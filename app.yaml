@@ -1,0 +1,17 @@
+application: dancesite
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /xd_receiver.htm
+  static_files: xd_receiver.htm
+  upload: xd_receiver.htm
+- url: /boo.html
+  static_files: boo.html
+  upload: boo.html
+- url: /boo2.html
+  static_files: boo2.html
+  upload: boo2.html
+- url: .*
+  script: main.py

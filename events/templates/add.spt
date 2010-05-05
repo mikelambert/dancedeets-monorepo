@@ -1,0 +1,34 @@
+#from spitfire.runtime.filters import escape_html
+#filter escape_html
+<html>
+  <head>
+    <title>Post Dance Event</title>
+  </head>
+  <body>
+		<h1>Add Dance Event</h1>
+		<form action="/events/add" method=post>
+			<p>Event URL: <input type=text name="event_url" size=80 onunfocus="loadEvent();">
+
+			<p>Event Types:
+			<ul>
+			#for $type in $types
+				<li><input type=checkbox name="tag" value="$type[0]">$type[1]
+			#end for
+			</ul>
+
+			<p>Event Dance Styles:
+			<ul>
+			#for $style in $styles
+				<li><input type=checkbox name="tag" value="$style[0]">$style[1]
+			#end for
+			</ul>
+
+			<button>Post</button>
+		</form>
+  </body>
+	<script type="text/javascript">
+		function loadEvent() {
+			//event_url
+		}
+	</script>
+</html>

@@ -1,0 +1,22 @@
+#from spitfire.runtime.filters import escape_html
+#filter escape_html
+<html>
+  <head>
+    <title>Dance Event Results</title>
+  </head>
+  <body>
+		<h1>Dance Event Results</title>
+
+<table>
+#for $result in $results
+#set $event = $result.event
+#set $fb_event = $event.get_fb_event_info()
+	<tr>
+		<td><a href="/events/view?event_id=$fb_event.eid"><img src="$fb_event.pic"></a></td>
+		<td><a href="/events/view?event_id=$fb_event.eid">$format_html($fb_event.name)</a></td>
+	</tr>
+#end for
+</table>
+
+  </body>
+</html>

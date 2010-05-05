@@ -1,0 +1,45 @@
+#from spitfire.runtime.filters import escape_html
+#filter escape_html
+<html>
+  <head>
+    <title>$fb_event.name</title>
+  </head>
+  <body>
+		<h1>$fb_event.name</h1>
+		<img src="$fb_event.pic">
+		<p>$format_html($fb_event.description)
+
+		<p>Location: $fb_event.location
+		<p>Venue: $venue
+		<p>See <a href="http://www.facebook.com/event.php?eid=$fb_event.eid">Event on Facebook</a>
+
+		<p>Event Types are:
+		<ul>
+			#for $type in $types
+			<li>$type
+			#end for
+		</ul>
+
+		<p>Dance Styles are:
+		<ul>
+			#for $style in $styles
+			<li>$style
+			#end for
+		</ul>
+
+		<p>Distance to mike is $distance miles
+
+<table>
+<tr>
+#for $rsvp, $friends in $event_friends.iteritems()
+<td valign=top>
+<b>$rsvp</b>: ($len($friends) friends)<br>
+#for $friend in $friends
+<img src="$friend.pic_square">$friend.name<br>
+#end for
+</td>
+#end for
+</tr>
+</table>
+  </body>
+</html>
