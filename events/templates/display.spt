@@ -27,7 +27,7 @@
 			#end for
 		</ul>
 
-		<p>Distance to mike is $distance miles
+		<p>Distance to mike is $format("%.0f", $distance) miles.
 
 <table>
 <tr>

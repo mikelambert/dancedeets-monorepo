@@ -24,10 +24,7 @@ DEBUG = True
 #TODO(lambert): send weekly emails with upcoming events per person
 #TODO(lambert): send notifications to interested users when someone adds a new event?
 
-#TODO(lambert): support "add an event" page. add a url, some tags, save it to db
-#TODO(lambert): support adding tags in some "structured" form via select lists
-
-#TODO(lambert): support show-all-events page that does a query across the db
+#TODO(lambert): add a bunch of events to the db, then dump the db for saving it
 #TODO(lambert): support filters on events (by distance? by tags? what else?)
 
 # TODO: move these to a base-servlet module
@@ -71,9 +68,10 @@ class MainHandler(BaseRequestHandler):
             venue = e.get_fb_event_info()['venue']
             venue = '%s, %s, %s, %s' % (venue['street'], venue['city'], venue['state'], venue['country'])
 
+            # This fails a lot. Split into separate requests? Cache heavily? Make ajax with long timeouts? :(
             try:
                 event_friends = e.get_fb_event_friends()
-            except urlfetch.DownloadError:
+            except urlfetch.DownloadError, exc:
                 event_friends = {}
             for rsvp in 'attending', 'unsure', 'declined', 'not_replied':
                 if rsvp in event_friends:
@@ -86,7 +84,10 @@ class MainHandler(BaseRequestHandler):
             self.display['fb_event'] = e.get_fb_event_info()
             self.display['distance'] = distance
             self.display['venue'] = venue
+
+            # function
             self.display['format_html'] = text.format_html
+            self.display['format'] = text.format
 
             tags_set = set(e.tags())
             self.display['styles'] = [x[1] for x in tags.STYLES if x[0] in tags_set]

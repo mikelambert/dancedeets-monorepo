@@ -24,3 +24,6 @@ def html_escape(value):
     else:
         return ''
 
+def format(f, s):
+    return f % s
+
