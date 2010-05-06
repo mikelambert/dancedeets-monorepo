@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
+import datetime
 import re
 import sys
+
+import pytz
 
 import wsgiref.handlers
 from facebook import webappfb
@@ -11,6 +14,7 @@ from google.appengine.api import urlfetch
 import gmaps
 from events import eventdata
 from events import tags
+from events import users
 from util import text
 
 DEBUG = True
@@ -82,11 +86,17 @@ class MainHandler(BaseRequestHandler):
             self.display = {}
             self.display['event'] = e
             self.display['fb_event'] = e.get_fb_event_info()
+            time_offset = users.get_timezone_for_user(self.facebook)
+            td = datetime.timedelta(hours=time_offset)
+
+            self.display['start_time'] = datetime.datetime.fromtimestamp(int(e.get_fb_event_info()['start_time'])) + td
+            self.display['end_time'] = datetime.datetime.fromtimestamp(int(e.get_fb_event_info()['end_time'])) + td
             self.display['distance'] = distance
             self.display['venue'] = venue
 
             # function
             self.display['format_html'] = text.format_html
+            self.display['date_format'] = text.date_format
             self.display['format'] = text.format
 
             tags_set = set(e.tags())
@@ -102,7 +112,6 @@ class MainHandler(BaseRequestHandler):
             # and then we prompt the user for access and set their settings here.
             #self.facebook.events.rsvp(int(self.request.get('event_id')), "unsure")
 
-            # TODO(lambert): print out event start/end times
             # TODO(lambert): maybe offer a link to message the owner
         else:
             self.response.out.write('Need an event_id. Or go to boo.html to login')

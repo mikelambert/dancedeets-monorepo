@@ -24,6 +24,9 @@ def html_escape(value):
     else:
         return ''
 
+def date_format(f, s):
+    return s.strftime(str(f))
+
 def format(f, s):
     return f % s
 

@@ -11,6 +11,8 @@
 
 		<p>Location: $fb_event.location
 		<p>Venue: $venue
+		<p>Start Time: $date_format('%Y-%m-%d %H:%M', $start_time)
+		<p>End Time: $date_format('%Y-%m-%d %H:%M', $end_time)
 		<p>See <a href="http://www.facebook.com/event.php?eid=$fb_event.eid">Event on Facebook</a>
 
 		<p>Event Types are:
