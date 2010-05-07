@@ -4,7 +4,65 @@
   <head>
     <title>$fb_event.name</title>
   </head>
-  <body>
+
+<style type="text/css">
+body {
+	margin: 0px;
+	padding: 0px;
+}
+
+#mastHead {
+	background-color: #309060;
+	height: 35px;
+	width: 100%;
+}
+
+#insideMastHead {
+	position: relative;
+	height: 100%;
+	margin: 0 auto;
+	width: 800px;
+}
+
+#title {
+	position: absolute;
+	bottom: 0px;
+}
+
+#insideInsideMastHead {
+	margin-left: 100px;
+	position: relative;
+	height: 25px;
+	background-color: #60B090;
+	border-color: #006030;
+	border-style: solid solid none;
+	border-width: 1px 1px 0px;
+	position: absolute;
+	bottom: 0px;
+}
+
+</style>
+  <body style="font-size:12px;font-family:'lucida grande'">
+
+<div id="mastHead">
+<div id="insideMastHead">
+<div id="title">
+DanceSite
+</div>
+<div id="insideInsideMastHead">
+See My Events
+
+Promote Event
+<input type="text">Search
+<ul>
+<li>Events
+<li>Account
+
+</div>
+</div>
+</div>
+
+<div
 		<h1>$fb_event.name</h1>
 		<img src="$fb_event.pic">
 		<p>$format_html($fb_event.description)
