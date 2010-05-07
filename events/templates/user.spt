@@ -1,0 +1,15 @@
+#from spitfire.runtime.filters import escape_html
+#filter escape_html
+<html>
+  <head>
+    <title>Settings</title>
+  </head>
+  <body>
+		<h1>Settings</title>
+
+<form action="/users/save">
+	<textarea name=address cols=50 rows=5>$address</textarea>
+</form>
+
+  </body>
+</html>
