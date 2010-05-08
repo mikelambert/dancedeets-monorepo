@@ -213,6 +213,33 @@ class SearchHandler(BaseRequestHandler):
         self.display['results'] = search_results
         self.display['format_html'] = text.format_html
         self.render_template('events.templates.results')
+
+        
+class UserHandler(BaseRequestHandler):
+    def get(self):
+        self.display['DANCES'] = users.DANCES
+        self.display['DANCE_HEADERS'] = users.DANCE_HEADERS
+        self.display['DANCE_LISTS'] = users.DANCE_LISTS
+
+        defaults = {
+            'zip': '',
+            'freestyle': users.FREESTYLE_FAN_NO_CLUBS,
+            'choreo': users.CHOREO_FAN,
+        }
+        # TODO(lambert): if we have info about the user, override/prepopulate it here
+        for field in defaults.keys():
+            if self.request.get(field):
+                defaults[field] = self.request.get(field)
+        self.display['defaults'] = defaults
+
+        #print urllib.urlopen('http://graph.facebook.com/me?access_token=%s' % self.facebook.access_token).read()
+
+        self.render_template('events.templates.user')
+
+    def post(self):
+        #if not validated:
+        #    self.get()
+        #TODO(lambert): save the data here
         
 
 
@@ -220,6 +247,7 @@ URLS = [
     ('/events/view', MainHandler),
     ('/events/add', AddHandler),
     ('/events/search', SearchHandler),
+    ('/user/edit', UserHandler),
 ]
 
 def main():

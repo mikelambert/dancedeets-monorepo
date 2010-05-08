@@ -5,10 +5,41 @@
     <title>Settings</title>
   </head>
   <body>
-		<h1>Settings</title>
+		<h1>Settings</h1>
 
 <form action="/users/save">
-	<textarea name=address cols=50 rows=5>$address</textarea>
+<p>
+	Home Zip Code: <em>(so we can tell how far away events are, and then only show you the ones you care about)</em><br>
+	<input type=text name=zip value="$defaults.zip">
+<p>
+<!--TODO(lambert): alert and prompt user on homepage when zipcode differs from the current city?-->
+
+<!--TODO(lambert): sort these based on expectations for the user-->
+
+<table><tr style="vertical-align:top">
+#for $type in $DANCES
+<td>
+<div style="width:250px">
+<strong>$DANCE_HEADERS[$type].name</strong><br>
+<span style="font-size:12px">$DANCE_HEADERS[$type].description</span><br>
+#for $list_item in $DANCE_LISTS[$type]
+  <hr>
+  <input type=radio name="$type" value="$list_item.internal" id="$list_item.internal"
+	#if $defaults.get($type) == $list_item.internal
+		checked	
+	#end if
+	>
+  <label for="$list_item.internal">
+    <strong>$list_item.name</strong>
+    <div style="font-size:12px">$list_item.description</div>
+  </label>
+#end for
+</div>
+</td>
+#end for
+</tr></table>
+
+<button>Save Changes</button>
 </form>
 
   </body>
