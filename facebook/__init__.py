@@ -289,6 +289,7 @@ METHODS = {
 
         'getInfo': [
             ('uid', int, []),
+            ('field', str, []),
         ],
 
         'setInfoOptions': [
@@ -938,6 +939,7 @@ class Facebook(object):
         self.auth_token = auth_token
         self.secret = None
         self.uid = None
+        self.access_token = None
         self.page_id = None
         self.in_canvas = False
         self.in_iframe = False
@@ -1303,6 +1305,9 @@ class Facebook(object):
 
         if params.get('added') == '1':
             self.added = True
+
+        if params.get('access_token'):
+            self.access_token = params['access_token']
 
         if params.get('expires'):
             self.session_key_expires = int(params['expires'])
