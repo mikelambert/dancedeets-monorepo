@@ -7,7 +7,7 @@
   <div id="user">
     Name: <input name="name" size="27"><br />
 <!-- only show the login button if the user is not logged in ! -->
-    <fb:login-button onlogin="update_user_box();"></fb:login-button>
+    <fb:login-button onlogin="update_user_box();" perms="user_location,rsvp_event,offline_access,email,user_events,read_friendlists"></fb:login-button>
   </div>
    <textarea name="comment" rows="5" cols="30"></textarea> <br />
     <input type="submit" value="Submit Comment">
@@ -39,6 +39,7 @@ function update_user_box() {
 		update_user_box();
 		//window.location.reload();
 	});
+
 </script>
 </body>
 </html>
