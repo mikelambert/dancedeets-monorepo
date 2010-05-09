@@ -24,7 +24,6 @@ DEBUG = True
 
 #TODO(lambert): add rsvp buttons to the event pages.
 
-#TODO(lambert): allow users to specify what their tags/location/mail-preferences are
 #TODO(lambert): send weekly emails with upcoming events per person
 #TODO(lambert): send notifications to interested users when someone adds a new event?
 
