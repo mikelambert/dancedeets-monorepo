@@ -7,6 +7,13 @@
   <body>
 		<h1>Add Dance Event</h1>
 		<form action="/events/add" method=post>
+
+			<select name="event_id">
+				<option value="">Select one of your events below...
+			#for $event in $events
+				<option value="$event.id">$date_format('%Y-%m-%d %H:%M', $event.start_time) $event.name
+			#end for
+			</select>
 			<p>Event URL: <input type=text name="event_url" size=80 onunfocus="loadEvent();">
 
 			<p>Event Types:

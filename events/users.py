@@ -1,5 +1,5 @@
 from google.appengine.ext import db
-
+from google.appengine.api import memcache
 
 def header_item(name, description):
     return dict(name=name, description=description)
@@ -48,8 +48,16 @@ class User(db.Model):
     choreo = db.StringProperty()
     send_email = db.BooleanProperty()
 
+def memcache_timezone_key(fb_user_id):
+    return 'UserTimeZone.%s' % fb_user_id
+
 def get_timezone_for_user(facebook):
-    query = 'select timezone from user where uid = %s' % facebook.uid
-    results = facebook.fql.query(query)
-    return results[0]['timezone']
+    memcache_key = memcache_timezone_key(facebook.uid)
+    user_timezone = memcache.get(memcache_key)
+    if not user_timezone:
+        query = 'select timezone from user where uid = %s' % facebook.uid
+        results = facebook.fql.query(query)
+        user_timezone = results[0]['timezone']
+        memcache.set(memcache_key, user_timezone, 10)
+    return user_timezone
 

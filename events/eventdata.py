@@ -66,8 +66,17 @@ def get_geocoded_location_for_event(event_info):
     venue = event_info['venue']
     address_components = [event_info['location'], venue['street'], venue['city'], venue['state'], venue['country']]
     address_components = [x for x in address_components if x]
-    return {'lat': venue['latitude'], 'lng': venue['longitude'], 'address': ', '.join(address_components)}
-    # NOTE: maybe we need to fall back on gmaps and get_geocoded_location() at some point?
+    results = {}
+    if venue.get('latitude') and venue.get('longitude'):
+        results['address'] = ', '.join(address_components)
+        results['lat'] = venue['latitude']
+        results['lng'] = venue['longitude']
+    else:
+        geocoded = get_geocoded_location(event_info['location'])
+        results['address'] = geocoded['address']
+        results['lat'] = geocoded['lat']
+        results['lng'] = geocoded['lng']
+    return results
 
 # Wait to implement this until we know the API we want.
 #def save_facebook_event(fb_event_id, db_event):

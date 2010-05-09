@@ -47,20 +47,27 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
     def __init__(self, *args, **kwargs):
         super(BaseRequestHandler, self).__init__(*args, **kwargs)
         self.display = {}
+        # functions, add these to some base display setup
+        self.display['format_html'] = text.format_html
+        self.display['date_format'] = text.date_format
+        self.display['format'] = text.format
 
     def render_template(self, name):
         template_class = import_template_class(name)
         template = template_class(search_list=[self.display], default_filter=text.html_escape)
         self.response.out.write(template.main().strip())
 
-
+    def localize_timestamp(self, dt):
+        time_offset = users.get_timezone_for_user(self.facebook)
+        td = datetime.timedelta(hours=time_offset)
+        return dt + td
 
 class MainHandler(BaseRequestHandler):
 
     def get(self):
         if self.request.get('event_id'):
             e = eventdata.FacebookEvent(self.facebook, int(self.request.get('event_id')))
-
+        
             e_lat = e.get_location()['lat']
             e_lng = e.get_location()['lng']
             # make sure our cookies are keyed by user-id somehow so different users don't conflict
@@ -68,6 +75,7 @@ class MainHandler(BaseRequestHandler):
             my_lng = -122.418144
             distance = gmaps.get_distance(e_lat, e_lng, my_lat, my_lng)
 
+            #TODO(lambert): properly handle venue vs street/city/state/country and location to get authoritative info
             venue = e.get_fb_event_info()['venue']
             venue = '%s, %s, %s, %s' % (venue['street'], venue['city'], venue['state'], venue['country'])
 
@@ -82,21 +90,13 @@ class MainHandler(BaseRequestHandler):
                     for friend in event_friends[rsvp]:
                         friend['name'].encode('utf8')
 
-            self.display = {}
             self.display['event'] = e
             self.display['fb_event'] = e.get_fb_event_info()
-            time_offset = users.get_timezone_for_user(self.facebook)
-            td = datetime.timedelta(hours=time_offset)
-
-            self.display['start_time'] = datetime.datetime.fromtimestamp(int(e.get_fb_event_info()['start_time'])) + td
-            self.display['end_time'] = datetime.datetime.fromtimestamp(int(e.get_fb_event_info()['end_time'])) + td
+            for field in ['start_time', 'end_time']:
+                self.display[field] = self.localize_timestamp(datetime.datetime.fromtimestamp(int(e.get_fb_event_info()[field])))
             self.display['distance'] = distance
             self.display['venue'] = venue
 
-            # function
-            self.display['format_html'] = text.format_html
-            self.display['date_format'] = text.date_format
-            self.display['format'] = text.format
 
             tags_set = set(e.tags())
             self.display['styles'] = [x[1] for x in tags.STYLES if x[0] in tags_set]
@@ -120,15 +120,35 @@ class AddHandler(BaseRequestHandler):
         self.display['types'] = tags.TYPES
         self.display['styles'] = tags.STYLES
 
+        from django.utils import simplejson
+        import urllib
+        results = urllib.urlopen('http://graph.facebook.com/me/events?access_token=%s' % self.facebook.access_token).read()
+        results_json = simplejson.loads(results)
+        events = sorted(results_json['data'], key=lambda x: x['start_time'])
+        for event in events:
+            for field in ['start_time', 'end_time']:
+                event[field] = self.localize_timestamp(datetime.datetime.strptime(event[field], '%Y-%m-%dT%H:%M:%S+0000'))
+
+        self.display['events'] = events
+
         self.render_template('events.templates.add')
 
     def post(self):
         #if not validated:
         #    self.get()
-        match = re.search('eid=(\d+)', self.request.get('event_url'))
-        if not match:
-            return self.get()
-        event_id = int(match.group(1))
+        event_id = None
+        #TODO: validation
+        assert not (self.request.get('event_url') and self.request.get('event_id'))
+        if self.request.get('event_url'):
+            match = re.search('eid=(\d+)', self.request.get('event_url'))
+            if not match: # TODO(lambert): poor man's validation??
+                return self.get()
+            event_id = int(match.group(1))
+        if self.request.get('event_id'):
+            event_id = int(self.request.get('event_id'))
+        if not event_id:
+            assert False # TODO: validation
+
         e = eventdata.FacebookEvent(self.facebook, event_id)
         e.set_tags(self.request.get_all('tag'))
         e.save_db_event()
@@ -210,7 +230,6 @@ class SearchHandler(BaseRequestHandler):
         query = SearchQuery(any_tags=tags_set)
         search_results = query.get_search_results(self.facebook)
         self.display['results'] = search_results
-        self.display['format_html'] = text.format_html
         self.render_template('events.templates.results')
 
         
@@ -238,8 +257,6 @@ class UserHandler(BaseRequestHandler):
             if self.request.get(field):
                 defaults[field] = self.request.get(field)
         self.display['defaults'] = defaults
-
-        #print urllib.urlopen('http://graph.facebook.com/me?access_token=%s' % self.facebook.access_token).read()
 
         self.render_template('events.templates.user')
 
