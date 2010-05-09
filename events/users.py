@@ -42,8 +42,11 @@ DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 class User(db.Model):
     fb_uid = db.IntegerProperty()
     zip = db.StringProperty()
+    distance = db.StringProperty()
+    distance_units = db.StringProperty()
     freestyle = db.StringProperty()
     choreo = db.StringProperty()
+    send_email = db.BooleanProperty()
 
 def get_timezone_for_user(facebook):
     query = 'select timezone from user where uid = %s' % facebook.uid

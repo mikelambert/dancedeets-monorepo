@@ -225,6 +225,10 @@ class UserHandler(BaseRequestHandler):
             'zip': '',
             'freestyle': users.FREESTYLE_FAN_NO_CLUBS,
             'choreo': users.CHOREO_FAN,
+            'send_email': True,
+            'distance': '60',
+            # TODO(lambert): Autoselect this based on facebook location
+            'distance_units': 'miles',
         }
         fetched_users = users.User.gql('where fb_uid = :fb_uid', fb_uid=self.facebook.uid).fetch(1)
         if fetched_users:
@@ -243,17 +247,19 @@ class UserHandler(BaseRequestHandler):
     def post(self):
         #if not validated:
         #    self.get()
-        #TODO(lambert): save the data here
         fetched_users = users.User.gql('where fb_uid = :fb_uid', fb_uid=self.facebook.uid).fetch(1)
         if fetched_users:
             user = fetched_users[0]
         else:
             user = users.User(fb_uid=self.facebook.uid)
-        for field in ['zip', 'freestyle', 'choreo']:
+        for field in ['zip', 'freestyle', 'choreo', 'distance', 'distance_units']:
             form_value = self.request.get(field)
             setattr(user, field, form_value)
+        for field in ['send_email']:
+            form_value = self.request.get(field) == "true"
+            setattr(user, field, form_value)
         user.put()
-        
+        self.redirect('/user/edit')
 
 
 URLS = [

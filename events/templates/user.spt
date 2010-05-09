@@ -12,6 +12,33 @@
 	Home Zip Code: <em>(so we can tell how far away events are, and then only show you the ones you care about)</em><br>
 	<input type=text name=zip value="$defaults.zip">
 <p>
+	Distance to Travel: <em>(how far away are you willing to go for stuff?)</em><br>
+	<input type=text name=distance value="$defaults.distance">
+	<select name=distance_units>
+		<option name="miles"
+#if $defaults.distance_units == "miles"
+	selected
+#end if
+		>miles
+		<option name="km"
+#if $defaults.distance_units == "km"
+	selected
+#end if
+		>km
+	</select>
+<p>
+	Send Email: <em>(do you want weekly emails of upcoming events?)</em><br>
+	<input type=radio name=send_email value="true" id="send_email_yes"
+#if $defaults.send_email
+	checked
+#end if
+	> <label for="send_email_yes">Yes</label>
+	<input type=radio name=send_email value="false" id="send_email_no"
+#if not $defaults.send_email
+	checked
+#end if
+	> <label for="send_email_no">No</label>
+<p>
 <!--TODO(lambert): alert and prompt user on homepage when zipcode differs from the current city?-->
 
 <!--TODO(lambert): sort these based on expectations for the user-->
