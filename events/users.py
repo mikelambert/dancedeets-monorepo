@@ -31,8 +31,9 @@ CHOREO_LIST = [
     list_item(CHOREO_DANCER, "Choreo Dancer", "Not just a fan, but you love hiphop workshops, auditions, and everything else in the hiphop choreography scene (also known as urban choreography scene.) This can potentially include jazz funk, hiphop/jazz, and other such blends of styles."),
 ]
 
-DANCE_CHOREO = 'CHOREO'
-DANCE_FREESTYLE = 'FREESTYLE'
+# these must match the field names below in the User table
+DANCE_CHOREO = 'choreo'
+DANCE_FREESTYLE = 'freestyle'
 
 DANCES = [DANCE_FREESTYLE, DANCE_CHOREO]
 DANCE_HEADERS = {DANCE_FREESTYLE: FREESTYLE_HEADER, DANCE_CHOREO: CHOREO_HEADER}
@@ -40,7 +41,7 @@ DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 
 class User(db.Model):
     fb_uid = db.IntegerProperty()
-    address = db.StringProperty()
+    zip = db.StringProperty()
     freestyle = db.StringProperty()
     choreo = db.StringProperty()
 

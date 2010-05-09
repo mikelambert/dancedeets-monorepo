@@ -7,7 +7,7 @@
   <body>
 		<h1>Settings</h1>
 
-<form action="/users/save">
+<form action="/user/edit" method="post">
 <p>
 	Home Zip Code: <em>(so we can tell how far away events are, and then only show you the ones you care about)</em><br>
 	<input type=text name=zip value="$defaults.zip">
@@ -24,15 +24,17 @@
 <span style="font-size:12px">$DANCE_HEADERS[$type].description</span><br>
 #for $list_item in $DANCE_LISTS[$type]
   <hr>
+<!-- border of 1px solid #EEEEEE ?? -->
   <input type=radio name="$type" value="$list_item.internal" id="$list_item.internal"
 	#if $defaults.get($type) == $list_item.internal
 		checked	
 	#end if
 	>
-  <label for="$list_item.internal">
-    <strong>$list_item.name</strong>
-    <div style="font-size:12px">$list_item.description</div>
-  </label>
+	<label for="$list_item.internal">
+		<strong>$list_item.name</strong>
+		<br>
+		<span style="font-size:12px;display:block">$list_item.description</span>
+	</label>
 #end for
 </div>
 </td>

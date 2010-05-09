@@ -226,7 +226,11 @@ class UserHandler(BaseRequestHandler):
             'freestyle': users.FREESTYLE_FAN_NO_CLUBS,
             'choreo': users.CHOREO_FAN,
         }
-        # TODO(lambert): if we have info about the user, override/prepopulate it here
+        fetched_users = users.User.gql('where fb_uid = :fb_uid', fb_uid=self.facebook.uid).fetch(1)
+        if fetched_users:
+            user = fetched_users[0]
+            for k in defaults:
+                defaults[k] = getattr(user, k)
         for field in defaults.keys():
             if self.request.get(field):
                 defaults[field] = self.request.get(field)
@@ -240,6 +244,15 @@ class UserHandler(BaseRequestHandler):
         #if not validated:
         #    self.get()
         #TODO(lambert): save the data here
+        fetched_users = users.User.gql('where fb_uid = :fb_uid', fb_uid=self.facebook.uid).fetch(1)
+        if fetched_users:
+            user = fetched_users[0]
+        else:
+            user = users.User(fb_uid=self.facebook.uid)
+        for field in ['zip', 'freestyle', 'choreo']:
+            form_value = self.request.get(field)
+            setattr(user, field, form_value)
+        user.put()
         
 
 
