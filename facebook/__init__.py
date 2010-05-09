@@ -1333,7 +1333,7 @@ class Facebook(object):
         if 'session_key' in params:
             self.session_key = params['session_key']
             if 'user' in params:
-                self.uid = params['user']
+                self.uid = int(params['user'])
             elif 'page_id' in params:
                 self.page_id = params['page_id']
             else:
@@ -1341,13 +1341,13 @@ class Facebook(object):
         elif 'profile_session_key' in params:
             self.session_key = params['profile_session_key']
             if 'profile_user' in params:
-                self.uid = params['profile_user']
+                self.uid = int(params['profile_user'])
             else:
                 return False
         elif 'canvas_user' in params:
-            self.uid = params['canvas_user']
+            self.uid = int(params['canvas_user'])
         elif 'uninstall' in params:
-            self.uid = params['user']
+            self.uid = int(params['user'])
         else:
             return False
 
