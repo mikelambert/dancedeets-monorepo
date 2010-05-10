@@ -12,8 +12,21 @@
 #set $event = $result.event
 #set $fb_event = $event.get_fb_event_info()
 	<tr>
-		<td><a href="/events/view?event_id=$fb_event.eid"><img src="$fb_event.pic"></a></td>
+		<td><a href="/events/view?event_id=$fb_event.eid"><img src="$result.get_image()"></a></td>
 		<td><a href="/events/view?event_id=$fb_event.eid">$format_html($fb_event.name)</a></td>
+		<td>
+			<form>
+<!-- TODO(lambert): make this work: event_rsvp("$fb_event.eid", "attending") -->
+			#set $user_rsvp = $result.get_attendence()
+			#for $rsvp in $CHOOSE_RSVPS
+				<input type=radio id="rsvp_${rsvp}_$fb_event.eid" name="rsvp_$fb_event.eid" value="$rsvp"
+				#if $rsvp == $user_rsvp
+					checked
+				#end if
+				> <label for="rsvp_${rsvp}_$fb_event.eid">$rsvp</label><br>
+			#end for
+			</form>
+		</td>
 	</tr>
 #end for
 </table>

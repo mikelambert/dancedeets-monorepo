@@ -7,10 +7,23 @@ import base_servlet
 #TODO(lambert): add rsvp buttons to the search results.
 #TODO(lambert): support filters on events (by distance? by tags? what else?)
 
+CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
+
 class SearchResult(object):
-    def __init__(self, event, query):
+    def __init__(self, fb_user_id, event, fb_event, query):
+        self.fb_user_id = fb_user_id
         self.event = event
+        self.fb_event = fb_event
         self.query = query
+
+    def get_image(self):
+        return eventdata.get_event_image_url(self.fb_event['picture'], eventdata.EVENT_IMAGE_MEDIUM)
+
+    def get_attendence(self):
+        for rsvp in CHOOSE_RSVPS:
+            if [x for x in self.fb_event[rsvp]['data'] if int(x['id']) == self.fb_user_id]:
+                return rsvp
+        return 'noreply'
 
 class SearchQuery(object):
     MATCH_TAGS = 'TAGS'
@@ -64,8 +77,13 @@ class SearchQuery(object):
         # - use prebucketed time/locations (by latlong grid, buckets of time)
         # - switch to non-appengine like SimpleDB or MySQL on Amazon
 
+        # TODO(lambert): Clean up our use of eventdata.FacebookEvent in light of our preloading API
         fb_events = [eventdata.FacebookEvent(facebook, x.fb_event_id) for x in eventdata.DBEvent.all().fetch(100)]
-        search_results = [SearchResult(x, self) for x in fb_events if self.matches_event(x)]
+        batch_lookup = base_servlet.BatchLookup(facebook)
+        for x in fb_events:
+            batch_lookup.lookup_event(x._fb_event_id)
+        batch_lookup.finish_loading()
+        search_results = [SearchResult(facebook.uid, x, batch_lookup.events[x._fb_event_id], self) for x in fb_events if self.matches_event(x)]
         return search_results
 
 class SearchHandler(base_servlet.BaseRequestHandler):
@@ -85,5 +103,6 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         query = SearchQuery(any_tags=tags_set)
         search_results = query.get_search_results(self.facebook)
         self.display['results'] = search_results
+        self.display['CHOOSE_RSVPS'] = CHOOSE_RSVPS
         self.render_template('events.templates.results')
 

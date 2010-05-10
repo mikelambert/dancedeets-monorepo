@@ -121,6 +121,7 @@ class BatchLookup(object):
         else:
             self.event_rpcs[event_id] = dict(
                 info=self._fetch_rpc('%s' % event_id),
+                picture=self._fetch_rpc('%s/picture' % event_id),
                 attending=self._fetch_rpc('%s/attending' % event_id),
                 maybe=self._fetch_rpc('%s/maybe' % event_id),
                 declined=self._fetch_rpc('%s/declined' % event_id),
@@ -145,9 +146,9 @@ class BatchLookup(object):
             memcache_set[self._memcache_user_key(user_id)] = result
             self.users[user_id] = result
         for event_id, event_dict in self.event_rpcs.items():
-            result = dict((k, self._map_rpc_to_json(v)) for k, v in event_dict.iteritems())
-            memcache_key = self._memcache_event_key(event_id)
-            memcache_set[_memcache_event_key(event_id)] = result
+            result = dict((k, self._map_rpc_to_json(v)) for k, v in event_dict.iteritems() if k != 'picture')
+            result['picture'] = event_dict['picture'].get_result().final_url
+            memcache_set[self._memcache_event_key(event_id)] = result
             self.events[event_id] = result
     
         if self.allow_memcache and memcache_set:

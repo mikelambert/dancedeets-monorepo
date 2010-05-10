@@ -6,6 +6,22 @@ import gmaps
 #memcache of: fb_event_id -> event info
 #db of: fbid, our_info
 
+# pic url prefixes:
+# increasing-size: t, s, n
+# square: q
+
+EVENT_IMAGE_SMALL = 't'
+EVENT_IMAGE_MEDIUM = 's'
+EVENT_IMAGE_LARGE = 'n'
+EVENT_IMAGE_SQUARE = 'q'
+EVENT_IMAGE_TYPES = [EVENT_IMAGE_SMALL, EVENT_IMAGE_MEDIUM, EVENT_IMAGE_LARGE, EVENT_IMAGE_SQUARE]
+
+def get_event_image_url(square_url, event_image_type):
+    assert event_image_type in EVENT_IMAGE_TYPES
+    final_url = square_url.replace('/q', '/%s' % event_image_type)
+    return final_url
+
+
 def memcache_event_key(fb_event_id):
     return 'Event.%s' % fb_event_id
 
