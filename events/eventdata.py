@@ -66,13 +66,14 @@ def get_geocoded_location_for_event(event_info):
     venue = event_info['venue']
     address_components = [event_info['location'], venue['street'], venue['city'], venue['state'], venue['country']]
     address_components = [x for x in address_components if x]
+    address = ', '.join(address_components)
     results = {}
     if venue.get('latitude') and venue.get('longitude'):
-        results['address'] = ', '.join(address_components)
+        results['address'] = address
         results['lat'] = venue['latitude']
         results['lng'] = venue['longitude']
     else:
-        geocoded = get_geocoded_location(event_info['location'])
+        geocoded = get_geocoded_location(address)
         results['address'] = geocoded['address']
         results['lat'] = geocoded['lat']
         results['lng'] = geocoded['lng']
