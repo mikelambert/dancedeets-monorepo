@@ -7,11 +7,14 @@ import facebook
 simplejson = facebook.simplejson
 urlread = facebook.urlread
 
+class GeocodeException(Exception):
+    pass
+
 def get_geocoded_data(address):
     url = "http://maps.google.com/maps/api/geocode/json?address=%s&sensor=false" % urllib.quote_plus(address)
     json_result = simplejson.load(urllib.urlopen(url))
-    # TODO(lambert): return as Exceptions
-    assert json_result['status'] == 'OK'
+    if json_result['status'] != 'OK'
+        raise GeocodeException("Got unexpected status: %s" % json_result['status'])
     result = json_result['results'][0]
     return result
 
@@ -27,8 +30,8 @@ def get_geocoded_country(address):
     result = get_geocoded_data(address)
     geocoded_location = {}
     countries = [x['short_name'] for x in result['address_components'] if u'country' in x['types']]
-    #TODO(lambert): handle with exceptions
-    assert len(countries) == 1
+    if len(countries) != 1:
+        raise GeocodeException("Found too many countries: %s" % countries)
     return countries[0]
 
 def get_distance(lat1, lng1, lat2, lng2, use_km=False):
