@@ -8,25 +8,29 @@
 		<h1>Add Dance Event</h1>
 		<form action="/events/add" method=post>
 
-			<select name="event_id">
-				<option value="">Select one of your events below...
-			#for $event in $events
-				<option value="$event.id">$date_format('%Y-%m-%d %H:%M', $event.start_time) $event.name
-			#end for
-			</select>
-			<p>Event URL: <input type=text name="event_url" size=80 onunfocus="loadEvent();">
-
+			Tell us about your facebook event:
+			<ul>
+				<li>Select one of your facebook events below:<br>
+					<select name="event_id">
+						<option value="">----------------
+					#for $event in $events
+						<option value="$event.id">$date_human_format($event.start_time): $event.name
+					#end for
+					</select>
+				<li>Or enter your URL here:<br>
+					<input type=text name="event_url" size=80 onunfocus="loadEvent();">
+			</ul>
 			<p>Event Types:
 			<ul>
 			#for $type in $types
-				<li><input type=checkbox name="tag" value="$type[0]">$type[1]
+				<li><input type=checkbox name="tag" value="$type[0]" id="tag_$type[0]"><label for="tag_$type[0]">$type[1]</label>
 			#end for
 			</ul>
 
 			<p>Event Dance Styles:
 			<ul>
 			#for $style in $styles
-				<li><input type=checkbox name="tag" value="$style[0]">$style[1]
+				<li><input type=checkbox name="tag" value="$style[0]" id="tag_$style[0]"><label for="tag_$style[0]">$style[1]</label>
 			#end for
 			</ul>
 
