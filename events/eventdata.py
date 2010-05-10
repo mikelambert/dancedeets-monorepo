@@ -13,12 +13,13 @@ def get_facebook_event_info(fb_event_id, facebook):
     memcache_key = memcache_event_key(fb_event_id)
     event_info = memcache.get(memcache_key)
     if not event_info:
-        columns = 'eid,name,pic_small,pic_small,pic,description,start_time,end_time,creator,update_time,location,venue,privacy'
+        columns = 'eid,name,pic_small,pic_small,pic,description,start_time,end_time,creator,update_time,location,venue,privacy,hide_guest_list'
         query = 'select %s from event where eid = %s' % (columns, fb_event_id)
         event_infos = facebook.fql.query(query)
         event_info = event_infos[0]
         # TODO(lambert): do this with exceptions
         assert event_info['privacy'] == 'OPEN'
+        assert event_info['hide_guest_list'] == False
         memcache.set(memcache_key, event_info, 10)
     return event_info
 

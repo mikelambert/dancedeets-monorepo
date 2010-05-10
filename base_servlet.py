@@ -5,6 +5,7 @@ import logging
 import re
 import sys
 
+import countries
 from facebook import webappfb
 from google.appengine.api import memcache
 from google.appengine.api import urlfetch
@@ -16,7 +17,6 @@ MEMCACHE_EXPIRY = 3600 * 24
 #TODO(lambert): force login before accessing stuff
 #TODO(lambert): show event info, queries without login?? P2
 
-# TODO: move these to a base-servlet module
 def import_template_module(template_name):
     try:
         return sys.modules[template_name]
@@ -38,7 +38,7 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         self.display = {}
         # functions, add these to some base display setup
         self.display['format_html'] = text.format_html
-        self.display['date_human_format'] = text.date_human_format
+        self.display['date_human_format'] = self.date_human_format
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
         self.batch_lookup = BatchLookup(self.facebook)
@@ -55,6 +55,28 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         td = datetime.timedelta(hours=time_offset)
         final_dt = dt + td
         return final_dt
+
+    def date_human_format(self, d):
+        now = datetime.datetime.now()
+        difference = (d - now)
+        month_day_of_week = d.strftime('%A, %B')
+        month_day = '%s %s' % (month_day_of_week, d.day)
+        if self.user_country in countries.AMPM_COUNTRIES:
+            time_string = '%d:%02d%s' % (int(d.strftime('%I')), d.minute, d.strftime('%p').lower())
+        else:
+            time_string = '%d:%02d' % (int(d.strftime('%H')), d.minute)
+        return '%s at %s' % (month_day, time_string)
+
+    def current_user(self):
+        return self.batch_lookup.users[self.facebook.uid]
+
+    def load_user_country(self):
+        location_name = self.current_user()['profile']['location']['name']
+        self.user_country = countries.get_country_for_location(location_name)
+
+    def finish_preload(self):
+        self.batch_lookup.finish_loading()
+        self.load_user_country()
 
 class BatchLookup(object):
     def __init__(self, facebook, allow_memcache=True):

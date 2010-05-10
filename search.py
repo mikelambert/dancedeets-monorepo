@@ -70,12 +70,15 @@ class SearchQuery(object):
 
 class SearchHandler(base_servlet.BaseRequestHandler):
     def get(self):
+        self.finish_preload()
+
         self.display['types'] = tags.TYPES
         self.display['styles'] = tags.STYLES
 
         self.render_template('events.templates.search')
 
     def post(self):
+        self.finish_preload()
         #if not validated:
         #    self.get()
         tags_set = self.request.get_all('tag')

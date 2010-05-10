@@ -9,11 +9,11 @@
 
 <form action="/user/edit" method="post">
 <p>
-	Home zip code in $location: <em>(so we can tell how far away events are, and only show you the ones you care about)</em><br>
-	<input type=text name=zip value="$defaults.zip">
+	Home location: <em>(used to tell how far away events are, for filtering out just stuff you care about. use a zip code or something equivalent if you want more accuracy)</em><br>
+	<input type=text name=location value="$defaults.location">
 <p>
 	How far are you willing to travel from $location for dance events:<br>
-	<input type=text name=distance value="$defaults.distance">
+	<input type=text name=distance value="$defaults.distance" size=5>
 	<select name=distance_units>
 		<option name="miles"
 #if $defaults.distance_units == "miles"

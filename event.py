@@ -16,7 +16,7 @@ DEBUG = True
 class MainHandler(base_servlet.BaseRequestHandler):
 
     def get(self):
-        self.batch_lookup.finish_loading()
+        self.finish_preload()
         if self.request.get('event_id'):
             e = eventdata.FacebookEvent(self.facebook, int(self.request.get('event_id')))
         
@@ -69,7 +69,7 @@ class MainHandler(base_servlet.BaseRequestHandler):
 
 class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):
-        self.batch_lookup.finish_loading()
+        self.finish_preload()
 
         self.display['types'] = tags.TYPES
         self.display['styles'] = tags.STYLES
@@ -85,6 +85,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         self.render_template('events.templates.add')
 
     def post(self):
+        self.finish_preload()
         #if not validated:
         #    self.get()
         event_id = None

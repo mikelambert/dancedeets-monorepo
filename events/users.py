@@ -41,7 +41,7 @@ DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 
 class User(db.Model):
     fb_uid = db.IntegerProperty()
-    zip = db.StringProperty()
+    location = db.StringProperty()
     distance = db.StringProperty()
     distance_units = db.StringProperty()
     freestyle = db.StringProperty()
