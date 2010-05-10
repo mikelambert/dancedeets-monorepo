@@ -1334,6 +1334,10 @@ class Facebook(object):
             self.session_key = params['session_key']
             if 'user' in params:
                 self.uid = int(params['user'])
+            # BEGIN: NEW FB CODE
+            elif 'uid' in params:
+                self.uid = int(params['ud'])
+            # END: NEW FB CODE
             elif 'page_id' in params:
                 self.page_id = params['page_id']
             else:
@@ -1393,8 +1397,6 @@ class Facebook(object):
             sig = hashlib.md5(payload + self.secret_key).hexdigest()
             expires = int(args["expires"])
             if sig == args.get("sig") and (not expires or time.time() < expires):
-                #TODO: arguably we should change the caller so it expects uid?
-                args['user'] = args['uid']
                 return args
             else:
                 return None
