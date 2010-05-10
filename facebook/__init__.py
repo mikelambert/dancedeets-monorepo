@@ -1336,7 +1336,7 @@ class Facebook(object):
                 self.uid = int(params['user'])
             # BEGIN: NEW FB CODE
             elif 'uid' in params:
-                self.uid = int(params['ud'])
+                self.uid = int(params['uid'])
             # END: NEW FB CODE
             elif 'page_id' in params:
                 self.page_id = params['page_id']

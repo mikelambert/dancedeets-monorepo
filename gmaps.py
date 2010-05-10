@@ -13,7 +13,7 @@ class GeocodeException(Exception):
 def get_geocoded_data(address):
     url = "http://maps.google.com/maps/api/geocode/json?address=%s&sensor=false" % urllib.quote_plus(address)
     json_result = simplejson.load(urllib.urlopen(url))
-    if json_result['status'] != 'OK'
+    if json_result['status'] != 'OK':
         raise GeocodeException("Got unexpected status: %s" % json_result['status'])
     result = json_result['results'][0]
     return result
