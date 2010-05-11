@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from events import users
 import base_servlet
+import countries
+from events import users
 
 #TODO(lambert): send weekly emails with upcoming events per person
 #TODO(lambert): send notifications to interested users when someone adds a new event?

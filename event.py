@@ -13,6 +13,21 @@ DEBUG = True
 
 #TODO(lambert): add rsvp buttons to the event pages.
 
+class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
+    def post(self):
+        self.finish_preload()
+        if self.request.get('event_id'):
+            rsvp = self.request.get('rsvp')
+            valid_rsvp = ['attending', 'maybe', 'declined']
+            assert rsvp in valid_rsvp #TODO(lambert): validation
+            if rsvp == 'maybe':
+                rsvp = 'unsure'
+
+            self.facebook.events.rsvp(int(self.request.get('event_id')), rsvp)
+        #TODO(lambert): write out success/failure error code and json response
+        self.response.out.write('OK')
+
+
 class MainHandler(base_servlet.BaseRequestHandler):
 
     def get(self):
@@ -57,11 +72,6 @@ class MainHandler(base_servlet.BaseRequestHandler):
 
             # template rendering
             self.render_template('events.templates.display')
-
-            # FBRequest: Cannot invite user to events??
-            # Instead let's offer the user to attend/maybe/decline on an event
-            # and then we prompt the user for access and set their settings here.
-            #self.facebook.events.rsvp(int(self.request.get('event_id')), "unsure")
 
             # TODO(lambert): maybe offer a link to message the owner
         else:

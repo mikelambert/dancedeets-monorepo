@@ -8,15 +8,13 @@ import user
 
 DEBUG = True
 
-#TODO(lambert): send weekly emails with upcoming events per person
-#TODO(lambert): send notifications to interested users when someone adds a new event?
-
 #TODO(lambert): add a bunch of events to the db, then dump the db for saving it
 
 URLS = [
     ('/events/view', event.MainHandler),
     ('/events/add', event.AddHandler),
     ('/events/search', search.SearchHandler),
+    ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/user/edit', user.UserHandler),
 ]
 
