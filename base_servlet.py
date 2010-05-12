@@ -137,16 +137,18 @@ class BatchLookup(object):
                 return simplejson.loads(result.content)
         except urlfetch.DownloadError:
             pass
-        return 'ERROR'
+        return None
 
     def finish_loading(self):
         memcache_set = {}
         for user_id, user_dict in self.user_rpcs.items():
-            result = dict((k, self._map_rpc_to_json(v)) for k, v in user_dict.iteritems())
+            kv_pairs = [(k, self._map_rpc_to_json(v)) for k, v in user_dict.iteritems()]
+            result = dict(kv for kv in kv_pairs if kv[1])
             memcache_set[self._memcache_user_key(user_id)] = result
             self.users[user_id] = result
         for event_id, event_dict in self.event_rpcs.items():
-            result = dict((k, self._map_rpc_to_json(v)) for k, v in event_dict.iteritems() if k != 'picture')
+            kv_pairs = [(k, self._map_rpc_to_json(v)) for k, v in event_dict.iteritems() if k != 'picture']
+            result = dict(kv for kv in kv_pairs if kv[1])
             result['picture'] = event_dict['picture'].get_result().final_url
             memcache_set[self._memcache_event_key(event_id)] = result
             self.events[event_id] = result

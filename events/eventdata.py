@@ -39,26 +39,6 @@ def get_facebook_event_info(fb_event_id, facebook):
         memcache.set(memcache_key, event_info, 10)
     return event_info
 
-def memcache_event_friends_key(user_id, event_id):
-    return 'Event.%s.%s' % (user_id, event_id)
-
-def get_event_friends(facebook, event_id):
-    memcache_key = memcache_event_friends_key(facebook.uid, event_id)
-    event_friends = memcache.get(memcache_key)
-    if not event_friends:
-        event_friends = get_event_friends_from_facebook(facebook, event_id)
-        memcache.set(memcache_key, event_friends, 10)
-    return event_friends
-
-def get_event_friends_from_facebook(facebook, event_id):
-    def query_for(status):
-        return 'select uid,name,pic_square,pic_big,pic_small from user where uid in (select uid2 from friend where uid1 = %s) and uid in (select uid from event_member where eid = %s and rsvp_status = "%s" )' % (facebook.uid, event_id, status)
-    queries = dict((status, query_for(status)) for status in ('attending', 'unsure', 'declined', 'not_replied'))
-
-    fql_results = facebook.fql.multiquery(queries)
-    formatted_results = dict((x['name'], x['fql_result_set']) for x in fql_results)
-    return formatted_results
-
 def memcache_location_key(location):
     return 'Location.%s' % location
 
@@ -141,12 +121,6 @@ class FacebookEvent(object):
             self._location = get_geocoded_location_for_event(self._get_fb_event_info())
         return self._location
     get_location = _get_location
-
-    def _get_fb_event_friends(self):
-        if not self._fb_event_friends:
-            self._fb_event_friends = get_event_friends(self._facebook, self._fb_event_id)
-        return self._fb_event_friends
-    get_fb_event_friends = _get_fb_event_friends
 
     def tags(self):
         return self._get_db_event().tags

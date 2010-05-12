@@ -31,8 +31,10 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
 class MainHandler(base_servlet.BaseRequestHandler):
 
     def get(self):
+        event_id = int(self.request.get('event_id'))
+        self.batch_lookup.lookup_event(event_id)
         self.finish_preload()
-        if self.request.get('event_id'):
+        if event_id:
             e = eventdata.FacebookEvent(self.facebook, int(self.request.get('event_id')))
         
             e_lat = e.get_location()['lat']
@@ -46,16 +48,18 @@ class MainHandler(base_servlet.BaseRequestHandler):
             venue = e.get_fb_event_info()['venue']
             venue = '%s, %s, %s, %s' % (venue['street'], venue['city'], venue['state'], venue['country'])
 
-            # This fails a lot. Split into separate requests? Cache heavily? Make ajax with long timeouts? :(
-            try:
-                event_friends = e.get_fb_event_friends()
-            except urlfetch.DownloadError, exc:
-                event_friends = {}
-            for rsvp in 'attending', 'unsure', 'declined', 'not_replied':
-                if rsvp in event_friends:
-                    event_friends[rsvp] = sorted(event_friends[rsvp], key=lambda x: x['name'])
-                    for friend in event_friends[rsvp]:
-                        friend['name'].encode('utf8')
+            friend_ids = set(x['id'] for x in self.current_user()['friends']['data'])
+            event_friends = {}
+            event_info = self.batch_lookup.events[event_id]
+            for rsvp in 'attending', 'maybe', 'declined', 'noreply':
+                if rsvp in event_info:
+                    rsvp_friends = [x for x in event_info[rsvp]['data'] if x['id'] in friend_ids]
+                    rsvp_friends = sorted(rsvp_friends, key=lambda x: x['name'])
+                    for friend in rsvp_friends:
+                        #TODO(lambert): Do we want to pre-resolve/cache all these image names in the server?
+                        #TODO(lambert): Do we want to skimp out on images altogether?
+                        friend['pic'] = 'https://graph.facebook.com/%s/picture?access_token=%s' % (friend['id'], self.facebook.access_token)
+                    event_friends[rsvp] = rsvp_friends
 
             self.display['event'] = e
             self.display['fb_event'] = e.get_fb_event_info()
