@@ -4,7 +4,7 @@ import datetime
 import re
 
 from google.appengine.api import urlfetch
-import gmaps
+import locations
 from events import eventdata
 from events import tags
 import base_servlet
@@ -42,7 +42,7 @@ class MainHandler(base_servlet.BaseRequestHandler):
             # make sure our cookies are keyed by user-id somehow so different users don't conflict
             my_lat = 37.763506
             my_lng = -122.418144
-            distance = gmaps.get_distance(e_lat, e_lng, my_lat, my_lng)
+            distance = locations.get_distance(e_lat, e_lng, my_lat, my_lng)
 
             #TODO(lambert): properly handle venue vs street/city/state/country and location to get authoritative info
             venue = e.get_fb_event_info()['venue']

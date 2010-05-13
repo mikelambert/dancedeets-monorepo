@@ -1,6 +1,6 @@
 from google.appengine.ext import db
 from google.appengine.api import memcache
-import gmaps
+import locations
 
 #memcache of: location str -> geocode lat long, address
 #memcache of: fb_event_id -> event info
@@ -39,17 +39,6 @@ def get_facebook_event_info(fb_event_id, facebook):
         memcache.set(memcache_key, event_info, 10)
     return event_info
 
-def memcache_location_key(location):
-    return 'Location.%s' % location
-
-def get_geocoded_location(location):
-    memcache_key = memcache_location_key(location)    
-    geocoded_location = memcache.get(memcache_key)
-    if not geocoded_location:
-        geocoded_location = gmaps.get_geocoded_address(location)
-        memcache.set(memcache_key, geocoded_location, 10)
-    return geocoded_location
-
 def get_db_event(fb_event_id):
     query = DBEvent.gql('where fb_event_id = :fb_event_id', fb_event_id=fb_event_id)
     results = query.fetch(1)
@@ -70,7 +59,7 @@ def get_geocoded_location_for_event(event_info):
         results['lat'] = venue['latitude']
         results['lng'] = venue['longitude']
     else:
-        geocoded = get_geocoded_location(address)
+        geocoded = locations.get_geocoded_location(address)
         results['address'] = geocoded['address']
         results['lat'] = geocoded['lat']
         results['lng'] = geocoded['lng']

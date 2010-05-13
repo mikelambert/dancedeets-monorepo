@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import base_servlet
-import countries
+import locations
 from events import users
 
 #TODO(lambert): send weekly emails with upcoming events per person
@@ -24,7 +24,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
             'distance': '60',
             'distance_units': 'km',
         }
-        if self.user_country in countries.MILES_COUNTRIES:
+        if self.user_country in locations.MILES_COUNTRIES:
             defaults['distance_units'] = 'miles'
 
         fetched_users = users.User.gql('where fb_uid = :fb_uid', fb_uid=self.facebook.uid).fetch(1)

@@ -5,7 +5,7 @@ import logging
 import re
 import sys
 
-import countries
+import locations
 from facebook import webappfb
 from google.appengine.api import memcache
 from google.appengine.api import urlfetch
@@ -61,7 +61,7 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         difference = (d - now)
         month_day_of_week = d.strftime('%A, %B')
         month_day = '%s %s' % (month_day_of_week, d.day)
-        if self.user_country in countries.AMPM_COUNTRIES:
+        if self.user_country in locations.AMPM_COUNTRIES:
             time_string = '%d:%02d%s' % (int(d.strftime('%I')), d.minute, d.strftime('%p').lower())
         else:
             time_string = '%d:%02d' % (int(d.strftime('%H')), d.minute)
@@ -72,7 +72,7 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
 
     def load_user_country(self):
         location_name = self.current_user()['profile']['location']['name']
-        self.user_country = countries.get_country_for_location(location_name)
+        self.user_country = locations.get_country_for_location(location_name)
 
     def finish_preload(self):
         self.batch_lookup.finish_loading()
