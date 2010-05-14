@@ -22,32 +22,6 @@ def get_event_image_url(square_url, event_image_type):
     return final_url
 
 
-def memcache_event_key(fb_event_id):
-    return 'Event.%s' % fb_event_id
-
-def get_facebook_event_info(fb_event_id, facebook):
-    memcache_key = memcache_event_key(fb_event_id)
-    event_info = memcache.get(memcache_key)
-    if not event_info:
-        columns = 'eid,name,pic_small,pic_small,pic,description,start_time,end_time,creator,update_time,location,venue,privacy,hide_guest_list'
-        query = 'select %s from event where eid = %s' % (columns, fb_event_id)
-        event_infos = facebook.fql.query(query)
-        event_info = event_infos[0]
-        # TODO(lambert): do this with exceptions
-        assert event_info['privacy'] == 'OPEN'
-        assert event_info['hide_guest_list'] == False
-        memcache.set(memcache_key, event_info, 10)
-    return event_info
-
-def get_db_event(fb_event_id):
-    query = DBEvent.gql('where fb_event_id = :fb_event_id', fb_event_id=fb_event_id)
-    results = query.fetch(1)
-    if results:
-        return results[0]
-    else:
-        return None
-
-
 def get_geocoded_location_for_event(event_info):
     venue = event_info['venue']
     address_components = [event_info['location'], venue['street'], venue['city'], venue['state'], venue['country']]
@@ -65,11 +39,13 @@ def get_geocoded_location_for_event(event_info):
         results['lng'] = geocoded['lng']
     return results
 
-# Wait to implement this until we know the API we want.
-#def save_facebook_event(fb_event_id, db_event):
-#    db_event = get_db_event(fb_event_id)
-#    db_event.tags = tags
-#    db_event.put()
+def get_db_event(fb_event_id):
+    query = DBEvent.gql('where fb_event_id = :fb_event_id', fb_event_id=fb_event_id)
+    results = query.fetch(1)
+    if results:
+        return results[0]
+    else:
+        return None
 
 
 class DBEvent(db.Model):
@@ -83,42 +59,3 @@ class DBEvent(db.Model):
 
     #def __repr__(self):
     #    return 'DBEvent(fb_event_id=%r,tags=%r)' % (self.fb_event_id, self.tags)
-
-class FacebookEvent(object):
-    def __init__(self, facebook, fb_event_id):
-        self._facebook = facebook
-        self._fb_event_id = fb_event_id
-        self._db_event = None
-        self._fb_event_info = None
-        self._location = None
-        self._fb_event_friends = None
-
-    def _get_db_event(self):
-        if not self._db_event:
-            self._db_event = get_db_event(self._fb_event_id) or DBEvent(fb_event_id=self._fb_event_id)
-            #self._db_event.title = 
-        return self._db_event
-
-    def _get_fb_event_info(self):
-        if not self._fb_event_info:
-            self._fb_event_info = get_facebook_event_info(self._fb_event_id, self._facebook)
-        return self._fb_event_info
-    get_fb_event_info = _get_fb_event_info
-
-    def _get_location(self):
-        if not self._location:
-            self._location = get_geocoded_location_for_event(self._get_fb_event_info())
-        return self._location
-    get_location = _get_location
-
-    def tags(self):
-        return self._get_db_event().tags
-
-    def set_tags(self, tags):
-        event = self._get_db_event()
-        event.tags = tags
-
-    def save_db_event(self):
-        event = self._get_db_event()
-        event.put()
-

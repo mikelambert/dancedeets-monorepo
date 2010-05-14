@@ -10,19 +10,19 @@
 <table>
 #for $result in $results
 #set $event = $result.event
-#set $fb_event = $event.get_fb_event_info()
+#set $fb_event = $result.fb_event
 	<tr>
-		<td><a href="/events/view?event_id=$fb_event.eid"><img src="$result.get_image()"></a></td>
-		<td><a href="/events/view?event_id=$fb_event.eid">$format_html($fb_event.name)</a></td>
+		<td><a href="/events/view?event_id=$fb_event.id"><img src="$result.get_image()"></a></td>
+		<td><a href="/events/view?event_id=$fb_event.id">$format_html($fb_event.name)</a></td>
 		<td>
 			<form>
 			#set $user_rsvp = $result.get_attendence()
 			#for $rsvp in $CHOOSE_RSVPS
-				<input type=radio id="rsvp_${rsvp}_$fb_event.eid" name="rsvp_$fb_event.eid" value="$rsvp" onclick='event_rsvp("$fb_event.eid", "$rsvp.lower()")'
+				<input type=radio id="rsvp_${rsvp}_$fb_event.id" name="rsvp_$fb_event.id" value="$rsvp" onclick='event_rsvp("$fb_event.id", "$rsvp.lower()")'
 				#if $rsvp == $user_rsvp
 					checked
 				#end if
-				> <label for="rsvp_${rsvp}_$fb_event.eid">$rsvp</label><br>
+				> <label for="rsvp_${rsvp}_$fb_event.id">$rsvp</label><br>
 			#end for
 			</form>
 		</td>

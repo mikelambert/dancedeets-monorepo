@@ -35,17 +35,20 @@ class MainHandler(base_servlet.BaseRequestHandler):
         self.batch_lookup.lookup_event(event_id)
         self.finish_preload()
         if event_id:
-            e = eventdata.FacebookEvent(self.facebook, int(self.request.get('event_id')))
+            e = self.batch_lookup.events[event_id]['info']
         
-            e_lat = e.get_location()['lat']
-            e_lng = e.get_location()['lng']
+            location = eventdata.get_geocoded_location_for_event(e)
+            self.display['location'] = location
+
+            e_lat = location['lat']
+            e_lng = location['lng']
             # make sure our cookies are keyed by user-id somehow so different users don't conflict
             my_lat = 37.763506
             my_lng = -122.418144
             distance = locations.get_distance(e_lat, e_lng, my_lat, my_lng)
 
             #TODO(lambert): properly handle venue vs street/city/state/country and location to get authoritative info
-            venue = e.get_fb_event_info()['venue']
+            venue = e['venue']
             venue = '%s, %s, %s, %s' % (venue['street'], venue['city'], venue['state'], venue['country'])
 
             friend_ids = set(x['id'] for x in self.current_user()['friends']['data'])
@@ -61,15 +64,19 @@ class MainHandler(base_servlet.BaseRequestHandler):
                         friend['pic'] = 'https://graph.facebook.com/%s/picture?access_token=%s' % (friend['id'], self.facebook.access_token)
                     event_friends[rsvp] = rsvp_friends
 
-            self.display['event'] = e
-            self.display['fb_event'] = e.get_fb_event_info()
+            self.display['fb_event'] = e
             for field in ['start_time', 'end_time']:
-                self.display[field] = self.localize_timestamp(datetime.datetime.fromtimestamp(int(e.get_fb_event_info()[field])))
+                self.display[field] = self.localize_timestamp(datetime.datetime.strptime(e[field], '%Y-%m-%dT%H:%M:%S+0000'))
             self.display['distance'] = distance
             self.display['venue'] = venue
 
 
-            tags_set = set(e.tags())
+            self.display['pic'] = 'https://graph.facebook.com/%s/picture?access_token=%s' % (e['id'], self.facebook.access_token)
+            #TODO(lambert): resolve fake url and get destination address
+            # eventdata.get_event_image_url(dest_url, 'eventdata.EVENT_IMAGE_LARGE)
+
+            db_event = eventdata.get_db_event(event_id)
+            tags_set = db_event and set(db_event.tags) or []
             self.display['styles'] = [x[1] for x in tags.STYLES if x[0] in tags_set]
             self.display['types'] = [x[1] for x in tags.TYPES if x[0] in tags_set]
             self.display['event_friends'] = event_friends
@@ -115,8 +122,9 @@ class AddHandler(base_servlet.BaseRequestHandler):
         if not event_id:
             assert False # TODO: validation
 
-        e = eventdata.FacebookEvent(self.facebook, event_id)
-        e.set_tags(self.request.get_all('tag'))
-        e.save_db_event()
+        e = eventdata.get_db_event(event_id)
+        e.tags = self.request.get_all('tag')
+        e.put()
+
         self.response.out.write('Thanks for submitting!<br>\n')
         self.response.out.write('<a href="/events/view?event_id=%s">View Page</a>' % event_id)

@@ -92,13 +92,11 @@ class BatchLookup(object):
         urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/%s?access_token=%s" % (path, self.facebook.access_token))
         return rpc
 
-    @staticmethod
-    def _memcache_user_key(user_id):
-        return 'FacebookUser.%s' % user_id
+    def _memcache_user_key(self, user_id):
+        return 'FacebookUser.%s.%s' % (self.facebook.uid, user_id)
 
-    @staticmethod
-    def _memcache_event_key(event_id):
-        return 'FacebookEvent.%s' % event_id
+    def _memcache_event_key(self, event_id):
+        return 'FacebookEvent.%s.%s' % (self.facebook.uid, event_id)
 
     #TODO(lambert): maybe convert these into get_multis and redo the API if the need warrants it?
     def lookup_user(self, user_id):
@@ -152,6 +150,9 @@ class BatchLookup(object):
             result['picture'] = event_dict['picture'].get_result().final_url
             memcache_set[self._memcache_event_key(event_id)] = result
             self.events[event_id] = result
+
+            for event_id, event in self.events.iteritems():
+                assert event['info']['privacy'] == 'OPEN' #TODO: validation and/or error handling?
     
         if self.allow_memcache and memcache_set:
             #TODO(lambert): check if this is above 1mb, and split it if so?

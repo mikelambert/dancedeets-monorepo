@@ -63,14 +63,14 @@ Account
 
 <div
 		<h1>$fb_event.name</h1>
-		<img src="$fb_event.pic">
+		<img src="$pic">
 		<p>$format_html($fb_event.description)
 
-		<p>Location: $event.get_location().address
+		<p>Location: $location.address
 		<p>Venue: $venue
 		<p>Start Time: $date_format('%Y-%m-%d %H:%M', $start_time)
 		<p>End Time: $date_format('%Y-%m-%d %H:%M', $end_time)
-		<p>See <a href="http://www.facebook.com/event.php?eid=$fb_event.eid">Event on Facebook</a>
+		<p>See <a href="http://www.facebook.com/event.php?eid=$fb_event.id">Event on Facebook</a>
 
 		<p>Event Types are:
 		<ul>

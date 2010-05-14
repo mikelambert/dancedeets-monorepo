@@ -10,18 +10,22 @@ import base_servlet
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 
 class SearchResult(object):
-    def __init__(self, fb_user_id, event, fb_event, query):
+    def __init__(self, fb_user_id, db_event, fb_event, query):
         self.fb_user_id = fb_user_id
-        self.event = event
-        self.fb_event = fb_event
+        # TODO(lambert): clean up these three params
+        self.event = db_event
+        self.real_event = fb_event
+        self.fb_event = fb_event['info']
         self.query = query
 
     def get_image(self):
-        return eventdata.get_event_image_url(self.fb_event['picture'], eventdata.EVENT_IMAGE_MEDIUM)
+        #TODO(lambert): reimplement event photos in the small form...
+        return ''
+        #return eventdata.get_event_image_url(self.fb_event['picture'], eventdata.EVENT_IMAGE_MEDIUM)
 
     def get_attendence(self):
         for rsvp in CHOOSE_RSVPS:
-            if [x for x in self.fb_event[rsvp]['data'] if int(x['id']) == self.fb_user_id]:
+            if [x for x in self.real_event[rsvp]['data'] if int(x['id']) == self.fb_user_id]:
                 return rsvp
         return 'noreply'
 
@@ -42,7 +46,7 @@ class SearchQuery(object):
     def matches_event(self, event):
         matches = set()
         if self.any_tags:
-            if self.any_tags.intersection(event.tags()):
+            if self.any_tags.intersection(event.tags):
                 matches.add(SearchQuery.MATCH_TAGS)
             else:
                 return []
@@ -78,12 +82,13 @@ class SearchQuery(object):
         # - switch to non-appengine like SimpleDB or MySQL on Amazon
 
         # TODO(lambert): Clean up our use of eventdata.FacebookEvent in light of our preloading API
-        fb_events = [eventdata.FacebookEvent(facebook, x.fb_event_id) for x in eventdata.DBEvent.all().fetch(100)]
+        db_events = eventdata.DBEvent.all().fetch(100)
         batch_lookup = base_servlet.BatchLookup(facebook)
-        for x in fb_events:
-            batch_lookup.lookup_event(x._fb_event_id)
+        for x in db_events:
+            batch_lookup.lookup_event(x.fb_event_id)
         batch_lookup.finish_loading()
-        search_results = [SearchResult(facebook.uid, x, batch_lookup.events[x._fb_event_id], self) for x in fb_events if self.matches_event(x)]
+        #TODO(lambert): need to pass facebook so they can get at the image urls
+        search_results = [SearchResult(facebook.uid, x, batch_lookup.events[x.fb_event_id], self) for x in db_events if self.matches_event(x)]
         return search_results
 
 class SearchHandler(base_servlet.BaseRequestHandler):
