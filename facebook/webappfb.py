@@ -151,7 +151,7 @@ class FacebookCanvasHandler(FacebookRequestHandler):
         """
         All valid canvas views are POSTS.
         """
-        # TODO: Attempt to auto-redirect to Facebook canvas?
+        # TO DO: Attempt to auto-redirect to Facebook canvas?
         self.error(404)
 
     def post(self, *args, **kwargs):
