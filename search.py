@@ -11,15 +11,12 @@ CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 class SearchResult(object):
     def __init__(self, fb_user_id, db_event, fb_event, query):
         self.fb_user_id = fb_user_id
-        # TODO(lambert): clean up these three params
         self.db_event = db_event
         self.fb_event = fb_event
         self.query = query
 
     def get_image(self):
-        #TODO(lambert): reimplement event photos in the small form...
-        return ''
-        #return eventdata.get_event_image_url(self.fb_event['picture'], eventdata.EVENT_IMAGE_MEDIUM)
+        return eventdata.get_event_image_url(self.fb_event['picture'], eventdata.EVENT_IMAGE_MEDIUM)
 
     def get_attendence(self):
         for rsvp in CHOOSE_RSVPS:
@@ -79,13 +76,11 @@ class SearchQuery(object):
         # - use prebucketed time/locations (by latlong grid, buckets of time)
         # - switch to non-appengine like SimpleDB or MySQL on Amazon
 
-        # TODO(lambert): Clean up our use of eventdata.FacebookEvent in light of our preloading API
         db_events = eventdata.DBEvent.all().fetch(100)
         batch_lookup = base_servlet.BatchLookup(facebook)
         for x in db_events:
             batch_lookup.lookup_event(x.fb_event_id)
         batch_lookup.finish_loading()
-        #TODO(lambert): need to pass facebook so they can get at the image urls
         search_results = [SearchResult(facebook.uid, x, batch_lookup.events[x.fb_event_id], self) for x in db_events if self.matches_event(x)]
         return search_results
 
