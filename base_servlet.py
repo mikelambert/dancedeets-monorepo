@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+import pickle
 import re
 import sys
 
@@ -155,10 +156,20 @@ class BatchLookup(object):
                 assert event['info']['privacy'] == 'OPEN' #TODO: validation and/or error handling?
     
         if self.allow_memcache and memcache_set:
-            #TODO(lambert): check if this is above 1mb, and split it if so?
-            import pickle
-            set_size = len(pickle.dumps(memcache_set))
-            logging.info('set memcache size is %s' % set_size)
-      
-            memcache.set_multi(memcache_set, MEMCACHE_EXPIRY)
+            safe_set_memcache(memcache_set, MEMCACHE_EXPIRY)
+
+def safe_set_memcache(memcache_set, expiry, top_level=True):
+    set_size = len(pickle.dumps(memcache_set))
+    if top_level:
+        logging.info('set memcache size is %s' % set_size)
+    # If it's roughly greater than a megabyte
+    if set_size > 1024 * 1024 - 100:
+        memcache_list = list(memcache_set.items())
+        if len(memcache_list) == 1:
+            logging.error("Saved item too large, cannot save, with key: %s", memcache_set.keys()[0])
+            return
+        safe_set_memcache(dict(memcache_list[:memcache_list/2]), expiry, top_level=False)
+        safe_set_memcache(dict(memcache_list[memcache_list/2:]), expiry, top_level=False)
+    else:
+        memcache.set_multi(memcache_set, MEMCACHE_EXPIRY)
 
