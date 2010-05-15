@@ -9,8 +9,7 @@
 
 <table>
 #for $result in $results
-#set $event = $result.event
-#set $fb_event = $result.fb_event
+#set $fb_event = $result.fb_event.info
 	<tr>
 		<td><a href="/events/view?event_id=$fb_event.id"><img src="$result.get_image()"></a></td>
 		<td><a href="/events/view?event_id=$fb_event.id">$format_html($fb_event.name)</a></td>

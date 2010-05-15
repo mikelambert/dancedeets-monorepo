@@ -4,7 +4,6 @@ from events import eventdata
 from events import tags
 import base_servlet
 
-#TODO(lambert): add rsvp buttons to the search results.
 #TODO(lambert): support filters on events (by distance? by tags? what else?)
 
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
@@ -13,9 +12,8 @@ class SearchResult(object):
     def __init__(self, fb_user_id, db_event, fb_event, query):
         self.fb_user_id = fb_user_id
         # TODO(lambert): clean up these three params
-        self.event = db_event
-        self.real_event = fb_event
-        self.fb_event = fb_event['info']
+        self.db_event = db_event
+        self.fb_event = fb_event
         self.query = query
 
     def get_image(self):
@@ -25,7 +23,7 @@ class SearchResult(object):
 
     def get_attendence(self):
         for rsvp in CHOOSE_RSVPS:
-            if [x for x in self.real_event[rsvp]['data'] if int(x['id']) == self.fb_user_id]:
+            if [x for x in self.fb_event[rsvp]['data'] if int(x['id']) == self.fb_user_id]:
                 return rsvp
         return 'noreply'
 
