@@ -59,8 +59,7 @@ class MainHandler(base_servlet.BaseRequestHandler):
                     rsvp_friends = [x for x in event_info[rsvp]['data'] if x['id'] in friend_ids]
                     rsvp_friends = sorted(rsvp_friends, key=lambda x: x['name'])
                     for friend in rsvp_friends:
-                        #TODO(lambert): Do we want to pre-resolve/cache all these image names in the server?
-                        #TODO(lambert): Do we want to skimp out on images altogether?
+                        #TODO(lambert): Do we want to pre-resolve/cache all these image names in the server? Or just keep images disabled?
                         friend['pic'] = 'https://graph.facebook.com/%s/picture?access_token=%s' % (friend['id'], self.facebook.access_token)
                     event_friends[rsvp] = rsvp_friends
 
@@ -70,10 +69,7 @@ class MainHandler(base_servlet.BaseRequestHandler):
             self.display['distance'] = distance
             self.display['venue'] = venue
 
-
-            self.display['pic'] = 'https://graph.facebook.com/%s/picture?access_token=%s' % (e['id'], self.facebook.access_token)
-            #TODO(lambert): resolve fake url and get destination address
-            # eventdata.get_event_image_url(dest_url, 'eventdata.EVENT_IMAGE_LARGE)
+            self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.events[event_id]['picture'], eventdata.EVENT_IMAGE_LARGE)
 
             db_event = eventdata.get_db_event(event_id)
             tags_set = db_event and set(db_event.tags) or []

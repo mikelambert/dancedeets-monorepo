@@ -94,7 +94,8 @@ Account
 <td valign=top>
 <b>$rsvp</b>: ($len($friends) friends)<br>
 #for $friend in $friends
-<img src="$friend.pic">$friend.name<br>
+<!-- img src="$friend.pic" -->
+$friend.name<br>
 #end for
 </td>
 #end for
