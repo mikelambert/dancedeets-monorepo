@@ -46,6 +46,16 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         # Always look up the user's information for every page view...?
         self.batch_lookup.lookup_user(self.facebook.uid)
 
+    def validate_form_for_errors(self):
+        return []
+
+    def is_valid_form(self):
+        self._errors = self.validate_form_for_errors()
+        return not self._errors
+
+    def get_errors(self):
+        return self._errors
+
     def render_template(self, name):
         template_class = import_template_class(name)
         template = template_class(search_list=[self.display], default_filter=text.html_escape)

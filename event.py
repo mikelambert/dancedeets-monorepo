@@ -14,13 +14,21 @@ DEBUG = True
 #TODO(lambert): add rsvp buttons to the event pages.
 
 class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
+    valid_rsvp = ['attending', 'maybe', 'declined']
+
+    def validate_form_for_errors(self):
+        errors = []
+        if not self.request.get('event_id'):
+            errors.append('missing event_id')
+        if not self.request.get('rsvp') in valid_rsvp:
+            errors.append("invalid or missing rsvp')
+        return errors
+
     def post(self):
         self.finish_preload()
-        if self.request.get('event_id'):
+        if self.is_valid_form():
             rsvp = self.request.get('rsvp')
-            valid_rsvp = ['attending', 'maybe', 'declined']
-            assert rsvp in valid_rsvp #TODO(lambert): validation
-            if rsvp == 'maybe':
+            if rsvp == 'maybe': #TODO(lambert): do this in the validation framework?
                 rsvp = 'unsure'
 
             self.facebook.events.rsvp(int(self.request.get('event_id')), rsvp)
@@ -101,22 +109,26 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         self.render_template('events.templates.add')
 
+    def validate_form_for_errors(self):
+        errors = []
+        if not self.request.get('event_url') and not self.request.get('event_id'):
+            errors.append('missing event_url or event_id')
+    
+        match = re.search('eid=(\d+)', self.request.get('event_url'))
+        if not match:
+            errors.append('invalid event_url, expecting eid= parameter')
+        return errors
     def post(self):
         self.finish_preload()
-        #if not validated:
-        #    self.get()
+        if not self.is_form_valid():
+            return self.get()
         event_id = None
-        #TODO: validation
-        assert not (self.request.get('event_url') and self.request.get('event_id'))
         if self.request.get('event_url'):
             match = re.search('eid=(\d+)', self.request.get('event_url'))
-            if not match: # TODO(lambert): poor man's validation??
-                return self.get()
             event_id = int(match.group(1))
         if self.request.get('event_id'):
             event_id = int(self.request.get('event_id'))
-        if not event_id:
-            assert False # TODO: validation
+        assert event_id # How can this happend??
 
         e = eventdata.get_db_event(event_id)
         e.tags = self.request.get_all('tag')
