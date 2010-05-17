@@ -5,6 +5,7 @@ import locations
 from events import users
 
 #TODO(lambert): send weekly emails with upcoming events per person
+#TODO(lambert): check if they've created any events with dance, hiphop, etc in the name, and if so ask them to add the event to this site
 #TODO(lambert): send notifications to interested users when someone adds a new event?
 
         

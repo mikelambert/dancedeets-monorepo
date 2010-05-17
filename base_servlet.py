@@ -30,6 +30,9 @@ def import_template_class(template_name):
     classname = template_name.split('.')[-1]
     return getattr(template_module, classname)
 
+class _ValidationError(Exception):
+    pass
+
 class BaseRequestHandler(webappfb.FacebookRequestHandler):
     def __init__(self, *args, **kwargs):
         super(BaseRequestHandler, self).__init__(*args, **kwargs)
@@ -46,15 +49,25 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         # Always look up the user's information for every page view...?
         self.batch_lookup.lookup_user(self.facebook.uid)
 
-    def validate_form_for_errors(self):
-        return []
+    def add_error(self, error):
+        self._errors.append(error)
 
-    def is_valid_form(self):
-        self._errors = self.validate_form_for_errors()
-        return not self._errors
+    def fatal_error(self, error):
+        self.add_error(error)
+        self.errors_are_fatal()
 
-    def get_errors(self):
-        return self._errors
+    def errors_are_fatal(self):
+        if self._errors:
+            raise ValidationError()
+
+    def handle_exception(self, e, debug):
+        if isinstance(e, _ValidationError):
+            self.handle_error_response(self._errors)
+        else:
+            super(BaseRequestHandler, self).handle_exception(e, debug)
+
+    def handle_error_response(self, errors):
+        #TODO(lambert): better default error handling, perhaps using default spitfire template
 
     def render_template(self, name):
         template_class = import_template_class(name)
@@ -88,6 +101,9 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
     def finish_preload(self):
         self.batch_lookup.finish_loading()
         self.load_user_country()
+
+class FacebookException(Exception):
+    pass
 
 class BatchLookup(object):
     def __init__(self, facebook, allow_memcache=True):
@@ -163,7 +179,9 @@ class BatchLookup(object):
             self.events[event_id] = result
 
             for event_id, event in self.events.iteritems():
-                assert event['info']['privacy'] == 'OPEN' #TODO: validation and/or error handling?
+                # Don't allow closed events to be used on our site
+                if event['info']['privacy'] != 'OPEN':
+                    raise FacebookException("Event must be Open, not %s: %s" % (event['info']['privacy'].title(), event['info']['name']))
     
         if self.allow_memcache and memcache_set:
             safe_set_memcache(memcache_set, MEMCACHE_EXPIRY)
