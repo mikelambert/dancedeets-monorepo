@@ -113,7 +113,10 @@ class AddHandler(base_servlet.BaseRequestHandler):
         if self.request.get('event_id'):
             event_id = int(self.request.get('event_id'))
         elif self.request.get('event_url'):
-            match = re.search('eid=(\d+)', self.request.get('event_url'))
+            url = self.request.get('event_url')
+            if '#' in url:
+                url = url.split('#')[1]
+            match = re.search('eid=(\d+)', url)
             if not match:
                 self.add_error('invalid event_url, expecting eid= parameter')
             event_id = int(match.group(1))
