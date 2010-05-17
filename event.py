@@ -26,13 +26,15 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         self.errors_are_fatal()
 
         rsvp = self.request.get('rsvp')
-        if rsvp == 'maybe': #TODO(lambert): do this in the validation framework?
+        if rsvp == 'maybe':
             rsvp = 'unsure'
 
         self.facebook.events.rsvp(int(self.request.get('event_id')), rsvp)
 
-        #TODO(lambert): write out success/failure error code and json response
-        self.response.out.write('OK')
+        self.write_json_response(success=True)
+
+    def handle_error_response(self, errors):
+        self.write_json_repsonse(success=False, errors=errors)
 
 
 class MainHandler(base_servlet.BaseRequestHandler):

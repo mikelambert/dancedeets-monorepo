@@ -39,6 +39,9 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
 
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
+        self._errors = []
+        # We can safely do this since there are very few ways others can modify self._errors
+        self.display['errors'] = self._errors
         self.display = {}
         # functions, add these to some base display setup
         self.display['format_html'] = text.format_html
@@ -67,7 +70,13 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
             super(BaseRequestHandler, self).handle_exception(e, debug)
 
     def handle_error_response(self, errors):
-        #TODO(lambert): better default error handling, perhaps using default spitfire template
+        if self.request.method == 'POST':
+            self.get() # call get response handler if we have post validation errors
+        else:
+            response.out.write("Fatal Error in non-POST request, non-recoverable!")
+
+    def write_json_response(self, **kwargs):
+        self.response.out.write(simplejson.dumps(kwargs))
 
     def render_template(self, name):
         template_class = import_template_class(name)
