@@ -54,8 +54,13 @@ class DBEvent(db.Model):
     # real data
     tags = db.StringListProperty()
 
-    # cache of facebook data for querying purposes
-    # or are we going to use googlebase for this?
+    # TODO(lambert): implement cache of facebook data for querying purposes
+    # maybe later consider using googlebase for this?
+    #name
+    #description
+    #start_time
+    #end_time
+    #location
 
     #def __repr__(self):
     #    return 'DBEvent(fb_event_id=%r,tags=%r)' % (self.fb_event_id, self.tags)
