@@ -39,10 +39,10 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
 
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
+        self.display = {}
         self._errors = []
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
-        self.display = {}
         # functions, add these to some base display setup
         self.display['format_html'] = text.format_html
         self.display['date_human_format'] = self.date_human_format
