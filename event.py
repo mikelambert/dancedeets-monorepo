@@ -37,7 +37,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         self.write_json_repsonse(success=False, errors=errors)
 
 
-class MainHandler(base_servlet.BaseRequestHandler):
+class ViewHandler(base_servlet.BaseRequestHandler):
 
     def get(self):
         event_id = int(self.request.get('event_id'))
@@ -87,7 +87,7 @@ class MainHandler(base_servlet.BaseRequestHandler):
             self.display['event_friends'] = event_friends
 
             # template rendering
-            self.render_template('events.templates.display')
+            self.render_template('events.templates.view')
 
             # TODO(lambert): maybe offer a link to message the owner
         else:

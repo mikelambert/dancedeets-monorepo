@@ -11,7 +11,7 @@ DEBUG = True
 #TODO(lambert): add a bunch of events to the db, then dump the db for saving it
 
 URLS = [
-    ('/events/view', event.MainHandler),
+    ('/events/view', event.ViewHandler),
     ('/events/add', event.AddHandler),
     ('/events/search', search.SearchHandler),
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
