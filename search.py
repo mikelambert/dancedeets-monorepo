@@ -36,7 +36,7 @@ class SearchQuery(object):
         self.distance = distance
         self.query_args = query_args
 
-    def matches_event(self, event):
+    def matches_event(self, event, fb_event):
         matches = set()
         if self.any_tags:
             if self.any_tags.intersection(event.tags):
@@ -44,19 +44,20 @@ class SearchQuery(object):
             else:
                 return []
         if self.start_time:
-            if self.start_time < event.time:
+            #TODO(lambert): convert these both to times and make the comparisons work
+            if self.start_time < fb_event.end_time:
                 matches.add(SearchQuery.MATCH_TIME)
             else:
                 return []
         if self.end_time:
-            if event.time < self.end_time:
+            if fb_event.start_time < self.end_time:
                 matches.add(SearchQuery.MATCH_TIME)
             else:
                 return []
         if self.query_args:
             found_keyword = False
             for keyword in self.query_args:
-                if keyword in self.name or keyword in self.description:
+                if keyword in fb_event.name or keyword in fb_event.description:
                     found_keyword = True
             if found_keyword:
                 matches.add(SearchQuery.MATCH_QUERY)
@@ -64,6 +65,9 @@ class SearchQuery(object):
                 return []
 
         return matches
+    
+    def get_candidate_events(self):
+        return eventdata.DBEvent.all().fetch(100)
 
     def get_search_results(self, facebook):
         # TODO(lambert): implement searching in the appengine backend
@@ -74,12 +78,12 @@ class SearchQuery(object):
         # - use prebucketed time/locations (by latlong grid, buckets of time)
         # - switch to non-appengine like SimpleDB or MySQL on Amazon
 
-        db_events = eventdata.DBEvent.all().fetch(100)
+        db_events = self.get_candidate_events()
         batch_lookup = base_servlet.BatchLookup(facebook)
         for x in db_events:
             batch_lookup.lookup_event(x.fb_event_id)
         batch_lookup.finish_loading()
-        search_results = [SearchResult(facebook.uid, x, batch_lookup.events[x.fb_event_id], self) for x in db_events if self.matches_event(x)]
+        search_results = [SearchResult(facebook.uid, x, batch_lookup.events[x.fb_event_id], self) for x in db_events if self.matches_event(x, batch_lookup.events[x.fb_event_id])]
         return search_results
 
 class SearchHandler(base_servlet.BaseRequestHandler):

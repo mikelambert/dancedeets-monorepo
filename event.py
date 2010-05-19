@@ -133,6 +133,9 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         self.errors_are_fatal()
         e = eventdata.get_db_event(event_id)
+        if not e:
+            e = eventdata.DBEvent(fb_event_id=event_id)
+            e.make_findable_for(self.batch_lookup.events[event_id])
         e.tags = self.request.get_all('tag')
         e.put()
 

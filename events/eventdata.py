@@ -1,3 +1,4 @@
+import cPickle as pickle
 from google.appengine.ext import db
 from google.appengine.api import memcache
 import locations
@@ -54,13 +55,9 @@ class DBEvent(db.Model):
     # real data
     tags = db.StringListProperty()
 
-    # TODO(lambert): implement cache of facebook data for querying purposes
-    # maybe later consider using googlebase for this?
-    #name
-    #description
-    #start_time
-    #end_time
-    #location
+    def make_findable_for(self, fb_dict):
+        # set up any cached fields or bucketing or whatnot for this event
+        pass
 
     #def __repr__(self):
     #    return 'DBEvent(fb_event_id=%r,tags=%r)' % (self.fb_event_id, self.tags)
