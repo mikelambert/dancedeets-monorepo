@@ -5,7 +5,11 @@
     <title>Settings</title>
   </head>
   <body>
+    <table><tr><td>
+    <img src="/dancedeets.png">
+    </td><td>
 		<h1>Settings</h1>
+    </td></tr></table>
 
 <form action="/user/edit" method="post">
 <p>

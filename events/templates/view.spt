@@ -61,8 +61,12 @@ Account
 </div>
 </div>
 
-<div
+<div>
+    <table><tr><td>
+    <img src="/dancedeets.png">
+    </td><td>
 		<h1>$fb_event.name</h1>
+    </td></tr></table>
 		<img src="$pic">
 		<p>$format_html($fb_event.description)
 

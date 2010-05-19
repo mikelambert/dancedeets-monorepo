@@ -10,7 +10,11 @@
 		</script>
   </head>
   <body>
+    <table><tr><td>
+    <img src="/dancedeets.png">
+    </td><td>
 		<h1>Dance Event Results</title>
+		</td></tr></table>
 
 <table>
 #for $result in $results
