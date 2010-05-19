@@ -1,5 +1,5 @@
-application: dancesite
-version: 1
+application: dancedeets
+version: v0-1-prerelease
 runtime: python
 api_version: 1
 

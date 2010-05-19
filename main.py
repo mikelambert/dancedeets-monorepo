@@ -4,7 +4,7 @@ import wsgiref.handlers
 from google.appengine.ext import webapp
 import event
 import search
-import user
+import myuser
 
 DEBUG = True
 
@@ -15,7 +15,7 @@ URLS = [
     ('/events/add', event.AddHandler),
     ('/events/search', search.SearchHandler),
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
-    ('/user/edit', user.UserHandler),
+    ('/user/edit', myuser.UserHandler),
 ]
 
 def main():
