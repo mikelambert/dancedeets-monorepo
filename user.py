@@ -41,8 +41,6 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.render_template('events.templates.user')
 
     def post(self):
-        if not self.form_is_valid():
-            return self.get()
         fetched_users = users.User.gql('where fb_uid = :fb_uid', fb_uid=self.facebook.uid).fetch(1)
         if fetched_users:
             user = fetched_users[0]

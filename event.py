@@ -21,7 +21,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
         if not self.request.get('event_id'):
             self.add_error('missing event_id')
-        if not self.request.get('rsvp') in valid_rsvp:
+        if not self.request.get('rsvp') in self.valid_rsvp:
             self.add_error('invalid or missing rsvp')
         self.errors_are_fatal()
 

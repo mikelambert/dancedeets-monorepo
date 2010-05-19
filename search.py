@@ -93,8 +93,6 @@ class SearchHandler(base_servlet.BaseRequestHandler):
 
     def post(self):
         self.finish_preload()
-        if not self.form_is_valid():
-            return self.get()
         tags_set = self.request.get_all('tag')
         query = SearchQuery(any_tags=tags_set)
         search_results = query.get_search_results(self.facebook)
