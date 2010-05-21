@@ -1,10 +1,12 @@
+#extends base
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
-<html>
-  <head>
-    <title>$fb_event.name</title>
-  </head>
+#def title
+$fb_event.name
+#end def
 
+
+#def head_stylesheet
 <style type="text/css">
 body {
 	margin: 0px;
@@ -42,6 +44,9 @@ body {
 }
 
 </style>
+#end def
+
+#def header
   <body style="font-size:12px;font-family:'lucida grande'">
 
 <div id="mastHead">
@@ -60,13 +65,10 @@ Account
 </div>
 </div>
 </div>
+#end def
 
+#def body
 <div>
-    <table><tr><td>
-    <img src="/dancedeets.png">
-    </td><td>
-		<h1>$fb_event.name</h1>
-    </td></tr></table>
 		<img src="$pic">
 		<p>$format_html($fb_event.description)
 
@@ -106,4 +108,4 @@ $friend.name<br>
 </tr>
 </table>
   </body>
-</html>
+#end def

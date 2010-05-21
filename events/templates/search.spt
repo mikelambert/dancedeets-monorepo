@@ -1,16 +1,11 @@
+#extends base
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
-<html>
-  <head>
-    <title>Search Dance Events</title>
-  </head>
-  <body>
-    <table><tr><td>
-    <img src="/dancedeets.png">
-    </td><td>
-		<h1>Search Dance Events</h1>
-    </td></tr></table>
+#def title
+Search Dance Events
+#end def
 
+#def body
 		<form action="/events/search" method=post>
 			<p>Start Date: <input type=text name="start_date" size=10> (yyyy-mm-dd)
 			<p>End Date: <input type=text name="end_date" size=10> (yyyy-mm-dd)
@@ -33,5 +28,4 @@
 
 			<button>Search</button>
 		</form>
-  </body>
-</html>
+#end def

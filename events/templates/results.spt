@@ -1,21 +1,19 @@
+#extends base
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
-<html>
-  <head>
-    <title>Dance Event Results</title>
-		<script src="http://www.google.com/jsapi" type="text/javascript"></script>
-		<script type="text/javascript">
-			google.load("jquery", "1.4.2");
-			google.load("jqueryui", "1.8.1");
-		</script>
-  </head>
-  <body>
-    <table><tr><td>
-    <img src="/dancedeets.png">
-    </td><td>
-		<h1>Dance Event Results</title>
-		</td></tr></table>
+#def title
+Dance Event Results
+#end def
 
+#def head_javascript
+	<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+	<script type="text/javascript">
+		google.load("jquery", "1.4.2");
+		google.load("jqueryui", "1.8.1");
+	</script>
+#end def
+
+#def body
 <table>
 #for $result in $results
 #set $fb_event = $result.fb_event.info
@@ -49,6 +47,4 @@ function event_rsvp(event_id, rsvp_status) {
 	});
 }
 </script>
-
-  </body>
-</html>
+#end def

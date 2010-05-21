@@ -1,15 +1,11 @@
+#extends base
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
-<html>
-  <head>
-    <title>Add Dance Event</title>
-  </head>
-  <body>
-		<table><tr><td>
-		<img src="/dancedeets.png">
-		</td><td>
-		<h1>Add Dance Event</h1>
-		</td></tr></table>
+#def title
+Add Dance Event
+#end def
+
+#def body
 		<form action="/events/add" method=post>
 
 			Tell us about your facebook event:
@@ -46,4 +42,5 @@
 			//event_url
 		}
 	</script>
-</html>
+#end def
+

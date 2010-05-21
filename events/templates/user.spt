@@ -1,16 +1,12 @@
+#extends base
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
-<html>
-  <head>
-    <title>Settings</title>
-  </head>
-  <body>
-    <table><tr><td>
-    <img src="/dancedeets.png">
-    </td><td>
-		<h1>Settings</h1>
-    </td></tr></table>
 
+#def title
+Settings
+#end def
+
+#def body
 <form action="/user/edit" method="post">
 <p>
 	Home location: <em>(used to tell how far away events are, for filtering out just stuff you care about. use a zip code or something equivalent if you want more accuracy)</em><br>
@@ -74,6 +70,4 @@
 
 <button>Save Changes</button>
 </form>
-
-  </body>
-</html>
+#end def
