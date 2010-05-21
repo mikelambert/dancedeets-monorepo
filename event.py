@@ -87,7 +87,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             self.display['event_friends'] = event_friends
 
             # template rendering
-            self.render_template('events.templates.view')
+            self.render_template('view')
 
             # TODO(lambert): maybe offer a link to message the owner
         else:
@@ -108,7 +108,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         self.display['events'] = events
 
-        self.render_template('events.templates.add')
+        self.render_template('add')
 
     def post(self):
     

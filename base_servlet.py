@@ -79,7 +79,8 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         self.response.out.write(simplejson.dumps(kwargs))
 
     def render_template(self, name):
-        template_class = import_template_class(name)
+        template_name = 'events.compiled_templates.%s' % name
+        template_class = import_template_class(template_name)
         template = template_class(search_list=[self.display], default_filter=text.html_escape)
         self.response.out.write(template.main().strip())
 

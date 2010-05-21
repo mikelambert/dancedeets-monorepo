@@ -38,7 +38,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
                 defaults[field] = self.request.get(field)
         self.display['defaults'] = defaults
         self.display['location'] = self.current_user()['profile']['location']['name']
-        self.render_template('events.templates.user')
+        self.render_template('user')
 
     def post(self):
         fetched_users = users.User.gql('where fb_uid = :fb_uid', fb_uid=self.facebook.uid).fetch(1)

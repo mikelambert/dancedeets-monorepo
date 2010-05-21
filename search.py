@@ -93,7 +93,7 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         self.display['types'] = tags.TYPES
         self.display['styles'] = tags.STYLES
 
-        self.render_template('events.templates.search')
+        self.render_template('search')
 
     def post(self):
         self.finish_preload()
@@ -102,5 +102,5 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         search_results = query.get_search_results(self.facebook)
         self.display['results'] = search_results
         self.display['CHOOSE_RSVPS'] = CHOOSE_RSVPS
-        self.render_template('events.templates.results')
+        self.render_template('results')
 
