@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>$title()</title>
+$head_stylesheet()
+$head_javascript()
+</head>
+<body>
+## get rid of this and merge it inline?
+$header()
+	<table><tr><td>
+	<img src="/dancedeets.png">
+	</td><td>
+	<h1>$title()</h1>
+	</td></tr></table>
+
+$body()
+
+</body>
+</html>
+
+#def title
+#end def
+#def head_stylesheet
+#end def
+#def head_javascript
+#end def
+#def header
+#end def
+#def body
+#end def
