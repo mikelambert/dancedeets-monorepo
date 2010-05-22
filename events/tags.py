@@ -23,7 +23,7 @@ TYPES = [
     (TYPE_SESSION, 'practice session'),
     (TYPE_COMPETITION, 'competition, battle, tournament'),
     (TYPE_CLUB, 'club, with cyphers and circles'),
-    (TYPE_OTHER, 'other, please specify!'),
+    (TYPE_OTHER, 'other'),
 ]
 
 STYLES = [
@@ -34,7 +34,7 @@ STYLES = [
     (STYLE_WAACKING, 'waacking, punking, vogueing'),
     (STYLE_HOUSE, 'house, housing'),
     (STYLE_OLDHIPHOP, '90s hiphop, middle school hiphop, new jack swing'),
-    (STYLE_OTHER, 'other, please specify!'),
+    (STYLE_OTHER, 'other'),
 ]
 
 TYPES_DICT = dict(TYPES)
