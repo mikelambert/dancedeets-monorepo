@@ -3,9 +3,7 @@ from google.appengine.ext import db
 from google.appengine.api import memcache
 import locations
 
-#memcache of: location str -> geocode lat long, address
-#memcache of: fb_event_id -> event info
-#db of: fbid, our_info
+CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 
 # pic url prefixes:
 # increasing-size: t, s, n
@@ -23,7 +21,8 @@ def get_event_image_url(square_url, event_image_type):
     return final_url
 
 
-def get_geocoded_location_for_event(event_info):
+def get_geocoded_location_for_event(fb_event):
+    event_info = fb_event['info']
     venue = event_info['venue']
     address_components = [event_info['location'], venue['street'], venue['city'], venue['state'], venue['country']]
     address_components = [x for x in address_components if x]
@@ -39,6 +38,12 @@ def get_geocoded_location_for_event(event_info):
         results['lat'] = geocoded['lat']
         results['lng'] = geocoded['lng']
     return results
+
+def get_attendence_for_fb_event(fb_event, fb_user_id):
+    for rsvp in CHOOSE_RSVPS:
+        if [x for x in fb_event[rsvp]['data'] if int(x['id']) == fb_user_id]:
+            return rsvp
+    return 'noreply'
 
 def get_db_event(fb_event_id):
     query = DBEvent.gql('where fb_event_id = :fb_event_id', fb_event_id=fb_event_id)

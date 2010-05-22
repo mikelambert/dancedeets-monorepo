@@ -4,8 +4,6 @@ from events import eventdata
 from events import tags
 import base_servlet
 
-CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
-
 class SearchResult(object):
     def __init__(self, fb_user_id, db_event, fb_event, query):
         self.fb_user_id = fb_user_id
@@ -17,10 +15,7 @@ class SearchResult(object):
         return eventdata.get_event_image_url(self.fb_event['picture'], eventdata.EVENT_IMAGE_MEDIUM)
 
     def get_attendence(self):
-        for rsvp in CHOOSE_RSVPS:
-            if [x for x in self.fb_event[rsvp]['data'] if int(x['id']) == self.fb_user_id]:
-                return rsvp
-        return 'noreply'
+        return eventdata.get_attendence_for_fb_event(self.fb_event, self.fb_user_id)
 
 class SearchQuery(object):
     MATCH_TAGS = 'TAGS'
@@ -101,6 +96,6 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         query = SearchQuery(any_tags=tags_set)
         search_results = query.get_search_results(self.facebook)
         self.display['results'] = search_results
-        self.display['CHOOSE_RSVPS'] = CHOOSE_RSVPS
+        self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
         self.render_template('results')
 

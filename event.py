@@ -11,8 +11,6 @@ import base_servlet
 
 DEBUG = True
 
-#TODO(lambert): add rsvp buttons to the event pages.
-
 class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
     valid_rsvp = ['attending', 'maybe', 'declined']
 
@@ -44,9 +42,10 @@ class ViewHandler(base_servlet.BaseRequestHandler):
         self.batch_lookup.lookup_event(event_id)
         self.finish_preload()
         if event_id:
-            e = self.batch_lookup.events[event_id]['info']
+            event_info = self.batch_lookup.events[event_id]
+            e = event_info['info']
         
-            location = eventdata.get_geocoded_location_for_event(e)
+            location = eventdata.get_geocoded_location_for_event(event_info)
             self.display['location'] = location
 
             e_lat = location['lat']
@@ -60,9 +59,11 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             venue = e['venue']
             venue = '%s, %s, %s, %s' % (venue['street'], venue['city'], venue['state'], venue['country'])
 
+            self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
+            self.display['attendee_status'] = eventdata.get_attendence_for_fb_event(event_info, self.facebook.uid)
+
             friend_ids = set(x['id'] for x in self.current_user()['friends']['data'])
             event_friends = {}
-            event_info = self.batch_lookup.events[event_id]
             for rsvp in 'attending', 'maybe', 'declined', 'noreply':
                 if rsvp in event_info:
                     rsvp_friends = [x for x in event_info[rsvp]['data'] if x['id'] in friend_ids]

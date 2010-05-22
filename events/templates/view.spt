@@ -1,4 +1,5 @@
-#extends base
+#extends _base
+#extends _rsvp
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
@@ -94,6 +95,9 @@ Account
 
 		<p>Distance to mike is $format("%.0f", $distance) miles.
 
+<p>RSVP:
+$rsvp_form($fb_event.id, $attendee_status)
+
 <table>
 <tr>
 #for $rsvp, $friends in $event_friends.iteritems()
@@ -109,3 +113,8 @@ $friend.name<br>
 </table>
   </body>
 #end def
+
+#def bottom_javascript
+$rsvp_script()
+#end def
+

@@ -15,6 +15,7 @@ $header()
 
 $body()
 
+$bottom_javascript()
 </body>
 </html>
 
@@ -27,4 +28,6 @@ $body()
 #def header
 #end def
 #def body
+#end def
+#def bottom_javascript
 #end def
