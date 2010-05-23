@@ -1,0 +1,28 @@
+#def rsvp_form($fb_event_id, $user_rsvp)
+<form>
+#for $rsvp in $CHOOSE_RSVPS
+	<input type=radio id="rsvp_${rsvp}_${fb_event_id}" name="rsvp_${fb_event_id}" value="$rsvp" onclick='event_rsvp("${fb_event_id}", "$rsvp.lower()")'
+	#if $rsvp == $user_rsvp
+		checked
+	#end if
+	> <label for="rsvp_${rsvp}_${fb_event_id}">$rsvp</label><br>
+#end for
+</form>
+#end def
+
+#def rsvp_script
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">
+	google.load("jquery", "1.4.2");
+	google.load("jqueryui", "1.8.1");
+</script>
+<script type="text/javascript">
+function event_rsvp(event_id, rsvp_status) {
+  $.ajax({
+    data: {rsvp: rsvp_status, event_id: event_id},
+    type: 'POST',
+    url: '/events/rsvp_ajax',
+  });
+}
+</script>
+#end def
