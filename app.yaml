@@ -10,5 +10,7 @@ handlers:
 - url: /dancedeets.png
   static_files: dancedeets.png
   upload: dancedeets.png
+- url: /css
+  static_dir: css
 - url: .*
   script: main.py
