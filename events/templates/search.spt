@@ -2,7 +2,7 @@
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def head_stylesheet
-<link rel="stylesheet" href="/css/jquery-ui-1.8.1.custom.css"></style>
+<link rel="stylesheet" href="/css/jquery-ui-1.8.1.custom.css" />
 #end def
 #def title
 Search Dance Events

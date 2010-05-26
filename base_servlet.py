@@ -5,6 +5,7 @@ import logging
 import pickle
 import re
 import sys
+import urllib
 
 import locations
 from facebook import webappfb
@@ -51,7 +52,7 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         if self.requires_login():
             if not self.facebook.access_token:
                 self.redirecting = 1
-                self.redirect('/login') #TODO(lambert): this url
+                self.redirect('/login?next=%s' % urllib.quote(self.request.url))
             else:
                 self.batch_lookup = BatchLookup(self.facebook)
                 # Always look up the user's information for every page view...?

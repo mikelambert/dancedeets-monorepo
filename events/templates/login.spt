@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+<body>
+
+<p>DanceDeets requires a facebook account to use it. The site relies heavily on facebook events, and the facebook terms of service prevent us from showing that information to you without your login information. Log in below to gain access to DanceDeets.
+
+<p><fb:login-button onlogin="window.location=getNextUrl();" perms="user_location,rsvp_event,offline_access,email,user_events,read_friendlists"></fb:login-button>
+
+<p>DanceDeets will request some permissions from you, here is a list of the permissions and the reasons why they are necessary:
+<ul>
+<li><b>User Location</b>: shows you dance events in your area.
+<li><b>RSVP Event</b>: lets you click "Attending" and add facebook events directly from DanceDeets
+<li><b>Email</b>: emails you about upcoming dance events that meet your criteria and interest.
+<li><b>User Events</b>: shows you what events you are attending (or not attending).
+<li><b>Read Friends</b>: shows you which of your friends are attending each event.
+<li><b>Offline Access</b>: lets you get weekly emails with upcoming event info, even if you haven't been to www.dancedeets.com.
+</ul>
+
+<div id="fb-root"></div>
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+<script>
+  function getNextUrl() {
+    return '$next';
+  }
+
+  FB.init({appId: '$api_key', status: true,
+         cookie: true, xfbml: true});
+
+  FB.Event.subscribe('auth.login', function(response) {
+    if (response.session) {
+			alert("yes");
+      // A user has logged in, and a new cookie has been saved
+    } else {
+			alert("no");
+      // The user has logged out, and the cookie has been cleared
+    }
+  });
+</script>
+</body>
+</html>

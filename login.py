@@ -8,9 +8,14 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         return False
 
     def get(self):
-        # Explicitly do not preload anything from facebook for this servlet
-        # self.finish_preload()
-        self.display['next'] = self.request.get('next')
-        self.display['api_key'] = self.facebook.api_key
-        self.render_template('login')
+        next = self.request.get('next') or '/'
+        # if they somehow have a login token already, let's just send them there
+        if self.facebook.access_token:
+            self.redirect(next)
+        else:
+            # Explicitly do not preload anything from facebook for this servlet
+            # self.finish_preload()
+            self.display['next'] = next
+            self.display['api_key'] = self.facebook.api_key
+            self.render_template('login')
 
