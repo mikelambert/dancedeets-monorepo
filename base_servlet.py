@@ -16,7 +16,6 @@ from util import text
 
 MEMCACHE_EXPIRY = 3600 * 24
 
-#TODO(lambert): force login before accessing stuff
 #TODO(lambert): show event info, queries without login?? P2
 
 def import_template_module(template_name):
