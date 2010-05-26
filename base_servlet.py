@@ -48,9 +48,17 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         self.display['date_human_format'] = self.date_human_format
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
-        self.batch_lookup = BatchLookup(self.facebook)
-        # Always look up the user's information for every page view...?
-        self.batch_lookup.lookup_user(self.facebook.uid)
+        if self.requires_login():
+            if not self.facebook.access_token:
+                self.redirecting = 1
+                self.redirect('/login') #TODO(lambert): this url
+            else:
+                self.batch_lookup = BatchLookup(self.facebook)
+                # Always look up the user's information for every page view...?
+                self.batch_lookup.lookup_user(self.facebook.uid)
+
+    def requires_login(self):
+        return True
 
     def add_error(self, error):
         self._errors.append(error)
@@ -109,6 +117,8 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         self.user_country = locations.get_country_for_location(location_name)
 
     def finish_preload(self):
+        if self.redirecting:
+            return
         self.batch_lookup.finish_loading()
         self.load_user_country()
 

@@ -35,6 +35,11 @@ function update_user_box() {
 <script>
 	FB.init({appId: 'c668a417978e92ff1f08d7ebef695ac5', status: true,
 				 cookie: true, xfbml: true});
+	FB.login(function(response) {
+		if (response.session) {
+		} else {
+		}
+	});
 	FB.Event.subscribe('auth.login', function(response) {
 		update_user_box();
 		//window.location.reload();
