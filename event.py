@@ -55,9 +55,6 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             my_lng = -122.418144
             distance = locations.get_distance(e_lat, e_lng, my_lat, my_lng)
 
-            #TODO(lambert): properly handle venue vs street/city/state/country and location to get authoritative info
-            venue = e['venue']
-            venue = '%s, %s, %s, %s' % (venue['street'], venue['city'], venue['state'], venue['country'])
 
             self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
             self.display['attendee_status'] = eventdata.get_attendence_for_fb_event(event_info, self.facebook.uid)
@@ -77,7 +74,6 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             for field in ['start_time', 'end_time']:
                 self.display[field] = self.localize_timestamp(datetime.datetime.strptime(e[field], '%Y-%m-%dT%H:%M:%S+0000'))
             self.display['distance'] = distance
-            self.display['venue'] = venue
 
             self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.events[event_id]['picture'], eventdata.EVENT_IMAGE_LARGE)
 
