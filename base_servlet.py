@@ -32,6 +32,8 @@ def import_template_class(template_name):
 
 class _ValidationError(Exception):
     pass
+class _ResponseComplete(Exception):
+    pass
 
 class BaseRequestHandler(webappfb.FacebookRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -48,10 +50,11 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         self.display['date_human_format'] = self.date_human_format
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
+        self.redirecting = False
         if self.requires_login():
             if not self.facebook.access_token:
-                self.redirecting = 1
                 self.redirect('/login?next=%s' % urllib.quote(self.request.url))
+                self.redirecting = True
             else:
                 self.batch_lookup = BatchLookup(self.facebook)
                 # Always look up the user's information for every page view...?
@@ -72,7 +75,9 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
             raise ValidationError()
 
     def handle_exception(self, e, debug):
-        if isinstance(e, _ValidationError):
+        if isinstance(e, _ResponseComplete):
+            return
+        elif isinstance(e, _ValidationError):
             self.handle_error_response(self._errors)
         else:
             super(BaseRequestHandler, self).handle_exception(e, debug)
@@ -118,7 +123,7 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
 
     def finish_preload(self):
         if self.redirecting:
-            return
+            raise _ResponseComplete()
         self.batch_lookup.finish_loading()
         self.load_user_country()
 
