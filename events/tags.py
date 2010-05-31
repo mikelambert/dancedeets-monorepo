@@ -1,29 +1,41 @@
 
-TYPE_WORKSHOP = 'WORKSHOP'
-TYPE_AUDITION = 'AUDITION'
-TYPE_PERFORMANCE = 'PERFORMANCE'
-TYPE_SESSION = 'SESSION'
-TYPE_COMPETITION = 'COMPETITION'
-TYPE_CLUB = 'CLUB'
-TYPE_OTHER = 'OTHER'
+FREESTYLE_CLUB = 'FREESTYLE_CLUB'
+FREESTYLE_COMPETITION = 'FREESTYLE_COMPETITION'
+FREESTYLE_PERFORMANCE = 'FREESTYLE_PERFORMANCE'
+FREESTYLE_WORKSHOP = 'FREESTYLE_WORKSHOP'
+FREESTYLE_CLASS = 'FREESTYLE_CLASS'
+FREESTYLE_SESSION = 'FREESTYLE_SESSION'
+FREESTYLE_OTHER = 'FREESTYLE_OTHER'
 
-STYLE_CHOREOHIPHOP = 'CHOREOHIPHOP'
-STYLE_BREAKING = 'BREAKING'
-STYLE_POPPING = 'POPPING'
-STYLE_LOCKING = 'LOCKING'
-STYLE_WAACKING = 'WAACKING'
-STYLE_HOUSE = 'HOUSE'
-STYLE_OLDHIPHOP = 'OLDHIPHOP'
-STYLE_OTHER = 'OTHER'
+CHOREO_PERFORMANCE = 'CHOREO_PERFORMANCE'
+CHOREO_WORKSHOP = 'CHOREO_WORKSHOP'
+CHOREO_CLASS = 'CHOREO_CLASS'
+CHOREO_CLUB = 'CHOREO_CLUB'
+CHOREO_OTHER = 'CHOREO_OTHER'
 
-TYPES = [
-    (TYPE_WORKSHOP, 'workshop, master class, brand new class'),
-    (TYPE_AUDITION, 'audition, tryout'),
-    (TYPE_PERFORMANCE, 'performance, show'),
-    (TYPE_SESSION, 'practice session'),
-    (TYPE_COMPETITION, 'competition, battle, tournament'),
-    (TYPE_CLUB, 'club, with cyphers and circles'),
-    (TYPE_OTHER, 'other'),
+STYLE_CHOREOHIPHOP = 'STYLE_CHOREOHIPHOP'
+STYLE_BREAKING = 'STYLE_BREAKING'
+STYLE_POPPING = 'STYLE_POPPING'
+STYLE_LOCKING = 'STYLE_LOCKING'
+STYLE_WAACKING = 'STYLE_WAACKING'
+STYLE_HOUSE = 'STYLE_HOUSE'
+STYLE_OLDHIPHOP = 'STYLE_OLDHIPHOP'
+STYLE_OTHER = 'STYLE_OTHER'
+
+FREESTYLE_EVENT_LIST = [
+    (FREESTYLE_WORKSHOP, 'workshop, master class, audition, tryout'),
+    (FREESTYLE_PERFORMANCE, 'performance, show'),
+    (FREESTYLE_SESSION, 'practice session'),
+    (FREESTYLE_COMPETITION, 'competition, battle, tournament'),
+    (FREESTYLE_CLUB, 'club with cyphers'),
+    (FREESTYLE_OTHER, 'other'),
+]
+
+CHOREO_EVENT_LIST = [
+    (CHOREO_WORKSHOP, 'workshop, master class, audition, tryout'),
+    (CHOREO_PERFORMANCE, 'performance, show, competition'),
+    (CHOREO_CLUB, 'club with performances'),
+    (CHOREO_OTHER, 'other'),
 ]
 
 STYLES = [
@@ -32,12 +44,11 @@ STYLES = [
     (STYLE_POPPING, 'popping, isolation, hitting, tutting, gliding, animation, robot'),
     (STYLE_LOCKING, 'locking'),
     (STYLE_WAACKING, 'waacking, punking, vogueing'),
-    (STYLE_HOUSE, 'house, housing'),
+    (STYLE_HOUSE, 'house dance'),
     (STYLE_OLDHIPHOP, '90s hiphop, middle school hiphop, new jack swing'),
     (STYLE_OTHER, 'other'),
 ]
 
-TYPES_DICT = dict(TYPES)
 STYLES_DICT = dict(STYLES)
 
 # minimum age (18+, 21+)

@@ -80,7 +80,8 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             db_event = eventdata.get_db_event(event_id)
             tags_set = db_event and set(db_event.tags) or []
             self.display['styles'] = [x[1] for x in tags.STYLES if x[0] in tags_set]
-            self.display['types'] = [x[1] for x in tags.TYPES if x[0] in tags_set]
+            self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST if x[0] in tags_set]
+            self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST if x[0] in tags_set]
             self.display['event_friends'] = event_friends
 
             # template rendering
@@ -94,7 +95,8 @@ class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
 
-        self.display['types'] = tags.TYPES
+        self.display['freestyle_types'] = tags.FREESTYLE_EVENT_LIST
+        self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
         self.display['styles'] = tags.STYLES
 
         results_json = self.batch_lookup.users[self.facebook.uid]['events']

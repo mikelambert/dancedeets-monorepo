@@ -16,11 +16,19 @@ Search Dance Events
 			<p>Keywords: <input type=text name="keywords" size=80>
 
 			<p>Event Types:
+			<table><tr valign=top><td>
 			<ul>
-			#for $type in $types
+			#for $type in $freestyle_types
 				<li><input type=checkbox checked name="tag" value="$type[0]">$type[1]
 			#end for
 			</ul>
+			</td><td>
+			<ul>
+			#for $type in $choreo_types
+				<li><input type=checkbox checked name="tag" value="$type[0]">$type[1]
+			#end for
+			</ul>
+			</td></tr></table>
 
 			<p>Event Dance Styles:
 			<ul>

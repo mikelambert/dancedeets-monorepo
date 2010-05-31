@@ -80,8 +80,11 @@ Account
 
 		<p>Event Types are:
 		<ul>
-			#for $type in $types
-			<li>$type
+			#for $type in $choreo_types
+			<li>Choreo: $type
+			#end for
+			#for $type in $freestyle_types
+			<li>Freestyle: $type
 			#end for
 		</ul>
 

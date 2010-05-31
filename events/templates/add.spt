@@ -21,11 +21,21 @@ Add Dance Event
 					<input type=text name="event_url" size=80 onunfocus="loadEvent();">
 			</ul>
 			<p>Event Types:
+			<table><tr valign=top><td>
+			Freestyle:<br>
 			<ul>
-			#for $type in $types
+			#for $type in $freestyle_types
 				<li><input type=checkbox name="tag" value="$type[0]" id="tag_$type[0]"><label for="tag_$type[0]">$type[1]</label>
 			#end for
 			</ul>
+			</td><td>
+			Choreo:<br>
+			<ul>
+			#for $type in $choreo_types
+				<li><input type=checkbox name="tag" value="$type[0]" id="tag_$type[0]"><label for="tag_$type[0]">$type[1]</label>
+			#end for
+			</ul>
+			</td></tr></table>
 
 			<p>Event Dance Styles:
 			<ul>

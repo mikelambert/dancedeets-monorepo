@@ -85,7 +85,8 @@ class SearchHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
 
-        self.display['types'] = tags.TYPES
+        self.display['freestyle_types'] = tags.FREESTYLE_EVENT_LIST
+        self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
         self.display['styles'] = tags.STYLES
 
         self.render_template('search')
