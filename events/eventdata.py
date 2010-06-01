@@ -24,7 +24,7 @@ def get_event_image_url(square_url, event_image_type):
 def get_geocoded_location_for_event(fb_event):
     event_info = fb_event['info']
     venue = event_info['venue']
-    address_components = [event_info['location'], venue['street'], venue['city'], venue['state'], venue['country']]
+    address_components = [event_info.get('location'), venue.get('street'), venue.get('city'), venue.get('state'), venue.get('country')]
     address_components = [x for x in address_components if x]
     address = ', '.join(address_components)
     results = {}
