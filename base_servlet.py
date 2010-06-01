@@ -207,7 +207,6 @@ class BatchLookup(object):
 
             for event_id, event in self.events.iteritems():
                 # Don't allow closed events to be used on our site
-                logging.info("%s %s", event_id, event)
                 if event['info']['privacy'] != 'OPEN':
                     raise FacebookException("Event must be Open, not %s: %s" % (event['info']['privacy'].title(), event['info']['name']))
     
