@@ -97,6 +97,9 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         template = template_class(search_list=[self.display], default_filter=text.html_escape)
         self.response.out.write(template.main().strip())
 
+    def parse_fb_timestamp(self, fb_timestamp):
+        return self.localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
+
     def localize_timestamp(self, dt):
         time_offset = self.batch_lookup.users[self.facebook.uid]['profile']['timezone']
         td = datetime.timedelta(hours=time_offset)

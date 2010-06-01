@@ -1,15 +1,20 @@
 #!/usr/bin/env python
 
+import datetime
+import logging
+
 from events import eventdata
 from events import tags
 import base_servlet
 
 class SearchResult(object):
-    def __init__(self, fb_user_id, db_event, fb_event, query):
+    def __init__(self, fb_user_id, db_event, fb_event, search_query):
         self.fb_user_id = fb_user_id
         self.db_event = db_event
         self.fb_event = fb_event
-        self.query = query
+        self.search_query = search_query
+        self.start_time = search_query.parse_fb_timestamp(self.fb_event['info']['start_time'])
+        self.end_time = search_query.parse_fb_timestamp(self.fb_event['info']['end_time'])
 
     def get_image(self):
         return eventdata.get_event_image_url(self.fb_event['picture'], eventdata.EVENT_IMAGE_MEDIUM)
@@ -23,7 +28,8 @@ class SearchQuery(object):
     MATCH_LOCATION = 'LOCATION'
     MATCH_QUERY = 'QUERY'
 
-    def __init__(self, any_tags=None, start_time=None, end_time=None, location=None, distance=None, query_args=None):
+    def __init__(self, parse_fb_timestamp, any_tags=None, start_time=None, end_time=None, location=None, distance=None, query_args=None):
+        self.parse_fb_timestamp = parse_fb_timestamp
         self.any_tags = set(any_tags)
         self.start_time = start_time
         self.end_time = end_time
@@ -39,20 +45,21 @@ class SearchQuery(object):
             else:
                 return []
         if self.start_time:
-            #TODO(lambert): convert these both to times and make the comparisons work
-            if self.start_time < fb_event.end_time:
+            fb_end_time = self.parse_fb_timestamp(fb_event['info']['end_time'])
+            if self.start_time < fb_end_time:
                 matches.add(SearchQuery.MATCH_TIME)
             else:
                 return []
         if self.end_time:
-            if fb_event.start_time < self.end_time:
+            fb_start_time = parse_fb_timestamp(fb_event['info']['start_time'])
+            if fb_start_time < self.end_time:
                 matches.add(SearchQuery.MATCH_TIME)
             else:
                 return []
         if self.query_args:
             found_keyword = False
             for keyword in self.query_args:
-                if keyword in fb_event.name or keyword in fb_event.description:
+                if keyword in fb_event['info']['name'] or keyword in fb_event['info']['description']:
                     found_keyword = True
             if found_keyword:
                 matches.add(SearchQuery.MATCH_QUERY)
@@ -79,6 +86,7 @@ class SearchQuery(object):
             batch_lookup.lookup_event(x.fb_event_id)
         batch_lookup.finish_loading()
         search_results = [SearchResult(facebook.uid, x, batch_lookup.events[x.fb_event_id], self) for x in db_events if self.matches_event(x, batch_lookup.events[x.fb_event_id])]
+        search_results.sort(key=lambda x: x.fb_event['info']['start_time'])
         return search_results
 
 class SearchHandler(base_servlet.BaseRequestHandler):
@@ -95,12 +103,12 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
         tags_set = self.request.get_all('tag')
         start_time = None
-        if self.request.get('start_time'):
-            start_time = datetime.strptime(self.request.get('start_time'), '%m/%d/%Y')
+        if self.request.get('start_date'):
+            start_time = datetime.datetime.strptime(self.request.get('start_date'), '%m/%d/%Y')
         end_time = None
-        if self.request.get('end_time'):
-            end_time = datetime.strptime(self.request.get('end_time'), '%m/%d/%Y')
-        query = SearchQuery(any_tags=tags_set, start_time=start_time, end_time=end_time)
+        if self.request.get('end_date'):
+            end_time = datetime.datetime.strptime(self.request.get('end_date'), '%m/%d/%Y')
+        query = SearchQuery(self.parse_fb_timestamp, any_tags=tags_set, start_time=start_time, end_time=end_time)
         search_results = query.get_search_results(self.facebook)
         self.display['results'] = search_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS

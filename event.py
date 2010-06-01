@@ -72,7 +72,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
             self.display['fb_event'] = e
             for field in ['start_time', 'end_time']:
-                self.display[field] = self.localize_timestamp(datetime.datetime.strptime(e[field], '%Y-%m-%dT%H:%M:%S+0000'))
+                self.display[field] = self.parse_fb_timestamp(e[field])
             self.display['distance'] = distance
 
             self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.events[event_id]['picture'], eventdata.EVENT_IMAGE_LARGE)

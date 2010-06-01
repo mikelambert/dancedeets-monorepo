@@ -12,7 +12,9 @@ Dance Event Results
 #set $fb_event = $result.fb_event.info
 	<tr>
 		<td><a href="/events/view?event_id=$fb_event.id"><img src="$result.get_image()"></a></td>
-		<td><a href="/events/view?event_id=$fb_event.id">$format_html($fb_event.name)</a></td>
+		<td><a href="/events/view?event_id=$fb_event.id">$format_html($fb_event.name)</a><br>
+		$date_format('%Y-%m-%d %H:%M', $result.start_time)
+		</td>
 		<td>
 			$rsvp_form($fb_event.id, $result.get_attendence())
 		</td>
