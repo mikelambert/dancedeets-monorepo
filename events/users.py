@@ -41,12 +41,23 @@ DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 
 class User(db.Model):
     fb_uid = db.IntegerProperty()
+    fb_session_key = db.StringProperty()
+    fb_access_token = db.StringProperty()
     location = db.StringProperty()
     distance = db.StringProperty()
     distance_units = db.StringProperty()
     freestyle = db.StringProperty()
     choreo = db.StringProperty()
     send_email = db.BooleanProperty()
+
+def get_user(uid):
+    user = None
+    fetched_users = User.gql('where fb_uid = :fb_uid', fb_uid=uid).fetch(1)
+    if fetched_users:
+        user = fetched_users[0]
+    if not user:
+        user = User(fb_uid=uid)
+    return user
 
 def memcache_timezone_key(fb_user_id):
     return 'UserTimeZone.%s' % fb_user_id

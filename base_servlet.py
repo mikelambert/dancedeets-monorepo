@@ -141,7 +141,8 @@ class BatchLookup(object):
 
     def _fetch_rpc(self, path):
         rpc = urlfetch.create_rpc()
-        urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/%s?access_token=%s" % (path, self.facebook.access_token))
+        url = "https://graph.facebook.com/%s?access_token=%s" % (path, self.facebook.access_token)
+        urlfetch.make_fetch_call(rpc, url)
         return rpc
 
     def _memcache_user_key(self, user_id):
@@ -201,15 +202,12 @@ class BatchLookup(object):
         for event_id, event_dict in self.event_rpcs.items():
             kv_pairs = [(k, self._map_rpc_to_json(v)) for k, v in event_dict.iteritems() if k != 'picture']
             result = dict(kv for kv in kv_pairs if kv[1])
+            if result['info']['privacy'] != 'OPEN': # only cache the results of "open" events
+                continue
             result['picture'] = event_dict['picture'].get_result().final_url
             memcache_set[self._memcache_event_key(event_id)] = result
             self.events[event_id] = result
 
-            for event_id, event in self.events.iteritems():
-                # Don't allow closed events to be used on our site
-                if event['info']['privacy'] != 'OPEN':
-                    raise FacebookException("Event must be Open, not %s: %s" % (event['info']['privacy'].title(), event['info']['name']))
-    
         if self.allow_memcache and memcache_set:
             safe_set_memcache(memcache_set, MEMCACHE_EXPIRY)
 

@@ -105,7 +105,9 @@ class AddHandler(base_servlet.BaseRequestHandler):
             for field in ['start_time', 'end_time']:
                 event[field] = self.localize_timestamp(datetime.datetime.strptime(event[field], '%Y-%m-%dT%H:%M:%S+0000'))
 
-        taskqueue.add(url='/tasks/load_events', params={'event_ids': ','.join(str(x['id']) for x in events)})
+        task_size = 5
+        for i in range(0, len(events), task_size):
+            taskqueue.add(url='/tasks/load_events', params={'user_id': self.facebook.uid, 'event_ids': ','.join(str(x['id']) for x in events[i:i+task_size])})
 
         self.display['events'] = events
 

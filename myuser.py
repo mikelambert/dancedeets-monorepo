@@ -30,11 +30,9 @@ class UserHandler(base_servlet.BaseRequestHandler):
         if self.user_country in locations.MILES_COUNTRIES:
             defaults['distance_units'] = 'miles'
 
-        fetched_users = users.User.gql('where fb_uid = :fb_uid', fb_uid=self.facebook.uid).fetch(1)
-        if fetched_users:
-            user = fetched_users[0]
-            for k in defaults:
-                defaults[k] = getattr(user, k)
+        user = users.get_user(self.facebook.uid)
+        for k in defaults:
+            defaults[k] = getattr(user, k)
         for field in defaults.keys():
             if self.request.get(field):
                 defaults[field] = self.request.get(field)
@@ -43,11 +41,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.render_template('user')
 
     def post(self):
-        fetched_users = users.User.gql('where fb_uid = :fb_uid', fb_uid=self.facebook.uid).fetch(1)
-        if fetched_users:
-            user = fetched_users[0]
-        else:
-            user = users.User(fb_uid=self.facebook.uid)
+        user = users.get_user(self.facebook.uid)
         for field in ['location', 'freestyle', 'choreo', 'distance', 'distance_units']:
             form_value = self.request.get(field)
             setattr(user, field, form_value)

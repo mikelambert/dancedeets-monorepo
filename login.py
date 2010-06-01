@@ -11,6 +11,10 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         next = self.request.get('next') or '/'
         # if they somehow have a login token already, let's just send them there
         if self.facebook.access_token:
+            user = users.get_user(self.facebook.uid)
+            user.fb_session_key = self.facebook.session_key
+            user.fb_access_token = self.facebook.access_token
+            user.put()
             self.redirect(next)
         else:
             # Explicitly do not preload anything from facebook for this servlet
