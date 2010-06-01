@@ -94,7 +94,13 @@ class SearchHandler(base_servlet.BaseRequestHandler):
     def post(self):
         self.finish_preload()
         tags_set = self.request.get_all('tag')
-        query = SearchQuery(any_tags=tags_set)
+        start_time = None
+        if self.request.get('start_time'):
+            start_time = datetime.strptime(self.request.get('start_time'), '%m/%d/%Y')
+        end_time = None
+        if self.request.get('end_time'):
+            end_time = datetime.strptime(self.request.get('end_time'), '%m/%d/%Y')
+        query = SearchQuery(any_tags=tags_set, start_time=start_time, end_time=end_time)
         search_results = query.get_search_results(self.facebook)
         self.display['results'] = search_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
