@@ -14,3 +14,7 @@ handlers:
   static_dir: css
 - url: .*
   script: main.py
+- url: /tasks/.*
+  script: main.py
+  login: admin
+

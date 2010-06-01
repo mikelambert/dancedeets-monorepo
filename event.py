@@ -3,7 +3,7 @@
 import datetime
 import re
 
-from google.appengine.api import urlfetch
+from google.appengine.api.labs import taskqueue
 import locations
 from events import eventdata
 from events import tags
@@ -105,12 +105,13 @@ class AddHandler(base_servlet.BaseRequestHandler):
             for field in ['start_time', 'end_time']:
                 event[field] = self.localize_timestamp(datetime.datetime.strptime(event[field], '%Y-%m-%dT%H:%M:%S+0000'))
 
+        taskqueue.add(url='/tasks/load_events', params={'event_ids': ','.join(str(x['id']) for x in events)})
+
         self.display['events'] = events
 
         self.render_template('add')
 
     def post(self):
-    
         if self.request.get('event_id'):
             event_id = int(self.request.get('event_id'))
         elif self.request.get('event_url'):

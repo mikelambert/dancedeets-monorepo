@@ -152,6 +152,7 @@ class BatchLookup(object):
 
     #TODO(lambert): maybe convert these into get_multis and redo the API if the need warrants it?
     def lookup_user(self, user_id):
+        assert user_id
         memcache_key = self._memcache_user_key(user_id)
         result = self.allow_memcache and memcache.get(memcache_key)
         if result:
@@ -164,6 +165,7 @@ class BatchLookup(object):
             )
 
     def lookup_event(self, event_id):
+        assert event_id
         memcache_key = self._memcache_event_key(event_id)
         result = self.allow_memcache and memcache.get(memcache_key)
         if result:
@@ -205,6 +207,7 @@ class BatchLookup(object):
 
             for event_id, event in self.events.iteritems():
                 # Don't allow closed events to be used on our site
+                logging.info("%s %s", event_id, event)
                 if event['info']['privacy'] != 'OPEN':
                     raise FacebookException("Event must be Open, not %s: %s" % (event['info']['privacy'].title(), event['info']['name']))
     
