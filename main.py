@@ -19,6 +19,7 @@ DEBUG = True
 URLS = [
     ('/tasks/load_events', tasks.LoadEventHandler),
     ('/tasks/load_users', tasks.LoadUserHandler),
+    ('/tasks/track_newuser_friends', tasks.TrackNewUserFriendsHandler),
     ('/events/view', event.ViewHandler),
     ('/events/add', event.AddHandler),
     ('/events/search', search.SearchHandler),

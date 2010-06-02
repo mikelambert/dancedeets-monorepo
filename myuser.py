@@ -4,8 +4,6 @@ import base_servlet
 import locations
 from events import users
 
-#TODO(lambert): create a user object when someone logs in for the first time, and store the timestamp
-#TODO(lambert): when they log in, look up friends, intersect with users of the app, and record which friends are also users. useful for tracking trendsetters in other cities.
 #TODO(lambert): send weekly emails with upcoming events per person
 #TODO(lambert): check if they've created any events with dance, hiphop, etc in the name, and if so ask them to add the event to this site
 #TODO(lambert): send notifications to interested users when someone adds a new event?

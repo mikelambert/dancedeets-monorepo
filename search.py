@@ -71,7 +71,7 @@ class SearchQuery(object):
     def get_candidate_events(self):
         return eventdata.DBEvent.all().fetch(100)
 
-    def get_search_results(self, facebook):
+    def get_search_results(self, fb_uid, fb_access_token):
         # TODO(lambert): implement searching in the appengine backend
         # hard to do inequality search on location *and* time in appengine
         # keyword searching is inefficient in appengine
@@ -81,11 +81,11 @@ class SearchQuery(object):
         # - switch to non-appengine like SimpleDB or MySQL on Amazon
 
         db_events = self.get_candidate_events()
-        batch_lookup = base_servlet.BatchLookup(facebook)
+        batch_lookup = base_servlet.BatchLookup(fb_uid, fb_access_token)
         for x in db_events:
             batch_lookup.lookup_event(x.fb_event_id)
         batch_lookup.finish_loading()
-        search_results = [SearchResult(facebook.uid, x, batch_lookup.events[x.fb_event_id], self) for x in db_events if self.matches_event(x, batch_lookup.events[x.fb_event_id])]
+        search_results = [SearchResult(fb_uid, x, batch_lookup.events[x.fb_event_id], self) for x in db_events if self.matches_event(x, batch_lookup.events[x.fb_event_id])]
         search_results.sort(key=lambda x: x.fb_event['info']['start_time'])
         return search_results
 
@@ -109,7 +109,7 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         if self.request.get('end_date'):
             end_time = datetime.datetime.strptime(self.request.get('end_date'), '%m/%d/%Y')
         query = SearchQuery(self.parse_fb_timestamp, any_tags=tags_set, start_time=start_time, end_time=end_time)
-        search_results = query.get_search_results(self.facebook)
+        search_results = query.get_search_results(self.facebook.uid, self.facebook.access_token)
         self.display['results'] = search_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
         self.render_template('results')

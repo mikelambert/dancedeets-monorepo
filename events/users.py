@@ -43,12 +43,17 @@ class User(db.Model):
     fb_uid = db.IntegerProperty()
     fb_session_key = db.StringProperty()
     fb_access_token = db.StringProperty()
+    creation_time = db.DateTimeProperty()
     location = db.StringProperty()
     distance = db.StringProperty()
     distance_units = db.StringProperty()
     freestyle = db.StringProperty()
     choreo = db.StringProperty()
     send_email = db.BooleanProperty()
+
+class UserFriendsAtSignup(db.Model):
+    fb_uid = db.IntegerProperty()
+    registered_friend_ids = db.ListProperty(int)
 
 def get_user(uid):
     user = None

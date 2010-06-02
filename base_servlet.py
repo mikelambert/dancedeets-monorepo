@@ -56,7 +56,7 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
                 self.redirect('/login?next=%s' % urllib.quote(self.request.url))
                 self.redirecting = True
             else:
-                self.batch_lookup = BatchLookup(self.facebook)
+                self.batch_lookup = BatchLookup(self.facebook.uid, self.facebook.access_token)
                 # Always look up the user's information for every page view...?
                 self.batch_lookup.lookup_user(self.facebook.uid)
 
@@ -134,8 +134,9 @@ class FacebookException(Exception):
     pass
 
 class BatchLookup(object):
-    def __init__(self, facebook, allow_memcache=True):
-        self.facebook = facebook
+    def __init__(self, fb_uid, fb_access_token, allow_memcache=True):
+        self.fb_uid = fb_uid
+        self.fb_access_token = fb_access_token
         self.allow_memcache = allow_memcache
         self.users = {}
         self.user_rpcs = {}
@@ -144,15 +145,15 @@ class BatchLookup(object):
 
     def _fetch_rpc(self, path):
         rpc = urlfetch.create_rpc()
-        url = "https://graph.facebook.com/%s?access_token=%s" % (path, self.facebook.access_token)
+        url = "https://graph.facebook.com/%s?access_token=%s" % (path, self.fb_access_token)
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
     def _memcache_user_key(self, user_id):
-        return 'FacebookUser.%s.%s' % (self.facebook.uid, user_id)
+        return 'FacebookUser.%s.%s' % (self.fb_uid, user_id)
 
     def _memcache_event_key(self, event_id):
-        return 'FacebookEvent.%s.%s' % (self.facebook.uid, event_id)
+        return 'FacebookEvent.%s.%s' % (self.fb_uid, event_id)
 
     #TODO(lambert): maybe convert these into get_multis and redo the API if the need warrants it?
     def lookup_user(self, user_id):
