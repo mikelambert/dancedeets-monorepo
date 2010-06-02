@@ -2,12 +2,8 @@ import math
 import urllib
 import urllib2
 
+from django.utils import simplejson
 from google.appengine.api import memcache
-
-# facebook.py deals with google-appengine wrapping, so use theirs
-import facebook
-simplejson = facebook.simplejson
-urlread = facebook.urlread
 
 MEMCACHE_EXPIRY = 24 * 3600
 

@@ -7,8 +7,9 @@ import re
 import sys
 import urllib
 
+import facebook
 import locations
-from facebook import webappfb
+from google.appengine.ext.webapp import RequestHandler
 from google.appengine.api import memcache
 from google.appengine.api import urlfetch
 from django.utils import simplejson
@@ -35,12 +36,17 @@ class _ValidationError(Exception):
 class _ResponseComplete(Exception):
     pass
 
-class BaseRequestHandler(webappfb.FacebookRequestHandler):
+FACEBOOK_CONFIG = None
+
+class BaseRequestHandler(RequestHandler):
     def __init__(self, *args, **kwargs):
         super(BaseRequestHandler, self).__init__(*args, **kwargs)
 
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
+        args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['api_key'], FACEBOOK_CONFIG['secret_key'])
+        self.fb_uid = int(args['uid'])
+        self.fb_graph = facebook.GraphAPI(args['access_token'])
         self.display = {}
         self._errors = []
         # We can safely do this since there are very few ways others can modify self._errors
@@ -52,13 +58,13 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         self.display['format'] = text.format
         self.redirecting = False
         if self.requires_login():
-            if not self.facebook.access_token:
+            if not self.fb_uid:
                 self.redirect('/login?next=%s' % urllib.quote(self.request.url))
                 self.redirecting = True
             else:
-                self.batch_lookup = BatchLookup(self.facebook.uid, self.facebook.access_token)
+                self.batch_lookup = BatchLookup(self.fb_uid, self.fb_graph)
                 # Always look up the user's information for every page view...?
-                self.batch_lookup.lookup_user(self.facebook.uid)
+                self.batch_lookup.lookup_user(self.fb_uid)
 
     def requires_login(self):
         return True
@@ -101,7 +107,7 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         return self.localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
 
     def localize_timestamp(self, dt):
-        time_offset = self.batch_lookup.users[self.facebook.uid]['profile']['timezone']
+        time_offset = self.batch_lookup.users[self.fb_uid]['profile']['timezone']
         td = datetime.timedelta(hours=time_offset)
         final_dt = dt + td
         return final_dt
@@ -118,7 +124,7 @@ class BaseRequestHandler(webappfb.FacebookRequestHandler):
         return '%s at %s' % (month_day, time_string)
 
     def current_user(self):
-        return self.batch_lookup.users[self.facebook.uid]
+        return self.batch_lookup.users[self.fb_uid]
 
     def load_user_country(self):
         location_name = self.current_user()['profile']['location']['name']
@@ -134,9 +140,9 @@ class FacebookException(Exception):
     pass
 
 class BatchLookup(object):
-    def __init__(self, fb_uid, fb_access_token, allow_memcache=True):
+    def __init__(self, fb_uid, fb_graph, allow_memcache=True):
         self.fb_uid = fb_uid
-        self.fb_access_token = fb_access_token
+        self.fb_graph = fb_graph
         self.allow_memcache = allow_memcache
         self.users = {}
         self.user_rpcs = {}
@@ -145,7 +151,7 @@ class BatchLookup(object):
 
     def _fetch_rpc(self, path):
         rpc = urlfetch.create_rpc()
-        url = "https://graph.facebook.com/%s?access_token=%s" % (path, self.fb_access_token)
+        url = "https://graph.facebook.com/%s?access_token=%s" % (path, self.fb_graph.access_token)
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 

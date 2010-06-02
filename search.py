@@ -19,8 +19,8 @@ class SearchResult(object):
     def get_image(self):
         return eventdata.get_event_image_url(self.fb_event['picture'], eventdata.EVENT_IMAGE_MEDIUM)
 
-    def get_attendence(self):
-        return eventdata.get_attendence_for_fb_event(self.fb_event, self.fb_user_id)
+    def get_attendance(self):
+        return eventdata.get_attendance_for_fb_event(self.fb_event, self.fb_user_id)
 
 class SearchQuery(object):
     MATCH_TAGS = 'TAGS'
@@ -71,7 +71,7 @@ class SearchQuery(object):
     def get_candidate_events(self):
         return eventdata.DBEvent.all().fetch(100)
 
-    def get_search_results(self, fb_uid, fb_access_token):
+    def get_search_results(self, fb_uid, graph):
         # TODO(lambert): implement searching in the appengine backend
         # hard to do inequality search on location *and* time in appengine
         # keyword searching is inefficient in appengine
@@ -81,7 +81,7 @@ class SearchQuery(object):
         # - switch to non-appengine like SimpleDB or MySQL on Amazon
 
         db_events = self.get_candidate_events()
-        batch_lookup = base_servlet.BatchLookup(fb_uid, fb_access_token)
+        batch_lookup = base_servlet.BatchLookup(fb_uid, graph)
         for x in db_events:
             batch_lookup.lookup_event(x.fb_event_id)
         batch_lookup.finish_loading()
@@ -109,7 +109,7 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         if self.request.get('end_date'):
             end_time = datetime.datetime.strptime(self.request.get('end_date'), '%m/%d/%Y')
         query = SearchQuery(self.parse_fb_timestamp, any_tags=tags_set, start_time=start_time, end_time=end_time)
-        search_results = query.get_search_results(self.facebook.uid, self.facebook.access_token)
+        search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         self.display['results'] = search_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
         self.render_template('results')

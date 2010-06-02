@@ -39,7 +39,7 @@ def get_geocoded_location_for_event(fb_event):
         results['lng'] = geocoded['lng']
     return results
 
-def get_attendence_for_fb_event(fb_event, fb_user_id):
+def get_attendance_for_fb_event(fb_event, fb_user_id):
     for rsvp in CHOOSE_RSVPS:
         if [x for x in fb_event[rsvp]['data'] if int(x['id']) == fb_user_id]:
             return rsvp

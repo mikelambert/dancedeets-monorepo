@@ -3,11 +3,11 @@
 import os
 import wsgiref.handlers
 from google.appengine.ext import webapp
+import base_servlet
 import event
 import search
 import login
 import myuser
-from facebook import webappfb
 import tasks
 import yaml
 
@@ -30,8 +30,11 @@ URLS = [
 
 def main():
     DEBUG = os.environ['SERVER_SOFTWARE'].startswith('Dev')
-    if not DEBUG:
-        webappfb.FACEBOOK_CONFIG = yaml.load(file('facebook-prod.yaml', 'r'))
+    if DEBUG:
+        filename = 'facebook.yaml'
+    else:
+        filename = 'facebook-prod.yaml'
+    base_servlet.FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
      application = webapp.WSGIApplication(URLS, debug=DEBUG)
     wsgiref.handlers.CGIHandler().run(application)
 

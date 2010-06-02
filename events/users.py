@@ -41,7 +41,6 @@ DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 
 class User(db.Model):
     fb_uid = db.IntegerProperty()
-    fb_session_key = db.StringProperty()
     fb_access_token = db.StringProperty()
     creation_time = db.DateTimeProperty()
     location = db.StringProperty()
@@ -67,12 +66,11 @@ def get_user(uid):
 def memcache_timezone_key(fb_user_id):
     return 'UserTimeZone.%s' % fb_user_id
 
-def get_timezone_for_user(facebook):
-    memcache_key = memcache_timezone_key(facebook.uid)
+def get_timezone_for_user(fb_uid, graph):
+    memcache_key = memcache_timezone_key(fb_uid)
     user_timezone = memcache.get(memcache_key)
     if not user_timezone:
-        query = 'select timezone from user where uid = %s' % facebook.uid
-        results = facebook.fql.query(query)
+        results = graph.request('method/users.getInfo', args=dict(uids=fb_uid, fields='timezone'))
         user_timezone = results[0]['timezone']
         memcache.set(memcache_key, user_timezone, 10)
     return user_timezone

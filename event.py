@@ -4,6 +4,7 @@ import datetime
 import re
 
 from google.appengine.api.labs import taskqueue
+import facebook
 import locations
 from events import eventdata
 from events import tags
@@ -27,7 +28,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         if rsvp == 'maybe':
             rsvp = 'unsure'
 
-        self.facebook.events.rsvp(int(self.request.get('event_id')), rsvp)
+        self.fb_graph.request('method/events.rsvp', args=dict(eid=int(self.request.get('event_id')), rsvp_status=rsvp))
 
         self.write_json_response(success=True)
 
@@ -57,7 +58,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
 
             self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
-            self.display['attendee_status'] = eventdata.get_attendence_for_fb_event(event_info, self.facebook.uid)
+            self.display['attendee_status'] = eventdata.get_attendance_for_fb_event(event_info, self.fb_uid)
 
             friend_ids = set(x['id'] for x in self.current_user()['friends']['data'])
             event_friends = {}
@@ -67,7 +68,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
                     rsvp_friends = sorted(rsvp_friends, key=lambda x: x['name'])
                     for friend in rsvp_friends:
                         #TODO(lambert): Do we want to pre-resolve/cache all these image names in the server? Or just keep images disabled?
-                        friend['pic'] = 'https://graph.facebook.com/%s/picture?access_token=%s' % (friend['id'], self.facebook.access_token)
+                        friend['pic'] = 'https://graph.facebook.com/%s/picture?access_token=%s' % (friend['id'], self.fb_graph.access_token)
                     event_friends[rsvp] = rsvp_friends
 
             self.display['fb_event'] = e
@@ -99,7 +100,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
         self.display['styles'] = tags.STYLES
 
-        results_json = self.batch_lookup.users[self.facebook.uid]['events']
+        results_json = self.batch_lookup.users[self.fb_uid]['events']
         events = sorted(results_json['data'], key=lambda x: x['start_time'])
         for event in events:
             for field in ['start_time', 'end_time']:
@@ -107,7 +108,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         task_size = 5
         for i in range(0, len(events), task_size):
-            taskqueue.add(url='/tasks/load_events', params={'user_id': self.facebook.uid, 'event_ids': ','.join(str(x['id']) for x in events[i:i+task_size])})
+            taskqueue.add(url='/tasks/load_events', params={'user_id': self.fb_uid, 'event_ids': ','.join(str(x['id']) for x in events[i:i+task_size])})
 
         self.display['events'] = events
 
