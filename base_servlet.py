@@ -129,6 +129,7 @@ class BaseRequestHandler(RequestHandler):
     def load_user_country(self):
         location_name = self.current_user()['profile']['location']['name']
         self.user_country = locations.get_country_for_location(location_name)
+        assert self.user_country, "User has no country for location %s" % location_name
 
     def finish_preload(self):
         if self.redirecting:
@@ -231,8 +232,9 @@ def safe_set_memcache(memcache_set, expiry, top_level=True):
         if len(memcache_list) == 1:
             logging.error("Saved item too large, cannot save, with key: %s", memcache_set.keys()[0])
             return
-        safe_set_memcache(dict(memcache_list[:memcache_list/2]), expiry, top_level=False)
-        safe_set_memcache(dict(memcache_list[memcache_list/2:]), expiry, top_level=False)
+        halfway = len(memcache_list) / 2
+        safe_set_memcache(dict(memcache_list[:halfway]), expiry, top_level=False)
+        safe_set_memcache(dict(memcache_list[halfway:]), expiry, top_level=False)
     else:
         memcache.set_multi(memcache_set, MEMCACHE_EXPIRY)
 

@@ -49,12 +49,16 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             location = eventdata.get_geocoded_location_for_event(event_info)
             self.display['location'] = location
 
-            e_lat = location['lat']
-            e_lng = location['lng']
-            # make sure our cookies are keyed by user-id somehow so different users don't conflict
-            my_lat = 37.763506
-            my_lng = -122.418144
-            distance = locations.get_distance(e_lat, e_lng, my_lat, my_lng)
+            if 'lat' in location and 'lng' in location:
+                e_lat = location['lat']
+                e_lng = location['lng']
+                # TODO: grab lat/long from user's location preference
+                my_lat = 37.763506
+                my_lng = -122.418144
+                distance = locations.get_distance(e_lat, e_lng, my_lat, my_lng)
+                self.display['distance'] = distance
+            else:
+                self.display['distance'] = None
 
 
             self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
@@ -74,7 +78,6 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             self.display['fb_event'] = e
             for field in ['start_time', 'end_time']:
                 self.display[field] = self.parse_fb_timestamp(e[field])
-            self.display['distance'] = distance
 
             self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.events[event_id]['picture'], eventdata.EVENT_IMAGE_LARGE)
 

@@ -95,7 +95,9 @@ Account
 			#end for
 		</ul>
 
-		<p>Distance to mike is $format("%.0f", $distance) miles.
+		#if $distance
+		<p>Distance to you is $format("%.0f", $distance) miles.
+		#end if
 
 <p>RSVP:
 $rsvp_form($fb_event.id, $attendee_status)

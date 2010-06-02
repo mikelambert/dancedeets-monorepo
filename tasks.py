@@ -1,9 +1,9 @@
 
-import simplejson
 import urllib
 
 import base_servlet
 import facebook
+from django.utils import simplejson
 from google.appengine.ext.webapp import RequestHandler
 from events import users
 

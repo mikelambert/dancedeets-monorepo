@@ -20,6 +20,8 @@ class GeocodeException(Exception):
 def _get_geocoded_data(address):
     url = "http://maps.google.com/maps/api/geocode/json?address=%s&sensor=false" % urllib.quote_plus(address)
     json_result = simplejson.load(urllib.urlopen(url))
+    if json_result['status'] == 'ZERO_RESULTS':
+        return None
     if json_result['status'] != 'OK':
         raise GeocodeException("Got unexpected status: %s" % json_result['status'])
     result = json_result['results'][0]
@@ -32,16 +34,20 @@ def memcache_location_key(location):
 def _raw_get_geocoded_location(address):
     result = _get_geocoded_data(address)
     geocoded_location = {}
-    geocoded_location['lat'] = result['geometry']['location']['lat']
-    geocoded_location['lng'] = result['geometry']['location']['lng']
-    geocoded_location['address'] = result['formatted_address']
+    if result:
+        geocoded_location['lat'] = result['geometry']['location']['lat']
+        geocoded_location['lng'] = result['geometry']['location']['lng']
+        geocoded_location['address'] = result['formatted_address']
+    else:
+        #TODO(lambert): refactor this to use a lat/lng point that can itself be None
+        geocoded_location['address'] = address
     return geocoded_location
 
 def get_geocoded_location(location):
   memcache_key = memcache_location_key(location)
   geocoded_location = memcache.get(memcache_key)
   if not geocoded_location:
-    geocoded_location = _get_geocoded_location(location)
+    geocoded_location = _raw_get_geocoded_location(location)
     memcache.set(memcache_key, geocoded_location, MEMCACHE_EXPIRY)
   return geocoded_location
 
@@ -68,7 +74,8 @@ def _memcache_country_key(location_name):
 
 def _raw_get_country_for_location(location_name):
     result = _get_geocoded_data(location_name)
-    geocoded_location = {}
+    if not result:
+        return None
     countries = [x['short_name'] for x in result['address_components'] if u'country' in x['types']]
     if len(countries) != 1:
         raise GeocodeException("Found too many countries: %s" % countries)

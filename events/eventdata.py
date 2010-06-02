@@ -1,6 +1,5 @@
 import cPickle as pickle
 from google.appengine.ext import db
-from google.appengine.api import memcache
 import locations
 
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
@@ -23,7 +22,7 @@ def get_event_image_url(square_url, event_image_type):
 
 def get_geocoded_location_for_event(fb_event):
     event_info = fb_event['info']
-    venue = event_info['venue']
+    venue = event_info.get('venue', {})
     address_components = [event_info.get('location'), venue.get('street'), venue.get('city'), venue.get('state'), venue.get('country')]
     address_components = [x for x in address_components if x]
     address = ', '.join(address_components)
@@ -33,10 +32,7 @@ def get_geocoded_location_for_event(fb_event):
         results['lat'] = venue['latitude']
         results['lng'] = venue['longitude']
     else:
-        geocoded = locations.get_geocoded_location(address)
-        results['address'] = geocoded['address']
-        results['lat'] = geocoded['lat']
-        results['lng'] = geocoded['lng']
+        results = locations.get_geocoded_location(address)
     return results
 
 def get_attendance_for_fb_event(fb_event, fb_user_id):
