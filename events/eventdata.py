@@ -29,8 +29,7 @@ def get_geocoded_location_for_event(fb_event):
     results = {}
     if venue.get('latitude') and venue.get('longitude'):
         results['address'] = address
-        results['lat'] = venue['latitude']
-        results['lng'] = venue['longitude']
+        results['latlng'] = (venue['latitude'], venue['longitude'])
     else:
         results = locations.get_geocoded_location(address)
     return results

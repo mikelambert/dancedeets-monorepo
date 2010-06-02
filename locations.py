@@ -18,7 +18,7 @@ class GeocodeException(Exception):
     pass
 
 def _get_geocoded_data(address):
-    url = "http://maps.google.com/maps/api/geocode/json?address=%s&sensor=false" % urllib.quote_plus(address)
+    url = "http://maps.google.com/maps/api/geocode/json?%s" % urllib.urlencode(dict(address=address, sensor='false'))
     json_result = simplejson.load(urllib.urlopen(url))
     if json_result['status'] == 'ZERO_RESULTS':
         return None
@@ -35,11 +35,10 @@ def _raw_get_geocoded_location(address):
     result = _get_geocoded_data(address)
     geocoded_location = {}
     if result:
-        geocoded_location['lat'] = result['geometry']['location']['lat']
-        geocoded_location['lng'] = result['geometry']['location']['lng']
+        geocoded_location['latlng'] = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
         geocoded_location['address'] = result['formatted_address']
     else:
-        #TODO(lambert): refactor this to use a lat/lng point that can itself be None
+        geocoded_location['latlng'] = None
         geocoded_location['address'] = address
     return geocoded_location
 

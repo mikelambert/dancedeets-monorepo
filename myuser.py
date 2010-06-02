@@ -17,8 +17,11 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.display['DANCE_HEADERS'] = users.DANCE_HEADERS
         self.display['DANCE_LISTS'] = users.DANCE_LISTS
 
+        facebook_location = self.current_user()['profile']['location']['name']
+
+        #TODO(lambert): fix default user creation in /login to also handle the information here
         defaults = {
-            'location': self.current_user()['profile']['location']['name'],
+            'location': facebook_location,
             'freestyle': users.FREESTYLE_FAN_NO_CLUBS,
             'choreo': users.CHOREO_FAN,
             'send_email': True,
@@ -29,13 +32,21 @@ class UserHandler(base_servlet.BaseRequestHandler):
             defaults['distance_units'] = 'miles'
 
         user = users.get_user(self.fb_uid)
-        for k in defaults:
-            defaults[k] = getattr(user, k)
+        if user.fb_access_token:
+            for k in defaults:
+                defaults[k] = getattr(user, k)
         for field in defaults.keys():
             if self.request.get(field):
                 defaults[field] = self.request.get(field)
         self.display['defaults'] = defaults
-        self.display['location'] = self.current_user()['profile']['location']['name']
+
+        # distance between saved location and facebook current location
+        facebook_geo_location = locations.get_geocoded_location(facebook_location)['latlng']
+        user_geo_location = locations.get_geocoded_location(defaults['location'])['latlng']
+        distance = locations.get_distance(facebook_geo_location[0], facebook_geo_location[1], user_geo_location[0], user_geo_location[1])
+        self.display['location_distance'] = distance
+        self.display['facebook_location'] = facebook_location
+
         self.render_template('user')
 
     def post(self):

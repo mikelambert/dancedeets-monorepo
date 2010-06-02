@@ -9,10 +9,14 @@ Settings
 #def body
 <form action="/user/edit" method="post">
 <p>
+<!--TODO(lambert): alert and prompt user on homepage when zipcode differs from the current city?-->
+	#if $location_distance > 100
+		<b>Your current city listed on facebook ($facebook_location) is far away from the current city listed on dancedeets ($defaults.location), you may want to fix this below.</b><br>
+	#end if
 	Home location: <em>(used to tell how far away events are, for filtering out just stuff you care about. use a zip code or something equivalent if you want more accuracy)</em><br>
 	<input type=text name=location value="$defaults.location">
 <p>
-	How far are you willing to travel from $location for dance events:<br>
+	How far are you willing to travel from $defaults.location for dance events:<br>
 	<input type=text name=distance value="$defaults.distance" size=5>
 	<select name=distance_units>
 		<option name="miles"
@@ -39,7 +43,6 @@ Settings
 #end if
 	> <label for="send_email_no">No</label>
 <p>
-<!--TODO(lambert): alert and prompt user on homepage when zipcode differs from the current city?-->
 
 <!--TODO(lambert): sort these based on expectations for the user-->
 

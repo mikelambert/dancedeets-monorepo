@@ -8,6 +8,7 @@ import facebook
 import locations
 from events import eventdata
 from events import tags
+from events import users
 import base_servlet
 
 DEBUG = True
@@ -49,12 +50,11 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             location = eventdata.get_geocoded_location_for_event(event_info)
             self.display['location'] = location
 
-            if 'lat' in location and 'lng' in location:
-                e_lat = location['lat']
-                e_lng = location['lng']
-                # TODO: grab lat/long from user's location preference
-                my_lat = 37.763506
-                my_lng = -122.418144
+            if location['latlng']:
+                e_lat, e_lng = location['latlng']
+                user = users.get_user(self.fb_uid)
+                user_location = locations.get_geocoded_location(user.location)
+                my_lat, my_lng = user_location['latlng']
                 distance = locations.get_distance(e_lat, e_lng, my_lat, my_lng)
                 self.display['distance'] = distance
             else:

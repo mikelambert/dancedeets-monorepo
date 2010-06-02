@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import datetime
+import urllib
 
 import base_servlet
 from events import users
@@ -16,7 +17,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         # once they have a login token, do initial signin stuff, and redirect them
         if self.fb_uid:
             user = users.get_user(self.fb_uid)
-            if not user.fb_session_key: # brand new user!
+            if not user.fb_access_token: # brand new user!
                 user.creation_time = datetime.datetime.now()
                 user_friends = users.UserFriendsAtSignup()
                 user_friends.fb_uid = self.fb_uid

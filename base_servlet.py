@@ -45,8 +45,12 @@ class BaseRequestHandler(RequestHandler):
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
         args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['api_key'], FACEBOOK_CONFIG['secret_key'])
-        self.fb_uid = int(args['uid'])
-        self.fb_graph = facebook.GraphAPI(args['access_token'])
+        if args:
+            self.fb_uid = int(args['uid'])
+            self.fb_graph = facebook.GraphAPI(args['access_token'])
+        else:
+            self.fb_uid = None
+            self.fb_graph = None
         self.display = {}
         self._errors = []
         # We can safely do this since there are very few ways others can modify self._errors
