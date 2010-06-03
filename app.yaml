@@ -12,9 +12,15 @@ handlers:
   upload: dancedeets.png
 - url: /css
   static_dir: css
-- url: .*
-  script: main.py
 - url: /tasks/.*
   script: main.py
   login: admin
+- url: /stats.*
+  script: $PYTHON_LIB/google/appengine/ext/appstats/ui.py
+- url: .*
+  script: main.py
 
+admin_console:
+ pages:
+ - name: Appstats
+   url: /stats
