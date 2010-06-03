@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import datetime
-import logging
 
 from events import eventdata
 from events import tags

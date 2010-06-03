@@ -70,7 +70,7 @@ def get_timezone_for_user(fb_uid, graph):
     memcache_key = memcache_timezone_key(fb_uid)
     user_timezone = memcache.get(memcache_key)
     if not user_timezone:
-        results = graph.request('method/users.getInfo', args=dict(uids=fb_uid, fields='timezone'))
+        results = graph.api_request('method/users.getInfo', args=dict(uids=fb_uid, fields='timezone'))
         user_timezone = results[0]['timezone']
         memcache.set(memcache_key, user_timezone, 10)
     return user_timezone

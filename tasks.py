@@ -13,6 +13,7 @@ class BaseTaskFacebookRequestHandler(RequestHandler):
 
         self.fb_uid = int(self.request.get('user_id'))
         user = users.get_user(self.fb_uid)
+        assert user.fb_access_token, "Can't execute background task for user %s without access_token" % self.fb_uid
         self.fb_graph = facebook.GraphAPI(user.fb_access_token)
 
 class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
@@ -20,7 +21,7 @@ class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
         return False
 
     def get(self):
-        app_friend_list = self.fb_graph.request('method/friends.getAppUsers')
+        app_friend_list = self.fb_graph.api_request('method/friends.getAppUsers')
         user_friends = users.UserFriendsAtSignup.gql('where fb_uid = :fb_uid', fb_uid=self.fb_uid).fetch(1)[0]
         user_friends.registered_friend_ids = app_friend_list
         user_friends.put()

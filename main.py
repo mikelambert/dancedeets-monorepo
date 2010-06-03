@@ -20,6 +20,9 @@ DEBUG = True
 #TODO(lambert): setup webtest to test the wsgi app as a regression test to ensure everything is working
 # http://pythonpaste.org/webtest/
 
+#TODO(lambert): set up fine-grained event recording for performance monitoring
+# http://code.google.com/appengine/docs/python/tools/appstats.html
+
 URLS = [
     ('/tasks/load_events', tasks.LoadEventHandler),
     ('/tasks/load_users', tasks.LoadUserHandler),

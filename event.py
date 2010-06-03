@@ -29,7 +29,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         if rsvp == 'maybe':
             rsvp = 'unsure'
 
-        self.fb_graph.request('method/events.rsvp', args=dict(eid=int(self.request.get('event_id')), rsvp_status=rsvp))
+        self.fb_graph.api_request('method/events.rsvp', args=dict(eid=int(self.request.get('event_id')), rsvp_status=rsvp))
 
         self.write_json_response(success=True)
 
