@@ -3,6 +3,8 @@
 import base_servlet
 import locations
 from events import users
+from google.appengine.ext import db
+
 
 #TODO(lambert): send weekly emails with upcoming events per person
 #TODO(lambert): check if they've created any events with dance, hiphop, etc in the name, and if so ask them to add the event to this site
@@ -49,7 +51,10 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.render_template('user')
 
     def post(self):
-        #TODO(lambert): do a transaction around this?
+        db.run_in_transaction(self.update_user)
+        self.redirect('/user/edit')
+
+    def update_user(self):
         user = users.get_user(self.fb_uid)
         for field in ['location', 'freestyle', 'choreo', 'distance', 'distance_units']:
             form_value = self.request.get(field)
@@ -62,4 +67,3 @@ class UserHandler(base_servlet.BaseRequestHandler):
             setattr(user, field, form_value)
         self.errors_are_fatal()
         user.put()
-        self.redirect('/user/edit')
