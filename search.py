@@ -84,7 +84,7 @@ class SearchQuery(object):
         for x in db_events:
             batch_lookup.lookup_event(x.fb_event_id)
         batch_lookup.finish_loading()
-        search_results = [SearchResult(fb_uid, x, batch_lookup.events[x.fb_event_id], self) for x in db_events if self.matches_event(x, batch_lookup.events[x.fb_event_id])]
+        search_results = [SearchResult(fb_uid, x, batch_lookup.objects[x.fb_event_id], self) for x in db_events if self.matches_event(x, batch_lookup.objects[x.fb_event_id])]
         search_results.sort(key=lambda x: x.fb_event['info']['start_time'])
         return search_results
 

@@ -9,6 +9,7 @@ import urllib
 
 import facebook
 import locations
+from google.appengine.ext.appstats import recording
 from google.appengine.ext.webapp import RequestHandler
 from google.appengine.api import memcache
 from google.appengine.api import urlfetch
@@ -111,7 +112,7 @@ class BaseRequestHandler(RequestHandler):
         return self.localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
 
     def localize_timestamp(self, dt):
-        time_offset = self.batch_lookup.users[self.fb_uid]['profile']['timezone']
+        time_offset = self.batch_lookup.objects[self.fb_uid]['profile']['timezone']
         td = datetime.timedelta(hours=time_offset)
         final_dt = dt + td
         return final_dt
@@ -128,7 +129,7 @@ class BaseRequestHandler(RequestHandler):
         return '%s at %s' % (month_day, time_string)
 
     def current_user(self):
-        return self.batch_lookup.users[self.fb_uid]
+        return self.batch_lookup.objects[self.fb_uid]
 
     def load_user_country(self):
         location_name = self.current_user()['profile']['location']['name']
@@ -145,14 +146,45 @@ class FacebookException(Exception):
     pass
 
 class BatchLookup(object):
+    OBJECT_USER = 'USER'
+    OBJECT_EVENT = 'EVENT'
+
+    def _memcache_user_key(self, user_id):
+        return 'FacebookUser.%s.%s' % (self.fb_uid, user_id)
+    def _memcache_event_key(self, event_id):
+        return 'FacebookEvent.%s.%s' % (self.fb_uid, event_id)
+
+    def _build_user_rpcs(self, user_id):
+        return dict(
+            profile=self._fetch_rpc('%s' % user_id),
+            friends=self._fetch_rpc('%s/friends' % user_id),
+            events=self._fetch_rpc('%s/events' % user_id)
+        )
+    def _build_event_rpcs(self, event_id):
+        return dict(
+            info=self._fetch_rpc('%s' % event_id),
+            picture=self._fetch_rpc('%s/picture' % event_id),
+            attending=self._fetch_rpc('%s/attending' % event_id),
+            maybe=self._fetch_rpc('%s/maybe' % event_id),
+            declined=self._fetch_rpc('%s/declined' % event_id),
+            noreply=self._fetch_rpc('%s/noreply' % event_id),
+        )
+
+    _key_generator = {
+        OBJECT_USER: _memcache_user_key,
+        OBJECT_EVENT: _memcache_event_key,
+    }
+
+    _rpc_generator = {
+        OBJECT_USER: _build_user_rpcs,
+        OBJECT_EVENT: _build_event_rpcs,
+    }
+    
     def __init__(self, fb_uid, fb_graph, allow_memcache=True):
         self.fb_uid = fb_uid
         self.fb_graph = fb_graph
         self.allow_memcache = allow_memcache
-        self.users = {}
-        self.user_rpcs = {}
-        self.events = {}
-        self.event_rpcs = {}
+        self.object_ids_to_types = {}
 
     def _fetch_rpc(self, path):
         rpc = urlfetch.create_rpc()
@@ -160,41 +192,28 @@ class BatchLookup(object):
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
-    def _memcache_user_key(self, user_id):
-        return 'FacebookUser.%s.%s' % (self.fb_uid, user_id)
-
-    def _memcache_event_key(self, event_id):
-        return 'FacebookEvent.%s.%s' % (self.fb_uid, event_id)
-
-    #TODO(lambert): maybe convert these into get_multis and redo the API if the need warrants it?
     def lookup_user(self, user_id):
         assert user_id
-        memcache_key = self._memcache_user_key(user_id)
-        result = self.allow_memcache and memcache.get(memcache_key)
-        if result:
-            self.users[user_id] = result
-        else:
-            self.user_rpcs[user_id] = dict(
-                profile=self._fetch_rpc('%s' % user_id),
-                friends=self._fetch_rpc('%s/friends' % user_id),
-                events=self._fetch_rpc('%s/events' % user_id)
-            )
+        self.object_ids_to_types[user_id] = self.OBJECT_USER
 
     def lookup_event(self, event_id):
         assert event_id
-        memcache_key = self._memcache_event_key(event_id)
-        result = self.allow_memcache and memcache.get(memcache_key)
-        if result:
-            self.events[event_id] = result
-        else:
-            self.event_rpcs[event_id] = dict(
-                info=self._fetch_rpc('%s' % event_id),
-                picture=self._fetch_rpc('%s/picture' % event_id),
-                attending=self._fetch_rpc('%s/attending' % event_id),
-                maybe=self._fetch_rpc('%s/maybe' % event_id),
-                declined=self._fetch_rpc('%s/declined' % event_id),
-                noreply=self._fetch_rpc('%s/noreply' % event_id),
-            )
+        self.object_ids_to_types[event_id] = self.OBJECT_EVENT
+
+    def setup_rpcs(self):
+        object_ids_to_lookup = list(self.object_ids_to_types)
+        if self.allow_memcache:
+            memcache_keys_to_ids = {}
+            for object_id, object_type in self.object_ids_to_types.iteritems():
+                key_func = self._key_generator[object_type]
+                memcache_keys_to_ids[key_func(self, object_id)] = object_id
+            object_keys_to_objects = memcache.get_multi(memcache_keys_to_ids.keys())
+            self.objects = dict((memcache_keys_to_ids[k], o) for (k, o) in object_keys_to_objects.iteritems())
+            object_ids_to_lookup = set(self.object_ids_to_types).difference(self.objects.keys())
+        self.object_ids_to_rpcs = {}
+        for object_id in object_ids_to_lookup:
+            rpc_func = self._rpc_generator[self.object_ids_to_types[object_id]]
+            self.object_ids_to_rpcs[object_id] = rpc_func(self, object_id)
 
     @staticmethod
     def _map_rpc_to_json(rpc):
@@ -208,20 +227,25 @@ class BatchLookup(object):
         return None
 
     def finish_loading(self):
+        self.setup_rpcs()
+        self.parse_rpcs()
+
+    def parse_rpcs(self):
         memcache_set = {}
-        for user_id, user_dict in self.user_rpcs.items():
-            kv_pairs = [(k, self._map_rpc_to_json(v)) for k, v in user_dict.iteritems()]
-            result = dict(kv for kv in kv_pairs if kv[1])
-            memcache_set[self._memcache_user_key(user_id)] = result
-            self.users[user_id] = result
-        for event_id, event_dict in self.event_rpcs.items():
-            kv_pairs = [(k, self._map_rpc_to_json(v)) for k, v in event_dict.iteritems() if k != 'picture']
-            result = dict(kv for kv in kv_pairs if kv[1])
-            if result['info']['privacy'] != 'OPEN': # only cache the results of "open" events
-                continue
-            result['picture'] = event_dict['picture'].get_result().final_url
-            memcache_set[self._memcache_event_key(event_id)] = result
-            self.events[event_id] = result
+        for object_id, object_rpc_dict in self.object_ids_to_rpcs.iteritems():
+            this_object = {}
+            object_type = self.object_ids_to_types[object_id]
+            for object_rpc_name, object_rpc in object_rpc_dict.iteritems():
+                if object_type == self.OBJECT_EVENT and object_rpc_name == 'picture':
+                    object_json = object_rpc.get_result().final_url
+                else:
+                    object_json = self._map_rpc_to_json(object_rpc)
+                if object_json:
+                    this_object[object_rpc_name] = object_json
+            key_func = self._key_generator[object_type]
+            if object_type == self.OBJECT_EVENT and this_object['info']['privacy'] == 'OPEN': # only cache the results of "open" events
+                memcache_set[key_func(self, object_id)] = this_object
+            self.objects[object_id] = this_object
 
         if self.allow_memcache and memcache_set:
             safe_set_memcache(memcache_set, MEMCACHE_EXPIRY)

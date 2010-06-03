@@ -44,7 +44,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
         self.batch_lookup.lookup_event(event_id)
         self.finish_preload()
         if event_id:
-            event_info = self.batch_lookup.events[event_id]
+            event_info = self.batch_lookup.objects[event_id]
             e = event_info['info']
         
             location = eventdata.get_geocoded_location_for_event(event_info)
@@ -79,7 +79,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             for field in ['start_time', 'end_time']:
                 self.display[field] = self.parse_fb_timestamp(e[field])
 
-            self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.events[event_id]['picture'], eventdata.EVENT_IMAGE_LARGE)
+            self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.objects[event_id]['picture'], eventdata.EVENT_IMAGE_LARGE)
 
             db_event = eventdata.get_db_event(event_id)
             tags_set = db_event and set(db_event.tags) or []
@@ -103,7 +103,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
         self.display['styles'] = tags.STYLES
 
-        results_json = self.batch_lookup.users[self.fb_uid]['events']
+        results_json = self.batch_lookup.objects[self.fb_uid]['events']
         events = sorted(results_json['data'], key=lambda x: x['start_time'])
         for event in events:
             for field in ['start_time', 'end_time']:
@@ -141,7 +141,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         e = eventdata.get_db_event(event_id)
         if not e:
             e = eventdata.DBEvent(fb_event_id=event_id)
-            e.make_findable_for(self.batch_lookup.events[event_id])
+            e.make_findable_for(self.batch_lookup.objects[event_id])
         e.tags = self.request.get_all('tag')
         e.put()
 
