@@ -111,7 +111,6 @@ class AddHandler(base_servlet.BaseRequestHandler):
             for field in ['start_time', 'end_time']:
                 event[field] = self.localize_timestamp(datetime.datetime.strptime(event[field], '%Y-%m-%dT%H:%M:%S+0000'))
 
-        #TODO(lambert): is there some way to make a heuristic guess about whether we should be doing this pre-population? maybe check if the user has visited this page in the last day?
         lastadd_key = 'LastAdd.%s' % self.fb_uid
         if not memcache.get(lastadd_key):
             task_size = 5
