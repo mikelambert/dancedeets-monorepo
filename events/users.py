@@ -39,11 +39,14 @@ DANCES = [DANCE_FREESTYLE, DANCE_CHOREO]
 DANCE_HEADERS = {DANCE_FREESTYLE: FREESTYLE_HEADER, DANCE_CHOREO: CHOREO_HEADER}
 DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 
+USER_EXPIRY = 24 * 60 * 60
+
 class User(db.Model):
     fb_uid = db.IntegerProperty()
     fb_access_token = db.StringProperty()
     creation_time = db.DateTimeProperty()
     location = db.StringProperty()
+    location_country = db.StringProperty()
     distance = db.StringProperty()
     distance_units = db.StringProperty()
     freestyle = db.StringProperty()
@@ -54,11 +57,19 @@ class UserFriendsAtSignup(db.Model):
     fb_uid = db.IntegerProperty()
     registered_friend_ids = db.ListProperty(int)
 
-def get_user(uid):
-    user = None
-    fetched_users = User.gql('where fb_uid = :fb_uid', fb_uid=uid).fetch(1)
-    if fetched_users:
-        user = fetched_users[0]
+def memcache_user_key(fb_user_id):
+    return 'User.%s' % fb_user_id
+
+def get_user(uid, allow_memcache=True):
+    memcache_key = memcache_user_key(uid)
+    user = allow_memcache and memcache.get(memcache_user_key(uid))
+    if not user:
+        fetched_users = User.gql('where fb_uid = :fb_uid', fb_uid=uid).fetch(1)
+        if fetched_users:
+            user = fetched_users[0]
+        #TODO: make sure to invalidate/re-set() this whereever we save the user?
+        memcache.set(memcache_key, user, USER_EXPIRY)
+    #TODO(lambert): is this a good idea? it can construct a not-filled-out user that we may depend on later, depending on who calls this.
     if not user:
         user = User(fb_uid=uid)
     return user

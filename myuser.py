@@ -28,13 +28,12 @@ class UserHandler(base_servlet.BaseRequestHandler):
             'distance': '60',
             'distance_units': 'km',
         }
-        if self.user_country in locations.MILES_COUNTRIES:
+        if self.user.location_country in locations.MILES_COUNTRIES:
             defaults['distance_units'] = 'miles'
 
-        user = users.get_user(self.fb_uid)
-        if user.fb_access_token:
+        if self.user:
             for k in defaults:
-                defaults[k] = getattr(user, k)
+                defaults[k] = getattr(self.user, k)
         for field in defaults.keys():
             if self.request.get(field):
                 defaults[field] = self.request.get(field)
@@ -50,12 +49,17 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.render_template('user')
 
     def post(self):
+        #TODO(lambert): do a transaction around this?
         user = users.get_user(self.fb_uid)
         for field in ['location', 'freestyle', 'choreo', 'distance', 'distance_units']:
             form_value = self.request.get(field)
             setattr(user, field, form_value)
+        user.location_country = locations.get_country_for_location(user.location)
+        if not user.location_country:
+            self.add_error("No country for location %r" % location_name)
         for field in ['send_email']:
             form_value = self.request.get(field) == "true"
             setattr(user, field, form_value)
+        self.errors_are_fatal()
         user.put()
         self.redirect('/user/edit')

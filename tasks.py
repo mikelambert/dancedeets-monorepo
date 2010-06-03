@@ -12,8 +12,8 @@ class BaseTaskFacebookRequestHandler(RequestHandler):
         super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
 
         self.fb_uid = int(self.request.get('user_id'))
-        user = users.get_user(self.fb_uid)
-        assert user.fb_access_token, "Can't execute background task for user %s without access_token" % self.fb_uid
+        self.user = users.get_user(self.fb_uid)
+        assert self.user.fb_access_token, "Can't execute background task for user %s without access_token" % self.fb_uid
         self.fb_graph = facebook.GraphAPI(user.fb_access_token)
 
 class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):

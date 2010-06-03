@@ -15,6 +15,7 @@ from google.appengine.api import memcache
 from google.appengine.api import urlfetch
 from django.utils import simplejson
 from util import text
+from events import users
 
 MEMCACHE_EXPIRY = 24 * 60 * 60
 
@@ -49,9 +50,11 @@ class BaseRequestHandler(RequestHandler):
         if args:
             self.fb_uid = int(args['uid'])
             self.fb_graph = facebook.GraphAPI(args['access_token'])
+            self.user = users.get_user(self.fb_uid)
         else:
             self.fb_uid = None
             self.fb_graph = None
+            self.user = None
         self.display = {}
         self._errors = []
         # We can safely do this since there are very few ways others can modify self._errors
@@ -122,7 +125,7 @@ class BaseRequestHandler(RequestHandler):
         difference = (d - now)
         month_day_of_week = d.strftime('%A, %B')
         month_day = '%s %s' % (month_day_of_week, d.day)
-        if self.user_country in locations.AMPM_COUNTRIES:
+        if self.user.location_country in locations.AMPM_COUNTRIES:
             time_string = '%d:%02d%s' % (int(d.strftime('%I')), d.minute, d.strftime('%p').lower())
         else:
             time_string = '%d:%02d' % (int(d.strftime('%H')), d.minute)
@@ -131,17 +134,10 @@ class BaseRequestHandler(RequestHandler):
     def current_user(self):
         return self.batch_lookup.objects[self.fb_uid]
 
-    def load_user_country(self):
-        location_name = self.current_user()['profile']['location']['name']
-        #TODO(lambert): stick this country and/or address in the User db object directly based on their entered location
-        self.user_country = locations.get_country_for_location(location_name)
-        assert self.user_country, "User has no country for location %s" % location_name
-
     def finish_preload(self):
         if self.redirecting:
             raise _ResponseComplete()
         self.batch_lookup.finish_loading()
-        self.load_user_country()
 
 class FacebookException(Exception):
     pass

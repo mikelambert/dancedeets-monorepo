@@ -16,6 +16,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         next = self.request.get('next') or '/'
         # once they have a login token, do initial signin stuff, and redirect them
         if self.fb_uid:
+            #TODO(lambert): do a transaction around this?
             user = users.get_user(self.fb_uid)
             if not user.fb_access_token: # brand new user!
                 user.creation_time = datetime.datetime.now()

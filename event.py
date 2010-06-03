@@ -54,7 +54,6 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
             if location['latlng']:
                 e_lat, e_lng = location['latlng']
-                user = users.get_user(self.fb_uid)
                 user_location = locations.get_geocoded_location(user.location)
                 my_lat, my_lng = user_location['latlng']
                 distance = locations.get_distance(e_lat, e_lng, my_lat, my_lng)
