@@ -4,6 +4,7 @@ import datetime
 import re
 
 from google.appengine.api.labs import taskqueue
+from google.appengine.api import memcache
 import facebook
 import locations
 from events import eventdata
@@ -11,7 +12,8 @@ from events import tags
 from events import users
 import base_servlet
 
-DEBUG = True
+PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
+assert base_servlet.MEMCACHE_EXPIRY >= PREFETCH_EVENTS_INTERVAL
 
 class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
     valid_rsvp = ['attending', 'maybe', 'declined']
@@ -109,9 +111,13 @@ class AddHandler(base_servlet.BaseRequestHandler):
             for field in ['start_time', 'end_time']:
                 event[field] = self.localize_timestamp(datetime.datetime.strptime(event[field], '%Y-%m-%dT%H:%M:%S+0000'))
 
-        task_size = 5
-        for i in range(0, len(events), task_size):
-            taskqueue.add(url='/tasks/load_events', params={'user_id': self.fb_uid, 'event_ids': ','.join(str(x['id']) for x in events[i:i+task_size])})
+        #TODO(lambert): is there some way to make a heuristic guess about whether we should be doing this pre-population? maybe check if the user has visited this page in the last day?
+        lastadd_key = 'LastAdd.%s' % self.fb_uid
+        if not memcache.get(lastadd_key):
+            task_size = 5
+            for i in range(0, len(events), task_size):
+                taskqueue.add(url='/tasks/load_events', params={'user_id': self.fb_uid, 'event_ids': ','.join(str(x['id']) for x in events[i:i+task_size])})
+            memcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
 
         self.display['events'] = events
 

@@ -16,7 +16,7 @@ from google.appengine.api import urlfetch
 from django.utils import simplejson
 from util import text
 
-MEMCACHE_EXPIRY = 3600 * 24
+MEMCACHE_EXPIRY = 24 * 60 * 60
 
 #TODO(lambert): show event info, queries without login?? P2
 
@@ -133,6 +133,7 @@ class BaseRequestHandler(RequestHandler):
 
     def load_user_country(self):
         location_name = self.current_user()['profile']['location']['name']
+        #TODO(lambert): stick this country and/or address in the User db object directly based on their entered location
         self.user_country = locations.get_country_for_location(location_name)
         assert self.user_country, "User has no country for location %s" % location_name
 
