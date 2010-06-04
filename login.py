@@ -17,7 +17,9 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         next = self.request.get('next') or '/'
         # once they have a login token, do initial signin stuff, and redirect them
         if self.fb_uid:
-            db.run_in_transaction(self.update_user_with_login)
+            self.update_user_with_login()
+            # Disabled due to an error: Only ancestor queries are allowed inside transactions.
+            #db.run_in_transaction(self.update_user_with_login)
             self.redirect(next)
         else:
             # Explicitly do not preload anything from facebook for this servlet
@@ -36,3 +38,4 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             taskqueue.add(url='/tasks/track_newuser_friends', params={'user_id': self.fb_uid})
         user.fb_access_token = self.fb_graph.access_token
         user.put()
+        return user
