@@ -72,7 +72,7 @@ class User(db.Model):
         return user
 
     def put(self):
-        self.put()
+        super(User, self).put()
         memcache_key = self.memcache_user_key(self.fb_uid)
         memcache.set(memcache_key, self, USER_EXPIRY)
 
