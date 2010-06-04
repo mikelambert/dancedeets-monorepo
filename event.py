@@ -132,9 +132,9 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 for field in ['start_time', 'end_time']:
                     event[field] = self.localize_timestamp(datetime.datetime.fromtimestamp(event[field]))
 
-        lastadd_key = 'LastAdd.%s' % self.fb_uid
+        lastadd_key = 'LastAdd.%s.%s' % (self.fb_uid, attending_only)
         if not memcache.get(lastadd_key):
-            task_size = 5
+            task_size = 20
             for i in range(0, len(events), task_size):
                 taskqueue.add(url='/tasks/load_events', params={'user_id': self.fb_uid, 'event_ids': ','.join(str(x['id']) for x in events[i:i+task_size])})
             memcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
