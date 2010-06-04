@@ -255,7 +255,7 @@ class BatchLookup(object):
                 if object_json:
                     this_object[object_rpc_name] = object_json
             key_func = self._key_generator[object_type]
-            if object_type == self.OBJECT_EVENT and this_object['info']['privacy'] == 'OPEN': # only cache the results of "open" events
+            if object_type != self.OBJECT_EVENT or this_object['info']['privacy'] == 'OPEN': # only cache the results of "open" events
                 memcache_set[key_func(self, object_id)] = this_object
             self.objects[object_id] = this_object
 
