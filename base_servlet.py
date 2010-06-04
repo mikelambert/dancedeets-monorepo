@@ -3,6 +3,7 @@
 import datetime
 import logging
 import pickle
+import random
 import re
 import sys
 import urllib
@@ -227,13 +228,15 @@ class BatchLookup(object):
                 key_func = self._key_generator[object_type]
                 memcache_keys_to_ids[key_func(self, object_id)] = object_id
             object_keys_to_objects = memcache.get_multi(memcache_keys_to_ids.keys())
+
+            self.objects = dict((memcache_keys_to_ids[k], o) for (k, o) in object_keys_to_objects.iteritems())
+            #TODO(lambert): get the objects, and object_ids_to_lookup...then do XX at a time, to avoid overloading concurrent url fetches
+            object_ids_to_lookup = set(self.object_ids_to_types).difference(self.objects.keys())
+
             get_size = len(pickle.dumps(object_keys_to_objects))
             logging.info("get_multi size is %s", get_size)
             logging.info("Original Keys looked up %s", memcache_keys_to_ids.keys())
             logging.info("IDs we Missed %s", object_ids_to_lookup)
-
-            self.objects = dict((memcache_keys_to_ids[k], o) for (k, o) in object_keys_to_objects.iteritems())
-            object_ids_to_lookup = set(self.object_ids_to_types).difference(self.objects.keys())
         self.object_ids_to_rpcs = {}
         for object_id in object_ids_to_lookup:
             rpc_func = self._rpc_generator[self.object_ids_to_types[object_id]]
