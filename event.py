@@ -100,6 +100,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):
         attending_only = self.request.get('attending_only')
+        today = time.mktime(datetime.date.today().timetuple()[:9])
         events_for_user_fql = """
                 SELECT eid, name, start_time, end_time, host
                 FROM event 
@@ -107,7 +108,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
                                             FROM event_member 
                                             WHERE uid = %s) 
                     AND start_time > '%s' 
-                ORDER BY start_time""" % (self.fb_uid, time.time())
+                ORDER BY start_time""" % (self.fb_uid, today)
         if not attending_only:
             self.batch_lookup.lookup_fql(events_for_user_fql)
         self.finish_preload()
