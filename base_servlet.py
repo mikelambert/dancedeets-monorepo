@@ -17,7 +17,10 @@ from django.utils import simplejson
 from util import text
 from events import users
 
+#TODO(lambert): standardize our use of memcahe expiries
+#TODO(lambert): set up a background cron job to refresh events
 MEMCACHE_EXPIRY = 24 * 60 * 60
+MEMCACHE_VARIANCE = 0.25
 
 #TODO(lambert): show event info, queries without login?? P2
 
@@ -142,6 +145,10 @@ class BaseRequestHandler(RequestHandler):
 class FacebookException(Exception):
     pass
 
+def expiry_with_variance(expiry, expiry_variance):
+  variance = expiry * expiry_variance
+  return random.randrange(expiry - variance, expiry + variance)
+
 class BatchLookup(object):
     OBJECT_USER = 'USER'
     OBJECT_EVENT = 'EVENT'
@@ -220,6 +227,11 @@ class BatchLookup(object):
                 key_func = self._key_generator[object_type]
                 memcache_keys_to_ids[key_func(self, object_id)] = object_id
             object_keys_to_objects = memcache.get_multi(memcache_keys_to_ids.keys())
+            get_size = len(pickle.dumps(object_keys_to_objects))
+            logging.info("get_multi size is %s", get_size)
+            logging.info("Original Keys looked up %s", memcache_keys_to_ids.keys())
+            logging.info("IDs we Missed %s", object_ids_to_lookup)
+
             self.objects = dict((memcache_keys_to_ids[k], o) for (k, o) in object_keys_to_objects.iteritems())
             object_ids_to_lookup = set(self.object_ids_to_types).difference(self.objects.keys())
         self.object_ids_to_rpcs = {}
@@ -255,12 +267,20 @@ class BatchLookup(object):
                 if object_json:
                     this_object[object_rpc_name] = object_json
             key_func = self._key_generator[object_type]
-            if object_type != self.OBJECT_EVENT or this_object['info']['privacy'] == 'OPEN': # only cache the results of "open" events
+            cacheable = False
+            if object_type != self.OBJECT_EVENT:
+                cacheable = True
+            elif  'info' in this_object and this_object['info']['privacy'] == 'OPEN':
+                cacheable = True
+            if cacheable:
                 memcache_set[key_func(self, object_id)] = this_object
             self.objects[object_id] = this_object
 
         if self.allow_memcache and memcache_set:
-            safe_set_memcache(memcache_set, MEMCACHE_EXPIRY)
+            for (k, v) in memcache_set.iteritems():
+                memcache.set(k, v, expiry_with_variance(MEMCACHE_EXPIRY, MEMCACHE_VARIANCE))
+            # Doesn't allow any variation between object expiries
+            #safe_set_memcache(memcache_set, MEMCACHE_EXPIRY)
 
 def safe_set_memcache(memcache_set, expiry, top_level=True):
     set_size = len(pickle.dumps(memcache_set))
@@ -276,5 +296,5 @@ def safe_set_memcache(memcache_set, expiry, top_level=True):
         safe_set_memcache(dict(memcache_list[:halfway]), expiry, top_level=False)
         safe_set_memcache(dict(memcache_list[halfway:]), expiry, top_level=False)
     else:
-        memcache.set_multi(memcache_set, MEMCACHE_EXPIRY)
+        memcache.set_multi(memcache_set, expiry)
 
