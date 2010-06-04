@@ -55,7 +55,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.redirect('/user/edit')
 
     def update_user(self):
-        user = users.get_user(self.fb_uid)
+        user = users.User.get(self.fb_uid)
         for field in ['location', 'freestyle', 'choreo', 'distance', 'distance_units']:
             form_value = self.request.get(field)
             setattr(user, field, form_value)

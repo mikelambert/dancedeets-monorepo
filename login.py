@@ -27,7 +27,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             self.render_template('login')
 
     def update_user_with_login(self):
-        user = users.get_user(self.fb_uid)
+        user = users.User.get(self.fb_uid)
         if not user.fb_access_token: # brand new user!
             user.creation_time = datetime.datetime.now()
             user_friends = users.UserFriendsAtSignup()

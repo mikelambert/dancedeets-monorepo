@@ -2,6 +2,7 @@
 
 import datetime
 import re
+import time
 
 from google.appengine.api.labs import taskqueue
 from google.appengine.api import memcache
@@ -98,17 +99,37 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
 class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):
+        attending_only = self.request.get('attending_only')
+        events_for_user_fql = """
+                SELECT eid, name, start_time, end_time, host
+                FROM event 
+                WHERE eid IN (SELECT eid 
+                                            FROM event_member 
+                                            WHERE uid = %s) 
+                    AND start_time > '%s' 
+                ORDER BY start_time""" % (self.fb_uid, time.time())
+        if not attending_only:
+            self.batch_lookup.lookup_fql(events_for_user_fql)
         self.finish_preload()
 
         self.display['freestyle_types'] = tags.FREESTYLE_EVENT_LIST
         self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
         self.display['styles'] = tags.STYLES
 
-        results_json = self.batch_lookup.objects[self.fb_uid]['events']
-        events = sorted(results_json['data'], key=lambda x: x['start_time'])
-        for event in events:
-            for field in ['start_time', 'end_time']:
-                event[field] = self.localize_timestamp(datetime.datetime.strptime(event[field], '%Y-%m-%dT%H:%M:%S+0000'))
+        if attending_only:
+            results_json = self.batch_lookup.objects[self.fb_uid]['events']
+            events = sorted(results_json['data'], key=lambda x: x['start_time'])
+            for event in events:
+                for field in ['start_time', 'end_time']:
+                    event[field] = self.localize_timestamp(datetime.datetime.strptime(event[field], '%Y-%m-%dT%H:%M:%S+0000'))
+        else:
+            results_json = self.batch_lookup.objects[events_for_user_fql]['fql']
+            events = sorted(results_json, key=lambda x: x['start_time'])
+            for event in events:
+                # rewrite hack necessary for templates (and above code)
+                event['id'] = event['eid']
+                for field in ['start_time', 'end_time']:
+                    event[field] = self.localize_timestamp(datetime.datetime.fromtimestamp(event[field]))
 
         lastadd_key = 'LastAdd.%s' % self.fb_uid
         if not memcache.get(lastadd_key):

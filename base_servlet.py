@@ -50,7 +50,7 @@ class BaseRequestHandler(RequestHandler):
         if args:
             self.fb_uid = int(args['uid'])
             self.fb_graph = facebook.GraphAPI(args['access_token'])
-            self.user = users.get_user(self.fb_uid)
+            self.user = users.User.get(self.fb_uid)
         else:
             self.fb_uid = None
             self.fb_graph = None
@@ -145,11 +145,14 @@ class FacebookException(Exception):
 class BatchLookup(object):
     OBJECT_USER = 'USER'
     OBJECT_EVENT = 'EVENT'
+    OBJECT_FQL = 'FQL'
 
     def _memcache_user_key(self, user_id):
         return 'FacebookUser.%s.%s' % (self.fb_uid, user_id)
     def _memcache_event_key(self, event_id):
         return 'FacebookEvent.%s.%s' % (self.fb_uid, event_id)
+    def _memcache_fql_key(self, fql):
+        return 'FacebookFql.%s.%s' % (self.fb_uid, fql)
 
     def _build_user_rpcs(self, user_id):
         return dict(
@@ -167,14 +170,22 @@ class BatchLookup(object):
             noreply=self._fetch_rpc('%s/noreply' % event_id),
         )
 
+    def _build_fql_rpcs(self, fql):
+        rpc = urlfetch.create_rpc()
+        url = "https://api.facebook.com/method/fql.query?%s" % urllib.urlencode(dict(query=fql, access_token=self.fb_graph.access_token, format='json'))
+        urlfetch.make_fetch_call(rpc, url)
+        return dict(fql=rpc)
+
     _key_generator = {
         OBJECT_USER: _memcache_user_key,
         OBJECT_EVENT: _memcache_event_key,
+        OBJECT_FQL: _memcache_fql_key,
     }
 
     _rpc_generator = {
         OBJECT_USER: _build_user_rpcs,
         OBJECT_EVENT: _build_event_rpcs,
+        OBJECT_FQL: _build_fql_rpcs,
     }
     
     def __init__(self, fb_uid, fb_graph, allow_memcache=True):
@@ -197,6 +208,10 @@ class BatchLookup(object):
         assert event_id
         self.object_ids_to_types[event_id] = self.OBJECT_EVENT
 
+    def lookup_fql(self, fql_query):
+        assert fql_query
+        self.object_ids_to_types[fql_query] = self.OBJECT_FQL
+
     def setup_rpcs(self):
         object_ids_to_lookup = list(self.object_ids_to_types)
         if self.allow_memcache:
@@ -218,7 +233,7 @@ class BatchLookup(object):
             result = rpc.get_result()
             if result.status_code == 200:
                 text = result.content
-                return simplejson.loads(result.content)
+                return simplejson.loads(text)
         except urlfetch.DownloadError:
             pass
         return None

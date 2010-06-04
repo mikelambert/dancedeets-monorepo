@@ -15,6 +15,9 @@ Add Dance Event
 						<option value="">----------------
 					#for $event in $events
 						<option value="$event.id">$date_human_format($event.start_time): $event.name
+						#if getattr($event, "host", None)
+							(by $event.host)
+						#end if
 					#end for
 					</select>
 				<li>Or enter your URL here:<br>

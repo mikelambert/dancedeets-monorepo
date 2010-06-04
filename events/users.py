@@ -53,36 +53,30 @@ class User(db.Model):
     choreo = db.StringProperty()
     send_email = db.BooleanProperty()
 
+    @staticmethod
+    def memcache_user_key(fb_user_id):
+        return 'User.%s' % fb_user_id
+
+    @classmethod
+    def get(cls, uid, allow_memcache=True):
+        memcache_key = cls.memcache_user_key(uid)
+        user = allow_memcache and memcache.get(memcache_key)
+        if not user:
+            fetched_users = User.gql('where fb_uid = :fb_uid', fb_uid=uid).fetch(1)
+            if fetched_users:
+                user = fetched_users[0]
+            memcache.set(memcache_key, user, USER_EXPIRY)
+        #TODO(lambert): is this a good idea? it can construct a not-filled-out user that we may depend on later, depending on who calls this.
+        if not user:
+            user = User(fb_uid=uid)
+        return user
+
+    def put(self):
+        self.put()
+        memcache_key = self.memcache_user_key(self.fb_uid)
+        memcache.set(memcache_key, self, USER_EXPIRY)
+
+
 class UserFriendsAtSignup(db.Model):
     fb_uid = db.IntegerProperty()
     registered_friend_ids = db.ListProperty(int)
-
-def memcache_user_key(fb_user_id):
-    return 'User.%s' % fb_user_id
-
-def get_user(uid, allow_memcache=True):
-    memcache_key = memcache_user_key(uid)
-    user = allow_memcache and memcache.get(memcache_user_key(uid))
-    if not user:
-        fetched_users = User.gql('where fb_uid = :fb_uid', fb_uid=uid).fetch(1)
-        if fetched_users:
-            user = fetched_users[0]
-        #TODO: make sure to invalidate/re-set() this whereever we save the user?
-        memcache.set(memcache_key, user, USER_EXPIRY)
-    #TODO(lambert): is this a good idea? it can construct a not-filled-out user that we may depend on later, depending on who calls this.
-    if not user:
-        user = User(fb_uid=uid)
-    return user
-
-def memcache_timezone_key(fb_user_id):
-    return 'UserTimeZone.%s' % fb_user_id
-
-def get_timezone_for_user(fb_uid, graph):
-    memcache_key = memcache_timezone_key(fb_uid)
-    user_timezone = memcache.get(memcache_key)
-    if not user_timezone:
-        results = graph.api_request('method/users.getInfo', args=dict(uids=fb_uid, fields='timezone'))
-        user_timezone = results[0]['timezone']
-        memcache.set(memcache_key, user_timezone, 10)
-    return user_timezone
-
