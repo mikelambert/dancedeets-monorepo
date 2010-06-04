@@ -3,6 +3,7 @@
 import os
 import wsgiref.handlers
 from google.appengine.ext import webapp
+from google.appengine.api import memcache
 from google.appengine.ext.webapp.util import run_wsgi_app
 import base_servlet
 import event
@@ -21,6 +22,11 @@ DEBUG = True
 #TODO(lambert): setup webtest to test the wsgi app as a regression test to ensure everything is working
 # http://pythonpaste.org/webtest/
 
+class ClearMemcacheHandler(webapp.RequestHandler):
+    def get(self):
+        memcache.flush_all()
+        self.response.out("Flushed memcache!")
+
 URLS = [
     ('/tasks/load_events', tasks.LoadEventHandler),
     ('/tasks/load_users', tasks.LoadUserHandler),
@@ -31,6 +37,7 @@ URLS = [
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/user/edit', myuser.UserHandler),
     ('/login', login.LoginHandler),
+    ('/clear_memcache', ClearMemcacheHandler),
 ]
 
 def main():
