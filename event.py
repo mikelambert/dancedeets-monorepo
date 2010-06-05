@@ -45,9 +45,11 @@ class ViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
         event_id = int(self.request.get('event_id'))
         self.batch_lookup.lookup_event(event_id)
+        self.batch_lookup.lookup_event_members(event_id)
         self.finish_preload()
         if event_id:
-            event_info = self.batch_lookup.objects[event_id]
+            event_info = self.batch_lookup.data_for_event(event_id)
+            event_members_info = self.batch_lookup.data_for_event_members(event_id)
             e = event_info['info']
         
             location = eventdata.get_geocoded_location_for_event(event_info)
@@ -64,7 +66,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
 
             self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
-            self.display['attendee_status'] = eventdata.get_attendance_for_fb_event(event_info, self.fb_uid)
+            self.display['attendee_status'] = eventdata.get_attendance_for_fb_event(event_members_info, self.fb_uid)
 
             friend_ids = set(x['id'] for x in self.current_user()['friends']['data'])
             event_friends = {}
@@ -81,7 +83,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             for field in ['start_time', 'end_time']:
                 self.display[field] = self.parse_fb_timestamp(e[field])
 
-            self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.objects[event_id]['picture'], eventdata.EVENT_IMAGE_LARGE)
+            self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.data_for_event(event_id)['picture'], eventdata.EVENT_IMAGE_LARGE)
 
             db_event = eventdata.get_db_event(event_id)
             tags_set = db_event and set(db_event.tags) or []
@@ -118,13 +120,13 @@ class AddHandler(base_servlet.BaseRequestHandler):
         self.display['styles'] = tags.STYLES
 
         if attending_only:
-            results_json = self.batch_lookup.objects[self.fb_uid]['events']
+            results_json = self.batch_lookup.data_for_user(self.fb_uid)['events']
             events = sorted(results_json['data'], key=lambda x: x['start_time'])
             for event in events:
                 for field in ['start_time', 'end_time']:
                     event[field] = self.localize_timestamp(datetime.datetime.strptime(event[field], '%Y-%m-%dT%H:%M:%S+0000'))
         else:
-            results_json = self.batch_lookup.objects[events_for_user_fql]['fql']
+            results_json = self.batch_lookup.data_for_fql(events_for_user_fql)['fql']
             events = sorted(results_json, key=lambda x: x['start_time'])
             for event in events:
                 # rewrite hack necessary for templates (and above code)
@@ -167,7 +169,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         e = eventdata.get_db_event(event_id)
         if not e:
             e = eventdata.DBEvent(fb_event_id=event_id)
-            e.make_findable_for(self.batch_lookup.objects[event_id])
+            e.make_findable_for(self.batch_lookup.data_for_event(event_id))
         e.tags = self.request.get_all('tag')
         e.put()
 

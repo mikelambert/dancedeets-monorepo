@@ -119,7 +119,7 @@ class BaseRequestHandler(RequestHandler):
         return self.localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
 
     def localize_timestamp(self, dt):
-        time_offset = self.batch_lookup.objects[self.fb_uid]['profile']['timezone']
+        time_offset = self.batch_lookup.data_for_user(self.fb_uid)['profile']['timezone']
         td = datetime.timedelta(hours=time_offset)
         final_dt = dt + td
         return final_dt
@@ -136,7 +136,7 @@ class BaseRequestHandler(RequestHandler):
         return '%s at %s' % (month_day, time_string)
 
     def current_user(self):
-        return self.batch_lookup.objects[self.fb_uid]
+        return self.batch_lookup.data_for_user(self.fb_uid)
 
     def finish_preload(self):
         if self.redirecting:
@@ -153,12 +153,15 @@ def expiry_with_variance(expiry, expiry_variance):
 class BatchLookup(object):
     OBJECT_USER = 'USER'
     OBJECT_EVENT = 'EVENT'
+    OBJECT_EVENT_MEMBERS = 'EVENT_MEMBERS'
     OBJECT_FQL = 'FQL'
 
     def _memcache_user_key(self, user_id):
         return 'FacebookUser.%s.%s' % (self.fb_uid, user_id)
     def _memcache_event_key(self, event_id):
         return 'FacebookEvent.%s.%s' % (self.fb_uid, event_id)
+    def _memcache_event_members_key(self, event_id):
+        return 'FacebookEventMembers.%s.%s' % (self.fb_uid, event_id)
     def _memcache_fql_key(self, fql):
         return 'FacebookFql.%s.%s' % (self.fb_uid, fql)
 
@@ -172,6 +175,9 @@ class BatchLookup(object):
         return dict(
             info=self._fetch_rpc('%s' % event_id),
             picture=self._fetch_rpc('%s/picture' % event_id),
+        )
+    def _build_event_members_rpcs(self, event_id):
+        return dict(
             attending=self._fetch_rpc('%s/attending' % event_id),
             maybe=self._fetch_rpc('%s/maybe' % event_id),
             declined=self._fetch_rpc('%s/declined' % event_id),
@@ -187,12 +193,14 @@ class BatchLookup(object):
     _key_generator = {
         OBJECT_USER: _memcache_user_key,
         OBJECT_EVENT: _memcache_event_key,
+        OBJECT_EVENT_MEMBERS: _memcache_event_members_key,
         OBJECT_FQL: _memcache_fql_key,
     }
 
     _rpc_generator = {
         OBJECT_USER: _build_user_rpcs,
         OBJECT_EVENT: _build_event_rpcs,
+        OBJECT_EVENT_MEMBERS: _build_event_members_rpcs,
         OBJECT_FQL: _build_fql_rpcs,
     }
     
@@ -200,7 +208,7 @@ class BatchLookup(object):
         self.fb_uid = fb_uid
         self.fb_graph = fb_graph
         self.allow_memcache = allow_memcache
-        self.object_ids_to_types = {}
+        self.object_ids = set()
 
     def _fetch_rpc(self, path):
         rpc = urlfetch.create_rpc()
@@ -210,39 +218,59 @@ class BatchLookup(object):
 
     def lookup_user(self, user_id):
         assert user_id
-        self.object_ids_to_types[user_id] = self.OBJECT_USER
+        self.object_ids.add((user_id, self.OBJECT_USER))
 
     def lookup_event(self, event_id):
         assert event_id
-        self.object_ids_to_types[event_id] = self.OBJECT_EVENT
+        self.object_ids.add((event_id, self.OBJECT_EVENT))
+
+    def lookup_event_members(self, event_id):
+        assert event_id
+        self.object_ids.add((event_id, self.OBJECT_EVENT_MEMBERS))
 
     def lookup_fql(self, fql_query):
         assert fql_query
-        self.object_ids_to_types[fql_query] = self.OBJECT_FQL
+        self.object_ids.add((fql_query, self.OBJECT_FQL))
 
-    def _get_objects_from_memcache(self, object_ids_to_types):
+    def data_for_user(self, user_id):
+        assert user_id
+        return self.objects[(user_id, self.OBJECT_USER)]
+
+    def data_for_event(self, event_id):
+        assert event_id
+        return self.objects[(event_id, self.OBJECT_EVENT)]
+
+    def data_for_event_members(self, event_id):
+        assert event_id
+        return self.objects[(event_id, self.OBJECT_EVENT_MEMBERS)]
+
+    def data_for_fql(self, fql_query):
+        assert fql_query
+        return self.objects[(fql_query, self.OBJECT_FQL)]
+
+    def _get_objects_from_memcache(self, object_ids):
         memcache_keys_to_ids = {}
-        for object_id, object_type in object_ids_to_types.iteritems():
+        for object_id, object_type in object_ids:
             key_func = self._key_generator[object_type]
-            memcache_keys_to_ids[key_func(self, object_id)] = object_id
+            memcache_keys_to_ids[key_func(self, object_id)] = (object_id, object_type)
         object_keys_to_objects = memcache.get_multi(memcache_keys_to_ids.keys())
 
         objects = dict((memcache_keys_to_ids[k], o) for (k, o) in object_keys_to_objects.iteritems())
 
         get_size = len(pickle.dumps(object_keys_to_objects))
         logging.info("BatchLookup: get_multi return size: %s", get_size)
-        logging.info("BatchLookup: get_multi objects: %s", object_ids_to_types.keys())
+        logging.info("BatchLookup: get_multi objects: %s", object_ids)
         return objects
 
     def finish_loading(self):
         if self.allow_memcache:
-            self.objects = self._get_objects_from_memcache(self.object_ids_to_types)
-            object_ids_to_lookup = list(set(self.object_ids_to_types).difference(self.objects.keys()))
+            self.objects = self._get_objects_from_memcache(self.object_ids)
+            object_ids_to_lookup = list(set(self.object_ids).difference(self.objects.keys()))
             logging.info("BatchLookup: get_multi missed objects: %s", object_ids_to_lookup)
         else:
-            object_ids_to_lookup = list(self.object_ids_to_types)
+            object_ids_to_lookup = list(self.object_ids)
 
-        FB_FETCH_COUNT = 4 # number of objects, each of which may be 1-5 RPCs
+        FB_FETCH_COUNT = 10 # number of objects, each of which may be 1-5 RPCs
         for i in range(0, len(object_ids_to_lookup), FB_FETCH_COUNT):
             fetched_objects = self._fetch_object_ids(object_ids_to_lookup[i:i+FB_FETCH_COUNT])    
             # Always store latest fetched stuff in memcache, regardless of self.allow_memcache
@@ -274,16 +302,15 @@ class BatchLookup(object):
         logging.info("Looking up IDs: %s", object_ids_to_lookup)
         # initiate RPCs
         self.object_ids_to_rpcs = {}
-        for object_id in object_ids_to_lookup:
-            rpc_func = self._rpc_generator[self.object_ids_to_types[object_id]]
-            self.object_ids_to_rpcs[object_id] = rpc_func(self, object_id)
+        for object_id, object_type in object_ids_to_lookup:
+            rpc_func = self._rpc_generator[object_type]
+            self.object_ids_to_rpcs[(object_id, object_type)] = rpc_func(self, object_id)
     
         # fetch RPCs
         fetched_objects = {}
-        for object_id, object_rpc_dict in self.object_ids_to_rpcs.iteritems():
+        for (object_id, object_type), object_rpc_dict in self.object_ids_to_rpcs.iteritems():
             this_object = {}
             object_is_bad = False
-            object_type = self.object_ids_to_types[object_id]
             for object_rpc_name, object_rpc in object_rpc_dict.iteritems():
                 if object_type == self.OBJECT_EVENT and object_rpc_name == 'picture':
                     object_json = self._map_rpc_to_url(object_rpc)
@@ -296,15 +323,14 @@ class BatchLookup(object):
             if object_is_bad:
                 logging.error("Failed to complete object: %s, only have keys %s", object_id, this_object.keys())
             else:
-                fetched_objects[object_id] = this_object
+                fetched_objects[(object_id, object_type)] = this_object
 
         return fetched_objects
 
     def _memcache_objects(self, fetched_objects):
         memcache_set = {}
-        for object_id, this_object in fetched_objects.iteritems():
+        for (object_id, object_type), this_object in fetched_objects.iteritems():
             cacheable = False
-            object_type = self.object_ids_to_types[object_id]
             if object_type != self.OBJECT_EVENT:
                 cacheable = True
             elif  'info' in this_object and this_object['info']['privacy'] == 'OPEN':
