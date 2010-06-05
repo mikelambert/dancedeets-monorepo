@@ -25,7 +25,7 @@ DEBUG = True
 class ClearMemcacheHandler(webapp.RequestHandler):
     def get(self):
         memcache.flush_all()
-        self.response.out("Flushed memcache!")
+        self.response.out.write("Flushed memcache!")
 
 URLS = [
     ('/tasks/load_events', tasks.LoadEventHandler),
