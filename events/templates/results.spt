@@ -16,7 +16,7 @@ Dance Event Results
 		$date_format('%Y-%m-%d %H:%M', $result.start_time)
 		</td>
 		<td>
-			$rsvp_form($fb_event.id, $result.get_attendance())
+			##$rsvp_form($fb_event.id, $result.get_attendance())
 		</td>
 	</tr>
 #end for

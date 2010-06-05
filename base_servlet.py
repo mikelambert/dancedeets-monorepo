@@ -257,7 +257,7 @@ class BatchLookup(object):
                 text = result.content
                 return simplejson.loads(text)
         except urlfetch.DownloadError:
-            slogging.error("Error downloading: %s", rpc.request.url())
+            logging.error("Error downloading: %s", rpc.request.url())
         return None
 
     @staticmethod
@@ -267,7 +267,7 @@ class BatchLookup(object):
             if result.status_code == 200:
                 return result.final_url
         except urlfetch.DownloadError, e:
-            slogging.error("Error downloading: %s", rpc.request.url())
+            logging.error("Error downloading: %s", rpc.request.url())
         return None
 
     def _fetch_object_ids(self, object_ids_to_lookup):
@@ -294,7 +294,7 @@ class BatchLookup(object):
                 else:
                     object_is_bad = True
             if object_is_bad:
-                slogging.error("Failed to complete object: %s, only have keys %s", object_id, this_object.keys())
+                logging.error("Failed to complete object: %s, only have keys %s", object_id, this_object.keys())
             else:
                 fetched_objects[object_id] = this_object
 
