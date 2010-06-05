@@ -220,27 +220,34 @@ class BatchLookup(object):
         assert fql_query
         self.object_ids_to_types[fql_query] = self.OBJECT_FQL
 
-    def setup_rpcs(self):
-        object_ids_to_lookup = list(self.object_ids_to_types)
+    def _get_objects_from_memcache(self, object_ids_to_types):
+        memcache_keys_to_ids = {}
+        for object_id, object_type in object_ids_to_types.iteritems():
+            key_func = self._key_generator[object_type]
+            memcache_keys_to_ids[key_func(self, object_id)] = object_id
+        object_keys_to_objects = memcache.get_multi(memcache_keys_to_ids.keys())
+
+        objects = dict((memcache_keys_to_ids[k], o) for (k, o) in object_keys_to_objects.iteritems())
+
+        get_size = len(pickle.dumps(object_keys_to_objects))
+        logging.info("BatchLookup: get_multi return size: %s", get_size)
+        logging.info("BatchLookup: get_multi objects: %s", object_ids_to_types.keys())
+        return objects
+
+    def finish_loading(self):
         if self.allow_memcache:
-            memcache_keys_to_ids = {}
-            for object_id, object_type in self.object_ids_to_types.iteritems():
-                key_func = self._key_generator[object_type]
-                memcache_keys_to_ids[key_func(self, object_id)] = object_id
-            object_keys_to_objects = memcache.get_multi(memcache_keys_to_ids.keys())
+            self.objects = self._get_objects_from_memcache(self.object_ids_to_types)
+            object_ids_to_lookup = list(set(self.object_ids_to_types).difference(self.objects.keys()))
+            logging.info("BatchLookup: get_multi missed objects: %s", object_ids_to_lookup)
+        else:
+            object_ids_to_lookup = list(self.object_ids_to_types)
 
-            self.objects = dict((memcache_keys_to_ids[k], o) for (k, o) in object_keys_to_objects.iteritems())
-            #TODO(lambert): get the objects, and object_ids_to_lookup...then do XX at a time, to avoid overloading concurrent url fetches
-            object_ids_to_lookup = set(self.object_ids_to_types).difference(self.objects.keys())
-
-            get_size = len(pickle.dumps(object_keys_to_objects))
-            logging.info("get_multi size is %s", get_size)
-            logging.info("Original Keys looked up %s", memcache_keys_to_ids.keys())
-            logging.info("IDs we Missed %s", object_ids_to_lookup)
-        self.object_ids_to_rpcs = {}
-        for object_id in object_ids_to_lookup:
-            rpc_func = self._rpc_generator[self.object_ids_to_types[object_id]]
-            self.object_ids_to_rpcs[object_id] = rpc_func(self, object_id)
+        FB_FETCH_COUNT = 4 # number of objects, each of which may be 1-5 RPCs
+        for i in range(0, len(object_ids_to_lookup), FB_FETCH_COUNT):
+            fetched_objects = self._fetch_object_ids(object_ids_to_lookup[i:i+FB_FETCH_COUNT])    
+            # Always store latest fetched stuff in memcache, regardless of self.allow_memcache
+            self._memcache_objects(fetched_objects)
+            self.objects.update(fetched_objects)
 
     @staticmethod
     def _map_rpc_to_json(rpc):
@@ -250,40 +257,68 @@ class BatchLookup(object):
                 text = result.content
                 return simplejson.loads(text)
         except urlfetch.DownloadError:
-            pass
+            slogging.error("Error downloading: %s", rpc.request.url())
         return None
 
-    def finish_loading(self):
-        self.setup_rpcs()
-        self.parse_rpcs()
+    @staticmethod
+    def _map_rpc_to_url(rpc):
+        try:
+            result = rpc.get_result()
+            if result.status_code == 200:
+                return result.final_url
+        except urlfetch.DownloadError, e:
+            slogging.error("Error downloading: %s", rpc.request.url())
+        return None
 
-    def parse_rpcs(self):
-        memcache_set = {}
+    def _fetch_object_ids(self, object_ids_to_lookup):
+        logging.info("Looking up IDs: %s", object_ids_to_lookup)
+        # initiate RPCs
+        self.object_ids_to_rpcs = {}
+        for object_id in object_ids_to_lookup:
+            rpc_func = self._rpc_generator[self.object_ids_to_types[object_id]]
+            self.object_ids_to_rpcs[object_id] = rpc_func(self, object_id)
+    
+        # fetch RPCs
+        fetched_objects = {}
         for object_id, object_rpc_dict in self.object_ids_to_rpcs.iteritems():
             this_object = {}
+            object_is_bad = False
             object_type = self.object_ids_to_types[object_id]
             for object_rpc_name, object_rpc in object_rpc_dict.iteritems():
                 if object_type == self.OBJECT_EVENT and object_rpc_name == 'picture':
-                    object_json = object_rpc.get_result().final_url
+                    object_json = self._map_rpc_to_url(object_rpc)
                 else:
                     object_json = self._map_rpc_to_json(object_rpc)
                 if object_json:
                     this_object[object_rpc_name] = object_json
-            key_func = self._key_generator[object_type]
+                else:
+                    object_is_bad = True
+            if object_is_bad:
+                slogging.error("Failed to complete object: %s, only have keys %s", object_id, this_object.keys())
+            else:
+                fetched_objects[object_id] = this_object
+
+        return fetched_objects
+
+    def _memcache_objects(self, fetched_objects):
+        memcache_set = {}
+        for object_id, this_object in fetched_objects.iteritems():
             cacheable = False
+            object_type = self.object_ids_to_types[object_id]
             if object_type != self.OBJECT_EVENT:
                 cacheable = True
             elif  'info' in this_object and this_object['info']['privacy'] == 'OPEN':
                 cacheable = True
             if cacheable:
+                key_func = self._key_generator[object_type]
                 memcache_set[key_func(self, object_id)] = this_object
-            self.objects[object_id] = this_object
 
-        if self.allow_memcache and memcache_set:
+        if memcache_set:
             for (k, v) in memcache_set.iteritems():
                 memcache.set(k, v, expiry_with_variance(MEMCACHE_EXPIRY, MEMCACHE_VARIANCE))
             # Doesn't allow any variation between object expiries
             #safe_set_memcache(memcache_set, MEMCACHE_EXPIRY)
+
 
 def safe_set_memcache(memcache_set, expiry, top_level=True):
     set_size = len(pickle.dumps(memcache_set))
