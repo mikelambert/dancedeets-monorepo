@@ -22,7 +22,8 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
 
     def post(self):
         self.finish_preload()
-        if not self.request.get('event_id'):
+        event_id = int(self.request.get('event_id'))
+        if not event_id:
             self.add_error('missing event_id')
         if not self.request.get('rsvp') in self.valid_rsvp:
             self.add_error('invalid or missing rsvp')
@@ -32,8 +33,11 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         if rsvp == 'maybe':
             rsvp = 'unsure'
 
-        memcache.delete()
-        self.fb_graph.api_request('method/events.rsvp', args=dict(eid=int(self.request.get('event_id')), rsvp_status=rsvp))
+        #TODO(lambert): clean up our reliance on private methods
+        memcache.delete(self.batch_lookup._memcache_key((event_id, self.batch_lookup.OBJECT_EVENT_MEMBERS)))
+        memcache.delete(self.batch_lookup._memcache_key((self.fb_uid, self.batch_lookup.OBJECT_USER)))
+
+        self.fb_graph.api_request('method/events.rsvp', args=dict(eid=event_id, rsvp_status=rsvp))
 
         self.write_json_response(success=True)
 

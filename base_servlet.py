@@ -20,7 +20,7 @@ from util import text
 from events import users
 
 #TODO(lambert): standardize our use of memcahe expiries
-#TODO(lambert): set up a background cron job to refresh events
+#TODO(lambert): set up a background cron job to refresh events, maybe use appengine data store
 MEMCACHE_EXPIRY = 24 * 60 * 60
 MEMCACHE_VARIANCE = 0.25
 
