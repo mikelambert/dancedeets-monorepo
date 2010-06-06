@@ -6,6 +6,7 @@ import pickle
 import random
 import re
 import sys
+import time
 import urllib
 
 import facebook
@@ -150,6 +151,20 @@ def expiry_with_variance(expiry, expiry_variance):
   variance = expiry * expiry_variance
   return random.randrange(expiry - variance, expiry + variance)
 
+RSVP_EVENTS_FQL = """
+SELECT eid, rsvp_status
+FROM event_member
+WHERE uid = %s
+"""
+
+ALL_EVENTS_FQL = """
+SELECT eid, name, start_time, end_time, host
+FROM event 
+WHERE eid IN (SELECT eid FROM event_member WHERE uid = %s) 
+AND start_time > '%s' 
+ORDER BY start_time
+"""
+
 class BatchLookup(object):
     OBJECT_USER = 'USER'
     OBJECT_EVENT = 'EVENT'
@@ -171,10 +186,12 @@ class BatchLookup(object):
     def _get_rpcs(self, object_key):
         object_id, object_type = object_key
         if object_type == self.OBJECT_USER:
+            today = time.mktime(datetime.date.today().timetuple()[:9])
             return dict(
                 profile=self._fetch_rpc('%s' % object_id),
                 friends=self._fetch_rpc('%s/friends' % object_id),
-                events=self._fetch_rpc('%s/events' % object_id)
+                rsvp_for_events=self._fql_rpc(RSVP_EVENTS_FQL % object_id),
+                all_event_info=self._fql_rpc(ALL_EVENTS_FQL % (object_id, today)),
             )
         elif object_type == self.OBJECT_EVENT:
             return dict(
@@ -189,10 +206,7 @@ class BatchLookup(object):
                 noreply=self._fetch_rpc('%s/noreply' % object_id),
             )
         elif object_type == self.OBJECT_FQL:
-            rpc = urlfetch.create_rpc()
-            url = "https://api.facebook.com/method/fql.query?%s" % urllib.urlencode(dict(query=object_id, access_token=self.fb_graph.access_token, format='json'))
-            urlfetch.make_fetch_call(rpc, url)
-            return dict(fql=rpc)
+            return dict(fql=self._fql_rpc(object_id))
         else:
             raise Exception("Unknown object type %s" % object_type)
 
@@ -201,6 +215,12 @@ class BatchLookup(object):
         self.fb_graph = fb_graph
         self.allow_memcache = allow_memcache
         self.object_keys = set()
+
+    def _fql_rpc(self, fql):
+        rpc = urlfetch.create_rpc()
+        url = "https://api.facebook.com/method/fql.query?%s" % urllib.urlencode(dict(query=fql, access_token=self.fb_graph.access_token, format='json'))
+        urlfetch.make_fetch_call(rpc, url)
+        return rpc
 
     def _fetch_rpc(self, path):
         rpc = urlfetch.create_rpc()

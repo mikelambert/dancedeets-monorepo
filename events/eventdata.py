@@ -34,11 +34,6 @@ def get_geocoded_location_for_event(fb_event):
         results = locations.get_geocoded_location(address)
     return results
 
-def get_attendance_for_fb_event(fb_event, fb_user_id):
-    for rsvp in CHOOSE_RSVPS:
-        if [x for x in fb_event[rsvp]['data'] if int(x['id']) == fb_user_id]:
-            return rsvp
-    return 'noreply'
 
 def get_db_event(fb_event_id):
     query = DBEvent.gql('where fb_event_id = :fb_event_id', fb_event_id=fb_event_id)

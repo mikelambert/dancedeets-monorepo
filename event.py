@@ -32,6 +32,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         if rsvp == 'maybe':
             rsvp = 'unsure'
 
+        #TODO(lambert): clean out and invalidate memcache for this event's users and owner?
         self.fb_graph.api_request('method/events.rsvp', args=dict(eid=int(self.request.get('event_id')), rsvp_status=rsvp))
 
         self.write_json_response(success=True)
@@ -57,7 +58,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
             if location['latlng']:
                 e_lat, e_lng = location['latlng']
-                user_location = locations.get_geocoded_location(user.location)
+                user_location = locations.get_geocoded_location(self.user.location)
                 my_lat, my_lng = user_location['latlng']
                 distance = locations.get_distance(e_lat, e_lng, my_lat, my_lng)
                 self.display['distance'] = distance
@@ -66,7 +67,14 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
 
             self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
-            self.display['attendee_status'] = eventdata.get_attendance_for_fb_event(event_members_info, self.fb_uid)
+            #TODO(lambert): factor out code
+            rsvps_list = self.batch_lookup.data_for_user(self.fb_uid)['rsvp_for_events']
+            rsvps = dict((int(x['eid']), x['rsvp_status']) for x in rsvps_list)
+            rsvp = rsvps[event_id]
+            if rsvp == 'unsure':
+                rsvp = 'maybe'
+            self.display['attendee_status'] = rsvp
+
 
             friend_ids = set(x['id'] for x in self.current_user()['friends']['data'])
             event_friends = {}
@@ -101,40 +109,21 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
 class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):
-        attending_only = self.request.get('attending_only')
-        today = time.mktime(datetime.date.today().timetuple()[:9])
-        events_for_user_fql = """
-                SELECT eid, name, start_time, end_time, host
-                FROM event 
-                WHERE eid IN (SELECT eid 
-                                            FROM event_member 
-                                            WHERE uid = %s) 
-                    AND start_time > '%s' 
-                ORDER BY start_time""" % (self.fb_uid, today)
-        if not attending_only:
-            self.batch_lookup.lookup_fql(events_for_user_fql)
         self.finish_preload()
 
         self.display['freestyle_types'] = tags.FREESTYLE_EVENT_LIST
         self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
         self.display['styles'] = tags.STYLES
 
-        if attending_only:
-            results_json = self.batch_lookup.data_for_user(self.fb_uid)['events']
-            events = sorted(results_json['data'], key=lambda x: x['start_time'])
-            for event in events:
-                for field in ['start_time', 'end_time']:
-                    event[field] = self.localize_timestamp(datetime.datetime.strptime(event[field], '%Y-%m-%dT%H:%M:%S+0000'))
-        else:
-            results_json = self.batch_lookup.data_for_fql(events_for_user_fql)['fql']
-            events = sorted(results_json, key=lambda x: x['start_time'])
-            for event in events:
-                # rewrite hack necessary for templates (and above code)
-                event['id'] = event['eid']
-                for field in ['start_time', 'end_time']:
-                    event[field] = self.localize_timestamp(datetime.datetime.fromtimestamp(event[field]))
+        results_json = self.batch_lookup.data_for_user(self.fb_uid)['all_event_info']
+        events = sorted(results_json, key=lambda x: x['start_time'])
+        for event in events:
+            # rewrite hack necessary for templates (and above code)
+            event['id'] = event['eid']
+            for field in ['start_time', 'end_time']:
+                event[field] = self.localize_timestamp(datetime.datetime.fromtimestamp(event[field]))
 
-        lastadd_key = 'LastAdd.%s.%s' % (self.fb_uid, attending_only)
+        lastadd_key = 'LastAdd.%s' % (self.fb_uid)
         if not memcache.get(lastadd_key):
             task_size = 20
             for i in range(0, len(events), task_size):

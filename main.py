@@ -16,9 +16,6 @@ import yaml
 
 DEBUG = True
 
-#TODO(lambert): dump the db for importing into the local store. need good test data.
-# http://code.google.com/appengine/docs/python/tools/uploadingdata.html
-
 #TODO(lambert): setup webtest to test the wsgi app as a regression test to ensure everything is working
 # http://pythonpaste.org/webtest/
 

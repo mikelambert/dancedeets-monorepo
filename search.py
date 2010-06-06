@@ -14,12 +14,15 @@ class SearchResult(object):
         self.search_query = search_query
         self.start_time = search_query.parse_fb_timestamp(self.fb_event['info']['start_time'])
         self.end_time = search_query.parse_fb_timestamp(self.fb_event['info']['end_time'])
+        self.rsvp_status = "unknown"
 
     def get_image(self):
         return eventdata.get_event_image_url(self.fb_event['picture'], eventdata.EVENT_IMAGE_MEDIUM)
 
     def get_attendance(self):
-        return eventdata.get_attendance_for_fb_event(self.fb_event, self.fb_user_id)
+        if self.rsvp_status == 'unsure':
+            return 'maybe'
+        return self.rsvp_status
 
 class SearchQuery(object):
     MATCH_TAGS = 'TAGS'
@@ -81,10 +84,15 @@ class SearchQuery(object):
 
         db_events = self.get_candidate_events()
         batch_lookup = base_servlet.BatchLookup(fb_uid, graph)
-        for x in db_events:
-            batch_lookup.lookup_event(x.fb_event_id)
+        for db_event in db_events:
+            batch_lookup.lookup_event(db_event.fb_event_id)
         batch_lookup.finish_loading()
-        search_results = [SearchResult(fb_uid, x, batch_lookup.data_for_event(x.fb_event_id), self) for x in db_events if self.matches_event(x, batch_lookup.data_for_event(x.fb_event_id))]
+        search_results = []
+        for db_event in db_events:
+            fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
+            if self.matches_event(db_event, fb_event):
+                result = SearchResult(fb_uid, db_event, fb_event, self)
+                search_results.append(result)
         search_results.sort(key=lambda x: x.fb_event['info']['start_time'])
         return search_results
 
@@ -109,6 +117,11 @@ class SearchHandler(base_servlet.BaseRequestHandler):
             end_time = datetime.datetime.strptime(self.request.get('end_date'), '%m/%d/%Y')
         query = SearchQuery(self.parse_fb_timestamp, any_tags=tags_set, start_time=start_time, end_time=end_time)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
+
+        rsvps_list = self.batch_lookup.data_for_user(self.fb_uid)['rsvp_for_events']
+        rsvps = dict((int(x['eid']), x['rsvp_status']) for x in rsvps_list)
+        for result in search_results:
+            result.rsvp_status = rsvps[result.db_event.fb_event_id]
         self.display['results'] = search_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
         self.render_template('results')
