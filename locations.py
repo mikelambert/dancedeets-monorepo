@@ -3,9 +3,7 @@ import urllib
 import urllib2
 
 from django.utils import simplejson
-from google.appengine.api import memcache
-
-MEMCACHE_EXPIRY = 24 * 3600
+import smemcache
 
 # http://en.wikipedia.org/wiki/Mile
 MILES_COUNTRIES = ['UK', 'US']
@@ -44,10 +42,10 @@ def _raw_get_geocoded_location(address):
 
 def get_geocoded_location(location):
   memcache_key = memcache_location_key(location)
-  geocoded_location = memcache.get(memcache_key)
+  geocoded_location = smemcache.get(memcache_key)
   if not geocoded_location:
     geocoded_location = _raw_get_geocoded_location(location)
-    memcache.set(memcache_key, geocoded_location, MEMCACHE_EXPIRY)
+    smemcache.set(memcache_key, geocoded_location, smemcache.MEMCACHE_EXPIRY)
   return geocoded_location
 
 
@@ -82,9 +80,9 @@ def _raw_get_country_for_location(location_name):
 
 def get_country_for_location(location_name):
   memcache_key = _memcache_country_key(location_name)
-  country = memcache.get(memcache_key)
+  country = smemcache.get(memcache_key)
   if not country:
     country = _raw_get_country_for_location(location_name)
-    memcache.set(memcache_key, country, MEMCACHE_EXPIRY)
+    smemcache.set(memcache_key, country, smemcache.MEMCACHE_EXPIRY)
   return country
 

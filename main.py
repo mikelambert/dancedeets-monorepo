@@ -2,8 +2,8 @@
 
 import os
 import wsgiref.handlers
+import yaml
 from google.appengine.ext import webapp
-from google.appengine.api import memcache
 from google.appengine.ext.webapp.util import run_wsgi_app
 import base_servlet
 import event
@@ -11,7 +11,7 @@ import search
 import login
 import myuser
 import tasks
-import yaml
+import smemcache
 
 
 DEBUG = True
@@ -21,7 +21,7 @@ DEBUG = True
 
 class ClearMemcacheHandler(webapp.RequestHandler):
     def get(self):
-        memcache.flush_all()
+        smemcache.flush_all()
         self.response.out.write("Flushed memcache!")
 
 URLS = [

@@ -3,6 +3,7 @@
 import datetime
 import logging
 import pickle
+import random
 import re
 import sys
 import time
@@ -12,16 +13,30 @@ import facebook
 import locations
 from google.appengine.ext.appstats import recording
 from google.appengine.ext.webapp import RequestHandler
+from google.appengine.api import memcache
 from google.appengine.api import urlfetch
 from django.utils import simplejson
 from util import text
 from events import users
-import template
-import smemcache
 
+#TODO(lambert): standardize our use of memcahe expiries
 #TODO(lambert): set up a background cron job to refresh events, maybe use appengine data store
+MEMCACHE_EXPIRY = 24 * 60 * 60
+MEMCACHE_VARIANCE = 0.25
 
 #TODO(lambert): show event info, queries without login?? P2
+
+def import_template_module(template_name):
+    try:
+        return sys.modules[template_name]
+    except KeyError:
+        __import__(template_name, globals(), locals(), [])
+        return sys.modules[template_name]
+
+def import_template_class(template_name):
+    template_module = import_template_module(template_name)
+    classname = template_name.split('.')[-1]
+    return getattr(template_module, classname)
 
 class _ValidationError(Exception):
     pass
@@ -96,8 +111,10 @@ class BaseRequestHandler(RequestHandler):
         self.response.out.write(simplejson.dumps(kwargs))
 
     def render_template(self, name):
-        rendered = template.render_template(name, self.display)
-        self.response.out.write(rendered)
+        template_name = 'events.compiled_templates.%s' % name
+        template_class = import_template_class(template_name)
+        template = template_class(search_list=[self.display], default_filter=text.html_escape)
+        self.response.out.write(template.main().strip())
 
     def parse_fb_timestamp(self, fb_timestamp):
         return self.localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
@@ -129,6 +146,10 @@ class BaseRequestHandler(RequestHandler):
 
 class FacebookException(Exception):
     pass
+
+def expiry_with_variance(expiry, expiry_variance):
+  variance = expiry * expiry_variance
+  return random.randrange(expiry - variance, expiry + variance)
 
 RSVP_EVENTS_FQL = """
 SELECT eid, rsvp_status
@@ -252,7 +273,7 @@ class BatchLookup(object):
     def _get_objects_from_memcache(self, object_keys):
         memcache_keys_to_ids = {}
         memcache_keys_to_object_keys = dict((self._memcache_key(object_key), object_key) for object_key in object_keys)
-        memcache_keys_to_objects = smemcache.get_multi(memcache_keys_to_object_keys.keys())
+        memcache_keys_to_objects = memcache.get_multi(memcache_keys_to_object_keys.keys())
 
         objects = dict((memcache_keys_to_object_keys[k], o) for (k, o) in memcache_keys_to_objects.iteritems())
 
@@ -324,6 +345,24 @@ class BatchLookup(object):
 
         if memcache_set:
             for (k, v) in memcache_set.iteritems():
-                smemcache.set(k, v, smemcache.expiry_with_variance(smemcache.MEMCACHE_EXPIRY, smemcache.MEMCACHE_VARIANCE))
+                memcache.set(k, v, expiry_with_variance(MEMCACHE_EXPIRY, MEMCACHE_VARIANCE))
             # Doesn't allow any variation between object expiries
-            #smemcache.safe_set_memcache(memcache_set, smemcache.MEMCACHE_EXPIRY)
+            #safe_set_memcache(memcache_set, MEMCACHE_EXPIRY)
+
+
+def safe_set_memcache(memcache_set, expiry, top_level=True):
+    set_size = len(pickle.dumps(memcache_set))
+    if top_level:
+        logging.info('set memcache size is %s' % set_size)
+    # If it's roughly greater than a megabyte
+    if set_size > 1024 * 1024 - 100:
+        memcache_list = list(memcache_set.items())
+        if len(memcache_list) == 1:
+            logging.error("Saved item too large, cannot save, with key: %s", memcache_set.keys()[0])
+            return
+        halfway = len(memcache_list) / 2
+        safe_set_memcache(dict(memcache_list[:halfway]), expiry, top_level=False)
+        safe_set_memcache(dict(memcache_list[halfway:]), expiry, top_level=False)
+    else:
+        memcache.set_multi(memcache_set, expiry)
+

@@ -5,16 +5,16 @@ import re
 import time
 
 from google.appengine.api.labs import taskqueue
-from google.appengine.api import memcache
 import facebook
 import locations
+import smemcache
 from events import eventdata
 from events import tags
 from events import users
 import base_servlet
 
 PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
-assert base_servlet.MEMCACHE_EXPIRY >= PREFETCH_EVENTS_INTERVAL
+assert smemcache.MEMCACHE_EXPIRY >= PREFETCH_EVENTS_INTERVAL
 
 class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
     valid_rsvp = ['attending', 'maybe', 'declined']
@@ -34,8 +34,8 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
             rsvp = 'unsure'
 
         #TODO(lambert): clean up our reliance on private methods
-        memcache.delete(self.batch_lookup._memcache_key((event_id, self.batch_lookup.OBJECT_EVENT_MEMBERS)))
-        memcache.delete(self.batch_lookup._memcache_key((self.fb_uid, self.batch_lookup.OBJECT_USER)))
+        smemcache.delete(self.batch_lookup._memcache_key((event_id, self.batch_lookup.OBJECT_EVENT_MEMBERS)))
+        smemcache.delete(self.batch_lookup._memcache_key((self.fb_uid, self.batch_lookup.OBJECT_USER)))
 
         self.fb_graph.api_request('method/events.rsvp', args=dict(eid=event_id, rsvp_status=rsvp))
 
@@ -138,11 +138,11 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 event[field] = self.localize_timestamp(datetime.datetime.fromtimestamp(event[field]))
 
         lastadd_key = 'LastAdd.%s' % (self.fb_uid)
-        if not memcache.get(lastadd_key):
+        if not smemcache.get(lastadd_key):
             task_size = 20
             for i in range(0, len(events), task_size):
                 taskqueue.add(url='/tasks/load_events', params={'user_id': self.fb_uid, 'event_ids': ','.join(str(x['id']) for x in events[i:i+task_size])})
-            memcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
+            smemcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
 
         self.display['events'] = events
 

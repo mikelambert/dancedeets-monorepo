@@ -1,5 +1,5 @@
 from google.appengine.ext import db
-from google.appengine.api import memcache
+import smemcache
 
 def header_item(name, description):
     return dict(name=name, description=description)
@@ -60,12 +60,12 @@ class User(db.Model):
     @classmethod
     def get(cls, uid, allow_memcache=True):
         memcache_key = cls.memcache_user_key(uid)
-        user = allow_memcache and memcache.get(memcache_key)
+        user = allow_memcache and smemcache.get(memcache_key)
         if not user:
             fetched_users = User.gql('where fb_uid = :fb_uid', fb_uid=uid).fetch(1)
             if fetched_users:
                 user = fetched_users[0]
-            memcache.set(memcache_key, user, USER_EXPIRY)
+            smemcache.set(memcache_key, user, USER_EXPIRY)
         #TODO(lambert): is this a good idea? it can construct a not-filled-out user that we may depend on later, depending on who calls this.
         if not user:
             user = User(fb_uid=uid)
@@ -74,7 +74,7 @@ class User(db.Model):
     def put(self):
         super(User, self).put()
         memcache_key = self.memcache_user_key(self.fb_uid)
-        memcache.set(memcache_key, self, USER_EXPIRY)
+        smemcache.set(memcache_key, self, USER_EXPIRY)
 
 
 class UserFriendsAtSignup(db.Model):
