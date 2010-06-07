@@ -157,6 +157,16 @@ FROM event_member
 WHERE uid = %s
 """
 
+# Not used
+RSVP_FUTURE_EVENTS_FQL = """
+SELECT eid, rsvp_status
+FROM event_member
+WHERE eid in 
+    (SELECT eid FROM event 
+    WHERE eid IN (SELECT eid FROM event_member WHERE uid = %s) 
+    AND start_time > '%s' ORDER BY start_time)
+"""
+
 ALL_EVENTS_FQL = """
 SELECT eid, name, start_time, end_time, host
 FROM event 
