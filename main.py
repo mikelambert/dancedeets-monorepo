@@ -6,11 +6,11 @@ import yaml
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 import base_servlet
-import event
-import search
-import login
-import myuser
-import tasks
+from servlets import event
+from servlets import search
+from servlets import login
+from servlets import myuser
+from servlets import tasks
 import smemcache
 
 
