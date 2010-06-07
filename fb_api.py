@@ -13,8 +13,6 @@ import smemcache
 
 #TODO(lambert): set up a background cron job to refresh events, maybe use appengine data store
 
-#TODO(lambert): show event info, queries without login?? P2
-
 class FacebookException(Exception):
     pass
 
