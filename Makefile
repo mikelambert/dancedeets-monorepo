@@ -1,4 +1,4 @@
 
 all:
-	cd events/templates && $(MAKE)
+	cd templates && $(MAKE)
 
