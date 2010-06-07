@@ -121,9 +121,19 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         results_json = self.batch_lookup.data_for_user(self.fb_uid)['all_event_info']
         events = sorted(results_json, key=lambda x: x['start_time'])
+
+        event_ids = [x['eid'] for x in events]
+        db_events = []
+        MAX_IN_SIZE = 30
+        for i in range(0, len(event_ids), MAX_IN_SIZE):
+            event_ids_str = ','.join(str(x) for x in event_ids[i:i+MAX_IN_SIZE])
+            db_events.extend(eventdata.DBEvent.gql('where fb_event_id in (%s)' % event_ids_str))
+        loaded_fb_event_ids = set(x.fb_event_id for x in db_events)
+
         for event in events:
             # rewrite hack necessary for templates (and above code)
             event['id'] = event['eid']
+            event['loaded'] = event['id'] in loaded_fb_event_ids
             for field in ['start_time', 'end_time']:
                 event[field] = self.localize_timestamp(datetime.datetime.fromtimestamp(event[field]))
 
