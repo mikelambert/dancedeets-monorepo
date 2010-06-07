@@ -1,11 +1,12 @@
 
 import urllib
 
-import base_servlet
-import facebook
 from django.utils import simplejson
 from google.appengine.ext.webapp import RequestHandler
+
 from events import users
+import facebook
+import fb_api
 
 class BaseTaskFacebookRequestHandler(RequestHandler):
     def initialize(self, request, response):
@@ -33,7 +34,7 @@ class LoadEventHandler(BaseTaskFacebookRequestHandler):
 
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
-        batch_lookup = base_servlet.BatchLookup(self.fb_uid, self.fb_graph)
+        batch_lookup = fb_api.BatchLookup(self.fb_uid, self.fb_graph)
         for event_id in event_ids:
             batch_lookup.lookup_event(event_id)
         batch_lookup.finish_loading()
@@ -45,7 +46,7 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
 
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
-        batch_lookup = base_servlet.BatchLookup(self.fb_uid, self.fb_graph)
+        batch_lookup = fb_api.BatchLookup(self.fb_uid, self.fb_graph)
         for user_id in user_ids:
             batch_lookup.lookup_user(user_id)
         batch_lookup.finish_loading()

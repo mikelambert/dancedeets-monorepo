@@ -5,13 +5,15 @@ import re
 import time
 
 from google.appengine.api.labs import taskqueue
-import facebook
-import locations
-import smemcache
+
+import base_servlet
 from events import eventdata
 from events import tags
 from events import users
-import base_servlet
+import facebook
+import fb_api
+import locations
+import smemcache
 
 PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
 assert smemcache.MEMCACHE_EXPIRY >= PREFETCH_EVENTS_INTERVAL
@@ -165,7 +167,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         self.batch_lookup.lookup_event(event_id)
         try:
             self.finish_preload()
-        except FacebookException, e:
+        except fb_api.FacebookException, e:
             self.add_error(str(e))
 
         self.errors_are_fatal()

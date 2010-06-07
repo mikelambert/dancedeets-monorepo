@@ -2,9 +2,10 @@
 
 import datetime
 
+import base_servlet
 from events import eventdata
 from events import tags
-import base_servlet
+import fb_api
 
 class SearchResult(object):
     def __init__(self, fb_user_id, db_event, fb_event, search_query):
@@ -83,7 +84,7 @@ class SearchQuery(object):
         # - switch to non-appengine like SimpleDB or MySQL on Amazon
 
         db_events = self.get_candidate_events()
-        batch_lookup = base_servlet.BatchLookup(fb_uid, graph)
+        batch_lookup = fb_api.BatchLookup(fb_uid, graph)
         for db_event in db_events:
             batch_lookup.lookup_event(db_event.fb_event_id)
         batch_lookup.finish_loading()
