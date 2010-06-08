@@ -76,7 +76,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             #TODO(lambert): factor out code
             rsvps_list = self.batch_lookup.data_for_user(self.fb_uid)['rsvp_for_events']
             rsvps = dict((int(x['eid']), x['rsvp_status']) for x in rsvps_list)
-            rsvp = rsvps[event_id]
+            rsvp = rsvps.get(event_id)
             if rsvp == 'unsure':
                 rsvp = 'maybe'
             self.display['attendee_status'] = rsvp

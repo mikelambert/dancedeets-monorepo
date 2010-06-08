@@ -122,7 +122,7 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         rsvps_list = self.batch_lookup.data_for_user(self.fb_uid)['rsvp_for_events']
         rsvps = dict((int(x['eid']), x['rsvp_status']) for x in rsvps_list)
         for result in search_results:
-            result.rsvp_status = rsvps[result.db_event.fb_event_id]
+            result.rsvp_status = rsvps.get(result.db_event.fb_event_id)
         self.display['results'] = search_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
         self.render_template('results')
