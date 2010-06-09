@@ -19,8 +19,6 @@ from util import text
 
 class _ValidationError(Exception):
     pass
-class _ResponseComplete(Exception):
-    pass
 
 FACEBOOK_CONFIG = None
 
@@ -52,7 +50,7 @@ class BaseRequestHandler(RequestHandler):
         if self.requires_login():
             if not self.fb_uid:
                 self.redirect('/login?next=%s' % urllib.quote(self.request.url))
-                self.redirecting = True
+                return True
             else:
                 self.batch_lookup = fb_api.BatchLookup(self.fb_uid, self.fb_graph)
                 # Always look up the user's information for every page view...?
@@ -73,9 +71,7 @@ class BaseRequestHandler(RequestHandler):
             raise ValidationError()
 
     def handle_exception(self, e, debug):
-        if isinstance(e, _ResponseComplete):
-            return
-        elif isinstance(e, _ValidationError):
+        if isinstance(e, _ValidationError):
             self.handle_error_response(self._errors)
         else:
             super(BaseRequestHandler, self).handle_exception(e, debug)
@@ -117,7 +113,5 @@ class BaseRequestHandler(RequestHandler):
         return self.batch_lookup.data_for_user(self.fb_uid)
 
     def finish_preload(self):
-        if self.redirecting:
-            raise _ResponseComplete()
         self.batch_lookup.finish_loading()
 

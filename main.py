@@ -37,6 +37,55 @@ URLS = [
     ('/clear_memcache', ClearMemcacheHandler),
 ]
 
+class MyWSGIApplication(webapp.WSGIApplication):
+    def __call__(self, environ, start_response):
+        """Called by WSGI when a request comes in."""
+        request = self.REQUEST_CLASS(environ)
+        response = self.RESPONSE_CLASS()
+
+        webapp.WSGIApplication.active_instance = self
+
+        handler = None
+        groups = ()
+        for regexp, handler_class in self._url_mapping:
+            match = regexp.match(request.path)
+            if match:
+                handler = handler_class()
+                processed = handler.initialize(request, response)
+                groups = match.groups()
+                if processed:
+                    handler = None
+                break
+
+        self.current_request_args = groups
+
+        if handler:
+            try:
+                method = environ['REQUEST_METHOD']
+                if method == 'GET':
+                    handler.get(*groups)
+                elif method == 'POST':
+                    handler.post(*groups)
+                elif method == 'HEAD':
+                    handler.head(*groups)
+                elif method == 'OPTIONS':
+                    handler.options(*groups)
+                elif method == 'PUT':
+                    handler.put(*groups)
+                elif method == 'DELETE':
+                    handler.delete(*groups)
+                elif method == 'TRACE':
+                    handler.trace(*groups)
+                else:
+                    handler.error(501)
+            except Exception, e:
+                handler.handle_exception(e, self.__debug)
+        else:
+            response.set_status(404)
+
+        response.wsgi_write(start_response)
+        return ['']
+
 def main():
     DEBUG = os.environ['SERVER_SOFTWARE'].startswith('Dev')
     if DEBUG:
@@ -44,7 +93,7 @@ def main():
     else:
         filename = 'facebook-prod.yaml'
     base_servlet.FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
-     application = webapp.WSGIApplication(URLS, debug=DEBUG)
+     application = MyWSGIApplication(URLS, debug=DEBUG)
     run_wsgi_app(application)
 
 
