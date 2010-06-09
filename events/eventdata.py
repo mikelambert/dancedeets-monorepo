@@ -1,5 +1,8 @@
+import datetime
 import cPickle as pickle
+
 from google.appengine.ext import db
+
 import locations
 
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
@@ -43,16 +46,29 @@ def get_db_event(fb_event_id):
     else:
         return None
 
+def get_db_events(fb_event_ids):
+    db_events = []
+    MAX_IN_SIZE = 30
+    for i in range(0, len(fb_event_ids), MAX_IN_SIZE):
+        fb_event_ids_str = ','.join(str(x) for x in fb_event_ids[i:i+MAX_IN_SIZE])
+        db_events.extend(DBEvent.gql('where fb_event_id in (%s)' % fb_event_ids_str))
+    return db_events
+
+    
 
 class DBEvent(db.Model):
     """Stores custom data about our Event"""
     fb_event_id = db.IntegerProperty()
     # real data
     tags = db.StringListProperty()
+    start_time = db.DateTimeProperty()
+    end_time = db.DateTimeProperty()
 
     def make_findable_for(self, fb_dict):
         # set up any cached fields or bucketing or whatnot for this event
-        pass
+
+        self.start_time = datetime.datetime.strptime(fb_dict['info']['start_time'], '%Y-%m-%dT%H:%M:%S+0000')
+        self.end_time = datetime.datetime.strptime(fb_dict['info']['end_time'], '%Y-%m-%dT%H:%M:%S+0000')
 
     #def __repr__(self):
     #    return 'DBEvent(fb_event_id=%r,tags=%r)' % (self.fb_event_id, self.tags)

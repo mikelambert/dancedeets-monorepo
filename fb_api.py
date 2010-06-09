@@ -11,8 +11,6 @@ from google.appengine.api import urlfetch
 from django.utils import simplejson
 import smemcache
 
-#TODO(lambert): set up a background cron job to refresh events, maybe use appengine data store
-
 class FacebookException(Exception):
     pass
 
@@ -166,10 +164,10 @@ class BatchLookup(object):
     def finish_loading(self):
         if self.allow_memcache:
             self.objects = self._get_objects_from_memcache(self.object_keys)
-            object_keys_to_lookup = list(set(self.object_keys).difference(self.objects.keys()))
-            logging.info("BatchLookup: get_multi missed objects: %s", object_keys_to_lookup)
         else:
-            object_keys_to_lookup = list(self.object_keys)
+            self.objects = {}
+        object_keys_to_lookup = list(set(self.object_keys).difference(self.objects.keys()))
+        logging.info("BatchLookup: get_multi missed objects: %s", object_keys_to_lookup)
 
         FB_FETCH_COUNT = 10 # number of objects, each of which may be 1-5 RPCs
         for i in range(0, len(object_keys_to_lookup), FB_FETCH_COUNT):

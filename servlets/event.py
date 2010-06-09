@@ -11,6 +11,7 @@ from events import eventdata
 from events import tags
 from events import users
 from logic import rsvp
+from logic import backgrounder
 import facebook
 import fb_api
 import locations
@@ -117,12 +118,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         results_json = self.batch_lookup.data_for_user(self.fb_uid)['all_event_info']
         events = sorted(results_json, key=lambda x: x['start_time'])
 
-        event_ids = [x['eid'] for x in events]
-        db_events = []
-        MAX_IN_SIZE = 30
-        for i in range(0, len(event_ids), MAX_IN_SIZE):
-            event_ids_str = ','.join(str(x) for x in event_ids[i:i+MAX_IN_SIZE])
-            db_events.extend(eventdata.DBEvent.gql('where fb_event_id in (%s)' % event_ids_str))
+        db_events = eventdata.get_db_events([x['eid'] for x in events])
         loaded_fb_event_ids = set(x.fb_event_id for x in db_events)
 
         for event in events:
@@ -134,9 +130,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         lastadd_key = 'LastAdd.%s' % (self.fb_uid)
         if not smemcache.get(lastadd_key):
-            task_size = 20
-            for i in range(0, len(events), task_size):
-                taskqueue.add(url='/tasks/load_events', params={'user_id': self.fb_uid, 'event_ids': ','.join(str(x['id']) for x in events[i:i+task_size])})
+            backgrounder.load_events(self.fb_uid, [x for x in events[i:i+task_size]])
             smemcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
 
         self.display['events'] = events
