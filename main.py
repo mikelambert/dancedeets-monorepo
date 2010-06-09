@@ -79,7 +79,7 @@ class MyWSGIApplication(webapp.WSGIApplication):
                 else:
                     handler.error(501)
             except Exception, e:
-                handler.handle_exception(e, self.__debug)
+                handler.handle_exception(e, DEBUG)
         else:
             response.set_status(404)
 

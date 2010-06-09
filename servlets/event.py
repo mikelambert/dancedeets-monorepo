@@ -10,6 +10,7 @@ import base_servlet
 from events import eventdata
 from events import tags
 from events import users
+from logic import rsvp
 import facebook
 import fb_api
 import locations
@@ -31,17 +32,12 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
             self.add_error('invalid or missing rsvp')
         self.errors_are_fatal()
 
-        rsvp = self.request.get('rsvp')
-        if rsvp == 'maybe':
-            rsvp = 'unsure'
+        rsvp_status = self.request.get('rsvp')
 
-        #TODO(lambert): clean up our reliance on private methods
-        smemcache.delete(self.batch_lookup._memcache_key((event_id, self.batch_lookup.OBJECT_EVENT_MEMBERS)))
-        smemcache.delete(self.batch_lookup._memcache_key((self.fb_uid, self.batch_lookup.OBJECT_USER)))
+        rsvps = rsvp.RSVPManager(self.batch_lookup)
+        success = rsvps.set_rsvp_for_event(self.fb_graph, event_id, rsvp_status)
 
-        self.fb_graph.api_request('method/events.rsvp', args=dict(eid=event_id, rsvp_status=rsvp))
-
-        self.write_json_response(success=True)
+        self.write_json_response(success=success)
 
     def handle_error_response(self, errors):
         self.write_json_repsonse(success=False, errors=errors)
@@ -71,27 +67,20 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             else:
                 self.display['distance'] = None
 
-
             self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
-            #TODO(lambert): factor out code
-            rsvps_list = self.batch_lookup.data_for_user(self.fb_uid)['rsvp_for_events']
-            rsvps = dict((int(x['eid']), x['rsvp_status']) for x in rsvps_list)
-            rsvp = rsvps.get(event_id)
-            if rsvp == 'unsure':
-                rsvp = 'maybe'
-            self.display['attendee_status'] = rsvp
-
+            rsvps = rsvp.RSVPManager(self.batch_lookup)
+            self.display['attendee_status'] = rsvps.get_rsvp_for_event(event_id)
 
             friend_ids = set(x['id'] for x in self.current_user()['friends']['data'])
             event_friends = {}
-            for rsvp in 'attending', 'maybe', 'declined', 'noreply':
-                if rsvp in event_info:
-                    rsvp_friends = [x for x in event_info[rsvp]['data'] if x['id'] in friend_ids]
+            for rsvp_status in 'attending', 'maybe', 'declined', 'noreply':
+                if rsvp_status in event_info:
+                    rsvp_friends = [x for x in event_info[rsvp_status]['data'] if x['id'] in friend_ids]
                     rsvp_friends = sorted(rsvp_friends, key=lambda x: x['name'])
                     for friend in rsvp_friends:
                         #TODO(lambert): Do we want to pre-resolve/cache all these image names in the server? Or just keep images disabled?
                         friend['pic'] = 'https://graph.facebook.com/%s/picture?access_token=%s' % (friend['id'], self.fb_graph.access_token)
-                    event_friends[rsvp] = rsvp_friends
+                    event_friends[rsvp_status] = rsvp_friends
 
             self.display['fb_event'] = e
             for field in ['start_time', 'end_time']:

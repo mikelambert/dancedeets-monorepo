@@ -5,6 +5,7 @@ import datetime
 import base_servlet
 from events import eventdata
 from events import tags
+from logic import rsvp
 import fb_api
 
 class SearchResult(object):
@@ -119,10 +120,9 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         query = SearchQuery(self.parse_fb_timestamp, any_tags=tags_set, start_time=start_time, end_time=end_time)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
 
-        rsvps_list = self.batch_lookup.data_for_user(self.fb_uid)['rsvp_for_events']
-        rsvps = dict((int(x['eid']), x['rsvp_status']) for x in rsvps_list)
+        rsvps = rsvp.RSVPManager(self.batch_lookup)
         for result in search_results:
-            result.rsvp_status = rsvps.get(result.db_event.fb_event_id)
+            result.rsvp_status = rsvps.get_rsvp_for_event(event_id)
         self.display['results'] = search_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
         self.render_template('results')
