@@ -103,6 +103,22 @@ class BatchLookup(object):
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
+    def invalidate_user(self, user_id):
+        assert user_id
+        smemcache.delete(self._memcache_key((user_id, self.OBJECT_USER)))
+
+    def invalidate_event(self, event_id):
+        assert event_id
+        smemcache.delete(self._memcache_key((event_id, self.OBJECT_EVENT)))
+
+    def invalidate_event_members(self, event_id):
+        assert event_id
+        smemcache.delete(self._memcache_key((event_id, self.OBJECT_EVENT_MEMBERS)))
+
+    def invalidate_fql(self, fql_query):
+        assert fql_query
+        smemcache.delete(self._memcache_key((fql_query, self.OBJECT_FQL)))
+
     def lookup_user(self, user_id):
         assert user_id
         self.object_keys.add((user_id, self.OBJECT_USER))

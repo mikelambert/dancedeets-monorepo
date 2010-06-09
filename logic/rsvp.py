@@ -17,9 +17,8 @@ class RSVPManager(object):
         if rsvp_status == 'maybe':
             rsvp_status = 'unsure'
 
-        #TODO(lambert): clean up our reliance on private methods
-        smemcache.delete(self.batch_lookup._memcache_key((event_id, self.batch_lookup.OBJECT_EVENT_MEMBERS)))
-        smemcache.delete(self.batch_lookup._memcache_key((self.batch_lookup.fb_uid, self.batch_lookup.OBJECT_USER)))
+        self.batch_lookup.invalidate_event(event_id)
+        self.batch_lookup.invalidate_user(self.batch_lookup.fb_uid)
 
         result = fb_graph.api_request('method/events.rsvp', args=dict(eid=event_id, rsvp_status=rsvp_status))
         return result
