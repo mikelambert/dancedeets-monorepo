@@ -57,6 +57,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             #    event_members_info = self.batch_lookup.data_for_event_members(event_id)
             #except KeyError:
             #    event_members_info = None
+            event_members_info = []
             e = event_info['info']
         
             location = eventdata.get_geocoded_location_for_event(event_info)
@@ -78,11 +79,10 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             friend_ids = set(x['id'] for x in self.current_user()['friends']['data'])
             event_friends = {}
             for rsvp_status in 'attending', 'maybe', 'declined', 'noreply':
-                if rsvp_status in event_info:
-                    rsvp_friends = [x for x in event_info[rsvp_status]['data'] if x['id'] in friend_ids]
+                if rsvp_status in event_members_info:
+                    rsvp_friends = [x for x in event_members_info[rsvp_status]['data'] if x['id'] in friend_ids]
                     rsvp_friends = sorted(rsvp_friends, key=lambda x: x['name'])
                     for friend in rsvp_friends:
-                        #TODO(lambert): Do we want to pre-resolve/cache all these image names in the server? Or just keep images disabled?
                         friend['pic'] = 'https://graph.facebook.com/%s/picture?access_token=%s' % (friend['id'], self.fb_graph.access_token)
                     event_friends[rsvp_status] = rsvp_friends
 
