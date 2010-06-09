@@ -48,11 +48,15 @@ class ViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
         event_id = int(self.request.get('event_id'))
         self.batch_lookup.lookup_event(event_id)
-        self.batch_lookup.lookup_event_members(event_id)
+        #self.batch_lookup.lookup_event_members(event_id)
         self.finish_preload()
         if event_id:
             event_info = self.batch_lookup.data_for_event(event_id)
-            event_members_info = self.batch_lookup.data_for_event_members(event_id)
+            # Disable event_members stuff while we figure out a better way to background-load this
+            #try:
+            #    event_members_info = self.batch_lookup.data_for_event_members(event_id)
+            #except KeyError:
+            #    event_members_info = None
             e = event_info['info']
         
             location = eventdata.get_geocoded_location_for_event(event_info)
