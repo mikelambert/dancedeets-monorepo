@@ -50,7 +50,7 @@ class LoadEventHandler(BaseTaskFacebookRequestHandler):
         failed_fb_event_ids = []
         for db_event in db_events:
             try:
-                fb_event = self.batch_lookup.data_for_event(db_event.fb_event_id))
+                fb_event = self.batch_lookup.data_for_event(db_event.fb_event_id)
             except KeyError:
                 failed_fb_event_ids.append(db_event.fb_event_id)
             db_event.make_findable_for(fb_event)

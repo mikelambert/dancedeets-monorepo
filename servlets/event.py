@@ -130,7 +130,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         lastadd_key = 'LastAdd.%s' % (self.fb_uid)
         if not smemcache.get(lastadd_key):
-            backgrounder.load_events(self.fb_uid, [x for x in events[i:i+task_size]])
+            backgrounder.load_events([x['eid'] for x in events])
             smemcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
 
         self.display['events'] = events
