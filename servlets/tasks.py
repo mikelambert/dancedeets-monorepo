@@ -23,7 +23,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         return False
 
     def initialize(self, request, response):
-        super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
+        return_value = super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
 
         self.fb_uid = int(self.request.get('user_id'))
         self.user = users.User.get(self.fb_uid)
@@ -31,6 +31,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         self.fb_graph = facebook.GraphAPI(self.user.fb_access_token)
         self.allow_memcache = bool(int(self.request.get('allow_memcache')))
         self.batch_lookup = fb_api.BatchLookup(self.fb_uid, self.fb_graph, allow_memcache=self.allow_memcache)
+        return return_value
 
 class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
     def get(self):

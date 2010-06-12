@@ -55,6 +55,7 @@ class BaseRequestHandler(RequestHandler):
                 self.batch_lookup = fb_api.BatchLookup(self.fb_uid, self.fb_graph)
                 # Always look up the user's information for every page view...?
                 self.batch_lookup.lookup_user(self.fb_uid)
+        return False
 
     def requires_login(self):
         return True

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import logging
 import os
 import wsgiref.handlers
 import yaml
@@ -48,6 +49,7 @@ class MyWSGIApplication(webapp.WSGIApplication):
 
         webapp.WSGIApplication.active_instance = self
 
+        processed = False
         handler = None
         groups = ()
         for regexp, handler_class in self._url_mapping:
@@ -56,35 +58,34 @@ class MyWSGIApplication(webapp.WSGIApplication):
                 handler = handler_class()
                 processed = handler.initialize(request, response)
                 groups = match.groups()
-                if processed:
-                    handler = None
                 break
 
         self.current_request_args = groups
 
-        if handler:
-            try:
-                method = environ['REQUEST_METHOD']
-                if method == 'GET':
-                    handler.get(*groups)
-                elif method == 'POST':
-                    handler.post(*groups)
-                elif method == 'HEAD':
-                    handler.head(*groups)
-                elif method == 'OPTIONS':
-                    handler.options(*groups)
-                elif method == 'PUT':
-                    handler.put(*groups)
-                elif method == 'DELETE':
-                    handler.delete(*groups)
-                elif method == 'TRACE':
-                    handler.trace(*groups)
-                else:
-                    handler.error(501)
-            except Exception, e:
-                handler.handle_exception(e, DEBUG)
-        else:
-            response.set_status(404)
+        if not processed:
+            if handler:
+                try:
+                    method = environ['REQUEST_METHOD']
+                    if method == 'GET':
+                        handler.get(*groups)
+                    elif method == 'POST':
+                        handler.post(*groups)
+                    elif method == 'HEAD':
+                        handler.head(*groups)
+                    elif method == 'OPTIONS':
+                        handler.options(*groups)
+                    elif method == 'PUT':
+                        handler.put(*groups)
+                    elif method == 'DELETE':
+                        handler.delete(*groups)
+                    elif method == 'TRACE':
+                        handler.trace(*groups)
+                    else:
+                        handler.error(501)
+                except Exception, e:
+                    handler.handle_exception(e, DEBUG)
+            else:
+                response.set_status(404)
 
         response.wsgi_write(start_response)
         return ['']
