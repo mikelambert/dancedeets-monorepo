@@ -7,9 +7,9 @@ import time
 import urllib
 
 import facebook
+from google.appengine.ext import db
 from google.appengine.api import urlfetch
 from django.utils import simplejson
-import smemcache
 
 class FacebookException(Exception):
     pass
@@ -38,26 +38,38 @@ AND start_time > '%s'
 ORDER BY start_time
 """
 
-class BatchLookup(object):
-    OBJECT_USER = 'USER'
-    OBJECT_EVENT = 'EVENT'
-    OBJECT_EVENT_MEMBERS = 'EVENT_MEMBERS'
-    OBJECT_FQL = 'FQL'
+class FacebookCachedObject(db.Model):
+    ckey = db.StringProperty()
+    pickled_dict = db.BlobProperty()
 
-    def _memcache_key(self, object_key):
-        return 'Facebook.%s.%s' % (self.fb_uid, object_key)
+    def pickle_dict(self, obj_dict):
+        self.pickled_dict = pickle.dumps(obj_dict, pickle.HIGHEST_PROTOCOL)
+        if len(self.pickled_dict) > 1024 * 1024 - 200:
+            slogging.error("Pickled dictionary getting too large (%s) for key (%s)", len(self.pickled_dict), self.ckey)
+        assert self.pickled_dict
+
+    def unpickled_dict(self):
+        assert self.pickled_dict
+        return pickle.loads(self.pickled_dict)
+
+
+class BatchLookup(object):
+    OBJECT_USER = 'OBJ_USER'
+    OBJECT_EVENT = 'OBJ_EVENT'
+    OBJECT_EVENT_MEMBERS = 'OBJ_EVENT_MEMBERS'
+    OBJECT_FQL = 'OBJ_FQL'
 
     def _is_cacheable(self, object_key, this_object):
-        object_id, object_type = object_key
+        fb_uid, object_id, object_type = object_key
         if object_type != self.OBJECT_EVENT:
             return True
-        elif  'info' in this_object and this_object['info']['privacy'] == 'OPEN':
+        elif    'info' in this_object and this_object['info']['privacy'] == 'OPEN':
             return True
         else:
             return False
 
     def _get_rpcs(self, object_key):
-        object_id, object_type = object_key
+        fb_uid, object_id, object_type = object_key
         if object_type == self.OBJECT_USER:
             today = time.mktime(datetime.date.today().timetuple()[:9])
             return dict(
@@ -83,10 +95,10 @@ class BatchLookup(object):
         else:
             raise Exception("Unknown object type %s" % object_type)
 
-    def __init__(self, fb_uid, fb_graph, allow_memcache=True):
+    def __init__(self, fb_uid, fb_graph, allow_cache=True):
         self.fb_uid = fb_uid
         self.fb_graph = fb_graph
-        self.allow_memcache = allow_memcache
+        self.allow_cache = allow_cache
         self.object_keys = set()
 
     def _fql_rpc(self, fql):
@@ -101,84 +113,87 @@ class BatchLookup(object):
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
-    def invalidate_user(self, user_id):
-        assert user_id
-        smemcache.delete(self._memcache_key((user_id, self.OBJECT_USER)))
+    def _user_key(self, user_id):
+        return tuple(str(x) for x in (self.fb_uid, user_id, self.OBJECT_USER))
+    def _event_key(self, event_id):
+        return tuple(str(x) for x in ('701004', event_id, self.OBJECT_EVENT)) #TODO(lambert): make this a shared constant
+    def _event_members_key(self, event_id):
+        return tuple(str(x) for x in ('701004', event_id, self.OBJECT_EVENT_MEMBERS))
+    def _fql_key(self, fql_query):
+        return tuple(str(x) for x in (self.fb_uid, fql_query, self.OBJECT_FQL))
 
-    def invalidate_event(self, event_id):
-        assert event_id
-        smemcache.delete(self._memcache_key((event_id, self.OBJECT_EVENT)))
+    def _string_key(self, key):
+        string_key = '.'.join(str(x).replace('.', '-') for x in key)
+        escaped_string_key = string_key.replace('"', '-').replace("'", '-')
+        return escaped_string_key
 
-    def invalidate_event_members(self, event_id):
-        assert event_id
-        smemcache.delete(self._memcache_key((event_id, self.OBJECT_EVENT_MEMBERS)))
+    def _db_delete(key_func):
+        def db_delete_func(self, id):
+            assert id
+            results = FacebookCachedObject.gql('where ckey = ' + self._string_key(key_func(self, id))).fetch(1)
+            if results:
+                results[0].delete()
+        return db_delete_func
 
-    def invalidate_fql(self, fql_query):
-        assert fql_query
-        smemcache.delete(self._memcache_key((fql_query, self.OBJECT_FQL)))
+    def _db_lookup(key_func):
+        def db_lookup_func(self, id):
+            assert id
+            self.object_keys.add(key_func(self, id))
+        return db_lookup_func
+        
+    def _data_for(key_func):
+        def data_for_func(self, id):
+            assert id
+            return self.objects[key_func(self, id)]
+        return data_for_func 
+        
+    invalidate_user = _db_delete(_user_key)
+    invalidate_event = _db_delete(_event_key)
+    invalidate_event_members = _db_delete(_event_members_key)
+    invalidate_fql = _db_delete(_fql_key)
 
-    def lookup_user(self, user_id):
-        assert user_id
-        self.object_keys.add((user_id, self.OBJECT_USER))
+    lookup_user = _db_lookup(_user_key)
+    lookup_event = _db_lookup(_event_key)
+    lookup_event_members = _db_lookup(_event_members_key)
+    lookup_fql = _db_lookup(_fql_key)
 
-    def lookup_event(self, event_id):
-        assert event_id
-        self.object_keys.add((event_id, self.OBJECT_EVENT))
+    data_for_user = _data_for(_user_key)
+    data_for_event = _data_for(_event_key)
+    data_for_event_members = _data_for(_event_members_key)
+    data_for_fql = _data_for(_fql_key)
 
-    def lookup_event_members(self, event_id):
-        assert event_id
-        self.object_keys.add((event_id, self.OBJECT_EVENT_MEMBERS))
-
-    def lookup_fql(self, fql_query):
-        assert fql_query
-        self.object_keys.add((fql_query, self.OBJECT_FQL))
-
-    def data_for_user(self, user_id):
-        assert user_id
-        return self.objects[(user_id, self.OBJECT_USER)]
-
-    def data_for_event(self, event_id):
-        assert event_id
-        return self.objects[(event_id, self.OBJECT_EVENT)]
-
-    def data_for_event_members(self, event_id):
-        assert event_id
-        return self.objects[(event_id, self.OBJECT_EVENT_MEMBERS)]
-
-    def data_for_fql(self, fql_query):
-        assert fql_query
-        return self.objects[(fql_query, self.OBJECT_FQL)]
-
-    def _get_objects_from_memcache(self, object_keys):
-        memcache_keys_to_ids = {}
-        memcache_keys_to_object_keys = dict((self._memcache_key(object_key), object_key) for object_key in object_keys)
-        memcache_keys_to_objects = smemcache.get_multi(memcache_keys_to_object_keys.keys())
-
-        objects = dict((memcache_keys_to_object_keys[k], o) for (k, o) in memcache_keys_to_objects.iteritems())
-
-        get_size = len(pickle.dumps(memcache_keys_to_objects))
-        logging.info("BatchLookup: get_multi return size: %s", get_size)
-        logging.info("BatchLookup: get_multi objects: %s", objects.keys())
-        return objects
+    def _get_objects_from_cache(self, object_keys):
+        clauses = [self._string_key(key) for key in object_keys]
+        query = 'where ckey in :1'
+        object_map = {}
+        at_a_time = 30 #TODO(lambert): factor this constant out
+        for i in range(0, len(clauses), at_a_time):
+            objects = FacebookCachedObject.gql(query, clauses[i:i+at_a_time]).fetch(len(object_keys))
+            object_map.update(dict((tuple(o.ckey.split('.')), o.unpickled_dict()) for o in objects))
+        logging.info("BatchLookup: get_multi objects: %s", object_map.keys())
+        return object_map
 
     def finish_loading(self):
-        if self.allow_memcache:
-            self.objects = self._get_objects_from_memcache(self.object_keys)
+        if self.allow_cache:
+            self.objects = self._get_objects_from_cache(self.object_keys)
         else:
             self.objects = {}
         object_keys_to_lookup = list(set(self.object_keys).difference(self.objects.keys()))
         logging.info("BatchLookup: get_multi missed objects: %s", object_keys_to_lookup)
 
+        unknown_results = list(set(self.objects.keys()).difference(self.object_keys))
+        assert not len(unknown_results), "Unknown keys found: %s" % unknown_results
+
         FB_FETCH_COUNT = 10 # number of objects, each of which may be 1-5 RPCs
         for i in range(0, len(object_keys_to_lookup), FB_FETCH_COUNT):
             fetched_objects = self._fetch_object_keys(object_keys_to_lookup[i:i+FB_FETCH_COUNT])    
-            # Always store latest fetched stuff in memcache, regardless of self.allow_memcache
-            self._store_objects_into_memcache(fetched_objects)
+            # Always store latest fetched stuff in cache, regardless of self.allow_cache
+            self._store_objects_into_cache(fetched_objects)
             self.objects.update(fetched_objects)
 
     @classmethod
     def _map_rpc_to_data(cls, object_key, object_rpc_name, object_rpc):
-        object_id, object_type = object_key
+        fb_uid, object_id, object_type = object_key
         try:
             result = object_rpc.get_result()
             if result.status_code == 200:
@@ -188,7 +203,7 @@ class BatchLookup(object):
                     text = result.content
                     return simplejson.loads(text)
         except urlfetch.DownloadError:
-            logging.error("Error downloading: %s", object_rpc.request.url())
+            logging.warning("Error downloading: %s", object_rpc.request.url())
         return None
 
     def _fetch_object_keys(self, object_keys_to_lookup):
@@ -210,20 +225,16 @@ class BatchLookup(object):
                 else:
                     object_is_bad = True
             if object_is_bad:
-                logging.error("Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
+                logging.warning("Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
             else:
                 fetched_objects[object_key] = this_object
 
         return fetched_objects
 
-    def _store_objects_into_memcache(self, fetched_objects):
-        memcache_set = {}
+    def _store_objects_into_cache(self, fetched_objects):
         for object_key, this_object in fetched_objects.iteritems():
             if self._is_cacheable(object_key, this_object):
-                memcache_set[self._memcache_key(object_key)] = this_object
-
-        if memcache_set:
-            for (k, v) in memcache_set.iteritems():
-                smemcache.set(k, v, smemcache.expiry_with_variance(smemcache.MEMCACHE_EXPIRY, smemcache.MEMCACHE_VARIANCE))
-            # Doesn't allow any variation between object expiries
-            #smemcache.safe_set_memcache(memcache_set, smemcache.MEMCACHE_EXPIRY)
+                obj = FacebookCachedObject()
+                obj.ckey = self._string_key(object_key)
+                obj.pickle_dict(this_object)
+                obj.put()
