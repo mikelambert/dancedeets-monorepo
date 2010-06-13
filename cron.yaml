@@ -1,8 +1,8 @@
 cron:
 - description: reload future facebook event data
-  url: /tasks/reload_future_events?allow_memcache=0
+  url: /tasks/reload_future_events?allow_cache=0
   schedule: every 12 hours
 - description: reload past facebook event data
-  url: /tasks/reload_past_events?allow_memcache=0
+  url: /tasks/reload_past_events?allow_cache=0
   schedule: every monday 2:00
 

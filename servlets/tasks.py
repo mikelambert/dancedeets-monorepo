@@ -29,8 +29,8 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         self.user = users.User.get(self.fb_uid)
         assert self.user.fb_access_token, "Can't execute background task for user %s without access_token" % self.fb_uid
         self.fb_graph = facebook.GraphAPI(self.user.fb_access_token)
-        self.allow_memcache = bool(int(self.request.get('allow_memcache')))
-        self.batch_lookup = fb_api.BatchLookup(self.fb_uid, self.fb_graph, allow_memcache=self.allow_memcache)
+        self.allow_cache = bool(int(self.request.get('allow_cache')))
+        self.batch_lookup = fb_api.BatchLookup(self.fb_uid, self.fb_graph, allow_cache=self.allow_cache)
         return return_value
 
 class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
@@ -56,7 +56,7 @@ class LoadEventHandler(BaseTaskFacebookRequestHandler):
                 failed_fb_event_ids.append(db_event.fb_event_id)
             db_event.make_findable_for(fb_event)
             db_event.put()
-        backgrounder.load_events(failed_fb_event_ids, self.allow_memcache)
+        backgrounder.load_events(failed_fb_event_ids, self.allow_cache)
     post=get
 
 class LoadEventMembersHandler(BaseTaskFacebookRequestHandler):
@@ -86,13 +86,13 @@ class ReloadPastEventsHandler(BaseTaskRequestHandler):
     def get(self):
         gm_today = datetime.datetime(*time.gmtime(time.time())[:6])
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE end_time < :1", gm_today)]
-        backgrounder.load_events(event_ids, allow_memcache=False)
+        backgrounder.load_events(event_ids, allow_cache=False)
     post=get
 
 class ReloadFutureEventsHandler(BaseTaskRequestHandler):
     def get(self):
         gm_yesterday = datetime.datetime(*time.gmtime(time.time())[:6]) - datetime.timedelta(days=1)
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql('WHERE start_time > :1', gm_yesterday)]
-        backgrounder.load_events(event_ids, allow_memcache=False)    
+        backgrounder.load_events(event_ids, allow_cache=False)    
     post=get
 
