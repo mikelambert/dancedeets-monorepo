@@ -85,7 +85,7 @@ class SearchQuery(object):
         # - switch to non-appengine like SimpleDB or MySQL on Amazon
 
         db_events = self.get_candidate_events()
-        batch_lookup = fb_api.BatchLookup(fb_uid, graph)
+        batch_lookup = base_servlet.CommonBatchLookup(fb_uid, graph)
         for db_event in db_events:
             batch_lookup.lookup_event(db_event.fb_event_id)
         batch_lookup.finish_loading()

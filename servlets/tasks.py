@@ -30,7 +30,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         assert self.user.fb_access_token, "Can't execute background task for user %s without access_token" % self.fb_uid
         self.fb_graph = facebook.GraphAPI(self.user.fb_access_token)
         self.allow_cache = bool(int(self.request.get('allow_cache')))
-        self.batch_lookup = fb_api.BatchLookup(self.fb_uid, self.fb_graph, allow_cache=self.allow_cache)
+        self.batch_lookup = base_servlet.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=self.allow_cache)
         return return_value
 
 class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):

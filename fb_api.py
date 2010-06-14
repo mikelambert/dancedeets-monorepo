@@ -113,12 +113,15 @@ class BatchLookup(object):
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
+    def get_userless_id(self):
+        return self.fb_uid
+
     def _user_key(self, user_id):
         return tuple(str(x) for x in (self.fb_uid, user_id, self.OBJECT_USER))
     def _event_key(self, event_id):
-        return tuple(str(x) for x in ('701004', event_id, self.OBJECT_EVENT)) #TODO(lambert): make this a shared constant
+        return tuple(str(x) for x in (self.get_userless_id(), event_id, self.OBJECT_EVENT))
     def _event_members_key(self, event_id):
-        return tuple(str(x) for x in ('701004', event_id, self.OBJECT_EVENT_MEMBERS))
+        return tuple(str(x) for x in (self.get_userless_id(), event_id, self.OBJECT_EVENT_MEMBERS))
     def _fql_key(self, fql_query):
         return tuple(str(x) for x in (self.fb_uid, fql_query, self.OBJECT_FQL))
 
