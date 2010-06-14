@@ -11,6 +11,7 @@ MILES_COUNTRIES = ['UK', 'US']
 # http://en.wikipedia.org/wiki/12-hour_clock
 AMPM_COUNTRIES = ['AU', 'BD', 'CA', 'CO', 'EG', 'IN', 'MY', 'NZ', 'PK', 'PH', 'US']
 
+LOCATION_EXPIRY = 24 * 60 * 60
 
 class GeocodeException(Exception):
     pass
@@ -45,7 +46,7 @@ def get_geocoded_location(location):
   geocoded_location = smemcache.get(memcache_key)
   if not geocoded_location:
     geocoded_location = _raw_get_geocoded_location(location)
-    smemcache.set(memcache_key, geocoded_location, smemcache.MEMCACHE_EXPIRY)
+    smemcache.set(memcache_key, geocoded_location, LOCATION_EXPIRY)
   return geocoded_location
 
 
@@ -83,6 +84,6 @@ def get_country_for_location(location_name):
   country = smemcache.get(memcache_key)
   if not country:
     country = _raw_get_country_for_location(location_name)
-    smemcache.set(memcache_key, country, smemcache.MEMCACHE_EXPIRY)
+    smemcache.set(memcache_key, country, LOCATION_EXPIRY)
   return country
 

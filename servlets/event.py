@@ -18,7 +18,6 @@ import locations
 import smemcache
 
 PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
-assert smemcache.MEMCACHE_EXPIRY >= PREFETCH_EVENTS_INTERVAL
 
 class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
     valid_rsvp = ['attending', 'maybe', 'declined']

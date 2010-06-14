@@ -4,10 +4,6 @@ import pickle
 import random
 from google.appengine.api.memcache import *
 
-#TODO(lambert): standardize our use of memcahe expiries
-MEMCACHE_EXPIRY = 24 * 60 * 60
-MEMCACHE_VARIANCE = 0.25
-
 def expiry_with_variance(expiry, expiry_variance):
   variance = expiry * expiry_variance
   return random.randrange(expiry - variance, expiry + variance)
