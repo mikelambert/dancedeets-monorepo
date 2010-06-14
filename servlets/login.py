@@ -35,7 +35,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             user_friends = users.UserFriendsAtSignup()
             user_friends.fb_uid = self.fb_uid
             user_friends.put()
-            taskqueue.add(url='/tasks/track_newuser_friends', params={'user_id': self.fb_uid})
+            taskqueue.add(url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': self.fb_uid}))
         user.fb_access_token = self.fb_graph.access_token
         user.put()
         return user
