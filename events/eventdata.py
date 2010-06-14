@@ -1,6 +1,7 @@
 import datetime
 import cPickle as pickle
 
+from google.appengine.api import datastore
 from google.appengine.ext import db
 
 import locations
@@ -48,9 +49,9 @@ def get_db_event(fb_event_id):
 
 def get_db_events(fb_event_ids):
     db_events = []
-    MAX_IN_SIZE = 30
-    for i in range(0, len(fb_event_ids), MAX_IN_SIZE):
-        fb_event_ids_str = ','.join(str(x) for x in fb_event_ids[i:i+MAX_IN_SIZE])
+    max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
+    for i in range(0, len(fb_event_ids), max_in_queries):
+        fb_event_ids_str = ','.join(str(x) for x in fb_event_ids[i:i+max_in_queries])
         db_events.extend(DBEvent.gql('where fb_event_id in (%s)' % fb_event_ids_str))
     return db_events
 

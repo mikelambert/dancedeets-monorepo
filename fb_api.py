@@ -8,6 +8,7 @@ import urllib
 
 import facebook
 from google.appengine.ext import db
+from google.appengine.api import datastore
 from google.appengine.api import urlfetch
 from django.utils import simplejson
 
@@ -169,9 +170,9 @@ class BatchLookup(object):
         clauses = [self._string_key(key) for key in object_keys]
         query = 'where ckey in :1'
         object_map = {}
-        at_a_time = 30 #TODO(lambert): factor this constant out
-        for i in range(0, len(clauses), at_a_time):
-            objects = FacebookCachedObject.gql(query, clauses[i:i+at_a_time]).fetch(len(object_keys))
+        max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
+        for i in range(0, len(clauses), max_in_queries):
+            objects = FacebookCachedObject.gql(query, clauses[i:i+max_in_queries]).fetch(len(object_keys))
             object_map.update(dict((tuple(o.ckey.split('.')), o.unpickled_dict()) for o in objects))
         logging.info("BatchLookup: get_multi objects: %s", object_map.keys())
         return object_map
