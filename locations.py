@@ -17,7 +17,8 @@ class GeocodeException(Exception):
     pass
 
 def _get_geocoded_data(address):
-    url = "http://maps.google.com/maps/api/geocode/json?%s" % urllib.urlencode(dict(address=address, sensor='false'))
+    url = "http://maps.google.com/maps/api/geocode/json?%s" % urllib.urlencode(dict(address=address, sensor='false', client='dancedeets'))
+
     json_result = simplejson.load(urllib.urlopen(url))
     if json_result['status'] == 'ZERO_RESULTS':
         return None
