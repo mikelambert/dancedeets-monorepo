@@ -40,24 +40,24 @@ class SearchQuery(object):
         self.location = location
         self.distance = distance
         self.query_args = query_args
+        self.matches = set()
 
     def matches_event(self, event, fb_event):
-        matches = set()
         if self.any_tags:
             if self.any_tags.intersection(event.tags):
-                matches.add(SearchQuery.MATCH_TAGS)
+                self.matches.add(SearchQuery.MATCH_TAGS)
             else:
                 return []
         if self.start_time:
             fb_end_time = self.parse_fb_timestamp(fb_event['info']['end_time'])
             if self.start_time < fb_end_time:
-                matches.add(SearchQuery.MATCH_TIME)
+                self.matches.add(SearchQuery.MATCH_TIME)
             else:
                 return []
         if self.end_time:
             fb_start_time = parse_fb_timestamp(fb_event['info']['start_time'])
             if fb_start_time < self.end_time:
-                matches.add(SearchQuery.MATCH_TIME)
+                self.matches.add(SearchQuery.MATCH_TIME)
             else:
                 return []
         if self.query_args:
@@ -66,35 +66,54 @@ class SearchQuery(object):
                 if keyword in fb_event['info']['name'] or keyword in fb_event['info']['description']:
                     found_keyword = True
             if found_keyword:
-                matches.add(SearchQuery.MATCH_QUERY)
+                self.matches.add(SearchQuery.MATCH_QUERY)
             else:
                 return []
 
-        return matches
+        return self.matches
     
     def get_candidate_events(self):
-        return eventdata.DBEvent.all().fetch(100)
+        clauses = []
+        bind_vars = {}
+        if self.any_tags:
+            clauses.append('tags in :tags')
+            bind_vars['tags'] = list(self.any_tags)
+            #TODO(lambert): make list queries more efficient by supporting "any choreo", "any freestyle", "any style", etc? wait until we hash out our UI more...
+            self.matches.add(SearchQuery.MATCH_TAGS)
+
+        if self.start_time:
+            clauses.append('start_time > :start_time')
+            bind_vars['start_time'] = self.start_time
+            self.matches.add(SearchQuery.MATCH_TIME)
+        elif self.end_time:
+            clauses.append('end_time > :end_time')
+            bind_vars['end_time'] = self.end_time
+            self.matches.add(SearchQuery.MATCH_TIME)
+        #TODO(lambert): implement searching in the appengine backend for multi-time-location queries
+        # ...use prebucketed time/locations (by latlong grid, buckets of time)
+        #TODO(lambert): implement simple keyword searches here?
+        full_clauses = ' and '.join('%s' % x for x in clauses)
+        return eventdata.DBEvent.gql('where %s' % full_clauses, **bind_vars).fetch(100)
 
     def get_search_results(self, fb_uid, graph):
-        # TODO(lambert): implement searching in the appengine backend
-        # hard to do inequality search on location *and* time in appengine
-        # keyword searching is inefficient in appengine
-
-        # So we either;
-        # - use prebucketed time/locations (by latlong grid, buckets of time)
-        # - switch to non-appengine like SimpleDB or MySQL on Amazon
-
+        # Do datastore filtering
         db_events = self.get_candidate_events()
+
+        # Now look up contents of each event...
         batch_lookup = base_servlet.CommonBatchLookup(fb_uid, graph)
         for db_event in db_events:
             batch_lookup.lookup_event(db_event.fb_event_id)
         batch_lookup.finish_loading()
+
+        # ...and do filtering based on the contents inside our app
         search_results = []
         for db_event in db_events:
             fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
             if self.matches_event(db_event, fb_event):
                 result = SearchResult(fb_uid, db_event, fb_event, self)
                 search_results.append(result)
+    
+        # Now sort and return the results
         search_results.sort(key=lambda x: x.fb_event['info']['start_time'])
         return search_results
 
@@ -108,7 +127,8 @@ class SearchHandler(base_servlet.BaseRequestHandler):
 
         self.render_template('search')
 
-    def post(self):
+class ResultsHandler(base_servlet.BaseRequestHandler):
+    def get(self):
         self.finish_preload()
         tags_set = self.request.get_all('tag')
         start_time = None

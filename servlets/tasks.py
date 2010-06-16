@@ -77,7 +77,6 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
 
 class ReloadAllEventsHandler(BaseTaskRequestHandler):
     def get(self):
-        #TODO(lambert): maybe support passing __keys__ around if we want to just retrieve keys in these /reload handlers and make things more efficient
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.all()]
         backgrounder.load_events(event_ids)    
     post=get
