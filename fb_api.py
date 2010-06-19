@@ -7,6 +7,7 @@ import time
 import urllib
 
 import facebook
+import smemcache
 from google.appengine.ext import db
 from google.appengine.api import datastore
 from google.appengine.api import urlfetch
@@ -166,7 +167,18 @@ class BatchLookup(object):
     data_for_event_members = _data_for(_event_members_key)
     data_for_fql = _data_for(_fql_key)
 
-    def _get_objects_from_cache(self, object_keys):
+    def _get_objects_from_memcache(self, object_keys):
+        clauses = [self._string_key(key) for key in object_keys]
+        objects = smemcache.get_multi(clauses)
+        object_map = dict((tuple(k.split('.')), v) for (k, v) in objects.iteritems())
+
+        get_size = len(pickle.dumps(objects))
+        logging.info("BatchLookup: get_multi return size: %s", get_size)
+        logging.info("BatchLookup: get_multi objects: %s", objects.keys())
+
+        return object_map
+
+    def _get_objects_from_dbcache(self, object_keys):
         clauses = [self._string_key(key) for key in object_keys]
         query = 'where ckey in :1'
         object_map = {}
@@ -178,21 +190,41 @@ class BatchLookup(object):
         return object_map
 
     def finish_loading(self):
+        self.objects = {}
+        object_keys_to_lookup = self.object_keys
+
         if self.allow_cache:
-            self.objects = self._get_objects_from_cache(self.object_keys)
-        else:
-            self.objects = {}
-        object_keys_to_lookup = list(set(self.object_keys).difference(self.objects.keys()))
-        logging.info("BatchLookup: get_multi missed objects: %s", object_keys_to_lookup)
+            # lookup from memcache
+            memcache_objects = self._get_objects_from_memcache(object_keys_to_lookup)
+            self.objects.update(memcache_objects)
+            # warn about strange keys we get back
+            unknown_results = set(memcache_objects).difference(object_keys_to_lookup)
+            assert not len(unknown_results), "Unknown keys found: %s" % unknown_results
+            # and fall back for the rest
+            object_keys_to_lookup = set(self.object_keys).difference(memcache_objects)
 
-        unknown_results = list(set(self.objects.keys()).difference(self.object_keys))
-        assert not len(unknown_results), "Unknown keys found: %s" % unknown_results
+            # fall back to getting the rest from the db cache
+            db_objects = self._get_objects_from_dbcache(object_keys_to_lookup)
+            self.objects.update(db_objects)
+            # warn about strange keys we get back
+            unknown_results = set(db_objects).difference(object_keys_to_lookup)
+            assert not len(unknown_results), "Unknown keys found: %s" % unknown_results
+            # and fall back for the rest
+            object_keys_to_lookup = set(object_keys_to_lookup).difference(db_objects)
 
+            # Cache in memcache for next time
+            self._store_objects_into_memcache(db_objects)
+
+            # Warn about what our get_multi missed
+            logging.info("BatchLookup: get_multi missed objects: %s", object_keys_to_lookup)
+
+            object_keys_to_lookup = list(object_keys_to_lookup)
         FB_FETCH_COUNT = 10 # number of objects, each of which may be 1-5 RPCs
         for i in range(0, len(object_keys_to_lookup), FB_FETCH_COUNT):
             fetched_objects = self._fetch_object_keys(object_keys_to_lookup[i:i+FB_FETCH_COUNT])    
             # Always store latest fetched stuff in cache, regardless of self.allow_cache
-            self._store_objects_into_cache(fetched_objects)
+            self._store_objects_into_dbcache(fetched_objects)
+            self._store_objects_into_memcache(fetched_objects)
             self.objects.update(fetched_objects)
 
     @classmethod
@@ -232,13 +264,20 @@ class BatchLookup(object):
                 logging.warning("Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
             else:
                 fetched_objects[object_key] = this_object
-
         return fetched_objects
 
-    def _store_objects_into_cache(self, fetched_objects):
+    def _store_objects_into_memcache(self, fetched_objects):
+        memcache_set = {}
+        for k, v  in fetched_objects.iteritems():
+            if self._is_cacheable(k, v):
+                memcache_set[self._string_key(k)] = v
+        smemcache.safe_set_memcache(memcache_set, 2*3600)
+
+    def _store_objects_into_dbcache(self, fetched_objects):
         for object_key, this_object in fetched_objects.iteritems():
             if self._is_cacheable(object_key, this_object):
                 obj = FacebookCachedObject()
                 obj.ckey = self._string_key(object_key)
                 obj.pickle_dict(this_object)
                 obj.put()
+        return fetched_objects
