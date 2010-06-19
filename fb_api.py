@@ -191,7 +191,7 @@ class BatchLookup(object):
 
     def finish_loading(self):
         self.objects = {}
-        object_keys_to_lookup = self.object_keys
+        object_keys_to_lookup = list(self.object_keys)
 
         if self.allow_cache:
             # lookup from memcache
