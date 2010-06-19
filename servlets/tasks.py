@@ -29,8 +29,8 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         self.user = users.User.get(self.fb_uid)
         assert self.user.fb_access_token, "Can't execute background task for user %s without access_token" % self.fb_uid
         self.fb_graph = facebook.GraphAPI(self.user.fb_access_token)
-        self.allow_cache = bool(int(self.request.get('allow_cache')))
-        self.batch_lookup = base_servlet.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=self.allow_cache)
+        self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
+        self.batch_lookup = fb_api.BatchLookup(self.fb_uid, self.fb_graph, allow_cache=self.allow_cache)
         return return_value
 
 class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
@@ -54,8 +54,9 @@ class LoadEventHandler(BaseTaskFacebookRequestHandler):
                 fb_event = self.batch_lookup.data_for_event(db_event.fb_event_id)
             except KeyError:
                 failed_fb_event_ids.append(db_event.fb_event_id)
-            db_event.make_findable_for(fb_event)
-            db_event.put()
+            else:
+                db_event.make_findable_for(fb_event)
+                db_event.put()
         backgrounder.load_events(failed_fb_event_ids, self.allow_cache)
     post=get
 
