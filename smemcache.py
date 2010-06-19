@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
+import logging
 import pickle
 import random
+from google.appengine.api import memcache
 from google.appengine.api.memcache import *
 
 def expiry_with_variance(expiry, expiry_variance):
