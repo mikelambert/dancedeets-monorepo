@@ -15,6 +15,13 @@ Search Dance Events
 
 			<p>Keywords: <input type=text name="keywords" size=80>
 
+			<p>City:
+			<select name=city>
+			#for $city in $cities
+				<option>$city
+			#end for
+			</select>
+
 			<p>Event Types:
 			<table><tr valign=top><td>
 			<ul>

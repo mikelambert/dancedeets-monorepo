@@ -3,10 +3,12 @@
 import datetime
 
 import base_servlet
+from events import cities
 from events import eventdata
 from events import tags
 from logic import rsvp
 import fb_api
+import locations
 
 class SearchResult(object):
     def __init__(self, fb_user_id, db_event, fb_event, search_query):
@@ -125,6 +127,12 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
         self.display['styles'] = tags.STYLES
 
+        user_location = locations.get_geocoded_location(self.user.location)['latlng']
+        import logging
+        logging.info("a %s %s",self.user.location, user_location)
+        sorted_cities = cities.sort_by_closest(user_location[0], user_location[1])
+        sorted_cities = [': '.join(reversed(x.split(', '))) for x in sorted_cities]
+        self.display['cities'] = sorted_cities
         self.render_template('search')
 
 class ResultsHandler(base_servlet.BaseRequestHandler):

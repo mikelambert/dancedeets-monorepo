@@ -16,7 +16,7 @@ IMPORTANT_CITIES = [
     ('Houston, Texas', (29.7628844, -95.3830614)),
     ('Phoenix, Arizona', (33.4483771, -112.0740373)),
     ('Philadelphia, Pennsylvania', (39.952334, -75.163788)),
-    ('San Antonio, California', (38.1838888, -122.5913889)),
+    ('San Antonio, Texas', (29.424122, -98.493628)),
     ('San Diego, California', (32.7153291, -117.1572551)),
     ('Dallas, Texas', (32.802954, -96.769923)),
     ('San Jose, California', (37.3393857, -121.8949554)),
@@ -77,3 +77,11 @@ def get_nearest_city(latitude, longitude):
     return closest_city
 
 
+def sort_by_closest(latitude, longitude):
+    def distance(x):
+        city_name, (city_latitude, city_longitude) = x
+        latdiff = city_latitude - latitude
+        lngdiff = city_longitude - longitude
+        distance_squared = latdiff*latdiff + lngdiff*lngdiff
+        return distance_squared
+    return [x[0] for x in sorted(IMPORTANT_CITIES, key=distance)]
