@@ -276,7 +276,12 @@ class BatchLookup(object):
     def _store_objects_into_dbcache(self, fetched_objects):
         for object_key, this_object in fetched_objects.iteritems():
             if self._is_cacheable(object_key, this_object):
-                obj = FacebookCachedObject()
+                # TODO(lambert): Make this transaction-safe
+                results = FacebookCachedObject.gql('where ckey = ' + self._string_key(key_func(self, id))).fetch(1)
+                if results:
+                    obj = results[0]
+                else:
+                    obj = FacebookCachedObject()
                 obj.ckey = self._string_key(object_key)
                 obj.pickle_dict(this_object)
                 obj.put()
