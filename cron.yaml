@@ -5,4 +5,6 @@ cron:
 - description: reload past facebook event data
   url: /tasks/reload_past_events?allow_cache=0
   schedule: every monday 2:00
-
+- description: colon cleansing
+  url: http://www.dancedeets.com/admin/delete_fb_cache
+  schedule: every 2 minutes

@@ -22,6 +22,7 @@ STYLE_HOUSE = 'STYLE_HOUSE'
 STYLE_OLDHIPHOP = 'STYLE_OLDHIPHOP'
 STYLE_OTHER = 'STYLE_OTHER'
 
+FREESTYLE_EVENT = 'FREESTYLE'
 FREESTYLE_EVENT_LIST = [
     (FREESTYLE_WORKSHOP, 'workshop, master class, audition, tryout'),
     (FREESTYLE_PERFORMANCE, 'performance, show'),
@@ -31,12 +32,16 @@ FREESTYLE_EVENT_LIST = [
     (FREESTYLE_OTHER, 'other'),
 ]
 
+CHOREO_EVENT = 'CHOREO'
 CHOREO_EVENT_LIST = [
     (CHOREO_WORKSHOP, 'workshop, master class, audition, tryout'),
     (CHOREO_PERFORMANCE, 'performance, show, competition'),
     (CHOREO_CLUB, 'club with performances'),
     (CHOREO_OTHER, 'other'),
 ]
+
+TIME_PAST = 'PAST'
+TIME_FUTURE = 'FUTURE'
 
 STYLES = [
     (STYLE_CHOREOHIPHOP, 'hiphop choreography, new-school hiphop, street jazz, jazz funk'),

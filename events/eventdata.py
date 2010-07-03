@@ -1,8 +1,12 @@
 import datetime
+import logging
 import cPickle as pickle
 
 from google.appengine.api import datastore
 from google.appengine.ext import db
+
+from events import cities
+from events import tags
 
 import locations
 
@@ -62,14 +66,43 @@ class DBEvent(db.Model):
     fb_event_id = db.IntegerProperty()
     # real data
     tags = db.StringListProperty()
+    
+    # searchable properties
+    search_tags = db.StringListProperty()
     start_time = db.DateTimeProperty()
     end_time = db.DateTimeProperty()
+    nearest_city = db.StringProperty()
+
+    # extra cached properties
+    address = db.StringProperty()
+    latitude = db.FloatProperty()
+    longitude = db.FloatProperty()
 
     def make_findable_for(self, fb_dict):
         # set up any cached fields or bucketing or whatnot for this event
 
         self.start_time = datetime.datetime.strptime(fb_dict['info']['start_time'], '%Y-%m-%dT%H:%M:%S+0000')
         self.end_time = datetime.datetime.strptime(fb_dict['info']['end_time'], '%Y-%m-%dT%H:%M:%S+0000')
+
+        self.search_tags = [] # CHOREO and/or FREESTYLE
+        if set(self.tags).intersection([x[0] for x in tags.FREESTYLE_EVENT_LIST]):
+            self.search_tags.append(tags.FREESTYLE_EVENT)
+        if set(self.tags).intersection([x[0] for x in tags.CHOREO_EVENT_LIST]):
+            self.search_tags.append(tags.CHOREO_EVENT)
+
+        self.search_times = [] # PAST or FUTURE
+        today = datetime.datetime.today()
+        if today < self.end_time:
+            self.search_times.append(tags.TIME_PAST)
+        else:
+            self.search_times.append(tags.TIME_FUTURE)
+
+        results = get_geocoded_location_for_event(fb_dict)
+        self.address = results['address']
+        self.latitude = results['latlng'][0]
+        self.longitude = results['latlng'][1]
+        self.nearest_city = cities.get_nearest_city(self.latitude, self.longitude)    
+        logging.info("Nearest city for %s is %s", self.address, self.nearest_city)
 
     #def __repr__(self):
     #    return 'DBEvent(fb_event_id=%r,tags=%r)' % (self.fb_event_id, self.tags)
