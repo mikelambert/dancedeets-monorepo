@@ -65,7 +65,9 @@ class BatchLookup(object):
         fb_uid, object_id, object_type = object_key
         if object_type != self.OBJECT_EVENT:
             return True
-        elif    'info' in this_object and this_object['info']['privacy'] == 'OPEN':
+        elif 'info' in this_object and this_object['deleted']:
+            return True
+        elif 'info' in this_object and this_object['info'] and this_object['info']['privacy'] == 'OPEN':
             return True
         else:
             return False
@@ -252,12 +254,14 @@ class BatchLookup(object):
         # fetch RPCs
         fetched_objects = {}
         for object_key, object_rpc_dict in self.object_keys_to_rpcs.iteritems():
-            this_object = {}
+            this_object = {'deleted': False}
             object_is_bad = False
             for object_rpc_name, object_rpc in object_rpc_dict.iteritems():
                 object_json = self._map_rpc_to_data(object_key, object_rpc_name, object_rpc)
-                if object_json:
+                if object_json is not None:
                     this_object[object_rpc_name] = object_json
+                    if object_json == False:
+                        this_object['deleted'] = True
                 else:
                     object_is_bad = True
             if object_is_bad:

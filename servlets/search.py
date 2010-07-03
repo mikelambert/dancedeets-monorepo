@@ -111,7 +111,7 @@ class SearchQuery(object):
         search_results = []
         for db_event in db_events:
             fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
-            if self.matches_event(db_event, fb_event):
+            if not fb_event['deleted'] and self.matches_event(db_event, fb_event):
                 result = SearchResult(fb_uid, db_event, fb_event, self)
                 search_results.append(result)
     

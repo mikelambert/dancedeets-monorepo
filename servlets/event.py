@@ -52,6 +52,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
         if event_id:
             event_info = self.batch_lookup.data_for_event(event_id)
+            #TODO(lambert): handle events with event_info['deleted'] == True
             # Disable event_members stuff while we figure out a better way to background-load this
             #try:
             #    event_members_info = self.batch_lookup.data_for_event_members(event_id)
