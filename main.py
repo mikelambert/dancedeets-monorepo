@@ -7,6 +7,7 @@ import yaml
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 import base_servlet
+from servlets import admin
 from servlets import event
 from servlets import search
 from servlets import login
@@ -19,11 +20,6 @@ DEBUG = True
 
 #TODO(lambert): setup webtest to test the wsgi app as a regression test to ensure everything is working
 # http://pythonpaste.org/webtest/
-
-class ClearMemcacheHandler(webapp.RequestHandler):
-    def get(self):
-        smemcache.flush_all()
-        self.response.out.write("Flushed memcache!")
 
 URLS = [
     ('/tasks/load_events', tasks.LoadEventHandler),
@@ -40,7 +36,8 @@ URLS = [
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/user/edit', myuser.UserHandler),
     ('/login', login.LoginHandler),
-    ('/clear_memcache', ClearMemcacheHandler),
+    ('/admin/clear_memcache', admin.ClearMemcacheHandler),
+    ('/admin/delete_fb_cache', admin.DeleteFBCacheHandler),
 ]
 
 class MyWSGIApplication(webapp.WSGIApplication):
