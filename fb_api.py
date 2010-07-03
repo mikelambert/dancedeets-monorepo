@@ -135,7 +135,7 @@ class BatchLookup(object):
     def _db_delete(key_func):
         def db_delete_func(self, id):
             assert id
-            results = FacebookCachedObject.gql('where ckey = ' + self._string_key(key_func(self, id))).fetch(1)
+            results = FacebookCachedObject.gql('where ckey = :1', self._string_key(key_func(self, id))).fetch(1)
             if results:
                 results[0].delete()
         return db_delete_func
@@ -277,7 +277,7 @@ class BatchLookup(object):
         for object_key, this_object in fetched_objects.iteritems():
             if self._is_cacheable(object_key, this_object):
                 # TODO(lambert): Make this transaction-safe
-                results = FacebookCachedObject.gql('where ckey = ' + self._string_key(key_func(self, id))).fetch(1)
+                results = FacebookCachedObject.gql('where ckey = :1', self._string_key(object_key)).fetch(1)
                 if results:
                     obj = results[0]
                 else:
