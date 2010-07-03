@@ -2,8 +2,14 @@ import math
 import urllib
 import urllib2
 
-from django.utils import simplejson
-import smemcache
+try:
+    from django.utils import simplejson
+except ImportError:
+    import simplejson
+try:
+    import smemcache
+except ImportError:
+    pass
 
 # http://en.wikipedia.org/wiki/Mile
 MILES_COUNTRIES = ['UK', 'US']
@@ -17,7 +23,7 @@ class GeocodeException(Exception):
     pass
 
 def _get_geocoded_data(address):
-    url = "http://maps.google.com/maps/api/geocode/json?%s" % urllib.urlencode(dict(address=address, sensor='false', client='dancedeets'))
+    url = "http://maps.google.com/maps/api/geocode/json?%s" % urllib.urlencode(dict(address=address, sensor='false'))
 
     json_result = simplejson.load(urllib.urlopen(url))
     if json_result['status'] == 'ZERO_RESULTS':
