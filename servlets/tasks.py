@@ -13,6 +13,9 @@ from logic import backgrounder
 import facebook
 import fb_api
 
+# How long to wait before retrying on a failure. Intended to prevent hammering the server.
+RETRY_ON_FAIL_DELAY = 60
+
 class BaseTaskRequestHandler(RequestHandler):
   def requires_login(self):
     return False
@@ -52,12 +55,12 @@ class LoadEventHandler(BaseTaskFacebookRequestHandler):
         for db_event in db_events:
             try:
                 fb_event = self.batch_lookup.data_for_event(db_event.fb_event_id)
-            except KeyError:
-                failed_fb_event_ids.append(db_event.fb_event_id)
-            else:
                 db_event.make_findable_for(fb_event)
                 db_event.put()
-        backgrounder.load_events(failed_fb_event_ids, self.allow_cache)
+            except:
+                logging.exception("Error loading event, going to retry eid=%s", db_event.fb_event_id)
+                failed_fb_event_ids.append(db_event.fb_event_id)
+        backgrounder.load_events(failed_fb_event_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
     post=get
 
 class LoadEventMembersHandler(BaseTaskFacebookRequestHandler):
