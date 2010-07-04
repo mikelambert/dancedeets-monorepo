@@ -69,9 +69,10 @@ class DBEvent(db.Model):
     
     # searchable properties
     search_tags = db.StringListProperty()
+    search_time_period = db.StringProperty()
     start_time = db.DateTimeProperty()
     end_time = db.DateTimeProperty()
-    nearest_city = db.StringProperty()
+    search_region = db.StringProperty()
 
     # extra cached properties
     address = db.StringProperty()
@@ -80,6 +81,10 @@ class DBEvent(db.Model):
 
     def make_findable_for(self, fb_dict):
         # set up any cached fields or bucketing or whatnot for this event
+
+        if fb_event['deleted']:
+            #TODO(lambert): zero out a bunch of fields so that this record becomes "invisible" to searches
+            return
 
         self.start_time = datetime.datetime.strptime(fb_dict['info']['start_time'], '%Y-%m-%dT%H:%M:%S+0000')
         self.end_time = datetime.datetime.strptime(fb_dict['info']['end_time'], '%Y-%m-%dT%H:%M:%S+0000')
@@ -90,19 +95,23 @@ class DBEvent(db.Model):
         if set(self.tags).intersection([x[0] for x in tags.CHOREO_EVENT_LIST]):
             self.search_tags.append(tags.CHOREO_EVENT)
 
-        self.search_times = [] # PAST or FUTURE
+        self.search_time_period = None # PAST or FUTURE
         today = datetime.datetime.today()
         if today < self.end_time:
-            self.search_times.append(tags.TIME_PAST)
+            self.search_time_period = tags.TIME_PAST
         else:
-            self.search_times.append(tags.TIME_FUTURE)
+            self.search_time_period = tags.TIME_FUTURE
 
         results = get_geocoded_location_for_event(fb_dict)
         self.address = results['address']
-        self.latitude = results['latlng'][0]
-        self.longitude = results['latlng'][1]
-        self.nearest_city = cities.get_nearest_city(self.latitude, self.longitude)    
-        logging.info("Nearest city for %s is %s", self.address, self.nearest_city)
+        if results['latlng']:
+            self.latitude = results['latlng'][0]
+            self.longitude = results['latlng'][1]
+            self.search_region = cities.get_nearest_city(self.latitude, self.longitude)    
+            logging.info("Nearest city for %s is %s", self.address, self.search_region)
+        else:
+            #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
+            logging.error("No geocoding results for eid=%s is: %s", self.fb_event_id, results)
 
     #def __repr__(self):
     #    return 'DBEvent(fb_event_id=%r,tags=%r)' % (self.fb_event_id, self.tags)
