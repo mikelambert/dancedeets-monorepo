@@ -33,6 +33,7 @@ URLS = [
     ('/events/add', event.AddHandler),
     ('/events/search', search.SearchHandler),
     ('/events/results', search.ResultsHandler),
+    ('/events/relevant', search.RelevantHandler),
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/user/edit', myuser.UserHandler),
     ('/login', login.LoginHandler),

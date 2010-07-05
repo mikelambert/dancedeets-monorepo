@@ -34,32 +34,40 @@ class SearchQuery(object):
     MATCH_LOCATION = 'LOCATION'
     MATCH_QUERY = 'QUERY'
 
-    def __init__(self, parse_fb_timestamp, any_tags=None, start_time=None, end_time=None, location=None, distance=None, query_args=None):
+    def __init__(self, parse_fb_timestamp, any_tags=None, choreo_freestyle=None, time_period=None, start_time=None, end_time=None, location=None, distance_in_km=None, query_args=None):
         self.parse_fb_timestamp = parse_fb_timestamp
-        self.any_tags = set(any_tags)
+        self.any_tags = set(any_tags or [])
+        self.choreo_freestyle = choreo_freestyle
+        self.time_period = time_period
         self.start_time = start_time
         self.end_time = end_time
+        if self.start_time and self.end_time:
+            assert self.start_time < self.end_time
+        if self.time_period == tags.TIME_FUTURE and self.end_time:
+                assert self.end_time > datetime.datetime.today()
+        if self.time_period == tags.TIME_FUTURE and self.start_time:
+                assert self.start_time < datetime.datetime.today()
+        self.search_regions = None
         self.location = location
-        self.distance = distance
+        self.distance_in_km = distance_in_km
         self.query_args = query_args
-        self.matches = set()
 
     def matches_event(self, event, fb_event):
         if self.any_tags:
             if self.any_tags.intersection(event.tags):
-                self.matches.add(SearchQuery.MATCH_TAGS)
+                pass
             else:
                 return []
         if self.start_time:
             fb_end_time = self.parse_fb_timestamp(fb_event['info']['end_time'])
             if self.start_time < fb_end_time:
-                self.matches.add(SearchQuery.MATCH_TIME)
+                pass
             else:
                 return []
         if self.end_time:
             fb_start_time = parse_fb_timestamp(fb_event['info']['start_time'])
             if fb_start_time < self.end_time:
-                self.matches.add(SearchQuery.MATCH_TIME)
+                pass
             else:
                 return []
         if self.query_args:
@@ -68,34 +76,34 @@ class SearchQuery(object):
                 if keyword in fb_event['info']['name'] or keyword in fb_event['info']['description']:
                     found_keyword = True
             if found_keyword:
-                self.matches.add(SearchQuery.MATCH_QUERY)
+                pass
             else:
                 return []
-
-        return self.matches
+        if self.distance_in_km:
+            distance = locations.get_distance(self.location[0], self.location[1], event.latitude, event.longitude, use_km=True)
+            if distance < self.distance_in_km:
+                pass
+            else:
+                return []
+        return True
     
     def get_candidate_events(self):
         clauses = []
         bind_vars = {}
-        if self.any_tags:
-            clauses.append('tags in :tags')
-            bind_vars['tags'] = list(self.any_tags)
-            #TODO(lambert): make list queries more efficient by supporting "any choreo", "any freestyle", "any style", etc? wait until we hash out our UI more...
-            self.matches.add(SearchQuery.MATCH_TAGS)
-
-        if self.start_time:
-            clauses.append('start_time > :start_time')
-            bind_vars['start_time'] = self.start_time
-            self.matches.add(SearchQuery.MATCH_TIME)
-        elif self.end_time:
-            clauses.append('end_time > :end_time')
-            bind_vars['end_time'] = self.end_time
-            self.matches.add(SearchQuery.MATCH_TIME)
-        #TODO(lambert): implement searching in the appengine backend for multi-time-location queries
-        # ...use prebucketed time/locations (by latlong grid, buckets of time)
-        #TODO(lambert): implement simple keyword searches here?
-        full_clauses = ' and '.join('%s' % x for x in clauses)
-        return eventdata.DBEvent.gql('where %s' % full_clauses, **bind_vars).fetch(100)
+        if self.choreo_freestyle:
+            clauses.append('search_tags = :search_tag')
+            bind_vars['search_tag'] = self.choreo_freestyle
+        if self.search_regions:
+            clauses.append('search_region in :search_regions')
+            bind_vars['search_regions'] = self.search_regions
+        if self.time_period:
+            clauses.append('search_time_period = :search_time_period')
+            bind_vars['search_time_period'] = self.time_period
+        if clauses:
+            full_clauses = ' and '.join('%s' % x for x in clauses)
+            return eventdata.DBEvent.gql('where %s' % full_clauses, **bind_vars).fetch(100)
+        else:
+            return eventdata.DBEvent.all().fetch(100)
 
     def get_search_results(self, fb_uid, graph):
         # Do datastore filtering
@@ -128,11 +136,8 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         self.display['styles'] = tags.STYLES
 
         user_location = locations.get_geocoded_location(self.user.location)['latlng']
-        import logging
-        logging.info("a %s %s",self.user.location, user_location)
-        sorted_cities = cities.sort_by_closest(user_location[0], user_location[1])
-        sorted_cities = [': '.join(reversed(x.split(', '))) for x in sorted_cities]
-        self.display['cities'] = sorted_cities
+        nearest_city = cities.get_nearest_city(user_location[0], user_location[1])
+        self.display['cities'] = []
         self.render_template('search')
 
 class ResultsHandler(base_servlet.BaseRequestHandler):
@@ -146,6 +151,23 @@ class ResultsHandler(base_servlet.BaseRequestHandler):
         if self.request.get('end_date'):
             end_time = datetime.datetime.strptime(self.request.get('end_date'), '%m/%d/%Y')
         query = SearchQuery(self.parse_fb_timestamp, any_tags=tags_set, start_time=start_time, end_time=end_time)
+        search_results = query.get_search_results(self.fb_uid, self.fb_graph)
+
+        rsvps = rsvp.RSVPManager(self.batch_lookup)
+        for result in search_results:
+            result.rsvp_status = rsvps.get_rsvp_for_event(result.db_event.fb_event_id)
+        self.display['results'] = search_results
+        self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
+        self.render_template('results')
+
+class RelevantHandler(base_servlet.BaseRequestHandler):
+    def get(self):
+        self.finish_preload()
+        user_location = locations.get_geocoded_location(self.user.location)['latlng']
+        query = SearchQuery(self.parse_fb_timestamp, time_period=tags.TIME_FUTURE, location=user_location, distance_in_km=self.user.distance_in_km())
+        nearest_city = cities.get_nearest_city(user_location[0], user_location[1])
+        # TODO(lambert): get multiple cities within a distance we care about?
+        query.search_regions = [nearest_city]
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
 
         rsvps = rsvp.RSVPManager(self.batch_lookup)
