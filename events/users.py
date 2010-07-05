@@ -42,16 +42,30 @@ DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 USER_EXPIRY = 24 * 60 * 60
 
 class User(db.Model):
+    # SSO
     fb_uid = db.IntegerProperty()
     fb_access_token = db.StringProperty()
+
+    # Statistics
     creation_time = db.DateTimeProperty()
+
+    # Search preferences
     location = db.StringProperty()
-    location_country = db.StringProperty()
-    distance = db.StringProperty()
+    distance = db.IntegerProperty()
     distance_units = db.StringProperty()
     freestyle = db.StringProperty()
     choreo = db.StringProperty()
+
+    # Other preferences
     send_email = db.BooleanProperty()
+    location_country = db.StringProperty()
+
+    def distance_in_km(self):
+        import logging
+        if self.distance_units == 'km':
+            return int(self.distance)
+        else:
+            return int(self.distance) * 1.609344
 
     @staticmethod
     def memcache_user_key(fb_user_id):

@@ -27,7 +27,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
             'freestyle': users.FREESTYLE_FAN_NO_CLUBS,
             'choreo': users.CHOREO_FAN,
             'send_email': True,
-            'distance': '60',
+            'distance': 60,
             'distance_units': 'km',
         }
         if self.user.location_country in locations.MILES_COUNTRIES:
@@ -58,9 +58,10 @@ class UserHandler(base_servlet.BaseRequestHandler):
 
     def update_user(self):
         user = users.User.get(self.fb_uid)
-        for field in ['location', 'freestyle', 'choreo', 'distance', 'distance_units']:
+        for field in ['location', 'freestyle', 'choreo', 'distance_units']:
             form_value = self.request.get(field)
             setattr(user, field, form_value)
+        user.distance = int(self.request.get('distance'))
         user.location_country = locations.get_country_for_location(user.location)
         if not user.location_country:
             self.add_error("No country for location %r" % location_name)
