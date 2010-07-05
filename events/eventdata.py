@@ -82,7 +82,7 @@ class DBEvent(db.Model):
     def make_findable_for(self, fb_dict):
         # set up any cached fields or bucketing or whatnot for this event
 
-        if fb_event['deleted']:
+        if fb_dict['deleted']:
             #TODO(lambert): zero out a bunch of fields so that this record becomes "invisible" to searches
             return
 
@@ -98,9 +98,9 @@ class DBEvent(db.Model):
         self.search_time_period = None # PAST or FUTURE
         today = datetime.datetime.today()
         if today < self.end_time:
-            self.search_time_period = tags.TIME_PAST
-        else:
             self.search_time_period = tags.TIME_FUTURE
+        else:
+            self.search_time_period = tags.TIME_PAST
 
         results = get_geocoded_location_for_event(fb_dict)
         self.address = results['address']
