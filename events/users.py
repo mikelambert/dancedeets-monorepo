@@ -51,7 +51,7 @@ class User(db.Model):
 
     # Search preferences
     location = db.StringProperty()
-    distance = db.IntegerProperty()
+    distance = db.StringProperty()
     distance_units = db.StringProperty()
     freestyle = db.StringProperty()
     choreo = db.StringProperty()
