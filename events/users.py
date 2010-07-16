@@ -61,8 +61,9 @@ class User(db.Model):
     location_country = db.StringProperty()
 
     def distance_in_km(self):
-        import logging
-        if self.distance_units == 'km':
+        if not self.distance:
+            return 0
+        elif self.distance_units == 'km':
             return int(self.distance)
         else:
             return int(self.distance) * 1.609344

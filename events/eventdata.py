@@ -10,6 +10,7 @@ from events import tags
 
 import locations
 
+REGION_RADIUS = 200 # kilometers
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 
 # pic url prefixes:
@@ -107,7 +108,9 @@ class DBEvent(db.Model):
         if results['latlng']:
             self.latitude = results['latlng'][0]
             self.longitude = results['latlng'][1]
-            self.search_region = cities.get_nearest_city(self.latitude, self.longitude)    
+            #TODO(lambert): Add enough cities to cities.py to support coverage over the entire US?
+            # Or add a "default US" that always gets searched, and that gets appended if no cities are close enough.
+            self.search_region = cities.get_cities_within(self.latitude, self.longitude, REGION_RADIUS)
             logging.info("Nearest city for %s is %s", self.address, self.search_region)
         else:
             #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses

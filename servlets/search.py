@@ -163,11 +163,17 @@ class ResultsHandler(base_servlet.BaseRequestHandler):
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
-        user_location = locations.get_geocoded_location(self.user.location)['latlng']
-        query = SearchQuery(self.parse_fb_timestamp, time_period=tags.TIME_FUTURE, location=user_location, distance_in_km=self.user.distance_in_km())
-        nearest_city = cities.get_nearest_city(user_location[0], user_location[1])
-        # TODO(lambert): get multiple cities within a distance we care about?
-        query.search_regions = [nearest_city]
+        user_location = self.user.location
+        distance_in_km = self.user.distance_in_km()
+        import logging
+        logging.info("Distance is %s", distance_in_km)
+        latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
+        query = SearchQuery(self.parse_fb_timestamp, time_period=tags.TIME_FUTURE, location=latlng_user_location, distance_in_km=distance_in_km)
+        find_cities_within_km = distance_in_km + eventdata.REGION_RADIUS
+        logging.info("Cities distance is %s", find_cities_within_km)
+        nearest_cities = cities.get_cities_within(latlng_user_location[0], latlng_user_location[1], distance_in_km=find_cities_within_km)
+        logging.info("Nearest cities are %s", nearest_cities)
+        query.search_regions = nearest_cities
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
 
         rsvps = rsvp.RSVPManager(self.batch_lookup)

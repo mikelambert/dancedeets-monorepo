@@ -1,4 +1,5 @@
 import sys
+import locations
 
 # import time
 # import re
@@ -80,6 +81,9 @@ def get_nearest_city(latitude, longitude):
             closest_distance_squared = distance_squared
     return closest_city
 
+def get_cities_within(latitude, longitude, distance_in_km):
+    return [city_name for (city_name, latlng) in IMPORTANT_CITIES
+            if locations.get_distance(latitude, longitude, latlng[0], latlng[1], use_km=True) < distance_in_km]
 
 def sort_by_closest(latitude, longitude):
     def distance(x):
