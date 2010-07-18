@@ -73,7 +73,7 @@ class DBEvent(db.Model):
     search_time_period = db.StringProperty()
     start_time = db.DateTimeProperty()
     end_time = db.DateTimeProperty()
-    search_region = db.StringProperty()
+    search_regions = db.StringListProperty()
 
     # extra cached properties
     address = db.StringProperty()
@@ -110,8 +110,8 @@ class DBEvent(db.Model):
             self.longitude = results['latlng'][1]
             #TODO(lambert): Add enough cities to cities.py to support coverage over the entire US?
             # Or add a "default US" that always gets searched, and that gets appended if no cities are close enough.
-            self.search_region = cities.get_cities_within(self.latitude, self.longitude, REGION_RADIUS)
-            logging.info("Nearest city for %s is %s", self.address, self.search_region)
+            self.search_regions = cities.get_cities_within(self.latitude, self.longitude, REGION_RADIUS)
+            logging.info("Nearest city for %s is %s", self.address, self.search_regions)
         else:
             #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
             logging.error("No geocoding results for eid=%s is: %s", self.fb_event_id, results)

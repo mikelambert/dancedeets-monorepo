@@ -94,7 +94,7 @@ class SearchQuery(object):
             clauses.append('search_tags = :search_tag')
             bind_vars['search_tag'] = self.choreo_freestyle
         if self.search_regions:
-            clauses.append('search_region in :search_regions')
+            clauses.append('search_regions in :search_regions')
             bind_vars['search_regions'] = self.search_regions
         if self.time_period:
             clauses.append('search_time_period = :search_time_period')
