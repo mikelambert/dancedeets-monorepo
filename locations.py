@@ -31,12 +31,10 @@ def _get_geocoded_data(address):
     unsigned_url_path = "/maps/api/geocode/json?%s" % urllib.urlencode(dict(address=address, sensor='false', client='free-dancedeets'))
     private_key = 'zj918QnslsoOQHl4kLjv-ZCgsDE='
     decoded_key = base64.urlsafe_b64decode(private_key)
-    print unsigned_url_path
     signature = hmac.new(decoded_key, unsigned_url_path, hashlib.sha1)
     encoded_signature = base64.urlsafe_b64encode(signature.digest())
 
     url = "http://maps.google.com%s&signature=%s" % (unsigned_url_path, encoded_signature)
-    print url
 
     results = urllib.urlopen(url).read()
     try:
