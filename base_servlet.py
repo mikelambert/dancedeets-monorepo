@@ -73,7 +73,7 @@ class BaseRequestHandler(RequestHandler):
 
     def errors_are_fatal(self):
         if self._errors:
-            raise ValidationError()
+            raise _ValidationError()
 
     def handle_exception(self, e, debug):
         if isinstance(e, _ValidationError):
