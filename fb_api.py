@@ -16,13 +16,13 @@ from django.utils import simplejson
 class FacebookException(Exception):
     pass
 
+# Not used
 RSVP_EVENTS_FQL = """
 SELECT eid, rsvp_status
 FROM event_member
 WHERE uid = %s
 """
 
-# Not used
 RSVP_FUTURE_EVENTS_FQL = """
 SELECT eid, rsvp_status
 FROM event_member
@@ -79,7 +79,8 @@ class BatchLookup(object):
             return dict(
                 profile=self._fetch_rpc('%s' % object_id),
                 friends=self._fetch_rpc('%s/friends' % object_id),
-                rsvp_for_events=self._fql_rpc(RSVP_EVENTS_FQL % object_id),
+                #TODO(lambert): fix this to request past-events better so historical stuff works
+                rsvp_for_events=self._fql_rpc(RSVP_FUTURE_EVENTS_FQL % object_id),
                 all_event_info=self._fql_rpc(ALL_EVENTS_FQL % (object_id, today)),
             )
         elif object_type == self.OBJECT_EVENT:
