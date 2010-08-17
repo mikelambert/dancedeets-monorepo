@@ -112,3 +112,6 @@ def get_country_for_location(location_name):
       smemcache.set(memcache_key, country, LOCATION_EXPIRY)
   return country
 
+def miles_in_km(miles):
+    return miles * 1.609344
+

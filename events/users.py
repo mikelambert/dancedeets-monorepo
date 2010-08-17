@@ -1,4 +1,5 @@
 from google.appengine.ext import db
+import locations
 import smemcache
 
 def header_item(name, description):
@@ -66,7 +67,7 @@ class User(db.Model):
         elif self.distance_units == 'km':
             return int(self.distance)
         else:
-            return int(self.distance) * 1.609344
+            return locations.miles_in_km(int(self.distance))
 
     @staticmethod
     def memcache_user_key(fb_user_id):
