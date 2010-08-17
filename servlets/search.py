@@ -35,11 +35,13 @@ class SearchQuery(object):
     MATCH_LOCATION = 'LOCATION'
     MATCH_QUERY = 'QUERY'
 
-    def __init__(self, parse_fb_timestamp, any_tags=None, choreo_freestyle=None, time_period=None, start_time=None, end_time=None, location=None, distance_in_km=None, query_args=None):
+    def __init__(self, parse_fb_timestamp, any_tags=None, choreo_freestyle=None, time_period=None, start_time=None, end_time=None, location=None, distance_in_km=None, query_args=None, freestyle=None, choreo=None):
         self.parse_fb_timestamp = parse_fb_timestamp
         self.any_tags = set(any_tags or [])
         self.choreo_freestyle = choreo_freestyle
         self.time_period = time_period
+        self.freestyle = freestyle
+        self.choreo = choreo
         self.start_time = start_time
         self.end_time = end_time
         if self.start_time and self.end_time:
@@ -100,6 +102,14 @@ class SearchQuery(object):
         if self.time_period:
             clauses.append('search_time_period = :search_time_period')
             bind_vars['search_time_period'] = self.time_period
+        search_tags = []
+        if self.choreo != users.CHOREO_APATHY:
+            search_tags.append(tags.CHOREO_EVENT)
+        if self.freestyle != users.FREESTYLE_APATHY:
+            search_tags.append(tags.FREESTYLE_EVENT)
+        if search_tags:
+            clauses.append('search_tags in :search_tags')
+            bind_vars['search_tags'] = search_tags
         if clauses:
             full_clauses = ' and '.join('%s' % x for x in clauses)
             return eventdata.DBEvent.gql('where %s' % full_clauses, **bind_vars).fetch(100)
@@ -188,7 +198,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['DANCE_LISTS'] = users.DANCE_LISTS
 
         latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
-        query = SearchQuery(self.parse_fb_timestamp, time_period=tags.TIME_FUTURE, location=latlng_user_location, distance_in_km=distance_in_km)
+        query = SearchQuery(self.parse_fb_timestamp, time_period=tags.TIME_FUTURE, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
         find_cities_within_km = distance_in_km + eventdata.REGION_RADIUS
         nearest_cities = cities.get_cities_within(latlng_user_location[0], latlng_user_location[1], distance_in_km=find_cities_within_km)
         query.search_regions = nearest_cities
