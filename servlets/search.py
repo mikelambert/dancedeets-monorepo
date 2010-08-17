@@ -6,6 +6,7 @@ import base_servlet
 from events import cities
 from events import eventdata
 from events import tags
+from events import users
 from logic import rsvp
 import fb_api
 import locations
@@ -163,16 +164,33 @@ class ResultsHandler(base_servlet.BaseRequestHandler):
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
-        user_location = self.user.location
-        distance_in_km = self.user.distance_in_km()
-        import logging
-        logging.info("Distance is %s", distance_in_km)
+        user_location = self.request.get('user_location', self.user.location)
+        distance = int(self.request.get('distance', self.user.distance))
+        distance_units = self.request.get('distance_units', self.user.distance_units)
+        if distance_units == 'miles':
+            distance_in_km = locations.miles_in_km(distance)
+        else:
+            distance_in_km = distance
+        freestyle = self.request.get('freestyle', self.user.freestyle)
+        choreo = self.request.get('choreo', self.user.choreo)
+
+        self.display['user_location'] = user_location
+        self.display['defaults'] = {
+            'distance': distance,
+            'distance_units': distance_units,
+            'user_location': user_location,
+            'freestyle': freestyle,
+            'choreo': choreo,
+        }
+        
+        self.display['DANCES'] = users.DANCES
+        self.display['DANCE_HEADERS'] = users.DANCE_HEADERS
+        self.display['DANCE_LISTS'] = users.DANCE_LISTS
+
         latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
         query = SearchQuery(self.parse_fb_timestamp, time_period=tags.TIME_FUTURE, location=latlng_user_location, distance_in_km=distance_in_km)
         find_cities_within_km = distance_in_km + eventdata.REGION_RADIUS
-        logging.info("Cities distance is %s", find_cities_within_km)
         nearest_cities = cities.get_cities_within(latlng_user_location[0], latlng_user_location[1], distance_in_km=find_cities_within_km)
-        logging.info("Nearest cities are %s", nearest_cities)
         query.search_regions = nearest_cities
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
 

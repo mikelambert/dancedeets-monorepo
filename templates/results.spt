@@ -7,6 +7,47 @@ Dance Event Results
 #end def
 
 #def body
+<form>
+<p>Location: <input name=user_location value="$defaults.user_location">
+<p>Distance: <input name=distance value="$defaults.distance">
+<select name="distance_units">
+	<option name=km
+#if $defaults.distance_units == 'km'
+		selected
+#end if
+	>km
+	<option name=miles
+#if $defaults.distance_units == 'miles'
+		selected
+#end if
+	>miles
+</select>
+<table><tr style="vertical-align:top">
+#for $type in $DANCES
+<td><div style="width:250px">
+<strong>$DANCE_HEADERS[$type].name</strong><br>
+<span style="font-size:12px">$DANCE_HEADERS[$type].description</span><br>
+#for $list_item in $DANCE_LISTS[$type]
+  <hr>
+<!-- border of 1px solid #EEEEEE ?? -->
+  <input type=radio name="$type" value="$list_item.internal" id="$list_item.internal"
+  #if $defaults.get($type) == $list_item.internal
+    checked
+  #end if
+  >
+  <label for="$list_item.internal">
+    $list_item.name
+  </label>
+#end for
+</div>
+</td>
+#end for
+</tr></table>
+
+<input type=submit value="Search">
+</form>
+<p>
+
 <table>
 #for $result in $results
 #set $fb_event = $result.fb_event.info
