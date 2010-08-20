@@ -148,7 +148,6 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         self.display['styles'] = tags.STYLES
 
         user_location = locations.get_geocoded_location(self.user.location)['latlng']
-        nearest_city = cities.get_nearest_city(user_location[0], user_location[1])
         self.display['cities'] = []
         self.render_template('search')
 
