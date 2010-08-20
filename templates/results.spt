@@ -52,8 +52,8 @@ Dance Event Results
 #for $result in $results
 #set $fb_event = $result.fb_event.info
 	<tr>
-		<td><a href="/events/view?event_id=$fb_event.id"><img src="$result.get_image()"></a></td>
-		<td><a href="/events/view?event_id=$fb_event.id">$format_html($fb_event.name)</a><br>
+		<td><a href="http://www.facebook.com/event.php?eid=$fb_event.id"><img src="$result.get_image()"></a></td>
+		<td><a href="http://www.facebook.com/event.php?eid=$fb_event.id">$format_html($fb_event.name)</a><br>
 		$date_format('%Y-%m-%d %H:%M', $result.start_time)
 		</td>
 		<td>
