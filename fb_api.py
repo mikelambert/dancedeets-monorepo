@@ -29,14 +29,14 @@ FROM event_member
 WHERE eid in 
     (SELECT eid FROM event 
     WHERE eid IN (SELECT eid FROM event_member WHERE uid = %s) 
-    AND start_time > '%s' ORDER BY start_time)
+    AND start_time > %d ORDER BY start_time)
 """
 
 ALL_EVENTS_FQL = """
 SELECT eid, name, start_time, end_time, host
 FROM event 
 WHERE eid IN (SELECT eid FROM event_member WHERE uid = %s) 
-AND start_time > '%s' 
+AND start_time > %d
 ORDER BY start_time
 """
 
@@ -47,7 +47,7 @@ class FacebookCachedObject(db.Model):
     def pickle_dict(self, obj_dict):
         self.pickled_dict = pickle.dumps(obj_dict, pickle.HIGHEST_PROTOCOL)
         if len(self.pickled_dict) > 1024 * 1024 - 200:
-            slogging.error("Pickled dictionary getting too large (%s) for key (%s)", len(self.pickled_dict), self.ckey)
+            logging.error("Pickled dictionary getting too large (%s) for key (%s)", len(self.pickled_dict), self.ckey)
         assert self.pickled_dict
 
     def unpickled_dict(self):
@@ -75,12 +75,11 @@ class BatchLookup(object):
     def _get_rpcs(self, object_key):
         fb_uid, object_id, object_type = object_key
         if object_type == self.OBJECT_USER:
-            today = time.mktime(datetime.date.today().timetuple()[:9])
+            today = int(time.mktime(datetime.date.today().timetuple()[:9]))
             return dict(
                 profile=self._fetch_rpc('%s' % object_id),
                 friends=self._fetch_rpc('%s/friends' % object_id),
-                #TODO(lambert): fix this to request past-events better so historical stuff works
-                rsvp_for_events=self._fql_rpc(RSVP_FUTURE_EVENTS_FQL % object_id),
+                rsvp_for_events=self._fql_rpc(RSVP_EVENTS_FQL % (object_id)),
                 all_event_info=self._fql_rpc(ALL_EVENTS_FQL % (object_id, today)),
             )
         elif object_type == self.OBJECT_EVENT:
@@ -176,8 +175,8 @@ class BatchLookup(object):
         object_map = dict((tuple(k.split('.')), v) for (k, v) in objects.iteritems())
 
         get_size = len(pickle.dumps(objects))
-        logging.info("BatchLookup: get_multi return size: %s", get_size)
-        logging.info("BatchLookup: get_multi objects: %s", objects.keys())
+        logging.info("BatchLookup: memcache get_multi return size: %s", get_size)
+        logging.info("BatchLookup: memcache get_multi objects: %s", objects.keys())
 
         return object_map
 
@@ -189,7 +188,7 @@ class BatchLookup(object):
         for i in range(0, len(clauses), max_in_queries):
             objects = FacebookCachedObject.gql(query, clauses[i:i+max_in_queries]).fetch(len(object_keys))
             object_map.update(dict((tuple(o.ckey.split('.')), o.unpickled_dict()) for o in objects))
-        logging.info("BatchLookup: get_multi objects: %s", object_map.keys())
+        logging.info("BatchLookup: db get_multi objects: %s", object_map.keys())
         return object_map
 
     def finish_loading(self):
@@ -241,12 +240,14 @@ class BatchLookup(object):
                 else:
                     text = result.content
                     return simplejson.loads(text)
+            else:
+                logging.error("BatchLookup: Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
         except urlfetch.DownloadError:
-            logging.warning("Error downloading: %s", object_rpc.request.url())
+            logging.error("BatchLookup: Error downloading: %s", object_rpc.request.url())
         return None
 
     def _fetch_object_keys(self, object_keys_to_lookup):
-        logging.info("Looking up IDs: %s", object_keys_to_lookup)
+        logging.info("BatchLookup: Looking up IDs: %s", object_keys_to_lookup)
         # initiate RPCs
         self.object_keys_to_rpcs = {}
         for object_key in object_keys_to_lookup:
@@ -260,13 +261,17 @@ class BatchLookup(object):
             for object_rpc_name, object_rpc in object_rpc_dict.iteritems():
                 object_json = self._map_rpc_to_data(object_key, object_rpc_name, object_rpc)
                 if object_json is not None:
-                    this_object[object_rpc_name] = object_json
+                    if type(object_json) == dict and 'error_code' in object_json:
+                        logging.error("BatchLookup: Error code from FB server: %s", object_json)
+                        object_is_bad = True
+                    else:
+                        this_object[object_rpc_name] = object_json
                     if object_json == False:
                         this_object['deleted'] = True
                 else:
                     object_is_bad = True
             if object_is_bad:
-                logging.warning("Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
+                logging.error("BatchLookup: Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
             else:
                 fetched_objects[object_key] = this_object
         return fetched_objects
@@ -280,14 +285,16 @@ class BatchLookup(object):
 
     def _store_objects_into_dbcache(self, fetched_objects):
         for object_key, this_object in fetched_objects.iteritems():
-            if self._is_cacheable(object_key, this_object):
-                # TODO(lambert): Make this transaction-safe
-                results = FacebookCachedObject.gql('where ckey = :1', self._string_key(object_key)).fetch(1)
-                if results:
-                    obj = results[0]
-                else:
-                    obj = FacebookCachedObject()
-                obj.ckey = self._string_key(object_key)
-                obj.pickle_dict(this_object)
-                obj.put()
+            if not self._is_cacheable(object_key, this_object):
+                logging.error("Looked up event %s but is not cacheable.", object_key)
+                continue
+            # TODO(lambert): Make this transaction-safe
+            results = FacebookCachedObject.gql('where ckey = :1', self._string_key(object_key)).fetch(1)
+            if results:
+                obj = results[0]
+            else:
+                obj = FacebookCachedObject()
+            obj.ckey = self._string_key(object_key)
+            obj.pickle_dict(this_object)
+            obj.put()
         return fetched_objects
