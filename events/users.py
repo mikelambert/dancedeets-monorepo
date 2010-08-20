@@ -9,15 +9,13 @@ def list_item(internal, name, description):
     return dict(internal=internal, name=name, description=description)
 
 FREESTYLE_DANCER = 'FREESTYLE_DANCER'
-FREESTYLE_FAN_WITH_CLUBS = 'FREESTYLE_FAN_WITH_CLUBS'
-FREESTYLE_FAN_NO_CLUBS = 'FREESTYLE_FAN_NO_CLUBS'
+FREESTYLE_FAN = 'FREESTYLE_FAN'
 FREESTYLE_APATHY = 'FREESTYLE_APATHY'
 
 FREESTYLE_HEADER = header_item("Freestyle", "Street Dances: breaking, house dancing, popping and locking, waacking and vogue, old school hiphop, etc.")
 FREESTYLE_LIST = [
     list_item(FREESTYLE_APATHY, "Freestyle Apathy", "You're not a fan of freestyle stuff, it's just not your scene."),
-    list_item(FREESTYLE_FAN_NO_CLUBS, "Freestyle Fan, No Clubs", "You love watching performances, jams, and battles."),
-    list_item(FREESTYLE_FAN_WITH_CLUBS, "Freestyle Fan, With Clubs", "In addition to performances, battles, and jams, you love going to the clubs to watch and absorb the vibe, even if you don't dance."),
+    list_item(FREESTYLE_FAN, "Freestyle Fan", "You love watching performances, jams, and battles, but don't jump in circles yourself."),
     list_item(FREESTYLE_DANCER, "Freestyle Dancer", "Not just a fan of freestyle stuff, but a dancer as well. You're interested in workshops, practice sessions, auditions, and other venues for learning."),
 ]
 
