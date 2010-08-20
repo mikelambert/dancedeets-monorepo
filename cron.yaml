@@ -1,4 +1,7 @@
 cron:
+- description: reload user data
+  url: /tasks/reload_users?allow_cache=0
+  schedule: every 6 hours
 - description: reload future facebook event data
   url: /tasks/reload_future_events?allow_cache=0
   schedule: every 12 hours

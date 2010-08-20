@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import datetime
+import logging
 
 import base_servlet
 from events import cities

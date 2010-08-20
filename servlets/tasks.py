@@ -79,23 +79,35 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
         self.batch_lookup.finish_loading()
     post=get
 
+class ReloadAllUsersHandler(BaseTaskRequestHandler):
+    def get(self):
+        user_ids = [user.fb_uid for user in users.User.all()]
+        backgrounder.load_users(user_ids, allow_cache=False)    
+    post=get
+
+class ResaveAllEventsHandler(BaseTaskRequestHandler):
+    def get(self):
+        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.all()]
+        backgrounder.load_events(event_ids, allow_cache=False)
+    post=get
+
 class ReloadAllEventsHandler(BaseTaskRequestHandler):
     def get(self):
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.all()]
-        backgrounder.load_events(event_ids)    
+        backgrounder.load_events(event_ids, allow_cache=False)
     post=get
 
 class ReloadPastEventsHandler(BaseTaskRequestHandler):
     def get(self):
         gm_today = datetime.datetime(*time.gmtime(time.time())[:6])
-        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE end_time < :1", gm_today)]
+        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE start_time < :1", gm_today)]
         backgrounder.load_events(event_ids, allow_cache=False)
     post=get
 
 class ReloadFutureEventsHandler(BaseTaskRequestHandler):
     def get(self):
         gm_yesterday = datetime.datetime(*time.gmtime(time.time())[:6]) - datetime.timedelta(days=1)
-        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql('WHERE start_time > :1', gm_yesterday)]
+        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql('WHERE end_time > :1', gm_yesterday)]
         backgrounder.load_events(event_ids, allow_cache=False)    
     post=get
 
