@@ -14,8 +14,8 @@ FREESTYLE_APATHY = 'FREESTYLE_APATHY'
 
 FREESTYLE_HEADER = header_item("Freestyle", "Street Dances: breaking, house dancing, popping and locking, waacking and vogue, old school hiphop, etc.")
 FREESTYLE_LIST = [
-    list_item(FREESTYLE_APATHY, "Freestyle Apathy", "You're not a fan of freestyle stuff, it's just not your scene."),
-    list_item(FREESTYLE_FAN, "Freestyle Fan", "You love watching performances, jams, and battles, but don't jump in circles yourself."),
+    list_item(FREESTYLE_APATHY, "No Interest in Freestyle", "You're not a fan of freestyle stuff, it's just not your scene to do yourself...yet."),
+    list_item(FREESTYLE_FAN, "Fan of Freestyle", "You love watching performances, jams, and battles, but don't jump in circles yourself."),
     list_item(FREESTYLE_DANCER, "Freestyle Dancer", "Not just a fan of freestyle stuff, but a dancer as well. You're interested in workshops, practice sessions, auditions, and other venues for learning."),
 ]
 
@@ -23,10 +23,10 @@ CHOREO_DANCER = 'CHOREO_DANCER'
 CHOREO_FAN = 'CHOREO_FAN'
 CHOREO_APATHY = 'CHOREO_APATHY'
 
-CHOREO_HEADER = header_item("Choreo", "Hiphop choreography, urban dance choreography, jazz-funk, contemporary hiphop, etc.")
+CHOREO_HEADER = header_item("Choreo", "Hiphop choreography, new-school hiphop, urban dance choreography, jazz-funk, contemporary hiphop, etc.")
 CHOREO_LIST = [
-    list_item(CHOREO_APATHY, "Choreo Apathy", "You're not a fan of hiphop choreography, it's just not your scene."),
-    list_item(CHOREO_FAN, "Choreo Fan", "You love watching hiphop choreography in performances and shows, including hiphop choreography competitions."),
+    list_item(CHOREO_APATHY, "No Interest in Choreo", "You're not a fan of hiphop choreography, it's just not your scene to do yourself...yet."),
+    list_item(CHOREO_FAN, "Fan of Choreo", "You love watching hiphop choreography in performances and shows, including hiphop choreography competitions."),
     list_item(CHOREO_DANCER, "Choreo Dancer", "Not just a fan, but you love hiphop workshops, auditions, and everything else in the hiphop choreography scene (also known as urban choreography scene.) This can potentially include jazz funk, hiphop/jazz, and other such blends of styles."),
 ]
 
