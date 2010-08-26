@@ -23,6 +23,12 @@
     return '$next';
   }
 
+  function getLoginStatus(response) {
+    if (response.session) {
+      window.location = getNextUrl();
+    }
+  }
+  FB.Event.subscribe('FB.loginStatus', getLoginStatus);
   FB.init({appId: '$api_key', status: true,
          cookie: true, xfbml: true});
 </script>
