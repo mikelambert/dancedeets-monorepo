@@ -24,7 +24,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         #TODO(lambert): fix default user creation in /login to also handle the information here
         defaults = {
             'location': facebook_location,
-            'freestyle': users.FREESTYLE_FAN_NO_CLUBS,
+            'freestyle': users.FREESTYLE_FAN,
             'choreo': users.CHOREO_FAN,
             'send_email': True,
             'distance': 60,
