@@ -111,7 +111,9 @@ class DBEvent(db.Model):
             #TODO(lambert): Add enough cities to cities.py to support coverage over the entire US?
             # Or add a "default US" that always gets searched, and that gets appended if no cities are close enough.
             self.search_regions = cities.get_cities_within(self.latitude, self.longitude, REGION_RADIUS)
-            logging.info("Nearest city for %s is %s", self.address, self.search_regions)
+            logging.info("Nearest cities for %s are %s", self.address, self.search_regions)
+            if not self.search_regions:
+                logging.error("Error no search regions for lat/lng (%s,%s) with address %s", self.latitude, self.longitude, self.address)
         else:
             #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
             logging.error("No geocoding results for eid=%s is: %s", self.fb_event_id, results)
