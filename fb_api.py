@@ -196,31 +196,34 @@ class BatchLookup(object):
         object_keys_to_lookup = list(self.object_keys)
 
         if self.allow_cache:
-            # lookup from memcache
-            memcache_objects = self._get_objects_from_memcache(object_keys_to_lookup)
-            self.objects.update(memcache_objects)
-            # warn about strange keys we get back
-            unknown_results = set(memcache_objects).difference(object_keys_to_lookup)
-            assert not len(unknown_results), "Unknown keys found: %s" % unknown_results
-            # and fall back for the rest
-            object_keys_to_lookup = set(self.object_keys).difference(memcache_objects)
+            if object_keys_to_lookup:
+                # lookup from memcache
+                memcache_objects = self._get_objects_from_memcache(object_keys_to_lookup)
+                self.objects.update(memcache_objects)
+                # warn about strange keys we get back
+                unknown_results = set(memcache_objects).difference(object_keys_to_lookup)
+                assert not len(unknown_results), "Unknown keys found: %s" % unknown_results
+                # and fall back for the rest
+                object_keys_to_lookup = set(self.object_keys).difference(memcache_objects)
 
             # fall back to getting the rest from the db cache
-            db_objects = self._get_objects_from_dbcache(object_keys_to_lookup)
-            self.objects.update(db_objects)
-            # warn about strange keys we get back
-            unknown_results = set(db_objects).difference(object_keys_to_lookup)
-            assert not len(unknown_results), "Unknown keys found: %s" % unknown_results
-            # and fall back for the rest
-            object_keys_to_lookup = set(object_keys_to_lookup).difference(db_objects)
+            if object_keys_to_lookup:
+                db_objects = self._get_objects_from_dbcache(object_keys_to_lookup)
+                self.objects.update(db_objects)
+                # warn about strange keys we get back
+                unknown_results = set(db_objects).difference(object_keys_to_lookup)
+                assert not len(unknown_results), "Unknown keys found: %s" % unknown_results
+                # and fall back for the rest
+                object_keys_to_lookup = set(object_keys_to_lookup).difference(db_objects)
 
-            # Cache in memcache for next time
-            self._store_objects_into_memcache(db_objects)
+                # Cache in memcache for next time
+                if db_objects:
+                    self._store_objects_into_memcache(db_objects)
 
-            # Warn about what our get_multi missed
-            logging.info("BatchLookup: get_multi missed objects: %s", object_keys_to_lookup)
+                # Warn about what our get_multi missed
+                logging.info("BatchLookup: get_multi missed objects: %s", object_keys_to_lookup)
 
-            object_keys_to_lookup = list(object_keys_to_lookup)
+        object_keys_to_lookup = list(object_keys_to_lookup)
         FB_FETCH_COUNT = 10 # number of objects, each of which may be 1-5 RPCs
         for i in range(0, len(object_keys_to_lookup), FB_FETCH_COUNT):
             fetched_objects = self._fetch_object_keys(object_keys_to_lookup[i:i+FB_FETCH_COUNT])    
