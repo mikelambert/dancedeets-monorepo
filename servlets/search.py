@@ -23,7 +23,13 @@ class SearchResult(object):
         self.rsvp_status = "unknown"
 
     def get_image(self):
-        return eventdata.get_event_image_url(self.fb_event['picture'], eventdata.EVENT_IMAGE_MEDIUM)
+        picture_url = self.fb_event.get('picture')
+        if picture_url:
+            return eventdata.get_event_image_url(picture_url, eventdata.EVENT_IMAGE_MEDIUM)
+        else:
+            logging.error("Error loading picture for event id %s", self.db_event.fb_event_id)
+            logging.error("Data is %s\n\n%s", self.db_event, self.fb_event)
+            return '' #TODO(lambert): handle no-image case
 
     def get_attendance(self):
         if self.rsvp_status == 'unsure':
@@ -108,7 +114,7 @@ class SearchQuery(object):
             search_tags.append(tags.CHOREO_EVENT)
         if self.freestyle != users.FREESTYLE_APATHY:
             search_tags.append(tags.FREESTYLE_EVENT)
-        if search_tags:
+        if len(search_tags) != 2:
             clauses.append('search_tags in :search_tags')
             bind_vars['search_tags'] = search_tags
         if clauses:
