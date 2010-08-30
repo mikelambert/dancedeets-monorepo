@@ -80,9 +80,22 @@ class User(db.Model):
             if fetched_users:
                 user = fetched_users[0]
             smemcache.set(memcache_key, user, USER_EXPIRY)
-        #TODO(lambert): is this a good idea? it can construct a not-filled-out user that we may depend on later, depending on who calls this.
-        if not user:
-            user = User(fb_uid=uid)
+        return user
+
+    @classmethod
+    def get_default_user(cls, fb_uid, location):
+        user = User(fb_uid=fb_uid)
+        user.location = location
+        self.location_country = locations.get_country_for_location(self.location)
+        user.freestyle = FREESTYLE_DANCER
+        user.choreo = CHOREO_DANCER
+        user.send_email = True
+        if user.location_country in locations.MILES_COUNTRIES:
+            user.distance = '90'
+            user.distance_units = 'miles'
+        else:
+            user.distance = '150'
+            user.distance_units = 'km'
         return user
 
     def put(self):

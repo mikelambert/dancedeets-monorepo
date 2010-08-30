@@ -4,7 +4,6 @@ class RSVPManager(object):
 
     def __init__(self, batch_lookup):
         self.batch_lookup = batch_lookup
-        #TODO(lambert): write code to purge these from cache, or load in background, or whatever. they aren't getting updated...
         rsvps_list = self.batch_lookup.data_for_user(self.batch_lookup.fb_uid)['rsvp_for_events']
         self.rsvps = dict((int(x['eid']), x['rsvp_status']) for x in rsvps_list)
 

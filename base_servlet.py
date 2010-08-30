@@ -41,6 +41,13 @@ class BaseRequestHandler(RequestHandler):
             self.fb_uid = None
             self.fb_graph = None
             self.user = None
+        if self.requires_login() and (not self.fb_uid or not self.user):
+            self.redirect('/login?next=%s' % urllib.quote(self.request.url))
+            return True
+        if self.fb_uid:
+            self.batch_lookup = CommonBatchLookup(self.fb_uid, self.fb_graph)
+            # Always look up the user's information for every page view...?
+            self.batch_lookup.lookup_user(self.fb_uid)
         self.display = {}
         self._errors = []
         # We can safely do this since there are very few ways others can modify self._errors
@@ -50,15 +57,6 @@ class BaseRequestHandler(RequestHandler):
         self.display['date_human_format'] = self.date_human_format
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
-        self.redirecting = False
-        if self.requires_login():
-            if not self.fb_uid:
-                self.redirect('/login?next=%s' % urllib.quote(self.request.url))
-                return True
-            else:
-                self.batch_lookup = CommonBatchLookup(self.fb_uid, self.fb_graph)
-                # Always look up the user's information for every page view...?
-                self.batch_lookup.lookup_user(self.fb_uid)
         return False
 
     def requires_login(self):

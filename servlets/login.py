@@ -17,6 +17,8 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         next = self.request.get('next') or '/'
         # once they have a login token, do initial signin stuff, and redirect them
         if self.fb_uid:
+            # We need to load the user info
+            self.finish_preload()
             self.update_user_with_login()
             # Disabled due to an error: Only ancestor queries are allowed inside transactions.
             #db.run_in_transaction(self.update_user_with_login)
@@ -30,6 +32,9 @@ class LoginHandler(base_servlet.BaseRequestHandler):
 
     def update_user_with_login(self):
         user = users.User.get(self.fb_uid)
+        if not user:
+            facebook_location = self.current_user()['profile']['location']['name']
+            user = users.User.get_default_user(self.fb_uid, facebook_location)
         if not user.fb_access_token: # brand new user!
             user.creation_time = datetime.datetime.now()
             user_friends = users.UserFriendsAtSignup()
