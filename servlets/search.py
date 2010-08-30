@@ -29,7 +29,7 @@ class SearchResult(object):
         else:
             logging.error("Error loading picture for event id %s", self.db_event.fb_event_id)
             logging.error("Data is %s\n\n%s", self.db_event, self.fb_event)
-            return '' #TODO(lambert): handle no-image case
+            return 'http://graph.facebook.com/331218348435/picture' % self.db_event.fb_event_id
 
     def get_attendance(self):
         if self.rsvp_status == 'unsure':
