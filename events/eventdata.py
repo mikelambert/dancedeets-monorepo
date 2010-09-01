@@ -84,7 +84,11 @@ class DBEvent(db.Model):
         # set up any cached fields or bucketing or whatnot for this event
 
         if fb_dict['deleted']:
-            #TODO(lambert): zero out a bunch of fields so that this record becomes "invisible" to searches
+            self.start_time = NOne
+            self.end_time = None
+            self.search_tags = []
+            self.search_time_period = None
+            self.search_regions = []
             return
 
         self.start_time = datetime.datetime.strptime(fb_dict['info']['start_time'], '%Y-%m-%dT%H:%M:%S+0000')
