@@ -7,11 +7,13 @@ import urllib
 from django.utils import simplejson
 from google.appengine.ext.webapp import RequestHandler
 
+import base_servlet
 from events import eventdata
 from events import users
-from logic import backgrounder
 import facebook
 import fb_api
+from logic import backgrounder
+from logic import email_events
 
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.
 RETRY_ON_FAIL_DELAY = 60
@@ -109,5 +111,12 @@ class ReloadFutureEventsHandler(BaseTaskRequestHandler):
         gm_yesterday = datetime.datetime(*time.gmtime(time.time())[:6]) - datetime.timedelta(days=1)
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql('WHERE end_time > :1', gm_yesterday)]
         backgrounder.load_events(event_ids, allow_cache=False)    
+    post=get
+
+class EmailUsersHandler(BaseTaskFacebookRequestHandler, base_servlet.UserTimeHandler):
+    def get(self):
+        self.batch_lookup.lookup_user(self.user.fb_uid)
+        self.batch_lookup.finish_loading()
+        email_events.email_for_user(self.user, self.batch_lookup, self.fb_graph, self.parse_fb_timestamp)
     post=get
 

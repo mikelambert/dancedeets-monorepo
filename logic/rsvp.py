@@ -23,3 +23,8 @@ class RSVPManager(object):
         result = fb_graph.api_request('method/events.rsvp', args=dict(eid=event_id, rsvp_status=rsvp_status))
         return result
 
+def decorate_with_rsvps(batch_lookup, search_results):
+    rsvps = RSVPManager(batch_lookup)
+    for result in search_results:
+        result.rsvp_status = rsvps.get_rsvp_for_event(result.db_event.fb_event_id)
+

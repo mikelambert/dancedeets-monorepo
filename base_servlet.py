@@ -26,7 +26,17 @@ class CommonBatchLookup(fb_api.BatchLookup):
     def get_userless_id(self):
         return '701004'
 
-class BaseRequestHandler(RequestHandler):
+class UserTimeHandler(object):
+    def parse_fb_timestamp(self, fb_timestamp):
+        return self.localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
+
+    def localize_timestamp(self, dt):
+        time_offset = self.batch_lookup.data_for_user(self.fb_uid)['profile']['timezone']
+        td = datetime.timedelta(hours=time_offset)
+        final_dt = dt + td
+        return final_dt
+
+class BaseRequestHandler(RequestHandler, UserTimeHandler):
     def __init__(self, *args, **kwargs):
         super(BaseRequestHandler, self).__init__(*args, **kwargs)
 
@@ -91,15 +101,6 @@ class BaseRequestHandler(RequestHandler):
     def render_template(self, name):
         rendered = template.render_template(name, self.display)
         self.response.out.write(rendered)
-
-    def parse_fb_timestamp(self, fb_timestamp):
-        return self.localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
-
-    def localize_timestamp(self, dt):
-        time_offset = self.batch_lookup.data_for_user(self.fb_uid)['profile']['timezone']
-        td = datetime.timedelta(hours=time_offset)
-        final_dt = dt + td
-        return final_dt
 
     def date_human_format(self, d):
         now = datetime.datetime.now()

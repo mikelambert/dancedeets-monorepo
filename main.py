@@ -30,6 +30,7 @@ URLS = [
     ('/tasks/reload_future_events', tasks.ReloadFutureEventsHandler),
     ('/tasks/reload_past_events', tasks.ReloadPastEventsHandler),
     ('/tasks/resave_all_events', tasks.ResaveAllEventsHandler),
+    ('/tasks/email_users', tasks.EmailUsersHandler),
     ('/events/view', event.ViewHandler),
     ('/events/add', event.AddHandler),
     ('/events/search', search.SearchHandler),
