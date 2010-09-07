@@ -64,7 +64,7 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
         self.display['format_html'] = text.format_html
-        self.display['date_human_format'] = self.date_human_format
+        self.display['date_human_format'] = self.user.date_human_format
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
         return False
@@ -101,17 +101,6 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
     def render_template(self, name):
         rendered = template.render_template(name, self.display)
         self.response.out.write(rendered)
-
-    def date_human_format(self, d):
-        now = datetime.datetime.now()
-        difference = (d - now)
-        month_day_of_week = d.strftime('%A, %B')
-        month_day = '%s %s' % (month_day_of_week, d.day)
-        if self.user.location_country in locations.AMPM_COUNTRIES:
-            time_string = '%d:%02d%s' % (int(d.strftime('%I')), d.minute, d.strftime('%p').lower())
-        else:
-            time_string = '%d:%02d' % (int(d.strftime('%H')), d.minute)
-        return '%s at %s' % (month_day, time_string)
 
     def current_user(self):
         return self.batch_lookup.data_for_user(self.fb_uid)
