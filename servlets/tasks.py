@@ -113,7 +113,13 @@ class ReloadFutureEventsHandler(BaseTaskRequestHandler):
         backgrounder.load_events(event_ids, allow_cache=False)    
     post=get
 
-class EmailUsersHandler(BaseTaskFacebookRequestHandler, base_servlet.UserTimeHandler):
+class EmailAllUsersHandler(BaseTaskRequestHandler):
+    def get(self):
+        user_ids = [user.fb_uid for user in users.User.all()]
+        backgrounder.email_users(user_ids)    
+    post=get
+
+class EmailUserHandler(BaseTaskFacebookRequestHandler, base_servlet.UserTimeHandler):
     def get(self):
         self.batch_lookup.lookup_user(self.user.fb_uid)
         self.batch_lookup.finish_loading()

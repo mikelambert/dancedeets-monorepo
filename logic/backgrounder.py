@@ -2,6 +2,13 @@ import urllib
 
 from google.appengine.api.labs import taskqueue
 
+def email_users(fb_uids, **kwargs):
+    """Sends out summary emails of upcoming events to all users. Don't call this unless you really mean it."""
+    #TODO(lambert): support more than one fbuser context per request in BaseTaskFacebookRequestHandler.initialize()
+    task_size = 1
+    for i in range(0, len(fb_uids), task_size):
+        taskqueue.add(method='GET', url='/tasks/email_user?' + urllib.urlencode(dict(user_id=','.join(str(x) for x in fb_uids[i:i+task_size]))), **kwargs)
+
 def load_users(fb_uids, allow_cache=True, **kwargs):
     #TODO(lambert): support more than one fbuser context per request in BaseTaskFacebookRequestHandler.initialize()
     task_size = 1
