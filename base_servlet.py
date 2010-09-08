@@ -64,7 +64,8 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
         self.display['format_html'] = text.format_html
-        self.display['date_human_format'] = self.user.date_human_format
+        if self.user:
+            self.display['date_human_format'] = self.user.date_human_format
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
         return False
