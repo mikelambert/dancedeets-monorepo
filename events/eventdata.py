@@ -26,8 +26,10 @@ EVENT_IMAGE_TYPES = [EVENT_IMAGE_SMALL, EVENT_IMAGE_MEDIUM, EVENT_IMAGE_LARGE, E
 
 def get_event_image_url(square_url, event_image_type):
     assert event_image_type in EVENT_IMAGE_TYPES
-    final_url = square_url.replace('/q', '/%s' % event_image_type)
-    return final_url
+    url = square_url
+    url = url.replace('/q', '/%s' % event_image_type)
+    url = url.replace('_q', '_%s' % event_image_type)
+    return url
 
 
 states_abbrev2full = {
