@@ -109,6 +109,8 @@ def get_original_address_for_event(fb_event):
     return address
 
 def get_remapped_address_for(address):
+    if not address:
+        return ''
     # map locations to corrected locations for events that have wrong or incomplete info
     location_mapping = LocationMapping.get_by_key_name(address)
     if location_mapping:

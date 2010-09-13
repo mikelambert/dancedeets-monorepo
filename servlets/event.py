@@ -177,10 +177,12 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         e = eventdata.get_db_event(event_id)
         if not e:
             e = eventdata.DBEvent(fb_event_id=event_id)
-            e.make_findable_for(self.batch_lookup.data_for_event(event_id))
+        e.make_findable_for(self.batch_lookup.data_for_event(event_id))
         e.tags = self.request.get_all('tag')
         e.creating_fb_uid = self.user.fb_uid
         e.put()
+
+        self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
 
 class AddHandler(base_servlet.BaseRequestHandler):
@@ -241,7 +243,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         e = eventdata.get_db_event(event_id)
         if not e:
             e = eventdata.DBEvent(fb_event_id=event_id)
-            e.make_findable_for(self.batch_lookup.data_for_event(event_id))
+        e.make_findable_for(self.batch_lookup.data_for_event(event_id))
         e.tags = self.request.get_all('tag')
         e.creating_fb_uid = self.user.fb_uid
         e.put()
