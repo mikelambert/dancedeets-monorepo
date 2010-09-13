@@ -96,14 +96,25 @@ states_full2abbrev = {}
 for abbr, full in states_abbrev2full.iteritems():
   states_full2abbrev[full] = abbr
 
+class LocationMapping(db.Model):
+    address = db.StringProperty()  
+    mapped_address = db.StringProperty()  
+
 def get_geocoded_location_for_event(fb_event):
+    # Do not trust facebook for latitude/longitude data. It appears to treat LA as Louisiana, etc. So always geocode
     event_info = fb_event['info']
     venue = event_info.get('venue', {})
+    # Use staes_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
     address_components = [event_info.get('location'), venue.get('street'), venue.get('city'), states_full2abbrev.get(venue.get('state'), venue.get('state')), venue.get('country')]
     address_components = [x for x in address_components if x]
     address = ', '.join(address_components)
     logging.info("For event = %s, address is %s", fb_event['info']['id'], address)
-    # Do not trust facebook for latitude/longitude data. It appears to treat LA as Louisiana, etc. So always geocode below.
+
+    # map locations to corrected locations for events that have wrong or incomplete info
+    location_mapping = LocationMapping.gql('where address = :address', address=address).fetch(1)
+    if location_mapping:
+        logging.info("address got remapped to %s", location_mapping.mapped_address)
+        address = location_mapping.mapped_address
     results = locations.get_geocoded_location(address)
     return results
 

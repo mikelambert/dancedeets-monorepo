@@ -87,7 +87,7 @@ class User(db.Model):
     def get_default_user(cls, fb_uid, location):
         user = User(fb_uid=fb_uid)
         user.location = location
-        self.location_country = locations.get_country_for_location(self.location)
+        user.location_country = locations.get_country_for_location(user.location)
         user.freestyle = FREESTYLE_DANCER
         user.choreo = CHOREO_DANCER
         user.send_email = True

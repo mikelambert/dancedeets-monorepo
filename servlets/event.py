@@ -105,7 +105,30 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
             # TODO(lambert): maybe offer a link to message the owner
         else:
-            self.response.out.write('Need an event_id. Or go to boo.html to login')
+            self.response.out.write('Need an event_id.')
+
+class AdminEditHandler(base_servlet.BaseRequestHandler):
+    def get(self):
+        if self.request.get('event_id'):
+            event_id = int(self.request.get('event_id'))
+
+        fb_event = self.batch_lookup.data_for_event(event_id)
+        if fb_event['info']['privacy'] == 'SECRET':
+            self.add_error('Cannot add private events to dancedeets!')
+
+        self.errors_are_fatal()
+        e = eventdata.get_db_event(event_id)
+        if not e:
+            e = eventdata.DBEvent(fb_event_id=event_id)
+
+        self.display['freestyle_types'] = tags.FREESTYLE_EVENT_LIST
+        self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
+        self.display['styles'] = tags.STYLES
+
+        self.display['event'] = e
+        self.display['fb_event'] = fb_event
+
+        self.render_template('admin_edit')
 
 class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):

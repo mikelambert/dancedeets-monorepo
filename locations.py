@@ -50,7 +50,7 @@ def _get_geocoded_data(address):
     return result
 
 
-def memcache_location_key(location):
+def _memcache_location_key(location):
   return 'Location.%s' % location
 
 def _raw_get_geocoded_location(address):
@@ -65,7 +65,7 @@ def _raw_get_geocoded_location(address):
     return geocoded_location
 
 def get_geocoded_location(location):
-  memcache_key = memcache_location_key(location)
+  memcache_key = _memcache_location_key(location)
   geocoded_location = smemcache and smemcache.get(memcache_key)
   if not geocoded_location:
     geocoded_location = _raw_get_geocoded_location(location)
