@@ -41,7 +41,7 @@ ORDER BY start_time
 """
 
 class FacebookCachedObject(db.Model):
-    ckey = db.StringProperty()
+    ckey = db.StringProperty() #TODO(lambert): move to primary key
     pickled_dict = db.BlobProperty()
 
     def pickle_dict(self, obj_dict):

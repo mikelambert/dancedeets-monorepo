@@ -3,6 +3,8 @@
 import datetime
 import re
 import time
+import urllib
+from django.utils import simplejson
 
 from google.appengine.api.labs import taskqueue
 
@@ -109,17 +111,37 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
 class AdminEditHandler(base_servlet.BaseRequestHandler):
     def get(self):
+        event_id = None
         if self.request.get('event_id'):
             event_id = int(self.request.get('event_id'))
+        self.batch_lookup.lookup_event(event_id)
+        self.finish_preload()
 
         fb_event = self.batch_lookup.data_for_event(event_id)
         if fb_event['info']['privacy'] == 'SECRET':
             self.add_error('Cannot add private events to dancedeets!')
 
         self.errors_are_fatal()
+
         e = eventdata.get_db_event(event_id)
         if not e:
             e = eventdata.DBEvent(fb_event_id=event_id)
+
+        if e.creating_fb_uid:
+            f = urllib.urlopen('https://graph.facebook.com/%s' % e.creating_fb_uid)
+            json = simplejson.loads(f.read())
+            creating_user = json['name']
+        else:
+            creating_user = None
+
+        original_address = eventdata.get_original_address_for_event(fb_event)
+        geocoded_address = locations.get_geocoded_location(original_address)['address']
+        remapped_address = eventdata.get_remapped_address_for(original_address)
+
+        self.display['creating_user'] = creating_user
+        self.display['original_address'] = original_address
+        self.display['geocoded_address'] = geocoded_address
+        self.display['remapped_address'] = remapped_address
 
         self.display['freestyle_types'] = tags.FREESTYLE_EVENT_LIST
         self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
@@ -129,6 +151,37 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['fb_event'] = fb_event
 
         self.render_template('admin_edit')
+
+    def post(self):
+        event_id = int(self.request.get('event_id'))
+        self.batch_lookup.lookup_event(event_id)
+        try:
+            self.finish_preload()
+        except fb_api.FacebookException, e:
+            self.add_error(str(e))
+
+        fb_event = self.batch_lookup.data_for_event(event_id)
+        if fb_event['info']['privacy'] == 'SECRET':
+            self.add_error('Cannot add private events to dancedeets!')
+
+        self.errors_are_fatal()
+
+
+        original_address = eventdata.get_original_address_for_event(fb_event)
+        remapped_address = eventdata.get_remapped_address_for(original_address)
+
+        new_remapped_address = self.request.get('remapped_address')
+        if new_remapped_address != remapped_address:
+            eventdata.save_remapped_address_for(original_address, new_remapped_address)
+
+        e = eventdata.get_db_event(event_id)
+        if not e:
+            e = eventdata.DBEvent(fb_event_id=event_id)
+            e.make_findable_for(self.batch_lookup.data_for_event(event_id))
+        e.tags = self.request.get_all('tag')
+        e.creating_fb_uid = self.user.fb_uid
+        e.put()
+
 
 class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):
@@ -190,6 +243,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             e = eventdata.DBEvent(fb_event_id=event_id)
             e.make_findable_for(self.batch_lookup.data_for_event(event_id))
         e.tags = self.request.get_all('tag')
+        e.creating_fb_uid = self.user.fb_uid
         e.put()
 
         self.response.out.write('Thanks for submitting!<br>\n')

@@ -43,7 +43,7 @@ USER_EXPIRY = 24 * 60 * 60
 
 class User(db.Model):
     # SSO
-    fb_uid = db.IntegerProperty()
+    fb_uid = db.IntegerProperty() #TODO(lambert): move to primary key
     fb_access_token = db.StringProperty()
 
     # Statistics
@@ -117,5 +117,5 @@ class User(db.Model):
 
 
 class UserFriendsAtSignup(db.Model):
-    fb_uid = db.IntegerProperty()
+    fb_uid = db.IntegerProperty() #TODO(lambert): move to primary key
     registered_friend_ids = db.ListProperty(int)

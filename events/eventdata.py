@@ -97,24 +97,41 @@ for abbr, full in states_abbrev2full.iteritems():
   states_full2abbrev[full] = abbr
 
 class LocationMapping(db.Model):
-    address = db.StringProperty()  
-    mapped_address = db.StringProperty()  
+    remapped_address = db.StringProperty()  
 
-def get_geocoded_location_for_event(fb_event):
-    # Do not trust facebook for latitude/longitude data. It appears to treat LA as Louisiana, etc. So always geocode
+def get_original_address_for_event(fb_event):
     event_info = fb_event['info']
     venue = event_info.get('venue', {})
     # Use staes_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
     address_components = [event_info.get('location'), venue.get('street'), venue.get('city'), states_full2abbrev.get(venue.get('state'), venue.get('state')), venue.get('country')]
     address_components = [x for x in address_components if x]
     address = ', '.join(address_components)
+    return address
+
+def get_remapped_address_for(address):
+    # map locations to corrected locations for events that have wrong or incomplete info
+    location_mapping = LocationMapping.get_by_key_name(address)
+    if location_mapping:
+        address = location_mapping.remapped_address
+        return address
+    else:
+        return None
+
+def save_remapped_address_for(original_address, new_remapped_address):
+    location_mapping = LocationMapping.get_or_insert(original_address)
+    location_mapping.remapped_address = new_remapped_address
+    location_mapping.put()
+
+def get_geocoded_location_for_event(fb_event):
+    # Do not trust facebook for latitude/longitude data. It appears to treat LA as Louisiana, etc. So always geocode
+    address = get_original_address_for_event(fb_event)
     logging.info("For event = %s, address is %s", fb_event['info']['id'], address)
 
-    # map locations to corrected locations for events that have wrong or incomplete info
-    location_mapping = LocationMapping.gql('where address = :address', address=address).fetch(1)
-    if location_mapping:
-        logging.info("address got remapped to %s", location_mapping.mapped_address)
-        address = location_mapping.mapped_address
+    remapped_address = get_remapped_address_for(address)
+    if remapped_address:
+        logging.info("address got remapped to %s", remapped_address)
+        address = remapped_address
+
     results = locations.get_geocoded_location(address)
     return results
 
@@ -139,9 +156,10 @@ def get_db_events(fb_event_ids):
 
 class DBEvent(db.Model):
     """Stores custom data about our Event"""
-    fb_event_id = db.IntegerProperty()
+    fb_event_id = db.IntegerProperty() #TODO(lambert): write mapreduce to move these all to primary keys
     # real data
     tags = db.StringListProperty()
+    creating_fb_uid = db.IntegerProperty()
     
     # searchable properties
     search_tags = db.StringListProperty()

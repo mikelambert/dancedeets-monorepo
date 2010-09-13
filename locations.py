@@ -61,7 +61,7 @@ def _raw_get_geocoded_location(address):
         geocoded_location['address'] = result['formatted_address']
     else:
         geocoded_location['latlng'] = None
-        geocoded_location['address'] = address
+        geocoded_location['address'] = None
     return geocoded_location
 
 def get_geocoded_location(location):
