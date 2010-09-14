@@ -41,13 +41,12 @@ ORDER BY start_time
 """
 
 class FacebookCachedObject(db.Model):
-    ckey = db.StringProperty() #TODO(lambert): move to primary key
     pickled_dict = db.BlobProperty()
 
     def pickle_dict(self, obj_dict):
         self.pickled_dict = pickle.dumps(obj_dict, pickle.HIGHEST_PROTOCOL)
         if len(self.pickled_dict) > 1024 * 1024 - 200:
-            logging.error("Pickled dictionary getting too large (%s) for key (%s)", len(self.pickled_dict), self.ckey)
+            logging.error("Pickled dictionary getting too large (%s) for key (%s)", len(self.pickled_dict), self.key.name())
         assert self.pickled_dict
 
     def unpickled_dict(self):
@@ -137,9 +136,9 @@ class BatchLookup(object):
     def _db_delete(key_func):
         def db_delete_func(self, id):
             assert id
-            results = FacebookCachedObject.gql('where ckey = :1', self._string_key(key_func(self, id))).fetch(1)
-            if results:
-                results[0].delete()
+            result = FacebookCachedObject.get_by_key_name(self._string_key(key_func(self, id)))
+            if result:
+                result.delete()
         return db_delete_func
 
     def _db_lookup(key_func):
@@ -182,12 +181,11 @@ class BatchLookup(object):
 
     def _get_objects_from_dbcache(self, object_keys):
         clauses = [self._string_key(key) for key in object_keys]
-        query = 'where ckey in :1'
         object_map = {}
         max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
         for i in range(0, len(clauses), max_in_queries):
-            objects = FacebookCachedObject.gql(query, clauses[i:i+max_in_queries]).fetch(len(object_keys))
-            object_map.update(dict((tuple(o.ckey.split('.')), o.unpickled_dict()) for o in objects))
+            objects = FacebookCachedObject.get_by_key_name(clauses[i:i+max_in_queries])
+            object_map.update(dict((tuple(o.key.name().split('.')), o.unpickled_dict()) for o in objects if o))
         logging.info("BatchLookup: db get_multi objects: %s", object_map.keys())
         return object_map
 
@@ -291,13 +289,7 @@ class BatchLookup(object):
             if not self._is_cacheable(object_key, this_object):
                 logging.error("Looked up event %s but is not cacheable.", object_key)
                 continue
-            # TODO(lambert): Make this transaction-safe
-            results = FacebookCachedObject.gql('where ckey = :1', self._string_key(object_key)).fetch(1)
-            if results:
-                obj = results[0]
-            else:
-                obj = FacebookCachedObject()
-            obj.ckey = self._string_key(object_key)
+            obj = FacebookCachedObject.get_or_insert(self._string_key(object_key))
             obj.pickle_dict(this_object)
             obj.put()
         return fetched_objects
