@@ -37,8 +37,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             user = users.User.get_default_user(self.fb_uid, facebook_location)
         if not user.fb_access_token: # brand new user!
             user.creation_time = datetime.datetime.now()
-            user_friends = users.UserFriendsAtSignup()
-            user_friends.fb_uid = self.fb_uid
+            user_friends = users.UserFriendsAtSignup(key_name=str(self.fb_uid))
             user_friends.put()
             taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': self.fb_uid}))
         user.fb_access_token = self.fb_graph.access_token

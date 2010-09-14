@@ -43,7 +43,7 @@ USER_EXPIRY = 24 * 60 * 60
 
 class User(db.Model):
     # SSO
-    fb_uid = db.IntegerProperty() #TODO(lambert): move to primary key
+    fb_uid = property(lambda x: int(x.key().name()))
     fb_access_token = db.StringProperty()
 
     # Statistics
@@ -77,15 +77,13 @@ class User(db.Model):
         memcache_key = cls.memcache_user_key(uid)
         user = allow_memcache and smemcache.get(memcache_key)
         if not user:
-            fetched_users = User.gql('where fb_uid = :fb_uid', fb_uid=uid).fetch(1)
-            if fetched_users:
-                user = fetched_users[0]
+            user = User.get_by_key_name(str(uid))
             smemcache.set(memcache_key, user, USER_EXPIRY)
         return user
 
     @classmethod
     def get_default_user(cls, fb_uid, location):
-        user = User(fb_uid=fb_uid)
+        user = User(key_name=str(fb_uid))
         user.location = location
         user.location_country = locations.get_country_for_location(user.location)
         user.freestyle = FREESTYLE_DANCER
@@ -117,5 +115,5 @@ class User(db.Model):
 
 
 class UserFriendsAtSignup(db.Model):
-    fb_uid = db.IntegerProperty() #TODO(lambert): move to primary key
+    fb_uid = property(lambda x: int(x.key().name()))
     registered_friend_ids = db.ListProperty(int)
