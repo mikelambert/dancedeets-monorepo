@@ -100,6 +100,10 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
         self.response.out.write(simplejson.dumps(kwargs))
 
     def render_template(self, name):
+        if self.fb_uid: # show fb user if we're logged in
+            self.display['fb_user'] = self.current_user()
+        else:
+            self.display['fb_user'] = None
         rendered = template.render_template(name, self.display)
         self.response.out.write(rendered)
 

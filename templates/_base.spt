@@ -7,6 +7,11 @@ $head_javascript()
 <body>
 ## get rid of this and merge it inline?
 $header()
+#if $fb_user
+	<div style="position: absolute; right:0px; top:0px; padding: 5px">
+	$fb_user.profile.name : <a href="/user/edit">Settings</a>
+#end if
+</div>
 	<table><tr><td>
 	<img src="/dancedeets.png">
 	</td><td>
@@ -16,6 +21,8 @@ $header()
 $body()
 
 $bottom_javascript()
+
+Things not working? Have ideas? Events you submitting not showing up? <a href="mailto:mlambert@gmail.com">Send me feedback!</a>
 </body>
 </html>
 
