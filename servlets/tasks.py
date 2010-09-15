@@ -48,26 +48,28 @@ class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
 
 class LoadEventHandler(BaseTaskFacebookRequestHandler):
     def get(self):
-        event_ids = [int(x) for x in self.request.get('event_ids').split(',') if x]
+        event_ids = [x for x in self.request.get('event_ids').split(',') if x]
         for event_id in event_ids:
             self.batch_lookup.lookup_event(event_id)
         self.batch_lookup.finish_loading()
-        db_events = eventdata.get_db_events(event_ids)
+        db_events = eventdata.DBEvent.get_by_key_name(event_ids)
         failed_fb_event_ids = []
-        for db_event in db_events:
+        for event_id, db_event in zip(event_ids, db_events):
+            if not db_event:
+                continue # could be due to uncache-able events that we don't save here
             try:
                 fb_event = self.batch_lookup.data_for_event(db_event.fb_event_id)
                 db_event.make_findable_for(fb_event)
                 db_event.put()
             except:
-                logging.exception("Error loading event, going to retry eid=%s", db_event.fb_event_id)
-                failed_fb_event_ids.append(db_event.fb_event_id)
+                logging.exception("Error loading event, going to retry eid=%s", fb_event_id)
+                failed_fb_event_ids.append(fb_event_id)
         backgrounder.load_events(failed_fb_event_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
     post=get
 
 class LoadEventMembersHandler(BaseTaskFacebookRequestHandler):
     def get(self):
-        event_ids = [int(x) for x in self.request.get('event_ids').split(',') if x]
+        event_ids = [x for x in self.request.get('event_ids').split(',') if x]
         for event_id in event_ids:
             self.batch_lookup.lookup_event_members(event_id)
         self.batch_lookup.finish_loading()
@@ -75,7 +77,7 @@ class LoadEventMembersHandler(BaseTaskFacebookRequestHandler):
 
 class LoadUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
-        user_ids = [int(x) for x in self.request.get('user_ids').split(',') if x]
+        user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         for user_id in user_ids:
             self.batch_lookup.lookup_user(user_id)
         self.batch_lookup.finish_loading()
@@ -90,7 +92,7 @@ class ReloadAllUsersHandler(BaseTaskRequestHandler):
 class ResaveAllEventsHandler(BaseTaskRequestHandler):
     def get(self):
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.all()]
-        backgrounder.load_events(event_ids, allow_cache=False)
+        backgrounder.load_events(event_ids)
     post=get
 
 class ReloadAllEventsHandler(BaseTaskRequestHandler):

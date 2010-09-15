@@ -138,27 +138,10 @@ def get_geocoded_location_for_event(fb_event):
     return results
 
 
-def get_db_event(fb_event_id):
-    query = DBEvent.gql('where fb_event_id = :fb_event_id', fb_event_id=fb_event_id)
-    results = query.fetch(1)
-    if results:
-        return results[0]
-    else:
-        return None
-
-def get_db_events(fb_event_ids):
-    db_events = []
-    max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
-    for i in range(0, len(fb_event_ids), max_in_queries):
-        fb_event_ids_str = ','.join(str(x) for x in fb_event_ids[i:i+max_in_queries])
-        db_events.extend(DBEvent.gql('where fb_event_id in (%s)' % fb_event_ids_str))
-    return db_events
-
-    
-
 class DBEvent(db.Model):
     """Stores custom data about our Event"""
-    fb_event_id = db.IntegerProperty() #TODO(lambert): write mapreduce to move these all to primary keys
+    fb_event_id = property(lambda x: int(x.key().name()))
+
     # real data
     tags = db.StringListProperty()
     creating_fb_uid = db.IntegerProperty()

@@ -27,7 +27,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
 
     def post(self):
         self.finish_preload()
-        event_id = int(self.request.get('event_id'))
+        event_id = self.request.get('event_id')
         if not event_id:
             self.add_error('missing event_id')
         if not self.request.get('rsvp') in self.valid_rsvp:
@@ -48,7 +48,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
 class ViewHandler(base_servlet.BaseRequestHandler):
 
     def get(self):
-        event_id = int(self.request.get('event_id'))
+        event_id = self.request.get('event_id')
         self.batch_lookup.lookup_event(event_id)
         #self.batch_lookup.lookup_event_members(event_id)
         self.finish_preload()
@@ -95,7 +95,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
             self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.data_for_event(event_id)['picture'], eventdata.EVENT_IMAGE_LARGE)
 
-            db_event = eventdata.get_db_event(event_id)
+            db_event = eventdata.DBEvent.get_or_insert(event_id)
             tags_set = db_event and set(db_event.tags) or []
             self.display['styles'] = [x[1] for x in tags.STYLES if x[0] in tags_set]
             self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST if x[0] in tags_set]
@@ -113,7 +113,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
     def get(self):
         event_id = None
         if self.request.get('event_id'):
-            event_id = int(self.request.get('event_id'))
+            event_id = self.request.get('event_id')
         self.batch_lookup.lookup_event(event_id)
         self.finish_preload()
 
@@ -123,10 +123,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.errors_are_fatal()
 
-        e = eventdata.get_db_event(event_id)
-        if not e:
-            e = eventdata.DBEvent(fb_event_id=event_id)
-
+        e = eventdata.DBEvent.get_or_insert(event_id)
         if e.creating_fb_uid:
             f = urllib.urlopen('https://graph.facebook.com/%s' % e.creating_fb_uid)
             json = simplejson.loads(f.read())
@@ -153,7 +150,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.render_template('admin_edit')
 
     def post(self):
-        event_id = int(self.request.get('event_id'))
+        event_id = self.request.get('event_id')
         self.batch_lookup.lookup_event(event_id)
         try:
             self.finish_preload()
@@ -174,9 +171,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         if new_remapped_address != remapped_address:
             eventdata.save_remapped_address_for(original_address, new_remapped_address)
 
-        e = eventdata.get_db_event(event_id)
-        if not e:
-            e = eventdata.DBEvent(fb_event_id=event_id)
+        e = eventdata.DBEvent.get_or_insert(event_id)
         e.make_findable_for(self.batch_lookup.data_for_event(event_id))
         e.tags = self.request.get_all('tag')
         e.creating_fb_uid = self.user.fb_uid
@@ -196,8 +191,8 @@ class AddHandler(base_servlet.BaseRequestHandler):
         results_json = self.batch_lookup.data_for_user(self.fb_uid)['all_event_info']
         events = sorted(results_json, key=lambda x: x['start_time'])
 
-        db_events = eventdata.get_db_events([x['eid'] for x in events])
-        loaded_fb_event_ids = set(x.fb_event_id for x in db_events)
+        db_events = eventdata.DBEvent.get_by_key_name([str(x['eid']) for x in events])
+        loaded_fb_event_ids = set(x.fb_event_id for x in db_events if x)
 
         for event in events:
             # rewrite hack necessary for templates (and above code)
@@ -217,7 +212,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
     def post(self):
         if self.request.get('event_id'):
-            event_id = int(self.request.get('event_id'))
+            event_id = self.request.get('event_id')
         elif self.request.get('event_url'):
             url = self.request.get('event_url')
             if '#' in url:
@@ -225,7 +220,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             match = re.search('eid=(\d+)', url)
             if not match:
                 self.add_error('invalid event_url, expecting eid= parameter')
-            event_id = int(match.group(1))
+            event_id = match.group(1)
         else:
             self.add_error('missing event_url or event_id parameter')
 
@@ -240,9 +235,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.add_error('Cannot add private events to dancedeets!')
 
         self.errors_are_fatal()
-        e = eventdata.get_db_event(event_id)
-        if not e:
-            e = eventdata.DBEvent(fb_event_id=event_id)
+        e = eventdata.DBEvent.get_or_insert(event_id)
         e.make_findable_for(self.batch_lookup.data_for_event(event_id))
         e.tags = self.request.get_all('tag')
         e.creating_fb_uid = self.user.fb_uid
