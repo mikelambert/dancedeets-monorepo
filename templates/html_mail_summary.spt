@@ -2,7 +2,7 @@
 #extends _rsvp
 
 #def html
-<p>See <a href="http://www.dancedeets.com/events/relevant">live up-to-date version</a> of the below events.
+<p>See <a href="http://www.dancedeets.com/">live up-to-date version</a> of the below events.
 
 <p>
 <table>

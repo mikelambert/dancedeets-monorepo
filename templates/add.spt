@@ -24,34 +24,37 @@ Add Dance Event
 						#end if
 					#end for
 					</select>
-				<li>Or enter your URL here:<br>
+				<li>Or enter your facebook event URL here:<br>
 					<input type=text name="event_url" size=80 onunfocus="loadEvent();">
 			</ul>
-			<p>Event Types:
-			<table><tr valign=top><td>
+			<p>Select the appropriate boxes below to ensure it reaches the right audience.<br>
+			<small>(Deliberately filling out misleading info can result in your account getting banned from this site):
+			<p><table><tr valign=top><td style="padding-right:20px">
 			Freestyle:<br>
+			<small>(bboy, popping, locking, house, waacking, vogue, 90s hiphop)</small><br>
 			<ul>
 			#for $type in $freestyle_types
 				<li><input type=checkbox name="tag" value="$type[0]" id="tag_$type[0]"><label for="tag_$type[0]">$type[1]</label>
 			#end for
 			</ul>
-			</td><td>
+			</td><td style="border-left: 1px solid grey;padding-left:20px">
 			Choreo:<br>
+			<small>(hiphop/jazz choreography, urban choreography, street jazz)</small><br>
 			<ul>
 			#for $type in $choreo_types
 				<li><input type=checkbox name="tag" value="$type[0]" id="tag_$type[0]"><label for="tag_$type[0]">$type[1]</label>
 			#end for
 			</ul>
 			</td></tr></table>
-
+<!--
 			<p>Event Dance Styles:
 			<ul>
 			#for $style in $styles
 				<li><input type=checkbox name="tag" value="$style[0]" id="tag_$style[0]"><label for="tag_$style[0]">$style[1]</label>
 			#end for
 			</ul>
-
-			<button>Add</button>
+			-->
+			<button>Add Event</button>
 		</form>
   </body>
 	<script type="text/javascript">
