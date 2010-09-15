@@ -83,6 +83,22 @@ class SearchQuery(object):
                 pass
             else:
                 return []
+
+        search_tags = []
+        if self.choreo == users.CHOREO_FAN:
+            search_tags.extend(tags.CHOREO_FAN_EVENTS)
+        elif self.choreo == users.CHOREO_DANCER:
+            search_tags.extend(x[0] for x in tags.CHOREO_EVENT_LIST)
+        if self.freestyle == users.FREESTYLE_FAN:
+            search_tags.extend(tags.FREESTYLE_FAN_EVENTS)
+        elif self.freestyle == users.FREESTYLE_DANCER:
+            search_tags.extend(x[0] for x in tags.FREESTYLE_EVENT_LIST)
+        intersecting_tags = set(search_tags).intersection(event.tags)
+        if intersecting_tags:
+            pass
+        else:
+            return []
+
         if self.query_args:
             found_keyword = False
             for keyword in self.query_args:
@@ -117,9 +133,13 @@ class SearchQuery(object):
             search_tags.append(tags.CHOREO_EVENT)
         if self.freestyle != users.FREESTYLE_APATHY:
             search_tags.append(tags.FREESTYLE_EVENT)
-        if len(search_tags) != 2:
-            clauses.append('search_tags in :search_tags')
-            bind_vars['search_tags'] = search_tags
+        if len(search_tags) == 0:
+            clauses.append('search_tags = "nonexistent"')
+        elif len(search_tags) == 1:
+            clauses.append('search_tags = :search_tags')
+            bind_vars['search_tags'] = search_tags[0]
+        elif len(search_tags) == 2:
+            pass # retrieve everything!
         if clauses:
             full_clauses = ' and '.join('%s' % x for x in clauses)
             return eventdata.DBEvent.gql('where %s' % full_clauses, **bind_vars).fetch(100)
