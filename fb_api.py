@@ -46,7 +46,7 @@ class FacebookCachedObject(db.Model):
     def pickle_dict(self, obj_dict):
         self.pickled_dict = pickle.dumps(obj_dict, pickle.HIGHEST_PROTOCOL)
         if len(self.pickled_dict) > 1024 * 1024 - 200:
-            logging.error("Pickled dictionary getting too large (%s) for key (%s)", len(self.pickled_dict), self.key.name())
+            logging.error("Pickled dictionary getting too large (%s) for key (%s)", len(self.pickled_dict), self.key().name())
         assert self.pickled_dict
 
     def unpickled_dict(self):
@@ -185,7 +185,7 @@ class BatchLookup(object):
         max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
         for i in range(0, len(clauses), max_in_queries):
             objects = FacebookCachedObject.get_by_key_name(clauses[i:i+max_in_queries])
-            object_map.update(dict((tuple(o.key.name().split('.')), o.unpickled_dict()) for o in objects if o))
+            object_map.update(dict((tuple(o.key().name().split('.')), o.unpickled_dict()) for o in objects if o))
         logging.info("BatchLookup: db get_multi objects: %s", object_map.keys())
         return object_map
 
