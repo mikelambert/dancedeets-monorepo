@@ -1,7 +1,10 @@
 cron:
 - description: email users about upcoming events
-  url: /tasks/email_all_users?allow_cache=0
+  url: /tasks/email_all_users
   schedule: every monday 15:00
+- description: email users about upcoming events again
+  url: /tasks/email_all_users
+  schedule: every thursday 15:00
 - description: reload user data
   url: /tasks/reload_all_users?allow_cache=0
   schedule: every 6 hours
