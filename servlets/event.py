@@ -241,5 +241,6 @@ class AddHandler(base_servlet.BaseRequestHandler):
         e.creating_fb_uid = self.user.fb_uid
         e.put()
 
-        self.response.out.write('Thanks for submitting!<br>\n')
-        self.response.out.write('<a href="/events/view?event_id=%s">View Page</a>' % event_id)
+        #TODO(lambert): implement a "yellow message" system and use for this, admin-edit, etc
+        self.response.out.write('Thanks for submitting! Go to your <a href="/">homepage</a>.<br>\n')
+        #self.response.out.write('<a href="/events/view?event_id=%s">View Page</a>' % event_id)
