@@ -33,7 +33,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
     def update_user_with_login(self):
         user = users.User.get(self.fb_uid)
         if not user:
-            facebook_location = self.current_user()['profile']['location']['name']
+            facebook_location = users.get_location(self.current_user())
             user = users.User.get_default_user(self.fb_uid, facebook_location)
         if not user.fb_access_token: # brand new user!
             user.creation_time = datetime.datetime.now()

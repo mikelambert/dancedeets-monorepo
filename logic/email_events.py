@@ -15,6 +15,8 @@ def email_for_user(user, batch_lookup, fb_graph, parse_fb_timestamp):
         return
 
     user_location = user.location
+    if not user_location:
+        return
     distance = int(user.distance)
     distance_units = user.distance_units
     if distance_units == 'miles':

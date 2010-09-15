@@ -66,7 +66,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
             location = eventdata.get_geocoded_location_for_event(event_info)
             self.display['location'] = location
 
-            if location['latlng']:
+            if location['latlng'] and self.user.location:
                 e_lat, e_lng = location['latlng']
                 user_location = locations.get_geocoded_location(self.user.location)
                 my_lat, my_lng = user_location['latlng']

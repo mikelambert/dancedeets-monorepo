@@ -21,7 +21,6 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
         self.display['styles'] = tags.STYLES
 
-        user_location = locations.get_geocoded_location(self.user.location)['latlng']
         self.display['cities'] = []
         self.render_template('search')
 
@@ -46,6 +45,10 @@ class ResultsHandler(base_servlet.BaseRequestHandler):
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
+        if not self.user.location:
+            #TODO(lambert): use a redirect message here!
+            self.redirect('/user/edit')
+            return
         user_location = self.request.get('user_location', self.user.location)
         distance = int(self.request.get('distance', self.user.distance))
         distance_units = self.request.get('distance_units', self.user.distance_units)

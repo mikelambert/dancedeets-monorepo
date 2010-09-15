@@ -26,13 +26,22 @@ class UserHandler(base_servlet.BaseRequestHandler):
                 defaults[field] = self.request.get(field)
         self.display['defaults'] = defaults
 
-        facebook_location = self.current_user()['profile']['location']['name']
+        location_too_far = False
+        location_unknown = False
+
+        facebook_location = users.get_location(self.current_user())
         # distance between saved location and facebook current location
-        facebook_geo_location = locations.get_geocoded_location(facebook_location)['latlng']
-        user_geo_location = locations.get_geocoded_location(defaults['location'])['latlng']
-        distance = locations.get_distance(facebook_geo_location[0], facebook_geo_location[1], user_geo_location[0], user_geo_location[1])
-        self.display['location_distance'] = distance
-        self.display['facebook_location'] = facebook_location
+        if facebook_location:
+            facebook_geo_location = locations.get_geocoded_location(facebook_location)['latlng']
+            user_geo_location = locations.get_geocoded_location(defaults['location'])['latlng']
+            distance = locations.get_distance(facebook_geo_location[0], facebook_geo_location[1], user_geo_location[0], user_geo_location[1])
+            if distance > 100:
+                location_too_far = True
+        if not self.user.location:
+            location_unknown = True
+        self.display['location_too_far'] = location_too_far
+        self.display['location_unknown'] = location_unknown
+        self.display['facebook_location'] = facebook_location or "Unknown"
 
         self.render_template('user')
 
@@ -48,9 +57,12 @@ class UserHandler(base_servlet.BaseRequestHandler):
             form_value = self.request.get(field)
             setattr(user, field, form_value)
         user.distance = self.request.get('distance')
-        user.location_country = locations.get_country_for_location(user.location)
-        if not user.location_country:
-            self.add_error("No country for location %r" % location_name)
+        if user.location:
+            user.location_country = locations.get_country_for_location(user.location)
+            if not user.location_country:
+                self.add_error("No country for location %r" % location_name)
+        else:
+            self.add_error("No location")
         for field in ['send_email']:
             form_value = self.request.get(field) == "true"
             setattr(user, field, form_value)

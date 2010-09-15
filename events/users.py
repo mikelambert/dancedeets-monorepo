@@ -41,6 +41,13 @@ DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 
 USER_EXPIRY = 24 * 60 * 60
 
+def get_location(fb_user):
+    if fb_user['profile'].get('location'):
+        facebook_location = fb_user['profile']['location']['name']
+    else:
+        facebook_location = None
+    return facebook_location
+
 class User(db.Model):
     # SSO
     fb_uid = property(lambda x: int(x.key().name()))
@@ -85,7 +92,10 @@ class User(db.Model):
     def get_default_user(cls, fb_uid, location):
         user = User(key_name=str(fb_uid))
         user.location = location
-        user.location_country = locations.get_country_for_location(user.location)
+        if user.location:
+            user.location_country = locations.get_country_for_location(user.location)
+        else:
+            user.location_country = None
         user.freestyle = FREESTYLE_DANCER
         user.choreo = CHOREO_DANCER
         user.send_email = True

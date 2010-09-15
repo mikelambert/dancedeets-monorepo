@@ -9,8 +9,11 @@ Settings
 #def body
 <form action="/user/edit" method="post">
 <p>
-	#if $location_distance > 100
-		<b>Your facebook location ($facebook_location) is far away from your location on dancedeets ($defaults.location). You may want to fix this below.</b><br>
+	#if $location_too_far
+		<b>Your facebook location ($facebook_location) is far away from your location on dancedeets ($defaults.location). You probably want to fix this below.</b><br>
+	#end if
+	#if $location_unknown
+		<b style="color:red">Your location is unspecified, you need to fix this below.</b><br>
 	#end if
 	Location: <em>(for finding events near you)</em><br>
 	<input type=text name=location value="$defaults.location">
