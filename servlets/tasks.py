@@ -19,8 +19,8 @@ from logic import email_events
 RETRY_ON_FAIL_DELAY = 60
 
 class BaseTaskRequestHandler(RequestHandler):
-  def requires_login(self):
-    return False
+    def requires_login(self):
+        return False
 
 
 class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
@@ -73,6 +73,14 @@ class LoadEventMembersHandler(BaseTaskFacebookRequestHandler):
         for event_id in event_ids:
             self.batch_lookup.lookup_event_members(event_id)
         self.batch_lookup.finish_loading()
+        failed_fb_event_ids = []
+        for event_id in event_ids:
+            try:
+                self.batch_lookup.data_for_event_members(event_id)
+             except:
+                logging.exception("Error loading event, going to retry eid=%s", fb_event_id)
+                failed_fb_event_ids.append(fb_event_id)
+        backgrounder.load_event_members(failed_fb_event_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
     post=get
 
 class LoadUserHandler(BaseTaskFacebookRequestHandler):
@@ -81,6 +89,15 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
         for user_id in user_ids:
             self.batch_lookup.lookup_user(user_id)
         self.batch_lookup.finish_loading()
+        failed_fb_user_ids = []
+        for user_id in user_ids:
+            try:
+                self.batch_lookup.data_for_user(user_id)
+             except:
+                logging.exception("Error loading user, going to retry uid=%s", fb_user_id)
+                failed_fb_user_ids.append(fb_user_id)
+        backgrounder.load_users(failed_fb_user_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
+
     post=get
 
 class ReloadAllUsersHandler(BaseTaskRequestHandler):
@@ -92,27 +109,27 @@ class ReloadAllUsersHandler(BaseTaskRequestHandler):
 class ResaveAllEventsHandler(BaseTaskRequestHandler):
     def get(self):
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.all()]
-        backgrounder.load_events(event_ids)
+        backgrounder.load_events_full(event_ids)
     post=get
 
 class ReloadAllEventsHandler(BaseTaskRequestHandler):
     def get(self):
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.all()]
-        backgrounder.load_events(event_ids, allow_cache=False)
+        backgrounder.load_events_full(event_ids, allow_cache=False)
     post=get
 
 class ReloadPastEventsHandler(BaseTaskRequestHandler):
     def get(self):
         gm_today = datetime.datetime(*time.gmtime(time.time())[:6])
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE start_time < :1", gm_today)]
-        backgrounder.load_events(event_ids, allow_cache=False)
+        backgrounder.load_events_full(event_ids, allow_cache=False)
     post=get
 
 class ReloadFutureEventsHandler(BaseTaskRequestHandler):
     def get(self):
         gm_yesterday = datetime.datetime(*time.gmtime(time.time())[:6]) - datetime.timedelta(days=1)
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql('WHERE end_time > :1', gm_yesterday)]
-        backgrounder.load_events(event_ids, allow_cache=False)    
+        backgrounder.load_events_full(event_ids, allow_cache=False)    
     post=get
 
 class EmailAllUsersHandler(BaseTaskRequestHandler):
