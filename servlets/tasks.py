@@ -77,7 +77,7 @@ class LoadEventMembersHandler(BaseTaskFacebookRequestHandler):
         for event_id in event_ids:
             try:
                 self.batch_lookup.data_for_event_members(event_id)
-             except:
+            except:
                 logging.exception("Error loading event, going to retry eid=%s", fb_event_id)
                 failed_fb_event_ids.append(fb_event_id)
         backgrounder.load_event_members(failed_fb_event_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
@@ -93,7 +93,7 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
         for user_id in user_ids:
             try:
                 self.batch_lookup.data_for_user(user_id)
-             except:
+            except:
                 logging.exception("Error loading user, going to retry uid=%s", fb_user_id)
                 failed_fb_user_ids.append(fb_user_id)
         backgrounder.load_users(failed_fb_user_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
