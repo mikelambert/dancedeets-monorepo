@@ -244,7 +244,7 @@ class BatchLookup(object):
             else:
                 logging.error("BatchLookup: Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
         except urlfetch.DownloadError:
-            logging.error("BatchLookup: Error downloading: %s", object_rpc.request.url())
+            logging.warning("BatchLookup: Error downloading: %s", object_rpc.request.url())
         return None
 
     def _fetch_object_keys(self, object_keys_to_lookup):
@@ -272,7 +272,7 @@ class BatchLookup(object):
                 else:
                     object_is_bad = True
             if object_is_bad:
-                logging.error("BatchLookup: Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
+                logging.warning("BatchLookup: Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
             else:
                 fetched_objects[object_key] = this_object
         return fetched_objects
