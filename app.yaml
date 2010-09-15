@@ -12,6 +12,9 @@ handlers:
   upload: dancedeets.png
 - url: /css
   static_dir: css
+- url: /tools/.*
+  script: main.py
+  login: admin
 - url: /admin/.*
   script: main.py
   login: admin

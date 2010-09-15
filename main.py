@@ -13,6 +13,7 @@ from servlets import search
 from servlets import login
 from servlets import myuser
 from servlets import tasks
+from servlets import tools
 import smemcache
 
 
@@ -22,6 +23,7 @@ DEBUG = True
 # http://pythonpaste.org/webtest/
 
 URLS = [
+    ('/tools/migrate_dbevents', tools.MigrateDBEventsHandler),
     ('/tasks/load_events', tasks.LoadEventHandler),
     ('/tasks/load_users', tasks.LoadUserHandler),
     ('/tasks/load_event_members', tasks.LoadEventMembersHandler),
