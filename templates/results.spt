@@ -7,6 +7,8 @@ Dance Event Results
 #end def
 
 #def body
+<p>Missing an event? <a href="/events/add">Add it here!</a>
+<p>
 <form>
 <p>Location: <input name=user_location value="$defaults.user_location">
 <p>Distance: <input name=distance value="$defaults.distance">
@@ -62,6 +64,8 @@ Dance Event Results
 	</tr>
 #end for
 </table>
+
+<p>Missing an event? <a href="/events/add">Add it here!</a>
 
 #end def
 
