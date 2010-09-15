@@ -26,6 +26,7 @@ IMPORTANT_CITIES = [
     ('El Paso, Texas', (31.7587198, -106.4869314)),
     ('San Antonio, Texas', (29.424122, -98.493628)),
     ('Dallas, Texas', (32.802954, -96.769923)),
+    ('Houston, Texas', (30.240086,-95.932617)),
     ('New Orleans, Louisiana', (29.9647222, -90.0705556)),
     ('Memphis, Tennessee', (35.1495342, -90.0489800)),
     ('Nashville, Tennessee', (36.1658899, -86.7844431)),
