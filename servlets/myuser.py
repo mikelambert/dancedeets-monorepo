@@ -58,12 +58,9 @@ class UserHandler(base_servlet.BaseRequestHandler):
             setattr(user, field, form_value)
         user.distance = self.request.get('distance')
         if user.location:
-            latlng = locations.get_geocoded_location(user.location)['latlng']
-            user.location_timezone, user.location_country = locations.get_timezone_and_country(latlng[0], latlng[1])
+            user.location_country = locations.get_country_for_location(user.location)
             if not user.location_country:
                 self.add_error("No country for location %r" % location_name)
-            if not user.location_timezone:
-                self.add_error("No timezone for location %r" % location_name)
         else:
             self.add_error("No location")
         for field in ['send_email']:

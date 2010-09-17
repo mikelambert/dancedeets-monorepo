@@ -31,8 +31,9 @@ class UserTimeHandler(object):
         return self.localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
 
     def localize_timestamp(self, dt):
-        timezone = self.user.location_timezone
-        final_dt = dt + timezone.utcoffset(dt)
+        time_offset = self.batch_lookup.data_for_user(self.fb_uid)['profile']['timezone']
+        td = datetime.timedelta(hours=time_offset)
+        final_dt = dt + td
         return final_dt
 
 class BaseRequestHandler(RequestHandler, UserTimeHandler):
