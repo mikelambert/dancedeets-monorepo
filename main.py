@@ -24,6 +24,7 @@ DEBUG = True
 
 URLS = [
     ('/tools/migrate_dbevents', tools.MigrateDBEventsHandler),
+    ('/tasks/cleanup_work', tasks.CleanupWorkHandler),
     ('/tasks/load_events', tasks.LoadEventHandler),
     ('/tasks/load_users', tasks.LoadUserHandler),
     ('/tasks/load_event_members', tasks.LoadEventMembersHandler),

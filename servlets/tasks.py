@@ -6,6 +6,7 @@ import urllib
 
 from django.utils import simplejson
 from google.appengine.ext.webapp import RequestHandler
+from google.appengine.api import mail
 
 import base_servlet
 from events import eventdata
@@ -145,3 +146,15 @@ class EmailUserHandler(BaseTaskFacebookRequestHandler, base_servlet.UserTimeHand
         email_events.email_for_user(self.user, self.batch_lookup, self.fb_graph, self.parse_fb_timestamp)
     post=get
 
+class CleanupWorkHandler(BaseTaskRequestHandler):
+    def get(self):
+        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE address = null and start_time != null")]
+        if event_ids:
+            event_urls = ['http://www.dancedeets.com/events/admin_edit?event_id=%s' % x for x in event_ids]
+            html = "Events missing addresses:\n\n" + "\n".join(event_urls)
+            message = mail.EmailMessage(
+                sender="mlambert@gmail.com",
+                to="mlambert@gmail.com",
+                subject="Events missing addresses",
+                html=html
+            )
