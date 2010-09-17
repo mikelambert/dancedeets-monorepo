@@ -4,9 +4,9 @@ runtime: python
 api_version: 1
 
 handlers:
-- url: /boo.html
-  static_files: boo.html
-  upload: boo.html
+- url: /admin/.*
+  script: $PYTHON_LIB/google/appengine/ext/admin
+  login: admin
 - url: /dancedeets.png
   static_files: dancedeets.png
   upload: dancedeets.png
