@@ -23,6 +23,7 @@ DEBUG = True
 # http://pythonpaste.org/webtest/
 
 URLS = [
+    ('/tools/oneoff', tools.OneOffHandler),
     ('/tools/migrate_dbevents', tools.MigrateDBEventsHandler),
     ('/tasks/cleanup_work', tasks.CleanupWorkHandler),
     ('/tasks/load_events', tasks.LoadEventHandler),

@@ -5,6 +5,15 @@ from google.appengine.ext import webapp
 from google.appengine.ext import deferred
 from util.mapper import Mapper
 from events import eventdata
+from events import users
+
+class OneOffHandler(webapp.RequestHandler):
+    def get(self):
+        for user in users.User.all():
+            if not getattr(user, 'location_timezone', None):
+                user.location_timezone = 'US/Eastern'
+                user.put()
+        self.response.out.write('yay!')
 
 class MyModelMapper(Mapper):
     KIND = eventdata.DBEvent
