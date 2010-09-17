@@ -102,6 +102,11 @@ def get_country_and_state_for_location(location_name):
         raise GeocodeException("Found too many countries: %s" % countries)
     return states[0], countries[0]
 
+#TODO(lambert): at some point eliminate timezones.py and implement it using a proper geonames web service
+# http://www.geonames.org/commercial-webservices.html
+# timezone_url = "http://ws.geonames.org/timezoneJSON?lat=%s&lng=%s" % (lat, lng)
+
+
 def miles_in_km(miles):
     return miles * 1.609344
 
