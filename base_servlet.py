@@ -7,6 +7,7 @@ import urllib
 
 from google.appengine.ext.webapp import RequestHandler
 from django.utils import simplejson
+from pytz.gae import pytz
 
 from events import users
 import facebook
@@ -31,7 +32,8 @@ class UserTimeHandler(object):
         return self.localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
 
     def localize_timestamp(self, dt):
-        timezone = self.user.location_timezone
+        timezone_str = self.user.location_timezone
+        timezone = pytz.timezone(timezone_str)
         final_dt = dt + timezone.utcoffset(dt)
         return final_dt
 
