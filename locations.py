@@ -42,7 +42,7 @@ def _get_geocoded_data(address):
     try:
         json_result = simplejson.loads(results)
     except simplejson.decoder.JSONDecodeError, e:
-        logging.error("Error decoding json: %s: %s", e, results)
+        logging.error("Error decoding json from %s: %s: %r", url, e, results)
         return None
     if json_result['status'] == 'ZERO_RESULTS':
         return None
@@ -53,7 +53,7 @@ def _get_geocoded_data(address):
 
 
 def _memcache_location_key(location):
-  return 'Location.%s' % location
+    return 'Location.%s' % location
 
 def _raw_get_geocoded_location(address):
     result = _get_geocoded_data(address)
@@ -67,13 +67,13 @@ def _raw_get_geocoded_location(address):
     return geocoded_location
 
 def get_geocoded_location(location):
-  memcache_key = _memcache_location_key(location)
-  geocoded_location = smemcache and smemcache.get(memcache_key)
-  if not geocoded_location:
-    geocoded_location = _raw_get_geocoded_location(location)
-    if smemcache:
-      smemcache.set(memcache_key, geocoded_location, LOCATION_EXPIRY)
-  return geocoded_location
+    memcache_key = _memcache_location_key(location)
+    geocoded_location = smemcache and smemcache.get(memcache_key)
+    if not geocoded_location:
+        geocoded_location = _raw_get_geocoded_location(location)
+        if smemcache:
+            smemcache.set(memcache_key, geocoded_location, LOCATION_EXPIRY)
+    return geocoded_location
 
 
 
@@ -94,7 +94,7 @@ def get_distance(lat1, lng1, lat2, lng2, use_km=False):
 
 
 def _memcache_country_key(location_name):
-  return 'FacebookLocation.%s' % location_name
+    return 'FacebookLocation.%s' % location_name
 
 def _raw_get_country_for_location(location_name):
     result = _get_geocoded_data(location_name)
@@ -106,13 +106,13 @@ def _raw_get_country_for_location(location_name):
     return countries[0]
 
 def get_country_for_location(location_name):
-  memcache_key = _memcache_country_key(location_name)
-  country = smemcache and smemcache.get(memcache_key)
-  if not country:
-    country = _raw_get_country_for_location(location_name)
-    if smemcache:
-      smemcache.set(memcache_key, country, LOCATION_EXPIRY)
-  return country
+    memcache_key = _memcache_country_key(location_name)
+    country = smemcache and smemcache.get(memcache_key)
+    if not country:
+        country = _raw_get_country_for_location(location_name)
+        if smemcache:
+            smemcache.set(memcache_key, country, LOCATION_EXPIRY)
+    return country
 
 def miles_in_km(miles):
     return miles * 1.609344
