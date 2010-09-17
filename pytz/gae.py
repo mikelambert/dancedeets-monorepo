@@ -34,9 +34,11 @@ try:
 except ImportError:
     # This means that we're not running under the SDK, likely a script
     class memcache(object):
+        @classmethod
         def add(*args, **kwargs):
             pass
 
+        @classmethod
         def get(*args, **kwargs):
             return None
 
