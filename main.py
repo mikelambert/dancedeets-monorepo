@@ -25,6 +25,8 @@ DEBUG = True
 URLS = [
     ('/tools/oneoff', tools.OneOffHandler),
     ('/tools/migrate_dbevents', tools.MigrateDBEventsHandler),
+    ('/tools/clear_memcache', admin.ClearMemcacheHandler),
+    ('/tools/delete_fb_cache', admin.DeleteFBCacheHandler),
     ('/tasks/cleanup_work', tasks.CleanupWorkHandler),
     ('/tasks/load_events', tasks.LoadEventHandler),
     ('/tasks/load_users', tasks.LoadUserHandler),
@@ -46,8 +48,6 @@ URLS = [
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/user/edit', myuser.UserHandler),
     ('/login', login.LoginHandler),
-    ('/admin/clear_memcache', admin.ClearMemcacheHandler),
-    ('/admin/delete_fb_cache', admin.DeleteFBCacheHandler),
 ]
 
 class MyWSGIApplication(webapp.WSGIApplication):
