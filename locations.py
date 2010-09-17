@@ -53,10 +53,19 @@ def _get_geocoded_data(address):
 
 
 def _memcache_location_key(location):
-    return 'Location.%s' % location
+    return 'GoogleMaps.%s' % location
 
-def _raw_get_geocoded_location(address):
-    result = _get_geocoded_data(address)
+def _raw_get_cached_geocoded_data(location):
+    memcache_key = _memcache_location_key(location)
+    geocoded_data = smemcache and smemcache.get(memcache_key)
+    if not geocoded_data:
+        geocoded_data = _get_geocoded_data(location)
+        if smemcache:
+            smemcache.set(memcache_key, geocoded_data, LOCATION_EXPIRY)
+    return geocoded_data
+
+def get_geocoded_location(address):
+    result = _raw_get_cached_geocoded_data(address)
     geocoded_location = {}
     if result:
         geocoded_location['latlng'] = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
@@ -65,17 +74,6 @@ def _raw_get_geocoded_location(address):
         geocoded_location['latlng'] = None
         geocoded_location['address'] = None
     return geocoded_location
-
-def get_geocoded_location(location):
-    memcache_key = _memcache_location_key(location)
-    geocoded_location = smemcache and smemcache.get(memcache_key)
-    if not geocoded_location:
-        geocoded_location = _raw_get_geocoded_location(location)
-        if smemcache:
-            smemcache.set(memcache_key, geocoded_location, LOCATION_EXPIRY)
-    return geocoded_location
-
-
 
 def get_distance(lat1, lng1, lat2, lng2, use_km=False):
     deg_per_rad = 57.2957795
@@ -92,27 +90,17 @@ def get_distance(lat1, lng1, lat2, lng2, use_km=False):
     distance = radius * circum
     return distance
 
-
-def _memcache_country_key(location_name):
-    return 'FacebookLocation.%s' % location_name
-
-def _raw_get_country_for_location(location_name):
-    result = _get_geocoded_data(location_name)
+def get_country_and_state_for_location(location_name):
+    result = _raw_get_cached_geocoded_data(location_name)
     if not result:
         return None
+    states = [x['short_name'] for x in result['address_components'] if u'administrative_area_level_1' in x['types']]
+    if len(states) != 1:
+        raise GeocodeException("Found too many states: %s" % states)
     countries = [x['short_name'] for x in result['address_components'] if u'country' in x['types']]
     if len(countries) != 1:
         raise GeocodeException("Found too many countries: %s" % countries)
-    return countries[0]
-
-def get_country_for_location(location_name):
-    memcache_key = _memcache_country_key(location_name)
-    country = smemcache and smemcache.get(memcache_key)
-    if not country:
-        country = _raw_get_country_for_location(location_name)
-        if smemcache:
-            smemcache.set(memcache_key, country, LOCATION_EXPIRY)
-    return country
+    return states[0], countries[0]
 
 def miles_in_km(miles):
     return miles * 1.609344

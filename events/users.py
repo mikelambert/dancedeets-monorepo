@@ -2,6 +2,7 @@ import datetime
 from google.appengine.ext import db
 import locations
 import smemcache
+from util import timezones
 
 def header_item(name, description):
     return dict(name=name, description=description)
@@ -66,6 +67,7 @@ class User(db.Model):
     # Other preferences
     send_email = db.BooleanProperty()
     location_country = db.StringProperty()
+    location_timezone = db.StringProperty()
 
     def distance_in_km(self):
         if not self.distance:
@@ -93,9 +95,12 @@ class User(db.Model):
         user = User(key_name=str(fb_uid))
         user.location = location
         if user.location:
-            user.location_country = locations.get_country_for_location(user.location)
+            state, country = locations.get_country_and_state_for_location(user.location)
+            user.location_country = country
+            user.location_timezone = timezones.get_timezone_for_state(state)
         else:
             user.location_country = None
+            user.location_timezone = None
         user.freestyle = FREESTYLE_DANCER
         user.choreo = CHOREO_DANCER
         user.send_email = True

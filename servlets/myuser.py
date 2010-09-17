@@ -4,7 +4,7 @@ import base_servlet
 import locations
 from events import users
 from google.appengine.ext import db
-
+from util import timezones
 
 #TODO(lambert): check if they've created any events with dance, hiphop, etc in the name, and if so ask them to add the event to this site
 #TODO(lambert): send notifications to interested users when someone adds a new event?
@@ -58,9 +58,13 @@ class UserHandler(base_servlet.BaseRequestHandler):
             setattr(user, field, form_value)
         user.distance = self.request.get('distance')
         if user.location:
-            user.location_country = locations.get_country_for_location(user.location)
+            state, country = locations.get_country_and_state_for_location(user.location)
+            user.location_country = country
+            user.location_timezone = timezones.get_timezone_for_state(state)
             if not user.location_country:
                 self.add_error("No country for location %r" % location_name)
+            if not user.location_timezone:
+                self.add_error("No timezone for location %r, state %s" % (location_name, state))
         else:
             self.add_error("No location")
         for field in ['send_email']:
