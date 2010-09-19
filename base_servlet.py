@@ -34,7 +34,7 @@ class UserTimeHandler(object):
     def localize_timestamp(self, dt):
         timezone_str = self.user.location_timezone
         timezone = pytz.timezone(timezone_str)
-        final_dt = dt + timezone.utcoffset(dt)
+        final_dt = dt + timezone.utcoffset(dt) - datetime.timedelta(hours=2) # HORRIBLE HACK FOR FB BROKENNESS
         return final_dt
 
 class BaseRequestHandler(RequestHandler, UserTimeHandler):
