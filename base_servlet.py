@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import datetime
+import logging
 import re
 import sys
 import urllib
@@ -69,6 +70,7 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
             self.display['date_human_format'] = self.user.date_human_format
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
+        self.display['request'] = request
         return False
 
     def requires_login(self):

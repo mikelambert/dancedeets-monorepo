@@ -129,8 +129,8 @@ function toggleId(id) {
 <p>
 
 #for $group in $grouped_results
-	#if $group.results
-		<div class="group" onclick="toggleId('$group.id'); return false;">
+	#if $group.results or $group.force
+		<div class="group" onclick="toggleId('$group.id'); return false;" id="$group.id-box">
 			<span id="$group.id-expander" class="group-expander"
 				#if not $group.expanded
 					style="background-image: url(/images/expand-icon-plus.gif);"
@@ -153,5 +153,18 @@ function toggleId(id) {
 #end def
 
 #def bottom_javascript
+#if not $past_view
+<script type="text/javascript">
+	$('#past_events-box').click(function() {
+		$('#past_events').load('/events/relevant #past_events', 
+		{
+			#for $x in $request.params.iteritems()
+				$x[0]: '$x[1]',
+			#end for
+				past: 1,
+		});
+	});
+#end if
+</script>
 $rsvp_script()
 #end def

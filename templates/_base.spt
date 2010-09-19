@@ -20,10 +20,17 @@ $header()
 
 $body()
 
-$bottom_javascript()
-
 Things not working? Have ideas? Events you submitting not showing up? <a href="mailto:mlambert@gmail.com">Send me feedback!</a>
 </body>
+
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">
+  google.load("jquery", "1.4.2");
+  google.load("jqueryui", "1.8.1");
+</script>
+
+$bottom_javascript()
+
 </html>
 
 #def title

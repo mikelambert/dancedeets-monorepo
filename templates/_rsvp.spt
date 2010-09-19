@@ -11,11 +11,6 @@
 #end def
 
 #def rsvp_script
-<script src="http://www.google.com/jsapi" type="text/javascript"></script>
-<script type="text/javascript">
-	google.load("jquery", "1.4.2");
-	google.load("jqueryui", "1.8.1");
-</script>
 <script type="text/javascript">
 function event_rsvp(event_id, rsvp_status) {
   $.ajax({

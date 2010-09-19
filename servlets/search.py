@@ -44,6 +44,12 @@ class ResultsHandler(base_servlet.BaseRequestHandler):
 
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def get(self):
+        self.handle()
+
+    def post(self):
+        self.handle()
+
+    def handle(self):
         self.finish_preload()
         if not self.user.location:
             #TODO(lambert): use a redirect message here!
@@ -58,6 +64,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             distance_in_km = distance
         freestyle = self.request.get('freestyle', self.user.freestyle)
         choreo = self.request.get('choreo', self.user.choreo)
+        past = self.request.get('past', '0') not in ['0', '', 'False', 'false']
 
         self.display['user_location'] = user_location
         self.display['defaults'] = {
@@ -66,6 +73,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             'user_location': user_location,
             'freestyle': freestyle,
             'choreo': choreo,
+            'past': past,
         }
         
         self.display['DANCES'] = users.DANCES
@@ -73,26 +81,35 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['DANCE_LISTS'] = users.DANCE_LISTS
 
         latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
-        query = search.SearchQuery(self.parse_fb_timestamp, time_period=tags.TIME_FUTURE, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
+        if past:
+            time_period = tags.TIME_PAST
+        else:
+            time_period = tags.TIME_FUTURE
+        query = search.SearchQuery(self.parse_fb_timestamp, time_period=time_period, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
 
         today = datetime.datetime.today()
         class Group(object):
-            def __init__(self, name, id, results, expanded):
+            def __init__(self, name, id, results, expanded, force=False):
                 self.name = name
                 self.id = id
                 self.results = results
                 self.expanded = expanded
+                self.force = force
 
         grouped_results = []
+        past_results = []
         present_results = []
         week_results = []
         month_results = []
         year_results = []
         for result in search_results:
             if result.start_time < today:
-                present_results.append(result)
+                if past: # If we're doing 'past' searches, group them differently
+                    past_results.append(result)
+                else:
+                    present_results.append(result)
             elif result.start_time < today + datetime.timedelta(days=7):
                 week_results.append(result)
             elif result.start_time < today + datetime.timedelta(days=30):
@@ -100,11 +117,13 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             else:
                 year_results.append(result)
     
-        grouped_results.append(Group('Ongoing Events', 'present_events', present_results, False))
-        grouped_results.append(Group('Events This Week', 'week_events', week_results, True))
-        grouped_results.append(Group('Events This Month', 'month_events', month_results, True))
-        grouped_results.append(Group('Future Events', 'year_events', year_results, True))
+        grouped_results.append(Group('Past Events', 'past_events', past_results, expanded=past, force=True))
+        grouped_results.append(Group('Ongoing Events', 'present_events', present_results, expanded=False))
+        grouped_results.append(Group('Events This Week', 'week_events', week_results, expanded=True))
+        grouped_results.append(Group('Events This Month', 'month_events', month_results, expanded=True))
+        grouped_results.append(Group('Future Events', 'year_events', year_results, expanded=True))
 
+        self.display['past_view'] = past
         self.display['grouped_results'] = grouped_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
         self.render_template('results')
