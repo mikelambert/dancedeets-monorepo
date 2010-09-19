@@ -190,7 +190,6 @@ class DBEvent(db.Model):
         if results['latlng']:
             self.latitude = results['latlng'][0]
             self.longitude = results['latlng'][1]
-            #TODO(lambert): Add enough cities to cities.py to support coverage over the entire US?
             # Or add a "default US" that always gets searched, and that gets appended if no cities are close enough.
             self.search_regions = cities.get_cities_within(self.latitude, self.longitude, REGION_RADIUS)
             logging.info("Nearest cities for %s are %s", self.address, self.search_regions)
