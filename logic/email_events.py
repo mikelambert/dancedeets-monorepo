@@ -5,7 +5,9 @@ from google.appengine.api import mail
 
 from events import eventdata
 from events import tags
+import fb_api
 import locations
+from logic import event_classifier
 from logic import rsvp
 from logic import search
 import template
@@ -27,15 +29,37 @@ def email_for_user(user, batch_lookup, fb_graph, parse_fb_timestamp):
     freestyle = user.freestyle
     choreo = user.choreo
 
+    # search for relevant events
     latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
     query = search.SearchQuery(parse_fb_timestamp, time_period=tags.TIME_FUTURE, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
     search_results = query.get_search_results(user.fb_uid, fb_graph)
     rsvp.decorate_with_rsvps(batch_lookup, search_results)
     
+    # check the events user-was-invited-to, looking for any dance-related fb events we don't know about yet
+    results_json = batch_lookup.data_for_user(user.fb_uid)['all_event_info']
+    events = sorted(results_json, key=lambda x: x['start_time'])
+    second_batch_lookup = fb_api.BatchLookup(user.fb_uid, fb_graph)
+    for mini_fb_event in events:
+        second_batch_lookup.lookup_event(str(mini_fb_event['eid']))
+    second_batch_lookup.finish_loading()
+    dance_event_ids = []
+    for mini_fb_event in events:
+        fb_event = second_batch_lookup.data_for_event(mini_fb_event['eid'])
+        is_dance_event = event_classifier.is_dance_event(fb_event)
+        if is_dance_event:
+            dance_event_ids.append(str(mini_fb_event['eid']))
+    # ideally would use keys_only=True, but that's not supported on get_by_key_name :-/
+    found_events = eventdata.DBEvent.get_by_key_name(dance_event_ids)
+    found_event_ids = [x.key().name() for x in found_events if x]
+    new_dance_event_ids = set(dance_event_ids).difference(found_event_ids)
+    new_dance_events = [second_batch_lookup.data_for_event(x) for x in new_dance_event_ids]
+    new_dance_events = sorted(new_dance_events, key=lambda x: x['info']['..'])
     display = {}
     display['date_human_format'] = user.date_human_format
     display['format_html'] = text.format_html
     display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
+
+    display['new_dance_events'] = new_dance_events
 
     display['results'] = search_results
     rendered = template.render_template('html_mail_summary', display)
@@ -44,7 +68,7 @@ def email_for_user(user, batch_lookup, fb_graph, parse_fb_timestamp):
     message = mail.EmailMessage(
         sender="events@dancedeets.com",
         subject="Dance events for %s" % d.strftime('%b %d, %Y'),
-        to=batch_lookup.data_for_user(user.fb_uid)['profile']['email'],
+        to='mlambert@gmail.com',#batch_lookup.data_for_user(user.fb_uid)['profile']['email'],
         html=rendered
     )
     message.send()
