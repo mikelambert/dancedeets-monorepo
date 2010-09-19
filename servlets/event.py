@@ -182,31 +182,41 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
 class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):
-        self.finish_preload()
 
         self.display['freestyle_types'] = tags.FREESTYLE_EVENT_LIST
         self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
         self.display['styles'] = tags.STYLES
 
-        results_json = self.batch_lookup.data_for_user(self.fb_uid)['all_event_info']
-        events = sorted(results_json, key=lambda x: x['start_time'])
+        fb_event = None
+        events = []
 
-        db_events = eventdata.DBEvent.get_by_key_name([str(x['eid']) for x in events])
-        loaded_fb_event_ids = set(x.fb_event_id for x in db_events if x)
+        event_id = self.request.get('event_id')
+        if event_id:
+            self.batch_lookup.lookup_event(event_id)
+            self.finish_preload()
+            fb_event = self.batch_lookup.data_for_event(event_id)
+        else:
+            self.finish_preload()
+            results_json = self.batch_lookup.data_for_user(self.fb_uid)['all_event_info']
+            events = sorted(results_json, key=lambda x: x['start_time'])
 
-        for event in events:
-            # rewrite hack necessary for templates (and above code)
-            event['id'] = event['eid']
-            event['loaded'] = event['id'] in loaded_fb_event_ids
-            for field in ['start_time', 'end_time']:
-                event[field] = self.localize_timestamp(datetime.datetime.fromtimestamp(event[field]))
+            db_events = eventdata.DBEvent.get_by_key_name([str(x['eid']) for x in events])
+            loaded_fb_event_ids = set(x.fb_event_id for x in db_events if x)
 
-        lastadd_key = 'LastAdd.%s' % (self.fb_uid)
-        if not smemcache.get(lastadd_key):
-            backgrounder.load_events([x['eid'] for x in events])
-            smemcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
+            for event in events:
+                # rewrite hack necessary for templates (and above code)
+                event['id'] = event['eid']
+                event['loaded'] = event['id'] in loaded_fb_event_ids
+                for field in ['start_time', 'end_time']:
+                    event[field] = self.localize_timestamp(datetime.datetime.fromtimestamp(event[field]))
+
+            lastadd_key = 'LastAdd.%s' % (self.fb_uid)
+            if not smemcache.get(lastadd_key):
+                backgrounder.load_events([x['eid'] for x in events])
+                smemcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
 
         self.display['events'] = events
+        self.display['fb_event'] = fb_event
 
         self.render_template('add')
 
