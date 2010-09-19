@@ -153,7 +153,7 @@ class CleanupWorkHandler(BaseTaskRequestHandler):
             event_urls = ['http://www.dancedeets.com/events/admin_edit?event_id=%s' % x for x in event_ids]
             html = "Events missing addresses:\n\n" + "\n".join(event_urls)
             message = mail.EmailMessage(
-                sender="mlambert@gmail.com",
+                sender="events@dancedeets.com",
                 to="mlambert@gmail.com",
                 subject="Events missing addresses",
                 html=html
