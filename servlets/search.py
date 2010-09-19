@@ -77,7 +77,33 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
 
-        self.display['results'] = search_results
+        today = datetime.datetime.today()
+        class Group(object):
+            def __init__(self, name, id, results):
+                self.name = name
+                self.id = id
+                self.results = results
+        grouped_results = []
+        present_results = []
+        week_results = []
+        month_results = []
+        year_results = []
+        for result in search_results:
+            if result.start_time < today:
+                present_results.append(result)
+            elif result.start_time < today + datetime.timedelta(days=7):
+                week_results.append(result)
+            elif result.start_time < today + datetime.timedelta(days=30):
+                month_results.append(result)
+            else:
+                year_results.append(result)
+    
+        grouped_results.append(Group('Ongoing Events', 'present_events', present_results))
+        grouped_results.append(Group('Events This Week', 'week_events', week_results))
+        grouped_results.append(Group('Events This Month', 'month_events', month_results))
+        grouped_results.append(Group('Future Events', 'month_events', year_results))
+
+        self.display['grouped_results'] = grouped_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
         self.render_template('results')
 

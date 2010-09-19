@@ -6,6 +6,59 @@
 Dance Event Results
 #end def
 
+#def head_javascript
+<script type="text/javascript">
+function toggleId(id) {
+	$('#' + id).toggle();
+	var url = $('#' + id + '-expander').css('backgroundImage');
+	if (url.indexOf('plus') != -1) {
+		$('#' + id + '-expander').css('backgroundImage', url.replace('plus', 'minus'));
+	} else {
+		$('#' + id + '-expander').css('backgroundImage', url.replace('minus', 'plus'));
+	}
+}
+</script>
+#end def
+
+#def head_stylesheet
+<style type="text/css">
+.results_table {
+	width:600px;
+}
+.group {
+	border-bottom: 1px solid black;
+	width:600px;
+}
+.group-expander {
+	margin-top: 2px;
+	width: 11px;
+	height: 11px;
+	float: left;
+	background-image: url(/images/expand-icon-minus.gif);
+}
+#present_events-expander {
+	background-image: url(/images/expand-icon-plus.gif);
+}
+#present_events {
+	display:none;
+}
+
+</style>
+#end def
+
+#def render_result($result)
+	#set $fb_event = $result.fb_event.info
+	<tr>
+		<td style="width:100px"><a href="http://www.facebook.com/event.php?eid=$fb_event.id"><img src="$result.get_image()"></a></td>
+		<td><a href="http://www.facebook.com/event.php?eid=$fb_event.id">$format_html($fb_event.name)</a><br>
+		$date_human_format($result.start_time)
+		</td>
+		<td style="width:100px">
+			$rsvp_form($fb_event.id, $result.get_attendance())
+		</td>
+	</tr>
+#end def
+
 #def body
 <p>Missing an event? <a href="/events/add">Add it here!</a>
 <p>
@@ -50,20 +103,19 @@ Dance Event Results
 </form>
 <p>
 
-<table>
-#for $result in $results
-#set $fb_event = $result.fb_event.info
-	<tr>
-		<td><a href="http://www.facebook.com/event.php?eid=$fb_event.id"><img src="$result.get_image()"></a></td>
-		<td><a href="http://www.facebook.com/event.php?eid=$fb_event.id">$format_html($fb_event.name)</a><br>
-		$date_format('%Y-%m-%d %H:%M', $result.start_time)
-		</td>
-		<td>
-			$rsvp_form($fb_event.id, $result.get_attendance())
-		</td>
-	</tr>
+#for $group in $grouped_results
+	#if $group.results
+		<div class="group" onclick="toggleId('$group.id'); return false;">
+			<span id="$group.id-expander" class="group-expander"></span>
+			<b>$group.name</b>
+		</div>
+		<table class="results_table" id="$group.id">
+		#for $result in $group.results
+			$render_result($result)
+		#end for
+		</table>
+	#end if
 #end for
-</table>
 
 <p>Missing an event? <a href="/events/add">Add it here!</a>
 
