@@ -71,6 +71,7 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
         self.display['request'] = request
+        self.display['api_key'] = FACEBOOK_CONFIG['api_key']
         return False
 
     def requires_login(self):

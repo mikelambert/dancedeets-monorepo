@@ -1,6 +1,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fb="http://www.facebook.com/2008/fbml"
+	xmlns:og="http://opengraphprotocol.org/schema/">
+<head>
+<title>Dance Deets</title>
+    <meta property="og:title" content="Dance Deets"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="http://www.dancedeets.com/"/>
+    <meta property="og:image" content="http://www.dancedeets.com/dancedeets.png"/>
+    <meta property="og:site_name" content="Dance Deets"/>
+    <meta property="fb:admins" content="701004"/>
+    <meta property="fb:app_id" content="2347064084"/>
+    <meta property="og:description"
+          content="A website for tracking and notifying users about all upcoming events in the dance scene."/>
+</head>
 <body>
+
+<table><tr><td>
+<img src="/dancedeets.png">
+</td><td>
+Dance Deets
+</td></tr></table>
 
 <p>DanceDeets requires a facebook account to use it. The site relies heavily on facebook events, and the facebook terms of service prevent us from showing that information to you without your login information. Log in below to gain access to DanceDeets.
 

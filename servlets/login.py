@@ -27,7 +27,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             # Explicitly do not preload anything from facebook for this servlet
             # self.finish_preload()
             self.display['next'] = '/login?%s' % urllib.urlencode({'next': next})
-            self.display['api_key'] = base_servlet.FACEBOOK_CONFIG['api_key']
             self.render_template('login')
 
     def update_user_with_login(self):
