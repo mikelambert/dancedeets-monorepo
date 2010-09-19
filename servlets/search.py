@@ -79,10 +79,12 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
         today = datetime.datetime.today()
         class Group(object):
-            def __init__(self, name, id, results):
+            def __init__(self, name, id, results, expanded):
                 self.name = name
                 self.id = id
                 self.results = results
+                self.expanded = expanded
+
         grouped_results = []
         present_results = []
         week_results = []
@@ -98,10 +100,10 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             else:
                 year_results.append(result)
     
-        grouped_results.append(Group('Ongoing Events', 'present_events', present_results))
-        grouped_results.append(Group('Events This Week', 'week_events', week_results))
-        grouped_results.append(Group('Events This Month', 'month_events', month_results))
-        grouped_results.append(Group('Future Events', 'month_events', year_results))
+        grouped_results.append(Group('Ongoing Events', 'present_events', present_results, False))
+        grouped_results.append(Group('Events This Week', 'week_events', week_results, True))
+        grouped_results.append(Group('Events This Month', 'month_events', month_results, True))
+        grouped_results.append(Group('Future Events', 'year_events', year_results, True))
 
         self.display['grouped_results'] = grouped_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
