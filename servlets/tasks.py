@@ -95,8 +95,8 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
             try:
                 self.batch_lookup.data_for_user(user_id)
             except:
-                logging.exception("Error loading user, going to retry uid=%s", fb_user_id)
-                failed_fb_user_ids.append(fb_user_id)
+                logging.exception("Error loading user, going to retry uid=%s", user_id)
+                failed_fb_user_ids.append(user_id)
         backgrounder.load_users(failed_fb_user_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
 
     post=get
