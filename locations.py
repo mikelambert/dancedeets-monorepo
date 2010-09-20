@@ -6,7 +6,6 @@ import math
 import urllib
 import urllib2
 
-from google.appengine.ext.appstats import recording
 try:
     from django.utils import simplejson
 except ImportError:
@@ -29,7 +28,6 @@ class GeocodeException(Exception):
     pass
 
 def _get_geocoded_data(address):
-    recording.recorder.record_custom_event('googlemaps-fetch')
     unsigned_url_path = "/maps/api/geocode/json?%s" % urllib.urlencode(dict(address=address.encode('utf-8'), sensor='false', client='free-dancedeets'))
     private_key = 'zj918QnslsoOQHl4kLjv-ZCgsDE='
     decoded_key = base64.urlsafe_b64decode(private_key)
