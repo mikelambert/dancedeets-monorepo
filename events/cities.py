@@ -34,7 +34,8 @@ IMPORTANT_CITIES = [
     ('Minneapolis, Minnesota', (44.9799653, -93.2638361)),
     ('Chicago, Illinois', (41.850033, -87.6500522)),
     ('Detroit, Michigan', (42.331426, -83.0457538)),
-    ('Buffalo, New York', (41.771312, -85.253906)),
+    ('Buffalo, New York', (42.332662, -83.045654)),
+    ('Syracuse, New York', (43.048141, -76.147446)),
     # Across middle america
     ('Denver, Colorado', (39.7391536, -104.9847034)),
     ('Oklahoma City, Oklahoma', (35.4675602, -97.5164276)),
