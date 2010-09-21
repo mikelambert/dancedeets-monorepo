@@ -1,3 +1,4 @@
+import cities
 import datetime
 from google.appengine.ext import db
 import locations
@@ -127,6 +128,11 @@ class User(db.Model):
         else:
             time_string = '%d:%02d' % (int(d.strftime('%H')), d.minute)
         return '%s at %s' % (month_day, time_string)
+
+    def get_closest_city(self):
+        latlng_user_location = locations.get_geocoded_location(self.location)['latlng']
+        user_city = cities.get_closest_city(latlng_user_location[0], latlng_user_location[1])
+        return user_city
 
 
 class UserFriendsAtSignup(db.Model):

@@ -5,17 +5,41 @@
 Dance Deets Rankings
 #end def
 
+#def head_stylesheet
+<style type="text/css">
+.current_city {
+	background-color: LightGrey;
+}
+</style>
+#end def
+
 #def body
 
-<p>Event Rankings:
+<form action="/rankings">
+Rankings over <select name="time_period" onchange="this.form.submit();">
+	#for $time_period in $time_periods
+		<option value="$time_period"
+		#if $current_time_period == $time_period
+			selected
+		#end if
+		>$time_period
+	#end for
+</select>
+</form>
+
+<p><h2>Rankings by Number of Dance Events:</h2>
 <table>
 <tr>
 #for $city_ranking in $style_event_rankings
-<td>
+<td valign=top>
 	<table>
 	<tr><th colspan=2>$city_ranking.style</th></tr>
 	#for $rank in $city_ranking.ranking
-		<tr><td>$rank.city</td><td>$rank.count</td></tr>
+		<tr
+			#if $rank.city == $user_city
+				class="current_city"
+			#end if
+		><td>$rank.city</td><td>$rank.count</td></tr>
 	#end for
 	</table>
 </td>
@@ -23,15 +47,39 @@ Dance Deets Rankings
 </tr>
 </table>
 
-<p>Dancer Rankings:
+<p><h2>Rankings by Number of Dancers:</h2>
 <table>
 <tr>
-#for $city_ranking in $style_user_rankings
-<td>
+#for $city_ranking in $style_dancer_rankings
+<td valign=top>
 	<table>
 	<tr><th colspan=2>$city_ranking.style</th></tr>
 	#for $rank in $city_ranking.ranking
-		<tr><td>$rank.city</td><td>$rank.count</td></tr>
+		<tr
+			#if $rank.city == $user_city
+				class="current_city"
+			#end if
+		><td>$rank.city</td><td>$rank.count</td></tr>
+	#end for
+	</table>
+</td>
+#end for
+</tr>
+</table>
+
+<p><h2>Rankings by Number of Dance Fans:</h2>
+<table>
+<tr>
+#for $city_ranking in $style_fan_rankings
+<td valign=top>
+	<table>
+	<tr><th colspan=2>$city_ranking.style</th></tr>
+	#for $rank in $city_ranking.ranking
+		<tr
+			#if $rank.city == $user_city
+				class="current_city"
+			#end if
+		><td>$rank.city</td><td>$rank.count</td></tr>
 	#end for
 	</table>
 </td>

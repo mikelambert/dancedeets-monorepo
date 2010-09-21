@@ -45,18 +45,30 @@ DANCE_FAN = 'DANCE_FAN'
 DANCE_DANCER = 'DANCE_DANCER'
 
 PEOPLES = [
+    DANCE_FAN,
+    DANCE_DANCER,
     CHOREO_FAN,
     CHOREO_DANCER,
     FREESTYLE_FAN,
     FREESTYLE_DANCER,
+]
+
+FANS = [
+    CHOREO_FAN,
+    FREESTYLE_FAN,
     DANCE_FAN,
+]
+
+DANCERS = [
+    CHOREO_DANCER,
+    FREESTYLE_DANCER,
     DANCE_DANCER,
 ]
 
 def get_time_periods(timestamp):
-    if timestamp < datetime.datetime.now() - datetime.timedelta(days=7):
+    if timestamp > datetime.datetime.now() - datetime.timedelta(days=7):
         yield LAST_WEEK
-    if timestamp < datetime.datetime.now() - datetime.timedelta(days=31):
+    if timestamp > datetime.datetime.now() - datetime.timedelta(days=31):
         yield LAST_MONTH
     yield ALL_TIME
 
@@ -92,8 +104,7 @@ def count_event(dbevent):
                 yield op.counters.Increment("%s/%s/%s" % (region, time_period, dance_style))
 
 def count_user(user):
-    latlng_user_location = locations.get_geocoded_location(user.location)['latlng']
-    user_city = cities.get_closest_city(latlng_user_location[0], latlng_user_location[1])
+    user_city = user.get_closest_city()
     for time_period in get_time_periods(user.creation_time):
         for dance_style in get_user_dance_styles(user):
             yield op.counters.Increment("%s/%s/%s" % (user_city, time_period, dance_style))
