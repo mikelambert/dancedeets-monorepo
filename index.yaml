@@ -32,6 +32,18 @@ indexes:
 
 - kind: MapreduceState
   properties:
+  - name: app_id
   - name: result_status
   - name: start_time
+    direction: desc
+
+- kind: MapreduceState
+  properties:
+  - name: result_status
+  - name: start_time
+    direction: desc
+
+- kind: User
+  properties:
+  - name: __key__
     direction: desc

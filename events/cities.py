@@ -57,6 +57,11 @@ IMPORTANT_CITIES = [
 
 ]
 
+def get_closest_city(latitude, longitude):
+    city_distance = lambda city: locations.get_distance(latitude, longitude, city[1][0], city[1][1])
+    closest_city = min(IMPORTANT_CITIES, key=city_distance)
+    return closest_city[0]
+
 def get_cities_within(latitude, longitude, distance_in_km):
     radius = 6371
     deg_per_rad = 57.2957795

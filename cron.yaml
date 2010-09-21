@@ -5,6 +5,9 @@ cron:
 - description: email users about upcoming events again
   url: /tasks/email_all_users
   schedule: every thursday 15:00
+- description: calculate periodic statistics and rankings
+  url: /tasks/compute_rankings
+  schedule: every 12 hours
 - description: email admin about cleanup work on events that needs to be done
   url: /tasks/cleanup_work
   schedule: every 24 hours

@@ -15,7 +15,7 @@ import facebook
 import fb_api
 from logic import backgrounder
 from logic import email_events
-from mapreduce import control
+from logic import rankings
 
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.
 RETRY_ON_FAIL_DELAY = 60
@@ -162,9 +162,4 @@ class CleanupWorkHandler(RequestHandler):
 
 class ComputeRankingsHandler(RequestHandler):
     def get(self):
-        control.start_map(
-            name='Compute Rankings',
-            reader_spec='mapreduce.input_readers.DatastoreInputReader',
-            handler_spec='logic.rankings.process',
-            reader_parameters={'entity_kind': 'events.eventdata.DBEvent'},
-        )
+        rankings.begin_ranking_calculations()

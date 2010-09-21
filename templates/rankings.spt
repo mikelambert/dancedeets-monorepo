@@ -7,9 +7,26 @@ Dance Deets Rankings
 
 #def body
 
+<p>Event Rankings:
 <table>
 <tr>
-#for $city_ranking in $style_rankings
+#for $city_ranking in $style_event_rankings
+<td>
+	<table>
+	<tr><th colspan=2>$city_ranking.style</th></tr>
+	#for $rank in $city_ranking.ranking
+		<tr><td>$rank.city</td><td>$rank.count</td></tr>
+	#end for
+	</table>
+</td>
+#end for
+</tr>
+</table>
+
+<p>Dancer Rankings:
+<table>
+<tr>
+#for $city_ranking in $style_user_rankings
 <td>
 	<table>
 	<tr><th colspan=2>$city_ranking.style</th></tr>
