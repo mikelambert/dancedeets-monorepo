@@ -145,6 +145,7 @@ class DBEvent(db.Model):
     # real data
     tags = db.StringListProperty()
     creating_fb_uid = db.IntegerProperty()
+    creation_datetime = db.DateTimeProperty()
     
     # searchable properties
     search_tags = db.StringListProperty()
