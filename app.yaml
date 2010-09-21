@@ -14,6 +14,9 @@ handlers:
   static_dir: css
 - url: /images
   static_dir: images
+- url: /mapreduce(/.*)?
+  script: mapreduce/main.py
+  login: admin
 - url: /tools/.*
   script: main.py
   login: admin

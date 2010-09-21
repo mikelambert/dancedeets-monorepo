@@ -38,6 +38,7 @@ URLS = [
     ('/tasks/resave_all_events', tasks.ResaveAllEventsHandler),
     ('/tasks/email_all_users', tasks.EmailAllUsersHandler),
     ('/tasks/email_user', tasks.EmailUserHandler),
+    ('/tasks/compute_rankings', tasks.ComputeRankingsHandler),
     ('/', search.RelevantHandler),
     ('/events/admin_edit', event.AdminEditHandler),
     ('/events/view', event.ViewHandler),

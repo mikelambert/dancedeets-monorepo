@@ -15,6 +15,7 @@ import facebook
 import fb_api
 from logic import backgrounder
 from logic import email_events
+from mapreduce import control
 
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.
 RETRY_ON_FAIL_DELAY = 60
@@ -146,7 +147,7 @@ class EmailUserHandler(BaseTaskFacebookRequestHandler, base_servlet.UserTimeHand
         email_events.email_for_user(self.user, self.batch_lookup, self.fb_graph, self.parse_fb_timestamp)
     post=get
 
-class CleanupWorkHandler(BaseTaskRequestHandler):
+class CleanupWorkHandler(RequestHandler):
     def get(self):
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE address = null and start_time != null")]
         if event_ids:
@@ -158,3 +159,12 @@ class CleanupWorkHandler(BaseTaskRequestHandler):
                 subject="Events missing addresses",
                 html=html
             )
+
+class ComputeRankingsHandler(RequestHandler):
+    def get(self):
+        control.start_map(
+            name='Compute Rankings',
+            reader_spec='mapreduce.input_readers.DatastoreInputReader',
+            handler_spec='logic.rankings.process',
+            reader_parameters={'entity_kind': 'events.eventdata.DBEvent'},
+        )
