@@ -1,7 +1,7 @@
 import datetime
 
 from google.appengine.ext import db
-from mapreduce import operation as op
+from mapreduce import model
 
 from events import tags
 
@@ -14,12 +14,20 @@ LAST_MONTH = 'LAST_MONTH'
 ALL_TIME = 'ALL_TIME'
 
 TIME_PERIODS = [
-    LAST_WEEK,
-    LAST_MONTH,
     ALL_TIME,
+    LAST_MONTH,
+    LAST_WEEK,
 ]
 
+FREESTYLE_STYLE = tags.FREESTYLE_EVENT
+CHOREO_STYLE = tags.CHOREO_EVENT
 ANY_STYLE = 'ANY_STYLE'
+
+STYLES = [
+    ANY_STYLE,
+    FREESTYLE_STYLE,
+    CHOREO_STYLE,
+]
 
 def get_time_periods(timestamp):
     if timestamp < datetime.datetime.now() - datetime.timedelta(days=7):
@@ -30,9 +38,9 @@ def get_time_periods(timestamp):
 
 def get_dance_styles(dbevent):
     if tags.FREESTYLE_EVENT in dbevent.search_tags:
-        yield tags.FREESTYLE_EVENT
+        yield FREESTYLE_STYLE
     if tags.CHOREO_EVENT in dbevent.search_tags:
-        yield tags.CHOREO_EVENT
+        yield CHOREO_STYLE
     yield ANY_STYLE
 
 def process(dbevent):
@@ -40,4 +48,15 @@ def process(dbevent):
         for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
             for dance_style in get_dance_styles(dbevent):
                 yield op.counters.Increment("%s/%s/%s" % (region, time_period, dance_style))
+
+def get_rankings():
+    mapreduce_states = model.MapreduceState.gql('WHERE result_status = :result_status ORDER BY start_time DESC', result_status='success').fetch(1)
+    final_counter_map = mapreduce_states[0].counters_map.counters
+    cities = {}
+    for k, counter in final_counter_map.iteritems():
+        if k.count('/') != 2:
+            continue
+        city, time_period, dance_style = k.split('/')
+        cities.setdefault(city, {}).setdefault(time_period, {})[dance_style] = counter
+    return cities
 

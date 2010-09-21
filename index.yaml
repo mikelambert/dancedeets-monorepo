@@ -29,3 +29,9 @@ indexes:
   properties:
   - name: __key__
     direction: desc
+
+- kind: MapreduceState
+  properties:
+  - name: result_status
+  - name: start_time
+    direction: desc

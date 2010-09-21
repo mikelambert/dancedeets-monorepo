@@ -12,6 +12,7 @@ from servlets import event
 from servlets import search
 from servlets import login
 from servlets import myuser
+from servlets import stats
 from servlets import tasks
 from servlets import tools
 import smemcache
@@ -40,6 +41,7 @@ URLS = [
     ('/tasks/email_user', tasks.EmailUserHandler),
     ('/tasks/compute_rankings', tasks.ComputeRankingsHandler),
     ('/', search.RelevantHandler),
+    ('/rankings', stats.RankingsHandler),
     ('/events/admin_edit', event.AdminEditHandler),
     ('/events/view', event.ViewHandler),
     ('/events/add', event.AddHandler),

@@ -1,0 +1,25 @@
+#extends _base
+#from spitfire.runtime.filters import escape_html
+#filter escape_html
+#def title
+Dance Deets Rankings
+#end def
+
+#def body
+
+<table>
+<tr>
+#for $city_ranking in $style_rankings
+<td>
+	<table>
+	<tr><th colspan=2>$city_ranking.style</th></tr>
+	#for $rank in $city_ranking.ranking
+		<tr><td>$rank.city</td><td>$rank.count</td></tr>
+	#end for
+	</table>
+</td>
+#end for
+</tr>
+</table>
+
+#end def
