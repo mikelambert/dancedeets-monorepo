@@ -175,7 +175,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         e.make_findable_for(self.batch_lookup.data_for_event(event_id))
         e.tags = self.request.get_all('tag')
         e.creating_fb_uid = self.user.fb_uid
-        e.creation_datetime = datetime.datetime.now()
+        e.creation_time = datetime.datetime.now()
         e.put()
 
         self.redirect('/events/admin_edit?event_id=%s' % event_id)
