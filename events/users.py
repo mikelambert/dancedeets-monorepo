@@ -130,8 +130,7 @@ class User(db.Model):
         return '%s at %s' % (month_day, time_string)
 
     def get_closest_city(self):
-        latlng_user_location = locations.get_geocoded_location(self.location)['latlng']
-        user_city = cities.get_closest_city(latlng_user_location[0], latlng_user_location[1])
+        user_city = cities.get_closest_city(self.location)
         return user_city
 
 

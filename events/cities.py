@@ -57,10 +57,15 @@ IMPORTANT_CITIES = [
 
 ]
 
-def get_closest_city(latitude, longitude):
-    city_distance = lambda city: locations.get_distance(latitude, longitude, city[1][0], city[1][1])
+def get_closest_city(location):
+    latitude, longitude = locations.get_geocoded_location(location)['latlng']
+    city_distance = lambda city: locations.get_distance(latitude, longitude, city[1][0], city[1][1], use_km=True)
     closest_city = min(IMPORTANT_CITIES, key=city_distance)
-    return closest_city[0]
+    if city_distance(closest_city) < 200:
+        return closest_city[0]
+    else:
+        logging.error("No closest city for user in %s", location)
+        return None
 
 def get_cities_within(latitude, longitude, distance_in_km):
     radius = 6371
