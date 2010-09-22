@@ -100,7 +100,7 @@ def get_user_dance_styles(user):
         yield CHOREO_FAN
         yield CHOREO_DANCER
 
-    if user.choreo != users.CHOREO_APATHY and user.freestyle != users.FREESTYLE_APATHY:
+    if user.choreo != users.CHOREO_APATHY or user.freestyle != users.FREESTYLE_APATHY:
         yield DANCE_FAN
         if user.choreo == users.CHOREO_DANCER or user.freestyle == users.FREESTYLE_DANCER:
             yield DANCE_DANCER
