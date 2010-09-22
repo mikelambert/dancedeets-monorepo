@@ -1,5 +1,6 @@
 #extends _base
 #extends _rsvp
+#extends _results
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
@@ -17,15 +18,6 @@ function toggleSearchOptions() {
 	}
 	$('#search_options').slideToggle(400);
 }
-function toggleId(id) {
-	var url = $('#' + id + '-expander').css('backgroundImage');
-	if (url.indexOf('plus') != -1) {
-		$('#' + id + '-expander').css('backgroundImage', url.replace('plus', 'minus'));
-	} else {
-		$('#' + id + '-expander').css('backgroundImage', url.replace('minus', 'plus'));
-	}
-	$('#' + id).slideToggle(400);
-}
 </script>
 #end def
 
@@ -33,17 +25,6 @@ function toggleId(id) {
 <style type="text/css">
 .results_table {
 	width:600px;
-}
-.group {
-	border-bottom: 1px solid black;
-	width:600px;
-}
-.group-expander {
-	margin-top: 2px;
-	width: 11px;
-	height: 11px;
-	float: left;
-	background-image: url(/images/expand-icon-minus.gif);
 }
 #search_options-box {
 	border: 1px solid grey;
@@ -57,23 +38,6 @@ function toggleId(id) {
 	background-image: url(/images/expand-icon-plus.gif);
 }
 </style>
-#end def
-
-#def render_results($results)
-<table class="results_table">
-	#for $result in $results
-		#set $fb_event = $result.fb_event.info
-		<tr>
-			<td style="width:100px"><a href="http://www.facebook.com/event.php?eid=$fb_event.id"><img src="$result.get_image()"></a></td>
-			<td><a href="http://www.facebook.com/event.php?eid=$fb_event.id">$format_html($fb_event.name)</a><br>
-			$date_human_format($result.start_time)
-			</td>
-			<td style="width:100px">
-				$rsvp_form($fb_event.id, $result.get_attendance())
-			</td>
-		</tr>
-	#end for
-</table>
 #end def
 
 #def body
@@ -127,44 +91,38 @@ function toggleId(id) {
 </div>
 
 <p>
-
-#for $group in $grouped_results
-	#if $group.results or $group.force
-		<div class="group" onclick="toggleId('$group.id'); return false;" id="$group.id-box">
-			<span id="$group.id-expander" class="group-expander"
-				#if not $group.expanded
-					style="background-image: url(/images/expand-icon-plus.gif);"
-				#end if
-			></span>
-			<b>$group.name</b>
-		</div>
-		<div id="$group.id"
-			#if not $group.expanded
-				style="display:none;"
+<div id="tabs" style="width: 700px">
+	<ul>
+		<li><a href="$past_view_url"><span>Past Events</span></a></li>
+		<li><a href="#ongoing_events"><span>Ongoing Events</span></a></li>
+		<li><a href="#upcoming_events"><span>Upcoming Events</span></a></li>
+	</ul>
+	<div id="past_events" class="ui-tabs-hide">
+		$render_results($past_results)
+	</div>
+	<div id="ongoing_events" class="ui-tabs-hide">
+		$render_results($ongoing_results)
+	</div>
+	<div id="upcoming_events">
+		#for $group in $grouped_upcoming_results
+			#if $group.results
+				<div><b>$group.name</b></div>
+				$render_results($group.results)
 			#end if
-		>
-			$render_results($group.results)
-		</div>
-	#end if
-#end for
+		#end for
+	</div>
+</div>
 
 <p>Missing an event? <a href="/events/add">Add it here!</a>
-
 #end def
 
 #def bottom_javascript
-#if not $past_view
-<script type="text/javascript">
-	$('#past_events-box').click(function() {
-		$('#past_events').load('/events/relevant #past_events', 
-		{
-			#for $x in $request.params.iteritems()
-				$x[0]: '$x[1]',
-			#end for
-				past: 1,
-		});
-	});
-#end if
-</script>
 $rsvp_script()
+<script type="text/javascript">
+$(document).ready(function() {
+	var tabs = $("#tabs").tabs();
+	tabs.tabs('select', '#upcoming_events');
+});
+</script>
+
 #end def

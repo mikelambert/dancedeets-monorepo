@@ -117,14 +117,18 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             else:
                 year_results.append(result)
     
-        grouped_results.append(Group('Past Events', 'past_events', past_results, expanded=past, force=True))
-        grouped_results.append(Group('Ongoing Events', 'present_events', present_results, expanded=False))
         grouped_results.append(Group('Events This Week', 'week_events', week_results, expanded=True))
         grouped_results.append(Group('Events This Month', 'month_events', month_results, expanded=True))
         grouped_results.append(Group('Future Events', 'year_events', year_results, expanded=True))
 
-        self.display['past_view'] = past
-        self.display['grouped_results'] = grouped_results
+        self.display['past_view_url'] = '/events/relevant?ajax=1&past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
+
+        self.display['past_results'] = past_results
+        self.display['ongoing_results'] = present_results
+        self.display['grouped_upcoming_results'] = grouped_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
-        self.render_template('results')
+        if self.request.get('ajax'):
+            self.render_template('results_ajax')
+        else:
+            self.render_template('results')
 

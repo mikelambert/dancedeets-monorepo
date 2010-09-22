@@ -1,0 +1,6 @@
+#extends _rsvp
+#extends _results
+
+#def main
+$render_results($past_results)
+#end def
