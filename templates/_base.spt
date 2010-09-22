@@ -21,11 +21,18 @@ $header()
 
 $body()
 
-<p><fb:like href="http://www.dancedeets.com" width="450" action="recommend" show_faces="false"></fb:like>
-
-<p>Things not working? Have ideas? Events you submitting not showing up? <a href="mailto:mlambert@gmail.com">Send feedback!</a>
-
-<p>See <a href="/rankings">rankings</a> on how your city compares to others!
+<div style="margin: 10px">Want to help DanceDeets succeed?
+<ul>
+<li>Add a <a href="/events/add">new dance event</a> to promote it.
+<li>Check out how <a href="/rankings">your city's dance scene</a> is doing compared to others in DanceDeets.
+<!--
+<li>Tell a friend about DanceDeets. You know, the friends that never can quite keep up with what dance things are going on.
+-->
+<li><a href="mailto:mlambert@gmail.com">Send feedback!</a> Things not working? Have ideas to make things better? Adoring fan mail?
+<li>Recommend DanceDeets on Facebook:<br>
+<fb:like href="http://www.dancedeets.com" width="450" action="recommend" show_faces="false"></fb:like>
+</ul>
+<div style="height: 100px"></div>
 
 <div id="fb-root"></div>
 </body>

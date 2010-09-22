@@ -113,7 +113,6 @@ function toggleSearchOptions() {
 	</div>
 </div>
 
-<p>Missing an event? <a href="/events/add">Add it here!</a>
 #end def
 
 #def bottom_javascript
