@@ -65,6 +65,21 @@ DANCERS = [
     DANCE_DANCER,
 ]
 
+string_translations = {
+    ALL_TIME: 'all time',
+    LAST_MONTH: 'last month',
+    LAST_WEEK: 'last week',
+    ANY_STYLE: 'all dancing',
+    FREESTYLE_STYLE: 'freestyle dancing',
+    CHOREO_STYLE: 'choreo dancing',
+    DANCE_FAN: 'all dance fans',
+    DANCE_DANCER: 'all dancers',
+    CHOREO_FAN: 'choreo fans',
+    CHOREO_DANCER: 'choreo dancers',
+    FREESTYLE_FAN: 'freeestyle fans',
+    FREESTYLE_DANCER: 'freestyle dancers',
+}
+
 def get_time_periods(timestamp):
     if timestamp > datetime.datetime.now() - datetime.timedelta(days=7):
         yield LAST_WEEK

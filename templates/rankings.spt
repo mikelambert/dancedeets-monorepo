@@ -22,7 +22,7 @@ Rankings over <select name="time_period" onchange="this.form.submit();">
 		#if $current_time_period == $time_period
 			selected
 		#end if
-		>$time_period
+		>$string_translations.get($time_period)
 	#end for
 </select>
 </form>
@@ -33,7 +33,7 @@ Rankings over <select name="time_period" onchange="this.form.submit();">
 #for $city_ranking in $style_event_rankings
 <td valign=top>
 	<table>
-	<tr><th colspan=2>$city_ranking.style</th></tr>
+	<tr><th colspan=2>$string_translations.get($city_ranking.style)</th></tr>
 	#for $rank in $city_ranking.ranking
 		<tr
 			#if $rank.city == $user_city
@@ -53,7 +53,7 @@ Rankings over <select name="time_period" onchange="this.form.submit();">
 #for $city_ranking in $style_dancer_rankings
 <td valign=top>
 	<table>
-	<tr><th colspan=2>$city_ranking.style</th></tr>
+	<tr><th colspan=2>$string_translations.get($city_ranking.style)</th></tr>
 	#for $rank in $city_ranking.ranking
 		<tr
 			#if $rank.city == $user_city
@@ -73,7 +73,7 @@ Rankings over <select name="time_period" onchange="this.form.submit();">
 #for $city_ranking in $style_fan_rankings
 <td valign=top>
 	<table>
-	<tr><th colspan=2>$city_ranking.style</th></tr>
+	<tr><th colspan=2>$string_translations.get($city_ranking.style)</th></tr>
 	#for $rank in $city_ranking.ranking
 		<tr
 			#if $rank.city == $user_city
