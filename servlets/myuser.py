@@ -6,10 +6,6 @@ from events import users
 from google.appengine.ext import db
 from util import timezones
 
-#TODO(lambert): check if they've created any events with dance, hiphop, etc in the name, and if so ask them to add the event to this site
-#TODO(lambert): send notifications to interested users when someone adds a new event?
-
-        
 class UserHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
