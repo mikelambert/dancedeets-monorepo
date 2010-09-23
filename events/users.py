@@ -88,7 +88,8 @@ class User(db.Model):
         user = allow_memcache and smemcache.get(memcache_key)
         if not user:
             user = User.get_by_key_name(str(uid))
-            smemcache.set(memcache_key, user, USER_EXPIRY)
+            if user:
+                smemcache.set(memcache_key, user, USER_EXPIRY)
         return user
 
     @classmethod
@@ -105,7 +106,7 @@ class User(db.Model):
         user.freestyle = FREESTYLE_DANCER
         user.choreo = CHOREO_DANCER
         user.send_email = True
-        if user.location_country in locations.MILES_COUNTRIES:
+        if not user.location_country or user.location_country in locations.MILES_COUNTRIES:
             user.distance = '90'
             user.distance_units = 'miles'
         else:
