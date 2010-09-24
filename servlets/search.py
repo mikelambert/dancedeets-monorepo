@@ -52,7 +52,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
     def handle(self):
         self.finish_preload()
         if not self.user.location:
-            #TODO(lambert): use a redirect message here!
+            self.user.add_message("We could not retrieve your location from facebook. Please fill out a location below")
             self.redirect('/user/edit')
             return
         user_location = self.request.get('user_location', self.user.location)

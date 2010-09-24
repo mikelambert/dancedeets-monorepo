@@ -19,6 +19,14 @@ $header()
 	<h1>$title()</h1>
 	</td></tr></table>
 
+#if $messages
+<div style="text-align: center">
+#for $message in $messages
+<span style="background-color: #2AA5CD; color: #CDF3FF">$message</span><br>
+#end for
+</div>
+#end if
+
 $body()
 
 <div style="margin: 10px">Want to help DanceDeets?

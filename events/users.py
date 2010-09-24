@@ -137,7 +137,29 @@ class User(db.Model):
         else:
             return None
 
+    def add_message(self, message):
+        user_message = UserMessage(
+            fb_uid=self.fb_uid,
+            creation_time=datetime.datetime.now(),    
+            message=message,
+        )
+        user_message.put()
+        return user_message
+
+    def get_and_purge_messages(self):
+        user_messages = UserMessage.gql("WHERE fb_uid = :fb_uid ORDER BY creation_time", fb_uid=self.fb_uid).fetch(100)
+        messages = [x.message for x in user_messages]
+        for user_message in user_messages:
+            user_message.delete()
+        return messages
 
 class UserFriendsAtSignup(db.Model):
     fb_uid = property(lambda x: int(x.key().name()))
     registered_friend_ids = db.ListProperty(int)
+
+class UserMessage(db.Model):
+    fb_uid = db.IntegerProperty()
+    creation_time = db.DateTimeProperty()
+    message = db.TextProperty()
+
+

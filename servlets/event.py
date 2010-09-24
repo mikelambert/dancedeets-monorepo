@@ -178,6 +178,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         e.creation_time = datetime.datetime.now()
         e.put()
 
+        self.user.add_message("Changes saved!")
         self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
 
@@ -246,13 +247,13 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.add_error('Cannot add private events to dancedeets!')
 
         self.errors_are_fatal()
+        fb_event = self.batch_lookup.data_for_event(event_id)
         e = eventdata.DBEvent.get_or_insert(event_id)
-        e.make_findable_for(self.batch_lookup.data_for_event(event_id))
+        e.make_findable_for(fb_event)
         e.tags = self.request.get_all('tag')
         e.creating_fb_uid = self.user.fb_uid
         e.creation_datetime = datetime.datetime.now()
         e.put()
 
-        #TODO(lambert): implement a "yellow message" system and use for this, admin-edit, etc
-        self.response.out.write('Thanks for submitting! Go to your <a href="/">homepage</a>.<br>\n')
-        #self.response.out.write('<a href="/events/view?event_id=%s">View Page</a>' % event_id)
+        self.user.add_message('Your event "%s" has been added.' % fb_event['info']['title'])
+        self.redirect('/')

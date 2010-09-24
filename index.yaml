@@ -47,3 +47,8 @@ indexes:
   properties:
   - name: __key__
     direction: desc
+
+- kind: UserMessage
+  properties:
+  - name: fb_uid
+  - name: creation_time
