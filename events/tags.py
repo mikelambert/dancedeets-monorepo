@@ -27,7 +27,7 @@ FREESTYLE_EVENT_LIST = [
     (FREESTYLE_WORKSHOP, 'workshop, master class, audition, tryout'),
     (FREESTYLE_PERFORMANCE, 'performance, show'),
     (FREESTYLE_SESSION, 'practice session'),
-    (FREESTYLE_COMPETITION, 'competition, battle, tournament'),
+    (FREESTYLE_COMPETITION, 'competition, jam, battle, tournament'),
     (FREESTYLE_CLUB, 'club with cyphers'),
     (FREESTYLE_OTHER, 'other'),
 ]

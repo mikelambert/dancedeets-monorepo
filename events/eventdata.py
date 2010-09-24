@@ -120,19 +120,21 @@ def get_remapped_address_for(address):
         return None
 
 def save_remapped_address_for(original_address, new_remapped_address):
-    location_mapping = LocationMapping.get_or_insert(original_address)
-    location_mapping.remapped_address = new_remapped_address
-    location_mapping.put()
+    if original_address:
+        location_mapping = LocationMapping.get_or_insert(original_address)
+        location_mapping.remapped_address = new_remapped_address
+        location_mapping.put()
 
 def get_geocoded_location_for_event(fb_event):
     # Do not trust facebook for latitude/longitude data. It appears to treat LA as Louisiana, etc. So always geocode
     address = get_original_address_for_event(fb_event)
     logging.info("For event = %s, address is %s", fb_event['info']['id'], address)
 
-    remapped_address = get_remapped_address_for(address)
-    if remapped_address:
-        logging.info("address got remapped to %s", remapped_address)
-        address = remapped_address
+    if address:
+        remapped_address = get_remapped_address_for(address)
+        if remapped_address:
+            logging.info("address got remapped to %s", remapped_address)
+            address = remapped_address
 
     results = locations.get_geocoded_location(address)
     return results

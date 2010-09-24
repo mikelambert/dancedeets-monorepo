@@ -63,7 +63,10 @@ def _raw_get_cached_geocoded_data(location):
     return geocoded_data
 
 def get_geocoded_location(address):
-    result = _raw_get_cached_geocoded_data(address)
+    if address:
+        result = _raw_get_cached_geocoded_data(address)
+    else:
+        result = None
     geocoded_location = {}
     if result:
         geocoded_location['latlng'] = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
