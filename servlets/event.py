@@ -52,62 +52,64 @@ class ViewHandler(base_servlet.BaseRequestHandler):
         self.batch_lookup.lookup_event(event_id)
         #self.batch_lookup.lookup_event_members(event_id)
         self.finish_preload()
-        if event_id:
-            event_info = self.batch_lookup.data_for_event(event_id)
-            #TODO(lambert): handle events with event_info['deleted'] == True
-            # Disable event_members stuff while we figure out a better way to background-load this
-            #try:
-            #    event_members_info = self.batch_lookup.data_for_event_members(event_id)
-            #except KeyError:
-            #    event_members_info = None
-            event_members_info = []
-            e = event_info['info']
-        
-            location = eventdata.get_geocoded_location_for_event(event_info)
-            self.display['location'] = location
-
-            if location['latlng'] and self.user.location:
-                e_lat, e_lng = location['latlng']
-                user_location = locations.get_geocoded_location(self.user.location)
-                my_lat, my_lng = user_location['latlng']
-                distance = locations.get_distance(e_lat, e_lng, my_lat, my_lng)
-                self.display['distance'] = distance
-            else:
-                self.display['distance'] = None
-
-            self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
-            rsvps = rsvp.RSVPManager(self.batch_lookup)
-            self.display['attendee_status'] = rsvps.get_rsvp_for_event(event_id)
-
-            friend_ids = set(x['id'] for x in self.current_user()['friends']['data'])
-            event_friends = {}
-            for rsvp_status in 'attending', 'maybe', 'declined', 'noreply':
-                if rsvp_status in event_members_info:
-                    rsvp_friends = [x for x in event_members_info[rsvp_status]['data'] if x['id'] in friend_ids]
-                    rsvp_friends = sorted(rsvp_friends, key=lambda x: x['name'])
-                    for friend in rsvp_friends:
-                        friend['pic'] = 'https://graph.facebook.com/%s/picture?access_token=%s' % (friend['id'], self.fb_graph.access_token)
-                    event_friends[rsvp_status] = rsvp_friends
-
-            self.display['fb_event'] = e
-            for field in ['start_time', 'end_time']:
-                self.display[field] = self.parse_fb_timestamp(e[field])
-
-            self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.data_for_event(event_id)['picture'], eventdata.EVENT_IMAGE_LARGE)
-
-            db_event = eventdata.DBEvent.get_or_insert(event_id)
-            tags_set = db_event and set(db_event.tags) or []
-            self.display['styles'] = [x[1] for x in tags.STYLES if x[0] in tags_set]
-            self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST if x[0] in tags_set]
-            self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST if x[0] in tags_set]
-            self.display['event_friends'] = event_friends
-
-            # template rendering
-            self.render_template('view')
-
-            # TODO(lambert): maybe offer a link to message the owner
-        else:
+        if not event_id:
             self.response.out.write('Need an event_id.')
+
+        event_info = self.batch_lookup.data_for_event(event_id)
+        if event_info['deleted']:
+            self.response.out.write('This event was deleted.')
+
+        # Disable event_members stuff while we figure out a better way to background-load this
+        try:
+            event_members_info = self.batch_lookup.data_for_event_members(event_id)
+        except KeyError:
+            event_members_info = None
+        event_members_info = []
+        e = event_info['info']
+    
+        location = eventdata.get_geocoded_location_for_event(event_info)
+        self.display['location'] = location
+
+        if location['latlng'] and self.user.location:
+            e_lat, e_lng = location['latlng']
+            user_location = locations.get_geocoded_location(self.user.location)
+            my_lat, my_lng = user_location['latlng']
+            distance = locations.get_distance(e_lat, e_lng, my_lat, my_lng)
+            self.display['distance'] = distance
+        else:
+            self.display['distance'] = None
+
+        self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
+        rsvps = rsvp.RSVPManager(self.batch_lookup)
+        self.display['attendee_status'] = rsvps.get_rsvp_for_event(event_id)
+
+        friend_ids = set(x['id'] for x in self.current_user()['friends']['data'])
+        event_friends = {}
+        for rsvp_status in 'attending', 'maybe', 'declined', 'noreply':
+            if rsvp_status in event_members_info:
+                rsvp_friends = [x for x in event_members_info[rsvp_status]['data'] if x['id'] in friend_ids]
+                rsvp_friends = sorted(rsvp_friends, key=lambda x: x['name'])
+                for friend in rsvp_friends:
+                    friend['pic'] = 'https://graph.facebook.com/%s/picture?access_token=%s' % (friend['id'], self.fb_graph.access_token)
+                event_friends[rsvp_status] = rsvp_friends
+
+        self.display['fb_event'] = e
+        for field in ['start_time', 'end_time']:
+            self.display[field] = self.parse_fb_timestamp(e[field])
+
+        self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.data_for_event(event_id)['picture'], eventdata.EVENT_IMAGE_LARGE)
+
+        db_event = eventdata.DBEvent.get_or_insert(event_id)
+        tags_set = db_event and set(db_event.tags) or []
+        self.display['styles'] = [x[1] for x in tags.STYLES if x[0] in tags_set]
+        self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST if x[0] in tags_set]
+        self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST if x[0] in tags_set]
+        self.display['event_friends'] = event_friends
+
+        # template rendering
+        self.render_template('view')
+
+        # TODO(lambert): maybe offer a link to message the owner
 
 class AdminEditHandler(base_servlet.BaseRequestHandler):
     def get(self):
