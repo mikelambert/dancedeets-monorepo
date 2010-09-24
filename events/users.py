@@ -131,8 +131,11 @@ class User(db.Model):
         return '%s at %s' % (month_day, time_string)
 
     def get_closest_city(self):
-        user_city = cities.get_closest_city(self.location)
-        return user_city
+        if self.location:
+            user_city = cities.get_closest_city(self.location)
+            return user_city
+        else:
+            return None
 
 
 class UserFriendsAtSignup(db.Model):
