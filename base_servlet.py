@@ -34,8 +34,11 @@ class UserTimeHandler(object):
 
     def localize_timestamp(self, dt):
         timezone_str = self.user.location_timezone
-        timezone = pytz.timezone(timezone_str)
-        final_dt = dt + timezone.utcoffset(dt) - datetime.timedelta(hours=2) # HORRIBLE HACK FOR FB BROKENNESS
+        if timezone_str:
+            timezone = pytz.timezone(timezone_str)
+            final_dt = dt + timezone.utcoffset(dt) - datetime.timedelta(hours=2) # HORRIBLE HACK FOR FB BROKENNESS
+        else:
+            final_dt = dt
         return final_dt
 
 class BaseRequestHandler(RequestHandler, UserTimeHandler):
@@ -49,6 +52,7 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
             self.fb_uid = int(args['uid'])
             self.fb_graph = facebook.GraphAPI(args['access_token'])
             self.user = users.User.get(self.fb_uid)
+            logging.info("Logged in uid %s", self.fb_uid)
         else:
             self.fb_uid = None
             self.fb_graph = None
