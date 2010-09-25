@@ -67,6 +67,7 @@ class User(db.Model):
 
     # Other preferences
     send_email = db.BooleanProperty()
+    location_geohash = db.StringProperty()
     location_country = db.StringProperty()
     location_timezone = db.StringProperty()
 
@@ -97,12 +98,18 @@ class User(db.Model):
         user = User(key_name=str(fb_uid))
         user.location = location
         if user.location:
+            #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
             state, country = locations.get_country_and_state_for_location(user.location)
+            geocoded_location = locations.get_geocoded_location(user.location)
             user.location_country = country
             user.location_timezone = timezones.get_timezone_for_state(state)
+            user.location_geohash = geohash.encode(geocoded_location['latlng'][0], geocoded_location['latlng'][1])
+            user.search_location_geohash = geohash.encode(geocoded_location['latlng'][0], geocoded_location['latlng'][1], precision=X)
         else:
             user.location_country = None
             user.location_timezone = None
+            user.location_geohash = None
+            user.search_location_geohash = None
         user.freestyle = FREESTYLE_DANCER
         user.choreo = CHOREO_DANCER
         user.send_email = True

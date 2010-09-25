@@ -76,21 +76,6 @@ def get_geocoded_location(address):
         geocoded_location['address'] = None
     return geocoded_location
 
-def get_distance(lat1, lng1, lat2, lng2, use_km=False):
-    deg_per_rad = 57.2957795
-    dlat = (lat2-lat1) / deg_per_rad
-    dlng = (lng2-lng1) / deg_per_rad
-    a = (math.sin(dlat/2) * math.sin(dlat/2) +
-        math.cos(lat1 / deg_per_rad) * math.cos(lat2 / deg_per_rad) * 
-        math.sin(dlng/2) * math.sin(dlng/2))
-    circum = 2 * math.atan2(math.sqrt(a), math.sqrt(1.0-a))
-    if use_km:
-        radius = 6371 # km
-    else:
-        radius = 3959 # miles
-    distance = radius * circum
-    return distance
-
 def get_country_and_state_for_location(location_name):
     result = _raw_get_cached_geocoded_data(location_name)
     if not result:
@@ -106,6 +91,29 @@ def get_country_and_state_for_location(location_name):
 #TODO(lambert): at some point eliminate timezones.py and implement it using a proper geonames web service
 # http://www.geonames.org/commercial-webservices.html
 # timezone_url = "http://ws.geonames.org/timezoneJSON?lat=%s&lng=%s" % (lat, lng)
+
+rad = math.pi / 180.0
+
+def get_distance(lat1, lng1, lat2, lng2, use_km=False):
+    dlat = (lat2-lat1) * rad
+    dlng = (lng2-lng1) * rad
+    a = (math.sin(dlat/2) * math.sin(dlat/2) +
+        math.cos(lat1 * rad) * math.cos(lat2 * rad) * 
+        math.sin(dlng/2) * math.sin(dlng/2))
+    circum = 2 * math.atan2(math.sqrt(a), math.sqrt(1.0-a))
+    if use_km:
+        radius = 6371 # km
+    else:
+        radius = 3959 # miles
+    distance = radius * circum
+    return distance
+
+def get_latlng_radius_box(lat, lng, radius):
+    miles_per_nautical_mile = 1.15078
+    lat_range = radius / (miles_per_nautical_mile * 60.0)
+    lng_range = radius / (math.cos(lat * rad) * miles_per_nautical_mile * 60.0)
+    return (lat - lat_range, lng - lng_range, lat + lat_range, lng + lng_range)
+
 
 
 def miles_in_km(miles):
