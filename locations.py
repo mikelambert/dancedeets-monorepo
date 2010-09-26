@@ -6,6 +6,8 @@ import math
 import urllib
 import urllib2
 
+import geohash
+
 try:
     from django.utils import simplejson
 except ImportError:
@@ -76,21 +78,6 @@ def get_geocoded_location(address):
         geocoded_location['address'] = None
     return geocoded_location
 
-def get_distance(lat1, lng1, lat2, lng2, use_km=False):
-    deg_per_rad = 57.2957795
-    dlat = (lat2-lat1) / deg_per_rad
-    dlng = (lng2-lng1) / deg_per_rad
-    a = (math.sin(dlat/2) * math.sin(dlat/2) +
-        math.cos(lat1 / deg_per_rad) * math.cos(lat2 / deg_per_rad) * 
-        math.sin(dlng/2) * math.sin(dlng/2))
-    circum = 2 * math.atan2(math.sqrt(a), math.sqrt(1.0-a))
-    if use_km:
-        radius = 6371 # km
-    else:
-        radius = 3959 # miles
-    distance = radius * circum
-    return distance
-
 def get_country_and_state_for_location(location_name):
     result = _raw_get_cached_geocoded_data(location_name)
     if not result:
@@ -107,7 +94,69 @@ def get_country_and_state_for_location(location_name):
 # http://www.geonames.org/commercial-webservices.html
 # timezone_url = "http://ws.geonames.org/timezoneJSON?lat=%s&lng=%s" % (lat, lng)
 
+rad = math.pi / 180.0
+
+def get_distance(lat1, lng1, lat2, lng2, use_km=False):
+    dlat = (lat2-lat1) * rad
+    dlng = (lng2-lng1) * rad
+    a = (math.sin(dlat/2) * math.sin(dlat/2) +
+        math.cos(lat1 * rad) * math.cos(lat2 * rad) * 
+        math.sin(dlng/2) * math.sin(dlng/2))
+    circum = 2 * math.atan2(math.sqrt(a), math.sqrt(1.0-a))
+    if use_km:
+        radius = 6371 # km
+    else:
+        radius = 3959 # miles
+    distance = radius * circum
+    return distance
+
+def get_lat_lng_offsets(lat, lng, km):
+    miles = km_in_miles(km)
+    miles_per_nautical_mile = 1.15078
+    lat_range = miles / (miles_per_nautical_mile * 60.0)
+    lng_range = miles / (math.cos(lat * rad) * miles_per_nautical_mile * 60.0)
+    return lat_range, lng_range
+
+circumference_of_earth = 40000 # km
+def get_geohash_bits_for_km(km):
+    if km < min_box_size:
+        return max_geohash_bits
+    geohash_bits = int(math.ceil(-math.log(1.0 * km / circumference_of_earth) / math.log(2)))
+    return geohash_bits
+
+min_box_size = 200 # km
+max_geohash_bits = get_geohash_bits_for_km(min_box_size)
+# max_geohash_bits should be 8, which is reasonable compared to 32 possible for complete geohashing
+
+
+one_over_sqrt_two = 1.0 / math.sqrt(2.0)
+# to understand why we need circle_corners, see the BACKGROUND of:
+# http://github.com/davetroy/geohash-js
+circle_corners = [
+    (-1, -1),
+    (-1, +1),
+    (+1, -1),
+    (+1, +1),    (-one_over_sqrt_two, -one_over_sqrt_two),
+    (-one_over_sqrt_two, +one_over_sqrt_two),
+    (+one_over_sqrt_two, -one_over_sqrt_two),
+    (+one_over_sqrt_two, +one_over_sqrt_two),
+]
+def get_all_geohashes_for(lat, lng, km):
+    # We subtract one in an attempt to get less geohashes below (by using a larger search area),
+    # but be aware we still risk having at most 9 geohashes in a worst-case edge-border
+    # 90miles in NY = 2 geohashes
+    # 90miles in SF = 6 geohashes
+    precision = get_geohash_bits_for_km(km) - 1
+    lat_range, lng_range = get_lat_lng_offsets(lat, lng, km)
+    geohashes = set()
+    for mult_lat, mult_lng in circle_corners:
+        new_lat = lat + mult_lat*lat_range
+        new_lng = lng + mult_lng*lng_range
+        geohashes.add(str(geohash.Geostring((new_lat, new_lng), depth=precision)))
+    return list(geohashes)
 
 def miles_in_km(miles):
     return miles * 1.609344
+def km_in_miles(km):
+    return km * 0.6213712
 

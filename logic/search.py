@@ -56,14 +56,11 @@ class SearchQuery(object):
                 assert self.end_time > datetime.datetime.today()
         if self.time_period == tags.TIME_FUTURE and self.start_time:
                 assert self.start_time < datetime.datetime.today()
-        self.search_regions = None
         self.location = location
         self.distance_in_km = distance_in_km
         self.query_args = query_args
 
-        find_cities_within_km = distance_in_km + eventdata.REGION_RADIUS
-        nearest_cities = cities.get_cities_within(location[0], location[1], distance_in_km=find_cities_within_km)
-        self.search_regions = nearest_cities
+        self.search_geohashes = locations.get_all_geohashes_for(location[0], location[1], distance_in_km)
 
     def matches_event(self, event, fb_event):
         if self.any_tags:
@@ -122,9 +119,9 @@ class SearchQuery(object):
         if self.choreo_freestyle:
             clauses.append('search_tags = :search_tag')
             bind_vars['search_tag'] = self.choreo_freestyle
-        if self.search_regions:
-            clauses.append('search_regions in :search_regions')
-            bind_vars['search_regions'] = self.search_regions
+        if self.search_geohashes:
+            clauses.append('geohashes in :search_geohashes')
+            bind_vars['search_geohashes'] = self.search_geohashes
         if self.time_period:
             clauses.append('search_time_period = :search_time_period')
             bind_vars['search_time_period'] = self.time_period

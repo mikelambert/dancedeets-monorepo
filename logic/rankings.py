@@ -113,6 +113,7 @@ def get_event_dance_styles(dbevent):
     yield ANY_STYLE
 
 def count_event(dbevent):
+    #TODO(lambert): reimplement without search-regions? manual list of countries, group by US city automatically, stored in the event
     for region in dbevent.search_regions:
         for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
             for dance_style in get_event_dance_styles(dbevent):

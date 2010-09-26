@@ -1,6 +1,9 @@
+import logging
+
+from google.appengine.ext import db
+
 import cities
 import datetime
-from google.appengine.ext import db
 import locations
 import smemcache
 from util import timezones
@@ -69,6 +72,7 @@ class User(db.Model):
     send_email = db.BooleanProperty()
     location_country = db.StringProperty()
     location_timezone = db.StringProperty()
+    search_location_geohashes = db.StringListProperty()
 
     def distance_in_km(self):
         if not self.distance:
@@ -96,13 +100,23 @@ class User(db.Model):
     def get_default_user(cls, fb_uid, location):
         user = User(key_name=str(fb_uid))
         user.location = location
+        logging.info("user location is %s", user.location)
         if user.location:
+            #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
             state, country = locations.get_country_and_state_for_location(user.location)
+            geocoded_location = locations.get_geocoded_location(user.location)
             user.location_country = country
             user.location_timezone = timezones.get_timezone_for_state(state)
+            
+            km = user.distance_in_km()
+            lat = geocoded_location['latlng'][0]
+            lng = geocoded_location['latlng'][1]
+            user.search_location_geohashes = locations.get_all_geohashes_for(lat, lng, km)
+            logging.info("the %s location hashes are %s", len(user.search_location_geohashes), user.search_location_geohashes)
         else:
             user.location_country = None
             user.location_timezone = None
+            user.search_location_geohashes = []
         user.freestyle = FREESTYLE_DANCER
         user.choreo = CHOREO_DANCER
         user.send_email = True

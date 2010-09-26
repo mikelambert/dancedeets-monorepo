@@ -1,9 +1,10 @@
 #!/usr/bin/env python
+import logging
+from google.appengine.ext import db
 
 import base_servlet
 import locations
 from events import users
-from google.appengine.ext import db
 from util import timezones
 
 class UserHandler(base_servlet.BaseRequestHandler):
@@ -55,8 +56,15 @@ class UserHandler(base_servlet.BaseRequestHandler):
         user.distance = self.request.get('distance')
         if user.location:
             state, country = locations.get_country_and_state_for_location(user.location)
+            geocoded_location = locations.get_geocoded_location(user.location)
             user.location_country = country
             user.location_timezone = timezones.get_timezone_for_state(state)
+            km = user.distance_in_km()
+            lat = geocoded_location['latlng'][0]
+            lng = geocoded_location['latlng'][1]
+            user.search_location_geohashes = locations.get_all_geohashes_for(lat, lng, km)
+            logging.info("the %s location hashes are %s", len(user.search_location_geohashes), user.search_location_geohashes)
+
             if not user.location_country:
                 self.add_error("No country for location %r" % location_name)
             if not user.location_timezone:

@@ -7,6 +7,7 @@ from google.appengine.ext import db
 
 from events import cities
 from events import tags
+import geohash
 
 import locations
 
@@ -154,12 +155,12 @@ class DBEvent(db.Model):
     search_time_period = db.StringProperty()
     start_time = db.DateTimeProperty()
     end_time = db.DateTimeProperty()
-    search_regions = db.StringListProperty()
 
     # extra cached properties
     address = db.StringProperty()
     latitude = db.FloatProperty()
     longitude = db.FloatProperty()
+    geohashes = db.StringListProperty()
 
     def make_findable_for(self, fb_dict):
         # set up any cached fields or bucketing or whatnot for this event
@@ -169,7 +170,6 @@ class DBEvent(db.Model):
             self.end_time = None
             self.search_tags = []
             self.search_time_period = None
-            self.search_regions = []
             return
 
         self.start_time = datetime.datetime.strptime(fb_dict['info']['start_time'], '%Y-%m-%dT%H:%M:%S+0000')
@@ -193,12 +193,13 @@ class DBEvent(db.Model):
         if results['latlng']:
             self.latitude = results['latlng'][0]
             self.longitude = results['latlng'][1]
-            # Or add a "default US" that always gets searched, and that gets appended if no cities are close enough.
-            self.search_regions = cities.get_cities_within(self.latitude, self.longitude, REGION_RADIUS)
-            logging.info("Nearest cities for %s are %s", self.address, self.search_regions)
-            if not self.search_regions:
-                logging.error("Error no search regions for eid=%s with lat/lng (%s,%s) with address %s", self.fb_event_id, self.latitude, self.longitude, self.address)
+            self.geohashes = []
+            for x in range(locations.max_geohash_bits):
+                self.geohashes.append(str(geohash.Geostring((self.latitude, self.longitude), depth=x)))
         else:
+            self.latitude = None
+            self.longitude = None
+            self.geohashes = []
             #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
             logging.error("No geocoding results for eid=%s is: %s", self.fb_event_id, results)
 
