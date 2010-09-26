@@ -59,12 +59,6 @@ class UserHandler(base_servlet.BaseRequestHandler):
             geocoded_location = locations.get_geocoded_location(user.location)
             user.location_country = country
             user.location_timezone = timezones.get_timezone_for_state(state)
-            km = user.distance_in_km()
-            lat = geocoded_location['latlng'][0]
-            lng = geocoded_location['latlng'][1]
-            user.search_location_geohashes = locations.get_all_geohashes_for(lat, lng, km)
-            logging.info("the %s location hashes are %s", len(user.search_location_geohashes), user.search_location_geohashes)
-
             if not user.location_country:
                 self.add_error("No country for location %r" % location_name)
             if not user.location_timezone:
