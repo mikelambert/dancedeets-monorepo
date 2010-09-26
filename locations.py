@@ -133,10 +133,12 @@ one_over_sqrt_two = 1.0 / math.sqrt(2.0)
 # to understand why we need circle_corners, see the BACKGROUND of:
 # http://github.com/davetroy/geohash-js
 circle_corners = [
+    (0, 0),
     (-1, -1),
     (-1, +1),
     (+1, -1),
-    (+1, +1),    (-one_over_sqrt_two, -one_over_sqrt_two),
+    (+1, +1),
+    (-one_over_sqrt_two, -one_over_sqrt_two),
     (-one_over_sqrt_two, +one_over_sqrt_two),
     (+one_over_sqrt_two, -one_over_sqrt_two),
     (+one_over_sqrt_two, +one_over_sqrt_two),
@@ -145,8 +147,9 @@ def get_all_geohashes_for(lat, lng, km):
     # We subtract one in an attempt to get less geohashes below (by using a larger search area),
     # but be aware we still risk having at most 9 geohashes in a worst-case edge-border
     # 90miles in NY = 2 geohashes
-    # 90miles in SF = 6 geohashes
-    precision = get_geohash_bits_for_km(km) - 1
+    # 90miles in SF = 3 geohashes
+    # And we use 2 * km since our search area is a radius of km, and we want a diameter/box.
+    precision = get_geohash_bits_for_km(2 * km) - 1
     lat_range, lng_range = get_lat_lng_offsets(lat, lng, km)
     geohashes = set()
     for mult_lat, mult_lng in circle_corners:

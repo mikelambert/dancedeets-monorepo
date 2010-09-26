@@ -61,6 +61,7 @@ class SearchQuery(object):
         self.query_args = query_args
 
         self.search_geohashes = locations.get_all_geohashes_for(location[0], location[1], distance_in_km)
+        logging.info("Searching geohashes %s", self.search_geohashes)
 
     def matches_event(self, event, fb_event):
         if self.any_tags:
