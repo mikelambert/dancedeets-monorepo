@@ -94,20 +94,22 @@ class User(db.Model):
                 smemcache.set(memcache_key, user, USER_EXPIRY)
         return user
 
+    def compute_derived_properties(self):
+        logging.info("self location is %s", self.location)
+        if self.location:
+            #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
+            country = locations.get_country_for_location(self.location)
+            geocoded_location = locations.get_geocoded_location(self.location)
+            self.location_country = country
+            self.location_timezone = cities.get_closest_city(self.location).timezone
+        else:
+            self.location_country = None
+            self.location_timezone = None
+
     @classmethod
     def get_default_user(cls, fb_uid, location):
         user = User(key_name=str(fb_uid))
         user.location = location
-        logging.info("user location is %s", user.location)
-        if user.location:
-            #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
-            country = locations.get_country_for_location(user.location)
-            geocoded_location = locations.get_geocoded_location(user.location)
-            user.location_country = country
-            user.location_timezone = cities.get_closest_city(user.location).timezone
-        else:
-            user.location_country = None
-            user.location_timezone = None
         user.freestyle = FREESTYLE_DANCER
         user.choreo = CHOREO_DANCER
         user.send_email = True
@@ -117,6 +119,7 @@ class User(db.Model):
         else:
             user.distance = '150'
             user.distance_units = 'km'
+        self.compute_derived_properties()
         return user
 
     def put(self):
