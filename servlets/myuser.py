@@ -55,7 +55,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
             setattr(user, field, form_value)
         user.distance = self.request.get('distance')
         if user.location:
-            country = locations.get_country_and_location(user.location)
+            country = locations.get_country_for_location(user.location)
             geocoded_location = locations.get_geocoded_location(user.location)
             user.location_country = country
             user.location_timezone = cities.get_closest_city(user.location).timezone
