@@ -95,10 +95,10 @@ states_abbrev2full = {
 
 states_full2abbrev = {}
 for abbr, full in states_abbrev2full.iteritems():
-  states_full2abbrev[full] = abbr
+    states_full2abbrev[full] = abbr
 
 class LocationMapping(db.Model):
-    remapped_address = db.StringProperty()  
+    remapped_address = db.StringProperty()
 
 def get_original_address_for_event(fb_event):
     event_info = fb_event['info']

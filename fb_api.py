@@ -279,7 +279,7 @@ class BatchLookup(object):
 
     def _store_objects_into_memcache(self, fetched_objects):
         memcache_set = {}
-        for k, v  in fetched_objects.iteritems():
+        for k, v in fetched_objects.iteritems():
             if self._is_cacheable(k, v):
                 memcache_set[self._string_key(k)] = v
         smemcache.safe_set_memcache(memcache_set, 2*3600)
@@ -295,6 +295,6 @@ class BatchLookup(object):
         return fetched_objects
 
 class CommonBatchLookup(BatchLookup):
-  def get_userless_id(self):
-    return '701004'
+    def get_userless_id(self):
+        return '701004'
 

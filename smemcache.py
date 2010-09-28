@@ -7,8 +7,8 @@ from google.appengine.api import memcache
 from google.appengine.api.memcache import *
 
 def expiry_with_variance(expiry, expiry_variance):
-  variance = expiry * expiry_variance
-  return random.randrange(expiry - variance, expiry + variance)
+    variance = expiry * expiry_variance
+    return random.randrange(expiry - variance, expiry + variance)
 
 def safe_set_memcache(memcache_set, expiry, top_level=True):
     set_size = len(pickle.dumps(memcache_set))

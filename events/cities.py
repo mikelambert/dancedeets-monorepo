@@ -36,8 +36,8 @@ class City(db.Model):
 def import_cities():
     # Download this file from http://download.geonames.org/export/dump/
     # Generally we import locally (to avoid 30sec servlet limits), then download-and-upload data:
-    # appcfg.py download_data --application=dancedeets --kind="City"  --url=http://127.0.0.1:8080/remote_api --filename=cities.db
-    # appcfg.py upload_data --application=dancedeets --kind="City"  --url=http://dancedeets.appspot.com/remote_api --filename=cities.db
+    # appcfg.py download_data --application=dancedeets --kind="City" --url=http://127.0.0.1:8080/remote_api --filename=cities.db
+    # appcfg.py upload_data --application=dancedeets --kind="City" --url=http://dancedeets.appspot.com/remote_api --filename=cities.db
     for line in open('cities15000.txt'):
         # List of fields from http://download.geonames.org/export/dump/
         geonameid, name, asciiname, alternatenames, latitude, longitude, feature_class, feature_code, country_code, cc2, admin1_code, admin2_code, admin3_code, admin4_code, population, elevation, gtopo30, timezone, modification_date = line.split('\t')
