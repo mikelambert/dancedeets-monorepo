@@ -1,4 +1,5 @@
 
+# from http://svn.python.org/projects/python/trunk/Tools/world/world
 countries_abbrev2full = {
     "AF": "Afghanistan",
     "AL": "Albania",
