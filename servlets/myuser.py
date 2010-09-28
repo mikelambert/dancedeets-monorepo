@@ -62,6 +62,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
                 self.add_error("No timezone for location %r" % user.location)
         else:
             self.add_error("No location")
+        #TODO(lambert): add an option for doing email "via facebook" as well. not everyone uses email.
         for field in ['send_email']:
             form_value = self.request.get(field) == "true"
             setattr(user, field, form_value)
