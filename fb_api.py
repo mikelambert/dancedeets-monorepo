@@ -293,3 +293,8 @@ class BatchLookup(object):
             obj.pickle_dict(this_object)
             obj.put()
         return fetched_objects
+
+class CommonBatchLookup(BatchLookup):
+  def get_userless_id(self):
+    return '701004'
+

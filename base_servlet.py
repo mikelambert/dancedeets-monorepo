@@ -24,10 +24,6 @@ class _ValidationError(Exception):
 
 FACEBOOK_CONFIG = None
 
-class CommonBatchLookup(fb_api.BatchLookup):
-    def get_userless_id(self):
-        return '701004'
-
 class UserTimeHandler(object):
     def parse_fb_timestamp(self, fb_timestamp):
         return self.localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
@@ -61,7 +57,7 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
             self.redirect('/login?next=%s' % urllib.quote(self.request.url))
             return True
         if self.fb_uid:
-            self.batch_lookup = CommonBatchLookup(self.fb_uid, self.fb_graph)
+            self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph)
             # Always look up the user's information for every page view...?
             self.batch_lookup.lookup_user(self.fb_uid)
         self.display = {}

@@ -8,6 +8,7 @@ from events import cities
 from events import eventdata
 from events import tags
 from events import users
+import fb_api
 from logic import rsvp
 import locations
 
@@ -149,7 +150,7 @@ class SearchQuery(object):
         db_events = self.get_candidate_events()
 
         # Now look up contents of each event...
-        batch_lookup = base_servlet.CommonBatchLookup(fb_uid, graph)
+        batch_lookup = fb_api.CommonBatchLookup(fb_uid, graph)
         for db_event in db_events:
             batch_lookup.lookup_event(db_event.fb_event_id)
         batch_lookup.finish_loading()
