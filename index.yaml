@@ -10,6 +10,11 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: City
+  properties:
+  - name: __key__
+    direction: desc
+
 - kind: DBEvent
   properties:
   - name: __key__

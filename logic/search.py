@@ -60,7 +60,7 @@ class SearchQuery(object):
         self.distance_in_km = distance_in_km
         self.query_args = query_args
 
-        self.search_geohashes = locations.get_all_geohashes_for(location[0], location[1], distance_in_km)
+        self.search_geohashes = locations.get_all_geohashes_for(location[0], location[1], km=distance_in_km)
         logging.info("Searching geohashes %s", self.search_geohashes)
 
     def matches_event(self, event, fb_event):

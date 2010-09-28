@@ -162,6 +162,8 @@ class DBEvent(db.Model):
     longitude = db.FloatProperty()
     geohashes = db.StringListProperty()
 
+    search_regions = db.StringListProperty()
+
     def make_findable_for(self, fb_dict):
         # set up any cached fields or bucketing or whatnot for this event
 

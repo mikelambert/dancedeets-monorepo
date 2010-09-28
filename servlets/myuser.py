@@ -4,8 +4,8 @@ from google.appengine.ext import db
 
 import base_servlet
 import locations
+from events import cities
 from events import users
-from util import timezones
 
 class UserHandler(base_servlet.BaseRequestHandler):
     def get(self):
@@ -55,14 +55,14 @@ class UserHandler(base_servlet.BaseRequestHandler):
             setattr(user, field, form_value)
         user.distance = self.request.get('distance')
         if user.location:
-            state, country = locations.get_country_and_state_for_location(user.location)
+            country = locations.get_country_and_location(user.location)
             geocoded_location = locations.get_geocoded_location(user.location)
             user.location_country = country
-            user.location_timezone = timezones.get_timezone_for_state(state)
+            user.location_timezone = cities.get_closest_city(user.location).timezone
             if not user.location_country:
                 self.add_error("No country for location %r" % location_name)
             if not user.location_timezone:
-                self.add_error("No timezone for location %r, state %s" % (location_name, state))
+                self.add_error("No timezone for location %r" % location_name)
         else:
             self.add_error("No location")
         for field in ['send_email']:

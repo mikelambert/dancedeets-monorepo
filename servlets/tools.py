@@ -1,9 +1,10 @@
 import time
 from google.appengine.ext import db
 from google.appengine.ext import webapp
-
 from google.appengine.ext import deferred
+
 from util.mapper import Mapper
+from events import cities
 from events import eventdata
 from events import users
 import fb_api
@@ -11,11 +12,7 @@ from logic import event_classifier
 
 class OneOffHandler(webapp.RequestHandler):
     def get(self):
-        for obj in fb_api.FacebookCachedObject.all():
-            if obj.key().name().endswith('OBJ_EVENT'):
-                fb_event = obj.unpickled_dict()['info']
-                is_dance_event = event_classifier.is_dance_event(fb_event)
-                self.response.out.write('%s: %s: %s\n' % (is_dance_event, fb_event['id'], fb_event['name']))
+        cities.import_cities()
         self.response.out.write('yay!')
 
 class MyModelMapper(Mapper):

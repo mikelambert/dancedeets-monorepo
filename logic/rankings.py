@@ -120,7 +120,7 @@ def count_event(dbevent):
                 yield op.counters.Increment("%s/%s/%s" % (region, time_period, dance_style))
 
 def count_user(user):
-    user_city = user.get_closest_city()
+    user_city = user.get_closest_city().key().name()
     for time_period in get_time_periods(user.creation_time):
         for dance_style in get_user_dance_styles(user):
             yield op.counters.Increment("%s/%s/%s" % (user_city, time_period, dance_style))

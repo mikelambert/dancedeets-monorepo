@@ -78,17 +78,14 @@ def get_geocoded_location(address):
         geocoded_location['address'] = None
     return geocoded_location
 
-def get_country_and_state_for_location(location_name):
+def get_country_for_location(location_name):
     result = _raw_get_cached_geocoded_data(location_name)
     if not result:
         return None
-    states = [x['short_name'] for x in result['address_components'] if u'administrative_area_level_1' in x['types']]
-    if len(states) != 1:
-        raise GeocodeException("Found too many states: %s" % states)
     countries = [x['short_name'] for x in result['address_components'] if u'country' in x['types']]
     if len(countries) != 1:
         raise GeocodeException("Found too many countries: %s" % countries)
-    return states[0], countries[0]
+    return countries[0]
 
 #TODO(lambert): at some point eliminate timezones.py and implement it using a proper geonames web service
 # http://www.geonames.org/commercial-webservices.html
@@ -117,12 +114,16 @@ def get_lat_lng_offsets(lat, lng, km):
     lng_range = miles / (math.cos(lat * rad) * miles_per_nautical_mile * 60.0)
     return lat_range, lng_range
 
-circumference_of_earth = 40000 # km
+circumference_of_earth = 40000.0 # km
 def get_geohash_bits_for_km(km):
     if km < min_box_size:
         return max_geohash_bits
     geohash_bits = int(math.ceil(-math.log(1.0 * km / circumference_of_earth) / math.log(2)))
     return geohash_bits
+
+def get_km_for_geohash_bits(precision):
+    km = circumference_of_earth * math.pow(2, -precision)
+    return km
 
 min_box_size = 200 # km
 max_geohash_bits = get_geohash_bits_for_km(min_box_size)
@@ -143,13 +144,20 @@ circle_corners = [
     (+one_over_sqrt_two, -one_over_sqrt_two),
     (+one_over_sqrt_two, +one_over_sqrt_two),
 ]
-def get_all_geohashes_for(lat, lng, km):
+def get_all_geohashes_for(lat, lng, km=None, precision=None):
+    assert km or precision
+    assert not km or not precision
     # We subtract one in an attempt to get less geohashes below (by using a larger search area),
     # but be aware we still risk having at most 9 geohashes in a worst-case edge-border
     # 90miles in NY = 2 geohashes
     # 90miles in SF = 3 geohashes
     # And we use 2 * km since our search area is a radius of km, and we want a diameter/box.
-    precision = get_geohash_bits_for_km(2 * km) - 1
+    if km:
+        precision = get_geohash_bits_for_km(2 * km) - 1
+    elif precision:
+        km = get_km_for_geohash_bits(precision)
+    else:
+        assert False, "shouldn't happen"
     lat_range, lng_range = get_lat_lng_offsets(lat, lng, km)
     geohashes = set()
     for mult_lat, mult_lng in circle_corners:

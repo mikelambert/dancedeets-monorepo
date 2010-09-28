@@ -26,7 +26,7 @@ class RankingsHandler(base_servlet.BaseRequestHandler):
         self.display['style_fan_rankings'] = style_fan_rankings
         self.display['time_periods'] = rankings.TIME_PERIODS
         self.display['current_time_period'] = time_period
-        self.display['user_city'] = self.user.get_closest_city()
+        self.display['user_city'] = self.user.get_closest_city().key().name()
         self.display['string_translations'] = rankings.string_translations
 
         self.render_template('rankings')

@@ -6,7 +6,6 @@ import cities
 import datetime
 import locations
 import smemcache
-from util import timezones
 
 def header_item(name, description):
     return dict(name=name, description=description)
@@ -102,10 +101,10 @@ class User(db.Model):
         logging.info("user location is %s", user.location)
         if user.location:
             #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
-            state, country = locations.get_country_and_state_for_location(user.location)
+            country = locations.get_country_for_location(user.location)
             geocoded_location = locations.get_geocoded_location(user.location)
             user.location_country = country
-            user.location_timezone = timezones.get_timezone_for_state(state)
+            user.location_timezone = cities.get_closest_city(user.location).timezone
         else:
             user.location_country = None
             user.location_timezone = None
