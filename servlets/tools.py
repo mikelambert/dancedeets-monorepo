@@ -10,12 +10,27 @@ from events import users
 import fb_api
 from logic import event_classifier
 
+class MyModelMapper(Mapper):
+    KIND = fb_api.FacebookCachedObject
+
+    def map(self, entity):
+        if 'OBJ_USER' in entity.key().name() or '701004' in entity.key().name():
+            return ([], [])
+        return ([], [entity])
+
 class OneOffHandler(webapp.RequestHandler):
     def get(self):
-        cities.import_cities()
+        m = MyModelMapper()
+        m.run()
         self.response.out.write('yay!')
 
-class MyModelMapper(Mapper):
+class ImportCitiesHandler(webapp.RequestHandler):
+    def get(self):
+        cities.import_cities()
+        self.response.out.write("Imported Cities!")
+
+
+class DBEventMapper(Mapper):
     KIND = eventdata.DBEvent
 
     def map(self, entity):
@@ -32,10 +47,10 @@ class MyModelMapper(Mapper):
 
 class MigrateDBEventsHandler(webapp.RequestHandler):
     def get(self):
-        m = MyModelMapper()
+        m = DBEventMapper()
         m.run()
         #deferred.defer(m.run)
-        self.response.out.write('yay!')
+        self.response.out.write('Trigger DBEvent Migration Mapreduce!')
 
 class ClearMemcacheHandler(webapp.RequestHandler):
     def get(self):

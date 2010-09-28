@@ -25,6 +25,7 @@ DEBUG = True
 
 URLS = [
     ('/tools/oneoff', tools.OneOffHandler),
+    ('/tools/import_cities', tools.ImportCitiesHandler),
     ('/tools/migrate_dbevents', tools.MigrateDBEventsHandler),
     ('/tools/clear_memcache', admin.ClearMemcacheHandler),
     ('/tools/delete_fb_cache', admin.DeleteFBCacheHandler),
