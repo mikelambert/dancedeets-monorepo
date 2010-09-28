@@ -108,7 +108,6 @@ class User(db.Model):
         else:
             user.location_country = None
             user.location_timezone = None
-            user.search_location_geohashes = []
         user.freestyle = FREESTYLE_DANCER
         user.choreo = CHOREO_DANCER
         user.send_email = True
