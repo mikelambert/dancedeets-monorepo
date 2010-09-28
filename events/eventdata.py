@@ -10,6 +10,7 @@ from events import tags
 import geohash
 
 import locations
+from util import abbrev
 
 REGION_RADIUS = 200 # kilometers
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
@@ -32,71 +33,6 @@ def get_event_image_url(square_url, event_image_type):
     url = url.replace('_q', '_%s' % event_image_type)
     return url
 
-
-states_abbrev2full = {
-    'AK': 'Alaska',
-    'AL': 'Alabama',
-    'AR': 'Arkansas',
-    'AS': 'American Samoa',
-    'AZ': 'Arizona',
-    'CA': 'California',
-    'CO': 'Colorado',
-    'CT': 'Connecticut',
-    'DC': 'District of Columbia',
-    'DE': 'Delaware',
-    'FL': 'Florida',
-    'GA': 'Georgia',
-    'GU': 'Guam',
-    'HI': 'Hawaii',
-    'IA': 'Iowa',
-    'ID': 'Idaho',
-    'IL': 'Illinois',
-    'IN': 'Indiana',
-    'KS': 'Kansas',
-    'KY': 'Kentucky',
-    'LA': 'Louisiana',
-    'MA': 'Massachusetts',
-    'MD': 'Maryland',
-    'ME': 'Maine',
-    'MI': 'Michigan',
-    'MN': 'Minnesota',
-    'MO': 'Missouri',
-    'MP': 'Northern Mariana Islands',
-    'MS': 'Mississippi',
-    'MT': 'Montana',
-    'NA': 'National',
-    'NC': 'North Carolina',
-    'ND': 'North Dakota',
-    'NE': 'Nebraska',
-    'NH': 'New Hampshire',
-    'NJ': 'New Jersey',
-    'NM': 'New Mexico',
-    'NV': 'Nevada',
-    'NY': 'New York',
-    'OH': 'Ohio',
-    'OK': 'Oklahoma',
-    'OR': 'Oregon',
-    'PA': 'Pennsylvania',
-    'PR': 'Puerto Rico',
-    'RI': 'Rhode Island',
-    'SC': 'South Carolina',
-    'SD': 'South Dakota',
-    'TN': 'Tennessee',
-    'TX': 'Texas',
-    'UT': 'Utah',
-    'VA': 'Virginia',
-    'VI': 'Virgin Islands',
-    'VT': 'Vermont',
-    'WA': 'Washington',
-    'WI': 'Wisconsin',
-    'WV': 'West Virginia',
-    'WY': 'Wyoming'
-}
-
-states_full2abbrev = {}
-for abbr, full in states_abbrev2full.iteritems():
-    states_full2abbrev[full] = abbr
-
 class LocationMapping(db.Model):
     remapped_address = db.StringProperty()
 
@@ -104,7 +40,7 @@ def get_original_address_for_event(fb_event):
     event_info = fb_event['info']
     venue = event_info.get('venue', {})
     # Use staes_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
-    address_components = [event_info.get('location'), venue.get('street'), venue.get('city'), states_full2abbrev.get(venue.get('state'), venue.get('state')), venue.get('country')]
+    address_components = [event_info.get('location'), venue.get('street'), venue.get('city'), abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state')), venue.get('country')]
     address_components = [x for x in address_components if x]
     address = ', '.join(address_components)
     return address
