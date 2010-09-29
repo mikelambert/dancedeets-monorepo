@@ -61,6 +61,8 @@ def email_for_user(user, batch_lookup, fb_graph, parse_fb_timestamp):
     search_results = query.get_search_results(user.fb_uid, fb_graph)
     rsvp.decorate_with_rsvps(batch_lookup, search_results)
     past_results, present_results, grouped_results = search.group_results(search_results)
+    # Don't include results more than a month out in these emails
+    grouped_results = [x for x in grouped_results if x.id != 'year_events']
 
     # check the events user-was-invited-to, looking for any dance-related fb events we don't know about yet
     new_dance_events = get_potential_dance_events(batch_lookup, user)
