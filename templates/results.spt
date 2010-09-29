@@ -95,7 +95,7 @@ function toggleSearchOptions() {
 	<ul>
 		<li><a href="$past_view_url" title="past events"><span>Past Events</span></a></li>
 		<li><a href="#ongoing_events"><span>Ongoing Events</span></a></li>
-		<li><a href="#upcoming_events"><span>Upcoming Events</span></a></li>
+		<li class="ui-tabs-selected"><a href="#upcoming_events"><span>Upcoming Events</span></a></li>
 	</ul>
 	<div id="past_events" class="ui-tabs-hide">
 		$render_results($past_results)
@@ -117,11 +117,4 @@ function toggleSearchOptions() {
 
 #def bottom_javascript
 $rsvp_script()
-<script type="text/javascript">
-$(document).ready(function() {
-	var tabs = $("#tabs").tabs();
-	tabs.tabs('select', '#upcoming_events');
-});
-</script>
-
 #end def
