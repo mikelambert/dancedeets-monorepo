@@ -1,0 +1,8 @@
+mapreduce:
+- name: CalculateRankings
+  mapper:
+    input_reader: mapreduce.input_readers.DatastoreInputReader
+    handler: logic.rankings.process
+    params:
+    - name: entity_kind
+      default: events.eventdata.DBEvent
