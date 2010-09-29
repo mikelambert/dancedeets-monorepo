@@ -95,7 +95,6 @@ class User(db.Model):
         return user
 
     def compute_derived_properties(self):
-        logging.info("self location is %s", self.location)
         if self.location:
             #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
             self.location_country = locations.get_country_for_location(self.location)
