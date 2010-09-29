@@ -11,7 +11,7 @@ Hi $fb_user.profile.name,
 #for $group in $grouped_results
 	#if $group.results
 		<div><b>$group.name</b></div>
-		$render_results($group.results, rsvp_form=False)
+		$render_results($group.results, use_rsvp_form=False)
 	#end if
 #end for
 

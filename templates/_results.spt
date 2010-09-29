@@ -1,4 +1,4 @@
-#def render_results($results, $rsvp_form=True)
+#def render_results($results, $use_rsvp_form=True)
 <table class="results_table">
 	#for $result in $results
 		#set $fb_event = $result.fb_event.info
@@ -8,7 +8,7 @@
 			$date_human_format($result.start_time)
 			</td>
 			<td style="width:130px">
-				#if $rsvp_form
+				#if $use_rsvp_form
 					$rsvp_form($fb_event.id, $result.get_attendance())
 				#else
 					rsvp: $result.get_attendance()
