@@ -113,14 +113,17 @@ def get_event_dance_styles(dbevent):
     yield ANY_STYLE
 
 def count_event(dbevent):
-    #TODO(lambert): reimplement without search-regions? manual list of countries, group by US city automatically, stored in the event
-    for region in dbevent.search_regions:
-        for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
-            for dance_style in get_event_dance_styles(dbevent):
-                yield op.counters.Increment("%s/%s/%s" % (region, time_period, dance_style))
+    #TODO(lambert): store largest_city in the event
+    if not dbevent.start_time: # deleted event, don't count
+        return
+    region = cities.get_largest_nearby_city_name(dbevent.address)
+    for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
+        for dance_style in get_event_dance_styles(dbevent):
+            yield op.counters.Increment("%s/%s/%s" % (region, time_period, dance_style))
 
 def count_user(user):
-    user_city = user.get_closest_city().key().name()
+    #TODO(lambert): store largest_city in the user
+    user_city = cities.get_largest_nearby_city_name(user.location)
     for time_period in get_time_periods(user.creation_time):
         for dance_style in get_user_dance_styles(user):
             yield op.counters.Increment("%s/%s/%s" % (user_city, time_period, dance_style))

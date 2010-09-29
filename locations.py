@@ -74,7 +74,7 @@ def get_geocoded_location(address):
         geocoded_location['latlng'] = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
         geocoded_location['address'] = result['formatted_address']
     else:
-        geocoded_location['latlng'] = None
+        geocoded_location['latlng'] = None, None
         geocoded_location['address'] = None
     return geocoded_location
 
