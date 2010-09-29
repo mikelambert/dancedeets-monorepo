@@ -87,10 +87,6 @@ def get_country_for_location(location_name):
         raise GeocodeException("Found too many countries: %s" % countries)
     return countries[0]
 
-#TODO(lambert): at some point eliminate timezones.py and implement it using a proper geonames web service
-# http://www.geonames.org/commercial-webservices.html
-# timezone_url = "http://ws.geonames.org/timezoneJSON?lat=%s&lng=%s" % (lat, lng)
-
 rad = math.pi / 180.0
 
 def get_distance(lat1, lng1, lat2, lng2, use_km=False):
