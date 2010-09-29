@@ -22,6 +22,9 @@ def compute_template_rankings(all_rankings, toplevel, time_period):
     return style_rankings
 
 class RankingsHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
     def get(self):
         self.finish_preload()
         time_period = self.request.get('time_period', rankings.ALL_TIME)
@@ -34,7 +37,8 @@ class RankingsHandler(base_servlet.BaseRequestHandler):
         self.display['style_fan_rankings'] = style_fan_rankings
         self.display['time_periods'] = rankings.TIME_PERIODS
         self.display['current_time_period'] = time_period
-        self.display['user_city'] = self.user.get_closest_city().key().name()
+        if self.user:
+            self.display['user_city'] = self.user.get_closest_city().key().name()
         self.display['string_translations'] = rankings.string_translations
 
         self.render_template('rankings')

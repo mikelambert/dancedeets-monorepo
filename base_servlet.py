@@ -60,6 +60,8 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
             self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph)
             # Always look up the user's information for every page view...?
             self.batch_lookup.lookup_user(self.fb_uid)
+        else:
+            self.batch_lookup = fb_api.CommonBatchLookup(None, self.fb_graph)
         self.display = {}
         self._errors = []
         # We can safely do this since there are very few ways others can modify self._errors
