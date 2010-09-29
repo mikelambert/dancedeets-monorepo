@@ -87,19 +87,21 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
 
     def errors_are_fatal(self):
         if self._errors:
-            raise _ValidationError()
+            raise _ValidationError(self._errors)
 
     def handle_exception(self, e, debug):
+        handled = False
         if isinstance(e, _ValidationError):
-            self.handle_error_response(self._errors)
-        else:
+            handled = self.handle_error_response(self._errors)
+        if not handled:
             super(BaseRequestHandler, self).handle_exception(e, debug)
 
     def handle_error_response(self, errors):
         if self.request.method == 'POST':
             self.get() # call get response handler if we have post validation errors
+            return True
         else:
-            response.out.write("Fatal Error in non-POST request, non-recoverable!")
+            return False # let exception handling code operate normally
 
     def write_json_response(self, **kwargs):
         self.response.out.write(simplejson.dumps(kwargs))
