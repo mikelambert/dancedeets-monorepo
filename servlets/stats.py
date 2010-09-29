@@ -1,4 +1,6 @@
 import base_servlet
+from events import tags
+from events import users
 from logic import rankings
 
 def compute_template_rankings(all_rankings, toplevel, time_period):
@@ -8,7 +10,13 @@ def compute_template_rankings(all_rankings, toplevel, time_period):
         for city, times_styles in all_rankings.iteritems():
             count = times_styles.get(time_period, {}).get(style, 0)
             if count:
-                city_ranking.append(dict(city=city, count=count))
+                if city == 'Unknown':
+                    url = None
+                else:
+                    freestyle = (style != tags.CHOREO_EVENT) and users.FREESTYLE_DANCER or users.FREESTYLE_APATHY
+                    choreo = (style != tags.FREESTYLE_EVENT) and users.CHOREO_DANCER or users.CHOREO_APATHY
+                    url = '/?user_location=%s&distance=100&distance_units=km&freestyle=%s&choreo=%s' % (city, freestyle, choreo)
+                city_ranking.append(dict(city=city, count=count, url=url))
         city_ranking = sorted(city_ranking, key=lambda x: -x['count'])
         style_rankings.append(dict(style=style, ranking=city_ranking))
     return style_rankings

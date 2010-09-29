@@ -39,7 +39,13 @@ Rankings over <select name="time_period" onchange="this.form.submit();">
 			#if $rank.city == $user_city
 				class="current_city"
 			#end if
-		><td>$rank.city</td><td>$rank.count</td></tr>
+		><td>$rank.city</td><td>
+			#if $rank.url
+				<a href="$rank.url">$rank.count</a>
+			#else
+				$rank.count
+			#end if
+		</td></tr>
 	#end for
 	</table>
 </td>
