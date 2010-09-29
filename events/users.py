@@ -1,6 +1,7 @@
 import logging
 
 from google.appengine.ext import db
+from google.appengine.runtime import apiproxy_errors
 
 import cities
 import datetime
@@ -148,7 +149,10 @@ class User(db.Model):
             creation_time=datetime.datetime.now(),    
             message=message,
         )
-        user_message.put()
+        try:
+            user_message.put()
+        except apiproxy_errors.CapabilityDisabledError:
+            pass
         return user_message
 
     def get_and_purge_messages(self):

@@ -11,6 +11,7 @@ import smemcache
 from google.appengine.ext import db
 from google.appengine.api import datastore
 from google.appengine.api import urlfetch
+from google.appengine.runtime import apiproxy_errors
 from django.utils import simplejson
 
 class FacebookException(Exception):
@@ -293,7 +294,10 @@ class BatchLookup(object):
                 continue
             obj = FacebookCachedObject.get_or_insert(self._string_key(object_key))
             obj.pickle_dict(this_object)
-            obj.put()
+            try:
+                obj.put()
+            except apiproxy_errors.CapabilityDisabledError:
+                pass
         return fetched_objects
 
 class CommonBatchLookup(BatchLookup):

@@ -3,6 +3,7 @@ import logging
 import cPickle as pickle
 
 from google.appengine.api import datastore
+from google.appengine.runtime import apiproxy_errors
 from google.appengine.ext import db
 
 from events import cities
@@ -60,7 +61,10 @@ def save_remapped_address_for(original_address, new_remapped_address):
     if original_address:
         location_mapping = LocationMapping.get_or_insert(original_address)
         location_mapping.remapped_address = new_remapped_address
-        location_mapping.put()
+        try:
+            location_mapping.put()
+        except apiproxy_errors.CapabilityDisabledError:
+            pass
 
 def get_geocoded_location_for_event(fb_event):
     # Do not trust facebook for latitude/longitude data. It appears to treat LA as Louisiana, etc. So always geocode

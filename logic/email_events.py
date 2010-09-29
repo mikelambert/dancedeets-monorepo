@@ -3,6 +3,7 @@ import logging
 
 from google.appengine.ext import db
 from google.appengine.api import mail
+from google.appengine.runtime import apiproxy_errors
 
 from events import eventdata
 from events import tags
@@ -67,7 +68,10 @@ def email_for_user(user, batch_lookup, fb_graph, parse_fb_timestamp):
         # saves it, with potentially false 'looked_at' field (unless already set as true by myself)
         if pe.looked_at is None:
             pe.looked_at = False
-            pe.put()
+            try:
+                pe.put()
+            except apiproxy_errors.CapabilityDisabledError:
+                pass
 
     display = {}
     display['date_human_format'] = user.date_human_format
