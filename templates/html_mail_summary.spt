@@ -18,12 +18,14 @@
 #end for
 </table>
 
-Perhaps you'd be interested in adding these dance events to Dance Deets?<br>
-<ul>
-#for $fb_event in $new_dance_events
-<li><a href="http://www.dancedeets.com/events/add?event_id=$fb_event['info']['id']">$fb_event['info']['name']</a>
-#end for
-</ul>
+#if $new_dance_events
+	Perhaps you'd be interested in adding these dance events to Dance Deets?<br>
+	<ul>
+	#for $fb_event in $new_dance_events
+	<li><a href="http://www.dancedeets.com/events/add?event_id=$fb_event['info']['id']">$fb_event['info']['name']</a>
+	#end for
+	</ul>
+#end if
 
 <p>Change <a href="http://www.dancedeets.com/user/edit">subscription settings, interests, locations, etc.</a>
 #end def
