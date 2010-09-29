@@ -116,7 +116,7 @@ class User(db.Model):
         else:
             user.distance = '150'
             user.distance_units = 'km'
-        self.compute_derived_properties()
+        user.compute_derived_properties()
         return user
 
     def put(self):
