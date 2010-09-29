@@ -85,9 +85,9 @@ def email_for_user(user, batch_lookup, fb_graph, parse_fb_timestamp):
     d = datetime.date.today()
     d = d - datetime.timedelta(days=d.weekday()) # round down to last monday
     message = mail.EmailMessage(
-        sender="events@dancedeets.com",
+        sender="DanceDeets Events <events@dancedeets.com>",
         subject="Dance events for %s" % d.strftime('%b %d, %Y'),
-        to='mlambert@gmail.com',#batch_lookup.data_for_user(user.fb_uid)['profile']['email'],
+        to=batch_lookup.data_for_user(user.fb_uid)['profile']['email'],
         html=rendered
     )
     message.send()
