@@ -48,6 +48,7 @@ def get_largest_nearby_city_name(location):
     city_name = '%s, %s' % (largest_nearby_city.city_name, abbrev.countries_abbrev2full[largest_nearby_city.country_name])
     if city_name == 'San Jose, United States':
         city_name = 'San Francisco, United States'
+    city_name = city_name.replace("Taiwan, Province of China", "Taiwan")
     return city_name
 
 class City(db.Model):
