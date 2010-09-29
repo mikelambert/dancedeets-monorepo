@@ -257,5 +257,5 @@ class AddHandler(base_servlet.BaseRequestHandler):
         e.creation_datetime = datetime.datetime.now()
         e.put()
 
-        self.user.add_message('Your event "%s" has been added.' % fb_event['info']['title'])
+        self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
         self.redirect('/')
