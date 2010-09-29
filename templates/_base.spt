@@ -8,9 +8,11 @@ $head_javascript()
 <body>
 ## get rid of this and merge it inline?
 $header()
+<div style="position: absolute; right:0px; top:0px; padding: 5px; text-align: right">
 #if $fb_user
-	<div style="position: absolute; right:0px; top:0px; padding: 5px; text-align: right">
 	$fb_user.profile.name : <a href="/user/edit">Settings</a>
+#else
+	<fb:login-button onlogin="window.location.reload();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
 #end if
 </div>
 	<table><tr><td>
@@ -52,6 +54,10 @@ $body()
   window.fbAsyncInit = function() {
     FB.init({appId: '$api_key', status: true, cookie: true,
              xfbml: true});
+    #if not $fb_user
+      ## only subscribe to login-status notifications if we're logged out, otherwise we get in an infinite loop
+      FB.Event.subscribe('FB.loginStatus', getLoginStatus);
+    #end if
   };
   (function() {
     var e = document.createElement('script'); e.async = true;
@@ -59,6 +65,12 @@ $body()
       '//connect.facebook.net/en_US/all.js';
     document.getElementById('fb-root').appendChild(e);
   }());
+
+  function getLoginStatus(response) {
+    if (response.session) {
+      window.location.reload();
+    }
+  }
 
 function share_dancedeets() {
 	FB.ui(

@@ -43,6 +43,7 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
 
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
+        login_url = '/login?next=%s' % urllib.quote(self.request.url)
         args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['api_key'], FACEBOOK_CONFIG['secret_key'])
         if args:
             self.fb_uid = int(args['uid'])
@@ -54,7 +55,7 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
             self.fb_graph = None
             self.user = None
         if self.requires_login() and (not self.fb_uid or not self.user):
-            self.redirect('/login?next=%s' % urllib.quote(self.request.url))
+            self.redirect(login_url)
             return True
         if self.fb_uid:
             self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph)
@@ -71,6 +72,8 @@ class BaseRequestHandler(RequestHandler, UserTimeHandler):
         if self.user:
             self.display['date_human_format'] = self.user.date_human_format
             self.display['messages'] = self.user.get_and_purge_messages()
+        else:
+            self.display['login_url'] = login_url
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
         self.display['request'] = request
