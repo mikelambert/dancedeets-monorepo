@@ -98,9 +98,7 @@ class User(db.Model):
         logging.info("self location is %s", self.location)
         if self.location:
             #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
-            country = locations.get_country_for_location(self.location)
-            geocoded_location = locations.get_geocoded_location(self.location)
-            self.location_country = country
+            self.location_country = locations.get_country_for_location(self.location)
             self.location_timezone = cities.get_closest_city(self.location).timezone
         else:
             self.location_country = None
