@@ -117,4 +117,9 @@ function toggleSearchOptions() {
 
 #def bottom_javascript
 $rsvp_script()
+<script type="text/javascript">
+$(document).ready(function() {
+	var tabs = $("#tabs").tabs();
+});
+</script>
 #end def
