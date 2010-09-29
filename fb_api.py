@@ -290,6 +290,7 @@ class BatchLookup(object):
     def _store_objects_into_dbcache(self, fetched_objects):
         for object_key, this_object in fetched_objects.iteritems():
             if not self._is_cacheable(object_key, this_object):
+                #TODO(lambert): cache the fact that it's a private-unshowable event somehow? same as deleted events?
                 logging.error("Looked up event %s but is not cacheable.", object_key)
                 continue
             obj = FacebookCachedObject.get_or_insert(self._string_key(object_key))
