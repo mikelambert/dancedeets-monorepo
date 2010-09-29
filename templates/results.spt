@@ -93,7 +93,7 @@ function toggleSearchOptions() {
 <p>
 <div id="tabs" style="width: 700px">
 	<ul>
-		<li><a href="$past_view_url"><span>Past Events</span></a></li>
+		<li><a href="$past_view_url" title="past events"><span>Past Events</span></a></li>
 		<li><a href="#ongoing_events"><span>Ongoing Events</span></a></li>
 		<li><a href="#upcoming_events"><span>Upcoming Events</span></a></li>
 	</ul>
