@@ -3,7 +3,7 @@
 #extends _results
 
 #def html
-Hi $fb_user.profile.name,
+Hi $fb_user.profile.first_name,
 
 <p>See <a href="http://www.dancedeets.com/">live up-to-date version</a> of the below events.
 
@@ -16,7 +16,7 @@ Hi $fb_user.profile.name,
 #end for
 
 #if $new_dance_events
-	Perhaps you'd be interested in adding these dance events to Dance Deets?<br>
+	If any of your events are for street/choreo dancers, please add them to Dance Deets:<br>
 	<ul>
 	#for $fb_event in $new_dance_events
 	<li><a href="http://www.dancedeets.com/events/add?event_id=$fb_event['info']['id']">$fb_event['info']['name']</a>
@@ -24,6 +24,6 @@ Hi $fb_user.profile.name,
 	</ul>
 #end if
 
-<p>Change <a href="http://www.dancedeets.com/user/edit">subscription settings, interests, locations, etc.</a>
+<p>To unsubscribe, change your location, or explore other dance styles, <a href="http://www.dancedeets.com/user/edit">change your Dance Deets settings.</a>
 #end def
 
