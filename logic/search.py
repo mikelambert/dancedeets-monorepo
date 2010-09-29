@@ -12,6 +12,41 @@ import fb_api
 from logic import rsvp
 import locations
 
+
+class ResultsGroup(object): 
+    def __init__(self, name, id, results, expanded, force=False): 
+        self.name = name 
+        self.id = id 
+        self.results = results 
+        self.expanded = expanded 
+        self.force = force 
+
+def group_results(search_results, past=False): 
+    today = datetime.datetime.today() 
+
+    grouped_results = [] 
+    past_results = [] 
+    present_results = [] 
+    week_results = [] 
+    month_results = [] 
+    year_results = [] 
+    for result in search_results: 
+        if result.start_time < today: 
+            if past: # If we're doing 'past' searches, group them differently 
+                past_results.append(result) 
+            else: 
+                present_results.append(result)
+        elif result.start_time < today + datetime.timedelta(days=7): 
+            week_results.append(result)
+        elif result.start_time < today + datetime.timedelta(days=30): 
+            month_results.append(result)
+        else: 
+            year_results.append(result) 
+    grouped_results.append(ResultsGroup('Events This Week', 'week_events', week_results, expanded=True)) 
+    grouped_results.append(ResultsGroup('Events This Month', 'month_events', month_results, expanded=True)) 
+    grouped_results.append(ResultsGroup('Future Events', 'year_events', year_results, expanded=True)) 
+    return past_results, present_results, grouped_results 
+
 class SearchResult(object):
     def __init__(self, fb_user_id, db_event, fb_event, search_query):
         self.fb_user_id = fb_user_id

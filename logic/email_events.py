@@ -60,7 +60,8 @@ def email_for_user(user, batch_lookup, fb_graph, parse_fb_timestamp):
     query = search.SearchQuery(parse_fb_timestamp, time_period=tags.TIME_FUTURE, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
     search_results = query.get_search_results(user.fb_uid, fb_graph)
     rsvp.decorate_with_rsvps(batch_lookup, search_results)
-    
+    past_results, present_results, grouped_results = search.group_results(search_results)
+
     # check the events user-was-invited-to, looking for any dance-related fb events we don't know about yet
     new_dance_events = get_potential_dance_events(batch_lookup, user)
     for event in new_dance_events:
@@ -77,13 +78,17 @@ def email_for_user(user, batch_lookup, fb_graph, parse_fb_timestamp):
     display['date_human_format'] = user.date_human_format
     display['format_html'] = text.format_html
     display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
+    display['user'] = user
+    display['fb_user'] = batch_lookup.data_for_user(user.fb_uid)
 
     display['new_dance_events'] = new_dance_events
 
-    display['results'] = search_results
+    display['grouped_results'] = grouped_results
+
     rendered = template.render_template('html_mail_summary', display)
     d = datetime.date.today()
     d = d - datetime.timedelta(days=d.weekday()) # round down to last monday
+    logging.info("Rendered HTML:\n%s", rendered)
     message = mail.EmailMessage(
         sender="DanceDeets Events <events@dancedeets.com>",
         subject="Dance events for %s" % d.strftime('%b %d, %Y'),

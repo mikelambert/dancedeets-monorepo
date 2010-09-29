@@ -1,22 +1,19 @@
 #extends _html_mail_base
 #extends _rsvp
+#extends _results
 
 #def html
+Hi $fb_user.profile.name,
+
 <p>See <a href="http://www.dancedeets.com/">live up-to-date version</a> of the below events.
 
 <p>
-<table>
-#for $result in $results
-#set $fb_event = $result.fb_event.info
-  <tr>
-    <td><a href="http://www.facebook.com/event.php?eid=$fb_event.id"><img src="$result.get_image()"></a></td>
-    <td><a href="http://www.facebook.com/event.php?eid=$fb_event.id">$format_html($fb_event.name)</a><br>
-    $date_human_format($result.start_time)
-    </td>
-    <td>Status: $result.get_attendance()</td>
-  </tr>
+#for $group in $grouped_results
+	#if $group.results
+		<div><b>$group.name</b></div>
+		$render_results($group.results, rsvp_form=False)
+	#end if
 #end for
-</table>
 
 #if $new_dance_events
 	Perhaps you'd be interested in adding these dance events to Dance Deets?<br>

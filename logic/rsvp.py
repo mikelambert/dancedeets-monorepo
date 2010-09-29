@@ -8,7 +8,7 @@ class RSVPManager(object):
         self.rsvps = dict((int(x['eid']), x['rsvp_status']) for x in rsvps_list)
 
     def get_rsvp_for_event(self, event_id):
-        rsvp = self.rsvps.get(int(event_id))
+        rsvp = self.rsvps.get(int(event_id), 'none')
         if rsvp == 'unsure':
             rsvp = 'maybe'
         return rsvp

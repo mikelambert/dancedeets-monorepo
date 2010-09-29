@@ -1,14 +1,18 @@
-#def render_results($results)
+#def render_results($results, $rsvp_form=True)
 <table class="results_table">
 	#for $result in $results
 		#set $fb_event = $result.fb_event.info
 		<tr>
-			<td style="width:100px"><a href="http://www.facebook.com/event.php?eid=$fb_event.id"><img src="$result.get_image()"></a></td>
+			<td style="width:100px"><a href="http://www.facebook.com/event.php?eid=$fb_event.id"><img src="$result.get_image()" width="100"></a></td>
 			<td><a href="http://www.facebook.com/event.php?eid=$fb_event.id">$format_html($fb_event.name)</a><br>
 			$date_human_format($result.start_time)
 			</td>
 			<td style="width:130px">
-				$rsvp_form($fb_event.id, $result.get_attendance())
+				#if $rsvp_form
+					$rsvp_form($fb_event.id, $result.get_attendance())
+				#else
+					rsvp: $result.get_attendance()
+				#end if
 			</td>
 		</tr>
 	#end for

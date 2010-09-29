@@ -88,38 +88,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         query = search.SearchQuery(self.parse_fb_timestamp, time_period=time_period, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
-
-        today = datetime.datetime.today()
-        class Group(object):
-            def __init__(self, name, id, results, expanded, force=False):
-                self.name = name
-                self.id = id
-                self.results = results
-                self.expanded = expanded
-                self.force = force
-
-        grouped_results = []
-        past_results = []
-        present_results = []
-        week_results = []
-        month_results = []
-        year_results = []
-        for result in search_results:
-            if result.start_time < today:
-                if past: # If we're doing 'past' searches, group them differently
-                    past_results.append(result)
-                else:
-                    present_results.append(result)
-            elif result.start_time < today + datetime.timedelta(days=7):
-                week_results.append(result)
-            elif result.start_time < today + datetime.timedelta(days=30):
-                month_results.append(result)
-            else:
-                year_results.append(result)
-    
-        grouped_results.append(Group('Events This Week', 'week_events', week_results, expanded=True))
-        grouped_results.append(Group('Events This Month', 'month_events', month_results, expanded=True))
-        grouped_results.append(Group('Future Events', 'year_events', year_results, expanded=True))
+        past_results, present_results, grouped_results = search.group_results(search_results, past=past)
 
         self.display['past_view_url'] = '/events/relevant?ajax=1&past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
 
