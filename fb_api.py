@@ -16,6 +16,8 @@ from django.utils import simplejson
 class FacebookException(Exception):
     pass
 
+DEADLINE = 10
+
 # Not used
 RSVP_EVENTS_FQL = """
 SELECT eid, rsvp_status
@@ -105,13 +107,13 @@ class BatchLookup(object):
         self.object_keys = set()
 
     def _fql_rpc(self, fql):
-        rpc = urlfetch.create_rpc()
+        rpc = urlfetch.create_rpc(deadline=DEADLINE)
         url = "https://api.facebook.com/method/fql.query?%s" % urllib.urlencode(dict(query=fql, access_token=self.fb_graph.access_token, format='json'))
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
     def _fetch_rpc(self, path):
-        rpc = urlfetch.create_rpc()
+        rpc = urlfetch.create_rpc(deadline=DEADLINE)
         url = "https://graph.facebook.com/%s?access_token=%s" % (path, self.fb_graph.access_token)
         urlfetch.make_fetch_call(rpc, url)
         return rpc
