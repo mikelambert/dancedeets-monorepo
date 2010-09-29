@@ -132,7 +132,7 @@ class DBEvent(db.Model):
 
         results = get_geocoded_location_for_event(fb_dict)
         self.address = results['address']
-        if results['latlng']:
+        if results['latlng'][0] is not None:
             self.latitude = results['latlng'][0]
             self.longitude = results['latlng'][1]
             self.geohashes = []
