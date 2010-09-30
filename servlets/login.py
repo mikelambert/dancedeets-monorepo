@@ -29,7 +29,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             # Explicitly do not preload anything from facebook for this servlet
             # self.finish_preload()
             event_rankings = rankings.get_event_rankings()
-            total_events = rankings.compute_sum(event_rankings, rankings.STYLES, rankings.ALL_TIME)
+            total_events = rankings.compute_sum(event_rankings, [rankings.ANY_STYLE], rankings.ALL_TIME)
             template_event_rankings = rankings.compute_template_rankings(event_rankings, rankings.STYLES, rankings.ALL_TIME, use_url=False)
             self.display['style_event_rankings'] = template_event_rankings
             self.display['total_events'] = total_events
