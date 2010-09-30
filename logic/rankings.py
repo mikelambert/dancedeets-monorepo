@@ -166,3 +166,31 @@ def get_user_rankings():
         cities.setdefault(city, {}).setdefault(time_period, {})[dance_style] = counter
     return cities
 
+def compute_sum(all_rankings, toplevel, time_period):
+    total_count = 0
+    for style in toplevel:
+        for city, times_styles in all_rankings.iteritems():
+            count = times_styles.get(time_period, {}).get(style, 0)
+            total_count += count
+    return total_count
+
+def compute_template_rankings(all_rankings, toplevel, time_period, use_url=True):
+    style_rankings = []
+    for style in toplevel:
+        city_ranking = []
+        for city, times_styles in all_rankings.iteritems():
+            if city == 'Unknown':
+                continue
+            count = times_styles.get(time_period, {}).get(style, 0)
+            if count:
+                freestyle = (style != tags.CHOREO_EVENT) and users.FREESTYLE_DANCER or users.FREESTYLE_APATHY
+                choreo = (style != tags.FREESTYLE_EVENT) and users.CHOREO_DANCER or users.CHOREO_APATHY
+                if use_url:
+                    url = '/?user_location=%s&distance=100&distance_units=km&freestyle=%s&choreo=%s' % (city, freestyle, choreo)
+                else:
+                    url = None
+                city_ranking.append(dict(city=city, count=count, url=url))
+        city_ranking = sorted(city_ranking, key=lambda x: -x['count'])
+        style_rankings.append(dict(style=style, ranking=city_ranking))
+    return style_rankings
+

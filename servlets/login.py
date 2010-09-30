@@ -8,13 +8,15 @@ from events import users
 from google.appengine.api.labs import taskqueue
 from google.appengine.ext import db
 
-        
+from logic import rankings
+
 class LoginHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
 
     def get(self):
         next = self.request.get('next') or '/'
+
         # once they have a login token, do initial signin stuff, and redirect them
         if self.fb_uid:
             # We need to load the user info
@@ -26,6 +28,12 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         else:
             # Explicitly do not preload anything from facebook for this servlet
             # self.finish_preload()
+            event_rankings = rankings.get_event_rankings()
+            total_events = rankings.compute_sum(event_rankings, rankings.STYLES, rankings.ALL_TIME)
+            template_event_rankings = rankings.compute_template_rankings(event_rankings, rankings.STYLES, rankings.ALL_TIME, use_url=False)
+            self.display['style_event_rankings'] = template_event_rankings
+            self.display['total_events'] = total_events
+            self.display['string_translations'] = rankings.string_translations
             self.display['next'] = '/login?%s' % urllib.urlencode({'next': next})
             self.render_template('login')
 

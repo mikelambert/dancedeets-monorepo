@@ -32,7 +32,7 @@
 
 <table><tr><td valign="top">
 
-<b>DanceDeets keeps you in the loop on dance events in your area.</b>
+<b>DanceDeets keeps you in the loop on dance events in your area:</b>
 <ul>
 <li>Whether you love watching dancers, or are a dancer yourself
 <li>Whether you love freestyle dancing, or dancing choreography.
@@ -69,11 +69,32 @@ So check it out by logging in here:
 
 </div>
 
+<p><b>There are currently $total_events dance events tracked on DanceDeets:</b>
+<table>
+<tr>
+#for $city_ranking in $style_event_rankings
+<td valign=top>
+  <table>
+  <tr><th colspan=2>$string_translations.get($city_ranking.style)</th></tr>
+  #for $rank in $city_ranking.ranking
+    <tr><td>$rank.city</td><td>
+      #if $rank.url
+        <a href="$rank.url">$rank.count</a>
+      #else
+        $rank.count
+      #end if
+    </td></tr>
+  #end for
+  </table>
+</td>
+#end for
+</tr>
+</table>
+
 </td><td valign="top">
-<p>DanceDeets organizes events very simply for you!
+<p><b>Look at how DanceDeets organizes dance events for you!</b>
 <p>
 <img src="/images/dancedeets-example.png" width=404 height=1072 style="border:1px solid black">
-
 </td></tr></table>
 
 <div id="fb-root"></div>
