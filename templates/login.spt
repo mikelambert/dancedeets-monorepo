@@ -30,27 +30,33 @@
 
 <img src="/dancedeets.png">
 
-<table>
-<tr valign="top"><td style="padding-right:30px">
+<table><tr><td valign="top">
 
-<p><b>DanceDeets keeps you in the loop on dance events in your area.</b>
+<b>DanceDeets keeps you in the loop on dance events in your area.</b>
 <ul>
 <li>Whether you love watching dancers, or are a dancer yourself
 <li>Whether you love freestyle dancing, or dancing choreography.
 <li>Whether you love bboying, house, popping, locking, waacking, voguing, house, or street jazz.
-<li>Whether you've been in the scene for dozens of years, or just trying to find the scene in a new city.
+<li>Whether you've been in the scene for dozens of years, or are new (or visiting) and looking for the scene in your city.
 </ul>
 
 So check it out by logging in here:
 
-<fb:login-button onlogin="window.location=getNextUrl();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
+<p><fb:login-button onlogin="window.location=getNextUrl();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
 
-<p>Yup, DanceDeets requires a facebook account. Someday we may let you use it without a facebook account, but for now the Facebook Terms of Service require it.
+<p><a href="#" style="font-size:80%" onclick="$('#why_facebook').toggle();return true;">Why does DanceDeets use Facebook login?</a>
 
-</td><td style="border-left: 1px solid black;padding-left:30px;">
+<div id="why_facebook" style="display:none">
 
-<p>DanceDeets will request some Facebook permissions from you, here's why:
+<p>DanceDeets uses Facebook for a few reasons:
+<ul>
+<li>You don't need to create a special account for this site (new username, password, email address, location, etc)
+<li>DanceDeets is a registry of Facebook events, which means it is built on top of the Facebook API, and requires you to login to work according to the Facebook Terms of Service.
+</ul>
 
+<p><a href="#" style="font-size:80%" onclick="$('#facebook_perms').toggle();return true;">Why does DanceDeets need so many Facebook permissions?</a>
+
+<div id="facebook_perms" style="display:none">
 <ul>
 <li><span class="permission-name">Access my public information</span>: <span class="permission-reason">show you which of your friends are attending dance events.</span>
 <li><span class="permission-name">Send me email</span>: <span class="permission-reason">emails you about upcoming dance events that meet your criteria and interest.</span>
@@ -59,11 +65,23 @@ So check it out by logging in here:
 <li><span class="permission-name">Access my profile information (Events)</span>: <span class="permission-reason">shows you what events you are attending (or not attending).</span>
 <li><span class="permission-name">Access my contact information (Current Location)</span>: <span class="permission-reason">only shows you dance events in your area.</span>
 </ul>
+</div>
 
-</td></tr>
-</table>
+</div>
+
+</td><td valign="top">
+<p>DanceDeets organizes events very simply for you!
+<p>
+<img src="/images/dancedeets-example.png" width=404 height=1072 style="border:1px solid black">
+
+</td></tr></table>
 
 <div id="fb-root"></div>
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">
+  google.load("jquery", "1.4.2");
+  google.load("jqueryui", "1.8.1");
+</script>
 <script src="http://connect.facebook.net/en_US/all.js"></script>
 <script>
   function getNextUrl() {
