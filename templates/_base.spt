@@ -58,6 +58,7 @@ $body()
       ## only subscribe to login-status notifications if we're logged out, otherwise we get in an infinite loop
       FB.Event.subscribe('FB.loginStatus', getLoginStatus);
     #end if
+    $fb_async_code()
   };
   (function() {
     var e = document.createElement('script'); e.async = true;
@@ -79,14 +80,13 @@ function share_dancedeets() {
 			message: '',
 			attachment: {
 				name: 'Dance Deets',
-				caption: 'Keep up on all the dance events in your area!',
+				caption: 'Keeps you in the loop on dance events you care about!',
 				description: (
-					"Dance Deets helps keep you in the loop on dance events you care about. " +
 					"Whether you love watching dance, " +
-          "or love dancing choreography or freestyling, " +
-					"whether you live in a big scene or a growing scene, " +
+					"or love dancing choreography or freestyling, " +
+					"whether you live in the scene for awhile, " +
 					"or are even just visiting a new scene, " +
-					"Dance Deets keeps track of it all."
+					"Dance Deets helps you keeps track of it all."
 				),
 				href: 'http://www.dancedeets.com/',
 			},
@@ -110,4 +110,6 @@ $bottom_javascript()
 #def body
 #end def
 #def bottom_javascript
+#end def
+#def fb_async_code
 #end def

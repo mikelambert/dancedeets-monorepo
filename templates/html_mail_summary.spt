@@ -7,6 +7,8 @@ Hi $fb_user.profile.first_name,
 
 <p>See <a href="http://www.dancedeets.com/">live up-to-date version</a> of the below events.
 
+<p>If you think your friends would like to know about Dance Deets, you can <a href="http://www.dancedeets.com/share">share Dance Deets on Facebook</a>.
+
 <p>
 #for $group in $grouped_results
 	#if $group.results
@@ -24,6 +26,6 @@ Hi $fb_user.profile.first_name,
 	</ul>
 #end if
 
-<p>To unsubscribe, change your location, or explore other dance styles, <a href="http://www.dancedeets.com/user/edit">change your Dance Deets settings.</a>
+<p>To unsubscribe, change your location, or choose choreo-vs-freestyle events, <a href="http://www.dancedeets.com/user/edit">change your Dance Deets settings.</a>
 #end def
 

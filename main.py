@@ -12,6 +12,7 @@ from servlets import event
 from servlets import search
 from servlets import login
 from servlets import myuser
+from servlets import share
 from servlets import stats
 from servlets import tasks
 from servlets import tools
@@ -53,6 +54,7 @@ URLS = [
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/user/edit', myuser.UserHandler),
     ('/login', login.LoginHandler),
+    ('/share', share.ShareHandler),
 ]
 
 class MyWSGIApplication(webapp.WSGIApplication):
