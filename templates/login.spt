@@ -42,7 +42,7 @@
 
 So check it out by logging in here:
 
-<p><fb:login-button onlogin="window.location=getNextUrl();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
+<p><fb:login-button length="long" onlogin="window.location=getNextUrl();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
 
 <p><a href="#" style="font-size:80%" onclick="$('#why_facebook').toggle();return true;">Why does DanceDeets use Facebook login?</a>
 
