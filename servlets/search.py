@@ -43,6 +43,16 @@ class ResultsHandler(base_servlet.BaseRequestHandler):
         self.render_template('results')
 
 class RelevantHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return True # required until we can find some way of handling timezones in base_servlet's localize_timestamp()
+        if not self.user:
+            # If they're not logged in, require a full set of fields...
+            required_fields = ['user_location', 'distance', 'distance_units', 'freestyle', 'choreo']
+            for field in required_fields:
+                if not self.request.get(field):
+                    return True
+        return False
+
     def get(self):
         self.handle()
 
@@ -51,19 +61,19 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
     def handle(self):
         self.finish_preload()
-        if not self.user.location:
+        if self.user and not self.user.location:
             self.user.add_message("We could not retrieve your location from facebook. Please fill out a location below")
             self.redirect('/user/edit')
             return
-        user_location = self.request.get('user_location', self.user.location)
-        distance = int(self.request.get('distance', self.user.distance))
-        distance_units = self.request.get('distance_units', self.user.distance_units)
+        user_location = self.request.get('user_location', self.user and self.user.location)
+        distance = int(self.request.get('distance', self.user and self.user.distance))
+        distance_units = self.request.get('distance_units', self.user and self.user.distance_units)
         if distance_units == 'miles':
             distance_in_km = locations.miles_in_km(distance)
         else:
             distance_in_km = distance
-        freestyle = self.request.get('freestyle', self.user.freestyle)
-        choreo = self.request.get('choreo', self.user.choreo)
+        freestyle = self.request.get('freestyle', self.user and self.user.freestyle)
+        choreo = self.request.get('choreo', self.user and self.user.choreo)
         past = self.request.get('past', '0') not in ['0', '', 'False', 'false']
 
         self.display['user_location'] = user_location
