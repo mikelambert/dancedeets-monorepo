@@ -15,10 +15,10 @@ Settings
 	#if $location_unknown
 		<b style="color:red">Your location is unspecified, you need to fix this below.</b><br>
 	#end if
-	Location: <em>(for finding events near you)</em><br>
+	Location:
 	<input type=text name=location value="$defaults.location">
 <p>
-	How far are you willing to travel from $defaults.location for dance events:<br>
+	How far will you travel:<br>
 	<input type=text name=distance value="$defaults.distance" size=5>
 	<select name=distance_units>
 		<option name="miles"
@@ -33,7 +33,7 @@ Settings
 		>km
 	</select>
 <p>
-	Send Email: <em>(do you want Mon/Fri emails of upcoming events?)</em><br>
+	Weekly Email Updates:<br>
 	<input type=radio name=send_email value="true" id="send_email_yes"
 #if $defaults.send_email
 	checked
