@@ -83,27 +83,29 @@ So check it out by logging in here:
 
 </div>
 
-<p><b>There are currently $total_events dance events tracked on DanceDeets:</b>
-<table>
-<tr>
-#for $city_ranking in $style_event_rankings
-<td valign=top>
-  <table>
-  <tr><th colspan=2>$string_translations.get($city_ranking.style)</th></tr>
-  #for $rank in $city_ranking.ranking
-    <tr><td>$rank.city</td><td>
-      #if $rank.url
-        <a href="$rank.url">$rank.count</a>
-      #else
-        $rank.count
-      #end if
-    </td></tr>
-  #end for
-  </table>
-</td>
-#end for
-</tr>
-</table>
+#if $total_events
+	<p><b>There are currently $total_events dance events tracked on DanceDeets:</b>
+	<table>
+	<tr>
+	#for $city_ranking in $style_event_rankings
+	<td valign=top>
+		<table>
+		<tr><th colspan=2>$string_translations.get($city_ranking.style)</th></tr>
+		#for $rank in $city_ranking.ranking
+			<tr><td>$rank.city</td><td>
+				#if $rank.url
+					<a href="$rank.url">$rank.count</a>
+				#else
+					$rank.count
+				#end if
+			</td></tr>
+		#end for
+		</table>
+	</td>
+	#end for
+	</tr>
+	</table>
+#end if
 
 </td><td valign="top">
 <p><b>Look at how DanceDeets organizes dance events for you!</b>
