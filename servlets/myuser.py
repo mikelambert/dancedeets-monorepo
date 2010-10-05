@@ -46,7 +46,8 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.update_user()
         # Disabled due to an error: Only ancestor queries are allowed inside transactions.
         #db.run_in_transaction(self.update_user)
-        self.redirect('/user/edit')
+        self.user.add_message("Settings saved!")
+        self.redirect('/')
 
     def update_user(self):
         user = users.User.get(self.fb_uid, self.request.get('location'))
