@@ -268,6 +268,9 @@ class BatchLookup(object):
                     if type(object_json) == dict and 'error_code' in object_json:
                         logging.error("BatchLookup: Error code from FB server: %s", object_json)
                         object_is_bad = True
+                    elif not object_json:
+                        logging.error("BatchLookup: FB returned %s for %s's %s", object_json, object_key, object_rpc_name)
+                        object_is_bad = True
                     else:
                         this_object[object_rpc_name] = object_json
                     if object_json == False:
