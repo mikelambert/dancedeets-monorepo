@@ -1,0 +1,73 @@
+BEFORE LAUNCH:
+
+- Do something about the emails so that people in lesser-activity
+areas get emailed less frequently, and only when necessary. Or stick
+with weekly-on-wednesday emails for now?
+
+- twitter box
+- jquery calendar
+- embed widget
+
+UI feedback from signup pages:
+- http://www.facebook.com/
+- www.gmail.com and reader.google.com
+- https://login.yahoo.com/config/login_verify2?&.src=ym
+- https://www.dropbox.com/
+- http://picasa.google.com/mac/
+- picasaweb: https://www.google.com/accounts/ServiceLogin?hl=en_US&continue=http://picasaweb.google.com/lh/login%3Fcontinue%3Dhttp%253A%252F%252Fpicasaweb.google.com%252Fhome&service=lh2&ltmpl=gp&passive=true
+- http://picasa.google.com/features.html#utm_medium=embed&utm_source=pwalogin
+- http://www.flickr.com/
+- http://www.tumblr.com/
+- http://hunch.com/
+- http://groupme.com/
+Lessons:
+Description/Text/Images on the left.
+New-User-Signup on the right/below.
+Existing-User-Signup on the top-right.
+Allow browsing the site. We can show event listings now with location+timezone.
+
+Event/Location sites for enthusiasts:
+- http://www.climbfind.com/
+
+UI feedback of my own:
+- make all click targets obvious. including "hands" for things that do onclick.
+- "Want to do better?" links from rankings page to promote to fb friends
+
+UI feedback from partychat:
+- use geolocation-by-ip to grab good event data for users. http://code.google.com/apis/ajax/documentation/#ClientLocation
+- show "San Francisco" on the page somewhere so the user knows where these are, and how to fix it if it's wrong
+- "Dolapo found Yoruba Dance Sessions on DanceDeets"
+- "Post this to your wall?" after rsvp-ing for an event. Promo for DanceDeets
+
+UI feedback from martina:
+X - finish settings, redirect
+- didn't know how to log in
+- didn't know need to fill out location
+- want clickable links on signin page
+- make these settings permanent, perhaps autodetecting repeat changes?
+
+UI feedback from Ian:
+- login their own events (sigh, no one sees this)
+- more links that lead to events? hmm
+- "all the dancing with the choreo and freestyle"
+- list "workshop, performance" next to events
+
+
+LAUNCH PLAN:
+- Post on my facebook every other day, at different times of day.
+- Post on friends' walls who haven't signed up yet. Work my way up to the dancers that I know less.
+- Try to reach people who promote events. search email for "invited you to". carlo, cj, char, jon malave, joanne, (conrad and voodoo?), shoey (nyc choreo scene?), agatha, robnasty, vienna, phoenix, main stacks, thecompany, main ingredient, inhumanoids, open house, allthewaylive, eric groove, francis llave, sandy lee, dennis infante, 
+- Email onecypher, mindbodyflo, firstclass arts, movement lifestyle, etc
+- Post on boogiezone, westcoastpoppin, bboyworld, bboy.org, breakernyc, streetdance.cz, etc.
+- Create flyers, hand out in NYC, SF, everywhere I go.
+
+LONGER TERM:
+- rss feed
+- Maybe cleanup homepage more with better text/images.
+- Add some stats on "users that see a given event", to make a
+compelling case for promoters to put events on this site.
+- Some way to find users who have created events, and directly incite them to add to dance deets?
+- Support read-only mode in the datastore by handling these things gracefully. hard to test??
+http://code.google.com/appengine/docs/python/howto/maintenance.html
+- allow override on timezone/scene/etc for users where we get it wrong
+
