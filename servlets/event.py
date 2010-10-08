@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import datetime
+import logging
 import re
 import time
 import urllib
@@ -12,6 +13,7 @@ import base_servlet
 from events import eventdata
 from events import tags
 from events import users
+from logic import email_events
 from logic import rsvp
 from logic import backgrounder
 import facebook
@@ -259,3 +261,25 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
         self.redirect('/')
+
+
+class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
+    def get(self):
+        potential_events = email_events.PotentialEvent.gql("WHERE looked_at = :looked_at", looked_at=False)
+        potential_event_ids = []
+        for e in potential_events:
+            potential_event_ids.append(e.key().name())
+
+        for e in potential_event_ids:
+            self.batch_lookup.lookup_event(e)
+        self.finish_preload()
+
+        for e in potential_event_ids:
+            try:
+                fb_event = self.batch_lookup.data_for_event(e)
+            except KeyError:
+                logging.error("Failed to load event id %s", e)
+                continue
+            self.response.out.write('<a href="/events/admin_edit?event_id=%s">%s</a><br>\n' % (fb_event['info']['id'], fb_event['info']['name']))
+
+

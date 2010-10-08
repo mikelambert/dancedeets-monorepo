@@ -23,6 +23,9 @@ handlers:
 - url: /admin/.*
   script: main.py
   login: admin
+- url: /events/admin.*
+  script: main.py
+  login: admin
 - url: /tasks/.*
   script: main.py
   login: admin

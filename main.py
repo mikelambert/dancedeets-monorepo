@@ -45,6 +45,7 @@ URLS = [
     ('/tasks/compute_rankings', tasks.ComputeRankingsHandler),
     ('/', search.RelevantHandler),
     ('/rankings', stats.RankingsHandler),
+    ('/events/admin_list_to_add', event.AdminPotentialEventViewHandler),
     ('/events/admin_edit', event.AdminEditHandler),
     ('/events/view', event.ViewHandler),
     ('/events/add', event.AddHandler),
