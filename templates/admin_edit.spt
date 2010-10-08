@@ -8,11 +8,17 @@ Admin Edit Dance Event
 #def body
 		<form action="/events/admin_edit" method=post>
 
-			<h2>$fb_event.info.name</h2>
+			<h2>$format_html($fb_event.info.name)</h2>
+			<a href="http://www.facebook.com/event.php?eid=$fb_event.info.id">See on Facebook</a><br><br>
 
 			Original Address: $original_address<br>
 			Geocoded Address: $geocoded_address<br>
 			Remapped Address: <input type="text" size=100 name="remapped_address" value="$remapped_address"><br>
+
+			<br>Description:
+			<div style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">
+			$format_html($fb_event.info.description)
+			</div>
 
 			<p>Event Types:
 			<table><tr valign=top><td>
@@ -40,7 +46,7 @@ Admin Edit Dance Event
 			#end for
 			</ul>
 			</td></tr></table>
-
+<!--
 			<p>Event Dance Styles:
 			<ul>
 			#for $style in $styles
@@ -52,8 +58,11 @@ Admin Edit Dance Event
 				><label for="tag_$style[0]">$style[1]</label>
 			#end for
 			</ul>
+-->
 			#if $creating_user
 				Submitted by <a href="http://www.facebook.com/profile.php?id=$event.creating_fb_uid">$creating_user</a>.<br>
+			#else
+				Creating new event!
 			#end if
 			<button>Edit</button>
 			<input type="hidden" name="event_id" value="$fb_event.info.id">
