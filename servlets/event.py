@@ -120,8 +120,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
 
         fb_event = self.batch_lookup.data_for_event(event_id)
-        if fb_event['info']['privacy'] == 'SECRET':
-            self.add_error('Cannot add private events to dancedeets!')
+        if fb_event['info']['privacy'] != 'OPEN':
+            self.add_error('Cannot add secret/closed events to dancedeets!')
 
         self.errors_are_fatal()
 
@@ -160,8 +160,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.add_error(str(e))
 
         fb_event = self.batch_lookup.data_for_event(event_id)
-        if fb_event['info']['privacy'] == 'SECRET':
-            self.add_error('Cannot add private events to dancedeets!')
+        if fb_event['info']['privacy'] != 'OPEN':
+            self.add_error('Cannot add secret/closed events to dancedeets!')
 
         self.errors_are_fatal()
 
@@ -245,8 +245,8 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.add_error(str(e))
 
         fb_event = self.batch_lookup.data_for_event(event_id)
-        if fb_event['info']['privacy'] == 'SECRET':
-            self.add_error('Cannot add private events to dancedeets!')
+        if fb_event['info']['privacy'] != 'OPEN':
+            self.add_error('Cannot add secret/closed events to dancedeets!')
 
         self.errors_are_fatal()
         fb_event = self.batch_lookup.data_for_event(event_id)
