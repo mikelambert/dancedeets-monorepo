@@ -1,0 +1,6 @@
+#extends _base
+
+#def fb_async_code
+share_dancedeets();
+#end def
+
