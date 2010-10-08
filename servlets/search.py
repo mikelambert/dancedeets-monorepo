@@ -14,6 +14,9 @@ import fb_api
 import locations
 
 class SearchHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
     def get(self):
         self.finish_preload()
 
@@ -25,6 +28,9 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         self.render_template('search')
 
 class ResultsHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
     def get(self):
         self.finish_preload()
         tags_set = self.request.get_all('tag')
@@ -44,7 +50,6 @@ class ResultsHandler(base_servlet.BaseRequestHandler):
 
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
-        return True # required until we can find some way of handling timezones in base_servlet's localize_timestamp()
         if not self.user:
             # If they're not logged in, require a full set of fields...
             required_fields = ['user_location', 'distance', 'distance_units', 'freestyle', 'choreo']
