@@ -5,6 +5,8 @@ import cPickle as pickle
 from google.appengine.api import datastore
 from google.appengine.runtime import apiproxy_errors
 from google.appengine.ext import db
+from pytz.gae import pytz
+
 
 from events import cities
 from events import tags
@@ -79,6 +81,15 @@ def get_geocoded_location_for_event(fb_event):
 
     results = locations.get_geocoded_location(address)
     return results
+
+def parse_fb_timestamp(fb_timestamp):
+    return localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
+
+def localize_timestamp(dt):
+    timezone = pytz.timezone("America/Los_Angeles")
+    localized_dt = timezone.localize(dt)
+    final_dt = dt + localized_dt.tzinfo.utcoffset(localized_dt)
+    return final_dt
 
 
 class DBEvent(db.Model):

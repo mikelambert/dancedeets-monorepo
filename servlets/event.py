@@ -95,7 +95,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
         self.display['fb_event'] = e
         for field in ['start_time', 'end_time']:
-            self.display[field] = self.parse_fb_timestamp(e[field])
+            self.display[field] = eventdata.parse_fb_timestamp(e[field])
 
         self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.data_for_event(event_id)['picture'], eventdata.EVENT_IMAGE_LARGE)
 

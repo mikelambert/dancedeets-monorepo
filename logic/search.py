@@ -53,8 +53,8 @@ class SearchResult(object):
         self.db_event = db_event
         self.fb_event = fb_event
         self.search_query = search_query
-        self.start_time = search_query.parse_fb_timestamp(self.fb_event['info']['start_time'])
-        self.end_time = search_query.parse_fb_timestamp(self.fb_event['info']['end_time'])
+        self.start_time = eventdata.parse_fb_timestamp(self.fb_event['info']['start_time'])
+        self.end_time = eventdata.parse_fb_timestamp(self.fb_event['info']['end_time'])
         self.rsvp_status = "unknown"
 
     def get_image(self):
@@ -77,8 +77,7 @@ class SearchQuery(object):
     MATCH_LOCATION = 'LOCATION'
     MATCH_QUERY = 'QUERY'
 
-    def __init__(self, parse_fb_timestamp, any_tags=None, choreo_freestyle=None, time_period=None, start_time=None, end_time=None, location=None, distance_in_km=None, query_args=None, freestyle=None, choreo=None):
-        self.parse_fb_timestamp = parse_fb_timestamp
+    def __init__(self, any_tags=None, choreo_freestyle=None, time_period=None, start_time=None, end_time=None, location=None, distance_in_km=None, query_args=None, freestyle=None, choreo=None):
         self.any_tags = set(any_tags or [])
         self.choreo_freestyle = choreo_freestyle
         self.time_period = time_period
@@ -106,13 +105,13 @@ class SearchQuery(object):
             else:
                 return []
         if self.start_time:
-            fb_end_time = self.parse_fb_timestamp(fb_event['info']['end_time'])
+            fb_end_time = eventdata.parse_fb_timestamp(fb_event['info']['end_time'])
             if self.start_time < fb_end_time:
                 pass
             else:
                 return []
         if self.end_time:
-            fb_start_time = parse_fb_timestamp(fb_event['info']['start_time'])
+            fb_start_time = eventdata.parse_fb_timestamp(fb_event['info']['start_time'])
             if fb_start_time < self.end_time:
                 pass
             else:

@@ -150,11 +150,11 @@ class EmailAllUsersHandler(BaseTaskRequestHandler):
         backgrounder.email_users(user_ids)    
     post=get
 
-class EmailUserHandler(BaseTaskFacebookRequestHandler, base_servlet.UserTimeHandler):
+class EmailUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         self.batch_lookup.lookup_user(self.user.fb_uid)
         self.batch_lookup.finish_loading()
-        email_events.email_for_user(self.user, self.batch_lookup, self.fb_graph, self.parse_fb_timestamp)
+        email_events.email_for_user(self.user, self.batch_lookup, self.fb_graph)
     post=get
 
 class CleanupWorkHandler(RequestHandler):

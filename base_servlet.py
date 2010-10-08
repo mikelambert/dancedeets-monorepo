@@ -8,7 +8,6 @@ import urllib
 
 from google.appengine.ext.webapp import RequestHandler
 from django.utils import simplejson
-from pytz.gae import pytz
 
 from events import users
 import facebook
@@ -24,20 +23,7 @@ class _ValidationError(Exception):
 
 FACEBOOK_CONFIG = None
 
-class UserTimeHandler(object):
-    def parse_fb_timestamp(self, fb_timestamp):
-        return self.localize_timestamp(datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S+0000'))
-
-    def localize_timestamp(self, dt):
-        timezone_str = self.user.location_timezone
-        if timezone_str:
-            timezone = pytz.timezone(timezone_str)
-            final_dt = dt + timezone.utcoffset(dt) - datetime.timedelta(hours=2) # HORRIBLE HACK FOR FB BROKENNESS
-        else:
-            final_dt = dt
-        return final_dt
-
-class BaseRequestHandler(RequestHandler, UserTimeHandler):
+class BaseRequestHandler(RequestHandler):
     def __init__(self, *args, **kwargs):
         super(BaseRequestHandler, self).__init__(*args, **kwargs)
 

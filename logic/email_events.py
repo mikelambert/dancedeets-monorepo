@@ -39,7 +39,7 @@ def get_potential_dance_events(batch_lookup, user):
 class PotentialEvent(db.Model):
     looked_at = db.BooleanProperty()
 
-def email_for_user(user, batch_lookup, fb_graph, parse_fb_timestamp):
+def email_for_user(user, batch_lookup, fb_graph):
     if not user.send_email:
         return
 
@@ -57,7 +57,7 @@ def email_for_user(user, batch_lookup, fb_graph, parse_fb_timestamp):
 
     # search for relevant events
     latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
-    query = search.SearchQuery(parse_fb_timestamp, time_period=tags.TIME_FUTURE, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
+    query = search.SearchQuery(time_period=tags.TIME_FUTURE, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
     search_results = query.get_search_results(user.fb_uid, fb_graph)
     rsvp.decorate_with_rsvps(batch_lookup, search_results)
     past_results, present_results, grouped_results = search.group_results(search_results)
