@@ -7,6 +7,7 @@ from google.appengine.runtime import apiproxy_errors
 
 from events import eventdata
 from events import tags
+from events import users
 import fb_api
 import locations
 from logic import event_classifier
@@ -25,6 +26,8 @@ def get_potential_dance_events(batch_lookup, user):
     dance_event_ids = []
     for mini_fb_event in events:
         fb_event = second_batch_lookup.data_for_event(mini_fb_event['eid'])
+        if fb_event['deleted'] or fb_event['info']['privacy'] != 'OPEN':
+            continue # only legit events
         is_dance_event = event_classifier.is_dance_event(fb_event)
         if is_dance_event:
             dance_event_ids.append(str(mini_fb_event['eid']))
@@ -77,7 +80,7 @@ def email_for_user(user, batch_lookup, fb_graph):
                 pass
 
     display = {}
-    display['date_human_format'] = user.date_human_format
+    display['date_human_format'] = users.date_human_format
     display['format_html'] = text.format_html
     display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
     display['user'] = user
