@@ -56,9 +56,10 @@ class BaseRequestHandler(RequestHandler):
         # functions, add these to some base display setup
         self.display['format_html'] = text.format_html
         if self.user:
-            self.display['date_human_format'] = self.user.date_human_format
+            self.display['date_human_format'] = lambda x: users.date_human_format(x, user=self.user)
             self.display['messages'] = self.user.get_and_purge_messages()
         else:
+            self.display['date_human_format'] = users.date_human_format
             self.display['login_url'] = login_url
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format

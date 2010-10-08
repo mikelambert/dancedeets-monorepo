@@ -8,10 +8,12 @@
 			$date_human_format($result.start_time)
 			</td>
 			<td style="width:130px">
-				#if $use_rsvp_form
-					$rsvp_form($fb_event.id, $result.get_attendance())
-				#else
-					rsvp: $result.get_attendance()
+				#if $result.get_attendance()
+					#if $use_rsvp_form
+						$rsvp_form($fb_event.id, $result.get_attendance())
+					#else
+						rsvp: $result.get_attendance()
+					#end if
 				#end if
 			</td>
 		</tr>

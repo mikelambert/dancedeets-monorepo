@@ -53,6 +53,18 @@ def get_location(fb_user):
         facebook_location = None
     return facebook_location
 
+def date_human_format(d, user=None):
+    now = datetime.datetime.now()
+    difference = (d - now)
+    month_day_of_week = d.strftime('%A, %B')
+    month_day = '%s %s' % (month_day_of_week, d.day)
+    if user and user.location_country in locations.AMPM_COUNTRIES:
+        time_string = '%d:%02d%s' % (int(d.strftime('%I')), d.minute, d.strftime('%p').lower())
+    else:
+        time_string = '%d:%02d' % (int(d.strftime('%H')), d.minute)
+    return '%s at %s' % (month_day, time_string)
+
+
 class User(db.Model):
     # SSO
     fb_uid = property(lambda x: int(x.key().name()))
@@ -128,17 +140,6 @@ class User(db.Model):
         super(User, self).put()
         memcache_key = self.memcache_user_key(self.fb_uid)
         smemcache.set(memcache_key, self, USER_EXPIRY)
-
-    def date_human_format(self, d):
-        now = datetime.datetime.now()
-        difference = (d - now)
-        month_day_of_week = d.strftime('%A, %B')
-        month_day = '%s %s' % (month_day_of_week, d.day)
-        if self.location_country in locations.AMPM_COUNTRIES:
-            time_string = '%d:%02d%s' % (int(d.strftime('%I')), d.minute, d.strftime('%p').lower())
-        else:
-            time_string = '%d:%02d' % (int(d.strftime('%H')), d.minute)
-        return '%s at %s' % (month_day, time_string)
 
     def get_closest_city(self):
         if self.location:

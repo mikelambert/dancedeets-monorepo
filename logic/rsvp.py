@@ -24,7 +24,10 @@ class RSVPManager(object):
         return result
 
 def decorate_with_rsvps(batch_lookup, search_results):
-    rsvps = RSVPManager(batch_lookup)
-    for result in search_results:
-        result.rsvp_status = rsvps.get_rsvp_for_event(result.db_event.fb_event_id)
-
+    if batch_lookup.fb_uid:
+        rsvps = RSVPManager(batch_lookup)
+        for result in search_results:
+            result.rsvp_status = rsvps.get_rsvp_for_event(result.db_event.fb_event_id)
+    else:
+        for result in search_results:
+            result.rsvp_status = None
