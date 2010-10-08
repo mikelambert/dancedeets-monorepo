@@ -34,6 +34,9 @@ event_regex = re.compile(r'\b(?:%s)\b' % '|'.join(event_keywords))
 
 def is_dance_event(fb_event):
     search_text = (fb_event['info']['name'] + ' ' + fb_event['info'].get('description', '')).lower()
-    dance_matches = dance_regex.findall(search_text)
-    event_matches = event_regex.findall(search_text)
-    return len(dance_matches) >= 1 and len(event_matches) >= 1
+    dance_matches = set(dance_regex.findall(search_text))
+    event_matches = set(event_regex.findall(search_text))
+    if len(dance_matches) >= 1 and len(event_matches) >= 1:
+        return dance_matches, event_matches
+    else:
+        return False

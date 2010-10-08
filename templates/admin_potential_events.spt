@@ -1,0 +1,16 @@
+#extends _base
+
+#def body
+<table>
+	#for $i, $potential_event in enumerate($potential_events_listing)
+	<tr
+	#if $i % 2 == 0
+		style="background-color: lightgrey"
+	#end if
+	>
+		<td><a href="/events/admin_edit?event_id=$potential_event.fb_event.info.id">$potential_event.fb_event.info.name</a></td>
+		<td>$potential_event.dance_words</td>
+		<td>$potential_event.event_words</td>
+	</tr>
+	#end for
+#end def

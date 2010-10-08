@@ -14,6 +14,7 @@ from events import eventdata
 from events import tags
 from events import users
 from logic import email_events
+from logic import event_classifier
 from logic import rsvp
 from logic import backgrounder
 import facebook
@@ -262,7 +263,6 @@ class AddHandler(base_servlet.BaseRequestHandler):
         self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
         self.redirect('/')
 
-
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
         potential_events = email_events.PotentialEvent.gql("WHERE looked_at = :looked_at", looked_at=False)
@@ -274,12 +274,22 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             self.batch_lookup.lookup_event(e)
         self.finish_preload()
 
+        template_events = []
         for e in potential_event_ids:
             try:
                 fb_event = self.batch_lookup.data_for_event(e)
             except KeyError:
                 logging.error("Failed to load event id %s", e)
                 continue
-            self.response.out.write('<a href="/events/admin_edit?event_id=%s">%s</a><br>\n' % (fb_event['info']['id'], fb_event['info']['name']))
-
+            dance_tags = event_classifier.is_dance_event(fb_event)
+            if dance_tags:
+                dance_words, event_words = dance_tags
+                dance_words_str = ', '.join(list(dance_words))
+                event_words_str = ', '.join(list(event_words))
+            else:
+                dance_words_str = 'NONE'
+                event_words_str = 'NONE'
+            template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str))
+        self.display['potential_events_listing'] = template_events
+        self.render_template('admin_potential_events')
 
