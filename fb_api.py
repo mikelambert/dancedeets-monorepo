@@ -2,7 +2,6 @@
 
 import datetime
 import logging
-import pickle
 import time
 import urllib
 
@@ -13,6 +12,12 @@ from google.appengine.api import datastore
 from google.appengine.api import urlfetch
 from google.appengine.runtime import apiproxy_errors
 from django.utils import simplejson
+
+# Comparison of pickle vs json:
+# http://kbyanc.blogspot.com/2007/07/python-serializer-benchmarks.html
+# http://metaoptimize.com/blog/2009/03/22/fast-deserialization-in-python/
+# http://www.peterbe.com/plog/json-pickle-or-marshal
+# http://inkdroid.org/journal/2008/10/24/json-vs-pickle/
 
 class FacebookException(Exception):
     pass
@@ -44,17 +49,17 @@ ORDER BY start_time
 """
 
 class FacebookCachedObject(db.Model):
-    pickled_dict = db.BlobProperty()
+    json_data = db.TextProperty()
 
-    def pickle_dict(self, obj_dict):
-        self.pickled_dict = pickle.dumps(obj_dict, pickle.HIGHEST_PROTOCOL)
-        if len(self.pickled_dict) > 1024 * 1024 - 200:
-            logging.error("Pickled dictionary getting too large (%s) for key (%s)", len(self.pickled_dict), self.key().name())
-        assert self.pickled_dict
+    def encode_data(self, obj_dict):
+        self.json_data = simplejson.dumps(obj_dict)
+        if len(self.json_data) > 1024 * 1024 - 200:
+            logging.error("Encoded dictionary getting too large (%s) for key (%s)", len(self.json_data), self.key().name())
+        assert self.json_data
 
-    def unpickled_dict(self):
-        assert self.pickled_dict
-        return pickle.loads(self.pickled_dict)
+    def decode_data(self):
+        assert self.json_data
+        return simplejson.loads(self.json_data)
 
 
 class BatchLookup(object):
@@ -188,7 +193,7 @@ class BatchLookup(object):
         max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
         for i in range(0, len(clauses), max_in_queries):
             objects = FacebookCachedObject.get_by_key_name(clauses[i:i+max_in_queries])
-            object_map.update(dict((tuple(o.key().name().split('.')), o.unpickled_dict()) for o in objects if o))
+            object_map.update(dict((tuple(o.key().name().split('.')), o.decode_data()) for o in objects if o))
         logging.info("BatchLookup: db get_multi objects: %s", object_map.keys())
         return object_map
 
@@ -268,13 +273,10 @@ class BatchLookup(object):
                     if type(object_json) == dict and 'error_code' in object_json:
                         logging.error("BatchLookup: Error code from FB server: %s", object_json)
                         object_is_bad = True
-                    elif object_json == False or object_json is None: # we want to allow the empty list []
-                        logging.error("BatchLookup: FB returned %s for %s's %s", object_json, object_key, object_rpc_name)
-                        object_is_bad = True
+                    elif object_json == False:
+                        this_object['deleted'] = True
                     else:
                         this_object[object_rpc_name] = object_json
-                    if object_json == False:
-                        this_object['deleted'] = True
                 else:
                     object_is_bad = True
             if object_is_bad:
@@ -297,7 +299,7 @@ class BatchLookup(object):
                 logging.error("Looked up event %s but is not cacheable.", object_key)
                 continue
             obj = FacebookCachedObject.get_or_insert(self._string_key(object_key))
-            obj.pickle_dict(this_object)
+            obj.encode_data(this_object)
             try:
                 obj.put()
             except apiproxy_errors.CapabilityDisabledError:
