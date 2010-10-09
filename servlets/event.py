@@ -269,6 +269,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         potential_event_ids = [x.key().name() for x in potential_events]
         already_added_events = eventdata.DBEvent.get_by_key_name(potential_event_ids)
         already_added_event_ids = [x.key().name() for x in already_added_events if x]
+        # construct a list of not-added ids for display, but keep the list of all ids around so we can still mark them as processed down below
         potential_event_notadded_ids = list(set(potential_event_ids).difference(already_added_event_ids))
 
         for e in potential_event_notadded_ids:
@@ -292,7 +293,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 event_words_str = 'NONE'
             template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str))
         self.display['potential_events_listing'] = template_events
-        self.display['potential_ids'] = ','.join(potential_event_ids)
+        self.display['potential_ids'] = ','.join(potential_event_ids) # use all ids, since we want to mark already-added ids as processed as well
         self.render_template('admin_potential_events')
 
     def post(self):
