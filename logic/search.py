@@ -56,6 +56,8 @@ class SearchResult(object):
         self.start_time = eventdata.parse_fb_timestamp(self.fb_event['info']['start_time'])
         self.end_time = eventdata.parse_fb_timestamp(self.fb_event['info']['end_time'])
         self.rsvp_status = "unknown"
+        tag_lookup = [tags.CHOREO_FREESTYLE_LOOKUP[x].title() for x in db_event.tags if x in tags.CHOREO_FREESTYLE_LOOKUP]
+        self.choreo_or_freestyle = ', '.join(sorted(list(set(x for x in tag_lookup))))
 
     def get_image(self):
         picture_url = self.fb_event.get('picture')

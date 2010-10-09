@@ -5,7 +5,8 @@
 		<tr>
 			<td style="width:100px"><a href="http://www.facebook.com/event.php?eid=$fb_event.id"><img src="$result.get_image()" width="100"></a></td>
 			<td><a href="http://www.facebook.com/event.php?eid=$fb_event.id">$format_html($fb_event.name)</a><br>
-			$date_human_format($result.start_time)
+			$date_human_format($result.start_time)<br>
+			$result.choreo_or_freestyle
 			</td>
 			<td style="width:130px">
 				#if $result.get_attendance()
