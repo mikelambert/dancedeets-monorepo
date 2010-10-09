@@ -13,4 +13,9 @@
 		<td>$potential_event.event_words</td>
 	</tr>
 	#end for
+</table>
+<form action="/events/admin_potential_events" method="post">
+<input type="hidden" name="processed_ids" value="$potential_ids">
+<button>Mark as Processed</button>
+</form>
 #end def

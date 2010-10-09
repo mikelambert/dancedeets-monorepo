@@ -291,5 +291,14 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 event_words_str = 'NONE'
             template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str))
         self.display['potential_events_listing'] = template_events
+        self.display['potential_ids'] = ','.join(potential_event_ids)
         self.render_template('admin_potential_events')
 
+    def post(self):
+        processed_ids = self.request.get('processed_ids', '').split(',')
+        if processed_ids:
+            potential_events = email_events.PotentialEvent.get_by_key_name(processed_ids)
+            for event in potential_events:
+                event.looked_at = True
+                event.put()
+            self.redirect('/events/admin_potential_events')
