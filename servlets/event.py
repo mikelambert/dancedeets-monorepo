@@ -266,16 +266,17 @@ class AddHandler(base_servlet.BaseRequestHandler):
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
         potential_events = email_events.PotentialEvent.gql("WHERE looked_at = :looked_at", looked_at=False)
-        potential_event_ids = []
-        for e in potential_events:
-            potential_event_ids.append(e.key().name())
+        potential_event_ids = [x.key().name() for x in potential_events]
+        already_added_events = eventdata.DBEvent.get_by_key_name(potential_event_ids)
+        already_added_event_ids = [x.key().name() for x in already_added_events if x]
+        potential_event_notadded_ids = list(set(potential_event_ids).difference(already_added_event_ids))
 
-        for e in potential_event_ids:
+        for e in potential_event_notadded_ids:
             self.batch_lookup.lookup_event(e)
         self.finish_preload()
 
         template_events = []
-        for e in potential_event_ids:
+        for e in potential_event_notadded_ids:
             try:
                 fb_event = self.batch_lookup.data_for_event(e)
             except KeyError:
