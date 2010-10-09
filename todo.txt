@@ -70,7 +70,7 @@ Right Side:
 Choreo or Freestyle, then Signup
 
 Relevant page:
-show descriptive search as text with links. Customize button.
+Customize button.
 Rankings on right-hand nav. Top call-to-action. Each ranking has see-more.
 Get rid of much of the footer.
 

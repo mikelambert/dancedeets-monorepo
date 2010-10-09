@@ -27,7 +27,6 @@ function toggleSearchOptions() {
 	width:600px;
 }
 #search_options-box {
-	border: 1px solid grey;
 	width: 600px;
 }
 #search_options-expander {
@@ -45,7 +44,7 @@ function toggleSearchOptions() {
 <p><div  id="search_options-box">
 	<div onclick="toggleSearchOptions();">
 		<span id="search_options-expander"></span>
-		Search Options
+		Searching for <a href="#" onclick="return false;">$event_types events</a> within <a href="#" onclick="return false;">$defaults.distance $defaults.distance_units</a> of <a href="#" onclick="return false;">${defaults.user_location}</a>.
 	</div>
 	<div id="search_options" style="display:none">
 		<form>

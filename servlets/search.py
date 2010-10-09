@@ -81,6 +81,13 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         choreo = self.request.get('choreo', self.user and self.user.choreo)
         past = self.request.get('past', '0') not in ['0', '', 'False', 'false']
 
+        event_types = []
+        if choreo in [x['internal'] for x in users.CHOREO_LIST[1:]]:
+            event_types.append('choreo')
+        if freestyle in [x['internal'] for x in users.FREESTYLE_LIST[1:]]:
+            event_types.append('freestyle')
+        self.display['event_types'] = ' and '.join(event_types)
+
         self.display['user_location'] = user_location
         self.display['defaults'] = {
             'distance': distance,
