@@ -181,8 +181,9 @@ class BatchLookup(object):
         objects = smemcache.get_multi(clauses)
         object_map = dict((tuple(k.split('.')), v) for (k, v) in objects.iteritems())
 
-        get_size = len(pickle.dumps(objects))
-        logging.info("BatchLookup: memcache get_multi return size: %s", get_size)
+        # DEBUG!
+        #get_size = len(pickle.dumps(objects))
+        #logging.info("BatchLookup: memcache get_multi return size: %s", get_size)
         logging.info("BatchLookup: memcache get_multi objects: %s", objects.keys())
 
         return object_map
