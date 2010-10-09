@@ -32,6 +32,9 @@ Event/Location sites for enthusiasts:
 UI feedback of my own:
 - make all click targets obvious. including "hands" for things that do onclick.
 - "Want to do better?" links from rankings page to promote to fb friends
+- track conversion via email redirect links
+
+Sans Serif Fonts
 
 UI feedback from partychat:
 - use geolocation-by-ip to grab good event data for users. http://code.google.com/apis/ajax/documentation/#ClientLocation
@@ -52,6 +55,22 @@ UI feedback from Ian:
 - "all the dancing with the choreo and freestyle"
 - list "workshop, performance" next to events
 
+
+HOMEPAGE:
+Left Side:
+Street Dance around the World
+- Find "X Events, Any Style, World-wide"
+- Promote "Reach X Dancers and Fans"
+See Balsamiq
+
+Upper-Right: Signin
+Right Side:
+Choreo or Freestyle, then Signup
+
+Relevant page:
+show descriptive search as text with links. Customize button.
+Rankings on right-hand nav. Top call-to-action. Each ranking has see-more.
+Get rid of much of the footer.
 
 LAUNCH PLAN:
 - Post on my facebook every other day, at different times of day.
