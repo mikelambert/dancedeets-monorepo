@@ -150,6 +150,8 @@ Loading events...
 
 <b>City:</b> <input type=text name="city" id="signup-city"><br>
 
+<!-- TODO(lambert): get real images, check-in instead of hotlink. -->
+<!-- TODO(lambert): move image info into tags.py. -->
 <b>Freestyle:</b>
 <table class="icon-table"
 <tr>
@@ -260,7 +262,6 @@ Dancer
 </script>
 <script src="http://connect.facebook.net/en_US/all.js"></script>
 <script>
-	// TODO(lambert): grab location from google-maps geocoding API
   function getNextUrl() {
     return '$next';
   }
