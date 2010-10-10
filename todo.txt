@@ -34,7 +34,6 @@ UI feedback of my own:
 - "Want to do better?" links from rankings page to promote to fb friends
 - track conversion via email redirect links
 - send daily email of http://www.dancedeets.com/events/admin_potential_events
-- remove weekly emails if no events
 
 Sans Serif Fonts
 
