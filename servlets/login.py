@@ -4,6 +4,7 @@ import datetime
 import urllib
 
 import base_servlet
+from events import tags
 from events import users
 from google.appengine.api.labs import taskqueue
 from google.appengine.ext import db
@@ -31,13 +32,19 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             event_rankings = rankings.get_event_rankings()
             if event_rankings:
                 total_events = rankings.compute_sum(event_rankings, [rankings.ANY_STYLE], rankings.ALL_TIME)
-                template_event_rankings = rankings.compute_template_rankings(event_rankings, rankings.STYLES, rankings.ALL_TIME, use_url=False)
             else:
                 total_events = 0
-                template_event_rankings = []
-            self.display['style_event_rankings'] = template_event_rankings
+            user_rankings = rankings.get_user_rankings()
+            if user_rankings:
+                total_users = rankings.compute_sum(user_rankings, [rankings.DANCE_FAN], rankings.ALL_TIME)
+            else:
+                total_users = 0
             self.display['total_events'] = total_events
-            self.display['string_translations'] = rankings.string_translations
+            self.display['total_users'] = total_users
+
+            self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST]
+            self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST]
+
             self.display['next'] = '/login?%s' % urllib.urlencode({'next': next})
             self.render_template('login')
 

@@ -2,5 +2,15 @@
 #extends _results
 
 #def main
-$render_results($past_results)
+	#if $past_results
+		$render_results($past_results)
+	#else
+		#for $group in $grouped_upcoming_results
+			#if $group.results
+				<div><b>$group.name</b></div>
+				$render_results($group.results)
+				#break
+			#end if
+		#end for
+	#end if
 #end def

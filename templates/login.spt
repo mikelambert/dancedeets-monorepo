@@ -39,22 +39,170 @@
 
 </script>
 
+<style type="text/css">
+body {
+	font-family: sans-serif;
+}
+
+#main {
+	position: relative;
+	width: 1000px;
+}
+#sign-in {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	padding: 5px;
+	text-align: right
+}
+#left-hand {
+	float: left;
+	width: 700px;
+}
+#right-hand {
+	float: right;
+	width: 300px;
+}
+#find {
+	float: left;
+	width: 50%;
+}
+#promote {
+	float: right;
+	width: 50%;
+}
+#events {
+	padding-left: 20px;
+	padding-top: 50px;
+	clear: both;
+}
+.action {
+	font-size: 300%
+}
+
+.icon-table {
+	width: 100%
+}
+
+.icon-table td {
+	//border: 1px solid grey;
+	vertical-align: bottom;
+}
+
+</style>
 </head>
 <body>
 
+<div id="main">
+<div id="sign-in">
+#if $fb_user
+  $fb_user.profile.name : <a href="/user/edit">Settings</a>
+#else
+  <fb:login-button onlogin="window.location.reload();" perms="user_location,rsvp
+_event,offline_access,email,user_events"></fb:login-button>
+#end if
+</div>
+<div id="header">
 <img src="/dancedeets.png">
+</div>
 
-<table><tr><td valign="top">
+<div id="left-hand">
 
-<b>DanceDeets keeps you in the loop on dance events in your area:</b>
-<ul>
-<li>dancer, or just someone who likes watching dancing
-<li>freestyle or choreography
-<li>bboy, house, popping, locking, waacking, vogue, hiphop, or street jazz
-<li>dancing for years, new to the dance scene, or just visiting a different dance scene
-</ul>
+<div id="find">
+<img src="http://i3.campaignmonitor.com/uploads/images/icons/48x48/icon-48x48-magnifying_glass.png">
+<span class="action">Find</span><br>
+<a href="/rankings">
+#if $total_events
+$total_events
+#end if
+Dance Events, Worldwide, All-styles
+</a>
+</div>
 
-<b>Check it out using your facebook account:</b>
+<div id="promote">
+<img src="http://www.softicons.com/download/business-icons/basic-2-icons-by-pixelmixer/png/48/megaphone.png">
+<span class="action">Promote</span><br>
+<a href="/events/add">
+Reach
+#if $total_users
+$total_users
+#end if
+Dancers and Dance Fans
+</a>
+</div>
+
+<div id="events">
+<div style="font-size:200%">Upcoming Events Near You</div>
+<!--TODO(lambert): replace with an accurate description!-->
+<div id="events_list">
+Loading events...
+</div>
+</div>
+
+</div>
+
+<div id="right-hand">
+<fieldset style="border: 1px black solid">
+
+<legend style="margin-left: 1em; padding: 0.2em 0.8em ">Sign Up</legend>
+
+<b>What dance events do you like?</b><br>
+
+<b>City:</b> <input type=text name="city" id="signup-city"><br>
+
+<b>Freestyle:</b>
+<table class="icon-table"
+<tr>
+<td>
+<label for="freestyle_$freestyle_types[0]">
+<img src="http://upload.wikimedia.org/wikipedia/commons/4/4b/Empty.gif" height="40" width="100%"><br>
+<input type="radio" name="freestyle" value="$freestyle_types[0]" id="freestyle_$freestyle_types[0]">
+Don't Care
+</label>
+</td>
+<td>
+<label for="freestyle_$freestyle_types[1]">
+<img src="http://www.jointanimalservices.org/Gifs/eyes.gif"><br>
+<input type="radio" name="freestyle" value="$freestyle_types[1]" id="freestyle_$freestyle_types[1]">
+Fan
+</label>
+</td>
+<td>
+<label for="freestyle_$freestyle_types[2]">
+<img src="http://myfavouriteforum.com/uploads/ficons/q2218862784_38887.jpg"><br>
+<input type="radio" name="freestyle" value="$freestyle_types[2]" id="freestyle_$freestyle_types[2]">
+Dancer
+</label>
+</td>
+</tr>
+</table>
+
+<b>Choreography:</b>
+<table class="icon-table">
+<tr>
+<td>
+<label for="choreo_$choreo_types[0]">
+<img src="http://upload.wikimedia.org/wikipedia/commons/4/4b/Empty.gif" height="40" width="100%"><br>
+<input type="radio" name="choreo" value="$choreo_types[0]" id="choreo_$choreo_types[0]">
+Don't Care
+</label>
+</td>
+<td>
+<label for="choreo_$choreo_types[1]">
+<img src="http://www.jointanimalservices.org/Gifs/eyes.gif"><br>
+<input type="radio" name="choreo" value="$choreo_types[1]" id="choreo_$choreo_types[1]">
+Fan
+</label>
+</td>
+<td> 
+<label for="choreo_$choreo_types[2]">
+<img src="http://www.creativeantics.com/images/dance/cadanceimages/cadancethumb/jazztap_4291_29_T.jpg"><br>
+<input type="radio" name="choreo" value="$choreo_types[2]" id="choreo_$choreo_types[2]">
+Dancer
+</label>
+</td>
+</tr>
+</table>
 
 <p><fb:login-button length="long" onlogin="window.location=getNextUrl();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
 
@@ -80,47 +228,39 @@
 <li><span class="permission-name">Access my contact information (Current Location)</span>: <span class="permission-reason">only shows you dance events in your area.</span>
 </ul>
 </div>
-
 </div>
 
-#if $total_events
-	<p><b>DanceDeets has $total_events dance events right now:</b>
-	<table>
-	<tr>
-	#for $city_ranking in $style_event_rankings
-	<td valign=top>
-		<table>
-		<tr><th colspan=2>$string_translations.get($city_ranking.style)</th></tr>
-		#for $rank in $city_ranking.ranking
-			<tr><td>$rank.city</td><td>
-				#if $rank.url
-					<a href="$rank.url">$rank.count</a>
-				#else
-					$rank.count
-				#end if
-			</td></tr>
-		#end for
-		</table>
-	</td>
-	#end for
-	</tr>
-	</table>
-#end if
+</fieldset>
 
-</td><td valign="top">
-<p><b>Look at how DanceDeets organizes dance events for you!</b>
-<p>
-<img src="/images/dancedeets-example.png" width=404 height=1072 style="border:1px solid lightgrey">
-</td></tr></table>
+</div>
+</div>
+
 
 <div id="fb-root"></div>
 <script src="http://www.google.com/jsapi" type="text/javascript"></script>
 <script type="text/javascript">
   google.load("jquery", "1.4.2");
   google.load("jqueryui", "1.8.1");
+
+	function getLocation() {
+		var city = "New York, NY";
+		if (google.loader.ClientLocation &&
+			google.loader.ClientLocation.address) {
+			var city = (
+				google.loader.ClientLocation.address.city + " " +
+				google.loader.ClientLocation.address.region  + " " +
+				google.loader.ClientLocation.address.country_code
+			);
+		}
+		var encoded_city = encodeURIComponent(city);
+		$('#events_list').load('/events/relevant?ajax=1&user_location=' + encoded_city + '&distance=30&distance_units=miles&freestyle=FREESTYLE_DANCER&choreo=CHOREO_DANCER');
+		$('#signup-city').val(city);
+	}
+	google.setOnLoadCallback(getLocation);
 </script>
 <script src="http://connect.facebook.net/en_US/all.js"></script>
 <script>
+	// TODO(lambert): grab location from google-maps geocoding API
   function getNextUrl() {
     return '$next';
   }
