@@ -159,6 +159,8 @@ def get_event_rankings():
 
 def get_user_rankings():
     mapreduce_states = model.MapreduceState.gql('WHERE result_status = :result_status AND app_id = :app_id ORDER BY start_time DESC', result_status='success', app_id=USER_RANKING).fetch(1)
+    if not mapreduce_states:
+        return None
     final_counter_map = mapreduce_states[0].counters_map.counters
     cities = {}
     for k, counter in final_counter_map.iteritems():
