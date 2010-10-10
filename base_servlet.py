@@ -38,7 +38,7 @@ class BaseRequestHandler(RequestHandler):
             logging.info("Logged in uid %s", self.fb_uid)
         else:
             self.fb_uid = None
-            self.fb_graph = None
+            self.fb_graph = facebook.GraphAPI(None)
             self.user = None
         if self.requires_login() and (not self.fb_uid or not self.user):
             self.redirect(login_url)
