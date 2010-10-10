@@ -30,8 +30,13 @@
 </script>
 
 <style type="text/css">
+@font-face {
+  font-family: "aaaiight-fat";
+  src: url(/fonts/aaaiight-fat.ttf) format("truetype");
+}
+
 body {
-	font-family: sans-serif;
+	font-family: Verdana, Geneva, sans-serif;
 }
 
 .permission-name {
@@ -62,30 +67,35 @@ body {
 }
 #find {
 	float: left;
-	width: 50%;
+	padding: 5%;
 }
 #promote {
 	float: right;
-	width: 50%;
+	padding: 5%;
 }
 #events {
-	padding-left: 20px;
+	margin-left:auto;
+	margin-right:auto;
+	width:70%;
 	padding-top: 50px;
 	clear: both;
 }
+
+.click-box {
+	cursor: pointer;
+	cursor: hand;
+}
+.click-box a {
+	text-decoration: none;
+	color: black;
+}
+.click-hover {
+	background-color: #d0d0d0;
+}
 .action {
-	font-size: 300%
+	font-size: 200%;
+	font-family: "aaaiight-fat";
 }
-
-.icon-table {
-	width: 100%
-}
-
-.icon-table td {
-	//border: 1px solid grey;
-	vertical-align: bottom;
-}
-
 </style>
 </head>
 <body>
@@ -100,36 +110,35 @@ _event,offline_access,email,user_events"></fb:login-button>
 #end if
 </div>
 <div id="header">
-<img src="/dancedeets.png">
+<img src="/dancedeets.png" width=224 height=110>
 </div>
 
 <div id="left-hand">
 
-<div id="find">
-<img src="http://i3.campaignmonitor.com/uploads/images/icons/48x48/icon-48x48-magnifying_glass.png">
-<span class="action">Find</span><br>
+<div id="find" class="click-box" onclick="window.location='/rankings';return false;">
 <a href="/rankings">
-#if $total_events
+<span class="action">Discover</span><br>
+over
+ #if $total_events
 $total_events
 #end if
-Dance Events, Worldwide, All-styles
+dance events around the world
 </a>
 </div>
 
-<div id="promote">
-<img src="http://www.softicons.com/download/business-icons/basic-2-icons-by-pixelmixer/png/48/megaphone.png">
-<span class="action">Promote</span><br>
+<div id="promote" class="click-box" onclick="window.location='/events/add';return false;">
 <a href="/events/add">
-Reach
+<span class="action">Promote</span><br>
+to 
 #if $total_users
 $total_users
 #end if
-Dancers and Dance Fans
+dancers and their fans
 </a>
 </div>
 
 <div id="events">
-<div style="font-size:200%">Upcoming Events Near You</div>
+<div style="font-size:200%; font-family: 'aaaiight-fat'">events near <span id="city_name"></span>:</div>
 <!--TODO(lambert): replace with an accurate description!-->
 <div id="events_list">
 Loading events...
@@ -141,69 +150,21 @@ Loading events...
 <div id="right-hand">
 <fieldset style="border: 1px black solid">
 
-<legend style="margin-left: 1em; padding: 0.2em 0.8em ">Sign Up</legend>
+<legend style="padding: 10px; font-family: 'aaaiight-fat'; font-size: 200%">Join the Scene</legend>
 
-<b>What dance events do you like?</b><br>
+<b>City:</b> <input type=text name="city" id="signup-city">
 
-<b>City:</b> <input type=text name="city" id="signup-city"><br>
-
-<!-- TODO(lambert): get real images, check-in instead of hotlink. -->
-<!-- TODO(lambert): move image info into tags.py. -->
-<b>Freestyle:</b>
-<table class="icon-table"
-<tr>
-<td>
-<label for="freestyle_$freestyle_types[0]">
-<img src="http://upload.wikimedia.org/wikipedia/commons/4/4b/Empty.gif" height="40" width="100%"><br>
-<input type="radio" name="freestyle" value="$freestyle_types[0]" id="freestyle_$freestyle_types[0]">
-Don't Care
-</label>
-</td>
-<td>
-<label for="freestyle_$freestyle_types[1]">
-<img src="http://www.jointanimalservices.org/Gifs/eyes.gif"><br>
-<input type="radio" name="freestyle" value="$freestyle_types[1]" id="freestyle_$freestyle_types[1]">
-Fan
-</label>
-</td>
-<td>
-<label for="freestyle_$freestyle_types[2]">
-<img src="http://myfavouriteforum.com/uploads/ficons/q2218862784_38887.jpg"><br>
-<input type="radio" name="freestyle" value="$freestyle_types[2]" id="freestyle_$freestyle_types[2]" checked>
-Dancer
-</label>
-</td>
-</tr>
-</table>
-
-<b>Choreography:</b>
-<table class="icon-table">
-<tr>
-<td>
-<label for="choreo_$choreo_types[0]">
-<img src="http://upload.wikimedia.org/wikipedia/commons/4/4b/Empty.gif" height="40" width="100%"><br>
-<input type="radio" name="choreo" value="$choreo_types[0]" id="choreo_$choreo_types[0]">
-Don't Care
-</label>
-</td>
-<td>
-<label for="choreo_$choreo_types[1]">
-<img src="http://www.jointanimalservices.org/Gifs/eyes.gif"><br>
-<input type="radio" name="choreo" value="$choreo_types[1]" id="choreo_$choreo_types[1]">
-Fan
-</label>
-</td>
-<td> 
-<label for="choreo_$choreo_types[2]">
-<img src="http://www.creativeantics.com/images/dance/cadanceimages/cadancethumb/jazztap_4291_29_T.jpg"><br>
-<input type="radio" name="choreo" value="$choreo_types[2]" id="choreo_$choreo_types[2]" checked>
-Dancer
-</label>
-</td>
-</tr>
-</table>
+<p><b>What interests you?</b>
+<ul style="list-style-type: none">
+<li><input type=radio name=user_type value="fan"> I watch dance events
+<li><input type=radio name=user_type value="choreo"> I do hiphop choreo
+<li><input type=radio name=user_type value="freestyle"> I do freestyle dance
+<li><input type=radio name=user_type value="everything" checked> I love all dance
+</ul>
 
 <p><fb:login-button length="long" onlogin="window.location=getNextUrl();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
+
+</fieldset>
 
 <p><a href="#" style="font-size:80%" onclick="$('#why_facebook').toggle();return true;">Why does DanceDeets use Facebook login?</a>
 
@@ -229,7 +190,6 @@ Dancer
 </div>
 </div>
 
-</fieldset>
 
 </div>
 </div>
@@ -241,19 +201,34 @@ Dancer
   google.load("jquery", "1.4.2");
   google.load("jqueryui", "1.8.1");
 
+	function setupActions() {
+		$(".click-box").hover(
+			function () {
+				$(this).addClass("click-hover");
+			},
+			function () {
+				$(this).removeClass("click-hover");
+			}
+		);
+	}
+
 	function getLocation() {
+		var short_city = 'New York';
 		var city = "New York, NY";
 		if (google.loader.ClientLocation &&
 			google.loader.ClientLocation.address) {
-			var city = (
+			short_city = google.loader.ClientLocation.address.city;
+			city = (
 				google.loader.ClientLocation.address.city + " " +
 				google.loader.ClientLocation.address.region  + " " +
 				google.loader.ClientLocation.address.country_code
 			);
 		}
 		var encoded_city = encodeURIComponent(city);
-		$('#events_list').load('/events/relevant?ajax=1&user_location=' + encoded_city + '&distance=30&distance_units=miles&freestyle=FREESTYLE_DANCER&choreo=CHOREO_DANCER');
+		$('#events_list').load('/events/relevant?ajax=1&user_location=' + encoded_city + '&distance=30&distance_units=miles&freestyle=FREESTYLE_DANCER&choreo=CHOREO_DANCER', setupActions);
 		$('#signup-city').val(city);
+		$('#city_name').html(short_city);
+		setupActions();
 	}
 	google.setOnLoadCallback(getLocation);
 </script>

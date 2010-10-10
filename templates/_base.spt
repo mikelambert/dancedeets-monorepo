@@ -4,8 +4,8 @@
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <style type="text/css">
 body {
-  font-family: sans-serif;
-}
+  font-family: Verdana, Geneva, sans-serif;
+} 
 </style>
 $head_stylesheet()
 $head_javascript()
@@ -35,7 +35,7 @@ $header()
 #end if
 </div>
 	<table><tr><td>
-	<a href="/"><img src="/dancedeets.png"></a>
+	<a href="/"><img src="/dancedeets.png" width=224 height=110></a>
 	</td><td>
 	<h1>$title()</h1>
 	</td></tr></table>

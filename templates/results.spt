@@ -23,11 +23,8 @@ function toggleSearchOptions() {
 
 #def head_stylesheet
 <style type="text/css">
-.results_table {
-	width:600px;
-}
 #search_options-box {
-	width: 600px;
+	width: 700px;
 }
 #search_options-expander {
 	margin-top: 2px;
@@ -40,6 +37,18 @@ function toggleSearchOptions() {
 	cursor: pointer;
 	cursor: hand;
 }
+.click-box {
+	cursor: pointer;
+	cursor: hand;
+}
+.click-box a {
+  text-decoration: none;
+  color: black;
+}
+.click-hover {
+  background-color: #d0d0d0;
+}
+
 </style>
 #end def
 
@@ -121,8 +130,20 @@ function toggleSearchOptions() {
 #def bottom_javascript
 $rsvp_script()
 <script type="text/javascript">
+function setupActions() {
+	$(".click-box").hover(
+		function () {
+			$(this).addClass("click-hover");
+		},
+		function () {
+			$(this).removeClass("click-hover");
+		}
+	);
+}
+
 $(document).ready(function() {
 	var tabs = $("#tabs").tabs();
+	setupActions();
 });
 </script>
 #end def

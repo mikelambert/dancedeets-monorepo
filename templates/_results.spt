@@ -1,24 +1,30 @@
 #def render_results($results, $use_rsvp_form=True)
-<table class="results_table">
 	#for $result in $results
 		#set $fb_event = $result.fb_event.info
-		<tr>
-			<td style="width:100px"><a href="http://www.facebook.com/event.php?eid=$fb_event.id"><img src="$result.get_image()" width="100"></a></td>
-			<td><a href="http://www.facebook.com/event.php?eid=$fb_event.id">$format_html($fb_event.name)</a><br>
-			$date_human_format($result.start_time)<br>
-			$result.choreo_or_freestyle
-			</td>
-			<td style="width:130px">
-				#if $result.get_attendance()
-					#if $use_rsvp_form
-						$rsvp_form($fb_event.id, $result.get_attendance())
-					#else
-						rsvp: $result.get_attendance()
-					#end if
+		## widths here are set to sum to 700px-50px = 650px
+		<div style="float:left" class="click-box" onclick="window.location='http://www.facebook.com/event.php?eid=$fb_event.id';return false;">
+			<a href="http://www.facebook.com/event.php?eid=$fb_event.id">
+				<div style="float:left;width:100px">
+					<img src="$result.get_image()" width="100">
+				</div>
+				<div style="float:right;width:400px">
+					$format_html($fb_event.name)<br>
+					$date_human_format($result.start_time)<br>
+					$result.choreo_or_freestyle
+				</div>
+			</a>
+		</div>
+		#if $result.get_attendance()
+			<div style="float:right;width:150px">
+				#if $use_rsvp_form
+					$rsvp_form($fb_event.id, $result.get_attendance())
+				#else
+					rsvp: $result.get_attendance()
 				#end if
-			</td>
-		</tr>
+			</div>
+		#end if
+		<div style="clear:both;height:15px"></div>
 	#end for
-</table>
+
 #end def
 

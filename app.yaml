@@ -12,6 +12,8 @@ handlers:
   upload: dancedeets.png
 - url: /css
   static_dir: css
+- url: /fonts
+  static_dir: fonts
 - url: /images
   static_dir: images
 - url: /mapreduce(/.*)?
