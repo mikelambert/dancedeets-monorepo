@@ -143,6 +143,7 @@ class User(db.Model):
 
     def get_closest_city(self):
         if self.location:
+            #TODO(lambert): cache this!
             user_city = cities.get_closest_city(self.location)
             return user_city
         else:
