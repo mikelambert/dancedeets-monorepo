@@ -172,7 +172,7 @@ Fan
 <td>
 <label for="freestyle_$freestyle_types[2]">
 <img src="http://myfavouriteforum.com/uploads/ficons/q2218862784_38887.jpg"><br>
-<input type="radio" name="freestyle" value="$freestyle_types[2]" id="freestyle_$freestyle_types[2]">
+<input type="radio" name="freestyle" value="$freestyle_types[2]" id="freestyle_$freestyle_types[2]" checked>
 Dancer
 </label>
 </td>
@@ -199,7 +199,7 @@ Fan
 <td> 
 <label for="choreo_$choreo_types[2]">
 <img src="http://www.creativeantics.com/images/dance/cadanceimages/cadancethumb/jazztap_4291_29_T.jpg"><br>
-<input type="radio" name="choreo" value="$choreo_types[2]" id="choreo_$choreo_types[2]">
+<input type="radio" name="choreo" value="$choreo_types[2]" id="choreo_$choreo_types[2]" checked>
 Dancer
 </label>
 </td>
