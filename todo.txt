@@ -34,12 +34,10 @@ UI feedback of my own:
 - track conversion via email redirect links
 - send daily email of http://www.dancedeets.com/events/admin_potential_events
 
-Sans Serif Fonts
-
 UI feedback from partychat:
 - use geolocation-by-ip to grab good event data for users. http://code.google.com/apis/ajax/documentation/#ClientLocation
 - show "San Francisco" on the page somewhere so the user knows where these are, and how to fix it if it's wrong
-- "Dolapo found Yoruba Dance Sessions on DanceDeets"
+- "Dolapo found Yoruba Dance Sessions on DanceDeets" posting to facebook, if using dancedeets to rsvp?
 - "Post this to your wall?" after rsvp-ing for an event. Promo for DanceDeets
 
 UI feedback from martina:
