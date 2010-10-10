@@ -36,13 +36,17 @@ function toggleSearchOptions() {
 	float: left;
 	background-image: url(/images/expand-icon-plus.gif);
 }
+.clickable {
+	cursor: pointer;
+	cursor: hand;
+}
 </style>
 #end def
 
 #def body
 <p>Missing an event? <a href="/events/add">Add it here!</a>
 <p><div  id="search_options-box">
-	<div onclick="toggleSearchOptions();">
+	<div onclick="toggleSearchOptions();" class="clickable">
 		<span id="search_options-expander"></span>
 		Searching for <a href="#" onclick="return false;">$event_types events</a> within <a href="#" onclick="return false;">$defaults.distance $defaults.distance_units</a> of <a href="#" onclick="return false;">${defaults.user_location}</a>.
 	</div>

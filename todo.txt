@@ -30,7 +30,6 @@ Event/Location sites for enthusiasts:
 - http://www.climbfind.com/
 
 UI feedback of my own:
-- make all click targets obvious. including "hands" for things that do onclick.
 - "Want to do better?" links from rankings page to promote to fb friends
 - track conversion via email redirect links
 - send daily email of http://www.dancedeets.com/events/admin_potential_events
