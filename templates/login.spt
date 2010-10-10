@@ -15,16 +15,6 @@
     <meta property="og:description"
           content="A website for tracking and notifying users about all upcoming events in the dance scene."/>
 
-<style type="text/css">
-.permission-name {
-}
-.permission-reason {
-	display:block;
-	padding-left: 40px;
-}
-
-</style>
-
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -42,6 +32,13 @@
 <style type="text/css">
 body {
 	font-family: sans-serif;
+}
+
+.permission-name {
+}
+.permission-reason {
+	display:block;
+	padding-left: 40px;
 }
 
 #main {
