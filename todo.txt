@@ -45,7 +45,6 @@ UI feedback from partychat:
 - "Post this to your wall?" after rsvp-ing for an event. Promo for DanceDeets
 
 UI feedback from martina:
-X - finish settings, redirect
 - didn't know how to log in
 - didn't know need to fill out location
 - want clickable links on signin page
