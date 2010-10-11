@@ -92,9 +92,10 @@ body {
 .click-hover {
 	background-color: #d0d0d0;
 }
-.action {
+.big-font {
 	font-size: 200%;
 	font-family: "aaaiight-fat";
+	letter-spacing: 0.05em;
 }
 </style>
 </head>
@@ -105,8 +106,7 @@ body {
 #if $fb_user
   $fb_user.profile.name : <a href="/user/edit">Settings</a>
 #else
-  <fb:login-button onlogin="window.location.reload();" perms="user_location,rsvp
-_event,offline_access,email,user_events"></fb:login-button>
+  <fb:login-button onlogin="window.location.reload();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
 #end if
 </div>
 <div id="header">
@@ -117,7 +117,7 @@ _event,offline_access,email,user_events"></fb:login-button>
 
 <div id="find" class="click-box" onclick="window.location='/rankings';return false;">
 <a href="/rankings">
-<span class="action">Discover</span><br>
+<span class="big-font">Discover</span><br>
 over
  #if $total_events
 $total_events
@@ -128,7 +128,7 @@ dance events around the world
 
 <div id="promote" class="click-box" onclick="window.location='/events/add';return false;">
 <a href="/events/add">
-<span class="action">Promote</span><br>
+<span class="big-font">Promote</span><br>
 to 
 #if $total_users
 $total_users
@@ -138,7 +138,7 @@ dancers and their fans
 </div>
 
 <div id="events">
-<div style="font-size:200%; font-family: 'aaaiight-fat'">events near <span id="city_name"></span>:</div>
+<div class="big-font">events near <span id="city_name"></span>:</div>
 <!--TODO(lambert): replace with an accurate description!-->
 <div id="events_list">
 Loading events...
@@ -150,7 +150,7 @@ Loading events...
 <div id="right-hand">
 <fieldset style="border: 1px black solid">
 
-<legend style="padding: 10px; font-family: 'aaaiight-fat'; font-size: 200%">Join the Scene</legend>
+<legend class="big-font" style="padding: 10px">Join the Scene</legend>
 
 <b>City:</b> <input type=text name="city" id="signup-city">
 
