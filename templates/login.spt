@@ -93,9 +93,9 @@ body {
 	background-color: #d0d0d0;
 }
 .big-font {
-	font-size: 200%;
+	font-size: 150%;
 	font-family: "aaaiight-fat";
-	letter-spacing: 0.05em;
+	letter-spacing: 0.2em;
 }
 </style>
 </head>
@@ -129,9 +129,8 @@ dance events around the world
 <div id="promote" class="click-box" onclick="window.location='/events/add';return false;">
 <a href="/events/add">
 <span class="big-font">Promote</span><br>
-to 
 #if $total_users
-$total_users
+to $total_users
 #end if
 dancers and their fans
 </a>
