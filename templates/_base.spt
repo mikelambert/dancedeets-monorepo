@@ -66,6 +66,7 @@ $head_javascript()
 $body()
 
 <div id="footer" style="margin: 10px">Want to help DanceDeets?
+<!-- Copyright 2010 Mike Lambert | About | Help | Feedback -->
 <ul>
 <li>Add a <a href="/events/add">new dance event</a> to promote it.
 <li>Check out how <a href="/rankings">your city's dance scene</a> is doing compared to others in DanceDeets.
