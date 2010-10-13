@@ -42,7 +42,6 @@ function toggleSearchOptions() {
 	cursor: hand;
 }
 .click-box a {
-	height: 100%;
 	display: block;
   text-decoration: none;
   color: black;
