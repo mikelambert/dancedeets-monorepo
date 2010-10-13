@@ -8,24 +8,6 @@ with weekly-on-wednesday emails for now?
 - jquery calendar
 - embed widget
 
-UI feedback from signup pages:
-- http://www.facebook.com/
-- www.gmail.com and reader.google.com
-- https://login.yahoo.com/config/login_verify2?&.src=ym
-- https://www.dropbox.com/
-- http://picasa.google.com/mac/
-- picasaweb: https://www.google.com/accounts/ServiceLogin?hl=en_US&continue=http://picasaweb.google.com/lh/login%3Fcontinue%3Dhttp%253A%252F%252Fpicasaweb.google.com%252Fhome&service=lh2&ltmpl=gp&passive=true
-- http://picasa.google.com/features.html#utm_medium=embed&utm_source=pwalogin
-- http://www.flickr.com/
-- http://www.tumblr.com/
-- http://hunch.com/
-- http://groupme.com/
-Lessons:
-Description/Text/Images on the left.
-New-User-Signup on the right/below.
-Existing-User-Signup on the top-right.
-Allow browsing the site. We can show event listings now with location+timezone.
-
 Event/Location sites for enthusiasts:
 - http://www.climbfind.com/
 
@@ -52,21 +34,6 @@ UI feedback from Ian:
 - "all the dancing with the choreo and freestyle"
 - list "workshop, performance" next to events
 
-
-HOMEPAGE:
-Left Side:
-Street Dance around the World
-- Find "X Events, Any Style, World-wide"
-- Promote "Reach X Dancers and Fans"
-See Balsamiq
-
-Upper-Right: Signin
-Right Side:
-Choreo or Freestyle, then Signup
-
-Relevant page:
-Customize button.
-Rankings on right-hand nav. Top call-to-action. Each ranking has see-more.
 Get rid of much of the footer.
 
 LAUNCH PLAN:
