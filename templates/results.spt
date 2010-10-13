@@ -23,6 +23,22 @@ function toggleSearchOptions() {
 
 #def head_stylesheet
 <style type="text/css">
+#left-hand {
+  float: left;
+  width: 710px;
+}
+#right-hand {
+  float: right;
+  width: 280px;
+	border: 1px solid lightgrey;
+	padding: 3px;
+}
+#right-hand hr {
+	color: lightgrey;
+	background-color: lightgrey;
+	border: 0;
+	height: 1px;
+}
 #search_options-box {
 	width: 700px;
 }
@@ -54,7 +70,8 @@ function toggleSearchOptions() {
 #end def
 
 #def body
-<p>Missing an event? <a href="/events/add">Add it here!</a>
+
+<div id="left-hand">
 <p><div  id="search_options-box">
 	<div onclick="toggleSearchOptions();" class="clickable">
 		<span id="search_options-expander"></span>
@@ -124,6 +141,56 @@ function toggleSearchOptions() {
 			#end if
 		#end for
 	</div>
+</div>
+
+</div>
+
+<div id="right-hand">
+<a href="/share">Invite Users</a><br>
+<a href="/events/add">Add Event</a><br>
+
+<hr>
+<i>Real Rankings Coming Soon!</i>
+<hr>
+San Francisco Dancers by # of Dancers Invited:<br>
+#1 XXX<br>
+#2 XXX<br>
+#3 XXX<br>
+...<br>
+#55 ...<br>
+#56 You<br>
+#57 ...<br>
+
+<hr>
+San Francisco Dancers by # of Events:
+#1 XXX<br>
+#2 XXX<br>
+#3 XXX<br>
+...<br>
+#55 ...<br>
+#56 You<br>
+#57 ...<br>
+
+<hr>
+Cities # by of Dancers Invited:<br>
+#1 San Francisco<br>
+#2 Los Angeles<br>
+#3 New York<br>
+...<br>
+#22 Miami<br>
+#23 Tallahassee<br>
+#24 Providence<br>
+
+<hr>
+Cities by # of Events:<br>
+#1 San Francisco<br>
+#2 Los Angeles<br>
+#3 New York<br>
+...<br>
+#22 Miami<br>
+#23 Tallahassee<br>
+#24 Providence<br>
+
 </div>
 
 #end def

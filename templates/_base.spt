@@ -6,6 +6,16 @@
 body {
   font-family: Verdana, Geneva, sans-serif;
 } 
+#main {
+  position: relative;
+  width: 1000px;
+}
+#footer {
+  clear: both;
+}
+* html #footer {
+  height: 1px;
+}
 </style>
 $head_stylesheet()
 $head_javascript()
@@ -26,14 +36,9 @@ $head_javascript()
 </head>
 <body>
 ## get rid of this and merge it inline?
-$header()
-<div style="position: absolute; right:0px; top:0px; padding: 5px; text-align: right">
-#if $fb_user
-	$fb_user.profile.name : <a href="/user/edit">Settings</a>
-#else
-	<fb:login-button onlogin="window.location.reload();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
-#end if
-</div>
+
+<div id="main">
+<div id="header">
 	<table><tr><td>
 	<a href="/"><img src="/dancedeets.png" width=224 height=110></a>
 	</td><td>
@@ -48,9 +53,19 @@ $header()
 </div>
 #end if
 
+</div>
+
+<div style="position: absolute; right:0px; top:0px; padding: 5px; text-align: right">
+#if $fb_user
+	$fb_user.profile.name : <a href="/user/edit">Settings</a>
+#else
+	<fb:login-button onlogin="window.location.reload();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
+#end if
+</div>
+
 $body()
 
-<div style="margin: 10px">Want to help DanceDeets?
+<div id="footer" style="margin: 10px">Want to help DanceDeets?
 <ul>
 <li>Add a <a href="/events/add">new dance event</a> to promote it.
 <li>Check out how <a href="/rankings">your city's dance scene</a> is doing compared to others in DanceDeets.
