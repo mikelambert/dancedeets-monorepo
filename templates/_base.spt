@@ -73,9 +73,8 @@ $body()
 <li><a href="javascript:share_dancedeets();return false">Post about DanceDeets on Facebook</a> to let your friends know about it. You know, the friends that never can quite keep up with what dance things are going on.
 <li><a href="mailto:mlambert@gmail.com">Send feedback!</a> Things not working? Have ideas to make things better? Adoring fan mail?
 <li>Recommend DanceDeets on Facebook:<br>
-<iframe src="http://www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FDance-Deets%2F110312662362915&amp;width=292&amp;colorscheme=light&amp;connections=5&amp;stream=false&amp;header=false&amp;height=163" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:163;" allowTransparency="true"></iframe>
+<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FDance-Deets%2F110312662362915&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=recommend&amp;font=verdana&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>
 </ul>
-<div style="height: 100px"></div>
 
 <div id="fb-root"></div>
 </body>
