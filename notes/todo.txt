@@ -8,30 +8,19 @@ with weekly-on-wednesday emails for now?
 - jquery calendar
 - embed widget
 
-Event/Location sites for enthusiasts:
-- http://www.climbfind.com/
-
 UI feedback of my own:
 - "Want to do better?" links from rankings page to promote to fb friends
 - track conversion via email redirect links
 - send daily email of http://www.dancedeets.com/events/admin_potential_events
 
 UI feedback from partychat:
-- use geolocation-by-ip to grab good event data for users. http://code.google.com/apis/ajax/documentation/#ClientLocation
-- show "San Francisco" on the page somewhere so the user knows where these are, and how to fix it if it's wrong
 - "Dolapo found Yoruba Dance Sessions on DanceDeets" posting to facebook, if using dancedeets to rsvp?
 - "Post this to your wall?" after rsvp-ing for an event. Promo for DanceDeets
 
 UI feedback from martina:
-- didn't know how to log in
-- didn't know need to fill out location
-- want clickable links on signin page
 - make these settings permanent, perhaps autodetecting repeat changes?
 
 UI feedback from Ian:
-- login their own events (sigh, no one sees this)
-- more links that lead to events? hmm
-- "all the dancing with the choreo and freestyle"
 - list "workshop, performance" next to events
 
 Get rid of much of the footer.
