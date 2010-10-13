@@ -146,13 +146,13 @@ function toggleSearchOptions() {
 </div>
 
 <div id="right-hand">
-<a href="/share">Invite Users</a><br>
+<a href="/share">Invite Dancers and Fans</a><br>
 <a href="/events/add">Add Event</a><br>
 
 <hr>
 <i>Real Rankings Coming Soon!</i>
 <hr>
-San Francisco Dancers by # of Dancers Invited:<br>
+San Francisco Dancers by # of Dancers/Fans Invited:<br>
 #1 XXX<br>
 #2 XXX<br>
 #3 XXX<br>
@@ -162,7 +162,7 @@ San Francisco Dancers by # of Dancers Invited:<br>
 #57 ...<br>
 
 <hr>
-San Francisco Dancers by # of Events:
+San Francisco Dancers by # of Events Added:
 #1 XXX<br>
 #2 XXX<br>
 #3 XXX<br>
@@ -172,7 +172,7 @@ San Francisco Dancers by # of Events:
 #57 ...<br>
 
 <hr>
-Cities # by of Dancers Invited:<br>
+Cities # by of Dancers/Fans:<br>
 #1 San Francisco<br>
 #2 Los Angeles<br>
 #3 New York<br>
