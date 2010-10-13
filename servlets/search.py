@@ -119,7 +119,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             if closest_city:
                 closest_cityname = closest_city.key().name()
         event_top_n, event_selected_n = rankings.top_n_with_selected(rankings.get_event_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME, closest_cityname)
-        user_top_n, user_selected_n = rankings.top_n_with_selected(rankings.get_user_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME, closest_cityname)
+        user_top_n, user_selected_n = rankings.top_n_with_selected(rankings.get_user_rankings(), rankings.DANCE_DANCER, rankings.ALL_TIME, closest_cityname)
         self.display['user_top_n'] = user_top_n
         self.display['event_top_n'] = event_top_n
         self.display['user_selected_n'] = user_selected_n
