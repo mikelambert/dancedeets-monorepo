@@ -67,11 +67,19 @@ body {
 }
 #find {
 	float: left;
-	padding: 5%;
+	width: 60%;
+	position: relative;
+}
+#find a {
+	padding: 20px;
 }
 #promote {
 	float: right;
-	padding: 5%;
+	width: 40%;
+	position: relative;
+}
+#promote a {
+	padding: 20px;
 }
 #events {
 	margin-left:auto;
@@ -86,6 +94,8 @@ body {
 	cursor: hand;
 }
 .click-box a {
+	height: 100%;
+	display: block;
 	text-decoration: none;
 	color: black;
 }
@@ -115,7 +125,7 @@ body {
 
 <div id="left-hand">
 
-<div id="find" class="click-box" onclick="window.location='/rankings';return false;">
+<div id="find" class="click-box">
 <a href="/rankings">
 <span class="big-font">Discover</span><br>
 over
@@ -126,7 +136,7 @@ dance events around the world
 </a>
 </div>
 
-<div id="promote" class="click-box" onclick="window.location='/events/add';return false;">
+<div id="promote" class="click-box">
 <a href="/events/add">
 <span class="big-font">Promote</span><br>
 #if $total_users
