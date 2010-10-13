@@ -1,0 +1,37 @@
+No logged-out usage, requires signin:
+- http://www.facebook.com/
+- http://www.gmail.com/
+- http://reader.google.com/
+- https://login.yahoo.com/config/login_verify2
+- http://hunch.com/ (waaay too barebones, no reason to sign up)
+- http://groupme.com/
+Downloadable Software:
+- https://www.dropbox.com/
+- http://picasa.google.com/mac/
+Limited logged-out usage, strongly encourages signin:
+- http://picasaweb.google.com
+- http://www.flickr.com/
+- http://www.tumblr.com/
+
+Event/Location sites for enthusiasts:
+- http://www.climbfind.com/
+
+Lessons:
+- Description/Text/Images on the left.
+- New-User-Signup on the right/below.
+- Existing-User-Login on the top-right.
+- Allow browsing the site. We can show event listings now with location+timezone.
+
+
+For comparison, other dancer sites that techie-ish dancers use (most
+dancers don't use them) include the following. Most are repurposing
+blog/forum/CMS software to build their sites with a bunch of features,
+whereas I'm aiming to reach a broader audience by building a simpler,
+leaner site that just does a couple things well.
+http://www.bboyworld.com/
+http://www.bboy.org/
+http://breakernyc.com/
+http://westcoastpoppin.com/
+http://www.dancenyc.org/
+http://www.streetdance.cz/
+http://boogiezone.com/
