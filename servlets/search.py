@@ -8,6 +8,7 @@ from events import cities
 from events import eventdata
 from events import tags
 from events import users
+from logic import rankings
 from logic import rsvp
 from logic import search
 import fb_api
@@ -111,6 +112,18 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
         past_results, present_results, grouped_results = search.group_results(search_results, past=past)
+
+        closest_cityname = None
+        if self.user:
+            closest_city = self.user.get_closest_city()
+            if closest_city:
+                closest_cityname = closest_city.key().name()
+        event_top_n, event_selected_n = rankings.top_n_with_selected(rankings.get_event_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME, closest_cityname)
+        user_top_n, user_selected_n = rankings.top_n_with_selected(rankings.get_user_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME, closest_cityname)
+        self.display['user_top_n'] = user_top_n
+        self.display['event_top_n'] = event_top_n
+        self.display['user_selected_n'] = user_selected_n
+        self.display['event_selected_n'] = event_selected_n
 
         self.display['past_view_url'] = '/events/relevant?ajax=1&past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
 

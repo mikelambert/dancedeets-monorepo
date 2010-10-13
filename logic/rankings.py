@@ -198,3 +198,21 @@ def compute_template_rankings(all_rankings, toplevel, time_period, use_url=True)
         style_rankings.append(dict(style=style, ranking=city_ranking))
     return style_rankings
 
+def top_n_with_selected(all_rankings, style, time_period, selected_name, group_size=3):
+    style_rankings = []
+    city_ranking = []
+    for city, times_styles in all_rankings.iteritems():
+        if city == 'Unknown':
+            continue
+        count = times_styles.get(time_period, {}).get(style, 0)
+        if count:
+            city_ranking.append(dict(city=city, count=count))
+    city_ranking = sorted(city_ranking, key=lambda x: -x['count'])
+    top_n = [(i+1, x) for (i, x) in enumerate(city_ranking[:group_size])]
+    selected_indices = [i for (i, x) in enumerate(city_ranking) if x == selected_name]
+    if selected_indices:
+        index = selected_indices[0][0]-1
+        selected_n = [(i+1, x) for (i, x) in enumerate(city_ranking[(index - group_size/2) : (index + group_size/2 + 1)])]
+    else:
+        selected_n = []
+    return top_n, selected_n
