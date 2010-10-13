@@ -1,0 +1,3 @@
+http://google-opensource.blogspot.com/2008/05/develop-with-git-on-google-code-project.html
+http://code.google.com/support/bin/answer.py?answer=56673&topic=10386
+(why does that redirect to http://code.google.com/p/support/wiki/FAQ ?)
