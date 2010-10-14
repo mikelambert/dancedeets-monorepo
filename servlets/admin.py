@@ -1,6 +1,7 @@
 import time
 from google.appengine.ext import db
 from google.appengine.ext import webapp
+import smemcache
 
 class DeleteFBCacheHandler(webapp.RequestHandler):
         def get(self):
