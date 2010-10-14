@@ -1,15 +1,10 @@
 BEFORE LAUNCH:
 
-- fix up mapreduce to use k=v params, and then in parsers
-- add dummy inviter-field, and use it as well for grouping
-
 - fix up sign in flow to remember user's preferences
 
 - keep sign-in button, but if user clicks it and fb account is not registered, re-use the sign-up form on a standalone page
 
 - build an invite flow that tracks original-inviting-user token
-
-- don't worry about splitting users/events by city for now, just stick it in one huge mapreduce state. later we can do multiple runs that grab a portion of cities, or have a second fixup script that uses the mapreduce state to produce good output on a per-city basis
 
 
 - Do something about the emails so that people in lesser-activity
