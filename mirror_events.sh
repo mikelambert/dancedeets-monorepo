@@ -1,4 +1,6 @@
+rm mapreducestates.db
 rm events.db
+rm potentialevents.db
 rm fb_data.db
 appcfg.py download_data --application=dancedeets --kind="MapreduceState" --url=http://dancedeets.appspot.com/remote_api --filename=mapreducestates.db
 appcfg.py download_data --application=dancedeets --kind="DBEvent" --url=http://dancedeets.appspot.com/remote_api --filename=events.db
