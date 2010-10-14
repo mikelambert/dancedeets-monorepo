@@ -72,6 +72,7 @@ class User(db.Model):
 
     # Statistics
     creation_time = db.DateTimeProperty()
+    inviting_fb_uid = db.IntegerProperty()
 
     # Search preferences
     location = db.StringProperty()
@@ -84,6 +85,9 @@ class User(db.Model):
     send_email = db.BooleanProperty()
     location_country = db.StringProperty()
     location_timezone = db.StringProperty()
+
+    # Derived from fb_user
+    full_name = db.StringProperty()
 
     def distance_in_km(self):
         if not self.distance:
@@ -107,7 +111,8 @@ class User(db.Model):
                 smemcache.set(memcache_key, user, USER_EXPIRY)
         return user
 
-    def compute_derived_properties(self):
+    def compute_derived_properties(self, fb_user):
+        self.full_name = fb_user['profile']['name']
         if self.location:
             #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
             self.location_country = locations.get_country_for_location(self.location)

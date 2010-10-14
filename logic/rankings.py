@@ -10,8 +10,10 @@ from events import tags
 from events import users
 import locations
 
-EVENT_RANKING = 'EVENT_RANKING'
-USER_RANKING = 'USER_RANKING'
+EVENT_FOR_CITY_RANKING = 'CITY_EVENT_RANKING'
+USER_FOR_CITY_RANKING = 'CITY_USER_RANKING'
+EVENT_FOR_USER_RANKING = 'EVENT_USER_RANKING'
+USER_FOR_USER_RANKING = 'USER_USER_RANKING'
 
 # location is a city in cities.py
 # time_period is one of ALL_TIME, LAST_MONTH, LAST_WEEK
@@ -115,6 +117,24 @@ def get_event_dance_styles(dbevent):
 def make_key_name(key_name, **kwargs):
     return '%s/%s' % (key_name, '/'.join('%s=%s' % (k, v) for (k, v) in kwargs.iteritems()))
 
+def count_event_for_user(dbevent):
+    if not dbevent.start_time: # deleted event, don't count
+        return
+    creator = dbevent.creating_fb_uid
+    city = cities.get_largest_nearby_city_name(dbevent.address)
+    for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
+        for dance_style in get_event_dance_styles(dbevent):
+            yield op.counters.Increment(make_key_name("User", city=city, time_period=time_period, dance_style=dance_style, user=creator))
+
+def count_user_for_user(user):
+    #TODO(lambert): store largest_city in the user
+    user_city = cities.get_largest_nearby_city_name(user.location)
+    inviter = user.inviting_fb_uid
+    # Do per-country mapreduces for this? And process different sets of cities in different mapreduces? Need some way to avoid overloading the mapreduce state...
+    for time_period in get_time_periods(user.creation_time):
+        for dance_style in get_user_dance_styles(user):
+            yield op.counters.Increment(make_key_name("User", city=user_city, time_period=time_period, dance_style=dance_style, user=inviter))
+
 def count_event_for_city(dbevent):
     #TODO(lambert): store largest_city in the event
     if not dbevent.start_time: # deleted event, don't count
@@ -123,8 +143,6 @@ def count_event_for_city(dbevent):
     for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
         for dance_style in get_event_dance_styles(dbevent):
             yield op.counters.Increment(make_key_name("City", city=city, time_period=time_period, dance_style=dance_style))
-    #creator = dbevent.creating_fb_uid
-    #yield op.counters.Increment("Creator/%s/%s/%s/%s" % (region, time_period, dance_style, creator))
 
 def count_user_for_city(user):
     #TODO(lambert): store largest_city in the user
@@ -132,24 +150,35 @@ def count_user_for_city(user):
     for time_period in get_time_periods(user.creation_time):
         for dance_style in get_user_dance_styles(user):
             yield op.counters.Increment(make_key_name("City", city=user_city, time_period=time_period, dance_style=dance_style))
-    # Do per-country mapreduces for this? And process different sets of cities in different mapreduces? Need some way to avoid overloading the mapreduce state...
-    #inviter = user.inviting_fb_uid
-    #yield op.counters.Increment("Inviter/%s/%s/%s/%s" % (region, time_period, dance_style, inviter))
 
 def begin_ranking_calculations():
-    control.start_map(
+    0 and control.start_map(
         name='Compute City Rankings by Events',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.rankings.count_event_for_city',
         reader_parameters={'entity_kind': 'events.eventdata.DBEvent'},
-        _app=EVENT_RANKING,
+        _app=EVENT_FOR_CITY_RANKING,
     )
-    control.start_map(
+    0 and control.start_map(
         name='Compute City Rankings by Users',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.rankings.count_user_for_city',
         reader_parameters={'entity_kind': 'events.users.User'},
-        _app=USER_RANKING,
+        _app=USER_FOR_CITY_RANKING,
+    )
+    control.start_map(
+        name='Compute User Rankings by Users',
+        reader_spec='mapreduce.input_readers.DatastoreInputReader',
+        handler_spec='logic.rankings.count_event_for_user',
+        reader_parameters={'entity_kind': 'events.eventdata.DBEvent'},
+        _app=EVENT_FOR_USER_RANKING,
+    )
+    control.start_map(
+        name='Compute User Rankings by Events',
+        reader_spec='mapreduce.input_readers.DatastoreInputReader',
+        handler_spec='logic.rankings.count_user_for_user',
+        reader_parameters={'entity_kind': 'events.users.User'},
+        _app=USER_FOR_USER_RANKING,
     )
 
 def parse_key_name(full_key_name):
@@ -162,11 +191,14 @@ def parse_key_name(full_key_name):
         return None, {}
     return key_name, kwargs
 
-def get_city_by_event_rankings():
-    mapreduce_states = model.MapreduceState.gql('WHERE result_status = :result_status AND app_id = :app_id ORDER BY start_time DESC', result_status='success', app_id=EVENT_RANKING).fetch(1)
+def _get_counter_map_for_ranking(ranking):
+    mapreduce_states = model.MapreduceState.gql('WHERE result_status = :result_status AND app_id = :app_id ORDER BY start_time DESC', result_status='success', app_id=ranking).fetch(1)
     if not mapreduce_states:
         return None
     final_counter_map = mapreduce_states[0].counters_map.counters
+    return final_counter_map
+
+def _group_cities_time_period_dance_styles(final_counter_map):
     cities = {}
     for k, counter in final_counter_map.iteritems():
         prefix, kwargs = parse_key_name(k)
@@ -175,18 +207,45 @@ def get_city_by_event_rankings():
         cities.setdefault(kwargs['city'], {}).setdefault(kwargs['time_period'], {})[kwargs['dance_style']] = counter
     return cities
 
-def get_city_by_user_rankings():
-    mapreduce_states = model.MapreduceState.gql('WHERE result_status = :result_status AND app_id = :app_id ORDER BY start_time DESC', result_status='success', app_id=USER_RANKING).fetch(1)
-    if not mapreduce_states:
-        return None
-    final_counter_map = mapreduce_states[0].counters_map.counters
-    cities = {}
+def _group_users_time_period_dance_styles(final_counter_map, city):
+    users = {}
     for k, counter in final_counter_map.iteritems():
         prefix, kwargs = parse_key_name(k)
-        if prefix != 'City':
+        if prefix != 'User':
             continue
-        cities.setdefault(kwargs['city'], {}).setdefault(kwargs['time_period'], {})[kwargs['dance_style']] = counter
+        if city and kwargs['city'] != city:
+            continue
+        users.setdefault(kwargs['user'], {}).setdefault(kwargs['time_period'], {})[kwargs['dance_style']] = counter
+    return users
+
+def get_city_by_event_rankings():
+    final_counter_map = _get_counter_map_for_ranking(EVENT_FOR_CITY_RANKING)
+    if not final_counter_map:
+        return None
+    cities = _group_cities_time_period_dance_styles(final_counter_map)
     return cities
+
+def get_city_by_user_rankings():
+    final_counter_map = _get_counter_map_for_ranking(USER_FOR_CITY_RANKING)
+    if not final_counter_map:
+        return None
+    cities = _group_cities_time_period_dance_styles(final_counter_map)
+    return cities
+
+def get_user_by_event_rankings(city=None):
+    final_counter_map = _get_counter_map_for_ranking(EVENT_FOR_USER_RANKING)
+    if not final_counter_map:
+        return None
+    
+    users = _group_users_time_period_dance_styles(final_counter_map, city=city)
+    return users
+
+def get_user_by_user_rankings(city=None):
+    final_counter_map = _get_counter_map_for_ranking(USER_FOR_USER_RANKING)
+    if not final_counter_map:
+        return None
+    users = _group_users_time_period_dance_styles(final_counter_map, city=city)
+    return users
 
 def compute_sum(all_rankings, toplevel, time_period):
     total_count = 0
@@ -196,11 +255,11 @@ def compute_sum(all_rankings, toplevel, time_period):
             total_count += count
     return total_count
 
-def compute_template_rankings(all_rankings, toplevel, time_period, use_url=True):
+def compute_city_template_rankings(all_rankings, toplevel, time_period, use_url=True):
     style_rankings = []
     for style in toplevel:
         city_ranking = []
-        for city, times_styles in all_rankings.iteritems():
+        for thing, times_styles in all_rankings.iteritems():
             if city == 'Unknown':
                 continue
             count = times_styles.get(time_period, {}).get(style, 0)
@@ -217,20 +276,22 @@ def compute_template_rankings(all_rankings, toplevel, time_period, use_url=True)
     return style_rankings
 
 def top_n_with_selected(all_rankings, style, time_period, selected_name, group_size=3):
+    if not all_rankings:
+        return [], []
     style_rankings = []
-    city_ranking = []
-    for city, times_styles in all_rankings.iteritems():
-        if city == 'Unknown':
+    thing_ranking = []
+    for thing, times_styles in all_rankings.iteritems():
+        if thing == 'Unknown':
             continue
         count = times_styles.get(time_period, {}).get(style, 0)
         if count:
-            city_ranking.append(dict(city=city, count=count))
-    city_ranking = sorted(city_ranking, key=lambda x: -x['count'])
-    top_n = [(i+1, x) for (i, x) in enumerate(city_ranking[:group_size])]
-    selected_indices = [i for (i, x) in enumerate(city_ranking) if x == selected_name]
+            thing_ranking.append(dict(key=thing, count=count))
+    thing_ranking = sorted(thing_ranking, key=lambda x: -x['count'])
+    top_n = [(i+1, x) for (i, x) in enumerate(thing_ranking[:group_size])]
+    selected_indices = [i for (i, x) in enumerate(thing_ranking) if x == selected_name]
     if selected_indices:
         index = selected_indices[0][0]-1
-        selected_n = [(i+1, x) for (i, x) in enumerate(city_ranking[(index - group_size/2) : (index + group_size/2 + 1)])]
+        selected_n = [(i+1, x) for (i, x) in enumerate(thing_ranking[(index - group_size/2) : (index + group_size/2 + 1)])]
     else:
         selected_n = []
     return top_n, selected_n

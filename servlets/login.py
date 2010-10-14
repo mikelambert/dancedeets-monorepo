@@ -29,6 +29,8 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         else:
             # Explicitly do not preload anything from facebook for this servlet
             # self.finish_preload()
+
+            #TODO(lambert): save off totals somewhere, perhaps in a separate mapreduce, so that these bigger blobs don't need tto be loaded
             event_rankings = rankings.get_city_by_event_rankings()
             if event_rankings:
                 total_events = rankings.compute_sum(event_rankings, [rankings.ANY_STYLE], rankings.ALL_TIME)

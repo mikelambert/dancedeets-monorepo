@@ -100,7 +100,7 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
                 failed_fb_user_ids.append(user_id)
         db_events = users.User.get_by_key_name(user_ids)
         for db_event in db_events:
-            db_event.compute_derived_properties()
+            db_event.compute_derived_properties(self.batch_lookup.data_for_user(user_id))
             db_event.put()
         backgrounder.load_users(failed_fb_user_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
 

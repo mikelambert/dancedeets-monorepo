@@ -154,45 +154,51 @@ function toggleSearchOptions() {
 <i>Real Rankings Coming Soon!</i>
 <hr>
 San Francisco Dancers by # of Dancers/Fans Invited:<br>
-#1 XXX<br>
-#2 XXX<br>
-#3 XXX<br>
+#for $i, $user in $user_top_n_users
+$i: $user.key: $user.count<br>
+#end for
 ...<br>
-#55 ...<br>
-#56 You<br>
-#57 ...<br>
+#if $user_selected_n_users
+#for $i, $user in $user_selected_n_users
+$i: $user.key: $user.count<br>
+#end for
+...<br>
+#end if
 
 <hr>
 San Francisco Dancers by # of Events Added:<br>
-#1 XXX<br>
-#2 XXX<br>
-#3 XXX<br>
+#for $i, $user in $event_top_n_users
+$i: $user.key: $user.count<br>
+#end for
 ...<br>
-#55 ...<br>
-#56 You<br>
-#57 ...<br>
+#if $event_selected_n_users
+#for $i, $user in $event_selected_n_users
+$i: $user.key: $user.count<br>
+#end for
+...<br>
+#end if
 
 <hr>
 Cities ranked by dancers+fans:<br>
-#for $i, $city in $user_top_n
-$i: $city.city: $city.count<br>
+#for $i, $city in $user_top_n_cities
+$i: $city.key: $city.count<br>
 #end for
 ...<br>
-#if $user_selected_n
-#for $i, $city in $user_selected_n
-$i: $cit.city: $city.count<br>
+#if $city_selected_n_cities
+#for $i, $city in $user_selected_n_cities
+$i: $city.key: $city.count<br>
 #end for
 ...<br>
 #end if
 
 <hr>
 Cities ranked by events:<br>
-#for $i, $city in $event_top_n
+#for $i, $city in $event_top_n_cities
 $i: $city.city: $city.count<br>
 #end for
 ...<br>
-#if $event_selected_n
-#for $i, $city in $event_selected_n
+#if $event_selected_n_cities
+#for $i, $city in $event_selected_n_cities
 $i: $city.city: $city.count<br>
 #end for
 ...<br>
