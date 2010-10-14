@@ -29,12 +29,12 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         else:
             # Explicitly do not preload anything from facebook for this servlet
             # self.finish_preload()
-            event_rankings = rankings.get_event_rankings()
+            event_rankings = rankings.get_city_by_event_rankings()
             if event_rankings:
                 total_events = rankings.compute_sum(event_rankings, [rankings.ANY_STYLE], rankings.ALL_TIME)
             else:
                 total_events = 0
-            user_rankings = rankings.get_user_rankings()
+            user_rankings = rankings.get_city_by_user_rankings()
             if user_rankings:
                 total_users = rankings.compute_sum(user_rankings, [rankings.DANCE_FAN], rankings.ALL_TIME)
             else:
