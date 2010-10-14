@@ -1,5 +1,17 @@
 BEFORE LAUNCH:
 
+- fix up mapreduce to use k=v params, and then in parsers
+- add dummy inviter-field, and use it as well for grouping
+
+- fix up sign in flow to remember user's preferences
+
+- keep sign-in button, but if user clicks it and fb account is not registered, re-use the sign-up form on a standalone page
+
+- build an invite flow that tracks original-inviting-user token
+
+- don't worry about splitting users/events by city for now, just stick it in one huge mapreduce state. later we can do multiple runs that grab a portion of cities, or have a second fixup script that uses the mapreduce state to produce good output on a per-city basis
+
+
 - Do something about the emails so that people in lesser-activity
 areas get emailed less frequently, and only when necessary. Or stick
 with weekly-on-wednesday emails for now?
@@ -29,6 +41,7 @@ LAUNCH PLAN:
 - Post on my facebook every other day, at different times of day.
 - Post on friends' walls who haven't signed up yet. Work my way up to the dancers that I know less.
 - Try to reach people who promote events. search email for "invited you to". carlo, cj, char, jon malave, joanne, (conrad and voodoo?), shoey (nyc choreo scene?), agatha, robnasty, vienna, phoenix, main stacks, thecompany, main ingredient, inhumanoids, open house, allthewaylive, eric groove, francis llave, sandy lee, dennis infante, 
+- Post on tumblr and get friends to reblog it.
 - Email onecypher, mindbodyflo, firstclass arts, movement lifestyle, etc
 - Post on boogiezone, westcoastpoppin, bboyworld, bboy.org, breakernyc, streetdance.cz, etc.
 - Create flyers, hand out in NYC, SF, everywhere I go.
