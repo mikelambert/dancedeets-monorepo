@@ -69,6 +69,34 @@ function toggleSearchOptions() {
 </style>
 #end def
 
+#def ranked_list($top_list, $selected_list)
+	#if $top_list
+		#for $i, $data in $top_list
+			$i: $data.key: $data.count<br>
+		#end for
+		...<br>
+		#if $selected_list
+			#set $user_i = len($selected_list)/2 + 1
+			#for $raw_i, ($i, $data) in enumerate($selected_list)
+				#if $raw_i == $user_i
+					<i>
+				#end if
+				$i: $data.key: $data.count
+				#if $raw_i == $user_i
+					</i>
+				#end if
+				<br>
+			#end for
+			...<br.
+		#else
+			You are not yet ranked!
+		#end if
+	#else
+		No rankings yet!
+	#end if
+#end def
+
+
 #def body
 
 <div id="left-hand">
@@ -151,56 +179,22 @@ function toggleSearchOptions() {
 
 <hr>
 <div style="font-size: 80%">
-$current_city Dancers by # of Dancers/Fans Invited:<br>
-#for $i, $user in $user_top_n_users
-$i: $user.key: $user.count<br>
-#end for
-...<br>
-#if $user_selected_n_users
-#for $i, $user in $user_selected_n_users
-$i: $user.key: $user.count<br>
-#end for
-...<br>
-#end if
+Rankings ($current_city)<br>
+by # of Invited People:<br>
+$ranked_list($user_top_n_users, $user_selected_n_users)
 
 <hr>
-$current_city Dancers by # of Events Added:<br>
-#for $i, $user in $event_top_n_users
-$i: $user.key: $user.count<br>
-#end for
-...<br>
-#if $event_selected_n_users
-#for $i, $user in $event_selected_n_users
-$i: $user.key: $user.count<br>
-#end for
-...<br>
-#end if
+Rankings ($current_city)<br>
+by # of Events Added:<br>
+$ranked_list($event_top_n_users, $event_selected_n_users)
 
 <hr>
 Cities ranked by dancers+fans:<br>
-#for $i, $city in $user_top_n_cities
-$i: $city.key: $city.count<br>
-#end for
-...<br>
-#if $city_selected_n_cities
-#for $i, $city in $user_selected_n_cities
-$i: $city.key: $city.count<br>
-#end for
-...<br>
-#end if
+$ranked_list($user_top_n_cities, $user_selected_n_cities)
 
 <hr>
 Cities ranked by events:<br>
-#for $i, $city in $event_top_n_cities
-$i: $city.key: $city.count<br>
-#end for
-...<br>
-#if $event_selected_n_cities
-#for $i, $city in $event_selected_n_cities
-$i: $city.key: $city.count<br>
-#end for
-...<br>
-#end if
+$ranked_list($event_top_n_cities, $event_selected_n_cities)
 
 </div>
 </div>
