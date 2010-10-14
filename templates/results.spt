@@ -66,6 +66,10 @@ function toggleSearchOptions() {
   background-color: #d0d0d0;
 }
 
+.ranking-title {
+	font-weight: bold;
+}
+
 </style>
 #end def
 
@@ -183,21 +187,19 @@ function toggleSearchOptions() {
 
 <hr>
 <div style="font-size: 80%">
-Rankings ($current_city)<br>
-by # of Invited People:<br>
+<span class="ranking-title">Who invited the most people in $current_city:</span><br>
 $ranked_list($user_top_n_users, $user_selected_n_users)
 
 <hr>
-Rankings ($current_city)<br>
-by # of Events Added:<br>
+<span class="ranking-title">Who added the most events in $current_city:</span><br>
 $ranked_list($event_top_n_users, $event_selected_n_users)
 
 <hr>
-Cities ranked by dancers+fans:<br>
+<span class="ranking-title">Who has the most dancers and fans:</span><br>
 $ranked_list($user_top_n_cities, $user_selected_n_cities)
 
 <hr>
-Cities ranked by events:<br>
+<span class="ranking-title">Who has the most events:</span><br>
 $ranked_list($event_top_n_cities, $event_selected_n_cities)
 
 </div>
