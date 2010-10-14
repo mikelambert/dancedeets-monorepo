@@ -152,14 +152,14 @@ def count_user_for_city(user):
             yield op.counters.Increment(make_key_name("City", city=user_city, time_period=time_period, dance_style=dance_style))
 
 def begin_ranking_calculations():
-    0 and control.start_map(
+    control.start_map(
         name='Compute City Rankings by Events',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.rankings.count_event_for_city',
         reader_parameters={'entity_kind': 'events.eventdata.DBEvent'},
         _app=EVENT_FOR_CITY_RANKING,
     )
-    0 and control.start_map(
+    control.start_map(
         name='Compute City Rankings by Users',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.rankings.count_user_for_city',
