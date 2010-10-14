@@ -146,10 +146,10 @@ class User(db.Model):
         memcache_key = self.memcache_user_key(self.fb_uid)
         smemcache.set(memcache_key, self, USER_EXPIRY)
 
-    def get_closest_city(self):
+    def get_city(self):
         if self.location:
-            #TODO(lambert): cache this!
-            user_city = cities.get_closest_city(self.location)
+            #TODO(lambert): cache this user city!
+            user_city = cities.get_largest_nearby_city_name(self.location)
             return user_city
         else:
             return None

@@ -115,9 +115,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
         closest_cityname = None
         if self.user:
-            closest_city = self.user.get_closest_city()
-            if closest_city:
-                closest_cityname = closest_city.key().name()
+            closest_cityname = self.user.get_city()
         #TODO(lambert): perhaps produce optimized versions of these without styles/times, for use on the homepage? less pickling/loading required
         event_top_n_cities, event_selected_n_cities = rankings.top_n_with_selected(rankings.get_city_by_event_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME, closest_cityname)
         user_top_n_cities, user_selected_n_cities = rankings.top_n_with_selected(rankings.get_city_by_user_rankings(), rankings.DANCE_DANCER, rankings.ALL_TIME, closest_cityname)
@@ -125,6 +123,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         user_top_n_users, user_selected_n_users = rankings.top_n_with_selected(rankings.get_user_by_user_rankings(city=closest_cityname), rankings.DANCE_DANCER, rankings.ALL_TIME, self.user.fb_uid)
 
         user_lists = [user_top_n_users, user_selected_n_users, event_top_n_users, event_selected_n_users]
+
         all_keys = set()
         for lst in user_lists:
             all_keys.update(d['key'] for (i, d) in lst)
@@ -138,6 +137,8 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
                 else:
                     d['key'] = 'Unknown'
 
+        logging.info("converted user lists: %s", user_lists)
+        self.display['closest_city'] = closest_cityname
         self.display['user_top_n_cities'] = user_top_n_cities
         self.display['event_top_n_cities'] = event_top_n_cities
         self.display['user_selected_n_cities'] = user_selected_n_cities
