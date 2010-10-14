@@ -94,8 +94,6 @@ function toggleSearchOptions() {
 				<br>
 			#end for
 			...<br.
-		#else
-			You are not yet ranked!
 		#end if
 	#else
 		No rankings yet!
