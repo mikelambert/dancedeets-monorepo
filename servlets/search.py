@@ -138,7 +138,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
                     d['key'] = 'Unknown'
 
         logging.info("converted user lists: %s", user_lists)
-        self.display['closest_city'] = closest_cityname
+        self.display['current_city'] = closest_cityname
         self.display['user_top_n_cities'] = user_top_n_cities
         self.display['event_top_n_cities'] = event_top_n_cities
         self.display['user_selected_n_cities'] = user_selected_n_cities
