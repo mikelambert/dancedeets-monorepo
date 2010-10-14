@@ -117,6 +117,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         if self.user:
             closest_cityname = self.user.get_city()
         #TODO(lambert): perhaps produce optimized versions of these without styles/times, for use on the homepage? less pickling/loading required
+        closest_cityname = 'San Francisco, United States'
         event_top_n_cities, event_selected_n_cities = rankings.top_n_with_selected(rankings.get_city_by_event_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME, closest_cityname)
         user_top_n_cities, user_selected_n_cities = rankings.top_n_with_selected(rankings.get_city_by_user_rankings(), rankings.DANCE_DANCER, rankings.ALL_TIME, closest_cityname)
         event_top_n_users, event_selected_n_users = rankings.top_n_with_selected(rankings.get_user_by_event_rankings(city=closest_cityname), rankings.ANY_STYLE, rankings.ALL_TIME, self.user.fb_uid)
@@ -126,12 +127,12 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
         all_keys = set()
         for lst in user_lists:
-            all_keys.update(d['key'] for (i, d) in lst)
+            all_keys.update(d['key'] for (i, sel, d) in lst)
 
         user_lookup = dict((x.key().name(), x) for x in users.User.get_by_key_name(list(all_keys)) if x)
 
         for lst in user_lists:
-            for i, d in lst:
+            for i, sel, d in lst:
                 if d['key'] in user_lookup:
                     d['key'] = user_lookup[d['key']].full_name
                 else:
