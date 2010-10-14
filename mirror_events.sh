@@ -1,3 +1,4 @@
+rm bulkloader*
 rm mapreducestates.db
 rm events.db
 rm potentialevents.db
