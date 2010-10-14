@@ -170,7 +170,6 @@ def get_city_by_event_rankings():
     cities = {}
     for k, counter in final_counter_map.iteritems():
         prefix, kwargs = parse_key_name(k)
-        print k, prefix, kwargs
         if prefix != 'City':
             continue
         cities.setdefault(kwargs['city'], {}).setdefault(kwargs['time_period'], {})[kwargs['dance_style']] = counter
