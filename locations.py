@@ -38,7 +38,9 @@ def _get_geocoded_data(address):
 
     url = "http://maps.google.com%s&signature=%s" % (unsigned_url_path, encoded_signature)
 
+    logging.info('geocoding url: %s', url)
     results = urllib.urlopen(url).read()
+    logging.info('geocoding results: %s', results)
     try:
         json_result = simplejson.loads(results)
     except simplejson.decoder.JSONDecodeError, e:
@@ -83,8 +85,10 @@ def get_country_for_location(location_name):
     if not result:
         return None
     countries = [x['short_name'] for x in result['address_components'] if u'country' in x['types']]
-    if len(countries) != 1:
-        raise GeocodeException("Found too many countries: %s" % countries)
+    if len(countries) == 0:
+        raise GeocodeException("Found no countries for %s: %r" % (location_name, result))
+    if len(countries) > 1:
+        raise GeocodeException("Found too many countries for %s: %s" % (location_name, countries))
     return countries[0]
 
 rad = math.pi / 180.0
