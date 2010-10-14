@@ -289,11 +289,17 @@ def top_n_with_selected(all_rankings, style, time_period, selected_name, group_s
         if count:
             thing_ranking.append(dict(key=thing, count=count))
     thing_ranking = sorted(thing_ranking, key=lambda x: -x['count'])
-    top_n = [(i+1, x) for (i, x) in enumerate(thing_ranking[:group_size])]
-    selected_indices = [i for (i, x) in enumerate(thing_ranking) if x == selected_name]
+    selected_indices = [i for (i, x) in enumerate(thing_ranking) if x['key'] == selected_name]
     if selected_indices:
-        index = selected_indices[0][0]-1
-        selected_n = [(i+1, x) for (i, x) in enumerate(thing_ranking[(index - group_size/2) : (index + group_size/2 + 1)])]
+        index = selected_indices[0]
+        min_index = index - group_size/2
+        max_index = index + group_size/2
+        if min_index+1 <= group_size:
+            group_size = max(max_index, group_size)
+            selected_n = []
+        else:
+            selected_n = [(i+1, x) for (i, x) in enumerate(thing_ranking[min_index:max_index])]
     else:
         selected_n = []
+    top_n = [(i+1, x) for (i, x) in enumerate(thing_ranking[:group_size])]
     return top_n, selected_n
