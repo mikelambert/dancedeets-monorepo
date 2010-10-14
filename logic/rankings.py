@@ -121,6 +121,7 @@ def count_event_for_user(dbevent):
     if not dbevent.start_time: # deleted event, don't count
         return
     creator = dbevent.creating_fb_uid
+    #TODO(lambert): fix this to use creator's location instead. either storing in dbevent or looking up from memcache-backed-by-db?
     city = cities.get_largest_nearby_city_name(dbevent.address)
     for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
         for dance_style in get_event_dance_styles(dbevent):
@@ -130,6 +131,7 @@ def count_user_for_user(user):
     #TODO(lambert): store largest_city in the user
     user_city = cities.get_largest_nearby_city_name(user.location)
     inviter = user.inviting_fb_uid
+    #TODO(lambert): fix this to use inviter's location instead. either storing in dbevent or looking up from memcache-backed-by-db?
     # Do per-country mapreduces for this? And process different sets of cities in different mapreduces? Need some way to avoid overloading the mapreduce state...
     for time_period in get_time_periods(user.creation_time):
         for dance_style in get_user_dance_styles(user):
