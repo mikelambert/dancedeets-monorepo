@@ -67,7 +67,7 @@ body {
 }
 #find {
 	float: left;
-	width: 60%;
+	width: 50%;
 	position: relative;
 }
 #find a {
@@ -75,7 +75,7 @@ body {
 }
 #promote {
 	float: right;
-	width: 40%;
+	width: 50%;
 	position: relative;
 }
 #promote a {
@@ -126,9 +126,8 @@ body {
 
 <div id="find" class="click-box">
 <a href="/rankings">
-<span class="big-font">Discover</span><br>
-over
- #if $total_events
+<span class="big-font">discover the scene</span><br>
+#if $total_events
 $total_events
 #end if
 dance events around the world
@@ -137,11 +136,12 @@ dance events around the world
 
 <div id="promote" class="click-box">
 <a href="/events/add">
-<span class="big-font">Promote</span><br>
+<span class="big-font">promote the scene</span><br>
+reach
 #if $total_users
-to $total_users
+$total_users
 #end if
-dancers and their fans
+dancers and dance fans
 </a>
 </div>
 
@@ -162,7 +162,7 @@ Loading events...
 
 <b>City:</b> <input type=text name="city" id="signup-city">
 
-<p><b>What interests you?</b>
+<p><b>Who are you in the scene?</b>
 <ul style="list-style-type: none">
 <li><input type=radio name=user_type value="fan"> I watch dance events
 <li><input type=radio name=user_type value="choreo"> I do hiphop choreo
