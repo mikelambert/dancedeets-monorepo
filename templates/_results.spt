@@ -4,10 +4,10 @@
 		## widths here are set to sum to 700px-50px = 650px
 		<div style="float:left" class="click-box">
 			<a href="http://www.facebook.com/event.php?eid=$fb_event.id">
-				<div style="float:left;width:100px">
-					<img src="$result.get_image()" width="100">
+				<div style="float:left;width:50px">
+					<img src="$result.get_image()" width="50">
 				</div>
-				<div style="float:right;width:400px">
+				<div style="float:right;width:450px;font-size:16px">
 					$format_html($fb_event.name)<br>
 					$date_human_format($result.start_time)<br>
 					$result.choreo_or_freestyle
@@ -16,7 +16,7 @@
 			</a>
 		</div>
 		#if $result.get_attendance()
-			<div style="float:right;width:150px">
+			<div style="float:right;width:150px;font-size:16px">
 				#if $use_rsvp_form
 					$rsvp_form($fb_event.id, $result.get_attendance())
 				#else

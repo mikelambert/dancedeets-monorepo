@@ -1,5 +1,5 @@
 #def rsvp_form($fb_event_id, $user_rsvp)
-<form>
+<form style="margin:0px">
 #for $rsvp in $CHOOSE_RSVPS
 	<input type=radio id="rsvp_${rsvp}_${fb_event_id}" name="rsvp_${fb_event_id}" value="$rsvp" onclick='event_rsvp("${fb_event_id}", "$rsvp.lower()")'
 	#if $rsvp == $user_rsvp
