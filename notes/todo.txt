@@ -11,7 +11,7 @@ BEFORE LAUNCH:
 areas get emailed less frequently, and only when necessary. Or stick
 with weekly-on-wednesday emails for now?
 
-- twitter box
+- twitter box: http://twitter.com/goodies/tweetbutton
 - jquery calendar
 - embed widget
 
