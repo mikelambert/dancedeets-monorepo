@@ -3,6 +3,11 @@ version: v0-2-eventgeohashes
 runtime: python
 api_version: 1
 
+builtins:
+- datastore_admin: on
+- remote_api: on
+- appstats: on
+
 handlers:
 - url: /admin/.*
   script: $PYTHON_LIB/google/appengine/ext/admin
@@ -31,19 +36,13 @@ handlers:
 - url: /tasks/.*
   script: main.py
   login: admin
-- url: /stats.*
-  script: $PYTHON_LIB/google/appengine/ext/appstats/ui.py
-  login: admin
-- url: /remote_api
-  script: $PYTHON_LIB/google/appengine/ext/remote_api/handler.py
-  login: admin
 - url: .*
   script: main.py
 
 admin_console:
  pages:
  - name: Appstats
-   url: /stats
+   url: /_ah/stats
 
 skip_files:
 - ^(.*/)?app\.yaml
