@@ -34,7 +34,7 @@ class BaseRequestHandler(RequestHandler):
         if args:
             self.fb_uid = int(args['uid'])
             self.fb_graph = facebook.GraphAPI(args['access_token'])
-            self.user = users.User.get(self.fb_uid)
+            self.user = users.User.get_cached(self.fb_uid)
             logging.info("Logged in uid %s", self.fb_uid)
         else:
             self.fb_uid = None
@@ -43,7 +43,7 @@ class BaseRequestHandler(RequestHandler):
         if self.requires_login() and (not self.fb_uid or not self.user):
             self.redirect(login_url)
             return True
-        if self.fb_uid:
+        if self.fb_uid: # if they have a fb_uid, let's do lookups on that behalf (does not require a user)
             self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph)
             # Always look up the user's information for every page view...?
             self.batch_lookup.lookup_user(self.fb_uid)
@@ -52,9 +52,11 @@ class BaseRequestHandler(RequestHandler):
         self.display = {}
         self._errors = []
         # We can safely do this since there are very few ways others can modify self._errors
+        #TODO(lambert): print errors in the template, and make sure to $format_html them
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
         self.display['format_html'] = text.format_html
+        self.display['format_js'] = text.format_js
         if self.user:
             self.display['date_human_format'] = lambda x: users.date_human_format(x, user=self.user)
             self.display['messages'] = self.user.get_and_purge_messages()
@@ -99,7 +101,7 @@ class BaseRequestHandler(RequestHandler):
         self.response.out.write(simplejson.dumps(kwargs))
 
     def render_template(self, name):
-        if self.fb_uid: # show fb user if we're logged in
+        if self.fb_uid: # show fb user if we're logged in. we only need fb_uid to get a fb_user
             self.display['fb_user'] = self.current_user()
         else:
             self.display['fb_user'] = None

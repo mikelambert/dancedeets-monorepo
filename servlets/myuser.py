@@ -16,8 +16,9 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.display['DANCE_LISTS'] = users.DANCE_LISTS
 
         defaults = {}
-        for k in dir(self.user):
-            defaults[k] = getattr(self.user, k)
+        user = users.User.get_by_key_name(str(self.fb_uid))
+        for k in dir(user):
+            defaults[k] = getattr(user, k)
         for field in defaults.keys():
             if self.request.get(field):
                 defaults[field] = self.request.get(field)
@@ -26,19 +27,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         location_too_far = False
         location_unknown = False
 
-        facebook_location = users.get_location(self.current_user())
-        # distance between saved location and facebook current location
-        if facebook_location:
-            facebook_geo_location = locations.get_geocoded_location(facebook_location)['latlng']
-            user_geo_location = locations.get_geocoded_location(defaults['location'])['latlng']
-            distance = locations.get_distance(facebook_geo_location[0], facebook_geo_location[1], user_geo_location[0], user_geo_location[1])
-            if distance > 100:
-                location_too_far = True
-        if not self.user.location:
-            location_unknown = True
-        self.display['location_too_far'] = location_too_far
-        self.display['location_unknown'] = location_unknown
-        self.display['facebook_location'] = facebook_location or "Unknown"
+        #TODO(lambert): implement distance-from-saved-location and current-location better, via ajax and geo-api call
 
         self.render_template('user')
 
@@ -50,13 +39,13 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.redirect('/')
 
     def update_user(self):
-        user = users.User.get(self.fb_uid, self.request.get('location'))
+        user = users.User.get_by_key_name(str(self.fb_uid))
         for field in ['location', 'freestyle', 'choreo', 'distance_units']:
             form_value = self.request.get(field)
             setattr(user, field, form_value)
         user.distance = self.request.get('distance')
         if user.location:
-            user.compute_derived_properties()
+            user.compute_derived_properties(self.batch_lookup.data_for_user(self.fb_uid))
             if not user.location_country:
                 self.add_error("No country for location %r" % user.location)
             if not user.location_timezone:

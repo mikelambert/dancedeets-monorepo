@@ -46,13 +46,6 @@ DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 
 USER_EXPIRY = 24 * 60 * 60
 
-def get_location(fb_user):
-    if fb_user['profile'].get('location'):
-        facebook_location = fb_user['profile']['location']['name']
-    else:
-        facebook_location = None
-    return facebook_location
-
 def date_human_format(d, user=None):
     now = datetime.datetime.now()
     difference = (d - now)
@@ -102,9 +95,9 @@ class User(db.Model):
         return 'User.%s' % fb_user_id
 
     @classmethod
-    def get(cls, uid, allow_memcache=True):
+    def get_cached(cls, uid):
         memcache_key = cls.memcache_user_key(uid)
-        user = allow_memcache and smemcache.get(memcache_key)
+        user = smemcache.get(memcache_key)
         if not user:
             user = User.get_by_key_name(str(uid))
             if user:
@@ -124,22 +117,6 @@ class User(db.Model):
         else:
             self.location_country = None
             self.location_timezone = None
-
-    @classmethod
-    def get_default_user(cls, fb_uid, location):
-        user = User(key_name=str(fb_uid))
-        user.location = location
-        user.freestyle = FREESTYLE_DANCER
-        user.choreo = CHOREO_DANCER
-        user.send_email = True
-        if not user.location_country or user.location_country in locations.MILES_COUNTRIES:
-            user.distance = '90'
-            user.distance_units = 'miles'
-        else:
-            user.distance = '150'
-            user.distance_units = 'km'
-        user.compute_derived_properties()
-        return user
 
     def put(self):
         super(User, self).put()

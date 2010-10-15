@@ -33,7 +33,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         return_value = super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
 
         self.fb_uid = int(self.request.get('user_id'))
-        self.user = users.User.get(self.fb_uid)
+        self.user = users.User.get_cached(self.fb_uid)
         assert self.user.fb_access_token, "Can't execute background task for user %s without access_token" % self.fb_uid
         self.fb_graph = facebook.GraphAPI(self.user.fb_access_token)
         self.allow_cache = bool(int(self.request.get('allow_cache', 1)))

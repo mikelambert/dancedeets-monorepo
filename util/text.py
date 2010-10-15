@@ -11,6 +11,21 @@ def spit_filtered(func):
 def format_html(value):
     return html_escape(value).replace('\n', '<br>\n')
 
+@spit_filtered
+def format_js(value):
+    if isinstance(value, basestring):
+        value = value.replace('"', '\"')
+        value = value.replace("'", "\'")
+        value = value.replace("\n", "\\n")
+        return value
+    elif isinstance(value, udn.UndefinedPlaceholder):
+        # trigger asplosion!
+        return str(value.name)
+    elif isinstance(value, (int, long, float)):
+        return str(value)
+    else:
+        return ''
+    
 def html_escape(value):
     if isinstance(value, basestring):
         value = value.replace('&', '&amp;')

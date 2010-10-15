@@ -1,10 +1,7 @@
 BEFORE LAUNCH:
 
-- fix up sign in flow to remember user's preferences
-
-- keep sign-in button, but if user clicks it and fb account is not registered, re-use the sign-up form on a standalone page
-
 - build an invite flow that tracks original-inviting-user token
+- use permanent cookies for dancedeets, and add a logout button
 
 
 - Do something about the emails so that people in lesser-activity
