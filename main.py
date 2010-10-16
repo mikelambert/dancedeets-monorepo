@@ -42,6 +42,8 @@ URLS = [
     ('/tasks/resave_all_events', tasks.ResaveAllEventsHandler),
     ('/tasks/email_all_users', tasks.EmailAllUsersHandler),
     ('/tasks/email_user', tasks.EmailUserHandler),
+    ('/tasks/load_all_potential_events', tasks.LoadAllPotentialEventsHandler),
+    ('/tasks/load_potential_events_for_user', tasks.LoadPotentialEventsForUserHandler),
     ('/tasks/compute_rankings', tasks.ComputeRankingsHandler),
     ('/', search.RelevantHandler),
     ('/rankings', stats.RankingsHandler),

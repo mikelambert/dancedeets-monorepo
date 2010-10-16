@@ -11,12 +11,13 @@ import fb_api
 from logic import event_classifier
 
 class MyModelMapper(Mapper):
-    KIND = fb_api.FacebookCachedObject
+    KIND = eventdata.DBEvent
 
     def map(self, entity):
-        if 'OBJ_USER' in entity.key().name() or '701004' in entity.key().name():
-            return ([], [])
-        return ([], [entity])
+        if entity.creating_fb_uid == None:
+            entity.creating_fb_uid = 701004
+            return ([entity], [])
+        return ([], [])
 
 class OneOffHandler(webapp.RequestHandler):
     def get(self):

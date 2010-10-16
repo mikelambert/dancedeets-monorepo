@@ -13,10 +13,10 @@ import base_servlet
 from events import eventdata
 from events import tags
 from events import users
-from logic import email_events
-from logic import event_classifier
-from logic import rsvp
 from logic import backgrounder
+from logic import event_classifier
+from logic import potential_events
+from logic import rsvp
 import facebook
 import fb_api
 import locations
@@ -265,8 +265,8 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
-        potential_events = email_events.PotentialEvent.gql("WHERE looked_at = :looked_at", looked_at=False)
-        potential_event_ids = [x.key().name() for x in potential_events]
+        unseen_potential_events = potential_events.PotentialEvent.gql("WHERE looked_at = :looked_at", looked_at=False)
+        potential_event_ids = [x.key().name() for x in unseen_potential_events]
         already_added_events = eventdata.DBEvent.get_by_key_name(potential_event_ids)
         already_added_event_ids = [x.key().name() for x in already_added_events if x]
         # construct a list of not-added ids for display, but keep the list of all ids around so we can still mark them as processed down below
@@ -299,8 +299,8 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def post(self):
         processed_ids = self.request.get('processed_ids', '').split(',')
         if processed_ids:
-            potential_events = email_events.PotentialEvent.get_by_key_name(processed_ids)
-            for event in potential_events:
+            seen_potential_events = potential_events.PotentialEvent.get_by_key_name(processed_ids)
+            for event in seen_potential_events:
                 event.looked_at = True
                 event.put()
             self.redirect('/events/admin_potential_events')

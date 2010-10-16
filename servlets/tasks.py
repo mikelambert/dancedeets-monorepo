@@ -15,6 +15,7 @@ import facebook
 import fb_api
 from logic import backgrounder
 from logic import email_events
+from logic import potential_events
 from logic import rankings
 
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.
@@ -173,3 +174,20 @@ class CleanupWorkHandler(RequestHandler):
 class ComputeRankingsHandler(RequestHandler):
     def get(self):
         rankings.begin_ranking_calculations()
+
+class LoadAllPotentialEventsHandler(RequestHandler):
+    #OPT: maybe some day make this happen immediately after reloading users, so we can guarantee the latest users' state, rather than adding another day to the pipeline delay
+    #TODO(lambert): email me when we get the latest batch of things completed.
+    def get(self):
+        user_ids = [user.fb_uid for user in users.User.all()]
+        backgrounder.load_potential_events_for_users(user_ids)
+
+class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
+    def get(self):
+        user_ids = [x for x in self.request.get('user_ids').split(',') if x]
+        load_users = users.User.get_by_key_name(user_ids)
+        for user in load_users:
+            self.batch_lookup.lookup_user(user.fb_uid)
+        self.batch_lookup.finish_loading()
+        for user in load_users:
+            potential_events.get_potential_dance_events(self.batch_lookup, user)
