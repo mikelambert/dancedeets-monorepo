@@ -93,8 +93,8 @@ class BatchLookup(object):
             )
         elif object_type == self.OBJECT_EVENT:
             return dict(
-                info=self._fetch_rpc('%s' % object_id),
-                picture=self._fetch_rpc('%s/picture' % object_id),
+                info=self._fetch_rpc('%s' % object_id, use_access_token=False),
+                picture=self._fetch_rpc('%s/picture' % object_id, use_access_token=False),
             )
         elif object_type == self.OBJECT_EVENT_MEMBERS:
             return dict(
@@ -114,15 +114,19 @@ class BatchLookup(object):
         self.allow_cache = allow_cache
         self.object_keys = set()
 
-    def _fql_rpc(self, fql):
+    def _fql_rpc(self, fql, use_access_token=True):
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
-        url = "https://api.facebook.com/method/fql.query?%s" % urllib.urlencode(dict(query=fql, access_token=self.fb_graph.access_token, format='json'))
+        url = "https://api.facebook.com/method/fql.query?%s" % urllib.urlencode(dict(query=fql, format='json'))
+        if access_token:
+            url += "&access_token=%s" % self.fb_graph.access_token
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
-    def _fetch_rpc(self, path):
+    def _fetch_rpc(self, path, use_access_token=True):
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
-        url = "https://graph.facebook.com/%s?access_token=%s" % (path, self.fb_graph.access_token)
+        url = "https://graph.facebook.com/%s" % path
+        if access_token:
+            url += "?access_token=%s" % self.fb_graph.access_token
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
