@@ -1,7 +1,6 @@
 BEFORE LAUNCH:
 
 - build an invite flow that tracks original-inviting-user token
-- use permanent cookies for dancedeets, and add a logout button
 
 
 - Do something about the emails so that people in lesser-activity

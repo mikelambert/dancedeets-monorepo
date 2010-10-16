@@ -259,9 +259,15 @@ Loading events...
   original_setRaw = FB.Cookie.setRaw;
   FB.Cookie.setRaw = function(val, ts, domain) {
     // ts may be 0, so we need to fix that up here:
-    ts = ((new Date()).getTime() / 1000) + 14 * 24 * 60 * 60;
+    if (!ts) {
+      ts = ((new Date()).getTime() / 1000) + 14 * 24 * 60 * 60;
+    }
     return original_setRaw(val, ts, domain);
   }
+  FB.Cookie.clear = function() {
+    FB.Cookie.setRaw('', 1, FB.Cookie._domain);
+  }
+
   FB.Event.subscribe('FB.loginStatus', getLoginStatus);
   FB.init({appId: '$api_key', status: true,
          cookie: true, xfbml: true});

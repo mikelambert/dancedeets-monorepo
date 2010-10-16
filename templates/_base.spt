@@ -57,7 +57,7 @@ $head_javascript()
 
 <div style="position: absolute; right:0px; top:0px; padding: 5px; text-align: right">
 #if $fb_user
-	$fb_user.profile.name : <a href="/user/edit">Settings</a>
+	$fb_user.profile.name : <a href="/user/edit">Settings</a> : <a href="#" onclick="FB.logout(function(response) { window.location.reload(); })">Logout</a>
 #else
 	<fb:login-button onlogin="window.location.reload();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
 #end if
@@ -90,8 +90,13 @@ $body()
     original_setRaw = FB.Cookie.setRaw;
     FB.Cookie.setRaw = function(val, ts, domain) {
       // ts may be 0, so we need to fix that up here:
-      ts = ((new Date()).getTime() / 1000) + 14 * 24 * 60 * 60;
+      if (!ts) {
+        ts = ((new Date()).getTime() / 1000) + 14 * 24 * 60 * 60;
+      }
       return original_setRaw(val, ts, domain);
+    }
+    FB.Cookie.clear = function() {
+      FB.Cookie.setRaw('', 1, FB.Cookie._domain);
     }
 
     FB.init({appId: '$api_key', status: true, cookie: true,
