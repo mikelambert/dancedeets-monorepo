@@ -261,7 +261,7 @@ def compute_city_template_rankings(all_rankings, toplevel, time_period, use_url=
     style_rankings = []
     for style in toplevel:
         city_ranking = []
-        for thing, times_styles in all_rankings.iteritems():
+        for city, times_styles in all_rankings.iteritems():
             if city == 'Unknown':
                 continue
             count = times_styles.get(time_period, {}).get(style, 0)
