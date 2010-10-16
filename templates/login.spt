@@ -247,13 +247,20 @@ Loading events...
 <script src="http://connect.facebook.net/en_US/all.js"></script>
 <script>
   function signUp() {
-		$('#signup-form').submit();
+    $('#signup-form').submit();
   }
 
   function getLoginStatus(response) {
     if (response.session && $attempt_autologin) {
       window.location = '$format_js($next)';
     }
+  }
+  // Override cookie-expiration setting so we get long-lived cookies.
+  original_setRaw = FB.Cookie.setRaw;
+  FB.Cookie.setRaw = function(val, ts, domain) {
+    // ts may be 0, so we need to fix that up here:
+    ts = ((new Date()).getTime() / 1000) + 14 * 24 * 60 * 60;
+    return original_setRaw(val, ts, domain);
   }
   FB.Event.subscribe('FB.loginStatus', getLoginStatus);
   FB.init({appId: '$api_key', status: true,
