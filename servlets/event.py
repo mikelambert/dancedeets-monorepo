@@ -177,10 +177,10 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             eventdata.save_remapped_address_for(original_address, new_remapped_address)
 
         e = eventdata.DBEvent.get_or_insert(event_id)
-        e.make_findable_for(self.batch_lookup.data_for_event(event_id))
         e.tags = self.request.get_all('tag')
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
+        e.make_findable_for(self.batch_lookup.data_for_event(event_id))
         e.put()
 
         self.user.add_message("Changes saved!")
@@ -254,10 +254,10 @@ class AddHandler(base_servlet.BaseRequestHandler):
         self.errors_are_fatal()
         fb_event = self.batch_lookup.data_for_event(event_id)
         e = eventdata.DBEvent.get_or_insert(event_id)
-        e.make_findable_for(fb_event)
         e.tags = self.request.get_all('tag')
         e.creating_fb_uid = self.user.fb_uid
         e.creation_datetime = datetime.datetime.now()
+        e.make_findable_for(fb_event)
         e.put()
 
         self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
