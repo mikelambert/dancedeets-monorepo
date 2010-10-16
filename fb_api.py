@@ -125,7 +125,7 @@ class BatchLookup(object):
     def _fetch_rpc(self, path, use_access_token=True):
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
         url = "https://graph.facebook.com/%s" % path
-        if access_token:
+        if use_access_token:
             url += "?access_token=%s" % self.fb_graph.access_token
         urlfetch.make_fetch_call(rpc, url)
         return rpc
