@@ -117,7 +117,7 @@ class BatchLookup(object):
     def _fql_rpc(self, fql, use_access_token=True):
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
         url = "https://api.facebook.com/method/fql.query?%s" % urllib.urlencode(dict(query=fql, format='json'))
-        if access_token:
+        if use_access_token:
             url += "&access_token=%s" % self.fb_graph.access_token
         urlfetch.make_fetch_call(rpc, url)
         return rpc
