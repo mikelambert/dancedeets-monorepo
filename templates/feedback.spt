@@ -1,0 +1,24 @@
+#extends _base
+
+#def title
+Feedback
+#end def
+
+#def body
+<form action="/feedback" method="post">
+
+<p>Questions? Need Help? Suggestions? Improvements? Criticism? Fill it out below!
+
+<p>Subject: <input type="text" name="subject" size="80">
+
+<p>Message:
+<br>
+<textarea name="body" rows="20" cols="80">
+</textarea>
+
+<p><button>Send Email</button>
+
+
+</form>
+
+#end def

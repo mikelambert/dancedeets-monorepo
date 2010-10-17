@@ -1,0 +1,33 @@
+#extends _base
+
+#def title
+About
+#end def
+
+#def body
+<p><h3>What is Dance Deets?</h3>
+<p>Dance Deets helps keep both dancers and dance fans in the loop about events in the dance scene. Whether that's the choreography scene or freestyle scene, or whatever style of dance you do (bboy, house, popping, locking, wacking, vogue, hiphopi, or street jazz), Dance Deets keeps track of it. And not just local to your scene, but any scene world-wise, so that when you go travelling on vacation or whatever, it'll be easy to find events whereever you are.
+
+<p><h3>Why was Dance Deets created?</h3>
+<p>
+The overall dream goal is to enable the street dance scene to grow and become bigger and more self-supporting.
+
+<ul>
+<li><b>Newbie dancers</b> find it difficult to break into the scene because they're not yet in the scene. Everyone else knows what's going on (facebook, text messages, word of mouth), but the new folks aren't well-connected yet and so often resort to dance studios because that's the only thing they can find online. It should be possible to find jams, clubs, workshops, etc without taking six months to meet everyone.
+
+<li><b>Travelers</b> often visit a city on vacation or something unrelated, but never know how to find the street dance scene. It's not until they've started networking with folks around the world, that they find the contacts that can clue them in on a visit. 
+
+<li><b>Dance fans</b> are often asking their dancer friends about dance events all the time. When's the next jam? When's the next show? The answer is sometimes that there's so much stuff going on it's hard to keep your friends in the loop! Dance Deets allows them to express their interest as a fan, so they can be a supporter without having to invest all the work in staying connected and up-to-date on facebook. Or what about random people that attend the premier dance shows because that's the only thing their local newspaper reports on? Wouldn't it be awesome if they could better support the scene?
+
+<li><b>Dance promoters</b> often have to resort to drastic means to promote their events. Lots of facebook wall postings, invites, messages, etc. And unfortunately, dance promoters are often only promoting to dancers, and have trouble reaching the friends-of-dancers crowd because they don't know the promoters or go to the same venues. Dance Deets will let dance events be seen by a much broader range of folks that might be interested.
+
+</ul>
+
+<p><h3>What's the history?</h3>
+
+<p>When Mike Lambert got into the dance scene in in San Francisco in 2007 at a dance studio, he remembers it being hard to find jams and clubs to go to practice more. After a a year or two, he slowly worked his way into the scene and discovered how effortless it became once you were in the scene.
+
+<p>Being a programmer at Google/YouTube before he discovered dance, he decided to try solving this with a website. After discussing it with a few dancers, both new and old, they all seemed to think the idea had merit, so it gave him confidence. But rather than throw up a forum and be done with it, he tried to use Facebook and the Facebook API to get it working. Dancers were already creating events on facebook and keeping them up to date, so leveraging all that work/information to make them available to everyone was basically a no-brainer.
+
+<p>Developed over the summer/fall of 2010, it finally launched at the end of 2010. Starting with San Francisco and New York having event information, he hoped it would eventually spread to other cities and friends-of-friends around the world.
+#end def

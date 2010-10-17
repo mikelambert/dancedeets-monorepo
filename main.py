@@ -8,10 +8,12 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 import base_servlet
 from servlets import admin
+from servlets import about
 from servlets import event
-from servlets import search
+from servlets import feedback
 from servlets import login
 from servlets import myuser
+from servlets import search
 from servlets import share
 from servlets import stats
 from servlets import tasks
@@ -58,6 +60,9 @@ URLS = [
     ('/user/edit', myuser.UserHandler),
     ('/login', login.LoginHandler),
     ('/share', share.ShareHandler),
+    ('/about', about.AboutHandler),
+    ('/help', feedback.HelpHandler),
+    ('/feedback', feedback.FeedbackHandler),
 ]
 
 class MyWSGIApplication(webapp.WSGIApplication):
