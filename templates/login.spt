@@ -119,7 +119,7 @@ body {
 #end if
 </div>
 <div id="header">
-<img src="/dancedeets.png" width=224 height=110>
+<img src="/dancedeets.png" width=374 height=71>
 </div>
 
 <div id="left-hand">

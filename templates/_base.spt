@@ -40,7 +40,7 @@ $head_javascript()
 <div id="main">
 <div id="header">
 	<table><tr><td>
-	<a href="/"><img src="/dancedeets.png" width=224 height=110></a>
+	<a href="/"><img src="/dancedeets.png" width=374 height=71></a>
 	</td><td>
 	<h1>$title()</h1>
 	</td></tr></table>
@@ -57,7 +57,11 @@ $head_javascript()
 
 <div style="position: absolute; right:0px; top:0px; padding: 5px; text-align: right">
 #if $fb_user
-	$fb_user.profile.name : <a href="/user/edit">Settings</a> : <a href="#" onclick="FB.logout(function(response) { window.location.reload(); })">Logout</a>
+	$fb_user.profile.name
+	|
+	<a href="/user/edit">Settings</a>
+	|
+	<a href="#" onclick="FB.logout(function(response) { window.location.reload(); })">Logout</a>
 #else
 	<fb:login-button onlogin="window.location.reload();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
 #end if
@@ -65,16 +69,12 @@ $head_javascript()
 
 $body()
 
-<div id="footer" style="margin: 10px">Want to help DanceDeets?
-<!-- Copyright 2010 Mike Lambert | About | Help | Feedback -->
-<ul>
-<li>Add a <a href="/events/add">new dance event</a> to promote it.
-<li>Check out how <a href="/rankings">your city's dance scene</a> is doing compared to others in DanceDeets.
-<li><a href="javascript:share_dancedeets();return false">Post about DanceDeets on Facebook</a> to let your friends know about it. You know, the friends that never can quite keep up with what dance things are going on.
-<li><a href="mailto:mlambert@gmail.com">Send feedback!</a> Things not working? Have ideas to make things better? Adoring fan mail?
-<li>Recommend DanceDeets on Facebook:<br>
-<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FDance-Deets%2F110312662362915&amp;layout=standard&amp;show_faces=true&amp;width=900&amp;action=recommend&amp;font=verdana&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:900px; height:80px;" allowTransparency="true"></iframe>
-</ul>
+<div id="footer" style="margin: 10px; text-align:center">
+<a href="/about">About</a> | <a href="/rankings">Rankings</a> | <a href="/help">Help</a> | <a href="/feedback">Feedback</a>
+<br>
+<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FDance-Deets%2F110312662362915&amp;layout=standard&amp;show_faces=true&amp;width=400&amp;action=recommend&amp;font=verdana&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:400px; height:80px;" allowTransparency="true"></iframe>
+</div>
+</div>
 
 <div id="fb-root"></div>
 </body>
@@ -119,27 +119,6 @@ $body()
       window.location.reload();
     }
   }
-
-function share_dancedeets() {
-	FB.ui(
-		{
-			method: 'stream.publish',
-			message: '',
-			attachment: {
-				name: 'Dance Deets',
-				caption: 'Keeps you in the loop on dance events you care about!',
-				description: (
-					"Whether you love watching dance, " +
-					"or love dancing choreography or freestyling, " +
-					"whether you live in the scene for awhile, " +
-					"or are even just visiting a new scene, " +
-					"Dance Deets helps you keeps track of it all."
-				),
-				href: 'http://www.dancedeets.com/',
-			},
-			user_message_prompt: 'Share your thoughts about DanceDeets with your friends',
-	});
-}
 </script>
 
 $bottom_javascript()

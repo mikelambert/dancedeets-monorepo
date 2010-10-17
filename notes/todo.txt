@@ -2,31 +2,19 @@ BEFORE LAUNCH:
 
 - build an invite flow that tracks original-inviting-user token
 
-
 - Do something about the emails so that people in lesser-activity
 areas get emailed less frequently, and only when necessary. Or stick
 with weekly-on-wednesday emails for now?
 
-- twitter box: http://twitter.com/goodies/tweetbutton
 - jquery calendar
 - embed widget
 
-UI feedback of my own:
 - "Want to do better?" links from rankings page to promote to fb friends
 - track conversion via email redirect links
+- track conversion on homepage, by user?
 - send daily email of http://www.dancedeets.com/events/admin_potential_events
+- "Post this to your wall?" after rsvp-ing for an event. Promo for DanceDeets via "Dolapo found Yoruba Dance Sessions on DanceDeets"
 
-UI feedback from partychat:
-- "Dolapo found Yoruba Dance Sessions on DanceDeets" posting to facebook, if using dancedeets to rsvp?
-- "Post this to your wall?" after rsvp-ing for an event. Promo for DanceDeets
-
-UI feedback from martina:
-- make these settings permanent, perhaps autodetecting repeat changes?
-
-UI feedback from Ian:
-- list "workshop, performance" next to events
-
-Get rid of much of the footer.
 
 LAUNCH PLAN:
 - Post on my facebook every other day, at different times of day.

@@ -4,7 +4,7 @@
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
-Dance Event Results
+Dance Events
 #end def
 
 #def head_javascript
