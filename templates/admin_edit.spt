@@ -2,7 +2,7 @@
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
-Admin Edit Dance Event
+Edit Event
 #end def
 
 #def body

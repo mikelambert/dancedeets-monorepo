@@ -2,7 +2,7 @@
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
-Dance Deets Rankings
+Rankings
 #end def
 
 #def head_stylesheet
