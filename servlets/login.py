@@ -58,7 +58,8 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST]
         self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST]
 
-        self.display['next'] = '/login?%s' % urllib.urlencode({'next': next})
+        self.display['next'] = next
+        self.display['referer'] = self.request.get('referer')
         self.render_template('login')
 
     def post(self):
@@ -71,7 +72,10 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             self.redirect(next)
             
         user = users.User(key_name=str(self.fb_uid))
+        user.fb_access_token = self.fb_graph.access_token
         user.location = self.request.get('city')
+        if self.request.get('referer'):
+            user.inviting_fb_uid = int(self.request.get('referer'))
         user_type = self.request.get('user_type')
         if user_type == 'fan':
             user.freestyle = users.FREESTYLE_FAN

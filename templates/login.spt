@@ -161,6 +161,7 @@ Loading events...
 
 <legend class="big-font" style="padding: 10px">Join the Scene</legend>
 
+<input type=hidden name="referer" value="$format_html($referer)">
 <input type=hidden name="next" value="$format_html($next)">
 
 <b>City:</b> <input type=text name="city" id="signup-city">

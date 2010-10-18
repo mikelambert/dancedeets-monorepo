@@ -55,7 +55,7 @@ function share_dancedeets() {
           "Dancer or dance fan, choreography or freestyle, " +
           "Dance Deets keeps you in the loop on the scene you care about."
         ),
-        href: 'http://www.dancedeets.com/?referral=$fb_user.profile.id',
+        href: '$share_url',
       },
       user_message_prompt: 'Share your thoughts about DanceDeets with your friends',
   });

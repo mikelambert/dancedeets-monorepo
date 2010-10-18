@@ -11,11 +11,11 @@ import fb_api
 from logic import event_classifier
 
 class MyModelMapper(Mapper):
-    KIND = eventdata.DBEvent
+    KIND = users.User
 
     def map(self, entity):
-        if entity.creating_fb_uid == None:
-            entity.creating_fb_uid = 701004
+        if entity.inviting_fb_uid == None:
+            entity.inviting_fb_uid = 701004
             return ([entity], [])
         return ([], [])
 
