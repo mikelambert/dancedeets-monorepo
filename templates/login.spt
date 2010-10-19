@@ -156,10 +156,10 @@ Loading events...
 </div>
 
 <div id="right-hand">
-<fieldset style="border: 1px black solid">
 <form action="/login" id="signup-form" method="post">
+<fieldset style="border: 1px black solid; background-color: #eee;border-radius: 10px">
 
-<legend class="big-font" style="padding: 10px">Join the Scene</legend>
+<legend class="big-font" style="padding: 0px 10px;;background-color:white;border:1px solid darkgrey">Join the Scene</legend>
 
 <input type=hidden name="referer" value="$format_html($referer)">
 <input type=hidden name="next" value="$format_html($next)">
@@ -173,11 +173,11 @@ Loading events...
 <li><input type=radio name=user_type value="freestyle"> I do freestyle dance
 <li><input type=radio name=user_type value="everything" checked> I love all dance
 </ul>
-</form>
 
 <p><fb:login-button length="long" onlogin="signUp();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
 
 </fieldset>
+</form>
 
 <p><a href="#" style="font-size:80%" onclick="$('#why_facebook').toggle();return true;">Why does DanceDeets use Facebook login?</a>
 
