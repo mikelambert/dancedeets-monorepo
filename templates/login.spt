@@ -156,7 +156,7 @@ Loading events...
 </div>
 
 <div id="right-hand">
-<form action="/login" id="signup-form" method="post">
+<form action="/login" id="signup-form" method="post" style="padding-top: 19px">
 <fieldset style="border: 1px black solid; background-color: #eee;border-radius: 10px">
 
 <legend class="big-font" style="padding: 0px 10px;;background-color:white;border:1px solid darkgrey">Join the Scene</legend>
