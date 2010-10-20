@@ -21,8 +21,6 @@ from servlets import tools
 import smemcache
 
 
-DEBUG = True
-
 #TODO(lambert): setup webtest to test the wsgi app as a regression test to ensure everything is working
 # http://pythonpaste.org/webtest/
 
@@ -66,6 +64,11 @@ URLS = [
 ]
 
 class MyWSGIApplication(webapp.WSGIApplication):
+    def __init__(self, url_mapping, debug=False, prod_mode=False):
+        self.debug = debug
+        self.prod_mode = prod_mode
+        super(MyWSGIApplication, self).__init__(url_mapping)
+
     def __call__(self, environ, start_response):
         """Called by WSGI when a request comes in."""
         request = self.REQUEST_CLASS(environ)
@@ -80,7 +83,7 @@ class MyWSGIApplication(webapp.WSGIApplication):
             match = regexp.match(request.path)
             if match:
                 handler = handler_class()
-                processed = handler.initialize(request, response)
+                processed = handler.initialize(request, response, self.prod_mode)
                 groups = match.groups()
                 break
 
@@ -107,7 +110,7 @@ class MyWSGIApplication(webapp.WSGIApplication):
                     else:
                         handler.error(501)
                 except Exception, e:
-                    handler.handle_exception(e, DEBUG)
+                    handler.handle_exception(e, self.debug)
             else:
                 response.set_status(404)
 
@@ -115,13 +118,13 @@ class MyWSGIApplication(webapp.WSGIApplication):
         return ['']
 
 def main():
-    DEBUG = os.environ['SERVER_SOFTWARE'].startswith('Dev')
-    if DEBUG:
-        filename = 'facebook.yaml'
-    else:
+    prod_mode = not os.environ['SERVER_SOFTWARE'].startswith('Dev')
+    if prod_mode:
         filename = 'facebook-prod.yaml'
+    else:
+        filename = 'facebook.yaml'
     base_servlet.FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
-     application = MyWSGIApplication(URLS, debug=DEBUG)
+     application = MyWSGIApplication(URLS, debug=True, prod_mode=prod_mode)
     run_wsgi_app(application)
 
 

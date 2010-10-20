@@ -19,7 +19,7 @@ body {
 </style>
 $head_stylesheet()
 $head_javascript()
-
+#if $prod_mode
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -33,6 +33,7 @@ $head_javascript()
   })();
 
 </script>
+#end if
 </head>
 <body>
 ## get rid of this and merge it inline?

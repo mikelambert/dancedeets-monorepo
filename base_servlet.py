@@ -27,7 +27,7 @@ class BaseRequestHandler(RequestHandler):
     def __init__(self, *args, **kwargs):
         super(BaseRequestHandler, self).__init__(*args, **kwargs)
 
-    def initialize(self, request, response):
+    def initialize(self, request, response, prod_mode):
         super(BaseRequestHandler, self).initialize(request, response)
         params = dict(next=self.request.url)
         referer = self.request.get('referer')
@@ -71,6 +71,7 @@ class BaseRequestHandler(RequestHandler):
         self.display['format'] = text.format
         self.display['request'] = request
         self.display['api_key'] = FACEBOOK_CONFIG['api_key']
+        self.display['prod_mode'] = prod_mode
         return False
 
     def requires_login(self):
