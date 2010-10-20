@@ -32,7 +32,11 @@ Add Dance Event
 				<p>Name: $format_html($fb_event.info.name)
 				<br>Description:
 				<div style="padding: 20px; width: 600px; height:250px; overflow:scroll; border: 1px solid black">
-				$format_html($fb_event.info.description)
+				#if $fb_event.info.get('description')
+					$format_html($fb_event.info.description)
+				#else
+					None!
+				#end if
 				</div>
 			#end if
 			<p>Describe the kind of dance event this is, so interested folks can hear about it.<br>

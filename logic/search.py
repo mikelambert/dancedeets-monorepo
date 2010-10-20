@@ -137,7 +137,7 @@ class SearchQuery(object):
         if self.query_args:
             found_keyword = False
             for keyword in self.query_args:
-                if keyword in fb_event['info']['name'] or keyword in fb_event['info']['description']:
+                if keyword in fb_event['info']['name'] or keyword in fb_event['info'].get('description', ''):
                     found_keyword = True
             if found_keyword:
                 pass

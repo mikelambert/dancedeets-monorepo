@@ -17,7 +17,11 @@ Edit Event
 
 			<br>Description:
 			<div style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">
-			$format_html($fb_event.info.description)
+			#if $fb_event.info.get('description')
+				$format_html($fb_event.info.description)
+			#else
+				None!
+			#end if
 			</div>
 
 			<p>Event Types:
