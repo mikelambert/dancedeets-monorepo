@@ -9,6 +9,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 import base_servlet
 from servlets import admin
 from servlets import about
+from servlets import calendar
 from servlets import event
 from servlets import feedback
 from servlets import login
@@ -52,6 +53,8 @@ URLS = [
     ('/events/view', event.ViewHandler),
     ('/events/add', event.AddHandler),
     ('/events/search', search.SearchHandler),
+    ('/calendar', calendar.CalendarHandler),
+    ('/calendar/feed', calendar.CalendarFeedHandler),
     ('/events/results', search.ResultsHandler),
     ('/events/relevant', search.RelevantHandler),
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
@@ -83,7 +86,8 @@ class MyWSGIApplication(webapp.WSGIApplication):
             match = regexp.match(request.path)
             if match:
                 handler = handler_class()
-                processed = handler.initialize(request, response, self.prod_mode)
+                handler.prod_mode = self.prod_mode # since we can't change the __init__ or intialize APIs, we must do this here
+                processed = handler.initialize(request, response)
                 groups = match.groups()
                 break
 

@@ -125,8 +125,8 @@ class DBEvent(db.Model):
             self.search_time_period = None
             return
 
-        self.start_time = datetime.datetime.strptime(fb_dict['info']['start_time'], '%Y-%m-%dT%H:%M:%S+0000')
-        self.end_time = datetime.datetime.strptime(fb_dict['info']['end_time'], '%Y-%m-%dT%H:%M:%S+0000')
+        self.start_time = localize_timestamp(datetime.datetime.strptime(fb_dict['info']['start_time'], '%Y-%m-%dT%H:%M:%S+0000'))
+        self.end_time = localize_timestamp(datetime.datetime.strptime(fb_dict['info']['end_time'], '%Y-%m-%dT%H:%M:%S+0000'))
 
         self.search_tags = [] # CHOREO and/or FREESTYLE
         if set(self.tags).intersection([x[0] for x in tags.FREESTYLE_EVENT_LIST]):

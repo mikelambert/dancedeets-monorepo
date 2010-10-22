@@ -66,7 +66,7 @@ class SearchResult(object):
         else:
             logging.error("Error loading picture for event id %s", self.db_event.fb_event_id)
             logging.error("Data is %s\n\n%s", self.db_event, self.fb_event)
-            return 'http://graph.facebook.com/331218348435/picture' % self.db_event.fb_event_id
+            return 'http://graph.facebook.com/%s/picture' % self.db_event.fb_event_id
 
     def get_attendance(self):
         if self.rsvp_status == 'unsure':
@@ -175,6 +175,12 @@ class SearchQuery(object):
             bind_vars['search_tags'] = search_tags[0]
         elif len(search_tags) == 2:
             pass # retrieve everything!
+        if self.start_time: # APPROXIMATION
+            clauses.append('start_time > :start_time_min')
+            bind_vars['start_time_min'] = self.start_time - datetime.timedelta(days=30)
+        if self.end_time:
+            clauses.append('start_time < :start_time_max')
+            bind_vars['start_time_max'] = self.end_time
         if clauses:
             full_clauses = ' and '.join('%s' % x for x in clauses)
             return eventdata.DBEvent.gql('where %s' % full_clauses, **bind_vars).fetch(100)

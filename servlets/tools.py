@@ -21,8 +21,12 @@ class MyModelMapper(Mapper):
 
 class OneOffHandler(webapp.RequestHandler):
     def get(self):
-        m = MyModelMapper()
-        m.run()
+        #m = MyModelMapper()
+        #m.run()
+        es = eventdata.DBEvent.get_by_key_name(['113197605407055', '127280820657989'])
+        for e in es:
+            if e:
+                e.delete()
         self.response.out.write('yay!')
 
 class ImportCitiesHandler(webapp.RequestHandler):

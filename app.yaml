@@ -17,6 +17,8 @@ handlers:
   upload: dancedeets.png
 - url: /css
   static_dir: css
+- url: /js
+  static_dir: js
 - url: /fonts
   static_dir: fonts
 - url: /images

@@ -149,6 +149,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['event_selected_n_users'] = event_selected_n_users
 
         self.display['past_view_url'] = '/events/relevant?ajax=1&past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
+        self.display['calendar_view_url'] = '/calendar?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
 
         self.display['past_results'] = past_results
         self.display['ongoing_results'] = present_results

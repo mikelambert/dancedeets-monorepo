@@ -1,12 +1,9 @@
 BEFORE LAUNCH:
 
-- build an invite flow that tracks original-inviting-user token
-
 - Do something about the emails so that people in lesser-activity
 areas get emailed less frequently, and only when necessary. Or stick
 with weekly-on-wednesday emails for now?
 
-- jquery calendar
 - embed widget
 
 - "Want to do better?" links from rankings page to promote to fb friends
@@ -14,7 +11,8 @@ with weekly-on-wednesday emails for now?
 - track conversion on homepage, by user?
 - send daily email of http://www.dancedeets.com/events/admin_potential_events
 - "Post this to your wall?" after rsvp-ing for an event. Promo for DanceDeets via "Dolapo found Yoruba Dance Sessions on DanceDeets"
-
+- Send messages via fb not email. Perhaps using fan pages?
+- last-login date
 
 LAUNCH PLAN:
 - Post on my facebook every other day, at different times of day.

@@ -27,6 +27,11 @@ indexes:
 
 - kind: DBEvent
   properties:
+  - name: geohashes
+  - name: start_time
+
+- kind: DBEvent
+  properties:
   - name: tags
   - name: start_time
 

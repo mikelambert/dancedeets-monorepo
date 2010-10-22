@@ -162,6 +162,7 @@ function toggleSearchOptions() {
 		<li><a href="$past_view_url" title="past events"><span>Past Events</span></a></li>
 		<li><a href="#ongoing_events"><span>Ongoing Events</span></a></li>
 		<li class="ui-tabs-selected"><a href="#upcoming_events"><span>Upcoming Events</span></a></li>
+		<li><a href="$calendar_view_url"><span>Calendar</span></a></li>
 	</ul>
 	<div id="past_events" class="ui-tabs-hide">
 		$render_results($past_results)
@@ -177,13 +178,15 @@ function toggleSearchOptions() {
 			#end if
 		#end for
 	</div>
+	<div id="calendar_events_tab">
+	</div>
 </div>
 
 </div>
 
 <div id="right-hand">
-<a href="/share">Invite Dancers and Fans</a><br>
-<a href="/events/add">Add Event</a><br>
+<a href="/share"><button>Invite Dancers and Fans</button></a><br>
+<a href="/events/add"><button>Add Dance Event</button></a><br>
 
 <hr>
 <div style="font-size: 80%">
