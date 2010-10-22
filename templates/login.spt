@@ -52,6 +52,8 @@ body {
 #main {
 	position: relative;
 	width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
 }
 #sign-in {
 	position: absolute;
