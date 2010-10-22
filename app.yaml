@@ -15,6 +15,9 @@ handlers:
 - url: /dancedeets.png
   static_files: dancedeets.png
   upload: dancedeets.png
+- url: /favicon.ico
+  static_files: favicon.ico
+  upload: favicon.ico
 - url: /css
   static_dir: css
 - url: /js

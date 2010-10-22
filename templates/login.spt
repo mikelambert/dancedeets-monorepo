@@ -4,6 +4,8 @@
 	xmlns:fb="http://www.facebook.com/2008/fbml"
 	xmlns:og="http://opengraphprotocol.org/schema/">
 <head>
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
 <title>Dance Deets</title>
     <meta property="og:title" content="Dance Deets"/>
     <meta property="og:type" content="website"/>
