@@ -42,3 +42,5 @@ def load_potential_events_for_users(fb_uids, allow_cache=True, **kwargs):
     for i in range(0, len(fb_uids), task_size):
         taskqueue.add(method='GET', url='/tasks/load_potential_events_for_user?' + urllib.urlencode(dict(user_id=','.join(str(x) for x in fb_uids[i:i+task_size]), user_ids=','.join(str(x) for x in fb_uids[i:i+task_size]), allow_cache=allow_cache_arg)), **kwargs)
 
+def update_last_login_time(user_id):
+    taskqueue.add(method='GET', url='/tasks/update_last_login_time?user_id=%s' % user_id)

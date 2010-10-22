@@ -65,6 +65,7 @@ class User(db.Model):
 
     # Statistics
     creation_time = db.DateTimeProperty()
+    last_login_time = db.DateTimeProperty()
     inviting_fb_uid = db.IntegerProperty()
 
     # Search preferences

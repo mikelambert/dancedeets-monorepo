@@ -191,3 +191,12 @@ class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
         self.batch_lookup.finish_loading()
         for user in load_users:
             potential_events.get_potential_dance_events(self.batch_lookup, user)
+
+class UpdateLastLoginTimeHandler(RequestHandler):
+    def get(self):
+        user = users.User.get_by_key_name(self.request.get('user_id'))
+        user.last_login_time = datetime.datetime.now()
+        try:
+            user.put()
+        except apiproxy_errors.CapabilityDisabledError:
+            pass # read-only mode!

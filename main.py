@@ -46,6 +46,7 @@ URLS = [
     ('/tasks/load_all_potential_events', tasks.LoadAllPotentialEventsHandler),
     ('/tasks/load_potential_events_for_user', tasks.LoadPotentialEventsForUserHandler),
     ('/tasks/compute_rankings', tasks.ComputeRankingsHandler),
+    ('/tasks/update_last_login_time', tasks.UpdateLastLoginTimeHandler),
     ('/', search.RelevantHandler),
     ('/rankings', stats.RankingsHandler),
     ('/events/admin_potential_events', event.AdminPotentialEventViewHandler),
