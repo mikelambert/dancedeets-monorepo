@@ -102,8 +102,8 @@ class BaseRequestHandler(RequestHandler):
         else:
             return False # let exception handling code operate normally
 
-    def write_json_response(self, **kwargs):
-        self.response.out.write(simplejson.dumps(kwargs))
+    def write_json_response(self, arg):
+        self.response.out.write(simplejson.dumps(arg))
 
     def render_template(self, name):
         if self.fb_uid: # show fb user if we're logged in. we only need fb_uid to get a fb_user

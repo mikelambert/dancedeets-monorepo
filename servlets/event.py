@@ -42,10 +42,10 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         rsvps = rsvp.RSVPManager(self.batch_lookup)
         success = rsvps.set_rsvp_for_event(self.fb_graph, event_id, rsvp_status)
 
-        self.write_json_response(success=success)
+        self.write_json_response(dict(success=success))
 
     def handle_error_response(self, errors):
-        self.write_json_repsonse(success=False, errors=errors)
+        self.write_json_response(dict(success=False, errors=errors))
 
 
 class ViewHandler(base_servlet.BaseRequestHandler):
