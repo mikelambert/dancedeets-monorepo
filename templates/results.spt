@@ -8,17 +8,6 @@ Dance Events
 #end def
 
 #def head_javascript
-<script type="text/javascript">
-function toggleSearchOptions() {
-	var url = $('#search_options-expander').css('backgroundImage');
-	if (url.indexOf('plus') != -1) {
-		$('#search_options-expander').css('backgroundImage', url.replace('plus', 'minus'));
-	} else {
-		$('#search_options-expander').css('backgroundImage', url.replace('minus', 'plus'));
-	}
-	$('#search_options').slideToggle(400);
-}
-</script>
 #end def
 
 #def head_stylesheet
@@ -30,8 +19,6 @@ function toggleSearchOptions() {
 #right-hand {
   float: right;
   width: 280px;
-	border: 1px solid lightgrey;
-	padding: 3px;
 }
 #right-hand hr {
 	color: lightgrey;
@@ -42,13 +29,6 @@ function toggleSearchOptions() {
 #search_options-box {
 	width: 700px;
 }
-#search_options-expander {
-	margin-top: 2px;
-	width: 11px;
-	height: 11px;
-	float: left;
-	background-image: url(/images/expand-icon-plus.gif);
-}
 .clickable {
 	cursor: pointer;
 	cursor: hand;
@@ -58,8 +38,13 @@ function toggleSearchOptions() {
 	cursor: hand;
 }
 .click-box a {
-	display: block;
-  text-decoration: none;
+	text-decoration: none;
+}
+// For some reason if try to turn off underlining in ".non-a" below it doesn't work, so we have to leave ".fake-a" and have it explicitly turn on underlining here (and turn it off in our parent so that non-a doesn't see it.)
+.click-box .fake-a {
+  text-decoration: underline;
+}
+.click-box .non-a {
   color: black;
 }
 .click-hover {
@@ -108,11 +93,14 @@ function toggleSearchOptions() {
 #def body
 
 <div id="left-hand">
-<p><div  id="search_options-box">
-	<div onclick="toggleSearchOptions();" class="clickable">
-		<span id="search_options-expander"></span>
-		Searching for <a href="#" onclick="return false;">$event_types events</a> within <a href="#" onclick="return false;">$defaults.distance $defaults.distance_units</a> of <a href="#" onclick="return false;">${defaults.user_location}</a>.
-	</div>
+	<div class="accordion">
+			<h3 class="head"><a href="#" onclick="return false;">
+			Searching for
+			$event_types events
+			within
+			$defaults.distance $defaults.distance_units of ${defaults.user_location}.
+			</a>
+			</h3>
 	<div id="search_options" style="display:none">
 		<form>
 		<p>Location: <input name=user_location value="$defaults.user_location">
@@ -185,11 +173,12 @@ function toggleSearchOptions() {
 </div>
 
 <div id="right-hand">
-<a href="/share"><button>Invite Dancers and Fans</button></a><br>
-<a href="/events/add"><button>Add Dance Event</button></a><br>
+<div class="ui-helper-reset ui-widget-content ui-corner-all">
+<a href="/share"><button id="share-button">Invite Dancers and Fans</button></a><br>
+<a href="/events/add"><button id="add-button">Add Dance Event</button></a><br>
 
 <hr>
-<div style="font-size: 80%">
+<div>
 <span class="ranking-title">Who invited the most people in $current_city:</span><br>
 $ranked_list($user_top_n_users, $user_selected_n_users)
 
@@ -205,6 +194,9 @@ $ranked_list($user_top_n_cities, $user_selected_n_cities)
 <span class="ranking-title">Who has the most events:</span><br>
 $ranked_list($event_top_n_cities, $event_selected_n_cities)
 
+<hr>
+See <a href="/rankings">All Rankings</a>.
+</div>
 </div>
 </div>
 
@@ -225,8 +217,30 @@ function setupActions() {
 }
 
 $(document).ready(function() {
-	var tabs = $("#tabs").tabs();
+	$("#share-button").button();
+	$("#add-button").button();
+	$("#tabs").tabs();
 	setupActions();
+
+	// Make our top-panel act the way we want...
+	$('.accordion').accordion();
+	$('.accordion .head').removeClass('ui-state-active');
+	var icon = $('.accordion .head .ui-icon');
+	icon.addClass('ui-icon-triangle-1-e');
+	icon.removeClass('ui-icon-triangle-1-s');
+	$('.accordion .head').click(function() {
+		var icon = $('.accordion .head .ui-icon');
+		if (icon.hasClass('ui-icon-triangle-1-s')) {
+			icon.addClass('ui-icon-triangle-1-e');
+			icon.removeClass('ui-icon-triangle-1-s');
+		} else {
+			icon.addClass('ui-icon-triangle-1-s');
+			icon.removeClass('ui-icon-triangle-1-e');
+		}
+		$(this).next().slideToggle('slow');
+		return false;
+	}).next().hide();
+
 });
 </script>
 #end def

@@ -4,13 +4,15 @@
 		## widths here are set to sum to 700px-50px = 650px
 		<div style="float:left" class="click-box">
 			<a href="http://www.facebook.com/event.php?eid=$fb_event.id">
-				<div style="float:left;width:50px">
-					<img src="$result.get_image()" width="50">
+				<div style="float:left;width:180px">
+					<img src="$result.get_image()" width="180">
 				</div>
-				<div style="float:right;width:450px;font-size:16px">
-					$format_html($fb_event.name)<br>
+				<div style="float:right;width:320px;font-size:16px">
+					<span class="fake-a">$format_html($fb_event.name)</span><br>
+					<div class="non-a">
+					($result.choreo_or_freestyle)<br>
 					$date_human_format($result.start_time)<br>
-					$result.choreo_or_freestyle
+					</div>
 				</div>
 				<div style="clear:both;height:1px;"></div>
 			</a>

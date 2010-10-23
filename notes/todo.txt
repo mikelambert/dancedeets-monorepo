@@ -11,6 +11,7 @@ with weekly-on-wednesday emails for now?
 - track conversion on homepage, by user?
 - send daily email of http://www.dancedeets.com/events/admin_potential_events
 - "Post this to your wall?" after rsvp-ing for an event. Promo for DanceDeets via "Dolapo found Yoruba Dance Sessions on DanceDeets"
+- In emails include rankings, with call-to-action.
 - Send messages via fb not email. Perhaps using fan pages?
 
 LAUNCH PLAN:

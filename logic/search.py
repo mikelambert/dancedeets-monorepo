@@ -62,7 +62,7 @@ class SearchResult(object):
     def get_image(self):
         picture_url = self.fb_event.get('picture')
         if picture_url:
-            return eventdata.get_event_image_url(picture_url, eventdata.EVENT_IMAGE_SQUARE)
+            return eventdata.get_event_image_url(picture_url, eventdata.EVENT_IMAGE_LARGE)
         else:
             logging.error("Error loading picture for event id %s", self.db_event.fb_event_id)
             logging.error("Data is %s\n\n%s", self.db_event, self.fb_event)
