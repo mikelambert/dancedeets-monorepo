@@ -35,10 +35,18 @@ def get_potential_dance_events(batch_lookup, user):
         if is_dance_event:
             dance_event_ids.append(str(mini_fb_event['eid']))
     # ideally would use keys_only=True, but that's not supported on get_by_key_name :-/
+
+    # Filter out DBEvents
     found_events = eventdata.DBEvent.get_by_key_name(dance_event_ids)
     found_event_ids = [x.key().name() for x in found_events if x]
     new_dance_event_ids = set(dance_event_ids).difference(found_event_ids)
-    new_dance_events = [second_batch_lookup.data_for_event(x) for x in new_dance_event_ids]
+
+    # Filter out looked_at PotentialEvents
+    potential_events = PotentialEvent.get_by_key_name(dance_event_ids)
+    seen_potential_event_ids = [x.key().name() for x in found_events if x and x.looked_at]
+    new_unseen_dance_event_ids = set(dance_event_ids).difference(seen_potential_event_ids)
+
+    new_dance_events = [second_batch_lookup.data_for_event(x) for x in new_unseen_dance_event_ids]
     new_dance_events = sorted(new_dance_events, key=lambda x: x['info']['start_time'])
     save_potential_fb_events(new_dance_events)
     return new_dance_events

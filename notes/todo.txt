@@ -12,7 +12,6 @@ with weekly-on-wednesday emails for now?
 - Revisit emails:
 - add rankings
 - add call-to-action
-- filter out already-filtered potential-events
 
 - "Want to do better?" links from rankings page to promote to fb friends
 - track conversion via email redirect links
