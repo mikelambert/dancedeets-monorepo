@@ -7,7 +7,7 @@
 				<div style="float:left;width:180px">
 					<img src="$result.get_image()" width="180">
 				</div>
-				<div style="float:right;width:320px;font-size:16px">
+				<div style="float:right;width:320px">
 					<span class="fake-a">$format_html($fb_event.name)</span><br>
 					<div class="non-a">
 					($result.choreo_or_freestyle)<br>
@@ -18,7 +18,7 @@
 			</a>
 		</div>
 		#if $result.get_attendance()
-			<div style="float:right;width:150px;font-size:16px">
+			<div style="float:right;width:150px">
 				#if $use_rsvp_form
 					$rsvp_form($fb_event.id, $result.get_attendance())
 				#else

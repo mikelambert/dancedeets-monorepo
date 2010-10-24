@@ -6,7 +6,7 @@
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/redmond/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <style type="text/css">
 body {
-  font-family: "Arial", "Helvetica", "Verdana", "sans-serif";
+  font-family: 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   font-size: 12px;
   background: #77AAE3;
 } 
@@ -79,7 +79,7 @@ $head_javascript()
 
 $body()
 
-<div id="footer" style="font-size: 16px; text-align:center; padding-top:30px;">
+<div id="footer" style="text-align:center; padding-top:30px;">
 <div style="padding-bottom:20px">
 <a href="/about">About</a> | <a href="/rankings">Rankings</a> | <a href="/help">Help</a> | <a href="/feedback">Feedback</a>
 </div>

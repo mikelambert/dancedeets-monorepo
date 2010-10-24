@@ -27,7 +27,7 @@ Dance Events
 	height: 1px;
 }
 #search_options-box {
-	width: 700px;
+	width: 100%;
 }
 .clickable {
 	cursor: pointer;
@@ -145,7 +145,7 @@ Dance Events
 </div>
 
 <p>
-<div id="tabs" style="width: 700px">
+<div id="tabs">
 	<ul>
 		<li><a href="$past_view_url" title="past events"><span>Past Events</span></a></li>
 		<li><a href="#ongoing_events"><span>Ongoing Events</span></a></li>
