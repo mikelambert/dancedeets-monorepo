@@ -18,23 +18,22 @@
 #def body
 <p><h2>Share with your friends!</h2>
 
-<p>Help friends with their questions:
+<p><b>When friends ask you...</b>
 <ul>
 <li>When's the next hiphop show or bboy battle?
 <li>Where can I find those clubs and parties with good dancers?
 <li>Are there any jams coming up? I'll come visit you!
 </ul>
 
-<p>How do you send things to your friends?
+<p><b>Just tell them about DanceDeets on...</b>
 <ul>
 <li>Twitter:
 <span>
    <a href="http://twitter.com/share" class="twitter-share-button"
       data-url="$share_url"
-      data-counturl="http://www.dancedeets.com/"
       data-text="Find events, shows, battles, and workshops in your dance scene!"
       data-related="dancedeets"
-      data-count="horizontal">Tweet</a>
+      data-count="none">Tweet</a>
 </span>
 <li>Facebook: <button id="fb-share" onclick="javascript:share_dancedeets()"><img src="http://www.ausfailure.com/wp-content/plugins/add-to-facebook-plugin/facebook_share_icon.gif"></button>
 <li>Email this link: $share_url
