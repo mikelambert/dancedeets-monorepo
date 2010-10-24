@@ -117,7 +117,9 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 class AdminEditHandler(base_servlet.BaseRequestHandler):
     def get(self):
         event_id = None
-        if self.request.get('event_id'):
+        if self.request.get('event_url'):
+            event_id = get_id_from_url(self.request.get('event_url'))
+        elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
         self.batch_lookup.lookup_event(event_id)
         self.finish_preload()
@@ -186,6 +188,13 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.user.add_message("Changes saved!")
         self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
+def get_id_from_url(url):
+    if '#' in url:
+        url = url.split('#')[1]
+    match = re.search('eid=(\d+)', url)
+    if not match:
+        return None
+    return match.group(1)
 
 class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):
@@ -197,7 +206,10 @@ class AddHandler(base_servlet.BaseRequestHandler):
         fb_event = None
         events = []
 
-        event_id = self.request.get('event_id')
+        if self.request.get('event_url'):
+            event_id = get_id_from_url(self.request.get('event_url'))
+        else:
+            event_id = self.request.get('event_id')
         if event_id:
             self.batch_lookup.lookup_event(event_id)
             self.finish_preload()
@@ -231,13 +243,9 @@ class AddHandler(base_servlet.BaseRequestHandler):
         if self.request.get('event_id'):
             event_id = self.request.get('event_id')
         elif self.request.get('event_url'):
-            url = self.request.get('event_url')
-            if '#' in url:
-                url = url.split('#')[1]
-            match = re.search('eid=(\d+)', url)
-            if not match:
+            event_id = get_id_from_url(self.request.get('event_url'))
+            if not event_id:
                 self.add_error('invalid event_url, expecting eid= parameter')
-            event_id = match.group(1)
         else:
             self.add_error('missing event_url or event_id parameter')
 
