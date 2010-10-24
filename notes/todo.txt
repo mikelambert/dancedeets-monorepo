@@ -6,12 +6,21 @@ with weekly-on-wednesday emails for now?
 
 - embed widget
 
+- Revisit add-event page for simplicity.
+- Show icons and event info and titles
+
+- Revisit emails:
+- add rankings
+- add call-to-action
+- filter out already-filtered potential-events
+
 - "Want to do better?" links from rankings page to promote to fb friends
 - track conversion via email redirect links
 - track conversion on homepage, by user?
+
 - send daily email of http://www.dancedeets.com/events/admin_potential_events
 - "Post this to your wall?" after rsvp-ing for an event. Promo for DanceDeets via "Dolapo found Yoruba Dance Sessions on DanceDeets"
-- In emails include rankings, with call-to-action.
+- share-event-on-facebook link. http://developers.facebook.com/docs/reference/fql/permissions and http://developers.facebook.com/docs/guides/attachments and publich_stream attachment
 - Send messages via fb not email. Perhaps using fan pages?
 
 LAUNCH PLAN:
@@ -26,11 +35,7 @@ LAUNCH PLAN:
 
 LONGER TERM:
 - rss feed
-- Maybe cleanup homepage more with better text/images.
-- Add some stats on "users that see a given event", to make a
-compelling case for promoters to put events on this site.
+- Add some stats on "users that see a given event", to make a compelling case for promoters to put events on this site.
 - Some way to find users who have created events, and directly incite them to add to dance deets?
-- Support read-only mode in the datastore by handling these things gracefully. hard to test??
-http://code.google.com/appengine/docs/python/howto/maintenance.html
 - allow override on timezone/scene/etc for users where we get it wrong
 
