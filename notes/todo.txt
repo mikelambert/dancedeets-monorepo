@@ -6,9 +6,6 @@ with weekly-on-wednesday emails for now?
 
 - embed widget
 
-- Revisit add-event page for simplicity.
-- Show icons and event info and titles
-
 - Revisit emails:
 - add rankings
 - add call-to-action
