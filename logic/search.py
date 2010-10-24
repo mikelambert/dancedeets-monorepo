@@ -56,17 +56,20 @@ class SearchResult(object):
         self.start_time = eventdata.parse_fb_timestamp(self.fb_event['info']['start_time'])
         self.end_time = eventdata.parse_fb_timestamp(self.fb_event['info']['end_time'])
         self.rsvp_status = "unknown"
-        tag_lookup = [tags.CHOREO_FREESTYLE_LOOKUP[x].title() for x in db_event.tags if x in tags.CHOREO_FREESTYLE_LOOKUP]
-        self.choreo_or_freestyle = ', '.join(sorted(list(set(x for x in tag_lookup))))
+        if self.db_event:
+            tag_lookup = [tags.CHOREO_FREESTYLE_LOOKUP[x].title() for x in db_event.tags if x in tags.CHOREO_FREESTYLE_LOOKUP]
+            self.choreo_or_freestyle = ', '.join(sorted(list(set(x for x in tag_lookup))))
+        else:
+            self.choreo_or_freestyle = None
 
     def get_image(self):
         picture_url = self.fb_event.get('picture')
         if picture_url:
             return eventdata.get_event_image_url(picture_url, eventdata.EVENT_IMAGE_LARGE)
         else:
-            logging.error("Error loading picture for event id %s", self.db_event.fb_event_id)
+            logging.error("Error loading picture for event id %s", self.fb_event['info']['id'])
             logging.error("Data is %s\n\n%s", self.db_event, self.fb_event)
-            return 'http://graph.facebook.com/%s/picture' % self.db_event.fb_event_id
+            return 'http://graph.facebook.com/%s/picture' % self.fb_event['info']['id']
 
     def get_attendance(self):
         if self.rsvp_status == 'unsure':
