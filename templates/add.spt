@@ -90,7 +90,7 @@ Add Dance Event
 				<input type=hidden name="event_id" value="$fb_event.info.id">
 				<p>Name: $format_html($fb_event.info.name)
 				<br>Description:
-				<div style="padding: 20px; width: 600px; height:250px; overflow:scroll; border: 1px solid black">
+				<div style="padding: 20px; width: 450px; height:250px; overflow:scroll; border: 1px solid black">
 				#if $fb_event.info.get('description')
 					$format_html($fb_event.info.description)
 				#else
