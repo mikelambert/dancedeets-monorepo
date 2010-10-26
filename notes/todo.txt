@@ -10,11 +10,8 @@ with weekly-on-wednesday emails for now?
 - add rankings
 - add call-to-action
 
-- Handle logged-out results page better on the right-hand-side
-
 - "Want to do better?" links from rankings page to promote to fb friends
-- track conversion via email redirect links
-- track conversion on homepage, by user?
+- track email-redirects to see who reads emails
 
 - add rankings of more types to the rankings page, perhaps by splitting up the rankings page
 - send daily email of http://www.dancedeets.com/events/admin_potential_events
