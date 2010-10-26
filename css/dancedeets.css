@@ -1,7 +1,9 @@
-//@font-face {
-//  font-family: "aaaiight-fat";
-//  src: url(/fonts/aaaiight-fat.ttf) format("truetype");
-//}
+/*
+@font-face {
+  font-family: "aaaiight-fat";
+  src: url(/fonts/aaaiight-fat.ttf) format("truetype");
+}
+*/
 
 body {
   font-family: 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -29,7 +31,7 @@ body {
 #footer {
   clear: both;
 }
-* html #footer { // for IE6
+* html #footer { /* for IE6 */
   height: 1px;
 }
 .centered-image {
@@ -58,7 +60,7 @@ body {
 }
 .event-title {
 	font-size: 120%;
-	font-weight: bold; // inherited from H3 anyway
+	font-weight: bold; /* inherited from H3 anyway */
 	margin: 0px;
 }
 .event-date {

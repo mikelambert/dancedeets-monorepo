@@ -37,7 +37,7 @@
 }
 #bottom {
 	clear: both;
-  height: 1px; // for IE6
+  height: 1px; /* for IE6 */
 }
 </style>
 #end def
