@@ -10,11 +10,13 @@ with weekly-on-wednesday emails for now?
 - add rankings
 - add call-to-action
 
+- Handle logged-out results page better on the right-hand-side
+
 - "Want to do better?" links from rankings page to promote to fb friends
 - track conversion via email redirect links
 - track conversion on homepage, by user?
-- for logged-out users, show an interstitial with allowing them to bypass it
 
+- add rankings of more types to the rankings page, perhaps by splitting up the rankings page
 - send daily email of http://www.dancedeets.com/events/admin_potential_events
 - "Post this to your wall?" after rsvp-ing for an event. Promo for DanceDeets via "Dolapo found Yoruba Dance Sessions on DanceDeets"
 - share-event-on-facebook link. http://developers.facebook.com/docs/reference/fql/permissions and http://developers.facebook.com/docs/guides/attachments and publich_stream attachment
