@@ -18,7 +18,7 @@
           content="A website for finding and promoting dance events to both dancers and dance fans around the world."/>
 <link href="/css/dancedeets.css" rel="stylesheet" type="text/css"/>
 <style type="text/css">
-sign-in {
+#sign-in {
   position: absolute;
   right: 0px;
   top: 0px;
@@ -30,15 +30,12 @@ sign-in {
   width: 50%;
   position: relative;
 }
-#find a {
-  padding: 20px;
-}
 #promote {
   float: right;
   width: 50%;
   position: relative;
 }
-#promote a {
+.find-promote-box {
   padding: 20px;
 }
 #events {
@@ -81,25 +78,29 @@ sign-in {
 
 <div id="left-hand">
 
-<div id="find" class="click-box">
-<a href="/rankings">
+<div id="find">
+<div class="find-promote-box">
 <span class="big-font">discover the scene</span><br>
+<a href="/rankings">
 #if $total_events
 $total_events
 #end if
 dance events around the world
 </a>
 </div>
+</div>
 
-<div id="promote" class="click-box">
-<a href="/events/add">
+<div id="promote">
+<div class="find-promote-box">
 <span class="big-font">promote the scene</span><br>
-reach
+<a href="/events/add">
+your events reach
 #if $total_users
 $total_users
 #end if
 dancers and dance fans
 </a>
+</div>
 </div>
 
 <div id="events">
@@ -116,7 +117,7 @@ Loading events...
 <form action="/login" id="signup-form" method="post" style="padding-top: 19px">
 <fieldset style="border: 1px black solid; background-color: #eee;border-radius: 10px">
 
-<legend class="big-font" style="padding: 0px 10px;;background-color:white;border:1px solid darkgrey">Join the Scene</legend>
+<legend class="big-font" style="padding: 0px 10px;;background-color:white;border:1px solid darkgrey">join the scene</legend>
 
 <input type=hidden name="referer" value="$format_html($referer)">
 <input type=hidden name="next" value="$format_html($next)">
@@ -200,7 +201,6 @@ Loading events...
 		$('#events_list').load('/events/relevant?ajax=1&user_location=' + encoded_city + '&distance=30&distance_units=miles&freestyle=FREESTYLE_DANCER&choreo=CHOREO_DANCER', setupActions);
 		$('#signup-city').val(city);
 		$('#city_name').html(short_city);
-		setupActions();
 	}
 	google.setOnLoadCallback(getLocation);
 </script>
