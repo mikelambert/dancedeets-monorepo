@@ -76,7 +76,7 @@ Account
 		<p>Location: $location.address
 		<p>Start Time: $date_format('%Y-%m-%d %H:%M', $start_time)
 		<p>End Time: $date_format('%Y-%m-%d %H:%M', $end_time)
-		<p>See <a href="http://www.facebook.com/event.php?eid=$fb_event.id">Event on Facebook</a>
+		<p>See <a href="$fb_event_url($fb_event.id)">Event on Facebook</a>
 
 		<p>Event Types are:
 		<ul>

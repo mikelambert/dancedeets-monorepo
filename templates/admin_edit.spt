@@ -9,7 +9,7 @@ Edit Event
 		<form action="/events/admin_edit" method=post>
 
 			<h2>$format_html($fb_event.info.name)</h2>
-			<a href="http://www.facebook.com/event.php?eid=$fb_event.info.id">See on Facebook</a><br><br>
+			<a href="$raw_fb_event_url($fb_event.info.id)">See on Facebook</a><br><br>
 
 			Original Address: $original_address<br>
 			Geocoded Address: $geocoded_address<br>

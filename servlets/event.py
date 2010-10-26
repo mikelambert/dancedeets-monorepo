@@ -21,6 +21,7 @@ import facebook
 import fb_api
 import locations
 import smemcache
+from util import urls
 
 PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
 
@@ -48,15 +49,43 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         self.write_json_response(dict(success=False, errors=errors))
 
 
+class RedirectToEventHandler(base_servlet.BaseRequestHandler):
+
+    def requires_login(self):
+        return False
+
+    def get(self):
+        event_id = self.request.get('event_id')
+        if not event_id:
+            self.response.out.write('Need an event_id.')
+
+        # Logged in users go directly to the event...
+        if self.user:
+            self.redirect(urls.raw_fb_event_url(event_id))
+
+        # For everyone else, there's an interstitial.
+        self.batch_lookup.lookup_event(event_id)
+        self.finish_preload()
+
+        event_info = self.batch_lookup.data_for_event(event_id)
+        if event_info['deleted']:
+            self.response.out.write('This event was deleted.')
+
+        self.display['event'] = event_info
+        self.display['referer'] = self.request.get('referer')
+        self.display['next'] =  self.request.url
+        self.render_template('event_interstitial')
+
+
 class ViewHandler(base_servlet.BaseRequestHandler):
 
     def get(self):
         event_id = self.request.get('event_id')
+        if not event_id:
+            self.response.out.write('Need an event_id.')
         self.batch_lookup.lookup_event(event_id)
         #self.batch_lookup.lookup_event_members(event_id)
         self.finish_preload()
-        if not event_id:
-            self.response.out.write('Need an event_id.')
 
         event_info = self.batch_lookup.data_for_event(event_id)
         if event_info['deleted']:

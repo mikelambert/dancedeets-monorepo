@@ -49,6 +49,9 @@ body {
 	width: 180px;
 	border: 1px solid #ccc;
 }
+.event-image img {
+	margin-bottom: -3px
+}
 .event-description {
 	float: right;
 	width: 300px;
@@ -85,8 +88,6 @@ a:hover {
   text-decoration: underline;
 }
 .big-font {
-  font-size: 150%;
-  font-family: "aaaiight-fat";
-  letter-spacing: 0.2em;
+  font-size: 200%;
 }
 

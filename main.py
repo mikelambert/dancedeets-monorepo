@@ -51,6 +51,7 @@ URLS = [
     ('/rankings', stats.RankingsHandler),
     ('/events/admin_potential_events', event.AdminPotentialEventViewHandler),
     ('/events/admin_edit', event.AdminEditHandler),
+    ('/events/redirect', event.RedirectToEventHandler),
     ('/events/view', event.ViewHandler),
     ('/events/add', event.AddHandler),
     ('/events/search', search.SearchHandler),

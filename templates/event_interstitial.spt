@@ -1,0 +1,37 @@
+#extends _base
+
+#def title
+$format_html($event.info.name)</title>
+#end def
+
+#def body
+<div id="left-hand">
+<p>Join the scene on DanceDeets:
+<ul>
+<li>go directly to facebook events and skip this page
+<li>email once a week with all upcoming events
+<li>if you just like to watch, then you can hide dance workshops and clubs
+<li>if you only do choreo or freestyle, you can hide the stuff you don't care about
+</ul>
+
+<p>To join the scene, click the "Login with Facebook button" on the right.
+
+<p>Otherwise, you can see the Facebook event:
+<div class="ui-helper-reset">
+<a href="$raw_fb_event_url($event.info.id)"><button id="facebook-button">$format_html($event.info.name)</button></a>
+</div>
+
+</div>
+
+<div id="right-hand">
+$signup_form($referer, $next)
+</div>
+#end def
+
+#def bottom_javascript
+<script type="text/javascript">
+$(document).ready(function() {
+  $("#facebook-button").button();
+});
+</script>
+#end def

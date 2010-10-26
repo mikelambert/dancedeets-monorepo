@@ -5,6 +5,7 @@ import base_servlet
 from events import eventdata
 import locations
 from logic import search
+from util import urls
 
 class LoginIfUnspecified(object):
     def requires_login(self):
@@ -49,7 +50,7 @@ class CalendarFeedHandler(base_servlet.BaseRequestHandler):
                 title=result.fb_event['info']['name'],
                 start=eventdata.parse_fb_timestamp(result.fb_event['info']['start_time']).strftime('%Y-%m-%dT%H:%M:%SZ'),
                 end=eventdata.parse_fb_timestamp(result.fb_event['info']['end_time']).strftime('%Y-%m-%dT%H:%M:%SZ'),
-                url='http://www.facebook.com/event.php?eid=%s' % result.fb_event['info']['id'],
+                url=urls.fb_event_url(result.fb_event['info']['id']),
             ))
         self.write_json_response(json_results)    
 

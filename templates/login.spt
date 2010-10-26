@@ -79,7 +79,7 @@
 
 <div id="find">
 <div class="find-promote-box">
-<span class="big-font">discover the scene</span><br>
+<span class="big-font">Discover the scene</span><br>
 <a href="/rankings">
 #if $total_events
 $total_events
@@ -91,8 +91,9 @@ dance events around the world
 
 <div id="promote">
 <div class="find-promote-box">
-<span class="big-font">promote the scene</span><br>
-<a href="/events/add">
+<span class="big-font">Promote the scene</span><br>
+<a href="/rankings">
+<!-- TODO(lambert): someday switch this to /events/add ? -->
 your events reach
 #if $total_users
 $total_users
@@ -103,7 +104,7 @@ dancers and dance fans
 </div>
 
 <div id="events">
-<div class="big-font">events near <span id="city_name"></span>:</div>
+<div class="big-font">Events near <span id="city_name"></span>:</div>
 <!--TODO(lambert): replace with an accurate description!-->
 <div id="events_list">
 Loading events...
@@ -112,7 +113,7 @@ Loading events...
 
 </div>
 
-<div id="right-hand">
+<div id="right-hand" style="padding-top: 19px">
 $signup_form($referer, $next)
 </div>
 
