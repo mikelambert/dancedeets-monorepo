@@ -1,33 +1,34 @@
 #def render_results($results, $use_rsvp_form=True)
+	<ol class="events-list">
 	#for $result in $results
 		#set $fb_event = $result.fb_event.info
 		## widths here are set to sum to 700px-50px = 650px
-		<div style="float:left" class="click-box">
-			<a href="http://www.facebook.com/event.php?eid=$fb_event.id">
-				<div style="float:left;width:180px">
-					<img src="$result.get_image()" width="180">
-				</div>
-				<div style="float:right;width:320px">
-					<span class="fake-a">$format_html($fb_event.name)</span><br>
-					<div class="non-a">
-					($result.choreo_or_freestyle)<br>
-					$date_human_format($result.start_time)<br>
+		<li class="">
+			<div style="float:left" class="click-box">
+				<a href="http://www.facebook.com/event.php?eid=$fb_event.id">
+					<div style="float:left;width:180px">
+						<img src="$result.get_image()" width="180" border="0">
 					</div>
-				</div>
-				<div style="clear:both;height:1px;"></div>
-			</a>
-		</div>
-		#if $result.get_attendance()
-			<div style="float:right;width:150px">
-				#if $use_rsvp_form
-					$rsvp_form($fb_event.id, $result.get_attendance())
-				#else
-					rsvp: $result.get_attendance()
-				#end if
+					<div style="float:right;width:320px">
+						<span class="event-title">$format_html($fb_event.name)</span><br>
+						($result.choreo_or_freestyle)<br>
+						$date_human_format($result.start_time)<br>
+					</div>
+					<div style="clear:both;height:1px;"></div>
+				</a>
 			</div>
-		#end if
-		<div style="clear:both;height:15px"></div>
+			#if $result.get_attendance()
+				<div style="float:right;width:150px">
+					#if $use_rsvp_form
+						$rsvp_form($fb_event.id, $result.get_attendance())
+					#else
+						rsvp: $result.get_attendance()
+					#end if
+				</div>
+			#end if
+			<div style="clear:both;height:15px"></div>
+		</li>
 	#end for
-
+	</ol>
 #end def
 

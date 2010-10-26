@@ -12,14 +12,6 @@ Dance Events
 
 #def head_stylesheet
 <style type="text/css">
-#left-hand {
-  float: left;
-  width: 710px;
-}
-#right-hand {
-  float: right;
-  width: 280px;
-}
 #right-hand hr {
 	color: lightgrey;
 	background-color: lightgrey;
@@ -29,26 +21,15 @@ Dance Events
 #search_options-box {
 	width: 100%;
 }
+.ui-widget-content a {
+  color: blue;
+}
+.ui-widget-content a:hover {
+  text-decoration: underline;
+}
 .clickable {
 	cursor: pointer;
 	cursor: hand;
-}
-.click-box {
-	cursor: pointer;
-	cursor: hand;
-}
-.click-box a {
-	text-decoration: none;
-}
-// For some reason if try to turn off underlining in ".non-a" below it doesn't work, so we have to leave ".fake-a" and have it explicitly turn on underlining here (and turn it off in our parent so that non-a doesn't see it.)
-.click-box .fake-a {
-  text-decoration: underline;
-}
-.click-box .non-a {
-  color: black;
-}
-.click-hover {
-  background-color: #d0d0d0;
 }
 
 .ranking-title {
@@ -161,7 +142,7 @@ Dance Events
 	<div id="upcoming_events">
 		#for $group in $grouped_upcoming_results
 			#if $group.results
-				<div><b>$group.name</b></div>
+				<h2 class="group-title">$group.name</b></h2>
 				$render_results($group.results)
 			#end if
 		#end for

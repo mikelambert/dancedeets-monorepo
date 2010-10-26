@@ -4,28 +4,7 @@
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <title>$title()</title>
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/redmond/jquery-ui.css" rel="stylesheet" type="text/css"/>
-<style type="text/css">
-body {
-  font-family: 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  font-size: 12px;
-  background: #77AAE3;
-} 
-#main {
-  position: relative;
-  width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
-  background: white;
-  border: 2px solid black;
-  padding: 5px;
-}
-#footer {
-  clear: both;
-}
-* html #footer {
-  height: 1px;
-}
-</style>
+<link href="/css/dancedeets.css" rel="stylesheet" type="text/css"/>
 $head_stylesheet()
 $head_javascript()
 #if $prod_mode
@@ -49,11 +28,8 @@ $head_javascript()
 
 <div id="main">
 <div id="header">
-	<table><tr><td>
-	<a href="/"><img src="/dancedeets.png" width=374 height=71></a>
-	</td><td>
+	<a href="/"><img src="/dancedeets.png" width=334 height=54 class="centered-image"></a>
 	<h1>$title()</h1>
-	</td></tr></table>
 
 #if $messages
 <div class="ui-widget" style="text-align: center">
