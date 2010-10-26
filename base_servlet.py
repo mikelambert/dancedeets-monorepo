@@ -34,7 +34,7 @@ class BaseRequestHandler(RequestHandler):
         referer = self.request.get('referer')
         if referer:
             params['referer'] = referer
-        login_url = 'login?%s' % urllib.urlencode(params)
+        login_url = '/login?%s' % urllib.urlencode(params)
         args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['api_key'], FACEBOOK_CONFIG['secret_key'])
         if args:
             self.fb_uid = int(args['uid'])
