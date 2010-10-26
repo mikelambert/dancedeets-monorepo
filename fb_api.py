@@ -250,12 +250,11 @@ class BatchLookup(object):
         fb_uid, object_id, object_type = object_key
         try:
             result = object_rpc.get_result()
-            if result.status_code == 200:
-                if object_type == cls.OBJECT_EVENT and object_rpc_name == 'picture':
-                    return result.final_url
-                else:
-                    text = result.content
-                    return simplejson.loads(text)
+            if object_type == cls.OBJECT_EVENT and object_rpc_name == 'picture':
+                return result.final_url
+            elif result.status_code == 200:
+                text = result.content
+                return simplejson.loads(text)
             else:
                 logging.error("BatchLookup: Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
         except urlfetch.DownloadError:
