@@ -58,6 +58,8 @@ body {
 }
 .event-title {
 	font-size: 120%;
+	font-weight: bold; // inherited from H3 anyway
+	margin: 0px;
 }
 .event-date {
 	padding-top: 10px;
