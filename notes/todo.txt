@@ -13,6 +13,7 @@ with weekly-on-wednesday emails for now?
 - "Want to do better?" links from rankings page to promote to fb friends
 - track conversion via email redirect links
 - track conversion on homepage, by user?
+- for logged-out users, show an interstitial with allowing them to bypass it
 
 - send daily email of http://www.dancedeets.com/events/admin_potential_events
 - "Post this to your wall?" after rsvp-ing for an event. Promo for DanceDeets via "Dolapo found Yoruba Dance Sessions on DanceDeets"
