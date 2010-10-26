@@ -21,6 +21,15 @@ Dance Events
 #search_options-box {
 	width: 100%;
 }
+
+.rankings {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.right-hand-button {
+}
+
 .ui-widget-content a {
   color: blue;
 }
@@ -155,29 +164,38 @@ Dance Events
 
 <div id="right-hand">
 <div class="ui-helper-reset ui-widget-content ui-corner-all">
-<a href="/share"><button id="share-button">Invite Dancers and Fans</button></a><br>
-<a href="/events/add"><button id="add-button">Add Dance Event</button></a><br>
+<div class="right-hand-button"><a href="/share"><button id="share-button">Invite Dancers and Fans</button></a></div>
+<div class="right-hand-button"><a href="/events/add"><button id="add-button">Add Dance Event</button></a></div>
 
 <hr>
-<div>
+<div class="rankings">
 <span class="ranking-title">Who invited the most people in $current_city:</span><br>
 $ranked_list($user_top_n_users, $user_selected_n_users)
+</div>
 
 <hr>
+<div class="rankings">
 <span class="ranking-title">Who added the most events in $current_city:</span><br>
 $ranked_list($event_top_n_users, $event_selected_n_users)
+</div>
 
 <hr>
+<div class="rankings">
 <span class="ranking-title">Who has the most dancers and fans:</span><br>
 $ranked_list($user_top_n_cities, $user_selected_n_cities)
+</div>
 
 <hr>
+<div class="rankings">
 <span class="ranking-title">Who has the most events:</span><br>
 $ranked_list($event_top_n_cities, $event_selected_n_cities)
+</div>
 
 <hr>
+<div class="rankings">
 See <a href="/rankings">All Rankings</a>.
 </div>
+
 </div>
 </div>
 

@@ -6,13 +6,13 @@
 		<li class="">
 			<div style="float:left" class="click-box">
 				<a href="http://www.facebook.com/event.php?eid=$fb_event.id">
-					<div style="float:left;width:180px">
+					<div class="event-image">
 						<img src="$result.get_image()" width="180" border="0">
 					</div>
-					<div style="float:right;width:320px">
-						<span class="event-title">$format_html($fb_event.name)</span><br>
-						($result.choreo_or_freestyle)<br>
-						$date_human_format($result.start_time)<br>
+					<div class="event-description">
+						<div class="event-title">$format_html($fb_event.name)</div>
+						<div class="event-choreo-freestyle">($result.choreo_or_freestyle)</div>
+						<div class="event-date">$date_human_format($result.start_time)</div>
 					</div>
 					<div style="clear:both;height:1px;"></div>
 				</a>
