@@ -1,8 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:fb="http://www.facebook.com/2008/fbml"
-	xmlns:og="http://opengraphprotocol.org/schema/">
+#extends _real_base
+#extends _signup
+
+#def headbody
 <head>
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -114,61 +113,13 @@ Loading events...
 </div>
 
 <div id="right-hand">
-<form action="/login" id="signup-form" method="post" style="padding-top: 19px">
-<fieldset style="border: 1px black solid; background-color: #eee;border-radius: 10px">
-
-<legend class="big-font" style="padding: 0px 10px;;background-color:white;border:1px solid darkgrey">join the scene</legend>
-
-<input type=hidden name="referer" value="$format_html($referer)">
-<input type=hidden name="next" value="$format_html($next)">
-
-<b>City:</b> <input type=text name="city" id="signup-city">
-
-<p><b>Who are you in the scene?</b>
-<ul style="list-style-type: none">
-<li><input type=radio name=user_type value="fan"> I watch dance events
-<li><input type=radio name=user_type value="choreo"> I do hiphop choreo
-<li><input type=radio name=user_type value="freestyle"> I do freestyle dance
-<li><input type=radio name=user_type value="everything" checked> I love all dance
-</ul>
-
-<p><fb:login-button length="long" onlogin="signUp();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
-
-</fieldset>
-</form>
-
-<p><a href="#" style="font-size:80%" onclick="$('#why_facebook').toggle();return true;">Why does DanceDeets use Facebook login?</a>
-
-<div id="why_facebook" style="display:none">
-
-<p>DanceDeets uses Facebook for a few reasons:
-<ul>
-<li>You don't need to create a special account for this site (new username, password, email address, location, etc)
-<li>DanceDeets is a registry of Facebook events, which means it is built on top of the Facebook API, and requires you to login to work according to the Facebook Terms of Service.
-</ul>
-
-<p><a href="#" style="font-size:80%" onclick="$('#facebook_perms').toggle();return true;">Why does DanceDeets need so many Facebook permissions?</a>
-
-<div id="facebook_perms" style="display:none">
-<ul>
-<li><span class="permission-name">Access my public information</span>: <span class="permission-reason">show you which of your friends are attending dance events.</span>
-<li><span class="permission-name">Send me email</span>: <span class="permission-reason">emails you about upcoming dance events that meet your criteria and interest.</span>
-<li><span class="permission-name">Access my data any time</span>: <span class="permission-reason">lets you get weekly emails with upcoming event info, even if you haven't been to www.dancedeets.com recently.</span>
-<li><span class="permission-name">Manage my events</span>: <span class="permission-reason">lets you click "Attending" and add facebook events directly from DanceDeets.</span>
-<li><span class="permission-name">Access my profile information (Events)</span>: <span class="permission-reason">shows you what events you are attending (or not attending).</span>
-<li><span class="permission-name">Access my contact information (Current Location)</span>: <span class="permission-reason">only shows you dance events in your area.</span>
-</ul>
-</div>
-</div>
-
-
+$signup_form($referer, $next)
 </div>
 
 <div id="footer"></div>
 </div>
 
 
-<div id="fb-root"></div>
 <script src="http://www.google.com/jsapi" type="text/javascript"></script>
 <script type="text/javascript">
   google.load("jquery", "1.4.2");
@@ -185,7 +136,7 @@ Loading events...
 		);
 	}
 
-	function getLocation() {
+	function getLoginPageLocation() {
 		var short_city = 'New York';
 		var city = "New York, NY";
 		if (google.loader.ClientLocation &&
@@ -199,38 +150,11 @@ Loading events...
 		}
 		var encoded_city = encodeURIComponent(city);
 		$('#events_list').load('/events/relevant?ajax=1&user_location=' + encoded_city + '&distance=30&distance_units=miles&freestyle=FREESTYLE_DANCER&choreo=CHOREO_DANCER', setupActions);
-		$('#signup-city').val(city);
 		$('#city_name').html(short_city);
 	}
-	google.setOnLoadCallback(getLocation);
+	google.setOnLoadCallback(getLoginPageLocation);
 </script>
-<script src="http://connect.facebook.net/en_US/all.js"></script>
-<script>
-  function signUp() {
-    $('#signup-form').submit();
-  }
-
-  function getLoginStatus(response) {
-    if (response.session && $attempt_autologin) {
-      window.location = '$format_js($next)';
-    }
-  }
-  // Override cookie-expiration setting so we get long-lived cookies.
-  original_setRaw = FB.Cookie.setRaw;
-  FB.Cookie.setRaw = function(val, ts, domain) {
-    // ts may be 0, so we need to fix that up here:
-    if (!ts) {
-      ts = ((new Date()).getTime() / 1000) + 14 * 24 * 60 * 60;
-    }
-    return original_setRaw(val, ts, domain);
-  }
-  FB.Cookie.clear = function() {
-    FB.Cookie.setRaw('', 1, FB.Cookie._domain);
-  }
-
-  FB.Event.subscribe('FB.loginStatus', getLoginStatus);
-  FB.init({appId: '$api_key', status: true,
-         cookie: true, xfbml: true});
-</script>
+$signup_form_javascript()
+$fb_javascript()
 </body>
-</html>
+#end def

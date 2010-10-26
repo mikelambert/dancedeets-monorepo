@@ -1,4 +1,7 @@
-<html>
+#extends _real_base
+#extends _signup
+
+#def headbody
 <head>
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -63,54 +66,17 @@ $body()
 </div>
 </div>
 
-<div id="fb-root"></div>
-</body>
 
 <script src="http://www.google.com/jsapi" type="text/javascript"></script>
 <script type="text/javascript">
   google.load("jquery", "1.4.3");
   google.load("jqueryui", "1.8.5");
 </script>
-<script>
-  window.fbAsyncInit = function() {
-    // Override cookie-expiration setting so we get long-lived cookies.
-    original_setRaw = FB.Cookie.setRaw;
-    FB.Cookie.setRaw = function(val, ts, domain) {
-      // ts may be 0, so we need to fix that up here:
-      if (!ts) {
-        ts = ((new Date()).getTime() / 1000) + 14 * 24 * 60 * 60;
-      }
-      return original_setRaw(val, ts, domain);
-    }
-    FB.Cookie.clear = function() {
-      FB.Cookie.setRaw('', 1, FB.Cookie._domain);
-    }
-
-    FB.init({appId: '$api_key', status: true, cookie: true,
-             xfbml: true});
-    #if not $fb_user
-      ## only subscribe to login-status notifications if we're logged out, otherwise we get in an infinite loop
-      FB.Event.subscribe('FB.loginStatus', getLoginStatus);
-    #end if
-    $fb_async_code()
-  };
-  (function() {
-    var e = document.createElement('script'); e.async = true;
-    e.src = document.location.protocol +
-      '//connect.facebook.net/en_US/all.js';
-    document.getElementById('fb-root').appendChild(e);
-  }());
-
-  function getLoginStatus(response) {
-    if (response.session) {
-      window.location.reload();
-    }
-  }
-</script>
+$fb_javascript()
 
 $bottom_javascript()
-
-</html>
+</body>
+#end def
 
 #def title
 #end def
@@ -123,6 +89,4 @@ $bottom_javascript()
 #def body
 #end def
 #def bottom_javascript
-#end def
-#def fb_async_code
 #end def
