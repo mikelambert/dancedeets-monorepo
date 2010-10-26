@@ -16,6 +16,7 @@ import locations
 from logic import backgrounder
 import template
 from util import text
+from util import urls
 
 #TODO(lambert): show event info, queries without login?? P2
 
@@ -72,6 +73,8 @@ class BaseRequestHandler(RequestHandler):
         else:
             self.display['date_human_format'] = users.date_human_format
             self.display['login_url'] = login_url
+        self.display['fb_event_url'] = urls.fb_event_url
+        self.display['raw_fb_event_url'] = urls.raw_fb_event_url
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
         self.display['request'] = request
