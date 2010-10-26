@@ -43,7 +43,7 @@ def get_potential_dance_events(batch_lookup, user):
 
     # Filter out looked_at PotentialEvents
     potential_events = PotentialEvent.get_by_key_name(dance_event_ids)
-    seen_potential_event_ids = [x.key().name() for x in found_events if x and x.looked_at]
+    seen_potential_event_ids = [x.key().name() for x in potential_events if x and x.looked_at]
     new_unseen_dance_event_ids = set(dance_event_ids).difference(seen_potential_event_ids)
 
     new_dance_events = [second_batch_lookup.data_for_event(x) for x in new_unseen_dance_event_ids]
