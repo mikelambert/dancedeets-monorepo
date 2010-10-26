@@ -43,6 +43,22 @@ body {
 	padding: 0px;
 	list-style-type:none
 }
+.event-image {
+	margin-right: 10px;
+	float: left;
+	width: 180px;
+	border: 1px solid #ccc;
+}
+.event-description {
+	float: right;
+	width: 300px;
+}
+.event-title {
+	font-size: 120%;
+}
+.event-date {
+	padding-top: 10px;
+}
 
 .permission-name {
 }
@@ -52,10 +68,6 @@ body {
 }
 
 .group-title {
-}
-
-.event-title {
-	font-weight: bold;
 }
 
 .click-box {
