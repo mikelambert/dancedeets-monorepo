@@ -32,6 +32,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.render_template('user')
 
     def post(self):
+        self.finish_preload()
         self.update_user()
         # Disabled due to an error: Only ancestor queries are allowed inside transactions.
         #db.run_in_transaction(self.update_user)
