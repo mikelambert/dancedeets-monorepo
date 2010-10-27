@@ -7,8 +7,10 @@ with weekly-on-wednesday emails for now?
 - embed widget
 
 - Revisit emails:
-- add rankings
-- add call-to-action
+- no external css files
+- use tables for all formatting
+- add rankings in right-hand-column
+- add call-to-action in right-hand-column
 
 - "Want to do better?" links from rankings page to promote to fb friends
 - track email-redirects to see who reads emails
