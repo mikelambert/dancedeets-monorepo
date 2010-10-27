@@ -31,7 +31,7 @@ $head_javascript()
 
 <div id="main">
 <div id="header">
-	<a href="/"><img src="/dancedeets.png" width=334 height=54 class="centered-image"></a>
+	<a href="/"><img src="/dancedeets.png" width=334 height=54 class="centered-image" border=0></a>
 	<h1>$title()</h1>
 
 #if $messages
