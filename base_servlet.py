@@ -42,7 +42,7 @@ class BaseRequestHandler(RequestHandler):
             self.fb_graph = facebook.GraphAPI(args['access_token'])
             self.user = users.User.get_cached(self.fb_uid)
             yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-            if not self.user.last_login_time or self.user.last_login_time < yesterday:
+            if self.user and (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
                 # Do this in a separate request so we don't increase latency on this call
                 backgrounder.update_last_login_time(self.user.fb_uid)
             logging.info("Logged in uid %s", self.fb_uid)
