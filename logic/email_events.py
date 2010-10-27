@@ -13,6 +13,7 @@ from logic import rsvp
 from logic import search
 import template
 from util import text
+from util import urls
 
 def email_for_user(user, batch_lookup, fb_graph):
     if not user.send_email:
@@ -48,6 +49,8 @@ def email_for_user(user, batch_lookup, fb_graph):
     display = {}
     display['date_human_format'] = users.date_human_format
     display['format_html'] = text.format_html
+    display['fb_event_url'] = urls.fb_event_url
+    display['raw_fb_event_url'] = urls.raw_fb_event_url
     display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
     display['user'] = user
     display['fb_user'] = batch_lookup.data_for_user(user.fb_uid)
