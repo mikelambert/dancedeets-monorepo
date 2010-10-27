@@ -52,8 +52,8 @@
 <script type="text/javascript">
 
 	function getSignupLocation() {
-		var short_city = 'New York';
-		var city = "New York, NY";
+		var short_city = '';
+		var city = "";
 		if (google.loader.ClientLocation &&
 			google.loader.ClientLocation.address) {
 			city = (
@@ -67,7 +67,15 @@
 	google.setOnLoadCallback(getSignupLocation);
 
   function signUp() {
-    $('#signup-form').submit();
+		FB.getLoginStatus(function(response) {
+			if (!response.session) {
+				alert("DanceDeets uses Facebook Login, so you'll need to allow permissions to join the scene. We promise no hacking or unauthorized wall posts or invites!");
+			} else if (!$('#signup-city').val()) {
+				alert("Please fill out your city and try again.");
+			} else {
+				$('#signup-form').submit();
+			}
+		});
   }
 </script>
 #end def
