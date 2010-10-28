@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import base64
+import Cookie
 import datetime
 import logging
 import re
@@ -29,12 +31,25 @@ class BaseRequestHandler(RequestHandler):
     def __init__(self, *args, **kwargs):
         super(BaseRequestHandler, self).__init__(*args, **kwargs)
 
+    def set_cookie(self, name, value, expires=None):
+        cookie = Cookie.SimpleCookie()
+        cookie[name] = str(base64.b64encode(value))
+        cookie[name]['path'] = '/'
+        cookie[name]['secure'] = ''
+        assert not expires
+        self.response.headers.add_header(*cookie.output().split(': '))
+        return cookie
+
+    def get_cookie(self, name):
+        try:
+            value = str(base64.b64decode(self.request.cookies[name]))
+        except KeyError:
+            value = None
+        return value
+
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
         params = dict(next=self.request.url)
-        referer = self.request.get('referer')
-        if referer:
-            params['referer'] = referer
         login_url = '/login?%s' % urllib.urlencode(params)
         args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['api_key'], FACEBOOK_CONFIG['secret_key'])
         if args:
@@ -51,9 +66,13 @@ class BaseRequestHandler(RequestHandler):
             self.fb_graph = facebook.GraphAPI(None)
             self.user = None
         if self.requires_login() and (not self.fb_uid or not self.user):
+            # If we're getting a referer id and not signed up, save off a cookie until they sign up
+            if self.request.get('referer'):
+                self.set_cookie('User-Referer', self.request.get('referer'))
             self.redirect(login_url)
             return True
-        if self.fb_uid: # if they have a fb_uid, let's do lookups on that behalf (does not require a user)
+        # If they have a fb_uid, let's do lookups on that behalf (does not require a user)
+        if self.fb_uid:
             self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph)
             # Always look up the user's information for every page view...?
             self.batch_lookup.lookup_user(self.fb_uid)
@@ -61,6 +80,12 @@ class BaseRequestHandler(RequestHandler):
             self.batch_lookup = fb_api.CommonBatchLookup(None, self.fb_graph)
         self.display = {}
         self._errors = []
+        # If they've authorized us, but we don't have a User object, force them to signup so we get initial prefs
+        # Let the client sit there and wait for the user to manually sign up.
+        if self.fb_uid and not self.user:
+            self.display['attempt_autologin'] = 0
+        else:
+            self.display['attempt_autologin'] = 1
         # We can safely do this since there are very few ways others can modify self._errors
         #TODO(lambert): print errors in the template, and make sure to $format_html them
         self.display['errors'] = self._errors

@@ -72,7 +72,6 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
             self.response.out.write('This event was deleted.')
 
         self.display['event'] = event_info
-        self.display['referer'] = self.request.get('referer')
         self.display['next'] =  self.request.url
         self.render_template('event_interstitial')
 

@@ -114,7 +114,7 @@ Loading events...
 </div>
 
 <div id="right-hand" style="padding-top: 19px">
-$signup_form($referer, $next)
+$signup_form($next)
 </div>
 
 <div id="footer"></div>

@@ -1,10 +1,9 @@
-#def signup_form($referer, $next)
+#def signup_form($next)
 <form action="/login" id="signup-form" method="post">
 <fieldset style="border: 1px black solid; background-color: #eee;border-radius: 10px">
 
 <legend class="big-font" style="padding: 0px 10px;;background-color:white;border:1px solid darkgrey">Join the scene</legend>
 
-<input type=hidden name="referer" value="$format_html($referer)">
 <input type=hidden name="next" value="$format_html($next)">
 
 <b>City:</b> <input type=text name="city" id="signup-city">

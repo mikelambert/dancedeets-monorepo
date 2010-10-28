@@ -24,11 +24,12 @@ $format_html($event.info.name)</title>
 </div>
 
 <div id="right-hand">
-$signup_form($referer, $next)
+$signup_form($next)
 </div>
 #end def
 
 #def bottom_javascript
+$signup_form_javascript()
 <script type="text/javascript">
 $(document).ready(function() {
   $("#facebook-button").button();

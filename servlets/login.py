@@ -20,7 +20,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
     def get(self):
         next = self.request.get('next') or '/'
 
-        self.display['attempt_autologin'] = 1
         # If they're logged in, and have an account created, update and redirect
         if self.fb_uid:
             user = users.User.get_by_key_name(str(self.fb_uid))
@@ -30,10 +29,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
                 user.put()
                 self.redirect(next)
                 return 
-            else:
-                # Do not attempt auto-login because we don't have a User on our side.
-                # Let the client sit there and wait for the user to manually sign up.
-                self.display['attempt_autologin'] = 0
 
         # Treat them like a totally logged-out user since they have no user object yet
         self.fb_uid = None
@@ -59,7 +54,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST]
 
         self.display['next'] = next
-        self.display['referer'] = self.request.get('referer')
         self.render_template('login')
 
     def post(self):
@@ -74,8 +68,10 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         user = users.User(key_name=str(self.fb_uid))
         user.fb_access_token = self.fb_graph.access_token
         user.location = self.request.get('city')
-        if self.request.get('referer'):
-            user.inviting_fb_uid = int(self.request.get('referer'))
+        # grab the cookie to figure out who referred this user
+        referer = self.get_cookie('User-Referer')
+        if referer:
+            user.inviting_fb_uid = int(referer)
         user_type = self.request.get('user_type')
         if user_type == 'fan':
             user.freestyle = users.FREESTYLE_FAN
