@@ -13,6 +13,13 @@ from google.appengine.ext import db
 import locations
 from logic import rankings
 
+def get_location(fb_user):
+    if fb_user['profile'].get('location'):
+        facebook_location = fb_user['profile']['location']['name']
+    else:
+        facebook_location = None
+    return facebook_location
+
 class LoginHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
@@ -61,6 +68,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         logging.info("Login Post with fb_uid = %s", self.fb_uid)
         assert self.fb_uid
         self.finish_preload()
+        fb_user = self.batch_lookup.data_for_user(self.fb_uid)
         next = self.request.get('next') or '/'
         user = users.User.get_by_key_name(str(self.fb_uid))
         if user:
@@ -68,17 +76,18 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             self.redirect(next)
             return
 
-        # If they're a new-user signup, but didn't fill out a city,
+        # If they're a new-user signup, but didn't fill out a city and facebook doesn't have a city,
         # then render the get() up above but with an error message to fill out the city
-        logging.info("User passed in a city of %r", self.request.get('city'))
-        if not self.request.get('city'):
+        city = self.request.get('city') or get_location(fb_user)
+        logging.info("User passed in a city of %r, facebook city is %s", self.request.get('city'), get_location(fb_user))
+        if not city:
             logging.info("Signup User forgot their city, so require that now.")
             self.get(needs_city=True)
             return
 
         user = users.User(key_name=str(self.fb_uid))
         user.fb_access_token = self.fb_graph.access_token
-        user.location = self.request.get('city')
+        user.location = city
         # grab the cookie to figure out who referred this user
         referer = self.get_cookie('User-Referer')
         logging.info("Referer was: %s", referer)
@@ -116,7 +125,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         user_friends.put()
         taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': self.fb_uid}))
 
-        user.compute_derived_properties(self.batch_lookup.data_for_user(self.fb_uid))
+        user.compute_derived_properties(fb_user)
         logging.info("Saving user with name %s", user.full_name)
         user.put()
 
