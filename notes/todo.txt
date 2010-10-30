@@ -14,6 +14,9 @@ with weekly-on-wednesday emails for now?
 - add rankings in right-hand-column
 - add call-to-action in right-hand-column
 
+- Handle ongoing events to better describe start/end time info so it's not confusing
+- Show end dates for things lasting longer than 24 hours.
+
 - "Want to do better?" links from rankings page to promote to fb friends
 - track email-redirects to see who reads emails
 
