@@ -62,6 +62,10 @@ class SearchResult(object):
         else:
             self.choreo_or_freestyle = None
 
+    def multi_day_event(self):
+        logging.info('%s %s', (self.end_time - self.start_time), (self.end_time - self.start_time) > datetime.timedelta(hours=24))
+        return (self.end_time - self.start_time) > datetime.timedelta(hours=24)
+
     def get_image(self):
         picture_url = self.fb_event.get('picture')
         if picture_url:
