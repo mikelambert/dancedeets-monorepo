@@ -6,6 +6,10 @@ with weekly-on-wednesday emails for now?
 
 - embed widget
 
+- Handle sigin vs login serverside and return appropriate messages (one submits form, one does not)
+- Handle city validation clientside + serverside and return errors otherwise
+- Handle XSRF properly
+
 - Revisit emails:
 - no external css files
 - use tables for all formatting
