@@ -69,6 +69,7 @@ class BaseRequestHandler(RequestHandler):
             # If we're getting a referer id and not signed up, save off a cookie until they sign up
             if self.request.get('referer'):
                 self.set_cookie('User-Referer', self.request.get('referer'))
+            logging.info("Login required, redirecting to login page: %s", login_url)
             self.redirect(login_url)
             return True
         # If they have a fb_uid, let's do lookups on that behalf (does not require a user)

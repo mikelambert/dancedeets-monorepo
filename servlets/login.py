@@ -58,16 +58,21 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.render_template('login')
 
     def post(self):
+        logging.info("Login Post with fb_uid = %s", self.fb_uid)
         assert self.fb_uid
         self.finish_preload()
         next = self.request.get('next') or '/'
         user = users.User.get_by_key_name(str(self.fb_uid))
         if user:
+            logging.info("Already have user with name %s, passing through to %s", user.full_name, next)
             self.redirect(next)
+            return
 
         # If they're a new-user signup, but didn't fill out a city,
         # then render the get() up above but with an error message to fill out the city
-        if not self.user and self.request.get('city'):
+        logging.info("User passed in a city of %r", self.request.get('city'))
+        if not self.request.get('city'):
+            logging.info("Signup User forgot their city, so require that now.")
             self.get(needs_city=True)
             return
 
@@ -76,6 +81,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         user.location = self.request.get('city')
         # grab the cookie to figure out who referred this user
         referer = self.get_cookie('User-Referer')
+        logging.info("Referer was: %s", referer)
         if referer:
             user.inviting_fb_uid = int(referer)
         user_type = self.request.get('user_type')
@@ -105,11 +111,14 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             user.distance_units = 'km'
         user.creation_time = datetime.datetime.now()
 
+        logging.info("Requesting background load of user's friends")
         user_friends = users.UserFriendsAtSignup(key_name=str(self.fb_uid))
         user_friends.put()
         taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': self.fb_uid}))
 
         user.compute_derived_properties(self.batch_lookup.data_for_user(self.fb_uid))
+        logging.info("Saving user with name %s", user.full_name)
         user.put()
 
+        logging.info("Redirecting to %s", next)
         self.redirect(next)
