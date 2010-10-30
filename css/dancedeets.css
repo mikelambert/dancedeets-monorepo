@@ -95,3 +95,6 @@ a:hover {
   font-size: 200%;
 }
 
+.ui-widget-content a {
+	color: blue;
+}

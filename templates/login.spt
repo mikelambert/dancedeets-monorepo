@@ -15,6 +15,7 @@
     <meta property="fb:app_id" content="2347064084"/>
     <meta property="og:description"
           content="A website for finding and promoting dance events to both dancers and dance fans around the world."/>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/redmond/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <link href="/css/dancedeets.css" rel="stylesheet" type="text/css"/>
 <style type="text/css">
 #sign-in {

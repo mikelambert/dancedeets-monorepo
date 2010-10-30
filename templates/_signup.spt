@@ -6,6 +6,14 @@
 
 <input type=hidden name="next" value="$format_html($next)">
 
+#if $needs_city
+<div style="color: red">Please fill out your city below:</div>
+<style type="text/css">
+#signup-city {
+	background-color: #ff8888;
+}
+</style>
+#end if
 <b>City:</b> <input type=text name="city" id="signup-city">
 
 <p><b>Who are you in the scene?</b>
@@ -20,6 +28,10 @@
 
 </fieldset>
 </form>
+
+<div id="complete_why_facebook">
+
+<p>DanceDeets uses Facebook Login, so you'll need to allow permissions to join the scene. We promise no hacking or unauthorized wall posts or invites!
 
 <p><a href="#" style="font-size:80%" onclick="$('#why_facebook').toggle();return true;">Why does DanceDeets use Facebook login?</a>
 
@@ -44,6 +56,7 @@
 </ul>
 </div>
 </div>
+</div>
 #end def
 
 
@@ -64,13 +77,26 @@
 		$('#signup-city').val(city);
 	}
 	google.setOnLoadCallback(getSignupLocation);
+	var must_allow_perms;
+	$(document).ready(function() {
+		must_allow_perms = $('#complete_why_facebook')
+			.dialog({
+				autoOpen: false,
+				title: 'Facebook Permissions',
+				closeOnEscape: true,
+				modal: true,
+				height: 400,
+				width: 600,
+			});
+	});
 
   function signUp() {
 		FB.getLoginStatus(function(response) {
 			if (!response.session) {
-				alert("DanceDeets uses Facebook Login, so you'll need to allow permissions to join the scene. We promise no hacking or unauthorized wall posts or invites!");
-			} else if (!$('#signup-city').val()) {
-				alert("Please fill out your city and try again.");
+				must_allow_perms.dialog('open');
+			// Can't distinguish which button was pressed, so we can't enforce city fillout clientside
+			//} else if (!$('#signup-city').val()) {
+			//	alert("Please fill out your city and try again.");
 			} else {
 				$('#signup-form').submit();
 			}

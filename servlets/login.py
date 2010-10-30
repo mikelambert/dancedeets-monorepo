@@ -17,7 +17,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
 
-    def get(self):
+    def get(self, needs_city=False):
         next = self.request.get('next') or '/'
 
         # If they're logged in, and have an account created, update and redirect
@@ -54,17 +54,23 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST]
 
         self.display['next'] = next
+        self.display['needs_city'] = needs_city
         self.render_template('login')
 
     def post(self):
         assert self.fb_uid
-
         self.finish_preload()
         next = self.request.get('next') or '/'
         user = users.User.get_by_key_name(str(self.fb_uid))
         if user:
             self.redirect(next)
-            
+
+        # If they're a new-user signup, but didn't fill out a city,
+        # then render the get() up above but with an error message to fill out the city
+        if not self.user and self.request.get('city'):
+            self.get(needs_city=True)
+            return
+
         user = users.User(key_name=str(self.fb_uid))
         user.fb_access_token = self.fb_graph.access_token
         user.location = self.request.get('city')
