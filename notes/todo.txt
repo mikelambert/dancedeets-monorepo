@@ -7,6 +7,7 @@ with weekly-on-wednesday emails for now?
 - embed widget
 
 - Handle XSRF properly
+- Replace datetime.datetime.now() with get_user_time_now()
 
 - Revisit emails:
 - no external css files
