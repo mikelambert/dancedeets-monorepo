@@ -120,14 +120,16 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             user.distance_units = 'km'
         user.creation_time = datetime.datetime.now()
 
-        logging.info("Requesting background load of user's friends")
         user_friends = users.UserFriendsAtSignup(key_name=str(self.fb_uid))
         user_friends.put()
-        taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': self.fb_uid}))
 
         user.compute_derived_properties(fb_user)
         logging.info("Saving user with name %s", user.full_name)
         user.put()
+
+        logging.info("Requesting background load of user's friends")
+        # Must occur after User is put with fb_access_token
+        taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': self.fb_uid}))
 
         logging.info("Redirecting to %s", next)
         self.redirect(next)
