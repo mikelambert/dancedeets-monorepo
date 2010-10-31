@@ -301,7 +301,7 @@ def top_n_with_selected(all_rankings, style, time_period, selected_name, group_s
             group_size = max(max_index, group_size)
             selected_n = []
         else:
-            selected_n = [(i+1, sel(x), x) for (i, x) in enumerate(thing_ranking[min_index:max_index])]
+            selected_n = [(min_index+i+1, sel(x), x) for (i, x) in enumerate(thing_ranking[min_index:max_index])]
     else:
         selected_n = []
     top_n = [(i+1, sel(x), x) for (i, x) in enumerate(thing_ranking[:group_size])]

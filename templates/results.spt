@@ -62,7 +62,7 @@ Dance Events
 		...<br>
 		#if $selected_list
 			#set $user_i = len($selected_list)/2 + 1
-			#for $raw_i, $sel, ($i, $data) in enumerate($selected_list)
+			#for $raw_i, ($i, $sel, $data) in enumerate($selected_list)
 				#if $sel
 					<i>
 				#end if
@@ -72,7 +72,7 @@ Dance Events
 				#end if
 				<br>
 			#end for
-			...<br.
+			...<br>
 		#end if
 	#else
 		No rankings yet!
