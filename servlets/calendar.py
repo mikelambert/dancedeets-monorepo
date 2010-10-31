@@ -23,7 +23,7 @@ class CalendarHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
         self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
         self.render_template('calendar_shell')
 
-class CalendarFeedHandler(base_servlet.BaseRequestHandler):
+class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
         start_time = datetime.datetime.fromtimestamp(int(self.request.get('start')))
