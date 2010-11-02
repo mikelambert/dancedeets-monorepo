@@ -8,6 +8,7 @@ with weekly-on-wednesday emails for now?
 
 - Handle XSRF properly
 - Replace datetime.datetime.now() with get_user_time_now()
+- Handle users that deauthorize an application remotely and invalidate my tokens. Handle callbacks, missing auth tokens, and maybe email them invite them to sign up again.
 
 - Revisit emails:
 - no external css files
