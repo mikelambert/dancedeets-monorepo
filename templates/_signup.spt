@@ -1,8 +1,8 @@
 #def signup_form($next)
-<form action="/login" id="signup-form" method="post">
+<form action="/login" id="signup-form" method="post" onsubmit="return false;">
 <fieldset style="border: 1px black solid; background-color: #eee;border-radius: 10px">
 
-<legend class="big-font" style="padding: 0px 10px;;background-color:white;border:1px solid darkgrey">Join the scene</legend>
+<legend class="big-font" style="padding: 0px 10px;background-color:white;border:1px solid darkgrey">Join the scene</legend>
 
 <input type=hidden name="next" value="$format_html($next)">
 
