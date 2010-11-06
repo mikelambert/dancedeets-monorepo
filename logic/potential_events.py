@@ -10,14 +10,14 @@ class PotentialEvent(db.Model):
 
 def save_potential_fb_events(new_dance_events):
     for event in new_dance_events:
-        pe = PotentialEvent.get_or_insert(str(event['info']['id']))
-        # saves it, with potentially false 'looked_at' field (unless already set as true by myself)
-        if pe.looked_at is None:
-            pe.looked_at = False
-            try:
+        try:
+            pe = PotentialEvent.get_or_insert(str(event['info']['id']))
+            # saves it, with potentially false 'looked_at' field (unless already set as true by myself)
+            if pe.looked_at is None:
+                pe.looked_at = False
                 pe.put()
-            except apiproxy_errors.CapabilityDisabledError:
-                pass
+        except apiproxy_errors.CapabilityDisabledError:
+            pass
 
 def get_potential_dance_events(batch_lookup, user):
     results_json = batch_lookup.data_for_user(user.fb_uid)['all_event_info']

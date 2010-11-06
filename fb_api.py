@@ -304,9 +304,9 @@ class BatchLookup(object):
                 #TODO(lambert): cache the fact that it's a private-unshowable event somehow? same as deleted events?
                 logging.error("Looked up event %s but is not cacheable.", object_key)
                 continue
-            obj = FacebookCachedObject.get_or_insert(self._string_key(object_key))
-            obj.encode_data(this_object)
             try:
+                obj = FacebookCachedObject.get_or_insert(self._string_key(object_key))
+                obj.encode_data(this_object)
                 obj.put()
             except apiproxy_errors.CapabilityDisabledError:
                 pass
