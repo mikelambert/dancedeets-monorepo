@@ -4,7 +4,7 @@ cron:
   schedule: every 24 hours
 - description: email users about upcoming events
   url: /tasks/email_all_users
-  schedule: every tuesday 15:00
+  schedule: every wednesday 15:00
 - description: calculate periodic statistics and rankings
   url: /tasks/compute_rankings
   schedule: every 12 hours
