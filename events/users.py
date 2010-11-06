@@ -7,6 +7,7 @@ import cities
 import datetime
 import locations
 import smemcache
+from util import dates
 
 def header_item(name, description):
     return dict(name=name, description=description)
@@ -47,8 +48,6 @@ DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 USER_EXPIRY = 24 * 60 * 60
 
 def date_human_format(d, user=None):
-    now = datetime.datetime.now()
-    difference = (d - now)
     month_day_of_week = d.strftime('%A, %B')
     month_day = '%s %s' % (month_day_of_week, d.day)
     if user and user.location_country in locations.AMPM_COUNTRIES:
@@ -118,6 +117,9 @@ class User(db.Model):
         else:
             self.location_country = None
             self.location_timezone = None
+
+    def local_time(self):
+        return dates.localize_timestamp(datetime.datetime.now(), timezone_str=self.location_timezone)
 
     def put(self):
         super(User, self).put()

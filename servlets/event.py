@@ -21,6 +21,7 @@ import facebook
 import fb_api
 import locations
 import smemcache
+from util import dates
 from util import urls
 
 PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
@@ -255,7 +256,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 event['id'] = event['eid']
                 event['loaded'] = event['id'] in loaded_fb_event_ids
                 for field in ['start_time', 'end_time']:
-                    event[field] = eventdata.localize_timestamp(datetime.datetime.fromtimestamp(event[field]))
+                    event[field] = dates.localize_timestamp(datetime.datetime.fromtimestamp(event[field]))
 
             lastadd_key = 'LastAdd.%s' % (self.fb_uid)
             if not smemcache.get(lastadd_key):
@@ -292,7 +293,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         e = eventdata.DBEvent.get_or_insert(event_id)
         e.tags = self.request.get_all('tag')
         e.creating_fb_uid = self.user.fb_uid
-        e.creation_datetime = datetime.datetime.now()
+        e.creation_time = datetime.datetime.now()
         e.make_findable_for(fb_event)
         e.put()
 

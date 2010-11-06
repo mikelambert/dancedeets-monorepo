@@ -124,6 +124,7 @@ def count_event_for_user(dbevent):
     creator = dbevent.creating_fb_uid
     #TODO(lambert): fix this to use creator's location instead. either storing in dbevent or looking up from memcache-backed-by-db?
     city = cities.get_largest_nearby_city_name(dbevent.address)
+    # one of these is gmt time, and one of these is event-local time. so this is a bit "off" from a correctness perspective
     for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
         for dance_style in get_event_dance_styles(dbevent):
             yield op.counters.Increment(make_key_name("User", city=city, time_period=time_period, dance_style=dance_style, user=creator))

@@ -22,14 +22,14 @@ class ResultsGroup(object):
         self.force = force 
 
 def group_results(search_results, past=False): 
-    today = datetime.datetime.today() 
+    today = datetime.datetime.now() 
 
     grouped_results = [] 
     past_results = [] 
     present_results = [] 
     week_results = [] 
     month_results = [] 
-    year_results = [] 
+    year_results = []
     for result in search_results: 
         if result.start_time < today: 
             if past: # If we're doing 'past' searches, group them differently 
@@ -96,9 +96,9 @@ class SearchQuery(object):
         if self.start_time and self.end_time:
             assert self.start_time < self.end_time
         if self.time_period == tags.TIME_FUTURE and self.end_time:
-                assert self.end_time > datetime.datetime.today()
+                assert self.end_time > datetime.datetime.now()
         if self.time_period == tags.TIME_FUTURE and self.start_time:
-                assert self.start_time < datetime.datetime.today()
+                assert self.start_time < datetime.datetime.now()
         self.location = location
         self.distance_in_km = distance_in_km
         self.query_args = query_args
