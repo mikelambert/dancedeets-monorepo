@@ -5,20 +5,41 @@
 #def html
 Hi $fb_user.profile.first_name,
 
-<p>See <a href="http://www.dancedeets.com/">live up-to-date version</a> of the below events.
+<p>If you think your friends would like to know about Dance Deets, you can <a href="http://www.dancedeets.com/share">share Dance Deets on Facebook</a>. Or forward them this email.
 
-<p>If you think your friends would like to know about Dance Deets, you can <a href="http://www.dancedeets.com/share">share Dance Deets on Facebook</a>.
+<p>(<a href="http://www.dancedeets.com/">up-to-date event listing</a> available)<br>
 
-<p>
 #for $group in $grouped_results
 	#if $group.results
-		<div><b>$group.name</b></div>
-		$render_results($group.results, use_rsvp_form=False)
+		<b style="font-size: 150%">$group.name</b><br>
+		<table cellpadding=0 cellspacing=0 border=0>
+		#for $result in $group.results
+		#set $fb_event = $result.fb_event.info
+		<tr>
+			<td width="180">
+				<a href="$fb_event_url($fb_event.id)">
+				<img src="$result.get_image()" width="180" border="0">
+				</a>
+				<br><br>
+			</td>
+			<td valign=top>
+				<a href="$fb_event_url($fb_event.id)">
+				<b style="font-size: 110%">$format_html($fb_event.name)</b><br>
+				($result.choreo_or_freestyle)<br>
+				$date_human_format($result.start_time)
+				#if $result.multi_day_event()
+					<br>to $date_human_format($result.end_time)
+				#end if
+				</a>
+			</td>
+		</tr>
+		#end for
+		</table>
 	#end if
 #end for
 
 #if $new_dance_events
-	If any of your events are for street/choreo dancers, please add them to Dance Deets:<br>
+	<p>If any of your events are for street/choreo dancers, please add them to Dance Deets:<br>
 	<ul>
 	#for $fb_event in $new_dance_events
 	<li><a href="http://www.dancedeets.com/events/add?event_id=$fb_event['info']['id']">$fb_event['info']['name']</a>
