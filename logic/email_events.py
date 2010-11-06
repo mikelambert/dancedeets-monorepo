@@ -15,7 +15,7 @@ import template
 from util import text
 from util import urls
 
-def email_for_user(user, batch_lookup, fb_graph):
+def email_for_user(user, batch_lookup, fb_graph, should_send=True):
     if not user.send_email:
         return
 
@@ -47,7 +47,7 @@ def email_for_user(user, batch_lookup, fb_graph):
     new_dance_events = potential_events.get_potential_dance_events(batch_lookup, user)
 
     display = {}
-    display['date_human_format'] = users.date_human_format
+    display['date_human_format'] = lambda x: users.date_human_format(x, user=user)
     display['format_html'] = text.format_html
     display['fb_event_url'] = urls.fb_event_url
     display['raw_fb_event_url'] = urls.raw_fb_event_url
@@ -69,5 +69,6 @@ def email_for_user(user, batch_lookup, fb_graph):
         to=batch_lookup.data_for_user(user.fb_uid)['profile']['email'],
         html=rendered
     )
-    message.send()
-
+    if should_send:
+        message.send()
+    return message

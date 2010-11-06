@@ -155,7 +155,9 @@ class EmailUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         self.batch_lookup.lookup_user(self.user.fb_uid)
         self.batch_lookup.finish_loading()
-        email_events.email_for_user(self.user, self.batch_lookup, self.fb_graph)
+        should_send = not self.request.get('no_send')
+        message = email_events.email_for_user(self.user, self.batch_lookup, self.fb_graph, should_send=should_send)
+        self.response.out.write(message.html)
     post=get
 
 class CleanupWorkHandler(RequestHandler):
