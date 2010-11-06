@@ -10,6 +10,9 @@ with weekly-on-wednesday emails for now?
 - Replace datetime.datetime.now() with get_user_time_now()
 - Handle users that deauthorize an application remotely and invalidate my tokens. Handle callbacks, missing auth tokens, and maybe email them invite them to sign up again.
 
+- attach youtube videos of the events
+- groupon emails as an example of call-to-action emails
+
 - Revisit emails:
 - no external css files
 - use tables for all formatting
@@ -40,4 +43,12 @@ LONGER TERM:
 - Add some stats on "users that see a given event", to make a compelling case for promoters to put events on this site.
 - Some way to find users who have created events, and directly incite them to add to dance deets?
 - allow override on timezone/scene/etc for users where we get it wrong
+
+- music venues, good events, using classifier
+- going through theater, arts, live music, etc
+- programmer-tech-meet-up events
+
+- video hosting, use youtube+vimeo apis to aggregate. group by event, by performer, by group, etc
+- live streaming events with kyte, aggregate for others to virtually 'attend'
+- simple mobile apps around html-frames
 
