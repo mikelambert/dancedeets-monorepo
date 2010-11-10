@@ -4,7 +4,9 @@
 
 <legend class="big-font" style="padding: 0px 10px;background-color:white;border:1px solid darkgrey">Join the scene</legend>
 
-<input type=hidden name="next" value="$format_html($next)">
+<div>Get notified about events you care about!</div>
+
+<div><input type=hidden name="next" value="$format_html($next)"></div>
 
 #if $needs_city
 <div style="color: red">Please fill out your city below:</div>
