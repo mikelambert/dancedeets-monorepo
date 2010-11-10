@@ -157,7 +157,8 @@ class EmailUserHandler(BaseTaskFacebookRequestHandler):
         self.batch_lookup.finish_loading()
         should_send = not self.request.get('no_send')
         message = email_events.email_for_user(self.user, self.batch_lookup, self.fb_graph, should_send=should_send)
-        self.response.out.write(message.html)
+        if message:
+            self.response.out.write(message.html)
     post=get
 
 class CleanupWorkHandler(RequestHandler):
@@ -176,6 +177,10 @@ class CleanupWorkHandler(RequestHandler):
 class ComputeRankingsHandler(RequestHandler):
     def get(self):
         rankings.begin_ranking_calculations()
+
+class RankingsJoinHandler(RequestHandler):
+    def get(self):
+        rankings.compute_summary()
 
 class LoadAllPotentialEventsHandler(RequestHandler):
     #OPT: maybe some day make this happen immediately after reloading users, so we can guarantee the latest users' state, rather than adding another day to the pipeline delay
