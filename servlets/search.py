@@ -115,10 +115,10 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
         closest_cityname = cities.get_largest_nearby_city_name(user_location)
         #TODO(lambert): perhaps produce optimized versions of these without styles/times, for use on the homepage? less pickling/loading required
-        event_top_n_cities, event_selected_n_cities = rankings.top_n_with_selected(rankings.get_city_by_event_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME, closest_cityname)
-        user_top_n_cities, user_selected_n_cities = rankings.top_n_with_selected(rankings.get_city_by_user_rankings(), rankings.DANCE_DANCER, rankings.ALL_TIME, closest_cityname)
-        event_top_n_users, event_selected_n_users = rankings.top_n_with_selected(rankings.get_user_by_event_rankings(city=closest_cityname), rankings.ANY_STYLE, rankings.ALL_TIME, self.fb_uid)
-        user_top_n_users, user_selected_n_users = rankings.top_n_with_selected(rankings.get_user_by_user_rankings(city=closest_cityname), rankings.DANCE_DANCER, rankings.ALL_TIME, self.fb_uid)
+        event_top_n_cities, event_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME), closest_cityname)
+        user_top_n_cities, user_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_user_rankings(), rankings.DANCE_DANCER, rankings.ALL_TIME), closest_cityname)
+        event_top_n_users, event_selected_n_users = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_user_by_event_rankings(city=closest_cityname), rankings.ANY_STYLE, rankings.ALL_TIME), self.fb_uid)
+        user_top_n_users, user_selected_n_users = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_user_by_user_rankings(city=closest_cityname), rankings.DANCE_DANCER, rankings.ALL_TIME), self.fb_uid)
 
         user_lists = [user_top_n_users, user_selected_n_users, event_top_n_users, event_selected_n_users]
 

@@ -185,6 +185,23 @@ def begin_ranking_calculations():
         _app=USER_FOR_USER_RANKING,
     )
 
+def compute_summary():
+    # IN PROGRESS
+    event_rankings = get_city_by_event_rankings()
+    if event_rankings:
+        total_events = compute_sum(event_rankings, [ANY_STYLE], ALL_TIME)
+    else:
+        total_events = 0
+    user_rankings = get_city_by_user_rankings()
+    if user_rankings:
+        total_users = compute_sum(user_rankings, [DANCE_FAN], ALL_TIME)
+    else:
+        total_users = 0
+    event_sorted_rankings = get_thing_ranking(event_rankings, ANY_STYLE, ALL_TIME)
+    user_sorted_rankings = get_thing_ranking(user_rankings, ANY_STYLE, ALL_TIME)
+    # save
+    total_events, total_users
+
 def parse_key_name(full_key_name):
     if '/' not in full_key_name:
         return None, {}
@@ -279,9 +296,9 @@ def compute_city_template_rankings(all_rankings, toplevel, time_period, use_url=
         style_rankings.append(dict(style=style, ranking=city_ranking))
     return style_rankings
 
-def top_n_with_selected(all_rankings, style, time_period, selected_name, group_size=3):
+def get_thing_ranking(all_rankings, style, time_period):
     if not all_rankings:
-        return [], []
+        return []
     style_rankings = []
     thing_ranking = []
     for thing, times_styles in all_rankings.iteritems():
@@ -291,6 +308,9 @@ def top_n_with_selected(all_rankings, style, time_period, selected_name, group_s
         if count:
             thing_ranking.append(dict(key=thing, count=count))
     thing_ranking = sorted(thing_ranking, key=lambda x: -x['count'])
+    return thing_ranking
+
+def top_n_with_selected(thing_ranking, selected_name, group_size=3):
     def sel(x):
         return x['key'] == str(selected_name)
     selected_indices = [i for (i, x) in enumerate(thing_ranking) if sel(x)]
