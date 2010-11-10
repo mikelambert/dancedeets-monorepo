@@ -13,8 +13,6 @@ with weekly-on-wednesday emails for now?
 - groupon emails as an example of call-to-action emails
 
 - Revisit emails:
-- no external css files
-- use tables for all formatting
 - add rankings in right-hand-column
 - add call-to-action in right-hand-column
 
