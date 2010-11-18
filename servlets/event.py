@@ -161,7 +161,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         e = eventdata.DBEvent.get_or_insert(event_id)
         if e.creating_fb_uid:
-            f = urllib.urlopen('https://graph.facebook.com/%s' % e.creating_fb_uid)
+            f = urllib.urlopen('https://graph.facebook.com/%s?access_token=%s' % (e.creating_fb_uid, self.fb_graph.access_token))
             json = simplejson.loads(f.read())
             creating_user = json['name']
         else:
