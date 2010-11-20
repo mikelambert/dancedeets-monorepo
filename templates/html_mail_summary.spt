@@ -5,6 +5,10 @@
 #def html
 Hi $fb_user.profile.first_name,
 
+#if $user.expired_oauth_token
+<p>You changed your facebook password and Dance Deets has lost permission to use your account. Please <a href="http://www.dancedeets.com">sign in to Dance Deets again</a> to ensure Dance Deets continues working for you!
+#end if
+
 <p>If you think your friends would like to know about Dance Deets, you can <a href="http://www.dancedeets.com/share">share Dance Deets on Facebook</a>. Or forward them this email.
 
 <p>(<a href="http://www.dancedeets.com/">up-to-date event listing</a> available)<br>
