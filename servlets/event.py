@@ -59,6 +59,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         event_id = self.request.get('event_id')
         if not event_id:
             self.response.out.write('Need an event_id.')
+            return
 
         # Logged in users go directly to the event...
         if self.user:
@@ -71,6 +72,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         event_info = self.batch_lookup.data_for_event(event_id)
         if event_info['deleted']:
             self.response.out.write('This event was deleted.')
+            return
 
         self.display['event'] = event_info
         self.display['next'] =  self.request.url
@@ -83,6 +85,13 @@ class ViewHandler(base_servlet.BaseRequestHandler):
         event_id = self.request.get('event_id')
         if not event_id:
             self.response.out.write('Need an event_id.')
+            return
+
+        db_event = eventdata.DBEvent.get_by_key_name(event_id)
+        if not db_event:
+            self.response.out.write('This event has not been added')
+            return
+
         self.batch_lookup.lookup_event(event_id)
         #self.batch_lookup.lookup_event_members(event_id)
         self.finish_preload()
@@ -90,6 +99,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
         event_info = self.batch_lookup.data_for_event(event_id)
         if event_info['deleted']:
             self.response.out.write('This event was deleted.')
+            return
 
         # Disable event_members stuff while we figure out a better way to background-load this
         try:
@@ -131,7 +141,6 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
         self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.data_for_event(event_id)['picture'], eventdata.EVENT_IMAGE_LARGE)
 
-        db_event = eventdata.DBEvent.get_or_insert(event_id)
         tags_set = db_event and set(db_event.tags) or []
         self.display['styles'] = [x[1] for x in tags.STYLES if x[0] in tags_set]
         self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST if x[0] in tags_set]
@@ -159,7 +168,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.errors_are_fatal()
 
-        e = eventdata.DBEvent.get_or_insert(event_id)
+        # Don't insert object until we're ready to save it...
+        e = eventdata.DBEvent.get_by_key_name(event_id) or eventdata.DBEvent()
         if e.creating_fb_uid:
             f = urllib.urlopen('https://graph.facebook.com/%s?access_token=%s' % (e.creating_fb_uid, self.fb_graph.access_token))
             json = simplejson.loads(f.read())
