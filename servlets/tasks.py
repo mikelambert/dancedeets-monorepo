@@ -89,9 +89,21 @@ class LoadEventMembersHandler(BaseTaskFacebookRequestHandler):
 class LoadUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
-        for user_id in user_ids:
-            self.batch_lookup.lookup_user(user_id)
-        self.batch_lookup.finish_loading()
+        assert len(user_ids) == 1
+        load_users = users.User.get_by_key_name(user_ids)
+        for user in load_users:
+            if user.expired_oauth_token:
+                return
+            else:
+                self.batch_lookup.lookup_user(user.fb_uid)
+        try:
+            self.batch_lookup.finish_loading()
+        except fb_api.ExpiredOAuthToken:
+            user = users.User.get_by_key_name(user_ids[0])
+            user.expired_oauth_token = True
+            user.put()
+            return
+
         failed_fb_user_ids = []
         for user_id in user_ids:
             try:
@@ -109,13 +121,13 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
 
 class ReloadAllUsersHandler(BaseTaskRequestHandler):
     def get(self):
-        user_ids = [user.fb_uid for user in users.User.all()]
+        user_ids = [user.fb_uid for user in users.User.all() if not user.expired_oauth_token]
         backgrounder.load_users(user_ids, allow_cache=False)    
     post=get
 
 class ResaveAllUsersHandler(BaseTaskRequestHandler):
     def get(self):
-        user_ids = [user.fb_uid for user in users.User.all()]
+        user_ids = [user.fb_uid for user in users.User.all() if not user.expired_oauth_token]
         backgrounder.load_users(user_ids)
     post=get
 
@@ -186,15 +198,19 @@ class LoadAllPotentialEventsHandler(RequestHandler):
     #OPT: maybe some day make this happen immediately after reloading users, so we can guarantee the latest users' state, rather than adding another day to the pipeline delay
     #TODO(lambert): email me when we get the latest batch of things completed.
     def get(self):
-        user_ids = [user.fb_uid for user in users.User.all()]
+        user_ids = [user.fb_uid for user in users.User.all() if not user.expired_oauth_token]
         backgrounder.load_potential_events_for_users(user_ids)
 
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
+        assert len(user_ids) == 1
         load_users = users.User.get_by_key_name(user_ids)
         for user in load_users:
-            self.batch_lookup.lookup_user(user.fb_uid)
+            if user.expired_oauth_token:
+                return
+            else:
+                self.batch_lookup.lookup_user(user.fb_uid)
         self.batch_lookup.finish_loading()
         for user in load_users:
             potential_events.get_potential_dance_events(self.batch_lookup, user)

@@ -63,6 +63,8 @@ class FacebookCachedObject(db.Model):
         assert self.json_data, "No json_data for key = %s" % self.key().name()
         return simplejson.loads(self.json_data)
 
+class ExpiredOAuthToken(Exception):
+    pass
 
 class BatchLookup(object):
     OBJECT_USER = 'OBJ_USER'
@@ -74,9 +76,9 @@ class BatchLookup(object):
         fb_uid, object_id, object_type = object_key
         if object_type != self.OBJECT_EVENT:
             return True
-        elif 'info' in this_object and this_object['deleted']:
+        elif this_object.get('deleted'):
             return True
-        elif 'info' in this_object and this_object['info'] and this_object['info']['privacy'] == 'OPEN':
+        elif this_object.get('info') and this_object['info']['privacy'] == 'OPEN':
             return True
         else:
             return False
@@ -248,11 +250,11 @@ class BatchLookup(object):
             result = object_rpc.get_result()
             if object_type == cls.OBJECT_EVENT and object_rpc_name == 'picture':
                 return result.final_url
-            elif result.status_code == 200:
+            if result.status_code != 200:
+                logging.error("BatchLookup: Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
+            if result.status_code in [200, 400]:
                 text = result.content
                 return simplejson.loads(text)
-            else:
-                logging.error("BatchLookup: Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
         except urlfetch.DownloadError:
             logging.warning("BatchLookup: Error downloading: %s", object_rpc.request.url())
         return None
@@ -263,7 +265,7 @@ class BatchLookup(object):
         self.object_keys_to_rpcs = {}
         for object_key in object_keys_to_lookup:
             self.object_keys_to_rpcs[object_key] = self._get_rpcs(object_key)
-    
+
         # fetch RPCs
         fetched_objects = {}
         for object_key, object_rpc_dict in self.object_keys_to_rpcs.iteritems():
@@ -274,6 +276,9 @@ class BatchLookup(object):
                 if object_json is not None:
                     if type(object_json) == dict and 'error_code' in object_json:
                         logging.error("BatchLookup: Error code from FB server: %s", object_json)
+                        # expired/invalidated OAuth token. We use one OAuth token per BatchLookup, so no use continuing...
+                        if object_json['error_code'] == 190:
+                            raise ExpiredOAuthToken(object_key)
                         object_is_bad = True
                     elif object_json == False:
                         this_object['deleted'] = True

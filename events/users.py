@@ -82,6 +82,8 @@ class User(db.Model):
     # Derived from fb_user
     full_name = db.StringProperty()
 
+    expired_oauth_token = db.BooleanProperty()
+
     def distance_in_km(self):
         if not self.distance:
             return 0
