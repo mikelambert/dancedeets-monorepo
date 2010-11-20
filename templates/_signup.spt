@@ -118,7 +118,8 @@
   }());
 
   function getLoginStatus(response) {
-    if (response.session && $attempt_autologin) {
+		## We might need some way to communicate to the server "hey we have offline_access, please clean out the user expired_oauth_token bits and don't redirect them back to /login"
+    if (response.session && response.perms.indexOf('offline_access') != -1 && 0 && $attempt_autologin) {
 			#if $next
 				window.location = '$format_js($next)';
 			#else

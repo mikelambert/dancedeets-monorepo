@@ -30,10 +30,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         # If they're logged in, and have an account created, update and redirect
         if self.fb_uid:
             user = users.User.get_by_key_name(str(self.fb_uid))
-            if user:
-                # We need to load the user info
-                user.fb_access_token = self.fb_graph.access_token
-                user.put()
+            if user and not user.expired_oauth_token:
                 self.redirect(next)
                 return 
 
@@ -59,6 +56,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
 
         self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST]
         self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST]
+        self.display['user_message'] = self.get_cookie('User-Message')
 
         self.display['next'] = next
         self.display['needs_city'] = needs_city

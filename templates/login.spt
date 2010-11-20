@@ -74,6 +74,13 @@
 </div>
 <div id="header">
 <img src="/dancedeets.png" width=334 height=54 class="centered-image">
+
+#if $user_message
+<div class="ui-widget" style="text-align: center">
+<div class="ui-state-highlight ui-corner-all">$user_message</div>
+</div>
+#end if
+
 </div>
 
 <div id="left-hand">

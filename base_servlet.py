@@ -52,10 +52,17 @@ class BaseRequestHandler(RequestHandler):
         params = dict(next=self.request.url)
         login_url = '/login?%s' % urllib.urlencode(params)
         args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['api_key'], FACEBOOK_CONFIG['secret_key'])
+        logging.info("fb cookie is %s with args %s", request.cookies.get('fbs_' + FACEBOOK_CONFIG['api_key']), args)
         if args:
             self.fb_uid = int(args['uid'])
             self.fb_graph = facebook.GraphAPI(args['access_token'])
             self.user = users.User.get_cached(self.fb_uid)
+            # If their auth token has changed, then write out the new one
+            if self.user and self.request.path == '/login':
+                self.user = users.User.get_by_key_name(str(self.fb_uid))
+                self.user.fb_access_token = self.fb_graph.access_token
+                self.user.expired_oauth_token = False
+                self.user.put() # this also sets to memcache
             yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
             if self.user and (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
                 # Do this in a separate request so we don't increase latency on this call
@@ -65,8 +72,20 @@ class BaseRequestHandler(RequestHandler):
             self.fb_uid = None
             self.fb_graph = facebook.GraphAPI(None)
             self.user = None
-        if self.requires_login() and (not self.fb_uid or not self.user):
+
+        # If they've expired, and not already on the login page, then be sure we redirect them to there...
+        redirect_for_new_oauth_token = (self.user and self.user.expired_oauth_token)
+        if redirect_for_new_oauth_token or (self.requires_login() and (not self.fb_uid or not self.user)):
             # If we're getting a referer id and not signed up, save off a cookie until they sign up
+            if not self.fb_uid:
+                logging.info("No facebook cookie.")
+            if not self.user:
+                logging.info("No database user object.")
+            if self.user and self.user.expired_oauth_token:
+                logging.info("User's OAuth token expired")
+                self.set_cookie('fbs_' + FACEBOOK_CONFIG['api_key'], '')
+                logging.info("clearing cookie %s", 'fbs_' + FACEBOOK_CONFIG['api_key'])
+                self.set_cookie('User-Message', "You changed your facebook password, so will need to click login again.")
             if self.request.get('referer'):
                 self.set_cookie('User-Referer', self.request.get('referer'))
             logging.info("Login required, redirecting to login page: %s", login_url)
