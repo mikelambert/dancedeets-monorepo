@@ -7,7 +7,6 @@ with weekly-on-wednesday emails for now?
 - embed widget
 
 - Handle XSRF properly
-- Handle users that deauthorize an application remotely and invalidate my tokens. Handle callbacks, missing auth tokens, and maybe email them invite them to sign up again.
 
 - attach youtube videos of the events
 - groupon emails as an example of call-to-action emails
