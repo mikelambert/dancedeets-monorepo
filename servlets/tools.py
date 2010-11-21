@@ -23,9 +23,11 @@ class OneOffHandler(webapp.RequestHandler):
     def get(self):
         #m = MyModelMapper()
         #m.run()
-        es = eventdata.DBEvent.get_by_key_name(['113197605407055', '127280820657989'])
+        es = eventdata.DBEvent.gql('where creating_fb_uid = :uid', uid=None).fetch(500)
+        self.response.out.write('len is %s<br>\n' % len(es))
         for e in es:
             if e:
+                self.response.out.write('es.uid = %s <br>\n' % e.fb_event_id)
                 e.delete()
         self.response.out.write('yay!')
 
