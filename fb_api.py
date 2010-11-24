@@ -171,7 +171,7 @@ class BatchLookup(object):
             if key in self.objects:
                 return self.objects[key_func(self, id)]
             else:
-                raise NoDataForObjectException(id)
+                raise NoFetchedDataException(id)
         return data_for_func 
         
     invalidate_user = _db_delete(_user_key)
