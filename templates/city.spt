@@ -1,0 +1,60 @@
+#extends _base
+#extends _rsvp
+#extends _results
+#from spitfire.runtime.filters import escape_html
+#filter escape_html
+#def title
+$title_prefix Dance Events in $closest_city
+#end def
+
+#def head_stylesheet
+<style type="text/css">
+.ui-widget-content a {
+  color: blue;
+}
+.ui-widget-content a:hover {
+  text-decoration: underline;
+}
+.clickable {
+  cursor: pointer;
+  cursor: hand;
+}
+</style>
+#end def
+
+#def body
+<div id="tabs">
+  <ul>
+    <li><a href="$past_view_url" title="past events"><span>Past Events</span></a></li>
+    <li><a href="#ongoing_events"><span>Ongoing Events</span></a></li>
+    <li class="ui-tabs-selected"><a href="#upcoming_events"><span>Upcoming Events</span></a></li>
+    <li><a href="$calendar_view_url"><span>Calendar</span></a></li>
+  </ul>
+  <div id="past_events" class="ui-tabs-hide">
+    $render_results($past_results)
+  </div>
+  <div id="ongoing_events" class="ui-tabs-hide">
+    $render_results($ongoing_results)
+  </div>
+  <div id="upcoming_events">
+    #for $group in $grouped_upcoming_results
+      #if $group.results
+        <h2 class="group-title">$group.name</b></h2>
+        $render_results($group.results)
+      #end if
+    #end for
+  </div>
+  <div id="calendar_events_tab">
+  </div>
+</div>
+
+#end def
+
+#def bottom_javascript
+$rsvp_script()
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#tabs").tabs();
+});
+</script>
+#end def
