@@ -190,6 +190,7 @@ countries_abbrev2full = {
     "ST": "Sao Tome and Principe",
     "SA": "Saudi Arabia",
     "SN": "Senegal",
+    "RS": "Serbia",
     "SC": "Seychelles",
     "SL": "Sierra Leone",
     "SG": "Singapore",
