@@ -166,6 +166,7 @@ class EmailAllUsersHandler(BaseTaskRequestHandler):
 class EmailUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         self.batch_lookup.lookup_user(self.user.fb_uid)
+        self.batch_lookup.lookup_user_events(self.user.fb_uid)
         self.batch_lookup.finish_loading()
         should_send = not self.request.get('no_send')
         message = email_events.email_for_user(self.user, self.batch_lookup, self.fb_graph, should_send=should_send)
@@ -211,6 +212,7 @@ class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
                 return
             else:
                 self.batch_lookup.lookup_user(user.fb_uid)
+                self.batch_lookup.lookup_user_events(user.fb_uid)
         self.batch_lookup.finish_loading()
         for user in load_users:
             potential_events.get_potential_dance_events(self.batch_lookup, user)

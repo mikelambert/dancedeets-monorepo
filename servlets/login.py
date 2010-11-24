@@ -11,6 +11,7 @@ from google.appengine.api.labs import taskqueue
 from google.appengine.ext import db
 
 import locations
+from logic import backgrounder
 from logic import rankings
 
 def get_location(fb_user):
@@ -128,6 +129,8 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         logging.info("Requesting background load of user's friends")
         # Must occur after User is put with fb_access_token
         taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': self.fb_uid}))
+        # Now load their potential events, to make "add event page" faster
+        backgrounder.load_potential_events_for_user(fb_uids=[self.fb_uid])
 
         logging.info("Redirecting to %s", next)
         self.redirect(next)

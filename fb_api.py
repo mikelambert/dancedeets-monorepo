@@ -19,9 +19,6 @@ from django.utils import simplejson
 # http://www.peterbe.com/plog/json-pickle-or-marshal
 # http://inkdroid.org/journal/2008/10/24/json-vs-pickle/
 
-class FacebookException(Exception):
-    pass
-
 DEADLINE = 20
 
 # Not used
@@ -65,9 +62,12 @@ class FacebookCachedObject(db.Model):
 
 class ExpiredOAuthToken(Exception):
     pass
+class NoFetchedDataException(Exception):
+    pass
 
 class BatchLookup(object):
     OBJECT_USER = 'OBJ_USER'
+    OBJECT_USER_EVENTS = 'OBJ_USER_EVENTS'
     OBJECT_EVENT = 'OBJ_EVENT'
     OBJECT_EVENT_MEMBERS = 'OBJ_EVENT_MEMBERS'
     OBJECT_FQL = 'OBJ_FQL'
@@ -86,11 +86,14 @@ class BatchLookup(object):
     def _get_rpcs(self, object_key):
         fb_uid, object_id, object_type = object_key
         if object_type == self.OBJECT_USER:
-            today = int(time.mktime(datetime.date.today().timetuple()[:9]))
             return dict(
                 profile=self._fetch_rpc('%s' % object_id),
                 friends=self._fetch_rpc('%s/friends' % object_id),
                 rsvp_for_events=self._fql_rpc(RSVP_EVENTS_FQL % (object_id)),
+            )
+        elif object_type == self.OBJECT_USER_EVENTS:
+            today = int(time.mktime(datetime.date.today().timetuple()[:9]))
+            return dict(
                 all_event_info=self._fql_rpc(ALL_EVENTS_FQL % (object_id, today)),
             )
         elif object_type == self.OBJECT_EVENT:
@@ -133,6 +136,8 @@ class BatchLookup(object):
 
     def _user_key(self, user_id):
         return tuple(str(x) for x in (self.fb_uid, user_id, self.OBJECT_USER))
+    def _user_events_key(self, user_id):
+        return tuple(str(x) for x in (self.fb_uid, user_id, self.OBJECT_USER_EVENTS))
     def _event_key(self, event_id):
         return tuple(str(x) for x in (self.get_userless_id(), event_id, self.OBJECT_EVENT))
     def _event_members_key(self, event_id):
@@ -162,20 +167,27 @@ class BatchLookup(object):
     def _data_for(key_func):
         def data_for_func(self, id):
             assert id
-            return self.objects[key_func(self, id)]
+            key = key_func(self, id)
+            if key in self.objects:
+                return self.objects[key_func(self, id)]
+            else:
+                raise NoDataForObjectException(id)
         return data_for_func 
         
     invalidate_user = _db_delete(_user_key)
+    invalidate_user_events = _db_delete(_user_events_key)
     invalidate_event = _db_delete(_event_key)
     invalidate_event_members = _db_delete(_event_members_key)
     invalidate_fql = _db_delete(_fql_key)
 
     lookup_user = _db_lookup(_user_key)
+    lookup_user_events = _db_lookup(_user_events_key)
     lookup_event = _db_lookup(_event_key)
     lookup_event_members = _db_lookup(_event_members_key)
     lookup_fql = _db_lookup(_fql_key)
 
     data_for_user = _data_for(_user_key)
+    data_for_user_events = _data_for(_user_events_key)
     data_for_event = _data_for(_event_key)
     data_for_event_members = _data_for(_event_members_key)
     data_for_fql = _data_for(_fql_key)

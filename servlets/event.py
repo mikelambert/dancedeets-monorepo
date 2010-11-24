@@ -254,10 +254,13 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.finish_preload()
             fb_event = self.batch_lookup.data_for_event(event_id)
         else:
+            self.batch_lookup.lookup_user_events(self.fb_uid)
             self.finish_preload()
-            results_json = self.batch_lookup.data_for_user(self.fb_uid)['all_event_info']
-            events = sorted(results_json, key=lambda x: x['start_time'])
-
+            try:
+                results_json = self.batch_lookup.data_for_user_events(self.fb_uid)['all_event_info']
+                events = sorted(results_json, key=lambda x: x['start_time'])
+            except fb_api.NoFetchedDataException:
+                events = []
             db_events = eventdata.DBEvent.get_by_key_name([str(x['eid']) for x in events])
             loaded_fb_event_ids = set(x.fb_event_id for x in db_events if x)
 
