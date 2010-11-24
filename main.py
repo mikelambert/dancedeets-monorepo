@@ -19,6 +19,7 @@ from servlets import share
 from servlets import stats
 from servlets import tasks
 from servlets import tools
+from servlets import city
 import smemcache
 
 
@@ -55,6 +56,7 @@ URLS = [
     ('/events/view', event.ViewHandler),
     ('/events/add', event.AddHandler),
     ('/events/search', search.SearchHandler),
+    ('/city/.*', city.CityHandler),
     ('/calendar', calendar.CalendarHandler),
     ('/calendar/feed', calendar.CalendarFeedHandler),
     ('/events/results', search.ResultsHandler),

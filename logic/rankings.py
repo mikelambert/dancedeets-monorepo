@@ -288,7 +288,11 @@ def compute_city_template_rankings(all_rankings, toplevel, time_period, use_url=
                 freestyle = (style != tags.CHOREO_EVENT) and users.FREESTYLE_DANCER or users.FREESTYLE_APATHY
                 choreo = (style != tags.FREESTYLE_EVENT) and users.CHOREO_DANCER or users.CHOREO_APATHY
                 if use_url:
-                    url = '/?user_location=%s&distance=100&distance_units=km&freestyle=%s&choreo=%s' % (city, freestyle, choreo)
+                    url = '/city/%s' % city
+                    if style == tags.CHOREO_EVENT:
+                        url += '/choreo'
+                    elif style == tags.FREESTYLE_EVENT:
+                        url += '/freestyle'
                 else:
                     url = None
                 city_ranking.append(dict(city=city, count=count, url=url))

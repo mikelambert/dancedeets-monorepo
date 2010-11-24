@@ -30,6 +30,10 @@
 						rsvp: $result.get_attendance()
 					#end if
 				</div>
+			#else
+				<div style="float:right;border:1px solid lightgrey;height:400px;width:450px;overflow:auto">
+					$format_html($fb_event.description)
+				</div>
 			#end if
 			<div style="clear:both;height:15px"></div>
 		</li>
