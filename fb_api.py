@@ -288,8 +288,11 @@ class BatchLookup(object):
                 if object_json is not None:
                     if type(object_json) == dict and 'error_code' in object_json:
                         logging.error("BatchLookup: Error code from FB server: %s", object_json)
-                        # expired/invalidated OAuth token. We use one OAuth token per BatchLookup, so no use continuing...
-                        if object_json['error_code'] == 190:
+
+                        fb_uid, object_id, object_type = object_key
+                        # expired/invalidated OAuth token for User objects. We use one OAuth token per BatchLookup, so no use continuing...
+                        # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
+                        if object_type == self.OBJECT_USER and object_json['error_code'] == 190:
                             raise ExpiredOAuthToken(object_key)
                         object_is_bad = True
                     elif object_json == False:
