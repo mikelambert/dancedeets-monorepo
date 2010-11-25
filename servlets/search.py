@@ -154,6 +154,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['grouped_upcoming_results'] = grouped_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
         if self.request.get('ajax'):
+            #TODO(lambert): do we want this to handle include_description=True or not based on from /city or /?...
             self.render_template('results_ajax')
         else:
             self.render_template('results')

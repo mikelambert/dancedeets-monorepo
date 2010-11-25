@@ -31,16 +31,16 @@ $title_prefix Dance Events in $closest_city
     <li><a href="$calendar_view_url"><span>Calendar</span></a></li>
   </ul>
   <div id="past_events" class="ui-tabs-hide">
-    $render_results($past_results)
+    $render_results($past_results, include_description=True)
   </div>
   <div id="ongoing_events" class="ui-tabs-hide">
-    $render_results($ongoing_results)
+    $render_results($ongoing_results, include_description=True)
   </div>
   <div id="upcoming_events">
     #for $group in $grouped_upcoming_results
       #if $group.results
         <h2 class="group-title">$group.name</b></h2>
-        $render_results($group.results)
+        $render_results($group.results, include_description=True)
       #end if
     #end for
   </div>

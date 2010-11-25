@@ -1,4 +1,4 @@
-#def render_results($results, $use_rsvp_form=True)
+#def render_results($results, $use_rsvp_form=True, $include_description=False)
 	<ol class="events-list">
 	#for $result in $results
 		#set $fb_event = $result.fb_event.info
@@ -31,9 +31,11 @@
 					#end if
 				</div>
 			#else
-				<div style="float:right;border:1px solid lightgrey;height:400px;width:450px;overflow:auto">
-					$format_html($fb_event.description)
-				</div>
+				#if $include_description
+					<div style="float:right;border:1px solid lightgrey;height:400px;width:450px;overflow:auto">
+						$format_html($fb_event.description)
+					</div>
+				#end if
 			#end if
 			<div style="clear:both;height:15px"></div>
 		</li>
