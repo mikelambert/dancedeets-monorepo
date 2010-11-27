@@ -10,7 +10,7 @@
 						<img src="$result.get_image()" width="180" border="0">
 					</div>
 					<div class="event-description">
-						<h3 class="event-title">$format_html($fb_event.name)</h3>
+						<h2 class="event-title">$format_html($fb_event.name)</h2>
 						<div class="event-choreo-freestyle">($result.choreo_or_freestyle)</div>
 						<div class="event-date">
 							$date_human_format($result.start_time)
