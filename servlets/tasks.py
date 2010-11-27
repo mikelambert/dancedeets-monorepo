@@ -10,6 +10,7 @@ from google.appengine.api import mail
 
 import base_servlet
 from events import eventdata
+from events import tags
 from events import users
 import facebook
 import fb_api
@@ -146,14 +147,13 @@ class ReloadAllEventsHandler(BaseTaskRequestHandler):
 class ReloadPastEventsHandler(BaseTaskRequestHandler):
     def get(self):
         gm_today = datetime.datetime(*time.gmtime(time.time())[:6])
-        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE start_time < :1", gm_today)]
+        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE search_time_period = :1", tags.TIME_PAST)]
         backgrounder.load_events_full(event_ids, allow_cache=False)
     post=get
 
 class ReloadFutureEventsHandler(BaseTaskRequestHandler):
     def get(self):
-        gm_yesterday = datetime.datetime(*time.gmtime(time.time())[:6]) - datetime.timedelta(days=1)
-        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql('WHERE end_time > :1', gm_yesterday)]
+        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql('WHERE search_time_period = :1', tags.TIME_FUTURE)]
         backgrounder.load_events_full(event_ids, allow_cache=False)    
     post=get
 
