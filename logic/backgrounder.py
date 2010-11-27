@@ -19,7 +19,8 @@ def load_users(fb_uids, allow_cache=True, **kwargs):
 def load_events_full(fb_event_ids, allow_cache=True, **kwargs):
     # Only once we've finished loading the raw events do we bother loading any event members
     load_events(fb_event_ids, allow_cache, **kwargs)
-    load_event_members(fb_event_ids, allow_cache, **kwargs)
+    #TODO(lambert): turned off until we either use this or can retrieve it more efficiently?
+    #load_event_members(fb_event_ids, allow_cache, **kwargs)
 
 def load_events(fb_event_ids, allow_cache=True, **kwargs):
     fb_uid = '701004' # Mike Lambert
