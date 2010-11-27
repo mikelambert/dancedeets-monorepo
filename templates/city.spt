@@ -25,9 +25,21 @@ $title_prefix Dance Events in $closest_city
 #def body
 <div id="tabs">
   <ul>
-    <li><a href="$past_view_url" title="past events"><span>Past Events</span></a></li>
-    <li><a href="#ongoing_events"><span>Ongoing Events</span></a></li>
+    <li
+    #if not $grouped_upcoming_results and not $ongoing_results
+      class="ui-tabs-selected"
+    #end if
+    ><a href="$past_view_url" title="past events"><span>Past Events</span></a></li>
+    #if $ongoing_results
+    <li
+    #if not $grouped_upcoming_results
+      class="ui-tabs-selected"
+    #end if
+    ><a href="#ongoing_events"><span>Ongoing Events</span></a></li>
+    #end if
+    #if $grouped_upcoming_results
     <li class="ui-tabs-selected"><a href="#upcoming_events"><span>Upcoming Events</span></a></li>
+    #end if
     <li><a href="$calendar_view_url"><span>Calendar</span></a></li>
   </ul>
   <div id="past_events" class="ui-tabs-hide">

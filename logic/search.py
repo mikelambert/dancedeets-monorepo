@@ -45,6 +45,7 @@ def group_results(search_results, past=False):
     grouped_results.append(ResultsGroup('Events This Week', 'week_events', week_results, expanded=True)) 
     grouped_results.append(ResultsGroup('Events This Month', 'month_events', month_results, expanded=True)) 
     grouped_results.append(ResultsGroup('Future Events', 'year_events', year_results, expanded=True)) 
+    grouped_results = [x for x in grouped_results if x.results]
     return past_results, present_results, grouped_results 
 
 class SearchResult(object):
