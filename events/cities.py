@@ -12,7 +12,7 @@ CITY_GEOHASH_PRECISIONS = range(
     locations.get_geohash_bits_for_km(200) + 1,
 )
 
-NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with"
+NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with
 
 def get_closest_city(location):
     latitude, longitude = locations.get_geocoded_location(location)['latlng']
