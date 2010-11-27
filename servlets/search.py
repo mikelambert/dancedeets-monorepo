@@ -53,7 +53,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         if not self.user:
             # If they're not logged in, require a full set of fields...
-            required_fields = ['user_location', 'distance', 'distance_units', 'freestyle', 'choreo']
+            required_fields = ['freestyle', 'choreo']
             for field in required_fields:
                 if not self.request.get(field):
                     return True
@@ -71,13 +71,23 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             self.user.add_message("We could not retrieve your location from facebook. Please fill out a location below")
             self.redirect('/user/edit')
             return
-        user_location = self.request.get('user_location', self.user and self.user.location)
-        distance = int(self.request.get('distance', self.user and self.user.distance))
-        distance_units = self.request.get('distance_units', self.user and self.user.distance_units)
-        if distance_units == 'miles':
-            distance_in_km = locations.miles_in_km(distance)
+        city_name = None
+        user_location = None
+        distance = None
+        distance_units = None
+        distance_in_km = None
+        latlng_user_location = None
+        if self.request.get('city_name'):
+            city_name = self.request.get('city_name')
         else:
-            distance_in_km = distance
+            user_location = self.request.get('user_location', self.user and self.user.location)
+            distance = int(self.request.get('distance', self.user and self.user.distance))
+            distance_units = self.request.get('distance_units', self.user and self.user.distance_units)
+            if distance_units == 'miles':
+                distance_in_km = locations.miles_in_km(distance)
+            else:
+                distance_in_km = distance
+            latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
         freestyle = self.request.get('freestyle', self.user and self.user.freestyle)
         choreo = self.request.get('choreo', self.user and self.user.choreo)
         past = self.request.get('past', '0') not in ['0', '', 'False', 'false']
@@ -91,6 +101,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
         self.display['user_location'] = user_location
         self.display['defaults'] = {
+            'city_name': city_name,
             'distance': distance,
             'distance_units': distance_units,
             'user_location': user_location,
@@ -103,12 +114,11 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['DANCE_HEADERS'] = users.DANCE_HEADERS
         self.display['DANCE_LISTS'] = users.DANCE_LISTS
 
-        latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
         if past:
             time_period = tags.TIME_PAST
         else:
             time_period = tags.TIME_FUTURE
-        query = search.SearchQuery(time_period=time_period, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
+        query = search.SearchQuery(time_period=time_period, city_name=city_name, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
         past_results, present_results, grouped_results = search.group_results(search_results, past=past)

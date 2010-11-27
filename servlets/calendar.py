@@ -11,7 +11,7 @@ class LoginIfUnspecified(object):
     def requires_login(self):
         if not self.user:
             # If they're not logged in, require a full set of fields...
-            required_fields = ['user_location', 'distance', 'distance_units', 'freestyle', 'choreo']
+            required_fields = ['freestyle', 'choreo']
             for field in required_fields:
                 if not self.request.get(field):
                     return True
@@ -29,18 +29,27 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
         start_time = datetime.datetime.fromtimestamp(int(self.request.get('start')))
         end_time = datetime.datetime.fromtimestamp(int(self.request.get('end')))
 
-        user_location = self.request.get('user_location', self.user and self.user.location)
-        distance = int(self.request.get('distance', self.user and self.user.distance))
-        distance_units = self.request.get('distance_units', self.user and self.user.distance_units)
-        if distance_units == 'miles':
-            distance_in_km = locations.miles_in_km(distance)
+        city_name = None
+        user_location = None
+        distance = None
+        distance_units = None
+        distance_in_km = None
+        latlng_user_location = None
+        if self.request.get('city_name'):
+            city_name = self.request.get('city_name')
         else:
-            distance_in_km = distance
+            user_location = self.request.get('user_location', self.user and self.user.location)
+            distance = int(self.request.get('distance', self.user and self.user.distance))
+            distance_units = self.request.get('distance_units', self.user and self.user.distance_units)
+            if distance_units == 'miles':
+                distance_in_km = locations.miles_in_km(distance)
+            else:
+                distance_in_km = distance
+            latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
         freestyle = self.request.get('freestyle', self.user and self.user.freestyle)
         choreo = self.request.get('choreo', self.user and self.user.choreo)
 
-        latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
-        query = search.SearchQuery(location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo, start_time=start_time, end_time=end_time)
+        query = search.SearchQuery(city_name=city_name, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo, start_time=start_time, end_time=end_time)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
 
         json_results = []

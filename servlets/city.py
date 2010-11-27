@@ -9,7 +9,6 @@ from events import tags
 from events import users
 from logic import rsvp
 from logic import search
-import locations
 
 class CityHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -22,9 +21,7 @@ class CityHandler(base_servlet.BaseRequestHandler):
         time_period = tags.TIME_FUTURE
 
         path_bits = self.request.path.split('/')
-        location = urllib.unquote(path_bits[2])
-        closest_cityname = cities.get_largest_nearby_city_name(location)
-        latlng_location = locations.get_geocoded_location(location)['latlng']
+        city_name = urllib.unquote(path_bits[2])
 
         # handle additional path elements here
         freestyle = users.FREESTYLE_DANCER
@@ -40,18 +37,16 @@ class CityHandler(base_servlet.BaseRequestHandler):
                 title_prefix = 'Hiphop Choreo'
 
         distance_in_km = 150
-        query = search.SearchQuery(time_period=time_period, location=latlng_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
+        query = search.SearchQuery(time_period=time_period, city_name=city_name, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
         past_results, present_results, grouped_results = search.group_results(search_results)
 
-        self.display['closest_city'] = closest_cityname
+        self.display['closest_city'] = city_name
         view_params = dict(
             freestyle=freestyle,
             choreo=choreo,
-            distance=distance_in_km,
-            distance_units='km',
-            user_location=location,
+            city_name=city_name,
         )
         self.display['past_view_url'] = '/events/relevant?ajax=1&past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in view_params.iteritems())
         self.display['calendar_view_url'] = '/calendar?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in view_params.iteritems())

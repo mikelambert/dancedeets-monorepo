@@ -101,6 +101,7 @@ class DBEvent(db.Model):
 
     # extra cached properties
     address = db.StringProperty()
+    city_name = db.StringProperty()
     latitude = db.FloatProperty()
     longitude = db.FloatProperty()
     geohashes = db.StringListProperty()
@@ -115,6 +116,8 @@ class DBEvent(db.Model):
             self.end_time = None
             self.search_tags = []
             self.search_time_period = None
+            self.address = None
+            self.city_name = None
             return
 
         self.start_time = dates.localize_timestamp(datetime.datetime.strptime(fb_dict['info']['start_time'], '%Y-%m-%dT%H:%M:%S+0000'))
@@ -135,6 +138,8 @@ class DBEvent(db.Model):
 
         results = get_geocoded_location_for_event(fb_dict)
         self.address = results['address']
+        self.city_name = cities.get_largest_nearby_city_name(self.address)
+
         if results['latlng'][0] is not None:
             self.latitude = results['latlng'][0]
             self.longitude = results['latlng'][1]

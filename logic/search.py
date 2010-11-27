@@ -86,7 +86,7 @@ class SearchQuery(object):
     MATCH_LOCATION = 'LOCATION'
     MATCH_QUERY = 'QUERY'
 
-    def __init__(self, any_tags=None, choreo_freestyle=None, time_period=None, start_time=None, end_time=None, location=None, distance_in_km=None, query_args=None, freestyle=None, choreo=None):
+    def __init__(self, any_tags=None, choreo_freestyle=None, time_period=None, start_time=None, end_time=None, city_name=None, location=None, distance_in_km=None, query_args=None, freestyle=None, choreo=None):
         self.any_tags = set(any_tags or [])
         self.choreo_freestyle = choreo_freestyle
         self.time_period = time_period
@@ -100,12 +100,15 @@ class SearchQuery(object):
                 assert self.end_time > datetime.datetime.now()
         if self.time_period == tags.TIME_FUTURE and self.start_time:
                 assert self.start_time < datetime.datetime.now()
+        self.city_name = city_name
         self.location = location
         self.distance_in_km = distance_in_km
         self.query_args = query_args
 
-        self.search_geohashes = locations.get_all_geohashes_for(location[0], location[1], km=distance_in_km)
-        logging.info("Searching geohashes %s", self.search_geohashes)
+        self.search_geohashes = []
+        if self.location:
+            self.search_geohashes = locations.get_all_geohashes_for(location[0], location[1], km=distance_in_km)
+            logging.info("Searching geohashes %s", self.search_geohashes)
 
     def matches_event(self, event, fb_event):
         if self.any_tags:
@@ -164,6 +167,9 @@ class SearchQuery(object):
         if self.choreo_freestyle:
             clauses.append('search_tags = :search_tag')
             bind_vars['search_tag'] = self.choreo_freestyle
+        if self.city_name:
+            clauses.append('city_name = :city_name')
+            bind_vars['city_name'] = self.city_name
         if self.search_geohashes:
             clauses.append('geohashes in :search_geohashes')
             bind_vars['search_geohashes'] = self.search_geohashes
@@ -190,6 +196,7 @@ class SearchQuery(object):
             bind_vars['start_time_max'] = self.end_time
         if clauses:
             full_clauses = ' and '.join('%s' % x for x in clauses)
+            logging.info("Doing search with clauses: %s", full_clauses)
             return eventdata.DBEvent.gql('where %s' % full_clauses, **bind_vars).fetch(100)
         else:
             return eventdata.DBEvent.all().fetch(100)
