@@ -1,5 +1,7 @@
 import smemcache
 
+from logic import backgrounder
+
 class RSVPManager(object):
 
     def __init__(self, batch_lookup):
@@ -17,10 +19,9 @@ class RSVPManager(object):
         if rsvp_status == 'maybe':
             rsvp_status = 'unsure'
 
-        self.batch_lookup.invalidate_event(event_id)
-        self.batch_lookup.invalidate_user(self.batch_lookup.fb_uid)
-
         result = fb_graph.api_request('method/events.rsvp', args=dict(eid=event_id, rsvp_status=rsvp_status))
+        backgrounder.load_events_full([event_id], allow_cache=False)
+        backgrounder.load_users([self.batch_lookup.fb_uid], allow_cache=False)
         return result
 
 def decorate_with_rsvps(batch_lookup, search_results):
