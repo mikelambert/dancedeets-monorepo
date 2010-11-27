@@ -32,6 +32,7 @@ URLS = [
     ('/tools/migrate_dbevents', tools.MigrateDBEventsHandler),
     ('/tools/clear_memcache', admin.ClearMemcacheHandler),
     ('/tools/delete_fb_cache', admin.DeleteFBCacheHandler),
+    ('/tools/show_users', admin.ShowUsersHandler),
     ('/tasks/cleanup_work', tasks.CleanupWorkHandler),
     ('/tasks/load_events', tasks.LoadEventHandler),
     ('/tasks/load_users', tasks.LoadUserHandler),
