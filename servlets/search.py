@@ -121,7 +121,10 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         query = search.SearchQuery(time_period=time_period, city_name=city_name, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
-        past_results, present_results, grouped_results = search.group_results(search_results, past=past)
+        past_results, present_results, grouped_results = search.group_results(search_results)
+        if time_period == tags.TIME_FUTURE:
+            present_results = past_results + present_results
+            past_results = []
 
         closest_cityname = cities.get_largest_nearby_city_name(user_location)
         #TODO(lambert): perhaps produce optimized versions of these without styles/times, for use on the homepage? less pickling/loading required

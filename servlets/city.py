@@ -18,7 +18,10 @@ class CityHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
 
         # TODO(lambert): include recent past events as well
-        time_period = tags.TIME_FUTURE
+        if 'Googlebot' in self.request.user_agent:
+            time_period = None
+        else:
+            time_period = tags.TIME_FUTURE
 
         path_bits = self.request.path.split('/')
         city_name = urllib.unquote(path_bits[2])
@@ -40,6 +43,9 @@ class CityHandler(base_servlet.BaseRequestHandler):
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
         past_results, present_results, grouped_results = search.group_results(search_results)
+        if time_period == tags.TIME_FUTURE:
+            present_results = past_results + present_results
+            past_results = []
 
         self.display['closest_city'] = city_name
         view_params = dict(

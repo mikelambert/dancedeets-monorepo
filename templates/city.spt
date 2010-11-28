@@ -29,7 +29,13 @@ $title_prefix Dance Events in $closest_city
     #if not $grouped_upcoming_results and not $ongoing_results
       class="ui-tabs-selected"
     #end if
-    ><a href="$past_view_url" title="past events"><span>Past Events</span></a></li>
+    ><a 
+		#if $past_results
+			href="#past_events"
+		#else
+			href="$past_view_url" 
+		#end if
+		title="past events"><span>Past Events</span></a></li>
     #if $ongoing_results
     <li
     #if not $grouped_upcoming_results

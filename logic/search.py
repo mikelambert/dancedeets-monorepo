@@ -21,8 +21,8 @@ class ResultsGroup(object):
         self.expanded = expanded 
         self.force = force 
 
-def group_results(search_results, past=False): 
-    today = datetime.datetime.now() 
+def group_results(search_results): 
+    now = datetime.datetime.now() 
 
     grouped_results = [] 
     past_results = [] 
@@ -31,14 +31,14 @@ def group_results(search_results, past=False):
     month_results = [] 
     year_results = []
     for result in search_results: 
-        if result.start_time < today: 
-            if past: # If we're doing 'past' searches, group them differently 
-                past_results.append(result) 
-            else: 
+        if result.start_time < now: 
+            if result.end_time > now:
                 present_results.append(result)
-        elif result.start_time < today + datetime.timedelta(days=7): 
+            else: 
+                past_results.append(result) 
+        elif result.start_time < now + datetime.timedelta(days=7): 
             week_results.append(result)
-        elif result.start_time < today + datetime.timedelta(days=30): 
+        elif result.start_time < now + datetime.timedelta(days=30): 
             month_results.append(result)
         else: 
             year_results.append(result) 
