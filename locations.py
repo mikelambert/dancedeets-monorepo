@@ -8,6 +8,7 @@ import urllib2
 
 import geohash
 
+from google.appengine.ext import db
 try:
     from django.utils import simplejson
 except ImportError:
@@ -53,6 +54,10 @@ def _get_geocoded_data(address):
     result = json_result['results'][0]
     return result
 
+class GeoCode(db.Model):
+    address = property(lambda x: int(x.key().name()))
+    json_data = db.TextProperty()
+
 
 def _memcache_location_key(location):
     return 'GoogleMaps.%s' % location
@@ -61,9 +66,17 @@ def _raw_get_cached_geocoded_data(location):
     memcache_key = _memcache_location_key(location)
     geocoded_data = smemcache and smemcache.get(memcache_key)
     if not geocoded_data:
-        geocoded_data = _get_geocoded_data(location)
-        if smemcache:
-            smemcache.set(memcache_key, geocoded_data, LOCATION_EXPIRY)
+        geocode = GeoCode.get_by_key_name(location)
+        if geocode:
+            geocoded_data = simplejson.loads(geocode.json_data)
+        if not geocoded_data:
+            geocoded_data = _get_geocoded_data(location)
+
+            geocode = GeoCode.get_or_insert(location)
+            geocode.json_data = simplejson.dumps(geocoded_data)
+            geocode.put()
+            if smemcache:
+                smemcache.set(memcache_key, geocoded_data, LOCATION_EXPIRY)
     return geocoded_data
 
 def get_geocoded_location(address):
