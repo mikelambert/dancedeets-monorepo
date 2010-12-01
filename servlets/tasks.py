@@ -200,7 +200,8 @@ class LoadAllPotentialEventsHandler(RequestHandler):
     #TODO(lambert): email me when we get the latest batch of things completed.
     def get(self):
         user_ids = [user.fb_uid for user in users.User.all() if not user.expired_oauth_token]
-        backgrounder.load_potential_events_for_users(user_ids)
+        # must load from cache here, since we don't load it as part of user lookups anymore
+        backgrounder.load_potential_events_for_users(user_ids, allow_cache=False)
 
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
