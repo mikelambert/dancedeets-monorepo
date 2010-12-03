@@ -56,6 +56,7 @@ URLS = [
     ('/', search.RelevantHandler),
     ('/_ah/warmup', DoNothingHandler),
     ('/rankings', stats.RankingsHandler),
+    ('/events/admin_nolocation_events', event.AdminNoLocationEventsHandler),
     ('/events/admin_potential_events', event.AdminPotentialEventViewHandler),
     ('/events/admin_edit', event.AdminEditHandler),
     ('/events/redirect', event.RedirectToEventHandler),

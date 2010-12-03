@@ -313,6 +313,20 @@ class AddHandler(base_servlet.BaseRequestHandler):
         self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
         self.redirect('/')
 
+class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
+    def get(self):
+        db_events = eventdata.DBEvent.gql("WHERE city_name = :1", "Unknown")
+        for e in db_events:
+            self.batch_lookup.lookup_event(e.fb_event_id)
+        self.finish_preload()
+        template_events = []
+        for e in db_events:
+            fb_event = self.batch_lookup.data_for_event(e.fb_event_id)
+            template_events.append(dict(fb_event=fb_event, db_event=e))
+        self.display['events'] = template_events
+        self.render_template('admin_nolocation_events')
+
+
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
         unseen_potential_events = potential_events.PotentialEvent.gql("WHERE looked_at = :looked_at", looked_at=False)
