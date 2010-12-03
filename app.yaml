@@ -3,6 +3,9 @@ version: v1-0-launch
 runtime: python
 api_version: 1
 
+inbound_services:
+- warmup
+
 builtins:
 - datastore_admin: on
 - remote_api: on
@@ -43,6 +46,9 @@ handlers:
   login: admin
 - url: .*
   script: main.py
+- url: /_ah/warmup
+  script: main.py
+  login: admin
 
 admin_console:
  pages:

@@ -26,6 +26,10 @@ import smemcache
 #TODO(lambert): setup webtest to test the wsgi app as a regression test to ensure everything is working
 # http://pythonpaste.org/webtest/
 
+class DoNothingHandler(base_servlet.BareBaseRequestHandler):
+    def get(self):
+        return
+
 URLS = [
     ('/tools/oneoff', tools.OneOffHandler),
     ('/tools/import_cities', tools.ImportCitiesHandler),
@@ -50,6 +54,7 @@ URLS = [
     ('/tasks/compute_rankings', tasks.ComputeRankingsHandler),
     ('/tasks/update_last_login_time', tasks.UpdateLastLoginTimeHandler),
     ('/', search.RelevantHandler),
+    ('/_ah/warmup', DoNothingHandler),
     ('/rankings', stats.RankingsHandler),
     ('/events/admin_potential_events', event.AdminPotentialEventViewHandler),
     ('/events/admin_edit', event.AdminEditHandler),
