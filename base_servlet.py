@@ -100,17 +100,20 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.fb_uid = int(args['uid'])
             self.fb_graph = facebook.GraphAPI(args['access_token'])
             self.user = users.User.get_cached(self.fb_uid)
-            # If their auth token has changed, then write out the new one
-            if self.user and self.request.path == '/login':
-                self.user = users.User.get_by_key_name(str(self.fb_uid))
-                self.user.fb_access_token = self.fb_graph.access_token
-                self.user.expired_oauth_token = False
-                self.user.put() # this also sets to memcache
-            yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-            if self.user and (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
-                # Do this in a separate request so we don't increase latency on this call
-                backgrounder.update_last_login_time(self.user.fb_uid)
-            logging.info("Logged in uid %s", self.fb_uid)
+            if not self.user:
+                self.fb_uid = None
+            else:
+                logging.info("Logged in uid %s", self.fb_uid)
+                # If their auth token has changed, then write out the new one
+                if self.request.path == '/login':
+                    self.user = users.User.get_by_key_name(str(self.fb_uid))
+                    self.user.fb_access_token = self.fb_graph.access_token
+                    self.user.expired_oauth_token = False
+                    self.user.put() # this also sets to memcache
+                yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+                if (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
+                    # Do this in a separate request so we don't increase latency on this call
+                    backgrounder.update_last_login_time(self.user.fb_uid)
         else:
             self.fb_uid = None
             self.fb_graph = facebook.GraphAPI(None)
