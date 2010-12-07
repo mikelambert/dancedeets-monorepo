@@ -7,9 +7,11 @@ import yaml
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 import base_servlet
-from servlets import admin
 from servlets import about
+from servlets import admin
+from servlets import atom
 from servlets import calendar
+from servlets import city
 from servlets import event
 from servlets import feedback
 from servlets import login
@@ -19,7 +21,6 @@ from servlets import share
 from servlets import stats
 from servlets import tasks
 from servlets import tools
-from servlets import city
 import smemcache
 
 
@@ -63,6 +64,7 @@ URLS = [
     ('/events/view', event.ViewHandler),
     ('/events/add', event.AddHandler),
     ('/events/search', search.SearchHandler),
+    ('/events/feed', atom.AtomHandler),
     ('/city/.*', city.CityHandler),
     ('/calendar', calendar.CalendarHandler),
     ('/calendar/feed', calendar.CalendarFeedHandler),
