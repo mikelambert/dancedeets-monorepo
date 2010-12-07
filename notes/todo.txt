@@ -4,11 +4,18 @@ BEFORE LAUNCH:
 areas get emailed less frequently, and only when necessary. Or stick
 with weekly-on-wednesday emails for now?
 
-- embed widget
+- rss feed
+- train system to identify dance events versus not. use negative keywords to filter out salsa/lindy stuff.
+- get rid of club events maybe? or second category that must be manually added? untrainable?
+- use list-of-attendees as a classifier in training event types as well. good for choreo hiphop.
+- maybe build system for "area leaders". they can approve/updaate/change events in their area. fix geocodes. nice admin-overview page, status of number-of-people, events to process
+
+- attach youtube videos of the events
+- add keywords per event. use them to look up videos, maybe with upload times <6months after event (to catch "yearly" event problems)
+- build an event classifier to autoclassify videos as dance videos or not
 
 - Handle XSRF properly
 
-- attach youtube videos of the events
 - groupon emails as an example of call-to-action emails
 
 - Revisit emails:
@@ -35,7 +42,7 @@ LAUNCH PLAN:
 - Create facebook advertisements
 
 LONGER TERM:
-- rss feed
+- embed widget
 - Add some stats on "users that see a given event", to make a compelling case for promoters to put events on this site.
 - Some way to find users who have created events, and directly incite them to add to dance deets?
 - allow override on timezone/scene/etc for users where we get it wrong
