@@ -5,7 +5,11 @@ areas get emailed less frequently, and only when necessary. Or stick
 with weekly-on-wednesday emails for now?
 
 - rss feed
+- use search-system to page through all-events periodically, using title-keywords (trained? something else? to identify new events) http://developers.facebook.com/docs/api
+- somehow expose all-upcoming-events-in-the-world view: a la http://www.dancedeets.com/?user_location=Katowice,+Poland&distance=10000&distance_units=miles&freestyle=FREESTYLE_DANCER&choreo=CHOREO_DANCER
 - train system to identify dance events versus not. use negative keywords to filter out salsa/lindy stuff.
+http://code.google.com/apis/predict/docs/getting-started.html
+http://code.google.com/apis/storage/docs/getting-started.html
 - get rid of club events maybe? or second category that must be manually added? untrainable?
 - use list-of-attendees as a classifier in training event types as well. good for choreo hiphop.
 - maybe build system for "area leaders". they can approve/updaate/change events in their area. fix geocodes. nice admin-overview page, status of number-of-people, events to process
