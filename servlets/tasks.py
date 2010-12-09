@@ -45,7 +45,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
 class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         app_friend_list = self.fb_graph.api_request('method/friends.getAppUsers')
-        user_friends = users.UserFriendsAtSignup.get_by_key_name(str(self.fb_uid))
+        user_friends = users.UserFriendsAtSignup.get_or_insert(str(self.fb_uid))
         user_friends.registered_friend_ids = app_friend_list
         user_friends.put()
     post=get
