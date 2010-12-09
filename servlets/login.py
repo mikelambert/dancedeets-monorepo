@@ -119,9 +119,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             user.distance_units = 'km'
         user.creation_time = datetime.datetime.now()
 
-        user_friends = users.UserFriendsAtSignup(key_name=str(self.fb_uid))
-        user_friends.put()
-
         user.compute_derived_properties(fb_user)
         logging.info("Saving user with name %s", user.full_name)
         user.put()
