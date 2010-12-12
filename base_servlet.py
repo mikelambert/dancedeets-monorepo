@@ -101,6 +101,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.fb_graph = facebook.GraphAPI(args['access_token'])
             self.user = users.User.get_cached(self.fb_uid)
             if self.request.path != '/login' and not self.user:
+                logging.info("Not a /login request and there is no user object, so pretending they are not logged in.")
                 self.fb_uid = None
             else:
                 logging.info("Logged in uid %s", self.fb_uid)
@@ -112,7 +113,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                         self.user.expired_oauth_token = False
                         self.user.put() # this also sets to memcache
                 yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-                if (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
+                if self.user and (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
                     # Do this in a separate request so we don't increase latency on this call
                     backgrounder.update_last_login_time(self.fb_uid)
         else:
