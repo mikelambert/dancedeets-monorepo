@@ -52,7 +52,7 @@ $head_javascript()
 	|
 	<a href="#" onclick="FB.logout(function(response) { window.location.reload(); })">Logout</a>
 #else
-	<fb:login-button onlogin="window.location.reload();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
+	<fb:login-button onlogin="signUp();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
 #end if
 </div>
 

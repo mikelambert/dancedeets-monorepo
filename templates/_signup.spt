@@ -1,5 +1,5 @@
 #def signup_form($next)
-<form action="/login" id="signup-form" method="post" onsubmit="return false;">
+<form action="/login" id="signup-form" method="post" onsubmit="return FB.Cookie.load();">
 <fieldset style="border: 1px black solid; background-color: #eee;border-radius: 10px">
 
 <legend class="big-font" style="padding: 0px 10px;background-color:white;border:1px solid darkgrey">Join the scene</legend>
@@ -91,19 +91,6 @@
 				width: 600,
 			});
 	});
-
-  function signUp() {
-		FB.getLoginStatus(function(response) {
-			if (!response.session) {
-				must_allow_perms.dialog('open');
-			// Can't distinguish which button was pressed, so we can't enforce city fillout clientside
-			//} else if (!$('#signup-city').val()) {
-			//	alert("Please fill out your city and try again.");
-			} else {
-				$('#signup-form').submit();
-			}
-		});
-  }
 </script>
 #end def
 
@@ -126,6 +113,22 @@
 				window.location.reload();
 			#end if
     }
+  }
+  function signUp() {
+		FB.getLoginStatus(function(response) {
+			if (!response.session) {
+				must_allow_perms.dialog('open');
+			// Can't distinguish which button was pressed, so we can't enforce city fillout clientside
+			//} else if (!$('#signup-city').val()) {
+			//	alert("Please fill out your city and try again.");
+			} else {
+				if ($('#signup-form')) {
+					$('#signup-form').submit();
+				} else {
+					window.location.reload();
+				}
+			}
+		});
   }
   window.fbAsyncInit = function() {
 		// Override cookie-expiration setting so we get long-lived cookies.
