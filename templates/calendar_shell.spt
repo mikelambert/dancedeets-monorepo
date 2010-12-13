@@ -14,7 +14,7 @@
 			aspectRatio: 1.5,
 			ignoreTimezone: true,
 			allDayDefault: false,
-			events: '$calendar_feed_url'
+			events: '$format_js($calendar_feed_url)'
 		})
 	});
 </script>
