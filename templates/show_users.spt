@@ -1,0 +1,26 @@
+#extends _base
+
+#def title
+List of Users
+#end def
+
+#def body
+There are $num_users users total:
+<table>
+#for $user in $users
+<tr><td>
+#if $user.creation_time
+	$date_format('%Y-%m-%d %H:%M', $user.creation_time)
+#end if
+</td><td>
+#if $user.last_login_time
+	$date_format('%Y-%m-%d %H:%M', $user.last_login_time)
+#end if
+</td><td>
+$user.location
+</td><td>
+<a href="http://www.facebook.com/profile.php?id=$user.fb_uid">$user.full_name</a>
+</td></tr>
+#end for
+</table>
+#end def
