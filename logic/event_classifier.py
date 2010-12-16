@@ -12,7 +12,7 @@ dance_keywords = [
     'strutters?', 'strutting',
     'glides?', 'gliding', 'waves?', 'waving', 'wavers?',
     'tuts?', 'tutting', 'tutters?',
-    'hip.?hop',
+    'hip.?hop', 'new.?style',
     'choreography', 'choreographers?', 'choreo', 'street jazz', 'street funk', 'jazz funk',
     'new jack swing', 'hype danc[^ ]*', '90.?s hip.?hop', 'social hip.?hop', 'old schol hip.?hop',
     'w[ha]acking', 'w[ha]ackers?', 'w[ha]ack', 'punking', 'punkers?', 'punk',
