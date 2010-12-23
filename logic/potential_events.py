@@ -31,7 +31,10 @@ def get_potential_dance_events(batch_lookup, user):
     second_batch_lookup.finish_loading()
     dance_event_ids = []
     for mini_fb_event in events:
-        fb_event = second_batch_lookup.data_for_event(mini_fb_event['eid'])
+        try:
+            fb_event = second_batch_lookup.data_for_event(mini_fb_event['eid'])
+        except fb_api.NoFetchedDataException:
+            continue # must be a non-saved event, probably due to private/closed event. so ignore.
         if fb_event['deleted'] or fb_event['info']['privacy'] != 'OPEN':
             continue # only legit events
         is_dance_event = event_classifier.is_dance_event(fb_event)
