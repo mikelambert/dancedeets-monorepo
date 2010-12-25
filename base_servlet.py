@@ -20,8 +20,6 @@ import template
 from util import text
 from util import urls
 
-#TODO(lambert): show event info, queries without login?? P2
-
 class _ValidationError(Exception):
     pass
 
@@ -33,7 +31,6 @@ class BareBaseRequestHandler(RequestHandler):
         self.display = {}
         self._errors = []
         # We can safely do this since there are very few ways others can modify self._errors
-        #TODO(lambert): print errors in the template, and make sure to $format_html them
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
         self.display['format_html'] = text.format_html

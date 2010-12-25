@@ -34,10 +34,17 @@ $head_javascript()
 	<a href="/"><img src="/dancedeets.png" width=334 height=54 class="centered-image" border=0></a>
 	<h1>$title()</h1>
 
+#if $errors
+<div class="ui-widget" style="text-align: center">
+#for $error in $errors
+<div class="ui-state-error ui-corner-all">$format_html($error)</div>
+#end for
+</div>
+#end if
 #if $messages
 <div class="ui-widget" style="text-align: center">
 #for $message in $messages
-<div class="ui-state-highlight ui-corner-all">$message</div>
+<div class="ui-state-highlight ui-corner-all">$format_html($message)</div>
 #end for
 </div>
 #end if
