@@ -20,6 +20,8 @@ There are $num_users users total:
 $user.location
 </td><td>
 <a href="http://www.facebook.com/profile.php?id=$user.fb_uid">$user.full_name</a>
+</td><td>
+$user.freestyle, $user.choreo
 </td></tr>
 #end for
 </table>
