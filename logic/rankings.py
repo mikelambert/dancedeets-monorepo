@@ -131,7 +131,7 @@ def count_event_for_user(dbevent):
 
 def count_user_for_user(user):
     #TODO(lambert): store largest_city in the user
-    user_city = cities.get_largest_nearby_city_name(user.location)
+    user_city = user.get_city()
     inviter = user.inviting_fb_uid
     #TODO(lambert): fix this to use inviter's location instead. either storing in dbevent or looking up from memcache-backed-by-db?
     # Do per-country mapreduces for this? And process different sets of cities in different mapreduces? Need some way to avoid overloading the mapreduce state...
