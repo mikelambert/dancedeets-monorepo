@@ -13,7 +13,7 @@ dance_keywords = [
     'strutters?', 'strutting',
     'glides?', 'gliding', 'waves?', 'waving', 'wavers?',
     'tuts?', 'tutting', 'tutters?',
-    'hip.?hop', 'new.?style',
+    'hip.?hop', 'new.?styles?', 'all.?styles?'
     'choreography', 'choreographers?', 'choreo', 'street jazz', 'street funk', 'jazz funk',
     'new jack swing', 'hype danc[^ ]*', '90.?s hip.?hop', 'social hip.?hop', 'old schol hip.?hop',
     'w[ha]acking', 'w[ha]ackers?', 'w[ha]ack', 'punking', 'punkers?', 'punk',
@@ -23,6 +23,7 @@ dance_keywords = [
 event_keywords = [
     'competitions?', 'battles?', 'tournaments?', 'jams?', 'contests?', 'judges?',
     'cyphers?', 'club',
+    '(\d)[ -]?vs?\.?[ -]?\1',
     'sessions?', 'shows?', 'performances?',
     'workshops?', 'class with', 'master class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
     'abdc',
