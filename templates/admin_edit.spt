@@ -11,9 +11,15 @@ Edit Event
 			<h2>$format_html($fb_event.info.name)</h2>
 			<a href="$raw_fb_event_url($fb_event.info.id)">See on Facebook</a><br><br>
 
-			Original Address: $original_address<br>
-			Geocoded Address: $geocoded_address<br>
+			Original Address: $format_html($original_address)<br>
+			Geocoded Address: $format_html($geocoded_address)<br>
 			Remapped Address: <input type="text" size=100 name="remapped_address" value="$remapped_address"><br>
+			Override Address:
+			#if $needs_override_address
+				(Required!)
+			#end if
+			<input type="text" size=100 name="override_address" value="$override_address"><br>
+			Final Geocoded Address: $format_html($final_geocoded_address)<br>
 
 			<br>Description:
 			<div style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">

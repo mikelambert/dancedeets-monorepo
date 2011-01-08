@@ -109,7 +109,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
         event_members_info = []
         e = event_info['info']
     
-        location = eventdata.get_geocoded_location_for_event(event_info)
+        location = eventdata.get_geocoded_location_for_event(db_event, event_info)
         self.display['location'] = location
 
         if location['latlng'] and self.user.location:
@@ -180,11 +180,19 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         original_address = eventdata.get_original_address_for_event(fb_event)
         geocoded_address = locations.get_geocoded_location(original_address)['address']
         remapped_address = eventdata.get_remapped_address_for(original_address)
+        override_address = e.address
+        final_geocoded_address = eventdata.get_geocoded_location_for_event(e, fb_event)['address']
+
+        trimmed_address = (remapped_address or original_address).replace('.', '').replace(' ', '').upper()
+        if original_address == '' or trimmed_address in ['TBA', 'TBD']:
+            self.display['needs_override_address'] = True
 
         self.display['creating_user'] = creating_user
         self.display['original_address'] = original_address
         self.display['geocoded_address'] = geocoded_address
         self.display['remapped_address'] = remapped_address
+        self.display['override_address'] = override_address
+        self.display['final_geocoded_address'] = final_geocoded_address
 
         self.display['freestyle_types'] = tags.FREESTYLE_EVENT_LIST
         self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
@@ -219,6 +227,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         e = eventdata.DBEvent.get_or_insert(event_id)
         e.tags = self.request.get_all('tag')
+        e.address = self.request.get('override_address') or None
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
         e.make_findable_for(self.batch_lookup.data_for_event(event_id))

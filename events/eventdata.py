@@ -67,17 +67,23 @@ def save_remapped_address_for(original_address, new_remapped_address):
         except apiproxy_errors.CapabilityDisabledError:
             pass
 
-def get_geocoded_location_for_event(fb_event):
+def get_usable_address_for_event(db_event, fb_event):
     # Do not trust facebook for latitude/longitude data. It appears to treat LA as Louisiana, etc. So always geocode
     address = get_original_address_for_event(fb_event)
     logging.info("For event = %s, address is %s", fb_event['info']['id'], address)
 
-    if address:
+    if db_event.address:
+        logging.info("address overridden to %s", db_event.address)
+        address = db_event.address
+    elif address:
         remapped_address = get_remapped_address_for(address)
         if remapped_address:
-            logging.info("address got remapped to %s", remapped_address)
+            logging.info("address remapped to %s", remapped_address)
             address = remapped_address
+    return address
 
+def get_geocoded_location_for_event(db_event, fb_event):
+    address = get_usable_address_for_event(db_event, fb_event)
     results = locations.get_geocoded_location(address)
     return results
 
@@ -136,9 +142,8 @@ class DBEvent(db.Model):
         else:
             self.search_time_period = tags.TIME_PAST
 
-        results = get_geocoded_location_for_event(fb_dict)
-        self.address = results['address']
-        self.city_name = cities.get_largest_nearby_city_name(self.address)
+        results = get_geocoded_location_for_event(self, fb_dict)
+        self.city_name = cities.get_largest_nearby_city_name(self.address or results['address'])
 
         if results['latlng'][0] is not None:
             self.latitude = results['latlng'][0]
