@@ -45,8 +45,7 @@ def _get_geocoded_data(address):
     try:
         json_result = simplejson.loads(results)
     except simplejson.decoder.JSONDecodeError, e:
-        logging.error("Error decoding json from %s: %s: %r", url, e, results)
-        return None
+        raise GeocodeException("Error decoding json from %s: %s: %r" % (url, e, results))
     if json_result['status'] == 'ZERO_RESULTS':
         return None
     if json_result['status'] != 'OK':
@@ -68,11 +67,14 @@ def _raw_get_cached_geocoded_data(location):
     if not geocoded_data:
         geocode = GeoCode.get_by_key_name(location)
         if geocode:
-            geocoded_data = simplejson.loads(geocode.json_data)
+            try:
+                geocoded_data = simplejson.loads(geocode.json_data)
+            except:
+                logging.exception("Error decoding json data for geocode %r: %r", location, geocode.json_data)
         if not geocoded_data:
             geocoded_data = _get_geocoded_data(location)
 
-            geocode = GeoCode.get_or_insert(location)
+            geocode = GeoCode(key_name=location)
             geocode.json_data = simplejson.dumps(geocoded_data)
             geocode.put()
             if smemcache:
