@@ -118,27 +118,6 @@ def get_event_dance_styles(dbevent):
 def make_key_name(key_name, **kwargs):
     return '%s/%s' % (key_name, '/'.join('%s=%s' % (k, v) for (k, v) in kwargs.iteritems()))
 
-def count_event_for_user(dbevent):
-    if not dbevent.start_time: # deleted event, don't count
-        return
-    creator = dbevent.creating_fb_uid
-    #TODO(lambert): fix this to use creator's location instead. either storing in dbevent or looking up from memcache-backed-by-db?
-    city = dbevent.city_name
-    # one of these is gmt time, and one of these is event-local time. so this is a bit "off" from a correctness perspective
-    for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
-        for dance_style in get_event_dance_styles(dbevent):
-            yield op.counters.Increment(make_key_name("User", city=city, time_period=time_period, dance_style=dance_style, user=creator))
-
-def count_user_for_user(user):
-    #TODO(lambert): store largest_city in the user
-    user_city = user.get_city()
-    inviter = user.inviting_fb_uid
-    #TODO(lambert): fix this to use inviter's location instead. either storing in dbevent or looking up from memcache-backed-by-db?
-    # Do per-country mapreduces for this? And process different sets of cities in different mapreduces? Need some way to avoid overloading the mapreduce state...
-    for time_period in get_time_periods(user.creation_time):
-        for dance_style in get_user_dance_styles(user):
-            yield op.counters.Increment(make_key_name("User", city=user_city, time_period=time_period, dance_style=dance_style, user=inviter))
-
 def count_event_for_city(dbevent):
     #TODO(lambert): store largest_city in the event
     if not dbevent.start_time: # deleted event, don't count
@@ -169,20 +148,6 @@ def begin_ranking_calculations():
         handler_spec='logic.rankings.count_user_for_city',
         reader_parameters={'entity_kind': 'events.users.User'},
         _app=USER_FOR_CITY_RANKING,
-    )
-    control.start_map(
-        name='Compute User Rankings by Users',
-        reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='logic.rankings.count_event_for_user',
-        reader_parameters={'entity_kind': 'events.eventdata.DBEvent'},
-        _app=EVENT_FOR_USER_RANKING,
-    )
-    control.start_map(
-        name='Compute User Rankings by Events',
-        reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='logic.rankings.count_user_for_user',
-        reader_parameters={'entity_kind': 'events.users.User'},
-        _app=USER_FOR_USER_RANKING,
     )
 
 def compute_summary():
@@ -253,21 +218,6 @@ def get_city_by_user_rankings():
     cities = _group_cities_time_period_dance_styles(final_counter_map)
     return cities
 
-def get_user_by_event_rankings(city=None):
-    final_counter_map = _get_counter_map_for_ranking(EVENT_FOR_USER_RANKING)
-    if not final_counter_map:
-        return None
-    
-    users = _group_users_time_period_dance_styles(final_counter_map, city=city)
-    return users
-
-def get_user_by_user_rankings(city=None):
-    final_counter_map = _get_counter_map_for_ranking(USER_FOR_USER_RANKING)
-    if not final_counter_map:
-        return None
-    users = _group_users_time_period_dance_styles(final_counter_map, city=city)
-    return users
-
 def compute_sum(all_rankings, toplevel, time_period):
     total_count = 0
     for style in toplevel:
@@ -326,7 +276,7 @@ def top_n_with_selected(thing_ranking, selected_name, group_size=3):
             group_size = max(max_index, group_size)
             selected_n = []
         else:
-            selected_n = [(min_index+i+1, sel(x), x) for (i, x) in enumerate(thing_ranking[min_index:max_index])]
+            selected_n = [(min_index+i+1, sel(x), x) for (i, x) in enumerate(thing_ranking[min_index:max_index+1])]
     else:
         selected_n = []
     top_n = [(i+1, sel(x), x) for (i, x) in enumerate(thing_ranking[:group_size])]

@@ -189,26 +189,14 @@ Dance Events
 
 <hr>
 <div class="rankings">
-<span class="ranking-title">Who invited the most people in $current_city:</span><br>
-$ranked_list($user_top_n_users, $user_selected_n_users)
-</div>
-
-<hr>
-<div class="rankings">
-<span class="ranking-title">Who added the most events in $current_city:</span><br>
-$ranked_list($event_top_n_users, $event_selected_n_users)
+<span class="ranking-title">Who has the most events:</span><br>
+$ranked_list($event_top_n_cities, $event_selected_n_cities)
 </div>
 
 <hr>
 <div class="rankings">
 <span class="ranking-title">Who has the most dancers and fans:</span><br>
 $ranked_list($user_top_n_cities, $user_selected_n_cities)
-</div>
-
-<hr>
-<div class="rankings">
-<span class="ranking-title">Who has the most events:</span><br>
-$ranked_list($event_top_n_cities, $event_selected_n_cities)
 </div>
 
 <hr>
