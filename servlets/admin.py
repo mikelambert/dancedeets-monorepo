@@ -22,7 +22,7 @@ class DeleteFBCacheHandler(webapp.RequestHandler):
 
 class ShowUsersHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
-        all_users = users.User.gql('order by creation_time').fetch(1000)
+        all_users = users.User.gql('order by creation_time desc').fetch(1000)
         self.display['num_users'] = len(all_users)
         self.display['users'] = all_users
         self.render_template('show_users')
