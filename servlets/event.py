@@ -184,7 +184,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         final_geocoded_address = eventdata.get_geocoded_location_for_event(e, fb_event)['address']
 
         trimmed_address = (remapped_address or original_address).replace('.', '').replace(' ', '').upper()
-        if original_address == '' or trimmed_address in ['TBA', 'TBD']:
+        if original_address == '' or trimmed_address in ['TBA', 'TBD', '']:
             self.display['needs_override_address'] = True
 
         self.display['creating_user'] = creating_user
