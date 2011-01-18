@@ -166,7 +166,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
         return True
 
     def current_user(self):
-        return self.batch_lookup.data_for_user(self.fb_uid)
+        if self.fb_uid:
+            return self.batch_lookup.data_for_user(self.fb_uid)
+        else:
+            return None
 
     def finish_preload(self):
         self.batch_lookup.finish_loading()
