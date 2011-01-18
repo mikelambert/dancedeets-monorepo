@@ -3,15 +3,11 @@ import datetime
 from spitfire.runtime import udn
 from spitfire.runtime.filters import skip_filter
 
-def spit_filtered(func):
-    return skip_filter(func)
-
-
-@spit_filtered
+@skip_filter
 def format_html(value):
     return html_escape(value).replace('\n', '<br>\n')
 
-@spit_filtered
+@skip_filter
 def format_js(value):
     if isinstance(value, basestring):
         value = value.replace('"', '\"')
