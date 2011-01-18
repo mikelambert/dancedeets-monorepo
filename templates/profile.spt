@@ -1,0 +1,23 @@
+#extends _base
+#from spitfire.runtime.filters import escape_html
+#filter escape_html
+
+#def title
+<img src="http://graph.facebook.com/$profile_username/picture?type=large">
+$primary_name - DanceDeets Profile
+#end def
+
+#def body
+#for $video_tag in $video_tags
+	$video_tag.get_video_embed()<br>
+	$video_tag.description<br>
+#end for
+
+<a href="#">Tag $primary_name in More Videos</a>
+<div>
+<form action="/profile/$profile_username/add_tag" method="post">
+<input type="text" name="video_url">
+<button>Tag!</button>
+</form>
+</div>
+#end def

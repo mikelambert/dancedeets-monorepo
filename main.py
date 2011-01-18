@@ -16,6 +16,7 @@ from servlets import event
 from servlets import feedback
 from servlets import login
 from servlets import myuser
+from servlets import profile_page
 from servlets import search
 from servlets import share
 from servlets import stats
@@ -66,6 +67,8 @@ URLS = [
     ('/events/search', search.SearchHandler),
     ('/events/feed', atom.AtomHandler),
     ('/city/.*', city.CityHandler),
+    ('/profile/[^/]*', profile_page.ProfileHandler),
+    ('/profile/[^/]*/add_tag', profile_page.ProfileAddTagHandler),
     ('/calendar', calendar.CalendarHandler),
     ('/calendar/feed', calendar.CalendarFeedHandler),
     ('/events/results', search.ResultsHandler),
