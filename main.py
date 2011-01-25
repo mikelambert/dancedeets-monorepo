@@ -22,6 +22,7 @@ from servlets import share
 from servlets import stats
 from servlets import tasks
 from servlets import tools
+from servlets import youtube_simple_api
 import smemcache
 
 
@@ -69,6 +70,7 @@ URLS = [
     ('/city/.*', city.CityHandler),
     ('/profile/[^/]*', profile_page.ProfileHandler),
     ('/profile/[^/]*/add_tag', profile_page.ProfileAddTagHandler),
+    ('/youtube_simple_api', youtube_simple_api.YoutubeSimpleApiHandler),
     ('/calendar', calendar.CalendarHandler),
     ('/calendar/feed', calendar.CalendarFeedHandler),
     ('/events/results', search.ResultsHandler),
