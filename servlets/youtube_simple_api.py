@@ -23,6 +23,7 @@ class YoutubeSimpleApiHandler(base_servlet.BareBaseRequestHandler):
             text_query = self.request.get('query')
             playlist_id = self.request.get('playlist_id')
             query = gdata.youtube.service.YouTubePlaylistQuery(playlist_id=playlist_id, text_query=text_query, params={'max-results': '50'})
+            result = yt_service.Query(query.ToUri())
             feed = gdata.youtube.YouTubePlaylistVideoFeedFromString(result.ToString())
         elif action == 'search':
             text_query = self.request.get('query')
