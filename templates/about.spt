@@ -6,28 +6,65 @@ About
 
 #def body
 <p><h3>What is Dance Deets?</h3>
-<p>Dance Deets keeps both dancers and dance fans in the loop on upcoming dance events. Whether it's the choreo scene or the freestyle scene, whatever style of dance you do (bboy, house, funk styles, hiphop, or street jazz), Dance Deets helps you keeps track of it. And not just your local dance scene, but any scene world-wide, so that when you travel or vacation, it'll be easy to hook into the scene wherever you go.
+<p>Dance Deets is your home for dance events: nationally and internationally. Wherever you are in the world, we’ll help you find a place to get your groove on. 
+
+<p><i>*Since the site is still in its beginning stages, most of our events will be focused around dance styles we know best which is basically hip hop, b-boying, choreography, funk, house, popping, locking, waacking, and other similar street dance styles. Hopefully we’ll be able to expand to cover other styles in the future. If you’re interested in joining our team and are an insider to another dance scene, email us!</i>
 
 <p><h3>Why was Dance Deets created?</h3>
-<p>
-The dream goal is to enable all aspects of the street dance scene to grow, becoming more self-supporting and building opportunities to take the scene to the next level. As an initial step towards this goal, Dance Deets is helping with raising awareness of all dance events.
+<p>The dance community, especially hip hop and street dance, is getting bigger and becoming more popular than ever these days. Every day new people want to get involved in the dance scene and find events, classes and workshops that appeal to their interests and are in their neighborhood. However, finding your way &#8220;into the dance scene&#8221; is sometimes difficult since many events are spread through word of mouth alone or through social networks that you may not be a part of.
+
+<p><i>At Dance Deets, we believe in an open dance community.</i> By providing a public, open forum that features strictly local dance events we are able to:
 
 <ul>
-<li><b>Newbie dancers</b> find it difficult to discover the scene because they're not yet a part of the scene. Everyone else already knows what's going on (facebook, text messages, word of mouth), but the new folks aren't well-connected yet, and so often resort to big-name dance studios because that's the only thing they can find online. We believe it should be possible to find jams, clubs, workshops, etc without taking six months to meet and network with everyone.
-
-<li><b>Travelers</b> often visit a city on vacation or something unrelated, but never know how to find the local street dance scene. It's not until they've started networking with folks around the world, that they find the contacts that can clue them in on a visit. We believe they should be able to find the local events and just drop in right away.
-
-<li><b>Dance fans</b> will always ask their dancer friends about upcoming dance events. When's the next jam? When's the next show? The answer is sometimes that there's so much stuff going on it's hard to keep your friends in the loop! Dance Deets allows them to express their interest as a fan, and stay in the loop on the stuff they care about. Or sometimes only the big-name dance events get the broad audiences, because they're the only ones that get mentioned in the local newspaper, and that's all this audience knows to find stuff. We believe dance events information should be available to everyone that is interested, regardless of who spends more on marketing.
-
-<li><b>Dance promoters</b> often have to resort to drastic means to promote their events. Lots of facebook wall postings, invites, messages, etc. And unfortunately, dance promoters are often only promoting to their dancer peers that already know about these events. They have trouble reaching the friends-of-dancers crowd to really expand their audience, because this audience doesn't know the promoters or run into the dance flyers. We hope to help dance promoters reach a broader audience even if dance is not their life.
-
+<li>Support the local dance communities in each city by promoting their events.
+<li>Open our doors to new dancers and encourage them to get involved.
+<li>Give dancers a way to explore new scenes/styles.
+<li>And most importantly, raise awareness about dance.
 </ul>
 
-<p><h3>What's the history?</h3>
+<p>Dance Deets is your one-stop-shop for dance events worldwide.
 
-<p>When Mike Lambert got into the dance scene in in San Francisco in 2007 at a dance studio, he remembers it being hard to find jams and clubs to go to practice more. After a year or two, he slowly worked his way into the scene and discovered how effortless it became once you were in the scene.
+<h3>What does Dance Deets even MEAN?</h3>
+<p>The word &#8216;deets&#8217; is slang for &#8216;details.&#8217; Dance Deets = Dance Details.
 
-<p>Being a programmer at Google/YouTube before he discovered dance, he decided to try solving this with what else...but a website! After discussing it with a few dancers, both young and old, they all seemed to think the idea had merit, so it gave him confidence to go forward with it. But rather than throw up a forum and be done with it, he tried to build it from scratch around the Facebook data. Dancers were already creating events on facebook and keeping them up to date, so leveraging all that work/information to make them available to everyone was basically a no-brainer.
+<p>Don’t believe us? Check <a href="http://www.urbandictionary.com/define.php?term=deets">Urban Dictionary</a>. BOOYAH!
 
-<p>Developed over the summer/fall of 2010, it finally launched at the end of 2010. Starting with San Francisco and New York having event information, he hoped it would eventually spread to other cities and friends-of-friends around the world.
+<h3>Who can use Dance Deets?</h3>
+<p>Everyone! Dance Deets was created to appeal to all levels of dancers, whether you’re a veteran in the scene or a newbie trying to take your first class. All you have to know is what style of dance you’re interested in learning and what city you’re in. Let the search bars lead you to your dance-tination (corny, we know).
+
+<p>Here’s a list of a few types of people and how they might use the site:
+<ul>
+<li><b>Newbie Dancers:</b> Don’t know where to start? Search for classes in your area to find a beginning class in the style you’re looking for. Or if you hate taking class and just want to get down, find a local dance party/jam and make it happen!
+<li><b>Travelers:</b> Visiting another city and need your dance fix? We have events listed nationally and internationally in all major cities so you can always get your dance on no matter where you are in the world.
+<li><b>Dance Fans:</b> If you love to watch performances and go to jams, search the site to find new events <i>outside</i> your network. You will no longer have to depend on your dancer friend who tells you about all the up-and-coming events. Stay in the loop for yourself and find awesome new underground events!
+<li><b>Dance Promoters:</b> Here’s your chance to reach people outside your direct network. Post your event on Dance Deets to get the word out AND expand your audience.
+<li><b>And most important: DANCERS!</b> Everyone knows that well-rounded dancers are the BEST dancers. Expand your dance vocabulary and find classes in different styles. Get to know the other dance communities in your area and be a social dance butterfly!
+</ul>
+
+<h3>LAZY, and don’t want to check the site?</h3>
+<p>Sign up for our <a href="/login">email alerts</a> to get specific dance events sent directly to your inbox. We promise not to spam.
+
+<h3>How does Dance Deets work?</h3>
+Dance Deets is synced directly with Facebook Events. Anyone can search the site free of charge to find events to attend. <b>If you want to post an event,</b> you MUST:
+
+<ol>
+<li>Be a member of <a href="http://www.facebook.com">Facebook</a>.
+<li>Sign up to be a member of Dance Deets. (Have no fear, becoming a Dance Deets member is free of charge! Click <a href="/login">here</a> to become a member today.)
+<li>Be invited to the event you’re posting on Facebook.
+</ol>
+
+<p>Anyone who meets the above criteria can post <b>any dance-related event</b> to Dance Deets. However, we reserve the right to remove any event that we feel is not directly related to the dance scene.
+
+Still don’t get it? <a href="/login">Sign up as a member</a> and try it out!
+
+<h3>Who is behind Dance Deets?</h3>
+
+<ul>
+<li>Mike Lambert<br>
+Creator and Lead Programmer
+
+<li>Gina Mariko Rosales<br>
+Master of Marketing & Operations
+</ul>
+
 #end def
