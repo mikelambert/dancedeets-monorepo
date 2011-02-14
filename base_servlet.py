@@ -150,10 +150,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
         else:
             self.display['attempt_autologin'] = 1
         if self.user:
-            self.display['date_human_format'] = lambda x: users.date_human_format(x, user=self.user)
+            aelf.display['date_human_format'] = lambda x: users.date_human_format(x, user=self.user)
+            aelf.display['duration_human_format'] = lambda x, y: users.duration_human_format(x, y, user=self.user)
             self.display['messages'] = self.user.get_and_purge_messages()
         else:
             self.display['date_human_format'] = users.date_human_format
+            self.display['duration_human_format'] = users.duration_human_format
             self.display['login_url'] = login_url
         self.display['fb_event_url'] = urls.fb_event_url
         self.display['raw_fb_event_url'] = urls.raw_fb_event_url

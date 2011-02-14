@@ -74,6 +74,11 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
             self.response.out.write('This event was deleted.')
             return
 
+        self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.data_for_event(event_id)['picture'], eventdata.EVENT_IMAGE_LARGE)
+
+        self.display['start_time'] = eventdata.parse_fb_timestamp(event_info['info']['start_time'])
+        self.display['end_time'] = eventdata.parse_fb_timestamp(event_info['info']['end_time'])
+
         self.display['event'] = event_info
         self.display['next'] =  self.request.url
         self.render_template('event_interstitial')

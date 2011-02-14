@@ -47,15 +47,27 @@ DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 
 USER_EXPIRY = 24 * 60 * 60
 
-def date_human_format(d, user=None):
-    month_day_of_week = d.strftime('%A, %B')
-    month_day = '%s %s' % (month_day_of_week, d.day)
-    if user and user.location_country in locations.AMPM_COUNTRIES:
+def time_human_format(d, user):
+    if not user or user.location_country in locations.AMPM_COUNTRIES:
         time_string = '%d:%02d%s' % (int(d.strftime('%I')), d.minute, d.strftime('%p').lower())
     else:
         time_string = '%d:%02d' % (int(d.strftime('%H')), d.minute)
-    return '%s at %s' % (month_day, time_string)
+    return time_string
 
+def date_human_format(d, user=None):
+    month_day_of_week = d.strftime('%A, %B')
+    month_day = '%s %s' % (month_day_of_week, d.day)
+    time_string = time_human_format(d, user=user)
+    return '%s - %s' % (month_day, time_string)
+
+def duration_human_format(d1, d2, user=None):
+    first_date = date_human_format(d1)
+    if (d2 - d1) > datetime.timedelta(hours=24):
+        second_date = date_human_format(d2, user)
+    else:
+        second_date = time_human_format(d2, user)
+    
+    return "%s to %s" % (first_date, second_date)
 
 class User(db.Model):
     # SSO
