@@ -21,22 +21,7 @@ from django.utils import simplejson
 
 DEADLINE = 20
 
-# Not used
-RSVP_EVENTS_FQL = """
-SELECT eid, rsvp_status
-FROM event_member
-WHERE uid = %s
-"""
-
-RSVP_FUTURE_EVENTS_FQL = """
-SELECT eid, rsvp_status
-FROM event_member
-WHERE eid in 
-    (SELECT eid FROM event 
-    WHERE eid IN (SELECT eid FROM event_member WHERE uid = %s) 
-    AND start_time > %d ORDER BY start_time)
-"""
-
+#TODO(lambert): get rid of this in favor of /me/events?since=yesterday
 ALL_EVENTS_FQL = """
 SELECT eid, name, start_time, end_time, host
 FROM event 
@@ -94,7 +79,7 @@ class BatchLookup(object):
             return dict(
                 profile=self._fetch_rpc('%s' % object_id),
                 friends=self._fetch_rpc('%s/friends' % object_id),
-                rsvp_for_events=self._fql_rpc(RSVP_EVENTS_FQL % (object_id)),
+                rsvp_for_future_events=self._fetch_rpc('%s/events?since=yesterday' % object_id),
             )
         elif object_type == self.OBJECT_USER_EVENTS:
             today = int(time.mktime(datetime.date.today().timetuple()[:9]))
