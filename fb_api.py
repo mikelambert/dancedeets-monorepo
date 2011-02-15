@@ -21,7 +21,6 @@ from django.utils import simplejson
 
 DEADLINE = 20
 
-#TODO(lambert): get rid of this in favor of /me/events?since=yesterday
 ALL_EVENTS_FQL = """
 SELECT eid, name, start_time, end_time, host
 FROM event 
