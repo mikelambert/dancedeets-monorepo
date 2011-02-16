@@ -18,11 +18,7 @@ $duration_human_format($start_time, $end_time)
 
 <p><b>Location:</b><br>
 $event.info.location<br>
-#if 'venue' in $event.info
-$event.info.venue.street<br>
-$event.info.venue.city, $event.info.venue.state<br>
-$event.info.venue.country<br>
-#end if
+$city_state_country<br>
 
 <p><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a>
 
