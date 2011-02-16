@@ -19,9 +19,9 @@ def save_potential_fb_events(new_dance_events):
         except apiproxy_errors.CapabilityDisabledError:
             pass
 
-def get_potential_dance_events(batch_lookup, user):
+def get_potential_dance_events(batch_lookup, user_id):
     try:
-        results_json = batch_lookup.data_for_user_events(user.fb_uid)['all_event_info']
+        results_json = batch_lookup.data_for_user_events(user_id)['all_event_info']
         events = sorted(results_json, key=lambda x: x['start_time'])
     except fb_api.NoFetchedDataException:
         events = []

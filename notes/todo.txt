@@ -1,7 +1,5 @@
 BEFORE LAUNCH:
 
-- add support to get all mike lambert's dancer friends events too! some good stuff in there, that we can add to the potential-events list.
-
 - support non-facebook login via http://developers.facebook.com/docs/plugins/registration ?
 
 - add comments via http://developers.facebook.com/docs/reference/plugins/comments

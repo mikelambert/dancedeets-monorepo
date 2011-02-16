@@ -53,6 +53,7 @@ class BatchLookup(object):
     OBJECT_PROFILE = 'OBJ_PROFILE'
     OBJECT_USER = 'OBJ_USER'
     OBJECT_USER_EVENTS = 'OBJ_USER_EVENTS'
+    OBJECT_FRIEND_LIST = 'OBJ_FRIEND_LIST'
     OBJECT_EVENT = 'OBJ_EVENT'
     OBJECT_EVENT_MEMBERS = 'OBJ_EVENT_MEMBERS'
     OBJECT_FQL = 'OBJ_FQL'
@@ -85,6 +86,10 @@ class BatchLookup(object):
             return dict(
                 all_event_info=self._fql_rpc(ALL_EVENTS_FQL % (object_id, today)),
             )
+        elif object_type == self.OBJECT_FRIEND_LIST:
+            return dict(
+                friend_list=self._fetch_rpc('%s/members' % object_id),
+            )
         elif object_type == self.OBJECT_EVENT:
             return dict(
                 info=self._fetch_rpc('%s' % object_id, use_access_token=False),
@@ -116,7 +121,11 @@ class BatchLookup(object):
 
     def _fetch_rpc(self, path, use_access_token=True):
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
-        url = "https://graph.facebook.com/%s?%s" % (path, urllib.urlencode(dict(access_token=self.fb_graph.access_token)))
+        if '?' in path:
+            combiner = '&'
+        else:
+            combiner = '?'
+        url = "https://graph.facebook.com/%s%s%s" % (path, combiner, urllib.urlencode(dict(access_token=self.fb_graph.access_token)))
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
@@ -129,6 +138,8 @@ class BatchLookup(object):
         return tuple(str(x) for x in (self.fb_uid, user_id, self.OBJECT_USER))
     def _user_events_key(self, user_id):
         return tuple(str(x) for x in (self.fb_uid, user_id, self.OBJECT_USER_EVENTS))
+    def _friend_list_key(self, friend_list_id):
+        return tuple(str(x) for x in (self.fb_uid, friend_list_id, self.OBJECT_FRIEND_LIST))
     def _event_key(self, event_id):
         return tuple(str(x) for x in (self.get_userless_id(), event_id, self.OBJECT_EVENT))
     def _event_members_key(self, event_id):
@@ -168,6 +179,7 @@ class BatchLookup(object):
     invalidate_profile = _db_delete(_profile_key)
     invalidate_user = _db_delete(_user_key)
     invalidate_user_events = _db_delete(_user_events_key)
+    invalidate_friend_list = _db_delete(_friend_list_key)
     invalidate_event = _db_delete(_event_key)
     invalidate_event_members = _db_delete(_event_members_key)
     invalidate_fql = _db_delete(_fql_key)
@@ -175,6 +187,7 @@ class BatchLookup(object):
     lookup_profile = _db_lookup(_profile_key)
     lookup_user = _db_lookup(_user_key)
     lookup_user_events = _db_lookup(_user_events_key)
+    lookup_friend_list = _db_lookup(_friend_list_key)
     lookup_event = _db_lookup(_event_key)
     lookup_event_members = _db_lookup(_event_members_key)
     lookup_fql = _db_lookup(_fql_key)
@@ -182,6 +195,7 @@ class BatchLookup(object):
     data_for_profile = _data_for(_profile_key)
     data_for_user = _data_for(_user_key)
     data_for_user_events = _data_for(_user_events_key)
+    data_for_friend_list = _data_for(_friend_list_key)
     data_for_event = _data_for(_event_key)
     data_for_event_members = _data_for(_event_members_key)
     data_for_fql = _data_for(_fql_key)

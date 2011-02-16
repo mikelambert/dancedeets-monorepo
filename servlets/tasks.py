@@ -87,6 +87,13 @@ class LoadEventMembersHandler(BaseTaskFacebookRequestHandler):
         backgrounder.load_event_members(failed_fb_event_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
     post=get
 
+class LoadFriendListHandler(BaseTaskFacebookRequestHandler):
+    def get(self):
+        friend_list_id = self.request.get('friend_list_id')
+        self.batch_lookup.lookup_friend_list(friend_list_id)
+        self.batch_lookup.finish_loading()
+    post=get
+
 class LoadUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
@@ -94,12 +101,14 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
         load_users = users.User.get_by_key_name(user_ids)
         for user in load_users:
             if user.expired_oauth_token:
+                logging.info("Known expired auth token, aborting.")
                 return
             else:
                 self.batch_lookup.lookup_user(user.fb_uid)
         try:
             self.batch_lookup.finish_loading()
         except fb_api.ExpiredOAuthToken:
+            logging.info("Auth token now expired, mark as such.")
             user = users.User.get_by_key_name(user_ids[0])
             user.expired_oauth_token = True
             user.put()
@@ -112,7 +121,8 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
             except:
                 logging.exception("Error loading user, going to retry uid=%s", user_id)
                 failed_fb_user_ids.append(user_id)
-        load_users = users.User.get_by_key_name(user_ids)
+        good_ids = list(set(user_ids).difference(failed_fb_user_ids))
+        load_users = users.User.get_by_key_name(good_ids)
         for user in load_users:
             user.compute_derived_properties(self.batch_lookup.data_for_user(user_id))
             user.put()
@@ -203,20 +213,37 @@ class LoadAllPotentialEventsHandler(RequestHandler):
         # must load from cache here, since we don't load it as part of user lookups anymore
         backgrounder.load_potential_events_for_users(user_ids, allow_cache=False)
 
+class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
+    def initialize(self, request, response):
+        print dir(request)
+        return super(LoadPotentialEventsForFriendsHandler, self).initialize(request, response)
+
+    def get(self):
+        friend_lists = []
+        #TODO(lambert): extract this out into some sort of dynamic lookup based on Mike Lambert
+        friend_lists.append('530448100598') # Freestyle SF
+        friend_lists.append('565645070588') # Choreo SF
+        friend_lists.append('565645040648') # Freestyle NYC
+        friend_lists.append('556389713398') # Choreo LA
+        friend_lists.append('583877258138') # Freestyle Elsewhere
+        friend_lists.append('565645155418') # Choreo Elsewhere
+        for x in friend_lists:
+            self.batch_lookup.lookup_friend_list(x)
+        self.batch_lookup.finish_loading()
+        for fl in friend_lists:
+            friend_ids = [x['id'] for x in self.batch_lookup.data_for_friend_list(fl)['friend_list']['data']]
+            backgrounder.load_potential_events_for_friends(self.fb_uid, friend_ids, allow_cache=self.allow_cache)
+
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
-        assert len(user_ids) == 1
-        load_users = users.User.get_by_key_name(user_ids)
-        for user in load_users:
-            if user.expired_oauth_token:
-                return
-            else:
-                self.batch_lookup.lookup_user(user.fb_uid)
-                self.batch_lookup.lookup_user_events(user.fb_uid)
+        if self.user.expired_oauth_token:
+            return
+        for user_id in user_ids:
+            self.batch_lookup.lookup_user_events(user_id)
         self.batch_lookup.finish_loading()
-        for user in load_users:
-            potential_events.get_potential_dance_events(self.batch_lookup, user)
+        for user_id in user_ids:
+            potential_events.get_potential_dance_events(self.batch_lookup, user_id)
 
 class UpdateLastLoginTimeHandler(RequestHandler):
     def get(self):

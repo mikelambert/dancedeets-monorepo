@@ -44,7 +44,7 @@ def email_for_user(user, batch_lookup, fb_graph, should_send=True):
     grouped_results = [x for x in grouped_results if x.id != 'year_events']
 
     # check the events user-was-invited-to, looking for any dance-related fb events we don't know about yet
-    new_dance_events = potential_events.get_potential_dance_events(batch_lookup, user)
+    new_dance_events = potential_events.get_potential_dance_events(batch_lookup, user.fb_uid)
 
     display = {}
     display['date_human_format'] = lambda x: users.date_human_format(x, user=user)
