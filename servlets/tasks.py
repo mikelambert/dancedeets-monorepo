@@ -98,35 +98,27 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         assert len(user_ids) == 1
-        load_users = users.User.get_by_key_name(user_ids)
-        for user in load_users:
-            if user.expired_oauth_token:
-                logging.info("Known expired auth token, aborting.")
-                return
-            else:
-                self.batch_lookup.lookup_user(user.fb_uid)
+        user_id = user_ids[0]
+        self.batch_lookup.lookup_user(user_id)
         try:
             self.batch_lookup.finish_loading()
         except fb_api.ExpiredOAuthToken:
             logging.info("Auth token now expired, mark as such.")
-            user = users.User.get_by_key_name(user_ids[0])
+            user = users.User.get_by_key_name(user_id)
             user.expired_oauth_token = True
             user.put()
             return
 
-        failed_fb_user_ids = []
-        for user_id in user_ids:
-            try:
-                self.batch_lookup.data_for_user(user_id)
-            except:
-                logging.exception("Error loading user, going to retry uid=%s", user_id)
-                failed_fb_user_ids.append(user_id)
-        good_ids = list(set(user_ids).difference(failed_fb_user_ids))
-        load_users = users.User.get_by_key_name(good_ids)
-        for user in load_users:
-            user.compute_derived_properties(self.batch_lookup.data_for_user(user_id))
-            user.put()
-        backgrounder.load_users(failed_fb_user_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
+        try:
+            self.batch_lookup.data_for_user(user_id)
+        except:
+            logging.exception("Error loading user, going to retry uid=%s", user_id)
+            backgrounder.load_users([user_id], self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
+            return
+
+        user = users.User.get_by_key_name(user_id)
+        user.compute_derived_properties(self.batch_lookup.data_for_user(user_id))
+        user.put()
 
     post=get
 
@@ -138,7 +130,7 @@ class ReloadAllUsersHandler(BaseTaskRequestHandler):
 
 class ResaveAllUsersHandler(BaseTaskRequestHandler):
     def get(self):
-        user_ids = [user.fb_uid for user in users.User.all() if not user.expired_oauth_token]
+        user_ids = [user.fb_uid for user in users.User.all()]
         backgrounder.load_users(user_ids)
     post=get
 
