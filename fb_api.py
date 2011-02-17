@@ -294,13 +294,15 @@ class BatchLookup(object):
             for object_rpc_name, object_rpc in object_rpc_dict.iteritems():
                 object_json = self._map_rpc_to_data(object_key, object_rpc_name, object_rpc)
                 if object_json is not None:
-                    if type(object_json) == dict and 'error_code' in object_json:
+                    if type(object_json) == dict and ('error_code' in object_json or 'error' in object_json):
                         logging.error("BatchLookup: Error code from FB server: %s", object_json)
 
                         fb_uid, object_id, object_type = object_key
                         # expired/invalidated OAuth token for User objects. We use one OAuth token per BatchLookup, so no use continuing...
                         # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
-                        if object_type == self.OBJECT_USER and object_json['error_code'] == 190:
+                        error_code = object_json.get('error_code')
+                        error_type = object_json.get('error', {}).get('type')
+                        if object_type == self.OBJECT_USER and (error_code == 190 or error_type == 'OAuthException'):
                             raise ExpiredOAuthToken(object_key)
                         object_is_bad = True
                     elif object_json == False:
