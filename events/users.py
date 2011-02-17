@@ -93,6 +93,7 @@ class User(db.Model):
 
     # Derived from fb_user
     full_name = db.StringProperty()
+    email = db.StringProperty()
 
     expired_oauth_token = db.BooleanProperty()
 
@@ -120,6 +121,7 @@ class User(db.Model):
 
     def compute_derived_properties(self, fb_user):
         self.full_name = fb_user['profile']['name']
+        self.email = fb_user['profile']['email']
         if self.location:
             #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
             self.location_country = locations.get_country_for_location(self.location)
