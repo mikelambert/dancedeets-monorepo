@@ -16,7 +16,7 @@ from util import text
 from util import urls
 
 def email_for_user(user, batch_lookup, fb_graph, should_send=True):
-    if not user.send_email:
+    if not user.send_email or not user.email:
         return
 
     user_location = user.location
@@ -70,7 +70,7 @@ def email_for_user(user, batch_lookup, fb_graph, should_send=True):
     message = mail.EmailMessage(
         sender="DanceDeets Events <events@dancedeets.com>",
         subject="Dance events for %s" % d.strftime('%b %d, %Y'),
-        to=batch_lookup.data_for_user(user.fb_uid)['profile']['email'],
+        to=user.email,
         html=rendered
     )
     if should_send:
