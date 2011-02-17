@@ -40,6 +40,7 @@ URLS = [
     ('/tools/clear_memcache', admin.ClearMemcacheHandler),
     ('/tools/delete_fb_cache', admin.DeleteFBCacheHandler),
     ('/tools/show_users', admin.ShowUsersHandler),
+    ('/tools/fb_data', admin.FBDataHandler),
     ('/tasks/cleanup_work', tasks.CleanupWorkHandler),
     ('/tasks/load_events', tasks.LoadEventHandler),
     ('/tasks/load_users', tasks.LoadUserHandler),
