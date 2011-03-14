@@ -18,6 +18,7 @@
 								<br>to $date_human_format($result.end_time)
 							#end if
 						</div>
+						<div class="event-city">$result.city</div>
 					</div>
 					<div style="clear:both;height:1px;"></div>
 				</a>

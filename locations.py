@@ -90,9 +90,20 @@ def get_geocoded_location(address):
     if result:
         geocoded_location['latlng'] = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
         geocoded_location['address'] = result['formatted_address']
+        def get(name):
+            components = [x['long_name'] for x in result['address_components'] if name in x['types']]
+            if components:
+                return components[0]
+            else:
+                return None
+            
+        geocoded_location['city'] = get('locality') or get('administrative_area_level_3') or get('administrative_area_level_2')
+        if not geocoded_location['city']:
+            logging.info(result)
     else:
         geocoded_location['latlng'] = None, None
         geocoded_location['address'] = None
+        geocoded_location['city'] = None
     return geocoded_location
 
 def get_country_for_location(location_name):
