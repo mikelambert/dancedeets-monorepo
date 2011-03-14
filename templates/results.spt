@@ -93,8 +93,8 @@ Dance Events
 			</h3>
 	<div id="search_options" style="display:none">
 		<form>
-		<p>Location: <input name=user_location value="$defaults.user_location">
-		<p>Distance: <input name=distance value="$defaults.distance">
+		<p>Events near <input name=user_location value="$defaults.user_location">
+		within <input name=distance value="$defaults.distance">
 		<select name="distance_units">
 			<option name=km
 		#if $defaults.distance_units == 'km'
