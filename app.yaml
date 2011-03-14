@@ -56,14 +56,14 @@ admin_console:
    url: /_ah/stats
 
 skip_files:
-- ^(.*/)?app\.yaml
-- ^(.*/)?app\.yml
-- ^(.*/)?index\.yaml
-- ^(.*/)?index\.yml
 - ^(.*/)?#.*#
 - ^(.*/)?.*~
 - ^(.*/)?.*\.py[co]
 - ^(.*/)?.*/RCS/.*
 - ^(.*/)?\..*
 - ^(.*/)?.*\.db
-- ^(.*/)?.*\.spt
+#- ^(.*/)?app\.yaml
+#- ^(.*/)?app\.yml
+#- ^(.*/)?index\.yaml
+#- ^(.*/)?index\.yml
+#- ^(.*/)?.*\.spt
