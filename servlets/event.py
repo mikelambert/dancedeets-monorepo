@@ -79,11 +79,14 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         self.display['start_time'] = eventdata.parse_fb_timestamp(event_info['info']['start_time'])
         self.display['end_time'] = eventdata.parse_fb_timestamp(event_info['info']['end_time'])
 
-        city_state_country = [
-            event_info['info']['venue'][x]
-            for x in ['city', 'state', 'country']
-            if x in event_info['info']['venue']
-        ]
+        if 'venue' in event_info['info']:
+            city_state_country = [
+                event_info['info']['venue'][x]
+                for x in ['city', 'state', 'country']
+                if x in event_info['info']['venue']
+            ]
+        else:
+            city_state_country = ''
         self.display['city_state_country'] = ', '.join(city_state_country)
         self.display['event'] = event_info
         self.display['next'] =  self.request.url
