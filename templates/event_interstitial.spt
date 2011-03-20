@@ -25,7 +25,7 @@ $city_state_country<br>
 </div>
 
 <div style="float:right;width:510px">
-#if getattr($event.info, 'description')
+#if $event.info.description
 	$format_html($event.info.description)
 #end if
 </div>
