@@ -5,23 +5,27 @@
 		## widths here are set to sum to 700px-50px = 650px
 		<li class="">
 			<div style="float:left" class="click-box">
+				<div class="event-image">
 				<a href="$fb_event_url($fb_event.id)">
-					<div class="event-image">
-						<img src="$result.get_image()" width="180" border="0">
-					</div>
-					<div class="event-description">
-						<h2 class="event-title">$format_html($fb_event.name)</h2>
-						<div class="event-choreo-freestyle">($result.choreo_or_freestyle)</div>
-						<div class="event-date">
-							$date_human_format($result.start_time)
-							#if $result.multi_day_event()
-								<br>to $date_human_format($result.end_time)
-							#end if
-						</div>
-						<div class="event-city">$result.city</div>
-					</div>
-					<div style="clear:both;height:1px;"></div>
+					<img src="$result.get_image()" width="180" border="0">
 				</a>
+				</div>
+				<div class="event-description">
+					<h2 class="event-title">
+					<a href="$fb_event_url($fb_event.id)">
+					$format_html($fb_event.name)
+					</a>
+					</h2>
+					<div class="event-choreo-freestyle">($result.choreo_or_freestyle)</div>
+					<div class="event-date">
+						$date_human_format($result.start_time)
+						#if $result.multi_day_event()
+							<br>to $date_human_format($result.end_time)
+						#end if
+					</div>
+					<div class="event-city">$result.city</div>
+				</div>
+				<div style="clear:both;height:1px;"></div>
 			</div>
 			#if $result.get_attendance()
 				<div style="float:right;width:150px">
