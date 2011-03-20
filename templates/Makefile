@@ -1,5 +1,5 @@
 
-spitfire_compile := spitfire-compile -O3
+spitfire_compile := python2.5 /usr/local/bin/spitfire-compile -O3
 
 QUIET := @
 

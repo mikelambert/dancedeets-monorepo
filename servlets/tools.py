@@ -1,3 +1,4 @@
+import logging
 import time
 from google.appengine.ext import db
 from google.appengine.ext import webapp
@@ -14,15 +15,20 @@ class MyModelMapper(Mapper):
     KIND = users.User
 
     def map(self, entity):
-        if entity.inviting_fb_uid == None:
-            entity.inviting_fb_uid = 701004
-            return ([entity], [])
-        return ([], [])
+        if entity.distance_units == 'km':
+            entity.distance = '500'
+            entity.distance_units = 'miles'
+        else:
+            if entity.distance == '90':
+                entity.distance = '100'
+            if entity.distance == '3':
+                entity.distance = '10'
+        return ([entity], [])
 
 class OneOffHandler(webapp.RequestHandler):
     def get(self):
-        #m = MyModelMapper()
-        #m.run()
+        m = MyModelMapper()
+        m.run()
         return
         es = eventdata.DBEvent.gql('where address != :addr', addr=None).fetch(500)
         self.response.out.write('len is %s<br>\n' % len(es))

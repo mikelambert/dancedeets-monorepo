@@ -94,7 +94,7 @@
 </script>
 #end def
 
-#def fb_javascript
+#def fb_javascript($next='')
 <div id="fb-root"></div>
 <script type="text/javascript">
   (function() {

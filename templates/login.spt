@@ -159,12 +159,12 @@ $signup_form($next)
 		}
 		var encoded_city = encodeURIComponent(city);
 		// TODO(lambert): when we load this, we should grab the city name as well for standardized lookups. and set it up to "allow fallback" so that it always returns events. or returns historical events. if necessary. so the user always sees something useful.
-		$('#events_list').load('/events/relevant?ajax=1&user_location=' + encoded_city + '&distance=30&distance_units=miles&freestyle=FREESTYLE_DANCER&choreo=CHOREO_DANCER', setupActions);
+		$('#events_list').load('/events/relevant?ajax=1&location=' + encoded_city + '&distance=30&distance_units=miles&dance_type=DANCE_TYPE_ALL_DANCE', setupActions);
 		$('#city_name').html(short_city);
 	}
 	google.setOnLoadCallback(getLoginPageLocation);
 </script>
 $signup_form_javascript()
-$fb_javascript()
+$fb_javascript($next)
 </body>
 #end def

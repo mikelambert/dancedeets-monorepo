@@ -37,6 +37,7 @@ class BareBaseRequestHandler(RequestHandler):
         self.display['format_js'] = text.format_js
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
+        self.display['next'] = ''
 
     def set_cookie(self, name, value, expires=None):
         cookie = Cookie.SimpleCookie()

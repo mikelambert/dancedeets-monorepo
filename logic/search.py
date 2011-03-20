@@ -88,9 +88,8 @@ class SearchQuery(object):
     MATCH_LOCATION = 'LOCATION'
     MATCH_QUERY = 'QUERY'
 
-    def __init__(self, any_tags=None, choreo_freestyle=None, time_period=None, start_time=None, end_time=None, city_name=None, location=None, distance_in_km=None, query_args=None, freestyle=None, choreo=None):
+    def __init__(self, any_tags=None, time_period=None, start_time=None, end_time=None, city_name=None, location=None, distance_in_km=None, query_args=None, freestyle=None, choreo=None):
         self.any_tags = set(any_tags or [])
-        self.choreo_freestyle = choreo_freestyle
         self.time_period = time_period
         self.freestyle = freestyle
         self.choreo = choreo
@@ -166,9 +165,6 @@ class SearchQuery(object):
     def get_candidate_events(self):
         clauses = []
         bind_vars = {}
-        if self.choreo_freestyle:
-            clauses.append('search_tags = :search_tag')
-            bind_vars['search_tag'] = self.choreo_freestyle
         if self.city_name:
             clauses.append('city_name = :city_name')
             bind_vars['city_name'] = self.city_name

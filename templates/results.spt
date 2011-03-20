@@ -1,6 +1,7 @@
 #extends _base
 #extends _rsvp
 #extends _results
+#extends _event_criteria
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
@@ -83,52 +84,16 @@ Dance Events
 #def body
 
 <div id="left-hand">
-	<div class="accordion">
-			<h3 class="head"><a href="#" onclick="return false;">
+	<div>
+			<h3 class="head">
 			Searching for
 			$event_types events
 			within
-			$defaults.distance $defaults.distance_units of ${defaults.user_location}.
-			</a>
+			$defaults.distance $defaults.distance_units of ${defaults.location}.
 			</h3>
-	<div id="search_options" style="display:none">
+	<div id="search_options">
 		<form>
-		<p>Events near <input name=user_location value="$defaults.user_location">
-		within <input name=distance value="$defaults.distance">
-		<select name="distance_units">
-			<option name=km
-		#if $defaults.distance_units == 'km'
-				selected
-		#end if
-			>km
-			<option name=miles
-		#if $defaults.distance_units == 'miles'
-				selected
-		#end if
-			>miles
-		</select>
-		<table><tr style="vertical-align:top">
-		#for $type in $DANCES
-		<td><div style="width:250px">
-		<strong>$DANCE_HEADERS[$type].name</strong><br>
-		<span style="font-size:12px">$DANCE_HEADERS[$type].description</span><br>
-		#for $list_item in $DANCE_LISTS[$type]
-			<hr>
-		<!-- border of 1px solid #EEEEEE ?? -->
-			<input type=radio name="$type" value="$list_item.internal" id="$list_item.internal"
-			#if $defaults.get($type) == $list_item.internal
-				checked
-			#end if
-			>
-			<label for="$list_item.internal">
-				$list_item.name
-			</label>
-		#end for
-		</div>
-		</td>
-		#end for
-		</tr></table>
-
+		$event_criteria($defaults)
 		<input type=submit value="Search">
 		</form>
 	</div>
@@ -223,30 +188,20 @@ function setupActions() {
 	);
 }
 
+var keys =  function  (o) {
+    var arr = [];
+    for (var propertyName in o) {
+      arr.push(propertyName);
+      }
+    return arr;
+  };
+ 
 $(document).ready(function() {
+	$event_criteria_bottom_javascript()
 	$("#share-button").button();
 	$("#add-button").button();
 	$("#tabs").tabs();
 	setupActions();
-
-	// Make our top-panel act the way we want...
-	$('.accordion').accordion();
-	$('.accordion .head').removeClass('ui-state-active');
-	var icon = $('.accordion .head .ui-icon');
-	icon.addClass('ui-icon-triangle-1-e');
-	icon.removeClass('ui-icon-triangle-1-s');
-	$('.accordion .head').click(function() {
-		var icon = $('.accordion .head .ui-icon');
-		if (icon.hasClass('ui-icon-triangle-1-s')) {
-			icon.addClass('ui-icon-triangle-1-e');
-			icon.removeClass('ui-icon-triangle-1-s');
-		} else {
-			icon.addClass('ui-icon-triangle-1-s');
-			icon.removeClass('ui-icon-triangle-1-e');
-		}
-		$(this).next().slideToggle('slow');
-		return false;
-	}).next().hide();
 
 });
 </script>

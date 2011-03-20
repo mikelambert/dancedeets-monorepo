@@ -19,9 +19,12 @@ There are $num_users users total:
 </td><td>
 $user.location
 </td><td>
+$user.distance
+$user.distance_units
+</td><td>
 <a href="http://www.facebook.com/profile.php?id=$user.fb_uid">$user.full_name</a>
 </td><td>
-$user.freestyle, $user.choreo
+$user.dance_type
 </td></tr>
 #end for
 </table>

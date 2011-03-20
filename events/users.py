@@ -15,6 +15,17 @@ def header_item(name, description):
 def list_item(internal, name, description):
     return dict(internal=internal, name=name, description=description)
 
+DANCE_TYPE_ALL_DANCE = list_item('DANCE_TYPE_ALL_DANCE', 'All Dance', '')
+DANCE_TYPE_FREESTYLE = list_item('DANCE_TYPE_FREESTYLE', 'Freestyle', '')
+DANCE_TYPE_CHOREO = list_item('DANCE_TYPE_CHOREO', 'Choreo', '')
+DANCE_TYPE_FAN = list_item('DANCE_TYPE_FAN', 'Dance Fan', '')
+DANCE_TYPES_LIST = [
+    DANCE_TYPE_ALL_DANCE,
+    DANCE_TYPE_FREESTYLE,
+    DANCE_TYPE_CHOREO,
+    DANCE_TYPE_FAN,
+]
+
 FREESTYLE_DANCER = 'FREESTYLE_DANCER'
 FREESTYLE_FAN = 'FREESTYLE_FAN'
 FREESTYLE_APATHY = 'FREESTYLE_APATHY'
@@ -83,6 +94,8 @@ class User(db.Model):
     location = db.StringProperty()
     distance = db.StringProperty()
     distance_units = db.StringProperty()
+
+    dance_type = db.StringProperty()
     freestyle = db.StringProperty()
     choreo = db.StringProperty()
 
@@ -137,10 +150,22 @@ class User(db.Model):
     def local_time(self):
         return dates.localize_timestamp(datetime.datetime.now(), timezone_str=self.location_timezone)
 
-    def put(self):
-        super(User, self).put()
+    def _populate_internal_entity(self):
+        logging.info("a %s" % self.dance_type)
+        if not getattr(self, 'dance_type', None):
+            logging.info("b")
+            if self.freestyle == FREESTYLE_DANCER and self.choreo == CHOREO_DANCER:
+                self.dance_type = DANCE_TYPE_ALL_DANCE['internal']
+            elif self.freestyle == FREESTYLE_DANCER:
+                self.dance_type = DANCE_TYPE_FREESTYLE['internal']
+            elif self.choreo == CHOREO_DANCER:
+                self.dance_type = DANCE_TYPE_CHOREO['internal']
+            else:
+                self.dance_type = DANCE_TYPE_FAN['internal']
+        logging.info("c %s" % self.dance_type)
         memcache_key = self.memcache_user_key(self.fb_uid)
         smemcache.set(memcache_key, self, USER_EXPIRY)
+        return super(User, self)._populate_internal_entity()
 
     def get_city(self):
         if self.location:

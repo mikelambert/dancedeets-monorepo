@@ -60,6 +60,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['user_message'] = self.get_cookie('User-Message')
 
         self.display['next'] = next
+        logging.info(self.display['next'])
         self.display['needs_city'] = needs_city
         self.render_template('login')
 
@@ -111,12 +112,8 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.errors_are_fatal()
 
         user.send_email = True
-        if not user.location_country or user.location_country in locations.MILES_COUNTRIES:
-            user.distance = '90'
-            user.distance_units = 'miles'
-        else:
-            user.distance = '150'
-            user.distance_units = 'km'
+        user.distance = '100'
+        user.distance_units = 'miles'
         user.creation_time = datetime.datetime.now()
 
         user.compute_derived_properties(fb_user)

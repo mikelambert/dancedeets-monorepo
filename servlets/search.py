@@ -51,12 +51,8 @@ class ResultsHandler(base_servlet.BaseRequestHandler):
 
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
-        if not self.user:
-            # If they're not logged in, require a full set of fields...
-            required_fields = ['freestyle', 'choreo']
-            for field in required_fields:
-                if not self.request.get(field):
-                    return True
+        if not self.request.get('location'):
+            return True
         return False
 
     def get(self):
@@ -72,53 +68,63 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             self.redirect('/user/edit')
             return
         city_name = None
-        user_location = None
+        location = None
         distance = None
         distance_units = None
         distance_in_km = None
-        latlng_user_location = None
+        latlng_location = None
         if self.request.get('city_name'):
             city_name = self.request.get('city_name')
         else:
-            user_location = self.request.get('user_location', self.user and self.user.location)
+            location = self.request.get('location', self.user and self.user.location)
             distance = int(self.request.get('distance', self.user and self.user.distance))
             distance_units = self.request.get('distance_units', self.user and self.user.distance_units)
             if distance_units == 'miles':
                 distance_in_km = locations.miles_in_km(distance)
             else:
                 distance_in_km = distance
-            latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
-        freestyle = self.request.get('freestyle', self.user and self.user.freestyle)
-        choreo = self.request.get('choreo', self.user and self.user.choreo)
+            latlng_location = locations.get_geocoded_location(location)['latlng']
         past = self.request.get('past', '0') not in ['0', '', 'False', 'false']
 
-        event_types = []
-        if choreo in [x['internal'] for x in users.CHOREO_LIST[1:]]:
-            event_types.append('choreo')
-        if freestyle in [x['internal'] for x in users.FREESTYLE_LIST[1:]]:
-            event_types.append('freestyle')
-        self.display['event_types'] = ' and '.join(event_types)
 
-        self.display['user_location'] = user_location
+        dance_type = self.request.get('dance_type', self.user and self.user.dance_type) or users.DANCE_TYPES_LIST[0]['internal']
+
+        self.display['event_types'] = [x['name'] for x in users.DANCE_TYPES_LIST if x['internal'] == dance_type][0].lower()
+
+        self.display['location'] = location
         self.display['defaults'] = {
             'city_name': city_name,
             'distance': distance,
             'distance_units': distance_units,
-            'user_location': user_location,
-            'freestyle': freestyle,
-            'choreo': choreo,
+            'location': location,
+            'dance_type': dance_type,
             'past': past,
         }
         
-        self.display['DANCES'] = users.DANCES
-        self.display['DANCE_HEADERS'] = users.DANCE_HEADERS
-        self.display['DANCE_LISTS'] = users.DANCE_LISTS
-
         if past:
             time_period = tags.TIME_PAST
         else:
             time_period = tags.TIME_FUTURE
-        query = search.SearchQuery(time_period=time_period, city_name=city_name, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
+
+        choreo = None
+        freestyle = None
+        if dance_type == users.DANCE_TYPE_ALL_DANCE['internal']:
+            freestyle = users.FREESTYLE_DANCER
+            choreo = users.CHOREO_DANCER
+        elif dance_type == users.DANCE_TYPE_FREESTYLE['internal']:
+            freestyle = users.FREESTYLE_DANCER
+            choreo = users.CHOREO_APATHY
+        elif dance_type == users.DANCE_TYPE_CHOREO['internal']:
+            freestyle = users.FREESTYLE_APATHY
+            choreo = users.CHOREO_DANCER
+        elif dance_type == users.DANCE_TYPE_FAN['internal']:
+            freestyle = users.FREESTYLE_FAN
+            choreo = users.CHOREO_FAN
+        else:
+            assert False, 'unknown dance_type: %s' % dance_type
+        self.display['DANCE_TYPES_LIST'] = users.DANCE_TYPES_LIST
+
+        query = search.SearchQuery(time_period=time_period, city_name=city_name, location=latlng_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
         past_results, present_results, grouped_results = search.group_results(search_results)
@@ -126,7 +132,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             present_results = past_results + present_results
             past_results = []
 
-        closest_cityname = cities.get_largest_nearby_city_name(user_location)
+        closest_cityname = cities.get_largest_nearby_city_name(location)
         #TODO(lambert): perhaps produce optimized versions of these without styles/times, for use on the homepage? less pickling/loading required
         event_top_n_cities, event_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME), closest_cityname)
         user_top_n_cities, user_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_user_rankings(), rankings.DANCE_DANCER, rankings.ALL_TIME), closest_cityname)

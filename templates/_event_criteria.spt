@@ -1,0 +1,54 @@
+#def event_criteria($defaults)
+<p>Events near <input name=location value="$defaults.location">
+within <select name="distance">
+#for $d in [10, 50, 100, 200, 500, 25000]
+	<option value="$d"
+	#if $defaults.distance == $d
+		selected
+	#end if
+	>
+	#if $d == 25000
+		Everywhere
+	#else
+		$d miles
+	#end if
+	</option>
+#end for
+</select>
+<input type=hidden name=distance_units value=miles>
+
+<style>
+#dance_type .ui-selecting { background: #FECA40; }
+#dance_type  .ui-selected { background: #F39814; color: white; }
+#dance_type {
+	list-style-type: none;
+	margin: 0;
+	padding: 0.4em;
+	-webkit-padding-start: 0px;
+}
+#dance_type  li { margin: 3px; padding: 0.4em; display: inline; }
+</style>
+
+<ol id="dance_type">
+	#for $dt in $DANCE_TYPES_LIST
+	<li id="dance_type_id_$dt.internal"
+	class="ui-widget-content
+	#if $dt.internal == $defaults.dance_type
+		ui-selected
+	#end if
+	">$dt.name</li>
+	#end for
+</ol>
+<input id=dance_type_input type=hidden name=dance_type value="">
+#end def
+
+#def event_criteria_bottom_javascript
+	$("#dance_type").selectable({
+		selected: function(event, ui) {
+			new_dance_type_id = ui.selected.id;
+			new_dance_type = new_dance_type_id.substr('dance_type_id_'.length)
+			$('#dance_type_input').val(new_dance_type);
+		}
+	});
+#end def
+

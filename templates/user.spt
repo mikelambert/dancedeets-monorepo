@@ -1,4 +1,5 @@
 #extends _base
+#extends _event_criteria
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 
@@ -9,23 +10,7 @@ Settings
 #def body
 <form action="/user/edit" method="post">
 <p>
-	Location:
-	<input type=text name=location value="$defaults.location">
-<p>
-	How far will you travel:<br>
-	<input type=text name=distance value="$defaults.distance" size=5>
-	<select name=distance_units>
-		<option name="miles"
-#if $defaults.distance_units == "miles"
-	selected
-#end if
-		>miles
-		<option name="km"
-#if $defaults.distance_units == "km"
-	selected
-#end if
-		>km
-	</select>
+$event_criteria($defaults)
 <p>
 	Weekly Email Updates:<br>
 	<input type=radio name=send_email value="true" id="send_email_yes"
@@ -38,35 +23,16 @@ Settings
 	checked
 #end if
 	> <label for="send_email_no">No</label>
-<p>
 
-<!--TODO(lambert): sort these based on expectations for the user-->
-
-<table><tr style="vertical-align:top">
-#for $type in $DANCES
-<td>
-<div style="width:250px">
-<strong>$DANCE_HEADERS[$type].name</strong><br>
-<span style="font-size:12px">$DANCE_HEADERS[$type].description</span><br>
-#for $list_item in $DANCE_LISTS[$type]
-  <hr>
-<!-- border of 1px solid #EEEEEE ?? -->
-  <input type=radio name="$type" value="$list_item.internal" id="$list_item.internal"
-	#if $defaults.get($type) == $list_item.internal
-		checked	
-	#end if
-	>
-	<label for="$list_item.internal">
-		<strong>$list_item.name</strong>
-		<br>
-		<span style="font-size:12px;display:block">$list_item.description</span>
-	</label>
-#end for
-</div>
-</td>
-#end for
 </tr></table>
 
 <button>Save Changes</button>
 </form>
 #end def
+
+#def bottom_javascript
+<script type="text/javascript">
+$event_criteria_bottom_javascript()
+</script>
+#end def
+
