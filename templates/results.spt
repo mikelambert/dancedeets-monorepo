@@ -135,7 +135,7 @@ Dance Events
 	<div id="upcoming_events">
 		#for $group in $grouped_upcoming_results
 			#if $group.results
-				<h2 class="group-title">$group.name</b></h2>
+				<h2 class="group-title">$group.name</h2>
 				$render_results($group.results)
 			#end if
 		#end for
