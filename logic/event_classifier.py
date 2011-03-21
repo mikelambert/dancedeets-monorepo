@@ -6,6 +6,7 @@ easy_dance_keywords = [
     'funk', 'hip.?hop', 'punk',
 ]
 dance_keywords = [
+    'street.?dance',
     'b.?boys?', 'b.?girls?', 'breaks', 'breaking', 'breakers?',
     'top.?rock(?:ers?|ing|)', 'up.?rock(?:ers?|ing|)',
     'housers?', 'house danc[^ ]*',
