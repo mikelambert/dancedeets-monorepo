@@ -24,8 +24,6 @@ $event_criteria($defaults)
 #end if
 	> <label for="send_email_no">No</label>
 
-</tr></table>
-
 <button>Save Changes</button>
 </form>
 #end def
