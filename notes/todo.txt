@@ -1,5 +1,22 @@
 BEFORE LAUNCH:
 
+- attending counts
+- link from google to event redirect should be blogroll showing one page, maybe text description?
+-- add find-more-events link to make it clear how to search for more
+- everyone else should just redirect to fb page
+
+- logged out page shows all events, somehow highlight location selector
+- hover-overs for event selectors
+
+- simplify to single-word descriptions of event types
+- add 'audition' type separately
+
+- rankings view, organize by country?
+
+- figure out how to simplify signup page to top right? make the signup link (if not yet registered) ask a couple follow-up questions prefilled...?
+
+
+
 - support non-facebook login via http://developers.facebook.com/docs/plugins/registration ?
 
 - add comments via http://developers.facebook.com/docs/reference/plugins/comments
