@@ -15,6 +15,7 @@ BEFORE LAUNCH:
 
 - figure out how to simplify signup page to top right? make the signup link (if not yet registered) ask a couple follow-up questions prefilled...?
 
+- maybe add optional links for large flyers?
 
 
 - support non-facebook login via http://developers.facebook.com/docs/plugins/registration ?
