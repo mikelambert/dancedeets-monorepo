@@ -28,13 +28,21 @@ Hi $fb_user.profile.first_name,
 			</td>
 			<td valign=top>
 				<a href="$fb_event_url($fb_event.id)">
-				<b style="font-size: 110%">$format_html($fb_event.name)</b><br>
+				<b style="font-size: 110%">$format_html($fb_event.name)</b>
+				</a><br>
 				($result.choreo_or_freestyle)<br>
-				$date_human_format($result.start_time)
+				$date_human_format($result.start_time)<br>
 				#if $result.multi_day_event()
-					<br>to $date_human_format($result.end_time)
+					to $date_human_format($result.end_time)<br>
 				#end if
-				</a>
+				#if getattr($result.db_event, 'attendee_count')
+					Attending:
+					#if result.attending_friend_count
+						$result.attending_friend_count friends,
+					#end if
+					$result.db_event.attendee_count total<br>
+				#end if
+				$result.city
 			</td>
 		</tr>
 		#end for
