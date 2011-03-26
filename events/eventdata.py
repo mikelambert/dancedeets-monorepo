@@ -104,6 +104,7 @@ class DBEvent(db.Model):
     search_time_period = db.StringProperty()
     start_time = db.DateTimeProperty()
     end_time = db.DateTimeProperty()
+    attendee_count = db.IntegerProperty()
 
     # extra cached properties
     address = db.StringProperty()
@@ -113,6 +114,10 @@ class DBEvent(db.Model):
     geohashes = db.StringListProperty()
 
     search_regions = db.StringListProperty()
+
+    def include_attending_summary(self, fb_dict):
+        attendees = fb_dict['attending']['data']
+        self.attendee_count = len(attendees)
 
     def make_findable_for(self, fb_dict):
         # set up any cached fields or bucketing or whatnot for this event

@@ -23,6 +23,10 @@
 							<br>to $date_human_format($result.end_time)
 						#end if
 					</div>
+					#if getattr($result.db_event, 'attendee_count')
+					<!-- TODO(lambert): remove once everywhere-->
+					<div class="event-city">Attending: $result.db_event.attendee_count others</div>
+					#end if
 					<div class="event-city">$result.city</div>
 				</div>
 				<div style="clear:both;height:1px;"></div>

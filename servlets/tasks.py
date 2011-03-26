@@ -71,20 +71,25 @@ class LoadEventHandler(BaseTaskFacebookRequestHandler):
         backgrounder.load_events(failed_fb_event_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
     post=get
 
-class LoadEventMembersHandler(BaseTaskFacebookRequestHandler):
+class LoadEventAttendingHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
         for event_id in event_ids:
-            self.batch_lookup.lookup_event_members(event_id)
+            self.batch_lookup.lookup_event_attending(event_id)
         self.batch_lookup.finish_loading()
+        db_events = eventdata.DBEvent.get_by_key_name(event_ids)
         failed_fb_event_ids = []
-        for event_id in event_ids:
+        for event_id, db_event in zip(event_ids, db_events):
+            if not db_event:
+                continue # could be due to uncache-able events that we don't save here
             try:
-                self.batch_lookup.data_for_event_members(event_id)
+                event_attending = self.batch_lookup.data_for_event_attending(event_id)
+                db_event.include_attending_summary(event_attending)
+                db_event.put()
             except:
                 logging.exception("Error loading event, going to retry eid=%s", event_id)
                 failed_fb_event_ids.append(event_id)
-        backgrounder.load_event_members(failed_fb_event_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
+        backgrounder.load_event_attending(failed_fb_event_ids, self.allow_cache, countdown=RETRY_ON_FAIL_DELAY)
     post=get
 
 class LoadFriendListHandler(BaseTaskFacebookRequestHandler):

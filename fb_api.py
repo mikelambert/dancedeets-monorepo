@@ -55,6 +55,7 @@ class BatchLookup(object):
     OBJECT_USER_EVENTS = 'OBJ_USER_EVENTS'
     OBJECT_FRIEND_LIST = 'OBJ_FRIEND_LIST'
     OBJECT_EVENT = 'OBJ_EVENT'
+    OBJECT_EVENT_ATTENDING = 'OBJ_EVENT_ATTENDING'
     OBJECT_EVENT_MEMBERS = 'OBJ_EVENT_MEMBERS'
     OBJECT_FQL = 'OBJ_FQL'
 
@@ -94,6 +95,10 @@ class BatchLookup(object):
             return dict(
                 info=self._fetch_rpc('%s' % object_id, use_access_token=False),
                 picture=self._fetch_rpc('%s/picture' % object_id, use_access_token=False),
+            )
+        elif object_type == self.OBJECT_EVENT_ATTENDING:
+            return dict(
+                attending=self._fetch_rpc('%s/attending' % object_id),
             )
         elif object_type == self.OBJECT_EVENT_MEMBERS:
             return dict(
@@ -142,6 +147,8 @@ class BatchLookup(object):
         return tuple(str(x) for x in (self.fb_uid, friend_list_id, self.OBJECT_FRIEND_LIST))
     def _event_key(self, event_id):
         return tuple(str(x) for x in (self.get_userless_id(), event_id, self.OBJECT_EVENT))
+    def _event_attending_key(self, event_id):
+        return tuple(str(x) for x in (self.get_userless_id(), event_id, self.OBJECT_EVENT_ATTENDING))
     def _event_members_key(self, event_id):
         return tuple(str(x) for x in (self.get_userless_id(), event_id, self.OBJECT_EVENT_MEMBERS))
     def _fql_key(self, fql_query):
@@ -181,6 +188,7 @@ class BatchLookup(object):
     invalidate_user_events = _db_delete(_user_events_key)
     invalidate_friend_list = _db_delete(_friend_list_key)
     invalidate_event = _db_delete(_event_key)
+    invalidate_event_attending = _db_delete(_event_attending_key)
     invalidate_event_members = _db_delete(_event_members_key)
     invalidate_fql = _db_delete(_fql_key)
 
@@ -189,6 +197,7 @@ class BatchLookup(object):
     lookup_user_events = _db_lookup(_user_events_key)
     lookup_friend_list = _db_lookup(_friend_list_key)
     lookup_event = _db_lookup(_event_key)
+    lookup_event_attending = _db_lookup(_event_attending_key)
     lookup_event_members = _db_lookup(_event_members_key)
     lookup_fql = _db_lookup(_fql_key)
 
@@ -197,6 +206,7 @@ class BatchLookup(object):
     data_for_user_events = _data_for(_user_events_key)
     data_for_friend_list = _data_for(_friend_list_key)
     data_for_event = _data_for(_event_key)
+    data_for_event_attending = _data_for(_event_attending_key)
     data_for_event_members = _data_for(_event_members_key)
     data_for_fql = _data_for(_fql_key)
 

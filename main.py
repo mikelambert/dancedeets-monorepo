@@ -44,7 +44,7 @@ URLS = [
     ('/tasks/cleanup_work', tasks.CleanupWorkHandler),
     ('/tasks/load_events', tasks.LoadEventHandler),
     ('/tasks/load_users', tasks.LoadUserHandler),
-    ('/tasks/load_event_members', tasks.LoadEventMembersHandler),
+    ('/tasks/load_event_attending', tasks.LoadEventAttendingHandler),
     ('/tasks/track_newuser_friends', tasks.TrackNewUserFriendsHandler),
     ('/tasks/reload_all_users', tasks.ReloadAllUsersHandler),
     ('/tasks/reload_future_events', tasks.ReloadFutureEventsHandler),
