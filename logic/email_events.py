@@ -28,12 +28,12 @@ def email_for_user(user, batch_lookup, fb_graph, should_send=True):
         distance_in_km = locations.miles_in_km(distance)
     else:
         distance_in_km = distance
-    freestyle = user.freestyle
-    choreo = user.choreo
+    dance_type = user.dance_type
+    min_attendees = user.min_attendees
 
     # search for relevant events
     latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
-    query = search.SearchQuery(time_period=tags.TIME_FUTURE, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
+    query = search.SearchQuery(time_period=tags.TIME_FUTURE, location=latlng_user_location, distance_in_km=distance_in_km, dance_type=dance_type, min_attendees=min_attendees)
     search_results = query.get_search_results(user.fb_uid, fb_graph)
     # Don't send email...
     if not search_results:

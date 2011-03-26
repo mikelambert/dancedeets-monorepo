@@ -88,11 +88,26 @@ class SearchQuery(object):
     MATCH_LOCATION = 'LOCATION'
     MATCH_QUERY = 'QUERY'
 
-    def __init__(self, any_tags=None, time_period=None, start_time=None, end_time=None, city_name=None, location=None, distance_in_km=None, query_args=None, freestyle=None, choreo=None):
+    def __init__(self, any_tags=None, time_period=None, start_time=None, end_time=None, city_name=None, location=None, distance_in_km=None, query_args=None, dance_type=None, min_attendees=None):
         self.any_tags = set(any_tags or [])
         self.time_period = time_period
-        self.freestyle = freestyle
-        self.choreo = choreo
+        self.dance_type = dance_type
+                if dance_type == users.DANCE_TYPE_ALL_DANCE['internal']:
+                        self.freestyle = users.FREESTYLE_DANCER
+                        self.choreo = users.CHOREO_DANCER
+                elif dance_type == users.DANCE_TYPE_FREESTYLE['internal']:
+                        self.freestyle = users.FREESTYLE_DANCER
+                        self.choreo = users.CHOREO_APATHY
+                elif dance_type == users.DANCE_TYPE_CHOREO['internal']:
+                        self.freestyle = users.FREESTYLE_APATHY
+                        self.choreo = users.CHOREO_DANCER
+                elif dance_type == users.DANCE_TYPE_FAN['internal']:
+                        self.freestyle = users.FREESTYLE_FAN
+                        self.choreo = users.CHOREO_FAN
+                else:
+                        assert False, 'unknown dance_type: %s' % dance_type
+
+        self.min_attendees = min_attendees
         self.start_time = start_time
         self.end_time = end_time
         if self.start_time and self.end_time:
@@ -129,6 +144,9 @@ class SearchQuery(object):
                 pass
             else:
                 return []
+
+        if self.min_attendees and event.attendee_count < self.min_attendees:
+            return []
 
         search_tags = []
         if self.choreo == users.CHOREO_FAN:
@@ -195,7 +213,7 @@ class SearchQuery(object):
         if clauses:
             full_clauses = ' and '.join('%s' % x for x in clauses)
             logging.info("Doing search with clauses: %s", full_clauses)
-            return eventdata.DBEvent.gql('where %s' % full_clauses, **bind_vars).fetch(100)
+            return eventdata.DBEvent.gql('where %s' % full_clauses, **bind_vars).fetch(1000)
         else:
             return eventdata.DBEvent.all().fetch(100)
 

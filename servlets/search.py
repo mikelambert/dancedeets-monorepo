@@ -87,6 +87,8 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         past = self.request.get('past', '0') not in ['0', '', 'False', 'false']
 
 
+        min_attendees = int(self.request.get('min_attendees', self.user and self.user.min_attendees))
+
         dance_type = self.request.get('dance_type', self.user and self.user.dance_type) or users.DANCE_TYPES_LIST[0]['internal']
 
         self.display['event_types'] = [x['name'] for x in users.DANCE_TYPES_LIST if x['internal'] == dance_type][0].lower()
@@ -98,6 +100,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             'distance_units': distance_units,
             'location': location,
             'dance_type': dance_type,
+            'min_attendees': min_attendees,
             'past': past,
         }
         
@@ -106,25 +109,9 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         else:
             time_period = tags.TIME_FUTURE
 
-        choreo = None
-        freestyle = None
-        if dance_type == users.DANCE_TYPE_ALL_DANCE['internal']:
-            freestyle = users.FREESTYLE_DANCER
-            choreo = users.CHOREO_DANCER
-        elif dance_type == users.DANCE_TYPE_FREESTYLE['internal']:
-            freestyle = users.FREESTYLE_DANCER
-            choreo = users.CHOREO_APATHY
-        elif dance_type == users.DANCE_TYPE_CHOREO['internal']:
-            freestyle = users.FREESTYLE_APATHY
-            choreo = users.CHOREO_DANCER
-        elif dance_type == users.DANCE_TYPE_FAN['internal']:
-            freestyle = users.FREESTYLE_FAN
-            choreo = users.CHOREO_FAN
-        else:
-            assert False, 'unknown dance_type: %s' % dance_type
         self.display['DANCE_TYPES_LIST'] = users.DANCE_TYPES_LIST
 
-        query = search.SearchQuery(time_period=time_period, city_name=city_name, location=latlng_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
+        query = search.SearchQuery(time_period=time_period, city_name=city_name, location=latlng_location, distance_in_km=distance_in_km, dance_type=dance_type, min_attendees=min_attendees)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
         past_results, present_results, grouped_results = search.group_results(search_results)

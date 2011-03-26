@@ -15,15 +15,9 @@ class MyModelMapper(Mapper):
     KIND = users.User
 
     def map(self, entity):
-        if entity.distance_units == 'km':
-            entity.distance = '500'
-            entity.distance_units = 'miles'
-        else:
-            if entity.distance == '90':
-                entity.distance = '100'
-            if entity.distance == '3':
-                entity.distance = '10'
-        return ([entity], [])
+        #entity.min_attendees = 0
+        return ([], [])
+        #return ([entity], [])
 
 class OneOffHandler(webapp.RequestHandler):
     def get(self):

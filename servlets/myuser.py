@@ -39,7 +39,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
 
     def update_user(self):
         user = users.User.get_by_key_name(str(self.fb_uid))
-        for field in ['location', 'dance_type', 'distance_units']:
+        for field in ['location', 'dance_type', 'distance_units', 'min_attendees']:
             form_value = self.request.get(field)
             setattr(user, field, form_value)
         user.distance = self.request.get('distance')

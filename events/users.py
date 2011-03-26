@@ -94,6 +94,7 @@ class User(db.Model):
     location = db.StringProperty()
     distance = db.StringProperty()
     distance_units = db.StringProperty()
+    min_attendees = db.IntegerProperty()
 
     dance_type = db.StringProperty()
     freestyle = db.StringProperty()
