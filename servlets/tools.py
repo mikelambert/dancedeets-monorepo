@@ -16,8 +16,8 @@ class MyModelMapper(Mapper):
 
     def map(self, entity):
         #entity.min_attendees = 0
-        return ([], [])
         #return ([entity], [])
+        return ([], [])
 
 class OneOffHandler(webapp.RequestHandler):
     def get(self):

@@ -24,8 +24,11 @@
 						#end if
 					</div>
 					#if getattr($result.db_event, 'attendee_count')
-					<!-- TODO(lambert): remove once everywhere-->
-					<div class="event-city">Attending: $result.db_event.attendee_count others</div>
+						<div class="event-city">Attending:
+						#if result.attending_friend_count
+							$result.attending_friend_count friends,
+						#end if
+						$result.db_event.attendee_count total</div>
 					#end if
 					<div class="event-city">$result.city</div>
 				</div>

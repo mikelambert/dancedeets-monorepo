@@ -9,6 +9,7 @@ from events import eventdata
 from events import tags
 from events import users
 from logic import rankings
+from logic import friends
 from logic import rsvp
 from logic import search
 import fb_api
@@ -113,6 +114,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
         query = search.SearchQuery(time_period=time_period, city_name=city_name, location=latlng_location, distance_in_km=distance_in_km, dance_type=dance_type, min_attendees=min_attendees)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
+        friends.decorate_with_friends(self.batch_lookup, search_results)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
         past_results, present_results, grouped_results = search.group_results(search_results)
         if time_period == tags.TIME_FUTURE:
