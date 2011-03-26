@@ -27,6 +27,8 @@ with
 	${m}+ attendees
 	</option>
 #end for
+</select>
+
 <style>
 #dance_type .ui-selecting { background: #FECA40; }
 #dance_type  .ui-selected { background: #F39814; color: white; }
