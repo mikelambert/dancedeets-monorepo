@@ -30,7 +30,7 @@ Hi $fb_user.profile.first_name,
 				<a href="$fb_event_url($fb_event.id)">
 				<b style="font-size: 110%">$format_html($fb_event.name)</b>
 				</a><br>
-				($result.choreo_or_freestyle)<br>
+				($result.event_types)<br>
 				$date_human_format($result.start_time)<br>
 				#if $result.multi_day_event()
 					to $date_human_format($result.end_time)<br>

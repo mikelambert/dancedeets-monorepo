@@ -7,9 +7,6 @@ BEFORE LAUNCH:
 - logged out page shows all events, somehow highlight location selector
 - hover-overs for event selectors
 
-- simplify to single-word descriptions of event types
-- add 'audition' type separately
-
 - rankings view, organize by country?
 
 - figure out how to simplify signup page to top right? make the signup link (if not yet registered) ask a couple follow-up questions prefilled...?

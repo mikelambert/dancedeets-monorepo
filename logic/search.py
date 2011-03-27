@@ -60,10 +60,10 @@ class SearchResult(object):
         self.city = results['city']
         self.rsvp_status = "unknown"
         if self.db_event:
-            tag_lookup = [tags.CHOREO_FREESTYLE_LOOKUP[x].title() for x in db_event.tags if x in tags.CHOREO_FREESTYLE_LOOKUP]
-            self.choreo_or_freestyle = ', '.join(sorted(list(set(x for x in tag_lookup))))
+            tag_lookup = [tags.EVENT_TYPE_LOOKUP[x] for x in db_event.tags]
+            self.event_types = ', '.join(sorted(tag_lookup))
         else:
-            self.choreo_or_freestyle = None
+            self.event_types = None
         self.attending_friend_count = 0
         self.attending_friends = []
 
