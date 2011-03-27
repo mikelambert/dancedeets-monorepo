@@ -64,6 +64,8 @@ class SearchResult(object):
             self.choreo_or_freestyle = ', '.join(sorted(list(set(x for x in tag_lookup))))
         else:
             self.choreo_or_freestyle = None
+        self.attending_friend_count = 0
+        self.attending_friends = []
 
     def multi_day_event(self):
         return (self.end_time - self.start_time) > datetime.timedelta(hours=24)

@@ -27,19 +27,18 @@ class CityHandler(base_servlet.BaseRequestHandler):
         city_name = urllib.unquote(path_bits[2])
 
         # handle additional path elements here
-        freestyle = users.FREESTYLE_DANCER
-        choreo = users.CHOREO_DANCER
+        dance_type = users.DANCE_TYPE_ALL_DANCE['internal']
         title_prefix = ''
         # if they only care about particular types, restrict appropriately
         if len(path_bits) >= 4:
             if path_bits[3] == 'freestyle':
-                choreo = users.CHOREO_APATHY
+                dance_type = users.DANCE_TYPE_FREESTYLE['internal']
                 title_prefix = 'Freestyle'
             elif path_bits[3] == 'choreo':
-                freestyle = users.FREESTYLE_APATHY
+                dance_type = users.DANCE_TYPE_CHOREO['internal']
                 title_prefix = 'Hiphop Choreo'
 
-        query = search.SearchQuery(time_period=time_period, city_name=city_name, freestyle=freestyle, choreo=choreo)
+        query = search.SearchQuery(time_period=time_period, city_name=city_name, dance_type=dance_type)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
         past_results, present_results, grouped_results = search.group_results(search_results)
@@ -49,8 +48,7 @@ class CityHandler(base_servlet.BaseRequestHandler):
 
         self.display['closest_city'] = city_name
         view_params = dict(
-            freestyle=freestyle,
-            choreo=choreo,
+            dance_type=dance_type,
             city_name=city_name,
         )
         self.display['past_view_url'] = '/events/relevant?ajax=1&past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in view_params.iteritems())
