@@ -60,7 +60,7 @@ class SearchResult(object):
         self.city = results['city']
         self.rsvp_status = "unknown"
         if self.db_event:
-            tag_lookup = [tags.EVENT_TYPE_LOOKUP[x] for x in db_event.tags]
+            tag_lookup = [tags.EVENT_TYPE_LOOKUP[x] for x in db_event.tags if x in tags.EVENT_TYPE_LOOKUP]
             self.event_types = ', '.join(sorted(tag_lookup))
         else:
             self.event_types = None
