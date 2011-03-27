@@ -88,7 +88,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         past = self.request.get('past', '0') not in ['0', '', 'False', 'false']
 
 
-        min_attendees = int(self.request.get('min_attendees', self.user and self.user.min_attendees))
+        min_attendees = int(self.request.get('min_attendees', self.user and self.user.min_attendees or 0))
 
         dance_type = self.request.get('dance_type', self.user and self.user.dance_type) or users.DANCE_TYPES_LIST[0]['internal']
 
