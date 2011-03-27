@@ -23,14 +23,21 @@
 							<br>to $date_human_format($result.end_time)
 						#end if
 					</div>
+					<div class="event-city">$result.city</div>
 					#if getattr($result.db_event, 'attendee_count')
 						<div class="event-city">Attending:
 						#if result.attending_friend_count
-							$result.attending_friend_count friends,
+							<span id="event-friends-$fb_event.id">$result.attending_friend_count friends</span>,
+							<div id="event-friends-list-$fb_event.id" style="display:none">
+							<div style="white-space: nowrap;">
+							#for $friend in $result.attending_friends
+								$friend<br>
+							#end for
+							</div>
+							</div>
 						#end if
 						$result.db_event.attendee_count total</div>
 					#end if
-					<div class="event-city">$result.city</div>
 				</div>
 				<div style="clear:both;height:1px;"></div>
 			</div>
@@ -55,3 +62,8 @@
 	</ol>
 #end def
 
+#def render_result_attending_tooltip_javascript($results)
+	#for $result in $results
+		$( "#event-friends-$result.fb_event.info.id" ).tooltip({ items: "#event-friends-$result.fb_event.info.id", content: function(response) {return $("#event-friends-list-$result.fb_event.info.id").html();} });
+	#end for
+#end def

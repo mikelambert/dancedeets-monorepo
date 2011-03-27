@@ -8,9 +8,6 @@
 Dance Events
 #end def
 
-#def head_javascript
-#end def
-
 #def head_stylesheet
 <style type="text/css">
 #right-hand hr {
@@ -175,6 +172,7 @@ See <a href="/rankings">All Rankings</a>.
 #end def
 
 #def bottom_javascript
+<script src="/js/jquery.ui.tooltip.js"></script>
 $rsvp_script()
 <script type="text/javascript">
 function setupActions() {
@@ -203,6 +201,13 @@ $(document).ready(function() {
 	$("#tabs").tabs();
 	setupActions();
 
+	$render_result_attending_tooltip_javascript($past_results)
+	$render_result_attending_tooltip_javascript($ongoing_results)
+	#for $group in $grouped_upcoming_results
+		#if $group.results
+			$render_result_attending_tooltip_javascript($group.results)
+		#end if
+	#end for
 });
 </script>
 #end def
