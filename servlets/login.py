@@ -41,19 +41,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         # Explicitly do not preload anything from facebook for this servlet
         # self.finish_preload()
 
-        #TODO(lambert): save off totals somewhere, perhaps in a separate mapreduce, so that these bigger blobs don't need to be loaded
-        event_rankings = rankings.get_city_by_event_rankings()
-        if event_rankings:
-            total_events = rankings.compute_sum(event_rankings, [rankings.ANY_STYLE], rankings.ALL_TIME)
-        else:
-            total_events = 0
-        user_rankings = rankings.get_city_by_user_rankings()
-        if user_rankings:
-            total_users = rankings.compute_sum(user_rankings, [rankings.DANCE_FAN], rankings.ALL_TIME)
-        else:
-            total_users = 0
-        self.display['total_events'] = total_events
-        self.display['total_users'] = total_users
+        self.display.update(rankings.retrieve_summary())
 
         self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST]
         self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST]

@@ -1,6 +1,8 @@
 import datetime
 import logging
 
+import smemcache
+
 from google.appengine.ext import db
 from mapreduce import control
 from mapreduce import model
@@ -150,6 +152,17 @@ def begin_ranking_calculations():
         _app=USER_FOR_CITY_RANKING,
     )
 
+
+TOTALS_KEY = 'StatTotals'
+TOTALS_EXPIRY = 24*3600
+def retrieve_summary():
+    totals = smemcache.get(TOTALS_KEY)
+    if not totals:
+        total_events, total_users = compute_summary()
+        totals = dict(total_events=total_events, total_users=total_users)
+        smemcache.set(TOTALS_KEY, totals, TOTALS_EXPIRY)
+    return totals
+
 def compute_summary():
     # IN PROGRESS
     event_rankings = get_city_by_event_rankings()
@@ -165,7 +178,7 @@ def compute_summary():
     event_sorted_rankings = get_thing_ranking(event_rankings, ANY_STYLE, ALL_TIME)
     user_sorted_rankings = get_thing_ranking(user_rankings, ANY_STYLE, ALL_TIME)
     # save
-    total_events, total_users
+    return total_events, total_users
 
 def parse_key_name(full_key_name):
     if '/' not in full_key_name:
