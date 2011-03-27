@@ -1,6 +1,5 @@
 BEFORE LAUNCH:
 
-- attending counts
 - link from google to event redirect should be blogroll showing one page, maybe text description?
 -- add find-more-events link to make it clear how to search for more
 - everyone else should just redirect to fb page
