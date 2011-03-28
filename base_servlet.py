@@ -16,6 +16,7 @@ import facebook
 import fb_api
 import locations
 from logic import backgrounder
+from logic import rankings
 import template
 from util import text
 from util import urls
@@ -163,6 +164,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['request'] = request
         self.display['api_key'] = FACEBOOK_CONFIG['api_key']
         self.display['prod_mode'] = self.prod_mode
+        self.display.update(rankings.retrieve_summary())
         return False
 
     def requires_login(self):

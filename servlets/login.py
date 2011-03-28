@@ -12,7 +12,6 @@ from google.appengine.ext import db
 
 import locations
 from logic import backgrounder
-from logic import rankings
 
 def get_location(fb_user):
     if fb_user['profile'].get('location'):
@@ -40,8 +39,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
 
         # Explicitly do not preload anything from facebook for this servlet
         # self.finish_preload()
-
-        self.display.update(rankings.retrieve_summary())
 
         self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST]
         self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST]

@@ -31,7 +31,8 @@ $head_javascript()
 
 <div id="main">
 <div id="header">
-	<a href="/"><img src="/dancedeets.png" width=334 height=54 class="centered-image" border=0></a>
+		<a href="/"><img src="/dancedeets.png" width=334 height=54 class="centered-image" border=0></a><br>
+	<center>${total_events}+ dance events worldwide</center>
 	<h1>$title()</h1>
 
 #if $errors
