@@ -90,14 +90,23 @@ def get_geocoded_location(address):
     if result:
         geocoded_location['latlng'] = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
         geocoded_location['address'] = result['formatted_address']
-        def get(name):
-            components = [x['long_name'] for x in result['address_components'] if name in x['types']]
+        def get(name, long=True):
+            components = [x[long and 'long_name' or 'short_name'] for x in result['address_components'] if name in x['types']]
             if components:
                 return components[0]
             else:
                 return None
             
-        geocoded_location['city'] = get('locality') or get('administrative_area_level_3') or get('administrative_area_level_2')
+        city_parts = []
+        city_parts.append(get('locality') or get('administrative_area_level_3') or get('administrative_area_level_2'))
+        country = get('country')
+        if country == 'United States':
+            city_parts.append(get('administrative_area_level_1', long=False))
+            city_parts.append(get('country', long=False))
+        else:
+            city_parts.append(country)
+        geocoded_location['city'] = ', '.join(x for x in city_parts if x)
+
         if not geocoded_location['city']:
             logging.info(result)
     else:
