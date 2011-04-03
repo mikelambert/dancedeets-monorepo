@@ -40,7 +40,7 @@ def email_for_user(user, batch_lookup, fb_graph, should_send=True):
     if not search_results:
         return
 
-    friends.decorate_with_friends(self.batch_lookup, search_results)
+    friends.decorate_with_friends(batch_lookup, search_results)
     fb_user = batch_lookup.data_for_user(batch_lookup.fb_uid)
     if 'rsvp_for_future_events' in fb_user:
         rsvp.decorate_with_rsvps(batch_lookup, search_results)
