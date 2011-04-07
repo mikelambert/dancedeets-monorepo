@@ -14,7 +14,10 @@
 	</tr>
 	#end for
 </table>
-<form action="/events/admin_potential_events" method="post">
+#if $has_more_events
+<p>There are more events waiting to be processed, but you must process the above events before you can see them.
+#end if
+<p><form action="/events/admin_potential_events" method="post">
 <input type="hidden" name="processed_ids" value="$potential_ids">
 <button>Mark as Processed</button>
 </form>
