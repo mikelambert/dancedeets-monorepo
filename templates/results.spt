@@ -145,7 +145,6 @@ Dance Events
 
 <div id="right-hand">
 <div class="ui-helper-reset ui-widget-content ui-corner-all">
-##TODO(lambert): show total dance events and dancer counts
 <div class="right-hand-button"><a href="/share"><button id="share-button">Invite Dancers and Fans</button></a></div>
 <div class="right-hand-button"><a href="/events/add"><button id="add-button">Add Dance Event</button></a></div>
 
