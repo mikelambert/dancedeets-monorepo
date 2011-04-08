@@ -30,7 +30,7 @@ $city_state_country<br>
 </div>
 
 <div style="float:right;width:510px">
-#if $event.info.description
+#if 'description' in $event.info
 	$format_html($event.info.description)
 #end if
 </div>
