@@ -154,7 +154,7 @@ def begin_ranking_calculations():
 
 
 TOTALS_KEY = 'StatTotals'
-TOTALS_EXPIRY = 24*3600
+TOTALS_EXPIRY = 3600
 def retrieve_summary():
     totals = smemcache.get(TOTALS_KEY)
     if not totals:
