@@ -6,9 +6,12 @@ class RSVPManager(object):
 
     def __init__(self, batch_lookup):
         self.batch_lookup = batch_lookup
-        rsvps_data = self.batch_lookup.data_for_user(self.batch_lookup.fb_uid)['rsvp_for_future_events']
-        rsvps_list = rsvps_data['data']
-        self.rsvps = dict((int(x['id']), x['rsvp_status']) for x in rsvps_list)
+        fb_user = self.batch_lookup.data_for_user(self.batch_lookup.fb_uid)
+        if 'rsvp_for_future_events' in fb_user:
+            rsvps_list = fb_user['rsvp_for_future_events']['data']
+            self.rsvps = dict((int(x['id']), x['rsvp_status']) for x in rsvps_list)
+        else:
+            self.rsvps = {}
 
     def get_rsvp_for_event(self, event_id):
         rsvp = self.rsvps.get(int(event_id), 'none')
