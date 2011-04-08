@@ -24,6 +24,21 @@ class LoginHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
 
+    def newpage(self):
+        query = search.SearchQuery(time_period=tags.TIME_FUTURE, location=dict(latlng=(0,0)), distance_in_km=locations.miles_in_km(12000), min_attendees=500)
+        # self.fb_uid should be None for these logged out users...
+                search_results = query.get_search_results(self.fb_uid, self.fb_graph)
+        past_results, present_results, grouped_results = search.group_results(search_results)
+        # Need to reverse engineer our search query terms to generate these URLs
+                self.display['past_view_url'] = '/events/relevant?ajax=1&past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
+                self.display['calendar_view_url'] = '/calendar?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
+                self.display['past_results'] = past_results
+                self.display['ongoing_results'] = present_results
+                self.display['grouped_upcoming_results'] = grouped_results
+
+        # Need to generate a display-defaults dict that's preselected as best as we can for the user, along with clientside code to figure out their location as best we can.
+
+
     def get(self, needs_city=False):
         next = self.request.get('next') or '/'
 
@@ -33,6 +48,9 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             if user and not user.expired_oauth_token:
                 self.redirect(next)
                 return 
+
+        if self.request.get('newpage'):
+            return self.newpage()
 
         # Treat them like a totally logged-out user since they have no user object yet
         self.fb_uid = None
