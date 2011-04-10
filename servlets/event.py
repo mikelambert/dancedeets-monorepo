@@ -385,7 +385,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str))
         self.display['has_more_events'] = has_more_events
         self.display['potential_events_listing'] = template_events
-        self.display['potential_ids'] = ','.join(potential_event_ids) # use all ids, since we want to mark already-added ids as processed as well
+        self.display['potential_ids'] = ','.join(already_added_event_ids + potential_event_notadded_ids) # use all ids, since we want to mark already-added ids as processed as well. but only the top N of the potential event ids that we're showing to the user.
         self.render_template('admin_potential_events')
 
     def post(self):
