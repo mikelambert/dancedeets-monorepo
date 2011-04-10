@@ -26,24 +26,24 @@ STYLE_OTHER = 'STYLE_OTHER'
 
 FREESTYLE_EVENT = 'FREESTYLE'
 FREESTYLE_EVENT_LIST = [
-    (FREESTYLE_WORKSHOP, 'workshop'),
-    (FREESTYLE_AUDITION, 'audition'),
-    (FREESTYLE_PERFORMANCE, 'performance'),
-    (FREESTYLE_SESSION, 'practice session'),
-    (FREESTYLE_COMPETITION, 'battle'),
-    (FREESTYLE_CLUB, 'club'),
-    (FREESTYLE_OTHER, 'other'),
+    (FREESTYLE_WORKSHOP, 'Workshop'),
+    (FREESTYLE_AUDITION, 'Audition'),
+    (FREESTYLE_PERFORMANCE, 'Performance'),
+    (FREESTYLE_SESSION, 'Practice Session'),
+    (FREESTYLE_COMPETITION, 'Battle'),
+    (FREESTYLE_CLUB, 'Club'),
+    (FREESTYLE_OTHER, 'Other'),
 ]
 
 FREESTYLE_FAN_EVENTS = [FREESTYLE_PERFORMANCE, FREESTYLE_COMPETITION, FREESTYLE_OTHER]
 
 CHOREO_EVENT = 'CHOREO'
 CHOREO_EVENT_LIST = [
-    (CHOREO_WORKSHOP, 'workshop'),
-    (CHOREO_AUDITION, 'audition'),
-    (CHOREO_PERFORMANCE, 'performance'),
-    (CHOREO_CLUB, 'club'),
-    (CHOREO_OTHER, 'other'),
+    (CHOREO_WORKSHOP, 'Workshop'),
+    (CHOREO_AUDITION, 'Audition'),
+    (CHOREO_PERFORMANCE, 'Performance'),
+    (CHOREO_CLUB, 'Club'),
+    (CHOREO_OTHER, 'Other'),
 ]
 CHOREO_FAN_EVENTS = [CHOREO_PERFORMANCE, CHOREO_CLUB, CHOREO_OTHER]
 
