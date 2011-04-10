@@ -34,6 +34,7 @@ class DoNothingHandler(base_servlet.BareBaseRequestHandler):
         return
 
 URLS = [
+    ('/tools/unprocess_future_events', tools.UnprocessFutureEventsHandler),
     ('/tools/oneoff', tools.OneOffHandler),
     ('/tools/import_cities', tools.ImportCitiesHandler),
     ('/tools/migrate_dbevents', tools.MigrateDBEventsHandler),

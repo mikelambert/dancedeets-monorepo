@@ -10,27 +10,34 @@ from events import eventdata
 from events import users
 import fb_api
 from logic import event_classifier
+from logic import potential_events
 
-class MyModelMapper(Mapper):
-    KIND = users.User
+class UnprocessFutureEvents(Mapper):
+    KIND = fb_api.FacebookCachedObject
 
     def map(self, entity):
-        #entity.min_attendees = 0
-        #return ([entity], [])
+        if entity.key().name().endswith('OBJ_EVENT'):
+            if entity.json_data:
+                event = entity.decode_data()
+                if not event['deleted']:
+                    info = event['info']
+                    if info['start_time'] > '2011-04-05' and info['updated_time'] > '2011-04-05':
+                        if event_classifier.is_dance_event(event):
+                            pe = potential_events.PotentialEvent.get_or_insert(str(event['info']['id']))
+                            pe.looked_at = False
+                            pe.put()
+                            logging.info("PE %s", event['info']['id'])
         return ([], [])
+
+class UnprocessFutureEventsHandler(webapp.RequestHandler):
+    def get(self):
+        m = UnprocessFutureEvents()
+        m.run()
+        return
 
 class OneOffHandler(webapp.RequestHandler):
     def get(self):
-        m = MyModelMapper()
-        m.run()
         return
-        es = eventdata.DBEvent.gql('where address != :addr', addr=None).fetch(500)
-        self.response.out.write('len is %s<br>\n' % len(es))
-        for e in es:
-            if e:
-                e.address = None
-                e.put()
-        self.response.out.write('yay!')
 
 class ImportCitiesHandler(webapp.RequestHandler):
     def get(self):
