@@ -4,7 +4,7 @@ import datetime
 import logging
 import re
 import time
-import urllib
+import urllib2
 from django.utils import simplejson
 
 from google.appengine.api.labs import taskqueue
@@ -185,7 +185,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         # Don't insert object until we're ready to save it...
         e = eventdata.DBEvent.get_by_key_name(event_id) or eventdata.DBEvent()
         if e.creating_fb_uid:
-            f = urllib.urlopen('https://graph.facebook.com/%s?access_token=%s' % (e.creating_fb_uid, self.fb_graph.access_token))
+            f = urllib2.urlopen('https://graph.facebook.com/%s?access_token=%s' % (e.creating_fb_uid, self.fb_graph.access_token))
             json = simplejson.loads(f.read())
             creating_user = json['name']
         else:
