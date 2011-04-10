@@ -48,8 +48,8 @@ CHOREO_EVENT_LIST = [
 CHOREO_FAN_EVENTS = [CHOREO_PERFORMANCE, CHOREO_CLUB, CHOREO_OTHER]
 
 EVENT_TYPE_LOOKUP = {}
-EVENT_TYPE_LOOKUP.update(dict((x[0], 'choreo %s' % x[1]) for x in CHOREO_EVENT_LIST))
-EVENT_TYPE_LOOKUP.update(dict((x[0], 'freestyle %s' % x[1]) for x in FREESTYLE_EVENT_LIST))
+EVENT_TYPE_LOOKUP.update(dict((x[0], 'Choreo %s' % x[1]) for x in CHOREO_EVENT_LIST))
+EVENT_TYPE_LOOKUP.update(dict((x[0], 'Freestyle %s' % x[1]) for x in FREESTYLE_EVENT_LIST))
 
 TIME_PAST = 'PAST'
 TIME_FUTURE = 'FUTURE'
