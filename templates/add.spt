@@ -52,7 +52,7 @@ Add Dance Event
 			#if $events
 				<ul>
 					<li>Enter your facebook event URL here:<br>
-						<input type=text name="event_url" size=80 onunfocus="loadEvent();">
+						<input type=text name="event_url" size=60 onunfocus="loadEvent();">
 					<li>Or select one of your facebook events below:<br>
 						<input id="event_id_form" type="hidden" name="event_id" value="">
 						<ul id="events">
@@ -131,16 +131,14 @@ Add Dance Event
 		//event_url
 	}
 	$(document).ready(function() {
-		$("#events").click(function() {
+		$("#events").click(function(event) {
 			var selectees = $(".ui-selectable", "#events");
 			selectees.filter('.ui-selected').each(function() {
 				$(this).removeClass('ui-selected');
 			});
 			$(event.target).parents().andSelf().filter('.ui-selectable').each(function() {
-				alert("found selected "+$(this)+" "+$(this).data('id'));
 				$(this).addClass('ui-selected');
 				$('#event_id_form').val($(this).data('id'));
-				alert("value is "+$('#event_id_form').val());
 			});
 		});
 	});
