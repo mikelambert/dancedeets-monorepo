@@ -26,13 +26,13 @@ dance_keywords = [
 
 easy_event_keywords = [
     'jams?', 'club', 'shows?', 'performances?', 'contests?',
+    'sessions?',
 ]
 
 event_keywords = [
     'competitions?', 'battles?', 'tournaments?', 'judges?',
     r'\d[ -]?vs?\.?[ -]?\d',
     'cyphers?',
-    'sessions?',
     'workshops?', 'class with', 'master class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
     'abdc',
 ]
