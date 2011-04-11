@@ -1,4 +1,6 @@
+import csv
 import logging
+import StringIO
 import time
 from google.appengine.ext import db
 from google.appengine.ext import webapp
@@ -50,6 +52,9 @@ class TrainingCsvHandler(webapp.RequestHandler):
             self.handle_potential_events(batch_event_keys)
 
     def handle_potential_events(self, batch_potential_events):
+
+        csv_file = StringIO.StringIO()
+        csv_writer = csv.writer(csv_file)
         batch_event_ids = [event.name() for event in batch_potential_events]
         db_events = eventdata.DBEvent.get_by_key_name(batch_event_ids)
 
@@ -70,12 +75,14 @@ class TrainingCsvHandler(webapp.RequestHandler):
                     owner_name = real_fb_event['info']['owner']['id']
                 else:
                     owner_name = ''
-                location = eventdata.get_original_address_for_event(real_fb_event)
+                location = eventdata.get_original_address_for_event(real_fb_event).encode('utf8')
                 name_and_description = real_fb_event['info']['name'] + real_fb_event['info'].get('description', '')
-                name_and_description = name_and_description.replace('\n', ' ')
-                self.response.out.write(','.join((tags, owner_name, location, name_and_description)).encode('utf8'))
+                name_and_description = name_and_description.replace('\n', ' ').encode('utf8')
+                
+                csv_writer.writerow([tags, owner_name, location, name_and_description])
             except Exception, e:
                 logging.error("Problem with event id %s: %r", event_id, e)
+        self.response.out.write(csv_file.getvalue())
     
 
 class ImportCitiesHandler(webapp.RequestHandler):
