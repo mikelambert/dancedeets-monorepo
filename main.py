@@ -35,6 +35,7 @@ class DoNothingHandler(base_servlet.BareBaseRequestHandler):
 
 URLS = [
     ('/tools/unprocess_future_events', tools.UnprocessFutureEventsHandler),
+    ('/tools/training_csv', tools.TrainingCsvHandler),
     ('/tools/oneoff', tools.OneOffHandler),
     ('/tools/import_cities', tools.ImportCitiesHandler),
     ('/tools/migrate_dbevents', tools.MigrateDBEventsHandler),

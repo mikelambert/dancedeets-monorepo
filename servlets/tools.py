@@ -39,6 +39,45 @@ class OneOffHandler(webapp.RequestHandler):
     def get(self):
         return
 
+class TrainingCsvHandler(webapp.RequestHandler):
+    def get(self):
+        key_query = potential_events.PotentialEvent.all(keys_only=True)
+        batch_event_keys = key_query.fetch(1000)
+        self.handle_potential_events(batch_event_keys)
+        while len(batch_event_keys) == 1000:
+            last_key = batch_event_keys[-1]
+            batch_event_keys = key_query.filter('__key__ >', last_key).fetch(1000)
+            self.handle_potential_events(batch_event_keys)
+
+    def handle_potential_events(self, batch_potential_events):
+        batch_event_ids = [event.name() for event in batch_potential_events]
+        db_events = eventdata.DBEvent.get_by_key_name(batch_event_ids)
+
+        batch_lookup = fb_api.CommonBatchLookup(None, None)
+        fb_events = fb_api.FacebookCachedObject.get_by_key_name(batch_lookup._string_key(batch_lookup._event_key(x)) for x in batch_event_ids)
+        for event_id, db_event, fb_event in zip(batch_event_ids, db_events, fb_events):
+            try:
+                if not fb_event or not fb_event.json_data:
+                    continue
+                real_fb_event = fb_event.decode_data()
+                if real_fb_event['deleted']:
+                    continue
+                if db_event:
+                    tags = ' '.join(db_event.tags)
+                else:
+                    tags = ''
+                if 'owner' in real_fb_event['info']:
+                    owner_name = real_fb_event['info']['owner']['id']
+                else:
+                    owner_name = ''
+                location = eventdata.get_original_address_for_event(real_fb_event)
+                name_and_description = real_fb_event['info']['name'] + real_fb_event['info'].get('description', '')
+                name_and_description = name_and_description.replace('\n', ' ')
+                self.response.out.write(','.join((tags, owner_name, location, name_and_description)).encode('utf8'))
+            except Exception, e:
+                logging.error("Problem with event id %s: %r", event_id, e)
+    
+
 class ImportCitiesHandler(webapp.RequestHandler):
     def get(self):
         cities.import_cities()
@@ -63,9 +102,7 @@ class DBEventMapper(Mapper):
 class MigrateDBEventsHandler(webapp.RequestHandler):
     def get(self):
         m = DBEventMapper()
-        m.run()
-        #deferred.defer(m.run)
-        self.response.out.write('Trigger DBEvent Migration Mapreduce!')
+        #m.run()
 
 class ClearMemcacheHandler(webapp.RequestHandler):
     def get(self):
