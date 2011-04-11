@@ -1,5 +1,7 @@
 BEFORE LAUNCH:
 
+- NEARBY_DISTANCE_KM?
+
 - remove "hand" cursor for non-clickable parts of the event list
 - auto-categorizing repeat events, or events with obvious keywords
 - add mark-as-unknown, mark-as-no as well. make sure unknown "sticks
