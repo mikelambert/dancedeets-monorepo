@@ -1,5 +1,11 @@
 BEFORE LAUNCH:
 
+- remove "hand" cursor for non-clickable parts of the event list
+- auto-categorizing repeat events, or events with obvious keywords
+- add mark-as-unknown, mark-as-no as well. make sure unknown "sticks
+around" past the usual "mark as processed", until the user explicitly
+categories it, or clicks marks-as-no on it.
+
 - link from google to event redirect should be blogroll showing one page, maybe text description?
 -- add find-more-events link to make it clear how to search for more
 - everyone else should just redirect to fb page
@@ -10,6 +16,9 @@ BEFORE LAUNCH:
 - rankings view, organize by country?
 
 - figure out how to simplify signup page to top right? make the signup link (if not yet registered) ask a couple follow-up questions prefilled...?
+
+
+MORE DOWN THE LINE:
 
 - maybe add optional links for large flyers?
 
