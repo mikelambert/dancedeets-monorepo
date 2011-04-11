@@ -34,7 +34,7 @@ def get_closest_city(location):
 
 def get_largest_nearby_city_name(location):
     logging.info("location is %s", location)
-    # rather than return the nearest city (Sunnyvalue, San Jose, etc)
+    # rather than return the nearest city (Sunnyvale, San Jose, etc)
     # try to find the largest city within a certain range to give us good groupings for the "scene" name of a user/event.
     latitude, longitude = locations.get_geocoded_location(location)['latlng']
     if latitude is None:
