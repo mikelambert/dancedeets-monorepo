@@ -76,7 +76,7 @@ class TrainingCsvHandler(webapp.RequestHandler):
                 else:
                     owner_name = ''
                 location = eventdata.get_original_address_for_event(real_fb_event).encode('utf8')
-                name_and_description = real_fb_event['info']['name'] + real_fb_event['info'].get('description', '')
+                name_and_description = '%s %s' % (real_fb_event['info']['name'], real_fb_event['info'].get('description', ''))
                 name_and_description = name_and_description.replace('\n', ' ').encode('utf8')
                 
                 csv_writer.writerow([tags, owner_name, location, name_and_description])
