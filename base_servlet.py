@@ -140,7 +140,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
             return True
         # If they have a fb_uid, let's do lookups on that behalf (does not require a user)
         if self.fb_uid:
-            self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph)
+            allow_cache = (self.request.get('allow_cache', '1') == '1')
+            self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=allow_cache)
             # Always look up the user's information for every page view...?
             self.batch_lookup.lookup_user(self.fb_uid)
         else:
