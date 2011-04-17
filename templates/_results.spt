@@ -4,7 +4,7 @@
 		#set $fb_event = $result.fb_event.info
 		## widths here are set to sum to 700px-50px = 650px
 		<li class="">
-			<div style="float:left" class="click-box">
+			<div style="float:left">
 				<div class="event-image">
 				<a href="$fb_event_url($fb_event.id)">
 					<img src="$result.get_image()" width="180" border="0">

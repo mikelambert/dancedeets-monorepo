@@ -6,7 +6,6 @@ BEFORE LAUNCH:
 - benefits of signing up in upper right corner
 - mark freestyle as streetdance
 
-- remove "hand" cursor for non-clickable parts of the event list
 - auto-categorizing repeat events, or events with obvious keywords
 - add mark-as-unknown, mark-as-no as well. make sure unknown "sticks
 around" past the usual "mark as processed", until the user explicitly
