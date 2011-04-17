@@ -2,7 +2,6 @@ BEFORE LAUNCH:
 
 - NEARBY_DISTANCE_KM?
 
-- sort list of friends
 - calendar broken
 - sign up and we'll represent you and your dance scene
 - benefits of signing up in upper right corner
