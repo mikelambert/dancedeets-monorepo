@@ -2,7 +2,6 @@ BEFORE LAUNCH:
 
 - NEARBY_DISTANCE_KM?
 
-- calendar broken
 - sign up and we'll represent you and your dance scene
 - benefits of signing up in upper right corner
 - mark freestyle as streetdance
@@ -24,6 +23,7 @@ categories it, or clicks marks-as-no on it.
 
 - figure out how to simplify signup page to top right? make the signup link (if not yet registered) ask a couple follow-up questions prefilled...?
 
+- tests: http://code.google.com/appengine/docs/python/tools/localunittesting.html
 
 MORE DOWN THE LINE:
 
