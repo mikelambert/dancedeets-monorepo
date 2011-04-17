@@ -6,8 +6,6 @@ BEFORE LAUNCH:
 - sign up and we'll represent you and your dance scene
 - benefits of signing up in upper right corner
 - mark freestyle as streetdance
-- highlight matched-keywords in the admin-edit box
-- maybe change button text depending on Create vs Edit
 
 - remove "hand" cursor for non-clickable parts of the event list
 - auto-categorizing repeat events, or events with obvious keywords

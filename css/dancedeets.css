@@ -99,3 +99,7 @@ a:hover {
 .ui-widget-content a {
 	color: blue;
 }
+
+.matched-text {
+	background-color: yellow;
+}

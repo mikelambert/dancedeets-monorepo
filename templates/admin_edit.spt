@@ -8,7 +8,7 @@ Edit Event
 #def body
 		<form action="/events/admin_edit" method=post>
 
-			<h2>$format_html($fb_event.info.name)</h2>
+			<h2>$highlight_keywords($format_html($fb_event.info.name))</h2>
 			<a href="$raw_fb_event_url($fb_event.info.id)">See on Facebook</a><br><br>
 
 			Original Address: $format_html($original_address)<br>
@@ -28,7 +28,7 @@ Edit Event
 			#else
 				#set $description = "None!"
 			#end if
-			<div id="description" style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">$format_html($description)</div>
+			<div id="description" style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">$highlight_keywords($format_html($description))</div>
 
 			<p>Event Types:
 			<table><tr valign=top><td>
@@ -71,10 +71,11 @@ Edit Event
 -->
 			#if $creating_user
 				Submitted by <a href="http://www.facebook.com/profile.php?id=$event.creating_fb_uid">$creating_user</a>.<br>
+				<button>Edit</button>
 			#else
 				Creating new event!
+				<button>Create</button>
 			#end if
-			<button>Edit</button>
 			<input type="hidden" name="event_id" value="$fb_event.info.id">
 		</form>
   </body>

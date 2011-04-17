@@ -1,5 +1,6 @@
 import logging
 import re
+from spitfire.runtime.filters import skip_filter
 
 easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?',
@@ -43,6 +44,8 @@ easy_event_regex = re.compile(r'\b(?:%s)\b' % '|'.join(easy_event_keywords))
 dance_regex = re.compile(r'\b(?:%s)\b' % '|'.join(dance_keywords))
 event_regex = re.compile(r'\b(?:%s)\b' % '|'.join(event_keywords))
 
+capturing_keyword_regex = re.compile(r'\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords))
+
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
 
 def is_dance_event(fb_event):
@@ -60,3 +63,7 @@ def is_dance_event(fb_event):
         return dance_matches.union(easy_dance_matches), event_matches.union(easy_event_matches)
     else:
         return False
+
+@skip_filter
+def highlight_keywords(text):
+    return capturing_keyword_regex.sub('<span class="matched-text">\\1</span>', text)

@@ -215,6 +215,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['event'] = e
         self.display['fb_event'] = fb_event
 
+        self.display['highlight_keywords'] = event_classifier.highlight_keywords
+
         self.render_template('admin_edit')
 
     def post(self):
