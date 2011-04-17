@@ -39,10 +39,11 @@ class UserHandler(base_servlet.BaseRequestHandler):
 
     def update_user(self):
         user = users.User.get_by_key_name(str(self.fb_uid))
-        for field in ['location', 'dance_type', 'distance_units', 'min_attendees']:
+        for field in ['location', 'dance_type', 'distance_units']:
             form_value = self.request.get(field)
             setattr(user, field, form_value)
         user.distance = self.request.get('distance')
+        user.min_attendees = int(self.request.get('min_attendees'))
         if user.location:
             user.compute_derived_properties(self.batch_lookup.data_for_user(self.fb_uid))
             if not user.location_country:
