@@ -12,6 +12,7 @@ from google.appengine.ext import db
 
 import locations
 from logic import backgrounder
+from logic import search
 
 def get_location(fb_user):
     if fb_user['profile'].get('location'):
@@ -25,7 +26,8 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         return False
 
     def newpage(self):
-        query = search.SearchQuery(time_period=tags.TIME_FUTURE, location=dict(latlng=(0,0)), distance_in_km=locations.miles_in_km(12000), min_attendees=500)
+        dance_type = users.DANCE_TYPES_LIST[0]['internal']
+        query = search.SearchQuery(time_period=tags.TIME_FUTURE, location=(0,0), distance_in_km=locations.miles_in_km(12000), min_attendees=500, dance_type=dance_type)
         # self.fb_uid should be None for these logged out users...
                 search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         past_results, present_results, grouped_results = search.group_results(search_results)
@@ -36,7 +38,21 @@ class LoginHandler(base_servlet.BaseRequestHandler):
                 self.display['ongoing_results'] = present_results
                 self.display['grouped_upcoming_results'] = grouped_results
 
+        self.display['DANCE_TYPES_LIST'] = users.DANCE_TYPES_LIST
+
         # Need to generate a display-defaults dict that's preselected as best as we can for the user, along with clientside code to figure out their location as best we can.
+
+        self.display['defaults'] = {
+            'city_name': '',
+            'distance': 100,
+            'distance_units': 'miles',
+            'location': 'New York, NY',
+            'dance_type': users.DANCE_TYPES_LIST[0]['internal'],
+            'min_attendees': 0,
+            'past': False,
+        }
+
+        self.render_template('results')
 
 
     def get(self, needs_city=False):
@@ -47,16 +63,16 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             user = users.User.get_by_key_name(str(self.fb_uid))
             if user and not user.expired_oauth_token:
                 self.redirect(next)
-                return 
-
-        if self.request.get('newpage'):
-            return self.newpage()
+                return
 
         # Treat them like a totally logged-out user since they have no user object yet
         self.fb_uid = None
 
         # Explicitly do not preload anything from facebook for this servlet
         # self.finish_preload()
+
+        if self.request.get('newpage'):
+            return self.newpage()
 
         self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST]
         self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST]
