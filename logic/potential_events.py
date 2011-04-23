@@ -37,6 +37,7 @@ def get_potential_dance_events(batch_lookup, user_id):
             continue # must be a non-saved event, probably due to private/closed event. so ignore.
         if fb_event['deleted'] or fb_event['info']['privacy'] != 'OPEN':
             continue # only legit events
+        #TODO(lambert): before we fix this to be a smarter classifier, perhaps we should do better caching of the results to avoid blowing quotas
         is_dance_event = event_classifier.is_dance_event(fb_event)
         if is_dance_event:
             dance_event_ids.append(str(mini_fb_event['eid']))
