@@ -124,7 +124,7 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
         user = users.User.get_by_key_name(user_id)
         user.compute_derived_properties(self.batch_lookup.data_for_user(user_id))
         user.put()
-
+        backgrounder.load_potential_events_for_users([user_id], allow_cache=False)
     post=get
 
 class ReloadAllUsersHandler(BaseTaskRequestHandler):
@@ -212,7 +212,6 @@ class LoadAllPotentialEventsHandler(RequestHandler):
 
 class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
     def initialize(self, request, response):
-        print dir(request)
         return super(LoadPotentialEventsForFriendsHandler, self).initialize(request, response)
 
     def get(self):
