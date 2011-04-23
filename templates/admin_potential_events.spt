@@ -1,6 +1,7 @@
 #extends _base
 
 #def body
+<p>There are $total_events potential total events, first 20 below:
 <table>
 	#for $i, $potential_event in enumerate($potential_events_listing)
 	<tr
