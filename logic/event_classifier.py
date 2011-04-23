@@ -34,6 +34,8 @@ easy_event_keywords = [
 event_keywords = [
     'competitions?', 'battles?', 'tournaments?', 'judges?',
     r'\d[ -]?vs?\.?[ -]?\d',
+    r'\d ?on ?\d',
+    r'(?:seven|7)\W+(?:to|two|2)\W+smoke',
     'cyphers?',
     'workshops?', 'class with', 'master class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
     'abdc',
