@@ -39,12 +39,12 @@ event_keywords = [
     'abdc',
 ]
 
-easy_dance_regex = re.compile(r'\b(?:%s)\b' % '|'.join(easy_dance_keywords))
-easy_event_regex = re.compile(r'\b(?:%s)\b' % '|'.join(easy_event_keywords))
-dance_regex = re.compile(r'\b(?:%s)\b' % '|'.join(dance_keywords))
-event_regex = re.compile(r'\b(?:%s)\b' % '|'.join(event_keywords))
+easy_dance_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(easy_dance_keywords))
+easy_event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(easy_event_keywords))
+dance_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_keywords))
+event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(event_keywords))
 
-capturing_keyword_regex = re.compile(r'\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords))
+capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords))
 
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
 
