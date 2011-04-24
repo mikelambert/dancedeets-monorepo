@@ -233,7 +233,7 @@ class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
 class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
     def get(self):
         friendpage_ids = [
-            '142477195771244', # hip hop international
+            # create a lot:
             'leeleecolemandotcom',
             'JakHamah',
             'iknowmyhiphop', # online workshops
@@ -265,6 +265,11 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
             '167296293025', # phresh
             '138672976153170', # cruz productions (dc)
             '121378334615', # school of hiphop
+
+            # post a lot
+            '142477195771244', # hip hop international
+            'Elements.Of.FUTURE',
+            'PHUNKYDOC',
         ]
         rpcs = []
         for id in friendpage_ids:
