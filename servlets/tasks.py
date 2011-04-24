@@ -1,12 +1,15 @@
 
+import cgi
 import datetime
 import logging
 import time
 import urllib
+import urlparse
 
 from django.utils import simplejson
 from google.appengine.ext.webapp import RequestHandler
 from google.appengine.api import mail
+from google.appengine.api import urlfetch
 
 import base_servlet
 from events import eventdata
@@ -211,9 +214,6 @@ class LoadAllPotentialEventsHandler(RequestHandler):
         backgrounder.load_potential_events_for_users(user_ids, allow_cache=False)
 
 class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
-    def initialize(self, request, response):
-        return super(LoadPotentialEventsForFriendsHandler, self).initialize(request, response)
-
     def get(self):
         friend_lists = []
         #TODO(lambert): extract this out into some sort of dynamic lookup based on Mike Lambert
@@ -229,6 +229,76 @@ class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
         for fl in friend_lists:
             friend_ids = [x['id'] for x in self.batch_lookup.data_for_friend_list(fl)['friend_list']['data']]
             backgrounder.load_potential_events_for_friends(self.fb_uid, friend_ids, allow_cache=self.allow_cache)
+
+class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
+    def get(self):
+        friendpage_ids = [
+            '142477195771244', # hip hop international
+            'leeleecolemandotcom',
+            'JakHamah',
+            'iknowmyhiphop', # online workshops
+            'jayveedance',
+            '109234335807931', # design dance company
+            '5317698061', # major definition
+            '365558916679', # each one teach one
+            '125996560364', # locking sessions in hong kong
+            '100000671184024', # redefinition dance
+            'worldofdance',
+            '55370822963', # soul sessions oslo
+            '170347183012244', # ufp classes/workshops
+            '52353601457', # culture hiphop in paris
+            '48539580946', # epik dance co open company class
+            'TheBboyFederation',
+            '100001129754693', # guts flava steps
+            '544173016', # funky soul
+            '100001321771588' # funky soul
+            '42405775374', # saint city session
+            '199293876763160', # groove basics
+            '111051478943510', # ace dance studio (aus)
+            'hippohproject',
+            '100000263022789', # evolution hiphop dance crew
+            'urban.artistry',
+            '32556168991', # the hip drop
+            '23896670959', # life x hiphop
+            '235997410577', # culture shock dc
+            '192193196286', # underground soul cypher (stuttgart)
+            '167296293025', # phresh
+            '138672976153170', # cruz productions (dc)
+            '121378334615', # school of hiphop
+        ]
+        rpcs = []
+        for id in friendpage_ids:
+            rpc = urlfetch.create_rpc(deadline=fb_api.DEADLINE)
+            url = 'https://graph.facebook.com/%s/posts' % id
+            urlfetch.make_fetch_call(rpc, url)
+            rpcs.append(rpc)
+        for id, rpc in zip(friendpage_ids, rpcs):
+            try:
+                result = rpc.get_result()
+                if result.status_code != 200:
+                    logging.error("Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
+                    if result.status_code == 400:
+                        text = result.content
+                        json = simplejson.loads(text)
+                        slogging.error(json)
+                if result.status_code == 200:
+                    text = result.content
+                    json = simplejson.loads(text)
+                    self.search_and_add_events(json)
+            except urlfetch.DownloadError, e:
+                logging.warning("Error downloading: %s: %s", object_rpc.request.url(), e)
+
+    def search_and_add_events(self, json):
+        if 'data' not in json:
+            logging.error("No 'data' found in: %s", json)
+            return
+        for post in json['data']:
+            if 'link' in post:
+                p = urlparse.urlparse(post['link'])
+                if p.path.endswith('event.php'):
+                    qs = cgi.parse_qs(p.query)
+                    eid = qs['eid'][0]
+                    potential_events.save_potential_fb_event_ids_if_new([eid])
 
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):

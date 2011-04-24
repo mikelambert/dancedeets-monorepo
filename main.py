@@ -58,6 +58,7 @@ URLS = [
     ('/tasks/load_all_potential_events', tasks.LoadAllPotentialEventsHandler),
     ('/tasks/load_potential_events_for_friends', tasks.LoadPotentialEventsForFriendsHandler),
     ('/tasks/load_potential_events_for_user', tasks.LoadPotentialEventsForUserHandler),
+    ('/tasks/load_potential_events_from_wall_posts', tasks.LoadPotentialEventsFromWallPostsHandler),
     ('/tasks/compute_rankings', tasks.ComputeRankingsHandler),
     ('/tasks/update_last_login_time', tasks.UpdateLastLoginTimeHandler),
     ('/', search.RelevantHandler),
