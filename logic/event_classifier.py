@@ -5,16 +5,18 @@ from spitfire.runtime.filters import skip_filter
 easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?',
     'funk', 'hip.?hop', 'punk',
+    # french
+    'danser',
 ]
 dance_keywords = [
     'street.?dance',
     'turf(?:ing)?', 'flex(?:ing)?', 'bucking?', 'jooking?',
     'b.?boys?', 'b.?girls?', 'breaks', 'breaking', 'breakers?',
     'top.?rock(?:ers?|ing|)', 'up.?rock(?:ers?|ing|)',
-    'housers?', 'house danc\w*',
+    'housers?', 'house ?danc\w*',
     'lockers?', 'locking?',
     'wh?aackers?', 'wh?aacking?',
-    'poppers?', 'popping?', 'hitting',
+    'poppers?', 'popp?ing?', 'hitting',
     'animation', 'isolation', 'robots?',
     'strutters?', 'strutting',
     'glides?', 'gliding', 'waves?', 'waving', 'wavers?',
@@ -22,6 +24,7 @@ dance_keywords = [
     'new.?styles?', 'all.?styles?'
     'choreography', 'choreographers?', 'choreo', 'street jazz', 'street funk', 'jazz funk',
     'new jack swing', 'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
+    'hype',
     'w[ha]acking', 'w[ha]ackers?', 'w[ha]ack', 'punking', 'punkers?', 
     'vogue', 'voguers?', 'vogueing',
 ]
@@ -38,6 +41,7 @@ event_keywords = [
     r'(?:seven|7)\W+(?:to|two|2)\W+smoke',
     'cyphers?',
     'workshops?', 'class with', 'master class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
+    'cours', 'stages?'
     'abdc',
 ]
 
