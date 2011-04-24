@@ -161,7 +161,7 @@ class DBEvent(db.Model):
             self.longitude = None
             self.geohashes = []
             #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
-            logging.error("No geocoding results for eid=%s is: %s", self.fb_event_id, results)
+            logging.warning("No geocoding results for eid=%s is: %s", self.fb_event_id, results)
 
     #def __repr__(self):
     #    return 'DBEvent(fb_event_id=%r,tags=%r)' % (self.fb_event_id, self.tags)
