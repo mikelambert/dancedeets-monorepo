@@ -315,6 +315,8 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 self.add_error('invalid event_url, expecting eid= parameter')
         else:
             self.add_error('missing event_url or event_id parameter')
+        self.errors_are_fatal()
+
 
         self.batch_lookup.lookup_event(event_id)
         try:
@@ -325,8 +327,8 @@ class AddHandler(base_servlet.BaseRequestHandler):
         fb_event = self.batch_lookup.data_for_event(event_id)
         if fb_event['info']['privacy'] != 'OPEN':
             self.add_error('Cannot add secret/closed events to dancedeets!')
-
         self.errors_are_fatal()
+
         fb_event = self.batch_lookup.data_for_event(event_id)
         e = eventdata.DBEvent.get_or_insert(event_id)
         e.tags = self.request.get_all('tag')
