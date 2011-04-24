@@ -11,7 +11,7 @@ dance_keywords = [
     'turf(?:ing)?', 'flex(?:ing)?', 'bucking?', 'jooking?',
     'b.?boys?', 'b.?girls?', 'breaks', 'breaking', 'breakers?',
     'top.?rock(?:ers?|ing|)', 'up.?rock(?:ers?|ing|)',
-    'housers?', 'house danc[^ ]*',
+    'housers?', 'house danc\w*',
     'lockers?', 'locking?',
     'wh?aackers?', 'wh?aacking?',
     'poppers?', 'popping?', 'hitting',
@@ -21,7 +21,7 @@ dance_keywords = [
     'tuts?', 'tutting', 'tutters?',
     'new.?styles?', 'all.?styles?'
     'choreography', 'choreographers?', 'choreo', 'street jazz', 'street funk', 'jazz funk',
-    'new jack swing', 'hype danc[^ ]*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
+    'new jack swing', 'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
     'w[ha]acking', 'w[ha]ackers?', 'w[ha]ack', 'punking', 'punkers?', 
     'vogue', 'voguers?', 'vogueing',
 ]
