@@ -364,8 +364,8 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         potential_event_notadded_ids = list(set(potential_event_ids).difference(already_added_event_ids))
 
         # Limit to 20 at a time so we don't overwhelm the user.
-        total_events = len(potential_event_notadded_ids)
-        has_more_events = total_events > 20
+        total_potential_events = len(potential_event_notadded_ids)
+        has_more_events = total_potential_events > 20
         potential_event_notadded_ids = potential_event_notadded_ids[:20]
 
         for e in potential_event_notadded_ids:
@@ -388,7 +388,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
             template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str))
-        self.display['total_events'] = total_events
+        self.display['total_potential_events'] = total_potential_events
         self.display['has_more_events'] = has_more_events
         self.display['potential_events_listing'] = template_events
         self.display['potential_ids'] = ','.join(already_added_event_ids + potential_event_notadded_ids) # use all ids, since we want to mark already-added ids as processed as well. but only the top N of the potential event ids that we're showing to the user.
