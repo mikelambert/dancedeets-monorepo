@@ -40,6 +40,11 @@ class BareBaseRequestHandler(RequestHandler):
         self.display['format'] = text.format
         self.display['next'] = ''
 
+    def initialize(self, request, response):
+        super(BareBaseRequestHandler, self).initialize(request, response)
+        for arg in sorted(self.request.arguments()):
+            logging.info("query %r = %r", arg, self.request.get_all(arg))
+
     def set_cookie(self, name, value, expires=None):
         cookie = Cookie.SimpleCookie()
         cookie[name] = str(base64.b64encode(value))
