@@ -12,6 +12,7 @@ from events import eventdata
 from events import users
 import fb_api
 from logic import event_classifier
+from logic import event_smart_classifier
 from logic import potential_events
 
 class UnprocessFutureEvents(Mapper):
@@ -39,7 +40,12 @@ class UnprocessFutureEventsHandler(webapp.RequestHandler):
 
 class OneOffHandler(webapp.RequestHandler):
     def get(self):
-        return
+        event_id = self.request.get('event_id')
+        batch_lookup = fb_api.CommonBatchLookup(None, None)
+        batch_lookup.lookup_event(event_id)
+        batch_lookup.finish_loading()
+        fb_event = batch_lookup.data_for_event(event_id)
+        event_smart_classifier.predict_types_for_event(fb_event)
 
 class TrainingCsvHandler(webapp.RequestHandler):
     def get(self):
@@ -71,15 +77,8 @@ class TrainingCsvHandler(webapp.RequestHandler):
                     tags = ' '.join(db_event.tags)
                 else:
                     tags = ''
-                if 'owner' in real_fb_event['info']:
-                    owner_name = real_fb_event['info']['owner']['id']
-                else:
-                    owner_name = ''
-                location = eventdata.get_original_address_for_event(real_fb_event).encode('utf8')
-                name_and_description = '%s %s' % (real_fb_event['info']['name'], real_fb_event['info'].get('description', ''))
-                name_and_description = name_and_description.replace('\n', ' ').encode('utf8')
-                
-                csv_writer.writerow([tags, owner_name, location, name_and_description])
+                features = event_smart_classifier.get_training_features(real_fb_event)
+                csv_writer.writerow([tags] + list(features))
             except Exception, e:
                 logging.error("Problem with event id %s: %r", event_id, e)
         self.response.out.write(csv_file.getvalue())
