@@ -60,6 +60,12 @@ class BatchLookup(object):
     OBJECT_EVENT_MEMBERS = 'OBJ_EVENT_MEMBERS'
     OBJECT_FQL = 'OBJ_FQL'
 
+    def __init__(self, fb_uid, fb_graph, allow_cache=True):
+        self.fb_uid = fb_uid
+        self.fb_graph = fb_graph
+        self.allow_cache = allow_cache
+        self.object_keys = set()
+
     def _is_cacheable(self, object_key, this_object):
         fb_uid, object_id, object_type = object_key
         if object_type != self.OBJECT_EVENT:
@@ -112,12 +118,6 @@ class BatchLookup(object):
             return dict(fql=self._fql_rpc(object_id))
         else:
             raise Exception("Unknown object type %s" % object_type)
-
-    def __init__(self, fb_uid, fb_graph, allow_cache=True):
-        self.fb_uid = fb_uid
-        self.fb_graph = fb_graph
-        self.allow_cache = allow_cache
-        self.object_keys = set()
 
     def _fql_rpc(self, fql, use_access_token=True):
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
