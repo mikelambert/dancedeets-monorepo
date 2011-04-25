@@ -52,7 +52,7 @@ Add Dance Event
 			#if $events
 				<ul>
 					<li>Enter your facebook event URL here:<br>
-						<input type=text name="event_url" size=60 onunfocus="loadEvent();">
+						<input id="event_url_form" type=text name="event_url" size=60 onunfocus="loadEvent();">
 					<li>Or select one of your facebook events below:<br>
 						<input id="event_id_form" type="hidden" name="event_id" value="">
 						<ul id="events">
@@ -118,7 +118,7 @@ Add Dance Event
 			</ul>
 
 			<p>View <a href="http://www.facebook.com/?sk=events" id="facebook-link">Event on Facebook</a>.
-			<p><button>Add Event</button>
+			<p><button onclick="return validateAdd();">Add Event</button>
 		</div>
 		<div id="bottom">
 		</div>
@@ -142,5 +142,13 @@ Add Dance Event
 			});
 		});
 	});
+	function validateAdd() {
+		if ($('#event_id_form').val() || $('#event_url_form').val()) {
+			return true;
+		} else {
+			alert("Please select one of your events to add, or enter the URL of the event you wish to add.");
+			return false;
+		}
+	}
 </script>
 #end def
