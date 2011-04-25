@@ -251,7 +251,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
             'TheBboyFederation',
             '100001129754693', # guts flava steps
             '544173016', # funky soul
-            '100001321771588' # funky soul
+            '100001321771588', # funky soul
             '42405775374', # saint city session
             '199293876763160', # groove basics
             '111051478943510', # ace dance studio (aus)
