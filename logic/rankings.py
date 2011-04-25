@@ -154,13 +154,11 @@ def begin_ranking_calculations():
 
 
 TOTALS_KEY = 'StatTotals'
-TOTALS_EXPIRY = 3600
+TOTALS_EXPIRY = 24*3600
 def retrieve_summary():
     totals = smemcache.get(TOTALS_KEY)
     if not totals:
-        total_events, total_users = compute_summary()
-        totals = dict(total_events=total_events, total_users=total_users)
-        smemcache.set(TOTALS_KEY, totals, TOTALS_EXPIRY)
+        compute_summary()
     return totals
 
 def compute_summary():
@@ -177,7 +175,11 @@ def compute_summary():
         total_users = 0
     event_sorted_rankings = get_thing_ranking(event_rankings, ANY_STYLE, ALL_TIME)
     user_sorted_rankings = get_thing_ranking(user_rankings, ANY_STYLE, ALL_TIME)
+
     # save
+    totals = dict(total_events=total_events, total_users=total_users)
+    smemcache.set(TOTALS_KEY, totals, TOTALS_EXPIRY)
+
     return total_events, total_users
 
 def parse_key_name(full_key_name):
