@@ -159,6 +159,8 @@ def retrieve_summary():
     totals = smemcache.get(TOTALS_KEY)
     if not totals:
         compute_summary()
+        # maybe avoid the extra lookup here by standardizing the two return types...from compute_summary
+        totals = smemcache.get(TOTALS_KEY)
     return totals
 
 def compute_summary():
