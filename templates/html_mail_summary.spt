@@ -42,7 +42,7 @@ Hi $fb_user.profile.first_name,
 					#end if
 					$result.db_event.attendee_count total<br>
 				#end if
-				$result.city
+				$result.db_event.actual_city_name
 			</td>
 		</tr>
 		#end for

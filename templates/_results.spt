@@ -23,7 +23,7 @@
 							<br>to $date_human_format($result.end_time)
 						#end if
 					</div>
-					<div class="event-city">$result.city</div>
+					<div class="event-city">$result.db_event.actual_city_name</div>
 					#if getattr($result.db_event, 'attendee_count')
 						<div class="event-city">Attending:
 						#if result.attending_friend_count

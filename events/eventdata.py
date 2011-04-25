@@ -108,7 +108,8 @@ class DBEvent(db.Model):
 
     # extra cached properties
     address = db.StringProperty()
-    city_name = db.StringProperty()
+    actual_city_name = db.StringProperty() # city for this event
+    city_name = db.StringProperty() # largest nearby city for this event
     latitude = db.FloatProperty()
     longitude = db.FloatProperty()
     geohashes = db.StringListProperty()
@@ -128,6 +129,7 @@ class DBEvent(db.Model):
             self.search_tags = []
             self.search_time_period = None
             self.address = None
+            self.actual_city_name = None
             self.city_name = None
             return
 
@@ -148,6 +150,7 @@ class DBEvent(db.Model):
             self.search_time_period = tags.TIME_PAST
 
         results = get_geocoded_location_for_event(self, fb_dict)
+        self.actual_city_name = results['city']
         self.city_name = cities.get_largest_nearby_city_name(self.address or results['address'])
 
         if results['latlng'][0] is not None:

@@ -56,8 +56,6 @@ class SearchResult(object):
         self.search_query = search_query
         self.start_time = eventdata.parse_fb_timestamp(self.fb_event['info']['start_time'])
         self.end_time = eventdata.parse_fb_timestamp(self.fb_event['info']['end_time'])
-        results = eventdata.get_geocoded_location_for_event(db_event, fb_event)
-        self.city = results['city']
         self.rsvp_status = "unknown"
         if self.db_event:
             tag_lookup = [tags.EVENT_TYPE_LOOKUP[x] for x in db_event.tags if x in tags.EVENT_TYPE_LOOKUP]
