@@ -2,6 +2,16 @@ import logging
 import re
 from spitfire.runtime.filters import skip_filter
 
+# TODO: translate to english before we try to apply the keyword matches
+# TODO: if event creator has created dance events previously, give it some weight
+# TODO: add keyword matches for dance crews, popular dance names
+# TODO: 
+
+# TODO: for each style-keyword, give it some weight. don't be a requirement but yet-another-bayes-input
+# TODO: add a bunch of classifier logic
+
+# maybe feed keywords into auto-classifying event type? bleh.
+
 easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?',
     'funk', 'hip.?hop', 'punk',
@@ -17,9 +27,10 @@ dance_keywords = [
     'lockers?', 'locking?',
     'wh?aackers?', 'wh?aacking?',
     'poppers?', 'popp?ing?', 'hitting',
-    'animation', 'isolation', 'robots?',
+    'isolation', 'robots?',
     'strutters?', 'strutting',
-    'glides?', 'gliding', 'waves?', 'waving', 'wavers?',
+    'glides?', 'gliding', 
+    'waving', 'wavers?',
     'tuts?', 'tutting', 'tutters?',
     'new.?styles?', 'all.?styles?',
     'choreography', 'choreographers?', 'choreo', 'street jazz', 'street funk', 'jazz funk',
