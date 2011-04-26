@@ -201,10 +201,6 @@ class ComputeRankingsHandler(RequestHandler):
     def get(self):
         rankings.begin_ranking_calculations()
 
-class RankingsJoinHandler(RequestHandler):
-    def get(self):
-        rankings.compute_summary()
-
 class LoadAllPotentialEventsHandler(RequestHandler):
     #OPT: maybe some day make this happen immediately after reloading users, so we can guarantee the latest users' state, rather than adding another day to the pipeline delay
     #TODO(lambert): email me when we get the latest batch of things completed.
@@ -270,6 +266,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
             '142477195771244', # hip hop international
             'Elements.Of.FUTURE',
             'PHUNKYDOC',
+            '78234619570', # bboy world
         ]
         rpcs = []
         for id in friendpage_ids:
