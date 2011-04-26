@@ -151,19 +151,18 @@ def begin_ranking_calculations():
         reader_parameters={'entity_kind': 'events.users.User'},
         _app=USER_FOR_CITY_RANKING,
     )
+    compute_summary(expiry=5*60) # 5 minutes
 
 
 TOTALS_KEY = 'StatTotals'
-TOTALS_EXPIRY = 24*3600
+TOTALS_EXPIRY = 6*3600
 def retrieve_summary():
     totals = smemcache.get(TOTALS_KEY)
     if not totals:
-        compute_summary()
-        # maybe avoid the extra lookup here by standardizing the two return types...from compute_summary
-        totals = smemcache.get(TOTALS_KEY)
+        totals = compute_summary()
     return totals
 
-def compute_summary():
+def compute_summary(expiry=TOTALS_EXPIRY):
     # IN PROGRESS
     event_rankings = get_city_by_event_rankings()
     if event_rankings:
@@ -180,9 +179,9 @@ def compute_summary():
 
     # save
     totals = dict(total_events=total_events, total_users=total_users)
-    smemcache.set(TOTALS_KEY, totals, TOTALS_EXPIRY)
+    smemcache.set(TOTALS_KEY, totals, expiry)
 
-    return total_events, total_users
+    return totals
 
 def parse_key_name(full_key_name):
     if '/' not in full_key_name:
