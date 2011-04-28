@@ -279,7 +279,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
             try:
                 result = rpc.get_result()
                 if result.status_code != 200:
-                    logging.error("Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
+                    logging.error("Error downloading: %s, error code is %s", rpc.request.url(), result.status_code)
                     if result.status_code == 400:
                         text = result.content
                         json = simplejson.loads(text)
