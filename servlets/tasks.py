@@ -261,6 +261,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
             '167296293025', # phresh
             '138672976153170', # cruz productions (dc)
             '121378334615', # school of hiphop
+            'TheBboySpot',
 
             # post a lot
             '142477195771244', # hip hop international
