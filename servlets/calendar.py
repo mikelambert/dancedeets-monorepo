@@ -3,6 +3,7 @@ import logging
 
 import base_servlet
 from events import eventdata
+from events import users
 import locations
 from logic import search
 from util import urls
