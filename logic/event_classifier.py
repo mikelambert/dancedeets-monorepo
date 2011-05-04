@@ -19,20 +19,23 @@ easy_dance_keywords = [
     'danser',
 ]
 dance_keywords = [
-    'street.?dance',
+    'street.?dance', 'break.?dance', 'break.?dancing?',
     'turf(?:ing)?', 'flex(?:ing)?', 'bucking?', 'jooking?',
-    'b.?boys?', 'b.?girls?', 'breaks', 'breaking', 'breakers?',
+    'b.?boys?', 'b.?boying?', 'b.?girls?', 'breaks', 'breaking?', 'breakers?', 'power.?move', 'footwork', 'footworking?',
     'top.?rock(?:ers?|ing|)', 'up.?rock(?:ers?|ing|)',
     'housers?', 'house ?danc\w*',
-    'lockers?', 'locking?',
+    'lockers?', 'locking?', 'lock dance',
     'wh?aackers?', 'wh?aacking?',
     'poppers?', 'popp?ing?', 'hitting',
-    'isolation', 'robots?',
+    'isolation', 'robots?', 'robott?ing?',
     'strutters?', 'strutting',
     'glides?', 'gliding', 
-    'waving', 'wavers?',
-    'tuts?', 'tutting', 'tutters?',
-    'new.?styles?', 'all.?styles?',
+    'boogaloo',
+    'waving?', 'wavers?',
+    'tuts?', 'tutting?', 'tutters?',
+    'new.?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
+    'me against the music',
+    'krump', 'krumping?',
     'choreography', 'choreographers?', 'choreo', 'street jazz', 'street funk', 'jazz funk',
     'new jack swing', 'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
     'hype',
@@ -46,7 +49,7 @@ easy_event_keywords = [
 ]
 
 event_keywords = [
-    'competitions?', 'battles?', 'tournaments?', 'judges?',
+    'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'preselection',
     r'\d[ -]?vs?\.?[ -]?\d',
     r'\d ?on ?\d',
     r'(?:seven|7)\W+(?:to|two|2)\W+smoke',
