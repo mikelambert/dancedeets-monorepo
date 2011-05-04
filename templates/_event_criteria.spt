@@ -51,7 +51,7 @@ with
 	">$dt.name</li>
 	#end for
 </ol>
-<input id=dance_type_input type=hidden name=dance_type value="">
+<input id=dance_type_input type=hidden name=dance_type value="$defaults.dance_type">
 #end def
 
 #def event_criteria_bottom_javascript
