@@ -16,8 +16,8 @@ def list_item(internal, name, description):
     return dict(internal=internal, name=name, description=description)
 
 DANCE_TYPE_ALL_DANCE = list_item('DANCE_TYPE_ALL_DANCE', 'All Dance', '')
-DANCE_TYPE_FREESTYLE = list_item('DANCE_TYPE_FREESTYLE', 'Freestyle', '')
-DANCE_TYPE_CHOREO = list_item('DANCE_TYPE_CHOREO', 'Choreo', '')
+DANCE_TYPE_FREESTYLE = list_item('DANCE_TYPE_FREESTYLE', 'Just Freestyle', '')
+DANCE_TYPE_CHOREO = list_item('DANCE_TYPE_CHOREO', 'Just Choreo', '')
 DANCE_TYPE_FAN = list_item('DANCE_TYPE_FAN', 'Dance Fan', '')
 DANCE_TYPES_LIST = [
     DANCE_TYPE_ALL_DANCE,
