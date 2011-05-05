@@ -25,7 +25,7 @@ dance_keywords = [
     'top.?rock(?:ers?|ing|)', 'up.?rock(?:ers?|ing|)',
     'housers?', 'house ?danc\w*',
     'lockers?', 'locking?', 'lock dance',
-    'wh?aackers?', 'wh?aacking?',
+    'wh?aa?ckers?', 'wh?aa?cking?', 'wh?aa?ck', 'punking', 'punkers?', 
     'poppers?', 'popp?ing?', 'hitting',
     'isolation', 'robots?', 'robott?ing?',
     'strutters?', 'strutting',
@@ -39,7 +39,6 @@ dance_keywords = [
     'choreography', 'choreographers?', 'choreo', 'street jazz', 'street funk', 'jazz funk',
     'new jack swing', 'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
     'hype',
-    'w[ha]acking', 'w[ha]ackers?', 'w[ha]ack', 'punking', 'punkers?', 
     'vogue', 'voguers?', 'vogueing',
 ]
 
