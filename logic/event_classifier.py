@@ -36,7 +36,7 @@ dance_keywords = [
     'new.?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
     'me against the music',
     'krump', 'krumping?',
-    'choreography', 'choreographers?', 'choreo', 'street jazz', 'street funk', 'jazz funk',
+    'choreograph(?:y|ed)', 'choreographers?', 'choreo', 'street jazz', 'street funk', 'jazz funk',
     'new jack swing', 'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
     'hype',
     'vogue', 'voguers?', 'vogueing',
@@ -48,9 +48,8 @@ easy_event_keywords = [
 ]
 
 event_keywords = [
-    'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'preselection',
-    r'\d[ -]?vs?\.?[ -]?\d',
-    r'\d ?on ?\d',
+    'boty', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
+    r'\d+[ -]?(?:vs?\.?|x|×|on)[ -]?\d+',
     r'(?:seven|7)\W+(?:to|two|2)\W+smoke',
     'cyphers?',
     'workshops?', 'class with', 'master class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
