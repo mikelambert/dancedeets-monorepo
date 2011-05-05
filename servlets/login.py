@@ -12,6 +12,7 @@ from google.appengine.ext import db
 
 import locations
 from logic import backgrounder
+from logic import rankings
 from logic import search
 
 def get_location(fb_user):
@@ -78,6 +79,16 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST]
         self.display['user_message'] = self.get_cookie('User-Message')
 
+        city_rankings = rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME)
+        top_na_rankings = [x for x in city_rankings if 'United States' in x['key'] or 'Canada' in x['key'] or 'Mexico' in x['key']][:10]
+        self.display['top_split_cities'] = [(x['key'], x['key'].split(', ')[0]) for x in top_na_rankings[:3]]
+        self.display['top_cities'] = [(x['key'], x['key'].split(', ')[0]) for x in top_na_rankings[3:]]
+        self.display['top_continents'] = [
+            ('tokyo', 'Europe'),
+            ('beijing', 'Asia'),
+            ('sydney', 'Australia'),
+            ('sao paolo', 'South America'),
+        ]
         self.display['next'] = next
         logging.info(self.display['next'])
         self.display['needs_city'] = needs_city

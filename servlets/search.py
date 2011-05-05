@@ -52,7 +52,7 @@ class ResultsHandler(base_servlet.BaseRequestHandler):
 
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
-        if not self.request.get('location') and not self.request.get('newpage'):
+        if not self.request.get('location'):
             return True
         return False
 

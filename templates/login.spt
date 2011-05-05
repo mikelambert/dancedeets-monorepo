@@ -41,8 +41,10 @@
 #events {
   margin-left:auto;
   margin-right:auto;
-  width:500px;
-  padding-top: 50px;
+  border-top: 1px solid grey;
+  padding-top: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
   clear: both;
 }
 </style>
@@ -112,11 +114,34 @@ dancers and dance fans
 </div>
 
 <div id="events">
-<div class="big-font">Events near <span id="city_name"></span>:</div>
-<!--TODO(lambert): replace with an accurate description!-->
-<div id="events_list">
-Loading events...
+
+<div style="float: left; width: 50%;">
+See choreo/freestyle events in these big cities:
+<ul>
+#for $internal_city, $city in $top_split_cities
+	<li><a href="/?location=$internal_city&distance=100&distance_units=miles">$city</a>
+	<li><a href="/?location=$internal_city&distance=100&distance_units=miles&dance_type=DANCE_TYPE_CHOREO">$city (choreo)</a>
+	<li><a href="/?location=$internal_city&distance=100&distance_units=miles&dance_type=DANCE_TYPE_FREESTYLE">$city (freestyle)</a>
+#end for
+</ul>
+
+See events for other north-american cities:
+<ul>
+#for $internal_city, $city in $top_cities
+	<li><a href="/?location=$internal_city&distance=100&distance_units=miles">$city</a>
+#end for
+</ul>
 </div>
+
+<div style="float: right; width: 50%;">
+See many more events for these other continents:
+<ul>
+#for $internal_location, $location in $top_continents
+<li><a href="/?location=$internal_location&distance=3000&distance_units=miles">$location</a>
+#end for
+</u>
+</div>
+
 </div>
 
 </div>
@@ -144,25 +169,6 @@ $signup_form($next)
 			}
 		);
 	}
-
-	function getLoginPageLocation() {
-		var short_city = 'New York';
-		var city = "New York, NY";
-		if (google.loader.ClientLocation &&
-			google.loader.ClientLocation.address) {
-			short_city = google.loader.ClientLocation.address.city;
-			city = (
-				google.loader.ClientLocation.address.city + " " +
-				google.loader.ClientLocation.address.region  + " " +
-				google.loader.ClientLocation.address.country_code
-			);
-		}
-		var encoded_city = encodeURIComponent(city);
-		// TODO(lambert): when we load this, we should grab the city name as well for standardized lookups. and set it up to "allow fallback" so that it always returns events. or returns historical events. if necessary. so the user always sees something useful.
-		$('#events_list').load('/events/relevant?ajax=1&location=' + encoded_city + '&distance=30&distance_units=miles&dance_type=DANCE_TYPE_ALL_DANCE', setupActions);
-		$('#city_name').html(short_city);
-	}
-	google.setOnLoadCallback(getLoginPageLocation);
 </script>
 $signup_form_javascript()
 $fb_javascript($next)
