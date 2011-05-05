@@ -124,12 +124,17 @@ Dance Events
 		<li><a href="$calendar_view_url"><span>Calendar</span></a></li>
 	</ul>
 	<div id="past_events" class="ui-tabs-hide">
+		#set $num_past_results = len($past_results)
+		Found $num_past_results events.
 		$render_results($past_results)
 	</div>
 	<div id="ongoing_events" class="ui-tabs-hide">
+		#set $num_ongoing_results = len($ongoing_results)
+		Found $num_ongoing_results events.
 		$render_results($ongoing_results)
 	</div>
 	<div id="upcoming_events">
+		Found $num_upcoming_results events.
 		#for $group in $grouped_upcoming_results
 			#if $group.results
 				<h2 class="group-title">$group.name</h2>
