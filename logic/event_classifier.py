@@ -21,7 +21,7 @@ easy_dance_keywords = [
 dance_keywords = [
     'street.?dance', 'break.?dance', 'break.?dancing?',
     'turf(?:ing)?', 'flex(?:ing)?', 'bucking?', 'jooking?',
-    'b.?boys?', 'b.?boying?', 'b.?girls?', 'breaks', 'breaking?', 'breakers?', 'power.?move', 'footwork', 'footworking?',
+    'b.?boys?', 'b.?boying?', 'b.?girls?', 'breaks', 'breaking?', 'breakers?', 'power.?moves?', 'footwork', 'footworking?',
     'top.?rock(?:ers?|ing|)', 'up.?rock(?:ers?|ing|)',
     'housers?', 'house ?danc\w*',
     'lockers?', 'locking?', 'lock dance',
