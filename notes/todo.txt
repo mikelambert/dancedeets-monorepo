@@ -2,6 +2,8 @@ BEFORE LAUNCH:
 
 - NEARBY_DISTANCE_KM?
 
+- allow refreshing of deleted events since 'deletion' appears to be transitory, sigh. stupid fb.
+
 - sign up and we'll represent you and your dance scene
 - benefits of signing up in upper right corner
 - mark freestyle as streetdance
