@@ -34,6 +34,7 @@ class DoNothingHandler(base_servlet.BareBaseRequestHandler):
         return
 
 URLS = [
+    ('/tools/owned_events', tools.OwnedEventsHandler),
     ('/tools/unprocess_future_events', tools.UnprocessFutureEventsHandler),
     ('/tools/training_csv', tools.TrainingCsvHandler),
     ('/tools/oneoff', tools.OneOffHandler),

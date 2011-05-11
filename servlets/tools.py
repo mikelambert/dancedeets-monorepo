@@ -47,6 +47,19 @@ class OneOffHandler(webapp.RequestHandler):
         fb_event = batch_lookup.data_for_event(event_id)
         event_smart_classifier.predict_types_for_event(fb_event)
 
+class OwnedEventsHandler(webapp.RequestHandler):
+    def get(self):
+        db_events_query = eventdata.DBEvent.gql('WHERE owner_fb_uid = :1', self.request.get('owner_id'))
+        db_events = db_events_query.fetch(1000)
+
+        batch_lookup = fb_api.CommonBatchLookup(None, None)
+
+        print 'Content-type: text/plain\n\n'
+        fb_events = fb_api.FacebookCachedObject.get_by_key_name(batch_lookup._string_key(batch_lookup._event_key(x.fb_event_id)) for x in db_events)
+        for db_event, fb_event in zip(db_events, fb_events):
+            real_fb_event = fb_event.decode_data()
+            print db_event.tags, real_fb_event['info']['name']
+
 class TrainingCsvHandler(webapp.RequestHandler):
     def get(self):
         key_query = potential_events.PotentialEvent.all(keys_only=True)
