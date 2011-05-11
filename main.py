@@ -5,6 +5,7 @@ import os
 import wsgiref.handlers
 import yaml
 from google.appengine.ext import webapp
+from google.appengine.ext import ereporter
 from google.appengine.ext.webapp.util import run_wsgi_app
 import base_servlet
 from servlets import about
@@ -25,6 +26,7 @@ from servlets import tools
 from servlets import youtube_simple_api
 import smemcache
 
+ereporter.register_logger()
 
 #TODO(lambert): setup webtest to test the wsgi app as a regression test to ensure everything is working
 # http://pythonpaste.org/webtest/

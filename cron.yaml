@@ -23,3 +23,6 @@ cron:
 - description: reload past facebook event data
   url: /tasks/reload_past_events?allow_cache=0
   schedule: every monday 2:00
+- description: daily exception report
+  url: /_ereporter?sender=mlambert@gmail.com
+  schedule: every day 00:00
