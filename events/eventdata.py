@@ -96,6 +96,7 @@ class DBEvent(db.Model):
 
     # real data
     tags = db.StringListProperty()
+    owner_fb_uid = db.StringProperty()
     creating_fb_uid = db.IntegerProperty()
     creation_time = db.DateTimeProperty()
     
@@ -132,6 +133,11 @@ class DBEvent(db.Model):
             self.actual_city_name = None
             self.city_name = None
             return
+
+        if 'owner' in fb_dict['info']:
+            self.owner_fb_uid = fb_dict['info']['owner']['id']
+        else:
+            self.owner_fb_uid = None
 
         self.start_time = parse_fb_timestamp(fb_dict['info']['start_time'])
         self.end_time = parse_fb_timestamp(fb_dict['info']['end_time'])
