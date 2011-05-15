@@ -67,12 +67,13 @@ def save_remapped_address_for(original_address, new_remapped_address):
         except apiproxy_errors.CapabilityDisabledError:
             pass
 
+#TODO(lambert): make db_event an optional param at the end of the param list
 def get_usable_address_for_event(db_event, fb_event):
     # Do not trust facebook for latitude/longitude data. It appears to treat LA as Louisiana, etc. So always geocode
     address = get_original_address_for_event(fb_event)
     logging.info("For event = %s, address is %s", fb_event['info']['id'], address)
 
-    if db_event.address:
+    if db_event and db_event.address:
         logging.info("address overridden to %s", db_event.address)
         address = db_event.address
     elif address:
