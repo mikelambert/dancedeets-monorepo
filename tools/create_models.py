@@ -4,21 +4,15 @@
 
 import csv
 import os
-import string
 
 all_data_lines = set()
 tags_data = {}
-
-trans = string.maketrans("-/","  ")
-delchars = string.punctuation.replace("-", "").replace("/", "")
-def strip_punctuation(s):
-    return s.translate(trans, delchars)
 
 print "Reading training CSV source file"
 for line in csv.reader(open('training/training_csv.txt')):
     tags, creator, location, text = line
     real_tags = [x for x in tags.split(' ') if x.startswith('FREESTYLE_') or x.startswith('CHOREO_')]
-    data_line = (creator, strip_punctuation(location).lower(), strip_punctuation(text).lower())
+    data_line = (creator, location, text)
     for x in real_tags:
         try:
             tags_data[x].append(data_line)
