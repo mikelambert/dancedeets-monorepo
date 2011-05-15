@@ -1,5 +1,12 @@
 BEFORE LAUNCH:
 
+Classification:
+- google classification API doesn't work well?
+- trying to use manual rules, appears I can't get any 100% accurate rules. Blah.
+- maybe do very manual rules. event-name keyword, creator, mark a certain way. only 5-10% of events will be solved by creator though :(
+- need to translate to english before applying language classifiers. should fix up 'stage' crap
+- remove 'club' as an option unless it's super strong (locking, popping, bboy, etc). then rely on manually-repeating-classified clubs to get club events (since often that's the only way to know a local scene)
+
 - NEARBY_DISTANCE_KM?
 
 - allow refreshing of deleted events since 'deletion' appears to be transitory, sigh. stupid fb.
