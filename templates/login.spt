@@ -142,6 +142,11 @@ See many more events for these other continents:
 </u>
 </div>
 
+<form>
+$event_criteria($defaults)
+<input type=submit value="Search">
+</form>
+
 </div>
 
 </div>
@@ -169,6 +174,22 @@ $signup_form($next)
 			}
 		);
 	}
+
+        function defaultSearchBox() {
+                var short_city = '';
+                var city = '';
+                if (google.loader.ClientLocation &&
+                        google.loader.ClientLocation.address) {
+                        city = (
+                                google.loader.ClientLocation.address.city + " " +
+                                google.loader.ClientLocation.address.region  + " " +
+                                google.loader.ClientLocation.address.country_code
+                        );
+                }
+                $('location_form').val(city);
+        }
+	google.setOnLoadCallback(defaultSearchBox);
+
 </script>
 $signup_form_javascript()
 $fb_javascript($next)

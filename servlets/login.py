@@ -89,6 +89,18 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             ('sydney', 'Australia'),
             ('sao paolo', 'South America'),
         ]
+
+                self.display['defaults'] = {
+                        'city_name': '',
+                        'distance': '100',
+                        'distance_units': 'miles',
+                        'location': '', # maybe set via ajax
+                        'dance_type': users.DANCE_TYPES_LIST[0]['internal'],
+                        'min_attendees': 0,
+                        'past': False,
+                }
+
+
         self.display['next'] = next
         logging.info(self.display['next'])
         self.display['needs_city'] = needs_city
