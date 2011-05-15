@@ -1,3 +1,5 @@
+# -*-*- encoding: utf-8 -*-*-
+
 import logging
 import re
 from spitfire.runtime.filters import skip_filter
