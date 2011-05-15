@@ -84,7 +84,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['top_split_cities'] = [(x['key'], x['key'].split(', ')[0]) for x in top_na_rankings[:3]]
         self.display['top_cities'] = [(x['key'], x['key'].split(', ')[0]) for x in top_na_rankings[3:]]
         self.display['top_continents'] = [
-            ('tokyo', 'Europe'),
+            ('paris', 'Europe'),
             ('beijing', 'Asia'),
             ('sydney', 'Australia'),
             ('sao paolo', 'South America'),
