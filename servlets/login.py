@@ -78,6 +78,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST]
         self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST]
         self.display['user_message'] = self.get_cookie('User-Message')
+        self.display['DANCE_TYPES_LIST'] = users.DANCE_TYPES_LIST
 
         city_rankings = rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME)
         top_na_rankings = [x for x in city_rankings if 'United States' in x['key'] or 'Canada' in x['key'] or 'Mexico' in x['key']][:10]

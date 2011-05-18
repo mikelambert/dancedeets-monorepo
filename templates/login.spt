@@ -1,5 +1,6 @@
 #extends _real_base
 #extends _signup
+#extends _event_criteria
 
 #def headbody
 <head>
@@ -142,10 +143,12 @@ See many more events for these other continents:
 </u>
 </div>
 
-<form>
+<div style="clear: both;border-top: 1px solid grey">
+<form action="/">
 $event_criteria($defaults)
 <input type=submit value="Search">
 </form>
+</div>
 
 </div>
 
