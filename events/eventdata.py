@@ -89,7 +89,7 @@ def get_geocoded_location_for_event(db_event, fb_event):
     return results
 
 def parse_fb_timestamp(fb_timestamp):
-    return dates.localize_timestamp(datetime.datetime.strptime(fb_timestamp.split('+')[0], '%Y-%m-%dT%H:%M:%S'))
+    return datetime.datetime.strptime(fb_timestamp.split('+')[0], '%Y-%m-%dT%H:%M:%S')
 
 class DBEvent(db.Model):
     """Stores custom data about our Event"""
