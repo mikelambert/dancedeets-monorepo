@@ -24,7 +24,7 @@ easy_dance_keywords = [
 dance_keywords = [
     'street.?dance', 'break.?dance', 'break.?dancing?',
     'turf(?:ing)?', 'flex(?:ing)?', 'bucking?', 'jooking?',
-    'b.?boys?', 'b.?boying?', 'b.?girls?', 'breaks', 'breaking?', 'breakers?', 'power.?moves?', 'footwork', 'footworking?',
+    'b.?boys?', 'b.?boying?', 'b.?girls?', 'b.?girling?', 'breaks', 'breaking?', 'breakers?', 'power.?moves?', 'footwork', 'footworking?',
     'top.?rock(?:ers?|ing|)', 'up.?rock(?:ers?|ing|)',
     'housers?', 'house ?danc\w*',
     'lockers?', 'locking?', 'lock dance',
@@ -37,13 +37,13 @@ dance_keywords = [
     'glides?', 'gliding', 
     'boogaloo',
     'tuts?', 'tutting?', 'tutters?',
-    'new.?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
+    'n(?:ew|u).?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
     'me against the music',
     'krump', 'krumping?',
     'choreograph(?:y|ed)', 'choreographers?', 'choreo', 'street jazz', 'street funk', 'jazz funk',
     'new jack swing', 'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
     'hype',
-    'vogue', 'voguers?', 'vogue?ing
+    'vogue', 'voguers?', 'vogue?ing',
 ]
 
 easy_event_keywords = [
@@ -72,7 +72,9 @@ capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywo
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
 
 def is_dance_event(fb_event):
-    search_text = (fb_event['info']['name'] + ' ' + fb_event['info'].get('description', '')).lower()
+    if 'name' not in fb_event['info']:
+        logging.info("fb event id is %s with value %s", fb_event['id'], fb_event)
+    search_text = (fb_event['info'].get('name') + ' ' + fb_event['info'].get('description', '')).lower()
     easy_dance_matches = set(easy_dance_regex.findall(search_text))
     easy_event_matches = set(easy_event_regex.findall(search_text))
     dance_matches = set(dance_regex.findall(search_text))
