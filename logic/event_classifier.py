@@ -73,8 +73,9 @@ capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywo
 
 def is_dance_event(fb_event):
     if 'name' not in fb_event['info']:
-        logging.info("fb event id is %s with value %s", fb_event['id'], fb_event)
-    search_text = (fb_event['info'].get('name') + ' ' + fb_event['info'].get('description', '')).lower()
+        logging.info("fb event id is %s has no name, with value %s", fb_event['info']['id'], fb_event)
+        return False
+    search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
     easy_dance_matches = set(easy_dance_regex.findall(search_text))
     easy_event_matches = set(easy_event_regex.findall(search_text))
     dance_matches = set(dance_regex.findall(search_text))
