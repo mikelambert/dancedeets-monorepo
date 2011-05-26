@@ -65,6 +65,7 @@ class BatchLookup(object):
         self.fb_graph = fb_graph
         self.allow_cache = allow_cache
         self.object_keys = set()
+        self.object_keys_to_lookup_without_cache = set()
 
     def _is_cacheable(self, object_key, this_object):
         fb_uid, object_id, object_type = object_key
@@ -171,9 +172,13 @@ class BatchLookup(object):
         return db_delete_func
 
     def _db_lookup(key_func):
-        def db_lookup_func(self, id):
+        def db_lookup_func(self, id, allow_cache=True):
             assert id
-            self.object_keys.add(key_func(self, id))
+            if allow_cache:
+                self.object_keys.add(key_func(self, id))
+            else:
+                self.object_keys_to_lookup_without_cache.add(key_func(self, id))
+
         return db_lookup_func
         
     def _data_for(key_func):
@@ -267,7 +272,7 @@ class BatchLookup(object):
                 # Warn about what our get_multi missed
                 logging.info("BatchLookup: get_multi missed objects: %s", object_keys_to_lookup)
 
-        object_keys_to_lookup = list(object_keys_to_lookup)
+        object_keys_to_lookup = list(set(object_keys_to_lookup).union(self.object_keys_to_lookup_without_cache))
         FB_FETCH_COUNT = 10 # number of objects, each of which may be 1-5 RPCs
         for i in range(0, len(object_keys_to_lookup), FB_FETCH_COUNT):
             fetched_objects = self._fetch_object_keys(object_keys_to_lookup[i:i+FB_FETCH_COUNT])    
