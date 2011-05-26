@@ -265,6 +265,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
             'monstersofhiphop',
 
             # post a lot
+            '702665569', # kashmir
             '142477195771244', # hip hop international
             'Elements.Of.FUTURE',
             'PHUNKYDOC',
