@@ -96,7 +96,11 @@ class BareBaseRequestHandler(RequestHandler):
 class BaseRequestHandler(BareBaseRequestHandler):
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
-        params = dict(next=self.request.url)
+        current_url_args = {}
+        for arg in sorted(self.request.arguments()):
+            current_url_args[args] = self.request.get_all(arg)
+        final_url = self.request.path + '?' + urllib.urlencode(current_url_args)
+        params = dict(next=final_url)
         login_url = '/login?%s' % urllib.urlencode(params)
         args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['api_key'], FACEBOOK_CONFIG['secret_key'])
         logging.info("fb cookie is %s with args %s", request.cookies.get('fbs_' + FACEBOOK_CONFIG['api_key']), args)
