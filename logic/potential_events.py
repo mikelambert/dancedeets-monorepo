@@ -22,7 +22,7 @@ def source_from_posts(thing_id):
 
 def display_for_source(source_str):
     source_type, source_id = source_str.split(':', 1)
-    return "<a href="http://ww.facebook.com/profile.php?id=%(source_id)s>%(source_type)s from %(source_id)s</a>" % dict(source_id=source_id, source_type=source_type)
+    return '<a href="http://www.facebook.com/profile.php?id=%(source_id)s">%(source_type)s from %(source_id)s</a>' % dict(source_id=source_id, source_type=source_type)
 
 def save_potential_fb_event_ids_if_new(event_ids, source=None):
     filtered_ids = [x for x in event_ids if not eventdata.DBEvent.get_by_key_name(str(x)) and not PotentialEvent.get_by_key_name(str(x))]
