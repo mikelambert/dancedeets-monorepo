@@ -240,6 +240,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
             '125996560364', # locking sessions in hong kong
             '100000671184024', # redefinition dance
             'worldofdance',
+            'utahudo',
             '55370822963', # soul sessions oslo
             '170347183012244', # ufp classes/workshops
             '52353601457', # culture hiphop in paris
@@ -289,11 +290,11 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
                 if result.status_code == 200:
                     text = result.content
                     json = simplejson.loads(text)
-                    self.search_and_add_events(json)
+                    self.search_and_add_events(json, user_id=id)
             except urlfetch.DownloadError, e:
                 logging.warning("Error downloading: %s: %s", object_rpc.request.url(), e)
 
-    def search_and_add_events(self, json):
+    def search_and_add_events(self, user_id, json):
         if 'data' not in json:
             logging.error("No 'data' found in: %s", json)
             return
@@ -303,7 +304,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
                 if p.path.endswith('event.php'):
                     qs = cgi.parse_qs(p.query)
                     eid = qs['eid'][0]
-                    potential_events.save_potential_fb_event_ids_if_new([eid])
+                    potential_events.save_potential_fb_event_ids_if_new([eid], source=potential_events.source_from_posts(user_id))
 
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):

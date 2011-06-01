@@ -9,12 +9,26 @@ from logic import event_classifier
 
 class PotentialEvent(db.Model):
     looked_at = db.BooleanProperty()
+    source = db.StringProperty()
 
-def save_potential_fb_event_ids_if_new(event_ids):
+SOURCE_USER_INVITES = 'user_invites'
+SOURCE_POSTS = 'posts'
+
+def source_from_user_invites(user_id):
+    return '%s:%s' % (SOURCE_USER_INVITES, user_id)
+
+def source_from_posts(thing_id):
+    return '%s:%s' % (SOURCE_POSTS, thing_id)
+
+def display_for_source(source_str):
+    source_type, source_id = source_str.split(':', 1)
+    return "<a href="http://ww.facebook.com/profile.php?id=%(source_id)s>%(source_type)s from %(source_id)s</a>" % dict(source_id=source_id, source_type=source_type)
+
+def save_potential_fb_event_ids_if_new(event_ids, source=None):
     filtered_ids = [x for x in event_ids if not eventdata.DBEvent.get_by_key_name(str(x)) and not PotentialEvent.get_by_key_name(str(x))]
-    save_potential_fb_event_ids(filtered_ids)
+    save_potential_fb_event_ids(filtered_ids, source=source)
 
-def save_potential_fb_event_ids(event_ids):
+def save_potential_fb_event_ids(event_ids, source=None):
     for event_id in event_ids:
         try:
             logging.info("Saving potential event %s", event_id)
@@ -22,6 +36,7 @@ def save_potential_fb_event_ids(event_ids):
             # saves it, with potentially false 'looked_at' field (unless already set as true by myself)
             if pe.looked_at is None:
                 pe.looked_at = False
+                pe.source = source
                 pe.put()
         except apiproxy_errors.CapabilityDisabledError:
             pass
@@ -61,6 +76,6 @@ def get_potential_dance_events(batch_lookup, user_id):
     new_unseen_dance_event_ids = set(new_dance_event_ids).difference(seen_potential_event_ids)
 
     new_dance_events = [second_batch_lookup.data_for_event(x) for x in new_unseen_dance_event_ids]
-    save_potential_fb_event_ids(new_unseen_dance_event_ids)
+    save_potential_fb_event_ids(new_unseen_dance_event_ids, source=source_from_user_invites(user_id))
     new_dance_events = sorted(new_dance_events, key=lambda x: x['info']['start_time'])
     return new_dance_events
