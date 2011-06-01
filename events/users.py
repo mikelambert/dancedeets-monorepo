@@ -152,7 +152,6 @@ class User(db.Model):
         return dates.localize_timestamp(datetime.datetime.now(), timezone_str=self.location_timezone)
 
     def _populate_internal_entity(self):
-        logging.info("a %s" % self.dance_type)
         if not getattr(self, 'dance_type', None):
             logging.info("b")
             if self.freestyle == FREESTYLE_DANCER and self.choreo == CHOREO_DANCER:
@@ -163,7 +162,6 @@ class User(db.Model):
                 self.dance_type = DANCE_TYPE_CHOREO['internal']
             else:
                 self.dance_type = DANCE_TYPE_FAN['internal']
-        logging.info("c %s" % self.dance_type)
         memcache_key = self.memcache_user_key(self.fb_uid)
         smemcache.set(memcache_key, self, USER_EXPIRY)
         return super(User, self)._populate_internal_entity()
