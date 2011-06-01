@@ -110,6 +110,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
     def post(self):
         logging.info("Login Post with fb_uid = %s", self.fb_uid)
         assert self.fb_uid
+        self.batch_lookup.lookup_user(self.fb_uid, allow_cache=False)
         self.finish_preload()
         fb_user = self.batch_lookup.data_for_user(self.fb_uid)
         next = self.request.get('next') or '/'
