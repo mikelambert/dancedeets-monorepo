@@ -31,7 +31,7 @@ ORDER BY start_time
 
 class FacebookCachedObject(db.Model):
     json_data = db.TextProperty()
-    #TODO(lambert): add date-of-cache, so that we can expire objects that are too old (and aren't auto-refreshed for us)
+    date_cached = db.DateTimeProperty(auto_now=True)
 
     def encode_data(self, obj_dict):
         self.json_data = simplejson.dumps(obj_dict)
