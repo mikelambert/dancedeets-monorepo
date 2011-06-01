@@ -1,5 +1,8 @@
 BEFORE LAUNCH:
 
+Expired auth token:
+- keep getting links to cities, but can't view them because we direct back to /login.
+
 Classification:
 - google classification API doesn't work well?
 - trying to use manual rules, appears I can't get any 100% accurate rules. Blah.
