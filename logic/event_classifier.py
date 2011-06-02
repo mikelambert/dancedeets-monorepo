@@ -19,7 +19,7 @@ easy_dance_keywords = [
     'punking', 'punkers?', 
     'funk', 'hip.?hop', 'punk',
     # french
-    'danser',
+    'danser', 'robots?', 
 ]
 dance_keywords = [
     'street.?dance', 'break.?dance', 'break.?dancing?',
@@ -30,7 +30,7 @@ dance_keywords = [
     'lockers?', 'locking?', 'lock dance',
     'wh?aa?cc?kers?', 'wh?aa?cc?king?', 'wh?aa?cc?k',
     'poppers?', 'popp?ing?',
-    'hitting', 'robots?', 
+    'hitting',
     'waving?', 'wavers?',
     'isolation', 'robott?ing?',
     'strutters?', 'strutting',
