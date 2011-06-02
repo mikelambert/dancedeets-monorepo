@@ -1,7 +1,8 @@
 BEFORE LAUNCH:
 
-Expired auth token:
-- keep getting links to cities, but can't view them because we direct back to /login.
+- Expired auth tokens, keep getting links to cities, but can't view them because we direct back to /login.
+- make 'ongoing' events use local timezone on client instead of server timezone
+- login button for non-existant user doesn't work, semi-logs-in-with-permission in half-broken state
 
 Classification:
 - google classification API doesn't work well?
