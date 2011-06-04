@@ -294,7 +294,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
             except urlfetch.DownloadError, e:
                 logging.warning("Error downloading: %s: %s", object_rpc.request.url(), e)
 
-    def search_and_add_events(self, user_id, json):
+    def search_and_add_events(self, json, user_id):
         if 'data' not in json:
             logging.error("No 'data' found in: %s", json)
             return
