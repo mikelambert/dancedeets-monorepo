@@ -286,7 +286,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
                     if result.status_code == 400:
                         text = result.content
                         json = simplejson.loads(text)
-                        slogging.error(json)
+                        logging.error(json)
                 if result.status_code == 200:
                     text = result.content
                     json = simplejson.loads(text)
