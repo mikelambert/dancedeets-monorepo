@@ -226,7 +226,7 @@ class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
             friend_ids = [x['id'] for x in self.batch_lookup.data_for_friend_list(fl)['friend_list']['data']]
             backgrounder.load_potential_events_for_friends(self.fb_uid, friend_ids, allow_cache=self.allow_cache)
 
-class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
+class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         friendpage_ids = [
             # create a lot:
@@ -274,9 +274,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskRequestHandler):
         ]
         rpcs = []
         for id in friendpage_ids:
-            rpc = urlfetch.create_rpc(deadline=fb_api.DEADLINE)
-            url = 'https://graph.facebook.com/%s/posts' % id
-            urlfetch.make_fetch_call(rpc, url)
+            rpc = self.batch_lookup._fetch_rpc('%s/posts' % id)
             rpcs.append(rpc)
         for id, rpc in zip(friendpage_ids, rpcs):
             try:
