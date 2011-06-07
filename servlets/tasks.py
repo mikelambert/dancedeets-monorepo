@@ -290,7 +290,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
                     json = simplejson.loads(text)
                     self.search_and_add_events(json, user_id=id)
             except urlfetch.DownloadError, e:
-                logging.warning("Error downloading: %s: %s", object_rpc.request.url(), e)
+                logging.warning("Error downloading: %s: %s", rpc.request.url(), e)
 
     def search_and_add_events(self, json, user_id):
         if 'data' not in json:
