@@ -274,7 +274,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
         ]
         rpcs = []
         for id in friendpage_ids:
-            rpc = self.batch_lookup._fetch_rpc('%s/posts' % id)
+            rpc = self.batch_lookup._fetch_rpc('%s/feed' % id)
             rpcs.append(rpc)
         for id, rpc in zip(friendpage_ids, rpcs):
             try:
