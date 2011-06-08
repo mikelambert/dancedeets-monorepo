@@ -21,6 +21,7 @@ from logic import backgrounder
 from logic import email_events
 from logic import potential_events
 from logic import rankings
+from logic import thing_scraper
 
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.
 RETRY_ON_FAIL_DELAY = 60
@@ -272,37 +273,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
             'PHUNKYDOC',
             '78234619570', # bboy world
         ]
-        rpcs = []
-        for id in friendpage_ids:
-            rpc = self.batch_lookup._fetch_rpc('%s/feed' % id)
-            rpcs.append(rpc)
-        for id, rpc in zip(friendpage_ids, rpcs):
-            try:
-                result = rpc.get_result()
-                if result.status_code != 200:
-                    logging.error("Error downloading: %s, error code is %s", rpc.request.url(), result.status_code)
-                    if result.status_code == 400:
-                        text = result.content
-                        json = simplejson.loads(text)
-                        logging.error(json)
-                if result.status_code == 200:
-                    text = result.content
-                    json = simplejson.loads(text)
-                    self.search_and_add_events(json, user_id=id)
-            except urlfetch.DownloadError, e:
-                logging.warning("Error downloading: %s: %s", rpc.request.url(), e)
-
-    def search_and_add_events(self, json, user_id):
-        if 'data' not in json:
-            logging.error("No 'data' found in: %s", json)
-            return
-        for post in json['data']:
-            if 'link' in post:
-                p = urlparse.urlparse(post['link'])
-                if p.path.endswith('event.php'):
-                    qs = cgi.parse_qs(p.query)
-                    eid = qs['eid'][0]
-                    potential_events.save_potential_fb_event_ids_if_new([eid], source=potential_events.source_from_posts(user_id))
+        thing_scraper.scrape_events_from_users(self.batch_lookup, friendpage_ids)
 
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
