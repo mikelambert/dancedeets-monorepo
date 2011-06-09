@@ -17,8 +17,8 @@ SOURCE_POSTS = 'posts'
 def source_from_user_invites(user_id):
     return '%s:%s' % (SOURCE_USER_INVITES, user_id)
 
-def source_from_posts(thing_id):
-    return '%s:%s' % (SOURCE_POSTS, thing_id)
+def source_from_posts(style_type, thing_id):
+    return '%s:%s:%s' % (SOURCE_POSTS, style_type, thing_id)
 
 def display_for_source(source_str):
     source_type, source_id = source_str.split(':', 1)

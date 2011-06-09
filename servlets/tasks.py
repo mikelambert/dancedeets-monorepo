@@ -2,6 +2,7 @@
 import cgi
 import datetime
 import logging
+import re
 import time
 import urllib
 import urlparse
@@ -40,8 +41,11 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
 
         self.fb_uid = int(self.request.get('user_id'))
         self.user = users.User.get_cached(self.fb_uid)
-        assert self.user.fb_access_token, "Can't execute background task for user %s without access_token" % self.fb_uid
-        self.fb_graph = facebook.GraphAPI(self.user.fb_access_token)
+        if self.user:
+            assert self.user.fb_access_token, "Can't execute background task for user %s without access_token" % self.fb_uid
+            self.fb_graph = facebook.GraphAPI(self.user.fb_access_token)
+        else:
+            self.fb_graph = facebook.GraphAPI(None)
         self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
         self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=self.allow_cache)
         return return_value
@@ -229,51 +233,16 @@ class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
 
 class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
     def get(self):
-        friendpage_ids = [
-            # create a lot:
-            'leeleecolemandotcom',
-            'JakHamah',
-            'iknowmyhiphop', # online workshops
-            'jayveedance',
-            '109234335807931', # design dance company
-            '5317698061', # major definition
-            '365558916679', # each one teach one
-            '125996560364', # locking sessions in hong kong
-            '100000671184024', # redefinition dance
-            'worldofdance',
-            'utahudo',
-            '55370822963', # soul sessions oslo
-            '170347183012244', # ufp classes/workshops
-            '52353601457', # culture hiphop in paris
-            '48539580946', # epik dance co open company class
-            'TheBboyFederation',
-            '100001129754693', # guts flava steps
-            '544173016', # funky soul
-            '100001321771588', # funky soul
-            '42405775374', # saint city session
-            '199293876763160', # groove basics
-            '111051478943510', # ace dance studio (aus)
-            'hippohproject',
-            '100000263022789', # evolution hiphop dance crew
-            'urban.artistry',
-            '32556168991', # the hip drop
-            '23896670959', # life x hiphop
-            '235997410577', # culture shock dc
-            '192193196286', # underground soul cypher (stuttgart)
-            '167296293025', # phresh
-            '138672976153170', # cruz productions (dc)
-            '121378334615', # school of hiphop
-            'TheBboySpot',
-            'monstersofhiphop',
-
-            # post a lot
-            '702665569', # kashmir
-            '142477195771244', # hip hop international
-            'Elements.Of.FUTURE',
-            'PHUNKYDOC',
-            '78234619570', # bboy world
-        ]
-        thing_scraper.scrape_events_from_users(self.batch_lookup, friendpage_ids)
+        filemap = {
+            'choreo_ids.txt': tags.CHOREO_EVENT,
+            'freestyle_ids.txt': tags.FREESTYLE_EVENT,
+            'dance_ids.txt': None,
+        }
+        for filename, style_type in filemap.iteritems():
+            lines = open('dance_keywords/%s' % filename).readlines()
+            friendpage_ids = [re.sub('[ #].*\n|\n', '', x) for x in lines]
+            friendpage_ids = [x.replace('.', '') for x in friendpage_ids]
+            thing_scraper.scrape_events_from_users(self.batch_lookup, friendpage_ids, style_type)
 
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
