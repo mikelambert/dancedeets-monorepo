@@ -357,11 +357,11 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
         unseen_potential_events = potential_events.PotentialEvent.gql("WHERE looked_at = :looked_at", looked_at=False)
-        potential_event_ids = [x.key().name() for x in unseen_potential_events]
-        already_added_events = eventdata.DBEvent.get_by_key_name(potential_event_ids)
+        potential_event_dict = dict((x.key().name(), x) for x in unseen_potential_events)
+        already_added_events = eventdata.DBEvent.get_by_key_name(list(potential_event_dict))
         already_added_event_ids = [x.key().name() for x in already_added_events if x]
         # construct a list of not-added ids for display, but keep the list of all ids around so we can still mark them as processed down below
-        potential_event_notadded_ids = list(set(potential_event_ids).difference(already_added_event_ids))
+        potential_event_notadded_ids = list(set(potential_event_dict).difference(already_added_event_ids))
 
         # Limit to 20 at a time so we don't overwhelm the user.
         total_potential_events = len(potential_event_notadded_ids)
@@ -379,6 +379,8 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             except KeyError:
                 logging.error("Failed to load event id %s", e)
                 continue
+            if fb_event['deleted']:
+                continue
             dance_tags = event_classifier.is_dance_event(fb_event)
             if dance_tags:
                 dance_words, event_words = dance_tags
@@ -387,7 +389,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             else:
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
-            template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str))
+            template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str, source=potential_event_dict[e].source))
         self.display['total_potential_events'] = total_potential_events
         self.display['has_more_events'] = has_more_events
         self.display['potential_events_listing'] = template_events
