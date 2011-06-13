@@ -1,8 +1,10 @@
 8 count,0
+a tribe called groove
 academy of phresh
 academy of swag
 afta shock
 alpha beatz crew
+altarego
 america'?s best dance crew
 anbu black ops
 asu hip hop
@@ -26,6 +28,7 @@ cslv
 culture shock
 d\.w\.e\.e\.b\.s
 danz n motion
+dc tribe
 de la femme
 dynamic dance crew
 dysfunktional solez
@@ -40,6 +43,7 @@ expressive doubt
 fanny pak
 flowethics
 foot clan
+for the cause
 freshh
 freshh 2.0
 funkanometry
@@ -49,6 +53,7 @@ future shock
 gen-x m\.o\.b
 generation x
 get the funk on
+groove against the machine
 groove against the machine
 groove bots
 groove elements
@@ -74,6 +79,7 @@ kreative movement
 kruciaal element
 lil' phunk
 lost kids
+main event,0
 main ingredient
 main stacks
 major definition
@@ -87,10 +93,12 @@ mos wanted crew
 movement lifestyle
 nerdz: the outsiders
 nia dance troupe
+no time 2 play
 nsu modern
 oddacities
 offspring,0
 pac modern
+pandora's myth,0
 pandora's myth,0
 part-?time models
 philippine all stars
@@ -103,6 +111,7 @@ praiset.e.a.m
 project em
 project nailz
 project nailz
+prophecy,0
 quadrisaurus
 quest crew
 raps dance troupe
@@ -124,6 +133,7 @@ sophistifunk
 soreal crew
 soreal cru
 soulforce
+soulidified project
 static noyze
 strykeforce ent
 super galactic beat manipulators
@@ -137,6 +147,7 @@ the boom cats crew
 the company,0
 the iv league
 thee slap bracelets
+tribl3 threat
 tru movement
 twofourseven
 ufp dance company
@@ -147,6 +158,7 @@ urban dance alliance
 various artist crew
 ven15
 vip san jose
+vip sj
 vip vallejo
 wanted ashiqz
 wrawsome
