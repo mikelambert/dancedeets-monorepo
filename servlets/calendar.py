@@ -21,8 +21,14 @@ class CalendarHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
 class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
-        start_time = datetime.datetime.fromtimestamp(int(self.request.get('start')))
-        end_time = datetime.datetime.fromtimestamp(int(self.request.get('end')))
+        if self.request.get('start'):
+            start_time = datetime.datetime.fromtimestamp(int(self.request.get('start')))
+        else:
+            start_time = datetime.datetime.now()
+        if self.request.get('end'):
+            end_time = datetime.datetime.fromtimestamp(int(self.request.get('end')))
+        else:
+            end_time = datetime.datetime.now() + datetime.timedelta(days=365)
 
         city_name = None
         user_location = None
