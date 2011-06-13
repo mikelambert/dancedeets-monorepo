@@ -1,5 +1,21 @@
 BEFORE LAUNCH:
 
+event-scraping-from-walls project:
+- store an autoclassified boolean, so we don't train on those
+- only autoclassify events with strong locations. or separate out 'location' from 'what type of event', so we can approach them independently (separate queues, etc)
+- keep track of source of source-page-id as a unique field, then we can query them for events-from-user to know if it's worth crawling (or store time, so we know frequency and can use that to estimate crawl frequency)
+- for each event that gets posted-and-crawled, grab the poster-of-event too, to add to our crawl. should give better freestyle/choreo classifying too
+- when trying to figure out the worth of crawling a given page/person, maybe-discount things where we crawl the poster too (as they are not unique-or-interesting to crawl). but don't discount entirely, as they may be a source to find new events or posters in the future.
+- what percentage of events on a page are dance-events versus not. some are more dance-only pages than others. may want to feed into prioritization system.
+
+- build a queue for events-to-clarify-location along with an "unknown", "educated guess" (city name appears in their event-location field), "previously classified", etc. looking for fast confirmation/agreement on these pages.
+
+- figure out best way to do auto-classifying that leads back into existing augmenting of data (better event style, better location/city, etc). do on PotentialEvent save? using appengine queues? something else?
+
+- fix urls coming from firefox 4.0 for calendar
+- maybe add support for non-club outdoor party or community center or boat party
+- or film-screening (other?)
+
 - Expired auth tokens, keep getting links to cities, but can't view them because we direct back to /login.
 - make 'ongoing' events use local timezone on client instead of server timezone
 - login button for non-existant user doesn't work, semi-logs-in-with-permission in half-broken state
