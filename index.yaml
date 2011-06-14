@@ -70,6 +70,11 @@ indexes:
   - name: start_time
     direction: desc
 
+- kind: PotentialEvent
+  properties:
+  - name: looked_at
+  - name: source
+
 - kind: User
   properties:
   - name: __key__
