@@ -98,8 +98,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         super(BaseRequestHandler, self).initialize(request, response)
         current_url_args = {}
         for arg in sorted(self.request.arguments()):
-            current_url_args[arg] = self.request.get_all(arg, doseq=True)
-        final_url = self.request.path + '?' + urllib.urlencode(current_url_args)
+            current_url_args[arg] = self.request.get_all(arg)
+        final_url = self.request.path + '?' + urllib.urlencode(current_url_args, doseq=True)
         params = dict(next=final_url)
         login_url = '/login?%s' % urllib.urlencode(params)
         args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['api_key'], FACEBOOK_CONFIG['secret_key'])
