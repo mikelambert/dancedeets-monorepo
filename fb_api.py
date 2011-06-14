@@ -105,8 +105,8 @@ class BatchLookup(object):
             )
         elif object_type == self.OBJECT_EVENT:
             return dict(
-                info=self._fetch_rpc('%s' % object_id, use_access_token=False),
-                picture=self._fetch_rpc('%s/picture' % object_id, use_access_token=False),
+                info=self._fetch_rpc('%s' % object_id),
+                picture=self._fetch_rpc('%s/picture' % object_id),
             )
         elif object_type == self.OBJECT_EVENT_ATTENDING:
             return dict(
