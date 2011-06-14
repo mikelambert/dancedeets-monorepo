@@ -118,7 +118,7 @@ SoulFlavourSchool
 102657993118343 # Original Urban Officiel
 196501173727749 # moroccan breakdance company
 Arab.Bboyworld
-UpsndownsCrua
+UpsndownsCru
 BreakBoyCHB
 112395485452817 # street scientists
 196501173727749 # LHIBA One
@@ -232,7 +232,7 @@ STYLEJUNKIES
 BattleOfTheEast
 secretwarsbookanddvd
 danceunity
-hongyeola
+hongyeol
 breakclubaustralia
 redferncityrockers
 platformhiphop
