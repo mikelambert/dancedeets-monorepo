@@ -16,7 +16,7 @@ def scrape_events_from_users(batch_lookup, thing_ids, style_type):
             thing_feed = batch_lookup.data_for_thing_feed(thing_id)
             process_thing_feed(thing_feed, style_type)
         except fb_api.NoFetchedDataException, e:
-            logging.error(str(e))
+            logging.error("Failed to fetch data for thing: %s", str(e))
 
 def process_thing_feed(thing_feed, style_type):
     thing_id = thing_feed['info']['id']
