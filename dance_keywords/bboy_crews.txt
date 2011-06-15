@@ -32,6 +32,7 @@ bkc,0
 blackjack crew
 blowup kingz
 body mechanics,0
+boogie brats
 boombox generation
 born 2 be bboys
 born to rock,0
@@ -61,6 +62,7 @@ damage plan kru
 dancebroomz
 dangerous stylez
 dangerous stylez
+deadly venoms crew
 diamonds crew
 dirty rotten scoundrelz
 dreamers
@@ -98,6 +100,8 @@ freakquency
 freestyle monkeyz
 fresh format,0
 fresh style rockers
+frezh motionz
+full force,0
 full force,0
 full fx crew
 furious rockers
@@ -130,8 +134,10 @@ illa beast crew
 illest villains
 illest villians
 illmatic styles
+illstyles crew
 illville
 imperial styles
+incredible sushi kings
 incredible sushi kings
 international flow syndicate
 joyeux loufocks
@@ -140,6 +146,7 @@ just of drill
 kaiva
 kalamacrew
 kids of soul
+killa beat
 kingz of warsaw
 komixx kidz
 koolskee
@@ -155,6 +162,7 @@ lethal weaponz
 lhibaking zoo
 lil dave rockers
 limit breakers
+lionz of zion
 locus of control
 lords of finesse
 lucky dice crew
@@ -180,6 +188,7 @@ northwest frazzle kids
 omego steps
 one soul crew
 original kizomba
+orphange movement
 oshare
 out 4 royalty
 ovaload
@@ -205,6 +214,7 @@ renegades of phunk
 renegades,0
 rentgen squad
 rep the king
+repstyles
 repstyles
 rhythm addicts
 rhythm faction
@@ -246,6 +256,7 @@ sould mavericks
 soulstice krew
 south brothers crew
 south coast breakers
+spinkingz
 step fenz
 steps without gravity
 sticky ruckus
@@ -261,6 +272,7 @@ supreme beings
 supremos
 survivals crew
 sushi kingz
+swift karacterz kru
 swift stepz
 söhne des kreises
 teen titanz
@@ -276,6 +288,7 @@ tiny toprockz
 tmnb crew
 trinity warriors
 trueflavas
+tsunami all stars
 unbreakable crew
 under attack,0
 union gangs crew
@@ -285,9 +298,12 @@ unity force crew
 unstopabullz
 untitled crew
 vagabonds,0
+vicious germz
 victorious secret
+weapons of rythem
 wizards of rhythm
 x-fenz
 zealous,0
 zip locks
+zulu kingz
 zygomatik

@@ -81,6 +81,7 @@ shonn boog
 shyguy
 skeeter rabbit
 slim boogie
+storm,0
 sugapop
 tatsuo yamamoto
 tatsuo,0
@@ -97,5 +98,6 @@ wahe,0
 whichway
 wildkatz
 willow,0
+yaman
 yoshie koda
 yugson
