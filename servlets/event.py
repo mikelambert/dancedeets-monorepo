@@ -384,13 +384,14 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 continue
             dance_tags = event_classifier.is_dance_event(fb_event)
             if dance_tags:
-                dance_words, event_words = dance_tags
+                truefalse, reason, dance_words, event_words = dance_tags
                 dance_words_str = ', '.join(list(dance_words))
                 event_words_str = ', '.join(list(event_words))
             else:
+                reason = None
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
-            template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str, source=potential_event_dict[e].source))
+            template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str, keyword_reason=reason, source=potential_event_dict[e].source))
         self.display['total_potential_events'] = total_potential_events
         self.display['has_more_events'] = has_more_events
         self.display['potential_events_listing'] = sorted(template_events, key=lambda x: x['source'])
