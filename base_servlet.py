@@ -40,6 +40,9 @@ class BareBaseRequestHandler(RequestHandler):
         self.display['format'] = text.format
         self.display['next'] = ''
 
+    def head(self):
+        return self.get()
+
     def initialize(self, request, response):
         super(BareBaseRequestHandler, self).initialize(request, response)
         for arg in sorted(self.request.arguments()):
