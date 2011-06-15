@@ -12,6 +12,7 @@
 		<td><a href="/events/admin_edit?event_id=$potential_event.fb_event.info.id">$potential_event.fb_event.info.name</a></td>
 		<td>$potential_event.dance_words</td>
 		<td>$potential_event.event_words</td>
+		<td>$potential_event.keyword_reason</td>
 		<td>$potential_event.source</td>
 	</tr>
 	#end for
