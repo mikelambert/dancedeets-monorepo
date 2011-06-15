@@ -7,9 +7,12 @@ event-scraping-from-walls project:
 - for each event that gets posted-and-crawled, grab the poster-of-event too, to add to our crawl. should give better freestyle/choreo classifying too
 - when trying to figure out the worth of crawling a given page/person, maybe-discount things where we crawl the poster too (as they are not unique-or-interesting to crawl). but don't discount entirely, as they may be a source to find new events or posters in the future.
 - what percentage of events on a page are dance-events versus not. some are more dance-only pages than others. may want to feed into prioritization system.
+- when we see an event via multiple avenues, retain information about each avenue used to discover the event
 
 - build a queue for events-to-clarify-location along with an "unknown", "educated guess" (city name appears in their event-location field), "previously classified", etc. looking for fast confirmation/agreement on these pages.
+- if we have city/state/country name from facebook, then we can ignore the street adress and prepended bits when attempting to auto-classify, it's of no use
 
+- can list out people-that-organize-events-in-a-given-area, to help people travelling to an area book an event workshop, or people local setup/book some performance
 - figure out best way to do auto-classifying that leads back into existing augmenting of data (better event style, better location/city, etc). do on PotentialEvent save? using appengine queues? something else?
 
 - fix urls coming from firefox 4.0 for calendar
