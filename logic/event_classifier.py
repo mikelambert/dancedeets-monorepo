@@ -132,7 +132,9 @@ easy_event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(easy_event_keywords))
 dance_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_keywords))
 event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(event_keywords))
 
-capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords))
+good_capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords))
+bad_capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(club_only_keywords + dance_wrong_style_keywords))
+
 
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
 
@@ -165,8 +167,10 @@ def is_dance_event(fb_event):
     elif len(easy_dance_matches) >= 1 and len(club_and_event_matches) >= 1 and len(dance_wrong_style_matches) == 0 and len(club_only_matches) == 0:
         return True, 'dance show thats not a club', dance_matches.union(easy_dance_matches).union(dance_and_music_matches), event_matches.union(easy_event_matches).union(club_and_event_matches)
     else:
-        return False, 'nothing', dance_wrong_style_matches, club_only_matches
+        return False#, 'nothing', dance_wrong_style_matches, club_only_matches
 
 @skip_filter
 def highlight_keywords(text):
-    return capturing_keyword_regex.sub('<span class="matched-text">\\1</span>', text)
+    text = good_capturing_keyword_regex.sub('<span class="matched-text">\\1</span>', text)
+    text = bad_capturing_keyword_regex.sub('<span class="bad-matched-text">\\1</span>', text)
+    return text
