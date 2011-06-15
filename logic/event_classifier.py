@@ -15,25 +15,31 @@ from spitfire.runtime.filters import skip_filter
 # maybe feed keywords into auto-classifying event type? bleh.
 
 easy_dance_keywords = [
-    'dances?', 'dancing', 'dancers?',
-    'punking', 'punkers?', 
-    'funk', 'hip.?hop', 'punk',
-    # french
-    'danser', 'robots?', 
+    'dances?', 'dancing', 'dancers?', 'danser',
 ]
+easy_choreography_keywords = [
+    'choreograph(?:y|ed)', 'choreographers?',
+]
+
+dance_and_music_keywords = [
+    'hip.?hop',
+    'funk',
+    'dancehall',
+]
+
 dance_keywords = [
     'street.?dance', 'break.?dance', 'break.?dancing?',
     'turf(?:ing)?', 'flex(?:ing)?', 'bucking?', 'jooking?',
     'b.?boys?', 'b.?boying?', 'b.?girls?', 'b.?girling?', 'breaks', 'breaking?', 'breakers?', 'power.?moves?', 'footwork', 'footworking?',
-    'top.?rock(?:ers?|ing|)', 'up.?rock(?:ers?|ing|)',
+    'top.?rock(?:ers?|ing?|)', 'up.?rock(?:ers?|ing?|)',
     'housers?', 'house ?danc\w*',
     'lockers?', 'locking?', 'lock dance',
     'wh?aa?cc?kers?', 'wh?aa?cc?king?', 'wh?aa?cc?k',
-    'poppers?', 'popp?ing?',
+    'poppers?', 'popp?i?ng?',
     'locking4life',
     'hitting',
     'waving?', 'wavers?',
-    'isolation', 'robott?ing?',
+    'robott?ing?',
     'strutters?', 'strutting',
     'glides?', 'gliding', 
     'boogaloo',
@@ -41,16 +47,57 @@ dance_keywords = [
     'n(?:ew|u).?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
     'me against the music',
     'krump', 'krumping?',
-    'choreograph(?:y|ed)', 'choreographers?', 'choreo', 'street jazz', 'street funk', 'jazz funk', 'boom crack',
+    'choreo', 'street jazz', 'street funk', 'jazz funk', 'boom crack',
     'new jack swing', 'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
     'hype',
     'vogue', 'voguers?', 'vogue?ing',
+    'urban danc\w*',
 ]
 
 easy_event_keywords = [
-    'jams?', 'club', 'shows?', 'performances?', 'contests?',
+    'jams?', 'club',
+]
+club_and_event_keywords = [
     'sessions?',
-    'stages?',
+    'shows?', 'performances?', 'contests?',
+]
+
+club_only_keywords = [
+    'club',
+    'bottle service',
+    'coat check',
+    #'rsvp',
+    'free before',
+    #'dance floor',
+    #'bar',
+    #'live',
+    #'and up',
+    'vip',
+    'guest.?list',
+    'drink specials?',
+    'resident dj.?s?',
+    'dj.?s?',
+    'electro', 'techno', 'trance', 'indie', 'glitch', 'dubstep',
+    'bands?',
+    'dress to',
+    'mixtape',
+    'decks',
+    'r&b',
+    'local dj.?s?',
+    'all night',
+    'lounge',
+    'live performances?',
+    'doors', # doors open at x
+    'restaurant',
+    'hotel',
+    'music shows?',
+    'a night of',
+    'dance floor',
+    'beer',
+    'blues',
+    'bartenders?',
+    'waiters?',
+    'waitress(?:es)?',
 ]
 
 event_keywords = [
@@ -63,12 +110,29 @@ event_keywords = [
     'abdc',
 ]
 
+
+dance_wrong_style_keywords = [
+    'styling', 'salsa', 'tango', 'latin', 'lindy', 'swing', 'samba',
+    # Sometimes used in studio name even though it's still a hiphop class:
+    #'ballroom',
+    #'ballet',
+    'jazz', 'tap', 'contemporary',
+    'african',
+    'zumba', 'belly.?danc(?:e(?:rs?)?|ing)',
+]
+
+dance_wrong_style_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_wrong_style_keywords))
+dance_and_music_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_and_music_keywords))
+club_and_event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(club_and_event_keywords))
+easy_choreography_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(easy_choreography_keywords))
+club_only_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(club_only_keywords))
+
 easy_dance_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(easy_dance_keywords))
 easy_event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(easy_event_keywords))
 dance_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_keywords))
 event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(event_keywords))
 
-capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords))
+capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords))
 
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
 
@@ -81,15 +145,27 @@ def is_dance_event(fb_event):
     easy_event_matches = set(easy_event_regex.findall(search_text))
     dance_matches = set(dance_regex.findall(search_text))
     event_matches = set(event_regex.findall(search_text))
-    if (
-            # one critical dance keyword and at least some event-y kind of keyword
-            (len(dance_matches) >= 1 and len(event_matches) + len(easy_event_matches) >= 1) or
-            # one critical event and at least some dance-y kind of keyword
-            (len(event_matches) >= 1 and len(dance_matches) + len(easy_dance_matches) >= 1)
-        ):
-        return dance_matches.union(easy_dance_matches), event_matches.union(easy_event_matches)
+    dance_wrong_style_matches = set(dance_wrong_style_regex.findall(search_text))
+    dance_and_music_matches = set(dance_and_music_regex.findall(search_text))
+    club_and_event_matches = set(club_and_event_regex.findall(search_text))
+    easy_choreography_matches = set(easy_choreography_regex.findall(search_text))
+    club_only_matches = set(club_only_regex.findall(search_text))
+
+    # one critical dance keyword
+    if len(dance_matches) >= 1:
+        return True, 'obvious dance style', dance_matches.union(easy_dance_matches).union(dance_and_music_matches), event_matches.union(easy_event_matches)
+    # if we have hiphop/funk, then ensure we have a strong event-keyword match
+    #elif len(dance_and_music_matches) >= 1 and len(easy_event_matches) >= 1 and len(club_only_matches) == 0:
+    #    return True, 'hiphop/funk and not club', dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(easy_choreography_matches), event_matches.union(easy_event_matches)
+    elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1:
+        return True, 'hiphop/funk and good event type', dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(easy_choreography_matches), event_matches.union(easy_event_matches)
+     # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
+    elif len(easy_dance_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and len(dance_wrong_style_matches) == 0:
+        return True, 'dance event thats not a bad-style', dance_matches.union(easy_dance_matches).union(dance_and_music_matches), event_matches.union(easy_event_matches)
+    elif len(easy_dance_matches) >= 1 and len(club_and_event_matches) >= 1 and len(dance_wrong_style_matches) == 0 and len(club_only_matches) == 0:
+        return True, 'dance show thats not a club', dance_matches.union(easy_dance_matches).union(dance_and_music_matches), event_matches.union(easy_event_matches).union(club_and_event_matches)
     else:
-        return False
+        return False, 'nothing', dance_wrong_style_matches, club_only_matches
 
 @skip_filter
 def highlight_keywords(text):
