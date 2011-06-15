@@ -140,8 +140,14 @@ class DBEvent(db.Model):
         else:
             self.owner_fb_uid = None
 
-        self.start_time = parse_fb_timestamp(fb_dict['info']['start_time'])
-        self.end_time = parse_fb_timestamp(fb_dict['info']['end_time'])
+        if fb_dict['info'].get('start_time'):
+            self.start_time = parse_fb_timestamp(fb_dict['info']['start_time'])
+        else:
+            self.start_time = datetime.datetime.min
+        if fb_dict['info'].get('end_time'):
+            self.end_time = parse_fb_timestamp(fb_dict['info']['end_time'])
+        else:
+            self.end_time = datetime.datetime.min
 
         self.search_tags = [] # CHOREO and/or FREESTYLE
         if set(self.tags).intersection([x[0] for x in tags.FREESTYLE_EVENT_LIST]):
