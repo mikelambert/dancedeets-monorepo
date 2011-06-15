@@ -46,7 +46,8 @@ dance_keywords = [
     'tuts?', 'tutting?', 'tutters?',
     'n(?:ew|u).?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
     'me against the music',
-    'krump', 'krumping?',
+    'krump', 'krumping?', 'krumpers?',
+    'hip.?hopp?ers?', 'housers?',
     'choreo', 'street jazz', 'street funk', 'jazz funk', 'boom crack',
     'new jack swing', 'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
     'hype',
