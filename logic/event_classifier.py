@@ -27,6 +27,7 @@ dance_and_music_keywords = [
     'dancehall',
     'hype',
     'breaks',
+    'dancehall',
 ]
 
 dance_keywords = [
