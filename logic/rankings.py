@@ -141,14 +141,14 @@ def begin_ranking_calculations():
         name='Compute City Rankings by Events',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.rankings.count_event_for_city',
-        reader_parameters={'entity_kind': 'events.eventdata.DBEvent'},
+        mapper_parameters={'entity_kind': 'events.eventdata.DBEvent'},
         _app=EVENT_FOR_CITY_RANKING,
     )
     control.start_map(
         name='Compute City Rankings by Users',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.rankings.count_user_for_city',
-        reader_parameters={'entity_kind': 'events.users.User'},
+        mapper_parameters={'entity_kind': 'events.users.User'},
         _app=USER_FOR_CITY_RANKING,
     )
     compute_summary(expiry=5*60) # 5 minutes

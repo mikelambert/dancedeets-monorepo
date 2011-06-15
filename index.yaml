@@ -57,14 +57,14 @@ indexes:
   - name: __key__
     direction: desc
 
-- kind: MapreduceState
+- kind: _AE_MR_MapreduceState
   properties:
   - name: app_id
   - name: result_status
   - name: start_time
     direction: desc
 
-- kind: MapreduceState
+- kind: _AE_MR_MapreduceState
   properties:
   - name: result_status
   - name: start_time
