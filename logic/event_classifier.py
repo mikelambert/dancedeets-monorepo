@@ -25,12 +25,14 @@ dance_and_music_keywords = [
     'hip.?hop',
     'funk',
     'dancehall',
+    'hype',
+    'breaks',
 ]
 
 dance_keywords = [
     'street.?dance', 'break.?dance', 'break.?dancing?',
     'turf(?:ing)?', 'flex(?:ing)?', 'bucking?', 'jooking?',
-    'b.?boys?', 'b.?boying?', 'b.?girls?', 'b.?girling?', 'breaks', 'breaking?', 'breakers?', 'power.?moves?', 'footwork', 'footworking?',
+    'b.?boys?', 'b.?boying?', 'b.?girls?', 'b.?girling?', 'breaking?', 'breakers?', 'power.?moves?', 'footwork', 'footworking?',
     'top.?rock(?:ers?|ing?|)', 'up.?rock(?:ers?|ing?|)',
     'housers?', 'house ?danc\w*',
     'lockers?', 'locking?', 'lock dance',
@@ -50,7 +52,6 @@ dance_keywords = [
     'hip.?hopp?ers?', 'housers?',
     'choreo', 'street jazz', 'street funk', 'jazz funk', 'boom crack',
     'new jack swing', 'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
-    'hype',
     'vogue', 'voguers?', 'vogue?ing',
     'urban danc\w*',
 ]
