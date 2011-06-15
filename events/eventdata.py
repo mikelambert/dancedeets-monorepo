@@ -41,8 +41,12 @@ class LocationMapping(db.Model):
 def get_original_address_for_event(fb_event):
     event_info = fb_event['info']
     venue = event_info.get('venue', {})
-    # Use staes_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
-    address_components = [event_info.get('location'), venue.get('street'), venue.get('city'), abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state')), venue.get('country')]
+    # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
+    state = abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state'))
+    if venue.get('city') and (state or venue.get('country')):
+        address_components = [venue.get('city'), state, venue.get('country')]
+    else:
+        address_components = [event_info.get('location'), venue.get('street'), venue.get('city'), state, venue.get('country')]
     address_components = [x for x in address_components if x]
     address = ', '.join(address_components)
     return address
