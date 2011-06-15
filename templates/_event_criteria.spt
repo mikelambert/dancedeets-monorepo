@@ -1,13 +1,14 @@
 #def event_criteria($defaults)
 <p>Events near <input id="location_form" name=location value="$defaults.location">
+<!-- distance is $defaults.distance -->
 within <select name="distance">
 #for $d in [10, 50, 100, 200, 500, 3000, 12000]
 	<option value="$d"
-	#if $defaults.distance == $d
+	#if str($defaults.distance) == str($d)
 		selected
 	#end if
 	>
-	#if $d == 12000
+	#if str($d) == str(12000)
 		Everywhere
 	#else
 		$d miles
@@ -17,10 +18,11 @@ within <select name="distance">
 </select>
 <input type=hidden name=distance_units value=miles>
 with
+<!-- min_attendees is $defaults.min_attendees -->
 <select name="min_attendees">
 #for $m in [0, 10, 50, 100, 500]
 	<option value="$m"
-	#if $defaults.min_attendees == $m
+	#if str($defaults.min_attendees) == str($m)
 		selected
 	#end if
 	>
