@@ -19,6 +19,7 @@ def scrape_events_from_users(batch_lookup, thing_ids, style_type):
             logging.error("Failed to fetch data for thing: %s", str(e))
 
 def process_thing_feed(thing_feed, style_type):
+    # TODO(lambert): do we really need to scrape the 'info' to get the id, or we can we half the number of calls by just getting the feed?
     thing_id = thing_feed['info']['id']
     if 'data' not in thing_feed['feed']:
         logging.error("No 'data' found in: %s", thing_feed['feed'])
