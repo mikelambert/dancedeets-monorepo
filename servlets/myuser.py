@@ -32,7 +32,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
     def post(self):
         self.finish_preload()
         self.update_user()
-        # Disabled due to an error: Only ancestor queries are allowed inside transactions.
+        # Disabled due to an error, the user.compute_derived_properties does some GeoCode lookups which are not ancestor queries.
         #db.run_in_transaction(self.update_user)
         self.user.add_message("Settings saved!")
         self.redirect('/')
