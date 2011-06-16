@@ -1,0 +1,57 @@
+make database object for things-to-scrape. list them with:
+- number of total wallposts-and-created-events we've found from this user
+- from wall posts, by each style/category
+- from created-events, by each style/category
+- from invitations (if signed into dancedeets), by each style/category
+
+- we can mapreduce over items and process them efficiently on cpu, bad on fb qps limits
+- we can mapreduce over items, stick them in a task queue, and then process them one-at-a-time (inefficiently on cpu, but we can keep qps down)
+- either way we can institute cutoff filters to only query those users that have given us good stuff in the past
+
+- for each event we find, find-or-construct a potentialevent, and add this thing-and-wall (or creator) as a source
+- add potential-event to the to-classify queue (even if already classified)
+
+in potential-event classifier, do a bunch of things:
+- use number-of-sources as a clue. the more sources we have, the more strongly it is a dance event. maybe mark it a maybe-dance-event?
+- also weight by the source type. if the source type has given us dance events before, then mark this a maybe-dance-event
+- use our is-a-dance-event text-filter, mark it a dance event if it is.
+- perhaps is-a-dance-event is too course. use our new dance-club and dance-workshop filters to filter it more exactly?
+- outputs should be: not-a-dance-event. maybe-dance-event-please-classify. heres-what-the-dance-event-is-just-create-it-already (maybe with some audit trail for admins to peek at and verify)
+- also use the list-of-attendees for an event (and their choreo/freestyle-ness) to identify the audience for an event
+- if we reclassify the event when new sources come in (and the user has not processed it), what happens if we've already constructed a DBEvent? do we un-do it? do we only run the potential-event-classifier X-hours after we first discover the event to let enough inputs seep in?
+
+then we have the admin queue going through potential-events that are maybe-dance-events (and/or reviewing the non-dance-events or definitely-dance-events queues for fun?)
+- for everything that gets a DBEvent created, run it through the location-classifier-finder. do this as part of the "save" code? if the location doesn't have a city, then stick it in the "figure out the location" queue with a "pending" location for the moment
+
+- in the figure-out-the-location queue, we attempt to look at the creator and/or attendees, look at their cities, attempt to geolocate them for city/state/country, and find 50% commonality at city/state/country level.
+- whatever we find, prefix that to the address/location/thingy we have, and attempt to geolocate *that*
+- if it doesn't work, stick in for-user-to-process admin queue via saving to the db
+
+
+other ideas:
+- finding new things. when we find pages/groups linked to on walls, or whatever. stick in a page-queue for me to process and poke through? maybe eventually automating adding these to our types?
+
+freestyle seeds:
+- elite force
+- moptops
+- electric boogaloos
+- original lockers
+- serial stepperz
+- rock steady crew
+- profowon (asia), allthewaylive, crosone, basically anyone with a full 5k list-of-friends :P
+- bigname dancers from nyc, bay area, los angeles, freestyle-elsewhere, freestyle-europe
+
+choreo seeds:
+- los angeles / san francisco / san diego choreographers
+- bdc choreographers
+- nyc competitive scene choreographers
+- s**t kingz
+
+- list these out as things, but with a seed=true and choreo/freestyle.
+- we can mapreduce over seed things, which causes it to fetch friends for each of them, and stick them in as things of their own. propagate the freestyle/choreo-seed-friend-lists down along with freestyle/choreo-seed counts
+- we can periodically run the mapreduce to add-friends-of-seeds. and over time we can promote other things to seed if/when we want, and it'll just work.
+- maybe build a queue that goes through the list of things, looks at their friends, counts number-of-seeds of each type (hardcoded freestyle/choreo), as well as the "old" values of all their friends as freestyle/choreo folks, and uses this to make a determination about the leanings of this person (potentially both) on multiple 0.0-1.0 scales. we set the "future" to be this, and then later copy future-to-old value. (so it's an iterative mapreduce that hopefully achieves some stabilization over time).
+- if it ever iterates badly, it'd be nice to figure out why and adjust our thresholds so that we can re-run-it-from-scratch with the seeds again. not sure where to go with this one though.
+
+- some things will not be people, just fan pages or groups. we should allow this, but with a manual freestyle/choreo override bit that is specifically set. maybe have a "is-person-group-or-fanpage" enum in this thing.
+- will probably need to build mapreduce inputs that specifically filter on seed or person-versus-others? mapreduces don't look at inputs just keys, so this may be harder? or we could use key-prefixes (or namespaces) to filter out just a sub-range we want to process for mapreduce.
