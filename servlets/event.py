@@ -365,9 +365,10 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         potential_event_notadded_ids.sort(key=lambda x: potential_event_dict[x].source)
 
         # Limit to 20 at a time so we don't overwhelm the user.
+        number_of_events = int(self.request.get('number_of_events', '20'))
         total_potential_events = len(potential_event_notadded_ids)
-        has_more_events = total_potential_events > 20
-        potential_event_notadded_ids = potential_event_notadded_ids[:20]
+        has_more_events = total_potential_events > number_of_events
+        potential_event_notadded_ids = potential_event_notadded_ids[:number_of_events]
 
         for e in potential_event_notadded_ids:
             self.batch_lookup.lookup_event(e)
