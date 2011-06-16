@@ -11,10 +11,10 @@ brandon dumlao
 brian puspos
 bryan tanaka
 candace brown
-cj[^a-z]*2auce[^a-z]*edwards
+cj\W+2auce\W+edwards
 david moore
 derrick caldwell
-di[^a-z]*moon[^a-z]*zhang
+di\W+moon\W+zhang
 eddie orales
 ellen kim
 emerson aquino
