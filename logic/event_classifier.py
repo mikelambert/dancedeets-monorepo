@@ -28,24 +28,26 @@ dance_and_music_keywords = [
     'hype',
     'breaks',
     'dancehall',
+    'boogaloo',
+    'hitting',
+    'breaking?', 'breakers?',
 ]
 
 dance_keywords = [
+    'poppers?', 'popp?i?ng?',
+
     'street.?dance', 'break.?dance', 'break.?dancing?',
-    'turf(?:ing)?', 'flex(?:ing)?', 'bucking?', 'jooking?',
-    'b.?boys?', 'b.?boying?', 'b.?girls?', 'b.?girling?', 'breaking?', 'breakers?', 'power.?moves?', 'footwork', 'footworking?',
+    'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
+    'b.?boys?', 'b.?boying?', 'b.?girls?', 'b.?girling?', 'power.?moves?', 'footwork', 'footworking?',
     'top.?rock(?:ers?|ing?|)', 'up.?rock(?:ers?|ing?|)',
     'housers?', 'house ?danc\w*',
     'lockers?', 'locking?', 'lock dance',
     'wh?aa?cc?kers?', 'wh?aa?cc?king?', 'wh?aa?cc?k',
-    'poppers?', 'popp?i?ng?',
     'locking4life',
-    'hitting',
     'waving?', 'wavers?',
     'robott?ing?',
     'strutters?', 'strutting',
     'glides?', 'gliding', 
-    'boogaloo',
     'tuts?', 'tutting?', 'tutters?',
     'n(?:ew|u).?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
     'me against the music',
@@ -103,12 +105,25 @@ club_only_keywords = [
     'waitress(?:es)?',
 ]
 
+#TODO(lambert): use these to filter out shows we don't really care about
+other_show_keywords = [
+    'comedy',
+    'poetry',
+    'poets?',
+    'spoken word',
+    'painting',
+    'juggling',
+    'magic',
+    'singing',
+    'acting',
+]
+
 event_keywords = [
     'boty', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
     r'\d+[ -]?(?:vs?\.?|x|×|on)[ -]?\d+',
     r'(?:seven|7)\W+(?:to|two|2)\W+smoke',
     'c(?:y|i)phers?',
-    'workshops?', 'class with', 'master class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
+    'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
     'cours',
     'abdc',
 ]
