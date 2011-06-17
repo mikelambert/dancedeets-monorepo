@@ -215,7 +215,7 @@ class SearchQuery(object):
             logging.info("Doing search with clauses: %s", full_clauses)
             return eventdata.DBEvent.gql('where %s' % full_clauses, **bind_vars).fetch(1000)
         else:
-            return eventdata.DBEvent.all().fetch(100)
+            return eventdata.DBEvent.all().fetch(1000)
 
     def get_search_results(self, fb_uid, graph):
         # Do datastore filtering
