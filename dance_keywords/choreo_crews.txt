@@ -3,6 +3,7 @@ a tribe called groove
 academy of phresh
 academy of swag
 afta shock
+ajnin precizion
 alpha beatz crew
 altarego
 america'?s best dance crew
@@ -63,6 +64,7 @@ grv,0
 heartbreak crew	
 hoya break squad
 i am phresh
+i\W?am\W?me
 iconic movement
 illmatic
 in da clutch
@@ -147,6 +149,7 @@ the boom cats crew
 the company,0
 the iv league
 thee slap bracelets
+tito boyscouts
 tribl3 threat
 tru movement
 twofourseven
@@ -163,4 +166,3 @@ vip vallejo
 wanted ashiqz
 wrawsome
 zee hype
-i\W?am\W?me
