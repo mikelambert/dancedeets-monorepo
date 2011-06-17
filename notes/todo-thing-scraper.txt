@@ -48,10 +48,42 @@ choreo seeds:
 - s**t kingz
 
 - list these out as things, but with a seed=true and choreo/freestyle.
-- we can mapreduce over seed things, which causes it to fetch friends for each of them, and stick them in as things of their own. propagate the freestyle/choreo-seed-friend-lists down along with freestyle/choreo-seed counts
+- we can mapreduce over seed things, which causes it to fetch friends for each of them, and stick them in as things of their own. propagate the freestyle/choreo-seed-friend-lists down along with freestyle/choreo-seed counts.
+- we may need to iteratively try mine (and other's) accesstokens to access their friends, since fb is a bit more strict about that
 - we can periodically run the mapreduce to add-friends-of-seeds. and over time we can promote other things to seed if/when we want, and it'll just work.
 - maybe build a queue that goes through the list of things, looks at their friends, counts number-of-seeds of each type (hardcoded freestyle/choreo), as well as the "old" values of all their friends as freestyle/choreo folks, and uses this to make a determination about the leanings of this person (potentially both) on multiple 0.0-1.0 scales. we set the "future" to be this, and then later copy future-to-old value. (so it's an iterative mapreduce that hopefully achieves some stabilization over time).
 - if it ever iterates badly, it'd be nice to figure out why and adjust our thresholds so that we can re-run-it-from-scratch with the seeds again. not sure where to go with this one though.
 
 - some things will not be people, just fan pages or groups. we should allow this, but with a manual freestyle/choreo override bit that is specifically set. maybe have a "is-person-group-or-fanpage" enum in this thing.
 - will probably need to build mapreduce inputs that specifically filter on seed or person-versus-others? mapreduces don't look at inputs just keys, so this may be harder? or we could use key-prefixes (or namespaces) to filter out just a sub-range we want to process for mapreduce.
+
+--------------------
+--major subsections of site/code to group by:
+--------------------
+
+db representation for thing
+
+mapreduce for processing things
+
+fetching thing data. events, walls, likes. can't grab friends unless they're a user of the app itself (using appropriate token).
+
+fetch groups too somehow?
+
+fetching the attending lists from events.
+
+processing stream of events of walls/events. adding to potentialevents with source
+
+processing stream of pages/people. (from people, and from events). add as potentialpeople a
+long with source
+
+
+eventclassifier. using textual logic, decision trees, and source filters info.
+classify as no, maybe, yes-with-settings.
+
+location classifier. use lookup logic? and use intelligence to query as much as we can about event and attendees.
+location admin queue.
+
+seed fetching? bleh doesn't work for requesting friends. :( give up? setup for just the peo
+ple that are in the site? mlambert already gets a good job. maybe future, steve veusty, tes
+sa, firstclass arts, wooyon, alain lauture, tiff bong, robert creer, rashaad pearson, marie
+ gumdrop, byron cox, amanda suk, phun keedoc, shoey sun, invent, dennis infante? 
