@@ -225,8 +225,9 @@ class SearchQuery(object):
         a = time.time()
         search_events = get_search_index()
         event_ids = []
-        for fb_event_id, geohash in search_events:
-            if [geohash.startswith(x) for x in self.search_geohashes]:
+        for fb_event_id, (latitude, longitude) in search_events:
+            distance = locations.get_distance(self.location[0], self.location[1], latitude, longitude, use_km=True)
+            if distance < self.distance_in_km:
                 event_ids.append(fb_event_id)
         logging.info("loading and filtering search index took %s seconds", time.time() - a)
         db_events = eventdata.get_cached_db_events(event_ids)
@@ -234,7 +235,7 @@ class SearchQuery(object):
 
     def get_search_results(self, fb_uid, graph):
         db_events = None
-        if self.time_period == tags.TIME_FUTURE:
+        if self.time_period == tags.TIME_FUTURE and self.distance_in_km:
             # Use cached blob for our common case of filtering
             db_events = self.magical_get_candidate_events()
         if db_events is None:
@@ -270,7 +271,7 @@ def construct_search_index():
     if len(db_events) == MAX_EVENTS:
         slogging.error('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
 
-    search_events = [(x.fb_event_id, max(x.geohashes, key=len)) for x in db_events if x.geohashes]
+    search_events = [(x.fb_event_id, (x.latitude, x.longitude)) for x in db_events if x.latitude or x.longitude]
     return search_events
 
 SEARCH_INDEX_MEMCACHE_KEY = 'SearchIndex'
