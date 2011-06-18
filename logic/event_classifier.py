@@ -70,6 +70,7 @@ club_and_event_keywords = [
 club_only_keywords = [
     'club',
     'bottle service',
+    'table service',
     'coat check',
     #'rsvp',
     'free before',
@@ -103,6 +104,7 @@ club_only_keywords = [
     'bartenders?',
     'waiters?',
     'waitress(?:es)?',
+    'go\Wgo',
 ]
 
 #TODO(lambert): use these to filter out shows we don't really care about
@@ -120,13 +122,12 @@ other_show_keywords = [
 
 event_keywords = [
     'boty', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
-    r'\d+[ -]?(?:vs?\.?|x|×|on)[ -]?\d+',
     r'(?:seven|7)\W+(?:to|two|2)\W+smoke',
     'c(?:y|i)phers?',
     'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
     'cours',
-    'abdc',
-]
+    'abdc', 'america's best dance crew',
+] + [r'%s[ -]?(?:vs?\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
 
 
 dance_wrong_style_keywords = [

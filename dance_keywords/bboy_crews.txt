@@ -24,6 +24,8 @@ bad taste cru
 bad trip crew
 badditude crew
 battle bandits
+battleholex
+bboy alliance
 bboys anonymous
 beat geeks
 belfast city breakers
@@ -50,6 +52,7 @@ breaze team
 broad street bullies
 brooklyn zoo,0
 byu breakers
+calamaties,0
 canton clan
 circle of fire
 come correct
@@ -98,6 +101,7 @@ florox
 flowjob
 foot clan
 foot klan
+footwork fanatics
 footwork fanatix
 foundationz
 fraggle rock
@@ -183,6 +187,7 @@ maziade
 melting force
 mental misstep
 midnight jammerz
+mighty 4
 mightyzulu
 motor city rockerz
 mystical crew
@@ -218,13 +223,13 @@ ready to rock
 real squad crew
 real squad,0
 reckless habits crew
+red eye jedis
 red mask,0
 renegades crew
 renegades of phunk
 renegades,0
 rentgen squad
 rep the king
-repstyles
 repstyles
 rhythm addicts
 rhythm faction
@@ -274,6 +279,7 @@ sticky ruckus
 stile balneare family
 street punk crew
 street stylz crew
+stylelements
 stylistic prowess
 super cr3w
 super crew
@@ -300,6 +306,7 @@ tmnb crew
 top nine,0
 trinity warriors
 trueflavas
+truroots
 tsunami all stars
 unbreakable crew
 under attack,0
@@ -317,5 +324,6 @@ wizards of rhythm
 x-fenz
 zealous,0
 zip locks
+zulu breakers
 zulu kingz
 zygomatik
