@@ -137,12 +137,12 @@ class SearchQuery(object):
             else:
                 return []
         if self.start_time:
-            if self.start_time < db_event.end_time:
+            if self.start_time < event.end_time:
                 pass
             else:
                 return []
         if self.end_time:
-            if db_event.start_time < self.end_time:
+            if event.start_time < self.end_time:
                 pass
             else:
                 return []
