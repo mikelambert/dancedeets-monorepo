@@ -26,3 +26,6 @@ cron:
 - description: daily exception report
   url: /_ereporter?sender=mlambert@gmail.com&to=mlambert@gmail.com
   schedule: every day 00:00
+- description: search index refresh
+  url: /tasks/recache_search_index
+  schedule: every 1 hours

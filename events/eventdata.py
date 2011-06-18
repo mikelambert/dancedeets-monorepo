@@ -1,6 +1,7 @@
 import datetime
 import logging
 import cPickle as pickle
+import time
 
 from google.appengine.api import datastore
 from google.appengine.runtime import apiproxy_errors
@@ -13,6 +14,8 @@ import geohash
 import locations
 from util import abbrev
 from util import dates
+
+import smemcache
 
 REGION_RADIUS = 200 # kilometers
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
@@ -94,6 +97,25 @@ def get_geocoded_location_for_event(db_event, fb_event):
 
 def parse_fb_timestamp(fb_timestamp):
     return datetime.datetime.strptime(fb_timestamp.split('+')[0], '%Y-%m-%dT%H:%M:%S')
+
+
+DBEVENT_PREFIX = 'DbEvent.%s'
+def get_cached_db_events(event_ids, allow_cache=True):
+    db_events = []
+    a = time.time()
+    if allow_cache:
+        memcache_keys = [DBEVENT_PREFIX % x for x in event_ids]
+        db_events = smemcache.get_multi(memcache_keys).values()
+        logging.info("loading db events from memcache (included below) took %s seconds", time.time() - a)
+    remaining_event_ids = set(event_ids).difference([x.fb_event_id for x in db_events])
+    if remaining_event_ids:
+        new_db_events = DBEvent.get_by_key_name([str(x) for x in remaining_event_ids])
+        smemcache.safe_set_memcache(dict((DBEVENT_PREFIX % x.fb_event_id, x) for x in new_db_events), expiry=2*3600)
+        db_events += new_db_events
+    db_event_map = dict((x.fb_event_id, x) for x in db_events)
+    logging.info("loading cached db events took %s seconds", time.time() - a)
+    return [db_event_map[x] for x in event_ids]
+
 
 class DBEvent(db.Model):
     """Stores custom data about our Event"""

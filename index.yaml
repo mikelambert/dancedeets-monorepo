@@ -22,6 +22,11 @@ indexes:
 
 - kind: DBEvent
   properties:
+  - name: search_time_period
+  - name: start_time
+
+- kind: DBEvent
+  properties:
   - name: address
   - name: start_time
 
@@ -57,6 +62,16 @@ indexes:
   - name: __key__
     direction: desc
 
+- kind: User
+  properties:
+  - name: __key__
+    direction: desc
+
+- kind: UserMessage
+  properties:
+  - name: fb_uid
+  - name: creation_time
+
 - kind: _AE_MR_MapreduceState
   properties:
   - name: app_id
@@ -69,13 +84,3 @@ indexes:
   - name: result_status
   - name: start_time
     direction: desc
-
-- kind: User
-  properties:
-  - name: __key__
-    direction: desc
-
-- kind: UserMessage
-  properties:
-  - name: fb_uid
-  - name: creation_time

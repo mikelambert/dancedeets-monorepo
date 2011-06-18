@@ -65,6 +65,8 @@ class BatchLookup(object):
         self.fb_uid = fb_uid
         self.fb_graph = fb_graph
         self.allow_cache = allow_cache
+        self.allow_memcache = self.allow_cache
+        self.allow_dbcache = self.allow_cache
         self.object_keys = set()
         self.object_keys_to_lookup_without_cache = set()
 
@@ -259,7 +261,7 @@ class BatchLookup(object):
         object_keys_to_lookup = list(self.object_keys)
 
         if self.allow_cache:
-            if object_keys_to_lookup:
+            if object_keys_to_lookup and self.allow_memcache:
                 # lookup from memcache
                 memcache_objects = self._get_objects_from_memcache(object_keys_to_lookup)
                 self.objects.update(memcache_objects)
@@ -270,7 +272,7 @@ class BatchLookup(object):
                 object_keys_to_lookup = set(self.object_keys).difference(memcache_objects)
 
             # fall back to getting the rest from the db cache
-            if object_keys_to_lookup:
+            if object_keys_to_lookup and self.allow_dbcache:
                 db_objects = self._get_objects_from_dbcache(object_keys_to_lookup)
                 self.objects.update(db_objects)
                 # warn about strange keys we get back

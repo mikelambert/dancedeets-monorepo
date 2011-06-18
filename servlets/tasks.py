@@ -22,6 +22,7 @@ from logic import backgrounder
 from logic import email_events
 from logic import potential_events
 from logic import rankings
+from logic import search
 from logic import thing_scraper
 
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.
@@ -263,3 +264,8 @@ class UpdateLastLoginTimeHandler(RequestHandler):
             user.put()
         except apiproxy_errors.CapabilityDisabledError:
             pass # read-only mode!
+
+class RecacheSearchIndex(RequestHandler):
+    def get(self):
+        search.recache_everything()
+

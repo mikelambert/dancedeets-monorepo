@@ -2,6 +2,10 @@
 
 import datetime
 import logging
+import time
+import smemcache
+
+from google.appengine.ext import db
 
 import base_servlet
 from events import cities
@@ -126,21 +130,19 @@ class SearchQuery(object):
             self.search_geohashes = locations.get_all_geohashes_for(location[0], location[1], km=distance_in_km)
             logging.info("Searching geohashes %s", self.search_geohashes)
 
-    def matches_event(self, event, fb_event):
+    def matches_db_event(self, event):
         if self.any_tags:
             if self.any_tags.intersection(event.tags):
                 pass
             else:
                 return []
         if self.start_time:
-            fb_end_time = eventdata.parse_fb_timestamp(fb_event['info']['end_time'])
-            if self.start_time < fb_end_time:
+            if self.start_time < db_event.end_time:
                 pass
             else:
                 return []
         if self.end_time:
-            fb_start_time = eventdata.parse_fb_timestamp(fb_event['info']['start_time'])
-            if fb_start_time < self.end_time:
+            if db_event.start_time < self.end_time:
                 pass
             else:
                 return []
@@ -162,19 +164,21 @@ class SearchQuery(object):
             pass
         else:
             return []
+        if self.distance_in_km:
+            distance = locations.get_distance(self.location[0], self.location[1], event.latitude, event.longitude, use_km=True)
+            if distance < self.distance_in_km:
+                pass
+            else:
+                return []
+        return True
 
+    def matches_fb_db_event(self, event, fb_event):
         if self.query_args:
             found_keyword = False
             for keyword in self.query_args:
                 if keyword in fb_event['info']['name'] or keyword in fb_event['info'].get('description', ''):
                     found_keyword = True
             if found_keyword:
-                pass
-            else:
-                return []
-        if self.distance_in_km:
-            distance = locations.get_distance(self.location[0], self.location[1], event.latitude, event.longitude, use_km=True)
-            if distance < self.distance_in_km:
                 pass
             else:
                 return []
@@ -211,27 +215,48 @@ class SearchQuery(object):
             clauses.append('start_time < :start_time_max')
             bind_vars['start_time_max'] = self.end_time
         if clauses:
-            full_clauses = ' and '.join('%s' % x for x in clauses)
+            full_clauses = ' AND '.join('%s' % x for x in clauses)
             logging.info("Doing search with clauses: %s", full_clauses)
-            return eventdata.DBEvent.gql('where %s' % full_clauses, **bind_vars).fetch(1000)
+            return eventdata.DBEvent.gql('WHERE %s' % full_clauses, **bind_vars).fetch(1000)
         else:
             return eventdata.DBEvent.all().fetch(1000)
 
+    def magical_get_candidate_events(self):
+        a = time.time()
+        search_events = get_search_index()
+        event_ids = []
+        for fb_event_id, geohash in search_events:
+            if [geohash.startswith(x) for x in self.search_geohashes]:
+                event_ids.append(fb_event_id)
+        logging.info("loading and filtering search index took %s seconds", time.time() - a)
+        db_events = eventdata.get_cached_db_events(event_ids)
+        return db_events
+
     def get_search_results(self, fb_uid, graph):
-        # Do datastore filtering
-        db_events = self.get_candidate_events()
+        db_events = None
+        if self.time_period == tags.TIME_FUTURE:
+            # Use cached blob for our common case of filtering
+            db_events = self.magical_get_candidate_events()
+        if db_events is None:
+            # Do datastore filtering
+            db_events = self.get_candidate_events()
+
+        # Do some obvious filtering before loading the fb events for each.
+        db_events = [x for x in db_events if self.matches_db_event(x)]
 
         # Now look up contents of each event...
+        a = time.time()
         batch_lookup = fb_api.CommonBatchLookup(fb_uid, graph)
         for db_event in db_events:
             batch_lookup.lookup_event(db_event.fb_event_id)
         batch_lookup.finish_loading()
+        logging.info("loading fb data took %s seconds", time.time() - a)
 
         # ...and do filtering based on the contents inside our app
         search_results = []
         for db_event in db_events:
             fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
-            if not fb_event['deleted'] and self.matches_event(db_event, fb_event):
+            if not fb_event['deleted'] and self.matches_fb_db_event(db_event, fb_event):
                 result = SearchResult(fb_uid, db_event, fb_event, self)
                 search_results.append(result)
     
@@ -239,3 +264,42 @@ class SearchQuery(object):
         search_results.sort(key=lambda x: x.fb_event['info']['start_time'])
         return search_results
 
+def construct_search_index():
+    MAX_EVENTS = 5000
+    db_events = db.Query(eventdata.DBEvent).filter('search_time_period =', tags.TIME_FUTURE).order('start_time').fetch(MAX_EVENTS)
+    if len(db_events) == MAX_EVENTS:
+        slogging.error('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
+
+    search_events = [(x.fb_event_id, max(x.geohashes, key=len)) for x in db_events if x.geohashes]
+    return search_events
+
+SEARCH_INDEX_MEMCACHE_KEY = 'SearchIndex'
+
+def get_search_index(allow_cache=True):
+    search_index = None
+    if allow_cache:
+        search_index = smemcache.get(SEARCH_INDEX_MEMCACHE_KEY)
+    if not search_index:
+        search_index = construct_search_index()
+        smemcache.set(SEARCH_INDEX_MEMCACHE_KEY, search_index, time=2*3600)
+    return search_index
+
+def cache_fb_events(search_index):
+    """Load and stick fb events into cache."""
+    batch_lookup = fb_api.CommonBatchLookup(None, None)
+    batch_lookup.allow_memcache = False
+    for event_id, geohashes in search_index:
+        batch_lookup.lookup_event(event_id)
+        batch_lookup.lookup_event_attending(event_id)
+    batch_lookup.finish_loading()
+
+def cache_db_events(search_index):
+    """Load and stick db events into cache."""
+    search_index = get_search_index()
+    event_ids = [event_id for event_id, geohashes in search_index]
+    eventdata.get_cached_db_events(event_ids, allow_cache=False)
+
+def recache_everything():
+    search_index = get_search_index(allow_cache=False)
+    cache_fb_events(search_index)
+    cache_db_events(search_index)
