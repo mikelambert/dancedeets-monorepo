@@ -31,19 +31,16 @@ ORDER BY start_time
 
 class FacebookCachedObject(db.Model):
     json_data = db.TextProperty()
+    data = properties.json_property(json_data)
     date_cached = db.DateTimeProperty(auto_now=True)
 
     def encode_data(self, obj_dict):
-        self.json_data = simplejson.dumps(obj_dict)
-        if len(self.json_data) > 1024 * 1024 - 200:
-            logging.error("Encoded dictionary getting too large (%s) for key (%s)", len(self.json_data), self.key().name())
-        assert self.json_data, "No json_data for key = %s" % self.key().name()
+        self.data = obj_dict
 
     def decode_data(self):
         if not self.json_data:
             self.delete() # hack fix to get these objects purged from the system
-        assert self.json_data, "No json_data for key = %s" % self.key().name()
-        return simplejson.loads(self.json_data)
+        return self.data
 
 class ExpiredOAuthToken(Exception):
     pass
