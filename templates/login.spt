@@ -78,6 +78,13 @@
 <div id="header">
 <img src="/dancedeets.png" width=334 height=54 class="centered-image">
 
+<div style="text-align: center;margin-top: 20px">Dance Deets is your home for streetdance events: locally and internationally.<br>
+Wherever you are in the world, we’ll help you find a place to get your groove on.<br>
+#if $total_events
+Over $total_events events and growing daily!
+#end if
+</div>
+
 #if $user_message
 <div class="ui-widget" style="text-align: center">
 <div class="ui-state-highlight ui-corner-all">$user_message</div>
@@ -87,6 +94,12 @@
 </div>
 
 <div id="left-hand">
+
+##<div>
+##<span><a href="/nearby">Events Near You</a></span>
+##<span><a href="/all">All Events</a></span>
+##<span><a href="/promote">Promote Your Scene</a></span>
+##</div>
 
 <div id="find">
 <div class="find-promote-box">
@@ -146,6 +159,7 @@ See many more events for these other continents:
 <div style="clear: both;border-top: 1px solid grey">
 <form action="/">
 $event_criteria($defaults)
+<br>
 <input type=submit value="Search">
 </form>
 </div>
