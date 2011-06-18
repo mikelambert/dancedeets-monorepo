@@ -3,7 +3,17 @@ import smemcache
 
 import fb_api
 
+# We only do this many at once, so that we don't load them all into memory simultaneously.
+# This helps us avoid blowing our soft memory limit and killing our serving process just because the user looked up every-event-in-the-world.
+# With 100, we seem to stay under the limit and have no real discernable difference in latency (below noise). Probably because our time is dominated by deserialization, not round-trip latency.
+RESULTS_AT_ONCE = 100
+
 def decorate_with_friends(batch_lookup, search_results):
+
+    if len(search_results) > RESULTS_AT_ONCE:
+        decorate_with_friends(batch_lookup, search_results[RESULTS_AT_ONCE:])
+        search_results = search_results[:RESULTS_AT_ONCE]
+
     if batch_lookup.fb_uid:
         friends_list = batch_lookup.data_for_user(batch_lookup.fb_uid)['friends']['data']
         friend_map = dict((x['id'], x['name']) for x in friends_list)
