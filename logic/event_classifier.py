@@ -126,7 +126,7 @@ event_keywords = [
     'c(?:y|i)phers?',
     'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
     'cours',
-    'abdc', 'america's best dance crew',
+    'abdc', 'america.?s best dance crew',
 ] + [r'%s[ -]?(?:vs?\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
 
 
