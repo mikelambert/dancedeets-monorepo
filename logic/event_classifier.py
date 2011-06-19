@@ -107,6 +107,12 @@ club_only_keywords = [
     'go\Wgo',
 ]
 
+anti_dance_keywords  = [
+    't?shirt competition',
+    'shaking competition',
+    'costume competition',
+]
+
 #TODO(lambert): use these to filter out shows we don't really care about
 other_show_keywords = [
     'comedy',
