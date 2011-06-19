@@ -4,9 +4,8 @@ make database object for things-to-scrape. list them with:
 - from created-events, by each style/category
 - from invitations (if signed into dancedeets), by each style/category
 
-- we can mapreduce over items and process them efficiently on cpu, bad on fb qps limits
-- we can mapreduce over items, stick them in a task queue, and then process them one-at-a-time (inefficiently on cpu, but we can keep qps down)
-- either way we can institute cutoff filters to only query those users that have given us good stuff in the past
+- we can mapreduce over items and process them efficiently on cpu, using rate-limits to keep qps down
+- if needed, we can institute cutoff filters to only query those users that have given us good stuff in the past
 
 - for each event we find, find-or-construct a potentialevent, and add this thing-and-wall (or creator) as a source
 - add potential-event to the to-classify queue (even if already classified)
