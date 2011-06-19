@@ -268,7 +268,7 @@ class SearchQuery(object):
 def construct_search_index():
     MAX_EVENTS = 5000
     db_events = db.Query(eventdata.DBEvent).filter('search_time_period =', tags.TIME_FUTURE).order('start_time').fetch(MAX_EVENTS)
-    if len(db_events) == MAX_EVENTS:
+    if len(db_events) >= MAX_EVENTS:
         slogging.error('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
 
     search_events = [(x.fb_event_id, (x.latitude, x.longitude)) for x in db_events if x.latitude or x.longitude]
@@ -285,9 +285,12 @@ def get_search_index(allow_cache=True):
         smemcache.set(SEARCH_INDEX_MEMCACHE_KEY, search_index, time=2*3600)
     return search_index
 
-def cache_fb_events(search_index):
+EVENTS_AT_A_TIME = 200
+def cache_fb_events(batch_lookup, search_index):
     """Load and stick fb events into cache."""
-    batch_lookup = fb_api.CommonBatchLookup(None, None)
+    cache_fb_events(batch_lookup, search_index[:EVENTS_AT_A_TIME])
+    search_index = search_index[EVENTS_AT_A_TIME:]
+    batch_lookup = batch_lookup.copy()
     batch_lookup.allow_memcache = False
     for event_id, geohashes in search_index:
         batch_lookup.lookup_event(event_id)
@@ -300,7 +303,7 @@ def cache_db_events(search_index):
     event_ids = [event_id for event_id, geohashes in search_index]
     eventdata.get_cached_db_events(event_ids, allow_cache=False)
 
-def recache_everything():
+def recache_everything(batch_lookup):
     search_index = get_search_index(allow_cache=False)
-    cache_fb_events(search_index)
+    cache_fb_events(batch_lookup, search_index)
     cache_db_events(search_index)

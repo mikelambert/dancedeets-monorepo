@@ -238,6 +238,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
         thing_scraper.mapreduce_scrape_all_sources(self.batch_lookup)
         return
 
+""" Old id-loading code
         filemap = {
             #'choreo_ids.txt': tags.CHOREO_EVENT,
             #'freestyle_ids.txt': tags.FREESTYLE_EVENT,
@@ -285,6 +286,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
 
             #sources from ids...
             #thing_scraper.scrape_events_from_sources(self.batch_lookup, friendpage_ids)
+"""
 
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
@@ -306,7 +308,7 @@ class UpdateLastLoginTimeHandler(RequestHandler):
         except apiproxy_errors.CapabilityDisabledError:
             pass # read-only mode!
 
-class RecacheSearchIndex(RequestHandler):
+class RecacheSearchIndex(BaseTaskFacebookRequestHandler):
     def get(self):
-        search.recache_everything()
+        search.recache_everything(self.batch_lookup)
 
