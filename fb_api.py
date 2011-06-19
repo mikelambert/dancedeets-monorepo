@@ -13,6 +13,8 @@ from google.appengine.api import urlfetch
 from google.appengine.runtime import apiproxy_errors
 from django.utils import simplejson
 
+from util import properties
+
 # Comparison of pickle vs json:
 # http://kbyanc.blogspot.com/2007/07/python-serializer-benchmarks.html
 # http://metaoptimize.com/blog/2009/03/22/fast-deserialization-in-python/
