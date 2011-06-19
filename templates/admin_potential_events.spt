@@ -13,7 +13,12 @@
 		<td>$potential_event.dance_words</td>
 		<td>$potential_event.event_words</td>
 		<td>$potential_event.keyword_reason</td>
-		<td>$potential_event.source</td>
+		<td>
+		$potential_event.potential_event.source<br>
+		#for $source_id, $source_field in zip($potential_event.potential_event.source_ids, $potential_event.potential_event.source_fields)
+			<a href="http://graph.facebook.com/$source_id">$source_id</a> : $source_field<br>
+		#end for
+		</td>
 	</tr>
 	#end for
 </table>

@@ -6,38 +6,44 @@ from google.appengine.runtime import apiproxy_errors
 from events import eventdata
 import fb_api
 from logic import event_classifier
+from logic import thing_db
+from util import properties
 
 class PotentialEvent(db.Model):
     looked_at = db.BooleanProperty()
     source = db.StringProperty()
+    #thing_sources_json = db.TextProperty()
+    #properties.json_property(sources_json)
+    source_ids = db.ListProperty(int)
+    source_fields = db.ListProperty(str)
 
-SOURCE_USER_INVITES = 'user_invites'
-SOURCE_POSTS = 'posts'
+def add_source_for_event_id(source, source_field, fb_event_id):
+    potential_event = PotentialEvent.get_or_insert(str(fb_event_id))
+    # If already added, return
+    for source_id, source_field_ in zip(potential_event.source_ids, potential_event.source_fields):
+        if source_id == source.graph_id and source_field_ == source_field:
+            return
+    def _internal_add_source_for_event_id():
+        potential_event = PotentialEvent.get_by_key_name(str(fb_event_id))
+        # If already added, return
+        for source_id, source_field_ in zip(potential_event.source_ids, potential_event.source_fields):
+            if source_id == source.graph_id and source_field_ == source_field:
+                return
+        potential_event.source_ids.append(source.graph_id)
+        potential_event.source_fields.append(source_field)
+        potential_event.put()
+    db.run_in_transaction(_internal_add_source_for_event_id)
 
-def source_from_user_invites(user_id):
-    return '%s:%s' % (SOURCE_USER_INVITES, user_id)
 
-def source_from_posts(style_type, thing_id):
-    return '%s:%s:%s' % (SOURCE_POSTS, style_type, thing_id)
-
-def display_for_source(source_str):
-    source_type, source_id = source_str.split(':', 1)
-    return '<a href="http://www.facebook.com/profile.php?id=%(source_id)s">%(source_type)s from %(source_id)s</a>' % dict(source_id=source_id, source_type=source_type)
-
-def save_potential_fb_event_ids_if_new(event_ids, source=None):
+def save_potential_fb_event_ids_if_new(event_ids, source=None, source_field=None):
     filtered_ids = [x for x in event_ids if not eventdata.DBEvent.get_by_key_name(str(x)) and not PotentialEvent.get_by_key_name(str(x))]
-    save_potential_fb_event_ids(filtered_ids, source=source)
+    save_potential_fb_event_ids(filtered_ids, source=source, source_field=source_field)
 
-def save_potential_fb_event_ids(event_ids, source=None):
+def save_potential_fb_event_ids(event_ids, source=None, source_field=None):
     for event_id in event_ids:
         try:
             logging.info("Saving potential event %s", event_id)
-            pe = PotentialEvent.get_or_insert(str(event_id))
-            # saves it, with potentially false 'looked_at' field (unless already set as true by myself)
-            if pe.looked_at is None:
-                pe.looked_at = False
-                pe.source = source
-                pe.put()
+            add_source_for_event_id(source, source_field, event_id)
         except apiproxy_errors.CapabilityDisabledError:
             pass
 
@@ -76,6 +82,7 @@ def get_potential_dance_events(batch_lookup, user_id):
     new_unseen_dance_event_ids = set(new_dance_event_ids).difference(seen_potential_event_ids)
 
     new_dance_events = [second_batch_lookup.data_for_event(x) for x in new_unseen_dance_event_ids]
-    save_potential_fb_event_ids(new_unseen_dance_event_ids, source=source_from_user_invites(user_id))
+    source = thing_db.source_for_user_id(user_id)
+    save_potential_fb_event_ids(new_unseen_dance_event_ids, source=source, source_field=thing_db.FIELD_INVITES)
     new_dance_events = sorted(new_dance_events, key=lambda x: x['info']['start_time'])
     return new_dance_events

@@ -362,7 +362,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         already_added_event_ids = [x.key().name() for x in already_added_events if x]
         # construct a list of not-added ids for display, but keep the list of all ids around so we can still mark them as processed down below
         potential_event_notadded_ids = list(set(potential_event_dict).difference(already_added_event_ids))
-        potential_event_notadded_ids.sort(key=lambda x: potential_event_dict[x].source)
+        potential_event_notadded_ids.sort(key=lambda x: -len(potential_event_dict[x].source_ids))
 
         # Limit to 20 at a time so we don't overwhelm the user.
         number_of_events = int(self.request.get('number_of_events', '20'))
@@ -392,10 +392,10 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 reason = None
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
-            template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str, keyword_reason=reason, source=potential_event_dict[e].source))
+            template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str, keyword_reason=reason, potential_event=potential_event_dict[e]))
         self.display['total_potential_events'] = total_potential_events
         self.display['has_more_events'] = has_more_events
-        self.display['potential_events_listing'] = sorted(template_events, key=lambda x: x['source'])
+        self.display['potential_events_listing'] = template_events
         self.display['potential_ids'] = ','.join(already_added_event_ids + potential_event_notadded_ids) # use all ids, since we want to mark already-added ids as processed as well. but only the top N of the potential event ids that we're showing to the user.
         self.render_template('admin_potential_events')
 

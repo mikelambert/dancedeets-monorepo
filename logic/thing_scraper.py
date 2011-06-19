@@ -2,25 +2,53 @@ import cgi
 import logging
 import urlparse
 
+import facebook
+
+from mapreduce import context
+from mapreduce import control
+#from mapreduce import operation as op
+
 import fb_api
 from logic import potential_events
+from logic import thing_db
 
-def scrape_events_from_users(batch_lookup, thing_ids, style_type):
-    batch_lookup = batch_lookup.copy(allow_cache=True)
-    for thing_id in thing_ids:
-        batch_lookup.lookup_thing_feed(thing_id)
+def scrape_events_from_sources(batch_lookup, sources):
+    batch_lookup = batch_lookup.copy(allow_cache=False)
+    for source in sources:
+        batch_lookup.lookup_thing_feed(source.graph_id)
     batch_lookup.finish_loading()
 
-    for thing_id in thing_ids:
+    for source in sources:
         try:
-            thing_feed = batch_lookup.data_for_thing_feed(thing_id)
-            process_thing_feed(thing_feed, style_type)
+            thing_feed = batch_lookup.data_for_thing_feed(source.graph_id)
+            process_thing_feed(source, thing_feed)
         except fb_api.NoFetchedDataException, e:
             logging.error("Failed to fetch data for thing: %s", str(e))
 
-def process_thing_feed(thing_feed, style_type):
+def scrape_source(source):
+    ctx = context.get()
+    params = ctx.mapreduce_spec.mapper.params
+    fb_graph = facebook.GraphAPI(params['batch_lookup_fb_graph_access_token'])
+    batch_lookup = fb_api.CommonBatchLookup(params['batch_lookup_fb_uid'], fb_graph, allow_cache=False) # Force refresh of thing feeds
+    scrape_events_from_sources(batch_lookup, [source])
+
+SOURCE_SCRAPER='SOURCE_SCRAPER'
+
+def mapreduce_scrape_all_sources(batch_lookup):
+    control.start_map(
+        name='Scrape All Sources',
+        reader_spec='mapreduce.input_readers.DatastoreInputReader',
+        handler_spec='logic.thing_scraper.scrape_source',
+        mapper_parameters={
+            'entity_kind': 'logic.thing_db.Source',
+            'batch_lookup_fb_uid': batch_lookup.fb_uid,
+            'batch_lookup_fb_graph_access_token': batch_lookup.fb_graph.access_token,
+        },
+        _app=SOURCE_SCRAPER,
+    )
+
+def process_thing_feed(source, thing_feed):
     # TODO(lambert): do we really need to scrape the 'info' to get the id, or we can we half the number of calls by just getting the feed?
-    thing_id = thing_feed['info']['id']
     if 'data' not in thing_feed['feed']:
         logging.error("No 'data' found in: %s", thing_feed['feed'])
         return
@@ -30,7 +58,7 @@ def process_thing_feed(thing_feed, style_type):
             if p.path.endswith('event.php'):
                 qs = cgi.parse_qs(p.query)
                 eid = qs['eid'][0]
-                potential_events.save_potential_fb_event_ids_if_new([eid], source=potential_events.source_from_posts(style_type, thing_id))
+                potential_events.save_potential_fb_event_ids([eid], source=source, source_field=thing_db.FIELD_FEED)
 
 
 

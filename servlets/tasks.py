@@ -23,6 +23,7 @@ from logic import email_events
 from logic import potential_events
 from logic import rankings
 from logic import search
+from logic import thing_db
 from logic import thing_scraper
 
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.
@@ -234,16 +235,56 @@ class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
 
 class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
     def get(self):
+        thing_scraper.mapreduce_scrape_all_sources(self.batch_lookup)
+        return
+
         filemap = {
-            'choreo_ids.txt': tags.CHOREO_EVENT,
-            'freestyle_ids.txt': tags.FREESTYLE_EVENT,
-            'dance_ids.txt': None,
+            #'choreo_ids.txt': tags.CHOREO_EVENT,
+            #'freestyle_ids.txt': tags.FREESTYLE_EVENT,
+            #'dance_ids.txt': None,
         }
         for filename, style_type in filemap.iteritems():
             lines = open('dance_keywords/%s' % filename).readlines()
             friendpage_ids = [re.sub('[ #].*\n|\n', '', x) for x in lines]
             friendpage_ids = [x.replace('.', '') for x in friendpage_ids]
-            thing_scraper.scrape_events_from_users(self.batch_lookup, friendpage_ids, style_type)
+            batch_lookup = self.batch_lookup.copy()
+            for friend_id in friendpage_ids:
+                batch_lookup.lookup_thing_feed(friend_id)
+            batch_lookup.finish_loading()
+
+            for friend_id in friendpage_ids:
+                try:
+                    data = batch_lookup.data_for_thing_feed(friend_id)
+                except fb_api.NoFetchedDataException:
+                    continue
+                id = data['info']['id']
+                source = thing_db.Source.get_or_insert(str(id))
+                if 'likes' in data['info']:
+                    source.graph_type = thing_db.GRAPH_TYPE_FANPAGE
+                elif 'locale' in data['info']:
+                    source.graph_type = thing_db.GRAPH_TYPE_PROFILE
+                elif 'version' in data['info']:
+                    source.graph_type = thing_db.GRAPH_TYPE_GROUP
+                elif 'start_time' in data['info']:
+                    source.graph_type = thing_db.GRAPH_TYPE_EVENT
+                else:
+                    logging.info("cannot classify id %s", friend_id)
+                
+                if not style_type or style_type == tags.CHOREO_EVENT:
+                    source.choreo = 1.0
+                else:
+                    source.choreo = 0.0
+                if not style_type or style_type == tags.FREESTYLE_EVENT:
+                    source.freestyle = 1.0
+                else:
+                    source.freestyle = 0.0
+
+                source.compute_derived_properties(data)
+                logging.info('source %s: %s', source.graph_id, source.name)
+                source.put()
+
+            #sources from ids...
+            #thing_scraper.scrape_events_from_sources(self.batch_lookup, friendpage_ids)
 
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
