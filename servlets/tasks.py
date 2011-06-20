@@ -151,7 +151,12 @@ class ResaveAllUsersHandler(BaseTaskRequestHandler):
 
 class ResaveAllEventsHandler(BaseTaskRequestHandler):
     def get(self):
-        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.all()]
+        db_events = eventdata.DBEvent.all()
+        event_ids = [db_event.fb_event_id for db_event in db_events if db_event.tags != []]
+        for db_event in db_events:
+            if db_event.tags == []:
+                logging.info("Deleting db_event id %s", db_event.fb_event_id)
+                db_event.delete()
         backgrounder.load_events_full(event_ids)
     post=get
 
