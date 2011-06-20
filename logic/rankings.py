@@ -137,6 +137,7 @@ def count_user_for_city(user):
             yield op.counters.Increment(make_key_name("City", city=user_city, time_period=time_period, dance_style=dance_style))
 
 def begin_ranking_calculations():
+    #TODO(lambert): move these into mapreduce.yaml, and expose them via a simple /XX API that we can trigger as needed
     control.start_map(
         name='Compute City Rankings by Events',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
@@ -144,6 +145,7 @@ def begin_ranking_calculations():
         mapper_parameters={'entity_kind': 'events.eventdata.DBEvent'},
         _app=EVENT_FOR_CITY_RANKING,
     )
+    #TODO(lambert): Make the above have a done callback triggering this one:
     control.start_map(
         name='Compute City Rankings by Users',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
@@ -151,6 +153,7 @@ def begin_ranking_calculations():
         mapper_parameters={'entity_kind': 'events.users.User'},
         _app=USER_FOR_CITY_RANKING,
     )
+    #TODO(lambert): move this into a /done callback on the above two
     compute_summary(expiry=5*60) # 5 minutes
 
 
