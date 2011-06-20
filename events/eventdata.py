@@ -20,6 +20,8 @@ import smemcache
 REGION_RADIUS = 200 # kilometers
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 
+ONLINE_ADDRESS = 'ONLINE'
+
 # pic url prefixes:
 # increasing-size: t, s, n
 # square: q
@@ -141,6 +143,7 @@ class DBEvent(db.Model):
     latitude = db.FloatProperty()
     longitude = db.FloatProperty()
     geohashes = db.StringListProperty()
+    anywhere = db.BooleanProperty()
 
     search_regions = db.StringListProperty()
 
@@ -188,7 +191,11 @@ class DBEvent(db.Model):
         else:
             self.search_time_period = tags.TIME_PAST
 
-        results = get_geocoded_location_for_event(self, fb_dict)
+        address = get_usable_address_for_event(self, fb_dict)
+        logging.info("%r %r", address, ONLINE_ADDRESS)
+        self.anywhere = (address == ONLINE_ADDRESS)
+
+        results = locations.get_geocoded_location(address)
         self.actual_city_name = results['city']
         self.city_name = cities.get_largest_nearby_city_name(self.address or results['address'])
 

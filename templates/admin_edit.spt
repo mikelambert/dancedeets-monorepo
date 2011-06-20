@@ -20,7 +20,9 @@ Edit Event
 			#end if
 			<input type="text" size=100 name="override_address" value="$override_address"><br>
 			Final Geocoded Address: $format_html($final_geocoded_address)<br>
-
+			#if $event.anywhere
+			Online/Anywhere/Worldwide<br>
+			#end if
 			<br>Description:
 			<button type="button" onclick="translateDescription();return true;">Translate Description</button>
 			#if $fb_event.info.get('description')
