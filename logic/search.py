@@ -288,7 +288,8 @@ def get_search_index(allow_cache=True):
 EVENTS_AT_A_TIME = 200
 def cache_fb_events(batch_lookup, search_index):
     """Load and stick fb events into cache."""
-    cache_fb_events(batch_lookup, search_index[:EVENTS_AT_A_TIME])
+    if len(search_index) > EVENTS_AT_A_TIME:
+        cache_fb_events(batch_lookup, search_index[:EVENTS_AT_A_TIME])
     search_index = search_index[EVENTS_AT_A_TIME:]
     batch_lookup = batch_lookup.copy()
     batch_lookup.allow_memcache = False
