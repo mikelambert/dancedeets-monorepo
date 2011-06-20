@@ -47,7 +47,7 @@ def _get_geocoded_data(address):
     except simplejson.decoder.JSONDecodeError, e:
         raise GeocodeException("Error decoding json from %s: %s: %r" % (url, e, results))
     if json_result['status'] == 'ZERO_RESULTS':
-        return None
+        return ''
     if json_result['status'] != 'OK':
         raise GeocodeException("Got unexpected status: %s" % json_result['status'])
     result = json_result['results'][0]
