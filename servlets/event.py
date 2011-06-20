@@ -249,7 +249,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         e.make_findable_for(self.batch_lookup.data_for_event(event_id))
         e.put()
 
-        backgrounder.load_event_attending(event_id)
+        backgrounder.load_event_attending([event_id])
         self.user.add_message("Changes saved!")
         self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
