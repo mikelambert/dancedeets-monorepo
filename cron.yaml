@@ -27,5 +27,5 @@ cron:
   url: /_ereporter?sender=mlambert@gmail.com&to=mlambert@gmail.com
   schedule: every day 00:00
 - description: search index refresh
-  url: /tasks/recache_search_index
+  url: /tasks/recache_search_index?user_id=701004
   schedule: every 1 hours
