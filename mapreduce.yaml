@@ -1,0 +1,11 @@
+mapreduce:
+- name: Compute City Rankings by Events
+  mapper:
+    input_reader: mapreduce.input_readers.DatastoreInputReader
+    handler: logic.rankings.count_event_for_city
+    params:
+    - name: entity_kind
+      default: events.eventdata.DBEvent
+    - name: _app
+      default: CITY_EVENT_RANKING
+
