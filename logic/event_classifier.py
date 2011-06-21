@@ -60,7 +60,7 @@ dance_keywords = [
 ]
 
 easy_event_keywords = [
-    'jams?', 'club',
+    'jams?', 'club', 'after.party', 'pre.party',
 ]
 club_and_event_keywords = [
     'sessions?',
@@ -107,11 +107,13 @@ club_only_keywords = [
     'go\Wgo',
 ]
 
+#TODO(lambert): use these
 anti_dance_keywords  = [
     't?shirt competition',
     'shaking competition',
     'costume competition',
 ]
+# 'vote for xx' in the subject
 
 #TODO(lambert): use these to filter out shows we don't really care about
 other_show_keywords = [
