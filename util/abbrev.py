@@ -241,6 +241,8 @@ countries_abbrev2full = {
     "YU": "Yugoslavia",
     "ZM": "Zambia",
     "ZW": "Zimbabwe",
+    # temp
+    "XK": "Kosovo",
 }
 
 countries_full2abbrev = {}
@@ -306,7 +308,7 @@ states_abbrev2full = {
     'WA': 'Washington',
     'WI': 'Wisconsin',
     'WV': 'West Virginia',
-    'WY': 'Wyoming'
+    'WY': 'Wyoming',
 }
 
 states_full2abbrev = {}
