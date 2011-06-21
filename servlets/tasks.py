@@ -263,31 +263,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
                     data = batch_lookup.data_for_thing_feed(friend_id)
                 except fb_api.NoFetchedDataException:
                     continue
-                id = data['info']['id']
-                source = thing_db.Source.get_or_insert(str(id))
-                if 'likes' in data['info']:
-                    source.graph_type = thing_db.GRAPH_TYPE_FANPAGE
-                elif 'locale' in data['info']:
-                    source.graph_type = thing_db.GRAPH_TYPE_PROFILE
-                elif 'version' in data['info']:
-                    source.graph_type = thing_db.GRAPH_TYPE_GROUP
-                elif 'start_time' in data['info']:
-                    source.graph_type = thing_db.GRAPH_TYPE_EVENT
-                else:
-                    logging.info("cannot classify id %s", friend_id)
-                
-                if not style_type or style_type == tags.CHOREO_EVENT:
-                    source.choreo = 1.0
-                else:
-                    source.choreo = 0.0
-                if not style_type or style_type == tags.FREESTYLE_EVENT:
-                    source.freestyle = 1.0
-                else:
-                    source.freestyle = 0.0
-
-                source.compute_derived_properties(data)
-                logging.info('source %s: %s', source.graph_id, source.name)
-                source.put()
+                thing_db.create_source_for_id(friend_id, data, style_type)
 
             #sources from ids...
             #thing_scraper.scrape_events_from_sources(self.batch_lookup, friendpage_ids)

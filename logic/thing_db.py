@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from google.appengine.ext import db
+from events import tags
 from util import properties
 
 GRAPH_TYPE_PROFILE = 'GRAPH_TYPE_PROFILE'
@@ -70,6 +71,32 @@ def source_for_user_id(user_id):
         return source
     return _source_for_user_id()
     #return db.run_in_transaction(_source_for_user_id)
+
+def create_source_for_id(source_id, data, style_type):
+    source = Source.get_or_insert(str(source_id))
+    if 'likes' in data['info']:
+        source.graph_type = GRAPH_TYPE_FANPAGE
+    elif 'locale' in data['info']:
+        source.graph_type = GRAPH_TYPE_PROFILE
+    elif 'version' in data['info']:
+        source.graph_type = GRAPH_TYPE_GROUP
+    elif 'start_time' in data['info']:
+        source.graph_type = GRAPH_TYPE_EVENT
+    else:
+        logging.info("cannot classify id %s", source_id)
+
+    if not style_type or style_type == tags.CHOREO_EVENT:
+        source.choreo = 1.0
+    else:
+        source.choreo = 0.0
+    if not style_type or style_type == tags.FREESTYLE_EVENT:
+        source.freestyle = 1.0
+    else:
+        source.freestyle = 0.0
+
+    source.compute_derived_properties(data)
+    logging.info('source %s: %s', source.graph_id, source.name)
+    source.put()
 
 """
 user:
