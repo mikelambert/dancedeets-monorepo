@@ -77,8 +77,8 @@ def _raw_get_cached_geocoded_data(location):
             geocode = GeoCode(key_name=location)
             geocode.json_data = simplejson.dumps(geocoded_data)
             geocode.put()
-            if smemcache:
-                smemcache.set(memcache_key, geocoded_data, LOCATION_EXPIRY)
+        if smemcache:
+            smemcache.set(memcache_key, geocoded_data, LOCATION_EXPIRY)
     return geocoded_data
 
 def get_geocoded_location(address):
