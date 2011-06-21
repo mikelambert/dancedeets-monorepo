@@ -112,6 +112,7 @@ anti_dance_keywords  = [
     't?shirt competition',
     'shaking competition',
     'costume competition',
+    'bottles popping?',
 ]
 # 'vote for xx' in the subject
 
@@ -146,6 +147,7 @@ dance_wrong_style_keywords = [
     'jazz', 'tap', 'contemporary',
     'african',
     'zumba', 'belly.?danc(?:e(?:rs?)?|ing)',
+    'soca',
 ]
 
 dance_wrong_style_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_wrong_style_keywords))

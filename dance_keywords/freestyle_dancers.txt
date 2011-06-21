@@ -1,5 +1,7 @@
 abstrak
+amanda\W+b?\W+angel
 ana sanchez
+andré pires
 archie burnett
 aus ninja
 aus omni
@@ -31,13 +33,13 @@ hideki
 hiro,0
 hurrikane
 iron monkey
-jazzy jay
-jrock
 j-rock
 jak-hamah
 javier ninja
 jazzy j
+jazzy jay
 jojo diggs
+jrock
 kapela
 kashmir,0
 khalid freeman
@@ -70,6 +72,7 @@ poppin’ john
 popula
 rabah,0
 rashaad pearson
+rockmaster
 salah
 scooby doo
 scoobydoo
