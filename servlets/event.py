@@ -358,7 +358,7 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
 
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
-        unseen_potential_events = potential_events.PotentialEvent.gql("WHERE looked_at = :looked_at", looked_at=False)
+        unseen_potential_events = potential_events.PotentialEvent.gql("WHERE looked_at != :looked_at", looked_at=True)
         potential_event_dict = dict((x.key().name(), x) for x in unseen_potential_events)
         already_added_events = eventdata.DBEvent.get_by_key_name(list(potential_event_dict))
         already_added_event_ids = [x.key().name() for x in already_added_events if x]
