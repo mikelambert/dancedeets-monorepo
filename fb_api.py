@@ -241,7 +241,7 @@ class BatchLookup(object):
         # DEBUG!
         #get_size = len(pickle.dumps(objects))
         #logging.info("BatchLookup: memcache get_multi return size: %s", get_size)
-        logging.info("BatchLookup: memcache get_multi objects: %s", objects.keys())
+        logging.info("BatchLookup: memcache get_multi objects found: %s", objects.keys())
 
         return object_map
 
@@ -252,7 +252,7 @@ class BatchLookup(object):
         for i in range(0, len(clauses), max_in_queries):
             objects = FacebookCachedObject.get_by_key_name(clauses[i:i+max_in_queries])
             object_map.update(dict((tuple(o.key().name().split('.')), o.decode_data()) for o in objects if o))
-        logging.info("BatchLookup: db get_multi objects: %s", object_map.keys())
+        logging.info("BatchLookup: db lookup objects found: %s", object_map.keys())
         return object_map
 
     def finish_loading(self):
