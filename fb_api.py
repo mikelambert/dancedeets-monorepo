@@ -106,7 +106,8 @@ class BatchLookup(object):
             )
         elif object_type == self.OBJECT_EVENT:
             return dict(
-                info=self._fetch_rpc('%s' % object_id),
+                # So, token-less gives us correct value of 2011-06-26T23:00:00, but using a token gives us 2011-06-27T06:00:00+0000 to convert to PST/PDT? UGH! No more non-public events!
+                info=self._fetch_rpc('%s' % object_id, use_access_token=False),
                 picture=self._fetch_rpc('%s/picture' % object_id),
             )
         elif object_type == self.OBJECT_EVENT_ATTENDING:
