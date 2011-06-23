@@ -1,5 +1,7 @@
 BEFORE LAUNCH:
 
+- Add Send Dialog to message event owners, and allow people to share with their friends. https://developers.facebook.com/docs/reference/dialogs/send/
+
 event-scraping-from-walls project:
 - store an autoclassified boolean, so we don't train on those
 - only autoclassify events with strong locations. or separate out 'location' from 'what type of event', so we can approach them independently (separate queues, etc)
