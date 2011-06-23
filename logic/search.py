@@ -289,22 +289,24 @@ EVENTS_AT_A_TIME = 200
 def cache_fb_events(batch_lookup, search_index):
     """Load and stick fb events into cache."""
     if len(search_index) > EVENTS_AT_A_TIME:
-        cache_fb_events(batch_lookup, search_index[:EVENTS_AT_A_TIME])
-    search_index = search_index[EVENTS_AT_A_TIME:]
+        cache_fb_events(batch_lookup, search_index[EVENTS_AT_A_TIME:])
+    search_index = search_index[:EVENTS_AT_A_TIME]
     batch_lookup = batch_lookup.copy()
     batch_lookup.allow_memcache = False
-    for event_id, geohashes in search_index:
+    for event_id, latlng in search_index:
         batch_lookup.lookup_event(event_id)
         batch_lookup.lookup_event_attending(event_id)
+    logging.info("Loading %s events into memcache", len(search_index))
     batch_lookup.finish_loading()
 
 def cache_db_events(search_index):
     """Load and stick db events into cache."""
     search_index = get_search_index()
-    event_ids = [event_id for event_id, geohashes in search_index]
+    event_ids = [event_id for event_id, latlng in search_index]
     eventdata.get_cached_db_events(event_ids, allow_cache=False)
 
 def recache_everything(batch_lookup):
     search_index = get_search_index(allow_cache=False)
+    logging.info("Overall loading %s events into memcache", len(search_index))
     cache_fb_events(batch_lookup, search_index)
     cache_db_events(search_index)

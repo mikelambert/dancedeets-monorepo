@@ -163,19 +163,21 @@ class ResaveAllEventsHandler(BaseTaskRequestHandler):
 class ReloadAllEventsHandler(BaseTaskRequestHandler):
     def get(self):
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.all()]
+        logging.info("Found %s total events to reload", len(event_ids))
         backgrounder.load_events_full(event_ids, allow_cache=False)
     post=get
 
 class ReloadPastEventsHandler(BaseTaskRequestHandler):
     def get(self):
-        gm_today = datetime.datetime(*time.gmtime(time.time())[:6])
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE search_time_period = :1", tags.TIME_PAST)]
+        logging.info("Found %s past events to reload", len(event_ids))
         backgrounder.load_events_full(event_ids, allow_cache=False)
     post=get
 
 class ReloadFutureEventsHandler(BaseTaskRequestHandler):
     def get(self):
         event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql('WHERE search_time_period = :1', tags.TIME_FUTURE)]
+        logging.info("Found %s future events to reload", len(event_ids))
         backgrounder.load_events_full(event_ids, allow_cache=False)    
     post=get
 
