@@ -98,7 +98,11 @@ def get_geocoded_location_for_event(db_event, fb_event):
     return results
 
 def parse_fb_timestamp(fb_timestamp):
-    return datetime.datetime.strptime(fb_timestamp.split('+')[0], '%Y-%m-%dT%H:%M:%S')
+    # If we access events with an access_token (necessary to get around DOS limits from overloaded appengine IPs), we get a timestamp-localized weirdly-timed time from facebook, and need to reverse-engineer it
+    if '+' in fb_timestamp:
+        return dates.localize_timestamp(datetime.datetime.strptime(fb_timestamp.split('+')[0], '%Y-%m-%dT%H:%M:%S'))
+    else:
+        return datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S')
 
 
 DBEVENT_PREFIX = 'DbEvent.%s'
