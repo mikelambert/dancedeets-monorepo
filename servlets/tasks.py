@@ -8,9 +8,11 @@ import urllib
 import urlparse
 
 from django.utils import simplejson
-from google.appengine.ext.webapp import RequestHandler
 from google.appengine.api import mail
 from google.appengine.api import urlfetch
+from google.appengine.ext.webapp import RequestHandler
+from google.appengine.runtime import apiproxy_errors
+
 
 import base_servlet
 from events import eventdata
