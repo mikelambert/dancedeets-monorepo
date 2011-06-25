@@ -36,12 +36,13 @@ dance_and_music_keywords = [
 dance_keywords = [
     'poppers?', 'popp?i?ng?',
 
+    'jerk(?:ers?|ing?)?',
     'street.?dance', 'break.?dance', 'break.?dancing?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b.?boys?', 'b.?boying?', 'b.?girls?', 'b.?girling?', 'power.?moves?', 'footwork', 'footworking?',
-    'top.?rock(?:ers?|ing?|)', 'up.?rock(?:ers?|ing?|)',
+    'top.?rock(?:ers?|ing?)?', 'up.?rock(?:ers?|ing?|)?',
     'housers?', 'house ?danc\w*',
-    'lockers?', 'locking?', 'lock dance',
+    'lock(?:ers?|ing?)?', 'lock dance',
     'wh?aa?cc?kers?', 'wh?aa?cc?king?', 'wh?aa?cc?k',
     'locking4life',
     'waving?', 'wavers?',
@@ -113,8 +114,12 @@ anti_dance_keywords  = [
     'shaking competition',
     'costume competition',
     'bottles popping?',
+    'dance fitness',
 ]
 # 'vote for xx' in the subject
+# methodology
+# cardio
+# fitness
 
 #TODO(lambert): use these to filter out shows we don't really care about
 other_show_keywords = [
@@ -148,6 +153,7 @@ dance_wrong_style_keywords = [
     'african',
     'zumba', 'belly.?danc(?:e(?:rs?)?|ing)',
     'soca',
+    'flamenco',
 ]
 
 dance_wrong_style_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_wrong_style_keywords))
