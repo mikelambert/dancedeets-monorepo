@@ -14,6 +14,7 @@ import fb_api
 from logic import event_classifier
 from logic import event_smart_classifier
 from logic import potential_events
+from logic import thing_db
 
 class UnprocessFutureEvents(Mapper):
     KIND = fb_api.FacebookCachedObject
@@ -38,14 +39,26 @@ class UnprocessFutureEventsHandler(webapp.RequestHandler):
         m.run()
         return
 
-class OneOffHandler(webapp.RequestHandler):
+from servlets import tasks
+class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler):
     def get(self):
-        event_id = self.request.get('event_id')
-        batch_lookup = fb_api.CommonBatchLookup(None, None)
-        batch_lookup.lookup_event(event_id)
-        batch_lookup.finish_loading()
-        fb_event = batch_lookup.data_for_event(event_id)
-        event_smart_classifier.predict_types_for_event(fb_event)
+        f = urllib2.urlopen('https://graph.facebook.com/%s' % 105818469508896)
+        data = f.read()
+        for i in range(0, len(data), 100):
+            logging.info(data[100*i:100*i+100])
+        return
+        source_id = 142477195771244
+        self.batch_lookup.lookup_thing_feed(source_id)
+        self.batch_lookup.finish_loading()
+        data = self.batch_lookup.data_for_thing_feed(source_id)
+        thing_db.create_source_for_id(source_id, data, style_type=None)
+
+        #event_id = self.request.get('event_id')
+        #batch_lookup = fb_api.CommonBatchLookup(None, None)
+        #batch_lookup.lookup_event(event_id)
+        #batch_lookup.finish_loading()
+        #fb_event = batch_lookup.data_for_event(event_id)
+        #event_smart_classifier.predict_types_for_event(fb_event)
 
 class OwnedEventsHandler(webapp.RequestHandler):
     def get(self):
