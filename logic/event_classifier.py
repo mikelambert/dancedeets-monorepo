@@ -121,6 +121,12 @@ anti_dance_keywords  = [
 # cardio
 # fitness
 
+# bad words in title of club events
+# DJ
+# Live
+# Mon/Tue/Wed/Thu/Fri/Sat
+# Guests?
+
 #TODO(lambert): use these to filter out shows we don't really care about
 other_show_keywords = [
     'comedy',
