@@ -23,7 +23,7 @@ def parse_fb_timestamp(fb_timestamp):
     else:
         return datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S')
 
-def time_human_format(d, country):
+def time_human_format(d, country=None):
     if not country or country in AMPM_COUNTRIES:
         time_string = '%d:%02d%s' % (int(d.strftime('%I')), d.minute, d.strftime('%p').lower())
     else:
