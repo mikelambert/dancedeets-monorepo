@@ -7,6 +7,7 @@ sys.path += ['/Users/lambert/Projects/googleappengine-read-only/python/lib/fancy
 sys.path += ['/Users/lambert/Projects/googleappengine-read-only/python/lib/django']
 sys.path += ['.']
 
+import datetime
 import sys
 import time
 import csv
@@ -35,7 +36,16 @@ def flatten_output(db_name, out_name, process_func):
             sys.stdout.flush()
     print "done"
 
-flatten_output("local_data/events.db", "local_data/events.csv", lambda x: [x.key().name(), str(x['owner_fb_uid']), ';'.join([y for y in x.get('tags', []) if not y.startswith('STYLE_')]),x['start_time'].strftime('%Y%m%d')])
+def event_list(x):
+    start_time = x.get('start_time') or datetime.datetime.min
+    return [
+        x.key().name(),
+        str(x['owner_fb_uid']),
+        ';'.join([y for y in x.get('tags', []) if not y.startswith('STYLE_')]),
+        start_time.strftime('%Y%m%d')
+    ]
+
+flatten_output("local_data/events.db", "local_data/events.csv", event_list)
 #flatten_output("local_data/potentialevents.db", "local_data/potentialevents.csv", lambda x: [x.key().name()])
 #flatten_output("local_data/fb_data.db", "local_data/fb_data.csv", lambda x: [x.key().name(), x['json_data']])
 

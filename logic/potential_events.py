@@ -50,7 +50,7 @@ def save_potential_fb_event_ids(event_ids, source=None, source_field=None):
 def get_potential_dance_events(batch_lookup, user_id):
     try:
         results_json = batch_lookup.data_for_user_events(user_id)['all_event_info']
-        events = sorted(results_json, key=lambda x: x['start_time'])
+        events = sorted(results_json, key=lambda x: x.get('start_time'))
     except fb_api.NoFetchedDataException:
         events = []
     second_batch_lookup = fb_api.CommonBatchLookup(batch_lookup.fb_uid, batch_lookup.fb_graph)
@@ -84,5 +84,5 @@ def get_potential_dance_events(batch_lookup, user_id):
     new_dance_events = [second_batch_lookup.data_for_event(x) for x in new_unseen_dance_event_ids]
     source = thing_db.source_for_user_id(user_id)
     save_potential_fb_event_ids(new_unseen_dance_event_ids, source=source, source_field=thing_db.FIELD_INVITES)
-    new_dance_events = sorted(new_dance_events, key=lambda x: x['info']['start_time'])
+    new_dance_events = sorted(new_dance_events, key=lambda x: x['info'].get('start_time'))
     return new_dance_events

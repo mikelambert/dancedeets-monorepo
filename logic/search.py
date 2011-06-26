@@ -58,8 +58,8 @@ class SearchResult(object):
         self.db_event = db_event
         self.fb_event = fb_event
         self.search_query = search_query
-        self.start_time = eventdata.parse_fb_timestamp(self.fb_event['info']['start_time'])
-        self.end_time = eventdata.parse_fb_timestamp(self.fb_event['info']['end_time'])
+        self.start_time = eventdata.parse_fb_timestamp(self.fb_event['info'].get('start_time'))
+        self.end_time = eventdata.parse_fb_timestamp(self.fb_event['info'].get('end_time'))
         self.rsvp_status = "unknown"
         if self.db_event:
             tag_lookup = [tags.EVENT_TYPE_LOOKUP[x] for x in db_event.tags if x in tags.EVENT_TYPE_LOOKUP]
@@ -262,7 +262,7 @@ class SearchQuery(object):
                 search_results.append(result)
     
         # Now sort and return the results
-        search_results.sort(key=lambda x: x.fb_event['info']['start_time'])
+        search_results.sort(key=lambda x: x.fb_event['info'].get('start_time'))
         return search_results
 
 def construct_search_index():

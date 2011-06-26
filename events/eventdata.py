@@ -98,6 +98,10 @@ def get_geocoded_location_for_event(db_event, fb_event):
     return results
 
 def parse_fb_timestamp(fb_timestamp):
+    # because of events like 23705144628 without any time information
+    if not fb_timestamp:
+        return datetime.datetime(1970, 1, 1)
+
     # If we access events with an access_token (necessary to get around DOS limits from overloaded appengine IPs), we get a timestamp-localized weirdly-timed time from facebook, and need to reverse-engineer it
     if '+' in fb_timestamp:
         return dates.localize_timestamp(datetime.datetime.strptime(fb_timestamp.split('+')[0], '%Y-%m-%dT%H:%M:%S'))
@@ -173,14 +177,8 @@ class DBEvent(db.Model):
         else:
             self.owner_fb_uid = None
 
-        if fb_dict['info'].get('start_time'):
-            self.start_time = parse_fb_timestamp(fb_dict['info']['start_time'])
-        else:
-            self.start_time = datetime.datetime.min
-        if fb_dict['info'].get('end_time'):
-            self.end_time = parse_fb_timestamp(fb_dict['info']['end_time'])
-        else:
-            self.end_time = datetime.datetime.min
+        self.start_time = parse_fb_timestamp(fb_dict['info'].get('start_time'))
+        self.end_time = parse_fb_timestamp(fb_dict['info'].get('end_time'))
 
         self.search_tags = [] # CHOREO and/or FREESTYLE
         if set(self.tags).intersection([x[0] for x in tags.FREESTYLE_EVENT_LIST]):

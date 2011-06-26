@@ -76,8 +76,8 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
 
         self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.data_for_event(event_id)['picture'], eventdata.EVENT_IMAGE_LARGE)
 
-        self.display['start_time'] = eventdata.parse_fb_timestamp(event_info['info']['start_time'])
-        self.display['end_time'] = eventdata.parse_fb_timestamp(event_info['info']['end_time'])
+        self.display['start_time'] = eventdata.parse_fb_timestamp(event_info['info'].get('start_time'))
+        self.display['end_time'] = eventdata.parse_fb_timestamp(event_info['info'].get('end_time'))
 
         if 'venue' in event_info['info']:
             city_state_country = [
@@ -151,7 +151,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
         self.display['fb_event'] = e
         for field in ['start_time', 'end_time']:
-            self.display[field] = eventdata.parse_fb_timestamp(e[field])
+            self.display[field] = eventdata.parse_fb_timestamp(e.get(field))
 
         self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.data_for_event(event_id)['picture'], eventdata.EVENT_IMAGE_LARGE)
 
@@ -284,7 +284,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.finish_preload()
             try:
                 results_json = self.batch_lookup.data_for_user_events(self.fb_uid)['all_event_info']
-                events = sorted(results_json, key=lambda x: x['start_time'])
+                events = sorted(results_json, key=lambda x: x.get('start_time'))
             except fb_api.NoFetchedDataException:
                 events = []
             db_events = eventdata.DBEvent.get_by_key_name([str(x['eid']) for x in events])
@@ -295,7 +295,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 event['id'] = event['eid']
                 event['loaded'] = event['id'] in loaded_fb_event_ids
                 for field in ['start_time', 'end_time']:
-                    event[field] = dates.localize_timestamp(datetime.datetime.fromtimestamp(event[field]))
+                    event[field] = dates.localize_timestamp(datetime.datetime.fromtimestamp(event.get(field)))
 
             lastadd_key = 'LastAdd.%s' % (self.fb_uid)
             if not smemcache.get(lastadd_key):

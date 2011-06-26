@@ -25,7 +25,7 @@ class UnprocessFutureEvents(Mapper):
                 event = entity.decode_data()
                 if not event['deleted']:
                     info = event['info']
-                    if info['start_time'] > '2011-04-05' and info['updated_time'] > '2011-04-05':
+                    if info.get('start_time') > '2011-04-05' and info['updated_time'] > '2011-04-05':
                         if event_classifier.is_dance_event(event):
                             pe = potential_events.PotentialEvent.get_or_insert(str(event['info']['id']))
                             pe.looked_at = False
