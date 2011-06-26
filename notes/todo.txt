@@ -1,5 +1,8 @@
 BEFORE LAUNCH:
 
+- Add Tumblr integration to auto-post to blogs: http://www.tumblr.com/docs/en/api
+- Grab list of places-he-posts-to from https://www.facebook.com/lifestyledance?sk=wall to get better european coverage
+
 - Add Send Dialog to message event owners, and allow people to share with their friends. https://developers.facebook.com/docs/reference/dialogs/send/
 
 event-scraping-from-walls project:
