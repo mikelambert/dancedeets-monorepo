@@ -13,9 +13,9 @@ from events import eventdata
 from events import tags
 from events import users
 import fb_api
-from logic import rsvp
 import locations
-
+from logic import rsvp
+from util import dates
 
 class ResultsGroup(object): 
     def __init__(self, name, id, results, expanded, force=False): 
@@ -58,8 +58,8 @@ class SearchResult(object):
         self.db_event = db_event
         self.fb_event = fb_event
         self.search_query = search_query
-        self.start_time = eventdata.parse_fb_timestamp(self.fb_event['info'].get('start_time'))
-        self.end_time = eventdata.parse_fb_timestamp(self.fb_event['info'].get('end_time'))
+        self.start_time = dates.parse_fb_timestamp(self.fb_event['info'].get('start_time'))
+        self.end_time = dates.parse_fb_timestamp(self.fb_event['info'].get('end_time'))
         self.rsvp_status = "unknown"
         if self.db_event:
             tag_lookup = [tags.EVENT_TYPE_LOOKUP[x] for x in db_event.tags if x in tags.EVENT_TYPE_LOOKUP]

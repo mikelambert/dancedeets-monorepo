@@ -22,9 +22,6 @@ except ImportError:
 # http://en.wikipedia.org/wiki/Mile
 MILES_COUNTRIES = ['UK', 'US']
 
-# http://en.wikipedia.org/wiki/12-hour_clock
-AMPM_COUNTRIES = ['AU', 'BD', 'CA', 'CO', 'EG', 'IN', 'MY', 'NZ', 'PK', 'PH', 'US']
-
 LOCATION_EXPIRY = 24 * 60 * 60
 
 class GeocodeException(Exception):

@@ -58,28 +58,6 @@ DANCE_LISTS = {DANCE_FREESTYLE: FREESTYLE_LIST, DANCE_CHOREO: CHOREO_LIST}
 
 USER_EXPIRY = 24 * 60 * 60
 
-def time_human_format(d, user):
-    if not user or user.location_country in locations.AMPM_COUNTRIES:
-        time_string = '%d:%02d%s' % (int(d.strftime('%I')), d.minute, d.strftime('%p').lower())
-    else:
-        time_string = '%d:%02d' % (int(d.strftime('%H')), d.minute)
-    return time_string
-
-def date_human_format(d, user=None):
-    month_day_of_week = d.strftime('%A, %B')
-    month_day = '%s %s' % (month_day_of_week, d.day)
-    time_string = time_human_format(d, user=user)
-    return '%s - %s' % (month_day, time_string)
-
-def duration_human_format(d1, d2, user=None):
-    first_date = date_human_format(d1)
-    if (d2 - d1) > datetime.timedelta(hours=24):
-        second_date = date_human_format(d2, user)
-    else:
-        second_date = time_human_format(d2, user)
-    
-    return "%s to %s" % (first_date, second_date)
-
 class User(db.Model):
     # SSO
     fb_uid = property(lambda x: int(x.key().name()))
@@ -103,7 +81,6 @@ class User(db.Model):
     # Other preferences
     send_email = db.BooleanProperty()
     location_country = db.StringProperty()
-    location_timezone = db.StringProperty()
 
     # Derived from fb_user
     full_name = db.StringProperty()
@@ -133,6 +110,11 @@ class User(db.Model):
                 smemcache.set(memcache_key, user, USER_EXPIRY)
         return user
 
+    def date_human_format(self, x):
+        return dates.date_human_format(x, country=self.location_country)
+    def duration_human_format(self, x):
+        return dates.duration_human_format(x, country=self.location_country)
+
     def compute_derived_properties(self, fb_user):
         self.full_name = fb_user['profile']['name']
         self.email = fb_user['profile'].get('email')
@@ -140,20 +122,11 @@ class User(db.Model):
             #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
             self.location_country = locations.get_country_for_location(self.location)
             closest_city = cities.get_closest_city(self.location)
-            if closest_city:
-                self.location_timezone = closest_city.timezone
-            else:
-                self.location_timezone = None
         else:
             self.location_country = None
-            self.location_timezone = None
-
-    def local_time(self):
-        return dates.localize_timestamp(datetime.datetime.now(), timezone_str=self.location_timezone)
 
     def _populate_internal_entity(self):
         if not getattr(self, 'dance_type', None):
-            logging.info("b")
             if self.freestyle == FREESTYLE_DANCER and self.choreo == CHOREO_DANCER:
                 self.dance_type = DANCE_TYPE_ALL_DANCE['internal']
             elif self.freestyle == FREESTYLE_DANCER:

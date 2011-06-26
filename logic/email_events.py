@@ -52,7 +52,7 @@ def email_for_user(user, batch_lookup, fb_graph, should_send=True):
     new_dance_events = potential_events.get_potential_dance_events(batch_lookup, user.fb_uid)
 
     display = {}
-    display['date_human_format'] = lambda x: users.date_human_format(x, user=user)
+    display['date_human_format'] = user.date_human_format
     display['format_html'] = text.format_html
     display['fb_event_url'] = urls.fb_event_url
     display['raw_fb_event_url'] = urls.raw_fb_event_url
