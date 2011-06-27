@@ -129,18 +129,22 @@ Dance Events
 		$render_results($past_results)
 	</div>
 	<div id="ongoing_events" class="ui-tabs-hide">
-		#set $num_ongoing_results = len($ongoing_results)
-		Found $num_ongoing_results events.
-		$render_results($ongoing_results)
+		#if $ongoing_results
+			#set $num_ongoing_results = len($ongoing_results)
+			Found $num_ongoing_results events.
+			$render_results($ongoing_results)
+		#end if
 	</div>
 	<div id="upcoming_events">
-		Found $num_upcoming_results events.
-		#for $group in $grouped_upcoming_results
-			#if $group.results
-				<h2 class="group-title">$group.name</h2>
-				$render_results($group.results)
-			#end if
-		#end for
+		#if $num_upcoming_results
+			Found $num_upcoming_results events.
+			#for $group in $grouped_upcoming_results
+				#if $group.results
+					<h2 class="group-title">$group.name</h2>
+					$render_results($group.results)
+				#end if
+			#end for
+		#end if
 	</div>
 	<div id="calendar_events_tab">
 	</div>
