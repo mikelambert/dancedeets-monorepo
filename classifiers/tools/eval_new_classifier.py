@@ -74,6 +74,9 @@ for id in false_negative2.difference(false_negative):
     print 'F', id, fb_event['info'].get('owner', {}).get('name'), fb_event['info']['name']
     print '  ', event_classifier.is_dance_event(fb_event), event_classifier2.is_dance_event(fb_event)
 
+print ''
+print ''
+
 print 'list of used-to-be-negative now-positive non-dance events'
 for id in true_negative.difference(true_negative2):
     fb_event = get_fb_event(id)
