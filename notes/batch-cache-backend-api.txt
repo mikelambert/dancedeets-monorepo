@@ -1,0 +1,42 @@
+look up in memcache
+if not, look up in db
+if found in db, store in memcache, and return
+
+
+to do a cache:
+- Need a DB cache object. Use same for all? Treat like memcache, so no need for scans/indices/etc beyond primary key index.
+- Store json data. Auto-decode/auto-encode for us.
+
+- Works for fb objects, geocoding locations
+
+Do we expire and auto-refill on demand from backend db?
+Do we do offline cronjob to refresh cache?
+
+- Cache prefix corresponding to single-arg-key function?
+if x.__self__:
+	x.__self__.__class__.__module__, x.__self__.__class__.__name__, x.__func__
+else:
+	x.__module__, x.__name__
+
+- Single-Arg-Key Function
+- List of Arg-Keys
+- Expiry = Reload objects older than this amount of time. Can always-use-old-data or force-reload-of-data (while leaving old value in "cache" for frontend), etc. It is a per-use-case expiry.
+
+- Something that caches fb-attending-lists more cheaply. Easy to do if it loads from fb. more difficult if it wants to backend into another "cache". Should we allow this or not?
+
+- Maybe store the time-since-created in memcache, so client can do expiry. then just set infinite expiry on our objects.
+
+- Some way for inner function to indicate "no data". Variants of no-data include:
+a) error fetching data, use cached data where possible
+b) object is deleted or does not exist or is not cache-able, cache non-existance itself (not infinite)
+
+- Some way to invalidate values as being old. Force-refresh them with a short-value expiry to force re-caching of data throughout the stack. Combined with reading-stale-data from speed-requiring frontend, can be used to great effect.
+
+- Background loading. Allow us to force-load-objects in the background. Maybe we need to somehow serialize this function and arguments to be passed to the backend? Report an error if we are unable to do so via pickle?
+
+- Time-delayed loading? On a given timeframe, we want to reload-the-cache. We want to schedule search-index-refreshes every time we clear the queue (or clear a subset of the queue). But only need to refresh parts of it, I think. Just the db/fb objects and the global event-listing. Time-delay loading might allow us to say "reload after ten minutes, unless someone else comes along and re-pushes-it-back to ten minutes again".
+
+Time-delayed-pushback tasks. Store an object in db with a given timestamp, and key. Set a task to wake up at that time, and check value. If it's in the past, then run our real task URL at that point. If it's in the future, die, because someone else scheduled a task to take care of that, and it's not us.
+
+- Mapreduce. We may want to mapreduce over individual objects, which puts a bad one-by-one efficiency of our backend tasks. Maybe need to extend mapreduce API to be BatchedMapreduce that takes X objects-per-function-call, and does X-loads via batch constantly.
+
