@@ -13,6 +13,9 @@ There are $num_users users total:
 	$date_format('%Y-%m-%d %H:%M', $user.creation_time)
 #end if
 </td><td>
+#if $user.login_count
+	$user.login_count
+#end if
 #if $user.last_login_time
 	$date_format('%Y-%m-%d %H:%M', $user.last_login_time)
 #end if

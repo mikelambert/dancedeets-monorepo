@@ -288,6 +288,10 @@ class UpdateLastLoginTimeHandler(RequestHandler):
     def get(self):
         user = users.User.get_by_key_name(self.request.get('user_id'))
         user.last_login_time = datetime.datetime.now()
+        if getattr(user, 'login_count'):
+            user.login_count += 1
+        else:
+            user.login_count = 2 # once for this one, once for initial creation
         try:
             user.put()
         except apiproxy_errors.CapabilityDisabledError:

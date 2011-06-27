@@ -50,6 +50,7 @@ dance_keywords = [
     'strutters?', 'strutting',
     'glides?', 'gliding', 
     'tuts?', 'tutting?', 'tutters?',
+    'mtv.?style',
     'n(?:ew|u).?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
     'me against the music',
     'krump', 'krumping?', 'krumpers?',
