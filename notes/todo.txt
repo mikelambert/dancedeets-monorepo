@@ -20,7 +20,7 @@ event-scraping-from-walls project:
 - can list out people-that-organize-events-in-a-given-area, to help people travelling to an area book an event workshop, or people local setup/book some performance
 - figure out best way to do auto-classifying that leads back into existing augmenting of data (better event style, better location/city, etc). do on PotentialEvent save? using appengine queues? something else?
 
-- fix urls coming from firefox 4.0 for calendar
+- city pages' past-tabs do not work and require login
 - maybe add support for non-club outdoor party or community center or boat party
 - or film-screening (other?)
 
