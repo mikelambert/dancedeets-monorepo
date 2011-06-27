@@ -46,6 +46,6 @@ def event_list(x):
     ]
 
 flatten_output("local_data/events.db", "local_data/events.csv", event_list)
-#flatten_output("local_data/potentialevents.db", "local_data/potentialevents.csv", lambda x: [x.key().name()])
-#flatten_output("local_data/fb_data.db", "local_data/fb_data.csv", lambda x: [x.key().name(), x['json_data']])
+flatten_output("local_data/potentialevents.db", "local_data/potentialevents.csv", lambda x: [x.key().name()])
+flatten_output("local_data/fb_data.db", "local_data/fb_data.csv", lambda x: [x.key().name(), x['json_data']])
 
