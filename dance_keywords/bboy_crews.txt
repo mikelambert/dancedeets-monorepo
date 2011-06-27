@@ -1,9 +1,9 @@
-top 9,0
 2 real 2 true 4 breakn
 302flex
 360 flava
 5 crew dynasty
 616 techniques
+8onepowermove
 923 crew
 a tribe called storm
 a wookie and a storm trooper
@@ -41,6 +41,7 @@ boombox generation
 born 2 be bboys
 born to rock,0
 break efx
+break kidz
 break wizard crew
 breakdance dominicano
 breakdancing ninja
@@ -170,6 +171,7 @@ legiteam obstruxxion
 legz
 les associes
 lethal weaponz
+lhiba kingzoo
 lhibaking zoo
 lil dave rockers
 limit breakers
@@ -206,9 +208,9 @@ oshare
 out 4 royalty
 ovaload
 phase t
+pockemon
 polskee flavour
 power 5000
-predatorz
 predatorz
 primates rockerzz
 problems kru
@@ -303,6 +305,7 @@ the stepcreaters
 the warriors
 tiny toprockz
 tmnb crew
+top 9,0
 top nine,0
 trinity warriors
 trueflavas
