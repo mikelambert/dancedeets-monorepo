@@ -191,6 +191,19 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         else:
             creating_user = None
 
+        dance_tags = event_classifier.is_dance_event(fb_event)
+        if dance_tags:
+            truefalse, reason, dance_words, event_words = dance_tags
+            dance_words_str = ', '.join(list(dance_words))
+            event_words_str = ', '.join(list(event_words))
+        else:
+            reason = None
+            dance_words_str = 'NONE'
+            event_words_str = 'NONE'
+        self.display['classifier_reason'] = reason
+        self.display['classifier_dance_words'] = dance_words_str
+        self.display['classifier_event_words'] = event_words_str
+
         original_address = eventdata.get_original_address_for_event(fb_event)
         geocoded_address = locations.get_geocoded_location(original_address)['address']
         remapped_address = eventdata.get_remapped_address_for(original_address)

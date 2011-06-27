@@ -32,6 +32,9 @@ Edit Event
 			#end if
 			<div id="description" style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">$highlight_keywords($format_html($description))</div>
 
+			<p>Reason: $classifier_reason<br>
+			Dance Words: $classifier_dance_words<br>
+			Event Words: $classifier_event_words<br>
 			<p>Event Types:
 			<table><tr valign=top><td>
 			Freestyle:<br>
