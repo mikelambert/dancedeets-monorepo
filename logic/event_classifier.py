@@ -24,10 +24,9 @@ easy_choreography_keywords = [
 dance_and_music_keywords = [
     'hip.?hop',
     'funk',
-    'dancehall',
+    'dance.?hall',
     'hype',
     'breaks',
-    'dancehall',
     'boogaloo',
     'hitting',
     'breaking?', 'breakers?',
