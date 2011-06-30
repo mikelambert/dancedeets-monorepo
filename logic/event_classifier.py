@@ -30,11 +30,13 @@ dance_and_music_keywords = [
     'boogaloo',
     'hitting',
     'breaking?', 'breakers?',
+    'free.?style',
 ]
 
 dance_keywords = [
     'poppers?', 'popp?i?ng?',
 
+    'ragga',
     'jerk(?:ers?|ing?)?',
     'street.?dance', 'break.?dance', 'break.?dancing?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
@@ -46,6 +48,7 @@ dance_keywords = [
     'locking4life',
     'waving?', 'wavers?',
     'robott?ing?',
+    'shuffle', 'melbourne shuffle',
     'strutters?', 'strutting',
     'glides?', 'gliding', 
     'tuts?', 'tutting?', 'tutters?',
@@ -64,7 +67,7 @@ easy_event_keywords = [
     'jams?', 'club', 'after.party', 'pre.party',
 ]
 club_and_event_keywords = [
-    'sessions?',
+    'sessions',
     'shows?', 'performances?', 'contests?',
 ]
 
@@ -110,6 +113,7 @@ club_only_keywords = [
 
 #TODO(lambert): use these
 anti_dance_keywords  = [
+    'wrestling competition',
     't?shirt competition',
     'shaking competition',
     'costume competition',
@@ -142,8 +146,9 @@ other_show_keywords = [
 
 event_keywords = [
     'boty', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
-    r'(?:seven|7)\W+(?:to|two|2)\W+smoke',
+    r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)phers?',
+    'session', # the plural 'sessions' is handled up above under club-and-event keywords
     'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
     'cours',
     'abdc', 'america.?s best dance crew',
