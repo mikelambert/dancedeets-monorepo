@@ -31,13 +31,14 @@ dance_and_music_keywords = [
     'hitting',
     'breaking?', 'breakers?',
     'free.?style',
+    'jerk',
 ]
 
 dance_keywords = [
     'poppers?', 'popp?i?ng?',
 
     'ragga',
-    'jerk(?:ers?|ing?)?',
+    'jerk(?:ers?|ing?)',
     'street.?dance', 'break.?dance', 'break.?dancing?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b.?boys?', 'b.?boying?', 'b.?girls?', 'b.?girling?', 'power.?moves?', 'footwork', 'footworking?',
@@ -113,6 +114,9 @@ club_only_keywords = [
 
 #TODO(lambert): use these
 anti_dance_keywords  = [
+    'jerk chicken',
+    'poker tournaments?',
+    'fashion competition',
     'wrestling competition',
     't?shirt competition',
     'shaking competition',
@@ -120,10 +124,16 @@ anti_dance_keywords  = [
     'bottles popping?',
     'dance fitness',
 ]
+
+#dj.*bboy
+#dj.*bgirl
+
 # 'vote for xx' in the subject
 # methodology
 # cardio
 # fitness
+
+# sometimes dance performances have Credits with a bunch of other performers, texts, production, etc. maybe remove these?
 
 # bad words in title of club events
 # DJ
@@ -157,6 +167,7 @@ event_keywords = [
 
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'tango', 'latin', 'lindy', 'swing', 'samba',
+    'technique',
     # Sometimes used in studio name even though it's still a hiphop class:
     #'ballroom',
     #'ballet',
