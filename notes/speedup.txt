@@ -1,0 +1,14 @@
+How to speed up the homepage:
+
+Store UserMessages in memcache as List/NoneToken explicitly, with fallback to the DB. Fast, but extra DB call each time?
+
+Why 60ms from after memcache get of 701004.701004.OBJ_USER until we geocode and look up GoogleMaps.paris
+
+140ms on Loading Friends. Can we store an optimized representation of this? Maybe just a list of friend-ids? And do ajax-load of actual friend names? Start with a minimized id/name list maybe? Should get 2x speed increase...
+
+Optimize/Remove calls to get_largest_nearby_city_name ? Do a few for that.
+
+Then one call each to get lists and intersect them:
+get_city_by_user_rankings
+get_city_by_event_rankings
+
