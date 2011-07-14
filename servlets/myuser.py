@@ -48,8 +48,6 @@ class UserHandler(base_servlet.BaseRequestHandler):
             user.compute_derived_properties(self.batch_lookup.data_for_user(self.fb_uid))
             if not user.location_country:
                 self.add_error("No country for location %r" % user.location)
-            if not user.location_timezone:
-                self.add_error("No timezone for location %r" % user.location)
         else:
             self.add_error("No location")
         #TODO(lambert): add an option for doing email "via facebook" as well. not everyone uses email.
