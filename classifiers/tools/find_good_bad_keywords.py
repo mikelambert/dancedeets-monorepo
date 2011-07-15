@@ -151,18 +151,25 @@ false_negatives = theory_bad_ids.difference(bad_ids)
 true_positives = theory_good_ids.difference(bad_ids)
 true_negatives = theory_bad_ids.difference(good_ids)
 
+open('scratch/false_positives.txt', 'w').writelines('%s\n' % x for x in false_positives)
+open('scratch/false_negatives.txt', 'w').writelines('%s\n' % x for x in false_negatives)
+open('scratch/true_positives.txt', 'w').writelines('%s\n' % x for x in true_positives)
+open('scratch/true_negatives.txt', 'w').writelines('%s\n' % x for x in true_negatives)
+
 print "Found %s true-positives, %s false-positives" % (len(true_positives), len(false_positives))
 print "Leaves %s to be manually-classified" % (len(false_negatives))
 
-for kw in basic_neg_keywords:
-    kw_re = re.compile(r'(?i)\b(?:%s)\b' % kw)
-    def kw_match(fb_event):
-        search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
-        return kw_re.search(search_text)
+debug_bad_keywords = False
+if debug_bad_keywords:
+    for kw in basic_neg_keywords:
+        kw_re = re.compile(r'(?i)\b(?:%s)\b' % kw)
+        def kw_match(fb_event):
+            search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
+            return kw_re.search(search_text)
 
-    good_excluded, good_ignored = partition_ids(good_ids, classifier=kw_match)
-    bad_excluded, bad_ignored = partition_ids(bad_ids, classifier=kw_match)
-    print "Keyword %r excludes %s good, %s bad events" % (kw, len(good_excluded), len(bad_excluded))
+        good_excluded, good_ignored = partition_ids(good_ids, classifier=kw_match)
+        bad_excluded, bad_ignored = partition_ids(bad_ids, classifier=kw_match)
+        print "Keyword %r excludes %s good, %s bad events" % (kw, len(good_excluded), len(bad_excluded))
 
 print "Best Positive Words:"
 print_top_for_df(df_minus_df(get_df(false_negatives, stripped_all_keyword_mapping), get_df(bad_ids, stripped_all_keyword_mapping), negative_scale=10))
