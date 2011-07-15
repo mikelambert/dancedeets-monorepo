@@ -1,10 +1,17 @@
 BEFORE LAUNCH:
 
+fsstaiwan
+massivemonkees
+18774751348
+236578886360189
+207580165927673
 26971512122
 121378334615
 133546692882
 shockarellas.dance.crew
 156623986125
+- Better location-detection for events on context: http://www.dancedeets.com/events/admin_edit?event_id=220778374616332
+- Owned events auto-classify: http://www.dancedeets.com/tools/owned_events?owner_id=1199227781
 
 - Add Tumblr integration to auto-post to blogs: http://www.tumblr.com/docs/en/api
 - Grab list of places-he-posts-to from https://www.facebook.com/lifestyledance?sk=wall to get better european coverage

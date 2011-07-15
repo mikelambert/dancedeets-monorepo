@@ -16,6 +16,7 @@ from spitfire.runtime.filters import skip_filter
 
 easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?', 'danser',
+    'hitting', 'footwork',
 ]
 easy_choreography_keywords = [
     'choreograph(?:y|ed)', 'choreographers?',
@@ -28,7 +29,6 @@ dance_and_music_keywords = [
     'hype',
     'breaks',
     'boogaloo',
-    'hitting',
     'breaking?', 'breakers?',
     'free.?style',
     'jerk',
@@ -41,7 +41,7 @@ dance_keywords = [
     'jerk(?:ers?|ing?)',
     'street.?dance', 'break.?dance', 'break.?dancing?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
-    'b.?boys?', 'b.?boying?', 'b.?girls?', 'b.?girling?', 'power.?moves?', 'footwork', 'footworking?',
+    'b.?boys?', 'b.?boying?', 'b.?girls?', 'b.?girling?', 'power.?moves?', 'footworking?',
     'top.?rock(?:ers?|ing?)?', 'up.?rock(?:ers?|ing?|)?',
     'housers?', 'house ?danc\w*',
     'lock(?:ers?|ing?)?', 'lock dance',
@@ -57,6 +57,7 @@ dance_keywords = [
     'n(?:ew|u).?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
     'me against the music',
     'krump', 'krumping?', 'krumpers?',
+    'girl.s.?hip.?hop',
     'hip.?hopp?ers?', 'housers?',
     'choreo', 'street jazz', 'street funk', 'jazz funk', 'boom crack',
     'new jack swing', 'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
@@ -124,6 +125,10 @@ anti_dance_keywords  = [
     'bottles popping?',
     'dance fitness',
 ]
+#in.house  ??
+# 'brad houser'
+# world class
+# 1st class
 
 #dj.*bboy
 #dj.*bgirl
@@ -134,6 +139,8 @@ anti_dance_keywords  = [
 # fitness
 
 # sometimes dance performances have Credits with a bunch of other performers, texts, production, etc. maybe remove these?
+
+# HIP HOP INTERNATIONAL
 
 # bad words in title of club events
 # DJ
