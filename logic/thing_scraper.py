@@ -57,8 +57,11 @@ def process_thing_feed(source, thing_feed):
             p = urlparse.urlparse(post['link'])
             if p.path.endswith('event.php'):
                 qs = cgi.parse_qs(p.query)
-                eid = qs['eid'][0]
-                potential_events.save_potential_fb_event_ids([eid], source=source, source_field=thing_db.FIELD_FEED)
+                if 'eid' in qs:
+                    eid = qs['eid'][0]
+                    potential_events.save_potential_fb_event_ids([eid], source=source, source_field=thing_db.FIELD_FEED)
+                else:
+                    logging.error("broken link is %s", post['link'])
 
 
 
