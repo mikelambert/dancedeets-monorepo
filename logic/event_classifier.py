@@ -26,7 +26,9 @@ dance_and_music_keywords = [
     'hip.?hop',
     'funk',
     'dance.?hall',
+    'ragga',
     'hype',
+    'new jack swing',
     'breaks',
     'boogaloo',
     'breaking?', 'breakers?',
@@ -37,32 +39,33 @@ dance_and_music_keywords = [
 dance_keywords = [
     'poppers?', 'popp?i?ng?',
 
-    'ragga',
     'jerk(?:ers?|ing?)',
+    'street.?dancing?',
     'street.?dance', 'break.?dance', 'break.?dancing?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
-    'b.?boys?', 'b.?boying?', 'b.?girls?', 'b.?girling?', 'power.?moves?', 'footworking?',
-    'top.?rock(?:ers?|ing?)?', 'up.?rock(?:ers?|ing?|)?',
-    'housers?', 'house ?danc\w*',
-    'lock(?:ers?|ing?)?', 'lock dance',
-    'wh?aa?cc?kers?', 'wh?aa?cc?king?', 'wh?aa?cc?k',
+    'b.?boy[sz]?', 'b.?boying?', 'b.?girl[sz]?', 'b.?girling?', 'power.?moves?', 'footworking?',
+    'top.?rock(?:er[sz]?|ing?)?', 'up.?rock(?:er[sz]?|ing?|)?',
+    'houser[sz]?', 'house ?danc\w*',
+    'lock(?:er[sz]?|ing?)?', 'lock dance',
+    'wh?aa?cc?ker[sz]?', 'wh?aa?cc?king?', 'wh?aa?cc?k',
     'locking4life',
     'waving?', 'wavers?',
     'robott?ing?',
     'shuffle', 'melbourne shuffle',
-    'strutters?', 'strutting',
+    'strutter[sz]?', 'strutting',
     'glides?', 'gliding', 
-    'tuts?', 'tutting?', 'tutters?',
+    'tuts?', 'tutting?', 'tutter[sz]?',
     'mtv.?style',
     'n(?:ew|u).?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
     'me against the music',
-    'krump', 'krumping?', 'krumpers?',
+    'krump', 'krumping?', 'krumper[sz]?',
     'girl.s.?hip.?hop',
-    'hip.?hopp?ers?', 'housers?',
+    'hip.?hopp?er[sz]?',
     'choreo', 'street jazz', 'street funk', 'jazz funk', 'boom crack',
-    'new jack swing', 'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
-    'vogue', 'voguers?', 'vogue?ing',
+    'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
+    'vogue', 'voguer[sz]?', 'vogue?ing',
     'urban danc\w*',
+    'pop\W{0,3}lock(?:ing?|er[sz]?)'
 ]
 
 easy_event_keywords = [
@@ -125,6 +128,8 @@ anti_dance_keywords  = [
     'bottles popping?',
     'dance fitness',
 ]
+# battle royale
+# go.?go.?danc(?:ers?|ing?)
 #in.house  ??
 # 'brad houser'
 # world class
@@ -134,6 +139,8 @@ anti_dance_keywords  = [
 #dj.*bgirl
 
 # 'vote for xx' in the subject
+# 'vote on' 'vote for' in body, but small body of text
+
 # methodology
 # cardio
 # fitness
