@@ -1,3 +1,4 @@
+
 abstrak
 amanda\W+b?\W+angel
 ana sanchez
@@ -61,6 +62,7 @@ manu,0
 marjory smarth
 mikey disko
 mr.? ?wiggles
+nelson
 ninja pop
 ninja,0
 p-lock
@@ -72,8 +74,10 @@ poppin’ john
 popula
 rabah,0
 rashaad pearson
+razzle dazzle
 rockmaster
 salah
+sally sly
 scooby doo
 scoobydoo
 scramblelock

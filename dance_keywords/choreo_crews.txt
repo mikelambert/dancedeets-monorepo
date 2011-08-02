@@ -46,8 +46,9 @@ flowethics
 foot clan
 for the cause
 freshh
-freshh 2.0
+ftc,0
 funkanometry
+funks
 funks sf
 funksters
 future shock
@@ -141,7 +142,6 @@ strykeforce ent
 super galactic beat manipulators
 supergalacticbeatmanipulators
 surreal crew
-surreal crew
 t twins
 team millenia
 thatonecompany
@@ -150,6 +150,7 @@ the company,0
 the iv league
 thee slap bracelets
 tito boyscouts
+tm,0
 tribl3 threat
 tru movement
 twofourseven

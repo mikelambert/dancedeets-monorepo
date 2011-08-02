@@ -56,6 +56,7 @@ dance_keywords = [
     'glides?', 'gliding', 
     'tuts?', 'tutting?', 'tutter[sz]?',
     'mtv.?style',
+    'dance style[sz]',
     'n(?:ew|u).?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
     'me against the music',
     'krump', 'krumping?', 'krumper[sz]?',
@@ -125,7 +126,7 @@ anti_dance_keywords  = [
     't?shirt competition',
     'shaking competition',
     'costume competition',
-    'bottles popping?',
+    'bottles? popping?',
     'dance fitness',
 ]
 # battle royale
@@ -169,6 +170,7 @@ other_show_keywords = [
 ]
 
 event_keywords = [
+    'crew battle[sz]?', 'exhibition battle[sz]?',
     'boty', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)phers?',
@@ -180,7 +182,7 @@ event_keywords = [
 
 
 dance_wrong_style_keywords = [
-    'styling', 'salsa', 'tango', 'latin', 'lindy', 'swing', 'samba',
+    'styling', 'salsa', 'tango', 'latin', 'lindy', 'swing', 'wcs', 'samba',
     'technique',
     # Sometimes used in studio name even though it's still a hiphop class:
     #'ballroom',

@@ -1,4 +1,6 @@
+
 2 real 2 true 4 breakn
+2nd nature
 302flex
 360 flava
 5 crew dynasty
@@ -24,10 +26,12 @@ bad taste cru
 bad trip crew
 badditude crew
 battle bandits
+battle born
 battleholex
 bboy alliance
 bboys anonymous
 beat geeks
+beatz n pieces
 belfast city breakers
 belorusian bboys
 big apple crew
@@ -61,6 +65,7 @@ concrete turtle
 contenido explicito crew
 crazy caps crew
 critical conditions
+crooks crew
 crush city rockers
 d'love
 da boogie crew
@@ -111,13 +116,14 @@ freestyle monkeyz
 fresh format,0
 fresh style rockers
 frezh motionz
-full force,0
+full force crew
 full force,0
 full fx crew
 furious rockers
 furious styles
 fusion rockers
 ghetlow pirates
+good.?foot crew
 goodtime grooverz
 goonies crew
 goonies,0
@@ -125,6 +131,7 @@ groove kings
 ground fx
 ground fx
 ground illuzions
+ground syndrome killers
 groundhoundz
 gwt,0
 h2o,0
@@ -153,6 +160,7 @@ incredible sushi kings
 international flow syndicate
 joyeux loufocks
 jr squad
+junk wartz
 just of drill
 kaiva
 kalamacrew
@@ -185,12 +193,14 @@ lunchbox jams
 marbles crew
 massive monkeys
 mathematics crew
+maximum efficiency crew
 maziade
 melting force
 mental misstep
 midnight jammerz
 mighty 4
 mightyzulu
+mischief crew
 motor city rockerz
 mystical crew
 natural born killaz
@@ -245,6 +255,8 @@ rocking boys
 rocksteady
 rolling street crew
 roxolid
+rsc,0
+rsk,0
 ruff`n`x
 ruffneck attack
 ruffneck attack
