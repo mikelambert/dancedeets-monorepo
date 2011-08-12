@@ -1,4 +1,3 @@
-
 abstrak
 amanda\W+b?\W+angel
 ana sanchez
@@ -45,6 +44,7 @@ kapela
 kashmir,0
 khalid freeman
 kid boogie
+kid boogie
 kim seto
 kite,0
 kool raul
@@ -78,6 +78,7 @@ razzle dazzle
 rockmaster
 salah
 sally sly
+sally sly
 scooby doo
 scoobydoo
 scramblelock
@@ -97,6 +98,7 @@ tatsuo,0
 theresa gustavsson
 tiffany bong
 tight eyez
+toni basil
 toni basil
 tony mcgregor
 treklock

@@ -49,6 +49,7 @@ dance_keywords = [
     'lock(?:er[sz]?|ing?)?', 'lock dance',
     'wh?aa?cc?ker[sz]?', 'wh?aa?cc?king?', 'wh?aa?cc?k',
     'locking4life',
+    'dance crew[sz]?',
     'waving?', 'wavers?',
     'robott?ing?',
     'shuffle', 'melbourne shuffle',
@@ -178,11 +179,12 @@ event_keywords = [
     'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
     'cours',
     'abdc', 'america.?s best dance crew',
+    'crew.?v[sz]?.?crew',
 ] + [r'%s[ -]?(?:vs?\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
 
 
 dance_wrong_style_keywords = [
-    'styling', 'salsa', 'tango', 'latin', 'lindy', 'swing', 'wcs', 'samba',
+    'styling', 'salsa', 'balboa', 'tango', 'latin', 'lindy', 'swing', 'wcs', 'samba',
     'technique',
     # Sometimes used in studio name even though it's still a hiphop class:
     #'ballroom',
