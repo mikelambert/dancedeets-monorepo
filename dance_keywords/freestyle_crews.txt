@@ -1,5 +1,7 @@
 academy of villians
 beat freaks
+citadanse
+collectif c nous
 dark unit
 ds players
 electric boogaloos
@@ -26,11 +28,13 @@ mgf,0
 moptops
 playboyz
 quest crew
+silent.?trix
 soul sector
 soul shifters
 supreme soul
 syrenz
 the lockers
 u-min
+vagabond,0
 wanted posse
 wonder twins

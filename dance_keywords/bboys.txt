@@ -1,9 +1,11 @@
+
 alien ness
 alienness
 asia one
 cico
 crazy legs
 crazylegs
+easy rock
 ken swift
 kwikstep
 lilou
@@ -20,4 +22,5 @@ swift rock
 swiftrock
 tony rock
 tonyrock
+wicket,0
 ynot

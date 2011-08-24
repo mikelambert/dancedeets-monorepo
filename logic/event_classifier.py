@@ -63,7 +63,7 @@ dance_keywords = [
     'krump', 'krumping?', 'krumper[sz]?',
     'girl.s.?hip.?hop',
     'hip.?hopp?er[sz]?',
-    'choreo', 'street jazz', 'street funk', 'jazz funk', 'boom crack',
+    'choreo', 'street.?jazz', 'street.?funk', 'jazz.?funk', 'boom.?crack',
     'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
     'vogue', 'voguer[sz]?', 'vogue?ing',
     'urban danc\w*',
@@ -72,6 +72,7 @@ dance_keywords = [
 
 easy_event_keywords = [
     'jams?', 'club', 'after.party', 'pre.party',
+    'open sessions?',
 ]
 club_and_event_keywords = [
     'sessions',
@@ -128,7 +129,9 @@ anti_dance_keywords  = [
     'shaking competition',
     'costume competition',
     'bottles? popping?',
+    'popping? bottles?',
     'dance fitness',
+    'lock down',
 ]
 # battle royale
 # go.?go.?danc(?:ers?|ing?)
@@ -172,7 +175,7 @@ other_show_keywords = [
 
 event_keywords = [
     'crew battle[sz]?', 'exhibition battle[sz]?',
-    'boty', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
+    'battle of the year', 'boty', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)phers?',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
