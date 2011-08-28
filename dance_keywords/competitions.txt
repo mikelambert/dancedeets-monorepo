@@ -3,6 +3,7 @@ r-16
 juste debout
 step ya game up
 express your style
+funkin stylez
 funkin styles
 sdk,0
 street dance kemp
@@ -13,8 +14,19 @@ battle of the style[sz]
 how the west was won
 htwww
 freestyle sessions
+house dance international
+house dance conference
+bboy summit
+battle of the year
+boty
+kod,0
+keep on dancing
+notorious ibe
+ibe,0
 
 # what are we classifying as? freestyle?
 abdc
 america's best dance crew
 world of dance
+monsters of hiphop
+monsters,0

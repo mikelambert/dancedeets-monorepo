@@ -104,7 +104,7 @@ def print_top_for_df(df):
     print '\n'.join([x[0] for x in sorted_df(df)][:20])
 
 
-basic_keywords = ['judges', '1[\s-]*(?:vs?.?|on)[\s-]*1', '2[\s-]*(?:vs?.?|on)[\s-]*2',  '3[\s-]*(?:vs?.?|on)[\s-]*3', '5[\s-]*(?:vs?.?|on)[\s-]*5', '4[\s-]*(?:vs?.?|on)[\s-]*4', 'prelims', 'jury', 'preselections', 'top 16', 'top 8', 'to smoke']
+basic_keywords = ['judges', '1[\s-]*(?:vs?.?|on)[\s-]*1', '2[\s-]*(?:vs?.?|on)[\s-]*2',  '3[\s-]*(?:vs?.?|on)[\s-]*3', '5[\s-]*(?:vs?.?|on)[\s-]*5', '4[\s-]*(?:vs?.?|on)[\s-]*4', 'prelims', 'preselections', 'top 16', 'top 8', 'to smoke']
 
 #, '\n8\.\s']
 #, battles start', 'popping battle', 'battles will', 'bboy battle']

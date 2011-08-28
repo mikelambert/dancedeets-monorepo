@@ -179,10 +179,11 @@ event_keywords = [
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)phers?',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
-    'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?',
+    'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?', 'lessons?',
     'cours',
     'abdc', 'america.?s best dance crew',
     'crew.?v[sz]?.?crew',
+    'prelims?',
 ] + [r'%s[ -]?(?:vs?\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
 
 

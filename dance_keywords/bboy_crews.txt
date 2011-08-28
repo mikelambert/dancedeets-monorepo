@@ -11,10 +11,12 @@ a wookie and a storm trooper
 a.c.e. crew
 absence crew
 absolute zero
+all area crew
 all out crew
 all stars kriminalz
 all the most
 angels of death
+animated rebels
 arcanum crew
 arcanum,0
 area 51,0
@@ -23,6 +25,7 @@ aviation crew
 b4b russia
 bad taste cru
 bad trip crew
+bad trip,0
 badditude crew
 battle bandits
 battle born
@@ -72,16 +75,20 @@ damage plan kru
 dancebroomz
 dangerous stylez
 dangerous stylez
+dark unit
 deadly venoms crew
 diamonds crew
 dirty rotten scoundrelz
+disciples of chaos
 dreamers
+drifterz
 dynamic rockers
 dynamite souls
 dépen'danse
 east side bboys
 east side bboys
 eb family
+einstein force
 electron libre
 elements of rice
 endless limits,0
@@ -109,6 +116,7 @@ foot clan
 foot klan
 footwork fanatics
 footwork fanatix
+force obscure
 foundationz
 fraggle rock
 freakquency
@@ -122,6 +130,7 @@ full fx crew
 furious rockers
 furious styles
 fusion rockers
+gamblerz
 ghetlow pirates
 good.?foot crew
 goodtime grooverz
@@ -158,9 +167,13 @@ imperial styles
 incredible sushi kings
 incredible sushi kings
 international flow syndicate
+iron bred kidz
+jinjo crew
+joe & labeille
 joyeux loufocks
 jr squad
 junk wartz
+just break,0
 just of drill
 kaiva
 kalamacrew
@@ -175,6 +188,7 @@ kronik soul
 la crew
 la familia
 la smala
+la vraie ecole
 legiteam obstruxion
 legiteam obstruxxion
 legz
@@ -204,6 +218,8 @@ mighty zulu kings
 mighty zulu kingz
 mightyzulu
 mischief crew
+mortal combat crew
+mosufu
 motor city rockerz
 mystical crew
 mzk
@@ -221,6 +237,7 @@ orphange movement
 oshare
 out 4 royalty
 ovaload
+percu'style crew
 phase t
 pockemon
 polskee flavour
@@ -250,6 +267,7 @@ repstyles
 rhythm addicts
 rhythm faction
 rhythmic rockerz
+risen from the ashes
 robotops
 rock force
 rock steady
@@ -297,6 +315,7 @@ sticky ruckus
 stile balneare family
 street punk crew
 street stylz crew
+style hunter
 stylelements
 stylistic prowess
 super cr3w
@@ -311,6 +330,8 @@ swift karacterz kru
 swift stepz
 söhne des kreises
 teen titanz
+tekken kidz
+tekken,0
 tha ha’stylez krew
 the angels of death
 the leevianos
