@@ -49,3 +49,26 @@ flatten_output("local_data/events.db", "local_data/events.csv", event_list)
 flatten_output("local_data/potentialevents.db", "local_data/potentialevents.csv", lambda x: [x.key().name()])
 flatten_output("local_data/fb_data.db", "local_data/fb_data.csv", lambda x: [x.key().name(), x['json_data']])
 
+# count characters
+count_characters = True
+if count_characters:
+    from django.utils import simplejson
+    conn = sqlite3.connect('local_data/fb_data.db', isolation_level=None)
+    cursor = conn.cursor()
+    cursor.execute('select id, value from result')
+    total = 0
+    count = 0
+    for unused_entity_id, entity in cursor:
+        entity_proto = entity_pb.EntityProto(contents=entity)
+        f = datastore.Entity._FromPb(entity_proto)
+        print f.key().name()
+        if f.key().name().endswith('OBJ_EVENT'):
+            if 'json_data' in f:
+                data = simplejson.loads(f['json_data'])
+                if not data['deleted']:
+                    total += len(data['info'].get('description', '')) or 0
+                    count += 1
+        
+    print 'total characters', total
+    print 'total events', ccount
+    print 'characters per event', 1.0*total/count
