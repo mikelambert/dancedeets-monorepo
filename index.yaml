@@ -28,14 +28,14 @@ indexes:
 - kind: DBEvent
   properties:
   - name: city_name
-  - name: search_tags
-  - name: start_time
+  - name: latitude
+  - name: anywhere
 
 - kind: DBEvent
   properties:
   - name: city_name
-  - name: latitude
-  - name: anywhere
+  - name: search_tags
+  - name: start_time
 
 - kind: DBEvent
   properties:
