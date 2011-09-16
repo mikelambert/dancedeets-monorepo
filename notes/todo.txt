@@ -13,7 +13,15 @@ massivemonkees
 133546692882
 shockarellas.dance.crew
 156623986125
+COS916
+lhibakingzoo
+
+choreo dance groups:
+190320540981905
+monstersofhiphop
+
 - Better location-detection for events on context: http://www.dancedeets.com/events/admin_edit?event_id=220778374616332
+http://www.dancedeets.com/events/admin_edit?event_id=191039400964294
 - Owned events auto-classify: http://www.dancedeets.com/tools/owned_events?owner_id=1199227781
 
 - Add Tumblr integration to auto-post to blogs: http://www.tumblr.com/docs/en/api
