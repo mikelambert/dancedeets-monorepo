@@ -59,6 +59,7 @@ class BatchLookup(object):
     OBJECT_EVENT_MEMBERS = 'OBJ_EVENT_MEMBERS'
     OBJECT_FQL = 'OBJ_FQL'
     OBJECT_THING_FEED = 'OBJ_THING_FEED'
+    OBJECT_VENUE = 'OBJ_VENUE'
 
     def __init__(self, fb_uid, fb_graph, allow_cache=True):
         self.fb_uid = fb_uid
@@ -128,6 +129,10 @@ class BatchLookup(object):
                 info=self._fetch_rpc('%s' % object_id),
                 feed=self._fetch_rpc('%s/feed' % object_id),
             )
+        elif object_type == self.OBJECT_VENUE:
+            return dict(
+                info=self._fetch_rpc('%s' % object_id, use_access_token=False),
+            )
         else:
             raise Exception("Unknown object type %s" % object_type)
 
@@ -170,6 +175,8 @@ class BatchLookup(object):
         return tuple(str(x) for x in (self.fb_uid, fql_query, self.OBJECT_FQL))
     def _thing_feed_key(self, thing_id):
         return tuple(str(x) for x in (self.get_userless_id(), thing_id, self.OBJECT_THING_FEED))
+    def _venue_key(self, thing_id):
+        return tuple(str(x) for x in (self.get_userless_id(), thing_id, self.OBJECT_VENUE))
 
     def _string_key(self, key):
         string_key = '.'.join(str(x).replace('.', '-') for x in key)
@@ -213,6 +220,7 @@ class BatchLookup(object):
     invalidate_event_members = _db_delete(_event_members_key)
     invalidate_fql = _db_delete(_fql_key)
     invalidate_thing_feed = _db_delete(_thing_feed_key)
+    invalidate_venue = _db_delete(_venue_key)
 
     lookup_profile = _db_lookup(_profile_key)
     lookup_user = _db_lookup(_user_key)
@@ -223,6 +231,7 @@ class BatchLookup(object):
     lookup_event_members = _db_lookup(_event_members_key)
     lookup_fql = _db_lookup(_fql_key)
     lookup_thing_feed = _db_lookup(_thing_feed_key)
+    lookup_venue = _db_lookup(_venue_key)
 
     data_for_profile = _data_for(_profile_key)
     data_for_user = _data_for(_user_key)
@@ -233,6 +242,7 @@ class BatchLookup(object):
     data_for_event_members = _data_for(_event_members_key)
     data_for_fql = _data_for(_fql_key)
     data_for_thing_feed = _data_for(_thing_feed_key)
+    data_for_venue = _data_for(_venue_key)
 
     def _get_objects_from_memcache(self, object_keys):
         clauses = [self._string_key(key) for key in object_keys]

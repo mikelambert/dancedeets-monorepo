@@ -9,6 +9,7 @@ from google.appengine.ext import db
 
 from events import cities
 from events import tags
+import fb_api
 import geohash
 
 import locations
@@ -46,12 +47,30 @@ class LocationMapping(db.Model):
 def get_original_address_for_event(fb_event):
     event_info = fb_event['info']
     venue = event_info.get('venue', {})
+    # if we have a venue id, get the city from there
+    logging.info("venue id is %s", venue.get('id'))
+    if venue.get('id'):
+        # TODO(lambert): need a better way to pass in a proper fb auth token here, so that we aren't bucked into common ip set
+        batch_lookup = fb_api.CommonBatchLookup(None, None)
+        batch_lookup.lookup_venue(venue.get('id'))
+        batch_lookup.finish_loading()
+        venue_data = batch_lookup.data_for_venue(venue.get('id'))
+        logging.info("venue data is %s", venue_data)
+        address = address_for_venue(venue_data['info'].get('location', {}))
+        logging.info("venue address is %s", address)
+        if address:
+            return address
+    # otherwise fall back on the address in the event, and go from there
+    raw_location = event_info.get('location')
+    return address_for_venue(venue, raw_location=raw_location)
+
+def address_for_venue(venue, raw_location=None):
     # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
     state = abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state'))
     if venue.get('city') and (state or venue.get('country')):
         address_components = [venue.get('city'), state, venue.get('country')]
     else:
-        address_components = [event_info.get('location'), venue.get('street'), venue.get('city'), state, venue.get('country')]
+        address_components = [raw_location, venue.get('street'), venue.get('city'), state, venue.get('country')]
     address_components = [x for x in address_components if x]
     address = ', '.join(address_components)
     return address
