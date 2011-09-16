@@ -28,17 +28,20 @@ dance_and_music_keywords = [
     'dance.?hall',
     'ragga',
     'hype',
-    'new jack swing',
+    'new ?jack ?swing',
     'breaks',
     'boogaloo',
     'breaking?', 'breakers?',
     'free.?style',
     'jerk',
+    'kpop',
 ]
 
+# hiphop dance. hiphop dans?
 dance_keywords = [
     'poppers?', 'popp?i?ng?',
 
+    'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
     'street.?dancing?',
     'street.?dance', 'break.?dance', 'break.?dancing?',
@@ -51,12 +54,14 @@ dance_keywords = [
     'locking4life',
     'dance crew[sz]?',
     'waving?', 'wavers?',
+    'bott?ing?',
     'robott?ing?',
     'shuffle', 'melbourne shuffle',
     'strutter[sz]?', 'strutting',
     'glides?', 'gliding', 
     'tuts?', 'tutting?', 'tutter[sz]?',
-    'mtv.?style',
+    'mtv\W?style',
+    'mtv\W?dance',
     'dance style[sz]',
     'n(?:ew|u).?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
     'me against the music',
@@ -72,7 +77,7 @@ dance_keywords = [
 
 easy_event_keywords = [
     'jams?', 'club', 'after.party', 'pre.party',
-    'open sessions?',
+    'open sessions?', 'training',
 ]
 club_and_event_keywords = [
     'sessions',
@@ -159,6 +164,7 @@ anti_dance_keywords  = [
 # Live
 # Mon/Tue/Wed/Thu/Fri/Sat
 # Guests?
+# 21+ 18+
 
 #TODO(lambert): use these to filter out shows we don't really care about
 other_show_keywords = [
@@ -175,15 +181,18 @@ other_show_keywords = [
 
 event_keywords = [
     'crew battle[sz]?', 'exhibition battle[sz]?',
+    apache line',
     'battle of the year', 'boty', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
+    'showcase','
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
-    'c(?:y|i)phers?',
+    'c(?:y|i)ph(?:a|ers?)',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?', 'lessons?',
     'cours',
     'abdc', 'america.?s best dance crew',
     'crew.?v[sz]?.?crew',
     'prelims?',
+    'bonnie\s*(and|&)\s*clyde',
 ] + [r'%s[ -]?(?:vs?\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
 
 
@@ -234,17 +243,37 @@ def is_dance_event(fb_event):
 
     # one critical dance keyword
     if len(dance_matches) >= 1:
-        return True, 'obvious dance style', dance_matches.union(easy_dance_matches).union(dance_and_music_matches), event_matches.union(easy_event_matches)
+        return (
+            True,
+            'obvious dance style',
+            dance_matches.union(easy_dance_matches).union(dance_and_music_matches),
+            event_matches.union(easy_event_matches)
+        )
     # if we have hiphop/funk, then ensure we have a strong event-keyword match
     #elif len(dance_and_music_matches) >= 1 and len(easy_event_matches) >= 1 and len(club_only_matches) == 0:
     #    return True, 'hiphop/funk and not club', dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(easy_choreography_matches), event_matches.union(easy_event_matches)
     elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1:
-        return True, 'hiphop/funk and good event type', dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(easy_choreography_matches), event_matches.union(easy_event_matches)
+        return (
+            True,
+            'hiphop/funk and good event type',
+            dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(easy_choreography_matches),
+            event_matches.union(easy_event_matches)
+        )
      # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
     elif len(easy_dance_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and len(dance_wrong_style_matches) == 0:
-        return True, 'dance event thats not a bad-style', dance_matches.union(easy_dance_matches).union(dance_and_music_matches), event_matches.union(easy_event_matches)
+        return (
+            True,
+            'dance event thats not a bad-style',
+            dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(easy_choreography_matches),
+            event_matches.union(easy_event_matches)
+        )
     elif len(easy_dance_matches) >= 1 and len(club_and_event_matches) >= 1 and len(dance_wrong_style_matches) == 0 and len(club_only_matches) == 0:
-        return True, 'dance show thats not a club', dance_matches.union(easy_dance_matches).union(dance_and_music_matches), event_matches.union(easy_event_matches).union(club_and_event_matches)
+        return (
+            True,
+            'dance show thats not a club',
+            dance_matches.union(easy_dance_matches).union(dance_and_music_matches),
+            event_matches.union(easy_event_matches).union(club_and_event_matches)
+        )
     else:
         return False#, 'nothing', dance_wrong_style_matches, club_only_matches
 
