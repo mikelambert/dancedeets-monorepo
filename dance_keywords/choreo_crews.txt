@@ -74,8 +74,8 @@ influenced motion senior
 jabbawockeez
 junior prophecy
 just2real
-kabba modern
 kaba modern
+kabba modern
 kcn modern
 km legacy
 kp krew
@@ -105,7 +105,7 @@ pac modern
 pandora's myth,0
 pandora's myth,0
 part-?time models
-philippine all stars
+philippine all\W?stars
 phresh select
 phunk phenomenon
 phunktions
@@ -120,10 +120,12 @@ prophecy,0
 quadrisaurus
 quest crew
 raps dance troupe
+rdt,0
 real proper crew
 request dance crew
 rhthym-zion
 rhythmatix
+rhythmology
 s\*\*t kingz
 sayelah
 sensazn
@@ -169,4 +171,5 @@ vip sj
 vip vallejo
 wanted ashiqz
 wrawsome
+young lions
 zee hype

@@ -1,4 +1,5 @@
 abstrak
+acky
 amanda\W+b?\W+angel
 ana sanchez
 andré pires
@@ -20,11 +21,12 @@ crykit
 d-lo
 damon frost
 dennis infante
+dino,0
 doclock
 don campbell
 ejoe
 el fonky juice
-firelock
+fire.?lock
 flockey
 fluky luke
 gemini
@@ -41,13 +43,16 @@ javier ninja
 jazzy j
 jazzy jay
 jed flurano
+jimmy soul
 jojo diggs
+jr?.? bogaloo
+jr?.? boogie
 jrock
-j-rock
+junior boogaloo
+junior boogie
 kapela
 kashmir,0
 khalid freeman
-kid boogie
 kid boogie
 kim seto
 kite,0
@@ -69,7 +74,7 @@ mr.? ?wiggles
 nelson
 ninja pop
 ninja,0
-p-lock
+p\W?lock
 pepito
 physs
 popkun
@@ -86,6 +91,7 @@ sally sly
 sally sly
 scooby doo
 scoobydoo
+scramble.?lock
 scramblelock
 serene ballarin
 shabba.?doo

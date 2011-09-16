@@ -4,8 +4,10 @@
 360 flava
 5 crew dynasty
 616 techniques
+7 dollars crew
 8onepowermove
 923 crew
+99flava crew
 a tribe called storm
 a wookie and a storm trooper
 a.c.e. crew
@@ -32,6 +34,7 @@ battle born
 battleholex
 bboy alliance
 bboys anonymous
+bboyworld
 beat geeks
 beatz n pieces
 belfast city breakers
@@ -39,6 +42,7 @@ belorusian bboys
 big apple crew
 big wong crew
 bkc,0
+blackice crew
 blackjack crew
 blowup kingz
 body mechanics,0
@@ -84,6 +88,7 @@ dreamers
 drifterz
 dynamic rockers
 dynamite souls
+dynasty rockers
 dépen'danse
 east side bboys
 east side bboys
@@ -100,6 +105,7 @@ faya
 felons of soul
 filthee feet
 flava squad
+flexible flav
 floor bombers
 floor burnin'
 floor gangz
@@ -111,6 +117,7 @@ floor royalty
 floor storm
 floorlords
 florox
+flow mo
 flowjob
 foot clan
 foot klan
@@ -119,6 +126,7 @@ footwork fanatix
 force obscure
 foundationz
 fraggle rock
+freak n stylz
 freakquency
 freestyle monkeyz
 fresh format,0
@@ -157,6 +165,7 @@ iazyges soul
 ill at will
 ill flavored rejects
 ill rock
+ill\W?abilities
 illa beast crew
 illest villains
 illest villians
@@ -166,6 +175,7 @@ illville
 imperial styles
 incredible sushi kings
 incredible sushi kings
+instant noodles
 international flow syndicate
 iron bred kidz
 jinjo crew
@@ -177,8 +187,10 @@ just break,0
 just of drill
 kaiva
 kalamacrew
+khzoo
 kids of soul
 killa beat
+killafornia
 kingz of warsaw
 knuckleheads cali
 komixx kidz
@@ -205,6 +217,7 @@ lucky dice crew
 lucky strike crew
 lucky strike,0
 lunchbox jams
+main ingredientz
 marbles crew
 massive monkeys
 mathematics crew
@@ -283,11 +296,13 @@ ruff`n`x
 ruffneck attack
 ruffneck attack
 rugged solutions
+runaway tribe
 runaway zombies
 saiko skematiks
 salt shakers,0
 savage skills
 seattle city breakers
+second nature,0
 second to none,0
 shake n' bake
 shark gangz
@@ -309,12 +324,14 @@ soulstice krew
 south brothers crew
 south coast breakers
 spinkingz
+squishy docious
 step fenz
 steps without gravity
 sticky ruckus
 stile balneare family
 street punk crew
 street stylz crew
+style elements
 style hunter
 stylelements
 stylistic prowess
@@ -323,6 +340,7 @@ super crew
 supercampeones
 supernaturalz
 supreme beings
+supreme beingz
 supremos
 survivals crew
 sushi kingz
@@ -332,6 +350,7 @@ söhne des kreises
 teen titanz
 tekken kidz
 tekken,0
+termites crew
 tha ha’stylez krew
 the angels of death
 the leevianos
@@ -368,4 +387,5 @@ zealous,0
 zip locks
 zulu breakers
 zulu kingz
+zulu nation
 zygomatik
