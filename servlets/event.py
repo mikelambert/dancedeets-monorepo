@@ -364,7 +364,8 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
         template_events = []
         for e in db_events:
             fb_event = self.batch_lookup.data_for_event(e.fb_event_id)
-            template_events.append(dict(fb_event=fb_event, db_event=e))
+            if not fb_event['deleted']:
+                template_events.append(dict(fb_event=fb_event, db_event=e))
         self.display['events'] = template_events
         self.render_template('admin_nolocation_events')
 
