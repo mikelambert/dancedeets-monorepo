@@ -181,9 +181,9 @@ other_show_keywords = [
 
 event_keywords = [
     'crew battle[sz]?', 'exhibition battle[sz]?',
-    apache line',
+    'apache line',
     'battle of the year', 'boty', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
-    'showcase','
+    'showcase',
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)ph(?:a|ers?)',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
@@ -192,7 +192,7 @@ event_keywords = [
     'abdc', 'america.?s best dance crew',
     'crew.?v[sz]?.?crew',
     'prelims?',
-    'bonnie\s*(and|&)\s*clyde',
+    'bonnie\s*(?:and|&)\s*clyde',
 ] + [r'%s[ -]?(?:vs?\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
 
 
