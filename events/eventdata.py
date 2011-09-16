@@ -55,11 +55,12 @@ def get_original_address_for_event(fb_event):
         batch_lookup.lookup_venue(venue.get('id'))
         batch_lookup.finish_loading()
         venue_data = batch_lookup.data_for_venue(venue.get('id'))
-        logging.info("venue data is %s", venue_data)
-        address = address_for_venue(venue_data['info'].get('location', {}))
-        logging.info("venue address is %s", address)
-        if address:
-            return address
+        if not venue_data['deleted']:
+            logging.info("venue data is %s", venue_data)
+            address = address_for_venue(venue_data['info'].get('location', {}))
+            logging.info("venue address is %s", address)
+            if address:
+                return address
     # otherwise fall back on the address in the event, and go from there
     raw_location = event_info.get('location')
     return address_for_venue(venue, raw_location=raw_location)
@@ -201,7 +202,6 @@ class DBEvent(db.Model):
             self.search_time_period = tags.TIME_PAST
 
         address = get_usable_address_for_event(self, fb_dict)
-        logging.info("%r %r", address, ONLINE_ADDRESS)
         self.anywhere = (address == ONLINE_ADDRESS)
 
         results = locations.get_geocoded_location(address)
