@@ -36,6 +36,7 @@ bboy alliance
 bboys anonymous
 bboyworld
 beat geeks
+beatsickmisfits
 beatz n pieces
 belfast city breakers
 belorusian bboys
@@ -230,6 +231,7 @@ mighty 4
 mighty zulu kings
 mighty zulu kingz
 mightyzulu
+mind 180
 mischief crew
 mortal combat crew
 mosufu
@@ -382,6 +384,7 @@ vagabond,0
 vagabonds,0
 vicious germz
 victorious secret
+war machines,0
 weapons of rythem
 wizards of rhythm
 x-fenz

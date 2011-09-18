@@ -19,7 +19,8 @@ easy_dance_keywords = [
     'hitting', 'footwork',
 ]
 easy_choreography_keywords = [
-    'choreograph(?:y|ed)', 'choreographers?',
+    'choreograph(?:y|ed)', 'choreographers?', 'choreo',
+
 ]
 
 dance_and_music_keywords = [
@@ -68,7 +69,7 @@ dance_keywords = [
     'krump', 'krumping?', 'krumper[sz]?',
     'girl.s.?hip.?hop',
     'hip.?hopp?er[sz]?',
-    'choreo', 'street.?jazz', 'street.?funk', 'jazz.?funk', 'boom.?crack',
+    'street.?jazz', 'street.?funk', 'jazz.?funk', 'boom.?crack',
     'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
     'vogue', 'voguer[sz]?', 'vogue?ing',
     'urban danc\w*',
@@ -198,6 +199,7 @@ event_keywords = [
 
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'balboa', 'tango', 'latin', 'lindy', 'swing', 'wcs', 'samba',
+    'burlesque',
     'technique',
     # Sometimes used in studio name even though it's still a hiphop class:
     #'ballroom',
