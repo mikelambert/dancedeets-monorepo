@@ -54,11 +54,9 @@ def group_results(search_results):
     return past_results, present_results, grouped_results 
 
 class SearchResult(object):
-    def __init__(self, fb_user_id, db_event, fb_event, search_query):
-        self.fb_user_id = fb_user_id
+    def __init__(self, db_event, fb_event):
         self.db_event = db_event
         self.fb_event = fb_event
-        self.search_query = search_query
         self.start_time = dates.parse_fb_timestamp(self.fb_event['info'].get('start_time'))
         self.end_time = dates.parse_fb_timestamp(self.fb_event['info'].get('end_time'))
         self.rsvp_status = "unknown"
@@ -84,13 +82,7 @@ class SearchResult(object):
         return self.rsvp_status
 
 class SearchQuery(object):
-    MATCH_TAGS = 'TAGS'
-    MATCH_TIME = 'TIME'
-    MATCH_LOCATION = 'LOCATION'
-    MATCH_QUERY = 'QUERY'
-
-    def __init__(self, any_tags=None, time_period=None, start_time=None, end_time=None, city_name=None, location=None, distance_in_km=None, query_args=None, dance_type=None, min_attendees=None):
-        self.any_tags = set(any_tags or [])
+    def __init__(self, time_period=None, start_time=None, end_time=None, city_name=None, location=None, distance_in_km=None, dance_type=None, min_attendees=None):
         self.time_period = time_period
         self.dance_type = dance_type
                 if dance_type == users.DANCE_TYPE_ALL_DANCE['internal']:
@@ -120,7 +112,6 @@ class SearchQuery(object):
         self.city_name = city_name
         self.location = location
         self.distance_in_km = distance_in_km
-        self.query_args = query_args
 
         self.search_geohashes = []
         if self.location:
@@ -128,24 +119,19 @@ class SearchQuery(object):
             logging.info("Searching geohashes %s", self.search_geohashes)
 
     def matches_db_event(self, event):
-        if self.any_tags:
-            if self.any_tags.intersection(event.tags):
-                pass
-            else:
-                return []
         if self.start_time:
             if self.start_time < event.end_time:
                 pass
             else:
-                return []
+                return False
         if self.end_time:
             if event.start_time < self.end_time:
                 pass
             else:
-                return []
+                return False
 
         if self.min_attendees and event.attendee_count < self.min_attendees:
-            return []
+            return False
 
         search_tags = []
         if self.choreo == users.CHOREO_FAN:
@@ -160,25 +146,16 @@ class SearchQuery(object):
         if intersecting_tags:
             pass
         else:
-            return []
+            return False
         if self.distance_in_km:
             distance = locations.get_distance(self.location[0], self.location[1], event.latitude, event.longitude, use_km=True)
             if distance < self.distance_in_km:
                 pass
             else:
-                return []
+                return False
         return True
 
     def matches_fb_db_event(self, event, fb_event):
-        if self.query_args:
-            found_keyword = False
-            for keyword in self.query_args:
-                if keyword in fb_event['info']['name'] or keyword in fb_event['info'].get('description', ''):
-                    found_keyword = True
-            if found_keyword:
-                pass
-            else:
-                return []
         return True
     
     def get_candidate_events(self):
@@ -255,7 +232,7 @@ class SearchQuery(object):
         for db_event in db_events:
             fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
             if not fb_event['deleted'] and self.matches_fb_db_event(db_event, fb_event):
-                result = SearchResult(fb_uid, db_event, fb_event, self)
+                result = SearchResult(db_event, fb_event)
                 search_results.append(result)
     
         # Now sort and return the results

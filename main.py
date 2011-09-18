@@ -81,7 +81,6 @@ URLS = [
     ('/youtube_simple_api', youtube_simple_api.YoutubeSimpleApiHandler),
     ('/calendar', calendar.CalendarHandler),
     ('/calendar/feed', calendar.CalendarFeedHandler),
-    ('/events/results', search.ResultsHandler),
     ('/events/relevant', search.RelevantHandler),
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/user/edit', myuser.UserHandler),

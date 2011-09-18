@@ -16,27 +16,6 @@ from logic import search
 import fb_api
 import locations
 
-class ResultsHandler(base_servlet.BaseRequestHandler):
-    def requires_login(self):
-        return False
-
-    def get(self):
-        self.finish_preload()
-        tags_set = self.request.get_all('tag')
-        start_time = None
-        if self.request.get('start_date'):
-            start_time = datetime.datetime.strptime(self.request.get('start_date'), '%m/%d/%Y')
-        end_time = None
-        if self.request.get('end_date'):
-            end_time = datetime.datetime.strptime(self.request.get('end_date'), '%m/%d/%Y')
-        query = search.SearchQuery(any_tags=tags_set, start_time=start_time, end_time=end_time)
-        search_results = query.get_search_results(self.fb_uid, self.fb_graph)
-        rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
-
-        self.display['results'] = search_results
-        self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
-        self.render_template('results')
-
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         if not self.request.get('location'):
