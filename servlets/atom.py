@@ -24,28 +24,17 @@ class AtomHandler(base_servlet.BaseRequestHandler):
         if self.request.get('city_name'):
             city_name = self.request.get('city_name')
         else:
-            user_location = self.request['user_location']
-            distance = int(self.request.get('distance', self.user and self.user.distance))
-            distance_units = self.request.get('distance_units', self.user and self.user.distance_units)
+            user_location = self.request['location']
+            distance = int(self.request.get('distance', '100'))
+            distance_units = self.request.get('distance_units', 'miles')
             if distance_units == 'miles':
                 distance_in_km = locations.miles_in_km(distance)
             else:
                 distance_in_km = distance
-            latlng_user_location = locations.get_geocoded_location(user_location)['latlng']
+            latlng_location = locations.get_geocoded_location(location)['latlng']
 
-        freestyle = self.request.get('freestyle', self.user and self.user.freestyle)
-        choreo = self.request.get('choreo', self.user and self.user.choreo)
-        all_time = self.request.get('all_time', '0') not in ['0', '', 'False', 'false']
-
-        self.display['defaults'] = {
-            'city_name': city_name,
-            'distance': distance,
-            'distance_units': distance_units,
-            'user_location': user_location,
-            'freestyle': freestyle,
-            'choreo': choreo,
-            'all_time': all_time,
-        }
+        dance_type = self.request.get('dance_type', users.DANCE_TYPES_LIST[0]['internal'])
+        time_period = self.request.get('time_period', tags.TIME_FUTURE)
 
         event_types = []
         if choreo in [x['internal'] for x in users.CHOREO_LIST[1:]]:
@@ -55,11 +44,7 @@ class AtomHandler(base_servlet.BaseRequestHandler):
         event_types_str = ' and '.join(event_types)
 
 
-        if all_time:
-            time_period = None
-        else:
-            time_period = tags.TIME_FUTURE
-        query = search.SearchQuery(city_name=city_name, time_period=time_period, location=latlng_user_location, distance_in_km=distance_in_km, freestyle=freestyle, choreo=choreo)
+        query = search.SearchQuery(city_name=city_name, time_period=time_period, location=latlng_location, distance_in_km=distance_in_km, dance_type=dance_type)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
 
         if city_name:
