@@ -14,6 +14,7 @@ from events import tags
 from events import users
 import fb_api
 import locations
+from logic import event_classifier
 from logic import rsvp
 from util import dates
 
@@ -61,11 +62,7 @@ class SearchResult(object):
         self.start_time = dates.parse_fb_timestamp(self.fb_event['info'].get('start_time'))
         self.end_time = dates.parse_fb_timestamp(self.fb_event['info'].get('end_time'))
         self.rsvp_status = "unknown"
-        if self.db_event:
-            tag_lookup = [tags.EVENT_TYPE_LOOKUP[x] for x in db_event.tags if x in tags.EVENT_TYPE_LOOKUP]
-            self.event_types = ', '.join(sorted(tag_lookup))
-        else:
-            self.event_types = None
+        self.event_types = ', '.join(event_classifier.relevant_keywords(self.fb_event))
         self.attending_friend_count = 0
         self.attending_friends = []
 

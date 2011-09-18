@@ -73,7 +73,7 @@ dance_keywords = [
     'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
     'vogue', 'voguer[sz]?', 'vogue?ing',
     'urban danc\w*',
-    'pop\W{0,3}lock(?:ing?|er[sz]?)'
+    'pop\W{0,3}lock(?:ing?|er[sz]?)?'
 ]
 
 easy_event_keywords = [
@@ -228,11 +228,15 @@ bad_capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(club_only_ke
 
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
 
+def get_relevant_text(fb_event):
+    search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
+    return search_text
+
 def is_dance_event(fb_event):
     if 'name' not in fb_event['info']:
         logging.info("fb event id is %s has no name, with value %s", fb_event['info']['id'], fb_event)
         return False
-    search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
+    search_text = get_relevant_text(fb_event)
     easy_dance_matches = set(easy_dance_regex.findall(search_text))
     easy_event_matches = set(easy_event_regex.findall(search_text))
     dance_matches = set(dance_regex.findall(search_text))
@@ -278,6 +282,12 @@ def is_dance_event(fb_event):
         )
     else:
         return False#, 'nothing', dance_wrong_style_matches, club_only_matches
+
+def relevant_keywords(fb_event):
+    text = get_relevant_text(fb_event)
+    good_keywords = good_capturing_keyword_regex.findall(text)
+    bad_keywords = bad_capturing_keyword_regex.findall(text)
+    return sorted(set(good_keywords).union(bad_keywords))
 
 @skip_filter
 def highlight_keywords(text):
