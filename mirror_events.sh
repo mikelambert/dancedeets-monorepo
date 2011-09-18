@@ -8,6 +8,7 @@ for name in $db_names ; do
 done
 rm bulkloader*
 for name in $db_names ; do
+  echo "uploading $name"
   #appcfg.py upload_data --application=dancedeets --kind="$name" --url=http://127.0.0.1:8080/_ah/remote_api --filename=local_data/$name.db
 done
 
