@@ -74,7 +74,6 @@ URLS = [
     ('/events/redirect', event.RedirectToEventHandler),
     ('/events/view', event.ViewHandler),
     ('/events/add', event.AddHandler),
-    ('/events/search', search.SearchHandler),
     ('/events/feed', atom.AtomHandler),
     ('/city/.*', city.CityHandler),
     ('/profile/[^/]*', profile_page.ProfileHandler),

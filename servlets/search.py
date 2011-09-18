@@ -16,20 +16,6 @@ from logic import search
 import fb_api
 import locations
 
-class SearchHandler(base_servlet.BaseRequestHandler):
-    def requires_login(self):
-        return False
-
-    def get(self):
-        self.finish_preload()
-
-        self.display['freestyle_types'] = tags.FREESTYLE_EVENT_LIST
-        self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
-        self.display['styles'] = tags.STYLES
-
-        self.display['cities'] = []
-        self.render_template('search')
-
 class ResultsHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
