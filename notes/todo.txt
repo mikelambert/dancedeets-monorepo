@@ -1,5 +1,7 @@
 BEFORE LAUNCH:
 
+nblinfo
+breakernyc
 368751381163
 124446607626914
 165692336816534
@@ -21,6 +23,11 @@ lhibakingzoo
 choreo dance groups:
 190320540981905
 monstersofhiphop
+
+- Post on walls of events about dancedeets for promotion: http://developers.facebook.com/docs/reference/api/event/
+- Auto-invite users to events of interest to them: http://developers.facebook.com/docs/reference/api/event/
+
+- Validate input for user location before we save their user info to the db.
 
 - Better location-detection for events on context: http://www.dancedeets.com/events/admin_edit?event_id=220778374616332
 http://www.dancedeets.com/events/admin_edit?event_id=191039400964294
