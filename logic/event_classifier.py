@@ -24,16 +24,16 @@ easy_choreography_keywords = [
 ]
 
 dance_and_music_keywords = [
-    'hip.?hop',
-    funk',
+    'hip\W?hop',
+    'funk',
     'dance.?hall',
     'ragga',
     'hype',
-    'new ?jack ?swing',
+    'new\W?jack\W?swing',
     'breaks',
     'boogaloo',
     'breaking?', 'breakers?',
-    'free.?style',
+    'free\W?style',
     'jerk',
     'kpop',
 ]
