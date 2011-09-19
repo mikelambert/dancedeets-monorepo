@@ -27,7 +27,7 @@ class ResultsGroup(object):
         self.force = force 
 
 def group_results(search_results): 
-    now = datetime.datetime.now() 
+    now = datetime.datetime.now() - datetime.timedelta(hours=12)
 
     grouped_results = [] 
     past_results = [] 
