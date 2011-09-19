@@ -25,7 +25,7 @@ easy_choreography_keywords = [
 
 dance_and_music_keywords = [
     'hip.?hop',
-    'funk',
+    funk',
     'dance.?hall',
     'ragga',
     'hype',
@@ -44,11 +44,11 @@ dance_keywords = [
 
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
-    'street.?dancing?',
-    'street.?dance', 'break.?dance', 'break.?dancing?',
+    'street\W?dancing?',
+    'street\W?dance', 'break\W?dance', 'break\W?dancing?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
-    'b.?boy[sz]?', 'b.?boying?', 'b.?girl[sz]?', 'b.?girling?', 'power.?moves?', 'footworking?',
-    'top.?rock(?:er[sz]?|ing?)?', 'up.?rock(?:er[sz]?|ing?|)?',
+    'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
+    'top\W?rock(?:er[sz]?|ing?)?', 'up\W?rock(?:er[sz]?|ing?|)?',
     'houser[sz]?', 'house ?danc\w*',
     'lock(?:er[sz]?|ing?)?', 'lock dance',
     'wh?aa?c?c?ker[sz]?', 'wh?a?a?cc?king?', 'wh?a?a?cc?k',
@@ -64,20 +64,20 @@ dance_keywords = [
     'mtv\W?style',
     'mtv\W?dance',
     'dance style[sz]',
-    'n(?:ew|u).?styles?', 'all.?style[zs]?', 'mix(?:ed)?.?style[sz]?'
+    'n(?:ew|u)\W?styles?', 'all\W?style[zs]?', 'mix(?:ed)?\W?style[sz]?'
     'me against the music',
     'krump', 'krumping?', 'krumper[sz]?',
-    'girl.s.?hip.?hop',
-    'hip.?hopp?er[sz]?',
-    'street.?jazz', 'street.?funk', 'jazz.?funk', 'boom.?crack',
-    'hype danc\w*', '90.?s hip.?hop', 'social hip.?hop', 'old school hip.?hop',
+    'girl\W?s\W?hip\W?hop',
+    'hip\W?hopp?er[sz]?',
+    'street\W?jazz', 'street\W?funk', 'jazz\W?funk', 'boom\W?crack',
+    'hype danc\w*', '90\W?s hip\W?hop', 'social hip\W?hop', 'old school hip\W?hop',
     'vogue', 'voguer[sz]?', 'vogue?ing',
     'urban danc\w*',
     'pop\W{0,3}lock(?:ing?|er[sz]?)?'
 ]
 
 easy_event_keywords = [
-    'jams?', 'club', 'after.party', 'pre.party',
+    'jams?', 'club', 'after\Wparty', 'pre\Wparty',
     'open sessions?', 'training',
 ]
 club_and_event_keywords = [
@@ -97,17 +97,17 @@ club_only_keywords = [
     #'live',
     #'and up',
     'vip',
-    'guest.?list',
+    'guest\W?list',
     'drink specials?',
-    'resident dj.?s?',
-    'dj.?s?',
+    'resident dj\W?s?',
+    'dj\W?s?',
     'electro', 'techno', 'trance', 'indie', 'glitch', 'dubstep',
     'bands?',
     'dress to',
     'mixtape',
     'decks',
     'r&b',
-    'local dj.?s?',
+    'local dj\W?s?',
     'all night',
     'lounge',
     'live performances?',
@@ -140,8 +140,8 @@ anti_dance_keywords  = [
     'lock down',
 ]
 # battle royale
-# go.?go.?danc(?:ers?|ing?)
-#in.house  ??
+# go\W?go\W?danc(?:ers?|ing?)
+#in\Whouse  ??
 # 'brad houser'
 # world class
 # 1st class
@@ -188,10 +188,10 @@ event_keywords = [
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)ph(?:a|ers?)',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
-    'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try.?outs?', 'class(?:es)?', 'lessons?',
+    'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try\W?outs?', 'class(?:es)?', 'lessons?',
     'cours',
-    'abdc', 'america.?s best dance crew',
-    'crew.?v[sz]?.?crew',
+    'abdc', 'america\W?s best dance crew',
+    'crew\W?v[sz]?\W?crew',
     'prelims?',
     'bonnie\s*(?:and|&)\s*clyde',
 ] + [r'%s[ -]?(?:vs?\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
@@ -206,7 +206,7 @@ dance_wrong_style_keywords = [
     #'ballet',
     'jazz', 'tap', 'contemporary',
     'african',
-    'zumba', 'belly.?danc(?:e(?:rs?)?|ing)',
+    'zumba', 'belly\W?danc(?:e(?:rs?)?|ing)',
     'soca',
     'flamenco',
 ]
