@@ -50,7 +50,7 @@ jr?.? boogie
 jrock
 junior boogaloo
 junior boogie
-kapela
+kapela,0
 kashmir,0
 khalid freeman
 kid boogie
@@ -71,7 +71,7 @@ manu,0
 marjory smarth
 mikey disko
 mr.? ?wiggles
-nelson
+nelson,0
 ninja pop
 ninja,0
 p\W?lock

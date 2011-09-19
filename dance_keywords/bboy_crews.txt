@@ -1,4 +1,3 @@
-2 real 2 true 4 breakn
 2nd nature
 302flex
 360 flava
@@ -17,6 +16,7 @@ all area crew
 all out crew
 all stars kriminalz
 all the most
+allthemost
 angels of death
 animated rebels
 arcanum crew
@@ -93,6 +93,7 @@ dynasty rockers
 dépen'danse
 east side bboys
 east side bboys
+eastside bboys
 eb family
 einstein force
 electron libre
@@ -161,6 +162,7 @@ headhunters crew
 headhunters,0
 heavy smokers
 hillsnation
+hoochen
 hustle kidz
 iazyges soul
 ill at will
@@ -267,8 +269,8 @@ pukiz 1127
 qc roc
 rafaga de viento
 random aspects
+rapid soul
 raw mind movement
-ready to rock
 real squad crew
 real squad,0
 reckless habits crew
@@ -284,6 +286,8 @@ rhythm addicts
 rhythm faction
 rhythmic rockerz
 risen from the ashes
+rivers crew
+riverz
 robotops
 rock force
 rock steady
@@ -351,6 +355,7 @@ sushi kingz
 swift karacterz kru
 swift stepz
 söhne des kreises
+team shmetta
 teen titanz
 tekken kidz
 tekken,0
@@ -385,6 +390,7 @@ vagabonds,0
 vicious germz
 victorious secret
 war machines,0
+warrios
 weapons of rythem
 wizards of rhythm
 x-fenz
@@ -392,5 +398,5 @@ zealous,0
 zip locks
 zulu breakers
 zulu kingz
-zulu nation
+zulu nation,0
 zygomatik

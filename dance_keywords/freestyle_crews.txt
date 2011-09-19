@@ -1,6 +1,7 @@
 academy of villians
 beat freaks
 beat up brno
+bopster scat
 citadanse
 collectif c nous
 criminalz
@@ -12,11 +13,11 @@ elite force
 fab 5 boogz
 five plus five
 fresh dynamix
-funny bones
+funny bones,0
 future funk
 gogo brothers
 groovmekanex
-hilty (&|and|\+) bosch
+hilty (?:&|and|\+) bosch
 house of dangerkat
 house of ninja
 ihow
@@ -38,6 +39,8 @@ quest crew
 silent.?trix
 soul sector
 soul shifters
+soul sisters
+soulsisters
 supreme soul
 syrenz
 the lockers
