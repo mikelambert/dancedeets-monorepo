@@ -14,6 +14,17 @@ from spitfire.runtime.filters import skip_filter
 
 # maybe feed keywords into auto-classifying event type? bleh.
 
+manual_dance_keywords = []
+for filename in ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'choreo_keywords', 'competitions', 'freestyle_crews', 'freestyle_dancers']:
+    for line in open('dance_keywords/%s.txt' % filename).readlines():
+        line = re.sub('\s*#.*', '', line.strip())
+        if not line:
+            continue
+        if line.endswith(',0'):
+            line = line[:-2]
+        else:
+            manual_dance_keywords.append(line)
+
 easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?', 'danser',
     'hitting', 'footwork',
@@ -211,6 +222,7 @@ dance_wrong_style_keywords = [
     'flamenco',
 ]
 
+manual_dance_keywords_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(manual_dance_keywords))
 dance_wrong_style_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_wrong_style_keywords))
 dance_and_music_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_and_music_keywords))
 club_and_event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(club_and_event_keywords))
@@ -222,7 +234,7 @@ easy_event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(easy_event_keywords))
 dance_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_keywords))
 event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(event_keywords))
 
-good_capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords))
+good_capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords))
 bad_capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(club_only_keywords + dance_wrong_style_keywords))
 
 
@@ -237,6 +249,8 @@ def is_dance_event(fb_event):
         logging.info("fb event id is %s has no name, with value %s", fb_event['info']['id'], fb_event)
         return False
     search_text = get_relevant_text(fb_event)
+    
+    manual_dance_keywords_matches = set(manual_dance_keywords_regex.findall(search_text))
     easy_dance_matches = set(easy_dance_regex.findall(search_text))
     easy_event_matches = set(easy_event_regex.findall(search_text))
     dance_matches = set(dance_regex.findall(search_text))
@@ -247,8 +261,15 @@ def is_dance_event(fb_event):
     easy_choreography_matches = set(easy_choreography_regex.findall(search_text))
     club_only_matches = set(club_only_regex.findall(search_text))
 
+    if len(manual_dance_keywords_matches) >= 1:
+        return (
+            True,
+            'obvious dancer or dance crew or battle',
+            dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(manual_dance_keywords_matches),
+            event_matches.union(easy_event_matches)
+        )
     # one critical dance keyword
-    if len(dance_matches) >= 1:
+    elif len(dance_matches) >= 1:
         return (
             True,
             'obvious dance style',
