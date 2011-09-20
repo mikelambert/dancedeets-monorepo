@@ -24,6 +24,8 @@ choreo dance groups:
 190320540981905
 monstersofhiphop
 
+- Use keyword density as another factor in identifying usefulness. and "does this words appear on a line of text by itself"
+
 - Post on walls of events about dancedeets for promotion: http://developers.facebook.com/docs/reference/api/event/
 - Auto-invite users to events of interest to them: http://developers.facebook.com/docs/reference/api/event/
 
