@@ -37,7 +37,7 @@ hiro,0
 hozin
 hurrikane
 iron monkey
-j-rock
+j-rock,0
 jak-hamah
 javier ninja
 jazzy j
