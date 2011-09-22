@@ -244,65 +244,67 @@ def get_relevant_text(fb_event):
     search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
     return search_text
 
-def is_dance_event(fb_event):
-    if 'name' not in fb_event['info']:
-        logging.info("fb event id is %s has no name, with value %s", fb_event['info']['id'], fb_event)
-        return False
-    search_text = get_relevant_text(fb_event)
-    
-    manual_dance_keywords_matches = set(manual_dance_keywords_regex.findall(search_text))
-    easy_dance_matches = set(easy_dance_regex.findall(search_text))
-    easy_event_matches = set(easy_event_regex.findall(search_text))
-    dance_matches = set(dance_regex.findall(search_text))
-    event_matches = set(event_regex.findall(search_text))
-    dance_wrong_style_matches = set(dance_wrong_style_regex.findall(search_text))
-    dance_and_music_matches = set(dance_and_music_regex.findall(search_text))
-    club_and_event_matches = set(club_and_event_regex.findall(search_text))
-    easy_choreography_matches = set(easy_choreography_regex.findall(search_text))
-    club_only_matches = set(club_only_regex.findall(search_text))
+class ClassifiedEvent(object):
+    def __init__(self, fb_event):
+        if 'name' not in fb_event['info']:
+            logging.info("fb event id is %s has no name, with value %s", fb_event['info']['id'], fb_event)
+            self.search_text = ''
+        else:
+            self.search_text = get_relevant_text(fb_event)
 
-    if len(manual_dance_keywords_matches) >= 1:
-        return (
-            True,
-            'obvious dancer or dance crew or battle',
-            dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(manual_dance_keywords_matches),
-            event_matches.union(easy_event_matches)
-        )
-    # one critical dance keyword
-    elif len(dance_matches) >= 1:
-        return (
-            True,
-            'obvious dance style',
-            dance_matches.union(easy_dance_matches).union(dance_and_music_matches),
-            event_matches.union(easy_event_matches)
-        )
-    # if we have hiphop/funk, then ensure we have a strong event-keyword match
-    #elif len(dance_and_music_matches) >= 1 and len(easy_event_matches) >= 1 and len(club_only_matches) == 0:
-    #    return True, 'hiphop/funk and not club', dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(easy_choreography_matches), event_matches.union(easy_event_matches)
-    elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1:
-        return (
-            True,
-            'hiphop/funk and good event type',
-            dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(easy_choreography_matches),
-            event_matches.union(easy_event_matches)
-        )
-     # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
-    elif len(easy_dance_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and len(dance_wrong_style_matches) == 0:
-        return (
-            True,
-            'dance event thats not a bad-style',
-            dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(easy_choreography_matches),
-            event_matches.union(easy_event_matches)
-        )
-    elif len(easy_dance_matches) >= 1 and len(club_and_event_matches) >= 1 and len(dance_wrong_style_matches) == 0 and len(club_only_matches) == 0:
-        return (
-            True,
-            'dance show thats not a club',
-            dance_matches.union(easy_dance_matches).union(dance_and_music_matches),
-            event_matches.union(easy_event_matches).union(club_and_event_matches)
+    def classify(self):
+        manual_dance_keywords_matches = set(manual_dance_keywords_regex.findall(self.search_text))
+        easy_dance_matches = set(easy_dance_regex.findall(self.search_text))
+        easy_event_matches = set(easy_event_regex.findall(self.search_text))
+        dance_matches = set(dance_regex.findall(self.search_text))
+        event_matches = set(event_regex.findall(self.search_text))
+        dance_wrong_style_matches = set(dance_wrong_style_regex.findall(self.search_text))
+        dance_and_music_matches = set(dance_and_music_regex.findall(self.search_text))
+        club_and_event_matches = set(club_and_event_regex.findall(self.search_text))
+        easy_choreography_matches = set(easy_choreography_regex.findall(self.search_text))
+        club_only_matches = set(club_only_regex.findall(self.search_text))
+
+        self.found_dance_matches = dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(manual_dance_keywords_matches).union(easy_choreography_matches)
+        self.found_event_matches = event_matches.union(easy_event_matches).union(club_and_event_matches)
+        self.found_wrong_matches = dance_wrong_style_matches.union(club_only_matches)
+
+        if len(manual_dance_keywords_matches) >= 1:
+            self.dance_event = 'obvious dancer or dance crew or battle'
+        # one critical dance keyword
+        elif len(dance_matches) >= 1:
+            self.dance_event = 'obvious dance style'
+        elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1:
+            self.dance_event = 'hiphop/funk and good event type'
+        # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
+        elif len(easy_dance_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and len(dance_wrong_style_matches) == 0:
+            self.dance_event = 'dance event thats not a bad-style'
+        elif len(easy_dance_matches) >= 1 and len(club_and_event_matches) >= 1 and len(dance_wrong_style_matches) == 0 and len(club_only_matches) == 0:
+            self.dance_event = 'dance show thats not a club'
+        else:
+            self.dance_event = False
+
+    def is_dance_event(self):
+        return bool(self.dance_event)
+    def reason(self):
+        return self.dance_event
+    def dance_matches(self):
+        return self.found_dance_matches
+    def event_matches(self):
+        return self.found_event_matches
+    def wrong_matches(self):
+        return self.found_wrong_matches
+
+def is_dance_event(fb_event):
+    classified_event = ClassifiedEvent(fb_event)
+    classified_event.classify()
+    if classified_event.is_dance_event():
+        return (True,
+            classified_event.reason(),
+            classified_event.dance_matches(),
+            classified_event.event_matches(),
         )
     else:
-        return False#, 'nothing', dance_wrong_style_matches, club_only_matches
+        return False
 
 def relevant_keywords(fb_event):
     text = get_relevant_text(fb_event)
