@@ -19,10 +19,12 @@ shockarellas.dance.crew
 156623986125
 COS916
 lhibakingzoo
+171740481960
 
 choreo dance groups:
 190320540981905
 monstersofhiphop
+
 
 - Use keyword density as another factor in identifying usefulness. and "does this words appear on a line of text by itself"
 

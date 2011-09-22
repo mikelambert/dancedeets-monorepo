@@ -1,3 +1,4 @@
+#ml (but need to get capitalization right)
 8 count,0
 a tribe called groove
 academy of phresh
@@ -11,8 +12,8 @@ anbu black ops
 asu hip hop
 audacity cru
 barkada modern
-boogie bots
 boogie ?monstarz
+boogie bots
 boogiezone entity
 box ?cuttuhz
 breed ocla
@@ -56,11 +57,13 @@ future shock
 gen-x m\.o\.b
 generation x
 get the funk on
+greathouse of dance
 groove against the machine
 groove against the machine
 groove bots
 groove elements
 groovement
+grooveology
 grv dance
 grv,0
 heartbreak crew	
@@ -89,11 +92,10 @@ main ingredient
 main stacks
 major definition
 marvelous motion
-mass appeal
+mass appeal,0
 mighty shock
 miniotics
 mischief makers
-#ml (but need to get capitalization right)
 mos wanted crew
 movement lifestyle
 nerdz: the outsiders
@@ -113,6 +115,7 @@ phunktions
 poreotics
 poreotix
 praiset.e.a.m
+press play,0
 project d
 project em
 project nailz

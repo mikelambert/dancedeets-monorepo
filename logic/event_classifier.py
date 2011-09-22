@@ -11,7 +11,7 @@ from spitfire.runtime.filters import skip_filter
 
 # TODO: for each style-keyword, give it some weight. don't be a requirement but yet-another-bayes-input
 # TODO: add a bunch of classifier logic
-
+# TODO: for iffy events, assume @ in the title means its a club event. same with monday(s) tuesday(s) etc.
 # maybe feed keywords into auto-classifying event type? bleh.
 
 manual_dance_keywords = []
@@ -27,7 +27,7 @@ for filename in ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'chore
 
 easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?', 'danser',
-    'hitting', 'footwork',
+    'footwork',
 ]
 easy_choreography_keywords = [
     'choreograph(?:y|ed)', 'choreographers?', 'choreo',
@@ -200,7 +200,7 @@ event_keywords = [
     'c(?:y|i)ph(?:a|ers?)',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try\W?outs?', 'class(?:es)?', 'lessons?',
-    'cours',
+    'cours', 'clases?',
     'abdc', 'america\W?s best dance crew',
     'crew\W?v[sz]?\W?crew',
     'prelims?',

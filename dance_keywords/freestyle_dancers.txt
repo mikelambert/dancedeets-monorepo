@@ -61,7 +61,7 @@ koutei
 lanaija
 legend,0
 les twins
-lil b
+lil b,0
 lockiano
 loic,0
 loose joint

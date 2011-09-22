@@ -20,6 +20,8 @@ di\W+moon\W+zhang
 dmoe
 eddie orales
 ellen kim
+elm pizarro
+elm\w+boogie\w+pizarro
 emerson aquino
 eric negron
 george anzaldo
@@ -65,6 +67,7 @@ nick demoura
 nick whage
 nico o'connor
 patrick cruz
+phillip geniza
 phillip.*pacman.*chbeeb
 rhapsody james
 rie hata
