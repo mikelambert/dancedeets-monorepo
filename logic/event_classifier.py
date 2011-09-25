@@ -12,6 +12,7 @@ from spitfire.runtime.filters import skip_filter
 # TODO: for each style-keyword, give it some weight. don't be a requirement but yet-another-bayes-input
 # TODO: add a bunch of classifier logic
 # TODO: for iffy events, assume @ in the title means its a club event. same with monday(s) tuesday(s) etc.
+# TODO: house class, house workshop, etc, etc. since 'house' by itself isn't sufficient
 # maybe feed keywords into auto-classifying event type? bleh.
 
 manual_dance_keywords = []
