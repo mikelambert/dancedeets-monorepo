@@ -147,7 +147,7 @@ anti_dance_keywords  = [
     'shaking competition',
     'costume competition',
     'bottles? popping?',
-    'popping? bottles?',
+    'poppin.? bottles?',
     'dance fitness',
     'lock down',
 ]
@@ -163,6 +163,7 @@ anti_dance_keywords  = [
 
 # 'vote for xx' in the subject
 # 'vote on' 'vote for' in body, but small body of text
+# release party
 
 # methodology
 # cardio

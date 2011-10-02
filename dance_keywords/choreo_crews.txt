@@ -19,7 +19,7 @@ boogiezone entity
 box ?cuttuhz
 breed ocla
 breed,0
-bridging the gap
+bridging the gap,0
 bu fusion
 cadc
 cassie jackson
@@ -36,7 +36,7 @@ dc tribe
 de la femme
 dynamic dance crew
 dysfunktional solez
-e.n.t.i.
+e\.n\.t\.i\.
 elevate dance crew
 elusive dance crew
 entity,0
