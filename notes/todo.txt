@@ -22,13 +22,18 @@ lhibakingzoo
 171740481960
 117903304959026
 1257062091
+1024374565
 
 choreo dance groups:
 190320540981905
 monstersofhiphop
+165790793451662
 
 both:
 214391411953646
+136750373022081
+165692336816534
+battlefest
 
 - Use keyword density as another factor in identifying usefulness. and "does this words appear on a line of text by itself"
 
@@ -45,6 +50,12 @@ http://www.dancedeets.com/events/admin_edit?event_id=191039400964294
 - Grab list of places-he-posts-to from https://www.facebook.com/lifestyledance?sk=wall to get better european coverage
 
 - Add Send Dialog to message event owners, and allow people to share with their friends. https://developers.facebook.com/docs/reference/dialogs/send/
+
+OAuth2 migration:
+https://developers.facebook.com/blog/post/525/
+https://developers.facebook.com/docs/reference/javascript/FB.login/
+https://developers.facebook.com/docs/reference/javascript/FB.getLoginStatus/
+
 
 event-scraping-from-walls project:
 - store an autoclassified boolean, so we don't train on those
