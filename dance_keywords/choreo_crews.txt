@@ -32,8 +32,10 @@ cslv
 culture shock
 d\.w\.e\.e\.b\.s
 danz n motion
+danz-n-motion
 dc tribe
 de la femme
+draztik
 dynamic dance crew
 dysfunktional solez
 e\.n\.t\.i\.
@@ -68,6 +70,7 @@ groovement
 grooveology
 grv dance
 grv,0
+haluan
 heartbreak crew	
 hoya break squad
 i am phresh
@@ -84,6 +87,7 @@ kaba modern
 kabba modern
 kcn modern
 km legacy
+kodachrome,0
 kp krew
 kreative movement
 kruciaal element
@@ -123,6 +127,7 @@ project em
 project nailz
 project nailz
 prophecy,0
+pulse dance crew
 quadrisaurus
 quest crew
 raps dance troupe
@@ -158,6 +163,7 @@ thatonecompany
 the boom cats crew 
 the company,0
 the iv league
+the project company
 thee slap bracelets
 tito boyscouts
 tm,0

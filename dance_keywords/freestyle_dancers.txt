@@ -29,7 +29,7 @@ el fonky juice
 fire.?lock
 flockey
 fluky luke
-gemini
+gemini,0
 guccon
 henry link
 hideki
@@ -37,6 +37,7 @@ hiro,0
 hozin
 hurrikane
 iron monkey
+j-?boogie # too many false-positive hits on 'j boogie'
 j-rock,0
 jak-hamah
 javier ninja
@@ -45,8 +46,9 @@ jazzy jay
 jed flurano
 jimmy soul
 jojo diggs
+jon boogz
+jr.? boogie
 jr?.? bogaloo
-jr?.? boogie
 jrock
 junior boogaloo
 junior boogie
@@ -78,11 +80,13 @@ p\W?lock
 pepito
 physs
 popkun
+popmaster fabel
 popntod
 popp?in.? pete
 poppin’ john
 popula
 rabah,0
+raquel cabrera
 rashaad pearson
 razzle dazzle
 rockmaster

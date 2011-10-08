@@ -70,6 +70,7 @@ dance_keywords = [
     'bott?ing?',
     'robott?ing?',
     'shuffle', 'melbourne shuffle',
+    'jump\W?style[sz]?',
     'strutter[sz]?', 'strutting',
     'glides?', 'gliding', 
     'tuts?', 'tutting?', 'tutter[sz]?',
