@@ -39,11 +39,13 @@ Edit Event
 			#if $creating_user
 				Submitted by <a href="http://www.facebook.com/profile.php?id=$event.creating_fb_uid">$creating_user</a>.<br>
 				<button>Edit</button>
+				<button name="delete" value="yes">Delete</button>
 			#else
 				Creating new event!
 				<button>Create</button>
 			#end if
 			<input type="hidden" name="event_id" value="$fb_event.info.id">
+
 		</form>
   </body>
 #end def

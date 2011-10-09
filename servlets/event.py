@@ -237,6 +237,12 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.errors_are_fatal()
 
+        if self.request.get('delete'):
+            e = eventdata.DBEvent.get_by_key_name(event_id)
+            e.delete()
+            self.user.add_message("Event deleted!")
+            self.redirect('/events/admin_edit?event_id=%s' % event_id)
+            return
 
         original_address = eventdata.get_original_address_for_event(fb_event)
         remapped_address = eventdata.get_remapped_address_for(original_address)
