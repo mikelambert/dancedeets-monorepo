@@ -47,9 +47,8 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
             else:
                 distance_in_km = distance
             latlng_location = locations.get_geocoded_location(location)['latlng']
-        dance_type = self.request.get('dance_type', self.user and self.user.dance_type) or users.DANCE_TYPES_LIST[0]['internal']
 
-        query = search.SearchQuery(city_name=city_name, location=latlng_location, distance_in_km=distance_in_km, dance_type=dance_type, start_time=start_time, end_time=end_time)
+        query = search.SearchQuery(city_name=city_name, location=latlng_location, distance_in_km=distance_in_km, start_time=start_time, end_time=end_time)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
 
         json_results = []

@@ -59,6 +59,6 @@ Hi $fb_user.profile.first_name,
 	</ul>
 #end if
 
-<p>To unsubscribe, change your location, or choose choreo-vs-freestyle events, <a href="http://www.dancedeets.com/user/edit">change your Dance Deets settings.</a>
+<p>To unsubscribe or change your preferred city, <a href="http://www.dancedeets.com/user/edit">go to your Dance Deets settings.</a>
 #end def
 

@@ -83,8 +83,7 @@ Dance Events
 <div id="left-hand">
 	<div>
 			<h3 class="head">
-			Searching for
-			$event_types events
+			Searching for events
 			within
 			$defaults.distance $defaults.distance_units of ${defaults.location}.
 			</h3>
@@ -203,7 +202,6 @@ var keys =  function  (o) {
   };
  
 $(document).ready(function() {
-	$event_criteria_bottom_javascript()
 	$("#share-button").button();
 	$("#add-button").button();
 	$("#tabs").tabs();

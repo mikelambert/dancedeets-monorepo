@@ -78,23 +78,6 @@ Account
 		<p>End Time: $date_format('%Y-%m-%d %H:%M', $end_time)
 		<p>See <a href="$fb_event_url($fb_event.id)">Event on Facebook</a>
 
-		<p>Event Types are:
-		<ul>
-			#for $type in $choreo_types
-			<li>Choreo: $type
-			#end for
-			#for $type in $freestyle_types
-			<li>Freestyle: $type
-			#end for
-		</ul>
-
-		<p>Dance Styles are:
-		<ul>
-			#for $style in $styles
-			<li>$style
-			#end for
-		</ul>
-
 		#if $distance
 		<p>Distance to you is $format("%.0f", $distance) miles.
 		#end if

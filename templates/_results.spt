@@ -16,7 +16,7 @@
 					$format_html($fb_event.name)
 					</a>
 					</h2>
-					<div class="event-choreo-freestyle">($result.event_types)</div>
+					<div class="event-types">($result.event_types)</div>
 					<div class="event-date">
 						$date_human_format($result.start_time)
 						#if $result.multi_day_event()

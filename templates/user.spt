@@ -28,9 +28,3 @@ $event_criteria($defaults)
 </form>
 #end def
 
-#def bottom_javascript
-<script type="text/javascript">
-$event_criteria_bottom_javascript()
-</script>
-#end def
-

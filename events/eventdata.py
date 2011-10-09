@@ -8,7 +8,6 @@ from google.appengine.runtime import apiproxy_errors
 from google.appengine.ext import db
 
 from events import cities
-from events import tags
 import fb_api
 import geohash
 
@@ -33,6 +32,8 @@ EVENT_IMAGE_LARGE = 'n'
 EVENT_IMAGE_SQUARE = 'q'
 EVENT_IMAGE_TYPES = [EVENT_IMAGE_SMALL, EVENT_IMAGE_MEDIUM, EVENT_IMAGE_LARGE, EVENT_IMAGE_SQUARE]
 
+TIME_PAST = 'PAST'
+TIME_FUTURE = 'FUTURE'
 
 def get_event_image_url(square_url, event_image_type):
     assert event_image_type in EVENT_IMAGE_TYPES
@@ -139,8 +140,10 @@ class DBEvent(db.Model):
     """Stores custom data about our Event"""
     fb_event_id = property(lambda x: int(x.key().name()))
 
-    # real data
+    # TODO(lambert): right now this is unused, but maybe we want to cache our "ish" tags or something to that effect?
     tags = db.StringListProperty()
+
+    # real data
     owner_fb_uid = db.StringProperty()
     creating_fb_uid = db.IntegerProperty()
     creation_time = db.DateTimeProperty()
@@ -188,18 +191,12 @@ class DBEvent(db.Model):
         self.start_time = dates.parse_fb_timestamp(fb_dict['info'].get('start_time'))
         self.end_time = dates.parse_fb_timestamp(fb_dict['info'].get('end_time'))
 
-        self.search_tags = [] # CHOREO and/or FREESTYLE
-        if set(self.tags).intersection([x[0] for x in tags.FREESTYLE_EVENT_LIST]):
-            self.search_tags.append(tags.FREESTYLE_EVENT)
-        if set(self.tags).intersection([x[0] for x in tags.CHOREO_EVENT_LIST]):
-            self.search_tags.append(tags.CHOREO_EVENT)
-
         self.search_time_period = None # PAST or FUTURE
         today = datetime.datetime.today() - datetime.timedelta(days=1)
         if today < self.end_time:
-            self.search_time_period = tags.TIME_FUTURE
+            self.search_time_period = TIME_FUTURE
         else:
-            self.search_time_period = tags.TIME_PAST
+            self.search_time_period = TIME_PAST
 
         address = get_usable_address_for_event(self, fb_dict)
         self.anywhere = (address == ONLINE_ADDRESS)

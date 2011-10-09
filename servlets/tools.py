@@ -12,7 +12,6 @@ from events import eventdata
 from events import users
 import fb_api
 from logic import event_classifier
-from logic import event_smart_classifier
 from logic import potential_events
 from logic import thing_db
 
@@ -51,14 +50,7 @@ class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler
         self.batch_lookup.lookup_thing_feed(source_id)
         self.batch_lookup.finish_loading()
         data = self.batch_lookup.data_for_thing_feed(source_id)
-        thing_db.create_source_for_id(source_id, data, style_type=None)
-
-        #event_id = self.request.get('event_id')
-        #batch_lookup = fb_api.CommonBatchLookup(None, None)
-        #batch_lookup.lookup_event(event_id)
-        #batch_lookup.finish_loading()
-        #fb_event = batch_lookup.data_for_event(event_id)
-        #event_smart_classifier.predict_types_for_event(fb_event)
+        thing_db.create_source_for_id(source_id, data)
 
 class OwnedEventsHandler(webapp.RequestHandler):
     def get(self):
@@ -72,43 +64,6 @@ class OwnedEventsHandler(webapp.RequestHandler):
         for db_event, fb_event in zip(db_events, fb_events):
             real_fb_event = fb_event.decode_data()
             print db_event.tags, real_fb_event['info']['name']
-
-class TrainingCsvHandler(webapp.RequestHandler):
-    def get(self):
-        key_query = potential_events.PotentialEvent.all(keys_only=True)
-        batch_event_keys = key_query.fetch(1000)
-        self.handle_potential_events(batch_event_keys)
-        while len(batch_event_keys) == 1000:
-            last_key = batch_event_keys[-1]
-            batch_event_keys = key_query.filter('__key__ >', last_key).fetch(1000)
-            self.handle_potential_events(batch_event_keys)
-
-    def handle_potential_events(self, batch_potential_events):
-
-        csv_file = StringIO.StringIO()
-        csv_writer = csv.writer(csv_file)
-        batch_event_ids = [event.name() for event in batch_potential_events]
-        db_events = eventdata.DBEvent.get_by_key_name(batch_event_ids)
-
-        batch_lookup = fb_api.CommonBatchLookup(None, None)
-        fb_events = fb_api.FacebookCachedObject.get_by_key_name(batch_lookup._string_key(batch_lookup._event_key(x)) for x in batch_event_ids)
-        for event_id, db_event, fb_event in zip(batch_event_ids, db_events, fb_events):
-            try:
-                if not fb_event or not fb_event.json_data:
-                    continue
-                real_fb_event = fb_event.decode_data()
-                if real_fb_event['deleted']:
-                    continue
-                if db_event:
-                    tags = ' '.join(db_event.tags)
-                else:
-                    tags = ''
-                features = event_smart_classifier.get_training_features(real_fb_event)
-                csv_writer.writerow([tags] + list(features))
-            except Exception, e:
-                logging.error("Problem with event id %s: %r", event_id, e)
-        self.response.out.write(csv_file.getvalue())
-    
 
 class ImportCitiesHandler(webapp.RequestHandler):
     def get(self):

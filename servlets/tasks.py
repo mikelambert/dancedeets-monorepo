@@ -16,7 +16,6 @@ from google.appengine.runtime import apiproxy_errors
 
 import base_servlet
 from events import eventdata
-from events import tags
 from events import users
 import facebook
 import fb_api
@@ -171,14 +170,14 @@ class ReloadAllEventsHandler(BaseTaskRequestHandler):
 
 class ReloadPastEventsHandler(BaseTaskRequestHandler):
     def get(self):
-        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE search_time_period = :1", tags.TIME_PAST)]
+        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE search_time_period = :1", eventdata.TIME_PAST)]
         logging.info("Found %s past events to reload", len(event_ids))
         backgrounder.load_events_full(event_ids, allow_cache=False)
     post=get
 
 class ReloadFutureEventsHandler(BaseTaskRequestHandler):
     def get(self):
-        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql('WHERE search_time_period = :1', tags.TIME_FUTURE)]
+        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql('WHERE search_time_period = :1', eventdata.TIME_FUTURE)]
         logging.info("Found %s future events to reload", len(event_ids))
         backgrounder.load_events_full(event_ids, allow_cache=False)    
     post=get
@@ -248,12 +247,13 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
         return
 
 """ Old id-loading code
-        filemap = {
-            #'choreo_ids.txt': tags.CHOREO_EVENT,
-            #'freestyle_ids.txt': tags.FREESTYLE_EVENT,
-            #'dance_ids.txt': None,
-        }
-        for filename, style_type in filemap.iteritems():
+        filemap = [
+            'choreo_ids.txt',
+            'freestyle_ids.txt',
+            'dance_ids.txt',
+        ]
+        for filename in filemap:
+            # ignore style_type
             lines = open('dance_keywords/%s' % filename).readlines()
             friendpage_ids = [re.sub('[ #].*\n|\n', '', x) for x in lines]
             friendpage_ids = [x.replace('.', '') for x in friendpage_ids]
@@ -267,7 +267,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
                     data = batch_lookup.data_for_thing_feed(friend_id)
                 except fb_api.NoFetchedDataException:
                     continue
-                thing_db.create_source_for_id(friend_id, data, style_type)
+                thing_db.create_source_for_id(friend_id, data)
 
             #sources from ids...
             #thing_scraper.scrape_events_from_sources(self.batch_lookup, friendpage_ids)

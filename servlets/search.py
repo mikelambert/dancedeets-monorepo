@@ -7,7 +7,6 @@ import time
 import base_servlet
 from events import cities
 from events import eventdata
-from events import tags
 from events import users
 from logic import rankings
 from logic import friends
@@ -56,29 +55,22 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
         min_attendees = int(self.request.get('min_attendees', self.user and self.user.min_attendees or 0))
 
-        dance_type = self.request.get('dance_type', self.user and self.user.dance_type) or users.DANCE_TYPES_LIST[0]['internal']
-
-        self.display['event_types'] = [x['name'] for x in users.DANCE_TYPES_LIST if x['internal'] == dance_type][0].lower()
-
         self.display['location'] = location
         self.display['defaults'] = {
             'city_name': city_name,
             'distance': distance,
             'distance_units': distance_units,
             'location': location,
-            'dance_type': dance_type,
             'min_attendees': min_attendees,
             'past': past,
         }
         
         if past:
-            time_period = tags.TIME_PAST
+            time_period = eventdata.TIME_PAST
         else:
-            time_period = tags.TIME_FUTURE
+            time_period = eventdata.TIME_FUTURE
 
-        self.display['DANCE_TYPES_LIST'] = users.DANCE_TYPES_LIST
-
-        query = search.SearchQuery(time_period=time_period, city_name=city_name, location=latlng_location, distance_in_km=distance_in_km, dance_type=dance_type, min_attendees=min_attendees)
+        query = search.SearchQuery(time_period=time_period, city_name=city_name, location=latlng_location, distance_in_km=distance_in_km, min_attendees=min_attendees)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
         a = time.time()
@@ -89,15 +81,15 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         logging.info("Decorating with personal rsvp data took %s seconds", time.time() - a)
 
         past_results, present_results, grouped_results = search.group_results(search_results)
-        if time_period == tags.TIME_FUTURE:
+        if time_period == eventdata.TIME_FUTURE:
             present_results = past_results + present_results
             past_results = []
 
         a = time.time()
         closest_cityname = cities.get_largest_nearby_city_name(location)
         #TODO(lambert): perhaps produce optimized versions of these without styles/times, for use on the homepage? less pickling/loading required
-        event_top_n_cities, event_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME), closest_cityname)
-        user_top_n_cities, user_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_user_rankings(), rankings.DANCE_DANCER, rankings.ALL_TIME), closest_cityname)
+        event_top_n_cities, event_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ALL_TIME), closest_cityname)
+        user_top_n_cities, user_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_user_rankings(), rankings.ALL_TIME), closest_cityname)
         logging.info("Computing current city and top-N cities took %s seconds", time.time() - a)
 
         self.display['current_city'] = closest_cityname

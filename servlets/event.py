@@ -11,7 +11,6 @@ from google.appengine.api.labs import taskqueue
 
 import base_servlet
 from events import eventdata
-from events import tags
 from events import users
 from logic import backgrounder
 from logic import event_classifier
@@ -155,10 +154,6 @@ class ViewHandler(base_servlet.BaseRequestHandler):
 
         self.display['pic'] = eventdata.get_event_image_url(self.batch_lookup.data_for_event(event_id)['picture'], eventdata.EVENT_IMAGE_LARGE)
 
-        tags_set = db_event and set(db_event.tags) or []
-        self.display['styles'] = [x[1] for x in tags.STYLES if x[0] in tags_set]
-        self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST if x[0] in tags_set]
-        self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST if x[0] in tags_set]
         self.display['event_friends'] = event_friends
 
         # template rendering
@@ -221,10 +216,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['override_address'] = override_address
         self.display['final_geocoded_address'] = final_geocoded_address
 
-        self.display['freestyle_types'] = tags.FREESTYLE_EVENT_LIST
-        self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
-        self.display['styles'] = tags.STYLES
-
         self.display['event'] = e
         self.display['fb_event'] = fb_event
 
@@ -255,7 +246,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             eventdata.save_remapped_address_for(original_address, new_remapped_address)
 
         e = eventdata.DBEvent.get_or_insert(event_id)
-        e.tags = self.request.get_all('tag')
         e.address = self.request.get('override_address') or None
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
@@ -276,11 +266,6 @@ def get_id_from_url(url):
 
 class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):
-
-        self.display['freestyle_types'] = tags.FREESTYLE_EVENT_LIST
-        self.display['choreo_types'] = tags.CHOREO_EVENT_LIST
-        self.display['styles'] = tags.STYLES
-
         fb_event = None
         events = []
 
@@ -345,7 +330,6 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         fb_event = self.batch_lookup.data_for_event(event_id)
         e = eventdata.DBEvent.get_or_insert(event_id)
-        e.tags = self.request.get_all('tag')
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
         e.make_findable_for(fb_event)

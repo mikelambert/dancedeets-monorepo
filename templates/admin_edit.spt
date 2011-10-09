@@ -35,45 +35,7 @@ Edit Event
 			<p>Reason: $classifier_reason<br>
 			Dance Words: $classifier_dance_words<br>
 			Event Words: $classifier_event_words<br>
-			<p>Event Types:
-			<table><tr valign=top><td>
-			Freestyle:<br>
-			<ul>
-			#for $type in $freestyle_types
-				<li><input type=checkbox name="tag" value="$type[0]" id="tag_$type[0]"
-				#set $this_type = $type[0]
-				#if $this_type in $event.tags
-					checked
-				#end if
-				><label for="tag_$type[0]">$type[1]</label>
-			#end for
-			</ul>
-			</td><td>
-			Choreo:<br>
-			<ul>
-			#for $type in $choreo_types
-				<li><input type=checkbox name="tag" value="$type[0]" id="tag_$type[0]"
-				#set $this_type = $type[0]
-				#if $this_type in $event.tags
-					checked
-				#end if
-				><label for="tag_$type[0]">$type[1]</label>
-			#end for
-			</ul>
-			</td></tr></table>
-<!--
-			<p>Event Dance Styles:
-			<ul>
-			#for $style in $styles
-				<li><input type=checkbox name="tag" value="$style[0]" id="tag_$style[0]"
-				#set $this_style = $style[0]
-				#if $this_style in $event.tags
-					checked
-				#end if
-				><label for="tag_$style[0]">$style[1]</label>
-			#end for
-			</ul>
--->
+			<p>
 			#if $creating_user
 				Submitted by <a href="http://www.facebook.com/profile.php?id=$event.creating_fb_uid">$creating_user</a>.<br>
 				<button>Edit</button>

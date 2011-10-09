@@ -18,14 +18,6 @@
 #end if
 <b>City:</b> <input type=text name="city" id="signup-city">
 
-<p><b>Who are you in the scene?</b>
-<ul style="list-style-type: none">
-<li><input type=radio name=user_type value="fan"> I watch dance events
-<li><input type=radio name=user_type value="choreo"> I do hiphop choreo
-<li><input type=radio name=user_type value="freestyle"> I do freestyle dance
-<li><input type=radio name=user_type value="everything" checked> I love all dance
-</ul>
-
 <p><fb:login-button length="long" onlogin="signUp();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
 
 </fieldset>

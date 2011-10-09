@@ -4,7 +4,7 @@
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
-$title_prefix Dance Events in $closest_city
+Dance Events in $closest_city
 #end def
 
 #def head_stylesheet

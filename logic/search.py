@@ -10,7 +10,6 @@ from google.appengine.ext import db
 import base_servlet
 from events import cities
 from events import eventdata
-from events import tags
 from events import users
 import fb_api
 import locations
@@ -82,32 +81,17 @@ class SearchResult(object):
         return self.rsvp_status
 
 class SearchQuery(object):
-    def __init__(self, time_period=None, start_time=None, end_time=None, city_name=None, location=None, distance_in_km=None, dance_type=None, min_attendees=None):
+    def __init__(self, time_period=None, start_time=None, end_time=None, city_name=None, location=None, distance_in_km=None, min_attendees=None):
         self.time_period = time_period
-        self.dance_type = dance_type
-                if dance_type == users.DANCE_TYPE_ALL_DANCE['internal']:
-                        self.freestyle = users.FREESTYLE_DANCER
-                        self.choreo = users.CHOREO_DANCER
-                elif dance_type == users.DANCE_TYPE_FREESTYLE['internal']:
-                        self.freestyle = users.FREESTYLE_DANCER
-                        self.choreo = users.CHOREO_APATHY
-                elif dance_type == users.DANCE_TYPE_CHOREO['internal']:
-                        self.freestyle = users.FREESTYLE_APATHY
-                        self.choreo = users.CHOREO_DANCER
-                elif dance_type == users.DANCE_TYPE_FAN['internal']:
-                        self.freestyle = users.FREESTYLE_FAN
-                        self.choreo = users.CHOREO_FAN
-                else:
-                        assert False, 'unknown dance_type: %s' % dance_type
 
         self.min_attendees = min_attendees
         self.start_time = start_time
         self.end_time = end_time
         if self.start_time and self.end_time:
             assert self.start_time < self.end_time
-        if self.time_period == tags.TIME_FUTURE and self.end_time:
+        if self.time_period == eventdata.TIME_FUTURE and self.end_time:
                 assert self.end_time > datetime.datetime.now()
-        if self.time_period == tags.TIME_FUTURE and self.start_time:
+        if self.time_period == eventdata.TIME_FUTURE and self.start_time:
                 assert self.start_time < datetime.datetime.now()
         self.city_name = city_name
         self.location = location
@@ -133,20 +117,6 @@ class SearchQuery(object):
         if self.min_attendees and event.attendee_count < self.min_attendees:
             return False
 
-        search_tags = []
-        if self.choreo == users.CHOREO_FAN:
-            search_tags.extend(tags.CHOREO_FAN_EVENTS)
-        elif self.choreo == users.CHOREO_DANCER:
-            search_tags.extend(x[0] for x in tags.CHOREO_EVENT_LIST)
-        if self.freestyle == users.FREESTYLE_FAN:
-            search_tags.extend(tags.FREESTYLE_FAN_EVENTS)
-        elif self.freestyle == users.FREESTYLE_DANCER:
-            search_tags.extend(x[0] for x in tags.FREESTYLE_EVENT_LIST)
-        intersecting_tags = set(search_tags).intersection(event.tags)
-        if intersecting_tags:
-            pass
-        else:
-            return False
         if self.distance_in_km:
             distance = locations.get_distance(self.location[0], self.location[1], event.latitude, event.longitude, use_km=True)
             if distance < self.distance_in_km:
@@ -170,18 +140,6 @@ class SearchQuery(object):
         if self.time_period:
             clauses.append('search_time_period = :search_time_period')
             bind_vars['search_time_period'] = self.time_period
-        search_tags = []
-        if self.choreo != users.CHOREO_APATHY:
-            search_tags.append(tags.CHOREO_EVENT)
-        if self.freestyle != users.FREESTYLE_APATHY:
-            search_tags.append(tags.FREESTYLE_EVENT)
-        if len(search_tags) == 0:
-            clauses.append('search_tags = "nonexistent"')
-        elif len(search_tags) == 1:
-            clauses.append('search_tags = :search_tags')
-            bind_vars['search_tags'] = search_tags[0]
-        elif len(search_tags) == 2:
-            pass # retrieve everything!
         if self.start_time: # APPROXIMATION
             clauses.append('start_time > :start_time_min')
             bind_vars['start_time_min'] = self.start_time - datetime.timedelta(days=30)
@@ -209,7 +167,7 @@ class SearchQuery(object):
 
     def get_search_results(self, fb_uid, graph):
         db_events = None
-        if self.time_period == tags.TIME_FUTURE and self.distance_in_km:
+        if self.time_period == eventdata.TIME_FUTURE and self.distance_in_km:
             # Use cached blob for our common case of filtering
             db_events = self.magical_get_candidate_events()
         if db_events is None:
@@ -241,7 +199,7 @@ class SearchQuery(object):
 
 def construct_search_index():
     MAX_EVENTS = 5000
-    db_events = db.Query(eventdata.DBEvent).filter('search_time_period =', tags.TIME_FUTURE).order('start_time').fetch(MAX_EVENTS)
+    db_events = db.Query(eventdata.DBEvent).filter('search_time_period =', eventdata.TIME_FUTURE).order('start_time').fetch(MAX_EVENTS)
     if len(db_events) >= MAX_EVENTS:
         slogging.error('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
 

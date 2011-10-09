@@ -2,8 +2,8 @@ import datetime
 import xml.sax.saxutils
 
 import base_servlet
+from events import eventdata
 from events import users
-from events import tags
 from logic import search
 
 from google.appengine.ext.webapp import RequestHandler
@@ -33,28 +33,17 @@ class AtomHandler(base_servlet.BaseRequestHandler):
                 distance_in_km = distance
             latlng_location = locations.get_geocoded_location(location)['latlng']
 
-        dance_type = self.request.get('dance_type', users.DANCE_TYPES_LIST[0]['internal'])
-        time_period = self.request.get('time_period', tags.TIME_FUTURE)
+        time_period = self.request.get('time_period', eventdata.TIME_FUTURE)
 
-        event_types = []
-        if choreo in [x['internal'] for x in users.CHOREO_LIST[1:]]:
-            event_types.append('choreo')
-        if freestyle in [x['internal'] for x in users.FREESTYLE_LIST[1:]]:
-            event_types.append('freestyle')
-        event_types_str = ' and '.join(event_types)
-
-
-        query = search.SearchQuery(city_name=city_name, time_period=time_period, location=latlng_location, distance_in_km=distance_in_km, dance_type=dance_type)
+        query = search.SearchQuery(city_name=city_name, time_period=time_period, location=latlng_location, distance_in_km=distance_in_km)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
 
         if city_name:
-            title = "%(event_types)s dance events in %(city_name)s." % dict(
-                event_types=event_types_str,
+            title = "dance events in %(city_name)s." % dict(
                 city_name=city_name,
             )
         else:
-            title = '%(event_types)s dance events within %(distance) %(distance_units)s of %(user_location)s.' % dict(
-                event_types=event_types_str,
+            title = 'dance events within %(distance) %(distance_units)s of %(user_location)s.' % dict(
                 distance=distance,
                 distance_units=distance_units,
                 user_location=user_location,

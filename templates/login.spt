@@ -130,16 +130,7 @@ dancers and dance fans
 <div id="events">
 
 <div style="float: left; width: 50%;">
-See choreo/freestyle events in these big cities:
-<ul>
-#for $internal_city, $city in $top_split_cities
-	<li><a href="/?location=$internal_city&distance=100&distance_units=miles">$city</a>
-	<li><a href="/?location=$internal_city&distance=100&distance_units=miles&dance_type=DANCE_TYPE_CHOREO">$city (choreo)</a>
-	<li><a href="/?location=$internal_city&distance=100&distance_units=miles&dance_type=DANCE_TYPE_FREESTYLE">$city (freestyle)</a>
-#end for
-</ul>
-
-See events for other north-american cities:
+See events in north-american cities:
 <ul>
 #for $internal_city, $city in $top_cities
 	<li><a href="/?location=$internal_city&distance=100&distance_units=miles">$city</a>

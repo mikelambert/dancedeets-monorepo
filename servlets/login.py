@@ -5,7 +5,7 @@ import logging
 import urllib
 
 import base_servlet
-from events import tags
+from events import eventdata
 from events import users
 from google.appengine.api.labs import taskqueue
 from google.appengine.ext import db
@@ -27,8 +27,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         return False
 
     def newpage(self):
-        dance_type = users.DANCE_TYPES_LIST[0]['internal']
-        query = search.SearchQuery(time_period=tags.TIME_FUTURE, location=(0,0), distance_in_km=locations.miles_in_km(12000), min_attendees=500, dance_type=dance_type)
+        query = search.SearchQuery(time_period=eventdata.TIME_FUTURE, location=(0,0), distance_in_km=locations.miles_in_km(12000), min_attendees=500)
         # self.fb_uid should be None for these logged out users...
                 search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         past_results, present_results, grouped_results = search.group_results(search_results)
@@ -39,8 +38,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
                 self.display['ongoing_results'] = present_results
                 self.display['grouped_upcoming_results'] = grouped_results
 
-        self.display['DANCE_TYPES_LIST'] = users.DANCE_TYPES_LIST
-
         # Need to generate a display-defaults dict that's preselected as best as we can for the user, along with clientside code to figure out their location as best we can.
 
         self.display['defaults'] = {
@@ -48,7 +45,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             'distance': 100,
             'distance_units': 'miles',
             'location': 'New York, NY',
-            'dance_type': users.DANCE_TYPES_LIST[0]['internal'],
             'min_attendees': 0,
             'past': False,
         }
@@ -75,15 +71,11 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         if self.request.get('newpage'):
             return self.newpage()
 
-        self.display['freestyle_types'] = [x[1] for x in tags.FREESTYLE_EVENT_LIST]
-        self.display['choreo_types'] = [x[1] for x in tags.CHOREO_EVENT_LIST]
         self.display['user_message'] = self.get_cookie('User-Message')
-        self.display['DANCE_TYPES_LIST'] = users.DANCE_TYPES_LIST
 
-        city_rankings = rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ANY_STYLE, rankings.ALL_TIME)
+        city_rankings = rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ALL_TIME)
         top_na_rankings = [x for x in city_rankings if 'United States' in x['key'] or 'Canada' in x['key'] or 'Mexico' in x['key']][:10]
-        self.display['top_split_cities'] = [(x['key'], x['key'].split(', ')[0]) for x in top_na_rankings[:3]]
-        self.display['top_cities'] = [(x['key'], x['key'].split(', ')[0]) for x in top_na_rankings[3:]]
+        self.display['top_cities'] = [(x['key'], x['key'].split(', ')[0]) for x in top_na_rankings]
         self.display['top_continents'] = [
             ('paris', 'Europe'),
             ('beijing', 'Asia'),
@@ -96,7 +88,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
                         'distance': '100',
                         'distance_units': 'miles',
                         'location': '', # maybe set via ajax
-                        'dance_type': users.DANCE_TYPES_LIST[0]['internal'],
                         'min_attendees': 0,
                         'past': False,
                 }
@@ -137,22 +128,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         logging.info("Referer was: %s", referer)
         if referer:
             user.inviting_fb_uid = int(referer)
-        user_type = self.request.get('user_type')
-        if user_type == 'fan':
-            user.freestyle = users.FREESTYLE_FAN
-            user.choreo = users.CHOREO_FAN
-        elif user_type == 'choreo':
-            user.freestyle = users.FREESTYLE_FAN
-            user.choreo = users.CHOREO_DANCER
-        elif user_type == 'freestyle':
-            user.freestyle = users.FREESTYLE_DANCER
-            user.choreo = users.CHOREO_FAN
-        elif user_type == 'everything':
-            user.freestyle = users.FREESTYLE_DANCER
-            user.choreo = users.CHOREO_DANCER
-        else:
-            self.add_error("Unknown user_type: %s" % user_type)
-    
         self.errors_are_fatal()
 
         user.send_email = True

@@ -136,7 +136,7 @@ stripped_neg_keyword_mapping = get_keyword_mapping(all_ids, stripper=strip_basic
 print "done, %d seconds" % (time.time() - a)
 
 types_to_ids = get_types_to_ids(classified_ids)
-the_type = tags.FREESTYLE_COMPETITION
+the_type = 'FREESTYLE_COMPETITION' # TODO(lambert): old legacy code, but was good for finding battles. so maybe keep? or use to classify dance-events-as-a-whole which would be easier?
 good_ids = types_to_ids[the_type]
 bad_ids = all_ids.difference(good_ids)
 

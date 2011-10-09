@@ -29,16 +29,6 @@
 	background: black;
 	color: white;
 }
-#left {
-	float: left;
-}
-#right {
-	float: right;
-}
-#bottom {
-	clear: both;
-  height: 1px; /* for IE6 */
-}
 </style>
 #end def
 
@@ -48,12 +38,13 @@ Add Dance Event
 
 #def body
 		<form action="/events/add" method=post>
-		<div id="left">
+		<div>
 			#if $events
-				<ul>
-					<li>Enter your facebook event URL here:<br>
+				<table><tr>
+					<td>Enter your facebook event URL here:<br>
 						<input id="event_url_form" type=text name="event_url" size=60 onunfocus="loadEvent();">
-					<li>Or select one of your facebook events below:<br>
+					</td>
+					<td>Or select one of your facebook events below:<br>
 						<input id="event_id_form" type="hidden" name="event_id" value="">
 						<ul id="events">
 						#for $event in $events
@@ -84,7 +75,8 @@ Add Dance Event
 							</li>
 						#end for
 						</ul>
-				</ul>
+					</td>
+				</tr></table>
 			#end if
 			#if $fb_event
 				<input type=hidden name="event_id" value="$fb_event.info.id">
@@ -98,29 +90,7 @@ Add Dance Event
 				#end if
 				</div>
 			#end if
-		</div>
-		<div id="right">
-			<p>Describe the kind of dance event this is, so interested folks can hear about it:
-			<p><b>Freestyle:</b><br>
-			<small>(bboying, popping, locking, house dancing, waacking, vogue, hiphop)</small><br>
-			<ul>
-			#for $type in $freestyle_types
-				<li><input type=checkbox name="tag" value="$type[0]" id="tag_$type[0]"><label for="tag_$type[0]">$type[1]</label>
-			#end for
-			</ul>
-			<hr>
-			<b>Choreo:</b><br>
-			<small>(hiphop/jazz choreography, urban choreography, street jazz)</small><br>
-			<ul>
-			#for $type in $choreo_types
-				<li><input type=checkbox name="tag" value="$type[0]" id="tag_$type[0]"><label for="tag_$type[0]">$type[1]</label>
-			#end for
-			</ul>
-
-			<p>View <a href="http://www.facebook.com/?sk=events" id="facebook-link">Event on Facebook</a>.
 			<p><button onclick="return validateAdd();">Add Event</button>
-		</div>
-		<div id="bottom">
 		</div>
 		</form>
 #end def
