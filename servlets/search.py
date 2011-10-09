@@ -17,7 +17,7 @@ import locations
 
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
-        if not self.request.get('location'):
+        if not self.request.get('location') and not self.request.get('city_name'):
             return True
         return False
 
