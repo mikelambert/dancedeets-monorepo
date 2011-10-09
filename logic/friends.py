@@ -16,7 +16,7 @@ def decorate_with_friends(batch_lookup, search_results):
 
     if batch_lookup.fb_uid:
         friends_list = batch_lookup.data_for_user(batch_lookup.fb_uid)['friends']['data']
-        friend_map = dict((x['id'], x['name']) for x in friends_list)
+        friend_map = dict((x['id'], x['name']) for x in friends_list if 'name' in x)
         friend_ids = set(friend_map.keys())
 
         attendee_batch_lookup = fb_api.CommonBatchLookup(batch_lookup.fb_uid, batch_lookup.fb_graph)
