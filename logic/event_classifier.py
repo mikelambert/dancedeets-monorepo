@@ -6,7 +6,6 @@ from spitfire.runtime.filters import skip_filter
 
 # TODO: translate to english before we try to apply the keyword matches
 # TODO: if event creator has created dance events previously, give it some weight
-# TODO: add keyword matches for dance crews, popular dance names
 # TODO: 
 
 # TODO: for each style-keyword, give it some weight. don't be a requirement but yet-another-bayes-input
