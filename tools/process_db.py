@@ -50,7 +50,7 @@ flatten_output("local_data/PotentialEvent.db", "local_data/PotentialEvent.csv", 
 flatten_output("local_data/FacebookCachedObject.db", "local_data/FacebookCachedObject.csv", lambda x: [x.key().name(), x['json_data']])
 
 # count characters
-count_characters = True
+count_characters = False
 if count_characters:
     from django.utils import simplejson
     conn = sqlite3.connect('local_data/FacebookCachedObject.db', isolation_level=None)
@@ -61,7 +61,6 @@ if count_characters:
     for unused_entity_id, entity in cursor:
         entity_proto = entity_pb.EntityProto(contents=entity)
         f = datastore.Entity._FromPb(entity_proto)
-        print f.key().name()
         if f.key().name().endswith('OBJ_EVENT'):
             if 'json_data' in f:
                 data = simplejson.loads(f['json_data'])
