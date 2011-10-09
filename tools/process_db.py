@@ -45,15 +45,15 @@ def event_list(x):
         start_time.strftime('%Y%m%d')
     ]
 
-flatten_output("local_data/events.db", "local_data/events.csv", event_list)
-flatten_output("local_data/potentialevents.db", "local_data/potentialevents.csv", lambda x: [x.key().name()])
-flatten_output("local_data/fb_data.db", "local_data/fb_data.csv", lambda x: [x.key().name(), x['json_data']])
+flatten_output("local_data/DBEvent.db", "local_data/DBEvent.csv", event_list)
+flatten_output("local_data/PotentialEvent.db", "local_data/PotentialEvent.csv", lambda x: [x.key().name()])
+flatten_output("local_data/FacebookCachedObject.db", "local_data/FacebookCachedObject.csv", lambda x: [x.key().name(), x['json_data']])
 
 # count characters
 count_characters = True
 if count_characters:
     from django.utils import simplejson
-    conn = sqlite3.connect('local_data/fb_data.db', isolation_level=None)
+    conn = sqlite3.connect('local_data/FacebookCachedObject.db', isolation_level=None)
     cursor = conn.cursor()
     cursor.execute('select id, value from result')
     total = 0
