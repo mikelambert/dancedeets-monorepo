@@ -6,7 +6,6 @@ import re
 import sys
 import time
 sys.path += ['.']
-from events import tags
 from logic import event_classifier
 
 classified_ids = {}
