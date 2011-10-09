@@ -8,19 +8,23 @@ import time
 sys.path += ['.']
 from logic import event_classifier
 
+#set to True if we want to find things to "yes this is good event"
+#set to False to find-and-trim out things for "no this is definitely not event"
+positive_classifier = True
+
 classified_ids = {}
-for row in csv.reader(open('local_data/events.csv')):
+for row in csv.reader(open('local_data/DBEvent.csv')):
     classified_ids[row[0]] = row[2].split(';')
 
 potential_ids = set()
-for row in csv.reader(open('local_data/potentialevents.csv')):
+for row in csv.reader(open('local_data/PotentialEvent.csv')):
     potential_ids.add(row[0])
 
 a = time.time()
 print "Loading fb data..."
 fb_entries = {}
 csv.field_size_limit(1000000000)
-for row in csv.reader(open('local_data/fb_data.csv')):
+for row in csv.reader(open('local_data/FacebookCachedObject.csv')):
     fb_entries[row[0]] = row[1]
 print "done, %d seconds" % (time.time() - a)
 
@@ -45,6 +49,17 @@ def get_types_to_ids(all_ids):
                 types_to_ids[type].append(id)
             except KeyError:
                 types_to_ids[type] = [id]
+    return types_to_ids
+
+def get_onlytypes_to_ids(all_ids):
+    types_to_ids = {}
+    for id in all_ids:
+        if len(classified_ids[id]) == 1:
+            for type in classified_ids[id]:
+                try:
+                    types_to_ids[type].append(id)
+                except KeyError:
+                    types_to_ids[type] = [id]
     return types_to_ids
 
 def partition_ids(ids, classifier=lambda x:False):
@@ -103,17 +118,37 @@ def print_top_for_df(df):
     print '\n'.join([x[0] for x in sorted_df(df)][:20])
 
 
-basic_keywords = ['judges', '1[\s-]*(?:vs?.?|on)[\s-]*1', '2[\s-]*(?:vs?.?|on)[\s-]*2',  '3[\s-]*(?:vs?.?|on)[\s-]*3', '5[\s-]*(?:vs?.?|on)[\s-]*5', '4[\s-]*(?:vs?.?|on)[\s-]*4', 'prelims', 'preselections', 'top 16', 'top 8', 'to smoke']
 
-#, '\n8\.\s']
-#, battles start', 'popping battle', 'battles will', 'bboy battle']
-basic_neg_keywords = ['the judges', 'dance', 'hip', 'night', 'people', 'open mic', 'games?', '2006', 'battle of']
-# ['weekly', 'album', 'system', 'introduced', 'appeared', 'continued']
-basic_re = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(basic_keywords))
-basic_neg_re = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(basic_neg_keywords))
+basic_keywords = ['judges', 'locking', 'bboy', 'popping', 'waacking', 'bboying', 'krump']
+basic_keywords += ['lockin', 'bgirl', 'boogiezone', 'newstyle', 'cyphers']
+basic_keywords += ['dance battle', 'battles start']
+basic_keywords += ['1[\s-]*(?:vs?.?|on)[\s-]*1', '2[\s-]*(?:vs?.?|on)[\s-]*2',  '3[\s-]*(?:vs?.?|on)[\s-]*3', '5[\s-]*(?:vs?.?|on)[\s-]*5', '4[\s-]*(?:vs?.?|on)[\s-]*4']
+
+if positive_classifier:
+    basic_neg_keywords = ['party', 'dj', 'night']
+    basic_neg_keywords += ['streetball', 'guitar', 'act', 'rap', 'vote', 'bottle', 'film', 'talent', 'fundraiser', 'shoot', 'graffiti', 'scratch', 'casting', 'votes', 'donate']
+    basic_neg_keywords += ['contemporary']
+else:
+    basic_keywords = ['edm', 'dub,', 'imprint', 'selectors', 'dnb', 'headliners', 'karaoke']
+    basic_neg_keywords = ['dance', 'dancers']
+
+
+# for battle/competition classifier
+#basic_keywords = 'judges', '1[\s-]*(?:vs?.?|on)[\s-]*1', '2[\s-]*(?:vs?.?|on)[\s-]*2',  '3[\s-]*(?:vs?.?|on)[\s-]*3', '5[\s-]*(?:vs?.?|on)[\s-]*5', '4[\s-]*(?:vs?.?|on)[\s-]*4', 'prelims', 'preselections', 'top 16', 'top 8', 'to smoke']
+# basic_neg_keywords = ['the judges', 'dance', 'hip', 'night', 'people', 'open mic', 'games?', '2006', 'battle of']
+
+if basic_keywords:
+    basic_re = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(basic_keywords))
+else:
+    basic_re = re.compile(r'XXXCSDCWEFWEF')
+if basic_neg_keywords:
+    basic_neg_re = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(basic_neg_keywords))
+else:
+    basic_neg_re = re.compile(r'XXXCSDCWEFWEF')
+
 def basic_match(fb_event):
     search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
-    if basic_neg_re.search(search_text):
+    if basic_neg_keywords and basic_neg_re.search(search_text):
         return False
     search_text = basic_neg_re.sub('', search_text)
     return basic_re.search(search_text)
@@ -135,9 +170,18 @@ stripped_neg_keyword_mapping = get_keyword_mapping(all_ids, stripper=strip_basic
 print "done, %d seconds" % (time.time() - a)
 
 types_to_ids = get_types_to_ids(classified_ids)
-the_type = 'FREESTYLE_COMPETITION' # TODO(lambert): old legacy code, but was good for finding battles. so maybe keep? or use to classify dance-events-as-a-whole which would be easier?
-good_ids = types_to_ids[the_type]
-bad_ids = all_ids.difference(good_ids)
+onlytypes_to_ids = get_onlytypes_to_ids(classified_ids)
+#the_type = 'FREESTYLE_COMPETITION' # TODO(lambert): old legacy code, but was good for finding battles. so maybe keep? or use to classify dance-events-as-a-whole which would be easier?
+#good_ids = types_to_ids[the_type]
+
+if positive_classifier:
+    onlyclub_ids = set()#onlytypes_to_ids['FREESTYLE_CLUB']).union(onlytypes_to_ids['CHOREO_CLUB'])
+    all_ids = all_ids.difference(onlyclub_ids)
+    good_ids = set(classified_ids).difference(onlyclub_ids)
+    bad_ids = all_ids.difference(good_ids)
+else:
+    bad_ids = classified_ids
+    good_ids = all_ids.difference(bad_ids)
 
 a = time.time()
 print "Running auto classifier..."
