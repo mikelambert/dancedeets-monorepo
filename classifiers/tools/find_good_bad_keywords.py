@@ -126,7 +126,11 @@ basic_keywords += ['1[\s-]*(?:vs?.?|on)[\s-]*1', '2[\s-]*(?:vs?.?|on)[\s-]*2',  
 
 if positive_classifier:
     basic_neg_keywords = ['party', 'dj', 'night']
-    basic_neg_keywords += ['streetball', 'guitar', 'act', 'rap', 'vote', 'bottle', 'film', 'talent', 'fundraiser', 'shoot', 'graffiti', 'scratch', 'casting', 'votes', 'donate']
+    basic_neg_keywords += ['streetball', 'guitar', 'act', 'rap', 'vote', 'bottle', 'film', 'talent', 'fundraiser', 'shoot', 'graffiti', 'scratch', 'casting', 'votes', 'donate', 'singer', 'sing', 'support', 'booty', 'costume', 'boba', 'bobas', 'yoga']
+    # popping bobas
+    # support XX
+    # booty ...battle/contest/judges
+    # custome contest
     basic_neg_keywords += ['contemporary']
 else:
     basic_keywords = ['edm', 'dub,', 'imprint', 'selectors', 'dnb', 'headliners', 'karaoke']
