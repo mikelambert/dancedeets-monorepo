@@ -147,7 +147,10 @@ class DBEvent(db.Model):
     owner_fb_uid = db.StringProperty()
     creating_fb_uid = db.IntegerProperty()
     creation_time = db.DateTimeProperty()
-    
+    # could be AUTO, ADMIN, USER, etc? Helps for maintaining a proper training corpus
+    #TODO(lambert): start using this field in auto-created events
+    creating_method = db.StringProperty()
+
     # searchable properties
     search_tags = db.StringListProperty()
     search_time_period = db.StringProperty()
