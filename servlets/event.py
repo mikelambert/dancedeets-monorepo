@@ -14,6 +14,7 @@ from events import eventdata
 from events import users
 from logic import backgrounder
 from logic import event_classifier
+from logic import event_locations
 from logic import potential_events
 from logic import rsvp
 import facebook
@@ -199,9 +200,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['classifier_dance_words'] = dance_words_str
         self.display['classifier_event_words'] = event_words_str
 
-        original_address = eventdata.get_original_address_for_event(fb_event)
+        original_address = event_locations.get_original_address_for_event(fb_event)
         geocoded_address = locations.get_geocoded_location(original_address)['address']
-        remapped_address = eventdata.get_remapped_address_for(original_address)
+        remapped_address = event_locations.get_remapped_address_for(original_address)
         override_address = e.address
         final_geocoded_address = eventdata.get_geocoded_location_for_event(e, fb_event)['address']
 
@@ -244,12 +245,12 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.redirect('/events/admin_edit?event_id=%s' % event_id)
             return
 
-        original_address = eventdata.get_original_address_for_event(fb_event)
-        remapped_address = eventdata.get_remapped_address_for(original_address)
+        original_address = event_locations.get_original_address_for_event(fb_event)
+        remapped_address = event_locations.get_remapped_address_for(original_address)
 
         new_remapped_address = self.request.get('remapped_address')
         if new_remapped_address != remapped_address:
-            eventdata.save_remapped_address_for(original_address, new_remapped_address)
+            event_locations.save_remapped_address_for(original_address, new_remapped_address)
 
         e = eventdata.DBEvent.get_or_insert(event_id)
         e.address = self.request.get('override_address') or None

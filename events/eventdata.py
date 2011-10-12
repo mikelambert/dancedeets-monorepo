@@ -3,16 +3,13 @@ import logging
 import cPickle as pickle
 import time
 
-from google.appengine.api import datastore
 from google.appengine.runtime import apiproxy_errors
 from google.appengine.ext import db
 
 from events import cities
-import fb_api
 import geohash
 
 import locations
-from util import abbrev
 from util import dates
 
 import smemcache
@@ -42,81 +39,6 @@ def get_event_image_url(square_url, event_image_type):
     url = url.replace('_q', '_%s' % event_image_type)
     return url
 
-class LocationMapping(db.Model):
-    remapped_address = db.StringProperty()
-
-def get_original_address_for_event(fb_event):
-    event_info = fb_event['info']
-    venue = event_info.get('venue', {})
-    # if we have a venue id, get the city from there
-    logging.info("venue id is %s", venue.get('id'))
-    if venue.get('id'):
-        # TODO(lambert): need a better way to pass in a proper fb auth token here, so that we aren't bucked into common ip set
-        batch_lookup = fb_api.CommonBatchLookup(None, None)
-        batch_lookup.lookup_venue(venue.get('id'))
-        batch_lookup.finish_loading()
-        venue_data = batch_lookup.data_for_venue(venue.get('id'))
-        if not venue_data['deleted']:
-            logging.info("venue data is %s", venue_data)
-            address = address_for_venue(venue_data['info'].get('location', {}))
-            logging.info("venue address is %s", address)
-            if address:
-                return address
-    # otherwise fall back on the address in the event, and go from there
-    raw_location = event_info.get('location')
-    return address_for_venue(venue, raw_location=raw_location)
-
-def address_for_venue(venue, raw_location=None):
-    # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
-    state = abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state'))
-    if venue.get('city') and (state or venue.get('country')):
-        address_components = [venue.get('city'), state, venue.get('country')]
-    else:
-        address_components = [raw_location, venue.get('street'), venue.get('city'), state, venue.get('country')]
-    address_components = [x for x in address_components if x]
-    address = ', '.join(address_components)
-    return address
-
-def get_remapped_address_for(address):
-    if not address:
-        return ''
-    # map locations to corrected locations for events that have wrong or incomplete info
-    location_mapping = LocationMapping.get_by_key_name(address)
-    if location_mapping:
-        address = location_mapping.remapped_address
-        return address
-    else:
-        return None
-
-def save_remapped_address_for(original_address, new_remapped_address):
-    if original_address:
-        location_mapping = LocationMapping.get_or_insert(original_address)
-        location_mapping.remapped_address = new_remapped_address
-        try:
-            location_mapping.put()
-        except apiproxy_errors.CapabilityDisabledError:
-            pass
-
-#TODO(lambert): make db_event an optional param at the end of the param list
-def get_usable_address_for_event(db_event, fb_event):
-    # Do not trust facebook for latitude/longitude data. It appears to treat LA as Louisiana, etc. So always geocode
-    address = get_original_address_for_event(fb_event)
-    logging.info("For event = %s, address is %s", fb_event['info']['id'], address)
-
-    if db_event and db_event.address:
-        logging.info("address overridden to %s", db_event.address)
-        address = db_event.address
-    elif address:
-        remapped_address = get_remapped_address_for(address)
-        if remapped_address:
-            logging.info("address remapped to %s", remapped_address)
-            address = remapped_address
-    return address
-
-def get_geocoded_location_for_event(db_event, fb_event):
-    address = get_usable_address_for_event(db_event, fb_event)
-    results = locations.get_geocoded_location(address)
-    return results
 
 DBEVENT_PREFIX = 'DbEvent.%s'
 def get_cached_db_events(event_ids, allow_cache=True):
@@ -201,7 +123,8 @@ class DBEvent(db.Model):
         else:
             self.search_time_period = TIME_PAST
 
-        address = get_usable_address_for_event(self, fb_dict)
+        #TODO(lambert): inline when we solve 'anywhere' problem
+        address = event_locations.get_usable_address_for_event(self, fb_dict)
         self.anywhere = (address == ONLINE_ADDRESS)
 
         results = locations.get_geocoded_location(address)
