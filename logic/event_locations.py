@@ -82,7 +82,7 @@ def _save_remapped_address_for(original_address, new_remapped_address):
 
 def update_remapped_address(fb_event, new_remapped_address):
     new_remapped_address = new_remapped_address or None
-    location_info = event_locations.LocationInfo(fb_event)
+    location_info = LocationInfo(fb_event)
     logging.info("remapped address for fb_event %r, new form value %r", location_info.remapped_address, new_remapped_address)
     if location_info.remapped_address != new_remapped_address:
         _save_remapped_address_for(location_info.fb_address, new_remapped_address)

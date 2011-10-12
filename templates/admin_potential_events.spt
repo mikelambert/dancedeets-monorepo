@@ -14,21 +14,22 @@ Potential Events Classification
 	#end if
 	>
 		<td><a href="/events/admin_edit?event_id=$potential_event.fb_event.info.id">$potential_event.fb_event.info.name</a></td>
-		<!--
+		<td>$potential_event.location_info.fb_city</td>
 		<td style="white-space: nowrap">
+		#if $potential_event.location_info.fb_city
 		(0)
 		<input type="radio" name="event_classification_$i" value="0">
 		<input type="radio" name="event_classification_$i" value="" checked>
 		<input type="radio" name="event_classification_$i" value="1">
 		(1)
 		<input type="hidden" name="event_id_$i" value="$potential_event.fb_event.info.id">
+		#end if
 		</td>
-		-->
 		<td>$potential_event.dance_words</td>
 		<td>$potential_event.event_words</td>
 		<td>$potential_event.keyword_reason</td>
 		<td>
-		<button onclick="$('#sources_$i').toggle()">$len($potential_event.potential_event.source_ids) Sources</button>
+		<button type="button" onclick="$('#sources_$i').toggle()">$len($potential_event.potential_event.source_ids) Sources</button>
 		<div id="sources_$i" style="display: none">
 		#for $source_id, $source_field in zip($potential_event.potential_event.source_ids, $potential_event.potential_event.source_fields)
 			<a href="http://graph.facebook.com/$source_id">$source_id</a> : $source_field<br>
