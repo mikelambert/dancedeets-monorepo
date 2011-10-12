@@ -123,7 +123,7 @@ class ViewHandler(base_servlet.BaseRequestHandler):
         event_members_info = []
         e = event_info['info']
     
-        location = eventdata.get_geocoded_location_for_event(db_event, event_info)
+        location = eventdata.get_geocoded_location_for_event(event_info, db_event)
         self.display['location'] = location
 
         if location['latlng'] and self.user.location:
@@ -199,23 +199,15 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['classifier_reason'] = reason
         self.display['classifier_dance_words'] = dance_words_str
         self.display['classifier_event_words'] = event_words_str
-
-        original_address = event_locations.get_original_address_for_event(fb_event)
-        geocoded_address = locations.get_geocoded_location(original_address)['address']
-        remapped_address = event_locations.get_remapped_address_for(original_address)
-        override_address = e.address
-        final_geocoded_address = eventdata.get_geocoded_location_for_event(e, fb_event)['address']
-
-        trimmed_address = (remapped_address or original_address).replace('.', '').replace(' ', '').upper()
-        if original_address == '' or trimmed_address in ['TBA', 'TBD', '']:
-            self.display['needs_override_address'] = True
-
         self.display['creating_user'] = creating_user
-        self.display['original_address'] = original_address
-        self.display['geocoded_address'] = geocoded_address
-        self.display['remapped_address'] = remapped_address
-        self.display['override_address'] = override_address
-        self.display['final_geocoded_address'] = final_geocoded_address
+
+        location_info = event_locations.LocationInfo(fb_event, e)
+        self.display['needs_override_address'] = location_info.needs_override_address()
+        self.display['original_address'] = location_info.fb_address
+        self.display['geocoded_address'] = locations.get_geocoded_location(location_info.fb_address)['address']
+        self.display['remapped_address'] = location_info.remapped_address
+        self.display['override_address'] = location_info.overridden_address
+        self.display['final_geocoded_address'] = location_info.final_city
 
         self.display['event'] = e
         self.display['fb_event'] = fb_event
@@ -245,12 +237,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.redirect('/events/admin_edit?event_id=%s' % event_id)
             return
 
-        original_address = event_locations.get_original_address_for_event(fb_event)
-        remapped_address = event_locations.get_remapped_address_for(original_address)
-
-        new_remapped_address = self.request.get('remapped_address')
-        if new_remapped_address != remapped_address:
-            event_locations.save_remapped_address_for(original_address, new_remapped_address)
+        location_info = event_locations.LocationInfo(fb_event)
+        new_remapped_address = self.request.get('remapped_address') or None
+        logging.info("li rma %r, n rma %r", location_info.remapped_address, new_remapped_address)
+        if location_info.remapped_address != new_remapped_address:
+            event_locations.save_remapped_address_for(location_info.fb_address, new_remapped_address)
 
         e = eventdata.DBEvent.get_or_insert(event_id)
         e.address = self.request.get('override_address') or None

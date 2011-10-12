@@ -8,16 +8,14 @@ from google.appengine.ext import db
 
 from events import cities
 import geohash
-
 import locations
+from logic import event_locations
 from util import dates
 
 import smemcache
 
 REGION_RADIUS = 200 # kilometers
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
-
-ONLINE_ADDRESS = 'ONLINE'
 
 # pic url prefixes:
 # increasing-size: t, s, n
@@ -123,17 +121,13 @@ class DBEvent(db.Model):
         else:
             self.search_time_period = TIME_PAST
 
-        #TODO(lambert): inline when we solve 'anywhere' problem
-        address = event_locations.get_usable_address_for_event(self, fb_dict)
-        self.anywhere = (address == ONLINE_ADDRESS)
+        location_info = event_locations.LocationInfo(fb_dict, self)
+        self.anywhere = location_info.is_online_event()
+        self.actual_city_name = location_info.actual_city()
+        self.city_name = location_info.largest_nearby_city()
 
-        results = locations.get_geocoded_location(address)
-        self.actual_city_name = results['city']
-        self.city_name = cities.get_largest_nearby_city_name(self.address or results['address'])
-
-        if results['latlng'][0] is not None:
-            self.latitude = results['latlng'][0]
-            self.longitude = results['latlng'][1]
+        if self.actual_city_name:
+            self.latitude, self.longitude = location_info.latlong()
             self.geohashes = []
             for x in range(locations.max_geohash_bits):
                 self.geohashes.append(str(geohash.Geostring((self.latitude, self.longitude), depth=x)))
