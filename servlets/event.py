@@ -399,6 +399,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
             template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str, keyword_reason=reason, potential_event=potential_event_dict[e]))
+        self.display['number_of_events']  = number_of_events 
         self.display['total_potential_events'] = total_potential_events
         self.display['has_more_events'] = has_more_events
         self.display['potential_events_listing'] = template_events
@@ -406,10 +407,21 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         self.render_template('admin_potential_events')
 
     def post(self):
+        # batch lookup-event infos here.
+        for i in range(int(self.request.get('number_of_events'))):
+            event_id = self.request.get('event_id_%s' % i)
+            event_classification = self.request.get('event_classification_%s' % i)
+            logging.info('event id %s with classification %s', event_id, event_classification)
+            # when we start messing with this, disable the "put" below
+            # construct events here?
+            # somehow need to deal with bad-addresses
+            # extract out logic for event saving
+            # extract out logic for "does this event have known-good city, probable city, or unknown?_shown
+
         processed_ids = self.request.get('processed_ids', '').split(',')
         if processed_ids:
             seen_potential_events = potential_events.PotentialEvent.get_by_key_name(processed_ids)
             for event in seen_potential_events:
                 event.looked_at = True
                 event.put()
-            self.redirect('/events/admin_potential_events')
+            self.redirect('/events/admin_potential_events?number_of_events=%s' % number_of_events)
