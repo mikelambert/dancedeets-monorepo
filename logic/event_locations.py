@@ -42,7 +42,7 @@ def _get_city_for_fb_event(fb_event):
         if not venue_data['deleted']:
             logging.info("venue data is %s", venue_data)
             city = _city_for_venue(venue_data['info'].get('location', {}))
-            logging.info("venue address is %s", address)
+            logging.info("venue address is %s", city)
             if city:
                 return city
     # otherwise fall back on the address in the event, and go from there
@@ -68,7 +68,7 @@ def _get_remapped_address_for(address):
     else:
         return None
 
-def save_remapped_address_for(original_address, new_remapped_address):
+def _save_remapped_address_for(original_address, new_remapped_address):
     if original_address:
         location_mapping = LocationMapping.get_or_insert(original_address)
         if new_remapped_address:
@@ -79,6 +79,14 @@ def save_remapped_address_for(original_address, new_remapped_address):
                 pass
         else:
             location_mapping.delete()
+
+def update_remapped_address(fb_event, new_remapped_address):
+    new_remapped_address = new_remapped_address or None
+    location_info = event_locations.LocationInfo(fb_event)
+    logging.info("remapped address for fb_event %r, new form value %r", location_info.remapped_address, new_remapped_address)
+    if location_info.remapped_address != new_remapped_address:
+        _save_remapped_address_for(location_info.fb_address, new_remapped_address)
+
 
 ONLINE_ADDRESS = 'ONLINE'
 

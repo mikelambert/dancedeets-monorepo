@@ -237,11 +237,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.redirect('/events/admin_edit?event_id=%s' % event_id)
             return
 
-        location_info = event_locations.LocationInfo(fb_event)
-        new_remapped_address = self.request.get('remapped_address') or None
-        logging.info("li rma %r, n rma %r", location_info.remapped_address, new_remapped_address)
-        if location_info.remapped_address != new_remapped_address:
-            event_locations.save_remapped_address_for(location_info.fb_address, new_remapped_address)
+        event_locations.update_remapped_address(fb_event, self.request.get('remapped_address'))
 
         e = eventdata.DBEvent.get_or_insert(event_id)
         e.address = self.request.get('override_address') or None
