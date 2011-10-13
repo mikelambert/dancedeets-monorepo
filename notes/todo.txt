@@ -50,6 +50,9 @@ both:
 165692336816534
 battlefest
 
+- Use SMS API from Twilio to offer "get me upcoming events" (24 hours? next 5 events? etc?) and "what is the info about this event queries?"
+http://www.twilio.com/pricing/
+
 - Use keyword density as another factor in identifying usefulness. and "does this words appear on a line of text by itself"
 
 - Post on walls of events about dancedeets for promotion: http://developers.facebook.com/docs/reference/api/event/
