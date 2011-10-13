@@ -7,8 +7,6 @@ import time
 import urllib2
 from django.utils import simplejson
 
-from google.appengine.api.labs import taskqueue
-
 import base_servlet
 from events import eventdata
 from events import users

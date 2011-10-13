@@ -141,7 +141,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
 
         logging.info("Requesting background load of user's friends")
         # Must occur after User is put with fb_access_token
-        taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': self.fb_uid}))
+        taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': self.fb_uid}), queue_name='slow-queue')
         # Now load their potential events, to make "add event page" faster
         backgrounder.load_potential_events_for_users([self.fb_uid])
 
