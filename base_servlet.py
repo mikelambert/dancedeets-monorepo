@@ -128,6 +128,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 if self.user and (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
                     # Do this in a separate request so we don't increase latency on this call
                     backgrounder.update_last_login_time(self.fb_uid)
+                    backgrounder.load_users([self.fb_uid], allow_cache=False)
         else:
             self.fb_uid = None
             self.fb_graph = facebook.GraphAPI(None)
