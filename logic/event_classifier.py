@@ -57,7 +57,6 @@ dance_and_music_keywords = [
 # hiphop dance. hiphop dans?
 dance_keywords = [
     'poppers?', 'popp?i?ng?',
-
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
     'street\W?dancing?',
@@ -87,7 +86,9 @@ dance_keywords = [
     'girl\W?s\W?hip\W?hop',
     'hip\W?hopp?er[sz]?',
     'street\W?jazz', 'street\W?funk', 'jazz\W?funk', 'boom\W?crack',
-    'hype danc\w*', '90\W?s hip\W?hop', 'social hip\W?hop', 'old school hip\W?hop',
+    'hype danc\w*', '90\W?s hip\W?hop',
+    'social hip\W?hop', 'hip\W?hop social dance[sz]',
+    'old\W?school hip\W?hop', 'hip\W?hop old\W?school',
     'vogue', 'voguer[sz]?', 'vogue?ing',
     'mini.?ball', 'house of ', 'realness',
     'urban danc\w*',
