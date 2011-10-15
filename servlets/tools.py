@@ -38,20 +38,11 @@ class UnprocessFutureEventsHandler(webapp.RequestHandler):
         m.run()
         return
 
+from logic import thing_scraper
 from servlets import tasks
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler):
     def get(self):
-        f = urllib2.urlopen('https://graph.facebook.com/%s' % 105818469508896)
-        data = f.read()
-        for i in range(0, len(data), 100):
-            logging.info(data[100*i:100*i+100])
-        return
-        source_id = 142477195771244
-        self.batch_lookup.lookup_thing_feed(source_id)
-        self.batch_lookup.finish_loading()
-        data = self.batch_lookup.data_for_thing_feed(source_id)
-        s = thing_db.create_source_for_id(source_id, data)
-        s.put()
+        thing_scraper.mapreduce_create_sources_from_events(self.batch_lookup)
 
 class OwnedEventsHandler(webapp.RequestHandler):
     def get(self):

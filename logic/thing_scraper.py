@@ -47,6 +47,33 @@ def mapreduce_scrape_all_sources(batch_lookup):
         _app=SOURCE_SCRAPER,
     )
 
+
+def create_source_from_event(event):
+    if not event.owner_fb_uid:
+        return
+    ctx = context.get()
+    params = ctx.mapreduce_spec.mapper.params
+    fb_graph = facebook.GraphAPI(params['batch_lookup_fb_graph_access_token'])
+    batch_lookup = fb_api.CommonBatchLookup(params['batch_lookup_fb_uid'], fb_graph, allow_cache=False) # Force refresh of thing feeds
+    batch_lookup.lookup_thing_feed(event.owner_fb_uid)
+    batch_lookup.finish_loading()
+    thing_feed = batch_lookup.data_for_thing_feed(event.owner_fb_uid)
+    if not thing_feed['deleted']:
+        thing_db.create_source_for_id(event.owner_fb_uid, thing_feed)
+
+def mapreduce_create_sources_from_events(batch_lookup):
+    control.start_map(
+        name='Create Sources from Events',
+        reader_spec='mapreduce.input_readers.DatastoreInputReader',
+        handler_spec='logic.thing_scraper.create_source_from_event',
+        mapper_parameters={
+            'entity_kind': 'events.eventdata.DBEvent',
+            'batch_lookup_fb_uid': batch_lookup.fb_uid,
+            'batch_lookup_fb_graph_access_token': batch_lookup.fb_graph.access_token,
+        },
+        _app='SOURCE_FROM_EVENT',
+    )
+
 def process_thing_feed(source, thing_feed):
     # TODO(lambert): do we really need to scrape the 'info' to get the id, or we can we half the number of calls by just getting the feed?
     if 'data' not in thing_feed['feed']:
