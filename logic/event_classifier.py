@@ -84,6 +84,7 @@ dance_keywords = [
     'street\W?jazz', 'street\W?funk', 'jazz\W?funk', 'boom\W?crack',
     'hype danc\w*', '90\W?s hip\W?hop', 'social hip\W?hop', 'old school hip\W?hop',
     'vogue', 'voguer[sz]?', 'vogue?ing',
+    'mini.?ball', 'house of ', 'realness',
     'urban danc\w*',
     'pop\W{0,3}lock(?:ing?|er[sz]?)?'
 ]
