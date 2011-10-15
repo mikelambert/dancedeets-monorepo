@@ -42,16 +42,16 @@ class Source(db.Model):
     #events_found = properties.json_property(events_found_json)
 
     def compute_derived_properties(self, fb_data):
-        if 'likes' in data['info']:
+        if 'likes' in fb_data['info']:
             self.graph_type = GRAPH_TYPE_FANPAGE
-        elif 'locale' in data['info']:
+        elif 'locale' in fb_data['info']:
             self.graph_type = GRAPH_TYPE_PROFILE
-        elif 'version' in data['info']:
+        elif 'version' in fb_data['info']:
             self.graph_type = GRAPH_TYPE_GROUP
-        elif 'start_time' in data['info']:
+        elif 'start_time' in fb_data['info']:
             self.graph_type = GRAPH_TYPE_EVENT
         else:
-            logging.info("cannot classify id %s", data['info']['id'])
+            logging.info("cannot classify id %s", fb_data['info']['id'])
 
         self.name = fb_data['info']['name']
         feed = fb_data['feed']['data']
