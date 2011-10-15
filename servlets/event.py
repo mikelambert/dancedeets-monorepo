@@ -15,6 +15,7 @@ from logic import event_classifier
 from logic import event_locations
 from logic import potential_events
 from logic import rsvp
+from logic import thing_db
 import facebook
 import fb_api
 import locations
