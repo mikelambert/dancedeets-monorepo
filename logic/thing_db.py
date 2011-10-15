@@ -83,6 +83,21 @@ def create_source_for_id(source_id, data):
     logging.info('source %s: %s', source.graph_id, source.name)
     return source
 
+def create_source_from_event(db_event, batch_lookup):
+    if not db_event.owner_fb_uid:
+        return
+    if db_event.owner_fb_uid == '153515311386826':
+        # BatchLookup: Error code from FB server: {u'error': {u'message': u'(#21) Page ID 153515311386826 was migrated to page ID 228698713808146.  Please update your API calls to the new ID', u'type': u'OAuthException'}}
+        return
+    # technically we could check if the object exists in the db, before we bother fetching the feed
+    batch_lookup.lookup_thing_feed(db_event.owner_fb_uid)
+    batch_lookup.finish_loading()
+    thing_feed = batch_lookup.data_for_thing_feed(db_event.owner_fb_uid)
+    if not thing_feed['deleted']:
+        s = create_source_for_id(db_event.owner_fb_uid, thing_feed)
+        s.put()
+
+
 """
 user:
 - invited-events fql (event, if member)

@@ -39,7 +39,7 @@ def mapreduce_scrape_all_sources(batch_lookup):
         name='Scrape All Sources',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.thing_scraper.scrape_source',
-        shard_count=1, # since we want to stick it in the slow-queue, and don't care how fast it executes
+        shard_count=2, # since we want to stick it in the slow-queue, and don't care how fast it executes
         queue_name='slow-queue',
         mapper_parameters={
             'entity_kind': 'logic.thing_db.Source',
@@ -51,28 +51,18 @@ def mapreduce_scrape_all_sources(batch_lookup):
 
 
 def create_source_from_event(event):
-    if not event.owner_fb_uid:
-        return
-    if event.owner_fb_uid == '153515311386826':
-        # BatchLookup: Error code from FB server: {u'error': {u'message': u'(#21) Page ID 153515311386826 was migrated to page ID 228698713808146.  Please update your API calls to the new ID', u'type': u'OAuthException'}}
-        return
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
     fb_graph = facebook.GraphAPI(params['batch_lookup_fb_graph_access_token'])
     batch_lookup = fb_api.CommonBatchLookup(params['batch_lookup_fb_uid'], fb_graph, allow_cache=False) # Force refresh of thing feeds
-    batch_lookup.lookup_thing_feed(event.owner_fb_uid)
-    batch_lookup.finish_loading()
-    thing_feed = batch_lookup.data_for_thing_feed(event.owner_fb_uid)
-    if not thing_feed['deleted']:
-        s = thing_db.create_source_for_id(event.owner_fb_uid, thing_feed)
-        s.put()
+    thing_db.create_source_from_event(event, batch_lookup)
 
 def mapreduce_create_sources_from_events(batch_lookup):
     control.start_map(
         name='Create Sources from Events',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.thing_scraper.create_source_from_event',
-        shard_count=1, # since we want to stick it in the slow-queue, and don't care how fast it executes
+        shard_count=2, # since we want to stick it in the slow-queue, and don't care how fast it executes
         queue_name='slow-queue',
         mapper_parameters={
             'entity_kind': 'events.eventdata.DBEvent',
@@ -83,10 +73,13 @@ def mapreduce_create_sources_from_events(batch_lookup):
     )
 
 def process_thing_feed(source, thing_feed):
-    # TODO(lambert): do we really need to scrape the 'info' to get the id, or we can we half the number of calls by just getting the feed?
+    if thing_feed['deleted']:
+        return
+    # TODO(lambert): do we really need to scrape the 'info' to get the id, or we can we half the number of calls by just getting the feed? should we trust that the type-of-the-thing-is-legit for all time, which is one case we use 'info'?
     if 'data' not in thing_feed['feed']:
         logging.error("No 'data' found in: %s", thing_feed['feed'])
         return
+
     for post in thing_feed['feed']['data']:
         if 'link' in post:
             p = urlparse.urlparse(post['link'])

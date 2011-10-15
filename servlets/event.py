@@ -242,6 +242,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
         e.make_findable_for(self.batch_lookup.data_for_event(event_id))
+        thing_db.create_source_from_event(e, self.batch_lookup.copy())
         e.put()
 
         backgrounder.load_event_attending([event_id])
@@ -325,6 +326,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
         e.make_findable_for(fb_event)
+        thing_db.create_source_from_event(e, self.batch_lookup.copy())
         e.put()
 
         self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
