@@ -50,7 +50,8 @@ class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler
         self.batch_lookup.lookup_thing_feed(source_id)
         self.batch_lookup.finish_loading()
         data = self.batch_lookup.data_for_thing_feed(source_id)
-        thing_db.create_source_for_id(source_id, data)
+        s = thing_db.create_source_for_id(source_id, data)
+        s.put()
 
 class OwnedEventsHandler(webapp.RequestHandler):
     def get(self):

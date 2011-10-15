@@ -20,6 +20,7 @@ from servlets import myuser
 from servlets import profile_page
 from servlets import search
 from servlets import share
+from servlets import source
 from servlets import stats
 from servlets import tasks
 from servlets import tools
@@ -80,6 +81,7 @@ URLS = [
     ('/youtube_simple_api', youtube_simple_api.YoutubeSimpleApiHandler),
     ('/calendar', calendar.CalendarHandler),
     ('/calendar/feed', calendar.CalendarFeedHandler),
+    ('/sources/admin_edit', source.AdminEditHandler),
     ('/events/relevant', search.RelevantHandler),
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/user/edit', myuser.UserHandler),

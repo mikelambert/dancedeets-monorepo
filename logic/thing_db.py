@@ -24,7 +24,7 @@ FIELD_EVENTS = 'FIELD_EVENTS' # /events
 FIELD_INVITES = 'FIELD_INVITES' # fql query on invites for signed-up users
 
 class Source(db.Model):
-    graph_id = property(lambda x: int(x.key().name()))
+    graph_id = property(lambda x: x.key().name())
     graph_type = db.StringProperty(choices=GRAPH_TYPES)
 
     # cached/derived from fb data
@@ -34,6 +34,9 @@ class Source(db.Model):
     # probably to assume for a given event? rough weighting factor?
     freestyle = db.FloatProperty()
     choreo = db.FloatProperty()
+
+    creating_fb_uid = db.IntegerProperty()
+        creation_time = db.DateTimeProperty()
 
     #events_found_json = db.TextProperty()
     #events_found = properties.json_property(events_found_json)
@@ -49,6 +52,19 @@ class Source(db.Model):
             logging.info('time delta is %s', self.feed_history_in_seconds)
         else:
             self.feed_history_in_seconds = 0
+
+def link_for_fb_source(data):
+    if 'likes' in data['info']:
+        return data['info']['link']
+    elif 'locale' in data['info']:
+        return 'http://www.facebook.com/profile.php?id=%s' % data['info']['id']
+    elif 'version' in data['info']:
+        return 'http://www.facebook.com/groups/%s/' % data['info']['id']
+    elif 'start_time' in data['info']:
+        return 'http://www.facebook.com/event.php?eid=%s' % data['info']['id']
+    else:
+        logging.info("cannot classify id %s", source_id)
+        return None
 
 def source_for_user_id(user_id):
     def _source_for_user_id():
@@ -74,7 +90,7 @@ def create_source_for_id(source_id, data):
 
     source.compute_derived_properties(data)
     logging.info('source %s: %s', source.graph_id, source.name)
-    source.put()
+    return source
 
 """
 user:

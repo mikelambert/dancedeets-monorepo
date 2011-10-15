@@ -244,34 +244,6 @@ class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
 class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         thing_scraper.mapreduce_scrape_all_sources(self.batch_lookup)
-        return
-
-""" Old id-loading code
-        filemap = [
-            'choreo_ids.txt',
-            'freestyle_ids.txt',
-            'dance_ids.txt',
-        ]
-        for filename in filemap:
-            # ignore style_type
-            lines = open('dance_keywords/%s' % filename).readlines()
-            friendpage_ids = [re.sub('[ #].*\n|\n', '', x) for x in lines]
-            friendpage_ids = [x.replace('.', '') for x in friendpage_ids]
-            batch_lookup = self.batch_lookup.copy()
-            for friend_id in friendpage_ids:
-                batch_lookup.lookup_thing_feed(friend_id)
-            batch_lookup.finish_loading()
-
-            for friend_id in friendpage_ids:
-                try:
-                    data = batch_lookup.data_for_thing_feed(friend_id)
-                except fb_api.NoFetchedDataException:
-                    continue
-                thing_db.create_source_for_id(friend_id, data)
-
-            #sources from ids...
-            #thing_scraper.scrape_events_from_sources(self.batch_lookup, friendpage_ids)
-"""
 
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
