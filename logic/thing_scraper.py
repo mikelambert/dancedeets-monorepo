@@ -39,6 +39,8 @@ def mapreduce_scrape_all_sources(batch_lookup):
         name='Scrape All Sources',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.thing_scraper.scrape_source',
+        shard_count=1, # since we want to stick it in the slow-queue, and don't care how fast it executes
+        queue_name='slow-queue',
         mapper_parameters={
             'entity_kind': 'logic.thing_db.Source',
             'batch_lookup_fb_uid': batch_lookup.fb_uid,
@@ -59,13 +61,16 @@ def create_source_from_event(event):
     batch_lookup.finish_loading()
     thing_feed = batch_lookup.data_for_thing_feed(event.owner_fb_uid)
     if not thing_feed['deleted']:
-        thing_db.create_source_for_id(event.owner_fb_uid, thing_feed)
+        s = thing_db.create_source_for_id(event.owner_fb_uid, thing_feed)
+        s.put()
 
 def mapreduce_create_sources_from_events(batch_lookup):
     control.start_map(
         name='Create Sources from Events',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.thing_scraper.create_source_from_event',
+        shard_count=1, # since we want to stick it in the slow-queue, and don't care how fast it executes
+        queue_name='slow-queue',
         mapper_parameters={
             'entity_kind': 'events.eventdata.DBEvent',
             'batch_lookup_fb_uid': batch_lookup.fb_uid,

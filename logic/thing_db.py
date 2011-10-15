@@ -42,6 +42,17 @@ class Source(db.Model):
     #events_found = properties.json_property(events_found_json)
 
     def compute_derived_properties(self, fb_data):
+        if 'likes' in data['info']:
+            self.graph_type = GRAPH_TYPE_FANPAGE
+        elif 'locale' in data['info']:
+            self.graph_type = GRAPH_TYPE_PROFILE
+        elif 'version' in data['info']:
+            self.graph_type = GRAPH_TYPE_GROUP
+        elif 'start_time' in data['info']:
+            self.graph_type = GRAPH_TYPE_EVENT
+        else:
+            logging.info("cannot classify id %s", data['info']['id'])
+
         self.name = fb_data['info']['name']
         feed = fb_data['feed']['data']
         if len(feed):
@@ -68,17 +79,6 @@ def link_for_fb_source(data):
 
 def create_source_for_id(source_id, data):
     source = Source.get_or_insert(str(source_id))
-    if 'likes' in data['info']:
-        source.graph_type = GRAPH_TYPE_FANPAGE
-    elif 'locale' in data['info']:
-        source.graph_type = GRAPH_TYPE_PROFILE
-    elif 'version' in data['info']:
-        source.graph_type = GRAPH_TYPE_GROUP
-    elif 'start_time' in data['info']:
-        source.graph_type = GRAPH_TYPE_EVENT
-    else:
-        logging.info("cannot classify id %s", source_id)
-
     source.compute_derived_properties(data)
     logging.info('source %s: %s', source.graph_id, source.name)
     return source
