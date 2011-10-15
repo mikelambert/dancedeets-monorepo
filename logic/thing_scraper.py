@@ -63,5 +63,6 @@ def process_thing_feed(source, thing_feed):
                 else:
                     logging.error("broken link is %s", post['link'])
 
-
-
+    # save new name, feed_history_in_seconds
+    source.compute_derived_properties(thing_feed)
+    source.put()
