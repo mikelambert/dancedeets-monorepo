@@ -16,7 +16,12 @@ from spitfire.runtime.filters import skip_filter
 
 manual_dance_keywords = []
 for filename in ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'choreo_keywords', 'competitions', 'freestyle_crews', 'freestyle_dancers']:
-    for line in open('dance_keywords/%s.txt' % filename).readlines():
+    try:
+        f = open('dance_keywords/%s.txt' % filename)
+    except IOError, e:
+        logging.error(e)
+        continue
+    for line in f.readlines():
         line = re.sub('\s*#.*', '', line.strip())
         if not line:
             continue
