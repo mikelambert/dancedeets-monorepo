@@ -24,7 +24,7 @@ FIELD_EVENTS = 'FIELD_EVENTS' # /events
 FIELD_INVITES = 'FIELD_INVITES' # fql query on invites for signed-up users
 
 class Source(db.Model):
-    graph_id = property(lambda x: x.key().name())
+    graph_id = property(lambda x: int(x.key().name()))
     graph_type = db.StringProperty(choices=GRAPH_TYPES)
 
     # cached/derived from fb data
@@ -65,15 +65,6 @@ def link_for_fb_source(data):
     else:
         logging.info("cannot classify id %s", source_id)
         return None
-
-def source_for_user_id(user_id):
-    def _source_for_user_id():
-        source = Source.get_or_insert(str(user_id))
-        source.graph_type = GRAPH_TYPE_PROFILE
-        source.put()
-        return source
-    return _source_for_user_id()
-    #return db.run_in_transaction(_source_for_user_id)
 
 def create_source_for_id(source_id, data):
     source = Source.get_or_insert(str(source_id))

@@ -82,7 +82,7 @@ def get_potential_dance_events(batch_lookup, user_id):
     new_unseen_dance_event_ids = set(new_dance_event_ids).difference(seen_potential_event_ids)
 
     new_dance_events = [second_batch_lookup.data_for_event(x) for x in new_unseen_dance_event_ids]
-    source = thing_db.source_for_user_id(user_id)
+    source = thing_db.create_source_for_id(user_id, batch_lookup.data_for_user(user_id))
     save_potential_fb_event_ids(new_unseen_dance_event_ids, source=source, source_field=thing_db.FIELD_INVITES)
     new_dance_events = sorted(new_dance_events, key=lambda x: x['info'].get('start_time'))
     return new_dance_events
