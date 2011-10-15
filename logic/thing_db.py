@@ -42,27 +42,28 @@ class Source(db.Model):
     #events_found = properties.json_property(events_found_json)
 
     def compute_derived_properties(self, fb_data):
-        if 'likes' in fb_data['info']:
-            self.graph_type = GRAPH_TYPE_FANPAGE
-        elif 'locale' in fb_data['info']:
-            self.graph_type = GRAPH_TYPE_PROFILE
-        elif 'version' in fb_data['info']:
-            self.graph_type = GRAPH_TYPE_GROUP
-        elif 'start_time' in fb_data['info']:
-            self.graph_type = GRAPH_TYPE_EVENT
-        else:
-            logging.info("cannot classify id %s", fb_data['info']['id'])
+        if fb_data: # only update these when we have feed data
+            if 'likes' in fb_data['info']:
+                self.graph_type = GRAPH_TYPE_FANPAGE
+            elif 'locale' in fb_data['info']:
+                self.graph_type = GRAPH_TYPE_PROFILE
+            elif 'version' in fb_data['info']:
+                self.graph_type = GRAPH_TYPE_GROUP
+            elif 'start_time' in fb_data['info']:
+                self.graph_type = GRAPH_TYPE_EVENT
+            else:
+                logging.info("cannot classify id %s", fb_data['info']['id'])
 
-        self.name = fb_data['info']['name']
-        feed = fb_data['feed']['data']
-        if len(feed):
-            dt = datetime.datetime.strptime(feed[-1]['created_time'], '%Y-%m-%dT%H:%M:%S+0000')
-            td = datetime.datetime.now() - dt
-            total_seconds = td.seconds + td.days * 24 * 3600
-            self.feed_history_in_seconds = total_seconds
-            logging.info('time delta is %s', self.feed_history_in_seconds)
-        else:
-            self.feed_history_in_seconds = 0
+            self.name = fb_data['info']['name']
+            feed = fb_data['feed']['data']
+            if len(feed):
+                dt = datetime.datetime.strptime(feed[-1]['created_time'], '%Y-%m-%dT%H:%M:%S+0000')
+                td = datetime.datetime.now() - dt
+                total_seconds = td.seconds + td.days * 24 * 3600
+                self.feed_history_in_seconds = total_seconds
+                logging.info('time delta is %s', self.feed_history_in_seconds)
+            else:
+                self.feed_history_in_seconds = 0
 
 def link_for_fb_source(data):
     if 'likes' in data['info']:
@@ -77,9 +78,9 @@ def link_for_fb_source(data):
         logging.info("cannot classify id %s", source_id)
         return None
 
-def create_source_for_id(source_id, data):
+def create_source_for_id(source_id, fb_data):
     source = Source.get_or_insert(str(source_id))
-    source.compute_derived_properties(data)
+    source.compute_derived_properties(fb_data)
     logging.info('source %s: %s', source.graph_id, source.name)
     return source
 
