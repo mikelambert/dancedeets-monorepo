@@ -53,6 +53,9 @@ def mapreduce_scrape_all_sources(batch_lookup):
 def create_source_from_event(event):
     if not event.owner_fb_uid:
         return
+    if event.owner_fb_uid == '153515311386826':
+        # BatchLookup: Error code from FB server: {u'error': {u'message': u'(#21) Page ID 153515311386826 was migrated to page ID 228698713808146.  Please update your API calls to the new ID', u'type': u'OAuthException'}}
+        return
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
     fb_graph = facebook.GraphAPI(params['batch_lookup_fb_graph_access_token'])
