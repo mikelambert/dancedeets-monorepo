@@ -19,6 +19,22 @@ http://www.dancedeets.com/events/admin_edit?event_id=214726508585136
 http://www.dancedeets.com/events/admin_edit?event_id=224488204279017
 http://www.dancedeets.com/events/admin_edit?event_id=140996745991450
 
+- For Sources that are an owner of an event, mark as P0
+- For Sources that have contributed as a source to a potentialevent of an event, mark as P1
+- For other sources that have yet to produce anything, mark as P2
+Is that any useful?
+
+- Determine rate-of-processing by looking at length_in_seconds, and fetch short feeds faster.
+- Determine quality level by looking at fraction of potentialevents from a source led to a real event. If high enough, show everything in the feed, if not only show things that pass the filter. If super low, then stop processing it as a feed altogether. Store this as a Source field somewhere.
+- Look at what fraction of good-events-from-source would have qualified for by our keyword filter. If it's low, then show everything, so we don't miss more good events. Also start at "zero" so that we cull sources over time but show everything up-front.
+- Maybe do a potential-explore for more sources. Find attendings of events, put in a big queue. Check them for any-good-events-at-all-on-feed, and if so add them as sources too. But don't put these in a periodic recrawl or it'd kill the system with a bajillion sources.
+
+- Separate out 'created by person X' from 'posted on X's wall by other person'. Why? Because owners-of-events, I want to trust other-events-they-created higher than other-events-ppl-posted? Perhaps this is not that relevant, as people are in the scene or not pretty straightforward."story": "Robert Creer created an event."
+- But we should find out "who posted on a given wall" and include them as a Source in addition to the person whose wall they posted on. Check "from" field "from": { "name": "ZiYin Lee", "id": "514085580" }.
+https://graph.facebook.com/inhumanoids/feed?access_token=AAAAAAITEghMBACHwjaZA1wIrO59JAZCvROnTRZClozb8EWT3o4KhSgJKwrGq5aLm0WHjGiTdjg29OVAu5ZCAqHfRQe5lSCnYwELdR1jv3wZDZD
+
+- Actually, would be interesting to count number of unique attendings on all events in the system so far. Group them by city to judge the size of scenes over the past year. Nice pretty statistics?
+
 - Use SMS API from Twilio to offer "get me upcoming events" (24 hours? next 5 events? etc?) and "what is the info about this event queries?"
 http://www.twilio.com/pricing/
 
