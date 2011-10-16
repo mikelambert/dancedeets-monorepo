@@ -7,7 +7,7 @@ import urllib
 import base_servlet
 from events import eventdata
 from events import users
-from google.appengine.api.labs import taskqueue
+from google.appengine.api import taskqueue
 from google.appengine.ext import db
 
 import locations

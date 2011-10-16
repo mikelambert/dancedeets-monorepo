@@ -1,6 +1,6 @@
 import urllib
 
-from google.appengine.api.labs import taskqueue
+from google.appengine.api import taskqueue
 
 def email_users(fb_uids, **kwargs):
     """Sends out summary emails of upcoming events to all users. Don't call this unless you really mean it."""
