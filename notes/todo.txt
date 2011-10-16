@@ -1,5 +1,24 @@
 BEFORE LAUNCH:
 
+- Ensure this matches:
+http://www.dancedeets.com/events/admin_edit?event_id=206267406110368
+'choreography workshops lounge'
+http://www.dancedeets.com/events/admin_edit?event_id=228216297195689
+'dance hip hop stage'?
+http://www.dancedeets.com/events/admin_edit?event_id=246805922037836
+'hip hopu, poppingu' - need to translate...
+http://www.dancedeets.com/events/admin_edit?event_id=108583275913497
+http://www.dancedeets.com/events/admin_edit?event_id=143985709032212
+http://www.dancedeets.com/events/admin_edit?event_id=282582811759681
+http://www.dancedeets.com/events/admin_edit?event_id=266608366706476
+http://www.dancedeets.com/events/admin_edit?event_id=124645687637460
+http://www.dancedeets.com/events/admin_edit?event_id=166047916808660
+http://www.dancedeets.com/events/admin_edit?event_id=257024251003490
+'workshopy'
+http://www.dancedeets.com/events/admin_edit?event_id=214726508585136
+http://www.dancedeets.com/events/admin_edit?event_id=224488204279017
+http://www.dancedeets.com/events/admin_edit?event_id=140996745991450
+
 - Use SMS API from Twilio to offer "get me upcoming events" (24 hours? next 5 events? etc?) and "what is the info about this event queries?"
 http://www.twilio.com/pricing/
 
