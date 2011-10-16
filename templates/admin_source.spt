@@ -23,12 +23,14 @@ Edit Event
 			<p>
 			#if $creating_user
 				Submitted by <a href="http://www.facebook.com/profile.php?id=$source.creating_fb_uid">$creating_user</a>.<br>
+			#end if
+			#if $source.is_saved()
 				<button>Edit Source</button>
 				<button name="delete" value="yes">Delete Source</button>
 			#else
 				Adding new source!
 				<button>Create Source</button>
-				<!--button>Not a Dance Event</button-->
+				<!--button>Not a Source</button-->
 			#end if
 			<input type="hidden" name="source_id" value="$fb_source.info.id">
 
