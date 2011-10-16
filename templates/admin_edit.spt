@@ -8,29 +8,58 @@ Edit Event
 #def body
 		<form action="/events/admin_edit" method=post>
 
+			<table class="goog-trans-section"><tr><td>
 			<h2>$highlight_keywords($format_html($fb_event.info.name))</h2>
+			</td><td class="goog-trans-control"></td></tr>
+			</table>
 			<a href="$raw_fb_event_url($fb_event.info.id)">See on Facebook</a><br><br>
 
-			Original Address: $format_html($original_address)<br>
-			Geocoded Address: $format_html($geocoded_address)<br>
-			Remapped Address: <input type="text" size=100 name="remapped_address" value="$remapped_address"><br>
-			Override Address:
-			#if $needs_override_address
-				(Required!)
-			#end if
-			<input type="text" size=100 name="override_address" value="$override_address"><br>
-			Final Geocoded Address: $format_html($final_geocoded_address)<br>
-			#if $event.anywhere
-			Online/Anywhere/Worldwide<br>
-			#end if
-			<br>Description:
-			<button type="button" onclick="translateDescription();return true;">Translate Description</button>
+			<table>
+				<tr><td>
+					Original Address:
+				</td><td>
+					<table class="goog-trans-section" style="display:inline"><tr><td>
+					$format_html($original_address)
+					</td><td class="goog-trans-control"></td></tr>
+					</table>
+				</td></tr>
+				<tr><td>
+					Geocoded Address:
+				</td><td>
+					$format_html($geocoded_address)
+				</td></tr>
+				<tr><td>
+					Remapped Address:
+				</td><td>
+					<input type="text" size=100 name="remapped_address" value="$remapped_address">
+				</td></tr>
+				<tr><td>
+					Override Address:
+					#if $needs_override_address
+						(Required!)
+					#end if
+				</td><td>
+					<input type="text" size=100 name="override_address" value="$override_address">
+				</td></tr>
+				<tr><td>
+					Final Address:
+				</td><td>
+					$format_html($final_geocoded_address)
+					#if $event.anywhere
+					<br>Online/Anywhere/Worldwide
+					#end if
+				</td></tr>
+			</table>
+			<div class="goog-trans-section">
+			<table><tr><td>Description:</td><td class="goog-trans-control"></td></tr></table>
 			#if $fb_event.info.get('description')
 				#set $description = $fb_event.info.description
 			#else
 				#set $description = "None!"
 			#end if
-			<div id="description" style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">$highlight_keywords($format_html($description))</div>
+			<div style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">$highlight_keywords($format_html($description))</div>
+			</div>
+			</div>
 
 			<p>Reason: $classifier_reason<br>
 			Dance Words: $classifier_dance_words<br>
@@ -57,60 +86,16 @@ Edit Event
 #end def
 
 #def bottom_javascript
-<script type="text/javascript">
-var translate_key = 'AIzaSyAMTDdM6Y8xDkS7zaj3nRWmxK01rHznlB0';
-
-
-var lines;
-var combined_lines;
-
-function handleTranslatedText(result) {
-	translated = result.translation;
-	/*APIv2
-	translated = result['data']['translations'][0]['translatedText'];
-	*/
-	$('#description').html($('#description').html().replace(combined_lines, translated));
-	translateMoreLines();
+<script>
+function googleSectionalElementInit() {
+  new google.translate.SectionalElement({
+    sectionalNodeClassName: 'goog-trans-section',
+    controlNodeClassName: 'goog-trans-control',
+    background: 'transparent'
+  }, 'google_sectional_element');
 }
-
-function translateMoreLines() {
-	combined_lines = '';
-	while (lines.length) {
-		var potential_combined_lines;
-		if (combined_lines) {
-			potential_combined_lines = combined_lines + '\n' + lines[0];
-		} else {
-			potential_combined_lines = lines[0];
-		}
-		var url = 'https://www.googleapis.com/language/translate/v2?target=en&callback=handleTranslatedText&key='+translate_key+'&q='+encodeURIComponent(potential_combined_lines);
-		if (url.length > 2000)
-			break;
-		combined_lines = potential_combined_lines;
-		lines.shift();
-	}
-	if (combined_lines) {
-		google.language.translate(
-			combined_lines,
-			'',
-			'en',
-			handleTranslatedText
-		);
-		/*APIv2
-		var script = document.createElement('script');
-		script.type = 'text/javascript';
-		script.src = url;
-		$("body").append( script );
-		*/
-	}
-}
-
-function translateDescription() {
-	lines = $('#description').html().split('\n');
-	combined_lines = '';
-	translateMoreLines();
-}
-
-google.load("language", "1");
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleSectionalElementInit&ug=section&hl=en"></script>
 </script>
 #end def
 
