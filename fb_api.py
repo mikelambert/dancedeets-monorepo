@@ -33,6 +33,7 @@ ORDER BY start_time
 
 GRAPH_ID_REMAP = {
     '169709049709619': '115488250943',
+    '153515311386826': '228698713808146',
 }
 
 class FacebookCachedObject(db.Model):
