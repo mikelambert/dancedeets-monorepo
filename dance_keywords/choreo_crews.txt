@@ -137,14 +137,17 @@ rdt,0
 real proper crew
 request dance crew
 rhthym-zion
+rhythm inc
 rhythmatix
 rhythmology
 s\*\*t kingz
+s\*\*t\W?kingz
 sayelah
 sensazn
 sgbm
 shaboobs
 sheroes
+shit\W?kingz
 short boy swag
 sick step
 sidepro
@@ -180,6 +183,7 @@ unyted stylz
 urban dance alliance
 various artist crew
 ven15
+verve collisionz
 vip san jose
 vip sj
 vip vallejo

@@ -52,10 +52,13 @@ dance_and_music_keywords = [
     'free\W?style',
     'jerk',
     'kpop',
+    'rnb',
+    'hard\Whitting',
 ]
 
 # hiphop dance. hiphop dans?
 dance_keywords = [
+    'swag',
     'poppers?', 'popp?i?ng?',
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
@@ -66,7 +69,7 @@ dance_keywords = [
     'top\W?rock(?:er[sz]?|ing?)?', 'up\W?rock(?:er[sz]?|ing?|)?',
     'houser[sz]?', 'house ?danc\w*',
     'lock(?:er[sz]?|ing?)?', 'lock dance',
-    'wh?aa?c?c?ker[sz]?', 'wh?a?a?cc?king?', 'wh?a?a?cc?k',
+    'wh?aa?c?c?ker[sz]?', 'wh?aa?cc?king?', 'wh?aa?cc?k',
     'locking4life',
     'dance crew[sz]?',
     'waving?', 'wavers?',
@@ -77,8 +80,7 @@ dance_keywords = [
     'strutter[sz]?', 'strutting',
     'glides?', 'gliding', 
     'tuts?', 'tutting?', 'tutter[sz]?',
-    'mtv\W?style',
-    'mtv\W?dance',
+    'mtv\W?style', 'mtv\W?dance', 'videoclip', 'videodance', 'l\W?a\W?\Wstyle',
     'dance style[sz]',
     'n(?:ew|u)\W?styles?', 'all\W?style[zs]?', 'mix(?:ed)?\W?style[sz]?'
     'me against the music',
@@ -88,7 +90,7 @@ dance_keywords = [
     'street\W?jazz', 'street\W?funk', 'jazz\W?funk', 'boom\W?crack',
     'hype danc\w*', '90\W?s hip\W?hop',
     'social hip\W?hop', 'hip\W?hop social dance[sz]',
-    'old\W?school hip\W?hop', 'hip\W?hop old\W?school',
+    '(?:old|new|nu|middle)\W?school hip\W?hop', 'hip\W?hop (?:old|new|nu|middle)\W?school',
     'vogue', 'voguer[sz]?', 'vogue?ing',
     'mini.?ball', 'house of ', 'realness',
     'urban danc\w*',
@@ -100,7 +102,7 @@ easy_event_keywords = [
     'open sessions?', 'training',
 ]
 club_and_event_keywords = [
-    'sessions',
+    'sessions', 'practice',
     'shows?', 'performances?', 'contests?',
 ]
 
@@ -120,7 +122,7 @@ club_only_keywords = [
     'drink specials?',
     'resident dj\W?s?',
     'dj\W?s?',
-    'electro', 'techno', 'trance', 'indie', 'glitch', 'dubstep',
+    'techno', 'trance', 'indie', 'glitch',
     'bands?',
     'dress to',
     'mixtape',
@@ -201,14 +203,15 @@ other_show_keywords = [
 ]
 
 event_keywords = [
+    'street\Wjam',
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'apache line',
-    'battle of the year', 'boty', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
+    'battle of the year', 'boty', 'compete', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
     'showcase',
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)ph(?:a|ers?)',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
-    'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try\W?outs?', 'class(?:es)?', 'lessons?',
+    'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
     'cours', 'clases?',
     'abdc', 'america\W?s best dance crew',
     'crew\W?v[sz]?\W?crew',
@@ -218,7 +221,7 @@ event_keywords = [
 
 
 dance_wrong_style_keywords = [
-    'styling', 'salsa', 'balboa', 'tango', 'latin', 'lindy', 'swing', 'wcs', 'samba',
+    'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'swing', 'wcs', 'samba',
     'burlesque',
     'technique',
     # Sometimes used in studio name even though it's still a hiphop class:

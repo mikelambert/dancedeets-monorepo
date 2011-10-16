@@ -110,6 +110,7 @@ slim boogie
 storm,0
 suga pop
 sugapop
+super dino
 tatsuo yamamoto
 tatsuo,0
 theresa gustavsson
@@ -131,3 +132,5 @@ yaman
 ynot
 yoshie koda
 yugson
+which\W?way sha
+bruce blanchard

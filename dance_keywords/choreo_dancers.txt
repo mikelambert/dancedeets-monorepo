@@ -14,7 +14,7 @@ bryan tanaka
 candace brown
 carlos neto
 cj\W+2auce\W+edwards
-david moore
+david moore,0
 derrick caldwell
 di\W+moon\W+zhang
 dmoe
@@ -69,6 +69,7 @@ nick bass
 nick demoura
 nick whage
 nico o'connor
+pat cruz
 patrick cruz
 phillip geniza
 phillip.*pacman.*chbeeb
@@ -85,6 +86,8 @@ sophia aguiar
 stephane charbonneau,0
 sven taylor
 teddy forance
+tony czar
 tucker barkley
 valentine norton
+vinh nguyen
 yeya

@@ -7,6 +7,7 @@ collectif c nous
 control freaks
 criminalz
 da gentlemen
+dacrudancecompany
 dark unit
 ds players
 electric boogaloos
@@ -37,6 +38,7 @@ moptops
 playboyz
 pro-dance
 quest crew
+r\W?a\W?f\W?\W?crew
 serial stepperz
 silent.?trix
 soul sector
