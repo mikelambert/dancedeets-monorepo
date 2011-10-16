@@ -52,7 +52,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         s = thing_db.create_source_for_id(source_id, self.batch_lookup.data_for_thing_feed(source_id))
 
                 if self.request.get('delete'):
-                        source.delete()
+                        s.delete()
                         self.user.add_message("Source deleted!")
                         self.redirect('/sources/admin_edit?source_id=%s' % source_id)
                         return
