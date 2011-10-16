@@ -83,7 +83,7 @@ def process_thing_feed(source, thing_feed):
     for post in thing_feed['feed']['data']:
         if 'link' in post:
             p = urlparse.urlparse(post['link'])
-            if p.path.endswith('event.php'):
+            if p.netloc == 'www.facebook.com' and p.path == '/event.php':
                 qs = cgi.parse_qs(p.query)
                 if 'eid' in qs:
                     eid = qs['eid'][0]
