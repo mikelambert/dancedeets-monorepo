@@ -31,6 +31,10 @@ AND start_time > %d
 ORDER BY start_time
 """
 
+GRAPH_ID_REMAP = {
+    '169709049709619': '115488250943',
+}
+
 class FacebookCachedObject(db.Model):
     json_data = db.TextProperty()
     data = properties.json_property(json_data)
@@ -186,6 +190,7 @@ class BatchLookup(object):
     def _db_delete(key_func):
         def db_delete_func(self, id):
             assert id
+            id = str(GRAPH_ID_REMAP.get(str(id), id))
             result = FacebookCachedObject.get_by_key_name(self._string_key(key_func(self, id)))
             if result:
                 result.delete()
@@ -194,6 +199,7 @@ class BatchLookup(object):
     def _db_lookup(key_func):
         def db_lookup_func(self, id, allow_cache=True):
             assert id
+            id = str(GRAPH_ID_REMAP.get(str(id), id))
             if allow_cache:
                 self.object_keys.add(key_func(self, id))
             else:
@@ -204,6 +210,7 @@ class BatchLookup(object):
     def _data_for(key_func):
         def data_for_func(self, id):
             assert id
+            id = str(GRAPH_ID_REMAP.get(str(id), id))
             key = key_func(self, id)
             if key in self.objects:
                 return self.objects[key_func(self, id)]
