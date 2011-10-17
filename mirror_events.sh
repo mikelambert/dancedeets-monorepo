@@ -1,5 +1,5 @@
 rm bulkloader*
-db_names="DBEvent PotentialEvent LocationMapping FacebookCachedObject" # Source GeoCode City"
+db_names="DBEvent PotentialEvent Source LocationMapping FacebookCachedObject" # GeoCode City"
 for name in $db_names ; do
   echo "downloading $name"
   rm local_data/$name-new
