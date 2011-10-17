@@ -186,6 +186,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         else:
             creating_user = None
 
+        if e.is_saved():
+            potential_event = potential_events.PotentialEvent.get_by_key_name(str(e.fb_event_id))
+        else:
+            potential_event = None
+
         dance_tags = event_classifier.is_dance_event(fb_event)
         if dance_tags:
             truefalse, reason, dance_words, event_words = dance_tags
@@ -199,6 +204,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['classifier_dance_words'] = dance_words_str
         self.display['classifier_event_words'] = event_words_str
         self.display['creating_user'] = creating_user
+
+        self.display['potential_event'] = potential_event
 
         location_info = event_locations.LocationInfo(fb_event, e)
         self.display['needs_override_address'] = location_info.needs_override_address()

@@ -78,6 +78,12 @@ Edit Event
 				<button>Create Event</button>
 				<!--button>Not a Dance Event</button-->
 			#end if
+			#if $potential_event
+				<p>Has a potential event. With Sources:
+				#for $source_id in $potential_event.source_ids
+					<a href="http://graph.facebook.com/$source_id">$source_id</a>,
+				#end for
+			#end if
 			<input type="hidden" name="event_id" value="$fb_event.info.id">
 
 		</form>
