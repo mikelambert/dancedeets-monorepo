@@ -14,22 +14,6 @@ from spitfire.runtime.filters import skip_filter
 # TODO: house class, house workshop, etc, etc. since 'house' by itself isn't sufficient
 # maybe feed keywords into auto-classifying event type? bleh.
 
-manual_dance_keywords = []
-for filename in ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'choreo_keywords', 'competitions', 'freestyle_crews', 'freestyle_dancers']:
-    try:
-        f = open('dance_keywords/%s.txt' % filename)
-    except IOError, e:
-        logging.error(e)
-        continue
-    for line in f.readlines():
-        line = re.sub('\s*#.*', '', line.strip())
-        if not line:
-            continue
-        if line.endswith(',0'):
-            line = line[:-2]
-        else:
-            manual_dance_keywords.append(line)
-
 easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?', 'danser',
     'footwork',
@@ -203,7 +187,7 @@ other_show_keywords = [
 ]
 
 event_keywords = [
-    'street\Wjam',
+    'street\W?jam',
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
@@ -234,7 +218,34 @@ dance_wrong_style_keywords = [
     'flamenco',
 ]
 
-manual_dance_keywords_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(manual_dance_keywords))
+manual_dance_keywords_regex = None
+good_capturing_keyword_regex = None
+
+def build_regexes():
+    global manual_dance_keywords_regex
+    global good_capturing_keyword_regex
+    if good_capturing_keyword_regex:
+        return
+
+    manual_dance_keywords = []
+    for filename in ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'choreo_keywords', 'competitions', 'freestyle_crews', 'freestyle_dancers']:
+        f = open('dance_keywords/%s.txt' % filename)
+        for line in f.readlines():
+            line = re.sub('\s*#.*', '', line.strip())
+            if not line:
+                continue
+            if line.endswith(',0'):
+                line = line[:-2]
+            else:
+                manual_dance_keywords.append(line)
+
+    if manual_dance_keywords:
+        manual_dance_keywords_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(manual_dance_keywords))
+    else:
+        manual_dance_keywords_regex = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
+
+    good_capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords))
+
 dance_wrong_style_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_wrong_style_keywords))
 dance_and_music_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_and_music_keywords))
 club_and_event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(club_and_event_keywords))
@@ -246,7 +257,6 @@ easy_event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(easy_event_keywords))
 dance_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_keywords))
 event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(event_keywords))
 
-good_capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords))
 bad_capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(club_only_keywords + dance_wrong_style_keywords))
 
 
@@ -265,6 +275,7 @@ class ClassifiedEvent(object):
             self.search_text = get_relevant_text(fb_event)
 
     def classify(self):
+        build_regexes()
         manual_dance_keywords_matches = set(manual_dance_keywords_regex.findall(self.search_text))
         easy_dance_matches = set(easy_dance_regex.findall(self.search_text))
         easy_event_matches = set(easy_event_regex.findall(self.search_text))
@@ -319,6 +330,7 @@ def is_dance_event(fb_event):
         return False
 
 def relevant_keywords(fb_event):
+    build_regexes()
     text = get_relevant_text(fb_event)
     good_keywords = good_capturing_keyword_regex.findall(text)
     bad_keywords = bad_capturing_keyword_regex.findall(text)
@@ -326,6 +338,7 @@ def relevant_keywords(fb_event):
 
 @skip_filter
 def highlight_keywords(text):
+    build_regexes()
     text = good_capturing_keyword_regex.sub('<span class="matched-text">\\1</span>', text)
     text = bad_capturing_keyword_regex.sub('<span class="bad-matched-text">\\1</span>', text)
     return text
