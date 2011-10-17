@@ -18,12 +18,14 @@ def scrape_events_from_sources(batch_lookup, sources):
         batch_lookup.lookup_thing_feed(source.graph_id)
     batch_lookup.finish_loading()
 
+    events = []
     for source in sources:
         try:
             thing_feed = batch_lookup.data_for_thing_feed(source.graph_id)
-            process_thing_feed(source, thing_feed)
+            events.extend(process_thing_feed(source, thing_feed))
         except fb_api.NoFetchedDataException, e:
             logging.error("Failed to fetch data for thing: %s", str(e))
+    return events
 
 def scrape_source(source):
     ctx = context.get()
@@ -74,12 +76,13 @@ def mapreduce_create_sources_from_events(batch_lookup):
 
 def process_thing_feed(source, thing_feed):
     if thing_feed['deleted']:
-        return
+        return []
     # TODO(lambert): do we really need to scrape the 'info' to get the id, or we can we half the number of calls by just getting the feed? should we trust that the type-of-the-thing-is-legit for all time, which is one case we use 'info'?
     if 'data' not in thing_feed['feed']:
         logging.error("No 'data' found in: %s", thing_feed['feed'])
-        return
+        return []
 
+    events = []
     for post in thing_feed['feed']['data']:
         if 'link' in post:
             p = urlparse.urlparse(post['link'])
@@ -88,9 +91,12 @@ def process_thing_feed(source, thing_feed):
                 if 'eid' in qs:
                     eid = qs['eid'][0]
                     potential_events.save_potential_fb_event_ids([eid], source=source, source_field=thing_db.FIELD_FEED)
+                    events.append(eid)
                 else:
                     logging.error("broken link is %s", post['link'])
-
+    
     # save new name, feed_history_in_seconds
     source.compute_derived_properties(thing_feed)
     source.put()
+
+    return events
