@@ -10,6 +10,8 @@ from logic import thing_db
 from util import properties
 
 class PotentialEvent(db.Model):
+    fb_event_id = property(lambda x: int(x.key().name()))
+
     looked_at = db.BooleanProperty()
     source = db.StringProperty()
     #thing_sources_json = db.TextProperty()

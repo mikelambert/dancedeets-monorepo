@@ -25,8 +25,25 @@ Edit Event
 				Submitted by <a href="http://www.facebook.com/profile.php?id=$source.creating_fb_uid">$creating_user</a>.<br>
 			#end if
 			#if $source.is_saved()
+
 				<button>Edit Source</button>
 				<button name="delete" value="yes">Delete Source</button>
+				<p>
+				Length-in-Seconds: $source.feed_history_in_seconds<br>
+				#if $potential_events
+					All $len($potential_events) PotentialEvent ids:
+					#for $potential_event in $potential_events
+						<a href="$raw_fb_event_url($potential_event.fb_event_id)">$potential_event.fb_event_id</a>,
+					#end for
+					<p>
+					All $len($db_events) DBEvents:
+					#for $db_event in $db_events
+						<a href="$raw_fb_event_url($db_event.fb_event_id)">$db_event.fb_event_id</a>,
+					#end for
+					
+					<br>
+				#end if
+				<pre>$fb_source.feed.data</pre>
 			#else
 				Adding new source!
 				<button>Create Source</button>

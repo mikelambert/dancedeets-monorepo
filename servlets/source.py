@@ -1,8 +1,11 @@
 import datetime
 from django.utils import simplejson
+import logging
 import urllib2
 
 import base_servlet
+from events import eventdata
+from logic import potential_events
 from logic import thing_db
 from logic import thing_scraper
 
@@ -29,6 +32,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         real_source_id = fb_source['info']['id']
         s = thing_db.create_source_for_id(real_source_id, fb_source)
+
+        source_potential_events = potential_events.PotentialEvent.gql('WHERE source_ids = :graph_id', graph_id=s.graph_id).fetch(1000)
+        found_db_events = [x for x in eventdata.DBEvent.get_by_key_name([str(x.fb_event_id) for x in source_potential_events]) if x]
+
+
         if s.creating_fb_uid:
             f = urllib2.urlopen('https://graph.facebook.com/%s?access_token=%s' % (s.creating_fb_uid, self.fb_graph.access_token))
             json = simplejson.loads(f.read())
@@ -37,6 +45,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             creating_user = None
 
         self.display['creating_user'] = creating_user
+        self.display['potential_events'] = source_potential_events
+        self.display['db_events'] = found_db_events
 
         self.display['source'] = s
         self.display['fb_source'] = fb_source
