@@ -4,13 +4,11 @@ import urlparse
 
 import facebook
 
-from mapreduce import context
-from mapreduce import control
-#from mapreduce import operation as op
-
 import fb_api
 from logic import potential_events
 from logic import thing_db
+
+from util import fb_mapreduce
 
 def scrape_events_from_sources(batch_lookup, sources):
     batch_lookup = batch_lookup.copy(allow_cache=False)
@@ -28,50 +26,27 @@ def scrape_events_from_sources(batch_lookup, sources):
     return events
 
 def scrape_source(source):
-    ctx = context.get()
-    params = ctx.mapreduce_spec.mapper.params
-    fb_graph = facebook.GraphAPI(params['batch_lookup_fb_graph_access_token'])
-    batch_lookup = fb_api.CommonBatchLookup(params['batch_lookup_fb_uid'], fb_graph, allow_cache=False) # Force refresh of thing feeds
+    batch_lookup = fb_mapreduce.get_batch_lookup(allow_cache=False) # Force refresh of thing feeds
     scrape_events_from_sources(batch_lookup, [source])
 
-SOURCE_SCRAPER='SOURCE_SCRAPER'
-
 def mapreduce_scrape_all_sources(batch_lookup):
-    control.start_map(
-        name='Scrape All Sources',
-        reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='logic.thing_scraper.scrape_source',
-        shard_count=2, # since we want to stick it in the slow-queue, and don't care how fast it executes
-        queue_name='slow-queue',
-        mapper_parameters={
-            'entity_kind': 'logic.thing_db.Source',
-            'batch_lookup_fb_uid': batch_lookup.fb_uid,
-            'batch_lookup_fb_graph_access_token': batch_lookup.fb_graph.access_token,
-        },
-        _app=SOURCE_SCRAPER,
+    fb_mapreduce.start_map(
+        batch_lookup,
+        'Scrape All Sources',
+        'logic.thing_scraper.scrape_source',
+        'logic.thing_db.Source'
     )
 
-
 def create_source_from_event(event):
-    ctx = context.get()
-    params = ctx.mapreduce_spec.mapper.params
-    fb_graph = facebook.GraphAPI(params['batch_lookup_fb_graph_access_token'])
-    batch_lookup = fb_api.CommonBatchLookup(params['batch_lookup_fb_uid'], fb_graph, allow_cache=False) # Force refresh of thing feeds
+    batch_lookup = fb_mapreduce.get_batch_lookup()
     thing_db.create_source_from_event(event, batch_lookup)
 
 def mapreduce_create_sources_from_events(batch_lookup):
-    control.start_map(
-        name='Create Sources from Events',
-        reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='logic.thing_scraper.create_source_from_event',
-        shard_count=2, # since we want to stick it in the slow-queue, and don't care how fast it executes
-        queue_name='slow-queue',
-        mapper_parameters={
-            'entity_kind': 'events.eventdata.DBEvent',
-            'batch_lookup_fb_uid': batch_lookup.fb_uid,
-            'batch_lookup_fb_graph_access_token': batch_lookup.fb_graph.access_token,
-        },
-        _app='SOURCE_FROM_EVENT',
+    fb_mapreduce.start_map(
+        batch_lookup,
+        'Create Sources from Events',
+        'logic.thing_scraper.create_source_from_event',
+        'events.eventdata.DBEvent'
     )
 
 def process_thing_feed(source, thing_feed):
