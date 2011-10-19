@@ -1,7 +1,10 @@
 from mapreduce import context
 from mapreduce import control
 
-def fb_mapreduce(batch_lookup, name, handler_spec, entity_kind):
+import facebook
+import fb_api
+
+def start_map(batch_lookup, name, handler_spec, entity_kind):
         control.start_map(
                 name=name,
                 reader_spec='mapreduce.input_readers.DatastoreInputReader',
@@ -20,4 +23,4 @@ def get_batch_lookup(allow_cache=True):
         params = ctx.mapreduce_spec.mapper.params
         fb_graph = facebook.GraphAPI(params['batch_lookup_fb_graph_access_token'])
         batch_lookup = fb_api.CommonBatchLookup(params['batch_lookup_fb_uid'], fb_graph, allow_cache=allow_cache)
-
+    return batch_lookup
