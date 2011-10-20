@@ -16,18 +16,18 @@ def scrape_events_from_sources(batch_lookup, sources):
         batch_lookup.lookup_thing_feed(source.graph_id)
     batch_lookup.finish_loading()
 
-    events = []
+    event_ids = []
     for source in sources:
         try:
             thing_feed = batch_lookup.data_for_thing_feed(source.graph_id)
-            events.extend(process_thing_feed(source, thing_feed))
+            event_ids.extend(process_thing_feed(source, thing_feed))
         except fb_api.NoFetchedDataException, e:
             logging.error("Failed to fetch data for thing: %s", str(e))
-    return events
+    return event_ids
 
 def scrape_source(source):
     batch_lookup = fb_mapreduce.get_batch_lookup(allow_cache=False) # Force refresh of thing feeds
-    scrape_events_from_sources(batch_lookup, [source])
+    event_ids = scrape_events_from_sources(batch_lookup, [source])
 
 def mapreduce_scrape_all_sources(batch_lookup):
     fb_mapreduce.start_map(
@@ -57,7 +57,8 @@ def process_thing_feed(source, thing_feed):
         logging.error("No 'data' found in: %s", thing_feed['feed'])
         return []
 
-    events = []
+    event_ids = []
+    new_source_ids = []
     for post in thing_feed['feed']['data']:
         if 'link' in post:
             p = urlparse.urlparse(post['link'])
@@ -66,7 +67,9 @@ def process_thing_feed(source, thing_feed):
                 if 'eid' in qs:
                     eid = qs['eid'][0]
                     potential_events.save_potential_fb_event_ids([eid], source=source, source_field=thing_db.FIELD_FEED)
-                    events.append(eid)
+                    event_ids.append(eid)
+                    if 'from' in post:
+                        new_source_ids.append(post['from'])
                 else:
                     logging.error("broken link is %s", post['link'])
     
@@ -74,4 +77,9 @@ def process_thing_feed(source, thing_feed):
     source.compute_derived_properties(thing_feed)
     source.put()
 
-    return events
+    for s_id in new_source_ids:
+        s = thing_db.create_source_for_id(s_id)
+        s.put()
+        
+
+    return event_ids
