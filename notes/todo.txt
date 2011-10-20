@@ -18,6 +18,9 @@ http://www.dancedeets.com/events/admin_edit?event_id=257024251003490
 http://www.dancedeets.com/events/admin_edit?event_id=214726508585136
 http://www.dancedeets.com/events/admin_edit?event_id=224488204279017
 http://www.dancedeets.com/events/admin_edit?event_id=140996745991450
+http://www.dancedeets.com/events/admin_edit?event_id=234728589917096
+http://www.dancedeets.com/events/admin_edit?event_id=263695657005390
+http://www.dancedeets.com/events/admin_edit?event_id=222782557786103
 
 - For Sources that are an owner of an event, mark as P0
 - For Sources that have contributed as a source to a potentialevent of an event, mark as P1
@@ -47,6 +50,7 @@ http://www.twilio.com/pricing/
 
 - Better location-detection for events on context: http://www.dancedeets.com/events/admin_edit?event_id=220778374616332
 http://www.dancedeets.com/events/admin_edit?event_id=191039400964294
+http://www.dancedeets.com/events/admin_edit?event_id=247636005284340
 - Owned events auto-classify: http://www.dancedeets.com/tools/owned_events?owner_id=1199227781
 
 - Add Tumblr integration to auto-post to blogs: http://www.tumblr.com/docs/en/api
