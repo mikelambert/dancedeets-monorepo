@@ -42,7 +42,7 @@ def partition_ids(ids, classifier=event_classifier.is_dance_event):
         fb_event = get_fb_event(id)
         if not fb_event: continue
         result = classifier(fb_event)
-        if result and result[0] != False:
+        if result:
             success.add(id)
         else:
             fail.add(id)
