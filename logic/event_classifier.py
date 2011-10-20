@@ -38,6 +38,7 @@ dance_and_music_keywords = [
     'kpop',
     'rnb',
     'hard\Whitting',
+    'old\W?school hip\W?hop',
 ]
 
 # hiphop dance. hiphop dans?
@@ -74,7 +75,7 @@ dance_keywords = [
     'street\W?jazz', 'street\W?funk', 'jazz\W?funk', 'boom\W?crack',
     'hype danc\w*', '90\W?s hip\W?hop',
     'social hip\W?hop', 'hip\W?hop social dance[sz]',
-    '(?:old|new|nu|middle)\W?school hip\W?hop', 'hip\W?hop (?:old|new|nu|middle)\W?school',
+    '(?:new|nu|middle)\W?school hip\W?hop', 'hip\W?hop (?:old|new|nu|middle)\W?school',
     'vogue', 'voguer[sz]?', 'vogue?ing',
     'mini.?ball', 'house of ', 'realness',
     'urban danc\w*',
@@ -207,7 +208,7 @@ event_keywords = [
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'swing', 'wcs', 'samba',
     'burlesque',
-    'technique',
+    'technique', 'limon',
     # Sometimes used in studio name even though it's still a hiphop class:
     #'ballroom',
     #'ballet',

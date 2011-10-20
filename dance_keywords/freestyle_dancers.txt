@@ -1,3 +1,4 @@
+
 abstrak
 acky
 amanda\W+b?\W+angel
@@ -11,8 +12,10 @@ bionic,0
 bobby mileage
 boogaloo sam
 brooklyn terry
+bruce blanchard
 buddha stretch
 byron cox
+caleaf
 caleaf sellers
 campbellock
 candoo,0
@@ -32,13 +35,13 @@ flockey
 fluky luke
 gemini,0
 guccon
+hector xtravaganza
 henry link
 hideki
 hiro,0
 hozin
 hurrikane
 iron monkey
-j-?boogie # too many false-positive hits on 'j boogie'
 j-rock,0
 jak-hamah
 javier ninja
@@ -124,13 +127,13 @@ tyrone proctor
 viktor manuel
 waackiesha
 wahe,0
+which\W?way sha
 whichway
 wildkatz
+willie ninja
 willow,0
 y-not
 yaman
 ynot
 yoshie koda
 yugson
-which\W?way sha
-bruce blanchard
