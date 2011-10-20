@@ -79,7 +79,7 @@ def link_for_fb_source(data):
         return None
 
 def create_source_for_id(source_id, fb_data):
-    source = Source.get_by_key_name(str(source_id)) or Source(key_name=source_id)
+    source = Source.get_by_key_name(str(source_id)) or Source(key_name=str(source_id))
     source.compute_derived_properties(fb_data)
     logging.info('source %s: %s', source.graph_id, source.name)
     return source
