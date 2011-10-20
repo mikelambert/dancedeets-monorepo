@@ -9,6 +9,19 @@ from util import abbrev
 class LocationMapping(db.Model):
     remapped_address = db.StringProperty()
 
+def cleanup_old_location_mappings():
+    from mapreduce import control
+    control.start_map(
+        name='Cleanup location mappings',
+        reader_spec='mapreduce.input_readers.DatastoreInputReader',
+        handler_spec='logic.event_locations.delete_empty_location_mappings',
+        mapper_parameters={'entity_kind': 'logic.event_locations.LocationMapping'},
+    )
+
+def delete_empty_location_mappings(lm):
+    if lm.remapped_address == '':
+        lm.delete()
+
 def _city_for_venue(venue):
     # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
     state = abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state'))
