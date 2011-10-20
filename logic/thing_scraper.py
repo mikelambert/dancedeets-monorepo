@@ -56,6 +56,10 @@ def process_thing_feed(source, thing_feed):
     if 'data' not in thing_feed['feed']:
         logging.error("No 'data' found in: %s", thing_feed['feed'])
         return []
+    
+    # save new name, feed_history_in_seconds
+    source.compute_derived_properties(thing_feed)
+    source.put()
 
     event_ids = []
     new_source_ids = []
@@ -72,10 +76,6 @@ def process_thing_feed(source, thing_feed):
                         new_source_ids.append(post['from'])
                 else:
                     logging.error("broken link is %s", post['link'])
-    
-    # save new name, feed_history_in_seconds
-    source.compute_derived_properties(thing_feed)
-    source.put()
 
     for s_id in new_source_ids:
         s = thing_db.create_source_for_id(s_id)
