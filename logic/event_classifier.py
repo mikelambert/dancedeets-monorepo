@@ -318,9 +318,13 @@ class ClassifiedEvent(object):
     def wrong_matches(self):
         return self.found_wrong_matches
 
-def is_dance_event(fb_event):
+def get_classified_event(fb_event):
     classified_event = ClassifiedEvent(fb_event)
     classified_event.classify()
+    return classified_event
+
+def is_dance_event(fb_event):
+    classified_event = get_classified_event(fb_event)
     if classified_event.is_dance_event():
         return (True,
             classified_event.reason(),
