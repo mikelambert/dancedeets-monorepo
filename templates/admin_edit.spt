@@ -39,7 +39,7 @@ Edit Event
 						(Required!)
 					#end if
 				</td><td>
-					<input type="text" size=100 name="override_address" value="$location_info.overriden_address">
+					<input type="text" size=100 name="override_address" value="$location_info.overridden_address">
 				</td></tr>
 				<tr><td>
 					Final Address:
