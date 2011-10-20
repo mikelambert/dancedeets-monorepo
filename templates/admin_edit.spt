@@ -19,32 +19,32 @@ Edit Event
 					Original Address:
 				</td><td>
 					<table class="goog-trans-section" style="display:inline"><tr><td>
-					$format_html($original_address)
+					$format_html($location_info.fb_address)
 					</td><td class="goog-trans-control"></td></tr>
 					</table>
 				</td></tr>
 				<tr><td>
 					Geocoded Address:
 				</td><td>
-					$format_html($geocoded_address)
+					$format_html($fb_geocoded_address)
 				</td></tr>
 				<tr><td>
 					Remapped Address:
 				</td><td>
-					<input type="text" size=100 name="remapped_address" value="$remapped_address">
+					<input type="text" size=100 name="remapped_address" value="$location_info.remapped_address">
 				</td></tr>
 				<tr><td>
 					Override Address:
-					#if $needs_override_address
+					#if $location_info.needs_override_address()
 						(Required!)
 					#end if
 				</td><td>
-					<input type="text" size=100 name="override_address" value="$override_address">
+					<input type="text" size=100 name="override_address" value="$location_info.overriden_address">
 				</td></tr>
 				<tr><td>
 					Final Address:
 				</td><td>
-					$format_html($final_geocoded_address)
+					$format_html($location_info.final_city)
 					#if $event.anywhere
 					<br>Online/Anywhere/Worldwide
 					#end if

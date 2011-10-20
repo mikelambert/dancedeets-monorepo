@@ -178,7 +178,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.errors_are_fatal()
 
         # Don't insert object until we're ready to save it...
-        e = eventdata.DBEvent.get_by_key_name(event_id) or eventdata.DBEvent()
+        e = eventdata.DBEvent.get_by_key_name(event_id) or eventdata.DBEvent(key_name=event_id)
         if e.creating_fb_uid:
             f = urllib2.urlopen('https://graph.facebook.com/%s?access_token=%s' % (e.creating_fb_uid, self.fb_graph.access_token))
             json = simplejson.loads(f.read())
@@ -186,10 +186,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         else:
             creating_user = None
 
-        if e.is_saved():
-            potential_event = potential_events.PotentialEvent.get_by_key_name(str(e.fb_event_id))
-        else:
-            potential_event = None
+        potential_event = potential_events.PotentialEvent.get_by_key_name(event_id)
 
         dance_tags = event_classifier.is_dance_event(fb_event)
         if dance_tags:
@@ -208,12 +205,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['potential_event'] = potential_event
 
         location_info = event_locations.LocationInfo(fb_event, e)
-        self.display['needs_override_address'] = location_info.needs_override_address()
-        self.display['original_address'] = location_info.fb_address
-        self.display['geocoded_address'] = locations.get_geocoded_location(location_info.fb_address)['address']
-        self.display['remapped_address'] = location_info.remapped_address
-        self.display['override_address'] = location_info.overridden_address
-        self.display['final_geocoded_address'] = location_info.final_city
+        self.display['location_info'] = location_info
+        self.display['fb_geocoded_address'] = locations.get_geocoded_location(location_info.fb_address)['address']
 
         self.display['event'] = e
         self.display['fb_event'] = fb_event
