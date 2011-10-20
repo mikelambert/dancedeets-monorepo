@@ -73,7 +73,7 @@ def process_thing_feed(source, thing_feed):
                     potential_events.save_potential_fb_event_ids([eid], source=source, source_field=thing_db.FIELD_FEED)
                     event_ids.append(eid)
                     if 'from' in post:
-                        new_source_ids.append(post['from'])
+                        new_source_ids.append(post['from']['id'])
                 else:
                     logging.error("broken link is %s", post['link'])
 
