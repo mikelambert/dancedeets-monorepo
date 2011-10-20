@@ -70,22 +70,25 @@ def _get_remapped_address_for(address):
 
 def _save_remapped_address_for(original_address, new_remapped_address):
     if original_address:
-        location_mapping = LocationMapping.get_or_insert(original_address)
+        location_mapping = LocationMapping.get_by_key_name(original_address)
         if new_remapped_address:
+            if not location_mapping:
+                location_mapping = LocationMapping(key_name=original_address)
             location_mapping.remapped_address = new_remapped_address
             try:
                 location_mapping.put()
-            except apiproxy_errors.CapabilityDisabledError:
-                pass
+            except apiproxy_errors.CapabilityDisabledError, e:
+                logging.error("failed to save location mapping due to %s", e)
         else:
-            location_mapping.delete()
+            if location_mapping:
+                location_mapping.delete()
 
 def update_remapped_address(fb_event, new_remapped_address):
     new_remapped_address = new_remapped_address or None
     location_info = LocationInfo(fb_event)
     logging.info("remapped address for fb_event %r, new form value %r", location_info.remapped_address, new_remapped_address)
     if location_info.remapped_address != new_remapped_address:
-        _save_remapped_address_for(location_info.fb_address, new_remapped_address)
+        _save_remapped_address_for(location_info.remapped_source(), new_remapped_address)
 
 
 ONLINE_ADDRESS = 'ONLINE'
@@ -108,20 +111,21 @@ class LocationInfo(object):
             logging.info("Address overridden to be %r", db_event.address)
         else:
             self.overridden_address = None
-            if not self.fb_city:
-                self.remapped_address = _get_remapped_address_for(self.fb_address)
-                if self.remapped_address:
-                    self.final_address = self.remapped_address
-                else:
-                    self.final_address = self.fb_address
-                logging.info("No fb city, so checking remapped address, which is %r", self.remapped_address)
-            else:
-                self.remapped_address = None
+            self.remapped_address = _get_remapped_address_for(self.remapped_source())
+            if self.remapped_address:
+                self.final_address = self.remapped_address
+                logging.info("Checking remapped address, which is %r", self.remapped_address)
+            elif self.fb_city:
                 self.final_address = self.fb_city
+            else:
+                self.final_address = self.fb_address
         results = locations.get_geocoded_location(self.final_address)
         self.final_city = results['city']
         self.final_latlng = results['latlng']
         logging.info("Final address is %r, final city is %r", self.final_address, self.final_city)
+
+    def remapped_source(self):
+        return self.fb_city or self.fb_address
 
     def needs_override_address(self):
         address = self.final_address or ''
