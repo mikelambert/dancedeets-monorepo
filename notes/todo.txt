@@ -22,15 +22,19 @@ http://www.dancedeets.com/events/admin_edit?event_id=234728589917096
 http://www.dancedeets.com/events/admin_edit?event_id=263695657005390
 http://www.dancedeets.com/events/admin_edit?event_id=222782557786103
 
-- For Sources that are an owner of an event, mark as P0
-- For Sources that have contributed as a source to a potentialevent of an event, mark as P1
-- For other sources that have yet to produce anything, mark as P2
-Is that any useful?
+- Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
+http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
 
 - Determine rate-of-processing by looking at length_in_seconds, and fetch short feeds faster.
-- Determine quality level by looking at fraction of potentialevents from a source led to a real event. If high enough, show everything in the feed, if not only show things that pass the filter. If super low, then stop processing it as a feed altogether. Store this as a Source field somewhere.
+- Determine quality level by looking at fraction of potentialevents from a source led to a real event. If high enough, show everything in the feed, if not only show things that pass the filter (not sure that was necessary?). If super low, then stop processing it as a feed altogether. Store this as a Source field somewhere.
 - Look at what fraction of good-events-from-source would have qualified for by our keyword filter. If it's low, then show everything, so we don't miss more good events. Also start at "zero" so that we cull sources over time but show everything up-front.
-- Maybe do a potential-explore for more sources. Find attendings of events, put in a big queue. Check them for any-good-events-at-all-on-feed, and if so add them as sources too. But don't put these in a periodic recrawl or it'd kill the system with a bajillion sources.
+- Maybe do a potential-explore for more sources. Find attendings of events, put in a big queue. Check them for any-good-events-at-all-on-feed, and if so add them as sources too. But don't put these in a periodic recrawl or it'd kill the system with a bajillion sources. But create Sources so we know not to recrawl them. Store last-crawl time?
+
+- Use real-time API:
+https://developers.facebook.com/docs/reference/api/realtime/
+- for subscribing to all our Source feeds, so we get notified when posts happen (instead of relying on huge polling scrapes)
+- for subscribing to our user information and calling user.compute_derived_properties() so we have up-to-date-info all the time (doesn't help with user_events though)
+- ensure that anything that comes in via a subscribe endpoint, has a retry handler that will retry any URL that 500s, so we don't lose update info
 
 - Separate out 'created by person X' from 'posted on X's wall by other person'. Why? Because owners-of-events, I want to trust other-events-they-created higher than other-events-ppl-posted? Perhaps this is not that relevant, as people are in the scene or not pretty straightforward."story": "Robert Creer created an event."
 - But we should find out "who posted on a given wall" and include them as a Source in addition to the person whose wall they posted on. Check "from" field "from": { "name": "ZiYin Lee", "id": "514085580" }.
