@@ -4,7 +4,9 @@ import urlparse
 
 import facebook
 
+from events import eventdata
 import fb_api
+from logic import event_classifier
 from logic import potential_events
 from logic import thing_db
 
@@ -20,7 +22,7 @@ def scrape_events_from_sources(batch_lookup, sources):
     for source in sources:
         try:
             thing_feed = batch_lookup.data_for_thing_feed(source.graph_id)
-            event_ids.extend(process_thing_feed(source, thing_feed))
+            event_ids.extend(process_thing_feed(source, thing_feed, batch_lookup.copy()))
         except fb_api.NoFetchedDataException, e:
             logging.error("Failed to fetch data for thing: %s", str(e))
     return event_ids
@@ -49,7 +51,7 @@ def mapreduce_create_sources_from_events(batch_lookup):
         'events.eventdata.DBEvent'
     )
 
-def process_thing_feed(source, thing_feed):
+def process_thing_feed(source, thing_feed, batch_lookup):
     if thing_feed['deleted']:
         return []
     # TODO(lambert): do we really need to scrape the 'info' to get the id, or we can we half the number of calls by just getting the feed? should we trust that the type-of-the-thing-is-legit for all time, which is one case we use 'info'?
@@ -62,7 +64,7 @@ def process_thing_feed(source, thing_feed):
     source.put()
 
     event_ids = []
-    new_source_ids = []
+    source_ids = []
     for post in thing_feed['feed']['data']:
         if 'link' in post:
             p = urlparse.urlparse(post['link'])
@@ -70,15 +72,27 @@ def process_thing_feed(source, thing_feed):
                 qs = cgi.parse_qs(p.query)
                 if 'eid' in qs:
                     eid = qs['eid'][0]
-                    potential_events.save_potential_fb_event_ids([eid], source=source, source_field=thing_db.FIELD_FEED)
                     event_ids.append(eid)
                     if 'from' in post:
-                        new_source_ids.append(post['from']['id'])
+                        source_ids.append(post['from']['id'])
                 else:
                     logging.error("broken link is %s", post['link'])
 
-    for s_id in new_source_ids:
-        s = thing_db.create_source_for_id(s_id)
+    existing_event_ids = set([x.fb_event_id for x in eventdata.DBEvent.get_by_key_name(event_ids)])# + PotentialEvent.get_by_key_name(event_ids)])
+    new_event_ids = [x for x in event_ids if x not in existing_event_ids]
+    for event_id in new_event_ids:
+        batch_lookup.lookup_event(event_id)
+    batch_lookup.finish_loading()
+
+    for event_id in new_event_ids:
+        fb_event = batch_lookup.data_for_event(event_id)
+        match_score = event_classifier.get_classified_event(fb_event).match_score()
+        potential_events.make_potential_event_with_source(event_id, match_score, source_id=source.graph_id, source_field=thing_db.FIELD_FEED)
+
+    existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(source_ids)])
+    new_source_ids = [x for x in source_ids if x not in existing_source_ids]
+    for source_id in new_source_ids:
+        s = thing_db.create_source_for_id(source_id, fb_data=None) #TODO(lambert): we know it doesn't exist, why does create_source_for_id check datastore?
         s.put()
         
 

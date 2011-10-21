@@ -14,41 +14,29 @@ class PotentialEvent(db.Model):
 
     looked_at = db.BooleanProperty()
     source = db.StringProperty()
-    #thing_sources_json = db.TextProperty()
-    #properties.json_property(sources_json)
     source_ids = db.ListProperty(int)
     source_fields = db.ListProperty(str)
 
-def add_source_for_event_id(source, source_field, fb_event_id):
-    #TODO(lambert): i think we are inadvertently creating PotentialEvents here, for things we find-are-good. We should fix that and make that explicit
-    potential_event = PotentialEvent.get_or_insert(str(fb_event_id))
-    # If already added, return
-    for source_id, source_field_ in zip(potential_event.source_ids, potential_event.source_fields):
-        if source_id == source.graph_id and source_field_ == source_field:
-            return
+    match_score = db.IntegerProperty()
+
+def make_potential_event_with_source(fb_event_id, match_score, source_id, source_field):
     def _internal_add_source_for_event_id():
-        potential_event = PotentialEvent.get_by_key_name(str(fb_event_id))
+        potential_event = PotentialEvent.get_by_key_name(str(fb_event_id)) or PotentialEvent(key_name=str(fb_event_id))
         # If already added, return
-        for source_id, source_field_ in zip(potential_event.source_ids, potential_event.source_fields):
-            if source_id == source.graph_id and source_field_ == source_field:
-                return
-        potential_event.source_ids.append(source.graph_id)
+        has_source = False
+        for source_id_, source_field_ in zip(potential_event.source_ids, potential_event.source_fields):
+            if source_id_ == source_id and source_field_ == source_field:
+                has_source = True
+        if has_source and potential_event.match_score == match_score:
+            return
+        potential_event.source_ids.append(source_id)
         potential_event.source_fields.append(source_field)
+        potential_event.match_score = match_score
         potential_event.put()
-    db.run_in_transaction(_internal_add_source_for_event_id)
-
-
-def save_potential_fb_event_ids_if_new(event_ids, source=None, source_field=None):
-    filtered_ids = [x for x in event_ids if not eventdata.DBEvent.get_by_key_name(str(x)) and not PotentialEvent.get_by_key_name(str(x))]
-    save_potential_fb_event_ids(filtered_ids, source=source, source_field=source_field)
-
-def save_potential_fb_event_ids(event_ids, source=None, source_field=None):
-    for event_id in event_ids:
-        try:
-            logging.info("Saving potential event %s", event_id)
-            add_source_for_event_id(source, source_field, event_id)
-        except apiproxy_errors.CapabilityDisabledError, e:
-            logging.error("Error saving potential event %s due to %s", event_id, e)
+    try:
+        db.run_in_transaction(_internal_add_source_for_event_id)
+    except apiproxy_errors.CapabilityDisabledError, e:
+        logging.error("Error saving potential event %s due to %s", event_id, e)
 
 def get_potential_dance_events(batch_lookup, user_id):
     try:
@@ -61,9 +49,11 @@ def get_potential_dance_events(batch_lookup, user_id):
         second_batch_lookup.lookup_event(str(mini_fb_event['eid']))
     second_batch_lookup.finish_loading()
     dance_event_ids = []
+    match_scores = {}
     for mini_fb_event in events:
+        event_id = str(mini_fb_event['eid'])
         try:
-            fb_event = second_batch_lookup.data_for_event(mini_fb_event['eid'])
+            fb_event = second_batch_lookup.data_for_event(event_id)
         except fb_api.NoFetchedDataException:
             continue # must be a non-saved event, probably due to private/closed event. so ignore.
         if fb_event['deleted'] or fb_event['info']['privacy'] != 'OPEN':
@@ -71,7 +61,8 @@ def get_potential_dance_events(batch_lookup, user_id):
         #TODO(lambert): before we fix this to be a smarter classifier, perhaps we should do better caching of the results to avoid blowing quotas
         classified_event = event_classifier.get_classified_event(fb_event)
         if classified_event.is_dance_event():
-            dance_event_ids.append(str(mini_fb_event['eid']))
+            dance_event_ids.append(event_id)
+            match_scores[event_id] = classified_event.match_score()
     # TODO(lambert): ideally would use keys_only=True, but that's not supported on get_by_key_name :-(
 
     # Filter out DBEvents
@@ -87,6 +78,7 @@ def get_potential_dance_events(batch_lookup, user_id):
     new_dance_events = [second_batch_lookup.data_for_event(x) for x in new_unseen_dance_event_ids]
     source = thing_db.create_source_for_id(user_id, fb_data=None)
     source.put()
-    save_potential_fb_event_ids(new_unseen_dance_event_ids, source=source, source_field=thing_db.FIELD_INVITES)
+    for event_id in new_unseen_dance_event_ids:
+        make_potential_event_with_source(event_id, match_scores[event_id], source_id=source.graph_id, source_field=thing_db.FIELD_INVITES)
     new_dance_events = sorted(new_dance_events, key=lambda x: x['info'].get('start_time'))
     return new_dance_events

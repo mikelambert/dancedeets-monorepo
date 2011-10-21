@@ -37,8 +37,6 @@ https://developers.facebook.com/docs/reference/api/realtime/
 - ensure that anything that comes in via a subscribe endpoint, has a retry handler that will retry any URL that 500s, so we don't lose update info
 
 - Separate out 'created by person X' from 'posted on X's wall by other person'. Why? Because owners-of-events, I want to trust other-events-they-created higher than other-events-ppl-posted? Perhaps this is not that relevant, as people are in the scene or not pretty straightforward."story": "Robert Creer created an event."
-- But we should find out "who posted on a given wall" and include them as a Source in addition to the person whose wall they posted on. Check "from" field "from": { "name": "ZiYin Lee", "id": "514085580" }.
-https://graph.facebook.com/inhumanoids/feed?access_token=AAAAAAITEghMBACHwjaZA1wIrO59JAZCvROnTRZClozb8EWT3o4KhSgJKwrGq5aLm0WHjGiTdjg29OVAu5ZCAqHfRQe5lSCnYwELdR1jv3wZDZD
 
 - Actually, would be interesting to count number of unique attendings on all events in the system so far. Group them by city to judge the size of scenes over the past year. Nice pretty statistics?
 

@@ -12,7 +12,13 @@ Potential Events Classification
 		style="background-color: lightgrey"
 	#end if
 	>
-		<td><a href="/events/admin_edit?event_id=$potential_event.fb_event.info.id">$potential_event.fb_event.info.name</a></td>
+		<td>
+		#if $potential_event.potential_event.match_score
+		$potential_event.potential_event.match_score
+		#else
+		0
+		#end if
+		<a href="/events/admin_edit?event_id=$potential_event.fb_event.info.id">$potential_event.fb_event.info.name</a></td>
 		<td>$potential_event.location_info.fb_city</td>
 		<td style="white-space: nowrap">
 		#if $potential_event.location_info.fb_city

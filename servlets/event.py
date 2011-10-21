@@ -357,7 +357,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         already_added_event_ids = [x.key().name() for x in already_added_events if x]
         # construct a list of not-added ids for display, but keep the list of all ids around so we can still mark them as processed down below
         potential_event_notadded_ids = list(set(potential_event_dict).difference(already_added_event_ids))
-        potential_event_notadded_ids.sort(key=lambda x: -len(potential_event_dict[x].source_ids))
+        potential_event_notadded_ids.sort(key=lambda x: -(potential_event_dict[x].match_score or 0))
 
         # Limit to 20 at a time so we don't overwhelm the user.
         number_of_events = int(self.request.get('number_of_events', '20'))

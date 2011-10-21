@@ -317,6 +317,8 @@ class ClassifiedEvent(object):
         return self.found_event_matches
     def wrong_matches(self):
         return self.found_wrong_matches
+    def match_score(self):
+        return len(self.found_dance_matches) + len(self.found_event_matches)
 
 def get_classified_event(fb_event):
     classified_event = ClassifiedEvent(fb_event)
