@@ -229,8 +229,13 @@ def build_regexes():
         return
 
     manual_dance_keywords = []
+    import os
+    if os.getcwd().endswith('mapreduce'): #TODO(lambert): what is going on with appengine sticking me in the wrong starting directory??
+        base_dir = '..'
+    else:
+        base_dir = '.'
     for filename in ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'choreo_keywords', 'competitions', 'freestyle_crews', 'freestyle_dancers']:
-        f = open('dance_keywords/%s.txt' % filename)
+        f = open('%s/dance_keywords/%s.txt' % (base_dir, filename))
         for line in f.readlines():
             line = re.sub('\s*#.*', '', line.strip())
             if not line:
@@ -318,7 +323,10 @@ class ClassifiedEvent(object):
     def wrong_matches(self):
         return self.found_wrong_matches
     def match_score(self):
-        return len(self.found_dance_matches) + len(self.found_event_matches)
+        combined_matches = self.found_dance_matches + self.found_event_matches
+        if len(combined_matches) < 3:
+            logging.info('%s', combined_matches)
+        return len(combined_matches)
 
 def get_classified_event(fb_event):
     classified_event = ClassifiedEvent(fb_event)
