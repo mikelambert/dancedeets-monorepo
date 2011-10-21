@@ -25,9 +25,14 @@ http://www.dancedeets.com/events/admin_edit?event_id=222782557786103
 - Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
 http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
 
-- Determine rate-of-processing by looking at length_in_seconds, and fetch short feeds faster.
-- Determine quality level by looking at fraction of potentialevents from a source led to a real event. If high enough, show everything in the feed, if not only show things that pass the filter (not sure that was necessary?). If super low, then stop processing it as a feed altogether. Store this as a Source field somewhere.
-- Look at what fraction of good-events-from-source would have qualified for by our keyword filter. If it's low, then show everything, so we don't miss more good events. Also start at "zero" so that we cull sources over time but show everything up-front.
+- Determine quality level by looking at fraction of potentialevents from a source led to a real event. If zero or near-zero, stop processing the feed entirely.
+- But beware that "zero feed_history sources aren't discarded forever here, they just haven't ever been scraped yet, and could change in the future. But maybe mark them separately since they're not worth scraping in the shortterm.
+- And beware items that have only been scraped for so-long. use a time-created field to give an item X amount of time before we give up on it.
+
+- Look at what fraction of good-events-from-source would have qualified for by our keyword filter. If it's low, then show everything, so we don't miss more good events, like clubs. Also start at "zero" with bias, so that we raise our standards for good-sources, but show everything up-front (in case we discover new dance keywords for these strange events).
+
+- Determine rate-of-processing by looking at length_in_seconds, and fetch short feeds faster. Necessary for reducing load and scaling up sources.
+
 - Maybe do a potential-explore for more sources. Find attendings of events, put in a big queue. Check them for any-good-events-at-all-on-feed, and if so add them as sources too. But don't put these in a periodic recrawl or it'd kill the system with a bajillion sources. But create Sources so we know not to recrawl them. Store last-crawl time?
 
 - Use real-time API:
