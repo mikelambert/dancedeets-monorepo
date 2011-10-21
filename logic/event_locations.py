@@ -40,7 +40,6 @@ def _get_city_for_fb_event(fb_event):
         batch_lookup.finish_loading()
         venue_data = batch_lookup.data_for_venue(venue.get('id'))
         if not venue_data['deleted']:
-            logging.info("venue data is %s", venue_data)
             city = _city_for_venue(venue_data['info'].get('location', {}))
             logging.info("venue address is %s", city)
             if city:
