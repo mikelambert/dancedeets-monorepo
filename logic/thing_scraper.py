@@ -78,7 +78,7 @@ def process_thing_feed(source, thing_feed, batch_lookup):
                 else:
                     logging.error("broken link is %s", post['link'])
 
-    existing_event_ids = set([x.fb_event_id for x in eventdata.DBEvent.get_by_key_name(event_ids)])# + PotentialEvent.get_by_key_name(event_ids)])
+    existing_event_ids = set([x.fb_event_id for x in eventdata.DBEvent.get_by_key_name(event_ids) + potential_events.PotentialEvent.get_by_key_name(event_ids) if x])
     new_event_ids = [x for x in event_ids if x not in existing_event_ids]
     for event_id in new_event_ids:
         batch_lookup.lookup_event(event_id)
@@ -86,10 +86,12 @@ def process_thing_feed(source, thing_feed, batch_lookup):
 
     for event_id in new_event_ids:
         fb_event = batch_lookup.data_for_event(event_id)
+        if fb_event['deleted']:
+            continue
         match_score = event_classifier.get_classified_event(fb_event).match_score()
         potential_events.make_potential_event_with_source(event_id, match_score, source_id=source.graph_id, source_field=thing_db.FIELD_FEED)
 
-    existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(source_ids)])
+    existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(source_ids) if x])
     new_source_ids = [x for x in source_ids if x not in existing_source_ids]
     for source_id in new_source_ids:
         s = thing_db.create_source_for_id(source_id, fb_data=None) #TODO(lambert): we know it doesn't exist, why does create_source_for_id check datastore?
