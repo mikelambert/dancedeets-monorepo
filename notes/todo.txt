@@ -21,6 +21,7 @@ http://www.dancedeets.com/events/admin_edit?event_id=140996745991450
 http://www.dancedeets.com/events/admin_edit?event_id=234728589917096
 http://www.dancedeets.com/events/admin_edit?event_id=263695657005390
 http://www.dancedeets.com/events/admin_edit?event_id=222782557786103
+http://www.dancedeets.com/events/admin_edit?event_id=258452520867371
 
 - Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
 http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
