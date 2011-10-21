@@ -54,7 +54,7 @@ dance_keywords = [
     'top\W?rock(?:er[sz]?|ing?)?', 'up\W?rock(?:er[sz]?|ing?|)?',
     'houser[sz]?', 'house ?danc\w*',
     'lock(?:er[sz]?|ing?)?', 'lock dance',
-    'wh?aa?c?c?ker[sz]?', 'wh?aa?cc?king?', 'wh?aa?cc?k',
+    '[uw]h?aa?c?c?ker[sz]?', '[uw]h?aa?cc?kinn?g?', '[uw]h?aa?cc?k',
     'locking4life',
     'dance crew[sz]?',
     'waving?', 'wavers?',
@@ -323,10 +323,11 @@ class ClassifiedEvent(object):
     def wrong_matches(self):
         return self.found_wrong_matches
     def match_score(self):
-        combined_matches = self.found_dance_matches + self.found_event_matches
-        if len(combined_matches) < 3:
-            logging.info('%s', combined_matches)
-        return len(combined_matches)
+        if self.is_dance_event():
+            combined_matches = self.found_dance_matches.union(self.found_event_matches)
+            return len(combined_matches)
+        else:
+            return 0
 
 def get_classified_event(fb_event):
     classified_event = ClassifiedEvent(fb_event)
