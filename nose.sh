@@ -1,3 +1,3 @@
 #!/usr/bin/bash
 
-nosetests --exclude="mapreduce|gdata|atom" $1 $2 $3 $4 $5
+nosetests --with-gae --exclude="mapreduce|gdata|atom" $1 $2 $3 $4 $5
