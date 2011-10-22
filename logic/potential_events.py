@@ -13,11 +13,13 @@ class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: int(x.key().name()))
 
     looked_at = db.BooleanProperty()
+    match_score = db.IntegerProperty()
+
+    # need to delete these
     source = db.StringProperty()
     source_ids = db.ListProperty(int)
     source_fields = db.ListProperty(str)
 
-    match_score = db.IntegerProperty()
 
 def make_potential_event_with_source(fb_event_id, match_score, source_id, source_field):
     def _internal_add_source_for_event_id():
@@ -27,16 +29,22 @@ def make_potential_event_with_source(fb_event_id, match_score, source_id, source
         for source_id_, source_field_ in zip(potential_event.source_ids, potential_event.source_fields):
             if source_id_ == source_id and source_field_ == source_field:
                 has_source = True
+        
         if has_source and potential_event.match_score == match_score:
-            return
+            return False
         potential_event.source_ids.append(source_id)
         potential_event.source_fields.append(source_field)
         potential_event.match_score = match_score
         potential_event.put()
+        return True
+
+    new_source = False
     try:
-        db.run_in_transaction(_internal_add_source_for_event_id)
+        new_source = db.run_in_transaction(_internal_add_source_for_event_id)
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", event_id, e)
+    if new_source:
+        thing_db.increment_num_potential_events(source_id)
 
 def get_potential_dance_events(batch_lookup, user_id):
     try:

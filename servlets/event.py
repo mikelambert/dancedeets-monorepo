@@ -245,6 +245,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         e.make_findable_for(self.batch_lookup.data_for_event(event_id))
         thing_db.create_source_from_event(e, self.batch_lookup.copy())
         e.put()
+        potential_event = potential_events.PotentialEvent.get_by_key_name(event_id)
+        if potential_event:
+            for source_id in potential_event.source_ids:
+                thing_db.increment_num_real_events(source_id)
+        # Hmm, how do we implement this one?# thing_db.increment_num_real_events_without_potential_events(source_id)
 
         backgrounder.load_event_attending([event_id])
         self.user.add_message("Changes saved!")

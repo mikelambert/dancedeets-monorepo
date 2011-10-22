@@ -23,6 +23,28 @@ FIELD_FEED = 'FIELD_FEED' # /feed
 FIELD_EVENTS = 'FIELD_EVENTS' # /events
 FIELD_INVITES = 'FIELD_INVITES' # fql query on invites for signed-up users
 
+def run_modify_transaction_for_key(key, func):
+    def inner_modify():
+        s = Source.get_by_key_name(str(key))
+        func(s)
+        s.put()
+    db.run_in_transaction(inner_modify)
+
+def increment_num_potential_events(source_id):
+    def inc(s):
+        s.num_potential_events = (s.num_potential_events or 0) + 1
+    run_modify_transaction_for_key(source_id, inc)
+
+def increment_num_real_events(source_id):
+    def inc(s):
+        s.num_real_events = (s.num_real_events or 0) + 1
+    run_modify_transaction_for_key(source_id, inc)
+
+def increment_num_real_events_without_potential_events(source_id):
+    def inc(s):
+        s.num_real_events_without_potential_events = (s.num_real_events_without_potential_events or 0) + 1
+    run_modify_transaction_for_key(source_id, inc)
+
 class Source(db.Model):
     graph_id = property(lambda x: int(x.key().name()))
     graph_type = db.StringProperty(choices=GRAPH_TYPES)
@@ -38,8 +60,9 @@ class Source(db.Model):
     creating_fb_uid = db.IntegerProperty()
         creation_time = db.DateTimeProperty()
 
-    #events_found_json = db.TextProperty()
-    #events_found = properties.json_property(events_found_json)
+    num_potential_events = db.IntegerProperty()
+    num_real_events = db.IntegerProperty()
+    num_real_events_without_potential_events = db.IntegerProperty()
 
     def compute_derived_properties(self, fb_data):
         if fb_data: # only update these when we have feed data
