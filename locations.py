@@ -61,14 +61,14 @@ def _memcache_location_key(location):
 def _raw_get_cached_geocoded_data(location):
     memcache_key = _memcache_location_key(location)
     geocoded_data = smemcache and smemcache.get(memcache_key)
-    if not geocoded_data:
+    if geocoded_data is None:
         geocode = GeoCode.get_by_key_name(location)
         if geocode:
             try:
                 geocoded_data = simplejson.loads(geocode.json_data)
             except:
                 logging.exception("Error decoding json data for geocode %r: %r", location, geocode.json_data)
-        if not geocoded_data:
+        if geocoded_data is None:
             geocoded_data = _get_geocoded_data(location)
 
             geocode = GeoCode(key_name=location)
