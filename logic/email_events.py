@@ -46,9 +46,6 @@ def email_for_user(user, batch_lookup, fb_graph, should_send=True):
     # Don't include results more than a month out in these emails
     grouped_results = [x for x in grouped_results if x.id != 'year_events']
 
-    # check the events user-was-invited-to, looking for any dance-related fb events we don't know about yet
-    new_dance_events = potential_events.get_potential_dance_events(batch_lookup, user.fb_uid)
-
     display = {}
     display['date_human_format'] = user.date_human_format
     display['format_html'] = text.format_html
@@ -57,8 +54,6 @@ def email_for_user(user, batch_lookup, fb_graph, should_send=True):
     display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
     display['user'] = user
     display['fb_user'] = batch_lookup.data_for_user(user.fb_uid)
-
-    display['new_dance_events'] = new_dance_events
 
     display['grouped_results'] = grouped_results
 

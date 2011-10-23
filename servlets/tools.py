@@ -38,11 +38,10 @@ class UnprocessFutureEventsHandler(webapp.RequestHandler):
         m.run()
         return
 
-from logic import thing_scraper
 from servlets import tasks
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler):
     def get(self):
-        thing_scraper.mapreduce_create_sources_from_events(self.batch_lookup)
+        thing_db.clean_mapreduce()
 
 class OwnedEventsHandler(webapp.RequestHandler):
     def get(self):

@@ -2,6 +2,8 @@ import datetime
 import logging
 
 from google.appengine.ext import db
+
+from mapreduce import control
 from util import properties
 
 GRAPH_TYPE_PROFILE = 'GRAPH_TYPE_PROFILE'
@@ -23,12 +25,33 @@ FIELD_FEED = 'FIELD_FEED' # /feed
 FIELD_EVENTS = 'FIELD_EVENTS' # /events
 FIELD_INVITES = 'FIELD_INVITES' # fql query on invites for signed-up users
 
+def clean_source(s):
+    s.creation_time = datetime.datetime.now() - datetime.timedelta(hours=12)
+    s.num_potential_events = s.num_potential_events or 0
+    s.num_real_events = s.num_real_events or 0
+    s.num_false_negatives = s.num_false_negatives or 0
+    s.num_all_events = s.num_all_events or s.num_potential_events
+    s.put()
+
+def clean_mapreduce():
+    control.start_map(
+        name='clean sources',
+        reader_spec='mapreduce.input_readers.DatastoreInputReader',
+        handler_spec='logic.thing_db.clean_source',
+        mapper_parameters={'entity_kind': 'logic.thing_db.Source'},
+        )
+
 def run_modify_transaction_for_key(key, func):
     def inner_modify():
         s = Source.get_by_key_name(str(key))
         func(s)
         s.put()
     db.run_in_transaction(inner_modify)
+
+def increment_num_all_events(source_id):
+    def inc(s):
+        s.num_all_events = (s.num_all_events or 0) + 1
+    run_modify_transaction_for_key(source_id, inc)
 
 def increment_num_potential_events(source_id):
     def inc(s):
@@ -61,9 +84,22 @@ class Source(db.Model):
     creation_time = db.DateTimeProperty()
     last_scrape_time = db.DateTimeProperty()
 
+    num_all_events = db.IntegerProperty()
     num_potential_events = db.IntegerProperty()
     num_real_events = db.IntegerProperty()
     num_false_negatives = db.IntegerProperty()
+
+    def fraction_potential_are_real(self, bias=2):
+        if self.num_potential_events:
+            return (self.num_real_events + bias) / (self.num_potential_events + bias)
+        else:
+            return 0
+
+    def fraction_real_are_false_negative(self, bias=2):
+        if self.num_real_events:
+            return (self.num_false_negatives + bias) / (self.num_real_events + bias)
+        else:
+            return 
 
     def compute_derived_properties(self, fb_data):
         if fb_data: # only update these when we have feed data

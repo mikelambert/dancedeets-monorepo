@@ -50,15 +50,6 @@ Hi $fb_user.profile.first_name,
 	#end if
 #end for
 
-#if $new_dance_events
-	<p>If any of your events are for street/choreo dancers, please add them to Dance Deets:<br>
-	<ul>
-	#for $fb_event in $new_dance_events
-	<li><a href="http://www.dancedeets.com/events/add?event_id=$fb_event['info']['id']">$fb_event['info']['name']</a>
-	#end for
-	</ul>
-#end if
-
 <p>To unsubscribe or change your preferred city, <a href="http://www.dancedeets.com/user/edit">go to your Dance Deets settings.</a>
 #end def
 

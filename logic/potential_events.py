@@ -44,7 +44,10 @@ def make_potential_event_with_source(fb_event_id, match_score, source_id, source
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", event_id, e)
     if new_source:
-        thing_db.increment_num_potential_events(source_id)
+        #TODO(lambert): doesn't handle the case of the match score increasing from <0 to >0 in the future
+        if match_score > 0:
+            thing_db.increment_num_potential_events(source_id)
+        thing_db.increment_num_all_events(source.graph_id)
 
 def get_potential_dance_events(batch_lookup, user_id):
     try:
@@ -68,25 +71,14 @@ def get_potential_dance_events(batch_lookup, user_id):
             continue # only legit events
         #TODO(lambert): before we fix this to be a smarter classifier, perhaps we should do better caching of the results to avoid blowing quotas
         classified_event = event_classifier.get_classified_event(fb_event)
-        if classified_event.is_dance_event():
-            dance_event_ids.append(event_id)
-            match_scores[event_id] = classified_event.match_score()
+        dance_event_ids.append(event_id)
+        match_scores[event_id] = classified_event.match_score()
     # TODO(lambert): ideally would use keys_only=True, but that's not supported on get_by_key_name :-(
 
-    # Filter out DBEvents
-    found_events = eventdata.DBEvent.get_by_key_name(dance_event_ids)
-    found_event_ids = [x.fb_event_id for x in found_events if x]
-    new_dance_event_ids = set(dance_event_ids).difference(found_event_ids)
-
-    # Filter out looked_at PotentialEvents
-    potential_events = PotentialEvent.get_by_key_name(new_dance_event_ids)
-    seen_potential_event_ids = [x.fb_event_id for x in potential_events if x and x.looked_at]
-    new_unseen_dance_event_ids = set(new_dance_event_ids).difference(seen_potential_event_ids)
-
-    new_dance_events = [second_batch_lookup.data_for_event(x) for x in new_unseen_dance_event_ids]
+    dance_events = [second_batch_lookup.data_for_event(x) for x in dance_event_ids]
     source = thing_db.create_source_for_id(user_id, fb_data=None)
     source.put()
-    for event_id in new_unseen_dance_event_ids:
+    for event_id in dance_event_ids:
         make_potential_event_with_source(event_id, match_scores[event_id], source_id=source.graph_id, source_field=thing_db.FIELD_INVITES)
-    new_dance_events = sorted(new_dance_events, key=lambda x: x['info'].get('start_time'))
-    return new_dance_events
+    dance_events = sorted(dance_events, key=lambda x: x['info'].get('start_time'))
+    return dance_events
