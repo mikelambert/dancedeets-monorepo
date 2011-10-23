@@ -30,7 +30,7 @@ def _address_for_venue(venue, raw_location):
 
 def _get_city_for_fb_event(fb_event):
     event_info = fb_event['info']
-    venue = event_info.get('venue', {})
+    venue = event_info.get('venue', {}) #TODO(lambert): need to support "venue decoration" so we don't need to do one-by-one lookups here
     # if we have a venue id, get the city from there
     logging.info("venue id is %s", venue.get('id'))
     if venue.get('id'):
