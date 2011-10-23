@@ -30,6 +30,9 @@ Edit Event
 				<button name="delete" value="yes">Delete Source</button>
 				<p>
 				Length-in-Seconds: $source.feed_history_in_seconds<br>
+				Num Potential Events: $source.num_potential_events<br>
+				Num Real Events: $source.num_real_events<br>
+				Num False-Negative Events: $source.num_false_negatives<br>
 				#if $potential_events
 					All $len($potential_events) PotentialEvent ids:
 					#for $potential_event in $potential_events
