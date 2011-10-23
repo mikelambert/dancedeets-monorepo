@@ -40,9 +40,9 @@ def increment_num_real_events(source_id):
         s.num_real_events = (s.num_real_events or 0) + 1
     run_modify_transaction_for_key(source_id, inc)
 
-def increment_num_real_events_without_potential_events(source_id):
+def increment_num_false_negatives(source_id):
     def inc(s):
-        s.num_real_events_without_potential_events = (s.num_real_events_without_potential_events or 0) + 1
+        s.num_false_negatives = (s.num_false_negatives or 0) + 1
     run_modify_transaction_for_key(source_id, inc)
 
 class Source(db.Model):
@@ -58,11 +58,12 @@ class Source(db.Model):
     choreo = db.FloatProperty()
 
     creating_fb_uid = db.IntegerProperty()
-        creation_time = db.DateTimeProperty()
+    creation_time = db.DateTimeProperty()
+    last_scrape_time = db.DateTimeProperty()
 
     num_potential_events = db.IntegerProperty()
     num_real_events = db.IntegerProperty()
-    num_real_events_without_potential_events = db.IntegerProperty()
+    num_false_negatives = db.IntegerProperty()
 
     def compute_derived_properties(self, fb_data):
         if fb_data: # only update these when we have feed data

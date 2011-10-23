@@ -61,6 +61,7 @@ def process_thing_feed(source, thing_feed, batch_lookup):
     
     # save new name, feed_history_in_seconds
     source.compute_derived_properties(thing_feed)
+    source.last_scrape_time = datetime.datetime.now()
     source.put()
 
     event_ids = []
@@ -78,9 +79,8 @@ def process_thing_feed(source, thing_feed, batch_lookup):
                 else:
                     logging.error("broken link is %s", post['link'])
 
-    existing_event_ids = set([x.fb_event_id for x in eventdata.DBEvent.get_by_key_name(event_ids) + potential_events.PotentialEvent.get_by_key_name(event_ids) if x])
-    new_event_ids = [x for x in event_ids if x not in existing_event_ids]
-    for event_id in new_event_ids:
+    # TODO(lambert): maybe trim any ids from posts with dates "past" the last time we scraped? tricky to get correct though
+    for event_id in event_ids:
         batch_lookup.lookup_event(event_id)
     batch_lookup.finish_loading()
 
@@ -90,6 +90,7 @@ def process_thing_feed(source, thing_feed, batch_lookup):
             continue
         match_score = event_classifier.get_classified_event(fb_event).match_score()
         potential_events.make_potential_event_with_source(event_id, match_score, source_id=source.graph_id, source_field=thing_db.FIELD_FEED)
+            
 
     existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(source_ids) if x])
     new_source_ids = [x for x in source_ids if x not in existing_source_ids]
