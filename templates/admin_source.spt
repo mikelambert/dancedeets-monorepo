@@ -2,7 +2,7 @@
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
-Edit Event
+Edit Source
 #end def
 
 #def body
@@ -36,12 +36,12 @@ Edit Event
 				#if $potential_events
 					All $len($potential_events) PotentialEvent ids:
 					#for $potential_event in $potential_events
-						<a href="$raw_fb_event_url($potential_event.fb_event_id)">$potential_event.fb_event_id</a>,
+						<a href="$dd_admin_event_url($potential_event.fb_event_id)">$potential_event.fb_event_id</a>,
 					#end for
 					<p>
 					All $len($db_events) DBEvents:
 					#for $db_event in $db_events
-						<a href="$raw_fb_event_url($db_event.fb_event_id)">$db_event.fb_event_id</a>,
+						<a href="$dd_admin_event_url($db_event.fb_event_id)">$db_event.fb_event_id</a>,
 					#end for
 					
 					<br>

@@ -174,8 +174,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.display['date_human_format'] = dates.date_human_format
             self.display['duration_human_format'] = dates.duration_human_format
             self.display['login_url'] = login_url
+
         self.display['fb_event_url'] = urls.fb_event_url
         self.display['raw_fb_event_url'] = urls.raw_fb_event_url
+        self.display['dd_admin_event_url'] = urls.dd_admin_event_url
+        self.display['dd_admin_source_url'] = urls.dd_admin_source_url
+
         self.display['request'] = request
         self.display['api_key'] = FACEBOOK_CONFIG['api_key']
         self.display['prod_mode'] = self.prod_mode

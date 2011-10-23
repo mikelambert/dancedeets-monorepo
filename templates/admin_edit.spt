@@ -81,7 +81,7 @@ Edit Event
 			#if $potential_event
 				<p>Has a potential event. With Sources:
 				#for $source_id in $potential_event.source_ids
-					<a href="http://graph.facebook.com/$source_id">$source_id</a>,
+					<a href="$dd_admin_source_url($source_id)">$source_id</a>,
 				#end for
 			#end if
 			<input type="hidden" name="event_id" value="$fb_event.info.id">
