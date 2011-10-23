@@ -31,6 +31,8 @@ FIELD_INVITES = 'FIELD_INVITES' # fql query on invites for signed-up users
 def run_modify_transaction_for_key(key, func):
     def inner_modify():
         s = Source.get_by_key_name(str(key))
+        if not s:
+            s = Source(key_name=str(key))
         func(s)
         s.put()
     db.run_in_transaction(inner_modify)
@@ -58,12 +60,20 @@ def increment_num_false_negatives(source_id):
 def increment_source_event_counters(source_id, potential_event, all_event, real_event, false_negative):
     def inc(s):
         if potential_event:
+            if not s.num_potential_events:
+                s.num_potential_events = 0
             s.num_potential_events += 1
         if all_event:
+            if not s.num_all_events:
+                s.num_all_events = 0
             s.num_all_events += 1
         if real_event:
+            if not s.num_real_events:
+                s.num_real_events = 0
             s.num_real_events += 1
         if false_negative:
+            if not s.num_false_negatives:
+                s.num_false_negatives = 0
             s.num_false_negatives += 1
     run_modify_transaction_for_key(source_id, inc)
 
@@ -169,20 +179,22 @@ def map_count_potential_event(pe):
     batch_lookup.finish_loading()
 
     fb_event = batch_lookup.data_for_event(pe.fb_event_id)
+    if fb_event['deleted']:
+        return
     classified_event = event_classifier.get_classified_event(fb_event)
 
     from events import eventdata
-    db_event = eventdata.DBEvent.get_by_key_name(pe.fb_event_id)
+    db_event = eventdata.DBEvent.get_by_key_name(str(pe.fb_event_id))
     for source_id in pe.source_ids:
         potential_event = classified_event.is_dance_event()
         all_event = True
         real_event = db_event != None
-        false_positive = db_event and not classified_event.is_dance_event()
+        false_negative = db_event and not classified_event.is_dance_event()
         increment_source_event_counters(source_id,
             potential_event=potential_event,
             all_event=all_event,
             real_event=real_event,
-            false_positive=false_positive
+            false_negative=false_negative
         )
 
 def mr_clean_source_counts():
