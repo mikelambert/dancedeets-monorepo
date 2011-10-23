@@ -14,6 +14,7 @@ class PotentialEvent(db.Model):
 
     looked_at = db.BooleanProperty()
     match_score = db.IntegerProperty()
+    show_even_if_no_score = db.BooleanProperty()
 
     # need to delete these
     source = db.StringProperty()
@@ -21,20 +22,23 @@ class PotentialEvent(db.Model):
     source_fields = db.ListProperty(str)
 
 
-def make_potential_event_with_source(fb_event_id, match_score, source_id, source_field):
+def make_potential_event_with_source(fb_event_id, match_score, source, source_field):
+    # show all events from a source if enough of them slip through our automatic filters
+    show_all_events = source.fraction_real_are_false_negative() > 0.05
     def _internal_add_source_for_event_id():
         potential_event = PotentialEvent.get_by_key_name(str(fb_event_id)) or PotentialEvent(key_name=str(fb_event_id))
         # If already added, return
         has_source = False
         for source_id_, source_field_ in zip(potential_event.source_ids, potential_event.source_fields):
-            if source_id_ == source_id and source_field_ == source_field:
+            if source_id_ == source.graph_id and source_field_ == source_field:
                 has_source = True
         
         if has_source and potential_event.match_score == match_score:
             return False
-        potential_event.source_ids.append(source_id)
+        potential_event.source_ids.append(source.graph_id)
         potential_event.source_fields.append(source_field)
         potential_event.match_score = match_score
+        potential_event.show_even_if_no_score = potential_event.show_even_if_no_score or show_all_events
         potential_event.put()
         return True
 
@@ -46,7 +50,7 @@ def make_potential_event_with_source(fb_event_id, match_score, source_id, source
     if new_source:
         #TODO(lambert): doesn't handle the case of the match score increasing from <0 to >0 in the future
         if match_score > 0:
-            thing_db.increment_num_potential_events(source_id)
+            thing_db.increment_num_potential_events(source.graph_id)
         thing_db.increment_num_all_events(source.graph_id)
 
 def get_potential_dance_events(batch_lookup, user_id):
@@ -79,6 +83,6 @@ def get_potential_dance_events(batch_lookup, user_id):
     source = thing_db.create_source_for_id(user_id, fb_data=None)
     source.put()
     for event_id in dance_event_ids:
-        make_potential_event_with_source(event_id, match_scores[event_id], source_id=source.graph_id, source_field=thing_db.FIELD_INVITES)
+        make_potential_event_with_source(event_id, match_scores[event_id], source=source, source_field=thing_db.FIELD_INVITES)
     dance_events = sorted(dance_events, key=lambda x: x['info'].get('start_time'))
     return dance_events

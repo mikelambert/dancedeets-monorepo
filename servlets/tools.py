@@ -41,7 +41,7 @@ class UnprocessFutureEventsHandler(webapp.RequestHandler):
 from servlets import tasks
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler):
     def get(self):
-        thing_db.clean_mapreduce()
+        thing_db.mr_clean_source_counts()
 
 class OwnedEventsHandler(webapp.RequestHandler):
     def get(self):

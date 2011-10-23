@@ -4,6 +4,8 @@ import logging
 from google.appengine.ext import db
 
 from mapreduce import control
+from logic import event_classifier
+from util import fb_mapreduce
 from util import properties
 
 GRAPH_TYPE_PROFILE = 'GRAPH_TYPE_PROFILE'
@@ -25,21 +27,6 @@ FIELD_FEED = 'FIELD_FEED' # /feed
 FIELD_EVENTS = 'FIELD_EVENTS' # /events
 FIELD_INVITES = 'FIELD_INVITES' # fql query on invites for signed-up users
 
-def clean_source(s):
-    s.creation_time = datetime.datetime.now() - datetime.timedelta(hours=12)
-    s.num_potential_events = s.num_potential_events or 0
-    s.num_real_events = s.num_real_events or 0
-    s.num_false_negatives = s.num_false_negatives or 0
-    s.num_all_events = s.num_all_events or s.num_potential_events
-    s.put()
-
-def clean_mapreduce():
-    control.start_map(
-        name='clean sources',
-        reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='logic.thing_db.clean_source',
-        mapper_parameters={'entity_kind': 'logic.thing_db.Source'},
-        )
 
 def run_modify_transaction_for_key(key, func):
     def inner_modify():
@@ -68,6 +55,19 @@ def increment_num_false_negatives(source_id):
         s.num_false_negatives = (s.num_false_negatives or 0) + 1
     run_modify_transaction_for_key(source_id, inc)
 
+def increment_source_event_counters(source_id, potential_event, all_event, real_event, false_negative):
+    def inc(s):
+        if potential_event:
+            s.num_potential_events += 1
+        if all_event:
+            s.num_all_events += 1
+        if real_event:
+            s.num_real_events += 1
+        if false_negative:
+            s.num_false_negatives += 1
+    run_modify_transaction_for_key(source_id, inc)
+
+
 class Source(db.Model):
     graph_id = property(lambda x: int(x.key().name()))
     graph_type = db.StringProperty(choices=GRAPH_TYPES)
@@ -89,13 +89,13 @@ class Source(db.Model):
     num_real_events = db.IntegerProperty()
     num_false_negatives = db.IntegerProperty()
 
-    def fraction_potential_are_real(self, bias=2):
+    def fraction_potential_are_real(self, bias=0):
         if self.num_potential_events:
             return (self.num_real_events + bias) / (self.num_potential_events + bias)
         else:
             return 0
 
-    def fraction_real_are_false_negative(self, bias=2):
+    def fraction_real_are_false_negative(self, bias=1):
         if self.num_real_events:
             return (self.num_false_negatives + bias) / (self.num_real_events + bias)
         else:
@@ -155,6 +155,53 @@ def create_source_from_event(db_event, batch_lookup):
         s = create_source_for_id(db_event.owner_fb_uid, thing_feed)
         s.put()
 
+
+def map_clean_source_count(s):
+    s.num_all_events = 0
+        s.num_potential_events = 0
+        s.num_real_events = 0
+        s.num_false_negatives = 0
+    s.put()
+
+def map_count_potential_event(pe):
+    batch_lookup = fb_mapreduce.get_batch_lookup()
+    batch_lookup.lookup_event(pe.fb_event_id)
+    batch_lookup.finish_loading()
+
+    fb_event = batch_lookup.data_for_event(pe.fb_event_id)
+    classified_event = event_classifier.get_classified_event(fb_event)
+
+    from events import eventdata
+    db_event = eventdata.DBEvent.get_by_key_name(pe.fb_event_id)
+    for source_id in pe.source_ids:
+        potential_event = classified_event.is_dance_event()
+        all_event = True
+        real_event = db_event != None
+        false_positive = db_event and not classified_event.is_dance_event()
+        increment_source_event_counters(source_id,
+            potential_event=potential_event,
+            all_event=all_event,
+            real_event=real_event,
+            false_positive=false_positive
+        )
+
+def mr_clean_source_counts():
+       control.start_map(
+                name='clean source counts',
+                reader_spec='mapreduce.input_readers.DatastoreInputReader',
+                handler_spec='logic.thing_db.clean_source_count',
+                mapper_parameters={
+                        'entity_kind': 'logic.thing_db.Source',
+                },
+        )
+
+def mr_count_potential_events():
+    fb_mapreduce.start_map(
+        name='count potential events',
+        handler_spec='logic.thing_db.map_count_potential_event',
+        entity_kind='logic.potential_events.PotentialEvent'
+    )
+    
 
 """
 user:

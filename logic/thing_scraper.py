@@ -1,4 +1,5 @@
 import cgi
+import datetime
 import logging
 import urlparse
 
@@ -12,24 +13,26 @@ from logic import thing_db
 
 from util import fb_mapreduce
 
-def scrape_events_from_sources(batch_lookup, sources):
+def scrape_events_from_source(batch_lookup, source):
+    # don't scrape sources that prove useless and give mostly garbage events
+    if source.fraction_potential_are_real() < 0.05:
+        return
+
     batch_lookup = batch_lookup.copy(allow_cache=False)
-    for source in sources:
-        batch_lookup.lookup_thing_feed(source.graph_id)
+    batch_lookup.lookup_thing_feed(source.graph_id)
     batch_lookup.finish_loading()
 
     event_ids = []
-    for source in sources:
-        try:
-            thing_feed = batch_lookup.data_for_thing_feed(source.graph_id)
-            event_ids.extend(process_thing_feed(source, thing_feed, batch_lookup.copy()))
-        except fb_api.NoFetchedDataException, e:
-            logging.error("Failed to fetch data for thing: %s", str(e))
+    try:
+        thing_feed = batch_lookup.data_for_thing_feed(source.graph_id)
+        event_ids = process_thing_feed(source, thing_feed, batch_lookup.copy())
+    except fb_api.NoFetchedDataException, e:
+        logging.error("Failed to fetch data for thing: %s", str(e))
     return event_ids
 
 def scrape_source(source):
     batch_lookup = fb_mapreduce.get_batch_lookup(allow_cache=False) # Force refresh of thing feeds
-    event_ids = scrape_events_from_sources(batch_lookup, [source])
+    event_ids = scrape_events_from_source(batch_lookup, source)
 
 def mapreduce_scrape_all_sources(batch_lookup):
     fb_mapreduce.start_map(
@@ -89,7 +92,7 @@ def process_thing_feed(source, thing_feed, batch_lookup):
         if fb_event['deleted']:
             continue
         match_score = event_classifier.get_classified_event(fb_event).match_score()
-        potential_events.make_potential_event_with_source(event_id, match_score, source_id=source.graph_id, source_field=thing_db.FIELD_FEED)
+        potential_events.make_potential_event_with_source(event_id, match_score, source=source.graph_id, source_field=thing_db.FIELD_FEED)
             
 
     existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(source_ids) if x])
