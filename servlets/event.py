@@ -252,7 +252,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             for source_id in potential_event.source_ids:
                 thing_db.increment_num_real_events(source_id)
                 if not classified_event.is_dance_event():
-                    thing_db.increment_num_false_positives(source_id)
+                    thing_db.increment_num_false_negatives(source_id)
         # Hmm, how do we implement this one?# thing_db.increment_num_real_events_without_potential_events(source_id)
 
         backgrounder.load_event_attending([event_id])

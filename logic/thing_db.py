@@ -189,14 +189,15 @@ def mr_clean_source_counts():
        control.start_map(
                 name='clean source counts',
                 reader_spec='mapreduce.input_readers.DatastoreInputReader',
-                handler_spec='logic.thing_db.clean_source_count',
+                handler_spec='logic.thing_db.map_clean_source_count',
                 mapper_parameters={
                         'entity_kind': 'logic.thing_db.Source',
                 },
         )
 
-def mr_count_potential_events():
+def mr_count_potential_events(batch_lookup):
     fb_mapreduce.start_map(
+        batch_lookup=batch_lookup,
         name='count potential events',
         handler_spec='logic.thing_db.map_count_potential_event',
         entity_kind='logic.potential_events.PotentialEvent'
