@@ -24,7 +24,7 @@ class PotentialEvent(db.Model):
 
 def make_potential_event_with_source(fb_event_id, match_score, source, source_field):
     # show all events from a source if enough of them slip through our automatic filters
-    show_all_events = source.fraction_real_are_false_negative() > 0.05
+    show_all_events = source.fraction_real_are_false_negative() > 0.05 and source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
     def _internal_add_source_for_event_id():
         potential_event = PotentialEvent.get_by_key_name(str(fb_event_id)) or PotentialEvent(key_name=str(fb_event_id))
         # If already added, return
