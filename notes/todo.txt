@@ -1,5 +1,9 @@
 BEFORE LAUNCH:
 
+- MapReduce InputFilter Ideas:
++ filter entries before iterating/loading them, with an extra query filter
++ do more work in the input_reader to load fb_event data for us automatically
+
 - Ensure this matches:
 http://www.dancedeets.com/events/admin_edit?event_id=206267406110368
 'choreography workshops lounge'
@@ -22,6 +26,7 @@ http://www.dancedeets.com/events/admin_edit?event_id=234728589917096
 http://www.dancedeets.com/events/admin_edit?event_id=263695657005390
 http://www.dancedeets.com/events/admin_edit?event_id=222782557786103
 http://www.dancedeets.com/events/admin_edit?event_id=258452520867371
+http://www.dancedeets.com/events/admin_edit?event_id=166840623406160
 
 - Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
 http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
