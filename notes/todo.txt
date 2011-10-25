@@ -1,7 +1,6 @@
 BEFORE LAUNCH:
 
 - MapReduce InputFilter Ideas:
-+ filter entries before iterating/loading them, with an extra query filter
 + do more work in the input_reader to load fb_event data for us automatically
 
 - Ensure this matches:

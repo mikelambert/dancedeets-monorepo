@@ -54,8 +54,6 @@ URLS = [
     ('/tasks/reload_all_users', tasks.ReloadAllUsersHandler),
     ('/tasks/reload_future_events', tasks.ReloadFutureEventsHandler),
     ('/tasks/reload_past_events', tasks.ReloadPastEventsHandler),
-    ('/tasks/resave_all_users', tasks.ResaveAllUsersHandler),
-    ('/tasks/resave_all_events', tasks.ResaveAllEventsHandler),
     ('/tasks/email_all_users', tasks.EmailAllUsersHandler),
     ('/tasks/email_user', tasks.EmailUserHandler),
     ('/tasks/load_all_potential_events', tasks.LoadAllPotentialEventsHandler),
@@ -147,15 +145,18 @@ class MyWSGIApplication(webapp.WSGIApplication):
         response.wsgi_write(start_response)
         return ['']
 
-def main():
-    prod_mode = not os.environ['SERVER_SOFTWARE'].startswith('Dev')
+def get_application(prod_mode=False):
     if prod_mode:
         filename = 'facebook-prod.yaml'
     else:
         filename = 'facebook.yaml'
     base_servlet.FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
      application = MyWSGIApplication(URLS, debug=True, prod_mode=prod_mode)
-    run_wsgi_app(application)
+    return application
+
+def main():
+    prod_mode = not os.environ['SERVER_SOFTWARE'].startswith('Dev')
+    run_wsgi_app(get_application(prod_mode))
 
 
 if __name__ == '__main__':

@@ -31,12 +31,12 @@ def scrape_events_from_source(batch_lookup, source):
     return event_ids
 
 def scrape_source(source):
-    batch_lookup = fb_mapreduce.get_batch_lookup(allow_cache=False) # Force refresh of thing feeds
+    batch_lookup = fb_mapreduce.get_batch_lookup()
     event_ids = scrape_events_from_source(batch_lookup, source)
 
 def mapreduce_scrape_all_sources(batch_lookup):
     fb_mapreduce.start_map(
-        batch_lookup,
+        batch_lookup.copy(allow_cache=False), # Force refresh of thing feeds
         'Scrape All Sources',
         'logic.thing_scraper.scrape_source',
         'logic.thing_db.Source'
@@ -87,12 +87,12 @@ def process_thing_feed(source, thing_feed, batch_lookup):
         batch_lookup.lookup_event(event_id)
     batch_lookup.finish_loading()
 
-    for event_id in new_event_ids:
+    for event_id in event_ids:
         fb_event = batch_lookup.data_for_event(event_id)
         if fb_event['deleted']:
             continue
         match_score = event_classifier.get_classified_event(fb_event).match_score()
-        potential_events.make_potential_event_with_source(event_id, match_score, source=source.graph_id, source_field=thing_db.FIELD_FEED)
+        potential_events.make_potential_event_with_source(event_id, match_score, source=source, source_field=thing_db.FIELD_FEED)
             
 
     existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(source_ids) if x])

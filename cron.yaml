@@ -3,7 +3,7 @@ cron:
   url: /tasks/load_potential_events_for_friends?user_id=701004&allow_cache=0
   schedule: every 24 hours
 - description: load potential events from special users
-  url: /tasks/load_potential_events_from_wall_posts?user_id=701004
+  url: /tasks/load_potential_events_from_wall_posts?user_id=701004&allow_cache=0
   schedule: every 24 hours
 - description: email users about upcoming events
   url: /tasks/email_all_users
