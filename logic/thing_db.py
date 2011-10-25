@@ -101,13 +101,13 @@ class Source(db.Model):
 
     def fraction_potential_are_real(self, bias=0):
         if self.num_potential_events:
-            return (self.num_real_events + bias) / (self.num_potential_events + bias)
+            return 1.0 * (self.num_real_events + bias) / (self.num_potential_events + bias)
         else:
             return 0
 
     def fraction_real_are_false_negative(self, bias=1):
         if self.num_real_events:
-            return (self.num_false_negatives + bias) / (self.num_real_events + bias)
+            return 1.0 * (self.num_false_negatives + bias) / (self.num_real_events + bias)
         else:
             return 
 
@@ -171,7 +171,7 @@ def map_clean_source_count(s):
         s.num_potential_events = 0
         s.num_real_events = 0
         s.num_false_negatives = 0
-    s.put()
+    yield s.put()
 
 def map_count_potential_event(pe):
     batch_lookup = fb_mapreduce.get_batch_lookup()
