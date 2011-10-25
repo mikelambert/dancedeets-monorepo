@@ -48,7 +48,7 @@ dance_keywords = [
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
     'street\W?dancing?',
-    'street\W?dance', 'break\W?dance', 'break\W?dancing?',
+    'street\W?dance', 'bre?ak\W?dance', 'bre?ak\W?dancing?', 'brea?ak\W?dancers?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
     'top\W?rock(?:er[sz]?|ing?)?', 'up\W?rock(?:er[sz]?|ing?|)?',
