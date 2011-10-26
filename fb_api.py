@@ -78,6 +78,7 @@ class BatchLookup(object):
 
     def __init__(self, fb_uid, fb_graph, allow_cache=True):
         self.fb_uid = fb_uid
+        self.userless_uid = fb_uid
         self.fb_graph = fb_graph
         self.allow_cache = allow_cache
         self.allow_memcache = self.allow_cache
@@ -169,9 +170,6 @@ class BatchLookup(object):
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
-    def get_userless_id(self):
-        return self.fb_uid
-
     def _profile_key(self, user_id):
         return tuple(str(x) for x in (self.fb_uid, user_id, self.OBJECT_PROFILE))
     def _user_key(self, user_id):
@@ -181,17 +179,17 @@ class BatchLookup(object):
     def _friend_list_key(self, friend_list_id):
         return tuple(str(x) for x in (self.fb_uid, friend_list_id, self.OBJECT_FRIEND_LIST))
     def _event_key(self, event_id):
-        return tuple(str(x) for x in (self.get_userless_id(), event_id, self.OBJECT_EVENT))
+        return tuple(str(x) for x in (self.userless_uid, event_id, self.OBJECT_EVENT))
     def _event_attending_key(self, event_id):
-        return tuple(str(x) for x in (self.get_userless_id(), event_id, self.OBJECT_EVENT_ATTENDING))
+        return tuple(str(x) for x in (self.userless_uid, event_id, self.OBJECT_EVENT_ATTENDING))
     def _event_members_key(self, event_id):
-        return tuple(str(x) for x in (self.get_userless_id(), event_id, self.OBJECT_EVENT_MEMBERS))
+        return tuple(str(x) for x in (self.userless_uid, event_id, self.OBJECT_EVENT_MEMBERS))
     def _fql_key(self, fql_query):
         return tuple(str(x) for x in (self.fb_uid, fql_query, self.OBJECT_FQL))
     def _thing_feed_key(self, thing_id):
-        return tuple(str(x) for x in (self.get_userless_id(), thing_id, self.OBJECT_THING_FEED))
+        return tuple(str(x) for x in (self.userless_uid, thing_id, self.OBJECT_THING_FEED))
     def _venue_key(self, thing_id):
-        return tuple(str(x) for x in (self.get_userless_id(), thing_id, self.OBJECT_VENUE))
+        return tuple(str(x) for x in (self.userless_uid, thing_id, self.OBJECT_VENUE))
 
     def _string_key(self, key):
         string_key = '.'.join(str(x).replace('.', '-') for x in key)
@@ -402,6 +400,6 @@ class BatchLookup(object):
 
 def CommonBatchLookup(*args, **kwargs):
     batch_lookup = BatchLookup(*args, **kwargs)
-    batch_lookup.fb_uid = '701004'
+    batch_lookup.userless_uid = '701004'
     return batch_lookup
 
