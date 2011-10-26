@@ -6,7 +6,7 @@ cron:
   url: /tasks/load_potential_events_from_wall_posts?user_id=701004&allow_cache=0
   schedule: every 24 hours
 - description: email users about upcoming events
-  url: /tasks/email_all_users
+  url: /tasks/email_all_users?user_id=701004
   schedule: every wednesday 15:00
 - description: calculate periodic statistics and rankings
   url: /tasks/compute_rankings
@@ -15,13 +15,13 @@ cron:
   url: /tasks/cleanup_work
   schedule: every 24 hours
 - description: reload user data
-  url: /tasks/reload_all_users?allow_cache=0
+  url: /tasks/reload_all_users?user_id=701004&allow_cache=0
   schedule: every 6 hours
 - description: reload future facebook event data
-  url: /tasks/reload_future_events?allow_cache=0
+  url: /tasks/reload_future_events?user_id=701004&allow_cache=0
   schedule: every 12 hours
 - description: reload past facebook event data
-  url: /tasks/reload_past_events?allow_cache=0
+  url: /tasks/reload_past_events?user_id=701004&allow_cache=0
   schedule: every monday 2:00
 - description: daily exception report
   url: /_ereporter?sender=mlambert@gmail.com&to=mlambert@gmail.com
