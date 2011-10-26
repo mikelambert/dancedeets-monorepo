@@ -67,6 +67,7 @@ skip_files:
 - ^(.*/)?\..*
 - ^(.*/)?.*\.db
 - ^(.*/)?.*\.csv
+- ^(.*/)?test_data(/.*)?
 #- ^(.*/)?app\.yaml
 #- ^(.*/)?app\.yml
 #- ^(.*/)?index\.yaml
