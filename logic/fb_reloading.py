@@ -25,7 +25,7 @@ def yield_load_fb_event(batch_lookup, db_event):
     fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
     db_event.make_findable_for(fb_event)
     yield db_event.put()
-map_load_fb_event = fb_mapreduce.mr_user_wrap(yield_load_fb_event)
+map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
 
@@ -43,7 +43,7 @@ def yield_load_fb_event_attending(batch_lookup, db_event):
     fb_event_attending = batch_lookup.data_for_event_attending(db_event.fb_event_id)
     db_event.include_attending_summary(fb_event_attending)
     yield db_event.put()
-map_load_fb_event_attending = fb_mapreduce.mr_user_wrap(yield_load_fb_event_attending)
+map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
 load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 
 
