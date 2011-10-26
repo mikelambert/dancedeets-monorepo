@@ -14,7 +14,7 @@ def decorate_with_friends(batch_lookup, search_results):
         decorate_with_friends(batch_lookup, search_results[RESULTS_AT_ONCE:])
         search_results = search_results[:RESULTS_AT_ONCE]
 
-    if batch_lookup.fb_uid:
+    if batch_lookup.fb_uid: # if logged in
         friends_list = batch_lookup.data_for_user(batch_lookup.fb_uid)['friends']['data']
         friend_map = dict((x['id'], x['name']) for x in friends_list if 'name' in x)
         friend_ids = set(friend_map.keys())
