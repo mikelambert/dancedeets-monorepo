@@ -101,15 +101,20 @@ class Source(db.Model):
 
     def fraction_potential_are_real(self, bias=0):
         if self.num_potential_events:
-            return 1.0 * (self.num_real_events + bias) / (self.num_potential_events + bias)
+            num_real_events = (self.num_real_events or 0) + bias
+            num_potential_events = (self.num_potential_events or 0) + bias
+            return 1.0 * num_real_events / num_potential_events
         else:
             return 0
 
     def fraction_real_are_false_negative(self, bias=1):
         if self.num_real_events:
-            return 1.0 * (self.num_false_negatives + bias) / (self.num_real_events + bias)
+            #TODO(lambert): figure out why num_false_negatives is None, in particular for source id=107687589275667 even after saving
+            num_false_negatives = (self.num_false_negatives or 0) + bias
+            num_real_events = (self.num_real_events or 0) + bias
+            return 1.0 * num_false_negatives / num_real_events
         else:
-            return 
+            return 0
 
     def compute_derived_properties(self, fb_data):
         if fb_data: # only update these when we have feed data
