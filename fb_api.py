@@ -400,7 +400,8 @@ class BatchLookup(object):
                 pass
         return fetched_objects
 
-class CommonBatchLookup(BatchLookup):
-    def get_userless_id(self):
-        return '701004'
+def CommonBatchLookup(*args, **kwargs):
+    batch_lookup = BatchLookup(*args, **kwargs)
+    batch_lookup.fb_uid = '701004'
+    return batch_lookup
 
