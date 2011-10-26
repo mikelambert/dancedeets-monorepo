@@ -27,11 +27,6 @@ from servlets import tools
 from servlets import youtube_simple_api
 import smemcache
 
-ereporter.register_logger()
-
-#TODO(lambert): setup webtest to test the wsgi app as a regression test to ensure everything is working
-# http://pythonpaste.org/webtest/
-
 class DoNothingHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
         return
@@ -155,6 +150,7 @@ def get_application(prod_mode=False):
     return application
 
 def main():
+    ereporter.register_logger()
     prod_mode = not os.environ['SERVER_SOFTWARE'].startswith('Dev')
     run_wsgi_app(get_application(prod_mode))
 
