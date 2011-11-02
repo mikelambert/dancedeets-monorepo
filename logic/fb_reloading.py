@@ -6,6 +6,7 @@ from mapreduce import util
 from mapreduce import input_readers
 
 from events import eventdata
+import fb_api
 from logic import email_events
 from logic import potential_events
 from util import fb_mapreduce
