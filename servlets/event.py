@@ -361,9 +361,9 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
         number_of_events = int(self.request.get('number_of_events', '20'))
-        unseen_potential_events = list(potential_events.PotentialEvent.gql("WHERE looked_at = False AND match_score > 0"))
+        unseen_potential_events = list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0"))
         if len(unseen_potential_events) < number_of_events:
-            unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = False AND match_score = 0 AND show_even_if_no_score = True"))
+            unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True"))
         potential_event_dict = dict((x.key().name(), x) for x in unseen_potential_events)
         already_added_events = eventdata.DBEvent.get_by_key_name(list(potential_event_dict))
         already_added_event_ids = [x.key().name() for x in already_added_events if x]
