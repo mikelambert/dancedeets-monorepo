@@ -68,6 +68,17 @@ indexes:
   - name: __key__
     direction: desc
 
+- kind: PotentialEvent
+  properties:
+  - name: looked_at
+  - name: match_score
+  - name: show_even_if_no_score
+
+- kind: PotentialEvent
+  properties:
+  - name: looked_at
+  - name: match_score
+
 - kind: User
   properties:
   - name: __key__
