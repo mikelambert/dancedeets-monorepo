@@ -33,6 +33,8 @@ Edit Source
 				Num Potential Events: $source.num_potential_events<br>
 				Num Real Events: $source.num_real_events<br>
 				Num False-Negative Events: $source.num_false_negatives<br>
+				Fraction of Real are False Negative: $source.fraction_real_are_false_negative()<br>
+				Fraction of Potential are Real: $source.fraction_potential_are_real()<br>
 				#if $potential_events
 					All $len($potential_events) PotentialEvent ids:
 					#for $potential_event in $potential_events
