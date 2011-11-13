@@ -40,8 +40,8 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
             city_name = self.request.get('city_name')
         else:
             location = self.request.get('location', self.user and self.user.location)
-            distance = int(self.request.get('distance', self.user and self.user.distance))
-            distance_units = self.request.get('distance_units', self.user and self.user.distance_units)
+            distance = int(self.request.get('distance', self.user and self.user.distance or 100))
+            distance_units = self.request.get('distance_units', self.user and self.user.distance_units or 'miles')
             if distance_units == 'miles':
                 distance_in_km = locations.miles_in_km(distance)
             else:
