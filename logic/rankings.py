@@ -67,6 +67,7 @@ def begin_ranking_calculations():
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.rankings.count_event_for_city',
         mapper_parameters={'entity_kind': 'events.eventdata.DBEvent'},
+        queue_name='slow-queue',
         _app=EVENT_FOR_CITY_RANKING,
     )
     #TODO(lambert): Make the above have a done callback triggering this one:
@@ -75,6 +76,7 @@ def begin_ranking_calculations():
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='logic.rankings.count_user_for_city',
         mapper_parameters={'entity_kind': 'events.users.User'},
+        queue_name='slow-queue',
         _app=USER_FOR_CITY_RANKING,
     )
     #TODO(lambert): move this into a /done callback on the above two
