@@ -1,3 +1,5 @@
+funkinstylez
+funkin.? stylez
 circle kingz
 r16
 r-16
@@ -24,6 +26,7 @@ kod,0
 keep on dancing
 notorious ibe
 ibe,0
+energies urbaines
 
 # what are we classifying as? freestyle?
 abdc
@@ -31,3 +34,4 @@ america's best dance crew
 world of dance
 monsters of hiphop
 monsters,0
+

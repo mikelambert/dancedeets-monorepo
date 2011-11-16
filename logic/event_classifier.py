@@ -209,6 +209,7 @@ event_keywords = [
 
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
+    'kizomba',
     'burlesque',
     'technique', 'limon',
     # Sometimes used in studio name even though it's still a hiphop class:

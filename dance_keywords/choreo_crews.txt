@@ -1,8 +1,11 @@
 #ml (but need to get capitalization right)
 8 count,0
 a tribe called groove
+academy of hype
 academy of phresh
 academy of swag
+academy of thugs
+academy of villains
 afta shock
 ajnin precizion
 alpha beatz crew
@@ -14,6 +17,7 @@ asu hip hop
 audacity cru
 barkada modern
 beat jerkeez
+beatphonik
 boogie ?monstarz
 boogie bots
 boogiezone entity
@@ -92,6 +96,7 @@ kabba modern
 kcn modern
 km legacy
 kodachrome,0
+kodachromeva
 kp krew
 kreative movement
 kruciaal element
@@ -109,6 +114,7 @@ mischief makers
 mos wanted crew
 movement lifestyle
 nerdz: the outsiders
+nerdz: the outsiderz
 nia dance troupe
 no time 2 play
 nsu modern
@@ -130,6 +136,7 @@ project d
 project em
 project nailz
 project nailz
+projectd
 prophecy,0
 pulse dance crew
 quadrisaurus

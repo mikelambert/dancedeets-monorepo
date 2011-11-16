@@ -40,6 +40,7 @@ mawu
 mgf,0
 moptops
 playboyz
+pro phenomen
 pro-dance
 quest crew
 r\W?a\W?f\W?\W?crew
@@ -55,6 +56,7 @@ syrenz
 the lockers
 the pastels
 the waackers
+turf feinz
 u-min
 vagabond,0
 waacktitioners
