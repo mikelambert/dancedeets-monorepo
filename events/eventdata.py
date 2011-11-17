@@ -9,6 +9,7 @@ from google.appengine.ext import db
 from events import cities
 import geohash
 import locations
+from logic import event_classifier
 from logic import event_locations
 from util import dates
 
@@ -87,6 +88,8 @@ class DBEvent(db.Model):
     geohashes = db.StringListProperty()
     anywhere = db.BooleanProperty()
 
+    event_keywords = db.StringListProperty()
+
     search_regions = db.StringListProperty()
 
     def include_attending_summary(self, fb_dict):
@@ -137,6 +140,8 @@ class DBEvent(db.Model):
             self.geohashes = []
             #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
             logging.warning("No geocoding results for eid=%s is: %s", self.fb_event_id)
+
+        self.event_keywords = event_classifier.relevant_keywords(fb_dict)
 
     #def __repr__(self):
     #    return 'DBEvent(fb_event_id=%r,tags=%r)' % (self.fb_event_id, self.tags)

@@ -59,7 +59,7 @@ class SearchResult(object):
         self.start_time = dates.parse_fb_timestamp(self.fb_event['info'].get('start_time'))
         self.end_time = dates.parse_fb_timestamp(self.fb_event['info'].get('end_time'))
         self.rsvp_status = "unknown"
-        self.event_types = ', '.join(event_classifier.relevant_keywords(self.fb_event))
+        self.event_types = ', '.join(self.db_event.event_keywords or [])
         self.attending_friend_count = 0
         self.attending_friends = []
 
@@ -186,15 +186,19 @@ class SearchQuery(object):
         logging.info("loading fb data took %s seconds", time.time() - a)
 
         # ...and do filtering based on the contents inside our app
+        a = time.time()
         search_results = []
         for db_event in db_events:
             fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
             if not fb_event['deleted'] and self.matches_fb_db_event(db_event, fb_event):
                 result = SearchResult(db_event, fb_event)
                 search_results.append(result)
+        logging.info("db filtering and Search Results took %s seconds", time.time() - a)
     
         # Now sort and return the results
+        a = time.time()
         search_results.sort(key=lambda x: x.fb_event['info'].get('start_time'))
+        logging.info("search result sorting took %s seconds", time.time() - a)
         return search_results
 
 def construct_search_index():
