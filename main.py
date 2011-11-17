@@ -47,6 +47,7 @@ URLS = [
     ('/tasks/load_event_attending', tasks.LoadEventAttendingHandler),
     ('/tasks/track_newuser_friends', tasks.TrackNewUserFriendsHandler),
     ('/tasks/reload_all_users', tasks.ReloadAllUsersHandler),
+    ('/tasks/reload_all_events', tasks.ReloadAllEventsHandler),
     ('/tasks/reload_future_events', tasks.ReloadFutureEventsHandler),
     ('/tasks/reload_past_events', tasks.ReloadPastEventsHandler),
     ('/tasks/email_all_users', tasks.EmailAllUsersHandler),

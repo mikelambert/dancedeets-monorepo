@@ -25,7 +25,7 @@ def yield_load_fb_event(batch_lookup, db_event):
     batch_lookup.finish_loading()
     fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
     db_event.make_findable_for(fb_event)
-    yield db_event.put()
+    db_event.put()
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
@@ -43,7 +43,7 @@ def yield_load_fb_event_attending(batch_lookup, db_event):
     batch_lookup.finish_loading()
     fb_event_attending = batch_lookup.data_for_event_attending(db_event.fb_event_id)
     db_event.include_attending_summary(fb_event_attending)
-    yield db_event.put()
+    db_event.put()
 map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
 load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 
@@ -65,23 +65,33 @@ def yield_load_fb_user(batch_lookup, user):
     except fb_api.ExpiredOAuthToken:
         logging.info("Auth token now expired, mark as such.")
         user.expired_oauth_token = True
-        yield user.put()
+        user.put()
         return
         fb_user = batch_lookup.data_for_user(user.fb_uid)
     user.compute_derived_properties(fb_user)
-    yield user.put()
+    user.put()
 map_load_fb_user = fb_mapreduce.mr_user_wrap(yield_load_fb_user)
 load_fb_user = fb_mapreduce.nomr_wrap(yield_load_fb_user)
 
-class FilteredInputReader(input_readers.DatastoreEntityInputReader):
+class FilteredInputReader(input_readers.DatastoreInputReader):
 
     def _iter_key_range(self, k_range):
-        raw_entity_kind = util.get_short_name(self._entity_kind)
-        query = k_range.make_ascending_datastore_query(raw_entity_kind)
-        self.filter_query(query)
-        logging.info("query is %s", query)
-        for entity in query.Run(config=datastore_query.QueryOptions(batch_size=self._batch_size)):
-            yield entity.key(), entity
+        cursor = None
+        while True:
+            query = k_range.make_ascending_query(
+                util.for_name(self._entity_kind))
+            self.filter_query(query)
+            if cursor:
+                query.with_cursor(cursor)
+
+            results = query.fetch(limit=self._batch_size)
+            if not results:
+                break
+
+            for model_instance in results:
+                key = model_instance.key()
+                yield key, model_instance
+            cursor = query.cursor()
 
     def filter_query(self, query):
         raise NotImplementedError("filter_query() not implemented in %s" % self.__class__)
@@ -112,6 +122,14 @@ def mr_load_future_fb_event(batch_lookup):
         reader_spec='logic.fb_reloading.FutureEventInputReader',
         )
 
+def mr_load_all_fb_event(batch_lookup):
+        fb_mapreduce.start_map(
+                batch_lookup=batch_lookup,
+                name='Load All Events',
+                handler_spec='logic.fb_reloading.map_load_fb_event',
+                entity_kind='events.eventdata.DBEvent',
+        )
+
 
 def mr_email_user(batch_lookup):
         fb_mapreduce.start_map(
@@ -131,9 +149,9 @@ def yield_email_user(batch_lookup, user):
     except fb_api.ExpiredOAuthToken:
         logging.info("Auth token now expired, mark as such.")
         user.expired_oauth_token = True
-        yield user.put()
-        yield None
-    yield email_events.email_for_user(user, batch_lookup, batch_lookup.fb_graph, should_send=True)
+        user.put()
+        return None
+    return email_events.email_for_user(user, batch_lookup, batch_lookup.fb_graph, should_send=True)
 map_email_user = fb_mapreduce.mr_user_wrap(yield_email_user)
 email_user = fb_mapreduce.nomr_wrap(yield_email_user)
 

@@ -113,6 +113,11 @@ class ReloadFutureEventsHandler(BaseTaskFacebookRequestHandler):
         fb_reloading.mr_load_future_fb_event(self.batch_lookup)
     post=get
 
+class ReloadAllEventsHandler(BaseTaskFacebookRequestHandler):
+    def get(self):
+        fb_reloading.mr_load_all_fb_event(self.batch_lookup)
+    post=get
+
 class EmailAllUsersHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         fb_reloading.mr_email_user(self.batch_lookup)

@@ -1,3 +1,4 @@
+import logging
 from mapreduce import context
 from mapreduce import control
 
@@ -26,6 +27,7 @@ def get_batch_lookup(user=None):
         batch_lookup = fb_api.CommonBatchLookup(user and user.fb_uid or params['batch_lookup_fb_uid'], fb_graph, allow_cache=params['batch_lookup_allow_cache'])
     return batch_lookup
 
+
 def mr_wrap(func):
     def map_func(*args, **kwargs):
         batch_lookup = get_batch_lookup()
@@ -40,5 +42,5 @@ def mr_user_wrap(func):
 
 def nomr_wrap(func):
     def map_func(*args, **kwargs):
-        return [x for x in func(*args, **kwargs)]
+        return func(*args, **kwargs)
     return map_func
