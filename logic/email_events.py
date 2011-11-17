@@ -18,6 +18,9 @@ from util import urls
 def email_for_user(user, batch_lookup, fb_graph, should_send=True):
     if not user.send_email or not user.email:
         return
+    fb_user = batch_lookup.data_for_user(batch_lookup.fb_uid)
+    if not 'profile' in fb_user:
+        return
 
     user_location = user.location
     if not user_location:
@@ -39,7 +42,6 @@ def email_for_user(user, batch_lookup, fb_graph, should_send=True):
         return
 
     friends.decorate_with_friends(batch_lookup, search_results)
-    fb_user = batch_lookup.data_for_user(batch_lookup.fb_uid)
     rsvp.decorate_with_rsvps(batch_lookup, search_results)
 
     past_results, present_results, grouped_results = search.group_results(search_results)
@@ -53,7 +55,7 @@ def email_for_user(user, batch_lookup, fb_graph, should_send=True):
     display['raw_fb_event_url'] = urls.raw_fb_event_url
     display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
     display['user'] = user
-    display['fb_user'] = batch_lookup.data_for_user(user.fb_uid)
+    display['fb_user'] = fb_user
 
     display['grouped_results'] = grouped_results
 
