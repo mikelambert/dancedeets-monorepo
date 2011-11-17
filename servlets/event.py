@@ -264,7 +264,9 @@ def get_id_from_url(url):
         url = url.split('#')[1]
     match = re.search('eid=(\d+)', url)
     if not match:
-        return None
+        match = re.search('/events/(\d+)/', url)
+        if not match:
+            return None
     return match.group(1)
 
 class AddHandler(base_servlet.BaseRequestHandler):
