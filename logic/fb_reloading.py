@@ -98,11 +98,11 @@ class FilteredInputReader(input_readers.DatastoreInputReader):
 
 class FutureEventInputReader(FilteredInputReader):
     def filter_query(self, query):
-        query['search_time_period ='] = eventdata.TIME_FUTURE
+        query.filter('search_time_period =', eventdata.TIME_FUTURE)
 
 class PastEventInputReader(FilteredInputReader):
     def filter_query(self, query):
-        query['search_time_period ='] = eventdata.TIME_PAST
+        query.filter('search_time_period =', eventdata.TIME_PAST)
 
 def mr_load_past_fb_event(batch_lookup):
         fb_mapreduce.start_map(
