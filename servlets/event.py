@@ -391,17 +391,17 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 continue
             if fb_event['deleted']:
                 continue
-            dance_tags = event_classifier.is_dance_event(fb_event)
-            if dance_tags:
-                truefalse, reason, dance_words, event_words = dance_tags
-                dance_words_str = ', '.join(list(dance_words))
-                event_words_str = ', '.join(list(event_words))
+            classified_event = event_classifier.get_classified_event(fb_event)
+            if classified_event.is_dance_event():
+                reason = classified_event.reason()
+                dance_words_str = ', '.join(list(classified_event.dance_matches()))
+                event_words_str = ', '.join(list(classified_event.event_matches()))
             else:
                 reason = None
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
             location_info = event_locations.LocationInfo(fb_event)
-            template_events.append(dict(fb_event=fb_event, dance_words=dance_words_str, event_words=event_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
+            template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
         self.display['number_of_events']  = number_of_events 
         self.display['total_potential_events'] = total_potential_events
         self.display['has_more_events'] = has_more_events

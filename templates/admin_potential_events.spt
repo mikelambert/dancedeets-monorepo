@@ -18,6 +18,9 @@ Potential Events Classification
 		#else
 			0
 		#end if
+		(
+			$potential_event.classified_event.keyword_density()
+		)
 		<a href="/events/admin_edit?event_id=$potential_event.fb_event.info.id">
 		#if 'name' in potential_event.fb_event.info
 			$potential_event.fb_event.info.name

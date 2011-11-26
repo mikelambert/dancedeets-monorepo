@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import logging
+import math
 import re
 from spitfire.runtime.filters import skip_filter
 
@@ -331,6 +332,11 @@ class ClassifiedEvent(object):
             return len(combined_matches)
         else:
             return 0
+    def keyword_density(self):
+        combined_matches = self.found_dance_matches.union(self.found_event_matches)
+        fraction_matched = 1.0 * len(combined_matches) / len(re.split(r'\W+', self.search_text))
+        return int(math.log(fraction_matched))
+
 
 def get_classified_event(fb_event):
     classified_event = ClassifiedEvent(fb_event)
