@@ -48,7 +48,7 @@ Edit Source
 					
 					<br>
 				#end if
-				<pre>$fb_source.feed.data</pre>
+				<pre>$fb_source_data</pre>
 			#else
 				Adding new source!
 				<button>Create Source</button>

@@ -1,6 +1,7 @@
 import datetime
 from django.utils import simplejson
 import logging
+import pprint
 import urllib2
 
 import base_servlet
@@ -50,6 +51,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.display['source'] = s
         self.display['fb_source'] = fb_source
+        self.display['fb_source_data'] = pprint.pformat(fb_source['feed']['data'])
         self.display['link_for_fb_source'] = thing_db.link_for_fb_source
 
         self.render_template('admin_source')
