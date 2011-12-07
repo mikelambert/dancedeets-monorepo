@@ -1,7 +1,14 @@
 BEFORE LAUNCH:
 
+- If we port to EC2, use http://appscale.cs.ucsb.edu/appengine.html
+
+- Automatic CSS resizing for mobile screens:
+Use http://twitter.github.com/bootstrap/, but tweak it a la the following:
+http://getskeleton.com/
+http://getskeleton.com/src/stylesheets/skeleton.css
+
 - MapReduce InputFilter Ideas:
-+ do more work in the input_reader to load fb_event data for us automatically
++ do more work in the input_reader to load fb_event data for us automatically. perhaps even do it in batch to save on CPU time.
 
 - Ensure this matches:
 http://www.dancedeets.com/events/admin_edit?event_id=206267406110368
@@ -32,6 +39,10 @@ http://www.dancedeets.com/events/admin_edit?event_id=124580344312372
 http://www.dancedeets.com/events/admin_edit?event_id=193362027404244
 http://www.dancedeets.com/events/admin_edit?event_id=294207553931329
 http://www.dancedeets.com/events/admin_edit?event_id=109967295779417
+http://www.dancedeets.com/events/admin_edit?event_id=297213826966950
+http://www.dancedeets.com/events/admin_edit?event_id=227428607325354
+http://www.dancedeets.com/events/admin_edit?event_id=262842063765336
+http://www.dancedeets.com/events/admin_edit?event_id=325031654175010
 
 - Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
 http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
@@ -39,8 +50,6 @@ http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
 - Determine quality level by looking at fraction of potentialevents from a source led to a real event. If zero or near-zero, stop processing the feed entirely.
 - But beware that "zero feed_history sources aren't discarded forever here, they just haven't ever been scraped yet, and could change in the future. But maybe mark them separately since they're not worth scraping in the shortterm.
 - And beware items that have only been scraped for so-long. use a time-created field to give an item X amount of time before we give up on it.
-
-- Look at what fraction of good-events-from-source would have qualified for by our keyword filter. If it's low, then show everything, so we don't miss more good events, like clubs. Also start at "zero" with bias, so that we raise our standards for good-sources, but show everything up-front (in case we discover new dance keywords for these strange events).
 
 - Determine rate-of-processing by looking at length_in_seconds, and fetch short feeds faster. Necessary for reducing load and scaling up sources.
 
@@ -99,8 +108,6 @@ event-scraping-from-walls project:
 - figure out best way to do auto-classifying that leads back into existing augmenting of data (better event style, better location/city, etc). do on PotentialEvent save? using appengine queues? something else?
 
 - city pages' past-tabs do not work and require login
-- maybe add support for non-club outdoor party or community center or boat party
-- or film-screening (other?)
 
 - Expired auth tokens, keep getting links to cities, but can't view them because we direct back to /login.
 - make 'ongoing' events use local timezone on client instead of server timezone
@@ -123,14 +130,12 @@ Classification:
 
 - sign up and we'll represent you and your dance scene
 - benefits of signing up in upper right corner
-- mark freestyle as streetdance
 
 - auto-categorizing repeat events, or events with obvious keywords
 - add mark-as-unknown, mark-as-no as well. make sure unknown "sticks
 around" past the usual "mark as processed", until the user explicitly
 categories it, or clicks marks-as-no on it.
 
-- link from google to event redirect should be blogroll showing one page, maybe text description?
 -- add find-more-events link to make it clear how to search for more
 - everyone else should just redirect to fb page
 
