@@ -79,7 +79,7 @@ class AtomHandler(base_servlet.BaseRequestHandler):
             self.response.out.write("""\
     <entry>
         <title>%(title)s</title>
-        <link href="http://www.facebook.com/event.php?eid=%(id)s" />
+        <link href="http://www.facebook.com/events/%(id)s/" />
         <id>http://www.dancedeets.com/event/%(id)s</id>
         <updated>%(last_modified)s</updated>
         <summary>%(description)s</summary>

@@ -125,7 +125,6 @@ class BatchLookup(object):
             )
         elif object_type == self.OBJECT_EVENT:
             return dict(
-                # So, token-less gives us correct value of 2011-06-26T23:00:00, but using a token gives us 2011-06-27T06:00:00+0000 to convert to PST/PDT? But token-less gets blocked due to overloaded appengine IPs. UGH!
                 info=self._fetch_rpc('%s' % object_id),
                 picture=self._fetch_rpc('%s/picture' % object_id),
             )

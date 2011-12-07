@@ -148,7 +148,7 @@ def link_for_fb_source(data):
     elif 'version' in data['info']:
         return 'http://www.facebook.com/groups/%s/' % data['info']['id']
     elif 'start_time' in data['info']:
-        return 'http://www.facebook.com/event.php?eid=%s' % data['info']['id']
+        return 'http://www.facebook.com/events/%s/' % data['info']['id']
     else:
         logging.info("cannot classify id %s", source_id)
         return None
