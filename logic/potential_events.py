@@ -35,8 +35,9 @@ def make_potential_event_with_source(fb_event_id, match_score, source, source_fi
         
         if has_source and potential_event.match_score == match_score:
             return False
-        potential_event.source_ids.append(source.graph_id)
-        potential_event.source_fields.append(source_field)
+        if not has_source:
+            potential_event.source_ids.append(source.graph_id)
+            potential_event.source_fields.append(source_field)
         potential_event.match_score = match_score
         potential_event.show_even_if_no_score = potential_event.show_even_if_no_score or show_all_events
         potential_event.put()
