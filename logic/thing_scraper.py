@@ -72,10 +72,14 @@ def process_thing_feed(source, thing_feed, batch_lookup):
     for post in thing_feed['feed']['data']:
         if 'link' in post:
             p = urlparse.urlparse(post['link'])
-            if p.netloc == 'www.facebook.com' and p.path == '/event.php':
+            if p.netloc == 'www.facebook.com' and (p.path == '/event.php' or p.path.startswith('/events/')):
+                event_id = None
                 qs = cgi.parse_qs(p.query)
                 if 'eid' in qs:
                     eid = qs['eid'][0]
+                if p.path.startswith('/events/'):
+                    eid = p.path.split('/')[2]
+                if eid:
                     event_ids.append(eid)
                     if 'from' in post:
                         source_ids.append(post['from']['id'])
