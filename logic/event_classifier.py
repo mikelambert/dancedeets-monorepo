@@ -335,7 +335,10 @@ class ClassifiedEvent(object):
     def keyword_density(self):
         combined_matches = self.found_dance_matches.union(self.found_event_matches)
         fraction_matched = 1.0 * len(combined_matches) / len(re.split(r'\W+', self.search_text))
-        return int(math.log(fraction_matched))
+        if not fraction_matched:
+            return -100
+        else:
+            return int(math.log(fraction_matched))
 
 
 def get_classified_event(fb_event):
