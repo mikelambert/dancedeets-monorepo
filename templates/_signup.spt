@@ -18,7 +18,7 @@
 #end if
 <b>City:</b> <input type=text name="city" id="signup-city">
 
-<p><fb:login-button length="long" onlogin="signUp();" perms="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
+<p><fb:login-button length="long" onlogin="signUp();" scope="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
 <!--TODO(lambert): add read_stream to get access to a bunch more streams/feeds out there? maybe just for Mike Lambert's magic token? what about friend_events...doesn't appear necessary?-->
 </fieldset>
 </form>
@@ -96,23 +96,12 @@
     document.getElementById('fb-root').appendChild(e);
   }());
 
-  function getLoginStatus(response) {
-		## We might need some way to communicate to the server "hey we have offline_access, please clean out the user expired_oauth_token bits and don't redirect them back to /login"
-    if (response.session && (!response.perms || response.perms.indexOf('offline_access') != -1) && 0 && $attempt_autologin) {
-			#if $next
-				window.location = '$format_js($next)';
-			#else
-				window.location.reload();
-			#end if
-    }
+  function handleStatusChange(response) {
   }
   function signUp() {
 		FB.getLoginStatus(function(response) {
-			if (!response.session) {
+			if (!response.authResponse) {
 				must_allow_perms.dialog('open');
-			// Can't distinguish which button was pressed, so we can't enforce city fillout clientside
-			//} else if (!$('#signup-city').val()) {
-			//	alert("Please fill out your city and try again.");
 			} else {
 				if ($('#signup-form')) {
 					$('#signup-form').submit();
@@ -124,6 +113,7 @@
   }
   window.fbAsyncInit = function() {
 		// Override cookie-expiration setting so we get long-lived cookies.
+		/*
 		original_setRaw = FB.Cookie.setRaw;
 		FB.Cookie.setRaw = function(val, ts, domain) {
 			// ts may be 0, so we need to fix that up here:
@@ -135,11 +125,12 @@
 		FB.Cookie.clear = function() {
 			FB.Cookie.setRaw('', 1, FB.Cookie._domain);
 		}
+		*/
 
-		FB.init({appId: '$api_key', status: true, cookie: true, xfbml: true});
+		FB.init({appId: '$app_id', status: true, cookie: true, xfbml: true, oauth: true});
 		#if not $fb_user
-      ## only subscribe to login-status notifications if we're logged out, otherwise we get in an infinite loop
-			FB.Event.subscribe('FB.loginStatus', getLoginStatus);
+			## only subscribe to login-status notifications if we're logged out, otherwise we get in an infinite loop
+			FB.Event.subscribe('auth.statusChange', handleStatusChange);
 		#end if
 	};
 </script>

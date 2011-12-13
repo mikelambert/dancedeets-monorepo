@@ -106,8 +106,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         final_url = self.request.path + '?' + urllib.urlencode(current_url_args, doseq=True)
         params = dict(next=final_url)
         login_url = '/login?%s' % urllib.urlencode(params)
-        args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['api_key'], FACEBOOK_CONFIG['secret_key'])
-        logging.info("fb cookie is %s with args %s", request.cookies.get('fbs_' + FACEBOOK_CONFIG['api_key']), args)
+        args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['app_id'], FACEBOOK_CONFIG['secret_key'])
         if args:
             self.fb_uid = int(args['uid'])
             self.fb_graph = facebook.GraphAPI(args['access_token'])
@@ -116,7 +115,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 logging.info("Not a /login request and there is no user object, so pretending they are not logged in.")
                 self.fb_uid = None
             else:
-                logging.info("Logged in uid %s", self.fb_uid)
+                logging.info("Logged in uid %s with name %s", self.fb_uid, self.user and self.user.full_name)
                 # If their auth token has changed, then write out the new one
                 if self.request.path == '/login':
                     self.user = users.User.get_by_key_name(str(self.fb_uid))
@@ -144,8 +143,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 logging.info("No database user object.")
             if self.user and self.user.expired_oauth_token:
                 logging.info("User's OAuth token expired")
-                self.set_cookie('fbs_' + FACEBOOK_CONFIG['api_key'], '')
-                logging.info("clearing cookie %s", 'fbs_' + FACEBOOK_CONFIG['api_key'])
+                self.set_cookie('fbsr_' + FACEBOOK_CONFIG['app_id'], None)
+                logging.info("clearing cookie %s", 'fbsr_' + FACEBOOK_CONFIG['app_id'])
                 self.set_cookie('User-Message', "You changed your facebook password, so will need to click login again.")
             if self.request.get('referer'):
                 self.set_cookie('User-Referer', self.request.get('referer'))
@@ -181,7 +180,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['dd_admin_source_url'] = urls.dd_admin_source_url
 
         self.display['request'] = request
-        self.display['api_key'] = FACEBOOK_CONFIG['api_key']
+        self.display['app_id'] = FACEBOOK_CONFIG['app_id']
         self.display['prod_mode'] = self.prod_mode
         self.display.update(rankings.retrieve_summary())
         return False
