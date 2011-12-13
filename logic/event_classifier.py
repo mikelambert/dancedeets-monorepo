@@ -46,6 +46,7 @@ dance_and_music_keywords = [
 # hiphop dance. hiphop dans?
 dance_keywords = [
     'swag',
+    'jazz rock',
     'poppers?', 'popp?i?ng?',
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
@@ -56,7 +57,8 @@ dance_keywords = [
     'top\W?rock(?:er[sz]?|ing?)?', 'up\W?rock(?:er[sz]?|ing?|)?',
     'houser[sz]?', 'house ?danc\w*',
     'lock(?:er[sz]?|ing?)?', 'lock dance',
-    '[uw]h?aa?c?c?ker[sz]?', '[uw]h?aa?cc?kinn?g?', '[uw]h?aa?cc?k',
+    '[uw]h?aa?c?c?ker[sz]?', '[uw]h?aa?cc?kinn?g?', '[uw]h?aa?cc?k', # waacking
+    'paa?nc?king?', # punking
     'locking4life',
     'dance crew[sz]?',
     'waving?', 'wavers?',
