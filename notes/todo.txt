@@ -86,6 +86,7 @@ http://www.dancedeets.com/events/admin_edit?event_id=247636005284340
 - Add Send Dialog to message event owners, and allow people to share with their friends. https://developers.facebook.com/docs/reference/dialogs/send/
 
 OAuth2 migration:
+https://developers.facebook.com/docs/guides/mobile/web/
 https://developers.facebook.com/blog/post/525/ # oauth2 login
 https://developers.facebook.com/docs/reference/javascript/FB.login/
 https://developers.facebook.com/docs/reference/javascript/FB.getLoginStatus/
