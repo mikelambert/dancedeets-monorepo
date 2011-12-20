@@ -63,6 +63,7 @@ class DBEvent(db.Model):
 
     # TODO(lambert): right now this is unused, but maybe we want to cache our "ish" tags or something to that effect?
     tags = db.StringListProperty()
+    search_tags = db.StringListProperty() # old classification-system tags
 
     # real data
     owner_fb_uid = db.StringProperty()
@@ -73,7 +74,6 @@ class DBEvent(db.Model):
     creating_method = db.StringProperty()
 
     # searchable properties
-    search_tags = db.StringListProperty()
     search_time_period = db.StringProperty()
     start_time = db.DateTimeProperty()
     end_time = db.DateTimeProperty()
@@ -102,7 +102,6 @@ class DBEvent(db.Model):
         if fb_dict['deleted']:
             self.start_time = None
             self.end_time = None
-            self.search_tags = []
             self.search_time_period = None
             self.address = None
             self.actual_city_name = None
