@@ -69,6 +69,7 @@ nick bass
 nick demoura
 nick whage
 nico o'connor
+parris goebel
 pat cruz
 patrick cruz
 phillip geniza

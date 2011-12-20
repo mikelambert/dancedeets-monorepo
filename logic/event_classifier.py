@@ -79,7 +79,7 @@ dance_keywords = [
     'street\W?jazz', 'street\W?funk', 'jazz\W?funk', 'boom\W?crack',
     'hype danc\w*',
     'social hip\W?hop', 'hip\W?hop social dance[sz]',
-    '(?:new|nu|middle)\W?school hip\W?hop', 'hip\W?hop (?:old|new|nu|middle)\W?school',
+    '(?:new|nu|middle)\W?s(?:ch|k)ool hip\W?hop', 'hip\W?hop (?:old|new|nu|middle)\W?s(?:ch|k)ool',
     'vogue', 'voguer[sz]?', 'vogue?ing',
     'mini.?ball', 'house of ', 'realness',
     'urban danc\w*',
