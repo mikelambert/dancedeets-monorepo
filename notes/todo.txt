@@ -1,5 +1,13 @@
 BEFORE LAUNCH:
 
+- Full text search on events: To make sure you are not inadvertently using production applications for testing, please email gae-full-text-search-tt@google.com your one preferred application id to activate. Note this service is for testing and development ONLY, no guarantees are given about reliability and data integrity, you are highly discouraged from using production applications. Also note you can only use High Replication Datastore applications.
+- Full text search on events: https://sites.google.com/a/appenginedemo.com/full-text-search.
+
+- Set up forums using Cloud SQL? https://code.google.com/apis/sqlservice/
+http://groups.google.com/group/google-cloud-sql-discuss
+
+- Replace backgrounder.py with http://code.google.com/appengine/articles/deferred.html
+
 - If we port to EC2, use http://appscale.cs.ucsb.edu/appengine.html
 
 - Automatic CSS resizing for mobile screens:
@@ -43,6 +51,7 @@ http://www.dancedeets.com/events/admin_edit?event_id=297213826966950
 http://www.dancedeets.com/events/admin_edit?event_id=227428607325354
 http://www.dancedeets.com/events/admin_edit?event_id=262842063765336
 http://www.dancedeets.com/events/admin_edit?event_id=325031654175010
+http://www.dancedeets.com/events/admin_edit?event_id=192959864132374
 
 - Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
 http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
