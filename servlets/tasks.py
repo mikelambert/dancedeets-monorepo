@@ -130,20 +130,6 @@ class EmailUserHandler(BaseTaskFacebookRequestHandler):
         fb_reloading.email_user(self.batch_lookup, load_users[0])
     post=get
 
-#TODO(lambert): does this even work??:
-class CleanupWorkHandler(RequestHandler):
-    def get(self):
-        event_ids = [db_event.fb_event_id for db_event in eventdata.DBEvent.gql("WHERE address = null and start_time != null")]
-        if event_ids:
-            event_urls = ['http://www.dancedeets.com/events/admin_edit?event_id=%s' % x for x in event_ids]
-            html = "Events missing addresses:\n\n" + "\n".join(event_urls)
-            message = mail.EmailMessage(
-                sender="events@dancedeets.com",
-                to="mlambert@gmail.com",
-                subject="Events missing addresses",
-                html=html
-            )
-
 class ComputeRankingsHandler(RequestHandler):
     def get(self):
         rankings.begin_ranking_calculations()

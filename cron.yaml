@@ -14,9 +14,6 @@ cron:
 - description: calculate periodic statistics and rankings
   url: /tasks/compute_rankings
   schedule: every 12 hours
-- description: email admin about cleanup work on events that needs to be done
-  url: /tasks/cleanup_work
-  schedule: every 24 hours
 - description: reload user data
   url: /tasks/reload_all_users?user_id=701004&allow_cache=0
   schedule: every 6 hours
