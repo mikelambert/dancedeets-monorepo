@@ -72,12 +72,12 @@ indexes:
   properties:
   - name: looked_at
   - name: match_score
-  - name: show_even_if_no_score
 
 - kind: PotentialEvent
   properties:
   - name: looked_at
   - name: match_score
+  - name: show_even_if_no_score
 
 - kind: User
   properties:
