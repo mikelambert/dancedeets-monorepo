@@ -75,19 +75,19 @@ class DBEvent(db.Model):
     creating_method = db.StringProperty(indexed=False)
 
     # searchable properties
-    search_time_period = db.StringProperty(indexed=False)
-    start_time = db.DateTimeProperty(indexed=False)
-    end_time = db.DateTimeProperty(indexed=False)
-    attendee_count = db.IntegerProperty(indexed=False)
+    search_time_period = db.StringProperty()
+    start_time = db.DateTimeProperty()
+    end_time = db.DateTimeProperty()
+    attendee_count = db.IntegerProperty()
 
     # extra cached properties
-    address = db.StringProperty(indexed=False)
+    address = db.StringProperty(indexed=False) # manually overridden address
     actual_city_name = db.StringProperty(indexed=False) # city for this event
-    city_name = db.StringProperty(indexed=False) # largest nearby city for this event
-    latitude = db.FloatProperty(indexed=False)
-    longitude = db.FloatProperty(indexed=False)
-    geohashes = db.StringListProperty(indexed=False)
-    anywhere = db.BooleanProperty(indexed=False)
+    city_name = db.StringProperty() # largest nearby city for this event
+    latitude = db.FloatProperty()
+    longitude = db.FloatProperty()
+    geohashes = db.StringListProperty()
+    anywhere = db.BooleanProperty()
 
     event_keywords = db.StringListProperty(indexed=False)
 

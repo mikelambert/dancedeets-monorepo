@@ -12,12 +12,12 @@ from util import properties
 class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: int(x.key().name()))
 
-    looked_at = db.BooleanProperty(indexed=False)
-    match_score = db.IntegerProperty(indexed=False)
-    show_even_if_no_score = db.BooleanProperty(indexed=False)
+    looked_at = db.BooleanProperty()
+    match_score = db.IntegerProperty()
+    show_even_if_no_score = db.BooleanProperty()
 
-    source_ids = db.ListProperty(int, indexed=False)
-    source_fields = db.ListProperty(str, indexed=False)
+    source_ids = db.ListProperty(int)
+    source_fields = db.ListProperty(str)
 
 
 def make_potential_event_with_source(fb_event_id, match_score, source, source_field):

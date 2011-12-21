@@ -117,8 +117,8 @@ class UserFriendsAtSignup(db.Model):
     registered_friend_ids = db.ListProperty(int, indexed=False)
 
 class UserMessage(db.Model):
-    fb_uid = db.IntegerProperty(indexed=False)
-    creation_time = db.DateTimeProperty(indexed=False)
+    fb_uid = db.IntegerProperty()
+    creation_time = db.DateTimeProperty()
     message = db.TextProperty(indexed=False)
 
 
