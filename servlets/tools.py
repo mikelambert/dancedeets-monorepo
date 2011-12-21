@@ -39,9 +39,11 @@ class UnprocessFutureEventsHandler(webapp.RequestHandler):
         return
 
 from servlets import tasks
+from logic import unique_attendees
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler):
     def get(self):
-        thing_db.mr_count_potential_events(self.batch_lookup)
+        mrp = unique_attendees.mr_count_attendees_per_city(self.batch_lookup)
+        self.response.out.write("pipeline id is " + mrp.pipeline_id)
 
 class OwnedEventsHandler(webapp.RequestHandler):
     def get(self):
