@@ -20,17 +20,17 @@ def parse_url(url):
     return None, None
 
 class ProfileVideoTag(db.Model):
-    fb_uid = db.IntegerProperty()
-    tagger_fb_uid = db.IntegerProperty()
-    video_site = db.StringProperty()
-    video_id = db.StringProperty()
-    description = db.StringProperty() # "at 0:56", or "blue guy on the left"
+    fb_uid = db.IntegerProperty(indexed=False) # TODO: make this a proper key
+    tagger_fb_uid = db.IntegerProperty(indexed=False)
+    video_site = db.StringProperty(indexed=False)
+    video_id = db.StringProperty(indexed=False)
+    description = db.StringProperty(indexed=False) # "at 0:56", or "blue guy on the left"
 
     #TODO(lambert): if you want to split into playlists, or control ordering, then you need to use youtube playlists. Can just hook up a youtube playlist if you want from your list. If you hook up a playlist, then auto-grab tags from that playlist, polled periodically... And then we don't have an "authoritative editor" problem. Or you can use AuthSub/OAuth to manage your playlist in some far-out future, dealing with multimaster sync issues...
 
-    playlist_name = db.StringListProperty()
-    approved = db.BooleanProperty()
-    deleted = db.BooleanProperty()
+    playlist_name = db.StringListProperty(indexed=False)
+    approved = db.BooleanProperty(indexed=False)
+    deleted = db.BooleanProperty(indexed=False)
 
     def get_video_page(self):
         if self.video_site == SITE_YOUTUBE:

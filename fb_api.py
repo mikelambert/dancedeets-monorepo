@@ -51,7 +51,7 @@ GRAPH_ID_REMAP = {
 class FacebookCachedObject(db.Model):
     json_data = db.TextProperty()
     data = properties.json_property(json_data)
-    date_cached = db.DateTimeProperty(auto_now=True)
+    date_cached = db.DateTimeProperty(auto_now=True, indexed=False)
 
     def encode_data(self, obj_dict):
         self.data = obj_dict

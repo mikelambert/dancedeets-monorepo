@@ -14,34 +14,34 @@ USER_EXPIRY = 24 * 60 * 60
 class User(db.Model):
     # SSO
     fb_uid = property(lambda x: int(x.key().name()))
-    fb_access_token = db.StringProperty()
+    fb_access_token = db.StringProperty(indexed=False)
 
     # Statistics
-    creation_time = db.DateTimeProperty()
-    last_login_time = db.DateTimeProperty()
-    login_count = db.IntegerProperty()
-    inviting_fb_uid = db.IntegerProperty()
+    creation_time = db.DateTimeProperty(indexed=False)
+    last_login_time = db.DateTimeProperty(indexed=False)
+    login_count = db.IntegerProperty(indexed=False)
+    inviting_fb_uid = db.IntegerProperty(indexed=False)
 
     # Search preferences
-    location = db.StringProperty()
-    distance = db.StringProperty()
-    distance_units = db.StringProperty()
-    min_attendees = db.IntegerProperty()
+    location = db.StringProperty(indexed=False)
+    distance = db.StringProperty(indexed=False)
+    distance_units = db.StringProperty(indexed=False)
+    min_attendees = db.IntegerProperty(indexed=False)
 
     # TODO(lambert): Get rid of these eventually??
-    dance_type = db.StringProperty()
-    freestyle = db.StringProperty()
-    choreo = db.StringProperty()
+    dance_type = db.StringProperty(indexed=False)
+    freestyle = db.StringProperty(indexed=False)
+    choreo = db.StringProperty(indexed=False)
 
     # Other preferences
-    send_email = db.BooleanProperty()
-    location_country = db.StringProperty()
+    send_email = db.BooleanProperty(indexed=False)
+    location_country = db.StringProperty(indexed=False)
 
     # Derived from fb_user
-    full_name = db.StringProperty()
-    email = db.StringProperty()
+    full_name = db.StringProperty(indexed=False)
+    email = db.StringProperty(indexed=False)
 
-    expired_oauth_token = db.BooleanProperty()
+    expired_oauth_token = db.BooleanProperty(indexed=False)
 
     def distance_in_km(self):
         if not self.distance:
@@ -114,11 +114,11 @@ class User(db.Model):
 
 class UserFriendsAtSignup(db.Model):
     fb_uid = property(lambda x: int(x.key().name()))
-    registered_friend_ids = db.ListProperty(int)
+    registered_friend_ids = db.ListProperty(int, indexed=False)
 
 class UserMessage(db.Model):
-    fb_uid = db.IntegerProperty()
-    creation_time = db.DateTimeProperty()
-    message = db.TextProperty()
+    fb_uid = db.IntegerProperty(indexed=False)
+    creation_time = db.DateTimeProperty(indexed=False)
+    message = db.TextProperty(indexed=False)
 
 

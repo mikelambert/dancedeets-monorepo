@@ -83,21 +83,22 @@ class Source(db.Model):
     graph_type = db.StringProperty(choices=GRAPH_TYPES)
 
     # cached/derived from fb data
-    name = db.StringProperty()
-    feed_history_in_seconds = db.IntegerProperty()
+    name = db.StringProperty(indexed=False)
+    feed_history_in_seconds = db.IntegerProperty(indexed=False)
 
     # probably to assume for a given event? rough weighting factor?
-    freestyle = db.FloatProperty()
-    choreo = db.FloatProperty()
+    # do we want to delete these now?
+    freestyle = db.FloatProperty(indexed=False)
+    choreo = db.FloatProperty(indexed=False)
 
-    creating_fb_uid = db.IntegerProperty()
-    creation_time = db.DateTimeProperty()
-    last_scrape_time = db.DateTimeProperty()
+    creating_fb_uid = db.IntegerProperty(indexed=False)
+    creation_time = db.DateTimeProperty(indexed=False)
+    last_scrape_time = db.DateTimeProperty(indexed=False)
 
-    num_all_events = db.IntegerProperty()
-    num_potential_events = db.IntegerProperty()
-    num_real_events = db.IntegerProperty()
-    num_false_negatives = db.IntegerProperty()
+    num_all_events = db.IntegerProperty(indexed=False)
+    num_potential_events = db.IntegerProperty(indexed=False)
+    num_real_events = db.IntegerProperty(indexed=False)
+    num_false_negatives = db.IntegerProperty(indexed=False)
 
     def fraction_potential_are_real(self, bias=0):
         if self.num_potential_events:

@@ -62,35 +62,35 @@ class DBEvent(db.Model):
     fb_event_id = property(lambda x: int(x.key().name()))
 
     # TODO(lambert): right now this is unused, but maybe we want to cache our "ish" tags or something to that effect?
-    tags = db.StringListProperty()
-    search_tags = db.StringListProperty() # old classification-system tags
+    tags = db.StringListProperty(indexed=False)
+    search_tags = db.StringListProperty(indexed=False) # old classification-system tags
+    search_regions = db.StringListProperty(indexed=False) # not sure what this was ever used for
 
     # real data
-    owner_fb_uid = db.StringProperty()
-    creating_fb_uid = db.IntegerProperty()
-    creation_time = db.DateTimeProperty()
+    owner_fb_uid = db.StringProperty(indexed=False)
+    creating_fb_uid = db.IntegerProperty(indexed=False)
+    creation_time = db.DateTimeProperty(indexed=False)
     # could be AUTO, ADMIN, USER, etc? Helps for maintaining a proper training corpus
     #TODO(lambert): start using this field in auto-created events
-    creating_method = db.StringProperty()
+    creating_method = db.StringProperty(indexed=False)
 
     # searchable properties
-    search_time_period = db.StringProperty()
-    start_time = db.DateTimeProperty()
-    end_time = db.DateTimeProperty()
-    attendee_count = db.IntegerProperty()
+    search_time_period = db.StringProperty(indexed=False)
+    start_time = db.DateTimeProperty(indexed=False)
+    end_time = db.DateTimeProperty(indexed=False)
+    attendee_count = db.IntegerProperty(indexed=False)
 
     # extra cached properties
-    address = db.StringProperty()
-    actual_city_name = db.StringProperty() # city for this event
-    city_name = db.StringProperty() # largest nearby city for this event
-    latitude = db.FloatProperty()
-    longitude = db.FloatProperty()
-    geohashes = db.StringListProperty()
-    anywhere = db.BooleanProperty()
+    address = db.StringProperty(indexed=False)
+    actual_city_name = db.StringProperty(indexed=False) # city for this event
+    city_name = db.StringProperty(indexed=False) # largest nearby city for this event
+    latitude = db.FloatProperty(indexed=False)
+    longitude = db.FloatProperty(indexed=False)
+    geohashes = db.StringListProperty(indexed=False)
+    anywhere = db.BooleanProperty(indexed=False)
 
-    event_keywords = db.StringListProperty()
+    event_keywords = db.StringListProperty(indexed=False)
 
-    search_regions = db.StringListProperty()
 
     def include_attending_summary(self, fb_dict):
         attendees = fb_dict['attending']['data']

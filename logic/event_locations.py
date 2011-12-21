@@ -7,7 +7,7 @@ import locations
 from util import abbrev
 
 class LocationMapping(db.Model):
-    remapped_address = db.StringProperty()
+    remapped_address = db.StringProperty(indexed=False)
 
 def _city_for_venue(venue):
     # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
