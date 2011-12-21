@@ -17,7 +17,7 @@ class User(db.Model):
     fb_access_token = db.StringProperty(indexed=False)
 
     # Statistics
-    creation_time = db.DateTimeProperty(indexed=False)
+    creation_time = db.DateTimeProperty()
     last_login_time = db.DateTimeProperty(indexed=False)
     login_count = db.IntegerProperty(indexed=False)
     inviting_fb_uid = db.IntegerProperty(indexed=False)
