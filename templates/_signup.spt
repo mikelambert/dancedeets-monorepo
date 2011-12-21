@@ -18,7 +18,7 @@
 #end if
 <b>City:</b> <input type=text name="city" id="signup-city">
 
-<p><fb:login-button length="long" onlogin="signUp();" scope="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
+<p><fb:login-button length="long" onlogin="signUp();" scope="user_location,rsvp_event,offline_access,email,user_events,user_groups,friends_events,friends_groups"></fb:login-button>
 <!--TODO(lambert): add read_stream to get access to a bunch more streams/feeds out there? maybe just for Mike Lambert's magic token? what about friend_events...doesn't appear necessary?-->
 </fieldset>
 </form>

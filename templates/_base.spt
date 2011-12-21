@@ -60,7 +60,7 @@ $head_javascript()
 	|
 	<a href="#" onclick="FB.logout(function(response) { window.location.reload(); })">Logout</a>
 #else
-	<fb:login-button onlogin="signUp();" scope="user_location,rsvp_event,offline_access,email,user_events"></fb:login-button>
+	<fb:login-button onlogin="signUp();" scope="user_location,rsvp_event,offline_access,email,user_events,user_groups,friends_events,friends_groups"></fb:login-button>
 #end if
 </div>
 
