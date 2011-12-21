@@ -3,6 +3,9 @@ version: v1-2-mishmash
 runtime: python
 api_version: 1
 
+includes:
+- mapreduce/include.yaml
+
 inbound_services:
 - warmup
 
@@ -30,9 +33,6 @@ handlers:
   static_dir: js
 - url: /images
   static_dir: images
-- url: /mapreduce(/.*)?
-  script: mapreduce/main.py
-  login: admin
 - url: /tools/.*
   script: main.py
   login: admin
