@@ -1,5 +1,14 @@
 BEFORE LAUNCH:
 
+- Maybe do a query on the members of a group to figure out a rough geographical region? Same with an event?
+
+- Maybe use "where are all events from this source located" as a suggestion for the location of this particular event in question? Waiting for certain number of events first?
+
+- For calculating the "size" of scene, we maybe have to worry about one-off club-goers to Temple, or whatnot. Maybe make them have to attend at least two events from different owners? Or make them attend at least 1% of events in the events listing?
+
+
+- Set up a Source queue for all Groups (maybe eventually pages?) that we find. Through myself, my friends, our users, etc. Look through them for dance-y stuff with any type of singular keyword, and add them to the queue for filtering (for now).
+
 - Full text search on events: To make sure you are not inadvertently using production applications for testing, please email gae-full-text-search-tt@google.com your one preferred application id to activate. Note this service is for testing and development ONLY, no guarantees are given about reliability and data integrity, you are highly discouraged from using production applications. Also note you can only use High Replication Datastore applications.
 - Full text search on events: https://sites.google.com/a/appenginedemo.com/full-text-search.
 
