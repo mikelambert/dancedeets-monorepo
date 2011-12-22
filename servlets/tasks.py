@@ -33,7 +33,7 @@ RETRY_ON_FAIL_DELAY = 60
 
 GET_FRIEND_APP_USERS = """
 SELECT uid FROM user
-WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ?)
+WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = %s)
 AND is_app_user = 1
 """
 
@@ -62,7 +62,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
 
 class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
     def get(self):
-        app_friend_list = self.fb_graph.request('fql', q=GET_FRIEND_APP_USERS % self.fb_uid)
+        app_friend_list = self.fb_graph.request('fql', args=dict(q=GET_FRIEND_APP_USERS % self.fb_uid))
         logging.info("app_friend_list is %s", app_friend_list)
         user_friends = users.UserFriendsAtSignup.get_or_insert(str(self.fb_uid))
         user_friends.registered_friend_ids = [x['uid'] for x in app_friend_list['data']]
@@ -171,7 +171,7 @@ class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         for user_id in user_ids:
-            fb_reloading.load_potential_events_for_user_id(self.batch_lookup, user_id)
+            fb_reloading.load_potential_events_for_user_id(self.batch_lookup.copy(), user_id)
 
 class UpdateLastLoginTimeHandler(RequestHandler):
     def get(self):

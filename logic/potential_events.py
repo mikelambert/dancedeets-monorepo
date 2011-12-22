@@ -55,10 +55,11 @@ def make_potential_event_with_source(fb_event_id, match_score, source, source_fi
 def get_potential_dance_events(batch_lookup, user_id):
     try:
         results_json = batch_lookup.data_for_user_events(user_id)['all_event_info']['data']
+        logging.info("resultsjson is %s", results_json)
         events = sorted(results_json, key=lambda x: x.get('start_time'))
     except fb_api.NoFetchedDataException:
         events = []
-    second_batch_lookup = batch_lookup.copy()
+    second_batch_lookup = batch_lookup.copy(allow_cache=True)
     for mini_fb_event in events:
         second_batch_lookup.lookup_event(str(mini_fb_event['eid']))
     second_batch_lookup.finish_loading()

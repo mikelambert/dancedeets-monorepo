@@ -25,7 +25,7 @@ def scrape_events_from_source(batch_lookup, source):
     event_ids = []
     try:
         thing_feed = batch_lookup.data_for_thing_feed(source.graph_id)
-        event_ids = process_thing_feed(source, thing_feed, batch_lookup.copy())
+        event_ids = process_thing_feed(source, thing_feed, batch_lookup.copy(allow_cache=True))
     except fb_api.NoFetchedDataException, e:
         logging.error("Failed to fetch data for thing: %s", str(e))
     return event_ids

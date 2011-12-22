@@ -88,7 +88,9 @@ class BatchLookup(object):
         self.object_keys = set()
         self.object_keys_to_lookup_without_cache = set()
 
-    def copy(self, allow_cache=True):
+    def copy(self, allow_cache=None):
+        if allow_cache is None:
+            allow_cache = self.allow_cache
         return self.__class__(self.fb_uid, self.fb_graph, allow_cache=allow_cache)
 
     def _is_cacheable(self, object_key, this_object):
