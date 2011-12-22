@@ -20,7 +20,7 @@ easy_dance_keywords = [
     'footwork',
 ]
 easy_choreography_keywords = [
-    'choreograph(?:y|ed)', 'choreographers?', 'choreo',
+    'koreografi', 'choreograph(?:y|ed)', 'choreographers?', 'choreo',
 
 ]
 
