@@ -37,7 +37,7 @@ def load_potential_events_for_users(fb_uids, allow_cache=True, **kwargs):
 
 
 def load_potential_events_for_friends(user_id, fb_uids, allow_cache=True, **kwargs):
-    task_size = 10
+    task_size = 1 # 10 seemed to break things with too-large memory sizes
     allow_cache_arg = (allow_cache and '1' or '0')
     for i in range(0, len(fb_uids), task_size):
         taskqueue.add(method='GET', url='/tasks/load_potential_events_for_user?' + urllib.urlencode(dict(user_id=user_id, user_ids=','.join(str(x) for x in fb_uids[i:i+task_size]), allow_cache=allow_cache_arg)), queue_name='slow-queue', **kwargs)
