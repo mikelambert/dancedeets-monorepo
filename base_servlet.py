@@ -182,6 +182,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['request'] = request
         self.display['app_id'] = FACEBOOK_CONFIG['app_id']
         self.display['prod_mode'] = self.prod_mode
+
+        fb_permissions = 'user_location,rsvp_event,offline_access,email,user_events,user_groups,friends_events,friends_groups'
+        if self.request.get('all_access'):
+            fb_permissions += ''
+        self.display['fb_permissions'] = fb_permissions
+
         self.display.update(rankings.retrieve_summary())
         return False
 
