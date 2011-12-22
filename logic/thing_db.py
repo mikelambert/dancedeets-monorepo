@@ -100,10 +100,10 @@ class Source(db.Model):
     num_real_events = db.IntegerProperty(indexed=False)
     num_false_negatives = db.IntegerProperty(indexed=False)
 
-    def fraction_potential_are_real(self, bias=0):
-        if self.num_potential_events:
-            num_real_events = (self.num_real_events or 0) + bias
-            num_potential_events = (self.num_potential_events or 0) + bias
+    def fraction_potential_are_real(self, bias=1):
+        num_real_events = (self.num_real_events or 0) + bias
+        num_potential_events = (self.num_potential_events or 0) + bias
+        if num_potential_events:
             return 1.0 * num_real_events / num_potential_events
         else:
             return 0
