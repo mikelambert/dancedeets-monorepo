@@ -31,6 +31,12 @@ from logic import thing_scraper
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.
 RETRY_ON_FAIL_DELAY = 60
 
+GET_FRIEND_APP_USERS = """
+SELECT uid FROM user
+WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ?)
+AND is_app_user = 1
+"""
+
 class BaseTaskRequestHandler(RequestHandler):
     def requires_login(self):
         return False
@@ -56,10 +62,10 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
 
 class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
     def get(self):
-        app_friend_list = self.fb_graph.api_request('method/friends.getAppUsers')
+        app_friend_list = self.fb_graph.request('fql', q=GET_FRIEND_APP_USERS % self.fb_uid)
         logging.info("app_friend_list is %s", app_friend_list)
         user_friends = users.UserFriendsAtSignup.get_or_insert(str(self.fb_uid))
-        user_friends.registered_friend_ids = app_friend_list
+        user_friends.registered_friend_ids = [x['uid'] for x in app_friend_list['data']]
         user_friends.put()
     post=get
 

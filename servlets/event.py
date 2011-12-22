@@ -287,6 +287,11 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.finish_preload()
             try:
                 results_json = self.batch_lookup.data_for_user_events(self.fb_uid)['all_event_info']
+                # TODO(lambert): get rid of the below one way or the other once we figure out what the final data format is
+                #import logging
+                #logging.info("%s", self.batch_lookup.data_for_user_events(self.fb_uid))
+                if 'data' in results_json:
+                    results_json = results_json['data']
                 events = sorted(results_json, key=lambda x: x.get('start_time'))
             except fb_api.NoFetchedDataException:
                 events = []

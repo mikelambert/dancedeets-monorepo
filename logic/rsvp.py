@@ -20,12 +20,9 @@ class RSVPManager(object):
         return rsvp
 
     def set_rsvp_for_event(self, fb_graph, event_id, rsvp_status):
-        if rsvp_status == 'maybe':
-            rsvp_status = 'unsure'
-
-        result = fb_graph.api_request('method/events.rsvp', args=dict(eid=event_id, rsvp_status=rsvp_status))
-        backgrounder.load_events_full([event_id], allow_cache=False)
+        result = fb_graph.request('%s/%s' % (event_id, rsvp_status), post_args={})
         backgrounder.load_users([self.batch_lookup.fb_uid], allow_cache=False)
+        backgrounder.load_event_attending([event_id], allow_cache=False)
         return result
 
 def decorate_with_rsvps(batch_lookup, search_results):
