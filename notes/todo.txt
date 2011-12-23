@@ -1,5 +1,8 @@
 BEFORE LAUNCH:
 
+- Do some word-nearby-ness classifier that gives more weight to dance-keywords near each other.
+- Somehow include the log(density) in our overall score. At lower-numbers-of-keywords, the weight becomes more important.
+
 - Maybe do a query on the members of a group to figure out a rough geographical region? Same with an event?
 
 - Maybe use "where are all events from this source located" as a suggestion for the location of this particular event in question? Waiting for certain number of events first?
