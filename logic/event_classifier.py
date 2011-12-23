@@ -16,11 +16,12 @@ from spitfire.runtime.filters import skip_filter
 # maybe feed keywords into auto-classifying event type? bleh.
 
 easy_dance_keywords = [
-    'dances?', 'dancing', 'dancers?', 'danser',
+    'dances?', 'dancing', 'dancers?', 'danser', 'danseur',
     'footwork',
 ]
 easy_choreography_keywords = [
-    'koreografi', 'choreograph(?:y|ed)', 'choreographers?', 'choreo',
+    'choreograph(?:y|ed)', 'choreographers?', 'choreo',
+    'koreografi', 'choreografien',
 
 ]
 
@@ -80,7 +81,7 @@ dance_keywords = [
     'hype danc\w*',
     'social hip\W?hop', 'hip\W?hop social dance[sz]',
     '(?:new|nu|middle)\W?s(?:ch|k)ool hip\W?hop', 'hip\W?hop (?:old|new|nu|middle)\W?s(?:ch|k)ool',
-    'vogue', 'voguer[sz]?', 'vogue?ing',
+    'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem',
     'mini.?ball', 'house of ', 'realness',
     'urban danc\w*',
     'pop\W{0,3}lock(?:ing?|er[sz]?)?'
@@ -196,13 +197,15 @@ event_keywords = [
     'street\W?jam',
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'apache line',
-    'battle of the year', 'boty', 'compete', 'competitions?', 'battles?', 'tournaments?', 'judge[sz]?', 'jury', 'preselection',
+    'battle of the year', 'boty', 'compete', 'competitions?', 'battles?', 'tournaments?', 'preselection',
+    'jury', 'jurados', 'judge[sz]?',
     'showcase',
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)ph(?:a|ers?)',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
-    'cours', 'clases?',
+    'classi',
+    'cours', 'clases?', 'corso', 
     'abdc', 'america\W?s best dance crew',
     'crew\W?v[sz]?\W?crew',
     'prelims?',
@@ -212,6 +215,11 @@ event_keywords = [
 
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
+    'barre',
+    'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
+    'oriental', 'oriente', 'orientale',
+    'tahitian dancing',
+    'folkloric',
     'kizomba',
     'burlesque',
     'technique', 'limon',
@@ -220,7 +228,7 @@ dance_wrong_style_keywords = [
     #'ballet',
     'jazz', 'tap', 'contemporary',
     'african',
-    'zumba', 'belly\W?danc(?:e(?:rs?)?|ing)',
+    'zumba', 'belly\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance',
     'soca',
     'flamenco',
 ]
