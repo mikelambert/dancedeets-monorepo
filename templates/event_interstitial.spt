@@ -1,7 +1,7 @@
 #extends _base
 
 #def title
-$format_html($event.info.name)</title>
+$format_html($event.info.name)
 #end def
 
 #def body
