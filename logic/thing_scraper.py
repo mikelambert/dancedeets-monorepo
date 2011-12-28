@@ -99,7 +99,7 @@ def process_thing_feed(source, thing_feed, batch_lookup):
         potential_events.make_potential_event_with_source(event_id, match_score, source=source, source_field=thing_db.FIELD_FEED)
             
 
-    existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(source_ids) if x])
+    existing_source_ids = set([str(x.graph_id) for x in thing_db.Source.get_by_key_name(source_ids) if x])
     new_source_ids = set([x for x in source_ids if x not in existing_source_ids])
     for source_id in new_source_ids:
         s = thing_db.create_source_for_id(source_id, fb_data=None) #TODO(lambert): we know it doesn't exist, why does create_source_for_id check datastore?
