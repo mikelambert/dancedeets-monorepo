@@ -188,11 +188,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         potential_event = potential_events.PotentialEvent.get_by_key_name(event_id)
 
-        dance_tags = event_classifier.is_dance_event(fb_event)
-        if dance_tags:
-            truefalse, reason, dance_words, event_words = dance_tags
-            dance_words_str = ', '.join(list(dance_words))
-            event_words_str = ', '.join(list(event_words))
+        classified_event = event_classifier.get_classified_event(fb_event)
+        if classified_event.is_dance_event():
+            reason = classified_event.reason()
+            dance_words_str = ', '.join(list(classified_event.dance_matches()))
+            event_words_str = ', '.join(list(classified_event.event_matches()))
         else:
             reason = None
             dance_words_str = 'NONE'

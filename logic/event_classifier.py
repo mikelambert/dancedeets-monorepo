@@ -360,17 +360,6 @@ def get_classified_event(fb_event):
     classified_event.classify()
     return classified_event
 
-def is_dance_event(fb_event):
-    classified_event = get_classified_event(fb_event)
-    if classified_event.is_dance_event():
-        return (True,
-            classified_event.reason(),
-            classified_event.dance_matches(),
-            classified_event.event_matches(),
-        )
-    else:
-        return False
-
 def relevant_keywords(fb_event):
     build_regexes()
     text = get_relevant_text(fb_event)
