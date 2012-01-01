@@ -158,6 +158,9 @@ anti_dance_keywords  = [
 # world class
 # 1st class
 
+# open mic
+# Marvellous dance crew (uuugh)
+
 #dj.*bboy
 #dj.*bgirl
 
@@ -216,6 +219,7 @@ event_keywords = [
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
     'barre',
+    'pole dance', 'flirt dance',
     'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
     'oriental', 'oriente', 'orientale',
     'tahitian dancing',
