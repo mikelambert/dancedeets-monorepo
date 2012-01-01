@@ -14,6 +14,7 @@ BEFORE LAUNCH:
 - For things-we-will-always-scrape (such as source feeds?), maybe it's not worth fb_api ever storing them in the database? Unsure of pros/cons here. Maybe only ever used to display admin-source-edit page?
 
 - Store language inside of PotentialEvent (or inside of Source)? Use to cache result of language lookup, mainly for speed purposes. Create a Translated-FacebookCachedObject that stores translated data. Only do re-lookup until PotentialEvent gets looked-at? Need to carefully not get billed-a-ton here, so maybe only do for certain types of Sources with potentialevents?
+- Alternately, maybe we want to translate our source-words to each potential language. Many would come out the same, but not all. Then depending on the event location (which is a free/cheap check), we use that to figure out which set of keywords to run against them. And for admin-potential-events, we can map each foreign-translated word back to it's english equivalent to give the admin an idea what they're up against before they go into the event and manually-translate it using the "button".
 
 - Need some way to auto-refresh cached PotentialEvents to pull in new data for these events. Maybe auto-expired based on time-loaded? Want to do allow_cache and allow_expiration value, so it doesn't apply in our normal user-facing case? Or maybe log errors for our user-facing case?
 
