@@ -1,5 +1,11 @@
 BEFORE LAUNCH:
 
+- Scrape fanpages, remember location, and display nearby ones in a sidebar on the right. Maybe another search-y box?
+
+- Make a fanpage scraper. Scrape for likes too, look for dance-y type stuff, and stick in a sources queue.
+- Scrape fanpages of myself and friends and site-users and friends. Scrape the fanpages of all fanpage sources too.
+- Do alongside the "groups" of myself and my friends and users of the site (and their friends?)
+
 - Do some word-nearby-ness classifier that gives more weight to dance-keywords near each other.
 - Somehow include the log(density) in our overall score. At lower-numbers-of-keywords, the weight becomes more important.
 
