@@ -1,12 +1,39 @@
 BEFORE LAUNCH:
 
+- Two separate Source systems. One for persons. One for groups/pages. (Do we care about events?)
+- For persons: We can add tons of PotentialSources for people. Maybe even one per each person in an event. Or more than X events. (Can grab these from our "scrape and count people in each scene" mapreduce?) When we try to evaluate their score, it comes from how many PotentialEvents we can get from these people. We have N/A (None) for not-scrapable, or a count if we can scrape it. Make sure to scrape both attendings as well as walls. If count is non-zero, then add to Sources list. This could blow up on us, so tag them somehow so we can undo in an emergency, or maybe do a PotentialSource for them.
+- For groups/pages. For each Source (person, group, page), scrape all groups/pages for it. Run them through a source-classifier, which uses textual description in each thing (again customized based on source type), as well as the wall-scrape for the thing. If it's a good one, add it to PotentialSource for filtering. When we add a source, do a scrape of it (for both potential events as well as new potential sources).
+- For all events, construct a Source with it. When the date for the event has passed, make it an inactive Source. In theory should also be notice-able by the lack of updates on the wall.
+- Instead of feed_history_of_seconds, store feed_start_timestamp and feed_end_timestamp. Potentially use now() - feed_start_timestamp to track how often to scrape (do we ever need to scrape 1+ times/day?) But we can also find things to scrape less often. Weekly versus daily simple threshold?
+- For any sources with now() - feed_end_timestamp > 2+ years (handle no-wall-things based on creation timestamps somehow?), then mark it inactive. Or if is event >1 month old, mark it inactive.
+
+- Make a X-at-a-time mapreduce, so that we can initiate fb lookups in parallel and save on CPU lookup time. Faster mapreduces! Return event-ids from process_thing instead of looking them up inside, so that we can do a better-job of parallelization across multiple thing's event-ids outside of process_thing.
+
+- Save a list of "authorized user ids" inside each source, which we use to scrape them. May make it difficult to do a mapreduce and efficiently group-them and look-them-up. But "oh well"...maybe it becomes one mapreduce per user id? Maybe it becomes a mapreduce containing all valid user ids that are used for scraping?
+
+- For things-we-will-always-scrape (such as source feeds?), maybe it's not worth fb_api ever storing them in the database? Unsure of pros/cons here. Maybe only ever used to display admin-source-edit page?
+
+- Store language inside of PotentialEvent (or inside of Source)? Use to cache result of language lookup, mainly for speed purposes. Create a Translated-FacebookCachedObject that stores translated data. Only do re-lookup until PotentialEvent gets looked-at? Need to carefully not get billed-a-ton here, so maybe only do for certain types of Sources with potentialevents?
+
+- Need some way to auto-refresh cached PotentialEvents to pull in new data for these events. Maybe auto-expired based on time-loaded? Want to do allow_cache and allow_expiration value, so it doesn't apply in our normal user-facing case? Or maybe log errors for our user-facing case?
+
+- Somehow need to ensure venues get re-looked-up? Does this happen in the Event re-loading cronjob?
+
+- Need to take a better look at what is cached, and what is not cached, on all these offline cronjobs. Sometimes only some things should be looked up.
+
+- Maybe make a "venue" decoration function, to avoid one-by-one venue lookups, which can slow down the AdminPotentialEvents display with many events.
+
+- Use XSRF for AdminPotentialEvents buttons-submission. Show red/green based on http status code.
+
+- Do a better job with "non-good-location-data events". Allow us to auto-classify, and show in green what location it classified to. Allow us to click in to "fix" if we dislike it.
+
 - Scrape fanpages, remember location, and display nearby ones in a sidebar on the right. Maybe another search-y box?
 
 - Make a fanpage scraper. Scrape for likes too, look for dance-y type stuff, and stick in a sources queue.
 - Scrape fanpages of myself and friends and site-users and friends. Scrape the fanpages of all fanpage sources too.
 - Do alongside the "groups" of myself and my friends and users of the site (and their friends?)
 
-- Do some word-nearby-ness classifier that gives more weight to dance-keywords near each other.
+- Do some word-nearby-ness classifier that gives more weight to dance-keywords near each other. This is why I was building that unittest...
 - Somehow include the log(density) in our overall score. At lower-numbers-of-keywords, the weight becomes more important.
 
 - Maybe do a query on the members of a group to figure out a rough geographical region? Same with an event?
@@ -228,7 +255,7 @@ LAUNCH PLAN:
 
 LONGER TERM:
 - embed widget
-- Add some stats on "users that see a given event", to make a compelling case for promoters to put events on this site.
+- Add some stats on "users that see a given event", to make a compelling case for promoters to put events on this site. Maybe use google-analytics cookie for uniqueness? Would need to investigate their 'format' a bit to see what's discoverable.
 - Some way to find users who have created events, and directly incite them to add to dance deets?
 - allow override on timezone/scene/etc for users where we get it wrong
 
