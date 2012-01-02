@@ -1,4 +1,5 @@
 import logging
+import re
 from google.appengine.ext import db
 import fb_api
 
@@ -118,7 +119,7 @@ class LocationInfo(object):
                 self.final_address = self.fb_city
             else:
                 # many geocodes have a couple trailing digits, a la "VIA ROMOLO GESSI 14"
-                self.final_address = re.sub(r' \d{,3}$', self.fb_address)
+                self.final_address = re.sub(r' \d{,3}$', '', self.fb_address)
         results = locations.get_geocoded_location(self.final_address)
         self.final_city = results['city']
         self.final_latlng = results['latlng']
