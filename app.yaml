@@ -13,6 +13,7 @@ builtins:
 - datastore_admin: on
 - remote_api: on
 - appstats: on
+- deferred: on
 
 handlers:
 - url: /admin/.*

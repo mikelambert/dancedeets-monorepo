@@ -8,6 +8,7 @@ import re
 import sys
 import urllib
 
+from google.appengine.ext import deferred
 from google.appengine.ext.webapp import RequestHandler
 from django.utils import simplejson
 
@@ -127,7 +128,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
                 if self.user and (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
                     # Do this in a separate request so we don't increase latency on this call
-                    backgrounder.update_last_login_time(self.fb_uid)
+                    deferred.do(update_last_login_time, self.user.fb_uid, datetime.datetime.now())
                     backgrounder.load_users([self.fb_uid], allow_cache=False)
         else:
             self.fb_uid = None
@@ -210,4 +211,14 @@ class BaseRequestHandler(BareBaseRequestHandler):
         else:
             self.display['fb_user'] = None
         super(BaseRequestHandler, self).render_template(name)
+
+def update_last_login_time(user_id, login_time):
+    user = user = users.User.get_by_key_name(user_id)
+    user.last_login_time = login_time
+    if getattr(user, 'login_count'):
+        user.login_count += 1
+    else:
+        user.login_count = 2 # once for this one, once for initial creation
+    # in read-only, keep trying until we succeed
+    user.put()
 

@@ -173,19 +173,6 @@ class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
         for user_id in user_ids:
             fb_reloading.load_potential_events_for_user_id(self.batch_lookup.copy(), user_id)
 
-class UpdateLastLoginTimeHandler(RequestHandler):
-    def get(self):
-        user = users.User.get_by_key_name(self.request.get('user_id'))
-        user.last_login_time = datetime.datetime.now()
-        if getattr(user, 'login_count'):
-            user.login_count += 1
-        else:
-            user.login_count = 2 # once for this one, once for initial creation
-        try:
-            user.put()
-        except apiproxy_errors.CapabilityDisabledError:
-            pass # read-only mode!
-
 class RecacheSearchIndex(BaseTaskFacebookRequestHandler):
     def get(self):
         search.recache_everything(self.batch_lookup)
