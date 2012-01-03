@@ -6,6 +6,7 @@ import time
 import smemcache
 
 from google.appengine.ext import db
+from google.appengine.ext import deferred
 
 import base_servlet
 from events import cities
@@ -16,6 +17,8 @@ import locations
 from logic import event_classifier
 from logic import rsvp
 from util import dates
+
+SLOW_QUEUE = 'slow-queue'
 
 class ResultsGroup(object): 
     def __init__(self, name, id, results, expanded, force=False): 
@@ -225,7 +228,7 @@ EVENTS_AT_A_TIME = 200
 def cache_fb_events(batch_lookup, search_index):
     """Load and stick fb events into cache."""
     if len(search_index) > EVENTS_AT_A_TIME:
-        cache_fb_events(batch_lookup, search_index[EVENTS_AT_A_TIME:])
+        deferred.defer(cache_fb_events, batch_lookup, search_index[EVENTS_AT_A_TIME:], _queue=SLOW_QUEUE)
         search_index = search_index[:EVENTS_AT_A_TIME]
     batch_lookup = batch_lookup.copy()
     batch_lookup.allow_memcache = False
@@ -238,7 +241,7 @@ def cache_fb_events(batch_lookup, search_index):
 def cache_db_events(search_index):
     """Load and stick db events into cache."""
     if len(search_index) > EVENTS_AT_A_TIME:
-        cache_db_events(search_index[EVENTS_AT_A_TIME:])
+        deferred.defer(cache_db_events, search_index[EVENTS_AT_A_TIME:], _queue=SLOW_QUEUE)
         search_index = search_index[:EVENTS_AT_A_TIME]
     event_ids = [event_id for event_id, latlng in search_index]
     eventdata.get_cached_db_events(event_ids, allow_cache=False)
@@ -246,5 +249,5 @@ def cache_db_events(search_index):
 def recache_everything(batch_lookup):
     search_index = get_search_index(allow_cache=False)
     logging.info("Overall loading %s events into memcache", len(search_index))
-    cache_fb_events(batch_lookup, search_index)
-    cache_db_events(search_index)
+    deferred.defer(cache_fb_events, batch_lookup, search_index, _queue=SLOW_QUEUE)
+    deferred.defer(cache_db_events, search_index, _queue=SLOW_QUEUE)
