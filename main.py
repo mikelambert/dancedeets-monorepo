@@ -56,7 +56,6 @@ URLS = [
     ('/tasks/load_potential_events_for_user', tasks.LoadPotentialEventsForUserHandler),
     ('/tasks/load_potential_events_from_wall_posts', tasks.LoadPotentialEventsFromWallPostsHandler),
     ('/tasks/compute_rankings', tasks.ComputeRankingsHandler),
-    ('/tasks/update_last_login_time', tasks.UpdateLastLoginTimeHandler),
     ('/tasks/recache_search_index', tasks.RecacheSearchIndex),
     ('/', search.RelevantHandler),
     ('/_ah/warmup', DoNothingHandler),
