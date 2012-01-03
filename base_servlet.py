@@ -128,7 +128,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
                 if self.user and (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
                     # Do this in a separate request so we don't increase latency on this call
-                    deferred.do(update_last_login_time, self.user.fb_uid, datetime.datetime.now())
+                    deferred.defer(update_last_login_time, self.user.fb_uid, datetime.datetime.now())
                     backgrounder.load_users([self.fb_uid], allow_cache=False)
         else:
             self.fb_uid = None
