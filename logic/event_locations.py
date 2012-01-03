@@ -10,11 +10,11 @@ from util import abbrev
 class LocationMapping(db.Model):
     remapped_address = db.StringProperty(indexed=False)
 
-def _city_for_venue(venue):
+def city_for_fb_location(location):
     # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
-    state = abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state'))
-    if venue.get('city') and (state or venue.get('country')):
-        address_components = [venue.get('city'), state, venue.get('country')]
+    state = abbrev.states_full2abbrev.get(location.get('state'), location.get('state'))
+    if location.get('city') and (state or location.get('country')):
+        address_components = [location.get('city'), state, location.get('country')]
         address_components = [x for x in address_components if x]
         address = ', '.join(address_components)
         return address
@@ -41,12 +41,12 @@ def _get_city_for_fb_event(fb_event):
         batch_lookup.finish_loading()
         venue_data = batch_lookup.data_for_venue(venue.get('id'))
         if not venue_data['deleted']:
-            city = _city_for_venue(venue_data['info'].get('location', {}))
+            city = city_for_fb_location(venue_data['info'].get('location', {}))
             logging.info("venue address is %s", city)
             if city:
                 return city
     # otherwise fall back on the address in the event, and go from there
-    city = _city_for_venue(venue)
+    city = city_for_fb_location(venue)
     if city:
         return city
     else:
@@ -56,7 +56,9 @@ def _get_address_for_fb_event(fb_event):
     event_info = fb_event['info']
     venue = event_info.get('venue', {})
     raw_location = event_info.get('location')
-    return _address_for_venue(venue, raw_location=raw_location)
+    final_address = _address_for_venue(venue, raw_location=raw_location)
+    # many geocodes have a couple trailing digits, a la "VIA ROMOLO GESSI 14"
+    return re.sub(r' \d{,3}$', '', final_address)
 
 def _get_remapped_address_for(address):
     if not address:
@@ -118,8 +120,7 @@ class LocationInfo(object):
             elif self.fb_city:
                 self.final_address = self.fb_city
             else:
-                # many geocodes have a couple trailing digits, a la "VIA ROMOLO GESSI 14"
-                self.final_address = re.sub(r' \d{,3}$', '', self.fb_address)
+                self.final_address = self.fb_address
         results = locations.get_geocoded_location(self.final_address)
         self.final_city = results['city']
         self.final_latlng = results['latlng']
