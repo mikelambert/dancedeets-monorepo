@@ -38,6 +38,8 @@ class BareBaseRequestHandler(RequestHandler):
         # functions, add these to some base display setup
         self.display['format_html'] = text.format_html
         self.display['format_js'] = text.format_js
+        self.display['urlencode'] = lambda x: urllib.quote_plus(x.encode('utf8'))
+
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
         self.display['next'] = ''

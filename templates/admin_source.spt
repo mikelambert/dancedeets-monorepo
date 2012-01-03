@@ -9,7 +9,8 @@ Edit Source
 		<form action="/sources/admin_edit" method=post>
 
 			<h2>$fb_source.info.name</h2>
-			<a href="$link_for_fb_source($fb_source)">See on Facebook</a><br><br>
+			<a href="$link_for_fb_source($fb_source)">See on Facebook</a> (<a href="http://graph.facebook.com/$fb_source.info.id">Graph</a>)
+			<br><br>
 
 			<div class="goog-trans-section">
 			<table><tr><td>Description:</td><td class="goog-trans-control"></td></tr></table>

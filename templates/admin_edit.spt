@@ -12,14 +12,17 @@ Edit Event
 			<h2>$highlight_keywords($format_html($fb_event.info.name))</h2>
 			</td><td class="goog-trans-control"></td></tr>
 			</table>
-			<a href="$raw_fb_event_url($fb_event.info.id)">See on Facebook</a><br><br>
-
+			<a href="$raw_fb_event_url($fb_event.info.id)">See on Facebook</a> (<a href="http://graph.facebook.com/$fb_event.info.id">Graph</a>)
+			#if 'owner' in $fb_event.info
+				(Owner: <a href="$dd_admin_source_url($fb_event.info.owner.id)">$fb_event.info.owner.name</a>)
+			#end if
+			<br><br>
 			<table>
 				<tr><td>
 					Original Address:
 				</td><td>
 					<table class="goog-trans-section" style="display:inline"><tr><td>
-					$format_html($location_info.fb_address)
+					<a href="http://www.google.com/search?q=$urlencode($location_info.fb_address)">$format_html($location_info.fb_address)</a>
 					</td><td class="goog-trans-control"></td></tr>
 					</table>
 				</td></tr>
@@ -31,7 +34,7 @@ Edit Event
 				<tr><td>
 					Remapped Address:
 				</td><td>
-					<input type="text" size=100 name="remapped_address" value="$location_info.remapped_address">
+					<input type="text" size=40 name="remapped_address" value="$location_info.remapped_address">
 				</td></tr>
 				<tr><td>
 					Override Address:
@@ -39,7 +42,7 @@ Edit Event
 						(Required!)
 					#end if
 				</td><td>
-					<input type="text" size=100 name="override_address" value="$location_info.overridden_address">
+					<input type="text" size=40 name="override_address" value="$location_info.overridden_address">
 				</td></tr>
 				<tr><td>
 					Final Address:
