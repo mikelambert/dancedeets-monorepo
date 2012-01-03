@@ -1,5 +1,7 @@
 BEFORE LAUNCH:
 
+- Use lazyload to speed up pageloadtime, better for mobile browsers too. http://www.appelsiini.net/projects/lazyload . Make sure to do gaceful degradation. fadein seems nice. Give a nice threshold so people don't really notice.
+
 - Two separate Source systems. One for persons. One for groups/pages. (Do we care about events?)
 - For persons: We can add tons of PotentialSources for people. Maybe even one per each person in an event. Or more than X events. (Can grab these from our "scrape and count people in each scene" mapreduce?) When we try to evaluate their score, it comes from how many PotentialEvents we can get from these people. We have N/A (None) for not-scrapable, or a count if we can scrape it. Make sure to scrape both attendings as well as walls. If count is non-zero, then add to Sources list. This could blow up on us, so tag them somehow so we can undo in an emergency, or maybe do a PotentialSource for them.
 - For groups/pages. For each Source (person, group, page), scrape all groups/pages for it. Run them through a source-classifier, which uses textual description in each thing (again customized based on source type), as well as the wall-scrape for the thing. If it's a good one, add it to PotentialSource for filtering. When we add a source, do a scrape of it (for both potential events as well as new potential sources).
@@ -98,6 +100,7 @@ http://www.dancedeets.com/events/admin_edit?event_id=227428607325354
 http://www.dancedeets.com/events/admin_edit?event_id=262842063765336
 http://www.dancedeets.com/events/admin_edit?event_id=325031654175010
 http://www.dancedeets.com/events/admin_edit?event_id=192959864132374
+http://www.dancedeets.com/events/admin_edit?event_id=296931520342753
 
 - Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
 http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
