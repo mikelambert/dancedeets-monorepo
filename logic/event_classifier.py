@@ -82,7 +82,7 @@ dance_keywords = [
     'social hip\W?hop', 'hip\W?hop social dance[sz]',
     '(?:new|nu|middle)\W?s(?:ch|k)ool hip\W?hop', 'hip\W?hop (?:old|new|nu|middle)\W?s(?:ch|k)ool',
     'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem',
-    'mini.?ball', 'house of ', 'realness',
+    'mini.?ball', 'realness',
     'urban danc\w*',
     'pop\W{0,3}lock(?:ing?|er[sz]?)?'
 ]
@@ -201,7 +201,7 @@ event_keywords = [
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?', 'battles?', 'tournaments?', 'preselection',
-    'jury', 'jurados', 'judge[sz]?',
+    'jurys?', 'jurados', 'judge[sz]?',
     'showcase',
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)ph(?:a|ers?)',
@@ -219,6 +219,7 @@ event_keywords = [
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
     'barre',
+    'musical theat(?:re|er)',
     'pole dance', 'flirt dance',
     'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
     'oriental', 'oriente', 'orientale',
@@ -227,6 +228,8 @@ dance_wrong_style_keywords = [
     'kizomba',
     'burlesque',
     'technique', 'limon',
+    'clogging',
+    'zouk',
     # Sometimes used in studio name even though it's still a hiphop class:
     #'ballroom',
     #'ballet',
