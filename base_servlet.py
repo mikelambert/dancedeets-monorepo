@@ -54,7 +54,8 @@ class BareBaseRequestHandler(RequestHandler):
         cookie[name] = str(base64.b64encode(value))
         cookie[name]['path'] = '/'
         cookie[name]['secure'] = ''
-        assert not expires
+        if expires is not None:
+            cookie[name]['expires'] = expires
         self.response.headers.add_header(*cookie.output().split(': '))
         return cookie
 
@@ -143,7 +144,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 logging.info("No database user object.")
             if self.user and self.user.expired_oauth_token:
                 logging.info("User's OAuth token expired")
-                self.set_cookie('fbsr_' + FACEBOOK_CONFIG['app_id'], None)
+                self.set_cookie('fbsr_' + FACEBOOK_CONFIG['app_id'], '', 0)
                 logging.info("clearing cookie %s", 'fbsr_' + FACEBOOK_CONFIG['app_id'])
                 self.set_cookie('User-Message', "You changed your facebook password, so will need to click login again.")
             if self.request.get('referer'):
