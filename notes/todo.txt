@@ -1,5 +1,11 @@
 BEFORE LAUNCH:
 
+- Maybe do expiration of geocode lookups? Seems ones that have been stored awhile are no longer returned by google? Maybe do soft-expiration that only writes out new values if different but will not delete existing values?
+
+- Display location of event owner.
+
+- Maybe scrape page to find group-via-which event was created, as well as all/additional owners. For use in displaying locations of owners. And for scraping group as an additional source.
+
 - Use lazyload to speed up pageloadtime, better for mobile browsers too. http://www.appelsiini.net/projects/lazyload . Make sure to do gaceful degradation. fadein seems nice. Give a nice threshold so people don't really notice.
 
 - Two separate Source systems. One for persons. One for groups/pages. (Do we care about events?)
