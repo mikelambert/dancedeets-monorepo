@@ -2,6 +2,8 @@ import urllib
 
 from google.appengine.api import taskqueue
 
+# deferred (http://code.google.com/appengine/articles/deferred.html) is useful, but since we map many of these to code that is also called by servlets (for debugging and/or cronjobs), it's not as useful for these:
+
 def load_users(user_ids, allow_cache=True, **kwargs):
     allow_cache_arg = (allow_cache and '1' or '0')
     for fb_uid in user_ids:

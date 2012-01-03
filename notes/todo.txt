@@ -54,8 +54,6 @@ BEFORE LAUNCH:
 - Set up forums using Cloud SQL? https://code.google.com/apis/sqlservice/
 http://groups.google.com/group/google-cloud-sql-discuss
 
-- Replace backgrounder.py with http://code.google.com/appengine/articles/deferred.html
-
 - If we port to EC2, use http://appscale.cs.ucsb.edu/appengine.html
 
 - Automatic CSS resizing for mobile screens:
