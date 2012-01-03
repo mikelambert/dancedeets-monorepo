@@ -11,6 +11,8 @@ from logic import email_events
 from logic import potential_events
 from util import fb_mapreduce
 
+BROKEN_UIDS = []#"1400235949", "1268158596"]
+
 def mr_load_fb_event(batch_lookup):
         fb_mapreduce.start_map(
                 batch_lookup=batch_lookup,
@@ -61,6 +63,9 @@ def mr_load_fb_user(batch_lookup):
 
 def yield_load_fb_user(batch_lookup, user):
     if user.expired_oauth_token:
+        return
+    # TODO(lambert): figure out why future's data can't be loaded
+    if str(user.fb_uid) in BROKEN_UIDS:
         return
         batch_lookup.lookup_user(user.fb_uid)
     try:
@@ -167,6 +172,9 @@ def mr_load_potential_events(batch_lookup):
         )
 
 def load_potential_events_for_user_id(batch_lookup, user_id):
+    # TODO(lambert): figure out why future's data can't be loaded
+    if str(user_id) in BROKEN_UIDS:
+        return
     batch_lookup.lookup_user_events(user_id)
     batch_lookup.finish_loading()
     potential_events.get_potential_dance_events(batch_lookup, user_id)
