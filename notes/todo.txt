@@ -1,5 +1,12 @@
 BEFORE LAUNCH:
 
+Optimizations:
+- DB: speed up event remapping lookups to make them more cached through sharded aggregates.
+- INSTANCE: make a mapreduce that passes in arrays-of-objects instead of object-by-object. Better parallelized FB fetching of data.
+- DB/INSTANCE: change performance characteristics of city pages (when requested by googlebot) to not be all-history-of-all-time. maybe just recent history of 1-2 months?
+- DB/INSTANCE: filter/sort which sources we fetch by using the number-of-things and frequency-of-updates of the feed. requires a bigger implementation of the details below.
+
+
 - Maybe do expiration of geocode lookups? Seems ones that have been stored awhile are no longer returned by google? Maybe do soft-expiration that only writes out new values if different but will not delete existing values?
 
 - Display location of event owner.
