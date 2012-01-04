@@ -7,6 +7,10 @@
 Dance Events in $closest_city
 #end def
 
+#def gaq_custom_vars
+  _gaq.push(['_setCustomVar', 3, 'Page Type', 'List']);
+#end def
+
 #def head_stylesheet
 <style type="text/css">
 .ui-widget-content a {

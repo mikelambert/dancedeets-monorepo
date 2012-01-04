@@ -4,6 +4,10 @@
 $format_html($event.info.name)
 #end def
 
+#def gaq_custom_vars
+  _gaq.push(['_setCustomVar', 3, 'Page Type', 'Event']);
+#end def
+
 #def body
 <div id="left-hand">
 

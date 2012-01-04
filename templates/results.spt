@@ -46,6 +46,10 @@ Dance Events
 </style>
 #end def
 
+#def gaq_custom_vars
+  _gaq.push(['_setCustomVar', 3, 'Page Type', 'List']);
+#end def
+
 #def ranked_list($top_list, $selected_list)
 	#if $top_list
 		#for $i, $sel, $data in $top_list

@@ -1,3 +1,7 @@
+#def fb_login_button
+<fb:login-button length="long" onclick="preSignUp();" onlogin="signUp();" scope="$fb_permissions"></fb:login-button>
+#end def
+
 #def signup_form($next)
 <form action="/login" id="signup-form" method="post" onsubmit="return FB.Cookie.load() != undefined;">
 <fieldset style="border: 1px black solid; background-color: #eee;border-radius: 10px">
@@ -18,7 +22,7 @@
 #end if
 <b>City:</b> <input type=text name="city" id="signup-city">
 
-<p><fb:login-button length="long" onlogin="signUp();" scope="$fb_permissions"></fb:login-button>
+<p>$fb_login_button()
 <!--TODO(lambert): add read_stream to get access to a bunch more streams/feeds out there? maybe just for Mike Lambert's magic token? what about friend_events...doesn't appear necessary?-->
 </fieldset>
 </form>
@@ -98,11 +102,16 @@
 
   function handleStatusChange(response) {
   }
+  function preSignUp() {
+		_gaq.push(['_trackEvent', 'Signup', 'Opened FB Signup Window']);
+  }
   function signUp() {
+		_gaq.push(['_trackEvent', 'Signup', 'Closed FB Signup Window']);
 		FB.getLoginStatus(function(response) {
 			if (!response.authResponse) {
 				must_allow_perms.dialog('open');
 			} else {
+				_gaq.push(['_trackEvent', 'Signup', 'Authorized Permissions']);
 				if ($('#signup-form')) {
 					$('#signup-form').submit();
 				} else {

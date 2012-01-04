@@ -72,7 +72,7 @@
 #if $fb_user
   $fb_user.profile.name : <a href="/user/edit">Settings</a>
 #else
-  <fb:login-button onlogin="signUp();" scope="$fb_permissions"></fb:login-button>
+  $fb_login_button()
 #end if
 </div>
 <div id="header">

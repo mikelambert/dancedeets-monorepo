@@ -1,6 +1,9 @@
 #extends _real_base
 #extends _signup
 
+#def gaq_custom_vars
+#end def
+
 #def headbody
 <head>
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
@@ -16,6 +19,18 @@ $head_javascript()
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-18831479-1']);
   _gaq.push(['_trackPageview']);
+  _gaq.push(['_setCustomVar', 1, 'Logged In',
+#if $fb_user
+'Yes'
+#else
+'No'
+#end if
+	, 2 /* session-level */] );
+#if $fb_user
+  _gaq.push(['_setCustomVar', 2, 'Has Account', 'Yes', 1 /* visitor-level */] );
+#end if
+
+$gaq_custom_vars()
 
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -60,7 +75,7 @@ $head_javascript()
 	|
 	<a href="#" onclick="FB.logout(function(response) { window.location.reload(); })">Logout</a>
 #else
-	<fb:login-button onlogin="signUp();" scope="$fb_permissions"></fb:login-button>
+	$fb_login_button()
 #end if
 </div>
 
