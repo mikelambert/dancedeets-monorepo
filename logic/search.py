@@ -207,6 +207,7 @@ class SearchQuery(object):
 def construct_search_index():
     MAX_EVENTS = 5000
     db_events = db.Query(eventdata.DBEvent).filter('search_time_period =', eventdata.TIME_FUTURE).order('start_time').fetch(MAX_EVENTS)
+    eventdata.cache_db_events(db_events)
     if len(db_events) >= MAX_EVENTS:
         slogging.error('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
 
@@ -238,16 +239,8 @@ def cache_fb_events(batch_lookup, search_index):
     logging.info("Loading %s events into memcache", len(search_index))
     batch_lookup.finish_loading()
 
-def cache_db_events(search_index):
-    """Load and stick db events into cache."""
-    if len(search_index) > EVENTS_AT_A_TIME:
-        deferred.defer(cache_db_events, search_index[EVENTS_AT_A_TIME:], _queue=SLOW_QUEUE)
-        search_index = search_index[:EVENTS_AT_A_TIME]
-    event_ids = [event_id for event_id, latlng in search_index]
-    eventdata.get_cached_db_events(event_ids, allow_cache=False)
-
 def recache_everything(batch_lookup):
     search_index = get_search_index(allow_cache=False)
     logging.info("Overall loading %s events into memcache", len(search_index))
     deferred.defer(cache_fb_events, batch_lookup, search_index, _queue=SLOW_QUEUE)
-    deferred.defer(cache_db_events, search_index, _queue=SLOW_QUEUE)
+    # caching of db events is done automatically by construct_search_index since it already has the db events loaded

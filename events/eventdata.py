@@ -40,6 +40,9 @@ def get_event_image_url(square_url, event_image_type):
 
 
 DBEVENT_PREFIX = 'DbEvent.%s'
+def cache_db_events(events):
+    return smemcache.safe_set_memcache(dict((DBEVENT_PREFIX % x.fb_event_id, x) for x in new_db_events), expiry=2*3600)
+
 def get_cached_db_events(event_ids, allow_cache=True):
     db_events = []
     a = time.time()
@@ -50,7 +53,7 @@ def get_cached_db_events(event_ids, allow_cache=True):
     remaining_event_ids = set(event_ids).difference([x.fb_event_id for x in db_events])
     if remaining_event_ids:
         new_db_events = DBEvent.get_by_key_name([str(x) for x in remaining_event_ids])
-        smemcache.safe_set_memcache(dict((DBEVENT_PREFIX % x.fb_event_id, x) for x in new_db_events), expiry=2*3600)
+        cache_db_events(new_db_events)
         db_events += new_db_events
     db_event_map = dict((x.fb_event_id, x) for x in db_events)
     logging.info("loading cached db events took %s seconds", time.time() - a)
