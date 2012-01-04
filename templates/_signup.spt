@@ -126,7 +126,10 @@
 			FB.Cookie.setRaw('', 1, FB.Cookie._domain);
 		}
 		*/
-
+		Date.prototype.addMonths = function(n) {
+			this.setMonth(this.getMonth()+n);
+			return this;
+		}
 		FB.init({appId: '$app_id', status: true, cookie: true, xfbml: true, oauth: true});
 		#if not $fb_user
 			## only subscribe to login-status notifications if we're logged out, otherwise we get in an infinite loop
