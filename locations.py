@@ -1,6 +1,7 @@
 import base64
 import hashlib
 import hmac
+import json
 import logging
 import math
 import urllib
@@ -9,10 +10,6 @@ import urllib2
 import geohash
 
 from google.appengine.ext import db
-try:
-    from django.utils import simplejson
-except ImportError:
-    import simplejson
 try:
     import smemcache
 except ImportError:
@@ -40,8 +37,8 @@ def _get_geocoded_data(address):
     results = urllib.urlopen(url).read()
     logging.info('geocoding results: %s', results)
     try:
-        json_result = simplejson.loads(results)
-    except simplejson.decoder.JSONDecodeError, e:
+        json_result = json.loads(results)
+    except json.decoder.JSONDecodeError, e:
         raise GeocodeException("Error decoding json from %s: %s: %r" % (url, e, results))
     if json_result['status'] == 'ZERO_RESULTS':
         return ''
@@ -65,14 +62,14 @@ def _raw_get_cached_geocoded_data(location):
         geocode = GeoCode.get_by_key_name(location)
         if geocode:
             try:
-                geocoded_data = simplejson.loads(geocode.json_data)
+                geocoded_data = json.loads(geocode.json_data)
             except:
                 logging.exception("Error decoding json data for geocode %r: %r", location, geocode.json_data)
         if geocoded_data is None:
             geocoded_data = _get_geocoded_data(location)
 
             geocode = GeoCode(key_name=location)
-            geocode.json_data = simplejson.dumps(geocoded_data)
+            geocode.json_data = json.dumps(geocoded_data)
             geocode.put()
         if smemcache:
             smemcache.set(memcache_key, geocoded_data, LOCATION_EXPIRY)

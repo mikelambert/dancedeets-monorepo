@@ -1,7 +1,7 @@
 application: dancedeets-hrd
-version: v1-2-mishmash
-runtime: python
-threadsafe: false #sigh, appengine starts charging me more, telling me i can use threadsafe to save on instances, but then leaves admin, mapreduce, and ereporter stuck using the old cgi interfaces so i can't actually use threadsafe.
+version: v1-3-python27
+runtime: python27
+threadsafe: true #sigh, appengine starts charging me more, telling me i can use threadsafe to save on instances, but then leaves admin, mapreduce, and ereporter stuck using the old cgi interfaces so i can't actually use threadsafe.
 api_version: 1
 
 includes:
@@ -17,9 +17,6 @@ builtins:
 - deferred: on
 
 handlers:
-- url: /admin/.*
-  script: $PYTHON_LIB/google/appengine/ext/admin
-  login: admin
 - url: /dancedeets.png
   static_files: dancedeets.png
   upload: dancedeets.png
@@ -36,24 +33,24 @@ handlers:
 - url: /images
   static_dir: images
 - url: /tools/.*
-  script: main.py
+  script: main.application
   login: admin
 - url: /admin/.*
-  script: main.py
+  script: main.application
   login: admin
 - url: /events/admin.*
-  script: main.py
+  script: main.application
   login: admin
 - url: /tasks/.*
-  script: main.py
+  script: main.application
   login: admin
 - url: /_ereporter
-  script: $PYTHON_LIB/google/appengine/ext/ereporter/report_generator.py
+  script: google.appengine.ext.ereporter.report_generator.application
   login: admin
 - url: .*
-  script: main.py
+  script: main.application
 - url: /_ah/warmup
-  script: main.py
+  script: main.application
   login: admin
 
 admin_console:

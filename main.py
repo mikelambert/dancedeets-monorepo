@@ -84,75 +84,43 @@ URLS = [
     ('/feedback', feedback.FeedbackHandler),
 ]
 
-class MyWSGIApplication(webapp.WSGIApplication):
-    def __init__(self, url_mapping, debug=False, prod_mode=False):
-        self.debug = debug
-        self.prod_mode = prod_mode
-        super(MyWSGIApplication, self).__init__(url_mapping)
+class WebappHandlerAdapter(webapp.BaseHandlerAdapter):
+    """An adapter to dispatch a ``webapp.RequestHandler``.
 
-    def __call__(self, environ, start_response):
-        """Called by WSGI when a request comes in."""
-        request = self.REQUEST_CLASS(environ)
-        response = self.RESPONSE_CLASS()
+    Like in webapp, the handler is constructed, then ``initialize()`` is
+    called, then the method corresponding to the HTTP request method is called.
+    """
 
-        webapp.WSGIApplication.active_instance = self
-
-        processed = False
-        handler = None
-        groups = ()
-        for regexp, handler_class in self._url_mapping:
-            match = regexp.match(request.path)
-            if match:
-                handler = handler_class()
-                handler.prod_mode = self.prod_mode # since we can't change the __init__ or intialize APIs, we must do this here
-                processed = handler.initialize(request, response)
-                groups = match.groups()
-                break
-
-        self.current_request_args = groups
-
+    def __call__(self, request, response):
+        handler = self.handler()
+        processed = handler.initialize(request, response)
         if not processed:
-            if handler:
-                try:
-                    method = environ['REQUEST_METHOD']
-                    if method == 'GET':
-                        handler.get(*groups)
-                    elif method == 'POST':
-                        handler.post(*groups)
-                    elif method == 'HEAD':
-                        handler.head(*groups)
-                    elif method == 'OPTIONS':
-                        handler.options(*groups)
-                    elif method == 'PUT':
-                        handler.put(*groups)
-                    elif method == 'DELETE':
-                        handler.delete(*groups)
-                    elif method == 'TRACE':
-                        handler.trace(*groups)
-                    else:
-                        handler.error(501)
-                except Exception, e:
-                    handler.handle_exception(e, self.debug)
-            else:
-                response.set_status(404)
+            method_name = _normalize_handler_method(request.method)
+            method = getattr(handler, method_name, None)
+            if not method:
+                abort(501)
 
-        response.wsgi_write(start_response)
-        return ['']
+            # The handler only receives *args if no named variables are set.
+            args, kwargs = request.route_args, request.route_kwargs
+            if kwargs:
+                args = ()
 
-def get_application(prod_mode=False):
-    if prod_mode:
-        filename = 'facebook-prod.yaml'
-    else:
-        filename = 'facebook.yaml'
-    base_servlet.FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
-     application = MyWSGIApplication(URLS, debug=True, prod_mode=prod_mode)
-    return application
+            try:
+                method(*args, **kwargs)
+            except Exception, e:
+                handler.handle_exception(e, request.app.debug)
 
-def main():
-    ereporter.register_logger()
-    prod_mode = not os.environ['SERVER_SOFTWARE'].startswith('Dev')
-    run_wsgi_app(get_application(prod_mode))
+webapp.WebappHandlerAdapter = WebappHandlerAdapter #HACK
 
+ereporter.register_logger()
+prod_mode = not os.environ['SERVER_SOFTWARE'].startswith('Dev')
+if prod_mode:
+    filename = 'facebook-prod.yaml'
+else:
+    filename = 'facebook.yaml'
+base_servlet.FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
 
-if __name__ == '__main__':
-    main()
+application = webapp.WSGIApplication(URLS)
+application.debug = True
+application.prod_mode = prod_mode
+
