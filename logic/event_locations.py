@@ -64,6 +64,8 @@ def _get_remapped_address_for(address):
     if not address:
         return ''
     # map locations to corrected locations for events that have wrong or incomplete info
+    #TODO(lambert): How about we have a sharded-memcache-key based on first hexadecimal character of md5-hash of address. this key-value would store all re-mappings with that prefix, and could be db-and-memcached easily.
+    #TODO(lambert): Write a mapreduce which goes through events looking for unnecessary mappings to clear out the mapping space.
     location_mapping = LocationMapping.get_by_key_name(address)
     if location_mapping:
         return location_mapping.remapped_address
