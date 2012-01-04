@@ -56,9 +56,8 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
 
 class ShowUsersHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
-        self.response.out.write('\n\n')
         all_users = users.User.all().fetch(1000)
-        all_users = list(reversed(sorted(all_users, key=lambda x: x.creation_time)))
+        all_users = reversed(sorted(all_users, key=lambda x: x.creation_time))
         self.display['num_users'] = len(all_users)
         self.display['users'] = all_users
         self.render_template('show_users')

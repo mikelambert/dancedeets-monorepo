@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import datetime
-import json
 import logging
 import time
 import urllib
@@ -12,6 +11,7 @@ from google.appengine.ext import db
 from google.appengine.api import datastore
 from google.appengine.api import urlfetch
 from google.appengine.runtime import apiproxy_errors
+from django.utils import simplejson
 
 from util import properties
 
@@ -337,7 +337,7 @@ class BatchLookup(object):
                 logging.error("BatchLookup: Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
             if result.status_code in [200, 400]:
                 text = result.content
-                return json.loads(text)
+                return simplejson.loads(text)
         except urlfetch.DownloadError, e:
             logging.warning("BatchLookup: Error downloading: %s: %s", object_rpc.request.url(), e)
         return None

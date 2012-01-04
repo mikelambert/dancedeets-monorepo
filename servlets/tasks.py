@@ -7,6 +7,7 @@ import time
 import urllib
 import urlparse
 
+from django.utils import simplejson
 from google.appengine.api import mail
 from google.appengine.api import urlfetch
 from google.appengine.ext.webapp import RequestHandler

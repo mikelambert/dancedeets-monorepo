@@ -3,7 +3,6 @@
 import base64
 import Cookie
 import datetime
-import json
 import logging
 import re
 import sys
@@ -12,6 +11,7 @@ import urllib
 from google.appengine.ext import db
 from google.appengine.ext import deferred
 from google.appengine.ext.webapp import RequestHandler
+from django.utils import simplejson
 
 from events import users
 import facebook
@@ -31,6 +31,7 @@ FACEBOOK_CONFIG = None
 
 class BareBaseRequestHandler(RequestHandler):
     def __init__(self, *args, **kwargs):
+        super(BareBaseRequestHandler, self).__init__(*args, **kwargs)
         self.display = {}
         self._errors = []
         # We can safely do this since there are very few ways others can modify self._errors
@@ -43,7 +44,6 @@ class BareBaseRequestHandler(RequestHandler):
         self.display['date_format'] = text.date_format
         self.display['format'] = text.format
         self.display['next'] = ''
-        super(BareBaseRequestHandler, self).__init__(*args, **kwargs)
 
     def head(self):
         return self.get()
@@ -86,8 +86,7 @@ class BareBaseRequestHandler(RequestHandler):
         if isinstance(e, _ValidationError):
             handled = self.handle_error_response(self._errors)
         if not handled:
-            raise
-            #super(BareBaseRequestHandler, self).handle_exception(e, debug)
+            super(BareBaseRequestHandler, self).handle_exception(e, debug)
 
     def handle_error_response(self, errors):
         if self.request.method == 'POST':
@@ -97,7 +96,7 @@ class BareBaseRequestHandler(RequestHandler):
             return False # let exception handling code operate normally
 
     def write_json_response(self, arg):
-        self.response.out.write(json.dumps(arg))
+        self.response.out.write(simplejson.dumps(arg))
 
     def render_template(self, name):
         rendered = template.render_template(name, self.display)
@@ -106,7 +105,6 @@ class BareBaseRequestHandler(RequestHandler):
 class BaseRequestHandler(BareBaseRequestHandler):
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
-        self.run_handler = True
         current_url_args = {}
         for arg in sorted(self.request.arguments()):
             current_url_args[arg] = [x.encode('utf-8') for x in self.request.get_all(arg)]
@@ -156,8 +154,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
             if self.request.get('referer'):
                 self.set_cookie('User-Referer', self.request.get('referer'))
             logging.info("Login required, redirecting to login page: %s", login_url)
-            self.run_handler = False
-            return self.redirect(login_url)
+            self.redirect(login_url)
+            return True
         # If they have a fb_uid, let's do lookups on that behalf (does not require a user)
         if self.fb_uid:
             allow_cache = (self.request.get('allow_cache', '1') == '1')
@@ -188,7 +186,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         self.display['request'] = request
         self.display['app_id'] = FACEBOOK_CONFIG['app_id']
-        self.display['prod_mode'] = self.request.app.prod_mode
+        self.display['prod_mode'] = self.prod_mode
 
         fb_permissions = 'user_location,rsvp_event,offline_access,email,user_events,user_groups,friends_events,friends_groups,user_likes,friends_likes'
         if self.request.get('all_access'):
@@ -197,10 +195,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         self.display.update(rankings.retrieve_summary())
         return False
-
-    def dispatch(self):
-        if self.run_handler:
-            super(BaseRequestHandler, self).dispatch()
 
     def requires_login(self):
         return True
