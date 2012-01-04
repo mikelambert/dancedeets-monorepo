@@ -26,9 +26,21 @@ Potential Events Classification
 			$potential_event.fb_event.info.name
 		#end if
 		</a></td>
-		<td>$potential_event.location_info.fb_city</td>
-		<td style="white-space: nowrap">
+		<td>
 		#if $potential_event.location_info.fb_city
+			$potential_event.location_info.fb_city
+		#else
+			<a href="http://www.google.com/search?q=$urlencode($potential_event.location_info.fb_address)">$format_html($potential_event.location_info.fb_address)</a><br>
+			$potential_event.location_info.final_city
+			#if $potential_event.location_info.overridden_address
+				(Overridden)
+			#elif $potential_event.location_info.overridden_address
+				(Remapped)
+			#end if
+		#end if
+		</td>
+		<td style="white-space: nowrap">
+		#if $potential_event.location_info.final_city
 		<form action="/events/admin_edit" method="post" target="dd_submit"> <!--TODO(lambert): make this ajax-handled-->
 		<input type="hidden" name="event_id" value="$potential_event.fb_event.info.id">
 		<button>Create Event</button>
