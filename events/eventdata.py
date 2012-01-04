@@ -41,7 +41,7 @@ def get_event_image_url(square_url, event_image_type):
 
 DBEVENT_PREFIX = 'DbEvent.%s'
 def cache_db_events(events):
-    return smemcache.safe_set_memcache(dict((DBEVENT_PREFIX % x.fb_event_id, x) for x in new_db_events), expiry=2*3600)
+    return smemcache.safe_set_memcache(dict((DBEVENT_PREFIX % x.fb_event_id, x) for x in events), expiry=2*3600)
 
 def get_cached_db_events(event_ids, allow_cache=True):
     db_events = []
