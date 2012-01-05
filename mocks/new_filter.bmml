@@ -1,0 +1,48 @@
+<mockup version="1.0" skin="sketch" measuredW="988" measuredH="187" mockupW="921" mockupH="169">
+  <controls>
+    <control controlID="12" controlTypeID="com.balsamiq.mockups::CheckBoxGroup" x="73" y="30" w="-1" h="-1" measuredW="266" measuredH="138" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Freestyle%20Events%3A%0A%5Bx%5D%20performance%2C%20show%0A%5Bx%5D%20competition%2C%20jam%2C%20battle%2C%20tournament%0A%5B%20%5D%20workshop%2C%20master%20class%2C%20audition%2C%20tryout%0A%5B%20%5D%20club%20with%20cyphers%0A%5B%20%5D%20other</text>
+      </controlProperties>
+    </control>
+    <control controlID="13" controlTypeID="com.balsamiq.mockups::CheckBoxGroup" x="345" y="30" w="-1" h="-1" measuredW="266" measuredH="115" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Choreo%20Events%3A%0A%5Bx%5D%20performance%2C%20show%2C%20competition%0A%5B%20%5D%20workshop%2C%20master%20class%2C%20audition%2C%20tryout%0A%5B%20%5D%20club%20with%20performances%0A%5B%20%5D%20other</text>
+      </controlProperties>
+    </control>
+    <control controlID="16" controlTypeID="com.balsamiq.mockups::FieldSet" x="57" y="8" w="921" h="169" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Filters</text>
+      </controlProperties>
+    </control>
+    <control controlID="30" controlTypeID="com.balsamiq.mockups::Link" x="745" y="139" w="-1" h="-1" measuredW="138" measuredH="23" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Always%20use%20this%20filter%21</text>
+      </controlProperties>
+    </control>
+    <control controlID="34" controlTypeID="com.balsamiq.mockups::Button" x="898" y="137" w="-1" h="-1" measuredW="65" measuredH="28" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Search</text>
+      </controlProperties>
+    </control>
+    <control controlID="49" controlTypeID="__group__" x="657" y="26" w="-1" h="-1" measuredW="269" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="46" controlTypeID="com.balsamiq.mockups::TextInput" x="57" y="0" w="62" h="-1" measuredW="62" measuredH="27" zOrder="0" locked="false" isInGroup="49">
+          <controlProperties>
+            <text>90%20miles</text>
+          </controlProperties>
+        </control>
+        <control controlID="47" controlTypeID="com.balsamiq.mockups::Label" x="0" y="1" w="57" h="23" measuredW="57" measuredH="23" zOrder="1" locked="false" isInGroup="49">
+          <controlProperties>
+            <text>...within%20</text>
+          </controlProperties>
+        </control>
+        <control controlID="48" controlTypeID="com.balsamiq.mockups::Label" x="119" y="0" w="150" h="23" measuredW="149" measuredH="23" zOrder="2" locked="false" isInGroup="49">
+          <controlProperties>
+            <text>of%20San%20Francisco%20%5Bchange%5D</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+  </controls>
+</mockup>

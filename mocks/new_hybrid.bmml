@@ -1,0 +1,296 @@
+<mockup version="1.0" skin="sketch" measuredW="1416" measuredH="785" mockupW="1379" mockupH="774">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::TextArea" x="37" y="11" w="512" h="34" measuredW="200" measuredH="140" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Dance%20Deets%20San%20Francisco%20%20%20%20%20%20%20%20%20%20%20%20%20Other%20Cities%3A%20%5BSan%20Diego%5D%20%7C%20%5BNew%20York%5D%20%7C%20%5BMore%3E%3E%5D</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::TextArea" x="37" y="44" w="512" h="151" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Looking%20for%20%5BSan%20Francisco%5D%20events%3F%20Or%20looking%20somewhere%20else%3F%0A%20%0AWest%20USA%3A%20%5BSan%20Francisco%5D%20%7C%20%5BLos%20Angeles%5D%20%7C%20%5BLas%20Vegas%5D%20%7C%20%5BSan%20Diego%5D%0AEast%20USA%3A%20%5BNew%20York%5D%20%7C%20%5BBaltimore%5D%20%7C%20%5BChicago%5D%20%7C%20%5BBoston%5D%0AEurope%3A%20%5BFrance%5D%20%7C%20%5BDenmark%5D%20%7C%20%5BUK%5D%20%7C%20%5BItaly%5D%0AAsia%3A%20%5BTokyo%5D%20%7C%20%5BTaiwan%5D%20%7C%20%5BHong%20Kong%5D%20%7C%20%5BPhilippines%5D%20%7C%20%5BMalaysia%5D%0AOther%3A%20%5BAustralia%5D%0AOther%3A%20input-text-box-here</text>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::HCurly" x="37" y="193" w="512" h="43" measuredW="200" measuredH="80" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>One%20of%20the%20above%20two%20boxes%2C%20depending%20on%20signed-in-vs-out%20%28aka%20our%20geo%20confidence%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::TextArea" x="556" y="11" w="211" h="140" measuredW="200" measuredH="140" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BSign%20up%21%5D%0A-%20get%20email%20alerts%0A-%20share%20events%20from%20your%20scene%0A-%20rep%20your%20city%0A%20%0A%5BFacebook%20Login%5D</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::TextArea" x="556" y="507" w="211" h="278" measuredW="200" measuredH="140" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Ranked%20by%201500%20Events%3A%0A1%29%20San%20Francisco%3A%20256%20Events%0A2%29%20Los%20Angeles%3A%20245%20Events%0A3%29%20New%20York%3A%20201%20Events%0A%5BSee%20All%20Rankings%5D%0A%20%0ARanked%20by%20120%20Dancers%3A%0A1%29%20San%20Francisco%3A%2030%20Dancers%0A2%29%20New%20York%3A%2025%20Dancers%0A3%29%20Los%20Angeles%3A%204%20Dancers%0A%5BSee%20All%20Rankings%5D%0A%20%0A%5BRep%20your%20city%20and%20get%20counted%21%5D</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::Canvas" x="37" y="242" w="512" h="457" measuredW="100" measuredH="70" zOrder="5" locked="false" isInGroup="-1"/>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Paragraph" x="46" y="252" w="418" h="47" measuredW="200" measuredH="140" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>18</size>
+        <text>Upcoming%20Dance%20Events%20near%20San%20Francisco%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="__group__" x="410" y="252" w="131" h="26" measuredW="131" measuredH="26" zOrder="7" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="14" controlTypeID="com.balsamiq.mockups::Link" x="6" y="3" w="-1" h="-1" measuredW="114" measuredH="21" zOrder="1" locked="false" isInGroup="7">
+          <controlProperties>
+            <text>Show%20Event%20Filters</text>
+          </controlProperties>
+        </control>
+        <control controlID="40" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="0" w="131" h="26" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="7"/>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="8" controlTypeID="__group__" x="47" y="315" w="401" h="79" measuredW="401" measuredH="79" zOrder="8" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="95" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="320" y="0" w="81" h="69" measuredW="77" measuredH="63" zOrder="0" locked="false" isInGroup="8">
+          <controlProperties>
+            <text>%28o%29%20attending%0A%28%20%29%20maybe%0A%28%20%29%20declined</text>
+          </controlProperties>
+        </control>
+        <control controlID="96" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="77" h="79" measuredW="77" measuredH="79" zOrder="1" locked="false" isInGroup="8">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="97" controlTypeID="com.balsamiq.mockups::Label" x="92" y="0" w="117" h="23" measuredW="143" measuredH="24" zOrder="2" locked="false" isInGroup="8">
+          <controlProperties>
+            <size>16</size>
+            <text>%5BDance%20Event%20Name%5D</text>
+          </controlProperties>
+        </control>
+        <control controlID="98" controlTypeID="com.balsamiq.mockups::Label" x="92" y="24" w="151" h="23" measuredW="137" measuredH="21" zOrder="3" locked="false" isInGroup="8">
+          <controlProperties>
+            <text>August%2021%2C%202010%20-%207pm</text>
+          </controlProperties>
+        </control>
+        <control controlID="99" controlTypeID="com.balsamiq.mockups::Label" x="92" y="42" w="86" h="23" measuredW="84" measuredH="21" zOrder="4" locked="false" isInGroup="8">
+          <controlProperties>
+            <text>San%20Francisco</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="9" controlTypeID="__group__" x="47" y="552" w="401" h="79" measuredW="401" measuredH="79" zOrder="9" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="95" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="320" y="0" w="81" h="69" measuredW="77" measuredH="63" zOrder="0" locked="false" isInGroup="9">
+          <controlProperties>
+            <text>%28o%29%20attending%0A%28%20%29%20maybe%0A%28%20%29%20declined</text>
+          </controlProperties>
+        </control>
+        <control controlID="96" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="77" h="79" measuredW="77" measuredH="79" zOrder="1" locked="false" isInGroup="9">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="97" controlTypeID="com.balsamiq.mockups::Label" x="92" y="0" w="117" h="23" measuredW="143" measuredH="24" zOrder="2" locked="false" isInGroup="9">
+          <controlProperties>
+            <size>16</size>
+            <text>%5BDance%20Event%20Name%5D</text>
+          </controlProperties>
+        </control>
+        <control controlID="98" controlTypeID="com.balsamiq.mockups::Label" x="92" y="24" w="151" h="23" measuredW="137" measuredH="21" zOrder="3" locked="false" isInGroup="9">
+          <controlProperties>
+            <text>August%2021%2C%202010%20-%207pm</text>
+          </controlProperties>
+        </control>
+        <control controlID="99" controlTypeID="com.balsamiq.mockups::Label" x="92" y="42" w="86" h="23" measuredW="84" measuredH="21" zOrder="4" locked="false" isInGroup="9">
+          <controlProperties>
+            <text>San%20Francisco</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="10" controlTypeID="__group__" x="47" y="473" w="401" h="79" measuredW="401" measuredH="79" zOrder="10" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="110" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="320" y="0" w="81" h="69" measuredW="78" measuredH="63" zOrder="0" locked="false" isInGroup="10">
+          <controlProperties>
+            <text>%28%20%29%20attending%0A%28%20%29%20maybe%0A%28%20%29%20declined</text>
+          </controlProperties>
+        </control>
+        <control controlID="111" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="77" h="79" measuredW="77" measuredH="79" zOrder="1" locked="false" isInGroup="10">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="112" controlTypeID="com.balsamiq.mockups::Label" x="92" y="0" w="117" h="23" measuredW="143" measuredH="24" zOrder="2" locked="false" isInGroup="10">
+          <controlProperties>
+            <size>16</size>
+            <text>%5BDance%20Event%20Name%5D</text>
+          </controlProperties>
+        </control>
+        <control controlID="113" controlTypeID="com.balsamiq.mockups::Label" x="92" y="24" w="151" h="23" measuredW="137" measuredH="21" zOrder="3" locked="false" isInGroup="10">
+          <controlProperties>
+            <text>August%2021%2C%202010%20-%207pm</text>
+          </controlProperties>
+        </control>
+        <control controlID="114" controlTypeID="com.balsamiq.mockups::Label" x="92" y="42" w="86" h="23" measuredW="84" measuredH="21" zOrder="4" locked="false" isInGroup="10">
+          <controlProperties>
+            <text>San%20Francisco</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::Canvas" x="556" y="153" w="211" h="352" measuredW="100" measuredH="70" zOrder="11" locked="false" isInGroup="-1"/>
+    <control controlID="12" controlTypeID="__group__" x="561" y="185" w="155" h="30" measuredW="155" measuredH="30" zOrder="12" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="25" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="29" h="30" measuredW="77" measuredH="79" zOrder="0" locked="false" isInGroup="12">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="26" controlTypeID="com.balsamiq.mockups::Label" x="38" y="3" w="117" h="23" measuredW="119" measuredH="21" zOrder="1" locked="false" isInGroup="12">
+          <controlProperties>
+            <text>%5BDance%20Event%20Name%5D</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="13" controlTypeID="__group__" x="561" y="215" w="155" h="30" measuredW="155" measuredH="30" zOrder="13" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="25" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="29" h="30" measuredW="77" measuredH="79" zOrder="0" locked="false" isInGroup="13">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="26" controlTypeID="com.balsamiq.mockups::Label" x="38" y="3" w="117" h="23" measuredW="119" measuredH="21" zOrder="1" locked="false" isInGroup="13">
+          <controlProperties>
+            <text>%5BDance%20Event%20Name%5D</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="14" controlTypeID="__group__" x="561" y="245" w="155" h="30" measuredW="155" measuredH="30" zOrder="14" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="25" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="29" h="30" measuredW="77" measuredH="79" zOrder="0" locked="false" isInGroup="14">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="26" controlTypeID="com.balsamiq.mockups::Label" x="38" y="3" w="117" h="23" measuredW="119" measuredH="21" zOrder="1" locked="false" isInGroup="14">
+          <controlProperties>
+            <text>%5BDance%20Event%20Name%5D</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="15" controlTypeID="com.balsamiq.mockups::Label" x="562" y="163" w="142" h="23" measuredW="143" measuredH="21" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Recent%20Nearby%20Events%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="16" controlTypeID="com.balsamiq.mockups::Label" x="561" y="284" w="161" h="23" measuredW="160" measuredH="21" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Recent%20Worldwide%20Events%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="17" controlTypeID="__group__" x="561" y="350" w="164" h="48" measuredW="164" measuredH="48" zOrder="17" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="131" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="29" h="30" measuredW="77" measuredH="79" zOrder="0" locked="false" isInGroup="17">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="132" controlTypeID="com.balsamiq.mockups::Paragraph" x="35" y="0" w="129" h="48" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="17">
+          <controlProperties>
+            <text>%5BDance%20Event%20Name%5D%0AParis</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="18" controlTypeID="__group__" x="561" y="306" w="164" h="48" measuredW="164" measuredH="48" zOrder="18" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="134" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="29" h="30" measuredW="77" measuredH="79" zOrder="0" locked="false" isInGroup="18">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="135" controlTypeID="com.balsamiq.mockups::Paragraph" x="35" y="0" w="129" h="48" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="18">
+          <controlProperties>
+            <text>%5BDance%20Event%20Name%5D%0ANew%20York</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="19" controlTypeID="__group__" x="47" y="394" w="401" h="79" measuredW="401" measuredH="79" zOrder="19" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="137" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="320" y="0" w="81" h="69" measuredW="78" measuredH="63" zOrder="0" locked="false" isInGroup="19">
+          <controlProperties>
+            <text>%28%20%29%20attending%0A%28o%29%20maybe%0A%28%20%29%20declined</text>
+          </controlProperties>
+        </control>
+        <control controlID="138" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="77" h="79" measuredW="77" measuredH="79" zOrder="1" locked="false" isInGroup="19">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="139" controlTypeID="com.balsamiq.mockups::Label" x="92" y="0" w="117" h="23" measuredW="143" measuredH="24" zOrder="2" locked="false" isInGroup="19">
+          <controlProperties>
+            <size>16</size>
+            <text>%5BDance%20Event%20Name%5D</text>
+          </controlProperties>
+        </control>
+        <control controlID="140" controlTypeID="com.balsamiq.mockups::Label" x="92" y="24" w="151" h="23" measuredW="137" measuredH="21" zOrder="3" locked="false" isInGroup="19">
+          <controlProperties>
+            <text>August%2021%2C%202010%20-%207pm</text>
+          </controlProperties>
+        </control>
+        <control controlID="141" controlTypeID="com.balsamiq.mockups::Label" x="92" y="42" w="86" h="23" measuredW="60" measuredH="21" zOrder="4" locked="false" isInGroup="19">
+          <controlProperties>
+            <text>San%20Jose</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="20" controlTypeID="com.balsamiq.mockups::Label" x="47" y="284" w="-1" h="-1" measuredW="438" measuredH="21" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BShow%20250%20Past%20Events%5D%20%7C%20%5BShow%2012%20Ongoing%20Events%5D%20%7C%20%5BSwitch%20to%20Calendar%20View%5D</text>
+      </controlProperties>
+    </control>
+    <control controlID="21" controlTypeID="com.balsamiq.mockups::HRule" x="44" y="305" w="490" h="-1" measuredW="100" measuredH="5" zOrder="21" locked="false" isInGroup="-1"/>
+    <control controlID="22" controlTypeID="com.balsamiq.mockups::Label" x="562" y="390" w="198" h="23" measuredW="129" measuredH="21" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Upcoming%20Big%20Events%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="23" controlTypeID="__group__" x="562" y="457" w="164" h="48" measuredW="164" measuredH="48" zOrder="23" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="131" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="29" h="30" measuredW="77" measuredH="79" zOrder="0" locked="false" isInGroup="23">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="132" controlTypeID="com.balsamiq.mockups::Paragraph" x="35" y="0" w="129" h="48" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="23">
+          <controlProperties>
+            <text>%5BDance%20Event%20Name%5D%0AParis</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="24" controlTypeID="__group__" x="562" y="413" w="164" h="48" measuredW="164" measuredH="48" zOrder="24" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="134" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="29" h="30" measuredW="77" measuredH="79" zOrder="0" locked="false" isInGroup="24">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="135" controlTypeID="com.balsamiq.mockups::Paragraph" x="35" y="0" w="129" h="48" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="24">
+          <controlProperties>
+            <text>%5BDance%20Event%20Name%5D%0ANew%20York</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="25" controlTypeID="com.balsamiq.mockups::StickyNote" x="117" y="215" w="243" h="125" measuredW="109" measuredH="123" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>TODO</text>
+      </controlProperties>
+    </control>
+    <control controlID="26" controlTypeID="com.balsamiq.mockups::Paragraph" x="1216" y="140" w="-1" h="-1" measuredW="200" measuredH="140" zOrder="26" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>yelp%0Aamazon%3F%0Ablogs%3F%0A%20%0A%20%0Ahttp%3A//www.juste-debout.com/fr_FR%0Ahttp%3A//www.braunbattleoftheyear.com/%0Ahttp%3A//www.funkin-stylez.com/%0Ahttp%3A//www.streetdance.cz/%20%3F</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
