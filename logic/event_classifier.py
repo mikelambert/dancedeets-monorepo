@@ -213,7 +213,7 @@ event_keywords = [
     'crew\W?v[sz]?\W?crew',
     'prelims?',
     'bonnie\s*(?:and|&)\s*clyde',
-] + [r'%s[ -]?(?:vs?\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
+] + [r'%s[ -]?(?:v/s|vs?\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
 
 
 dance_wrong_style_keywords = [
