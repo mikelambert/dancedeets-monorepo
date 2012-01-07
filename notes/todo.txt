@@ -1,5 +1,15 @@
 BEFORE LAUNCH:
 
+When we do a search, use location in many places:
+- upcoming events
+- ongoing events
+- recent events
+- how your city ranks (events, users, attendees)
+- nearby fan pages
+- nearby dance schools
+- nearby "websites" people enter
+How to organize all this information and make it easy to grow/expand what we display?
+
 Optimizations:
 - DB: speed up event remapping lookups to make them more cached through sharded aggregates.
 - INSTANCE: make a mapreduce that passes in arrays-of-objects instead of object-by-object. Better parallelized FB fetching of data.
@@ -110,6 +120,7 @@ http://www.dancedeets.com/events/admin_edit?event_id=262842063765336
 http://www.dancedeets.com/events/admin_edit?event_id=325031654175010
 http://www.dancedeets.com/events/admin_edit?event_id=192959864132374
 http://www.dancedeets.com/events/admin_edit?event_id=296931520342753
+http://www.dancedeets.com/events/admin_edit?event_id=309266979096698
 
 - Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
 http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
