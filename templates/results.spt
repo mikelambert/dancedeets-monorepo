@@ -1,11 +1,11 @@
-#extends _base
+extends _base
 #extends _rsvp
 #extends _results
 #extends _event_criteria
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
-Dance Events
+$display_location dance events
 #end def
 
 #def head_stylesheet
@@ -53,6 +53,7 @@ Dance Events
 
 <div class="sub-content span11">
 <div class="box">
+Events near ${display_location}:
 <ul class="tabs" data-tabs="tabs">
 	<li
 	#if $selected_tab == 'past'

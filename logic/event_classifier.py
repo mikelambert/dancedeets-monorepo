@@ -46,9 +46,13 @@ dance_and_music_keywords = [
 
 # hiphop dance. hiphop dans?
 dance_keywords = [
+    'breakingu', #breaking polish
+    'tanecznych', #dance polish
+    'tancerzami', #dancers polish
     'swag',
     'jazz rock',
     'poppers?', 'popp?i?ng?',
+    'poppeurs?',
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
     'street\W?dancing?',
@@ -81,6 +85,7 @@ dance_keywords = [
     'hype danc\w*',
     'social hip\W?hop', 'hip\W?hop social dance[sz]',
     '(?:new|nu|middle)\W?s(?:ch|k)ool hip\W?hop', 'hip\W?hop (?:old|new|nu|middle)\W?s(?:ch|k)ool',
+    'newstyleurs?',
     'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem',
     'mini.?ball', 'realness',
     'urban danc\w*',

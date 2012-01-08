@@ -105,6 +105,8 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['user_selected_n_cities'] = user_selected_n_cities
         self.display['event_selected_n_cities'] = event_selected_n_cities
 
+        self.display['display_location'] = fe_search_query.city_name or fe_search_query.location
+
         request_params = fe_search_query.url_params()
         if 'calendar' in request_params:
             del request_params['calendar'] #TODO(lambert): clean this up more
