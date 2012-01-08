@@ -32,7 +32,7 @@ Rankings over <select name="time_period" onchange="this.form.submit();">
 </form>
 
 <p><h2>Rankings by Dance Events:</h2>
-<table>
+<table class="rankings">
 #for $rank in $event_rankings
 	<tr
 		#if $rank.city == $user_city
@@ -58,7 +58,7 @@ Rankings over <select name="time_period" onchange="this.form.submit();">
 </table>
 
 <p><h2>Rankings by Dancers:</h2>
-<table>
+<table class="rankings">
 #for $rank in $user_rankings
 	<tr
 		#if $rank.city == $user_city

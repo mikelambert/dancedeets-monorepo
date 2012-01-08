@@ -61,12 +61,18 @@ select {
 	width: 200px;
 }
 .event-title {
+	color: #000000;
 	font-size: 120%;
 	font-weight: bold; /* inherited from H3 anyway */
 	margin: 0px;
 }
 .event-date {
+	color: #000000;
 	padding-top: 10px;
+}
+
+table.rankings td {
+	padding: 5px;
 }
 
 #search-form span.glass {
@@ -99,7 +105,7 @@ select {
 
 /* for ongoing events*/
 h3.event-title {
-	line-height: 1.5;
+	line-height: 1.3;
 }
 .event-image {
 	line-height: 1;
@@ -113,7 +119,7 @@ h3.event-title {
 }
 
 .wide-event {
-        padding-bottom: 8px;
+        padding-bottom: 10px;
 }
 
 .topbar div > ul span, .nav span {
