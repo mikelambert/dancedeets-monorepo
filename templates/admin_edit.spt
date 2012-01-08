@@ -1,11 +1,12 @@
-#extends _base
+#extends _bigbox_base
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
 Edit Event
 #end def
 
-#def body
+#def inner_body
+
 		<form action="/events/admin_edit" method=post>
 
 			<table class="goog-trans-section"><tr><td>
@@ -74,12 +75,12 @@ Edit Event
 			<p>
 			#if $creating_user
 				Submitted by <a href="http://www.facebook.com/profile.php?id=$event.creating_fb_uid">$creating_user</a>.<br>
-				<button>Edit Event</button>
-				<button name="delete" value="yes">Delete Event</button>
+				<button class="btn">Edit Event</button>
+				<button class="btn" name="delete" value="yes">Delete Event</button>
 			#else
 				Creating new event!
-				<button>Create Event</button>
-				<!--button>Not a Dance Event</button-->
+				<button class="btn">Create Event</button>
+				<!--button class="btn">Not a Dance Event</button-->
 			#end if
 			#if $potential_event
 				<p>Has a potential event.<br>

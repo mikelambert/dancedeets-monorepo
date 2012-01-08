@@ -1,9 +1,9 @@
-#extends _base
+#extends _bigbox_base
 #def title
 Potential Events Classification
 #end def
 
-#def body
+#def inner_body
 <p>There are $total_potential_events potential total events, first batch below:
 <table>
 	#for $i, $potential_event in enumerate($potential_events_listing)
@@ -43,7 +43,7 @@ Potential Events Classification
 		#if $potential_event.location_info.final_city
 		<form action="/events/admin_edit" method="post" target="dd_submit"> <!--TODO(lambert): make this ajax-handled-->
 		<input type="hidden" name="event_id" value="$potential_event.fb_event.info.id">
-		<button>Create Event</button>
+		<button class="btn">Create Event</button>
 		</form>
 		#end if
 		</td>
@@ -51,7 +51,7 @@ Potential Events Classification
 		<td>$potential_event.event_words</td>
 		<td>$potential_event.keyword_reason</td>
 		<td>
-		<button type="button" onclick="$('#sources_$i').toggle()">$len($potential_event.potential_event.source_ids) Sources</button>
+		<button class="btn" type="button" onclick="$('#sources_$i').toggle()">$len($potential_event.potential_event.source_ids) Sources</button>
 		<div id="sources_$i" style="display: none">
 		#for $source_id, $source_field in zip($potential_event.potential_event.source_ids, $potential_event.potential_event.source_fields)
 			<a href="http://graph.facebook.com/$source_id">$source_id</a> : $source_field<br>
@@ -68,6 +68,6 @@ Potential Events Classification
 <form action="/events/admin_potential_events" method="post">
 <input type="hidden" name="number_of_events" value="$number_of_events">
 <input type="hidden" name="processed_ids" value="$potential_ids">
-<button>Process Events</button>
+<button class="btn">Process Events</button>
 </form>
 #end def

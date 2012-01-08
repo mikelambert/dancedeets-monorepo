@@ -1,4 +1,4 @@
-#extends _base
+#extends _bigbox_base
 
 #def head_javascript
 <script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
@@ -15,7 +15,7 @@
 </style>
 #end def
 
-#def body
+#def inner_body
 <p><h2>Share with your friends!</h2>
 
 <p><b>When friends ask you...</b>
@@ -35,7 +35,7 @@
       data-related="dancedeets"
       data-count="none">Tweet</a>
 </span>
-<li>Facebook: <button id="fb-share" onclick="javascript:share_dancedeets()"><img src="http://www.ausfailure.com/wp-content/plugins/add-to-facebook-plugin/facebook_share_icon.gif"></button>
+<li>Facebook: <button class="btn" id="fb-share" onclick="javascript:share_dancedeets()"><img src="http://www.ausfailure.com/wp-content/plugins/add-to-facebook-plugin/facebook_share_icon.gif"></button>
 <li>Email this link: $share_url
 </ul>
 

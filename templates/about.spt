@@ -1,10 +1,10 @@
-#extends _base
+#extends _bigbox_base
 
 #def title
 About
 #end def
 
-#def body
+#def inner_body
 <p><h3>What is Dance Deets?</h3>
 <p>Dance Deets is your home for dance events: nationally and internationally. Wherever you are in the world, we’ll help you find a place to get your groove on. 
 

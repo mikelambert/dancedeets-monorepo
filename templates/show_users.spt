@@ -1,10 +1,10 @@
-#extends _base
+#extends _bigbox_base
 
 #def title
 List of Users
 #end def
 
-#def body
+#def inner_body
 There are $num_users users total:
 <table>
 #for $user in $users

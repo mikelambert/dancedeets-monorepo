@@ -1,11 +1,11 @@
-#extends _base
+#extends _bigbox_base
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
 Edit Source
 #end def
 
-#def body
+#def inner_body
 		<form action="/sources/admin_edit" method=post>
 
 			<h2>$fb_source.info.name</h2>
@@ -33,8 +33,8 @@ Edit Source
 			#end if
 			#if $source.is_saved()
 
-				<button>Edit Source</button>
-				<button name="delete" value="yes">Delete Source</button>
+				<button class="btn">Edit Source</button>
+				<button class="btn" name="delete" value="yes">Delete Source</button>
 				<p>
 				Length-in-Seconds: $source.feed_history_in_seconds<br>
 				Num Potential Events: $source.num_potential_events<br>
@@ -58,8 +58,8 @@ Edit Source
 				<pre>$fb_source_data</pre>
 			#else
 				Adding new source!
-				<button>Create Source</button>
-				<!--button>Not a Source</button-->
+				<button class="btn">Create Source</button>
+				<!--button class="btn">Not a Source</button-->
 			#end if
 			<input type="hidden" name="source_id" value="$fb_source.info.id">
 

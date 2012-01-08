@@ -1,10 +1,10 @@
-#extends _base
+#extends _bigbox_base
 
 #def title
 Feedback
 #end def
 
-#def body
+#def inner_body
 <form action="/feedback" method="post">
 
 <p>Questions? Need Help? Suggestions? Improvements? Criticism? Fill it out below!
@@ -16,7 +16,7 @@ Feedback
 <textarea name="body" rows="20" cols="80">
 </textarea>
 
-<p><button>Send Email</button>
+<p><button class="btn">Send Email</button>
 
 
 </form>

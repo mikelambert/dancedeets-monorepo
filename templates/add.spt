@@ -1,4 +1,4 @@
-#extends _base
+#extends _bigbox_base
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 
@@ -36,7 +36,7 @@
 Add Dance Event
 #end def
 
-#def body
+#def inner_body
 		<form action="/events/add" method=post>
 		<div>
 			#if $events
@@ -90,7 +90,7 @@ Add Dance Event
 				#end if
 				</div>
 			#end if
-			<p><button onclick="return validateAdd();">Add Event</button>
+			<p><button class="btn" onclick="return validateAdd();">Add Event</button>
 		</div>
 		</form>
 #end def
