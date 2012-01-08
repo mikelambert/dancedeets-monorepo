@@ -38,16 +38,21 @@ class CityHandler(base_servlet.BaseRequestHandler):
             past_results = []
 
         self.display['closest_city'] = city_name
-        view_params = dict(
+        request_params = dict(
             city_name=city_name,
         )
-        self.display['past_view_url'] = '/events/relevant?past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in view_params.iteritems())
-        self.display['calendar_view_url'] = '/calendar?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in view_params.iteritems())
+
+                self.display['past_view_url'] = '/events/relevant?past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+                self.display['upcoming_view_url'] = '/events/relevant?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+                self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+                self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+
 
         self.display['num_upcoming_results'] = sum([len(x.results) for x in grouped_results])
         self.display['past_results'] = past_results
         self.display['ongoing_results'] = present_results
         self.display['grouped_upcoming_results'] = grouped_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
+        self.display['selected_tab'] = 'present'
         self.render_template('results')
 
