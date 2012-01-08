@@ -29,6 +29,18 @@ class FrontendSearchQuery(object):
         self.min_attendees = 0
         self.past = 0
 
+    def url_params(self):
+        if self.city_name:
+            return {'city_name': self.city_name}
+        else:
+            return {
+                'location': self.location,
+                'distance': self.distance,
+                'distance_units': self.distance_units,
+                'min_attendees': self.min_attendees,
+                'past': self.past,
+            }
+
 class ResultsGroup(object): 
     def __init__(self, name, id, results, expanded, force=False): 
         self.name = name 

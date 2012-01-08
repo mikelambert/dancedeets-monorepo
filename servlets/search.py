@@ -3,6 +3,7 @@
 import datetime
 import logging
 import time
+import urllib
 
 import base_servlet
 from events import cities
@@ -27,7 +28,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
     def post(self):
         self.handle()
 
-    def handle(self):
+    def handle(self, city_name=None):
         self.finish_preload()
         if self.user and not self.user.location:
             self.user.add_message("We could not retrieve your location from facebook. Please fill out a location below")
@@ -35,8 +36,12 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             return
 
         fe_search_query = search.FrontendSearchQuery()
-        if self.request.get('city_name'):
-            fe_search_query.city_name = self.request.get('city_name')
+
+        # in case we get it passed in via the URL handler
+        city_name = city_name or self.request.get('city_name')
+
+        if city_name:
+            fe_search_query.city_name = city_name
             latlng_location = None
             distance_in_km = None
         else:
@@ -99,7 +104,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['user_selected_n_cities'] = user_selected_n_cities
         self.display['event_selected_n_cities'] = event_selected_n_cities
 
-        request_params = dict(self.request.params)
+        request_params = fe_search_query.url_params()
         if 'calendar' in request_params:
             del request_params['calendar'] #TODO(lambert): clean this up more
         if 'past' in request_params:
@@ -112,3 +117,17 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
         self.render_template('results')
 
+class CityHandler(RelevantHandler):
+    def requires_login(self):
+        return False
+
+    def handle(self):
+        path_bits = self.request.path.split('/')
+        city_name = urllib.unquote(path_bits[2])
+
+        # if they only care about particular types, too bad, redirect them to the main page since we don't support that anymore
+        if len(path_bits) >= 4:
+            self.redirect('/'.join(path_bits[:-1]))
+            return
+
+        super(CityHandler, self).handle(city_name=city_name)

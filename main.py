@@ -12,7 +12,6 @@ from servlets import about
 from servlets import admin
 from servlets import atom
 from servlets import calendar
-from servlets import city
 from servlets import event
 from servlets import feedback
 from servlets import login
@@ -64,10 +63,9 @@ URLS = [
     ('/events/admin_potential_events', event.AdminPotentialEventViewHandler),
     ('/events/admin_edit', event.AdminEditHandler),
     ('/events/redirect', event.RedirectToEventHandler),
-    ('/events/view', event.ViewHandler),
     ('/events/add', event.AddHandler),
     ('/events/feed', atom.AtomHandler),
-    ('/city/.*', city.CityHandler),
+    ('/city/.*', search.CityHandler),
     ('/profile/[^/]*', profile_page.ProfileHandler),
     ('/profile/[^/]*/add_tag', profile_page.ProfileAddTagHandler),
     ('/youtube_simple_api', youtube_simple_api.YoutubeSimpleApiHandler),
