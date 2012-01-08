@@ -26,7 +26,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             source_id = get_id_from_url(self.request.get('source_url'))
         elif self.request.get('source_id'):
             source_id = self.request.get('source_id')
-        self.batch_lookup.lookup_thing_feed(source_id, allow_cache=False)
+        self.batch_lookup.lookup_thing_feed(source_id)
         self.finish_preload()
 
         fb_source = self.batch_lookup.data_for_thing_feed(source_id)
@@ -48,6 +48,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['creating_user'] = creating_user
         self.display['potential_events'] = source_potential_events
         self.display['db_events'] = found_db_events
+        self.display['no_good_event_ids'] = set(x.fb_event_id for x in source_potential_events).difference(x.fb_event_id for x in found_db_events)
 
         self.display['source'] = s
         self.display['fb_source'] = fb_source

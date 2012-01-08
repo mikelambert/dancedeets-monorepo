@@ -52,7 +52,11 @@ Edit Source
 					#for $db_event in $db_events
 						<a href="$dd_admin_event_url($db_event.fb_event_id)">$db_event.fb_event_id</a>,
 					#end for
-					
+					<p>
+					All $len($no_good_event_ids) No-Good PotentialEvent ids:
+					#for $event_id in $no_good_event_ids
+						<a href="$dd_admin_event_url($event_id)">$event_id</a>,
+					#end for
 					<br>
 				#end if
 				<pre>$fb_source_data</pre>
