@@ -20,6 +20,15 @@ from util import dates
 
 SLOW_QUEUE = 'slow-queue'
 
+class FrontendSearchQuery(object):
+    def __init__(self):
+        self.city_name = None
+        self.location = None
+        self.distance = 100
+        self.distance_units = 'miles'
+        self.min_attendees = 0
+        self.past = 0
+
 class ResultsGroup(object): 
     def __init__(self, name, id, results, expanded, force=False): 
         self.name = name 

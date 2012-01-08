@@ -11,22 +11,12 @@ Dance Events in $closest_city
   _gaq.push(['_setCustomVar', 3, 'Page Type', 'List']);
 #end def
 
-#def head_stylesheet
-<style type="text/css">
-.ui-widget-content a {
-  color: blue;
-}
-.ui-widget-content a:hover {
-  text-decoration: underline;
-}
-.clickable {
-  cursor: pointer;
-  cursor: hand;
-}
-</style>
-#end def
-
 #def body
+<div class="row">
+
+<div class="sub-content span11">
+<div class="box">
+
 <div id="tabs">
   <ul>
     <li
@@ -68,6 +58,10 @@ Dance Events in $closest_city
   </div>
   <div id="calendar_events_tab">
   </div>
+</div>
+
+</div>
+</div>
 </div>
 
 #end def

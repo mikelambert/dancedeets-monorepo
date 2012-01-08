@@ -3,14 +3,12 @@
 
 #def main
 	#if $past_results
-                #set $num_past_results = len($past_results)
-                Found $num_past_results events.
-		$render_results($past_results)
+		$render_wide_results($past_results)
 	#else
-                Found $num_upcoming_results events.
 		#for $group in $grouped_upcoming_results
 			#if $group.results
-				$render_results($group.results)
+				<h2 class="group-title">$group.name</h2>
+				$render_wide_results($group.results)
 				#break
 			#end if
 		#end for

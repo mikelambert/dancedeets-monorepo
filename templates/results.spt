@@ -9,41 +9,6 @@ Dance Events
 #end def
 
 #def head_stylesheet
-<style type="text/css">
-#right-hand hr {
-	color: lightgrey;
-	background-color: lightgrey;
-	border: 0;
-	height: 1px;
-}
-#search_options-box {
-	width: 100%;
-}
-
-.rankings {
-	padding-left: 10px;
-	padding-right: 10px;
-}
-
-.right-hand-button {
-}
-
-.ui-widget-content a {
-  color: blue;
-}
-.ui-widget-content a:hover {
-  text-decoration: underline;
-}
-.clickable {
-	cursor: pointer;
-	cursor: hand;
-}
-
-.ranking-title {
-	font-weight: bold;
-}
-
-</style>
 #end def
 
 #def gaq_custom_vars
@@ -84,132 +49,95 @@ Dance Events
 
 #def body
 
-<div id="left-hand">
-	<div>
-			<h3 class="head">
-			Searching for events
-			within
-			$defaults.distance $defaults.distance_units of ${defaults.location}.
-			</h3>
-	<div id="search_options">
-		<form>
-		$event_criteria($defaults)
-		<input type=submit value="Search">
-		</form>
+<div class="row">
+
+<div class="sub-content span11">
+<div class="box">
+<ul class="tabs" data-tabs="tabs">
+	<li
+	#if $past_results
+		class="active"
+	#end if
+	><a
+	#if $past_results
+		href="#"
+	#else
+		href="$past_view_url"
+	#end if
+	><span>
+	#set $num_past_results = len($past_results)
+	#if $num_past_results
+		$num_past_results
+	#end if
+	Past Events</span></a></li>
+
+	<li
+	#if $num_upcoming_results or $ongoing_results
+	class="active"
+	#end if
+	><a href="$upcoming_view_url"><span>
+	#if $num_upcoming_results
+	$num_upcoming_results
+	#end if
+	Upcoming Events</span></a></li>
+	<li><a href="$calendar_view_url"><span>Calendar</span></a></li>
+</ul>
+	$render_wide_results($past_results)
+	#if $num_upcoming_results
+		#for $group in $grouped_upcoming_results
+			#if $group.results
+				<h2 class="group-title">$group.name</h2>
+				$render_wide_results($group.results)
+			#end if
+		#end for
+	#end if
+	#if $ongoing_results
+		<div id="ongoing_events" style="float:right; width:180px; border-left: 1px solid lightgrey; padding-left: 10px; padding-right: 5px">
+			<h3>Ongoing Events</h3>
+			$render_narrow_results($ongoing_results)
+		</div>
+	#end if
+	<div style="clear:both;height:1px;"></div>
+</div>
+</div>
+
+<div class="sub-content span5">
+	<div class="box">
+		<a href="/share" class="btn small">Invite Dancers and Fans</a>
+		<a href="/events/add" class="btn small">Add Dance Event</a>
 	</div>
 </div>
 
-<p>
-<div id="tabs">
-	<ul>
-		<li
-		#if not $grouped_upcoming_results and not $ongoing_results
-			class="ui-tabs-selected"
-		#end if
-		><a
-		#if $past_results
-			href="#past_events"
-		#else
-			href="$past_view_url"
-		#end if
-		title="past events"><span>Past Events</span></a></li>
-		#if $ongoing_results
-		<li
-		#if not $grouped_upcoming_results
-			class="ui-tabs-selected"
-		#end if
-		><a href="#ongoing_events"><span>Ongoing Events</span></a></li>
-		#end if
-		#if $grouped_upcoming_results
-		<li class="ui-tabs-selected"><a href="#upcoming_events"><span>Upcoming Events</span></a></li>
-		#end if
-		##TODO(lambert): if upcoming events is empty on page load, then auto-switch to ongoing events? or past events?
-		<li><a href="$calendar_view_url"><span>Calendar</span></a></li>
-	</ul>
-	<div id="past_events" class="ui-tabs-hide">
-		#set $num_past_results = len($past_results)
-		Found $num_past_results events.
-		$render_results($past_results)
-	</div>
-	<div id="ongoing_events" class="ui-tabs-hide">
-		#if $ongoing_results
-			#set $num_ongoing_results = len($ongoing_results)
-			Found $num_ongoing_results events.
-			$render_results($ongoing_results)
-		#end if
-	</div>
-	<div id="upcoming_events">
-		#if $num_upcoming_results
-			Found $num_upcoming_results events.
-			#for $group in $grouped_upcoming_results
-				#if $group.results
-					<h2 class="group-title">$group.name</h2>
-					$render_results($group.results)
-				#end if
-			#end for
-		#end if
-	</div>
-	<div id="calendar_events_tab">
+<div class="sub-content span5">
+	<div class="box">
+		<div class="rankings">
+		<span class="ranking-title">Who has the most events:</span><br>
+		$ranked_list($event_top_n_cities, $event_selected_n_cities)
+		</div>
+
+		<hr>
+		<div class="rankings">
+		<span class="ranking-title">Who has the most dancers and fans:</span><br>
+		$ranked_list($user_top_n_cities, $user_selected_n_cities)
+		</div>
+
+		<hr>
+		<div class="rankings">
+		See <a href="/rankings">All Rankings</a>.
+		</div>
 	</div>
 </div>
 
-</div>
-
-<div id="right-hand">
-<div class="ui-helper-reset ui-widget-content ui-corner-all">
-<div class="right-hand-button"><a href="/share"><button id="share-button">Invite Dancers and Fans</button></a></div>
-<div class="right-hand-button"><a href="/events/add"><button id="add-button">Add Dance Event</button></a></div>
-
-<hr>
-<div class="rankings">
-<span class="ranking-title">Who has the most events:</span><br>
-$ranked_list($event_top_n_cities, $event_selected_n_cities)
-</div>
-
-<hr>
-<div class="rankings">
-<span class="ranking-title">Who has the most dancers and fans:</span><br>
-$ranked_list($user_top_n_cities, $user_selected_n_cities)
-</div>
-
-<hr>
-<div class="rankings">
-See <a href="/rankings">All Rankings</a>.
-</div>
-
-</div>
 </div>
 
 #end def
 
 #def bottom_javascript
-<script src="/js/jquery.ui.tooltip.js"></script>
 $rsvp_script()
-<script type="text/javascript">
-function setupActions() {
-	$(".click-box").hover(
-		function () {
-			$(this).addClass("click-hover");
-		},
-		function () {
-			$(this).removeClass("click-hover");
-		}
-	);
-}
+<script src="/js/bootstrap-twipsy.js"></script>
 
-var keys =  function  (o) {
-    var arr = [];
-    for (var propertyName in o) {
-      arr.push(propertyName);
-      }
-    return arr;
-  };
- 
+<script type="text/javascript">
 $(document).ready(function() {
-	$("#share-button").button();
-	$("#add-button").button();
-	$("#tabs").tabs();
-	setupActions();
 
 	$render_result_attending_tooltip_javascript($past_results)
 	$render_result_attending_tooltip_javascript($ongoing_results)

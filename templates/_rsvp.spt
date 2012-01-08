@@ -1,11 +1,13 @@
 #def rsvp_form($fb_event_id, $user_rsvp)
 <form style="margin:0px">
+<select name="rsvp_${fb_event_id}">
 #for $rsvp in $CHOOSE_RSVPS
-	<input type=radio id="rsvp_${rsvp}_${fb_event_id}" name="rsvp_${fb_event_id}" value="$rsvp" onclick='event_rsvp("${fb_event_id}", "$rsvp.lower()")'
+	<option value="$rsvp"
 	#if $rsvp == $user_rsvp
-		checked
+		selected
 	#end if
-	> <label for="rsvp_${rsvp}_${fb_event_id}">$rsvp</label><br>
+	onselect='event_rsvp("${fb_event_id}", "$rsvp.lower()")'
+	>$rsvp
 #end for
 </form>
 #end def

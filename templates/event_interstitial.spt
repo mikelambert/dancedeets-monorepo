@@ -9,10 +9,10 @@ $format_html($event.info.name)
 #end def
 
 #def body
-<div id="left-hand">
+<div class="row">
 
-
-<div style="float:left;width:190px">
+<div class="sub-content span4">
+<div class="box">
 <a href="$raw_fb_event_url($event.info.id)">
 <img src="$pic">
 </a>
@@ -32,23 +32,16 @@ $city_state_country<br>
 <p><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a>
 
 </div>
+</div>
 
-<div style="float:right;width:510px">
+<div class="sub-content span12">
+<div class="box">
 #if 'description' in $event.info
 	$format_html($event.info.description)
 #end if
 </div>
-
 </div>
 
-<div id="right-hand">
-<p>Join the scene on DanceDeets:
-<ul>
-<li>go directly to facebook events and skip this page
-<li>weekly email alerts
-<li>only show the events you care about
-</ul>
-$signup_form($next)
 </div>
 #end def
 

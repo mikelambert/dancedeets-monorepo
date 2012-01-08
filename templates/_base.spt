@@ -9,8 +9,13 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <title>$title()</title>
-<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/redmond/jquery-ui.css" rel="stylesheet" type="text/css"/>
-<link href="/css/dancedeets.css" rel="stylesheet" type="text/css"/>
+
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/dancedeets.css">
+
 $head_stylesheet()
 $head_javascript()
 #if $prod_mode
@@ -44,57 +49,103 @@ $gaq_custom_vars()
 <body>
 ## get rid of this and merge it inline?
 
-<div id="main">
-<div id="header">
-		<a href="/"><img src="/dancedeets.png" width=334 height=54 class="centered-image" border=0></a><br>
-	<center>${total_events}+ dance events worldwide</center>
-	<h1>$title()</h1>
+
+<div class="topbar">
+	<div class="fill">
+		<div class="container">
+			<a class="brand" href="/"><img src="/images/dancedeets-small-white.png" width="220" height="33"></a>
+<form id="search-form" action="/" style="margin: 0px;">
+			<ul class="nav">
+				<li><span>tracking ${total_events} dance events worldwide</li>
+				<li class="dropdown" data-dropdown="dropdown">
+<a href="#" class="dropdown-toggle" style="padding: 10px 10px 7px">
+<span id="search-button" class="glass"><i></i></span>
+            <input id="location_input" type="text" name="location" placeholder="Location" style="margin-top:-8px;width:180px"/>
+</a>
+    <ul class="dropdown-menu" style="width:100%;max-width:none">
+      <li>within <select name="distance">
+#for $d in [10, 50, 100, 200, 500, 3000, 12000]
+        <option value="$d"
+        #if str($defaults.distance) == str($d)
+                selected
+        #end if
+        >
+        #if str($d) == str(12000)
+                Everywhere
+        #else
+                $d miles
+        #end if
+        </option>
+#end for
+</select>
+<input type=hidden name=distance_units value=miles>
+      </li>
+      <li>with <select name="min_attendees">
+#for $m in [0, 10, 50, 100, 500]
+        <option value="$m"
+        #if str($defaults.min_attendees) == str($m)
+                selected
+        #end if
+        >
+        ${m}+ attendees
+        </option>
+#end for
+</select>
+      </li>
+    </ul>
+  </li>
+			</ul>
+</form>
+			<span class="pull-right">
+#if $fb_user
+			<ul class="nav">
+				<li><span>$fb_user.profile.name</span></li>
+				<li><a href="/user/edit">Settings</a></li>
+				<li><a href="#" onclick="FB.logout(function(response) { window.location.reload(); })">Logout</a></li>
+			</ul>
+#else
+			<div class="fb_button-nav">$fb_login_button()</div>
+#end if
+			</span>
+		</div>
+	</div>
+</div>
+
+    <div class="container">
 
 #if $errors
-<div class="ui-widget" style="text-align: center">
 #for $error in $errors
-<div class="ui-state-error ui-corner-all">$format_html($error)</div>
+	<div class="alert-message error">$format_html($error)</div>
 #end for
-</div>
 #end if
 #if $messages
-<div class="ui-widget" style="text-align: center">
 #for $message in $messages
-<div class="ui-state-highlight ui-corner-all">$format_html($message)</div>
+	<div class="alert-message info">$format_html($message)</div>
 #end for
-</div>
 #end if
 
-</div>
-
-<div style="position: absolute; right:0px; top:0px; padding: 5px; text-align: right">
-#if $fb_user
-	$fb_user.profile.name
-	|
-	<a href="/user/edit">Settings</a>
-	|
-	<a href="#" onclick="FB.logout(function(response) { window.location.reload(); })">Logout</a>
-#else
-	$fb_login_button()
-#end if
-</div>
 
 $body()
 
-<div id="footer" style="text-align:center; padding-top:30px;">
-<div style="padding-bottom:20px">
-<a href="/about">About</a> | <a href="/rankings">Rankings</a> | <a href="/help">Help</a> | <a href="/feedback">Feedback</a>
-</div>
-<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FDance-Deets%2F110312662362915&amp;layout=standard&amp;show_faces=true&amp;width=400&amp;action=recommend&amp;font=verdana&amp;colorscheme=light&amp;height=80&ref=recommend_button" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:400px; height:80px;" allowTransparency="true"></iframe>
-</div>
-</div>
+	<footer>
+	<a href="/about">About</a> | <a href="/rankings">Rankings</a> | <a href="/help">Help</a> | <a href="/feedback">Feedback</a>
+	<br>
+	<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FDance-Deets%2F110312662362915&amp;layout=standard&amp;show_faces=true&amp;width=400&amp;action=recommend&amp;font=verdana&amp;colorscheme=light&amp;height=80&ref=recommend_button" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:400px; height:80px;" allowTransparency="true"></iframe>
+	</footer>
+
+</div> <!-- /container -->
 
 
-<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="/js/bootstrap-dropdown.js"></script>
+
 <script type="text/javascript">
-  google.load("jquery", "1.4.3");
-  google.load("jqueryui", "1.8.5");
+$(document).ready(function() {
+	$("#search-button").click(function(e){ $("#search-form").submit(); });
+        $("body").delegate("#location_input", "click", function() { return false; });
+});
 </script>
+
 $fb_javascript()
 
 $bottom_javascript()

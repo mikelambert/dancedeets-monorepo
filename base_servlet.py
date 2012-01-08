@@ -19,6 +19,7 @@ import fb_api
 import locations
 from logic import backgrounder
 from logic import rankings
+from logic import search
 import template
 from util import dates
 from util import text
@@ -193,6 +194,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
             fb_permissions += ',read_friendlists'
         self.display['fb_permissions'] = fb_permissions
 
+        self.display['defaults'] = search.FrontendSearchQuery()
+
         self.display.update(rankings.retrieve_summary())
         return False
 
@@ -214,6 +217,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         else:
             self.display['fb_user'] = None
         super(BaseRequestHandler, self).render_template(name)
+
 
 def update_last_login_time(user_id, login_time):
     def _update_last_login_time():

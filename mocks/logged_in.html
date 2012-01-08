@@ -4,7 +4,7 @@
   xmlns:fb="http://www.facebook.com/2008/fbml"
   xmlns:og="http://opengraphprotocol.org/schema/">
 <head>
-<base href="http://www.dancedeets.com">
+<base href="http://v1-4-boostrap-ui.dancedeets-hrd.appspot.com/">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <title>Dance Events
@@ -13,12 +13,14 @@
 <!--[if lt IE 9]>
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
-<link rel="stylesheet" href="file:///Users/lambert/Projects/bootstrap/lib/bootstrap.css">
-<!--
 <link rel="stylesheet" href="/css/bootstrap.min.css">
 <link href="/css/dancedeets.css" rel="stylesheet" type="text/css"/>
--->
 <style type="text/css">
+
+#search-form span.glass i {
+background-image: url(/images/search-icon.png);
+}
+
       html, body {
         background-color: #77AAE3;
       }
@@ -144,10 +146,48 @@ h3.event-title {
     <div class="topbar">
       <div class="fill">
         <div class="container">
-          <a class="brand" href="#">DanceDeets</a>
+           <a class="brand" href="#"><img src="/images/dancedeets-small.png" width="220" height="33"></a>
+<form action="" style="margin:0px" id="search-form">
           <ul class="nav">
             <li><span>more than 11459 dance events worldwide</li>
+            <li class="dropdown" data-dropdown="dropdown">
+<a href="#" class="dropdown-toggle" style="padding: 10px 10px 7px">
+<span class="glass js-search-action"><i></i></span>
+            <input id="location_input" type="text" placeholder="Search" style="margin-top: -8px;" />
+</a>
+    <ul class="dropdown-menu" style="width:100%;max-width:none">
+      <li>within <select name="distance">
+#for $d in [10, 50, 100, 200, 500, 3000, 12000]
+        <option value="$d"
+        #if str($defaults.distance) == str($d)
+                selected
+        #end if
+        >
+        #if str($d) == str(12000)
+                Everywhere
+        #else
+                $d miles
+        #end if
+        </option>#end for
+</select>
+<input type=hidden name=distance_units value=miles>
+      </li>
+      <li>with <select name="min_attendees">
+#for $m in [0, 10, 50, 100, 500]
+        <option value="$m"
+        #if str($defaults.min_attendees) == str($m)
+                selected
+        #end if
+        >
+        ${m}+ attendees
+        </option>
+#end for
+</select>
+      </li>
+    </ul>
+  </li>
           </ul>
+</form>
           <span class="pull-right">
           <ul class="nav">
             <li><span>Mike Lambert</span></li>
@@ -534,6 +574,8 @@ See <a href="/rankings">All Rankings</a>.
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-dropdown.js"></script>
+
 <div id="fb-root"></div>
 <script type="text/javascript">
 /*
@@ -612,6 +654,7 @@ $(document).ready(function() {
 	$( "#event-friends-321947617818579" ).twipsy({title: function(){return $("#event-friends-list-321947617818579").html();}, html: true});
 	$( "#event-friends-260929490615272" ).twipsy({title: function(){return $("#event-friends-list-260929490615272").html();}, html: true});
 
+	$("body").delegate("#location_input", "click", function() { return false; });
 });
 
 </script>

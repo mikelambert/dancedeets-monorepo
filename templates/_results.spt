@@ -1,62 +1,99 @@
-#def render_results($results, $use_rsvp_form=True, $include_description=False)
+#def render_narrow_results($results, $use_rsvp_form=True, $include_description=False)
 	<ol class="events-list">
 	#for $result in $results
 		#set $fb_event = $result.fb_event.info
 		## widths here are set to sum to 700px-50px = 650px
-		<li class="">
-			<div style="float:left">
-				<div class="event-image">
-				<a href="$fb_event_url($fb_event.id)">
-					<img src="$result.get_image()" width="180" border="0">
-				</a>
-				</div>
-				<div class="event-description">
-					<h2 class="event-title">
-					<a href="$fb_event_url($fb_event.id)">
-					$format_html($fb_event.name)
-					</a>
-					</h2>
-					<div class="event-types">($result.event_types)</div>
-					<div class="event-date">
-						$date_human_format($result.start_time)
-						#if $result.multi_day_event()
-							<br>to $date_human_format($result.end_time)
-						#end if
-					</div>
-					<div class="event-city">$result.db_event.actual_city_name</div>
-					#if getattr($result.db_event, 'attendee_count')
-						<div class="event-city">Attending:
-						#if result.attending_friend_count
-							<span id="event-friends-$fb_event.id">$result.attending_friend_count friends</span>,
-							<div id="event-friends-list-$fb_event.id" style="display:none">
-							<div style="white-space: nowrap;">
-							#for $friend in $result.attending_friends
-								$friend<br>
-							#end for
-							</div>
-							</div>
-						#end if
-						$result.db_event.attendee_count total</div>
-					#end if
-				</div>
-				<div style="clear:both;height:1px;"></div>
+		<li class="narrow-event">
+			<h3 class="event-title">
+			<a href="$fb_event_url($fb_event.id)">
+			$format_html($fb_event.name)
+			</a>
+			</h3>
+
+			<div class="event-image">
+			<a href="$fb_event_url($fb_event.id)">
+				<img src="$result.get_image()" width="180" border="0">
+			</a>
 			</div>
+
+			<div class="event-types">($result.event_types)</div>
+			<div class="event-city">$result.db_event.actual_city_name</div>
 			#if $result.get_attendance()
-				<div style="float:right;width:150px">
+				<div>RSVP:
 					#if $use_rsvp_form
 						$rsvp_form($fb_event.id, $result.get_attendance())
 					#else
-						rsvp: $result.get_attendance()
+						$result.get_attendance()
 					#end if
 				</div>
 			#else
 				#if $include_description
-					<div style="float:right;border:1px solid lightgrey;height:400px;width:450px;overflow:auto">
+					<div>
 						$format_html($fb_event.get('description'))
 					</div>
 				#end if
 			#end if
-			<div style="clear:both;height:15px"></div>
+		</li>
+	#end for
+	</ol>
+#end def
+
+#def render_wide_results($results, $use_rsvp_form=True, $include_description=False)
+	<ol class="events-list">
+	#for $result in $results
+		#set $fb_event = $result.fb_event.info
+		## widths here are set to sum to 700px-50px = 650px
+		<li class="wide-event">
+			<div class="event-image">
+			<a href="$fb_event_url($fb_event.id)">
+				<img src="$result.get_image()" width="180" border="0">
+			</a>
+			</div>
+			<div class="event-description">
+				<h3 class="event-title">
+				<a href="$fb_event_url($fb_event.id)">
+				$format_html($fb_event.name)
+				</a>
+				</h3>
+				<div class="event-types">($result.event_types)</div>
+				<div class="event-date">
+					$date_human_format($result.start_time)
+					#if $result.multi_day_event()
+						<br>to $date_human_format($result.end_time)
+					#end if
+				</div>
+				<div class="event-city">$result.db_event.actual_city_name</div>
+				#if getattr($result.db_event, 'attendee_count')
+					<div class="event-city">Attending:
+					#if result.attending_friend_count
+						<span id="event-friends-$fb_event.id">$result.attending_friend_count friends</span>,
+						<div id="event-friends-list-$fb_event.id" style="display:none">
+						<div style="white-space: nowrap;">
+						#for $friend in $result.attending_friends
+							$friend<br>
+						#end for
+						</div>
+						</div>
+					#end if
+					$result.db_event.attendee_count total</div>
+				#end if
+				#if $result.get_attendance()
+					<div>RSVP:
+						#if $use_rsvp_form
+							$rsvp_form($fb_event.id, $result.get_attendance())
+						#else
+							$result.get_attendance()
+						#end if
+					</div>
+				#else
+					#if $include_description
+						<div>
+							$format_html($fb_event.get('description'))
+						</div>
+					#end if
+				#end if
+			</div>
+			<div style="clear:both;height:1px;"></div>
 		</li>
 	#end for
 	</ol>
@@ -64,6 +101,6 @@
 
 #def render_result_attending_tooltip_javascript($results)
 	#for $result in $results
-		$( "#event-friends-$result.fb_event.info.id" ).tooltip({ items: "#event-friends-$result.fb_event.info.id", content: function(response) {return $("#event-friends-list-$result.fb_event.info.id").html();} });
+		$( "#event-friends-$result.fb_event.info.id" ).twipsy({ title: function(){return $("#event-friends-list-$result.fb_event.info.id").html();}, html: true});
 	#end for
 #end def

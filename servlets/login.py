@@ -32,7 +32,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
                 search_results = query.get_search_results(self.fb_uid, self.fb_graph)
         past_results, present_results, grouped_results = search.group_results(search_results)
         # Need to reverse engineer our search query terms to generate these URLs
-                self.display['past_view_url'] = '/events/relevant?ajax=1&past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
+                self.display['past_view_url'] = '/events/relevant?past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
                 self.display['calendar_view_url'] = '/calendar?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
                 self.display['past_results'] = past_results
                 self.display['ongoing_results'] = present_results
