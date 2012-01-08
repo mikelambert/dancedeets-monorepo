@@ -8,23 +8,38 @@ Settings
 #end def
 
 #def body
+<div class="row">
+<div class="sub-content span16">
+<div class="box">
+
 <form action="/user/edit" method="post">
 <p>
 $event_criteria($defaults)
 <p>
 	Weekly Email Updates:<br>
+<ul class="inputs-list">
+<li>
+	<label>
 	<input type=radio name=send_email value="true" id="send_email_yes"
 #if $defaults.send_email
 	checked
 #end if
-	> <label for="send_email_yes">Yes</label>
+	> Yes</label>
+</li>
+<li>
+	<label>
 	<input type=radio name=send_email value="false" id="send_email_no"
 #if not $defaults.send_email
 	checked
 #end if
-	> <label for="send_email_no">No</label>
+	> No</label>
+</ul>
 
-<p><button>Save Changes</button>
+<p><button class="btn">Save Changes</button>
 </form>
+
+</div>
+</div>
+</div>
 #end def
 

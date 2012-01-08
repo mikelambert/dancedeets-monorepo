@@ -1,12 +1,12 @@
-#extends _real_base
+#extends _base
 #extends _signup
 #extends _event_criteria
 
-#def headbody
-<head>
-<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-<link rel="icon" href="/favicon.ico" type="image/x-icon">
-<title>Dance Deets</title>
+#def title
+DanceDeets
+#end def
+
+#def head_stylesheet
     <meta property="og:title" content="Dance Deets"/>
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="http://www.dancedeets.com/"/>
@@ -16,93 +16,25 @@
     <meta property="fb:app_id" content="2347064084"/>
     <meta property="og:description"
           content="A website for finding and promoting dance events to both dancers and dance fans around the world."/>
-<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/redmond/jquery-ui.css" rel="stylesheet" type="text/css"/>
-<link href="/css/dancedeets.css" rel="stylesheet" type="text/css"/>
-<style type="text/css">
-#sign-in {
-  position: absolute;
-  right: 0px;
-  top: 0px;
-  padding: 5px;
-  text-align: right
-}
-#find {
-  float: left;
-  width: 50%;
-  position: relative;
-}
-#promote {
-  float: right;
-  width: 50%;
-  position: relative;
-}
-.find-promote-box {
-  padding: 20px;
-}
-#events {
-  margin-left:auto;
-  margin-right:auto;
-  border-top: 1px solid grey;
-  padding-top: 30px;
-  padding-left: 20px;
-  padding-right: 20px;
-  clear: both;
-}
-</style>
-#if $prod_mode
-<script type="text/javascript">
+#end def
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-18831479-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
-#end if
-</head>
-<body>
-
-<div id="main">
-<div id="sign-in">
-#if $fb_user
-  $fb_user.profile.name : <a href="/user/edit">Settings</a>
-#else
-  $fb_login_button()
-#end if
-</div>
-<div id="header">
-<img src="/dancedeets.png" width=334 height=54 class="centered-image">
-
-<div style="text-align: center;margin-top: 20px">Dance Deets is your home for streetdance events: locally and internationally.<br>
+#def body
+<div class="row">
+<div class="sub-content span12">
+<div class="box">
+Dance Deets is your home for streetdance events: locally and internationally.<br>
 Wherever you are in the world, we’ll help you find a place to get your groove on.<br>
 #if $total_events
 Over $total_events events and growing daily!
 #end if
 </div>
-
-#if $user_message
-<div class="ui-widget" style="text-align: center">
-<div class="ui-state-highlight ui-corner-all">$user_message</div>
 </div>
-#end if
-
 </div>
 
-<div id="left-hand">
+<div class="row">
 
-##<div>
-##<span><a href="/nearby">Events Near You</a></span>
-##<span><a href="/all">All Events</a></span>
-##<span><a href="/promote">Promote Your Scene</a></span>
-##</div>
-
-<div id="find">
-<div class="find-promote-box">
+<div class="sub-content span6">
+<div class="box">
 <span class="big-font">Discover the scene</span><br>
 <a href="/rankings">
 #if $total_events
@@ -113,8 +45,8 @@ dance events around the world
 </div>
 </div>
 
-<div id="promote">
-<div class="find-promote-box">
+<div class="sub-content span6">
+<div class="box">
 <span class="big-font">Promote the scene</span><br>
 <a href="/rankings">
 <!-- TODO(lambert): someday switch this to /events/add ? -->
@@ -127,9 +59,12 @@ dancers and dance fans
 </div>
 </div>
 
-<div id="events">
+</div>
 
-<div style="float: left; width: 50%;">
+<div class="row">
+
+<div class="sub-content span6">
+<div class="box">
 See events in north-american cities:
 <ul>
 #for $internal_city, $city in $top_cities
@@ -137,8 +72,10 @@ See events in north-american cities:
 #end for
 </ul>
 </div>
+</div>
 
-<div style="float: right; width: 50%;">
+<div class="sub-content span6">
+<div class="box">
 See many more events for these other continents:
 <ul>
 #for $internal_location, $location in $top_continents
@@ -146,60 +83,10 @@ See many more events for these other continents:
 #end for
 </u>
 </div>
-
-<div style="clear: both;border-top: 1px solid grey">
-<form action="/">
-$event_criteria($defaults)
-<br>
-<input type=submit value="Search">
-</form>
 </div>
 
 </div>
 
-</div>
-
-<div id="right-hand" style="padding-top: 19px">
-$signup_form($next)
-</div>
-
-<div id="footer"></div>
-</div>
 
 
-<script src="http://www.google.com/jsapi" type="text/javascript"></script>
-<script type="text/javascript">
-  google.load("jquery", "1.4.2");
-  google.load("jqueryui", "1.8.1");
-
-	function setupActions() {
-		$(".click-box").hover(
-			function () {
-				$(this).addClass("click-hover");
-			},
-			function () {
-				$(this).removeClass("click-hover");
-			}
-		);
-	}
-
-        function defaultSearchBox() {
-                var short_city = '';
-                var city = '';
-                if (google.loader.ClientLocation &&
-                        google.loader.ClientLocation.address) {
-                        city = (
-                                google.loader.ClientLocation.address.city + " " +
-                                google.loader.ClientLocation.address.region  + " " +
-                                google.loader.ClientLocation.address.country_code
-                        );
-                }
-                $('location_form').val(city);
-        }
-	google.setOnLoadCallback(defaultSearchBox);
-
-</script>
-$signup_form_javascript()
-$fb_javascript($next)
-</body>
 #end def

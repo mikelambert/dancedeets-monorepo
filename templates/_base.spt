@@ -146,7 +146,7 @@ $(document).ready(function() {
 });
 </script>
 
-$fb_javascript()
+$fb_javascript($next)
 
 $bottom_javascript()
 </body>

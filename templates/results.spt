@@ -107,12 +107,14 @@ Dance Events
 		$render_wide_results($past_results)
 	#elif $selected_tab == 'present'
 		#if $num_upcoming_results
+			<div id="upcoming_events" style="float:left">
 			#for $group in $grouped_upcoming_results
 				#if $group.results
 					<h2 class="group-title">$group.name</h2>
 					$render_wide_results($group.results)
 				#end if
 			#end for
+			</div>
 		#end if
 		#if $ongoing_results
 			<div id="ongoing_events" style="float:right; width:180px; border-left: 1px solid lightgrey; padding-left: 10px; padding-right: 5px">

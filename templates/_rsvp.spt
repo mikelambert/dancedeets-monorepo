@@ -9,6 +9,7 @@
 	onselect='event_rsvp("${fb_event_id}", "$rsvp.lower()")'
 	>$rsvp
 #end for
+</select>
 </form>
 #end def
 
