@@ -109,8 +109,14 @@
 	});
   }
   function handleStatusChange(response) {
-	/* what happens when there is no User object? how do we create that? */
-	window.location.reload();
+	if (response.status === 'connected') {
+		window.location.reload();
+	} else if (response.status === 'not_authorized') {
+		// the user is logged in to Facebook, 
+		//but not connected to the app
+	} else {
+		// the user isn't even logged in to Facebook.
+	}
   }
   function preSignUp() {
 		_gaq.push(['_trackEvent', 'Signup', 'Opened FB Signup Window']);
