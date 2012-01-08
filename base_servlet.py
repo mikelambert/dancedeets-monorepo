@@ -116,10 +116,20 @@ class BaseRequestHandler(BareBaseRequestHandler):
         if args:
             self.fb_uid = int(args['uid'])
             self.fb_graph = facebook.GraphAPI(args['access_token'])
-            self.user = users.User.get_cached(self.fb_uid)
-            if self.request.path != '/login' and not self.user:
-                logging.info("Not a /login request and there is no user object, so pretending they are not logged in.")
-                self.fb_uid = None
+            self.user = users.User.get_cached(str(self.fb_uid))
+            logging.info("user found is %s", self.user)
+            if not self.user:
+                from servlets import login
+                batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=False)
+                batch_lookup.lookup_user(self.fb_uid)
+                batch_lookup.finish_loading()
+                fb_user = batch_lookup.data_for_user(self.fb_uid)
+
+                referer = self.get_cookie('User-Referer')
+
+                login.construct_user(self.fb_uid, self.fb_graph, fb_user, self.request, referer)
+                #TODO(lambert): handle this MUUUCH better
+                logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
             else:
                 logging.info("Logged in uid %s with name %s", self.fb_uid, self.user and self.user.full_name)
                 # If their auth token has changed, then write out the new one
@@ -221,7 +231,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
 def update_last_login_time(user_id, login_time):
     def _update_last_login_time():
-        user = user = users.User.get_by_key_name(str(user_id))
+        user = users.User.get_by_key_name(str(user_id))
         user.last_login_time = login_time
         if getattr(user, 'login_count'):
             user.login_count += 1

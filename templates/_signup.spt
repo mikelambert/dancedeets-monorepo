@@ -109,6 +109,7 @@
 	});
   }
   function handleStatusChange(response) {
+	/* what happens when there is no User object? how do we create that? */
 	window.location.reload();
   }
   function preSignUp() {

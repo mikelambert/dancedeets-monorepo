@@ -56,7 +56,7 @@ $gaq_custom_vars()
 			<a class="brand" href="/"><img src="/images/dancedeets-small-white.png" width="220" height="33"></a>
 <form id="search-form" action="/" style="margin: 0px;">
 			<ul class="nav">
-				<li><span>tracking ${total_events} dance events worldwide</li>
+				<li><span>${total_events} dance events worldwide</li>
 				<li class="dropdown" data-dropdown="dropdown">
 <a href="#" class="dropdown-toggle" style="padding: 10px 10px 7px">
 <span id="search-button" class="glass"><i></i></span>
@@ -99,7 +99,7 @@ $gaq_custom_vars()
 			<span class="pull-right">
 #if $fb_user
 			<ul class="nav">
-				<li><span>$fb_user.profile.name</span></li>
+				<li><span class="user-name">$fb_user.profile.name</span></li>
 				<li><a href="/user/edit">Settings</a></li>
 				<li><a href="#" onclick="logout(); return false;">Logout</a></li>
 			</ul>

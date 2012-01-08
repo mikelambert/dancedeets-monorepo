@@ -26,32 +26,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
 
-    def newpage(self):
-        query = search.SearchQuery(time_period=eventdata.TIME_FUTURE, location=(0,0), distance_in_km=locations.miles_in_km(12000), min_attendees=500)
-        # self.fb_uid should be None for these logged out users...
-                search_results = query.get_search_results(self.fb_uid, self.fb_graph)
-        past_results, present_results, grouped_results = search.group_results(search_results)
-        # Need to reverse engineer our search query terms to generate these URLs
-                self.display['past_view_url'] = '/events/relevant?past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
-                self.display['calendar_view_url'] = '/calendar?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
-                self.display['past_results'] = past_results
-                self.display['ongoing_results'] = present_results
-                self.display['grouped_upcoming_results'] = grouped_results
-
-        # Need to generate a display-defaults dict that's preselected as best as we can for the user, along with clientside code to figure out their location as best we can.
-
-        self.display['defaults'] = {
-            'city_name': '',
-            'distance': 100,
-            'distance_units': 'miles',
-            'location': 'New York, NY',
-            'min_attendees': 0,
-            'past': False,
-        }
-
-        self.render_template('results')
-
-
     def get(self, needs_city=False):
         next = self.request.get('next') or '/'
 
@@ -67,9 +41,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
 
         # Explicitly do not preload anything from facebook for this servlet
         # self.finish_preload()
-
-        if self.request.get('newpage'):
-            return self.newpage()
 
         self.display['user_message'] = self.get_cookie('User-Message')
 
@@ -104,31 +75,36 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.batch_lookup.lookup_user(self.fb_uid, allow_cache=False)
         self.finish_preload()
         fb_user = self.batch_lookup.data_for_user(self.fb_uid)
-        next = self.request.get('next') or '/'
-        user = users.User.get_by_key_name(str(self.fb_uid))
+
+        referer = self.get_cookie('User-Referer')
+        construct_user(self.fb_uid, self.fb_graph, fb_user, self.request, referer)
+        logging.info("Redirecting to %s", next)
+        self.redirect(next)
+
+def construct_user(fb_uid, fb_graph, fb_user, request, referer):
+        next = request.get('next') or '/'
+        user = users.User.get_by_key_name(str(fb_uid))
         if user:
             logging.info("Already have user with name %s, passing through to %s", user.full_name, next)
-            self.redirect(next)
             return
 
         # If they're a new-user signup, but didn't fill out a city and facebook doesn't have a city,
         # then render the get() up above but with an error message to fill out the city
-        city = self.request.get('city') or get_location(fb_user)
-        logging.info("User passed in a city of %r, facebook city is %s", self.request.get('city'), get_location(fb_user))
+        city = request.get('city') or get_location(fb_user)
+        logging.info("User passed in a city of %r, facebook city is %s", request.get('city'), get_location(fb_user))
         if not city:
             logging.info("Signup User forgot their city, so require that now.")
-            self.get(needs_city=True)
-            return
+            #TODO(lambert): FIXME!!!
+            #get(needs_city=True)
+            #return
 
-        user = users.User(key_name=str(self.fb_uid))
-        user.fb_access_token = self.fb_graph.access_token
+        user = users.User(key_name=str(fb_uid))
+        user.fb_access_token = fb_graph.access_token
         user.location = city
         # grab the cookie to figure out who referred this user
-        referer = self.get_cookie('User-Referer')
         logging.info("Referer was: %s", referer)
         if referer:
             user.inviting_fb_uid = int(referer)
-        self.errors_are_fatal()
 
         user.send_email = True
         user.distance = '100'
@@ -141,9 +117,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
 
         logging.info("Requesting background load of user's friends")
         # Must occur after User is put with fb_access_token
-        taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': self.fb_uid}), queue_name='slow-queue')
+        taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': fb_uid}), queue_name='slow-queue')
         # Now load their potential events, to make "add event page" faster
-        backgrounder.load_potential_events_for_users([self.fb_uid])
-
-        logging.info("Redirecting to %s", next)
-        self.redirect(next)
+        backgrounder.load_potential_events_for_users([fb_uid])
