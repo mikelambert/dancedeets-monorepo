@@ -54,7 +54,7 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
         self.response.out.write('Memcache:\n%s\n' % pprint.pformat(memcache_result, width=200))
         self.response.out.write('Database:\n%s\n' % pprint.pformat(db_result and db_result.decode_data() or None, width=200))
 
-class ShowUsersHandler(base_servlet.BareBaseRequestHandler):
+class ShowUsersHandler(base_servlet.BaseRequestHandler):
     def get(self):
         all_users = users.User.all().fetch(1000)
         all_users = reversed(sorted(all_users, key=lambda x: x.creation_time))
