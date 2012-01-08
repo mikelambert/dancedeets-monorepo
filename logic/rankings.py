@@ -184,7 +184,7 @@ def compute_city_template_rankings(all_rankings, time_period, use_url=True):
             else:
                 url = None
             city_ranking.append(dict(city=city, count=count, url=url))
-    city_ranking = sorted(city_ranking, key=lambda x: -x['count'])
+    city_ranking = sorted(city_ranking, key=lambda x: (-x['count'], x['city']))
     return city_ranking
 
 def get_thing_ranking(all_rankings, time_period):
@@ -197,7 +197,7 @@ def get_thing_ranking(all_rankings, time_period):
         count = times.get(time_period, {})
         if count:
             thing_ranking.append(dict(key=thing, count=count))
-    thing_ranking = sorted(thing_ranking, key=lambda x: -x['count'])
+    thing_ranking = sorted(thing_ranking, key=lambda x: (-x['count'], x['key']))
     return thing_ranking
 
 def top_n_with_selected(thing_ranking, selected_name, group_size=3):
