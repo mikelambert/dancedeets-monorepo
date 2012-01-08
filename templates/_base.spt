@@ -101,7 +101,7 @@ $gaq_custom_vars()
 			<ul class="nav">
 				<li><span>$fb_user.profile.name</span></li>
 				<li><a href="/user/edit">Settings</a></li>
-				<li><a href="#" onclick="FB.logout(function(response) { window.location.reload(); })">Logout</a></li>
+				<li><a href="#" onclick="logout(); return false;">Logout</a></li>
 			</ul>
 #else
 			<div class="fb_button-nav">$fb_login_button()</div>

@@ -1,5 +1,5 @@
 #def fb_login_button
-<fb:login-button length="long" onclick="preSignUp();" onlogin="signUp();" scope="$fb_permissions"></fb:login-button>
+<fb:login-button length="long" onclick="preSignUp();return false;" onlogin="signUp();" scope="$fb_permissions"></fb:login-button>
 #end def
 
 #def signup_form($next)
@@ -102,7 +102,14 @@
     document.getElementById('fb-root').appendChild(e);
   }());
 
+  function logout() {
+ 	FB.logout(function(response) {
+		document.cookie = 'fbsr_${app_id}=;path=/;domain=.dancedeets.com;expires=Thu, 01-Jan-1970 00:00:01 GMT';
+		window.location.reload();
+	});
+  }
   function handleStatusChange(response) {
+	window.location.reload();
   }
   function preSignUp() {
 		_gaq.push(['_trackEvent', 'Signup', 'Opened FB Signup Window']);
@@ -114,33 +121,11 @@
 				must_allow_perms.dialog('open');
 			} else {
 				_gaq.push(['_trackEvent', 'Signup', 'Authorized Permissions']);
-				if ($('#signup-form')) {
-					$('#signup-form').submit();
-				} else {
-					window.location.reload();
-				}
+				window.location.reload();
 			}
 		});
   }
   window.fbAsyncInit = function() {
-		// Override cookie-expiration setting so we get long-lived cookies.
-		/*
-		original_setRaw = FB.Cookie.setRaw;
-		FB.Cookie.setRaw = function(val, ts, domain) {
-			// ts may be 0, so we need to fix that up here:
-			if (!ts) {
-				ts = ((new Date()).getTime() / 1000) + 14 * 24 * 60 * 60;
-			}
-			return original_setRaw(val, ts, domain);
-		}
-		FB.Cookie.clear = function() {
-			FB.Cookie.setRaw('', 1, FB.Cookie._domain);
-		}
-		*/
-		Date.prototype.addMonths = function(n) {
-			this.setMonth(this.getMonth()+n);
-			return this;
-		}
 		FB.init({appId: '$app_id', status: true, cookie: true, xfbml: true, oauth: true});
 		#if not $fb_user
 			## only subscribe to login-status notifications if we're logged out, otherwise we get in an infinite loop
