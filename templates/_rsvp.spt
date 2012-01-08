@@ -1,14 +1,21 @@
 #def rsvp_form($fb_event_id, $user_rsvp)
 <form style="margin:0px;display:inline">
-<select name="rsvp_${fb_event_id}">
+<!--$user_rsvp-->
+<select
+	id="rsvp_${fb_event_id}"
+	name="rsvp_${fb_event_id}"
+	onchange='event_rsvp("${fb_event_id}", $("#rsvp_${fb_event_id}").val());'
+>
 #for $rsvp in $CHOOSE_RSVPS
 	<option value="$rsvp"
 	#if $rsvp == $user_rsvp
 		selected
 	#end if
-	onselect='event_rsvp("${fb_event_id}", "$rsvp.lower()")'
 	>$rsvp
 #end for
+#if $user_rsvp == 'none'
+<option value="" selected>none
+#end if
 </select>
 </form>
 #end def
