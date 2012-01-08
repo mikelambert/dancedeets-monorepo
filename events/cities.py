@@ -33,6 +33,7 @@ def get_closest_city(location):
                 return None
 
 def get_largest_nearby_city_name(location):
+    # TODO(lambert): we should cache this entire function. use lowercase of location to determine cache key. Using DB cache too.
     logging.info("location is %s", location)
     # rather than return the nearest city (Sunnyvale, San Jose, etc)
     # try to find the largest city within a certain range to give us good groupings for the "scene" name of a user/event.
