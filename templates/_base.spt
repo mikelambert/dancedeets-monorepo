@@ -141,7 +141,7 @@ $body()
 
 <script type="text/javascript">
 $(document).ready(function() {
-	$("#search-button").click(function(e){ $("#search-form").submit(); });
+	$("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
         $("body").delegate("#location_input", "click", function() { return false; });
 });
 </script>
