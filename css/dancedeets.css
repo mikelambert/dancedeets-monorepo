@@ -1,5 +1,11 @@
 /* Convert to less for some of those 5px vars, then compile it together with bootstrap.css into a single css file */
 
+.user-name {
+	max-width: 120px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
 .alert-message {
 	margin-top: 20px;
 }
