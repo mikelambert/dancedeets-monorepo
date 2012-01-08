@@ -1,5 +1,26 @@
 BEFORE LAUNCH:
 
+- After we launch the new UI, and the within-X-miles is not as noticeable, we should use the bounding boxes returned by google maps to auto-expand our search area:
+{u'geometry':
+  {u'location_type': u'APPROXIMATE',
+   u'bounds': {
+     u'northeast': {u'lat': 81.669178000000002, u'lng': -168.3545},
+     u'southwest': {u'lat': -12.940300000000001, u'lng': 25.015899999999998}
+   },
+   u'viewport': {
+     u'northeast': {u'lat': 81.669178000000002, u'lng': -168.3545},
+     u'southwest': {u'lat': -12.940300000000001, u'lng': 25.015899999999998}
+   },
+   u'location': {u'lat': 34.047863, u'lng': 100.61965530000001}
+  },
+  u'address_components': [
+    {u'long_name': u'Asia', u'types': [u'natural_feature'], u'short_name': u'Asia'}
+  ],
+  u'formatted_address': u'Asia',
+  u'types': [u'natural_feature']
+}
+
+
 When we do a search, use location in many places:
 - upcoming events
 - ongoing events
@@ -8,6 +29,7 @@ When we do a search, use location in many places:
 - nearby fan pages
 - nearby dance schools
 - nearby "websites" people enter
+- trending links/youtube videos
 How to organize all this information and make it easy to grow/expand what we display?
 
 Optimizations:
