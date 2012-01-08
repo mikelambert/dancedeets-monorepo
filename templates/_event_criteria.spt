@@ -1,3 +1,4 @@
+#TODO(lambert): remove this since it's no longer a common module. write things directly in user.spt
 #def event_criteria($defaults)
 <p>Events near <input id="location_form" name=location value="$defaults.location">
 <!-- distance is $defaults.distance -->

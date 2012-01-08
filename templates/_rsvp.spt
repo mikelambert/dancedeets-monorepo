@@ -1,5 +1,5 @@
 #def rsvp_form($fb_event_id, $user_rsvp)
-<form style="margin:0px">
+<form style="margin:0px;display:inline">
 <select name="rsvp_${fb_event_id}">
 #for $rsvp in $CHOOSE_RSVPS
 	<option value="$rsvp"
