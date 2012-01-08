@@ -12,6 +12,7 @@ class LoginIfUnspecified(object):
     def requires_login(self):
         return False
 
+#TODO(lambert): clean this out
 class CalendarHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()

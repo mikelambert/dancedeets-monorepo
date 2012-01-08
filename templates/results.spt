@@ -55,49 +55,76 @@ Dance Events
 <div class="box">
 <ul class="tabs" data-tabs="tabs">
 	<li
-	#if $past_results
+	#if $selected_tab == 'past'
 		class="active"
 	#end if
 	><a
-	#if $past_results
+	#if $selected_tab == 'past'
 		href="#"
 	#else
 		href="$past_view_url"
 	#end if
 	><span>
-	#set $num_past_results = len($past_results)
-	#if $num_past_results
-		$num_past_results
+	#if $selected_tab == 'past'
+		#set $num_past_results = len($past_results)
+		#if $num_past_results
+			$num_past_results
+		#end if
 	#end if
 	Past Events</span></a></li>
 
 	<li
-	#if $num_upcoming_results or $ongoing_results
-	class="active"
+	#if $selected_tab == 'present'
+		class="active"
 	#end if
-	><a href="$upcoming_view_url"><span>
-	#if $num_upcoming_results
-	$num_upcoming_results
+	><a
+	#if $selected_tab == 'present'
+		href="#"
+	#else
+		href="$upcoming_view_url"
+	#end if
+	><span>
+	#if $selected_tab == 'present'
+		#if $num_upcoming_results
+			$num_upcoming_results
+		#end if
 	#end if
 	Upcoming Events</span></a></li>
-	<li><a href="$calendar_view_url"><span>Calendar</span></a></li>
+
+	<li
+	#if $selected_tab == 'calendar'
+		class="active"
+	#end if
+	><a
+	#if $selected_tab == 'calendar'
+		href="#"
+	#else
+		href="$calendar_view_url"
+	#end if
+	><span>Calendar</span></a></li>
 </ul>
-	$render_wide_results($past_results)
-	#if $num_upcoming_results
-		#for $group in $grouped_upcoming_results
-			#if $group.results
-				<h2 class="group-title">$group.name</h2>
-				$render_wide_results($group.results)
-			#end if
-		#end for
+	#if $selected_tab == 'past'
+		$render_wide_results($past_results)
+	#elif $selected_tab == 'present'
+		#if $num_upcoming_results
+			#for $group in $grouped_upcoming_results
+				#if $group.results
+					<h2 class="group-title">$group.name</h2>
+					$render_wide_results($group.results)
+				#end if
+			#end for
+		#end if
+		#if $ongoing_results
+			<div id="ongoing_events" style="float:right; width:180px; border-left: 1px solid lightgrey; padding-left: 10px; padding-right: 5px">
+				<h3>Ongoing Events</h3>
+				$render_narrow_results($ongoing_results)
+			</div>
+		#end if
+		<div style="clear:both;height:1px;"></div>
+	#elif $selected_tab == 'calendar'
+
+		<div id="calendar"></div>
 	#end if
-	#if $ongoing_results
-		<div id="ongoing_events" style="float:right; width:180px; border-left: 1px solid lightgrey; padding-left: 10px; padding-right: 5px">
-			<h3>Ongoing Events</h3>
-			$render_narrow_results($ongoing_results)
-		</div>
-	#end if
-	<div style="clear:both;height:1px;"></div>
 </div>
 </div>
 
@@ -139,13 +166,34 @@ $rsvp_script()
 <script type="text/javascript">
 $(document).ready(function() {
 
+#if $selected_tab == 'past'
 	$render_result_attending_tooltip_javascript($past_results)
+#elif $selected_tab == 'present'
 	$render_result_attending_tooltip_javascript($ongoing_results)
 	#for $group in $grouped_upcoming_results
 		#if $group.results
 			$render_result_attending_tooltip_javascript($group.results)
 		#end if
 	#end for
+#end if
+
 });
 </script>
+
+#if $selected_tab == 'calendar'
+<link rel='stylesheet' type='text/css' href='/css/fullcalendar.css' />
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<script type='text/javascript' src='/js/fullcalendar.min.js'></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#calendar').fullCalendar({
+		aspectRatio: 1.5,
+		ignoreTimezone: true,
+		allDayDefault: false,
+		events: '$format_js($calendar_feed_url)'
+	});
+});
+</script>
+#end if
 #end def

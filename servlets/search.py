@@ -58,20 +58,33 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         else:
             time_period = eventdata.TIME_FUTURE
 
-        query = search.SearchQuery(time_period=time_period, city_name=fe_search_query.city_name, location=latlng_location, distance_in_km=distance_in_km, min_attendees=fe_search_query.min_attendees)
-        search_results = query.get_search_results(self.fb_uid, self.fb_graph)
-        # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
-        a = time.time()
-        friends.decorate_with_friends(self.batch_lookup, search_results)
-        logging.info("Decorating with friends-attending took %s seconds", time.time() - a)
-        a = time.time()
-        rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
-        logging.info("Decorating with personal rsvp data took %s seconds", time.time() - a)
+        if not self.request.get('calendar'):
+            query = search.SearchQuery(time_period=time_period, city_name=fe_search_query.city_name, location=latlng_location, distance_in_km=distance_in_km, min_attendees=fe_search_query.min_attendees)
+            search_results = query.get_search_results(self.fb_uid, self.fb_graph)
+            # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
+            a = time.time()
+            friends.decorate_with_friends(self.batch_lookup, search_results)
+            logging.info("Decorating with friends-attending took %s seconds", time.time() - a)
+            a = time.time()
+            rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
+            logging.info("Decorating with personal rsvp data took %s seconds", time.time() - a)
 
-        past_results, present_results, grouped_results = search.group_results(search_results)
-        if time_period == eventdata.TIME_FUTURE:
-            present_results = past_results + present_results
-            past_results = []
+            past_results, present_results, grouped_results = search.group_results(search_results)
+            if time_period == eventdata.TIME_FUTURE:
+                present_results = past_results + present_results
+                past_results = []
+
+            self.display['num_upcoming_results'] = sum([len(x.results) for x in grouped_results]) + len(present_results)
+            self.display['past_results'] = past_results
+            self.display['ongoing_results'] = present_results
+            self.display['grouped_upcoming_results'] = grouped_results
+
+        if fe_search_query.past:
+                self.display['selected_tab'] = 'past'
+        elif self.request.get('calendar'):
+            self.display['selected_tab'] = 'calendar'
+        else:
+            self.display['selected_tab'] = 'present'
 
         a = time.time()
         closest_cityname = cities.get_largest_nearby_city_name(fe_search_query.location)
@@ -87,16 +100,15 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['event_selected_n_cities'] = event_selected_n_cities
 
         request_params = dict(self.request.params)
+        if 'calendar' in request_params:
+            del request_params['calendar'] #TODO(lambert): clean this up more
         if 'past' in request_params:
             del request_params['past'] #TODO(lambert): clean this up more
         self.display['past_view_url'] = '/events/relevant?past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
         self.display['upcoming_view_url'] = '/events/relevant?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
-        self.display['calendar_view_url'] = '/calendar?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+        self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+        self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
 
-        self.display['num_upcoming_results'] = sum([len(x.results) for x in grouped_results]) + len(present_results)
-        self.display['past_results'] = past_results
-        self.display['ongoing_results'] = present_results
-        self.display['grouped_upcoming_results'] = grouped_results
         self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
         self.render_template('results')
 
