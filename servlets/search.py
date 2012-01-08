@@ -94,10 +94,13 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
         a = time.time()
         closest_cityname = cities.get_largest_nearby_city_name(fe_search_query.location)
+        logging.info("computing largest nearby city took %s seconds", time.time() - a)
+
+        a = time.time()
         #TODO(lambert): perhaps produce optimized versions of these without styles/times, for use on the homepage? less pickling/loading required
         event_top_n_cities, event_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ALL_TIME), closest_cityname)
         user_top_n_cities, user_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_user_rankings(), rankings.ALL_TIME), closest_cityname)
-        logging.info("Computing current city and top-N cities took %s seconds", time.time() - a)
+        logging.info("Sorting and ranking top-N cities took %s seconds", time.time() - a)
 
         self.display['current_city'] = closest_cityname
         self.display['user_top_n_cities'] = user_top_n_cities
