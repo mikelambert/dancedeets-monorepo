@@ -115,6 +115,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['app_id'], FACEBOOK_CONFIG['secret_key'])
         if args:
             self.fb_uid = int(args['uid'])
+            #TODO(lambert): change fb api to not request access token, and instead pull it from the user
+            # only request the access token from FB when it's been longer than a day, and do it out-of-band to fetch-and-update-db-and-memcache
             self.fb_graph = facebook.GraphAPI(args['access_token'])
             self.user = users.User.get_cached(str(self.fb_uid))
             logging.info("user found is %s", self.user)
@@ -133,12 +135,11 @@ class BaseRequestHandler(BareBaseRequestHandler):
             else:
                 logging.info("Logged in uid %s with name %s", self.fb_uid, self.user and self.user.full_name)
                 # If their auth token has changed, then write out the new one
-                if self.request.path == '/login':
+                if self.user.fb_access_token != self.fb_graph.access_token:
                     self.user = users.User.get_by_key_name(str(self.fb_uid))
-                    if self.user:
-                        self.user.fb_access_token = self.fb_graph.access_token
-                        self.user.expired_oauth_token = False
-                        self.user.put() # this also sets to memcache
+                    self.user.fb_access_token = self.fb_graph.access_token
+                    self.user.expired_oauth_token = False
+                    self.user.put() # this also sets to memcache
                 yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
                 if self.user and (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
                     # Do this in a separate request so we don't increase latency on this call
