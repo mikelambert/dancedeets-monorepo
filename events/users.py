@@ -42,6 +42,7 @@ class User(db.Model):
     email = db.StringProperty(indexed=False)
 
     expired_oauth_token = db.BooleanProperty(indexed=False)
+    expired_oauth_token_reason = db.StringProperty(indexed=False)
 
     def distance_in_km(self):
         if not self.distance:
