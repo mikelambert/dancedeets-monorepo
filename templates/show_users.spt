@@ -28,7 +28,7 @@ $user.distance_units
 (<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=$user.key().__str__()">AE</a>)
 <a href="https://www.facebook.com/profile.php?id=$user.fb_uid">$user.full_name</a>
 #if $user.expired_oauth_token
-<span style="color:red">(expired!)</span>
+<span style="color:red" title="$user.expired_oauth_token_reason">(expired!)</span>
 #end if
 </td><td>
 $user.dance_type
