@@ -37,7 +37,6 @@ def _key_for_name(name):
 def accumulate_time(name, time):
     memcache_key = _key_for_name(name)
     incremented = memcache.incr(memcache_key, delta=int(time*1000), initial_value=0) #in milliseconds
-    logging.info('incremented is %s', incremented)
 
     names = memcache.get(MEMCACHE_NAMES_KEY)
     if not names:
