@@ -131,20 +131,20 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
                 login.construct_user(self.fb_uid, self.fb_graph, fb_user, self.request, referer)
                 #TODO(lambert): handle this MUUUCH better
-                logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
-            else:
-                logging.info("Logged in uid %s with name %s", self.fb_uid, self.user and self.user.full_name)
-                # If their auth token has changed, then write out the new one
-                if self.user.fb_access_token != self.fb_graph.access_token:
-                    self.user = users.User.get_by_key_name(str(self.fb_uid))
-                    self.user.fb_access_token = self.fb_graph.access_token
-                    self.user.expired_oauth_token = False
-                    self.user.put() # this also sets to memcache
-                yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-                if self.user and (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
-                    # Do this in a separate request so we don't increase latency on this call
-                    deferred.defer(update_last_login_time, self.user.fb_uid, datetime.datetime.now(), _queue='slow-queue')
-                    backgrounder.load_users([self.fb_uid], allow_cache=False)
+                l$ogging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
+
+            logging.info("Logged in uid %s with name %s", self.fb_uid, self.user and self.user.full_name)
+            # If their auth token has changed, then write out the new one
+            if self.user.fb_access_token != self.fb_graph.access_token:
+                self.user = users.User.get_by_key_name(str(self.fb_uid))
+                self.user.fb_access_token = self.fb_graph.access_token
+                self.user.expired_oauth_token = False
+                self.user.put() # this also sets to memcache
+            yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+            if self.user and (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
+                # Do this in a separate request so we don't increase latency on this call
+                deferred.defer(update_last_login_time, self.user.fb_uid, datetime.datetime.now(), _queue='slow-queue')
+                backgrounder.load_users([self.fb_uid], allow_cache=False)
         else:
             self.fb_uid = None
             self.fb_graph = facebook.GraphAPI(None)

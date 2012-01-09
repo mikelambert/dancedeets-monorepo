@@ -109,7 +109,12 @@ def construct_user(fb_uid, fb_graph, fb_user, request, referer):
         user.send_email = True
         user.distance = '100'
         user.distance_units = 'miles'
+        user.min_attendees = 0
+
         user.creation_time = datetime.datetime.now()
+
+        user.login_count = 1
+        user.last_login_time = user.creation_time
 
         user.compute_derived_properties(fb_user)
         logging.info("Saving user with name %s", user.full_name)
