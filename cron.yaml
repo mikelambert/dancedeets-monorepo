@@ -37,4 +37,4 @@ cron:
   timezone: America/Los_Angeles
 - description: keepalive memcache timings
   url: /tasks/timings_keep_alive
-  schedule: every 1 hours
+  schedule: every 20 minutes
