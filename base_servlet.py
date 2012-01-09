@@ -19,7 +19,6 @@ import fb_api
 import locations
 from logic import backgrounder
 from logic import rankings
-from logic import search
 import template
 from util import dates
 from util import text
@@ -205,6 +204,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             fb_permissions += ',read_friendlists'
         self.display['fb_permissions'] = fb_permissions
 
+        from logic import search # TODO(lambert): fix this delayed-import
         self.display['defaults'] = search.FrontendSearchQuery()
 
         self.display.update(rankings.retrieve_summary())
