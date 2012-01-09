@@ -41,8 +41,11 @@ from servlets import tasks
 from logic import unique_attendees
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler):
     def get(self):
-        mrp = unique_attendees.mr_count_attendees_per_city(self.batch_lookup)
-        self.response.out.write("pipeline id is " + mrp.pipeline_id)
+        expired_users = users.User.all().fetch(1000)
+        for u in expired_users:
+            if u.expired_oauth_token:
+                u.expired_oauth_token = False
+                u.put()
 
 class OwnedEventsHandler(webapp.RequestHandler):
     def get(self):
