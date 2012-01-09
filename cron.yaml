@@ -11,6 +11,7 @@ cron:
 - description: email users about upcoming events
   url: /tasks/email_all_users?user_id=701004
   schedule: every wednesday 15:00
+  timezone: America/Los_Angeles
 - description: calculate periodic statistics and rankings
   url: /tasks/compute_rankings
   schedule: every 13 hours
@@ -26,12 +27,14 @@ cron:
 - description: daily exception report
   url: /_ereporter?sender=mlambert@gmail.com&to=mlambert@gmail.com
   schedule: every day 00:00
+  timezone: America/Los_Angeles
 - description: search index refresh
   url: /tasks/recache_search_index?user_id=701004
   schedule: every 1 hours
 - description: clear and email memcache timings
   url: /tasks/timings_process_day?to=mlambert@gmail.com&sender=mlambert@gmail.com
   schedule: every day 00:00
+  timezone: America/Los_Angeles
 - description: keepalive memcache timings
   url: /tasks/timings_keep_alive
   schedule: every 1 hours
