@@ -74,9 +74,9 @@ def yield_load_fb_user(batch_lookup, user):
         batch_lookup.lookup_user(user.fb_uid)
     try:
         batch_lookup.finish_loading()
-    except fb_api.ExpiredOAuthToken:
-        logging.info("Auth token now expired, mark as such.")
-        user.expired_oauth_token = True
+    except fb_api.ExpiredOAuthToken, e:
+        logging.info("Auth token now expired, mark as such: %s", e)
+        user.expired_oauth_token = e.args[0]
         user.put()
         return
         fb_user = batch_lookup.data_for_user(user.fb_uid)
@@ -159,9 +159,9 @@ def yield_email_user(batch_lookup, user):
         batch_lookup.lookup_user_events(user.fb_uid)
     try:
         batch_lookup.finish_loading()
-    except fb_api.ExpiredOAuthToken:
-        logging.info("Auth token now expired, mark as such.")
-        user.expired_oauth_token = True
+    except fb_api.ExpiredOAuthToken, e:
+        logging.info("Auth token now expired, mark as such: %s", e)
+        user.expired_oauth_token = e.args[0]
         user.put()
         return None
     return email_events.email_for_user(user, batch_lookup, batch_lookup.fb_graph, should_send=True)
