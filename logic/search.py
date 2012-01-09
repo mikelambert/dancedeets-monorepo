@@ -17,6 +17,7 @@ import locations
 from logic import event_classifier
 from logic import rsvp
 from util import dates
+from util import timings
 
 SLOW_QUEUE = 'slow-queue'
 
@@ -247,6 +248,7 @@ def get_search_index(allow_cache=True):
     return search_index
 
 EVENTS_AT_A_TIME = 200
+@timings.timed
 def cache_fb_events(batch_lookup, search_index):
     """Load and stick fb events into cache."""
     if len(search_index) > EVENTS_AT_A_TIME:
@@ -260,6 +262,7 @@ def cache_fb_events(batch_lookup, search_index):
     logging.info("Loading %s events into memcache", len(search_index))
     batch_lookup.finish_loading()
 
+@timings.timed
 def recache_everything(batch_lookup):
     search_index = get_search_index(allow_cache=False)
     logging.info("Overall loading %s events into memcache", len(search_index))

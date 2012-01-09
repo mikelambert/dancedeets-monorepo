@@ -15,6 +15,7 @@ from logic import rsvp
 from logic import search
 import fb_api
 import locations
+from util import timings
 
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -28,6 +29,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
     def post(self):
         self.handle()
 
+    @timings.timed
     def handle(self, city_name=None):
         self.finish_preload()
         if self.user and not self.user.location:

@@ -27,6 +27,7 @@ from logic import rankings
 from logic import search
 from logic import thing_db
 from logic import thing_scraper
+from util import timings
 
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.
 RETRY_ON_FAIL_DELAY = 60
@@ -38,9 +39,7 @@ AND is_app_user = 1
 """
 
 class BaseTaskRequestHandler(RequestHandler):
-    def requires_login(self):
-        return False
-
+    pass
 
 class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
     def requires_login(self):
@@ -176,4 +175,29 @@ class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
 class RecacheSearchIndex(BaseTaskFacebookRequestHandler):
     def get(self):
         search.recache_everything(self.batch_lookup)
+
+class TimingsKeepAlive(BaseTaskRequestHandler):
+    def get(self):
+        timings.keep_alive()
+
+class TimingsProcessDay(BaseTaskRequestHandler):
+    def get(self):
+        summary = timings.summary()
+        sorted_summary = sorted(summary.items(), key=lambda x: x[1])
+        summary_lines = []
+        for key, value in sorted_summary:
+            summary_line = '%s: %sms' % (key, value)
+            self.response.out.write('%s\n' % summary_line)
+            logging.info(summary_line)
+            summary_lines.append(summary_line)
+
+        # email!
+        if self.request.get('to') and self.request.get('sender'):
+            mail.send_mail(
+                to=self.request.get('to'),
+                sender=self.request.get('sender'),
+                subject="instance usage for the day",
+                body='\n'.join(summary_lines)
+            )
+        timings.clear_all()
 

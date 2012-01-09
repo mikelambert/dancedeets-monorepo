@@ -10,6 +10,7 @@ import fb_api
 from logic import email_events
 from logic import potential_events
 from util import fb_mapreduce
+from util import timings
 
 BROKEN_UIDS = []#"1400235949", "1268158596"]
 
@@ -21,6 +22,7 @@ def mr_load_fb_event(batch_lookup):
                 entity_kind='events.eventdata.DBEvent'
         )
 
+@timings.timed
 def yield_load_fb_event(batch_lookup, db_event):
     logging.info("loading db event %s", db_event.fb_event_id)
     batch_lookup.lookup_event(db_event.fb_event_id)
@@ -43,6 +45,7 @@ def mr_load_fb_event_attending(batch_lookup):
                 entity_kind='events.eventdata.DBEvent'
         )
 
+@timings.timed
 def yield_load_fb_event_attending(batch_lookup, db_event):
     batch_lookup.lookup_event_attending(db_event.fb_event_id)
     batch_lookup.finish_loading()
@@ -61,6 +64,7 @@ def mr_load_fb_user(batch_lookup):
                 entity_kind='events.users.User',
         )
 
+@timings.timed
 def yield_load_fb_user(batch_lookup, user):
     if user.expired_oauth_token:
         return
@@ -149,6 +153,7 @@ def mr_email_user(batch_lookup):
         )
 
 #TODO(lambert): do we really want yield on this one?
+@timings.timed
 def yield_email_user(batch_lookup, user):
         batch_lookup.lookup_user(user.fb_uid)
         batch_lookup.lookup_user_events(user.fb_uid)
@@ -171,6 +176,7 @@ def mr_load_potential_events(batch_lookup):
                 entity_kind='events.users.User',
         )
 
+@timings.timed
 def load_potential_events_for_user_id(batch_lookup, user_id):
     # TODO(lambert): figure out why future's data can't be loaded
     if str(user_id) in BROKEN_UIDS:

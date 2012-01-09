@@ -4,6 +4,11 @@ import logging
 import math
 import re
 from spitfire.runtime.filters import skip_filter
+try:
+    from util import timings
+    timed = timings.timed
+except ImportError:
+    timed = lambda x: x
 
 # TODO: translate to english before we try to apply the keyword matches
 # TODO: if event creator has created dance events previously, give it some weight
@@ -306,6 +311,7 @@ class ClassifiedEvent(object):
         else:
             self.search_text = get_relevant_text(fb_event)
 
+    @timed
     def classify(self):
         build_regexes()
         manual_dance_keywords_matches = set(manual_dance_keywords_regex.findall(self.search_text))

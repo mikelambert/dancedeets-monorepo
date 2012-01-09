@@ -4,6 +4,7 @@ import logging
 import pickle
 import random
 from google.appengine.api import memcache
+#used so people can treat smemcache just like memcache library
 from google.appengine.api.memcache import *
 
 def expiry_with_variance(expiry, expiry_variance):

@@ -12,7 +12,9 @@ from logic import potential_events
 from logic import thing_db
 
 from util import fb_mapreduce
+from util import timings
 
+@timings.timed
 def scrape_events_from_source(batch_lookup, source):
     # don't scrape sources that prove useless and give mostly garbage events
     if source.fraction_potential_are_real() < 0.05:

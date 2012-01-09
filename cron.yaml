@@ -1,25 +1,25 @@
 cron:
 - description: load potential events from our users
   url: /tasks/load_all_potential_events?user_id=701004&allow_cache=0
-  schedule: every 24 hours
+  schedule: every 23 hours
 - description: load potential events from mikes friends
   url: /tasks/load_potential_events_for_friends?user_id=701004&allow_cache=0
-  schedule: every 24 hours
+  schedule: every 22 hours
 - description: load potential events from special users and sources
   url: /tasks/load_potential_events_from_wall_posts?user_id=701004&allow_cache=0
-  schedule: every 24 hours
+  schedule: every 21 hours
 - description: email users about upcoming events
   url: /tasks/email_all_users?user_id=701004
   schedule: every wednesday 15:00
 - description: calculate periodic statistics and rankings
   url: /tasks/compute_rankings
-  schedule: every 12 hours
+  schedule: every 13 hours
 - description: reload user data
   url: /tasks/reload_all_users?user_id=701004&allow_cache=0
-  schedule: every 6 hours
+  schedule: every 9 hours
 - description: reload future facebook event data
   url: /tasks/reload_future_events?user_id=701004&allow_cache=0
-  schedule: every 12 hours
+  schedule: every 15 hours
 - description: reload past facebook event data
   url: /tasks/reload_past_events?user_id=701004&allow_cache=0
   schedule: every monday 2:00
@@ -28,4 +28,10 @@ cron:
   schedule: every day 00:00
 - description: search index refresh
   url: /tasks/recache_search_index?user_id=701004
+  schedule: every 1 hours
+- description: clear and email memcache timings
+  url: /tasks/timings_process_day?to=mlambert@gmail.com&sender=mlambert@gmail.com
+  schedule: every day 00:00
+- description: keepalive memcache timings
+  url: /tasks/timings_keep_alive
   schedule: every 1 hours
