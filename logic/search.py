@@ -247,9 +247,13 @@ def get_search_index(allow_cache=True):
         smemcache.set(SEARCH_INDEX_MEMCACHE_KEY, search_index, time=2*3600)
     return search_index
 
+# since _inner_cache_fb_events is a decorated function, it can't be pickled, which breaks deferred. so make this wrapper function here.
+def cache_fb_events(batch_lookup, search_index):
+    _inner_cache_fb_lookups(batch_lookup, search_index)
+
 EVENTS_AT_A_TIME = 200
 @timings.timed
-def cache_fb_events(batch_lookup, search_index):
+def _inner_cache_fb_events(batch_lookup, search_index):
     """Load and stick fb events into cache."""
     if len(search_index) > EVENTS_AT_A_TIME:
         deferred.defer(cache_fb_events, batch_lookup, search_index[EVENTS_AT_A_TIME:], _queue=SLOW_QUEUE)
