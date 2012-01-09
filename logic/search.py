@@ -249,7 +249,7 @@ def get_search_index(allow_cache=True):
 
 # since _inner_cache_fb_events is a decorated function, it can't be pickled, which breaks deferred. so make this wrapper function here.
 def cache_fb_events(batch_lookup, search_index):
-    _inner_cache_fb_lookups(batch_lookup, search_index)
+    _inner_cache_fb_events(batch_lookup, search_index)
 
 EVENTS_AT_A_TIME = 200
 @timings.timed
