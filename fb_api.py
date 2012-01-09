@@ -365,8 +365,9 @@ class BatchLookup(object):
                         # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
                         error_code = object_json.get('error_code')
                         error_type = object_json.get('error', {}).get('type')
-                        if object_type == self.OBJECT_USER and (error_code == 190 or error_type == 'OAuthException'):
-                            raise ExpiredOAuthToken(object_key)
+                        error_message = object_json.get('error', {}).get('message')
+                        if object_type == self.OBJECT_USER and error_type == 'OAuthException':
+                            raise ExpiredOAuthToken(error_message)
                         object_is_bad = True
                     elif object_json == False:
                         this_object['deleted'] = True
