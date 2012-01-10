@@ -44,18 +44,19 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         city_name = city_name or self.request.get('city_name')
 
         if city_name:
-            fe_search_query.city_name = city_name
-            latlng_location = None
-            distance_in_km = None
+            fe_search_query.location = city_name
+            fe_search_query.distance = 50
+            fe_search_query.distance_units = 'miles'
         else:
             fe_search_query.location = self.request.get('location', self.user and self.user.location)
-            fe_search_query.distance = int(self.request.get('distance', self.user and self.user.distance or 100))
+            fe_search_query.distance = int(self.request.get('distance', self.user and self.user.distance or 50))
             fe_search_query.distance_units = self.request.get('distance_units', self.user and self.user.distance_units or 'miles')
-            if fe_search_query.distance_units == 'miles':
-                distance_in_km = locations.miles_in_km(fe_search_query.distance)
-            else:
-                distance_in_km = distance
-            latlng_location = locations.get_geocoded_location(fe_search_query.location)['latlng']
+
+        if fe_search_query.distance_units == 'miles':
+            distance_in_km = locations.miles_in_km(fe_search_query.distance)
+        else:
+            distance_in_km = distance
+        bounds = locations.get_location_bounds(fe_search_query.location, distance_in_km)
         fe_search_query.past = self.request.get('past', '0') not in ['0', '', 'False', 'false']
 
 
@@ -67,7 +68,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             time_period = eventdata.TIME_FUTURE
 
         if not self.request.get('calendar'):
-            query = search.SearchQuery(time_period=time_period, city_name=fe_search_query.city_name, location=latlng_location, distance_in_km=distance_in_km, min_attendees=fe_search_query.min_attendees)
+            query = search.SearchQuery(time_period=time_period, bounds=bounds, min_attendees=fe_search_query.min_attendees)
             search_results = query.get_search_results(self.fb_uid, self.fb_graph)
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
             a = time.time()
@@ -110,7 +111,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['user_selected_n_cities'] = user_selected_n_cities
         self.display['event_selected_n_cities'] = event_selected_n_cities
 
-        self.display['display_location'] = fe_search_query.city_name or fe_search_query.location
+        self.display['display_location'] = fe_search_query.location
 
         request_params = fe_search_query.url_params()
         if 'calendar' in request_params:

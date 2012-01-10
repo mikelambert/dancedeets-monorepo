@@ -55,8 +55,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         ]
 
                 self.display['defaults'] = {
-                        'city_name': '',
-                        'distance': '100',
+                        'distance': '50',
                         'distance_units': 'miles',
                         'location': '', # maybe set via ajax
                         'min_attendees': 0,
@@ -107,7 +106,7 @@ def construct_user(fb_uid, fb_graph, fb_user, request, referer):
             user.inviting_fb_uid = int(referer)
 
         user.send_email = True
-        user.distance = '100'
+        user.distance = '50'
         user.distance_units = 'miles'
         user.min_attendees = 0
 

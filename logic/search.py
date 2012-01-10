@@ -23,24 +23,20 @@ SLOW_QUEUE = 'slow-queue'
 
 class FrontendSearchQuery(object):
     def __init__(self):
-        self.city_name = None
         self.location = None
-        self.distance = 100
+        self.distance = 50
         self.distance_units = 'miles'
         self.min_attendees = 0
         self.past = 0
 
     def url_params(self):
-        if self.city_name:
-            return {'city_name': self.city_name}
-        else:
-            return {
-                'location': self.location,
-                'distance': self.distance,
-                'distance_units': self.distance_units,
-                'min_attendees': self.min_attendees,
-                'past': self.past,
-            }
+        return {
+            'location': self.location,
+            'distance': self.distance,
+            'distance_units': self.distance_units,
+            'min_attendees': self.min_attendees,
+            'past': self.past,
+        }
 
 class ResultsGroup(object): 
     def __init__(self, name, id, results, expanded, force=False): 
@@ -106,7 +102,7 @@ class SearchResult(object):
         return self.rsvp_status
 
 class SearchQuery(object):
-    def __init__(self, time_period=None, start_time=None, end_time=None, city_name=None, location=None, distance_in_km=None, min_attendees=None):
+    def __init__(self, time_period=None, start_time=None, end_time=None, bounds=None, min_attendees=None):
         self.time_period = time_period
 
         self.min_attendees = min_attendees
@@ -118,14 +114,11 @@ class SearchQuery(object):
                 assert self.end_time > datetime.datetime.now()
         if self.time_period == eventdata.TIME_FUTURE and self.start_time:
                 assert self.start_time < datetime.datetime.now()
-        self.city_name = city_name
-        self.location = location
-        self.distance_in_km = distance_in_km
+        self.bounds = bounds
+        assert self.bounds
 
-        self.search_geohashes = []
-        if self.location:
-            self.search_geohashes = locations.get_all_geohashes_for(location[0], location[1], km=distance_in_km)
-            logging.info("Searching geohashes %s", self.search_geohashes)
+        self.search_geohashes = locations.get_all_geohashes_for(bounds)
+        logging.info("Searching geohashes %s", self.search_geohashes)
 
     def matches_db_event(self, event):
         if self.start_time:
@@ -142,12 +135,9 @@ class SearchQuery(object):
         if self.min_attendees and event.attendee_count < self.min_attendees:
             return False
 
-        if self.distance_in_km:
-            distance = locations.get_distance(self.location[0], self.location[1], event.latitude, event.longitude, use_km=True)
-            if distance < self.distance_in_km:
-                pass
-            else:
-                return False
+        if not locations.contains(self.bounds, (event.latitude, event.longitude)):
+            return False
+
         return True
 
     def matches_fb_db_event(self, event, fb_event):
@@ -156,9 +146,6 @@ class SearchQuery(object):
     def get_candidate_events(self):
         clauses = []
         bind_vars = {}
-        if self.city_name:
-            clauses.append('city_name = :city_name')
-            bind_vars['city_name'] = self.city_name
         if self.search_geohashes:
             clauses.append('geohashes in :search_geohashes')
             bind_vars['search_geohashes'] = self.search_geohashes
@@ -183,8 +170,7 @@ class SearchQuery(object):
         search_events = get_search_index()
         event_ids = []
         for fb_event_id, (latitude, longitude) in search_events:
-            distance = locations.get_distance(self.location[0], self.location[1], latitude, longitude, use_km=True)
-            if distance < self.distance_in_km:
+            if locations.contains(self.bounds, (latitude, longitude)):
                 event_ids.append(fb_event_id)
         logging.info("loading and filtering search index took %s seconds", time.time() - a)
         db_events = eventdata.get_cached_db_events(event_ids)
@@ -192,15 +178,17 @@ class SearchQuery(object):
 
     def get_search_results(self, fb_uid, graph):
         db_events = None
-        if self.time_period == eventdata.TIME_FUTURE and self.distance_in_km:
+        if self.time_period == eventdata.TIME_FUTURE:
             # Use cached blob for our common case of filtering
             db_events = self.magical_get_candidate_events()
         if db_events is None:
             # Do datastore filtering
             db_events = self.get_candidate_events()
 
+        orig_db_events_length = len(db_events)
         # Do some obvious filtering before loading the fb events for each.
         db_events = [x for x in db_events if self.matches_db_event(x)]
+        logging.info("in-process filtering trimmed us from %s to % events", orig_db_events_length, len(db_events))
 
         # Now look up contents of each event...
         a = time.time()

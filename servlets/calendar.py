@@ -31,25 +31,21 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
         else:
             end_time = datetime.datetime.now() + datetime.timedelta(days=365)
 
-        city_name = None
-        location = None
-        distance = None
-        distance_units = None
-        distance_in_km = None
-        latlng_location = None
         if self.request.get('city_name'):
-            city_name = self.request.get('city_name')
+            location = self.request.get('city_name')
+            distance = 50
+            distance_units = 'miles'
         else:
             location = self.request.get('location', self.user and self.user.location)
-            distance = int(self.request.get('distance', self.user and self.user.distance or 100))
+            distance = int(self.request.get('distance', self.user and self.user.distance or 50))
             distance_units = self.request.get('distance_units', self.user and self.user.distance_units or 'miles')
-            if distance_units == 'miles':
-                distance_in_km = locations.miles_in_km(distance)
-            else:
-                distance_in_km = distance
-            latlng_location = locations.get_geocoded_location(location)['latlng']
+        if distance_units == 'miles':
+            distance_in_km = locations.miles_in_km(distance)
+        else:
+            distance_in_km = distance
+        bounds = locations.get_location_bounds(location, distance_in_km)
 
-        query = search.SearchQuery(city_name=city_name, location=latlng_location, distance_in_km=distance_in_km, start_time=start_time, end_time=end_time)
+        query = search.SearchQuery(bounds=bounds, start_time=start_time, end_time=end_time)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
 
         json_results = []

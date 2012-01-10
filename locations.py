@@ -78,11 +78,37 @@ def _raw_get_cached_geocoded_data(location):
             smemcache.set(memcache_key, geocoded_data, LOCATION_EXPIRY)
     return geocoded_data
 
+def get_location_bounds(address, distance_in_km):
+    if not address:
+        return None, None
+    result = _raw_get_cached_geocoded_data(address)
+
+    def to_latlng(x):
+        return x['lat'], x['lng']
+    northeast = to_latlng(result['geometry']['viewport']['northeast'])
+    southwest = to_latlng(result['geometry']['viewport']['southwest'])
+
+    logging.info("1 NE %s, SW %s", northeast, southwest)
+
+    offsets_northeast = get_lat_lng_offsets(northeast, distance_in_km)
+    offsets_southwest = get_lat_lng_offsets(southwest, distance_in_km)
+
+    def add_latlngs(x, y):
+        return (x[0] + y[0], x[1] + y[1])
+    def sub_latlngs(x, y):
+        return (x[0] - y[0], x[1] - y[1])
+    northeast = add_latlngs(northeast, offsets_northeast)
+    southwest = sub_latlngs(southwest, offsets_southwest)
+
+    logging.info("2 NE %s, SW %s", northeast, southwest)
+
+    return southwest, northeast # ordered more negative to more positive
+
+#TODO(lambert): NOW simplify this so it only returns the bits necessary for the few remaining callers that use it
 def get_geocoded_location(address):
-    if address:
-        result = _raw_get_cached_geocoded_data(address)
-    else:
-        result = None
+    if not address:
+        return {}
+    result = _raw_get_cached_geocoded_data(address)
     geocoded_location = {}
     if result:
         geocoded_location['latlng'] = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
@@ -125,11 +151,11 @@ def get_country_for_location(location_name):
 
 rad = math.pi / 180.0
 
-def get_distance(lat1, lng1, lat2, lng2, use_km=False):
-    dlat = (lat2-lat1) * rad
-    dlng = (lng2-lng1) * rad
+def get_distance(latlng1, latlng2, use_km=False):
+    dlat = (latlng2[0]-latlng1[0]) * rad
+    dlng = (latlng2[1]-latlng1[1]) * rad
     a = (math.sin(dlat/2) * math.sin(dlat/2) +
-        math.cos(lat1 * rad) * math.cos(lat2 * rad) * 
+        math.cos(latlng1[0] * rad) * math.cos(latlng2[0] * rad) * 
         math.sin(dlng/2) * math.sin(dlng/2))
     circum = 2 * math.atan2(math.sqrt(a), math.sqrt(1.0-a))
     if use_km:
@@ -139,11 +165,19 @@ def get_distance(lat1, lng1, lat2, lng2, use_km=False):
     distance = radius * circum
     return distance
 
-def get_lat_lng_offsets(lat, lng, km):
+def contains(bounds, latlng):
+    lats_good = bounds[0][0] < latlng[0] < bounds[1][0]
+    if bounds[0][1] < bounds[1][1]:
+        lngs_good = bounds[0][1] < latlng[1] < bounds[1][1]
+    else:
+        lngs_good = bounds[0][1] < latlng[1] or latlng[1] < bounds[1][1]
+    return lats_good and lngs_good
+
+def get_lat_lng_offsets(latlng, km):
     miles = km_in_miles(km)
     miles_per_nautical_mile = 1.15078
     lat_range = miles / (miles_per_nautical_mile * 60.0)
-    lng_range = miles / (math.cos(lat * rad) * miles_per_nautical_mile * 60.0)
+    lng_range = miles / (math.cos(latlng[0] * rad) * miles_per_nautical_mile * 60.0)
     return lat_range, lng_range
 
 circumference_of_earth = 40000.0 # km
@@ -162,40 +196,32 @@ max_geohash_bits = get_geohash_bits_for_km(min_box_size)
 # max_geohash_bits should be 8, which is reasonable compared to 32 possible for complete geohashing
 
 
-one_over_sqrt_two = 1.0 / math.sqrt(2.0)
-# to understand why we need circle_corners, see the BACKGROUND of:
-# http://github.com/davetroy/geohash-js
-circle_corners = [
-    (0, 0),
-    (-1, -1),
-    (-1, +1),
-    (+1, -1),
-    (+1, +1),
-    (-one_over_sqrt_two, -one_over_sqrt_two),
-    (-one_over_sqrt_two, +one_over_sqrt_two),
-    (+one_over_sqrt_two, -one_over_sqrt_two),
-    (+one_over_sqrt_two, +one_over_sqrt_two),
-]
-def get_all_geohashes_for(lat, lng, km=None, precision=None):
-    assert km or precision
-    assert not km or not precision
-    # We subtract one in an attempt to get less geohashes below (by using a larger search area),
-    # but be aware we still risk having at most 9 geohashes in a worst-case edge-border
-    # 90miles in NY = 2 geohashes
-    # 90miles in SF = 3 geohashes
-    # And we use 2 * km since our search area is a radius of km, and we want a diameter/box.
-    if km:
-        precision = get_geohash_bits_for_km(2 * km) - 1
-    elif precision:
-        km = get_km_for_geohash_bits(precision)
-    else:
-        assert False, "shouldn't happen"
-    lat_range, lng_range = get_lat_lng_offsets(lat, lng, km)
+def get_all_geohashes_for(bounds, precision=None):
+    if not precision:
+        # We subtract one in an attempt to get less geohashes below (by using a larger search area),
+        # but be aware we still risk having at most 5 geohashes in a worst-case edge-border
+        # 90miles in NY = 2 geohashes
+        # 90miles in SF = 3 geohashes
+        km = get_distance(bounds[0], bounds[1], use_km=True)
+        precision = get_geohash_bits_for_km(km) - 1
+
+    center = (
+        (bounds[0][0] + bounds[1][0]) / 2,
+        (bounds[0][1] + bounds[1][1]) / 2
+    )
+
+    # to understand why this is necessary, see the BACKGROUND of:
+    # https://github.com/davetroy/geohash-js/blob/master/README
+    pinpoints = [
+        center,
+        bounds[0],
+        bounds[1],
+        (bounds[0][0], bounds[1][1]),
+        (bounds[1][0], bounds[0][1]),
+    ]
     geohashes = set()
-    for mult_lat, mult_lng in circle_corners:
-        new_lat = lat + mult_lat*lat_range
-        new_lng = lng + mult_lng*lng_range
-        geohashes.add(str(geohash.Geostring((new_lat, new_lng), depth=precision)))
+    for point in pinpoints:
+        geohashes.add(str(geohash.Geostring(point, depth=precision)))
     return list(geohashes)
 
 def miles_in_km(miles):

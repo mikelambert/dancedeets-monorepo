@@ -1,5 +1,5 @@
 application: dancedeets-hrd
-version: v1-6-timings
+version: v1-7-location-bounds
 runtime: python
 threadsafe: false #sigh, appengine starts charging me more, telling me i can use threadsafe to save on instances, but then leaves admin, mapreduce, and ereporter stuck using the old cgi interfaces so i can't actually use threadsafe.
 api_version: 1
