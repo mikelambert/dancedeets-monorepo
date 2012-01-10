@@ -106,9 +106,9 @@ def get_location_bounds(address, distance_in_km):
 
 #TODO(lambert): NOW simplify this so it only returns the bits necessary for the few remaining callers that use it
 def get_geocoded_location(address):
-    if not address:
-        return {}
-    result = _raw_get_cached_geocoded_data(address)
+    result = None
+    if address:
+        result = _raw_get_cached_geocoded_data(address)
     geocoded_location = {}
     if result:
         geocoded_location['latlng'] = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
