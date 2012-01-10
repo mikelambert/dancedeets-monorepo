@@ -12,8 +12,6 @@ from events import cities
 from events import users
 import locations
 
-from util import timings
-
 EVENT_FOR_CITY_RANKING = 'CITY_EVENT_RANKING'
 USER_FOR_CITY_RANKING = 'CITY_USER_RANKING'
 EVENT_FOR_USER_RANKING = 'EVENT_USER_RANKING'
@@ -48,7 +46,6 @@ def get_time_periods(timestamp):
 def make_key_name(key_name, **kwargs):
     return '%s/%s' % (key_name, '/'.join('%s=%s' % (k, v) for (k, v) in kwargs.iteritems()))
 
-@timings.timed
 def count_event_for_city(dbevent):
     #TODO(lambert): store largest_city in the event
     if not dbevent.start_time: # deleted event, don't count
@@ -57,7 +54,6 @@ def count_event_for_city(dbevent):
     for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
         yield op.counters.Increment(make_key_name("City", city=city, time_period=time_period))
 
-@timings.timed
 def count_user_for_city(user):
     #TODO(lambert): store largest_city in the user
     user_city = cities.get_largest_nearby_city_name(user.location)
