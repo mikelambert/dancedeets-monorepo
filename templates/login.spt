@@ -63,10 +63,10 @@ dancers and dance fans
 
 <div class="sub-content span6">
 <div class="box">
-See events in north-american cities:
+See events in the top north-american cities:
 <ul>
 #for $internal_city, $city in $top_cities
-	<li><a href="/?location=$internal_city&distance=100&distance_units=miles">$city</a>
+	<li><a href="/?location=$internal_city&distance=50&distance_units=miles">$city</a>
 #end for
 </ul>
 </div>
@@ -74,12 +74,19 @@ See events in north-american cities:
 
 <div class="sub-content span6">
 <div class="box">
-See many more events for these other continents:
+See many more events for these european countries:
 <ul>
-#for $internal_location, $location in $top_continents
-<li><a href="/?location=$internal_location&distance=3000&distance_units=miles">$location</a>
+#for $location in $top_european_countries
+<li><a href="/?location=$location&distance=50&distance_units=miles">$location</a>
 #end for
-</u>
+</ul>
+<p>
+See many more events for these continents:
+<ul>
+#for $location in $top_continents
+<li><a href="/?location=$location&distance=50&distance_units=miles">$location</a>
+#end for
+</ul>
 </div>
 </div>
 
