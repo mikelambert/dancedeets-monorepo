@@ -84,6 +84,8 @@ class SearchResult(object):
         self.attending_friend_count = 0
         self.attending_friends = []
 
+        self.index = None
+
     def multi_day_event(self):
         return (self.end_time - self.start_time) > datetime.timedelta(hours=24)
 
@@ -206,6 +208,8 @@ class SearchQuery(object):
             if not fb_event['deleted'] and self.matches_fb_db_event(db_event, fb_event):
                 result = SearchResult(db_event, fb_event)
                 search_results.append(result)
+        for i, result in enumerate(search_results):
+            result.index = i
         logging.info("db filtering and Search Results took %s seconds", time.time() - a)
     
         # Now sort and return the results
