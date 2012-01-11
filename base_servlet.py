@@ -206,6 +206,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         from logic import search # TODO(lambert): fix this delayed-import
         self.display['defaults'] = search.FrontendSearchQuery()
+        self.display['defaults'].location = self.request.get('location')
 
         self.display.update(rankings.retrieve_summary())
         return False

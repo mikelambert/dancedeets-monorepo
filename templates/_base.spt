@@ -60,7 +60,7 @@ $gaq_custom_vars()
 				<li class="dropdown" data-dropdown="dropdown">
 <a href="#" class="dropdown-toggle" style="padding: 10px 10px 7px">
 <span id="search-button" class="glass"><i></i></span>
-            <input id="location_input" type="text" name="location" placeholder="Location" style="margin-top:-8px;width:180px"/>
+            <input id="location_input" type="text" name="location" placeholder="Location" style="margin-top:-8px;width:180px"/ value="$defaults.location">
 </a>
     <ul class="dropdown-menu" style="width:100%;max-width:none">
       <li>Distance: <select name="distance">
