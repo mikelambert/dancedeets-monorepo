@@ -24,6 +24,7 @@ from servlets import stats
 from servlets import tasks
 from servlets import tools
 from servlets import youtube_simple_api
+from util import batched_mapperworker
 import smemcache
 
 class DoNothingHandler(base_servlet.BareBaseRequestHandler):
@@ -82,6 +83,7 @@ URLS = [
     ('/about', about.AboutHandler),
     ('/help', feedback.HelpHandler),
     ('/feedback', feedback.FeedbackHandler),
+    ('/mapreduce/worker_callback', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
 ]
 
 class MyWSGIApplication(webapp.WSGIApplication):

@@ -4,9 +4,6 @@ runtime: python
 threadsafe: false #sigh, appengine starts charging me more, telling me i can use threadsafe to save on instances, but then leaves admin, mapreduce, and ereporter stuck using the old cgi interfaces so i can't actually use threadsafe.
 api_version: 1
 
-includes:
-- mapreduce/include.yaml
-
 inbound_services:
 - warmup
 
@@ -50,11 +47,20 @@ handlers:
 - url: /_ereporter
   script: $PYTHON_LIB/google/appengine/ext/ereporter/report_generator.py
   login: admin
-- url: .*
+- url: /mapreduce/worker_callback
   script: main.py
+  login: admin
+- url: /mapreduce/pipeline/images
+  static_dir: mapreduce/lib/pipeline/ui/images
+- url: /mapreduce(/.*)?
+  script: mapreduce/main.py
+  login: admin
 - url: /_ah/warmup
   script: main.py
   login: admin
+- url: .*
+  script: main.py
+
 
 admin_console:
  pages:
