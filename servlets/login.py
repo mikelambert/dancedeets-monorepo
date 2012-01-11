@@ -26,6 +26,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
 
+    #TODO(lambert): move this into the same base / handler, so we don't do stupid redirects to /login
     def get(self, needs_city=False):
         next = self.request.get('next') or '/'
 
@@ -63,18 +64,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         logging.info(self.display['next'])
         self.display['needs_city'] = needs_city
         self.render_template('login')
-
-    def post(self):
-        logging.info("Login Post with fb_uid = %s", self.fb_uid)
-        assert self.fb_uid
-        self.batch_lookup.lookup_user(self.fb_uid, allow_cache=False)
-        self.finish_preload()
-        fb_user = self.batch_lookup.data_for_user(self.fb_uid)
-
-        referer = self.get_cookie('User-Referer')
-        construct_user(self.fb_uid, self.fb_graph, fb_user, self.request, referer)
-        logging.info("Redirecting to %s", next)
-        self.redirect(next)
 
 def construct_user(fb_uid, fb_graph, fb_user, request, referer):
         next = request.get('next') or '/'
