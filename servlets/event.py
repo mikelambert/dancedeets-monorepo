@@ -107,6 +107,18 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.errors_are_fatal()
 
+        owner_location = None
+        if 'owner' in fb_event['info']:
+            owner_id = fb_event['info']['owner']['id']
+            new_batch_lookup = self.batch_lookup.copy()
+            new_batch_lookup.lookup_profile(owner_id)
+            new_batch_lookup.finish_loading()
+            owner = new_batch_lookup.data_for_profile(owner_id)['profile']
+            if 'location' in owner:
+                owner_location = event_locations.city_for_fb_location(owner['location'])
+        self.display['owner_location'] = owner_location
+
+
         # Don't insert object until we're ready to save it...
         e = eventdata.DBEvent.get_by_key_name(event_id) or eventdata.DBEvent(key_name=event_id)
         if e.creating_fb_uid:

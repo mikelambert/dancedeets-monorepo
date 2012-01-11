@@ -24,11 +24,7 @@ Optimizations:
 
 - Maybe do expiration of geocode lookups? Seems ones that have been stored awhile are no longer returned by google? Maybe do soft-expiration that only writes out new values if different but will not delete existing values?
 
-- Display location of event owner.
-
 - Maybe scrape page to find group-via-which event was created, as well as all/additional owners. For use in displaying locations of owners. And for scraping group as an additional source.
-
-- Use lazyload to speed up pageloadtime, better for mobile browsers too. http://www.appelsiini.net/projects/lazyload . Make sure to do gaceful degradation. fadein seems nice. Give a nice threshold so people don't really notice.
 
 - Two separate Source systems. One for persons. One for groups/pages. (Do we care about events?)
 - For persons: We can add tons of PotentialSources for people. Maybe even one per each person in an event. Or more than X events. (Can grab these from our "scrape and count people in each scene" mapreduce?) When we try to evaluate their score, it comes from how many PotentialEvents we can get from these people. We have N/A (None) for not-scrapable, or a count if we can scrape it. Make sure to scrape both attendings as well as walls. If count is non-zero, then add to Sources list. This could blow up on us, so tag them somehow so we can undo in an emergency, or maybe do a PotentialSource for them.

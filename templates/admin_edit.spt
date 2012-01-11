@@ -15,7 +15,11 @@ Edit Event
 			</table>
 			<a href="$raw_fb_event_url($fb_event.info.id)">See on Facebook</a> (<a href="http://graph.facebook.com/$fb_event.info.id">Graph</a>)
 			#if 'owner' in $fb_event.info
-				(Owner: <a href="$dd_admin_source_url($fb_event.info.owner.id)">$fb_event.info.owner.name</a>)
+				(Owner: <a href="$dd_admin_source_url($fb_event.info.owner.id)">$fb_event.info.owner.name</a>
+#if $owner_location
+, Location: $owner_location
+#end if
+)
 			#end if
 			<br><br>
 			<table>
