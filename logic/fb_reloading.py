@@ -19,22 +19,25 @@ def mr_load_fb_event(batch_lookup):
                 batch_lookup=batch_lookup,
                 name='Load Events',
                 handler_spec='logic.fb_reloading.map_load_fb_event',
+        handle_batch_size=20,
                 entity_kind='events.eventdata.DBEvent'
         )
 
 @timings.timed
-def yield_load_fb_event(batch_lookup, db_event):
-    logging.info("loading db event %s", db_event.fb_event_id)
-    batch_lookup.lookup_event(db_event.fb_event_id)
+def yield_load_fb_event(batch_lookup, db_events):
+    logging.info("loading db events %s", [db_event.fb_event_id for db_event in db_events])
+    for db_event in db_events:
+        batch_lookup.lookup_event(db_event.fb_event_id)
     batch_lookup.finish_loading()
-    try:
-        fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
-        db_event.make_findable_for(fb_event)
-        db_event.put()
-    except fb_api.NoFetchedDataException:
-        logging.info("No data fetched for event id %s", db_event.fb_event_id)
+    for db_event in db_events:
+        try:
+            fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
+            db_event.make_findable_for(fb_event)
+            db_event.put()
+        except fb_api.NoFetchedDataException:
+            logging.info("No data fetched for event id %s", db_event.fb_event_id)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
-load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
+load_fb_event = fb_mapreduce.nomr_wrap(lambda batch_lookup, db_event: yield_load_fb_event(batch_lookup, [db_event]))
 
 
 def mr_load_fb_event_attending(batch_lookup):
@@ -123,6 +126,7 @@ def mr_load_past_fb_event(batch_lookup):
                 name='Load Past Events',
                 handler_spec='logic.fb_reloading.map_load_fb_event',
                 entity_kind='events.eventdata.DBEvent',
+        handle_batch_size=20,
         reader_spec='logic.fb_reloading.PastEventInputReader',
         )
 
@@ -132,6 +136,7 @@ def mr_load_future_fb_event(batch_lookup):
                 name='Load Future Events',
                 handler_spec='logic.fb_reloading.map_load_fb_event',
                 entity_kind='events.eventdata.DBEvent',
+        handle_batch_size=20,
         reader_spec='logic.fb_reloading.FutureEventInputReader',
         )
 
@@ -140,6 +145,7 @@ def mr_load_all_fb_event(batch_lookup):
                 batch_lookup=batch_lookup,
                 name='Load All Events',
                 handler_spec='logic.fb_reloading.map_load_fb_event',
+        handle_batch_size=20,
                 entity_kind='events.eventdata.DBEvent',
         )
 
