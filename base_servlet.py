@@ -118,7 +118,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
             # only request the access token from FB when it's been longer than a day, and do it out-of-band to fetch-and-update-db-and-memcache
             self.fb_graph = facebook.GraphAPI(args['access_token'])
             self.user = users.User.get_cached(str(self.fb_uid))
-            logging.info("user found is %s", self.user)
             if not self.user:
                 from servlets import login
                 batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=False)
