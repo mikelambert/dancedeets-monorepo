@@ -55,7 +55,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         if fe_search_query.distance_units == 'miles':
             distance_in_km = locations.miles_in_km(fe_search_query.distance)
         else:
-            distance_in_km = distance
+            distance_in_km = fe_search_query.distance
         bounds = locations.get_location_bounds(fe_search_query.location, distance_in_km)
         fe_search_query.past = self.request.get('past', '0') not in ['0', '', 'False', 'false']
 
