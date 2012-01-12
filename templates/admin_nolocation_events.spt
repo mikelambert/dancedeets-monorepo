@@ -1,5 +1,9 @@
 #extends _bigbox_base
 
+#def title
+Events without Locations
+#end def
+
 #def inner_body
 <table>
 	#for $i, $event in enumerate($events)
@@ -16,6 +20,7 @@
 			No Nearby City
 		#end if
 		</td>
+		<td>$date_human_format($event.db_event.start_time)</td>
 	</tr>
 	#end for
 </table>

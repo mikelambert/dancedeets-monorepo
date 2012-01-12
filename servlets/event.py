@@ -113,9 +113,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             new_batch_lookup = self.batch_lookup.copy()
             new_batch_lookup.lookup_profile(owner_id)
             new_batch_lookup.finish_loading()
-            owner = new_batch_lookup.data_for_profile(owner_id)['profile']
-            if 'location' in owner:
-                owner_location = event_locations.city_for_fb_location(owner['location'])
+            combined_owner = new_batch_lookup.data_for_profile(owner_id)
+            if not combined_owner['deleted']:
+                owner = combined_owner['profile']
+                if 'location' in owner:
+                    owner_location = event_locations.city_for_fb_location(owner['location'])
         self.display['owner_location'] = owner_location
 
 
@@ -229,7 +231,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.finish_preload()
             try:
                 results_json = self.batch_lookup.data_for_user_events(self.fb_uid)['all_event_info']['data']
-                events = sorted(results_json, key=lambda x: x.get('start_time'))
+                events = reversed(sorted(results_json, key=lambda x: x.get('start_time')))
             except fb_api.NoFetchedDataException:
                 events = []
             db_events = eventdata.DBEvent.get_by_key_name([str(x['eid']) for x in events])
@@ -294,7 +296,7 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
             self.batch_lookup.lookup_event(e.fb_event_id)
         self.finish_preload()
         template_events = []
-        for e in db_events:
+        for e in sorted(db_events, key=lambda x: x.start_time):
             fb_event = self.batch_lookup.data_for_event(e.fb_event_id)
             if not fb_event['deleted']:
                 template_events.append(dict(fb_event=fb_event, db_event=e))
