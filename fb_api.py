@@ -114,6 +114,7 @@ class BatchLookup(object):
             return dict(
                 profile=self._fetch_rpc('%s' % object_id),
                 friends=self._fetch_rpc('%s/friends' % object_id),
+                permissions=self._fetch_rpc('%s/permissions' % object_id),
                 rsvp_for_future_events=self._fetch_rpc('%s/events?since=yesterday' % object_id),
             )
         elif object_type == self.OBJECT_USER_EVENTS:
