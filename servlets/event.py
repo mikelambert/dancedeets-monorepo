@@ -185,7 +185,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
         e.make_findable_for(self.batch_lookup.data_for_event(event_id))
-        thing_db.create_source_from_event(e, self.batch_lookup.copy())
+        thing_db.create_source_from_event(self.batch_lookup.copy(), e)
         e.put()
 
         classified_event = event_classifier.get_classified_event(fb_event)
@@ -280,7 +280,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
         e.make_findable_for(fb_event)
-        thing_db.create_source_from_event(e, self.batch_lookup.copy())
+        thing_db.create_source_from_event(self.batch_lookup.copy(), e)
         e.put()
 
         self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])

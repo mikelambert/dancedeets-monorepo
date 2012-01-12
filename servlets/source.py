@@ -76,6 +76,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.user.add_message("Source added!")
         #TODO(lambert): make this a backgrounded action?
-        thing_scraper.scrape_events_from_source(self.batch_lookup.copy(), s)
+        thing_scraper.scrape_events_from_sources(self.batch_lookup.copy(), [s])
         self.redirect('/sources/admin_edit?source_id=%s' % source_id)
 

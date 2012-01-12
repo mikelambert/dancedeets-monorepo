@@ -15,45 +15,40 @@ from util import fb_mapreduce
 from util import timings
 
 @timings.timed
-def scrape_events_from_source(batch_lookup, source):
+def scrape_events_from_sources(batch_lookup, sources):
     # don't scrape sources that prove useless and give mostly garbage events
-    if source.fraction_potential_are_real() < 0.05:
-        return
+    sources = [x for x in sources if x.fraction_potential_are_real() > 0.05]
 
     batch_lookup = batch_lookup.copy(allow_cache=False)
-    batch_lookup.lookup_thing_feed(source.graph_id)
+    for source in sources:
+        batch_lookup.lookup_thing_feed(source.graph_id)
     batch_lookup.finish_loading()
 
     event_ids = []
-    try:
-        thing_feed = batch_lookup.data_for_thing_feed(source.graph_id)
-        event_ids = process_thing_feed(source, thing_feed, batch_lookup.copy(allow_cache=True))
-    except fb_api.NoFetchedDataException, e:
-        logging.error("Failed to fetch data for thing: %s", str(e))
+    for source in sources:
+        try:
+            thing_feed = batch_lookup.data_for_thing_feed(source.graph_id)
+            event_ids = process_thing_feed(source, thing_feed, batch_lookup.copy(allow_cache=True))
+        except fb_api.NoFetchedDataException, e:
+            logging.error("Failed to fetch data for thing: %s", str(e))
     return event_ids
-
-def scrape_source(source):
-    batch_lookup = fb_mapreduce.get_batch_lookup()
-    event_ids = scrape_events_from_source(batch_lookup, source)
+map_scrape_events_from_source = fb_mapreduce.mr_wrap(scrape_events_from_sources)
 
 def mapreduce_scrape_all_sources(batch_lookup):
     fb_mapreduce.start_map(
         batch_lookup.copy(allow_cache=False), # Force refresh of thing feeds
         'Scrape All Sources',
-        'logic.thing_scraper.scrape_source',
-        'logic.thing_db.Source'
+        'logic.thing_scraper.map_scrape_events_from_source',
+        'logic.thing_db.Source',
+        handle_batch_size=10,
     )
-
-def create_source_from_event(event):
-    batch_lookup = fb_mapreduce.get_batch_lookup()
-    thing_db.create_source_from_event(event, batch_lookup)
 
 def mapreduce_create_sources_from_events(batch_lookup):
     fb_mapreduce.start_map(
         batch_lookup,
         'Create Sources from Events',
-        'logic.thing_scraper.create_source_from_event',
-        'events.eventdata.DBEvent'
+        'logic.thing_db.map_create_source_from_event',
+        'events.eventdata.DBEvent',
     )
 
 def process_thing_feed(source, thing_feed, batch_lookup):

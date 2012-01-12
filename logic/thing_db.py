@@ -161,7 +161,7 @@ def create_source_for_id(source_id, fb_data):
     logging.info('source %s: %s', source.graph_id, source.name)
     return source
 
-def create_source_from_event(db_event, batch_lookup):
+def create_source_from_event(batch_lookup, db_event):
     if not db_event.owner_fb_uid:
         return
     # technically we could check if the object exists in the db, before we bother fetching the feed
@@ -171,7 +171,7 @@ def create_source_from_event(db_event, batch_lookup):
     if not thing_feed['deleted']:
         s = create_source_for_id(db_event.owner_fb_uid, thing_feed)
         s.put()
-
+map_create_source_from_event = fb_mapreduce.mr_wrap(create_source_from_event)
 
 def map_clean_source_count(s):
     s.num_all_events = 0
