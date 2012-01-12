@@ -108,14 +108,14 @@ class LocationInfo(object):
     
         logging.info("For event %s, fb city is %r, fb address is %r", fb_event['info']['id'], self.fb_city, self.fb_address)
 
+        # technically not needed for final location, but loaded here so we can still display on admin_edit page and modify it indepenently
+        self.remapped_address = _get_remapped_address_for(self.remapped_source())
         if db_event and db_event.address:
             self.overridden_address = db_event.address
-            self.remapped_address = None
             self.final_address = self.overridden_address
             logging.info("Address overridden to be %r", db_event.address)
         else:
             self.overridden_address = None
-            self.remapped_address = _get_remapped_address_for(self.remapped_source())
             if self.remapped_address:
                 self.final_address = self.remapped_address
                 logging.info("Checking remapped address, which is %r", self.remapped_address)
