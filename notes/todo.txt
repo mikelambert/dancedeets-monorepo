@@ -1,5 +1,7 @@
 BEFORE LAUNCH:
 
+- Make fbapi have a thing per type, with many methods. Lookupmany. Lookupnow. Refreshcache. Fetchcache (Lru). Etc. Refreshifold. Etc.
+
 - Save on processing time by using ETags: https://developers.facebook.com/blog/post/627/
 
 - Make calendar-view treat events ending before 5am as being solely on the previous day?
