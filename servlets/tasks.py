@@ -99,7 +99,7 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
 
 class ReloadAllUsersHandler(BaseTaskFacebookRequestHandler):
     def get(self):
-        # TODO(lambert): this should be using the individual user's access token, not mine
+        # this calls a map function wrapped by mr_user_wrap, so it works correctly on a per-user basis
         fb_reloading.mr_load_fb_user(self.batch_lookup)
     post=get
 
@@ -142,7 +142,7 @@ class ComputeRankingsHandler(RequestHandler):
 
 class LoadAllPotentialEventsHandler(BaseTaskFacebookRequestHandler):
     def get(self):
-        # TODO(lambert): this should be using the individual user's access token, not mine
+        # this calls a map function wrapped by mr_user_wrap, so it works correctly on a per-user basis
         fb_reloading.mr_load_potential_events(self.batch_lookup)
 
 class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
