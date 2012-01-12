@@ -99,6 +99,7 @@ class LoadUserHandler(BaseTaskFacebookRequestHandler):
 
 class ReloadAllUsersHandler(BaseTaskFacebookRequestHandler):
     def get(self):
+        # TODO(lambert): this should be using the individual user's access token, not mine
         fb_reloading.mr_load_fb_user(self.batch_lookup)
     post=get
 
@@ -140,9 +141,8 @@ class ComputeRankingsHandler(RequestHandler):
         rankings.begin_ranking_calculations()
 
 class LoadAllPotentialEventsHandler(BaseTaskFacebookRequestHandler):
-    #OPT: maybe some day make this happen immediately after reloading users, so we can guarantee the latest users' state, rather than adding another day to the pipeline delay
-    #TODO(lambert): email me when we get the latest batch of things completed.
     def get(self):
+        # TODO(lambert): this should be using the individual user's access token, not mine
         fb_reloading.mr_load_potential_events(self.batch_lookup)
 
 class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
@@ -169,8 +169,7 @@ class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
-        for user_id in user_ids:
-            fb_reloading.load_potential_events_for_user_id(self.batch_lookup.copy(), user_id)
+        fb_reloading.load_potential_events_for_user_ids(self.batch_lookup.copy(), user_ids)
 
 class RecacheSearchIndex(BaseTaskFacebookRequestHandler):
     def get(self):

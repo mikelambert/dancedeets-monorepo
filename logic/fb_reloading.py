@@ -19,7 +19,7 @@ def mr_load_fb_event(batch_lookup):
                 batch_lookup=batch_lookup,
                 name='Load Events',
                 handler_spec='logic.fb_reloading.map_load_fb_event',
-        handle_batch_size=20,
+                handle_batch_size=20,
                 entity_kind='events.eventdata.DBEvent'
         )
 
@@ -45,16 +45,19 @@ def mr_load_fb_event_attending(batch_lookup):
                 batch_lookup=batch_lookup,
                 name='Load Event Attending',
                 handler_spec='logic.fb_reloading.map_load_fb_event_attending',
+                handle_batch_size=20,
                 entity_kind='events.eventdata.DBEvent'
         )
 
 @timings.timed
-def yield_load_fb_event_attending(batch_lookup, db_event):
-    batch_lookup.lookup_event_attending(db_event.fb_event_id)
+def yield_load_fb_event_attending(batch_lookup, db_events):
+    for db_event in db_events:
+        batch_lookup.lookup_event_attending(db_event.fb_event_id)
     batch_lookup.finish_loading()
-    fb_event_attending = batch_lookup.data_for_event_attending(db_event.fb_event_id)
-    db_event.include_attending_summary(fb_event_attending)
-    db_event.put()
+    for db_event in db_events:
+        fb_event_attending = batch_lookup.data_for_event_attending(db_event.fb_event_id)
+        db_event.include_attending_summary(fb_event_attending)
+        db_event.put()
 map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
 load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 
@@ -181,22 +184,23 @@ def mr_load_potential_events(batch_lookup):
                 batch_lookup=batch_lookup,
                 name='Load Potential Events For Users',
                 handler_spec='logic.fb_reloading.map_load_potential_events',
+                handle_batch_size=20,
                 entity_kind='events.users.User',
         )
 
 @timings.timed
-def load_potential_events_for_user_id(batch_lookup, user_id):
+def load_potential_events_for_user_ids(batch_lookup, user_ids):
     # TODO(lambert): figure out why future's data can't be loaded
-    if str(user_id) in BROKEN_UIDS:
-        return
-    batch_lookup.lookup_user_events(user_id)
+    user_ids = user_ids.difference(BROKEN_UIDS)
+    for user_id in user_ids:
+        batch_lookup.lookup_user_events(user_id)
     batch_lookup.finish_loading()
-    potential_events.get_potential_dance_events(batch_lookup, user_id)
+    for user_id in user_ids:
+        potential_events.get_potential_dance_events(batch_lookup, user_id)
 
-def yield_load_potential_events(batch_lookup, user):
-    if user.expired_oauth_token:
-        return
-    load_potential_events_for_user_id(batch_lookup, user.fb_uid)
+def yield_load_potential_events(batch_lookup, users):
+    users = [x for x in users if not x.expired_oauth_token]
+    load_potential_events_for_user_ids(batch_lookup, [x.fb_uid for x in users])
 map_load_potential_events = fb_mapreduce.mr_user_wrap(yield_load_potential_events)
 load_potential_events = fb_mapreduce.nomr_wrap(yield_load_potential_events)
 
