@@ -56,7 +56,7 @@
 #if $result.index < 5
 				<img src="$result.get_image()" width="180" border="0">
 #else
-				<img class="lazy-narrow" src="/images/placeholder.gif" data-original="$result.get_image()" width="180" border="0">
+				<img class="lazy-wide" src="/images/placeholder.gif" data-original="$result.get_image()" width="180" border="0">
 				<noscript><img src="$result.get_image()" width="180" border="0"></noscript>
 #end if
 			</a>

@@ -55,18 +55,25 @@ def group_results(search_results):
     week_results = [] 
     month_results = [] 
     year_results = []
+    past_index = 0
+    future_index = 0
     for result in search_results: 
-        if result.start_time < now: 
+        if result.start_time < now:
+            result.index = past_index
+            past_index += 1
             if result.end_time > now:
                 present_results.append(result)
             else: 
                 past_results.append(result) 
-        elif result.start_time < now + datetime.timedelta(days=7): 
-            week_results.append(result)
-        elif result.start_time < now + datetime.timedelta(days=30): 
-            month_results.append(result)
-        else: 
-            year_results.append(result) 
+        else:
+            result.index = future_index
+            future_index += 1
+            if result.start_time < now + datetime.timedelta(days=7): 
+                week_results.append(result)
+            elif result.start_time < now + datetime.timedelta(days=30): 
+                month_results.append(result)
+            else: 
+                year_results.append(result) 
     grouped_results.append(ResultsGroup('Events This Week', 'week_events', week_results, expanded=True)) 
     grouped_results.append(ResultsGroup('Events This Month', 'month_events', month_results, expanded=True)) 
     grouped_results.append(ResultsGroup('Future Events', 'year_events', year_results, expanded=True)) 
@@ -208,8 +215,6 @@ class SearchQuery(object):
             if not fb_event['deleted'] and self.matches_fb_db_event(db_event, fb_event):
                 result = SearchResult(db_event, fb_event)
                 search_results.append(result)
-        for i, result in enumerate(search_results):
-            result.index = i
         logging.info("db filtering and Search Results took %s seconds", time.time() - a)
     
         # Now sort and return the results
