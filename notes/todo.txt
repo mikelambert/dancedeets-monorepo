@@ -17,7 +17,6 @@ How to organize all this information and make it easy to grow/expand what we dis
 
 Optimizations:
 - DB: speed up event remapping lookups to make them more cached through sharded aggregates.
-- INSTANCE: make a mapreduce that passes in arrays-of-objects instead of object-by-object. Better parallelized FB fetching of data.
 - DB/INSTANCE: change performance characteristics of city pages (when requested by googlebot) to not be all-history-of-all-time. maybe just recent history of 1-2 months?
 - DB/INSTANCE: filter/sort which sources we fetch by using the number-of-things and frequency-of-updates of the feed. requires a bigger implementation of the details below.
 
@@ -32,8 +31,6 @@ Optimizations:
 - For all events, construct a Source with it. When the date for the event has passed, make it an inactive Source. In theory should also be notice-able by the lack of updates on the wall.
 - Instead of feed_history_of_seconds, store feed_start_timestamp and feed_end_timestamp. Potentially use now() - feed_start_timestamp to track how often to scrape (do we ever need to scrape 1+ times/day?) But we can also find things to scrape less often. Weekly versus daily simple threshold?
 - For any sources with now() - feed_end_timestamp > 2+ years (handle no-wall-things based on creation timestamps somehow?), then mark it inactive. Or if is event >1 month old, mark it inactive.
-
-- Make a X-at-a-time mapreduce, so that we can initiate fb lookups in parallel and save on CPU lookup time. Faster mapreduces! Return event-ids from process_thing instead of looking them up inside, so that we can do a better-job of parallelization across multiple thing's event-ids outside of process_thing.
 
 - Save a list of "authorized user ids" inside each source, which we use to scrape them. May make it difficult to do a mapreduce and efficiently group-them and look-them-up. But "oh well"...maybe it becomes one mapreduce per user id? Maybe it becomes a mapreduce containing all valid user ids that are used for scraping?
 
@@ -82,9 +79,6 @@ http://groups.google.com/group/google-cloud-sql-discuss
 Use http://twitter.github.com/bootstrap/, but tweak it a la the following:
 http://getskeleton.com/
 http://getskeleton.com/src/stylesheets/skeleton.css
-
-- MapReduce InputFilter Ideas:
-+ do more work in the input_reader to load fb_event data for us automatically. perhaps even do it in batch to save on CPU time.
 
 - Ensure this matches:
 http://www.dancedeets.com/events/admin_edit?event_id=206267406110368
