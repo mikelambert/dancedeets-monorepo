@@ -45,6 +45,9 @@ class BareBaseRequestHandler(RequestHandler):
         self.display['format'] = text.format
         self.display['next'] = ''
 
+        # set to false on various admin pages
+        self.display['track_google_analytics'] = True
+
     def head(self):
         return self.get()
 

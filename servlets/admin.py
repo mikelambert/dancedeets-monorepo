@@ -61,6 +61,7 @@ class ShowUsersHandler(base_servlet.BaseRequestHandler):
         all_users = reversed(sorted(all_users, key=lambda x: x.creation_time))
         self.display['num_users'] = len(all_users)
         self.display['users'] = all_users
+        self.display['track_google_analytics'] = False
         self.render_template('show_users')
 
 class ClearMemcacheHandler(webapp.RequestHandler):

@@ -55,6 +55,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['fb_source_data'] = pprint.pformat(fb_source['feed']['data'])
         self.display['link_for_fb_source'] = thing_db.link_for_fb_source
 
+        self.display['track_google_analytics'] = False
         self.render_template('admin_source')
 
     def post(self):
