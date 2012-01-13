@@ -14,6 +14,7 @@ from servlets import atom
 from servlets import calendar
 from servlets import event
 from servlets import feedback
+from servlets import gprediction
 from servlets import login
 from servlets import myuser
 from servlets import profile_page
@@ -32,6 +33,7 @@ class DoNothingHandler(base_servlet.BareBaseRequestHandler):
         return
 
 URLS = [
+    ('/tools/training_data', gprediction.GenerateTrainingDataHandler),
     ('/tools/owned_events', tools.OwnedEventsHandler),
     ('/tools/unprocess_future_events', tools.UnprocessFutureEventsHandler),
     ('/tools/oneoff', tools.OneOffHandler),

@@ -21,6 +21,13 @@ def city_for_fb_location(location):
     else:
         return None
 
+def venue_for_fb_location(location):
+    returned_location = city_for_fb_location(location)
+    if location.get('street'):
+        returned_location = '%s, %s' % (location.get('street'), returned_location)
+    else:
+        return returned_location
+
 def _address_for_venue(venue, raw_location):
     # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
     state = abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state'))

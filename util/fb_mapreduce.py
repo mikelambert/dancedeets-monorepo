@@ -1,6 +1,7 @@
 import logging
 from mapreduce import context
 from mapreduce import control
+from mapreduce import util
 
 import facebook
 import fb_api
@@ -33,9 +34,16 @@ def get_batch_lookup(user=None):
 
 
 def mr_wrap(func):
-    def map_func(*args, **kwargs):
-        batch_lookup = get_batch_lookup()
-        return func(batch_lookup, *args, **kwargs)
+    if util.is_generator(func):
+        def map_func(*args, **kwargs):
+            batch_lookup = get_batch_lookup()
+            # this passes the generator on to the client as a generator, while still having this function be detected as a generator (instead of just returning the generator directly, which would work but not let this function be detected as a generator)
+            for x in func(batch_lookup, *args, **kwargs):
+                yield x
+    else:
+        def map_func(*args, **kwargs):
+            batch_lookup = get_batch_lookup()
+            return func(batch_lookup, *args, **kwargs)
     return map_func
 
 def mr_user_wrap(func):
