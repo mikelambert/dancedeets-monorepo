@@ -26,10 +26,18 @@ indexes:
   - name: latitude
   - name: anywhere
 
+# TODO(lambert): delete me
 - kind: DBEvent
   properties:
   - name: geohashes
   - name: start_time
+
+- kind: DBEvent
+  properties:
+  - name: geohashes
+  - name: search_time_period
+  - name: start_time
+    direction: desc
 
 - kind: DBEvent
   properties:

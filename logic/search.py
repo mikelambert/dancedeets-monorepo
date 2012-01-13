@@ -170,9 +170,10 @@ class SearchQuery(object):
         if clauses:
             full_clauses = ' AND '.join('%s' % x for x in clauses)
             logging.info("Doing search with clauses: %s", full_clauses)
-            return eventdata.DBEvent.gql('WHERE %s' % full_clauses, **bind_vars).fetch(1000)
+            full_clauses += " ORDER BY start_time DESC"
+            return eventdata.DBEvent.gql('WHERE %s' % full_clauses, **bind_vars).fetch(500) #TODO(lambert): implement pagination if we want to go back further than this?
         else:
-            return eventdata.DBEvent.all().fetch(1000)
+            return eventdata.DBEvent.all().fetch(500)
 
     def magical_get_candidate_events(self):
         a = time.time()
