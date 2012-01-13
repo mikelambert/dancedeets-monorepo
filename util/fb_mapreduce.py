@@ -5,21 +5,24 @@ from mapreduce import control
 import facebook
 import fb_api
 
-def start_map(batch_lookup, name, handler_spec, entity_kind, reader_spec='mapreduce.input_readers.DatastoreInputReader', handle_batch_size=None):
-        control.start_map(
-                name=name,
-                reader_spec=reader_spec,
-                handler_spec=handler_spec,
-                shard_count=2, # since we want to stick it in the slow-queue, and don't care how fast it executes
-                queue_name='slow-queue',
-                mapper_parameters={
-                        'entity_kind': entity_kind,
-            'handle_batch_size': handle_batch_size,
-            'batch_lookup_fb_uid': batch_lookup.fb_uid,
-                        'batch_lookup_fb_graph_access_token': batch_lookup.fb_graph.access_token,
-            'batch_lookup_allow_cache': batch_lookup.allow_cache,
-                },
-        )
+def start_map(batch_lookup, name, handler_spec, entity_kind, reader_spec='mapreduce.input_readers.DatastoreInputReader', handle_batch_size=None, output_writer_spec=None, extra_mapper_params={}):
+    mapper_params = {
+        'entity_kind': entity_kind,
+        'handle_batch_size': handle_batch_size,
+        'batch_lookup_fb_uid': batch_lookup.fb_uid,
+        'batch_lookup_fb_graph_access_token': batch_lookup.fb_graph.access_token,
+        'batch_lookup_allow_cache': batch_lookup.allow_cache,
+    }
+    mapper_params.update(extra_mapper_params)
+    control.start_map(
+        name=name,
+        reader_spec=reader_spec,
+        handler_spec=handler_spec,
+        output_writer_spec=output_writer_spec,
+        shard_count=2, # since we want to stick it in the slow-queue, and don't care how fast it executes
+        queue_name='slow-queue',
+        mapper_parameters=mapper_params,
+    )
 
 def get_batch_lookup(user=None):
         ctx = context.get()
