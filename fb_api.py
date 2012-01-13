@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+import re
 import time
 import urllib
 
@@ -174,31 +175,48 @@ class BatchLookup(object):
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
+    def key_func(func):
+        def _func(self, *args, **kwargs):
+            result = func(self, *args, **kwargs)
+            return self._normalize_key(result)
+        return _func
+
+    @key_func
     def _profile_key(self, user_id):
-        return tuple(str(x) for x in (self.fb_uid, user_id, self.OBJECT_PROFILE))
+        return (self.fb_uid, user_id, self.OBJECT_PROFILE)
+    @key_func
     def _user_key(self, user_id):
-        return tuple(str(x) for x in (self.fb_uid, user_id, self.OBJECT_USER))
+        return (self.fb_uid, user_id, self.OBJECT_USER)
+    @key_func
     def _user_events_key(self, user_id):
-        return tuple(str(x) for x in (self.fb_uid, user_id, self.OBJECT_USER_EVENTS))
+        return (self.fb_uid, user_id, self.OBJECT_USER_EVENTS)
+    @key_func
     def _friend_list_key(self, friend_list_id):
-        return tuple(str(x) for x in (self.fb_uid, friend_list_id, self.OBJECT_FRIEND_LIST))
+        return (self.fb_uid, friend_list_id, self.OBJECT_FRIEND_LIST)
+    @key_func
     def _event_key(self, event_id):
-        return tuple(str(x) for x in (self.userless_uid, event_id, self.OBJECT_EVENT))
+        return (self.userless_uid, event_id, self.OBJECT_EVENT)
+    @key_func
     def _event_attending_key(self, event_id):
-        return tuple(str(x) for x in (self.userless_uid, event_id, self.OBJECT_EVENT_ATTENDING))
+        return (self.userless_uid, event_id, self.OBJECT_EVENT_ATTENDING)
+    @key_func
     def _event_members_key(self, event_id):
-        return tuple(str(x) for x in (self.userless_uid, event_id, self.OBJECT_EVENT_MEMBERS))
+        return (self.userless_uid, event_id, self.OBJECT_EVENT_MEMBERS)
+    @key_func
     def _fql_key(self, fql_query):
-        return tuple(str(x) for x in (self.fb_uid, fql_query, self.OBJECT_FQL))
+        return (self.fb_uid, fql_query, self.OBJECT_FQL)
+    @key_func
     def _thing_feed_key(self, thing_id):
-        return tuple(str(x) for x in (self.userless_uid, thing_id, self.OBJECT_THING_FEED))
+        return (self.userless_uid, thing_id, self.OBJECT_THING_FEED)
+    @key_func
     def _venue_key(self, thing_id):
-        return tuple(str(x) for x in (self.userless_uid, thing_id, self.OBJECT_VENUE))
+        return (self.userless_uid, thing_id, self.OBJECT_VENUE)
 
     def _string_key(self, key):
-        string_key = '.'.join(str(x).replace('.', '-') for x in key)
-        escaped_string_key = string_key.replace('"', '-').replace("'", '-')
-        return escaped_string_key
+        return '.'.join(self._normalize_key(key))
+
+    def _normalize_key(self, key):
+        return tuple(re.sub(r'[."\']', '-', str(x)) for x in key)
 
     def _db_delete(key_func):
         def db_delete_func(self, id):
