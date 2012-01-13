@@ -84,7 +84,8 @@ class BatchLookup(object):
         self.userless_uid = fb_uid
         self.fb_graph = fb_graph
         self.allow_cache = allow_cache
-        self.allow_memcache = self.allow_cache
+        self.allow_memcache_read = self.allow_cache
+        self.allow_memcache_write = True
         self.allow_dbcache = self.allow_cache
         self.object_keys = set()
         self.object_keys_to_lookup_without_cache = set()
@@ -309,7 +310,7 @@ class BatchLookup(object):
         object_keys_to_lookup = list(self.object_keys)
 
         if self.allow_cache:
-            if object_keys_to_lookup and self.allow_memcache:
+            if object_keys_to_lookup and self.allow_memcache_read:
                 # lookup from memcache
                 memcache_objects = self._get_objects_from_memcache(object_keys_to_lookup)
                 self.objects.update(memcache_objects)
@@ -330,7 +331,7 @@ class BatchLookup(object):
                 object_keys_to_lookup = set(object_keys_to_lookup).difference(db_objects)
 
                 # Cache in memcache for next time
-                if db_objects:
+                if db_objects and self.allow_memcache_write:
                     self._store_objects_into_memcache(db_objects)
 
                 # Warn about what our get_multi missed

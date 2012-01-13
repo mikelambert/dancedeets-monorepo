@@ -257,7 +257,7 @@ def _inner_cache_fb_events(batch_lookup, search_index):
         deferred.defer(cache_fb_events, batch_lookup, search_index[EVENTS_AT_A_TIME:], _queue=SLOW_QUEUE)
         search_index = search_index[:EVENTS_AT_A_TIME]
     batch_lookup = batch_lookup.copy()
-    batch_lookup.allow_memcache = False
+    batch_lookup.allow_memcache_read = False
     for event_id, latlng in search_index:
         batch_lookup.lookup_event(event_id)
         batch_lookup.lookup_event_attending(event_id)
