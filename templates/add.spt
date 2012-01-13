@@ -40,43 +40,39 @@ Add Dance Event
 		<form action="/events/add" method=post>
 		<div>
 			#if $events
-				<table><tr>
-					<td>Enter your facebook event URL here:<br>
-						<input id="event_url_form" type=text name="event_url" size=60 onunfocus="loadEvent();">
-					</td>
-					<td>Or select one of your facebook events below:<br>
-						<input id="event_id_form" type="hidden" name="event_id" value="">
-						<ul id="events">
-						#for $event in $events
-							<li data-id="$event.id" class="
-								#if $event.loaded
-									ui-disabled
-								#else
-									ui-selectable
-								#end if
-								">
-								<div style="float:left;width:50px">
-									<img src="http://graph.facebook.com/$event.id/picture" width="50">
-								</div>
-								<div style="float:right;width:320px">
-									<span class="fake-a">$format_html($event.name)</span><br>
-									<div class="non-a">
-									$date_human_format($event.start_time)<br>
-									#if getattr($event, "host", None)
-										(by $event.host)<br>
-									#end if
+				Enter your facebook event URL here:<br>
+				<input id="event_url_form" type=text name="event_url" size=60 onunfocus="loadEvent();">
+				Or select one of your facebook events below:<br>
+				<input id="event_id_form" type="hidden" name="event_id" value="">
+				<ul id="events">
+				#for $event in $events
+					<li data-id="$event.id" class="
+						#if $event.loaded
+							ui-disabled
+						#else
+							ui-selectable
+						#end if
+						">
+						<div style="float:left;width:50px">
+							<img src="http://graph.facebook.com/$event.id/picture" width="50">
+						</div>
+						<div style="float:right;width:320px">
+							<span class="fake-a">$format_html($event.name)</span><br>
+							<div class="non-a">
+							$date_human_format($event.start_time)<br>
+							#if getattr($event, "host", None)
+								(by $event.host)<br>
+							#end if
 
-									#if $event.loaded
-										ALREADY ADDED
-									#end if
-									</div>
-								</div>
-								<div style="clear:both;height:15px;"></div>
-							</li>
-						#end for
-						</ul>
-					</td>
-				</tr></table>
+							#if $event.loaded
+								ALREADY ADDED
+							#end if
+							</div>
+						</div>
+						<div style="clear:both;height:15px;"></div>
+					</li>
+				#end for
+				</ul>
 			#end if
 			#if $fb_event
 				<input type=hidden name="event_id" value="$fb_event.info.id">

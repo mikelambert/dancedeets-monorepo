@@ -224,16 +224,19 @@ class AddHandler(base_servlet.BaseRequestHandler):
         else:
             event_id = self.request.get('event_id')
         if event_id:
+            logging.info("Showing page for adding event %s", event_id)
             self.batch_lookup.lookup_event(event_id)
             self.finish_preload()
             fb_event = self.batch_lookup.data_for_event(event_id)
         else:
+            logging.info("Showing page for selecting an event to add")
             self.batch_lookup.lookup_user_events(self.fb_uid)
             self.finish_preload()
             try:
                 results_json = self.batch_lookup.data_for_user_events(self.fb_uid)['all_event_info']['data']
-                events = reversed(sorted(results_json, key=lambda x: x.get('start_time')))
-            except fb_api.NoFetchedDataException:
+                events = list(reversed(sorted(results_json, key=lambda x: x.get('start_time'))))
+            except fb_api.NoFetchedDataException, e:
+                logging.error("Could not load event info for user: %s", e)
                 events = []
             db_events = eventdata.DBEvent.get_by_key_name([str(x['eid']) for x in events])
             loaded_fb_event_ids = set(x.fb_event_id for x in db_events if x)
@@ -251,6 +254,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 smemcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
 
         self.display['events'] = events
+        logging.info("AA %s", self.display['events'])
         self.display['fb_event'] = fb_event
 
         self.render_template('add')
