@@ -2,21 +2,27 @@
 
 import re
 
-'cat local_data/events.csv | cut -f4 -d, | sort | cut -c1-6 | uniq -c | cut -b1-4'
+'cat local_data/DBEvent.csv | cut -f4 -d, | sort | cut -c1-6 | uniq -c | cut -b1-4'
 
 a = """
-  57
-  64
- 105
- 208
- 226
- 241
- 362
- 339
- 418
- 409
- 732
- 739
+  68
+  70
+ 123
+ 207
+ 231
+ 244
+ 376
+ 357
+ 434
+ 455
+ 724
+ 729
+ 807
+ 712
+1071
+1225
+1125
+1149
 """
 
 b = re.split(r'\s+', a.strip())
@@ -33,7 +39,7 @@ e = ','.join([str(x) for x in d])
 
 '7,8,14,28,30,32,48,45,56,55,99,100'
 
-f = "https://chart.googleapis.com/chart?cht=lc&chs=300x200&chd=t:%s&chxt=x,y&chxr=1,0,%s,%s&chxl=0:|Jun'10|Dec'10|Jul'11" % (e, max(c), int(max(c)/5))
+f = "https://chart.googleapis.com/chart?cht=lc&chs=300x200&chd=t:%s&chxt=x,y&chxr=1,0,%s,%s&chxl=0:|Jul'10|Jan'10|Jul'11|Jan'11" % (e, max(c), int(max(c)/5))
 
 print f
 
