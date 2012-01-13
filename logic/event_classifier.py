@@ -260,7 +260,7 @@ def build_regexes():
         base_dir = '..'
     else:
         base_dir = '.'
-    for filename in ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'choreo_keywords', 'competitions', 'freestyle_crews', 'freestyle_dancers']:
+    for filename in ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'choreo_keywords', 'competitions', 'freestyle_crews', 'freestyle_dancers', 'freestyle_keywords']:
         f = open('%s/dance_keywords/%s.txt' % (base_dir, filename))
         for line in f.readlines():
             line = re.sub('\s*#.*', '', line.strip())
