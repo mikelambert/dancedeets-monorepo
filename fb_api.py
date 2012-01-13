@@ -343,7 +343,8 @@ class BatchLookup(object):
             fetched_objects = self._fetch_object_keys(object_keys_to_lookup[i:i+FB_FETCH_COUNT])    
             # Always store latest fetched stuff in cache, regardless of self.allow_cache
             self._store_objects_into_dbcache(fetched_objects)
-            self._store_objects_into_memcache(fetched_objects)
+            if db_objects and self.allow_memcache_write:
+                self._store_objects_into_memcache(fetched_objects)
             self.objects.update(fetched_objects)
 
     @classmethod
