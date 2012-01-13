@@ -308,20 +308,20 @@ class ClassifiedEvent(object):
 
     def classify(self):
         build_regexes()
-        manual_dance_keywords_matches = set(manual_dance_keywords_regex.findall(self.search_text))
-        easy_dance_matches = set(easy_dance_regex.findall(self.search_text))
-        easy_event_matches = set(easy_event_regex.findall(self.search_text))
-        dance_matches = set(dance_regex.findall(self.search_text))
-        event_matches = set(event_regex.findall(self.search_text))
-        dance_wrong_style_matches = set(dance_wrong_style_regex.findall(self.search_text))
-        dance_and_music_matches = set(dance_and_music_regex.findall(self.search_text))
-        club_and_event_matches = set(club_and_event_regex.findall(self.search_text))
-        easy_choreography_matches = set(easy_choreography_regex.findall(self.search_text))
-        club_only_matches = set(club_only_regex.findall(self.search_text))
+        manual_dance_keywords_matches = manual_dance_keywords_regex.findall(self.search_text)
+        easy_dance_matches = easy_dance_regex.findall(self.search_text)
+        easy_event_matches = easy_event_regex.findall(self.search_text)
+        dance_matches = dance_regex.findall(self.search_text)
+        event_matches = event_regex.findall(self.search_text)
+        dance_wrong_style_matches = dance_wrong_style_regex.findall(self.search_text)
+        dance_and_music_matches = dance_and_music_regex.findall(self.search_text)
+        club_and_event_matches = club_and_event_regex.findall(self.search_text)
+        easy_choreography_matches = easy_choreography_regex.findall(self.search_text)
+        club_only_matches = club_only_regex.findall(self.search_text)
 
-        self.found_dance_matches = dance_matches.union(easy_dance_matches).union(dance_and_music_matches).union(manual_dance_keywords_matches).union(easy_choreography_matches)
-        self.found_event_matches = event_matches.union(easy_event_matches).union(club_and_event_matches)
-        self.found_wrong_matches = dance_wrong_style_matches.union(club_only_matches)
+        self.found_dance_matches = dance_matches + easy_dance_matches + dance_and_music_matches + manual_dance_keywords_matches + easy_choreography_matches
+        self.found_event_matches = event_matches + easy_event_matches + club_and_event_matches
+        self.found_wrong_matches = dance_wrong_style_matches + club_only_matches
 
         if len(manual_dance_keywords_matches) >= 1:
             self.dance_event = 'obvious dancer or dance crew or battle'
@@ -343,24 +343,24 @@ class ClassifiedEvent(object):
     def reason(self):
         return self.dance_event
     def dance_matches(self):
-        return self.found_dance_matches
+        return set(self.found_dance_matches)
     def event_matches(self):
-        return self.found_event_matches
+        return set(self.found_event_matches)
     def wrong_matches(self):
-        return self.found_wrong_matches
+        return set(self.found_wrong_matches)
     def match_score(self):
         if self.is_dance_event():
-            combined_matches = self.found_dance_matches.union(self.found_event_matches)
+            combined_matches = self.found_dance_matches + self.found_event_matches
             return len(combined_matches)
         else:
             return 0
     def keyword_density(self):
-        combined_matches = self.found_dance_matches.union(self.found_event_matches)
+        combined_matches = self.found_dance_matches + self.found_event_matches
         fraction_matched = 1.0 * len(combined_matches) / len(re.split(r'\W+', self.search_text))
         if not fraction_matched:
             return -100
         else:
-            return int(math.log(fraction_matched))
+            return int(math.log(fraction_matched, 2))
 
 
 def get_classified_event(fb_event):
