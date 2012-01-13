@@ -26,12 +26,6 @@ indexes:
   - name: latitude
   - name: anywhere
 
-# TODO(lambert): delete me
-- kind: DBEvent
-  properties:
-  - name: geohashes
-  - name: start_time
-
 - kind: DBEvent
   properties:
   - name: geohashes
