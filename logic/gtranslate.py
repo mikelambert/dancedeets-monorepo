@@ -31,7 +31,10 @@ def check_language(text):
             payload=form_data,
             method=urlfetch.POST,
             headers={'X-HTTP-Method-Override': 'GET'})
-        assert result.status_code == 200
+        if result.status_code != 200:
+            error = "result status code is %s for content %s" % (result.status_code, result.content)
+            logging.error(error)
+            raise Exception("Error in translation: %s" % error)
         response_content = result.content
     json_content = json.loads(response_content)
     real_results = json_content['data']['detections'][0][0]
