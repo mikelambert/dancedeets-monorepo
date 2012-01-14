@@ -6,12 +6,14 @@ from google.appengine.runtime import apiproxy_errors
 from events import eventdata
 import fb_api
 from logic import event_classifier
+from logic import gtranslate
 from logic import thing_db
 from util import properties
 
 class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: int(x.key().name()))
 
+    language = db.StringProperty()
     looked_at = db.BooleanProperty()
     match_score = db.IntegerProperty()
     show_even_if_no_score = db.BooleanProperty()
@@ -31,21 +33,25 @@ def make_potential_event_with_source(fb_event_id, fb_event, source, source_field
             if source_id_ == source.graph_id and source_field_ == source_field:
                 has_source = True
         
-        if has_source and potential_event.match_score == match_score:
-            return False
-        if not has_source:
-            potential_event.source_ids.append(source.graph_id)
-            potential_event.source_fields.append(source_field)
+        if has_source:
+            return False, potential_event.match_score
+
+        potential_event.source_ids.append(source.graph_id)
+        potential_event.source_fields.append(source_field)
+
+        potential_event.language = gtranslate.check_language(fb_event['info']['description'])
+
         # only calculate the event score if we've got some new data (new source, etc)
-         match_score = event_classifier.get_classified_event(fb_event).match_score()
+        # TODO(lambert): implement a mapreduce over future-event potential-events that recalculates scores
+        match_score = event_classifier.get_classified_event(fb_event).match_score()
         potential_event.match_score = match_score
         potential_event.show_even_if_no_score = potential_event.show_even_if_no_score or show_all_events
         potential_event.put()
-        return True
+        return True, potential_event.match_score
 
     new_source = False
     try:
-        new_source = db.run_in_transaction(_internal_add_source_for_event_id)
+        new_source, match_score = db.run_in_transaction(_internal_add_source_for_event_id)
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", event_id, e)
     if new_source:
@@ -65,6 +71,10 @@ def get_potential_dance_events(batch_lookup, user_id):
     for mini_fb_event in events:
         second_batch_lookup.lookup_event(str(mini_fb_event['eid']))
     second_batch_lookup.finish_loading()
+
+    source = thing_db.create_source_for_id(user_id, fb_data=None)
+    source.put()
+
     dance_event_ids = []
     for mini_fb_event in events:
         event_id = str(mini_fb_event['eid'])
@@ -74,12 +84,4 @@ def get_potential_dance_events(batch_lookup, user_id):
             continue # must be a non-saved event, probably due to private/closed event. so ignore.
         if fb_event['deleted'] or fb_event['info']['privacy'] != 'OPEN':
             continue # only legit events
-        make_potential_event_with_source(event_id, fb_event, match_scores[event_id], source=source, source_field=thing_db.FIELD_INVITES)
-    # TODO(lambert): ideally would use keys_only=True, but that's not supported on get_by_key_name :-(
-
-    dance_events = [second_batch_lookup.data_for_event(x) for x in dance_event_ids]
-    source = thing_db.create_source_for_id(user_id, fb_data=None)
-    source.put()
-    for event_id in dance_event_ids:
-    dance_events = sorted(dance_events, key=lambda x: x['info'].get('start_time'))
-    return dance_events
+        make_potential_event_with_source(event_id, fb_event, source=source, source_field=thing_db.FIELD_INVITES)
