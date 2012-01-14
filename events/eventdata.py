@@ -50,14 +50,15 @@ def get_cached_db_events(event_ids, allow_cache=True):
         memcache_keys = [DBEVENT_PREFIX % x for x in event_ids]
         db_events = smemcache.get_multi(memcache_keys).values()
         logging.info("loading db events from memcache (included below) took %s seconds", time.time() - a)
-    remaining_event_ids = set(event_ids).difference([x.fb_event_id for x in db_events])
+    remaining_event_ids = set(event_ids).difference([x.fb_event_id for x in db_events if x])
     if remaining_event_ids:
         new_db_events = DBEvent.get_by_key_name([str(x) for x in remaining_event_ids])
+        new_db_events = [x for x in new_db_events if x]
         cache_db_events(new_db_events)
         db_events += new_db_events
     db_event_map = dict((x.fb_event_id, x) for x in db_events)
     logging.info("loading cached db events took %s seconds", time.time() - a)
-    return [db_event_map[x] for x in event_ids]
+    return [db_event_map.get(x, None) for x in event_ids]
 
 
 class DBEvent(db.Model):

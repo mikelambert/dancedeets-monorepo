@@ -3,6 +3,7 @@ import logging
 import string
 import StringIO
 
+from events import eventdata
 import fb_api
 from logic import event_locations
 from util import fb_mapreduce
@@ -19,18 +20,25 @@ def training_data_for_pevents(batch_lookup, pevents):
         batch_lookup.lookup_event(potential_event.fb_event_id)
         batch_lookup.lookup_event_attending(potential_event.fb_event_id)
     batch_lookup.finish_loading()
+
+    # TODO(lambert): ideally would use keys_only=True, but that's not supported on get_by_key_name :-(
+    db_events = eventdata.get_cached_db_events([x.fb_event_id for x in pevents])
+    good_event_ids = [x.fb_event_id for x in db_events if x]
+
     csv_file = StringIO.StringIO()
     csv_writer = csv.writer(csv_file)
 
     for potential_event in pevents:
         try:
+            good_event = potential_event.fb_event_id in good_event_ids and 'dance' or 'nodance'
+
             fb_event = batch_lookup.data_for_event(potential_event.fb_event_id)
             if fb_event['deleted']:
                 continue
             fb_event_attending = batch_lookup.data_for_event_attending(potential_event.fb_event_id)
 
             training_features = get_training_features(potential_event, fb_event, fb_event_attending)
-            csv_writer.writerow(training_features)
+            csv_writer.writerow([good_event] + list(training_features))
         except fb_api.NoFetchedDataException:
             logging.info("No data fetched for event id %s", potential_event.fb_event_id)
     yield csv_file.getvalue()
