@@ -33,7 +33,8 @@ class DoNothingHandler(base_servlet.BareBaseRequestHandler):
         return
 
 URLS = [
-    ('/tools/training_data', gprediction.GenerateTrainingDataHandler),
+    ('/tools/download_training_data/([^/]+)?', gprediction.DownloadTrainingDataHandler),
+    ('/tools/generate_training_data', gprediction.GenerateTrainingDataHandler),
     ('/tools/owned_events', tools.OwnedEventsHandler),
     ('/tools/unprocess_future_events', tools.UnprocessFutureEventsHandler),
     ('/tools/oneoff', tools.OneOffHandler),
