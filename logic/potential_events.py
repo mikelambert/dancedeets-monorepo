@@ -20,7 +20,7 @@ class PotentialEvent(db.Model):
     source_fields = db.ListProperty(str)
 
 
-def make_potential_event_with_source(fb_event_id, match_score, source, source_field):
+def make_potential_event_with_source(fb_event_id, fb_event, source, source_field):
     # show all events from a source if enough of them slip through our automatic filters
     show_all_events = source.fraction_real_are_false_negative() > 0.05 and source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
     def _internal_add_source_for_event_id():
@@ -36,6 +36,8 @@ def make_potential_event_with_source(fb_event_id, match_score, source, source_fi
         if not has_source:
             potential_event.source_ids.append(source.graph_id)
             potential_event.source_fields.append(source_field)
+        # only calculate the event score if we've got some new data (new source, etc)
+         match_score = event_classifier.get_classified_event(fb_event).match_score()
         potential_event.match_score = match_score
         potential_event.show_even_if_no_score = potential_event.show_even_if_no_score or show_all_events
         potential_event.put()
@@ -64,7 +66,6 @@ def get_potential_dance_events(batch_lookup, user_id):
         second_batch_lookup.lookup_event(str(mini_fb_event['eid']))
     second_batch_lookup.finish_loading()
     dance_event_ids = []
-    match_scores = {}
     for mini_fb_event in events:
         event_id = str(mini_fb_event['eid'])
         try:
@@ -73,16 +74,12 @@ def get_potential_dance_events(batch_lookup, user_id):
             continue # must be a non-saved event, probably due to private/closed event. so ignore.
         if fb_event['deleted'] or fb_event['info']['privacy'] != 'OPEN':
             continue # only legit events
-        #TODO(lambert): before we fix this to be a smarter classifier, perhaps we should do better caching of the results to avoid blowing quotas
-        classified_event = event_classifier.get_classified_event(fb_event)
-        dance_event_ids.append(event_id)
-        match_scores[event_id] = classified_event.match_score()
+        make_potential_event_with_source(event_id, fb_event, match_scores[event_id], source=source, source_field=thing_db.FIELD_INVITES)
     # TODO(lambert): ideally would use keys_only=True, but that's not supported on get_by_key_name :-(
 
     dance_events = [second_batch_lookup.data_for_event(x) for x in dance_event_ids]
     source = thing_db.create_source_for_id(user_id, fb_data=None)
     source.put()
     for event_id in dance_event_ids:
-        make_potential_event_with_source(event_id, match_scores[event_id], source=source, source_field=thing_db.FIELD_INVITES)
     dance_events = sorted(dance_events, key=lambda x: x['info'].get('start_time'))
     return dance_events

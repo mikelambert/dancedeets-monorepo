@@ -9,7 +9,6 @@ from google.appengine.ext import deferred
 
 from events import eventdata
 import fb_api
-from logic import event_classifier
 from logic import potential_events
 from logic import thing_db
 
@@ -104,8 +103,7 @@ def process_event_source_ids(event_source_combos, batch_lookup):
         fb_event = batch_lookup.data_for_event(event_id)
         if fb_event['deleted']:
             continue
-        match_score = event_classifier.get_classified_event(fb_event).match_score()
-        potential_events.make_potential_event_with_source(event_id, match_score, source=source, source_field=thing_db.FIELD_FEED)
+        potential_events.make_potential_event_with_source(event_id, fb_event, source=source, source_field=thing_db.FIELD_FEED)
 
     existing_source_ids = set([str(x.graph_id) for x in thing_db.Source.get_by_key_name(potential_new_source_ids) if x])
     new_source_ids = set([x for x in potential_new_source_ids if x not in existing_source_ids])
