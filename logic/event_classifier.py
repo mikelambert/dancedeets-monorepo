@@ -16,12 +16,16 @@ from spitfire.runtime.filters import skip_filter
 # maybe feed keywords into auto-classifying event type? bleh.
 
 easy_dance_keywords = [
-    'dances?', 'dancing', 'dancers?', 'danse', 'danser', 'danseur',
+    'dances?', 'dancing', 'dancers?',
+    'danse', 'danser', 'danseurs?', # french
+    'danzatore' # dancer italian
     'footwork',
 ]
 easy_choreography_keywords = [
     'choreograph(?:y|ed)', 'choreographers?', 'choreo',
-    'koreografi', 'choreografien',
+    'coreografie', # italian
+    'koreografi', # swedish
+    'choreografien', # german
 
 ]
 
@@ -48,6 +52,8 @@ dance_and_music_keywords = [
 dance_keywords = [
     'breakingu', #breaking polish
     'tanecznych', #dance polish
+    'tańca', # dance polish
+    'taneczne', # dance polish
     'tancerzami', #dancers polish
     'swag',
     'jazz rock',
@@ -97,6 +103,7 @@ easy_event_keywords = [
     'open sessions?', 'training',
 ]
 club_and_event_keywords = [
+    'sesja', # polish session
     'sessions', 'practice',
     'shows?', 'performances?', 'contests?',
 ]
@@ -205,13 +212,23 @@ event_keywords = [
     'street\W?jam',
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'apache line',
-    'battle of the year', 'boty', 'compete', 'competitions?', 'battles?', 'tournaments?', 'preselection',
+    'battle of the year', 'boty', 'compete', 'competitions?',
+    'battles?',
+    'zawody', # polish battle/contest
+    'walki', # polish battle/fight
+    'tournaments?', 'preselection',
     'jurys?', 'jurados', 'judge[sz]?',
     'showcase',
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)ph(?:a|ers?)',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
-    'workshops?', 'class with', 'master\W?class(?:es)?', 'auditions?', 'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
+    'workshops?',
+    'warsztaty', # polish workshop
+    'warsztatów', # polish workshop
+    'class with', 'master\W?class(?:es)?',
+    'auditions?',
+    'audizione', # italian audition
+    'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
     'classi',
     'cours', 'clases?', 'corso', 
     'abdc', 'america\W?s best dance crew',
@@ -219,6 +236,7 @@ event_keywords = [
     'prelims?',
     'bonnie\s*(?:and|&)\s*clyde',
 ] + [r'%s[ -]?(?:v/s|vs?\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
+event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x vs x
 
 
 dance_wrong_style_keywords = [
