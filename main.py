@@ -33,6 +33,7 @@ class DoNothingHandler(base_servlet.BareBaseRequestHandler):
         return
 
 URLS = [
+    ('/tools/backfill_languages', tools.BackfillLanguagesHandler),
     ('/tools/download_training_data/([^/]+)?', gprediction.DownloadTrainingDataHandler),
     ('/tools/generate_training_data', gprediction.GenerateTrainingDataHandler),
     ('/tools/owned_events', tools.OwnedEventsHandler),

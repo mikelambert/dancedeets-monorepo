@@ -21,6 +21,11 @@ class PotentialEvent(db.Model):
     source_ids = db.ListProperty(int)
     source_fields = db.ListProperty(str)
 
+def get_language_for_fb_event(fb_event):
+    return gtranslate.check_language('%s. %s' % (
+        fb_event['info'].get('name', ''),
+        fb_event['info'].get('description', '')
+    ))
 
 def make_potential_event_with_source(fb_event_id, fb_event, source, source_field):
     # show all events from a source if enough of them slip through our automatic filters
@@ -39,7 +44,7 @@ def make_potential_event_with_source(fb_event_id, fb_event, source, source_field
         potential_event.source_ids.append(source.graph_id)
         potential_event.source_fields.append(source_field)
 
-        potential_event.language = gtranslate.check_language(fb_event['info']['description'])
+        potential_event.language = get_language_for_fb_event(fb_event)
 
         # only calculate the event score if we've got some new data (new source, etc)
         # TODO(lambert): implement a mapreduce over future-event potential-events that recalculates scores
@@ -85,3 +90,33 @@ def get_potential_dance_events(batch_lookup, user_id):
         if fb_event['deleted'] or fb_event['info']['privacy'] != 'OPEN':
             continue # only legit events
         make_potential_event_with_source(event_id, fb_event, source=source, source_field=thing_db.FIELD_INVITES)
+
+import fb_api
+from util import fb_mapreduce
+from mapreduce import operation as op
+
+def backfill_languages(batch_lookup, pevents):
+        batch_lookup.allow_memcache_write = False # don't pollute memcache
+        for potential_event in pevents:
+                batch_lookup.lookup_event(potential_event.fb_event_id)
+        batch_lookup.finish_loading()
+
+    for potential_event in pevents:
+        try:
+            fb_event = batch_lookup.data_for_event(potential_event.fb_event_id)
+            if fb_event['deleted']:
+                continue
+                    potential_event.language = get_language_for_fb_event(fb_event)
+            yield op.db.Put(potential_event)
+        except fb_api.NoFetchedDataException:
+            logging.info("No data fetched for event id %s", potential_event.fb_event_id)
+map_backfill_languages = fb_mapreduce.mr_wrap(backfill_languages)
+
+def mr_backfill_languages(batch_lookup):
+    fb_mapreduce.start_map(
+        batch_lookup=batch_lookup,
+        name='Backfill Languages',
+        handler_spec='logic.potential_events.map_backfill_languages',
+        handle_batch_size=20,
+        entity_kind='logic.potential_events.PotentialEvent',
+    )
