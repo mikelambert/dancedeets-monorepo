@@ -16,7 +16,7 @@ from spitfire.runtime.filters import skip_filter
 # maybe feed keywords into auto-classifying event type? bleh.
 
 easy_dance_keywords = [
-    'dances?', 'dancing', 'dancers?', 'danser', 'danseur',
+    'dances?', 'dancing', 'dancers?', 'danse', 'danser', 'danseur',
     'footwork',
 ]
 easy_choreography_keywords = [
