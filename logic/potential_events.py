@@ -96,17 +96,18 @@ from util import fb_mapreduce
 from mapreduce import operation as op
 
 def backfill_languages(batch_lookup, pevents):
-        batch_lookup.allow_memcache_write = False # don't pollute memcache
-        for potential_event in pevents:
-                batch_lookup.lookup_event(potential_event.fb_event_id)
-        batch_lookup.finish_loading()
+    pevents = [x for x in pevents if not hasattr(x, 'language')]
+    batch_lookup.allow_memcache_write = False # don't pollute memcache
+    for potential_event in pevents:
+        batch_lookup.lookup_event(potential_event.fb_event_id)
+    batch_lookup.finish_loading()
 
     for potential_event in pevents:
         try:
             fb_event = batch_lookup.data_for_event(potential_event.fb_event_id)
             if fb_event['deleted']:
                 continue
-                    potential_event.language = get_language_for_fb_event(fb_event)
+            potential_event.language = get_language_for_fb_event(fb_event)
             yield op.db.Put(potential_event)
         except fb_api.NoFetchedDataException:
             logging.info("No data fetched for event id %s", potential_event.fb_event_id)
