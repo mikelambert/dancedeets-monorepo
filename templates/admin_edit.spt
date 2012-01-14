@@ -67,7 +67,6 @@ Edit Event
 			#end if
 			<div style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">$highlight_keywords($format_html($description))</div>
 			</div>
-
 			<p>Reason: $classifier_reason<br>
 			Dance Words: $classifier_dance_words<br>
 			Event Words: $classifier_event_words<br>
@@ -87,7 +86,9 @@ Edit Event
 				<!--button class="btn">Not a Dance Event</button-->
 			#end if
 			#if $potential_event
-				<p>Has a potential event.<br>
+
+				<p>Has a potential event (<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=$potential_event.key().__str__()">AE</a>).<br>
+				Language: $potential_event.language<br>
 				Score is $potential_event.match_score .<br>
 				Show-even-if-zero is $potential_event.show_even_if_no_score .<br>
 				With Sources:

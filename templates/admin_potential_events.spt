@@ -3,9 +3,17 @@
 Potential Events Classification
 #end def
 
+#def head_stylesheet
+<style type="text/css">
+.potential-events td {
+	padding: 4px;
+}
+</style>
+#end def
+
 #def inner_body
 <p>There are $total_potential_events potential total events, first batch below:
-<table>
+<table class="potential-events">
 	#for $i, $potential_event in enumerate($potential_events_listing)
 	<tr
 	#if $i % 2 == 0
@@ -46,6 +54,15 @@ Potential Events Classification
 		<button class="btn">Create Event</button>
 		</form>
 		#end if
+		</td>
+		<td>
+		<span
+		#if $potential_event.potential_event.language != 'en'
+		style="color:red"
+		#end if
+		>
+		$potential_event.potential_event.language
+		</span>
 		</td>
 		<td>$potential_event.dance_words</td>
 		<td>$potential_event.event_words</td>
