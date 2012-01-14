@@ -18,7 +18,10 @@ from spitfire.runtime.filters import skip_filter
 easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?',
     'danse', 'danser', 'danseurs?', # french
-    'danzatore' # dancer italian
+    'danzatore', # dancer italian
+    'bailarína?', # dancer spanish
+    'danzas', # dance spanish
+    'baile', # dance spanish
     'footwork',
 ]
 easy_choreography_keywords = [
@@ -65,8 +68,10 @@ dance_keywords = [
     'street\W?dance', 'bre?ak\W?dance', 'bre?ak\W?dancing?', 'brea?ak\W?dancers?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
-    'top\W?rock(?:er[sz]?|ing?)?', 'up\W?rock(?:er[sz]?|ing?|)?',
+    'footworks', # spanish footworks
+    'top\W?rock(?:s|er[sz]?|ing?)?', 'up\W?rock(?:s|er[sz]?|ing?|)?',
     'houser[sz]?', 'house ?danc\w*',
+    'dance house', # seen in italian
     'lock(?:er[sz]?|ing?)?', 'lock dance',
     '[uw]h?aa?c?c?ker[sz]?', '[uw]h?aa?cc?kinn?g?', '[uw]h?aa?cc?k', # waacking
     'paa?nc?king?', # punking
@@ -95,6 +100,8 @@ dance_keywords = [
     'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem',
     'mini.?ball', 'realness',
     'urban danc\w*',
+    'danzas urbanas', # spanish urban dance
+    'baile urbano', # spanish urban dance
     'pop\W{0,3}lock(?:ing?|er[sz]?)?'
 ]
 
@@ -104,6 +111,7 @@ easy_event_keywords = [
 ]
 club_and_event_keywords = [
     'sesja', # polish session
+    #'.*セッション.*', # japanese sessions
     'sessions', 'practice',
     'shows?', 'performances?', 'contests?',
 ]
@@ -214,23 +222,31 @@ event_keywords = [
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?',
     'battles?',
+    'batallas', # battles spanish
     'zawody', # polish battle/contest
     'walki', # polish battle/fight
-    'tournaments?', 'preselection',
+    'tournaments?',
+    'preselections?',
+    'présélections?', # preselections french
     'jurys?', 'jurados', 'judge[sz]?',
     'showcase',
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)ph(?:a|ers?)',
+    #'.*サイファ.*', # japanese cypher
+    #'.*サイファー.*', # japanese cypher
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     'workshops?',
+    #'stage', # italian workshop, too noisy until we have per-language keywords
     'warsztaty', # polish workshop
     'warsztatów', # polish workshop
     'class with', 'master\W?class(?:es)?',
     'auditions?',
     'audizione', # italian audition
     'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
+    'lezione', # lession italian
     'classi',
-    'cours', 'clases?', 'corso', 
+    'cours', 'clases?',
+    'corso',  # lesson italian
     'abdc', 'america\W?s best dance crew',
     'crew\W?v[sz]?\W?crew',
     'prelims?',
