@@ -13,13 +13,6 @@ from logic import event_classifier
 from logic import potential_events
 from logic import thing_db
 
-from servlets import tasks
-
-class BackfillLanguagesHandler(tasks.BaseTaskFacebookRequestHandler):
-        def get(self):
-                potential_events.mr_backfill_languages(self.batch_lookup)
-
-
 class UnprocessFutureEvents(Mapper):
     KIND = fb_api.FacebookCachedObject
 
