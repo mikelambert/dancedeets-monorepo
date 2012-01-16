@@ -68,6 +68,7 @@ def _get_address_for_fb_event(fb_event):
     return re.sub(r' \d{,3}$', '', final_address)
 
 def _get_remapped_address_for(address):
+    address = (address or '').strip()
     if not address:
         return ''
     # map locations to corrected locations for events that have wrong or incomplete info
@@ -80,6 +81,8 @@ def _get_remapped_address_for(address):
         return None
 
 def _save_remapped_address_for(original_address, new_remapped_address):
+    original_address = (original_address or '').strip()
+    new_remapped_address = (new_remapped_address or '').strip()
     if original_address:
         location_mapping = LocationMapping.get_by_key_name(original_address)
         if new_remapped_address:
