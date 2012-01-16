@@ -27,7 +27,7 @@ def get_language_for_fb_event(fb_event):
         fb_event['info'].get('description', '')
     ))
 
-def _common_potential_event_setup(fb_event):
+def _common_potential_event_setup(potential_event, fb_event):
     # only calculate the event score if we've got some new data (new source, etc)
     # TODO(lambert): implement a mapreduce over future-event potential-events that recalculates scores
     potential_event.language = get_language_for_fb_event(fb_event)
@@ -35,14 +35,17 @@ def _common_potential_event_setup(fb_event):
     potential_event.match_score = match_score
 
 def make_potential_event_without_source(fb_event_id, fb_event):
-    def _internal_addpotential_event():
+    def _internal_add_potential_event():
         potential_event = PotentialEvent.get_by_key_name(str(fb_event_id)) or PotentialEvent(key_name=str(fb_event_id))
-        _common_potential_event_setup(fb_event)
+        # TODO(lambert): this may re-duplicate this work for potential events that already exist. is this okay or not?
+        _common_potential_event_setup(potential_event, fb_event)
         potential_event.put()
+        return potential_event
     try:
-        db.run_in_transaction(_internal_add_potential_event)
+        potential_event = db.run_in_transaction(_internal_add_potential_event)
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", event_id, e)
+    return potential_event
 
 def make_potential_event_with_source(fb_event_id, fb_event, source, source_field):
     # show all events from a source if enough of them slip through our automatic filters
@@ -58,7 +61,7 @@ def make_potential_event_with_source(fb_event_id, fb_event, source, source_field
         if has_source:
             return False, potential_event.match_score
 
-        _common_potential_event_setup(fb_event)
+        _common_potential_event_setup(potential_event, fb_event)
 
         potential_event.source_ids.append(source.graph_id)
         potential_event.source_fields.append(source_field)
