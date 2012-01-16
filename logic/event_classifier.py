@@ -1,5 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
+import codecs
 import logging
 import math
 import re
@@ -17,11 +18,29 @@ from spitfire.runtime.filters import skip_filter
 
 easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?',
+    u'ダンサー', # japanese dance
     'danse', 'danser', 'danseurs?', # french
+    'tancerzy', # dancer polish
+    'tanecznej', # dance polish
+    'tancerka', # dance polish
+    'tanecznych', #dance polish
+    u'tańca', # dance polish
+    'taneczne', # dance polish
+    'tancerzami', #dancers polish
+    u'dança', # dancing portuguese
+    u'dançar', # dance portuguese
     'danzatore', # dancer italian
-    'bailarína?', # dancer spanish
+    u'bailarína?', # dancer spanish
     'danzas', # dance spanish
     'baile', # dance spanish
+    u'šoku', # dance lithuanian
+    u'šokti', # dance (verb) lithuanian
+    u'šokis', # dance lithuanian
+    u'šokyje', # dance lithuanian
+    u'šokėjų', # dance (noun) lithuanian
+    u'šokėju', # dancer lithuanian
+    'ballerino', # dancer italian
+    u'tänzern', # dancer german
     'footwork',
 ]
 easy_choreography_keywords = [
@@ -29,7 +48,10 @@ easy_choreography_keywords = [
     'coreografie', # italian
     'koreografi', # swedish
     'choreografien', # german
-
+    'choreografams' # choreographer lithuanian
+    'choreografijas', # choreography lithuanian
+    u'choreografów', # choreographer polish
+    'coreografiche', # choreographic italian
 ]
 
 dance_and_music_keywords = [
@@ -54,10 +76,6 @@ dance_and_music_keywords = [
 # hiphop dance. hiphop dans?
 dance_keywords = [
     'breakingu', #breaking polish
-    'tanecznych', #dance polish
-    'tańca', # dance polish
-    'taneczne', # dance polish
-    'tancerzami', #dancers polish
     'swag',
     'jazz rock',
     'poppers?', 'popp?i?ng?',
@@ -87,7 +105,7 @@ dance_keywords = [
     'tuts?', 'tutting?', 'tutter[sz]?',
     'mtv\W?style', 'mtv\W?dance', 'videoclip', 'videodance', 'l\W?a\W?\Wstyle',
     'dance style[sz]',
-    'n(?:ew|u)\W?styles?', 'all\W?style[zs]?', 'mix(?:ed)?\W?style[sz]?'
+    'n(?:ew|u)\W?styles?', 'all\W?style[zs]?', 'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'me against the music',
     'krump', 'krumping?', 'krumper[sz]?',
     'girl\W?s\W?hip\W?hop',
@@ -96,6 +114,7 @@ dance_keywords = [
     'hype danc\w*',
     'social hip\W?hop', 'hip\W?hop social dance[sz]',
     '(?:new|nu|middle)\W?s(?:ch|k)ool hip\W?hop', 'hip\W?hop (?:old|new|nu|middle)\W?s(?:ch|k)ool',
+    'hiphopo', # lithuanian hiphop
     'newstyleurs?',
     'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem',
     'mini.?ball', 'realness',
@@ -111,9 +130,11 @@ easy_event_keywords = [
 ]
 club_and_event_keywords = [
     'sesja', # polish session
-    #'.*セッション.*', # japanese sessions
+    u'セッション', # japanese sessions
     'sessions', 'practice',
     'shows?', 'performances?', 'contests?',
+    'dancecontests', # dance contests german
+    'esibizioni', #italian performance/exhibition
 ]
 
 club_only_keywords = [
@@ -221,29 +242,45 @@ event_keywords = [
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?',
+    'konkursams', # lithuanian competition
+    u'čempionatams', # lithuanian championship
     'battles?',
+    u'バトル', # japanese battle
     'batallas', # battles spanish
     'zawody', # polish battle/contest
     'walki', # polish battle/fight
+    u'walkę', # polish battle/fight
+    'bitwa', # polish battle
+    'bitwach', # polish battle
     'tournaments?',
+    'turniejach', # tournament polish
     'preselections?',
-    'présélections?', # preselections french
+    u'présélections?', # preselections french
     'jurys?', 'jurados', 'judge[sz]?',
+    'giuria', # jury italian
     'showcase',
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)ph(?:a|ers?)',
-    #'.*サイファ.*', # japanese cypher
-    #'.*サイファー.*', # japanese cypher
+    u'サイファ', # japanese cypher
+    u'サイファー', # japanese cypher
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     'workshops?',
     #'stage', # italian workshop, too noisy until we have per-language keywords
     'warsztaty', # polish workshop
-    'warsztatów', # polish workshop
+    u'warsztatów', # polish workshop
+    u'seminarų', # lithuanian workshop
     'class with', 'master\W?class(?:es)?',
     'auditions?',
     'audizione', # italian audition
+    'naborem', # polish recruitment/audition
     'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
+    'lekcja', # polish lesson
+    'eigoje', # lithuanian course
+    'pamokas', # lithuanian lesson
+    'kursai', # course lithuanian
     'lezione', # lession italian
+    u'zajęciach', # class polish
+    u'zajęcia', # classes polish
     'classi',
     'cours', 'clases?',
     'corso',  # lesson italian
@@ -251,7 +288,7 @@ event_keywords = [
     'crew\W?v[sz]?\W?crew',
     'prelims?',
     'bonnie\s*(?:and|&)\s*clyde',
-] + [r'%s[ -]?(?:v/s|vs?\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
+] + [u'%s[ -]?(?:v/s|vs?\\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
 event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x vs x
 
 
@@ -295,7 +332,7 @@ def build_regexes():
     else:
         base_dir = '.'
     for filename in ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'choreo_keywords', 'competitions', 'freestyle_crews', 'freestyle_dancers', 'freestyle_keywords']:
-        f = open('%s/dance_keywords/%s.txt' % (base_dir, filename))
+        f = codecs.open('%s/dance_keywords/%s.txt' % (base_dir, filename), encoding='utf-8')
         for line in f.readlines():
             line = re.sub('\s*#.*', '', line.strip())
             if not line:
@@ -304,26 +341,38 @@ def build_regexes():
                 line = line[:-2]
             else:
                 manual_dance_keywords.append(line)
+                try:
+                    make_regex([line])
+                except:
+                    print line
 
     if manual_dance_keywords:
-        manual_dance_keywords_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(manual_dance_keywords))
+        manual_dance_keywords_regex = make_regex(manual_dance_keywords)
     else:
         manual_dance_keywords_regex = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
-    good_capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords))
+    good_capturing_keyword_regex = make_regex(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True)
 
-dance_wrong_style_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_wrong_style_keywords))
-dance_and_music_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_and_music_keywords))
-club_and_event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(club_and_event_keywords))
-easy_choreography_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(easy_choreography_keywords))
-club_only_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(club_only_keywords))
+def make_regex(strings, matching=False):
+    u = u'|'.join(strings)
+    if matching:
+        regex = u'(?ui)\\b(' + u + u')\\b'
+    else:
+        regex = u'(?ui)\\b(?:' + u + u')\\b'
+    return re.compile(regex)
 
-easy_dance_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(easy_dance_keywords))
-easy_event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(easy_event_keywords))
-dance_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(dance_keywords))
-event_regex = re.compile(r'(?i)\b(?:%s)\b' % '|'.join(event_keywords))
+dance_wrong_style_regex = make_regex(dance_wrong_style_keywords)
+dance_and_music_regex = make_regex(dance_and_music_keywords)
+club_and_event_regex = make_regex(club_and_event_keywords)
+easy_choreography_regex = make_regex(easy_choreography_keywords)
+club_only_regex = make_regex(club_only_keywords)
 
-bad_capturing_keyword_regex = re.compile(r'(?i)\b(%s)\b' % '|'.join(club_only_keywords + dance_wrong_style_keywords))
+easy_dance_regex = make_regex(easy_dance_keywords)
+easy_event_regex = make_regex(easy_event_keywords)
+dance_regex = make_regex(dance_keywords)
+event_regex = make_regex(event_keywords)
+
+bad_capturing_keyword_regex = make_regex(club_only_keywords + dance_wrong_style_keywords, matching=True)
 
 
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
@@ -415,3 +464,5 @@ def highlight_keywords(text):
     text = good_capturing_keyword_regex.sub('<span class="matched-text">\\1</span>', text)
     text = bad_capturing_keyword_regex.sub('<span class="bad-matched-text">\\1</span>', text)
     return text
+build_regexes()
+

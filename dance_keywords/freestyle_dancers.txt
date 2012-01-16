@@ -37,6 +37,7 @@ hector xtravaganza
 henry link
 hideki
 hiro,0
+hiro\W+alma
 hozin
 hurrikane
 iron monkey
@@ -49,6 +50,7 @@ jed flurano
 jimmy soul
 jojo diggs
 jon boogz
+joseph go
 jr.? boogie
 jr?.? bogaloo
 jrock
@@ -67,6 +69,8 @@ lanaija
 legend,0
 les twins
 lil b,0
+lis funk
+liss funk
 lockiano
 loic,0
 loose joint
@@ -92,6 +96,7 @@ rabah,0
 raquel cabrera
 rashaad pearson
 razzle dazzle
+ricky soul
 rockmaster
 rokafella
 salah
@@ -114,8 +119,12 @@ storm,0
 suga pop
 sugapop
 super dino
+suthoom\W+symbol.?ism
+takesaburo\W+so.?deep
+takesaburo\W+xxx.?large
 tatsuo yamamoto
 tatsuo,0
+tatsuo\W+glass.?hopper
 theresa gustavsson
 tiffany bong
 tight eyez
