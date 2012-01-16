@@ -19,6 +19,9 @@ from spitfire.runtime.filters import skip_filter
 easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?',
     u'ダンサー', # japanese dance
+    u'舞', # chinese dance
+    u'舞蹈', # chinese dance
+    u'舞蹈的', # chinese dance
     'danse', 'danser', 'danseurs?', # french
     'tancerzy', # dancer polish
     'tanecznej', # dance polish
@@ -56,8 +59,10 @@ easy_choreography_keywords = [
 
 dance_and_music_keywords = [
     'hip\W?hop',
+    'hip\W?hopo', # lithuanian hiphop
+    'hip\W?hopu', # polish hiphop
     'funk',
-    'dance.?hall',
+    'dance\W?hall',
     'ragga',
     'hype',
     'new\W?jack\W?swing',
@@ -86,6 +91,7 @@ dance_keywords = [
     'street\W?dance', 'bre?ak\W?dance', 'bre?ak\W?dancing?', 'brea?ak\W?dancers?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
+    'breakeuse', # french bgirl
     'footworks', # spanish footworks
     'top\W?rock(?:s|er[sz]?|ing?)?', 'up\W?rock(?:s|er[sz]?|ing?|)?',
     'houser[sz]?', 'house ?danc\w*',
@@ -106,6 +112,7 @@ dance_keywords = [
     'mtv\W?style', 'mtv\W?dance', 'videoclip', 'videodance', 'l\W?a\W?\Wstyle',
     'dance style[sz]',
     'n(?:ew|u)\W?styles?', 'all\W?style[zs]?', 'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
+    'tout\W?style[zs]?', # french all-styles
     'me against the music',
     'krump', 'krumping?', 'krumper[sz]?',
     'girl\W?s\W?hip\W?hop',
@@ -114,10 +121,9 @@ dance_keywords = [
     'hype danc\w*',
     'social hip\W?hop', 'hip\W?hop social dance[sz]',
     '(?:new|nu|middle)\W?s(?:ch|k)ool hip\W?hop', 'hip\W?hop (?:old|new|nu|middle)\W?s(?:ch|k)ool',
-    'hiphopo', # lithuanian hiphop
     'newstyleurs?',
-    'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem',
-    'mini.?ball', 'realness',
+    'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem', 'voguin',
+    'mini\W?ball', 'realness',
     'urban danc\w*',
     'danzas urbanas', # spanish urban dance
     'baile urbano', # spanish urban dance
@@ -257,6 +263,7 @@ event_keywords = [
     'preselections?',
     u'présélections?', # preselections french
     'jurys?', 'jurados', 'judge[sz]?',
+    'jueces', # spanish judges
     'giuria', # jury italian
     'showcase',
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
@@ -274,6 +281,8 @@ event_keywords = [
     'audizione', # italian audition
     'naborem', # polish recruitment/audition
     'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
+    'aulas?', # portuguese class(?:es)?
+    'dansklasser', # swedish dance classes
     'lekcja', # polish lesson
     'eigoje', # lithuanian course
     'pamokas', # lithuanian lesson
@@ -316,13 +325,10 @@ dance_wrong_style_keywords = [
     'flamenco',
 ]
 
-manual_dance_keywords_regex = None
-good_capturing_keyword_regex = None
+all_regexes = {}
 
 def build_regexes():
-    global manual_dance_keywords_regex
-    global good_capturing_keyword_regex
-    if good_capturing_keyword_regex:
+    if all_regexes['good_capturing_keyword_regex']:
         return
 
     manual_dance_keywords = []
@@ -341,38 +347,36 @@ def build_regexes():
                 line = line[:-2]
             else:
                 manual_dance_keywords.append(line)
-                try:
-                    make_regex([line])
-                except:
-                    print line
 
     if manual_dance_keywords:
-        manual_dance_keywords_regex = make_regex(manual_dance_keywords)
+        all_regexes['manual_dance_keywords_regex'] = make_regex(manual_dance_keywords)
     else:
-        manual_dance_keywords_regex = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
+        all_regexes['manual_dance_keywords_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
-    good_capturing_keyword_regex = make_regex(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True)
+    all_regexes['good_capturing_keyword_regex'] = make_regex(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True)
 
-def make_regex(strings, matching=False):
+def make_regex(strings, matching=False, word_boundaries=True):
     u = u'|'.join(strings)
     if matching:
-        regex = u'(?ui)\\b(' + u + u')\\b'
+        regex = u'(?ui)(' + u + u')'
     else:
-        regex = u'(?ui)\\b(?:' + u + u')\\b'
+        regex = u'(?ui)(?:' + u + u')'
+    if word_boundaries:
+        regex = r'\b%s\b' % regex
     return re.compile(regex)
 
-dance_wrong_style_regex = make_regex(dance_wrong_style_keywords)
-dance_and_music_regex = make_regex(dance_and_music_keywords)
-club_and_event_regex = make_regex(club_and_event_keywords)
-easy_choreography_regex = make_regex(easy_choreography_keywords)
-club_only_regex = make_regex(club_only_keywords)
+all_regexes['dance_wrong_style_regex'] = make_regex(dance_wrong_style_keywords)
+all_regexes['dance_and_music_regex'] = make_regex(dance_and_music_keywords)
+all_regexes['club_and_event_regex'] = make_regex(club_and_event_keywords)
+all_regexes['easy_choreography_regex'] = make_regex(easy_choreography_keywords)
+all_regexes['club_only_regex'] = make_regex(club_only_keywords)
 
-easy_dance_regex = make_regex(easy_dance_keywords)
-easy_event_regex = make_regex(easy_event_keywords)
-dance_regex = make_regex(dance_keywords)
-event_regex = make_regex(event_keywords)
+all_regexes['easy_dance_regex'] = make_regex(easy_dance_keywords)
+all_regexes['easy_event_regex'] = make_regex(easy_event_keywords)
+all_regexes['dance_regex'] = make_regex(dance_keywords)
+all_regexes['event_regex'] = make_regex(event_keywords)
 
-bad_capturing_keyword_regex = make_regex(club_only_keywords + dance_wrong_style_keywords, matching=True)
+all_regexes['bad_capturing_keyword_regex'] = make_regex(club_only_keywords + dance_wrong_style_keywords, matching=True)
 
 
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
@@ -382,25 +386,26 @@ def get_relevant_text(fb_event):
     return search_text
 
 class ClassifiedEvent(object):
-    def __init__(self, fb_event):
+    def __init__(self, fb_event, language):
         if 'name' not in fb_event['info']:
             logging.info("fb event id is %s has no name, with value %s", fb_event['info']['id'], fb_event)
             self.search_text = ''
         else:
             self.search_text = get_relevant_text(fb_event)
+        self.language = language
 
     def classify(self):
         build_regexes()
-        manual_dance_keywords_matches = manual_dance_keywords_regex.findall(self.search_text)
-        easy_dance_matches = easy_dance_regex.findall(self.search_text)
-        easy_event_matches = easy_event_regex.findall(self.search_text)
-        dance_matches = dance_regex.findall(self.search_text)
-        event_matches = event_regex.findall(self.search_text)
-        dance_wrong_style_matches = dance_wrong_style_regex.findall(self.search_text)
-        dance_and_music_matches = dance_and_music_regex.findall(self.search_text)
-        club_and_event_matches = club_and_event_regex.findall(self.search_text)
-        easy_choreography_matches = easy_choreography_regex.findall(self.search_text)
-        club_only_matches = club_only_regex.findall(self.search_text)
+        manual_dance_keywords_matches = all_regexes['manual_dance_keywords_regex'].findall(self.search_text)
+        easy_dance_matches = all_regexes['easy_dance_regex'].findall(self.search_text)
+        easy_event_matches = all_regexes['easy_event_regex'].findall(self.search_text)
+        dance_matches = all_regexes['dance_regex'].findall(self.search_text)
+        event_matches = all_regexes['event_regex'].findall(self.search_text)
+        dance_wrong_style_matches = all_regexes['dance_wrong_style_regex'].findall(self.search_text)
+        dance_and_music_matches = all_regexes['dance_and_music_regex'].findall(self.search_text)
+        club_and_event_matches = all_regexes['club_and_event_regex'].findall(self.search_text)
+        easy_choreography_matches = all_regexes['easy_choreography_regex'].findall(self.search_text)
+        club_only_matches = all_regexes['club_only_regex'].findall(self.search_text)
 
         self.found_dance_matches = dance_matches + easy_dance_matches + dance_and_music_matches + manual_dance_keywords_matches + easy_choreography_matches
         self.found_event_matches = event_matches + easy_event_matches + club_and_event_matches
@@ -446,23 +451,22 @@ class ClassifiedEvent(object):
             return int(math.log(fraction_matched, 2))
 
 
-def get_classified_event(fb_event):
-    classified_event = ClassifiedEvent(fb_event)
+def get_classified_event(fb_event, language):
+    classified_event = ClassifiedEvent(fb_event, language)
     classified_event.classify()
     return classified_event
 
 def relevant_keywords(fb_event):
     build_regexes()
     text = get_relevant_text(fb_event)
-    good_keywords = good_capturing_keyword_regex.findall(text)
-    bad_keywords = bad_capturing_keyword_regex.findall(text)
+    good_keywords = all_regexes['good_capturing_keyword_regex'].findall(text)
+    bad_keywords = all_regexes['bad_capturing_keyword_regex'].findall(text)
     return sorted(set(good_keywords).union(bad_keywords))
 
 @skip_filter
 def highlight_keywords(text):
     build_regexes()
-    text = good_capturing_keyword_regex.sub('<span class="matched-text">\\1</span>', text)
-    text = bad_capturing_keyword_regex.sub('<span class="bad-matched-text">\\1</span>', text)
+    text = all_regexes['good_capturing_keyword_regex'].sub('<span class="matched-text">\\1</span>', text)
+    text = all_regexes['bad_capturing_keyword_regex'].sub('<span class="bad-matched-text">\\1</span>', text)
     return text
-build_regexes()
 

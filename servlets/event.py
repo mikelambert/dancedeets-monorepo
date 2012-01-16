@@ -132,7 +132,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         potential_event = potential_events.PotentialEvent.get_by_key_name(event_id)
 
-        classified_event = event_classifier.get_classified_event(fb_event)
+        classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         if classified_event.is_dance_event():
             reason = classified_event.reason()
             dance_words_str = ', '.join(list(classified_event.dance_matches()))
@@ -191,8 +191,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         thing_db.create_source_from_event(self.batch_lookup.copy(), e)
         e.put()
 
-        classified_event = event_classifier.get_classified_event(fb_event)
-        potential_event = potential_events.PotentialEvent.get_by_key_name(event_id)
+        potential_event = potential_events.make_potential_event_without_source(event_id, fb_event)
+        classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         if potential_event:
             for source_id in potential_event.source_ids:
                 thing_db.increment_num_real_events(source_id)

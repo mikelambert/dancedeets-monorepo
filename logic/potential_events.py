@@ -27,6 +27,23 @@ def get_language_for_fb_event(fb_event):
         fb_event['info'].get('description', '')
     ))
 
+def _common_potential_event_setup(fb_event):
+    # only calculate the event score if we've got some new data (new source, etc)
+    # TODO(lambert): implement a mapreduce over future-event potential-events that recalculates scores
+    potential_event.language = get_language_for_fb_event(fb_event)
+    match_score = event_classifier.get_classified_event(fb_event, language=potential_event.language).match_score()
+    potential_event.match_score = match_score
+
+def make_potential_event_without_source(fb_event_id, fb_event):
+    def _internal_addpotential_event():
+        potential_event = PotentialEvent.get_by_key_name(str(fb_event_id)) or PotentialEvent(key_name=str(fb_event_id))
+        _common_potential_event_setup(fb_event)
+        potential_event.put()
+    try:
+        db.run_in_transaction(_internal_add_potential_event)
+    except apiproxy_errors.CapabilityDisabledError, e:
+        logging.error("Error saving potential event %s due to %s", event_id, e)
+
 def make_potential_event_with_source(fb_event_id, fb_event, source, source_field):
     # show all events from a source if enough of them slip through our automatic filters
     show_all_events = source.fraction_real_are_false_negative() > 0.05 and source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
@@ -41,15 +58,10 @@ def make_potential_event_with_source(fb_event_id, fb_event, source, source_field
         if has_source:
             return False, potential_event.match_score
 
+        _common_potential_event_setup(fb_event)
+
         potential_event.source_ids.append(source.graph_id)
         potential_event.source_fields.append(source_field)
-
-
-        # only calculate the event score if we've got some new data (new source, etc)
-        # TODO(lambert): implement a mapreduce over future-event potential-events that recalculates scores
-        match_score = event_classifier.get_classified_event(fb_event).match_score()
-        potential_event.match_score = match_score
-        potential_event.language = get_language_for_fb_event(fb_event)
 
         potential_event.show_even_if_no_score = potential_event.show_even_if_no_score or show_all_events
         potential_event.put()

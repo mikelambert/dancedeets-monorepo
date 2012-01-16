@@ -188,7 +188,7 @@ def map_count_potential_event(pe):
     fb_event = batch_lookup.data_for_event(pe.fb_event_id)
     if fb_event['deleted']:
         return
-    classified_event = event_classifier.get_classified_event(fb_event)
+    classified_event = event_classifier.get_classified_event(fb_event, pe.language)
 
     from events import eventdata
     db_event = eventdata.DBEvent.get_by_key_name(str(pe.fb_event_id))
