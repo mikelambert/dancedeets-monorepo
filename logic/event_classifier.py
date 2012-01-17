@@ -19,6 +19,7 @@ from spitfire.runtime.filters import skip_filter
 easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?',
     u'ダンサー', # japanese dance
+    u'ダンス', # japanese dance
     u'舞', # chinese dance
     u'舞蹈', # chinese dance
     u'舞蹈的', # chinese dance
@@ -33,6 +34,7 @@ easy_dance_keywords = [
     u'dança', # dancing portuguese
     u'dançar', # dance portuguese
     'danzatore', # dancer italian
+    'bailando', # dancing spanish
     u'bailarína?', # dancer spanish
     'danzas', # dance spanish
     'baile', # dance spanish
@@ -60,6 +62,7 @@ easy_choreography_keywords = [
 
 dance_and_music_keywords = [
     'hip\W?hop',
+    u'ヒップホップ', # hiphop japanese
     'hip\W?hopo', # lithuanian hiphop
     'hip\W?hopu', # polish hiphop
     'funk',
@@ -140,6 +143,10 @@ club_and_event_keywords = [
     u'セッション', # japanese sessions
     'sessions', 'practice',
     'shows?', 'performances?', 'contests?',
+    u'秀', # chinese show
+    u'的表演', # chinese performance
+    u'表演', # chinese performance
+    u'パフォーマンス', # japanese performance
     'konkurrencer', # danish contest
     'dancecontests', # dance contests german
     'esibizioni', #italian performance/exhibition
