@@ -130,8 +130,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         else:
             creating_user = None
 
-        potential_event = potential_events.PotentialEvent.get_by_key_name(event_id)
-
+        potential_event = potential_events.make_potential_event_without_source(event_id, fb_event)
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         if classified_event.is_dance_event():
             reason = classified_event.reason()
@@ -340,7 +339,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 continue
             if fb_event['deleted']:
                 continue
-            classified_event = event_classifier.get_classified_event(fb_event)
+            classified_event = event_classifier.get_classified_event(fb_event, potential_event_dict[e])
             if classified_event.is_dance_event():
                 reason = classified_event.reason()
                 dance_words_str = ', '.join(list(classified_event.dance_matches()))
