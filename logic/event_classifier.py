@@ -48,6 +48,7 @@ easy_dance_keywords = [
 ]
 easy_choreography_keywords = [
     'choreograph(?:y|ed)', 'choreographers?', 'choreo',
+    u'chorégraphe', # french choreographer
     'coreografie', # italian
     'koreografi', # swedish
     'choreografien', # german
@@ -139,6 +140,7 @@ club_and_event_keywords = [
     u'セッション', # japanese sessions
     'sessions', 'practice',
     'shows?', 'performances?', 'contests?',
+    'konkurrencer', # danish contest
     'dancecontests', # dance contests german
     'esibizioni', #italian performance/exhibition
 ]
@@ -250,6 +252,7 @@ event_keywords = [
     'battle of the year', 'boty', 'compete', 'competitions?',
     'konkursams', # lithuanian competition
     u'čempionatams', # lithuanian championship
+    'meisterschaft', # german championship
     'battles?',
     u'バトル', # japanese battle
     'batallas', # battles spanish
@@ -260,6 +263,7 @@ event_keywords = [
     'bitwach', # polish battle
     'tournaments?',
     'turniejach', # tournament polish
+    'turneringer', # danish tournament
     'preselections?',
     u'présélections?', # preselections french
     'jurys?', 'jurados', 'judge[sz]?',
@@ -282,12 +286,14 @@ event_keywords = [
     'naborem', # polish recruitment/audition
     'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
     'aulas?', # portuguese class(?:es)?
+    'lekcie', # slovak lessons
     'dansklasser', # swedish dance classes
     'lekcja', # polish lesson
     'eigoje', # lithuanian course
     'pamokas', # lithuanian lesson
     'kursai', # course lithuanian
-    'lezione', # lession italian
+    'lezione', # lesson italian
+    'lezioni', # lessons italian
     u'zajęciach', # class polish
     u'zajęcia', # classes polish
     'classi',
@@ -369,8 +375,8 @@ WORD_BOUNDARIES = 0
 NO_WORD_BOUNDARIES = 1
 def make_regexes(strings, matching=False):
     a = [None] * 2
-    a[NO_WORD_BOUNDARIES] = make_regex(strings, matching=matching, word_boundaries=True)
-    a[WORD_BOUNDARIES] = make_regex(strings, matching=matching, word_boundaries=False)
+    a[NO_WORD_BOUNDARIES] = make_regex(strings, matching=matching, word_boundaries=False)
+    a[WORD_BOUNDARIES] = make_regex(strings, matching=matching, word_boundaries=True)
     return tuple(a)
 
 all_regexes['dance_wrong_style_regex'] = make_regexes(dance_wrong_style_keywords)
