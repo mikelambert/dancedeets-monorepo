@@ -6,6 +6,7 @@ from google.appengine.runtime import apiproxy_errors
 from events import eventdata
 import fb_api
 from logic import event_classifier
+from logic import gprediction
 from logic import gtranslate
 from logic import thing_db
 from util import properties
@@ -15,6 +16,7 @@ class PotentialEvent(db.Model):
 
     language = db.StringProperty()
     looked_at = db.BooleanProperty()
+    dance_prediction_score = db.FloatProperty()
     match_score = db.IntegerProperty()
     show_even_if_no_score = db.BooleanProperty()
 
@@ -27,18 +29,19 @@ def get_language_for_fb_event(fb_event):
         fb_event['info'].get('description', '')
     ))
 
-def _common_potential_event_setup(potential_event, fb_event):
+def _common_potential_event_setup(potential_event, fb_event, fb_event_attending):
     # only calculate the event score if we've got some new data (new source, etc)
     # TODO(lambert): implement a mapreduce over future-event potential-events that recalculates scores
     potential_event.language = get_language_for_fb_event(fb_event)
+    potential_event.dance_prediction_score = gprediction.predict(potential_event, fb_event, fb_event_attending)
     match_score = event_classifier.get_classified_event(fb_event, language=potential_event.language).match_score()
     potential_event.match_score = match_score
 
-def make_potential_event_without_source(fb_event_id, fb_event):
+def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attending):
     def _internal_add_potential_event():
         potential_event = PotentialEvent.get_by_key_name(str(fb_event_id)) or PotentialEvent(key_name=str(fb_event_id))
         # TODO(lambert): this may re-duplicate this work for potential events that already exist. is this okay or not?
-        _common_potential_event_setup(potential_event, fb_event)
+        _common_potential_event_setup(potential_event, fb_event, fb_event_attending)
         potential_event.put()
         return potential_event
     try:
@@ -47,7 +50,7 @@ def make_potential_event_without_source(fb_event_id, fb_event):
         logging.error("Error saving potential event %s due to %s", event_id, e)
     return potential_event
 
-def make_potential_event_with_source(fb_event_id, fb_event, source, source_field):
+def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, source, source_field):
     # show all events from a source if enough of them slip through our automatic filters
     show_all_events = source.fraction_real_are_false_negative() > 0.05 and source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
     def _internal_add_source_for_event_id():
@@ -61,7 +64,7 @@ def make_potential_event_with_source(fb_event_id, fb_event, source, source_field
         if has_source:
             return False, potential_event.match_score
 
-        _common_potential_event_setup(potential_event, fb_event)
+        _common_potential_event_setup(potential_event, fb_event, fb_event_attending)
 
         potential_event.source_ids.append(source.graph_id)
         potential_event.source_fields.append(source_field)
@@ -90,6 +93,7 @@ def get_potential_dance_events(batch_lookup, user_id):
     second_batch_lookup = batch_lookup.copy(allow_cache=True)
     for mini_fb_event in events:
         second_batch_lookup.lookup_event(str(mini_fb_event['eid']))
+        second_batch_lookup.lookup_event_attending(str(mini_fb_event['eid']))
     second_batch_lookup.finish_loading()
 
     source = thing_db.create_source_for_id(user_id, fb_data=None)
@@ -100,8 +104,9 @@ def get_potential_dance_events(batch_lookup, user_id):
         event_id = str(mini_fb_event['eid'])
         try:
             fb_event = second_batch_lookup.data_for_event(event_id)
+            fb_event_attending = second_batch_lookup.data_for_event_attending(event_id)
         except fb_api.NoFetchedDataException:
             continue # must be a non-saved event, probably due to private/closed event. so ignore.
         if fb_event['deleted'] or fb_event['info']['privacy'] != 'OPEN':
             continue # only legit events
-        make_potential_event_with_source(event_id, fb_event, source=source, source_field=thing_db.FIELD_INVITES)
+        make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_INVITES)

@@ -29,6 +29,11 @@ Potential Events Classification
 		(
 			$potential_event.classified_event.keyword_density()
 		)
+		</td>
+		<td>
+		<span style="text-color: green">
+		$potential_event.potential_event.dance_prediction_score
+		</span>
 		<a href="/events/admin_edit?event_id=$potential_event.fb_event.info.id">
 		#if 'name' in potential_event.fb_event.info
 			$potential_event.fb_event.info.name

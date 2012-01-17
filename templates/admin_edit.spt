@@ -89,7 +89,8 @@ Edit Event
 
 				<p>Has a potential event (<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=$potential_event.key().__str__()">AE</a>).<br>
 				Language: $potential_event.language<br>
-				Score is $potential_event.match_score .<br>
+				Keyword Score is $potential_event.match_score .<br>
+				Dance Prediction is $potential_event.dance_prediction_score .<br>
 				Show-even-if-zero is $potential_event.show_even_if_no_score .<br>
 				With Sources:
 				#for $source_id in $potential_event.source_ids

@@ -99,9 +99,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
         self.batch_lookup.lookup_event(event_id, allow_cache=False)
+        self.batch_lookup.lookup_event_attending(event_id, allow_cache=False)
         self.finish_preload()
 
         fb_event = self.batch_lookup.data_for_event(event_id)
+        fb_event_attending = self.batch_lookup.data_for_event_attending(event_id)
         if fb_event['info']['privacy'] != 'OPEN':
             self.add_error('Cannot add secret/closed events to dancedeets!')
 
@@ -130,7 +132,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         else:
             creating_user = None
 
-        potential_event = potential_events.make_potential_event_without_source(event_id, fb_event)
+        potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
+        potential_event.dance_prediction_score = getattr(potential_event, 'dance_prediction_score', 0)
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         if classified_event.is_dance_event():
             reason = classified_event.reason()
@@ -162,12 +165,14 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
     def post(self):
         event_id = self.request.get('event_id')
         self.batch_lookup.lookup_event(event_id)
+        self.batch_lookup.lookup_event_attending(event_id)
         try:
             self.finish_preload()
         except fb_api.FacebookException, e:
             self.add_error(str(e))
 
         fb_event = self.batch_lookup.data_for_event(event_id)
+        fb_event_attending = self.batch_lookup.data_for_event_attending(event_id)
         if fb_event['info']['privacy'] != 'OPEN':
             self.add_error('Cannot add secret/closed events to dancedeets!')
 
@@ -190,7 +195,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         thing_db.create_source_from_event(self.batch_lookup.copy(), e)
         e.put()
 
-        potential_event = potential_events.make_potential_event_without_source(event_id, fb_event)
+        potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
+        if not hasattr(potential_event, 'dance_prediction_score'):
+            #TODO(lambert): remove this manual hack (and the getattrs!) once we backpopulate scores for everything? even if that score is '0'
+            potential_event.dance_prediction_score = gprediction.predict(potential_event, fb_event, fb_event_attending)
+            potential_event.put()
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         if potential_event:
             for source_id in potential_event.source_ids:
@@ -312,8 +321,10 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
         number_of_events = int(self.request.get('number_of_events', '20'))
         unseen_potential_events = list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0"))
-        if len(unseen_potential_events) < number_of_events:
-            unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True"))
+        unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True"))
+        for x in unseen_potential_events:
+            x.dance_prediction_score = getattr(x, 'dance_prediction_score', 0)
+
         potential_event_dict = dict((x.key().name(), x) for x in unseen_potential_events)
         already_added_events = eventdata.DBEvent.get_by_key_name(list(potential_event_dict))
         already_added_event_ids = [x.key().name() for x in already_added_events if x]
