@@ -65,7 +65,9 @@ def get_training_features(potential_event, fb_event, fb_event_attending):
 
     #TODO(lambert): maybe include number-of-keywords and keyword-density?
 
-    return (owner_name, location, name, description, attendee_list, source_list)
+    #TODO(lambert): someday write this as a proper mapreduce that reduces across languages and builds a classifier model per language?
+    # for now we can just grep and build sub-models per-language on my client machine.
+    return (potential_event.language, owner_name, location, name, description, attendee_list, source_list)
 
 
 def mr_generate_training_data(batch_lookup):
