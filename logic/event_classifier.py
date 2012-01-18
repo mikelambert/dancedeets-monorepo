@@ -46,11 +46,19 @@ easy_dance_keywords = [
     u'šokti', # dance (verb) lithuanian
     u'šokis', # dance lithuanian
     u'šokyje', # dance lithuanian
+    u'šokėjai', # dancers lithuanian
+    u'šokėjais', # dancers lithuanian
+    u'šokėjas', # dancers lithuanian
+    u'šokių', # dance lithuanian
+    u'šokėjui', # dancers lithuanian
     u'šokėjų', # dance (noun) lithuanian
     u'šokėju', # dancer lithuanian
+    u'šokėjo', # dance lithuanian
     'ballerino', # dancer italian
     u'tänzern', # dancer german
     'bailar', # dancer spanish
+    u'танчер', # dancer macedonian
+    u'танцовиот', # dance macedonian
     'footwork',
     'tanzschule', # danceschool german
     'plesa', # dance croatian
@@ -64,6 +72,7 @@ easy_choreography_keywords = [
     'coreografie', # italian
     'koreografi', # swedish
     'choreografien', # german
+    u'кореограф', # macedonian
     'choreografams' # choreographer lithuanian
     'choreografijas', # choreography lithuanian
     u'choreografów', # choreographer polish
@@ -73,6 +82,7 @@ easy_choreography_keywords = [
 
 dance_and_music_keywords = [
     'hip\W?hop',
+    u'хипхоп', # macedonian hiphop
     u'ヒップホップ', # hiphop japanese
     'hip\W?hopo', # lithuanian hiphop
     'hip\W?hopu', # polish hiphop
@@ -104,7 +114,8 @@ dance_keywords = [
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
     'street\W?dancing?',
-    'katutanssi.*', # finish streetdance
+    u'gatvės šokių', # lithuanian streetdance
+    'katutanssi.*', # finnish streetdance
     'street\W?dance', 'bre?ak\W?dance', 'bre?ak\W?dancing?', 'brea?ak\W?dancers?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
@@ -291,6 +302,7 @@ event_keywords = [
     'preselections?',
     u'présélections?', # preselections french
     'jurys?', 'jurados', 'judge[sz]?',
+    u'teisėjai', # lithuanian judges
     'tuomaristo', # jury finnish
     'jueces', # spanish judges
     'giuria', # jury italian
