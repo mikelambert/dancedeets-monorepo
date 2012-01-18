@@ -20,6 +20,8 @@ easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?',
     u'ダンサー', # japanese dance
     u'ダンス', # japanese dance
+    u'舞者', # chinese dancer
+    u'舞技', # chinese dancing
     u'舞', # chinese dance
     u'舞蹈', # chinese dance
     u'舞蹈的', # chinese dance
@@ -33,7 +35,9 @@ easy_dance_keywords = [
     'tancerzami', #dancers polish
     u'dança', # dancing portuguese
     u'dançar', # dance portuguese
+    'danza', # dance italian
     'danzatore', # dancer italian
+    'danzatrice', # dancer italian
     'bailando', # dancing spanish
     u'bailarína?', # dancer spanish
     'danzas', # dance spanish
@@ -46,7 +50,13 @@ easy_dance_keywords = [
     u'šokėju', # dancer lithuanian
     'ballerino', # dancer italian
     u'tänzern', # dancer german
+    'bailar', # dancer spanish
     'footwork',
+    'tanzschule', # danceschool german
+    'plesa', # dance croatian
+    'plesu', # dancing croatian
+    'tanssi', # dance finish
+    u'nhảy', # dance vietnamese
 ]
 easy_choreography_keywords = [
     'choreograph(?:y|ed)', 'choreographers?', 'choreo',
@@ -58,6 +68,7 @@ easy_choreography_keywords = [
     'choreografijas', # choreography lithuanian
     u'choreografów', # choreographer polish
     'coreografiche', # choreographic italian
+    'coreografa', # choreographer italian
 ]
 
 dance_and_music_keywords = [
@@ -85,6 +96,7 @@ dance_and_music_keywords = [
 # hiphop dance. hiphop dans?
 dance_keywords = [
     'breakingu', #breaking polish
+    u'breaktánc', # breakdance hungarian
     'swag',
     'jazz rock',
     'poppers?', 'popp?i?ng?',
@@ -92,6 +104,7 @@ dance_keywords = [
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
     'street\W?dancing?',
+    'katutanssi.*', # finish streetdance
     'street\W?dance', 'bre?ak\W?dance', 'bre?ak\W?dancing?', 'brea?ak\W?dancers?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
@@ -257,7 +270,10 @@ event_keywords = [
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?',
+    u'thi nhảy', # dance competition vietnam
+    'kilpailu.*' # finish competition
     'konkursams', # lithuanian competition
+    'verseny', # hungarian competition
     u'čempionatams', # lithuanian championship
     'meisterschaft', # german championship
     'battles?',
@@ -270,10 +286,12 @@ event_keywords = [
     'bitwach', # polish battle
     'tournaments?',
     'turniejach', # tournament polish
+    u'giải đấu', # tournament vietnamese
     'turneringer', # danish tournament
     'preselections?',
     u'présélections?', # preselections french
     'jurys?', 'jurados', 'judge[sz]?',
+    'tuomaristo', # jury finnish
     'jueces', # spanish judges
     'giuria', # jury italian
     'showcase',
@@ -283,15 +301,19 @@ event_keywords = [
     u'サイファー', # japanese cypher
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     'workshops?',
+    'radionicama', # workshop croatian/
     #'stage', # italian workshop, too noisy until we have per-language keywords
     'warsztaty', # polish workshop
     u'warsztatów', # polish workshop
     u'seminarų', # lithuanian workshop
     'class with', 'master\W?class(?:es)?',
     'auditions?',
+    u'試鏡', # chinese audition
     'audizione', # italian audition
     'naborem', # polish recruitment/audition
     'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
+    u'課程', # course chinese
+    u'課', # class chinese
     'aulas?', # portuguese class(?:es)?
     'lekcie', # slovak lessons
     'dansklasser', # swedish dance classes
@@ -309,6 +331,7 @@ event_keywords = [
     'abdc', 'america\W?s best dance crew',
     'crew\W?v[sz]?\W?crew',
     'prelims?',
+    u'初賽', # chinese preliminaries
     'bonnie\s*(?:and|&)\s*clyde',
 ] + [u'%s[ -]?(?:v/s|vs?\\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
 event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x vs x
