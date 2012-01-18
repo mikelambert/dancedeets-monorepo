@@ -37,7 +37,7 @@ def yield_load_fb_event(batch_lookup, db_events):
         except fb_api.NoFetchedDataException:
             logging.info("No data fetched for event id %s", db_event.fb_event_id)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
-load_fb_event = fb_mapreduce.nomr_wrap(lambda batch_lookup, db_event: yield_load_fb_event(batch_lookup, [db_event]))
+load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
 
 def mr_load_fb_event_attending(batch_lookup):
