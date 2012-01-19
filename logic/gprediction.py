@@ -81,34 +81,24 @@ def mr_generate_training_data(batch_lookup):
         extra_mapper_params={'mime_type': 'text/plain'},
     )
 
+MAGIC_USER_ID = '100529355548393795594'
+
 def get_predict_service():
     import httplib2
     from apiclient.discovery import build
-    from oauth2client.file import Storage
-    from oauth2client.client import OAuth2WebServerFlow
-    from oauth2client.tools import run
+    from oauth2client import appengine
 
-    storage = Storage('prediction.dat')
-    credentials = storage.get()
-    if credentials is None or credentials.invalid:
-        FLOW = OAuth2WebServerFlow(
-            client_id='1036605010208-e3s55kfu80la0kidbo685rgehj1inl7b.apps.googleusercontent.com',
-            client_secret='ZaGCgi2aMVBoGuLj9AoUihVT',
-            scope='https://www.googleapis.com/auth/prediction',
-            user_agent='prediction-cmdline-sample/1.0')
-        credentials = run(FLOW, storage)
-    # Create an httplib2.Http object to handle our HTTP requests and authorize it
-    # with our good Credentials.
-    http = httplib2.Http()
-    http = credentials.authorize(http)
+    credentials = appengine.StorageByKeyName(appengine.CredentialsModel, MAGIC_USER_ID, 'credentials').get()
+    http = credentials.authorize(httplib2.Http())
+
     service = build("prediction", "v1.4", http=http)
     return service
 
 MODEL_NAME = 'dancedeets/training_data.english.csv'
-def predict(potential_event, fb_event, fb_event_attending):
+def predict(potential_event, fb_event, fb_event_attending, service=None):
     if potential_event.language == 'en':
         body = {'input': {'csvInstance': get_training_features(potential_event, fb_event, fb_event_attending)}}
-        service = get_predict_service()
+        service = service or get_predict_service()
         train = service.trainedmodels()
         prediction = train.predict(body=body, id=MODEL_NAME).execute()
         multi = prediction['outputMulti']
