@@ -166,7 +166,7 @@ dance_keywords = [
     'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem', 'voguin',
     'mini\W?ball', 'realness',
     'urban danc\w*',
-    'danças urbanas', # portuguese urban dance
+    u'danças urbanas', # portuguese urban dance
     'danzas urbanas', # spanish urban dance
     'baile urbano', # spanish urban dance
     'pop\W{0,3}lock(?:ing?|er[sz]?)?'
@@ -423,14 +423,21 @@ def build_regexes():
     all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True)
 
 def make_regex(strings, matching=False, word_boundaries=True):
-    u = u'|'.join(strings)
-    if matching:
-        regex = u'(?ui)(' + u + u')'
-    else:
-        regex = u'(?ui)(?:' + u + u')'
-    if word_boundaries:
-        regex = r'\b%s\b' % regex
-    return re.compile(regex)
+    try:
+        u = u'|'.join(strings)
+        if matching:
+            regex = u'(?ui)(' + u + u')'
+        else:
+            regex = u'(?ui)(?:' + u + u')'
+        if word_boundaries:
+            regex = r'\b%s\b' % regex
+        return re.compile(regex)
+    except UnicodeDecodeError:
+        for line in strings:
+            try:
+                re.compile(u'|'.join([line]))
+            except UnicodeDecodeError:
+                logging.error("failed to compile: %r", line)
 
 WORD_BOUNDARIES = 0
 NO_WORD_BOUNDARIES = 1
