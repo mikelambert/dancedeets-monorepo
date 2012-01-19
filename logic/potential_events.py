@@ -32,8 +32,12 @@ def get_language_for_fb_event(fb_event):
 def _common_potential_event_setup(potential_event, fb_event, fb_event_attending):
     # only calculate the event score if we've got some new data (new source, etc)
     # TODO(lambert): implement a mapreduce over future-event potential-events that recalculates scores
-    potential_event.language = get_language_for_fb_event(fb_event)
-    potential_event.dance_prediction_score = gprediction.predict(potential_event, fb_event, fb_event_attending)
+    if not potential_event.language:
+        potential_event.language = get_language_for_fb_event(fb_event)
+    if not getattr(potential_event, 'dance_prediction_score'):
+        pass
+        # TURN OFF WHILE FIXING BACKEND OAUTH SAVES
+        # potential_event.dance_prediction_score = gprediction.predict(potential_event, fb_event, fb_event_attending)
     match_score = event_classifier.get_classified_event(fb_event, language=potential_event.language).match_score()
     potential_event.match_score = match_score
 
