@@ -25,11 +25,15 @@ easy_dance_keywords = [
     u'舞', # chinese dance
     u'舞蹈', # chinese dance
     u'舞蹈的', # chinese dance
+    u'เต้น', # dance thai
+    u'tancujú', # dance slovak
+    u'tanečno', # dance slovak
     'danse', 'danser', 'danseurs?', # french
     'tancerzy', # dancer polish
     'tanecznej', # dance polish
     'tancerka', # dance polish
     'tanecznych', #dance polish
+    'taniec', # dance polish
     u'tańca', # dance polish
     'taneczne', # dance polish
     'tancerzami', #dancers polish
@@ -60,11 +64,14 @@ easy_dance_keywords = [
     u'танчер', # dancer macedonian
     u'танцовиот', # dance macedonian
     'footwork',
+    'tanzgruppen?', # dancegroup german
     'tanzschule', # danceschool german
     'plesa', # dance croatian
     'plesu', # dancing croatian
     'tanssi', # dance finish
     u'nhảy', # dance vietnamese
+    u'tänzer', # dancer german
+    'tanz', # dance german
 ]
 easy_choreography_keywords = [
     'choreograph(?:y|ed)', 'choreographers?', 'choreo',
@@ -78,6 +85,9 @@ easy_choreography_keywords = [
     u'choreografów', # choreographer polish
     'coreografiche', # choreographic italian
     'coreografa', # choreographer italian
+    'choreografem', # choreographer polish
+    'coreograficas', # spanish
+    'coreografia', # portuguese
 ]
 
 dance_and_music_keywords = [
@@ -86,6 +96,7 @@ dance_and_music_keywords = [
     u'ヒップホップ', # hiphop japanese
     'hip\W?hopo', # lithuanian hiphop
     'hip\W?hopu', # polish hiphop
+    'hip\W?hopowym', # polish hiphop
     'funk',
     'dance\W?hall',
     'ragga',
@@ -125,6 +136,8 @@ dance_keywords = [
     'houser[sz]?', 'house ?danc\w*',
     'dance house', # seen in italian
     'lock(?:er[sz]?|ing?)?', 'lock dance',
+    u'ロッカーズ', # japanese lockers
+    u'ロッカ', # japanese lock
     '[uw]h?aa?c?c?ker[sz]?', '[uw]h?aa?cc?kinn?g?', '[uw]h?aa?cc?k', # waacking
     'paa?nc?king?', # punking
     'locking4life',
@@ -153,6 +166,7 @@ dance_keywords = [
     'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem', 'voguin',
     'mini\W?ball', 'realness',
     'urban danc\w*',
+    'danças urbanas', # portuguese urban dance
     'danzas urbanas', # spanish urban dance
     'baile urbano', # spanish urban dance
     'pop\W{0,3}lock(?:ing?|er[sz]?)?'
@@ -295,6 +309,7 @@ event_keywords = [
     u'walkę', # polish battle/fight
     'bitwa', # polish battle
     'bitwach', # polish battle
+    u'バトル', # japanese battle
     'tournaments?',
     'turniejach', # tournament polish
     u'giải đấu', # tournament vietnamese
@@ -320,12 +335,14 @@ event_keywords = [
     u'seminarų', # lithuanian workshop
     'class with', 'master\W?class(?:es)?',
     'auditions?',
+    'audiciones', # spanish audition
     u'試鏡', # chinese audition
     'audizione', # italian audition
     'naborem', # polish recruitment/audition
     'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
     u'課程', # course chinese
     u'課', # class chinese
+    'kurs(?:en)?', # course german
     'aulas?', # portuguese class(?:es)?
     'lekcie', # slovak lessons
     'dansklasser', # swedish dance classes
@@ -337,6 +354,7 @@ event_keywords = [
     'lezioni', # lessons italian
     u'zajęciach', # class polish
     u'zajęcia', # classes polish
+    u'คลาส', # class thai
     'classi',
     'cours', 'clases?',
     'corso',  # lesson italian
@@ -367,6 +385,7 @@ dance_wrong_style_keywords = [
     #'ballroom',
     #'ballet',
     'jazz', 'tap', 'contemporary',
+    'contemporanea', # contemporary italian
     'african',
     'zumba', 'belly\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance',
     'soca',
@@ -452,7 +471,7 @@ class ClassifiedEvent(object):
 
     def classify(self):
         build_regexes()
-        if self.language in ['ja', 'ko', 'zh-CN', 'zh-TW']:
+        if self.language in ['ja', 'ko', 'zh-CN', 'zh-TW', 'th']:
             idx = NO_WORD_BOUNDARIES
         else:
             idx = WORD_BOUNDARIES
