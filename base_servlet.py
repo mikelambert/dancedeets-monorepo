@@ -133,6 +133,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 login.construct_user(self.fb_uid, self.fb_graph, fb_user, self.request, referer)
                 #TODO(lambert): handle this MUUUCH better
                 logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
+                self.user = users.User.get_cached(str(self.fb_uid))
 
             logging.info("Logged in uid %s with name %s", self.fb_uid, self.user and self.user.full_name)
             # If their auth token has changed, then write out the new one
