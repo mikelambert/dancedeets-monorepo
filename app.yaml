@@ -58,6 +58,10 @@ handlers:
 - url: /_ah/warmup
   script: main.py
   login: admin
+- url: /oauth2callback
+  script: oauth2client/appengine.py
+- url: /oauth_setup
+  script: servlets/oauth.py
 - url: .*
   script: main.py
 
