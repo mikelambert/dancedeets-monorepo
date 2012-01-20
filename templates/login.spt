@@ -46,11 +46,7 @@ dance events around the world
 <span class="big-font">Promote the scene</span><br>
 <a href="/rankings">
 <!-- TODO(lambert): someday switch this to /events/add ? -->
-your events reach
-#if $total_users
-$total_users
-#end if
-dancers and dance fans
+dance events reach 5000+ dancers every month
 </a>
 </div>
 </div>
