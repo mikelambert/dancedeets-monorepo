@@ -48,6 +48,7 @@ def mapreduce_scrape_all_sources(batch_lookup):
         'logic.thing_scraper.map_scrape_events_from_source',
         'logic.thing_db.Source',
         handle_batch_size=10,
+        queue='super-slow-queue',
     )
 
 def mapreduce_create_sources_from_events(batch_lookup):

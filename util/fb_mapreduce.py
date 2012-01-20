@@ -6,7 +6,7 @@ from mapreduce import util
 import facebook
 import fb_api
 
-def start_map(batch_lookup, name, handler_spec, entity_kind, reader_spec='mapreduce.input_readers.DatastoreInputReader', handle_batch_size=None, output_writer_spec=None, extra_mapper_params={}):
+def start_map(batch_lookup, name, handler_spec, entity_kind, reader_spec='mapreduce.input_readers.DatastoreInputReader', handle_batch_size=None, output_writer_spec=None, extra_mapper_params={}, queue='slow-queue'):
     mapper_params = {
         'entity_kind': entity_kind,
         'handle_batch_size': handle_batch_size,
@@ -20,8 +20,8 @@ def start_map(batch_lookup, name, handler_spec, entity_kind, reader_spec='mapred
         reader_spec=reader_spec,
         handler_spec=handler_spec,
         output_writer_spec=output_writer_spec,
-        shard_count=2, # since we want to stick it in the slow-queue, and don't care how fast it executes
-        queue_name='slow-queue',
+        shard_count=8, # since we want to stick it in the slow-queue, and don't care how fast it executes
+        queue_name=queue,
         mapper_parameters=mapper_params,
     )
 

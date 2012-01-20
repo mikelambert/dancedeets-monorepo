@@ -2,3 +2,6 @@ queue:
 - name: slow-queue
   rate: 20/s
   max_concurrent_requests: 2
+- name: super-slow-queue
+  rate: 20/s
+  max_concurrent_requests: 1
