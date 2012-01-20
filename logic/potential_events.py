@@ -23,6 +23,15 @@ class PotentialEvent(db.Model):
     source_ids = db.ListProperty(int)
     source_fields = db.ListProperty(str)
 
+    def has_source_with_field(self, source_id, source_field):
+        has_source = False
+        for source_id_, source_field_ in zip(self.source_ids, self.source_fields):
+            if source_id_ == source_id and source_field_ == source_field:
+                has_source = True
+        return has_source
+
+
+
 def get_language_for_fb_event(fb_event):
     return gtranslate.check_language('%s. %s' % (
         fb_event['info'].get('name', ''),
@@ -67,7 +76,7 @@ def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, 
             if source_id_ == source.graph_id and source_field_ == source_field:
                 has_source = True
         
-        if has_source:
+        if potential_event.has_source_with_field(source.graph_id, source_field):
             return False, potential_event.match_score
 
         _common_potential_event_setup(potential_event, fb_event, fb_event_attending, predict_service)
@@ -93,21 +102,24 @@ def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, 
 def get_potential_dance_events(batch_lookup, user_id):
     try:
         results_json = batch_lookup.data_for_user_events(user_id)['all_event_info']['data']
-        events = sorted(results_json, key=lambda x: x.get('start_time'))
+        event_ids = [str(x['eid']) for x in sorted(results_json, key=lambda x: x.get('start_time'))]
     except fb_api.NoFetchedDataException:
-        events = []
+        event_ids = []
+    existing_potential_events = PotentialEvent.get_by_key_name([str(x) for x in event_ids])
+    tracked_potential_event_ids = [str(x.fb_event_id) for x in existing_potential_events if x and x.has_source_with_field(user_id, thing_db.FIELD_INVITES)]
+
+    events_ids = set(event_ids).difference(tracked_potential_event_ids) # only handle new ids
     second_batch_lookup = batch_lookup.copy(allow_cache=True)
-    for mini_fb_event in events:
-        second_batch_lookup.lookup_event(str(mini_fb_event['eid']))
-        second_batch_lookup.lookup_event_attending(str(mini_fb_event['eid']))
+    for event_id in event_ids:
+        second_batch_lookup.lookup_event(event_id)
+        second_batch_lookup.lookup_event_attending(event_id)
     second_batch_lookup.finish_loading()
 
     source = thing_db.create_source_for_id(user_id, fb_data=None)
     source.put()
 
     dance_event_ids = []
-    for mini_fb_event in events:
-        event_id = str(mini_fb_event['eid'])
+    for event_id in event_ids:
         try:
             fb_event = second_batch_lookup.data_for_event(event_id)
             fb_event_attending = second_batch_lookup.data_for_event_attending(event_id)
