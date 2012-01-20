@@ -13,3 +13,5 @@ def dd_admin_source_url(eid):
 def fb_user_url(uid):
     return 'http://www.facebook.com/profile.php?id=%s' % uid
 
+def fb_event_image_url(eid, size='large'):
+    return 'https://graph.facebook.com/%s/picture?type=%s' % (eid, size)

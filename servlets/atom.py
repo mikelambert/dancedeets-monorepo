@@ -1,12 +1,17 @@
 import datetime
+import logging
 import xml.sax.saxutils
+
+from google.appengine.ext.webapp import RequestHandler
 
 import base_servlet
 from events import eventdata
 from events import users
+import locations
+from logic import event_locations
 from logic import search
-
-from google.appengine.ext.webapp import RequestHandler
+from util import text
+from util import urls
 
 class AtomHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -15,19 +20,9 @@ class AtomHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
 
-        user_location = None
-        distance = None
-        distance_units = None
-        distance_in_km = None
-        if self.request.get('city_name'):
-            city_name = self.request.get('city_name')
-            location = city_name
-            distance = 50
-            distance_units = 'miles'
-        else:
-            location = self.request['location']
-            distance = int(self.request.get('distance', '50'))
-            distance_units = self.request.get('distance_units', 'miles')
+        location = self.request.get('location')
+        distance = int(self.request.get('distance', '50'))
+        distance_units = self.request.get('distance_units', 'miles')
 
         if distance_units == 'miles':
             distance_in_km = locations.miles_in_km(distance)
@@ -37,18 +32,21 @@ class AtomHandler(base_servlet.BaseRequestHandler):
 
         time_period = self.request.get('time_period', eventdata.TIME_FUTURE)
 
-        query = search.SearchQuery(time_period=time_period, bounds=bounds, distance_in_km=distance_in_km)
+        query = search.SearchQuery(time_period=time_period, bounds=bounds)
         search_results = query.get_search_results(self.fb_uid, self.fb_graph)
+        #TODO(lambert): move to common library
+        now = datetime.datetime.now() - datetime.timedelta(hours=12)
+        search_results = [x for x in search_results if x.start_time > now]
 
-        title = 'dance events within %(distance) %(distance_units)s of %(user_location)s.' % dict(
+        title = 'dance events within %(distance)s %(distance_units)s of %(location)s.' % dict(
             distance=distance,
             distance_units=distance_units,
-            user_location=user_location,
+            location=location,
         )
         atom_date_format = "%Y-%m-%dT%H:%M:%SZ"
         last_modified = datetime.datetime.now().strftime(atom_date_format)
 
-        url = '/events/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
+        url = 'http://www.dancedeets.com/events/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
 
         self.response.out.write("""\
 <?xml version="1.0" encoding="utf-8"?>
@@ -57,7 +55,6 @@ class AtomHandler(base_servlet.BaseRequestHandler):
  
     <title>%(title)s</title>
     <link href="%(url)s" rel="self" />
-    <link href="http://www.dancedeets.com/" />
     <id>http://www.dancedeets.com</id>
     <updated>%(last_modified)s</updated>
     <author>
@@ -73,19 +70,38 @@ class AtomHandler(base_servlet.BaseRequestHandler):
         #TODO(lambert): setup proper date-modified times
 
         for result in search_results:
+            # Seriously need to rewrite this as a proper function. Ideally get some good event test cases and build some tests around it.
+            if 'venue' in result.fb_event['info']:
+                location = event_locations.venue_for_fb_location(result.fb_event['info']['venue'], result.fb_event['info'].get('location'))
+            elif 'location' in result.fb_event['info']:
+                location = result.fb_event['info']['location']
+            else:
+                location = 'Unknown'
+
+            lines = []
+            lines.append('<img src="%s" />' % urls.fb_event_image_url(result.fb_event['info']['id']))
+            lines.append('Start Time: %s' % text.date_format(u'%Y-%m-%d %H:%M', result.db_event.start_time))
+            lines.append('End Time: %s' % text.date_format(u'%Y-%m-%d %H:%M', result.db_event.end_time))
+            if location:
+                lines.append('Location: %s' % xml.sax.saxutils.escape(location))
+            lines.append('')
+            lines.append(xml.sax.saxutils.escape(result.fb_event['info']['description']))
+            description = '\n'.join(lines)
+
+            description = description.replace('\n', '<br/>\n')
             self.response.out.write("""\
     <entry>
         <title>%(title)s</title>
         <link href="http://www.facebook.com/events/%(id)s/" />
         <id>http://www.dancedeets.com/event/%(id)s</id>
-        <updated>%(last_modified)s</updated>
-        <summary>%(description)s</summary>
+        <published>%(published)s</published>
+        <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">%(description)s</div></summary>
     </entry>
 """ % dict(
                 title=xml.sax.saxutils.escape(result.fb_event['info']['name'].encode('ascii', 'xmlcharrefreplace')),
                 id=result.fb_event['info']['id'],
-                last_modified=result.start_time.strftime(atom_date_format),
-                description=xml.sax.saxutils.escape(result.fb_event['info']['description'].encode('ascii', 'xmlcharrefreplace')),
+                published=result.start_time.strftime(atom_date_format),
+                description=(description.encode('ascii', 'xmlcharrefreplace')),
             ))
 
         self.response.out.write("""\
