@@ -39,6 +39,9 @@ easy_dance_keywords = [
     'tancerzami', #dancers polish
     u'dança', # dancing portuguese
     u'dançar', # dance portuguese
+    u'taneční', # dancing czech
+    u'tanečníky', # dancers czech
+    'tancovat', # dance czech
     'danza', # dance italian
     'danzatore', # dancer italian
     'danzatrice', # dancer italian
@@ -319,7 +322,9 @@ event_keywords = [
     'turneringer', # danish tournament
     'preselections?',
     u'présélections?', # preselections french
-    'jurys?', 'jurados', 'judge[sz]?',
+    'jurys?',
+    'jurados?', # spanish jury
+    'judge[sz]?',
     u'teisėjai', # lithuanian judges
     'tuomaristo', # jury finnish
     'jueces', # spanish judges
@@ -343,6 +348,7 @@ event_keywords = [
     'audizione', # italian audition
     'naborem', # polish recruitment/audition
     'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
+    'lekci', # czech lesson
     u'課程', # course chinese
     u'課', # class chinese
     'kurs(?:en)?', # course german
