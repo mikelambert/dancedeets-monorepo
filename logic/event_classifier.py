@@ -68,7 +68,8 @@ easy_dance_keywords = [
     'tanzschule', # danceschool german
     'plesa', # dance croatian
     'plesu', # dancing croatian
-    'tanssi', # dance finish
+    'tanssi', # dance finnish
+    'tanssi\w*' # finnish dance-something
     u'nhảy', # dance vietnamese
     u'tänzer', # dancer german
     'tanz', # dance german
@@ -77,6 +78,7 @@ easy_choreography_keywords = [
     'choreograph(?:y|ed)', 'choreographers?', 'choreo',
     u'chorégraphe', # french choreographer
     'coreografie', # italian
+    'koreografioista', # finnish
     'koreografi', # swedish
     'choreografien', # german
     u'кореограф', # macedonian
@@ -126,7 +128,7 @@ dance_keywords = [
     'jerk(?:ers?|ing?)',
     'street\W?dancing?',
     u'gatvės šokių', # lithuanian streetdance
-    'katutanssi.*', # finnish streetdance
+    'katutanssi\w*', # finnish streetdance
     'street\W?dance', 'bre?ak\W?dance', 'bre?ak\W?dancing?', 'brea?ak\W?dancers?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
@@ -154,6 +156,7 @@ dance_keywords = [
     'dance style[sz]',
     'n(?:ew|u)\W?styles?', 'all\W?style[zs]?', 'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'tout\W?style[zs]?', # french all-styles
+    'tutti gli stili', # italian all-styles
     'me against the music',
     'krump', 'krumping?', 'krumper[sz]?',
     'girl\W?s\W?hip\W?hop',
@@ -296,7 +299,7 @@ event_keywords = [
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?',
     u'thi nhảy', # dance competition vietnam
-    'kilpailu.*' # finish competition
+    'kilpailu\w*' # finish competition
     'konkursams', # lithuanian competition
     'verseny', # hungarian competition
     u'čempionatams', # lithuanian championship
