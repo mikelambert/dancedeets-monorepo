@@ -30,6 +30,11 @@ class LoginHandler(base_servlet.BaseRequestHandler):
     def get(self, needs_city=False):
         next = self.request.get('next') or '/'
 
+        want_specific_page = (next != '/?')
+        if want_specific_page:
+            #TODO(lambert): do a much better job here, either not requiring login for more pages, or supporting logged-out error messages too.
+            self.display['errors'] = ['Sorry, but you must Log In to view that page.']
+
         # If they're logged in, and have an account created, update and redirect
         if self.fb_uid:
             user = users.User.get_by_key_name(str(self.fb_uid))
