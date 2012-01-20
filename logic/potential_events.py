@@ -41,15 +41,16 @@ def get_language_for_fb_event(fb_event):
 def _common_potential_event_setup(potential_event, fb_event, fb_event_attending, predict_service):
     # only calculate the event score if we've got some new data (new source, etc)
     # TODO(lambert): implement a mapreduce over future-event potential-events that recalculates scores
-    if not potential_event.language:
-        potential_event.language = get_language_for_fb_event(fb_event)
-    if not getattr(potential_event, 'dance_prediction_score'):
-        potential_event.dance_prediction_score = gprediction.predict(potential_event, fb_event, fb_event_attending, service=predict_service)
+    # Turn off translation and prediction since they're too expensive for me. :(
+    #if not potential_event.language:
+    #    potential_event.language = get_language_for_fb_event(fb_event)
+    #if not getattr(potential_event, 'dance_prediction_score'):
+    #    potential_event.dance_prediction_score = gprediction.predict(potential_event, fb_event, fb_event_attending, service=predict_service)
     match_score = event_classifier.get_classified_event(fb_event, language=potential_event.language).match_score()
     potential_event.match_score = match_score
 
 def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attending):
-    predict_service = gprediction.get_predict_service()
+    predict_service = None#gprediction.get_predict_service()
     def _internal_add_potential_event():
         potential_event = PotentialEvent.get_by_key_name(str(fb_event_id))
         if not potential_event:
@@ -65,7 +66,7 @@ def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attendin
     return potential_event
 
 def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, source, source_field):
-    predict_service = gprediction.get_predict_service()
+    predict_service = None#gprediction.get_predict_service()
     # show all events from a source if enough of them slip through our automatic filters
     show_all_events = source.fraction_real_are_false_negative() > 0.05 and source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
     def _internal_add_source_for_event_id():

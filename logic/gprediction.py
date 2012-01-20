@@ -84,6 +84,7 @@ def mr_generate_training_data(batch_lookup):
 MAGIC_USER_ID = '100529355548393795594'
 
 def get_predict_service():
+    #TODO(lambert): we need to cache this somehow, if we use this, since it appears to not even use memcache for credentials.
     import httplib2
     from apiclient.discovery import build
     from oauth2client import appengine

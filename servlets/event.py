@@ -198,7 +198,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
         if not hasattr(potential_event, 'dance_prediction_score'):
             #TODO(lambert): remove this manual hack (and the getattrs!) once we backpopulate scores for everything? even if that score is '0'
-            potential_event.dance_prediction_score = gprediction.predict(potential_event, fb_event, fb_event_attending)
+            potential_event.dance_prediction_score = None#gprediction.predict(potential_event, fb_event, fb_event_attending)
             potential_event.put()
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         if potential_event:
