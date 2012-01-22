@@ -83,7 +83,8 @@ def _get_remapped_address_for(address):
 
 def _save_remapped_address_for(original_address, new_remapped_address):
     original_address = (original_address or '').strip()
-    new_remapped_address = (new_remapped_address or '').strip()
+    if new_remapped_address != ' ':
+        new_remapped_address = (new_remapped_address or '').strip()
     if original_address:
         location_mapping = LocationMapping.get_by_key_name(original_address)
         if new_remapped_address:
