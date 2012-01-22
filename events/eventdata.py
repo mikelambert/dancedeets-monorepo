@@ -71,7 +71,7 @@ class DBEvent(db.Model):
     search_regions = db.StringListProperty(indexed=False) # not sure what this was ever used for
 
     # real data
-    owner_fb_uid = db.StringProperty(indexed=False)
+    owner_fb_uid = db.StringProperty()
     creating_fb_uid = db.IntegerProperty(indexed=False)
     creation_time = db.DateTimeProperty(indexed=False)
     # could be AUTO, ADMIN, USER, etc? Helps for maintaining a proper training corpus

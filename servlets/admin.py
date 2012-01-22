@@ -5,8 +5,10 @@ from google.appengine.ext import webapp
 import smemcache
 
 import base_servlet
+from events import eventdata
 from events import users
 import fb_api
+from util import urls
 
 class DeleteFBCacheHandler(webapp.RequestHandler):
         def get(self):
@@ -53,6 +55,15 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
         db_result = fb_api.FacebookCachedObject.get_by_key_name(real_key)
         self.response.out.write('Memcache:\n%s\n' % pprint.pformat(memcache_result, width=200))
         self.response.out.write('Database:\n%s\n' % pprint.pformat(db_result and db_result.decode_data() or None, width=200))
+
+class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
+    def get(self):
+        self.finish_preload()
+        all_events = eventdata.DBEvent.gql('WHERE owner_fb_uid = :1', None).fetch(1000)
+        import logging
+        logging.info("found %s events", len(all_events))
+        for e in all_events:
+            self.response.out.write('<a href="%s">%s</a><br>\n' % (urls.raw_fb_event_url(e.fb_event_id), e.fb_event_id))
 
 class ShowUsersHandler(base_servlet.BaseRequestHandler):
     def get(self):
