@@ -106,10 +106,12 @@ def get_potential_dance_events(batch_lookup, user_id):
         event_ids = [str(x['eid']) for x in sorted(results_json, key=lambda x: x.get('start_time'))]
     except fb_api.NoFetchedDataException:
         event_ids = []
+    logging.info("For user id %s, found %s events %s", user_id, len(event_ids), event_ids)
     existing_potential_events = PotentialEvent.get_by_key_name([str(x) for x in event_ids])
     tracked_potential_event_ids = [str(x.fb_event_id) for x in existing_potential_events if x and x.has_source_with_field(user_id, thing_db.FIELD_INVITES)]
+    logging.info("For user id %s, already %s tracking potential events for %s", user_id, len(tracked_potential_event_ids), tracked_potential_event_ids)
 
-    events_ids = set(event_ids).difference(tracked_potential_event_ids) # only handle new ids
+    event_ids = set(event_ids).difference(tracked_potential_event_ids) # only handle new ids
     second_batch_lookup = batch_lookup.copy(allow_cache=True)
     for event_id in event_ids:
         second_batch_lookup.lookup_event(event_id)
