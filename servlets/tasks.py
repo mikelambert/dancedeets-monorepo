@@ -149,10 +149,13 @@ class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
         friend_lists = []
         #TODO(lambert): extract this out into some sort of dynamic lookup based on Mike Lambert
         friend_lists.append('530448100598') # Freestyle SF
-        friend_lists.append('565645070588') # Choreo SF
         friend_lists.append('565645040648') # Freestyle NYC
-        friend_lists.append('556389713398') # Choreo LA
+        friend_lists.append('734193578028') # Freestyle Asia
+        friend_lists.append('612289903968') # Freestyle LA/SD
+        friend_lists.append('646041540418') # Freestyle Europe
         friend_lists.append('583877258138') # Freestyle Elsewhere
+        friend_lists.append('565645070588') # Choreo SF
+        friend_lists.append('556389713398') # Choreo LA
         friend_lists.append('565645155418') # Choreo Elsewhere
         for x in friend_lists:
             self.batch_lookup.lookup_friend_list(x)
