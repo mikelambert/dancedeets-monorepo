@@ -17,6 +17,7 @@ from spitfire.runtime.filters import skip_filter
 # maybe feed keywords into auto-classifying event type? bleh.
 
 easy_dance_keywords = [
+    'dance style[sz]',
     'dances?', 'dancing', 'dancers?',
     u'ダンサー', # japanese dance
     u'ダンス', # japanese dance
@@ -25,83 +26,46 @@ easy_dance_keywords = [
     u'舞', # chinese dance
     u'舞蹈', # chinese dance
     u'舞蹈的', # chinese dance
+    u'排舞', # chinese dance
     u'เต้น', # dance thai
+    'danse\w*', # french
+    'taniec', # dance polish
+    'tan[ec][ec]\w*', # dance polish
     u'tancujú', # dance slovak
     u'tanečno', # dance slovak
-    'danse', 'danser', 'danseurs?', # french
-    'tancerzy', # dancer polish
-    'tanecznej', # dance polish
-    'tancerka', # dance polish
-    'tanecznych', #dance polish
-    'taniec', # dance polish
-    u'tańca', # dance polish
-    'taneczne', # dance polish
-    'tancerzami', #dancers polish
-    u'dança', # dancing portuguese
-    u'dançar', # dance portuguese
-    u'taneční', # dancing czech
-    u'tanečníky', # dancers czech
+    u'danç\w*', # dance portuguese
+    u'tańc\w*', # dance polish
+    u'taneč\w*', # dance czech
     'tancovat', # dance czech
-    'danza', # dance italian
-    'danzatore', # dancer italian
-    'danzatrice', # dancer italian
-    'bailando', # dancing spanish
-    u'bailarína?', # dancer spanish
+    'danza\w*', # dance italian
+    u'šok\w*', # dance lithuanian
+    'tanz\w*', # dance german
+    'tanssi\w*' # finnish dance
+    'bail[ae]\w*', # dance spanish
     'danzas', # dance spanish
-    'baile', # dance spanish
-    u'šoku', # dance lithuanian
-    u'šokti', # dance (verb) lithuanian
-    u'šokis', # dance lithuanian
-    u'šokyje', # dance lithuanian
-    u'šokėjai', # dancers lithuanian
-    u'šokėjais', # dancers lithuanian
-    u'šokėjas', # dancers lithuanian
-    u'šokių', # dance lithuanian
-    u'šokėjui', # dancers lithuanian
-    u'šokėjų', # dance (noun) lithuanian
-    u'šokėju', # dancer lithuanian
-    u'šokėjo', # dance lithuanian
     'ballerino', # dancer italian
     u'tänzern', # dancer german
-    'bailar', # dancer spanish
     u'танчер', # dancer macedonian
     u'танцовиот', # dance macedonian
     'footwork',
-    'tanzgruppen?', # dancegroup german
-    'tanzschule', # danceschool german
     'plesa', # dance croatian
     'plesu', # dancing croatian
-    'tanssi', # dance finnish
-    'tanssi\w*' # finnish dance-something
     u'nhảy', # dance vietnamese
     u'tänzer', # dancer german
-    'tanz', # dance german
 ]
 easy_choreography_keywords = [
-    'choreograph(?:y|ed)', 'choreographers?', 'choreo',
+    '(?:ch|k|c)oreogra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese
+    'choreo',
+    u'chorée', # french choreo
     u'chorégraphe', # french choreographer
-    'coreografie', # italian
-    'koreografioista', # finnish
-    'koreografi', # swedish
-    'choreografien', # german
     u'кореограф', # macedonian
-    'choreografams' # choreographer lithuanian
-    'choreografijas', # choreography lithuanian
-    u'choreografów', # choreographer polish
-    'coreografiche', # choreographic italian
-    'coreografa', # choreographer italian
-    'choreografem', # choreographer polish
-    'coreograficas', # spanish
-    'coreografia', # portuguese
 ]
 
 dance_and_music_keywords = [
     'hip\W?hop',
     u'хипхоп', # macedonian hiphop
     u'ヒップホップ', # hiphop japanese
-    'hip\W?hopo', # lithuanian hiphop
-    'hip\W?hopu', # polish hiphop
-    'hip\W?hopowym', # polish hiphop
+    'hip\W?hop\w*', # lithuanian, polish hiphop
     'funk',
     'dance\W?hall',
     'ragga',
@@ -156,7 +120,6 @@ dance_keywords = [
     'glides?', 'gliding', 
     'tuts?', 'tutting?', 'tutter[sz]?',
     'mtv\W?style', 'mtv\W?dance', 'videoclip', 'videodance', 'l\W?a\W?\Wstyle',
-    'dance style[sz]',
     'n(?:ew|u)\W?styles?', 'all\W?style[zs]?', 'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'tout\W?style[zs]?', # french all-styles
     'tutti gli stili', # italian all-styles
@@ -306,6 +269,7 @@ event_keywords = [
     'konkursams', # lithuanian competition
     'verseny', # hungarian competition
     u'čempionatams', # lithuanian championship
+    'campeonato', # spanish championship
     'meisterschaft', # german championship
     'battles?',
     u'バトル', # japanese battle
@@ -336,6 +300,7 @@ event_keywords = [
     u'サイファー', # japanese cypher
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     'workshops?',
+    'talleres', # workshops spanish
     'radionicama', # workshop croatian/
     #'stage', # italian workshop, too noisy until we have per-language keywords
     'warsztaty', # polish workshop
@@ -351,6 +316,7 @@ event_keywords = [
     'lekci', # czech lesson
     u'課程', # course chinese
     u'課', # class chinese
+    u'堂課', # lesson chinese
     'kurs(?:en)?', # course german
     'aulas?', # portuguese class(?:es)?
     'lekcie', # slovak lessons
@@ -378,11 +344,17 @@ event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x v
 
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
+    'tumbling',
+    'exotic',
+    'cheer',
     'barre',
+    'contact improv'
+    'contratto mimo', # italian contact mime
     'musical theat(?:re|er)',
     'pole dance', 'flirt dance',
     'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
-    'oriental', 'oriente', 'orientale',
+    'oriental\w*', 'oriente', 
+    'capoeira',
     'tahitian dancing',
     'folkloric',
     'kizomba',
@@ -390,6 +362,7 @@ dance_wrong_style_keywords = [
     'technique', 'limon',
     'clogging',
     'zouk',
+    'afro mundo',
     # Sometimes used in studio name even though it's still a hiphop class:
     #'ballroom',
     #'ballet',
