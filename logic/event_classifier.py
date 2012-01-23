@@ -99,6 +99,7 @@ dance_keywords = [
     'street\W?dance', 'bre?ak\W?dance', 'bre?ak\W?dancing?', 'brea?ak\W?dancers?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
+    '파워무브', # powermove korean
     'breakeuse', # french bgirl
     'footworks', # spanish footworks
     'top\W?rock(?:s|er[sz]?|ing?)?', 'up\W?rock(?:s|er[sz]?|ing?|)?',
@@ -301,7 +302,7 @@ event_keywords = [
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     'workshops?',
     'talleres', # workshops spanish
-    'radionicama', # workshop croatian/
+    'radionicama', # workshop croatian
     #'stage', # italian workshop, too noisy until we have per-language keywords
     'warsztaty', # polish workshop
     u'warsztatów', # polish workshop
@@ -313,12 +314,15 @@ event_keywords = [
     'audizione', # italian audition
     'naborem', # polish recruitment/audition
     'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
+    u'수업', # korean class
+    u'수업을', # korean classes
     'lekci', # czech lesson
     u'課程', # course chinese
     u'課', # class chinese
     u'堂課', # lesson chinese
     'kurs(?:en)?', # course german
     'aulas?', # portuguese class(?:es)?
+    u'특강', # korean lecture
     'lekcie', # slovak lessons
     'dansklasser', # swedish dance classes
     'lekcja', # polish lesson
