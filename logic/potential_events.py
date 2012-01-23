@@ -26,7 +26,7 @@ class PotentialEvent(db.Model):
     def has_source_with_field(self, source_id, source_field):
         has_source = False
         for source_id_, source_field_ in zip(self.source_ids, self.source_fields):
-            if source_id_ == source_id and source_field_ == source_field:
+            if source_id_ == int(source_id) and source_field_ == source_field:
                 has_source = True
         return has_source
 
@@ -72,12 +72,8 @@ def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, 
     def _internal_add_source_for_event_id():
         potential_event = PotentialEvent.get_by_key_name(str(fb_event_id)) or PotentialEvent(key_name=str(fb_event_id))
         # If already added, return
-        has_source = False
-        for source_id_, source_field_ in zip(potential_event.source_ids, potential_event.source_fields):
-            if source_id_ == source.graph_id and source_field_ == source_field:
-                has_source = True
-        
         if potential_event.has_source_with_field(source.graph_id, source_field):
+            logging.info("has source already!")
             return False, potential_event.match_score
 
         _common_potential_event_setup(potential_event, fb_event, fb_event_attending, predict_service)
@@ -106,20 +102,31 @@ def get_potential_dance_events(batch_lookup, user_id):
         event_ids = [str(x['eid']) for x in sorted(results_json, key=lambda x: x.get('start_time'))]
     except fb_api.NoFetchedDataException:
         event_ids = []
-    logging.info("For user id %s, found %s events %s", user_id, len(event_ids), event_ids)
-    existing_potential_events = PotentialEvent.get_by_key_name([str(x) for x in event_ids])
+
+    logging.info("For user id %s, found %s invited events %s", user_id, len(event_ids), event_ids)
+    existing_potential_events = PotentialEvent.get_by_key_name(event_ids)
     tracked_potential_event_ids = [str(x.fb_event_id) for x in existing_potential_events if x and x.has_source_with_field(user_id, thing_db.FIELD_INVITES)]
     logging.info("For user id %s, already %s tracking potential events for %s", user_id, len(tracked_potential_event_ids), tracked_potential_event_ids)
 
     event_ids = set(event_ids).difference(tracked_potential_event_ids) # only handle new ids
+    logging.info("For user id %s, leaves %s events to process", user_id, len(event_ids))
+
+    # Only do 150 events a time so we don't blow up memory
+    # TODO(lambert): Maybe do something whereby we don't load fb-events for things we just need to add a source-id on, and only load for things without a potential-event at all. Will need to change the make_potential_event_with_source() API around though...perhaps it's about time.
+    if len(event_ids) > 150:
+        logging.info("Trimming to 150 events so we don't blow through memory, we'll get the rest of the events next time we run...")
+        event_ids = sorted(event_ids)[:150]
+
+    source = thing_db.create_source_for_id(user_id, fb_data=None)
+    source.put()
+
+    logging.info("Going to look up %s events", len(event_ids))
     second_batch_lookup = batch_lookup.copy(allow_cache=True)
+
     for event_id in event_ids:
         second_batch_lookup.lookup_event(event_id)
         second_batch_lookup.lookup_event_attending(event_id)
     second_batch_lookup.finish_loading()
-
-    source = thing_db.create_source_for_id(user_id, fb_data=None)
-    source.put()
 
     dance_event_ids = []
     for event_id in event_ids:
@@ -127,7 +134,9 @@ def get_potential_dance_events(batch_lookup, user_id):
             fb_event = second_batch_lookup.data_for_event(event_id)
             fb_event_attending = second_batch_lookup.data_for_event_attending(event_id)
         except fb_api.NoFetchedDataException:
+            logging.info("event id %s: no fetched data", event_id)
             continue # must be a non-saved event, probably due to private/closed event. so ignore.
         if fb_event['deleted'] or fb_event['info']['privacy'] != 'OPEN':
+            logging.info("event id %s: deleted, or private", event_id)
             continue # only legit events
         make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_INVITES)
