@@ -12,6 +12,7 @@ cultureshock
 da gentlemen
 dacrudancecompany
 dark unit
+deep down dopeizm
 ds players
 dynamic brno
 electric boogaloos
@@ -51,6 +52,7 @@ quest crew
 r\W?a\W?f\W?\W?crew
 serial stepperz
 silent.?trix
+soul fresh crew
 soul sector
 soul shifters
 soul sisters
@@ -70,4 +72,3 @@ waacktitioners
 waacouture
 wanted posse
 wonder twins
-soul fresh crew

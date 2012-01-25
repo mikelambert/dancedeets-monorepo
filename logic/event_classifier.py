@@ -66,6 +66,10 @@ dance_and_music_keywords = [
     u'хипхоп', # macedonian hiphop
     u'ヒップホップ', # hiphop japanese
     'hip\W?hop\w*', # lithuanian, polish hiphop
+    'all\W?style[zs]?',
+    'tout\W?style[zs]?', # french all-styles
+    'tutti gli stili', # italian all-styles
+    'swag',
     'funk',
     'dance\W?hall',
     'ragga',
@@ -85,9 +89,9 @@ dance_and_music_keywords = [
 
 # hiphop dance. hiphop dans?
 dance_keywords = [
+    'freestylers?',
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
-    'swag',
     'jazz rock',
     'poppers?', 'popp?i?ng?',
     'poppeurs?',
@@ -99,7 +103,7 @@ dance_keywords = [
     'street\W?dance', 'bre?ak\W?dance', 'bre?ak\W?dancing?', 'brea?ak\W?dancers?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
-    '파워무브', # powermove korean
+    u'파워무브', # powermove korean
     'breakeuse', # french bgirl
     'footworks', # spanish footworks
     'top\W?rock(?:s|er[sz]?|ing?)?', 'up\W?rock(?:s|er[sz]?|ing?|)?',
@@ -121,9 +125,8 @@ dance_keywords = [
     'glides?', 'gliding', 
     'tuts?', 'tutting?', 'tutter[sz]?',
     'mtv\W?style', 'mtv\W?dance', 'videoclip', 'videodance', 'l\W?a\W?\Wstyle',
-    'n(?:ew|u)\W?styles?', 'all\W?style[zs]?', 'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
-    'tout\W?style[zs]?', # french all-styles
-    'tutti gli stili', # italian all-styles
+    'n(?:ew|u)\W?styles?',
+    'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'me against the music',
     'krump', 'krumping?', 'krumper[sz]?',
     'girl\W?s\W?hip\W?hop',
@@ -150,6 +153,7 @@ club_and_event_keywords = [
     'sesja', # polish session
     u'セッション', # japanese sessions
     'sessions', 'practice',
+    u'セッション', # session japanese
     'shows?', 'performances?', 'contests?',
     u'秀', # chinese show
     u'的表演', # chinese performance
@@ -215,6 +219,9 @@ anti_dance_keywords  = [
     'dance fitness',
     'lock down',
 ]
+# lock up
+# battle freestyle ?
+# dj battle
 # battle royale
 # go\W?go\W?danc(?:ers?|ing?)
 #in\Whouse  ??
@@ -282,7 +289,7 @@ event_keywords = [
     'bitwach', # polish battle
     u'バトル', # japanese battle
     'tournaments?',
-    'turniejach', # tournament polish
+    'turnie\w*', # tournament polish/german
     u'giải đấu', # tournament vietnamese
     'turneringer', # danish tournament
     'preselections?',
@@ -320,7 +327,8 @@ event_keywords = [
     u'課程', # course chinese
     u'課', # class chinese
     u'堂課', # lesson chinese
-    'kurs(?:en)?', # course german
+    'concorso', # course italian
+    'kurs(?:y|en)?', # course german/polish
     'aulas?', # portuguese class(?:es)?
     u'특강', # korean lecture
     'lekcie', # slovak lessons
@@ -353,6 +361,7 @@ dance_wrong_style_keywords = [
     'cheer',
     'barre',
     'contact improv'
+    'contact improv\w*'
     'contratto mimo', # italian contact mime
     'musical theat(?:re|er)',
     'pole dance', 'flirt dance',
@@ -423,7 +432,8 @@ def make_regex(strings, matching=False, word_boundaries=True):
             try:
                 re.compile(u'|'.join([line]))
             except UnicodeDecodeError:
-                logging.error("failed to compile: %r", line)
+                logging.error("failed to compile: %r: %s", line, line)
+        logging.fatal("Error constructing regexes")
 
 WORD_BOUNDARIES = 0
 NO_WORD_BOUNDARIES = 1
