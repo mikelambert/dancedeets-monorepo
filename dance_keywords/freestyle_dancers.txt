@@ -124,6 +124,7 @@ storm,0
 suga pop
 sugapop
 super dino
+takuya\W+symbol.?ism
 suthoom\W+symbol.?ism
 takesaburo\W+so.?deep
 takesaburo\W+xxx.?large

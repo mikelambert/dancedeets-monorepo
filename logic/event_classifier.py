@@ -254,6 +254,9 @@ anti_dance_keywords  = [
 # Guests?
 # 21+ 18+
 
+# boogiezone if not contemporary?
+# free style if not salsa?
+
 #TODO(lambert): use these to filter out shows we don't really care about
 other_show_keywords = [
     'comedy',
@@ -289,6 +292,8 @@ event_keywords = [
     'bitwach', # polish battle
     u'バトル', # japanese battle
     'tournaments?',
+    u'大会', # japanese tournament
+    u'トーナメント', # japanese tournament
     'turnie\w*', # tournament polish/german
     u'giải đấu', # tournament vietnamese
     'turneringer', # danish tournament
@@ -360,8 +365,8 @@ dance_wrong_style_keywords = [
     'exotic',
     'cheer',
     'barre',
-    'contact improv'
-    'contact improv\w*'
+    'contact improv',
+    'contact improv\w*',
     'contratto mimo', # italian contact mime
     'musical theat(?:re|er)',
     'pole dance', 'flirt dance',

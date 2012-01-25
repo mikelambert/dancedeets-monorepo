@@ -23,7 +23,7 @@ boogie ?monstarz
 boogie bots
 boogiezone entity
 box ?cuttuhz
-break efx
+break\W?efx
 breed ocla
 breed,0
 bridging the gap,0
@@ -84,6 +84,7 @@ haluan
 heartbreak crew	
 hip hop connxion
 hoya break squad
+hype 303
 i am phresh
 i\W?am\W?me
 iconic movement
@@ -105,6 +106,7 @@ kreative movement
 kruciaal element
 lil' phunk
 lost kids
+machinez remainz
 main event,0
 main ingredient
 main stacks
