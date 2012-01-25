@@ -60,6 +60,11 @@ indexes:
   - name: match_score
   - name: show_even_if_no_score
 
+- kind: PotentialEvent
+  properties:
+  - name: __key__
+    direction: desc
+
 - kind: User
   properties:
   - name: __key__
