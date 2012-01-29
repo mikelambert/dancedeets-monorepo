@@ -40,7 +40,7 @@ easy_dance_keywords = [
     'danza\w*', # dance italian
     u'šok\w*', # dance lithuanian
     'tanz\w*', # dance german
-    'tanssi\w*' # finnish dance
+    'tanssi\w*', # finnish dance
     'bail[ae]\w*', # dance spanish
     'danzas', # dance spanish
     'ballerino', # dancer italian
@@ -54,7 +54,7 @@ easy_dance_keywords = [
     u'tänzer', # dancer german
 ]
 easy_choreography_keywords = [
-    '(?:ch|k|c)oreogra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese
+    u'(?:ch|k|c)ore[o|ó]gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese
     'choreo',
     u'chorée', # french choreo
     u'chorégraphe', # french choreographer
@@ -103,6 +103,7 @@ dance_keywords = [
     'street\W?dance', 'bre?ak\W?dance', 'bre?ak\W?dancing?', 'brea?ak\W?dancers?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
+    'b\W?boy\w*', # 'bboyev' in slovak
     u'파워무브', # powermove korean
     'breakeuse', # french bgirl
     'footworks', # spanish footworks
@@ -124,7 +125,8 @@ dance_keywords = [
     'strutter[sz]?', 'strutting',
     'glides?', 'gliding', 
     'tuts?', 'tutting?', 'tutter[sz]?',
-    'mtv\W?style', 'mtv\W?dance', 'videoclip', 'videodance', 'l\W?a\W?\Wstyle',
+    'mtv\W?style', 'mtv\W?dance', 'videoclip', 'videodance',
+    'l\W?a\W?\Wstyle', 'l\W?a\W?\Wdance',
     'n(?:ew|u)\W?styles?',
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'me against the music',
@@ -313,6 +315,8 @@ event_keywords = [
     u'サイファー', # japanese cypher
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     'workshops?',
+    # 'taller', # workshop spanish
+    'delavnice', # workshop slovak
     'talleres', # workshops spanish
     'radionicama', # workshop croatian
     #'stage', # italian workshop, too noisy until we have per-language keywords
@@ -361,6 +365,7 @@ event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x v
 
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
+    'salsy', # salsa czech
     'tumbling',
     'exotic',
     'cheer',
@@ -371,6 +376,7 @@ dance_wrong_style_keywords = [
     'musical theat(?:re|er)',
     'pole dance', 'flirt dance',
     'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
+    'indienne',
     'oriental\w*', 'oriente', 
     'capoeira',
     'tahitian dancing',
@@ -385,7 +391,7 @@ dance_wrong_style_keywords = [
     #'ballroom',
     #'ballet',
     'jazz', 'tap', 'contemporary',
-    'contemporanea', # contemporary italian
+    'contempor\w*', # contemporary italian, french
     'african',
     'zumba', 'belly\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance',
     'soca',

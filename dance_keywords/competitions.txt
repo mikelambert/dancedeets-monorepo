@@ -39,3 +39,7 @@ monsters,0
 soulgasm
 b-fresh
 world dance colosseum
+wdc,0
+wod,0
+prelude,0 # use capitals to distinguish?
+
