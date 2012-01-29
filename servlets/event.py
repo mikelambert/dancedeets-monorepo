@@ -168,7 +168,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.batch_lookup.lookup_event_attending(event_id)
         try:
             self.finish_preload()
-        except fb_api.FacebookException, e:
+        except Exception, e:
             self.add_error(str(e))
 
         fb_event = self.batch_lookup.data_for_event(event_id)
