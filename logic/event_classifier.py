@@ -225,11 +225,19 @@ anti_dance_keywords  = [
 # battle freestyle ?
 # dj battle
 # battle royale
+# http://www.dancedeets.com/events/admin_edit?event_id=208662995897296
+# mc performances
+# beatbox performances
+# beat 
+# 'open cyphers'
+# freestyle
 # go\W?go\W?danc(?:ers?|ing?)
 #in\Whouse  ??
 # 'brad houser'
 # world class
 # 1st class
+# whack music
+# wack music
 
 # open mic
 # Marvellous dance crew (uuugh)
@@ -258,6 +266,7 @@ anti_dance_keywords  = [
 
 # boogiezone if not contemporary?
 # free style if not salsa?
+
 
 #TODO(lambert): use these to filter out shows we don't really care about
 other_show_keywords = [
@@ -291,6 +300,7 @@ event_keywords = [
     'walki', # polish battle/fight
     u'walkę', # polish battle/fight
     'bitwa', # polish battle
+    u'bitwę', # polish battle
     'bitwach', # polish battle
     u'バトル', # japanese battle
     'tournaments?',
@@ -309,6 +319,7 @@ event_keywords = [
     'jueces', # spanish judges
     'giuria', # jury italian
     'showcase',
+    #'spectacle', # french show...disabled until we do a better job on false positives
     r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
     'c(?:y|i)ph(?:a|ers?)',
     u'サイファ', # japanese cypher
@@ -336,6 +347,7 @@ event_keywords = [
     u'課程', # course chinese
     u'課', # class chinese
     u'堂課', # lesson chinese
+    u'コース', # course japanese
     'concorso', # course italian
     'kurs(?:y|en)?', # course german/polish
     'aulas?', # portuguese class(?:es)?
@@ -366,6 +378,7 @@ event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x v
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
     'salsy', # salsa czech
+    'hula',
     'tumbling',
     'exotic',
     'cheer',
@@ -387,9 +400,11 @@ dance_wrong_style_keywords = [
     'clogging',
     'zouk',
     'afro mundo',
+    'classica',
     # Sometimes used in studio name even though it's still a hiphop class:
     #'ballroom',
     #'ballet',
+    #'yoga',
     'jazz', 'tap', 'contemporary',
     'contempor\w*', # contemporary italian, french
     'african',
