@@ -1,0 +1,98 @@
+As of January 2012, all events and all dance events:
+
+All Events Processed:
+39546 English
+2815 French
+1505 Italian
+1429 German
+1340 Czech
+ 862 Spanish
+ 548 Portuguese
+ 460 Dutch
+ 429 Polish
+ 391 Taiwanese
+ 279 Norwegian
+ 260 Bosnian
+ 256 Danish
+ 238 Unknown
+ 205 Swedish
+ 173 Croatian
+ 148 Japanese
+ 141 Slovakian
+ 127 Finish
+  86 Vietnamese
+  79 Hungarian
+  75 Arabic
+  72 Bulgarian
+  48 Russian
+  45 Slovenian
+  45 iw(??)
+  33 Lithuanian
+  32 Turkish
+  32 Greek
+  29 Estonian
+  22 Romanian
+  19 Korean
+  19 Catalan/Valencian
+  17 Welsh(??)
+  15 Chinese
+  14 Indonesian
+  12 Galacian
+  11 Malay
+   9 Esperanto
+   8 Thai
+   8 Swahili
+   7 Icelandic
+   6 Tagalog
+   6 Latvian
+   5 Maltese
+   4 Afrikaans
+   2 Albanian
+   1 Ukranian
+   1 Pushto/Pashto
+   1 Georgian
+
+All Dance Events Added:
+7244 English
+ 650 French
+ 381 Italian
+ 351 Czech
+ 292 German
+ 240 Spanish
+ 175 Polish
+ 132 Taiwanese
+  84 Portuguese
+  66 Swedish
+  65 Danish
+  56 Dutch XXX
+  48 Slovakian
+  41 Norwegian
+  31 Bosnian XXX
+  29 Finnish
+  28 Hungarian
+  20 Japanese XXX
+  15 Vietnamese
+  14 iw
+  14 
+  12 hr
+  11 ro
+  11 lt
+   7 et
+   7 bg
+   6 ko
+   5 tr
+   5 sl
+   5 el
+   4 ru
+   3 th
+   3 id
+   3 gl
+   2 zh-CN
+   2 sw
+   2 mt
+   2 ms
+   2 is
+   1 tl
+   1 sq
+   1 ca
+

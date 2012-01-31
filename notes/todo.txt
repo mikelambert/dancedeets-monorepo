@@ -1,5 +1,48 @@
 BEFORE LAUNCH:
 
+For homepage:
+better call to action on homepage
+better explanation of site
+better why-you-should-sign-up
+add links for the cities in the rankings
+
+move share-twitter/fb into right-hand bar
+better search links for logged-out homepage
+
+use https://developers.facebook.com/docs/reference/plugins/like/ for right-hand nav
+use it also to give confidence in our sign-up buttons
+
+- why do we get new sources on dancedeets. crappy sources. we should track how a source gets added?
+- we should filter out 'bad' sources that don't give us data?
+- overwhelmed with bad events
+- also modify our event classifier/filter-er to get rid of semi-good/semi-crappy events.
+- set up local event-classifier tester, so we can check how well a classifier works on our local event store
+- display context for each keyword?
+- write a better dance-event classifier using judges/contestants/styles/etc
+
+
+
+
+- Definitely use this "density" metric on event classification.
+For "dance" events, 3 is guaranteed dance event. Maybe not one we want with vote/like/upload/etc.
+For "specific-dance" events, maybe 4 or 5 or more can be good?
+
+'open mic freestyle cyphers' ... need to handle this better
+
+- Need to write mini-classifiers, to help.
+- Is a battle. Judge/Jury. Names with parenthesis. 1/2/3/4/5. 2v2-whatever. Prelims/rounds top8/etc.
+- Is a workshop. class/lecture/lesson. learn. etc.
+- Is a DJ club. DJ bios.
+- Is a fancy club. bottles, cover, girls, booty, random unicode, etc.
+- Is a dance show. list of crews/performers. hiphop mentioned?
+
+- hiphop/funk and good event type...ugh kill me now!
+
+
+- Dance show at a club?
+- Fancy club with a dance show?
+- DJ club with good DJs I like?
+
 - Train model on all-languages, see if it performs better.
 - Train with proper utility weights so we bias in the direction we want.
 http://code.google.com/apis/predict/docs/reference/v1.4/reference.html#method_prediction_trainedmodels_insert
@@ -138,6 +181,9 @@ http://www.dancedeets.com/events/admin_edit?event_id=219466118137439 # chinese
 http://www.dancedeets.com/events/admin_edit?event_id=102007889921435 # chinese
 http://www.dancedeets.com/events/admin_edit?event_id=164884303618923 # stage
 http://www.dancedeets.com/events/admin_edit?event_id=262771393789462 # missing workshop/lesson/etc
+http://www.dancedeets.com/events/admin_edit?event_id=203967696355522 # crew name isn't sufficient?
+http://www.dancedeets.com/events/admin_edit?event_id=358950427450632 # ragga dancehall stage
+http://www.dancedeets.com/events/admin_edit?event_id=231858233563921 # house, new jack swing, stage
 
 - Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
 http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
