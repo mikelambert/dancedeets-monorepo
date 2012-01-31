@@ -24,8 +24,12 @@ a = time.time()
 print "Loading fb data..."
 fb_entries = {}
 csv.field_size_limit(1000000000)
-for row in csv.reader(open('local_data/FacebookCachedObject.csv')):
-    fb_entries[row[0]] = row[1]
+for i, row in enumerate(csv.reader(open('local_data/FacebookCachedObject.csv'))):
+    if i % 10000 == 0:
+        print 'Loading fb row %s' % i
+    row_id = row[0].split('.')[1]
+    if row_id in potential_ids or row_id in classified_ids:
+        fb_entries[row[0]] = row[1]
 print "done, %d seconds" % (time.time() - a)
 
 all_ids = potential_ids.union(classified_ids)
@@ -169,14 +173,12 @@ def get_matches(fb_event):
 a = time.time()
 print "Computing keyword counts..."
 keyword_mapping = get_keyword_mapping(all_ids)
-stripped_all_keyword_mapping = get_keyword_mapping(all_ids, stripper=strip_basic_all)
-stripped_neg_keyword_mapping = get_keyword_mapping(all_ids, stripper=strip_basic_neg)
+stripped_all_keyword_mapping = keyword_mapping#get_keyword_mapping(all_ids, stripper=strip_basic_all)
+stripped_neg_keyword_mapping = keyword_mapping#get_keyword_mapping(all_ids, stripper=strip_basic_neg)
 print "done, %d seconds" % (time.time() - a)
 
 types_to_ids = get_types_to_ids(classified_ids)
 onlytypes_to_ids = get_onlytypes_to_ids(classified_ids)
-#the_type = 'FREESTYLE_COMPETITION' # TODO(lambert): old legacy code, but was good for finding battles. so maybe keep? or use to classify dance-events-as-a-whole which would be easier?
-#good_ids = types_to_ids[the_type]
 
 if positive_classifier:
     onlyclub_ids = set()#onlytypes_to_ids['FREESTYLE_CLUB']).union(onlytypes_to_ids['CHOREO_CLUB'])
