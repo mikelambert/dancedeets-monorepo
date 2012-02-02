@@ -1,4 +1,5 @@
 #ml (but need to get capitalization right)
+foota?\W+thrillaz # ignore 5 at front due to backtracking
 8 count,0
 a tribe called groove
 academy of hype
@@ -13,16 +14,17 @@ alpha beatz crew
 altarego
 america'?s best dance crew
 anbu black ops
+aota crew
 apt,0
 asu hip hop
 audacity cru
 barkada modern
 beat jerkeez
 beatphonik
-boogie ?monstarz
+boogie\W?monstarz
 boogie bots
 boogiezone entity
-box ?cuttuhz
+box\W?cuttuhz
 break\W?efx
 breed ocla
 breed,0
@@ -42,6 +44,7 @@ d\.w\.e\.e\.b\.s
 danz n motion
 danz-n-motion
 dc tribe
+dcypher
 de la femme
 design dance company
 draztik
@@ -52,6 +55,7 @@ elevate dance crew
 elusive dance crew
 entity,0
 epic motion
+epik dance
 epiphany dance crew
 evol cru
 expressive doubt
@@ -84,6 +88,7 @@ haluan
 heartbreak crew	
 hip hop connxion
 hoya break squad
+hungry bumz
 hype 303
 i am phresh
 i\W?am\W?me
@@ -109,25 +114,25 @@ lost kids
 machinez remainz
 main event,0
 main ingredient
-main stacks
+main\W?stacks
 major definition
 marvelous motion
 mass appeal,0
 mighty shock
 miniotics
 mischief makers
+mit ridonkulous
 mos wanted crew
 movement lifestyle
-nerdz: the outsiders
-nerdz: the outsiderz
+natural st8
+nerdz: the .utsider[sz]
 nia dance troupe
 no time 2 play
 nsu modern
 oddacities
 offspring,0
 pac modern
-pandora's myth,0
-pandora's myth,0
+pandora's myth
 part-?time models
 philippine all\W?stars
 phresh select
@@ -139,13 +144,16 @@ praiset.e.a.m
 press play,0
 project d
 project em
+project m
 project nailz
 project nailz
 projectd
 prophecy,0
 pulse dance crew
+puzzle league
 quadrisaurus
 quest crew
+quickstyle studio
 raps dance troupe
 rdt,0
 real proper crew
@@ -155,6 +163,8 @@ request dance crew
 rhthym-zion
 rhythm inc
 rhythmatix
+rhythmology company
+rhythmology,0
 s\*\*t kingz
 s\*\*t\W?kingz
 sayelah

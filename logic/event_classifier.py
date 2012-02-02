@@ -16,11 +16,16 @@ from spitfire.runtime.filters import skip_filter
 # TODO: house class, house workshop, etc, etc. since 'house' by itself isn't sufficient
 # maybe feed keywords into auto-classifying event type? bleh.
 
+# 'crew' biases dance one way, 'company' biases it another
 easy_dance_keywords = [
     'dance style[sz]',
     'dances?', 'dancing', 'dancers?',
     u'ダンサー', # japanese dance
     u'ダンス', # japanese dance
+    u'רוקד', # hebrew dance
+    u'רקדם', # hebrew dancers
+    u'רוקדים', # hebrew dance
+    u'רקדנים', # hebrew dancers
     u'舞者', # chinese dancer
     u'舞技', # chinese dancing
     u'舞', # chinese dance
@@ -28,8 +33,10 @@ easy_dance_keywords = [
     u'舞蹈的', # chinese dance
     u'排舞', # chinese dance
     u'เต้น', # dance thai
+    u'กเต้น', # dancers thai
     'danse\w*', # french
     'taniec', # dance polish
+    u'zatanč\w*', # dance czech
     'tan[ec][ec]\w*', # dance polish
     u'tancujú', # dance slovak
     u'tanečno', # dance slovak
@@ -61,8 +68,11 @@ easy_choreography_keywords = [
     u'кореограф', # macedonian
 ]
 
+# if somehow has funks, hiphop, and breaks, and house. or 3/4? call it a dance event?
+
 dance_and_music_keywords = [
     'hip\W?hop',
+    u'ההיפ הופ', # hebrew hiphop
     u'хипхоп', # macedonian hiphop
     u'ヒップホップ', # hiphop japanese
     'hip\W?hop\w*', # lithuanian, polish hiphop
@@ -89,6 +99,7 @@ dance_and_music_keywords = [
 
 # hiphop dance. hiphop dans?
 dance_keywords = [
+    'music video',
     'freestylers?',
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
@@ -113,7 +124,7 @@ dance_keywords = [
     'lock(?:er[sz]?|ing?)?', 'lock dance',
     u'ロッカーズ', # japanese lockers
     u'ロッカ', # japanese lock
-    '[uw]h?aa?c?c?ker[sz]?', '[uw]h?aa?cc?kinn?g?', '[uw]h?aa?cc?k', # waacking
+    '[uw]h?aa?c?c?k(?:er[sz]?|inn?g?)', # waacking
     'paa?nc?king?', # punking
     'locking4life',
     'dance crew[sz]?',
@@ -141,9 +152,8 @@ dance_keywords = [
     'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem', 'voguin',
     'mini\W?ball', 'realness',
     'urban danc\w*',
-    u'danças urbanas', # portuguese urban dance
-    'danzas urbanas', # spanish urban dance
-    'baile urbano', # spanish urban dance
+    'dan\w+ urban\w+', # spanish urban dance
+    'baile urban\w+', # spanish urban dance
     'pop\W{0,3}lock(?:ing?|er[sz]?)?'
 ]
 
@@ -283,6 +293,9 @@ other_show_keywords = [
 
 event_keywords = [
     'street\W?jam',
+    'camp',
+    'kamp',
+    'kemp',
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?',
@@ -314,18 +327,25 @@ event_keywords = [
     'jurys?',
     'jurados?', # spanish jury
     'judge[sz]?',
+    'giudici', # italian judges
+    u'השופט', # hebrew judge
+    u'השופטים', # hebrew judges
     u'teisėjai', # lithuanian judges
     'tuomaristo', # jury finnish
     'jueces', # spanish judges
     'giuria', # jury italian
     'showcase',
     #'spectacle', # french show...disabled until we do a better job on false positives
-    r'(?:seven|7)\W*(?:to|two|2)\W*smoke',
+    r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook)',
     'c(?:y|i)ph(?:a|ers?)',
     u'サイファ', # japanese cypher
     u'サイファー', # japanese cypher
+    'cerchi', # italian circle/cypher
+    u'ไซเฟอร์', # thai cypher
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
-    'workshops?',
+    'workshop\W?s?',
+    u'סדנאות', # hebrew workshops
+    u'סדנה', # hebew workshop
     # 'taller', # workshop spanish
     'delavnice', # workshop slovak
     'talleres', # workshops spanish
@@ -337,10 +357,12 @@ event_keywords = [
     'class with', 'master\W?class(?:es)?',
     'auditions?',
     'audiciones', # spanish audition
+    'konkurz', # audition czech
     u'試鏡', # chinese audition
     'audizione', # italian audition
     'naborem', # polish recruitment/audition
     'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
+    'klass(?:EN)?', # slovakian class
     u'수업', # korean class
     u'수업을', # korean classes
     'lekci', # czech lesson
@@ -378,6 +400,9 @@ event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x v
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
     'salsy', # salsa czech
+    'milonga',
+    'dance partner',
+    'cha cha',
     'hula',
     'tumbling',
     'exotic',
@@ -390,6 +415,7 @@ dance_wrong_style_keywords = [
     'pole dance', 'flirt dance',
     'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
     'indienne',
+    'arabe', 'arabic',
     'oriental\w*', 'oriente', 
     'capoeira',
     'tahitian dancing',
@@ -400,11 +426,12 @@ dance_wrong_style_keywords = [
     'clogging',
     'zouk',
     'afro mundo',
-    'classica',
+    'class?ic[ao]',
     # Sometimes used in studio name even though it's still a hiphop class:
     #'ballroom',
     #'ballet',
     #'yoga',
+    'tribal',
     'jazz', 'tap', 'contemporary',
     'contempor\w*', # contemporary italian, french
     'african',
@@ -490,7 +517,7 @@ def get_relevant_text(fb_event):
     return search_text
 
 class ClassifiedEvent(object):
-    def __init__(self, fb_event, language):
+    def __init__(self, fb_event, language=None):
         if 'name' not in fb_event['info']:
             logging.info("fb event id is %s has no name, with value %s", fb_event['info']['id'], fb_event)
             self.search_text = ''
@@ -579,4 +606,5 @@ def highlight_keywords(text):
     text = all_regexes['good_capturing_keyword_regex'][WORD_BOUNDARIES].sub('<span class="matched-text">\\1</span>', text)
     text = all_regexes['bad_capturing_keyword_regex'][WORD_BOUNDARIES].sub('<span class="bad-matched-text">\\1</span>', text)
     return text
+
 

@@ -10,6 +10,7 @@ babson,0
 bionic,0
 bobby mileage
 boogaloo sam
+bravo brahms
 brian green
 brooklyn terry
 bruce blanchard
@@ -20,6 +21,7 @@ caleaf
 caleaf sellers
 campbellock
 candoo,0
+conrad rochester
 crazy kyo
 cricket,0
 crykit
@@ -30,6 +32,7 @@ doclock
 don campbell
 ejoe
 el fonky juice
+eva schou
 fire.?lock
 flockey
 fluky luke
@@ -43,7 +46,7 @@ hiro,0
 hiro\W+alma
 hozin
 hurrikane
-i.?cee
+i\W?cee
 iron monkey
 j-rock,0
 jak-hamah
@@ -51,6 +54,7 @@ javier ninja
 jazzy j
 jazzy jay
 jed flurano
+jeff selby
 jimmy soul
 jojo diggs
 jon boogz
@@ -66,6 +70,7 @@ khalid freeman
 kid boogie
 kim seto
 kite,0
+knowbody greathouse
 kool raul
 koutei
 kumari suraj
@@ -82,6 +87,7 @@ malika benjelloun
 mamson,0
 manu,0
 marjory smarth
+meech
 mikey disko
 moncell durden
 mr.? ?wiggles
@@ -101,6 +107,7 @@ rabah,0
 raquel cabrera
 rashaad pearson
 razzle dazzle
+rennie harris
 ricky soul
 rockmaster
 rokafella
@@ -124,10 +131,10 @@ storm,0
 suga pop
 sugapop
 super dino
-takuya\W+symbol.?ism
 suthoom\W+symbol.?ism
 takesaburo\W+so.?deep
 takesaburo\W+xxx.?large
+takuya\W+symbol.?ism
 tatsuo yamamoto
 tatsuo,0
 tatsuo\W+glass.?hopper

@@ -194,6 +194,7 @@ kalamacrew
 khzoo
 kids of soul
 killa beat
+killa fresh crew
 killafornia
 kingz of warsaw
 knuckleheads cali
@@ -320,7 +321,7 @@ side by side,0
 silent response
 silent trix
 sin cru
-skill methodz
+skill\W?methodz
 smockemon
 solid ground movement
 sophisticatz

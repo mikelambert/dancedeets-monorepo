@@ -5,23 +5,24 @@ antoine troupe
 april bambao
 april rodriguez
 ava bernstine
-bam martin
-bam martin
+bam\W+martin
 beau fournier
 brandon dumlao
 brian puspos
 bryan tanaka
 candace brown
 carlos neto
-cj\W+2auce\W+edwards
+2auce\W+edwards # ignore cj at front due to backtracking
 david moore,0
 derrick caldwell
-di\W+moon\W+zhang
+devin jamieson
+moon\W+zhang # ignore moon at the front due to backtracking
 dmoe
+eddie morales
 eddie orales
 ellen kim
 elm pizarro
-elm\w+boogie\w+pizarro
+elm\W+boogie\W+pizarro
 emerson aquino
 eric negron
 george anzaldo
@@ -57,6 +58,7 @@ lando wilkins
 lee lee coleman
 lin samuelsen
 lyle beniga
+marc marvelous
 mari martin
 mariama ambrose
 mariel martin
@@ -76,7 +78,7 @@ parris goebel
 pat cruz
 patrick cruz
 phillip geniza
-phillip.*pacman.*chbeeb
+phillip\W+pacman\W+chbeeb
 rhapsody james
 rie hata
 rocko,0

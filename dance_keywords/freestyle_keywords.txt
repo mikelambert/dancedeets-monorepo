@@ -1,3 +1,81 @@
 trophee masters
 street\W?dance\?k[ea]mp
 latex ball
+leo xtravaganza
+paris dupree
+
+dj veusty
+greg gauthier
+kaistar
+timmy regisford
+dj spinna
+clubshelter
+tyrone francis
+tyrone\W+mixologist\W+francis
+louie vega
+rubi r-tres
+ian friday
+afro mosaic soul
+derek sampson
+ep\W+extended play
+afrika bambaataa
+dj disciple
+jellybean benitez
+jayvi velasco
+marques wyatt
+rich medina
+sweater\W?funk
+jaze-art remote
+david harness
+eric groove
+stephen rigmaiden
+peven everett
+
+coney island boardwalk
+the floor improv night
+dance culture
+jump\W+n\W+funk
+about the music presents
+thepeople
+behind the groove
+united grooves
+evolve\W+2nd\W+fridays?
+
+evolution movement
+
+the wop
+harlem shake
+criss cross
+roger rabbit
+running man
+
+hip hop dancefest
+
+g-style
+slick dogg
+
+just4rockers
+beat streat vol
+battlefest
+brooklyn united rockers
+wdc.{,10}final
+funk box
+funkbox
+saint city session
+tap water sessions
+toca tuesday
+teez party
+breakhousea
+choreographer\W?s ball
+choreographer\W?s carnival
+# teach some fundamentals
+soul summit
+motown party
+funk off
+soul train
+# support stage if french words in the page: l' le et un 
+# street battle
+banana sessions?
+whogotskillz
+each (?:1|one) teach (?:1|one)
+sdk\W?europe
