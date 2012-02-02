@@ -27,8 +27,8 @@ csv.field_size_limit(1000000000)
 for i, row in enumerate(csv.reader(open('local_data/FacebookCachedObject.csv'))):
     if i % 10000 == 0:
         print 'Loading fb row %s' % i
-    row_id = row[0].split('.')[1]
-    if row_id in potential_ids or row_id in classified_ids:
+    source_id, row_id, row_type = row[0].split('.')
+    if source_id == "701004" and row_type == "OBJ_EVENT" and (row_id in potential_ids or row_id in classified_ids):
         fb_entries[row[0]] = row[1]
 print "done, %d seconds" % (time.time() - a)
 
