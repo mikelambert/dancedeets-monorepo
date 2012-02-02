@@ -1,6 +1,8 @@
 BEFORE LAUNCH:
 
-For homepage:
+- Why do we have problems with non-701004 events being loaded??
+
+- For homepage:
 better call to action on homepage
 better explanation of site
 better why-you-should-sign-up
@@ -184,6 +186,19 @@ http://www.dancedeets.com/events/admin_edit?event_id=262771393789462 # missing w
 http://www.dancedeets.com/events/admin_edit?event_id=203967696355522 # crew name isn't sufficient?
 http://www.dancedeets.com/events/admin_edit?event_id=358950427450632 # ragga dancehall stage
 http://www.dancedeets.com/events/admin_edit?event_id=231858233563921 # house, new jack swing, stage
+http://www.dancedeets.com/events/admin_edit?event_id=149815488462616 # ??
+193983440678494 # beat street
+http://www.dancedeets.com/events/admin_edit?event_id=363751446970691 # 
+http://www.dancedeets.com/events/admin_edit?event_id=316649131706251 # 
+http://www.dancedeets.com/events/admin_edit?event_id=359823644046511 # hhdu jam old school hip hop, space to train, mirror
+http://www.dancedeets.com/events/admin_edit?event_id=140853525997526
+http://www.dancedeets.com/events/admin_edit?event_id=260544503964101 # session
+http://www.dancedeets.com/events/admin_edit?event_id=170215153054761 # house class
+http://www.dancedeets.com/events/admin_edit?event_id=117365165015843 # spectacle for french
+http://www.dancedeets.com/events/admin_edit?event_id=151634374928764 # street jam session
+http://www.dancedeets.com/events/admin_edit?event_id=231043440253834 # breakin practice
+http://www.dancedeets.com/events/admin_edit?event_id=324969544184938 # freestyle friday
+http://www.dancedeets.com/events/admin_edit?event_id=148775235167387 # cypher event
 
 - Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
 http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
