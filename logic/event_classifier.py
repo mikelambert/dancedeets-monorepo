@@ -4,6 +4,8 @@ import codecs
 import logging
 import math
 import re
+import time
+from util import re_flatten
 from spitfire.runtime.filters import skip_filter
 
 # TODO: translate to english before we try to apply the keyword matches
@@ -442,10 +444,7 @@ dance_wrong_style_keywords = [
 
 all_regexes = {}
 
-def build_regexes():
-    if 'good_capturing_keyword_regex' in all_regexes:
-        return
-
+def get_manual_dance_keywords():
     manual_dance_keywords = []
     import os
     if os.getcwd().endswith('mapreduce'): #TODO(lambert): what is going on with appengine sticking me in the wrong starting directory??
@@ -462,6 +461,13 @@ def build_regexes():
                 line = line[:-2]
             else:
                 manual_dance_keywords.append(line)
+    return manual_dance_keywords
+
+def build_regexes():
+    if 'good_capturing_keyword_regex' in all_regexes:
+        return
+
+    manual_dance_keywords = get_manual_dance_keywords()
 
     if manual_dance_keywords:
         all_regexes['manual_dance_keywords_regex'] = make_regexes(manual_dance_keywords)
@@ -470,7 +476,17 @@ def build_regexes():
 
     all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True)
 
+def special_word(x):
+    if re.search(r'[\(\)\\\*\+\?\[\]]', x):
+        return True
+    return False
+
 def make_regex(strings, matching=False, word_boundaries=True):
+    # flatten out all the simple regexes that we can
+    not_special = [x for x in strings if not special_word(x)]
+    special = [x for x in strings if special_word(x)]
+    strings = [re_flatten.construct_regex(not_special)] + special
+
     try:
         u = u'|'.join(strings)
         if matching:
@@ -524,14 +540,25 @@ class ClassifiedEvent(object):
         else:
             self.search_text = get_relevant_text(fb_event)
         self.language = language
+        self.times = {}
 
     def classify(self):
         build_regexes()
-        if self.language in ['ja', 'ko', 'zh-CN', 'zh-TW', 'th']:
-            idx = NO_WORD_BOUNDARIES
-        else:
+        try:
+            self.search_text.encode('latin1')
+            simple_text = True
+        except UnicodeEncodeError:
+            simple_text = False
+
+        if simple_text: #self.language not in ['ja', 'ko', 'zh-CN', 'zh-TW', 'th']:
             idx = WORD_BOUNDARIES
+        else:
+            idx = NO_WORD_BOUNDARIES
+
+        a = time.time()
+        b = time.time()
         manual_dance_keywords_matches = all_regexes['manual_dance_keywords_regex'][idx].findall(self.search_text)
+        self.times['manual_regex'] = time.time() - b
         easy_dance_matches = all_regexes['easy_dance_regex'][idx].findall(self.search_text)
         easy_event_matches = all_regexes['easy_event_regex'][idx].findall(self.search_text)
         dance_matches = all_regexes['dance_regex'][idx].findall(self.search_text)
@@ -541,6 +568,7 @@ class ClassifiedEvent(object):
         club_and_event_matches = all_regexes['club_and_event_regex'][idx].findall(self.search_text)
         easy_choreography_matches = all_regexes['easy_choreography_regex'][idx].findall(self.search_text)
         club_only_matches = all_regexes['club_only_regex'][idx].findall(self.search_text)
+        self.times['all_regexes'] = time.time() - a
 
         self.found_dance_matches = dance_matches + easy_dance_matches + dance_and_music_matches + manual_dance_keywords_matches + easy_choreography_matches
         self.found_event_matches = event_matches + easy_event_matches + club_and_event_matches
@@ -606,5 +634,4 @@ def highlight_keywords(text):
     text = all_regexes['good_capturing_keyword_regex'][WORD_BOUNDARIES].sub('<span class="matched-text">\\1</span>', text)
     text = all_regexes['bad_capturing_keyword_regex'][WORD_BOUNDARIES].sub('<span class="bad-matched-text">\\1</span>', text)
     return text
-
 
