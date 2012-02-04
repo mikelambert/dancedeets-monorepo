@@ -6,6 +6,7 @@ import math
 import re
 import time
 from util import re_flatten
+from util import cjk_detect
 from spitfire.runtime.filters import skip_filter
 
 # TODO: translate to english before we try to apply the keyword matches
@@ -18,6 +19,7 @@ from spitfire.runtime.filters import skip_filter
 # TODO: house class, house workshop, etc, etc. since 'house' by itself isn't sufficient
 # maybe feed keywords into auto-classifying event type? bleh.
 
+# street dancers ?
 # 'crew' biases dance one way, 'company' biases it another
 easy_dance_keywords = [
     'dance style[sz]',
@@ -63,7 +65,7 @@ easy_dance_keywords = [
     u'tänzer', # dancer german
 ]
 easy_choreography_keywords = [
-    u'(?:ch|k|c)ore[o|ó]gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese
+    u'(?:ch|k|c)oe?re[o|ó]gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese
     'choreo',
     u'chorée', # french choreo
     u'chorégraphe', # french choreographer
@@ -337,7 +339,6 @@ event_keywords = [
     'jueces', # spanish judges
     'giuria', # jury italian
     'showcase',
-    #'spectacle', # french show...disabled until we do a better job on false positives
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook)',
     'c(?:y|i)ph(?:a|ers?)',
     u'サイファ', # japanese cypher
@@ -352,7 +353,6 @@ event_keywords = [
     'delavnice', # workshop slovak
     'talleres', # workshops spanish
     'radionicama', # workshop croatian
-    #'stage', # italian workshop, too noisy until we have per-language keywords
     'warsztaty', # polish workshop
     u'warsztatów', # polish workshop
     u'seminarų', # lithuanian workshop
@@ -398,6 +398,14 @@ event_keywords = [
 ] + [u'%s[ -]?(?:v/s|vs?\\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
 event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x vs x
 
+french_event_keywords = [
+    'spectacle',
+    'stage',
+]
+
+italian_event_keywords = [
+    'stage',
+]
 
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
@@ -417,6 +425,7 @@ dance_wrong_style_keywords = [
     'pole dance', 'flirt dance',
     'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
     'indienne',
+    'persiana?',
     'arabe', 'arabic',
     'oriental\w*', 'oriente', 
     'capoeira',
@@ -433,10 +442,14 @@ dance_wrong_style_keywords = [
     #'ballroom',
     #'ballet',
     #'yoga',
+    'pilates',
     'tribal',
     'jazz', 'tap', 'contemporary',
     'contempor\w*', # contemporary italian, french
     'african',
+    'sabar',
+    'silk',
+    'aerial',
     'zumba', 'belly\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance',
     'soca',
     'flamenco',
@@ -522,9 +535,13 @@ all_regexes['easy_dance_regex'] = make_regexes(easy_dance_keywords)
 all_regexes['easy_event_regex'] = make_regexes(easy_event_keywords)
 all_regexes['dance_regex'] = make_regexes(dance_keywords)
 all_regexes['event_regex'] = make_regexes(event_keywords)
+all_regexes['french_event_regex'] = make_regexes(event_keywords + french_event_keywords)
+all_regexes['italian_event_regex'] = make_regexes(event_keywords + italian_event_keywords)
 
 all_regexes['bad_capturing_keyword_regex'] = make_regexes(club_only_keywords + dance_wrong_style_keywords, matching=True)
 
+all_regexes['italian'] = make_regexes(['di', 'i', 'e', 'con'])
+all_regexes['french'] = make_regexes(["l'\w*", 'le', 'et', 'une', 'avec', u'à', 'pour'])
 
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
 
@@ -544,6 +561,7 @@ class ClassifiedEvent(object):
 
     def classify(self):
         build_regexes()
+        start = time.time()
         try:
             self.search_text.encode('latin1')
             simple_text = True
@@ -554,6 +572,7 @@ class ClassifiedEvent(object):
             idx = WORD_BOUNDARIES
         else:
             idx = NO_WORD_BOUNDARIES
+ 
 
         a = time.time()
         b = time.time()
@@ -562,7 +581,12 @@ class ClassifiedEvent(object):
         easy_dance_matches = all_regexes['easy_dance_regex'][idx].findall(self.search_text)
         easy_event_matches = all_regexes['easy_event_regex'][idx].findall(self.search_text)
         dance_matches = all_regexes['dance_regex'][idx].findall(self.search_text)
-        event_matches = all_regexes['event_regex'][idx].findall(self.search_text)
+        if all_regexes['french'][idx].search(self.search_text):
+            event_matches = all_regexes['french_event_regex'][idx].findall(self.search_text)
+        elif all_regexes['italian'][idx].search(self.search_text):
+            event_matches = all_regexes['italian_event_regex'][idx].findall(self.search_text)
+        else:
+            event_matches = all_regexes['event_regex'][idx].findall(self.search_text)
         dance_wrong_style_matches = all_regexes['dance_wrong_style_regex'][idx].findall(self.search_text)
         dance_and_music_matches = all_regexes['dance_and_music_regex'][idx].findall(self.search_text)
         club_and_event_matches = all_regexes['club_and_event_regex'][idx].findall(self.search_text)
@@ -588,6 +612,7 @@ class ClassifiedEvent(object):
             self.dance_event = 'dance show thats not a club'
         else:
             self.dance_event = False
+        self.times['all_match'] = time.time() - a
 
     def is_dance_event(self):
         return bool(self.dance_event)
