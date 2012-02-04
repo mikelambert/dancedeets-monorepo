@@ -562,17 +562,12 @@ class ClassifiedEvent(object):
     def classify(self):
         build_regexes()
         start = time.time()
-        try:
-            self.search_text.encode('latin1')
-            simple_text = True
-        except UnicodeEncodeError:
-            simple_text = False
 
-        if simple_text: #self.language not in ['ja', 'ko', 'zh-CN', 'zh-TW', 'th']:
-            idx = WORD_BOUNDARIES
-        else:
+        #self.language not in ['ja', 'ko', 'zh-CN', 'zh-TW', 'th']:
+        if cjk_detect.cjk_regex.search(self.search_text):
             idx = NO_WORD_BOUNDARIES
- 
+        else:
+            idx = WORD_BOUNDARIES
 
         a = time.time()
         b = time.time()
