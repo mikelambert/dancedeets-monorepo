@@ -102,11 +102,14 @@ def process_event_source_ids(event_source_combos, batch_lookup):
     batch_lookup.finish_loading()
 
     for event_id, source, posting_source_id in event_source_combos:
-        fb_event = batch_lookup.data_for_event(event_id)
-        fb_event_attending = batch_lookup.data_for_event_attending(event_id)
-        if fb_event['deleted']:
+        try:
+            fb_event = batch_lookup.data_for_event(event_id)
+            fb_event_attending = batch_lookup.data_for_event_attending(event_id)
+            if fb_event['deleted']:
+                continue
+            potential_events.make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_FEED)
+        except fb_api.NoFetchedDataException:
             continue
-        potential_events.make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_FEED)
 
     existing_source_ids = set([str(x.graph_id) for x in thing_db.Source.get_by_key_name(potential_new_source_ids) if x])
     new_source_ids = set([x for x in potential_new_source_ids if x not in existing_source_ids])
