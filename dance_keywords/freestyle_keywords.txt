@@ -31,6 +31,7 @@ eric groove
 stephen rigmaiden
 peven everett
 
+soiree atmosphere
 coney island boardwalk
 the floor improv night
 dance culture
@@ -72,7 +73,7 @@ choreographer\W?s carnival
 soul summit
 motown party
 funk off
-soul train
+soul\W?train
 # support stage if french words in the page: l' le et un 
 # street battle
 banana sessions?

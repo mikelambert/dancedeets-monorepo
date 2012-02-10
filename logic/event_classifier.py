@@ -19,7 +19,7 @@ from spitfire.runtime.filters import skip_filter
 # TODO: house class, house workshop, etc, etc. since 'house' by itself isn't sufficient
 # maybe feed keywords into auto-classifying event type? bleh.
 
-# street dancers ?
+# street dance.* ?
 # 'crew' biases dance one way, 'company' biases it another
 easy_dance_keywords = [
     'dance style[sz]',
@@ -42,6 +42,7 @@ easy_dance_keywords = [
     'taniec', # dance polish
     u'zatanč\w*', # dance czech
     'tan[ec][ec]\w*', # dance polish
+    'tanca', # dance slovak
     u'tancujú', # dance slovak
     u'tanečno', # dance slovak
     u'danç\w*', # dance portuguese
@@ -79,6 +80,7 @@ dance_and_music_keywords = [
     u'ההיפ הופ', # hebrew hiphop
     u'хипхоп', # macedonian hiphop
     u'ヒップホップ', # hiphop japanese
+    u'힙합', # korean hiphop
     'hip\W?hop\w*', # lithuanian, polish hiphop
     'all\W?style[zs]?',
     'tout\W?style[zs]?', # french all-styles
@@ -113,6 +115,8 @@ dance_keywords = [
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
     'street\W?dancing?',
+    u'ストリートダンス', # japanese streetdance
+    u'街舞', # chinese streetdance / hiphop
     u'gatvės šokių', # lithuanian streetdance
     'katutanssi\w*', # finnish streetdance
     'street\W?dance', 'bre?ak\W?dance', 'bre?ak\W?dancing?', 'brea?ak\W?dancers?',
@@ -140,7 +144,8 @@ dance_keywords = [
     'strutter[sz]?', 'strutting',
     'glides?', 'gliding', 
     'tuts?', 'tutting?', 'tutter[sz]?',
-    'mtv\W?style', 'mtv\W?dance', 'videoclip', 'videodance',
+    'mj\W+style', 'michael jackson style',
+    'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
     'l\W?a\W?\Wstyle', 'l\W?a\W?\Wdance',
     'n(?:ew|u)\W?styles?',
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
@@ -303,6 +308,7 @@ event_keywords = [
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?',
+    u'compétition', # french competition
     u'thi nhảy', # dance competition vietnam
     'kilpailu\w*' # finish competition
     'konkursams', # lithuanian competition
@@ -310,6 +316,7 @@ event_keywords = [
     u'čempionatams', # lithuanian championship
     'campeonato', # spanish championship
     'meisterschaft', # german championship
+    'concorsi', # italian competition
     'battles?',
     u'バトル', # japanese battle
     'batallas', # battles spanish
@@ -338,7 +345,7 @@ event_keywords = [
     'tuomaristo', # jury finnish
     'jueces', # spanish judges
     'giuria', # jury italian
-    'showcase',
+    'show\W?case',
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook)',
     'c(?:y|i)ph(?:a|ers?)',
     u'サイファ', # japanese cypher
@@ -346,7 +353,10 @@ event_keywords = [
     'cerchi', # italian circle/cypher
     u'ไซเฟอร์', # thai cypher
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
+    'formazione', # training italian
     'workshop\W?s?',
+    'ateliers', # french workshop
+    'workshopy', # czech workshop
     u'סדנאות', # hebrew workshops
     u'סדנה', # hebew workshop
     # 'taller', # workshop spanish
@@ -358,6 +368,7 @@ event_keywords = [
     u'seminarų', # lithuanian workshop
     'class with', 'master\W?class(?:es)?',
     'auditions?',
+    'audicija', # audition croatia
     'audiciones', # spanish audition
     'konkurz', # audition czech
     u'試鏡', # chinese audition
@@ -367,7 +378,7 @@ event_keywords = [
     'klass(?:EN)?', # slovakian class
     u'수업', # korean class
     u'수업을', # korean classes
-    'lekci', # czech lesson
+    'lekc[ie]', # czech lesson
     u'課程', # course chinese
     u'課', # class chinese
     u'堂課', # lesson chinese
@@ -409,6 +420,7 @@ italian_event_keywords = [
 
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
+    'waltz',
     'salsy', # salsa czech
     'milonga',
     'dance partner',
@@ -601,7 +613,7 @@ class ClassifiedEvent(object):
         elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1:
             self.dance_event = 'hiphop/funk and good event type'
         # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
-        elif len(easy_dance_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and len(dance_wrong_style_matches) == 0:
+        elif len(easy_dance_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and len(dance_wrong_style_matches) == 0: #and len(club_only_matches) < 2:
             self.dance_event = 'dance event thats not a bad-style'
         elif len(easy_dance_matches) >= 1 and len(club_and_event_matches) >= 1 and len(dance_wrong_style_matches) == 0 and len(club_only_matches) == 0:
             self.dance_event = 'dance show thats not a club'

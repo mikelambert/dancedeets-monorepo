@@ -1,5 +1,5 @@
-head\W?hunters\W+soulciety
 academy of villians
+art of tecknique
 bds praha
 beat freaks
 beat up brno
@@ -32,10 +32,12 @@ gogo brothers
 gr818ers
 groovmekanex
 gute reize
+head\W?hunters\W+soulciety
 hilty (?:&|and|\+) bosch
 house of dangerkat
 house of ebony
 house of evisu
+house of la douche
 house of ninja
 house of xtravaganza
 housin\W+authority

@@ -88,6 +88,7 @@ mamson,0
 manu,0
 marjory smarth
 meech
+michael angelo
 mikey disko
 moncell durden
 mr.? ?wiggles
@@ -146,6 +147,8 @@ toni basil
 tony mcgregor
 treklock
 tyrone proctor
+tyrone\W+da bone\W+proctor
+viktor manoel
 viktor manuel
 waackiesha
 wahe,0
