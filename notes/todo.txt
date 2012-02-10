@@ -1,6 +1,7 @@
 BEFORE LAUNCH:
 
-- Why do we have problems with non-701004 events being loaded??
+- write a mapreduce to clean out fbapi data with the wrong user id. save a ton of space
+- uhoh, we are slowly growing the list-of-sources all the time, everytime something gets posted on a wall. no wonder the number of events keeps growing. we need to trim out sources with a ton of crap events.
 
 - For homepage:
 better call to action on homepage
@@ -141,64 +142,27 @@ http://www.dancedeets.com/events/admin_edit?event_id=206267406110368
 'choreography workshops lounge'
 http://www.dancedeets.com/events/admin_edit?event_id=228216297195689
 'dance hip hop stage'?
-http://www.dancedeets.com/events/admin_edit?event_id=246805922037836
-'hip hopu, poppingu' - need to translate...
-http://www.dancedeets.com/events/admin_edit?event_id=108583275913497
-http://www.dancedeets.com/events/admin_edit?event_id=143985709032212
 http://www.dancedeets.com/events/admin_edit?event_id=282582811759681
 http://www.dancedeets.com/events/admin_edit?event_id=266608366706476
 http://www.dancedeets.com/events/admin_edit?event_id=124645687637460
-http://www.dancedeets.com/events/admin_edit?event_id=166047916808660
-http://www.dancedeets.com/events/admin_edit?event_id=257024251003490
-'workshopy'
-http://www.dancedeets.com/events/admin_edit?event_id=214726508585136
 http://www.dancedeets.com/events/admin_edit?event_id=224488204279017
-http://www.dancedeets.com/events/admin_edit?event_id=140996745991450
-http://www.dancedeets.com/events/admin_edit?event_id=234728589917096
 http://www.dancedeets.com/events/admin_edit?event_id=263695657005390
 http://www.dancedeets.com/events/admin_edit?event_id=222782557786103
-http://www.dancedeets.com/events/admin_edit?event_id=258452520867371
-http://www.dancedeets.com/events/admin_edit?event_id=166840623406160
-http://www.dancedeets.com/events/admin_edit?event_id=283649694988640
-http://www.dancedeets.com/events/admin_edit?event_id=248228508559362
-http://www.dancedeets.com/events/admin_edit?event_id=124580344312372
 http://www.dancedeets.com/events/admin_edit?event_id=193362027404244
-http://www.dancedeets.com/events/admin_edit?event_id=294207553931329
 http://www.dancedeets.com/events/admin_edit?event_id=109967295779417
 http://www.dancedeets.com/events/admin_edit?event_id=297213826966950
-http://www.dancedeets.com/events/admin_edit?event_id=227428607325354
-http://www.dancedeets.com/events/admin_edit?event_id=262842063765336
-http://www.dancedeets.com/events/admin_edit?event_id=325031654175010
-http://www.dancedeets.com/events/admin_edit?event_id=192959864132374
-http://www.dancedeets.com/events/admin_edit?event_id=296931520342753
-http://www.dancedeets.com/events/admin_edit?event_id=309266979096698
-http://www.dancedeets.com/events/admin_edit?event_id=187250901364482
-http://www.dancedeets.com/events/admin_edit?event_id=166932506745009
-http://www.dancedeets.com/events/admin_edit?event_id=247170958648110 # HENRY LINKIEM
-http://www.dancedeets.com/events/admin_edit?event_id=169132136513796
 http://www.dancedeets.com/events/admin_edit?event_id=164801136955648
-http://www.dancedeets.com/events/admin_edit?event_id=158418747599772
-http://www.dancedeets.com/events/admin_edit?event_id=340231789329103 # just title
-http://www.dancedeets.com/events/admin_edit?event_id=219466118137439 # chinese
-http://www.dancedeets.com/events/admin_edit?event_id=102007889921435 # chinese
-http://www.dancedeets.com/events/admin_edit?event_id=164884303618923 # stage
 http://www.dancedeets.com/events/admin_edit?event_id=262771393789462 # missing workshop/lesson/etc
-http://www.dancedeets.com/events/admin_edit?event_id=203967696355522 # crew name isn't sufficient?
-http://www.dancedeets.com/events/admin_edit?event_id=358950427450632 # ragga dancehall stage
-http://www.dancedeets.com/events/admin_edit?event_id=231858233563921 # house, new jack swing, stage
-http://www.dancedeets.com/events/admin_edit?event_id=149815488462616 # ??
-193983440678494 # beat street
-http://www.dancedeets.com/events/admin_edit?event_id=363751446970691 # 
-http://www.dancedeets.com/events/admin_edit?event_id=316649131706251 # 
 http://www.dancedeets.com/events/admin_edit?event_id=359823644046511 # hhdu jam old school hip hop, space to train, mirror
 http://www.dancedeets.com/events/admin_edit?event_id=140853525997526
 http://www.dancedeets.com/events/admin_edit?event_id=260544503964101 # session
 http://www.dancedeets.com/events/admin_edit?event_id=170215153054761 # house class
-http://www.dancedeets.com/events/admin_edit?event_id=117365165015843 # spectacle for french
 http://www.dancedeets.com/events/admin_edit?event_id=151634374928764 # street jam session
 http://www.dancedeets.com/events/admin_edit?event_id=231043440253834 # breakin practice
 http://www.dancedeets.com/events/admin_edit?event_id=324969544184938 # freestyle friday
 http://www.dancedeets.com/events/admin_edit?event_id=148775235167387 # cypher event
+http://www.dancedeets.com/events/admin_edit?event_id=372653979427954
+http://www.dancedeets.com/events/admin_edit?event_id=233084563440802 # add dancers
 
 - Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
 http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
