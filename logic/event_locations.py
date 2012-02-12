@@ -8,6 +8,8 @@ import locations
 from util import abbrev
 
 # TODO: do some auto-classification of ripley grier, pearl studios, champion studios, etc. People always type horrible addresses.
+# UCI
+# UCLB
 
 class LocationMapping(db.Model):
     remapped_address = db.StringProperty(indexed=False)
