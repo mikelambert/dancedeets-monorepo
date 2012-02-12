@@ -192,8 +192,8 @@ def map_count_potential_event(pe):
 
     from events import eventdata
     db_event = eventdata.DBEvent.get_by_key_name(str(pe.fb_event_id))
+    potential_event = classified_event.is_dance_event()
     for source_id in pe.source_ids:
-        potential_event = classified_event.is_dance_event()
         all_event = True
         real_event = db_event != None
         false_negative = db_event and not classified_event.is_dance_event()
