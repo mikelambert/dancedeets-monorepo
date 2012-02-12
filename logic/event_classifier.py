@@ -26,6 +26,7 @@ easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?',
     u'ダンサー', # japanese dance
     u'ダンス', # japanese dance
+    u'踊り', # japanese dance
     u'רוקד', # hebrew dance
     u'רקדם', # hebrew dancers
     u'רוקדים', # hebrew dance
@@ -101,6 +102,7 @@ dance_and_music_keywords = [
     'hard\Whitting',
     'old\W?school hip\W?hop',
     '90\W?s hip\W?hop',
+    u'フリースタイル', # japanese freestyle
 ]
 
 # hiphop dance. hiphop dans?
@@ -168,14 +170,16 @@ dance_keywords = [
 
 easy_event_keywords = [
     'jams?', 'club', 'after\Wparty', 'pre\Wparty',
+    u'クラブ',  # japanese club
     'open sessions?', 'training',
 ]
 club_and_event_keywords = [
     'sesja', # polish session
-    u'セッション', # japanese sessions
     'sessions', 'practice',
-    u'セッション', # session japanese
+    # international sessions are handled down below
     'shows?', 'performances?', 'contests?',
+    'showcase',
+    u'ショーケース', # japanese showcase
     u'秀', # chinese show
     u'的表演', # chinese performance
     u'表演', # chinese performance
@@ -353,7 +357,9 @@ event_keywords = [
     'cerchi', # italian circle/cypher
     u'ไซเฟอร์', # thai cypher
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
+    u'セッション', # japanese session
     'formazione', # training italian
+    u'トレーニング', # japanese training
     'workshop\W?s?',
     'ateliers', # french workshop
     'workshopy', # czech workshop
@@ -454,6 +460,7 @@ dance_wrong_style_keywords = [
     #'ballroom',
     #'ballet',
     #'yoga',
+    'modern dance',
     'pilates',
     'tribal',
     'jazz', 'tap', 'contemporary',

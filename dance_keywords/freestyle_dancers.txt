@@ -1,5 +1,6 @@
 abstrak
 acky
+alessandro cascone
 amanda\W+b?\W+angel
 ana sanchez
 andré pires
@@ -33,12 +34,15 @@ don campbell
 ejoe
 el fonky juice
 eva schou
+fabio crestale
 fire.?lock
 flockey
 fluky luke
 gemini,0
+gianni wers
 grishka
 guccon
+guitart velasco
 hector xtravaganza
 henry link
 hideki
@@ -83,6 +87,7 @@ liss funk
 lockiano
 loic,0
 loose joint
+macia del prete
 malika benjelloun
 mamson,0
 manu,0
@@ -110,6 +115,7 @@ rashaad pearson
 razzle dazzle
 rennie harris
 ricky soul
+roberta fontana
 rockmaster
 rokafella
 salah
@@ -132,6 +138,7 @@ storm,0
 suga pop
 sugapop
 super dino
+super\W?dave
 suthoom\W+symbol.?ism
 takesaburo\W+so.?deep
 takesaburo\W+xxx.?large
