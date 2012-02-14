@@ -1,5 +1,4 @@
 #ml (but need to get capitalization right)
-foota?\W+thrillaz # ignore 5 at front due to backtracking
 8 count,0
 a tribe called groove
 academy of hype
@@ -21,8 +20,8 @@ audacity cru
 barkada modern
 beat jerkeez
 beatphonik
-boogie\W?monstarz
 boogie bots
+boogie\W?monstarz
 boogiezone entity
 box\W?cuttuhz
 break\W?efx
@@ -62,6 +61,7 @@ expressive doubt
 fanny pak
 flowethics
 foot clan
+foota?\W+thrillaz # ignore 5 at front due to backtracking
 for the cause
 freshh
 ftc,0
@@ -155,6 +155,7 @@ quadrisaurus
 quest crew
 quickstyle studio
 raps dance troupe
+rds company
 rdt,0
 real proper crew
 redefined dance company

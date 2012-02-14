@@ -27,7 +27,7 @@ Potential Events Classification
 			0
 		#end if
 		(
-			$potential_event.classified_event.keyword_density()
+			$potential_event.classified_event.inverse_keyword_density()
 		)
 		</td>
 		<td>

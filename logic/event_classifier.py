@@ -26,6 +26,9 @@ easy_dance_keywords = [
     'dances?', 'dancing', 'dancers?',
     u'ダンサー', # japanese dance
     u'ダンス', # japanese dance
+    u'춤.?', # korean dance
+    u'추고.?.?', # korean dancing
+    u'댄서.?.?', # korean dancers
     u'踊り', # japanese dance
     u'רוקד', # hebrew dance
     u'רקדם', # hebrew dancers
@@ -70,7 +73,7 @@ easy_choreography_keywords = [
     u'(?:ch|k|c)oe?re[o|ó]gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese
     'choreo',
     u'chorée', # french choreo
-    u'chorégraphe', # french choreographer
+    u'chorégraph\w*', # french choreographer
     u'кореограф', # macedonian
 ]
 
@@ -117,6 +120,7 @@ dance_keywords = [
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
     'street\W?dancing?',
+    u'스트릿', # street korean
     u'ストリートダンス', # japanese streetdance
     u'街舞', # chinese streetdance / hiphop
     u'gatvės šokių', # lithuanian streetdance
@@ -178,6 +182,7 @@ club_and_event_keywords = [
     'sessions', 'practice',
     # international sessions are handled down below
     'shows?', 'performances?', 'contests?',
+    'concours', # french contest
     'showcase',
     u'ショーケース', # japanese showcase
     u'秀', # chinese show
@@ -312,6 +317,7 @@ event_keywords = [
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?',
+    'competencia', # spanish competition
     u'compétition', # french competition
     u'thi nhảy', # dance competition vietnam
     'kilpailu\w*' # finish competition
@@ -321,6 +327,7 @@ event_keywords = [
     'campeonato', # spanish championship
     'meisterschaft', # german championship
     'concorsi', # italian competition
+    u'danstävling', # swedish dance competition
     'battles?',
     u'バトル', # japanese battle
     'batallas', # battles spanish
@@ -356,11 +363,13 @@ event_keywords = [
     u'サイファー', # japanese cypher
     'cerchi', # italian circle/cypher
     u'ไซเฟอร์', # thai cypher
+    u'싸이퍼.?', # korean cypher
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     u'セッション', # japanese session
     'formazione', # training italian
     u'トレーニング', # japanese training
     'workshop\W?s?',
+    'cursillo', # spanish workshop
     'ateliers', # french workshop
     'workshopy', # czech workshop
     u'סדנאות', # hebrew workshops
@@ -460,6 +469,8 @@ dance_wrong_style_keywords = [
     #'ballroom',
     #'ballet',
     #'yoga',
+    'acroyoga',
+    'kirtan',
     'modern dance',
     'pilates',
     'tribal',
@@ -476,6 +487,7 @@ dance_wrong_style_keywords = [
 
 all_regexes = {}
 
+#TODO(lambert): maybe handle 'byronom coxom' in slovakian with these keywords
 def get_manual_dance_keywords():
     manual_dance_keywords = []
     import os
@@ -516,10 +528,10 @@ def special_word(x):
 def make_regex(strings, matching=False, word_boundaries=True):
     # flatten out all the simple regexes that we can
     not_special = [x for x in strings if not special_word(x)]
-    special = [x for x in strings if special_word(x)]
-    strings = [re_flatten.construct_regex(not_special)] + special
 
     try:
+        special = [x for x in strings if special_word(x)]
+        strings = [re_flatten.construct_regex(not_special)] + special
         u = u'|'.join(strings)
         if matching:
             regex = u'(?ui)(' + u + u')'
@@ -612,15 +624,22 @@ class ClassifiedEvent(object):
         self.found_event_matches = event_matches + easy_event_matches + club_and_event_matches
         self.found_wrong_matches = dance_wrong_style_matches + club_only_matches
 
+        combined_matches = self.found_dance_matches + self.found_event_matches
+        fraction_matched = 1.0 * len(combined_matches) / len(re.split(r'\W+', self.search_text))
+        if not fraction_matched:
+            self.calc_inverse_keyword_density = 100
+        else:
+            self.calc_inverse_keyword_density = -int(math.log(fraction_matched, 2))
+
         if len(manual_dance_keywords_matches) >= 1:
             self.dance_event = 'obvious dancer or dance crew or battle'
         # one critical dance keyword
         elif len(dance_matches) >= 1:
             self.dance_event = 'obvious dance style'
-        elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1:
+        elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and self.calc_inverse_keyword_density < 5:
             self.dance_event = 'hiphop/funk and good event type'
         # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
-        elif len(easy_dance_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and len(dance_wrong_style_matches) == 0: #and len(club_only_matches) < 2:
+        elif len(easy_dance_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and len(dance_wrong_style_matches) == 0 and self.calc_inverse_keyword_density < 5:
             self.dance_event = 'dance event thats not a bad-style'
         elif len(easy_dance_matches) >= 1 and len(club_and_event_matches) >= 1 and len(dance_wrong_style_matches) == 0 and len(club_only_matches) == 0:
             self.dance_event = 'dance show thats not a club'
@@ -644,13 +663,8 @@ class ClassifiedEvent(object):
             return len(combined_matches)
         else:
             return 0
-    def keyword_density(self):
-        combined_matches = self.found_dance_matches + self.found_event_matches
-        fraction_matched = 1.0 * len(combined_matches) / len(re.split(r'\W+', self.search_text))
-        if not fraction_matched:
-            return -100
-        else:
-            return int(math.log(fraction_matched, 2))
+    def inverse_keyword_density(self):
+        return self.calc_inverse_keyword_density
 
 
 def get_classified_event(fb_event, language):
