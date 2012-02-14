@@ -4,6 +4,11 @@ from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext import deferred
 
+from mapreduce import context
+from mapreduce import control
+from mapreduce import operation as op
+from mapreduce import util
+
 from util.mapper import Mapper
 from events import cities
 from events import eventdata
@@ -12,6 +17,9 @@ import fb_api
 from logic import event_classifier
 from logic import potential_events
 from logic import thing_db
+from servlets import tasks
+
+
 
 class UnprocessFutureEvents(Mapper):
     KIND = fb_api.FacebookCachedObject
@@ -35,15 +43,23 @@ class UnprocessFutureEventsHandler(webapp.RequestHandler):
         m.run()
         return
 
-from servlets import tasks
-from logic import unique_attendees
+def map_delete_cached_with_wrong_user_id(fbo):
+    user_id, obj_id, obj_type = fbo.key().name().split('.')
+    bl = fb_api.BatchLookup
+    bl_types = (bl.OBJECT_EVENT, bl.OBJECT_EVENT_ATTENDING, bl.OBJECT_EVENT_MEMBERS, bl.OBJECT_THING_FEED, bl.OBJECT_VENUE)
+    if obj_type in bl_types and user_id != '701004':
+        yield op.db.Delete(fbo)
+
+
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler):
     def get(self):
-        expired_users = users.User.all().fetch(1000)
-        for u in expired_users:
-            if u.expired_oauth_token:
-                u.expired_oauth_token = False
-                u.put()
+        control.start_map(
+            name='cleanup',
+            reader_spec='mapreduce.input_readers.DatastoreInputReader',
+            handler_spec='servlets.tools.map_delete_cached_with_wrong_user_id',
+            mapper_parameters={'entity_kind': 'fb_api.FacebookCachedObject'},
+            shard_count=8,
+        )
 
 class OwnedEventsHandler(webapp.RequestHandler):
     def get(self):
