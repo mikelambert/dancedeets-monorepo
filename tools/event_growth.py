@@ -5,24 +5,25 @@ import re
 'cat local_data/DBEvent.csv | cut -f4 -d, | sort | cut -c1-6 | uniq -c | cut -b1-4'
 
 a = """
-  68
-  70
- 123
+  61
+  65
+ 115
+ 193
  207
- 231
- 244
- 376
- 357
- 434
- 455
- 724
- 729
- 807
- 712
-1071
-1225
-1125
-1149
+ 225
+ 345
+ 332
+ 389
+ 419
+ 670
+ 675
+ 739
+ 666
+1009
+1167
+1065
+1100
+1581
 """
 
 b = re.split(r'\s+', a.strip())
@@ -30,7 +31,7 @@ b = re.split(r'\s+', a.strip())
 c = [int(x) for x in b]
 
 # turn this on to get total growth curves
-c = reduce(lambda x, y: x + [y+x[-1]], c[1:], c[:1])
+#c = reduce(lambda x, y: x + [y+x[-1]], c[1:], c[:1])
 #[57, 121, 226, 434, 660, 901, 1263, 1602, 2020, 2429, 3161, 3900]
 
 d = [x*100/max(c) for x in c]
