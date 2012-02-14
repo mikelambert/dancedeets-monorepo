@@ -135,15 +135,13 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
         potential_event.dance_prediction_score = getattr(potential_event, 'dance_prediction_score', 0)
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
+        self.display['classified_event'] = classified_event
         if classified_event.is_dance_event():
-            reason = classified_event.reason()
             dance_words_str = ', '.join(list(classified_event.dance_matches()))
             event_words_str = ', '.join(list(classified_event.event_matches()))
         else:
-            reason = None
             dance_words_str = 'NONE'
             event_words_str = 'NONE'
-        self.display['classifier_reason'] = reason
         self.display['classifier_dance_words'] = dance_words_str
         self.display['classifier_event_words'] = event_words_str
         self.display['creating_user'] = creating_user
