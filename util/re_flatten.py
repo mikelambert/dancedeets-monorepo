@@ -21,7 +21,8 @@ def _sub_alternation(tree):
         return u'(?:%s)' % '|'.join(regexes)
 
 QUANTIFIER = '(?:[+*?]|{\d+(?:,\d+)?})?\??'
-def tokenize_regex(r):
+def tokenize_regex(original_r):
+    r = original_r
     tokenized = []
     while r:
           match = re.match(r'\\?[^()\[\]*+?]' + QUANTIFIER, r)
@@ -40,7 +41,7 @@ def tokenize_regex(r):
             r = r[match.end():]
             continue
         if r.startswith('('):
-            return r
+            return original_r
         raise Exception("Cannot parse regex: %r" % r)
     return tuple(tokenized)
 
