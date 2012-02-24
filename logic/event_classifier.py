@@ -86,12 +86,13 @@ dance_and_music_keywords = [
     u'ヒップホップ', # hiphop japanese
     u'힙합', # korean hiphop
     'hip\W?hop\w*', # lithuanian, polish hiphop
+    'music video',
     'all\W?style[zs]?',
     'tout\W?style[zs]?', # french all-styles
     'tutti gli stili', # italian all-styles
     'swag',
     'funk',
-    'dance\W?hall',
+    'dance\W?hall\w+',
     'ragga',
     'hype',
     'new\W?jack\W?swing',
@@ -110,7 +111,6 @@ dance_and_music_keywords = [
 
 # hiphop dance. hiphop dans?
 dance_keywords = [
-    'music video',
     'freestylers?',
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
@@ -135,6 +135,7 @@ dance_keywords = [
     'top\W?rock(?:s|er[sz]?|ing?)?', 'up\W?rock(?:s|er[sz]?|ing?|)?',
     'houser[sz]?', 'house ?danc\w*',
     'dance house', # seen in italian
+    'electro\W?dance',
     'lock(?:er[sz]?|ing?)?', 'lock dance',
     u'ロッカーズ', # japanese lockers
     u'ロッカ', # japanese lock
@@ -157,16 +158,20 @@ dance_keywords = [
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'me against the music',
     'krump', 'krumping?', 'krumper[sz]?',
+    'crunk',
+    'ragga\W?jamm?',
     'girl\W?s\W?hip\W?hop',
     'hip\W?hopp?er[sz]?',
     'street\W?jazz', 'street\W?funk', 'jazz\W?funk', 'boom\W?crack',
     'hype danc\w*',
     'social hip\W?hop', 'hip\W?hop social dance[sz]',
-    '(?:new|nu|middle)\W?s(?:ch|k)ool hip\W?hop', 'hip\W?hop (?:old|new|nu|middle)\W?s(?:ch|k)ool',
+    '(?:new|nu|middle)\W?s(?:ch|k)ool\W\W?hip\W?hop', 'hip\W?hop\W\W?(?:old|new|nu|middle)\W?s(?:ch|k)ool',
     'newstyleurs?',
     'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem', 'voguin',
     'mini\W?ball', 'realness',
     'urban danc\w*',
+    'urban style[sz]',
+    u'dan[çc]\w* urban\w*',
     'dan\w+ urban\w+', # spanish urban dance
     'baile urban\w+', # spanish urban dance
     'pop\W{0,3}lock(?:ing?|er[sz]?)?'
@@ -182,6 +187,7 @@ club_and_event_keywords = [
     'sessions', 'practice',
     # international sessions are handled down below
     'shows?', 'performances?', 'contests?',
+    u'vystoupení', # czech performances
     'concours', # french contest
     'showcase',
     u'ショーケース', # japanese showcase
@@ -317,6 +323,7 @@ event_keywords = [
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?',
+    'konkurrence', # danish competition
     'competencia', # spanish competition
     u'compétition', # french competition
     u'thi nhảy', # dance competition vietnam
@@ -413,7 +420,8 @@ event_keywords = [
     u'zajęciach', # class polish
     u'zajęcia', # classes polish
     u'คลาส', # class thai
-    'classi',
+    'classe', # class italian
+    'classi', # classes italin
     'cours', 'clases?',
     'corso',  # lesson italian
     'abdc', 'america\W?s best dance crew',
@@ -455,9 +463,10 @@ dance_wrong_style_keywords = [
     'persiana?',
     'arabe', 'arabic',
     'oriental\w*', 'oriente', 
+    'cubana',
     'capoeira',
     'tahitian dancing',
-    'folkloric',
+    'folklor\w+',
     'kizomba',
     'burlesque',
     'technique', 'limon',
@@ -476,7 +485,7 @@ dance_wrong_style_keywords = [
     'tribal',
     'jazz', 'tap', 'contemporary',
     'contempor\w*', # contemporary italian, french
-    'african',
+    'africa\w+',
     'sabar',
     'silk',
     'aerial',
@@ -520,18 +529,9 @@ def build_regexes():
 
     all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True)
 
-def special_word(x):
-    if re.search(r'[\(\)\\\*\+\?\[\]]', x):
-        return True
-    return False
-
 def make_regex(strings, matching=False, word_boundaries=True):
-    # flatten out all the simple regexes that we can
-    not_special = [x for x in strings if not special_word(x)]
-
     try:
-        special = [x for x in strings if special_word(x)]
-        strings = [re_flatten.construct_regex(not_special)] + special
+        strings = [re_flatten.construct_regex(strings)]
         u = u'|'.join(strings)
         if matching:
             regex = u'(?ui)(' + u + u')'
@@ -546,6 +546,7 @@ def make_regex(strings, matching=False, word_boundaries=True):
                 re.compile(u'|'.join([line]))
             except UnicodeDecodeError:
                 logging.error("failed to compile: %r: %s", line, line)
+                raise
         logging.fatal("Error constructing regexes")
 
 WORD_BOUNDARIES = 0
@@ -646,6 +647,7 @@ class ClassifiedEvent(object):
         else:
             self.dance_event = False
         self.times['all_match'] = time.time() - a
+        print self.times
 
     def is_dance_event(self):
         return bool(self.dance_event)
