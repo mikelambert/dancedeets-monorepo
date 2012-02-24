@@ -1,3 +1,4 @@
+2auce\W+edwards # ignore cj at front due to backtracking
 alex bullon
 amanda suk
 andrew baterina
@@ -12,11 +13,9 @@ brian puspos
 bryan tanaka
 candace brown
 carlos neto
-2auce\W+edwards # ignore cj at front due to backtracking
 david moore,0
 derrick caldwell
 devin jamieson
-moon\W+zhang # ignore moon at the front due to backtracking
 dmoe
 eddie morales
 eddie orales
@@ -67,6 +66,7 @@ mecnun giasar
 michael riccio
 mike song
 misha gabriel
+moon\W+zhang # ignore moon at the front due to backtracking
 nacer misterstep
 nader musharbash
 nick bass

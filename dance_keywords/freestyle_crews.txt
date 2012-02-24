@@ -1,4 +1,5 @@
 academy of villians
+art of technique
 art of tecknique
 bds praha
 beat freaks
@@ -56,6 +57,7 @@ master\W?mind rockers
 mawu
 mgf,0
 moptops
+o'trip house
 playboyz
 pro phenomen
 pro-dance
