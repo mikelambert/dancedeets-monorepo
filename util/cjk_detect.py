@@ -1,6 +1,7 @@
 import re
 
-_chr = [[0x2E80, 0x2E99],    # Han # So  [26] CJK RADICAL REPEAT, CJK RADICAL RAP
+_chr = [[0x0E00, 0x0E7F],    # Thai characters
+        [0x2E80, 0x2E99],    # Han # So  [26] CJK RADICAL REPEAT, CJK RADICAL RAP
         [0x2E9B, 0x2EF3],    # Han # So  [89] CJK RADICAL CHOKE, CJK RADICAL C-SIMPLIFIED TURTLE
         [0x2F00, 0x2FD5],    # Han # So [214] KANGXI RADICAL ONE, KANGXI RADICAL FLUTE
         0x3005,              # Han # Lm       IDEOGRAPHIC ITERATION MARK
