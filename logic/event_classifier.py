@@ -40,6 +40,7 @@ easy_dance_keywords = [
     u'舞蹈', # chinese dance
     u'舞蹈的', # chinese dance
     u'排舞', # chinese dance
+    u'แดนซ์', # dance thai
     u'เต้น', # dance thai
     u'กเต้น', # dancers thai
     'danse\w*', # french
@@ -103,10 +104,15 @@ dance_and_music_keywords = [
     'jerk',
     'kpop',
     'rnb',
+    'poppin'
     'hard\Whitting',
+    'electro\W?dance',
     'old\W?school hip\W?hop',
     '90\W?s hip\W?hop',
     u'フリースタイル', # japanese freestyle
+    'vogue',
+    'crunk',
+
 ]
 
 # hiphop dance. hiphop dans?
@@ -115,7 +121,7 @@ dance_keywords = [
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
     'jazz rock',
-    'poppers?', 'popp?i?ng?',
+    'poppers?', 'popp?i?ng', # listing poppin in the ambiguous keywords
     'poppeurs?',
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
@@ -135,7 +141,6 @@ dance_keywords = [
     'top\W?rock(?:s|er[sz]?|ing?)?', 'up\W?rock(?:s|er[sz]?|ing?|)?',
     'houser[sz]?', 'house ?danc\w*',
     'dance house', # seen in italian
-    'electro\W?dance',
     'lock(?:er[sz]?|ing?)?', 'lock dance',
     u'ロッカーズ', # japanese lockers
     u'ロッカ', # japanese lock
@@ -158,7 +163,6 @@ dance_keywords = [
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'me against the music',
     'krump', 'krumping?', 'krumper[sz]?',
-    'crunk',
     'ragga\W?jamm?',
     'girl\W?s\W?hip\W?hop',
     'hip\W?hopp?er[sz]?',
@@ -167,7 +171,7 @@ dance_keywords = [
     'social hip\W?hop', 'hip\W?hop social dance[sz]',
     '(?:new|nu|middle)\W?s(?:ch|k)ool\W\W?hip\W?hop', 'hip\W?hop\W\W?(?:old|new|nu|middle)\W?s(?:ch|k)ool',
     'newstyleurs?',
-    'vogue', 'voguer[sz]?', 'vogue?ing', 'vogue fem', 'voguin',
+    'voguer[sz]?', 'vogue?ing', 'vogue fem', 'voguin',
     'mini\W?ball', 'realness',
     'urban danc\w*',
     'urban style[sz]',
@@ -335,6 +339,7 @@ event_keywords = [
     'meisterschaft', # german championship
     'concorsi', # italian competition
     u'danstävling', # swedish dance competition
+    u'แข่งขัน', # thai competition
     'battles?',
     u'バトル', # japanese battle
     'batallas', # battles spanish
@@ -423,7 +428,6 @@ event_keywords = [
     'classe', # class italian
     'classi', # classes italin
     'cours', 'clases?',
-    'corso',  # lesson italian
     'abdc', 'america\W?s best dance crew',
     'crew\W?v[sz]?\W?crew',
     'prelims?',
@@ -466,10 +470,15 @@ dance_wrong_style_keywords = [
     'cubana',
     'capoeira',
     'tahitian dancing',
+    'tahitienne',
     'folklor\w+',
     'kizomba',
     'burlesque',
     'technique', 'limon',
+    'artist\Win\Wresidence',
+    'guest artists?',
+    'faculty',
+    'disciplinary',
     'clogging',
     'zouk',
     'afro mundo',
@@ -531,12 +540,11 @@ def build_regexes():
 
 def make_regex(strings, matching=False, word_boundaries=True):
     try:
-        strings = [re_flatten.construct_regex(strings)]
-        u = u'|'.join(strings)
+        inner_regex = re_flatten.construct_regex(strings)
         if matching:
-            regex = u'(?ui)(' + u + u')'
+            regex = u'(?ui)(' + inner_regex + u')'
         else:
-            regex = u'(?ui)(?:' + u + u')'
+            regex = u'(?ui)(?:' + inner_regex + u')'
         if word_boundaries:
             regex = r'\b%s\b' % regex
         return re.compile(regex)
@@ -647,7 +655,6 @@ class ClassifiedEvent(object):
         else:
             self.dance_event = False
         self.times['all_match'] = time.time() - a
-        print self.times
 
     def is_dance_event(self):
         return bool(self.dance_event)
@@ -677,16 +684,29 @@ def get_classified_event(fb_event, language):
 def relevant_keywords(fb_event):
     build_regexes()
     text = get_relevant_text(fb_event)
-    #TODO(lambert): add language-support to this so we do better on foreign ones
-    good_keywords = all_regexes['good_capturing_keyword_regex'][NO_WORD_BOUNDARIES].findall(text)
-    bad_keywords = all_regexes['bad_capturing_keyword_regex'][NO_WORD_BOUNDARIES].findall(text)
+    if cjk_detect.cjk_regex.search(text):
+        idx = NO_WORD_BOUNDARIES
+    else:
+        idx = WORD_BOUNDARIES
+    good_keywords = all_regexes['good_capturing_keyword_regex'][idx].findall(text)
+    bad_keywords = all_regexes['bad_capturing_keyword_regex'][idx].findall(text)
     return sorted(set(good_keywords).union(bad_keywords))
 
 @skip_filter
 def highlight_keywords(text):
     build_regexes()
-    #TODO(lambert): add language-support to this so we do better on foreign ones
-    text = all_regexes['good_capturing_keyword_regex'][WORD_BOUNDARIES].sub('<span class="matched-text">\\1</span>', text)
-    text = all_regexes['bad_capturing_keyword_regex'][WORD_BOUNDARIES].sub('<span class="bad-matched-text">\\1</span>', text)
+    if cjk_detect.cjk_regex.search(text):
+        idx = NO_WORD_BOUNDARIES
+    else:
+        idx = WORD_BOUNDARIES
+    text = all_regexes['good_capturing_keyword_regex'][idx].sub('<span class="matched-text">\\1</span>', text)
+    text = all_regexes['bad_capturing_keyword_regex'][idx].sub('<span class="bad-matched-text">\\1</span>', text)
     return text
 
+if __name__ == '__main__':
+    a = ['club', 'bottle service', 'table service', 'coat check', 'free before', 'vip', 'guest\\W?list', 'drink specials?', 'resident dj\\W?s?', 'dj\\W?s?', 'techno', 'trance', 'indie', 'glitch', 'bands?', 'dress to', 'mixtape', 'decks', 'r&b', 'local dj\\W?s?', 'all night', 'lounge', 'live performances?', 'doors', 'restaurant', 'hotel', 'music shows?', 'a night of', 'dance floor', 'beer', 'blues', 'bartenders?', 'waiters?', 'waitress(?:es)?', 'go\\Wgo', 'gogo', 'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba', 'waltz', 'salsy', 'milonga', 'dance partner', 'cha cha', 'hula', 'tumbling', 'exotic', 'cheer', 'barre', 'contact improv', 'contact improv\\w*', 'contratto mimo', 'musical theat(?:re|er)', 'pole dance', 'flirt dance', 'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar', 'indienne', 'persiana?', 'arabe', 'arabic', 'oriental\\w*', 'oriente', 'cubana', 'capoeira', 'tahitian dancing', 'folklor\\w+', 'kizomba', 'burlesque', 'technique', 'limon', 'clogging', 'zouk', 'afro mundo', 'class?ic[ao]', 'acroyoga', 'kirtan', 'modern dance', 'pilates', 'tribal', 'jazz', 'tap', 'contemporary', 'contempor\\w*', 'africa\\w+', 'sabar', 'silk', 'aerial', 'zumba', 'belly\\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance', 'soca', 'flamenco']
+    a = sorted(a)
+    print a
+    print re_flatten.construct_regex(a)
+    print highlight_keywords(' ๆ ซึ่งไม่ให้พี่น้อง Bboy ได้ผิดหวังอีกต่อไป*')
+    print highlight_keywords('matched-text')
