@@ -93,7 +93,7 @@ dance_and_music_keywords = [
     'tutti gli stili', # italian all-styles
     'swag',
     'funk',
-    'dance\W?hall\w+',
+    'dance\W?hall\w*',
     'ragga',
     'hype',
     'new\W?jack\W?swing',
@@ -117,6 +117,7 @@ dance_and_music_keywords = [
 
 # hiphop dance. hiphop dans?
 dance_keywords = [
+    'street\W?jam',
     'freestylers?',
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
@@ -125,13 +126,13 @@ dance_keywords = [
     'poppeurs?',
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
-    'street\W?dancing?',
+    'street\W?dancing?', 'street\W?dancer?s?',
     u'스트릿', # street korean
     u'ストリートダンス', # japanese streetdance
     u'街舞', # chinese streetdance / hiphop
     u'gatvės šokių', # lithuanian streetdance
     'katutanssi\w*', # finnish streetdance
-    'street\W?dance', 'bre?ak\W?dance', 'bre?ak\W?dancing?', 'brea?ak\W?dancers?',
+    'bre?ak\W?dancing?', 'bre?ak\W?dancer?s?',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
     'b\W?boy\w*', # 'bboyev' in slovak
@@ -320,7 +321,6 @@ other_show_keywords = [
 ]
 
 event_keywords = [
-    'street\W?jam',
     'camp',
     'kamp',
     'kemp',

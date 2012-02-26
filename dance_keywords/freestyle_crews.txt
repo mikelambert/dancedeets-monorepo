@@ -2,6 +2,7 @@ academy of villians
 art of technique
 art of tecknique
 bds praha
+beat buddy boi
 beat freaks
 beat up brno
 bopster scat
@@ -14,8 +15,10 @@ criminalz
 cultureshock
 da gentlemen
 dacrudancecompany
+dance fusion
 dark unit
 deep down dopeizm
+down\W?town\W?bounce
 ds players
 dynamic brno
 electric boogaloos
@@ -78,6 +81,7 @@ the lockers
 the next movement praha
 the pastels
 the waackers
+thequickstyle
 tokyo footworkz
 turf feinz
 u-min
