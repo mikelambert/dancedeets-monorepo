@@ -128,21 +128,22 @@ class DBEvent(db.Model):
             self.search_time_period = TIME_PAST
 
         location_info = event_locations.LocationInfo(fb_dict, self)
-        self.anywhere = location_info.is_online_event()
-        self.actual_city_name = location_info.actual_city()
-        self.city_name = location_info.largest_nearby_city()
-
-        if self.actual_city_name:
-            self.latitude, self.longitude = location_info.latlong()
-            self.geohashes = []
-            for x in range(locations.max_geohash_bits):
-                self.geohashes.append(str(geohash.Geostring((self.latitude, self.longitude), depth=x)))
-        else:
-            self.latitude = None
-            self.longitude = None
-            self.geohashes = []
-            #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
-            logging.warning("No geocoding results for eid=%s is: %s", self.fb_event_id)
+        # If we got good values from before, don't overwrite with empty values!
+        if location_info.actual_city() or not self.actual_city_name:
+            self.anywhere = location_info.is_online_event()
+            self.actual_city_name = location_info.actual_city()
+            self.city_name = location_info.largest_nearby_city()
+            if self.actual_city_name:
+                self.latitude, self.longitude = location_info.latlong()
+                self.geohashes = []
+                for x in range(locations.max_geohash_bits):
+                    self.geohashes.append(str(geohash.Geostring((self.latitude, self.longitude), depth=x)))
+            else:
+                self.latitude = None
+                self.longitude = None
+                self.geohashes = []
+                #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
+                logging.warning("No geocoding results for eid=%s is: %s", self.fb_event_id)
 
         self.event_keywords = event_classifier.relevant_keywords(fb_dict)
 
