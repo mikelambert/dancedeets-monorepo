@@ -28,10 +28,10 @@ def flatten_output(db_name, out_name, process_func):
         f = datastore.Entity._FromPb(entity_proto)
         try:
             result = process_func(f)
+            if result is not None:
+                csvwriter.writerow(result)
         except Exception, e:
             print "Error processing row %s: %r: %s" % (f.key().name(), e, f)
-        if result is not None:
-            csvwriter.writerow(result)
 
         ct += 1
         if ct % 20000 == 0:
@@ -50,6 +50,8 @@ def event_list(x):
         start_time.strftime('%Y%m%d')
     ]
 
+def potential_event(x):
+    return [x.key().name(), x.get('match_score', 0)]
 def json_data(x):
     if 'json_data' in x:
         return [x.key().name(), x['json_data']]
@@ -57,7 +59,7 @@ def json_data(x):
         return None
 
 flatten_output("local_data/DBEvent.db", "local_data/DBEvent.csv", event_list)
-#flatten_output("local_data/PotentialEvent.db", "local_data/PotentialEvent.csv", lambda x: [x.key().name()])
+flatten_output("local_data/PotentialEvent.db", "local_data/PotentialEvent.csv", potential_event)
 flatten_output("local_data/FacebookCachedObject.db", "local_data/FacebookCachedObject.csv", json_data)
 
 # count characters
