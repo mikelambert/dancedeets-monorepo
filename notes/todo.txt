@@ -1,6 +1,7 @@
 BEFORE LAUNCH:
 
-- write a mapreduce to clean out fbapi data with the wrong user id. save a ton of space
+- Weight titles more than bodies, and weight line lengths appropriately. Might help with "DJ Bio" problem.
+
 - uhoh, we are slowly growing the list-of-sources all the time, everytime something gets posted on a wall. no wonder the number of events keeps growing. we need to trim out sources with a ton of crap events.
 
 - For homepage:
@@ -154,6 +155,8 @@ http://www.dancedeets.com/events/admin_edit?event_id=297213826966950
 http://www.dancedeets.com/events/admin_edit?event_id=164801136955648
 http://www.dancedeets.com/events/admin_edit?event_id=262771393789462 # missing workshop/lesson/etc
 http://www.dancedeets.com/events/admin_edit?event_id=359823644046511 # hhdu jam old school hip hop, space to train, mirror
+http://www.dancedeets.com/events/admin_edit?event_id=299741040086967 # same as previous
+http://www.dancedeets.com/events/admin_edit?event_id=306340392756530
 http://www.dancedeets.com/events/admin_edit?event_id=140853525997526
 http://www.dancedeets.com/events/admin_edit?event_id=260544503964101 # session
 http://www.dancedeets.com/events/admin_edit?event_id=170215153054761 # house class
@@ -163,6 +166,8 @@ http://www.dancedeets.com/events/admin_edit?event_id=324969544184938 # freestyle
 http://www.dancedeets.com/events/admin_edit?event_id=148775235167387 # cypher event
 http://www.dancedeets.com/events/admin_edit?event_id=372653979427954
 http://www.dancedeets.com/events/admin_edit?event_id=233084563440802 # add dancers
+http://www.dancedeets.com/events/admin_edit?event_id=292474087484320
+http://www.dancedeets.com/events/admin_edit?event_id=394044470610646
 
 - Use prospective search for finding events created in the time-since-emails-generated, and write out real-time notifications to users about them:
 http://code.google.com/appengine/docs/python/prospectivesearch/overview.html
