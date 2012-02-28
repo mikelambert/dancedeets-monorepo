@@ -173,6 +173,7 @@ dance_keywords = [
     '(?:new|nu|middle)\W?s(?:ch|k)ool\W\W?hip\W?hop', 'hip\W?hop\W\W?(?:old|new|nu|middle)\W?s(?:ch|k)ool',
     'newstyleurs?',
     'voguer[sz]?', 'vogue?ing', 'vogue fem', 'voguin',
+    'fem queen', 'butch queen',
     'mini\W?ball', 'realness',
     'urban danc\w*',
     'urban style[sz]',
@@ -394,6 +395,7 @@ event_keywords = [
     u'warsztatów', # polish workshop
     u'seminarų', # lithuanian workshop
     'class with', 'master\W?class(?:es)?',
+    'casting call',
     'auditions?',
     'audicija', # audition croatia
     'audiciones', # spanish audition
@@ -477,7 +479,6 @@ dance_wrong_style_keywords = [
     'technique', 'limon',
     'artist\Win\Wresidence',
     'guest artists?',
-    'faculty',
     'disciplinary',
     'clogging',
     'zouk',
@@ -536,6 +537,7 @@ def build_regexes():
     else:
         all_regexes['manual_dance_keywords_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
+    all_regexes['good_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords)
     all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True)
 
 def make_regex(strings, matching=False, word_boundaries=True):
@@ -601,7 +603,6 @@ class ClassifiedEvent(object):
 
     def classify(self):
         build_regexes()
-        start = time.time()
 
         #self.language not in ['ja', 'ko', 'zh-CN', 'zh-TW', 'th']:
         if cjk_detect.cjk_regex.search(self.search_text):
@@ -609,6 +610,9 @@ class ClassifiedEvent(object):
         else:
             idx = WORD_BOUNDARIES
 
+        if not all_regexes['good_keyword_regex'][idx].search(self.search_text):
+            self.dance_event = False
+            return
         a = time.time()
         b = time.time()
         manual_dance_keywords_matches = all_regexes['manual_dance_keywords_regex'][idx].findall(self.search_text)
