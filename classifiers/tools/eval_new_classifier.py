@@ -1,41 +1,24 @@
 #!/usr/bin/python
 
-import csv
-import json
 import sys
 sys.path += ['.']
 from logic import event_classifier
 from logic import event_classifier2
+from classifiers import processing
 
-good_ids = set()
-for row in csv.reader(open('local_data/DBEvent.csv')):
-    good_ids.add(row[0])
-
-potential_ids = set()
-for row in csv.reader(open('local_data/PotentialEvent.csv')):
-    potential_ids.add(row[0])
-
-potential_and_good_ids = potential_ids.intersection(good_ids)
-potential_and_bad_ids = potential_ids.difference(good_ids)
-
-combined_ids = potential_ids.union(good_ids)
-
-def all_fb_data():
-    csv.field_size_limit(1000000000)
-    for row in csv.reader(open('local_data/FacebookCachedObject.csv')):
-        source_id, row_id, row_type = row[0].split('.')
-        if source_id == "701004" and row_type == 'OBJ_EVENT' and row_id in combined_ids:
-            fb_event = json.loads(row[1])
-            if fb_event and not fb_event['deleted'] and fb_event['info']['privacy'] == 'OPEN':
-                yield row_id, fb_event
-
+ids_info = processing.load_ids()
+for x in ids_info:
+    print x, len(ids_info[x])
+good_ids = ids_info['good_ids']
+bad_ids = ids_info['bad_ids']
+combined_ids = ids_info['combined_ids']
 
 START_EVENT = 0
-END_EVENT = 0
+END_EVENT = 10000
 def partition_ids(classifier=event_classifier.ClassifiedEvent):
     success = set()
     fail = set()
-    for i, (id, fb_event) in enumerate(all_fb_data()):
+    for i, (id, fb_event) in enumerate(processing.all_fb_data(combined_ids)):
         if not i % 10000: print 'Processing ', i
         if i < START_EVENT:
             continue
@@ -53,27 +36,31 @@ def partition_ids(classifier=event_classifier.ClassifiedEvent):
             fail.add(id)
     return fail, success
 
-print 'good', len(good_ids)
-print 'potential', len(potential_ids)
-print 'potential-and-good', len(potential_and_good_ids)
-print 'potential-and-bad', len(potential_and_bad_ids)
-
 
 print '---'
 fail, succeed = partition_ids()
-false_negative = fail.difference(potential_and_bad_ids)
-true_negative = fail.intersection(potential_and_bad_ids)
+true_positive = succeed.intersection(good_ids)
+false_positive = succeed.intersection(bad_ids)
+false_negative = fail.intersection(good_ids)
+true_negative = fail.intersection(bad_ids)
 print 'false negatives', len(false_negative)
 print 'true negatives', len(true_negative)
 
 print '--- using old filter ---'
 fail2, succeed2 = partition_ids(classifier=event_classifier2.ClassifiedEvent)
-false_negative2 = fail2.difference(potential_and_bad_ids)
-true_negative2 = fail2.intersection(potential_and_bad_ids)
+true_positive2 = succeed2.intersection(good_ids)
+false_positive2 = succeed2.intersection(bad_ids)
+false_negative2 = fail2.intersection(good_ids)
+true_negative2 = fail2.intersection(bad_ids)
 print 'false negatives', len(false_negative2)
 print 'true negatives', len(true_negative2)
 
-print 'list of used-to-be-positive now-negative dance events'
+print '-----'
+print "Events we helped find:", len(true_positive.difference(true_positive2))
+print "Events we will miss:", len(false_positive.difference(false_positive2))
+print "Events we will waste time on:", len(true_negative2.difference(true_negative))
+
+print 'list of used-to-be-positive now-negative dance events (things we will miss)'
 for id in false_negative.difference(false_negative2):
     print id
     continue
@@ -86,7 +73,7 @@ for id in false_negative.difference(false_negative2):
 print ''
 print ''
 
-print 'list of used-to-be-negative now-positive non-dance events'
+print 'list of used-to-be-negative now-positive non-dance events (extra useless work)'
 for id in true_negative2.difference(true_negative):
     print id
     continue
