@@ -101,6 +101,8 @@ def process_event_source_ids(event_source_combos, batch_lookup):
         potential_new_source_ids.add(posting_source_id)
     batch_lookup.finish_loading()
 
+    # TODO(lambert): Maybe filter this event out for itself and its sources, before we attempt to load event-attending and recreate it?
+    # TODO(lambert): like what we do with potential-events-from-invites? maybe combine those flows?
     for event_id, source, posting_source_id in event_source_combos:
         try:
             fb_event = batch_lookup.data_for_event(event_id)

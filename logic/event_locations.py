@@ -10,6 +10,11 @@ from util import abbrev
 # TODO: do some auto-classification of ripley grier, pearl studios, champion studios, etc. People always type horrible addresses.
 # UCI
 # UCLB
+# JD School
+# V.D'ASCQ replacements? -> Villeneuve-d'Ascq
+# detect obvious city names embedded inside?
+
+# TODO(lambert): when we get an un-geocodable address, stick with last-known-address in the DBEvent, and do not overwrite with None
 
 class LocationMapping(db.Model):
     remapped_address = db.StringProperty(indexed=False)
