@@ -85,7 +85,7 @@ class AtomHandler(base_servlet.BaseRequestHandler):
             if location:
                 lines.append('Location: %s' % xml.sax.saxutils.escape(location))
             lines.append('')
-            lines.append(xml.sax.saxutils.escape(result.fb_event['info']['description']))
+            lines.append(xml.sax.saxutils.escape(result.fb_event['info'].get('description', '')))
             description = '\n'.join(lines)
 
             description = description.replace('\n', '<br/>\n')
