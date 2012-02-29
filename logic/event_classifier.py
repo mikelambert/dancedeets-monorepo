@@ -527,7 +527,7 @@ def get_manual_dance_keywords():
     return manual_dance_keywords
 
 def build_regexes():
-    if 'good_capturing_keyword_regex' in all_regexes:
+    if 'good_keyword_regex' in all_regexes:
         return
 
     manual_dance_keywords = get_manual_dance_keywords()
@@ -538,15 +538,11 @@ def build_regexes():
         all_regexes['manual_dance_keywords_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
     all_regexes['good_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords)
-    all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True)
 
-def make_regex(strings, matching=False, word_boundaries=True):
+def make_regex(strings, word_boundaries=True):
     try:
         inner_regex = re_flatten.construct_regex(strings)
-        if matching:
-            regex = u'(?ui)(' + inner_regex + u')'
-        else:
-            regex = u'(?ui)(?:' + inner_regex + u')'
+        regex = u'(?ui)(?:' + inner_regex + u')'
         if word_boundaries:
             regex = r'\b%s\b' % regex
         return re.compile(regex)
@@ -561,10 +557,10 @@ def make_regex(strings, matching=False, word_boundaries=True):
 
 WORD_BOUNDARIES = 0
 NO_WORD_BOUNDARIES = 1
-def make_regexes(strings, matching=False):
+def make_regexes(strings):
     a = [None] * 2
-    a[NO_WORD_BOUNDARIES] = make_regex(strings, matching=matching, word_boundaries=False)
-    a[WORD_BOUNDARIES] = make_regex(strings, matching=matching, word_boundaries=True)
+    a[NO_WORD_BOUNDARIES] = make_regex(strings, word_boundaries=False)
+    a[WORD_BOUNDARIES] = make_regex(strings, word_boundaries=True)
     return tuple(a)
 
 all_regexes['dance_wrong_style_regex'] = make_regexes(dance_wrong_style_keywords)
@@ -580,7 +576,7 @@ all_regexes['event_regex'] = make_regexes(event_keywords)
 all_regexes['french_event_regex'] = make_regexes(event_keywords + french_event_keywords)
 all_regexes['italian_event_regex'] = make_regexes(event_keywords + italian_event_keywords)
 
-all_regexes['bad_capturing_keyword_regex'] = make_regexes(club_only_keywords + dance_wrong_style_keywords, matching=True)
+all_regexes['bad_keyword_regex'] = make_regexes(club_only_keywords + dance_wrong_style_keywords)
 
 all_regexes['italian'] = make_regexes(['di', 'i', 'e', 'con'])
 all_regexes['french'] = make_regexes(["l'\w*", 'le', 'et', 'une', 'avec', u'à', 'pour'])
@@ -692,8 +688,8 @@ def relevant_keywords(fb_event):
         idx = NO_WORD_BOUNDARIES
     else:
         idx = WORD_BOUNDARIES
-    good_keywords = all_regexes['good_capturing_keyword_regex'][idx].findall(text)
-    bad_keywords = all_regexes['bad_capturing_keyword_regex'][idx].findall(text)
+    good_keywords = all_regexes['good_keyword_regex'][idx].findall(text)
+    bad_keywords = all_regexes['bad_keyword_regex'][idx].findall(text)
     return sorted(set(good_keywords).union(bad_keywords))
 
 @skip_filter
@@ -703,8 +699,8 @@ def highlight_keywords(text):
         idx = NO_WORD_BOUNDARIES
     else:
         idx = WORD_BOUNDARIES
-    text = all_regexes['good_capturing_keyword_regex'][idx].sub('<span class="matched-text">\\1</span>', text)
-    text = all_regexes['bad_capturing_keyword_regex'][idx].sub('<span class="bad-matched-text">\\1</span>', text)
+    text = all_regexes['good_keyword_regex'][idx].sub('<span class="matched-text">\\1</span>', text)
+    text = all_regexes['bad_keyword_regex'][idx].sub('<span class="bad-matched-text">\\1</span>', text)
     return text
 
 if __name__ == '__main__':
