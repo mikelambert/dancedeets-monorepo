@@ -252,8 +252,7 @@ club_only_keywords = [
     'bartenders?',
     'waiters?',
     'waitress(?:es)?',
-    'go\Wgo',
-    'gogo',
+    'go\W?go',
 ]
 
 #TODO(lambert): use these
@@ -473,7 +472,8 @@ dance_wrong_style_keywords = [
     'contact improv\w*',
     'contratto mimo', # italian contact mime
     'musical theat(?:re|er)',
-    'pole dance', 'flirt dance',
+    'pole danc\w+', 'flirt danc\w+',
+    'go\W?go',
     'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
     'indienne',
     'persiana?',
@@ -623,7 +623,11 @@ class ClassifiedEvent(object):
 
         #self.language not in ['ja', 'ko', 'zh-CN', 'zh-TW', 'th']:
         if cjk_detect.cjk_regex.search(self.search_text):
-            idx = NO_WORD_BOUNDARIES
+            cjk_chars = len(cjk_detect.cjk_regex.findall(self.search_text))
+            if 1.0 * cjk_chars / len(self.search_text) > 0.05:
+                idx = NO_WORD_BOUNDARIES
+            else:
+                idx = WORD_BOUNDARIES
         else:
             idx = WORD_BOUNDARIES
 
