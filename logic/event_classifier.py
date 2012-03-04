@@ -3,7 +3,13 @@
 import codecs
 import logging
 import math
-import re
+try:
+    import re2 as re
+except ImportError:
+    print "Could not import re2, falling back."
+    import re
+else:
+    re.set_fallback_notification(re.FALLBACK_WARNING)
 import time
 from util import re_flatten
 from util import cjk_detect
@@ -239,7 +245,6 @@ club_only_keywords = [
     'a night of',
     'dance floor',
     'beer',
-    'blues',
     'bartenders?',
     'waiters?',
     'waitress(?:es)?',
@@ -449,6 +454,7 @@ italian_event_keywords = [
 
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
+    'blues',
     'waltz',
     'salsy', # salsa czech
     'milonga',
@@ -467,7 +473,7 @@ dance_wrong_style_keywords = [
     'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
     'indienne',
     'persiana?',
-    'arabe', 'arabic',
+    'arabe', 'arabic', 'araba',
     'oriental\w*', 'oriente', 
     'cubana',
     'capoeira',
@@ -544,16 +550,16 @@ def make_regex(strings, matching=False, word_boundaries=True):
     try:
         inner_regex = re_flatten.construct_regex(strings)
         if matching:
-            regex = u'(?ui)(' + inner_regex + u')'
+            regex = u'(' + inner_regex + u')'
         else:
-            regex = u'(?ui)(?:' + inner_regex + u')'
+            regex = u'(?:' + inner_regex + u')'
         if word_boundaries:
             regex = r'\b%s\b' % regex
         return re.compile(regex)
     except UnicodeDecodeError:
         for line in strings:
             try:
-                re.compile(u'|'.join([line]))
+                re.compile(u'|'.join([line]), re.UNICODE)
             except UnicodeDecodeError:
                 logging.error("failed to compile: %r: %s", line, line)
                 raise
@@ -610,9 +616,9 @@ class ClassifiedEvent(object):
         else:
             idx = WORD_BOUNDARIES
 
-        if not all_regexes['good_keyword_regex'][idx].search(self.search_text):
-            self.dance_event = False
-            return
+        #if not all_regexes['good_keyword_regex'][idx].search(self.search_text):
+        #    self.dance_event = False
+        #    return
         a = time.time()
         b = time.time()
         manual_dance_keywords_matches = all_regexes['manual_dance_keywords_regex'][idx].findall(self.search_text)
