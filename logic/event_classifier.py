@@ -4,7 +4,7 @@ import codecs
 import logging
 import math
 try:
-    import re
+    import re2
     import re2 as re
 except ImportError:
     print "Could not import re2, falling back."
@@ -654,8 +654,8 @@ class ClassifiedEvent(object):
         self.found_event_matches = event_matches + easy_event_matches + club_and_event_matches
         self.found_wrong_matches = dance_wrong_style_matches + club_only_matches
 
-        self.title_wrong_style_matches = all_regexes['dance_wrong_style_regex'][idx].findall(self.title)
-        self.title_good_matches = all_regexes['good_keyword_regex'][idx].findall(self.title)
+        title_wrong_style_matches = all_regexes['dance_wrong_style_regex'][idx].findall(self.title)
+        title_good_matches = all_regexes['good_keyword_regex'][idx].findall(self.title)
             
         combined_matches = self.found_dance_matches + self.found_event_matches
         fraction_matched = 1.0 * len(combined_matches) / len(re.split(r'\W+', self.search_text))
@@ -669,7 +669,7 @@ class ClassifiedEvent(object):
         # one critical dance keyword
         elif len(dance_matches) >= 1:
             self.dance_event = 'obvious dance style'
-        elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and self.calc_inverse_keyword_density < 5 and not (self.title_wrong_style_matches and not self.title_good_matches):
+        elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):
             self.dance_event = 'hiphop/funk and good event type'
         # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
         elif len(easy_dance_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and len(dance_wrong_style_matches) == 0 and self.calc_inverse_keyword_density < 5:
@@ -700,7 +700,7 @@ class ClassifiedEvent(object):
         return self.calc_inverse_keyword_density
 
 
-def get_classified_event(fb_event, language):
+def get_classified_event(fb_event, language=None):
     classified_event = ClassifiedEvent(fb_event, language)
     classified_event.classify()
     return classified_event
