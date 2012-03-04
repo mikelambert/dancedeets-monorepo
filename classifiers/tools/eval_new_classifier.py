@@ -39,9 +39,20 @@ def partition_ids(classifier=event_classifier.ClassifiedEvent):
     print 'Time per event: %s' % (1.0 * (time.time() - a) / (max(END_EVENT, i) - START_EVENT))
     return fail, success
 
+# TODO(lambert): move this all into a proper main()
+
+import sys
+import getopt
+opt_data = getopt.getopt(sys.argv[1:], 'o:i:')
+opts = dict(opt_data[0])
+if not opts.get('-i'):
+    opts['-i'] = 'old_eval'
 
 print '---'
 fail, succeed = partition_ids()
+if opts.get('-o'):
+    open(opts['-o']+".fail", 'w').writelines([x+"\n" for x in fail])
+    open(opts['-o']+".succeed", 'w').writelines([x+"\n" for x in succeed])
 true_positive = succeed.intersection(good_ids)
 false_positive = succeed.intersection(bad_ids)
 false_negative = fail.intersection(good_ids)
@@ -50,7 +61,10 @@ print 'false negatives', len(false_negative)
 print 'true negatives', len(true_negative)
 
 print '--- using old filter ---'
-fail2, succeed2 = partition_ids(classifier=event_classifier2.ClassifiedEvent)
+if opts.get('-i'):
+    fail2 = set(x.strip() for x in open(opts['-i']+".fail").readlines())
+    succeed2 = set(x.strip() for x in open(opts['-i']+".succeed").readlines())
+#fail2, succeed2 = partition_ids(classifier=event_classifier2.ClassifiedEvent)
 true_positive2 = succeed2.intersection(good_ids)
 false_positive2 = succeed2.intersection(bad_ids)
 false_negative2 = fail2.intersection(good_ids)
@@ -60,8 +74,9 @@ print 'true negatives', len(true_negative2)
 
 print '-----'
 print "Events we helped find:", len(true_positive.difference(true_positive2))
-print "Events we will miss:", len(false_positive.difference(false_positive2))
-print "Events we will waste time on:", len(true_negative2.difference(true_negative))
+print "Events we will miss:", len(false_negative.difference(false_negative2))
+print "Events we will waste time on:", len(false_positive.difference(false_positive2))
+print "Events we saved time on:", len(true_negative.difference(true_negative2))
 
 print 'list of used-to-be-positive now-negative dance events (things we will miss)'
 for id in false_negative.difference(false_negative2):
@@ -77,7 +92,7 @@ print ''
 print ''
 
 print 'list of used-to-be-negative now-positive non-dance events (extra useless work)'
-for id in true_negative2.difference(true_negative):
+for id in false_positive.difference(false_positive2):
     print id
     continue
     fb_event = get_fb_event(id)
