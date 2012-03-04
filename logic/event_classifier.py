@@ -4,9 +4,11 @@ import codecs
 import logging
 import math
 try:
+    import re
     import re2 as re
 except ImportError:
     print "Could not import re2, falling back."
+    re2 = None
     import re
 else:
     re.set_fallback_notification(re.FALLBACK_WARNING)
@@ -118,13 +120,12 @@ dance_and_music_keywords = [
     u'フリースタイル', # japanese freestyle
     'vogue',
     'crunk',
-
+    'freestylers?',
 ]
 
 # hiphop dance. hiphop dans?
 dance_keywords = [
     'street\W?jam',
-    'freestylers?',
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
     'jazz rock',
@@ -133,12 +134,14 @@ dance_keywords = [
     'commercial hip\W?hop',
     'jerk(?:ers?|ing?)',
     'street\W?dancing?', 'street\W?dancer?s?',
+    'street\W?danc\w+',
     u'스트릿', # street korean
     u'ストリートダンス', # japanese streetdance
     u'街舞', # chinese streetdance / hiphop
     u'gatvės šokių', # lithuanian streetdance
     'katutanssi\w*', # finnish streetdance
     'bre?ak\W?dancing?', 'bre?ak\W?dancer?s?',
+    'break\W?danc\w+',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
     'b\W?boy\w*', # 'bboyev' in slovak
@@ -183,6 +186,7 @@ dance_keywords = [
     'mini\W?ball', 'realness',
     'urban danc\w*',
     'urban style[sz]',
+    'urban contemporary',
     u'dan[çc]\w* urban\w*',
     'dan\w+ urban\w+', # spanish urban dance
     'baile urban\w+', # spanish urban dance
@@ -486,6 +490,7 @@ dance_wrong_style_keywords = [
     'artist\Win\Wresidence',
     'guest artists?',
     'disciplinary',
+    'reflective',
     'clogging',
     'zouk',
     'afro mundo',
@@ -496,6 +501,7 @@ dance_wrong_style_keywords = [
     #'yoga',
     'acroyoga',
     'kirtan',
+    'hoop\W?dance',
     'modern dance',
     'pilates',
     'tribal',
@@ -555,7 +561,10 @@ def make_regex(strings, matching=False, word_boundaries=True):
             regex = u'(?:' + inner_regex + u')'
         if word_boundaries:
             regex = r'\b%s\b' % regex
-        return re.compile(regex)
+        if re2:
+            return re.compile(regex, max_mem=15000000)
+        else:
+            return re.compile(regex)
     except UnicodeDecodeError:
         for line in strings:
             try:
@@ -602,8 +611,10 @@ class ClassifiedEvent(object):
         if 'name' not in fb_event['info']:
             logging.info("fb event id is %s has no name, with value %s", fb_event['info']['id'], fb_event)
             self.search_text = ''
+            self.title = ''
         else:
             self.search_text = get_relevant_text(fb_event)
+            self.title = fb_event['info'].get('name', '').lower()
         self.language = language
         self.times = {}
 
@@ -643,6 +654,9 @@ class ClassifiedEvent(object):
         self.found_event_matches = event_matches + easy_event_matches + club_and_event_matches
         self.found_wrong_matches = dance_wrong_style_matches + club_only_matches
 
+        self.title_wrong_style_matches = all_regexes['dance_wrong_style_regex'][idx].findall(self.title)
+        self.title_good_matches = all_regexes['good_keyword_regex'][idx].findall(self.title)
+            
         combined_matches = self.found_dance_matches + self.found_event_matches
         fraction_matched = 1.0 * len(combined_matches) / len(re.split(r'\W+', self.search_text))
         if not fraction_matched:
@@ -655,7 +669,7 @@ class ClassifiedEvent(object):
         # one critical dance keyword
         elif len(dance_matches) >= 1:
             self.dance_event = 'obvious dance style'
-        elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and self.calc_inverse_keyword_density < 5:
+        elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and self.calc_inverse_keyword_density < 5 and not (self.title_wrong_style_matches and not self.title_good_matches):
             self.dance_event = 'hiphop/funk and good event type'
         # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
         elif len(easy_dance_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and len(dance_wrong_style_matches) == 0 and self.calc_inverse_keyword_density < 5:
