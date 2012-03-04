@@ -15,7 +15,7 @@ bad_ids = ids_info['bad_ids']
 combined_ids = ids_info['combined_ids']
 
 START_EVENT = 0
-END_EVENT = 1000
+END_EVENT = 0
 def partition_ids(classifier=event_classifier.ClassifiedEvent):
     success = set()
     fail = set()
@@ -36,7 +36,7 @@ def partition_ids(classifier=event_classifier.ClassifiedEvent):
             #    print id, fb_event['info'].get('name')
             #    print result.found_dance_matches, result.found_event_matches, result.found_wrong_matches
             fail.add(id)
-    print 'Time per event: %s' % (1.0 * (time.time() - a) / (END_EVENT - START_EVENT))
+    print 'Time per event: %s' % (1.0 * (time.time() - a) / (max(END_EVENT, i) - START_EVENT))
     return fail, success
 
 
