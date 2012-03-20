@@ -152,7 +152,6 @@ dance_keywords = [
     'footworks', # spanish footworks
     'top\W?rock(?:s|er[sz]?|ing?)?', 'up\W?rock(?:s|er[sz]?|ing?|)?',
     'houser[sz]?', 'house ?danc\w*',
-    'dance\W?hall\w*',
     'dance house', # seen in italian
     'lock(?:er[sz]?|ing?)?', 'lock dance',
     u'ロッカーズ', # japanese lockers
@@ -168,7 +167,7 @@ dance_keywords = [
     'jump\W?style[sz]?',
     'strutter[sz]?', 'strutting',
     'glides?', 'gliding', 
-    'tuts?', 'tutting?', 'tutter[sz]?',
+    'tutting?', 'tutter[sz]?',
     'mj\W+style', 'michael jackson style',
     'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
     'hip\W?hop\Wheels',
@@ -194,7 +193,7 @@ dance_keywords = [
     u'dan[çc]\w* urban\w*',
     'dan\w+ urban\w+', # spanish urban dance
     'baile urban\w+', # spanish urban dance
-    'pop\W{0,3}lock(?:ing?|er[sz]?)?'
+    'pop\W{0,3}lock(?:ing?|er[sz]?)?',
 ]
 # Crazy polish sometimes does lockingu. Maybe we need to do this more generally though.
 dance_keywords = dance_keywords + [x+'u' for x in dance_keywords] 
@@ -492,19 +491,14 @@ dance_wrong_style_keywords = [
     'folklor\w+',
     'kizomba',
     'burlesque',
-    'technique', 'limon',
+    'limon',
     'artist\Win\Wresidence',
-    'guest artists?',
     'disciplinary',
     'reflective',
     'clogging',
     'zouk',
     'afro mundo',
     'class?ic[ao]',
-    # Sometimes used in studio name even though it's still a hiphop class:
-    #'ballroom',
-    #'ballet',
-    #'yoga',
     'acroyoga',
     'kirtan',
     'hoop\W?dance',
@@ -520,6 +514,14 @@ dance_wrong_style_keywords = [
     'zumba', 'belly\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance',
     'soca',
     'flamenco',
+    'technique',
+    'guest artists?',
+]
+dance_wrong_style_title_keywords = dance_wrong_style_keywords + [
+    # Sometimes used in studio name even though it's still a hiphop class:
+    'ballroom',
+    'ballet',
+    'yoga',
 ]
 
 all_regexes = {}
@@ -589,6 +591,7 @@ def make_regexes(strings, matching=False):
     return tuple(a)
 
 all_regexes['dance_wrong_style_regex'] = make_regexes(dance_wrong_style_keywords)
+all_regexes['dance_wrong_style_title_regex'] = make_regexes(dance_wrong_style_title_keywords)
 all_regexes['dance_and_music_regex'] = make_regexes(dance_and_music_keywords)
 all_regexes['club_and_event_regex'] = make_regexes(club_and_event_keywords)
 all_regexes['easy_choreography_regex'] = make_regexes(easy_choreography_keywords)
@@ -679,6 +682,12 @@ class ClassifiedEvent(object):
         # one critical dance keyword
         elif len(dance_matches) >= 1:
             self.dance_event = 'obvious dance style'
+        # If the title has a bad-style and no good-styles, mark it bad
+        elif (all_regexes['dance_wrong_style_title_regex'][idx].search(self.title) and
+            not (all_regexes['dance_and_music_regex'][idx].search(self.title) or
+                 manual_dance_keywords_matches or dance_matches)): # these two are implied by the above, but do it here just in case future clause re-ordering occurs
+            self.dance_event = False
+
         elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):
             self.dance_event = 'hiphop/funk and good event type'
         # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
