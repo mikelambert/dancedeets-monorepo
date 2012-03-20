@@ -9,8 +9,10 @@ aus ninja
 aus omni
 babson,0
 bionic,0
+bly richards
 bobby mileage
 boogaloo sam
+bouboo soumare
 bravo brahms
 brian green
 brooklyn terry
@@ -52,6 +54,7 @@ hozin
 hurrikane
 i\W?cee
 iron monkey
+isaac suarez
 j-rock,0
 jak-hamah
 javier ninja
@@ -90,7 +93,9 @@ loose joint
 macia del prete
 malika benjelloun
 mamson,0
+manel head
 manu,0
+marcio monteiro
 marjory smarth
 meech
 melanie aguirre
@@ -122,6 +127,7 @@ rokafella
 salah
 sally sly
 sally sly
+sandra granada
 scooby doo
 scoobydoo
 scramble.?lock

@@ -1,6 +1,8 @@
 2auce\W+edwards # ignore cj at front due to backtracking
+alan truong
 alex bullon
 amanda suk
+andi vega
 andrew baterina
 antoine troupe
 april bambao
@@ -9,6 +11,7 @@ ava bernstine
 bam\W+martin
 beau fournier
 brandon dumlao
+brian fucanan
 brian puspos
 bryan tanaka
 candace brown
@@ -61,6 +64,7 @@ marc marvelous
 mari martin
 mariama ambrose
 mariel martin
+mark fucanan
 martin singh,0
 mecnun giasar
 michael riccio
@@ -92,6 +96,7 @@ sophia aguiar
 stephane charbonneau,0
 sven taylor
 teddy forance
+tega alex
 tony czar
 tucker barkley
 valentine norton

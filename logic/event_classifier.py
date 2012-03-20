@@ -7,7 +7,7 @@ try:
     import re2
     import re2 as re
 except ImportError:
-    print "Could not import re2, falling back."
+    logging.info("Could not import re2, falling back to re.")
     re2 = None
     import re
 else:
@@ -55,6 +55,7 @@ easy_dance_keywords = [
     'taniec', # dance polish
     u'zatanč\w*', # dance czech
     'tan[ec][ec]\w*', # dance polish
+    u'tańca', # dance polish
     'tanca', # dance slovak
     u'tancujú', # dance slovak
     u'tanečno', # dance slovak
@@ -99,6 +100,7 @@ dance_and_music_keywords = [
     'all\W?style[zs]?',
     'tout\W?style[zs]?', # french all-styles
     'tutti gli stili', # italian all-styles
+    'shuffle',
     'swag',
     'funk',
     'dance\W?hall\w*',
@@ -150,6 +152,7 @@ dance_keywords = [
     'footworks', # spanish footworks
     'top\W?rock(?:s|er[sz]?|ing?)?', 'up\W?rock(?:s|er[sz]?|ing?|)?',
     'houser[sz]?', 'house ?danc\w*',
+    'dance\W?hall\w*',
     'dance house', # seen in italian
     'lock(?:er[sz]?|ing?)?', 'lock dance',
     u'ロッカーズ', # japanese lockers
@@ -161,13 +164,14 @@ dance_keywords = [
     'waving?', 'wavers?',
     'bott?ing?',
     'robott?ing?',
-    'shuffle', 'melbourne shuffle',
+    'melbourne shuffle',
     'jump\W?style[sz]?',
     'strutter[sz]?', 'strutting',
     'glides?', 'gliding', 
     'tuts?', 'tutting?', 'tutter[sz]?',
     'mj\W+style', 'michael jackson style',
     'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
+    'hip\W?hop\Wheels',
     'l\W?a\W?\Wstyle', 'l\W?a\W?\Wdance',
     'n(?:ew|u)\W?styles?',
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
@@ -192,6 +196,8 @@ dance_keywords = [
     'baile urban\w+', # spanish urban dance
     'pop\W{0,3}lock(?:ing?|er[sz]?)?'
 ]
+# Crazy polish sometimes does lockingu. Maybe we need to do this more generally though.
+dance_keywords = dance_keywords + [x+'u' for x in dance_keywords] 
 
 easy_event_keywords = [
     'jams?', 'club', 'after\Wparty', 'pre\Wparty',
@@ -426,7 +432,7 @@ event_keywords = [
     u'특강', # korean lecture
     'lekcie', # slovak lessons
     'dansklasser', # swedish dance classes
-    'lekcja', # polish lesson
+    'lekcj[ai]', # polish lesson
     'eigoje', # lithuanian course
     'pamokas', # lithuanian lesson
     'kursai', # course lithuanian
