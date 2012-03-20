@@ -104,7 +104,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         fb_event = self.batch_lookup.data_for_event(event_id)
         fb_event_attending = self.batch_lookup.data_for_event_attending(event_id)
-        if fb_event['info']['privacy'] != 'OPEN':
+        if fb_event['info'].get('privacy') != 'OPEN':
             self.add_error('Cannot add secret/closed events to dancedeets!')
 
         self.errors_are_fatal()
@@ -171,7 +171,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         fb_event = self.batch_lookup.data_for_event(event_id)
         fb_event_attending = self.batch_lookup.data_for_event_attending(event_id)
-        if fb_event['info']['privacy'] != 'OPEN':
+        if fb_event['info'].get('privacy') != 'OPEN':
             self.add_error('Cannot add secret/closed events to dancedeets!')
 
         self.errors_are_fatal()
@@ -284,7 +284,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.add_error(str(e))
 
         fb_event = self.batch_lookup.data_for_event(event_id)
-        if fb_event['info']['privacy'] != 'OPEN':
+        if fb_event['info'].get('privacy') != 'OPEN':
             self.add_error('Cannot add secret/closed events to dancedeets!')
         self.errors_are_fatal()
 
@@ -318,8 +318,10 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
         number_of_events = int(self.request.get('number_of_events', '20'))
-        unseen_potential_events = list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0"))
-        unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True"))
+        unseen_potential_events = list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0 ORDER BY match_score DESC LIMIT %s" % number_of_events))
+        if len(unseen_potential_events) < number_of_events:
+            unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True LIMIT %s" % (number_of_events - len(unseen_potential_events))))
+        
         for x in unseen_potential_events:
             x.dance_prediction_score = getattr(x, 'dance_prediction_score', 0)
 
@@ -331,7 +333,9 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         potential_event_notadded_ids.sort(key=lambda x: -(potential_event_dict[x].match_score or 0))
 
         # Limit to 20 at a time so we don't overwhelm the user.
-        total_potential_events = len(potential_event_notadded_ids)
+        total_potential_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0").count(2000)
+        total_potential_events += potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True").count(2000)
+
         has_more_events = total_potential_events > number_of_events
         potential_event_notadded_ids = potential_event_notadded_ids[:number_of_events]
 
