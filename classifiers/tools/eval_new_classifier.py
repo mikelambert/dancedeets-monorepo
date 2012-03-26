@@ -14,9 +14,12 @@ bad_ids = ids_info['bad_ids']
 combined_ids = ids_info['combined_ids']
 
 def handle_new_false_negative(id, ec):
-    print "fn", [(k, v) for (k, v) in ec.__dict__.iteritems() if k not in ['search_text', 'times']]
+    print "FALSE------", id, [(k, v) for (k, v) in ec.__dict__.iteritems() if k not in ['search_text', 'times']]
+    pass
+
 def handle_new_false_positive(id, ec):
-    print "fp", [(k, v) for (k, v) in ec.__dict__.iteritems() if k not in ['search_text', 'times']]
+    print "FALSE++++++", id, [(k, v) for (k, v) in ec.__dict__.iteritems() if k not in ['search_text', 'times']]
+    pass
 
 
 START_EVENT = 0
@@ -36,7 +39,7 @@ def partition_ids(old_true_positive, old_true_negative, classifier=event_classif
         if result.is_dance_event():
             success.add(id)
             if id in old_true_negative:
-                handle_new_false_positive(result)
+                handle_new_false_positive(id, result)
         else:
             # To print out failures, to see if there's any way we can better detect them
             #if id in good_ids:
@@ -44,7 +47,7 @@ def partition_ids(old_true_positive, old_true_negative, classifier=event_classif
             #    print result.found_dance_matches, result.found_event_matches, result.found_wrong_matches
             fail.add(id)
             if id in old_true_positive:
-                handle_new_false_negative(result)
+                handle_new_false_negative(id, result)
     print 'Time per event: %s' % (1.0 * (time.time() - a) / (max(END_EVENT, i) - START_EVENT))
     return fail, success
 
