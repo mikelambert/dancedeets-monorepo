@@ -1,5 +1,11 @@
 BEFORE LAUNCH:
 
+- Incorporate negative keywords:
+https://docs.google.com/spreadsheet/ccc?key=0AkP-DrxqM3GVdHRhUkpDYlFnZFhieko2NWJ1cVlxUWc&pli=1#gid=0
+
+- Add Social OpenGraph actions: https://developers.facebook.com/docs/opengraph/tutorial/#plugins
+- Add mobile integration: https://developers.facebook.com/docs/guides/mobile/web/
+
 - Weight titles more than bodies, and weight line lengths appropriately. Might help with "DJ Bio" problem.
 
 - uhoh, we are slowly growing the list-of-sources all the time, everytime something gets posted on a wall. no wonder the number of events keeps growing. we need to trim out sources with a ton of crap events.
