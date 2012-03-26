@@ -20,7 +20,7 @@ Potential Events Classification
 		style="background-color: lightgrey"
 	#end if
 	>
-		<td>
+		<td><nobr>
 		#if $potential_event.potential_event.match_score
 			$potential_event.potential_event.match_score
 		#else
@@ -29,7 +29,7 @@ Potential Events Classification
 		(
 			$potential_event.classified_event.inverse_keyword_density()
 		)
-		</td>
+		</nobr></td>
 		<td>
 		<span style="text-color: green">
 		$potential_event.potential_event.dance_prediction_score
