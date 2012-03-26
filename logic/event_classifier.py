@@ -69,7 +69,7 @@ easy_dance_keywords = [
     'tanssi\w*', # finnish dance
     'bail[ae]\w*', # dance spanish
     'danzas', # dance spanish
-    'ballerino', # dancer italian
+    'ballerin[io]', # dancer italian
     u'tänzern', # dancer german
     u'танчер', # dancer macedonian
     u'танцовиот', # dance macedonian
@@ -107,6 +107,7 @@ dance_and_music_keywords = [
     'ragga',
     'hype',
     'new\W?jack\W?swing',
+    'glides?', 'gliding', 
     'breaks',
     'boogaloo',
     'breaking?', 'breakers?',
@@ -161,16 +162,18 @@ dance_keywords = [
     'locking4life',
     'dance crew[sz]?',
     'waving?', 'wavers?',
+    'toy\W?man',
+    'puppet\W?style',
     'bott?ing?',
     'robott?ing?',
     'melbourne shuffle',
     'jump\W?style[sz]?',
     'strutter[sz]?', 'strutting',
-    'glides?', 'gliding', 
     'tutting?', 'tutter[sz]?',
     'mj\W+style', 'michael jackson style',
     'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
     'hip\W?hop\Wheels',
+    # only do la-style if not salsa? http://www.dancedeets.com/events/admin_edit?event_id=292605290807447
     'l\W?a\W?\Wstyle', 'l\W?a\W?\Wdance',
     'n(?:ew|u)\W?styles?',
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
@@ -261,7 +264,7 @@ club_only_keywords = [
 ]
 
 #TODO(lambert): use these
-anti_dance_keywords  = [
+preprocess_removals = [
     'jerk chicken',
     'poker tournaments?',
     'fashion competition',
@@ -273,8 +276,17 @@ anti_dance_keywords  = [
     'poppin.? bottles?',
     'dance fitness',
     'lock down',
+    'lock up',
+    'latin street dance',
+    'whack music',
+    'wack music',
+    'marvellous dance crew',
+    '1st class',
+    'first class',
+    'world class',
+    'go\W?go\W?danc(?:ers?|ing?)',
 ]
-# lock up
+
 # battle freestyle ?
 # dj battle
 # battle royale
@@ -284,16 +296,10 @@ anti_dance_keywords  = [
 # beat 
 # 'open cyphers'
 # freestyle
-# go\W?go\W?danc(?:ers?|ing?)
 #in\Whouse  ??
 # 'brad houser'
-# world class
-# 1st class
-# whack music
-# wack music
 
 # open mic
-# Marvellous dance crew (uuugh)
 
 #dj.*bboy
 #dj.*bgirl
@@ -365,6 +371,7 @@ event_keywords = [
     'bitwach', # polish battle
     u'バトル', # japanese battle
     'tournaments?',
+    'tournoi', # french tournament
     u'大会', # japanese tournament
     u'トーナメント', # japanese tournament
     'turnie\w*', # tournament polish/german
@@ -384,6 +391,7 @@ event_keywords = [
     'giuria', # jury italian
     'show\W?case',
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook)',
+    'open circles',
     'c(?:y|i)ph(?:a|ers?)',
     u'サイファ', # japanese cypher
     u'サイファー', # japanese cypher
@@ -474,6 +482,7 @@ dance_wrong_style_keywords = [
     'cheer',
     'barre',
     'contact improv',
+    'contato improv\w*',
     'contact improv\w*',
     'contratto mimo', # italian contact mime
     'musical theat(?:re|er)',
@@ -491,8 +500,10 @@ dance_wrong_style_keywords = [
     'folklor\w+',
     'kizomba',
     'burlesque',
+    u'バーレスク', # burlesque japan
     'limon',
     'artist\Win\Wresidence',
+    'residency',
     'disciplinary',
     'reflective',
     'clogging',
@@ -506,9 +517,11 @@ dance_wrong_style_keywords = [
     'pilates',
     'tribal',
     'jazz', 'tap', 'contemporary',
+    u'współczesnego', # contemporary polish
     'contempor\w*', # contemporary italian, french
     'africa\w+',
     'sabar',
+    'aerial silk',
     'silk',
     'aerial',
     'zumba', 'belly\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance',
@@ -516,12 +529,14 @@ dance_wrong_style_keywords = [
     'flamenco',
     'technique',
     'guest artists?',
+    'partnering',
 ]
 dance_wrong_style_title_keywords = dance_wrong_style_keywords + [
     # Sometimes used in studio name even though it's still a hiphop class:
     'ballroom',
     'ballet',
     'yoga',
+    'talent shows?', # we don't care about talent shows that offer dance options
 ]
 
 all_regexes = {}
@@ -590,6 +605,7 @@ def make_regexes(strings, matching=False):
     a[WORD_BOUNDARIES] = make_regex(strings, matching=matching, word_boundaries=True)
     return tuple(a)
 
+all_regexes['preprocess_removals_regex'] = make_regexes(preprocess_removals)
 all_regexes['dance_wrong_style_regex'] = make_regexes(dance_wrong_style_keywords)
 all_regexes['dance_wrong_style_title_regex'] = make_regexes(dance_wrong_style_title_keywords)
 all_regexes['dance_and_music_regex'] = make_regexes(dance_and_music_keywords)
@@ -640,38 +656,41 @@ class ClassifiedEvent(object):
         else:
             idx = WORD_BOUNDARIES
 
-        #if not all_regexes['good_keyword_regex'][idx].search(self.search_text):
+        search_text = all_regexes['preprocess_removals_regex'][idx].sub('', self.search_text)
+        title = all_regexes['preprocess_removals_regex'][idx].sub('', self.title)
+
+        #if not all_regexes['good_keyword_regex'][idx].search(search_text):
         #    self.dance_event = False
         #    return
         a = time.time()
         b = time.time()
-        manual_dance_keywords_matches = all_regexes['manual_dance_keywords_regex'][idx].findall(self.search_text)
+        manual_dance_keywords_matches = all_regexes['manual_dance_keywords_regex'][idx].findall(search_text)
         self.times['manual_regex'] = time.time() - b
-        easy_dance_matches = all_regexes['easy_dance_regex'][idx].findall(self.search_text)
-        easy_event_matches = all_regexes['easy_event_regex'][idx].findall(self.search_text)
-        dance_matches = all_regexes['dance_regex'][idx].findall(self.search_text)
-        if all_regexes['french'][idx].search(self.search_text):
-            event_matches = all_regexes['french_event_regex'][idx].findall(self.search_text)
-        elif all_regexes['italian'][idx].search(self.search_text):
-            event_matches = all_regexes['italian_event_regex'][idx].findall(self.search_text)
+        easy_dance_matches = all_regexes['easy_dance_regex'][idx].findall(search_text)
+        easy_event_matches = all_regexes['easy_event_regex'][idx].findall(search_text)
+        dance_matches = all_regexes['dance_regex'][idx].findall(search_text)
+        if all_regexes['french'][idx].search(search_text):
+            event_matches = all_regexes['french_event_regex'][idx].findall(search_text)
+        elif all_regexes['italian'][idx].search(search_text):
+            event_matches = all_regexes['italian_event_regex'][idx].findall(search_text)
         else:
-            event_matches = all_regexes['event_regex'][idx].findall(self.search_text)
-        dance_wrong_style_matches = all_regexes['dance_wrong_style_regex'][idx].findall(self.search_text)
-        dance_and_music_matches = all_regexes['dance_and_music_regex'][idx].findall(self.search_text)
-        club_and_event_matches = all_regexes['club_and_event_regex'][idx].findall(self.search_text)
-        easy_choreography_matches = all_regexes['easy_choreography_regex'][idx].findall(self.search_text)
-        club_only_matches = all_regexes['club_only_regex'][idx].findall(self.search_text)
+            event_matches = all_regexes['event_regex'][idx].findall(search_text)
+        dance_wrong_style_matches = all_regexes['dance_wrong_style_regex'][idx].findall(search_text)
+        dance_and_music_matches = all_regexes['dance_and_music_regex'][idx].findall(search_text)
+        club_and_event_matches = all_regexes['club_and_event_regex'][idx].findall(search_text)
+        easy_choreography_matches = all_regexes['easy_choreography_regex'][idx].findall(search_text)
+        club_only_matches = all_regexes['club_only_regex'][idx].findall(search_text)
         self.times['all_regexes'] = time.time() - a
 
         self.found_dance_matches = dance_matches + easy_dance_matches + dance_and_music_matches + manual_dance_keywords_matches + easy_choreography_matches
         self.found_event_matches = event_matches + easy_event_matches + club_and_event_matches
         self.found_wrong_matches = dance_wrong_style_matches + club_only_matches
 
-        title_wrong_style_matches = all_regexes['dance_wrong_style_regex'][idx].findall(self.title)
-        title_good_matches = all_regexes['good_keyword_regex'][idx].findall(self.title)
+        title_wrong_style_matches = all_regexes['dance_wrong_style_regex'][idx].findall(title)
+        title_good_matches = all_regexes['good_keyword_regex'][idx].findall(title)
             
         combined_matches = self.found_dance_matches + self.found_event_matches
-        fraction_matched = 1.0 * len(combined_matches) / len(re.split(r'\W+', self.search_text))
+        fraction_matched = 1.0 * len(combined_matches) / len(re.split(r'\W+', search_text))
         if not fraction_matched:
             self.calc_inverse_keyword_density = 100
         else:
@@ -683,8 +702,8 @@ class ClassifiedEvent(object):
         elif len(dance_matches) >= 1:
             self.dance_event = 'obvious dance style'
         # If the title has a bad-style and no good-styles, mark it bad
-        elif (all_regexes['dance_wrong_style_title_regex'][idx].search(self.title) and
-            not (all_regexes['dance_and_music_regex'][idx].search(self.title) or
+        elif (all_regexes['dance_wrong_style_title_regex'][idx].search(title) and
+            not (all_regexes['dance_and_music_regex'][idx].search(title) or
                  manual_dance_keywords_matches or dance_matches)): # these two are implied by the above, but do it here just in case future clause re-ordering occurs
             self.dance_event = False
 
