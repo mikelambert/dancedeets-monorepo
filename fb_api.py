@@ -394,6 +394,10 @@ class BatchLookup(object):
                         this_object['deleted'] = True
                     else:
                         this_object[object_rpc_name] = object_json
+                elif object_rpc_name == 'picture':
+                    fb_uid, object_id, object_type = object_key
+                    logging.info("Failed to get picture key, using fallback default picture url for %s." % object_id)
+                    this_object[object_rpc_name] = 'https://graph.facebook.com/%s/picture' % object_id
                 else:
                     object_is_bad = True
             if object_is_bad:
