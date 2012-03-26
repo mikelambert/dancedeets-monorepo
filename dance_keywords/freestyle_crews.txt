@@ -1,3 +1,4 @@
+b\W?fresh brno 
 academy of villians
 art of technique
 art of tecknique
@@ -37,6 +38,7 @@ gr818ers
 groovmekanex
 gute reize
 head\W?hunters\W+soulciety
+hex bex
 hilty (?:&|and|\+) bosch
 house of dangerkat
 house of ebony
