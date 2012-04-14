@@ -101,7 +101,7 @@ class BatchLookup(object):
             return True
         elif this_object.get('deleted'):
             return True
-        elif this_object.get('info') and this_object['info'].get('privacy') == 'OPEN':
+        elif this_object.get('info') and this_object['info'].get('privacy', 'OPEN') == 'OPEN':
             return True
         else:
             return False

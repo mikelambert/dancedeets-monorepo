@@ -138,7 +138,7 @@ def get_potential_dance_events(batch_lookup, user_id):
         except fb_api.NoFetchedDataException:
             logging.info("event id %s: no fetched data", event_id)
             continue # must be a non-saved event, probably due to private/closed event. so ignore.
-        if fb_event['deleted'] or fb_event['info'].get('privacy') != 'OPEN':
+        if fb_event['deleted'] or fb_event['info'].get('privacy', 'OPEN') != 'OPEN':
             logging.info("event id %s: deleted, or private", event_id)
             continue # only legit events
         make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_INVITES)
