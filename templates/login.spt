@@ -62,7 +62,7 @@ dance events reach 5000+ dancers every month
 See events in the top north-american cities:
 <ul>
 #for $internal_city, $city in $top_cities
-	<li><a href="/?location=$internal_city&distance=50&distance_units=miles">$city</a>
+	<li><a href="/?location=$urllib_quote_plus($internal_city)&distance=50&distance_units=miles">$city</a>
 #end for
 </ul>
 </div>
