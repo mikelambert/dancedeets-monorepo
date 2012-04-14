@@ -16,7 +16,6 @@ absolute zero
 all area crew
 all out crew
 all stars kriminalz
-all the most
 allthemost
 angels of death
 animated rebels
@@ -293,11 +292,9 @@ rivers crew
 riverz
 robotops
 rock force
-rock steady
 rockafellaz
 rockforce
 rocking boys
-rocksteady,0
 rolling street crew
 roxolid
 rsc,0

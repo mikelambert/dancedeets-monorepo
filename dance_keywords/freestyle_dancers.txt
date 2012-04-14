@@ -1,3 +1,4 @@
+be bop crew
 abstrak
 acky
 alessandro cascone
@@ -54,7 +55,7 @@ hiro,0
 hiro\W+alma
 hozin
 hurrikane
-i\W?cee
+i\W?cee\W+forzesound
 iron monkey
 isaac suarez
 j-rock,0
@@ -64,6 +65,7 @@ jazzy j
 jazzy jay
 jed flurano
 jeff selby
+jib\W+ghetto
 jimmy soul
 jojo diggs
 jon boogz
@@ -75,6 +77,7 @@ junior boogaloo
 junior boogie
 kapela,0
 kashmir,0
+katrin blantar
 khalid freeman
 kid boogie
 kim seto

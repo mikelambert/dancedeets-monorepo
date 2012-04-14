@@ -91,6 +91,7 @@ easy_choreography_keywords = [
 
 dance_and_music_keywords = [
     'hip\W?hop',
+    u'嘻哈', # chinese hiphop
     u'ההיפ הופ', # hebrew hiphop
     u'хипхоп', # macedonian hiphop
     u'ヒップホップ', # hiphop japanese
@@ -213,7 +214,7 @@ club_and_event_keywords = [
     'shows?', 'performances?', 'contests?',
     u'vystoupení', # czech performances
     'concours', # french contest
-    'showcase',
+    'show\W?case',
     u'ショーケース', # japanese showcase
     u'秀', # chinese show
     u'的表演', # chinese performance
@@ -389,7 +390,6 @@ event_keywords = [
     'tuomaristo', # jury finnish
     'jueces', # spanish judges
     'giuria', # jury italian
-    'show\W?case',
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook)',
     'open circles',
     'c(?:y|i)ph(?:a|ers?)',
@@ -481,6 +481,7 @@ dance_wrong_style_keywords = [
     'exotic',
     'cheer',
     'barre',
+    'butoh',
     'contact improv',
     'contato improv\w*',
     'contact improv\w*',
