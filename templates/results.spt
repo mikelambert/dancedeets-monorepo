@@ -164,9 +164,9 @@ Events near ${display_location}:
 
 #def bottom_javascript
 $rsvp_script()
-<script src="/js/bootstrap-twipsy.js"></script>
+<script src="/vjs/$version/bootstrap-twipsy.js"></script>
 
-<script src="/js/jquery.lazyload.min.js" type="text/javascript"></script>
+<script src="/vjs/$version/jquery.lazyload.min.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -188,9 +188,9 @@ $(document).ready(function() {
 </script>
 
 #if $selected_tab == 'calendar'
-<link rel='stylesheet' type='text/css' href='/css/fullcalendar.css' />
+<link rel='stylesheet' type='text/css' href='/vcss/$version/fullcalendar.css' />
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-<script type='text/javascript' src='/js/fullcalendar.min.js'></script>
+<script type='text/javascript' src='/vjs/$version/fullcalendar.min.js'></script>
 
 <script type="text/javascript">
 $(document).ready(function() {

@@ -26,6 +26,10 @@ handlers:
 - url: /favicon.ico
   static_files: favicon.ico
   upload: favicon.ico
+- url: /vcss/.*
+  static_dir: css
+- url: /vjs/.*
+  static_dir: js
 - url: /css
   static_dir: css
 - url: /js

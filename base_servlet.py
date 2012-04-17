@@ -4,6 +4,7 @@ import base64
 import Cookie
 import datetime
 import logging
+import os
 import re
 import sys
 import urllib
@@ -34,6 +35,8 @@ class BareBaseRequestHandler(RequestHandler):
         super(BareBaseRequestHandler, self).__init__(*args, **kwargs)
         self.display = {}
         self._errors = []
+
+        self.display['version'] = os.getenv('CURRENT_VERSION_ID').split('.')[-1]
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
         # functions, add these to some base display setup

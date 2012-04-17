@@ -13,8 +13,8 @@
 <!--[if lt IE 9]>
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
-<link rel="stylesheet" href="/css/bootstrap.min.css">
-<link rel="stylesheet" href="/css/dancedeets.css">
+<link rel="stylesheet" href="/vcss/$version/bootstrap.min.css">
+<link rel="stylesheet" href="/vcss/$version/dancedeets.css">
 
 $head_stylesheet()
 $head_javascript()
@@ -137,7 +137,7 @@ $body()
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="/js/bootstrap-dropdown.js"></script>
+<script src="/vjs/$version/bootstrap-dropdown.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {

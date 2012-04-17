@@ -1,10 +1,10 @@
-<link rel='stylesheet' type='text/css' href='/css/fullcalendar.css' />
+<link rel='stylesheet' type='text/css' href='/vcss/$version/fullcalendar.css' />
 <script src="http://www.google.com/jsapi" type="text/javascript"></script>
 <script type="text/javascript">
   google.load("jquery", "1.4.2");
   google.load("jqueryui", "1.8.1");
 </script>
-<script type='text/javascript' src='/js/fullcalendar.min.js'></script>
+<script type='text/javascript' src='/vjs/$version/fullcalendar.min.js'></script>
 
 <div id="calendar"></div>
 
