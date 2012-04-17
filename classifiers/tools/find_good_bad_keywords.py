@@ -24,9 +24,66 @@ for i, row in enumerate(csv.reader(open('local_data/FacebookCachedObject.csv')))
     #    break
     source_id, row_id, row_type = row[0].split('.')
     if source_id == "701004" and row_type == "OBJ_EVENT":
-        fb_entries[row[0]] = json.loads(row[1])
-        found_event_ids.add(row_id)
-print "done, %d seconds" % (time.time() - a)
+        if re.search(r'freestyle|cypher|cipher', row[1]):
+            fb_entries[row[0]] = json.loads(row[1])
+            found_event_ids.add(row_id)
+print "done, %d seconds, using %s events" % ((time.time() - a), len(found_event_ids))
+
+_bad_ids = """262185997192054
+262185997192054
+189005731208734
+252332548180183
+169340009836878
+210695735694992
+315317571849986
+345028368870869
+135376583251341
+190975384341716
+149359838517414
+262466083828178
+334260309950061
+275111512554233
+302921526433940
+210695735694992
+253269711419677
+208443532587437
+358004127561923
+369091239773418
+244492588972542
+113424452119494
+359814084043065
+330235107008484
+345691242131785
+331342693571264
+361972543821487
+378619662155354
+296801027050137
+305099059548738
+253268444751346
+162154073886560
+290835774303963
+358864257465796
+343414719013429
+185045374930911
+246115828796607
+292703670784103
+227695903989563
+351924681488160
+253704941372041
+215477448534686
+180738645369143""".split("\n")
+
+_good_ids = """236467306447169
+195475827220494
+294273573970277
+348784985154156
+385669834783774
+250371245042502
+157335347716233
+387123937980600
+318299674872576
+225370597555828
+344311292276178""".split("\n")
 
 classified_ids = {}
 for row in csv.reader(open('local_data/DBEvent.csv')):
@@ -152,6 +209,8 @@ else:
     basic_keywords = ['edm', 'dub,', 'imprint', 'selectors', 'dnb', 'headliners', 'karaoke']
     basic_neg_keywords = ['dance', 'dancers']
 
+basic_keywords = []
+basic_neg_keywords = []
 
 # for battle/competition classifier
 #basic_keywords = 'judges', '1[\s-]*(?:vs?.?|on)[\s-]*1', '2[\s-]*(?:vs?.?|on)[\s-]*2',  '3[\s-]*(?:vs?.?|on)[\s-]*3', '5[\s-]*(?:vs?.?|on)[\s-]*5', '4[\s-]*(?:vs?.?|on)[\s-]*4', 'prelims', 'preselections', 'top 16', 'top 8', 'to smoke']
