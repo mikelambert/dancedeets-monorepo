@@ -84,8 +84,8 @@ class SearchResult(object):
     def __init__(self, db_event, fb_event):
         self.db_event = db_event
         self.fb_event = fb_event
-        self.start_time = dates.parse_fb_timestamp(self.fb_event['info'].get('start_time'))
-        self.end_time = dates.parse_fb_timestamp(self.fb_event['info'].get('end_time'))
+        self.start_time = dates.parse_fb_start_time(self.fb_event)
+        self.end_time = dates.parse_fb_end_time(self.fb_event)
         self.rsvp_status = "unknown"
         self.event_types = ', '.join(self.db_event.event_keywords or [])
         self.attending_friend_count = 0

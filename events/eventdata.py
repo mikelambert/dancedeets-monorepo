@@ -117,8 +117,8 @@ class DBEvent(db.Model):
         else:
             self.owner_fb_uid = None
 
-        self.start_time = dates.parse_fb_timestamp(fb_dict['info'].get('start_time'))
-        self.end_time = dates.parse_fb_timestamp(fb_dict['info'].get('end_time'))
+        self.start_time = dates.parse_fb_start_time(fb_dict)
+        self.end_time = dates.parse_fb_end_time(fb_dict)
 
         self.search_time_period = None # PAST or FUTURE
         today = datetime.datetime.today() - datetime.timedelta(days=1)

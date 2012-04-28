@@ -23,6 +23,21 @@ def parse_fb_timestamp(fb_timestamp):
     else:
         return datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S')
 
+def parse_fb_start_time(fb_event):
+    dt = parse_fb_timestamp(fb_event['info'].get('start_time'))
+    return handle_fb_dt_transform(dt, fb_event)
+
+def parse_fb_end_time(fb_event):
+    dt = parse_fb_timestamp(fb_event['info'].get('end_time'))
+    return handle_fb_dt_transform(dt, fb_event)
+
+def handle_fb_dt_transform(dt, fb_event):
+    event_timezone = fb_event['info'].get('timezone')
+    if event_timezone:
+        dt -= datetime.timedelta(hours=fb_event.get('timezone_offset') or 9)
+        dt = localize_timestamp(dt, timezone_str=event_timezone)
+    return dt
+
 def time_human_format(d, country=None):
     if not country or country in AMPM_COUNTRIES:
         time_string = '%d:%02d%s' % (int(d.strftime('%I')), d.minute, d.strftime('%p').lower())

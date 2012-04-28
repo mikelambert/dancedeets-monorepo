@@ -53,8 +53,8 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
             json_results.append(dict(
                 id=result.fb_event['info']['id'],
                 title=result.fb_event['info']['name'],
-                start=dates.parse_fb_timestamp(result.fb_event['info'].get('start_time')).strftime('%Y-%m-%dT%H:%M:%SZ'),
-                end=dates.parse_fb_timestamp(result.fb_event['info'].get('end_time')).strftime('%Y-%m-%dT%H:%M:%SZ'),
+                start=dates.parse_fb_start_time(result.fb_event).strftime('%Y-%m-%dT%H:%M:%SZ'),
+                end=dates.parse_fb_end_time(result.fb_event).strftime('%Y-%m-%dT%H:%M:%SZ'),
                 url=urls.fb_event_url(result.fb_event['info']['id']),
             ))
         self.write_json_response(json_results)    

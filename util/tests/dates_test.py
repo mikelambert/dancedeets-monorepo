@@ -44,5 +44,12 @@ class DatesTest(unittest.TestCase):
                          'Saturday, January 1 - 12:00am to Monday, January 3 - 8:00am')
 
 
+    def test_event_dates(self):
+        e = {'timezone_offset': 9, 'info': {'start_time': '2012-04-18T05:30:00', 'timezone': 'America/Los_Angeles'}}
+        self.assertEqual(dates.parse_fb_start_time(e),
+                         datetime.datetime(2012, 4, 17, 13, 30))
+        e = {'timezone_offset': 9, 'info': {'start_time': '2012-04-17T13:30:00'}}
+        self.assertEqual(dates.parse_fb_start_time(e),
+                         datetime.datetime(2012, 4, 17, 13, 30))
 if __name__ == '__main__':
     unittest.main()
