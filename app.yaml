@@ -8,7 +8,6 @@ inbound_services:
 - warmup
 
 builtins:
-- datastore_admin: on
 - remote_api: on
 - appstats: on
 - deferred: on
