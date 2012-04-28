@@ -12,6 +12,7 @@ def start_map(batch_lookup, name, handler_spec, entity_kind, reader_spec='mapred
         'handle_batch_size': handle_batch_size,
         'batch_lookup_fb_uid': batch_lookup.fb_uid,
         'batch_lookup_fb_graph_access_token': batch_lookup.fb_graph.access_token,
+        'batch_lookup_timezone_offset': batch_lookup.timezone_offset,
         'batch_lookup_allow_cache': batch_lookup.allow_cache,
     }
     mapper_params.update(extra_mapper_params)
@@ -29,7 +30,8 @@ def get_batch_lookup(user=None):
         ctx = context.get()
         params = ctx.mapreduce_spec.mapper.params
         fb_graph = facebook.GraphAPI(user and user.fb_access_token or params['batch_lookup_fb_graph_access_token'])
-        batch_lookup = fb_api.CommonBatchLookup(user and user.fb_uid or params['batch_lookup_fb_uid'], fb_graph, allow_cache=params['batch_lookup_allow_cache'])
+    timezone_offset = user and user.timezone_offset or params['batch_lookup_timezone_offset']
+        batch_lookup = fb_api.CommonBatchLookup(user and user.fb_uid or params['batch_lookup_fb_uid'], fb_graph, timezone_offset, allow_cache=params['batch_lookup_allow_cache'])
     return batch_lookup
 
 

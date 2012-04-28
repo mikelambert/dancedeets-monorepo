@@ -33,7 +33,7 @@ class AtomHandler(base_servlet.BaseRequestHandler):
         time_period = self.request.get('time_period', eventdata.TIME_FUTURE)
 
         query = search.SearchQuery(time_period=time_period, bounds=bounds)
-        search_results = query.get_search_results(self.fb_uid, self.fb_graph)
+        search_results = query.get_search_results(self.batch_lookup)
         #TODO(lambert): move to common library
         now = datetime.datetime.now() - datetime.timedelta(hours=12)
         search_results = [x for x in search_results if x.start_time > now]

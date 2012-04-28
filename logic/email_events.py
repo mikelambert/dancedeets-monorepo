@@ -36,7 +36,7 @@ def email_for_user(user, batch_lookup, fb_graph, should_send=True):
     # search for relevant events
     bounds = locations.get_location_bounds(user_location, distance_in_km)
     query = search.SearchQuery(time_period=eventdata.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
-    search_results = query.get_search_results(user.fb_uid, fb_graph)
+    search_results = query.get_search_results(batch_lookup)
     # Don't send email...
     if not search_results:
         return

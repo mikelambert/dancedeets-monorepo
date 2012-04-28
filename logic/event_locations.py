@@ -53,7 +53,7 @@ def _get_city_for_fb_event(fb_event):
     logging.info("venue id is %s", venue.get('id'))
     if venue.get('id'):
         # TODO(lambert): need a better way to pass in a proper fb auth token here, so that we aren't bucked into common ip set
-        batch_lookup = fb_api.CommonBatchLookup(None, None)
+        batch_lookup = fb_api.CommonBatchLookup(None, None, 0)
         batch_lookup.lookup_venue(venue.get('id'))
         batch_lookup.finish_loading()
         venue_data = batch_lookup.data_for_venue(venue.get('id'))

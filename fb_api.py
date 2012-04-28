@@ -79,10 +79,11 @@ class BatchLookup(object):
     OBJECT_THING_FEED = 'OBJ_THING_FEED'
     OBJECT_VENUE = 'OBJ_VENUE'
 
-    def __init__(self, fb_uid, fb_graph, allow_cache=True):
+    def __init__(self, fb_uid, fb_graph, timezone_offset, allow_cache=True):
         self.fb_uid = fb_uid
         self.userless_uid = fb_uid
         self.fb_graph = fb_graph
+        self.timezone_offset = timezone_offset
         self.allow_cache = allow_cache
         self.allow_memcache_read = self.allow_cache
         self.allow_memcache_write = True
@@ -93,7 +94,7 @@ class BatchLookup(object):
     def copy(self, allow_cache=None):
         if allow_cache is None:
             allow_cache = self.allow_cache
-        return CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=allow_cache)
+        return CommonBatchLookup(self.fb_uid, self.fb_graph, self.timezone_offset, allow_cache=allow_cache)
 
     def _is_cacheable(self, object_key, this_object):
         fb_uid, object_id, object_type = object_key
@@ -373,7 +374,9 @@ class BatchLookup(object):
         # fetch RPCs
         fetched_objects = {}
         for object_key, object_rpc_dict in self.object_keys_to_rpcs.iteritems():
-            this_object = {'deleted': False}
+            this_object = {}
+            this_object['deleted'] = False
+            this_object['timezone_offset'] = self.timezone_offset
             object_is_bad = False
             for object_rpc_name, object_rpc in object_rpc_dict.iteritems():
                 object_json = self._map_rpc_to_data(object_key, object_rpc_name, object_rpc)

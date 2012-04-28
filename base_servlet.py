@@ -127,7 +127,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.user = users.User.get_cached(str(self.fb_uid))
             if not self.user:
                 from servlets import login
-                batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=False)
+                batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, None, allow_cache=False)
                 batch_lookup.lookup_user(self.fb_uid)
                 batch_lookup.finish_loading()
                 fb_user = batch_lookup.data_for_user(self.fb_uid)
@@ -138,7 +138,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 #TODO(lambert): handle this MUUUCH better
                 logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
                 self.user = users.User.get_cached(str(self.fb_uid))
-
+            if not self.user:
+                logging.error("Do not have a self.user at point A")
             logging.info("Logged in uid %s with name %s", self.fb_uid, self.user and self.user.full_name)
             # If their auth token has changed, then write out the new one
             if self.user.fb_access_token != self.fb_graph.access_token:
@@ -176,12 +177,14 @@ class BaseRequestHandler(BareBaseRequestHandler):
             return True
         # If they have a fb_uid, let's do lookups on that behalf (does not require a user)
         if self.fb_uid:
+            if not self.user:
+                logging.error("Do not have a self.user at point B")
             allow_cache = (self.request.get('allow_cache', '1') == '1')
-            self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=allow_cache)
+            self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, self.user.timezone_offset, allow_cache=allow_cache)
             # Always look up the user's information for every page view...?
             self.batch_lookup.lookup_user(self.fb_uid)
         else:
-            self.batch_lookup = fb_api.CommonBatchLookup(None, self.fb_graph)
+            self.batch_lookup = fb_api.CommonBatchLookup(None, self.fb_graph, None)
         # If they've authorized us, but we don't have a User object, force them to signup so we get initial prefs
         # Let the client sit there and wait for the user to manually sign up.
         if self.fb_uid and not self.user:

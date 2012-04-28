@@ -186,7 +186,8 @@ class SearchQuery(object):
         db_events = eventdata.get_cached_db_events(event_ids)
         return db_events
 
-    def get_search_results(self, fb_uid, graph):
+    def get_search_results(self, batch_lookup):
+        batch_lookup = batch_lookup.copy()
         db_events = None
         if self.time_period == eventdata.TIME_FUTURE:
             # Use cached blob for our common case of filtering
@@ -202,7 +203,6 @@ class SearchQuery(object):
 
         # Now look up contents of each event...
         a = time.time()
-        batch_lookup = fb_api.CommonBatchLookup(fb_uid, graph)
         for db_event in db_events:
             batch_lookup.lookup_event(db_event.fb_event_id)
         batch_lookup.finish_loading()

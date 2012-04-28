@@ -19,7 +19,7 @@ def decorate_with_friends(batch_lookup, search_results):
         friend_map = dict((x['id'], x['name']) for x in friends_list if 'name' in x)
         friend_ids = set(friend_map.keys())
 
-        attendee_batch_lookup = fb_api.CommonBatchLookup(batch_lookup.fb_uid, batch_lookup.fb_graph)
+        attendee_batch_lookup = batch_lookup.copy()
         for result in search_results:
             attendee_batch_lookup.lookup_event_attending(result.db_event.fb_event_id)
         attendee_batch_lookup.finish_loading()

@@ -46,7 +46,7 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
         bounds = locations.get_location_bounds(location, distance_in_km)
 
         query = search.SearchQuery(bounds=bounds, start_time=start_time, end_time=end_time)
-        search_results = query.get_search_results(self.fb_uid, self.fb_graph)
+        search_results = query.get_search_results(self.batch_lookup)
 
         json_results = []
         for result in search_results:

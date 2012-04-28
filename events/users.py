@@ -1,6 +1,7 @@
 import logging
 
 from google.appengine.ext import db
+from google.appengine.api import datastore_errors
 from google.appengine.runtime import apiproxy_errors
 
 import cities
@@ -40,6 +41,7 @@ class User(db.Model):
     # Derived from fb_user
     full_name = db.StringProperty(indexed=False)
     email = db.StringProperty(indexed=False)
+    timezone_offset = db.FloatProperty(indexed=False)
 
     expired_oauth_token = db.BooleanProperty(indexed=False)
     expired_oauth_token_reason = db.StringProperty(indexed=False)
@@ -74,6 +76,10 @@ class User(db.Model):
     def compute_derived_properties(self, fb_user):
         self.full_name = fb_user['profile']['name']
         self.email = fb_user['profile'].get('email')
+        try:
+            self.timezone_offset = float(fb_user['profile'].get('timezone'))
+        except datastore_errors.BadValueError:
+            logging.error("Failed to save timezone %s", fb_user['profile'].get('timezone'))
         if self.location:
             #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
             self.location_country = locations.get_country_for_location(self.location)
