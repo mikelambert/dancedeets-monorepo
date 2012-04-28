@@ -1,4 +1,3 @@
-be bop crew
 abstrak
 acky
 alessandro cascone
@@ -9,6 +8,7 @@ archie burnett
 aus ninja
 aus omni
 babson,0
+be bop crew
 bionic,0
 bly richards
 bobby mileage
@@ -41,6 +41,7 @@ fabio crestale
 fire.?lock
 flockey
 fluky luke
+future ninja
 gemini,0
 gianni wers
 greenteck
@@ -111,6 +112,7 @@ mr.? ?wiggles
 nelson,0
 ninja pop
 ninja,0
+nubian nene
 p\W?lock
 pepito
 physs
