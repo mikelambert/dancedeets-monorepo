@@ -183,10 +183,12 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.redirect('/events/admin_edit?event_id=%s' % event_id)
             return
 
-        event_locations.update_remapped_address(fb_event, self.request.get('remapped_address'))
+        if self.request.get('remapped_address') is not None:
+            event_locations.update_remapped_address(fb_event, self.request.get('remapped_address'))
 
         e = eventdata.DBEvent.get_or_insert(event_id)
-        e.address = self.request.get('override_address') or None
+        if self.request.get('override_address') is not None:
+            e.address = self.request.get('override_address')
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
         e.make_findable_for(self.batch_lookup.data_for_event(event_id))
@@ -333,8 +335,8 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         potential_event_notadded_ids.sort(key=lambda x: -(potential_event_dict[x].match_score or 0))
 
         # Limit to 20 at a time so we don't overwhelm the user.
-        total_potential_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0").count(2000)
-        total_potential_events += potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True").count(2000)
+        total_potential_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0").count(20000)
+        total_potential_events += potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True").count(20000)
 
         has_more_events = total_potential_events > number_of_events
         potential_event_notadded_ids = potential_event_notadded_ids[:number_of_events]
