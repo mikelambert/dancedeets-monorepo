@@ -8,7 +8,7 @@ import fb_api
 from logic import event_locations
 from util import fb_mapreduce
 
-convert_chars = string.punctuation + '\n\t'
+convert_chars = string.punctuation + '\r\n\t'
 trans = string.maketrans(convert_chars, ' ' * len(convert_chars))
 
 def strip_punctuation(s):
@@ -17,6 +17,8 @@ def strip_punctuation(s):
 def training_data_for_pevents(batch_lookup, pevents):
     batch_lookup.allow_memcache_write = False # don't pollute memcache
     for potential_event in pevents:
+        if not potential_event.looked_at:
+            continue
         batch_lookup.lookup_event(potential_event.fb_event_id)
         batch_lookup.lookup_event_attending(potential_event.fb_event_id)
     batch_lookup.finish_loading()
@@ -29,6 +31,8 @@ def training_data_for_pevents(batch_lookup, pevents):
     csv_writer = csv.writer(csv_file)
 
     for potential_event in pevents:
+        if not potential_event.looked_at:
+            continue
         try:
             good_event = potential_event.fb_event_id in good_event_ids and 'dance' or 'nodance'
 
