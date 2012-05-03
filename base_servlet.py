@@ -60,6 +60,11 @@ class BareBaseRequestHandler(RequestHandler):
         for arg in sorted(self.request.arguments()):
             logging.info("query %r = %r", arg, self.request.get_all(arg))
 
+        logging.info("Appengine Request Headers:")
+        for x in request.headers:
+            if x.lower().startswith('x-appengine-'):
+                logging.info("%s: %s", x, request.headers[x])
+
     def set_cookie(self, name, value, expires=None):
         cookie = Cookie.SimpleCookie()
         cookie[name] = str(base64.b64encode(value))
