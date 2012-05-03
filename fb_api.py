@@ -32,6 +32,10 @@ AND start_time > %d
 ORDER BY start_time
 """
 
+IMAGE_URL_FQL = """
+SELECT pic,pic_big,pic_small FROM event WHERE eid=%s
+"""
+
 GRAPH_ID_REMAP = {
     '101647263255275': '117377888288248',
     '108494635874217': '166812893357651',
@@ -132,7 +136,7 @@ class BatchLookup(object):
         elif object_type == self.OBJECT_EVENT:
             return dict(
                 info=self._fetch_rpc('%s' % object_id),
-                picture=self._fetch_rpc('%s/picture' % object_id),
+                picture_urls=self._fql_rpc(IMAGE_URL_FQL % (object_id)),
             )
         elif object_type == self.OBJECT_EVENT_ATTENDING:
             return dict(
@@ -353,8 +357,6 @@ class BatchLookup(object):
         fb_uid, object_id, object_type = object_key
         try:
             result = object_rpc.get_result()
-            if object_type == cls.OBJECT_EVENT and object_rpc_name == 'picture':
-                return result.final_url
             if result.status_code != 200:
                 logging.error("BatchLookup: Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
             if result.status_code in [200, 400]:
@@ -397,10 +399,6 @@ class BatchLookup(object):
                         this_object['deleted'] = True
                     else:
                         this_object[object_rpc_name] = object_json
-                elif object_rpc_name == 'picture':
-                    fb_uid, object_id, object_type = object_key
-                    logging.info("Failed to get picture key, using fallback default picture url for %s." % object_id)
-                    this_object[object_rpc_name] = 'https://graph.facebook.com/%s/picture' % object_id
                 else:
                     object_is_bad = True
             if object_is_bad:

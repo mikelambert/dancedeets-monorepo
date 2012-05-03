@@ -18,6 +18,7 @@ from logic import event_classifier
 from logic import rsvp
 from util import dates
 from util import timings
+from util import urls
 
 SLOW_QUEUE = 'slow-queue'
 
@@ -97,13 +98,7 @@ class SearchResult(object):
         return (self.end_time - self.start_time) > datetime.timedelta(hours=24)
 
     def get_image(self):
-        picture_url = self.fb_event.get('picture')
-        if picture_url:
-            return eventdata.get_event_image_url(picture_url, eventdata.EVENT_IMAGE_LARGE)
-        else:
-            logging.error("Error loading picture for event id %s", self.fb_event['info']['id'])
-            logging.error("Data is %s\n\n%s", self.db_event, self.fb_event)
-            return 'http://graph.facebook.com/%s/picture?type=large' % self.fb_event['info']['id']
+        return eventdata.get_event_image_url(self.fb_event)
 
     def get_attendance(self):
         if self.rsvp_status == 'unsure':

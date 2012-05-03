@@ -18,25 +18,17 @@ import smemcache
 REGION_RADIUS = 200 # kilometers
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 
-# pic url prefixes:
-# increasing-size: t, s, n
-# square: q
-
-EVENT_IMAGE_SMALL = 't'
-EVENT_IMAGE_MEDIUM = 's'
-EVENT_IMAGE_LARGE = 'n'
-EVENT_IMAGE_SQUARE = 'q'
-EVENT_IMAGE_TYPES = [EVENT_IMAGE_SMALL, EVENT_IMAGE_MEDIUM, EVENT_IMAGE_LARGE, EVENT_IMAGE_SQUARE]
-
 TIME_PAST = 'PAST'
 TIME_FUTURE = 'FUTURE'
 
-def get_event_image_url(square_url, event_image_type):
-    assert event_image_type in EVENT_IMAGE_TYPES
-    url = square_url
-    url = url.replace('/q', '/%s' % event_image_type)
-    url = url.replace('_q', '_%s' % event_image_type)
-    return url
+def get_event_image_url(fb_event):
+    picture_url = fb_event.get('picture_urls')
+    # TODO(lambert): delete else clause once we've loaded picture_urls for everything?
+    if picture_url:
+        return picture_url['data'][0]['pic_big']
+    else:
+        logging.error("Error loading picture for event id %s", fb_event['info']['id'])
+        return urls.fb_event_image_url(fb_event['info']['id'])
 
 
 DBEVENT_PREFIX = 'DbEvent.%s'
