@@ -12,6 +12,7 @@ import locations
 from logic import event_classifier
 from logic import event_locations
 from util import dates
+from util import urls
 
 import smemcache
 
