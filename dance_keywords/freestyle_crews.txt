@@ -1,5 +1,6 @@
 3kick sp[rl]it[sz]
 academy of villians
+alkaholiks
 ancut stonez
 art of tec[hk]nique
 au[rl]o[rl]a.tex
@@ -7,19 +8,22 @@ b\W?fresh brno
 baccano
 bds praha
 be\W?bop crew
-beat buddy boi
 beat freaks
 beat up brno
+beat\W?buddy\W?boi
 beatdown brothers
 beatstrong
 beatsukiboys
 bopster scat
+breakydelic
+bushbabeez
 capitol flow # turf
 citadanse
 collectif c nous
 coney island dancers
 consciencia
 control freaks
+cosmic funk
 criminalz
 cultureshock
 da gentlemen
@@ -27,6 +31,9 @@ dacrudancecompany
 dance fusion
 dark unit
 deep down dopeizm
+dejavu
+diger deep
+digital junkeez
 double elementz
 down\W?town\W?bounce
 ds players
@@ -35,21 +42,29 @@ dynamic brno
 electric boogaloos
 elite force
 fab 5 boogz
+fab\W*5 boogz
 five plus five
 floor magnets # turf
+floor masters
 floor raskals # turf
 footworkingz
 fresh audio mindz # turf
 fresh dynamix
 funny bones,0
+gelaketz
+ghbv
 glasshopper
 gogo brothers
 gr818ers
 groovmekanex
 gute reize
 head\W?hunters\W+soulciety
+heavy-q
 hex bex
+hi-brid
 hilty (?:&|and|\+) bosch
+hiphop junkeez
+hipnotic boogie
 house of dangerkat
 house of ebony
 house of evisu
@@ -62,13 +77,17 @@ imperial house of waacking
 inhumanoids
 international house of waacking
 ivy league crew
+j\W?soul brothers
 jabbawockeez
+jack\W?baskets
+kamikaze clownz
 klandeskillz
+l\.?o\.?f\.?d
 lagos apt
 legion of extra.?ordinary dancers
 lockbandbeat
+lockin'on
 lockism
-lofd
 lucifer,0
 lumi dance
 lxd
@@ -76,21 +95,35 @@ machine gone funk
 marjoram
 master\W?mind rockers
 mawu
+men\W?soul
 mgf,0
+mo\w?\w?paradise
 moptops
+natural movementz
 o'trip house
+perfect combustion
 pinocchio brothers
 playboyz
 pro phenomen
 pro-dance
+pro-seed
+queen mobb
 quest crew
 r\W?a\W?f\W?\W?crew
+rag pound
+redwindsor
 serial stepperz
+shibuya harlem shakers
 silent.?trix
+sorakarat
+soul colors
 soul fresh crew
 soul sector
 soul shifters
 soulsweat
+stax groove
+stax groove
+street messengers
 sucreamgoodman
 supreme soul
 symbol-ism
@@ -110,4 +143,8 @@ waacktitioners
 waacouture
 wanted posse
 wonder twins
+yo\W?bbo psycho hitters
+zombie kids
 あけっPARズ
+なすっ子キューカンバ
+オーロラテックス
