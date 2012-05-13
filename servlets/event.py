@@ -112,7 +112,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         owner_location = None
         if 'owner' in fb_event['info']:
             owner_id = fb_event['info']['owner']['id']
-            new_batch_lookup = self.batch_lookup.copy()
+            new_batch_lookup = self.batch_lookup.copy(allow_cache=False)
             new_batch_lookup.lookup_profile(owner_id)
             new_batch_lookup.finish_loading()
             combined_owner = new_batch_lookup.data_for_profile(owner_id)
@@ -148,7 +148,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.display['potential_event'] = potential_event
 
-        location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, e)
+        location_info = event_locations.LocationInfo(self.batch_lookup.copy(allow_cache=False), fb_event, e)
         self.display['location_info'] = location_info
         self.display['fb_geocoded_address'] = locations.get_geocoded_location(location_info.fb_address)['address']
 
@@ -162,8 +162,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
     def post(self):
         event_id = self.request.get('event_id')
-        self.batch_lookup.lookup_event(event_id)
-        self.batch_lookup.lookup_event_attending(event_id)
+        self.batch_lookup.lookup_event(event_id, allow_cache=False)
+        self.batch_lookup.lookup_event_attending(event_id, allow_cache=False)
         try:
             self.finish_preload()
         except Exception, e:
@@ -184,7 +184,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             return
 
         if self.request.get('remapped_address') is not None:
-            event_locations.update_remapped_address(self.batch_lookup, fb_event, self.request.get('remapped_address'))
+            event_locations.update_remapped_address(self.batch_lookup.copy(allow_cache=False), fb_event, self.request.get('remapped_address'))
 
         e = eventdata.DBEvent.get_or_insert(event_id)
         if self.request.get('override_address') is not None:
@@ -192,7 +192,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
         e.make_findable_for(self.batch_lookup, self.batch_lookup.data_for_event(event_id))
-        thing_db.create_source_from_event(self.batch_lookup.copy(), e)
+        thing_db.create_source_from_event(self.batch_lookup.copy(allow_cache=False), e)
         e.put()
 
         potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
@@ -207,8 +207,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                 if not classified_event.is_dance_event():
                     thing_db.increment_num_false_negatives(source_id)
         # Hmm, how do we implement this one?# thing_db.increment_num_real_events_without_potential_events(source_id)
-
-        backgrounder.load_event_attending([event_id])
+        # Disable for now since we're doing it inline above
+        #backgrounder.load_event_attending([event_id])
         self.user.add_message("Changes saved!")
         self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
