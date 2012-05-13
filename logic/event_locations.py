@@ -46,18 +46,19 @@ def _address_for_venue(venue, raw_location):
     address = ', '.join(address_components)
     return address
 
-def _get_city_for_fb_event(fb_event):
+def _get_city_for_fb_event(batch_lookup, fb_event):
     event_info = fb_event['info']
     venue = event_info.get('venue', {}) #TODO(lambert): need to support "venue decoration" so we don't need to do one-by-one lookups here
     # if we have a venue id, get the city from there
     logging.info("venue id is %s", venue.get('id'))
     if venue.get('id'):
-        # TODO(lambert): need a better way to pass in a proper fb auth token here, so that we aren't bucked into common ip set
-        batch_lookup = fb_api.CommonBatchLookup(None, None, 0)
+        batch_lookup = batch_lookup.copy(allow_cache=batch_lookup.allow_cache)
         batch_lookup.lookup_venue(venue.get('id'))
         batch_lookup.finish_loading()
         venue_data = batch_lookup.data_for_venue(venue.get('id'))
-        if not venue_data['deleted']:
+        if venue_data['deleted']:
+            logging.warning("no venue found for id %s", venue.get('id'))
+        else:
             city = city_for_fb_location(venue_data['info'].get('location', {}))
             logging.info("venue address is %s", city)
             if city:
@@ -108,9 +109,9 @@ def _save_remapped_address_for(original_address, new_remapped_address):
             if location_mapping:
                 location_mapping.delete()
 
-def update_remapped_address(fb_event, new_remapped_address):
+def update_remapped_address(batch_lookup, fb_event, new_remapped_address):
     new_remapped_address = new_remapped_address or None
-    location_info = LocationInfo(fb_event)
+    location_info = LocationInfo(batch_lookup, fb_event)
     logging.info("remapped address for fb_event %r, new form value %r", location_info.remapped_address, new_remapped_address)
     if location_info.remapped_address != new_remapped_address:
         _save_remapped_address_for(location_info.remapped_source(), new_remapped_address)
@@ -119,9 +120,9 @@ def update_remapped_address(fb_event, new_remapped_address):
 ONLINE_ADDRESS = 'ONLINE'
 
 class LocationInfo(object):
-    def __init__(self, fb_event, db_event=None):
+    def __init__(self, batch_lookup, fb_event, db_event=None):
         # Do not trust facebook for latitude/longitude data. It appears to treat LA as Louisiana, etc. So always geocode
-        self.fb_city = _get_city_for_fb_event(fb_event)
+        self.fb_city = _get_city_for_fb_event(batch_lookup, fb_event)
         if self.fb_city:
             self.fb_address = self.fb_city
         else:
@@ -129,7 +130,7 @@ class LocationInfo(object):
     
         logging.info("For event %s, fb city is %r, fb address is %r", fb_event['info']['id'], self.fb_city, self.fb_address)
 
-        # technically not needed for final location, but loaded here so we can still display on admin_edit page and modify it indepenently
+        # technically not needed if db_event.address is set, but loaded here so we can still display on admin_edit page and modify it independently
         self.remapped_address = _get_remapped_address_for(self.remapped_source())
         if db_event and db_event.address:
             self.overridden_address = db_event.address

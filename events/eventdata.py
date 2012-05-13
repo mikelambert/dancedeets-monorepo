@@ -93,7 +93,7 @@ class DBEvent(db.Model):
         attendees = fb_dict['attending']['data']
         self.attendee_count = len(attendees)
 
-    def make_findable_for(self, fb_dict):
+    def make_findable_for(self, batch_lookup, fb_dict):
         # set up any cached fields or bucketing or whatnot for this event
 
         if fb_dict['deleted']:
@@ -120,7 +120,7 @@ class DBEvent(db.Model):
         else:
             self.search_time_period = TIME_PAST
 
-        location_info = event_locations.LocationInfo(fb_dict, self)
+        location_info = event_locations.LocationInfo(batch_lookup, fb_dict, self)
         # If we got good values from before, don't overwrite with empty values!
         if location_info.actual_city() or not self.actual_city_name:
             self.anywhere = location_info.is_online_event()

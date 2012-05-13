@@ -32,7 +32,7 @@ def yield_load_fb_event(batch_lookup, db_events):
     for db_event in db_events:
         try:
             fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
-            db_event.make_findable_for(fb_event)
+            db_event.make_findable_for(batch_lookup, fb_event)
             db_event.put()
         except fb_api.NoFetchedDataException:
             logging.info("No data fetched for event id %s", db_event.fb_event_id)

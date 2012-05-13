@@ -148,7 +148,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.display['potential_event'] = potential_event
 
-        location_info = event_locations.LocationInfo(fb_event, e)
+        location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, e)
         self.display['location_info'] = location_info
         self.display['fb_geocoded_address'] = locations.get_geocoded_location(location_info.fb_address)['address']
 
@@ -184,14 +184,14 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             return
 
         if self.request.get('remapped_address') is not None:
-            event_locations.update_remapped_address(fb_event, self.request.get('remapped_address'))
+            event_locations.update_remapped_address(self.batch_lookup, fb_event, self.request.get('remapped_address'))
 
         e = eventdata.DBEvent.get_or_insert(event_id)
         if self.request.get('override_address') is not None:
             e.address = self.request.get('override_address')
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
-        e.make_findable_for(self.batch_lookup.data_for_event(event_id))
+        e.make_findable_for(self.batch_lookup, self.batch_lookup.data_for_event(event_id))
         thing_db.create_source_from_event(self.batch_lookup.copy(), e)
         e.put()
 
@@ -294,7 +294,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         e = eventdata.DBEvent.get_or_insert(event_id)
         e.creating_fb_uid = self.user.fb_uid
         e.creation_time = datetime.datetime.now()
-        e.make_findable_for(fb_event)
+        e.make_findable_for(self.batch_lookup, fb_event)
         thing_db.create_source_from_event(self.batch_lookup.copy(), e)
         e.put()
 
@@ -363,7 +363,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 reason = None
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
-            location_info = event_locations.LocationInfo(fb_event)
+            location_info = event_locations.LocationInfo(self.batch_lookup, fb_event)
             template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
         self.display['number_of_events']  = number_of_events 
         self.display['total_potential_events'] = total_potential_events
