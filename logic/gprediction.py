@@ -50,7 +50,7 @@ map_training_data_for_pevents = fb_mapreduce.mr_wrap(training_data_for_pevents)
 
 def get_training_features(potential_event, fb_event, fb_event_attending):
     if 'owner' in fb_event['info']:
-        owner_name = fb_event['info']['owner']['id']
+        owner_name = 'id%s' % fb_event['info']['owner']['id']
     else:
         owner_name = ''
     if 'venue' in fb_event['info']:
@@ -63,9 +63,9 @@ def get_training_features(potential_event, fb_event, fb_event_attending):
     name = strip_text(fb_event['info'].get('name', ''))
     description = strip_text(fb_event['info'].get('description', ''))
 
-    attendee_list = ' '.join([x['id'] for x in fb_event_attending['attending']['data']])
+    attendee_list = ' '.join(['id%s' % x['id'] for x in fb_event_attending['attending']['data']])
 
-    source_list = ' '.join(str(x) for x in potential_event.source_ids)
+    source_list = ' '.join('id%s' % x for x in potential_event.source_ids)
 
     #TODO(lambert): maybe include number-of-keywords and keyword-density?
 
