@@ -89,6 +89,8 @@ Edit Event
 
 				<p>Has a potential event (<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=$potential_event.key().__str__()">AE</a>).<br>
 				Language: $potential_event.language<br>
+				Dance Bias Score is $potential_event.dance_bias_score .<br>
+				Non Dance Bias Score is $potential_event.non_dance_bias_score .<br>
 				Keyword Score is $potential_event.match_score .<br>
 				Inv Keyword Density is $classified_event.inverse_keyword_density() .<br>
 				Dance Prediction is $potential_event.dance_prediction_score .<br>

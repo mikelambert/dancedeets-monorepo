@@ -16,7 +16,8 @@ class PotentialEvent(db.Model):
 
     language = db.StringProperty()
     looked_at = db.BooleanProperty()
-    dance_prediction_score = db.FloatProperty()
+    dance_bias_score = db.FloatProperty()
+    non_dance_bias_score = db.FloatProperty()
     match_score = db.IntegerProperty()
     show_even_if_no_score = db.BooleanProperty()
 
@@ -44,13 +45,13 @@ def _common_potential_event_setup(potential_event, fb_event, fb_event_attending,
     # Turn off translation and prediction since they're too expensive for me. :(
     #if not potential_event.language:
     #    potential_event.language = get_language_for_fb_event(fb_event)
-    #if not getattr(potential_event, 'dance_prediction_score'):
-    #    potential_event.dance_prediction_score = gprediction.predict(potential_event, fb_event, fb_event_attending, service=predict_service)
+    #if not getattr(potential_event, 'dance_bias_score'):
+    #    potential_event.dance_bias_score, potential_event.non_dance_bias_score = gprediction.predict(potential_event, fb_event, fb_event_attending, service=predict_service)
     match_score = event_classifier.get_classified_event(fb_event, language=potential_event.language).match_score()
     potential_event.match_score = match_score
 
 def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attending):
-    predict_service = None#gprediction.get_predict_service()
+    predict_service = gprediction.get_predict_service()
     def _internal_add_potential_event():
         potential_event = PotentialEvent.get_by_key_name(str(fb_event_id))
         if not potential_event:
@@ -63,6 +64,20 @@ def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attendin
         potential_event = db.run_in_transaction(_internal_add_potential_event)
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", event_id, e)
+
+    if potential_event and not getattr(potential_event, 'dance_bias_score'):
+        dance_bias_score, non_dance_bias_score = gprediction.predict(potential_event, fb_event, fb_event_attending, service=predict_service)
+        def _internal_update_scores():
+            potential_event = PotentialEvent.get_by_key_name(str(fb_event_id))
+            potential_event.dance_bias_score = dance_bias_score
+            potential_event.non_dance_bias_score = non_dance_bias_score
+            potential_event.put()
+            return potential_event
+        try:
+            potential_event = db.run_in_transaction(_internal_update_scores)
+        except apiproxy_errors.CapabilityDisabledError, e:
+            logging.error("Error saving potential event %s due to %s", event_id, e)
+
     return potential_event
 
 def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, source, source_field):

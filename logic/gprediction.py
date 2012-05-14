@@ -96,23 +96,23 @@ def get_predict_service():
     credentials = appengine.StorageByKeyName(appengine.CredentialsModel, MAGIC_USER_ID, 'credentials').get()
     http = credentials.authorize(httplib2.Http())
 
-    service = build("prediction", "v1.4", http=http)
+    service = build("prediction", "v1.5", http=http)
     return service
 
 MODEL_NAME = 'dancedeets/training_data.english.csv'
-def predict(potential_event, fb_event, fb_event_attending, service=None):
-    if potential_event.language == 'en':
-        body = {'input': {'csvInstance': get_training_features(potential_event, fb_event, fb_event_attending)}}
-        service = service or get_predict_service()
-        train = service.trainedmodels()
-        prediction = train.predict(body=body, id=MODEL_NAME).execute()
-        multi = prediction['outputMulti']
-        dance_score = [x['score'] for x in multi if x['label'] == 'dance'][0]
-        nodance_score = [x['score'] for x in multi if x['label'] == 'nodance'][0]
-        logging.info("Dance Score: %s, NoDance Score: %s", dance_score, nodance_score)
-        if 1.0 - (dance_score + nodance_score) > 0.01:
-            logging.error("dance score and no dance score do not sum to 1.0")
-        return dance_score
-    else:
-        return None
+DANCE_BIAS_MODEL_NAME = 'training20120513dance'
+NOT_DANCE_BIAS_MODEL_NAME = 'training20120513nodance'
 
+def predict(potential_event, fb_event, fb_event_attending, service=None):
+    body = {'input': {'csvInstance': get_training_features(potential_event, fb_event, fb_event_attending)}}
+    logging.info("Dance Data: %r", body)
+    service = service or get_predict_service()
+    train = service.trainedmodels()
+    dance_bias_prediction = train.predict(body=body, id=DANCE_BIAS_MODEL_NAME).execute()
+    dance_bias_score = [x['score'] for x in dance_bias_prediction['outputMulti'] if x['label'] == 'dance'][0]
+    not_dance_bias_prediction = train.predict(body=body, id=NOT_DANCE_BIAS_MODEL_NAME).execute()
+    not_dance_bias_score = [x['score'] for x in not_dance_bias_prediction['outputMulti'] if x['label'] == 'dance'][0]
+    logging.info("Dance Result: %s", dance_bias_prediction)
+    logging.info("NoDance Result: %s", not_dance_bias_prediction)
+    logging.info("Dance Score: %s, NoDance Score: %s", dance_bias_score, not_dance_bias_score)
+    return dance_bias_score, not_dance_bias_score
