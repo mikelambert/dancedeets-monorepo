@@ -109,6 +109,7 @@ michael angelo
 mikey disko
 moncell durden
 mr.? ?wiggles
+nelson ewande
 nelson,0
 ninja pop
 ninja,0
@@ -171,6 +172,7 @@ tony mcgregor
 treklock
 tyrone proctor
 tyrone\W+da bone\W+proctor
+veronica pepe
 viktor manoel
 viktor manuel
 waackiesha
