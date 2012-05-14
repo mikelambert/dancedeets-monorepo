@@ -28,12 +28,13 @@ Potential Events Classification
 		#end if
 		(
 			$potential_event.classified_event.inverse_keyword_density()
-		)
+		)<br>
+		<span style="color: green">
+		D:d=$potential_event.potential_event.dance_bias_score<br>
+		ND:d=$potential_event.potential_event.non_dance_bias_score
+		</span>
 		</nobr></td>
 		<td>
-		<span style="text-color: green">
-		$potential_event.potential_event.dance_prediction_score
-		</span>
 		<a href="/events/admin_edit?event_id=$potential_event.fb_event.info.id">
 		#if 'name' in potential_event.fb_event.info
 			$potential_event.fb_event.info.name

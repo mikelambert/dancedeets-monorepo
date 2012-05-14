@@ -343,12 +343,14 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
 
         for e in potential_event_notadded_ids:
             self.batch_lookup.lookup_event(e)
+            self.batch_lookup.lookup_event_attending(e)
         self.finish_preload()
 
         template_events = []
         for e in potential_event_notadded_ids:
             try:
                 fb_event = self.batch_lookup.data_for_event(e)
+                fb_event_attending = self.batch_lookup.data_for_event_attending(e)
             except KeyError:
                 logging.error("Failed to load event id %s", e)
                 continue
@@ -364,6 +366,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
             location_info = event_locations.LocationInfo(self.batch_lookup, fb_event)
+            potential_event_dict[e] = potential_events.update_scores_for_potential_event(potential_event_dict[e], fb_event, fb_event_attending)
             template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
         self.display['number_of_events']  = number_of_events 
         self.display['total_potential_events'] = total_potential_events
