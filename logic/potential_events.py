@@ -48,9 +48,9 @@ def _common_potential_event_setup(potential_event, fb_event):
     match_score = event_classifier.get_classified_event(fb_event, language=potential_event.language).match_score()
     potential_event.match_score = match_score
 
-def update_scores_for_potential_event(potential_event, fb_event, fb_event_attending):
+def update_scores_for_potential_event(potential_event, fb_event, fb_event_attending, service=None):
     if potential_event and not getattr(potential_event, 'dance_bias_score'):
-        predict_service = gprediction.get_predict_service()
+        predict_service = service or gprediction.get_predict_service()
         dance_bias_score, non_dance_bias_score = gprediction.predict(potential_event, fb_event, fb_event_attending, service=predict_service)
         fb_event_id = potential_event.fb_event_id
         def _internal_update_scores():
@@ -107,6 +107,7 @@ def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, 
         new_source, match_score = db.run_in_transaction(_internal_add_source_for_event_id)
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", event_id, e)
+    potential_event = PotentialEvent.get_by_key_name(str(fb_event_id))
     potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
     if new_source:
         #TODO(lambert): doesn't handle the case of the match score increasing from <0 to >0 in the future
