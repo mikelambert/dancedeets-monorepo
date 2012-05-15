@@ -93,7 +93,6 @@ Edit Event
 				Non Dance Bias Score is $potential_event.non_dance_bias_score .<br>
 				Keyword Score is $potential_event.match_score .<br>
 				Inv Keyword Density is $classified_event.inverse_keyword_density() .<br>
-				Dance Prediction is $potential_event.dance_prediction_score .<br>
 				Show-even-if-zero is $potential_event.show_even_if_no_score .<br>
 				With Sources:
 				#for $source_id in $potential_event.source_ids
