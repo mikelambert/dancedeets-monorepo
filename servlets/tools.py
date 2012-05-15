@@ -19,9 +19,6 @@ from logic import thing_db
 from servlets import tasks
 
 
-
-        return ([], [])
-
 class UnprocessFutureEventsHandler(webapp.RequestHandler):
     def get(self):
         #TODO(lambert): reimplement if needed:
@@ -66,27 +63,6 @@ class ImportCitiesHandler(webapp.RequestHandler):
     def get(self):
         cities.import_cities()
         self.response.out.write("Imported Cities!")
-
-
-class DBEventMapper(Mapper):
-    KIND = eventdata.DBEvent
-
-    def map(self, entity):
-        if entity.key().name():
-            return ([], [])
-
-        new_entity = eventdata.DBEvent(
-            key_name = str(entity.__dict__['_entity']['fb_event_id']),
-            tags = entity.tags,
-            creating_fb_uid = entity.creating_fb_uid,
-        )
-
-        return ([new_entity], [entity])
-
-class MigrateDBEventsHandler(webapp.RequestHandler):
-    def get(self):
-        m = DBEventMapper()
-        #m.run()
 
 class ClearMemcacheHandler(webapp.RequestHandler):
     def get(self):
