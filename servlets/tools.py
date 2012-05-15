@@ -9,7 +9,6 @@ from mapreduce import control
 from mapreduce import operation as op
 from mapreduce import util
 
-from util.mapper import Mapper
 from events import cities
 from events import eventdata
 from events import users
@@ -21,26 +20,21 @@ from servlets import tasks
 
 
 
-class UnprocessFutureEvents(Mapper):
-    KIND = fb_api.FacebookCachedObject
-
-    def map(self, entity):
-        if entity.key().name().endswith('OBJ_EVENT'):
-            if entity.json_data:
-                event = entity.decode_data()
-                if not event['deleted']:
-                    info = event['info']
-                    if info.get('start_time') > '2011-04-05' and info['updated_time'] > '2011-04-05':
-                        pe = potential_events.PotentialEvent.get_or_insert(str(event['info']['id']))
-                        pe.looked_at = None
-                        pe.put()
-                        logging.info("PE %s", event['info']['id'])
         return ([], [])
 
 class UnprocessFutureEventsHandler(webapp.RequestHandler):
     def get(self):
-        m = UnprocessFutureEvents()
-        m.run()
+        #TODO(lambert): reimplement if needed:
+        #if entity.key().name().endswith('OBJ_EVENT'):
+        #    if entity.json_data:
+        #        event = entity.decode_data()
+        #        if not event['deleted']:
+        #            info = event['info']
+        #            if info.get('start_time') > '2011-04-05' and info['updated_time'] > '2011-04-05':
+        #                pe = potential_events.PotentialEvent.get_or_insert(str(event['info']['id']))
+        #                pe.looked_at = None
+        #                pe.put()
+        #                logging.info("PE %s", event['info']['id'])
         return
 
 def map_delete_cached_with_wrong_user_id(fbo):
@@ -53,13 +47,7 @@ def map_delete_cached_with_wrong_user_id(fbo):
 
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler):
     def get(self):
-        control.start_map(
-            name='cleanup',
-            reader_spec='mapreduce.input_readers.DatastoreInputReader',
-            handler_spec='servlets.tools.map_delete_cached_with_wrong_user_id',
-            mapper_parameters={'entity_kind': 'fb_api.FacebookCachedObject'},
-            shard_count=8,
-        )
+        pass
 
 class OwnedEventsHandler(webapp.RequestHandler):
     def get(self):
