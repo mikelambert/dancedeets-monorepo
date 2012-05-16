@@ -133,7 +133,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             creating_user = None
 
         potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
-        potential_event.dance_prediction_score = getattr(potential_event, 'dance_prediction_score', 0)
+        potential_event = potential_events.update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         self.display['classified_event'] = classified_event
         if classified_event.is_dance_event():
@@ -196,10 +196,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         e.put()
 
         potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
-        if not hasattr(potential_event, 'dance_prediction_score'):
-            #TODO(lambert): remove this manual hack (and the getattrs!) once we backpopulate scores for everything? even if that score is '0'
-            potential_event.dance_prediction_score = None#gprediction.predict(potential_event, fb_event, fb_event_attending)
-            potential_event.put()
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         if potential_event:
             for source_id in potential_event.source_ids:
@@ -323,9 +319,6 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         unseen_potential_events = list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0 ORDER BY match_score DESC LIMIT %s" % number_of_events))
         if len(unseen_potential_events) < number_of_events:
             unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True LIMIT %s" % (number_of_events - len(unseen_potential_events))))
-        
-        for x in unseen_potential_events:
-            x.dance_prediction_score = getattr(x, 'dance_prediction_score', 0)
 
         potential_event_dict = dict((x.key().name(), x) for x in unseen_potential_events)
         already_added_events = eventdata.DBEvent.get_by_key_name(list(potential_event_dict))
