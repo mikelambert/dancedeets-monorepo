@@ -57,6 +57,7 @@ Potential Events Classification
 		#if $potential_event.location_info.final_city
 		<form action="/events/admin_edit" method="post" target="dd_submit"> <!--TODO(lambert): make this ajax-handled-->
 		<input type="hidden" name="event_id" value="$potential_event.fb_event.info.id">
+		<input type="hidden" name="background" value="1">
 		<button class="btn">Create Event</button>
 		</form>
 		#end if
