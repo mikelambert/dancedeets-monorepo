@@ -123,7 +123,6 @@ dance_and_music_keywords = [
     '90\W?s hip\W?hop',
     u'フリースタイル', # japanese freestyle
     'vogue',
-    'crunk',
     'freestylers?',
 ]
 
@@ -168,7 +167,6 @@ dance_keywords = [
     'bott?ing?',
     'robott?ing?',
     'melbourne shuffle',
-    'jump\W?style[sz]?',
     'strutter[sz]?', 'strutting',
     'tutting?', 'tutter[sz]?',
     'mj\W+style', 'michael jackson style',
@@ -473,6 +471,8 @@ dance_wrong_style_keywords = [
     'blues',
     'waltz',
     'salsy', # salsa czech
+    'disco dance',
+    'disco tan\w+', # czech disco dance
     'milonga',
     'dance partner',
     'cha cha',
@@ -518,6 +518,7 @@ dance_wrong_style_keywords = [
     'pilates',
     'tribal',
     'jazz', 'tap', 'contemporary',
+    u'súčasný', # contemporary slovak
     u'współczesnego', # contemporary polish
     'contempor\w*', # contemporary italian, french
     'africa\w+',

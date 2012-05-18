@@ -1,6 +1,7 @@
 3kick sp[rl]it[sz]
+6sence
+a4o
 academy of villians
-alkaholiks
 ancut stonez
 art of tec[hk]nique
 au[rl]o[rl]a.tex
@@ -16,12 +17,13 @@ beatstrong
 beatsukiboys
 bopster scat
 breakydelic
+burning styles crew
 bushbabeez
 capitol flow # turf
+chillax girlz
 citadanse
 collectif c nous
 coney island dancers
-consciencia
 control freaks
 cosmic funk
 criminalz
@@ -31,7 +33,6 @@ dacrudancecompany
 dance fusion
 dark unit
 deep down dopeizm
-dejavu
 diger deep
 digital junkeez
 double elementz
@@ -39,6 +40,7 @@ down\W?town\W?bounce
 ds players
 dsn core knowledge
 dynamic brno
+dynamic devotion
 electric boogaloos
 elite force
 fab 5 boogz
@@ -58,11 +60,11 @@ glasshopper
 gogo brothers
 gr818ers
 groovmekanex
+gunz hunt
 gute reize
 head\W?hunters\W+soulciety
 heavy-q
 hex bex
-hi-brid
 hilty (?:&|and|\+) bosch
 hiphop junkeez
 hipnotic boogie
@@ -93,6 +95,7 @@ lucifer,0
 lumi dance
 lxd
 machine gone funk
+madhood
 marjoram
 master\W?mind rockers
 mawu
@@ -129,6 +132,7 @@ sucreamgoodman
 supreme soul
 symbol-ism
 syrenz
+tha rampage crew
 the kulture kids
 the lockers
 the next movement praha
@@ -145,7 +149,6 @@ waacouture
 wanted posse
 wonder twins
 yo\W?bbo psycho hitters
-zombie kids
 あけっPARズ
 なすっ子キューカンバ
 オーロラテックス
