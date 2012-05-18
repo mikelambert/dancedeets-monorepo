@@ -53,11 +53,7 @@ def get_training_features(potential_event, fb_event, fb_event_attending):
         owner_name = 'id%s' % fb_event['info']['owner']['id']
     else:
         owner_name = ''
-    if 'venue' in fb_event['info']:
-        location = event_locations.venue_for_fb_location(fb_event['info']['venue'])
-        location = (location or '').encode('utf8')
-    else:
-        location = ''
+    location = event_locations.get_address_for_fb_event(fb_event).encode('utf-8')
     def strip_text(s):
         return strip_punctuation(s.encode('utf8')).lower()
     name = strip_text(fb_event['info'].get('name', ''))

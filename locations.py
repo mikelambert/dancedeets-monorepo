@@ -121,40 +121,47 @@ def get_location_bounds(address, distance_in_km):
 
     return southwest, northeast # ordered more negative to more positive
 
-#TODO(lambert): NOW simplify this so it only returns the bits necessary for the few remaining callers that use it
-def get_geocoded_location(address):
-    result = None
-    if address:
-        result = _raw_get_cached_geocoded_data(address=address)
-    geocoded_location = {}
-    if result:
-        geocoded_location['latlng'] = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
-        geocoded_location['address'] = result['formatted_address']
-        def get(name, long=True):
-            components = [x[long and 'long_name' or 'short_name'] for x in result['address_components'] if name in x['types']]
-            if components:
-                return components[0]
-            else:
-                return None
-            
-        city_parts = []
-        city_parts.append(get('locality') or get('administrative_area_level_3') or get('administrative_area_level_2'))
-        country = get('country')
-        if country == 'United States':
-            city_parts.append(get('administrative_area_level_1', long=False))
-            city_parts.append(get('country', long=False))
-        else:
-            city_parts.append(get('administrative_area_level_1', long=False))
-            city_parts.append(country)
-        geocoded_location['city'] = ', '.join(x for x in city_parts if x)
+def get_city_name(address=None, latlng=None):
+    result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
+    if not result:
+        return None
+    return _get_city_name(result)
 
-        if not geocoded_location['city']:
-            logging.info(result)
+def get_city_name_and_latlng(address=None, latlng=None):
+    result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
+    if not result:
+        return None
+    latlng = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
+    return _get_city_name(result), latlng
+
+def get_latlng(address=None, latlng=None):
+    result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
+    if not result:
+        return None
+    return (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
+
+def _get_city_name(result):
+    def get(name, long=True):
+        components = [x[long and 'long_name' or 'short_name'] for x in result['address_components'] if name in x['types']]
+        if components:
+            return components[0]
+        else:
+            return None
+        
+    city_parts = []
+    city_parts.append(get('locality') or get('administrative_area_level_3') or get('administrative_area_level_2'))
+    country = get('country')
+    if country == 'United States':
+        city_parts.append(get('administrative_area_level_1', long=False))
+        city_parts.append(get('country', long=False))
     else:
-        geocoded_location['latlng'] = None, None
-        geocoded_location['address'] = None
-        geocoded_location['city'] = None
-    return geocoded_location
+        city_parts.append(get('administrative_area_level_1', long=False))
+        city_parts.append(country)
+    city_name = ', '.join(x for x in city_parts if x)
+
+    if not city_name:
+        logging.warning("Could not get city for geocode results: %s", result)
+    return city_name
 
 def get_country_for_location(location_name):
     result = _raw_get_cached_geocoded_data(address=location_name)

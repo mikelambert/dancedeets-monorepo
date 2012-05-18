@@ -20,7 +20,6 @@ class LocationMapping(db.Model):
     remapped_address = db.StringProperty(indexed=False)
 
 def city_for_fb_location(location):
-    # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
     state = abbrev.states_full2abbrev.get(location.get('state'), location.get('state'))
     if location.get('city') and (state or location.get('country')):
         address_components = [location.get('city'), state, location.get('country')]
@@ -30,23 +29,7 @@ def city_for_fb_location(location):
     else:
         return None
 
-def venue_for_fb_location(location, raw_location=None):
-    returned_location = city_for_fb_location(location)
-    if location.get('street'):
-        returned_location = '%s, %s' % (location.get('street'), returned_location)
-    if raw_location:
-        returned_location = '%s, %s' % (raw_location, returned_location)
-    return returned_location
-
-def _address_for_venue(venue, raw_location):
-    # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
-    state = abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state'))
-    address_components = [raw_location, venue.get('street'), venue.get('city'), state, venue.get('country')]
-    address_components = [x for x in address_components if x]
-    address = ', '.join(address_components)
-    return address
-
-def _get_city_for_fb_event(batch_lookup, fb_event):
+def _get_latlng_from_event(batch_lookup, fb_event):
     event_info = fb_event['info']
     venue = event_info.get('venue', {}) #TODO(lambert): need to support "venue decoration" so we don't need to do one-by-one lookups here
     # if we have a venue id, get the city from there
@@ -57,24 +40,30 @@ def _get_city_for_fb_event(batch_lookup, fb_event):
         batch_lookup.finish_loading()
         venue_data = batch_lookup.data_for_venue(venue.get('id'))
         if venue_data['deleted']:
-            logging.warning("no venue found for id %s", venue.get('id'))
-        else:
-            city = city_for_fb_location(venue_data['info'].get('location', {}))
-            logging.info("venue address is %s", city)
-            if city:
-                return city
-    # otherwise fall back on the address in the event, and go from there
-    city = city_for_fb_location(venue)
-    if city:
-        return city
-    else:
-        return None
+            logging.warning("no venue found for id %s, retrying with cache bust", venue.get('id'))
+            # TODO(lambert): clean up old venues in the system, this is a hack until then
+            batch_lookup = batch_lookup.copy(allow_cache=False)
+            batch_lookup.lookup_venue(venue.get('id'))
+            batch_lookup.finish_loading()
+            venue_data = batch_lookup.data_for_venue(venue.get('id'))
+            if venue_data['deleted']:
+                logging.error("STILL no venue found for id %s, giving up", venue.get('id'))
+        if not venue_data['deleted']:
+            loc = (venue_data['info'].get('location', {}))
+            return loc['latitude'], loc['longitude']
+    return None
 
-def _get_address_for_fb_event(fb_event):
+def get_address_for_fb_event(fb_event):
     event_info = fb_event['info']
     venue = event_info.get('venue', {})
-    raw_location = event_info.get('location')
-    final_address = _address_for_venue(venue, raw_location=raw_location)
+    event_location = event_info.get('location')
+
+    # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
+    state = abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state'))
+    address_components = [event_location, venue.get('street'), venue.get('city'), state, venue.get('country')]
+    address_components = [x for x in address_components if x]
+    final_address = ', '.join(address_components)
+
     # many geocodes have a couple trailing digits, a la "VIA ROMOLO GESSI 14"
     return re.sub(r' \d{,3}$', '', final_address)
 
@@ -114,52 +103,60 @@ def update_remapped_address(batch_lookup, fb_event, new_remapped_address):
     location_info = LocationInfo(batch_lookup, fb_event)
     logging.info("remapped address for fb_event %r, new form value %r", location_info.remapped_address, new_remapped_address)
     if location_info.remapped_address != new_remapped_address:
-        _save_remapped_address_for(location_info.remapped_source(), new_remapped_address)
+        _save_remapped_address_for(location_info.fb_address, new_remapped_address)
 
 
 ONLINE_ADDRESS = 'ONLINE'
+def get_city_name_and_latlng(address=None):
+    if address == ONLINE_ADDRESS:
+        return ONLINE_ADDRESS, None
+    else:
+        return locations.get_city_name_and_latlng(address=address)
 
 class LocationInfo(object):
-    def __init__(self, batch_lookup, fb_event, db_event=None):
-        # Do not trust facebook for latitude/longitude data. It appears to treat LA as Louisiana, etc. So always geocode
-        self.fb_city = _get_city_for_fb_event(batch_lookup, fb_event)
-        if self.fb_city:
-            self.fb_address = self.fb_city
-        else:
-            self.fb_address = _get_address_for_fb_event(fb_event)
-    
-        logging.info("For event %s, fb city is %r, fb address is %r", fb_event['info']['id'], self.fb_city, self.fb_address)
+    def __init__(self, batch_lookup, fb_event, db_event=None, debug=False):
+        has_overridden_address = db_event and db_event.address
 
-        # technically not needed if db_event.address is set, but loaded here so we can still display on admin_edit page and modify it independently
-        self.remapped_address = _get_remapped_address_for(self.remapped_source())
-        if db_event and db_event.address:
-            self.overridden_address = db_event.address
-            self.final_address = self.overridden_address
-            logging.info("Address overridden to be %r", db_event.address)
-        else:
-            self.overridden_address = None
-            if self.remapped_address:
-                self.final_address = self.remapped_address
-                logging.info("Checking remapped address, which is %r", self.remapped_address)
-            elif self.fb_city:
-                self.final_address = self.fb_city
+        self.overridden_address = None
+        self.fb_address = None
+        self.remapped_address = None
+        if not has_overridden_address or debug:
+            self.final_latlng = _get_latlng_from_event(batch_lookup, fb_event)
+            if self.final_latlng:
+                self.final_city = locations.get_city_name(latlng=self.latlng)
+                self.fb_address = self.final_city
+                self.remapped_address = ''
             else:
-                self.final_address = self.fb_address
-        results = locations.get_geocoded_location(self.final_address)
-        self.final_city = results['city']
-        self.final_latlng = results['latlng']
-        logging.info("Final address is %r, final city is %r", self.final_address, self.final_city)
+                self.fb_address = get_address_for_fb_event(fb_event)
+                self.remapped_address = _get_remapped_address_for(self.fb_address)
+                if self.remapped_address:
+                    logging.info("Checking remapped address, which is %r", self.remapped_address)
+                result = get_city_name_and_latlng(address=self.remapped_address or self.fb_address)
+                if result:
+                    self.final_city, self.final_latlng = result
+                else:
+                    self.final_city = None
+                    self.final_latlng = None
 
-    def remapped_source(self):
-        return self.fb_city or self.fb_address
+        if has_overridden_address:
+            self.overridden_address = db_event.address
+            logging.info("Address overridden to be %r", self.overridden_address)
+            result = get_city_name_and_latlng(address=self.overridden_address)
+            if result:
+                self.final_city, self.final_latlng = result
+            else:
+                self.final_city = None
+                self.final_latlng = None
+
+        logging.info("Final latlng is %r, final city is %r", self.final_latlng, self.final_city)
 
     def needs_override_address(self):
-        address = self.final_address or ''
+        address = self.remapped_address or self.fb_address or ''
         trimmed_address = address.replace('.', '').replace(' ', '').upper()
         return (trimmed_address in ['TBA', 'TBD', ''])
 
     def is_online_event(self):
-        return self.final_address == ONLINE_ADDRESS
+        return self.final_city == ONLINE_ADDRESS
 
     def actual_city(self):
         if self.is_online_event():
@@ -171,7 +168,7 @@ class LocationInfo(object):
         if self.is_online_event():
             return None
         else:
-            return cities.get_largest_nearby_city_name(self.final_city)
+            return cities.get_largest_nearby_city_name(self.final_city) #TODO(lambert): switch this to latlng lookup
 
     def latlong(self):
         if self.is_online_event():

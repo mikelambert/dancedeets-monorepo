@@ -120,7 +120,7 @@ class DBEvent(db.Model):
         else:
             self.search_time_period = TIME_PAST
 
-        location_info = event_locations.LocationInfo(batch_lookup, fb_dict, self)
+        location_info = event_locations.LocationInfo(batch_lookup, fb_dict, db_event=self)
         # If we got good values from before, don't overwrite with empty values!
         if location_info.actual_city() or not self.actual_city_name:
             self.anywhere = location_info.is_online_event()

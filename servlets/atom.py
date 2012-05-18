@@ -70,13 +70,7 @@ class AtomHandler(base_servlet.BaseRequestHandler):
         #TODO(lambert): setup proper date-modified times
 
         for result in search_results:
-            # Seriously need to rewrite this as a proper function. Ideally get some good event test cases and build some tests around it.
-            if 'venue' in result.fb_event['info']:
-                location = event_locations.venue_for_fb_location(result.fb_event['info']['venue'], result.fb_event['info'].get('location'))
-            elif 'location' in result.fb_event['info']:
-                location = result.fb_event['info']['location']
-            else:
-                location = 'Unknown'
+            location = event_locations.get_address_for_fb_event(result.fb_event) or 'Unknown'
 
             lines = []
             lines.append('<img src="%s" />' % urls.fb_event_image_url(result.fb_event['info']['id']))

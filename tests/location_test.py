@@ -5,15 +5,11 @@ import unittest
 import locations
 
 class LocationsTest(unittest.TestCase):
-    def test_geocoded_location(self):
-        result = locations.get_geocoded_location(address='San Francisco, CA')
-        self.assertEqual(result['city'], u'San Francisco, CA, US')
+    def test_get_city_name(self):
+        self.assertEqual(locations.get_city_name(address='San Francisco, CA'), u'San Francisco, CA, US')
+        self.assertEqual(locations.get_city_name(address='Tokyo, Japan'), u'Tokyo, Japan')
+        self.assertEqual(locations.get_city_name(address='Mexico City, Mexico'), u'Mexico City, DF, Mexico')
 
-        result = locations.get_geocoded_location(address='Tokyo, Japan')
-        self.assertEqual(result['city'], u'Tokyo, Japan')
-
-        result = locations.get_geocoded_location(address='Mexico City, Mexico')
-        self.assertEqual(result['city'], u'Mexico City, DF, Mexico')
-
-if __name__ == '__main__':
-    unittest.main()
+    def test_get_country(self):
+        self.assertEqual(locations.get_country_for_location(address='San Francisco'), u'US')
+        self.assertEqual(locations.get_country_for_location(address='Tokyo'), u'JP')
