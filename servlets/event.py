@@ -163,6 +163,10 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.render_template('admin_edit')
 
     def post(self):
+        event_id = self.request.get('event_id')
+        remapped_address = self.request.get('remapped_address')
+        override_address = self.request.get('override_address')
+
         if self.request.get('delete'):
             e = eventdata.DBEvent.get_by_key_name(event_id)
             e.delete()
@@ -170,9 +174,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.redirect('/events/admin_edit?event_id=%s' % event_id)
             return
 
-        event_id = self.request.get('event_id')
-        remapped_address = self.request.get('remapped_address')
-        override_address = self.request.get('override_address')
         if self.request.get('background'):
             deferred.defer(add_update_event, event_id, remapped_address, override_address, self.user.fb_uid, self.batch_lookup.copy())
             self.response.out.write("Added!")
