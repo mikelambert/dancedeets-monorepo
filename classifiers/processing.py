@@ -22,9 +22,11 @@ def load_ids():
         line = line.strip()
         if line.startswith('+'):
             result['good_ids'].add(line[1:])
-            result['bad_ids'].remove(line[1:])
+            if line[1:] in result['bad_ids']:
+                result['bad_ids'].remove(line[1:])
         elif line.startswith('-'):
-            result['good_ids'].remove(line[1:])
+            if line[1:] in result['good_ids']:
+                result['good_ids'].remove(line[1:])
             result['bad_ids'].add(line[1:])
 
     result = dict((k, frozenset(v)) for (k, v) in result.iteritems())
