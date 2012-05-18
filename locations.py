@@ -27,7 +27,15 @@ LOCATION_EXPIRY = 24 * 60 * 60
 class GeocodeException(Exception):
     pass
 
-def _get_geocoded_data(address):
+def _get_geocoded_data(address=None, latlng=None):
+    params = {}
+    if address is not None:
+        params['address'] = address.encode('utf-8')
+    if latlng is not None:
+        params['latlng'] = '%s,%s' % latlng
+    assert params
+    params['sensor'] = False
+    params['client'] = 'free-dancedeets'
     unsigned_url_path = "/maps/api/geocode/json?%s" % urllib.urlencode(dict(address=address.encode('utf-8'), sensor='false', client='free-dancedeets'))
     private_key = 'zj918QnslsoOQHl4kLjv-ZCgsDE='
     decoded_key = base64.urlsafe_b64decode(private_key)
@@ -58,20 +66,29 @@ class GeoCode(db.Model):
 def _memcache_location_key(location):
     return 'GoogleMaps.%s' % location
 
-def _raw_get_cached_geocoded_data(location):
-    memcache_key = _memcache_location_key(location)
+def _geocode_key(address, latlng):
+    assert address or latlng
+    assert not (address and latlng)
+    if address:
+        return address
+    else:
+        return '%s,%s' % latlng
+
+def _raw_get_cached_geocoded_data(address=None, latlng=None):
+    geocode_key = _geocode_key(address, latlng)
+    memcache_key = _memcache_location_key(geocode_key)
     geocoded_data = smemcache and smemcache.get(memcache_key)
     if geocoded_data is None:
-        geocode = GeoCode.get_by_key_name(location)
+        geocode = GeoCode.get_by_key_name(geocode_key)
         if geocode:
             try:
                 geocoded_data = simplejson.loads(geocode.json_data)
             except:
-                logging.exception("Error decoding json data for geocode %r: %r", location, geocode.json_data)
+                logging.exception("Error decoding json data for geocode %r with latlng %s: %r", address, latlng, geocode.json_data)
         if geocoded_data is None:
-            geocoded_data = _get_geocoded_data(location)
+            geocoded_data = _get_geocoded_data(address=address, latlng=latlng)
 
-            geocode = GeoCode(key_name=location)
+            geocode = GeoCode(key_name=geocode_key)
             geocode.json_data = simplejson.dumps(geocoded_data)
             geocode.put()
         if smemcache:
@@ -81,7 +98,7 @@ def _raw_get_cached_geocoded_data(location):
 def get_location_bounds(address, distance_in_km):
     if not address:
         return None, None
-    result = _raw_get_cached_geocoded_data(address)
+    result = _raw_get_cached_geocoded_data(address=address)
 
     def to_latlng(x):
         return x['lat'], x['lng']
@@ -108,7 +125,7 @@ def get_location_bounds(address, distance_in_km):
 def get_geocoded_location(address):
     result = None
     if address:
-        result = _raw_get_cached_geocoded_data(address)
+        result = _raw_get_cached_geocoded_data(address=address)
     geocoded_location = {}
     if result:
         geocoded_location['latlng'] = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
@@ -127,6 +144,7 @@ def get_geocoded_location(address):
             city_parts.append(get('administrative_area_level_1', long=False))
             city_parts.append(get('country', long=False))
         else:
+            city_parts.append(get('administrative_area_level_1', long=False))
             city_parts.append(country)
         geocoded_location['city'] = ', '.join(x for x in city_parts if x)
 
@@ -139,7 +157,7 @@ def get_geocoded_location(address):
     return geocoded_location
 
 def get_country_for_location(location_name):
-    result = _raw_get_cached_geocoded_data(location_name)
+    result = _raw_get_cached_geocoded_data(address=location_name)
     if not result:
         return None
     countries = [x['short_name'] for x in result['address_components'] if u'country' in x['types']]

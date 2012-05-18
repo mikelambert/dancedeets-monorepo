@@ -30,7 +30,7 @@ class Stub(object):
             'address': '',
             'city': '',
         }
-        locations.get_geocoded_location = lambda x: dummy_location
+        locations.get_geocoded_location = lambda *args, **kwargs: dummy_location
 
     def deactivate(self):
         fb_api.BatchLookup = self.original_batch_lookup
