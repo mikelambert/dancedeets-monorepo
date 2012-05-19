@@ -1,0 +1,30 @@
+{"deleted": false,
+"attending": {
+   "data": [
+      {
+         "name": "Devin Hong",
+         "id": "1387981651",
+         "rsvp_status": "attending"
+      },
+      {
+         "name": "Richard Le",
+         "id": "1341665245",
+         "rsvp_status": "attending"
+      },
+      {
+         "name": "Larry Phatso Oliver",
+         "id": "1405690106",
+         "rsvp_status": "attending"
+      },
+      {
+         "name": "Robert Vicario",
+         "id": "1256713145",
+         "rsvp_status": "attending"
+      }
+   ],
+   "paging": {
+      "next": "https://graph.facebook.com/340325609368063/attending?access_token=AAAAAAITEghMBANpPFBCk6dPhm92WIZB5DzlU1foYnsXb4834yrHyM1nnphqzg9OhTuyepbX3MnrD3zZBa9mhujs2lyAZASb1u4lZBiG8vwZDZD&limit=5000&offset=5000&__after_id=1256713145"
+   }
+}
+
+}
