@@ -85,9 +85,13 @@ Edit Event
 				<button class="btn">Create Event</button>
 				<!--button class="btn">Not a Dance Event</button-->
 			#end if
+			<p>
+			#if $event
+				Has a db event (<a href="https://appengine.google.com/
+datastore/edit?app_id=s~dancedeets-hrd&key=$event.key().__str__()">AE</a>).<br>
+			#end if
 			#if $potential_event
-
-				<p>Has a potential event (<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=$potential_event.key().__str__()">AE</a>).<br>
+				Has a potential event (<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=$potential_event.key().__str__()">AE</a>).<br>
 				Language: $potential_event.language<br>
 				Dance Bias Score is $potential_event.dance_bias_score .<br>
 				Non Dance Bias Score is $potential_event.non_dance_bias_score .<br>
