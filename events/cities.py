@@ -16,7 +16,7 @@ NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identif
 
 def get_closest_city(location):
     point = locations.get_latlng(address=location)
-    if point[0] is None:
+    if point is None:
         return None
     city_distance = lambda city: locations.get_distance(point, (city.latitude, city.longitude), use_km=True)
 
@@ -38,7 +38,7 @@ def get_largest_nearby_city_name(location):
     # rather than return the nearest city (Sunnyvale, San Jose, etc)
     # try to find the largest city within a certain range to give us good groupings for the "scene" name of a user/event.
     point = locations.get_latlng(address=location)
-    if point[0] is None:
+    if point is None:
         return "Unknown"
     geohashes = locations.get_all_geohashes_for((point, point), precision=locations.get_geohash_bits_for_km(NEARBY_DISTANCE_KM))
     cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(100)
