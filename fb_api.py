@@ -158,7 +158,7 @@ class BatchLookup(object):
             )
         elif object_type == self.OBJECT_VENUE:
             return dict(
-                info=self._fetch_rpc('%s' % object_id, use_access_token=False),
+                info=self._fetch_rpc('%s' % object_id),
             )
         else:
             raise Exception("Unknown object type %s" % object_type)
