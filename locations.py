@@ -34,9 +34,9 @@ def _get_geocoded_data(address=None, latlng=None):
     if latlng is not None:
         params['latlng'] = '%s,%s' % latlng
     assert params
-    params['sensor'] = False
+    params['sensor'] = 'false'
     params['client'] = 'free-dancedeets'
-    unsigned_url_path = "/maps/api/geocode/json?%s" % urllib.urlencode(dict(address=address.encode('utf-8'), sensor='false', client='free-dancedeets'))
+    unsigned_url_path = "/maps/api/geocode/json?%s" % urllib.urlencode(params)
     private_key = 'zj918QnslsoOQHl4kLjv-ZCgsDE='
     decoded_key = base64.urlsafe_b64decode(private_key)
     signature = hmac.new(decoded_key, unsigned_url_path, hashlib.sha1)
@@ -75,6 +75,8 @@ def _geocode_key(address, latlng):
         return '%s,%s' % latlng
 
 def _raw_get_cached_geocoded_data(address=None, latlng=None):
+    if not address and not latlng:
+        return {}
     geocode_key = _geocode_key(address, latlng)
     memcache_key = _memcache_location_key(geocode_key)
     geocoded_data = smemcache and smemcache.get(memcache_key)
@@ -131,14 +133,14 @@ def get_city_name_and_latlng(address=None, latlng=None):
     result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
     if not result:
         return None
-    latlng = (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
+    latlng = (float(result['geometry']['location']['lat']), float(result['geometry']['location']['lng']))
     return _get_city_name(result), latlng
 
 def get_latlng(address=None, latlng=None):
     result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
     if not result:
         return None
-    return (result['geometry']['location']['lat'], result['geometry']['location']['lng'])
+    return (float(result['geometry']['location']['lat']), float(result['geometry']['location']['lng']))
 
 def _get_city_name(result):
     def get(name, long=True):

@@ -50,7 +50,7 @@ def _get_latlng_from_event(batch_lookup, fb_event):
                 logging.error("STILL no venue found for id %s, giving up", venue.get('id'))
         if not venue_data['deleted']:
             loc = (venue_data['info'].get('location', {}))
-            return loc['latitude'], loc['longitude']
+            return float(loc['latitude']), float(loc['longitude'])
     return None
 
 def get_address_for_fb_event(fb_event):
@@ -70,7 +70,7 @@ def get_address_for_fb_event(fb_event):
 def _get_remapped_address_for(address):
     address = (address or '').strip()
     if not address:
-        return ''
+        return None
     # map locations to corrected locations for events that have wrong or incomplete info
     #TODO(lambert): How about we have a sharded-memcache-key based on first hexadecimal character of md5-hash of address. this key-value would store all re-mappings with that prefix, and could be db-and-memcached easily.
     #TODO(lambert): Write a mapreduce which goes through events looking for unnecessary mappings to clear out the mapping space.
@@ -117,15 +117,17 @@ class LocationInfo(object):
     def __init__(self, batch_lookup, fb_event, db_event=None, debug=False):
         has_overridden_address = db_event and db_event.address
 
+        self.exact_from_event = False
         self.overridden_address = None
         self.fb_address = None
         self.remapped_address = None
         if not has_overridden_address or debug:
             self.final_latlng = _get_latlng_from_event(batch_lookup, fb_event)
             if self.final_latlng:
-                self.final_city = locations.get_city_name(latlng=self.latlng)
+                self.exact_from_event = True
+                self.final_city = locations.get_city_name(latlng=self.final_latlng)
                 self.fb_address = self.final_city
-                self.remapped_address = ''
+                self.remapped_address = None
             else:
                 self.fb_address = get_address_for_fb_event(fb_event)
                 self.remapped_address = _get_remapped_address_for(self.fb_address)
