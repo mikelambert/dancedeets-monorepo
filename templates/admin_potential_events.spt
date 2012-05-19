@@ -41,14 +41,14 @@ Potential Events Classification
 		#end if
 		</a></td>
 		<td>
-		#if $potential_event.location_info.fb_city
-			$potential_event.location_info.fb_city
+		#if $potential_event.location_info.exact_from_event
+			$potential_event.location_info.final_city
 		#else
 			<a href="http://www.google.com/search?q=$urlencode($potential_event.location_info.fb_address)">$format_html($potential_event.location_info.fb_address)</a><br>
 			$potential_event.location_info.final_city
 			#if $potential_event.location_info.overridden_address
 				(Overridden)
-			#elif $potential_event.location_info.overridden_address
+			#elif $potential_event.location_info.remapped_address
 				(Remapped)
 			#end if
 		#end if
