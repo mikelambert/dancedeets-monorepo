@@ -17,19 +17,19 @@ def get_event(event_id):
     return fb_event
 
 class EventLocationsTest(unittest.TestCase):
-        def setUp(self):
-                self.fb_api = fb_api_stub.Stub()
-                self.fb_api.activate()
+    def setUp(self):
+        self.fb_api = fb_api_stub.Stub()
+        self.fb_api.activate()
         self.batch_lookup = fb_api.CommonBatchLookup(None, None, None)
 
-                self.testbed = testbed.Testbed()
-                self.testbed.activate()
-                self.testbed.init_datastore_v3_stub()
-                self.testbed.init_memcache_stub()
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
 
-        def tearDown(self):
-                self.testbed.deactivate()
-                self.fb_api.deactivate()
+    def tearDown(self):
+        self.testbed.deactivate()
+        self.fb_api.deactivate()
 
     def get_event(self, event_id):
         self.batch_lookup.lookup_event(event_id)
@@ -42,13 +42,13 @@ class EventLocationsTest(unittest.TestCase):
         self.assertEqual(event_locations.get_address_for_fb_event(fb_event), "Hype Dance, 67 Earl Street")
 
 class LocationInfoTest(EventLocationsTest):
-        def setUp(self):
-                self.fb_api = fb_api_stub.Stub()
-                self.fb_api.activate()
+    def setUp(self):
+        self.fb_api = fb_api_stub.Stub()
+        self.fb_api.activate()
         self.batch_lookup = fb_api.CommonBatchLookup(None, None, None)
 
-        def tearDown(self):
-                self.fb_api.deactivate()
+    def tearDown(self):
+        self.fb_api.deactivate()
 
     def test_SimpleVenue(self):
         fb_event = self.get_event(EVENT_ID)
@@ -159,3 +159,16 @@ class LocationInfoTest(EventLocationsTest):
         self.assertEqual(location_info.final_city, None)
         self.assertEqual(location_info.final_latlng, None)
         self.assertEqual(location_info.exact_from_event, False)
+
+    def test_EasyLatLong(self):
+        fb_event = self.get_event(102)
+
+        location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, debug=True)
+        self.assertEqual(location_info.overridden_address, None)
+        self.assertEqual(location_info.remapped_address, None)
+        self.assertEqual(location_info.fb_address, 'San Francisco, CA, US')
+        self.assertEqual(location_info.final_city, 'San Francisco, CA, US')
+        self.assertEqual(location_info.final_latlng, (37.774929499999999, -122.4194155))
+        self.assertEqual(location_info.exact_from_event, True)
+
+

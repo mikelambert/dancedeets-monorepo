@@ -34,6 +34,8 @@ def _get_latlng_from_event(batch_lookup, fb_event):
     venue = event_info.get('venue', {}) #TODO(lambert): need to support "venue decoration" so we don't need to do one-by-one lookups here
     # if we have a venue id, get the city from there
     logging.info("venue id is %s", venue.get('id'))
+    if venue.get('latitude') and venue.get('longitude'):
+        return float(venue['latitude']), float(venue['longitude'])
     if venue.get('id'):
         batch_lookup = batch_lookup.copy(allow_cache=batch_lookup.allow_cache)
         batch_lookup.lookup_venue(venue.get('id'))
