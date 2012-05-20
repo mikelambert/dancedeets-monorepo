@@ -145,20 +145,28 @@ def get_latlng(address=None, latlng=None):
 def _get_city_name(result):
     def get(name, long=True):
         components = [x[long and 'long_name' or 'short_name'] for x in result['address_components'] if name in x['types']]
-        if components:
-            return components[0]
-        else:
-            return None
+        # Sometimes we see this, so return both 
+        #{
+        #  "long_name" : "Naka Ward",
+        #  "short_name" : "Naka Ward",
+        #  "types" : [ "locality", "political" ]
+        #},
+        #{
+        #  "long_name" : "Nagoya",
+        #  "short_name" : "Nagoya",
+        #  "types" : [ "locality", "political" ]
+        #},
+        return components
         
     city_parts = []
-    city_parts.append(get('locality') or get('administrative_area_level_3') or get('administrative_area_level_2'))
+    city_parts.extend(get('locality') or get('administrative_area_level_3') or get('administrative_area_level_2'))
     country = get('country')
-    if country == 'United States':
-        city_parts.append(get('administrative_area_level_1', long=False))
-        city_parts.append(get('country', long=False))
+    if country == ['United States']:
+        city_parts.extend(get('administrative_area_level_1', long=False))
+        city_parts.extend(get('country', long=False))
     else:
-        city_parts.append(get('administrative_area_level_1', long=False))
-        city_parts.append(country)
+        city_parts.extend(get('administrative_area_level_1', long=False))
+        city_parts.extend(country)
     city_name = ', '.join(x for x in city_parts if x)
 
     if not city_name:
