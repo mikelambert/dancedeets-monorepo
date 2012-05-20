@@ -176,7 +176,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         if self.request.get('background'):
             deferred.defer(add_update_event, event_id, remapped_address, override_address, self.user.fb_uid, self.batch_lookup.copy())
-            self.response.out.write("Added!")
+            self.response.out.write("<title>Added!</title>Added!")
         else:
             try:
                 add_update_event(event_id, remapped_address, override_address, self.user.fb_uid, self.batch_lookup)
@@ -363,13 +363,15 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 reason = classified_event.reason()
                 dance_words_str = ', '.join(list(classified_event.dance_matches()))
                 event_words_str = ', '.join(list(classified_event.event_matches()))
+                wrong_words_str = ', '.join(list(classified_event.wrong_matches()))
             else:
                 reason = None
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
+                wrong_words_str = 'NONE'
             location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, debug=True)
             potential_event_dict[e] = potential_events.update_scores_for_potential_event(potential_event_dict[e], fb_event, fb_event_attending)
-            template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
+            template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, wrong_words=wrong_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
         self.display['number_of_events']  = number_of_events 
         self.display['total_potential_events'] = total_potential_events
         self.display['has_more_events'] = has_more_events

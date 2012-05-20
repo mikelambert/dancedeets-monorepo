@@ -71,8 +71,9 @@ Potential Events Classification
 		$potential_event.potential_event.language
 		</span>
 		</td>
-		<td>$potential_event.dance_words</td>
-		<td>$potential_event.event_words</td>
+		<td>$potential_event.dance_words<br>
+		$potential_event.event_words</td>
+		<td>$potential_event.wrong_words</td>
 		<td>$potential_event.keyword_reason</td>
 		<td>
 		<button class="btn" type="button" onclick="$('#sources_$i').toggle()">$len($potential_event.potential_event.source_ids) Sources</button>
