@@ -2,7 +2,7 @@ import datetime
 import unittest
 from util import dates
 
-class DatesTest(unittest.TestCase):
+class TestDates(unittest.TestCase):
     nye = datetime.datetime(2000, 1, 1)
     nye_plus_8 = datetime.datetime(2000, 1, 1, 8)
     nye_plus_15 = datetime.datetime(2000, 1, 1, 15)

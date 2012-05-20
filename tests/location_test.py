@@ -4,7 +4,7 @@ import unittest
 
 import locations
 
-class LocationsTest(unittest.TestCase):
+class TestLocations(unittest.TestCase):
     def test_get_city_name(self):
         self.assertEqual(locations.get_city_name(address='San Francisco, CA'), u'San Francisco, CA, US')
         self.assertEqual(locations.get_city_name(address='Tokyo, Japan'), u'Tokyo, Japan')

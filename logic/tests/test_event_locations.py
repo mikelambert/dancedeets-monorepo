@@ -16,7 +16,7 @@ EVENT_ID = '299993043349170'
 def get_event(event_id):
     return fb_event
 
-class EventLocationsTest(unittest.TestCase):
+class TestEventLocations(unittest.TestCase):
     def setUp(self):
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate()
@@ -41,7 +41,7 @@ class EventLocationsTest(unittest.TestCase):
         fb_event = self.get_event(EVENT_ID)
         self.assertEqual(event_locations.get_address_for_fb_event(fb_event), "Hype Dance, 67 Earl Street")
 
-class LocationInfoTest(EventLocationsTest):
+class TestLocationInfo(TestEventLocations):
     def setUp(self):
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate()

@@ -3,7 +3,7 @@
 
 import unittest
 
-class ImportTest(unittest.TestCase):
+class TestImports(unittest.TestCase):
     def test_main_import(self):
         import main
 
