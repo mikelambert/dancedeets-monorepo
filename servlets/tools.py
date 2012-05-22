@@ -13,6 +13,7 @@ from events import cities
 from events import eventdata
 from events import users
 import fb_api
+from logic import auto_add
 from logic import event_classifier
 from logic import mr_prediction
 from logic import potential_events
@@ -45,7 +46,7 @@ def map_delete_cached_with_wrong_user_id(fbo):
 
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler):
     def get(self):
-        mr_prediction.mr_classify_potential_events(self.batch_lookup)
+        auto_add.mr_classify_potential_events(self.batch_lookup)
 
 class OwnedEventsHandler(webapp.RequestHandler):
     def get(self):
