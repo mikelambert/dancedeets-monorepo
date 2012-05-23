@@ -37,6 +37,7 @@ URLS = [
     ('/tools/generate_training_data', gprediction.GenerateTrainingDataHandler),
     ('/tools/owned_events', tools.OwnedEventsHandler),
     ('/tools/unprocess_future_events', tools.UnprocessFutureEventsHandler),
+    ('/tools/auto_add_potential_events', tools.AutoAddPotentialEventsHandler),
     ('/tools/oneoff', tools.OneOffHandler),
     ('/tools/import_cities', tools.ImportCitiesHandler),
     ('/tools/clear_memcache', admin.ClearMemcacheHandler),

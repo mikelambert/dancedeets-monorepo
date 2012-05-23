@@ -15,6 +15,7 @@ from events import users
 import fb_api
 from logic import auto_add
 from logic import event_classifier
+from logic import mr_dump
 from logic import mr_prediction
 from logic import potential_events
 from logic import thing_db
@@ -45,6 +46,10 @@ def map_delete_cached_with_wrong_user_id(fbo):
 
 
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler):
+    def get(self):
+        mr_dump.mr_dump_events(self.batch_lookup)
+
+class AutoAddPotentialEventsHandler(tasks.BaseTaskFacebookRequestHandler):
     def get(self):
         auto_add.mr_classify_potential_events(self.batch_lookup)
 
