@@ -37,6 +37,9 @@ def classify_events(batch_lookup, pe_list):
             results.append(result)
             try:
                 add_entities.add_update_event(pe.fb_event_id, 0, batch_lookup, creating_method=eventdata.CM_AUTO)
+                pe2 = potential_events.PotentialEvent.get_by_key_name(str(pe.fb_event_id))
+                pe2.looked_at = True
+                pe2.put()
             except (fb_api.NoFetchedDataException, add_entities.AddEventException), e:
                 logging.error("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
     yield ''.join(results).encode('utf-8')
