@@ -66,6 +66,7 @@ brooklyn zoo,0
 byu breakers
 calamaties,0
 canton clan
+chief rockers
 circle of fire
 concrete turtle
 contenido explicito crew
@@ -111,11 +112,12 @@ floor burnin'
 floor gangz
 floor hunters
 floor master dancers
+floor masters
 floor obsessions
 floor ridaz
 floor royalty
 floor storm
-floorlords
+floor\W?lords
 florox
 flow? mo
 foot clan
@@ -224,6 +226,7 @@ main ingredientz
 marbles crew
 marittima funk
 massive monkeys
+masters of mayhem
 mathematics crew
 maximum efficiency crew
 maziade
@@ -248,6 +251,7 @@ new york city breakers
 no name crew
 north flava
 northwest frazzle kids
+nyc breakers
 omego steps
 one peace boy'z
 one soul crew

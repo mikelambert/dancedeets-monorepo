@@ -1,3 +1,4 @@
+(?:5|five)\W?f(?:oo)?t thrillaz
 3kick sp[rl]it[sz]
 6sence
 a4o
