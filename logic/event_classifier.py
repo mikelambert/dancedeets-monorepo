@@ -17,6 +17,8 @@ from util import re_flatten
 from util import cjk_detect
 from spitfire.runtime.filters import skip_filter
 
+USE_UNICODE = False
+
 # TODO: translate to english before we try to apply the keyword matches
 # TODO: if event creator has created dance events previously, give it some weight
 # TODO: 
@@ -80,7 +82,7 @@ easy_dance_keywords = [
     u'tänzer', # dancer german
 ]
 easy_choreography_keywords = [
-    u'(?:ch|k|c)oe?re[o|ó]gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese
+    u'(?:ch|k|c)oe?re[o|ó]?gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese
     'choreo',
     u'chorée', # french choreo
     u'chorégraph\w*', # french choreographer
@@ -375,10 +377,61 @@ battle_keywords = [
     u'トーナメント', # japanese tournament
     'turnie\w*', # tournament polish/german
     u'giải đấu', # tournament vietnamese
+    u'thi đấu', # competition vietnamese
+    u'đấu', # game vietnamese
     'turneringer', # danish tournament
     'preselections?',
     u'présélections?', # preselections french
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook)',
+]
+
+class_keywords = [
+    'workshop\W?s?',
+    'cursillo', # spanish workshop
+    'ateliers', # french workshop
+    'workshopy', # czech workshop
+    u'סדנאות', # hebrew workshops
+    u'סדנה', # hebew workshop
+    # 'taller', # workshop spanish
+    'delavnice', # workshop slovak
+    'talleres', # workshops spanish
+    'radionicama', # workshop croatian
+    'warsztaty', # polish workshop
+    u'warsztatów', # polish workshop
+    u'seminarų', # lithuanian workshop
+    'class with', 'master\W?class(?:es)?',
+    u'мастер-класса?', # russian master class
+    u'классa?', # russian class
+    'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
+    'klass(?:EN)?', # slovakian class
+    u'수업', # korean class
+    u'수업을', # korean classes
+    'lekc[ie]', # czech lesson
+    u'課程', # course chinese
+    u'課', # class chinese
+    u'堂課', # lesson chinese
+    u'コース', # course japanese
+    'concorso', # course italian
+    'kurs(?:y|en)?', # course german/polish
+    'aulas?', # portuguese class(?:es)?
+    u'특강', # korean lecture
+    'lektion(?:en)?', # german lecture
+    'lekcie', # slovak lessons
+    'dansklasser', # swedish dance classes
+    'lekcj[ai]', # polish lesson
+    'eigoje', # lithuanian course
+    'pamokas', # lithuanian lesson
+    'kursai', # course lithuanian
+    'lez.', #  lesson italian
+    'lezione', # lesson italian
+    'lezioni', # lessons italian
+    u'zajęciach', # class polish
+    u'zajęcia', # classes polish
+    u'คลาส', # class thai
+    'classe', # class italian
+    'classi', # classes italin
+    'klasser?', # norwegian class
+    'cours', 'clases?',
 ]
 
 event_keywords = [
@@ -397,20 +450,6 @@ event_keywords = [
     u'セッション', # japanese session
     'formazione', # training italian
     u'トレーニング', # japanese training
-    'workshop\W?s?',
-    'cursillo', # spanish workshop
-    'ateliers', # french workshop
-    'workshopy', # czech workshop
-    u'סדנאות', # hebrew workshops
-    u'סדנה', # hebew workshop
-    # 'taller', # workshop spanish
-    'delavnice', # workshop slovak
-    'talleres', # workshops spanish
-    'radionicama', # workshop croatian
-    'warsztaty', # polish workshop
-    u'warsztatów', # polish workshop
-    u'seminarų', # lithuanian workshop
-    'class with', 'master\W?class(?:es)?',
     'casting call',
     'auditions?',
     'audicija', # audition croatia
@@ -419,33 +458,6 @@ event_keywords = [
     u'試鏡', # chinese audition
     'audizione', # italian audition
     'naborem', # polish recruitment/audition
-    'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
-    'klass(?:EN)?', # slovakian class
-    u'수업', # korean class
-    u'수업을', # korean classes
-    'lekc[ie]', # czech lesson
-    u'課程', # course chinese
-    u'課', # class chinese
-    u'堂課', # lesson chinese
-    u'コース', # course japanese
-    'concorso', # course italian
-    'kurs(?:y|en)?', # course german/polish
-    'aulas?', # portuguese class(?:es)?
-    u'특강', # korean lecture
-    'lekcie', # slovak lessons
-    'dansklasser', # swedish dance classes
-    'lekcj[ai]', # polish lesson
-    'eigoje', # lithuanian course
-    'pamokas', # lithuanian lesson
-    'kursai', # course lithuanian
-    'lezione', # lesson italian
-    'lezioni', # lessons italian
-    u'zajęciach', # class polish
-    u'zajęcia', # classes polish
-    u'คลาส', # class thai
-    'classe', # class italian
-    'classi', # classes italin
-    'cours', 'clases?',
     'abdc', 'america\W?s best dance crew',
     'crew\W?v[sz]?\W?crew',
     'prelims?',
@@ -453,6 +465,7 @@ event_keywords = [
     'bonnie\s*(?:and|&)\s*clyde',
 ]
 n_x_n_keywords = [u'%s[ -]?(?:v/s|vs?\\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
+event_keywords += class_keywords
 event_keywords += n_x_n_keywords
 event_keywords += battle_keywords
 event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x vs x
@@ -594,11 +607,12 @@ def build_regexes():
     else:
         all_regexes['manual_dance_keywords_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
-    all_regexes['good_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords)
-    all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True)
+    all_regexes['good_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, wrapper='(?i)%s')
+    all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True, wrapper='(?i)%s')
 
 def make_regex_string(strings, matching=False, word_boundaries=True, wrapper='%s'):
-    inner_regex = re_flatten.construct_regex(strings)
+    unicode_enforce = USE_UNICODE and '(?u)' or ''
+    inner_regex = '%s%s' % (unicode_enforce, re_flatten.construct_regex(strings))
     if matching:
         regex = u'(' + inner_regex + u')'
     else:
@@ -624,8 +638,8 @@ def make_regex(strings, matching=False, word_boundaries=True, wrapper='%s', flag
                 raise
         logging.fatal("Error constructing regexes")
 
-WORD_BOUNDARIES = 0
-NO_WORD_BOUNDARIES = 1
+NO_WORD_BOUNDARIES = 0
+WORD_BOUNDARIES = 1
 def make_regexes(strings, matching=False, wrapper='%s', flags=0):
     a = [None] * 2
     a[NO_WORD_BOUNDARIES] = make_regex(strings, matching=matching, word_boundaries=False, wrapper=wrapper, flags=flags)
@@ -640,6 +654,7 @@ all_regexes['battle_regex'] = make_regexes(battle_keywords)
 all_regexes['n_x_n_regex'] = make_regexes(n_x_n_keywords)
 all_regexes['dance_wrong_style_title_regex'] = make_regexes(dance_wrong_style_title_keywords)
 all_regexes['dance_and_music_regex'] = make_regexes(dance_and_music_keywords)
+all_regexes['class_regex'] = make_regexes(class_keywords)
 all_regexes['club_and_event_regex'] = make_regexes(club_and_event_keywords)
 all_regexes['easy_choreography_regex'] = make_regexes(easy_choreography_keywords)
 all_regexes['club_only_regex'] = make_regexes(club_only_keywords)
@@ -664,6 +679,7 @@ def get_relevant_text(fb_event):
 
 class ClassifiedEvent(object):
     def __init__(self, fb_event, language=None):
+        self.fb_event = fb_event
         if 'name' not in fb_event['info']:
             logging.info("fb event id is %s has no name, with value %s", fb_event['info']['id'], fb_event)
             self.search_text = ''
