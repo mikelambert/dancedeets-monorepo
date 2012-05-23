@@ -135,6 +135,7 @@ dance_keywords = [
     'poppers?', 'popp?i?ng', # listing poppin in the ambiguous keywords
     'poppeurs?',
     'commercial hip\W?hop',
+    'hip\W?hop dance',
     'jerk(?:ers?|ing?)',
     'street\W?dancing?', 'street\W?dancer?s?',
     'street\W?danc\w+',
@@ -360,6 +361,7 @@ event_keywords = [
     u'danstävling', # swedish dance competition
     u'แข่งขัน', # thai competition
     'battles?',
+    u'比賽', # chinese battle
     u'バトル', # japanese battle
     'batallas', # battles spanish
     'zawody', # polish battle/contest
@@ -458,6 +460,9 @@ judge_keywords = [
         'tuomaristo', # jury finnish
         'jueces', # spanish judges
         'giuria', # jury italian
+    u'評審', # chinese judges
+    u'評判', # chinese judges
+    u'評判團', # chinese judges
 ]
 event_keywords += judge_keywords
 
@@ -718,9 +723,7 @@ class ClassifiedEvent(object):
         #        # strong!
         #        strong += 1
         
-        if (easy_dance_matches or self.real_dance_matches) and all_regexes['start_judge_keywords_regex'][idx].search(search_text):
-            self.dance_event = 'judged event'
-        elif len(self.manual_dance_keywords_matches) >= 1:
+        if len(self.manual_dance_keywords_matches) >= 1:
             self.dance_event = 'obvious dancer or dance crew or battle'
         # one critical dance keyword
         elif len(self.real_dance_matches) >= 1:

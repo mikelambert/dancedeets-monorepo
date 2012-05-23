@@ -25,9 +25,11 @@ citadanse
 collectif c nous
 coney island dancers
 control freaks
+cosec crew
 cosmic funk
 criminalz
 cultureshock
+d2mg crew
 da gentlemen
 dacrudancecompany
 dance fusion
@@ -56,6 +58,7 @@ fresh dynamix
 funny bones,0
 gelaketz
 ghbv
+ghetto style
 glasshopper
 gogo brothers
 gr818ers
@@ -88,6 +91,7 @@ klandeskillz
 l\.?o\.?f\.?d
 lagos apt
 legion of extra.?ordinary dancers
+legion-x
 lockbandbeat
 lockin'on
 lockism
@@ -99,6 +103,7 @@ madhood
 marjoram
 master\W?mind rockers
 mawu
+mda crew
 men\W?soul
 mgf,0
 mo\w?\w?paradise
@@ -114,6 +119,7 @@ pro-seed
 queen mobb
 quest crew
 r\W?a\W?f\W?\W?crew
+radiolecos
 rag pound
 redwindsor
 serial stepperz
@@ -125,6 +131,7 @@ soul fresh crew
 soul sector
 soul shifters
 soulsweat
+soulxpress
 stax groove
 stax groove
 street messengers
