@@ -13,9 +13,6 @@ MIKE_ID = '701004'
 USER_ID = '1000'
 EVENT_ID = '299993043349170'
 
-def get_event(event_id):
-    return fb_event
-
 class TestEventLocations(unittest.TestCase):
     def setUp(self):
         self.fb_api = fb_api_stub.Stub()
