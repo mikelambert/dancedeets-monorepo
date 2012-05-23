@@ -99,7 +99,7 @@ dance_and_music_keywords = [
     'hip\W?hop\w*', # lithuanian, polish hiphop
     'music video',
     'all\W?style[zs]?',
-    'tout\W?style[zs]?', # french all-styles
+    'tou[ts]\W?style[zs]?', # french all-styles
     'tutti gli stili', # italian all-styles
     'shuffle',
     'swag',
@@ -340,11 +340,7 @@ other_show_keywords = [
     'acting',
 ]
 
-event_keywords = [
-    'camp',
-    'kamp',
-    'kemp',
-    'crew battle[sz]?', 'exhibition battle[sz]?',
+battle_keywords = [
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?',
     'konkurrence', # danish competition
@@ -360,7 +356,9 @@ event_keywords = [
     'concorsi', # italian competition
     u'danstävling', # swedish dance competition
     u'แข่งขัน', # thai competition
+    'crew battle[sz]?', 'exhibition battle[sz]?',
     'battles?',
+    'battlu(?:je)?', # french czech
     u'比賽', # chinese battle
     u'バトル', # japanese battle
     'batallas', # battles spanish
@@ -381,10 +379,17 @@ event_keywords = [
     'preselections?',
     u'présélections?', # preselections french
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook)',
+]
+
+event_keywords = [
+    'camp',
+    'kamp',
+    'kemp',
     'open circles',
     'c(?:y|i)ph(?:a|ers?)',
     u'サイファ', # japanese cypher
     u'サイファー', # japanese cypher
+    u'サーク', # japanese circle
     'cerchi', # italian circle/cypher
     u'ไซเฟอร์', # thai cypher
     u'싸이퍼.?', # korean cypher
@@ -446,13 +451,17 @@ event_keywords = [
     'prelims?',
     u'初賽', # chinese preliminaries
     'bonnie\s*(?:and|&)\s*clyde',
-] + [u'%s[ -]?(?:v/s|vs?\\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
+]
+n_x_n_keywords = [u'%s[ -]?(?:v/s|vs?\\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
+event_keywords += n_x_n_keywords
+event_keywords += battle_keywords
 event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x vs x
 
 judge_keywords = [
         'jurys?',
         'jurados?', # spanish jury
         'judge[sz]?',
+    '(?:les? )?juges?', # french judges
         'giudici', # italian judges
         u'השופט', # hebrew judge
         u'השופטים', # hebrew judges
@@ -588,16 +597,20 @@ def build_regexes():
     all_regexes['good_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords)
     all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True)
 
+def make_regex_string(strings, matching=False, word_boundaries=True, wrapper='%s'):
+    inner_regex = re_flatten.construct_regex(strings)
+    if matching:
+        regex = u'(' + inner_regex + u')'
+    else:
+        regex = u'(?:' + inner_regex + u')'
+    if word_boundaries:
+        regex = r'\b%s\b' % regex
+    regex = wrapper % regex
+    return regex
+
 def make_regex(strings, matching=False, word_boundaries=True, wrapper='%s', flags=0):
     try:
-        inner_regex = re_flatten.construct_regex(strings)
-        if matching:
-            regex = u'(' + inner_regex + u')'
-        else:
-            regex = u'(?:' + inner_regex + u')'
-        if word_boundaries:
-            regex = r'\b%s\b' % regex
-        regex = wrapper % regex
+        regex = make_regex_string(strings, matching=matching, word_boundaries=word_boundaries, wrapper=wrapper)
         if re2:
             return re.compile(regex, max_mem=15000000, flags=flags)
         else:
@@ -622,7 +635,9 @@ def make_regexes(strings, matching=False, wrapper='%s', flags=0):
 all_regexes['preprocess_removals_regex'] = make_regexes(preprocess_removals)
 all_regexes['dance_wrong_style_regex'] = make_regexes(dance_wrong_style_keywords)
 all_regexes['judge_keywords_regex'] = make_regexes(judge_keywords)
-all_regexes['start_judge_keywords_regex'] = make_regexes(judge_keywords, wrapper='^%s', flags=re.MULTILINE)
+all_regexes['start_judge_keywords_regex'] = make_regexes(judge_keywords, wrapper='^\W*%s', flags=re.MULTILINE)
+all_regexes['battle_regex'] = make_regexes(battle_keywords)
+all_regexes['n_x_n_regex'] = make_regexes(n_x_n_keywords)
 all_regexes['dance_wrong_style_title_regex'] = make_regexes(dance_wrong_style_title_keywords)
 all_regexes['dance_and_music_regex'] = make_regexes(dance_and_music_keywords)
 all_regexes['club_and_event_regex'] = make_regexes(club_and_event_keywords)
