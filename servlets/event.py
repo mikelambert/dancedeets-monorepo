@@ -14,6 +14,7 @@ from events import eventdata
 from events import users
 from logic import add_entities
 from logic import backgrounder
+from logic import event_auto_classifier
 from logic import event_classifier
 from logic import event_locations
 from logic import potential_events
@@ -127,8 +128,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
 
         # Don't insert object until we're ready to save it...
-        e = eventdata.DBEvent.get_by_key_name(event_id) or eventdata.DBEvent(key_name=event_id)
-        if e.creating_fb_uid:
+        e = eventdata.DBEvent.get_by_key_name(event_id)
+        if e and e.creating_fb_uid:
             f = urllib2.urlopen('https://graph.facebook.com/%s?access_token=%s' % (e.creating_fb_uid, self.fb_graph.access_token))
             json = simplejson.loads(f.read())
             creating_user = json['name']
@@ -150,6 +151,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['creating_user'] = creating_user
 
         self.display['potential_event'] = potential_event
+
+        types = []
+        battle, reason = event_auto_classifier.is_battle(classified_event)
+        types.append('battle=%s:%s' % (battle, reason))
+        self.display['auto_classified_types'] = ', '.join(types)
 
         location_info = event_locations.LocationInfo(self.batch_lookup.copy(allow_cache=False), fb_event, db_event=e, debug=True)
         self.display['location_info'] = location_info

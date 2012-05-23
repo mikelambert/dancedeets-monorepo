@@ -31,13 +31,13 @@ def classify_events(batch_lookup, pe_list):
             continue
         classified_event = event_classifier.ClassifiedEvent(fb_event)
         classified_event.classify()
-        if event_auto_classifier.is_battle(classified_event):
+        if event_auto_classifier.is_battle(classified_event)[0]:
             location_info = event_locations.LocationInfo(batch_lookup, fb_event)
             result = '%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, location_info.exact_from_event, location_info.final_city, location_info.final_city != None, location_info.fb_address, fb_event['info'].get('name', '')))
             results.append(result)
             try:
                 add_entities.add_update_event(pe.fb_event_id, 0, batch_lookup, creating_method=eventdata.CM_AUTO)
-            except fb_api.NoFetchedDataException, e:
+            except (fb_api.NoFetchedDataException, add_entities.AddEventException), e:
                 logging.error("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
     yield ''.join(results).encode('utf-8')
 
@@ -51,7 +51,7 @@ def mr_classify_potential_events(batch_lookup):
         'logic.auto_add.map_classify_events',
         'logic.potential_events.PotentialEvent',
         handle_batch_size=20,
-        queue='slow-queue',
+        queue=None,
         reader_spec='logic.auto_add.UnprocessedPotentialEventsReader',
         output_writer_spec='mapreduce.output_writers.BlobstoreOutputWriter',
         extra_mapper_params={'mime_type': 'text/plain'},

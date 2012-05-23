@@ -53,7 +53,7 @@ Edit Event
 					Final Address:
 				</td><td>
 					$format_html($location_info.final_city)
-					#if $event.anywhere
+					#if $event and $event.anywhere
 					<br>Online/Anywhere/Worldwide
 					#end if
 				</td></tr>
@@ -70,14 +70,19 @@ Edit Event
 			<p>Reason: $classified_event.reason()<br>
 			Dance Words: $classifier_dance_words<br>
 			Event Words: $classifier_event_words<br>
-			Any Existing Tags:
-			#for $tag in $event.tags
-				$tag
-			#end for
+			Auto-classified: $auto_classified_types<br>
+			#if $event
+				Any Existing Tags:
+				#for $tag in $event.tags
+					$tag
+				#end for
 			<br>
+			#end if
 			<p>
-			#if $creating_user
-				Submitted by <a href="http://www.facebook.com/profile.php?id=$event.creating_fb_uid">$creating_user</a>.<br>
+			#if $event
+				#if $creating_user
+					Submitted by <a href="http://www.facebook.com/profile.php?id=$event.creating_fb_uid">$creating_user</a>.<br>
+				#end if
 				<button class="btn">Edit Event</button>
 				<button class="btn" name="delete" value="yes">Delete Event</button>
 			#else

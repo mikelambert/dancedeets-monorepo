@@ -5,6 +5,9 @@ from logic import event_locations
 from logic import potential_events
 from logic import thing_db
 
+class AddEventException(Exception):
+    pass
+
 def add_update_event(event_id, user_id, batch_lookup, remapped_address=None, override_address=None, creating_method=None):
     event_id = str(event_id)
     batch_lookup.lookup_event(event_id, allow_cache=False)
@@ -14,7 +17,7 @@ def add_update_event(event_id, user_id, batch_lookup, remapped_address=None, ove
     fb_event = batch_lookup.data_for_event(event_id)
     fb_event_attending = batch_lookup.data_for_event_attending(event_id)
     if fb_event['info'].get('privacy', 'OPEN') != 'OPEN':
-        raise Exception('Cannot add secret/closed events to dancedeets!')
+        raise AddEventException('Cannot add secret/closed events to dancedeets!')
 
     if remapped_address is not None:
         event_locations.update_remapped_address(batch_lookup.copy(allow_cache=False), fb_event, remapped_address)
