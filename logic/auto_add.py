@@ -2,6 +2,8 @@ import logging
 
 import fb_api
 
+from events import eventdata
+from logic import add_entities
 from logic import event_auto_classifier
 from logic import event_classifier
 from logic import event_locations
@@ -33,6 +35,10 @@ def classify_events(batch_lookup, pe_list):
             location_info = event_locations.LocationInfo(batch_lookup, fb_event)
             result = '%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, location_info.exact_from_event, location_info.final_city, location_info.final_city != None, location_info.fb_address, fb_event['info'].get('name', '')))
             results.append(result)
+            try:
+                add_entities.add_update_event(pe.fb_event_id, 0, batch_lookup, creating_method=eventdata.CM_AUTO)
+            except fb_api.NoFetchedDataException, e:
+                logging.error("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
     yield ''.join(results).encode('utf-8')
 
 

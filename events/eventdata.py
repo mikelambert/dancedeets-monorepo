@@ -53,6 +53,9 @@ def get_cached_db_events(event_ids, allow_cache=True):
     logging.info("loading cached db events took %s seconds", time.time() - a)
     return [db_event_map.get(x, None) for x in event_ids]
 
+CM_AUTO = 'CM_AUTO'
+CM_ADMIN = 'CM_ADMIN'
+CM_USER = 'CM_USER'
 
 class DBEvent(db.Model):
     """Stores custom data about our Event"""

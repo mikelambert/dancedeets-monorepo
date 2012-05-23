@@ -12,6 +12,7 @@ from google.appengine.ext import deferred
 import base_servlet
 from events import eventdata
 from events import users
+from logic import add_entities
 from logic import backgrounder
 from logic import event_classifier
 from logic import event_locations
@@ -175,47 +176,16 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             return
 
         if self.request.get('background'):
-            deferred.defer(add_update_event, event_id, remapped_address, override_address, self.user.fb_uid, self.batch_lookup.copy())
+            deferred.defer(add_entities.add_update_event, event_id, remapped_address, override_address, self.user.fb_uid, self.batch_lookup.copy(), creating_method=eventdata.CMS_ADMIN)
             self.response.out.write("<title>Added!</title>Added!")
         else:
             try:
-                add_update_event(event_id, remapped_address, override_address, self.user.fb_uid, self.batch_lookup)
+                add_entities.add_update_event(event_id, self.user.fb_uid, self.batch_lookup, remapped_address=remapped_address, override_address=override_address)
             except Exception, e:
                 self.add_error(str(e))
             self.errors_are_fatal()
             self.user.add_message("Changes saved!")
             self.redirect('/events/admin_edit?event_id=%s' % event_id)
-
-def add_update_event(event_id, remapped_address, override_address, user_id, batch_lookup):
-    batch_lookup.lookup_event(event_id, allow_cache=False)
-    batch_lookup.lookup_event_attending(event_id, allow_cache=False)
-    batch_lookup.finish_loading()
-
-    fb_event = batch_lookup.data_for_event(event_id)
-    fb_event_attending = batch_lookup.data_for_event_attending(event_id)
-    if fb_event['info'].get('privacy', 'OPEN') != 'OPEN':
-        raise Exception('Cannot add secret/closed events to dancedeets!')
-
-    if remapped_address is not None:
-        event_locations.update_remapped_address(batch_lookup.copy(allow_cache=False), fb_event, remapped_address)
-
-    e = eventdata.DBEvent.get_or_insert(event_id)
-    if override_address is not None:
-        e.address = override_address
-    e.creating_fb_uid = user_id
-    e.creation_time = datetime.datetime.now()
-    e.make_findable_for(batch_lookup, batch_lookup.data_for_event(event_id))
-    thing_db.create_source_from_event(batch_lookup.copy(allow_cache=False), e)
-    e.put()
-
-    potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
-    classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
-    if potential_event:
-        for source_id in potential_event.source_ids:
-            thing_db.increment_num_real_events(source_id)
-            if not classified_event.is_dance_event():
-                thing_db.increment_num_false_negatives(source_id)
-    # Hmm, how do we implement this one?# thing_db.increment_num_real_events_without_potential_events(source_id)
 
 def get_id_from_url(url):
     if '#' in url:
@@ -281,27 +251,12 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 self.add_error('invalid event_url, expecting eid= parameter')
         else:
             self.add_error('missing event_url or event_id parameter')
-        self.errors_are_fatal()
 
-
-        self.batch_lookup.lookup_event(event_id)
         try:
-            self.finish_preload()
-        except fb_api.FacebookException, e:
+            add_update_event(event_id, self.user.fb_uid, batch_lookup, creating_method=eventdata.CM_USER)
+        except Exception, e:
             self.add_error(str(e))
-
-        fb_event = self.batch_lookup.data_for_event(event_id)
-        if fb_event['info'].get('privacy', 'OPEN') != 'OPEN':
-            self.add_error('Cannot add secret/closed events to dancedeets!')
         self.errors_are_fatal()
-
-        fb_event = self.batch_lookup.data_for_event(event_id)
-        e = eventdata.DBEvent.get_or_insert(event_id)
-        e.creating_fb_uid = self.user.fb_uid
-        e.creation_time = datetime.datetime.now()
-        e.make_findable_for(self.batch_lookup, fb_event)
-        thing_db.create_source_from_event(self.batch_lookup.copy(), e)
-        e.put()
 
         self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
         self.redirect('/')
