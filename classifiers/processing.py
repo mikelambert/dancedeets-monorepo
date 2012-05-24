@@ -18,6 +18,10 @@ def load_ids():
 
     result['bad_ids'] = result['combined_ids'].difference(result['good_ids'])
 
+    for line in open('local_data/added_ids.txt').readlines():
+        line = line.strip()
+        result['good_ids'].add(line)
+
     for line in open('local_data/diffs.txt').readlines():
         line = line.strip()
         if line.startswith('+'):
