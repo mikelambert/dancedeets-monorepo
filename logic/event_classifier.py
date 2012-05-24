@@ -29,6 +29,21 @@ USE_UNICODE = False
 # TODO: house class, house workshop, etc, etc. since 'house' by itself isn't sufficient
 # maybe feed keywords into auto-classifying event type? bleh.
 
+def make_regex_string(strings, matching=False, word_boundaries=True, wrapper='%s'):
+    unicode_enforce = USE_UNICODE and '(?u)' or ''
+    inner_regex = '%s%s' % (unicode_enforce, re_flatten.construct_regex(strings))
+    if matching:
+        regex = u'(' + inner_regex + u')'
+    else:
+        regex = u'(?:' + inner_regex + u')'
+    if word_boundaries:
+        regex = r'\b%s\b' % regex
+    else:
+        regex = regex.replace(r'\b', '')
+    regex = wrapper % regex
+    return regex
+
+
 # street dance.* ?
 # 'crew' biases dance one way, 'company' biases it another
 easy_dance_keywords = [
@@ -91,7 +106,7 @@ easy_choreography_keywords = [
 
 # if somehow has funks, hiphop, and breaks, and house. or 3/4? call it a dance event?
 
-dance_and_music_keywords = [
+dance_and_music_not_wrong_battle_keywords = [
     'hip\W?hop',
     u'嘻哈', # chinese hiphop
     u'ההיפ הופ', # hebrew hiphop
@@ -114,7 +129,6 @@ dance_and_music_keywords = [
     'breaks',
     'boogaloo',
     'breaking?', 'breakers?',
-    'free\W?style',
     'jerk',
     'kpop',
     'rnb',
@@ -123,9 +137,11 @@ dance_and_music_keywords = [
     'electro\W?dance',
     'old\W?school hip\W?hop',
     '90\W?s hip\W?hop',
-    u'フリースタイル', # japanese freestyle
     'vogue',
-    'freestylers?',
+    u'フリースタイル', # japanese freestyle
+]
+dance_and_music_keywords = dance_and_music_not_wrong_battle_keywords + [
+    'free\W?style(?:r?|rs?)', # when combined with competition, works incorrectly
 ]
 
 # hiphop dance. hiphop dans?
@@ -155,7 +171,7 @@ dance_keywords = [
     'breakeuse', # french bgirl
     'footworks', # spanish footworks
     'top\W?rock(?:s|er[sz]?|ing?)?', 'up\W?rock(?:s|er[sz]?|ing?|)?',
-    'houser[sz]?', 'house ?danc\w*',
+    'houser[sz]?',
     'dance house', # seen in italian
     'lock(?:er[sz]?|ing?)?', 'lock dance',
     u'ロッカーズ', # japanese lockers
@@ -203,18 +219,31 @@ dance_keywords = [
 # Crazy polish sometimes does lockingu. Maybe we need to do this more generally though.
 dance_keywords = dance_keywords + [x+'u' for x in dance_keywords] 
 
+# freestyle dance
+easy_dance_regexes = make_regex_string(easy_dance_keywords)
+dance_keywords += ['house ?%s' % easy_dance_regexes]
+dance_keywords += ['free\W?style(?:r?|rs?) ?%s' % easy_dance_regexes]
+dance_and_music_regexes = make_regex_string(dance_and_music_keywords)
+dance_keywords += [
+  '%s ?%s' % (dance_and_music_regexes, easy_dance_regexes),
+  '%s ?%s' % (easy_dance_regexes, dance_and_music_regexes),
+]
+
 easy_event_keywords = [
     'jams?', 'club', 'after\Wparty', 'pre\Wparty',
     u'クラブ',  # japanese club
     'open sessions?', 'training',
 ]
+contest_keywords = [
+    'contests?',
+    u'vystoupení', # czech performances
+    'concours', # french contest
+]
 club_and_event_keywords = [
     'sesja', # polish session
     'sessions', 'practice',
     # international sessions are handled down below
-    'shows?', 'performances?', 'contests?',
-    u'vystoupení', # czech performances
-    'concours', # french contest
+    'shows?', 'performances?',
     'show\W?case',
     u'ショーケース', # japanese showcase
     u'秀', # chinese show
@@ -224,7 +253,7 @@ club_and_event_keywords = [
     'konkurrencer', # danish contest
     'dancecontests', # dance contests german
     'esibizioni', #italian performance/exhibition
-]
+] + contest_keywords
 
 club_only_keywords = [
     'club',
@@ -347,6 +376,7 @@ battle_keywords = [
     'battle of the year', 'boty', 'compete', 'competitions?',
     'konkurrence', # danish competition
     'competencia', # spanish competition
+    u'competición', # spanish competition
     u'compétition', # french competition
     u'thi nhảy', # dance competition vietnam
     'kilpailu\w*' # finish competition
@@ -382,7 +412,7 @@ battle_keywords = [
     'turneringer', # danish tournament
     'preselections?',
     u'présélections?', # preselections french
-    r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook)',
+    r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
 ]
 
 class_keywords = [
@@ -465,6 +495,7 @@ event_keywords = [
     'bonnie\s*(?:and|&)\s*clyde',
 ]
 n_x_n_keywords = [u'%s[ -]?(?:v/s|vs?\\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
+n_x_n_keywords += [u'%s[ -](?:v/s|vs?\\.?|x|×|on)[ -]%s' % (i, i) for i in ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
 event_keywords += class_keywords
 event_keywords += n_x_n_keywords
 event_keywords += battle_keywords
@@ -542,6 +573,8 @@ dance_wrong_style_keywords = [
     'reflective',
     'clogging',
     'zouk',
+    'african dance',
+    'afro dance',
     'afro mundo',
     'class?ic[ao]',
     'acroyoga',
@@ -609,18 +642,6 @@ def build_regexes():
 
     all_regexes['good_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, wrapper='(?i)%s')
     all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True, wrapper='(?i)%s')
-
-def make_regex_string(strings, matching=False, word_boundaries=True, wrapper='%s'):
-    unicode_enforce = USE_UNICODE and '(?u)' or ''
-    inner_regex = '%s%s' % (unicode_enforce, re_flatten.construct_regex(strings))
-    if matching:
-        regex = u'(' + inner_regex + u')'
-    else:
-        regex = u'(?:' + inner_regex + u')'
-    if word_boundaries:
-        regex = r'\b%s\b' % regex
-    regex = wrapper % regex
-    return regex
 
 def make_regex(strings, matching=False, word_boundaries=True, wrapper='%s', flags=0):
     try:
@@ -740,7 +761,8 @@ class ClassifiedEvent(object):
         title_good_matches = all_regexes['good_keyword_regex'][idx].findall(title)
             
         combined_matches = self.found_dance_matches + self.found_event_matches
-        fraction_matched = 1.0 * len(combined_matches) / len(re.split(r'\W+', search_text))
+        words = [re.split(r'\W+', re.sub(r'\bhttp.*?\s', '', search_text))]
+        fraction_matched = 1.0 * len(combined_matches) / len(words)
         if not fraction_matched:
             self.calc_inverse_keyword_density = 100
         else:

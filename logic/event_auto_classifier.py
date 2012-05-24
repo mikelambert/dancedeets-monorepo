@@ -7,7 +7,6 @@ bad_battles = [
     'beatbox',
     'rap',
     'swimsuit',
-    'street fighter',
     'tekken',
     'capcom',
     'games?',
@@ -15,31 +14,34 @@ bad_battles = [
     'videogames?',
     'sexy',
     'lingerie',
-    'sing',
     'judge jules',
 ]
 wrong_battle_styles = [
+    '(?:mc|emcee)\Whip\W?hop',
     'emcee',
     'rap',
     'beat',
-    'dj',
+    'beatbox',
+    'dj\W?s?',
     'producer',
     'performance',
     'graf(?:fiti)?',
 ]
 p1 = event_classifier.make_regex_string(wrong_battle_styles)
-p2 = event_classifier.make_regex_string(event_classifier.battle_keywords)
-bad_battles.append(u'%s %s' % (p1, p2))
-bad_battles.append(u'%s %s' % (p1, p2))
+p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
+bad_battles.append(u'%s ?%s' % (p1, p2))
+bad_battles.append(u'%s ?%s' % (p1, p2))
 bad_battles_regex = event_classifier.make_regexes(bad_battles)
 
-p1 = event_classifier.make_regex_string(event_classifier.easy_dance_keywords)
-p2 = event_classifier.make_regex_string(event_classifier.battle_keywords)
+p1 = event_classifier.make_regex_string(event_classifier.easy_dance_keywords + event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.easy_choreography_keywords)
+p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
 dance_battles_regex = event_classifier.make_regexes([
-    u'%s %s' % (p1, p2),
-    u'%s %s' % (p2, p1),
+    u'%s ?%s' % (p1, p2),
+    u'%s ?%s' % (p2, p1),
 ])
 assert dance_battles_regex[1].search('dance battle')
+assert dance_battles_regex[1].search('custom breaking contest')
+assert dance_battles_regex[1].search('concours choregraphique')
 
 non_dance_support = [
     'fundraiser',
@@ -48,6 +50,8 @@ non_dance_support = [
     'support',
 ]
 non_dance_regex = event_classifier.make_regexes(non_dance_support)
+
+# TODO: make sure this doesn't match... 'mc hiphop contest'
 
 def find_competitor_list(classified_event):
     text = classified_event.search_text
@@ -76,17 +80,24 @@ def find_competitor_list(classified_event):
                     return True
     return False
 
+# TODO: accumulate reasons why we did/didn't accept. each event has a story
+# TODO: also track "was a battle, but not sure about kind". good for maybe-queue.
+# TODO: the above is useful for "ish" keywords, where if we know its a dance-event due to the magic bit, and it appears to be battle-ish-but-not-sure-about-dance-ish, then mark it battle-ish
+# TOOD: in an effort to simplify, can we make a "battle-ish" bit be computed separately, and then try to figure out if it's dance-y after that using other keywords?
+# TODO: If it has certain battle names in title, include automatically? redbull bc one cypher, etc
+
 def is_battle(classified_event):
     if not classified_event.is_dance_event():
         return (False, 'not a dance event')
+    search_text = classified_event.final_search_text
     has_competitors = find_competitor_list(classified_event)
     if not has_competitors and classified_event.calc_inverse_keyword_density >= 5:
         return (False, 'relevant keywords too sparse')
     if not classified_event.real_dance_matches and not classified_event.manual_dance_keywords_matches:
         return (False, 'no strong dance keywords')
-    search_text = classified_event.final_search_text
 
-    if dance_battles_regex[classified_event.boundaries].search(search_text):
+    no_bad_battles_search_text = bad_battles_regex[classified_event.boundaries].sub('', search_text)
+    if dance_battles_regex[classified_event.boundaries].search(no_bad_battles_search_text):
         if not non_dance_regex[classified_event.boundaries].search(classified_event.final_title):
             if not event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].search(classified_event.final_title):
                 return (True, 'good-style real dance battle/comp!')
