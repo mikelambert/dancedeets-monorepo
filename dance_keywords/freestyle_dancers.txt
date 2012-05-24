@@ -55,6 +55,7 @@ henry link
 hideki
 hiro,0
 hiro\W+alma
+pino\W+alma
 hozin
 hurrikane
 i\W?cee\W+forzesound
