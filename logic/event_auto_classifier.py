@@ -2,7 +2,7 @@ import re
 
 from logic import event_classifier
 
-bad_battles = [
+wrong_battles = [
     'talent',
     'beatbox',
     'rap',
@@ -29,9 +29,9 @@ wrong_battle_styles = [
 ]
 p1 = event_classifier.make_regex_string(wrong_battle_styles)
 p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
-bad_battles.append(u'%s ?%s' % (p1, p2))
-bad_battles.append(u'%s ?%s' % (p1, p2))
-bad_battles_regex = event_classifier.make_regexes(bad_battles)
+wrong_battles.append(u'%s ?%s' % (p1, p2))
+wrong_battles.append(u'%s ?%s' % (p1, p2))
+wrong_battles_regex = event_classifier.make_regexes(wrong_battles)
 
 p1 = event_classifier.make_regex_string(event_classifier.easy_dance_keywords + event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.easy_choreography_keywords)
 p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
@@ -86,36 +86,62 @@ def find_competitor_list(classified_event):
 # TOOD: in an effort to simplify, can we make a "battle-ish" bit be computed separately, and then try to figure out if it's dance-y after that using other keywords?
 # TODO: If it has certain battle names in title, include automatically? redbull bc one cypher, etc
 
+def is_any_battle(classified_event):
+    search_text = classified_event.final_search_text
+    has_competitors = find_competitor_list(classified_event)
+    has_judges = event_classifier.all_regexes['start_judge_keywords_regex'][classified_event.boundaries].search(search_text)
+    has_n_x_n_battle = (
+        event_classifier.all_regexes['battle_regex'][classified_event.boundaries].search(search_text) and
+        event_classifier.all_regexes['n_x_n_regex'][classified_event.boundaries].search(search_text)
+    )
+    no_wrong_battles_search_text = wrong_battles_regex[classified_event.boundaries].sub('', search_text)
+    has_dance_battle = (
+        dance_battles_regex[classified_event.boundaries].search(no_wrong_battles_search_text) and
+        non_dance_regex[classified_event.boundaries].search(classified_event.final_title)
+    )
+    return has_competitors or has_judges or has_n_x_n_battle or has_dance_battle
+
+def is_real_dance(classified_event):
+    search_text = classified_event.final_search_text
+    if not classified_event.is_dance_event():
+        return (False, 'not a dance event')
+
+
 def is_battle(classified_event):
     if not classified_event.is_dance_event():
         return (False, 'not a dance event')
+
     search_text = classified_event.final_search_text
-    has_competitors = find_competitor_list(classified_event)
-    if not has_competitors and classified_event.calc_inverse_keyword_density >= 5:
-        return (False, 'relevant keywords too sparse')
     if not classified_event.real_dance_matches and not classified_event.manual_dance_keywords_matches:
         return (False, 'no strong dance keywords')
 
-    no_bad_battles_search_text = bad_battles_regex[classified_event.boundaries].sub('', search_text)
-    if dance_battles_regex[classified_event.boundaries].search(no_bad_battles_search_text):
-        if not non_dance_regex[classified_event.boundaries].search(classified_event.final_title):
-            if not event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].search(classified_event.final_title):
-                return (True, 'good-style real dance battle/comp!')
-    if has_competitors:
-                if len(set(classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches)) > 1:
-                        return (True, 'has a list of competitors, and some strong dance keywords')
+    has_sparse_keywords = abs(classified_event.calc_inverse_keyword_density) >= 7
+    has_competitors = find_competitor_list(classified_event)
+    if not has_competitors and has_sparse_keywords:
+        return (False, 'relevant keywords too sparse')
+    
+    no_wrong_battles_search_text = wrong_battles_regex[classified_event.boundaries].sub('', search_text)
+    has_dance_battle = dance_battles_regex[classified_event.boundaries].findall(no_wrong_battles_search_text)
 
-    if event_classifier.all_regexes['battle_regex'][classified_event.boundaries].search(search_text):
-        if event_classifier.all_regexes['n_x_n_regex'][classified_event.boundaries].search(search_text):
-            if not bad_battles_regex[classified_event.boundaries].search(search_text):
-                return (True, 'battle keyword, NxN, good dance style')
+    has_n_x_n_battle = event_classifier.all_regexes['n_x_n_regex'][classified_event.boundaries].findall(search_text)
+    has_battle = event_classifier.all_regexes['battle_regex'][classified_event.boundaries].findall(search_text)
+    has_wrong_battle = wrong_battles_regex[classified_event.boundaries].findall(search_text)
+    is_wrong_competition = non_dance_regex[classified_event.boundaries].findall(classified_event.final_title)
+    is_wrong_style_battle = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_many_real_dance_keywords = len(set(classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches)) > 1
+    has_judge = event_classifier.all_regexes['start_judge_keywords_regex'][classified_event.boundaries].findall(search_text)
 
-    if event_classifier.all_regexes['start_judge_keywords_regex'][classified_event.boundaries].search(search_text):
-        if not bad_battles_regex[classified_event.boundaries].search(search_text):
-            return (True, 'no ambiguous wrong-battle-style keywords')
-        elif len(set(classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches)) > 1:
-            return (True, 'had some ambiguous keywords, but enough strong dance matches anyway')
-        # remove this if we add another clause below this. or implement an aggregated-reason
-        return (False, 'too ambiguous of a judge/jury result')
+    # has_real_dance_battle? where is 'locking battle' in all of this? in our check for real_dance_matches combined with the others?
+
+    if has_dance_battle and not is_wrong_competition and not is_wrong_style_battle:
+        return (True, 'good-style real dance battle/comp!')
+    if has_n_x_n_battle and has_battle and not has_wrong_battle:
+        return (True, 'battle keyword, NxN, good dance style')
+    if has_competitors and has_many_real_dance_keywords:
+        return (True, 'has a list of competitors, and some strong dance keywords')
+    if has_judge and not has_wrong_battle:
+        return (True, 'no ambiguous wrong-battle-style keywords')
+    if has_judge and has_many_real_dance_keywords:
+        return (True, 'had some ambiguous keywords, but enough strong dance matches anyway')
     return (False, 'no judge/jury or battle/NxN')
 
