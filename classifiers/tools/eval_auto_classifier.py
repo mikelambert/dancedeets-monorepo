@@ -32,7 +32,10 @@ def partition_ids(ids, classifier=lambda x:False):
 
 def basic_match(fb_event):
     e = event_classifier.get_classified_event(fb_event)
-    return event_auto_classifier.is_battle(e)[0]
+    result = event_auto_classifier.is_battle(e)
+    if result[0] and fb_event['info']['id'] not in good_ids:
+        print fb_event['info']['id'], result
+    return result[0]
 
 if positive_classifier:
     good_ids = classified_ids
