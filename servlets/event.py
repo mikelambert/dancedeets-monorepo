@@ -182,7 +182,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             return
 
         if self.request.get('background'):
-            deferred.defer(add_entities.add_update_event, event_id, remapped_address, override_address, self.user.fb_uid, self.batch_lookup.copy(), creating_method=eventdata.CMS_ADMIN)
+            deferred.defer(add_entities.add_update_event, event_id, remapped_address, override_address, self.user.fb_uid, self.batch_lookup.copy(), creating_method=eventdata.CM_ADMIN)
             self.response.out.write("<title>Added!</title>Added!")
         else:
             try:
