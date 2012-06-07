@@ -153,7 +153,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['potential_event'] = potential_event
 
         types = []
-        battle, reason = event_auto_classifier.is_battle(classified_event)
+        battle, reason = event_auto_classifier.is_auto_add_event(classified_event)
         types.append('battle=%s:%s' % (battle, reason))
         self.display['auto_classified_types'] = ', '.join(types)
 
@@ -298,8 +298,9 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         potential_event_notadded_ids.sort(key=lambda x: -(potential_event_dict[x].match_score or 0))
 
         # Limit to 20 at a time so we don't overwhelm the user.
-        total_potential_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0").count(20000)
-        total_potential_events += potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True").count(20000)
+        non_zero_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0").count(20000)
+        zero_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True").count(20000)
+        total_potential_events = non_zero_events + zero_events
 
         has_more_events = total_potential_events > number_of_events
         potential_event_notadded_ids = potential_event_notadded_ids[:number_of_events]
@@ -334,7 +335,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             potential_event_dict[e] = potential_events.update_scores_for_potential_event(potential_event_dict[e], fb_event, fb_event_attending)
             template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, wrong_words=wrong_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
         self.display['number_of_events']  = number_of_events 
-        self.display['total_potential_events'] = total_potential_events
+        self.display['total_potential_events'] = '%s + %s' % (non_zero_events, zero_events)
         self.display['has_more_events'] = has_more_events
         self.display['potential_events_listing'] = template_events
         self.display['potential_ids'] = ','.join(already_added_event_ids + potential_event_notadded_ids) # use all ids, since we want to mark already-added ids as processed as well. but only the top N of the potential event ids that we're showing to the user.
