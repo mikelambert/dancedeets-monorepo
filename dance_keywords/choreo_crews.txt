@@ -1,85 +1,148 @@
 #ml (but need to get capitalization right)
+.\.f\.udance3
+220 second to none
 8 count,0
+8th union
 a tribe called groove
+a-youngin
+abba modern
+aca hip\Whop
 academy of hype
 academy of phresh
 academy of swag
 academy of thugs
 academy of villains
+adc senior
+adc,0
 afta shock
+aftermath dance
+afx dance
 ajnin precizion
 alien tactics cru
 alpha beatz crew
 altarego
 america'?s best dance crew
 anbu black ops
+and what!\?
+annual streets head
 aota crew
+aov,0
 apt,0
+aqces dancerz
+areakidz
 asu hip hop
 audacity cru
 barkada modern
+beat crooks
 beat jerkeez
 beatphonik
 boogie bots
 boogie\W?monstarz
 boogiezone entity
 box\W?cuttuhz
+break even!
 break\W?efx
+breed dance
 breed ocla
 breed,0
 bridging the gap,0
 brown bag special
 bu edge
 bu fusion
+c2 genesys
 cadc
+cadence dance
 capital funk
 cassie jackson
+chapkis dance
 chill factor
+chocolate factory,0
+chocolate factory,0
 choreo cookies
+club cubic
+cmi kidz
+co-2tar
+collabor8
+common ground,0
+control\W+management
+creative monsterz
+crewcial
 csdc
 csla
 cslv
-culture shock
+cuda,0
+culture sc?hock
+cypher squad
 d\.w\.e\.e\.b\.s
+damage control dance
+dance 2xs
+dance for a reason,0
+dance union battle
+dance unlimited
+dance2xs uiuc
+danceworx
 danz n motion
 danz-n-motion
 dc tribe
 dcypher
 de\Wla\Wfemme class # since we can't use just de la femme because it's french :(
+defined movement,0
 design dance company
+dia clones
+dirty feet dc
 draztik
 dynamic dance crew
+dynamic ladies
 dysfunktional solez
+e\.?p\.?i\.?c\.? motion
 e\.n\.t\.i\.
+edsf,0
+eight count,0
+elektrolytes,0
 elevate dance crew
 elusive dance crew
+emp royalty
+enkore,0
 entity,0
-epic motion
 epik dance
+epiphany dance
 epiphany dance crew
+essence-ill
 evol cru
+evolution hip\W?hop
 expressive doubt
+fambiz
+family bizness
 fanny pak
+flash mob
+flow dance,0
 flowethics
 foot clan
 foota?\W+thrillaz # ignore 5 at front due to backtracking
+for the cause,0
+freakin twistrz
 freshh
 ftc,0
 funkanometry
 funks
 funks sf
 funksters
+funky habits
+fusion@london
 future shock
 gen-x m\.o\.b
 gen2
 generation x
 get the funk on
+goodphil
+gravy babies
 greathouse of dance
 griminals
 groove against the machine
 groove against the machine
 groove bots
 groove elements
+groove,0
 groovement
 grooveology
 grv dance
@@ -87,46 +150,81 @@ grv,0
 haluan
 heartbreak crew	
 hip hop connxion
+hiptop
+hit the floor,0
+hitsny
+hollabak,0
+hopskotch,0
+hostepper
+hotstepper
+house of funk
 hoya break squad
 hungry bumz
 hype 303
+hypnotix
 i am phresh
 i\W?am\W?me
 iconic movement
 illmatic
+impulse dance
 in da clutch
+indecisive dance krew
 influenced motion junior
 influenced motion senior
+insa dance
+international dance connection
+intrigue,0
 jabbawockeez
+jiggnation
+jiggurs
 junior prophecy
 just2real
+kaba kids
 kaba modern
 kabba modern
+kaution dance
 kcn modern
+kinematix
+kinetic elements
 km legacy
 kodachrome,0
 kodachromeva
+kokus productions
 kp krew
+kpa fusion
 kreative movement
 kruciaal element
+l\.e\.a\.p\.,0
+ladies of hip\W?hop
+lfx,0
 lil' phunk
+loonabeats
 lost kids
+m\.i\.,0
 machinez remainz
 main event,0
 main ingredient
 main\W?stacks
 major definition
 marvelous motion
+marvels dance
+marvels dance
+marvels dance
 mass appeal,0
+masters of movement
 mighty shock
 miniotics
 mischief makers
 mit ridonkulous
 mos wanted
 mos wanted crew
+motivating excellence
 movement lifestyle
+msa agency
+mustant state of mind
+mutant state of mind
 natural st8
-nerdz: the .utsider[sz]
+nerdz\W{,8}the .uts.der[sz]
 new style motherlode
 nia dance troupe
 no time 2 play
@@ -134,17 +232,25 @@ nsu modern
 nu kinematix
 oddacities
 offspring,0
+oip dance company
+one youth dance
+onyx,0
+opportunity core
+organized kaos
+outburst dance
 pac modern
 pandora's myth
 part-?time models
 philippine all\W?stars
+phinix
 phresh select
 phunk phenomenon
 phunktions
 poreotics
 poreotix
 praiset.e.a.m
-press play,0
+press p\.?l\.?a\.?y\.?,0
+prince academy,0
 project d
 project em
 project m
@@ -154,31 +260,47 @@ projectd
 pronailz
 prophecy,0
 pulse dance crew
+pulse,0
 puzzle league
+q minor
 quadrisaurus
 quest crew
 quickstyle studio
 raps dance troupe
 rds company
 rdt,0
+rdt,0
+re\Wjectz
 real proper crew
 redefined dance company
+rejects,0
+remix monkeys
 request crew
 request dance crew
+rhetoracle
 rhthym-zion
 rhythm city
 rhythm inc
 rhythmatix
 rhythmology company
+rhythmology juniors
 rhythmology,0
+royal family,0
+rythmycs dance
 s\*\*t kingz
 s\*\*t\W?kingz
+s\.l\.a\.m\.
+samahang modern
+sampul dance
 sayelah
+secret society,0
 sensazn
+sfhhdf
 sgbm
 shaboobs
 sheroes
 shit\W?kingz
+shockout academy
 short boy swag
 sick step
 sidepro
@@ -186,43 +308,83 @@ sinigang
 sophistifunk
 soreal crew
 soreal cru
+soreal,0
 soulforce
 soulidified project
 static noyze
+streethype
 strykeforce ent
+studio 68
+studio fx
 style 2 kill
+summer stacks
+sunday school
+sunshine training academy
+sunshine troupe
 super galactic beat manipulators
 supergalacticbeatmanipulators
 surreal crew
 t twins
-team millenia
-team millennia
+t\.o\.y\.s\.,0
+tae talent agency
+team millenn?ia
+team vibe
 thatonecompany
+the \Wm\Wovement
 the boom cats crew 
 the company,0
+the diplomats,0
+the drop company
 the iv league
 the mooks
 the project company
+the project junior team
 thee slap bracelets
 thelab_dance
 tito boyscouts
 tm,0
+tournosol crew
 tribl3 threat
 tru movement
+tru vibe
+truelement
+twisted feet
 twofourseven
+u\.n\.i\.t\.
+ubd hip\W?hop
+ucd dance
+uchenna dance
+udc fulltime
+ufn,0
 ufp dance company
 ufp,0
+ufp,0
 ufpx
+underground gen[0-9]*
+unique movement,0
+unity dance ensemble
 unity la
+unofficial project,0
+until further notice,0
 unyted stylz
 urban dance alliance
+usual suspekt[zs]
+v girls
 various artist crew
+varsity high
 ven15
 verve collisionz
+verve,0
 vip san jose
 vip sj
 vip vallejo
+vyb,0
 wanted ashiqz
+werkaholics
 wrawsome
+wrebellious
+wyldstyl
+xtreme dance force
+yfamd
 young lions
 zee hype

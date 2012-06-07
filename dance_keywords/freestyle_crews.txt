@@ -4,6 +4,7 @@
 a4o
 academy of villians
 ancut stonez
+aov,0
 art of tec[hk]nique
 au[rl]o[rl]a.tex
 b\W?fresh brno 
@@ -54,6 +55,7 @@ five plus five
 floor magnets # turf
 floor masters
 floor raskals # turf
+floorriorz
 footworkingz
 forzesound
 fresh audio mindz # turf
@@ -67,6 +69,7 @@ glasshopper
 gogo brothers
 gr818ers
 groovmekanex
+grv,0
 gunz hunt
 gute reize
 head\W?hunters\W+soulciety
@@ -87,6 +90,7 @@ imperial house of waacking
 inhumanoids
 international house of waacking
 ivy league crew
+j\W?s\W?b\W? undeground
 j\W?soul brothers
 jabbawockeez
 jack\W?baskets
@@ -142,8 +146,10 @@ stax groove
 street messengers
 sucreamgoodman
 supreme soul
+swing men brother[sz]
 symbol-ism
 syrenz
+temporaly
 tha rampage crew
 the kulture kids
 the lockers
@@ -154,12 +160,17 @@ thequickstyle
 tokyo footworkz
 tokyo waacking sensation
 turf feinz
+twiggz fam
+urban artistry
 u-min
 vagabond,0
+vigorous ladies
 waacktitioners
 waacouture
 wanted posse
 wonder twins
+wrecking crew orchestra
+yo-bbo
 yo\W?bbo psycho hitters
 あけっPARズ
 なすっ子キューカンバ

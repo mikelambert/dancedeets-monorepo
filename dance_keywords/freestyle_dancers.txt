@@ -55,7 +55,6 @@ henry link
 hideki
 hiro,0
 hiro\W+alma
-pino\W+alma
 hozin
 hurrikane
 i\W?cee\W+forzesound
@@ -120,6 +119,7 @@ nubian nene
 p\W?lock
 pepito
 physs
+pino\W+alma
 popkun
 popmaster fabel
 popntod
@@ -160,6 +160,7 @@ sugapop
 super dino
 super\W?dave
 suthoom\W+symbol.?ism
+suzuki yusuke
 takesaburo\W+so.?deep
 takesaburo\W+xxx.?large
 takuya\W+symbol.?ism
