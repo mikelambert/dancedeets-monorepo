@@ -31,7 +31,7 @@ def classify_events(batch_lookup, pe_list):
             continue
         classified_event = event_classifier.ClassifiedEvent(fb_event)
         classified_event.classify()
-        if event_auto_classifier.is_battle(classified_event)[0]:
+        if event_auto_classifier.is_auto_add_event(classified_event)[0]:
             location_info = event_locations.LocationInfo(batch_lookup, fb_event)
             result = '%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, location_info.exact_from_event, location_info.final_city, location_info.final_city != None, location_info.fb_address, fb_event['info'].get('name', '')))
             results.append(result)

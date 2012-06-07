@@ -65,6 +65,7 @@ easy_dance_keywords = [
     u'舞蹈', # chinese dance
     u'舞蹈的', # chinese dance
     u'排舞', # chinese dance
+    u'跳下去', # chinese dance?
     u'แดนซ์', # dance thai
     u'เต้น', # dance thai
     u'กเต้น', # dancers thai
@@ -193,8 +194,10 @@ dance_keywords = [
     'hip\W?hop\Wheels',
     # only do la-style if not salsa? http://www.dancedeets.com/events/admin_edit?event_id=292605290807447
     'l\W?a\W?\Wstyle', 'l\W?a\W?\Wdance',
-    'n(?:ew|u)\W?styles?',
+    'n(?:ew|u)\W?style',
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
+    'all\W+open\W?style[sz]?',
+    'open\W+all\W?style[sz]?',
     'me against the music',
     'krump', 'krumping?', 'krumper[sz]?',
     'ragga\W?jamm?',
@@ -228,12 +231,15 @@ dance_keywords += [
   '%s ?%s' % (dance_and_music_regexes, easy_dance_regexes),
   '%s ?%s' % (easy_dance_regexes, dance_and_music_regexes),
 ]
-
+easy_battle_keywords = [
+    'jams?', 
+]
 easy_event_keywords = [
-    'jams?', 'club', 'after\Wparty', 'pre\Wparty',
+    'club', 'after\Wparty', 'pre\Wparty',
     u'クラブ',  # japanese club
     'open sessions?', 'training',
 ]
+easy_event_keywords += easy_battle_keywords
 contest_keywords = [
     'contests?',
     u'vystoupení', # czech performances
@@ -413,6 +419,10 @@ battle_keywords = [
     'preselections?',
     u'présélections?', # preselections french
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
+    'crew\W?v[sz]?\W?crew',
+    'bonnie\s*(?:and|&)\s*clyde',
+    'prelims?',
+    u'初賽', # chinese preliminaries
 ]
 
 class_keywords = [
@@ -432,7 +442,7 @@ class_keywords = [
     'class with', 'master\W?class(?:es)?',
     u'мастер-класса?', # russian master class
     u'классa?', # russian class
-    'try\W?outs?', 'class(?:es)?', 'lessons?', 'courses?',
+    'class(?:es)?', 'lessons?', 'courses?',
     'klass(?:EN)?', # slovakian class
     u'수업', # korean class
     u'수업을', # korean classes
@@ -464,6 +474,17 @@ class_keywords = [
     'cours', 'clases?',
 ]
 
+audition_keywords = [
+    'try\W?outs?',
+     'casting call',
+    'auditions?',
+    'audicija', # audition croatia
+    'audiciones', # spanish audition
+    'konkurz', # audition czech
+    u'試鏡', # chinese audition
+    'audizione', # italian audition
+    'naborem', # polish recruitment/audition
+]
 event_keywords = [
     'camp',
     'kamp',
@@ -480,25 +501,14 @@ event_keywords = [
     u'セッション', # japanese session
     'formazione', # training italian
     u'トレーニング', # japanese training
-    'casting call',
-    'auditions?',
-    'audicija', # audition croatia
-    'audiciones', # spanish audition
-    'konkurz', # audition czech
-    u'試鏡', # chinese audition
-    'audizione', # italian audition
-    'naborem', # polish recruitment/audition
     'abdc', 'america\W?s best dance crew',
-    'crew\W?v[sz]?\W?crew',
-    'prelims?',
-    u'初賽', # chinese preliminaries
-    'bonnie\s*(?:and|&)\s*clyde',
 ]
 n_x_n_keywords = [u'%s[ -]?(?:v/s|vs?\\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
 n_x_n_keywords += [u'%s[ -](?:v/s|vs?\\.?|x|×|on)[ -]%s' % (i, i) for i in ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
 event_keywords += class_keywords
 event_keywords += n_x_n_keywords
 event_keywords += battle_keywords
+event_keywords += audition_keywords
 event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x vs x
 
 judge_keywords = [
@@ -605,6 +615,8 @@ dance_wrong_style_title_keywords = dance_wrong_style_keywords + [
     'ballet',
     'yoga',
     'talent shows?', # we don't care about talent shows that offer dance options
+    'stiletto',
+    '\w+ball', # basketball/baseball/football tryouts
 ]
 
 all_regexes = {}
@@ -612,6 +624,7 @@ all_regexes = {}
 #TODO(lambert): maybe handle 'byronom coxom' in slovakian with these keywords
 def get_manual_dance_keywords():
     manual_dance_keywords = []
+    dependent_manual_dance_keywords = []
     import os
     if os.getcwd().endswith('mapreduce'): #TODO(lambert): what is going on with appengine sticking me in the wrong starting directory??
         base_dir = '..'
@@ -625,23 +638,28 @@ def get_manual_dance_keywords():
                 continue
             if line.endswith(',0'):
                 line = line[:-2]
+                dependent_manual_dance_keywords.append(line)
             else:
                 manual_dance_keywords.append(line)
-    return manual_dance_keywords
+    return manual_dance_keywords, dependent_manual_dance_keywords
 
 def build_regexes():
     if 'good_capturing_keyword_regex' in all_regexes:
         return
 
-    manual_dance_keywords = get_manual_dance_keywords()
+    manual_dance_keywords, dependent_manual_dance_keywords = get_manual_dance_keywords()
 
     if manual_dance_keywords:
         all_regexes['manual_dance_keywords_regex'] = make_regexes(manual_dance_keywords)
     else:
         all_regexes['manual_dance_keywords_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
+    if manual_dance_keywords:
+        all_regexes['extended_manual_dance_keywords_regex'] = make_regexes(manual_dance_keywords + dependent_manual_dance_keywords)
+    else:
+        all_regexes['extended_manual_dance_keywords_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
-    all_regexes['good_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, wrapper='(?i)%s')
-    all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords, matching=True, wrapper='(?i)%s')
+    all_regexes['good_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords + dependent_manual_dance_keywords, wrapper='(?i)%s')
+    all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords + dependent_manual_dance_keywords, matching=True, wrapper='(?i)%s')
 
 def make_regex(strings, matching=False, word_boundaries=True, wrapper='%s', flags=0):
     try:
@@ -670,7 +688,7 @@ def make_regexes(strings, matching=False, wrapper='%s', flags=0):
 all_regexes['preprocess_removals_regex'] = make_regexes(preprocess_removals)
 all_regexes['dance_wrong_style_regex'] = make_regexes(dance_wrong_style_keywords)
 all_regexes['judge_keywords_regex'] = make_regexes(judge_keywords)
-all_regexes['start_judge_keywords_regex'] = make_regexes(judge_keywords, wrapper='^\W*%s', flags=re.MULTILINE)
+all_regexes['audition_regex'] = make_regexes(audition_keywords)
 all_regexes['battle_regex'] = make_regexes(battle_keywords)
 all_regexes['n_x_n_regex'] = make_regexes(n_x_n_keywords)
 all_regexes['dance_wrong_style_title_regex'] = make_regexes(dance_wrong_style_title_keywords)
@@ -761,7 +779,7 @@ class ClassifiedEvent(object):
         title_good_matches = all_regexes['good_keyword_regex'][idx].findall(title)
             
         combined_matches = self.found_dance_matches + self.found_event_matches
-        words = [re.split(r'\W+', re.sub(r'\bhttp.*?\s', '', search_text))]
+        words = re.split(r'\W+', re.sub(r'\bhttp.*?\s', '', search_text))
         fraction_matched = 1.0 * len(combined_matches) / len(words)
         if not fraction_matched:
             self.calc_inverse_keyword_density = 100
