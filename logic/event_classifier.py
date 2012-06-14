@@ -205,7 +205,8 @@ dance_keywords = [
     'hip\W?hopp?er[sz]?',
     'street\W?jazz', 'street\W?funk', 'jazz\W?funk', 'boom\W?crack',
     'hype danc\w*',
-    'social hip\W?hop', 'hip\W?hop social dance[sz]',
+    'social hip\W?hop', 'hip\W?hop social dance[sz]', 'hip\W?hop party dance[sz]',
+    'hip\W?hop grooves',
     '(?:new|nu|middle)\W?s(?:ch|k)ool\W\W?hip\W?hop', 'hip\W?hop\W\W?(?:old|new|nu|middle)\W?s(?:ch|k)ool',
     'newstyleurs?',
     'voguer[sz]?', 'vogue?ing', 'vogue fem', 'voguin',
@@ -515,6 +516,7 @@ judge_keywords = [
         'jurys?',
         'jurados?', # spanish jury
         'judge[sz]?',
+    'jures', # french jury
     '(?:les? )?juges?', # french judges
         'giudici', # italian judges
         u'השופט', # hebrew judge
@@ -868,5 +870,5 @@ if __name__ == '__main__':
     a = sorted(a)
     print a
     print re_flatten.construct_regex(a)
-    print highlight_keywords(' ๆ ซึ่งไม่ให้พี่น้อง Bboy ได้ผิดหวังอีกต่อไป*')
+    print highlight_keywords(u' ๆ ซึ่งไม่ให้พี่น้อง Bboy ได้ผิดหวังอีกต่อไป*')
     print highlight_keywords('matched-text')
