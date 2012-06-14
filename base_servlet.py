@@ -172,7 +172,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 logging.info("No database user object.")
             if self.user and self.user.expired_oauth_token:
                 logging.info("User's OAuth token expired")
-                self.set_cookie('fbsr_' + FACEBOOK_CONFIG['app_id'], '', 0)
+                self.set_cookie('fbsr_' + FACEBOOK_CONFIG['app_id'], '', 'Thu, 01 Jan 1970 00:00:01 GMT')
                 logging.info("clearing cookie %s", 'fbsr_' + FACEBOOK_CONFIG['app_id'])
                 self.set_cookie('User-Message', "You changed your facebook password, so will need to click login again.")
             if self.request.get('referer'):
