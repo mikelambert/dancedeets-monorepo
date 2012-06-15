@@ -143,17 +143,16 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 #TODO(lambert): handle this MUUUCH better
                 logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
                 self.user = users.User.get_cached(str(self.fb_uid))
-            if not self.user:
-                logging.error("Do not have a self.user at point A")
-            logging.info("Logged in uid %s with name %s", self.fb_uid, self.user and self.user.full_name)
+            logging.info("Logged in uid %s with name %s", self.fb_uid, self.user.full_name)
             # If their auth token has changed, then write out the new one
-            if self.user.fb_access_token != self.fb_graph.access_token:
+            logging.info("User has token %s, cookie has token %s", self.user.fb_access_token, self.fb_graph.access_token)
+            if self.request.get('new_token') == '1' or self.user.fb_access_token != self.fb_graph.access_token:
                 self.user = users.User.get_by_key_name(str(self.fb_uid))
                 self.user.fb_access_token = self.fb_graph.access_token
                 self.user.expired_oauth_token = False
                 self.user.put() # this also sets to memcache
             yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-            if self.user and (not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday):
+            if not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday:
                 # Do this in a separate request so we don't increase latency on this call
                 deferred.defer(update_last_login_time, self.user.fb_uid, datetime.datetime.now(), _queue='slow-queue')
                 backgrounder.load_users([self.fb_uid], allow_cache=False)
@@ -162,6 +161,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.fb_graph = facebook.GraphAPI(None)
             self.user = None
 
+        self.display['attempt_autologin'] = 1
         # If they've expired, and not already on the login page, then be sure we redirect them to there...
         redirect_for_new_oauth_token = (self.user and self.user.expired_oauth_token)
         if redirect_for_new_oauth_token or (self.requires_login() and (not self.fb_uid or not self.user)):
@@ -172,14 +172,20 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 logging.info("No database user object.")
             if self.user and self.user.expired_oauth_token:
                 logging.info("User's OAuth token expired")
-                self.set_cookie('fbsr_' + FACEBOOK_CONFIG['app_id'], '', 'Thu, 01 Jan 1970 00:00:01 GMT')
-                logging.info("clearing cookie %s", 'fbsr_' + FACEBOOK_CONFIG['app_id'])
+                #self.set_cookie('fbsr_' + FACEBOOK_CONFIG['app_id'], '', 'Thu, 01 Jan 1970 00:00:01 GMT')
+                #logging.info("clearing cookie %s", 'fbsr_' + FACEBOOK_CONFIG['app_id'])
                 self.set_cookie('User-Message', "You changed your facebook password, so will need to click login again.")
             if self.request.get('referer'):
                 self.set_cookie('User-Referer', self.request.get('referer'))
-            logging.info("Login required, redirecting to login page: %s", login_url)
-            self.redirect(login_url)
-            return True
+            if not self.is_login_page():
+                logging.info("Login required, redirecting to login page: %s", login_url)
+                self.redirect(login_url)
+                return True
+            else:
+                self.display['attempt_autologin'] = 0 # do not attempt auto-login. wait for them to re-login
+                self.fb_uid = None
+                self.fb_graph = facebook.GraphAPI(None)
+                self.user = None
         # If they have a fb_uid, let's do lookups on that behalf (does not require a user)
         if self.fb_uid:
             if not self.user:
@@ -190,12 +196,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.batch_lookup.lookup_user(self.fb_uid)
         else:
             self.batch_lookup = fb_api.CommonBatchLookup(None, self.fb_graph, None)
-        # If they've authorized us, but we don't have a User object, force them to signup so we get initial prefs
-        # Let the client sit there and wait for the user to manually sign up.
-        if self.fb_uid and not self.user:
-            self.display['attempt_autologin'] = 0
-        else:
-            self.display['attempt_autologin'] = 1
         if self.user:
             self.display['date_human_format'] = self.user.date_human_format
             self.display['duration_human_format'] = self.user.duration_human_format
@@ -228,6 +228,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
     def requires_login(self):
         return True
+
+    def is_login_page(self):
+        return False
 
     def current_user(self):
         if self.fb_uid:

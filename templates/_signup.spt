@@ -102,15 +102,27 @@
     document.getElementById('fb-root').appendChild(e);
   }());
 
+  function deleteFBCookie() {
+	document.cookie = 'fbsr_${app_id}=;path=/;domain=.dancedeets.com;expires=Thu, 01-Jan-1970 00:00:01 GMT';
+  }
+
+  function reloadWithNewToken() {
+	if (String(window.location).indexOf('?') != -1) {
+		window.location = window.location + '&new_token=1';
+	} else {
+		window.location = window.location + '?new_token=1';
+	}
+  }
+
   function logout() {
  	FB.logout(function(response) {
-		document.cookie = 'fbsr_${app_id}=;path=/;domain=.dancedeets.com;expires=Thu, 01-Jan-1970 00:00:01 GMT';
+		deleteFBCookie();
 		window.location.reload();
 	});
   }
   function handleStatusChange(response) {
 	if (response.status === 'connected') {
-		window.location.reload();
+		reloadWithNewToken();
 	} else if (response.status === 'not_authorized') {
 		// the user is logged in to Facebook, 
 		//but not connected to the app
@@ -128,13 +140,13 @@
 				must_allow_perms.dialog('open');
 			} else {
 				_gaq.push(['_trackEvent', 'Signup', 'Authorized Permissions']);
-				window.location.reload();
+				reloadWithNewToken();
 			}
 		});
   }
   window.fbAsyncInit = function() {
 		FB.init({appId: '$app_id', status: true, cookie: true, xfbml: true, oauth: true});
-		#if not $fb_user
+		#if not $fb_user and $attempt_autologin
 			## only subscribe to login-status notifications if we're logged out, otherwise we get in an infinite loop
 			FB.Event.subscribe('auth.statusChange', handleStatusChange);
 		#end if

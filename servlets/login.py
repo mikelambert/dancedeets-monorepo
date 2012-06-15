@@ -26,6 +26,9 @@ class LoginHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
 
+    def is_login_page(self):
+        return True
+
     #TODO(lambert): move this into the same base / handler, so we don't do stupid redirects to /login
     def get(self, needs_city=False):
         next = self.request.get('next') or '/'
