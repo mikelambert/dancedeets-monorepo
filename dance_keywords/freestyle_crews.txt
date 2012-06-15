@@ -64,7 +64,7 @@ funny bones,0
 gart project
 gelaketz
 ghbv
-ghetto style
+ghetto\W?style
 giddap
 glasshopper
 gogo brothers

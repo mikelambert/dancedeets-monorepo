@@ -115,7 +115,6 @@ dance_and_music_not_wrong_battle_keywords = [
     u'ヒップホップ', # hiphop japanese
     u'힙합', # korean hiphop
     'hip\W?hop\w*', # lithuanian, polish hiphop
-    'music video',
     'all\W?style[zs]?',
     'tou[ts]\W?style[zs]?', # french all-styles
     'tutti gli stili', # italian all-styles
@@ -127,7 +126,7 @@ dance_and_music_not_wrong_battle_keywords = [
     'hype',
     'new\W?jack\W?swing',
     'glides?', 'gliding', 
-    'breaks',
+    # 'breaks', # too many false positives
     'boogaloo',
     'breaking?', 'breakers?',
     'jerk',
@@ -303,6 +302,7 @@ club_only_keywords = [
 
 #TODO(lambert): use these
 preprocess_removals = [
+    "america's got talent",
     'jerk chicken',
     'poker tournaments?',
     'fashion competition',
@@ -444,7 +444,7 @@ class_keywords = [
     u'мастер-класса?', # russian master class
     u'классa?', # russian class
     'class(?:es)?', 'lessons?', 'courses?',
-    'klass(?:EN)?', # slovakian class
+    'klass(?:en)?', # slovakian class
     u'수업', # korean class
     u'수업을', # korean classes
     'lekc[ie]', # czech lesson
@@ -558,7 +558,6 @@ dance_wrong_style_keywords = [
     'cheer',
     'barre',
     'butoh',
-    'contact improv',
     'contato improv\w*',
     'contact improv\w*',
     'contratto mimo', # italian contact mime
@@ -715,7 +714,8 @@ all_regexes['french'] = make_regexes(["l'\w*", 'le', 'et', 'une', 'avec', u'à',
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
 
 def get_relevant_text(fb_event):
-    search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
+    # use a separator here, so 'actors workshop' 'breaking boundaries...' doesn't match 'workshop breaking'
+    search_text = (fb_event['info'].get('name', '') + ' . . . . ' + fb_event['info'].get('description', '')).lower()
     return search_text
 
 class ClassifiedEvent(object):
