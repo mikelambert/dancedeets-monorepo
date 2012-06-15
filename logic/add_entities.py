@@ -41,3 +41,4 @@ def add_update_event(event_id, user_id, batch_lookup, remapped_address=None, ove
             if not classified_event.is_dance_event():
                 thing_db.increment_num_false_negatives(source_id)
     # Hmm, how do we implement this one?# thing_db.increment_num_real_events_without_potential_events(source_id)
+    return fb_event, e
