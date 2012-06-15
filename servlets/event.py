@@ -259,12 +259,12 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.add_error('missing event_url or event_id parameter')
 
         try:
-            add_update_event(event_id, self.user.fb_uid, batch_lookup, creating_method=eventdata.CM_USER)
+            fb_event, e = add_entities.add_update_event(event_id, self.user.fb_uid, self.batch_lookup, creating_method=eventdata.CM_USER)
+            self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
         except Exception, e:
             self.add_error(str(e))
         self.errors_are_fatal()
 
-        self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
         self.redirect('/')
 
 class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
