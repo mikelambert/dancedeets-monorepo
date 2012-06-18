@@ -49,6 +49,7 @@ def _common_potential_event_setup(potential_event, fb_event):
     potential_event.match_score = match_score
 
 def update_scores_for_potential_event(potential_event, fb_event, fb_event_attending, service=None):
+    return potential_event # This prediction isn't really working, so let's turn it off for now
     if potential_event and not getattr(potential_event, 'dance_bias_score'):
         predict_service = service or gprediction.get_predict_service()
         dance_bias_score, non_dance_bias_score = gprediction.predict(potential_event, fb_event, fb_event_attending, service=predict_service)

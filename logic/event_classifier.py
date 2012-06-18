@@ -192,7 +192,8 @@ dance_keywords = [
     'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
     'hip\W?hop\Wheels',
     # only do la-style if not salsa? http://www.dancedeets.com/events/admin_edit?event_id=292605290807447
-    'l\W?a\W?\Wstyle', 'l\W?a\W?\Wdance',
+    # 'l\W?a\W?\Wstyle',
+    'l\W?a\W?\Wdance',
     'n(?:ew|u)\W?style',
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'all\W+open\W?style[sz]?',
@@ -440,6 +441,8 @@ class_keywords = [
     'warsztaty', # polish workshop
     u'warsztatów', # polish workshop
     u'seminarų', # lithuanian workshop
+    'intensive',
+    'intensivo', # spanish intensive
     'class with', 'master\W?class(?:es)?',
     u'мастер-класса?', # russian master class
     u'классa?', # russian class

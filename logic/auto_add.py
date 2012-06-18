@@ -1,5 +1,7 @@
 import logging
 
+from mapreduce import context
+
 import fb_api
 
 from events import eventdata
@@ -34,13 +36,15 @@ def classify_events(batch_lookup, pe_list):
         if event_auto_classifier.is_auto_add_event(classified_event)[0]:
             location_info = event_locations.LocationInfo(batch_lookup, fb_event)
             result = '%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, location_info.exact_from_event, location_info.final_city, location_info.final_city != None, location_info.fb_address, fb_event['info'].get('name', '')))
-            # Move this to after-we-successfully-update?
-            results.append(result)
             try:
                 add_entities.add_update_event(pe.fb_event_id, 0, batch_lookup, creating_method=eventdata.CM_AUTO)
                 pe2 = potential_events.PotentialEvent.get_by_key_name(str(pe.fb_event_id))
                 pe2.looked_at = True
                 pe2.put()
+                # TODO(lambert): handle un-add-able events differently
+                results.append(result)
+                ctx = context.get()
+                ctx.counters.increment('auto-added-dance-events')
             except (fb_api.NoFetchedDataException, add_entities.AddEventException), e:
                 logging.error("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
     yield ''.join(results).encode('utf-8')
