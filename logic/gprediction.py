@@ -67,7 +67,8 @@ def get_training_features(potential_event, fb_event, fb_event_attending):
 
     #TODO(lambert): someday write this as a proper mapreduce that reduces across languages and builds a classifier model per language?
     # for now we can just grep and build sub-models per-language on my client machine.
-    return (potential_event.language, owner_name, location, name, description, attendee_list, source_list)
+    #return (potential_event.language, owner_name, location, name, description, attendee_list, source_list)
+    return (attendee_list,)
 
 
 def mr_generate_training_data(batch_lookup):
@@ -79,6 +80,7 @@ def mr_generate_training_data(batch_lookup):
         handle_batch_size=20,
         entity_kind='logic.potential_events.PotentialEvent',
         extra_mapper_params={'mime_type': 'text/plain'},
+        queue=None,
     )
 
 MAGIC_USER_ID = '100529355548393795594'
