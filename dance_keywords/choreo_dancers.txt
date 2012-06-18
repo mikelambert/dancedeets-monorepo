@@ -1,4 +1,5 @@
 2auce\W+edwards # ignore cj at front due to backtracking
+ace ventura,0
 alan truong
 alex bullon
 amanda suk
@@ -7,10 +8,12 @@ andrew baterina
 antoine troupe
 april bambao
 april rodriguez
+arnel calvario
 ava bernstine
 bam\W+martin
 beau fournier
 brandon dumlao
+breeze lee
 brian fucanan
 brian puspos
 bryan tanaka
@@ -20,6 +23,7 @@ david moore,0
 derrick caldwell
 devin jamieson
 dmoe
+dom byrd
 eddie morales
 eddie orales
 ellen kim
@@ -32,9 +36,11 @@ gigi torres
 greg chapkis
 gus bemberry
 ian eastwood
+isaac tee
 jackie lautchang
 jackie luatchang
 jared grimes
+jay\W?chris moore
 jayson wright
 jeffrey viray
 jeka
@@ -70,13 +76,17 @@ mecnun giasar
 michael riccio
 mike song
 misha gabriel
+miss\W?funk
+moe borromeo
 moon\W+zhang # ignore moon at the front due to backtracking
+mr\W? lucky
 nacer misterstep
 nader musharbash
 nick bass
 nick demoura
 nick whage
 nico o'connor
+nika kjlun
 olivia\W+chachi\W+gonzales
 parris goebel
 pat cruz
@@ -98,6 +108,7 @@ sven taylor
 teddy forance
 tega alex
 tony czar
+toybox,0
 tucker barkley
 valentine norton
 vinh nguyen
