@@ -42,6 +42,55 @@ world dance colosseum
 wdc,0
 wod,0
 prelude,0 # use capitals to distinguish?
+goodphil
 
 sybarite
+
+
+funkologia
+trophee masters
+street\W?dance\?k[ea]mp
+latex ball
+leo xtravaganza
+paris dupree
+freedom dance party
+
+soiree atmosphere
+coney island boardwalk
+the floor improv night
+dance culture
+jump\W+n\W+funk
+about the music presents
+thepeople
+behind the groove
+united grooves
+evolve\W+2nd\W+fridays?
+
+just4rockers
+beat streat vol
+battlefest
+brooklyn united rockers
+wdc.{,10}final
+funk box
+funkbox
+saint city session
+tap water sessions
+toca tuesday
+teez party
+breakhousea
+choreographer\W?s ball
+choreographer\W?s carnival
+# teach some fundamentals
+soul summit
+motown party
+funk off
+soul\W?train
+# support stage if french words in the page: l' le et un
+# street battle
+banana sessions?
+whogotskillz
+each (?:1|one) teach (?:1|one)
+sdk\W?europe
+
+hip hop dancefest
 

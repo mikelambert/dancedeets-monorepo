@@ -55,8 +55,6 @@ cadence dance
 capital funk
 cassie jackson
 chapkis dance
-chill factor
-chocolate factory,0
 chocolate factory,0
 choreo cookies
 club cubic
@@ -117,6 +115,7 @@ fanny pak
 flash mob
 flow dance,0
 flowethics
+fo\Wreal
 foot clan
 foota?\W+thrillaz # ignore 5 at front due to backtracking
 for the cause,0
@@ -135,7 +134,6 @@ gen-x m\.o\.b
 gen2
 generation x
 get the funk on
-goodphil
 gravy babies
 greathouse of dance
 griminals
@@ -238,8 +236,8 @@ oip dance company
 one youth dance
 onyx,0
 opportunity core
-organized kaos
 outburst dance
+overfl0
 pac modern
 pandora's myth
 part-?time models
@@ -287,6 +285,7 @@ rhythmatix
 rhythmology company
 rhythmology juniors
 rhythmology,0
+rock with the one
 royal family,0
 rythmycs dance
 s\*\*t kingz
@@ -329,6 +328,7 @@ surreal crew
 t twins
 t\.o\.y\.s\.,0
 tae talent agency
+team 2x
 team millenn?ia
 team vibe
 thatonecompany
@@ -383,6 +383,7 @@ vip vallejo
 vyb,0
 wanted ashiqz
 werkaholics
+woof legacy
 wrawsome
 wrebellious
 wyldstyl

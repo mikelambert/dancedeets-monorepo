@@ -80,6 +80,7 @@ miss\W?funk
 moe borromeo
 moon\W+zhang # ignore moon at the front due to backtracking
 mr\W? lucky
+myron marten 
 nacer misterstep
 nader musharbash
 nick bass
@@ -94,6 +95,7 @@ patrick cruz
 phillip geniza
 phillip\W+pacman\W+chbeeb
 rhapsody james
+ricky cole 
 rie hata
 rocko,0
 samath orm
@@ -112,4 +114,5 @@ toybox,0
 tucker barkley
 valentine norton
 vinh nguyen
+wayman tisdale
 yeya

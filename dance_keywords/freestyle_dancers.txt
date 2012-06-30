@@ -161,6 +161,7 @@ super dino
 super\W?dave
 suthoom\W+symbol.?ism
 suzuki yusuke
+tadd gadduang
 takesaburo\W+so.?deep
 takesaburo\W+xxx.?large
 takuya\W+symbol.?ism

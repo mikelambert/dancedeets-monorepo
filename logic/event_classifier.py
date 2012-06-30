@@ -139,6 +139,7 @@ dance_and_music_not_wrong_battle_keywords = [
     '90\W?s hip\W?hop',
     'vogue',
     u'フリースタイル', # japanese freestyle
+    'b\W?boy\w*', # 'bboyev' in slovak
 ]
 dance_and_music_keywords = dance_and_music_not_wrong_battle_keywords + [
     'free\W?style(?:r?|rs?)', # when combined with competition, works incorrectly
@@ -166,7 +167,6 @@ dance_keywords = [
     'break\W?danc\w+',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
-    'b\W?boy\w*', # 'bboyev' in slovak
     u'파워무브', # powermove korean
     'breakeuse', # french bgirl
     'footworks', # spanish footworks
@@ -245,6 +245,8 @@ contest_keywords = [
     'contests?',
     u'vystoupení', # czech performances
     'concours', # french contest
+    'konkurrencer', # danish contest
+    'dancecontests', # dance contests german
 ]
 club_and_event_keywords = [
     'sesja', # polish session
@@ -257,8 +259,7 @@ club_and_event_keywords = [
     u'的表演', # chinese performance
     u'表演', # chinese performance
     u'パフォーマンス', # japanese performance
-    'konkurrencer', # danish contest
-    'dancecontests', # dance contests german
+    # maybe include 'spectacle' as well?
     'esibizioni', #italian performance/exhibition
 ] + contest_keywords
 
@@ -625,8 +626,10 @@ dance_wrong_style_title_keywords = dance_wrong_style_keywords + [
 
 all_regexes = {}
 
+grouped_manual_dance_keywords = {}
+
 #TODO(lambert): maybe handle 'byronom coxom' in slovakian with these keywords
-def get_manual_dance_keywords():
+def get_manual_dance_keywords(filenames):
     manual_dance_keywords = []
     dependent_manual_dance_keywords = []
     import os
@@ -634,7 +637,8 @@ def get_manual_dance_keywords():
         base_dir = '..'
     else:
         base_dir = '.'
-    for filename in ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'choreo_keywords', 'competitions', 'freestyle_crews', 'freestyle_dancers', 'freestyle_keywords']:
+
+    for filename in filenames:
         f = codecs.open('%s/dance_keywords/%s.txt' % (base_dir, filename), encoding='utf-8')
         for line in f.readlines():
             line = re.sub('\s*#.*', '', line.strip())
@@ -647,11 +651,30 @@ def get_manual_dance_keywords():
                 manual_dance_keywords.append(line)
     return manual_dance_keywords, dependent_manual_dance_keywords
 
+manual_dance_keywords = []
+dependent_manual_dance_keywords = []
+
 def build_regexes():
+    global manual_dance_keywords, dependent_manual_dance_keywords
     if 'good_capturing_keyword_regex' in all_regexes:
         return
 
-    manual_dance_keywords, dependent_manual_dance_keywords = get_manual_dance_keywords()
+    dancer_keyword_files = ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'freestyle_crews', 'freestyle_dancers']
+    extra_keyword_files = ['choreo_keywords', 'freestyle_keywords', 'competitions', 'good_djs']
+
+    manual_dancers, dependent_manual_dancers = get_manual_dance_keywords(dancer_keyword_files)
+
+    if manual_dancers:
+        all_regexes['manual_dancers_regex'] = make_regexes(manual_dancers)
+    else:
+        all_regexes['manual_dancers_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
+    if manual_dancers:
+        all_regexes['extended_manual_dancers_regex'] = make_regexes(manual_dancers + dependent_manual_dancers)
+    else:
+        all_regexes['extended_manual_dancers_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
+
+
+    manual_dance_keywords, dependent_manual_dance_keywords = get_manual_dance_keywords(dancer_keyword_files + extra_keyword_files)
 
     if manual_dance_keywords:
         all_regexes['manual_dance_keywords_regex'] = make_regexes(manual_dance_keywords)

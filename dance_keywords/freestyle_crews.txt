@@ -168,7 +168,7 @@ vagabond,0
 vigorous ladies
 waacktitioners
 waacouture
-wanted posse
+wanted\W?posse
 wonder twins
 wrecking crew orchestra
 yo-bbo

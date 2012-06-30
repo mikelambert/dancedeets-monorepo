@@ -32,7 +32,8 @@ def partition_ids(ids, classifier=lambda x:False):
 
 def basic_match(fb_event):
     e = event_classifier.get_classified_event(fb_event)
-    result = event_auto_classifier.is_vogue_event(e)
+    result = event_auto_classifier.is_auto_add_event(e)
+    #result = event_auto_classifier.is_workshop(e)
     if result[0] and fb_event['info']['id'] not in good_ids:
         print fb_event['info']['id'], result
     return result[0]

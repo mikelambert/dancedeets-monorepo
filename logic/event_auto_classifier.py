@@ -4,10 +4,20 @@ import re
 
 from logic import event_classifier
 
+connectors = [
+    ' ?',
+    ' di ',
+    ' de ',
+]
+connectors_regex = event_classifier.make_regex_string(connectors)
+
 wrong_classes = [
+    'on stage',
     'top class',
     'of course',
     'class rnb',
+    'breaking down',
+    'ground\W?breaking',
 ]
 wrong_classes_regex = event_classifier.make_regexes(wrong_classes)
 
@@ -21,6 +31,7 @@ wrong_numbered_list_regex = event_classifier.make_regexes(wrong_numbered_list)
 
 wrong_auditions = [
     'sing(?:ers?)?',
+    'singing',
     'singer',
     'model',
     'poet(?:ry|s)?',
@@ -58,15 +69,15 @@ wrong_battle_styles = [
 ]
 p1 = event_classifier.make_regex_string(wrong_battle_styles)
 p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
-wrong_battles.append(u'%s ?%s' % (p1, p2))
-wrong_battles.append(u'%s ?%s' % (p1, p2))
+wrong_battles.append(u'%s%s%s' % (p1, connectors_regex, p2))
+wrong_battles.append(u'%s%s%s' % (p1, connectors_regex, p2))
 wrong_battles_regex = event_classifier.make_regexes(wrong_battles)
 
 p1 = event_classifier.make_regex_string(event_classifier.easy_dance_keywords + event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.easy_choreography_keywords + event_classifier.dance_keywords)
 p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords + event_classifier.easy_battle_keywords)
 dance_battles_regex = event_classifier.make_regexes([
-    u'%s ?%s' % (p1, p2),
-    u'%s ?%s' % (p2, p1),
+    u'%s%s%s' % (p1, connectors_regex, p2),
+    u'%s%s%s' % (p2, connectors_regex, p1),
 ])
 assert dance_battles_regex[1].search('dance battle')
 assert dance_battles_regex[1].search('custom breaking contest')
@@ -75,8 +86,8 @@ assert dance_battles_regex[1].search('concours choregraphique')
 p1 = event_classifier.make_regex_string(event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.dance_keywords)
 p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords) # not easy_battle_keywords
 good_dance_battles_regex = event_classifier.make_regexes([
-    u'%s ?%s' % (p1, p2),
-    u'%s ?%s' % (p2, p1),
+    u'%s%s%s' % (p1, connectors_regex, p2),
+    u'%s%s%s' % (p2, connectors_regex, p1),
 ])
 assert good_dance_battles_regex[1].search('all-styles battle')
 assert good_dance_battles_regex[1].search('custom breaking contest')
@@ -85,12 +96,20 @@ assert good_dance_battles_regex[1].search('custom breaking contest')
 dance_class_styles = event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.dance_keywords
 dance_class_styles_regex = event_classifier.make_regexes(dance_class_styles)
 
-p1 = event_classifier.make_regex_string(event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.dance_keywords)
+ambiguous_class_keywords = [
+        'stage',
+        'stages'
+]
+ambiguous_class_regex = event_classifier.make_regex_string(ambiguous_class_keywords)
+p1 = event_classifier.make_regex_string(event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.dance_keywords + ['house'])
 p2 = event_classifier.make_regex_string(event_classifier.class_keywords)
 good_dance_class_regex = event_classifier.make_regexes([
-    u'%s ?%s' % (p1, p2),
-    u'%s ?%s' % (p2, p1),
+    u'%s%s%s' % (p1, connectors_regex, p2),
+    u'%s%s%s' % (p2, connectors_regex, p1),
+    # only do one direction here, since we don't want "house stage" and "funk stage"
+     u'%s%s%s' % (ambiguous_class_regex, connectors_regex, p1),
 ])
+extended_class_regex = event_classifier.make_regexes(event_classifier.class_keywords + ambiguous_class_keywords)
 
 non_dance_support = [
     'fundraiser',
@@ -104,10 +123,10 @@ full_judge_keywords = event_classifier.judge_keywords
 judge_qualifier = event_classifier.make_regex_string(event_classifier.dance_keywords + event_classifier.easy_dance_keywords + event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.easy_choreography_keywords + event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
 judge_regex = event_classifier.make_regex_string(event_classifier.judge_keywords)
 full_judge_keywords.extend([
-        u'%s ?%s' % (judge_qualifier, judge_regex),
-        u'%s ?%s' % (judge_regex, judge_qualifier),
+        u'%s%s%s' % (judge_qualifier, connectors_regex, judge_regex),
+        u'%s%s%s' % (judge_regex, connectors_regex, judge_qualifier),
 ])
-start_judge_keywords_regex = event_classifier.make_regexes(full_judge_keywords, wrapper='^\W*%s', flags=re.MULTILINE)
+start_judge_keywords_regex = event_classifier.make_regexes(full_judge_keywords, wrapper='^[^\w\n]*%s', flags=re.MULTILINE)
 
 # TODO: make sure this doesn't match... 'mc hiphop contest'
 
@@ -197,10 +216,10 @@ def has_list_of_good_classes(classified_event):
             continue
         for line in sub_lines:
             dance_class_style_matches = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(line)
-            manual_dance_keywords = event_classifier.all_regexes['manual_dance_keywords_regex'][classified_event.boundaries].findall(line)
+            manual_dancers = event_classifier.all_regexes['manual_dancers_regex'][classified_event.boundaries].findall(line)
             dance_wrong_style_matches = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(line)
-            if (dance_class_style_matches or manual_dance_keywords) and not dance_wrong_style_matches:
-                good_lines.append(dance_class_style_matches + manual_dance_keywords)
+            if (dance_class_style_matches or manual_dancers) and not dance_wrong_style_matches:
+                good_lines.append(dance_class_style_matches + manual_dancers)
         if len(good_lines) > len(sub_lines) / 10:
             return True, 'found good schedule: %s: %s, %s' % ('\n'.join(sub_lines), good_lines, bad_lines)
     return False, ''
@@ -301,7 +320,7 @@ def is_audition(classified_event):
 
     has_audition = event_classifier.all_regexes['audition_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_good_dance_title = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
-    has_good_crew_title = event_classifier.all_regexes['extended_manual_dance_keywords_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_good_crew_title = event_classifier.all_regexes['extended_manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
 
 
     search_text = classified_event.final_search_text
@@ -380,10 +399,9 @@ def is_audition(classified_event):
 
 
 def is_workshop(classified_event):
-    # TODO(lambert): Add "Stage" to list of keywords for titles
-    has_class_title = event_classifier.all_regexes['class_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_class_title = extended_class_regex[classified_event.boundaries].findall(classified_event.final_title)
     has_good_dance_title = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
-    has_good_crew_title = event_classifier.all_regexes['manual_dance_keywords_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_good_crew_title = event_classifier.all_regexes['manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_wrong_style_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_easy_dance_title = event_classifier.all_regexes['easy_dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
 
@@ -392,7 +410,7 @@ def is_workshop(classified_event):
     has_good_dance_class = good_dance_class_regex[classified_event.boundaries].findall(trimmed_search_text)
 
     has_good_dance = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(trimmed_search_text)
-    has_good_crew = event_classifier.all_regexes['manual_dance_keywords_regex'][classified_event.boundaries].findall(trimmed_search_text)
+    has_good_crew = event_classifier.all_regexes['manual_dancers_regex'][classified_event.boundaries].findall(trimmed_search_text)
 
     if has_class_title and (has_good_dance_title or has_good_crew_title) and not has_wrong_style_title:
         return (True, 'has class with strong title')
@@ -412,6 +430,25 @@ def is_vogue_event(classified_event):
         return True, 'has vogue keywords: %s' % (vogue_matches.union(easy_vogue_matches))
     return False, 'not enough vogue keywords'
 
+solo_lines_regex = None
+
+def build_regexes():
+    global solo_lines_regex
+
+    if solo_lines_regex is not None:
+        return
+
+    solo_lines_regex = event_classifier.make_regexes(event_classifier.dance_keywords + event_classifier.manual_dance_keywords, wrapper='^[^\w\n]*%s[^.\w\n]*$', flags=re.MULTILINE)
+
+def is_strong_keywords(classified_event):
+    build_regexes()
+
+    text = classified_event.search_text
+    good_stuff_matches = solo_lines_regex[classified_event.boundaries].findall(text)
+    if len(good_stuff_matches) > 0:
+        return True, 'found good keywords on lines by themselves: %s' % good_stuff_matches
+    return False, 'no good keywords on lines by themselves'
+
 def is_auto_add_event(classified_event):
     result = is_battle(classified_event)
     if result[0]:
@@ -428,5 +465,8 @@ def is_auto_add_event(classified_event):
     result = is_vogue_event(classified_event)
     if result[0]:
         return result
+    #result = is_strong_keywords(classified_event)
+    #if result[0]:
+    #    return result
     return (False, 'nothing')
 
