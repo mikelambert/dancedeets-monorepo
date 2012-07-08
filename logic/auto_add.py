@@ -16,6 +16,7 @@ from util import mr_helper
 class UnprocessedPotentialEventsReader(mr_helper.FilteredInputReader):
     def filter_query(self, query):
         query.filter('looked_at =', None)
+        query.filter('show_even_if_no_score =', True)
 
 def classify_events(batch_lookup, pe_list):
     for pe in pe_list:
