@@ -135,6 +135,9 @@ class SearchQuery(object):
                 pass
             else:
                 return False
+        if self.time_period == eventdata.TIME_FUTURE:
+            if event.end_time < datetime.datetime.now():
+                return False
 
         if self.min_attendees and event.attendee_count < self.min_attendees:
             return False
