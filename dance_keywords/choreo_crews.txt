@@ -107,6 +107,7 @@ epiphany dance
 epiphany dance crew
 essence-ill
 evol cru
+evolution movement
 evolution hip\W?hop
 expressive doubt
 fambiz
@@ -319,7 +320,6 @@ studio 68
 studio fx
 style 2 kill
 summer stacks
-sunday school
 sunshine training academy
 sunshine troupe
 super galactic beat manipulators

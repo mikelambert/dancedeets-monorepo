@@ -1,4 +1,4 @@
-abstrak
+abstrak,0
 acky
 alessandro cascone
 amanda\W+b?\W+angel
@@ -76,6 +76,7 @@ joseph\Wgo
 jr.? boogie
 jr?.? bogaloo
 jrock
+junior almeida
 junior boogaloo
 junior boogie
 kapela,0
@@ -105,11 +106,14 @@ manel head
 manu,0
 marcio monteiro
 marjory smarth
+mayu\W+l.?o.?f.?d
+mayu\Wjammy
 meech
 melanie aguirre
 michael angelo
 mikey disko
 moncell durden
+moncell\W+illkozby\W?durden
 mr.? ?wiggles
 nelson ewande
 nelson,0
@@ -134,7 +138,6 @@ rashaad pearson
 razzle dazzle
 rennie harris
 ricky soul
-roberta fontana
 rockmaster
 rokafella
 salah
@@ -165,6 +168,7 @@ tadd gadduang
 takesaburo\W+so.?deep
 takesaburo\W+xxx.?large
 takuya\W+symbol.?ism
+tatsu\W+o.?g.?s
 tatsuo yamamoto
 tatsuo,0
 tatsuo\W+glass.?hopper

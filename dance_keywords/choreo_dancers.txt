@@ -79,7 +79,7 @@ misha gabriel
 miss\W?funk
 moe borromeo
 moon\W+zhang # ignore moon at the front due to backtracking
-mr\W? lucky
+mr\W? lucky,0
 myron marten 
 nacer misterstep
 nader musharbash

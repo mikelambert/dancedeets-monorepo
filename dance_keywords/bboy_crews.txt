@@ -102,7 +102,7 @@ extra credit crew
 extreme crew
 fallen kings
 familia loca
-faya
+faya,0
 felons of soul
 filthee feet
 flava squad
@@ -113,7 +113,7 @@ floor gangz
 floor hunters
 floor master dancers
 floor masters
-floor obsessions
+floor obsessions?
 floor ridaz
 floor royalty
 floor storm
@@ -192,7 +192,6 @@ just of drill
 kaiva
 kalamacrew
 khzoo
-kids of soul
 killa beat
 killa fresh crew
 killafornia
@@ -329,6 +328,7 @@ solid ground movement
 sophisticatz
 soul assassins,0
 soul felons
+soul jerz
 soul mechanics krew
 soul phase crew
 soul rebels
@@ -400,7 +400,7 @@ warrios
 waseda breakers
 weapons of rythem
 wizards of rhythm
-x-fenz
+x\W?fenz
 yokohama city breakers
 zealous,0
 zip locks
