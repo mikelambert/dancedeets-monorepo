@@ -1,13 +1,22 @@
 # -*-*- encoding: utf-8 -*-*-
 
+import datetime
 import re
 
 from logic import event_classifier
+from util import dates
+
+# house side?
+# lock side?
+# experimental side?
+
+# house battles http://www.dancedeets.com/events/admin_edit?event_id=240788332653377
 
 connectors = [
     ' ?',
     ' di ',
     ' de ',
+#    ' \W ',
 ]
 connectors_regex = event_classifier.make_regex_string(connectors)
 
@@ -18,6 +27,10 @@ wrong_classes = [
     'class rnb',
     'breaking down',
     'ground\W?breaking',
+    'main\Wstage',
+    'house classics?', # need to solve japanese case?
+    'world\Wclass',
+    'open house',
 ]
 wrong_classes_regex = event_classifier.make_regexes(wrong_classes)
 
@@ -116,6 +129,7 @@ non_dance_support = [
     'likes?',
     'votes?',
     'support',
+    'follow',
 ]
 non_dance_regex = event_classifier.make_regexes(non_dance_support)
 
@@ -169,15 +183,25 @@ vogue_regex = event_classifier.make_regexes(vogue_keywords)
 easy_vogue_regex = event_classifier.make_regexes(easy_vogue_keywords)
 
 def has_list_of_good_classes(classified_event):
+    if not classified_event.is_dance_event():
+        return (False, 'not a dance event')
+
+    # if title is good strong keyword, and we have a list of classes:
+    # why doesn't this get found by the is_workshop title classifier? where is our "camp" keyword
+    # http://www.dancedeets.com/events/admin_edit?event_id=317006008387038
+
     #(?!20[01][05])
-    time = r'\b[012]?\d[:.]?(?:[0-5][05])?(?:am|pm)?\b'
-    time_with_minutes = r'\b[012]?\d[:.]?(?:[0-5][05])(?:am|pm)?\b'
-    time_to_time = r'%s ?(?:to|do|до|til|till|a|-|\W) ?%s' % (time, time)
+    time = r'\b[012]?\d[:.,h]?(?:[0-5][05])?(?:am|pm)?\b'
+    time_with_minutes = r'\b[012]?\d[:.,h]?(?:[0-5][05])(?:am|pm)?\b'
+    time_to_time = r'%s ?(?:to|do|до|til|till|a|-|[^\w,.]) ?%s' % (time, time)
 
     text = classified_event.search_text
     club_only_matches = event_classifier.all_regexes['club_only_regex'][classified_event.boundaries].findall(text)
     if len(club_only_matches) > 2:
         return False, 'too many club keywords: %s' % club_only_matches
+    title_wrong_style_matches = event_classifier.all_regexes['dance_wrong_style_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    if title_wrong_style_matches:
+        return False, 'wrong style in the title: %s' % title_wrong_style_matches
     lines = text.split('\n')
     idx = 0
     schedule_lines = []
@@ -192,7 +216,7 @@ def has_list_of_good_classes(classified_event):
             # compare delimiters, times, time diffs, styles, etc
             times = re.findall(time_to_time, line)
             if not times or len(line) > 80:
-                if idx - first_idx > 2:
+                if idx - first_idx >= 1:
                     schedule_lines.append(lines[first_idx:idx])
                 break
             idx += 1
@@ -203,25 +227,26 @@ def has_list_of_good_classes(classified_event):
             # TODO(lambert): Somehow track "1)" that might show up here? :(
             times = [x for x in times if x not in ['1.', '2.']]
             if not times or len(line) > 80:
-                if idx - first_idx > 2:
+                if idx - first_idx >= 3:
                     schedule_lines.append(lines[first_idx:idx])
                 break
             idx += 1
         idx += 1
 
     for sub_lines in schedule_lines:
-        bad_lines = []
         good_lines = []
         if not [line for line in sub_lines if re.search(time_with_minutes, line)]:
             continue
         for line in sub_lines:
             dance_class_style_matches = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(line)
+            dance_and_music_matches = event_classifier.all_regexes['dance_and_music_regex'][classified_event.boundaries].findall(line)
             manual_dancers = event_classifier.all_regexes['manual_dancers_regex'][classified_event.boundaries].findall(line)
             dance_wrong_style_matches = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(line)
-            if (dance_class_style_matches or manual_dancers) and not dance_wrong_style_matches:
-                good_lines.append(dance_class_style_matches + manual_dancers)
-        if len(good_lines) > len(sub_lines) / 10:
-            return True, 'found good schedule: %s: %s, %s' % ('\n'.join(sub_lines), good_lines, bad_lines)
+            if (dance_class_style_matches or manual_dancers or dance_and_music_matches) and not dance_wrong_style_matches:
+                good_lines.append(dance_class_style_matches + manual_dancers + dance_and_music_matches)
+        end_time = dates.parse_fb_end_time(classified_event.fb_event)
+        if len(good_lines) > len(sub_lines) / 10 and end_time.time() > datetime.time(12):
+            return True, 'found good schedule: %s: %s' % ('\n'.join(sub_lines), good_lines)
     return False, ''
 
 def find_competitor_list(classified_event):
@@ -396,6 +421,12 @@ def is_audition(classified_event):
 
 # 'dancehall workshop' in title should work as-is? why not?
 
+# ALREADY CONFIRMED INSTRUCTORS!
+# As of 06.14.12
+# Subject to Change
+# 
+# Nika Kjlun
+# Mr. Lucky
 
 
 def is_workshop(classified_event):
@@ -438,14 +469,15 @@ def build_regexes():
     if solo_lines_regex is not None:
         return
 
-    solo_lines_regex = event_classifier.make_regexes(event_classifier.dance_keywords + event_classifier.manual_dance_keywords, wrapper='^[^\w\n]*%s[^.\w\n]*$', flags=re.MULTILINE)
+    solo_lines_regex = event_classifier.make_regexes(event_classifier.dance_keywords + event_classifier.manual_dancers, wrapper='^[^\w\n]*%s[^\w\n]*(?:$|\(|-)', flags=re.MULTILINE)
 
-def is_strong_keywords(classified_event):
+def has_standalone_keywords(classified_event):
     build_regexes()
 
     text = classified_event.search_text
     good_stuff_matches = solo_lines_regex[classified_event.boundaries].findall(text)
-    if len(good_stuff_matches) > 0:
+    # TODO(lambert): when doing set-building for uniqueness, try to get the matched text, not the stuff that prepends with non-word-chars
+    if len(set(good_stuff_matches)) >= 2:
         return True, 'found good keywords on lines by themselves: %s' % good_stuff_matches
     return False, 'no good keywords on lines by themselves'
 
@@ -465,8 +497,8 @@ def is_auto_add_event(classified_event):
     result = is_vogue_event(classified_event)
     if result[0]:
         return result
-    #result = is_strong_keywords(classified_event)
-    #if result[0]:
-    #    return result
+    result = has_standalone_keywords(classified_event)
+    if result[0]:
+        return result
     return (False, 'nothing')
 

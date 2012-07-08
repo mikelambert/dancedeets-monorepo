@@ -55,5 +55,17 @@ class TestClassifier(unittest.TestCase):
         is_battle, reasons = event_auto_classifier.is_battle(classified_event)
         self.assertFalse(is_battle)
 
+    def testClass(self):
+        fb_event = self.get_event(127125550747109)
+        classified_event = event_classifier.get_classified_event(fb_event)
+        has_classes, reasons = event_auto_classifier.has_list_of_good_classes(classified_event)
+        self.assertTrue(has_classes)
+
+    def testNoClass(self):
+        fb_event = self.get_event(278853778841357)
+        classified_event = event_classifier.get_classified_event(fb_event)
+        has_classes, reasons = event_auto_classifier.has_list_of_good_classes(classified_event)
+        self.assertFalse(has_classes)
+
 if __name__ == '__main__':
     print unittest.main()

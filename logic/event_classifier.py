@@ -125,7 +125,7 @@ dance_and_music_not_wrong_battle_keywords = [
     'ragga',
     'hype',
     'new\W?jack\W?swing',
-    'glides?', 'gliding', 
+    'gliding', 
     # 'breaks', # too many false positives
     'boogaloo',
     'breaking?', 'breakers?',
@@ -278,6 +278,8 @@ club_only_keywords = [
     'guest\W?list',
     'drink specials?',
     'resident dj\W?s?',
+    'residency',
+    'ravers?',
     'dj\W?s?',
     'techno', 'trance', 'indie', 'glitch',
     'bands?',
@@ -445,6 +447,7 @@ class_keywords = [
     'intensive',
     'intensivo', # spanish intensive
     'class with', 'master\W?class(?:es)?',
+    'company class',
     u'мастер-класса?', # russian master class
     u'классa?', # russian class
     'class(?:es)?', 'lessons?', 'courses?',
@@ -653,9 +656,12 @@ def get_manual_dance_keywords(filenames):
 
 manual_dance_keywords = []
 dependent_manual_dance_keywords = []
+manual_dancers = []
+dependent_manual_dancers = []
 
 def build_regexes():
     global manual_dance_keywords, dependent_manual_dance_keywords
+    global manual_dancers, dependent_manual_dancers
     if 'good_capturing_keyword_regex' in all_regexes:
         return
 
