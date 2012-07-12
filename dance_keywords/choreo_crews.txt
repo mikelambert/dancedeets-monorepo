@@ -105,8 +105,8 @@ epiphany dance
 epiphany dance crew
 essence-ill
 evol cru
-evolution movement
 evolution hip\W?hop
+evolution movement
 expressive doubt
 fambiz
 family bizness
@@ -208,7 +208,9 @@ marvels dance
 marvels dance
 mass appeal,0
 masters of movement
+method crew
 mighty shock
+mini shock
 miniotics
 mischief makers
 mit ridonkulous
@@ -305,6 +307,7 @@ sophistifunk
 soreal crew
 soreal cru
 soreal,0
+soulbeats crew
 soulforce
 soulidified project
 static noyze
@@ -385,3 +388,4 @@ xtreme dance force
 yfamd
 young lions
 zee hype
+zenith dance crew
