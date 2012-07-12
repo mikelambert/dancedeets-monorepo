@@ -29,26 +29,28 @@ USE_UNICODE = False
 # TODO: house class, house workshop, etc, etc. since 'house' by itself isn't sufficient
 # maybe feed keywords into auto-classifying event type? bleh.
 
-def make_regex_string(strings, matching=False, word_boundaries=True, wrapper='%s'):
-    unicode_enforce = USE_UNICODE and '(?u)' or ''
-    inner_regex = '%s%s' % (unicode_enforce, re_flatten.construct_regex(strings))
+def make_regex_string(strings, matching=False, word_boundaries=False, match_cjk=False, wrapper='%s'):
+    inner_regex = re_flatten.construct_regex(strings)
     if matching:
         regex = u'(' + inner_regex + u')'
     else:
         regex = u'(?:' + inner_regex + u')'
     if word_boundaries:
         regex = r'\b%s\b' % regex
-    else:
-        regex = regex.replace(r'\b', '')
+        if match_cjk:
+            regex = '(?u)%s' % regex
     regex = wrapper % regex
     return regex
 
 
-# street dance.* ?
 # 'crew' biases dance one way, 'company' biases it another
 easy_dance_keywords = [
     'dance style[sz]',
     'dances?', 'dancing', 'dancers?',
+    u'танцуват', # bulgarian dance
+    u'танцува', # bulgarian dance
+    u'танцовия', # bulgarian dance
+    u'изтанцуват', # bulgarian dancing
     u'ダンサー', # japanese dance
     u'ダンス', # japanese dance
     u'춤.?', # korean dance
@@ -175,6 +177,8 @@ dance_keywords = [
     'top\W?rock(?:s|er[sz]?|ing?)?', 'up\W?rock(?:s|er[sz]?|ing?|)?',
     'houser[sz]?',
     'dance house', # seen in italian
+    'soul dance',
+    u'ソウルダンス', # soul dance japanese
     'lock(?:er[sz]?|ing?)?', 'lock dance',
     u'ロッカーズ', # japanese lockers
     u'ロッカ', # japanese lock
@@ -236,8 +240,8 @@ dance_keywords += [
   '%s ?%s' % (easy_dance_regexes, dance_and_music_regexes),
 ]
 dance_keywords += [
-    'street%s' % make_regex_string(easy_choreography_keywords),
-    'street%s' % make_regex_string(easy_dance_keywords),
+    'street\W?%s' % make_regex_string(easy_choreography_keywords),
+    'street\W?%s' % make_regex_string(easy_dance_keywords),
 ]
 
 
@@ -247,7 +251,8 @@ easy_battle_keywords = [
 easy_event_keywords = [
     'club', 'after\Wparty', 'pre\Wparty',
     u'クラブ',  # japanese club
-    'open sessions?', 'training',
+    'open sessions?',
+    'training',
 ]
 easy_event_keywords += easy_battle_keywords
 contest_keywords = [
@@ -267,6 +272,7 @@ club_and_event_keywords = [
     u'秀', # chinese show
     u'的表演', # chinese performance
     u'表演', # chinese performance
+    u'изпълнението', # bulgarian performance
     u'パフォーマンス', # japanese performance
     # maybe include 'spectacle' as well?
     'esibizioni', #italian performance/exhibition
@@ -391,6 +397,16 @@ other_show_keywords = [
     'acting',
 ]
 
+cypher_keywords = [
+    'c(?:y|i)ph(?:a|ers?)',
+    u'サイファ', # japanese cypher
+    u'サイファー', # japanese cypher
+    u'サーク', # japanese circle
+    'cerchi', # italian circle/cypher
+    u'ไซเฟอร์', # thai cypher
+    u'싸이퍼.?', # korean cypher
+]
+
 battle_keywords = [
     'apache line',
     'battle of the year', 'boty', 'compete', 'competitions?',
@@ -413,6 +429,7 @@ battle_keywords = [
     'battlu(?:je)?', # french czech
     u'比賽', # chinese battle
     u'バトル', # japanese battle
+    u'битката', # bulgarian battle
     'batallas', # battles spanish
     'zawody', # polish battle/contest
     'walki', # polish battle/fight
@@ -428,6 +445,7 @@ battle_keywords = [
     'turnie\w*', # tournament polish/german
     u'giải đấu', # tournament vietnamese
     u'thi đấu', # competition vietnamese
+    u'състезанието', # competition bulgarian
     u'đấu', # game vietnamese
     'turneringer', # danish tournament
     'preselections?',
@@ -438,6 +456,7 @@ battle_keywords = [
     'prelims?',
     u'初賽', # chinese preliminaries
 ]
+
 
 class_keywords = [
     'workshop\W?s?',
@@ -492,11 +511,16 @@ class_keywords = [
     'camp',
     'kamp',
     'kemp',
+    'formazione', # training italian
+    'formazioni', # training italian
+    u'トレーニング', # japanese training
 ]
 
 audition_keywords = [
     'try\W?outs?',
+    'casting',
      'casting call',
+    'castingul', # romanian casting
     'auditions?',
     'audicija', # audition croatia
     'audiciones', # spanish audition
@@ -505,19 +529,11 @@ audition_keywords = [
     'audizione', # italian audition
     'naborem', # polish recruitment/audition
 ]
+
 event_keywords = [
     'open circles',
-    'c(?:y|i)ph(?:a|ers?)',
-    u'サイファ', # japanese cypher
-    u'サイファー', # japanese cypher
-    u'サーク', # japanese circle
-    'cerchi', # italian circle/cypher
-    u'ไซเฟอร์', # thai cypher
-    u'싸이퍼.?', # korean cypher
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     u'セッション', # japanese session
-    'formazione', # training italian
-    u'トレーニング', # japanese training
     'abdc', 'america\W?s best dance crew',
 ]
 n_x_n_keywords = [u'%s[ -]?(?:v/s|vs?\\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
@@ -526,11 +542,13 @@ event_keywords += class_keywords
 event_keywords += n_x_n_keywords
 event_keywords += battle_keywords
 event_keywords += audition_keywords
+event_keywords += cypher_keywords
 event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x vs x
 
 judge_keywords = [
         'jurys?',
         'jurados?', # spanish jury
+    u'журито', # bulgarian jury
         'judge[sz]?',
     'jures', # french jury
     '(?:les? )?juges?', # french judges
@@ -636,6 +654,12 @@ dance_wrong_style_title_keywords = dance_wrong_style_keywords + [
     '\w+ball', # basketball/baseball/football tryouts
 ]
 
+ambiguous_wrong_style_keywords = [
+    'modern',
+    'ballet',
+    'ballroom',
+]
+
 all_regexes = {}
 
 grouped_manual_dance_keywords = {}
@@ -703,9 +727,9 @@ def build_regexes():
     all_regexes['good_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords + dependent_manual_dance_keywords, wrapper='(?i)%s')
     all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords + dependent_manual_dance_keywords, matching=True, wrapper='(?i)%s')
 
-def make_regex(strings, matching=False, word_boundaries=True, wrapper='%s', flags=0):
+def make_regex(strings, match_cjk, matching=False, wrapper='%s', flags=0):
     try:
-        regex = make_regex_string(strings, matching=matching, word_boundaries=word_boundaries, wrapper=wrapper)
+        regex = make_regex_string(strings, matching=matching, word_boundaries=True, match_cjk=match_cjk, wrapper=wrapper)
         if re2:
             return re.compile(regex, max_mem=15000000, flags=flags)
         else:
@@ -723,8 +747,8 @@ NO_WORD_BOUNDARIES = 0
 WORD_BOUNDARIES = 1
 def make_regexes(strings, matching=False, wrapper='%s', flags=0):
     a = [None] * 2
-    a[NO_WORD_BOUNDARIES] = make_regex(strings, matching=matching, word_boundaries=False, wrapper=wrapper, flags=flags)
-    a[WORD_BOUNDARIES] = make_regex(strings, matching=matching, word_boundaries=True, wrapper=wrapper, flags=flags)
+    a[NO_WORD_BOUNDARIES] = make_regex(strings, matching=matching, match_cjk=True, wrapper=wrapper, flags=flags)
+    a[WORD_BOUNDARIES] = make_regex(strings, matching=matching, match_cjk=False, wrapper=wrapper, flags=flags)
     return tuple(a)
 
 all_regexes['preprocess_removals_regex'] = make_regexes(preprocess_removals)

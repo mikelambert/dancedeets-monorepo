@@ -7,6 +7,9 @@ from logic import event_classifier
 
 
 class TestClassifier(unittest.TestCase):
+    def test_SimpleMatches(self):
+        self.assertTrue(event_classifier.all_regexes['dance_regex'][1].findall('streetdance'))
+
     def test_SoulSessionsOslo(self):
         fb_event = dict(info=dict(name="FB Event", description="sessions jam battles cyphers dj's"))
         classified_event = event_classifier.get_classified_event(fb_event)

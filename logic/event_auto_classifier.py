@@ -30,7 +30,7 @@ wrong_classes = [
     'on stage',
     'top class',
     'of course',
-    'class rnb',
+    'class\W?rnb',
     'class act',
     'breaking down',
     'ground\W?breaking',
@@ -39,8 +39,20 @@ wrong_classes = [
     'house classics?', # need to solve japanese case?
     'world\Wclass',
     'open house',
-    'hip\W?hop kemp', # refers to hiphop music!
+    'hip\W?hop\W?kempu?', # refers to hiphop music!
     'camp\W?house',
+]
+
+ambiguous_wrong_style_keywords = [
+    'modern',
+    'ballet',
+    'ballroom',
+]
+p1 = event_classifier.make_regex_string(ambiguous_wrong_style_keywords)
+p2 = event_classifier.make_regex_string(event_classifier.class_keywords)
+wrong_classes += [
+    u'%s%s%s' % (p1, connectors_regex, p2),
+    u'%s%s%s' % (p2, connectors_regex, p1),
 ]
 wrong_classes_regex = event_classifier.make_regexes(wrong_classes)
 
@@ -92,33 +104,48 @@ wrong_battle_styles = [
 ]
 p1 = event_classifier.make_regex_string(wrong_battle_styles)
 p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
-wrong_battles.append(u'%s%s%s' % (p1, connectors_regex, p2))
-wrong_battles.append(u'%s%s%s' % (p1, connectors_regex, p2))
+wrong_battles += [
+    u'%s%s%s' % (p1, connectors_regex, p2),
+    u'%s%s%s' % (p2, connectors_regex, p1), # this also gets "battle djs"
+]
 wrong_battles_regex = event_classifier.make_regexes(wrong_battles)
-
-p1 = event_classifier.make_regex_string(event_classifier.easy_dance_keywords + event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.easy_choreography_keywords + event_classifier.dance_keywords + house_keywords)
-p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords + event_classifier.easy_battle_keywords)
-dance_battles_regex = event_classifier.make_regexes([
-    u'%s%s%s' % (p1, connectors_regex, p2),
-    u'%s%s%s' % (p2, connectors_regex, p1),
-])
-assert dance_battles_regex[1].search('dance battle')
-assert dance_battles_regex[1].search('custom breaking contest')
-assert dance_battles_regex[1].search('concours choregraphique')
-assert dance_battles_regex[1].search('house dance battle')
-
-p1 = event_classifier.make_regex_string(event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.dance_keywords + house_keywords)
-p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords) # not easy_battle_keywords
-good_dance_battles_regex = event_classifier.make_regexes([
-    u'%s%s%s' % (p1, connectors_regex, p2),
-    u'%s%s%s' % (p2, connectors_regex, p1),
-])
-assert good_dance_battles_regex[1].search('all-styles battle')
-assert good_dance_battles_regex[1].search('custom breaking contest')
 
 
 dance_class_styles = event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.dance_keywords + house_keywords
 dance_class_styles_regex = event_classifier.make_regexes(dance_class_styles)
+
+
+cypher_regex = event_classifier.make_regex_string(event_classifier.cypher_keywords)
+battle_regex = event_classifier.make_regex_string(event_classifier.battle_keywords)
+p1_good = event_classifier.make_regex_string(dance_class_styles)
+p1_okay = event_classifier.make_regex_string(event_classifier.easy_dance_keywords + event_classifier.easy_choreography_keywords)
+p2_good = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
+p2_okay = event_classifier.make_regex_string(event_classifier.easy_battle_keywords)
+good_dance_battles_keywords = [
+    u'%s%s%s' % (p1_good, connectors_regex, p2_good),
+    u'%s%s%s' % (p2_good, connectors_regex, p1_good),
+    'king of (?:the )?%s' % cypher_regex,
+    '%s\W?king' % cypher_regex,
+    'bonnie\s*(?:and|&)\s*clyde %s' % battle_regex,
+    r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
+]
+good_dance_battles_regex = event_classifier.make_regexes(good_dance_battles_keywords)
+
+dance_battles_keywords = good_dance_battles_keywords + [
+    u'%s%s%s' % (p1_okay, connectors_regex, p2_okay),
+    u'%s%s%s' % (p2_okay, connectors_regex, p1_okay),
+    u'%s%s%s' % (p1_okay, connectors_regex, p2_good),
+    u'%s%s%s' % (p2_good, connectors_regex, p1_okay),
+    u'%s%s%s' % (p1_good, connectors_regex, p2_okay),
+    u'%s%s%s' % (p2_okay, connectors_regex, p1_good),
+]
+dance_battles_regex = event_classifier.make_regexes(dance_battles_keywords)
+assert dance_battles_regex[1].search('dance battle')
+assert dance_battles_regex[1].search('custom breaking contest')
+assert dance_battles_regex[1].search('concours choregraphique')
+assert dance_battles_regex[1].search('house dance battle')
+assert good_dance_battles_regex[1].search('all-styles battle')
+assert good_dance_battles_regex[1].search('custom breaking contest')
 
 ambiguous_class_keywords = [
         'stage',
@@ -335,20 +362,18 @@ def is_battle(classified_event):
     has_many_real_dance_keywords = len(set(classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches)) > 1
     has_start_judge = start_judge_keywords_regex[classified_event.boundaries].findall(search_text)
 
-    # has_real_dance_battle? where is 'locking battle' in all of this? in our check for real_dance_matches combined with the others?
-
     if not has_good_dance_battle and not (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches):
         return (False, 'no strong dance keywords')
 
     if has_dance_battle and not is_wrong_competition and not is_wrong_style_battle_title and not has_wrong_battle:
-        return (True, 'good-style real dance battle/comp! %s' % has_good_dance_battle)
-    if has_n_x_n and has_battle and not has_wrong_battle:
+        return (True, 'good-style real dance battle/comp! %s with keywords %s' % (has_dance_battle, (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches)))
+    elif has_n_x_n and has_battle and not has_wrong_battle:
         return (True, 'battle keyword, NxN, good dance style')
-    if has_competitors and has_many_real_dance_keywords and not has_wrong_battle:
+    elif has_competitors and has_many_real_dance_keywords and not has_wrong_battle:
         return (True, 'has a list of competitors, and some strong dance keywords')
-    if has_start_judge and not has_wrong_battle:
+    elif has_start_judge and not has_wrong_battle:
         return (True, 'no ambiguous wrong-battle-style keywords')
-    if has_start_judge and has_many_real_dance_keywords:
+    elif has_start_judge and has_many_real_dance_keywords:
         return (True, 'had some ambiguous keywords, but enough strong dance matches anyway')
     return (False, 'no judge/jury or battle/NxN')
 
