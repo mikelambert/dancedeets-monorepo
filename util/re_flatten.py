@@ -11,7 +11,7 @@ def _sub_alternation(tree):
     regexes = []
     if tree.value != pytrie.NULL:
         regexes.append('')
-    for x in tree.children.keys():
+    for x in sorted(tree.children.keys(), key=lambda x:-len(x)):
         subtree = tree.children[x]
         regex = _sub_alternation(subtree)
         regexes.append(x + regex)
