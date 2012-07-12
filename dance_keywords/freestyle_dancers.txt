@@ -91,7 +91,6 @@ kool raul
 koutei
 kumari suraj
 lanaija
-legend,0
 les twins
 lil b,0
 lis funk
@@ -103,7 +102,6 @@ macia del prete
 malika benjelloun
 mamson,0
 manel head
-manu,0
 marcio monteiro
 marjory smarth
 mayu\W+l.?o.?f.?d
@@ -118,7 +116,6 @@ mr.? ?wiggles
 nelson ewande
 nelson,0
 ninja pop
-ninja,0
 nubian nene
 p\W?lock
 pepito

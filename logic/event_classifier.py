@@ -64,6 +64,7 @@ easy_dance_keywords = [
     u'舞', # chinese dance
     u'舞蹈', # chinese dance
     u'舞蹈的', # chinese dance
+    u'蹈上', # chinese dance
     u'排舞', # chinese dance
     u'跳下去', # chinese dance?
     u'แดนซ์', # dance thai
@@ -88,6 +89,9 @@ easy_dance_keywords = [
     'bail[ae]\w*', # dance spanish
     'danzas', # dance spanish
     'ballerin[io]', # dancer italian
+    'dansare', # dancers swedish
+    'dansat', # dancing swedish
+    'dans', # swedish dance
     u'tänzern', # dancer german
     u'танчер', # dancer macedonian
     u'танцовиот', # dance macedonian
@@ -156,8 +160,6 @@ dance_keywords = [
     'commercial hip\W?hop',
     'hip\W?hop dance',
     'jerk(?:ers?|ing?)',
-    'street\W?dancing?', 'street\W?dancer?s?',
-    'street\W?danc\w+',
     u'스트릿', # street korean
     u'ストリートダンス', # japanese streetdance
     u'街舞', # chinese streetdance / hiphop
@@ -212,6 +214,7 @@ dance_keywords = [
     'voguer[sz]?', 'vogue?ing', 'vogue fem', 'voguin',
     'fem queen', 'butch queen',
     'mini\W?ball', 'realness',
+    'new\W?style hustle',
     'urban danc\w*',
     'urban style[sz]',
     'urban contemporary',
@@ -232,6 +235,12 @@ dance_keywords += [
   '%s ?%s' % (dance_and_music_regexes, easy_dance_regexes),
   '%s ?%s' % (easy_dance_regexes, dance_and_music_regexes),
 ]
+dance_keywords += [
+    'street%s' % make_regex_string(easy_choreography_keywords),
+    'street%s' % make_regex_string(easy_dance_keywords),
+]
+
+
 easy_battle_keywords = [
     'jams?', 
 ]
@@ -480,6 +489,9 @@ class_keywords = [
     'classi', # classes italin
     'klasser?', # norwegian class
     'cours', 'clases?',
+    'camp',
+    'kamp',
+    'kemp',
 ]
 
 audition_keywords = [
@@ -494,9 +506,6 @@ audition_keywords = [
     'naborem', # polish recruitment/audition
 ]
 event_keywords = [
-    'camp',
-    'kamp',
-    'kemp',
     'open circles',
     'c(?:y|i)ph(?:a|ers?)',
     u'サイファ', # japanese cypher

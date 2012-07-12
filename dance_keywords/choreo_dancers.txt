@@ -1,5 +1,4 @@
 2auce\W+edwards # ignore cj at front due to backtracking
-ace ventura,0
 alan truong
 alex bullon
 amanda suk
@@ -24,6 +23,7 @@ derrick caldwell
 devin jamieson
 dmoe
 dom byrd
+eddie martinez
 eddie morales
 eddie orales
 ellen kim
@@ -44,6 +44,7 @@ jay\W?chris moore
 jayson wright
 jeffrey viray
 jeka
+jekajane
 jerome esplana
 jillian meyers
 joao assuncao
@@ -51,7 +52,6 @@ jp goldstein
 jp san pedro
 julius law
 jun quemado
-kai,0
 keko domenech
 ken duong
 kenny wormald

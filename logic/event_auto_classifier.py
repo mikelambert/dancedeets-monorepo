@@ -21,6 +21,7 @@ connectors = [
     ' ?',
     ' di ',
     ' de ',
+    ' ?: ?',
 #    ' \W ',
 ]
 connectors_regex = event_classifier.make_regex_string(connectors)
@@ -30,12 +31,16 @@ wrong_classes = [
     'top class',
     'of course',
     'class rnb',
+    'class act',
     'breaking down',
     'ground\W?breaking',
     'main\Wstage',
+    '(?:second|2nd) stage',
     'house classics?', # need to solve japanese case?
     'world\Wclass',
     'open house',
+    'hip\W?hop kemp', # refers to hiphop music!
+    'camp\W?house',
 ]
 wrong_classes_regex = event_classifier.make_regexes(wrong_classes)
 
@@ -136,6 +141,7 @@ non_dance_support = [
     'votes?',
     'support',
     'follow',
+    '(?:pre)?sale',
 ]
 non_dance_regex = event_classifier.make_regexes(non_dance_support)
 
@@ -352,7 +358,7 @@ def is_audition(classified_event):
 
     has_audition = event_classifier.all_regexes['audition_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_good_dance_title = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
-    has_good_crew_title = event_classifier.all_regexes['extended_manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_extended_good_crew_title = event_classifier.all_regexes['extended_manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
 
 
     search_text = classified_event.final_search_text
@@ -360,7 +366,7 @@ def is_audition(classified_event):
     has_wrong_style = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(search_text)
     has_wrong_audition = wrong_auditions_regex[classified_event.boundaries].findall(search_text)
 
-    if has_audition and (has_good_dance_title or has_good_crew_title):
+    if has_audition and (has_good_dance_title or has_extended_good_crew_title):
         return (True, 'has audition with strong title')
     if has_audition and has_good_dance and not has_wrong_style and not has_wrong_audition:
         return (True, 'has audition with good-and-not-bad dance style')
@@ -437,9 +443,11 @@ def is_audition(classified_event):
 
 
 def is_workshop(classified_event):
-    has_class_title = extended_class_regex[classified_event.boundaries].findall(classified_event.final_title)
+    trimmed_title = wrong_classes_regex[classified_event.boundaries].sub('', classified_event.final_title)
+    has_class_title = extended_class_regex[classified_event.boundaries].findall(trimmed_title)
+    has_non_dance_event_title = non_dance_regex[classified_event.boundaries].findall(classified_event.final_title)
     has_good_dance_title = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
-    has_good_crew_title = event_classifier.all_regexes['manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_extended_good_crew_title = event_classifier.all_regexes['extended_manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_wrong_style_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_easy_dance_title = event_classifier.all_regexes['easy_dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
 
@@ -450,8 +458,10 @@ def is_workshop(classified_event):
     has_good_dance = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(trimmed_search_text)
     has_good_crew = event_classifier.all_regexes['manual_dancers_regex'][classified_event.boundaries].findall(trimmed_search_text)
 
-    if has_class_title and (has_good_dance_title or has_good_crew_title) and not has_wrong_style_title:
-        return (True, 'has class with strong title')
+    if has_class_title and (has_good_dance_title or has_extended_good_crew_title) and not has_wrong_style_title:
+        return (True, 'has class with strong class-title: %s %s' % (has_class_title, (has_good_dance_title or has_extended_good_crew_title)))
+    elif classified_event.is_dance_event() and has_good_dance_title and has_extended_good_crew_title and not has_wrong_style_title and not has_non_dance_event_title:
+        return (True, 'has class with strong style-title: %s %s' % (has_good_dance_title, has_extended_good_crew_title))
     elif has_class_title and has_easy_dance_title and not has_wrong_style_title and (has_good_dance or has_good_crew):
         return (True, 'has dance class that contains strong description')
     elif has_good_dance_class and not has_wrong_style_title:

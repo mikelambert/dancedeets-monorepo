@@ -27,7 +27,6 @@ and what!\?
 annual streets head
 aota crew
 aov,0
-apt,0
 aqces dancerz
 areakidz
 asu hip hop
@@ -68,7 +67,6 @@ crewcial
 csdc
 csla
 cslv
-cuda,0
 culture sc?hock
 cypher squad
 d\.w\.e\.e\.b\.s
@@ -142,7 +140,6 @@ groove against the machine
 groove against the machine
 groove bots
 groove elements
-groove,0
 groovement
 grooveology
 grv dance
@@ -173,7 +170,6 @@ influenced motion junior
 influenced motion senior
 insa dance
 international dance connection
-intrigue,0
 jabbawockeez
 jiggnation
 jiggurs
@@ -201,7 +197,6 @@ lfx,0
 lil' phunk
 loonabeats
 lost kids
-m\.i\.,0
 machinez remainz
 main event,0
 main ingredient
@@ -261,7 +256,6 @@ projectd
 pronailz
 prophecy,0
 pulse dance crew
-pulse,0
 puzzle league
 q minor
 quadrisaurus
