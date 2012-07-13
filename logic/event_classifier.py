@@ -72,7 +72,7 @@ easy_dance_keywords = [
     u'แดนซ์', # dance thai
     u'เต้น', # dance thai
     u'กเต้น', # dancers thai
-    'danse\w*', # french
+    'danse\w*', # french and danish
     'taniec', # dance polish
     u'zatanč\w*', # dance czech
     'tan[ec][ec]\w*', # dance polish
@@ -93,7 +93,7 @@ easy_dance_keywords = [
     'ballerin[io]', # dancer italian
     'dansare', # dancers swedish
     'dansat', # dancing swedish
-    'dans', # swedish dance
+    'dans', # swedish danish dance
     u'tänzern', # dancer german
     u'танчер', # dancer macedonian
     u'танцовиот', # dance macedonian
@@ -104,7 +104,7 @@ easy_dance_keywords = [
     u'tänzer', # dancer german
 ]
 easy_choreography_keywords = [
-    u'(?:ch|k|c)oe?re[o|ó]?gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese
+    u'(?:ch|k|c)oe?re[o|ó]?gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese, danish
     'choreo',
     u'chorée', # french choreo
     u'chorégraph\w*', # french choreographer
@@ -654,45 +654,47 @@ dance_wrong_style_title_keywords = dance_wrong_style_keywords + [
     '\w+ball', # basketball/baseball/football tryouts
 ]
 
-ambiguous_wrong_style_keywords = [
-    'modern',
-    'ballet',
-    'ballroom',
-]
-
 all_regexes = {}
 
 grouped_manual_dance_keywords = {}
 
+INDEPENDENT_KEYWORD = 0
+DEPENDENT_KEYWORD = 1
+
 #TODO(lambert): maybe handle 'byronom coxom' in slovakian with these keywords
-def get_manual_dance_keywords(filenames):
-    manual_dance_keywords = []
-    dependent_manual_dance_keywords = []
+def get_manual_dance_keywords(filename):
+    manual_keywords = []
+    dependent_manual_keywords = []
     import os
     if os.getcwd().endswith('mapreduce'): #TODO(lambert): what is going on with appengine sticking me in the wrong starting directory??
         base_dir = '..'
     else:
         base_dir = '.'
 
-    for filename in filenames:
-        f = codecs.open('%s/dance_keywords/%s.txt' % (base_dir, filename), encoding='utf-8')
-        for line in f.readlines():
-            line = re.sub('\s*#.*', '', line.strip())
-            if not line:
-                continue
-            if line.endswith(',0'):
-                line = line[:-2]
-                dependent_manual_dance_keywords.append(line)
-            else:
-                manual_dance_keywords.append(line)
-    return manual_dance_keywords, dependent_manual_dance_keywords
+    f = codecs.open('%s/dance_keywords/%s.txt' % (base_dir, filename), encoding='utf-8')
+    for line in f.readlines():
+        line = re.sub('\s*#.*', '', line.strip())
+        if not line:
+            continue
+        if line.endswith(',0'):
+            line = line[:-2]
+            dependent_manual_keywords.append(line)
+        else:
+            manual_keywords.append(line)
 
+    result = [None, None]
+    result[INDEPENDENT_KEYWORD] = manual_keywords
+    result[DEPENDENT_KEYWORD] = dependent_manual_keywords
+    return result
+
+manual_keywords = {}
 manual_dance_keywords = []
 dependent_manual_dance_keywords = []
 manual_dancers = []
 dependent_manual_dancers = []
 
 def build_regexes():
+    global manual_keywords
     global manual_dance_keywords, dependent_manual_dance_keywords
     global manual_dancers, dependent_manual_dancers
     if 'good_capturing_keyword_regex' in all_regexes:
@@ -701,28 +703,35 @@ def build_regexes():
     dancer_keyword_files = ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'freestyle_crews', 'freestyle_dancers']
     extra_keyword_files = ['choreo_keywords', 'freestyle_keywords', 'competitions', 'good_djs']
 
-    manual_dancers, dependent_manual_dancers = get_manual_dance_keywords(dancer_keyword_files)
+    for filename in dancer_keyword_files + extra_keyword_files:
+        manual_keywords[filename] = get_manual_dance_keywords(filename)
+    manual_dancers = []
+    dependent_manual_dancers = []
+    for filename in dancer_keyword_files:
+        manual_dancers += manual_keywords[filename][INDEPENDENT_KEYWORD]
+        dependent_manual_dancers += manual_keywords[filename][DEPENDENT_KEYWORD]
+    manual_keywords['manual_dancers'] = [None, None]
+    manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD] = manual_dancers
+    manual_keywords['manual_dancers'][DEPENDENT_KEYWORD] = dependent_manual_dancers
 
-    if manual_dancers:
-        all_regexes['manual_dancers_regex'] = make_regexes(manual_dancers)
-    else:
-        all_regexes['manual_dancers_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
-    if manual_dancers:
-        all_regexes['extended_manual_dancers_regex'] = make_regexes(manual_dancers + dependent_manual_dancers)
-    else:
-        all_regexes['extended_manual_dancers_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
+    manual_dance_keywords = manual_dancers[:]
+    dependent_manual_dance_keywords = dependent_manual_dancers[:]
+    for filename in extra_keyword_files:
+        manual_dance_keywords += manual_keywords[filename][INDEPENDENT_KEYWORD]
+        dependent_manual_dance_keywords += manual_keywords[filename][DEPENDENT_KEYWORD]
+    manual_keywords['manual_dance_keywords'] = [None, None]
+    manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD] = manual_dance_keywords
+    manual_keywords['manual_dance_keywords'][DEPENDENT_KEYWORD] = dependent_manual_dance_keywords
 
-
-    manual_dance_keywords, dependent_manual_dance_keywords = get_manual_dance_keywords(dancer_keyword_files + extra_keyword_files)
-
-    if manual_dance_keywords:
-        all_regexes['manual_dance_keywords_regex'] = make_regexes(manual_dance_keywords)
-    else:
-        all_regexes['manual_dance_keywords_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
-    if manual_dance_keywords:
-        all_regexes['extended_manual_dance_keywords_regex'] = make_regexes(manual_dance_keywords + dependent_manual_dance_keywords)
-    else:
-        all_regexes['extended_manual_dance_keywords_regex'] = re.compile(r'NEVER_MATCH_BLAGSDFSDFSEF')
+    for keyword, x in manual_keywords.iteritems():
+        if x[INDEPENDENT_KEYWORD]:
+            all_regexes['%s_regex' % keyword] = make_regexes(x[INDEPENDENT_KEYWORD])
+        else:
+            all_regexes['%s_regex' % keyword] = make_regexes(r'NEVER_MATCH_BLAGSDFSDFSEF')
+        if x[INDEPENDENT_KEYWORD] + x[DEPENDENT_KEYWORD]:
+            all_regexes['extended_%s_regex' % keyword] = make_regexes(x[INDEPENDENT_KEYWORD] + x[DEPENDENT_KEYWORD])
+        else:
+            all_regexes['%s_regex' % keyword] = make_regexes(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
     all_regexes['good_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords + dependent_manual_dance_keywords, wrapper='(?i)%s')
     all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords + dependent_manual_dance_keywords, matching=True, wrapper='(?i)%s')

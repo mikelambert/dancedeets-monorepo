@@ -115,8 +115,8 @@ dance_class_styles = event_classifier.dance_and_music_not_wrong_battle_keywords 
 dance_class_styles_regex = event_classifier.make_regexes(dance_class_styles)
 
 
-cypher_regex = event_classifier.make_regex_string(event_classifier.cypher_keywords)
-battle_regex = event_classifier.make_regex_string(event_classifier.battle_keywords)
+cypher_regex_string = event_classifier.make_regex_string(event_classifier.cypher_keywords)
+battle_regex_string = event_classifier.make_regex_string(event_classifier.battle_keywords)
 p1_good = event_classifier.make_regex_string(dance_class_styles)
 p1_okay = event_classifier.make_regex_string(event_classifier.easy_dance_keywords + event_classifier.easy_choreography_keywords)
 p2_good = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
@@ -124,9 +124,9 @@ p2_okay = event_classifier.make_regex_string(event_classifier.easy_battle_keywor
 good_dance_battles_keywords = [
     u'%s%s%s' % (p1_good, connectors_regex, p2_good),
     u'%s%s%s' % (p2_good, connectors_regex, p1_good),
-    'king of (?:the )?%s' % cypher_regex,
-    '%s\W?king' % cypher_regex,
-    'bonnie\s*(?:and|&)\s*clyde %s' % battle_regex,
+    'king of (?:the )?%s' % cypher_regex_string,
+    '%s\W?king' % cypher_regex_string,
+    'bonnie\s*(?:and|&)\s*clyde %s' % battle_regex_string,
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
 ]
 good_dance_battles_regex = event_classifier.make_regexes(good_dance_battles_keywords)
@@ -523,6 +523,14 @@ def has_standalone_keywords(classified_event):
         return True, 'found good keywords on lines by themselves: %s' % good_stuff_matches
     return False, 'no good keywords on lines by themselves'
 
+def has_good_event_title(classified_event):
+    non_dance_title_keywords = non_dance_regex[classified_event.boundaries].findall(classified_event.final_title)
+    wrong_battles_title = wrong_battles_regex[classified_event.boundaries].findall(classified_event.final_title)
+    title_keywords = event_classifier.all_regexes['competitions_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    if title_keywords and not non_dance_title_keywords and not wrong_battles_title:
+        return True, 'looks like a good event title: %s' % title_keywords
+    return False, 'no good event title'
+
 def is_auto_add_event(classified_event):
     result = is_battle(classified_event)
     if result[0]:
@@ -542,5 +550,55 @@ def is_auto_add_event(classified_event):
     result = has_standalone_keywords(classified_event)
     if result[0]:
         return result
+    result = has_good_event_title(classified_event)
+    if result[0]:
+        return result
     return (False, 'nothing')
 
+
+good_bad_club_keywords_filter = [
+    'evelyn\W+champagne\W+king',
+    'water\W?bottles?',
+    'genie in (?:the|a) bottle',
+]
+good_bad_club_keywords_regex = event_classifier.make_regexes(good_bad_club_keywords_filter)
+
+bad_club_keywords = [
+    'bottle\W?service',
+    'popping?\W?bottles?',
+    'bottle\W?popping?',
+    'bottles?',
+    'grey goose',
+    'champagne',
+    'belvedere',
+    'ciroc',
+]
+bad_club_regex = event_classifier.make_regexes(bad_club_keywords)
+
+cypher_regex = event_classifier.make_regexes(event_classifier.cypher_keywords)
+
+def is_bad_club(classified_event):
+    text = good_bad_club_keywords_regex[classified_event.boundaries].sub('', classified_event.search_text)
+    bad_club = bad_club_regex[classified_event.boundaries].findall(text)
+
+    has_battles = dance_battles_regex[classified_event.boundaries].findall(text)
+    has_style = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(text)
+    has_manual_keywords = event_classifier.all_regexes['extended_manual_dance_keywords_regex'][classified_event.boundaries].findall(text)
+    has_cypher = cypher_regex[classified_event.boundaries].findall(text)
+
+    has_other_event_title = event_classifier.all_regexes['event_regex'][classified_event.boundaries].findall(classified_event.final_title)
+
+    has_ambiguous_text = has_battles or has_style or has_manual_keywords or has_cypher
+    if bad_club and not has_ambiguous_text and not has_other_event_title:
+        return True, 'has bad keywords: %s' % bad_club
+    return False, 'not a bad club'
+
+def is_auto_notadd_event(classified_event, auto_add_result=None):
+    result = auto_add_result or s_auto_add_event(classified_event)
+    if result[0]:
+        return False, 'is auto_add_event: %s' % result[1]
+
+    result = is_bad_club(classified_event)
+    if result[0]:
+        return result
+    return False, 'not a bad enough event'

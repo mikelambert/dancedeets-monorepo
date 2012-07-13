@@ -16,10 +16,12 @@ class PotentialEvent(db.Model):
 
     language = db.StringProperty()
     looked_at = db.BooleanProperty()
+    auto_looked_at = db.BooleanProperty()
     dance_bias_score = db.FloatProperty()
     non_dance_bias_score = db.FloatProperty()
     match_score = db.IntegerProperty()
     show_even_if_no_score = db.BooleanProperty()
+    should_look_at = db.BooleanProperty()
 
     source_ids = db.ListProperty(int)
     source_fields = db.ListProperty(str)
@@ -31,6 +33,10 @@ class PotentialEvent(db.Model):
                 has_source = True
         return has_source
 
+    def put(self):
+        #TODO(lambert): write as pre-put hook once we're using NDB.
+        self.should_look_at = bool(self.match_score > 0 or self.show_even_if_no_score)
+        super(PotentialEvent, self).put()
 
 
 def get_language_for_fb_event(fb_event):
