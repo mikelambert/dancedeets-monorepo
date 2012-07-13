@@ -10,7 +10,6 @@ from logic import event_auto_classifier
 from logic import event_classifier
 from classifiers import processing
 
-positive_classifier = True
 
 ids_info = processing.load_ids()
 for x in ids_info:
@@ -30,10 +29,13 @@ def partition_ids(ids, classifier=lambda x:False):
             fails.add(id)
     return successes, fails
 
+positive_classifier = False
 def basic_match(fb_event):
     e = event_classifier.get_classified_event(fb_event)
-    result = event_auto_classifier.is_auto_add_event(e)
-    #result = event_auto_classifier.is_workshop(e)
+    if positive_classifier:
+        result = event_auto_classifier.is_auto_add_event(e)
+    else:
+        result = event_auto_classifier.is_auto_notadd_event(e)
     if result[0] and fb_event['info']['id'] not in good_ids:
         print fb_event['info']['id'], result
     return result[0]
