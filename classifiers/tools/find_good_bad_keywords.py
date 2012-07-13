@@ -10,7 +10,7 @@ from logic import event_classifier
 
 #set to True if we want to find things to "yes this is good event"
 #set to False to find-and-trim out things for "no this is definitely not event"
-positive_classifier = True
+positive_classifier = False
 
 a = time.time()
 print "Loading fb data..."
@@ -24,9 +24,8 @@ for i, row in enumerate(csv.reader(open('local_data/FacebookCachedObject.csv')))
     #    break
     source_id, row_id, row_type = row[0].split('.')
     if source_id == "701004" and row_type == "OBJ_EVENT":
-        if re.search(r'freestyle|cypher|cipher', row[1]):
-            fb_entries[row[0]] = json.loads(row[1])
-            found_event_ids.add(row_id)
+        fb_entries[row[0]] = json.loads(row[1])
+        found_event_ids.add(row_id)
 print "done, %d seconds, using %s events" % ((time.time() - a), len(found_event_ids))
 
 _bad_ids = """262185997192054
@@ -108,27 +107,6 @@ def get_fb_event(id):
     if fb_event['deleted']:
         return None
     return fb_event
-
-def get_types_to_ids(all_ids):
-    types_to_ids = {}
-    for id in all_ids:
-        for type in classified_ids[id]:
-            try:
-                types_to_ids[type].append(id)
-            except KeyError:
-                types_to_ids[type] = [id]
-    return types_to_ids
-
-def get_onlytypes_to_ids(all_ids):
-    types_to_ids = {}
-    for id in all_ids:
-        if len(classified_ids[id]) == 1:
-            for type in classified_ids[id]:
-                try:
-                    types_to_ids[type].append(id)
-                except KeyError:
-                    types_to_ids[type] = [id]
-    return types_to_ids
 
 def partition_ids(ids, classifier=lambda x:False):
     successes = set()
@@ -240,13 +218,8 @@ def get_matches(fb_event):
     search_text = (fb_event['info'].get('name', '') + ' ' + fb_event['info'].get('description', '')).lower()
     return basic_re.findall(search_text), basic_neg_re.findall(search_text)
 
-#types_to_ids = get_types_to_ids(classified_ids)
-#onlytypes_to_ids = get_onlytypes_to_ids(classified_ids)
-
 if positive_classifier:
-    onlyclub_ids = set()#onlytypes_to_ids['FREESTYLE_CLUB']).union(onlytypes_to_ids['CHOREO_CLUB'])
-    all_ids = all_ids.difference(onlyclub_ids)
-    good_ids = set(classified_ids).difference(onlyclub_ids)
+    good_ids = classified_ids
     bad_ids = all_ids.difference(good_ids)
 else:
     bad_ids = classified_ids
