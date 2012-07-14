@@ -29,6 +29,7 @@ connectors_regex = event_classifier.make_regex_string(connectors)
 wrong_classes = [
     'straight up', # up rock
     'tear\W?jerker', # jerker
+    'in-strutter', # strutter
     'on stage',
     'pledge class',
     'top class',
@@ -476,6 +477,7 @@ def is_workshop(classified_event):
     has_extended_good_crew_title = event_classifier.all_regexes['extended_manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_wrong_style_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_easy_dance_title = event_classifier.all_regexes['easy_dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_good_dance_class_title = good_dance_class_regex[classified_event.boundaries].findall(trimmed_title)
 
     search_text = classified_event.final_search_text
     trimmed_search_text = wrong_classes_regex[classified_event.boundaries].sub('', search_text)
@@ -489,10 +491,10 @@ def is_workshop(classified_event):
         return (True, 'has class with strong class-title: %s %s' % (has_class_title, (has_good_dance_title or has_extended_good_crew_title)))
     elif classified_event.is_dance_event() and has_good_dance_title and has_extended_good_crew_title and not has_wrong_style_title and not has_non_dance_event_title:
         return (True, 'has class with strong style-title: %s %s' % (has_good_dance_title, has_extended_good_crew_title))
-    elif has_class_title and has_easy_dance_title and not has_wrong_style_title and (has_good_dance or has_good_crew):
-        return (True, 'has dance class that contains strong description')
     elif has_class_title and not has_wrong_style and (has_good_dance or has_good_crew):
         return (True, 'has dance class that contains strong description')
+    elif has_good_dance_class_title:
+        return (True, 'has good dance class title: %s' % has_good_dance_class_title)
     elif has_good_dance_class and not has_wrong_style_title:
         return (True, 'has good dance class: %s' % has_good_dance_class)
     return (False, 'nothing')
