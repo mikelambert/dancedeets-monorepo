@@ -42,7 +42,6 @@ world dance colosseum
 wdc,0
 wod,0
 prelude,0 # use capitals to distinguish?
-goodphil
 
 sybarite
 

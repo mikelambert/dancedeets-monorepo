@@ -199,7 +199,7 @@ loonabeats
 lost kids
 machinez remainz
 main event,0
-main ingredient
+main ingredient,0
 main\W?stacks
 major definition
 marvelous motion
@@ -261,6 +261,7 @@ pulse dance crew
 puzzle league
 q minor
 quadrisaurus
+queenz dance company
 quest crew
 quickstyle studio
 raps dance troupe
@@ -328,6 +329,7 @@ tae talent agency
 team 2x
 team millenn?ia
 team vibe
+that one company,0
 thatonecompany
 the \Wm\Wovement
 the boom cats crew 

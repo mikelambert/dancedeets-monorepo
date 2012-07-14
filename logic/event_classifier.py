@@ -225,6 +225,7 @@ dance_keywords = [
     u'dan[çc]\w* urban\w*',
     'dan\w+ urban\w+', # spanish urban dance
     'baile urban\w+', # spanish urban dance
+    'estilo\w* urban\w+', # spanish urban styles
     'pop\W{0,3}lock(?:ing?|er[sz]?)?',
 ]
 # Crazy polish sometimes does lockingu. Maybe we need to do this more generally though.
@@ -472,7 +473,7 @@ class_keywords = [
     'warsztaty', # polish workshop
     u'warsztatów', # polish workshop
     u'seminarų', # lithuanian workshop
-    'intensive',
+    'intensives?',
     'intensivo', # spanish intensive
     'class with', 'master\W?class(?:es)?',
     'company class',
@@ -643,6 +644,7 @@ dance_wrong_style_keywords = [
     'technique',
     'guest artists?',
     'partnering',
+    'charleston',
 ]
 dance_wrong_style_title_keywords = dance_wrong_style_keywords + [
     # Sometimes used in studio name even though it's still a hiphop class:
