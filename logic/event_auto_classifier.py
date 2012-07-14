@@ -27,7 +27,10 @@ connectors = [
 connectors_regex = event_classifier.make_regex_string(connectors)
 
 wrong_classes = [
+    'straight up', # up rock
+    'tear\W?jerker', # jerker
     'on stage',
+    'pledge class',
     'top class',
     'of course',
     'class\W?rnb',
@@ -36,11 +39,11 @@ wrong_classes = [
     'ground\W?breaking',
     'main\Wstage',
     '(?:second|2nd) stage',
-    'house classics?', # need to solve japanese case?
     'world\Wclass',
     'open house',
     'hip\W?hop\W?kempu?', # refers to hiphop music!
     'camp\W?house',
+    'in\W?house',
 ]
 
 ambiguous_wrong_style_keywords = [
@@ -67,11 +70,9 @@ wrong_numbered_list_regex = event_classifier.make_regexes(wrong_numbered_list)
 wrong_auditions = [
     'sing(?:ers?)?',
     'singing',
-    'singer',
     'model',
     'poet(?:ry|s)?',
-    'act(?:or|ress)?',
-    'talent',
+    'act(?:ors?|ress(?:es)?)?',
     'mike portoghese', # TODO(lambert): When we get bio removal for keyword matches, we can remove this one
 ]
 wrong_auditions_regex = event_classifier.make_regexes(wrong_auditions)
@@ -393,7 +394,7 @@ def is_audition(classified_event):
 
     if has_audition and (has_good_dance_title or has_extended_good_crew_title):
         return (True, 'has audition with strong title')
-    if has_audition and has_good_dance and not has_wrong_style and not has_wrong_audition:
+    elif has_audition and has_good_dance and not has_wrong_style and not has_wrong_audition:
         return (True, 'has audition with good-and-not-bad dance style')
     return (False, 'no audition')
 
@@ -478,6 +479,7 @@ def is_workshop(classified_event):
 
     search_text = classified_event.final_search_text
     trimmed_search_text = wrong_classes_regex[classified_event.boundaries].sub('', search_text)
+    has_wrong_style = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(trimmed_search_text)
     has_good_dance_class = good_dance_class_regex[classified_event.boundaries].findall(trimmed_search_text)
 
     has_good_dance = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(trimmed_search_text)
@@ -488,6 +490,8 @@ def is_workshop(classified_event):
     elif classified_event.is_dance_event() and has_good_dance_title and has_extended_good_crew_title and not has_wrong_style_title and not has_non_dance_event_title:
         return (True, 'has class with strong style-title: %s %s' % (has_good_dance_title, has_extended_good_crew_title))
     elif has_class_title and has_easy_dance_title and not has_wrong_style_title and (has_good_dance or has_good_crew):
+        return (True, 'has dance class that contains strong description')
+    elif has_class_title and not has_wrong_style and (has_good_dance or has_good_crew):
         return (True, 'has dance class that contains strong description')
     elif has_good_dance_class and not has_wrong_style_title:
         return (True, 'has good dance class: %s' % has_good_dance_class)
@@ -511,16 +515,25 @@ def build_regexes():
     if solo_lines_regex is not None:
         return
 
-    solo_lines_regex = event_classifier.make_regexes(event_classifier.dance_keywords + event_classifier.manual_dancers, wrapper='^[^\w\n]*%s[^\w\n]*(?:$|\(|-)', flags=re.MULTILINE)
+    event_classifier.build_regexes()
+
+    solo_lines_regex = event_classifier.make_regexes(event_classifier.dance_keywords + event_classifier.manual_dancers)
 
 def has_standalone_keywords(classified_event):
     build_regexes()
 
     text = classified_event.search_text
-    good_stuff_matches = solo_lines_regex[classified_event.boundaries].findall(text)
-    # TODO(lambert): when doing set-building for uniqueness, try to get the matched text, not the stuff that prepends with non-word-chars
-    if len(set(good_stuff_matches)) >= 2:
-        return True, 'found good keywords on lines by themselves: %s' % good_stuff_matches
+    good_matches = set()
+    for line in text.split('\n'):
+        alpha_line = re.sub(r'\W', '', line)
+        if not alpha_line:
+            continue
+        remaining_line = solo_lines_regex[classified_event.boundaries].sub('', line)
+        alpha_remaining_line = re.sub(r'\W', '', remaining_line)
+        if 0.5 > 1.0 * len(alpha_remaining_line) / len(alpha_line):
+            good_matches.add(solo_lines_regex[classified_event.boundaries].findall(line)[0]) # at most one keyword per line
+    if len(good_matches) >= 2:
+        return True, 'found good keywords on lines by themselves: %s' % set(good_matches)
     return False, 'no good keywords on lines by themselves'
 
 def has_good_event_title(classified_event):
@@ -594,7 +607,7 @@ def is_bad_club(classified_event):
     return False, 'not a bad club'
 
 def is_auto_notadd_event(classified_event, auto_add_result=None):
-    result = auto_add_result or s_auto_add_event(classified_event)
+    result = auto_add_result or is_auto_add_event(classified_event)
     if result[0]:
         return False, 'is auto_add_event: %s' % result[1]
 
