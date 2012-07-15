@@ -152,8 +152,15 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.display['potential_event'] = potential_event
 
-        yesno, reason = event_auto_classifier.is_auto_add_event(classified_event)
-        self.display['auto_classified_types'] = '%s:%s' % (yesno, reason)
+        add_result = event_auto_classifier.is_auto_add_event(classified_event)
+        notadd_result = event_auto_classifier.is_auto_notadd_event(classified_event, auto_add_result=add_result)
+        auto_classified = ''
+        if add_result[0]:
+            auto_classified += 'add: %s.\n' % add_result[1]
+        if notadd_result[0]:
+            auto_classified += 'notadd: %s.\n' % notadd_result[1]
+
+        self.display['auto_classified_types'] = auto_classified
 
         location_info = event_locations.LocationInfo(self.batch_lookup.copy(allow_cache=False), fb_event, db_event=e, debug=True)
         self.display['location_info'] = location_info
