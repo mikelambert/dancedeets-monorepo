@@ -209,7 +209,9 @@ dance_keywords = [
     'ragga\W?jamm?',
     'girl\W?s\W?hip\W?hop',
     'hip\W?hopp?er[sz]?',
-    'street\W?jazz', 'street\W?funk', 'jazz\W?funk', 'boom\W?crack',
+    'street\W?jazz', 'street\W?funk',
+    'jazz\W?funk', 'funk\W?jazz',
+    'boom\W?crack',
     'hype danc\w*',
     'social hip\W?hop', 'hip\W?hop social dance[sz]', 'hip\W?hop party dance[sz]',
     'hip\W?hop grooves',
@@ -223,9 +225,9 @@ dance_keywords = [
     'urban style[sz]',
     'urban contemporary',
     u'dan[çc]\w* urban\w*',
-    'dan\w+ urban\w+', # spanish urban dance
-    'baile urban\w+', # spanish urban dance
-    'estilo\w* urban\w+', # spanish urban styles
+    'dan\w+ urbai?n\w+', # spanish/french urban dance
+    'baile urbai?n\w+', # spanish urban dance
+    'estilo\w* urbai?n\w+', # spanish urban styles
     'pop\W{0,3}lock(?:ing?|er[sz]?)?',
 ]
 # Crazy polish sometimes does lockingu. Maybe we need to do this more generally though.
@@ -241,8 +243,8 @@ dance_keywords += [
   '%s ?%s' % (easy_dance_regexes, dance_and_music_regexes),
 ]
 dance_keywords += [
-    'street\W?%s' % make_regex_string(easy_choreography_keywords),
-    'street\W?%s' % make_regex_string(easy_dance_keywords),
+    'street\W?%s\w*' % make_regex_string(easy_choreography_keywords),
+    'street\W?%s\w*' % make_regex_string(easy_dance_keywords),
 ]
 
 
@@ -258,7 +260,6 @@ easy_event_keywords = [
 easy_event_keywords += easy_battle_keywords
 contest_keywords = [
     'contests?',
-    u'vystoupení', # czech performances
     'concours', # french contest
     'konkurrencer', # danish contest
     'dancecontests', # dance contests german
@@ -273,6 +274,8 @@ club_and_event_keywords = [
     u'秀', # chinese show
     u'的表演', # chinese performance
     u'表演', # chinese performance
+    u'vystoupení', # czech performances
+    u'výkonnostních', # czech performance
     u'изпълнението', # bulgarian performance
     u'パフォーマンス', # japanese performance
     # maybe include 'spectacle' as well?
@@ -322,6 +325,10 @@ club_only_keywords = [
 
 #TODO(lambert): use these
 preprocess_removals = [
+    # positive
+    'tap water', # for theo and dominque's jam
+
+    # negative
     "america's got talent",
     'jerk chicken',
     'poker tournaments?',
@@ -343,6 +350,7 @@ preprocess_removals = [
     'first class',
     'world class',
     'go\W?go\W?danc(?:ers?|ing?)',
+    'latin street',
 ]
 
 # battle freestyle ?
@@ -578,10 +586,12 @@ italian_event_keywords = [
 
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
-    'latines', 'quickstep', 'rumba', 'chacha',
+    'latines', 'quickstep', 'rumba', 'cha\W?cha',
     'blues',
     'waltz',
     'salsy', # salsa czech
+    'salser[oa]s?',
+    'kizomba',
     'disco dance',
     'disco tan\w+', # czech disco dance
     'milonga',

@@ -606,7 +606,41 @@ def is_bad_club(classified_event):
     has_ambiguous_text = has_battles or has_style or has_manual_keywords or has_cypher
     if bad_club and not has_ambiguous_text and not has_other_event_title:
         return True, 'has bad keywords: %s' % bad_club
-    return False, 'not a bad club'
+
+
+weak_classical_dance_terms = [
+    'technique',
+    'dance company',
+    'explore',
+    'visual',
+    'stage',
+    'dance collective',
+]
+weak_classical_dance_regex = event_classifier.make_regexes(weak_classical_dance_terms)
+
+house_regex = event_classifier.make_regexes(['house'])
+
+def is_bad_wrong_dance(classified_event):
+    dance_and_music_matches = event_classifier.all_regexes['dance_and_music_regex'][classified_event.boundaries].findall(classified_event.search_text)
+    real_dance_keywords = set(classified_event.real_dance_matches + dance_and_music_matches)
+    manual_keywords = classified_event.manual_dance_keywords_matches
+
+    trimmed_text = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].sub('', classified_event.search_text)
+    trimmed_text = event_classifier.all_regexes['manual_dance_keywords_regex'][classified_event.boundaries].sub('', trimmed_text)
+    trimmed_text = event_classifier.all_regexes['dance_and_music_regex'][classified_event.boundaries].sub('', trimmed_text)
+
+    weak_classical_dance_keywords = weak_classical_dance_regex[classified_event.boundaries].findall(trimmed_text)
+    strong_classical_dance_keywords = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(trimmed_text)
+
+    has_house = house_regex[classified_event.boundaries].findall(trimmed_text)
+    club_only_matches = event_classifier.all_regexes['club_only_regex'][classified_event.boundaries].findall(trimmed_text)
+
+
+    keyword_count = len(strong_classical_dance_keywords) + 0.5 * len(weak_classical_dance_keywords)
+
+    if not real_dance_keywords and not has_house and len(club_only_matches) <= 1 and len(manual_keywords) <= 1 and keyword_count >= 2:
+        return True, 'Has strong classical keywords %s, but only real keywords %s' % (strong_classical_dance_keywords + weak_classical_dance_keywords, manual_keywords)
+    return False, 'not a bad classical dance event'
 
 def is_auto_notadd_event(classified_event, auto_add_result=None):
     result = auto_add_result or is_auto_add_event(classified_event)
@@ -614,6 +648,9 @@ def is_auto_notadd_event(classified_event, auto_add_result=None):
         return False, 'is auto_add_event: %s' % result[1]
 
     result = is_bad_club(classified_event)
+    if result[0]:
+        return result
+    result = is_bad_wrong_dance(classified_event)
     if result[0]:
         return result
     return False, 'not a bad enough event'

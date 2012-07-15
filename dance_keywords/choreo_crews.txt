@@ -182,6 +182,7 @@ kaution dance
 kcn modern
 kinematix
 kinetic elements
+kinetic kreation
 kinjaz
 km legacy
 kodachrome,0
@@ -234,6 +235,7 @@ oip dance company
 one youth dance
 onyx,0
 opportunity core
+opportunity\W?core
 outburst dance
 overfl0
 pac modern
