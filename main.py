@@ -17,6 +17,7 @@ from servlets import feedback
 from servlets import gprediction
 from servlets import login
 from servlets import myuser
+from servlets import privacy
 from servlets import profile_page
 from servlets import search
 from servlets import share
@@ -85,6 +86,7 @@ URLS = [
     ('/login', login.LoginHandler),
     ('/share', share.ShareHandler),
     ('/about', about.AboutHandler),
+    ('/privacy', privacy.PrivacyHandler),
     ('/help', feedback.HelpHandler),
     ('/feedback', feedback.FeedbackHandler),
     ('/mapreduce/worker_callback', batched_mapperworker.BatchedMapperWorkerCallbackHandler),

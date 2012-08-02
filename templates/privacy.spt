@@ -1,0 +1,22 @@
+#extends _bigbox_base
+
+#def title
+Privacy
+#end def
+
+#def inner_body
+<p><h3>Privacy Policy</h3>
+<p>Dance Deets attempts to find and share dance-related facebook events with the world. To accomplish this goal, when you sign up for the site, Dance Deets program will:
+<ul>
+<li>search through you and your friends' facebook events looking for dance events that others might be interested in
+<li>search through your groups or fanpages you've liked, to see if any are dance-related that could help Dance Deets find more dance events
+</ul>
+</p>
+
+<p>Dance Deets will also use your name, email address, and location to provide you with dance events relevant to you. This includes sending weekly emails, and trying to discern when your location changes and you might want different set of events.
+</p>
+
+<p>Facebook is built on facebook accounts, and on top of Google AppEngine platform, in an attempt to avoid as much custom-development as possible to reduce the attack surface area available to hackers.
+</p>
+
+#end def
