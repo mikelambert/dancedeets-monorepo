@@ -132,6 +132,7 @@ good_dance_battles_keywords = [
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
 ]
 good_dance_battles_regex = event_classifier.make_regexes(good_dance_battles_keywords)
+assert good_dance_battles_regex[1].search('hip hop dance competition')
 
 dance_battles_keywords = good_dance_battles_keywords + [
     u'%s%s%s' % (p1_okay, connectors_regex, p2_okay),
@@ -479,6 +480,8 @@ def is_workshop(classified_event):
     has_easy_dance_title = event_classifier.all_regexes['easy_dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_good_dance_class_title = good_dance_class_regex[classified_event.boundaries].findall(trimmed_title)
 
+    lee_lee_hiphop = 'lee lee' in classified_event.final_title and re.findall('hip\W?hop', classified_event.final_title)
+
     search_text = classified_event.final_search_text
     trimmed_search_text = wrong_classes_regex[classified_event.boundaries].sub('', search_text)
     has_wrong_style = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(trimmed_search_text)
@@ -490,6 +493,8 @@ def is_workshop(classified_event):
     if has_class_title and (has_good_dance_title or has_extended_good_crew_title) and not has_wrong_style_title:
         return (True, 'has class with strong class-title: %s %s' % (has_class_title, (has_good_dance_title or has_extended_good_crew_title)))
     elif classified_event.is_dance_event() and has_good_dance_title and has_extended_good_crew_title and not has_wrong_style_title and not has_non_dance_event_title:
+        return (True, 'has class with strong style-title: %s %s' % (has_good_dance_title, has_extended_good_crew_title))
+    elif classified_event.is_dance_event() and lee_lee_hiphop and not has_wrong_style_title and not has_non_dance_event_title:
         return (True, 'has class with strong style-title: %s %s' % (has_good_dance_title, has_extended_good_crew_title))
     elif has_class_title and not has_wrong_style and (has_good_dance or has_good_crew):
         return (True, 'has dance class that contains strong description')
@@ -606,7 +611,7 @@ def is_bad_club(classified_event):
     has_ambiguous_text = has_battles or has_style or has_manual_keywords or has_cypher
     if bad_club and not has_ambiguous_text and not has_other_event_title:
         return True, 'has bad keywords: %s' % bad_club
-
+    return False, 'not a bad club'
 
 weak_classical_dance_terms = [
     'technique',
