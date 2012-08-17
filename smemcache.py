@@ -12,14 +12,14 @@ def expiry_with_variance(expiry, expiry_variance):
     return random.randrange(expiry - variance, expiry + variance)
 
 def safe_set_memcache(memcache_set, expiry, top_level=True):
-    memcache.set_multi(memcache_set, expiry)
-    return
+    #memcache.set_multi(memcache_set, expiry)
+    #return
     # No longer need to worry about setting something larger than a MB, since appengine scales larger easily for us
     set_size = len(pickle.dumps(memcache_set))
     if top_level:
         logging.info('set memcache size is %s' % set_size)
     # If it's roughly greater than a megabyte
-    if set_size > 1024 * 1024 - 100:
+    if set_size > 900000:
         memcache_list = list(memcache_set.items())
         if len(memcache_list) == 1:
             logging.error("Saved item too large, cannot save, with key: %s", memcache_set.keys()[0])
