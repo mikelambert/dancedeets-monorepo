@@ -169,6 +169,8 @@ dance_keywords = [
     'katutanssi\w*', # finnish streetdance
     'bre?ak\W?dancing?', 'bre?ak\W?dancer?s?',
     'break\W?danc\w+',
+    '(?:lite|light)\W?feet',
+    'getting?\W?(?:lite|light)',
     'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
     'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
     u'파워무브', # powermove korean
@@ -351,6 +353,7 @@ preprocess_removals = [
     'world class',
     'go\W?go\W?danc(?:ers?|ing?)',
     'latin street',
+    'ice\w?breaker',
 ]
 
 # battle freestyle ?
@@ -418,7 +421,8 @@ cypher_keywords = [
 
 battle_keywords = [
     'apache line',
-    'battle of the year', 'boty', 'compete', 'competitions?',
+    'battle of the year', 'boty', 'compete',
+    'competitions?',
     'konkurrence', # danish competition
     'competencia', # spanish competition
     u'competición', # spanish competition
@@ -427,6 +431,8 @@ battle_keywords = [
     'kilpailu\w*' # finish competition
     'konkursams', # lithuanian competition
     'verseny', # hungarian competition
+    'championships?',
+    'champs?',
     u'čempionatams', # lithuanian championship
     'campeonato', # spanish championship
     'meisterschaft', # german championship
@@ -571,6 +577,7 @@ judge_keywords = [
     u'評審', # chinese judges
     u'評判', # chinese judges
     u'評判團', # chinese judges
+    u'審査員', # japanese judges
 ]
 event_keywords += judge_keywords
 

@@ -149,6 +149,7 @@ stax groove
 street messengers
 stylematix
 sucreamgoodman
+super beat magicians
 supreme soul
 swing men brother[sz]
 symbol-ism
@@ -163,7 +164,7 @@ the waackers
 thequickstyle
 tokyo footworkz
 tokyo waacking sensation
-turf feinz
+turf\W?feinz
 twiggz fam
 u-min
 urban artistry

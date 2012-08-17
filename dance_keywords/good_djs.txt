@@ -1,29 +1,30 @@
+afrika bambaataa
+afro mosaic soul
 bj piggo
-sabine blazin
-dj jazzy jeff
-dj veusty
-greg gauthier
-kaistar
-timmy regisford
-dj spinna
 clubshelter
+david harness
+derek sampson
+dj disciple
+dj jazzy jeff
+dj nk-soul
+dj spinna
+dj veusty
+ep\W+extended play
+eric groove
+greg gauthier
+ian friday
+jayvi velasco
+jaze-art remote
+jellybean benitez
+kaistar
+louie vega
+marques wyatt
+peven everett
+rich medina
+rubi r-tres
+sabine blazin
+stephen rigmaiden
+sweater\W?funk
+timmy regisford
 tyrone francis
 tyrone\W+mixologist\W+francis
-louie vega
-rubi r-tres
-ian friday
-afro mosaic soul
-derek sampson
-ep\W+extended play
-afrika bambaataa
-dj disciple
-jellybean benitez
-jayvi velasco
-marques wyatt
-rich medina
-sweater\W?funk
-jaze-art remote
-david harness
-eric groove
-stephen rigmaiden
-peven everett

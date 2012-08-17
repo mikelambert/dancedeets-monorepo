@@ -154,6 +154,7 @@ shonn boog
 shyguy
 skeeter rabbit
 slim boogie
+so\Wichiro\W+gold rush
 storm,0
 suga pop
 sugapop
@@ -195,3 +196,4 @@ yaman
 ynot
 yoshie koda
 yugson
+yuu\W+black out

@@ -45,6 +45,8 @@ prelude,0 # use capitals to distinguish?
 
 sybarite
 
+loft practice
+this is house
 
 funkologia
 trophee masters
@@ -84,6 +86,7 @@ soul summit
 motown party
 funk off
 soul\W?train
+seaport soul series
 # support stage if french words in the page: l' le et un
 # street battle
 banana sessions?
@@ -92,4 +95,5 @@ each (?:1|one) teach (?:1|one)
 sdk\W?europe
 
 hip hop dancefest
-
+coney island dancers
+the loft practice
