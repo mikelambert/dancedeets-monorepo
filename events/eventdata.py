@@ -23,7 +23,7 @@ TIME_PAST = 'PAST'
 TIME_FUTURE = 'FUTURE'
 
 def get_event_image_url(fb_event):
-    picture_url = fb_event.get('picture_urls')
+    picture_url = fb_event.get('fql_info') or fb_event.get('picture_urls')
     # TODO(lambert): delete else clause once we've loaded picture_urls for everything?
     if picture_url and picture_url['data']:
         return picture_url['data'][0]['pic_big']

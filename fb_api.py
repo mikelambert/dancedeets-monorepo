@@ -32,8 +32,11 @@ AND start_time > %d
 ORDER BY start_time
 """
 
-IMAGE_URL_FQL = """
-SELECT pic,pic_big,pic_small FROM event WHERE eid=%s
+EXTRA_EVENT_INFO_FQL = """
+SELECT
+pic, pic_big, pic_small,
+all_members_count
+FROM event WHERE eid = %s
 """
 
 GRAPH_ID_REMAP = {
@@ -67,6 +70,14 @@ class FacebookCachedObject(db.Model):
         if not self.json_data:
             self.delete() # hack fix to get these objects purged from the system
         return self.data
+
+def is_public_ish(fb_event):
+    data = fb_event.get('fql_info', {}).get('data')
+    return (
+        fb_event['info'].get('privacy', 'OPEN') != 'OPEN' or
+        data and data[0].get('all_members_count', 0) > 100
+    )
+
 
 class ExpiredOAuthToken(Exception):
     pass
@@ -108,7 +119,7 @@ class BatchLookup(object):
             return True
         elif this_object.get('deleted'):
             return True
-        elif this_object.get('info') and this_object['info'].get('privacy', 'OPEN') == 'OPEN':
+        elif this_object.get('info') and is_public_ish(this_object):
             return True
         else:
             return False
@@ -138,7 +149,7 @@ class BatchLookup(object):
         elif object_type == self.OBJECT_EVENT:
             return dict(
                 info=self._fetch_rpc('%s' % object_id),
-                picture_urls=self._fql_rpc(IMAGE_URL_FQL % (object_id)),
+                fql_info=self._fql_rpc(EXTRA_EVENT_INFO_FQL % (object_id)),
             )
         elif object_type == self.OBJECT_EVENT_ATTENDING:
             return dict(

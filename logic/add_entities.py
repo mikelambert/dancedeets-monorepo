@@ -1,4 +1,5 @@
 import datetime
+import fb_api
 from events import eventdata
 from logic import event_classifier
 from logic import event_locations
@@ -16,7 +17,7 @@ def add_update_event(event_id, user_id, batch_lookup, remapped_address=None, ove
 
     fb_event = batch_lookup.data_for_event(event_id)
     fb_event_attending = batch_lookup.data_for_event_attending(event_id)
-    if fb_event['info'].get('privacy', 'OPEN') != 'OPEN':
+    if not fb_api.is_public_ish(fb_event):
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
 
     if remapped_address is not None:
