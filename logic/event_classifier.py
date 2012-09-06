@@ -36,9 +36,10 @@ def make_regex_string(strings, matching=False, word_boundaries=False, match_cjk=
     else:
         regex = u'(?:' + inner_regex + u')'
     if word_boundaries:
-        regex = r'\b%s\b' % regex
         if match_cjk:
             regex = '(?u)%s' % regex
+        else:
+            regex = r'\b%s\b' % regex
     regex = wrapper % regex
     return regex
 
@@ -475,6 +476,7 @@ battle_keywords = [
 
 class_keywords = [
     'workshop\W?s?',
+    u'ワークショップ', # japanese workshop
     'cursillo', # spanish workshop
     'ateliers', # french workshop
     'workshopy', # czech workshop
