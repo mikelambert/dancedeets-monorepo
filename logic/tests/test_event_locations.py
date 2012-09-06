@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import math
 import unittest
 
 from google.appengine.ext import testbed
@@ -47,6 +48,13 @@ class TestLocationInfo(TestEventLocations):
     def tearDown(self):
         self.fb_api.deactivate()
 
+    def assertNearEqual(self, a, b, delta=0.00001):
+        if type(a) == tuple:
+            for x, y in zip(a, b):
+                self.assertNearEqual(x, y, delta=delta)
+        else:
+            assert math.abs(a-b) < delta
+
     def test_SimpleVenue(self):
         fb_event = self.get_event(EVENT_ID)
         location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, debug=True)
@@ -54,7 +62,7 @@ class TestLocationInfo(TestEventLocations):
         self.assertEqual(location_info.remapped_address, None)
         self.assertEqual(location_info.fb_address, 'Hype Dance, 67 Earl Street')
         self.assertEqual(location_info.final_city, 'Sheffield, United Kingdom')
-        self.assertEqual(location_info.final_latlng, (53.375206800000001, -1.4709795999999999))
+        self.assertNearEqual(location_info.final_latlng, (53.375206800000001, -1.4709795999999999))
         self.assertEqual(location_info.exact_from_event, False)
 
     def test_NoVenue(self):
@@ -64,24 +72,28 @@ class TestLocationInfo(TestEventLocations):
         self.assertEqual(location_info.remapped_address, None)
         self.assertEqual(location_info.fb_address, 'Somewhere in San Francisco')
         self.assertEqual(location_info.final_city, 'San Francisco, CA, US')
-        self.assertEqual(location_info.final_latlng, (37.774929499999999, -122.4194155))
+        self.assertNearEqual(location_info.final_latlng, (37.774929499999999, -122.4194155))
         self.assertEqual(location_info.exact_from_event, False)
 
 
     def test_NoVenueWithRemap(self):
         fb_event = self.get_event(100)
-        event_locations.update_remapped_address(self.batch_lookup, fb_event, 'Oakland, CA')
 
-        location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, debug=True)
-        self.assertEqual(location_info.overridden_address, None)
-        self.assertEqual(location_info.remapped_address, 'Oakland, CA')
-        self.assertEqual(location_info.fb_address, 'Somewhere in San Francisco')
-        self.assertEqual(location_info.final_city, 'Oakland, CA, US')
-        self.assertEqual(location_info.final_latlng, (37.804363700000003, -122.2711137))
-        self.assertEqual(location_info.exact_from_event, False)
+        try:
+            event_locations.update_remapped_address(self.batch_lookup, fb_event, 'Oakland, CA')
 
-        event_locations.update_remapped_address(self.batch_lookup, fb_event, '')
-        self.test_NoVenue() # should be the same as before
+            location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, debug=True)
+            self.assertEqual(location_info.overridden_address, None)
+            self.assertEqual(location_info.remapped_address, 'Oakland, CA')
+            self.assertEqual(location_info.fb_address, 'Somewhere in San Francisco')
+            self.assertEqual(location_info.final_city, 'Oakland, CA, US')
+            self.assertNearEqual(location_info.final_latlng, (37.804363700000003, -122.2711137))
+            self.assertEqual(location_info.exact_from_event, False)
+
+            event_locations.update_remapped_address(self.batch_lookup, fb_event, '')
+            self.test_NoVenue() # should be the same as before
+        finally:
+            event_locations.update_remapped_address(self.batch_lookup, fb_event, '')
 
     def test_Override(self):
         db_event = eventdata.DBEvent(address='San Jose, CA')
@@ -92,7 +104,7 @@ class TestLocationInfo(TestEventLocations):
         self.assertEqual(location_info.remapped_address, None)
         self.assertEqual(location_info.fb_address, 'Somewhere in San Francisco')
         self.assertEqual(location_info.final_city, 'San Jose, CA, US')
-        self.assertEqual(location_info.final_latlng, (37.339385700000001, -121.89495549999999))
+        self.assertNearEqual(location_info.final_latlng, (37.339385700000001, -121.89495549999999))
         self.assertEqual(location_info.exact_from_event, False)
 
     def test_Online(self):
@@ -122,18 +134,23 @@ class TestLocationInfo(TestEventLocations):
     def test_TBD(self):
         db_event = eventdata.DBEvent(address='San Francisco, CA')
         fb_event = self.get_event(100)
-        event_locations.update_remapped_address(self.batch_lookup, fb_event, 'TBD')
 
-        location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, db_event=db_event, debug=True)
-        self.assertEqual(location_info.overridden_address, 'San Francisco, CA')
-        self.assertEqual(location_info.remapped_address, 'TBD')
-        self.assertEqual(location_info.needs_override_address(), True)
+        try:
+            event_locations.update_remapped_address(self.batch_lookup, fb_event, 'TBD')
 
-        location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, debug=True)
-        self.assertEqual(location_info.overridden_address, None)
-        self.assertEqual(location_info.remapped_address, 'TBD')
-        self.assertEqual(location_info.needs_override_address(), True)
-        self.assertEqual(location_info.exact_from_event, False)
+            location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, db_event=db_event, debug=True)
+            self.assertEqual(location_info.overridden_address, 'San Francisco, CA')
+            self.assertEqual(location_info.remapped_address, 'TBD')
+            self.assertEqual(location_info.needs_override_address(), True)
+
+            location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, debug=True)
+            self.assertEqual(location_info.overridden_address, None)
+            self.assertEqual(location_info.remapped_address, 'TBD')
+            self.assertEqual(location_info.needs_override_address(), True)
+            self.assertEqual(location_info.exact_from_event, False)
+
+        finally:
+            event_locations.update_remapped_address(self.batch_lookup, fb_event, '')
 
     def test_VenueWithLatLong(self):
         fb_event = self.get_event(437418756269948)
@@ -143,7 +160,7 @@ class TestLocationInfo(TestEventLocations):
         self.assertEqual(location_info.remapped_address, None)
         self.assertEqual(location_info.fb_address, 'Mexico City, DF, Mexico')
         self.assertEqual(location_info.final_city, 'Mexico City, DF, Mexico')
-        self.assertEqual(location_info.final_latlng, (19.400437272727, -99.132922272727))
+        self.assertNearEqual(location_info.final_latlng, (19.400437272727, -99.132922272727))
         self.assertEqual(location_info.exact_from_event, True)
 
     def test_NothingAtAll(self):
@@ -165,7 +182,7 @@ class TestLocationInfo(TestEventLocations):
         self.assertEqual(location_info.remapped_address, None)
         self.assertEqual(location_info.fb_address, 'San Francisco, CA, US')
         self.assertEqual(location_info.final_city, 'San Francisco, CA, US')
-        self.assertEqual(location_info.final_latlng, (37.774929499999999, -122.4194155))
+        self.assertNearEqual(location_info.final_latlng, (37.774929499999999, -122.4194155))
         self.assertEqual(location_info.exact_from_event, True)
 
 
