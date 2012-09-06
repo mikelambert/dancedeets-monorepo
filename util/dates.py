@@ -1,42 +1,23 @@
 import datetime
-from pytz.gae import pytz
 
 # http://en.wikipedia.org/wiki/12-hour_clock
 AMPM_COUNTRIES = ['AU', 'BD', 'CA', 'CO', 'EG', 'IN', 'MY', 'NZ', 'PK', 'PH', 'US']
-
-
-def localize_timestamp(dt, timezone_str="America/Los_Angeles"):
-    # facebook stupidly gives us times localized into a UTC timezone, even though it is timezone-less information. Let's "undo" that here
-    timezone = pytz.timezone(timezone_str)
-    localized_dt = timezone.localize(dt)
-    final_dt = dt + localized_dt.tzinfo.utcoffset(localized_dt)
-    return final_dt
 
 def parse_fb_timestamp(fb_timestamp):
     # because of events like 23705144628 without any time information
     if not fb_timestamp:
         return datetime.datetime(1970, 1, 1)
-
-    # If we access events with an access_token (necessary to get around DOS limits from overloaded appengine IPs), we get a timestamp-localized weirdly-timed time from facebook, and need to reverse-engineer it
-    if '+' in fb_timestamp:
-        return localize_timestamp(datetime.datetime.strptime(fb_timestamp.split('+')[0], '%Y-%m-%dT%H:%M:%S'))
-    else:
-        return datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S')
+    try:
+        return datetime.datetime.strptime(fb_timestamp, '%Y-%m-%d') # .date()
+    except ValueError:
+        # intentionally ignore timezone, since we care about representing the time zone in the event's local point of view
+        return datetime.datetime.strptime(fb_timestamp[:19], '%Y-%m-%dT%H:%M:%S')
 
 def parse_fb_start_time(fb_event):
-    dt = parse_fb_timestamp(fb_event['info'].get('start_time'))
-    return handle_fb_dt_transform(dt, fb_event)
+    return parse_fb_timestamp(fb_event['info'].get('start_time'))
 
 def parse_fb_end_time(fb_event):
-    dt = parse_fb_timestamp(fb_event['info'].get('end_time'))
-    return handle_fb_dt_transform(dt, fb_event)
-
-def handle_fb_dt_transform(dt, fb_event):
-    event_timezone = fb_event['info'].get('timezone')
-    if event_timezone:
-        dt -= datetime.timedelta(hours=fb_event.get('timezone_offset') or 9)
-        dt = localize_timestamp(dt, timezone_str=event_timezone)
-    return dt
+    return parse_fb_timestamp(fb_event['info'].get('end_time'))
 
 def time_human_format(d, country=None):
     if not country or country in AMPM_COUNTRIES:

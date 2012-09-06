@@ -240,8 +240,6 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 # rewrite hack necessary for templates (and above code)
                 event['id'] = event['eid']
                 event['loaded'] = event['id'] in loaded_fb_event_ids
-                for field in ['start_time', 'end_time']:
-                    event[field] = dates.localize_timestamp(datetime.datetime.fromtimestamp(event.get(field)))
 
             lastadd_key = 'LastAdd.%s' % (self.fb_uid)
             if not smemcache.get(lastadd_key):
