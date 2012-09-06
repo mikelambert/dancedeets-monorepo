@@ -7,16 +7,20 @@ ancut stonez
 aov,0
 art of tec[hk]nique
 au[rl]o[rl]a.tex
+b-trible
 b\W?fresh brno 
 baccano
 bds praha
 be\W?bop crew
+beat focu
 beat freaks
 beat up brno
 beat\W?buddy\W?boi
 beatdown brothers
 beatstrong
 beatsukiboys
+blue power crew
+boogie renaissance
 bopster scat
 breakydelic
 buccchild fam
@@ -32,6 +36,7 @@ cosec crew
 cosmic funk
 criminalz
 cultureshock
+cymatic soles
 d'oam
 d2mg crew
 da gentlemen
@@ -43,6 +48,7 @@ diger deep
 digital junkeez
 double elementz
 down\W?town\W?bounce
+dream wing crew
 ds players
 dsn core knowledge
 dynamic brno
@@ -52,15 +58,19 @@ elite force
 fab 5 boogz
 fab\W*5 boogz
 five plus five
+floor engin kids
 floor magnets # turf
 floor masters
+floor monster crew
 floor raskals # turf
 floorriorz
+flow mircle rulerz
 footworkingz
 forzesound
 fresh audio mindz # turf
 fresh dynamix
 funny bones,0
+g.c.\W?crew
 gart project
 gelaketz
 ghbv
@@ -69,6 +79,7 @@ giddap
 glasshopper
 gogo brothers
 gr818ers
+grasshopper crew
 groovmekanex
 grv,0
 gunz hunt
@@ -109,11 +120,13 @@ lumi dance
 lxd
 machine gone funk
 madhood
+madness cycle
 marjoram
 master\W?mind rockers
 mawu
 mda crew
 men\W?soul
+metro gangz
 mgf,0
 mo\w?\w?paradise
 moptops
@@ -122,6 +135,7 @@ o'trip
 perfect combustion
 pinocchio brothers
 playboyz
+power beat crew
 pro phenomen
 pro-dance
 pro-seed
@@ -132,10 +146,12 @@ r\W?a\W?f\W?\W?crew
 radiolecos
 rag pound
 redwindsor
+relax crew
 rm sister
 serial stepperz
 shibuya harlem shakers
 silent.?trix
+slc danso
 sorakarat
 soul colors
 soul fresh crew
@@ -171,6 +187,8 @@ urban artistry
 urban dance project
 vagabond,0
 vigorous ladies
+vulture kill
+waacking ain't wack
 waacktitioners
 waacouture
 wanted\W?posse

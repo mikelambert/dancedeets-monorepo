@@ -380,7 +380,7 @@ ven15
 verve collisionz
 verve,0
 vip san jose
-vip sj
+vip\W?sj
 vip vallejo
 vyb,0
 wanted ashiqz

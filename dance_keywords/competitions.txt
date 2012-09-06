@@ -1,3 +1,6 @@
+5\W?pointz
+soul sessions oslo
+what came out of the mothership
 funkinstylez
 funkin.? stylez
 circle kingz
@@ -56,6 +59,7 @@ leo xtravaganza
 paris dupree
 freedom dance party
 
+afro\W+bang
 soiree atmosphere
 coney island boardwalk
 the floor improv night
@@ -76,7 +80,7 @@ funk box
 funkbox
 saint city session
 tap water sessions
-toca tuesday
+toca tuesdays?
 teez party
 breakhousea
 choreographer\W?s ball
@@ -93,7 +97,16 @@ banana sessions?
 whogotskillz
 each (?:1|one) teach (?:1|one)
 sdk\W?europe
+dance\W?central\W?station
+build your own house
+roots\W?nyc
+libation nyc
 
 hip hop dancefest
 coney island dancers
 the loft practice
+mosaic soul sessions?
+sic open dance session?
+house dance connect
+house dance crossing
+
