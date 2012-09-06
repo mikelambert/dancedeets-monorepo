@@ -148,9 +148,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
             logging.info("User has token %s, cookie has token %s", self.user.fb_access_token, self.fb_graph.access_token)
             if self.request.get('new_token') == '1' or self.user.fb_access_token != self.fb_graph.access_token:
                 self.user = users.User.get_by_key_name(str(self.fb_uid))
-                self.user.fb_access_token = self.fb_graph.access_token
-                self.user.expired_oauth_token = False
-                self.user.put() # this also sets to memcache
+                if self.user:
+                    self.user.fb_access_token = self.fb_graph.access_token
+                    self.user.expired_oauth_token = False
+                    self.user.put() # this also sets to memcache
             yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
             if not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday:
                 # Do this in a separate request so we don't increase latency on this call

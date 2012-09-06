@@ -279,7 +279,14 @@ def get_user_from_cookie(cookies, app_id, app_secret):
     finally:
         file.close()
 
-    access_token = cgi.parse_qs(token_response)["access_token"][-1]
+    if 'access_token' in cgi.parse_qs(token_response):
+      access_token = cgi.parse_qs(token_response)["access_token"][-1]
+      import logging
+      logging.info("access token response %r", cgi.parse_qs(token_response))
+    else:
+      access_token = None
+      import logging
+      logging.info("access token response %r", cgi.parse_qs(token_response))
 
     return dict(
         uid = response["user_id"],
