@@ -74,8 +74,8 @@ class FacebookCachedObject(db.Model):
 def is_public_ish(fb_event):
     data = fb_event.get('fql_info', {}).get('data')
     return (
-        fb_event['info'].get('privacy', 'OPEN') != 'OPEN' or
-        data and data[0].get('all_members_count', 0) > 100
+        fb_event['info'].get('privacy', 'OPEN') == 'OPEN' or
+        data and data[0].get('all_members_count', 0) > 60
     )
 
 
