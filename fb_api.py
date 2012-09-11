@@ -265,7 +265,7 @@ class BatchLookup(object):
             if key in self.objects:
                 return self.objects[key_func(self, id)]
             else:
-                raise NoFetchedDataException('Could not find %s' % key)
+                raise NoFetchedDataException('Could not find %s' % (key,))
         return data_for_func 
         
     invalidate_profile = _db_delete(_profile_key)
