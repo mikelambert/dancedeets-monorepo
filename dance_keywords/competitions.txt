@@ -1,3 +1,4 @@
+j\.u\.i\.c\.e\.? hip hop dance
 5\W?pointz
 soul sessions oslo
 what came out of the mothership
@@ -104,6 +105,7 @@ libation nyc
 
 hip hop dancefest
 coney island dancers
+release.{,20}disciple
 the loft practice
 mosaic soul sessions?
 sic open dance session?

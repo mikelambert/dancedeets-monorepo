@@ -45,6 +45,8 @@ wrong_classes = [
     'hip\W?hop\W?kempu?', # refers to hiphop music!
     'camp\W?house',
     'in\W?house',
+    'lock in',
+    'juste debout school',
 ]
 
 ambiguous_wrong_style_keywords = [
@@ -169,6 +171,7 @@ non_dance_support = [
     'fundraiser',
     'likes?',
     'votes?',
+    'votas?', # spanish votes
     'support',
     'follow',
     '(?:pre)?sale',

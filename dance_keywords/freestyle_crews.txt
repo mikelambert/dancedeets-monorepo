@@ -69,6 +69,7 @@ footworkingz
 forzesound
 fresh audio mindz # turf
 fresh dynamix
+funk soldiers
 funny bones,0
 g.c.\W?crew
 gart project
@@ -156,7 +157,7 @@ sorakarat
 soul colors
 soul fresh crew
 soul sector
-soul shifters
+soul\W?shifters
 soul2soul
 soulsweat
 soulxpress
@@ -168,6 +169,7 @@ sucreamgoodman
 super beat magicians
 supreme soul
 swing men brother[sz]
+symbiotic monsters
 symbol-ism
 syrenz
 temporaly
@@ -186,6 +188,7 @@ u-min
 urban artistry
 urban dance project
 vagabond,0
+versa-style
 vigorous ladies
 vulture kill
 waacking ain't wack
