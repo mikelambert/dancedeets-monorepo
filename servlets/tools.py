@@ -58,7 +58,7 @@ class OwnedEventsHandler(webapp.RequestHandler):
         db_events_query = eventdata.DBEvent.gql('WHERE owner_fb_uid = :1', self.request.get('owner_id'))
         db_events = db_events_query.fetch(1000)
 
-        batch_lookup = fb_api.CommonBatchLookup(None, None, None)
+        batch_lookup = fb_api.CommonBatchLookup(None, None)
 
         print 'Content-type: text/plain\n\n'
         fb_events = fb_api.FacebookCachedObject.get_by_key_name(batch_lookup._string_key(batch_lookup._event_key(x.fb_event_id)) for x in db_events)

@@ -56,7 +56,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         else:
             self.fb_graph = facebook.GraphAPI(None)
         self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
-        self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, self.user.timezone_offset, allow_cache=self.allow_cache)
+        self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=self.allow_cache)
         return return_value
 
 class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):

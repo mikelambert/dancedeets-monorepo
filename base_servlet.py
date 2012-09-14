@@ -132,7 +132,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.user = users.User.get_cached(str(self.fb_uid))
             if not self.user:
                 from servlets import login
-                batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, None, allow_cache=False)
+                batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=False)
                 batch_lookup.lookup_user(self.fb_uid)
                 batch_lookup.finish_loading()
                 fb_user = batch_lookup.data_for_user(self.fb_uid)
@@ -192,11 +192,11 @@ class BaseRequestHandler(BareBaseRequestHandler):
             if not self.user:
                 logging.error("Do not have a self.user at point B")
             allow_cache = (self.request.get('allow_cache', '1') == '1')
-            self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, self.user.timezone_offset, allow_cache=allow_cache)
+            self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=allow_cache)
             # Always look up the user's information for every page view...?
             self.batch_lookup.lookup_user(self.fb_uid)
         else:
-            self.batch_lookup = fb_api.CommonBatchLookup(None, self.fb_graph, None)
+            self.batch_lookup = fb_api.CommonBatchLookup(None, self.fb_graph)
         if self.user:
             self.display['date_human_format'] = self.user.date_human_format
             self.display['duration_human_format'] = self.user.duration_human_format

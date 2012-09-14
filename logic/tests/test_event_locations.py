@@ -18,7 +18,7 @@ class TestEventLocations(unittest.TestCase):
     def setUp(self):
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate()
-        self.batch_lookup = fb_api.CommonBatchLookup(None, None, None)
+        self.batch_lookup = fb_api.CommonBatchLookup(None, None)
 
         self.testbed = testbed.Testbed()
         self.testbed.activate()
@@ -43,7 +43,7 @@ class TestLocationInfo(TestEventLocations):
     def setUp(self):
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate()
-        self.batch_lookup = fb_api.CommonBatchLookup(None, None, None)
+        self.batch_lookup = fb_api.CommonBatchLookup(None, None)
 
     def tearDown(self):
         self.fb_api.deactivate()

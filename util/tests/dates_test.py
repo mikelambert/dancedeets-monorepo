@@ -40,10 +40,10 @@ class TestDates(unittest.TestCase):
 
 
     def test_event_dates(self):
-        e = {'timezone_offset': 9, 'info': {'start_time': '2012-04-18T05:30:00T-0800', 'timezone': 'America/Los_Angeles'}}
+        e = {'info': {'start_time': '2012-04-18T05:30:00T-0800', 'timezone': 'America/Los_Angeles'}}
         self.assertEqual(dates.parse_fb_start_time(e),
                          datetime.datetime(2012, 4, 18, 5, 30))
-        e = {'timezone_offset': 9, 'info': {'start_time': '2012-04-17T13:30:00'}}
+        e = {'info': {'start_time': '2012-04-17T13:30:00'}}
         self.assertEqual(dates.parse_fb_start_time(e),
                          datetime.datetime(2012, 4, 17, 13, 30))
 if __name__ == '__main__':
