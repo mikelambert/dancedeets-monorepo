@@ -59,6 +59,16 @@ def mapreduce_create_sources_from_events(batch_lookup):
         'events.eventdata.DBEvent',
     )
 
+def parsed_event_link(url):
+    p = urlparse.urlparse(url)
+    # allow relative urls
+    good_domain = p.netloc in ['', 'www.facebook.com', 'm.facebook.com']
+    good_path = p.path == '/event.php' or p.path.startswith('/events/')
+    if good_domain and good_path:
+        return p
+    else:
+        return None
+
 def process_thing_feed(source, thing_feed):
     if thing_feed['deleted']:
         return []
@@ -72,24 +82,37 @@ def process_thing_feed(source, thing_feed):
     source.last_scrape_time = datetime.datetime.now()
     source.put()
 
+    event_source_combos = parse_event_source_combos_from_feed(source, thing_feed['feed']['data'])
+    return event_source_combos
+
+def parse_event_source_combos_from_feed(source, feed_data):
     event_source_combos = []
-    for post in thing_feed['feed']['data']:
+    for post in feed_data:
+        p = None
         if 'link' in post:
-            p = urlparse.urlparse(post['link'])
-            if p.netloc == 'www.facebook.com' and (p.path == '/event.php' or p.path.startswith('/events/')):
-                event_id = None
-                qs = cgi.parse_qs(p.query)
-                if 'eid' in qs:
-                    eid = qs['eid'][0]
-                if p.path.startswith('/events/'):
-                    eid = p.path.split('/')[2]
-                if eid:
-                    extra_source_id = None
-                    if 'from' in post:
-                        extra_source_id = post['from']['id']
-                    event_source_combos.append((eid, source, extra_source_id))
-                else:
-                    logging.error("broken link is %s", post['link'])
+            link = post['link']
+            p = parsed_event_link(link)
+        else:
+            # sometimes 'pages' have events-created, but posted as status messages that we need to parse out manually
+            for x in post.get('actions', []):
+                link = x['link']
+                p = parsed_event_link(link)
+                if p:
+                    break
+        if p:
+            event_id = None
+            qs = cgi.parse_qs(p.query)
+            if 'eid' in qs:
+                eid = qs['eid'][0]
+            if p.path.startswith('/events/'):
+                eid = p.path.split('/')[2]
+            if eid:
+                extra_source_id = None
+                if 'from' in post:
+                    extra_source_id = post['from']['id']
+                event_source_combos.append((eid, source, extra_source_id))
+            else:
+                logging.error("broken link is %s", urlparse.urlunparse(p))
     return event_source_combos
 
 def process_event_source_ids(event_source_combos, batch_lookup):

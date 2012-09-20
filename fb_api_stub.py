@@ -11,11 +11,13 @@ class FileBackedBatchLookup(fb_api.BatchLookup):
         fetched_objects = {}
         for key in keys:
             try:
-                fetched_objects[key] = json.loads(open('test_data/FacebookCachedObject/%s' % self._string_key(key)).read())
+                fetched_objects[key] = get_object(_string_key(key))
             except IOError:
                 pass
         return fetched_objects
 
+def get_object(string_key):
+    return json.loads(open('test_data/FacebookCachedObject/%s' % string_key).read())
 
 class Stub(object):
     def activate(self):
