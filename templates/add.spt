@@ -59,7 +59,7 @@ Add Dance Event
 						<div style="float:right;width:320px">
 							<span class="fake-a">$format_html($event.name)</span><br>
 							<div class="non-a">
-							$date_human_format($event.start_time)<br>
+							$date_human_format($parse_fb_timestamp($event.start_time))<br>
 							#if getattr($event, "host", None)
 								(by $event.host)<br>
 							#end if

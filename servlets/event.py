@@ -247,9 +247,8 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 smemcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
 
         self.display['events'] = events
-        logging.info("AA %s", self.display['events'])
         self.display['fb_event'] = fb_event
-
+        self.display['parse_fb_timestamp'] = dates.parse_fb_timestamp
         self.render_template('add')
 
     def post(self):
