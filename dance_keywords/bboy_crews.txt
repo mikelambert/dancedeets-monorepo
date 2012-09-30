@@ -68,6 +68,7 @@ calamaties,0
 canton clan
 chief rockers
 circle of fire
+concrete all\W?stars
 concrete turtle
 contenido explicito crew
 crazy caps crew
@@ -282,9 +283,9 @@ real squad,0
 reckless habits crew
 red eye jedis
 red mask,0
-renegade rockers
 renegades crew
 renegades of phunk
+renegades? rockers
 rentgen squad
 rep the king
 repstyles
@@ -401,6 +402,7 @@ waseda breakers
 weapons of rythem
 wizards of rhythm
 x\W?fenz
+xmob
 yokohama city breakers
 zealous,0
 zip locks

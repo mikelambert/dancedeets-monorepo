@@ -54,6 +54,7 @@ dsn core knowledge
 dynamic brno
 dynamic devotion
 electric boogaloos
+electro swinger\W?s
 elite force
 fab 5 boogz
 fab\W*5 boogz
@@ -70,6 +71,7 @@ forzesound
 fresh audio mindz # turf
 fresh dynamix
 funk soldiers
+funkyshit
 funny bones,0
 g.c.\W?crew
 gart project
@@ -129,6 +131,7 @@ mda crew
 men\W?soul
 metro gangz
 mgf,0
+mix\W?d ingrdnts
 mo\w?\w?paradise
 moptops
 natural movementz
@@ -157,8 +160,8 @@ sorakarat
 soul colors
 soul fresh crew
 soul sector
-soul\W?shifters
 soul2soul
+soul\W?shifters
 soulsweat
 soulxpress
 stax groove

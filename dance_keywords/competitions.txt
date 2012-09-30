@@ -1,5 +1,10 @@
+got to get a knutt
+prince n king
+feel the spirit.{0,15}jellybean
+ain\W?t nuthin but a house party
 j\.u\.i\.c\.e\.? hip hop dance
 5\W?pointz
+shelter,0
 soul sessions oslo
 what came out of the mothership
 funkinstylez
@@ -76,7 +81,7 @@ just4rockers
 beat streat vol
 battlefest
 brooklyn united rockers
-wdc.{,10}final
+wdc.{0,10}final
 funk box
 funkbox
 saint city session
@@ -103,12 +108,16 @@ build your own house
 roots\W?nyc
 libation nyc
 
+deep sf
+deep la
 hip hop dancefest
 coney island dancers
-release.{,20}disciple
+paradise garage
+jamboree
+
+release.{0,20}disciple
 the loft practice
 mosaic soul sessions?
 sic open dance session?
 house dance connect
 house dance crossing
-

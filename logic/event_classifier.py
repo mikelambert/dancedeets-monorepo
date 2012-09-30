@@ -84,6 +84,7 @@ easy_dance_keywords = [
     u'danç\w*', # dance portuguese
     u'tańc\w*', # dance polish
     u'taneč\w*', # dance czech
+    u'taneční\w*', # dance czech # needed for now since \w won't match unicode unless we're in incode mode
     'tancovat', # dance czech
     'danza\w*', # dance italian
     u'šok\w*', # dance lithuanian
@@ -139,7 +140,7 @@ dance_and_music_not_wrong_battle_keywords = [
     'jerk',
     'kpop',
     'rnb',
-    'poppin'
+    'poppin',
     'hard\Whitting',
     'electro\W?dance',
     'old\W?school hip\W?hop',
@@ -414,6 +415,7 @@ cypher_keywords = [
     'c(?:y|i)ph(?:a|ers?)',
     u'サイファ', # japanese cypher
     u'サイファー', # japanese cypher
+    u'サークル', # japanese circle
     u'サーク', # japanese circle
     'cerchi', # italian circle/cypher
     u'ไซเฟอร์', # thai cypher
@@ -551,6 +553,8 @@ event_keywords = [
     'open circles',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     u'セッション', # japanese session
+    u'練習会', # japanese training
+    u'練習', # japanese practice
     'abdc', 'america\W?s best dance crew',
 ]
 n_x_n_keywords = [u'%s[ -]?(?:v/s|vs?\\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]

@@ -224,7 +224,7 @@ msa agency
 mustant state of mind
 mutant state of mind
 natural st8
-nerdz\W{,8}the .uts.der[sz]
+nerdz\W{0,8}the .uts.der[sz]
 new style motherlode
 nia dance troupe
 no time 2 play
@@ -235,6 +235,7 @@ offspring,0
 oip dance company
 one youth dance
 onyx,0
+oppcore
 opportunity core
 opportunity\W?core
 outburst dance
@@ -292,6 +293,7 @@ rythmycs dance
 s\*\*t kingz
 s\*\*t\W?kingz
 s\.l\.a\.m\.
+sac modern
 samahang modern
 sampul dance
 sayelah
@@ -380,8 +382,8 @@ ven15
 verve collisionz
 verve,0
 vip san jose
-vip\W?sj
 vip vallejo
+vip\W?sj
 vyb,0
 wanted ashiqz
 werkaholics
