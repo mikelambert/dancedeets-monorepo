@@ -96,6 +96,14 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         self.render_template('event_interstitial')
 
 class AdminEditHandler(base_servlet.BaseRequestHandler):
+    def show_barebones_page(self, fb_event_id):
+        potential_event = potential_events.PotentialEvent.get_by_key_name(fb_event_id)
+        e = eventdata.DBEvent.get_by_key_name(fb_event_id)
+        if potential_event:
+            self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">AE</a>' % potential_event.key().__str__())
+        if e:
+            self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">DBE</a>' % e.key().__str__())
+
     def get(self):
         event_id = None
         if self.request.get('event_url'):
@@ -106,8 +114,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.batch_lookup.lookup_event_attending(event_id, allow_cache=False)
         self.finish_preload()
 
-        fb_event = self.batch_lookup.data_for_event(event_id)
-        fb_event_attending = self.batch_lookup.data_for_event_attending(event_id)
+        try:
+            fb_event = self.batch_lookup.data_for_event(event_id)
+            fb_event_attending = self.batch_lookup.data_for_event_attending(event_id)
+        except fb_api.NoFetchedDataException:
+            return self.show_barebones_page(event_id)
 
         if not fb_api.is_public_ish(fb_event):
             self.add_error('Cannot add secret/closed events to dancedeets!')
@@ -138,7 +149,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             creating_user = None
 
         potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
-        potential_event = potential_events.update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
         classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
         self.display['classified_event'] = classified_event
         if classified_event.is_dance_event():
