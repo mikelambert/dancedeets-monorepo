@@ -42,7 +42,7 @@ def _get_latlng_from_event(batch_lookup, fb_event):
         batch_lookup.finish_loading()
         venue_data = batch_lookup.data_for_venue(venue.get('id'))
         if venue_data['deleted']:
-            logging.warning("no venue found for id %s, retrying with cache bust", venue.get('id'))
+            logging.warning("no venue found for event id %s, venue id %s, retrying with cache bust", fb_event['info'].get('id'), venue.get('id'))
             # TODO(lambert): clean up old venues in the system, this is a hack until then
             batch_lookup = batch_lookup.copy(allow_cache=False)
             batch_lookup.lookup_venue(venue.get('id'))

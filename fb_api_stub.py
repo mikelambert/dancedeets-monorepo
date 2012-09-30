@@ -11,7 +11,7 @@ class FileBackedBatchLookup(fb_api.BatchLookup):
         fetched_objects = {}
         for key in keys:
             try:
-                fetched_objects[key] = get_object(_string_key(key))
+                fetched_objects[key] = get_object(self._string_key(key))
             except IOError:
                 pass
         return fetched_objects

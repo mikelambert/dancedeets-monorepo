@@ -53,7 +53,7 @@ class TestLocationInfo(TestEventLocations):
             for x, y in zip(a, b):
                 self.assertNearEqual(x, y, delta=delta)
         else:
-            assert math.abs(a-b) < delta
+            assert abs(a-b) < delta
 
     def test_SimpleVenue(self):
         fb_event = self.get_event(EVENT_ID)
@@ -158,8 +158,8 @@ class TestLocationInfo(TestEventLocations):
         location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, debug=True)
         self.assertEqual(location_info.overridden_address, None)
         self.assertEqual(location_info.remapped_address, None)
-        self.assertEqual(location_info.fb_address, 'Mexico City, DF, Mexico')
-        self.assertEqual(location_info.final_city, 'Mexico City, DF, Mexico')
+        self.assertEqual(location_info.fb_address, 'Mexico City, D.F., Mexico')
+        self.assertEqual(location_info.final_city, 'Mexico City, D.F., Mexico')
         self.assertNearEqual(location_info.final_latlng, (19.400437272727, -99.132922272727))
         self.assertEqual(location_info.exact_from_event, True)
 

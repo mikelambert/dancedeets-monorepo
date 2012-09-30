@@ -9,7 +9,7 @@ class TestLocations(unittest.TestCase):
         self.assertEqual(locations.get_city_name(address='San Francisco, CA'), u'San Francisco, CA, US')
         self.assertEqual(locations.get_city_name(address='Tokyo, Japan'), u'Tokyo, Japan')
         self.assertEqual(locations.get_city_name(address='Osaka'), u'Osaka, Osaka Prefecture, Japan')
-        self.assertEqual(locations.get_city_name(address='Mexico City, Mexico'), u'Mexico City, DF, Mexico')
+        self.assertEqual(locations.get_city_name(address='Mexico City, Mexico'), u'Mexico City, D.F., Mexico')
 
     def test_get_country(self):
         self.assertEqual(locations.get_country_for_location('San Francisco'), u'US')
