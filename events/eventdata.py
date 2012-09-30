@@ -118,7 +118,7 @@ class DBEvent(db.Model):
 
         self.search_time_period = None # PAST or FUTURE
         today = datetime.datetime.today() - datetime.timedelta(days=1)
-        if today < self.end_time:
+        if today < dates.parse_fb_end_time(fb_dict, need_result=True):
             self.search_time_period = TIME_FUTURE
         else:
             self.search_time_period = TIME_PAST

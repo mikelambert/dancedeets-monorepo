@@ -291,7 +291,7 @@ def has_list_of_good_classes(classified_event):
                 good_lines.append(dance_class_style_matches + manual_dancers + dance_and_music_matches)
         start_time = dates.parse_fb_start_time(classified_event.fb_event)
         end_time = dates.parse_fb_end_time(classified_event.fb_event)
-        if len(good_lines) > len(sub_lines) / 10 and (end_time.time() > datetime.time(12) or end_time - start_time > datetime.timedelta(hours=12)):
+        if len(good_lines) > len(sub_lines) / 10 and (not end_time or end_time.time() > datetime.time(12) or end_time - start_time > datetime.timedelta(hours=12)):
             return True, 'found good schedule: %s: %s' % ('\n'.join(sub_lines), good_lines)
     return False, ''
 

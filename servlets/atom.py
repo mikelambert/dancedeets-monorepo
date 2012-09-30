@@ -75,7 +75,8 @@ class AtomHandler(base_servlet.BaseRequestHandler):
             lines = []
             lines.append('<img src="%s" />' % urls.fb_event_image_url(result.fb_event['info']['id']))
             lines.append('Start Time: %s' % text.date_format(u'%Y-%m-%d %H:%M', result.db_event.start_time))
-            lines.append('End Time: %s' % text.date_format(u'%Y-%m-%d %H:%M', result.db_event.end_time))
+            if result.db_event.end_time:
+                lines.append('End Time: %s' % text.date_format(u'%Y-%m-%d %H:%M', result.db_event.end_time))
             if location:
                 lines.append('Location: %s' % xml.sax.saxutils.escape(location))
             lines.append('')

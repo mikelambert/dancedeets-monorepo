@@ -62,7 +62,7 @@ def group_results(search_results):
         if result.start_time < now:
             result.index = past_index
             past_index += 1
-            if result.end_time > now:
+            if result.fake_end_time > now:
                 present_results.append(result)
             else: 
                 past_results.append(result) 
@@ -87,6 +87,7 @@ class SearchResult(object):
         self.fb_event = fb_event
         self.start_time = dates.parse_fb_start_time(self.fb_event)
         self.end_time = dates.parse_fb_end_time(self.fb_event)
+        self.fake_end_time = dates.parse_fb_end_time(self.fb_event, need_result=True)
         self.rsvp_status = "unknown"
         self.event_types = ', '.join(self.db_event.event_keywords or [])
         self.attending_friend_count = 0
@@ -95,7 +96,7 @@ class SearchResult(object):
         self.index = None
 
     def multi_day_event(self):
-        return (self.end_time - self.start_time) > datetime.timedelta(hours=24)
+        return not self.end_time or (self.end_time - self.start_time) > datetime.timedelta(hours=24)
 
     def get_image(self):
         return eventdata.get_event_image_url(self.fb_event)
@@ -126,7 +127,7 @@ class SearchQuery(object):
 
     def matches_db_event(self, event):
         if self.start_time:
-            if self.start_time < event.end_time:
+            if self.start_time < event.fake_end_time:
                 pass
             else:
                 return False
@@ -136,7 +137,7 @@ class SearchQuery(object):
             else:
                 return False
         if self.time_period == eventdata.TIME_FUTURE:
-            if event.end_time < datetime.datetime.now():
+            if event.fake_end_time < datetime.datetime.now():
                 return False
 
         if self.min_attendees and event.attendee_count < self.min_attendees:
