@@ -70,7 +70,7 @@
 				<div class="event-types">($result.event_types)</div>
 				<div class="event-date">
 					$date_human_format($result.start_time)
-					#if $result.multi_day_event()
+					#if $result.multi_day_event() and $result.end_time
 						<br>to $date_human_format($result.end_time)
 					#end if
 				</div>

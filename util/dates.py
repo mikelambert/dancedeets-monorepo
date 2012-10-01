@@ -21,8 +21,11 @@ def parse_fb_start_time(fb_event):
 def parse_fb_end_time(fb_event, need_result=False):
     result = parse_fb_timestamp(fb_event['info'].get('end_time'))
     if need_result:
-        result = parse_fb_start_time(fb_event) + end_date_less_events_duration
+        result = faked_end_time(parse_fb_start_time(fb_event), result)
     return result
+
+def faked_end_time(start_time, end_time):
+    return end_time or start_time + end_date_less_events_duration
 
 def time_human_format(d, country=None):
     if not country or country in AMPM_COUNTRIES:

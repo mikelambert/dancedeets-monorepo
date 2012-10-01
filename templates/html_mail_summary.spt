@@ -32,7 +32,7 @@ Hi $fb_user.profile.first_name,
 				</a><br>
 				($result.event_types)<br>
 				$date_human_format($result.start_time)<br>
-				#if $result.multi_day_event()
+				#if $result.multi_day_event() and $result.end_time
 					to $date_human_format($result.end_time)<br>
 				#end if
 				#if getattr($result.db_event, 'attendee_count')
