@@ -100,9 +100,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         potential_event = potential_events.PotentialEvent.get_by_key_name(fb_event_id)
         e = eventdata.DBEvent.get_by_key_name(fb_event_id)
         if potential_event:
-            self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">AE</a>' % potential_event.key().__str__())
+            self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">PE</a> ' % potential_event.key().__str__())
         if e:
-            self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">DBE</a>' % e.key().__str__())
+            self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">DBE</a> ' % e.key().__str__())
 
     def get(self):
         event_id = None
@@ -131,8 +131,12 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             new_batch_lookup = self.batch_lookup.copy(allow_cache=False)
             new_batch_lookup.lookup_profile(owner_id)
             new_batch_lookup.finish_loading()
-            combined_owner = new_batch_lookup.data_for_profile(owner_id)
-            if not combined_owner['deleted']:
+            combined_owner = None
+            try:
+                combined_owner = new_batch_lookup.data_for_profile(owner_id)
+            except fb_api.NoFetchedDataException:
+                pass
+            if combined_owner and not combined_owner['deleted']:
                 owner = combined_owner['profile']
                 if 'location' in owner:
                     owner_location = event_locations.city_for_fb_location(owner['location'])
