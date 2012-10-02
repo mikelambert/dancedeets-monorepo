@@ -232,7 +232,7 @@ dance_keywords = [
     'dan\w+ urbai?n\w+', # spanish/french urban dance
     'baile urbai?n\w+', # spanish urban dance
     'estilo\w* urbai?n\w+', # spanish urban styles
-    'pop\W{0,3}lock(?:ing?|er[sz]?)?',
+    'pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:ing?|er[sz]?)?',
 ]
 # Crazy polish sometimes does lockingu. Maybe we need to do this more generally though.
 dance_keywords = dance_keywords + [x+'u' for x in dance_keywords] 
@@ -268,9 +268,11 @@ contest_keywords = [
     'konkurrencer', # danish contest
     'dancecontests', # dance contests german
 ]
-club_and_event_keywords = [
+practice_keywords = [
     'sesja', # polish session
     'sessions', 'practice',
+]
+performance_keywords = [
     # international sessions are handled down below
     'shows?', 'performances?',
     'show\W?case',
@@ -284,7 +286,9 @@ club_and_event_keywords = [
     u'パフォーマンス', # japanese performance
     # maybe include 'spectacle' as well?
     'esibizioni', #italian performance/exhibition
-] + contest_keywords
+]
+
+club_and_event_keywords = practice_keywords + performance_keywords + contest_keywords
 
 club_only_keywords = [
     'club',

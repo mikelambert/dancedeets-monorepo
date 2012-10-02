@@ -14,7 +14,8 @@ from util import dates
 
 house_keywords = [
     'house',
-    'house dance',
+    # this is now handled by dance_keywords in event_classifier.py
+    # 'house dance',
 ]
 
 connectors = [
@@ -188,6 +189,13 @@ full_judge_keywords.extend([
 start_judge_keywords_regex = event_classifier.make_regexes(full_judge_keywords, wrapper='^[^\w\n]*%s', flags=re.MULTILINE)
 
 # TODO: make sure this doesn't match... 'mc hiphop contest'
+
+p1 = event_classifier.make_regex_string(event_classifier.dance_keywords)
+p2 = event_classifier.make_regex_string(event_classifier.performance_keywords + event_classifier.practice_keywords)
+performance_practice_regex = event_classifier.make_regexes([
+    u'%s%s%s' % (p1, connectors_regex, p2),
+    u'%s%s%s' % (p2, connectors_regex, p1),
+])
 
 vogue_keywords = [
     'butch realness',
@@ -554,6 +562,20 @@ def has_good_event_title(classified_event):
         return True, 'looks like a good event title: %s' % title_keywords
     return False, 'no good event title'
 
+def is_performance_or_practice(classified_event):
+    text = classified_event.search_text
+    text = re.sub(r'\b(?:beat\W?lock|baile funk|star\W?strutting|power\W?move show)\b', '', text)
+
+    performances_and_practices = []
+    for line in text.split('\n'):
+        if len(line) > 500:
+            continue
+        performances_and_practices.extend(performance_practice_regex[classified_event.boundaries].findall(line))
+    bad_event_types = re.findall(r'\b(?:book)\b', classified_event.search_text)
+    if performances_and_practices and not bad_event_types:
+        return True, 'found good performance/practice keywords: %s' % performances_and_practices
+    return False, 'no good keywords'
+
 def is_auto_add_event(classified_event):
     result = is_battle(classified_event)
     if result[0]:
@@ -574,6 +596,9 @@ def is_auto_add_event(classified_event):
     if result[0]:
         return result
     result = has_good_event_title(classified_event)
+    if result[0]:
+        return result
+    result = is_performance_or_practice(classified_event)
     if result[0]:
         return result
     return (False, 'nothing')

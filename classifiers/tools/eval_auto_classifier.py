@@ -70,12 +70,12 @@ def partition_ids(ids, classifier=lambda x:False):
             add_counts(bad_counts, fb_event)
     return successes, fails
 
-positive_classifier = False
+positive_classifier = True
 def basic_match(fb_event):
     e = event_classifier.get_classified_event(fb_event)
     if positive_classifier:
-        result = event_auto_classifier.is_auto_add_event(e)
-        #result = event_auto_classifier.is_workshop(e)
+        #result = event_auto_classifier.is_auto_add_event(e)
+        result = event_auto_classifier.is_performance_or_practice(e)
         #result = event_auto_classifier.is_workshop(e)
     else:
         result = event_auto_classifier.is_auto_notadd_event(e)
@@ -93,7 +93,7 @@ else:
     bad_ids = classified_ids
     good_ids = all_ids.difference(bad_ids)
 
-keyword_counts = True
+keyword_counts = False
 good_counts = {}
 bad_counts = {}
 false_positive_counts = {}
