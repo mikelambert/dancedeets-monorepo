@@ -144,6 +144,7 @@ countries_abbrev2full = {
     "MD": "Moldova, Republic of",
     "MC": "Monaco",
     "MN": "Mongolia",
+    "ME": "Montenegro",
     "MS": "Montserrat",
     "MA": "Morocco",
     "MZ": "Mozambique",
