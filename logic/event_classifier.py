@@ -47,7 +47,7 @@ def make_regex_string(strings, matching=False, word_boundaries=False, match_cjk=
 # 'crew' biases dance one way, 'company' biases it another
 easy_dance_keywords = [
     'dance style[sz]',
-    'dances?', 'dancing', 'dancers?',
+    'dances?', "dancin[g']?", 'dancers?',
     u'танцуват', # bulgarian dance
     u'танцува', # bulgarian dance
     u'танцовия', # bulgarian dance
@@ -136,11 +136,11 @@ dance_and_music_not_wrong_battle_keywords = [
     'gliding', 
     # 'breaks', # too many false positives
     'boogaloo',
-    'breaking?', 'breakers?',
+    "breakin[g']?", 'breakers?',
     'jerk',
     'kpop',
     'rnb',
-    'poppin',
+    "poppin\'?",
     'hard\Whitting',
     'electro\W?dance',
     'old\W?school hip\W?hop',
@@ -163,41 +163,41 @@ dance_keywords = [
     'poppeurs?',
     'commercial hip\W?hop',
     'hip\W?hop dance',
-    'jerk(?:ers?|ing?)',
+    "jerk(?:ers?|in[g']?)",
     u'스트릿', # street korean
     u'ストリートダンス', # japanese streetdance
     u'街舞', # chinese streetdance / hiphop
     u'gatvės šokių', # lithuanian streetdance
     'katutanssi\w*', # finnish streetdance
-    'bre?ak\W?dancing?', 'bre?ak\W?dancer?s?',
+    "bre?ak\W?dancin[g']?", 'bre?ak\W?dancer?s?',
     'break\W?danc\w+',
     '(?:lite|light)\W?feet',
-    'getting?\W?(?:lite|light)',
-    'turfing?', 'turf danc\w+', 'flexing?', 'bucking?', 'jooking?',
-    'b\W?boy[sz]?', 'b\W?boying?', 'b\W?girl[sz]?', 'b\W?girling?', 'power\W?moves?', 'footworking?',
+    "gettin[g']?\W?(?:lite|light)",
+    "turfin[g']?", 'turf danc\w+', "flexin[g']?", "buckin[g']?", "jookin[g']?",
+    'b\W?boy[sz]?', "b\W?boyin[g']?", 'b\W?girl[sz]?', "b\W?girlin[g']?", 'power\W?moves?', "footworkin[g']?",
     u'파워무브', # powermove korean
     'breakeuse', # french bgirl
     'footworks', # spanish footworks
-    'top\W?rock(?:s|er[sz]?|ing?)?', 'up\W?rock(?:s|er[sz]?|ing?|)?',
+    "top\W?rock(?:s|er[sz]?|in[g']?)?", "up\W?rock(?:s|er[sz]?|in[g']?|)?",
     'houser[sz]?',
     'dance house', # seen in italian
     'soul dance',
     u'ソウルダンス', # soul dance japanese
-    'lock(?:er[sz]?|ing?)?', 'lock dance',
+    "lock(?:er[sz]?|in[g']?)?", 'lock dance',
     u'ロッカーズ', # japanese lockers
     u'ロッカ', # japanese lock
-    '[uw]h?aa?c?c?k(?:er[sz]?|inn?g?)', # waacking
-    'paa?nc?king?', # punking
+    "[uw]h?aa?c?c?k(?:er[sz]?|inn?[g']?)", # waacking
+    "paa?nc?kin[g']?", # punking
     'locking4life',
     'dance crew[sz]?',
-    'waving?', 'wavers?',
+    "wavin[g']?", 'wavers?',
     'toy\W?man',
     'puppet\W?style',
-    'bott?ing?',
-    'robott?ing?',
+    "bott?in[g']?",
+    "robott?in[g']?",
     'melbourne shuffle',
     'strutter[sz]?', 'strutting',
-    'tutting?', 'tutter[sz]?',
+    "tuttin[g']?", 'tutter[sz]?',
     'mj\W+style', 'michael jackson style',
     'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
     'hip\W?hop\Wheels',
@@ -209,7 +209,7 @@ dance_keywords = [
     'all\W+open\W?style[sz]?',
     'open\W+all\W?style[sz]?',
     'me against the music',
-    'krump', 'krumping?', 'krumper[sz]?',
+    'krump', "krumpin[g']?", 'krumper[sz]?',
     'ragga\W?jamm?',
     'girl\W?s\W?hip\W?hop',
     'hip\W?hopp?er[sz]?',
@@ -221,7 +221,7 @@ dance_keywords = [
     'hip\W?hop grooves',
     '(?:new|nu|middle)\W?s(?:ch|k)ool\W\W?hip\W?hop', 'hip\W?hop\W\W?(?:old|new|nu|middle)\W?s(?:ch|k)ool',
     'newstyleurs?',
-    'voguer[sz]?', 'vogue?ing', 'vogue fem', 'voguin',
+    'voguer[sz]?', "vogue?in[g']?", 'vogue fem', 'voguin',
     'fem queen', 'butch queen',
     'mini\W?ball', 'realness',
     'new\W?style hustle',
@@ -232,7 +232,7 @@ dance_keywords = [
     'dan\w+ urbai?n\w+', # spanish/french urban dance
     'baile urbai?n\w+', # spanish urban dance
     'estilo\w* urbai?n\w+', # spanish urban styles
-    'pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:ing?|er[sz]?)?',
+    "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)?",
 ]
 # Crazy polish sometimes does lockingu. Maybe we need to do this more generally though.
 dance_keywords = dance_keywords + [x+'u' for x in dance_keywords] 
