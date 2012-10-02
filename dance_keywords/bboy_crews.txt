@@ -23,12 +23,14 @@ arcanum crew
 arcanum,0
 area 51,0
 armed n' dangerous crew
+artistics tribe
 aviation crew
 b4b russia
 bad taste cru
 bad trip crew
 bad trip,0
 badditude crew
+banguhrang
 battle bandits
 battle born
 battleholex
@@ -68,6 +70,7 @@ calamaties,0
 canton clan
 chief rockers
 circle of fire
+circus runways
 concrete all\W?stars
 concrete turtle
 contenido explicito crew
@@ -88,6 +91,7 @@ diamonds crew
 dirty rotten scoundrelz
 disciples of chaos
 domestic apes
+dot\W?posse
 drifterz
 dynamic rockers
 dynamite souls
@@ -139,6 +143,7 @@ frezh motionz
 full force crew
 full force,0
 full fx crew
+funk fockers
 funky belgian'?z
 furious rockers
 furious styles
@@ -211,7 +216,6 @@ legiteam obstruxion
 legiteam obstruxxion
 legz
 les associes
-lethal weaponz
 lhiba kingzoo
 lhibaking zoo
 lil dave rockers
@@ -297,6 +301,7 @@ rivers crew
 riverz
 robotops
 rock force
+rock so fresh
 rockafellaz
 rockforce
 rocking boys
@@ -338,6 +343,7 @@ sould mavericks
 soulstice krew
 south brothers crew
 south coast breakers
+specter crew
 spinkingz
 squishy docious
 step fenz
@@ -349,7 +355,9 @@ street stylz crew
 style elements
 style hunter
 stylelements
+stylistic kings
 stylistic prowess
+suicide kings
 super cr3w
 super crew
 supercampeones
@@ -384,6 +392,7 @@ trueflavas
 truroots
 tsunami all stars
 unbreakable crew
+uncomfortably fresh
 under attack,0
 unik breakers
 union gangs crew
@@ -401,6 +410,7 @@ warrios
 waseda breakers
 weapons of rythem
 wizards of rhythm
+x-mob
 x\W?fenz
 xmob
 yokohama city breakers
