@@ -273,7 +273,8 @@ def get_user_from_cookie(cookies, app_id, app_secret):
         redirect_uri = '',
     )
 
-    file = urllib.urlopen("https://graph.facebook.com/oauth/access_token?" + urllib.urlencode(args))
+    url = "https://graph.facebook.com/oauth/access_token?" + urllib.urlencode(args)
+    file = urllib.urlopen(url)
     try:
         token_response = file.read()
     finally:
@@ -281,12 +282,10 @@ def get_user_from_cookie(cookies, app_id, app_secret):
 
     if 'access_token' in cgi.parse_qs(token_response):
       access_token = cgi.parse_qs(token_response)["access_token"][-1]
-      import logging
-      logging.info("access token response %r", cgi.parse_qs(token_response))
     else:
       access_token = None
-      import logging
-      logging.info("access token response %r", cgi.parse_qs(token_response))
+    import logging
+    logging.info("access token response %r", cgi.parse_qs(token_response))
 
     return dict(
         uid = response["user_id"],
