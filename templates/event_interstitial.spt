@@ -29,7 +29,7 @@ $event.info.venue.street<br>
 #end if
 $city_state_country<br>
 
-<p><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a>
+<p><b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b>
 
 </div>
 </div>

@@ -64,10 +64,6 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
             self.response.out.write('Need an event_id.')
             return
 
-        # Logged in users go directly to the event...
-        if self.user:
-            self.redirect(urls.raw_fb_event_url(event_id))
-
         # For everyone else, there's an interstitial.
         self.batch_lookup.lookup_event(event_id)
         self.finish_preload()
