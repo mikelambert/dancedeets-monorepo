@@ -115,7 +115,7 @@ easy_choreography_keywords = [
 
 # if somehow has funks, hiphop, and breaks, and house. or 3/4? call it a dance event?
 
-dance_and_music_not_wrong_battle_keywords = [
+dance_and_music_keywords = [
     'hip\W?hop',
     u'嘻哈', # chinese hiphop
     u'ההיפ הופ', # hebrew hiphop
@@ -148,9 +148,6 @@ dance_and_music_not_wrong_battle_keywords = [
     'vogue',
     u'フリースタイル', # japanese freestyle
     'b\W?boy\w*', # 'bboyev' in slovak
-]
-dance_and_music_keywords = dance_and_music_not_wrong_battle_keywords + [
-    'free\W?style(?:r?|rs?)', # when combined with competition, works incorrectly
 ]
 
 # hiphop dance. hiphop dans?
@@ -205,6 +202,8 @@ dance_keywords = [
     # 'l\W?a\W?\Wstyle',
     'l\W?a\W?\Wdance',
     'n(?:ew|u)\W?style',
+    'n(?:ew|u)\W?style\Whip\W?hop',
+    'hip\W?hop\Wn(?:ew|u)\W?style',
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'all\W+open\W?style[sz]?',
     'open\W+all\W?style[sz]?',

@@ -116,7 +116,7 @@ wrong_battles += [
 wrong_battles_regex = event_classifier.make_regexes(wrong_battles)
 
 
-dance_class_styles = event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.dance_keywords + house_keywords
+dance_class_styles = event_classifier.dance_and_music_keywords + event_classifier.dance_keywords + house_keywords
 dance_class_styles_regex = event_classifier.make_regexes(dance_class_styles)
 
 
@@ -158,7 +158,7 @@ ambiguous_class_keywords = [
         'stages'
 ]
 ambiguous_class_regex = event_classifier.make_regex_string(ambiguous_class_keywords)
-p1 = event_classifier.make_regex_string(event_classifier.dance_and_music_not_wrong_battle_keywords + event_classifier.dance_keywords + house_keywords)
+p1 = event_classifier.make_regex_string(event_classifier.dance_and_music_keywords + event_classifier.dance_keywords + house_keywords)
 p2 = event_classifier.make_regex_string(event_classifier.class_keywords)
 good_dance_class_regex = event_classifier.make_regexes([
     u'%s%s%s' % (p1, connectors_regex, p2),
@@ -180,7 +180,7 @@ non_dance_support = [
 non_dance_regex = event_classifier.make_regexes(non_dance_support)
 
 full_judge_keywords = event_classifier.judge_keywords
-judge_qualifier = event_classifier.make_regex_string(event_classifier.dance_keywords + event_classifier.easy_dance_keywords + event_classifier.dance_and_music_not_wrong_battle_keywords + house_keywords + event_classifier.easy_choreography_keywords + event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
+judge_qualifier = event_classifier.make_regex_string(event_classifier.dance_keywords + event_classifier.easy_dance_keywords + event_classifier.dance_and_music_keywords + house_keywords + event_classifier.easy_choreography_keywords + event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
 judge_regex = event_classifier.make_regex_string(event_classifier.judge_keywords)
 full_judge_keywords.extend([
         u'%s%s%s' % (judge_qualifier, connectors_regex, judge_regex),
@@ -671,8 +671,11 @@ def is_bad_wrong_dance(classified_event):
 
     keyword_count = len(strong_classical_dance_keywords) + 0.5 * len(weak_classical_dance_keywords)
 
+    just_free_style_dance = len(real_dance_keywords) == 1 and list(real_dance_keywords)[0].startswith('free')
     if not real_dance_keywords and not has_house and len(club_only_matches) <= 1 and len(manual_keywords) <= 1 and keyword_count >= 2:
         return True, 'Has strong classical keywords %s, but only real keywords %s' % (strong_classical_dance_keywords + weak_classical_dance_keywords, manual_keywords)
+    elif keyword_count >= 2 and just_free_style_dance and not manual_keywords:
+        return True, 'Has strong classical keywords %s with freestyle dance, but only dance keywords %s' % (strong_classical_dance_keywords + weak_classical_dance_keywords, real_dance_keywords.union(manual_keywords))
     return False, 'not a bad classical dance event'
 
 def is_auto_notadd_event(classified_event, auto_add_result=None):
