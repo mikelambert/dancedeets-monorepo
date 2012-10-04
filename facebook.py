@@ -263,6 +263,9 @@ def get_user_from_cookie(cookies, app_id, app_secret):
         pass
 
     response = parse_signed_request(cookie, app_secret)
+    import logging
+    import datetime
+    logging.info("cookie response is %r", response)
     if not response:
         return None
 
@@ -279,17 +282,41 @@ def get_user_from_cookie(cookies, app_id, app_secret):
         token_response = file.read()
     finally:
         file.close()
+    parsed_response = cgi.parse_qs(token_response)
+    logging.info("token response %r", parsed_response)
 
-    if 'access_token' in cgi.parse_qs(token_response):
-      access_token = cgi.parse_qs(token_response)["access_token"][-1]
+    expires_time = None
+    if 'access_token' in parsed_response:
+      access_token = parsed_response["access_token"][-1]
+      if 'expires' in parsed_response:
+          expires_time = datetime.datetime.now() + datetime.timedelta(seconds=int(parsed_response["expires"][-1]))
     else:
       access_token = None
-    import logging
-    logging.info("access token response %r", cgi.parse_qs(token_response))
 
+    if access_token:
+        args = dict(
+            client_id = app_id,
+            client_secret = app_secret,
+            grant_type = 'fb_exchange_token',
+            fb_exchange_token = access_token
+        )
+        url = "https://graph.facebook.com/oauth/access_token?" + urllib.urlencode(args)
+        file = urllib.urlopen(url)
+        try:
+            token_response = file.read()
+        finally:
+            file.close()
+        parsed_response = cgi.parse_qs(token_response)
+        logging.info("token response #2 %r", parsed_response)
+        if 'access_token' in parsed_response:
+          access_token = parsed_response["access_token"][-1]
+          if 'expires' in parsed_response:
+              expires_time = datetime.datetime.now() + datetime.timedelta(seconds=int(parsed_response["expires"][-1]))
+    
     return dict(
         uid = response["user_id"],
         access_token = access_token,
+        access_token_expires = expires_time,
     )
 
 def old_get_user_from_cookie(cookies, app_id, app_secret):

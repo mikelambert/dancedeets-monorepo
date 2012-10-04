@@ -73,7 +73,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['needs_city'] = needs_city
         self.render_template('login')
 
-def construct_user(fb_uid, fb_graph, fb_user, request, referer):
+def construct_user(fb_uid, access_token, access_token_expires, fb_user, request, referer):
         next = request.get('next') or '/'
         user = users.User.get_by_key_name(str(fb_uid))
         if user:
@@ -91,7 +91,8 @@ def construct_user(fb_uid, fb_graph, fb_user, request, referer):
             #return
 
         user = users.User(key_name=str(fb_uid))
-        user.fb_access_token = fb_graph.access_token
+        user.fb_access_token = access_token
+        user.fb_access_token_expires = access_token_expires
         user.location = city
         # grab the cookie to figure out who referred this user
         logging.info("Referer was: %s", referer)

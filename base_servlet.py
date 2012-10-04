@@ -115,6 +115,79 @@ class BareBaseRequestHandler(RequestHandler):
         self.response.out.write(rendered)
 
 class BaseRequestHandler(BareBaseRequestHandler):
+    def setup_login_state(self, request):
+        #TODO(lambert): change fb api to not request access token, and instead pull it from the user
+        # only request the access token from FB when it's been longer than a day, and do it out-of-band to fetch-and-update-db-and-memcache
+
+        args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['app_id'], FACEBOOK_CONFIG['secret_key'])
+        # We should return args if we're signed in, one way or the other
+        # though we may not have gotten an access_token this way if the received cookie was the same as the previous request
+        if not args:
+            self.fb_uid = None
+            self.fb_graph = facebook.GraphAPI(None) 
+            self.user = None
+            return
+
+        self.fb_uid = int(args['uid'])
+        self.user = users.User.get_cached(str(self.fb_uid))
+
+        # if we don't have a user and don't have a token, it means the user just signed-up, but double-refreshed.
+        # so the second request doesn't have a user. so let it be logged-out, as we continue on...
+        # the other request should construct the user, so the next load should work okay
+        if not self.user and not args['access_token']:
+            logging.error("We have no user and no access token, but we know they're logged in. Likely due to a double-refresh on the same cookie, for a user who just signed up")
+            self.fb_uid = None
+            self.fb_graph = facebook.GraphAPI(None) 
+            self.user = None
+            return
+
+        # if we don't have a user but do have a token, the user has granted us permissions, so let's construct the user now
+        if not self.user:
+            fb_graph = facebook.GraphAPI(args['access_token'])
+            from servlets import login
+            batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, fb_graph, allow_cache=False)
+            batch_lookup.lookup_user(self.fb_uid)
+            batch_lookup.finish_loading()
+            fb_user = batch_lookup.data_for_user(self.fb_uid)
+
+            referer = self.get_cookie('User-Referer')
+
+            login.construct_user(self.fb_uid, args['access_token'], args['access_token_expires'], fb_user, self.request, referer)
+            #TODO(lambert): handle this MUUUCH better
+            logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
+            self.user = users.User.get_cached(str(self.fb_uid))
+
+        if not self.user:
+            logging.error("We still don't have a user!")
+            self.fb_uid = None
+            self.fb_graph = facebook.GraphAPI(None) 
+            self.user = None
+            return
+
+        logging.info("Logged in uid %s with name %s", self.fb_uid, self.user.full_name)
+        # When we get args, we may have gotten a new acces token, or not...so choose the best we've got
+        self.fb_graph = facebook.GraphAPI(args['access_token'] or (self.user and self.user.fb_access_token))
+        # If their auth token has changed, then write out the new one
+        logging.info("User has token %s, cookie has token %s", self.user.fb_access_token, args['access_token'])
+
+        if (
+            # if the user's token is expired and we have a new one, grab the new one
+            (self.user.expired_oauth_token and args['access_token']) or
+            # if the user's access token differs from what's stored, update it
+            (args['access_token'] and self.user.fb_access_token != args['access_token'])
+        ):
+            logging.info("Putting new access token into db/memcache")
+            self.user = users.User.get_by_key_name(str(self.fb_uid))
+            self.user.fb_access_token = self.fb_graph.access_token
+            self.user.expired_oauth_token = False
+            self.user.put() # this also sets to memcache
+
+        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        if not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday:
+            # Do this in a separate request so we don't increase latency on this call
+            deferred.defer(update_last_login_time, self.user.fb_uid, datetime.datetime.now(), _queue='slow-queue')
+            backgrounder.load_users([self.fb_uid], allow_cache=False)
+
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
         current_url_args = {}
@@ -123,48 +196,15 @@ class BaseRequestHandler(BareBaseRequestHandler):
         final_url = self.request.path + '?' + urllib.urlencode(current_url_args, doseq=True)
         params = dict(next=final_url)
         login_url = '/login?%s' % urllib.urlencode(params)
-        args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['app_id'], FACEBOOK_CONFIG['secret_key'])
-        if args:
-            self.fb_uid = int(args['uid'])
-            #TODO(lambert): change fb api to not request access token, and instead pull it from the user
-            # only request the access token from FB when it's been longer than a day, and do it out-of-band to fetch-and-update-db-and-memcache
-            self.fb_graph = facebook.GraphAPI(args['access_token'])
-            self.user = users.User.get_cached(str(self.fb_uid))
-            if not self.user:
-                from servlets import login
-                batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=False)
-                batch_lookup.lookup_user(self.fb_uid)
-                batch_lookup.finish_loading()
-                fb_user = batch_lookup.data_for_user(self.fb_uid)
-
-                referer = self.get_cookie('User-Referer')
-
-                login.construct_user(self.fb_uid, self.fb_graph, fb_user, self.request, referer)
-                #TODO(lambert): handle this MUUUCH better
-                logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
-                self.user = users.User.get_cached(str(self.fb_uid))
-            logging.info("Logged in uid %s with name %s", self.fb_uid, self.user.full_name)
-            # If their auth token has changed, then write out the new one
-            logging.info("User has token %s, cookie has token %s", self.user.fb_access_token, self.fb_graph.access_token)
-            if self.request.get('new_token') == '1' or self.user.fb_access_token != self.fb_graph.access_token:
-                self.user = users.User.get_by_key_name(str(self.fb_uid))
-                if self.user:
-                    self.user.fb_access_token = self.fb_graph.access_token
-                    self.user.expired_oauth_token = False
-                    self.user.put() # this also sets to memcache
-            yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-            if not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday:
-                # Do this in a separate request so we don't increase latency on this call
-                deferred.defer(update_last_login_time, self.user.fb_uid, datetime.datetime.now(), _queue='slow-queue')
-                backgrounder.load_users([self.fb_uid], allow_cache=False)
-        else:
-            self.fb_uid = None
-            self.fb_graph = facebook.GraphAPI(None)
-            self.user = None
+        self.setup_login_state(request)
 
         self.display['attempt_autologin'] = 1
         # If they've expired, and not already on the login page, then be sure we redirect them to there...
         redirect_for_new_oauth_token = (self.user and self.user.expired_oauth_token)
+        if redirect_for_new_oauth_token:
+            logging.error("We have a logged in user, but an expired access token. How?!?!")
+        # TODO(lambert): delete redirect_for_new_oauth_token codepaths
+        # TODO(lambert): delete codepaths that handle user-id but no self.user. assume this entire thing relates to no-user.
         if redirect_for_new_oauth_token or (self.requires_login() and (not self.fb_uid or not self.user)):
             # If we're getting a referer id and not signed up, save off a cookie until they sign up
             if not self.fb_uid:
@@ -215,7 +255,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['app_id'] = FACEBOOK_CONFIG['app_id']
         self.display['prod_mode'] = self.prod_mode
 
-        fb_permissions = 'user_location,rsvp_event,offline_access,email,user_events,user_groups,friends_events,friends_groups,user_likes,friends_likes'
+        fb_permissions = 'user_location,rsvp_event,email,user_events,user_groups,friends_events,friends_groups,user_likes,friends_likes'
         if self.request.get('all_access'):
             fb_permissions += ',read_friendlists'
         self.display['fb_permissions'] = fb_permissions

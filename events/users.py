@@ -16,6 +16,7 @@ class User(db.Model):
     # SSO
     fb_uid = property(lambda x: int(x.key().name()))
     fb_access_token = db.StringProperty(indexed=False)
+    fb_access_token_expires = db.DateTimeProperty(indexed=False)
 
     # Statistics
     creation_time = db.DateTimeProperty()
