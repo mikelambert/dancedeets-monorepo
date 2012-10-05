@@ -27,12 +27,13 @@ class OAuthSetupHandler(webapp.RequestHandler):
       self.response.out.write('oauth error! %s' % e)
 
 
+application = webapp.WSGIApplication(
+    [
+     ('/oauth_setup', OAuthSetupHandler),
+    ],
+    debug=True)
+
 def main():
-  application = webapp.WSGIApplication(
-      [
-       ('/oauth_setup', OAuthSetupHandler),
-      ],
-      debug=True)
   run_wsgi_app(application)
 
 

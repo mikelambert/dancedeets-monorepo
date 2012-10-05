@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 import datetime
+import json
 import logging
 import re
 import time
 import urllib2
-from django.utils import simplejson
 
 from google.appengine.ext import deferred
 
@@ -143,8 +143,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         e = eventdata.DBEvent.get_by_key_name(event_id)
         if e and e.creating_fb_uid:
             f = urllib2.urlopen('https://graph.facebook.com/%s?access_token=%s' % (e.creating_fb_uid, self.fb_graph.access_token))
-            json = simplejson.loads(f.read())
-            creating_user = json['name']
+            json_data = json.loads(f.read())
+            creating_user = json_data['name']
         else:
             creating_user = None
 

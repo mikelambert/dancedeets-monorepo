@@ -1,7 +1,7 @@
 application: dancedeets-hrd
-version: v1-7-location-bounds
-runtime: python
-threadsafe: false #sigh, appengine starts charging me more, telling me i can use threadsafe to save on instances, but then leaves admin, mapreduce, and ereporter stuck using the old cgi interfaces so i can't actually use threadsafe.
+version: v1-8-python27
+runtime: python27
+threadsafe: true
 api_version: 1
 
 inbound_services:
@@ -13,9 +13,6 @@ builtins:
 - deferred: on
 
 handlers:
-- url: /admin/.*
-  script: $PYTHON_LIB/google/appengine/ext/admin
-  login: admin
 - url: /dancedeets.png
   static_files: dancedeets.png
   upload: dancedeets.png
@@ -36,37 +33,37 @@ handlers:
 - url: /images
   static_dir: images
 - url: /tools/.*
-  script: main.py
+  script: main.application
   login: admin
 - url: /admin/.*
-  script: main.py
+  script: main.application
   login: admin
 - url: /events/admin.*
-  script: main.py
+  script: main.application
   login: admin
 - url: /tasks/.*
-  script: main.py
+  script: main.application
   login: admin
 - url: /_ereporter
-  script: $PYTHON_LIB/google/appengine/ext/ereporter/report_generator.py
+  script: google.appengine.ext.ereporter.report_generator.application
   login: admin
 - url: /mapreduce/worker_callback
-  script: main.py
+  script: main.application
   login: admin
 - url: /mapreduce/pipeline/images
   static_dir: mapreduce/lib/pipeline/ui/images
 - url: /mapreduce(/.*)?
-  script: mapreduce/main.py
+  script: mapreduce.main.APP
   login: admin
 - url: /_ah/warmup
-  script: main.py
+  script: main.application
   login: admin
 - url: /oauth2callback
-  script: oauth2client/appengine.py
+  script: oauth2client.appengine.application
 - url: /oauth_setup
-  script: servlets/oauth.py
+  script: servlets.oauth.application
 - url: .*
-  script: main.py
+  script: main.application
 
 
 admin_console:

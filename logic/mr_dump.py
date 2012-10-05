@@ -1,7 +1,7 @@
 import csv
+import json
 import logging
 import StringIO
-from django.utils import simplejson
 
 import fb_api
 from util import fb_mapreduce
@@ -26,7 +26,7 @@ def dump_fb_json(batch_lookup, pe_list):
     results = []
     for pe in pe_list:
         try:
-            result = simplejson.dumps(batch_lookup.data_for_event(pe.fb_event_id))
+            result = json.dumps(batch_lookup.data_for_event(pe.fb_event_id))
             csv_writer.writerow([batch_lookup._string_key(batch_lookup._event_key(pe.fb_event_id)), result])
         except fb_api.NoFetchedDataException:
             logging.error("skipping row for event id %s", pe.fb_event_id)

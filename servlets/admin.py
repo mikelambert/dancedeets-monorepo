@@ -1,8 +1,8 @@
+import json
 import pprint
 import time
 from google.appengine.ext import db
 from google.appengine.ext import webapp
-from django.utils import simplejson
 import smemcache
 
 import base_servlet
@@ -56,8 +56,8 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
         db_result = fb_api.FacebookCachedObject.get_by_key_name(real_key)
         self.response.out.write('Memcache:\n%s\n\n' % pprint.pformat(memcache_result, width=200))
         self.response.out.write('Database:\n%s\n\n' % pprint.pformat(db_result and db_result.decode_data() or None, width=200))
-        self.response.out.write('MemcacheJSON:\n%s\n\n' % simplejson.dumps(memcache_result))
-        self.response.out.write('DatabaseJSON:\n%s\n\n' % simplejson.dumps(db_result and db_result.decode_data() or None))
+        self.response.out.write('MemcacheJSON:\n%s\n\n' % json.dumps(memcache_result))
+        self.response.out.write('DatabaseJSON:\n%s\n\n' % json.dumps(db_result and db_result.decode_data() or None))
 
 class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
