@@ -481,6 +481,7 @@ battle_keywords = [
 
 class_keywords = [
     'workshop\W?s?',
+    'ws', # japanese workshop WS
     u'ワークショップ', # japanese workshop
     'cursillo', # spanish workshop
     'ateliers', # french workshop
