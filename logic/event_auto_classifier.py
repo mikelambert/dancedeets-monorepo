@@ -508,7 +508,7 @@ def is_workshop(classified_event):
     elif classified_event.is_dance_event() and lee_lee_hiphop and not has_wrong_style_title and not has_non_dance_event_title:
         return (True, 'has class with strong style-title: %s %s' % (has_good_dance_title, has_extended_good_crew_title))
     elif has_class_title and not has_wrong_style and (has_good_dance or has_good_crew):
-        return (True, 'has dance class that contains strong description')
+        return (True, 'has dance class title: %s, that contains strong description %s' % (has_class_title, has_good_dance + has_good_crew))
     elif has_good_dance_class_title:
         return (True, 'has good dance class title: %s' % has_good_dance_class_title)
     elif has_good_dance_class and not has_wrong_style_title:
