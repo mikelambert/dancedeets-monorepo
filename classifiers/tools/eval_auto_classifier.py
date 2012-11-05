@@ -74,8 +74,8 @@ positive_classifier = True
 def basic_match(fb_event):
     e = event_classifier.get_classified_event(fb_event)
     if positive_classifier:
-        #result = event_auto_classifier.is_auto_add_event(e)
-        result = event_auto_classifier.is_performance_or_practice(e)
+        result = event_auto_classifier.is_auto_add_event(e)
+        #result = event_auto_classifier.has_good_djs_title(e)
         #result = event_auto_classifier.is_workshop(e)
     else:
         result = event_auto_classifier.is_auto_notadd_event(e)
