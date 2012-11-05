@@ -9,10 +9,10 @@ import os
 import re
 import sys
 import urllib
+import webapp2
 
 from google.appengine.ext import db
 from google.appengine.ext import deferred
-from google.appengine.ext.webapp import RequestHandler
 
 from events import users
 import facebook
@@ -30,7 +30,7 @@ class _ValidationError(Exception):
 
 FACEBOOK_CONFIG = None
 
-class BareBaseRequestHandler(RequestHandler):
+class BareBaseRequestHandler(webapp2.RequestHandler):
     def __init__(self, *args, **kwargs):
         self.display = {}
         self._errors = []

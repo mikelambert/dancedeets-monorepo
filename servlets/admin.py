@@ -1,8 +1,8 @@
 import json
 import pprint
 import time
+import webapp2
 from google.appengine.ext import db
-from google.appengine.ext import webapp
 import smemcache
 
 import base_servlet
@@ -11,7 +11,7 @@ from events import users
 import fb_api
 from util import urls
 
-class DeleteFBCacheHandler(webapp.RequestHandler):
+class DeleteFBCacheHandler(webapp2.RequestHandler):
         def get(self):
                 self.response.headers['Content-Type'] = 'text/plain'
                 try:
@@ -78,7 +78,7 @@ class ShowUsersHandler(base_servlet.BaseRequestHandler):
         self.display['track_google_analytics'] = False
         self.render_template('show_users')
 
-class ClearMemcacheHandler(webapp.RequestHandler):
+class ClearMemcacheHandler(webapp2.RequestHandler):
     def get(self):
         smemcache.flush_all()
         self.response.out.write("Flushed memcache!")

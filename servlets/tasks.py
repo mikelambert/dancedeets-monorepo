@@ -6,10 +6,10 @@ import re
 import time
 import urllib
 import urlparse
+import webapp2
 
 from google.appengine.api import mail
 from google.appengine.api import urlfetch
-from google.appengine.ext.webapp import RequestHandler
 from google.appengine.runtime import apiproxy_errors
 
 
@@ -37,7 +37,7 @@ WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = %s)
 AND is_app_user = 1
 """
 
-class BaseTaskRequestHandler(RequestHandler):
+class BaseTaskRequestHandler(webapp2.RequestHandler):
     pass
 
 class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
@@ -134,7 +134,7 @@ class EmailUserHandler(BaseTaskFacebookRequestHandler):
         fb_reloading.email_user(self.batch_lookup, load_users[0])
     post=get
 
-class ComputeRankingsHandler(RequestHandler):
+class ComputeRankingsHandler(webapp2.RequestHandler):
     def get(self):
         rankings.begin_ranking_calculations()
 

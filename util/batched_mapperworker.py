@@ -1,8 +1,5 @@
 import logging
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp import util
-
 from mapreduce import context
 from mapreduce import handlers
 from mapreduce import input_readers

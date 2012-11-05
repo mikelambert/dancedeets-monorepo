@@ -8,7 +8,7 @@ from events import users
 import main
 import fb_api_stub
 
-app = TestApp(main.get_application())
+app = TestApp(main.application)
 
 MIKE_ID = '701004'
 USER_ID = '1000'

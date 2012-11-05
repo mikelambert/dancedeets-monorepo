@@ -1,7 +1,7 @@
 import logging
 import time
+import webapp2
 from google.appengine.ext import db
-from google.appengine.ext import webapp
 from google.appengine.ext import deferred
 
 from mapreduce import context
@@ -22,7 +22,7 @@ from logic import thing_db
 from servlets import tasks
 
 
-class UnprocessFutureEventsHandler(webapp.RequestHandler):
+class UnprocessFutureEventsHandler(webapp2.RequestHandler):
     def get(self):
         #TODO(lambert): reimplement if needed:
         #if entity.key().name().endswith('OBJ_EVENT'):
@@ -45,7 +45,7 @@ def map_delete_cached_with_wrong_user_id(fbo):
         yield op.db.Delete(fbo)
 
 
-class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp.RequestHandler):
+class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp2.RequestHandler):
     def get(self):
         mr_dump.mr_dump_events(self.batch_lookup)
 
@@ -53,7 +53,7 @@ class AutoAddPotentialEventsHandler(tasks.BaseTaskFacebookRequestHandler):
     def get(self):
         auto_add.mr_classify_potential_events(self.batch_lookup)
 
-class OwnedEventsHandler(webapp.RequestHandler):
+class OwnedEventsHandler(webapp2.RequestHandler):
     def get(self):
         db_events_query = eventdata.DBEvent.gql('WHERE owner_fb_uid = :1', self.request.get('owner_id'))
         db_events = db_events_query.fetch(1000)
@@ -66,12 +66,12 @@ class OwnedEventsHandler(webapp.RequestHandler):
             real_fb_event = fb_event.decode_data()
             print db_event.tags, real_fb_event['info']['name']
 
-class ImportCitiesHandler(webapp.RequestHandler):
+class ImportCitiesHandler(webapp2.RequestHandler):
     def get(self):
         cities.import_cities()
         self.response.out.write("Imported Cities!")
 
-class ClearMemcacheHandler(webapp.RequestHandler):
+class ClearMemcacheHandler(webapp2.RequestHandler):
     def get(self):
         smemcache.flush_all()
         self.response.out.write("Flushed memcache!")

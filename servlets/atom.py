@@ -1,8 +1,7 @@
 import datetime
 import logging
+import webapp2
 import xml.sax.saxutils
-
-from google.appengine.ext.webapp import RequestHandler
 
 import base_servlet
 from events import eventdata

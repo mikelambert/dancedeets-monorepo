@@ -562,6 +562,15 @@ def has_good_event_title(classified_event):
         return True, 'looks like a good event title: %s' % title_keywords
     return False, 'no good event title'
 
+def has_good_djs_title(classified_event):
+    non_dance_title_keywords = non_dance_regex[classified_event.boundaries].findall(classified_event.final_title)
+    wrong_battles_title = wrong_battles_regex[classified_event.boundaries].findall(classified_event.final_title)
+    title_keywords = event_classifier.all_regexes['good_djs_regex'][classified_event.boundaries].findall(classified_event.final_title)
+
+    if title_keywords and not non_dance_title_keywords and not wrong_battles_title:
+        return True, 'looks like a good dj title: %s' % title_keywords
+    return False, 'no good dj title'
+
 def is_performance_or_practice(classified_event):
     text = classified_event.search_text
     text = re.sub(r'\b(?:beat\W?lock|baile funk|star\W?strutting|power\W?move show)\b', '', text)

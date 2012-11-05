@@ -2,9 +2,9 @@
 
 import logging
 import os
+import webapp2
 import wsgiref.handlers
 import yaml
-from google.appengine.ext import webapp
 from google.appengine.ext import ereporter
 from google.appengine.ext.webapp.util import run_wsgi_app
 import base_servlet
@@ -92,10 +92,10 @@ URLS = [
     ('/mapreduce/worker_callback', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
 ]
 
-class WebappHandlerAdapter(webapp.BaseHandlerAdapter):
-    """An adapter to dispatch a ``webapp.RequestHandler``.
+class WebappHandlerAdapter(webapp2.BaseHandlerAdapter):
+    """An adapter to dispatch a ``webapp2.RequestHandler``.
 
-    Like in webapp, the handler is constructed, then ``initialize()`` is
+    Like in webapp2, the handler is constructed, then ``initialize()`` is
     called, then the method corresponding to the HTTP request method is called.
     """
 
@@ -118,17 +118,17 @@ class WebappHandlerAdapter(webapp.BaseHandlerAdapter):
             except Exception, e:
                 handler.handle_exception(e, request.app.debug)
 
-webapp.WebappHandlerAdapter = WebappHandlerAdapter #HACK
+webapp2.WebappHandlerAdapter = WebappHandlerAdapter #HACK
 
 ereporter.register_logger()
-prod_mode = not os.environ['SERVER_SOFTWARE'].startswith('Dev')
+prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
 if prod_mode:
     filename = 'facebook-prod.yaml'
 else:
     filename = 'facebook.yaml'
 base_servlet.FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
 
-application = webapp.WSGIApplication(URLS)
+application = webapp2.WSGIApplication(URLS)
 application.debug = True
 application.prod_mode = prod_mode
 
