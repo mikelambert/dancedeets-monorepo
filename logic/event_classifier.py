@@ -155,7 +155,9 @@ dance_keywords = [
     'street\W?jam',
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
+    u'ブレイク', # breakdance japanese
     'jazz rock',
+    'funk\W?style[sz]?',
     'poppers?', 'popp?i?ng', # listing poppin in the ambiguous keywords
     'poppeurs?',
     'commercial hip\W?hop',
@@ -480,7 +482,7 @@ battle_keywords = [
 
 
 class_keywords = [
-    'workshop\W?s?',
+    'work\W?shop\W?s?',
     'ws', # japanese workshop WS
     u'ワークショップ', # japanese workshop
     'cursillo', # spanish workshop
@@ -495,6 +497,7 @@ class_keywords = [
     'warsztaty', # polish workshop
     u'warsztatów', # polish workshop
     u'seminarų', # lithuanian workshop
+    'taller de', # spanish workshop
     'intensives?',
     'intensivo', # spanish intensive
     'class with', 'master\W?class(?:es)?',
@@ -561,14 +564,27 @@ event_keywords = [
     u'練習', # japanese practice
     'abdc', 'america\W?s best dance crew',
 ]
-n_x_n_keywords = [u'%s[ -]?(?:v/s|vs?\\.?|x|×|on)[ -]?%s' % (i, i) for i in range(12)]
-n_x_n_keywords += [u'%s[ -](?:v/s|vs?\\.?|x|×|on)[ -]%s' % (i, i) for i in ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
+
+english_digit_x_keywords = [
+    'v/s',
+    r'vs?\.?'
+    'on',
+    'x',
+    u'×',
+]
+digit_x_keywords = english_digit_x_keywords + [
+    'na',
+    'mot',
+]
+digit_x_string = '|'.join(digit_x_keywords)
+english_digit_x_string = '|'.join(english_digit_x_keywords)
+n_x_n_keywords = [u'%s[ -]?(?:%s)[ -]?%s' % (i, digit_x_string, i) for i in range(12)]
+n_x_n_keywords += [u'%s[ -](?:%s)[ -]%s' % (i, english_digit_x_string, i) for i in ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
 event_keywords += class_keywords
 event_keywords += n_x_n_keywords
 event_keywords += battle_keywords
 event_keywords += audition_keywords
 event_keywords += cypher_keywords
-event_keywords += [r'%s[ -]?na[ -]?%s' % (i, i) for i in range(12)] # polish x vs x
 
 judge_keywords = [
         'jurys?',

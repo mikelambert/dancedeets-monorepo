@@ -104,14 +104,16 @@ ihow
 imperial house of waacking
 inhumanoids
 international house of waacking
-ivy league crew
+ivy\W?league crew
 j\W?s\W?b\W? undeground
 j\W?soul brothers
 jabbawockeez
 jack\W?baskets
 kamikaze clownz
+kinematik dance
 klandeskillz
 l\.?o\.?f\.?d
+lab bonita stax
 lagos apt
 legion of extra.?ordinary dancers
 legion-x
@@ -164,7 +166,6 @@ soul2soul
 soul\W?shifters
 soulsweat
 soulxpress
-stax groove
 stax groove
 street messengers
 stylematix

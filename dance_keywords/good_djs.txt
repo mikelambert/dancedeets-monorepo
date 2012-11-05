@@ -1,6 +1,6 @@
-akalepse
 afrika bambaataa
 afro mosaic soul
+akalepse
 bj piggo
 black coffee
 clubshelter
@@ -13,6 +13,7 @@ dj spinna
 dj veusty
 ep\W+extended play
 eric groove
+francois k
 greg gauthier
 ian friday
 jayvi velasco
@@ -21,6 +22,7 @@ jellybean benitez
 kaistar
 louie vega
 marques wyatt
+ohishi\W+(?:jmc\W+)?sodeep
 peven everett
 rich medina
 rubi r-tres
