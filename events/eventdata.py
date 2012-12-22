@@ -139,7 +139,7 @@ class DBEvent(db.Model):
                 self.longitude = None
                 self.geohashes = []
                 #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
-                logging.warning("No geocoding results for eid=%s is: %s", self.fb_event_id)
+                logging.warning("No geocoding results for eid=%s is: %s", self.fb_event_id, location_info)
 
         self.event_keywords = event_classifier.relevant_keywords(fb_dict)
 
