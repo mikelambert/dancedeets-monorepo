@@ -48,6 +48,8 @@ def make_regex_string(strings, matching=False, word_boundaries=False, match_cjk=
 easy_dance_keywords = [
     'dance style[sz]',
     'dances?', "dancin[g']?", 'dancers?',
+    u'댄스', # korean dance
+    u'댄서', # korean dancer
     u'танцуват', # bulgarian dance
     u'танцува', # bulgarian dance
     u'танцовия', # bulgarian dance
@@ -95,6 +97,9 @@ easy_dance_keywords = [
     'ballerin[io]', # dancer italian
     'dansare', # dancers swedish
     'dansat', # dancing swedish
+    'dansama', # dancers swedish
+    'dansa\w*', # dance-* swedish
+    'dansgolv', # dance floor swedish
     'dans', # swedish danish dance
     u'tänzern', # dancer german
     u'танчер', # dancer macedonian
@@ -126,6 +131,7 @@ dance_and_music_keywords = [
     'all\W?style[zs]?',
     'tou[ts]\W?style[zs]?', # french all-styles
     'tutti gli stili', # italian all-styles
+    'be\W?bop',
     'shuffle',
     'swag',
     'funk',
@@ -238,9 +244,17 @@ dance_keywords = [
 # Crazy polish sometimes does lockingu. Maybe we need to do this more generally though.
 dance_keywords = dance_keywords + [x+'u' for x in dance_keywords] 
 
+house_keywords = [
+    'house',
+    u'하우스', # korean house
+    u'ハウス', # japanese house
+]
+house_regex_string = make_regex_string(house_keywords)
+
 # freestyle dance
 easy_dance_regexes = make_regex_string(easy_dance_keywords)
-dance_keywords += ['house ?%s' % easy_dance_regexes]
+dance_keywords += ['%s ?%s' % (house_regex_string, easy_dance_regexes)]
+
 dance_keywords += ['free\W?style(?:r?|rs?) ?%s' % easy_dance_regexes]
 dance_and_music_regexes = make_regex_string(dance_and_music_keywords)
 dance_keywords += [
@@ -484,6 +498,7 @@ battle_keywords = [
 class_keywords = [
     'work\W?shop\W?s?',
     'ws', # japanese workshop WS
+    'w\.s\.', # japanese workshop W.S.
     u'ワークショップ', # japanese workshop
     'cursillo', # spanish workshop
     'ateliers', # french workshop
@@ -567,7 +582,7 @@ event_keywords = [
 
 english_digit_x_keywords = [
     'v/s',
-    r'vs?\.?'
+    r'vs?\.?',
     'on',
     'x',
     u'×',
@@ -575,10 +590,12 @@ english_digit_x_keywords = [
 digit_x_keywords = english_digit_x_keywords + [
     'na',
     'mot',
+    'contra',
+    'contre',
 ]
 digit_x_string = '|'.join(digit_x_keywords)
 english_digit_x_string = '|'.join(english_digit_x_keywords)
-n_x_n_keywords = [u'%s[ -]?(?:%s)[ -]?%s' % (i, digit_x_string, i) for i in range(12)]
+n_x_n_keywords = [u'%s[ -]?(?:%s)[ -]?%s' % (i, digit_x_string, i) for i in range(12)[1:]]
 n_x_n_keywords += [u'%s[ -](?:%s)[ -]%s' % (i, english_digit_x_string, i) for i in ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
 event_keywords += class_keywords
 event_keywords += n_x_n_keywords
@@ -604,6 +621,7 @@ judge_keywords = [
     u'評判', # chinese judges
     u'評判團', # chinese judges
     u'審査員', # japanese judges
+    u'ジャッジ', # japanese judges
 ]
 event_keywords += judge_keywords
 

@@ -48,6 +48,7 @@ wrong_classes = [
     'in\W?house',
     'lock in',
     'juste debout school',
+    'baile funk',
 ]
 
 ambiguous_wrong_style_keywords = [
@@ -107,6 +108,22 @@ wrong_battle_styles = [
     'performance',
     'graf(?:fiti)?',
 ]
+
+#TODO: use
+# solo performance
+# solo battle
+# crew battle
+# team battle
+# these mean....more
+format_types = [
+        'solo',
+        u'ソロ', # japanese solo
+        'team',
+        u'チーム', # japanese team
+        'crew',
+        u'クルー', # japanese crew
+]
+
 p1 = event_classifier.make_regex_string(wrong_battle_styles)
 p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
 wrong_battles += [
@@ -379,6 +396,7 @@ def is_battle(classified_event):
     if not has_good_dance_battle and not (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches):
         return (False, 'no strong dance keywords')
 
+    # TODO(lambert): Need to make this apply except when it's an n-x-n style battle. or good-style battle. 'hiphop battle' or 'n x n battle' may be ambiguous, but 'locking (solo) battle' or '1 vs 1 bboy/bgirl battle' is definitely not.
     if has_dance_battle and not is_wrong_competition and not is_wrong_style_battle_title and not has_wrong_battle:
         return (True, 'good-style real dance battle/comp! %s with keywords %s' % (has_dance_battle, (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches)))
     elif has_n_x_n and has_battle and not has_wrong_battle:

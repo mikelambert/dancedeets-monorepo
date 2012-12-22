@@ -23,6 +23,7 @@ blue power crew
 boogie renaissance
 bopster scat
 breakydelic
+broken sport
 buccchild fam
 burning styles crew
 bushbabeez
@@ -54,6 +55,7 @@ dsn core knowledge
 dynamic brno
 dynamic devotion
 electric boogaloos
+electro swinger\W?s
 electro swinger\W?s
 elite force
 fab 5 boogz
@@ -109,10 +111,12 @@ j\W?s\W?b\W? undeground
 j\W?soul brothers
 jabbawockeez
 jack\W?baskets
+jazz\W?cotech
 kamikaze clownz
 kinematik dance
 klandeskillz
 l\.?o\.?f\.?d
+lab bonita stax
 lab bonita stax
 lagos apt
 legion of extra.?ordinary dancers
@@ -133,7 +137,7 @@ mda crew
 men\W?soul
 metro gangz
 mgf,0
-mix\W?d ingrdnts
+mix\W?d ingr?dnts
 mo\w?\w?paradise
 moptops
 natural movementz
@@ -154,7 +158,7 @@ rag pound
 redwindsor
 relax crew
 rm sister
-serial stepperz
+serial\W?stepper[sz]
 shibuya harlem shakers
 silent.?trix
 slc danso
@@ -166,7 +170,9 @@ soul2soul
 soul\W?shifters
 soulsweat
 soulxpress
+sound cream stepper[sz]
 stax groove
+steppin\W? jazz ladies
 street messengers
 stylematix
 sucreamgoodman
@@ -198,7 +204,7 @@ vulture kill
 waacking ain't wack
 waacktitioners
 waacouture
-wanted\W?posse
+wanted\W?possee?
 wavebotics crew
 wonder twins
 wrecking crew orchestra

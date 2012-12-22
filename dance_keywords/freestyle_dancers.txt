@@ -46,6 +46,7 @@ flockey
 fluky luke
 future ninja
 gemini,0
+genki\W+pyro
 gianni wers
 greenteck
 greentek
@@ -58,6 +59,7 @@ hideki
 hilty\W+bosch
 hiro,0
 hiro\W+alma
+hitmaster fish
 hozin
 hurrikane
 i\W?cee\W+forzesound
@@ -85,6 +87,7 @@ junior boogie
 kapela,0
 kashmir,0
 katrin blantar
+katsumi\W+pyro
 khalid freeman
 kid boogie
 kim seto
@@ -96,7 +99,7 @@ kumari suraj
 lanaija
 les twins
 lil b,0
-link efc
+link\W+efc
 lis funk
 liss funk
 lockiano
@@ -124,6 +127,7 @@ ninja pop
 nubian nene
 p\W?lock
 pepito
+perry louis
 physs
 pino\W+alma
 popkun
@@ -154,6 +158,7 @@ serene ballarin
 shabba.?doo
 shaik
 shan s
+shannon mabra
 shockalock
 shonn boog
 shyguy
@@ -161,7 +166,7 @@ skeeter rabbit
 slim boogie
 so\Wichiro\W+gold rush
 storm,0
-suga pop
+sugar? pop
 sugapop
 super dino
 super\W?dave
@@ -192,6 +197,7 @@ viktor manoel
 viktor manuel
 waackeisha
 waackiesha
+wadoo\W+zero db
 wahe,0
 walid boumhami
 which\W?way sha

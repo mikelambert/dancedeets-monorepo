@@ -1,3 +1,8 @@
+hangtime sundays
+cercle underground
+funk train
+vogue\W+tone
+ejoe\W?s house
 deeper side of soul
 got to get a knutt
 prince n king
@@ -13,7 +18,7 @@ funkin.? stylez
 circle kingz
 r16
 r-16
-juste? debout
+juste?\W?debout
 step ya game up
 express your style
 funkin style?[zs]
@@ -27,8 +32,9 @@ how the west was won
 htwww
 freestyle sessions
 hip\W?hop international
-house dance international
-house dance conference
+house\W?dance\W?international
+house\W?dance\W?conference
+house\W?dance\W?forever
 bboy summit
 battle of the year
 boty
@@ -67,6 +73,7 @@ paris dupree
 freedom dance party
 
 afro\W+bang
+soirée atmosphère
 soiree atmosphere
 coney island boardwalk
 the floor improv night

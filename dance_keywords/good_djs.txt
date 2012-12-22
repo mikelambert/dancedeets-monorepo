@@ -17,16 +17,18 @@ francois k
 greg gauthier
 ian friday
 jayvi velasco
-jaze-art remote
+jaze\W?art\W?remote
 jellybean benitez
 kaistar
 louie vega
+manchildblack
 marques wyatt
 ohishi\W+(?:jmc\W+)?sodeep
 peven everett
 rich medina
 rubi r-tres
 sabine blazin
+sachio\W+hi-score
 stephen rigmaiden
 sweater\W?funk
 timmy regisford
