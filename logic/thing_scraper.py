@@ -1,6 +1,7 @@
 import cgi
 import datetime
 import logging
+import re
 import urlparse
 
 import facebook
@@ -105,7 +106,10 @@ def parse_event_source_combos_from_feed(source, feed_data):
             if 'eid' in qs:
                 eid = qs['eid'][0]
             if p.path.startswith('/events/'):
-                eid = p.path.split('/')[2]
+                potential_eid = p.path.split('/')[2]
+                m = re.match(r'(\d+)', potential_eid)
+                if m:
+                    eid = m.group(1)
             if eid:
                 extra_source_id = None
                 if 'from' in post:
