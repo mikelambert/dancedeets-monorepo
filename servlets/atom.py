@@ -19,6 +19,8 @@ class AtomHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
 
+        self.response.headers['Content-Type'] = 'application/atom+xml'
+
         location = self.request.get('location')
         distance = int(self.request.get('distance', '50'))
         distance_units = self.request.get('distance_units', 'miles')
