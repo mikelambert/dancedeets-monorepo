@@ -64,6 +64,8 @@ def parsed_event_link(url):
     p = urlparse.urlparse(url)
     # allow relative urls
     good_domain = p.netloc in ['', 'www.facebook.com', 'm.facebook.com']
+    if p.fragment.startswith('!/'):
+        return parsed_event_link(urlparse.urljoin(url, p.fragment[1:]))
     good_path = p.path == '/event.php' or p.path.startswith('/events/')
     if good_domain and good_path:
         return p
@@ -105,6 +107,7 @@ def parse_event_source_combos_from_feed(source, feed_data):
             qs = cgi.parse_qs(p.query)
             if 'eid' in qs:
                 eid = qs['eid'][0]
+            eid = None
             if p.path.startswith('/events/'):
                 potential_eid = p.path.split('/')[2]
                 m = re.match(r'(\d+)', potential_eid)
