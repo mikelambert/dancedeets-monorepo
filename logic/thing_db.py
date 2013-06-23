@@ -152,7 +152,7 @@ def link_for_fb_source(data):
     elif 'start_time' in data['info']:
         return 'http://www.facebook.com/events/%s/' % data['info']['id']
     else:
-        logging.info("cannot classify id %s", source_id)
+        logging.info("cannot classify data %s", data)
         return None
 
 def create_source_for_id(source_id, fb_data):
