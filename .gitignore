@@ -1,0 +1,20 @@
+*.pyc
+*.swp
+compiled_templates
+
+# master installed libraries location:
+download
+
+# installed libraries symlinks:
+apiclient
+atom
+gdata
+gflags.py
+gflags_validators.py
+httplib2
+mapreduce
+oauth2client
+spitfire
+unittest2
+uritemplate
+

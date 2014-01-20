@@ -22,6 +22,14 @@ class TestTasks(unittest.TestCase):
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
+        #TODO(lambert): move this into some testbed wrapper code, or port upstream
+        # This is a bug in the code versions between appengine and its libraries:
+        # mapreduce requires a DEFAULT_VERSION_HOSTNAME
+        # ereporter requires a CURRENT_VERSION_ID with a dot in it
+        self.testbed.setup_env(overwrite=True,
+            DEFAULT_VERSION_HOSTNAME='testhost:testport',
+            CURRENT_VERSION_ID='testbed.version'
+        )
         #TODO(lambert): To enable this, we need to figure out how to make slow-queue exist
         #self.testbed.init_taskqueue_stub()
         
@@ -35,20 +43,24 @@ class TestTasks(unittest.TestCase):
         u.fb_access_token = "DUMMY"
         u.put()
 
-
     def tearDown(self):
         self.testbed.deactivate()
         self.fb_api.deactivate()
 
-    def testLoadEvents(self):
+class TestLoadEvents(TestTasks):
+    def runTest(self):
         app.get('/tasks/load_events?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
-    def testLoadEventAttending(self):
+
+class TestLoadEventAttending(TestTasks):
+    def runTest(self):
         app.get('/tasks/load_event_attending?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
 
-    def testReloadFutureEvents(self):
+class TestReloadFutureEvents(TestTasks):
+    def runTest(self):
         app.get('/tasks/reload_future_events?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
 
-    def testReloadPastEvents(self):
+class TestReloadPastEvents(TestTasks):
+    def runTest(self):
         app.get('/tasks/reload_future_events?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
 
 """

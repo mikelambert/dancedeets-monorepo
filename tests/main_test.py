@@ -4,7 +4,7 @@
 import unittest
 
 class TestImports(unittest.TestCase):
-    def test_main_import(self):
+    def runTest(self):
         import main
 
 if __name__ == '__main__':

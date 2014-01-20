@@ -6,22 +6,26 @@ import unittest
 from logic import event_classifier
 
 
-class TestClassifier(unittest.TestCase):
-    def test_SimpleMatches(self):
+class TestSimpleMatches(unittest.TestCase):
+    def runTest(self):
         self.assertTrue(event_classifier.all_regexes['dance_regex'][1].findall('streetdance'))
 
-    def test_SoulSessionsOslo(self):
+class TestSoulSessionsOslo(unittest.TestCase):
+    def runTest(self):
         fb_event = dict(info=dict(name="FB Event", description="sessions jam battles cyphers dj's"))
         classified_event = event_classifier.get_classified_event(fb_event)
         self.assertEqual(set([]), classified_event.dance_matches())
         self.assertEqual(set(['sessions', 'jam', 'battles', 'cyphers']), classified_event.event_matches())
-    def test_DanceClass(self):
+
+class TestDanceClass(unittest.TestCase):
+    def runTest(self):
         fb_event = dict(info=dict(name="FB Event", description="more stuff here with dance class"))
         classified_event = event_classifier.get_classified_event(fb_event)
         self.assertEqual(set(['dance']), classified_event.dance_matches())
         self.assertEqual(set(['class']), classified_event.event_matches())
 
-    def test_CJK(self):
+class TestCJK(unittest.TestCase):
+    def runTest(self):
         fb_event = dict(info=dict(name="Blah", description="""
 ╔════════════════════════════╗
 

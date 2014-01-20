@@ -31,37 +31,43 @@ class TestClassifier(unittest.TestCase):
         fb_event = self.batch_lookup.data_for_event(event_id)
         return fb_event
 
-    def testRockBattleEvent(self):
+class TestRockBattleEvent(TestClassifier):
+    def runTest(self):
         fb_event = self.get_event(292568747504427)
         classified_event = event_classifier.get_classified_event(fb_event)
         is_battle, reasons = event_auto_classifier.is_battle(classified_event)
         self.assertTrue(is_battle)
 
-    def testDJBattleEvent(self):
+class TestDJBattleEvent(TestClassifier):
+    def runTest(self):
         fb_event = self.get_event(101883956566382)
         classified_event = event_classifier.get_classified_event(fb_event)
         is_battle, reasons = event_auto_classifier.is_battle(classified_event)
         self.assertFalse(is_battle)
 
-    def testAllStylesBattleEvent(self):
+class TestAllStylesBattleEvent(TestClassifier):
+    def runTest(self):
         fb_event = self.get_event(113756888764413)
         classified_event = event_classifier.get_classified_event(fb_event)
         is_battle, reasons = event_auto_classifier.is_battle(classified_event)
         self.assertTrue(is_battle)
 
-    def testMixtapeCompetitorList(self):
+class TestMixtapeCompetitorList(TestClassifier):
+    def runTest(self):
         fb_event = self.get_event(194555360659913)
         classified_event = event_classifier.get_classified_event(fb_event)
         is_battle, reasons = event_auto_classifier.is_battle(classified_event)
         self.assertFalse(is_battle)
 
-    def testClass(self):
+class TestClass(TestClassifier):
+    def runTest(self):
         fb_event = self.get_event(127125550747109)
         classified_event = event_classifier.get_classified_event(fb_event)
         has_classes, reasons = event_auto_classifier.has_list_of_good_classes(classified_event)
         self.assertTrue(has_classes)
 
-    def testNoClass(self):
+class TestNoClass(TestClassifier):
+    def runTest(self):
         fb_event = self.get_event(278853778841357)
         classified_event = event_classifier.get_classified_event(fb_event)
         has_classes, reasons = event_auto_classifier.has_list_of_good_classes(classified_event)
