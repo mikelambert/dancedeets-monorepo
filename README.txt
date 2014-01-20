@@ -1,4 +1,11 @@
-To set up dancedeets, run ./setup.sh first. It will download and install the necessary libraries,
+First, download and install mercurial here:
+http://mercurial.selenic.com/downloads/
+
+Then download and install appengine libraries here:
+https://developers.google.com/appengine/downloads
+And be sure to open the app at least once, to set up /usr/local/google_appengine
+
+Then to set up dancedeets, run ./setup.sh first. It will download and install the necessary libraries,
 setting up symlinks for the ones that need to be included in the uploaded package.
 
 Once that's done, run 'make' to compile the templates.
