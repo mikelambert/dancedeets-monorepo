@@ -1,5 +1,5 @@
 application: dancedeets-hrd
-version: v1-9-new-machine3
+version: v2-0-reinspired
 runtime: python27
 threadsafe: true
 api_version: 1
@@ -81,6 +81,7 @@ skip_files:
 - ^(.*/)?.*\.csv
 - ^(.*/)?test_data(/.*)?
 - ^/local_data(/.*)?
+- ^download(/.*)?
 #- ^(.*/)?app\.yaml
 #- ^(.*/)?app\.yml
 #- ^(.*/)?index\.yaml

@@ -1,4 +1,6 @@
 
+QUIET := @
+
 all:
-	cd templates && $(MAKE)
+	$(QUIET)cd templates && $(MAKE)
 
