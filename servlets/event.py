@@ -5,6 +5,7 @@ import json
 import logging
 import re
 import time
+import urllib
 import urllib2
 
 from google.appengine.ext import deferred
@@ -54,7 +55,6 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
 
 
 class RedirectToEventHandler(base_servlet.BaseRequestHandler):
-
     def requires_login(self):
         return False
 
@@ -63,8 +63,20 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         if not event_id:
             self.response.out.write('Need an event_id.')
             return
+        self.redirect(urls.fb_relative_event_url(event_id))
 
-        # For everyone else, there's an interstitial.
+class ShowEventHandler(base_servlet.BaseRequestHandler):
+
+    def requires_login(self):
+        return False
+
+    def get(self):
+        path_bits = self.request.path.split('/')
+                event_id = urllib.unquote(path_bits[2])
+        if not event_id:
+            self.response.out.write('Need an event_id.')
+            return
+
         self.batch_lookup.lookup_event(event_id)
         self.finish_preload()
 
