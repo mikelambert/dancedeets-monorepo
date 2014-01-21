@@ -129,7 +129,9 @@ class Source(db.Model):
                 self.graph_type = GRAPH_TYPE_EVENT
             else:
                 logging.info("cannot classify id %s", fb_data['info']['id'])
-
+            if 'name' not in fb_data['info']:
+                logging.error('cannot find name for fb event data: %s, cannot update source data...', fb_data)
+                return
             self.name = fb_data['info']['name']
             feed = fb_data['feed']['data']
             if len(feed):

@@ -78,13 +78,13 @@ def yield_load_fb_user(batch_lookup, user):
         batch_lookup.lookup_user(user.fb_uid)
     try:
         batch_lookup.finish_loading()
-    except fb_api.ExpiredOAuthToken, e:
+            fb_user = batch_lookup.data_for_user(user.fb_uid)
+    except (fb_api.ExpiredOAuthToken, fb_api.NoFetchedDataException), e:
         logging.info("Auth token now expired, mark as such: %s", e)
         user.expired_oauth_token_reason = e.args[0]
         user.expired_oauth_token = True
         user.put()
         return
-        fb_user = batch_lookup.data_for_user(user.fb_uid)
     user.compute_derived_properties(fb_user)
     user.put()
 map_load_fb_user = fb_mapreduce.mr_user_wrap(yield_load_fb_user)
