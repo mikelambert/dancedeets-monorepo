@@ -69,9 +69,10 @@ easy_dance_keywords = [
     u'舞', # chinese dance
     u'舞蹈', # chinese dance
     u'舞蹈的', # chinese dance
-    u'蹈上', # chinese dance
     u'排舞', # chinese dance
-    u'跳下去', # chinese dance?
+    # Chewy says no:
+    #u'蹈上', # chinese dance
+    #u'跳下去', # chinese dance?
     u'แดนซ์', # dance thai
     u'เต้น', # dance thai
     u'กเต้น', # dancers thai
@@ -229,6 +230,7 @@ dance_keywords = [
     '(?:new|nu|middle)\W?s(?:ch|k)ool\W\W?hip\W?hop', 'hip\W?hop\W\W?(?:old|new|nu|middle)\W?s(?:ch|k)ool',
     'newstyleurs?',
     'voguer[sz]?', "vogue?in[g']?", 'vogue fem', 'voguin',
+    'vouge', "vougin[g']?",
     'fem queen', 'butch queen',
     'mini\W?ball', 'realness',
     'new\W?style hustle',
@@ -241,8 +243,10 @@ dance_keywords = [
     'estilo\w* urbai?n\w+', # spanish urban styles
     "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)?",
 ]
-# Crazy polish sometimes does lockingu. Maybe we need to do this more generally though.
+# Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
 dance_keywords = dance_keywords + [x+'u' for x in dance_keywords] 
+# TODO(lambert): Is this a safe one to add?
+# dance_keywords = dance_keywords + [x+'y' for x in dance_keywords] 
 
 house_keywords = [
     'house',
@@ -291,6 +295,7 @@ performance_keywords = [
     # international sessions are handled down below
     'shows?', 'performances?',
     'show\W?case',
+    u'représentation', # french performance
     u'ショーケース', # japanese showcase
     u'秀', # chinese show
     u'的表演', # chinese performance

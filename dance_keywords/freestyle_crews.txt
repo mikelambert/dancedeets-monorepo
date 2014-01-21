@@ -2,6 +2,7 @@
 3kick sp[rl]it[sz]
 6sence
 a4o
+academy of shock
 academy of villians
 ancut stonez
 aov,0
@@ -19,12 +20,14 @@ beat\W?buddy\W?boi
 beatdown brothers
 beatstrong
 beatsukiboys
+black messengers
 blue power crew
 boogie renaissance
 bopster scat
 breakydelic
-broken sport
+broken\W?sport
 buccchild fam
+bulletproof funk
 burning styles crew
 bushbabeez
 capitol flow # turf
@@ -32,7 +35,9 @@ chillax girlz
 citadanse
 collectif c nous
 coney island dancers
+consciencia,0
 control freaks
+conven crew
 cosec crew
 cosmic funk
 criminalz
@@ -77,6 +82,7 @@ funkyshit
 funny bones,0
 g.c.\W?crew
 gart project
+gekko state
 gelaketz
 ghbv
 ghetto\W?style
@@ -140,6 +146,7 @@ mgf,0
 mix\W?d ingr?dnts
 mo\w?\w?paradise
 moptops
+mos mitter
 natural movementz
 o'trip
 perfect combustion
@@ -157,6 +164,7 @@ radiolecos
 rag pound
 redwindsor
 relax crew
+repoll:fx
 rm sister
 serial\W?stepper[sz]
 shibuya harlem shakers

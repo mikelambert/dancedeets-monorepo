@@ -1,5 +1,6 @@
 abstrak,0
 acky
+akihic☆
 alessandro cascone
 amanda\W+b?\W+angel
 ana sanchez
@@ -9,6 +10,7 @@ aus ninja
 aus omni
 babson,0
 be bop crew
+ben wichert
 bionic,0
 bly richards
 bobby mileage
@@ -17,6 +19,7 @@ boogie frantick
 bouboo soumare
 bravo brahms
 brian green
+brian\W+footwork\W+green
 brooklyn terry
 bruce blanchard
 bruce ykanji
@@ -26,6 +29,7 @@ caleaf
 caleaf sellers
 campbellock
 candoo,0
+chaz cabonce
 conrad rochester
 crazy kyo
 cricket,0
@@ -39,22 +43,27 @@ don campbell
 ejoe
 el fonky juice
 emiko sugiyama
+eri fenesis
 eva schou
 fabio crestale
 fire.?lock
 flockey
 fluky luke
+fly lady di
 future ninja
 gemini,0
 genki\W+pyro
 gianni wers
+gravidy
 greenteck
 greentek
 grishka
+gucchon
 guccon
 guitart velasco
 hector xtravaganza
 henry link
+hero\W+至芸
 hideki
 hilty\W+bosch
 hiro,0
@@ -81,6 +90,7 @@ joseph\Wgo
 jr.? boogie
 jr?.? bogaloo
 jrock
+jujubeatz
 junior almeida
 junior boogaloo
 junior boogie
@@ -106,6 +116,7 @@ lockiano
 loic,0
 loose joint
 macia del prete
+madoka
 malika benjelloun
 mamson,0
 manel head
@@ -121,6 +132,7 @@ mikey disko
 moncell durden
 moncell\W+illkozby\W?durden
 mr.? ?wiggles
+nao\W+so deep
 nelson ewande
 nelson,0
 ninja pop
@@ -136,6 +148,7 @@ popntod
 popp?in.? pete
 poppin\W? john
 popula
+powerserge
 princess lockerooo
 rabah mahafoufi
 rabah,0
@@ -166,8 +179,8 @@ skeeter rabbit
 slim boogie
 so\Wichiro\W+gold rush
 storm,0
-sugar? pop
 sugapop
+sugar? pop
 super dino
 super\W?dave
 suthoom\W+symbol.?ism

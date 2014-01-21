@@ -8,7 +8,9 @@ david harness
 derek sampson
 dj disciple
 dj jazzy jeff
+dj k-katsu
 dj nk-soul
+dj premier
 dj spinna
 dj veusty
 ep\W+extended play
@@ -23,6 +25,7 @@ kaistar
 louie vega
 manchildblack
 marques wyatt
+max pela
 ohishi\W+(?:jmc\W+)?sodeep
 peven everett
 rich medina
@@ -31,6 +34,7 @@ sabine blazin
 sachio\W+hi-score
 stephen rigmaiden
 sweater\W?funk
+tijo aimé
 timmy regisford
 tyrone francis
 tyrone\W+mixologist\W+francis
