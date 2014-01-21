@@ -51,14 +51,13 @@ indexes:
 
 - kind: PotentialEvent
   properties:
-  - name: looked_at
-  - name: match_score
+  - name: __key__
+    direction: desc
 
 - kind: PotentialEvent
   properties:
   - name: looked_at
   - name: match_score
-    direction: desc
 
 - kind: PotentialEvent
   properties:
@@ -68,7 +67,8 @@ indexes:
 
 - kind: PotentialEvent
   properties:
-  - name: __key__
+  - name: looked_at
+  - name: match_score
     direction: desc
 
 - kind: User

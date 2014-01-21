@@ -12,8 +12,8 @@ def expiry_with_variance(expiry, expiry_variance):
     return random.randrange(expiry - variance, expiry + variance)
 
 def safe_set_memcache(memcache_set, expiry, top_level=True):
-    #memcache.set_multi(memcache_set, expiry)
-    #return
+    memcache.set_multi(memcache_set, expiry)
+    return
     # No longer need to worry about setting something larger than a MB, since appengine scales larger easily for us
     set_size = len(pickle.dumps(memcache_set))
     if top_level:
