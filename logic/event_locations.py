@@ -37,6 +37,7 @@ def _get_latlng_from_event(batch_lookup, fb_event):
     if venue.get('latitude') and venue.get('longitude'):
         return float(venue['latitude']), float(venue['longitude'])
     if venue.get('id'):
+        logging.error("VENUE DEBUG: fb event %s has venue without lat/long but with id %s", event_info['id'], venue['id'])
         batch_lookup = batch_lookup.copy(allow_cache=batch_lookup.allow_cache)
         batch_lookup.lookup_venue(venue.get('id'))
         batch_lookup.finish_loading()
@@ -59,6 +60,7 @@ def _get_latlng_from_event(batch_lookup, fb_event):
                 logging.error("STILL no venue found for id %s, giving up", venue.get('id'))
         if venue_data and not venue_data['deleted']:
             loc = (venue_data['info'].get('location', {}))
+            logging.error("VENUE DEBUG: somehow our retrieved venue has a lat/long that the event didnt? %s,%s", loc['latitude'], loc['longitude'])
             return float(loc['latitude']), float(loc['longitude'])
     return None
 
