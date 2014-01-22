@@ -6,12 +6,12 @@
 Hi $fb_user.profile.first_name,
 
 #if $user.expired_oauth_token
-<p>You changed your facebook password and Dance Deets has lost permission to use your account. Please <a href="http://www.dancedeets.com">sign in to Dance Deets again</a> to ensure Dance Deets continues working for you!
+<p>You changed your facebook password and Dance Deets has lost permission to use your account. Please <a href="http://www.dancedeets.com/?source=email">sign in to Dance Deets again</a> to ensure Dance Deets continues working for you!
 #end if
 
-<p>If you think your friends would like to know about Dance Deets, you can <a href="http://www.dancedeets.com/share">share Dance Deets on Facebook</a>. Or forward them this email.
+<p>If you think your friends would like to know about Dance Deets, you can <a href="http://www.dancedeets.com/share?source=email">share Dance Deets on Facebook</a>. Or forward them this email.
 
-<p>(<a href="http://www.dancedeets.com/">up-to-date event listing</a> available)<br>
+<p>(<a href="http://www.dancedeets.com/?source=email">up-to-date event listing</a> available)<br>
 
 #for $group in $grouped_results
 	#if $group.results
@@ -21,13 +21,13 @@ Hi $fb_user.profile.first_name,
 		#set $fb_event = $result.fb_event.info
 		<tr>
 			<td width="180">
-				<a href="$fb_event_url($fb_event.id)">
+				<a href="$fb_event_url($fb_event.id)?source=email">
 				<img src="$result.get_image()" width="180" border="0">
 				</a>
 				<br><br>
 			</td>
 			<td valign=top>
-				<a href="$fb_event_url($fb_event.id)">
+				<a href="$fb_event_url($fb_event.id)?source=email">
 				<b style="font-size: 110%">$format_html($fb_event.name)</b>
 				</a><br>
 				($result.event_types)<br>
