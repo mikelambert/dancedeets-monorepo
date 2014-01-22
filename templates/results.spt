@@ -133,6 +133,8 @@ Events near ${display_location}:
 
 <div class="sub-content span5">
 	<div class="box">
+		<div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="button" data-width="295" data-action="like" data-show-faces="true" data-share="true"></div>
+		<p>
 		<a href="/share" class="btn small">Invite Dancers and Fans</a>
 		<a href="/events/add" class="btn small">Add Dance Event</a>
 	</div>

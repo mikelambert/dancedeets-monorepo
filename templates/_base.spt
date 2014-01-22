@@ -130,7 +130,7 @@ $body()
 	<footer>
 	<a href="/about">About</a> | <a href="/rankings">Rankings</a> | <a href="/help">Help</a> | <a href="/feedback">Feedback</a> | <a href="/privacy">Privacy</a>
 	<br>
-	<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FDance-Deets%2F110312662362915&amp;layout=standard&amp;show_faces=true&amp;width=400&amp;action=recommend&amp;font=verdana&amp;colorscheme=light&amp;height=80&ref=recommend_button" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:400px; height:80px;" allowTransparency="true"></iframe>
+	<div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="button" data-width="400" data-action="like" data-show-faces="true" data-share="true"></div>
 	</footer>
 
 </div> <!-- /container -->
