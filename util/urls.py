@@ -2,7 +2,7 @@ def fb_event_url(eid):
     return 'http://www.dancedeets.com%s' % fb_relative_event_url(eid)
 
 def fb_relative_event_url(eid):
-    return '/events/%s' % str(eid)
+    return '/events/%s/' % str(eid)
 
 def raw_fb_event_url(eid):
     return 'http://www.facebook.com/events/%s/' % str(eid)

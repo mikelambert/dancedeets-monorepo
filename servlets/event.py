@@ -63,7 +63,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         if not event_id:
             self.response.out.write('Need an event_id.')
             return
-        self.redirect(urls.fb_relative_event_url(event_id))
+        return self.redirect(urls.fb_relative_event_url(event_id), permanent=True)
 
 class ShowEventHandler(base_servlet.BaseRequestHandler):
 
@@ -76,6 +76,8 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         if not event_id:
             self.response.out.write('Need an event_id.')
             return
+        if not self.request.path.endswith('/'):
+            return self.redirect(urls.fb_relative_event_url(event_id), permanent=True)
 
         self.batch_lookup.lookup_event(event_id)
         self.finish_preload()
@@ -206,8 +208,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             e = eventdata.DBEvent.get_by_key_name(event_id)
             e.delete()
             self.user.add_message("Event deleted!")
-            self.redirect('/events/admin_edit?event_id=%s' % event_id)
-            return
+            return self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
         if self.request.get('background'):
             deferred.defer(add_entities.add_update_event, event_id, remapped_address, override_address, self.user.fb_uid, self.batch_lookup.copy(), creating_method=eventdata.CM_ADMIN)
@@ -219,7 +220,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                 self.add_error(str(e))
             self.errors_are_fatal()
             self.user.add_message("Changes saved!")
-            self.redirect('/events/admin_edit?event_id=%s' % event_id)
+            return self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
 def get_id_from_url(url):
     if '#' in url:
@@ -290,7 +291,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.add_error(str(e))
         self.errors_are_fatal()
 
-        self.redirect('/')
+        return self.redirect('/')
 
 class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
@@ -375,4 +376,4 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 event.looked_at = True
                 event.put()
             number_of_events = int(self.request.get('number_of_events'))
-            self.redirect('/events/admin_potential_events?number_of_events=%s' % number_of_events)
+            return self.redirect('/events/admin_potential_events?number_of_events=%s' % number_of_events)
