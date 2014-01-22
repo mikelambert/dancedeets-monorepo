@@ -58,6 +58,8 @@ GRAPH_ID_REMAP = {
     '134669003249370': '120378378044400',
 }
 
+OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins')
+
 class FacebookCachedObject(db.Model):
     json_data = db.TextProperty()
     data = properties.json_property(json_data)
@@ -147,7 +149,7 @@ class BatchLookup(object):
             )
         elif object_type == self.OBJECT_EVENT:
             return dict(
-                info=self._fetch_rpc('%s' % object_id),
+                info=self._fetch_rpc('%s' % object_id, fields=OBJ_EVENT_FIELDS),
                 fql_info=self._fql_rpc(EXTRA_EVENT_INFO_FQL % (object_id)),
             )
         elif object_type == self.OBJECT_EVENT_ATTENDING:
@@ -181,11 +183,13 @@ class BatchLookup(object):
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
-    def _fetch_rpc(self, path, use_access_token=True):
+    def _fetch_rpc(self, path, fields=None, use_access_token=True):
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
         url = 'https://graph.facebook.com/%s' % path
+        if fields:
+            url = '%s?fields=%s' % (url, ','.join(fields))
         if use_access_token:
-            if '?' in path:
+            if '?' in url:
                 combiner = '&'
             else:
                 combiner = '?'
