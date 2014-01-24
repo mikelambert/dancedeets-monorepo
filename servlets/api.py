@@ -1,4 +1,5 @@
 import datetime
+import json
 import logging
 import webapp2
 import xml.sax.saxutils
@@ -12,18 +13,25 @@ from logic import search
 from util import text
 from util import urls
 
-class AtomHandler(base_servlet.BaseRequestHandler):
+DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
+class FeedHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
 
     def get(self):
         self.finish_preload()
 
-        self.response.headers['Content-Type'] = 'application/atom+xml'
-
         location = self.request.get('location')
         distance = int(self.request.get('distance', '50'))
         distance_units = self.request.get('distance_units', 'miles')
+
+        if not location:
+            self.add_error('Need location parameter')
+        format = self.request.get('format', 'json')
+        if format not in ('json', 'atom'):
+            self.add_error('Unknown format')
+        self.errors_are_fatal()
 
         if distance_units == 'miles':
             distance_in_km = locations.miles_in_km(distance)
@@ -35,17 +43,54 @@ class AtomHandler(base_servlet.BaseRequestHandler):
 
         query = search.SearchQuery(time_period=time_period, bounds=bounds)
         search_results = query.get_search_results(self.batch_lookup)
-        #TODO(lambert): move to common library
+        #TODO(lambert): move to common library.
         now = datetime.datetime.now() - datetime.timedelta(hours=12)
         search_results = [x for x in search_results if x.start_time > now]
+        
+        if format == 'atom':
+            return self.HandleAtomFeed(distance, distance_units, location, search_results)
+        elif format == 'json':
+            return self.HandleJsonFeed(distance, distance_units, location, search_results)
+        else:
+            logging.fatal("Unkonwn format, should have been caught up above")
+
+    @staticmethod
+    def SearchResultToJson(x):
+        return {
+            'id': x.fb_event['info']['id'],
+            'title': x.fb_event['info']['name'],
+            'description': x.fb_event['info'].get('description'),
+            'city': x.db_event.actual_city_name,
+            'image_url': x.get_image(),
+            'cover_url': x.fb_event['info'].get('cover'),
+            'start_time': x.start_time.strftime(DATETIME_FORMAT),
+            'end_time': x.end_time and x.end_time.strftime(DATETIME_FORMAT) or None,
+            'keywords': x.event_types,
+        }
+
+    def HandleJsonFeed(self, distance, distance_units, location, search_results):
+        callback = self.request.get('callback')
+        if callback:
+            self.response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
+        else:
+            self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
+
+        json_results = [self.SearchResultToJson(x) for x in search_results]
+        if callback:
+            self.response.out.write('%s(' % callback)
+        self.response.out.write(json.dumps(json_results))
+        if callback:
+            self.response.out.write(')')
+
+    def HandleAtomFeed(self, distance, distance_units, location, search_results):
+        self.response.headers['Content-Type'] = 'application/atom+xml'
 
         title = 'dance events within %(distance)s %(distance_units)s of %(location)s.' % dict(
             distance=distance,
             distance_units=distance_units,
             location=location,
         )
-        atom_date_format = "%Y-%m-%dT%H:%M:%SZ"
-        last_modified = datetime.datetime.now().strftime(atom_date_format)
+        last_modified = datetime.datetime.now().strftime(DATETIME_FORMAT)
 
         url = 'http://www.dancedeets.com/events/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
 
@@ -96,7 +141,7 @@ class AtomHandler(base_servlet.BaseRequestHandler):
 """ % dict(
                 title=xml.sax.saxutils.escape(result.fb_event['info']['name'].encode('ascii', 'xmlcharrefreplace')),
                 id=result.fb_event['info']['id'],
-                published=result.start_time.strftime(atom_date_format),
+                published=result.start_time.strftime(DATETIME_FORMAT),
                 description=(description.encode('ascii', 'xmlcharrefreplace')),
             ))
 

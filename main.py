@@ -10,7 +10,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 import base_servlet
 from servlets import about
 from servlets import admin
-from servlets import atom
+from servlets import api
 from servlets import calendar
 from servlets import event
 from servlets import feedback
@@ -72,7 +72,7 @@ URLS = [
     ('/events/admin_edit', event.AdminEditHandler),
     ('/events/redirect', event.RedirectToEventHandler),
     ('/events/add', event.AddHandler),
-    ('/events/feed', atom.AtomHandler),
+    ('/events/feed', api.FeedHandler),
     ('/events/relevant', search.RelevantHandler),
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     (r'/events/\d+/?', event.ShowEventHandler),
