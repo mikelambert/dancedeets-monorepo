@@ -70,9 +70,6 @@ easy_dance_keywords = [
     u'舞蹈', # chinese dance
     u'舞蹈的', # chinese dance
     u'排舞', # chinese dance
-    # Chewy says no:
-    #u'蹈上', # chinese dance
-    #u'跳下去', # chinese dance?
     u'แดนซ์', # dance thai
     u'เต้น', # dance thai
     u'กเต้น', # dancers thai

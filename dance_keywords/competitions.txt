@@ -81,8 +81,7 @@ paris dupree
 freedom dance party
 
 afro\W+bang
-soirée atmosphère
-soiree atmosphere
+soir[eé]e atmosph[eè]re
 coney island boardwalk
 the floor improv night
 dance culture
