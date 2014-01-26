@@ -1,5 +1,5 @@
 {
-  "deleted": false,
+  "empty": false,
   "info": {
     "name": "event with no venue information, just raw location",
     "location": "Somewhere in San Francisco"

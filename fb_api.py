@@ -58,6 +58,9 @@ GRAPH_ID_REMAP = {
     '134669003249370': '120378378044400',
 }
 
+EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS = 'insufficient_permissions'
+EMPTY_CAUSE_DELETED = 'deleted'
+
 OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins')
 
 class FacebookCachedObject(db.Model):
@@ -75,7 +78,7 @@ class FacebookCachedObject(db.Model):
 
 def is_public_ish(fb_event):
     data = fb_event.get('fql_info', {}).get('data')
-    return (
+    return not fb_event['empty'] and (
         fb_event['info'].get('privacy', 'OPEN') == 'OPEN' or
         data and data[0].get('all_members_count', 0) > 60
     )
@@ -118,7 +121,8 @@ class BatchLookup(object):
         fb_uid, object_id, object_type = object_key
         if object_type != self.OBJECT_EVENT:
             return True
-        elif this_object.get('deleted'):
+        # intentionally empty object
+        elif this_object.get('empty'):
             return True
         elif this_object.get('info') and is_public_ish(this_object):
             return True
@@ -314,6 +318,10 @@ class BatchLookup(object):
         #logging.info("BatchLookup: memcache get_multi return size: %s", get_size)
         logging.info("BatchLookup: memcache get_multi objects found: %s", objects.keys())
 
+        # Backwards-compatibility support for old objects lingering around
+        for k in object_map:
+            if 'empty' not in object_map[k]:
+                object_map[k]['empty'] = object_map[k].get('deleted') and EMPTY_CAUSE_DELETED or None
         return object_map
 
     def _get_objects_from_dbcache(self, object_keys):
@@ -324,6 +332,11 @@ class BatchLookup(object):
             objects = FacebookCachedObject.get_by_key_name(clauses[i:i+max_in_queries])
             object_map.update(dict((tuple(o.key().name().split('.')), o.decode_data()) for o in objects if o))
         logging.info("BatchLookup: db lookup objects found: %s", object_map.keys())
+
+        # Backwards-compatibility support for old objects lingering around
+        for k in object_map:
+            if 'empty' not in object_map[k]:
+                object_map[k]['empty'] = object_map[k].get('deleted') and EMPTY_CAUSE_DELETED or None
         return object_map
 
     def finish_loading(self):
@@ -393,12 +406,18 @@ class BatchLookup(object):
         fetched_objects = {}
         for object_key, object_rpc_dict in self.object_keys_to_rpcs.iteritems():
             this_object = {}
-            this_object['deleted'] = False
+            this_object['empty'] = None
             object_is_bad = False
             for object_rpc_name, object_rpc in object_rpc_dict.iteritems():
                 object_json = self._map_rpc_to_data(object_key, object_rpc_name, object_rpc)
                 if object_json is not None:
+                    error_code = None
                     if type(object_json) == dict and ('error_code' in object_json or 'error' in object_json):
+                        error_code = object_json.get('error_code', object_json.get('error', {}).get('code', None))
+                    if error_code == 100:
+                        # This means the event exists, but the current access_token is insufficient to query it
+                        this_object['empty'] = EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS
+                    elif error_code:
                         logging.error("BatchLookup: Error code from FB server: %s", object_json)
 
                         fb_uid, object_id, object_type = object_key
@@ -411,7 +430,7 @@ class BatchLookup(object):
                             raise ExpiredOAuthToken(error_message)
                         object_is_bad = True
                     elif object_json == False:
-                        this_object['deleted'] = True
+                        this_object['empty'] = EMPTY_CAUSE_DELETED
                     else:
                         this_object[object_rpc_name] = object_json
                 else:

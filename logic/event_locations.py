@@ -46,7 +46,7 @@ def _get_latlng_from_event(batch_lookup, fb_event):
             venue_data = batch_lookup.data_for_venue(venue.get('id'))
         except fb_api.NoFetchedDataException:
             pass
-        if not venue_data or venue_data['deleted']:
+        if not venue_data or venue_data['empty']:
             logging.warning("no venue found for event id %s, venue id %s, retrying with cache bust", fb_event['info'].get('id'), venue.get('id'))
             # TODO(lambert): clean up old venues in the system, this is a hack until then
             batch_lookup = batch_lookup.copy(allow_cache=False)
@@ -56,9 +56,9 @@ def _get_latlng_from_event(batch_lookup, fb_event):
                 venue_data = batch_lookup.data_for_venue(venue.get('id'))
             except fb_api.NoFetchedDataException:
                 pass
-            if not venue_data or venue_data['deleted']:
+            if not venue_data or venue_data['empty']:
                 logging.error("STILL no venue found for id %s, giving up", venue.get('id'))
-        if venue_data and not venue_data['deleted']:
+        if venue_data and not venue_data['empty']:
             loc = (venue_data['info'].get('location', {}))
             logging.critical("VENUE DEBUG: somehow our retrieved venue has a lat/long that the event didnt? %s,%s", loc['latitude'], loc['longitude'])
             return float(loc['latitude']), float(loc['longitude'])

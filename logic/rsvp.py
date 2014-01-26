@@ -29,7 +29,7 @@ def decorate_with_rsvps(batch_lookup, search_results):
     if batch_lookup.fb_uid:
         rsvps = RSVPManager(batch_lookup)
         for result in search_results:
-            result.rsvp_status = rsvps.get_rsvp_for_event(result.db_event.fb_event_id)
+            result.rsvp_status = rsvps.get_rsvp_for_event(result.fb_event_id)
     else:
         for result in search_results:
             result.rsvp_status = None

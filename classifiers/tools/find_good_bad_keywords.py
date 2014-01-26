@@ -104,7 +104,7 @@ def get_fb_event(id):
     if key not in fb_entries:
         return None
     fb_event = fb_entries[key]
-    if fb_event['deleted']:
+    if fb_event['empty']:
         return None
     return fb_event
 

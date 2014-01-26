@@ -73,7 +73,7 @@ def parsed_event_link(url):
         return None
 
 def process_thing_feed(source, thing_feed):
-    if thing_feed['deleted']:
+    if thing_feed['empty']:
         return []
     # TODO(lambert): do we really need to scrape the 'info' to get the id, or we can we half the number of calls by just getting the feed? should we trust that the type-of-the-thing-is-legit for all time, which is one case we use 'info'?
     if 'data' not in thing_feed['feed']:
@@ -137,7 +137,7 @@ def process_event_source_ids(event_source_combos, batch_lookup):
         try:
             fb_event = batch_lookup.data_for_event(event_id)
             fb_event_attending = batch_lookup.data_for_event_attending(event_id)
-            if fb_event['deleted']:
+            if fb_event['empty']:
                 continue
             potential_events.make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_FEED)
         except fb_api.NoFetchedDataException:

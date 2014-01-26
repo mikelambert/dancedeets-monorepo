@@ -31,7 +31,7 @@ def classify_events(batch_lookup, pe_list):
             fb_event = batch_lookup.data_for_event(pe.fb_event_id)
         except fb_api.NoFetchedDataException:
             continue
-        if fb_event['deleted']:
+        if fb_event['empty']:
             continue
         classified_event = event_classifier.ClassifiedEvent(fb_event)
         classified_event.classify()

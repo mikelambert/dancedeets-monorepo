@@ -37,7 +37,7 @@ def training_data_for_pevents(batch_lookup, pevents):
             good_event = potential_event.fb_event_id in good_event_ids and 'dance' or 'nodance'
 
             fb_event = batch_lookup.data_for_event(potential_event.fb_event_id)
-            if fb_event['deleted']:
+            if fb_event['empty']:
                 continue
             fb_event_attending = batch_lookup.data_for_event_attending(potential_event.fb_event_id)
 

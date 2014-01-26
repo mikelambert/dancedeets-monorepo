@@ -2,9 +2,11 @@
 
 import datetime
 import logging
+import re
 import time
 import smemcache
 
+from google.appengine.api import search
 from google.appengine.ext import db
 from google.appengine.ext import deferred
 
@@ -22,22 +24,7 @@ from util import urls
 
 SLOW_QUEUE = 'slow-queue'
 
-class FrontendSearchQuery(object):
-    def __init__(self):
-        self.location = None
-        self.distance = 50
-        self.distance_units = 'miles'
-        self.min_attendees = 0
-        self.past = 0
-
-    def url_params(self):
-        return {
-            'location': self.location,
-            'distance': self.distance,
-            'distance_units': self.distance_units,
-            'min_attendees': self.min_attendees,
-            'past': self.past,
-        }
+FUTURE_EVENTS_INDEX = 'FutureEvents'
 
 class ResultsGroup(object): 
     def __init__(self, name, id, results, expanded, force=False): 
@@ -82,14 +69,16 @@ def group_results(search_results):
     return past_results, present_results, grouped_results 
 
 class SearchResult(object):
-    def __init__(self, db_event, fb_event):
-        self.db_event = db_event
+    def __init__(self, pseudo_db_event, fb_event):
         self.fb_event = fb_event
+        self.fb_event_id = fb_event['info']['id']
+        self.actual_city_name = pseudo_db_event.actual_city_name
+        self.attendee_count = pseudo_db_event.attendee_count
         self.start_time = dates.parse_fb_start_time(self.fb_event)
         self.end_time = dates.parse_fb_end_time(self.fb_event)
         self.fake_end_time = dates.parse_fb_end_time(self.fb_event, need_result=True)
         self.rsvp_status = "unknown"
-        self.event_types = ', '.join(self.db_event.event_keywords or [])
+        self.event_keywords = ', '.join(pseudo_db_event.event_keywords or [])
         self.attending_friend_count = 0
         self.attending_friends = []
 
@@ -106,8 +95,19 @@ class SearchResult(object):
             return 'maybe'
         return self.rsvp_status
 
+class PseudoDBEvent(SearchResult):
+    def __init__(self, d):
+        self.fb_event_id = d.doc_id
+        self.actual_city_name = d.field('actual_city_name').value
+        self.attendee_count = 0
+        # TODO(lambert): why doesn't this work?
+        # self.attendee_count = d.field('attendee_count').value
+        if self.attendee_count == 0:
+            self.attendee_count = None
+        self.event_keywords = d.field('event_keywords').value.split(', ')
+
 class SearchQuery(object):
-    def __init__(self, time_period=None, start_time=None, end_time=None, bounds=None, min_attendees=None):
+    def __init__(self, time_period=None, start_time=None, end_time=None, bounds=None, min_attendees=None, keywords=None):
         self.time_period = time_period
 
         self.min_attendees = min_attendees
@@ -123,7 +123,8 @@ class SearchQuery(object):
         assert self.bounds
 
         self.search_geohashes = locations.get_all_geohashes_for(bounds)
-        logging.info("Searching geohashes %s", self.search_geohashes)
+
+        self.keywords = keywords
 
     def matches_db_event(self, event):
         faked_end_time = dates.faked_end_time(event.start_time, event.end_time)
@@ -152,7 +153,46 @@ class SearchQuery(object):
     def matches_fb_db_event(self, event, fb_event):
         return True
     
-    def get_candidate_events(self):
+    DATE_SEARCH_FORMAT = '%Y-%m-%d'
+    def get_new_candidate_events(self):
+        clauses = []
+        if self.bounds:
+            # Using geohashes (with 'or') or geopoints both will trigger 'complex' searches.
+            # Using these >=/>= keeps things as a 'simple' search, though it means they will
+            # likely be lists-of-most-events that are then intersected to get the small set.
+            # This is okay since we are using this for 'future-looking searches' by default
+            # If/when we want to support 'past searches', we may want to use complex searches
+            # using geohashes or geopoints.
+            clauses += ['latitude >= %s AND longitude >= %s' % self.bounds[0]]
+            clauses += ['latitude <= %s AND longitude <= %s' % self.bounds[1]]
+        if self.time_period:
+            pass #
+        if self.start_time:
+            clauses += ['end_time >= %s' % self.start_time.date().strftime(DATE_SEARCH_FORMAT)]
+        if self.end_time:
+            clauses += ['start_time <= %s' % self.end_time.date().strftime(DATE_SEARCH_FORMAT)]
+        if self.keywords:
+            safe_keywords = re.sub(r'[<=>:()]', '', self.keywords)
+            clauses += [safe_keywords]
+        if clauses:
+            full_search = ' '.join(clauses)
+            logging.info("Doing search for %r", full_search)
+            doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
+            #TODO(lambert): implement pagination
+            options = search.QueryOptions(
+                limit=1000,
+                returned_fields=['actual_city_name', 'attendee_count', 'event_keywords'])
+            query = search.Query(query_string=full_search, options=options)
+            doc_search_results = doc_index.search(query)
+            search_results = []
+            for x in doc_search_results:
+                try:
+                    search_results.append(PseudoDBEvent(x))
+                except ValueError, e:
+                    logging.error("Exception %s while constructing result for %s", e, x)
+            return search_results
+
+    def get_old_candidate_events(self):
         clauses = []
         bind_vars = {}
         if self.search_geohashes:
@@ -186,37 +226,47 @@ class SearchQuery(object):
         db_events = eventdata.get_cached_db_events(event_ids)
         return db_events
 
-    def get_search_results(self, batch_lookup):
+    def get_search_results(self, batch_lookup, new_search=False):
         batch_lookup = batch_lookup.copy()
         db_events = None
-        if self.time_period == eventdata.TIME_FUTURE:
+        a = time.time()
+        if self.time_period == eventdata.TIME_FUTURE and not new_search:
             # Use cached blob for our common case of filtering
             db_events = self.magical_get_candidate_events()
+            logging.info("In-memory cache search returned %d events", len(db_events))
         if db_events is None:
             # Do datastore filtering
-            db_events = self.get_candidate_events()
-
-        orig_db_events_length = len(db_events)
-        # Do some obvious filtering before loading the fb events for each.
-        db_events = [x for x in db_events if self.matches_db_event(x)]
-        logging.info("in-process filtering trimmed us from %s to % events", orig_db_events_length, len(db_events))
+            if new_search:
+                db_events = self.get_new_candidate_events()
+                logging.info("New style search returned %s events", len(db_events))
+            else:
+                logging.info("Searching geohashes %s", self.search_geohashes)
+                db_events = self.get_old_candidate_events()
+                logging.info("Old style search returned %s events", len(db_events))
+                orig_db_events_length = len(db_events)
+                # Do some obvious filtering before loading the fb events for each.
+                db_events = [x for x in db_events if self.matches_db_event(x)]
+                logging.info("in-process filtering trimmed us from %s to % events", orig_db_events_length, len(db_events))
+        logging.info("Using search index took %s seconds", time.time() - a)
 
         # Now look up contents of each event...
         a = time.time()
         for db_event in db_events:
             batch_lookup.lookup_event(db_event.fb_event_id)
         batch_lookup.finish_loading()
-        logging.info("loading fb data took %s seconds", time.time() - a)
+        logging.info("Loading fb data took %s seconds", time.time() - a)
 
         # ...and do filtering based on the contents inside our app
         a = time.time()
         search_results = []
         for db_event in db_events:
             fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
-            if not fb_event['deleted'] and self.matches_fb_db_event(db_event, fb_event):
+            if not fb_event['empty'] and self.matches_fb_db_event(db_event, fb_event):
+                if 'info' not in fb_event:
+                    logging.warning('%s', fb_event)
                 result = SearchResult(db_event, fb_event)
                 search_results.append(result)
-        logging.info("db filtering and Search Results took %s seconds", time.time() - a)
+        logging.info("dbevent in-memory filtering took %s seconds, leaving %s results", time.time() - a, len(search_results))
     
         # Now sort and return the results
         a = time.time()
@@ -224,12 +274,108 @@ class SearchQuery(object):
         logging.info("search result sorting took %s seconds", time.time() - a)
         return search_results
 
+def construct_fulltext_search_index(batch_lookup):
+    logging.info("Loading DB Events")
+    MAX_EVENTS = 10000
+    db_event_keys = db.Query(eventdata.DBEvent, keys_only=True).filter('search_time_period =', eventdata.TIME_FUTURE).order('start_time').fetch(MAX_EVENTS)
+    db_event_ids = [x.id_or_name() for x in db_event_keys]
+
+    if len(db_event_ids) >= MAX_EVENTS:
+        logging.error('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
+    logging.info("Loaded %s DB Events", len(db_event_ids))
+
+    doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
+
+    docs_per_group = search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST
+
+    logging.info("Deleting Expired DB Events")
+    start_id = '0'
+    doc_ids_to_delete = set()
+    while True:
+        doc_ids = [x.doc_id for x in doc_index.get_range(ids_only=True, start_id=start_id, include_start_object=False)]
+        if not doc_ids:
+            break
+        new_ids_to_delete = set(doc_ids).difference(db_event_ids)
+        doc_ids_to_delete.update(new_ids_to_delete)
+        logging.info("Looking at %s doc_id candidates for deletion, will delete %s entries.", len(doc_ids), len(new_ids_to_delete))
+        start_id = doc_ids[-1]
+    if len(doc_ids_to_delete) and len(doc_ids_to_delete) < len(db_event_ids) / 10:
+        logging.critical("Deleting %s docs, more than 10% of total %s docs", len(doc_ids_to_delete), len(db_event_ids))
+    logging.info("Deleting %s Events", len(doc_ids_to_delete))
+    doc_ids_to_delete = list(doc_ids_to_delete)
+    for i in range(0,len(doc_ids_to_delete), docs_per_group):
+        doc_index.delete(doc_ids_to_delete[i:i+docs_per_group])
+
+    # Add all events
+    logging.info("Loading %s FB Events, in groups of %s", len(db_event_ids), docs_per_group)
+    for i in range(0,len(db_event_ids), docs_per_group):
+        group_db_event_ids = db_event_ids[i:i+docs_per_group]
+        deferred.defer(save_db_event_ids, batch_lookup, group_db_event_ids)
+
+def save_db_event_ids(batch_lookup, db_event_ids):
+    # TODO(lambert): how will we ensure we only update changed events?
+    logging.info("Loading %s DB Events", len(db_event_ids))
+    db_events = eventdata.DBEvent.get_by_key_name(db_event_ids)
+    if None in db_events:
+        logging.error("DB Event Lookup returned None!")
+    logging.info("Loading %s FB Events", len(db_event_ids))
+    for db_event_id in db_event_ids:
+        batch_lookup.lookup_event(db_event_id)
+    batch_lookup.finish_loading()
+
+    delete_ids = []
+    doc_events = []
+    logging.info("Constructing Documents")
+    for db_event in db_events:
+        fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
+        if fb_event['empty']:
+            delete_ids.append(str(db_event.fb_event_id))
+            continue
+        # TODO(lambert): find a way to index no-location events.
+        # As of now, the lat/long number fields cannot be None.
+        # In what radius/location should no-location events show up
+        # and how do we want to return them
+        # Perhaps a separate index that is combined at search-time?
+        if db_event.latitude is None:
+            delete_ids.append(str(db_event.fb_event_id))
+            continue
+        if dates.faked_end_time(db_event.start_time, db_event.end_time) < datetime.datetime.now():
+            logging.error("Event far in the past, still showing up in our index-able set: %s" % db_event.fb_event_id)
+            logging.error("Start time %s, computed end time %s", db_event.start_time, dates.faked_end_time(db_event.start_time, db_event.end_time))
+            delete_ids.append(str(db_event.fb_event_id))
+            continue
+        doc_event = search.Document(
+            doc_id=str(db_event.fb_event_id),
+            fields=[
+                search.TextField(name='keywords', value=fb_event['info']['name'] + fb_event['info'].get('description', '')),
+                search.NumberField(name='attendee_count', value=db_event.attendee_count or 0),
+                search.DateField(name='start_time', value=db_event.start_time),
+                search.DateField(name='end_time', value=dates.faked_end_time(db_event.start_time, db_event.end_time)),
+                search.NumberField(name='latitude', value=db_event.latitude),
+                search.NumberField(name='longitude', value=db_event.longitude),
+                search.TextField(name='actual_city_name', value=db_event.actual_city_name),
+                search.TextField(name='event_keywords', value=', '.join(db_event.event_keywords)),
+            ],
+            #language=XX, # We have no good language detection
+            rank=int(time.mktime(db_event.start_time.timetuple())),
+            )
+        doc_events.append(doc_event)
+
+    logging.info("Adding %s documents", len(doc_events))
+    doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
+    doc_index.put(doc_events)
+
+    # These events could not be filtered out too early,
+    # but only after looking up in this db+fb-event-data world
+    logging.info("Cleaning up and deleting %s documents", len(delete_ids))
+    doc_index.delete(delete_ids)
+
 def construct_search_index():
-    MAX_EVENTS = 5000
+    MAX_EVENTS = 10000
     db_events = db.Query(eventdata.DBEvent).filter('search_time_period =', eventdata.TIME_FUTURE).order('start_time').fetch(MAX_EVENTS)
     eventdata.cache_db_events(db_events)
     if len(db_events) >= MAX_EVENTS:
-        slogging.error('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
+        logging.error('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
 
     search_events = [(x.fb_event_id, (x.latitude, x.longitude)) for x in db_events if x.latitude or x.longitude]
     return search_events

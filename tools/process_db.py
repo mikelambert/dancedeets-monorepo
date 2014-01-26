@@ -77,7 +77,7 @@ if count_characters:
         if f.key().name().endswith('OBJ_EVENT'):
             if 'json_data' in f:
                 data = simplejson.loads(f['json_data'])
-                if not data['deleted']:
+                if not data['empty']:
                     total += len(data['info'].get('description', '')) or 0
                     count += 1
         

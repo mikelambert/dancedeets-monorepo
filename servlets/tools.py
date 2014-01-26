@@ -28,7 +28,7 @@ class UnprocessFutureEventsHandler(webapp2.RequestHandler):
         #if entity.key().name().endswith('OBJ_EVENT'):
         #    if entity.json_data:
         #        event = entity.decode_data()
-        #        if not event['deleted']:
+        #        if not event['empty']:
         #            info = event['info']
         #            if info.get('start_time') > '2011-04-05' and info['updated_time'] > '2011-04-05':
         #                pe = potential_events.PotentialEvent.get_or_insert(str(event['info']['id']))

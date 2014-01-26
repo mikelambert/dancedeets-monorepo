@@ -7,6 +7,7 @@ from google.appengine.runtime import apiproxy_errors
 from google.appengine.ext import db
 
 from events import cities
+import fb_api
 import geohash
 import locations
 from logic import event_classifier
@@ -99,13 +100,22 @@ class DBEvent(db.Model):
     def make_findable_for(self, batch_lookup, fb_dict):
         # set up any cached fields or bucketing or whatnot for this event
 
-        if fb_dict['deleted']:
+        if fb_dict['empty'] == fb_api.EMPTY_CAUSE_DELETED:
             self.start_time = None
             self.end_time = None
             self.search_time_period = None
             self.address = None
             self.actual_city_name = None
             self.city_name = None
+            return
+        elif fb_dict['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
+            # TODO(lambert): Find a better way to solve this hack
+            # Where insufficient-access events don't get re-processed,
+            # and don't pass into TIME_PAST
+            if not self.start_time:
+                self.search_time_period = None
+            elif datetime.datetime.now() > dates.faked_end_time(self.start_time, None):
+                self.search_time_period = TIME_PAST
             return
 
         if 'owner' in fb_dict['info']:

@@ -176,6 +176,10 @@ class RecacheSearchIndex(BaseTaskFacebookRequestHandler):
     def get(self):
         search.recache_everything(self.batch_lookup)
 
+class RefreshFulltextSearchIndex(BaseTaskFacebookRequestHandler):
+    def get(self):
+        search.construct_fulltext_search_index(self.batch_lookup)
+
 class TimingsKeepAlive(BaseTaskRequestHandler):
     def get(self):
         timings.keep_alive()

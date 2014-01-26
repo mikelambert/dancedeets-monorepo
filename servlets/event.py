@@ -83,8 +83,8 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
 
         event_info = self.batch_lookup.data_for_event(event_id)
-        if event_info['deleted']:
-            self.response.out.write('This event was deleted.')
+        if event_info['empty']:
+            self.response.out.write('This event was %s.' % event_info['empty'])
             return
 
         self.display['pic'] = eventdata.get_event_image_url(event_info)
@@ -120,6 +120,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             event_id = get_id_from_url(self.request.get('event_url'))
         elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
+        if event_id == '394296940581779':
+            return self.show_barebones_page(event_id)
         self.batch_lookup.lookup_event(event_id, allow_cache=False)
         self.batch_lookup.lookup_event_attending(event_id, allow_cache=False)
         self.finish_preload()
@@ -146,7 +148,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                 combined_owner = new_batch_lookup.data_for_profile(owner_id)
             except fb_api.NoFetchedDataException:
                 pass
-            if combined_owner and not combined_owner['deleted']:
+            if combined_owner and not combined_owner['empty']:
                 owner = combined_owner['profile']
                 if 'location' in owner:
                     owner_location = event_locations.city_for_fb_location(owner['location'])
@@ -303,7 +305,7 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
         template_events = []
         for e in sorted(db_events, key=lambda x: x.start_time):
             fb_event = self.batch_lookup.data_for_event(e.fb_event_id)
-            if not fb_event['deleted']:
+            if not fb_event['empty']:
                 template_events.append(dict(fb_event=fb_event, db_event=e))
         self.display['events'] = template_events
         self.render_template('admin_nolocation_events')
@@ -344,7 +346,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             except KeyError:
                 logging.error("Failed to load event id %s", e)
                 continue
-            if fb_event['deleted']:
+            if fb_event['empty']:
                 continue
             classified_event = event_classifier.get_classified_event(fb_event, potential_event_dict[e])
             if classified_event.is_dance_event():

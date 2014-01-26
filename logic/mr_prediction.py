@@ -30,7 +30,7 @@ def classify_events(batch_lookup, pe_list):
                 fb_event_attending = batch_lookup.data_for_event_attending(pe.fb_event_id)
             except fb_api.NoFetchedDataException:
                 continue
-            if fb_event['deleted']:
+            if fb_event['empty']:
                 continue
             predict_service = predict_service or gprediction.get_predict_service()
             pe = potential_events.update_scores_for_potential_event(pe, fb_event, fb_event_attending, predict_service)

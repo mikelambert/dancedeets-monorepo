@@ -170,7 +170,7 @@ def create_source_from_event(batch_lookup, db_event):
     batch_lookup.lookup_thing_feed(db_event.owner_fb_uid)
     batch_lookup.finish_loading()
     thing_feed = batch_lookup.data_for_thing_feed(db_event.owner_fb_uid)
-    if not thing_feed['deleted']:
+    if not thing_feed['empty']:
         s = create_source_for_id(db_event.owner_fb_uid, thing_feed)
         s.put()
 map_create_source_from_event = fb_mapreduce.mr_wrap(create_source_from_event)
@@ -188,7 +188,7 @@ def map_count_potential_event(pe):
     batch_lookup.finish_loading()
 
     fb_event = batch_lookup.data_for_event(pe.fb_event_id)
-    if fb_event['deleted']:
+    if fb_event['empty']:
         return
     classified_event = event_classifier.get_classified_event(fb_event, pe.language)
 

@@ -60,12 +60,12 @@ class FeedHandler(base_servlet.BaseRequestHandler):
             'id': x.fb_event['info']['id'],
             'title': x.fb_event['info']['name'],
             'description': x.fb_event['info'].get('description'),
-            'city': x.db_event.actual_city_name,
+            'city': x.actual_city_name,
             'image_url': x.get_image(),
             'cover_url': x.fb_event['info'].get('cover'),
             'start_time': x.start_time.strftime(DATETIME_FORMAT),
             'end_time': x.end_time and x.end_time.strftime(DATETIME_FORMAT) or None,
-            'keywords': x.event_types,
+            'keywords': x.event_keywords,
         }
 
     def HandleJsonFeed(self, distance, distance_units, location, search_results):
@@ -120,9 +120,9 @@ class FeedHandler(base_servlet.BaseRequestHandler):
 
             lines = []
             lines.append('<img src="%s" />' % urls.fb_event_image_url(result.fb_event['info']['id']))
-            lines.append('Start Time: %s' % text.date_format(u'%Y-%m-%d %H:%M', result.db_event.start_time))
-            if result.db_event.end_time:
-                lines.append('End Time: %s' % text.date_format(u'%Y-%m-%d %H:%M', result.db_event.end_time))
+            lines.append('Start Time: %s' % text.date_format(u'%Y-%m-%d %H:%M', result.start_time))
+            if result.end_time:
+                lines.append('End Time: %s' % text.date_format(u'%Y-%m-%d %H:%M', result.end_time))
             if location:
                 lines.append('Location: %s' % xml.sax.saxutils.escape(location))
             lines.append('')

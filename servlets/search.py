@@ -13,6 +13,7 @@ from logic import rankings
 from logic import friends
 from logic import rsvp
 from logic import search
+from logic import search_base
 import fb_api
 import locations
 from util import timings
@@ -38,7 +39,8 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             self.redirect('/user/edit')
             return
 
-        fe_search_query = search.FrontendSearchQuery()
+        fe_search_query = search_base.FrontendSearchQuery()
+        fe_search_query.keywords = self.request.get('keywords')
 
         # in case we get it passed in via the URL handler
         city_name = city_name or self.request.get('city_name')
@@ -68,8 +70,8 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             time_period = eventdata.TIME_FUTURE
 
         if not self.request.get('calendar'):
-            query = search.SearchQuery(time_period=time_period, bounds=bounds, min_attendees=fe_search_query.min_attendees)
-            search_results = query.get_search_results(self.batch_lookup)
+            query = search.SearchQuery(time_period=time_period, bounds=bounds, min_attendees=fe_search_query.min_attendees, keywords=fe_search_query.keywords)
+            search_results = query.get_search_results(self.batch_lookup, new_search=self.request.get('new_search') == '1')
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
             a = time.time()
             friends.decorate_with_friends(self.batch_lookup, search_results)

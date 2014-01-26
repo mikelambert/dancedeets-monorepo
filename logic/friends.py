@@ -21,11 +21,11 @@ def decorate_with_friends(batch_lookup, search_results):
 
         attendee_batch_lookup = batch_lookup.copy()
         for result in search_results:
-            attendee_batch_lookup.lookup_event_attending(result.db_event.fb_event_id)
+            attendee_batch_lookup.lookup_event_attending(result.fb_event_id)
         attendee_batch_lookup.finish_loading()
 
         for result in search_results:
-            event_attendees = attendee_batch_lookup.data_for_event_attending(result.db_event.fb_event_id)['attending']['data']
+            event_attendees = attendee_batch_lookup.data_for_event_attending(result.fb_event_id)['attending']['data']
             event_attendee_ids = [x['id'] for x in event_attendees]
             event_friend_attendees = friend_ids.intersection(event_attendee_ids)
             result.attending_friends = sorted(friend_map[x] for x in event_friend_attendees)
