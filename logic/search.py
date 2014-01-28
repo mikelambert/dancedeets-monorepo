@@ -24,6 +24,7 @@ from util import urls
 
 SLOW_QUEUE = 'slow-queue'
 
+ALL_EVENTS_INDEX = 'AllEvents'
 FUTURE_EVENTS_INDEX = 'FutureEvents'
 
 class ResultsGroup(object): 
@@ -166,8 +167,14 @@ class SearchQuery(object):
             clauses += ['latitude >= %s AND longitude >= %s' % self.bounds[0]]
             clauses += ['latitude <= %s AND longitude <= %s' % self.bounds[1]]
         if self.time_period:
-            pass #
+            if self.time_period == eventdata.TIME_FUTURE:
+                index_name = FUTURE_EVENTS_INDEX
+            else:
+                index_name = ALL_EVENTS_INDEX
         if self.start_time:
+            # Do we want/need this hack?
+            if self.start_time > datetime.datetime.now():
+                index_name = FUTURE_EVENTS_INDEX
             clauses += ['end_time >= %s' % self.start_time.date().strftime(DATE_SEARCH_FORMAT)]
         if self.end_time:
             clauses += ['start_time <= %s' % self.end_time.date().strftime(DATE_SEARCH_FORMAT)]
@@ -177,7 +184,7 @@ class SearchQuery(object):
         if clauses:
             full_search = ' '.join(clauses)
             logging.info("Doing search for %r", full_search)
-            doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
+            doc_index = search.Index(name=index_name)
             #TODO(lambert): implement pagination
             options = search.QueryOptions(
                 limit=1000,
@@ -274,17 +281,21 @@ class SearchQuery(object):
         logging.info("search result sorting took %s seconds", time.time() - a)
         return search_results
 
-def construct_fulltext_search_index(batch_lookup):
+def construct_fulltext_search_index(batch_lookup, index_future=True):
     logging.info("Loading DB Events")
     MAX_EVENTS = 10000
-    db_event_keys = db.Query(eventdata.DBEvent, keys_only=True).filter('search_time_period =', eventdata.TIME_FUTURE).order('start_time').fetch(MAX_EVENTS)
+    db_query = db.Query(eventdata.DBEvent, keys_only=True)
+    if index_future:
+        db_query = db_query.filter('search_time_period =', eventdata.TIME_FUTURE)
+    db_event_keys = db_query.order('start_time').fetch(MAX_EVENTS)
     db_event_ids = [x.id_or_name() for x in db_event_keys]
 
     if len(db_event_ids) >= MAX_EVENTS:
         logging.error('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
     logging.info("Loaded %s DB Events", len(db_event_ids))
 
-    doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
+    index_name = index_future and FUTURE_EVENTS_INDEX or ALL_EVENTS_INDEX
+    doc_index = search.Index(name=index_name)
 
     docs_per_group = search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST
 
@@ -310,9 +321,9 @@ def construct_fulltext_search_index(batch_lookup):
     logging.info("Loading %s FB Events, in groups of %s", len(db_event_ids), docs_per_group)
     for i in range(0,len(db_event_ids), docs_per_group):
         group_db_event_ids = db_event_ids[i:i+docs_per_group]
-        deferred.defer(save_db_event_ids, batch_lookup, group_db_event_ids)
+        deferred.defer(save_db_event_ids, batch_lookup, index_name, group_db_event_ids)
 
-def save_db_event_ids(batch_lookup, db_event_ids):
+def save_db_event_ids(batch_lookup, index_name, db_event_ids):
     # TODO(lambert): how will we ensure we only update changed events?
     logging.info("Loading %s DB Events", len(db_event_ids))
     db_events = eventdata.DBEvent.get_by_key_name(db_event_ids)
@@ -339,15 +350,10 @@ def save_db_event_ids(batch_lookup, db_event_ids):
         if db_event.latitude is None:
             delete_ids.append(str(db_event.fb_event_id))
             continue
-        if dates.faked_end_time(db_event.start_time, db_event.end_time) < datetime.datetime.now():
-            logging.error("Event far in the past, still showing up in our index-able set: %s" % db_event.fb_event_id)
-            logging.error("Start time %s, computed end time %s", db_event.start_time, dates.faked_end_time(db_event.start_time, db_event.end_time))
-            delete_ids.append(str(db_event.fb_event_id))
-            continue
         doc_event = search.Document(
             doc_id=str(db_event.fb_event_id),
             fields=[
-                search.TextField(name='keywords', value=fb_event['info']['name'] + fb_event['info'].get('description', '')),
+                search.TextField(name='keywords', value=fb_event['info'].get('name', '') + fb_event['info'].get('description', '')),
                 search.NumberField(name='attendee_count', value=db_event.attendee_count or 0),
                 search.DateField(name='start_time', value=db_event.start_time),
                 search.DateField(name='end_time', value=dates.faked_end_time(db_event.start_time, db_event.end_time)),
@@ -362,7 +368,7 @@ def save_db_event_ids(batch_lookup, db_event_ids):
         doc_events.append(doc_event)
 
     logging.info("Adding %s documents", len(doc_events))
-    doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
+    doc_index = search.Index(name=index_name)
     doc_index.put(doc_events)
 
     # These events could not be filtered out too early,
