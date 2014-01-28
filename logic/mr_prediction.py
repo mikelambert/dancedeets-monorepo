@@ -5,11 +5,6 @@ import fb_api
 from logic import gprediction
 from logic import potential_events
 from util import fb_mapreduce
-from util import mr_helper
-
-class UnprocessedPotentialEventsReader(mr_helper.FilteredInputReader):
-    def filter_query(self, query):
-        query.filter('looked_at =', None)
 
 def classify_events(batch_lookup, pe_list):
     pe_list = [x for x in pe_list if x.match_score > 0]
@@ -49,9 +44,9 @@ def mr_classify_potential_events(batch_lookup):
         'Auto-Classify Events',
         'logic.mr_prediction.map_classify_events',
         'logic.potential_events.PotentialEvent',
+        filters=[('looked_at', '=', None)],
         handle_batch_size=20,
         queue='slow-queue',
-        reader_spec='logic.mr_prediction.UnprocessedPotentialEventsReader',
         output_writer_spec='mapreduce.output_writers.BlobstoreOutputWriter',
         extra_mapper_params={'mime_type': 'text/plain'},
     )

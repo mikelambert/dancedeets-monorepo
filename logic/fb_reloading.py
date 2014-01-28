@@ -8,7 +8,6 @@ from logic import email_events
 from logic import potential_events
 from util import fb_mapreduce
 from util import timings
-from util import mr_helper
 
 BROKEN_UIDS = []#"1400235949", "1268158596"]
 
@@ -90,22 +89,14 @@ def yield_load_fb_user(batch_lookup, user):
 map_load_fb_user = fb_mapreduce.mr_user_wrap(yield_load_fb_user)
 load_fb_user = fb_mapreduce.nomr_wrap(yield_load_fb_user)
 
-class FutureEventInputReader(mr_helper.FilteredInputReader):
-    def filter_query(self, query):
-        query.filter('search_time_period =', eventdata.TIME_FUTURE)
-
-class PastEventInputReader(mr_helper.FilteredInputReader):
-    def filter_query(self, query):
-        query.filter('search_time_period =', eventdata.TIME_PAST)
-
 def mr_load_past_fb_event(batch_lookup):
         fb_mapreduce.start_map(
                 batch_lookup=batch_lookup,
                 name='Load Past Events',
                 handler_spec='logic.fb_reloading.map_load_fb_event',
                 entity_kind='events.eventdata.DBEvent',
+        filters=[('search_time_period', '=', eventdata.TIME_PAST)],
         handle_batch_size=20,
-        reader_spec='logic.fb_reloading.PastEventInputReader',
         )
 
 def mr_load_future_fb_event(batch_lookup):
@@ -114,8 +105,8 @@ def mr_load_future_fb_event(batch_lookup):
                 name='Load Future Events',
                 handler_spec='logic.fb_reloading.map_load_fb_event',
                 entity_kind='events.eventdata.DBEvent',
+        filters=[('search_time_period', '=', eventdata.TIME_FUTURE)],
         handle_batch_size=20,
-        reader_spec='logic.fb_reloading.FutureEventInputReader',
         )
 
 def mr_load_all_fb_event(batch_lookup):

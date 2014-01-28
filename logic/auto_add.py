@@ -11,12 +11,10 @@ from logic import event_classifier
 from logic import event_locations
 from logic import potential_events
 from util import fb_mapreduce
-from util import mr_helper
 
-class UnprocessedPotentialEventsReader(mr_helper.FilteredInputReader):
-    def filter_query(self, query):
-        query.filter('looked_at =', None)
-        query.filter('should_look_at =', True)
+from mapreduce import input_readers
+class UnprocessedPotentialEventsReader(input_readers.DatastoreInputReader):
+    pass 
 
 def classify_events(batch_lookup, pe_list):
     for pe in pe_list:
@@ -71,9 +69,9 @@ def mr_classify_potential_events(batch_lookup):
         'Auto-Add Events',
         'logic.auto_add.map_classify_events',
         'logic.potential_events.PotentialEvent',
+        filters=[('looked_at', '=', None), ('should_look_at', '=', True)],
         handle_batch_size=20,
         queue='fast-queue',
-        reader_spec='logic.auto_add.UnprocessedPotentialEventsReader',
         output_writer_spec='mapreduce.output_writers.BlobstoreOutputWriter',
         extra_mapper_params={'mime_type': 'text/plain'},
     )
