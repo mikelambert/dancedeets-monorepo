@@ -6,6 +6,7 @@ class FrontendSearchQuery(object):
         self.min_attendees = 0
         self.past = 0
         self.keywords = ''
+        self.deb = None
 
     def url_params(self):
         return {
@@ -15,4 +16,5 @@ class FrontendSearchQuery(object):
             'min_attendees': self.min_attendees,
             'past': self.past,
             'keywords': self.keywords,
+            'deb': self.deb,
         }

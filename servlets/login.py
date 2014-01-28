@@ -14,6 +14,7 @@ import locations
 from logic import backgrounder
 from logic import rankings
 from logic import search
+from logic import search_base
 
 def get_location(fb_user):
     if fb_user['profile'].get('location'):
@@ -59,14 +60,10 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['top_european_countries'] = ['Czech Republic', 'Finland', 'France', 'Germany', 'Ireland', 'Italy', 'Norway', 'Poland', 'Spain', 'Sweden', 'Switzerland', 'United Kingdom', 'Portugal']
         self.display['top_continents'] = ['Asia', 'Africa', 'Australia', 'South America']
 
-                self.display['defaults'] = {
-                        'distance': '50',
-                        'distance_units': 'miles',
-                        'location': '', # maybe set via ajax
-                        'min_attendees': 0,
-                        'past': False,
-                }
-
+                self.display['defaults'] = search_base.FrontendSearchQuery()
+                self.display['defaults'].location = self.request.get('location')
+                self.display['defaults'].keywords = self.request.get('keywords')
+                self.display['defaults'].deb = self.request.get('deb')
 
         self.display['next'] = next
         logging.info(self.display['next'])

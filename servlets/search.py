@@ -40,6 +40,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             return
 
         fe_search_query = search_base.FrontendSearchQuery()
+        fe_search_query.deb = self.request.get('deb')
         fe_search_query.keywords = self.request.get('keywords')
 
         # in case we get it passed in via the URL handler
@@ -71,7 +72,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
         if not self.request.get('calendar'):
             query = search.SearchQuery(time_period=time_period, bounds=bounds, min_attendees=fe_search_query.min_attendees, keywords=fe_search_query.keywords)
-            search_results = query.get_search_results(self.batch_lookup, new_search=self.request.get('new_search') == '1')
+            search_results = query.get_search_results(self.batch_lookup, new_search=self.request.get('deb') == 'new_search')
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
             a = time.time()
             friends.decorate_with_friends(self.batch_lookup, search_results)

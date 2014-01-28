@@ -198,6 +198,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
             current_url_args[arg] = [x.encode('utf-8') for x in self.request.get_all(arg)]
         final_url = self.request.path + '?' + urllib.urlencode(current_url_args, doseq=True)
         params = dict(next=final_url)
+        if 'deb' in self.request.arguments():
+            params['deb'] = self.request.get('deb')
         login_url = '/login?%s' % urllib.urlencode(params)
         self.setup_login_state(request)
 
@@ -265,6 +267,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         self.display['defaults'] = search_base.FrontendSearchQuery()
         self.display['defaults'].location = self.request.get('location')
+        self.display['defaults'].keywords = self.request.get('keywords')
+        self.display['defaults'].deb = self.request.get('deb')
 
         self.display.update(rankings.retrieve_summary())
         return False

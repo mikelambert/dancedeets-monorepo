@@ -56,11 +56,15 @@ $gaq_custom_vars()
 			<a class="brand" href="/"><img src="/images/dancedeets-small-white.png" width="220" height="33"></a>
 <form id="search-form" action="/" style="margin: 0px;">
 			<ul class="nav">
-				<li><span>${total_events} dance events worldwide</li>
+				<li><span>${total_events} dance events </li>
 				<li class="dropdown" data-dropdown="dropdown">
 <a href="#" class="dropdown-toggle" style="padding: 10px 10px 7px">
 <span id="search-button" class="glass"><i></i></span>
-            <input id="location_input" type="text" name="location" placeholder="Location" style="margin-top:-8px;width:180px"/ value="$defaults.location">
+#if str($defaults.deb) == "new_search"
+            <input id="keywords_input" type="text" name="keywords" placeholder="Any events" style="margin-top:-8px;width:100px"/ value="$defaults.keywords"> near
+#end if
+            <input id="location_input" type="text" name="location" placeholder="Location" style="margin-top:-8px;width:120px"/ value="$defaults.location">
+            <input type="hidden" name="deb" value="$defaults.deb">
 </a>
     <ul class="dropdown-menu" style="width:100%;max-width:none">
       <li>Distance: <select name="distance">
@@ -143,6 +147,20 @@ $body()
 $(document).ready(function() {
 	$("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
         $("body").delegate("#location_input", "click", function() { return false; });
+$(document).ready(function(event) {
+    $('#keywords_input').keydown(function(event) {
+        if (event.keyCode == 13) {
+            this.form.submit();
+            return false;
+         }
+    });
+    $('#location_input').keydown(function(event) {
+        if (event.keyCode == 13) {
+            this.form.submit();
+            return false;
+         }
+    });
+});
 });
 </script>
 
