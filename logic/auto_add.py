@@ -12,10 +12,6 @@ from logic import event_locations
 from logic import potential_events
 from util import fb_mapreduce
 
-from mapreduce import input_readers
-class UnprocessedPotentialEventsReader(input_readers.DatastoreInputReader):
-    pass 
-
 def classify_events(batch_lookup, pe_list):
     for pe in pe_list:
         batch_lookup.lookup_event(pe.fb_event_id)
