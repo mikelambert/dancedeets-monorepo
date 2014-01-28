@@ -60,8 +60,9 @@ def _get_latlng_from_event(batch_lookup, fb_event):
                 logging.error("STILL no venue found for id %s, giving up", venue.get('id'))
         if venue_data and not venue_data['empty']:
             loc = (venue_data['info'].get('location', {}))
-            logging.critical("VENUE DEBUG: somehow our retrieved venue has a lat/long that the event didnt? %s,%s", loc['latitude'], loc['longitude'])
-            return float(loc['latitude']), float(loc['longitude'])
+            if 'latitude' in loc:
+                logging.critical("VENUE DEBUG: somehow our retrieved venue has a lat/long that the event didnt? %s,%s (are we sure the event is updated?)", loc['latitude'], loc['longitude'])
+                return float(loc['latitude']), float(loc['longitude'])
     return None
 
 def get_address_for_fb_event(fb_event):
