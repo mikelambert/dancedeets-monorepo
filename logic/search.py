@@ -283,15 +283,16 @@ class SearchQuery(object):
 
 def construct_fulltext_search_index(batch_lookup, index_future=True):
     logging.info("Loading DB Events")
-    MAX_EVENTS = 10000
+    MAX_EVENTS = 100000
     db_query = db.Query(eventdata.DBEvent, keys_only=True)
     if index_future:
         db_query = db_query.filter('search_time_period =', eventdata.TIME_FUTURE)
     db_event_keys = db_query.order('start_time').fetch(MAX_EVENTS)
-    db_event_ids = [x.id_or_name() for x in db_event_keys]
+    db_event_ids = set(x.id_or_name() for x in db_event_keys)
 
+    logging.info("Found %s db event ids for indexing", len(db_event_ids))
     if len(db_event_ids) >= MAX_EVENTS:
-        logging.error('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
+        logging.critical('Found %s events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
     logging.info("Loaded %s DB Events", len(db_event_ids))
 
     index_name = index_future and FUTURE_EVENTS_INDEX or ALL_EVENTS_INDEX
@@ -319,8 +320,9 @@ def construct_fulltext_search_index(batch_lookup, index_future=True):
 
     # Add all events
     logging.info("Loading %s FB Events, in groups of %s", len(db_event_ids), docs_per_group)
-    for i in range(0,len(db_event_ids), docs_per_group):
-        group_db_event_ids = db_event_ids[i:i+docs_per_group]
+    db_event_ids_list = list(db_event_ids)
+    for i in range(0,len(db_event_ids_list), docs_per_group):
+        group_db_event_ids = db_event_ids_list[i:i+docs_per_group]
         deferred.defer(save_db_event_ids, batch_lookup, index_name, group_db_event_ids)
 
 def save_db_event_ids(batch_lookup, index_name, db_event_ids):
@@ -381,7 +383,7 @@ def construct_search_index():
     db_events = db.Query(eventdata.DBEvent).filter('search_time_period =', eventdata.TIME_FUTURE).order('start_time').fetch(MAX_EVENTS)
     eventdata.cache_db_events(db_events)
     if len(db_events) >= MAX_EVENTS:
-        logging.error('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
+        logging.critical('Found %s future events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
 
     search_events = [(x.fb_event_id, (x.latitude, x.longitude)) for x in db_events if x.latitude or x.longitude]
     return search_events
