@@ -1,12 +1,10 @@
 import datetime
 import json
 import logging
-import webapp2
 import xml.sax.saxutils
 
 import base_servlet
 from events import eventdata
-from events import users
 import locations
 from logic import event_locations
 from logic import search

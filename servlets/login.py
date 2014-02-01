@@ -5,15 +5,11 @@ import logging
 import urllib
 
 import base_servlet
-from events import eventdata
 from events import users
 from google.appengine.api import taskqueue
-from google.appengine.ext import db
 
-import locations
 from logic import backgrounder
 from logic import rankings
-from logic import search
 from logic import search_base
 
 def get_location(fb_user):

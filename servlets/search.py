@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import datetime
 import logging
 import time
 import urllib
@@ -8,13 +7,11 @@ import urllib
 import base_servlet
 from events import cities
 from events import eventdata
-from events import users
 from logic import rankings
 from logic import friends
 from logic import rsvp
 from logic import search
 from logic import search_base
-import fb_api
 import locations
 from util import timings
 

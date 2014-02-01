@@ -7,6 +7,7 @@ import webapp2
 class TestImports(unittest.TestCase):
     def runTest(self):
         import main
+        return main # to avoid pyflakes unused warning
 
 class TestUrlRoutes(unittest.TestCase):
     def runTest(self):

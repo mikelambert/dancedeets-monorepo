@@ -1,30 +1,18 @@
 
-import cgi
-import datetime
 import logging
-import re
-import time
-import urllib
-import urlparse
 import webapp2
 
 from google.appengine.api import mail
-from google.appengine.api import urlfetch
-from google.appengine.runtime import apiproxy_errors
 
 
-import base_servlet
 from events import eventdata
 from events import users
 import facebook
 import fb_api
 from logic import backgrounder
-from logic import email_events
 from logic import fb_reloading
-from logic import potential_events
 from logic import rankings
 from logic import search
-from logic import thing_db
 from logic import thing_scraper
 from util import timings
 
@@ -99,12 +87,6 @@ class ReloadAllUsersHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         # this calls a map function wrapped by mr_user_wrap, so it works correctly on a per-user basis
         fb_reloading.mr_load_fb_user(self.batch_lookup)
-    post=get
-
-class ReloadAllEventsHandler(BaseTaskFacebookRequestHandler):
-    def get(self):
-        fb_reloading.mr_load_fb_event(self.batch_lookup)
-        fb_reloading.mr_load_fb_event_attending(self.batch_lookup)
     post=get
 
 class ReloadPastEventsHandler(BaseTaskFacebookRequestHandler):

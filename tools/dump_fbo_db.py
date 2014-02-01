@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
 import sqlite3
-import logging
-#import pprint
 
 import sys
 sys.path += ['/Users/lambert/Projects/googleappengine-read-only/python']

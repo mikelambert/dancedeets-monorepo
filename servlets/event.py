@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
-import datetime
 import json
 import logging
 import re
-import time
 import urllib
 import urllib2
 
@@ -12,7 +10,6 @@ from google.appengine.ext import deferred
 
 import base_servlet
 from events import eventdata
-from events import users
 from logic import add_entities
 from logic import backgrounder
 from logic import event_auto_classifier
@@ -20,8 +17,6 @@ from logic import event_classifier
 from logic import event_locations
 from logic import potential_events
 from logic import rsvp
-from logic import thing_db
-import facebook
 import fb_api
 import locations
 import smemcache

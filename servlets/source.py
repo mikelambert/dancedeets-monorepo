@@ -1,7 +1,6 @@
-import datetime
 import json
-import logging
 import pprint
+import re
 import urllib2
 
 import base_servlet

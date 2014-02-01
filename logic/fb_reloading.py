@@ -1,7 +1,5 @@
 import logging
 
-from google.appengine.datastore import datastore_query
-
 from events import eventdata
 import fb_api
 from logic import email_events

@@ -1,12 +1,9 @@
 import datetime
 import logging
-import cPickle as pickle
 import time
 
-from google.appengine.runtime import apiproxy_errors
 from google.appengine.ext import db
 
-from events import cities
 import fb_api
 import geohash
 import locations

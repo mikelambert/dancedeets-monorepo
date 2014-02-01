@@ -1,5 +1,4 @@
 import logging
-import math
 
 from google.appengine.ext import db
 
@@ -77,7 +76,6 @@ def import_cities():
 
         if int(population) < 50000:
             continue
-        city_geohash = str(geohash.Geostring((float(latitude), float(longitude)), depth=10))
         city = City.get_or_insert(', '.join([asciiname, admin1_code, country_code]))
         city.city_name = asciiname
         city.state_name = admin1_code

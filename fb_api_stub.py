@@ -1,8 +1,4 @@
 import json
-import logging
-
-from google.appengine.datastore import entity_pb
-from google.appengine.api import datastore
 
 import fb_api
 

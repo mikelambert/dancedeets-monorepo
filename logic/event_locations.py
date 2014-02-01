@@ -1,6 +1,7 @@
 import logging
 import re
 from google.appengine.ext import db
+from google.appengine.runtime import apiproxy_errors
 import fb_api
 
 from events import cities

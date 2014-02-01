@@ -1,16 +1,12 @@
 import datetime
-import logging
 
 import smemcache
 
-from google.appengine.ext import db
 from mapreduce import control
 from mapreduce import model
 from mapreduce import operation as op
 
 from events import cities
-from events import users
-import locations
 
 EVENT_FOR_CITY_RANKING = 'CITY_EVENT_RANKING'
 USER_FOR_CITY_RANKING = 'CITY_USER_RANKING'
@@ -105,8 +101,9 @@ def compute_summary(expiry=TOTALS_EXPIRY):
         total_users = compute_sum(user_rankings, ALL_TIME)
     else:
         total_users = 0
-    event_sorted_rankings = get_thing_ranking(event_rankings, ALL_TIME)
-    user_sorted_rankings = get_thing_ranking(user_rankings, ALL_TIME)
+    #TODO(lambert): Store these in the memcache cache?
+    #event_sorted_rankings = get_thing_ranking(event_rankings, ALL_TIME)
+    #user_sorted_rankings = get_thing_ranking(user_rankings, ALL_TIME)
 
     # save
     totals = dict(total_events=total_events, total_users=total_users)

@@ -1,24 +1,26 @@
-import logging
-import time
+#Leaving these in-but-commented-out for future ease-of-hacking:
+#import logging
+#import time
 import webapp2
-from google.appengine.ext import db
-from google.appengine.ext import deferred
+#from google.appengine.ext import db
+#from google.appengine.ext import deferred
 
-from mapreduce import context
-from mapreduce import control
+#from mapreduce import context
+#from mapreduce import control
 from mapreduce import operation as op
-from mapreduce import util
+#from mapreduce import util
 
 from events import cities
 from events import eventdata
-from events import users
+#from events import users
 import fb_api
 from logic import auto_add
-from logic import event_classifier
+#from logic import event_classifier
 from logic import mr_dump
-from logic import mr_prediction
-from logic import potential_events
-from logic import thing_db
+#from logic import mr_prediction
+#from logic import potential_events
+#from logic import thing_db
+import smemcache
 from servlets import tasks
 
 

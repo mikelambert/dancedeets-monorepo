@@ -18,7 +18,6 @@ def dump_fb_json(batch_lookup, pe_list):
         csv_file = StringIO.StringIO()
         csv_writer = csv.writer(csv_file)
 
-    results = []
     for pe in pe_list:
         try:
             result = json.dumps(batch_lookup.data_for_event(pe.fb_event_id))

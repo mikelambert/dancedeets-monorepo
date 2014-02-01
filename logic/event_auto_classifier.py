@@ -305,7 +305,7 @@ def has_list_of_good_classes(classified_event):
 
     for sub_lines in schedule_lines:
         good_lines = []
-        if not [line for line in sub_lines if re.search(time_with_minutes, line)]:
+        if not [x for x in sub_lines if re.search(time_with_minutes, x)]:
             continue
         for line in sub_lines:
             dance_class_style_matches = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(line)
@@ -506,7 +506,6 @@ def is_workshop(classified_event):
     has_good_dance_title = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_extended_good_crew_title = event_classifier.all_regexes['extended_manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_wrong_style_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
-    has_easy_dance_title = event_classifier.all_regexes['easy_dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_good_dance_class_title = good_dance_class_regex[classified_event.boundaries].findall(trimmed_title)
 
     lee_lee_hiphop = 'lee lee' in classified_event.final_title and re.findall('hip\W?hop', classified_event.final_title)

@@ -36,7 +36,7 @@ def _key_for_name(name):
 
 def accumulate_time(name, time):
     memcache_key = _key_for_name(name)
-    incremented = memcache.incr(memcache_key, delta=int(time*1000), initial_value=0) #in milliseconds
+    memcache.incr(memcache_key, delta=int(time*1000), initial_value=0) #in milliseconds
 
     names = memcache.get(MEMCACHE_NAMES_KEY)
     if not names:
@@ -50,7 +50,7 @@ def clear_all():
     memcache.delete(MEMCACHE_NAMES_KEY)
     for name in names:
         memcache_key = _key_for_name(name)
-        memcache.delete(name)
+        memcache.delete(memcache_key)
     
 def keep_alive():
     names = memcache.get(MEMCACHE_NAMES_KEY) or set()

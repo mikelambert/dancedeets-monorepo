@@ -1,5 +1,3 @@
-import smemcache
-
 from logic import backgrounder
 
 class RSVPManager(object):

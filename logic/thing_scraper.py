@@ -4,11 +4,8 @@ import logging
 import re
 import urlparse
 
-import facebook
-
 from google.appengine.ext import deferred
 
-from events import eventdata
 import fb_api
 from logic import potential_events
 from logic import thing_db
@@ -109,7 +106,6 @@ def parse_event_source_combos_from_feed(source, feed_data):
                 if p:
                     break
         if p:
-            event_id = None
             qs = cgi.parse_qs(p.query)
             if 'eid' in qs:
                 eid = qs['eid'][0]

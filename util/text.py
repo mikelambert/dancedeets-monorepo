@@ -1,5 +1,3 @@
-import datetime
-
 from spitfire.runtime import udn
 from spitfire.runtime.filters import skip_filter
 

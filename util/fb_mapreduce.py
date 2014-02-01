@@ -1,4 +1,3 @@
-import logging
 from mapreduce import context
 from mapreduce import control
 from mapreduce import util

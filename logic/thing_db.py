@@ -6,7 +6,6 @@ from google.appengine.ext import db
 from mapreduce import control
 from logic import event_classifier
 from util import fb_mapreduce
-from util import properties
 
 GRAPH_TYPE_PROFILE = 'GRAPH_TYPE_PROFILE'
 GRAPH_TYPE_FANPAGE = 'GRAPH_TYPE_FANPAGE'

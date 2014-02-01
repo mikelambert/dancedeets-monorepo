@@ -12,7 +12,6 @@ import datetime
 import os
 import sqlite3
 import sys
-import time
 from google.appengine.datastore import entity_pb
 from google.appengine.api import datastore
 
@@ -82,5 +81,5 @@ if count_characters:
                     count += 1
         
     print 'total characters', total
-    print 'total events', ccount
+    print 'total events', count
     print 'characters per event', 1.0*total/count

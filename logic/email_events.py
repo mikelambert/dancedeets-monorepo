@@ -4,10 +4,7 @@ import logging
 from google.appengine.api import mail
 
 from events import eventdata
-from events import users
-import fb_api
 import locations
-from logic import potential_events
 from logic import friends
 from logic import rsvp
 from logic import search

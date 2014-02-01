@@ -10,17 +10,10 @@ from google.appengine.api import search
 from google.appengine.ext import db
 from google.appengine.ext import deferred
 
-import base_servlet
-from events import cities
 from events import eventdata
-from events import users
-import fb_api
 import locations
-from logic import event_classifier
-from logic import rsvp
 from util import dates
 from util import timings
-from util import urls
 
 SLOW_QUEUE = 'slow-queue'
 
@@ -175,9 +168,9 @@ class SearchQuery(object):
             # Do we want/need this hack?
             if self.start_time > datetime.datetime.now():
                 index_name = FUTURE_EVENTS_INDEX
-            clauses += ['end_time >= %s' % self.start_time.date().strftime(DATE_SEARCH_FORMAT)]
+            clauses += ['end_time >= %s' % self.start_time.date().strftime(self.DATE_SEARCH_FORMAT)]
         if self.end_time:
-            clauses += ['start_time <= %s' % self.end_time.date().strftime(DATE_SEARCH_FORMAT)]
+            clauses += ['start_time <= %s' % self.end_time.date().strftime(self.DATE_SEARCH_FORMAT)]
         if self.keywords:
             safe_keywords = re.sub(r'[<=>:()]', '', self.keywords)
             clauses += [safe_keywords]

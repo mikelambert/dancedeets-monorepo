@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 
-import logging
 import os
 import webapp2
-import wsgiref.handlers
 import yaml
 from google.appengine.ext import ereporter
-from google.appengine.ext.webapp.util import run_wsgi_app
 import base_servlet
 from servlets import about
 from servlets import admin
@@ -27,7 +24,6 @@ from servlets import tasks
 from servlets import tools
 from servlets import youtube_simple_api
 from util import batched_mapperworker
-import smemcache
 
 class DoNothingHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
@@ -105,10 +101,10 @@ class WebappHandlerAdapter(webapp2.BaseHandlerAdapter):
         handler = self.handler()
         processed = handler.initialize(request, response)
         if not processed:
-            method_name = _normalize_handler_method(request.method)
+            method_name = webapp2._normalize_handler_method(request.method)
             method = getattr(handler, method_name, None)
             if not method:
-                abort(501)
+                webapp2.abort(501)
 
             # The handler only receives *args if no named variables are set.
             args, kwargs = request.route_args, request.route_kwargs

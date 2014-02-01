@@ -6,8 +6,6 @@ import datetime
 import json
 import logging
 import os
-import re
-import sys
 import urllib
 import webapp2
 
@@ -17,7 +15,6 @@ from google.appengine.ext import deferred
 from events import users
 import facebook
 import fb_api
-import locations
 from logic import backgrounder
 from logic import rankings
 from logic import search_base

@@ -84,7 +84,6 @@ class User(db.Model):
         if self.location:
             #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
             self.location_country = locations.get_country_for_location(self.location)
-            closest_city = cities.get_closest_city(self.location)
         else:
             self.location_country = None
 

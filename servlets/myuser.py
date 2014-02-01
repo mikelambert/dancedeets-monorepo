@@ -1,10 +1,4 @@
-#!/usr/bin/env python
-import logging
-from google.appengine.ext import db
-
 import base_servlet
-import locations
-from events import cities
 from events import users
 
 class UserHandler(base_servlet.BaseRequestHandler):
@@ -20,8 +14,8 @@ class UserHandler(base_servlet.BaseRequestHandler):
                 defaults[field] = self.request.get(field)
         self.display['defaults'] = defaults
 
-        location_too_far = False
-        location_unknown = False
+        #location_too_far = False
+        #location_unknown = False
 
         #TODO(lambert): implement distance-from-saved-location and current-location better, via ajax and geo-api call
 

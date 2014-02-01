@@ -3,13 +3,11 @@ import logging
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
-from events import eventdata
 import fb_api
 from logic import event_classifier
 from logic import gprediction
 from logic import gtranslate
 from logic import thing_db
-from util import properties
 
 class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: int(x.key().name()))
@@ -69,7 +67,7 @@ def update_scores_for_potential_event(potential_event, fb_event, fb_event_attend
         try:
             potential_event = db.run_in_transaction(_internal_update_scores)
         except apiproxy_errors.CapabilityDisabledError, e:
-            logging.error("Error saving potential event %s due to %s", event_id, e)
+            logging.error("Error saving potential event %s due to %s", fb_event_id, e)
     return potential_event
 
 
@@ -85,7 +83,7 @@ def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attendin
     try:
         potential_event = db.run_in_transaction(_internal_add_potential_event)
     except apiproxy_errors.CapabilityDisabledError, e:
-        logging.error("Error saving potential event %s due to %s", event_id, e)
+        logging.error("Error saving potential event %s due to %s", fb_event_id, e)
 
     potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
     return potential_event
@@ -112,7 +110,7 @@ def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, 
     try:
         new_source, match_score = db.run_in_transaction(_internal_add_source_for_event_id)
     except apiproxy_errors.CapabilityDisabledError, e:
-        logging.error("Error saving potential event %s due to %s", event_id, e)
+        logging.error("Error saving potential event %s due to %s", fb_event_id, e)
     potential_event = PotentialEvent.get_by_key_name(str(fb_event_id))
     potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
     if new_source:
@@ -155,7 +153,6 @@ def get_potential_dance_events(batch_lookup, user_id):
         second_batch_lookup.lookup_event_attending(event_id)
     second_batch_lookup.finish_loading()
 
-    dance_event_ids = []
     for event_id in event_ids:
         try:
             fb_event = second_batch_lookup.data_for_event(event_id)

@@ -7,7 +7,6 @@ import re
 import time
 import urllib
 
-import facebook
 import smemcache
 from google.appengine.ext import db
 from google.appengine.api import datastore

@@ -1,4 +1,5 @@
 import cgi
+import re
 import urlparse
 
 from google.appengine.ext import db
@@ -54,7 +55,7 @@ class ProfileVideoTag(db.Model):
             return "unknown!"
 
     def get_profile(self):
-        return "/profile/%s" % fb_uid
+        return "/profile/%s" % self.fb_uid
 
 # for logged-in playlist fetching:
 # AuthSub
