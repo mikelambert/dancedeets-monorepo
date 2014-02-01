@@ -9,9 +9,6 @@ class BatchedMapperWorkerCallbackHandler(handlers.MapperWorkerCallbackHandler):
     super(BatchedMapperWorkerCallbackHandler, self).__init__(*args, **kwargs)
     self.all_data = []
 
-  def handle(self):
-    return super(BatchedMapperWorkerCallbackHandler, self).handle()
-
   def _process_inputs(self,
                       input_reader,
                       shard_state,
