@@ -75,17 +75,10 @@ easy_dance_keywords = [
     u'กเต้น', # dancers thai
     'danse\w*', # french and danish
     'taniec', # dance polish
+    u'tane?[cč][íú\w]*', # dance slovak/czech
     u'zatanč\w*', # dance czech
-    'tan[ec][ec]\w*', # dance polish
-    u'tańca', # dance polish
-    'tanca', # dance slovak
-    u'tancujú', # dance slovak
-    u'tanečno', # dance slovak
+    u'tańe?c\w*', # dance polish/czech
     u'danç\w*', # dance portuguese
-    u'tańc\w*', # dance polish
-    u'taneč\w*', # dance czech
-    u'taneční\w*', # dance czech # needed for now since \w won't match unicode unless we're in incode mode
-    'tancovat', # dance czech
     'danza\w*', # dance italian
     u'šok\w*', # dance lithuanian
     'tanz\w*', # dance german
@@ -243,6 +236,7 @@ dance_keywords = [
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
 dance_keywords = dance_keywords + [x+'u' for x in dance_keywords] 
 # TODO(lambert): Is this a safe one to add?
+# http://en.wikipedia.org/wiki/Slovak_declension
 # dance_keywords = dance_keywords + [x+'y' for x in dance_keywords] 
 
 house_keywords = [
