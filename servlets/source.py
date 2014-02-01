@@ -72,7 +72,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                         return
 
                 s.creating_fb_uid = self.user.fb_uid
-                s.creation_time = datetime.datetime.now()
         s.put()
 
         self.user.add_message("Source added!")

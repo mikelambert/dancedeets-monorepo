@@ -92,7 +92,7 @@ class Source(db.Model):
     choreo = db.FloatProperty(indexed=False)
 
     creating_fb_uid = db.IntegerProperty(indexed=False)
-    creation_time = db.DateTimeProperty(indexed=False)
+    creation_time = db.DateTimeProperty(indexed=False, auto_now_add=True)
     last_scrape_time = db.DateTimeProperty(indexed=False)
 
     num_all_events = db.IntegerProperty(indexed=False)
