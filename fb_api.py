@@ -111,6 +111,8 @@ class BatchLookup(object):
         self.allow_dbcache = self.allow_cache
         self.object_keys = set()
         self.object_keys_to_lookup_without_cache = set()
+        self.fb_fetches = 0
+        self.db_updates = 0
 
     def copy(self, allow_cache=None):
         if allow_cache is None:
@@ -185,6 +187,7 @@ class BatchLookup(object):
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
         url = "https://graph.facebook.com/fql?%s" % urllib.urlencode(dict(q=fql, access_token=self.fb_graph.access_token))
         urlfetch.make_fetch_call(rpc, url)
+        self.fb_fetches += 1
         return rpc
 
     def _fetch_rpc(self, path, fields=None, use_access_token=True):
@@ -198,6 +201,7 @@ class BatchLookup(object):
             else:
                 combiner = '?'
             url += combiner + urllib.urlencode(dict(access_token=self.fb_graph.access_token))
+        self.fb_fetches += 1
         urlfetch.make_fetch_call(rpc, url)
         return rpc
 
@@ -456,8 +460,11 @@ class BatchLookup(object):
                 continue
             try:
                 obj = FacebookCachedObject.get_or_insert(self._string_key(object_key))
+                old_json_data = obj.json_data
                 obj.encode_data(this_object)
-                obj.put()
+                if old_json_data != obj.json_data:
+                    obj.put()
+                    self.db_updates += 1
             except apiproxy_errors.CapabilityDisabledError:
                 pass
         return fetched_objects

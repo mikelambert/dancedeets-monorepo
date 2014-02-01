@@ -97,7 +97,6 @@ def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, 
         potential_event = PotentialEvent.get_by_key_name(str(fb_event_id)) or PotentialEvent(key_name=str(fb_event_id))
         # If already added, return
         if potential_event.has_source_with_field(source.graph_id, source_field):
-            logging.info("has source already!")
             return False, potential_event.match_score
 
         _common_potential_event_setup(potential_event, fb_event)

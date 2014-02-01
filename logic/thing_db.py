@@ -139,7 +139,7 @@ class Source(db.Model):
                 td = datetime.datetime.now() - dt
                 total_seconds = td.seconds + td.days * 24 * 3600
                 self.feed_history_in_seconds = total_seconds
-                logging.info('time delta is %s', self.feed_history_in_seconds)
+                #logging.info('feed time delta is %s', self.feed_history_in_seconds)
             else:
                 self.feed_history_in_seconds = 0
         #TODO(lambert): at some point we need to calculate all potential events, and all real events, and update the numbers with values from them. and all fake events. we have a problem where a new source gets added, adds in the potential events and/or real events, but doesn't properly tally them all. can fix this one-off, but it's too-late now, and i imagine our data will grow inaccurate over time anyway.

@@ -26,6 +26,8 @@ def scrape_events_from_sources(batch_lookup, sources):
         batch_lookup.lookup_thing_feed(source.graph_id)
     batch_lookup.finish_loading()
 
+    logging.info("Fetched %s objects, saved %s updates", batch_lookup.fb_fetches, batch_lookup.db_updates)
+
     event_source_combos = []
     for source in sources:
         try:
@@ -142,6 +144,7 @@ def process_event_source_ids(event_source_combos, batch_lookup):
             potential_events.make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_FEED)
         except fb_api.NoFetchedDataException:
             continue
+    logging.info("Found %s potential events", len(event_source_combos))
 
     existing_source_ids = set([str(x.graph_id) for x in thing_db.Source.get_by_key_name(potential_new_source_ids) if x])
     new_source_ids = set([x for x in potential_new_source_ids if x not in existing_source_ids])
@@ -149,6 +152,8 @@ def process_event_source_ids(event_source_combos, batch_lookup):
         #TODO(lambert): we know it doesn't exist, why does create_source_for_id check datastore?
         s = thing_db.Source(key_name=str(source_id))
         s.put()
+    logging.info("Found %s new sources", len(new_source_ids))
+
     # initiate an out-of-band-scrape for our new sources we found
     if new_source_ids:
         deferred.defer(scrape_events_from_source_ids, batch_lookup.copy(), new_source_ids)
