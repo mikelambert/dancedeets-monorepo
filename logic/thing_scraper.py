@@ -47,7 +47,7 @@ map_scrape_events_from_source = fb_mapreduce.mr_wrap(scrape_events_from_sources)
 def mapreduce_scrape_all_sources(batch_lookup, min_potential_events=None):
     filters = []
     if min_potential_events:
-        filters.append(('num_potential_events', '>', min_potential_events))
+        filters.append(('num_potential_events', '>=', min_potential_events))
     fb_mapreduce.start_map(
         batch_lookup.copy(allow_cache=False), # Force refresh of thing feeds
         'Scrape All Sources',
