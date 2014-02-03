@@ -75,11 +75,22 @@ class FacebookCachedObject(db.Model):
             self.delete() # hack fix to get these objects purged from the system
         return self.data
 
-def is_public_ish(fb_event):
+def _all_members_count(fb_event, value=None):
     data = fb_event.get('fql_info', {}).get('data')
+    if data and data[0].get('all_members_count'):
+        if value:
+            data[0]['all_members_count'] = value
+        else:
+            return data[0]['all_members_count']
+    else:
+        if value:
+            raise ValueError()
+        return None
+
+def is_public_ish(fb_event):
     return not fb_event['empty'] and (
         fb_event['info'].get('privacy', 'OPEN') == 'OPEN' or
-        data and data[0].get('all_members_count', 0) > 60
+        _all_members_count(fb_event) > 60
     )
 
 
@@ -268,14 +279,20 @@ class BatchLookup(object):
         return db_lookup_func
         
     def _data_for(key_func):
-        def data_for_func(self, id):
+        def data_for_func(self, id, only_if_updated=False):
             assert id
             id = str(GRAPH_ID_REMAP.get(str(id), id))
             key = key_func(self, id)
-            if key in self.objects:
+            if only_if_updated:
+                object_lookup = self.updated_objects
+            else:
+                object_lookup = self.objects
+            if key in object_lookup:
                 return self.objects[key_func(self, id)]
             else:
-                raise NoFetchedDataException('Could not find %s' % (key,))
+                # only_if_updated means the caller expects to have some None returns
+                if not only_if_updated:
+                    raise NoFetchedDataException('Could not find %s' % (key,))
         return data_for_func 
         
     invalidate_profile = _db_delete(_profile_key)
@@ -344,6 +361,7 @@ class BatchLookup(object):
 
     def finish_loading(self):
         self.objects = {}
+        self.updated_objects = {}
         object_keys_to_lookup = list(self.object_keys)
 
         if self.allow_cache:
@@ -408,6 +426,7 @@ class BatchLookup(object):
         # fetch RPCs
         fetched_objects = {}
         for object_key, object_rpc_dict in self.object_keys_to_rpcs.iteritems():
+            fb_uid, object_id, object_type = object_key
             this_object = {}
             this_object['empty'] = None
             object_is_bad = False
@@ -423,7 +442,6 @@ class BatchLookup(object):
                     elif error_code:
                         logging.error("BatchLookup: Error code from FB server: %s", object_json)
 
-                        fb_uid, object_id, object_type = object_key
                         # expired/invalidated OAuth token for User objects. We use one OAuth token per BatchLookup, so no use continuing...
                         # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
                         error_code = object_json.get('error_code')
@@ -441,6 +459,19 @@ class BatchLookup(object):
             if object_is_bad:
                 logging.warning("BatchLookup: Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
             else:
+                #TODO(lambert): refactor this code/function to make this approach nicer
+                if object_type == self.OBJECT_EVENT:
+                    # So fql_count's all_members_count can be rounded,
+                    # to save on unnecessary db updates and indexing.
+                    # Especially as it's only for privacy check comparison to 60
+                    # So round down to most significant digit:
+                    amc = _all_members_count(this_object)
+                    if amc:
+                        str_amc = str(amc)
+                        # Yes, this timed faster than math.round and string-manip
+                        new_amc = int(str_amc[0])*10**(len(str_amc)-1)
+                        _all_members_count(this_object, new_amc)
+
                 fetched_objects[object_key] = this_object
         return fetched_objects
 
@@ -464,6 +495,11 @@ class BatchLookup(object):
                 if old_json_data != obj.json_data:
                     obj.put()
                     self.db_updates += 1
+                    #DEBUG
+                    #logging.info("OLD %s", old_json_data)
+                    #logging.info("NEW %s", obj.json_data)
+                    # Store list of updated objects for later querying
+                    self.updated_objects[object_key] = this_object
             except apiproxy_errors.CapabilityDisabledError:
                 pass
         return fetched_objects

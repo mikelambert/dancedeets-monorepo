@@ -1,9 +1,12 @@
+import datetime
 import logging
 
 from events import eventdata
 import fb_api
 from logic import email_events
 from logic import potential_events
+from logic import search
+from util import dates
 from util import fb_mapreduce
 from util import timings
 
@@ -26,11 +29,29 @@ def yield_load_fb_event(batch_lookup, db_events):
     batch_lookup.finish_loading()
     for db_event in db_events:
         try:
-            fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
-            db_event.make_findable_for(batch_lookup, fb_event)
-            db_event.put()
-        except fb_api.NoFetchedDataException:
-            logging.info("No data fetched for event id %s", db_event.fb_event_id)
+            fb_event = batch_lookup.data_for_event(db_event.fb_event_id, only_if_updated=True)
+
+            #TODO(lambert): refactor this logic to a central place!
+            one_day_ago = datetime.datetime.now() - datetime.timedelta(days=1)
+            event_end_time = dates.faked_end_time(db_event.start_time, db_event.end_time)
+            how_far_in_past = (one_day_ago - event_end_time).total_seconds()
+            recently_became_past = (how_far_in_past > 0 and how_far_in_past < 3*24*60*60)
+            # Force an update for events that recently went into the past, to get TIME_PAST set
+            #TODO(lambert): this is a major hack!!! :-(
+            # Events that change due to facebook, should be updated in db and index
+            # We need to capture attendee-changes (in the fb_event_attending updates)!
+            # Events that change due to time-passing, are currently not-handled-well-at-all...this forces it, via an ugly hack.
+            if recently_became_past:
+                fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
+            if fb_event:
+                # NOTE: This update is most likely due to a change in the all-members of the event.
+                # We should decide if this is worth tracking/keeping somehow, as it may be worth skipping?
+                logging.info("FBevent %s updated, saving and indexing DBevent", fb_event['info']['id'])
+                db_event.make_findable_for(batch_lookup, fb_event)
+                db_event.put()
+                search.update_fulltext_search_index(db_event, fb_event)
+        except fb_api.NoFetchedDataException, e:
+            logging.info("No data fetched for event id %s: %s", db_event.fb_event_id, e)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 

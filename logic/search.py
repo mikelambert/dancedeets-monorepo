@@ -274,6 +274,20 @@ class SearchQuery(object):
         logging.info("search result sorting took %s seconds", time.time() - a)
         return search_results
 
+def update_fulltext_search_index(db_event, fb_event):
+    doc_event = _create_doc_event(db_event, fb_event)
+    if not doc_event: return
+    if db_event.search_time_period == eventdata.TIME_FUTURE:
+        doc_index = search.Index(name=ALL_EVENTS_INDEX)
+        doc_index.put(doc_event)
+        doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
+        doc_index.put(doc_event)
+    else:
+        doc_index = search.Index(name=ALL_EVENTS_INDEX)
+        doc_index.put(doc_event)
+        doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
+        doc_index.delete(doc_event)
+
 def construct_fulltext_search_index(batch_lookup, index_future=True):
     logging.info("Loading DB Events")
     MAX_EVENTS = 100000
@@ -318,6 +332,33 @@ def construct_fulltext_search_index(batch_lookup, index_future=True):
         group_db_event_ids = db_event_ids_list[i:i+docs_per_group]
         deferred.defer(save_db_event_ids, batch_lookup, index_name, group_db_event_ids)
 
+def _create_doc_event(db_event, fb_event):
+    if fb_event['empty']:
+        return None
+    # TODO(lambert): find a way to index no-location events.
+    # As of now, the lat/long number fields cannot be None.
+    # In what radius/location should no-location events show up
+    # and how do we want to return them
+    # Perhaps a separate index that is combined at search-time?
+    if db_event.latitude is None:
+        return None
+    doc_event = search.Document(
+        doc_id=str(db_event.fb_event_id),
+        fields=[
+            search.TextField(name='keywords', value=fb_event['info'].get('name', '') + fb_event['info'].get('description', '')),
+            search.NumberField(name='attendee_count', value=db_event.attendee_count or 0),
+            search.DateField(name='start_time', value=db_event.start_time),
+            search.DateField(name='end_time', value=dates.faked_end_time(db_event.start_time, db_event.end_time)),
+            search.NumberField(name='latitude', value=db_event.latitude),
+            search.NumberField(name='longitude', value=db_event.longitude),
+            search.TextField(name='actual_city_name', value=db_event.actual_city_name),
+            search.TextField(name='event_keywords', value=', '.join(db_event.event_keywords)),
+        ],
+        #language=XX, # We have no good language detection
+        rank=int(time.mktime(db_event.start_time.timetuple())),
+        )
+    return doc_event
+
 def save_db_event_ids(batch_lookup, index_name, db_event_ids):
     # TODO(lambert): how will we ensure we only update changed events?
     logging.info("Loading %s DB Events", len(db_event_ids))
@@ -334,32 +375,10 @@ def save_db_event_ids(batch_lookup, index_name, db_event_ids):
     logging.info("Constructing Documents")
     for db_event in db_events:
         fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
-        if fb_event['empty']:
+        doc_event = _create_doc_event(db_event, fb_event)
+        if not doc_event:
             delete_ids.append(str(db_event.fb_event_id))
             continue
-        # TODO(lambert): find a way to index no-location events.
-        # As of now, the lat/long number fields cannot be None.
-        # In what radius/location should no-location events show up
-        # and how do we want to return them
-        # Perhaps a separate index that is combined at search-time?
-        if db_event.latitude is None:
-            delete_ids.append(str(db_event.fb_event_id))
-            continue
-        doc_event = search.Document(
-            doc_id=str(db_event.fb_event_id),
-            fields=[
-                search.TextField(name='keywords', value=fb_event['info'].get('name', '') + fb_event['info'].get('description', '')),
-                search.NumberField(name='attendee_count', value=db_event.attendee_count or 0),
-                search.DateField(name='start_time', value=db_event.start_time),
-                search.DateField(name='end_time', value=dates.faked_end_time(db_event.start_time, db_event.end_time)),
-                search.NumberField(name='latitude', value=db_event.latitude),
-                search.NumberField(name='longitude', value=db_event.longitude),
-                search.TextField(name='actual_city_name', value=db_event.actual_city_name),
-                search.TextField(name='event_keywords', value=', '.join(db_event.event_keywords)),
-            ],
-            #language=XX, # We have no good language detection
-            rank=int(time.mktime(db_event.start_time.timetuple())),
-            )
         doc_events.append(doc_event)
 
     logging.info("Adding %s documents", len(doc_events))

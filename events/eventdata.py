@@ -111,7 +111,7 @@ class DBEvent(db.Model):
             # and don't pass into TIME_PAST
             if not self.start_time:
                 self.search_time_period = None
-            elif datetime.datetime.now() - datetime.timedelta(days=1) > dates.faked_end_time(self.start_time, None):
+            elif datetime.datetime.now() - datetime.timedelta(days=1) > dates.faked_end_time(self.start_time, self.end_time):
                 self.search_time_period = TIME_PAST
             return
 
@@ -124,7 +124,7 @@ class DBEvent(db.Model):
         self.end_time = dates.parse_fb_end_time(fb_dict)
 
         self.search_time_period = None # PAST or FUTURE
-        # TODO(lambert): This -1day definition of today is done twice in here, and once in logic/search.py. Refactor that!
+        # TODO(lambert): This -1day definition of today is done twice in here, and once in logic/search.py, and logic/fb_reloading! Waaay late to refactor that!
         today = datetime.datetime.today() - datetime.timedelta(days=1)
         if today < dates.parse_fb_end_time(fb_dict, need_result=True):
             self.search_time_period = TIME_FUTURE
