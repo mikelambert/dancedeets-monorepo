@@ -2,6 +2,8 @@
 *.swp
 compiled_templates
 
+*.sublime-workspace
+
 # master installed libraries location:
 download
 
