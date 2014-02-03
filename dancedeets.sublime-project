@@ -1,0 +1,19 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": ".",
+			"folder_exclude_patterns": ["compiled_templates", "download"],
+		},
+    ],
+    "build_systems":
+    [
+        {
+            "name": "test",
+            "working_dir": "${project_path:${folder}}",
+            "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+            "shell_cmd": "make && ./nose.sh"
+        },
+    ]
+}
