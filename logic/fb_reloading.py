@@ -30,12 +30,10 @@ def yield_load_fb_event(batch_lookup, db_events):
     for db_event in db_events:
         try:
             fb_event = batch_lookup.data_for_event(db_event.fb_event_id, only_if_updated=True)
-
-            #TODO(lambert): refactor this logic to a central place!
-            one_day_ago = datetime.datetime.now() - datetime.timedelta(days=1)
-            event_end_time = dates.faked_end_time(db_event.start_time, db_event.end_time)
-            how_far_in_past = (one_day_ago - event_end_time).total_seconds()
-            recently_became_past = (how_far_in_past > 0 and how_far_in_past < 3*24*60*60)
+            event_end_time = dates.parse_fb_end_time(fb_event, need_result=True)
+            event_in_future     = (eventdata.TIME_FUTURE == eventdata.event_time_period(event_end_time))
+            event_was_in_future = (eventdata.TIME_FUTURE == eventdata.event_time_period(event_end_time, time_travel=datetime.timedelta(days=-3)))
+            recently_became_past = (event_in_future and not event_was_in_future)
             # Force an update for events that recently went into the past, to get TIME_PAST set
             #TODO(lambert): this is a major hack!!! :-(
             # Events that change due to facebook, should be updated in db and index

@@ -51,6 +51,16 @@ def get_cached_db_events(event_ids, allow_cache=True):
     logging.info("loading cached db events took %s seconds", time.time() - a)
     return [db_event_map.get(x, None) for x in event_ids]
 
+def event_time_period(event_end_time, time_travel=None):
+    today = datetime.datetime.today() - datetime.timedelta(days=1)
+    if time_travel:
+        today += time_travel
+    event_relative = (event_end_time - today).total_seconds()
+    if event_relative > 0:
+        return TIME_FUTURE
+    else:
+        return TIME_PAST
+
 CM_AUTO = 'CM_AUTO'
 CM_ADMIN = 'CM_ADMIN'
 CM_USER = 'CM_USER'
@@ -111,8 +121,9 @@ class DBEvent(db.Model):
             # and don't pass into TIME_PAST
             if not self.start_time:
                 self.search_time_period = None
-            elif datetime.datetime.now() - datetime.timedelta(days=1) > dates.faked_end_time(self.start_time, self.end_time):
-                self.search_time_period = TIME_PAST
+            else:
+                event_end_time = dates.faked_end_time(self.start_time, self.end_time)
+                self.search_time_period = event_time_period(event_end_time)
             return
 
         if 'owner' in fb_dict['info']:
@@ -123,13 +134,8 @@ class DBEvent(db.Model):
         self.start_time = dates.parse_fb_start_time(fb_dict)
         self.end_time = dates.parse_fb_end_time(fb_dict)
 
-        self.search_time_period = None # PAST or FUTURE
-        # TODO(lambert): This -1day definition of today is done twice in here, and once in logic/search.py, and logic/fb_reloading! Waaay late to refactor that!
-        today = datetime.datetime.today() - datetime.timedelta(days=1)
-        if today < dates.parse_fb_end_time(fb_dict, need_result=True):
-            self.search_time_period = TIME_FUTURE
-        else:
-            self.search_time_period = TIME_PAST
+        event_end_time = dates.parse_fb_end_time(fb_dict, need_result=True)
+        self.search_time_period = event_time_period(event_end_time)
 
         location_info = event_locations.LocationInfo(batch_lookup, fb_dict, db_event=self)
         # If we got good values from before, don't overwrite with empty values!
