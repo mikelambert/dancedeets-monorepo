@@ -416,6 +416,23 @@ class BatchLookup(object):
             logging.warning("BatchLookup: Error downloading: %s: %s", object_rpc.request.url(), e)
         return None
 
+    def _cleanup_data(self, object_key, object_data):
+        fb_uid, object_id, object_type = object_key
+        #TODO(lambert): refactor this code/function to make this approach nicer
+        if object_type == self.OBJECT_EVENT:
+            # So fql_count's all_members_count can be rounded,
+            # to save on unnecessary db updates and indexing.
+            # Especially as it's only for privacy check comparison to 60
+            # So round down to most significant digit:
+            amc = _all_members_count(object_data)
+            if amc:
+                str_amc = str(amc)
+                # Yes, this timed faster than math.round and string-manip
+                new_amc = int(str_amc[0])*10**(len(str_amc)-1)
+                # Set new all_members_count data.
+                _all_members_count(object_data, new_amc)
+        return object_data
+
     def _fetch_object_keys(self, object_keys_to_lookup):
         logging.info("BatchLookup: Looking up IDs: %s", object_keys_to_lookup)
         # initiate RPCs
@@ -458,21 +475,7 @@ class BatchLookup(object):
                     object_is_bad = True
             if object_is_bad:
                 logging.warning("BatchLookup: Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
-            else:
-                #TODO(lambert): refactor this code/function to make this approach nicer
-                if object_type == self.OBJECT_EVENT:
-                    # So fql_count's all_members_count can be rounded,
-                    # to save on unnecessary db updates and indexing.
-                    # Especially as it's only for privacy check comparison to 60
-                    # So round down to most significant digit:
-                    amc = _all_members_count(this_object)
-                    if amc:
-                        str_amc = str(amc)
-                        # Yes, this timed faster than math.round and string-manip
-                        new_amc = int(str_amc[0])*10**(len(str_amc)-1)
-                        _all_members_count(this_object, new_amc)
-
-                fetched_objects[object_key] = this_object
+                fetched_objects[object_key] = self._cleanup_data(object_key, this_object)
         return fetched_objects
 
     def _store_objects_into_memcache(self, fetched_objects):
