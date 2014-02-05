@@ -184,7 +184,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.display['auto_classified_types'] = auto_classified
 
-        location_info = event_locations.LocationInfo(self.batch_lookup.copy(allow_cache=False), fb_event, db_event=e, debug=True)
+        location_info = event_locations.LocationInfo(fb_event, db_event=e, debug=True)
         self.display['location_info'] = location_info
         self.display['fb_geocoded_address'] = locations.get_city_name(address=location_info.fb_address)
 
@@ -354,7 +354,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
                 wrong_words_str = 'NONE'
-            location_info = event_locations.LocationInfo(self.batch_lookup, fb_event, debug=True)
+            location_info = event_locations.LocationInfo(fb_event, debug=True)
             potential_event_dict[e] = potential_events.update_scores_for_potential_event(potential_event_dict[e], fb_event, fb_event_attending)
             template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, wrong_words=wrong_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
         self.display['number_of_events']  = number_of_events 

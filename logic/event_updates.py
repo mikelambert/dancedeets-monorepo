@@ -10,11 +10,11 @@ from logic import search
 from util import dates
 
 
-def update_and_save_event(db_event, batch_lookup, fb_dict):
-    _inner_make_event_findable_for(db_event, batch_lookup, fb_dict)
+def update_and_save_event(db_event, fb_dict):
+    _inner_make_event_findable_for(db_event, fb_dict)
     search.update_fulltext_search_index(db_event, fb_dict)
 
-def _inner_make_event_findable_for(db_event, batch_lookup, fb_dict):
+def _inner_make_event_findable_for(db_event, fb_dict):
     # set up any cached fields or bucketing or whatnot for this event
 
     if fb_dict['empty'] == fb_api.EMPTY_CAUSE_DELETED:
@@ -47,7 +47,7 @@ def _inner_make_event_findable_for(db_event, batch_lookup, fb_dict):
     event_end_time = dates.parse_fb_end_time(fb_dict, need_result=True)
     db_event.search_time_period = eventdata.event_time_period(event_end_time)
 
-    location_info = event_locations.LocationInfo(batch_lookup, fb_dict, db_event=db_event)
+    location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
     # If we got good values from before, don't overwrite with empty values!
     if location_info.actual_city() or not db_event.actual_city_name:
         db_event.anywhere = location_info.is_online_event()

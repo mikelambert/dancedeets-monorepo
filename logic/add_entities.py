@@ -22,7 +22,7 @@ def add_update_event(event_id, user_id, batch_lookup, remapped_address=None, ove
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
 
     if remapped_address is not None:
-        event_locations.update_remapped_address(batch_lookup.copy(allow_cache=False), fb_event, remapped_address)
+        event_locations.update_remapped_address(fb_event, remapped_address)
 
     e = eventdata.DBEvent.get_or_insert(event_id)
     if override_address is not None:
@@ -32,7 +32,7 @@ def add_update_event(event_id, user_id, batch_lookup, remapped_address=None, ove
         e.creating_method = creating_method
     e.creation_time = datetime.datetime.now()
     fb_event = batch_lookup.data_for_event(event_id)
-    event_updates.update_and_save_event(e, batch_lookup, fb_event)
+    event_updates.update_and_save_event(e, fb_event)
     thing_db.create_source_from_event(batch_lookup.copy(allow_cache=False), e)
 
     potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)

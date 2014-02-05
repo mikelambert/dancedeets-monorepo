@@ -3,7 +3,6 @@
   "info": {
     "name": "event with no location information at all",
     "venue": {
-       "id": "165019403627859",
        "latitude": "37.774929499999999",
        "longitude": "-122.4194155"
     }

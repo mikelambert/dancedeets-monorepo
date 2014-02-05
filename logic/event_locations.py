@@ -2,7 +2,6 @@ import logging
 import re
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
-import fb_api
 
 from events import cities
 import locations
@@ -30,40 +29,16 @@ def city_for_fb_location(location):
     else:
         return None
 
-def _get_latlng_from_event(batch_lookup, fb_event):
+def _get_latlng_from_event(fb_event):
     event_info = fb_event['info']
     venue = event_info.get('venue', {}) #TODO(lambert): need to support "venue decoration" so we don't need to do one-by-one lookups here
     # if we have a venue id, get the city from there
     logging.info("venue id is %s", venue.get('id'))
     if venue.get('latitude') and venue.get('longitude'):
         return float(venue['latitude']), float(venue['longitude'])
-    if venue.get('id'):
-        logging.error("VENUE DEBUG: fb event %s has venue without lat/long but with id %s", event_info['id'], venue['id'])
-        batch_lookup = batch_lookup.copy(allow_cache=batch_lookup.allow_cache)
-        batch_lookup.lookup_venue(venue.get('id'))
-        batch_lookup.finish_loading()
-        venue_data = None
-        try:
-            venue_data = batch_lookup.data_for_venue(venue.get('id'))
-        except fb_api.NoFetchedDataException:
-            pass
-        if not venue_data or venue_data['empty']:
-            logging.warning("no venue found for event id %s, venue id %s, retrying with cache bust", fb_event['info'].get('id'), venue.get('id'))
-            # TODO(lambert): clean up old venues in the system, this is a hack until then
-            batch_lookup = batch_lookup.copy(allow_cache=False)
-            batch_lookup.lookup_venue(venue.get('id'))
-            batch_lookup.finish_loading()
-            try:
-                venue_data = batch_lookup.data_for_venue(venue.get('id'))
-            except fb_api.NoFetchedDataException:
-                pass
-            if not venue_data or venue_data['empty']:
-                logging.error("STILL no venue found for id %s, giving up", venue.get('id'))
-        if venue_data and not venue_data['empty']:
-            loc = (venue_data['info'].get('location', {}))
-            if 'latitude' in loc:
-                logging.critical("VENUE DEBUG: somehow our retrieved venue has a lat/long that the event didnt? %s,%s (are we sure the event is updated?)", loc['latitude'], loc['longitude'])
-                return float(loc['latitude']), float(loc['longitude'])
+    # In the "olden days", we would get a venue block with an id but without a lat/lng, requiring further lookup.
+    # We don't appear to get this any more, so we can eliminate our event-dependent venue lookup code.
+    # Maybe we get an id and no lat/lng still, but looking up the latest venue information shouldn't give a lat/lng either.
     return None
 
 def get_address_for_fb_event(fb_event):
@@ -111,9 +86,9 @@ def _save_remapped_address_for(original_address, new_remapped_address):
             if location_mapping:
                 location_mapping.delete()
 
-def update_remapped_address(batch_lookup, fb_event, new_remapped_address):
+def update_remapped_address(fb_event, new_remapped_address):
     new_remapped_address = new_remapped_address or None
-    location_info = LocationInfo(batch_lookup, fb_event)
+    location_info = LocationInfo(fb_event)
     logging.info("remapped address for fb_event %r, new form value %r", location_info.remapped_address, new_remapped_address)
     if location_info.remapped_address != new_remapped_address:
         _save_remapped_address_for(location_info.fb_address, new_remapped_address)
@@ -127,7 +102,7 @@ def get_city_name_and_latlng(address=None):
         return locations.get_city_name_and_latlng(address=address)
 
 class LocationInfo(object):
-    def __init__(self, batch_lookup, fb_event, db_event=None, debug=False):
+    def __init__(self, fb_event, db_event=None, debug=False):
         has_overridden_address = db_event and db_event.address
 
         self.exact_from_event = False
@@ -135,7 +110,7 @@ class LocationInfo(object):
         self.fb_address = None
         self.remapped_address = None
         if not has_overridden_address or debug:
-            self.final_latlng = _get_latlng_from_event(batch_lookup, fb_event)
+            self.final_latlng = _get_latlng_from_event(fb_event)
             if self.final_latlng:
                 self.exact_from_event = True
                 self.final_city = locations.get_city_name(latlng=self.final_latlng)

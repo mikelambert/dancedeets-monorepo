@@ -22,7 +22,7 @@ def event_time_period(event_end_time, time_travel=None):
     if event_relative > 0:
         return TIME_FUTURE
     else:
-        returTIME_PAST
+        return TIME_PAST
 
 def get_event_image_url(fb_event):
     picture_url = fb_event.get('fql_info') or fb_event.get('picture_urls')
