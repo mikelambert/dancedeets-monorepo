@@ -43,9 +43,6 @@ def _inner_make_event_findable_for(db_event, fb_dict):
         db_event.city_name = None
         return
     elif fb_dict['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
-        # TODO(lambert): Find a better way to solve this hack
-        # Where insufficient-access events don't get re-processed,
-        # and don't pass into TIME_PAST
         db_event.search_time_period = _event_time_period(db_event)
         return
 
