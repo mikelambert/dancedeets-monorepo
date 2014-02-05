@@ -3,8 +3,8 @@ import fb_api
 from events import eventdata
 from logic import event_classifier
 from logic import event_locations
+from logic import event_updates
 from logic import potential_events
-from logic import search
 from logic import thing_db
 
 class AddEventException(Exception):
@@ -32,10 +32,8 @@ def add_update_event(event_id, user_id, batch_lookup, remapped_address=None, ove
         e.creating_method = creating_method
     e.creation_time = datetime.datetime.now()
     fb_event = batch_lookup.data_for_event(event_id)
-    e.make_findable_for(batch_lookup, fb_event)
-    search.update_fulltext_search_index(e, fb_event)
+    event_updates.update_and_save_event(e, batch_lookup, fb_event)
     thing_db.create_source_from_event(batch_lookup.copy(allow_cache=False), e)
-    e.put()
 
     potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)

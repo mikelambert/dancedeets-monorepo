@@ -4,12 +4,6 @@ import time
 
 from google.appengine.ext import db
 
-import fb_api
-import geohash
-import locations
-from logic import event_classifier
-from logic import event_locations
-from util import dates
 from util import urls
 
 import smemcache
@@ -19,6 +13,16 @@ CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 
 TIME_PAST = 'PAST'
 TIME_FUTURE = 'FUTURE'
+
+def event_time_period(event_end_time, time_travel=None):
+    today = datetime.datetime.today() - datetime.timedelta(days=1)
+    if time_travel:
+        today += time_travel
+    event_relative = (event_end_time - today).total_seconds()
+    if event_relative > 0:
+        return TIME_FUTURE
+    else:
+        returTIME_PAST
 
 def get_event_image_url(fb_event):
     picture_url = fb_event.get('fql_info') or fb_event.get('picture_urls')
@@ -50,16 +54,6 @@ def get_cached_db_events(event_ids, allow_cache=True):
     db_event_map = dict((x.fb_event_id, x) for x in db_events)
     logging.info("loading cached db events took %s seconds", time.time() - a)
     return [db_event_map.get(x, None) for x in event_ids]
-
-def event_time_period(event_end_time, time_travel=None):
-    today = datetime.datetime.today() - datetime.timedelta(days=1)
-    if time_travel:
-        today += time_travel
-    event_relative = (event_end_time - today).total_seconds()
-    if event_relative > 0:
-        return TIME_FUTURE
-    else:
-        return TIME_PAST
 
 CM_AUTO = 'CM_AUTO'
 CM_ADMIN = 'CM_ADMIN'
@@ -99,63 +93,9 @@ class DBEvent(db.Model):
 
     event_keywords = db.StringListProperty(indexed=False)
 
-
     def include_attending_summary(self, fb_dict):
         attendees = fb_dict['attending']['data']
         self.attendee_count = len(attendees)
-
-    def make_findable_for(self, batch_lookup, fb_dict):
-        # set up any cached fields or bucketing or whatnot for this event
-
-        if fb_dict['empty'] == fb_api.EMPTY_CAUSE_DELETED:
-            self.start_time = None
-            self.end_time = None
-            self.search_time_period = None
-            self.address = None
-            self.actual_city_name = None
-            self.city_name = None
-            return
-        elif fb_dict['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
-            # TODO(lambert): Find a better way to solve this hack
-            # Where insufficient-access events don't get re-processed,
-            # and don't pass into TIME_PAST
-            if not self.start_time:
-                self.search_time_period = None
-            else:
-                event_end_time = dates.faked_end_time(self.start_time, self.end_time)
-                self.search_time_period = event_time_period(event_end_time)
-            return
-
-        if 'owner' in fb_dict['info']:
-            self.owner_fb_uid = fb_dict['info']['owner']['id']
-        else:
-            self.owner_fb_uid = None
-
-        self.start_time = dates.parse_fb_start_time(fb_dict)
-        self.end_time = dates.parse_fb_end_time(fb_dict)
-
-        event_end_time = dates.parse_fb_end_time(fb_dict, need_result=True)
-        self.search_time_period = event_time_period(event_end_time)
-
-        location_info = event_locations.LocationInfo(batch_lookup, fb_dict, db_event=self)
-        # If we got good values from before, don't overwrite with empty values!
-        if location_info.actual_city() or not self.actual_city_name:
-            self.anywhere = location_info.is_online_event()
-            self.actual_city_name = location_info.actual_city()
-            self.city_name = location_info.largest_nearby_city()
-            if self.actual_city_name:
-                self.latitude, self.longitude = location_info.latlong()
-                self.geohashes = []
-                for x in range(locations.max_geohash_bits):
-                    self.geohashes.append(str(geohash.Geostring((self.latitude, self.longitude), depth=x)))
-            else:
-                self.latitude = None
-                self.longitude = None
-                self.geohashes = []
-                #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
-                logging.warning("No geocoding results for eid=%s is: %s", self.fb_event_id, location_info)
-
-        self.event_keywords = event_classifier.relevant_keywords(fb_dict)
 
     #def __repr__(self):
     #    return 'DBEvent(fb_event_id=%r,tags=%r)' % (self.fb_event_id, self.tags)

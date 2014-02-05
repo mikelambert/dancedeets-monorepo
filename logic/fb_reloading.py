@@ -4,8 +4,8 @@ import logging
 from events import eventdata
 import fb_api
 from logic import email_events
+from logic import event_updates
 from logic import potential_events
-from logic import search
 from util import dates
 from util import fb_mapreduce
 from util import timings
@@ -45,9 +45,7 @@ def yield_load_fb_event(batch_lookup, db_events):
                 # NOTE: This update is most likely due to a change in the all-members of the event.
                 # We should decide if this is worth tracking/keeping somehow, as it may be worth skipping?
                 logging.info("FBevent %s updated, saving and indexing DBevent", fb_event['info']['id'])
-                db_event.make_findable_for(batch_lookup, fb_event)
-                db_event.put()
-                search.update_fulltext_search_index(db_event, fb_event)
+                event_updates.update_and_save_event(db_event, batch_lookup, fb_event)
         except fb_api.NoFetchedDataException, e:
             logging.info("No data fetched for event id %s: %s", db_event.fb_event_id, e)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
