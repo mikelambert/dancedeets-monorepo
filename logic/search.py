@@ -287,6 +287,12 @@ def update_fulltext_search_index(db_event, fb_event):
         doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
         doc_index.delete(str(db_event.fb_event_id))
 
+def delete_from_fulltext_search_index(db_event_id):
+    doc_index = search.Index(name=ALL_EVENTS_INDEX)
+    doc_index.delete(db_event_id)
+    doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
+    doc_index.delete(db_event_id)
+
 def construct_fulltext_search_index(batch_lookup, index_future=True):
     logging.info("Loading DB Events")
     MAX_EVENTS = 100000

@@ -21,6 +21,10 @@ def _event_time_period(db_event):
     else:
         return eventdata.TIME_PAST
 
+def delete_event(db_event):
+    search.delete_from_fulltext_search_index(db_event.fb_event_id)
+    db_event.delete()
+
 # Even if the fb_event isn't updated, sometimes we still need to force a db_event update
 def need_forced_update(db_event):
     # If the expected time period is not the same as what we've computed and stored, we need to force update

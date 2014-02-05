@@ -15,6 +15,7 @@ from logic import backgrounder
 from logic import event_auto_classifier
 from logic import event_classifier
 from logic import event_locations
+from logic import event_updates
 from logic import potential_events
 from logic import rsvp
 import fb_api
@@ -201,7 +202,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         if self.request.get('delete'):
             e = eventdata.DBEvent.get_by_key_name(event_id)
-            e.delete()
+            event_updates.delete_event(e)
             self.user.add_message("Event deleted!")
             return self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
