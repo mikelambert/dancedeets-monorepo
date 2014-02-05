@@ -4,6 +4,7 @@ from events import eventdata
 from logic import event_classifier
 from logic import event_locations
 from logic import potential_events
+from logic import search
 from logic import thing_db
 
 class AddEventException(Exception):
@@ -30,7 +31,9 @@ def add_update_event(event_id, user_id, batch_lookup, remapped_address=None, ove
     if creating_method:
         e.creating_method = creating_method
     e.creation_time = datetime.datetime.now()
-    e.make_findable_for(batch_lookup, batch_lookup.data_for_event(event_id))
+    fb_event = batch_lookup.data_for_event(event_id)
+    e.make_findable_for(batch_lookup, fb_event)
+    search.update_fulltext_search_index(e, fb_event)
     thing_db.create_source_from_event(batch_lookup.copy(allow_cache=False), e)
     e.put()
 
