@@ -115,8 +115,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             event_id = get_id_from_url(self.request.get('event_url'))
         elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
-        if event_id == '394296940581779':
-            return self.show_barebones_page(event_id)
         self.batch_lookup.lookup_event(event_id, allow_cache=False)
         self.batch_lookup.lookup_event_attending(event_id, allow_cache=False)
         self.finish_preload()

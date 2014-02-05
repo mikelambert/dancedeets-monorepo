@@ -288,7 +288,7 @@ class BatchLookup(object):
             else:
                 object_lookup = self.objects
             if key in object_lookup:
-                return self.objects[key_func(self, id)]
+                return object_lookup[key]
             else:
                 # only_if_updated means the caller expects to have some None returns
                 if not only_if_updated:
@@ -475,7 +475,7 @@ class BatchLookup(object):
                     object_is_bad = True
             if object_is_bad:
                 logging.warning("BatchLookup: Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
-                fetched_objects[object_key] = self._cleanup_data(object_key, this_object)
+            fetched_objects[object_key] = self._cleanup_data(object_key, this_object)
         return fetched_objects
 
     def _store_objects_into_memcache(self, fetched_objects):
