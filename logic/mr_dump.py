@@ -15,8 +15,8 @@ def dump_fb_json(batch_lookup, pe_list):
         batch_lookup.lookup_event(pe.fb_event_id)
     batch_lookup.finish_loading()
 
-        csv_file = StringIO.StringIO()
-        csv_writer = csv.writer(csv_file)
+    csv_file = StringIO.StringIO()
+    csv_writer = csv.writer(csv_file)
 
     for pe in pe_list:
         try:

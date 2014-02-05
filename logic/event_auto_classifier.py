@@ -116,12 +116,12 @@ wrong_battle_styles = [
 # team battle
 # these mean....more
 format_types = [
-        'solo',
-        u'ソロ', # japanese solo
-        'team',
-        u'チーム', # japanese team
-        'crew',
-        u'クルー', # japanese crew
+    'solo',
+    u'ソロ', # japanese solo
+    'team',
+    u'チーム', # japanese team
+    'crew',
+    u'クルー', # japanese crew
 ]
 
 p1 = event_classifier.make_regex_string(wrong_battle_styles)
@@ -171,8 +171,8 @@ assert good_dance_battles_regex[1].search('all-styles battle')
 assert good_dance_battles_regex[1].search('custom breaking contest')
 
 ambiguous_class_keywords = [
-        'stage',
-        'stages'
+    'stage',
+    'stages'
 ]
 ambiguous_class_regex = event_classifier.make_regex_string(ambiguous_class_keywords)
 p1 = event_classifier.make_regex_string(event_classifier.dance_and_music_keywords + event_classifier.dance_keywords + house_keywords)
@@ -200,8 +200,8 @@ full_judge_keywords = event_classifier.judge_keywords
 judge_qualifier = event_classifier.make_regex_string(event_classifier.dance_keywords + event_classifier.easy_dance_keywords + event_classifier.dance_and_music_keywords + house_keywords + event_classifier.easy_choreography_keywords + event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
 judge_regex = event_classifier.make_regex_string(event_classifier.judge_keywords)
 full_judge_keywords.extend([
-        u'%s%s%s' % (judge_qualifier, connectors_regex, judge_regex),
-        u'%s%s%s' % (judge_regex, connectors_regex, judge_qualifier),
+    u'%s%s%s' % (judge_qualifier, connectors_regex, judge_regex),
+    u'%s%s%s' % (judge_regex, connectors_regex, judge_qualifier),
 ])
 start_judge_keywords_regex = event_classifier.make_regexes(full_judge_keywords, wrapper='^[^\w\n]*%s', flags=re.MULTILINE)
 

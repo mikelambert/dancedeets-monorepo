@@ -56,10 +56,10 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['top_european_countries'] = ['Czech Republic', 'Finland', 'France', 'Germany', 'Ireland', 'Italy', 'Norway', 'Poland', 'Spain', 'Sweden', 'Switzerland', 'United Kingdom', 'Portugal']
         self.display['top_continents'] = ['Asia', 'Africa', 'Australia', 'South America']
 
-                self.display['defaults'] = search_base.FrontendSearchQuery()
-                self.display['defaults'].location = self.request.get('location')
-                self.display['defaults'].keywords = self.request.get('keywords')
-                self.display['defaults'].deb = self.request.get('deb')
+        self.display['defaults'] = search_base.FrontendSearchQuery()
+        self.display['defaults'].location = self.request.get('location')
+        self.display['defaults'].keywords = self.request.get('keywords')
+        self.display['defaults'].deb = self.request.get('deb')
 
         self.display['next'] = next
         logging.info(self.display['next'])

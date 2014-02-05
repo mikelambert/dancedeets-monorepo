@@ -89,7 +89,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             self.display['grouped_upcoming_results'] = grouped_results
 
         if fe_search_query.past:
-                self.display['selected_tab'] = 'past'
+            self.display['selected_tab'] = 'past'
         elif self.request.get('calendar'):
             self.display['selected_tab'] = 'calendar'
         else:

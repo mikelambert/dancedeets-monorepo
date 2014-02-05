@@ -176,9 +176,9 @@ map_create_source_from_event = fb_mapreduce.mr_wrap(create_source_from_event)
 
 def map_clean_source_count(s):
     s.num_all_events = 0
-        s.num_potential_events = 0
-        s.num_real_events = 0
-        s.num_false_negatives = 0
+    s.num_potential_events = 0
+    s.num_real_events = 0
+    s.num_false_negatives = 0
     yield s.put()
 
 def map_count_potential_event(pe):
@@ -206,14 +206,14 @@ def map_count_potential_event(pe):
         )
 
 def mr_clean_source_counts():
-       control.start_map(
-                name='clean source counts',
-                reader_spec='mapreduce.input_readers.DatastoreInputReader',
-                handler_spec='logic.thing_db.map_clean_source_count',
-                mapper_parameters={
-                        'entity_kind': 'logic.thing_db.Source',
-                },
-        )
+    control.start_map(
+        name='clean source counts',
+        reader_spec='mapreduce.input_readers.DatastoreInputReader',
+        handler_spec='logic.thing_db.map_clean_source_count',
+        mapper_parameters={
+            'entity_kind': 'logic.thing_db.Source',
+        },
+    )
 
 def mr_count_potential_events(batch_lookup):
     fb_mapreduce.start_map(

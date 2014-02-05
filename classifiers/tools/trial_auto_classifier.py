@@ -1,8 +1,5 @@
 #!/usr/bin/python
 
-import csv
-import json
-import re
 import sys
 import time
 sys.path += ['.']
@@ -21,9 +18,7 @@ def failure(ce, fb_event, result):
         print fb_event['info']['id'], fb_event['info'].get('name').encode('utf-8'), result
 
 def partition_ids():
-    successes = set()
-    fails = set()
-        for i, (id, fb_event) in enumerate(processing.all_fb_data([], filename='local_data/PotentialFBEvents.csv')):
+    for i, (id, fb_event) in enumerate(processing.all_fb_data([], filename='local_data/PotentialFBEvents.csv')):
         e = event_classifier.get_classified_event(fb_event)
         result = event_auto_classifier.is_battle(e)
         if result[0]:

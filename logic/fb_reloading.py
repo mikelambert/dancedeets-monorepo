@@ -12,11 +12,11 @@ BROKEN_UIDS = []#"1400235949", "1268158596"]
 
 def mr_load_fb_event(batch_lookup):
     fb_mapreduce.start_map(
-            batch_lookup=batch_lookup,
-            name='Load Events',
-            handler_spec='logic.fb_reloading.map_load_fb_event',
-            handle_batch_size=20,
-            entity_kind='events.eventdata.DBEvent'
+        batch_lookup=batch_lookup,
+        name='Load Events',
+        handler_spec='logic.fb_reloading.map_load_fb_event',
+        handle_batch_size=20,
+        entity_kind='events.eventdata.DBEvent'
     )
 
 @timings.timed
@@ -40,13 +40,13 @@ load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
 
 def mr_load_fb_event_attending(batch_lookup):
-        fb_mapreduce.start_map(
-                batch_lookup=batch_lookup,
-                name='Load Event Attending',
-                handler_spec='logic.fb_reloading.map_load_fb_event_attending',
-                handle_batch_size=20,
-                entity_kind='events.eventdata.DBEvent'
-        )
+    fb_mapreduce.start_map(
+        batch_lookup=batch_lookup,
+        name='Load Event Attending',
+        handler_spec='logic.fb_reloading.map_load_fb_event_attending',
+        handle_batch_size=20,
+        entity_kind='events.eventdata.DBEvent'
+    )
 
 @timings.timed
 def yield_load_fb_event_attending(batch_lookup, db_events):
@@ -62,12 +62,12 @@ load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 
 
 def mr_load_fb_user(batch_lookup):
-        fb_mapreduce.start_map(
-                batch_lookup=batch_lookup,
-                name='Load Users',
-                handler_spec='logic.fb_reloading.map_load_fb_user',
-                entity_kind='events.users.User',
-        )
+    fb_mapreduce.start_map(
+        batch_lookup=batch_lookup,
+        name='Load Users',
+        handler_spec='logic.fb_reloading.map_load_fb_user',
+        entity_kind='events.users.User',
+    )
 
 @timings.timed
 def yield_load_fb_user(batch_lookup, user):
@@ -76,10 +76,10 @@ def yield_load_fb_user(batch_lookup, user):
     # TODO(lambert): figure out why future's data can't be loaded
     if str(user.fb_uid) in BROKEN_UIDS:
         return
-        batch_lookup.lookup_user(user.fb_uid)
+    batch_lookup.lookup_user(user.fb_uid)
     try:
         batch_lookup.finish_loading()
-            fb_user = batch_lookup.data_for_user(user.fb_uid)
+        fb_user = batch_lookup.data_for_user(user.fb_uid)
     except (fb_api.ExpiredOAuthToken, fb_api.NoFetchedDataException), e:
         logging.info("Auth token now expired, mark as such: %s", e)
         user.expired_oauth_token_reason = e.args[0]
@@ -92,49 +92,49 @@ map_load_fb_user = fb_mapreduce.mr_user_wrap(yield_load_fb_user)
 load_fb_user = fb_mapreduce.nomr_wrap(yield_load_fb_user)
 
 def mr_load_past_fb_event(batch_lookup):
-        fb_mapreduce.start_map(
-                batch_lookup=batch_lookup,
-                name='Load Past Events',
-                handler_spec='logic.fb_reloading.map_load_fb_event',
-                entity_kind='events.eventdata.DBEvent',
+    fb_mapreduce.start_map(
+        batch_lookup=batch_lookup,
+        name='Load Past Events',
+        handler_spec='logic.fb_reloading.map_load_fb_event',
+        entity_kind='events.eventdata.DBEvent',
         filters=[('search_time_period', '=', eventdata.TIME_PAST)],
         handle_batch_size=20,
-        )
+    )
 
 def mr_load_future_fb_event(batch_lookup):
-        fb_mapreduce.start_map(
-                batch_lookup=batch_lookup,
-                name='Load Future Events',
-                handler_spec='logic.fb_reloading.map_load_fb_event',
-                entity_kind='events.eventdata.DBEvent',
+    fb_mapreduce.start_map(
+        batch_lookup=batch_lookup,
+        name='Load Future Events',
+        handler_spec='logic.fb_reloading.map_load_fb_event',
+        entity_kind='events.eventdata.DBEvent',
         filters=[('search_time_period', '=', eventdata.TIME_FUTURE)],
         handle_batch_size=20,
-        )
+    )
 
 def mr_load_all_fb_event(batch_lookup):
-        fb_mapreduce.start_map(
-                batch_lookup=batch_lookup,
-                name='Load All Events',
-                handler_spec='logic.fb_reloading.map_load_fb_event',
+    fb_mapreduce.start_map(
+        batch_lookup=batch_lookup,
+        name='Load All Events',
+        handler_spec='logic.fb_reloading.map_load_fb_event',
         handle_batch_size=20,
-                entity_kind='events.eventdata.DBEvent',
-        )
+        entity_kind='events.eventdata.DBEvent',
+    )
 
 
 def mr_email_user(batch_lookup):
-        fb_mapreduce.start_map(
-                batch_lookup=batch_lookup,
-                name='Email Users',
+    fb_mapreduce.start_map(
+        batch_lookup=batch_lookup,
+        name='Email Users',
         #TODO: MOVE
-                handler_spec='logic.fb_reloading.map_email_user',
-                entity_kind='events.users.User',
-        )
+        handler_spec='logic.fb_reloading.map_email_user',
+        entity_kind='events.users.User',
+    )
 
 #TODO(lambert): do we really want yield on this one?
 @timings.timed
 def yield_email_user(batch_lookup, user):
-        batch_lookup.lookup_user(user.fb_uid)
-        batch_lookup.lookup_user_events(user.fb_uid)
+    batch_lookup.lookup_user(user.fb_uid)
+    batch_lookup.lookup_user_events(user.fb_uid)
     try:
         batch_lookup.finish_loading()
     except fb_api.ExpiredOAuthToken, e:
@@ -148,12 +148,12 @@ map_email_user = fb_mapreduce.mr_user_wrap(yield_email_user)
 email_user = fb_mapreduce.nomr_wrap(yield_email_user)
 
 def mr_load_potential_events(batch_lookup):
-        fb_mapreduce.start_map(
-                batch_lookup=batch_lookup,
-                name='Load Potential Events For Users',
-                handler_spec='logic.fb_reloading.map_load_potential_events',
-                entity_kind='events.users.User',
-        )
+    fb_mapreduce.start_map(
+        batch_lookup=batch_lookup,
+        name='Load Potential Events For Users',
+        handler_spec='logic.fb_reloading.map_load_potential_events',
+        entity_kind='events.users.User',
+    )
 
 @timings.timed
 def load_potential_events_for_user_ids(batch_lookup, user_ids):

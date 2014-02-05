@@ -4,6 +4,8 @@ from mapreduce import context
 from mapreduce import handlers
 from mapreduce import input_readers
 
+# This file uses spaces instead of tabs, to make it easier to copy from the mapreduce/ code.
+
 class BatchedMapperWorkerCallbackHandler(handlers.MapperWorkerCallbackHandler):
   def __init__(self, *args, **kwargs):
     super(BatchedMapperWorkerCallbackHandler, self).__init__(*args, **kwargs)

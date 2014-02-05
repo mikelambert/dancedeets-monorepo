@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-import csv
-import json
 import re
 import sys
 import time
@@ -13,7 +11,7 @@ from classifiers import processing
 
 ids_info = processing.load_ids()
 for x in ids_info:
-        print x, len(ids_info[x])
+    print x, len(ids_info[x])
 classified_ids = ids_info['good_ids']
 all_ids = ids_info['combined_ids']
 
@@ -51,7 +49,7 @@ def print_top_for_df(df):
 def partition_ids(ids, classifier=lambda x:False):
     successes = set()
     fails = set()
-        for i, (id, fb_event) in enumerate(processing.all_fb_data(ids)):
+    for i, (id, fb_event) in enumerate(processing.all_fb_data(ids)):
         if not i % 10000: print 'Processing ', i
         result = classifier(fb_event)
         if result:
@@ -126,4 +124,4 @@ if keyword_counts:
 
 
 for id in false_positives:
-        print 'F', id
+    print 'F', id

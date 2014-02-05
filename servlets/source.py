@@ -10,12 +10,12 @@ from logic import thing_db
 from logic import thing_scraper
 
 def get_id_from_url(url):
-        if '#' in url:
-                url = url.split('#')[1]
-        match = re.search('id=(\d+)', url)
-        if not match:
-                return None
-        return match.group(1)
+    if '#' in url:
+        url = url.split('#')[1]
+    match = re.search('id=(\d+)', url)
+    if not match:
+        return None
+    return match.group(1)
 
 class AdminEditHandler(base_servlet.BaseRequestHandler):
     def get(self):
@@ -58,19 +58,19 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.render_template('admin_source')
 
     def post(self):
-                source_id = self.request.get('source_id')
-                self.batch_lookup.lookup_thing_feed(source_id, allow_cache=False)
-                self.finish_preload()
+        source_id = self.request.get('source_id')
+        self.batch_lookup.lookup_thing_feed(source_id, allow_cache=False)
+        self.finish_preload()
 
         s = thing_db.create_source_for_id(source_id, self.batch_lookup.data_for_thing_feed(source_id))
 
-                if self.request.get('delete'):
-                        s.delete()
-                        self.user.add_message("Source deleted!")
-                        self.redirect('/sources/admin_edit?source_id=%s' % source_id)
-                        return
+        if self.request.get('delete'):
+            s.delete()
+            self.user.add_message("Source deleted!")
+            self.redirect('/sources/admin_edit?source_id=%s' % source_id)
+            return
 
-                s.creating_fb_uid = self.user.fb_uid
+        s.creating_fb_uid = self.user.fb_uid
         s.put()
 
         self.user.add_message("Source added!")

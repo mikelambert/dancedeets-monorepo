@@ -6,7 +6,6 @@ import re
 import sys
 import time
 sys.path += ['.']
-from logic import event_classifier
 
 #set to True if we want to find things to "yes this is good event"
 #set to False to find-and-trim out things for "no this is definitely not event"
@@ -141,7 +140,6 @@ def split_words_for_id(id, stripper):
 def get_keyword_mapping(all_ids, stripper=lambda x:x):
     keyword_mapping = {}
     for fb_id in all_ids:
-        search_text = get_stripped(fb_id, stripper)
         #TODO(lambert): also explore bigrams
         keyword_mapping[fb_id] = split_words_for_id(fb_id, stripper)        
     return keyword_mapping
@@ -257,8 +255,8 @@ if debug_bad_keywords:
         print "Keyword %r excludes %s good, %s bad events" % (kw, len(good_excluded), len(bad_excluded))
 
 for id in false_positives:
-        fb_event = get_fb_event(id)
-        print 'F', id, get_matches(fb_event)
+    fb_event = get_fb_event(id)
+    print 'F', id, get_matches(fb_event)
 
 print "Computing DFs..."
 df_false_negatives = get_df(false_negatives, stripper=strip_basic_all)
@@ -276,7 +274,7 @@ import sys
 sys.exit()
 
 
-
+"""
 for success_type, success_ids in successes.iteritems():
     true_positives = success_ids.intersection(good_ids)
     false_positives = success_ids.difference(good_ids)
@@ -299,4 +297,5 @@ print 'good', len(good_ids)
 print 'potential', len(potential_ids)
 print 'potential-and-good', len(potential_and_good_ids)
 print 'potential-and-bad', len(potential_and_bad_ids)
+"""
 

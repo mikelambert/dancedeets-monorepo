@@ -600,19 +600,19 @@ event_keywords += audition_keywords
 event_keywords += cypher_keywords
 
 judge_keywords = [
-        'jurys?',
-        'jurados?', # spanish jury
+    'jurys?',
+    'jurados?', # spanish jury
     u'журито', # bulgarian jury
-        'judge[sz]?',
+    'judge[sz]?',
     'jures', # french jury
     '(?:les? )?juges?', # french judges
-        'giudici', # italian judges
-        u'השופט', # hebrew judge
-        u'השופטים', # hebrew judges
-        u'teisėjai', # lithuanian judges
-        'tuomaristo', # jury finnish
-        'jueces', # spanish judges
-        'giuria', # jury italian
+    'giudici', # italian judges
+    u'השופט', # hebrew judge
+    u'השופטים', # hebrew judges
+    u'teisėjai', # lithuanian judges
+    'tuomaristo', # jury finnish
+    'jueces', # spanish judges
+    'giuria', # jury italian
     u'評審', # chinese judges
     u'評判', # chinese judges
     u'評判團', # chinese judges
@@ -936,8 +936,10 @@ class ClassifiedEvent(object):
             self.dance_event = 'obvious dance style'
         # If the title has a bad-style and no good-styles, mark it bad
         elif (all_regexes['dance_wrong_style_title_regex'][idx].search(title) and
-            not (all_regexes['dance_and_music_regex'][idx].search(title) or
-                 self.manual_dance_keywords_matches or self.real_dance_matches)): # these two are implied by the above, but do it here just in case future clause re-ordering occurs
+            not (
+                all_regexes['dance_and_music_regex'][idx].search(title) or
+                self.manual_dance_keywords_matches or
+                self.real_dance_matches)): # these two are implied by the above, but do it here just in case future clause re-ordering occurs
             self.dance_event = False
 
         elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):

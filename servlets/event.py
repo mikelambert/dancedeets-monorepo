@@ -67,7 +67,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
 
     def get(self):
         path_bits = self.request.path.split('/')
-                event_id = urllib.unquote(path_bits[2])
+        event_id = urllib.unquote(path_bits[2])
         if not event_id:
             self.response.out.write('Need an event_id.')
             return

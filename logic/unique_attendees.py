@@ -4,7 +4,7 @@ from util import fb_mapreduce
 def map_each_attendee(db_event):
     batch_lookup = fb_mapreduce.get_batch_lookup()
     batch_lookup.lookup_event_attending(db_event.fb_event_id)
-        batch_lookup.finish_loading()
+    batch_lookup.finish_loading()
     fb_event_attending = batch_lookup.data_for_event_attending(db_event.fb_event_id)
     for attendee in fb_event_attending['attending']['data']:
         yield (db_event.city_name, attendee['id'])
