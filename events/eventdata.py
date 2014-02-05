@@ -1,12 +1,9 @@
-import datetime
 import logging
 import time
 
 from google.appengine.ext import db
 
-from util import dates
 from util import urls
-
 import smemcache
 
 REGION_RADIUS = 200 # kilometers
@@ -14,16 +11,6 @@ CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 
 TIME_PAST = 'PAST'
 TIME_FUTURE = 'FUTURE'
-
-
-def event_time_period(start_time, end_time):
-    event_end_time = dates.faked_end_time(start_time, end_time)
-    today = datetime.datetime.today() - datetime.timedelta(days=1)
-    event_relative = (event_end_time - today).total_seconds()
-    if event_relative > 0:
-        return TIME_FUTURE
-    else:
-        return TIME_PAST
 
 def get_event_image_url(fb_event):
     picture_url = fb_event.get('fql_info') or fb_event.get('picture_urls')
@@ -33,7 +20,6 @@ def get_event_image_url(fb_event):
     else:
         logging.error("Error loading picture for event id %s", fb_event['info']['id'])
         return urls.fb_event_image_url(fb_event['info']['id'])
-
 
 DBEVENT_PREFIX = 'DbEvent.%s'
 def cache_db_events(events):

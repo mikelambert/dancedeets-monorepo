@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from events import eventdata
@@ -9,6 +10,22 @@ from logic import event_locations
 from logic import search
 from util import dates
 
+def _event_time_period(db_event):
+    if not db_event.start_time:
+        return None
+    event_end_time = dates.faked_end_time(db_event.start_time, db_event.end_time)
+    today = datetime.datetime.today() - datetime.timedelta(days=1)
+    event_relative = (event_end_time - today).total_seconds()
+    if event_relative > 0:
+        return eventdata.TIME_FUTURE
+    else:
+        return eventdata.TIME_PAST
+
+# Even if the fb_event isn't updated, sometimes we still need to force a db_event update
+def need_forced_update(db_event):
+    # If the expected time period is not the same as what we've computed and stored, we need to force update
+    new_time_period = (db_event.search_time_period != _event_time_period(db_event))
+    return new_time_period
 
 def update_and_save_event(db_event, fb_dict):
     _inner_make_event_findable_for(db_event, fb_dict)
@@ -29,10 +46,7 @@ def _inner_make_event_findable_for(db_event, fb_dict):
         # TODO(lambert): Find a better way to solve this hack
         # Where insufficient-access events don't get re-processed,
         # and don't pass into TIME_PAST
-        if not db_event.start_time:
-            db_event.search_time_period = None
-        else:
-            db_event.search_time_period = eventdata.event_time_period(db_event.start_time, db_event.end_time)
+        db_event.search_time_period = _event_time_period(db_event)
         return
 
     if 'owner' in fb_dict['info']:
@@ -42,7 +56,7 @@ def _inner_make_event_findable_for(db_event, fb_dict):
 
     db_event.start_time = dates.parse_fb_start_time(fb_dict)
     db_event.end_time = dates.parse_fb_end_time(fb_dict)
-    db_event.search_time_period = eventdata.event_time_period(db_event.start_time, db_event.end_time)
+    db_event.search_time_period = _event_time_period(db_event)
 
     location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
     # If we got good values from before, don't overwrite with empty values!

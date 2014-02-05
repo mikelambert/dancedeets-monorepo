@@ -5,7 +5,6 @@ import fb_api
 from logic import email_events
 from logic import event_updates
 from logic import potential_events
-from util import dates
 from util import fb_mapreduce
 from util import timings
 
@@ -29,15 +28,7 @@ def yield_load_fb_event(batch_lookup, db_events):
     for db_event in db_events:
         try:
             fb_event = batch_lookup.data_for_event(db_event.fb_event_id, only_if_updated=True)
-            start_time = dates.parse_fb_start_time(fb_event)
-            end_time = dates.parse_fb_end_time(fb_event)
-            new_time_period = (db_event.search_time_period != eventdata.event_time_period(start_time, end_time))
-            # Force an update for events that recently went into the past, to get TIME_PAST set
-            #TODO(lambert): this is a major hack!!! :-(
-            # Events that change due to facebook, should be updated in db and index
-            # We need to capture attendee-changes (in the fb_event_attending updates)!
-            # Events that change due to time-passing, are currently not-handled-well-at-all...this forces it, via an ugly hack.
-            if new_time_period:
+            if event_updates.need_forced_update(db_event):
                 fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
             if fb_event:
                 # NOTE: This update is most likely due to a change in the all-members of the event.
