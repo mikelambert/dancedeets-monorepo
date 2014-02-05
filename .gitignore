@@ -1,7 +1,12 @@
+# generated files:
 *.pyc
 *.swp
 compiled_templates
 
+# mac files:
+.DS_Store
+
+# per-user sublime files:
 *.sublime-workspace
 
 # master installed libraries location:
