@@ -276,6 +276,7 @@ class SearchQuery(object):
 def update_fulltext_search_index(db_event, fb_event):
     doc_event = _create_doc_event(db_event, fb_event)
     if not doc_event: return
+    logging.info("Adding event to search index: %s", db_event.fb_event_id)
     if db_event.search_time_period == eventdata.TIME_FUTURE:
         doc_index = search.Index(name=ALL_EVENTS_INDEX)
         doc_index.put(doc_event)
@@ -288,10 +289,11 @@ def update_fulltext_search_index(db_event, fb_event):
         doc_index.delete(str(db_event.fb_event_id))
 
 def delete_from_fulltext_search_index(db_event_id):
+    logging.info("Deleting event from search index: %s", db_event_id)
     doc_index = search.Index(name=ALL_EVENTS_INDEX)
-    doc_index.delete(db_event_id)
+    doc_index.delete(str(db_event_id))
     doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
-    doc_index.delete(db_event_id)
+    doc_index.delete(str(db_event_id))
 
 def construct_fulltext_search_index(batch_lookup, index_future=True):
     logging.info("Loading DB Events")
