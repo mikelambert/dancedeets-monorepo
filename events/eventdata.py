@@ -4,6 +4,7 @@ import time
 
 from google.appengine.ext import db
 
+from util import dates
 from util import urls
 
 import smemcache
@@ -14,10 +15,10 @@ CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 TIME_PAST = 'PAST'
 TIME_FUTURE = 'FUTURE'
 
-def event_time_period(event_end_time, time_travel=None):
+
+def event_time_period(start_time, end_time):
+    event_end_time = dates.faked_end_time(start_time, end_time)
     today = datetime.datetime.today() - datetime.timedelta(days=1)
-    if time_travel:
-        today += time_travel
     event_relative = (event_end_time - today).total_seconds()
     if event_relative > 0:
         return TIME_FUTURE

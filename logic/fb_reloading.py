@@ -1,4 +1,3 @@
-import datetime
 import logging
 
 from events import eventdata
@@ -30,16 +29,15 @@ def yield_load_fb_event(batch_lookup, db_events):
     for db_event in db_events:
         try:
             fb_event = batch_lookup.data_for_event(db_event.fb_event_id, only_if_updated=True)
-            event_end_time = dates.parse_fb_end_time(fb_event, need_result=True)
-            event_in_future     = (eventdata.TIME_FUTURE == eventdata.event_time_period(event_end_time))
-            event_was_in_future = (eventdata.TIME_FUTURE == eventdata.event_time_period(event_end_time, time_travel=datetime.timedelta(days=-3)))
-            recently_became_past = (event_in_future and not event_was_in_future)
+            start_time = dates.parse_fb_start_time(fb_event)
+            end_time = dates.parse_fb_end_time(fb_event)
+            new_time_period = (db_event.search_time_period != eventdata.event_time_period(start_time, end_time))
             # Force an update for events that recently went into the past, to get TIME_PAST set
             #TODO(lambert): this is a major hack!!! :-(
             # Events that change due to facebook, should be updated in db and index
             # We need to capture attendee-changes (in the fb_event_attending updates)!
             # Events that change due to time-passing, are currently not-handled-well-at-all...this forces it, via an ugly hack.
-            if recently_became_past:
+            if new_time_period:
                 fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
             if fb_event:
                 # NOTE: This update is most likely due to a change in the all-members of the event.

@@ -121,9 +121,8 @@ class SearchQuery(object):
         self.keywords = keywords
 
     def matches_db_event(self, event):
-        faked_end_time = dates.faked_end_time(event.start_time, event.end_time)
         if self.start_time:
-            if self.start_time < faked_end_time:
+            if self.start_time < self.fake_end_time:
                 pass
             else:
                 return False
@@ -133,7 +132,7 @@ class SearchQuery(object):
             else:
                 return False
         if self.time_period == eventdata.TIME_FUTURE:
-            if faked_end_time < datetime.datetime.now():
+            if self.fake_end_time < datetime.datetime.now():
                 return False
 
         if self.min_attendees and event.attendee_count < self.min_attendees:

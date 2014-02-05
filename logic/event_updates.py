@@ -32,8 +32,7 @@ def _inner_make_event_findable_for(db_event, fb_dict):
         if not db_event.start_time:
             db_event.search_time_period = None
         else:
-            event_end_time = dates.faked_end_time(db_event.start_time, db_event.end_time)
-            db_event.search_time_period = eventdata.event_time_period(event_end_time)
+            db_event.search_time_period = eventdata.event_time_period(db_event.start_time, db_event.end_time)
         return
 
     if 'owner' in fb_dict['info']:
@@ -43,9 +42,7 @@ def _inner_make_event_findable_for(db_event, fb_dict):
 
     db_event.start_time = dates.parse_fb_start_time(fb_dict)
     db_event.end_time = dates.parse_fb_end_time(fb_dict)
-
-    event_end_time = dates.parse_fb_end_time(fb_dict, need_result=True)
-    db_event.search_time_period = eventdata.event_time_period(event_end_time)
+    db_event.search_time_period = eventdata.event_time_period(db_event.start_time, db_event.end_time)
 
     location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
     # If we got good values from before, don't overwrite with empty values!
