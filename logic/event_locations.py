@@ -30,11 +30,8 @@ def city_for_fb_location(location):
         return None
 
 def _get_latlng_from_event(fb_event):
-    event_info = fb_event['info']
-    venue = event_info.get('venue', {}) #TODO(lambert): need to support "venue decoration" so we don't need to do one-by-one lookups here
-    # if we have a venue id, get the city from there
-    logging.info("venue id is %s", venue.get('id'))
-    if venue.get('latitude') and venue.get('longitude'):
+    venue = fb_event['info'].get('venue')
+    if venue and venue.get('latitude') and venue.get('longitude'):
         return float(venue['latitude']), float(venue['longitude'])
     # In the "olden days", we would get a venue block with an id but without a lat/lng, requiring further lookup.
     # We don't appear to get this any more, so we can eliminate our event-dependent venue lookup code.
