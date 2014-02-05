@@ -3,6 +3,9 @@
 *.swp
 compiled_templates
 
+# temp files not for git
+tmp
+
 # mac files:
 .DS_Store
 
