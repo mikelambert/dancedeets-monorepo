@@ -30,7 +30,6 @@ def add_update_event(event_id, user_id, batch_lookup, remapped_address=None, ove
     e.creating_fb_uid = user_id
     if creating_method:
         e.creating_method = creating_method
-    e.creation_time = datetime.datetime.now()
     fb_event = batch_lookup.data_for_event(event_id)
     event_updates.update_and_save_event(e, fb_event)
     thing_db.create_source_from_event(batch_lookup.copy(allow_cache=False), e)

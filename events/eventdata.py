@@ -58,7 +58,7 @@ class DBEvent(db.Model):
     # real data
     owner_fb_uid = db.StringProperty()
     creating_fb_uid = db.IntegerProperty(indexed=False)
-    creation_time = db.DateTimeProperty(indexed=False)
+    creation_time = db.DateTimeProperty(indexed=False, auto_now_add=True)
     # could be AUTO, ADMIN, USER, etc? Helps for maintaining a proper training corpus
     #TODO(lambert): start using this field in auto-created events
     creating_method = db.StringProperty(indexed=False)
