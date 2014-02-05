@@ -13,13 +13,13 @@ from util import timings
 BROKEN_UIDS = []#"1400235949", "1268158596"]
 
 def mr_load_fb_event(batch_lookup):
-        fb_mapreduce.start_map(
-                batch_lookup=batch_lookup,
-                name='Load Events',
-                handler_spec='logic.fb_reloading.map_load_fb_event',
-                handle_batch_size=20,
-                entity_kind='events.eventdata.DBEvent'
-        )
+    fb_mapreduce.start_map(
+            batch_lookup=batch_lookup,
+            name='Load Events',
+            handler_spec='logic.fb_reloading.map_load_fb_event',
+            handle_batch_size=20,
+            entity_kind='events.eventdata.DBEvent'
+    )
 
 @timings.timed
 def yield_load_fb_event(batch_lookup, db_events):
