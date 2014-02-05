@@ -31,7 +31,7 @@ def yield_load_fb_event(batch_lookup, db_events):
             if event_updates.need_forced_update(db_event):
                 fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
             if fb_event:
-                logging.info("FBevent %s updated, saving and indexing DBevent", fb_event['info']['id'])
+                logging.info("FBEvent %s changed, will try to save and indexing DBEvent", db_event.fb_event_id)
                 event_updates.update_and_save_event(db_event, fb_event)
         except fb_api.NoFetchedDataException, e:
             logging.info("No data fetched for event id %s: %s", db_event.fb_event_id, e)
