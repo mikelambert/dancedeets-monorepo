@@ -131,7 +131,8 @@ class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
         #TODO(lambert): extract this out into some sort of dynamic lookup based on Mike Lambert
         friend_lists.append('530448100598') # Freestyle SF
         friend_lists.append('565645040648') # Freestyle NYC
-        friend_lists.append('734193578028') # Freestyle Asia
+        friend_lists.append('10100136378543108') # Freestyle Asia
+        friend_lists.append('734193578028') # Freestyle Japan
         friend_lists.append('612289903968') # Freestyle LA/SD
         friend_lists.append('646041540418') # Freestyle Europe
         friend_lists.append('583877258138') # Freestyle Elsewhere
