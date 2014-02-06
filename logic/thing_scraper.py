@@ -9,14 +9,20 @@ from google.appengine.ext import deferred
 import fb_api
 from logic import potential_events
 from logic import thing_db
-
+from mapreduce import context
 from util import fb_mapreduce
 from util import timings
 
 @timings.timed
 def scrape_events_from_sources(batch_lookup, sources):
-    # don't scrape sources that prove useless and give mostly garbage events
-    sources = [x for x in sources if x.fraction_potential_are_real() > 0.05]
+    ctx = context.get()
+    if ctx:
+        params = ctx.mapreduce_spec.mapper.params
+        min_potential_events = params.get('min_potential_events', 0)
+        sources = [x for x in sources if min_potential_events <= x.num_potential_events]
+
+  # don't scrape sources that prove useless and give mostly garbage events
+    #sources = [x for x in sources if x.fraction_potential_are_real() > 0.05]
 
     batch_lookup = batch_lookup.copy(allow_cache=False)
     for source in sources:
@@ -42,16 +48,16 @@ def scrape_events_from_source_ids(batch_lookup, source_ids):
 map_scrape_events_from_source = fb_mapreduce.mr_wrap(scrape_events_from_sources)
 
 def mapreduce_scrape_all_sources(batch_lookup, min_potential_events=None):
-    filters = []
-    if min_potential_events:
-        filters.append(('num_potential_events', '>=', min_potential_events))
+    # Do not do the min_potential_events>1 filter in the mapreduce filter,
+    # or it will want to do a range-shard on that property. Instead, pass-it-down
+    # and use it as an early-return in the per-Source processing.
     fb_mapreduce.start_map(
         batch_lookup.copy(allow_cache=False), # Force refresh of thing feeds
         'Scrape All Sources',
         'logic.thing_scraper.map_scrape_events_from_source',
         'logic.thing_db.Source',
         handle_batch_size=10,
-        filters=filters,
+        extra_mapper_params={'min_potential_events': min_potential_events},
         queue='super-slow-queue',
     )
 
