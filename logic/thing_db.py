@@ -122,12 +122,12 @@ class Source(db.Model):
                 self.graph_type = GRAPH_TYPE_FANPAGE
             elif 'locale' in fb_data['info']:
                 self.graph_type = GRAPH_TYPE_PROFILE
-            elif 'version' in fb_data['info']:
+            elif 'groups.facebook.com' in fb_data['info'].get('email'):
                 self.graph_type = GRAPH_TYPE_GROUP
             elif 'start_time' in fb_data['info']:
                 self.graph_type = GRAPH_TYPE_EVENT
             else:
-                logging.info("cannot classify id %s", fb_data['info']['id'])
+                logging.info("cannot classify object type for id %s", fb_data['info']['id'])
             if 'name' not in fb_data['info']:
                 logging.error('cannot find name for fb event data: %s, cannot update source data...', fb_data)
                 return
