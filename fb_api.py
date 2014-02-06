@@ -475,6 +475,7 @@ class BatchLookup(object):
                     object_is_bad = True
             if object_is_bad:
                 logging.warning("BatchLookup: Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
+            else:
                 fetched_objects[object_key] = self._cleanup_data(object_key, this_object)
         return fetched_objects
 
