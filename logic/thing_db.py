@@ -122,7 +122,7 @@ class Source(db.Model):
                 self.graph_type = GRAPH_TYPE_FANPAGE
             elif 'locale' in fb_data['info']:
                 self.graph_type = GRAPH_TYPE_PROFILE
-            elif 'groups.facebook.com' in fb_data['info'].get('email'):
+            elif 'groups.facebook.com' in fb_data['info'].get('email', []):
                 self.graph_type = GRAPH_TYPE_GROUP
             elif 'start_time' in fb_data['info']:
                 self.graph_type = GRAPH_TYPE_EVENT
