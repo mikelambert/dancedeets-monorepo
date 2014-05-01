@@ -50,6 +50,8 @@ easy_dance_keywords = [
     'dances?', "dancin[g']?", 'dancers?',
     u'댄스', # korean dance
     u'댄서', # korean dancer
+    u'танцы', # russian dancing
+    u'танцоров', # russian dancers
     u'танцуват', # bulgarian dance
     u'танцува', # bulgarian dance
     u'танцовия', # bulgarian dance
@@ -68,7 +70,6 @@ easy_dance_keywords = [
     u'舞技', # chinese dancing
     u'舞', # chinese dance
     u'舞蹈', # chinese dance
-    u'舞蹈的', # chinese dance
     u'排舞', # chinese dance
     u'แดนซ์', # dance thai
     u'เต้น', # dance thai
@@ -243,6 +244,7 @@ house_keywords = [
     'house',
     u'하우스', # korean house
     u'ハウス', # japanese house
+    u'хаус', # russian house
 ]
 house_regex_string = make_regex_string(house_keywords)
 

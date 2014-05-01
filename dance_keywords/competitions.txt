@@ -1,3 +1,5 @@
+diggs deeper
+soul food monthly
 tokyo soul drive
 shiftless shuffle
 soul street
@@ -129,7 +131,7 @@ deep la
 hip hop dancefest
 coney island dancers
 paradise garage
-jamboree
+clubhouse jamboree
 
 release.{0,20}disciple
 the loft practice
