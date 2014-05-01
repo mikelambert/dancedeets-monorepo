@@ -225,7 +225,7 @@ class SearchQuery(object):
         db_events = eventdata.get_cached_db_events(event_ids)
         return db_events
 
-    def get_search_results(self, batch_lookup, new_search=False):
+    def get_search_results(self, batch_lookup, new_search=True):
         batch_lookup = batch_lookup.copy()
         db_events = None
         a = time.time()
