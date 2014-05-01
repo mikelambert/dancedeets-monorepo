@@ -146,8 +146,8 @@ h3.event-title {
 
 .fb_button-nav {
 	padding: 10px 10px 0px;
-	/* because otherwise the in-progress load causes the top-bar to grow uncontrollably for a bit. this isolates it. 
-	position: absolute;*/
+	width: 200px;
+	text-align: right;
 }
 
 .permission-reason {
