@@ -78,3 +78,4 @@ def _inner_make_event_findable_for(db_event, fb_dict):
             logging.warning("No geocoding results for eid=%s is: %s", db_event.fb_event_id, location_info)
 
     db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
+    db_event.put()
