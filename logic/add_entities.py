@@ -1,4 +1,3 @@
-import datetime
 import fb_api
 from events import eventdata
 from logic import event_classifier
