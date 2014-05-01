@@ -41,7 +41,11 @@ def _get_latlng_from_event(fb_event):
 def get_address_for_fb_event(fb_event):
     event_info = fb_event['info']
     venue = event_info.get('venue', {})
-    event_location = event_info.get('location')
+    event_location = event_info.get('location', '')
+
+    # Sometimes the venue is [] instead of {...}, so handle that no-venue scenario
+    if not venue:
+        return event_location
 
     # Use states_full2abbrev to convert "Lousiana" to "LA" so "Hollywood, LA" geocodes correctly.
     state = abbrev.states_full2abbrev.get(venue.get('state'), venue.get('state'))
