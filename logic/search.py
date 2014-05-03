@@ -150,14 +150,17 @@ class SearchQuery(object):
     def get_new_candidate_events(self):
         clauses = []
         if self.bounds:
-            # Using geohashes (with 'or') or geopoints both will trigger 'complex' searches.
-            # Using these >=/>= keeps things as a 'simple' search, though it means they will
-            # likely be lists-of-most-events that are then intersected to get the small set.
-            # This is okay since we are using this for 'future-looking searches' by default
-            # If/when we want to support 'past searches', we may want to use complex searches
-            # using geohashes or geopoints.
-            clauses += ['latitude >= %s AND longitude >= %s' % self.bounds[0]]
-            clauses += ['latitude <= %s AND longitude <= %s' % self.bounds[1]]
+            # We try to keep searches as simple as possible, 
+            # using just AND queries on latitude/longitude.
+            # But for stuff crossing +/-180 degrees,
+            # we need to do an OR longitude query on each side.
+            latitudes = (self.bounds[0][0], self.bounds[1][0])
+            longitudes = (self.bounds[0][1], self.bounds[1][1])
+            clauses += ['latitude >= %s AND latitude <= %s' % latitudes]
+            if longitudes[0] < longitudes[1]:
+                clauses += ['longitude >= %s AND longitude <= %s' % longitudes]
+            else:
+                clauses += ['(longitude <= %s OR longitude >= %s)' % longitudes]
         if self.time_period:
             if self.time_period == eventdata.TIME_FUTURE:
                 index_name = FUTURE_EVENTS_INDEX
