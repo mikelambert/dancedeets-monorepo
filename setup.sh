@@ -21,6 +21,7 @@ sudo python setup.py install
 
 # NOSE-GAE
 cd $BASE_DIR/download
+sudo rm -rf NoseGAE
 git clone https://github.com/Trii/NoseGAE.git
 cd NoseGAE
 sudo python setup.py install
