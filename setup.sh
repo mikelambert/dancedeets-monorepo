@@ -3,7 +3,7 @@
 set -e
 
 # Find latest version here: https://pypi.python.org/pypi/nose
-NOSE_VERSION=nose-1.3.0
+NOSE_VERSION=nose-1.3.1
 # Find latest version here: https://pypi.python.org/pypi/unittest2
 UNITTEST2_VERSION=unittest2-0.5.1-python2.3
 # Find latest version here: https://pypi.python.org/pypi/WebTest
@@ -21,8 +21,8 @@ sudo python setup.py install
 
 # NOSE-GAE
 cd $BASE_DIR/download
-svn checkout http://nose-gae.googlecode.com/svn/trunk/ nose-gae-read-only
-cd nose-gae-read-only
+git clone https://github.com/Trii/NoseGAE.git
+cd NoseGAE
 sudo python setup.py install
 
 # SPITFIRE
