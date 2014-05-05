@@ -87,7 +87,7 @@ URLS = [
     ('/privacy', privacy.PrivacyHandler),
     ('/help', feedback.HelpHandler),
     ('/feedback', feedback.FeedbackHandler),
-    ('/mapreduce/worker_callback', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
+    ('/mapreduce/worker_callback.*', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
 ]
 
 class WebappHandlerAdapter(webapp2.BaseHandlerAdapter):
