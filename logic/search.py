@@ -161,11 +161,10 @@ class SearchQuery(object):
                 clauses += ['longitude >= %s AND longitude <= %s' % longitudes]
             else:
                 clauses += ['(longitude <= %s OR longitude >= %s)' % longitudes]
+        index_name = ALL_EVENTS_INDEX
         if self.time_period:
             if self.time_period == eventdata.TIME_FUTURE:
                 index_name = FUTURE_EVENTS_INDEX
-            else:
-                index_name = ALL_EVENTS_INDEX
         if self.start_time:
             # Do we want/need this hack?
             if self.start_time > datetime.datetime.now():
