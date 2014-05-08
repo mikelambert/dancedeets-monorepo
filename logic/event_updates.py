@@ -33,6 +33,8 @@ def need_forced_update(db_event):
 
 def update_and_save_event(db_event, fb_dict):
     _inner_make_event_findable_for(db_event, fb_dict)
+    # We want to save it here, no matter how it was changed.
+    db_event.put()
     search.update_fulltext_search_index(db_event, fb_dict)
 
 def _inner_make_event_findable_for(db_event, fb_dict):
@@ -78,4 +80,3 @@ def _inner_make_event_findable_for(db_event, fb_dict):
             logging.warning("No geocoding results for eid=%s is: %s", db_event.fb_event_id, location_info)
 
     db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
-    db_event.put()
