@@ -233,7 +233,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         if self.fb_uid:
             if not self.user:
                 logging.error("Do not have a self.user at point B")
-            allow_cache = (self.request.get('allow_cache', '1') == '1')
+            allow_cache = bool(int(self.request.get('allow_cache', 1)))
             self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=allow_cache)
             # Always look up the user's information for every page view...?
             self.batch_lookup.lookup_user(self.fb_uid)

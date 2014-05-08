@@ -14,6 +14,7 @@ def start_map(batch_lookup, name, handler_spec, entity_kind, filters=None, handl
         'batch_lookup_fb_uid': batch_lookup.fb_uid,
         'batch_lookup_fb_graph_access_token': batch_lookup.fb_graph.access_token,
         'batch_lookup_allow_cache': batch_lookup.allow_cache,
+        'batch_lookup_force_updated': batch_lookup.force_updated,
         'filters': filters,
     }
     mapper_params.update(extra_mapper_params)
@@ -31,7 +32,12 @@ def get_batch_lookup(user=None):
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
     fb_graph = facebook.GraphAPI(user and user.fb_access_token or params['batch_lookup_fb_graph_access_token'])
-    batch_lookup = fb_api.CommonBatchLookup(user and user.fb_uid or params['batch_lookup_fb_uid'], fb_graph, allow_cache=params['batch_lookup_allow_cache'])
+    batch_lookup = fb_api.CommonBatchLookup(
+        user and user.fb_uid or params['batch_lookup_fb_uid'],
+        fb_graph,
+        allow_cache=params['batch_lookup_allow_cache'],
+        force_updated=params['batch_lookup_force_updated'],
+    )
     return batch_lookup
 
 

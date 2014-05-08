@@ -227,11 +227,12 @@ class BatchLookup(object):
     OBJECT_FQL = 'OBJ_FQL'
     OBJECT_THING_FEED = 'OBJ_THING_FEED'
 
-    def __init__(self, fb_uid, fb_graph, allow_cache=True):
+    def __init__(self, fb_uid, fb_graph, allow_cache=True, force_updated=False):
         self.fb_uid = fb_uid
         self.userless_uid = fb_uid
         self.fb_graph = fb_graph
         self.allow_cache = allow_cache
+        self.force_updated = force_updated
         self.allow_memcache_read = self.allow_cache
         self.allow_memcache_write = True
         self.allow_dbcache = self.allow_cache
@@ -243,7 +244,7 @@ class BatchLookup(object):
     def copy(self, allow_cache=None):
         if allow_cache is None:
             allow_cache = self.allow_cache
-        return CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=allow_cache)
+        return CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=allow_cache, force_updated=self.force_updated)
 
     def _is_cacheable(self, object_key, this_object):
         fb_uid, object_id, object_type = object_key
@@ -392,7 +393,7 @@ class BatchLookup(object):
             assert id
             id = str(GRAPH_ID_REMAP.get(str(id), id))
             key = key_func(self, id)
-            if only_if_updated:
+            if only_if_updated and not self.force_updated:
                 object_lookup = self.updated_objects
             else:
                 object_lookup = self.objects
