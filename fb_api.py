@@ -515,7 +515,7 @@ class BatchLookup(object):
         try:
             result = object_rpc.get_result()
             if result.status_code != 200:
-                logging.error("BatchLookup: Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
+                logging.warning("BatchLookup: Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
             if result.status_code in [200, 400]:
                 text = result.content
                 return json.loads(text)
