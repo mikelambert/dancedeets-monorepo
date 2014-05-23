@@ -373,6 +373,7 @@ class Memcache(CacheSystem):
                 cache_key = self._key_to_cache_key(k)
                 memcache_set[cache_key] = v
         smemcache.safe_set_memcache(memcache_set, 2*3600)
+        return {}
 
     def invalidate_keys(self, keys):
         cache_keys = [self._key_to_cache_key(key) for key in keys]
@@ -416,7 +417,7 @@ class DBCache(CacheSystem):
                     updated_objects[object_key] = this_object
             except apiproxy_errors.CapabilityDisabledError:
                 pass
-            return updated_objects
+        return updated_objects
 
     def invalidate_keys(self, keys):
         cache_keys = [self._key_to_cache_key(key) for key in keys]
@@ -433,6 +434,7 @@ class FBAPI(CacheSystem):
     def fetch_keys(self, keys):
         FB_FETCH_COUNT = 10 # number of objects, each of which may be 1-5 RPCs
         fetched_objects = {}
+        keys = list(keys)
         for i in range(0, len(keys), FB_FETCH_COUNT):
             fetched_objects.update(self._fetch_object_keys(keys[i:i+FB_FETCH_COUNT]))
         return fetched_objects
@@ -468,7 +470,7 @@ class FBAPI(CacheSystem):
         for object_key in object_keys_to_lookup:
             cls, oid = object_key
             parts_to_urls = cls.get_lookups(oid, self.access_token)
-            parts_to_rpcs = dict((part_key, self._create_rpc_for_url(url)) for (part_key, url) in parts_to_urls)
+            parts_to_rpcs = dict((part_key, self._create_rpc_for_url(url)) for (part_key, url) in parts_to_urls.iteritems())
             object_keys_to_rpcs[object_key] = parts_to_rpcs
 
         # fetch RPCs
@@ -512,10 +514,21 @@ class FBAPI(CacheSystem):
 
 
 class FBLookup(object):
-    def __init__(self, fb_uid, fb_graph):
+    def __init__(self, fb_uid, access_token):
         self._keys_to_fetch = set()
         self.fb_uid = fb_uid
-        self.fb_graph = fb_graph
+        self.access_token = access_token
+        self._fetched_objects = {}
+        self._db_updated_objects = set()
+        self._object_keys_to_lookup_without_cache = set()
+        self.force_updated = False
+        self.allow_cache = True
+        self.allow_memcache_write = True
+        self.allow_memcache_read = True
+        self.allow_dbcache = True
+        self.m = Memcache(self.fb_uid)
+        self.db = DBCache(self.fb_uid)
+        self.fb = FBAPI(self.access_token)
 
     def request(self, cls, object_id):
         self._keys_to_fetch.add((cls, object_id))
@@ -524,8 +537,19 @@ class FBLookup(object):
         for oid in object_ids:
             self._keys_to_fetch.add((cls, oid))
 
-    def fetched_data(self, cls, object_id):
-        return self._fetched_objects[(cls, object_id)]
+    def fetched_data(self, cls, object_id, only_if_updated=False):
+        #id = str(GRAPH_ID_REMAP.get(str(id), id))
+        key = (cls, object_id)
+        if (self.force_updated or
+              not only_if_updated or
+              (only_if_updated and key in self._db_updated_objects)):
+            if key in self._fetched_objects:
+                return self._fetched_objects[key]
+        # only_if_updated means the caller expects to have some None returns
+            if only_if_updated:
+                return None
+            else:
+                raise NoFetchedDataException('Could not find %s' % (key,))
 
     def fetch(self, cls, object_id):
         self.request(cls, object_id)
@@ -538,20 +562,22 @@ class FBLookup(object):
         return object_map
 
     def do_fetch(self):
-        object_map = self.lookup(self._keys_to_fetch)
+        object_map, updated_object_map = self.lookup(self._keys_to_fetch)
         self._fetched_objects.update(object_map)
+        self._db_updated_objects = set(updated_object_map.keys())
         return object_map
 
+    def clear_local_cache(self):
+        self._fetched_objects = {}
+        
     def lookup(self, keys):
-        m = Memcache(self.fb_uid)
-        db = DBCache(self.fb_uid)
-        fb = FBAPI(self.fb_graph.access_token)
 
         all_fetched_objects = {}
+        updated_objects = {}
         if self.allow_cache:
             # Memcache Read
             if self.allow_memcache_read:
-                fetched_objects = self._cleanup_object_map(m.fetch_keys(keys))
+                fetched_objects = self._cleanup_object_map(self.m.fetch_keys(keys))
                 all_fetched_objects.update(fetched_objects)
                 unknown_results = set(fetched_objects).difference(keys)
                 if len(unknown_results):
@@ -560,9 +586,9 @@ class FBLookup(object):
 
             # DB Read
             if self.allow_dbcache:
-                fetched_objects = self._cleanup_object_map(db.fetch_keys(keys))
+                fetched_objects = self._cleanup_object_map(self.db.fetch_keys(keys))
                 if self.allow_memcache_write:
-                    m.save_objects(fetched_objects)
+                    self.m.save_objects(fetched_objects)
                 all_fetched_objects.update(fetched_objects)
                 unknown_results = set(fetched_objects).difference(keys)
                 if len(unknown_results):
@@ -570,12 +596,12 @@ class FBLookup(object):
                 keys = set(keys).difference(fetched_objects)
 
             # Facebook Read
-            keys.union_update(self.object_keys_to_lookup_without_cache)
+            keys.update(self._object_keys_to_lookup_without_cache)
 
-            fetched_objects = self._cleanup_object_map(fb.fetch_keys(keys))
+            fetched_objects = self._cleanup_object_map(self.fb.fetch_keys(keys))
             if self.allow_memcache_write:
-                m.save_objects(fetched_objects)
-            updated_objects = db.save_objects(fetched_objects)
+                self.m.save_objects(fetched_objects)
+            updated_objects = self.db.save_objects(fetched_objects)
             all_fetched_objects.update(fetched_objects)
             unknown_results = set(fetched_objects).difference(keys)
             if len(unknown_results):
@@ -583,21 +609,21 @@ class FBLookup(object):
             keys = set(keys).difference(fetched_objects)
 
         if keys:
-            logging.info("Couldn't find values for keys: %s", keys)
+            logging.error("Couldn't find values for keys: %s", keys)
 
-        self.fb_fetches = fb.fb_fetches
-        self.db_updates = db.db_updates
+        self.fb_fetches = self.fb.fb_fetches
+        self.db_updates = self.db.db_updates
 
         return all_fetched_objects, updated_objects
         #TODO: implement userless_uid and force_updated and object_keys_to_lookup_without_cache creation
 
     @staticmethod
-    def _cleanup_object_map(cls, object_map):
+    def _cleanup_object_map(object_map):
         """NOTE: modifies object_map in-place"""
         # Clean up objects
         for k, v in object_map.iteritems():
             cls, oid = k
-            object_map[k] = cls._cleanup_data(v)
+            object_map[k] = cls.cleanup_data(v)
         return object_map
 
 class BatchLookup(object):
@@ -775,7 +801,6 @@ class BatchLookup(object):
         return db_lookup_func
         
     def _data_for(key_func):
-        #TODO
         def data_for_func(self, id, only_if_updated=False):
             assert id
             id = str(GRAPH_ID_REMAP.get(str(id), id))
