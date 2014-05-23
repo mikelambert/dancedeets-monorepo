@@ -43,8 +43,10 @@ def classify_events(batch_lookup, pe_list):
                 results.append(result)
                 ctx = context.get()
                 ctx.counters.increment('auto-added-dance-events')
-            except (fb_api.NoFetchedDataException, add_entities.AddEventException), e:
+            except fb_api.NoFetchedDataException as e:
                 logging.error("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
+            except add_entities.AddEventException as e:
+                logging.warning("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
         auto_notadd_result = event_auto_classifier.is_auto_notadd_event(classified_event, auto_add_result=auto_add_result)
         if auto_notadd_result[0]:
             pe2 = potential_events.PotentialEvent.get_by_key_name(str(pe.fb_event_id))
