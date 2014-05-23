@@ -179,6 +179,8 @@ EMPTY_CAUSE_DELETED = 'deleted'
 
 OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins')
 
+USERLESS_UID = '701004'
+
 class FacebookCachedObject(db.Model):
     json_data = db.TextProperty()
     data = properties.json_property(json_data)
@@ -215,6 +217,393 @@ class ExpiredOAuthToken(Exception):
     pass
 class NoFetchedDataException(Exception):
     pass
+
+
+class LookupType(object):
+
+    @classmethod
+    def _url(cls, path, access_token, fields=None):
+        url_args = {}
+        if fields:
+            url_args['fields'] = ','.join(fields)
+        if access_token:
+            url_args['access_token'] = access_token
+        return 'https://graph.facebook.com/%s?%s' % (path, urllib.urlencode(url_args))
+
+    @classmethod
+    def _fql_url(cls, fql, access_token):
+        url_args = dict(q=fql)
+        if access_token:
+            url_args['access_token'] = access_token
+        return "https://graph.facebook.com/fql?%s" % urllib.urlencode(url_args)
+
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        raise NotImplementedError()
+
+    @classmethod
+    def get_lookups(cls, object_id, access_token):
+        raise NotImplementedError()
+
+    @classmethod
+    def cleanup_data(cls, object_data):
+        """NOTE: modifies object_data in-place"""
+        # Backwards-compatibility support for old objects lingering around
+        if 'empty' not in object_data:
+            object_data['empty'] = object_data.get('deleted') and EMPTY_CAUSE_DELETED or None
+        return object_data
+
+class LookupUser(LookupType):
+    key = 'OBJ_USER'
+    @classmethod
+    def get_lookups(cls, object_id, access_token):
+        return dict(
+            profile=cls._url('%s' % object_id, access_token),
+            friends=cls._url('%s/friends' % object_id, access_token),
+            permissions=cls._url('%s/permissions' % object_id, access_token),
+            rsvp_for_future_events=cls._url('%s/events?since=yesterday' % object_id, access_token),
+        )
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (fetching_uid, object_id, 'OBJ_USER')
+
+class LookupUserEvents(LookupType):
+    @classmethod
+    def get_lookups(cls, object_id, access_token):
+        today = int(time.mktime(datetime.date.today().timetuple()[:9]))
+        return dict(
+            all_event_info=cls._fql_url(ALL_EVENTS_FQL % (object_id, today), access_token),
+        )
+    @classmethod
+    def _cache_key(cls, object_id, fetching_uid):
+        return (fetching_uid, object_id, 'OBJ_USER_EVENTS')
+
+class LookupFriendList(LookupType):
+    @classmethod
+    def get_lookups(cls, object_id, access_token):
+        return dict(
+            friend_list=cls._url('%s/members' % object_id, access_token),
+        )
+    @classmethod
+    def _cache_key(cls, object_id, fetching_uid):
+        return (fetching_uid, object_id, 'OBJ_FRIEND_LIST')
+
+class LookupEvent(LookupType):
+    #TODO: implement these and others
+    @classmethod
+    def get_lookups(cls, object_id, access_token):
+        return dict(
+            info=cls._url(object_id, access_token, fields=OBJ_EVENT_FIELDS),
+            fql_info=cls._fql_url(EXTRA_EVENT_INFO_FQL % (object_id), access_token),
+        )
+    @classmethod
+    def _cache_key(cls, object_id, fetching_uid):
+        return (USERLESS_UID, object_id, 'OBJ_EVENT')
+
+    @classmethod
+    def cleanup_data(cls, object_data):
+        """NOTE: modifies object_data in-place"""
+        object_data = cls.cleanup_data(object_data)
+        # So fql_count's all_members_count can be rounded,
+        # to save on unnecessary db updates and indexing.
+        # Especially as it's only for privacy check comparison to 60
+        # So round down to most significant digit:
+        amc = _all_members_count(object_data)
+        if amc:
+            str_amc = str(amc)
+            # Yes, this timed faster than math.round and string-manip
+            new_amc = int(str_amc[0])*10**(len(str_amc)-1)
+            # Set new all_members_count data.
+            _all_members_count(object_data, new_amc)
+        return object_data
+
+
+class CacheSystem(object):
+    def fetch_keys(self, keys):
+        raise NotImplementedError()
+    def save_objects(self, keys_to_objects):
+        raise NotImplementedError()
+    def invalidate_keys(self, keys):
+        raise NotImplementedError()
+
+    def _string_key(self, key):
+        return '.'.join(self._normalize_key(key))
+
+    def _normalize_key(self, key):
+        return tuple(re.sub(r'[."\']', '-', str(x)) for x in key)
+
+    def _key_to_cache_key(self, key):
+        cls, oid = key
+        fetching_uid = self.fetching_uid
+        return self._string_key(cls.cache_key(oid, fetching_uid))
+
+    def _is_cacheable(self, object_key, this_object):
+        cls, oid = object_key
+        #TODO: clean this up with inheritance
+        if cls != LookupEvent:
+            return True
+        # intentionally empty object
+        elif this_object.get('empty'):
+            return True
+        elif this_object.get('info') and is_public_ish(this_object):
+            return True
+        else:
+            return False
+
+
+class Memcache(CacheSystem):
+    def __init__(self, fetching_uid):
+        self.fetching_uid = fetching_uid
+
+    def fetch_keys(self, keys):
+        cache_key_mapping = dict((self._key_to_cache_key(key), key) for key in keys)
+        objects = smemcache.get_multi(cache_key_mapping.keys())
+        object_map = dict((cache_key_mapping[k], v) for (k, v) in objects.iteritems())
+
+        # DEBUG!
+        #get_size = len(pickle.dumps(objects))
+        #logging.info("BatchLookup: memcache get_multi return size: %s", get_size)
+        logging.info("BatchLookup: memcache get_multi objects found: %s", objects.keys())
+        return object_map
+
+    def save_objects(self, keys_to_objects):
+        memcache_set = {}
+        for k, v in keys_to_objects.iteritems():
+            if self._is_cacheable(k, v):
+                cache_key = self._key_to_cache_key(k)
+                memcache_set[cache_key] = v
+        smemcache.safe_set_memcache(memcache_set, 2*3600)
+
+    def invalidate_keys(self, keys):
+        cache_keys = [self._key_to_cache_key(key) for key in keys]
+        smemcache.delete_multi(cache_keys)
+
+class DBCache(CacheSystem):
+    def __init__(self, fetching_uid):
+        self.fetching_uid = fetching_uid
+        self.db_updates = 0
+
+    def fetch_keys(self, keys):
+        cache_key_mapping = dict((self._key_to_cache_key(key), key) for key in keys)
+        object_map = {}
+        max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
+        cache_keys = cache_key_mapping.keys()
+        for i in range(0, len(cache_keys), max_in_queries):
+            objects = FacebookCachedObject.get_by_key_name(cache_keys[i:i+max_in_queries])
+            object_map.update(dict((cache_key_mapping[o.key().name()], o.decode_data()) for o in objects if o))
+        logging.info("BatchLookup: db lookup objects found: %s", object_map.keys())
+        return object_map
+
+    def save_objects(self, keys_to_objects):
+        updated_objects = {}
+        for object_key, this_object in keys_to_objects.iteritems():
+            if not self._is_cacheable(object_key, this_object):
+                #TODO(lambert): cache the fact that it's a private-unshowable event somehow? same as deleted events?
+                logging.warning("Looked up event %s but is not cacheable.", object_key)
+                continue
+            try:
+                cache_key = self._key_to_cache_key(object_key)
+                obj = FacebookCachedObject.get_or_insert(cache_key)
+                old_json_data = obj.json_data
+                obj.encode_data(this_object)
+                if old_json_data != obj.json_data:
+                    obj.put()
+                    self.db_updates += 1
+                    #DEBUG
+                    #logging.info("OLD %s", old_json_data)
+                    #logging.info("NEW %s", obj.json_data)
+                    # Store list of updated objects for later querying
+                    updated_objects[object_key] = this_object
+            except apiproxy_errors.CapabilityDisabledError:
+                pass
+            return updated_objects
+
+    def invalidate_keys(self, keys):
+        cache_keys = [self._key_to_cache_key(key) for key in keys]
+        results = FacebookCachedObject.get_by_key_name(cache_keys)
+        for result in results:
+            result.delete()
+
+
+class FBAPI(CacheSystem):
+    def __init__(self, access_token):
+        self.access_token = access_token
+        self.fb_fetches = 0
+
+    def fetch_keys(self, keys):
+        FB_FETCH_COUNT = 10 # number of objects, each of which may be 1-5 RPCs
+        fetched_objects = {}
+        for i in range(0, len(keys), FB_FETCH_COUNT):
+            fetched_objects.update(self._fetch_object_keys(keys[i:i+FB_FETCH_COUNT]))
+        return fetched_objects
+
+    def save_objects(self, keys_to_objects):
+        raise NotImplementedError("Cannot save anything to FB")
+    def invalidate_keys(self, keys):
+        raise NotImplementedError("Cannot invalidate anything in FB")
+
+    def _create_rpc_for_url(self, url):
+        rpc = urlfetch.create_rpc(deadline=DEADLINE)
+        urlfetch.make_fetch_call(rpc, url)
+        self.fb_fetches += 1
+        return rpc
+
+    @staticmethod
+    def _map_rpc_to_data(object_key, object_rpc_name, object_rpc):
+        try:
+            result = object_rpc.get_result()
+            if result.status_code != 200:
+                logging.warning("BatchLookup: Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
+            if result.status_code in [200, 400]:
+                text = result.content
+                return json.loads(text)
+        except urlfetch.DownloadError, e:
+            logging.warning("BatchLookup: Error downloading: %s: %s", object_rpc.request.url(), e)
+        return None
+
+    def _fetch_object_keys(self, object_keys_to_lookup):
+        logging.info("BatchLookup: Looking up IDs: %s", object_keys_to_lookup)
+        # initiate RPCs
+        object_keys_to_rpcs = {}
+        for object_key in object_keys_to_lookup:
+            cls, oid = object_key
+            parts_to_urls = cls.get_lookups(oid, self.access_token)
+            parts_to_rpcs = dict((part_key, self._create_rpc_for_url(url)) for (part_key, url) in parts_to_urls)
+            object_keys_to_rpcs[object_key] = parts_to_rpcs
+
+        # fetch RPCs
+        fetched_objects = {}
+        for object_key, object_rpc_dict in object_keys_to_rpcs.iteritems():
+            this_object = {}
+            this_object['empty'] = None
+            object_is_bad = False
+            for object_rpc_name, object_rpc in object_rpc_dict.iteritems():
+                object_json = self._map_rpc_to_data(object_key, object_rpc_name, object_rpc)
+                if object_json is not None:
+                    error_code = None
+                    if type(object_json) == dict and ('error_code' in object_json or 'error' in object_json):
+                        error_code = object_json.get('error_code', object_json.get('error', {}).get('code', None))
+                    if error_code == 100:
+                        # This means the event exists, but the current access_token is insufficient to query it
+                        this_object['empty'] = EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS
+                    elif error_code:
+                        logging.error("BatchLookup: Error code from FB server: %s", object_json)
+
+                        # expired/invalidated OAuth token for User objects. We use one OAuth token per BatchLookup, so no use continuing...
+                        # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
+                        error_code = object_json.get('error_code')
+                        error_type = object_json.get('error', {}).get('type')
+                        error_message = object_json.get('error', {}).get('message')
+                        cls, oid = object_key
+                        if cls == LookupUser and error_type == 'OAuthException':
+                            raise ExpiredOAuthToken(error_message)
+                        object_is_bad = True
+                    elif object_json == False:
+                        this_object['empty'] = EMPTY_CAUSE_DELETED
+                    else:
+                        this_object[object_rpc_name] = object_json
+                else:
+                    object_is_bad = True
+            if object_is_bad:
+                logging.warning("BatchLookup: Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
+            else:
+                fetched_objects[object_key] = this_object
+        return fetched_objects
+
+
+class FBLookup(object):
+    def __init__(self, fb_uid, fb_graph):
+        self._keys_to_fetch = set()
+        self.fb_uid = fb_uid
+        self.fb_graph = fb_graph
+
+    def fetch(self, cls, object_id):
+        self._keys_to_fetch.add((cls, object_id))
+
+    def fetch_many(self, cls, object_ids):
+        for oid in object_ids:
+            self._keys_to_fetch.add((cls, oid))
+
+    def lookup(self):
+        keys = self._keys_to_fetch
+        caches = [Memcache(self.fb_uid), DBCache(self.fb_uid), FBAPI(self.fb_graph.access_token)]
+        all_fetched_objects = {}
+        previous_caches = []
+        for c in caches:
+            fetched_objects = c.fetch_keys(keys)
+            for pc in previous_caches:
+                pc.save_objects(fetched_objects)
+            all_fetched_objects.update(fetched_objects)
+            unknown_results = set(fetched_objects).difference(keys)
+            if len(unknown_results):
+                logging.error("Unknown keys found: %s", unknown_results)
+            # and fall back for the rest
+            keys = set(keys).difference(fetched_objects)
+            previous_caches.append(c)
+        if keys:
+            logging.info("Couldn't find values for keys: %s", keys)
+        return all_fetched_objects
+
+    def do_fetch(self):
+        self._fetched_objects.update(self.flexible_lookup(self._keys_to_fetch))
+
+    def flexible_lookup(self, keys):
+        m = Memcache(self.fb_uid)
+        db = DBCache(self.fb_uid)
+        fb = FBAPI(self.fb_graph.access_token)
+
+        all_fetched_objects = {}
+        if self.allow_cache:
+            # Memcache Read
+            if self.allow_memcache_read:
+                fetched_objects = self._cleanup_object_map(m.fetch_keys(keys))
+                all_fetched_objects.update(fetched_objects)
+                unknown_results = set(fetched_objects).difference(keys)
+                if len(unknown_results):
+                    logging.error("Unknown keys found: %s", unknown_results)
+                keys = set(keys).difference(fetched_objects)
+
+            # DB Read
+            if self.allow_dbcache:
+                fetched_objects = self._cleanup_object_map(db.fetch_keys(keys))
+                if self.allow_memcache_write:
+                    m.save_objects(fetched_objects)
+                all_fetched_objects.update(fetched_objects)
+                unknown_results = set(fetched_objects).difference(keys)
+                if len(unknown_results):
+                    logging.error("Unknown keys found: %s", unknown_results)
+                keys = set(keys).difference(fetched_objects)
+
+            # Facebook Read
+            keys.union_update(self.object_keys_to_lookup_without_cache)
+
+            fetched_objects = self._cleanup_object_map(fb.fetch_keys(keys))
+            if self.allow_memcache_write:
+                m.save_objects(fetched_objects)
+            updated_objects = db.save_objects(fetched_objects)
+            all_fetched_objects.update(fetched_objects)
+            unknown_results = set(fetched_objects).difference(keys)
+            if len(unknown_results):
+                logging.error("Unknown keys found: %s", unknown_results)
+            keys = set(keys).difference(fetched_objects)
+
+        if keys:
+            logging.info("Couldn't find values for keys: %s", keys)
+
+        self.fb_fetches = fb.fb_fetches
+        self.db_updates = db.db_updates
+
+        return all_fetched_objects, updated_objects
+        #TODO: implement userless_uid and force_updated and object_keys_to_lookup_without_cache creation
+
+    @staticmethod
+    def _cleanup_object_map(cls, object_map):
+        """NOTE: modifies object_map in-place"""
+        # Clean up objects
+        for k, v in object_map.iteritems():
+            cls, oid = k
+            object_map[k] = cls._cleanup_data(v)
+        return object_map
 
 class BatchLookup(object):
     OBJECT_PROFILE = 'OBJ_PROFILE'
@@ -258,6 +647,7 @@ class BatchLookup(object):
         else:
             return False
 
+    #TODO
     def _get_rpcs(self, object_key):
         fb_uid, object_id, object_type = object_key
         if object_type == self.OBJECT_PROFILE:
@@ -378,6 +768,7 @@ class BatchLookup(object):
         return db_delete_func
 
     def _db_lookup(key_func):
+        #TODO
         def db_lookup_func(self, id, allow_cache=True):
             assert id
             id = str(GRAPH_ID_REMAP.get(str(id), id))
@@ -389,6 +780,7 @@ class BatchLookup(object):
         return db_lookup_func
         
     def _data_for(key_func):
+        #TODO
         def data_for_func(self, id, only_if_updated=False):
             assert id
             id = str(GRAPH_ID_REMAP.get(str(id), id))
@@ -617,6 +1009,6 @@ class BatchLookup(object):
 
 def CommonBatchLookup(*args, **kwargs):
     batch_lookup = BatchLookup(*args, **kwargs)
-    batch_lookup.userless_uid = '701004'
+    batch_lookup.userless_uid = USERLESS_UID
     return batch_lookup
 
