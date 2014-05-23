@@ -275,7 +275,7 @@ class LookupUserEvents(LookupType):
             all_event_info=cls._fql_url(ALL_EVENTS_FQL % (object_id, today), access_token),
         )
     @classmethod
-    def _cache_key(cls, object_id, fetching_uid):
+    def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_USER_EVENTS')
 
 class LookupFriendList(LookupType):
@@ -285,7 +285,7 @@ class LookupFriendList(LookupType):
             friend_list=cls._url('%s/members' % object_id, access_token),
         )
     @classmethod
-    def _cache_key(cls, object_id, fetching_uid):
+    def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_FRIEND_LIST')
 
 class LookupEvent(LookupType):
@@ -297,13 +297,13 @@ class LookupEvent(LookupType):
             fql_info=cls._fql_url(EXTRA_EVENT_INFO_FQL % (object_id), access_token),
         )
     @classmethod
-    def _cache_key(cls, object_id, fetching_uid):
+    def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT')
 
     @classmethod
     def cleanup_data(cls, object_data):
         """NOTE: modifies object_data in-place"""
-        object_data = cls.cleanup_data(object_data)
+        object_data = super(LookupEvent, cls).cleanup_data(object_data)
         # So fql_count's all_members_count can be rounded,
         # to save on unnecessary db updates and indexing.
         # Especially as it's only for privacy check comparison to 60
@@ -517,37 +517,32 @@ class FBLookup(object):
         self.fb_uid = fb_uid
         self.fb_graph = fb_graph
 
-    def fetch(self, cls, object_id):
+    def request(self, cls, object_id):
         self._keys_to_fetch.add((cls, object_id))
 
-    def fetch_many(self, cls, object_ids):
+    def request_many(self, cls, object_ids):
         for oid in object_ids:
             self._keys_to_fetch.add((cls, oid))
 
-    def lookup(self):
-        keys = self._keys_to_fetch
-        caches = [Memcache(self.fb_uid), DBCache(self.fb_uid), FBAPI(self.fb_graph.access_token)]
-        all_fetched_objects = {}
-        previous_caches = []
-        for c in caches:
-            fetched_objects = c.fetch_keys(keys)
-            for pc in previous_caches:
-                pc.save_objects(fetched_objects)
-            all_fetched_objects.update(fetched_objects)
-            unknown_results = set(fetched_objects).difference(keys)
-            if len(unknown_results):
-                logging.error("Unknown keys found: %s", unknown_results)
-            # and fall back for the rest
-            keys = set(keys).difference(fetched_objects)
-            previous_caches.append(c)
-        if keys:
-            logging.info("Couldn't find values for keys: %s", keys)
-        return all_fetched_objects
+    def fetched_data(self, cls, object_id):
+        return self._fetched_objects[(cls, object_id)]
+
+    def fetch(self, cls, object_id):
+        self.request(cls, object_id)
+        self.do_fetch()
+        return self.fetched_data(cls, object_id)
+
+    def fetch_many(self, cls, object_ids):
+        self.request_many(cls, object_ids)
+        object_map = self.do_fetch()
+        return object_map
 
     def do_fetch(self):
-        self._fetched_objects.update(self.flexible_lookup(self._keys_to_fetch))
+        object_map = self.lookup(self._keys_to_fetch)
+        self._fetched_objects.update(object_map)
+        return object_map
 
-    def flexible_lookup(self, keys):
+    def lookup(self, keys):
         m = Memcache(self.fb_uid)
         db = DBCache(self.fb_uid)
         fb = FBAPI(self.fb_graph.access_token)
