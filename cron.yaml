@@ -28,9 +28,6 @@ cron:
   url: /_ereporter?sender=mlambert@gmail.com&to=mlambert@gmail.com
   schedule: every day 00:00
   timezone: America/Los_Angeles
-- description: search index refresh
-  url: /tasks/recache_search_index?user_id=701004
-  schedule: every 1 hours
 - description: clear and email memcache timings
   url: /tasks/timings_process_day?to=mlambert@gmail.com&sender=mlambert@gmail.com
   schedule: every day 00:00
