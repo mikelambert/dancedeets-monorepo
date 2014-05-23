@@ -4,26 +4,24 @@ set -e
 
 # Find latest version here: https://pypi.python.org/pypi/nose
 NOSE_VERSION=nose-1.3.1
-# Find latest version here: https://pypi.python.org/pypi/unittest2
-UNITTEST2_VERSION=unittest2-0.5.1-python2.3
 # Find latest version here: https://pypi.python.org/pypi/WebTest
 WEBTEST_VERSION=WebTest-2.0.12
 
 BASE_DIR=$(pwd)
 mkdir -p download/
 
-# NOSE
-cd $BASE_DIR/download
-curl https://pypi.python.org/packages/source/n/nose/$NOSE_VERSION.tar.gz --output $NOSE_VERSION.tar.gz
-tar xvzf $NOSE_VERSION.tar.gz
-cd $NOSE_VERSION
-sudo python setup.py install
-
 # NOSE-GAE
 cd $BASE_DIR/download
 sudo rm -rf NoseGAE
 git clone https://github.com/Trii/NoseGAE.git
 cd NoseGAE
+sudo python setup.py install
+
+# NOSE
+cd $BASE_DIR/download
+curl https://pypi.python.org/packages/source/n/nose/$NOSE_VERSION.tar.gz --output $NOSE_VERSION.tar.gz
+tar xvzf $NOSE_VERSION.tar.gz
+cd $NOSE_VERSION
 sudo python setup.py install
 
 # SPITFIRE
@@ -76,14 +74,6 @@ svn checkout http://appengine-mapreduce.googlecode.com/svn/trunk/ appengine-mapr
 cd appengine-mapreduce-read-only
 # no installation! just symlinking!
 ln -sf download/appengine-mapreduce-read-only/python/src/mapreduce $BASE_DIR/
-
-# UNITTEST2
-cd $BASE_DIR/download
-curl http://www.voidspace.org.uk/downloads/$UNITTEST2_VERSION.zip -o $UNITTEST2_VERSION.zip
-unzip -o $UNITTEST2_VERSION.zip
-cd $UNITTEST2_VERSION
-sudo python setup.py install
-ln -sf download/$UNITTEST2_VERSION/unittest2 $BASE_DIR/
 
 # WEBTEST
 cd $BASE_DIR/download
