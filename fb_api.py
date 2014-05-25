@@ -386,12 +386,12 @@ class CacheSystem(object):
         return tuple(re.sub(r'[."\']', '-', str(x)) for x in key)
 
     def _key_to_cache_key(self, key):
-        cls, oid = key
+        cls, oid = break_key(key)
         fetching_uid = self.fetching_uid
         return self._string_key(cls.cache_key(oid, fetching_uid))
 
     def _is_cacheable(self, object_key, this_object):
-        cls, oid = object_key
+        cls, oid = break_key(object_key)
         #TODO: clean this up with inheritance
         if cls != LookupEvent:
             return True
@@ -521,7 +521,7 @@ class FBAPI(CacheSystem):
         # initiate RPCs
         object_keys_to_rpcs = {}
         for object_key in object_keys_to_lookup:
-            cls, oid = object_key
+            cls, oid = break_key(object_key)
             parts_to_urls = cls.get_lookups(oid, self.access_token)
             parts_to_rpcs = dict((part_key, self._create_rpc_for_url(url)) for (part_key, url) in parts_to_urls.iteritems())
             object_keys_to_rpcs[object_key] = parts_to_rpcs
@@ -549,7 +549,7 @@ class FBAPI(CacheSystem):
                         error_code = object_json.get('error_code')
                         error_type = object_json.get('error', {}).get('type')
                         error_message = object_json.get('error', {}).get('message')
-                        cls, oid = object_key
+                        cls, oid = break_key(object_key)
                         if cls == LookupUser and error_type == 'OAuthException':
                             raise ExpiredOAuthToken(error_message)
                         object_is_bad = True
@@ -565,6 +565,13 @@ class FBAPI(CacheSystem):
                 fetched_objects[object_key] = this_object
         return fetched_objects
 
+
+def generate_key(cls, object_id):
+    new_object_id = str(GRAPH_ID_REMAP.get(str(object_id), str(object_id)))
+    return (cls, new_object_id)
+
+def break_key(key):
+    return key
 
 class FBLookup(object):
     def __init__(self, fb_uid, access_token):
@@ -584,22 +591,22 @@ class FBLookup(object):
         self.fb = FBAPI(self.access_token)
 
     def request(self, cls, object_id, allow_cache=True):
+        key = generate_key(cls, object_id)
         if allow_cache:
-            self._keys_to_fetch.add((cls, object_id))
+            self._keys_to_fetch.add(key)
         else:
-            self._object_keys_to_lookup_without_cache.add((cls, object_id))
+            self._object_keys_to_lookup_without_cache.add(key)
 
     def request_many(self, cls, object_ids, allow_cache=True):
         for object_id in object_ids:
+            key = generate_key(cls, object_id)
             if allow_cache:
-                self._keys_to_fetch.add((cls, object_id))
+                self._keys_to_fetch.add(key)
             else:
-                self._object_keys_to_lookup_without_cache.add((cls, object_id))
+                self._object_keys_to_lookup_without_cache.add(key)
 
     def fetched_data(self, cls, object_id, only_if_updated=False):
-        #TODO: implement remapping
-        # id = str(GRAPH_ID_REMAP.get(str(id), id))
-        key = (cls, object_id)
+        key = generate_key(cls, object_id)
         if (self.force_updated or
               not only_if_updated or
               (only_if_updated and key in self._db_updated_objects)):
@@ -631,7 +638,6 @@ class FBLookup(object):
         self._fetched_objects = {}
         
     def lookup(self, keys):
-
         all_fetched_objects = {}
         updated_objects = {}
         if self.allow_cache:
@@ -681,7 +687,7 @@ class FBLookup(object):
         """NOTE: modifies object_map in-place"""
         # Clean up objects
         for k, v in object_map.iteritems():
-            cls, oid = k
+            cls, oid = break_key(k)
             object_map[k] = cls.cleanup_data(v)
         return object_map
 
