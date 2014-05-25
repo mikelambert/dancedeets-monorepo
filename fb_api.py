@@ -253,8 +253,17 @@ class LookupType(object):
             object_data['empty'] = object_data.get('deleted') and EMPTY_CAUSE_DELETED or None
         return object_data
 
+class LookupProfile(LookupType):
+    @classmethod
+    def get_lookups(cls, object_id, access_token):
+        return dict(
+            profile=cls._url('%s' % object_id, None),
+        )
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (USERLESS_UID, object_id, 'OBJ_PROFILE')
+
 class LookupUser(LookupType):
-    key = 'OBJ_USER'
     @classmethod
     def get_lookups(cls, object_id, access_token):
         return dict(
