@@ -267,6 +267,8 @@ class LookupUser(LookupType):
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_USER')
 
+#TODO(lambert): move these LookupType subclasses out of fb_api.py into client code where they belong,
+# keeping this file infrastructure and unmodified as we add new features + LookupTypes
 class LookupUserEvents(LookupType):
     @classmethod
     def get_lookups(cls, object_id, access_token):
@@ -289,7 +291,6 @@ class LookupFriendList(LookupType):
         return (fetching_uid, object_id, 'OBJ_FRIEND_LIST')
 
 class LookupEvent(LookupType):
-    #TODO: implement these and others
     @classmethod
     def get_lookups(cls, object_id, access_token):
         return dict(
@@ -317,6 +318,49 @@ class LookupEvent(LookupType):
             _all_members_count(object_data, new_amc)
         return object_data
 
+class LookupEventAttending(LookupType):
+    @classmethod
+    def get_lookups(cls, object_id, access_token):
+        return dict(
+            attending=cls._url('%s/attending' % object_id, access_token),
+        )
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (USERLESS_UID, object_id, 'OBJ_EVENT_ATTENDING')
+
+class LookupEventMembers(LookupType):
+    @classmethod
+    def get_lookups(cls, object_id, access_token):
+        return dict(
+            attending=cls._url('%s/attending' % object_id, access_token),
+            maybe=cls._url('%s/maybe' % object_id, access_token),
+            declined=cls._url('%s/declined' % object_id, access_token),
+            noreply=cls._url('%s/noreply' % object_id, access_token),
+        )
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (USERLESS_UID, object_id, 'OBJ_EVENT_MEMBERS')
+
+class LookupFQL(LookupType):
+    @classmethod
+    def get_lookups(cls, object_id, access_token):
+        return dict(
+            fql=cls._fql_url(object_id, access_token),
+        )
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (fetching_uid, object_id, 'OBJ_FQL')
+
+class LookupThingFeed(LookupType):
+    @classmethod
+    def get_lookups(cls, object_id, access_token):
+        return dict(
+            info=cls._url('%s' % object_id, access_token),
+            feed=cls._url('%s/feed' % object_id, access_token),
+        )
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (fetching_uid, object_id, 'OBJ_THING_FEED')
 
 class CacheSystem(object):
     def fetch_keys(self, keys):
@@ -530,15 +574,22 @@ class FBLookup(object):
         self.db = DBCache(self.fb_uid)
         self.fb = FBAPI(self.access_token)
 
-    def request(self, cls, object_id):
-        self._keys_to_fetch.add((cls, object_id))
+    def request(self, cls, object_id, allow_cache=True):
+        if allow_cache:
+            self._keys_to_fetch.add((cls, object_id))
+        else:
+            self._object_keys_to_lookup_without_cache.add((cls, object_id))
 
-    def request_many(self, cls, object_ids):
-        for oid in object_ids:
-            self._keys_to_fetch.add((cls, oid))
+    def request_many(self, cls, object_ids, allow_cache=True):
+        for object_id in object_ids:
+            if allow_cache:
+                self._keys_to_fetch.add((cls, object_id))
+            else:
+                self._object_keys_to_lookup_without_cache.add((cls, object_id))
 
     def fetched_data(self, cls, object_id, only_if_updated=False):
-        #id = str(GRAPH_ID_REMAP.get(str(id), id))
+        #TODO: implement remapping
+        # id = str(GRAPH_ID_REMAP.get(str(id), id))
         key = (cls, object_id)
         if (self.force_updated or
               not only_if_updated or
@@ -615,7 +666,6 @@ class FBLookup(object):
         self.db_updates = self.db.db_updates
 
         return all_fetched_objects, updated_objects
-        #TODO: implement userless_uid and force_updated and object_keys_to_lookup_without_cache creation
 
     @staticmethod
     def _cleanup_object_map(object_map):
@@ -668,7 +718,6 @@ class BatchLookup(object):
         else:
             return False
 
-    #TODO
     def _get_rpcs(self, object_key):
         fb_uid, object_id, object_type = object_key
         if object_type == self.OBJECT_PROFILE:
@@ -789,7 +838,6 @@ class BatchLookup(object):
         return db_delete_func
 
     def _db_lookup(key_func):
-        #TODO
         def db_lookup_func(self, id, allow_cache=True):
             assert id
             id = str(GRAPH_ID_REMAP.get(str(id), id))
