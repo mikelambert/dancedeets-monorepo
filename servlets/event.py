@@ -41,7 +41,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
 
         rsvp_status = self.request.get('rsvp')
 
-        rsvps = rsvp.RSVPManager(self.fb_user, self.batch_lookup)
+        rsvps = rsvp.RSVPManager(self.batch_lookup)
         success = rsvps.set_rsvp_for_event(self.access_token, event_id, rsvp_status)
 
         self.write_json_response(dict(success=success))

@@ -40,7 +40,7 @@ def email_for_user(user, batch_lookup, should_send=True):
     if not search_results:
         return
 
-    friends.decorate_with_friends(fb_user, batch_lookup, search_results)
+    friends.decorate_with_friends(batch_lookup, search_results)
     rsvp.decorate_with_rsvps(batch_lookup, search_results)
 
     past_results, present_results, grouped_results = search.group_results(search_results)

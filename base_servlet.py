@@ -238,6 +238,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
             allow_cache = bool(int(self.request.get('allow_cache', 1)))
             self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.access_token, allow_cache=allow_cache)
             self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
+            # Always look up the user's information for every page view...?
+            self.batch_lookup.lookup_user(self.fb_uid)
+            self.fbl.request(fb_api.LookupUser, self.fb_uid)
         else:
             self.batch_lookup = fb_api.CommonBatchLookup(None, None)
             self.fbl = fb_api.FBLookup(None, None)
