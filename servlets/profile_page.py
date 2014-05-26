@@ -32,7 +32,7 @@ class ProfileHandler(BaseProfileHandler):
         self.display['primary_name'] = primary_name
         self.display['real_name'] = fb_profile['profile']['name']
 
-        self.display['owner'] = (self.current_user() and self.current_user()['profile']['id'] == fb_profile_uid)
+        self.display['owner'] = (self.fb_user and self.fb_user['profile']['id'] == fb_profile_uid)
 
         video_tags = tags.ProfileVideoTag.gql('where fb_uid=:fb_uid', fb_uid=fb_profile_uid).fetch(100)
 

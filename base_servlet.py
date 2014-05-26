@@ -129,6 +129,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         self.fb_uid = int(args['uid'])
         self.user = users.User.get_cached(str(self.fb_uid))
+        self.fb_user = None
 
         # if we don't have a user and don't have a token, it means the user just signed-up, but double-refreshed.
         # so the second request doesn't have a user. so let it be logged-out, as we continue on...
@@ -143,14 +144,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
         # if we don't have a user but do have a token, the user has granted us permissions, so let's construct the user now
         if not self.user:
             from servlets import login
-            batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, args['access_token'], allow_cache=False)
-            batch_lookup.lookup_user(self.fb_uid)
-            batch_lookup.finish_loading()
-            fb_user = batch_lookup.data_for_user(self.fb_uid)
-
+            fbl = fb_api.FBLookup(self.fb_uid, args['access_token'])
+            self.fb_user = fbl.get(fb_api.LookupUser, self.fb_uid)
+            
             referer = self.get_cookie('User-Referer')
 
-            login.construct_user(self.fb_uid, args['access_token'], args['access_token_expires'], fb_user, self.request, referer)
+            login.construct_user(self.fb_uid, args['access_token'], args['access_token_expires'], self.fb_user, self.request, referer)
             #TODO(lambert): handle this MUUUCH better
             logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
             self.user = users.User.get_cached(str(self.fb_uid))
@@ -280,19 +279,13 @@ class BaseRequestHandler(BareBaseRequestHandler):
         return False
 
     def current_user(self):
-        if self.fb_uid:
-            return self.batch_lookup.data_for_user(self.fb_uid)
-        else:
-            return None
+        return self.fb_user
 
     def finish_preload(self):
         self.batch_lookup.finish_loading()
 
     def render_template(self, name):
-        if self.fb_uid: # show fb user if we're logged in. we only need fb_uid to get a fb_user
-            self.display['fb_user'] = self.current_user()
-        else:
-            self.display['fb_user'] = None
+        self.display['fb_user'] = self.fb_user
         super(BaseRequestHandler, self).render_template(name)
 
 
