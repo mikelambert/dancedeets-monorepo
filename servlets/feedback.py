@@ -15,8 +15,8 @@ class FeedbackHandler(base_servlet.BaseRequestHandler):
     def post(self):
         self.finish_preload()
         from_line = 'From: %s <%s>' % (
-            self.fb_user['profile']['name'],
-            self.fb_user['profile']['email']
+            self.batch_lookup.data_for_user(self.user.fb_uid)['profile']['name'],
+            self.batch_lookup.data_for_user(self.user.fb_uid)['profile']['email']
         )
         message = mail.EmailMessage(
             sender="DanceDeets Feedback Form <events@dancedeets.com>",

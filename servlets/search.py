@@ -72,7 +72,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             search_results = query.get_search_results(self.batch_lookup, new_search=self.request.get('deb') != 'old_search')
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
             a = time.time()
-            friends.decorate_with_friends(self.fb_user, self.batch_lookup, search_results)
+            friends.decorate_with_friends(self.batch_lookup, search_results)
             logging.info("Decorating with friends-attending took %s seconds", time.time() - a)
             a = time.time()
             rsvp.decorate_with_rsvps(self.batch_lookup, search_results)
