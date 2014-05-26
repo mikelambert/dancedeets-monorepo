@@ -264,6 +264,7 @@ def get_user_from_cookie(cookies, app_id, app_secret):
         # if it's not an int, it's likely to be our encoded json string we want
         pass
 
+    # TODO(lambert): LOGIN: If we pass in the access_token from the client, we dont need to query to get the code here...
     response = parse_signed_request(cookie, app_secret)
     import logging
     import datetime
@@ -315,6 +316,7 @@ def get_user_from_cookie(cookies, app_id, app_secret):
           if 'expires' in parsed_response:
               expires_time = datetime.datetime.now() + datetime.timedelta(seconds=int(parsed_response["expires"][-1]))
     
+    # TODO(lambert): LOGIN: Do a sanity check that this access token belongs to this user? Every time??
     return dict(
         uid = response["user_id"],
         access_token = access_token,
