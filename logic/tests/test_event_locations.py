@@ -6,8 +6,8 @@ from google.appengine.ext import testbed
 
 from events import eventdata
 import fb_api
-import fb_api_stub
 from logic import event_locations
+from test_utils import fb_api_stub
 
 MIKE_ID = '701004'
 USER_ID = '1000'

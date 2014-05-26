@@ -1,8 +1,8 @@
 
 import unittest
-import fb_api_stub
 
 from logic import thing_scraper
+from test_utils import fb_api_stub
 
 class TestSourceCreatingEvent(unittest.TestCase):
     def runTest(self):

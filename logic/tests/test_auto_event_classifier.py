@@ -5,9 +5,9 @@ import unittest
 from google.appengine.ext import testbed
 
 import fb_api
-import fb_api_stub
 from logic import event_auto_classifier
 from logic import event_classifier
+from test_utils import fb_api_stub
 
 
 class TestClassifier(unittest.TestCase):
