@@ -614,6 +614,7 @@ judge_keywords = [
     u'teisėjai', # lithuanian judges
     'tuomaristo', # jury finnish
     'jueces', # spanish judges
+    'juriu', # romanian judges
     'giuria', # jury italian
     u'評審', # chinese judges
     u'評判', # chinese judges
