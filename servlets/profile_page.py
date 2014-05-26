@@ -1,5 +1,6 @@
 import re
 import base_servlet
+import fb_api
 from profiles import profile
 from profiles import tags
 
@@ -7,11 +8,11 @@ class BaseProfileHandler(base_servlet.BaseRequestHandler):
     def initialize(self, request, response):
         super(BaseProfileHandler, self).initialize(request, response)
         self.profile_username = re.match(r'/profile/([^/]+)', self.request.path).group(1)
-        self.batch_lookup.lookup_profile(self.profile_username)
+        self.fbl.request(fb_api.LookupProfile, self.profile_username)
         self.display['profile_username'] = self.profile_username
 
     def get_profile_user(self):
-        return self.batch_lookup.data_for_profile(self.profile_username)
+        return self.fbl.fetched_data(fb_api.LookupProfile, self.profile_username)
 
 class ProfileHandler(BaseProfileHandler):
     def requires_login(self):

@@ -5,6 +5,7 @@ import urllib2
 
 import base_servlet
 from events import eventdata
+import fb_api
 from logic import potential_events
 from logic import thing_db
 from logic import thing_scraper
@@ -25,10 +26,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             source_id = get_id_from_url(self.request.get('source_url'))
         elif self.request.get('source_id'):
             source_id = self.request.get('source_id')
-        self.batch_lookup.lookup_thing_feed(source_id)
-        self.finish_preload()
-
-        fb_source = self.batch_lookup.data_for_thing_feed(source_id)
+        fb_source = self.fbl.get(fb_api.LookupThingFeed, source_id)
 
         real_source_id = fb_source['info']['id']
         s = thing_db.create_source_for_id(real_source_id, fb_source)
@@ -59,10 +57,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
     def post(self):
         source_id = self.request.get('source_id')
-        self.batch_lookup.lookup_thing_feed(source_id, allow_cache=False)
-        self.finish_preload()
+        fb_source = self.fbl.get(fb_api.LookupThingFeed, source_id, allow_cache=False)
 
-        s = thing_db.create_source_for_id(source_id, self.batch_lookup.data_for_thing_feed(source_id))
+        s = thing_db.create_source_for_id(source_id, fb_source)
 
         if self.request.get('delete'):
             s.delete()

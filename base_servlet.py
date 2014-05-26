@@ -285,9 +285,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
     def is_login_page(self):
         return False
 
-    def current_user(self):
-        return self.fb_user
-
     def finish_preload(self):
         self.batch_lookup.finish_loading()
         self.fbl.batch_fetch()

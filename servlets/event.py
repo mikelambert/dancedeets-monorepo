@@ -10,6 +10,8 @@ from google.appengine.ext import deferred
 
 import base_servlet
 from events import eventdata
+import fb_api
+import locations
 from logic import add_entities
 from logic import backgrounder
 from logic import event_auto_classifier
@@ -18,8 +20,6 @@ from logic import event_locations
 from logic import event_updates
 from logic import potential_events
 from logic import rsvp
-import fb_api
-import locations
 import smemcache
 from util import dates
 from util import urls
@@ -28,7 +28,6 @@ PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
 
 class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
     valid_rsvp = ['attending', 'maybe', 'declined']
-
 
     def post(self):
         self.finish_preload()
@@ -75,10 +74,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         if not self.request.path.endswith('/'):
             return self.redirect(urls.fb_relative_event_url(event_id), permanent=True)
 
-        self.batch_lookup.lookup_event(event_id)
-        self.finish_preload()
-
-        event_info = self.batch_lookup.data_for_event(event_id)
+        event_info = self.fbl.get(fb_api.LookupEvent, event_id)
         if event_info['empty']:
             self.response.out.write('This event was %s.' % event_info['empty'])
             return
@@ -116,13 +112,13 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             event_id = get_id_from_url(self.request.get('event_url'))
         elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
-        self.batch_lookup.lookup_event(event_id, allow_cache=False)
-        self.batch_lookup.lookup_event_attending(event_id, allow_cache=False)
+        self.fbl.request(fb_api.LookupEvent, event_id, allow_cache=False)
+        self.fbl.request(fb_api.LookupEventAttending, event_id, allow_cache=False)
         self.finish_preload()
 
         try:
-            fb_event = self.batch_lookup.data_for_event(event_id)
-            fb_event_attending = self.batch_lookup.data_for_event_attending(event_id)
+            fb_event = self.fbl.fetched_data(fb_api.LookupEvent, event_id)
+            fb_event_attending = self.fbl.fetched_data(fb_api.LookupEventAttending, event_id)
         except fb_api.NoFetchedDataException:
             return self.show_barebones_page(event_id)
 
@@ -134,14 +130,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         owner_location = None
         if 'owner' in fb_event['info']:
             owner_id = fb_event['info']['owner']['id']
-            new_batch_lookup = self.batch_lookup.copy(allow_cache=False)
-            new_batch_lookup.lookup_profile(owner_id)
-            new_batch_lookup.finish_loading()
-            combined_owner = None
+            self.fbl.allow_cache = False
             try:
-                combined_owner = new_batch_lookup.data_for_profile(owner_id)
+                combined_owner = self.fbl.get(fb_api.LookupProfile, owner_id)
             except fb_api.NoFetchedDataException:
-                pass
+                combined_owner = None
             if combined_owner and not combined_owner['empty']:
                 owner = combined_owner['profile']
                 if 'location' in owner:
@@ -239,15 +232,12 @@ class AddHandler(base_servlet.BaseRequestHandler):
             event_id = self.request.get('event_id')
         if event_id:
             logging.info("Showing page for adding event %s", event_id)
-            self.batch_lookup.lookup_event(event_id)
-            self.finish_preload()
-            fb_event = self.batch_lookup.data_for_event(event_id)
+            fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
         else:
             logging.info("Showing page for selecting an event to add")
-            self.batch_lookup.lookup_user_events(self.fb_uid)
-            self.finish_preload()
             try:
-                results_json = self.batch_lookup.data_for_user_events(self.fb_uid)['all_event_info']['data']
+                user_events = self.fbl.get(fb_api.LookupUserEvents, self.fb_uid)
+                results_json = user_events['all_event_info']['data']
                 events = list(reversed(sorted(results_json, key=lambda x: x.get('start_time'))))
             except fb_api.NoFetchedDataException, e:
                 logging.error("Could not load event info for user: %s", e)
@@ -293,12 +283,10 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
         # TODO: There are some events with city_name=Unknown and a valid latitude that are just not near any major metropolis. They are undercounted and have "No Scene", which we may want to fix at some point.
         db_events = eventdata.DBEvent.gql("WHERE city_name = :1 AND latitude = :2 and anywhere != :3", 'Unknown', None, True)
-        for e in db_events:
-            self.batch_lookup.lookup_event(e.fb_event_id)
-        self.finish_preload()
+        self.fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
         template_events = []
         for e in sorted(db_events, key=lambda x: x.start_time):
-            fb_event = self.batch_lookup.data_for_event(e.fb_event_id)
+            fb_event = self.fbl.fetched_data(fb_api.LookupEvent, e.fb_event_id)
             if not fb_event['empty']:
                 template_events.append(dict(fb_event=fb_event, db_event=e))
         self.display['events'] = template_events
@@ -327,16 +315,15 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         has_more_events = total_potential_events > number_of_events
         potential_event_notadded_ids = potential_event_notadded_ids[:number_of_events]
 
-        for e in potential_event_notadded_ids:
-            self.batch_lookup.lookup_event(e)
-            self.batch_lookup.lookup_event_attending(e)
+        self.fbl.request_multi(fb_api.LookupEvent, potential_event_notadded_ids)
+        self.fbl.request_multi(fb_api.LookupEventAttending, potential_event_notadded_ids)
         self.finish_preload()
 
         template_events = []
         for e in potential_event_notadded_ids:
             try:
-                fb_event = self.batch_lookup.data_for_event(e)
-                fb_event_attending = self.batch_lookup.data_for_event_attending(e)
+                fb_event = self.fbl.fetched_data(fb_api.LookupEvent, e)
+                fb_event_attending = self.fbl.fetched_data(fb_api.LookupEventAttending, e)
             except KeyError:
                 logging.error("Failed to load event id %s", e)
                 continue
