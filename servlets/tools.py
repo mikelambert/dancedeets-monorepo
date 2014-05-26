@@ -1,11 +1,11 @@
 #Leaving these in-but-commented-out for future ease-of-hacking:
-#import logging
+import logging
 #import time
 import webapp2
 #from google.appengine.ext import db
 #from google.appengine.ext import deferred
 
-#from mapreduce import context
+from mapreduce import context
 #from mapreduce import control
 from mapreduce import operation as op
 #from mapreduce import util
@@ -16,7 +16,7 @@ from events import eventdata
 import fb_api
 from logic import auto_add
 #from logic import event_classifier
-from logic import mr_dump
+#from logic import mr_dump
 #from logic import mr_prediction
 #from logic import potential_events
 #from logic import thing_db
@@ -47,9 +47,48 @@ def map_delete_cached_with_wrong_user_id(fbo):
         yield op.db.Delete(fbo)
 
 
+def count_private_events(batch_lookup, e_list):
+    for e in e_list:
+        batch_lookup.lookup_event(e.fb_event_id)
+    batch_lookup.finish_loading()
+
+    ctx = context.get()
+
+    for e in e_list:
+        try:
+            fbe = batch_lookup.data_for_event(e.fb_event_id)
+            if 'info' not in fbe:
+                logging.error("skipping row2 for event id %s", e.fb_event_id)
+                continue
+            attendees = fb_api._all_members_count(fbe)
+            privacy = fbe['info'].get('privacy', 'OPEN')
+            if privacy != 'OPEN' and attendees > 60:
+                ctx.counters.increment('nonpublic-and-large')
+            ctx.counters.increment('privacy-%s' % privacy)
+
+            yield e.fb_event_id, privacy, attendees
+        except fb_api.NoFetchedDataException:
+            logging.error("skipping row for event id %s", e.fb_event_id)
+
+from util import fb_mapreduce
+map_dump_private_events = fb_mapreduce.mr_wrap(count_private_events)
+
+def mr_private_events(batch_lookup):
+    fb_mapreduce.start_map(
+        batch_lookup.copy(allow_cache=False),
+        'Dump Private Events',
+        'servlets.tools.map_dump_private_events',
+        'events.eventdata.DBEvent',
+        handle_batch_size=80,
+        queue=None,
+        filters=[('search_time_period', '=', eventdata.TIME_FUTURE)],
+        output_writer_spec='mapreduce.output_writers.BlobstoreOutputWriter',
+        extra_mapper_params={'mime_type': 'text/plain'},
+    )
+
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp2.RequestHandler):
     def get(self):
-        mr_dump.mr_dump_events(self.batch_lookup)
+        mr_private_events(self.batch_lookup)
 
 class AutoAddPotentialEventsHandler(tasks.BaseTaskFacebookRequestHandler):
     def get(self):
