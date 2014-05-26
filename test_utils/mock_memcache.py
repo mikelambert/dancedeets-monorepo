@@ -1,6 +1,5 @@
+
 _cache = {}
-
-
 
 def set(key, value, time=0):
   set_multi({key:value},time)
