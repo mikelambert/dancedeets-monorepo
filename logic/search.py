@@ -11,6 +11,7 @@ from google.appengine.ext import db
 from google.appengine.ext import deferred
 
 from events import eventdata
+import fb_api
 import locations
 from util import dates
 from util import timings
@@ -227,8 +228,7 @@ class SearchQuery(object):
         db_events = eventdata.get_cached_db_events(event_ids)
         return db_events
 
-    def get_search_results(self, batch_lookup, new_search=True):
-        batch_lookup = batch_lookup.copy()
+    def get_search_results(self, fbl, new_search=True):
         db_events = None
         a = time.time()
         if self.time_period == eventdata.TIME_FUTURE and not new_search:
@@ -252,16 +252,15 @@ class SearchQuery(object):
 
         # Now look up contents of each event...
         a = time.time()
-        for db_event in db_events:
-            batch_lookup.lookup_event(db_event.fb_event_id)
-        batch_lookup.finish_loading()
+        fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
+        fbl.batch_fetch()
         logging.info("Loading fb data took %s seconds", time.time() - a)
 
         # ...and do filtering based on the contents inside our app
         a = time.time()
         search_results = []
         for db_event in db_events:
-            fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
+            fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
             if not fb_event['empty'] and self.matches_fb_db_event(db_event, fb_event):
                 if 'info' not in fb_event:
                     logging.warning('%s', fb_event)

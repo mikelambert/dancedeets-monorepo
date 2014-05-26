@@ -118,18 +118,19 @@ class BaseRequestHandler(BareBaseRequestHandler):
         #TODO(lambert): change fb api to not request access token, and instead pull it from the user
         # only request the access token from FB when it's been longer than a day, and do it out-of-band to fetch-and-update-db-and-memcache
 
+        self.fb_user = None
+        self.fb_uid = None
+        self.user = None
+        self.access_token = None
+
         args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['app_id'], FACEBOOK_CONFIG['secret_key'])
         # We should return args if we're signed in, one way or the other
         # though we may not have gotten an access_token this way if the received cookie was the same as the previous request
         if not args:
-            self.fb_uid = None
-            self.access_token = None
-            self.user = None
             return
 
         self.fb_uid = int(args['uid'])
         self.user = users.User.get_cached(str(self.fb_uid))
-        self.fb_user = None
 
         # if we don't have a user and don't have a token, it means the user just signed-up, but double-refreshed.
         # so the second request doesn't have a user. so let it be logged-out, as we continue on...
@@ -140,6 +141,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.access_token = None
             self.user = None
             return
+            
+        fbl = fb_api.FBLookup(self.fb_uid, args['access_token'])
+        self.fb_user = fbl.get(fb_api.LookupUser, self.fb_uid)
 
         # if we don't have a user but do have a token, the user has granted us permissions, so let's construct the user now
         if not self.user:
@@ -233,8 +237,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 logging.error("Do not have a self.user at point B")
             allow_cache = bool(int(self.request.get('allow_cache', 1)))
             self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.access_token, allow_cache=allow_cache)
+            self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
         else:
-            self.batch_lookup = fb_api.CommonBatchLookup(None, self.access_token)
+            self.batch_lookup = fb_api.CommonBatchLookup(None, None)
+            self.fbl = fb_api.FBLookup(None, None)
         if self.user:
             self.display['date_human_format'] = self.user.date_human_format
             self.display['duration_human_format'] = self.user.duration_human_format
@@ -281,6 +287,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
     def finish_preload(self):
         self.batch_lookup.finish_loading()
+        self.fbl.batch_fetch()
 
     def render_template(self, name):
         self.display['fb_user'] = self.fb_user

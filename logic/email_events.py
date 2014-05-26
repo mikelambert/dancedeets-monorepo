@@ -4,6 +4,7 @@ import logging
 from google.appengine.api import mail
 
 from events import eventdata
+import fb_api
 import locations
 from logic import friends
 from logic import rsvp
@@ -33,7 +34,8 @@ def email_for_user(user, batch_lookup, should_send=True):
     # search for relevant events
     bounds = locations.get_location_bounds(user_location, distance_in_km)
     query = search.SearchQuery(time_period=eventdata.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
-    search_results = query.get_search_results(batch_lookup)
+    fbl = fb_api.FBLookup(batch_lookup.fb_uid, batch_lookup.access_token)
+    search_results = query.get_search_results(fbl)
     # Don't send email...
     if not search_results:
         return
