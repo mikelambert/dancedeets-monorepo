@@ -57,6 +57,12 @@ def _inner_make_event_findable_for(db_event, fb_dict):
     else:
         db_event.owner_fb_uid = None
 
+    fb_data = fb_dict.get('fql_info', {}).get('data')
+    if fb_data:
+        db_event.attending_count = fb_data[0].get('all_members_count')
+    else:
+        db_event.attending_count = None
+
     db_event.start_time = dates.parse_fb_start_time(fb_dict)
     db_event.end_time = dates.parse_fb_end_time(fb_dict)
     db_event.search_time_period = _event_time_period(db_event)
