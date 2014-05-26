@@ -271,8 +271,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         return False
 
     def dispatch(self):
-           if self.run_handler:
-               super(BaseRequestHandler, self).dispatch()
+        if self.run_handler:
+            super(BaseRequestHandler, self).dispatch()
 
     def requires_login(self):
         return True
