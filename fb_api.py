@@ -222,7 +222,7 @@ class NoFetchedDataException(Exception):
 class LookupType(object):
 
     @classmethod
-    def _url(cls, path, access_token, fields=None):
+    def url(cls, path, access_token, fields=None):
         url_args = {}
         if fields:
             url_args['fields'] = ','.join(fields)
@@ -231,7 +231,7 @@ class LookupType(object):
         return 'https://graph.facebook.com/%s?%s' % (path, urllib.urlencode(url_args))
 
     @classmethod
-    def _fql_url(cls, fql, access_token):
+    def fql_url(cls, fql, access_token):
         url_args = dict(q=fql)
         if access_token:
             url_args['access_token'] = access_token
@@ -257,7 +257,7 @@ class LookupProfile(LookupType):
     @classmethod
     def get_lookups(cls, object_id, access_token):
         return dict(
-            profile=cls._url('%s' % object_id, None),
+            profile=cls.url('%s' % object_id, None),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -267,10 +267,10 @@ class LookupUser(LookupType):
     @classmethod
     def get_lookups(cls, object_id, access_token):
         return dict(
-            profile=cls._url('%s' % object_id, access_token),
-            friends=cls._url('%s/friends' % object_id, access_token),
-            permissions=cls._url('%s/permissions' % object_id, access_token),
-            rsvp_for_future_events=cls._url('%s/events?since=yesterday' % object_id, access_token),
+            profile=cls.url('%s' % object_id, access_token),
+            friends=cls.url('%s/friends' % object_id, access_token),
+            permissions=cls.url('%s/permissions' % object_id, access_token),
+            rsvp_for_future_events=cls.url('%s/events?since=yesterday' % object_id, access_token),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -283,7 +283,7 @@ class LookupUserEvents(LookupType):
     def get_lookups(cls, object_id, access_token):
         today = int(time.mktime(datetime.date.today().timetuple()[:9]))
         return dict(
-            all_event_info=cls._fql_url(ALL_EVENTS_FQL % (object_id, today), access_token),
+            all_event_info=cls.fql_url(ALL_EVENTS_FQL % (object_id, today), access_token),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -293,7 +293,7 @@ class LookupFriendList(LookupType):
     @classmethod
     def get_lookups(cls, object_id, access_token):
         return dict(
-            friend_list=cls._url('%s/members' % object_id, access_token),
+            friend_list=cls.url('%s/members' % object_id, access_token),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -303,8 +303,8 @@ class LookupEvent(LookupType):
     @classmethod
     def get_lookups(cls, object_id, access_token):
         return dict(
-            info=cls._url(object_id, access_token, fields=OBJ_EVENT_FIELDS),
-            fql_info=cls._fql_url(EXTRA_EVENT_INFO_FQL % (object_id), access_token),
+            info=cls.url(object_id, access_token, fields=OBJ_EVENT_FIELDS),
+            fql_info=cls.fql_url(EXTRA_EVENT_INFO_FQL % (object_id), access_token),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -331,7 +331,7 @@ class LookupEventAttending(LookupType):
     @classmethod
     def get_lookups(cls, object_id, access_token):
         return dict(
-            attending=cls._url('%s/attending' % object_id, access_token),
+            attending=cls.url('%s/attending' % object_id, access_token),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -341,10 +341,10 @@ class LookupEventMembers(LookupType):
     @classmethod
     def get_lookups(cls, object_id, access_token):
         return dict(
-            attending=cls._url('%s/attending' % object_id, access_token),
-            maybe=cls._url('%s/maybe' % object_id, access_token),
-            declined=cls._url('%s/declined' % object_id, access_token),
-            noreply=cls._url('%s/noreply' % object_id, access_token),
+            attending=cls.url('%s/attending' % object_id, access_token),
+            maybe=cls.url('%s/maybe' % object_id, access_token),
+            declined=cls.url('%s/declined' % object_id, access_token),
+            noreply=cls.url('%s/noreply' % object_id, access_token),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -354,7 +354,7 @@ class LookupFQL(LookupType):
     @classmethod
     def get_lookups(cls, object_id, access_token):
         return dict(
-            fql=cls._fql_url(object_id, access_token),
+            fql=cls.fql_url(object_id, access_token),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -364,8 +364,8 @@ class LookupThingFeed(LookupType):
     @classmethod
     def get_lookups(cls, object_id, access_token):
         return dict(
-            info=cls._url('%s' % object_id, access_token),
-            feed=cls._url('%s/feed' % object_id, access_token),
+            info=cls.url('%s' % object_id, access_token),
+            feed=cls.url('%s/feed' % object_id, access_token),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -502,6 +502,20 @@ class FBAPI(CacheSystem):
         urlfetch.make_fetch_call(rpc, url)
         self.fb_fetches += 1
         return rpc
+
+    def post(self, path, args, post_args):
+        if not args: args = {}
+        if self.access_token:
+            if post_args is not None:
+                post_args["access_token"] = self.access_token
+            else:
+                args["access_token"] = self.access_token
+        post_data = None if post_args is None else urllib.urlencode(post_args)
+        f = urllib.urlopen(
+                "https://graph.facebook.com/" + path + "?" +
+                urllib.urlencode(args), post_data)
+        result = f.read()
+        return result
 
     @staticmethod
     def _map_rpc_to_data(object_key, object_rpc_name, object_rpc):

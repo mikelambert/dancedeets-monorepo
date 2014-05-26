@@ -1,3 +1,4 @@
+import fb_api
 from logic import backgrounder
 
 class RSVPManager(object):
@@ -17,8 +18,9 @@ class RSVPManager(object):
             rsvp = 'maybe'
         return rsvp
 
-    def set_rsvp_for_event(self, fb_graph, event_id, rsvp_status):
-        result = fb_graph.request('%s/%s' % (event_id, rsvp_status), post_args={})
+    def set_rsvp_for_event(self, access_token, event_id, rsvp_status):
+        fb = fb_api.FBAPI(access_token)
+        result = fb.post('%s/%s' % (event_id, rsvp_status), args={}, post_args={})
         backgrounder.load_users([self.batch_lookup.fb_uid], allow_cache=False)
         backgrounder.load_event_attending([event_id], allow_cache=False)
         return result
