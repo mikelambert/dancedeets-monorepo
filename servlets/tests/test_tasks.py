@@ -5,6 +5,7 @@ from google.appengine.ext import testbed
 
 from events import eventdata
 from events import users
+import fb_api
 import main
 from test_utils import fb_api_stub
 
@@ -63,11 +64,21 @@ class TestReloadPastEvents(TestTasks):
     def runTest(self):
         app.get('/tasks/reload_future_events?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
 
+class TestTrackNewUserFriends(TestTasks):
+    def runTest(self):
+        fb_api.FBAPI.results = {
+            'https://graph.facebook.com/fql?q=%0ASELECT+uid+FROM+user%0AWHERE+uid+IN+%28SELECT+uid2+FROM+friend+WHERE+uid1+%3D+701004%29%0AAND+is_app_user+%3D+1%0A&access_token=DUMMY':
+            (200, {
+                "data": [
+                    {"uid": 703278},
+                    {"uid": 823422},
+            ]}),
+        }
+        app.get('/tasks/track_newuser_friends?user_id=%s' % MIKE_ID)
+
 """
 def test_2():
     print app.get('/tasks/load_users?user_id=701004&user_ids=701004')
-def test_4():
-    print app.get('/tasks/track_newuser_friends?user_id=701004')
 def test_5():
     print app.get('/tasks/reload_all_users?user_id=701004')
 def test_8():

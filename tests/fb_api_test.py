@@ -1,13 +1,11 @@
 #!/usr/bin/python
 
 import unittest
-import json
 import re
-
-from google.appengine.api import urlfetch
 
 import mock_memcache
 import fb_api
+from test_utils import fb_api_stub
 
 class TestLookupUser(unittest.TestCase):
     def runTest(self):
@@ -93,45 +91,20 @@ class TestDBCache(unittest.TestCase):
         db.save_objects({user_key: user_modified})
         self.assertEqual(db.db_updates, 2)
 
-class FakeRequest(object):
-    def __init__(self, url):
-        self._url = url
-    def url(self):
-        return self._url
-
-class FakeRPC(object):
-    def __init__(self, url, fb_api_results):
-        self.url = url
-        self.fb_api_results = fb_api_results
-        self.request = FakeRequest(url)
-
-    def get_result(self):
-        if self.url in self.fb_api_results:
-            status_code, content = self.fb_api_results[self.url]
-            return FakeResult(status_code, content)
-        else:
-            raise urlfetch.DownloadError('no backend data found')
-
-class FakeResult(object):
-    def __init__(self, status_code, content):
-        self.status_code = status_code
-        self.content = json.dumps(content)
-
 class TestFBAPI(unittest.TestCase):
     def setUp(self):
-        self.rpc_for_url = fb_api.FBAPI._create_rpc_for_url
-        self.fb_api_results = {}
-        fb_api.FBAPI._create_rpc_for_url = lambda fbapi_self, url: FakeRPC(url, self.fb_api_results)
+        self.fb_api = fb_api_stub.Stub()
+        self.fb_api.activate()
 
     def tearDown(self):
-        fb_api.FBAPI._create_rpc_for_url = self.rpc_for_url
+        self.fb_api.deactivate()
 
     def runTest(self):
         fb = fb_api.FBAPI('access_token')
         d = fb.fetch_keys([])
         self.assertEqual(d, {})
 
-        self.fb_api_results = {
+        fb_api.FBAPI.results = {
             'https://graph.facebook.com/uid?access_token=access_token': (200, {}),
             'https://graph.facebook.com/uid/events?since=yesterday?access_token=access_token': (200, {}),
             'https://graph.facebook.com/uid/friends?access_token=access_token': (200, {}),
@@ -149,7 +122,7 @@ class TestFBAPI(unittest.TestCase):
             }}
         )
 
-        self.fb_api_results = {
+        fb_api.FBAPI.results = {
             'https://graph.facebook.com/uid?access_token=access_token': (500, {}),
             'https://graph.facebook.com/uid/events?since=yesterday?access_token=access_token': (200, {}),
             'https://graph.facebook.com/uid/friends?access_token=access_token': (200, {}),
@@ -160,7 +133,7 @@ class TestFBAPI(unittest.TestCase):
         # We don't return incomplete objects at all, if a component errors-out on 500
         self.assertEqual(d, {})
 
-        self.fb_api_results = {
+        fb_api.FBAPI.results = {
             'https://graph.facebook.com/uid?access_token=access_token': (200, False),
             'https://graph.facebook.com/uid/events?since=yesterday?access_token=access_token': (200, False),
             'https://graph.facebook.com/uid/friends?access_token=access_token': (200, False),
@@ -174,7 +147,7 @@ class TestFBAPI(unittest.TestCase):
             }}
         )
 
-        self.fb_api_results = {
+        fb_api.FBAPI.results = {
             'https://graph.facebook.com/uid?access_token=access_token': (200, {'error_code': 100}),
             'https://graph.facebook.com/uid/events?since=yesterday?access_token=access_token': (200, {'error_code': 100}),
             'https://graph.facebook.com/uid/friends?access_token=access_token': (200, {'error_code': 100}),
@@ -190,17 +163,16 @@ class TestFBAPI(unittest.TestCase):
 
 class TestFBLookup(unittest.TestCase):
     def setUp(self):
-        self.rpc_for_url = fb_api.FBAPI._create_rpc_for_url
-        self.fb_api_results = {}
-        fb_api.FBAPI._create_rpc_for_url = lambda fbapi_self, url: FakeRPC(url, self.fb_api_results)
+        self.fb_api = fb_api_stub.Stub()
+        self.fb_api.activate()
 
     def tearDown(self):
-        fb_api.FBAPI._create_rpc_for_url = self.rpc_for_url
+        self.fb_api.deactivate()
 
     def runTest(self):
         fbl = fb_api.FBLookup('uid', 'access_token')
 
-        self.fb_api_results = {
+        fb_api.FBAPI.results = {
             'https://graph.facebook.com/uid?access_token=access_token': (200, {}),
             'https://graph.facebook.com/uid/events?since=yesterday?access_token=access_token': (200, {}),
             'https://graph.facebook.com/uid/friends?access_token=access_token': (200, {}),
@@ -218,7 +190,7 @@ class TestFBLookup(unittest.TestCase):
         )
 
         # Rely on cache to fulfill this request now
-        self.fb_api_results = {}
+        fb_api.FBAPI.results = {}
         fbl.clear_local_cache()
         result = fbl.get(fb_api.LookupUser, 'uid')
         self.assertEqual(result,

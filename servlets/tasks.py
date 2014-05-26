@@ -48,14 +48,17 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
 
 
 class LookupAppFriendUsers(fb_api.LookupType):
-    def get_lookups(self, object_id):
-        return dict(info=GET_FRIEND_APP_USERS % object_id)
+    @classmethod
+    def get_lookups(cls, object_id, access_token):
+        return dict(info=cls.fql_url(GET_FRIEND_APP_USERS % object_id, access_token))
 
 class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         fb = fb_api.FBAPI(self.batch_lookup.access_token)
-        fb_result = fb.fetch_keys([fb_api.generate_key(LookupAppFriendUsers, self.fb_uid)])
-        app_friend_list = fb_result['info']
+        key = fb_api.generate_key(LookupAppFriendUsers, self.fb_uid)
+        fb_result = fb.fetch_keys([key])
+        print fb_result
+        app_friend_list = fb_result[key]['info']
         logging.info("app_friend_list is %s", app_friend_list)
         user_friends = users.UserFriendsAtSignup.get_or_insert(str(self.fb_uid))
         user_friends.registered_friend_ids = [x['uid'] for x in app_friend_list['data']]
