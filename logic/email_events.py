@@ -35,13 +35,16 @@ def email_for_user(user, batch_lookup, should_send=True):
     bounds = locations.get_location_bounds(user_location, distance_in_km)
     query = search.SearchQuery(time_period=eventdata.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
     fbl = fb_api.FBLookup(batch_lookup.fb_uid, batch_lookup.access_token)
+    #TODO(lambert: remove this manual fb_user fetch, when we use the servlet-construct FBLookup
+    fb_user = fbl.request(fb_api.LookupUser, fbl.fb_uid)
+
     search_results = query.get_search_results(fbl)
     # Don't send email...
     if not search_results:
         return
 
-    friends.decorate_with_friends(batch_lookup, search_results)
-    rsvp.decorate_with_rsvps(batch_lookup, search_results)
+    friends.decorate_with_friends(fbl, search_results)
+    rsvp.decorate_with_rsvps(fbl, search_results)
 
     past_results, present_results, grouped_results = search.group_results(search_results)
     # Don't include results more than a month out in these emails

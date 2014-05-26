@@ -581,6 +581,8 @@ class FBAPI(CacheSystem):
 
 
 def generate_key(cls, object_id):
+    if isinstance(object_id, (set, list, tuple)):
+        raise TypeError("object_id is of incorrect type: %s" % type(object_id))
     new_object_id = str(GRAPH_ID_REMAP.get(str(object_id), str(object_id)))
     return (cls, new_object_id)
 
