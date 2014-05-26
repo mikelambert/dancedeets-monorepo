@@ -206,7 +206,7 @@ class TestFBLookup(unittest.TestCase):
             'https://graph.facebook.com/uid/friends?access_token=access_token': (200, {}),
             'https://graph.facebook.com/uid/permissions?access_token=access_token': (200, {}),
         }
-        result = fbl.fetch(fb_api.LookupUser, 'uid')
+        result = fbl.get(fb_api.LookupUser, 'uid')
         self.assertEqual(result,
             {
                 'empty': None,
@@ -220,7 +220,7 @@ class TestFBLookup(unittest.TestCase):
         # Rely on cache to fulfill this request now
         self.fb_api_results = {}
         fbl.clear_local_cache()
-        result = fbl.fetch(fb_api.LookupUser, 'uid')
+        result = fbl.get(fb_api.LookupUser, 'uid')
         self.assertEqual(result,
             {
                 'empty': None,
@@ -235,7 +235,7 @@ class TestFBLookup(unittest.TestCase):
         user_key = (fb_api.LookupUser, 'uid')
         fbl.m.invalidate_keys([user_key])
         fbl.clear_local_cache()
-        result = fbl.fetch(fb_api.LookupUser, 'uid')
+        result = fbl.get(fb_api.LookupUser, 'uid')
         self.assertEqual(result,
             {
                 'empty': None,
@@ -248,7 +248,7 @@ class TestFBLookup(unittest.TestCase):
 
         # Clear db, still works (because of memcache)
         fbl.clear_local_cache()
-        result = fbl.fetch(fb_api.LookupUser, 'uid')
+        result = fbl.get(fb_api.LookupUser, 'uid')
         fbl.db.invalidate_keys([user_key])
         self.assertEqual(result,
             {
@@ -263,4 +263,4 @@ class TestFBLookup(unittest.TestCase):
         # Clear memcache, now that db is empty, no longer works
         fbl.m.invalidate_keys([user_key])
         fbl.clear_local_cache()
-        self.assertRaises(fb_api.NoFetchedDataException, fbl.fetch, fb_api.LookupUser, 'uid')
+        self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupUser, 'uid')

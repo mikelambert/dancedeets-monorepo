@@ -571,7 +571,8 @@ def generate_key(cls, object_id):
     return (cls, new_object_id)
 
 def break_key(key):
-    return key
+    cls, object_id = key
+    return (cls, object_id)
 
 class FBLookup(object):
     def __init__(self, fb_uid, access_token):
@@ -591,13 +592,9 @@ class FBLookup(object):
         self.fb = FBAPI(self.access_token)
 
     def request(self, cls, object_id, allow_cache=True):
-        key = generate_key(cls, object_id)
-        if allow_cache:
-            self._keys_to_fetch.add(key)
-        else:
-            self._object_keys_to_lookup_without_cache.add(key)
-
-    def request_many(self, cls, object_ids, allow_cache=True):
+        self.request_multi(cls, (object_id,), allow_cache=allow_cache)
+        
+    def request_multi(self, cls, object_ids, allow_cache=True):
         for object_id in object_ids:
             key = generate_key(cls, object_id)
             if allow_cache:
@@ -606,6 +603,12 @@ class FBLookup(object):
                 self._object_keys_to_lookup_without_cache.add(key)
 
     def fetched_data(self, cls, object_id, only_if_updated=False):
+        return self._fetched_data_single(cls, object_id, only_if_updated)
+
+    def fetched_data_multi(self, cls, object_ids, only_if_updated=False):
+        return [self._fetched_data_single(cls, object_id, only_if_updated) for object_id in object_ids]
+
+    def _fetched_data_single(self, cls, object_id, only_if_updated):
         key = generate_key(cls, object_id)
         if (self.force_updated or
               not only_if_updated or
@@ -618,26 +621,33 @@ class FBLookup(object):
             else:
                 raise NoFetchedDataException('Could not find %s' % (key,))
 
-    def fetch(self, cls, object_id):
+    def get(self, cls, object_id):
         self.request(cls, object_id)
-        self.do_fetch()
+        self.batch_fetch()
         return self.fetched_data(cls, object_id)
 
-    def fetch_many(self, cls, object_ids):
-        self.request_many(cls, object_ids)
-        object_map = self.do_fetch()
-        return object_map
+    def get_multi(self, cls, object_ids):
+        self.request_multi(cls, object_ids)
+        self.batch_fetch()
+        return self.fetched_data_multi(cls, object_ids)
 
-    def do_fetch(self):
-        object_map, updated_object_map = self.lookup(self._keys_to_fetch)
+    def batch_fetch(self):
+        object_map, updated_object_map = self._lookup(self._keys_to_fetch)
         self._fetched_objects.update(object_map)
         self._db_updated_objects = set(updated_object_map.keys())
         return object_map
 
+    def invalidate(self, cls, object_id):
+        self.invalidate(cls, (object_id,))
+
+    def invalidate_multi(self, cls, object_ids):
+        self.m.invalidate_keys(cls, object_ids)
+        self.db.invalidate_keys(cls, object_ids)
+
     def clear_local_cache(self):
         self._fetched_objects = {}
         
-    def lookup(self, keys):
+    def _lookup(self, keys):
         all_fetched_objects = {}
         updated_objects = {}
         if self.allow_cache:
