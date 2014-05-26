@@ -3,9 +3,8 @@ from logic import backgrounder
 
 class RSVPManager(object):
 
-    def __init__(self, batch_lookup):
+    def __init__(self, fb_user, batch_lookup):
         self.batch_lookup = batch_lookup
-        fb_user = self.batch_lookup.data_for_user(self.batch_lookup.fb_uid)
         if 'rsvp_for_future_events' in fb_user:
             rsvps_list = fb_user['rsvp_for_future_events']['data']
             self.rsvps = dict((int(x['id']), x['rsvp_status']) for x in rsvps_list)
@@ -27,7 +26,7 @@ class RSVPManager(object):
 
 def decorate_with_rsvps(batch_lookup, search_results):
     if batch_lookup.fb_uid:
-        rsvps = RSVPManager(batch_lookup)
+        rsvps = RSVPManager(self.fb_user, batch_lookup)
         for result in search_results:
             result.rsvp_status = rsvps.get_rsvp_for_event(result.fb_event_id)
     else:

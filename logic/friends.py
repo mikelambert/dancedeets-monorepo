@@ -3,10 +3,10 @@
 # With 100, we seem to stay under the limit and have no real discernable difference in latency (below noise). Probably because our time is dominated by deserialization, not round-trip latency.
 RESULTS_AT_ONCE = 100
 
-def decorate_with_friends(batch_lookup, search_results):
+def decorate_with_friends(fb_user, batch_lookup, search_results):
 
     if len(search_results) > RESULTS_AT_ONCE:
-        decorate_with_friends(batch_lookup, search_results[RESULTS_AT_ONCE:])
+        decorate_with_friends(fb_user, batch_lookup, search_results[RESULTS_AT_ONCE:])
         search_results = search_results[:RESULTS_AT_ONCE]
 
     if batch_lookup.fb_uid: # if logged in
