@@ -7,7 +7,6 @@ from google.appengine.api import mail
 
 from events import eventdata
 from events import users
-import facebook
 import fb_api
 from logic import backgrounder
 from logic import fb_reloading
@@ -39,12 +38,12 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         self.user = users.User.get_cached(self.fb_uid)
         if self.user:
             assert self.user.fb_access_token, "Can't execute background task for user %s without access_token" % self.fb_uid
-            self.fb_graph = facebook.GraphAPI(self.user.fb_access_token)
+            self.access_token = self.user.fb_access_token
         else:
-            self.fb_graph = facebook.GraphAPI(None)
+            self.access_token = None
         self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
         force_updated = bool(int(self.request.get('force_updated', 0)))
-        self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=self.allow_cache, force_updated=force_updated)
+        self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.access_token, allow_cache=self.allow_cache, force_updated=force_updated)
         return return_value
 
 

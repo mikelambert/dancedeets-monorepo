@@ -123,7 +123,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         # though we may not have gotten an access_token this way if the received cookie was the same as the previous request
         if not args:
             self.fb_uid = None
-            self.fb_graph = facebook.GraphAPI(None) 
+            self.access_token = None
             self.user = None
             return
 
@@ -136,15 +136,14 @@ class BaseRequestHandler(BareBaseRequestHandler):
         if not self.user and not args['access_token']:
             logging.error("We have no user and no access token, but we know they're logged in. Likely due to a double-refresh on the same cookie, for a user who just signed up")
             self.fb_uid = None
-            self.fb_graph = facebook.GraphAPI(None) 
+            self.access_token = None
             self.user = None
             return
 
         # if we don't have a user but do have a token, the user has granted us permissions, so let's construct the user now
         if not self.user:
-            fb_graph = facebook.GraphAPI(args['access_token'])
             from servlets import login
-            batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, fb_graph, allow_cache=False)
+            batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, args['access_token'], allow_cache=False)
             batch_lookup.lookup_user(self.fb_uid)
             batch_lookup.finish_loading()
             fb_user = batch_lookup.data_for_user(self.fb_uid)
@@ -159,13 +158,13 @@ class BaseRequestHandler(BareBaseRequestHandler):
         if not self.user:
             logging.error("We still don't have a user!")
             self.fb_uid = None
-            self.fb_graph = facebook.GraphAPI(None) 
+            self.access_token = None
             self.user = None
             return
 
         logging.info("Logged in uid %s with name %s", self.fb_uid, self.user.full_name)
-        # When we get args, we may have gotten a new acces token, or not...so choose the best we've got
-        self.fb_graph = facebook.GraphAPI(args['access_token'] or (self.user and self.user.fb_access_token))
+        # When we get args, we may have gotten a new access token, or not...so choose the best we've got
+        self.access_token = (args['access_token'] or (self.user and self.user.fb_access_token))
         # If their auth token has changed, then write out the new one
         logging.info("User has token %s, cookie has token %s", self.user.fb_access_token, args['access_token'])
 
@@ -177,7 +176,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         ):
             logging.info("Putting new access token into db/memcache")
             self.user = users.User.get_by_key_name(str(self.fb_uid))
-            self.user.fb_access_token = self.fb_graph.access_token
+            self.user.fb_access_token = self.access_token
             self.user.expired_oauth_token = False
             self.user.put() # this also sets to memcache
 
@@ -227,18 +226,18 @@ class BaseRequestHandler(BareBaseRequestHandler):
             else:
                 self.display['attempt_autologin'] = 0 # do not attempt auto-login. wait for them to re-login
                 self.fb_uid = None
-                self.fb_graph = facebook.GraphAPI(None)
+                self.access_token = None
                 self.user = None
         # If they have a fb_uid, let's do lookups on that behalf (does not require a user)
         if self.fb_uid:
             if not self.user:
                 logging.error("Do not have a self.user at point B")
             allow_cache = bool(int(self.request.get('allow_cache', 1)))
-            self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=allow_cache)
+            self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.access_token, allow_cache=allow_cache)
             # Always look up the user's information for every page view...?
             self.batch_lookup.lookup_user(self.fb_uid)
         else:
-            self.batch_lookup = fb_api.CommonBatchLookup(None, self.fb_graph)
+            self.batch_lookup = fb_api.CommonBatchLookup(None, self.access_token)
         if self.user:
             self.display['date_human_format'] = self.user.date_human_format
             self.display['duration_human_format'] = self.user.duration_human_format

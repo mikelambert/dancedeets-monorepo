@@ -143,7 +143,7 @@ def yield_email_user(batch_lookup, user):
         user.expired_oauth_token = True
         user.put()
         return None
-    return email_events.email_for_user(user, batch_lookup, batch_lookup.fb_graph, should_send=True)
+    return email_events.email_for_user(user, batch_lookup, should_send=True)
 map_email_user = fb_mapreduce.mr_user_wrap(yield_email_user)
 email_user = fb_mapreduce.nomr_wrap(yield_email_user)
 

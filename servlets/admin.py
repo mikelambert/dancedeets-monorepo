@@ -28,11 +28,11 @@ class DeleteFBCacheHandler(webapp2.RequestHandler):
 class FBDataHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
-        fb_graph = None
+        access_token = None
         real_key = self.request.get('key')
         if not real_key:
             fb_uid = self.request.get('fb_uid')
-            batch_lookup = fb_api.CommonBatchLookup(fb_uid, fb_graph)
+            batch_lookup = fb_api.CommonBatchLookup(fb_uid, access_token)
             fbtype = self.request.get('type')
             if fbtype == batch_lookup.OBJECT_PROFILE:
                 key = batch_lookup._profile_key(self.request.get('arg'))

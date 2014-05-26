@@ -12,7 +12,7 @@ import template
 from util import text
 from util import urls
 
-def email_for_user(user, batch_lookup, fb_graph, should_send=True):
+def email_for_user(user, batch_lookup, should_send=True):
     if not user.send_email or not user.email:
         return
     fb_user = batch_lookup.data_for_user(batch_lookup.fb_uid)

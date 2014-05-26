@@ -726,10 +726,10 @@ class BatchLookup(object):
     OBJECT_FQL = 'OBJ_FQL'
     OBJECT_THING_FEED = 'OBJ_THING_FEED'
 
-    def __init__(self, fb_uid, fb_graph, allow_cache=True, force_updated=False):
+    def __init__(self, fb_uid, access_token, allow_cache=True, force_updated=False):
         self.fb_uid = fb_uid
         self.userless_uid = fb_uid
-        self.fb_graph = fb_graph
+        self.access_token = access_token
         self.allow_cache = allow_cache
         self.force_updated = force_updated
         self.allow_memcache_read = self.allow_cache
@@ -743,7 +743,7 @@ class BatchLookup(object):
     def copy(self, allow_cache=None):
         if allow_cache is None:
             allow_cache = self.allow_cache
-        return CommonBatchLookup(self.fb_uid, self.fb_graph, allow_cache=allow_cache, force_updated=self.force_updated)
+        return CommonBatchLookup(self.fb_uid, self.access_token, allow_cache=allow_cache, force_updated=self.force_updated)
 
     def _is_cacheable(self, object_key, this_object):
         fb_uid, object_id, object_type = object_key
@@ -807,7 +807,7 @@ class BatchLookup(object):
 
     def _fql_rpc(self, fql, use_access_token=True):
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
-        url = "https://graph.facebook.com/fql?%s" % urllib.urlencode(dict(q=fql, access_token=self.fb_graph.access_token))
+        url = "https://graph.facebook.com/fql?%s" % urllib.urlencode(dict(q=fql, access_token=self.access_token))
         urlfetch.make_fetch_call(rpc, url)
         self.fb_fetches += 1
         return rpc
@@ -822,7 +822,7 @@ class BatchLookup(object):
                 combiner = '&'
             else:
                 combiner = '?'
-            url += combiner + urllib.urlencode(dict(access_token=self.fb_graph.access_token))
+            url += combiner + urllib.urlencode(dict(access_token=self.access_token))
         self.fb_fetches += 1
         urlfetch.make_fetch_call(rpc, url)
         return rpc

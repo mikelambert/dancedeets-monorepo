@@ -22,7 +22,7 @@ def mr_count_attendees_per_city(batch_lookup):
         mapper_params={
             'entity_kind': 'events.eventdata.DBEvent',
             'batch_lookup_fb_uid': batch_lookup.fb_uid,
-            'batch_lookup_fb_graph_access_token': batch_lookup.fb_graph.access_token,
+            'batch_lookup_access_token': batch_lookup.access_token,
             'batch_lookup_allow_cache': batch_lookup.allow_cache,
 
         },

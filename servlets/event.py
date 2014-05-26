@@ -42,7 +42,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
         rsvp_status = self.request.get('rsvp')
 
         rsvps = rsvp.RSVPManager(self.batch_lookup)
-        success = rsvps.set_rsvp_for_event(self.fb_graph.access_token, event_id, rsvp_status)
+        success = rsvps.set_rsvp_for_event(self.access_token, event_id, rsvp_status)
 
         self.write_json_response(dict(success=success))
 
@@ -152,7 +152,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         # Don't insert object until we're ready to save it...
         e = eventdata.DBEvent.get_by_key_name(event_id)
         if e and e.creating_fb_uid:
-            f = urllib2.urlopen('https://graph.facebook.com/%s?access_token=%s' % (e.creating_fb_uid, self.fb_graph.access_token))
+            f = urllib2.urlopen('https://graph.facebook.com/%s?access_token=%s' % (e.creating_fb_uid, self.access_token))
             json_data = json.loads(f.read())
             creating_user = json_data['name']
         else:
