@@ -8,8 +8,6 @@ from logic import potential_events
 from util import fb_mapreduce
 from util import timings
 
-BROKEN_UIDS = []#"1400235949", "1268158596"]
-
 def mr_load_fb_event(batch_lookup):
     fb_mapreduce.start_map(
         batch_lookup=batch_lookup,
@@ -20,16 +18,16 @@ def mr_load_fb_event(batch_lookup):
     )
 
 @timings.timed
-def yield_load_fb_event(batch_lookup, db_events):
+def yield_load_fb_event(fbl, db_events):
+    fbl = fb_api.massage_fbl(fbl)
     logging.info("loading db events %s", [db_event.fb_event_id for db_event in db_events])
-    for db_event in db_events:
-        batch_lookup.lookup_event(db_event.fb_event_id)
-    batch_lookup.finish_loading()
+    fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
+    fbl.batch_fetch()
     for db_event in db_events:
         try:
-            fb_event = batch_lookup.data_for_event(db_event.fb_event_id, only_if_updated=True)
+            fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id, only_if_updated=True)
             if event_updates.need_forced_update(db_event):
-                fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
+                fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
             if fb_event:
                 logging.info("FBEvent %s changed, will try to save and indexing DBEvent", db_event.fb_event_id)
                 event_updates.update_and_save_event(db_event, fb_event)
@@ -49,12 +47,12 @@ def mr_load_fb_event_attending(batch_lookup):
     )
 
 @timings.timed
-def yield_load_fb_event_attending(batch_lookup, db_events):
+def yield_load_fb_event_attending(fbl, db_events):
+    fbl = fb_api.massage_fbl(fbl)
+    fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events])
+    fbl.batch_fetch()
     for db_event in db_events:
-        batch_lookup.lookup_event_attending(db_event.fb_event_id)
-    batch_lookup.finish_loading()
-    for db_event in db_events:
-        fb_event_attending = batch_lookup.data_for_event_attending(db_event.fb_event_id)
+        fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, db_event.fb_event_id)
         db_event.include_attending_summary(fb_event_attending)
         db_event.put()
 map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
@@ -70,16 +68,14 @@ def mr_load_fb_user(batch_lookup):
     )
 
 @timings.timed
-def yield_load_fb_user(batch_lookup, user):
+def yield_load_fb_user(fbl, user):
+    fbl = fb_api.massage_fbl(fbl)
     if user.expired_oauth_token:
         return
-    # TODO(lambert): figure out why future's data can't be loaded
-    if str(user.fb_uid) in BROKEN_UIDS:
-        return
-    batch_lookup.lookup_user(user.fb_uid)
+    fbl.request(fb_api.LookupUser, user.fb_uid)
     try:
-        batch_lookup.finish_loading()
-        fb_user = batch_lookup.data_for_user(user.fb_uid)
+        fbl.batch_fetch()
+        fb_user = fbl.fetched_data(fb_api.LookupUser, user.fb_uid)
     except (fb_api.ExpiredOAuthToken, fb_api.NoFetchedDataException), e:
         logging.info("Auth token now expired, mark as such: %s", e)
         user.expired_oauth_token_reason = e.args[0]
@@ -132,18 +128,19 @@ def mr_email_user(batch_lookup):
 
 #TODO(lambert): do we really want yield on this one?
 @timings.timed
-def yield_email_user(batch_lookup, user):
-    batch_lookup.lookup_user(user.fb_uid)
-    batch_lookup.lookup_user_events(user.fb_uid)
+def yield_email_user(fbl, user):
+    fbl = fb_api.massage_fbl(fbl)
+    fbl.request(fb_api.LookupUser, user.fb_uid)
+    fbl.request(fb_api.LookupUserEvents, user.fb_uid)
     try:
-        batch_lookup.finish_loading()
+        fbl.batch_fetch()
     except fb_api.ExpiredOAuthToken, e:
         logging.info("Auth token now expired, mark as such: %s", e)
         user.expired_oauth_token_reason = e.args[0]
         user.expired_oauth_token = True
         user.put()
         return None
-    return email_events.email_for_user(user, batch_lookup, should_send=True)
+    return email_events.email_for_user(user, fbl, should_send=True)
 map_email_user = fb_mapreduce.mr_user_wrap(yield_email_user)
 email_user = fb_mapreduce.nomr_wrap(yield_email_user)
 
@@ -156,14 +153,13 @@ def mr_load_potential_events(batch_lookup):
     )
 
 @timings.timed
-def load_potential_events_for_user_ids(batch_lookup, user_ids):
-    # TODO(lambert): figure out why future's data can't be loaded
-    user_ids = set(user_ids).difference(BROKEN_UIDS)
+def load_potential_events_for_user_ids(fbl, user_ids):
+    fbl = fb_api.massage_fbl(fbl)
+    fbl.get_multi(fb_api.LookupUserEvents, user_ids)
+    fbl.batch_fetch()
     for user_id in user_ids:
-        batch_lookup.lookup_user_events(user_id)
-    batch_lookup.finish_loading()
-    for user_id in user_ids:
-        potential_events.get_potential_dance_events(batch_lookup, user_id)
+        user_events = fbl.fetched_data(fb_api.LookupUserEvents, user_id)
+        potential_events.get_potential_dance_events(fbl, user_events)
 
 def yield_load_potential_events(batch_lookup, user):
     if user.expired_oauth_token:

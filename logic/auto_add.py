@@ -12,17 +12,17 @@ from logic import event_locations
 from logic import potential_events
 from util import fb_mapreduce
 
-def classify_events(batch_lookup, pe_list):
-    for pe in pe_list:
-        batch_lookup.lookup_event(pe.fb_event_id)
-        #batch_lookup.lookup_event_attending(pe.fb_event_id)
+def classify_events(fbl, pe_list):
+    fbl = fb_api.massage_fbl(fbl)
+    fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
+    #fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in pe_list])
     
-    batch_lookup.finish_loading()
+    fbl.batch_fetch()
 
     results = []
     for pe in pe_list:
         try:
-            fb_event = batch_lookup.data_for_event(pe.fb_event_id)
+            fb_event = fbl.fetched_data(fb_api.LookupEvent, pe.fb_event_id)
         except fb_api.NoFetchedDataException:
             continue
         if fb_event['empty']:
@@ -34,7 +34,7 @@ def classify_events(batch_lookup, pe_list):
             location_info = event_locations.LocationInfo(fb_event)
             result = '+%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, location_info.exact_from_event, location_info.final_city, location_info.final_city != None, location_info.fb_address, fb_event['info'].get('name', '')))
             try:
-                add_entities.add_update_event(pe.fb_event_id, 0, batch_lookup, creating_method=eventdata.CM_AUTO)
+                add_entities.add_update_event(pe.fb_event_id, 0, fbl, creating_method=eventdata.CM_AUTO)
                 pe2 = potential_events.PotentialEvent.get_by_key_name(str(pe.fb_event_id))
                 pe2.looked_at = True
                 pe2.auto_looked_at = True

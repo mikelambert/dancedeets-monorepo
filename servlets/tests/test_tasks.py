@@ -54,6 +54,13 @@ class TestLoadEvents(TestTasks):
 
 class TestLoadEventAttending(TestTasks):
     def runTest(self):
+        fb_api.FBAPI.results = {
+            'https://graph.facebook.com/299993043349170/attending?access_token=DUMMY': (200, {
+                "data": [
+                    {"uid": 703278},
+                    {"uid": 823422},
+            ]})
+        }
         app.get('/tasks/load_event_attending?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
 
 class TestReloadFutureEvents(TestTasks):

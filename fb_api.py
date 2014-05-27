@@ -38,6 +38,13 @@ all_members_count
 FROM event WHERE eid = %s
 """
 
+#TODO(lambert): remove once the full conversion is complete
+def massage_fbl(fbl):
+    if isinstance(fbl, BatchLookup):
+        return FBLookup(fbl.fb_uid, fbl.access_token)
+    else:
+        return fbl
+
 #TODO(lambert): handle these remaps correctly.
 # BatchLookup: Error code from FB server: {u'error': {u'message': u'(#21) Page ID 220841031315396 was migrated to page ID 158188404247583.  Please update your API calls to the new ID', u'code': 21, u'type': u'OAuthException'}}
 # Ideally by rewriting the Source object in the database, but possibly by just doing a re-fetch and logging an error?

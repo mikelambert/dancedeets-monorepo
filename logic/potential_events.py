@@ -119,13 +119,11 @@ def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, 
             thing_db.increment_num_potential_events(source.graph_id)
         thing_db.increment_num_all_events(source.graph_id)
 
-def get_potential_dance_events(batch_lookup, user_id):
-    try:
-        results_json = batch_lookup.data_for_user_events(user_id)['all_event_info']['data']
-        event_ids = [str(x['eid']) for x in sorted(results_json, key=lambda x: x.get('start_time'))]
-    except fb_api.NoFetchedDataException:
-        event_ids = []
+def get_potential_dance_events(fbl, fb_user_events):
+    results_json = fb_user_events['all_event_info']['data']
+    event_ids = [str(x['eid']) for x in sorted(results_json, key=lambda x: x.get('start_time'))]
 
+    user_id = fbl.fb_uid
     logging.info("For user id %s, found %s invited events %s", user_id, len(event_ids), event_ids)
 
     # TODO(lambert): instead of this, perhaps we want to store the "previous list of ids from this users invites", or compare versus the previous all_event_info object?
@@ -146,17 +144,16 @@ def get_potential_dance_events(batch_lookup, user_id):
     source.put()
 
     logging.info("Going to look up %s events", len(event_ids))
-    second_batch_lookup = batch_lookup.copy(allow_cache=True)
+    fbl.allow_cache = True
 
-    for event_id in event_ids:
-        second_batch_lookup.lookup_event(event_id)
-        second_batch_lookup.lookup_event_attending(event_id)
-    second_batch_lookup.finish_loading()
+    fbl.request_multi(fb_api.LookupEvent, event_ids)
+    fbl.request_multi(fb_api.LookupEventAttending, event_ids)
+    fbl.batch_fetch()
 
     for event_id in event_ids:
         try:
-            fb_event = second_batch_lookup.data_for_event(event_id)
-            fb_event_attending = second_batch_lookup.data_for_event_attending(event_id)
+            fb_event = fbl.fetched_data(fb_api.LookupEvent, event_id)
+            fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
         except fb_api.NoFetchedDataException:
             logging.info("event id %s: no fetched data", event_id)
             continue # must be a non-saved event, probably due to private/closed event. so ignore.

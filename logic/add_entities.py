@@ -9,14 +9,14 @@ from logic import thing_db
 class AddEventException(Exception):
     pass
 
-def add_update_event(event_id, user_id, batch_lookup, remapped_address=None, override_address=None, creating_method=None):
+def add_update_event(event_id, user_id, fbl, remapped_address=None, override_address=None, creating_method=None):
     event_id = str(event_id)
-    batch_lookup.lookup_event(event_id, allow_cache=False)
-    batch_lookup.lookup_event_attending(event_id, allow_cache=False)
-    batch_lookup.finish_loading()
+    fbl.request(fb_api.LookupEvent, event_id, allow_cache=False)
+    fbl.request(fb_api.LookupEventAttending, event_id, allow_cache=False)
+    fbl.batch_fetch()
 
-    fb_event = batch_lookup.data_for_event(event_id)
-    fb_event_attending = batch_lookup.data_for_event_attending(event_id)
+    fb_event = fbl.fetched_data(fb_api.LookupEvent, event_id)
+    fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
     if not fb_api.is_public_ish(fb_event):
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
 
@@ -29,9 +29,8 @@ def add_update_event(event_id, user_id, batch_lookup, remapped_address=None, ove
     e.creating_fb_uid = user_id
     if creating_method:
         e.creating_method = creating_method
-    fb_event = batch_lookup.data_for_event(event_id)
     event_updates.update_and_save_event(e, fb_event)
-    thing_db.create_source_from_event(batch_lookup.copy(allow_cache=False), e)
+    thing_db.create_source_from_event(fbl, e)
 
     potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)

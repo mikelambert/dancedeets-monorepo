@@ -57,7 +57,6 @@ class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
         fb = fb_api.FBAPI(self.batch_lookup.access_token)
         key = fb_api.generate_key(LookupAppFriendUsers, self.fb_uid)
         fb_result = fb.fetch_keys([key])
-        print fb_result
         app_friend_list = fb_result[key]['info']
         logging.info("app_friend_list is %s", app_friend_list)
         user_friends = users.UserFriendsAtSignup.get_or_insert(str(self.fb_uid))

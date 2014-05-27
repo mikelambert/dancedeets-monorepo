@@ -13,10 +13,10 @@ import template
 from util import text
 from util import urls
 
-def email_for_user(user, batch_lookup, should_send=True):
+def email_for_user(user, fbl, should_send=True):
     if not user.send_email or not user.email:
         return
-    fb_user = batch_lookup.data_for_user(batch_lookup.fb_uid)
+    fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
     if not 'profile' in fb_user:
         return
 
@@ -34,9 +34,7 @@ def email_for_user(user, batch_lookup, should_send=True):
     # search for relevant events
     bounds = locations.get_location_bounds(user_location, distance_in_km)
     query = search.SearchQuery(time_period=eventdata.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
-    fbl = fb_api.FBLookup(batch_lookup.fb_uid, batch_lookup.access_token)
-    #TODO(lambert: remove this manual fb_user fetch, when we use the servlet-construct FBLookup
-    fb_user = fbl.request(fb_api.LookupUser, fbl.fb_uid)
+    fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
     search_results = query.get_search_results(fbl)
     # Don't send email...

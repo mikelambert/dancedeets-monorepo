@@ -200,11 +200,11 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             return self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
         if self.request.get('background'):
-            deferred.defer(add_entities.add_update_event, event_id, remapped_address, override_address, self.user.fb_uid, self.batch_lookup.copy(), creating_method=eventdata.CM_ADMIN)
+            deferred.defer(add_entities.add_update_event, event_id, self.user.fb_uid, self.fbl, remapped_address=remapped_address, override_address=override_address, creating_method=eventdata.CM_ADMIN)
             self.response.out.write("<title>Added!</title>Added!")
         else:
             try:
-                add_entities.add_update_event(event_id, self.user.fb_uid, self.batch_lookup, remapped_address=remapped_address, override_address=override_address)
+                add_entities.add_update_event(event_id, self.user.fb_uid, self.fbl, remapped_address=remapped_address, override_address=override_address, creating_method=eventdata.CM_ADMIN)
             except Exception, e:
                 self.add_error(str(e))
             self.errors_are_fatal()
@@ -271,7 +271,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.add_error('missing event_url or event_id parameter')
 
         try:
-            fb_event, e = add_entities.add_update_event(event_id, self.user.fb_uid, self.batch_lookup, creating_method=eventdata.CM_USER)
+            fb_event, e = add_entities.add_update_event(event_id, self.user.fb_uid, self.fbl, creating_method=eventdata.CM_USER)
             self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
         except Exception, e:
             self.add_error(str(e))
