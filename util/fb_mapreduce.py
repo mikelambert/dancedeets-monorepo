@@ -2,7 +2,6 @@ from mapreduce import context
 from mapreduce import control
 from mapreduce import util
 
-import facebook
 import fb_api
 
 def start_map(batch_lookup, name, handler_spec, entity_kind, filters=None, handle_batch_size=None, output_writer_spec=None, extra_mapper_params=None, queue='slow-queue'):
@@ -31,7 +30,7 @@ def start_map(batch_lookup, name, handler_spec, entity_kind, filters=None, handl
 def get_batch_lookup(user=None):
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
-    access_token = facebook.GraphAPI(user and user.fb_access_token or params['batch_lookup_access_token'])
+    access_token = (user and user.fb_access_token or params['batch_lookup_access_token'])
     batch_lookup = fb_api.CommonBatchLookup(
         user and user.fb_uid or params['batch_lookup_fb_uid'],
         access_token,
