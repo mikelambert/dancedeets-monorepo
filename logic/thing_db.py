@@ -167,7 +167,7 @@ def create_source_from_event(fbl, db_event):
     if not db_event.owner_fb_uid:
         return
     # technically we could check if the object exists in the db, before we bother fetching the feed
-    thing_feed = fbl.get(fb_api.ThingFeedLookup, db_event.owner_fb_uid)
+    thing_feed = fbl.get(fb_api.LookupThingFeed, db_event.owner_fb_uid)
     if not thing_feed['empty']:
         s = create_source_for_id(db_event.owner_fb_uid, thing_feed)
         s.put()
