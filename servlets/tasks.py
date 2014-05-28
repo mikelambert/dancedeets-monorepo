@@ -162,9 +162,9 @@ class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         fb_reloading.load_potential_events_for_user_ids(self.fbl, user_ids)
 
-class RecacheSearchIndex(BaseTaskFacebookRequestHandler):
+class MemcacheFutureEvents(BaseTaskFacebookRequestHandler):
     def get(self):
-        search.recache_everything(self.fbl)
+        search.memcache_future_events(self.fbl)
 
 class RefreshFulltextSearchIndex(BaseTaskFacebookRequestHandler):
     def get(self):

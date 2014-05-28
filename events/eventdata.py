@@ -51,9 +51,8 @@ class DBEvent(db.Model):
     fb_event_id = property(lambda x: int(x.key().name()))
 
     # TODO(lambert): right now this is unused, but maybe we want to cache our "ish" tags or something to that effect?
+    # Was originally used to track manually-applied tags
     tags = db.StringListProperty(indexed=False)
-    search_tags = db.StringListProperty(indexed=False) # old classification-system tags
-    search_regions = db.StringListProperty(indexed=False) # not sure what this was ever used for
 
     # real data
     owner_fb_uid = db.StringProperty()
@@ -75,14 +74,6 @@ class DBEvent(db.Model):
     city_name = db.StringProperty() # largest nearby city for this event
     latitude = db.FloatProperty()
     longitude = db.FloatProperty()
-    geohashes = db.StringListProperty()
     anywhere = db.BooleanProperty()
 
     event_keywords = db.StringListProperty(indexed=False)
-
-    def include_attending_summary(self, fb_dict):
-        attendees = fb_dict['attending']['data']
-        self.attendee_count = len(attendees)
-
-    #def __repr__(self):
-    #    return 'DBEvent(fb_event_id=%r,tags=%r)' % (self.fb_event_id, self.tags)

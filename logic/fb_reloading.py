@@ -47,12 +47,7 @@ def mr_load_fb_event_attending(fbl):
 
 @timings.timed
 def yield_load_fb_event_attending(fbl, db_events):
-    fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events])
-    fbl.batch_fetch()
-    for db_event in db_events:
-        fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, db_event.fb_event_id)
-        db_event.include_attending_summary(fb_event_attending)
-        db_event.put()
+    fbl.get_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events])
 map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
 load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 

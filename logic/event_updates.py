@@ -3,8 +3,6 @@ import logging
 
 from events import eventdata
 import fb_api
-import geohash
-import locations
 from logic import event_classifier
 from logic import event_locations
 from logic import search
@@ -75,13 +73,9 @@ def _inner_make_event_findable_for(db_event, fb_dict):
         db_event.city_name = location_info.largest_nearby_city()
         if db_event.actual_city_name:
             db_event.latitude, db_event.longitude = location_info.latlong()
-            db_event.geohashes = []
-            for x in range(locations.max_geohash_bits):
-                db_event.geohashes.append(str(geohash.Geostring((db_event.latitude, db_event.longitude), depth=x)))
         else:
             db_event.latitude = None
             db_event.longitude = None
-            db_event.geohashes = []
             #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
             logging.warning("No geocoding results for eid=%s is: %s", db_event.fb_event_id, location_info)
 

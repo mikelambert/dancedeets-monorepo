@@ -172,6 +172,7 @@ GRAPH_ID_REMAP = {
     '217186302149':    '429993677084666',
     '216749701737422': '158902407580774',
     '214309541986996': '623349991055209',
+    '439206306171478': '183572455374',
 }
 
 EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS = 'insufficient_permissions'
@@ -603,6 +604,9 @@ class FBLookup(object):
         self.allow_memcache_write = True
         self.allow_memcache_read = True
         self.allow_dbcache = True
+        # If we fetch objects from memcache, we can save them back into memcache.
+        # Useful for keeping objects in cache when we don't care about staleness.
+        self.resave_to_memcache = False
         self.m = Memcache(self.fb_uid)
         self.db = DBCache(self.fb_uid)
         self.fb = FBAPI(self.access_token)
@@ -675,6 +679,8 @@ class FBLookup(object):
                 logging.info("DEBUG: allow_memcache_read is %s", self.allow_memcache_read)
             if self.allow_memcache_read:
                 fetched_objects = self._cleanup_object_map(self.m.fetch_keys(keys))
+                if self.resave_to_memcache:
+                    self.m.save_objects(fetched_objects)
                 if self.debug:
                     logging.info("DEBUG: memcache requested %s keys, returned %s objects", len(keys), len(fetched_objects))
                 all_fetched_objects.update(fetched_objects)
