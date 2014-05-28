@@ -172,12 +172,14 @@ class TestFBLookup(unittest.TestCase):
     def runTest(self):
         fbl = fb_api.FBLookup('uid', 'access_token')
 
+        # Set up our facebook backend
         fb_api.FBAPI.results = {
             'https://graph.facebook.com/uid?access_token=access_token': (200, {}),
             'https://graph.facebook.com/uid/events?since=yesterday?access_token=access_token': (200, {}),
             'https://graph.facebook.com/uid/friends?access_token=access_token': (200, {}),
             'https://graph.facebook.com/uid/permissions?access_token=access_token': (200, {}),
         }
+        # And fetching it then populates our memcache and db
         result = fbl.get(fb_api.LookupUser, 'uid')
         self.assertEqual(result,
             {
@@ -189,8 +191,17 @@ class TestFBLookup(unittest.TestCase):
             }
         )
 
-        # Rely on cache to fulfill this request now
+        # Now remove our facebook backend, and test all our caches
+
         fb_api.FBAPI.results = {}
+        fbl.clear_local_cache()
+
+        # Check that if allow_cache=False, we cannot fetch anything
+        fbl.allow_cache = False
+        self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupUser, 'uid')
+        fbl.allow_cache = True
+
+        # Rely on memcache/dbcache to fulfill this request now
         fbl.clear_local_cache()
         result = fbl.get(fb_api.LookupUser, 'uid')
         self.assertEqual(result,
@@ -203,10 +214,17 @@ class TestFBLookup(unittest.TestCase):
             }
         )
 
-        # Clear memcache, still works (and repopulates memcache)
+        # Clear memcache...
         user_key = (fb_api.LookupUser, 'uid')
         fbl.m.invalidate_keys([user_key])
         fbl.clear_local_cache()
+
+        # Check that fetching with allow_db_cache=False, fails
+        fbl.allow_dbcache = False
+        self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupUser, 'uid')
+        fbl.allow_dbcache = True
+
+        # But allowing db cache still works (and repopulates memcache)
         result = fbl.get(fb_api.LookupUser, 'uid')
         self.assertEqual(result,
             {
@@ -218,10 +236,17 @@ class TestFBLookup(unittest.TestCase):
             }
         )
 
-        # Clear db, still works (because of memcache)
-        fbl.clear_local_cache()
-        result = fbl.get(fb_api.LookupUser, 'uid')
+        # Clear dbcache, but still can work (because of memcache)
         fbl.db.invalidate_keys([user_key])
+        fbl.clear_local_cache()
+
+        # Without allowing memcache read, it fails
+        fbl.allow_memcache_read = False
+        self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupUser, 'uid')
+        fbl.allow_memcache_read = True
+
+        # But with memcache read, it works fine
+        result = fbl.get(fb_api.LookupUser, 'uid')
         self.assertEqual(result,
             {
                 'empty': None,
@@ -232,7 +257,7 @@ class TestFBLookup(unittest.TestCase):
             }
         )
 
-        # Clear memcache, now that db is empty, no longer works
+        # Clear memcache, now that db is empty, data is entirely gone, and it no longer works
         fbl.m.invalidate_keys([user_key])
         fbl.clear_local_cache()
         self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupUser, 'uid')

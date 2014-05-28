@@ -606,6 +606,7 @@ class FBLookup(object):
         self.m = Memcache(self.fb_uid)
         self.db = DBCache(self.fb_uid)
         self.fb = FBAPI(self.access_token)
+        self.debug = False
 
     def request(self, cls, object_id, allow_cache=True):
         self.request_multi(cls, (object_id,), allow_cache=allow_cache)
@@ -666,10 +667,16 @@ class FBLookup(object):
     def _lookup(self, keys):
         all_fetched_objects = {}
         updated_objects = {}
+        if self.debug:
+            logging.info("DEBUG: allow_cache is %s", self.allow_cache)
         if self.allow_cache:
             # Memcache Read
+            if self.debug:
+                logging.info("DEBUG: allow_memcache_read is %s", self.allow_memcache_read)
             if self.allow_memcache_read:
                 fetched_objects = self._cleanup_object_map(self.m.fetch_keys(keys))
+                if self.debug:
+                    logging.info("DEBUG: memcache requested %s keys, returned %s objects", len(keys), len(fetched_objects))
                 all_fetched_objects.update(fetched_objects)
                 unknown_results = set(fetched_objects).difference(keys)
                 if len(unknown_results):
@@ -677,8 +684,12 @@ class FBLookup(object):
                 keys = set(keys).difference(fetched_objects)
 
             # DB Read
+            if self.debug:
+                logging.info("DEBUG: allow_dbcache is %s", self.allow_dbcache)
             if self.allow_dbcache:
                 fetched_objects = self._cleanup_object_map(self.db.fetch_keys(keys))
+                if self.debug:
+                    logging.info("DEBUG: db requested %s keys, returned %s objects", len(keys), len(fetched_objects))
                 if self.allow_memcache_write:
                     self.m.save_objects(fetched_objects)
                 all_fetched_objects.update(fetched_objects)
@@ -687,18 +698,20 @@ class FBLookup(object):
                     logging.error("Unknown keys found: %s", unknown_results)
                 keys = set(keys).difference(fetched_objects)
 
-            # Facebook Read
-            keys.update(self._object_keys_to_lookup_without_cache)
+        # Facebook Read
+        keys.update(self._object_keys_to_lookup_without_cache)
 
-            fetched_objects = self._cleanup_object_map(self.fb.fetch_keys(keys))
-            if self.allow_memcache_write:
-                self.m.save_objects(fetched_objects)
-            updated_objects = self.db.save_objects(fetched_objects)
-            all_fetched_objects.update(fetched_objects)
-            unknown_results = set(fetched_objects).difference(keys)
-            if len(unknown_results):
-                logging.error("Unknown keys found: %s", unknown_results)
-            keys = set(keys).difference(fetched_objects)
+        fetched_objects = self._cleanup_object_map(self.fb.fetch_keys(keys))
+        if self.debug:
+            logging.info("DEBUG: fb requested %s keys, returned %s objects", len(keys), len(fetched_objects))
+        if self.allow_memcache_write:
+            self.m.save_objects(fetched_objects)
+        updated_objects = self.db.save_objects(fetched_objects)
+        all_fetched_objects.update(fetched_objects)
+        unknown_results = set(fetched_objects).difference(keys)
+        if len(unknown_results):
+            logging.error("Unknown keys found: %s", unknown_results)
+        keys = set(keys).difference(fetched_objects)
 
         if keys:
             logging.error("Couldn't find values for keys: %s", keys)
