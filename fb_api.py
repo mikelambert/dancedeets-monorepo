@@ -178,7 +178,8 @@ GRAPH_ID_REMAP = {
 EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS = 'insufficient_permissions'
 EMPTY_CAUSE_DELETED = 'deleted'
 
-OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins')
+#TODO(lambert): use parent_group to find additional sources to scrape
+OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins', 'parent_group')
 
 USERLESS_UID = '701004'
 
