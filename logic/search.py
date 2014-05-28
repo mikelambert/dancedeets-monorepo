@@ -296,7 +296,7 @@ def delete_from_fulltext_search_index(db_event_id):
     doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
     doc_index.delete(str(db_event_id))
 
-def construct_fulltext_search_index(batch_lookup, index_future=True):
+def construct_fulltext_search_index(fbl, index_future=True):
     logging.info("Loading DB Events")
     MAX_EVENTS = 100000
     db_query = db.Query(eventdata.DBEvent, keys_only=True)
@@ -338,7 +338,7 @@ def construct_fulltext_search_index(batch_lookup, index_future=True):
     db_event_ids_list = list(db_event_ids)
     for i in range(0,len(db_event_ids_list), docs_per_group):
         group_db_event_ids = db_event_ids_list[i:i+docs_per_group]
-        deferred.defer(save_db_event_ids, batch_lookup, index_name, group_db_event_ids)
+        deferred.defer(save_db_event_ids, fbl, index_name, group_db_event_ids)
 
 def _create_doc_event(db_event, fb_event):
     if fb_event['empty']:
@@ -367,22 +367,21 @@ def _create_doc_event(db_event, fb_event):
         )
     return doc_event
 
-def save_db_event_ids(batch_lookup, index_name, db_event_ids):
+def save_db_event_ids(fbl, index_name, db_event_ids):
     # TODO(lambert): how will we ensure we only update changed events?
     logging.info("Loading %s DB Events", len(db_event_ids))
     db_events = eventdata.DBEvent.get_by_key_name(db_event_ids)
     if None in db_events:
         logging.error("DB Event Lookup returned None!")
     logging.info("Loading %s FB Events", len(db_event_ids))
-    for db_event_id in db_event_ids:
-        batch_lookup.lookup_event(db_event_id)
-    batch_lookup.finish_loading()
+    fbl.request_multi(fb_api.LookupEvent, db_event_ids)
+    fbl.batch_fetch()
 
     delete_ids = []
     doc_events = []
     logging.info("Constructing Documents")
     for db_event in db_events:
-        fb_event = batch_lookup.data_for_event(db_event.fb_event_id)
+        fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
         doc_event = _create_doc_event(db_event, fb_event)
         if not doc_event:
             delete_ids.append(str(db_event.fb_event_id))
@@ -420,27 +419,26 @@ def get_search_index(allow_cache=True):
     return search_index
 
 # since _inner_cache_fb_events is a decorated function, it can't be pickled, which breaks deferred. so make this wrapper function here.
-def cache_fb_events(batch_lookup, search_index):
-    _inner_cache_fb_events(batch_lookup, search_index)
+def cache_fb_events(fbl, search_index):
+    _inner_cache_fb_events(fbl, search_index)
 
 EVENTS_AT_A_TIME = 200
 @timings.timed
-def _inner_cache_fb_events(batch_lookup, search_index):
+def _inner_cache_fb_events(fbl, search_index):
     """Load and stick fb events into cache."""
     if len(search_index) > EVENTS_AT_A_TIME:
-        deferred.defer(cache_fb_events, batch_lookup, search_index[EVENTS_AT_A_TIME:], _queue=SLOW_QUEUE)
+        deferred.defer(cache_fb_events, fbl, search_index[EVENTS_AT_A_TIME:], _queue=SLOW_QUEUE)
         search_index = search_index[:EVENTS_AT_A_TIME]
-    batch_lookup = batch_lookup.copy()
-    batch_lookup.allow_memcache_read = False
-    for event_id, latlng in search_index:
-        batch_lookup.lookup_event(event_id)
-        batch_lookup.lookup_event_attending(event_id)
+    fbl.allow_memcache_read = False
+    event_ids = [event_id for event_id, latlng in search_index]
+    fbl.request_multi(fb_api.LookupEvent, event_ids)
+    fbl.request_multi(fb_api.LookupEventAttending, event_ids)
     logging.info("Loading %s events into memcache", len(search_index))
-    batch_lookup.finish_loading()
+    fbl.batch_fetch()
 
 @timings.timed
-def recache_everything(batch_lookup):
+def recache_everything(fbl):
     search_index = get_search_index(allow_cache=False)
     logging.info("Overall loading %s events into memcache", len(search_index))
-    deferred.defer(cache_fb_events, batch_lookup, search_index, _queue=SLOW_QUEUE)
+    deferred.defer(cache_fb_events, fbl, search_index, _queue=SLOW_QUEUE)
     # caching of db events is done automatically by construct_search_index since it already has the db events loaded

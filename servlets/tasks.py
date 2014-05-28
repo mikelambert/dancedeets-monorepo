@@ -44,6 +44,9 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
         force_updated = bool(int(self.request.get('force_updated', 0)))
         self.batch_lookup = fb_api.CommonBatchLookup(self.fb_uid, self.access_token, allow_cache=self.allow_cache, force_updated=force_updated)
+        self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
+        self.fbl.allow_cache = self.allow_cache
+        self.fbl.force_updated = force_updated
         return return_value
 
 
@@ -167,12 +170,12 @@ class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
 
 class RecacheSearchIndex(BaseTaskFacebookRequestHandler):
     def get(self):
-        search.recache_everything(self.batch_lookup)
+        search.recache_everything(self.fbl)
 
 class RefreshFulltextSearchIndex(BaseTaskFacebookRequestHandler):
     def get(self):
         index_future = bool(int(self.request.get('index_future', 1)))
-        search.construct_fulltext_search_index(self.batch_lookup, index_future=index_future)
+        search.construct_fulltext_search_index(self.fbl, index_future=index_future)
 
 class TimingsKeepAlive(BaseTaskRequestHandler):
     def get(self):
