@@ -130,7 +130,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         owner_location = None
         if 'owner' in fb_event['info']:
             owner_id = fb_event['info']['owner']['id']
-            self.fbl.allow_cache = False
             try:
                 combined_owner = self.fbl.get(fb_api.LookupProfile, owner_id)
             except fb_api.NoFetchedDataException:

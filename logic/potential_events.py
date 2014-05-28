@@ -144,7 +144,6 @@ def get_potential_dance_events(fbl, fb_user_events):
     source.put()
 
     logging.info("Going to look up %s events", len(event_ids))
-    fbl.allow_cache = True
 
     fbl.request_multi(fb_api.LookupEvent, event_ids)
     fbl.request_multi(fb_api.LookupEventAttending, event_ids)

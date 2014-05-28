@@ -9,7 +9,7 @@ from servlets import tasks
 
 class GenerateTrainingDataHandler(tasks.BaseTaskFacebookRequestHandler):
     def get(self):
-        gprediction.mr_generate_training_data(self.batch_lookup)
+        gprediction.mr_generate_training_data(self.fbl)
 
 class DownloadTrainingDataHandler(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, resource):

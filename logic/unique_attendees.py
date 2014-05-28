@@ -4,8 +4,7 @@ import fb_api
 from util import fb_mapreduce
 
 def map_each_attendee(db_event):
-    batch_lookup = fb_mapreduce.get_batch_lookup()
-    fbl = fb_api.massage_fbl(batch_lookup)
+    fbl = fb_mapreduce.get_fblookup()
     fbl.request(fb_api.LookupEventAttending, db_event.fb_event_id)
     fbl.batch_fetch()
     fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, db_event.fb_event_id)
@@ -15,7 +14,7 @@ def map_each_attendee(db_event):
 def reduce_just_unique_attendees(city, all_attendees):
     yield (city, len(set(all_attendees)))
 
-def mr_count_attendees_per_city(batch_lookup):
+def mr_count_attendees_per_city(fbl):
     mrp = mapreduce_pipeline.MapreducePipeline( 
         'unique_attendees',
         'logic.unique_attendees.map_each_attendee',
@@ -24,10 +23,9 @@ def mr_count_attendees_per_city(batch_lookup):
         'mapreduce.output_writers.BlobstoreOutputWriter',
         mapper_params={
             'entity_kind': 'events.eventdata.DBEvent',
-            'batch_lookup_fb_uid': batch_lookup.fb_uid,
-            'batch_lookup_access_token': batch_lookup.access_token,
-            'batch_lookup_allow_cache': batch_lookup.allow_cache,
-
+            'fbl_fb_uid': fbl.fb_uid,
+            'fbl_access_token': fbl.access_token,
+            'fbl_allow_cache': fbl.allow_cache,
         },
         reducer_params={'mime_type': 'text/plain'},
         shards=2,

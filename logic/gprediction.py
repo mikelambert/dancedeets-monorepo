@@ -15,7 +15,6 @@ def strip_punctuation(s):
     return s.translate(trans)
 
 def training_data_for_pevents(fbl, pevents):
-    fbl = fb_api.massage_fbl(fbl)
     fbl.allow_memcache_write = False # don't pollute memcache
     fb_event_ids = [x.fb_event_id for x in pevents if x.looked_at]
     fbl.request_multi(fb_api.LookupEvent, fb_event_ids)
@@ -70,9 +69,9 @@ def get_training_features(potential_event, fb_event, fb_event_attending):
     return (potential_event.language, owner_name, location, name, description, attendee_list, source_list)
     
 
-def mr_generate_training_data(batch_lookup):
+def mr_generate_training_data(fbl):
     fb_mapreduce.start_map(
-        batch_lookup=batch_lookup,
+        fbl=fbl,
         name='Write Training Data',
         handler_spec='logic.gprediction.map_training_data_for_pevents',
         output_writer_spec='mapreduce.output_writers.BlobstoreOutputWriter',

@@ -4,16 +4,16 @@ from mapreduce import util
 
 import fb_api
 
-def start_map(batch_lookup, name, handler_spec, entity_kind, filters=None, handle_batch_size=None, output_writer_spec=None, extra_mapper_params=None, queue='slow-queue'):
+def start_map(fbl, name, handler_spec, entity_kind, filters=None, handle_batch_size=None, output_writer_spec=None, extra_mapper_params=None, queue='slow-queue'):
     filters = filters or []
     extra_mapper_params = extra_mapper_params or {}
     mapper_params = {
         'entity_kind': entity_kind,
         'handle_batch_size': handle_batch_size,
-        'batch_lookup_fb_uid': batch_lookup.fb_uid,
-        'batch_lookup_access_token': batch_lookup.access_token,
-        'batch_lookup_allow_cache': batch_lookup.allow_cache,
-        'batch_lookup_force_updated': batch_lookup.force_updated,
+        'fbl_fb_uid': fbl.fb_uid,
+        'fbl_access_token': fbl.access_token,
+        'fbl_allow_cache': fbl.allow_cache,
+        'fbl_force_updated': fbl.force_updated,
         'filters': filters,
     }
     mapper_params.update(extra_mapper_params)
@@ -27,36 +27,35 @@ def start_map(batch_lookup, name, handler_spec, entity_kind, filters=None, handl
         mapper_parameters=mapper_params,
     )
 
-def get_batch_lookup(user=None):
+def get_fblookup(user=None):
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
-    access_token = (user and user.fb_access_token or params['batch_lookup_access_token'])
-    batch_lookup = fb_api.CommonBatchLookup(
-        user and user.fb_uid or params['batch_lookup_fb_uid'],
-        access_token,
-        allow_cache=params['batch_lookup_allow_cache'],
-        force_updated=params['batch_lookup_force_updated'],
-    )
-    return batch_lookup
+    access_token = (user and user.fb_access_token or params['fbl_access_token'])
+    fbl = fb_api.FBLookup(
+        user and user.fb_uid or params['fbl_fb_uid'],
+        access_token)
+    fbl.allow_cache = params['fbl_allow_cache']
+    fbl.force_updated = params['fbl_force_updated']
+    return fbl
 
 
 def mr_wrap(func):
     if util.is_generator(func):
         def map_func(*args, **kwargs):
-            batch_lookup = get_batch_lookup()
+            fbl = get_fblookup()
             # this passes the generator on to the client as a generator, while still having this function be detected as a generator (instead of just returning the generator directly, which would work but not let this function be detected as a generator)
-            for x in func(batch_lookup, *args, **kwargs):
+            for x in func(fbl, *args, **kwargs):
                 yield x
     else:
         def map_func(*args, **kwargs):
-            batch_lookup = get_batch_lookup()
-            return func(batch_lookup, *args, **kwargs)
+            fbl = get_fblookup()
+            return func(fbl, *args, **kwargs)
     return map_func
 
 def mr_user_wrap(func):
     def map_func(user, *args, **kwargs):
-        batch_lookup = get_batch_lookup(user=user)
-        return func(batch_lookup, user, *args, **kwargs)
+        fbl = get_fblookup(user=user)
+        return func(fbl, user, *args, **kwargs)
     return map_func
 
 def nomr_wrap(func):

@@ -15,7 +15,6 @@ from util import timings
 
 @timings.timed
 def scrape_events_from_sources(fbl, sources):
-    fbl = fb_api.massage_fbl(fbl)
     ctx = context.get()
     if ctx:
         params = ctx.mapreduce_spec.mapper.params
@@ -46,12 +45,12 @@ def scrape_events_from_source_ids(fbl, source_ids):
 
 map_scrape_events_from_source = fb_mapreduce.mr_wrap(scrape_events_from_sources)
 
-def mapreduce_scrape_all_sources(batch_lookup, min_potential_events=None):
+def mapreduce_scrape_all_sources(fbl, min_potential_events=None):
     # Do not do the min_potential_events>1 filter in the mapreduce filter,
     # or it will want to do a range-shard on that property. Instead, pass-it-down
     # and use it as an early-return in the per-Source processing.
     fb_mapreduce.start_map(
-        batch_lookup.copy(allow_cache=False), # Force refresh of thing feeds
+        fbl.copy(allow_cache=False), # Force refresh of thing feeds
         'Scrape All Sources',
         'logic.thing_scraper.map_scrape_events_from_source',
         'logic.thing_db.Source',
@@ -60,9 +59,9 @@ def mapreduce_scrape_all_sources(batch_lookup, min_potential_events=None):
         queue='super-slow-queue',
     )
 
-def mapreduce_create_sources_from_events(batch_lookup):
+def mapreduce_create_sources_from_events(fbl):
     fb_mapreduce.start_map(
-        batch_lookup,
+        fbl,
         'Create Sources from Events',
         'logic.thing_db.map_create_source_from_event',
         'events.eventdata.DBEvent',

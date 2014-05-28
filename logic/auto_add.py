@@ -13,7 +13,7 @@ from logic import potential_events
 from util import fb_mapreduce
 
 def classify_events(fbl, pe_list):
-    fbl = fb_api.massage_fbl(fbl)
+    assert fbl.allow_cache
     fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
     #fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in pe_list])
     
@@ -61,9 +61,9 @@ def classify_events(fbl, pe_list):
 
 map_classify_events = fb_mapreduce.mr_wrap(classify_events)
 
-def mr_classify_potential_events(batch_lookup):
+def mr_classify_potential_events(fbl):
     fb_mapreduce.start_map(
-        batch_lookup.copy(allow_cache=True),
+        fbl,
         'Auto-Add Events',
         'logic.auto_add.map_classify_events',
         'logic.potential_events.PotentialEvent',

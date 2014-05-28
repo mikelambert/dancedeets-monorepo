@@ -7,7 +7,6 @@ import fb_api
 from util import fb_mapreduce
 
 def dump_fb_json(fbl, pe_list):
-    fbl = fb_api.massage_fbl(fbl)
     pe_list = [x for x in pe_list if x.match_score > 0]
     if not pe_list:
         return
@@ -29,9 +28,9 @@ def dump_fb_json(fbl, pe_list):
 
 map_dump_fb_json = fb_mapreduce.mr_wrap(dump_fb_json)
 
-def mr_dump_events(batch_lookup):
+def mr_dump_events(fbl):
     fb_mapreduce.start_map(
-        batch_lookup.copy(allow_cache=False),
+        fbl,
         'Dump Potential FB Event Data',
         'logic.mr_dump.map_dump_fb_json',
         'logic.potential_events.PotentialEvent',

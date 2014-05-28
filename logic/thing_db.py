@@ -164,7 +164,6 @@ def create_source_for_id(source_id, fb_data):
     return source
 
 def create_source_from_event(fbl, db_event):
-    fbl = fb_api.massage_fbl(fbl)
     if not db_event.owner_fb_uid:
         return
     # technically we could check if the object exists in the db, before we bother fetching the feed
@@ -182,8 +181,7 @@ def map_clean_source_count(s):
     yield s.put()
 
 def map_count_potential_event(pe):
-    batch_lookup = fb_mapreduce.get_batch_lookup()
-    fbl = fb_api.massage_fbl(batch_lookup)
+    fbl = fb_mapreduce.get_fblookup()
     fb_event = fbl.get(fb_api.LookupEvent, pe.fb_event_id)
     if fb_event['empty']:
         return
@@ -213,9 +211,9 @@ def mr_clean_source_counts():
         },
     )
 
-def mr_count_potential_events(batch_lookup):
+def mr_count_potential_events(fbl):
     fb_mapreduce.start_map(
-        batch_lookup=batch_lookup,
+        fbl=fbl,
         name='count potential events',
         handler_spec='logic.thing_db.map_count_potential_event',
         entity_kind='logic.potential_events.PotentialEvent'

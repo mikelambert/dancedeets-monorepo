@@ -72,9 +72,9 @@ def count_private_events(fbl, e_list):
 from util import fb_mapreduce
 map_dump_private_events = fb_mapreduce.mr_wrap(count_private_events)
 
-def mr_private_events(batch_lookup):
+def mr_private_events(fbl):
     fb_mapreduce.start_map(
-        batch_lookup.copy(allow_cache=False),
+        fbl,
         'Dump Private Events',
         'servlets.tools.map_dump_private_events',
         'events.eventdata.DBEvent',
@@ -87,11 +87,11 @@ def mr_private_events(batch_lookup):
 
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp2.RequestHandler):
     def get(self):
-        mr_private_events(self.batch_lookup)
+        mr_private_events(self.fbl)
 
 class AutoAddPotentialEventsHandler(tasks.BaseTaskFacebookRequestHandler):
     def get(self):
-        auto_add.mr_classify_potential_events(self.batch_lookup)
+        auto_add.mr_classify_potential_events(self.fbl)
 
 class OwnedEventsHandler(webapp2.RequestHandler):
     def get(self):

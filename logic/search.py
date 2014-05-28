@@ -429,6 +429,7 @@ def _inner_cache_fb_events(fbl, search_index):
     if len(search_index) > EVENTS_AT_A_TIME:
         deferred.defer(cache_fb_events, fbl, search_index[EVENTS_AT_A_TIME:], _queue=SLOW_QUEUE)
         search_index = search_index[:EVENTS_AT_A_TIME]
+    # Force write to memcache by forcing a memcache "miss"
     fbl.allow_memcache_read = False
     event_ids = [event_id for event_id, latlng in search_index]
     fbl.request_multi(fb_api.LookupEvent, event_ids)

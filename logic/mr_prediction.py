@@ -7,7 +7,6 @@ from logic import potential_events
 from util import fb_mapreduce
 
 def classify_events(fbl, pe_list):
-    fbl = fb_api.massage_fbl(fbl)
     pe_list = [x for x in pe_list if x.match_score > 0]
     if not pe_list:
         return
@@ -38,9 +37,9 @@ def classify_events(fbl, pe_list):
 
 map_classify_events = fb_mapreduce.mr_wrap(classify_events)
 
-def mr_classify_potential_events(batch_lookup):
+def mr_classify_potential_events(fbl):
     fb_mapreduce.start_map(
-        batch_lookup.copy(allow_cache=False),
+        fbl,
         'Auto-Classify Events',
         'logic.mr_prediction.map_classify_events',
         'logic.potential_events.PotentialEvent',
