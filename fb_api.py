@@ -642,13 +642,13 @@ class FBLookup(object):
             else:
                 raise NoFetchedDataException('Could not find %s' % (key,))
 
-    def get(self, cls, object_id):
-        self.request(cls, object_id)
+    def get(self, cls, object_id, allow_cache=True):
+        self.request(cls, object_id, allow_cache=allow_cache)
         self.batch_fetch()
         return self.fetched_data(cls, object_id)
 
-    def get_multi(self, cls, object_ids):
-        self.request_multi(cls, object_ids)
+    def get_multi(self, cls, object_ids, allow_cache=True):
+        self.request_multi(cls, object_ids, allow_cache=allow_cache)
         self.batch_fetch()
         return self.fetched_data_multi(cls, object_ids)
 
