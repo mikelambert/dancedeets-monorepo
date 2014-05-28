@@ -17,7 +17,7 @@ class TestEventLocations(unittest.TestCase):
     def setUp(self):
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate()
-        self.batch_lookup = fb_api.CommonBatchLookup(None, None)
+        self.fbl = fb_api.FBLookup(None, None)
 
         self.testbed = testbed.Testbed()
         self.testbed.activate()
@@ -29,10 +29,7 @@ class TestEventLocations(unittest.TestCase):
         self.fb_api.deactivate()
 
     def get_event(self, event_id):
-        self.batch_lookup.lookup_event(event_id)
-        self.batch_lookup.finish_loading()
-        fb_event = self.batch_lookup.data_for_event(event_id)
-        return fb_event
+        return self.fbl.get(fb_api.LookupEvent, event_id)
 
     def assertNearEqual(self, a, b, delta=0.001):
         if type(a) == tuple:

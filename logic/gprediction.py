@@ -14,17 +14,16 @@ trans = string.maketrans(convert_chars, ' ' * len(convert_chars))
 def strip_punctuation(s):
     return s.translate(trans)
 
-def training_data_for_pevents(batch_lookup, pevents):
-    batch_lookup.allow_memcache_write = False # don't pollute memcache
-    for potential_event in pevents:
-        if not potential_event.looked_at:
-            continue
-        batch_lookup.lookup_event(potential_event.fb_event_id)
-        batch_lookup.lookup_event_attending(potential_event.fb_event_id)
-    batch_lookup.finish_loading()
+def training_data_for_pevents(fbl, pevents):
+    fbl = fb_api.massage_fbl(fbl)
+    fbl.allow_memcache_write = False # don't pollute memcache
+    fb_event_ids = [x.fb_event_id for x in pevents if x.looked_at]
+    fbl.request_multi(fb_api.LookupEvent, fb_event_ids)
+    fbl.request_multi(fb_api.LookupEventAttending, fb_event_ids)
+    fbl.batch_fetch()
 
     # TODO(lambert): ideally would use keys_only=True, but that's not supported on get_by_key_name :-(
-    db_events = eventdata.get_cached_db_events([x.fb_event_id for x in pevents])
+    db_events = eventdata.get_cached_db_events(fb_event_ids)
     good_event_ids = [x.fb_event_id for x in db_events if x]
 
     csv_file = StringIO.StringIO()
@@ -36,10 +35,10 @@ def training_data_for_pevents(batch_lookup, pevents):
         try:
             good_event = potential_event.fb_event_id in good_event_ids and 'dance' or 'nodance'
 
-            fb_event = batch_lookup.data_for_event(potential_event.fb_event_id)
+            fb_event = fbl.fetched_data(fb_api.LookupEvent, potential_event.fb_event_id)
             if fb_event['empty']:
                 continue
-            fb_event_attending = batch_lookup.data_for_event_attending(potential_event.fb_event_id)
+            fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, potential_event.fb_event_id)
 
             training_features = get_training_features(potential_event, fb_event, fb_event_attending)
             csv_writer.writerow([good_event] + list(training_features))
@@ -67,9 +66,9 @@ def get_training_features(potential_event, fb_event, fb_event_attending):
 
     #TODO(lambert): someday write this as a proper mapreduce that reduces across languages and builds a classifier model per language?
     # for now we can just grep and build sub-models per-language on my client machine.
-    #return (potential_event.language, owner_name, location, name, description, attendee_list, source_list)
     return (attendee_list,)
-
+    return (potential_event.language, owner_name, location, name, description, attendee_list, source_list)
+    
 
 def mr_generate_training_data(batch_lookup):
     fb_mapreduce.start_map(

@@ -183,10 +183,8 @@ def map_clean_source_count(s):
 
 def map_count_potential_event(pe):
     batch_lookup = fb_mapreduce.get_batch_lookup()
-    batch_lookup.lookup_event(pe.fb_event_id)
-    batch_lookup.finish_loading()
-
-    fb_event = batch_lookup.data_for_event(pe.fb_event_id)
+    fbl = fb_api.massage_fbl(batch_lookup)
+    fb_event = fbl.get(fb_api.LookupEvent, pe.fb_event_id)
     if fb_event['empty']:
         return
     classified_event = event_classifier.get_classified_event(fb_event, pe.language)

@@ -392,7 +392,7 @@ class CacheSystem(object):
     def _normalize_key(self, key):
         return tuple(re.sub(r'[."\']', '-', str(x)) for x in key)
 
-    def _key_to_cache_key(self, key):
+    def key_to_cache_key(self, key):
         cls, oid = break_key(key)
         fetching_uid = self.fetching_uid
         return self._string_key(cls.cache_key(oid, fetching_uid))
@@ -416,7 +416,7 @@ class Memcache(CacheSystem):
         self.fetching_uid = fetching_uid
 
     def fetch_keys(self, keys):
-        cache_key_mapping = dict((self._key_to_cache_key(key), key) for key in keys)
+        cache_key_mapping = dict((self.key_to_cache_key(key), key) for key in keys)
         objects = smemcache.get_multi(cache_key_mapping.keys())
         object_map = dict((cache_key_mapping[k], v) for (k, v) in objects.iteritems())
 
@@ -430,13 +430,13 @@ class Memcache(CacheSystem):
         memcache_set = {}
         for k, v in keys_to_objects.iteritems():
             if self._is_cacheable(k, v):
-                cache_key = self._key_to_cache_key(k)
+                cache_key = self.key_to_cache_key(k)
                 memcache_set[cache_key] = v
         smemcache.safe_set_memcache(memcache_set, 2*3600)
         return {}
 
     def invalidate_keys(self, keys):
-        cache_keys = [self._key_to_cache_key(key) for key in keys]
+        cache_keys = [self.key_to_cache_key(key) for key in keys]
         smemcache.delete_multi(cache_keys)
 
 class DBCache(CacheSystem):
@@ -445,7 +445,7 @@ class DBCache(CacheSystem):
         self.db_updates = 0
 
     def fetch_keys(self, keys):
-        cache_key_mapping = dict((self._key_to_cache_key(key), key) for key in keys)
+        cache_key_mapping = dict((self.key_to_cache_key(key), key) for key in keys)
         object_map = {}
         max_in_queries = datastore.MAX_ALLOWABLE_QUERIES
         cache_keys = cache_key_mapping.keys()
@@ -463,7 +463,7 @@ class DBCache(CacheSystem):
                 logging.warning("Looked up event %s but is not cacheable.", object_key)
                 continue
             try:
-                cache_key = self._key_to_cache_key(object_key)
+                cache_key = self.key_to_cache_key(object_key)
                 obj = FacebookCachedObject.get_or_insert(cache_key)
                 old_json_data = obj.json_data
                 obj.encode_data(this_object)
@@ -480,7 +480,7 @@ class DBCache(CacheSystem):
         return updated_objects
 
     def invalidate_keys(self, keys):
-        cache_keys = [self._key_to_cache_key(key) for key in keys]
+        cache_keys = [self.key_to_cache_key(key) for key in keys]
         results = FacebookCachedObject.get_by_key_name(cache_keys)
         for result in results:
             result.delete()

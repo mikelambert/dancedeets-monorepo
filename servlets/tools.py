@@ -47,16 +47,15 @@ def map_delete_cached_with_wrong_user_id(fbo):
         yield op.db.Delete(fbo)
 
 
-def count_private_events(batch_lookup, e_list):
-    for e in e_list:
-        batch_lookup.lookup_event(e.fb_event_id)
-    batch_lookup.finish_loading()
+def count_private_events(fbl, e_list):
+    fbl.get(fb_api.LookupEvent, [x.fb_event_id for x in e_list])
+    fbl.batch_fetch()
 
     ctx = context.get()
 
     for e in e_list:
         try:
-            fbe = batch_lookup.data_for_event(e.fb_event_id)
+            fbe = fbl.fetched_data(fb_api.LookupEvent, e.fb_event_id)
             if 'info' not in fbe:
                 logging.error("skipping row2 for event id %s", e.fb_event_id)
                 continue
@@ -99,10 +98,9 @@ class OwnedEventsHandler(webapp2.RequestHandler):
         db_events_query = eventdata.DBEvent.gql('WHERE owner_fb_uid = :1', self.request.get('owner_id'))
         db_events = db_events_query.fetch(1000)
 
-        batch_lookup = fb_api.CommonBatchLookup(None, None)
-
         print 'Content-type: text/plain\n\n'
-        fb_events = fb_api.FacebookCachedObject.get_by_key_name(batch_lookup._string_key(batch_lookup._event_key(x.fb_event_id)) for x in db_events)
+        keys = [fb_api.generate_key(fb_api.LookupEvent, x.fb_event_id) for x in db_events]
+        fb_events = fb_api.DBCache(None).fetch_keys(keys)
         for db_event, fb_event in zip(db_events, fb_events):
             real_fb_event = fb_event.decode_data()
             print db_event.tags, real_fb_event['info']['name']

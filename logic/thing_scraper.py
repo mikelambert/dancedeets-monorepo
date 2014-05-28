@@ -14,7 +14,8 @@ from util import fb_mapreduce
 from util import timings
 
 @timings.timed
-def scrape_events_from_sources(batch_lookup, sources):
+def scrape_events_from_sources(fbl, sources):
+    fbl = fb_api.massage_fbl(fbl)
     ctx = context.get()
     if ctx:
         params = ctx.mapreduce_spec.mapper.params
@@ -24,26 +25,24 @@ def scrape_events_from_sources(batch_lookup, sources):
   # don't scrape sources that prove useless and give mostly garbage events
     #sources = [x for x in sources if x.fraction_potential_are_real() > 0.05]
 
-    batch_lookup = batch_lookup.copy(allow_cache=False)
-    for source in sources:
-        batch_lookup.lookup_thing_feed(source.graph_id)
-    batch_lookup.finish_loading()
+    fbl.request_multi(fb_api.LookupThingFeed, [x.graph_id for x in sources])
+    fbl.batch_fetch()
 
-    logging.info("Fetched %s objects, saved %s updates", batch_lookup.fb_fetches, batch_lookup.db_updates)
+    logging.info("Fetched %s objects, saved %s updates", fbl.fb_fetches, fbl.db_updates)
 
     event_source_combos = []
     for source in sources:
         try:
-            thing_feed = batch_lookup.data_for_thing_feed(source.graph_id)
+            thing_feed = fbl.fetched_data(fb_api.LookupThingFeed, source.graph_id)
             event_source_combos.extend(process_thing_feed(source, thing_feed))
         except fb_api.NoFetchedDataException, e:
             logging.error("Failed to fetch data for thing: %s", str(e))
 
-    process_event_source_ids(event_source_combos, batch_lookup.copy(allow_cache=True))
+    process_event_source_ids(event_source_combos, fbl)
 
-def scrape_events_from_source_ids(batch_lookup, source_ids):
+def scrape_events_from_source_ids(fbl, source_ids):
     sources = thing_db.Source.get_by_key_name(source_ids)
-    scrape_events_from_sources(batch_lookup, sources)
+    scrape_events_from_sources(fbl, sources)
 
 map_scrape_events_from_source = fb_mapreduce.mr_wrap(scrape_events_from_sources)
 
@@ -130,21 +129,21 @@ def parse_event_source_combos_from_feed(source, feed_data):
                 logging.error("broken link is %s", urlparse.urlunparse(p))
     return event_source_combos
 
-def process_event_source_ids(event_source_combos, batch_lookup):
+def process_event_source_ids(event_source_combos, fbl):
     # TODO(lambert): maybe trim any ids from posts with dates "past" the last time we scraped? tricky to get correct though
     potential_new_source_ids = set()
     for event_id, source, posting_source_id in event_source_combos:
-        batch_lookup.lookup_event(event_id)
-        batch_lookup.lookup_event_attending(event_id)
+        fbl.request(fb_api.LookupEvent, event_id)
+        fbl.request(fb_api.LookupEventAttending, event_id)
         potential_new_source_ids.add(posting_source_id)
-    batch_lookup.finish_loading()
+    fbl.batch_fetch()
 
     # TODO(lambert): Maybe filter this event out for itself and its sources, before we attempt to load event-attending and recreate it?
     # TODO(lambert): like what we do with potential-events-from-invites? maybe combine those flows?
     for event_id, source, posting_source_id in event_source_combos:
         try:
-            fb_event = batch_lookup.data_for_event(event_id)
-            fb_event_attending = batch_lookup.data_for_event_attending(event_id)
+            fb_event = fbl.fetched_data(fb_api.LookupEvent, event_id)
+            fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
             if fb_event['empty']:
                 continue
             potential_events.make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_FEED)
@@ -162,5 +161,5 @@ def process_event_source_ids(event_source_combos, batch_lookup):
 
     # initiate an out-of-band-scrape for our new sources we found
     if new_source_ids:
-        deferred.defer(scrape_events_from_source_ids, batch_lookup.copy(), new_source_ids)
+        deferred.defer(scrape_events_from_source_ids, fbl, new_source_ids)
 

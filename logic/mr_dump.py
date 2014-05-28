@@ -6,22 +6,23 @@ import StringIO
 import fb_api
 from util import fb_mapreduce
 
-def dump_fb_json(batch_lookup, pe_list):
+def dump_fb_json(fbl, pe_list):
+    fbl = fb_api.massage_fbl(fbl)
     pe_list = [x for x in pe_list if x.match_score > 0]
     if not pe_list:
         return
 
-    for pe in pe_list:
-        batch_lookup.lookup_event(pe.fb_event_id)
-    batch_lookup.finish_loading()
+    fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
+    fbl.batch_fetch()
 
     csv_file = StringIO.StringIO()
     csv_writer = csv.writer(csv_file)
 
     for pe in pe_list:
         try:
-            result = json.dumps(batch_lookup.data_for_event(pe.fb_event_id))
-            csv_writer.writerow([batch_lookup._string_key(batch_lookup._event_key(pe.fb_event_id)), result])
+            result = json.dumps(fbl.fetched_data(fb_api.LookupEvent, pe.fb_event_id))
+            cache_key = fbl.key_to_cache_key(fb_api.generate_key(fb_api.LookupEvent, pe.fb_event_id))
+            csv_writer.writerow([cache_key, result])
         except fb_api.NoFetchedDataException:
             logging.error("skipping row for event id %s", pe.fb_event_id)
     yield csv_file.getvalue()

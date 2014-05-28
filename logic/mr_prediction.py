@@ -6,23 +6,23 @@ from logic import gprediction
 from logic import potential_events
 from util import fb_mapreduce
 
-def classify_events(batch_lookup, pe_list):
+def classify_events(fbl, pe_list):
+    fbl = fb_api.massage_fbl(fbl)
     pe_list = [x for x in pe_list if x.match_score > 0]
     if not pe_list:
         return
     predict_service = None
-    for pe in pe_list:
-        if not getattr(pe, 'dance_bias_score'):
-            batch_lookup.lookup_event(pe.fb_event_id)
-            batch_lookup.lookup_event_attending(pe.fb_event_id)
-    batch_lookup.finish_loading()
+    pe_ids = [x.fb_event_id for x in pe_list if not getattr(x, 'dance_bias_score')]
+    fbl.request_multi(fb_api.LookupEvent, pe_ids)
+    fbl.request_multi(fb_api.LookupEventAttending, pe_ids)
+    fbl.batch_fetch()
 
     results = []
     for pe in pe_list:
         if not getattr(pe, 'dance_bias_score'):
             try:
-                fb_event = batch_lookup.data_for_event(pe.fb_event_id)
-                fb_event_attending = batch_lookup.data_for_event_attending(pe.fb_event_id)
+                fb_event = fbl.fetched_data(fb_api.LookupEvent, pe.fb_event_id)
+                fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, pe.fb_event_id)
             except fb_api.NoFetchedDataException:
                 continue
             if fb_event['empty']:

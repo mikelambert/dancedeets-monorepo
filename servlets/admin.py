@@ -32,26 +32,25 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
         real_key = self.request.get('key')
         if not real_key:
             fb_uid = self.request.get('fb_uid')
-            batch_lookup = fb_api.CommonBatchLookup(fb_uid, access_token)
-            fbtype = self.request.get('type')
-            if fbtype == batch_lookup.OBJECT_PROFILE:
-                key = batch_lookup._profile_key(self.request.get('arg'))
-            elif fbtype == batch_lookup.OBJECT_USER:
-                key = batch_lookup._user_key(self.request.get('arg'))
-            elif fbtype == batch_lookup.OBJECT_USER_EVENTS:
-                key = batch_lookup._user_events_key(self.request.get('arg'))
-            elif fbtype == batch_lookup.OBJECT_FRIEND_LIST:
-                key = batch_lookup._friend_list_key(self.request.get('arg'))
-            elif fbtype == batch_lookup.OBJECT_EVENT:
-                key = batch_lookup._event_key(self.request.get('arg'))
-            elif fbtype == batch_lookup.OBJECT_EVENT_MEMBERS:
-                key = batch_lookup._event_members_key(self.request.get('arg'))
-            elif fbtype == batch_lookup.OBJECT_FQL:
-                key = batch_lookup._fql_key(self.request.get('arg'))
+            fbl = fb_api.FBLookup(fb_uid, access_token)
+            fbtype_lookup = {
+                'OBJ_PROFILE': fb_api.LookupProfile,
+                'OBJ_USER': fb_api.LookupUser,
+                'OBJ_USER_EVENTS': fb_api.LookupUserEvents,
+                'OBJ_FRIEND_LIST': fb_api.LookupFriendList,
+                'OBJ_EVENT': fb_api.LookupEvent,
+                'OBJ_EVENT_MEMBERS': fb_api.LookupEventMembers,
+                'OBJ_FQL': fb_api.LookupFQL,
+                'OBJ_THING_FEED': fb_api.LookupThingFeed,
+            }
+            req_type = self.request.get('type')
+            if req_type in fbtype_lookup:
+                fbtype = fbtype_lookup[req_type]
             else:
-                self.response.out.write('type must be one of BatchLookup.OBJECT_*: %s' % fbtype)
+                self.response.out.write('type %s  must be one of %s' % (req_type, fbtype_lookup.keys()))
                 return
-            real_key = batch_lookup._string_key(key)
+            key = fb_api.generate_key(fbtype, self.request.get('arg'))
+            real_key = fbl.key_to_cache_key(key)
         memcache_result = smemcache.get(real_key)
         db_result = fb_api.FacebookCachedObject.get_by_key_name(real_key)
         self.response.out.write('Memcache:\n%s\n\n' % pprint.pformat(memcache_result, width=200))

@@ -1,11 +1,14 @@
 from mapreduce import mapreduce_pipeline
+
+import fb_api
 from util import fb_mapreduce
 
 def map_each_attendee(db_event):
     batch_lookup = fb_mapreduce.get_batch_lookup()
-    batch_lookup.lookup_event_attending(db_event.fb_event_id)
-    batch_lookup.finish_loading()
-    fb_event_attending = batch_lookup.data_for_event_attending(db_event.fb_event_id)
+    fbl = fb_api.massage_fbl(batch_lookup)
+    fbl.request(fb_api.LookupEventAttending, db_event.fb_event_id)
+    fbl.batch_fetch()
+    fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, db_event.fb_event_id)
     for attendee in fb_event_attending['attending']['data']:
         yield (db_event.city_name, attendee['id'])
 
