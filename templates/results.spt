@@ -104,6 +104,7 @@ Events near ${display_location}:
 	#end if
 	><span>Calendar</span></a></li>
 </ul>
+<div class="tabs-after top-to-bottom-fade"></div>
 	#if $selected_tab == 'past'
 		$render_wide_results($past_results)
 	#elif $selected_tab == 'present'
