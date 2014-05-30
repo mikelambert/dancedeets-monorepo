@@ -20,6 +20,7 @@ class FeedHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
 
+        # TODO(lambert): We should factor out the search-query/results-generation between api.py, calendar.py, and search.py
         location = self.request.get('location')
         distance = int(self.request.get('distance', '50'))
         distance_units = self.request.get('distance_units', 'miles')
@@ -39,7 +40,10 @@ class FeedHandler(base_servlet.BaseRequestHandler):
 
         time_period = self.request.get('time_period', eventdata.TIME_FUTURE)
 
-        query = search.SearchQuery(time_period=time_period, bounds=bounds)
+        min_attendees = int(self.request.get('min_attendees', self.user and self.user.min_attendees or 0))
+        keywords = self.request.get('keywords')
+
+        query = search.SearchQuery(time_period=time_period, bounds=bounds, min_attendees=min_attendees, keywords=keywords)
         search_results = query.get_search_results(self.fbl)
         #TODO(lambert): move to common library.
         now = datetime.datetime.now() - datetime.timedelta(hours=12)

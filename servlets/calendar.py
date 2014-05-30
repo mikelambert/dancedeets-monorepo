@@ -43,7 +43,10 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
             distance_in_km = distance
         bounds = locations.get_location_bounds(location, distance_in_km)
 
-        query = search.SearchQuery(bounds=bounds, start_time=start_time, end_time=end_time)
+        keywords = self.request.get('keywords')
+        min_attendees = int(self.request.get('min_attendees', self.user and self.user.min_attendees or 0))
+
+        query = search.SearchQuery(bounds=bounds, start_time=start_time, end_time=end_time, min_attendees=min_attendees, keywords=keywords)
         search_results = query.get_search_results(self.fbl)
 
         json_results = []
