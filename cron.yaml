@@ -38,3 +38,6 @@ cron:
 - description: keep fb events in memory for search pages
   url: /tasks/memcache_future_events?user_id=701004
   schedule: every 1 hours
+- description: auto-add events weekly
+  url: /tools/auto_add_potential_events?user_id=701004
+  schedule: every thursday 2:00
