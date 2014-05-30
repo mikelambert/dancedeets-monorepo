@@ -307,6 +307,8 @@ class LookupEvent(LookupType):
         return dict(
             info=cls.url(object_id, access_token, fields=OBJ_EVENT_FIELDS),
             fql_info=cls.fql_url(EXTRA_EVENT_INFO_FQL % (object_id), access_token),
+            # Do we really want another FQL call used up, just for this? Maybe wait until we can convert all of fql_info over?
+            #pic_big=cls.url('%s/picture?type=small&redirect=false' % object_id, access_token),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
