@@ -36,5 +36,5 @@ cron:
   url: /tasks/timings_keep_alive
   schedule: every 20 minutes
 - description: keep fb events in memory for search pages
-  url: /tasks/memcache_future_events
+  url: /tasks/memcache_future_events?user_id=701004
   schedule: every 1 hours
