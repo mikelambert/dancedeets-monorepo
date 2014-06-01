@@ -9,9 +9,9 @@ from test_utils import fb_api_stub
 
 class TestLookupUser(unittest.TestCase):
     def runTest(self):
-        lookups = fb_api.LookupUser.get_lookups('id', 'access_token')
-        self.assertEqual(lookups['profile'], 'https://graph.facebook.com/id?access_token=access_token')
-        self.assertEqual(lookups['friends'], 'https://graph.facebook.com/id/friends?access_token=access_token')
+        lookups = fb_api.LookupUser.get_lookups('id')
+        self.assertEqual(lookups['profile'], '/id')
+        self.assertEqual(lookups['friends'], '/id/friends')
         cache_key = fb_api.LookupUser.cache_key('id', 'fetch_id')
         self.assertEqual(cache_key, ('fetch_id', 'id', 'OBJ_USER'))
 
@@ -24,9 +24,9 @@ class TestLookupUser(unittest.TestCase):
 
 class TestLookupEvent(unittest.TestCase):
     def runTest(self):
-        lookups = fb_api.LookupEvent.get_lookups('id', 'access_token')
+        lookups = fb_api.LookupEvent.get_lookups('id')
         info_url = re.sub('fields=[^&]*', 'fields=X', lookups['info'])
-        self.assertEqual(info_url, 'https://graph.facebook.com/id?access_token=access_token&fields=X')
+        self.assertEqual(info_url, '/id?fields=X')
         cache_key = fb_api.LookupEvent.cache_key('id', 'fetch_id')
         self.assertEqual(cache_key, (fb_api.USERLESS_UID, 'id', 'OBJ_EVENT'))
 
@@ -105,10 +105,10 @@ class TestFBAPI(unittest.TestCase):
         self.assertEqual(d, {})
 
         fb_api.FBAPI.results = {
-            'https://graph.facebook.com/uid?access_token=access_token': (200, {}),
-            'https://graph.facebook.com/uid/events?since=yesterday?access_token=access_token': (200, {}),
-            'https://graph.facebook.com/uid/friends?access_token=access_token': (200, {}),
-            'https://graph.facebook.com/uid/permissions?access_token=access_token': (200, {}),
+            '/uid': (200, {}),
+            '/uid/events?since=yesterday': (200, {}),
+            '/uid/friends': (200, {}),
+            '/uid/permissions': (200, {}),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -123,10 +123,10 @@ class TestFBAPI(unittest.TestCase):
         )
 
         fb_api.FBAPI.results = {
-            'https://graph.facebook.com/uid?access_token=access_token': (500, {}),
-            'https://graph.facebook.com/uid/events?since=yesterday?access_token=access_token': (200, {}),
-            'https://graph.facebook.com/uid/friends?access_token=access_token': (200, {}),
-            'https://graph.facebook.com/uid/permissions?access_token=access_token': (200, {}),
+            '/uid': (500, {}),
+            '/uid/events?since=yesterday': (200, {}),
+            '/uid/friends': (200, {}),
+            '/uid/permissions': (200, {}),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -134,10 +134,10 @@ class TestFBAPI(unittest.TestCase):
         self.assertEqual(d, {})
 
         fb_api.FBAPI.results = {
-            'https://graph.facebook.com/uid?access_token=access_token': (200, False),
-            'https://graph.facebook.com/uid/events?since=yesterday?access_token=access_token': (200, False),
-            'https://graph.facebook.com/uid/friends?access_token=access_token': (200, False),
-            'https://graph.facebook.com/uid/permissions?access_token=access_token': (200, False),
+            '/uid': (200, False),
+            '/uid/events?since=yesterday': (200, False),
+            '/uid/friends': (200, False),
+            '/uid/permissions': (200, False),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -148,10 +148,10 @@ class TestFBAPI(unittest.TestCase):
         )
 
         fb_api.FBAPI.results = {
-            'https://graph.facebook.com/uid?access_token=access_token': (200, {'error_code': 100}),
-            'https://graph.facebook.com/uid/events?since=yesterday?access_token=access_token': (200, {'error_code': 100}),
-            'https://graph.facebook.com/uid/friends?access_token=access_token': (200, {'error_code': 100}),
-            'https://graph.facebook.com/uid/permissions?access_token=access_token': (200, {'error_code': 100}),
+            '/uid': (200, {'error_code': 100}),
+            '/uid/events?since=yesterday': (200, {'error_code': 100}),
+            '/uid/friends': (200, {'error_code': 100}),
+            '/uid/permissions': (200, {'error_code': 100}),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -174,10 +174,10 @@ class TestFBLookup(unittest.TestCase):
 
         # Set up our facebook backend
         fb_api.FBAPI.results = {
-            'https://graph.facebook.com/uid?access_token=access_token': (200, {}),
-            'https://graph.facebook.com/uid/events?since=yesterday?access_token=access_token': (200, {}),
-            'https://graph.facebook.com/uid/friends?access_token=access_token': (200, {}),
-            'https://graph.facebook.com/uid/permissions?access_token=access_token': (200, {}),
+            '/uid': (200, {}),
+            '/uid/events?since=yesterday': (200, {}),
+            '/uid/friends': (200, {}),
+            '/uid/permissions': (200, {}),
         }
         # And fetching it then populates our memcache and db
         result = fbl.get(fb_api.LookupUser, 'uid')
@@ -261,3 +261,11 @@ class TestFBLookup(unittest.TestCase):
         fbl.m.invalidate_keys([user_key])
         fbl.clear_local_cache()
         self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupUser, 'uid')
+
+
+
+class TestMisc(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual('/path?fields=a%2Cb', fb_api.LookupType.url('path', fields=['a', 'b']))
+        self.assertEqual(True, fb_api.LookupEvent.use_access_token)
+        self.assertEqual(False, fb_api.LookupProfile.use_access_token)

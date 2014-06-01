@@ -55,7 +55,7 @@ class TestLoadEvents(TestTasks):
 class TestLoadEventAttending(TestTasks):
     def runTest(self):
         fb_api.FBAPI.results = {
-            'https://graph.facebook.com/299993043349170/attending?access_token=DUMMY': (200, {
+            '/299993043349170/attending': (200, {
                 "data": [
                     {"uid": 703278},
                     {"uid": 823422},
@@ -74,7 +74,7 @@ class TestReloadPastEvents(TestTasks):
 class TestTrackNewUserFriends(TestTasks):
     def runTest(self):
         fb_api.FBAPI.results = {
-            'https://graph.facebook.com/fql?q=%0ASELECT+uid+FROM+user%0AWHERE+uid+IN+%28SELECT+uid2+FROM+friend+WHERE+uid1+%3D+701004%29%0AAND+is_app_user+%3D+1%0A&access_token=DUMMY':
+            '/fql?q=%0ASELECT+uid+FROM+user%0AWHERE+uid+IN+%28SELECT+uid2+FROM+friend+WHERE+uid1+%3D+701004%29%0AAND+is_app_user+%3D+1%0A':
             (200, {
                 "data": [
                     {"uid": 703278},

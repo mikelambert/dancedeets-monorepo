@@ -222,29 +222,25 @@ class NoFetchedDataException(Exception):
 
 
 class LookupType(object):
+    use_access_token = True
 
     @classmethod
-    def url(cls, path, access_token, fields=None):
-        url_args = {}
+    def url(cls, path, fields=None):
         if fields:
-            url_args['fields'] = ','.join(fields)
-        if access_token:
-            url_args['access_token'] = access_token
-        return 'https://graph.facebook.com/%s?%s' % (path, urllib.urlencode(url_args))
+            return '/%s?%s' % (path, urllib.urlencode(dict(fields=','.join(fields))))
+        else:
+            return '/%s' % path
 
     @classmethod
-    def fql_url(cls, fql, access_token):
-        url_args = dict(q=fql)
-        if access_token:
-            url_args['access_token'] = access_token
-        return "https://graph.facebook.com/fql?%s" % urllib.urlencode(url_args)
+    def fql_url(cls, fql):
+        return "/fql?%s" % urllib.urlencode(dict(q=fql))
 
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         raise NotImplementedError()
 
     @classmethod
-    def get_lookups(cls, object_id, access_token):
+    def get_lookups(cls, object_id):
         raise NotImplementedError()
 
     @classmethod
@@ -256,10 +252,12 @@ class LookupType(object):
         return object_data
 
 class LookupProfile(LookupType):
+    use_access_token = False
+
     @classmethod
-    def get_lookups(cls, object_id, access_token):
+    def get_lookups(cls, object_id):
         return dict(
-            profile=cls.url('%s' % object_id, None),
+            profile=cls.url('%s' % object_id),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -267,12 +265,12 @@ class LookupProfile(LookupType):
 
 class LookupUser(LookupType):
     @classmethod
-    def get_lookups(cls, object_id, access_token):
+    def get_lookups(cls, object_id):
         return dict(
-            profile=cls.url('%s' % object_id, access_token),
-            friends=cls.url('%s/friends' % object_id, access_token),
-            permissions=cls.url('%s/permissions' % object_id, access_token),
-            rsvp_for_future_events=cls.url('%s/events?since=yesterday' % object_id, access_token),
+            profile=cls.url('%s' % object_id),
+            friends=cls.url('%s/friends' % object_id),
+            permissions=cls.url('%s/permissions' % object_id),
+            rsvp_for_future_events=cls.url('%s/events?since=yesterday' % object_id),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -282,10 +280,10 @@ class LookupUser(LookupType):
 # keeping this file infrastructure and unmodified as we add new features + LookupTypes
 class LookupUserEvents(LookupType):
     @classmethod
-    def get_lookups(cls, object_id, access_token):
+    def get_lookups(cls, object_id):
         today = int(time.mktime(datetime.date.today().timetuple()[:9]))
         return dict(
-            all_event_info=cls.fql_url(ALL_EVENTS_FQL % (object_id, today), access_token),
+            all_event_info=cls.fql_url(ALL_EVENTS_FQL % (object_id, today)),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -293,9 +291,9 @@ class LookupUserEvents(LookupType):
 
 class LookupFriendList(LookupType):
     @classmethod
-    def get_lookups(cls, object_id, access_token):
+    def get_lookups(cls, object_id):
         return dict(
-            friend_list=cls.url('%s/members' % object_id, access_token),
+            friend_list=cls.url('%s/members' % object_id),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -303,10 +301,13 @@ class LookupFriendList(LookupType):
 
 class LookupEvent(LookupType):
     @classmethod
-    def get_lookups(cls, object_id, access_token):
+    def get_lookups(cls, object_id):
+        #TODO: Use dependent lookups to grab cover image data:
+        #     -F 'batch=[{ "method":"GET","name":"get-friends","relative_url":"215868941935265?fields=cover","omit_response_on_success":false},
+        #         {"method":"GET","relative_url":"?fields=images&ids={result=get-friends:$.cover.cover_id}"}]' \
         return dict(
-            info=cls.url(object_id, access_token, fields=OBJ_EVENT_FIELDS),
-            fql_info=cls.fql_url(EXTRA_EVENT_INFO_FQL % (object_id), access_token),
+            info=cls.url(object_id, fields=OBJ_EVENT_FIELDS),
+            fql_info=cls.fql_url(EXTRA_EVENT_INFO_FQL % (object_id)),
             # Do we really want another FQL call used up, just for this? Maybe wait until we can convert all of fql_info over?
             #pic_big=cls.url('%s/picture?type=small&redirect=false' % object_id, access_token),
         )
@@ -333,9 +334,9 @@ class LookupEvent(LookupType):
 
 class LookupEventAttending(LookupType):
     @classmethod
-    def get_lookups(cls, object_id, access_token):
+    def get_lookups(cls, object_id):
         return dict(
-            attending=cls.url('%s/attending' % object_id, access_token),
+            attending=cls.url('%s/attending' % object_id),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -343,12 +344,12 @@ class LookupEventAttending(LookupType):
 
 class LookupEventMembers(LookupType):
     @classmethod
-    def get_lookups(cls, object_id, access_token):
+    def get_lookups(cls, object_id):
         return dict(
-            attending=cls.url('%s/attending' % object_id, access_token),
-            maybe=cls.url('%s/maybe' % object_id, access_token),
-            declined=cls.url('%s/declined' % object_id, access_token),
-            noreply=cls.url('%s/noreply' % object_id, access_token),
+            attending=cls.url('%s/attending' % object_id),
+            maybe=cls.url('%s/maybe' % object_id),
+            declined=cls.url('%s/declined' % object_id),
+            noreply=cls.url('%s/noreply' % object_id),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -356,9 +357,9 @@ class LookupEventMembers(LookupType):
 
 class LookupFQL(LookupType):
     @classmethod
-    def get_lookups(cls, object_id, access_token):
+    def get_lookups(cls, object_id):
         return dict(
-            fql=cls.fql_url(object_id, access_token),
+            fql=cls.fql_url(object_id),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -366,10 +367,10 @@ class LookupFQL(LookupType):
 
 class LookupThingFeed(LookupType):
     @classmethod
-    def get_lookups(cls, object_id, access_token):
+    def get_lookups(cls, object_id):
         return dict(
-            info=cls.url('%s' % object_id, access_token),
-            feed=cls.url('%s/feed' % object_id, access_token),
+            info=cls.url('%s' % object_id),
+            feed=cls.url('%s/feed' % object_id),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -501,12 +502,6 @@ class FBAPI(CacheSystem):
     def invalidate_keys(self, keys):
         raise NotImplementedError("Cannot invalidate anything in FB")
 
-    def _create_rpc_for_url(self, url):
-        rpc = urlfetch.create_rpc(deadline=DEADLINE)
-        urlfetch.make_fetch_call(rpc, url)
-        self.fb_fetches += 1
-        return rpc
-
     def post(self, path, args, post_args):
         if not args: args = {}
         if self.access_token:
@@ -522,17 +517,28 @@ class FBAPI(CacheSystem):
         return result
 
     @staticmethod
-    def _map_rpc_to_data(object_key, object_rpc_name, object_rpc):
+    def _map_rpc_to_data(object_rpc):
         try:
             result = object_rpc.get_result()
             if result.status_code != 200:
-                logging.warning("BatchLookup: Error downloading: %s, error code is %s", object_rpc.request.url(), result.status_code)
+                logging.warning("BatchLookup: Error downloading, error code is %s, body is %s", result.status_code, result.content)
             if result.status_code in [200, 400]:
                 text = result.content
                 return json.loads(text)
         except urlfetch.DownloadError, e:
-            logging.warning("BatchLookup: Error downloading: %s: %s", object_rpc.request.url(), e)
+            logging.warning("BatchLookup: Error downloading: %s", e)
         return None
+
+    def _create_rpc_for_batch(self, batch_list, use_access_token):
+        post_args = {'batch': json.dumps(batch_list)}
+        if use_access_token and self.access_token:
+            post_args["access_token"] = self.access_token
+        post_args["include_headers"] = False # Don't need to see all the caching headers per response
+        post_data = None if post_args is None else urllib.urlencode(post_args)
+        rpc = urlfetch.create_rpc(deadline=DEADLINE)
+        urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/", post_data, "POST")
+        self.fb_fetches += len(batch_list)
+        return rpc
 
     def _fetch_object_keys(self, object_keys_to_lookup):
         logging.info("BatchLookup: Looking up IDs: %s", object_keys_to_lookup)
@@ -540,19 +546,30 @@ class FBAPI(CacheSystem):
         object_keys_to_rpcs = {}
         for object_key in object_keys_to_lookup:
             cls, oid = break_key(object_key)
-            parts_to_urls = cls.get_lookups(oid, self.access_token)
-            parts_to_rpcs = dict((part_key, self._create_rpc_for_url(url)) for (part_key, url) in parts_to_urls.iteritems())
-            object_keys_to_rpcs[object_key] = parts_to_rpcs
+            parts_to_urls = cls.get_lookups(oid)
+            batch_list = [dict(method='GET', name=part_key, relative_url=url, omit_response_on_success=False) for (part_key, url) in parts_to_urls.iteritems()]
+            rpc = self._create_rpc_for_batch(batch_list, cls.use_access_token)
+            object_keys_to_rpcs[object_key] = rpc
 
         # fetch RPCs
         fetched_objects = {}
-        for object_key, object_rpc_dict in object_keys_to_rpcs.iteritems():
+        for object_key, object_rpc in object_keys_to_rpcs.iteritems():
             this_object = {}
             this_object['empty'] = None
             object_is_bad = False
-            for object_rpc_name, object_rpc in object_rpc_dict.iteritems():
-                object_json = self._map_rpc_to_data(object_key, object_rpc_name, object_rpc)
-                if object_json is not None:
+            rpc_results = self._map_rpc_to_data(object_rpc)
+            if isinstance(rpc_results, list):
+                named_results = zip(batch_list, rpc_results)
+            else:
+                logging.error("Error happened!")
+                logging.error("rpc_results is %s", rpc_results)
+                object_is_bad = True
+                named_results = []
+            for batch_item, result in named_results:
+                object_rpc_name = batch_item['name']
+                object_result_code = result['code']
+                object_json = json.loads(result['body'])
+                if object_result_code == 200 and object_json is not None:
                     error_code = None
                     if type(object_json) == dict and ('error_code' in object_json or 'error' in object_json):
                         error_code = object_json.get('error_code', object_json.get('error', {}).get('code', None))
@@ -569,6 +586,7 @@ class FBAPI(CacheSystem):
                         error_message = object_json.get('error', {}).get('message')
                         cls, oid = break_key(object_key)
                         if cls == LookupUser and error_type == 'OAuthException':
+                            #TODO(lambert): this will probably need to be moved in light of the new fb-batch-query usage
                             raise ExpiredOAuthToken(error_message)
                         object_is_bad = True
                     elif object_json == False:
@@ -576,6 +594,7 @@ class FBAPI(CacheSystem):
                     else:
                         this_object[object_rpc_name] = object_json
                 else:
+                    logging.warning("Got code %s when requesting %s: %s", object_result_code, batch_item, result)
                     object_is_bad = True
             if object_is_bad:
                 logging.warning("BatchLookup: Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
