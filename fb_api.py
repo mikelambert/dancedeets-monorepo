@@ -225,9 +225,9 @@ class LookupType(object):
     use_access_token = True
 
     @classmethod
-    def url(cls, path, fields=None):
+    def url(cls, path, fields=None, **kwargs):
         if fields:
-            return '/%s?%s' % (path, urllib.urlencode(dict(fields=','.join(fields))))
+            return '/%s?%s' % (path, urllib.urlencode(dict(fields=','.join(fields), **kwargs)))
         else:
             return '/%s' % path
 
@@ -302,12 +302,11 @@ class LookupFriendList(LookupType):
 class LookupEvent(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
-        #TODO: Use dependent lookups to grab cover image data:
-        #     -F 'batch=[{ "method":"GET","name":"get-friends","relative_url":"215868941935265?fields=cover","omit_response_on_success":false},
-        #         {"method":"GET","relative_url":"?fields=images&ids={result=get-friends:$.cover.cover_id}"}]' \
         return dict(
             info=cls.url(object_id, fields=OBJ_EVENT_FIELDS),
             fql_info=cls.fql_url(EXTRA_EVENT_INFO_FQL % (object_id)),
+            # Dependent lookup for the image from the info's cover photo id:
+            cover_info=cls.url('', fields=['images'], ids='{result=info:$.cover.cover_id}'),
             # Do we really want another FQL call used up, just for this? Maybe wait until we can convert all of fql_info over?
             #pic_big=cls.url('%s/picture?type=small&redirect=false' % object_id, access_token),
         )
