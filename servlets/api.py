@@ -4,10 +4,9 @@ import logging
 import xml.sax.saxutils
 
 import base_servlet
-from events import eventdata
-import locations
 from logic import event_locations
 from logic import search
+from logic import search_base
 from util import text
 from util import urls
 
@@ -20,39 +19,32 @@ class FeedHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
 
-        # TODO(lambert): We should factor out the search-query/results-generation between api.py, calendar.py, and search.py
-        location = self.request.get('location')
-        distance = int(self.request.get('distance', '50'))
-        distance_units = self.request.get('distance_units', 'miles')
+        # Search API explicitly uses user=None
+        fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, None)
 
-        if not location:
+        if not fe_search_query.location:
             self.add_error('Need location parameter')
         format = self.request.get('format', 'json')
         if format not in ('json', 'atom'):
             self.add_error('Unknown format')
         self.errors_are_fatal()
 
-        if distance_units == 'miles':
-            distance_in_km = locations.miles_in_km(distance)
-        else:
-            distance_in_km = distance
-        bounds = locations.get_location_bounds(location, distance_in_km)
-
-        time_period = self.request.get('time_period', eventdata.TIME_FUTURE)
-
-        min_attendees = int(self.request.get('min_attendees', self.user and self.user.min_attendees or 0))
-        keywords = self.request.get('keywords')
-
-        query = search.SearchQuery(time_period=time_period, bounds=bounds, min_attendees=min_attendees, keywords=keywords)
-        search_results = query.get_search_results(self.fbl)
+        search_query = search.SearchQuery.create_from_query(fe_search_query)
+        search_results = search_query.get_search_results(self.fbl)
         #TODO(lambert): move to common library.
         now = datetime.datetime.now() - datetime.timedelta(hours=12)
         search_results = [x for x in search_results if x.start_time > now]
         
+        title = 'dance events within %(distance)s %(distance_units)s of %(location)s.' % dict(
+            distance=fe_search_query.distance,
+            distance_units=fe_search_query.distance_units,
+            location=fe_search_query.location,
+        )
+
         if format == 'atom':
-            return self.HandleAtomFeed(distance, distance_units, location, search_results)
+            return self.HandleAtomFeed(title, search_results)
         elif format == 'json':
-            return self.HandleJsonFeed(distance, distance_units, location, search_results)
+            return self.HandleJsonFeed(search_results)
         else:
             logging.fatal("Unkonwn format, should have been caught up above")
 
@@ -70,7 +62,7 @@ class FeedHandler(base_servlet.BaseRequestHandler):
             'keywords': x.event_keywords,
         }
 
-    def HandleJsonFeed(self, distance, distance_units, location, search_results):
+    def HandleJsonFeed(self, search_results):
         callback = self.request.get('callback')
         if callback:
             self.response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
@@ -84,14 +76,9 @@ class FeedHandler(base_servlet.BaseRequestHandler):
         if callback:
             self.response.out.write(')')
 
-    def HandleAtomFeed(self, distance, distance_units, location, search_results):
+    def HandleAtomFeed(self, title, search_results):
         self.response.headers['Content-Type'] = 'application/atom+xml'
 
-        title = 'dance events within %(distance)s %(distance_units)s of %(location)s.' % dict(
-            distance=distance,
-            distance_units=distance_units,
-            location=location,
-        )
         last_modified = datetime.datetime.now().strftime(DATETIME_FORMAT)
 
         url = 'http://www.dancedeets.com/events/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())

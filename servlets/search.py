@@ -12,7 +12,6 @@ from logic import friends
 from logic import rsvp
 from logic import search
 from logic import search_base
-import locations
 from util import timings
 
 class RelevantHandler(base_servlet.BaseRequestHandler):
@@ -36,40 +35,10 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             self.redirect('/user/edit')
             return
 
-        fe_search_query = search_base.FrontendSearchQuery()
-        fe_search_query.deb = self.request.get('deb')
-        fe_search_query.keywords = self.request.get('keywords')
-
-        # in case we get it passed in via the URL handler
-        city_name = city_name or self.request.get('city_name')
-
-        if city_name:
-            fe_search_query.location = city_name
-            fe_search_query.distance = 50
-            fe_search_query.distance_units = 'miles'
-        else:
-            fe_search_query.location = self.request.get('location', self.user and self.user.location)
-            fe_search_query.distance = int(self.request.get('distance', self.user and self.user.distance or 50))
-            fe_search_query.distance_units = self.request.get('distance_units', self.user and self.user.distance_units or 'miles')
-
-        if fe_search_query.distance_units == 'miles':
-            distance_in_km = locations.miles_in_km(fe_search_query.distance)
-        else:
-            distance_in_km = fe_search_query.distance
-        bounds = locations.get_location_bounds(fe_search_query.location, distance_in_km)
-        fe_search_query.past = self.request.get('past', '0') not in ['0', '', 'False', 'false']
-
-
-        fe_search_query.min_attendees = int(self.request.get('min_attendees', self.user and self.user.min_attendees or 0))
-
-        if fe_search_query.past:
-            time_period = eventdata.TIME_PAST
-        else:
-            time_period = eventdata.TIME_FUTURE
-
+        fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, self.user, city_name=city_name)
         if not self.request.get('calendar'):
-            query = search.SearchQuery(time_period=time_period, bounds=bounds, min_attendees=fe_search_query.min_attendees, keywords=fe_search_query.keywords)
-            search_results = query.get_search_results(self.fbl)
+            search_query = search.SearchQuery.create_from_query(fe_search_query)
+            search_results = search_query.get_search_results(self.fbl)
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
             a = time.time()
             friends.decorate_with_friends(self.fbl, search_results)
@@ -79,7 +48,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             logging.info("Decorating with personal rsvp data took %s seconds", time.time() - a)
 
             past_results, present_results, grouped_results = search.group_results(search_results)
-            if time_period == eventdata.TIME_FUTURE:
+            if search_query.time_period == eventdata.TIME_FUTURE:
                 present_results = past_results + present_results
                 past_results = []
 

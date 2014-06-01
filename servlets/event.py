@@ -79,6 +79,8 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             self.response.out.write('This event was %s.' % event_info['empty'])
             return
 
+        self.display['new_layout'] = self.request.get('new_layout')
+        self.display['cover'] = event_info['info'].get('cover')
         self.display['pic'] = eventdata.get_event_image_url(event_info)
 
         self.display['start_time'] = dates.parse_fb_start_time(event_info)
