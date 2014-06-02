@@ -50,7 +50,7 @@ def mapreduce_scrape_all_sources(fbl, min_potential_events=None):
     # or it will want to do a range-shard on that property. Instead, pass-it-down
     # and use it as an early-return in the per-Source processing.
     fb_mapreduce.start_map(
-        fbl.copy(allow_cache=False), # Force refresh of thing feeds
+        fbl,
         'Scrape All Sources',
         'logic.thing_scraper.map_scrape_events_from_source',
         'logic.thing_db.Source',
