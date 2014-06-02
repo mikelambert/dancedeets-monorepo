@@ -585,7 +585,7 @@ class FBAPI(CacheSystem):
                 object_rpc_name = batch_item['name']
                 object_result_code = result['code']
                 object_json = json.loads(result['body'])
-                if object_result_code == 200 and object_json is not None:
+                if object_result_code in [200, 400] and object_json is not None:
                     error_code = None
                     if type(object_json) == dict and ('error_code' in object_json or 'error' in object_json):
                         error_code = object_json.get('error_code', object_json.get('error', {}).get('code', None))

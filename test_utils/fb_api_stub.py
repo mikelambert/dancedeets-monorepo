@@ -41,14 +41,19 @@ class FakeRPC(object):
             for url in urls:
                 if url in MemoryFBAPI.results:
                     status_code, content = MemoryFBAPI.results[url]
-                    results.append(dict(code=status_code, body=json.dumps(content)))
                 else:
-                    raise urlfetch.DownloadError('no backend data found for %s' % url)
+                    status_code = 404
+                    content = None
+                results.append(dict(code=status_code, body=json.dumps(content)))
             return FakeResult(results)
         else:
             assert len(self.batch_list) == 1
-            status_code, content = MemoryFBAPI.results[self.batch_list[0]['relative_url']]
-            return FakeResult(content)
+            url = self.batch_list[0]['relative_url']
+            if url in MemoryFBAPI.results:
+                status_code, content = MemoryFBAPI.results[url]
+                return FakeResult(content)
+            else:
+                raise urlfetch.DownloadError('no backend data found for %s' % url)
 
 class FakeResult(object):
     def __init__(self, results):

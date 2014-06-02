@@ -286,6 +286,31 @@ class TestFBLookupProfile(unittest.TestCase):
             }
         )
 
+class TestFailureHandling(unittest.TestCase):
+    def setUp(self):
+        self.fb_api = fb_api_stub.Stub()
+        self.fb_api.activate(disk_db=False)
+
+    def tearDown(self):
+        self.fb_api.deactivate()
+
+    def runTest(self):
+        fbl = fb_api.FBLookup('uid', 'access_token')
+
+        # Set up our facebook backend
+        fields_str = '%2C'.join(fb_api.OBJ_EVENT_FIELDS)
+        url = '/eid?fields=%s' % fields_str
+        fb_api.FBAPI.results = {
+            url:
+                (400, {"error": {"message": "Unsupported get request.", "type": "GraphMethodException", "code": 100}}),
+            '/fql?q=%0ASELECT%0Apic%2C+pic_big%2C+pic_small%2C%0Aall_members_count%0AFROM+event+WHERE+eid+%3D+eid%0A':
+                (400, {"error": {"message": "Unsupported get request.", "type": "GraphMethodException", "code": 100}})
+        }
+
+        result = fbl.get(fb_api.LookupEvent, 'eid')
+        self.assertEqual(result['empty'], fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS)
+
+
 class TestMisc(unittest.TestCase):
     def runTest(self):
         self.assertEqual('/path?fields=a%2Cb', fb_api.LookupType.url('path', fields=['a', 'b']))
