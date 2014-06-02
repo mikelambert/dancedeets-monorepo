@@ -30,19 +30,25 @@ class DiskDBCache(fb_api.DBCache):
         return fetched_objects
 
 class FakeRPC(object):
-    def __init__(self, batch_list):
+    def __init__(self, batch_list, use_access_token):
         self.batch_list = batch_list
+        self.use_access_token = use_access_token
 
     def get_result(self):
         results = []
-        urls = [x['relative_url'] for x in self.batch_list]
-        for url in urls:
-            if url in MemoryFBAPI.results:
-                status_code, content = MemoryFBAPI.results[url]
-                results.append(dict(code=status_code, body=json.dumps(content)))
-            else:
-                raise urlfetch.DownloadError('no backend data found for %s' % url)
-        return FakeResult(results)
+        if self.use_access_token:
+            urls = [x['relative_url'] for x in self.batch_list]
+            for url in urls:
+                if url in MemoryFBAPI.results:
+                    status_code, content = MemoryFBAPI.results[url]
+                    results.append(dict(code=status_code, body=json.dumps(content)))
+                else:
+                    raise urlfetch.DownloadError('no backend data found for %s' % url)
+            return FakeResult(results)
+        else:
+            assert len(self.batch_list) == 1
+            status_code, content = MemoryFBAPI.results[self.batch_list[0]['relative_url']]
+            return FakeResult(content)
 
 class FakeResult(object):
     def __init__(self, results):
@@ -53,4 +59,4 @@ class MemoryFBAPI(fb_api.FBAPI):
     results = {}
 
     def _create_rpc_for_batch(self, batch_list, use_access_token):
-        return FakeRPC(batch_list)
+        return FakeRPC(batch_list, use_access_token)

@@ -262,7 +262,29 @@ class TestFBLookup(unittest.TestCase):
         fbl.clear_local_cache()
         self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupUser, 'uid')
 
+class TestFBLookupProfile(unittest.TestCase):
+    def setUp(self):
+        self.fb_api = fb_api_stub.Stub()
+        self.fb_api.activate(disk_db=False)
 
+    def tearDown(self):
+        self.fb_api.deactivate()
+
+    def runTest(self):
+        fbl = fb_api.FBLookup('uid', 'access_token')
+
+        # Set up our facebook backend
+        fb_api.FBAPI.results = {
+            '/uid': (200, {}),
+        }
+        # And fetching it then populates our memcache and db
+        result = fbl.get(fb_api.LookupProfile, 'uid')
+        self.assertEqual(result,
+            {
+                'profile': {},
+                'empty': None,
+            }
+        )
 
 class TestMisc(unittest.TestCase):
     def runTest(self):

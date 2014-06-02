@@ -222,6 +222,7 @@ class NoFetchedDataException(Exception):
 
 
 class LookupType(object):
+    optional_keys = []
     use_access_token = True
 
     @classmethod
@@ -300,6 +301,8 @@ class LookupFriendList(LookupType):
         return (fetching_uid, object_id, 'OBJ_FRIEND_LIST')
 
 class LookupEvent(LookupType):
+    optional_keys = ['cover_info']
+
     @classmethod
     def get_lookups(cls, object_id):
         return dict(
@@ -529,13 +532,20 @@ class FBAPI(CacheSystem):
         return None
 
     def _create_rpc_for_batch(self, batch_list, use_access_token):
-        post_args = {'batch': json.dumps(batch_list)}
-        if use_access_token and self.access_token:
-            post_args["access_token"] = self.access_token
-        post_args["include_headers"] = False # Don't need to see all the caching headers per response
-        post_data = None if post_args is None else urllib.urlencode(post_args)
-        rpc = urlfetch.create_rpc(deadline=DEADLINE)
-        urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/", post_data, "POST")
+        if use_access_token:
+            post_args = {'batch': json.dumps(batch_list)}
+            if use_access_token and self.access_token:
+                post_args["access_token"] = self.access_token
+            post_args["include_headers"] = False # Don't need to see all the caching headers per response
+            post_data = None if post_args is None else urllib.urlencode(post_args)
+            rpc = urlfetch.create_rpc(deadline=DEADLINE)
+            urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/", post_data, "POST")
+        else:
+            if len(batch_list) != 1:
+                raise ValueError("Cannot do batch calls without an access_token")
+            query = batch_list[0]['relative_url']
+            rpc = urlfetch.create_rpc(deadline=DEADLINE)
+            urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/" + query)
         self.fb_fetches += len(batch_list)
         return rpc
 
@@ -553,18 +563,25 @@ class FBAPI(CacheSystem):
         # fetch RPCs
         fetched_objects = {}
         for object_key, object_rpc in object_keys_to_rpcs.iteritems():
+            cls, oid = break_key(object_key)
+            parts_to_urls = cls.get_lookups(oid)
+            mini_batch_list = [dict(name=part_key, relative_url=url) for (part_key, url) in parts_to_urls.iteritems()]
             this_object = {}
             this_object['empty'] = None
             object_is_bad = False
             rpc_results = self._map_rpc_to_data(object_rpc)
+            if not cls.use_access_token:
+                logging.info(rpc_results)
+                rpc_results = [dict(code=200, body=json.dumps(rpc_results))]
             if isinstance(rpc_results, list):
-                named_results = zip(batch_list, rpc_results)
+                named_results = zip(mini_batch_list, rpc_results)
             else:
-                logging.error("Error happened!")
-                logging.error("rpc_results is %s", rpc_results)
+                logging.error("Error occurred on response, rpc_results is %s", rpc_results)
                 object_is_bad = True
                 named_results = []
             for batch_item, result in named_results:
+                #TODO(lambert): handle timeouts:
+                #https://developers.facebook.com/docs/graph-api/making-multiple-requests/#timeouts
                 object_rpc_name = batch_item['name']
                 object_result_code = result['code']
                 object_json = json.loads(result['body'])
@@ -583,7 +600,6 @@ class FBAPI(CacheSystem):
                         error_code = object_json.get('error_code')
                         error_type = object_json.get('error', {}).get('type')
                         error_message = object_json.get('error', {}).get('message')
-                        cls, oid = break_key(object_key)
                         if cls == LookupUser and error_type == 'OAuthException':
                             #TODO(lambert): this will probably need to be moved in light of the new fb-batch-query usage
                             raise ExpiredOAuthToken(error_message)
@@ -594,7 +610,8 @@ class FBAPI(CacheSystem):
                         this_object[object_rpc_name] = object_json
                 else:
                     logging.warning("Got code %s when requesting %s: %s", object_result_code, batch_item, result)
-                    object_is_bad = True
+                    if object_rpc_name not in cls.optional_keys:
+                        object_is_bad = True
             if object_is_bad:
                 logging.warning("BatchLookup: Failed to complete object: %s, only have keys %s", object_key, this_object.keys())
             else:
@@ -674,7 +691,7 @@ class FBLookup(object):
         return self.fetched_data_multi(cls, object_ids)
 
     def batch_fetch(self):
-        object_map, updated_object_map = self._lookup(self._keys_to_fetch)
+        object_map, updated_object_map = self._lookup()
         self._fetched_objects.update(object_map)
         self._db_updated_objects = set(updated_object_map.keys())
         return object_map
@@ -689,7 +706,8 @@ class FBLookup(object):
     def clear_local_cache(self):
         self._fetched_objects = {}
         
-    def _lookup(self, keys):
+    def _lookup(self):
+        keys = self._keys_to_fetch
         all_fetched_objects = {}
         updated_objects = {}
         if self.debug:
@@ -745,6 +763,10 @@ class FBLookup(object):
 
         self.fb_fetches = self.fb.fb_fetches
         self.db_updates = self.db.db_updates
+
+        # In case we do futher fetches, don't refetch any of these keys
+        self._keys_to_fetch = set()
+        self._object_keys_to_lookup_without_cache = set()
 
         return all_fetched_objects, updated_objects
 
