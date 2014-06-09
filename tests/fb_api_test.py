@@ -296,6 +296,7 @@ class TestFailureHandling(unittest.TestCase):
 
     def runTest(self):
         fbl = fb_api.FBLookup('uid', 'access_token')
+        fbl.allow_cache = False
 
         # Set up our facebook backend
         fields_str = '%2C'.join(fb_api.OBJ_EVENT_FIELDS)
@@ -309,6 +310,32 @@ class TestFailureHandling(unittest.TestCase):
 
         result = fbl.get(fb_api.LookupEvent, 'eid')
         self.assertEqual(result['empty'], fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS)
+        fbl.clear_local_cache()
+
+        fb_api.FBAPI.results = {
+            url:
+                (200, {
+                    "name": "Funk in Focus Workshop ft. Rashaad & Future",
+                    "start_time": "2014-07-12T17:00:00-0400",
+                    "id": "eid"
+                }),
+            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.cover_id%7D':
+                (400, {'error': {'message': 'Cannot specify an empty identifier', 'code': 2500, 'type': 'OAuthException'}}),
+            '/fql?q=%0ASELECT%0Apic%2C+pic_big%2C+pic_small%2C%0Aall_members_count%0AFROM+event+WHERE+eid+%3D+eid%0A':
+                (200, {
+                    "data": [
+                        {
+                            "pic": "",
+                            "all_members_count": 437,
+                        }
+                    ]
+                }),
+        }
+
+        result = fbl.get(fb_api.LookupEvent, 'eid')
+        self.assertEqual(result['empty'], None)
+        self.assertEqual(result['info']['id'], 'eid')
+
 
 
 class TestMisc(unittest.TestCase):

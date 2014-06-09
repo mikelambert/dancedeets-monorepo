@@ -593,7 +593,7 @@ class FBAPI(CacheSystem):
                         # This means the event exists, but the current access_token is insufficient to query it
                         this_object['empty'] = EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS
                     elif error_code:
-                        logging.error("BatchLookup: Error code from FB server: %s", object_json)
+                        logging.warning("BatchLookup: Error code from FB server for %s: %s", object_rpc_name, object_json)
 
                         # expired/invalidated OAuth token for User objects. We use one OAuth token per BatchLookup, so no use continuing...
                         # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
@@ -603,7 +603,8 @@ class FBAPI(CacheSystem):
                         if cls == LookupUser and error_type == 'OAuthException':
                             #TODO(lambert): this will probably need to be moved in light of the new fb-batch-query usage
                             raise ExpiredOAuthToken(error_message)
-                        object_is_bad = True
+                        if object_rpc_name not in cls.optional_keys:
+                            object_is_bad = True
                     elif object_json == False:
                         this_object['empty'] = EMPTY_CAUSE_DELETED
                     else:
