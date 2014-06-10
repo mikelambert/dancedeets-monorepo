@@ -68,7 +68,7 @@ def yield_load_fb_user(fbl, user):
     try:
         fbl.batch_fetch()
         fb_user = fbl.fetched_data(fb_api.LookupUser, user.fb_uid)
-    except (fb_api.ExpiredOAuthToken, fb_api.NoFetchedDataException), e:
+    except fb_api.ExpiredOAuthToken as e:
         logging.info("Auth token now expired, mark as such: %s", e)
         user.expired_oauth_token_reason = e.args[0]
         user.expired_oauth_token = True
@@ -125,7 +125,7 @@ def yield_email_user(fbl, user):
     fbl.request(fb_api.LookupUserEvents, user.fb_uid)
     try:
         fbl.batch_fetch()
-    except fb_api.ExpiredOAuthToken, e:
+    except fb_api.ExpiredOAuthToken as e:
         logging.info("Auth token now expired, mark as such: %s", e)
         user.expired_oauth_token_reason = e.args[0]
         user.expired_oauth_token = True
