@@ -286,7 +286,7 @@ class TestFBLookupProfile(unittest.TestCase):
             }
         )
 
-class TestFailureHandling(unittest.TestCase):
+class TestEventFailureHandling(unittest.TestCase):
     def setUp(self):
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate(disk_db=False)
@@ -318,7 +318,7 @@ class TestFailureHandling(unittest.TestCase):
         fb_api.FBAPI.results = {
             url:
                 (200, {'id': 'eid'}),
-            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.cover_id%7D': None,
+            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.cover_id%7D': fb_api_stub.RESULT_TIMEOUT,
             '/fql?q=%0ASELECT%0Apic%2C+pic_big%2C+pic_small%2C%0Aall_members_count%0AFROM+event+WHERE+eid+%3D+eid%0A':
                 (200, {}),
         }
@@ -331,11 +331,11 @@ class TestFailureHandling(unittest.TestCase):
         fb_api.FBAPI.results = {
             url:
                 (200, {'id': 'eid'}),
-            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.cover_id%7D': None,
-            '/fql?q=%0ASELECT%0Apic%2C+pic_big%2C+pic_small%2C%0Aall_members_count%0AFROM+event+WHERE+eid+%3D+eid%0A': None,
+            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.cover_id%7D': fb_api_stub.RESULT_TIMEOUT,
+            '/fql?q=%0ASELECT%0Apic%2C+pic_big%2C+pic_small%2C%0Aall_members_count%0AFROM+event+WHERE+eid+%3D+eid%0A': fb_api_stub.RESULT_TIMEOUT,
         }
 
-        self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupUser, 'eid')
+        self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupEvent, 'eid')
         fbl.clear_local_cache()
 
         # Event without a Cover field
@@ -363,10 +363,28 @@ class TestFailureHandling(unittest.TestCase):
         self.assertEqual(result['empty'], None)
         self.assertEqual(result['info']['id'], 'eid')
 
-        #TODO(lambert): Add token-expiration functionality tests.
-        """
-        {u'error': {u'message': u'Error validating access token: Session has expired on Jun 9, 2014 10:05am. The current time is Jun 9, 2014 10:32am.', u'code': 190, u'type': u'OAuthException', u'error_subcode': 463}}
-        """
+class TestUserFailureHandling(unittest.TestCase):
+    def setUp(self):
+        self.fb_api = fb_api_stub.Stub()
+        self.fb_api.activate(disk_db=False)
+
+    def tearDown(self):
+        self.fb_api.deactivate()
+
+    def runTest(self):
+        fbl = fb_api.FBLookup('uid', fb_api_stub.EXPIRED_ACCESS_TOKEN)
+        fbl.allow_cache = False
+
+        self.assertRaises(fb_api.ExpiredOAuthToken, fbl.get, fb_api.LookupUser, 'uid')
+
+        try:
+            fbl.get(fb_api.LookupUser, 'eid')
+        except fb_api.ExpiredOAuthToken as e:
+            self.assertTrue('Error validating access token' in e.args[0])
+        fbl.clear_local_cache()
+
+        # TODO(lambert): Test and handle partial-permissions access problems?
+
 
 
 class TestMisc(unittest.TestCase):

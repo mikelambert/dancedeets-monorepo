@@ -576,6 +576,12 @@ class FBAPI(CacheSystem):
             if isinstance(rpc_results, list):
                 named_results = zip(mini_batch_list, rpc_results)
             else:
+                error_type = rpc_results.get('error', {}).get('type')
+                error_message = rpc_results.get('error', {}).get('message')
+                # expired/invalidated OAuth token for User objects. We use one OAuth token per BatchLookup, so no use continuing...
+                # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
+                if cls == LookupUser and error_type == 'OAuthException':
+                    raise ExpiredOAuthToken(error_message)
                 logging.error("Error occurred on response, rpc_results is %s", rpc_results)
                 object_is_bad = True
                 named_results = []
@@ -595,17 +601,16 @@ class FBAPI(CacheSystem):
                     if error_code == 100:
                         # This means the event exists, but the current access_token is insufficient to query it
                         this_object['empty'] = EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS
+                    elif error_code in [
+                            2, # Temporary API error: An unexpected error has occurred. Please retry your request later.
+                            2500, # Dependent-lookup on non-existing field: Cannot specify an empty identifier.
+                        ]:
+                        pass
+                        logging.warning("BatchLookup: Error code from FB server for %s: %s: %s", object_rpc_name, error_code, object_json)
+                        if object_rpc_name not in cls.optional_keys:
+                            object_is_bad = True
                     elif error_code:
-                        logging.warning("BatchLookup: Error code from FB server for %s: %s", object_rpc_name, object_json)
-
-                        # expired/invalidated OAuth token for User objects. We use one OAuth token per BatchLookup, so no use continuing...
-                        # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
-                        error_code = object_json.get('error_code')
-                        #TODO(lambert): this will probably need to be moved in light of the new fb-batch-query usage. Everything is an OAuthException now
-                        #error_type = object_json.get('error', {}).get('type')
-                        #error_message = object_json.get('error', {}).get('message')
-                        #if cls == LookupUser and error_type == 'OAuthException':
-                        #    raise ExpiredOAuthToken(error_message)
+                        logging.error("BatchLookup: Error code from FB server for %s: %s: %s", object_rpc_name, error_code, object_json)
                         if object_rpc_name not in cls.optional_keys:
                             object_is_bad = True
                     elif object_json == False:
