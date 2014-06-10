@@ -100,8 +100,12 @@ def get_location_bounds(address, distance_in_km):
 
     def to_latlng(x):
         return x['lat'], x['lng']
-    northeast = to_latlng(result['geometry']['viewport']['northeast'])
-    southwest = to_latlng(result['geometry']['viewport']['southwest'])
+    try:
+        northeast = to_latlng(result['geometry']['viewport']['northeast'])
+        southwest = to_latlng(result['geometry']['viewport']['southwest'])
+    except TypeError as e:
+        logging.error("Problem with address: %r: %r", address, result)
+        raise e
 
     logging.info("1 NE %s, SW %s", northeast, southwest)
 
