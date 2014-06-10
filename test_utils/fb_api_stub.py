@@ -40,11 +40,19 @@ class FakeRPC(object):
             urls = [x['relative_url'] for x in self.batch_list]
             for url in urls:
                 if url in MemoryFBAPI.results:
-                    status_code, content = MemoryFBAPI.results[url]
+                    result = MemoryFBAPI.results[url]
+                    if result is None:
+                        status_code = None
+                        content = None
+                    else:
+                        status_code, content = result
                 else:
                     status_code = 404
                     content = None
-                results.append(dict(code=status_code, body=json.dumps(content)))
+                if status_code:
+                    results.append(dict(code=status_code, body=json.dumps(content)))
+                else:
+                    results.append(None)
             return FakeResult(results)
         else:
             assert len(self.batch_list) == 1

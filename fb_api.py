@@ -580,9 +580,12 @@ class FBAPI(CacheSystem):
                 object_is_bad = True
                 named_results = []
             for batch_item, result in named_results:
-                #TODO(lambert): handle timeouts:
-                #https://developers.facebook.com/docs/graph-api/making-multiple-requests/#timeouts
                 object_rpc_name = batch_item['name']
+                if result is None:
+                    logging.warning("Got timeout when requesting %s", batch_item)
+                    if object_rpc_name not in cls.optional_keys:
+                        object_is_bad = True
+                    continue
                 object_result_code = result['code']
                 object_json = json.loads(result['body'])
                 if object_result_code in [200, 400] and object_json is not None:
@@ -598,11 +601,11 @@ class FBAPI(CacheSystem):
                         # expired/invalidated OAuth token for User objects. We use one OAuth token per BatchLookup, so no use continuing...
                         # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
                         error_code = object_json.get('error_code')
-                        error_type = object_json.get('error', {}).get('type')
-                        error_message = object_json.get('error', {}).get('message')
-                        if cls == LookupUser and error_type == 'OAuthException':
-                            #TODO(lambert): this will probably need to be moved in light of the new fb-batch-query usage
-                            raise ExpiredOAuthToken(error_message)
+                        #TODO(lambert): this will probably need to be moved in light of the new fb-batch-query usage. Everything is an OAuthException now
+                        #error_type = object_json.get('error', {}).get('type')
+                        #error_message = object_json.get('error', {}).get('message')
+                        #if cls == LookupUser and error_type == 'OAuthException':
+                        #    raise ExpiredOAuthToken(error_message)
                         if object_rpc_name not in cls.optional_keys:
                             object_is_bad = True
                     elif object_json == False:

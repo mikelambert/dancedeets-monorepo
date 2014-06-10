@@ -12,7 +12,7 @@ from mapreduce import operation as op
 
 from events import cities
 from events import eventdata
-#from events import users
+from events import users
 import fb_api
 from logic import auto_add
 #from logic import event_classifier
@@ -87,7 +87,13 @@ def mr_private_events(fbl):
 
 class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp2.RequestHandler):
     def get(self):
-        mr_private_events(self.fbl)
+        all_users = users.User.all().fetch(10000)
+        for user in all_users:
+            if user.expired_oauth_token_reason and 'fb_api.LookupUser' in user.expired_oauth_token_reason:
+                user.expired_oauth_token_reason = None
+                user.expired_oauth_token = False
+                user.put()
+
 
 class AutoAddPotentialEventsHandler(tasks.BaseTaskFacebookRequestHandler):
     def get(self):

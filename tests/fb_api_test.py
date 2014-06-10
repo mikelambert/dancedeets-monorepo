@@ -301,21 +301,48 @@ class TestFailureHandling(unittest.TestCase):
         # Set up our facebook backend
         fields_str = '%2C'.join(fb_api.OBJ_EVENT_FIELDS)
         url = '/eid?fields=%s' % fields_str
+
+        # Inaccessible event
         fb_api.FBAPI.results = {
             url:
                 (400, {"error": {"message": "Unsupported get request.", "type": "GraphMethodException", "code": 100}}),
             '/fql?q=%0ASELECT%0Apic%2C+pic_big%2C+pic_small%2C%0Aall_members_count%0AFROM+event+WHERE+eid+%3D+eid%0A':
-                (400, {"error": {"message": "Unsupported get request.", "type": "GraphMethodException", "code": 100}})
+                (400, {"error": {"message": "Unsupported get request.", "type": "GraphMethodException", "code": 100}}),
         }
 
         result = fbl.get(fb_api.LookupEvent, 'eid')
         self.assertEqual(result['empty'], fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS)
         fbl.clear_local_cache()
 
+        # Partial timeout of optional field
+        fb_api.FBAPI.results = {
+            url:
+                (200, {'id': 'eid'}),
+            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.cover_id%7D': None,
+            '/fql?q=%0ASELECT%0Apic%2C+pic_big%2C+pic_small%2C%0Aall_members_count%0AFROM+event+WHERE+eid+%3D+eid%0A':
+                (200, {}),
+        }
+
+        result = fbl.get(fb_api.LookupEvent, 'eid')
+        self.assertEqual(result['info']['id'], 'eid')
+        fbl.clear_local_cache()
+
+        # Partial timeout of required field
+        fb_api.FBAPI.results = {
+            url:
+                (200, {'id': 'eid'}),
+            '/?fields=images&ids=%7Bresult%3Dinfo%3A%24.cover.cover_id%7D': None,
+            '/fql?q=%0ASELECT%0Apic%2C+pic_big%2C+pic_small%2C%0Aall_members_count%0AFROM+event+WHERE+eid+%3D+eid%0A': None,
+        }
+
+        self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupUser, 'eid')
+        fbl.clear_local_cache()
+
+        # Event without a Cover field
         fb_api.FBAPI.results = {
             url:
                 (200, {
-                    "name": "Funk in Focus Workshop ft. Rashaad & Future",
+                    "name": "Event Title",
                     "start_time": "2014-07-12T17:00:00-0400",
                     "id": "eid"
                 }),
@@ -336,6 +363,10 @@ class TestFailureHandling(unittest.TestCase):
         self.assertEqual(result['empty'], None)
         self.assertEqual(result['info']['id'], 'eid')
 
+        #TODO(lambert): Add token-expiration functionality tests.
+        """
+        {u'error': {u'message': u'Error validating access token: Session has expired on Jun 9, 2014 10:05am. The current time is Jun 9, 2014 10:32am.', u'code': 190, u'type': u'OAuthException', u'error_subcode': 463}}
+        """
 
 
 class TestMisc(unittest.TestCase):
