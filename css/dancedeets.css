@@ -32,6 +32,8 @@
 	height: 315px;
 	width: 850px;
 	overflow: hidden;
+	margin-left:auto;
+	margin-right:auto;
 }
 #cover-box.#cover {
 	position:absolute;

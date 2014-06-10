@@ -9,6 +9,46 @@ $format_html($event.info.name)
 #end def
 
 #def body
+#if $new_layout
+<div class="row" itemscope itemtype="http://data-vocabulary.org/Event">
+#if $cover
+<div id="cover-box" style="background: url(/images/fade-dark.png) bottom left repeat-x;">
+<!--TODO: HANDLE MISSING COVER GRACEFULLY!!!-->
+<img src="$cover.source" id="cover" itemprop="photo" style="top:-${cover.offset_y}%">
+</div>
+#end if
+
+<div style="float: left">
+<p><b>Time:</b></p><br>
+$duration_human_format($start_time, $end_time)
+
+<p><b>Location:</b></p><br>
+<div itemprop="location">
+#if 'location' in $event.info
+$event.info.location<br>
+#end if
+#if 'venue' in $event.info and 'street' in $event.info.venue
+$event.info.venue.street<br>
+#end if
+$city_state_country<br>
+</div>
+
+<b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b>
+</div>
+
+<div style="float: right">
+<div class="sub-content">
+<div class="box" itemprop="description">
+#if 'description' in $event.info
+	$format_html($event.info.description)
+#end if
+</div>
+</div>
+
+</div>
+
+</div>
+#else
 <div class="row" itemscope itemtype="http://data-vocabulary.org/Event">
 
 <div class="sub-content span4">
@@ -45,6 +85,7 @@ $city_state_country<br>
 </div>
 
 </div>
+#end if
 #end def
 
 #def bottom_javascript
