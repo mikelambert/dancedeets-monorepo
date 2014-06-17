@@ -15,6 +15,8 @@ class Stub(object):
         self.real_fb_api = fb_api.FBAPI
         if memory_memcache:
             fb_api.FBAPI = MemoryFBAPI
+            fb_api.FBAPI.do_timeout = False
+            fb_api.FBAPI.results = {}
         self.real_db_cache = fb_api.DBCache
         if disk_db:
             fb_api.DBCache = DiskDBCache
@@ -34,14 +36,17 @@ class DiskDBCache(fb_api.DBCache):
         return fetched_objects
 
 class FakeRPC(object):
-    def __init__(self, batch_list, use_access_token, expired_token):
+    def __init__(self, batch_list, use_access_token, expired_token, do_timeout):
         self.batch_list = batch_list
         self.use_access_token = use_access_token
         self.expired_token = expired_token
+        self.do_timeout = do_timeout
 
     def get_result(self):
         results = []
-        if self.expired_token:
+        if self.do_timeout:
+            raise urlfetch.DownloadError("Deadline exceeded while waiting for HTTP response from URL")
+        elif self.expired_token:
             return FakeResult(400, {'error': {
                 'message': u'Error validating access token: Session has expired on Jun 9, 2014 10:05am. The current time is Jun 9, 2014 10:32am.',
                 'code': 190,
@@ -82,6 +87,7 @@ class FakeResult(object):
 
 class MemoryFBAPI(fb_api.FBAPI):
     results = {}
+    do_timeout = False
 
     def _create_rpc_for_batch(self, batch_list, use_access_token):
-        return FakeRPC(batch_list, use_access_token, self.access_token == EXPIRED_ACCESS_TOKEN)
+        return FakeRPC(batch_list, use_access_token, self.access_token == EXPIRED_ACCESS_TOKEN, self.do_timeout)

@@ -362,6 +362,12 @@ class TestEventFailureHandling(unittest.TestCase):
         result = fbl.get(fb_api.LookupEvent, 'eid')
         self.assertEqual(result['empty'], None)
         self.assertEqual(result['info']['id'], 'eid')
+        fbl.clear_local_cache()
+
+        fb_api.FBAPI.do_timeout = True
+        self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupEvent, 'eid')
+        fb_api.FBAPI.do_timeout = False
+        fbl.clear_local_cache()
 
 class TestUserFailureHandling(unittest.TestCase):
     def setUp(self):

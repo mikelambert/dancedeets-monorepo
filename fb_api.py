@@ -197,6 +197,9 @@ GRAPH_ID_REMAP = {
     '196190050417479': '109385715812370',
     '111360475626193': '113447425480493',
     '127038517466349': '524300984332662',
+    '156791684337813': '498318103607011',
+    '127038517466349': '524300984332662',
+
 
 }
 
@@ -485,7 +488,7 @@ class DBCache(CacheSystem):
         for object_key, this_object in keys_to_objects.iteritems():
             if not self._is_cacheable(object_key, this_object):
                 #TODO(lambert): cache the fact that it's a private-unshowable event somehow? same as deleted events?
-                logging.warning("Looked up event %s but is not cacheable.", object_key)
+                logging.warning("BatchLookup: Looked up event %s but is not cacheable.", object_key)
                 continue
             try:
                 cache_key = self.key_to_cache_key(object_key)
@@ -596,10 +599,13 @@ class FBAPI(CacheSystem):
             object_is_bad = False
             rpc_results = self._map_rpc_to_data(object_rpc)
             if not cls.use_access_token:
-                logging.info(rpc_results)
                 rpc_results = [dict(code=200, body=json.dumps(rpc_results))]
             if isinstance(rpc_results, list):
                 named_results = zip(mini_batch_list, rpc_results)
+            elif rpc_results is None:
+                logging.warning("BatchLookup: Has empty rpc_results, perhaps due to URL fetch timeout")
+                object_is_bad = True
+                named_results = []
             else:
                 error_code = rpc_results.get('error', {}).get('code')
                 error_type = rpc_results.get('error', {}).get('type')
@@ -608,13 +614,13 @@ class FBAPI(CacheSystem):
                 # we don't trigger on UserEvents objects since those are often optional and we don't want to break on those, or set invalid bits on those (get it from the User failures instead)
                 if error_code == 190 and error_type == 'OAuthException':
                     raise ExpiredOAuthToken(error_message)
-                logging.error("Error occurred on response, rpc_results is %s", rpc_results)
+                logging.error("BatchLookup: Error occurred on response, rpc_results is %s", rpc_results)
                 object_is_bad = True
                 named_results = []
             for batch_item, result in named_results:
                 object_rpc_name = batch_item['name']
                 if result is None:
-                    logging.warning("Got timeout when requesting %s", batch_item)
+                    logging.warning("BatchLookup: Got timeout when requesting %s", batch_item)
                     if object_rpc_name not in cls.optional_keys:
                         object_is_bad = True
                     continue
@@ -644,7 +650,7 @@ class FBAPI(CacheSystem):
                     else:
                         this_object[object_rpc_name] = object_json
                 else:
-                    logging.warning("Got code %s when requesting %s: %s", object_result_code, batch_item, result)
+                    logging.warning("BatchLookup: Got code %s when requesting %s: %s", object_result_code, batch_item, result)
                     if object_rpc_name not in cls.optional_keys:
                         object_is_bad = True
             if object_is_bad:
@@ -760,7 +766,7 @@ class FBLookup(object):
                 all_fetched_objects.update(fetched_objects)
                 unknown_results = set(fetched_objects).difference(keys)
                 if len(unknown_results):
-                    logging.error("Unknown keys found: %s", unknown_results)
+                    logging.error("BatchLookup: Unknown keys found: %s", unknown_results)
                 keys = set(keys).difference(fetched_objects)
 
             # DB Read
@@ -775,7 +781,7 @@ class FBLookup(object):
                 all_fetched_objects.update(fetched_objects)
                 unknown_results = set(fetched_objects).difference(keys)
                 if len(unknown_results):
-                    logging.error("Unknown keys found: %s", unknown_results)
+                    logging.error("BatchLookup: Unknown keys found: %s", unknown_results)
                 keys = set(keys).difference(fetched_objects)
 
         # Facebook Read
@@ -790,11 +796,11 @@ class FBLookup(object):
         all_fetched_objects.update(fetched_objects)
         unknown_results = set(fetched_objects).difference(keys)
         if len(unknown_results):
-            logging.error("Unknown keys found: %s", unknown_results)
+            logging.error("BatchLookup: Unknown keys found: %s", unknown_results)
         keys = set(keys).difference(fetched_objects)
 
         if keys:
-            logging.error("Couldn't find values for keys: %s", keys)
+            logging.error("BatchLookup: Couldn't find values for keys: %s", keys)
 
         self.fb_fetches = self.fb.fb_fetches
         self.db_updates = self.db.db_updates
