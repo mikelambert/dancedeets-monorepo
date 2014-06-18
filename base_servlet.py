@@ -5,6 +5,7 @@ import Cookie
 import datetime
 import json
 import logging
+import hashlib
 import os
 import urllib
 import webapp2
@@ -113,76 +114,115 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         rendered = template.render_template(name, self.display)
         self.response.out.write(rendered)
 
+def generate_userlogin_hash(user_login_cookie):
+    raw_string = ','.join('%r: %r' % (k.encode('ascii'), v.encode('ascii')) for (k, v) in sorted(user_login_cookie.items()) if k != 'hash')
+    m = hashlib.md5()
+    m.update(FACEBOOK_CONFIG['secret_key'])
+    m.update(raw_string)
+    m.update(FACEBOOK_CONFIG['secret_key'])
+    return m.hexdigest()
+
+def validate_hashed_userlogin(user_login_cookie):
+    passed_hash = user_login_cookie['hash']
+    computed_hash = generate_userlogin_hash(user_login_cookie)
+    if passed_hash != computed_hash:
+        logging.error("For user_login_data %s, passed_in_hash %s != computed_hash %s", user_login_cookie, passed_hash, computed_hash)
+    return passed_hash == computed_hash
+
 class BaseRequestHandler(BareBaseRequestHandler):
+
+    def get_long_lived_token_and_expires(self, request):
+        response = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['app_id'], FACEBOOK_CONFIG['secret_key'])
+        return response['access_token'], response['access_token_expires']
+
     def setup_login_state(self, request):
         #TODO(lambert): change fb api to not request access token, and instead pull it from the user
         # only request the access token from FB when it's been longer than a day, and do it out-of-band to fetch-and-update-db-and-memcache
 
-        self.fb_user = None
         self.fb_uid = None
         self.user = None
         self.access_token = None
 
-        args = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['app_id'], FACEBOOK_CONFIG['secret_key'])
-        # We should return args if we're signed in, one way or the other
-        # though we may not have gotten an access_token this way if the received cookie was the same as the previous request
-        if not args:
+        # Load Facebook cookie
+        response = facebook.parse_signed_request(request.cookies.get("fbsr_" + FACEBOOK_CONFIG['app_id'], ""), FACEBOOK_CONFIG['secret_key'])
+        fb_cookie_uid = None
+        if response:
+            fb_cookie_uid = int(response['user_id'])
+        logging.info("fb cookie id is %s", fb_cookie_uid)
+
+        # Load our dancedeets logged-in user/state
+        our_cookie_uid = None
+        user_login_string = request.cookies.get('user_login', '')
+        if user_login_string:
+            user_login_cookie = json.loads(urllib.unquote(user_login_string))
+            if validate_hashed_userlogin(user_login_cookie):
+                our_cookie_uid = int(user_login_cookie['uid'])
+
+        # If the user has changed facebook users, let's automatically re-login at dancedeets
+        if fb_cookie_uid and fb_cookie_uid != our_cookie_uid:
+            user_login_cookie = {
+                'uid': str(fb_cookie_uid),
+            }
+            user_login_cookie['hash'] = generate_userlogin_hash(user_login_cookie)
+            user_login_string = urllib.quote(json.dumps(user_login_cookie))
+            logging.info("setting cookie response... to %s", user_login_string)
+            domain = request.host.replace('www.','.')
+            if ':' in domain:
+                domain = domain.split(':')[0]
+            self.response.set_cookie('user_login', user_login_string, expires=datetime.datetime.now() + datetime.timedelta(days=30), path='/', domain=domain)
+            our_cookie_uid = fb_cookie_uid
+
+        # Don't force-logout the user if there is a our_cookie_uid but not a fb_cookie_uid
+        # The fb cookie probably expired after a couple hours, and we'd prefer to keep our users logged-in
+
+        # Logged-out view, just return without setting anything up
+        if not our_cookie_uid:
             return
 
-        self.fb_uid = int(args['uid'])
+        self.fb_uid = our_cookie_uid
         self.user = users.User.get_cached(str(self.fb_uid))
 
-        # if we don't have a user and don't have a token, it means the user just signed-up, but double-refreshed.
-        # so the second request doesn't have a user. so let it be logged-out, as we continue on...
-        # the other request should construct the user, so the next load should work okay
-        if not self.user and not args['access_token']:
-            logging.error("We have no user and no access token, but we know they're logged in. Likely due to a double-refresh on the same cookie, for a user who just signed up")
-            self.fb_uid = None
-            self.access_token = None
-            self.user = None
-            return
-            
-        fbl = fb_api.FBLookup(self.fb_uid, args['access_token'])
-        self.fb_user = fbl.get(fb_api.LookupUser, self.fb_uid)
-
-        # if we don't have a user but do have a token, the user has granted us permissions, so let's construct the user now
-        if not self.user:
+        # If we have a user, grab the access token
+        if self.user:
+            # Long-lived tokens should last "around" 60 days, so let's refresh-renew if there's only 40 days left
+            if self.user.fb_access_token_expires:
+                token_expires_soon = (self.user.fb_access_token_expires - datetime.datetime.now()) < datetime.timedelta(days=40)
+            else:
+                token_expires_soon = True
+            if self.user.expired_oauth_token or token_expires_soon:
+                access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
+                logging.info("Putting new access token into db/memcache")
+                self.user = users.User.get_by_key_name(str(self.fb_uid))
+                self.user.fb_access_token = access_token
+                self.user.fb_access_token_expires = access_token_expires
+                self.user.expired_oauth_token = False
+                self.user.put() # this also sets to memcache
+            self.access_token = self.user.fb_access_token
+        else:
+            # if we don't have a user but do have a token, the user has granted us permissions, so let's construct the user now
+            access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
+            self.access_token = access_token
+            # Fix this ugly import hack:
             from servlets import login
-            fbl = fb_api.FBLookup(self.fb_uid, args['access_token'])
-            self.fb_user = fbl.get(fb_api.LookupUser, self.fb_uid)
+            fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
+            fb_user = fbl.get(fb_api.LookupUser, self.fb_uid)
             
             referer = self.get_cookie('User-Referer')
-
-            login.construct_user(self.fb_uid, args['access_token'], args['access_token_expires'], self.fb_user, self.request, referer)
+            login.construct_user(self.fb_uid, self.access_token, access_token_expires, fb_user, self.request, referer)
             #TODO(lambert): handle this MUUUCH better
             logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
             self.user = users.User.get_cached(str(self.fb_uid))
-
-        if not self.user:
-            logging.error("We still don't have a user!")
-            self.fb_uid = None
-            self.access_token = None
-            self.user = None
-            return
+            # Should not happen:
+            if not self.user:
+                logging.error("We still don't have a user!")
+                self.fb_uid = None
+                self.access_token = None
+                self.user = None
+                return
 
         logging.info("Logged in uid %s with name %s", self.fb_uid, self.user.full_name)
-        # When we get args, we may have gotten a new access token, or not...so choose the best we've got
-        self.access_token = (args['access_token'] or (self.user and self.user.fb_access_token))
-        # If their auth token has changed, then write out the new one
-        logging.info("User has token %s, cookie has token %s", self.user.fb_access_token, args['access_token'])
-
-        if (
-            # if the user's token is expired and we have a new one, grab the new one
-            (self.user.expired_oauth_token and args['access_token']) or
-            # if the user's access token differs from what's stored, update it
-            (args['access_token'] and self.user.fb_access_token != args['access_token'])
-        ):
-            logging.info("Putting new access token into db/memcache")
-            self.user = users.User.get_by_key_name(str(self.fb_uid))
-            self.user.fb_access_token = self.access_token
-            self.user.expired_oauth_token = False
-            self.user.put() # this also sets to memcache
-
+        
+        # Track last-logged-in state
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         if not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday:
             # Do this in a separate request so we don't increase latency on this call
@@ -233,8 +273,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 self.user = None
         # If they have a fb_uid, let's do lookups on that behalf (does not require a user)
         if self.fb_uid:
-            if not self.user:
-                logging.error("Do not have a self.user at point B")
             allow_cache = bool(int(self.request.get('allow_cache', 1)))
             self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
             self.fbl.allow_cache = allow_cache
@@ -287,7 +325,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.fbl.batch_fetch()
 
     def render_template(self, name):
-        self.display['fb_user'] = self.fb_user
+        if self.fb_uid:
+            self.display['fb_user'] = self.fbl.fetched_data(fb_api.LookupUser, self.fb_uid)
         super(BaseRequestHandler, self).render_template(name)
 
 

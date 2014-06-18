@@ -93,48 +93,65 @@
 #end def
 
 #def fb_javascript($next='')
+<script src="/vjs/$version/jquery.cookie.js"></script>
 <div id="fb-root"></div>
 <script type="text/javascript">
-  (function() {
-    var e = document.createElement('script'); e.async = true;
-    e.src = document.location.protocol +
-      '//connect.facebook.net/en_US/all.js';
-    document.getElementById('fb-root').appendChild(e);
-  }());
+	(function() {
+		var e = document.createElement('script'); e.async = true;
+		e.src = document.location.protocol +
+			'//connect.facebook.net/en_US/all.js';
+		document.getElementById('fb-root').appendChild(e);
+	}());
 
-  function deleteFBCookie() {
-	document.cookie = 'fbsr_${app_id}=;path=/;domain=.dancedeets.com;expires=Thu, 01-Jan-1970 00:00:01 GMT';
-  }
-
-  function reloadWithNewToken() {
-	if (String(window.location).indexOf('?') != -1) {
-		window.location = window.location + '&new_token=1';
-	} else {
-		window.location = window.location + '?new_token=1';
+	function deleteLoginCookies() {
+		$.removeCookie('fbsr_${app_id}')
+		$.removeCookie('user_login')
 	}
-  }
 
-  function logout() {
- 	FB.logout(function(response) {
-		deleteFBCookie();
-		window.location.reload();
-	});
-  }
-  function handleStatusChange(response) {
-	if (response.status === 'connected') {
-		// TODO(lambert): LOGIN: Can we do an in-place reload of the upper-header via ajax?
-		reloadWithNewToken();
-	} else if (response.status === 'not_authorized') {
-		// the user is logged in to Facebook, 
-		//but not connected to the app
-	} else {
-		// the user isn't even logged in to Facebook.
+	function reloadWithNewToken() {
+		if (String(window.location).indexOf('?') != -1) {
+			window.location = window.location + '&new_token=1';
+		} else {
+			window.location = window.location + '?new_token=1';
+		}
 	}
-  }
-  function preSignUp() {
+	function currentUser() {
+		var user_login = $.cookie('user_login');
+		if (user_login) {
+			var a = user_login;
+			var b = JSON.parse(a);
+			var c = JSON.parse(user_login)['uid'];
+			return JSON.parse(user_login)['uid'];
+		}
+	}
+
+	function logout() {
+		FB.logout(function(response) {
+			deleteLoginCookies();
+			window.location.reload();
+		});
+	}
+	function handleStatusChange(response) {
+	alert(reponse.status);
+		if (response.status === 'connected') {
+			if (response.authResponse.userID != currentUser()) {
+				// reload through endpoint to set up new user cookie serverside
+				// TODO(lambert): Add a full-screen overlay explaining what we are doing...
+				reloadWithNewToken();
+			}
+		} else if (response.status === 'not_authorized') {
+			// the user is logged in to Facebook, but not connected to the app
+			deleteLoginCookies();
+			// TODO(lambert): Add a full-screen overlay explaining what we are doing...
+			reloadWithNewToken();
+		} else {
+			// the user isn't even logged in to Facebook.
+		}
+	}
+	function preSignUp() {
 		_gaq.push(['_trackEvent', 'Signup', 'Opened FB Signup Window']);
-  }
-  function signUp() {
+	}
+	function signUp() {
 		_gaq.push(['_trackEvent', 'Signup', 'Closed FB Signup Window']);
 		FB.getLoginStatus(function(response) {
 			if (!response.authResponse) {
@@ -145,16 +162,10 @@
 				reloadWithNewToken();
 			}
 		});
-  }
-  window.fbAsyncInit = function() {
+	}
+	window.fbAsyncInit = function() {
 		FB.init({appId: '$app_id', status: true, cookie: true, xfbml: true});
-		#if not $fb_user and $attempt_autologin
-			## only subscribe to login-status notifications if we're logged out, otherwise we get in an infinite loop
-			// TODO(lambert): LOGIN:
-			//I think it should be okay to subscribe to logged-in status changes, as long as we check "old state" and compare against that?
-			// Needs some testing. Might be able to get rid of the signUp() function and combine it with handleStatusChange ?
-			FB.Event.subscribe('auth.statusChange', handleStatusChange);
-		#end if
+		FB.Event.subscribe('auth.statusChange', handleStatusChange);
 	};
 </script>
 #end def

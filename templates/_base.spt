@@ -145,6 +145,7 @@ $body()
 $(document).ready(function() {
 	$("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
         $("body").delegate("#location_input", "click", function() { return false; });
+});
 $(document).ready(function(event) {
     $('#keywords_input').keydown(function(event) {
         if (event.keyCode == 13) {
@@ -158,7 +159,6 @@ $(document).ready(function(event) {
             return false;
          }
     });
-});
 });
 </script>
 

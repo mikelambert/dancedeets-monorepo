@@ -1,5 +1,5 @@
 application: dancedeets-hrd
-version: v2-0-reinspired
+version: v2-1-newlogin
 runtime: python27
 threadsafe: true
 api_version: 1
