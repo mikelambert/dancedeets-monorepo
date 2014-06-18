@@ -14,6 +14,8 @@ class FrontendSearchQuery(object):
         self.start_time = None
         self.end_time = None
 
+        self.validated = False
+
     def url_params(self):
         return {
             'location': self.location,
@@ -55,3 +57,16 @@ class FrontendSearchQuery(object):
         else:
             self.end_time = datetime.datetime.now() + datetime.timedelta(days=365)
         return self
+
+    def validation_errors(self):
+        errors = []
+        for field in ['keywords', 'location']:
+            value = getattr(self, field)
+            if '[/url]' in value:
+                errors.append('wiki markup in %s' % field)
+            if '</a>' in value:
+                errors.append('html in %s' % field)
+        if not self.location.strip():
+            errors.append('must specify a location')
+        self.validated = not bool(errors)
+        return errors
