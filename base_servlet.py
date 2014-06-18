@@ -309,7 +309,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['defaults'].deb = self.request.get('deb')
 
         self.display.update(rankings.retrieve_summary())
-        return False
 
     def dispatch(self):
         if self.run_handler:

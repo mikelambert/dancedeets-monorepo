@@ -32,7 +32,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         return False
 
     def initialize(self, request, response):
-        return_value = super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
+        super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
 
         self.fb_uid = int(self.request.get('user_id'))
         self.user = users.User.get_cached(self.fb_uid)
@@ -46,7 +46,6 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
         self.fbl.allow_cache = self.allow_cache
         self.fbl.force_updated = force_updated
-        return return_value
 
 
 class LookupAppFriendUsers(fb_api.LookupType):

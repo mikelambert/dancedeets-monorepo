@@ -90,34 +90,6 @@ URLS = [
     ('/mapreduce/worker_callback.*', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
 ]
 
-class WebappHandlerAdapter(webapp2.BaseHandlerAdapter):
-    """An adapter to dispatch a ``webapp2.RequestHandler``.
-
-    Like in webapp2, the handler is constructed, then ``initialize()`` is
-    called, then the method corresponding to the HTTP request method is called.
-    """
-
-    def __call__(self, request, response):
-        handler = self.handler()
-        processed = handler.initialize(request, response)
-        if not processed:
-            method_name = webapp2._normalize_handler_method(request.method)
-            method = getattr(handler, method_name, None)
-            if not method:
-                webapp2.abort(501)
-
-            # The handler only receives *args if no named variables are set.
-            args, kwargs = request.route_args, request.route_kwargs
-            if kwargs:
-                args = ()
-
-            try:
-                method(*args, **kwargs)
-            except Exception, e:
-                handler.handle_exception(e, request.app.debug)
-
-webapp2.WebappHandlerAdapter = WebappHandlerAdapter #HACK
-
 ereporter.register_logger()
 prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
 if prod_mode:
