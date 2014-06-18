@@ -132,7 +132,6 @@
 		});
 	}
 	function handleStatusChange(response) {
-	alert(reponse.status);
 		if (response.status === 'connected') {
 			if (response.authResponse.userID != currentUser()) {
 				// reload through endpoint to set up new user cookie serverside

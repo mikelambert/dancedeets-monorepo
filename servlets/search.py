@@ -39,7 +39,6 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         validation_errors = fe_search_query.validation_errors()
         if validation_errors:
             self.add_error('Invalid search query: %s' % ', '.join(validation_errors))
-            # Sanitize bad fields:
 
         if not self.request.get('calendar'):
             search_query = search.SearchQuery.create_from_query(fe_search_query)
