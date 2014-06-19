@@ -49,11 +49,11 @@ class FrontendSearchQuery(object):
         self.min_attendees = int(request.get('min_attendees', user and user.min_attendees or 0))
 
         if request.get('start'):
-            self.start_time = datetime.datetime.fromtimestamp(int(request.get('start')))
+            self.start_time = datetime.datetime.strptime(request.get('start'), '%Y-%m-%d')
         else:
             self.start_time = datetime.datetime.now()
         if request.get('end'):
-            self.end_time = datetime.datetime.fromtimestamp(int(request.get('end')))
+            self.end_time = datetime.datetime.strptime(request.get('end'), '%Y-%m-%d')
         else:
             self.end_time = datetime.datetime.now() + datetime.timedelta(days=365)
         return self

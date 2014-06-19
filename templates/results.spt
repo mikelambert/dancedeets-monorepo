@@ -161,6 +161,25 @@ Events near ${display_location}:
 #end def
 
 #def bottom_javascript
+
+#if $selected_tab == 'calendar'
+<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.css' />
+<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.print.css' />
+<!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
+<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.min.js'></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#calendar').fullCalendar({
+		aspectRatio: 1.5,
+		ignoreTimezone: true,
+		allDayDefault: false,
+		events: '$format_js($calendar_feed_url)'
+	});
+});
+</script>
+#else
 $rsvp_script()
 <script src="/vjs/$version/bootstrap-twipsy.js"></script>
 
@@ -182,22 +201,6 @@ $(document).ready(function() {
 
 	$("img.lazy-narrow").show().lazyload({threshold : 500});
 	$("img.lazy-wide").show().lazyload({threshold : 500});
-});
-</script>
-
-#if $selected_tab == 'calendar'
-<link rel='stylesheet' type='text/css' href='/vcss/$version/fullcalendar.css' />
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-<script type='text/javascript' src='/vjs/$version/fullcalendar.min.js'></script>
-
-<script type="text/javascript">
-$(document).ready(function() {
-	$('#calendar').fullCalendar({
-		aspectRatio: 1.5,
-		ignoreTimezone: true,
-		allDayDefault: false,
-		events: '$format_js($calendar_feed_url)'
-	});
 });
 </script>
 #end if
