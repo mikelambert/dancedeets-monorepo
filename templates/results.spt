@@ -51,7 +51,7 @@ $display_location dance events
 
 <div class="row">
 
-<div class="box col-md-9" style="height:300px">
+<div class="box col-md-9" style="min-height:300px">
 Events near ${display_location}:
 <ul class="nav nav-tabs" data-tabs="tabs">
 	<li
@@ -111,14 +111,14 @@ Events near ${display_location}:
 			<div id="upcoming_events" style="float:left">
 			#for $group in $grouped_upcoming_results
 				#if $group.results
-					<h2 class="group-title">$group.name</h2>
+					<h3 class="group-title">$group.name</h3>
 					$render_wide_results($group.results)
 				#end if
 			#end for
 			</div>
 		#end if
 		#if $ongoing_results
-			<div id="ongoing_events" style="float:right; width:180px; border-left: 1px solid lightgrey; padding-left: 10px; padding-right: 5px">
+			<div id="ongoing_events" style="float:right; border-left: 1px solid lightgrey; width:195px; padding-left: 5px">
 				<h3>Ongoing Events</h3>
 				$render_narrow_results($ongoing_results)
 			</div>
