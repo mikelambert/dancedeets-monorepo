@@ -68,6 +68,9 @@ handlers:
 - url: .*
   script: main.application
 
+automatic_scaling:
+  max_idle_instances: 1
+  max_pending_latency: 500ms
 
 admin_console:
  pages:
