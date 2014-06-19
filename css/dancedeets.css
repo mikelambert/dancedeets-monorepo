@@ -125,10 +125,6 @@ html, body {
 .event-image img {
 	margin-bottom: -2px;
 }
-.event-description {
-	float: left;
-	width: 200px;
-}
 .event-title {
 	color: #000000;
 	font-size: 120%;
@@ -185,6 +181,7 @@ h3.event-title {
 	padding-bottom: 5px;
 	border-bottom: 1px solid lightgrey;
 	margin-bottom: 5px;
+	float: left;
 }
 
 .wide-event {

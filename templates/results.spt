@@ -108,7 +108,7 @@ Events near ${display_location}:
 		$render_wide_results($past_results)
 	#elif $selected_tab == 'present'
 		#if $num_upcoming_results
-			<div id="upcoming_events" style="float:left">
+			<div id="upcoming_events" class="col-md-8 col-xs-12">
 			#for $group in $grouped_upcoming_results
 				#if $group.results
 					<h3 class="group-title">$group.name</h3>
@@ -118,7 +118,7 @@ Events near ${display_location}:
 			</div>
 		#end if
 		#if $ongoing_results
-			<div id="ongoing_events" style="float:right; border-left: 1px solid lightgrey; width:195px; padding-left: 5px">
+			<div id="ongoing_events" class="col-md-4 col-xs-12" style="border-left: 1px solid lightgrey; padding-left: 5px">
 				<h3>Ongoing Events</h3>
 				$render_narrow_results($ongoing_results)
 			</div>

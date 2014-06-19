@@ -23,6 +23,8 @@
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 $head_stylesheet()
 $head_javascript()
 #if $prod_mode and $track_google_analytics
