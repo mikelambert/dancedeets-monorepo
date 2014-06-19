@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
+import logging
 import os
 import webapp2
 import yaml
 from google.appengine.ext import ereporter
 import base_servlet
+from logic import event_auto_classifier
 from servlets import about
 from servlets import admin
 from servlets import api
@@ -27,6 +29,9 @@ from util import batched_mapperworker
 
 class DoNothingHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
+        logging.info("Loading regexes")
+        event_auto_classifier.build_regexes()
+        logging.info("Loaded regexes")
         return
 
 URLS = [
