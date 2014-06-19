@@ -118,9 +118,6 @@
 	function currentUser() {
 		var user_login = $.cookie('user_login');
 		if (user_login) {
-			var a = user_login;
-			var b = JSON.parse(a);
-			var c = JSON.parse(user_login)['uid'];
 			return JSON.parse(user_login)['uid'];
 		}
 	}
@@ -139,10 +136,12 @@
 				reloadWithNewToken();
 			}
 		} else if (response.status === 'not_authorized') {
-			// the user is logged in to Facebook, but not connected to the app
-			deleteLoginCookies();
-			// TODO(lambert): Add a full-screen overlay explaining what we are doing...
-			reloadWithNewToken();
+			if (currentUser()) {
+				// the user is logged in to Facebook, but not connected to the app
+				deleteLoginCookies();
+				// TODO(lambert): Add a full-screen overlay explaining what we are doing...
+				reloadWithNewToken('not_authorized');
+			}
 		} else {
 			// the user isn't even logged in to Facebook.
 		}
