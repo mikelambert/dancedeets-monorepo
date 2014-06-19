@@ -104,7 +104,8 @@ def get_location_bounds(address, distance_in_km):
         northeast = to_latlng(result['geometry']['viewport']['northeast'])
         southwest = to_latlng(result['geometry']['viewport']['southwest'])
     except TypeError as e:
-        logging.error("Problem with address: %r: %r", address, result)
+        logging.error("Ungeocodable address %r gave result: %r", address, result)
+        #TODO(lambert): do a better job returning these as errors to the user
         raise e
 
     logging.info("1 NE %s, SW %s", northeast, southwest)
