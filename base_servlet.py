@@ -143,8 +143,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.user = None
         self.access_token = None
 
-        if len(request.get_all('new_token')) > 1:
-            logging.error('Have too many new_token parameters, something is Very Wrong!')
+        if len(request.get_all('nt')) > 1:
+            logging.error('Have too many nt= parameters, something is Very Wrong!')
             for k, v in request.cookies.iteritems():
                 logging.info("DEBUG: cookie %r = %r", k, v)
         # Load Facebook cookie

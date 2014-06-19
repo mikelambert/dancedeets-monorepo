@@ -110,9 +110,9 @@
 
 	function reloadWithNewToken() {
 		if (String(window.location).indexOf('?') != -1) {
-			window.location = window.location + '&new_token=1';
+			window.location = window.location + '&nt=1';
 		} else {
-			window.location = window.location + '?new_token=1';
+			window.location = window.location + '?nt=1';
 		}
 	}
 	function currentUser() {
