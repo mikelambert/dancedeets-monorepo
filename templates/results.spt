@@ -52,7 +52,7 @@ $display_location dance events
 <div class="row">
 
 <div class="sub-content span11">
-<div class="box">
+<div class="box" style="height: 300px">
 Events near ${display_location}:
 <ul class="tabs" data-tabs="tabs">
 	<li

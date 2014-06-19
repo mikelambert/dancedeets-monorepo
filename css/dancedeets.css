@@ -75,8 +75,6 @@ body {
 	margin-top: -18px;
 	padding-bottom: 100px;
 	margin-bottom: -100px;
-	/* take up space, so that the float-left top-n-list stays on the right side */
-	min-height: 100px;
 }
 
 /* each floating white box on the homepage */
