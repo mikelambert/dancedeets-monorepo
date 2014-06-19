@@ -147,7 +147,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
             logging.error('Have too many new_token parameters, something is Very Wrong!')
             for k, v in request.cookies.iteritems():
                 logging.info("DEBUG: cookie %r = %r", k, v)
-
         # Load Facebook cookie
         response = facebook.parse_signed_request(request.cookies.get("fbsr_" + FACEBOOK_CONFIG['app_id'], ""), FACEBOOK_CONFIG['secret_key'])
         fb_cookie_uid = None

@@ -20,8 +20,7 @@ DanceDeets
 
 #def body
 <div class="row">
-<div class="sub-content span12">
-<div class="box">
+<div class="box col-md-12">
 
 <div style="margin-bottom: 10px">
 Dance Deets is your home for streetdance events: locally and internationally.<br>
@@ -32,7 +31,7 @@ Over $total_events events and growing daily!
 </div>
 
 <div class="row">
-<div class="span6">
+<div class="col-md-5">
 <span class="big-font">Discover the scene</span><br>
 <a href="/rankings">
 #if $total_events
@@ -42,7 +41,7 @@ dance events around the world
 </a>
 </div>
 
-<div class="span5">
+<div class="col-md-5">
 <span class="big-font">Promote the scene</span><br>
 <a href="/rankings">
 <!-- TODO(lambert): someday switch this to /events/add ? -->
@@ -53,12 +52,10 @@ dance events reach 18,000+ dancers every month
 
 </div>
 </div>
-</div>
 
 <div class="row">
 
-<div class="sub-content span6">
-<div class="box">
+<div class="box col-md-5">
 See events in the top north-american cities:
 <ul>
 #for $internal_city, $city in $top_cities
@@ -66,10 +63,8 @@ See events in the top north-american cities:
 #end for
 </ul>
 </div>
-</div>
 
-<div class="sub-content span6">
-<div class="box">
+<div class="box col-md-5">
 See many more events for these european countries:
 <ul>
 #for $location in $top_european_countries
@@ -83,7 +78,6 @@ See many more events for these continents:
 <li><a href="/?location=$location&distance=50&distance_units=miles">$location</a>
 #end for
 </ul>
-</div>
 </div>
 
 </div>

@@ -20,11 +20,43 @@
 	margin-top: 20px;
 }
 
-/* main logo */
-.topbar .brand {
-	padding: 4px 10px 0px 0px;
-	margin-left: 0px;
+/* bootstrap.css overrides */
+.navbar-brand {
+	/* our image is larger, so we need less padding */
+	padding: 8px;
 }
+/* these all relate to giving regular text a proper display color/padding */
+.nav-text {
+	position: relative;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  line-height: 20px;
+
+  color: #fff;
+  background-color: transparent;
+}
+@media (min-width: 768px) {
+  .nav-text {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+}
+/* can use a smaller padding between nav items */
+.nav > li > a {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.nav > li > .nav-text {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.fb_button-nav {
+	padding: 10px 10px 0px;
+	width: 200px;
+	text-align: right;
+}
+
 
 #cover-box {
 	display: block;
@@ -48,9 +80,6 @@ select {
 html, body {
 	background-color: #FFFFFF;
 }
-body {
-	padding-top: 40px; /* 40px to make the container go all the way to the bottom of the topbar */
-}
 .container > footer {
 	background-color: #fff;
 	text-align: center; /* center align it with the container */
@@ -72,17 +101,13 @@ body {
 }
 
 .tabs-after {
-	margin-top: -18px;
 	padding-bottom: 100px;
 	margin-bottom: -100px;
 }
 
 /* each floating white box on the homepage */
-.sub-content {
-	background-color: #fff;
+.box {
 	margin-top: 5px; /* @gridGutterWidth = 5px */
-}
-.sub-content .box {
 	padding: 5px;
 }
 
@@ -164,20 +189,6 @@ h3.event-title {
 
 .wide-event {
         padding-bottom: 10px;
-}
-
-.topbar div > ul span, .nav span {
-	display: block;
-	float: none;
-	padding: 10px 10px 11px;
-	line-height: 19px;
-	text-decoration: none;
-}
-
-.fb_button-nav {
-	padding: 10px 10px 0px;
-	width: 200px;
-	text-align: right;
 }
 
 .permission-reason {

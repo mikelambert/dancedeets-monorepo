@@ -3,10 +3,8 @@
 #def body
 <div class="row">
 
-<div class="sub-content span16">
-<div class="box">
+<div class="box col-md-12">
 $inner_body()
-</div>
 </div>
 
 </div>

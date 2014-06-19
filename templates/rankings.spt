@@ -16,8 +16,7 @@ Rankings
 #def body
 <div class="row">
 
-<div class="sub-content span16">
-<div class="box">
+<div class="box col-md-12">
 
 <form action="/rankings">
 Rankings over <select name="time_period" onchange="this.form.submit();">
@@ -68,7 +67,6 @@ Rankings over <select name="time_period" onchange="this.form.submit();">
 #end for
 </table>
 
-</div>
 </div>
 </div>
 #end def

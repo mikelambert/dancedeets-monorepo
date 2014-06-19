@@ -9,8 +9,7 @@ Settings
 
 #def body
 <div class="row">
-<div class="sub-content span16">
-<div class="box">
+<div class="box col-md-12">
 
 <form action="/user/edit" method="post">
 <p>
@@ -38,7 +37,6 @@ $event_criteria($defaults)
 <p><button class="btn">Save Changes</button>
 </form>
 
-</div>
 </div>
 </div>
 #end def

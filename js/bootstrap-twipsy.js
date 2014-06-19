@@ -1,7 +1,7 @@
 /* ==========================================================
- * bootstrap-twipsy.js v1.4.0
+ * bootstrap-twipsy.js v2.0.0
  * http://twitter.github.com/bootstrap/javascript.html#twipsy
- * Adapted from the original jQuery.tipsy by Jason Frame
+ * Inspired by the original jQuery.tipsy by Jason Frame
  * ==========================================================
  * Copyright 2011 Twitter, Inc.
  *
@@ -18,127 +18,182 @@
  * limitations under the License.
  * ========================================================== */
 
-
 !function( $ ) {
 
   "use strict"
-
- /* CSS TRANSITION SUPPORT (https://gist.github.com/373874)
-  * ======================================================= */
-
-  var transitionEnd
-
-  $(document).ready(function () {
-
-    $.support.transition = (function () {
-      var thisBody = document.body || document.documentElement
-        , thisStyle = thisBody.style
-        , support = thisStyle.transition !== undefined || thisStyle.WebkitTransition !== undefined || thisStyle.MozTransition !== undefined || thisStyle.MsTransition !== undefined || thisStyle.OTransition !== undefined
-      return support
-    })()
-
-    // set CSS transition event type
-    if ( $.support.transition ) {
-      transitionEnd = "TransitionEnd"
-      if ( $.browser.webkit ) {
-      	transitionEnd = "webkitTransitionEnd"
-      } else if ( $.browser.mozilla ) {
-      	transitionEnd = "transitionend"
-      } else if ( $.browser.opera ) {
-      	transitionEnd = "oTransitionEnd"
-      }
-    }
-
-  })
-
 
  /* TWIPSY PUBLIC CLASS DEFINITION
   * ============================== */
 
   var Twipsy = function ( element, options ) {
-    this.$element = $(element)
-    this.options = options
-    this.enabled = true
-    this.fixTitle()
+    this.init('twipsy', element, options)
   }
 
   Twipsy.prototype = {
 
-    show: function() {
-      var pos
+    constructor: Twipsy
+
+  , init: function ( type, element, options ) {
+      var eventIn
+        , eventOut
+
+      this.type = type
+      this.$element = $(element)
+      this.options = this.getOptions(options)
+      this.enabled = true
+
+      if (this.options.trigger != 'manual') {
+        eventIn  = this.options.trigger == 'hover' ? 'mouseenter' : 'focus'
+        eventOut = this.options.trigger == 'hover' ? 'mouseleave' : 'blur'
+        this.$element.on(eventIn, this.options.selector, $.proxy(this.enter, this))
+        this.$element.on(eventOut, this.options.selector, $.proxy(this.leave, this))
+      }
+
+      this.options.selector ?
+        (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
+        this.fixTitle()
+    }
+
+  , getOptions: function ( options ) {
+      options = $.extend({}, $.fn[this.type].defaults, options, this.$element.data())
+
+      if (options.delay && typeof options.delay == 'number') {
+        options.delay = {
+          show: options.delay
+        , hide: options.delay
+        }
+      }
+
+      return options
+    }
+
+  , enter: function ( e ) {
+      var self = $(e.currentTarget)[this.type](this._options).data(this.type)
+
+      if (!self.options.delay || !self.options.delay.show) {
+        self.show()
+      } else {
+        self.hoverState = 'in'
+        setTimeout(function() {
+          if (self.hoverState == 'in') {
+            self.show()
+          }
+        }, self.options.delay.show)
+      }
+    }
+
+  , leave: function ( e ) {
+      var self = $(e.currentTarget)[this.type](this._options).data(this.type)
+
+      if (!self.options.delay || !self.options.delay.hide) {
+        self.hide()
+      } else {
+        setTimeout(function() {
+          self.hoverState = 'out'
+          if (self.hoverState == 'out') {
+            self.hide()
+          }
+        }, self.options.delay.hide)
+      }
+    }
+
+  , show: function () {
+      var $tip
+        , inside
+        , pos
         , actualWidth
         , actualHeight
         , placement
-        , $tip
         , tp
 
       if (this.hasContent() && this.enabled) {
         $tip = this.tip()
         this.setContent()
 
-        if (this.options.animate) {
+        if (this.options.animation) {
           $tip.addClass('fade')
         }
+
+        placement = typeof this.options.placement == 'function' ?
+          thing.call(this, $tip[0], this.$element[0]) :
+          this.options.placement
+
+        inside = /in/.test(placement)
 
         $tip
           .remove()
           .css({ top: 0, left: 0, display: 'block' })
-          .prependTo(document.body)
+          .prependTo(inside ? this.$element : document.body)
 
-        pos = $.extend({}, this.$element.offset(), {
-          width: this.$element[0].offsetWidth
-        , height: this.$element[0].offsetHeight
-        })
+        pos = this.getPosition(inside)
 
         actualWidth = $tip[0].offsetWidth
         actualHeight = $tip[0].offsetHeight
 
-        placement = maybeCall(this.options.placement, this, [ $tip[0], this.$element[0] ])
-
-        switch (placement) {
-          case 'below':
-            tp = {top: pos.top + pos.height + this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2}
+        switch (inside ? placement.split(' ')[1] : placement.split(' ')[0]) {
+          case 'bottom':
+            tp = {top: pos.top + pos.height, left: pos.left + pos.width / 2 - actualWidth / 2}
             break
-          case 'above':
-            tp = {top: pos.top - actualHeight - this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2}
+          case 'top':
+            tp = {top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2}
             break
           case 'left':
-            tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth - this.options.offset}
+            tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth}
             break
           case 'right':
-            tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width + this.options.offset}
+            tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width}
             break
         }
-
+        switch (inside ? placement.split(' ')[2] : placement.split(' ')[1]) {
+          case 'bottom':
+            tp.top = pos.top - pos.height / 2
+            break
+          case 'top':
+            tp.top = pos.top - pos.height / 2 - actualHeight / 2
+            break
+          case 'left':
+            tp.left = pos.left + pos.width / 2 - actualWidth + 15
+            break
+          case 'right':
+            tp.left = pos.left + pos.width / 2 - 15
+            break
+        }
         $tip
           .css(tp)
-          .addClass(placement)
+          .addClass(placement.replace(' ','-'))
           .addClass('in')
       }
     }
 
   , setContent: function () {
       var $tip = this.tip()
-      $tip.find('.twipsy-inner')[this.options.html ? 'html' : 'text'](this.getTitle())
+      $tip.find('.twipsy-inner').html(this.getTitle())
       $tip[0].className = 'twipsy'
     }
 
-  , hide: function() {
+  , hide: function () {
       var that = this
         , $tip = this.tip()
 
       $tip.removeClass('in')
 
-      function removeElement () {
-        $tip.remove()
+      function removeWithAnimation() {
+        var timeout = setTimeout(function () {
+          $tip.off($.support.transition.end).remove()
+        }, 500)
+
+        $tip.one($.support.transition.end, function () {
+          clearTimeout(timeout)
+          $tip.remove()
+        })
       }
 
       $.support.transition && this.$tip.hasClass('fade') ?
-        $tip.bind(transitionEnd, removeElement) :
-        removeElement()
+        removeWithAnimation() :
+        $tip.remove()
     }
 
-  , fixTitle: function() {
+  , fixTitle: function () {
       var $e = this.$element
       if ($e.attr('title') || typeof($e.attr('data-original-title')) != 'string') {
         $e.attr('data-original-title', $e.attr('title') || '').removeAttr('title')
@@ -149,29 +204,31 @@
       return this.getTitle()
     }
 
-  , getTitle: function() {
+  , getPosition: function (inside) {
+      return $.extend({}, (inside ? {top: 0, left: 0} : this.$element.offset()), {
+        width: this.$element[0].offsetWidth
+      , height: this.$element[0].offsetHeight
+      })
+    }
+
+  , getTitle: function () {
       var title
         , $e = this.$element
         , o = this.options
 
-        this.fixTitle()
+      title = $e.attr('data-original-title')
+        || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
 
-        if (typeof o.title == 'string') {
-          title = $e.attr(o.title == 'title' ? 'data-original-title' : o.title)
-        } else if (typeof o.title == 'function') {
-          title = o.title.call($e[0])
-        }
+      title = title.toString().replace(/(^\s*|\s*$)/, "")
 
-        title = ('' + title).replace(/(^\s*|\s*$)/, "")
-
-        return title || o.fallback
+      return title
     }
 
-  , tip: function() {
-      return this.$tip = this.$tip || $('<div class="twipsy" />').html(this.options.template)
+  , tip: function () {
+      return this.$tip = this.$tip || $(this.options.template)
     }
 
-  , validate: function() {
+  , validate: function () {
       if (!this.$element[0].parentNode) {
         this.hide()
         this.$element = null
@@ -179,15 +236,15 @@
       }
     }
 
-  , enable: function() {
+  , enable: function () {
       this.enabled = true
     }
 
-  , disable: function() {
+  , disable: function () {
       this.enabled = false
     }
 
-  , toggleEnabled: function() {
+  , toggleEnabled: function () {
       this.enabled = !this.enabled
     }
 
@@ -198,124 +255,29 @@
   }
 
 
- /* TWIPSY PRIVATE METHODS
-  * ====================== */
-
-   function maybeCall ( thing, ctx, args ) {
-     return typeof thing == 'function' ? thing.apply(ctx, args) : thing
-   }
-
  /* TWIPSY PLUGIN DEFINITION
   * ======================== */
 
-  $.fn.twipsy = function (options) {
-    $.fn.twipsy.initWith.call(this, options, Twipsy, 'twipsy')
-    return this
+  $.fn.twipsy = function ( option ) {
+    return this.each(function () {
+      var $this = $(this)
+        , data = $this.data('twipsy')
+        , options = typeof option == 'object' && option
+      if (!data) $this.data('twipsy', (data = new Twipsy(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
   }
 
-  $.fn.twipsy.initWith = function (options, Constructor, name) {
-    var twipsy
-      , binder
-      , eventIn
-      , eventOut
-
-    if (options === true) {
-      return this.data(name)
-    } else if (typeof options == 'string') {
-      twipsy = this.data(name)
-      if (twipsy) {
-        twipsy[options]()
-      }
-      return this
-    }
-
-    options = $.extend({}, $.fn[name].defaults, options)
-
-    function get(ele) {
-      var twipsy = $.data(ele, name)
-
-      if (!twipsy) {
-        twipsy = new Constructor(ele, $.fn.twipsy.elementOptions(ele, options))
-        $.data(ele, name, twipsy)
-      }
-
-      return twipsy
-    }
-
-    function enter() {
-      var twipsy = get(this)
-      twipsy.hoverState = 'in'
-
-      if (options.delayIn == 0) {
-        twipsy.show()
-      } else {
-        twipsy.fixTitle()
-        setTimeout(function() {
-          if (twipsy.hoverState == 'in') {
-            twipsy.show()
-          }
-        }, options.delayIn)
-      }
-    }
-
-    function leave() {
-      var twipsy = get(this)
-      twipsy.hoverState = 'out'
-      if (options.delayOut == 0) {
-        twipsy.hide()
-      } else {
-        setTimeout(function() {
-          if (twipsy.hoverState == 'out') {
-            twipsy.hide()
-          }
-        }, options.delayOut)
-      }
-    }
-
-    if (!options.live) {
-      this.each(function() {
-        get(this)
-      })
-    }
-
-    if (options.trigger != 'manual') {
-      binder   = options.live ? 'live' : 'bind'
-      eventIn  = options.trigger == 'hover' ? 'mouseenter' : 'focus'
-      eventOut = options.trigger == 'hover' ? 'mouseleave' : 'blur'
-      this[binder](eventIn, enter)[binder](eventOut, leave)
-    }
-
-    return this
-  }
-
-  $.fn.twipsy.Twipsy = Twipsy
+  $.fn.twipsy.Constructor = Twipsy
 
   $.fn.twipsy.defaults = {
-    animate: true
-  , delayIn: 0
-  , delayOut: 0
-  , fallback: ''
-  , placement: 'above'
-  , html: false
-  , live: false
-  , offset: 0
-  , title: 'title'
+    animation: true
+  , delay: 0
+  , selector: false
+  , placement: 'top'
   , trigger: 'hover'
-  , template: '<div class="twipsy-arrow"></div><div class="twipsy-inner"></div>'
+  , title: ''
+  , template: '<div class="twipsy"><div class="twipsy-arrow"></div><div class="twipsy-inner"></div></div>'
   }
 
-  $.fn.twipsy.rejectAttrOptions = [ 'title' ]
-
-  $.fn.twipsy.elementOptions = function(ele, options) {
-    var data = $(ele).data()
-      , rejects = $.fn.twipsy.rejectAttrOptions
-      , i = rejects.length
-
-    while (i--) {
-      delete data[rejects[i]]
-    }
-
-    return $.extend({}, options, data)
-  }
-
-}( window.jQuery || window.ender );
+}( window.jQuery )

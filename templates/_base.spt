@@ -16,6 +16,13 @@
 <link rel="stylesheet" href="/vcss/$version/bootstrap.min.css">
 <link rel="stylesheet" href="/vcss/$version/dancedeets.css">
 
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
 $head_stylesheet()
 $head_javascript()
 #if $prod_mode and $track_google_analytics
@@ -50,79 +57,60 @@ $gaq_custom_vars()
 ## get rid of this and merge it inline?
 
 
-<div class="topbar">
-	<div class="fill">
-		<div class="container">
-			<a class="brand" href="/"><img src="/images/dancedeets-small-white.png" width="220" height="33"></a>
-<form id="search-form" action="/" style="margin: 0px;">
-			<ul class="nav">
-				<li><span>${total_events} dance events </li>
-				<li class="dropdown" data-dropdown="dropdown">
-<a href="#" class="dropdown-toggle" style="padding: 10px 10px 7px">
-<span id="search-button" class="glass"><i></i></span>
-            <input id="keywords_input" type="text" name="keywords" placeholder="Any events" style="margin-top:-8px;width:100px"/ value="$defaults.keywords"> near
+<!-- Static navbar -->
+<div class="navbar navbar-inverse navbar-static-top" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/"><img src="/images/dancedeets-small-white.png" width="220" height="33"></a>
+		</div>
+		<div class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><div class="nav-text">${total_events} dance events</div></li>
+			</ul>
+      <form id="search-form" class="navbar-form navbar-left" role="search" action="/">
+        <div class="form-group">
+            <input id="keywords_input" type="text" name="keywords" placeholder="Any events" style="margin-top:-8px;width:100px"/ value="$defaults.keywords">
+            <span class="nav-text">near</span>
             <input id="location_input" type="text" name="location" placeholder="Location" style="margin-top:-8px;width:120px"/ value="$defaults.location">
             <input type="hidden" name="deb" value="$defaults.deb">
-</a>
-    <ul class="dropdown-menu" style="width:100%;max-width:none">
-      <li>Distance: <select name="distance">
-#for $d in [10, 50, 100, 200, 500, 3000, 12000]
-        <option value="$d"
-        #if str($defaults.distance) == str($d)
-                selected
-        #end if
-        >
-        #if str($d) == str(12000)
-                Everywhere
-        #else
-                $d miles
-        #end if
-        </option>
-#end for
-</select>
-<input type=hidden name=distance_units value=miles>
-      </li>
-      <li>Attendees: <select name="min_attendees">
-#for $m in [0, 10, 50, 100, 500]
-        <option value="$m"
-        #if str($defaults.min_attendees) == str($m)
-                selected
-        #end if
-        >
-        ${m}+
-        </option>
-#end for
-</select>
-      </li>
-    </ul>
-  </li>
-			</ul>
-</form>
-			<span class="pull-right">
+        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+<!-- maybe make a small hourglass icon search box ? 
+  $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
+-->
+        </div>
+      </form>
 #if $fb_user
-			<ul class="nav">
-				<li><span class="user-name">$fb_user.profile.name</span></li>
+			<ul class="nav navbar-nav navbar-right">
+				<li><div class="user-name nav-text">$fb_user.profile.name</div></li>
 				<li><a href="/user/edit">Settings</a></li>
 				<li><a href="#" onclick="logout(); return false;">Logout</a></li>
-			</ul>
 #else
-			<div class="fb_button-nav">$fb_login_button()</div>
+      <ul class="nav navbar-nav navbar-left">
+				<li><div class="nav-text">$fb_login_button()</div></li>
+      </ul>
 #end if
-			</span>
-		</div>
+			</ul>
+		</div><!--/.nav-collapse -->
 	</div>
 </div>
+
 
     <div class="container">
 
 #if $errors
 #for $error in $errors
-	<div class="alert-message error">$format_html($error)</div>
+	<div class="bg-danger">$format_html($error)</div>
 #end for
 #end if
 #if $messages
 #for $message in $messages
-	<div class="alert-message info">$format_html($message)</div>
+	<div class="bg-info">$format_html($message)</div>
 #end for
 #end if
 
@@ -138,12 +126,11 @@ $body()
 </div> <!-- /container -->
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="/vjs/$version/bootstrap-dropdown.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="/vjs/$version/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
-	$("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
         $("body").delegate("#location_input", "click", function() { return false; });
 });
 $(document).ready(function(event) {
