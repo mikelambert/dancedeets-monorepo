@@ -8,13 +8,6 @@ class LoginIfUnspecified(object):
     def requires_login(self):
         return False
 
-#TODO(lambert): clean this out
-class CalendarHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
-    def get(self):
-        self.finish_preload()
-        self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in self.request.params.iteritems())
-        self.render_template('calendar_shell')
-
 class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()

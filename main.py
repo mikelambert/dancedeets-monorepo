@@ -77,7 +77,6 @@ URLS = [
     ('/profile/[^/]*', profile_page.ProfileHandler),
     ('/profile/[^/]*/add_tag', profile_page.ProfileAddTagHandler),
     ('/youtube_simple_api', youtube_simple_api.YoutubeSimpleApiHandler),
-    ('/calendar', calendar.CalendarHandler),
     ('/calendar/feed', calendar.CalendarFeedHandler),
     ('/sources/admin_edit', source.AdminEditHandler),
     ('/user/edit', myuser.UserHandler),
