@@ -142,7 +142,7 @@ GRAPH_ID_REMAP = {
     '160221984083382': '375092315924747',
     '130185697047654': '195452550490652',
     '129443898716':    '339859416120941',
-    '200584136628031': '125319455969',
+    '200584136628031': '284343681602486',
     '198696906825':    '146433465403523',
     '196974990348068': '124590784219792',
     '62227967539':     '255426124546095',
@@ -668,7 +668,9 @@ class FBAPI(CacheSystem):
 def generate_key(cls, object_id):
     if isinstance(object_id, (set, list, tuple)):
         raise TypeError("object_id is of incorrect type: %s" % type(object_id))
-    new_object_id = str(GRAPH_ID_REMAP.get(str(object_id), str(object_id)))
+    new_object_id = str(object_id)
+    while new_object_id in GRAPH_ID_REMAP:
+        new_object_id = GRAPH_ID_REMAP[new_object_id]
     return (cls, new_object_id)
 
 def break_key(key):
