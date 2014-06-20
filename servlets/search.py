@@ -54,6 +54,28 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             rsvp.decorate_with_rsvps(self.fbl, search_results)
             logging.info("Decorating with personal rsvp data took %s seconds", time.time() - a)
 
+            if self.request.get('fake') == '1':
+                import fb_api
+                fb_event = self.fbl.get(fb_api.LookupEvent, '229831487172739')
+                from google.appengine.api import search as search_api
+
+                doc = search_api.Document(
+                    doc_id=str(fb_event['info']['id']),
+                    fields=[
+                        search_api.TextField(name='event_keywords', value='dance, competition'),
+                        search_api.TextField(name='actual_city_name', value='New York, NY'),
+                    ],
+                )
+                pseudo_db_event = search.PseudoDBEvent(doc)
+                result = search.SearchResult(pseudo_db_event, fb_event)
+                result.attendee_count = 100
+                result.attending_friend_count = 2
+                result.attending_friends = ['Mike', 'John']
+                import datetime
+                result.start_time = datetime.datetime.now()
+                result.end_time = datetime.datetime.now() + datetime.timedelta(days=2)
+                search_results = [result]
+
             past_results, present_results, grouped_results = search.group_results(search_results)
             if search_query.time_period == eventdata.TIME_FUTURE:
                 present_results = past_results + present_results
