@@ -86,16 +86,15 @@
 					$result.actual_city_name
 				</div>
 				#if $result.attendee_count
-					<div class="event-city">Attending:
+					<div class="event-attending">Attending:
 					#if result.attending_friend_count
-						<span id="event-friends-$fb_event.id">$result.attending_friend_count friends</span>,
-						<div id="event-friends-list-$fb_event.id" style="display:none">
-						<div style="white-space: nowrap;">
+						<span id="event-friends-$fb_event.id"
+						data-toggle="tooltip" data-placement="top" data-html="true"
+						title="
 						#for $friend in $result.attending_friends
 							$friend<br>
 						#end for
-						</div>
-						</div>
+						">$result.attending_friend_count friends</span>,
 					#end if
 					$result.attendee_count total</div>
 				#end if
@@ -123,6 +122,6 @@
 
 #def render_result_attending_tooltip_javascript($results)
 	#for $result in $results
-		$( "#event-friends-$result.fb_event.info.id" ).twipsy({ title: function(){return $("#event-friends-list-$result.fb_event.info.id").html();}, html: true});
+		$('#event-friends-$result.fb_event.info.id').tooltip();
 	#end for
 #end def

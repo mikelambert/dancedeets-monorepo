@@ -93,7 +93,6 @@
 #end def
 
 #def fb_javascript($next='')
-<script src="/vjs/$version/jquery.cookie.js"></script>
 <div id="fb-root"></div>
 <script type="text/javascript">
 	(function() {
