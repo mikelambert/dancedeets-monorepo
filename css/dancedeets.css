@@ -182,6 +182,7 @@ h3.event-title {
 	border-bottom: 1px solid lightgrey;
 	margin-bottom: 5px;
 	float: left;
+	width: 100%;
 }
 
 .wide-event {
