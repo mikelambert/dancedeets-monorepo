@@ -27,7 +27,6 @@ from util import urls
 class _ValidationError(Exception):
     pass
 
-FACEBOOK_CONFIG = None
 
 class BareBaseRequestHandler(webapp2.RequestHandler):
     def __init__(self, *args, **kwargs):
@@ -117,9 +116,9 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
 def generate_userlogin_hash(user_login_cookie):
     raw_string = ','.join('%r: %r' % (k.encode('ascii'), v.encode('ascii')) for (k, v) in sorted(user_login_cookie.items()) if k != 'hash')
     m = hashlib.md5()
-    m.update(FACEBOOK_CONFIG['secret_key'])
+    m.update(facebook.FACEBOOK_CONFIG['secret_key'])
     m.update(raw_string)
-    m.update(FACEBOOK_CONFIG['secret_key'])
+    m.update(facebook.FACEBOOK_CONFIG['secret_key'])
     return m.hexdigest()
 
 def validate_hashed_userlogin(user_login_cookie):
@@ -132,7 +131,7 @@ def validate_hashed_userlogin(user_login_cookie):
 class BaseRequestHandler(BareBaseRequestHandler):
 
     def get_long_lived_token_and_expires(self, request):
-        response = facebook.get_user_from_cookie(request.cookies, FACEBOOK_CONFIG['app_id'], FACEBOOK_CONFIG['secret_key'])
+        response = facebook.get_user_from_cookie(request.cookies)
         return response['access_token'], response['access_token_expires']
 
     def setup_login_state(self, request):
@@ -148,7 +147,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             for k, v in request.cookies.iteritems():
                 logging.info("DEBUG: cookie %r = %r", k, v)
         # Load Facebook cookie
-        response = facebook.parse_signed_request(request.cookies.get("fbsr_" + FACEBOOK_CONFIG['app_id'], ""), FACEBOOK_CONFIG['secret_key'])
+        response = facebook.parse_signed_request(request.cookies)
         fb_cookie_uid = None
         if response:
             fb_cookie_uid = int(response['user_id'])
@@ -306,7 +305,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['dd_admin_source_url'] = urls.dd_admin_source_url
 
         self.display['request'] = request
-        self.display['app_id'] = FACEBOOK_CONFIG['app_id']
+        self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']
         self.display['prod_mode'] = self.request.app.prod_mode
 
         fb_permissions = 'user_location,rsvp_event,email,user_events,user_groups,friends_events,friends_groups,user_likes,friends_likes'

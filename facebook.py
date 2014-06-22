@@ -23,29 +23,24 @@ http://developers.facebook.com/docs/api. You can download the Facebook
 JavaScript SDK at http://github.com/facebook/connect-js/.
 """
 
+import base64
 import cgi
+import hmac
+import json
+import os
 import hashlib
 import urllib
+import yaml
 
-# Find a JSON parser
-try:
-    import json
-    _parse_json = lambda s: json.loads(s)
-except ImportError:
-    try:
-        import simplejson
-        _parse_json = lambda s: simplejson.loads(s)
-    except ImportError:
-        # For Google AppEngine
-        from django.utils import simplejson
-        _parse_json = lambda s: simplejson.loads(s)
-
+prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
+if prod_mode:
+    filename = 'facebook-prod.yaml'
+else:
+    filename = 'facebook.yaml'
+FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
 
 # This new code pulled from: https://gist.github.com/1190267
 # aka: Hacked version of "official" (but now unsupported) Facebook Python SDK to support OAuth 2.0
-
-import base64
-import hmac
 
 def urlsafe_b64decode(str):
     """Perform Base 64 decoding for strings with missing padding."""
@@ -74,7 +69,7 @@ def parse_signed_request(signed_request, secret):
         return {}
 
     sig = urlsafe_b64decode(str(esig))
-    data = _parse_json(urlsafe_b64decode(str(payload)))
+    data = json.loads(urlsafe_b64decode(str(payload)))
 
     if not isinstance(data, dict):
         raise SignedRequestError("Pyload is not a json string!")
@@ -89,9 +84,10 @@ def parse_signed_request(signed_request, secret):
 
     return {}
 
+def parse_signed_request_cookie(cookies):
+    return parse_signed_request(cookies.get("fbsr_" + FACEBOOK_CONFIG['app_id'], ""), FACEBOOK_CONFIG['secret_key'])
 
-
-def get_user_from_cookie(cookies, app_id, app_secret):
+def get_user_from_cookie(cookies):
     """Parses the cookie set by the official Facebook JavaScript SDK.
 
     cookies should be a dictionary-like object mapping cookie names to
@@ -106,6 +102,8 @@ def get_user_from_cookie(cookies, app_id, app_secret):
     http://github.com/facebook/connect-js/. Read more about Facebook
     authentication at http://developers.facebook.com/docs/authentication/.
     """
+    app_id = FACEBOOK_CONFIG['app_id']
+    app_secret = FACEBOOK_CONFIG['secret_key']
 
     cookie = cookies.get("fbsr_" + app_id, "")
     if not cookie:

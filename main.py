@@ -3,7 +3,6 @@
 import logging
 import os
 import webapp2
-import yaml
 from google.appengine.ext import ereporter
 import base_servlet
 from logic import event_auto_classifier
@@ -95,14 +94,8 @@ URLS = [
 ]
 
 ereporter.register_logger()
-prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
-if prod_mode:
-    filename = 'facebook-prod.yaml'
-else:
-    filename = 'facebook.yaml'
-base_servlet.FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
-
 application = webapp2.WSGIApplication(URLS)
 application.debug = True
+prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
 application.prod_mode = prod_mode
 
