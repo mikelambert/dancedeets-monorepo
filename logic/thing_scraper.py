@@ -21,7 +21,7 @@ def scrape_events_from_sources(fbl, sources):
         min_potential_events = params.get('min_potential_events', 0)
         sources = [x for x in sources if min_potential_events <= x.num_potential_events]
 
-  # don't scrape sources that prove useless and give mostly garbage events
+    # don't scrape sources that prove useless and give mostly garbage events
     #sources = [x for x in sources if x.fraction_potential_are_real() > 0.05]
 
     fbl.request_multi(fb_api.LookupThingFeed, [x.graph_id for x in sources])
