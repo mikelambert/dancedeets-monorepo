@@ -3,8 +3,6 @@ import datetime
 # http://en.wikipedia.org/wiki/12-hour_clock
 AMPM_COUNTRIES = ['AU', 'BD', 'CA', 'CO', 'EG', 'IN', 'MY', 'NZ', 'PK', 'PH', 'US']
 
-end_date_less_events_duration = datetime.timedelta(hours=4*24)
-
 def parse_fb_timestamp(fb_timestamp):
     # because of events like 23705144628 without any time information
     if not fb_timestamp:
@@ -25,7 +23,13 @@ def parse_fb_end_time(fb_event, need_result=False):
     return result
 
 def faked_end_time(start_time, end_time):
-    return end_time or start_time + end_date_less_events_duration
+    if end_time:
+        return end_time
+    else:
+        if start_time.hour or start_time.minute:
+            return start_time + datetime.timedelta(hours=24)
+        else:
+            return start_time + datetime.timedelta(hours=4*24)
 
 def time_human_format(d, country=None):
     if not country or country in AMPM_COUNTRIES:
