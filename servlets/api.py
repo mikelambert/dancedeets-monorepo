@@ -50,11 +50,16 @@ class FeedHandler(base_servlet.BaseRequestHandler):
 
     @staticmethod
     def SearchResultToJson(x):
+        if x.location:
+            location = '%s, %s' % (x.location, x.actual_city_name)
+        else:
+            location = x.actual_city_name
         return {
             'id': x.fb_event['info']['id'],
             'title': x.fb_event['info']['name'],
             'description': x.fb_event['info'].get('description'),
-            'city': x.actual_city_name,
+            'location': x.actual_city_name,
+            'city': location,
             'image_url': x.get_image(),
             'cover_url': x.fb_event['info'].get('cover'),
             'start_time': x.start_time.strftime(DATETIME_FORMAT),
