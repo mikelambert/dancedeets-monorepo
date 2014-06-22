@@ -83,7 +83,3 @@ $city_state_country<br>
 </div>
 #end if
 #end def
-
-#def bottom_javascript
-$signup_form_javascript()
-#end def
