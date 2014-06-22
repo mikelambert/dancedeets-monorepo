@@ -188,20 +188,27 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         # If we have a user, grab the access token
         if self.user:
-            # Long-lived tokens should last "around" 60 days, so let's refresh-renew if there's only 40 days left
-            if self.user.fb_access_token_expires:
-                token_expires_soon = (self.user.fb_access_token_expires - datetime.datetime.now()) < datetime.timedelta(days=40)
+            if fb_cookie_uid:
+                # Long-lived tokens should last "around" 60 days, so let's refresh-renew if there's only 40 days left
+                if self.user.fb_access_token_expires:
+                    token_expires_soon = (self.user.fb_access_token_expires - datetime.datetime.now()) < datetime.timedelta(days=40)
+                else:
+                    token_expires_soon = True
+                if self.user.expired_oauth_token or token_expires_soon:
+                    access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
+                    logging.info("Putting new access token into db/memcache")
+                    self.user = users.User.get_by_key_name(str(self.fb_uid))
+                    self.user.fb_access_token = access_token
+                    self.user.fb_access_token_expires = access_token_expires
+                    self.user.expired_oauth_token = False
+                    self.user.put() # this also sets to memcache
+                self.access_token = self.user.fb_access_token
             else:
-                token_expires_soon = True
-            if self.user.expired_oauth_token or token_expires_soon:
-                access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
-                logging.info("Putting new access token into db/memcache")
-                self.user = users.User.get_by_key_name(str(self.fb_uid))
-                self.user.fb_access_token = access_token
-                self.user.fb_access_token_expires = access_token_expires
-                self.user.expired_oauth_token = False
-                self.user.put() # this also sets to memcache
-            self.access_token = self.user.fb_access_token
+                logging.info("Have dd login cookie but no fb login cookie")
+                if self.user.expired_oauth_token:
+                    self.fb_uid = None
+                    self.user = None
+                    return
         else:
             # if we don't have a user but do have a token, the user has granted us permissions, so let's construct the user now
             access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
