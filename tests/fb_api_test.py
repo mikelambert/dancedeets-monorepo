@@ -10,8 +10,8 @@ from test_utils import fb_api_stub
 class TestLookupUser(unittest.TestCase):
     def runTest(self):
         lookups = fb_api.LookupUser.get_lookups('id')
-        self.assertEqual(lookups['profile'], '/id')
-        self.assertEqual(lookups['friends'], '/id/friends')
+        self.assertEqual(lookups[0], ('profile', '/id'))
+        self.assertEqual(lookups[1], ('friends', '/id/friends'))
         cache_key = fb_api.LookupUser.cache_key('id', 'fetch_id')
         self.assertEqual(cache_key, ('fetch_id', 'id', 'OBJ_USER'))
 
@@ -25,7 +25,7 @@ class TestLookupUser(unittest.TestCase):
 class TestLookupEvent(unittest.TestCase):
     def runTest(self):
         lookups = fb_api.LookupEvent.get_lookups('id')
-        info_url = re.sub('fields=[^&]*', 'fields=X', lookups['info'])
+        info_url = re.sub('fields=[^&]*', 'fields=X', [x[1] for x in lookups if x[0] == 'info'][0])
         self.assertEqual(info_url, '/id?fields=X')
         cache_key = fb_api.LookupEvent.cache_key('id', 'fetch_id')
         self.assertEqual(cache_key, (fb_api.USERLESS_UID, 'id', 'OBJ_EVENT'))

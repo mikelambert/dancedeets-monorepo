@@ -297,9 +297,9 @@ class LookupProfile(LookupType):
 
     @classmethod
     def get_lookups(cls, object_id):
-        return dict(
-            profile=cls.url('%s' % object_id),
-        )
+        return [
+            ('profile', cls.url('%s' % object_id)),
+        ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_PROFILE')
@@ -307,12 +307,12 @@ class LookupProfile(LookupType):
 class LookupUser(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
-        return dict(
-            profile=cls.url('%s' % object_id),
-            friends=cls.url('%s/friends' % object_id),
-            permissions=cls.url('%s/permissions' % object_id),
-            rsvp_for_future_events=cls.url('%s/events?since=yesterday' % object_id),
-        )
+        return [
+            ('profile', cls.url('%s' % object_id)),
+            ('friends', cls.url('%s/friends' % object_id)),
+            ('permissions', cls.url('%s/permissions' % object_id)),
+            ('rsvp_for_future_events', cls.url('%s/events?since=yesterday' % object_id)),
+        ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_USER')
@@ -323,9 +323,9 @@ class LookupUserEvents(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         today = int(time.mktime(datetime.date.today().timetuple()[:9]))
-        return dict(
-            all_event_info=cls.fql_url(ALL_EVENTS_FQL % (object_id, today)),
-        )
+        return [
+            ('all_event_info', cls.fql_url(ALL_EVENTS_FQL % (object_id, today))),
+        ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_USER_EVENTS')
@@ -333,9 +333,9 @@ class LookupUserEvents(LookupType):
 class LookupFriendList(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
-        return dict(
-            friend_list=cls.url('%s/members' % object_id),
-        )
+        return [
+            ('friend_list', cls.url('%s/members' % object_id)),
+        ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_FRIEND_LIST')
@@ -345,14 +345,14 @@ class LookupEvent(LookupType):
 
     @classmethod
     def get_lookups(cls, object_id):
-        return dict(
-            info=cls.url(object_id, fields=OBJ_EVENT_FIELDS),
-            fql_info=cls.fql_url(EXTRA_EVENT_INFO_FQL % (object_id)),
+        return [
+            ('info', cls.url(object_id, fields=OBJ_EVENT_FIELDS)),
+            ('fql_info', cls.fql_url(EXTRA_EVENT_INFO_FQL % (object_id))),
             # Dependent lookup for the image from the info's cover photo id:
-            cover_info=cls.url('', fields=['images'], ids='{result=info:$.cover.cover_id}'),
+            ('cover_info', cls.url('', fields=['images'], ids='{result=info:$.cover.cover_id}')),
             # Do we really want another FQL call used up, just for this? Maybe wait until we can convert all of fql_info over?
             #pic_big=cls.url('%s/picture?type=small&redirect=false' % object_id),
-        )
+        ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT')
@@ -377,9 +377,9 @@ class LookupEvent(LookupType):
 class LookupEventAttending(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
-        return dict(
-            attending=cls.url('%s/attending' % object_id),
-        )
+        return [
+            ('attending', cls.url('%s/attending' % object_id)),
+        ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT_ATTENDING')
@@ -387,12 +387,12 @@ class LookupEventAttending(LookupType):
 class LookupEventMembers(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
-        return dict(
-            attending=cls.url('%s/attending' % object_id),
-            maybe=cls.url('%s/maybe' % object_id),
-            declined=cls.url('%s/declined' % object_id),
-            noreply=cls.url('%s/noreply' % object_id),
-        )
+        return [
+            ('attending', cls.url('%s/attending' % object_id)),
+            ('maybe', cls.url('%s/maybe' % object_id)),
+            ('declined', cls.url('%s/declined' % object_id)),
+            ('noreply', cls.url('%s/noreply' % object_id)),
+        ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT_MEMBERS')
@@ -400,9 +400,9 @@ class LookupEventMembers(LookupType):
 class LookupFQL(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
-        return dict(
-            fql=cls.fql_url(object_id),
-        )
+        return [
+            ('fql', cls.fql_url(object_id)),
+        ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_FQL')
@@ -410,10 +410,10 @@ class LookupFQL(LookupType):
 class LookupThingFeed(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
-        return dict(
-            info=cls.url('%s' % object_id),
-            feed=cls.url('%s/feed' % object_id),
-        )
+        return [
+            ('info', cls.url('%s' % object_id)),
+            ('feed', cls.url('%s/feed' % object_id)),
+        ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_THING_FEED')
@@ -591,7 +591,7 @@ class FBAPI(CacheSystem):
         for object_key in object_keys_to_lookup:
             cls, oid = break_key(object_key)
             parts_to_urls = cls.get_lookups(oid)
-            batch_list = [dict(method='GET', name=part_key, relative_url=url, omit_response_on_success=False) for (part_key, url) in parts_to_urls.iteritems()]
+            batch_list = [dict(method='GET', name=part_key, relative_url=url, omit_response_on_success=False) for (part_key, url) in parts_to_urls]
             rpc = self._create_rpc_for_batch(batch_list, cls.use_access_token)
             object_keys_to_rpcs[object_key] = rpc
 
@@ -600,7 +600,7 @@ class FBAPI(CacheSystem):
         for object_key, object_rpc in object_keys_to_rpcs.iteritems():
             cls, oid = break_key(object_key)
             parts_to_urls = cls.get_lookups(oid)
-            mini_batch_list = [dict(name=part_key, relative_url=url) for (part_key, url) in parts_to_urls.iteritems()]
+            mini_batch_list = [dict(name=part_key, relative_url=url) for (part_key, url) in parts_to_urls]
             this_object = {}
             this_object['empty'] = None
             object_is_bad = False
