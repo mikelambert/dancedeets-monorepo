@@ -108,6 +108,15 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         if e:
             self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">DBE</a> ' % e.key().__str__())
 
+    def handle_error_response(self, errors):
+        event_id = None
+        if self.request.get('event_url'):
+            event_id = get_id_from_url(self.request.get('event_url'))
+        elif self.request.get('event_id'):
+            event_id = self.request.get('event_id')
+        error_string = ','.join(errors)
+        return '%s\n%s' % (error_string, self.show_barebones_page(event_id))
+
     def get(self):
         event_id = None
         if self.request.get('event_url'):
