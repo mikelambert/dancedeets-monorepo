@@ -53,7 +53,7 @@ class FakeRPC(object):
                 'type': 'OAuthException',
                 'error_subcode': 463
             }})
-        elif self.use_access_token:
+        else:
             urls = [x['relative_url'] for x in self.batch_list]
             for url in urls:
                 if url in MemoryFBAPI.results:
@@ -71,14 +71,6 @@ class FakeRPC(object):
                 else:
                     results.append(None)
             return FakeResult(200, results)
-        else:
-            assert len(self.batch_list) == 1
-            url = self.batch_list[0]['relative_url']
-            if url in MemoryFBAPI.results:
-                status_code, content = MemoryFBAPI.results[url]
-                return FakeResult(200, content)
-            else:
-                raise urlfetch.DownloadError('no backend data found for %s' % url)
 
 class FakeResult(object):
     def __init__(self, status_code, results):

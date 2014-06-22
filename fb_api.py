@@ -7,6 +7,7 @@ import re
 import time
 import urllib
 
+import facebook
 import smemcache
 from google.appengine.ext import db
 from google.appengine.api import datastore
@@ -210,7 +211,8 @@ GRAPH_ID_REMAP = {
     '300538363331638': '331876913556828',
     '298836906369':    '143503752378302',
     '293194630797776': '591521077576361',
-
+    '222331884466189': '14932597084',
+    '171141252988101': '206918392697176',
 }
 
 EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS = 'insufficient_permissions'
@@ -349,7 +351,7 @@ class LookupEvent(LookupType):
             # Dependent lookup for the image from the info's cover photo id:
             cover_info=cls.url('', fields=['images'], ids='{result=info:$.cover.cover_id}'),
             # Do we really want another FQL call used up, just for this? Maybe wait until we can convert all of fql_info over?
-            #pic_big=cls.url('%s/picture?type=small&redirect=false' % object_id, access_token),
+            #pic_big=cls.url('%s/picture?type=small&redirect=false' % object_id),
         )
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -570,20 +572,15 @@ class FBAPI(CacheSystem):
         return None
 
     def _create_rpc_for_batch(self, batch_list, use_access_token):
-        if use_access_token:
-            post_args = {'batch': json.dumps(batch_list)}
-            if use_access_token and self.access_token:
-                post_args["access_token"] = self.access_token
-            post_args["include_headers"] = False # Don't need to see all the caching headers per response
-            post_data = None if post_args is None else urllib.urlencode(post_args)
-            rpc = urlfetch.create_rpc(deadline=DEADLINE)
-            urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/", post_data, "POST")
+        post_args = {'batch': json.dumps(batch_list)}
+        if use_access_token and self.access_token:
+            post_args["access_token"] = self.access_token
         else:
-            if len(batch_list) != 1:
-                raise ValueError("Cannot do batch calls without an access_token")
-            query = batch_list[0]['relative_url']
-            rpc = urlfetch.create_rpc(deadline=DEADLINE)
-            urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/" + query)
+            post_args["access_token"] = '%s|%s' % (facebook.FACEBOOK_CONFIG['app_id'], facebook.FACEBOOK_CONFIG['secret_key'])
+        post_args["include_headers"] = False # Don't need to see all the caching headers per response
+        post_data = None if post_args is None else urllib.urlencode(post_args)
+        rpc = urlfetch.create_rpc(deadline=DEADLINE)
+        urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/", post_data, "POST")
         self.fb_fetches += len(batch_list)
         return rpc
 
@@ -608,8 +605,6 @@ class FBAPI(CacheSystem):
             this_object['empty'] = None
             object_is_bad = False
             rpc_results = self._map_rpc_to_data(object_rpc)
-            if not cls.use_access_token:
-                rpc_results = [dict(code=200, body=json.dumps(rpc_results))]
             if isinstance(rpc_results, list):
                 named_results = zip(mini_batch_list, rpc_results)
             elif rpc_results is None:
