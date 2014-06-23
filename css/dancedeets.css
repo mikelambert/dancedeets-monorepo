@@ -53,20 +53,63 @@
 	text-align: right;
 }
 
-
-#cover-box {
+/* add the margins, and set up ourselves horizontally, where we automatically take up the space inside #cover-box-fill */
+#cover-box-outer {
+	overflow: hidden;
+	margin-left: auto;
+	margin-right: auto;
+	width: 80%;
+	/* give some space below the cover box for the event details */
+	margin-bottom: 15px;
+}
+/* fill up the entire space available to us horizontally, and "take up space" vertically, though our size will be off by some computations */
+#cover-box-fill {
 	display: block;
 	position: relative;
-	height: 315px;
-	width: 850px;
-	overflow: hidden;
-	margin-left:auto;
-	margin-right:auto;
+	width: 100%;
+	padding-bottom: 37%; /* same ratio as facebook event page: (height/width) */;
 }
-#cover-box.#cover {
+#cover-box-fill::before {
+	background: url(/images/fade-dark.png) bottom left repeat-x;
+	z-index: 1; /* put background on top of image */
+	content: '';
+	height: 100%;
+	width: 100%;
+	position: absolute;
+}
+#cover-box-fill #cover-image {
 	position:absolute;
 	width:100%;
 }
+
+.event-page-title {
+	font-size: 2em;
+	font-weight: 500;
+}
+.event-page-title-on-cover {
+	padding-left: 10px;
+	position: absolute;
+	bottom: 0;
+	color: #fff;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+	z-index: 1; /* so we are also on top of the image */
+}
+
+.responsive-map-wrapper {
+	position: relative;
+	padding-top: 25px;
+	height: 0;
+	padding-bottom: 100%; /* square...but only because width is 80% below, with our 80% here */
+	margin-bottom: -20%;
+}
+.responsive-map-wrapper iframe {
+	width: 80%;
+	height: 80%;
+	position: absolute;
+	top: 0;
+	left: 0;
+} 
+
 
 /* all select boxes should autosize */
 select {

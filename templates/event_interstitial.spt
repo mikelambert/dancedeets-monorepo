@@ -9,77 +9,85 @@ $format_html($event.info.name)
 #end def
 
 #def body
-#if $new_layout
-<div class="row" itemscope itemtype="http://data-vocabulary.org/Event">
-#if $cover
-<div id="cover-box" style="background: url(/images/fade-dark.png) bottom left repeat-x;">
-<!--TODO: HANDLE MISSING COVER GRACEFULLY!!!-->
-<img src="$cover.source" id="cover" itemprop="photo" style="top:-${cover.offset_y}%">
-</div>
-#end if
+<div itemscope itemtype="http://data-vocabulary.org/Event">
 
-<div style="float: left">
-<p><b>Time:</b></p><br>
-$duration_human_format($start_time, $end_time)
-
-<p><b>Location:</b></p><br>
-<div itemprop="location">
-#if 'location' in $event.info
-$event.info.location<br>
-#end if
-#if 'venue' in $event.info and 'street' in $event.info.venue
-$event.info.venue.street<br>
-#end if
-$city_state_country<br>
+<div class="row">
+	#if $cover
+		<div style="position: relative;">
+			<div id="cover-box-outer">
+				<div id="cover-box-fill">
+					<img id="cover-image" src="$cover.source" itemprop="photo">
+					<!--style="margin-top:-${cover.offset_y}%">-->
+					<h1 class="event-page-title event-page-title-on-cover">$event.info.name</h1>
+				</div>
+			</div>
+		</div>
+	#else
+		<h1 class="event-page-title">$event.info.name</h1>
+	#end if
 </div>
 
-<b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b>
+<div class="col-sm-4">
+	<div><b><a href="$cover.source">See Full Flyer</a></b></div>
+	<div><b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b></div>
+	<div><b>Time:</b></div>
+	<div>$duration_human_format($start_time, $end_time)</div>
+	<div><b>Location:</b></div>
+	<div itemprop="location">
+	#if 'location' in $event.info
+	$event.info.location<br>
+	#end if
+	#if $street_address
+	$street_address<br>
+	#end if
+	$city_state_country<br>
+	</div>
+	## not worth showing maps embed if there is no street_address
+	#if $street_address
+		#if 'description' in $event.info
+			<div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
+		#end if
+		<div class="responsive-map-wrapper">
+		<iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=$urlencode($street_address+", "+$city_state_country)&key=AIzaSyAMTDdM6Y8xDkS7zaj3nRWmxK01rHznlB0"></iframe>
+		</div>
+	#end if
 </div>
 
-<div style="float: right">
-<div class="sub-content">
-<div class="box" itemprop="description">
 #if 'description' in $event.info
-	$format_html($event.info.description)
+	<div class="col-sm-8" itemprop="description">
+		<div><b>Description:</b></div>
+			$format_html($event.info.description)
+		</div>
+	</div>
 #end if
-</div>
-</div>
 
-</div>
+<!--
+can add these to google-maps embed:
+language= parameter
+region= paramter cctld
+-->
 
-</div>
-#else
-<div class="row" itemscope itemtype="http://data-vocabulary.org/Event">
-
-<div class="box col-md-3">
-<a href="$raw_fb_event_url($event.info.id)">
-<img src="$pic" itemprop="photo">
-</a>
-
-<p><b>Time:</b><br>
-$duration_human_format($start_time, $end_time)
-
-<p><b>Location:</b><br>
-<div itemprop="location">
-#if 'location' in $event.info
-$event.info.location<br>
-#end if
-#if 'venue' in $event.info and 'street' in $event.info.venue
-$event.info.venue.street<br>
-#end if
-$city_state_country<br>
+##itemprop=event
 </div>
 
-<p><b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b>
+#end def
 
-</div>
+#def bottom_javascript
+<script type="text/javascript">
+function position_cover() {
+	/* magic positioning function. makes no sense, but it works, much better than setting it to "-top:${cover.offset_y}%" */
+	/* difficult facebook event cover ids to handle include: 448903208580641 */
+	var offset_y = $cover.offset_y;
+	var cover_w = $("#cover-box-outer").width();
+	var cover_h = $("#cover-box-outer").height();
+	var img_w = $("#cover-image").width();
+	var img_h = $("#cover-image").height();
+	var real_img_h = (cover_w * img_h / img_w) - cover_h;
 
-<div class="box col-md-9" itemprop="description">
-#if 'description' in $event.info
-	$format_html($event.info.description)
-#end if
-</div>
-
-</div>
-#end if
+	$("#cover-image").css ({ top: parseInt (real_img_h * offset_y / 100 * -1) + "px" });
+}
+$(document).ready(function() {
+	position_cover();
+};
+</script>
 #end def

@@ -79,7 +79,6 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             self.response.out.write('This event was %s.' % event_info['empty'])
             return
 
-        self.display['new_layout'] = self.request.get('new_layout')
         self.display['cover'] = event_info['info'].get('cover')
         self.display['pic'] = eventdata.get_event_image_url(event_info)
 
@@ -92,9 +91,12 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                 for x in ['city', 'state', 'country']
                 if x in event_info['info']['venue']
             ]
+            street_address = event_info['info']['venue'].get('street')
         else:
             city_state_country = ''
+            street_address = ''
         self.display['city_state_country'] = ', '.join(city_state_country)
+        self.display['street_address'] = street_address
         self.display['event'] = event_info
         self.display['next'] =  self.request.url
         self.render_template('event_interstitial')

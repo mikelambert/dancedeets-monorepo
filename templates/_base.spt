@@ -98,9 +98,6 @@ $gaq_custom_vars()
 	</div>
 </div>
 
-
-    <div class="container">
-
 #if $errors
 #for $error in $errors
 	<div class="bg-danger">$format_html($error)</div>
