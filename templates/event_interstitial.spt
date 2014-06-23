@@ -88,6 +88,6 @@ function position_cover() {
 }
 $(document).ready(function() {
 	position_cover();
-};
+});
 </script>
 #end def
