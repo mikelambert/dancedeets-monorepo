@@ -143,12 +143,6 @@ html, body {
 	margin-bottom: -100px;
 }
 
-/* each floating white box on the homepage */
-.box {
-	margin-top: 5px; /* @gridGutterWidth = 5px */
-	padding: 5px;
-}
-
 .events-list {
 	margin: 0px;
 	padding: 0px;

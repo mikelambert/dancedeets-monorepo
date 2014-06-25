@@ -1,4 +1,4 @@
-#extends _base
+#extends _bigbox_base
 #extends _event_criteria
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
@@ -7,10 +7,7 @@
 Settings
 #end def
 
-#def body
-<div class="row">
-<div class="box col-md-12">
-
+#def inner_body
 <form action="/user/edit" method="post">
 <p>
 $event_criteria($defaults)
@@ -36,8 +33,5 @@ $event_criteria($defaults)
 
 <p><button class="btn">Save Changes</button>
 </form>
-
-</div>
-</div>
 #end def
 

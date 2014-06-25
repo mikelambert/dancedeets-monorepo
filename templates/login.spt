@@ -19,15 +19,16 @@ DanceDeets
 #end def
 
 #def body
-<div class="row">
-<div class="box col-md-12">
+<div class="container-fluid">
 
-<div style="margin-bottom: 10px">
+<div class="row">
+<div class="col-md-12" style="margin-bottom: 10px">
 Dance Deets is your home for streetdance events: locally and internationally.<br>
 Wherever you are in the world, we’ll help you find a place to get your groove on.<br>
 #if $total_events
 Over $total_events events and growing daily!
 #end if
+</div>
 </div>
 
 <div class="row">
@@ -50,38 +51,31 @@ dance events reach 18,000+ dancers every month
 </div>
 </div>
 
-</div>
-</div>
-
 <div class="row">
-
-<div class="box col-md-5">
+<div class="col-md-5">
 See events in the top north-american cities:
 <ul>
 #for $internal_city, $city in $top_cities
-	<li><a href="/?location=$urllib_quote_plus($internal_city)&distance=50&distance_units=miles">$city</a>
+	<li><a href="/?location=$urllib_quote_plus($internal_city)&distance=50&distance_units=miles">$city</a></li>
 #end for
 </ul>
 </div>
 
-<div class="box col-md-5">
+<div class="col-md-5">
 See many more events for these european countries:
 <ul>
 #for $location in $top_european_countries
-<li><a href="/?location=$location&distance=50&distance_units=miles">$location</a>
+<li><a href="/?location=$location&distance=50&distance_units=miles">$location</a></li>
 #end for
 </ul>
-<p>
-See many more events for these continents:
+<p>See many more events for these continents:</p>
 <ul>
 #for $location in $top_continents
-<li><a href="/?location=$location&distance=50&distance_units=miles">$location</a>
+<li><a href="/?location=$location&distance=50&distance_units=miles">$location</a></li>
 #end for
 </ul>
 </div>
-
 </div>
 
-
-
+</div>
 #end def

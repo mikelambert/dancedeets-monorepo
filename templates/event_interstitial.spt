@@ -11,6 +11,7 @@ $format_html($event.info.name)
 #def body
 <div itemscope itemtype="http://data-vocabulary.org/Event">
 
+<div class="container-fluid">
 <div class="row">
 	#if $cover
 		<div style="position: relative;">
@@ -27,6 +28,7 @@ $format_html($event.info.name)
 	#end if
 </div>
 
+<div class="row">
 <div class="col-sm-4">
 	<div><b><a href="$cover.source">See Full Flyer</a></b></div>
 	<div><b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b></div>
@@ -56,16 +58,19 @@ $format_html($event.info.name)
 #if 'description' in $event.info
 	<div class="col-sm-8" itemprop="description">
 		<div><b>Description:</b></div>
-			$format_html($event.info.description)
-		</div>
+		$format_html($event.info.description)
 	</div>
 #end if
+</div>
 
 <!--
 can add these to google-maps embed:
 language= parameter
 region= paramter cctld
 -->
+
+## container-fluid
+</div>
 
 ##itemprop=event
 </div>

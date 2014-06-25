@@ -49,7 +49,7 @@ $display_location dance events
 
 #def body
 
-<div class="box col-md-9" style="min-height:300px">
+<div class="col-md-9" style="min-height:300px">
 Events near ${display_location}:
 <ul class="nav nav-tabs" data-tabs="tabs">
 	<li
@@ -129,14 +129,14 @@ Events near ${display_location}:
 </div>
 </div>
 
-<div class="box col-md-3">
+<div class="col-md-3">
 	<div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="225" data-action="like" data-show-faces="true" data-share="true" style="margin-bottom: 10px;"></div>
 	<p>
 	<a href="/share" class="btn btn-default">Invite Dancers and Fans</a>
 	<a href="/events/add" class="btn btn-default">Add Dance Event</a>
 </div>
 
-<div class="box col-md-3">
+<div class="col-md-3">
 	<div class="rankings">
 	<span class="ranking-title">Who has the most events:</span><br>
 	$ranked_list($event_top_n_cities, $event_selected_n_cities)

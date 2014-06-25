@@ -1,4 +1,4 @@
-#extends _base
+#extends _bigbox_base
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 
@@ -6,7 +6,7 @@
 $primary_name - DanceDeets Profile
 #end def
 
-#def body
+#def inner_body
 <img src="http://graph.facebook.com/$profile_username/picture?type=large">
 <p>
 #for $video_tag in $video_tags

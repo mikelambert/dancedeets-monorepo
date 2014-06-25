@@ -1,6 +1,7 @@
-#extends _base
+#extends _bigbox_base
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
+
 #def title
 Rankings
 #end def
@@ -13,10 +14,7 @@ Rankings
 </style>
 #end def
 
-#def body
-<div class="row">
-
-<div class="box col-md-12">
+#def inner_body
 
 <form action="/rankings">
 Rankings over <select name="time_period" onchange="this.form.submit();">
@@ -66,7 +64,4 @@ Rankings over <select name="time_period" onchange="this.form.submit();">
 	><td>$rank.city</td><td>$rank.count</td></tr>
 #end for
 </table>
-
-</div>
-</div>
 #end def
