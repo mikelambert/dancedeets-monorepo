@@ -70,6 +70,8 @@ region= paramter cctld
 ##itemprop=event
 </div>
 
+<div style="clear:both;height:1px"></div>
+
 #end def
 
 #def bottom_javascript
