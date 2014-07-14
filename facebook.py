@@ -147,6 +147,7 @@ def get_user_from_cookie(cookies):
       if 'expires' in parsed_response:
           expires_time = datetime.datetime.now() + datetime.timedelta(seconds=int(parsed_response["expires"][-1]))
     else:
+      logging.error("No access_token in first parsed_response: %s", parsed_response)
       access_token = None
 
     if access_token:
@@ -168,7 +169,9 @@ def get_user_from_cookie(cookies):
           access_token = parsed_response["access_token"][-1]
           if 'expires' in parsed_response:
               expires_time = datetime.datetime.now() + datetime.timedelta(seconds=int(parsed_response["expires"][-1]))
-    
+        else:
+          logging.error("No access_token in second parsed_response: %s", parsed_response)
+
     # TODO(lambert): LOGIN: Do a sanity check that this access token belongs to this user? Every time??
     return dict(
         uid = response["user_id"],

@@ -63,7 +63,10 @@ def mr_load_fb_user(fbl):
 @timings.timed
 def yield_load_fb_user(fbl, user):
     if user.expired_oauth_token:
+        logging.info("Skipping user %s (%s) due to expired access_token", user.fb_uid, user.full_name)
         return
+    if not fbl.access_token:
+        logging.info("Skipping user %s (%s) due to not having an access_token", user.fb_uid, user.full_name)
     fbl.request(fb_api.LookupUser, user.fb_uid)
     try:
         fbl.batch_fetch()

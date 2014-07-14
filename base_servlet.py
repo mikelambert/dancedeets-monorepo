@@ -195,18 +195,25 @@ class BaseRequestHandler(BareBaseRequestHandler):
                     token_expires_soon = True
                 if self.user.expired_oauth_token or token_expires_soon:
                     access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
-                    logging.info("Putting new access token into db/memcache")
-                    self.user = users.User.get_by_key_name(str(self.fb_uid))
-                    self.user.fb_access_token = access_token
-                    self.user.fb_access_token_expires = access_token_expires
-                    self.user.expired_oauth_token = False
-                    self.user.put() # this also sets to memcache
+                    logging.info("New access token from cookie: %s, expires %s", access_token, access_token_expires)
+                    if access_token:
+                        self.user = users.User.get_by_key_name(str(self.fb_uid))
+                        self.user.fb_access_token = access_token
+                        self.user.fb_access_token_expires = access_token_expires
+                        self.user.expired_oauth_token = False
+                        self.user.expired_oauth_token_reason = ""
+                        self.user.put() # this also sets to memcache
+                        logging.info("Stored the new access_token to the User db")
+                    else:
+                        logging.error("Got a cookie, but no access_token. Using the one from the existing user. Strange!")
                 self.access_token = self.user.fb_access_token
             else:
+                self.access_token = self.user.fb_access_token
                 logging.info("Have dd login cookie but no fb login cookie")
                 if self.user.expired_oauth_token:
                     self.fb_uid = None
                     self.user = None
+                    self.access_token = None
                     return
         else:
             # if we don't have a user but do have a token, the user has granted us permissions, so let's construct the user now
@@ -230,7 +237,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 self.user = None
                 return
 
-        logging.info("Logged in uid %s with name %s", self.fb_uid, self.user.full_name)
+        logging.info("Logged in uid %s with name %s and token %s", self.fb_uid, self.user.full_name, self.access_token)
         
         # Track last-logged-in state
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
@@ -317,6 +324,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['defaults'].location = self.request.get('location')
         self.display['defaults'].keywords = self.request.get('keywords')
         self.display['defaults'].deb = self.request.get('deb')
+
+        self.display['deb'] = self.request.get('deb')
 
         self.display.update(rankings.retrieve_summary())
 
