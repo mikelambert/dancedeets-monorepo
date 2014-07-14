@@ -13,8 +13,9 @@
 	}());
 
 	function deleteLoginCookies() {
-		$.removeCookie('fbsr_${app_id}')
-		$.removeCookie('user_login')
+		cookie_options = {domain: '.dancedeets.com', path: '/'}
+		$.removeCookie('fbsr_${app_id}', cookie_options)
+		$.removeCookie('user_login', cookie_options)
 	}
 
 	function reloadWithNewToken() {
