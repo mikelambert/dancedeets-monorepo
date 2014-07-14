@@ -157,6 +157,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         # Don't insert object until we're ready to save it...
         e = eventdata.DBEvent.get_by_key_name(event_id)
         if e and e.creating_fb_uid:
+            logging.info("Looking up: https://graph.facebook.com/%s?access_token=%s" % (e.creating_fb_uid, self.access_token))
             f = urllib2.urlopen('https://graph.facebook.com/%s?access_token=%s' % (e.creating_fb_uid, self.access_token))
             json_data = json.loads(f.read())
             creating_user = json_data['name']
