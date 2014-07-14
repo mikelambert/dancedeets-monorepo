@@ -21,6 +21,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<meta property="fb:app_id" content="$app_id"/>
 $head_stylesheet()
 $head_javascript()
 #if $prod_mode and $track_google_analytics

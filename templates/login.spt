@@ -12,8 +12,6 @@ DanceDeets
     <meta property="og:url" content="http://www.dancedeets.com/"/>
     <meta property="og:image" content="http://www.dancedeets.com/dancedeets.png"/>
     <meta property="og:site_name" content="Dance Deets"/>
-    <meta property="fb:admins" content="701004"/>
-    <meta property="fb:app_id" content="$app_id"/>
     <meta property="og:description"
           content="A website for finding and promoting dance events to both dancers and dance fans around the world."/>
 #end def

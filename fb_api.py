@@ -15,6 +15,7 @@ from google.appengine.api import urlfetch
 from google.appengine.runtime import apiproxy_errors
 
 from util import properties
+from util import urls
 
 # Comparison of pickle vs json:
 # http://kbyanc.blogspot.com/2007/07/python-serializer-benchmarks.html
@@ -213,6 +214,7 @@ GRAPH_ID_REMAP = {
     '293194630797776': '591521077576361',
     '222331884466189': '14932597084',
     '171141252988101': '206918392697176',
+    '317110981749490': '784921641542422',
 }
 
 EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS = 'insufficient_permissions'
@@ -373,6 +375,18 @@ class LookupEvent(LookupType):
             # Set new all_members_count data.
             _all_members_count(object_data, new_amc)
         return object_data
+
+class LookupEventPageComments(LookupType):
+    use_access_token = False
+
+    @classmethod
+    def get_lookups(cls, object_id):
+        return [
+            ('comments', cls.url('/comments/?ids=%s' % urls.fb_event_url(object_id))),
+        ]
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (USERLESS_UID, object_id, 'OBJ_EVENTPAGE_COMMENTS')
 
 class LookupEventAttending(LookupType):
     @classmethod

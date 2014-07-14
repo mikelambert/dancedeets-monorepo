@@ -114,6 +114,9 @@
 					#end if
 				#end if
 			</div>
+			#if $deb == 'comments'
+				<div><a href="#" onclick="$('#comments-$fb_event.id').toggleClass('hidden');return false;">Show all <fb:comments-count href="$fb_event_url($fb_event.id)"></fb:comments-count> comments</a>.</div>
+			#end if
 			<div style="clear:both;height:1px;"></div>
 		</li>
 	#end for
