@@ -37,7 +37,8 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         self.fb_uid = int(self.request.get('user_id'))
         self.user = users.User.get_cached(self.fb_uid)
         if self.user:
-            assert self.user.fb_access_token, "Can't execute background task for user %s without access_token" % self.fb_uid
+            if not self.user.fb_access_token:
+                logging.error("Can't execute background task for user %s without access_token", self.fb_uid)
             self.access_token = self.user.fb_access_token
         else:
             self.access_token = None
