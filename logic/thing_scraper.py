@@ -125,7 +125,7 @@ def parse_event_source_combos_from_feed(source, feed_data):
                     extra_source_id = post['from']['id']
                 event_source_combos.append((eid, source, extra_source_id))
             else:
-                logging.error("broken link is %s", urlparse.urlunparse(p))
+                logging.warning("broken link is %s", urlparse.urlunparse(p))
     return event_source_combos
 
 def process_event_source_ids(event_source_combos, fbl):
