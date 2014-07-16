@@ -30,7 +30,9 @@ $format_html($event.info.name)
 
 <div class="row">
 <div class="col-sm-4">
-	<div><b><a href="$cover.source">See Full Flyer</a></b></div>
+	#if $cover
+		<div><b><a href="$cover.source">See Full Flyer</a></b></div>
+	#end if
 	<div><b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b></div>
 	<div><b>Time:</b></div>
 	<div>$duration_human_format($start_time, $end_time)</div>
@@ -81,6 +83,7 @@ region= paramter cctld
 
 #def bottom_javascript
 <script type="text/javascript">
+#if $cover
 function position_cover() {
 	/* magic positioning function. makes no sense, but it works, much better than setting it to "-top:${cover.offset_y}%" */
 	/* difficult facebook event cover ids to handle include: 448903208580641 */
@@ -96,5 +99,6 @@ function position_cover() {
 $(document).ready(function() {
 	position_cover();
 });
+#end if
 </script>
 #end def
