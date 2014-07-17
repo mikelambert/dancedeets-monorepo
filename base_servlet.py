@@ -215,7 +215,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                     self.user = None
                     self.access_token = None
                     return
-        else:
+        elif fb_cookie_uid:
             # if we don't have a user but do have a token, the user has granted us permissions, so let's construct the user now
             access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
             self.access_token = access_token
@@ -236,6 +236,13 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 self.access_token = None
                 self.user = None
                 return
+        else:
+            # no user, no fb_cookie_uid, but we have fb_uid from the user_login cookie
+            logging.error("We have a user_login cookie, but no user, and no fb_cookie_uid. Acting as logged-out")
+            self.fb_uid = None
+            self.access_token = None
+            self.user = None
+            return
 
         logging.info("Logged in uid %s with name %s and token %s", self.fb_uid, self.user.full_name, self.access_token)
         
