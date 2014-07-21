@@ -65,7 +65,7 @@ Edit Event
 			#else
 				#set $description = "None!"
 			#end if
-			<div style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">$highlight_keywords($format_html($description))</div>
+			<div style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">$highlight_keywords($linkify($format_html($description)))</div>
 			</div>
 			<p>Reason: $classified_event.reason()<br>
 			Dance Words: $classifier_dance_words<br>

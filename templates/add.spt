@@ -80,7 +80,7 @@ Add Dance Event
 				<br>Description:
 				<div style="padding: 20px; width: 450px; height:250px; overflow:scroll; border: 1px solid black">
 				#if $fb_event.info.get('description')
-					$format_html($fb_event.info.description)
+					$linkify(format_html($fb_event.info.description), escape=True)
 				#else
 					None!
 				#end if

@@ -24,7 +24,7 @@ Edit Source
 				#end if
 			#end if
 
-			<div id="description" style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">$format_html($description)</div>
+			<div id="description" style="padding: 20px; width: 600px; height:150px; overflow:scroll; border: 1px solid black">$linkify($format_html($description))</div>
 			</div>
 
 			<p>

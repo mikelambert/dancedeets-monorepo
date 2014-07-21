@@ -60,7 +60,7 @@ $format_html($event.info.name)
 #if 'description' in $event.info
 	<div class="col-sm-8" itemprop="description">
 		<div><b>Description:</b></div>
-		$format_html($event.info.description)
+		$linkify($format_html($event.info.description))
 	</div>
 #end if
 </div>
