@@ -168,6 +168,7 @@ dance_keywords = [
     'katutanssi\w*', # finnish streetdance
     "bre?ak\W?dancin[g']?", 'bre?ak\W?dancer?s?',
     'break\W?danc\w+',
+    'rock\W?dan[cs]\w+',
     '(?:lite|light)\W?feet',
     "gettin[g']?\W?(?:lite|light)",
     "turfin[g']?", 'turf danc\w+', "flexin[g']?", "buckin[g']?", "jookin[g']?",

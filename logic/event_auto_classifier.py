@@ -602,7 +602,15 @@ def is_performance_or_practice(classified_event):
         return True, 'found good performance/practice keywords: %s' % performances_and_practices
     return False, 'no good keywords'
 
+def is_intentional(classified_event):
+    if 'dancedeets' in classified_event.final_search_text:
+        return True, 'found dancedeets reference'
+    return False, 'no dancedeets reference'
+
 def is_auto_add_event(classified_event):
+    result = is_intentional(classified_event)
+    if result[0]:
+        return result
     result = is_battle(classified_event)
     if result[0]:
         return result
