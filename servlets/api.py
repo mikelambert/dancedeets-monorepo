@@ -4,6 +4,7 @@ import logging
 import xml.sax.saxutils
 
 import base_servlet
+from events import eventdata
 from logic import event_locations
 from logic import search
 from logic import search_base
@@ -61,7 +62,7 @@ class FeedHandler(base_servlet.BaseRequestHandler):
             'location': x.actual_city_name,
             'city': location,
             'image_url': x.get_image(),
-            'cover_url': x.fb_event['info'].get('cover'),
+            'cover_url': eventdata.get_largest_cover(x.fb_event),
             'start_time': x.start_time.strftime(DATETIME_FORMAT),
             'end_time': x.end_time and x.end_time.strftime(DATETIME_FORMAT) or None,
             'keywords': x.event_keywords,

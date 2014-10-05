@@ -25,6 +25,14 @@ DBEVENT_PREFIX = 'DbEvent.%s'
 def cache_db_events(events):
     return smemcache.safe_set_memcache(dict((DBEVENT_PREFIX % x.fb_event_id, x) for x in events), expiry=2*3600)
 
+def get_largest_cover(fb_event):
+    if 'cover_info' in fb_event:
+        cover = fb_event['cover_info'][str(fb_event['info']['cover']['cover_id'])]
+        max_cover = max(cover['images'], key=lambda x: x['height'])
+        return max_cover
+    else:
+        return None
+
 def get_cached_db_events(event_ids, allow_cache=True):
     db_events = []
     a = time.time()
