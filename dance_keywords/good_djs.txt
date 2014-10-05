@@ -4,6 +4,8 @@ akalepse
 bj piggo
 black coffee
 clubshelter
+(?:joe|joaquin\W+joe)\W+claussell
+danny krivit
 david harness
 derek sampson
 dj disciple
@@ -26,6 +28,7 @@ louie vega
 manchildblack
 marques wyatt
 max pela
+myrto joyce
 ohishi\W+(?:jmc\W+)?sodeep
 peven everett
 rich medina

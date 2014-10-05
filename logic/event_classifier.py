@@ -189,6 +189,9 @@ dance_keywords = [
     'locking4life',
     'dance crew[sz]?',
     "wavin[g']?", 'wavers?',
+    'liquid\W+dance'
+    'liquid\W+(?:\w+\W+)?digitz',
+    'finger\W+digitz',
     'toy\W?man',
     'puppet\W?style',
     "bott?in[g']?",
