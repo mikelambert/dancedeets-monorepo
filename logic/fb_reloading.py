@@ -68,18 +68,17 @@ def yield_load_fb_user(fbl, user):
         return
     if not fbl.access_token:
         logging.info("Skipping user %s (%s) due to not having an access_token", user.fb_uid, user.full_name)
-    fbl.request(fb_api.LookupUser, user.fb_uid)
     try:
-        fbl.batch_fetch()
-        fb_user = fbl.fetched_data(fb_api.LookupUser, user.fb_uid)
+        fb_user = fbl.get(fb_api.LookupUser, user.fb_uid)
     except fb_api.ExpiredOAuthToken as e:
         logging.info("Auth token now expired, mark as such: %s", e)
         user.expired_oauth_token_reason = e.args[0]
         user.expired_oauth_token = True
         user.put()
         return
-    user.compute_derived_properties(fb_user)
-    user.put()
+    else:
+        user.compute_derived_properties(fb_user)
+        user.put()
 map_load_fb_user = fb_mapreduce.mr_user_wrap(yield_load_fb_user)
 load_fb_user = fb_mapreduce.nomr_wrap(yield_load_fb_user)
 
@@ -149,18 +148,29 @@ def mr_load_potential_events(fbl):
 
 @timings.timed
 def load_potential_events_for_user_ids(fbl, user_ids):
-    fbl.get_multi(fb_api.LookupUserEvents, user_ids)
-    fbl.batch_fetch()
+    user_events_list = fbl.get_multi(fb_api.LookupUserEvents, user_ids)
     # Since we've loaded the latest events from the user, allow future event lookups to come from cache
     fbl.allow_cache = True
-    for user_id in user_ids:
-        user_events = fbl.fetched_data(fb_api.LookupUserEvents, user_id)
+    for user_events in user_events_list:
         potential_events.get_potential_dance_events(fbl, user_events)
 
 def yield_load_potential_events(fbl, user):
     if user.expired_oauth_token:
         return
-    load_potential_events_for_user_ids(fbl, [user.fb_uid])
+    try:
+        user_events = fbl.get(fb_api.LookupUserEvents, user.fb_uid)
+    except fb_api.ExpiredOAuthToken as e:
+        logging.warning("Auth token now expired, skip for now until user-load fixes this: %s", e)
+        # or do we want to fix-and-put here
+        #user.expired_oauth_token_reason = e.args[0]
+        #user.expired_oauth_token = True
+        #user.put()
+        #return
+    else:
+        # Since we've loaded the latest events from the user, allow future event lookups to come from cache
+        fbl.allow_cache = True
+        potential_events.get_potential_dance_events(fbl, user_events)
+
 map_load_potential_events = fb_mapreduce.mr_user_wrap(yield_load_potential_events)
 load_potential_events = fb_mapreduce.nomr_wrap(yield_load_potential_events)
 
