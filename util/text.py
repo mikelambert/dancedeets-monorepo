@@ -63,11 +63,9 @@ def linkify(value):
     # We don't need to escape the value we send in the href, since everything should be been pre-escaped.
     def make_href(m):
         link = m.group(1)
-        logging.info(link)
         if '"' in link:
             logging.error("Found double-quote in link %r in linkify for %r", link, value)
         return '<a href="%s">%s</a>' % (m.group(1), m.group(1))
-    logging.info(value)
     return url_finder_re.sub(make_href, value)
 
 @skip_filter
