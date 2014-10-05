@@ -1,5 +1,5 @@
 application: dancedeets-hrd
-version: v2-2-ui-upgrades
+version: v2-3-new-analytics
 runtime: python27
 threadsafe: true
 api_version: 1
