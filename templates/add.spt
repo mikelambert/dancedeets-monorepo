@@ -42,6 +42,7 @@ Add Dance Event
 			#if $events
 				Enter your facebook event URL here:<br>
 				<input id="event_url_form" type=text name="event_url" size=60 onunfocus="loadEvent();">
+				<br/>
 				Or select one of your facebook events below:<br>
 				<input id="event_id_form" type="hidden" name="event_id" value="">
 				<ul id="events">
@@ -80,7 +81,7 @@ Add Dance Event
 				<br>Description:
 				<div style="padding: 20px; width: 450px; height:250px; overflow:scroll; border: 1px solid black">
 				#if $fb_event.info.get('description')
-					$linkify(format_html($fb_event.info.description), escape=True)
+					$linkify($format_html($fb_event.info.description))
 				#else
 					None!
 				#end if
