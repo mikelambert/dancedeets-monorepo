@@ -12,6 +12,7 @@ from servlets import api
 from servlets import calendar
 from servlets import event
 from servlets import feedback
+from servlets import home
 from servlets import gprediction
 from servlets import login
 from servlets import myuser
@@ -91,6 +92,7 @@ URLS = [
     ('/help', feedback.HelpHandler),
     ('/feedback', feedback.FeedbackHandler),
     ('/mapreduce/worker_callback.*', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
+    ('/home', home.HomeHandler),
 ]
 
 ereporter.register_logger()

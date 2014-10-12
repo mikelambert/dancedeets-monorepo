@@ -1,0 +1,152 @@
+#extends _base
+#extends _signup
+#extends _event_criteria
+
+#def title
+DanceDeets
+#end def
+
+#def head_stylesheet
+    <meta property="og:title" content="Dance Deets"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="http://www.dancedeets.com/"/>
+    <meta property="og:image" content="http://www.dancedeets.com/dancedeets.png"/>
+    <meta property="og:site_name" content="Dance Deets"/>
+    <meta property="og:description"
+          content="Find streetdance events around the world."/>
+#end def
+
+#def body
+## not using container-fluid, but container, so things are more centered
+<div class="container">
+
+<div class="row">
+<div class="col-xs-12">
+
+<div style="position: relative;">
+	<div style="	margin-left: auto;
+	margin-right: auto;
+	width: 80%;
+">
+		<div style="	display: block;
+	position: relative;
+	width: 100%;
+	overflow:hidden;">
+			<img src="/images/choreo-competition.jpg" style="
+	width:100%;
+" width="100%">
+<!--
+			<div style="
+	padding-left: 10px;
+	position: absolute;
+	bottom: 0;
+	color: #fff;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+	z-index: 1; /* so we are also on top of the image */
+	font-size: 140%;
+"><
+			Search all
+#if $total_events
+	$total_events
+#else
+	of our
+#end if
+streetdance events, and stay in the know on workshops, performances, jams, and parties near you! <button>Join DanceDeets Today</button>
+
+			</div>
+-->
+		</div>
+	</div>
+</div>
+
+</div>
+</div>
+
+<div class="row">
+<div class="col-xs-10 col-xs-offset-1">
+
+<div style="	font-size: 120%;">
+Search all
+#if $total_events
+	$total_events
+#else
+	of our
+#end if
+streetdance events, and stay in the know on workshops, performances, jams, and parties near you:<br>
+<button>Join DanceDeets Today</button>
+</div>
+
+</div>
+</div>
+
+<style type="text/css">
+.testimonial {
+	font-size: 80%;
+	margin-bottom: 1em;
+	margin-top: 1em;
+	min-height: 48px; /* for the float-ed img */
+}
+</style>
+
+<div class="row">
+
+<div class="col-sm-4">
+<span class="big-font">Find your Scene</span><br>
+Find local dance events you care about. Never miss out on a great dance event again!
+<div class="testimonial">
+<div style="float:left"><img src="/images/mike.jpg" width="48" height="48"></div>
+When my friends hit me up asking what's good this weekend, I always send them to DanceDeets.
+<br>
+- Mike, NYC resident dancer
+</div>
+</div>
+
+<div class="col-sm-4">
+<span class="big-font">Travel the World</span><br>
+Wherever you travel, hook up with the dance scene instantly! Don't waste valuable time searching for dancers...
+<div class="testimonial">
+<div style="float:left"><img src="/images/mike.jpg" width="48" height="48"></div>
+When I visited Paris, DanceDeets saved me so much time, and helped me check out the dance scene there!
+<br>
+- Mike, travelling dancer
+</div>
+</div>
+
+<div class="col-sm-4">
+<span class="big-font">Share Events</span><br>
+Organizing an event? Promote your streetdance events to interested dancers!
+Otherwise, even just joining helps share your dance events!
+<div class="testimonial">
+<div style="float:left"><img src="/images/mike.jpg" width="48" height="48"></div>
+DanceDeets helped my event reach dancers I never even knew about!
+<br>
+- Mike, dance event organizer
+</div>
+</div>
+
+</div>
+
+<div class="row">
+
+<div class="col-sm-6 col-sm-offset-3" style="margin-bottom: 5em">
+Are you ready to help your scene?
+<br>
+<button>Join DanceDeets Today</button>
+<br>
+<br>
+
+Or if you want to:
+<ul>
+<li>check out <a href="/relevant?location=">dance events in $nearby_location</a></li>
+<li>travel and find events near
+<input type="text" placeholder="city or country">
+<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+</li>
+<li>discover <a href="">events from a random city</a></li>
+</ul>
+
+</div>
+</div>
+
+</div>
+#end def
