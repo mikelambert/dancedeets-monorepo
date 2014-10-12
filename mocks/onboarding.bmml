@@ -73,7 +73,7 @@
     </control>
     <control controlID="14" controlTypeID="com.balsamiq.mockups::Paragraph" x="152" y="324" w="-1" h="-1" measuredW="275" measuredH="80" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>The%20more%20you%20dance%2C%20the%20more%20you%27ll%20progress%2C%20so%20time%20to%20go%20out%20dancing%21%20Dancedeets%20helps%20you%20find%20local%20dance%20events%20you%20didn%27t%20hear%20about.</text>
+        <text>Dancedeets%20helps%20you%20find%20local%20dance%20events%20you%20didn%27t%20hear%20about.%20The%20more%20you%20dance%2C%20the%20more%20you%27ll%20grow%2C%20so%20find%20more%20spots%20to%20dance%21%20</text>
       </controlProperties>
     </control>
     <control controlID="15" controlTypeID="com.balsamiq.mockups::SubTitle" x="725" y="286" w="-1" h="-1" measuredW="246" measuredH="27" zOrder="13" locked="false" isInGroup="-1">
@@ -83,7 +83,7 @@
     </control>
     <control controlID="16" controlTypeID="com.balsamiq.mockups::Paragraph" x="725" y="324" w="-1" h="-1" measuredW="275" measuredH="80" zOrder="14" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>If%20you%27ve%20got%20an%20event%20you%20want%20to%20promote%2C%20add%20it%20to%20Dance%20Deets%20to%20share%20with%20interested%20dancers%21%20And%20even%20if%20you%20don%27t%20organize%20events%2C%20joining%20helps%20share%20all%20your%20Facebook%20dance%20events%20with%20others%20in%20the%20scene%21</text>
+        <text>If%20you%27ve%20got%20an%20event%20you%20want%20to%20promote%2C%20add%20it%20to%20Dance%20Deets%20to%20share%20it%20other%20with%20dancers%21%20And%20even%20if%20you%20don%27t%20organize%20events%2C%20joining%20helps%20share%20all%20your%20Facebook%20dance%20events%20with%20others%20in%20the%20scene%21</text>
       </controlProperties>
     </control>
     <control controlID="20" controlTypeID="com.balsamiq.mockups::Label" x="398" y="885" w="-1" h="-1" measuredW="215" measuredH="21" zOrder="16" locked="false" isInGroup="-1">
