@@ -93,6 +93,8 @@ URLS = [
     ('/feedback', feedback.FeedbackHandler),
     ('/mapreduce/worker_callback.*', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
     ('/home', home.HomeHandler),
+    ('/api/events/\d+/?', api.EventHandler),
+    ('/api/search', api.SearchHandler),
 ]
 
 ereporter.register_logger()
