@@ -154,19 +154,15 @@ class FeedHandler(base_servlet.BaseRequestHandler):
 class SearchHandler(base_servlet.BaseRequestHandler):
     pass
 
-FB_EVENT_COPY_KEYS = ['id', 'name', 'description', 'start_time']
-VENUE_ADDRESS_COPY_KEYS = ['street', 'city', 'state', 'zip', 'country']
-VENUE_GEOCODE_COPY_KEYS = ['longitude', 'latitude']
-
 def canonicalize_event_data(fb_event, db_event):
     event_api = {}
-    for key in FB_EVENT_COPY_KEYS:
+    for key in ['id', 'name', 'description', 'start_time']:
         event_api[key] = fb_event['info'][key]
     # end time can be option, especially on single-day events that are whole-day events
-    event_api[key] = fb_event['info'].get('end_time')
+    event_api['end_time'] = fb_event['info'].get('end_time')
 
     # cover images
-    if fb_event['cover_info']:
+    if fb_event.get('cover_info'):
         cover_id = str(fb_event['info']['cover']['cover_id'])
         cover_images = sorted(fb_event['cover_info'][cover_id]['images'], key=lambda x: -x['height'])
         event_api['cover'] = {
@@ -177,26 +173,36 @@ def canonicalize_event_data(fb_event, db_event):
         event_api['cover'] = None
 
     # location data
-    location = fb_event['info']['location']
+    venue_location_name = fb_event['info']['location']
     venue = fb_event['info']['venue']
+    if 'name' in venue and venue['name'] != venue_location_name:
+        logging.error("Venue name %r is different from location name %r", venue['name'], venue_location_name)
+    venue_id = None
+    if 'id' in venue:
+        venue_id = venue['id']
     address = None
-    if 'name' in venue:
-        if venue['name'] != location:
-            logging.error("Venue name %r is different from location name %r" % (venue['name'], location))
-            event_api['venue'] = {'name': location}
-    else:
+    if 'country' in venue:
         address = {}
-        for key in VENUE_ADDRESS_COPY_KEYS:
-            address[key] = venue[key]
+        for key in ['street', 'city', 'state', 'zip', 'country']:
+            address[key] = venue.get(key)
+    geocode = None
+    if 'longitude' in venue:
         geocode = {}
-        for key in VENUE_GEOCODE_COPY_KEYS:
+        for key in ['longitude', 'latitude']:
             geocode[key] = venue[key]
-        event_api['venue'] = {
-            'name': location,
-            'id': str(venue['id']),
-            'address': address,
-            'geocode': geocode,
-        }
+    # I have seen:
+    # name only
+    # name and id and geocode
+    # name and address and id and geocode
+    # name and address (everything except zip) and id and geocode
+    # so now address can be any subset of those fields that the venue author filled out...but will specify none, at least
+    # ...are there more variations? write a mapreduce on recent events to check?
+    event_api['venue'] = {
+        'name': venue_location_name,
+        'id': venue_id,
+        'address': address,
+        'geocode': geocode,
+    }
     # people data
     if 'admins' in fb_event['info']:
         event_api['admins'] = fb_event['info']['admins']['data']
@@ -241,6 +247,8 @@ class EventHandler(base_servlet.BaseRequestHandler):
 
         json_data = canonicalize_event_data(fb_event, db_event)
 
+        # Ten minute expiry on data we return
+        self.response.headers['Cache-Control'] = 'max-age=%s' % (60*10)
         write_json_data(self.request.get('callback'), self.response, json_data)
 
 
