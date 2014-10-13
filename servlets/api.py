@@ -154,21 +154,20 @@ class FeedHandler(base_servlet.BaseRequestHandler):
 class SearchHandler(base_servlet.BaseRequestHandler):
     pass
 
-FB_EVENT_COPY_KEYS = ['id', 'name', 'description', 'start_time', 'end_time']
+FB_EVENT_COPY_KEYS = ['id', 'name', 'description', 'start_time']
 VENUE_ADDRESS_COPY_KEYS = ['street', 'city', 'state', 'zip', 'country']
 VENUE_GEOCODE_COPY_KEYS = ['longitude', 'latitude']
-
-#EXTRA_KEYS = ['admins']
-#MEMBER_KEYS = [fql_info][all_members_count]
 
 def canonicalize_event_data(fb_event, db_event):
     event_api = {}
     for key in FB_EVENT_COPY_KEYS:
         event_api[key] = fb_event['info'][key]
+    # end time can be option, especially on single-day events that are whole-day events
+    event_api[key] = fb_event['info'].get('end_time')
 
     # cover images
     if fb_event['cover_info']:
-        cover_id = fb_event['info']['cover']['cover_id']
+        cover_id = str(fb_event['info']['cover']['cover_id'])
         cover_images = sorted(fb_event['cover_info'][cover_id]['images'], key=lambda x: -x['height'])
         event_api['cover'] = {
             'cover_id': cover_id,
@@ -180,26 +179,37 @@ def canonicalize_event_data(fb_event, db_event):
     # location data
     location = fb_event['info']['location']
     venue = fb_event['info']['venue']
-    address = {}
-    for key in VENUE_ADDRESS_COPY_KEYS:
-        address[key] = venue[key]
-    geocode = {}
-    for key in VENUE_GEOCODE_COPY_KEYS:
-        geocode[key] = venue[key]
-    event_api['venue'] = {
-        'id': venue['id'],
-        'name': location,
-        'address': address,
-        'geocode': geocode,
-    }
+    address = None
+    if 'name' in venue:
+        if venue['name'] != location:
+            logging.error("Venue name %r is different from location name %r" % (venue['name'], location))
+            event_api['venue'] = {'name': location}
+    else:
+        address = {}
+        for key in VENUE_ADDRESS_COPY_KEYS:
+            address[key] = venue[key]
+        geocode = {}
+        for key in VENUE_GEOCODE_COPY_KEYS:
+            geocode[key] = venue[key]
+        event_api['venue'] = {
+            'name': location,
+            'id': str(venue['id']),
+            'address': address,
+            'geocode': geocode,
+        }
     # people data
-    event_api['admins'] = fb_event['info']['admins']['data']
+    if 'admins' in fb_event['info']:
+        event_api['admins'] = fb_event['info']['admins']['data']
+    else:
+        event_api['admins'] =  None
     event_api['metadata'] = {
         'added_time': db_event.creation_time.strftime(DATETIME_FORMAT),
         'added_method': db_event.creating_method,
         'added_person': db_event.creating_fb_uid,
         'dance_keywords': db_event.event_keywords,
     }
+    # maybe handle: ticket_uri', 'timezone', 'updated_time', 'is_date_only
+    # TODO(FB2.0): return 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count'
     return event_api
 
 class EventHandler(base_servlet.BaseRequestHandler):

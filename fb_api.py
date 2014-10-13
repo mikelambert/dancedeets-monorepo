@@ -239,8 +239,8 @@ EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS = 'insufficient_permissions'
 EMPTY_CAUSE_DELETED = 'deleted'
 
 #TODO(lambert): use parent_group to find additional sources to scrape
-OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins', 'parent_group')
-# Available in 2.1:
+OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins', 'parent_group', 'ticket_uri', 'timezone', 'updated_time', 'is_date_only')
+# TODO(FB2.0): Available in 2.1:
 # 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count'
 
 USERLESS_UID = '701004'
