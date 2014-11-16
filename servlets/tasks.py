@@ -50,6 +50,8 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
 
 
 class LookupAppFriendUsers(fb_api.LookupType):
+    version = "v1.0"
+
     @classmethod
     def get_lookups(cls, object_id):
         return [('info', cls.fql_url(GET_FRIEND_APP_USERS % object_id))]

@@ -74,7 +74,7 @@ class TestReloadPastEvents(TestTasks):
 class TestTrackNewUserFriends(TestTasks):
     def runTest(self):
         fb_api.FBAPI.results = {
-            '/fql?q=%0ASELECT+uid+FROM+user%0AWHERE+uid+IN+%28SELECT+uid2+FROM+friend+WHERE+uid1+%3D+701004%29%0AAND+is_app_user+%3D+1%0A':
+            '/v1.0/fql?q=%0ASELECT+uid+FROM+user%0AWHERE+uid+IN+%28SELECT+uid2+FROM+friend+WHERE+uid1+%3D+701004%29%0AAND+is_app_user+%3D+1%0A':
             (200, {
                 "data": [
                     {"uid": 703278},
