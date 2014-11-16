@@ -33,13 +33,6 @@ AND start_time >= %d
 ORDER BY start_time
 """
 
-EXTRA_EVENT_INFO_FQL = """
-SELECT
-pic, pic_big, pic_small,
-all_members_count
-FROM event WHERE eid = %s
-"""
-
 #TODO(lambert): handle these remaps correctly.
 # BatchLookup: Error code from FB server: {u'error': {u'message': u'(#21) Page ID 220841031315396 was migrated to page ID 158188404247583.  Please update your API calls to the new ID', u'code': 21, u'type': u'OAuthException'}}
 # Ideally by rewriting the Source object in the database, but possibly by just doing a re-fetch and logging an error?
@@ -239,9 +232,7 @@ EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS = 'insufficient_permissions'
 EMPTY_CAUSE_DELETED = 'deleted'
 
 #TODO(lambert): use parent_group to find additional sources to scrape
-OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins', 'parent_group', 'ticket_uri', 'timezone', 'updated_time', 'is_date_only')
-# TODO(FB2.0): Available in 2.1:
-# 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count'
+OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins', 'parent_group', 'ticket_uri', 'timezone', 'updated_time', 'is_date_only', 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count')
 
 USERLESS_UID = '701004'
 
@@ -259,6 +250,7 @@ class FacebookCachedObject(db.Model):
         return self.data
 
 def _all_members_count(fb_event, value=None):
+    # TODO(FB2.0): cleanup!
     data = fb_event.get('fql_info', {}).get('data')
     if data and data[0].get('all_members_count'):
         if value:
@@ -266,14 +258,22 @@ def _all_members_count(fb_event, value=None):
         else:
             return data[0]['all_members_count']
     else:
-        if value:
-            raise ValueError()
-        return None
+        if 'info' in fb_event and fb_event['info'].get('attending_count'):
+            if value:
+                fb_event['info']['attending_count'] = value
+            else:
+                return fb_event['info']['attending_count']
+        else:
+            if value:
+                raise ValueError()
+            return None
 
 def is_public_ish(fb_event):
+    # Don't allow SECRET events
     return not fb_event['empty'] and (
         fb_event['info'].get('privacy', 'OPEN') == 'OPEN' or
-        _all_members_count(fb_event) > 60
+        (fb_event['info'].get('privacy', 'OPEN') == 'FRIENDS' and
+         _all_members_count(fb_event) > 60)
     )
 
 
@@ -286,17 +286,18 @@ class NoFetchedDataException(Exception):
 class LookupType(object):
     optional_keys = []
     use_access_token = True
+    version = "v2.2"
 
     @classmethod
     def url(cls, path, fields=None, **kwargs):
         if fields:
-            return '/%s?%s' % (path, urllib.urlencode(dict(fields=','.join(fields), **kwargs)))
+            return '/%s/%s?%s' % (cls.version, path, urllib.urlencode(dict(fields=','.join(fields), **kwargs)))
         else:
-            return '/%s' % path
+            return '/%s/%s' % (cls.version, path)
 
     @classmethod
     def fql_url(cls, fql):
-        return "/fql?%s" % urllib.urlencode(dict(q=fql))
+        return "/%s/fql?%s" % (cls.version, urllib.urlencode(dict(q=fql)))
 
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -327,6 +328,9 @@ class LookupProfile(LookupType):
         return (USERLESS_UID, object_id, 'OBJ_PROFILE')
 
 class LookupUser(LookupType):
+    # TODO(FB2.0): cutover whenever is convenient, not sure it makes a difference to this app
+    version = "v1.0" # still get access to 'friends', though we don't use it, so this can switch to v2.2 easily
+
     @classmethod
     def get_lookups(cls, object_id):
         return [
@@ -342,6 +346,9 @@ class LookupUser(LookupType):
 #TODO(lambert): move these LookupType subclasses out of fb_api.py into client code where they belong,
 # keeping this file infrastructure and unmodified as we add new features + LookupTypes
 class LookupUserEvents(LookupType):
+    # TODO(FB2.0): cutover at the last moment
+    version = "v1.0" # still using implicit access to friend's events
+
     @classmethod
     def get_lookups(cls, object_id):
         today = int(time.mktime(datetime.date.today().timetuple()[:9]))
@@ -369,11 +376,9 @@ class LookupEvent(LookupType):
     def get_lookups(cls, object_id):
         return [
             ('info', cls.url(object_id, fields=OBJ_EVENT_FIELDS)),
-            ('fql_info', cls.fql_url(EXTRA_EVENT_INFO_FQL % (object_id))),
             # Dependent lookup for the image from the info's cover photo id:
             ('cover_info', cls.url('', fields=['images'], ids='{result=info:$.cover.cover_id}')),
-            # Do we really want another FQL call used up, just for this? Maybe wait until we can convert all of fql_info over?
-            #pic_big=cls.url('%s/picture?type=small&redirect=false' % object_id),
+            ('picture', cls.url('%s/picture?redirect=false&type=large' % object_id)),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -430,16 +435,6 @@ class LookupEventMembers(LookupType):
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT_MEMBERS')
-
-class LookupFQL(LookupType):
-    @classmethod
-    def get_lookups(cls, object_id):
-        return [
-            ('fql', cls.fql_url(object_id)),
-        ]
-    @classmethod
-    def cache_key(cls, object_id, fetching_uid):
-        return (fetching_uid, object_id, 'OBJ_FQL')
 
 class LookupThingFeed(LookupType):
     @classmethod

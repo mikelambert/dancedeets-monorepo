@@ -214,7 +214,7 @@ def canonicalize_event_data(fb_event, db_event):
         'added_person': db_event.creating_fb_uid,
         'dance_keywords': db_event.event_keywords,
     }
-    # maybe handle: ticket_uri', 'timezone', 'updated_time', 'is_date_only
+    # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only
     # TODO(FB2.0): return 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count'
     return event_api
 

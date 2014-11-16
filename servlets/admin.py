@@ -40,7 +40,6 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
                 'OBJ_FRIEND_LIST': fb_api.LookupFriendList,
                 'OBJ_EVENT': fb_api.LookupEvent,
                 'OBJ_EVENT_MEMBERS': fb_api.LookupEventMembers,
-                'OBJ_FQL': fb_api.LookupFQL,
                 'OBJ_THING_FEED': fb_api.LookupThingFeed,
             }
             req_type = self.request.get('type')
