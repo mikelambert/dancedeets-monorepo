@@ -171,6 +171,7 @@ def canonicalize_event_data(fb_event, db_event):
         }
     else:
         event_api['cover'] = None
+    event_api['picture'] = eventdata.get_event_image_url(fb_event)
 
     # location data
     venue_location_name = fb_event['info']['location']
@@ -214,8 +215,10 @@ def canonicalize_event_data(fb_event, db_event):
         'added_person': db_event.creating_fb_uid,
         'dance_keywords': db_event.event_keywords,
     }
-    # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only
-    # TODO(FB2.0): return 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count'
+    # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only'
+    rsvp_fields = ['attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count']
+    event_api['rsvp'] = dict((x, fb_event['info'][x]) for x in rsvp_fields)
+
     return event_api
 
 class EventHandler(base_servlet.BaseRequestHandler):
