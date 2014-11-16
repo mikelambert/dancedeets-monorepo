@@ -18,3 +18,8 @@ actually talk to google maps API server (and form a regression test to ensure we
 understand the returned data).  As such, if you run the tests too often you may
 encounter quota-exceeded errors.  Just wait a bit before re-running tests, or
 pass in a directory/filename to limit the scope of tests that are run.
+
+
+If you want to setup re2, be sure to:
+download re2 from google code, possibly applying https://gist.github.com/brantfaircloth/675539 if it is still necessary.
+download pyre2 from https://github.com/axiak/pyre2 (not the broken pypi 0.2.20 version!).

@@ -36,7 +36,7 @@ def make_regex_string(strings, matching=False, word_boundaries=False, match_cjk=
     else:
         regex = u'(?:' + inner_regex + u')'
     if word_boundaries:
-        if match_cjk:
+        if match_cjk and not re2:
             regex = '(?u)%s' % regex
         else:
             regex = r'\b%s\b' % regex
@@ -806,7 +806,8 @@ def make_regex(strings, match_cjk, matching=False, wrapper='%s', flags=0):
     try:
         regex = make_regex_string(strings, matching=matching, word_boundaries=True, match_cjk=match_cjk, wrapper=wrapper)
         if re2:
-            return re.compile(regex, max_mem=15000000, flags=flags)
+            # default max_mem is 8<<20 = 8*1000*1000
+            return re.compile(regex, max_mem=60*1000*1000, flags=flags)
         else:
             return re.compile(regex, flags=flags)
     except UnicodeDecodeError:
