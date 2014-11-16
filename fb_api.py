@@ -29,7 +29,7 @@ ALL_EVENTS_FQL = """
 SELECT eid, name, start_time, end_time, host
 FROM event 
 WHERE eid IN (SELECT eid FROM event_member WHERE uid = %s) 
-AND start_time > %d
+AND start_time >= %d
 ORDER BY start_time
 """
 
