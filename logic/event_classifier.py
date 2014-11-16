@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import codecs
+import collections
 import logging
 import math
 try:
@@ -871,6 +872,8 @@ class ClassifiedEvent(object):
             self.title = fb_event['info'].get('name', '').lower()
         self.language = language
         self.times = {}
+        self.token_originals = collections.defaultdict(lambda: [])
+        self.tokenized_text = self.search_text
 
     def classify(self):
         build_regexes()
@@ -961,6 +964,20 @@ class ClassifiedEvent(object):
             self.dance_event = False
         self.times['all_match'] = time.time() - a
 
+
+    def replace_tokens(self, regexes, token):
+        def replace_with(match):
+            matched_text = match.group(0)
+            self.token_originals[token].append(matched_text)
+            return token
+        self.tokenized_text = regexes[token][self.boundaries].sub(replace_with, self.tokenized_text)
+
+    def count_tokens(self, token):
+        return len(self.token_originals[token])
+        
+    def get_tokens(self, token):
+        return self.token_originals[token]
+        
     def is_dance_event(self):
         return bool(self.dance_event)
     def reason(self):
