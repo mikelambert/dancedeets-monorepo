@@ -14,11 +14,18 @@ except ImportError:
 else:
     re.set_fallback_notification(re.FALLBACK_WARNING)
 import time
-from util import re_flatten
 from util import cjk_detect
 from spitfire.runtime.filters import skip_filter
+from logic import keywords
+from logic import regex_keywords
 
 USE_UNICODE = False
+
+#TODO(lambert): eliminate these as part of refactoring
+make_regex_string = regex_keywords.make_regex_string
+make_regex = regex_keywords.make_regex
+make_regexes = regex_keywords.make_regexes
+
 
 # TODO: translate to english before we try to apply the keyword matches
 # TODO: if event creator has created dance events previously, give it some weight
@@ -30,86 +37,7 @@ USE_UNICODE = False
 # TODO: house class, house workshop, etc, etc. since 'house' by itself isn't sufficient
 # maybe feed keywords into auto-classifying event type? bleh.
 
-def make_regex_string(strings, matching=False, word_boundaries=False, match_cjk=False, wrapper='%s'):
-    inner_regex = re_flatten.construct_regex(strings)
-    if matching:
-        regex = u'(' + inner_regex + u')'
-    else:
-        regex = u'(?:' + inner_regex + u')'
-    if word_boundaries:
-        if match_cjk and not re2:
-            regex = '(?u)%s' % regex
-        else:
-            regex = r'\b%s\b' % regex
-    regex = wrapper % regex
-    return regex
 
-
-# 'crew' biases dance one way, 'company' biases it another
-easy_dance_keywords = [
-    'dance style[sz]',
-    'dances?', "dancin[g']?", 'dancers?',
-    u'댄스', # korean dance
-    u'댄서', # korean dancer
-    u'танцы', # russian dancing
-    u'танцоров', # russian dancers
-    u'танцуват', # bulgarian dance
-    u'танцува', # bulgarian dance
-    u'танцовия', # bulgarian dance
-    u'изтанцуват', # bulgarian dancing
-    u'ダンサー', # japanese dance
-    u'ダンス', # japanese dance
-    u'춤.?', # korean dance
-    u'추고.?.?', # korean dancing
-    u'댄서.?.?', # korean dancers
-    u'踊り', # japanese dance
-    u'רוקד', # hebrew dance
-    u'רקדם', # hebrew dancers
-    u'רוקדים', # hebrew dance
-    u'רקדנים', # hebrew dancers
-    u'舞者', # chinese dancer
-    u'舞技', # chinese dancing
-    u'舞', # chinese dance
-    u'舞蹈', # chinese dance
-    u'排舞', # chinese dance
-    u'แดนซ์', # dance thai
-    u'เต้น', # dance thai
-    u'กเต้น', # dancers thai
-    'danse\w*', # french and danish
-    'taniec', # dance polish
-    u'tane?[cč][íú\w]*', # dance slovak/czech
-    u'zatanč\w*', # dance czech
-    u'tańe?c\w*', # dance polish/czech
-    u'danç\w*', # dance portuguese
-    'danza\w*', # dance italian
-    u'šok\w*', # dance lithuanian
-    'tanz\w*', # dance german
-    'tanssi\w*', # finnish dance
-    'bail[ae]\w*', # dance spanish
-    'danzas', # dance spanish
-    'ballerin[io]', # dancer italian
-    'dansare', # dancers swedish
-    'dansat', # dancing swedish
-    'dansama', # dancers swedish
-    'dansa\w*', # dance-* swedish
-    'dansgolv', # dance floor swedish
-    'dans', # swedish danish dance
-    u'tänzern', # dancer german
-    u'танчер', # dancer macedonian
-    u'танцовиот', # dance macedonian
-    'footwork',
-    'plesa', # dance croatian
-    'plesu', # dancing croatian
-    u'nhảy', # dance vietnamese
-    u'tänzer', # dancer german
-]
-easy_choreography_keywords = [
-    u'(?:ch|k|c)oe?re[o|ó]?gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese, danish
-    'choreo',
-    u'chorée', # french choreo
-    u'chorégraph\w*', # french choreographer
-    u'кореограф', # macedonian
-]
 
 # if somehow has funks, hiphop, and breaks, and house. or 3/4? call it a dance event?
 
@@ -254,7 +182,7 @@ house_keywords = [
 house_regex_string = make_regex_string(house_keywords)
 
 # freestyle dance
-easy_dance_regexes = make_regex_string(easy_dance_keywords)
+easy_dance_regexes = make_regex_string(keywords.get(keywords.EASY_DANCE))
 dance_keywords += ['%s ?%s' % (house_regex_string, easy_dance_regexes)]
 
 dance_keywords += ['free\W?style(?:r?|rs?) ?%s' % easy_dance_regexes]
@@ -264,8 +192,8 @@ dance_keywords += [
   '%s ?%s' % (easy_dance_regexes, dance_and_music_regexes),
 ]
 dance_keywords += [
-    'street\W?%s\w*' % make_regex_string(easy_choreography_keywords),
-    'street\W?%s\w*' % make_regex_string(easy_dance_keywords),
+    'street\W?%s\w*' % make_regex_string(keywords.get(keywords.EASY_CHOREO)),
+    'street\W?%s\w*' % make_regex_string(keywords.get(keywords.EASY_DANCE)),
 ]
 
 
@@ -433,17 +361,6 @@ other_show_keywords = [
     'acting',
 ]
 
-cypher_keywords = [
-    'c(?:y|i)ph(?:a|ers?)',
-    u'サイファ', # japanese cypher
-    u'サイファー', # japanese cypher
-    u'サークル', # japanese circle
-    u'サーク', # japanese circle
-    'cerchi', # italian circle/cypher
-    u'ไซเฟอร์', # thai cypher
-    u'싸이퍼.?', # korean cypher
-]
-
 battle_keywords = [
     'apache line',
     'battle of the year', 'boty', 'compete',
@@ -604,7 +521,7 @@ event_keywords += class_keywords
 event_keywords += n_x_n_keywords
 event_keywords += battle_keywords
 event_keywords += audition_keywords
-event_keywords += cypher_keywords
+event_keywords += keywords.get(keywords.CYPHER)
 
 judge_keywords = [
     'jurys?',
@@ -800,33 +717,8 @@ def build_regexes():
         else:
             all_regexes['%s_regex' % keyword] = make_regexes(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
-    all_regexes['good_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords + dependent_manual_dance_keywords, wrapper='(?i)%s')
-    all_regexes['good_capturing_keyword_regex'] = make_regexes(easy_dance_keywords + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + easy_choreography_keywords + manual_dance_keywords + dependent_manual_dance_keywords, matching=True, wrapper='(?i)%s')
-
-def make_regex(strings, match_cjk, matching=False, wrapper='%s', flags=0):
-    try:
-        regex = make_regex_string(strings, matching=matching, word_boundaries=True, match_cjk=match_cjk, wrapper=wrapper)
-        if re2:
-            # default max_mem is 8<<20 = 8*1000*1000
-            return re.compile(regex, max_mem=60*1000*1000, flags=flags)
-        else:
-            return re.compile(regex, flags=flags)
-    except UnicodeDecodeError:
-        for line in strings:
-            try:
-                re.compile(u'|'.join([line]), re.UNICODE)
-            except UnicodeDecodeError:
-                logging.error("failed to compile: %r: %s", line, line)
-                raise
-        logging.fatal("Error constructing regexes")
-
-NO_WORD_BOUNDARIES = 0
-WORD_BOUNDARIES = 1
-def make_regexes(strings, matching=False, wrapper='%s', flags=0):
-    a = [None] * 2
-    a[NO_WORD_BOUNDARIES] = make_regex(strings, matching=matching, match_cjk=True, wrapper=wrapper, flags=flags)
-    a[WORD_BOUNDARIES] = make_regex(strings, matching=matching, match_cjk=False, wrapper=wrapper, flags=flags)
-    return tuple(a)
+    all_regexes['good_keyword_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE) + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + keywords.get(keywords.EASY_CHOREO) + manual_dance_keywords + dependent_manual_dance_keywords, wrapper='(?i)%s')
+    all_regexes['good_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE) + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + keywords.get(keywords.EASY_CHOREO) + manual_dance_keywords + dependent_manual_dance_keywords, matching=True, wrapper='(?i)%s')
 
 all_regexes['preprocess_removals_regex'] = make_regexes(preprocess_removals)
 all_regexes['dance_wrong_style_regex'] = make_regexes(dance_wrong_style_keywords)
@@ -838,10 +730,10 @@ all_regexes['dance_wrong_style_title_regex'] = make_regexes(dance_wrong_style_ti
 all_regexes['dance_and_music_regex'] = make_regexes(dance_and_music_keywords)
 all_regexes['class_regex'] = make_regexes(class_keywords)
 all_regexes['club_and_event_regex'] = make_regexes(club_and_event_keywords)
-all_regexes['easy_choreography_regex'] = make_regexes(easy_choreography_keywords)
+all_regexes['easy_choreography_regex'] = make_regexes(keywords.get(keywords.EASY_CHOREO))
 all_regexes['club_only_regex'] = make_regexes(club_only_keywords)
 
-all_regexes['easy_dance_regex'] = make_regexes(easy_dance_keywords)
+all_regexes['easy_dance_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE))
 all_regexes['easy_event_regex'] = make_regexes(easy_event_keywords)
 all_regexes['dance_regex'] = make_regexes(dance_keywords)
 all_regexes['event_regex'] = make_regexes(event_keywords)
@@ -882,11 +774,11 @@ class ClassifiedEvent(object):
         if cjk_detect.cjk_regex.search(self.search_text):
             cjk_chars = len(cjk_detect.cjk_regex.findall(self.search_text))
             if 1.0 * cjk_chars / len(self.search_text) > 0.05:
-                self.boundaries = NO_WORD_BOUNDARIES
+                self.boundaries = regex_keywords.NO_WORD_BOUNDARIES
             else:
-                self.boundaries = WORD_BOUNDARIES
+                self.boundaries = regex_keywords.WORD_BOUNDARIES
         else:
-            self.boundaries = WORD_BOUNDARIES
+            self.boundaries = regex_keywords.WORD_BOUNDARIES
         idx = self.boundaries
 
         self.final_search_text = all_regexes['preprocess_removals_regex'][idx].sub('', self.search_text)
@@ -965,12 +857,12 @@ class ClassifiedEvent(object):
         self.times['all_match'] = time.time() - a
 
 
-    def replace_tokens(self, regexes, token):
+    def replace_tokens(self, token):
         def replace_with(match):
             matched_text = match.group(0)
             self.token_originals[token].append(matched_text)
             return token
-        self.tokenized_text = regexes[token][self.boundaries].sub(replace_with, self.tokenized_text)
+        self.tokenized_text = keywords.get_regex(token)[self.boundaries].sub(replace_with, self.tokenized_text)
 
     def count_tokens(self, token):
         return len(self.token_originals[token])
@@ -1007,9 +899,9 @@ def relevant_keywords(fb_event):
     build_regexes()
     text = get_relevant_text(fb_event)
     if cjk_detect.cjk_regex.search(text):
-        idx = NO_WORD_BOUNDARIES
+        idx = regex_keywords.NO_WORD_BOUNDARIES
     else:
-        idx = WORD_BOUNDARIES
+        idx = regex_keywords.WORD_BOUNDARIES
     good_keywords = all_regexes['good_capturing_keyword_regex'][idx].findall(text)
     bad_keywords = all_regexes['bad_capturing_keyword_regex'][idx].findall(text)
     return sorted(set(good_keywords).union(bad_keywords))
@@ -1018,9 +910,9 @@ def relevant_keywords(fb_event):
 def highlight_keywords(text):
     build_regexes()
     if cjk_detect.cjk_regex.search(text):
-        idx = NO_WORD_BOUNDARIES
+        idx = regex_keywords.NO_WORD_BOUNDARIES
     else:
-        idx = WORD_BOUNDARIES
+        idx = regex_keywords.WORD_BOUNDARIES
     text = all_regexes['good_capturing_keyword_regex'][idx].sub('<span class="matched-text">\\1</span>', text)
     text = all_regexes['bad_capturing_keyword_regex'][idx].sub('<span class="bad-matched-text">\\1</span>', text)
     return text
@@ -1029,6 +921,5 @@ if __name__ == '__main__':
     a = ['club', 'bottle service', 'table service', 'coat check', 'free before', 'vip', 'guest\\W?list', 'drink specials?', 'resident dj\\W?s?', 'dj\\W?s?', 'techno', 'trance', 'indie', 'glitch', 'bands?', 'dress to', 'mixtape', 'decks', 'r&b', 'local dj\\W?s?', 'all night', 'lounge', 'live performances?', 'doors', 'restaurant', 'hotel', 'music shows?', 'a night of', 'dance floor', 'beer', 'blues', 'bartenders?', 'waiters?', 'waitress(?:es)?', 'go\\Wgo', 'gogo', 'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba', 'waltz', 'salsy', 'milonga', 'dance partner', 'cha cha', 'hula', 'tumbling', 'exotic', 'cheer', 'barre', 'contact improv', 'contact improv\\w*', 'contratto mimo', 'musical theat(?:re|er)', 'pole dance', 'flirt dance', 'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar', 'indienne', 'persiana?', 'arabe', 'arabic', 'oriental\\w*', 'oriente', 'cubana', 'capoeira', 'tahitian dancing', 'folklor\\w+', 'kizomba', 'burlesque', 'technique', 'limon', 'clogging', 'zouk', 'afro mundo', 'class?ic[ao]', 'acroyoga', 'kirtan', 'modern dance', 'pilates', 'tribal', 'jazz', 'tap', 'contemporary', 'contempor\\w*', 'africa\\w+', 'sabar', 'silk', 'aerial', 'zumba', 'belly\\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance', 'soca', 'flamenco']
     a = sorted(a)
     print a
-    print re_flatten.construct_regex(a)
     print highlight_keywords(u' ๆ ซึ่งไม่ให้พี่น้อง Bboy ได้ผิดหวังอีกต่อไป*')
     print highlight_keywords('matched-text')

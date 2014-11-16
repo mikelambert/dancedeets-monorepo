@@ -4,9 +4,9 @@ import datetime
 import re
 
 from logic import event_classifier
+from logic import keywords
 from util import dates
 
-keywords = {}
 
 # house side?
 # lock side?
@@ -139,10 +139,10 @@ dance_class_styles = event_classifier.dance_and_music_keywords + event_classifie
 dance_class_styles_regex = event_classifier.make_regexes(dance_class_styles)
 assert dance_class_styles_regex[0].search('hip hop dance')
 
-cypher_regex_string = event_classifier.make_regex_string(event_classifier.cypher_keywords)
+cypher_regex_string = event_classifier.make_regex_string(keywords.get(keywords.CYPHER))
 battle_regex_string = event_classifier.make_regex_string(event_classifier.battle_keywords)
 p1_good = event_classifier.make_regex_string(dance_class_styles)
-p1_okay = event_classifier.make_regex_string(event_classifier.easy_dance_keywords + event_classifier.easy_choreography_keywords)
+p1_okay = event_classifier.make_regex_string(keywords.get(keywords.EASY_DANCE) + keywords.get(keywords.EASY_CHOREO))
 p2_good = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
 p2_okay = event_classifier.make_regex_string(event_classifier.easy_battle_keywords)
 good_dance_battles_keywords = [
@@ -199,7 +199,7 @@ non_dance_support = [
 non_dance_regex = event_classifier.make_regexes(non_dance_support)
 
 full_judge_keywords = event_classifier.judge_keywords
-judge_qualifier = event_classifier.make_regex_string(event_classifier.dance_keywords + event_classifier.easy_dance_keywords + event_classifier.dance_and_music_keywords + house_keywords + event_classifier.easy_choreography_keywords + event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
+judge_qualifier = event_classifier.make_regex_string(event_classifier.dance_keywords + keywords.get(keywords.EASY_DANCE) + event_classifier.dance_and_music_keywords + house_keywords + keywords.get(keywords.EASY_CHOREO) + event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
 judge_regex = event_classifier.make_regex_string(event_classifier.judge_keywords)
 full_judge_keywords.extend([
     u'%s%s%s' % (judge_qualifier, connectors_regex, judge_regex),
@@ -639,44 +639,22 @@ def is_auto_add_event(classified_event):
         return result
     return (False, 'nothing')
 
-GOOD_INSTANCE_OF_BAD_CLUB = '_GOOD_INSTANCE_OF_BAD_CLUB_'
-
-keywords[GOOD_INSTANCE_OF_BAD_CLUB] = [
-    'evelyn\W+champagne\W+king',
-    'water\W?bottles?',
-    'genie in (?:the|a) bottle',
-]
-
-BAD_CLUB = '_BAD_CLUB_'
-keywords[BAD_CLUB] = [
-    'bottle\W?service',
-    'popping?\W?bottles?',
-    'bottle\W?popping?',
-    'bottles?',
-    'grey goose',
-    'champagne',
-    'belvedere',
-    'ciroc',
-]
-regexes = dict((token, event_classifier.make_regexes(keywords)) for (token, keywords) in keywords.iteritems())
-
-cypher_regex = event_classifier.make_regexes(event_classifier.cypher_keywords)
-
 def is_bad_club(classified_event):
-    classified_event.replace_tokens(regexes, GOOD_INSTANCE_OF_BAD_CLUB)
-    classified_event.replace_tokens(regexes, BAD_CLUB)
+    classified_event.replace_tokens(keywords.GOOD_INSTANCE_OF_BAD_CLUB)
+    classified_event.replace_tokens(keywords.BAD_CLUB)
+    classified_event.replace_tokens(keywords.CYPHER)
     text = classified_event.tokenized_text
 
     has_battles = dance_battles_regex[classified_event.boundaries].findall(text)
     has_style = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(text)
     has_manual_keywords = event_classifier.all_regexes['extended_manual_dance_keywords_regex'][classified_event.boundaries].findall(text)
-    has_cypher = cypher_regex[classified_event.boundaries].findall(text)
+    has_cypher = classified_event.count_tokens(keywords.CYPHER)
 
     has_other_event_title = event_classifier.all_regexes['event_regex'][classified_event.boundaries].findall(classified_event.final_title)
 
     has_ambiguous_text = has_battles or has_style or has_manual_keywords or has_cypher
-    if classified_event.count_tokens(BAD_CLUB) and not has_ambiguous_text and not has_other_event_title:
-        return True, 'has bad keywords: %s' % classified_event.get_tokens(BAD_CLUB)
+    if classified_event.count_tokens(keywords.BAD_CLUB) and not has_ambiguous_text and not has_other_event_title:
+        return True, 'has bad keywords: %s' % classified_event.get_tokens(keywords.BAD_CLUB)
     return False, 'not a bad club'
 
 weak_classical_dance_terms = [
