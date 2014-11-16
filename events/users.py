@@ -79,8 +79,8 @@ class User(db.Model):
         self.email = fb_user['profile'].get('email')
         try:
             self.timezone_offset = float(fb_user['profile'].get('timezone'))
-        except datastore_errors.BadValueError:
-            logging.error("Failed to save timezone %s", fb_user['profile'].get('timezone'))
+        except (datastore_errors.BadValueError, TypeError) as e:
+            logging.error("Failed to save timezone %s: %s", fb_user['profile'].get('timezone'), e)
         if self.location:
             #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
             self.location_country = locations.get_country_for_location(self.location)
