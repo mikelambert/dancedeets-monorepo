@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
+
 import logging
+logging.info("Begin modules")
 import os
 import webapp2
 from google.appengine.ext import ereporter
 import base_servlet
-from logic import event_auto_classifier
+logging.info("Begin servlets")
 from servlets import about
 from servlets import admin
 from servlets import api
@@ -27,11 +29,14 @@ from servlets import tools
 from servlets import youtube_simple_api
 from util import batched_mapperworker
 
+logging.info("Finished modules")
+
 class DoNothingHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
-        logging.info("Loading regexes")
-        event_auto_classifier.build_regexes()
-        logging.info("Loaded regexes")
+        #from logic import event_auto_classifier
+        #logging.info("Loading regexes")
+        #event_auto_classifier.build_regexes()
+        #logging.info("Loaded regexes")
         return
 
 URLS = [
