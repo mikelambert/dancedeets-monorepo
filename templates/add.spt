@@ -39,10 +39,10 @@ Add Dance Event
 #def inner_body
 		<form action="/events/add" method=post>
 		<div>
+			Enter your facebook event URL here:<br>
+			<input id="event_url_form" type=text name="event_url" size=60 onunfocus="loadEvent();">
+			<br/>
 			#if $events
-				Enter your facebook event URL here:<br>
-				<input id="event_url_form" type=text name="event_url" size=60 onunfocus="loadEvent();">
-				<br/>
 				Or select one of your facebook events below:<br>
 				<input id="event_id_form" type="hidden" name="event_id" value="">
 				<ul id="events">
