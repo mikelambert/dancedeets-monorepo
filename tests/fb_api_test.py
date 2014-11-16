@@ -3,9 +3,9 @@
 import unittest
 import re
 
-import mock_memcache
 import fb_api
 from test_utils import fb_api_stub
+from test_utils import mock_memcache
 
 class TestLookupUser(unittest.TestCase):
     def runTest(self):
