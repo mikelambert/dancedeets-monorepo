@@ -323,7 +323,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']
         self.display['prod_mode'] = self.request.app.prod_mode
 
-        fb_permissions = 'user_location,rsvp_event,email,user_events,user_groups,friends_events,friends_groups,user_likes,friends_likes'
+        # TODO: get rid of user_location when we can switch to IP-based geocoding (since mobile clients don't need it)
+        # TODO(FB2.0): get rid of user_groups/user_likes
+        # TODO(FB2.0): get rid of friends_events (when we have enough users using mobile 2.0 to keep us going)
+        fb_permissions = 'user_location,rsvp_event,email,user_events,user_groups,user_likes,friends_events'
         if self.request.get('all_access'):
             fb_permissions += ',read_friendlists'
         self.display['fb_permissions'] = fb_permissions
