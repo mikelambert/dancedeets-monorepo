@@ -160,7 +160,7 @@ def _get_city_name(result):
         return components
         
     city_parts = []
-    city_parts.extend(get('locality') or get('administrative_area_level_3') or get('administrative_area_level_2'))
+    city_parts.extend(get('locality') or get('sublocality') or get('administrative_area_level_3') or get('administrative_area_level_2'))
     country = get('country')
     if country == ['United States']:
         city_parts.extend(get('administrative_area_level_1', long=False))
