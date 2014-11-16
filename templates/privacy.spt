@@ -6,17 +6,19 @@ Privacy
 
 #def inner_body
 <p><h3>Privacy Policy</h3>
-<p>Dance Deets attempts to find and share dance-related facebook events with the world. To accomplish this goal, when you sign up for the site, Dance Deets program will:
+<p>DanceDeets finds and shares dance-related facebook events with the world. We rely on our users to help us find these events, in particular:
 <ul>
-<li>search through you and your friends' facebook events looking for dance events that others might be interested in
-<li>search through your groups or fanpages you've liked, to see if any are dance-related that could help Dance Deets find more dance events
+<li>You can add Facebook events to the site by selecting among all of your Facebook events.
+<li>DanceDeets robots will search through the events available to it (including yours), looking for obvious public and useful dance events to include on the site for others. So just by signing up, you also help share your relevant dance events with the broader community.
 </ul>
 </p>
 
-<p>Dance Deets will also use your name, email address, and location to provide you with dance events relevant to you. This includes sending weekly emails, and trying to discern when your location changes and you might want different set of events.
+<p>DanceDeets will also use your name, email address, and location to provide you with dance events relevant to you. This includes sending weekly emails (which can be disabled in Settings), as well as using your current city to find events near you.
 </p>
 
-<p>Facebook is built on facebook accounts, and on top of Google AppEngine platform, in an attempt to avoid as much custom-development as possible to reduce the attack surface area available to hackers.
+<p>DanceDeets is built on facebook login, and so you can choose to block DanceDeets at any time, by disabling DanceDeets within your Facebook account settings.
+
+<p>DanceDeets is built on the Google AppEngine platform, in an attempt to avoid as much custom-development as possible, and to reduce the potential surface area available to hackers. We don't share or sell your data to anyone or any corporation. But we do fetch your data from Facebook and sometimes publish data back to Facebook (event RSVPs, explicit sharing, etc). And while we store data on the Google AppEngine platform, we do not access or connect that data with any Google Accounts in any way.
 </p>
 
 #end def
