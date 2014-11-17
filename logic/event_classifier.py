@@ -38,201 +38,6 @@ make_regexes = regex_keywords.make_regexes
 # maybe feed keywords into auto-classifying event type? bleh.
 
 
-battle_keywords = [
-    'apache line',
-    'battle of the year', 'boty', 'compete',
-    'competitions?',
-    'konkurrence', # danish competition
-    'competencia', # spanish competition
-    u'competición', # spanish competition
-    u'compétition', # french competition
-    u'thi nhảy', # dance competition vietnam
-    'kilpailu\w*' # finish competition
-    'konkursams', # lithuanian competition
-    'verseny', # hungarian competition
-    'championships?',
-    'champs?',
-    u'čempionatams', # lithuanian championship
-    'campeonato', # spanish championship
-    'meisterschaft', # german championship
-    'concorsi', # italian competition
-    u'danstävling', # swedish dance competition
-    u'แข่งขัน', # thai competition
-    'crew battle[sz]?', 'exhibition battle[sz]?',
-    'battles?',
-    'battlu(?:je)?', # french czech
-    u'比賽', # chinese battle
-    u'バトル', # japanese battle
-    u'битката', # bulgarian battle
-    'batallas', # battles spanish
-    'zawody', # polish battle/contest
-    'walki', # polish battle/fight
-    u'walkę', # polish battle/fight
-    'bitwa', # polish battle
-    u'bitwę', # polish battle
-    'bitwach', # polish battle
-    u'バトル', # japanese battle
-    'tournaments?',
-    'tournoi', # french tournament
-    u'大会', # japanese tournament
-    u'トーナメント', # japanese tournament
-    'turnie\w*', # tournament polish/german
-    u'giải đấu', # tournament vietnamese
-    u'thi đấu', # competition vietnamese
-    u'състезанието', # competition bulgarian
-    u'đấu', # game vietnamese
-    'turneringer', # danish tournament
-    'preselections?',
-    u'présélections?', # preselections french
-    r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
-    'crew\W?v[sz]?\W?crew',
-    'bonnie\s*(?:and|&)\s*clyde',
-    'prelims?',
-    u'初賽', # chinese preliminaries
-]
-
-
-class_keywords = [
-    'work\W?shop\W?s?',
-    'ws', # japanese workshop WS
-    'w\.s\.', # japanese workshop W.S.
-    u'ワークショップ', # japanese workshop
-    'cursillo', # spanish workshop
-    'ateliers', # french workshop
-    'workshopy', # czech workshop
-    u'סדנאות', # hebrew workshops
-    u'סדנה', # hebew workshop
-    # 'taller', # workshop spanish
-    'delavnice', # workshop slovak
-    'talleres', # workshops spanish
-    'radionicama', # workshop croatian
-    'warsztaty', # polish workshop
-    u'warsztatów', # polish workshop
-    u'seminarų', # lithuanian workshop
-    'taller de', # spanish workshop
-    'intensives?',
-    'intensivo', # spanish intensive
-    'class with', 'master\W?class(?:es)?',
-    'company class',
-    u'мастер-класса?', # russian master class
-    u'классa?', # russian class
-    'class(?:es)?', 'lessons?', 'courses?',
-    'klass(?:en)?', # slovakian class
-    u'수업', # korean class
-    u'수업을', # korean classes
-    'lekc[ie]', # czech lesson
-    u'課程', # course chinese
-    u'課', # class chinese
-    u'堂課', # lesson chinese
-    u'コース', # course japanese
-    'concorso', # course italian
-    'kurs(?:y|en)?', # course german/polish
-    'aulas?', # portuguese class(?:es)?
-    u'특강', # korean lecture
-    'lektion(?:en)?', # german lecture
-    'lekcie', # slovak lessons
-    'dansklasser', # swedish dance classes
-    'lekcj[ai]', # polish lesson
-    'eigoje', # lithuanian course
-    'pamokas', # lithuanian lesson
-    'kursai', # course lithuanian
-    'lez.', #  lesson italian
-    'lezione', # lesson italian
-    'lezioni', # lessons italian
-    u'zajęciach', # class polish
-    u'zajęcia', # classes polish
-    u'คลาส', # class thai
-    'classe', # class italian
-    'classi', # classes italin
-    'klasser?', # norwegian class
-    'cours', 'clases?',
-    'camp',
-    'kamp',
-    'kemp',
-    'formazione', # training italian
-    'formazioni', # training italian
-    u'トレーニング', # japanese training
-]
-
-audition_keywords = [
-    'try\W?outs?',
-    'casting',
-     'casting call',
-    'castingul', # romanian casting
-    'auditions?',
-    'audicija', # audition croatia
-    'audiciones', # spanish audition
-    'konkurz', # audition czech
-    u'試鏡', # chinese audition
-    'audizione', # italian audition
-    'naborem', # polish recruitment/audition
-]
-
-event_keywords = [
-    'open circles',
-    'session', # the plural 'sessions' is handled up above under club-and-event keywords
-    u'セッション', # japanese session
-    u'練習会', # japanese training
-    u'練習', # japanese practice
-    'abdc', 'america\W?s best dance crew',
-]
-
-english_digit_x_keywords = [
-    'v/s',
-    r'vs?\.?',
-    'on',
-    'x',
-    u'×',
-]
-digit_x_keywords = english_digit_x_keywords + [
-    'na',
-    'mot',
-    'contra',
-    'contre',
-]
-digit_x_string = '|'.join(digit_x_keywords)
-english_digit_x_string = '|'.join(english_digit_x_keywords)
-n_x_n_keywords = [u'%s[ -]?(?:%s)[ -]?%s' % (i, digit_x_string, i) for i in range(12)[1:]]
-n_x_n_keywords += [u'%s[ -](?:%s)[ -]%s' % (i, english_digit_x_string, i) for i in ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
-event_keywords += class_keywords
-event_keywords += n_x_n_keywords
-event_keywords += battle_keywords
-event_keywords += audition_keywords
-event_keywords += keywords.get(keywords.CYPHER)
-
-judge_keywords = [
-    'jurys?',
-    'jurados?', # spanish jury
-    u'журито', # bulgarian jury
-    'judge[sz]?',
-    'jures', # french jury
-    '(?:les? )?juges?', # french judges
-    'giudici', # italian judges
-    u'השופט', # hebrew judge
-    u'השופטים', # hebrew judges
-    u'teisėjai', # lithuanian judges
-    'tuomaristo', # jury finnish
-    'jueces', # spanish judges
-    'juriu', # romanian judges
-    'giuria', # jury italian
-    u'評審', # chinese judges
-    u'評判', # chinese judges
-    u'評判團', # chinese judges
-    u'審査員', # japanese judges
-    u'ジャッジ', # japanese judges
-]
-event_keywords += judge_keywords
-
-
-french_event_keywords = [
-    'spectacle',
-    'stage',
-]
-
-italian_event_keywords = [
-    'stage',
-]
-
 dance_wrong_style_keywords = [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
     'latines', 'quickstep', 'rumba', 'cha\W?cha',
@@ -394,18 +199,36 @@ def build_regexes():
         else:
             all_regexes['%s_regex' % keyword] = make_regexes(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
-    all_regexes['good_keyword_regex']           = make_regexes(keywords.get(keywords.EASY_DANCE, keywords.EASY_EVENT, keywords.EASY_BATTLE, keywords.DANCE, keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST, keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_CHOREO) + event_keywords + manual_dance_keywords + dependent_manual_dance_keywords, wrapper='(?i)%s')
-    all_regexes['good_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE, keywords.EASY_EVENT, keywords.EASY_BATTLE, keywords.DANCE, keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST, keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_CHOREO) + event_keywords + manual_dance_keywords + dependent_manual_dance_keywords, matching=True, wrapper='(?i)%s')
+    good_keywords = keywords.get(
+        keywords.EASY_DANCE,
+        keywords.EASY_EVENT,
+        keywords.EASY_BATTLE,
+        keywords.DANCE,
+        keywords.PRACTICE,
+        keywords.PERFORMANCE,
+        keywords.CONTEST,
+        keywords.AMBIGUOUS_DANCE_MUSIC,
+        keywords.EASY_CHOREO,
+        keywords.CLASS,
+        keywords.N_X_N,
+        keywords.BATTLE,
+        keywords.AUDITION,
+        keywords.CYPHER,
+        keywords.JUDGE
+    ) + manual_dance_keywords + dependent_manual_dance_keywords
+    all_regexes['good_keyword_regex'] = make_regexes(good_keywords, wrapper='(?i)%s')
+    all_regexes['good_capturing_keyword_regex'] = make_regexes(good_keywords, matching=True, wrapper='(?i)%s')
+
 
 all_regexes['preprocess_removals_regex'] = keywords.get_regex(keywords.PREPROCESS_REMOVAL)
 all_regexes['dance_wrong_style_regex'] = make_regexes(dance_wrong_style_keywords)
-all_regexes['judge_keywords_regex'] = make_regexes(judge_keywords)
-all_regexes['audition_regex'] = make_regexes(audition_keywords)
-all_regexes['battle_regex'] = make_regexes(battle_keywords)
-all_regexes['n_x_n_regex'] = make_regexes(n_x_n_keywords)
+all_regexes['judge_keywords_regex'] = keywords.get_regex(keywords.JUDGE)
+all_regexes['audition_regex'] = keywords.get_regex(keywords.AUDITION)
+all_regexes['battle_regex'] = keywords.get_regex(keywords.BATTLE)
+all_regexes['n_x_n_regex'] = keywords.get_regex(keywords.N_X_N)
 all_regexes['dance_wrong_style_title_regex'] = make_regexes(dance_wrong_style_title_keywords)
 all_regexes['dance_and_music_regex'] = keywords.get_regex(keywords.AMBIGUOUS_DANCE_MUSIC)
-all_regexes['class_regex'] = make_regexes(class_keywords)
+all_regexes['class_regex'] = keywords.get_regex(keywords.CLASS)
 all_regexes['club_and_event_regex'] = make_regexes(keywords.get(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST))
 all_regexes['easy_choreography_regex'] = keywords.get_regex(keywords.EASY_CHOREO)
 all_regexes['club_only_regex'] = make_regexes(keywords.CLUB_ONLY)
@@ -413,9 +236,17 @@ all_regexes['club_only_regex'] = make_regexes(keywords.CLUB_ONLY)
 all_regexes['easy_dance_regex'] = keywords.get_regex(keywords.EASY_DANCE)
 all_regexes['easy_event_regex'] = make_regexes(keywords.get(keywords.EASY_EVENT, keywords.EASY_BATTLE))
 all_regexes['dance_regex'] = keywords.get_regex(keywords.DANCE)
+event_keywords =     keywords.get(
+    keywords.CLASS,
+    keywords.N_X_N,
+    keywords.BATTLE,
+    keywords.AUDITION,
+    keywords.CYPHER,
+    keywords.JUDGE
+)
 all_regexes['event_regex'] = make_regexes(event_keywords)
-all_regexes['french_event_regex'] = make_regexes(event_keywords + french_event_keywords)
-all_regexes['italian_event_regex'] = make_regexes(event_keywords + italian_event_keywords)
+all_regexes['french_event_regex'] = make_regexes(event_keywords + keywords.get(keywords.FRENCH_EVENT))
+all_regexes['italian_event_regex'] = make_regexes(event_keywords + keywords.get(keywords.ITALIAN_EVENT))
 
 all_regexes['bad_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.CLUB_ONLY) + dance_wrong_style_keywords, matching=True)
 

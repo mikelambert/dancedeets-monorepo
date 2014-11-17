@@ -474,6 +474,209 @@ add(OTHER_SHOW, [
     'acting',
 ])
 
+
+
+BATTLE = token('BATTLE')
+add(BATTLE, [
+    'apache line',
+    'battle of the year', 'boty', 'compete',
+    'competitions?',
+    'konkurrence', # danish competition
+    'competencia', # spanish competition
+    u'competición', # spanish competition
+    u'compétition', # french competition
+    u'thi nhảy', # dance competition vietnam
+    'kilpailu\w*' # finish competition
+    'konkursams', # lithuanian competition
+    'verseny', # hungarian competition
+    'championships?',
+    'champs?',
+    u'čempionatams', # lithuanian championship
+    'campeonato', # spanish championship
+    'meisterschaft', # german championship
+    'concorsi', # italian competition
+    u'danstävling', # swedish dance competition
+    u'แข่งขัน', # thai competition
+    'crew battle[sz]?', 'exhibition battle[sz]?',
+    'battles?',
+    'battlu(?:je)?', # french czech
+    u'比賽', # chinese battle
+    u'バトル', # japanese battle
+    u'битката', # bulgarian battle
+    'batallas', # battles spanish
+    'zawody', # polish battle/contest
+    'walki', # polish battle/fight
+    u'walkę', # polish battle/fight
+    'bitwa', # polish battle
+    u'bitwę', # polish battle
+    'bitwach', # polish battle
+    u'バトル', # japanese battle
+    'tournaments?',
+    'tournoi', # french tournament
+    u'大会', # japanese tournament
+    u'トーナメント', # japanese tournament
+    'turnie\w*', # tournament polish/german
+    u'giải đấu', # tournament vietnamese
+    u'thi đấu', # competition vietnamese
+    u'състезанието', # competition bulgarian
+    u'đấu', # game vietnamese
+    'turneringer', # danish tournament
+    'preselections?',
+    u'présélections?', # preselections french
+    r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
+    'crew\W?v[sz]?\W?crew',
+    'bonnie\s*(?:and|&)\s*clyde',
+    'prelims?',
+    u'初賽', # chinese preliminaries
+])
+
+CLASS = token('CLASS')
+add(CLASS, [
+    'work\W?shop\W?s?',
+    'ws', # japanese workshop WS
+    'w\.s\.', # japanese workshop W.S.
+    u'ワークショップ', # japanese workshop
+    'cursillo', # spanish workshop
+    'ateliers', # french workshop
+    'workshopy', # czech workshop
+    u'סדנאות', # hebrew workshops
+    u'סדנה', # hebew workshop
+    # 'taller', # workshop spanish
+    'delavnice', # workshop slovak
+    'talleres', # workshops spanish
+    'radionicama', # workshop croatian
+    'warsztaty', # polish workshop
+    u'warsztatów', # polish workshop
+    u'seminarų', # lithuanian workshop
+    'taller de', # spanish workshop
+    'intensives?',
+    'intensivo', # spanish intensive
+    'class with', 'master\W?class(?:es)?',
+    'company class',
+    u'мастер-класса?', # russian master class
+    u'классa?', # russian class
+    'class(?:es)?', 'lessons?', 'courses?',
+    'klass(?:en)?', # slovakian class
+    u'수업', # korean class
+    u'수업을', # korean classes
+    'lekc[ie]', # czech lesson
+    u'課程', # course chinese
+    u'課', # class chinese
+    u'堂課', # lesson chinese
+    u'コース', # course japanese
+    'concorso', # course italian
+    'kurs(?:y|en)?', # course german/polish
+    'aulas?', # portuguese class(?:es)?
+    u'특강', # korean lecture
+    'lektion(?:en)?', # german lecture
+    'lekcie', # slovak lessons
+    'dansklasser', # swedish dance classes
+    'lekcj[ai]', # polish lesson
+    'eigoje', # lithuanian course
+    'pamokas', # lithuanian lesson
+    'kursai', # course lithuanian
+    'lez.', #  lesson italian
+    'lezione', # lesson italian
+    'lezioni', # lessons italian
+    u'zajęciach', # class polish
+    u'zajęcia', # classes polish
+    u'คลาส', # class thai
+    'classe', # class italian
+    'classi', # classes italin
+    'klasser?', # norwegian class
+    'cours', 'clases?',
+    'camp',
+    'kamp',
+    'kemp',
+    'formazione', # training italian
+    'formazioni', # training italian
+    u'トレーニング', # japanese training
+])
+
+AUDITION = token('AUDITION')
+add(AUDITION, [
+    'try\W?outs?',
+    'casting',
+     'casting call',
+    'castingul', # romanian casting
+    'auditions?',
+    'audicija', # audition croatia
+    'audiciones', # spanish audition
+    'konkurz', # audition czech
+    u'試鏡', # chinese audition
+    'audizione', # italian audition
+    'naborem', # polish recruitment/audition
+])
+
+EVENT = token('EVENT')
+add(EVENT, [
+    'open circles',
+    'session', # the plural 'sessions' is handled up above under club-and-event keywords
+    u'セッション', # japanese session
+    u'練習会', # japanese training
+    u'練習', # japanese practice
+    'abdc', 'america\W?s best dance crew',
+])
+
+def _generate_n_x_n_keywords():
+    english_digit_x_keywords = [
+        'v/s',
+        r'vs?\.?',
+        'on',
+        'x',
+        u'×',
+    ]
+    digit_x_keywords = english_digit_x_keywords + [
+        'na',
+        'mot',
+        'contra',
+        'contre',
+    ]
+    digit_x_string = '|'.join(digit_x_keywords)
+    english_digit_x_string = '|'.join(english_digit_x_keywords)
+    n_x_n_keywords = [u'%s[ -]?(?:%s)[ -]?%s' % (i, digit_x_string, i) for i in range(12)[1:]]
+    n_x_n_keywords += [u'%s[ -](?:%s)[ -]%s' % (i, english_digit_x_string, i) for i in ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
+    return n_x_n_keywords
+
+N_X_N = token('N_X_N')
+add(N_X_N, _generate_n_x_n_keywords())
+
+JUDGE = token('JUDGE')
+add(JUDGE, [
+    'jurys?',
+    'jurados?', # spanish jury
+    u'журито', # bulgarian jury
+    'judge[sz]?',
+    'jures', # french jury
+    '(?:les? )?juges?', # french judges
+    'giudici', # italian judges
+    u'השופט', # hebrew judge
+    u'השופטים', # hebrew judges
+    u'teisėjai', # lithuanian judges
+    'tuomaristo', # jury finnish
+    'jueces', # spanish judges
+    'juriu', # romanian judges
+    'giuria', # jury italian
+    u'評審', # chinese judges
+    u'評判', # chinese judges
+    u'評判團', # chinese judges
+    u'審査員', # japanese judges
+    u'ジャッジ', # japanese judges
+])
+
+
+
+FRENCH_EVENT = token('FRENCH_EVENT')
+add(FRENCH_EVENT, [
+    'spectacle',
+    'stage',
+])
+
+ITALIAN_EVENT = token('ITALIAN_EVENT')
+add(ITALIAN_EVENT, [
+    'stage',
+])
+
 #TODO(lambert): should these be done here, as additional keywords?
 # Or should they be done as part oa grammar, that tries to combine these into larger tokens at that level
 
