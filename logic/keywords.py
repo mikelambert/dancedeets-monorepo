@@ -291,13 +291,23 @@ add(HOUSE, [
 # freestyle dance
 add(DANCE, ['%s ?%s' % (get_regex_string(HOUSE), get_regex_string(EASY_DANCE))])
 
-add(DANCE, ['free\W?style(?:r?|rs?) ?%s' % get_regex_string(EASY_DANCE)])
+FREESTYLE = token('FREESTYLE')
+add(FREESTYLE, [
+    'free\W?style(?:r?|rs?)',
+])
+
+STREET = token('STREET')
+add(STREET, [
+    'street',
+])
+
+add(DANCE, ['%s ?%s' % (get_regex_string(FREESTYLE), get_regex_string(EASY_DANCE))])
 add(DANCE, [
   '%s ?%s' % (get_regex_string(AMBIGUOUS_DANCE_MUSIC), get_regex_string(EASY_DANCE)),
   '%s ?%s' % (get_regex_string(EASY_DANCE), get_regex_string(AMBIGUOUS_DANCE_MUSIC)),
 ])
 add(DANCE, [
-    'street\W?%s\w*' % get_regex_string(EASY_CHOREO),
-    'street\W?%s\w*' % get_regex_string(EASY_DANCE),
+    '%s\W?%s\w*' % (get_regex_string(STREET), get_regex_string(EASY_CHOREO)),
+    '%s\W?%s\w*' % (get_regex_string(STREET), get_regex_string(EASY_DANCE)),
 ])
 
