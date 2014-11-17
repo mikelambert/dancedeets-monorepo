@@ -677,6 +677,95 @@ add(ITALIAN_EVENT, [
     'stage',
 ])
 
+
+DANCE_WRONG_STYLE = token('DANCE_WRONG_STYLE')
+add(DANCE_WRONG_STYLE, [
+    'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
+    'latines', 'quickstep', 'rumba', 'cha\W?cha',
+    'blues',
+    'waltz',
+    'salsy', # salsa czech
+    'salser[oa]s?',
+    'kizomba',
+    'disco dance',
+    'disco tan\w+', # czech disco dance
+    'milonga',
+    'dance partner',
+    'cha cha',
+    'hula',
+    'tumbling',
+    'exotic',
+    'cheer',
+    'barre',
+    'butoh',
+    'contato improv\w*',
+    'contact improv\w*',
+    'contratto mimo', # italian contact mime
+    'musical theat(?:re|er)',
+    'pole danc\w+', 'flirt danc\w+',
+    'go\W?go',
+    'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
+    'indienne',
+    'persiana?',
+    'arabe', 'arabic', 'araba',
+    'oriental\w*', 'oriente', 
+    'cubana',
+    'capoeira',
+    'tahitian dancing',
+    'tahitienne',
+    'folklor\w+',
+    'kizomba',
+    'burlesque',
+    u'バーレスク', # burlesque japan
+    'limon',
+    'artist\Win\Wresidence',
+    'residency',
+    'disciplinary',
+    'reflective',
+    'clogging',
+    'zouk',
+    'african dance',
+    'afro dance',
+    'afro mundo',
+    'class?ic[ao]',
+    'acroyoga',
+    'kirtan',
+    'hoop\W?dance',
+    'modern dance',
+    'pilates',
+    'tribal',
+    'jazz', 'tap', 'contemporary',
+    u'súčasný', # contemporary slovak
+    u'współczesnego', # contemporary polish
+    'contempor\w*', # contemporary italian, french
+    'africa\w+',
+    'sabar',
+    'aerial silk',
+    'silk',
+    'aerial',
+    'zumba', 'belly\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance',
+    'soca',
+    'flamenco',
+    'technique',
+    'guest artists?',
+    'partnering',
+    'charleston',
+])
+
+# These are okay to see in event descriptions, but we don't want it to be in the event title, or it is too strong for us
+DANCE_WRONG_STYLE_TITLE = token('DANCE_WRONG_STYLE_TITLE')
+add(DANCE_WRONG_STYLE_TITLE, get(DANCE_WRONG_STYLE))
+add(DANCE_WRONG_STYLE_TITLE, [
+    # Sometimes used in studio name even though it's still a hiphop class:
+    'ballroom',
+    'ballet',
+    'yoga',
+    'talent shows?', # we don't care about talent shows that offer dance options
+    'stiletto',
+    '\w+ball', # basketball/baseball/football tryouts
+])
+
+
 #TODO(lambert): should these be done here, as additional keywords?
 # Or should they be done as part oa grammar, that tries to combine these into larger tokens at that level
 

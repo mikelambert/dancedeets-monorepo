@@ -37,89 +37,6 @@ make_regexes = regex_keywords.make_regexes
 # TODO: house class, house workshop, etc, etc. since 'house' by itself isn't sufficient
 # maybe feed keywords into auto-classifying event type? bleh.
 
-
-dance_wrong_style_keywords = [
-    'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
-    'latines', 'quickstep', 'rumba', 'cha\W?cha',
-    'blues',
-    'waltz',
-    'salsy', # salsa czech
-    'salser[oa]s?',
-    'kizomba',
-    'disco dance',
-    'disco tan\w+', # czech disco dance
-    'milonga',
-    'dance partner',
-    'cha cha',
-    'hula',
-    'tumbling',
-    'exotic',
-    'cheer',
-    'barre',
-    'butoh',
-    'contato improv\w*',
-    'contact improv\w*',
-    'contratto mimo', # italian contact mime
-    'musical theat(?:re|er)',
-    'pole danc\w+', 'flirt danc\w+',
-    'go\W?go',
-    'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
-    'indienne',
-    'persiana?',
-    'arabe', 'arabic', 'araba',
-    'oriental\w*', 'oriente', 
-    'cubana',
-    'capoeira',
-    'tahitian dancing',
-    'tahitienne',
-    'folklor\w+',
-    'kizomba',
-    'burlesque',
-    u'バーレスク', # burlesque japan
-    'limon',
-    'artist\Win\Wresidence',
-    'residency',
-    'disciplinary',
-    'reflective',
-    'clogging',
-    'zouk',
-    'african dance',
-    'afro dance',
-    'afro mundo',
-    'class?ic[ao]',
-    'acroyoga',
-    'kirtan',
-    'hoop\W?dance',
-    'modern dance',
-    'pilates',
-    'tribal',
-    'jazz', 'tap', 'contemporary',
-    u'súčasný', # contemporary slovak
-    u'współczesnego', # contemporary polish
-    'contempor\w*', # contemporary italian, french
-    'africa\w+',
-    'sabar',
-    'aerial silk',
-    'silk',
-    'aerial',
-    'zumba', 'belly\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance',
-    'soca',
-    'flamenco',
-    'technique',
-    'guest artists?',
-    'partnering',
-    'charleston',
-]
-dance_wrong_style_title_keywords = dance_wrong_style_keywords + [
-    # Sometimes used in studio name even though it's still a hiphop class:
-    'ballroom',
-    'ballet',
-    'yoga',
-    'talent shows?', # we don't care about talent shows that offer dance options
-    'stiletto',
-    '\w+ball', # basketball/baseball/football tryouts
-]
-
 all_regexes = {}
 
 grouped_manual_dance_keywords = {}
@@ -221,12 +138,12 @@ def build_regexes():
 
 
 all_regexes['preprocess_removals_regex'] = keywords.get_regex(keywords.PREPROCESS_REMOVAL)
-all_regexes['dance_wrong_style_regex'] = make_regexes(dance_wrong_style_keywords)
+all_regexes['dance_wrong_style_regex'] = keywords.get_regex(keywords.DANCE_WRONG_STYLE)
 all_regexes['judge_keywords_regex'] = keywords.get_regex(keywords.JUDGE)
 all_regexes['audition_regex'] = keywords.get_regex(keywords.AUDITION)
 all_regexes['battle_regex'] = keywords.get_regex(keywords.BATTLE)
 all_regexes['n_x_n_regex'] = keywords.get_regex(keywords.N_X_N)
-all_regexes['dance_wrong_style_title_regex'] = make_regexes(dance_wrong_style_title_keywords)
+all_regexes['dance_wrong_style_title_regex'] = keywords.get_regex(keywords.DANCE_WRONG_STYLE_TITLE)
 all_regexes['dance_and_music_regex'] = keywords.get_regex(keywords.AMBIGUOUS_DANCE_MUSIC)
 all_regexes['class_regex'] = keywords.get_regex(keywords.CLASS)
 all_regexes['club_and_event_regex'] = make_regexes(keywords.get(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST))
@@ -248,7 +165,7 @@ all_regexes['event_regex'] = make_regexes(event_keywords)
 all_regexes['french_event_regex'] = make_regexes(event_keywords + keywords.get(keywords.FRENCH_EVENT))
 all_regexes['italian_event_regex'] = make_regexes(event_keywords + keywords.get(keywords.ITALIAN_EVENT))
 
-all_regexes['bad_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.CLUB_ONLY) + dance_wrong_style_keywords, matching=True)
+all_regexes['bad_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.CLUB_ONLY, keywords.DANCE_WRONG_STYLE), matching=True)
 
 all_regexes['italian'] = make_regexes(['di', 'i', 'e', 'con'])
 all_regexes['french'] = make_regexes(["l'\w*", 'le', 'et', 'une', 'avec', u'à', 'pour'])
