@@ -13,47 +13,12 @@ from util import dates
 # experimental side?
 
 
-connectors = [
-    ' ?',
-    ' di ',
-    ' de ',
-    ' ?: ?',
-#    ' \W ',
-]
-connectors_regex = event_classifier.make_regex_string(connectors)
+connectors_regex = keywords.get_regex_string(keywords.CONNECTORS)
 
-wrong_classes = [
-    'straight up', # up rock
-    'tear\W?jerker', # jerker
-    'in-strutter', # strutter
-    'on stage',
-    'pledge class',
-    'top class',
-    'of course',
-    'class\W?rnb',
-    'class act',
-    'breaking down',
-    'ground\W?breaking',
-    'main\Wstage',
-    '(?:second|2nd) stage',
-    'world\Wclass',
-    'open house',
-    'hip\W?hop\W?kempu?', # refers to hiphop music!
-    'camp\W?house',
-    'in\W?house',
-    'lock in',
-    'juste debout school',
-    'baile funk',
-]
 
-ambiguous_wrong_style_keywords = [
-    'modern',
-    'ballet',
-    'ballroom',
-]
-p1 = event_classifier.make_regex_string(ambiguous_wrong_style_keywords)
+p1 = keywords.get_regex_string(keywords.AMBIGUOUS_WRONG_STYLE)
 p2 = keywords.get_regex_string(keywords.CLASS)
-wrong_classes += [
+wrong_classes = [
     u'%s%s%s' % (p1, connectors_regex, p2),
     u'%s%s%s' % (p2, connectors_regex, p1),
 ]

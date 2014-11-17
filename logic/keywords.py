@@ -414,9 +414,31 @@ add(PREPROCESS_REMOVAL, [
     '1st class',
     'first class',
     'world class',
+    'pledge class',
+    'world\Wclass',
+    'top class',
+    'class\W?rnb',
+    'class act',
     'go\W?go\W?danc(?:ers?|ing?)',
     'latin street',
     'ice\w?breaker',
+
+    'straight up', # up rock
+    'tear\W?jerker', # jerker
+    'in-strutter', # strutter
+    'on stage',
+    'main\Wstage',
+    'of course',
+    'breaking down',
+    'ground\W?breaking',
+    '(?:second|2nd) stage',
+    'open house',
+    'hip\W?hop\W?kempu?', # refers to hiphop music!
+    'camp\W?house',
+    'in\W?house',
+    'lock in',
+    'juste debout school',
+    'baile funk',
 ])
 
 # battle freestyle ?
@@ -763,6 +785,23 @@ add(DANCE_WRONG_STYLE_TITLE, [
     'talent shows?', # we don't care about talent shows that offer dance options
     'stiletto',
     '\w+ball', # basketball/baseball/football tryouts
+])
+
+
+CONNECTORS = token('CONNECTORS')
+add(CONNECTORS, [
+    ' ?',
+    ' di ',
+    ' de ',
+    ' ?: ?',
+#    ' \W ',
+])
+
+AMBIGUOUS_WRONG_STYLE = token('AMBIGUOUS_WRONG_STYLE')
+add(AMBIGUOUS_WRONG_STYLE, [
+    'modern',
+    'ballet',
+    'ballroom',
 ])
 
 
