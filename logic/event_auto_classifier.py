@@ -12,13 +12,6 @@ from util import dates
 # lock side?
 # experimental side?
 
-# house battles http://www.dancedeets.com/events/admin_edit?event_id=240788332653377
-
-house_keywords = [
-    'house',
-    # this is now handled by dance_keywords in event_classifier.py
-    # 'house dance',
-]
 
 connectors = [
     ' ?',
@@ -127,23 +120,23 @@ format_types = [
 ]
 
 p1 = event_classifier.make_regex_string(wrong_battle_styles)
-p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
+p2 = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + keywords.get(keywords.CONTEST))
 wrong_battles += [
     u'%s%s%s' % (p1, connectors_regex, p2),
     u'%s%s%s' % (p2, connectors_regex, p1), # this also gets "battle djs"
 ]
 wrong_battles_regex = event_classifier.make_regexes(wrong_battles)
 
-dance_class_styles = keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC) + keywords.get(keywords.DANCE) + keywords.get(keywords.HOUSE)
+dance_class_styles = keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.HOUSE)
 dance_class_styles_regex = event_classifier.make_regexes(dance_class_styles)
 assert dance_class_styles_regex[0].search('hip hop dance')
 
 cypher_regex_string = keywords.get_regex_string(keywords.CYPHER)
 battle_regex_string = event_classifier.make_regex_string(event_classifier.battle_keywords)
 p1_good = event_classifier.make_regex_string(dance_class_styles)
-p1_okay = event_classifier.make_regex_string(keywords.get(keywords.EASY_DANCE) + keywords.get(keywords.EASY_CHOREO))
-p2_good = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
-p2_okay = event_classifier.make_regex_string(event_classifier.easy_battle_keywords)
+p1_okay = event_classifier.make_regex_string(keywords.get(keywords.EASY_DANCE, keywords.EASY_CHOREO))
+p2_good = event_classifier.make_regex_string(event_classifier.battle_keywords + event_classifier.n_x_n_keywords + keywords.get(keywords.CONTEST))
+p2_okay = keywords.get_regex_string(keywords.EASY_BATTLE)
 good_dance_battles_keywords = [
     u'%s%s%s' % (p1_good, connectors_regex, p2_good),
     u'%s%s%s' % (p2_good, connectors_regex, p1_good),
@@ -176,7 +169,7 @@ ambiguous_class_keywords = [
     'stages'
 ]
 ambiguous_class_regex = event_classifier.make_regex_string(ambiguous_class_keywords)
-p1 = event_classifier.make_regex_string(keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC) + keywords.get(keywords.DANCE) + keywords.get(keywords.HOUSE))
+p1 = event_classifier.make_regex_string(keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.HOUSE))
 p2 = event_classifier.make_regex_string(event_classifier.class_keywords)
 good_dance_class_regex = event_classifier.make_regexes([
     u'%s%s%s' % (p1, connectors_regex, p2),
@@ -198,7 +191,7 @@ non_dance_support = [
 non_dance_regex = event_classifier.make_regexes(non_dance_support)
 
 full_judge_keywords = event_classifier.judge_keywords
-judge_qualifier = event_classifier.make_regex_string(keywords.get(keywords.DANCE) + keywords.get(keywords.EASY_DANCE) + keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC) + house_keywords + keywords.get(keywords.EASY_CHOREO) + event_classifier.battle_keywords + event_classifier.n_x_n_keywords + event_classifier.contest_keywords)
+judge_qualifier = event_classifier.make_regex_string(keywords.get(keywords.DANCE, keywords.EASY_DANCE, keywords.AMBIGUOUS_DANCE_MUSIC, keywords.HOUSE, keywords.EASY_CHOREO, keywords.CONTEST) + event_classifier.battle_keywords + event_classifier.n_x_n_keywords)
 judge_regex = event_classifier.make_regex_string(event_classifier.judge_keywords)
 full_judge_keywords.extend([
     u'%s%s%s' % (judge_qualifier, connectors_regex, judge_regex),
@@ -209,7 +202,7 @@ start_judge_keywords_regex = event_classifier.make_regexes(full_judge_keywords, 
 # TODO: make sure this doesn't match... 'mc hiphop contest'
 
 p1 = keywords.get_regex_string(keywords.DANCE)
-p2 = event_classifier.make_regex_string(event_classifier.performance_keywords + event_classifier.practice_keywords)
+p2 = event_classifier.make_regex_string(keywords.get(keywords.PERFORMANCE, keywords.PRACTICE))
 performance_practice_regex = event_classifier.make_regexes([
     u'%s%s%s' % (p1, connectors_regex, p2),
     u'%s%s%s' % (p2, connectors_regex, p1),

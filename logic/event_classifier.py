@@ -38,44 +38,9 @@ make_regexes = regex_keywords.make_regexes
 # maybe feed keywords into auto-classifying event type? bleh.
 
 
-easy_battle_keywords = [
-    'jams?', 
-]
-easy_event_keywords = [
-    'club', 'after\Wparty', 'pre\Wparty',
-    u'クラブ',  # japanese club
-    'open sessions?',
-    'training',
-]
-easy_event_keywords += easy_battle_keywords
-contest_keywords = [
-    'contests?',
-    'concours', # french contest
-    'konkurrencer', # danish contest
-    'dancecontests', # dance contests german
-]
-practice_keywords = [
-    'sesja', # polish session
-    'sessions', 'practice',
-]
-performance_keywords = [
-    # international sessions are handled down below
-    'shows?', 'performances?',
-    'show\W?case',
-    u'représentation', # french performance
-    u'ショーケース', # japanese showcase
-    u'秀', # chinese show
-    u'的表演', # chinese performance
-    u'表演', # chinese performance
-    u'vystoupení', # czech performances
-    u'výkonnostních', # czech performance
-    u'изпълнението', # bulgarian performance
-    u'パフォーマンス', # japanese performance
-    # maybe include 'spectacle' as well?
-    'esibizioni', #italian performance/exhibition
-]
 
-club_and_event_keywords = practice_keywords + performance_keywords + contest_keywords
+
+club_and_event_keywords = keywords.get(keywords.PRACTICE) + keywords.get(keywords.PERFORMANCE) + keywords.get(keywords.CONTEST)
 
 club_only_keywords = [
     'club',
@@ -558,8 +523,8 @@ def build_regexes():
         else:
             all_regexes['%s_regex' % keyword] = make_regexes(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
-    all_regexes['good_keyword_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE) + easy_event_keywords + keywords.get(keywords.DANCE) + event_keywords + club_and_event_keywords + keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC) + keywords.get(keywords.EASY_CHOREO) + manual_dance_keywords + dependent_manual_dance_keywords, wrapper='(?i)%s')
-    all_regexes['good_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE) + easy_event_keywords + keywords.get(keywords.DANCE) + event_keywords + club_and_event_keywords + keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC) + keywords.get(keywords.EASY_CHOREO) + manual_dance_keywords + dependent_manual_dance_keywords, matching=True, wrapper='(?i)%s')
+    all_regexes['good_keyword_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE) + keywords.get(keywords.EASY_EVENT, keywords.EASY_BATTLE) + keywords.get(keywords.DANCE) + event_keywords + club_and_event_keywords + keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC) + keywords.get(keywords.EASY_CHOREO) + manual_dance_keywords + dependent_manual_dance_keywords, wrapper='(?i)%s')
+    all_regexes['good_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE) + keywords.get(keywords.EASY_EVENT, keywords.EASY_BATTLE) + keywords.get(keywords.DANCE) + event_keywords + club_and_event_keywords + keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC) + keywords.get(keywords.EASY_CHOREO) + manual_dance_keywords + dependent_manual_dance_keywords, matching=True, wrapper='(?i)%s')
 
 all_regexes['preprocess_removals_regex'] = make_regexes(preprocess_removals)
 all_regexes['dance_wrong_style_regex'] = make_regexes(dance_wrong_style_keywords)
@@ -575,7 +540,7 @@ all_regexes['easy_choreography_regex'] = make_regexes(keywords.get(keywords.EASY
 all_regexes['club_only_regex'] = make_regexes(club_only_keywords)
 
 all_regexes['easy_dance_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE))
-all_regexes['easy_event_regex'] = make_regexes(easy_event_keywords)
+all_regexes['easy_event_regex'] = make_regexes(keywords.get(keywords.EASY_EVENT, keywords.EASY_BATTLE))
 all_regexes['dance_regex'] = keywords.get_regex(keywords.DANCE)
 all_regexes['event_regex'] = make_regexes(event_keywords)
 all_regexes['french_event_regex'] = make_regexes(event_keywords + french_event_keywords)

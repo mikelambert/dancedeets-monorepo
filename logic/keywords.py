@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 #
 
+import itertools
 import re
 import regex_keywords
 
@@ -24,8 +25,12 @@ def get_regex(token):
         _regexes[token] = regex_keywords.make_regexes(_keywords[token])
         return _regexes[token]
 
-def get(token):
-    return _keywords[token]
+def flatten(listOfLists):
+    "Flatten one level of nesting"
+    return list(itertools.chain.from_iterable(listOfLists))
+
+def get(*args):
+    return flatten(_keywords[token] for token in args)
 
 def token(token_input):
     assert not re.match('\W', token_input)
@@ -277,6 +282,8 @@ add(DANCE, [x+'u' for x in get(DANCE)])
 # dance_keywords = dance_keywords + [x+'y' for x in dance_keywords] 
 
 # hiphop dance. hiphop dans?
+
+# house battles http://www.dancedeets.com/events/admin_edit?event_id=240788332653377
 HOUSE = token('HOUSE')
 add(HOUSE, [
     'house',
@@ -284,12 +291,6 @@ add(HOUSE, [
     u'ハウス', # japanese house
     u'хаус', # russian house
 ])
-
-#TODO(lambert): should these be done here, as additional keywords?
-# Or should they be done as part oa grammar, that tries to combine these into larger tokens at that level
-
-# freestyle dance
-add(DANCE, ['%s ?%s' % (get_regex_string(HOUSE), get_regex_string(EASY_DANCE))])
 
 FREESTYLE = token('FREESTYLE')
 add(FREESTYLE, [
@@ -301,6 +302,55 @@ add(STREET, [
     'street',
 ])
 
+EASY_BATTLE = token('EASY_BATTLE')
+add(EASY_BATTLE, [
+    'jams?', 
+])
+
+EASY_EVENT = token('EASY_EVENT')
+add(EASY_EVENT, [
+    'club', 'after\Wparty', 'pre\Wparty',
+    u'クラブ',  # japanese club
+    'open sessions?',
+    'training',
+])
+
+CONTEST = token('CONTEST')
+add(CONTEST, [
+    'contests?',
+    'concours', # french contest
+    'konkurrencer', # danish contest
+    'dancecontests', # dance contests german
+])
+PRACTICE = token('PRACTICE')
+add(PRACTICE, [
+    'sesja', # polish session
+    'sessions', 'practice',
+])
+
+PERFORMANCE = token('PERFORMANCE')
+add(PERFORMANCE, [
+    'shows?', 'performances?',
+    'show\W?case',
+    u'représentation', # french performance
+    u'ショーケース', # japanese showcase
+    u'秀', # chinese show
+    u'的表演', # chinese performance
+    u'表演', # chinese performance
+    u'vystoupení', # czech performances
+    u'výkonnostních', # czech performance
+    u'изпълнението', # bulgarian performance
+    u'パフォーマンス', # japanese performance
+    # maybe include 'spectacle' as well?
+    'esibizioni', #italian performance/exhibition
+])
+
+
+#TODO(lambert): should these be done here, as additional keywords?
+# Or should they be done as part oa grammar, that tries to combine these into larger tokens at that level
+
+# freestyle dance
+add(DANCE, ['%s ?%s' % (get_regex_string(HOUSE), get_regex_string(EASY_DANCE))])
 add(DANCE, ['%s ?%s' % (get_regex_string(FREESTYLE), get_regex_string(EASY_DANCE))])
 add(DANCE, [
   '%s ?%s' % (get_regex_string(AMBIGUOUS_DANCE_MUSIC), get_regex_string(EASY_DANCE)),
