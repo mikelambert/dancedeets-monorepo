@@ -38,165 +38,6 @@ make_regexes = regex_keywords.make_regexes
 # maybe feed keywords into auto-classifying event type? bleh.
 
 
-
-# if somehow has funks, hiphop, and breaks, and house. or 3/4? call it a dance event?
-
-dance_and_music_keywords = [
-    'hip\W?hop',
-    u'嘻哈', # chinese hiphop
-    u'ההיפ הופ', # hebrew hiphop
-    u'хипхоп', # macedonian hiphop
-    u'ヒップホップ', # hiphop japanese
-    u'힙합', # korean hiphop
-    'hip\W?hop\w*', # lithuanian, polish hiphop
-    'all\W?style[zs]?',
-    'tou[ts]\W?style[zs]?', # french all-styles
-    'tutti gli stili', # italian all-styles
-    'be\W?bop',
-    'shuffle',
-    'swag',
-    'funk',
-    'dance\W?hall\w*',
-    'ragga',
-    'hype',
-    'new\W?jack\W?swing',
-    'gliding', 
-    # 'breaks', # too many false positives
-    'boogaloo',
-    "breakin[g']?", 'breakers?',
-    'jerk',
-    'kpop',
-    'rnb',
-    "poppin\'?",
-    'hard\Whitting',
-    'electro\W?dance',
-    'old\W?school hip\W?hop',
-    '90\W?s hip\W?hop',
-    'vogue',
-    u'フリースタイル', # japanese freestyle
-    'b\W?boy\w*', # 'bboyev' in slovak
-]
-
-# hiphop dance. hiphop dans?
-dance_keywords = [
-    'street\W?jam',
-    'breakingu', #breaking polish
-    u'breaktánc', # breakdance hungarian
-    u'ブレイク', # breakdance japanese
-    'jazz rock',
-    'funk\W?style[sz]?',
-    'poppers?', 'popp?i?ng', # listing poppin in the ambiguous keywords
-    'poppeurs?',
-    'commercial hip\W?hop',
-    'hip\W?hop dance',
-    "jerk(?:ers?|in[g']?)",
-    u'스트릿', # street korean
-    u'ストリートダンス', # japanese streetdance
-    u'街舞', # chinese streetdance / hiphop
-    u'gatvės šokių', # lithuanian streetdance
-    'katutanssi\w*', # finnish streetdance
-    "bre?ak\W?dancin[g']?", 'bre?ak\W?dancer?s?',
-    'break\W?danc\w+',
-    'rock\W?dan[cs]\w+',
-    '(?:lite|light)\W?feet',
-    "gettin[g']?\W?(?:lite|light)",
-    "turfin[g']?", 'turf danc\w+', "flexin[g']?", "buckin[g']?", "jookin[g']?",
-    'b\W?boy[sz]?', "b\W?boyin[g']?", 'b\W?girl[sz]?', "b\W?girlin[g']?", 'power\W?moves?', "footworkin[g']?",
-    u'파워무브', # powermove korean
-    'breakeuse', # french bgirl
-    'footworks', # spanish footworks
-    "top\W?rock(?:s|er[sz]?|in[g']?)?", "up\W?rock(?:s|er[sz]?|in[g']?|)?",
-    'houser[sz]?',
-    'dance house', # seen in italian
-    'soul dance',
-    u'ソウルダンス', # soul dance japanese
-    "lock(?:er[sz]?|in[g']?)?", 'lock dance',
-    u'ロッカーズ', # japanese lockers
-    u'ロッカ', # japanese lock
-    "[uw]h?aa?c?c?k(?:er[sz]?|inn?[g']?)", # waacking
-    "paa?nc?kin[g']?", # punking
-    'locking4life',
-    'dance crew[sz]?',
-    "wavin[g']?", 'wavers?',
-    'liquid\W+dance'
-    'liquid\W+(?:\w+\W+)?digitz',
-    'finger\W+digitz',
-    'toy\W?man',
-    'puppet\W?style',
-    "bott?in[g']?",
-    "robott?in[g']?",
-    'melbourne shuffle',
-    'strutter[sz]?', 'strutting',
-    "tuttin[g']?", 'tutter[sz]?',
-    'mj\W+style', 'michael jackson style',
-    'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
-    'hip\W?hop\Wheels',
-    # only do la-style if not salsa? http://www.dancedeets.com/events/admin_edit?event_id=292605290807447
-    # 'l\W?a\W?\Wstyle',
-    'l\W?a\W?\Wdance',
-    'n(?:ew|u)\W?style',
-    'n(?:ew|u)\W?style\Whip\W?hop',
-    'hip\W?hop\Wn(?:ew|u)\W?style',
-    'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
-    'all\W+open\W?style[sz]?',
-    'open\W+all\W?style[sz]?',
-    'me against the music',
-    'krump', "krumpin[g']?", 'krumper[sz]?',
-    'ragga\W?jamm?',
-    'girl\W?s\W?hip\W?hop',
-    'hip\W?hopp?er[sz]?',
-    'street\W?jazz', 'street\W?funk',
-    'jazz\W?funk', 'funk\W?jazz',
-    'boom\W?crack',
-    'hype danc\w*',
-    'social hip\W?hop', 'hip\W?hop social dance[sz]', 'hip\W?hop party dance[sz]',
-    'hip\W?hop grooves',
-    '(?:new|nu|middle)\W?s(?:ch|k)ool\W\W?hip\W?hop', 'hip\W?hop\W\W?(?:old|new|nu|middle)\W?s(?:ch|k)ool',
-    'newstyleurs?',
-    'voguer[sz]?', "vogue?in[g']?", 'vogue fem', 'voguin',
-    'vouge', "vougin[g']?",
-    'fem queen', 'butch queen',
-    'mini\W?ball', 'realness',
-    'new\W?style hustle',
-    'urban danc\w*',
-    'urban style[sz]',
-    'urban contemporary',
-    u'dan[çc]\w* urban\w*',
-    'dan\w+ urbai?n\w+', # spanish/french urban dance
-    'baile urbai?n\w+', # spanish urban dance
-    'estilo\w* urbai?n\w+', # spanish urban styles
-    "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)?",
-]
-# Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
-dance_keywords = dance_keywords + [x+'u' for x in dance_keywords] 
-# TODO(lambert): Is this a safe one to add?
-# http://en.wikipedia.org/wiki/Slovak_declension
-# dance_keywords = dance_keywords + [x+'y' for x in dance_keywords] 
-
-house_keywords = [
-    'house',
-    u'하우스', # korean house
-    u'ハウス', # japanese house
-    u'хаус', # russian house
-]
-house_regex_string = make_regex_string(house_keywords)
-
-# freestyle dance
-easy_dance_regexes = make_regex_string(keywords.get(keywords.EASY_DANCE))
-dance_keywords += ['%s ?%s' % (house_regex_string, easy_dance_regexes)]
-
-dance_keywords += ['free\W?style(?:r?|rs?) ?%s' % easy_dance_regexes]
-dance_and_music_regexes = make_regex_string(dance_and_music_keywords)
-dance_keywords += [
-  '%s ?%s' % (dance_and_music_regexes, easy_dance_regexes),
-  '%s ?%s' % (easy_dance_regexes, dance_and_music_regexes),
-]
-dance_keywords += [
-    'street\W?%s\w*' % make_regex_string(keywords.get(keywords.EASY_CHOREO)),
-    'street\W?%s\w*' % make_regex_string(keywords.get(keywords.EASY_DANCE)),
-]
-
-
 easy_battle_keywords = [
     'jams?', 
 ]
@@ -717,8 +558,8 @@ def build_regexes():
         else:
             all_regexes['%s_regex' % keyword] = make_regexes(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
-    all_regexes['good_keyword_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE) + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + keywords.get(keywords.EASY_CHOREO) + manual_dance_keywords + dependent_manual_dance_keywords, wrapper='(?i)%s')
-    all_regexes['good_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE) + easy_event_keywords + dance_keywords + event_keywords + club_and_event_keywords + dance_and_music_keywords + keywords.get(keywords.EASY_CHOREO) + manual_dance_keywords + dependent_manual_dance_keywords, matching=True, wrapper='(?i)%s')
+    all_regexes['good_keyword_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE) + easy_event_keywords + keywords.get(keywords.DANCE) + event_keywords + club_and_event_keywords + keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC) + keywords.get(keywords.EASY_CHOREO) + manual_dance_keywords + dependent_manual_dance_keywords, wrapper='(?i)%s')
+    all_regexes['good_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE) + easy_event_keywords + keywords.get(keywords.DANCE) + event_keywords + club_and_event_keywords + keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC) + keywords.get(keywords.EASY_CHOREO) + manual_dance_keywords + dependent_manual_dance_keywords, matching=True, wrapper='(?i)%s')
 
 all_regexes['preprocess_removals_regex'] = make_regexes(preprocess_removals)
 all_regexes['dance_wrong_style_regex'] = make_regexes(dance_wrong_style_keywords)
@@ -727,7 +568,7 @@ all_regexes['audition_regex'] = make_regexes(audition_keywords)
 all_regexes['battle_regex'] = make_regexes(battle_keywords)
 all_regexes['n_x_n_regex'] = make_regexes(n_x_n_keywords)
 all_regexes['dance_wrong_style_title_regex'] = make_regexes(dance_wrong_style_title_keywords)
-all_regexes['dance_and_music_regex'] = make_regexes(dance_and_music_keywords)
+all_regexes['dance_and_music_regex'] = keywords.get_regex(keywords.AMBIGUOUS_DANCE_MUSIC)
 all_regexes['class_regex'] = make_regexes(class_keywords)
 all_regexes['club_and_event_regex'] = make_regexes(club_and_event_keywords)
 all_regexes['easy_choreography_regex'] = make_regexes(keywords.get(keywords.EASY_CHOREO))
@@ -735,7 +576,7 @@ all_regexes['club_only_regex'] = make_regexes(club_only_keywords)
 
 all_regexes['easy_dance_regex'] = make_regexes(keywords.get(keywords.EASY_DANCE))
 all_regexes['easy_event_regex'] = make_regexes(easy_event_keywords)
-all_regexes['dance_regex'] = make_regexes(dance_keywords)
+all_regexes['dance_regex'] = keywords.get_regex(keywords.DANCE)
 all_regexes['event_regex'] = make_regexes(event_keywords)
 all_regexes['french_event_regex'] = make_regexes(event_keywords + french_event_keywords)
 all_regexes['italian_event_regex'] = make_regexes(event_keywords + italian_event_keywords)
