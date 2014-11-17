@@ -346,6 +346,134 @@ add(PERFORMANCE, [
 ])
 
 
+CLUB_ONLY = token('CLUB_ONLY')
+add(CLUB_ONLY, [
+    'club',
+    'bottle service',
+    'table service',
+    'coat check',
+    #'rsvp',
+    'free before',
+    #'dance floor',
+    #'bar',
+    #'live',
+    #'and up',
+    'vip',
+    'guest\W?list',
+    'drink specials?',
+    'resident dj\W?s?',
+    'residency',
+    'ravers?',
+    'dj\W?s?',
+    'techno', 'trance', 'indie', 'glitch',
+    'bands?',
+    'dress to',
+    'mixtape',
+    'decks',
+    'r&b',
+    'local dj\W?s?',
+    'all night',
+    'lounge',
+    'live performances?',
+    'doors', # doors open at x
+    'restaurant',
+    'hotel',
+    'music shows?',
+    'a night of',
+    'dance floor',
+    'beer',
+    'bartenders?',
+    'waiters?',
+    'waitress(?:es)?',
+    'go\W?go',
+])
+
+PREPROCESS_REMOVAL = token('PREPROCESS_REMOVAL')
+add(PREPROCESS_REMOVAL, [
+    # positive
+    'tap water', # for theo and dominque's jam
+
+    # negative
+    "america's got talent",
+    'jerk chicken',
+    'poker tournaments?',
+    'fashion competition',
+    'wrestling competition',
+    't?shirt competition',
+    'shaking competition',
+    'costume competition',
+    'bottles? popping?',
+    'poppin.? bottles?',
+    'dance fitness',
+    'lock down',
+    'lock up',
+    'latin street dance',
+    'whack music',
+    'wack music',
+    'marvellous dance crew',
+    '1st class',
+    'first class',
+    'world class',
+    'go\W?go\W?danc(?:ers?|ing?)',
+    'latin street',
+    'ice\w?breaker',
+])
+
+# battle freestyle ?
+# dj battle
+# battle royale
+# http://www.dancedeets.com/events/admin_edit?event_id=208662995897296
+# mc performances
+# beatbox performances
+# beat 
+# 'open cyphers'
+# freestyle
+#in\Whouse  ??
+# 'brad houser'
+
+# open mic
+
+#dj.*bboy
+#dj.*bgirl
+
+# 'vote for xx' in the subject
+# 'vote on' 'vote for' in body, but small body of text
+# release party
+
+# methodology
+# cardio
+# fitness
+
+# sometimes dance performances have Credits with a bunch of other performers, texts, production, etc. maybe remove these?
+
+# HIP HOP INTERNATIONAL
+
+# bad words in title of club events
+# DJ
+# Live
+# Mon/Tue/Wed/Thu/Fri/Sat
+# Guests?
+# 21+ 18+
+
+# boogiezone if not contemporary?
+# free style if not salsa?
+
+
+#TODO(lambert): use these to filter out shows we don't really care about
+#TODO: UNUSED!!
+OTHER_SHOW = token('OTHER_SHOW')
+add(OTHER_SHOW, [
+    'comedy',
+    'poetry',
+    'poets?',
+    'spoken word',
+    'painting',
+    'juggling',
+    'magic',
+    'singing',
+    'acting',
+])
+
 #TODO(lambert): should these be done here, as additional keywords?
 # Or should they be done as part oa grammar, that tries to combine these into larger tokens at that level
 
