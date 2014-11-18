@@ -13,7 +13,7 @@ from util import dates
 # experimental side?
 
 
-connectors_regex = keywords.get_regex_string(keywords.CONNECTORS)
+connectors_regex = keywords.get_regex_string(keywords.CONNECTOR)
 
 
 p1 = keywords.get_regex_string(keywords.AMBIGUOUS_WRONG_STYLE)
@@ -24,69 +24,9 @@ wrong_classes = [
 ]
 wrong_classes_regex = event_classifier.make_regexes(wrong_classes)
 
-wrong_numbered_list = [
-    'track(?:list(?:ing)?)?',
-    'release',
-    'download',
-    'ep',
-]
-wrong_numbered_list_regex = event_classifier.make_regexes(wrong_numbered_list)
-
-wrong_auditions = [
-    'sing(?:ers?)?',
-    'singing',
-    'model',
-    'poet(?:ry|s)?',
-    'act(?:ors?|ress(?:es)?)?',
-    'mike portoghese', # TODO(lambert): When we get bio removal for keyword matches, we can remove this one
-]
-wrong_auditions_regex = event_classifier.make_regexes(wrong_auditions)
-
-wrong_battles = [
-    'talent',
-    'beatbox',
-    'rap',
-    'swimsuit',
-    'tekken',
-    'capcom',
-    'games?',
-    'game breaking',
-    'videogames?',
-    'sexy',
-    'lingerie',
-    'judge jules',
-    'open mic',
-]
-wrong_battle_styles = [
-    '(?:mc|emcee)\Whip\W?hop',
-    'emcee',
-    'rap',
-    'beat',
-    'beatbox',
-    'dj\W?s?',
-    'producer',
-    'performance',
-    'graf(?:fiti)?',
-]
-
-#TODO: use
-# solo performance
-# solo battle
-# crew battle
-# team battle
-# these mean....more
-format_types = [
-    'solo',
-    u'ソロ', # japanese solo
-    'team',
-    u'チーム', # japanese team
-    'crew',
-    u'クルー', # japanese crew
-]
-
-p1 = event_classifier.make_regex_string(wrong_battle_styles)
+p1 = keywords.get_regex_string(keywords.WRONG_BATTLE_STYLE)
 p2 = event_classifier.make_regex_string(keywords.get(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST))
-wrong_battles += [
+wrong_battles = keywords.get(keywords.WRONG_BATTLE) + [
     u'%s%s%s' % (p1, connectors_regex, p2),
     u'%s%s%s' % (p2, connectors_regex, p1), # this also gets "battle djs"
 ]
@@ -298,7 +238,7 @@ def find_competitor_list(classified_event):
             return False # good list of times! workshops, etc! performance/shows/club-set times!
         if len(event_classifier.all_regexes['event_regex'][classified_event.boundaries].findall(numbered_list)) > num_lines / 8:
             return False
-        if wrong_numbered_list_regex[classified_event.boundaries].findall(text):
+        if keywords.get_regex(keywords.WRONG_NUMBERED_LIST)[classified_event.boundaries].findall(text):
             return False
         if num_lines > 10:
             return True
@@ -389,7 +329,7 @@ def is_audition(classified_event):
     search_text = classified_event.final_search_text
     has_good_dance = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(search_text)
     has_wrong_style = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(search_text)
-    has_wrong_audition = wrong_auditions_regex[classified_event.boundaries].findall(search_text)
+    has_wrong_audition = keywords.get_regex(keywords.WRONG_AUDITION)[classified_event.boundaries].findall(search_text)
 
     if has_audition and (has_good_dance_title or has_extended_good_crew_title):
         return (True, 'has audition with strong title')

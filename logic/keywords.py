@@ -11,11 +11,9 @@ _regex_strings = {}
 _regexes = {}
 
 def get_regex_string(token):
-    if token in _regex_strings:
-        return _regex_strings[token]
-    else:
+    if token not in _regex_strings:
         _regex_strings[token] = regex_keywords.make_regex_string(_keywords[token])
-        return _regex_strings[token]
+    return _regex_strings[token]
 
 def get_regex(token):
     if token in _regexes:
@@ -482,7 +480,7 @@ add(PREPROCESS_REMOVAL, [
 
 
 #TODO(lambert): use these to filter out shows we don't really care about
-#TODO: UNUSED!!
+#TODO: UNUSED
 OTHER_SHOW = token('OTHER_SHOW')
 add(OTHER_SHOW, [
     'comedy',
@@ -788,8 +786,8 @@ add(DANCE_WRONG_STYLE_TITLE, [
 ])
 
 
-CONNECTORS = token('CONNECTORS')
-add(CONNECTORS, [
+CONNECTOR = token('CONNECTORS')
+add(CONNECTOR, [
     ' ?',
     ' di ',
     ' de ',
@@ -802,6 +800,71 @@ add(AMBIGUOUS_WRONG_STYLE, [
     'modern',
     'ballet',
     'ballroom',
+])
+
+
+WRONG_NUMBERED_LIST = token('WRONG_NUMBERED_LIST')
+add(WRONG_NUMBERED_LIST, [
+    'track(?:list(?:ing)?)?',
+    'release',
+    'download',
+    'ep',
+])
+
+WRONG_AUDITION = token('WRONG_AUDITIONS')
+add(WRONG_AUDITION, [
+    'sing(?:ers?)?',
+    'singing',
+    'model',
+    'poet(?:ry|s)?',
+    'act(?:ors?|ress(?:es)?)?',
+    'mike portoghese', # TODO(lambert): When we get bio removal for keyword matches, we can remove this one
+])
+
+WRONG_BATTLE = token('WRONG_BATTLES')
+add(WRONG_BATTLE, [
+    'talent',
+    'beatbox',
+    'rap',
+    'swimsuit',
+    'tekken',
+    'capcom',
+    'games?',
+    'game breaking',
+    'videogames?',
+    'sexy',
+    'lingerie',
+    'judge jules',
+    'open mic',
+])
+WRONG_BATTLE_STYLE = token('WRONG_BATTLE_STYLES')
+add(WRONG_BATTLE_STYLE, [
+    '(?:mc|emcee)\Whip\W?hop',
+    'emcee',
+    'rap',
+    'beat',
+    'beatbox',
+    'dj\W?s?',
+    'producer',
+    'performance',
+    'graf(?:fiti)?',
+])
+
+#TODO: use
+# solo performance
+# solo battle
+# crew battle
+# team battle
+# these mean....more
+#TODO: UNUSED
+FORMAT_TYPE = token('FORMAT_TYPE')
+add(FORMAT_TYPE, [
+    'solo',
+    u'ソロ', # japanese solo
+    'team',
+    u'チーム', # japanese team
+    'crew',
+    u'クルー', # japanese crew
 ])
 
 
