@@ -138,7 +138,6 @@ def build_regexes():
     all_regexes['good_capturing_keyword_regex'] = make_regexes(good_keywords, matching=True, wrapper='(?i)%s')
 
 
-all_regexes['preprocess_removals_regex'] = keywords.get_regex(keywords.PREPROCESS_REMOVAL)
 all_regexes['dance_wrong_style_regex'] = keywords.get_regex(keywords.DANCE_WRONG_STYLE)
 all_regexes['judge_keywords_regex'] = keywords.get_regex(keywords.JUDGE)
 all_regexes['audition_regex'] = keywords.get_regex(keywords.AUDITION)
@@ -179,6 +178,32 @@ def get_relevant_text(fb_event):
     search_text = (fb_event['info'].get('name', '') + ' . . . . ' + fb_event['info'].get('description', '')).lower()
     return search_text
 
+class StringProcessor(object):
+    def __init__(self, text, match_on_word_boundaries):
+        self.text = text
+        self.match_on_word_boundaries = match_on_word_boundaries
+        self.token_originals = collections.defaultdict(lambda: [])
+
+    def tokenize_all(self, *tokens):
+        for token in tokens:
+            self.tokenize(token)
+
+    def tokenize(self, token):
+        def replace_with(match):
+            matched_text = match.group(0)
+            self.token_originals[token].append(matched_text)
+            return token.replace_string()
+        self.text = keywords.get_regex(token)[self.match_on_word_boundaries].sub(replace_with, self.text)
+
+    def count_tokens(self, token):
+        return len(self.token_originals[token])
+
+    def get_tokens(self, token):
+        return self.token_originals[token]
+
+    def get_tokenized_text(self):
+        return self.text
+
 class ClassifiedEvent(object):
     def __init__(self, fb_event, language=None):
         self.fb_event = fb_event
@@ -191,8 +216,6 @@ class ClassifiedEvent(object):
             self.title = fb_event['info'].get('name', '').lower()
         self.language = language
         self.times = {}
-        self.token_originals = collections.defaultdict(lambda: [])
-        self.tokenized_text = self.search_text
 
     def classify(self):
         build_regexes()
@@ -208,10 +231,16 @@ class ClassifiedEvent(object):
             self.boundaries = regex_keywords.WORD_BOUNDARIES
         idx = self.boundaries
 
-        self.final_search_text = all_regexes['preprocess_removals_regex'][idx].sub('', self.search_text)
+        self.processed_text = StringProcessor(self.search_text, self.boundaries)
+        self.processed_text.tokenize(keywords.PREPROCESS_REMOVAL)
+        self.final_search_text = self.processed_text.get_tokenized_text()
         search_text = self.final_search_text
-        self.final_title = all_regexes['preprocess_removals_regex'][idx].sub('', self.title)
+
+        self.processed_title = StringProcessor(self.title, self.boundaries)
+        self.processed_title.tokenize(keywords.PREPROCESS_REMOVAL)
+        self.final_title = self.processed_title.get_tokenized_text()
         title = self.final_title
+
 
         #if not all_regexes['good_keyword_regex'][idx].search(search_text):
         #    self.dance_event = False
@@ -283,20 +312,6 @@ class ClassifiedEvent(object):
             self.dance_event = False
         self.times['all_match'] = time.time() - a
 
-
-    def replace_tokens(self, token):
-        def replace_with(match):
-            matched_text = match.group(0)
-            self.token_originals[token].append(matched_text)
-            return token
-        self.tokenized_text = keywords.get_regex(token)[self.boundaries].sub(replace_with, self.tokenized_text)
-
-    def count_tokens(self, token):
-        return len(self.token_originals[token])
-        
-    def get_tokens(self, token):
-        return self.token_originals[token]
-        
     def is_dance_event(self):
         return bool(self.dance_event)
     def reason(self):

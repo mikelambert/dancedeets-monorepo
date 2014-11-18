@@ -27,6 +27,9 @@ class Keyword(GrammarRule):
     def as_token_regex(self):
         return self.keyword
 
+    def replace_string(self):
+        return self.keyword
+
     def __repr__(self):
         return 'Keyword(%r)' % self.keyword
 

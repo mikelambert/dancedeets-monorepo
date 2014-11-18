@@ -426,21 +426,20 @@ def is_auto_add_event(classified_event):
     return (False, 'nothing')
 
 def is_bad_club(classified_event):
-    classified_event.replace_tokens(keywords.GOOD_INSTANCE_OF_BAD_CLUB)
-    classified_event.replace_tokens(keywords.BAD_CLUB)
-    classified_event.replace_tokens(keywords.CYPHER)
-    text = classified_event.tokenized_text
+    processed_text = classified_event.processed_text
+    processed_text.tokenize_all(keywords.GOOD_INSTANCE_OF_BAD_CLUB, keywords.BAD_CLUB, keywords.CYPHER)
+    text = processed_text.get_tokenized_text()
 
     has_battles = dance_battles_regex[classified_event.boundaries].findall(text)
     has_style = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(text)
     has_manual_keywords = event_classifier.all_regexes['extended_manual_dance_keywords_regex'][classified_event.boundaries].findall(text)
-    has_cypher = classified_event.count_tokens(keywords.CYPHER)
+    has_cypher = processed_text.count_tokens(keywords.CYPHER)
 
     has_other_event_title = event_classifier.all_regexes['event_regex'][classified_event.boundaries].findall(classified_event.final_title)
 
     has_ambiguous_text = has_battles or has_style or has_manual_keywords or has_cypher
-    if classified_event.count_tokens(keywords.BAD_CLUB) and not has_ambiguous_text and not has_other_event_title:
-        return True, 'has bad keywords: %s' % classified_event.get_tokens(keywords.BAD_CLUB)
+    if processed_text.count_tokens(keywords.BAD_CLUB) and not has_ambiguous_text and not has_other_event_title:
+        return True, 'has bad keywords: %s' % processed_text.get_tokens(keywords.BAD_CLUB)
     return False, 'not a bad club'
 
 
