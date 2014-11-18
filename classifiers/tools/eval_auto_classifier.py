@@ -68,7 +68,7 @@ def partition_ids(ids, classifier=lambda x:False):
             add_counts(bad_counts, fb_event)
     return successes, fails
 
-positive_classifier = False
+positive_classifier = True
 def basic_match(fb_event):
     e = event_classifier.get_classified_event(fb_event)
     if positive_classifier:
