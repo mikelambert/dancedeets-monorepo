@@ -25,17 +25,17 @@ def tokenize_regex(original_r):
     r = original_r
     tokenized = []
     while r:
-          match = re.match(r'\\?[^()\[\]*+?]' + QUANTIFIER, r)
-          if match:
-              tokenized.append(match.group(0))
-            r = r[match.end():]
-            continue
-        match = re.match(r'^\[(?:[^\]\\]+|\\.)*\]' + QUANTIFIER, r)
+        match = re.match(r'\\?[^()\[\]*+?]' + QUANTIFIER, r)
         if match:
             tokenized.append(match.group(0))
             r = r[match.end():]
             continue
-        match = re.match(r'^\((?:[^\\()]+|\\.)*\)' + QUANTIFIER, r)
+        match = re.match(r'^\[(?:[^\]\\]|\\.)*\]' + QUANTIFIER, r)
+        if match:
+            tokenized.append(match.group(0))
+            r = r[match.end():]
+            continue
+        match = re.match(r'^\((?:[^\\()]|\\.)+\)' + QUANTIFIER, r)
         if match:
             tokenized.append(match.group(0))
             r = r[match.end():]
