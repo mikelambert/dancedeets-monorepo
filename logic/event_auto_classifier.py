@@ -16,7 +16,6 @@ from util import dates
 
 connectors_regex = keywords.get_regex_string(keywords.CONNECTOR)
 
-
 p1 = keywords.get_regex_string(keywords.AMBIGUOUS_WRONG_STYLE)
 p2 = keywords.get_regex_string(keywords.CLASS)
 wrong_classes = [
@@ -33,13 +32,7 @@ wrong_battles = keywords.get(keywords.WRONG_BATTLE) + [
 ]
 wrong_battles_regex = event_classifier.make_regexes(wrong_battles)
 
-dance_class_styles = keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.HOUSE)
-dance_class_styles_regex = event_classifier.make_regexes(dance_class_styles)
-assert dance_class_styles_regex[0].search('hip hop dance')
-
-cypher_regex_string = keywords.get_regex_string(keywords.CYPHER)
-battle_regex_string = keywords.get_regex_string(keywords.BATTLE)
-p1_good = event_classifier.make_regex_string(dance_class_styles)
+p1_good = keywords.get_regex_string(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.HOUSE)
 p1_okay = keywords.get_regex_string(keywords.EASY_DANCE, keywords.EASY_CHOREO)
 p2_good = keywords.get_regex_string(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)
 p2_okay = keywords.get_regex_string(keywords.EASY_BATTLE)

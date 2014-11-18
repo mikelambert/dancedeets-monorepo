@@ -791,12 +791,16 @@ add(DANCE_WRONG_STYLE_TITLE, [
 ])
 
 
+#TODO(lambert): we need to remove the empty CONNECTOR here, and probably spaces as well, and handle that in the rules? or just ensure this never gets applied except as part of rules
 CONNECTOR = token('CONNECTORS')
 add(CONNECTOR, [
     ' ?',
     ' di ',
     ' de ',
     ' ?: ?',
+    u'な', # japanese
+    u'の', # japanese
+    u'的', # chinese
 #    ' \W ',
 ])
 
@@ -934,13 +938,13 @@ add(SEMI_BAD_DANCE, [
 ])
 
 #TODO(lambert): should these be done here, as additional keywords?
-# Or should they be done as part oa grammar, that tries to combine these into larger tokens at that level
+# Or should they be done as part of the grammar, that tries to combine these into rules of some sort?
 
 OBVIOUS_BATTLE = token('OBVIOUS_BATTLE')
 add(OBVIOUS_BATTLE, [
     'apache line',
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
-    'bonnie\s*(?:and|&)\s*clyde',
+    'bonnie\s*(?:and|&)\s*clyde %s' % get_regex_string(BATTLE),
     'king of (?:the )?%s' % get_regex_string(CYPHER),
     '%s\W?king' % get_regex_string(CYPHER),
 ])
