@@ -126,8 +126,7 @@ add(FULL_JUDGE,Any(
         keywords.N_X_N
     )
 )))
-# TODO: we need to make a regex of the above rule, but at the start-of-a-line:
-# start_judge_keywords_regex = event_classifier.make_regexes(JUDGE_RULE, wrapper='^[^\w\n]*%s', flags=re.MULTILINE)
+# TODO(lambert): Maybe add a special RegexRule that I can fill with '^[^\w\n]*', and encapsulate that here instead of client code
 
 PERFORMANCE_PRACTICE = 'PERFORMANCE_PRACTICE'
 add(PERFORMANCE_PRACTICE, commutative_connected(keywords.DANCE, Any(keywords.PERFORMANCE, keywords.PRACTICE)))
