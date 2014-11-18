@@ -63,6 +63,13 @@ class TestClass(TestClassifier):
         has_classes, reasons = event_auto_classifier.has_list_of_good_classes(classified_event)
         self.assertTrue(has_classes)
 
+class TestBadClub(TestClassifier):
+    def runTest(self):
+        fb_event = self.get_event(149083330948)
+        classified_event = event_classifier.get_classified_event(fb_event)
+        is_bad_club, reasons = event_auto_classifier.is_bad_club(classified_event)
+        self.assertTrue(is_bad_club)
+
 class TestNoClass(TestClassifier):
     def runTest(self):
         fb_event = self.get_event(278853778841357)
