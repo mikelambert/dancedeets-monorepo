@@ -142,19 +142,19 @@ all_regexes['preprocess_removals_regex'] = keywords.get_regex(keywords.PREPROCES
 all_regexes['dance_wrong_style_regex'] = keywords.get_regex(keywords.DANCE_WRONG_STYLE)
 all_regexes['judge_keywords_regex'] = keywords.get_regex(keywords.JUDGE)
 all_regexes['audition_regex'] = keywords.get_regex(keywords.AUDITION)
-all_regexes['battle_regex'] = make_regexes(keywords.get(keywords.BATTLE, keywords.OBVIOUS_BATTLE))
+all_regexes['battle_regex'] = keywords.get_regex(keywords.BATTLE, keywords.OBVIOUS_BATTLE)
 all_regexes['n_x_n_regex'] = keywords.get_regex(keywords.N_X_N)
 all_regexes['dance_wrong_style_title_regex'] = keywords.get_regex(keywords.DANCE_WRONG_STYLE_TITLE)
 all_regexes['dance_and_music_regex'] = keywords.get_regex(keywords.AMBIGUOUS_DANCE_MUSIC)
 all_regexes['class_regex'] = keywords.get_regex(keywords.CLASS)
-all_regexes['club_and_event_regex'] = make_regexes(keywords.get(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST))
+all_regexes['club_and_event_regex'] = keywords.get_regex(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST)
 all_regexes['easy_choreography_regex'] = keywords.get_regex(keywords.EASY_CHOREO)
-all_regexes['club_only_regex'] = make_regexes(keywords.CLUB_ONLY)
+all_regexes['club_only_regex'] = keywords.get_regex(keywords.CLUB_ONLY)
 
 all_regexes['easy_dance_regex'] = keywords.get_regex(keywords.EASY_DANCE)
-all_regexes['easy_event_regex'] = make_regexes(keywords.get(keywords.EASY_EVENT, keywords.EASY_BATTLE))
+all_regexes['easy_event_regex'] = keywords.get_regex(keywords.EASY_EVENT, keywords.EASY_BATTLE)
 all_regexes['dance_regex'] = keywords.get_regex(keywords.DANCE)
-event_keywords =     keywords.get(
+event_tokens =     [
     keywords.CLASS,
     keywords.N_X_N,
     keywords.BATTLE,
@@ -162,10 +162,10 @@ event_keywords =     keywords.get(
     keywords.AUDITION,
     keywords.CYPHER,
     keywords.JUDGE
-)
-all_regexes['event_regex'] = make_regexes(event_keywords)
-all_regexes['french_event_regex'] = make_regexes(event_keywords + keywords.get(keywords.FRENCH_EVENT))
-all_regexes['italian_event_regex'] = make_regexes(event_keywords + keywords.get(keywords.ITALIAN_EVENT))
+]
+all_regexes['event_regex'] = keywords.get_regex(*event_tokens)
+all_regexes['french_event_regex'] = keywords.get_regex(keywords.FRENCH_EVENT, *event_tokens)
+all_regexes['italian_event_regex'] = keywords.get_regex(keywords.ITALIAN_EVENT, *event_tokens)
 
 all_regexes['bad_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.CLUB_ONLY, keywords.DANCE_WRONG_STYLE), matching=True)
 

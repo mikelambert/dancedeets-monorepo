@@ -10,25 +10,28 @@ _keywords = {}
 _regex_strings = {}
 _regexes = {}
 
-def get_regex_string(token):
-    if token not in _regex_strings:
-        _regex_strings[token] = regex_keywords.make_regex_string(_keywords[token])
-    return _regex_strings[token]
+def _key(tokens):
+    return ':'.join(sorted(tokens))
 
-def get_regex(token):
-    if token in _regexes:
-        return _regexes[token]
-    else:
+def get_regex_string(*tokens):
+    token_key = _key(tokens)
+    if token_key not in _regex_strings:
+        _regex_strings[token_key] = regex_keywords.make_regex_string(get(*tokens))
+    return _regex_strings[token_key]
+
+def get_regex(*tokens):
+    token_key = _key(tokens)
+    if token_key not in _regexes:
         # TODO(lambert): this is regexes, while function name is regex. We need to fix this (since make_regex is a different function)
-        _regexes[token] = regex_keywords.make_regexes(_keywords[token])
-        return _regexes[token]
+        _regexes[token_key] = regex_keywords.make_regexes(get(*tokens))
+    return _regexes[token_key]
 
-def flatten(listOfLists):
+def _flatten(listOfLists):
     "Flatten one level of nesting"
     return list(itertools.chain.from_iterable(listOfLists))
 
-def get(*args):
-    return flatten(_keywords[token] for token in args)
+def get(*tokens):
+    return _flatten(_keywords[token] for token in tokens)
 
 def token(token_input):
     assert not re.match('\W', token_input)
@@ -875,6 +878,7 @@ add(BAD_COMPETITION, [
     'likes?',
     'votes?',
     'votas?', # spanish votes
+    u'głosowani\w+', # polish vote
     'support',
     'follow',
     '(?:pre)?sale',
