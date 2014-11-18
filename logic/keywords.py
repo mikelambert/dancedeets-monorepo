@@ -10,8 +10,28 @@ _keywords = {}
 _regex_strings = {}
 _regexes = {}
 
+class GrammarRule(object):
+    """The entire grammar rule tree must be composed of these."""
+
+class Keyword(GrammarRule):
+    def __init__(self, keyword):
+        self.keyword = keyword
+
+    def children(self):
+        return []
+
+    def as_expanded_regex(self):
+        return get_regex_string(self)
+
+    def as_token_regex(self):
+        return self.keyword
+
+    def __repr__(self):
+        return 'Keyword(%r)' % self.keyword
+
+
 def _key(tokens):
-    return ':'.join(sorted(tokens))
+    return tuple(sorted(tokens))
 
 def get_regex_string(*tokens):
     token_key = _key(tokens)
@@ -35,7 +55,7 @@ def get(*tokens):
 
 def token(token_input):
     assert not re.match('\W', token_input)
-    return '_%s_' % token_input
+    return Keyword('_%s_' % token_input)
 
 def add(token, keywords):
     # If anything has been built off of these, when we want to add new stuff, then we need to raise an error
