@@ -42,13 +42,9 @@ p1_good = event_classifier.make_regex_string(dance_class_styles)
 p1_okay = event_classifier.make_regex_string(keywords.get(keywords.EASY_DANCE, keywords.EASY_CHOREO))
 p2_good = event_classifier.make_regex_string(keywords.get(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST))
 p2_okay = keywords.get_regex_string(keywords.EASY_BATTLE)
-good_dance_battles_keywords = [
+good_dance_battles_keywords = keywords.get(keywords.OBVIOUS_BATTLE) + [
     u'%s%s%s' % (p1_good, connectors_regex, p2_good),
     u'%s%s%s' % (p2_good, connectors_regex, p1_good),
-    'king of (?:the )?%s' % cypher_regex_string,
-    '%s\W?king' % cypher_regex_string,
-    'bonnie\s*(?:and|&)\s*clyde %s' % battle_regex_string,
-    r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
 ]
 good_dance_battles_regex = event_classifier.make_regexes(good_dance_battles_keywords)
 assert good_dance_battles_regex[1].search('hip hop dance competition')
@@ -69,11 +65,7 @@ assert dance_battles_regex[1].search('house dance battle')
 assert good_dance_battles_regex[1].search('all-styles battle')
 assert good_dance_battles_regex[1].search('custom breaking contest')
 
-ambiguous_class_keywords = [
-    'stage',
-    'stages'
-]
-ambiguous_class_regex = event_classifier.make_regex_string(ambiguous_class_keywords)
+ambiguous_class_regex = keywords.get_regex_string(keywords.AMBIGUOUS_CLASS)
 p1 = event_classifier.make_regex_string(keywords.get(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.HOUSE))
 p2 = keywords.get_regex_string(keywords.CLASS)
 good_dance_class_regex = event_classifier.make_regexes([
@@ -82,18 +74,9 @@ good_dance_class_regex = event_classifier.make_regexes([
     # only do one direction here, since we don't want "house stage" and "funk stage"
      u'%s%s%s' % (ambiguous_class_regex, connectors_regex, p1),
 ])
-extended_class_regex = event_classifier.make_regexes(keywords.get(keywords.CLASS) + ambiguous_class_keywords)
+extended_class_regex = event_classifier.make_regexes(keywords.get(keywords.CLASS) + keywords.get(keywords.AMBIGUOUS_CLASS))
 
-non_dance_support = [
-    'fundraiser',
-    'likes?',
-    'votes?',
-    'votas?', # spanish votes
-    'support',
-    'follow',
-    '(?:pre)?sale',
-]
-non_dance_regex = event_classifier.make_regexes(non_dance_support)
+non_dance_regex = keywords.get_regex(keywords.BAD_COMPETITION)
 
 full_judge_keywords = keywords.get(keywords.JUDGE)
 judge_qualifier = event_classifier.make_regex_string(keywords.get(
@@ -122,43 +105,8 @@ performance_practice_regex = event_classifier.make_regexes([
     u'%s%s%s' % (p2, connectors_regex, p1),
 ])
 
-vogue_keywords = [
-    'butch realness',
-    'butch queen',
-    'vogue fem',
-    'hand performance',
-    'face performance',
-    'femme queen',
-    'sex siren',
-    'vogue?ing',
-    'voguin',
-    'voguer[sz]?',
-    'trans\W?man',
-]
-easy_vogue_keywords = [
-    'never walked',
-    'virgin',
-    'drags?',
-    'twist',
-    'realness',
-    'runway',
-    'female figure',
-    'couture',
-    'butch',
-    'ota',
-    'open to all',
-    'f\\.?q\\.?',
-    'b\\.?q\\.?',
-    'vogue',
-    'house of',
-    'category',
-    'troph(?:y|ies)',
-    'old way',
-    'new way',
-    'ball',
-]
-vogue_regex = event_classifier.make_regexes(vogue_keywords)
-easy_vogue_regex = event_classifier.make_regexes(easy_vogue_keywords)
+vogue_regex = keywords.get_regex_string(keywords.VOGUE)
+easy_vogue_regex = keywords.get_regex_string(keywords.EASY_VOGUE)
 
 def has_list_of_good_classes(classified_event):
     if not classified_event.is_dance_event():
@@ -563,17 +511,6 @@ def is_bad_club(classified_event):
         return True, 'has bad keywords: %s' % classified_event.get_tokens(keywords.BAD_CLUB)
     return False, 'not a bad club'
 
-weak_classical_dance_terms = [
-    'technique',
-    'dance company',
-    'explore',
-    'visual',
-    'stage',
-    'dance collective',
-]
-weak_classical_dance_regex = event_classifier.make_regexes(weak_classical_dance_terms)
-
-house_regex = event_classifier.make_regexes(['house'])
 
 def is_bad_wrong_dance(classified_event):
     dance_and_music_matches = event_classifier.all_regexes['dance_and_music_regex'][classified_event.boundaries].findall(classified_event.search_text)
@@ -584,10 +521,10 @@ def is_bad_wrong_dance(classified_event):
     trimmed_text = event_classifier.all_regexes['manual_dance_keywords_regex'][classified_event.boundaries].sub('', trimmed_text)
     trimmed_text = event_classifier.all_regexes['dance_and_music_regex'][classified_event.boundaries].sub('', trimmed_text)
 
-    weak_classical_dance_keywords = weak_classical_dance_regex[classified_event.boundaries].findall(trimmed_text)
+    weak_classical_dance_keywords = keywords.get_regex(keywords.SEMI_BAD_DANCE)[classified_event.boundaries].findall(trimmed_text)
     strong_classical_dance_keywords = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(trimmed_text)
 
-    has_house = house_regex[classified_event.boundaries].findall(trimmed_text)
+    has_house = keywords.get_regex(keywords.HOUSE)[classified_event.boundaries].findall(trimmed_text)
     club_only_matches = event_classifier.all_regexes['club_only_regex'][classified_event.boundaries].findall(trimmed_text)
 
 

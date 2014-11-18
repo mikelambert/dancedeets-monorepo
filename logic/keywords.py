@@ -498,7 +498,6 @@ add(OTHER_SHOW, [
 
 BATTLE = token('BATTLE')
 add(BATTLE, [
-    'apache line',
     'battle of the year', 'boty', 'compete',
     'competitions?',
     'konkurrence', # danish competition
@@ -543,9 +542,7 @@ add(BATTLE, [
     'turneringer', # danish tournament
     'preselections?',
     u'présélections?', # preselections french
-    r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
     'crew\W?v[sz]?\W?crew',
-    'bonnie\s*(?:and|&)\s*clyde',
     'prelims?',
     u'初賽', # chinese preliminaries
 ])
@@ -697,6 +694,11 @@ add(ITALIAN_EVENT, [
     'stage',
 ])
 
+AMBIGUOUS_CLASS = token('AMBIGUOUS_CLASS')
+add(AMBIGUOUS_CLASS, [
+    'stage',
+    'stages',
+])
 
 DANCE_WRONG_STYLE = token('DANCE_WRONG_STYLE')
 add(DANCE_WRONG_STYLE, [
@@ -867,9 +869,77 @@ add(FORMAT_TYPE, [
     u'クルー', # japanese crew
 ])
 
+BAD_COMPETITION = token('BAD_COMPETITION')
+add(BAD_COMPETITION, [
+    'fundraiser',
+    'likes?',
+    'votes?',
+    'votas?', # spanish votes
+    'support',
+    'follow',
+    '(?:pre)?sale',
+])
+
+
+VOGUE = token('VOGUE')
+add(VOGUE, [
+    'butch realness',
+    'butch queen',
+    'vogue fem',
+    'hand performance',
+    'face performance',
+    'femme queen',
+    'sex siren',
+    'vogue?ing',
+    'voguin',
+    'voguer[sz]?',
+    'trans\W?man',
+])
+EASY_VOGUE = token('EASY_VOGUE')
+add(EASY_VOGUE, [
+    'never walked',
+    'virgin',
+    'drags?',
+    'twist',
+    'realness',
+    'runway',
+    'female figure',
+    'couture',
+    'butch',
+    'ota',
+    'open to all',
+    'f\\.?q\\.?',
+    'b\\.?q\\.?',
+    'vogue',
+    'house of',
+    'category',
+    'troph(?:y|ies)',
+    'old way',
+    'new way',
+    'ball',
+])
+
+SEMI_BAD_DANCE = token('SEMI_BAD_DANCE')
+add(SEMI_BAD_DANCE, [
+    'technique',
+    'dance company',
+    'explore',
+    'visual',
+    'stage',
+    'dance collective',
+])
 
 #TODO(lambert): should these be done here, as additional keywords?
 # Or should they be done as part oa grammar, that tries to combine these into larger tokens at that level
+
+OBVIOUS_BATTLE = token('OBVIOUS_BATTLE')
+add(OBVIOUS_BATTLE, [
+    'apache line',
+    r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
+    'bonnie\s*(?:and|&)\s*clyde',
+    'king of (?:the )?%s' % get_regex_string(CYPHER),
+    '%s\W?king' % get_regex_string(CYPHER),
+])
 
 # freestyle dance
 add(DANCE, ['%s ?%s' % (get_regex_string(HOUSE), get_regex_string(EASY_DANCE))])

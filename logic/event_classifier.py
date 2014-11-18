@@ -129,6 +129,7 @@ def build_regexes():
         keywords.CLASS,
         keywords.N_X_N,
         keywords.BATTLE,
+        keywords.OBVIOUS_BATTLE,
         keywords.AUDITION,
         keywords.CYPHER,
         keywords.JUDGE
@@ -141,7 +142,7 @@ all_regexes['preprocess_removals_regex'] = keywords.get_regex(keywords.PREPROCES
 all_regexes['dance_wrong_style_regex'] = keywords.get_regex(keywords.DANCE_WRONG_STYLE)
 all_regexes['judge_keywords_regex'] = keywords.get_regex(keywords.JUDGE)
 all_regexes['audition_regex'] = keywords.get_regex(keywords.AUDITION)
-all_regexes['battle_regex'] = keywords.get_regex(keywords.BATTLE)
+all_regexes['battle_regex'] = make_regexes(keywords.get(keywords.BATTLE, keywords.OBVIOUS_BATTLE))
 all_regexes['n_x_n_regex'] = keywords.get_regex(keywords.N_X_N)
 all_regexes['dance_wrong_style_title_regex'] = keywords.get_regex(keywords.DANCE_WRONG_STYLE_TITLE)
 all_regexes['dance_and_music_regex'] = keywords.get_regex(keywords.AMBIGUOUS_DANCE_MUSIC)
@@ -157,6 +158,7 @@ event_keywords =     keywords.get(
     keywords.CLASS,
     keywords.N_X_N,
     keywords.BATTLE,
+    keywords.OBVIOUS_BATTLE,
     keywords.AUDITION,
     keywords.CYPHER,
     keywords.JUDGE
