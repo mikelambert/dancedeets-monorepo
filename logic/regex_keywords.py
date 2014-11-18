@@ -27,15 +27,17 @@ def make_regex_string(strings, matching=False, word_boundaries=False, match_cjk=
     regex = wrapper % regex
     return regex
 
+def make_regex_raw(regex_string, flags=0):
+    if re2:
+        # default max_mem is 8<<20 = 8*1000*1000
+        return re.compile(regex_string, max_mem=60*1000*1000, flags=flags)
+    else:
+        return re.compile(regex_string, flags=flags)
 
 def make_regex(strings, match_cjk, matching=False, wrapper='%s', flags=0):
     try:
         regex = make_regex_string(strings, matching=matching, word_boundaries=True, match_cjk=match_cjk, wrapper=wrapper)
-        if re2:
-            # default max_mem is 8<<20 = 8*1000*1000
-            return re.compile(regex, max_mem=60*1000*1000, flags=flags)
-        else:
-            return re.compile(regex, flags=flags)
+        return make_regex_raw(regex, flags)
     except UnicodeDecodeError:
         for line in strings:
             try:
@@ -51,4 +53,19 @@ def make_regexes(strings, matching=False, wrapper='%s', flags=0):
     a = [None] * 2
     a[NO_WORD_BOUNDARIES] = make_regex(strings, matching=matching, match_cjk=True, wrapper=wrapper, flags=flags)
     a[WORD_BOUNDARIES] = make_regex(strings, matching=matching, match_cjk=False, wrapper=wrapper, flags=flags)
+    return tuple(a)
+
+def prep_regex(regex_string, match_cjk=False, wrapper='%s'):
+    if match_cjk and not re2:
+        regex_string = '(?u)%s' % regex_string
+    else:
+        regex_string = r'\b%s\b' % regex_string
+    if wrapper:
+        regex_string = wrapper % regex_string
+    return regex_string
+
+def make_regexes_raw(regex_string, wrapper='%s', flags=0):
+    a = [None] * 2
+    a[NO_WORD_BOUNDARIES] = make_regex_raw(prep_regex(regex_string, match_cjk=True, wrapper=wrapper), flags=flags)
+    a[WORD_BOUNDARIES] = make_regex_raw(prep_regex(regex_string, match_cjk=False, wrapper=wrapper), flags=flags)
     return tuple(a)
