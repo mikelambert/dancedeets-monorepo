@@ -95,7 +95,7 @@ GOOD_DANCE = 'DANCE'
 add(GOOD_DANCE, Any(
     keywords.DANCE,
     commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE), keywords.EASY_DANCE),
-  commutative_connected(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE),
+    commutative_connected(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE),
     commutative_connected(keywords.STREET, Any(keywords.EASY_CHOREO, keywords.EASY_DANCE)),
 ))
 
@@ -118,7 +118,13 @@ good_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.HOUSE)
 ambiguous_dance = Any(keywords.EASY_DANCE, keywords.EASY_CHOREO)
 good_battle = Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)
 ambiguous_battle = Any(keywords.EASY_BATTLE)
-add(GOOD_DANCE_BATTLE, Any(keywords.OBVIOUS_BATTLE, commutative_connected(good_dance, good_battle)))
+add(GOOD_DANCE_BATTLE, Any(
+    keywords.OBVIOUS_BATTLE,
+    connected(keywords.BONNIE_AND_CLYDE, keywords.BATTLE),
+    connected(keywords.KING_OF_THE, keywords.CYPHER),
+    connected(keywords.CYPHER, keywords.KING),
+    commutative_connected(good_dance, good_battle)
+))
 
 DANCE_BATTLE = 'DANCE_BATTLE'
 add(DANCE_BATTLE, Any(

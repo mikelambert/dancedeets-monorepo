@@ -187,7 +187,6 @@ add(AMBIGUOUS_DANCE_MUSIC, [
     'tutti gli stili', # italian all-styles
     'be\W?bop',
     'shuffle',
-    'swag',
     'funk',
     'dance\W?hall\w*',
     'ragga',
@@ -826,6 +825,8 @@ add(CONNECTOR, [
     u'な', # japanese
     u'の', # japanese
     u'的', # chinese
+#TODO(lambert): explore adding these variations, and their impact on quality
+#    r' ?[^\w\s] ?',
 #    ' \W ',
 ])
 
@@ -972,8 +973,20 @@ OBVIOUS_BATTLE = token('OBVIOUS_BATTLE')
 add(OBVIOUS_BATTLE, [
     'apache line',
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
-    'bonnie\s*(?:and|&)\s*clyde %s' % get_regex_string(BATTLE),
-    'king of (?:the )?%s' % get_regex_string(CYPHER),
-    '%s\W?king' % get_regex_string(CYPHER),
 ])
 
+# TODO(lambert): is it worth having all these here as super-basic keywords? Should we instead just list these directly in rules.py?
+BONNIE_AND_CLYDE = token('BONNIE_AND_CLYDE')
+add(BONNIE_AND_CLYDE, [
+    'bonnie\s*(?:and|&)\s*clyde'
+])
+
+KING_OF_THE = token('KING_OF_THE')
+add(KING_OF_THE, [
+    'king of (?:the )?',
+])
+
+KING = token('KING')
+add(KING, [
+    'king'
+])
