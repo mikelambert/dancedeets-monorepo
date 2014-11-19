@@ -870,7 +870,9 @@ add(WRONG_BATTLE, [
     'lingerie',
     'judge jules',
     'open mic',
+    'producer',
 ])
+
 WRONG_BATTLE_STYLE = token('WRONG_BATTLE_STYLES')
 add(WRONG_BATTLE_STYLE, [
     '(?:mc|emcee)\Whip\W?hop',
@@ -903,7 +905,8 @@ add(FORMAT_TYPE, [
 
 BAD_COMPETITION = token('BAD_COMPETITION')
 add(BAD_COMPETITION, [
-    'fundraiser',
+    'video',
+    'fundrais\w+',
     'likes?',
     'votes?',
     'votas?', # spanish votes
@@ -972,17 +975,5 @@ add(OBVIOUS_BATTLE, [
     'bonnie\s*(?:and|&)\s*clyde %s' % get_regex_string(BATTLE),
     'king of (?:the )?%s' % get_regex_string(CYPHER),
     '%s\W?king' % get_regex_string(CYPHER),
-])
-
-# freestyle dance
-add(DANCE, ['%s ?%s' % (get_regex_string(HOUSE), get_regex_string(EASY_DANCE))])
-add(DANCE, ['%s ?%s' % (get_regex_string(FREESTYLE), get_regex_string(EASY_DANCE))])
-add(DANCE, [
-  '%s ?%s' % (get_regex_string(AMBIGUOUS_DANCE_MUSIC), get_regex_string(EASY_DANCE)),
-  '%s ?%s' % (get_regex_string(EASY_DANCE), get_regex_string(AMBIGUOUS_DANCE_MUSIC)),
-])
-add(DANCE, [
-    '%s\W?%s\w*' % (get_regex_string(STREET), get_regex_string(EASY_CHOREO)),
-    '%s\W?%s\w*' % (get_regex_string(STREET), get_regex_string(EASY_DANCE)),
 ])
 

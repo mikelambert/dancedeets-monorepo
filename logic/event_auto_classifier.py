@@ -340,7 +340,7 @@ def build_regexes():
 
     event_classifier.build_regexes()
 
-    solo_lines_regex = event_classifier.make_regexes(keywords.get(keywords.DANCE) + event_classifier.manual_dancers)
+    solo_lines_regex = event_classifier.make_regexes([rules.get(rules.GOOD_DANCE).as_expanded_regex()] + event_classifier.manual_dancers)
 
 def has_standalone_keywords(classified_event):
     build_regexes()

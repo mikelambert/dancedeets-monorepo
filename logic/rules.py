@@ -64,6 +64,22 @@ class Connector(keywords.GrammarRule):
     def __repr__(self):
         return 'Connector()'
 
+class RegexRule(keywords.GrammarRule):
+    def __init__(self, regex):
+        self.regex = regex
+
+    def children(self):
+        return []
+
+    def as_expanded_regex(self):
+        return self.regex
+
+    def as_token_regex(self):
+        return self.regex
+
+    def __repr__(self):
+        return 'RegexRule(%r)' % self.regex
+
 
 def connected(a, b):
     return Ordered(a, Connector(), b)
@@ -73,6 +89,16 @@ def commutative_connected(a, b):
         connected(a, b),
         connected(b, a),
     )
+
+
+GOOD_DANCE = 'DANCE'
+add(GOOD_DANCE, Any(
+    keywords.DANCE,
+    commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE), keywords.EASY_DANCE),
+  commutative_connected(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE),
+    commutative_connected(keywords.STREET, Any(keywords.EASY_CHOREO, keywords.EASY_DANCE)),
+))
+
 
 WRONG_CLASS = 'WRONG_CLASS'
 add(WRONG_CLASS, commutative_connected(keywords.AMBIGUOUS_WRONG_STYLE, keywords.CLASS))

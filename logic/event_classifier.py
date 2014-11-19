@@ -18,6 +18,7 @@ from util import cjk_detect
 from spitfire.runtime.filters import skip_filter
 from logic import keywords
 from logic import regex_keywords
+from logic import rules
 
 USE_UNICODE = False
 
@@ -152,7 +153,7 @@ all_regexes['club_only_regex'] = keywords.get_regex(keywords.CLUB_ONLY)
 
 all_regexes['easy_dance_regex'] = keywords.get_regex(keywords.EASY_DANCE)
 all_regexes['easy_event_regex'] = keywords.get_regex(keywords.EASY_EVENT, keywords.EASY_BATTLE)
-all_regexes['dance_regex'] = keywords.get_regex(keywords.DANCE)
+all_regexes['dance_regex'] = regex_keywords.make_regexes_raw(rules.get(rules.GOOD_DANCE).as_expanded_regex())
 event_tokens =     [
     keywords.CLASS,
     keywords.N_X_N,
