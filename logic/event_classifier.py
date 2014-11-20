@@ -190,6 +190,17 @@ class StringProcessor(object):
             self.tokenize(token)
 
     def tokenize(self, token):
+        """Tokenizes the relevant bits of this String. Replaces all instances of the token's regex, with the token's string representation.
+        """
+        # I tried a bunch of implementations for speed here. This approach appears to be the fastest:
+        # Run tokenize for each regex, doing a brute force search-and-replace on the string. (+70sec)
+        #
+        # Other ideas that didn't work included:
+        # - Do this as a matching-regex with one match group per token, to figure out which token matched. (+waaaay to slow)
+        # - In a non-matching regex, but with the matched text, run a matching-regex to figure out which token matched. (+150sec)
+        # - In a non-matching regex, but with the matched text, run each token regex by hand to see which matched. (+100sec)
+        # - Do one pass for findall to get tokens, and another for sub to replace with the magic token. (+100sec)
+        # Could have explored O(lgN) search options for a couple of the above, but it felt like the overhead of entering/exiting re2 was the biggest cost.
         def replace_with(match):
             matched_text = match.group(0)
             self.token_originals[token].append(matched_text)
@@ -233,9 +244,59 @@ class ClassifiedEvent(object):
         idx = self.boundaries
 
         self.processed_text = StringProcessor(self.search_text, self.boundaries)
+        # This must be first, to remove the fake keywords
         self.processed_text.tokenize(keywords.PREPROCESS_REMOVAL)
+
         self.final_search_text = self.processed_text.get_tokenized_text()
         search_text = self.final_search_text
+
+        # Then we apply a bunch of our regular keyword rules
+        # Not CONNECTOR, not PREPROCESS_REMOVAL.
+        # There are some overlapping keywords in here that I need to fix. Maybe can automate detection with a master-replace-regex that looks in these, to find what to replace with (and errors on multiple)
+        desired_keywords = [
+            keywords.AMBIGUOUS_CLASS,
+            keywords.AMBIGUOUS_DANCE_MUSIC,
+            keywords.AMBIGUOUS_WRONG_STYLE,
+            keywords.AUDITION,
+            keywords.BAD_CLUB,
+            keywords.BAD_COMPETITION,
+            keywords.BATTLE,
+            keywords.BONNIE_AND_CLYDE,
+            keywords.CLASS,
+            keywords.CLUB_ONLY,
+            keywords.CONTEST,
+            keywords.CYPHER,
+            keywords.DANCE,
+            keywords.DANCE_WRONG_STYLE,
+            keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
+            keywords.EASY_BATTLE,
+            keywords.EASY_CHOREO,
+            keywords.EASY_DANCE,
+            keywords.EASY_EVENT,
+            keywords.EASY_VOGUE,
+            keywords.EVENT,
+            keywords.FORMAT_TYPE,
+            keywords.FREESTYLE,
+            keywords.GOOD_INSTANCE_OF_BAD_CLUB,
+            keywords.HOUSE,
+            keywords.JUDGE,
+            keywords.KING,
+            keywords.KING_OF_THE,
+            keywords.N_X_N,
+            keywords.OBVIOUS_BATTLE,
+            keywords.OTHER_SHOW,
+            keywords.PERFORMANCE,
+            keywords.PRACTICE,
+            keywords.SEMI_BAD_DANCE,
+            keywords.STREET,
+            keywords.VOGUE,
+            keywords.WRONG_AUDITION,
+            keywords.WRONG_BATTLE,
+            keywords.WRONG_BATTLE_STYLE,
+            keywords.WRONG_NUMBERED_LIST,
+        ]
+        for keyword in desired_keywords:
+            self.processed_text.tokenize(keyword)
 
         self.processed_title = StringProcessor(self.title, self.boundaries)
         self.processed_title.tokenize(keywords.PREPROCESS_REMOVAL)
