@@ -13,7 +13,10 @@ ids_info = processing.load_ids()
 for x in ids_info:
     print x, len(ids_info[x])
 classified_ids = ids_info['good_ids']
-all_ids = ids_info['combined_ids']
+if len(sys.argv) > 1:
+    all_ids = set([sys.argv[1]])
+else:
+    all_ids = ids_info['combined_ids']
 
 TOTAL = None # magic key
 def add_counts(base_counts, fb_event):
