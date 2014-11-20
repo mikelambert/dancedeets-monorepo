@@ -803,7 +803,7 @@ add(DANCE_WRONG_STYLE, [
 ])
 
 # These are okay to see in event descriptions, but we don't want it to be in the event title, or it is too strong for us
-DANCE_WRONG_STYLE_TITLE_ONLY = token('DANCE_WRONG_STYLE_TITLE')
+DANCE_WRONG_STYLE_TITLE_ONLY = token('DANCE_WRONG_STYLE_TITLE_ONLY')
 add(DANCE_WRONG_STYLE_TITLE_ONLY, [
     # Sometimes used in studio name even though it's still a hiphop class:
     'ballroom',
