@@ -816,7 +816,7 @@ add(DANCE_WRONG_STYLE_TITLE_ONLY, [
 
 
 #TODO(lambert): we need to remove the empty CONNECTOR here, and probably spaces as well, and handle that in the rules? or just ensure this never gets applied except as part of rules
-CONNECTOR = token('CONNECTORS')
+CONNECTOR = token('CONNECTOR')
 add(CONNECTOR, [
     ' ?',
     ' di ',
@@ -846,7 +846,7 @@ add(WRONG_NUMBERED_LIST, [
     'ep',
 ])
 
-WRONG_AUDITION = token('WRONG_AUDITIONS')
+WRONG_AUDITION = token('WRONG_AUDITION')
 add(WRONG_AUDITION, [
     'sing(?:ers?)?',
     'singing',
@@ -856,7 +856,7 @@ add(WRONG_AUDITION, [
     'mike portoghese', # TODO(lambert): When we get bio removal for keyword matches, we can remove this one
 ])
 
-WRONG_BATTLE = token('WRONG_BATTLES')
+WRONG_BATTLE = token('WRONG_BATTLE')
 add(WRONG_BATTLE, [
     'talent',
     'beatbox',
@@ -874,7 +874,7 @@ add(WRONG_BATTLE, [
     'producer',
 ])
 
-WRONG_BATTLE_STYLE = token('WRONG_BATTLE_STYLES')
+WRONG_BATTLE_STYLE = token('WRONG_BATTLE_STYLE')
 add(WRONG_BATTLE_STYLE, [
     '(?:mc|emcee)\Whip\W?hop',
     'emcee',
