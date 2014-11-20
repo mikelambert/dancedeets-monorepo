@@ -209,9 +209,7 @@ add(AMBIGUOUS_DANCE_MUSIC, [
     'b\W?boy\w*', # 'bboyev' in slovak
 ])
 
-# hiphop dance. hiphop dans?
-DANCE = token('DANCE')
-add(DANCE, [
+legit_dance = [
     'street\W?jam',
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
@@ -299,9 +297,12 @@ add(DANCE, [
     'baile urbai?n\w+', # spanish urban dance
     'estilo\w* urbai?n\w+', # spanish urban styles
     "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)?",
-])
+]
+# hiphop dance. hiphop dans?
+DANCE = token('DANCE')
+add(DANCE, legit_dance)
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
-add(DANCE, [x+'u' for x in get(DANCE)])
+add(DANCE, [x+'u' for x in legit_dance])
 # TODO(lambert): Is this a safe one to add?
 # http://en.wikipedia.org/wiki/Slovak_declension
 # dance_keywords = dance_keywords + [x+'y' for x in dance_keywords] 
@@ -802,9 +803,8 @@ add(DANCE_WRONG_STYLE, [
 ])
 
 # These are okay to see in event descriptions, but we don't want it to be in the event title, or it is too strong for us
-DANCE_WRONG_STYLE_TITLE = token('DANCE_WRONG_STYLE_TITLE')
-add(DANCE_WRONG_STYLE_TITLE, get(DANCE_WRONG_STYLE))
-add(DANCE_WRONG_STYLE_TITLE, [
+DANCE_WRONG_STYLE_TITLE_ONLY = token('DANCE_WRONG_STYLE_TITLE')
+add(DANCE_WRONG_STYLE_TITLE_ONLY, [
     # Sometimes used in studio name even though it's still a hiphop class:
     'ballroom',
     'ballet',

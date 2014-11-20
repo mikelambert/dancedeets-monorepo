@@ -145,7 +145,7 @@ EXTENDED_CLASS = 'EXTENDED_CLASS'
 add(EXTENDED_CLASS, Any(keywords.CLASS, keywords.AMBIGUOUS_CLASS))
 
 FULL_JUDGE = 'FULL_JUDGE'
-add(FULL_JUDGE,Any(
+add(FULL_JUDGE, Any(
     keywords.JUDGE,
     commutative_connected(keywords.JUDGE, Any(
         keywords.DANCE,
@@ -162,3 +162,6 @@ add(FULL_JUDGE,Any(
 
 PERFORMANCE_PRACTICE = 'PERFORMANCE_PRACTICE'
 add(PERFORMANCE_PRACTICE, commutative_connected(keywords.DANCE, Any(keywords.PERFORMANCE, keywords.PRACTICE)))
+
+DANCE_WRONG_STYLE_TITLE = 'DANCE_WRONG_STYLE_TITLE'
+add(DANCE_WRONG_STYLE_TITLE, Any(keywords.DANCE_WRONG_STYLE, keywords.DANCE_WRONG_STYLE_TITLE_ONLY))
