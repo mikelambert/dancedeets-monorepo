@@ -53,10 +53,10 @@ def has_list_of_good_classes(classified_event):
     time_to_time = r'%s ?(?:to|do|до|til|till|a|-|[^\w,.]) ?%s' % (time, time)
 
     text = classified_event.search_text
-    club_only_matches = event_classifier.all_regexes['club_only_regex'][classified_event.boundaries].findall(text)
+    club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
     if len(club_only_matches) > 2:
         return False, 'too many club keywords: %s' % club_only_matches
-    title_wrong_style_matches = event_classifier.all_regexes['dance_wrong_style_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    title_wrong_style_matches = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
     if title_wrong_style_matches:
         return False, 'wrong style in the title: %s' % title_wrong_style_matches
     lines = text.split('\n')
@@ -95,8 +95,10 @@ def has_list_of_good_classes(classified_event):
         if not [x for x in sub_lines if re.search(time_with_minutes, x)]:
             continue
         for line in sub_lines:
+            proc_line = event_classifier.StringProcessor(line, classified_event.boundaries)
+            proc_line.tokenize(keywords.AMBIGUOUS_DANCE_MUSIC)
             dance_class_style_matches = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(line)
-            dance_and_music_matches = event_classifier.all_regexes['dance_and_music_regex'][classified_event.boundaries].findall(line)
+            dance_and_music_matches = proc_line.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
             manual_dancers = event_classifier.all_regexes['manual_dancers_regex'][classified_event.boundaries].findall(line)
             dance_wrong_style_matches = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(line)
             if (dance_class_style_matches or manual_dancers or dance_and_music_matches) and not dance_wrong_style_matches:
@@ -163,7 +165,6 @@ def is_battle(classified_event):
         return (False, 'not a dance event')
 
     search_text = classified_event.final_search_text
-
     has_sparse_keywords = classified_event.calc_inverse_keyword_density >= 5
     has_competitors = find_competitor_list(classified_event)
     if not has_competitors and has_sparse_keywords:
@@ -444,19 +445,19 @@ def is_bad_club(classified_event):
 
 
 def is_bad_wrong_dance(classified_event):
-    dance_and_music_matches = event_classifier.all_regexes['dance_and_music_regex'][classified_event.boundaries].findall(classified_event.search_text)
+    dance_and_music_matches = classified_event.processed_text.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
     real_dance_keywords = set(classified_event.real_dance_matches + dance_and_music_matches)
     manual_keywords = classified_event.manual_dance_keywords_matches
 
     trimmed_text = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].sub('', classified_event.search_text)
     trimmed_text = event_classifier.all_regexes['manual_dance_keywords_regex'][classified_event.boundaries].sub('', trimmed_text)
-    trimmed_text = event_classifier.all_regexes['dance_and_music_regex'][classified_event.boundaries].sub('', trimmed_text)
+    #trimmed_text = event_classifier.all_regexes['dance_and_music_regex'][classified_event.boundaries].sub('', trimmed_text)
 
     weak_classical_dance_keywords = keywords.get_regex(keywords.SEMI_BAD_DANCE)[classified_event.boundaries].findall(trimmed_text)
     strong_classical_dance_keywords = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(trimmed_text)
 
     has_house = keywords.get_regex(keywords.HOUSE)[classified_event.boundaries].findall(trimmed_text)
-    club_only_matches = event_classifier.all_regexes['club_only_regex'][classified_event.boundaries].findall(trimmed_text)
+    club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
 
 
     keyword_count = len(strong_classical_dance_keywords) + 0.5 * len(weak_classical_dance_keywords)

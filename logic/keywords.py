@@ -206,7 +206,6 @@ add(AMBIGUOUS_DANCE_MUSIC, [
     '90\W?s hip\W?hop',
     'vogue',
     u'フリースタイル', # japanese freestyle
-    'b\W?boy\w*', # 'bboyev' in slovak
 ])
 
 legit_dance = [
@@ -233,6 +232,7 @@ legit_dance = [
     "gettin[g']?\W?(?:lite|light)",
     "turfin[g']?", 'turf danc\w+', "flexin[g']?", "buckin[g']?", "jookin[g']?",
     'b\W?boy[sz]?', "b\W?boyin[g']?", 'b\W?girl[sz]?', "b\W?girlin[g']?", 'power\W?moves?', "footworkin[g']?",
+    'b\W?boy\w*', # 'bboyev' in slovak
     u'파워무브', # powermove korean
     'breakeuse', # french bgirl
     'footworks', # spanish footworks

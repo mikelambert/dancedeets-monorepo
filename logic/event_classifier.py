@@ -2,6 +2,7 @@
 
 import codecs
 import collections
+import itertools
 import logging
 import math
 try:
@@ -139,20 +140,13 @@ def build_regexes():
     all_regexes['good_capturing_keyword_regex'] = make_regexes(good_keywords, matching=True, wrapper='(?i)%s')
 
 
-all_regexes['dance_wrong_style_regex'] = keywords.get_regex(keywords.DANCE_WRONG_STYLE)
 all_regexes['judge_keywords_regex'] = keywords.get_regex(keywords.JUDGE)
 all_regexes['audition_regex'] = keywords.get_regex(keywords.AUDITION)
 all_regexes['battle_regex'] = keywords.get_regex(keywords.BATTLE, keywords.OBVIOUS_BATTLE)
 all_regexes['n_x_n_regex'] = keywords.get_regex(keywords.N_X_N)
 all_regexes['dance_wrong_style_title_regex'] = regex_keywords.make_regexes_raw(rules.get(rules.DANCE_WRONG_STYLE_TITLE).as_expanded_regex())
-all_regexes['dance_and_music_regex'] = keywords.get_regex(keywords.AMBIGUOUS_DANCE_MUSIC)
 all_regexes['class_regex'] = keywords.get_regex(keywords.CLASS)
-all_regexes['club_and_event_regex'] = keywords.get_regex(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST)
-all_regexes['easy_choreography_regex'] = keywords.get_regex(keywords.EASY_CHOREO)
-all_regexes['club_only_regex'] = keywords.get_regex(keywords.CLUB_ONLY)
 
-all_regexes['easy_dance_regex'] = keywords.get_regex(keywords.EASY_DANCE)
-all_regexes['easy_event_regex'] = keywords.get_regex(keywords.EASY_EVENT, keywords.EASY_BATTLE)
 all_regexes['dance_regex'] = regex_keywords.make_regexes_raw(rules.get(rules.GOOD_DANCE).as_expanded_regex())
 event_tokens =     [
     keywords.CLASS,
@@ -178,6 +172,11 @@ def get_relevant_text(fb_event):
     # use a separator here, so 'actors workshop' 'breaking boundaries...' doesn't match 'workshop breaking'
     search_text = (fb_event['info'].get('name', '') + ' . . . . ' + fb_event['info'].get('description', '')).lower()
     return search_text
+
+
+def _flatten(listOfLists):
+    "Flatten one level of nesting"
+    return list(itertools.chain.from_iterable(listOfLists))
 
 class StringProcessor(object):
     def __init__(self, text, match_on_word_boundaries):
@@ -210,8 +209,8 @@ class StringProcessor(object):
     def count_tokens(self, token):
         return len(self.token_originals[token])
 
-    def get_tokens(self, token):
-        return self.token_originals[token]
+    def get_tokens(self, *tokens):
+        return _flatten(self.token_originals[token] for token in tokens)
 
     def get_tokenized_text(self):
         return self.text
@@ -253,7 +252,10 @@ class ClassifiedEvent(object):
         # Then we apply a bunch of our regular keyword rules
         # Not CONNECTOR, not PREPROCESS_REMOVAL.
         # There are some overlapping keywords in here that I need to fix. Maybe can automate detection with a master-replace-regex that looks in these, to find what to replace with (and errors on multiple)
+        # But in the meantime, let's start to figure out a rough ordering for them. dance at the bottom, good-instance-of-bad-club hack at the top, etc. Hopefully the middle tier can be large and order-irrelevant.
         desired_keywords = [
+            keywords.GOOD_INSTANCE_OF_BAD_CLUB,
+
             keywords.AMBIGUOUS_CLASS,
             keywords.AMBIGUOUS_DANCE_MUSIC,
             keywords.AMBIGUOUS_WRONG_STYLE,
@@ -268,16 +270,9 @@ class ClassifiedEvent(object):
             keywords.CYPHER,
             keywords.DANCE,
             keywords.DANCE_WRONG_STYLE,
-            keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
-            keywords.EASY_BATTLE,
-            keywords.EASY_CHOREO,
-            keywords.EASY_DANCE,
-            keywords.EASY_EVENT,
-            keywords.EASY_VOGUE,
             keywords.EVENT,
             keywords.FORMAT_TYPE,
             keywords.FREESTYLE,
-            keywords.GOOD_INSTANCE_OF_BAD_CLUB,
             keywords.HOUSE,
             keywords.JUDGE,
             keywords.KING,
@@ -287,13 +282,20 @@ class ClassifiedEvent(object):
             keywords.OTHER_SHOW,
             keywords.PERFORMANCE,
             keywords.PRACTICE,
-            keywords.SEMI_BAD_DANCE,
             keywords.STREET,
             keywords.VOGUE,
             keywords.WRONG_AUDITION,
             keywords.WRONG_BATTLE,
             keywords.WRONG_BATTLE_STYLE,
             keywords.WRONG_NUMBERED_LIST,
+
+            #keywords.SEMI_BAD_DANCE,
+
+            keywords.EASY_BATTLE,
+            keywords.EASY_CHOREO,
+            keywords.EASY_DANCE,
+            keywords.EASY_EVENT,
+            keywords.EASY_VOGUE,
         ]
         for keyword in desired_keywords:
             self.processed_text.tokenize(keyword)
@@ -303,6 +305,9 @@ class ClassifiedEvent(object):
         self.final_title = self.processed_title.get_tokenized_text()
         title = self.final_title
 
+        self.processed_title.tokenize(keywords.AMBIGUOUS_DANCE_MUSIC)
+        #keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
+
 
         #if not all_regexes['good_keyword_regex'][idx].search(search_text):
         #    self.dance_event = False
@@ -311,8 +316,8 @@ class ClassifiedEvent(object):
         b = time.time()
         self.manual_dance_keywords_matches = all_regexes['manual_dance_keywords_regex'][idx].findall(search_text)
         self.times['manual_regex'] = time.time() - b
-        easy_dance_matches = all_regexes['easy_dance_regex'][idx].findall(search_text)
-        easy_event_matches = all_regexes['easy_event_regex'][idx].findall(search_text)
+        easy_dance_matches = self.processed_text.get_tokens(keywords.EASY_DANCE)
+        easy_event_matches = self.processed_text.get_tokens(keywords.EASY_EVENT, keywords.EASY_BATTLE)
         self.real_dance_matches = all_regexes['dance_regex'][idx].findall(search_text)
         if all_regexes['french'][idx].search(search_text):
             event_matches = all_regexes['french_event_regex'][idx].findall(search_text)
@@ -320,18 +325,18 @@ class ClassifiedEvent(object):
             event_matches = all_regexes['italian_event_regex'][idx].findall(search_text)
         else:
             event_matches = all_regexes['event_regex'][idx].findall(search_text)
-        dance_wrong_style_matches = all_regexes['dance_wrong_style_regex'][idx].findall(search_text)
-        dance_and_music_matches = all_regexes['dance_and_music_regex'][idx].findall(search_text)
-        club_and_event_matches = all_regexes['club_and_event_regex'][idx].findall(search_text)
-        easy_choreography_matches = all_regexes['easy_choreography_regex'][idx].findall(search_text)
-        club_only_matches = all_regexes['club_only_regex'][idx].findall(search_text)
+        dance_wrong_style_matches = self.processed_text.get_tokens(keywords.DANCE_WRONG_STYLE)
+        dance_and_music_matches = self.processed_text.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
+        club_and_event_matches = self.processed_text.get_tokens(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST)
+        easy_choreography_matches = self.processed_text.get_tokens(keywords.EASY_CHOREO)
+        club_only_matches = self.processed_text.get_tokens(keywords.CLUB_ONLY)
         self.times['all_regexes'] = time.time() - a
 
         self.found_dance_matches = self.real_dance_matches + easy_dance_matches + dance_and_music_matches + self.manual_dance_keywords_matches + easy_choreography_matches
         self.found_event_matches = event_matches + easy_event_matches + club_and_event_matches
         self.found_wrong_matches = dance_wrong_style_matches + club_only_matches
 
-        title_wrong_style_matches = all_regexes['dance_wrong_style_regex'][idx].findall(title)
+        title_wrong_style_matches = all_regexes['dance_wrong_style_title_regex'][idx].findall(title)
         title_good_matches = all_regexes['good_keyword_regex'][idx].findall(title)
             
         combined_matches = self.found_dance_matches + self.found_event_matches
@@ -358,7 +363,7 @@ class ClassifiedEvent(object):
         # If the title has a bad-style and no good-styles, mark it bad
         elif (all_regexes['dance_wrong_style_title_regex'][idx].search(title) and
             not (
-                all_regexes['dance_and_music_regex'][idx].search(title) or
+                self.processed_title.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC) or
                 self.manual_dance_keywords_matches or
                 self.real_dance_matches)): # these two are implied by the above, but do it here just in case future clause re-ordering occurs
             self.dance_event = False
