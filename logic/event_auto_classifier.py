@@ -35,8 +35,6 @@ start_judge_keywords_regex = regexes_for_rule(rules.FULL_JUDGE, wrapper='^[^\w\n
 performance_practice_regex = regexes_for_rule(rules.PERFORMANCE_PRACTICE)
 
 non_dance_regex = keywords.get_regex(keywords.BAD_COMPETITION)
-vogue_regex = keywords.get_regex(keywords.VOGUE)
-easy_vogue_regex = keywords.get_regex(keywords.EASY_VOGUE)
 
 
 def has_list_of_good_classes(classified_event):
@@ -119,7 +117,7 @@ def find_competitor_list(classified_event):
             return False # good list of times! workshops, etc! performance/shows/club-set times!
         if len(event_classifier.all_regexes['event_regex'][classified_event.boundaries].findall(numbered_list)) > num_lines / 8:
             return False
-        if keywords.get_regex(keywords.WRONG_NUMBERED_LIST)[classified_event.boundaries].findall(text):
+        if classified_event.processed_text.get_tokens(keywords.WRONG_NUMBERED_LIST):
             return False
         if num_lines > 10:
             return True
@@ -214,7 +212,7 @@ def is_audition(classified_event):
     search_text = classified_event.final_search_text
     has_good_dance = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(search_text)
     has_wrong_style = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(search_text)
-    has_wrong_audition = keywords.get_regex(keywords.WRONG_AUDITION)[classified_event.boundaries].findall(search_text)
+    has_wrong_audition = classified_event.processed_text.get_tokens(keywords.WRONG_AUDITION)
 
     if has_audition and (has_good_dance_title or has_extended_good_crew_title):
         return (True, 'has audition with strong title')
@@ -327,9 +325,9 @@ def is_workshop(classified_event):
 
 
 def is_vogue_event(classified_event):
-    text = classified_event.search_text
-    vogue_matches = set(vogue_regex[classified_event.boundaries].findall(text))
-    easy_vogue_matches = set(easy_vogue_regex[classified_event.boundaries].findall(text))
+    # We use sets here to get unique keywords
+    vogue_matches = set(classified_event.processed_text.get_tokens(keywords.VOGUE))
+    easy_vogue_matches = set(classified_event.processed_text.get_tokens(keywords.EASY_VOGUE))
     match_count = len(vogue_matches) + 0.33 * len(easy_vogue_matches)
     if match_count > 2:
         return True, 'has vogue keywords: %s' % (vogue_matches.union(easy_vogue_matches))
@@ -460,7 +458,7 @@ def is_bad_wrong_dance(classified_event):
     weak_classical_dance_keywords = keywords.get_regex(keywords.SEMI_BAD_DANCE)[classified_event.boundaries].findall(trimmed_text)
     strong_classical_dance_keywords = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(trimmed_text)
 
-    has_house = keywords.get_regex(keywords.HOUSE)[classified_event.boundaries].findall(trimmed_text)
+    has_house = classified_event.processed_text.get_tokens(keywords.HOUSE)
     club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
 
 
