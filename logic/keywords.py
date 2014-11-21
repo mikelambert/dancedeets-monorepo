@@ -892,8 +892,8 @@ add(FORMAT_TYPE, [
     u'クルー', # japanese crew
 ])
 
-BAD_COMPETITION = token('BAD_COMPETITION')
-add(BAD_COMPETITION, [
+BAD_COMPETITION_TITLE_ONLY = token('BAD_COMPETITION_TITLE_ONLY')
+add(BAD_COMPETITION_TITLE_ONLY, [
     'video',
     'fundrais\w+',
     'likes?',

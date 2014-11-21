@@ -34,9 +34,6 @@ extended_class_regex = regexes_for_rule(rules.EXTENDED_CLASS)
 start_judge_keywords_regex = regexes_for_rule(rules.FULL_JUDGE, wrapper='^[^\w\n]*%s', flags=re.MULTILINE)
 performance_practice_regex = regexes_for_rule(rules.PERFORMANCE_PRACTICE)
 
-non_dance_regex = keywords.get_regex(keywords.BAD_COMPETITION)
-
-
 def has_list_of_good_classes(classified_event):
     if not classified_event.is_dance_event():
         return (False, 'not a dance event')
@@ -154,7 +151,7 @@ def is_any_battle(classified_event):
     no_wrong_battles_search_text = wrong_battles_regex[classified_event.boundaries].sub('', search_text)
     has_dance_battle = (
         dance_battles_regex[classified_event.boundaries].search(no_wrong_battles_search_text) and
-        not non_dance_regex[classified_event.boundaries].search(classified_event.final_title)
+        not classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     )
     return has_competitors or has_start_judges or has_n_x_n_battle or has_dance_battle
 
@@ -175,7 +172,7 @@ def is_battle(classified_event):
     has_n_x_n = classified_event.processed_text.count_tokens(keywords.N_X_N)
     has_battle = classified_event.processed_text.count_tokens(keywords.BATTLE)
     has_wrong_battle = wrong_battles_regex[classified_event.boundaries].findall(search_text)
-    is_wrong_competition = non_dance_regex[classified_event.boundaries].findall(classified_event.final_title)
+    is_wrong_competition = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     is_wrong_style_battle_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_many_real_dance_keywords = len(set(classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches)) > 1
     has_start_judge = start_judge_keywords_regex[classified_event.boundaries].findall(search_text)
@@ -293,7 +290,7 @@ def is_audition(classified_event):
 def is_workshop(classified_event):
     trimmed_title = wrong_classes_regex[classified_event.boundaries].sub('', classified_event.final_title)
     has_class_title = extended_class_regex[classified_event.boundaries].findall(trimmed_title)
-    has_non_dance_event_title = non_dance_regex[classified_event.boundaries].findall(classified_event.final_title)
+    has_non_dance_event_title = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     has_good_dance_title = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_extended_good_crew_title = event_classifier.all_regexes['extended_manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_wrong_style_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
@@ -363,7 +360,7 @@ def has_standalone_keywords(classified_event):
     return False, 'no good keywords on lines by themselves'
 
 def has_good_event_title(classified_event):
-    non_dance_title_keywords = non_dance_regex[classified_event.boundaries].findall(classified_event.final_title)
+    non_dance_title_keywords = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     wrong_battles_title = wrong_battles_regex[classified_event.boundaries].findall(classified_event.final_title)
     title_keywords = event_classifier.all_regexes['competitions_regex'][classified_event.boundaries].findall(classified_event.final_title)
     if title_keywords and not non_dance_title_keywords and not wrong_battles_title:
@@ -371,7 +368,7 @@ def has_good_event_title(classified_event):
     return False, 'no good event title'
 
 def has_good_djs_title(classified_event):
-    non_dance_title_keywords = non_dance_regex[classified_event.boundaries].findall(classified_event.final_title)
+    non_dance_title_keywords = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     wrong_battles_title = wrong_battles_regex[classified_event.boundaries].findall(classified_event.final_title)
     title_keywords = event_classifier.all_regexes['good_djs_regex'][classified_event.boundaries].findall(classified_event.final_title)
 

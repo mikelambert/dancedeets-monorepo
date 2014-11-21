@@ -262,7 +262,6 @@ class ClassifiedEvent(object):
             keywords.AMBIGUOUS_DANCE_MUSIC,
             keywords.AMBIGUOUS_WRONG_STYLE,
             keywords.BAD_CLUB,
-            keywords.BAD_COMPETITION,
             keywords.BONNIE_AND_CLYDE,
             keywords.CLUB_ONLY,
             keywords.CONTEST,
@@ -302,6 +301,12 @@ class ClassifiedEvent(object):
 
         for keyword in desired_keywords:
             self.processed_title.tokenize(keyword)
+        for keyword in [
+            keywords.BAD_COMPETITION_TITLE_ONLY,
+            keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
+        ]:
+            self.processed_title.tokenize(keyword)
+
 
 
         #if not all_regexes['good_keyword_regex'][idx].search(search_text):
