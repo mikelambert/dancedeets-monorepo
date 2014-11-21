@@ -139,13 +139,7 @@ def build_regexes():
     all_regexes['good_keyword_regex'] = make_regexes(good_keywords, wrapper='(?i)%s')
     all_regexes['good_capturing_keyword_regex'] = make_regexes(good_keywords, matching=True, wrapper='(?i)%s')
 
-
-all_regexes['judge_keywords_regex'] = keywords.get_regex(keywords.JUDGE)
-all_regexes['audition_regex'] = keywords.get_regex(keywords.AUDITION)
-all_regexes['battle_regex'] = keywords.get_regex(keywords.BATTLE, keywords.OBVIOUS_BATTLE)
-all_regexes['n_x_n_regex'] = keywords.get_regex(keywords.N_X_N)
 all_regexes['dance_wrong_style_title_regex'] = regex_keywords.make_regexes_raw(rules.get(rules.DANCE_WRONG_STYLE_TITLE).as_expanded_regex())
-all_regexes['class_regex'] = keywords.get_regex(keywords.CLASS)
 
 all_regexes['dance_regex'] = regex_keywords.make_regexes_raw(rules.get(rules.GOOD_DANCE).as_expanded_regex())
 event_tokens =     [
@@ -305,9 +299,8 @@ class ClassifiedEvent(object):
         self.final_title = self.processed_title.get_tokenized_text()
         title = self.final_title
 
-        self.processed_title.tokenize(keywords.AMBIGUOUS_DANCE_MUSIC)
-        self.processed_title.tokenize(keywords.DANCE_WRONG_STYLE)
-        #keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
+        for keyword in desired_keywords:
+            self.processed_title.tokenize(keyword)
 
 
         #if not all_regexes['good_keyword_regex'][idx].search(search_text):
@@ -346,7 +339,7 @@ class ClassifiedEvent(object):
         if not fraction_matched:
             self.calc_inverse_keyword_density = 100
         else:
-            self.calc_inverse_keyword_density = -int(math.log(fraction_matched, 2))
+            self.calc_inverse_keyword_density = -math.log(fraction_matched, 2)
 
         #strong = 0
         #for line in search_text.split('\n'):

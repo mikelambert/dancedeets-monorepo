@@ -134,6 +134,9 @@ add(DANCE_BATTLE, Any(
     commutative_connected(ambiguous_dance, ambiguous_battle),
 ))
 
+BATTLE = 'BATTLE'
+add(BATTLE, Any(keywords.BATTLE, keywords.OBVIOUS_BATTLE))
+
 GOOD_DANCE_CLASS = 'GOOD_DANCE_CLASS'
 add(GOOD_DANCE_CLASS, Any(
     commutative_connected(good_dance, keywords.CLASS),

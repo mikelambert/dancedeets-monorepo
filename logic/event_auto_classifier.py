@@ -150,8 +150,8 @@ def is_any_battle(classified_event):
     has_competitors = find_competitor_list(classified_event)
     has_start_judges = start_judge_keywords_regex[classified_event.boundaries].search(search_text)
     has_n_x_n_battle = (
-        event_classifier.all_regexes['battle_regex'][classified_event.boundaries].search(search_text) and
-        event_classifier.all_regexes['n_x_n_regex'][classified_event.boundaries].search(search_text)
+        classified_event.processed_text.count_tokens(keywords.BATTLE) and
+        classified_event.processed_text.count_tokens(keywords.N_X_N)
     )
     no_wrong_battles_search_text = wrong_battles_regex[classified_event.boundaries].sub('', search_text)
     has_dance_battle = (
@@ -174,8 +174,8 @@ def is_battle(classified_event):
     has_dance_battle = dance_battles_regex[classified_event.boundaries].findall(no_wrong_battles_search_text)
     has_good_dance_battle = good_dance_battles_regex[classified_event.boundaries].findall(no_wrong_battles_search_text)
 
-    has_n_x_n = event_classifier.all_regexes['n_x_n_regex'][classified_event.boundaries].findall(search_text)
-    has_battle = event_classifier.all_regexes['battle_regex'][classified_event.boundaries].findall(search_text)
+    has_n_x_n = classified_event.processed_text.count_tokens(keywords.N_X_N)
+    has_battle = classified_event.processed_text.count_tokens(keywords.BATTLE)
     has_wrong_battle = wrong_battles_regex[classified_event.boundaries].findall(search_text)
     is_wrong_competition = non_dance_regex[classified_event.boundaries].findall(classified_event.final_title)
     is_wrong_style_battle_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
@@ -202,7 +202,7 @@ def is_audition(classified_event):
     if not classified_event.is_dance_event():
         return (False, 'not a dance event')
 
-    has_audition = event_classifier.all_regexes['audition_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_audition = classified_event.processed_title.get_tokens(keywords.AUDITION)
     has_good_dance_title = event_classifier.all_regexes['dance_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_extended_good_crew_title = event_classifier.all_regexes['extended_manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
 
