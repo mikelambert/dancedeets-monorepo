@@ -709,21 +709,9 @@ add(JUDGE, [
     u'ジャッジ', # japanese judges
 ])
 
-
-
-FRENCH_EVENT = token('FRENCH_EVENT')
-add(FRENCH_EVENT, [
-    'spectacle',
-    'stage',
-])
-
-ITALIAN_EVENT = token('ITALIAN_EVENT')
-add(ITALIAN_EVENT, [
-    'stage',
-])
-
 AMBIGUOUS_CLASS = token('AMBIGUOUS_CLASS')
 add(AMBIGUOUS_CLASS, [
+    'spectacle',
     'stage',
     'stages',
 ])

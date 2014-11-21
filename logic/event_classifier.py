@@ -152,8 +152,8 @@ event_tokens =     [
     keywords.JUDGE
 ]
 all_regexes['event_regex'] = keywords.get_regex(*event_tokens)
-all_regexes['french_event_regex'] = keywords.get_regex(keywords.FRENCH_EVENT, *event_tokens)
-all_regexes['italian_event_regex'] = keywords.get_regex(keywords.ITALIAN_EVENT, *event_tokens)
+all_regexes['french_event_regex'] = keywords.get_regex(keywords.AMBIGUOUS_CLASS, *event_tokens)
+all_regexes['italian_event_regex'] = keywords.get_regex(keywords.AMBIGUOUS_CLASS, *event_tokens)
 
 all_regexes['bad_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.CLUB_ONLY, keywords.DANCE_WRONG_STYLE), matching=True)
 
@@ -250,29 +250,30 @@ class ClassifiedEvent(object):
         desired_keywords = [
             keywords.GOOD_INSTANCE_OF_BAD_CLUB,
 
+            keywords.CLASS,
+            keywords.N_X_N,
+            keywords.BATTLE,
+            keywords.OBVIOUS_BATTLE,
+            keywords.AUDITION,
+            keywords.CYPHER,
+            keywords.JUDGE,
+
             keywords.AMBIGUOUS_CLASS,
             keywords.AMBIGUOUS_DANCE_MUSIC,
             keywords.AMBIGUOUS_WRONG_STYLE,
-            keywords.AUDITION,
             keywords.BAD_CLUB,
             keywords.BAD_COMPETITION,
-            keywords.BATTLE,
             keywords.BONNIE_AND_CLYDE,
-            keywords.CLASS,
             keywords.CLUB_ONLY,
             keywords.CONTEST,
-            keywords.CYPHER,
             keywords.DANCE,
             keywords.DANCE_WRONG_STYLE,
             keywords.EVENT,
             keywords.FORMAT_TYPE,
             keywords.FREESTYLE,
             keywords.HOUSE,
-            keywords.JUDGE,
             keywords.KING,
             keywords.KING_OF_THE,
-            keywords.N_X_N,
-            keywords.OBVIOUS_BATTLE,
             keywords.OTHER_SHOW,
             keywords.PERFORMANCE,
             keywords.PRACTICE,
@@ -313,12 +314,19 @@ class ClassifiedEvent(object):
         easy_dance_matches = self.processed_text.get_tokens(keywords.EASY_DANCE)
         easy_event_matches = self.processed_text.get_tokens(keywords.EASY_EVENT, keywords.EASY_BATTLE)
         self.real_dance_matches = all_regexes['dance_regex'][idx].findall(search_text)
-        if all_regexes['french'][idx].search(search_text):
-            event_matches = all_regexes['french_event_regex'][idx].findall(search_text)
-        elif all_regexes['italian'][idx].search(search_text):
-            event_matches = all_regexes['italian_event_regex'][idx].findall(search_text)
+        event_tokens =     [
+            keywords.CLASS,
+            keywords.N_X_N,
+            keywords.BATTLE,
+            keywords.OBVIOUS_BATTLE,
+            keywords.AUDITION,
+            keywords.CYPHER,
+            keywords.JUDGE,
+        ]
+        if all_regexes['french'][idx].search(search_text) or all_regexes['italian'][idx].search(search_text):
+            event_matches = self.processed_text.get_tokens(keywords.AMBIGUOUS_CLASS, *event_tokens)
         else:
-            event_matches = all_regexes['event_regex'][idx].findall(search_text)
+            event_matches = self.processed_text.get_tokens(*event_tokens)
         dance_wrong_style_matches = self.processed_text.get_tokens(keywords.DANCE_WRONG_STYLE)
         dance_and_music_matches = self.processed_text.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
         club_and_event_matches = self.processed_text.get_tokens(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST)
@@ -333,7 +341,8 @@ class ClassifiedEvent(object):
         title_wrong_style_matches = all_regexes['dance_wrong_style_title_regex'][idx].findall(title)
         title_good_matches = all_regexes['good_keyword_regex'][idx].findall(title)
             
-        combined_matches = self.found_dance_matches + self.found_event_matches
+        combined_matches_string = ' '.join(self.found_dance_matches + self.found_event_matches)
+        combined_matches = re.split(r'\W+', combined_matches_string)
         words = re.split(r'\W+', re.sub(r'\bhttp.*?\s', '', search_text))
         fraction_matched = 1.0 * len(combined_matches) / len(words)
         if not fraction_matched:

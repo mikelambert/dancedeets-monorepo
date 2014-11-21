@@ -182,6 +182,10 @@ def is_battle(classified_event):
     has_many_real_dance_keywords = len(set(classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches)) > 1
     has_start_judge = start_judge_keywords_regex[classified_event.boundaries].findall(search_text)
 
+    #print has_dance_battle
+    #print is_wrong_competition
+    #print is_wrong_style_battle_title
+    #print has_wrong_battle
     if not has_good_dance_battle and not (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches):
         return (False, 'no strong dance keywords')
 
