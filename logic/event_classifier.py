@@ -306,6 +306,7 @@ class ClassifiedEvent(object):
         title = self.final_title
 
         self.processed_title.tokenize(keywords.AMBIGUOUS_DANCE_MUSIC)
+        self.processed_title.tokenize(keywords.DANCE_WRONG_STYLE)
         #keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
 
 

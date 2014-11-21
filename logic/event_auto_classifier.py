@@ -56,7 +56,7 @@ def has_list_of_good_classes(classified_event):
     club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
     if len(club_only_matches) > 2:
         return False, 'too many club keywords: %s' % club_only_matches
-    title_wrong_style_matches = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    title_wrong_style_matches = classified_event.processed_title.get_tokens(keywords.DANCE_WRONG_STYLE)
     if title_wrong_style_matches:
         return False, 'wrong style in the title: %s' % title_wrong_style_matches
     lines = text.split('\n')
@@ -115,7 +115,7 @@ def find_competitor_list(classified_event):
     if results:
         numbered_list = results.group(0)
         num_lines = numbered_list.count('\n')
-        if len(re.findall(r'\d ?[.:h] ?\d\d|am|pm', numbered_list)) > num_lines / 4:
+        if len(re.findall(r'\d ?[.:h] ?\d\d|\bam\b|\bpm\b', numbered_list)) > num_lines / 4:
             return False # good list of times! workshops, etc! performance/shows/club-set times!
         if len(event_classifier.all_regexes['event_regex'][classified_event.boundaries].findall(numbered_list)) > num_lines / 8:
             return False
