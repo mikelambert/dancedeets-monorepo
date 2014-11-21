@@ -165,7 +165,7 @@ def is_battle(classified_event):
         return (False, 'not a dance event')
 
     search_text = classified_event.final_search_text
-    has_sparse_keywords = classified_event.calc_inverse_keyword_density >= 5
+    has_sparse_keywords = classified_event.calc_inverse_keyword_density >= 5.2
     has_competitors = find_competitor_list(classified_event)
     if not has_competitors and has_sparse_keywords:
         return (False, 'relevant keywords too sparse')
