@@ -305,12 +305,23 @@ def is_workshop(classified_event):
 
     trimmed_text = classified_event.processed_text.delete_with_rule(rules.WRONG_CLASS)
     has_good_dance_class = trimmed_text.find_with_rule(rules.GOOD_DANCE_CLASS)
-    trimmed_search_text = trimmed_text.get_tokenized_text()
     has_good_dance = classified_event.processed_text.find_with_rule(rules.GOOD_DANCE)
     has_wrong_style = classified_event.processed_text.find_with_rule(rules.DANCE_WRONG_STYLE_TITLE)
 
-    has_good_crew = event_classifier.all_regexes['manual_dancers_regex'][classified_event.boundaries].findall(trimmed_search_text)
+    has_good_crew = classified_event.processed_text.get_tokens(event_classifier.manual_dancer_keyword)
 
+    #print has_class_title
+    #print has_good_dance_title
+    #print has_extended_good_crew_title
+    #print has_wrong_style_title
+
+    #print classified_event.final_search_text
+    #print classified_event.processed_text.get_tokenized_text()
+    #print ''
+    #print has_class_title
+    #print has_wrong_style
+    #print has_good_dance
+    #print has_good_crew
     if has_class_title and (has_good_dance_title or has_extended_good_crew_title) and not has_wrong_style_title:
         return (True, 'has class with strong class-title: %s %s' % (has_class_title, (has_good_dance_title or has_extended_good_crew_title)))
     elif classified_event.is_dance_event() and has_good_dance_title and has_extended_good_crew_title and not has_wrong_style_title and not has_non_dance_event_title:

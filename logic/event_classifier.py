@@ -78,10 +78,14 @@ dependent_manual_dance_keywords = []
 manual_dancers = []
 dependent_manual_dancers = []
 
+manual_dancer_keyword = None
+manual_dance_keyword = None
+
 def build_regexes():
     global manual_keywords
     global manual_dance_keywords, dependent_manual_dance_keywords
     global manual_dancers, dependent_manual_dancers
+    global manual_dancer_keyword, manual_dance_keyword
     if 'good_capturing_keyword_regex' in all_regexes:
         return
 
@@ -98,6 +102,9 @@ def build_regexes():
     manual_keywords['manual_dancers'] = [None, None]
     manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD] = manual_dancers
     manual_keywords['manual_dancers'][DEPENDENT_KEYWORD] = dependent_manual_dancers
+    # TODO: rename, put in a useful place, etc
+    manual_dancer_keyword = keywords.token('MANUAL_DANCER')
+    keywords.add(manual_dancer_keyword, manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD])
 
     manual_dance_keywords = manual_dancers[:]
     dependent_manual_dance_keywords = dependent_manual_dancers[:]
@@ -107,6 +114,8 @@ def build_regexes():
     manual_keywords['manual_dance_keywords'] = [None, None]
     manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD] = manual_dance_keywords
     manual_keywords['manual_dance_keywords'][DEPENDENT_KEYWORD] = dependent_manual_dance_keywords
+    #manual_dance_keyword = keywords.token('MANUAL_DANCE')
+    #keywords.add(manual_dance_keyword, manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD])
 
     for keyword, x in manual_keywords.iteritems():
         if x[INDEPENDENT_KEYWORD]:
@@ -192,7 +201,7 @@ class StringProcessor(object):
             matched_text = match.group(0)
             self.token_originals[token].append(matched_text)
             return token.replace_string()
-        self.text = keywords.get_regex(token)[self.match_on_word_boundaries].sub(replace_with, self.text)
+        self.text = keywords.get_regex(token)[0].sub(replace_with, self.text)
 
     def count_tokens(self, token):
         return len(self.token_originals[token])
@@ -251,6 +260,7 @@ class ClassifiedEvent(object):
         # There are some overlapping keywords in here that I need to fix. Maybe can automate detection with a master-replace-regex that looks in these, to find what to replace with (and errors on multiple)
         # But in the meantime, let's start to figure out a rough ordering for them. dance at the bottom, good-instance-of-bad-club hack at the top, etc. Hopefully the middle tier can be large and order-irrelevant.
         desired_keywords = [
+            manual_dancer_keyword,
             keywords.GOOD_INSTANCE_OF_BAD_CLUB,
 
             keywords.CLASS,
