@@ -114,7 +114,7 @@ add(DANCE_STYLE, Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.HO
 
 # TODO: make sure this doesn't match... 'mc hiphop contest'
 GOOD_DANCE_BATTLE = 'GOOD_DANCE_BATTLE'
-good_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.HOUSE)
+good_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, get(GOOD_DANCE), keywords.HOUSE)
 ambiguous_dance = Any(keywords.EASY_DANCE, keywords.EASY_CHOREO)
 good_battle = Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)
 ambiguous_battle = Any(keywords.EASY_BATTLE)
@@ -151,7 +151,7 @@ FULL_JUDGE = 'FULL_JUDGE'
 add(FULL_JUDGE, Any(
     keywords.JUDGE,
     commutative_connected(keywords.JUDGE, Any(
-        keywords.DANCE,
+        get(GOOD_DANCE),
         keywords.EASY_DANCE,
         keywords.AMBIGUOUS_DANCE_MUSIC,
         keywords.HOUSE,
@@ -164,7 +164,23 @@ add(FULL_JUDGE, Any(
 # TODO(lambert): Maybe add a special RegexRule that I can fill with '^[^\w\n]*', and encapsulate that here instead of client code
 
 PERFORMANCE_PRACTICE = 'PERFORMANCE_PRACTICE'
-add(PERFORMANCE_PRACTICE, commutative_connected(keywords.DANCE, Any(keywords.PERFORMANCE, keywords.PRACTICE)))
+add(PERFORMANCE_PRACTICE, commutative_connected(get(GOOD_DANCE), Any(keywords.PERFORMANCE, keywords.PRACTICE)))
 
 DANCE_WRONG_STYLE_TITLE = 'DANCE_WRONG_STYLE_TITLE'
 add(DANCE_WRONG_STYLE_TITLE, Any(keywords.DANCE_WRONG_STYLE, keywords.DANCE_WRONG_STYLE_TITLE_ONLY))
+
+event_keywords = [
+    keywords.CLASS,
+    keywords.N_X_N,
+    keywords.BATTLE,
+    keywords.OBVIOUS_BATTLE,
+    keywords.AUDITION,
+    keywords.CYPHER,
+    keywords.JUDGE,
+]
+
+EVENT = 'EVENT'
+add(EVENT, Any(*event_keywords))
+
+EVENT_WITH_ROMANCE_EVENT = 'EVENT_WITH_ROMANCE_EVENT'
+add(EVENT_WITH_ROMANCE_EVENT, Any(keywords.AMBIGUOUS_CLASS, *event_keywords))

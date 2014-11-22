@@ -142,19 +142,6 @@ def build_regexes():
 all_regexes['dance_wrong_style_title_regex'] = regex_keywords.make_regexes_raw(rules.get(rules.DANCE_WRONG_STYLE_TITLE).as_expanded_regex())
 
 all_regexes['dance_regex'] = regex_keywords.make_regexes_raw(rules.get(rules.GOOD_DANCE).as_expanded_regex())
-event_tokens =     [
-    keywords.CLASS,
-    keywords.N_X_N,
-    keywords.BATTLE,
-    keywords.OBVIOUS_BATTLE,
-    keywords.AUDITION,
-    keywords.CYPHER,
-    keywords.JUDGE
-]
-all_regexes['event_regex'] = keywords.get_regex(*event_tokens)
-all_regexes['french_event_regex'] = keywords.get_regex(keywords.AMBIGUOUS_CLASS, *event_tokens)
-all_regexes['italian_event_regex'] = keywords.get_regex(keywords.AMBIGUOUS_CLASS, *event_tokens)
-
 all_regexes['bad_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.CLUB_ONLY, keywords.DANCE_WRONG_STYLE), matching=True)
 
 all_regexes['italian'] = make_regexes(['di', 'i', 'e', 'con'])
@@ -171,6 +158,13 @@ def get_relevant_text(fb_event):
 def _flatten(listOfLists):
     "Flatten one level of nesting"
     return list(itertools.chain.from_iterable(listOfLists))
+
+_rule_regexes = {}
+def get_rule_regex(rule, **kwargs):
+    key = (rule, tuple(sorted(kwargs.items())))
+    if key not in _rule_regexes:
+        _rule_regexes[key] = regex_keywords.make_regexes_raw(rules.get(rule).as_token_regex(), **kwargs)
+    return _rule_regexes[key]
 
 class StringProcessor(object):
     def __init__(self, text, match_on_word_boundaries):
@@ -208,6 +202,15 @@ class StringProcessor(object):
 
     def get_tokenized_text(self):
         return self.text
+
+    def find_with_rule(self, rule, **kwargs):
+        regex = get_rule_regex(rule, **kwargs)
+        return regex[self.match_on_word_boundaries].findall(self.text)
+
+    def delete_with_rule(self, rule, **kwargs):
+        regex = get_rule_regex(rule, **kwargs)
+        trimmed_text = regex[self.match_on_word_boundaries].sub('', self.text)
+        return StringProcessor(trimmed_text, self.match_on_word_boundaries)
 
 class ClassifiedEvent(object):
     def __init__(self, fb_event, language=None):
@@ -319,19 +322,10 @@ class ClassifiedEvent(object):
         easy_dance_matches = self.processed_text.get_tokens(keywords.EASY_DANCE)
         easy_event_matches = self.processed_text.get_tokens(keywords.EASY_EVENT, keywords.EASY_BATTLE)
         self.real_dance_matches = all_regexes['dance_regex'][idx].findall(search_text)
-        event_tokens =     [
-            keywords.CLASS,
-            keywords.N_X_N,
-            keywords.BATTLE,
-            keywords.OBVIOUS_BATTLE,
-            keywords.AUDITION,
-            keywords.CYPHER,
-            keywords.JUDGE,
-        ]
         if all_regexes['french'][idx].search(search_text) or all_regexes['italian'][idx].search(search_text):
-            event_matches = self.processed_text.get_tokens(keywords.AMBIGUOUS_CLASS, *event_tokens)
+            event_matches = self.processed_text.find_with_rule(rules.EVENT_WITH_ROMANCE_EVENT)
         else:
-            event_matches = self.processed_text.get_tokens(*event_tokens)
+            event_matches = self.processed_text.find_with_rule(rules.EVENT)
         dance_wrong_style_matches = self.processed_text.get_tokens(keywords.DANCE_WRONG_STYLE)
         dance_and_music_matches = self.processed_text.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
         club_and_event_matches = self.processed_text.get_tokens(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST)

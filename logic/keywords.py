@@ -390,7 +390,6 @@ add(CLUB_ONLY, [
     'resident dj\W?s?',
     'residency',
     'ravers?',
-    'dj\W?s?',
     'techno', 'trance', 'indie', 'glitch',
     'bands?',
     'dress to',
@@ -577,7 +576,7 @@ add(BATTLE, [
 
 CLASS = token('CLASS')
 add(CLASS, [
-    'work\W?shop\W?s?',
+    'work\W?shop(?:\W?s)?',
     'ws', # japanese workshop WS
     'w\.s\.', # japanese workshop W.S.
     u'ワークショップ', # japanese workshop
@@ -869,7 +868,7 @@ add(WRONG_BATTLE_STYLE, [
     'rap',
     'beat',
     'beatbox',
-    'dj\W?s?',
+    'dj(\W?s)?',
     'producer',
     'performance',
     'graf(?:fiti)?',
