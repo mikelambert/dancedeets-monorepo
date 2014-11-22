@@ -14,8 +14,10 @@ for x in ids_info:
     print x, len(ids_info[x])
 classified_ids = ids_info['good_ids']
 if len(sys.argv) > 1:
-    all_ids = set([sys.argv[1]])
+    full_run = False
+    all_ids = set(sys.argv[1:])
 else:
+    full_run = True
     all_ids = ids_info['combined_ids']
 
 TOTAL = None # magic key
@@ -85,6 +87,8 @@ def basic_match(fb_event):
     if result[0] and fb_event['info']['id'] not in good_ids:
         # false positive
         print fb_event['info']['id'], result
+    if not full_run:
+        print fb_event['info']['id'], result
     return result[0]
 
 if positive_classifier:
@@ -111,10 +115,11 @@ false_negatives = theory_bad_ids.difference(bad_ids)
 true_positives = theory_good_ids.difference(bad_ids)
 true_negatives = theory_bad_ids.difference(good_ids)
 
-open('scratch/false_positives.txt', 'w').writelines('%s\n' % x for x in sorted(false_positives))
-open('scratch/false_negatives.txt', 'w').writelines('%s\n' % x for x in sorted(false_negatives))
-open('scratch/true_positives.txt', 'w').writelines('%s\n' % x for x in sorted(true_positives))
-open('scratch/true_negatives.txt', 'w').writelines('%s\n' % x for x in sorted(true_negatives))
+if full_run:
+    open('scratch/false_positives.txt', 'w').writelines('%s\n' % x for x in sorted(false_positives))
+    open('scratch/false_negatives.txt', 'w').writelines('%s\n' % x for x in sorted(false_negatives))
+    open('scratch/true_positives.txt', 'w').writelines('%s\n' % x for x in sorted(true_positives))
+    open('scratch/true_negatives.txt', 'w').writelines('%s\n' % x for x in sorted(true_negatives))
 
 print "Found %s true-positives, %s false-positives" % (len(true_positives), len(false_positives))
 print "Leaves %s to be manually-classified" % (len(false_negatives))
