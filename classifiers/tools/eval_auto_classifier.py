@@ -116,6 +116,9 @@ false_negatives = theory_bad_ids.difference(bad_ids)
 true_positives = theory_good_ids.difference(bad_ids)
 true_negatives = theory_bad_ids.difference(good_ids)
 
+print "Found %s true-positives, %s false-positives" % (len(true_positives), len(false_positives))
+print "Leaves %s to be manually-classified" % (len(false_negatives))
+
 if full_run:
     try:
         os.makedirs('scratch')
@@ -125,9 +128,6 @@ if full_run:
     open('scratch/false_negatives.txt', 'w').writelines('%s\n' % x for x in sorted(false_negatives))
     open('scratch/true_positives.txt', 'w').writelines('%s\n' % x for x in sorted(true_positives))
     open('scratch/true_negatives.txt', 'w').writelines('%s\n' % x for x in sorted(true_negatives))
-
-print "Found %s true-positives, %s false-positives" % (len(true_positives), len(false_positives))
-print "Leaves %s to be manually-classified" % (len(false_negatives))
 
 if keyword_counts:
     print "Best finds for false-negatives:"
