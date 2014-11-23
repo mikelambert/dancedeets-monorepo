@@ -201,7 +201,7 @@ class StringProcessor(object):
             matched_text = match.group(0)
             self.token_originals[token].append(matched_text)
             return token.replace_string()
-        self.text = keywords.get_regex(token)[0].sub(replace_with, self.text)
+        self.text = keywords.get_regex(token)[self.match_on_word_boundaries].sub(replace_with, self.text)
 
     def count_tokens(self, token):
         return len(self.token_originals[token])
@@ -263,6 +263,8 @@ class ClassifiedEvent(object):
             manual_dancer_keyword,
             keywords.GOOD_INSTANCE_OF_BAD_CLUB,
 
+            keywords.DANCE, #jazzfunk, streetjazz, etc
+
             keywords.CLASS,
             keywords.N_X_N,
             keywords.BATTLE,
@@ -271,6 +273,10 @@ class ClassifiedEvent(object):
             keywords.CYPHER,
             keywords.JUDGE,
 
+            # king-of-the must be before king
+            keywords.KING_OF_THE,
+            keywords.KING,
+
             keywords.AMBIGUOUS_CLASS,
             keywords.AMBIGUOUS_DANCE_MUSIC,
             keywords.AMBIGUOUS_WRONG_STYLE,
@@ -278,14 +284,11 @@ class ClassifiedEvent(object):
             keywords.BONNIE_AND_CLYDE,
             keywords.CLUB_ONLY,
             keywords.CONTEST,
-            keywords.DANCE,
             keywords.DANCE_WRONG_STYLE,
             keywords.EVENT,
             keywords.FORMAT_TYPE,
             keywords.FREESTYLE,
             keywords.HOUSE,
-            keywords.KING,
-            keywords.KING_OF_THE,
             keywords.OTHER_SHOW,
             keywords.PERFORMANCE,
             keywords.PRACTICE,
