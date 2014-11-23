@@ -72,7 +72,7 @@ def add(token, keywords):
         _keywords[token] = keywords
 
 # 'crew' biases dance one way, 'company' biases it another
-EASY_DANCE = token('EASY_DANCE')
+EASY_DANCE = token('EASYDANCE')
 add(EASY_DANCE, [
     'dance style[sz]',
     'dances?', "dancin[g']?", 'dancers?',
@@ -229,9 +229,9 @@ legit_dance = [
     'rock\W?dan[cs]\w+',
     '(?:lite|light)\W?feet',
     "gettin[g']?\W?(?:lite|light)",
-    "turfin[g']?", 'turf danc\w+', "flexin[g']?", "buckin[g']?", "jookin[g']?",
-    'b\W?boy[sz]?', "b\W?boyin[g']?", 'b\W?girl[sz]?', "b\W?girlin[g']?", 'power\W?moves?', "footworkin[g']?",
-    'b\W?boy\w*', # 'bboyev' in slovak
+    "turfin(?:[g']?|er[sz])", 'turf danc\w+', "flexin[g']?", "buckin[g']?", "jookin[g']?",
+    'power\W?moves?', "footworkin[g']?",
+    'b\W?(?:boy|girl)\w*',
     u'파워무브', # powermove korean
     'breakeuse', # french bgirl
     'footworks', # spanish footworks
@@ -255,6 +255,7 @@ legit_dance = [
     'puppet\W?style',
     "bott?in[g']?",
     "robott?in[g']?",
+    'g\W?styl\w+',
     'melbourne shuffle',
     'strutter[sz]?', 'strutting',
     "tuttin[g']?", 'tutter[sz]?',
@@ -323,12 +324,12 @@ add(STREET, [
     'street',
 ])
 
-EASY_BATTLE = token('EASY_BATTLE')
+EASY_BATTLE = token('EASYBATTLE')
 add(EASY_BATTLE, [
     'jams?', 
 ])
 
-EASY_EVENT = token('EASY_EVENT')
+EASY_EVENT = token('EASYEVENT')
 add(EASY_EVENT, [
     'club', 'after\Wparty', 'pre\Wparty',
     u'クラブ',  # japanese club
@@ -408,7 +409,7 @@ add(CLUB_ONLY, [
     'go\W?go',
 ])
 
-PREPROCESS_REMOVAL = token('PREPROCESS_REMOVAL')
+PREPROCESS_REMOVAL = token('PREPROCESSREMOVAL')
 add(PREPROCESS_REMOVAL, [
     # positive
     'tap water', # for theo and dominque's jam
@@ -503,7 +504,7 @@ add(PREPROCESS_REMOVAL, [
 
 #TODO(lambert): use these to filter out shows we don't really care about
 #TODO: UNUSED
-OTHER_SHOW = token('OTHER_SHOW')
+OTHER_SHOW = token('OTHERSHOW')
 add(OTHER_SHOW, [
     'comedy',
     'poetry',
@@ -703,14 +704,14 @@ add(JUDGE, [
     u'ジャッジ', # japanese judges
 ])
 
-AMBIGUOUS_CLASS = token('AMBIGUOUS_CLASS')
+AMBIGUOUS_CLASS = token('AMBIGUOUSCLASS')
 add(AMBIGUOUS_CLASS, [
     'spectacle',
     'stage',
     'stages',
 ])
 
-DANCE_WRONG_STYLE = token('DANCE_WRONG_STYLE')
+DANCE_WRONG_STYLE = token('DANCEWRONGSTYLE')
 add(DANCE_WRONG_STYLE, [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
     'latines', 'quickstep', 'rumba', 'cha\W?cha',
@@ -785,7 +786,7 @@ add(DANCE_WRONG_STYLE, [
 ])
 
 # These are okay to see in event descriptions, but we don't want it to be in the event title, or it is too strong for us
-DANCE_WRONG_STYLE_TITLE_ONLY = token('DANCE_WRONG_STYLE_TITLE_ONLY')
+DANCE_WRONG_STYLE_TITLE_ONLY = token('DANCEWRONGSTYLETITLEONLY')
 add(DANCE_WRONG_STYLE_TITLE_ONLY, [
     # Sometimes used in studio name even though it's still a hiphop class:
     'ballroom',
@@ -812,7 +813,7 @@ add(CONNECTOR, [
 #    ' \W ',
 ])
 
-AMBIGUOUS_WRONG_STYLE = token('AMBIGUOUS_WRONG_STYLE')
+AMBIGUOUS_WRONG_STYLE = token('AMBIGUOUSWRONGSTYLE')
 add(AMBIGUOUS_WRONG_STYLE, [
     'modern',
     'ballet',
@@ -820,7 +821,7 @@ add(AMBIGUOUS_WRONG_STYLE, [
 ])
 
 
-WRONG_NUMBERED_LIST = token('WRONG_NUMBERED_LIST')
+WRONG_NUMBERED_LIST = token('WRONGNUMBEREDLIST')
 add(WRONG_NUMBERED_LIST, [
     'track(?:list(?:ing)?)?',
     'release',
@@ -828,7 +829,7 @@ add(WRONG_NUMBERED_LIST, [
     'ep',
 ])
 
-WRONG_AUDITION = token('WRONG_AUDITION')
+WRONG_AUDITION = token('WRONGAUDITION')
 add(WRONG_AUDITION, [
     'sing(?:ers?)?',
     'singing',
@@ -838,7 +839,7 @@ add(WRONG_AUDITION, [
     'mike portoghese', # TODO(lambert): When we get bio removal for keyword matches, we can remove this one
 ])
 
-WRONG_BATTLE = token('WRONG_BATTLE')
+WRONG_BATTLE = token('WRONGBATTLE')
 add(WRONG_BATTLE, [
     'talent',
     'beatbox',
@@ -856,7 +857,7 @@ add(WRONG_BATTLE, [
     'producer',
 ])
 
-WRONG_BATTLE_STYLE = token('WRONG_BATTLE_STYLE')
+WRONG_BATTLE_STYLE = token('WRONGBATTLESTYLE')
 add(WRONG_BATTLE_STYLE, [
     '(?:mc|emcee)\Whip\W?hop',
     'emcee',
@@ -876,7 +877,7 @@ add(WRONG_BATTLE_STYLE, [
 # team battle
 # these mean....more
 #TODO: UNUSED
-FORMAT_TYPE = token('FORMAT_TYPE')
+FORMAT_TYPE = token('FORMATTYPE')
 add(FORMAT_TYPE, [
     'solo',
     u'ソロ', # japanese solo
@@ -886,7 +887,7 @@ add(FORMAT_TYPE, [
     u'クルー', # japanese crew
 ])
 
-BAD_COMPETITION_TITLE_ONLY = token('BAD_COMPETITION_TITLE_ONLY')
+BAD_COMPETITION_TITLE_ONLY = token('BADCOMPETITIONTITLEONLY')
 add(BAD_COMPETITION_TITLE_ONLY, [
     'video',
     'fundrais\w+',
@@ -915,7 +916,7 @@ add(VOGUE, [
     'trans\W?man',
     'mini\W?ball',
 ])
-EASY_VOGUE = token('EASY_VOGUE')
+EASY_VOGUE = token('EASYVOGUE')
 add(EASY_VOGUE, [
     'never walked',
     'virgin',
@@ -928,8 +929,8 @@ add(EASY_VOGUE, [
     'butch',
     'ota',
     'open to all',
-    'f\\.?q\\.?',
-    'b\\.?q\\.?',
+    r'f\.?q\.?',
+    r'b\.?q\.?',
     'vogue',
     'house of',
     'category',
@@ -939,7 +940,7 @@ add(EASY_VOGUE, [
     'ball',
 ])
 
-SEMI_BAD_DANCE = token('SEMI_BAD_DANCE')
+SEMI_BAD_DANCE = token('SEMIBADDANCE')
 add(SEMI_BAD_DANCE, [
     'technique',
     'dance company',
@@ -952,19 +953,19 @@ add(SEMI_BAD_DANCE, [
 #TODO(lambert): should these be done here, as additional keywords?
 # Or should they be done as part of the grammar, that tries to combine these into rules of some sort?
 
-OBVIOUS_BATTLE = token('OBVIOUS_BATTLE')
+OBVIOUS_BATTLE = token('OBVIOUSBATTLE')
 add(OBVIOUS_BATTLE, [
     'apache line',
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
 ])
 
 # TODO(lambert): is it worth having all these here as super-basic keywords? Should we instead just list these directly in rules.py?
-BONNIE_AND_CLYDE = token('BONNIE_AND_CLYDE')
+BONNIE_AND_CLYDE = token('BONNIEANDCLYDE')
 add(BONNIE_AND_CLYDE, [
     'bonnie\s*(?:and|&)\s*clyde'
 ])
 
-KING_OF_THE = token('KING_OF_THE')
+KING_OF_THE = token('KINGOFTHE')
 add(KING_OF_THE, [
     'king of (?:the )?',
 ])
