@@ -32,7 +32,7 @@ def has_list_of_good_classes(classified_event):
     #(?!20[01][05])
     time = r'\b[012]?\d[:.,h]?(?:[0-5][05])?(?:am|pm)?\b'
     time_with_minutes = r'\b[012]?\d[:.,h]?(?:[0-5][05])(?:am|pm)?\b'
-    time_to_time = r'%s ?(?:to|do|до|til|till|a|-|[^\w,.]) ?%s' % (time, time)
+    time_to_time = r'%s ?(?:to|do|до|til|till|alle|a|-|[^\w,.]) ?%s' % (time, time)
 
     text = classified_event.search_text
     club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
@@ -185,6 +185,7 @@ def is_battle(classified_event):
     #print has_good_dance_battle
     #print classified_event.real_dance_matches
     #print classified_event.processed_text.get_tokenized_text()
+    #print classified_event.processed_text.match_on_word_boundaries
     if not has_good_dance_battle and not (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches):
         return (False, 'no strong dance keywords')
 
