@@ -20,10 +20,11 @@ def make_regex_string(strings, matching=False, word_boundaries=False, match_cjk=
     else:
         regex = u'(?:' + inner_regex + u')'
     if word_boundaries:
-        if match_cjk and not re2:
-            regex = '(?u)%s' % regex
+        if match_cjk:
+            if not re2:
+                regex = '(?u)%s' % regex
         else:
-            regex = r'\b%s\b' % regex
+            regex = r"\b%s\b'?" % regex
     regex = wrapper % regex
     return regex
 
@@ -56,10 +57,11 @@ def make_regexes(strings, matching=False, wrapper='%s', flags=0):
     return tuple(a)
 
 def prep_regex(regex_string, match_cjk=False, wrapper='%s'):
-    if match_cjk and not re2:
-        regex_string = '(?u)%s' % regex_string
+    if match_cjk:
+        if not re2:
+            regex_string = '(?u)%s' % regex_string
     else:
-        regex_string = r'\b%s\b' % regex_string
+        regex_string = r"\b%s\b'?" % regex_string
     if wrapper:
         regex_string = wrapper % regex_string
     return regex_string
