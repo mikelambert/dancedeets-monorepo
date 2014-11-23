@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import os
 import re
 import sys
 import time
@@ -116,6 +117,10 @@ true_positives = theory_good_ids.difference(bad_ids)
 true_negatives = theory_bad_ids.difference(good_ids)
 
 if full_run:
+    try:
+        os.makedirs('scratch')
+    except OSError:
+        pass
     open('scratch/false_positives.txt', 'w').writelines('%s\n' % x for x in sorted(false_positives))
     open('scratch/false_negatives.txt', 'w').writelines('%s\n' % x for x in sorted(false_negatives))
     open('scratch/true_positives.txt', 'w').writelines('%s\n' % x for x in sorted(true_positives))
