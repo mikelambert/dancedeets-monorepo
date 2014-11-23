@@ -204,7 +204,6 @@ add(AMBIGUOUS_DANCE_MUSIC, [
     'electro\W?dance',
     'old\W?school hip\W?hop',
     '90\W?s hip\W?hop',
-    'vogue',
     u'フリースタイル', # japanese freestyle
 ])
 
@@ -284,10 +283,6 @@ legit_dance = [
     'hip\W?hop grooves',
     '(?:new|nu|middle)\W?s(?:ch|k)ool\W\W?hip\W?hop', 'hip\W?hop\W\W?(?:old|new|nu|middle)\W?s(?:ch|k)ool',
     'newstyleurs?',
-    'voguer[sz]?', "vogue?in[g']?", 'vogue fem', 'voguin',
-    'vouge', "vougin[g']?",
-    'fem queen', 'butch queen',
-    'mini\W?ball', 'realness',
     'new\W?style hustle',
     'urban danc\w*',
     'urban style[sz]',
@@ -296,7 +291,7 @@ legit_dance = [
     'dan\w+ urbai?n\w+', # spanish/french urban dance
     'baile urbai?n\w+', # spanish urban dance
     'estilo\w* urbai?n\w+', # spanish urban styles
-    "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)?",
+    "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)",
 ]
 # hiphop dance. hiphop dans?
 DANCE = token('DANCE')
@@ -912,12 +907,13 @@ add(VOGUE, [
     'vogue fem',
     'hand performance',
     'face performance',
-    'femme queen',
+    'fem(?:me)? queen',
     'sex siren',
-    'vogue?ing',
-    'voguin',
-    'voguer[sz]?',
+    "vou?gue?in[g']?",
+    'vou?guin',
+    'vou?guer[sz]?',
     'trans\W?man',
+    'mini\W?ball',
 ])
 EASY_VOGUE = token('EASY_VOGUE')
 add(EASY_VOGUE, [

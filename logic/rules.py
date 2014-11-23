@@ -94,6 +94,7 @@ def commutative_connected(a, b):
 GOOD_DANCE = 'DANCE'
 add(GOOD_DANCE, Any(
     keywords.DANCE,
+    keywords.VOGUE,
     commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE), keywords.EASY_DANCE),
     commutative_connected(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE),
     commutative_connected(keywords.STREET, Any(keywords.EASY_CHOREO, keywords.EASY_DANCE)),
@@ -110,7 +111,7 @@ add(WRONG_BATTLE, Any(
 ))
 
 DANCE_STYLE = 'DANCE_STYLE'
-add(DANCE_STYLE, Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.HOUSE))
+add(DANCE_STYLE, Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.VOGUE, keywords.HOUSE))
 
 # TODO: make sure this doesn't match... 'mc hiphop contest'
 GOOD_DANCE_BATTLE = 'GOOD_DANCE_BATTLE'
