@@ -190,6 +190,7 @@ class StringProcessor(object):
         """
         # I tried a bunch of implementations for speed here. This approach appears to be the fastest:
         # Run tokenize for each regex, doing a brute force search-and-replace on the string. (+70sec)
+        # We used to include a lambda-replace function to grab the contents, but later realized the original matched string is irrelevant to our use cases.
         #
         # Other ideas that didn't work included:
         # - Do this as a matching-regex with one match group per token, to figure out which token matched. (+waaaay to slow)
@@ -197,11 +198,11 @@ class StringProcessor(object):
         # - In a non-matching regex, but with the matched text, run each token regex by hand to see which matched. (+100sec)
         # - Do one pass for findall to get tokens, and another for sub to replace with the magic token. (+100sec)
         # Could have explored O(lgN) search options for a couple of the above, but it felt like the overhead of entering/exiting re2 was the biggest cost.
-        def replace_with(match):
-            matched_text = match.group(0)
-            self.token_originals[token].append(matched_text)
-            return token.replace_string()
-        self.text = keywords.get_regex(token)[self.match_on_word_boundaries].sub(replace_with, self.text)
+        self.text, count = keywords.get_regex(token)[self.match_on_word_boundaries].subn(token.replace_string(), self.text)
+        # If we want to get the matched results/keywords too, then we should only do that conditinoally on count, here:
+        #if count:
+        #    self.token_originals[token].extend(keywords.get_regex(token)[self.match_on_word_boundaries].findall(self.text))
+        self.token_originals[token].extend([token.replace_string()] * count)
 
     def count_tokens(self, token):
         return len(self.token_originals[token])
