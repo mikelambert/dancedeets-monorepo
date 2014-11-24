@@ -179,7 +179,7 @@ class StringProcessor(object):
     def __init__(self, text, match_on_word_boundaries):
         self.text = text
         self.match_on_word_boundaries = match_on_word_boundaries
-        self.token_originals = collections.defaultdict(lambda: [])
+        self.token_originals = collections.defaultdict(lambda: 0)
 
     def tokenize_all(self, *tokens):
         for token in tokens:
@@ -202,13 +202,13 @@ class StringProcessor(object):
         # If we want to get the matched results/keywords too, then we should only do that conditinoally on count, here:
         #if count:
         #    self.token_originals[token].extend(keywords.get_regex(token)[self.match_on_word_boundaries].findall(self.text))
-        self.token_originals[token].extend([token.replace_string()] * count)
+        self.token_originals[token] = count
 
     def count_tokens(self, token):
-        return len(self.token_originals[token])
+        return self.token_originals[token]
 
     def get_tokens(self, *tokens):
-        return _flatten(self.token_originals[token] for token in tokens)
+        return ['X'] * sum(self.token_originals[token] for token in tokens)
 
     def get_tokenized_text(self):
         return self.text
@@ -355,9 +355,9 @@ class ClassifiedEvent(object):
         title_good_matches = all_regexes['good_keyword_regex'][idx].findall(title)
             
         combined_matches_string = ' '.join(self.found_dance_matches + self.found_event_matches)
-        combined_matches = re.split(r'\W+', combined_matches_string)
-        words = re.split(r'\W+', re.sub(r'\bhttp.*?\s', '', search_text))
-        fraction_matched = 1.0 * len(combined_matches) / len(words)
+        dummy, combined_matches = re.subn(r'\w+', '', combined_matches_string)
+        dummy, words = re.subn(r'\w+', '', re.sub(r'\bhttp.*?\s', '', search_text))
+        fraction_matched = 1.0 * (combined_matches+1) / (words+1)
         if not fraction_matched:
             self.calc_inverse_keyword_density = 100
         else:
