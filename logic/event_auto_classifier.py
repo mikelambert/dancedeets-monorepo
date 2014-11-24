@@ -83,6 +83,10 @@ def has_list_of_good_classes(classified_event):
             dance_and_music_matches = proc_line.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
             manual_dancers = event_classifier.all_regexes['manual_dancers_regex'][classified_event.boundaries].findall(line)
             dance_wrong_style_matches = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(line)
+            # Sometimes we have a schedule with hiphop and ballet
+            # Sometimes we have a schedule with hiphop and dj and beatbox/rap (more on music side)
+            # Sometimes we have a schedule with hiphop, house, and beatbox (legit, crosses boundaries)
+            # TODO: Should do a better job of classifying the ambiguous music/dance types, based on the presence of non-ambiguous dance types too
             if (dance_class_style_matches or manual_dancers or dance_and_music_matches) and not dance_wrong_style_matches:
                 good_lines.append(dance_class_style_matches + manual_dancers + dance_and_music_matches)
         start_time = dates.parse_fb_start_time(classified_event.fb_event)

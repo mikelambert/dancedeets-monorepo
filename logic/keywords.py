@@ -442,7 +442,7 @@ add(PREPROCESS_REMOVAL, [
     'class act',
     'go\W?go\W?danc(?:ers?|ing?)',
     'latin street',
-    'ice\w?breaker',
+    'ice\W?breaker',
 
     'straight up', # up rock
     'tear\W?jerker', # jerker
@@ -596,6 +596,7 @@ add(CLASS, [
     u'мастер-класса?', # russian master class
     u'классa?', # russian class
     'class(?:es)?', 'lessons?', 'courses?',
+    #TODO: should i do a "class(?!ic)"
     'klass(?:en)?', # slovakian class
     u'수업', # korean class
     u'수업을', # korean classes
