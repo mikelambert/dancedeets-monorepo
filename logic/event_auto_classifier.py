@@ -1,7 +1,14 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import datetime
-import re
+import logging
+try:
+    import re2
+    import re2 as re
+except ImportError:
+    logging.info("Could not import re2, falling back to re.")
+    re2 = None
+    import re
 
 from logic import event_classifier
 from logic import keywords
