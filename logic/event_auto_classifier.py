@@ -405,16 +405,15 @@ def has_good_djs_title(classified_event):
     return False, 'no good dj title'
 
 def is_performance_or_practice(classified_event):
-    text = classified_event.search_text
-    text = re.sub(r'\b(?:beat\W?lock|baile funk|star\W?strutting|power\W?move show)\b', '', text)
+    text = classified_event.processed_text.get_tokenized_text()
 
     performances_and_practices = []
     for line in text.split('\n'):
+        pline = event_classifier.StringProcessor(line, classified_event.boundaries)
         if len(line) > 500:
             continue
-        performances_and_practices.extend(performance_practice_regex[classified_event.boundaries].findall(line))
-    bad_event_types = re.findall(r'\b(?:book)\b', classified_event.search_text)
-    if performances_and_practices and not bad_event_types:
+        performances_and_practices.extend(pline.find_with_rule(rules.PERFORMANCE_PRACTICE))
+    if performances_and_practices:
         return True, 'found good performance/practice keywords: %s' % performances_and_practices
     return False, 'no good keywords'
 
