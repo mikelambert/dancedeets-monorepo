@@ -6,10 +6,6 @@ import unittest
 from logic import event_classifier
 
 
-class TestSimpleMatches(unittest.TestCase):
-    def runTest(self):
-        self.assertTrue(event_classifier.all_regexes['dance_regex'][1].findall('streetdance'))
-
 class TestSoulSessionsOslo(unittest.TestCase):
     def runTest(self):
         fb_event = dict(info=dict(name="FB Event", description="sessions jam battles cyphers dj's"))

@@ -9,6 +9,9 @@ from logic import event_auto_classifier
 from logic import event_classifier
 from test_utils import fb_api_stub
 
+class TestSimpleMatches(unittest.TestCase):
+        def runTest(self):
+                self.assertTrue(event_auto_classifier.dance_regex[1].findall('streetdance'))
 
 class TestClassifier(unittest.TestCase):
     def setUp(self):
