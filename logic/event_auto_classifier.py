@@ -196,8 +196,12 @@ def is_battle(classified_event):
     #print has_wrong_battle
     #print has_good_dance_battle
     #print classified_event.real_dance_matches
+    #print classified_event.manual_dance_keywords_matches
     #print classified_event.processed_text.get_tokenized_text()
     #print classified_event.processed_text.match_on_word_boundaries
+    #print has_start_judge
+    #print classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches
+    #print has_many_real_dance_keywords
     if not has_good_dance_battle and not (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches):
         return (False, 'no strong dance keywords')
 
