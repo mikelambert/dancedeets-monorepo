@@ -258,11 +258,11 @@ def _all_members_count(fb_event, value=None):
         else:
             return data[0]['all_members_count']
     else:
-        if 'info' in fb_event and fb_event['info'].get('attending_count'):
+        if 'info' in fb_event and fb_event['info'].get('invited_count'):
             if value:
-                fb_event['info']['attending_count'] = value
+                fb_event['info']['invited_count'] = value
             else:
-                return fb_event['info']['attending_count']
+                return fb_event['info']['invited_count']
         else:
             if value:
                 raise ValueError()
@@ -270,10 +270,13 @@ def _all_members_count(fb_event, value=None):
 
 def is_public_ish(fb_event):
     # Don't allow SECRET events
+    logging.info("fb event %s has privacy %s with members %s", fb_event['info']['id'], fb_event['info'].get('privacy'), _all_members_count(fb_event))
     return not fb_event['empty'] and (
         fb_event['info'].get('privacy', 'OPEN') == 'OPEN' or
         (fb_event['info'].get('privacy', 'OPEN') == 'FRIENDS' and
-         _all_members_count(fb_event) > 60)
+         _all_members_count(fb_event) >= 60) or
+        (fb_event['info'].get('privacy', 'OPEN') == 'SECRET' and
+         _all_members_count(fb_event) >= 200)
     )
 
 
