@@ -150,11 +150,12 @@ def build_regexes():
 
 all_regexes['dance_wrong_style_title_regex'] = regex_keywords.make_regexes_raw(rules.get(rules.DANCE_WRONG_STYLE_TITLE).as_expanded_regex())
 
-all_regexes['dance_regex'] = regex_keywords.make_regexes_raw(rules.get(rules.GOOD_DANCE).as_expanded_regex())
 all_regexes['bad_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.CLUB_ONLY, keywords.DANCE_WRONG_STYLE), matching=True)
 
-all_regexes['italian'] = make_regexes(['di', 'i', 'e', 'con'])
-all_regexes['french'] = make_regexes(["l'\w*", 'le', 'et', 'une', 'avec', u'à', 'pour'])
+all_regexes['romance'] = make_regexes([
+    'di', 'i', 'e', 'con', # italian
+    "l'\w*", 'le', 'et', 'une', 'avec', u'à', 'pour', # french
+])
 
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
 
@@ -172,7 +173,7 @@ _rule_regexes = {}
 def get_rule_regex(rule, **kwargs):
     key = (rule, tuple(sorted(kwargs.items())))
     if key not in _rule_regexes:
-        _rule_regexes[key] = regex_keywords.make_regexes_raw(rules.get(rule).as_token_regex(), **kwargs)
+        _rule_regexes[key] = regex_keywords.make_regexes_raw(rules.get(rule).as_expanded_regex(), **kwargs)
     return _rule_regexes[key]
 
 class StringProcessor(object):
@@ -188,6 +189,8 @@ class StringProcessor(object):
     def tokenize(self, token):
         """Tokenizes the relevant bits of this String. Replaces all instances of the token's regex, with the token's string representation.
         """
+        # Don't actually tokenize most things, turns out there's no runtime performance advantage, and a quality hit.
+        return
         # I tried a bunch of implementations for speed here. This approach appears to be the fastest:
         # Run tokenize for each regex, doing a brute force search-and-replace on the string. (+70sec)
         # We used to include a lambda-replace function to grab the contents, but later realized the original matched string is irrelevant to our use cases.
@@ -198,17 +201,23 @@ class StringProcessor(object):
         # - In a non-matching regex, but with the matched text, run each token regex by hand to see which matched. (+100sec)
         # - Do one pass for findall to get tokens, and another for sub to replace with the magic token. (+100sec)
         # Could have explored O(lgN) search options for a couple of the above, but it felt like the overhead of entering/exiting re2 was the biggest cost.
+
+    def real_tokenize(self, token):
         self.text, count = keywords.get_regex(token)[self.match_on_word_boundaries].subn(token.replace_string(), self.text)
         # If we want to get the matched results/keywords too, then we should only do that conditinoally on count, here:
         #if count:
         #    self.token_originals[token].extend(keywords.get_regex(token)[self.match_on_word_boundaries].findall(self.text))
-        self.token_originals[token] = count
 
     def count_tokens(self, token):
+        return len(self._get_token(token))
+
+    def _get_token(self, token):
+        if token not in self.token_originals:
+            self.token_originals[token] = keywords.get_regex(token)[self.match_on_word_boundaries].findall(self.text)
         return self.token_originals[token]
 
     def get_tokens(self, *tokens):
-        return ['X'] * sum(self.token_originals[token] for token in tokens)
+        return _flatten(self._get_token(token) for token in tokens)
 
     def get_tokenized_text(self):
         return self.text
@@ -252,6 +261,7 @@ class ClassifiedEvent(object):
         self.processed_text = StringProcessor(self.search_text, self.boundaries)
         # This must be first, to remove the fake keywords
         self.processed_text.tokenize(keywords.PREPROCESS_REMOVAL)
+        self.processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
 
         self.final_search_text = self.processed_text.get_tokenized_text()
         search_text = self.final_search_text
@@ -313,6 +323,7 @@ class ClassifiedEvent(object):
 
         self.processed_title = StringProcessor(self.title, self.boundaries)
         self.processed_title.tokenize(keywords.PREPROCESS_REMOVAL)
+        self.processed_title.real_tokenize(keywords.PREPROCESS_REMOVAL)
         self.final_title = self.processed_title.get_tokenized_text()
         title = self.final_title
 
@@ -324,8 +335,6 @@ class ClassifiedEvent(object):
         ]:
             self.processed_title.tokenize(keyword)
 
-
-
         #if not all_regexes['good_keyword_regex'][idx].search(search_text):
         #    self.dance_event = False
         #    return
@@ -333,27 +342,20 @@ class ClassifiedEvent(object):
         b = time.time()
         self.manual_dance_keywords_matches = all_regexes['manual_dance_keywords_regex'][idx].findall(search_text)
         self.times['manual_regex'] = time.time() - b
-        easy_dance_matches = self.processed_text.get_tokens(keywords.EASY_DANCE)
-        easy_event_matches = self.processed_text.get_tokens(keywords.EASY_EVENT, keywords.EASY_BATTLE)
-        self.real_dance_matches = all_regexes['dance_regex'][idx].findall(search_text)
-        if all_regexes['french'][idx].search(search_text) or all_regexes['italian'][idx].search(search_text):
+        self.real_dance_matches = self.processed_text.find_with_rule(rules.GOOD_DANCE)
+        if all_regexes['romance'][idx].search(search_text):
             event_matches = self.processed_text.find_with_rule(rules.EVENT_WITH_ROMANCE_EVENT)
         else:
             event_matches = self.processed_text.find_with_rule(rules.EVENT)
-        dance_wrong_style_matches = self.processed_text.get_tokens(keywords.DANCE_WRONG_STYLE)
-        dance_and_music_matches = self.processed_text.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
         club_and_event_matches = self.processed_text.get_tokens(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST)
-        easy_choreography_matches = self.processed_text.get_tokens(keywords.EASY_CHOREO)
-        club_only_matches = self.processed_text.get_tokens(keywords.CLUB_ONLY)
         self.times['all_regexes'] = time.time() - a
 
-        self.found_dance_matches = self.real_dance_matches + easy_dance_matches + dance_and_music_matches + self.manual_dance_keywords_matches + easy_choreography_matches
-        self.found_event_matches = event_matches + easy_event_matches + club_and_event_matches
-        self.found_wrong_matches = dance_wrong_style_matches + club_only_matches
+        self.found_dance_matches = self.real_dance_matches + self.processed_text.get_tokens(keywords.EASY_DANCE, keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_CHOREO) + self.manual_dance_keywords_matches
+        self.found_event_matches = event_matches + self.processed_text.get_tokens(keywords.EASY_EVENT, keywords.EASY_BATTLE) + club_and_event_matches
+        self.found_wrong_matches = self.processed_text.get_tokens(keywords.DANCE_WRONG_STYLE) + self.processed_text.get_tokens(keywords.CLUB_ONLY)
 
         title_wrong_style_matches = all_regexes['dance_wrong_style_title_regex'][idx].findall(title)
         title_good_matches = all_regexes['good_keyword_regex'][idx].findall(title)
-            
         combined_matches_string = ' '.join(self.found_dance_matches + self.found_event_matches)
         dummy, combined_matches = re.subn(r'\w+', '', combined_matches_string)
         dummy, words = re.subn(r'\w+', '', re.sub(r'\bhttp.*?\s', '', search_text))
@@ -370,7 +372,6 @@ class ClassifiedEvent(object):
         #    if 1.0 * good_parts / len(line) > 0.1:
         #        # strong!
         #        strong += 1
-        
         if len(self.manual_dance_keywords_matches) >= 1:
             self.dance_event = 'obvious dancer or dance crew or battle'
         # one critical dance keyword
@@ -384,12 +385,12 @@ class ClassifiedEvent(object):
                 self.real_dance_matches)): # these two are implied by the above, but do it here just in case future clause re-ordering occurs
             self.dance_event = False
 
-        elif len(dance_and_music_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):
+        elif self.processed_text.count_tokens(keywords.AMBIGUOUS_DANCE_MUSIC) >= 1 and (len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):
             self.dance_event = 'hiphop/funk and good event type'
         # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
-        elif len(easy_dance_matches) >= 1 and (len(event_matches) + len(easy_choreography_matches)) >= 1 and len(dance_wrong_style_matches) == 0 and self.calc_inverse_keyword_density < 5:
+        elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and (len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)) >= 1 and not self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE) and self.calc_inverse_keyword_density < 5:
             self.dance_event = 'dance event thats not a bad-style'
-        elif len(easy_dance_matches) >= 1 and len(club_and_event_matches) >= 1 and len(dance_wrong_style_matches) == 0 and len(club_only_matches) == 0:
+        elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and len(club_and_event_matches) >= 1 and not self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE) and self.processed_text.count_tokens(keywords.CLUB_ONLY) == 0:
             self.dance_event = 'dance show thats not a club'
         else:
             self.dance_event = False
