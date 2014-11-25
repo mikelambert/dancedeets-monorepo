@@ -1,5 +1,5 @@
 application: dancedeets-hrd
-version: v2-4-mostly-fb-v2dot2
+version: v2-5-new-grammar
 runtime: python27
 threadsafe: true
 api_version: 1
