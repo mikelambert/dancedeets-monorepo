@@ -131,7 +131,7 @@ add(EASY_DANCE, [
     u'tänzer', # dancer german
 ])
 
-EASY_CHOREO = token('EASY_CHOREO')
+EASY_CHOREO = token('EASYCHOREO')
 add(EASY_CHOREO, [
     u'(?:ch|k|c)oe?re[o|ó]?gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese, danish
     'choreo',
@@ -140,14 +140,14 @@ add(EASY_CHOREO, [
     u'кореограф', # macedonian
 ])
 
-GOOD_INSTANCE_OF_BAD_CLUB = token('GOOD_INSTANCE_OF_BAD_CLUB')
+GOOD_INSTANCE_OF_BAD_CLUB = token('GOODINSTANCEOFBADCLUB')
 add(GOOD_INSTANCE_OF_BAD_CLUB, [
     'evelyn\W+champagne\W+king',
     'water\W?bottles?',
     'genie in (?:the|a) bottle',
 ])
 
-BAD_CLUB = token('BAD_CLUB')
+BAD_CLUB = token('BADCLUB')
 add(BAD_CLUB, [
     'bottle\W?service',
     'popping?\W?bottles?',
@@ -173,7 +173,7 @@ add(CYPHER, [
 
 # if somehow has funks, hiphop, and breaks, and house. or 3/4? call it a dance event?
 
-AMBIGUOUS_DANCE_MUSIC = token('AMBIGUOUS_DANCE_MUSIC')
+AMBIGUOUS_DANCE_MUSIC = token('AMBIGUOUSDANCEMUSIC')
 add(AMBIGUOUS_DANCE_MUSIC, [
     'hip\W?hop',
     u'嘻哈', # chinese hiphop
@@ -368,7 +368,7 @@ add(PERFORMANCE, [
 ])
 
 
-CLUB_ONLY = token('CLUB_ONLY')
+CLUB_ONLY = token('CLUBONLY')
 add(CLUB_ONLY, [
     'club',
     'bottle service',
@@ -679,7 +679,7 @@ def _generate_n_x_n_keywords():
     n_x_n_keywords += [u'%s[ -](?:%s)[ -]%s' % (i, english_digit_x_string, i) for i in ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
     return n_x_n_keywords
 
-N_X_N = token('N_X_N')
+N_X_N = token('NXN')
 add(N_X_N, _generate_n_x_n_keywords())
 
 JUDGE = token('JUDGE')
