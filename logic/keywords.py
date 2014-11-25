@@ -25,10 +25,14 @@ class Keyword(GrammarRule):
         return get_regex_string(self)
 
     def as_token_regex(self):
-        return self.keyword
+        return r'_%s\d*_' % self.keyword
 
-    def replace_string(self):
-        return self.keyword
+    def replace_string(self, *args):
+        if args:
+            extra_hash = abs(hash(args[0]))
+        else:
+            extra_hash = ''
+        return '_%s%s_' % (self.keyword, extra_hash)
 
     def __repr__(self):
         return 'Keyword(%r)' % self.keyword
@@ -40,7 +44,7 @@ def _key(tokens):
 def get_regex_string(*tokens):
     token_key = _key(tokens)
     if token_key not in _regex_strings:
-        _regex_strings[token_key] = re_flatten.construct_regex(get(*tokens))
+        _regex_strings[token_key] = re_flatten.construct_regex(get(*tokens) + [token.as_token_regex() for token in tokens])
     return _regex_strings[token_key]
 
 #TODO(lambert): move this function out of here in some way, as it is an artifact of the old-way
@@ -48,7 +52,7 @@ def get_regex(*tokens):
     token_key = _key(tokens)
     if token_key not in _regexes:
         # TODO(lambert): this is regexes, while function name is regex. We need to fix this (since make_regex is a different function)
-        _regexes[token_key] = regex_keywords.make_regexes(get(*tokens))
+        _regexes[token_key] = regex_keywords.make_regexes(get(*tokens) + [token.as_token_regex() for token in tokens])
     return _regexes[token_key]
 
 def _flatten(listOfLists):
@@ -60,7 +64,7 @@ def get(*tokens):
 
 def token(token_input):
     assert not re.match('\W', token_input)
-    return Keyword('_%s_' % token_input)
+    return Keyword(token_input)
 
 def add(token, keywords):
     # If anything has been built off of these, when we want to add new stuff, then we need to raise an error

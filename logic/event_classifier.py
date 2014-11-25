@@ -103,7 +103,7 @@ def build_regexes():
     manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD] = manual_dancers
     manual_keywords['manual_dancers'][DEPENDENT_KEYWORD] = dependent_manual_dancers
     # TODO: rename, put in a useful place, etc
-    manual_dancer_keyword = keywords.token('MANUAL_DANCER')
+    manual_dancer_keyword = keywords.token('MANUALDANCER')
     keywords.add(manual_dancer_keyword, manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD])
 
     manual_dance_keywords = manual_dancers[:]
@@ -112,7 +112,7 @@ def build_regexes():
         manual_dance_keywords += manual_keywords[filename][INDEPENDENT_KEYWORD]
         dependent_manual_dance_keywords += manual_keywords[filename][DEPENDENT_KEYWORD]
     manual_keywords['manual_dance_keywords'] = [None, None]
-    manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD] = manual_dance_keywords
+    manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD] = manual_dance_keywords + ['_MANUALDANCER\d*_']
     manual_keywords['manual_dance_keywords'][DEPENDENT_KEYWORD] = dependent_manual_dance_keywords
     #manual_dance_keyword = keywords.token('MANUAL_DANCE')
     #keywords.add(manual_dance_keyword, manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD])
@@ -125,7 +125,7 @@ def build_regexes():
         if x[INDEPENDENT_KEYWORD] + x[DEPENDENT_KEYWORD]:
             all_regexes['extended_%s_regex' % keyword] = make_regexes(x[INDEPENDENT_KEYWORD] + x[DEPENDENT_KEYWORD])
         else:
-            all_regexes['%s_regex' % keyword] = make_regexes(r'NEVER_MATCH_BLAGSDFSDFSEF')
+            all_regexes['extended_%s_regex' % keyword] = make_regexes(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
     good_keywords = keywords.get(
         keywords.EASY_DANCE,
@@ -203,7 +203,9 @@ class StringProcessor(object):
         # Could have explored O(lgN) search options for a couple of the above, but it felt like the overhead of entering/exiting re2 was the biggest cost.
 
     def real_tokenize(self, token):
-        self.text, count = keywords.get_regex(token)[self.match_on_word_boundaries].subn(token.replace_string(), self.text)
+        def word_with_hash(match):
+            return token.replace_string(match.group(0))
+        self.text, count = keywords.get_regex(token)[self.match_on_word_boundaries].subn(word_with_hash, self.text)
         # If we want to get the matched results/keywords too, then we should only do that conditinoally on count, here:
         #if count:
         #    self.token_originals[token].extend(keywords.get_regex(token)[self.match_on_word_boundaries].findall(self.text))
@@ -262,6 +264,9 @@ class ClassifiedEvent(object):
         # This must be first, to remove the fake keywords
         self.processed_text.tokenize(keywords.PREPROCESS_REMOVAL)
         self.processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
+        self.processed_text.real_tokenize(manual_dancer_keyword)
+        self.processed_text.real_tokenize(keywords.GOOD_INSTANCE_OF_BAD_CLUB)
+        self.processed_text.real_tokenize(keywords.DANCE)
 
         self.final_search_text = self.processed_text.get_tokenized_text()
         search_text = self.final_search_text
