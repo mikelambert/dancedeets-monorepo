@@ -24,6 +24,8 @@ class User(db.Model):
     login_count = db.IntegerProperty(indexed=False)
     inviting_fb_uid = db.IntegerProperty(indexed=False)
 
+    clients = db.StringListProperty(indexed=False)
+
     # Search preferences
     location = db.StringProperty(indexed=False)
     distance = db.StringProperty(indexed=False)

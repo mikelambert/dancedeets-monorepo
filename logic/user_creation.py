@@ -8,30 +8,19 @@ import fb_api
 from events import users
 from logic import backgrounder
 
-def create_user_with_fbuser():
-    pass
-
-def create_user(access_token, access_token_expires, city, referer=None, client=None):
-        # Build a cache-less lookup
-        fbl = fb_api.FBLookup(None, access_token)
-        fb_user = fbl.get(fb_api.LookupUser, 'me')
-        fb_uid = fb_user['info']['id']
-
-        fbl = fb_api.FBLookup(fb_uid, access_token)
-        fb_user = fbl.get(fb_api.LookupUser, fb_uid)
-
+def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires, city, send_email=False, referer=None, client=None):
         user = users.User(key_name=str(fb_uid))
         user.fb_access_token = access_token
         user.fb_access_token_expires = access_token_expires
         user.location = city
-        
+
         # grab the cookie to figure out who referred this user
         logging.info("Referer was: %s", referer)
         if referer:
             user.inviting_fb_uid = int(referer)
-        #TODO(lambert): use the client field, either storing the creating client, or storing all-clients-seen
+        user.clients = [client]
 
-        user.send_email = True
+        user.send_email = send_email
         user.distance = '50'
         user.distance_units = 'miles'
         user.min_attendees = 0
@@ -51,4 +40,15 @@ def create_user(access_token, access_token_expires, city, referer=None, client=N
         # Now load their potential events, to make "add event page" faster (and let us process/scrape their events)
         #fb_reloading.load_potential_events_for_user_ids(fbl, [fb_uid])
         backgrounder.load_potential_events_for_users([fb_uid])
+
+
+def create_user(access_token, access_token_expires, city, send_email=False, referer=None, client=None):
+        # Build a cache-less lookup
+        fbl = fb_api.FBLookup(None, access_token)
+        fb_user = fbl.get(fb_api.LookupUser, 'me')
+        fb_uid = fb_user['info']['id']
+
+        fbl = fb_api.FBLookup(fb_uid, access_token)
+        fb_user = fbl.get(fb_api.LookupUser, fb_uid)
+        return create_user(fb_uid, fb_user, access_token, access_token_expires, city, send_email=send_email, referer=referer, client=client)
 

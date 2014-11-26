@@ -1,14 +1,10 @@
 #!/usr/bin/env python
 
-import datetime
 import logging
-import urllib
 
 import base_servlet
 from events import users
-from google.appengine.api import taskqueue
 
-from logic import backgrounder
 from logic import rankings
 from logic import search_base
 
@@ -59,46 +55,3 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         logging.info(self.display['next'])
         self.display['needs_city'] = needs_city
         self.render_template('login')
-
-def construct_user(fb_uid, access_token, access_token_expires, fb_user, city, referer):
-        user = users.User.get_by_key_name(str(fb_uid))
-        if user:
-            logging.info("Already have user with name %s, passing through to next url", user.full_name)
-            return
-
-        # If they're a new-user signup, but didn't fill out a city and facebook doesn't have a city,
-        # then render the get() up above but with an error message to fill out the city
-        if not city:
-            logging.info("Signup User forgot their city, so require that now.")
-            #TODO(lambert): FIXME!!!
-            #get(needs_city=True)
-            #return
-
-        user = users.User(key_name=str(fb_uid))
-        user.fb_access_token = access_token
-        user.fb_access_token_expires = access_token_expires
-        user.location = city
-        # grab the cookie to figure out who referred this user
-        logging.info("Referer was: %s", referer)
-        if referer:
-            user.inviting_fb_uid = int(referer)
-
-        user.send_email = True
-        user.distance = '50'
-        user.distance_units = 'miles'
-        user.min_attendees = 0
-
-        user.creation_time = datetime.datetime.now()
-
-        user.login_count = 1
-        user.last_login_time = user.creation_time
-
-        user.compute_derived_properties(fb_user)
-        logging.info("Saving user with name %s", user.full_name)
-        user.put()
-
-        logging.info("Requesting background load of user's friends")
-        # Must occur after User is put with fb_access_token
-        taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': fb_uid}), queue_name='slow-queue')
-        # Now load their potential events, to make "add event page" faster
-        backgrounder.load_potential_events_for_users([fb_uid])

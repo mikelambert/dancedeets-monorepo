@@ -17,6 +17,7 @@ from events import users
 import facebook
 import fb_api
 from logic import backgrounder
+from logic import user_creation
 from logic import rankings
 from logic import search_base
 import template
@@ -238,14 +239,13 @@ class BaseRequestHandler(BareBaseRequestHandler):
             access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
             self.access_token = access_token
             # Fix this ugly import hack:
-            from servlets import login
             fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
             fb_user = fbl.get(fb_api.LookupUser, self.fb_uid)
             
             referer = self.get_cookie('User-Referer')
             city = self.request.get('city') or self.get_location_from_headers() or get_location(fb_user)
             logging.info("User passed in a city of %r, facebook city is %s", self.request.get('city'), get_location(fb_user))
-            login.construct_user(self.fb_uid, self.access_token, access_token_expires, fb_user, city, referer)
+            user_creation.create_user_with_fbuser(self.fb_uid, fb_user, self.access_token, access_token_expires, city, send_email=True, referer=referer, client='web')
             #TODO(lambert): handle this MUUUCH better
             logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
             self.user = users.User.get_cached(str(self.fb_uid))
