@@ -180,6 +180,8 @@ class SearchHandler(ApiHandler):
     #TODO: implement new search API
 
 class AuthHandler(ApiHandler):
+    requires_auth = True
+
     def post(self):
         self.finish_preload()
 
@@ -194,6 +196,8 @@ class AuthHandler(ApiHandler):
 
 
 class SettingsHandler(ApiHandler):
+    requires_auth = True
+    
     def get(self):
         user = users.User.get_by_key_name(str(self.fb_uid))
         json_data = {
