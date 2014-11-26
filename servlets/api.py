@@ -6,6 +6,7 @@ import xml.sax.saxutils
 import base_servlet
 import fb_api
 from events import eventdata
+from events import users
 from logic import event_locations
 from logic import search
 from logic import search_base
@@ -15,23 +16,45 @@ from util import urls
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
-def write_json_data(callback, response, json_data):
-    if callback:
-        response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
-    else:
-        response.headers['Content-Type'] = 'application/json; charset=utf-8'
+class ApiHandler(base_servlet.BaseRequestHandler):
+    requires_auth = False
+    supports_auth = False
 
-    if callback:
-        response.out.write('%s(' % callback)
-    response.out.write(json.dumps(json_data))
-    if callback:
-        response.out.write(')')
-
-
-class FeedHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
-    
+
+    def write_json_error(self, error_string):
+        return self._write_json_data(error_string)
+
+    def write_json_success(self, results=None):
+        return self._write_json_data(results)
+
+    def _write_json_data(self, json_data):
+        callback = self.request.get('callback')
+        if callback:
+            self.response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
+        else:
+            self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
+
+        if callback:
+            self.response.out.write('%s(' % callback)
+        self.response.out.write(json.dumps(json_data))
+        if callback:
+            self.response.out.write(')')
+
+    def initialize(self, request, response):
+        super(ApiHandler, self).initialize(request, response)
+        if self.requires_auth or self.supports_auth:
+            if self.request.get('access_token'):
+                self.fbl = fb_api.FBLookup(None, self.request.get('access_token'))
+                self.fb_user = self.fbl.get(fb_api.LookupUser, 'me')
+                self.fb_uid = self.fb_user['info']['id']
+            elif self.requires_auth:
+                self.add_error("Needs access_token parameter")
+                self.write_json_error("Error: Needs access_token parameter")
+
+
+class FeedHandler(ApiHandler):
 
     def get(self):
         self.finish_preload()
@@ -88,7 +111,7 @@ class FeedHandler(base_servlet.BaseRequestHandler):
 
     def handle_json_feed(self, title, search_results):
         json_results = [self.SearchResultToJson(x) for x in search_results]
-        write_json_data(self.request.get('callback'), self.response, json_results)
+        self.write_json_success(json_results)
 
     def handle_atom_feed(self, title, search_results):
         self.response.headers['Content-Type'] = 'application/atom+xml'
@@ -152,13 +175,34 @@ class FeedHandler(base_servlet.BaseRequestHandler):
 </feed>
 """)
 
-class SearchHandler(base_servlet.BaseRequestHandler):
+class SearchHandler(ApiHandler):
     pass
     #TODO: implement new search API
 
-class AuthHandler(base_servlet.BaseRequestHandler):
-    def requires_login(self):
-        return False
+class AuthHandler(ApiHandler):
+    def post(self):
+        self.finish_preload()
+
+        access_token = self.request.get('access_token')
+        access_token_expires = self.request.get('access_token_expires')
+        city = self.request.get('city') or self.get_location_from_headers()
+        client = self.request.get('client')
+        logging.info("Auth token from client %s is %s", client, access_token)
+
+        user_creation.create_user(access_token, access_token_expires, city, client=client)
+        self.write_json_success()
+
+
+class SettingsHandler(ApiHandler):
+    def get(self):
+        user = users.User.get_by_key_name(str(self.fb_uid))
+        json_data = {
+            'location': user.location,
+            'distance': user.distance,
+            'distance_units': user.distance_units,
+            'send_email': user.send_email,
+        }
+        self.write_json_success(json_data)
 
     def post(self):
         self.finish_preload()
@@ -170,7 +214,7 @@ class AuthHandler(base_servlet.BaseRequestHandler):
         logging.info("Auth token from client %s is %s", client, access_token)
 
         user_creation.create_user(access_token, access_token_expires, city, client=client)
-        write_json_data(self.request.get('callback'), self.response, 'ok')
+        self.write_json_success()
 
 
 def canonicalize_event_data(fb_event, db_event):
@@ -271,6 +315,6 @@ class EventHandler(base_servlet.BaseRequestHandler):
 
         # Ten minute expiry on data we return
         self.response.headers['Cache-Control'] = 'max-age=%s' % (60*10)
-        write_json_data(self.request.get('callback'), self.response, json_data)
+        self.write_json_success(json_data)
 
 
