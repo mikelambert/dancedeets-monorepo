@@ -197,7 +197,7 @@ class AuthHandler(ApiHandler):
 
 class SettingsHandler(ApiHandler):
     requires_auth = True
-    
+
     def get(self):
         user = users.User.get_by_key_name(str(self.fb_uid))
         json_data = {
@@ -211,13 +211,17 @@ class SettingsHandler(ApiHandler):
     def post(self):
         self.finish_preload()
 
-        access_token = self.request.get('access_token')
-        access_token_expires = self.request.get('access_token_expires')
-        city = self.request.get('city') or self.get_location_from_headers()
-        client = self.request.get('client')
-        logging.info("Auth token from client %s is %s", client, access_token)
+        user = users.User.get_by_key_name(str(self.fb_uid))
+        if self.request.get('location'):
+            user.location = self.request.get('location')
+        if self.request.get('distance'):
+            user.distance = self.request.get('distance')
+        if self.request.get('distance_units'):
+            user.distance_units = self.request.get('distance_units')
+        if self.request.get('send_email'):
+            user.send_email = self.request.get('send_email')
+        user.put()
 
-        user_creation.create_user(access_token, access_token_expires, city, client=client)
         self.write_json_success()
 
 
