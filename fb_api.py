@@ -725,8 +725,12 @@ class FBLookup(object):
         # If we fetch objects from memcache, we can save them back into memcache.
         # Useful for keeping objects in cache when we don't care about staleness.
         self.resave_to_memcache = False
-        self.m = Memcache(self.fb_uid)
-        self.db = DBCache(self.fb_uid)
+        if self.fb_uid:
+            self.m = Memcache(self.fb_uid)
+            self.db = DBCache(self.fb_uid)
+        else:
+            self.m = None
+            self.db = None
         self.fb = FBAPI(self.access_token)
         self.debug = False
 
@@ -780,8 +784,10 @@ class FBLookup(object):
         self.invalidate(cls, (object_id,))
 
     def invalidate_multi(self, cls, object_ids):
-        self.m.invalidate_keys(cls, object_ids)
-        self.db.invalidate_keys(cls, object_ids)
+        if self.m:
+            self.m.invalidate_keys(cls, object_ids)
+        if self.db:
+            self.db.invalidate_keys(cls, object_ids)
 
     def clear_local_cache(self):
         self._fetched_objects = {}
@@ -796,7 +802,7 @@ class FBLookup(object):
             # Memcache Read
             if self.debug:
                 logging.info("DEBUG: allow_memcache_read is %s", self.allow_memcache_read)
-            if self.allow_memcache_read:
+            if self.m and self.allow_memcache_read:
                 fetched_objects = self._cleanup_object_map(self.m.fetch_keys(keys))
                 if self.resave_to_memcache:
                     self.m.save_objects(fetched_objects)
@@ -811,11 +817,11 @@ class FBLookup(object):
             # DB Read
             if self.debug:
                 logging.info("DEBUG: allow_dbcache is %s", self.allow_dbcache)
-            if self.allow_dbcache:
+            if self.db and self.allow_dbcache:
                 fetched_objects = self._cleanup_object_map(self.db.fetch_keys(keys))
                 if self.debug:
                     logging.info("DEBUG: db requested %s keys, returned %s objects", len(keys), len(fetched_objects))
-                if self.allow_memcache_write:
+                if self.m and self.allow_memcache_write:
                     self.m.save_objects(fetched_objects)
                 all_fetched_objects.update(fetched_objects)
                 unknown_results = set(fetched_objects).difference(keys)
@@ -829,9 +835,10 @@ class FBLookup(object):
         fetched_objects = self._cleanup_object_map(self.fb.fetch_keys(keys))
         if self.debug:
             logging.info("DEBUG: fb requested %s keys, returned %s objects", len(keys), len(fetched_objects))
-        if self.allow_memcache_write:
+        if self.m and self.allow_memcache_write:
             self.m.save_objects(fetched_objects)
-        updated_objects = self.db.save_objects(fetched_objects)
+        if self.db:
+            updated_objects = self.db.save_objects(fetched_objects)
         all_fetched_objects.update(fetched_objects)
         unknown_results = set(fetched_objects).difference(keys)
         if len(unknown_results):
@@ -842,7 +849,8 @@ class FBLookup(object):
             logging.error("BatchLookup: Couldn't find values for keys: %s", keys)
 
         self.fb_fetches = self.fb.fb_fetches
-        self.db_updates = self.db.db_updates
+        if self.db:
+            self.db_updates = self.db.db_updates
 
         # In case we do futher fetches, don't refetch any of these keys
         self._keys_to_fetch = set()
