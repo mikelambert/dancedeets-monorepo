@@ -270,7 +270,6 @@ def _all_members_count(fb_event, value=None):
 
 def is_public_ish(fb_event):
     # Don't allow SECRET events
-    logging.info("fb event %s has privacy %s with members %s", fb_event['info']['id'], fb_event['info'].get('privacy'), _all_members_count(fb_event))
     return not fb_event['empty'] and (
         fb_event['info'].get('privacy', 'OPEN') == 'OPEN' or
         (fb_event['info'].get('privacy', 'OPEN') == 'FRIENDS' and

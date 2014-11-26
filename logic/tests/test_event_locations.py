@@ -17,7 +17,7 @@ class TestEventLocations(unittest.TestCase):
     def setUp(self):
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate()
-        self.fbl = fb_api.FBLookup(None, None)
+        self.fbl = fb_api.FBLookup("dummyid", None)
 
         self.testbed = testbed.Testbed()
         self.testbed.activate()
