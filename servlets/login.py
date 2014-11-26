@@ -12,12 +12,6 @@ from logic import backgrounder
 from logic import rankings
 from logic import search_base
 
-def get_location(fb_user):
-    if fb_user['profile'].get('location'):
-        facebook_location = fb_user['profile']['location']['name']
-    else:
-        facebook_location = None
-    return facebook_location
 
 class LoginHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -66,17 +60,14 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['needs_city'] = needs_city
         self.render_template('login')
 
-def construct_user(fb_uid, access_token, access_token_expires, fb_user, request, referer):
-        next = request.get('next') or '/'
+def construct_user(fb_uid, access_token, access_token_expires, fb_user, city, referer):
         user = users.User.get_by_key_name(str(fb_uid))
         if user:
-            logging.info("Already have user with name %s, passing through to %s", user.full_name, next)
+            logging.info("Already have user with name %s, passing through to next url", user.full_name)
             return
 
         # If they're a new-user signup, but didn't fill out a city and facebook doesn't have a city,
         # then render the get() up above but with an error message to fill out the city
-        city = request.get('city') or get_location(fb_user)
-        logging.info("User passed in a city of %r, facebook city is %s", request.get('city'), get_location(fb_user))
         if not city:
             logging.info("Signup User forgot their city, so require that now.")
             #TODO(lambert): FIXME!!!

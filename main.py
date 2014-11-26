@@ -100,6 +100,7 @@ URLS = [
     ('/home', home.HomeHandler),
     ('/api/events/\d+/?', api.EventHandler),
     ('/api/search', api.SearchHandler),
+    ('/api/auth', api.AuthHandler),
 ]
 
 ereporter.register_logger()

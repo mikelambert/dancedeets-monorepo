@@ -9,6 +9,7 @@ from events import eventdata
 from logic import event_locations
 from logic import search
 from logic import search_base
+from logic import user_creation
 from util import text
 from util import urls
 
@@ -153,6 +154,24 @@ class FeedHandler(base_servlet.BaseRequestHandler):
 
 class SearchHandler(base_servlet.BaseRequestHandler):
     pass
+    #TODO: implement new search API
+
+class AuthHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
+    def post(self):
+        self.finish_preload()
+
+        access_token = self.request.get('access_token')
+        access_token_expires = self.request.get('access_token_expires')
+        city = self.request.get('city') or self.get_location_from_headers()
+        client = self.request.get('client')
+        logging.info("Auth token from client %s is %s", client, access_token)
+
+        user_creation.create_user(access_token, access_token_expires, city, client=client)
+        write_json_data(self.request.get('callback'), self.response, 'ok')
+
 
 def canonicalize_event_data(fb_event, db_event):
     event_api = {}

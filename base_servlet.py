@@ -129,7 +129,24 @@ def validate_hashed_userlogin(user_login_cookie):
         logging.error("For user_login_data %s, passed_in_hash %s != computed_hash %s", user_login_cookie, passed_hash, computed_hash)
     return passed_hash == computed_hash
 
+def get_location(fb_user):
+    if fb_user['profile'].get('location'):
+        facebook_location = fb_user['profile']['location']['name']
+    else:
+        facebook_location = None
+    return facebook_location
+
+
 class BaseRequestHandler(BareBaseRequestHandler):
+
+    def get_location_from_headers(self):
+        location_components = [
+            self.request.headers["X-AppEngine-City"],
+            self.request.headers["X-AppEngine-Region"],
+            self.request.headers["X-AppEngine-Country"],
+        ]
+        location = ', '.join(x for x in location_components if x)
+        return location
 
     def get_long_lived_token_and_expires(self, request):
         response = facebook.get_user_from_cookie(request.cookies)
@@ -226,7 +243,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
             fb_user = fbl.get(fb_api.LookupUser, self.fb_uid)
             
             referer = self.get_cookie('User-Referer')
-            login.construct_user(self.fb_uid, self.access_token, access_token_expires, fb_user, self.request, referer)
+            city = self.request.get('city') or self.get_location_from_headers() or get_location(fb_user)
+            logging.info("User passed in a city of %r, facebook city is %s", self.request.get('city'), get_location(fb_user))
+            login.construct_user(self.fb_uid, self.access_token, access_token_expires, fb_user, city, referer)
             #TODO(lambert): handle this MUUUCH better
             logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
             self.user = users.User.get_cached(str(self.fb_uid))
