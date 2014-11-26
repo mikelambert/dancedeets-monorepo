@@ -45,13 +45,13 @@ class TestLookupEvent(unittest.TestCase):
         cleaned_object_data = fb_api.LookupEvent.cleanup_data(object_data)
         self.assertEqual(cleaned_object_data['fql_info']['data'][0]['all_members_count'], 200)
 
-        object_data = {'info': {'attending_count': 67}}
+        object_data = {'info': {'invited_count': 67}}
         cleaned_object_data = fb_api.LookupEvent.cleanup_data(object_data)
-        self.assertEqual(cleaned_object_data['info']['attending_count'], 60)
+        self.assertEqual(cleaned_object_data['info']['invited_count'], 60)
 
-        object_data = {'info': {'attending_count': 267}}
+        object_data = {'info': {'invited_count': 267}}
         cleaned_object_data = fb_api.LookupEvent.cleanup_data(object_data)
-        self.assertEqual(cleaned_object_data['info']['attending_count'], 200)
+        self.assertEqual(cleaned_object_data['info']['invited_count'], 200)
 
 class TestMemcache(unittest.TestCase):
     def setUp(self):
