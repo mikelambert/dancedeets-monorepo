@@ -185,10 +185,11 @@ class AuthHandler(ApiHandler):
     def post(self):
         self.finish_preload()
 
-        access_token = self.request.get('access_token')
-        access_token_expires = self.request.get('access_token_expires')
-        city = self.request.get('city') or self.get_location_from_headers()
-        client = self.request.get('client')
+        json_request = json.loads(self.request.body)
+        access_token = json_request.get('access_token')
+        access_token_expires = json_request.get('access_token_expires')
+        city = json_request.get('city') or self.get_location_from_headers()
+        client = json_request.get('client')
         logging.info("Auth token from client %s is %s", client, access_token)
 
         user_creation.create_user(access_token, access_token_expires, city, client=client)
@@ -212,14 +213,15 @@ class SettingsHandler(ApiHandler):
         self.finish_preload()
 
         user = users.User.get_by_key_name(str(self.fb_uid))
-        if self.request.get('location'):
-            user.location = self.request.get('location')
-        if self.request.get('distance'):
-            user.distance = self.request.get('distance')
-        if self.request.get('distance_units'):
-            user.distance_units = self.request.get('distance_units')
-        if self.request.get('send_email'):
-            user.send_email = self.request.get('send_email')
+        json_request = json.loads(self.request.body)
+        if json_request.get('location'):
+            user.location = json_request.get('location')
+        if json_request.get('distance'):
+            user.distance = json_request.get('distance')
+        if json_request.get('distance_units'):
+            user.distance_units = json_request.get('distance_units')
+        if json_request.get('send_email'):
+            user.send_email = json_request.get('send_email')
         user.put()
 
         self.write_json_success()
