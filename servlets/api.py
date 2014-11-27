@@ -188,11 +188,11 @@ class AuthHandler(ApiHandler):
         json_request = json.loads(self.request.body)
         access_token = json_request.get('access_token')
         access_token_expires = json_request.get('access_token_expires')
-        city = json_request.get('city') or self.get_location_from_headers()
+        location = json_request.get('location') or self.get_location_from_headers()
         client = json_request.get('client')
         logging.info("Auth token from client %s is %s", client, access_token)
 
-        user_creation.create_user(access_token, access_token_expires, city, client=client)
+        user_creation.create_user(access_token, access_token_expires, location, client=client)
         self.write_json_success()
 
 

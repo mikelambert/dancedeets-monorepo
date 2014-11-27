@@ -8,11 +8,11 @@ import fb_api
 from events import users
 from logic import backgrounder
 
-def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires, city, send_email=False, referer=None, client=None):
+def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires, location, send_email=False, referer=None, client=None):
     user = users.User(key_name=str(fb_uid))
     user.fb_access_token = access_token
     user.fb_access_token_expires = access_token_expires
-    user.location = city
+    user.location = location
 
     # grab the cookie to figure out who referred this user
     logging.info("Referer was: %s", referer)
@@ -42,7 +42,7 @@ def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires,
     backgrounder.load_potential_events_for_users([fb_uid])
 
 
-def create_user(access_token, access_token_expires, city, send_email=False, referer=None, client=None):
+def create_user(access_token, access_token_expires, location, send_email=False, referer=None, client=None):
     #TODO(lambebrt): move to servlets/api.py code, if this is repeated code
     # Build a cache-less lookup
     fbl = fb_api.FBLookup(None, access_token)
@@ -51,5 +51,5 @@ def create_user(access_token, access_token_expires, city, send_email=False, refe
 
     fbl = fb_api.FBLookup(fb_uid, access_token)
     fb_user = fbl.get(fb_api.LookupUser, fb_uid)
-    return create_user(fb_uid, fb_user, access_token, access_token_expires, city, send_email=send_email, referer=referer, client=client)
+    return create_user(fb_uid, fb_user, access_token, access_token_expires, location, send_email=send_email, referer=referer, client=client)
 
