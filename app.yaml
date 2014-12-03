@@ -1,13 +1,18 @@
 application: dancedeets-hrd
 version: v2-6-vms
 vm: true
-runtime: python27
+runtime: vm
 threadsafe: true
 api_version: 1
+module: default
+
+manual_scaling:
+  instances: 2
 
 vm_settings:
-  vm_runtime: python27
   machine_type: g1-small
+  vm_runtime: python27
+
 #  has_docker_image: 'True'
 
 #automatic_scaling:
@@ -21,12 +26,10 @@ vm_settings:
 #  cpu_utilization:
 #    target_utilization: 0.5
 
-manual_scaling:
-  instances: 2
 
-resources:
-  cpu: .5
-  memory_gb: 1.3
+#resources:
+#  cpu: .5
+#  memory_gb: 1.3
 
 inbound_services:
 - warmup
