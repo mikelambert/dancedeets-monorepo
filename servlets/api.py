@@ -294,7 +294,7 @@ def canonicalize_event_data(fb_event, db_event):
 
     return event_api
 
-class EventHandler(base_servlet.BaseRequestHandler):
+class EventHandler(ApiHandler):
     def requires_login(self):
         return False
 
