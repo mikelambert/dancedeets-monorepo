@@ -48,7 +48,7 @@ $format_html($event.info.name)
 			<div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
 		#end if
 		<div class="responsive-map-wrapper">
-		<iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=$urlencode($street_address+", "+$city_state_country)&key=AIzaSyAMTDdM6Y8xDkS7zaj3nRWmxK01rHznlB0"></iframe>
+		<iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=$urlencode($street_address+", "+$city_state_country)&key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ"></iframe>
 		</div>
 	#end if
 </div>
