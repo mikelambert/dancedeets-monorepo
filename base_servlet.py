@@ -191,7 +191,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
             domain = request.host.replace('www.','.')
             if ':' in domain:
                 domain = domain.split(':')[0]
-            self.response.set_cookie('user_login', user_login_string, expires=datetime.datetime.now() + datetime.timedelta(days=30), path='/', domain=domain)
+            #TODO: set_cookie() got an unexpected keyword argument 'expires'
+            self.response.set_cookie('user_login', user_login_string, max_age=30*24*60*60, path='/', domain=domain)
             our_cookie_uid = fb_cookie_uid
 
         # Don't force-logout the user if there is a our_cookie_uid but not a fb_cookie_uid
