@@ -21,7 +21,7 @@ def mr_load_fb_event(fbl):
 def yield_load_fb_event(fbl, db_events):
     logging.info("loading db events %s", [db_event.fb_event_id for db_event in db_events])
     fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
-    fbl.request_multi(fb_api.LookupEventPageComments, [x.fb_event_id for x in db_events])
+    #fbl.request_multi(fb_api.LookupEventPageComments, [x.fb_event_id for x in db_events])
     fbl.batch_fetch()
     for db_event in db_events:
         try:
