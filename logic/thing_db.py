@@ -147,7 +147,7 @@ class Source(db.Model):
 def link_for_fb_source(data):
     if 'likes' in data['info']:
         return data['info']['link']
-    elif 'locale' in data['info']:
+    elif 'last_name' in data['info']:
         return 'http://www.facebook.com/profile.php?id=%s' % data['info']['id']
     elif 'version' in data['info']:
         return 'http://www.facebook.com/groups/%s/' % data['info']['id']
