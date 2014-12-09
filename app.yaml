@@ -1,5 +1,4 @@
 application: dancedeets-hrd
-version: v2-6-vms
 vm: true
 runtime: vm
 threadsafe: true
