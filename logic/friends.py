@@ -6,6 +6,8 @@ import fb_api
 RESULTS_AT_ONCE = 100
 
 def decorate_with_friends(fbl, search_results):
+    #DISABLE_ATTENDING
+    return
 
     if len(search_results) > RESULTS_AT_ONCE:
         decorate_with_friends(fbl, search_results[RESULTS_AT_ONCE:])
