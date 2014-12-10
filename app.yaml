@@ -5,20 +5,18 @@ threadsafe: true
 api_version: 1
 module: default
 
-#manual_scaling:
-#  instances: 2
-#
-#vm_settings:
-#  machine_type: g1-small
-#  vm_runtime: python27
+manual_scaling:
+  instances: 2
 
-
+vm_settings:
+  machine_type: g1-small
+  vm_runtime: python27
 
 #  has_docker_image: 'True'
 
-automatic_scaling:
-  max_idle_instances: 1
-  max_pending_latency: 500ms
+#automatic_scaling:
+#  max_idle_instances: 1
+#  max_pending_latency: 500ms
 
 #automatic_scaling:
 #  min_num_instances: 1
