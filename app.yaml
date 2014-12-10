@@ -1,8 +1,6 @@
 application: dancedeets-hrd
-version: v2-7-undo-vm
-#vm: true
-#runtime: vm
-runtime: python27
+vm: true
+runtime: vm
 threadsafe: true
 api_version: 1
 module: default

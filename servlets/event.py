@@ -126,12 +126,15 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
         self.fbl.request(fb_api.LookupEvent, event_id, allow_cache=False)
-        self.fbl.request(fb_api.LookupEventAttending, event_id, allow_cache=False)
+        #DISABLE_ATTENDING
+        #self.fbl.request(fb_api.LookupEventAttending, event_id, allow_cache=False)
         self.finish_preload()
 
         try:
             fb_event = self.fbl.fetched_data(fb_api.LookupEvent, event_id)
-            fb_event_attending = self.fbl.fetched_data(fb_api.LookupEventAttending, event_id)
+            #DISABLE_ATTENDING
+            fb_event_attending = None
+            #fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
         except fb_api.NoFetchedDataException:
             return self.show_barebones_page(event_id)
 

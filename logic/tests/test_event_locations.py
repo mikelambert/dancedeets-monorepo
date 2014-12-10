@@ -31,7 +31,7 @@ class TestEventLocations(unittest.TestCase):
     def get_event(self, event_id):
         return self.fbl.get(fb_api.LookupEvent, event_id)
 
-    def assertNearEqual(self, a, b, delta=0.001):
+    def assertNearEqual(self, a, b, delta=0.01):
         if type(a) == tuple:
             for x, y in zip(a, b):
                 self.assertNearEqual(x, y, delta=delta)

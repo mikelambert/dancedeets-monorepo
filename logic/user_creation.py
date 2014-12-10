@@ -43,9 +43,10 @@ def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires,
 
 
 def create_user(access_token, access_token_expires, location, send_email=False, referer=None, client=None):
-    #TODO(lambebrt): move to servlets/api.py code, if this is repeated code
+    #TODO(lambebrt): move to servlets/api.py code, combine with initialize() there
     # Build a cache-less lookup
     fbl = fb_api.FBLookup(None, access_token)
+    fbl.make_passthrough()
     fb_user = fbl.get(fb_api.LookupUser, 'me')
     fb_uid = fb_user['info']['id']
 

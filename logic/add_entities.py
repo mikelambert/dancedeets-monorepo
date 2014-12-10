@@ -12,11 +12,14 @@ class AddEventException(Exception):
 def add_update_event(event_id, user_id, fbl, remapped_address=None, override_address=None, creating_method=None):
     event_id = str(event_id)
     fbl.request(fb_api.LookupEvent, event_id, allow_cache=False)
-    fbl.request(fb_api.LookupEventAttending, event_id, allow_cache=False)
+    #DISABLE_ATTENDING
+    #fbl.request(fb_api.LookupEventAttending, event_id, allow_cache=False)
     fbl.batch_fetch()
 
     fb_event = fbl.fetched_data(fb_api.LookupEvent, event_id)
-    fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
+    #DISABLE_ATTENDING
+    fb_event_attending = None
+    #fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
     if not fb_api.is_public_ish(fb_event):
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
 

@@ -6,7 +6,7 @@ cron:
   url: /tasks/load_potential_events_for_friends?user_id=701004&allow_cache=0
   schedule: every 22 hours
 - description: load potential events from special users and sources
-  url: /tasks/load_potential_events_from_wall_posts?user_id=701004&allow_cache=0&min_potential_events=1
+  url: /tasks/load_potential_events_from_wall_posts?user_id=701004&allow_cache=0&min_potential_events=2
   schedule: every 21 hours
 - description: email users about upcoming events
   url: /tasks/email_all_users?user_id=701004
@@ -14,16 +14,16 @@ cron:
   timezone: America/Los_Angeles
 - description: calculate periodic statistics and rankings
   url: /tasks/compute_rankings
-  schedule: every 13 hours
+  schedule: every 2 days
 - description: reload user data
   url: /tasks/reload_all_users?user_id=701004&allow_cache=0
-  schedule: every 9 hours
+  schedule: every 25 hours
 - description: reload future facebook event data
   url: /tasks/reload_future_events?user_id=701004&allow_cache=0
-  schedule: every 15 hours
-- description: reload past facebook event data
-  url: /tasks/reload_past_events?user_id=701004&allow_cache=0
-  schedule: every monday 2:00
+  schedule: every 20 hours
+#- description: reload past facebook event data
+#  url: /tasks/reload_past_events?user_id=701004&allow_cache=0
+#  schedule: every monday 2:00
 - description: daily exception report
   url: /_ereporter?sender=mlambert@gmail.com&to=mlambert@gmail.com
   schedule: every day 00:00
@@ -40,4 +40,4 @@ cron:
   schedule: every 1 hours
 - description: auto-add events weekly
   url: /tools/auto_add_potential_events?user_id=701004
-  schedule: every thursday 2:00
+  schedule: every tuesday 2:00

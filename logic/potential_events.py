@@ -146,13 +146,16 @@ def get_potential_dance_events(fbl, fb_user_events):
     logging.info("Going to look up %s events", len(event_ids))
 
     fbl.request_multi(fb_api.LookupEvent, event_ids)
-    fbl.request_multi(fb_api.LookupEventAttending, event_ids)
+    #DISABLE_ATTENDING
+    #fbl.request_multi(fb_api.LookupEventAttending, event_ids)
     fbl.batch_fetch()
 
     for event_id in event_ids:
         try:
             fb_event = fbl.fetched_data(fb_api.LookupEvent, event_id)
-            fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
+            #DISABLE_ATTENDING
+            fb_event_attending = None
+            #fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
         except fb_api.NoFetchedDataException:
             logging.info("event id %s: no fetched data", event_id)
             continue # must be a non-saved event, probably due to private/closed event. so ignore.
