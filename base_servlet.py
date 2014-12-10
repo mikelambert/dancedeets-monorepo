@@ -142,9 +142,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
     def get_location_from_headers(self):
         location_components = [
-            self.request.headers["X-AppEngine-City"],
-            self.request.headers["X-AppEngine-Region"],
-            self.request.headers["X-AppEngine-Country"],
+            self.request.headers.get("X-AppEngine-City"),
+            self.request.headers.get("X-AppEngine-Region"),
+            self.request.headers.get("X-AppEngine-Country"),
         ]
         location = ', '.join(x for x in location_components if x)
         return location
@@ -241,6 +241,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.access_token = access_token
             # Fix this ugly import hack:
             fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
+            fbl.debug = 'fbl' in self.debug_list
             fb_user = fbl.get(fb_api.LookupUser, self.fb_uid)
             
             referer = self.get_cookie('User-Referer')
@@ -284,6 +285,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
         params = dict(next=final_url)
         if 'deb' in self.request.arguments():
             params['deb'] = self.request.get('deb')
+            self.debug_list = self.request.get('deb').split(',')
+        else:
+            self.debug_list = []
+        logging.info("Debug list is %r", self.debug_list)
         login_url = '/login?%s' % urllib.urlencode(params)
         self.setup_login_state(request)
 
@@ -325,6 +330,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.fbl.request(fb_api.LookupUser, self.fb_uid)
         else:
             self.fbl = fb_api.FBLookup(None, None)
+        self.fbl.debug = 'fbl' in self.debug_list
         if self.user:
             self.display['date_human_format'] = self.user.date_human_format
             self.display['duration_human_format'] = self.user.duration_human_format
