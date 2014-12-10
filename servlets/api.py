@@ -47,6 +47,7 @@ class ApiHandler(base_servlet.BaseRequestHandler):
         if self.requires_auth or self.supports_auth:
             if self.request.get('access_token'):
                 self.fbl = fb_api.FBLookup(None, self.request.get('access_token'))
+                self.fbl.make_passthrough()
                 self.fb_user = self.fbl.get(fb_api.LookupUser, 'me')
                 self.fb_uid = self.fb_user['info']['id']
             elif self.requires_auth:

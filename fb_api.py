@@ -616,7 +616,7 @@ class FBAPI(CacheSystem):
         return rpc
 
     def _fetch_object_keys(self, object_keys_to_lookup):
-        logging.info("BatchLookup: Looking up IDs: %s", object_keys_to_lookup)
+        logging.info("BatchLookup: Fetching IDs from FB: %s", object_keys_to_lookup)
         # initiate RPCs
         object_keys_to_rpcs = {}
         for object_key in object_keys_to_lookup:
@@ -724,14 +724,14 @@ class FBLookup(object):
         # If we fetch objects from memcache, we can save them back into memcache.
         # Useful for keeping objects in cache when we don't care about staleness.
         self.resave_to_memcache = False
-        if self.fb_uid:
-            self.m = Memcache(self.fb_uid)
-            self.db = DBCache(self.fb_uid)
-        else:
-            self.m = None
-            self.db = None
+        self.m = Memcache(self.fb_uid)
+        self.db = DBCache(self.fb_uid)
         self.fb = FBAPI(self.access_token)
         self.debug = False
+
+    def make_passthrough(self):
+        self.m = None
+        self.db = None
 
     def request(self, cls, object_id, allow_cache=True):
         self.request_multi(cls, (object_id,), allow_cache=allow_cache)
