@@ -20,10 +20,8 @@ class TestSearch(unittest.TestCase):
         #TODO(lambert): move this into some testbed wrapper code, or port upstream
         # This is a bug in the code versions between appengine and its libraries:
         # mapreduce requires a DEFAULT_VERSION_HOSTNAME
-        # ereporter requires a CURRENT_VERSION_ID with a dot in it
         self.testbed.setup_env(overwrite=True,
-            DEFAULT_VERSION_HOSTNAME='testhost:testport',
-            CURRENT_VERSION_ID='testbed.version'
+            DEFAULT_VERSION_HOSTNAME='localhost',
         )
 
 

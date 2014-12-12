@@ -103,9 +103,10 @@ URLS = [
     ('/api/auth', api.AuthHandler),
 ]
 
-ereporter.register_logger()
+prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
+if prod_mode:
+    ereporter.register_logger()
 application = webapp2.WSGIApplication(URLS)
 application.debug = True
-prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
 application.prod_mode = prod_mode
 
