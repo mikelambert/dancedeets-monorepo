@@ -70,10 +70,25 @@ ln -sf download/httplib2/python2/httplib2 $BASE_DIR/
 
 # MAPREDUCE
 cd $BASE_DIR/download
-svn checkout http://appengine-mapreduce.googlecode.com/svn/trunk/ appengine-mapreduce-read-only
-cd appengine-mapreduce-read-only
+git clone https://github.com/GoogleCloudPlatform/appengine-mapreduce.git
+cd appengine-mapreduce
 # no installation! just symlinking!
-ln -sf download/appengine-mapreduce-read-only/python/src/mapreduce $BASE_DIR/
+ln -sf download/appengine-mapreduce/python/src/mapreduce $BASE_DIR/
+
+#GRAPHY (used by mapreduce)
+cd $BASE_DIR/download
+svn checkout http://graphy.googlecode.com/svn/trunk/ graphy-read-only
+cd graphy-read-only
+ln -sf download/graphy-read-only/graphy $BASE_DIR/
+
+cd $BASE_DIR/download
+git clone https://github.com/simplejson/simplejson.git
+cd simplejson
+python setup.py build
+# no installation! just symlinking!
+ln -sf download/simplejson/simplejson $BASE_DIR/
+
+#SIMPLEJSON (used by mapreduce)
 
 # WEBTEST
 cd $BASE_DIR/download
