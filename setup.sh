@@ -3,9 +3,9 @@
 set -e
 
 # Find latest version here: https://pypi.python.org/pypi/nose
-NOSE_VERSION=nose-1.3.1
+NOSE_VERSION=nose-1.3.4
 # Find latest version here: https://pypi.python.org/pypi/WebTest
-WEBTEST_VERSION=WebTest-2.0.12
+WEBTEST_VERSION=WebTest-2.0.16
 
 BASE_DIR=$(pwd)
 mkdir -p download/
