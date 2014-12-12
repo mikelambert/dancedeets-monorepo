@@ -81,14 +81,13 @@ svn checkout http://graphy.googlecode.com/svn/trunk/ graphy-read-only
 cd graphy-read-only
 ln -sf download/graphy-read-only/graphy $BASE_DIR/
 
+#SIMPLEJSON (used by mapreduce)
 cd $BASE_DIR/download
 git clone https://github.com/simplejson/simplejson.git
 cd simplejson
 python setup.py build
 # no installation! just symlinking!
 ln -sf download/simplejson/simplejson $BASE_DIR/
-
-#SIMPLEJSON (used by mapreduce)
 
 # WEBTEST
 cd $BASE_DIR/download
