@@ -180,15 +180,23 @@ class SearchHandler(ApiHandler):
     pass
     #TODO: implement new search API
 
+ISO_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
+
 class AuthHandler(ApiHandler):
     requires_auth = True
+
 
     def post(self):
         self.finish_preload()
 
         json_request = json.loads(self.request.body)
+        logging.info("Request body: %r", json_request)
         access_token = json_request.get('access_token')
-        access_token_expires = json_request.get('access_token_expires')
+        access_token_expires_with_tz = json_request.get('access_token_expires')
+        # strip off the timezone, since we can't easily process it
+        # TODO(lambert): using http://labix.org/python-dateutil to parse timezones would help with that
+        access_token_expires_without_tz = access_token_expires_with_tz[:-5]
+        access_token_expires = datetime.datetime.strptime(access_token_expires_without_tz, ISO_DATETIME_FORMAT)
         location = json_request.get('location') or self.get_location_from_headers()
         client = json_request.get('client')
         logging.info("Auth token from client %s is %s", client, access_token)
