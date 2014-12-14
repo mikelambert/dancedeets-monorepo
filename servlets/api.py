@@ -43,12 +43,16 @@ class ApiHandler(base_servlet.BaseRequestHandler):
         if callback:
             self.response.out.write(')')
 
+    def handle_error_response(self, errors):
+        self.write_json_error({'errors': errors})
+        return True
+
     def initialize(self, request, response):
         super(ApiHandler, self).initialize(request, response)
 
         if self.request.body:
             logging.info("Request body: %r", self.request.body)
-            escaped_body = urllib.unquote(self.request.body.strip('='))
+            escaped_body = urllib.unquote_plus(self.request.body.strip('='))
             self.json_body = json.loads(escaped_body)
             logging.info("json_request: %r", self.json_body)
         else:
@@ -63,7 +67,6 @@ class ApiHandler(base_servlet.BaseRequestHandler):
                 logging.info("Access token for user ID %s", self.fb_uid)
             elif self.requires_auth:
                 self.add_error("Needs access_token parameter")
-                self.write_json_error("Error: Needs access_token parameter")
 
 
 class FeedHandler(ApiHandler):
@@ -196,8 +199,8 @@ ISO_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 class AuthHandler(ApiHandler):
     requires_auth = True
 
-
     def post(self):
+        self.errors_are_fatal()
         self.finish_preload()
 
         access_token = self.json_body.get('access_token')
