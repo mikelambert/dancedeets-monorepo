@@ -65,7 +65,10 @@ def linkify(value):
         link = m.group(1)
         if '"' in link:
             logging.error("Found double-quote in link %r in linkify for %r", link, value)
-        return '<a href="%s">%s</a>' % (m.group(1), m.group(1))
+        url = m.group(1)
+        if not url.startswith('http'):
+            url = 'http://' + url
+        return '<a href="%s">%s</a>' % (url, m.group(1))
     return url_finder_re.sub(make_href, value)
 
 @skip_filter
