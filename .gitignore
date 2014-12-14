@@ -1,16 +1,22 @@
 # generated files:
 *.pyc
 *.swp
+app-nose.yaml
 compiled_templates
 
 # temp files not for git
 tmp
+
+# scratch files for tool output
+scratch
 
 # mac files:
 .DS_Store
 
 # per-user sublime files:
 *.sublime-workspace
+
+.gcloud
 
 # master installed libraries location:
 download
@@ -21,10 +27,11 @@ atom
 gdata
 gflags.py
 gflags_validators.py
+graphy
 httplib2
 mapreduce
 oauth2client
+simplejson
 spitfire
 unittest2
 uritemplate
-
