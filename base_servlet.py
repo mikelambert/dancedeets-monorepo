@@ -57,8 +57,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
 
     def initialize(self, request, response):
         super(BareBaseRequestHandler, self).initialize(request, response)
-        for arg in sorted(self.request.arguments()):
-            logging.info("query %r = %r", arg, self.request.get_all(arg))
+        for arg in sorted(self.request.GET):
+            logging.info("query %r = %r", arg, self.request.GET.getall(arg))
 
         logging.info("Appengine Request Headers:")
         for x in request.headers:
@@ -279,8 +279,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         super(BaseRequestHandler, self).initialize(request, response)
         self.run_handler = True
         current_url_args = {}
-        for arg in sorted(self.request.arguments()):
-            current_url_args[arg] = [x.encode('utf-8') for x in self.request.get_all(arg)]
+        for arg in sorted(self.request.GET):
+            current_url_args[arg] = [x.encode('utf-8') for x in self.request.GET.getall(arg)]
         final_url = self.request.path + '?' + urllib.urlencode(current_url_args, doseq=True)
         params = dict(next=final_url)
         if 'deb' in self.request.arguments():

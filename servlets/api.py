@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import urllib
 import xml.sax.saxutils
 
 import base_servlet
@@ -26,7 +27,7 @@ class ApiHandler(base_servlet.BaseRequestHandler):
     def write_json_error(self, error_string):
         return self._write_json_data(error_string)
 
-    def write_json_success(self, results=None):
+    def write_json_success(self, results=True):
         return self._write_json_data(results)
 
     def _write_json_data(self, json_data):
@@ -44,12 +45,22 @@ class ApiHandler(base_servlet.BaseRequestHandler):
 
     def initialize(self, request, response):
         super(ApiHandler, self).initialize(request, response)
+
+        if self.request.body:
+            logging.info("Request body: %r", self.request.body)
+            escaped_body = urllib.unquote(self.request.body.strip('='))
+            self.json_body = json.loads(escaped_body)
+            logging.info("json_request: %r", self.json_body)
+        else:
+            self.json_body = None
+
         if self.requires_auth or self.supports_auth:
-            if self.request.get('access_token'):
-                self.fbl = fb_api.FBLookup(None, self.request.get('access_token'))
+            if self.json_body.get('access_token'):
+                self.fbl = fb_api.FBLookup(None, self.json_body.get('access_token'))
                 self.fbl.make_passthrough()
                 self.fb_user = self.fbl.get(fb_api.LookupUser, 'me')
-                self.fb_uid = self.fb_user['info']['id']
+                self.fb_uid = self.fb_user['profile']['id']
+                logging.info("Access token for user ID %s", self.fb_uid)
             elif self.requires_auth:
                 self.add_error("Needs access_token parameter")
                 self.write_json_error("Error: Needs access_token parameter")
@@ -189,19 +200,26 @@ class AuthHandler(ApiHandler):
     def post(self):
         self.finish_preload()
 
-        json_request = json.loads(self.request.body)
-        logging.info("Request body: %r", json_request)
-        access_token = json_request.get('access_token')
-        access_token_expires_with_tz = json_request.get('access_token_expires')
+        access_token = self.json_body.get('access_token')
+        access_token_expires_with_tz = self.json_body.get('access_token_expires')
         # strip off the timezone, since we can't easily process it
         # TODO(lambert): using http://labix.org/python-dateutil to parse timezones would help with that
         access_token_expires_without_tz = access_token_expires_with_tz[:-5]
         access_token_expires = datetime.datetime.strptime(access_token_expires_without_tz, ISO_DATETIME_FORMAT)
-        location = json_request.get('location') or self.get_location_from_headers()
-        client = json_request.get('client')
+        location = self.json_body.get('location') or self.get_location_from_headers()
+        client = self.json_body.get('client')
         logging.info("Auth token from client %s is %s", client, access_token)
 
-        user_creation.create_user(access_token, access_token_expires, location, client=client)
+        user = users.User.get_by_key_name(str(self.fb_uid))
+        if user:
+            logging.info("User exists, updating user with new fb access token data")
+            user.fb_access_token = access_token
+            user.fb_access_token_expires = access_token_expires
+            user.expired_oauth_token = False
+            user.expired_oauth_token_reason = ""
+            user.put() # this also sets to memcache
+        else:
+            user_creation.create_user_with_fbuser(self.fb_uid, self.fb_user, access_token, access_token_expires, location, client=client)
         self.write_json_success()
 
 
