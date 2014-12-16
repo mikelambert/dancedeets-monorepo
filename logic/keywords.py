@@ -142,6 +142,7 @@ add(EASY_CHOREO, [
     u'chorée', # french choreo
     u'chorégraph\w*', # french choreographer
     u'кореограф', # macedonian
+    u'안무',
 ])
 
 GOOD_INSTANCE_OF_BAD_CLUB = token('GOODINSTANCEOFBADCLUB')
@@ -194,6 +195,7 @@ add(AMBIGUOUS_DANCE_MUSIC, [
     'funk',
     'dance\W?hall\w*',
     'ragga',
+    u'레게', # korean reggae
     'hype',
     'new\W?jack\W?swing',
     'gliding', 
@@ -202,6 +204,7 @@ add(AMBIGUOUS_DANCE_MUSIC, [
     "breakin[g']?", 'breakers?',
     'jerk',
     'kpop',
+    u'케이팝', # korean kpop
     'rnb',
     "poppin\'?",
     'hard\Whitting',
@@ -209,6 +212,7 @@ add(AMBIGUOUS_DANCE_MUSIC, [
     'old\W?school hip\W?hop',
     '90\W?s hip\W?hop',
     u'フリースタイル', # japanese freestyle
+    u'얼반', # korean urban
 ])
 
 legit_dance = [
@@ -217,9 +221,11 @@ legit_dance = [
     u'breaktánc', # breakdance hungarian
     u'ブレイク', # breakdance japanese
     'jazz rock',
+    u'재즈 ?록', # korean jazz rock
     'funk\W?style[sz]?',
     'poppers?', 'popp?i?ng', # listing poppin in the ambiguous keywords
     'poppeurs?',
+    u'팝핀', # korean popping
     'commercial hip\W?hop',
     'hip\W?hop dance',
     "jerk(?:ers?|in[g']?)",
@@ -236,33 +242,45 @@ legit_dance = [
     "turfin(?:[g']?|er[sz])", 'turf danc\w+', "flexin[g']?", "buckin[g']?", "jookin[g']?",
     'power\W?moves?', "footworkin[g']?",
     'b\W?(?:boy|girl)\w*',
+    u'비보이', # korean bboy
+    u'비걸', # korean bgirl
     u'파워무브', # powermove korean
     'breakeuse', # french bgirl
     'footworks', # spanish footworks
     "top\W?rock(?:s|er[sz]?|in[g']?)?", "up\W?rock(?:s|er[sz]?|in[g']?|)?",
+    u'탑락', # toprock
     'houser[sz]?',
     'dance house', # seen in italian
     'soul dance',
     u'ソウルダンス', # soul dance japanese
     "lock(?:er[sz]?|in[g']?)?", 'lock dance',
+    #'soul train',...do we want this?
+    u'소울트레인', # korean soul train
     u'ロッカーズ', # japanese lockers
     u'ロッカ', # japanese lock
+    u'락킹', # korean locking
     "[uw]h?aa?c?c?k(?:er[sz]?|inn?[g']?)", # waacking
+    u'왁킹', # korean waacking
     "paa?nc?kin[g']?", # punking
     'locking4life',
     'dance crew[sz]?',
+    u'댄스 ?승무원', # korean dance crew
     "wavin[g']?", 'wavers?',
     'liquid\W+dance'
     'liquid\W+(?:\w+\W+)?digitz',
+    u'리퀴드댄싱', # korean liquid dance
     'finger\W+digitz',
     'toy\W?man',
     'puppet\W?style',
     "bott?in[g']?",
     "robott?in[g']?",
+    u'로봇팅', # roboting
     'g\W?styl\w+',
     'melbourne shuffle',
     'strutter[sz]?', 'strutting',
+    u'스트럿팅', # strutting
     "tuttin[g']?", 'tutter[sz]?',
+    u'텃팅', # korean tutting
     'mj\W+style', 'michael jackson style',
     'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
     'hip\W?hop\Wheels',
@@ -271,13 +289,17 @@ legit_dance = [
     'l\W?a\W?\Wdance',
     'n(?:ew|u)\W?style',
     'n(?:ew|u)\W?style\Whip\W?hop',
+    u'뉴스타일 ?힙합', # korean new style hiphop
     'hip\W?hop\Wn(?:ew|u)\W?style',
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'all\W+open\W?style[sz]?',
     'open\W+all\W?style[sz]?',
     'me against the music',
     'krump', "krumpin[g']?", 'krumper[sz]?',
+    u'크럼핑', # korean krumping
     'ragga\W?jamm?',
+    u'댄스 ?레게', # korean reggae dance
+    u'레게 ?댄스', # korean reggae dance
     'girl\W?s\W?hip\W?hop',
     'hip\W?hopp?er[sz]?',
     'street\W?jazz', 'street\W?funk',
@@ -326,18 +348,22 @@ add(FREESTYLE, [
 STREET = token('STREET')
 add(STREET, [
     'street',
+    u'스트리트', # korean street
 ])
 
 EASY_BATTLE = token('EASYBATTLE')
 add(EASY_BATTLE, [
     'jams?', 
+    u'잼', # korean jam
 ])
 
 EASY_EVENT = token('EASYEVENT')
 add(EASY_EVENT, [
     'club', 'after\Wparty', 'pre\Wparty',
+    u'클럽', # korean club
     u'クラブ',  # japanese club
     'open sessions?',
+    u'오픈 ?세션', # open session
     'training',
 ])
 
@@ -352,6 +378,7 @@ PRACTICE = token('PRACTICE')
 add(PRACTICE, [
     'sesja', # polish session
     'sessions', 'practice',
+    u'연습', # korean practice/runthrough
 ])
 
 PERFORMANCE = token('PERFORMANCE')
@@ -359,6 +386,8 @@ add(PERFORMANCE, [
     'shows?', 'performances?',
     'show\W?case',
     u'représentation', # french performance
+    u'퍼포먼스', # korean performance
+    u'쇼케이스', # korean showcase
     u'ショーケース', # japanese showcase
     u'秀', # chinese show
     u'的表演', # chinese performance
@@ -543,6 +572,11 @@ add(BATTLE, [
     'concorsi', # italian competition
     u'danstävling', # swedish dance competition
     u'แข่งขัน', # thai competition
+    u'대회에서', # korean competition
+    u'선수권대회', # korean champsionship
+    u'대회', # korean rally/tournament/etc commonality
+    u'대전', # korean battle
+    u'배틀', # korean battle
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'battles?',
     'battlu(?:je)?', # french czech
@@ -580,6 +614,7 @@ add(CLASS, [
     'ws', # japanese workshop WS
     'w\.s\.', # japanese workshop W.S.
     u'ワークショップ', # japanese workshop
+    u'작업장', # korean workshop
     'cursillo', # spanish workshop
     'ateliers', # french workshop
     'workshopy', # czech workshop
@@ -633,6 +668,7 @@ add(CLASS, [
     'camp',
     'kamp',
     'kemp',
+    u'캠프', # korean camp
     'formazione', # training italian
     'formazioni', # training italian
     u'トレーニング', # japanese training
@@ -648,7 +684,10 @@ add(AUDITION, [
     'audicija', # audition croatia
     'audiciones', # spanish audition
     'konkurz', # audition czech
+    u'オーディション', # japanese audition
+    u'トライアウト', # japanese tryout
     u'試鏡', # chinese audition
+    u'오디션', # korean audition
     'audizione', # italian audition
     'naborem', # polish recruitment/audition
 ])
@@ -670,6 +709,7 @@ def _generate_n_x_n_keywords():
         'on',
         'x',
         u'×',
+        u':',
     ]
     digit_x_keywords = english_digit_x_keywords + [
         'na',
@@ -707,6 +747,7 @@ add(JUDGE, [
     u'評判團', # chinese judges
     u'審査員', # japanese judges
     u'ジャッジ', # japanese judges
+    u'심사', # korean judges
 ])
 
 AMBIGUOUS_CLASS = token('AMBIGUOUSCLASS')
@@ -719,9 +760,14 @@ add(AMBIGUOUS_CLASS, [
 DANCE_WRONG_STYLE = token('DANCEWRONGSTYLE')
 add(DANCE_WRONG_STYLE, [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
+    u'소스', # korean salsa
+    u'탱고', # korean tango
+    u'린디', # korean lindy
     'latines', 'quickstep', 'rumba', 'cha\W?cha',
+    u'륨바', # korean rumba
     'blues',
     'waltz',
+    u'왈츠', # korean waltzz
     'salsy', # salsa czech
     'salser[oa]s?',
     'kizomba',
@@ -741,8 +787,10 @@ add(DANCE_WRONG_STYLE, [
     'contratto mimo', # italian contact mime
     'musical theat(?:re|er)',
     'pole danc\w+', 'flirt danc\w+',
+    u'폴 ?댄스', # korean pole dance
     'go\W?go',
     'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
+    u'볼리우드', # bollywood
     'indienne',
     'persiana?',
     'arabe', 'arabic', 'araba',
@@ -773,6 +821,8 @@ add(DANCE_WRONG_STYLE, [
     'pilates',
     'tribal',
     'jazz', 'tap', 'contemporary',
+    u'재즈', # korean jazz
+    u'탭 ?댄스', # korean tap dance
     u'súčasný', # contemporary slovak
     u'współczesnego', # contemporary polish
     'contempor\w*', # contemporary italian, french
@@ -886,10 +936,13 @@ FORMAT_TYPE = token('FORMATTYPE')
 add(FORMAT_TYPE, [
     'solo',
     u'ソロ', # japanese solo
+    u'만', # korean solo
     'team',
     u'チーム', # japanese team
+    u'팀', # korean team
     'crew',
     u'クルー', # japanese crew
+    u'크루', # korean crew
 ])
 
 BAD_COMPETITION_TITLE_ONLY = token('BADCOMPETITIONTITLEONLY')

@@ -1,3 +1,24 @@
+오리지날리티 # originality
+락앤롤,0 # lock n lol, but also rock n roll
+펑키즈 # Funkies
+코스믹 ?슬랍 # cosmic slop
+펑키 ?스트릿 ?프린스즈 # Funky street princes
+펑크 ?폴 ?라이프# Funk For Life
+크리티컬 ?포인트 # Critical point
+루플로 ?디플로 # Luplo D-FLO
+브랜드 ?뉴 ?마인드 # Brand New Mind
+위너스 ?크루 # Winners Crew
+일렉트릭 ?부갈루스 # Electric Boogaloos
+블루 ?웨일 ?브라더스 # Blue Whale Brothers
+애니메이션 ?크루 # Animation Crew
+티아이피 # TIP Crew
+진조 ?크루 # Jinjo Crew
+라스트 ?포 ?원 # Last For One
+겜블러 ?크루 # Gamblerz Crew
+리버스 # Riverz Crew
+익스프레션,0 # Expression
+익스트림,0 # Extreme Crew
+모닝 ?오브 ?오울 # Morning of Owl
 (?:5|five)\W?f(?:oo)?t thrillaz
 3kick sp[rl]it[sz]
 6sence
