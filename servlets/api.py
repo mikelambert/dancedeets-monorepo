@@ -6,6 +6,7 @@ import xml.sax.saxutils
 
 import base_servlet
 import fb_api
+import locations
 from events import eventdata
 from events import users
 from logic import event_locations
@@ -17,6 +18,8 @@ from util import urls
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
+#TODO(lambert): move to webapp. Handle:
+# finish_preload, get_location_from_headers, add_error, errors_are_fatal.
 class ApiHandler(base_servlet.BaseRequestHandler):
     requires_auth = False
     supports_auth = False
@@ -24,10 +27,12 @@ class ApiHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
 
-    def write_json_error(self, error_string):
-        return self._write_json_data(error_string)
+    def write_json_error(self, error_result):
+        return self._write_json_data(error_result)
 
-    def write_json_success(self, results=True):
+    def write_json_success(self, results=None):
+        if results is None:
+            results = {'success': True}
         return self._write_json_data(results)
 
     def _write_json_data(self, json_data):
@@ -191,8 +196,43 @@ class FeedHandler(ApiHandler):
 """)
 
 class SearchHandler(ApiHandler):
-    pass
-    #TODO: implement new search API
+
+    def get(self):
+        self.finish_preload()
+
+        # Search API explicitly uses user=None
+        fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, None)
+
+        if not fe_search_query.location:
+            self.add_error('Need location parameter')
+
+        city_name = locations.get_city_name(address=fe_search_query.location)
+        if city_name is None:
+            self.add_error('Could not geocode location')
+
+        self.errors_are_fatal()
+
+        search_query = search.SearchQuery.create_from_query(fe_search_query)
+
+        search_results = search_query.get_search_results(self.fbl)
+        #TODO(lambert): move to common library.
+        now = datetime.datetime.now() - datetime.timedelta(hours=12)
+        search_results = [x for x in search_results if x.start_time > now]
+        
+        title = 'Events near %(location)s' % dict(
+            location=city_name,
+        )
+        if fe_search_query.keywords:
+            title = '%s containing "%s"' % (title, fe_search_query.keywords)
+
+        json_results = [canonicalize_event_data(x, None) for x in search_results]
+        json_response = {
+            'results': json_results,
+            'title': title,
+            'location': city_name,
+        }
+        self.write_json_success(json_response)
+
 
 ISO_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
@@ -209,7 +249,9 @@ class AuthHandler(ApiHandler):
         # TODO(lambert): using http://labix.org/python-dateutil to parse timezones would help with that
         access_token_expires_without_tz = access_token_expires_with_tz[:-5]
         access_token_expires = datetime.datetime.strptime(access_token_expires_without_tz, ISO_DATETIME_FORMAT)
-        location = self.json_body.get('location') or self.get_location_from_headers()
+        location = self.json_body.get('location')
+        # Don't use self.get_location_from_headers(), as I'm not sure how accurate it is if called from the API.
+        # Also don't use location to update the user, if we don't actually have a location
         client = self.json_body.get('client')
         logging.info("Auth token from client %s is %s", client, access_token)
 
@@ -312,12 +354,16 @@ def canonicalize_event_data(fb_event, db_event):
         event_api['admins'] = fb_event['info']['admins']['data']
     else:
         event_api['admins'] =  None
-    event_api['metadata'] = {
-        'added_time': db_event.creation_time.strftime(DATETIME_FORMAT),
-        'added_method': db_event.creating_method,
-        'added_person': db_event.creating_fb_uid,
-        'dance_keywords': db_event.event_keywords,
-    }
+    if db_event:
+        metadata = {
+            'added_time': db_event.creation_time.strftime(DATETIME_FORMAT),
+            'added_method': db_event.creating_method,
+            'added_person': db_event.creating_fb_uid,
+            'dance_keywords': db_event.event_keywords,
+        }
+    else:
+        metadata = {}
+    event_api['metadata'] = metadata
     # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only'
     rsvp_fields = ['attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count']
     event_api['rsvp'] = dict((x, fb_event['info'][x]) for x in rsvp_fields)
