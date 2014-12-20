@@ -232,7 +232,7 @@ class SearchHandler(ApiHandler):
         if fe_search_query.keywords:
             title = '%s containing "%s"' % (title, fe_search_query.keywords)
 
-        json_results = [canonicalize_event_data(x, None) for x in search_results]
+        json_results = [canonicalize_event_data(x.fb_event, None) for x in search_results]
         json_response = {
             'results': json_results,
             'title': title,
