@@ -148,11 +148,10 @@ def build_regexes():
         keywords.FREESTYLE,
         keywords.STREET,
         keywords.EVENT,
-        keywords.AMBIGUOUSCLASS,
-        keywords.FORMATTYPE,
+        keywords.AMBIGUOUS_CLASS,
+        keywords.FORMAT_TYPE,
         keywords.VOGUE,
         keywords.EASY_VOGUE,
-        keywords.OBVIOUSBATTLE,
         keywords.BONNIE_AND_CLYDE
     ) + manual_dance_keywords + dependent_manual_dance_keywords
     all_regexes['good_keyword_regex'] = make_regexes(good_keywords, wrapper='(?i)%s')
