@@ -232,7 +232,7 @@ class SearchHandler(ApiHandler):
         if fe_search_query.keywords:
             title = '%s containing "%s"' % (title, fe_search_query.keywords)
 
-        json_results = [canonicalize_event_data(x.fb_event, None) for x in search_results]
+        json_results = [canonicalize_event_data(x.fb_event, None, x.event_keywords) for x in search_results]
         json_response = {
             'results': json_results,
             'title': title,
@@ -316,7 +316,10 @@ class SettingsHandler(ApiHandler):
         self.write_json_success()
 
 
-def canonicalize_event_data(fb_event, db_event):
+def canonicalize_event_data(fb_event, db_event, event_keywords):
+    if event_keywords is None:
+        event_keywords = db_event.event_keywords
+
     event_api = {}
     for key in ['id', 'name', 'description', 'start_time']:
         event_api[key] = fb_event['info'][key]
@@ -371,16 +374,16 @@ def canonicalize_event_data(fb_event, db_event):
         event_api['admins'] = fb_event['info']['admins']['data']
     else:
         event_api['admins'] =  None
+
+    annotations = {}
     if db_event:
-        metadata = {
-            'added_time': db_event.creation_time.strftime(DATETIME_FORMAT),
-            'added_method': db_event.creating_method,
-            'added_person': db_event.creating_fb_uid,
-            'dance_keywords': db_event.event_keywords,
+        annotations['creation'] = {
+            'time': db_event.creation_time.strftime(DATETIME_FORMAT),
+            'method': db_event.creating_method,
+            'creator': db_event.creating_fb_uid,
         }
-    else:
-        metadata = {}
-    event_api['metadata'] = metadata
+    annotations['dance_keywords'] = event_keywords
+    event_api['annotations'] = annotations
     # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only'
     rsvp_fields = ['attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count']
     event_api['rsvp'] = dict((x, fb_event['info'][x]) for x in rsvp_fields)
@@ -414,7 +417,7 @@ class EventHandler(ApiHandler):
 
         db_event = eventdata.DBEvent.get_by_key_name(event_id)
 
-        json_data = canonicalize_event_data(fb_event, db_event)
+        json_data = canonicalize_event_data(fb_event, db_event, None)
 
         # Ten minute expiry on data we return
         self.response.headers['Cache-Control'] = 'max-age=%s' % (60*10)
