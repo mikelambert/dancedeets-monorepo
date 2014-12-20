@@ -50,6 +50,7 @@ Add Dance Event
 					None!
 				#end if
 				</div>
+				<p><button class="btn">Add Event</button>
 			#else
 				Enter your facebook event URL here:<br>
 				<input id="event_url_form" type=text name="event_url" size=60 onunfocus="loadEvent();">
@@ -87,8 +88,8 @@ Add Dance Event
 					#end for
 					</ul>
 				#end if
+				<p><button class="btn" onclick="return validateAdd();">Add Event</button>
 			#end if
-			<p><button class="btn" onclick="return validateAdd();">Add Event</button>
 		</div>
 		</form>
 #end def

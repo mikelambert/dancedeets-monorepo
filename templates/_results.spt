@@ -22,7 +22,7 @@
 			</a>
 			</div>
 
-			<div class="event-types">($result.event_keywords)</div>
+			<div class="event-types">($result.event_keywords_string)</div>
 			<div class="event-city">
 				#if $fb_event.location
 					$fb_event.location,
@@ -72,7 +72,7 @@
 				$format_html($fb_event.name)
 				</a>
 				</h3>
-				<div class="event-types">($result.event_keywords)</div>
+				<div class="event-types">($result.event_keywords_string)</div>
 				<div class="event-date">
 					$date_human_format($result.start_time)
 					#if $result.multi_day_event() and $result.end_time

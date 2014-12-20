@@ -126,7 +126,7 @@ class FeedHandler(ApiHandler):
             'cover_url': eventdata.get_largest_cover(x.fb_event),
             'start_time': x.start_time.strftime(DATETIME_FORMAT),
             'end_time': x.end_time and x.end_time.strftime(DATETIME_FORMAT) or None,
-            'keywords': x.event_keywords,
+            'keywords': x.event_keywords_string(),
         }
 
     def handle_json_feed(self, title, search_results):

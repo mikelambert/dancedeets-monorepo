@@ -74,12 +74,15 @@ class SearchResult(object):
         self.end_time = dates.parse_fb_end_time(self.fb_event)
         self.fake_end_time = dates.parse_fb_end_time(self.fb_event, need_result=True)
         self.rsvp_status = "unknown"
-        self.event_keywords = ', '.join(pseudo_db_event.event_keywords or [])
+        self.event_keywords = pseudo_db_event.event_keywords or []
         # These are initialized in logic/friends.py
         self.attending_friend_count = 0
         self.attending_friends = []
 
         self.index = None
+
+    def event_keywords_string(self):
+        return ', '.join(self.event_keywords)
 
     def multi_day_event(self):
         return not self.end_time or (self.end_time - self.start_time) > datetime.timedelta(hours=24)
@@ -92,7 +95,7 @@ class SearchResult(object):
             return 'maybe'
         return self.rsvp_status
 
-class PseudoDBEvent(SearchResult):
+class PseudoDBEvent(object):
     def __init__(self, d):
         self.fb_event_id = d.doc_id
         self.actual_city_name = d.field('actual_city_name').value
@@ -139,7 +142,7 @@ class SearchQuery(object):
         return self
 
     DATE_SEARCH_FORMAT = '%Y-%m-%d'
-    def get_candidate_events(self):
+    def get_candidate_dbevents(self):
         clauses = []
         if self.bounds:
             # We try to keep searches as simple as possible, 
@@ -177,18 +180,18 @@ class SearchQuery(object):
                 returned_fields=['actual_city_name', 'attendee_count', 'event_keywords'])
             query = search.Query(query_string=full_search, options=options)
             doc_search_results = doc_index.search(query)
-            search_results = []
+            db_events = []
             for x in doc_search_results:
                 try:
-                    search_results.append(PseudoDBEvent(x))
+                    db_events.append(PseudoDBEvent(x))
                 except ValueError, e:
                     logging.error("Exception %s while constructing result for %s", e, x)
-            return search_results
+            return db_events
 
     def get_search_results(self, fbl):
         a = time.time()
         # Do datastore filtering
-        db_events = self.get_candidate_events()
+        db_events = self.get_candidate_dbevents()
         logging.info("Search returned %s events in %s seconds", len(db_events), time.time() - a)
 
         # Now look up contents of each event...
