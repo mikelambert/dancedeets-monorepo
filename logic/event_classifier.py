@@ -143,7 +143,17 @@ def build_regexes():
         keywords.OBVIOUS_BATTLE,
         keywords.AUDITION,
         keywords.CYPHER,
-        keywords.JUDGE
+        keywords.JUDGE,
+        keywords.HOUSE,
+        keywords.FREESTYLE,
+        keywords.STREET,
+        keywords.EVENT,
+        keywords.AMBIGUOUSCLASS,
+        keywords.FORMATTYPE,
+        keywords.VOGUE,
+        keywords.EASY_VOGUE,
+        keywords.OBVIOUSBATTLE,
+        keywords.BONNIE_AND_CLYDE
     ) + manual_dance_keywords + dependent_manual_dance_keywords
     all_regexes['good_keyword_regex'] = make_regexes(good_keywords, wrapper='(?i)%s')
     all_regexes['good_capturing_keyword_regex'] = make_regexes(good_keywords, matching=True, wrapper='(?i)%s')
