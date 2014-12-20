@@ -210,6 +210,13 @@ class SearchHandler(ApiHandler):
         if city_name is None:
             self.add_error('Could not geocode location')
 
+        if fe_search_query.distance_units == 'miles':
+            distance_in_km = locations.miles_in_km(fe_search_query.distance)
+        else:
+            distance_in_km = fe_search_query.distance
+        southwest, northeast = locations.get_location_bounds(address=fe_search_query.location, distance_in_km=distance_in_km)
+
+
         self.errors_are_fatal()
 
         search_query = search.SearchQuery.create_from_query(fe_search_query)
@@ -230,6 +237,16 @@ class SearchHandler(ApiHandler):
             'results': json_results,
             'title': title,
             'location': city_name,
+            'location_box': {
+                'southwest': {
+                    'latitude': southwest[0],
+                    'longitude': southwest[1],
+                },
+                'northeast': {
+                    'latitude': northeast[0],
+                    'longitude': northeast[1],
+                },
+            },
         }
         self.write_json_success(json_response)
 
