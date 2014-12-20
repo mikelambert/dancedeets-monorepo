@@ -160,14 +160,20 @@ def _get_city_name(result):
         return components
         
     city_parts = []
-    city_parts.extend(get('locality') or get('sublocality') or get('administrative_area_level_3') or get('administrative_area_level_2'))
+    # TODO(lambert): Things to test and verify:
+    # Bay Area, San Francisco, Brooklyn, New York, Tokyo, Osaka/Shibuya, Europe/Asia, The Haight
+    city_parts.extend(get('locality') or get('sublocality') or get('administrative_area_level_3') or get('administrative_area_level_2') or get('colloquial_area'))
     country = get('country')
-    if country == ['United States']:
-        city_parts.extend(get('administrative_area_level_1', long=False))
-        city_parts.extend(get('country', long=False))
+    if country:
+        if country == ['United States']:
+            city_parts.extend(get('administrative_area_level_1', long=False))
+            city_parts.extend(get('country', long=False))
+        else:
+            city_parts.extend(get('administrative_area_level_1', long=False))
+            city_parts.extend(country)
     else:
-        city_parts.extend(get('administrative_area_level_1', long=False))
-        city_parts.extend(country)
+        city_parts.extend(get('continent'))
+
     city_name = ', '.join(x for x in city_parts if x)
 
     if not city_name:
