@@ -2,27 +2,18 @@
 
 set -e
 
-# Find latest version here: https://pypi.python.org/pypi/nose
-NOSE_VERSION=nose-1.3.4
-# Find latest version here: https://pypi.python.org/pypi/WebTest
-WEBTEST_VERSION=WebTest-2.0.16
-
 BASE_DIR=$(pwd)
 mkdir -p download/
 
-# NOSE-GAE
 cd $BASE_DIR/download
-sudo rm -rf NoseGAE
-git clone https://github.com/Trii/NoseGAE.git
-cd NoseGAE
-sudo python setup.py install
+curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
+python get-pip.py
+sudo python get-pip.py
 
-# NOSE
-cd $BASE_DIR/download
-curl https://pypi.python.org/packages/source/n/nose/$NOSE_VERSION.tar.gz --output $NOSE_VERSION.tar.gz
-tar xvzf $NOSE_VERSION.tar.gz
-cd $NOSE_VERSION
-sudo python setup.py install
+# For testing, just install them locally. Depends on pip being installed.
+sudo pip install nosegae
+sudo pip install nose
+sudo pip install webtest
 
 # SPITFIRE
 cd $BASE_DIR/download
@@ -89,11 +80,5 @@ python setup.py build
 # no installation! just symlinking!
 ln -sf download/simplejson/simplejson $BASE_DIR/
 
-# WEBTEST
-cd $BASE_DIR/download
-curl https://pypi.python.org/packages/source/W/WebTest/$WEBTEST_VERSION.zip -o $WEBTEST_VERSION.zip
-unzip -o $WEBTEST_VERSION
-cd $WEBTEST_VERSION
-sudo python setup.py install
-# No symlink necessary here?
-# ln -sf download/$WEBTEST_VERSION/webtest $BASE_DIR
+# Build our code
+make

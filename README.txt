@@ -4,6 +4,17 @@ http://mercurial.selenic.com/downloads/
 Then download and install appengine libraries here:
 https://developers.google.com/appengine/downloads
 
+# Install boot2docker from http://boot2docker.io/
+boot2docker init
+boot2docker start
+
+# Setup gcloud:
+curl https://sdk.cloud.google.com | bash
+gcloud components update app preview
+gcloud config set project dancedeets-hrd
+gcloud auth login
+gcloud preview app run app.yaml
+
 And open the app at least once, to set up /usr/local/google_appengine.
 
 Then to set up dancedeets, run ./setup.sh first. It will download and install
