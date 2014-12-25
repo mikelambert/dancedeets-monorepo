@@ -54,7 +54,7 @@ class TestAuth(TestSearch):
         }
         self.assertEqual(users.User.get_by_key_name(me_uid), None)
         result = app.post_json('/api/auth', auth_request)
-        self.assertEqual(result.json, True)
+        self.assertEqual(result.json, {'success': True})
         self.assertNotEqual(users.User.get_by_key_name(me_uid), None)
         self.assertEqual(users.User.get_by_key_name(me_uid).fb_access_token, access_token)
 
@@ -62,10 +62,10 @@ class TestAuth(TestSearch):
         # This time it will update the token, but not create a new user.
         old_dumps = utils.dumps
         try:
-            utils.dumps = lambda s: urllib.quote(old_dumps(s))
+            utils.dumps = lambda *args, **kwargs: urllib.quote(old_dumps(*args, **kwargs))
             auth_request['access_token'] = new_access_token
             result = app.post_json('/api/auth', auth_request)
-            self.assertEqual(result.json, True)
+            self.assertEqual(result.json, {'success': True})
         finally:
             utils.dumps = old_dumps
 
