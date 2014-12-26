@@ -397,17 +397,15 @@ class EventHandler(ApiHandler):
     def get(self):
         self.finish_preload()
 
-        path_bits = self.request.path.split('/')
-        if not self.request.path.startswith('/api/events/'):
-            self.add_error('Path is malformed: %s' % self.request.path)
-        elif len(path_bits) != 4 and len(path_bits) != 5:
+        path_bits = self.request.path.split('/events/')
+        if len(path_bits) != 2:
             self.add_error('Path is malformed: %s' % self.request.path)
             self.response.out.write('Need an event_id.')
         else:
             try:
-                event_id = str(int(path_bits[3]))
+                event_id = str(int(path_bits[1].strip('/')))
             except TypeError:
-                self.add_error('Event id expected: %s' % path_bits[3])
+                self.add_error('Event id expected: %s' % path_bits[1])
 
             fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
             if fb_event['empty']:

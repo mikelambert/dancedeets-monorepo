@@ -101,6 +101,9 @@ URLS = [
     ('/api/events/\d+/?', api.EventHandler),
     ('/api/search', api.SearchHandler),
     ('/api/auth', api.AuthHandler),
+    ('/api/v1.0/events/\d+/?', api.EventHandler),
+    ('/api/v1.0/search', api.SearchHandler),
+    ('/api/v1.0/auth', api.AuthHandler),
 ]
 
 prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
