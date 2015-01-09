@@ -321,9 +321,11 @@ def canonicalize_event_data(fb_event, db_event, event_keywords):
         event_keywords = db_event.event_keywords
 
     event_api = {}
-    for key in ['id', 'name', 'description', 'start_time']:
+    for key in ['id', 'name', 'start_time']:
         event_api[key] = fb_event['info'][key]
-    # end time can be option, especially on single-day events that are whole-day events
+    # Return an empty description, if we don't have a description for some reason
+    event_api['description'] = fb_event['info'].get('description', '')
+    # end time can be optional, especially on single-day events that are whole-day events
     event_api['end_time'] = fb_event['info'].get('end_time')
 
     # cover images
