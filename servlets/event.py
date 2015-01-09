@@ -211,7 +211,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         if self.request.get('delete'):
             e = eventdata.DBEvent.get_by_key_name(event_id)
-            event_updates.delete_event(e)
+            # This e will be None if the user submits a deletion-form twice
+            if e:
+                event_updates.delete_event(e)
             self.user.add_message("Event deleted!")
             return self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
