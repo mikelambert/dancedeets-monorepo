@@ -232,7 +232,14 @@ class SearchHandler(ApiHandler):
         if fe_search_query.keywords:
             title = '%s containing "%s"' % (title, fe_search_query.keywords)
 
-        json_results = [canonicalize_event_data(x.fb_event, None, x.event_keywords) for x in search_results]
+        json_results = []
+        for result in search_results:
+            try:
+                json_result = canonicalize_event_data(result.fb_event, None, result.event_keywords)
+                json_results.append(json_result)
+            except Exception as e:
+                logging.error("Error processing event %s: %s" % (result.fb_event_id, e))
+
         json_response = {
             'results': json_results,
             'title': title,
