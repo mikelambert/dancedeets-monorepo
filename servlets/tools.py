@@ -12,7 +12,7 @@ from mapreduce import operation as op
 
 from events import cities
 from events import eventdata
-#from events import users
+from events import users
 import fb_api
 import locations
 from logic import auto_add
@@ -86,12 +86,16 @@ def mr_private_events(fbl):
         extra_mapper_params={'mime_type': 'text/plain'},
     )
 
-class OneOffHandler(tasks.BaseTaskFacebookRequestHandler):#webapp2.RequestHandler):
+#tasks.BaseTaskFacebookRequestHandler):#
+class OneOffHandler(webapp2.RequestHandler):
     def get(self):
-        geocode_key = locations._geocode_key('Australia', None)
-        geocode = locations.GeoCode.get_by_key_name(geocode_key)
-        geocode.delete()
-
+        print 'Content-type: text/plain\n\n'
+        for uf in users.UserFriendsAtSignup.all().fetch(10000):
+            print uf.fb_uid
+            if not hasattr(uf, 'registered_friend_string_ids') or not uf.registered_friend_string_ids:
+                uf.registered_friend_string_ids = [str(x) for x in uf.registered_friend_ids]
+                #uf.registered_friend_ids = []
+                uf.put()
 
 class AutoAddPotentialEventsHandler(tasks.BaseTaskFacebookRequestHandler):
     def get(self):

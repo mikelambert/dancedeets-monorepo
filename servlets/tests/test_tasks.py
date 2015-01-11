@@ -75,8 +75,9 @@ class TestTrackNewUserFriends(TestTasks):
             '/v1.0/fql?q=%0ASELECT+uid+FROM+user%0AWHERE+uid+IN+%28SELECT+uid2+FROM+friend+WHERE+uid1+%3D+701004%29%0AAND+is_app_user+%3D+1%0A':
             (200, {
                 "data": [
+                    # Yes, we sometimes have both strings and integers being returned
                     {"uid": 703278},
-                    {"uid": 823422},
+                    {"uid": '823422'},
             ]}),
         }
         app.get('/tasks/track_newuser_friends?user_id=%s' % MIKE_ID)

@@ -124,6 +124,7 @@ class User(db.Model):
 class UserFriendsAtSignup(db.Model):
     fb_uid = property(lambda x: int(x.key().name()))
     registered_friend_ids = db.ListProperty(int, indexed=False)
+    registered_friend_string_ids = db.StringListProperty(indexed=False)
 
 class UserMessage(db.Model):
     fb_uid = db.IntegerProperty()

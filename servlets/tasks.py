@@ -63,7 +63,7 @@ class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
         app_friend_list = fb_result[key]['info']
         logging.info("app_friend_list is %s", app_friend_list)
         user_friends = users.UserFriendsAtSignup.get_or_insert(str(self.fb_uid))
-        user_friends.registered_friend_ids = [x['uid'] for x in app_friend_list['data']]
+        user_friends.registered_friend_string_ids = [str(x['uid']) for x in app_friend_list['data']]
         user_friends.put()
     post=get
 
