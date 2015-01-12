@@ -50,6 +50,10 @@ $head_javascript()
 </script>
 
 
+#else
+<script type="text/javascript">
+var _gaq = [];
+</script>
 #end if
 </head>
 <body>
@@ -101,13 +105,31 @@ $head_javascript()
 
 #if $errors
 #for $error in $errors
-	<div class="bg-danger">$format_html($error)</div>
+	<div class="alert alert-danger">$format_html($error)</div>
 #end for
 #end if
 #if $messages
 #for $message in $messages
-	<div class="bg-info">$format_html($message)</div>
+	<div class="alert alert-info">$format_html($message)</div>
 #end for
+#end if
+
+#if not $fb_user
+  <div class="alert alert-warning alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <ul>
+    <li>Are you a dancer in-the-know? Help others by sharing your dance events: <button onclick="manualLogin();">Join dancedeets</button> today!
+    <li>Are you learning to dance? <a href="" onclick="manualLogin();">Subscribe to a weekly email</a> of upcoming events.
+    </ul>
+  </div>
+<script type="text/javascript">
+function manualLogin() {
+  preSignUp();
+  FB.login(function(response){
+    signUp();
+  }, {scope: '$fb_permissions'});
+}
+</script>
 #end if
 
 
