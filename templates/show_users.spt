@@ -4,9 +4,29 @@
 List of Users
 #end def
 
+#def head_stylesheet
+<style type="text/css">
+th {
+	text-align: left;
+}
+td,th {
+	padding-right: 10px;
+}
+</style>
+#end def
+
 #def inner_body
-There are $num_users users total:
+There are $num_users users total, and $num_active_users active users.
+
 <table>
+<tr>
+<th>Creation Time</th>
+<th>Login Count</th>
+<th>Login Time</th>
+<th>Location</th>
+<th>Distance</th>
+<th>User Links</th>
+</tr>
 #for $user in $users
 <tr><td>
 #if $user.creation_time
@@ -16,6 +36,7 @@ There are $num_users users total:
 #if $user.login_count
 	$user.login_count
 #end if
+</td><td>
 #if $user.last_login_time
 	$date_format('%Y-%m-%d %H:%M', $user.last_login_time)
 #end if
@@ -30,8 +51,6 @@ $user.distance_units
 #if $user.expired_oauth_token
 <span style="color:red" title="$user.expired_oauth_token_reason">(expired!)</span>
 #end if
-</td><td>
-$user.dance_type
 </td></tr>
 #end for
 </table>

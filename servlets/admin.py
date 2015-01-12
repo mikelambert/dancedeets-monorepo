@@ -69,9 +69,10 @@ class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
 class ShowUsersHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
-        all_users = users.User.all().fetch(1000)
-        all_users = reversed(sorted(all_users, key=lambda x: x.creation_time))
+        all_users = users.User.all().fetch(10000)
+        all_users = sorted(all_users, key=lambda x: x.creation_time, reverse=True)
         self.display['num_users'] = len(all_users)
+        self.display['num_active_users'] = len([x for x in all_users if not x.expired_oauth_token])
         self.display['users'] = all_users
         self.display['track_google_analytics'] = False
         self.render_template('show_users')
