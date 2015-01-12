@@ -348,7 +348,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['request'] = request
         self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']
         self.display['prod_mode'] = self.request.app.prod_mode
-        self.display['base_hostname'] = 'dancedeets.com' if prod_mode else 'dev-dancedeets.com'
+        self.display['base_hostname'] = 'dancedeets.com' if self.request.app.prod_mode else 'dev-dancedeets.com'
 
         # TODO: get rid of user_location when we can switch to IP-based geocoding (since mobile clients don't need it)
         # TODO(FB2.0): get rid of user_groups/user_likes
