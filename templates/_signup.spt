@@ -1,5 +1,5 @@
 #def fb_login_button
-<fb:login-button length="long" onclick="preSignUp();return false;" onlogin="signUp();" scope="$fb_permissions"></fb:login-button>
+<fb:login-button length="long" scope="$fb_permissions"></fb:login-button>
 #end def
 
 #def fb_javascript($next='')
@@ -56,21 +56,23 @@
 			// the user isn't even logged in to Facebook.
 		}
 	}
+	/*
 	function preSignUp() {
-		_gaq.push(['_trackEvent', 'Signup', 'Opened FB Signup Window']);
+		//ga('send', 'event', 'Signup', 'Opened FB Signup Window');
 	}
 	function signUp() {
-		_gaq.push(['_trackEvent', 'Signup', 'Closed FB Signup Window']);
+		//ga('send', 'event', 'Signup', 'Closed FB Signup Window');
 		FB.getLoginStatus(function(response) {
 			if (!response.authResponse) {
 				// TODO(lambert): LOGIN: Do a better job of re-requesting permissions via auth_type: rerequest on the login() call?
 				must_allow_perms.dialog('open');
 			} else {
-				_gaq.push(['_trackEvent', 'Signup', 'Authorized Permissions']);
+				//ga('send', 'event', 'Signup', 'Authorized Permissions');
 				reloadWithNewToken();
 			}
 		});
 	}
+	*/
 	window.fbAsyncInit = function() {
 		FB.init({appId: '$app_id', status: true, cookie: true, xfbml: true});
 		FB.Event.subscribe('auth.statusChange', handleStatusChange);
