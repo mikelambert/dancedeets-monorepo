@@ -9,6 +9,7 @@
 <title>$title()</title>
 
 <meta name="google-play-app" content="app-id=com.dancedeets.android">
+<meta name="apple-itunes-app" content="app-id=955212002">
 
 <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="/vcss/$version/dancedeets.css">
