@@ -15,12 +15,12 @@ $format_html($event.info.name)
 				<div id="cover-box-fill">
 					<img id="cover-image" src="$cover.source" itemprop="photo">
 					<!--style="margin-top:-${cover.offset_y}%">-->
-					<h1 class="event-page-title event-page-title-on-cover">$event.info.name</h1>
+					<h1 class="event-page-title event-page-title-on-cover" itemprop="name">$event.info.name</h1>
 				</div>
 			</div>
 		</div>
 	#else
-		<h1 class="event-page-title">$event.info.name</h1>
+		<h1 class="event-page-title" itemprop="summary">$event.info.name</h1>
 	#end if
 </div>
 
