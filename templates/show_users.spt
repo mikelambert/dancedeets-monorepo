@@ -25,6 +25,7 @@ There are $num_users users total, and $num_active_users active users.
 <th>Login Time</th>
 <th>Location</th>
 <th>Distance</th>
+<th>Platforms</th>
 <th>User Links</th>
 </tr>
 #for $user in $users
@@ -45,6 +46,10 @@ $user.location
 </td><td>
 $user.distance
 $user.distance_units
+</td><td>
+#for $client in $user.clients
+$client
+#end for
 </td><td>
 (<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=$user.key().__str__()">AE</a>)
 <a href="https://www.facebook.com/profile.php?id=$user.fb_uid">$user.full_name</a>
