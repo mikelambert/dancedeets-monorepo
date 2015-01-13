@@ -109,11 +109,11 @@ def parse_event_source_combos_from_feed(source, feed_data):
                 p = parsed_event_link(link)
                 if p:
                     break
-            message = post.get('message')
-            # We're only looking for events, and not all possible links, so this is easier:
-            match = re.search(r'https?://\S*facebook\.com\S*/event\S+', message)
-            if match:
-                p = parsed_event_link(match.group(0))
+            if post.get('message'):
+                # We're only looking for events, and not all possible links, so this is easier:
+                match = re.search(r'https?://\S*facebook\.com\S*/event\S+', post.get('message'))
+                if match:
+                    p = parsed_event_link(match.group(0))
         if p:
             qs = cgi.parse_qs(p.query)
             if 'eid' in qs:
