@@ -145,7 +145,7 @@ class Source(db.Model):
         #TODO(lambert): at some point we need to calculate all potential events, and all real events, and update the numbers with values from them. and all fake events. we have a problem where a new source gets added, adds in the potential events and/or real events, but doesn't properly tally them all. can fix this one-off, but it's too-late now, and i imagine our data will grow inaccurate over time anyway.
 
 def link_for_fb_source(data):
-    if 'likes' in data['info']:
+    if 'link' in data['info']:
         return data['info']['link']
     elif 'last_name' in data['info']:
         return 'http://www.facebook.com/profile.php?id=%s' % data['info']['id']
@@ -154,8 +154,7 @@ def link_for_fb_source(data):
     elif 'start_time' in data['info']:
         return 'http://www.facebook.com/events/%s/' % data['info']['id']
     else:
-        logging.info("cannot classify data %s", data)
-        return None
+        return 'http://www.facebook.com/%s/' % data['info']['id']
 
 def create_source_for_id(source_id, fb_data):
     source = Source.get_by_key_name(str(source_id)) or Source(key_name=str(source_id))
