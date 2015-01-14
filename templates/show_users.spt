@@ -16,7 +16,14 @@ td,th {
 #end def
 
 #def inner_body
-There are $num_users users total, and $num_active_users active users.
+<div>There are $num_users users total, and $num_active_users active users.</div>
+
+<div>
+Users by platform:<br>
+#for $client, $count in $client_counts.iteritems()
+$client: $count<br>
+#end for
+</div>
 
 <table>
 <tr>

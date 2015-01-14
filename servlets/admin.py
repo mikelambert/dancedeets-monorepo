@@ -1,3 +1,4 @@
+import collections
 import json
 import pprint
 import time
@@ -69,8 +70,16 @@ class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
 class ShowUsersHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
-        all_users = users.User.all().fetch(10000)
-        all_users = sorted(all_users, key=lambda x: x.creation_time, reverse=True)
+        num_fetch_users = int(self.request.get('num_users', 500))
+        order_field = self.request.get('order_field', 'creation_time')
+        all_users = users.User.all().order('-%s' % order_field).fetch(num_fetch_users)
+        all_users = sorted(all_users, key=lambda x: getattr(x, order_field), reverse=True)
+        client_counts = collections.defaultdict(lambda: 0)
+        for user in all_users:
+            for client in user.clients:
+                client_counts[client] += 1
+
+        self.display['client_counts'] = client_counts
         self.display['num_users'] = len(all_users)
         self.display['num_active_users'] = len([x for x in all_users if not x.expired_oauth_token])
         self.display['users'] = all_users

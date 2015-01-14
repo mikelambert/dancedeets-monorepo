@@ -20,11 +20,11 @@ class User(db.Model):
 
     # Statistics
     creation_time = db.DateTimeProperty()
-    last_login_time = db.DateTimeProperty(indexed=False)
-    login_count = db.IntegerProperty(indexed=False)
+    last_login_time = db.DateTimeProperty()
+    login_count = db.IntegerProperty()
     inviting_fb_uid = db.IntegerProperty(indexed=False)
 
-    clients = db.StringListProperty(indexed=False)
+    clients = db.StringListProperty()
 
     # Search preferences
     location = db.StringProperty(indexed=False)
