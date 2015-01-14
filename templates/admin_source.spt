@@ -29,7 +29,7 @@ Edit Source
 
 			<p>
 			#if $creating_user
-				Submitted by <a href="http://www.facebook.com/profile.php?id=$source.creating_fb_uid">$creating_user</a>.<br>
+				Submitted by <a href="$creating_user.profile.link">$creating_user.profile.name</a>.<br>
 			#end if
 			#if $source.is_saved()
 

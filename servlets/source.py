@@ -36,9 +36,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
 
         if s.creating_fb_uid:
-            f = urllib2.urlopen('https://graph.facebook.com/%s?access_token=%s' % (s.creating_fb_uid, self.access_token))
-            json_user = json.loads(f.read())
-            creating_user = json_user['name']
+            creating_user = self.fbl.get(fb_api.LookupUser, s.creating_fb_uid)
         else:
             creating_user = None
 

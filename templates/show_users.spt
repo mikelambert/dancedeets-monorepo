@@ -35,7 +35,7 @@ $client: $count<br>
 <th>Platforms</th>
 <th>User Links</th>
 </tr>
-#for $user in $users
+#for $user, $fb_user in zip($users, $fb_users)
 <tr><td>
 #if $user.creation_time
 	$date_format('%Y-%m-%d %H:%M', $user.creation_time)
@@ -59,7 +59,7 @@ $client
 #end for
 </td><td>
 (<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=$user.key().__str__()">AE</a>)
-<a href="https://www.facebook.com/profile.php?id=$user.fb_uid">$user.full_name</a>
+<a href="$fb_user.profile.link">$user.full_name</a>
 #if $user.expired_oauth_token
 <span style="color:red" title="$user.expired_oauth_token_reason">(expired!)</span>
 #end if

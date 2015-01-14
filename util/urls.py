@@ -13,8 +13,5 @@ def dd_admin_event_url(eid):
 def dd_admin_source_url(eid):
     return 'http://www.dancedeets.com/sources/admin_edit?source_id=%s' % eid
 
-def fb_user_url(uid):
-    return 'http://www.facebook.com/profile.php?id=%s' % uid
-
 def fb_event_image_url(eid, size='large'):
     return 'https://graph.facebook.com/%s/picture?type=%s' % (eid, size)
