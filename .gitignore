@@ -32,6 +32,8 @@ httplib2
 mapreduce
 oauth2client
 simplejson
+six.py
 spitfire
+twilio
 unittest2
 uritemplate

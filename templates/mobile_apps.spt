@@ -1,0 +1,87 @@
+#extends _base
+
+#def title
+DanceDeets - Mobile Apps
+#end def
+
+#def head_stylesheet
+<style type="text/css">
+.spacing {
+	margin-top: 8px;
+}
+.feature {
+    list-style-type: none;
+}
+
+.sms-textbox {
+	display: inline-block;
+	width: auto;
+	vertical-align: middle;
+}
+.feature .icon {
+	width: 25px;
+	height 25px;
+	opacity: 0.6;
+    filter: alpha(opacity=60); /* For IE8 and earlier */
+    margin: 4px;
+    top: -4px;
+    position: relative;
+}
+.install-div {
+	margin: 20px;
+}
+.store-button {
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+</style>
+#end def
+
+#def body
+## not using container-fluid, but container, so things are more centered
+<div class="container">
+
+<div class="row">
+
+<div class="col-sm-6">
+<h2>DanceDeets Mobile Apps</h2>
+
+
+<div class="install-div">
+Get the app now:
+<div class="spacing">
+<a href="$android_url"><img src="/images/play_store_download.png" class="store-button"></a>
+<a href="$ios_url"><img src="/images/app_store_download.png" class="store-button"></a>
+</div>
+</div>
+
+<div class="install-div">
+Or enter your phone number, and we'll send you a link to install:
+<form class="spacing" method="post" action="/mobile_apps">
+<input type="hidden" name="action" value="send_sms" />
+<input type="text" class="form-control sms-textbox" name="phone" placeholder="+1 (123) 456-7890" />
+<button type="submit" value="submit" class="btn btn-primary sms-button">Send link to my phone</button>
+</form>
+</div>
+
+<div class="install-div">
+Keep up with the latest dance events when you're on the go!
+<ul class="spacing">
+<li class="feature"><img class="icon" src="/images/ic_menu_search.png">Search Worldwide</li>
+<li class="feature"><img class="icon" src="/images/ic_menu_calendar.png">Add to Calendar</li>
+<li class="feature"><img class="icon" src="/images/ic_menu_facebook.png">View on Facebook</li>
+<li class="feature"><img class="icon" src="/images/ic_menu_map.png">Get Directions</li>
+<li class="feature"><img class="icon" src="/images/ic_menu_translate.png">Translate Languages (Android Only)</li>
+<li class="feature"><img class="icon" src="/images/ic_menu_rsvp.png">RSVP on Facebook (iOS Only)</li>
+</ul>
+</div>
+
+</div>
+
+<div class="col-sm-6">
+<img src="/images/phones.jpg" width="80%">
+</div>
+
+</div>
+</div>
+#end def

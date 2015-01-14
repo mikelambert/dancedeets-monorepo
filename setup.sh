@@ -15,6 +15,21 @@ sudo pip install nosegae
 sudo pip install nose
 sudo pip install webtest
 
+# SIX (for TWILIO)
+cd $BASE_DIR/download
+hg clone https://mikelambert@bitbucket.org/gutworth/six/ || echo "Already have hg client"
+cd six
+hg update
+sudo python setup.py install
+ln -sf download/six/six.py $BASE_DIR/
+
+# TWILIO
+cd $BASE_DIR/download
+git clone https://github.com/twilio/twilio-python.git
+cd twilio-python
+sudo python setup.py install
+ln -sf download/twilio-python/twilio $BASE_DIR/
+
 # SPITFIRE
 cd $BASE_DIR/download
 svn checkout http://spitfire.googlecode.com/svn/trunk/ spitfire-read-only

@@ -17,6 +17,7 @@ from servlets import feedback
 from servlets import home
 from servlets import gprediction
 from servlets import login
+from servlets import mobile_apps
 from servlets import myuser
 from servlets import privacy
 from servlets import profile_page
@@ -91,6 +92,7 @@ URLS = [
     ('/sources/admin_edit', source.AdminEditHandler),
     ('/user/edit', myuser.UserHandler),
     ('/login', login.LoginHandler),
+    ('/mobile_apps', mobile_apps.MobileAppsHandler),
     ('/share', share.ShareHandler),
     ('/about', about.AboutHandler),
     ('/privacy', privacy.PrivacyHandler),
