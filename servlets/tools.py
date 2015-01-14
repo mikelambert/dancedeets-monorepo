@@ -89,13 +89,12 @@ def mr_private_events(fbl):
 #tasks.BaseTaskFacebookRequestHandler):#
 class OneOffHandler(webapp2.RequestHandler):
     def get(self):
-        print 'Content-type: text/plain\n\n'
-        for uf in users.UserFriendsAtSignup.all().fetch(10000):
-            print uf.fb_uid
-            if not hasattr(uf, 'registered_friend_string_ids') or not uf.registered_friend_string_ids:
-                uf.registered_friend_string_ids = [str(x) for x in uf.registered_friend_ids]
-                #uf.registered_friend_ids = []
-                uf.put()
+        for u in users.User.all():
+            self.response.write('%s<br>\n' % u.fb_uid)
+            if not u.clients:
+                u.clients = ['web']
+                u.put()
+                print 'put'
 
 class AutoAddPotentialEventsHandler(tasks.BaseTaskFacebookRequestHandler):
     def get(self):
