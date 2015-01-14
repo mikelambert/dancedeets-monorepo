@@ -11,7 +11,7 @@
 <meta name="google-play-app" content="app-id=com.dancedeets.android">
 <meta name="apple-itunes-app" content="app-id=955212002">
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="/vcss/$version/dancedeets.css">
 <link rel="stylesheet" href="/vcss/$version/jquery.smartbanner.css">
 
@@ -143,7 +143,7 @@ $body()
 </div> <!-- /container -->
 
 
-<script src="//cdn.jsdelivr.net/g/jquery@1.11,bootstrap@3.1,jquery.cookie@1.4"></script>
+<script src="//cdn.jsdelivr.net/g/jquery@1.11,bootstrap@3.3.1,jquery.cookie@1.4"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
