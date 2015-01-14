@@ -226,6 +226,11 @@ class BaseRequestHandler(BareBaseRequestHandler):
                         logging.info("Stored the new access_token to the User db")
                     else:
                         logging.error("Got a cookie, but no access_token. Using the one from the existing user. Strange!")
+                if 'web' not in self.user.clients:
+                    self.user = users.User.get_by_key_name(str(self.fb_uid))
+                    self.user.clients.append('web')
+                    self.user.put()
+                    logging.info("Added the web client to the User db")
                 self.access_token = self.user.fb_access_token
             else:
                 self.access_token = self.user.fb_access_token
