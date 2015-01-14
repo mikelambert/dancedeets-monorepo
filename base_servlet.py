@@ -364,7 +364,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             fb_permissions += ',read_friendlists'
         self.display['fb_permissions'] = fb_permissions
 
-        already_used_mobile = 'android' in self.user.clients or 'ios' in self.user.clients
+        already_used_mobile = self.user and ('android' in self.user.clients or 'ios' in self.user.clients)
         currently_on_mobile = mobile.get_mobile_platform(self.request.user_agent)
         show_mobile_promo = not currently_on_mobile and not already_used_mobile
         self.display['show_mobile_promo'] = show_mobile_promo
