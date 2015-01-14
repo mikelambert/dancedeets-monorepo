@@ -18,6 +18,7 @@ import facebook
 import fb_api
 from logic import backgrounder
 from logic import user_creation
+from logic import mobile
 from logic import rankings
 from logic import search_base
 import template
@@ -362,6 +363,11 @@ class BaseRequestHandler(BareBaseRequestHandler):
         if self.request.get('all_access'):
             fb_permissions += ',read_friendlists'
         self.display['fb_permissions'] = fb_permissions
+
+        already_used_mobile = 'android' in self.user.clients or 'ios' in self.user.clients
+        currently_on_mobile = mobile.get_mobile_platform(self.request.user_agent)
+        show_mobile_promo = not currently_on_mobile and not already_used_mobile
+        self.display['show_mobile_promo'] = show_mobile_promo
 
         self.display['defaults'] = search_base.FrontendSearchQuery()
         self.display['defaults'].location = self.request.get('location')

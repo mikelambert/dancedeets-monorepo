@@ -105,32 +105,35 @@ var _gaq = [];
 </div>
 
 #if $errors
+<div class="alert alert-danger"><ul>
 #for $error in $errors
-	<div class="alert alert-danger">$format_html($error)</div>
+	<li>$format_html($error)</li>
 #end for
+</ul></div>
 #end if
+
 #if $messages
+<div class="alert alert-info">
+<button type="button" class="close aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<ul>
 #for $message in $messages
-	<div class="alert alert-info">$format_html($message)</div>
+	<li>$format_html($message)</li>
 #end for
+</ul></div>
 #end if
 
+#if not $suppress_promos and (not $fb_user or $show_mobile_promo)
+<div class="alert alert-warning alert-dismissible" role="alert"><ul>
+<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 #if not $fb_user
-  <div class="alert alert-warning alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <ul>
-    <li>Are you a dancer in-the-know? Help others by sharing your dance events: <button onclick="manualLogin();">Join dancedeets</button> today!
-    <li>Are you learning to dance? <button onclick="manualLogin();">Subscribe to a weekly email</button> of upcoming events.
-    </ul>
-  </div>
-<script type="text/javascript">
-function manualLogin() {
-  FB.login(function(response){
-  }, {scope: '$fb_permissions'});
-}
-</script>
+    <li>Are you a dancer in-the-know? Help others by sharing your dance events: <button onclick="manualLogin();" class="btn btn-default">Join dancedeets</button> today!
+    <li>Are you learning to dance? <button onclick="manualLogin();" class="btn btn-default">Subscribe to a weekly email</button> of upcoming events.
 #end if
-
+#if $show_mobile_promo
+    <li>Did you know? We've got a mobile app for DanceDeets too: <a href="/mobile_apps" class="btn btn-default">Download the app</a> for Android and iPhone/iPad today!
+#end if
+</ul></div>
+#end if
 
 $body()
 
@@ -146,6 +149,10 @@ $body()
 <script src="//cdn.jsdelivr.net/g/jquery@1.11,bootstrap@3.3.1,jquery.cookie@1.4"></script>
 
 <script type="text/javascript">
+function manualLogin() {
+  FB.login(function(response){}, {scope: '$fb_permissions'});
+}
+
 $(document).ready(function() {
         $("body").delegate("#location_input", "click", function() { return false; });
 });

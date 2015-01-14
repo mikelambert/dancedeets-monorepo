@@ -1,12 +1,13 @@
 import base_servlet
+from logic import mobile
 from logic import sms
+
 
 
 IOS_URL = 'https://itunes.apple.com/us/app/dancedeets/id955212002?mt=8'
 ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.dancedeets.android'
 
 class MobileAppsHandler(base_servlet.BaseRequestHandler):
-
 
     def requires_login(self):
         return False
@@ -16,16 +17,16 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
 
         action = self.request.get('action')
         if action == 'download':
-            user_agent = self.request.user_agent.lower()
-            if 'iphone' in user_agent or 'ipod' in user_agent or 'ipad' in user_agent:
+            mobile_platform = mobile.get_mobile_platform(self.request.user_agent)
+            if mobile_platform == mobile.MOBILE_IOS:
                 self.redirect(IOS_URL)
                 handled = True
-            elif 'silk/' in user_agent:
+            elif mobile_platform == mobile.MOBILE_KINDLE:
                 self.render_page(error="Sorry, we do not support Amazon Kindles.")
-            elif 'android' in user_agent:
+            elif mobile_platform == mobile.MOBILE_ANDROID:
                 self.redirect(ANDROID_URL)
                 handled = True
-            elif 'windows nt' in user_agent and 'touch' in user_agent:
+            elif mobile_platform == mobile.MOBILE_WINDOWS_PHONE:
                 self.render_page(error="Sorry, we do not support Windows Phones.")
                 handled = False
             else:
@@ -40,6 +41,7 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
             self.display['messages'] = [message]
         if error:
             self.display['errors'] = [error]
+        self.display['suppress_promos'] = True
         self.render_template('mobile_apps')
 
     def post(self):
