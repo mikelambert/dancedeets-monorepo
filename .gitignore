@@ -4,6 +4,9 @@
 app-nose.yaml
 compiled_templates
 
+# secret files
+keys.yaml
+
 # temp files not for git
 tmp
 
