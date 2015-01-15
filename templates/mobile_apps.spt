@@ -28,7 +28,8 @@ DanceDeets - Mobile Apps
     position: relative;
 }
 .install-div {
-	margin: 20px;
+	margin-left: 20px;
+	margin-top: 20px;
 }
 .store-button {
 	margin-right: 5px;
@@ -43,15 +44,22 @@ DanceDeets - Mobile Apps
 
 <div class="row">
 
-<div class="col-sm-6">
+<div class="col-sm-7" style="padding-right: 0px">
 <h2>DanceDeets Mobile Apps</h2>
 
 
-<div class="install-div">
+<div class="install-div clearfix">
+<div style="float:left">
 Get the app now:
 <div class="spacing">
 <a href="$android_url"><img src="/images/play_store_download.png" class="store-button"></a>
+<br>
 <a href="$ios_url"><img src="/images/app_store_download.png" class="store-button"></a>
+</div>
+</div>
+
+<div style="float:left">
+<img src="/images/full_penguin_360.png" height="140">
 </div>
 </div>
 
@@ -66,7 +74,7 @@ Or enter your phone number, and we'll send you a link to install:
 
 <div class="install-div">
 Keep up with the latest dance events when you're on the go!
-<ul class="spacing">
+<ul class="feature-list spacing">
 <li class="feature"><img class="icon" src="/images/ic_menu_search.png">Search Worldwide</li>
 <li class="feature"><img class="icon" src="/images/ic_menu_calendar.png">Add to Calendar</li>
 <li class="feature"><img class="icon" src="/images/ic_menu_facebook.png">View on Facebook</li>
@@ -78,8 +86,8 @@ Keep up with the latest dance events when you're on the go!
 
 </div>
 
-<div class="col-sm-6">
-<img src="/images/phones.jpg" width="80%">
+<div class="col-sm-5">
+<img src="/images/phones.jpg" width="100%">
 </div>
 
 </div>
