@@ -301,11 +301,15 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
         db_events = eventdata.DBEvent.gql("WHERE city_name = :1 AND latitude = :2 ORDER BY start_time DESC LIMIT %s" % num_events, 'Unknown', None)
         db_events = [x for x in db_events if x.anywhere == False]
         self.fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
+        self.fbl.batch_fetch()
         template_events = []
-        for e in sorted(db_events, key=lambda x: x.start_time):
-            fb_event = self.fbl.fetched_data(fb_api.LookupEvent, e.fb_event_id)
-            if not fb_event['empty']:
-                template_events.append(dict(fb_event=fb_event, db_event=e))
+        for e in db_events:
+            try:
+                fb_event = self.fbl.fetched_data(fb_api.LookupEvent, e.fb_event_id)
+                if not fb_event['empty']:
+                    template_events.append(dict(fb_event=fb_event, db_event=e))
+            except fb_api.NoFetchedDataException as e:
+                logging.error(e)
         self.display['events'] = template_events
         self.render_template('admin_nolocation_events')
 
