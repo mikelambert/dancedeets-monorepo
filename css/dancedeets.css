@@ -269,10 +269,49 @@ footer {
 	}
 	75% {
 		top: -30px;
+		width: 140px;
+		height: 140px;
 		-webkit-animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
 		animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
 	}
 	100% {
 		top: 0px;
+		width: 140px;
+		height: 140px;
+	}
+}
+@keyframes bounce
+{
+	0% {
+		width: 140px;
+		height: 140px;
+		top: 0px;
+	}
+	40% {
+		width: 140px;
+		height: 120px;
+		top: 20px;
+		-webkit-animation-timing-function: ease-out;
+		animation-timing-function: ease-out;
+	}
+	50% {
+		top: 0px;
+		width: 140px;
+		height: 140px;
+		-webkit-animation-timing-function: cubic-bezier(0.33333, 0.66667, 0.66667, 1);
+		animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+	}
+	75% {
+		top: -30px;
+		-webkit-animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+		animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+		/* These seem to be required in Safari to keep the thing from shrinking horizontally */
+		width: 140px;
+		height: 140px;
+	}
+	100% {
+		top: 0px;
+		width: 140px;
+		height: 140px;
 	}
 }
