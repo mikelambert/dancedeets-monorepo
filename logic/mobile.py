@@ -4,6 +4,8 @@ MOBILE_ANDROID = 'MOBILE_ANDROID'
 MOBILE_WINDOWS_PHONE = 'MOBILE_WINDOWS_PHONE'
 
 def get_mobile_platform(user_agent):
+    if not user_agent:
+        user_agent = 'Unknown'
     user_agent = user_agent.lower()
     if 'iphone' in user_agent or 'ipod' in user_agent or 'ipad' in user_agent:
         return MOBILE_IOS
