@@ -4,8 +4,16 @@
 
 #def headbody
 <head>
-<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/images/fav32.png" sizes="32x32" type="image/x-icon">
+<link rel="icon" href="/images/fav64.png" sizes="64x64" type="image/x-icon">
+<link rel="icon" href="/images/fav128.png" sizes="128x128" type="image/x-icon">
+<!-- show this one last, so that browsers who don't understand sizes= use a smaller icon -->
+<link rel="icon" href="/images/fav32.png" type="image/x-icon"/>
+<link rel="apple-touch-icon" sizes="60x60" href="/images/fav60.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/images/fav76.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/images/fav120.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/images/fav152.png">
+
 <title>$title()</title>
 
 <meta name="google-play-app" content="app-id=com.dancedeets.android">
