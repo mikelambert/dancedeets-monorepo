@@ -392,6 +392,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.fbl.batch_fetch()
 
     def render_template(self, name):
+        # If we didn't load the user for some reason, let's load things now
+        self.finish_preload()
         if self.fb_uid:
             self.display['fb_user'] = self.fbl.fetched_data(fb_api.LookupUser, self.fb_uid)
         super(BaseRequestHandler, self).render_template(name)
@@ -401,7 +403,7 @@ def update_last_login_time(user_id, login_time):
     def _update_last_login_time():
         user = users.User.get_by_key_name(str(user_id))
         user.last_login_time = login_time
-        if getattr(user, 'login_count'):
+        if user.login_count:
             user.login_count += 1
         else:
             user.login_count = 2 # once for this one, once for initial creation
