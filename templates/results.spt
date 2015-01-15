@@ -45,6 +45,7 @@ $display_location dance events
 
 
 #def body
+<div class="row">
 
 <div class="col-md-9" style="min-height:300px">
 Events near ${display_location}:
@@ -131,9 +132,10 @@ Events near ${display_location}:
 	<p>
 	<a href="/share" class="btn btn-primary">Invite Dancers and Fans</a>
 	<a href="/events/add" class="btn btn-primary">Add Dance Event</a>
-</div>
 
-<div class="col-md-3">
+
+	<hr>
+
 	<div class="rankings">
 	<span class="ranking-title">Who has the most events:</span><br>
 	$ranked_list($event_top_n_cities, $event_selected_n_cities)
@@ -151,6 +153,7 @@ Events near ${display_location}:
 	</div>
 </div>
 
+</div> ## row
 #end def
 
 #def bottom_javascript
