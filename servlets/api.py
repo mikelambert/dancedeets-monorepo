@@ -366,10 +366,16 @@ def canonicalize_event_data(fb_event, db_event, event_keywords):
     event_api['picture'] = eventdata.get_event_image_url(fb_event)
 
     # location data
-    venue_location_name = fb_event['info']['location']
+    if 'location' in fb_event['info']:
+        venue_location_name = fb_event['info']['location']
+    elif db_event and db_event.actual_city_name:
+        venue_location_name = db_event.actual_city_name
+    else:
+        logging.error("Error: Event %s was returned via the API, but has no location information", fb_event['info']['id'])
+        venue_location_name = None
     venue = fb_event['info'].get('venue', {})
     if 'name' in venue and venue['name'] != venue_location_name:
-        logging.error("Venue name %r is different from location name %r", venue['name'], venue_location_name)
+        logging.error("For event %s, venue name %r is different from location name %r", fb_event['info']['id'], venue['name'], venue_location_name)
     venue_id = None
     if 'id' in venue:
         venue_id = venue['id']
@@ -384,8 +390,8 @@ def canonicalize_event_data(fb_event, db_event, event_keywords):
         for key in ['longitude', 'latitude']:
             geocode[key] = venue[key]
     # I have seen:
-    # no venue subfields at all
-    # name only
+    # no venue subfields at all (ie, we manually specify the address/location in the event or remapping)
+    # name only (possibly remapped?)
     # name and id and geocode
     # name and address and id and geocode
     # name and address (everything except zip) and id and geocode
