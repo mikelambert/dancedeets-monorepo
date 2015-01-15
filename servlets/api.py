@@ -286,8 +286,16 @@ class AuthHandler(ApiHandler):
             user.fb_access_token_expires = access_token_expires
             user.expired_oauth_token = False
             user.expired_oauth_token_reason = ""
+
+            # Track usage stats
+            user.last_login_time = datetime.datetime.now()
+            if user.login_count:
+                user.login_count += 1
+            else:
+                user.login_count = 2 # once for this one, once for initial creation
             if client not in user.clients:
                 user.clients.append(client)
+
             user.put() # this also sets to memcache
         else:
             user_creation.create_user_with_fbuser(self.fb_uid, self.fb_user, access_token, access_token_expires, location, client=client)
