@@ -296,8 +296,10 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
 class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
+        num_events = int(self.request.get('num_events', 100))
         # TODO: There are some events with city_name=Unknown and a valid latitude that are just not near any major metropolis. They are undercounted and have "No Scene", which we may want to fix at some point.
-        db_events = eventdata.DBEvent.gql("WHERE city_name = :1 AND latitude = :2 and anywhere != :3", 'Unknown', None, True)
+        db_events = eventdata.DBEvent.gql("WHERE city_name = :1 AND latitude = :2 ORDER BY start_time DESC LIMIT %s" % num_events, 'Unknown', None)
+        db_events = [x for x in db_events if x.anywhere == False]
         self.fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
         template_events = []
         for e in sorted(db_events, key=lambda x: x.start_time):

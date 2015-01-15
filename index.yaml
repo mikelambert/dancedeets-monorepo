@@ -28,6 +28,13 @@ indexes:
 
 - kind: DBEvent
   properties:
+  - name: city_name
+  - name: latitude
+  - name: start_time
+    direction: desc
+
+- kind: DBEvent
+  properties:
   - name: geohashes
   - name: search_time_period
   - name: start_time
