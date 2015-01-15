@@ -216,3 +216,63 @@ h3.event-title {
 footer {
 	text-align: center;
 }
+
+
+/* For use on the /mobile_apps page */
+.sms-textbox {
+	display: inline-block;
+	width: auto;
+	vertical-align: middle;
+}
+.feature .icon {
+	width: 25px;
+	height 25px;
+	opacity: 0.6;
+    filter: alpha(opacity=60); /* For IE8 and earlier */
+    margin: 4px;
+    top: -4px;
+    position: relative;
+}
+.install-div {
+	margin-left: 20px;
+	margin-top: 20px;
+}
+.store-button {
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+#penguin {
+	position: relative; /* so it can move */
+}
+
+@-webkit-keyframes bounce
+{
+	0% {
+		width: 140px;
+		height: 140px;
+		top: 0px;
+	}
+	40% {
+		width: 140px;
+		height: 120px;
+		top: 20px;
+		-webkit-animation-timing-function: ease-out;
+		animation-timing-function: ease-out;
+	}
+	50% {
+		top: 0px;
+		width: 140px;
+		height: 140px;
+		-webkit-animation-timing-function: cubic-bezier(0.33333, 0.66667, 0.66667, 1);
+		animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+	}
+	75% {
+		top: -30px;
+		-webkit-animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+		animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+	}
+	100% {
+		top: 0px;
+	}
+}

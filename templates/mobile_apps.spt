@@ -13,28 +13,8 @@ DanceDeets - Mobile Apps
     list-style-type: none;
 }
 
-.sms-textbox {
-	display: inline-block;
-	width: auto;
-	vertical-align: middle;
-}
-.feature .icon {
-	width: 25px;
-	height 25px;
-	opacity: 0.6;
-    filter: alpha(opacity=60); /* For IE8 and earlier */
-    margin: 4px;
-    top: -4px;
-    position: relative;
-}
-.install-div {
-	margin-left: 20px;
-	margin-top: 20px;
-}
-.store-button {
-	margin-right: 5px;
-	margin-bottom: 5px;
-}
+$walkout_animation
+
 </style>
 #end def
 
@@ -59,7 +39,7 @@ Get the app now:
 </div>
 
 <div style="float:left">
-<img src="/images/full_penguin_360.png" height="140">
+<img id="penguin" src="/images/full_penguin_360.png" height="140" onclick="walkOut();">
 </div>
 </div>
 
@@ -92,4 +72,17 @@ Keep up with the latest dance events when you're on the go!
 
 </div>
 </div>
+#end def
+
+#def bottom_javascript
+<script type="text/javascript">
+function walkOut() {
+	$('#penguin').css('webkitAnimation', 'bounce 0.5s infinite 0s, walkOut ${total_time}s');
+	$('#penguin').css('animation', 'bounce 0.5s infinite 0s, walkOut ${total_time}s');
+	$('#penguin').bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function(){
+		$('#penguin').hide();
+	});
+
+}
+</script>
 #end def
