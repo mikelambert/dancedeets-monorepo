@@ -345,9 +345,6 @@ class SettingsHandler(ApiHandler):
 
 
 def canonicalize_event_data(fb_event, db_event, event_keywords):
-    if event_keywords is None:
-        event_keywords = db_event.event_keywords
-
     event_api = {}
     for key in ['id', 'name', 'start_time']:
         event_api[key] = fb_event['info'][key]
@@ -370,7 +367,7 @@ def canonicalize_event_data(fb_event, db_event, event_keywords):
 
     # location data
     venue_location_name = fb_event['info']['location']
-    venue = fb_event['info']['venue']
+    venue = fb_event['info'].get('venue', {})
     if 'name' in venue and venue['name'] != venue_location_name:
         logging.error("Venue name %r is different from location name %r", venue['name'], venue_location_name)
     venue_id = None
@@ -387,6 +384,7 @@ def canonicalize_event_data(fb_event, db_event, event_keywords):
         for key in ['longitude', 'latitude']:
             geocode[key] = venue[key]
     # I have seen:
+    # no venue subfields at all
     # name only
     # name and id and geocode
     # name and address and id and geocode
@@ -412,7 +410,16 @@ def canonicalize_event_data(fb_event, db_event, event_keywords):
             'method': db_event.creating_method,
             'creator': db_event.creating_fb_uid,
         }
-    annotations['dance_keywords'] = event_keywords
+    # We may have keywords from the search result that called us
+    if event_keywords:
+        annotations['dance_keywords'] = event_keywords
+    # or from the db_event associated with this
+    elif db_event:
+        annotations['dance_keywords'] = db_event.event_keywords
+    # or possibly none at all, if we only received a fb_event..
+    else:
+        pass
+
     event_api['annotations'] = annotations
     # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only'
     rsvp_fields = ['attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count']
