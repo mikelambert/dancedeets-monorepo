@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import re
 import urllib
 import xml.sax.saxutils
 
@@ -295,6 +296,16 @@ class AuthHandler(ApiHandler):
                 user.login_count = 2 # once for this one, once for initial creation
             if client not in user.clients:
                 user.clients.append(client)
+
+
+            if location:
+                # If we had a geocode failure, or had a geocode bug, or we did a geocode bug and only got a country
+                if not user.location or 'null' in user.location or ',' not in user.location or re.search(r', \w\w$', user.location):
+                    user.location = location
+            else:
+                # Use the IP address headers if we've got nothing better
+                if not user.location:
+                    user.location = self.get_location_from_headers()
 
             user.put() # this also sets to memcache
         else:
