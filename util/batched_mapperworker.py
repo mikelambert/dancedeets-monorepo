@@ -18,7 +18,12 @@ class BatchedMapperWorkerCallbackHandler(fixed_mappers.FixedMapperWorkerCallback
                       shard_state,
                       tstate,
                       ctx):
-    return super(BatchedMapperWorkerCallbackHandler, self)._process_inputs(input_reader, shard_state, tstate, ctx)
+    finished_shard = super(BatchedMapperWorkerCallbackHandler, self)._process_inputs(input_reader, shard_state, tstate, ctx)
+    if finished_shard and self.all_data:
+      # Don't care whether it thinks we're over time or not
+      super(BatchedMapperWorkerCallbackHandler, self)._process_datum(self.all_data, input_reader, ctx, tstate)
+      self.all_data = []
+    return finished_shard
 
   def _process_datum(self, data, input_reader, ctx, transient_shard_state):
     if data is not input_readers.ALLOW_CHECKPOINT:
