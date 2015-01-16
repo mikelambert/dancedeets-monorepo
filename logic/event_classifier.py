@@ -364,7 +364,7 @@ class ClassifiedEvent(object):
         club_and_event_matches = self.processed_text.get_tokens(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST)
         self.times['all_regexes'] = time.time() - a
 
-        self.found_dance_matches = self.real_dance_matches + self.processed_text.get_tokens(keywords.EASY_DANCE, keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_CHOREO) + self.manual_dance_keywords_matches
+        self.found_dance_matches = self.real_dance_matches + self.processed_text.get_tokens(keywords.EASY_DANCE, keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_CHOREO, keywords.HOUSE, keywords.EASY_VOGUE) + self.manual_dance_keywords_matches
         self.found_event_matches = event_matches + self.processed_text.get_tokens(keywords.EASY_EVENT, keywords.EASY_BATTLE) + club_and_event_matches
         self.found_wrong_matches = self.processed_text.get_tokens(keywords.DANCE_WRONG_STYLE) + self.processed_text.get_tokens(keywords.CLUB_ONLY)
 
