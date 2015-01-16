@@ -399,7 +399,7 @@ class ClassifiedEvent(object):
                 self.real_dance_matches)): # these two are implied by the above, but do it here just in case future clause re-ordering occurs
             self.dance_event = False
 
-        elif self.processed_text.count_tokens(keywords.AMBIGUOUS_DANCE_MUSIC) >= 1 and (len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):
+        elif self.processed_text.count_tokens(keywords.AMBIGUOUS_DANCE_MUSIC) + self.processed_text.count_tokens(keywords.HOUSE) >= 1 and (len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)) >= 1 and self.calc_inverse_keyword_density < 5 and not (title_wrong_style_matches and not title_good_matches):
             self.dance_event = 'hiphop/funk and good event type'
         # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
         elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and (len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)) >= 1 and not self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE) and self.calc_inverse_keyword_density < 5:
