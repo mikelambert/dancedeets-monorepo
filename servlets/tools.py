@@ -98,7 +98,12 @@ class OneOffHandler(webapp2.RequestHandler):
 
 class AutoAddPotentialEventsHandler(tasks.BaseTaskFacebookRequestHandler):
     def get(self):
-        auto_add.mr_classify_potential_events(self.fbl)
+        past_event = self.request.get('past_event', None)
+        if past_event == '1':
+            past_event = True
+        elif past_event == '0':
+            past_event = False
+        auto_add.mr_classify_potential_events(self.fbl, past_event)
 
 class OwnedEventsHandler(webapp2.RequestHandler):
     def get(self):

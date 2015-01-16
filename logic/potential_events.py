@@ -4,10 +4,13 @@ from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
 import fb_api
+from events import eventdata
 from logic import event_classifier
+from logic import event_updates
 from logic import gprediction
 from logic import gtranslate
 from logic import thing_db
+from util import dates
 
 class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: int(x.key().name()))
@@ -24,6 +27,9 @@ class PotentialEvent(db.Model):
     source_ids = db.ListProperty(int)
     source_fields = db.ListProperty(str)
 
+    # This is a representation of FUTURE vs PAST, so we can filter in our mapreduce criteria for relevant future events easily
+    past_event = db.BooleanProperty()
+
     def has_source_with_field(self, source_id, source_field):
         has_source = False
         for source_id_, source_field_ in zip(self.source_ids, self.source_fields):
@@ -35,6 +41,19 @@ class PotentialEvent(db.Model):
         #TODO(lambert): write as pre-put hook once we're using NDB.
         self.should_look_at = bool(self.match_score > 0 or self.show_even_if_no_score)
         super(PotentialEvent, self).put()
+
+    def set_past_event(self, fb_event):
+        if not fb_event:
+            past_event = True
+        elif fb_event['empty']:
+            past_event = True
+        else:
+            start_time = dates.parse_fb_start_time(fb_event)
+            end_time = dates.parse_fb_end_time(fb_event)
+            past_event = (eventdata.TIME_PAST == event_updates._event_time_period2(start_time, end_time))
+        changed = (self.past_event != past_event)
+        self.past_event = past_event
+        return changed
 
 
 def get_language_for_fb_event(fb_event):
@@ -51,6 +70,7 @@ def _common_potential_event_setup(potential_event, fb_event):
     #    potential_event.language = get_language_for_fb_event(fb_event)
     match_score = event_classifier.get_classified_event(fb_event, language=potential_event.language).match_score()
     potential_event.match_score = match_score
+    potential_event.set_past_event(fb_event)
 
 def update_scores_for_potential_event(potential_event, fb_event, fb_event_attending, service=None):
     return potential_event # This prediction isn't really working, so let's turn it off for now

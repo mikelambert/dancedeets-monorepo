@@ -24,9 +24,17 @@ def classify_events(fbl, pe_list):
         try:
             fb_event = fbl.fetched_data(fb_api.LookupEvent, pe.fb_event_id)
         except fb_api.NoFetchedDataException:
+            fb_event = None
+        if fb_event and fb_event['empty']:
+            fb_event = None
+
+        # Get these past events out of the way, saved, then continue.
+        # Next time through this mapreduce, we shouldn't need to process them.
+        if pe.set_past_event(fb_event):
+            pe.put()
+        if not fb_event:
             continue
-        if fb_event['empty']:
-            continue
+
         classified_event = event_classifier.ClassifiedEvent(fb_event)
         classified_event.classify()
         auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
@@ -61,13 +69,16 @@ def classify_events(fbl, pe_list):
 
 map_classify_events = fb_mapreduce.mr_wrap(classify_events)
 
-def mr_classify_potential_events(fbl):
+def mr_classify_potential_events(fbl, past_event):
+    filters = [('looked_at', '=', None), ('should_look_at', '=', True)]
+    if past_event is not None:
+        filters.append(('past_event', '=', past_event))
     fb_mapreduce.start_map(
         fbl,
         'Auto-Add Events',
         'logic.auto_add.map_classify_events',
         'logic.potential_events.PotentialEvent',
-        filters=[('looked_at', '=', None), ('should_look_at', '=', True)],
+        filters=filters,
         handle_batch_size=20,
         queue='fast-queue',
         output_writer_spec='mapreduce.output_writers.BlobstoreOutputWriter',

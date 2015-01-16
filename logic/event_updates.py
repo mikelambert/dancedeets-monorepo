@@ -9,9 +9,12 @@ from logic import search
 from util import dates
 
 def _event_time_period(db_event):
-    if not db_event.start_time:
+    return _event_time_period2(db_event.start_time, db_event.end_time)
+
+def _event_time_period2(start_time, end_time):
+    if not start_time:
         return None
-    event_end_time = dates.faked_end_time(db_event.start_time, db_event.end_time)
+    event_end_time = dates.faked_end_time(start_time, end_time)
     today = datetime.datetime.today() - datetime.timedelta(days=1)
     event_relative = (event_end_time - today).total_seconds()
     if event_relative > 0:
