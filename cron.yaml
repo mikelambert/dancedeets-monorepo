@@ -14,7 +14,7 @@ cron:
   timezone: America/Los_Angeles
 - description: calculate periodic statistics and rankings
   url: /tasks/compute_rankings
-  schedule: every 2 days
+  schedule: every 48 hours
 - description: reload user data
   url: /tasks/reload_all_users?user_id=701004&allow_cache=0
   schedule: every 25 hours
@@ -38,6 +38,6 @@ cron:
 - description: keep fb events in memory for search pages
   url: /tasks/memcache_future_events?user_id=701004
   schedule: every 1 hours
-- description: auto-add events weekly
-  url: /tools/auto_add_potential_events?user_id=701004
-  schedule: every tuesday 2:00
+- description: auto-add events daily
+  url: /tools/auto_add_potential_events?user_id=701004&past_event=0
+  schedule: every 3 hours
