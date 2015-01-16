@@ -368,11 +368,15 @@ def canonicalize_event_data(fb_event, db_event, event_keywords):
     # location data
     if 'location' in fb_event['info']:
         venue_location_name = fb_event['info']['location']
-    elif db_event and db_event.actual_city_name:
-        venue_location_name = db_event.actual_city_name
+    # We could do something like this...
+    #elif db_event and db_event.actual_city_name:
+    #    venue_location_name = db_event.actual_city_name
+    # ...but really, this would return the overridden/remapped address name, which would likely just be a "City" anyway.
+    # A city isn't particularly useful for our clients trying to display the event on a map.
     else:
-        logging.error("Error: Event %s was returned via the API, but has no location information", fb_event['info']['id'])
-        venue_location_name = None
+        # In these very rare cases (where we've manually set the location on a location-less event), return ''
+        # TODO: We'd ideally like to return None, but unfortunately Android expects this to be non-null in 1.0.3 and earlier.
+        venue_location_name = ""
     venue = fb_event['info'].get('venue', {})
     if 'name' in venue and venue['name'] != venue_location_name:
         logging.error("For event %s, venue name %r is different from location name %r", fb_event['info']['id'], venue['name'], venue_location_name)
@@ -390,12 +394,12 @@ def canonicalize_event_data(fb_event, db_event, event_keywords):
         for key in ['longitude', 'latitude']:
             geocode[key] = venue[key]
     # I have seen:
-    # no venue subfields at all (ie, we manually specify the address/location in the event or remapping)
-    # name only (possibly remapped?)
-    # name and id and geocode
-    # name and address and id and geocode
-    # name and address (everything except zip) and id and geocode
-    # so now address can be any subset of those fields that the venue author filled out...but will specify none, at least
+    # - no venue subfields at all (ie, we manually specify the address/location in the event or remapping), which will be returned as "" here (see above comment)
+    # - name only (possibly remapped?)
+    # - name and id and geocode
+    # - name and address and id and geocode
+    # - name and address (everything except zip) and id and geocode
+    # - so now address can be any subset of those fields that the venue author filled out...but will specify none, at least
     # ...are there more variations? write a mapreduce on recent events to check?
     event_api['venue'] = {
         'name': venue_location_name,
