@@ -3,9 +3,8 @@ from twilio.rest import TwilioRestClient
 import keys
 
 # put your own credentials here 
-ACCOUNT_SID = "AC4fe8564ea12bfcb3af18df2ee99c2bd9" 
-AUTH_TOKEN = keys.get("twilio_auth_token") 
- 
+ACCOUNT_SID = "AC4fe8564ea12bfcb3af18df2ee99c2bd9"
+AUTH_TOKEN = keys.get("twilio_auth_token")
 
 def send_email_link(phone_number):
     client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN) 
