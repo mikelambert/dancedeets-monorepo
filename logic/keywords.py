@@ -287,7 +287,6 @@ legit_dance = [
     # only do la-style if not salsa? http://www.dancedeets.com/events/admin_edit?event_id=292605290807447
     # 'l\W?a\W?\Wstyle',
     'l\W?a\W?\Wdance',
-    'n(?:ew|u)\W?style',
     'n(?:ew|u)\W?style\Whip\W?hop',
     u'뉴스타일 ?힙합', # korean new style hiphop
     'hip\W?hop\Wn(?:ew|u)\W?style',
