@@ -43,10 +43,14 @@ def add_update_event(event_id, user_id, fbl, remapped_address=None, override_add
         # When we want to support complex queries on many types of events, perhaps we should use Prospective Search.
         auth_tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.user_id=="701004", pubsub.OAuthToken.token_nickname=="BigTwitter").fetch(1)
         if auth_tokens:
-            auth_token = auth_tokens[0]
-            pubsub.authed_twitter_post(auth_token, e, fb_event)
+            pubsub.twitter_post(auth_tokens[0], e, fb_event)
         else:
             logging.error("Could not find Mike's BigTwitter OAuthToken")
+        auth_tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.user_id=="701004", pubsub.OAuthToken.token_nickname=="1613128148918160").fetch(1)
+        if auth_tokens:
+            result = pubsub.facebook_post(auth_tokens[0], e, fb_event)
+            if not result:
+                logging.error("Error posting to FB wall: %s" % result)
 
     potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)

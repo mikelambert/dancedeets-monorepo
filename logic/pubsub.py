@@ -1,6 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
-import datetime
+import urllib
 import urlparse
 import oauth2 as oauth
 
@@ -8,7 +8,9 @@ from google.appengine.ext import ndb
 from twitter import Twitter
 from twitter import OAuth
 
+import fb_api
 import keys
+from util import dates
 from util import urls
 
 consumer_key = 'xzpiBnUCGqTWSqTgmE6XtLDpw'
@@ -17,12 +19,12 @@ consumer_secret = keys.get("twitter_consumer_secret")
 DATE_FORMAT = "%Y/%m/%d"
 TIME_FORMAT = "%H:%M"
 
-def format_post(db_event, fb_event):
+def format_twitter_post(db_event, fb_event):
     url = urls.fb_event_url(fb_event['info']['id'])
     title = fb_event['info']['name']
     city = db_event.actual_city_name
 
-    start_time = db_event.start_time
+    start_time = dates.parse_fb_start_time(fb_event)
     #TODO(lambert): Some day, when we are doing more local relevant data, list the time here, and do it at the right time accounting for timezone offsets
     #if start_time.date() == datetime.date.today():
     #    datetime_string = start_time.strftime(TIME_FORMAT)
@@ -41,29 +43,53 @@ def format_post(db_event, fb_event):
         final_title += u'…'
     return u"%s%s %s" % (prefix, final_title, url)
 
-def twitter_post(db_event, fb_event):
-    status = format_post(db_event, fb_event)
-    token_key = keys.get("twitter_access_token_secret")
-
-    t = Twitter(
-        auth=OAuth("2982386308-SaQrXs3Va0ZpjXDe5hgJ9N52x3yfq8ZsO2VXvLB", token_key, consumer_key, consumer_secret))
-    t.statuses.update(
-        status=status)
-
-def authed_twitter_post(auth_token, db_event, fb_event):
-    status = format_post(db_event, fb_event)
+def twitter_post(auth_token, db_event, fb_event):
+    status = format_twitter_post(db_event, fb_event)
 
     t = Twitter(
         auth=OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, consumer_key, consumer_secret))
     t.statuses.update(
         status=status)
 
+def format_facebook_post(db_event, fb_event):
+    start_time = dates.parse_fb_start_time(fb_event)
+    datetime_string = start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
+    name = fb_event['info']['name']
+    return '%s - %s' % (datetime_string, name)
+
+def facebook_post(auth_token, db_event, fb_event):
+    message = format_facebook_post(db_event, fb_event)
+    link = urls.fb_event_url(fb_event['info']['id'])
+
+    post_values = {}
+    post_values['message'] = message
+    #post_values['link'] = link
+    venue_id = fb_event['info'].get('venue', {}).get('id')
+    if venue_id:
+        post_values['place'] = venue_id
+    if fb_event['info'].get('admins'):
+        admin_ids = [x['id'] for x in fb_event['info']['admins']['data']]
+        post_values['tags'] = ','.join(admin_ids)
+
+    # At some point, set up feed targetting:
+    feed_targeting = {}
+    #feed_targeting['cities'] = '' # int array
+    #feed_targeting['countries'] = '', # two char country abbreviations
+    #and 'regions' too?
+
+    page_id = auth_token.token_nickname
+    endpoint = '/v2.2/%s/feed' % page_id
+    fb = fb_api.FBAPI(auth_token.oauth_token)
+    result = fb.post(endpoint, None, post_values)
+    return result
+
+
 request_token_url = 'https://twitter.com/oauth/request_token'
 access_token_url = 'https://twitter.com/oauth/access_token'
 authorize_url = 'https://twitter.com/oauth/authorize'
 
 APP_TWITTER = 'APP_TWITTER'
-APP_INSTAGRAM = 'APP_INSTAGRAM'
+APP_FACEBOOK = 'APP_FACEBOOK' # a butchering of OAuthToken!
 #...fb?
 #...tumblr?
 
@@ -89,26 +115,27 @@ def twitter_oauth1(user_id, token_nickname):
     # said access token.
 
     resp, content = client.request(request_token_url, "GET")
-    print resp, content
     if resp['status'] != '200':
         raise Exception("Invalid response %s." % resp['status'])
 
     request_token = dict(urlparse.parse_qsl(content))
 
-    auth_token = OAuthToken(user_id=str(user_id), token_nickname=token_nickname, application=APP_TWITTER,
-        valid_token=False, temp_oauth_token=request_token['oauth_token'], temp_oauth_token_secret=request_token['oauth_token_secret'])
+    auth_tokens = OAuthToken.query(OAuthToken.user_id==str(user_id), OAuthToken.token_nickname==token_nickname, OAuthToken.application==APP_TWITTER).fetch(1)
+    if auth_tokens:
+        auth_token = auth_tokens[0]
+    else:
+        auth_token = OAuthToken()
+    auth_token.user_id = str(user_id)
+    auth_token.token_nickname = token_nickname
+    auth_token.application = APP_TWITTER
+    auth_token.temp_oauth_token = request_token['oauth_token']
+    auth_token.temp_oauth_token_secret = request_token['oauth_token_secret']
     auth_token.put()
-
-    #print "Request Token:"
-    #print "    - oauth_token        = %s" % request_token['oauth_token']
-    #print "    - oauth_token_secret = %s" % request_token['oauth_token_secret']
-    #print 
 
     # Step 2: Redirect to the provider. Since this is a CLI script we do not 
     # redirect. In a web application you would redirect the user to the URL
     # below.
 
-    #print "Go to the following link in your browser:"
     return "%s?oauth_token=%s" % (authorize_url, request_token['oauth_token'])
 
 #user comes to:
@@ -136,6 +163,42 @@ def twitter_oauth2(oauth_token, oauth_verifier):
     access_token = dict(urlparse.parse_qsl(content))
     auth_token.oauth_token = access_token['oauth_token']
     auth_token.oauth_token_secret = access_token['oauth_token_secret']
+    auth_token.valid_token = True
+    auth_token.put()
+    return auth_token
+
+
+class LookupUserAccounts(fb_api.LookupType):
+    @classmethod
+    def get_lookups(cls, object_id):
+        return [
+            ('accounts', cls.url('%s/accounts' % object_id)),
+        ]
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (fetching_uid, object_id, 'OBJ_USER_ACCOUNTS')
+
+
+def facebook_auth(fbl, page_uid):
+    accounts = fbl.get(LookupUserAccounts, fbl.fb_uid, allow_cache=False)
+    all_pages = accounts['accounts']['data']
+    pages = [x for x in all_pages if x['id'] == page_uid]
+    if not pages:
+        raise ValueError("Failed to find page id in user's page permissions: %s" % page_uid)
+    page = pages[0]
+    print page
+    page_token = page['access_token']
+
+    auth_tokens = OAuthToken.query(OAuthToken.user_id==str(fbl.fb_uid), OAuthToken.token_nickname==str(page_uid), OAuthToken.application==APP_FACEBOOK).fetch(1)
+    if auth_tokens:
+        auth_token = auth_tokens[0]
+    else:
+        auth_token = OAuthToken()
+    auth_token.user_id = str(fbl.fb_uid)
+    auth_token.token_nickname = str(page_uid)
+    auth_token.application = APP_FACEBOOK
+    auth_token.valid_token = True
+    auth_token.oauth_token = page_token
     auth_token.put()
     return auth_token
 
