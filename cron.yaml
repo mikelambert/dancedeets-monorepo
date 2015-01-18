@@ -1,7 +1,7 @@
 cron:
 - description: load potential events from our users
   url: /tasks/load_all_potential_events?user_id=701004&allow_cache=0
-  schedule: every 23 hours
+  schedule: every 8 hours
 - description: load potential events from mikes friends
   url: /tasks/load_potential_events_for_friends?user_id=701004&allow_cache=0
   schedule: every 22 hours
