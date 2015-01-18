@@ -12,19 +12,23 @@ from logic import event_locations
 from logic import potential_events
 from util import fb_mapreduce
 
-def classify_events(fbl, pe_list):
-    assert fbl.allow_cache
-    fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
-    #fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in pe_list])
-    
-    fbl.batch_fetch()
+def classify_events(fbl, pe_list, fb_list=None):
+    if fb_list is None:
+        assert fbl.allow_cache
+        fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
+        #fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in pe_list])
+        
+        fbl.batch_fetch()
+        fb_list = []
+        for pe in pe_list:
+            try:
+                fb_event = fbl.fetched_data(fb_api.LookupEvent, pe.fb_event_id)
+            except fb_api.NoFetchedDataException:
+                fb_event = None
+            fb_list.append(fb_event)
 
     results = []
-    for pe in pe_list:
-        try:
-            fb_event = fbl.fetched_data(fb_api.LookupEvent, pe.fb_event_id)
-        except fb_api.NoFetchedDataException:
-            fb_event = None
+    for pe, fb_event in zip(pe_list, fb_list):
         if fb_event and fb_event['empty']:
             fb_event = None
 
@@ -33,6 +37,12 @@ def classify_events(fbl, pe_list):
         if pe.set_past_event(fb_event):
             pe.put()
         if not fb_event:
+            continue
+
+        # Don't process events we've already looked at, or don't need to look at.
+        # This doesn't happen with the mapreduce that pre-filters them out,
+        # but it does happen when we scrape users potential events and throw them all in here.
+        if not pe.should_look_at or pe.looked_at:
             continue
 
         classified_event = event_classifier.ClassifiedEvent(fb_event)
@@ -50,7 +60,8 @@ def classify_events(fbl, pe_list):
                 # TODO(lambert): handle un-add-able events differently
                 results.append(result)
                 ctx = context.get()
-                ctx.counters.increment('auto-added-dance-events')
+                if ctx:
+                    ctx.counters.increment('auto-added-dance-events')
             except fb_api.NoFetchedDataException as e:
                 logging.error("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
             except add_entities.AddEventException as e:
@@ -64,10 +75,14 @@ def classify_events(fbl, pe_list):
             result = '-%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, fb_event['info'].get('name', '')))
             results.append(result)
             ctx = context.get()
-            ctx.counters.increment('auto-notadded-dance-events')
+            if ctx:
+                ctx.counters.increment('auto-notadded-dance-events')
+
+def classify_events_with_yield(*args, **kwargs):
+    results = classify_events(*args, **kwargs)
     yield ''.join(results).encode('utf-8')
 
-map_classify_events = fb_mapreduce.mr_wrap(classify_events)
+map_classify_events = fb_mapreduce.mr_wrap(classify_events_with_yield)
 
 def mr_classify_potential_events(fbl, past_event):
     filters = [('looked_at', '=', None), ('should_look_at', '=', True)]

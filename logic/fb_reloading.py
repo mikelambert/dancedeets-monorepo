@@ -4,7 +4,7 @@ from events import eventdata
 import fb_api
 from logic import email_events
 from logic import event_updates
-from logic import potential_events
+from logic import scrape_user_potential_events
 from util import fb_mapreduce
 from util import timings
 
@@ -152,7 +152,7 @@ def load_potential_events_for_user_ids(fbl, user_ids):
     # Since we've loaded the latest events from the user, allow future event lookups to come from cache
     fbl.allow_cache = True
     for user_events in user_events_list:
-        potential_events.get_potential_dance_events(fbl, user_events)
+        scrape_user_potential_events.get_potential_dance_events(fbl, user_events)
 
 def yield_load_potential_events(fbl, user):
     if user.expired_oauth_token:
@@ -169,7 +169,7 @@ def yield_load_potential_events(fbl, user):
     else:
         # Since we've loaded the latest events from the user, allow future event lookups to come from cache
         fbl.allow_cache = True
-        potential_events.get_potential_dance_events(fbl, user_events)
+        scrape_user_potential_events.get_potential_dance_events(fbl, user_events)
 
 map_load_potential_events = fb_mapreduce.mr_user_wrap(yield_load_potential_events)
 load_potential_events = fb_mapreduce.nomr_wrap(yield_load_potential_events)
