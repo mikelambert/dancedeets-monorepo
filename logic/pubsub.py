@@ -1,5 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
+import datetime
 import urlparse
 import oauth2 as oauth
 
@@ -13,21 +14,32 @@ from util import urls
 consumer_key = 'xzpiBnUCGqTWSqTgmE6XtLDpw'
 consumer_secret = keys.get("twitter_consumer_secret") 
 
+DATE_FORMAT = "%Y/%m/%d"
+TIME_FORMAT = "%H:%M"
+
 def format_post(db_event, fb_event):
     url = urls.fb_event_url(fb_event['info']['id'])
     title = fb_event['info']['name']
     city = db_event.actual_city_name
 
+    start_time = db_event.start_time
+    #TODO(lambert): Some day, when we are doing more local relevant data, list the time here, and do it at the right time accounting for timezone offsets
+    #if start_time.date() == datetime.date.today():
+    #    datetime_string = start_time.strftime(TIME_FORMAT)
+    #else:
+    datetime_string = start_time.strftime(DATE_FORMAT)
+
     # twitter length is 22, so I use 23 to give buffer.
     # TODO(lambert): fetch help/configuration daily to find the current value
     # as described on https://dev.twitter.com/overview/t.co
     url_length = 23
-    title_length = 140 - url_length - len(city) - len(u": … ")
+    prefix = "%s: %s: " % (datetime_string, city)
 
+    title_length = 140 - len(prefix) - len(u"… ") - url_length
     final_title = title[0:title_length]
     if final_title != title:
         final_title += u'…'
-    return u"%s: %s %s" % (city, final_title, url)
+    return u"%s%s %s" % (prefix, final_title, url)
 
 def twitter_post(db_event, fb_event):
     status = format_post(db_event, fb_event)
@@ -55,7 +67,7 @@ APP_INSTAGRAM = 'APP_INSTAGRAM'
 #...fb?
 #...tumblr?
 
-class AuthToken(ndb.Model):
+class OAuthToken(ndb.Model):
     user_id = ndb.StringProperty()
     token_nickname = ndb.StringProperty()
     application = ndb.StringProperty()
@@ -66,6 +78,7 @@ class AuthToken(ndb.Model):
     oauth_token_secret = ndb.StringProperty()
     #search criteria? location? radius? search terms?
     #post on event find? post x hours before event? multiple values?
+
 
 def twitter_oauth1(user_id, token_nickname):
     consumer = oauth.Consumer(consumer_key, consumer_secret)
@@ -82,7 +95,7 @@ def twitter_oauth1(user_id, token_nickname):
 
     request_token = dict(urlparse.parse_qsl(content))
 
-    auth_token = AuthToken(user_id=str(user_id), token_nickname=token_nickname, application=APP_TWITTER,
+    auth_token = OAuthToken(user_id=str(user_id), token_nickname=token_nickname, application=APP_TWITTER,
         valid_token=False, temp_oauth_token=request_token['oauth_token'], temp_oauth_token_secret=request_token['oauth_token_secret'])
     auth_token.put()
 
@@ -104,7 +117,7 @@ def twitter_oauth1(user_id, token_nickname):
 #        oauth_verifier=uw7NjWHT6OJ1MpJOXsHfNxoAhPKpgI8BlYDhxEjIBY
 
 def twitter_oauth2(oauth_token, oauth_verifier):
-    auth_tokens = AuthToken.query(AuthToken.temp_oauth_token==oauth_token, AuthToken.application==APP_TWITTER).fetch(1)
+    auth_tokens = OAuthToken.query(OAuthToken.temp_oauth_token==oauth_token, OAuthToken.application==APP_TWITTER).fetch(1)
     if not auth_tokens:
         return None
     auth_token = auth_tokens[0]

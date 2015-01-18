@@ -1,3 +1,5 @@
+import logging
+
 import fb_api
 from events import eventdata
 from logic import event_classifier
@@ -28,6 +30,7 @@ def add_update_event(event_id, user_id, fbl, remapped_address=None, override_add
         event_locations.update_remapped_address(fb_event, remapped_address)
 
     e = eventdata.DBEvent.get_or_insert(event_id)
+    newly_created = (not e.creating_fb_uid)
     if override_address is not None:
         e.address = override_address
     e.creating_fb_uid = user_id
@@ -36,7 +39,14 @@ def add_update_event(event_id, user_id, fbl, remapped_address=None, override_add
     event_updates.update_and_save_event(e, fb_event)
     thing_db.create_source_from_event(fbl, e)
 
-    pubsub.twitter_post(e, fb_event)
+    if newly_created:
+        # When we want to support complex queries on many types of events, perhaps we should use Prospective Search.
+        auth_tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.user_id=="701004", pubsub.OAuthToken.token_nickname=="BigTwitter").fetch(1)
+        if auth_tokens:
+            auth_token = auth_tokens[0]
+            pubsub.authed_twitter_post(auth_token, e, fb_event)
+        else:
+            logging.error("Could not find Mike's BigTwitter OAuthToken")
 
     potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)

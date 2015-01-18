@@ -4,7 +4,12 @@ from logic import pubsub
 class TwitterOAuthStartHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
-        url = pubsub.twitter_oauth1(self.fb_uid, 'Post to Twitter')
+        nickname = self.request.get('token_nickname')
+        if not nickname:
+            #TODO(lambert): Clean up
+            self.response.write('Need token_nickname parameter')
+            return
+        url = pubsub.twitter_oauth1(self.fb_uid, nickname)
         self.redirect(url)
 
 class TwitterOAuthCallbackHandler(base_servlet.BaseRequestHandler):
@@ -21,11 +26,13 @@ class TwitterOAuthCallbackHandler(base_servlet.BaseRequestHandler):
 class TwitterOAuthSuccessHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
+        #TODO(lambert): Clean up
         self.response.write('Authorized!')
         #pubsub.authed_twitter_post(auth_token, None, None)
 
 class TwitterOAuthFailureHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
+        #TODO(lambert): Clean up
         self.response.write("Failure, couldn't find auth token conection!")
         #pubsub.authed_twitter_post(auth_token, None, None)
