@@ -63,7 +63,7 @@ def facebook_post(auth_token, db_event, fb_event):
 
     post_values = {}
     post_values['message'] = message
-    #post_values['link'] = link
+    post_values['link'] = link
     venue_id = fb_event['info'].get('venue', {}).get('id')
     if venue_id:
         post_values['place'] = venue_id
