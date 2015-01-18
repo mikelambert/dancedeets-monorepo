@@ -5,11 +5,11 @@ from logic import auto_add
 from logic import potential_events
 from logic import thing_db
 
-def get_potential_dance_events(fbl, fb_user_events):
+def get_potential_dance_events(fbl, user_id, fb_user_events):
+    # The source_id is not fbl.fb_uid, because sometimes we fetch friend's events as Mike, and the source is not Mike.
     results_json = fb_user_events['all_event_info']['data']
     event_ids = [str(x['eid']) for x in sorted(results_json, key=lambda x: x.get('start_time'))]
 
-    user_id = fbl.fb_uid
     logging.info("For user id %s, found %s invited events %s", user_id, len(event_ids), event_ids)
 
     # TODO(lambert): instead of this, perhaps we want to store the "previous list of ids from this users invites", or compare versus the previous all_event_info object?

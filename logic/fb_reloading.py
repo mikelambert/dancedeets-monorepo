@@ -151,8 +151,8 @@ def load_potential_events_for_user_ids(fbl, user_ids):
     user_events_list = fbl.get_multi(fb_api.LookupUserEvents, user_ids)
     # Since we've loaded the latest events from the user, allow future event lookups to come from cache
     fbl.allow_cache = True
-    for user_events in user_events_list:
-        scrape_user_potential_events.get_potential_dance_events(fbl, user_events)
+    for user_id, user_events in zip(user_ids, user_events_list):
+        scrape_user_potential_events.get_potential_dance_events(fbl, user_id, user_events)
 
 def yield_load_potential_events(fbl, user):
     if user.expired_oauth_token:
@@ -169,7 +169,7 @@ def yield_load_potential_events(fbl, user):
     else:
         # Since we've loaded the latest events from the user, allow future event lookups to come from cache
         fbl.allow_cache = True
-        scrape_user_potential_events.get_potential_dance_events(fbl, user_events)
+        scrape_user_potential_events.get_potential_dance_events(fbl, user.fb_uid, user_events)
 
 map_load_potential_events = fb_mapreduce.mr_user_wrap(yield_load_potential_events)
 load_potential_events = fb_mapreduce.nomr_wrap(yield_load_potential_events)
