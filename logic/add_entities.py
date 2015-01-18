@@ -40,17 +40,22 @@ def add_update_event(event_id, user_id, fbl, remapped_address=None, override_add
     thing_db.create_source_from_event(fbl, e)
 
     if newly_created:
+        logging.info("New event, publishing to twitter/facebook")
         # When we want to support complex queries on many types of events, perhaps we should use Prospective Search.
         auth_tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.user_id=="701004", pubsub.OAuthToken.token_nickname=="BigTwitter").fetch(1)
         if auth_tokens:
             pubsub.twitter_post(auth_tokens[0], e, fb_event)
         else:
             logging.error("Could not find Mike's BigTwitter OAuthToken")
-        auth_tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.user_id=="701004", pubsub.OAuthToken.token_nickname=="1613128148918160").fetch(1)
+        auth_tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.user_id=="701004").fetch(1)
         if auth_tokens:
-            result = pubsub.facebook_post(auth_tokens[0], e, fb_event)
-            if not result:
-                logging.error("Error posting to FB wall: %s" % result)
+            auth_token = auth_tokens[0]
+            if auth_token.token_nickname in ["1613128148918160", "1375421172766829"]:
+                result = pubsub.facebook_post(auth_token, e, fb_event)
+                if 'error' in result:
+                    logging.error("Error posting to FB wall: %s" % result)
+        else:
+            logging.error("Could not find Mike's Facebook Page to post to")
 
     potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
