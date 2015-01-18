@@ -362,6 +362,8 @@ class LookupUserEvents(LookupType):
         return (fetching_uid, object_id, 'OBJ_USER_EVENTS')
 
 class LookupFriendList(LookupType):
+    version = "v1.0" # still using implicit access to list of friends
+
     @classmethod
     def get_lookups(cls, object_id):
         return [
