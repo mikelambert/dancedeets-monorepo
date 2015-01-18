@@ -5,8 +5,7 @@ import urlparse
 import oauth2 as oauth
 
 from google.appengine.ext import ndb
-from twitter import Twitter
-from twitter import OAuth
+import twitter
 
 from events import eventdata
 import fb_api
@@ -47,8 +46,8 @@ def format_twitter_post(db_event, fb_event):
 def twitter_post(auth_token, db_event, fb_event):
     status = format_twitter_post(db_event, fb_event)
 
-    t = Twitter(
-        auth=OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, consumer_key, consumer_secret))
+    t = twitter.Twitter(
+        auth=twitter.OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, consumer_key, consumer_secret))
     t.statuses.update(
         status=status)
 
@@ -61,9 +60,9 @@ def facebook_post(auth_token, db_event, fb_event):
     post_values = {}
     #post_values['message'] = fb_event['info']['name']
     post_values['link'] = link#.replace('www.dancedeets.com', 'dev-dancedeets.com:8080')
-    post_values['name'] = fb_event['info']['name']
+    post_values['name'] = fb_event['info']['name'].encode('utf8')
     post_values['caption'] = datetime_string
-    post_values['description'] = fb_event['info'].get('description', '')
+    post_values['description'] = fb_event['info'].get('description', '').encode('utf8')
     post_values['picture'] = eventdata.get_largest_cover(fb_event)['source']
     venue_id = fb_event['info'].get('venue', {}).get('id')
     if venue_id:
