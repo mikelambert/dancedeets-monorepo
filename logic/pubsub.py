@@ -1,6 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
-import urllib
+import json
 import urlparse
 import oauth2 as oauth
 
@@ -8,6 +8,7 @@ from google.appengine.ext import ndb
 from twitter import Twitter
 from twitter import OAuth
 
+from events import eventdata
 import fb_api
 import keys
 from util import dates
@@ -51,19 +52,19 @@ def twitter_post(auth_token, db_event, fb_event):
     t.statuses.update(
         status=status)
 
-def format_facebook_post(db_event, fb_event):
-    start_time = dates.parse_fb_start_time(fb_event)
-    datetime_string = start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
-    name = fb_event['info']['name']
-    return '%s - %s' % (datetime_string, name)
-
 def facebook_post(auth_token, db_event, fb_event):
-    message = format_facebook_post(db_event, fb_event)
     link = urls.fb_event_url(fb_event['info']['id'])
 
+    start_time = dates.parse_fb_start_time(fb_event)
+    datetime_string = start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
+
     post_values = {}
-    post_values['message'] = message
-    post_values['link'] = link
+    #post_values['message'] = fb_event['info']['name']
+    post_values['link'] = link#.replace('www.dancedeets.com', 'dev-dancedeets.com:8080')
+    post_values['name'] = fb_event['info']['name']
+    post_values['caption'] = datetime_string
+    post_values['description'] = fb_event['info'].get('description', '')
+    post_values['picture'] = eventdata.get_largest_cover(fb_event)['source']
     venue_id = fb_event['info'].get('venue', {}).get('id')
     if venue_id:
         post_values['place'] = venue_id
@@ -72,7 +73,7 @@ def facebook_post(auth_token, db_event, fb_event):
         post_values['tags'] = ','.join(admin_ids)
 
     # At some point, set up feed targetting:
-    feed_targeting = {}
+    #feed_targeting = {}
     #feed_targeting['cities'] = '' # int array
     #feed_targeting['countries'] = '', # two char country abbreviations
     #and 'regions' too?
@@ -81,7 +82,7 @@ def facebook_post(auth_token, db_event, fb_event):
     endpoint = '/v2.2/%s/feed' % page_id
     fb = fb_api.FBAPI(auth_token.oauth_token)
     result = fb.post(endpoint, None, post_values)
-    return result
+    return json.loads(result)
 
 
 request_token_url = 'https://twitter.com/oauth/request_token'
