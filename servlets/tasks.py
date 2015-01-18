@@ -143,14 +143,17 @@ class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
         friend_lists.append('530448100598') # Freestyle SF
         friend_lists.append('565645040648') # Freestyle NYC
         friend_lists.append('10100136378543108') # Freestyle Asia
+        friend_lists.append('10100415076510148') # Freestyle Boston
         friend_lists.append('734193578028') # Freestyle Japan
-        friend_lists.append('612289903968') # Freestyle LA/SD
+        friend_lists.append('612289903968') # Freestyle Socal
         friend_lists.append('646041540418') # Freestyle Europe
         friend_lists.append('583877258138') # Freestyle Elsewhere
         friend_lists.append('565645070588') # Choreo SF
         friend_lists.append('556389713398') # Choreo LA
         friend_lists.append('565645155418') # Choreo Elsewhere
-        for fl in self.fbl.get_multi(fb_api.LookupFriendList, friend_lists):
+        print self.fbl.access_token
+        for fl_id, fl in zip(friend_lists, self.fbl.get_multi(fb_api.LookupFriendList, friend_lists, allow_cache=False)):
+            logging.info("Friend list %s: Searching %s friends for events", fl_id, len(fl['friend_list']['data']))
             friend_ids = [x['id'] for x in fl['friend_list']['data']]
             backgrounder.load_potential_events_for_friends(self.fb_uid, friend_ids, allow_cache=self.allow_cache)
 
