@@ -38,6 +38,10 @@ builtins:
 - appstats: on
 - deferred: on
 
+libraries:
+- name: ssl
+  version: latest
+
 handlers:
 - url: /dancedeets.png
   static_files: dancedeets.png

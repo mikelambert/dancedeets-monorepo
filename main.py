@@ -6,8 +6,17 @@ logging.info("Begin modules")
 import os
 import webapp2
 from google.appengine.ext import ereporter
-import base_servlet
+
+
+prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
+
+# Make python-twitter work in the sandbox (not yet sure about prod...)
+if not prod_mode:
+    from google.appengine.tools.devappserver2.python import sandbox
+    sandbox._WHITE_LIST_C_MODULES += ['_ssl']
+
 logging.info("Begin servlets")
+import base_servlet
 from servlets import about
 from servlets import admin
 from servlets import api
@@ -21,6 +30,7 @@ from servlets import mobile_apps
 from servlets import myuser
 from servlets import privacy
 from servlets import profile_page
+from servlets import pubsub_setup
 from servlets import search
 from servlets import share
 from servlets import source
@@ -100,6 +110,10 @@ URLS = [
     ('/feedback', feedback.FeedbackHandler),
     ('/mapreduce/worker_callback.*', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
     ('/home', home.HomeHandler),
+    ('/twitter/oauth_start', pubsub_setup.TwitterOAuthStartHandler),
+    ('/twitter/oauth_callback', pubsub_setup.TwitterOAuthCallbackHandler),
+    ('/twitter/oauth_success', pubsub_setup.TwitterOAuthSuccessHandler),
+    ('/twitter/oauth_failure', pubsub_setup.TwitterOAuthFailureHandler),
     ('/api/events/\d+/?', api.EventHandler),
     ('/api/search', api.SearchHandler),
     ('/api/auth', api.AuthHandler),
@@ -108,7 +122,6 @@ URLS = [
     ('/api/v1.0/auth', api.AuthHandler),
 ]
 
-prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
 if prod_mode:
     ereporter.register_logger()
 application = webapp2.WSGIApplication(URLS)

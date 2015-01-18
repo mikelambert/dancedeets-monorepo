@@ -4,6 +4,7 @@ from logic import event_classifier
 from logic import event_locations
 from logic import event_updates
 from logic import potential_events
+from logic import pubsub
 from logic import thing_db
 
 class AddEventException(Exception):
@@ -34,6 +35,8 @@ def add_update_event(event_id, user_id, fbl, remapped_address=None, override_add
         e.creating_method = creating_method
     event_updates.update_and_save_event(e, fb_event)
     thing_db.create_source_from_event(fbl, e)
+
+    pubsub.twitter_post(e, fb_event)
 
     potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)

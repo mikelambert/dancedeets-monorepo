@@ -15,6 +15,21 @@ sudo pip install nosegae
 sudo pip install nose
 sudo pip install webtest
 
+# TWITTER
+cd $BASE_DIR/download
+git clone https://github.com/bear/python-twitter.git
+cd twitter
+sudo python setup.py install
+ln -sf download/twitter/twitter $BASE_DIR/
+
+# OAUTH2 (for authorizing twitter)
+cd $BASE_DIR/download
+git clone https://github.com/simplegeo/python-oauth2.git
+cd python-oauth2
+sudo python setup.py install
+ln -sf download/python-oauth2/oauth2 $BASE_DIR/
+
+
 # SIX (for TWILIO)
 cd $BASE_DIR/download
 hg clone https://mikelambert@bitbucket.org/gutworth/six/ || echo "Already have hg client"
