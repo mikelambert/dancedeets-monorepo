@@ -188,7 +188,7 @@ $bottom_javascript()
     $.smartbanner({
       title: "DanceDeets",
       author: "DanceDeets",
-      icon: 'images/ic_launcher_dancedeets.png'
+      icon: '/images/ic_launcher_dancedeets.png'
     });
   </script>
 </body>
