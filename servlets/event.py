@@ -316,10 +316,22 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
 
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
+        filters = [('looked_at', '=', None), ('should_look_at', '=', True)]
+
+        past_event = self.request.get('past_event', None)
+        if past_event == '1':
+            past_event = True
+        elif past_event == '0':
+            past_event = False
+        if past_event is not None:
+            past_event_query = 'AND past_event = %s' % past_event
+        else:
+            past_event_query = ''
+
         number_of_events = int(self.request.get('number_of_events', '20'))
-        unseen_potential_events = list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0 ORDER BY match_score DESC LIMIT %s" % number_of_events))
+        unseen_potential_events = list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0 %s ORDER BY match_score DESC LIMIT %s" % (past_event_query, number_of_events)))
         if len(unseen_potential_events) < number_of_events:
-            unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True LIMIT %s" % (number_of_events - len(unseen_potential_events))))
+            unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True %s ORDER BY match_score DESC LIMIT %s" % (past_event_query, number_of_events - len(unseen_potential_events))))
 
         potential_event_dict = dict((x.key().name(), x) for x in unseen_potential_events)
         already_added_events = eventdata.DBEvent.get_by_key_name(list(potential_event_dict))
@@ -329,8 +341,8 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         potential_event_notadded_ids.sort(key=lambda x: -(potential_event_dict[x].match_score or 0))
 
         # Limit to 20 at a time so we don't overwhelm the user.
-        non_zero_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0").count(20000)
-        zero_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True").count(20000)
+        non_zero_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score > 0 %s" % past_event_query).count(20000)
+        zero_events = potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True %s" % past_event_query).count(20000)
         total_potential_events = non_zero_events + zero_events
 
         has_more_events = total_potential_events > number_of_events

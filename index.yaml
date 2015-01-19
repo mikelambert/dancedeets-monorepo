@@ -78,6 +78,19 @@ indexes:
   - name: match_score
     direction: desc
 
+- kind: PotentialEvent
+  properties:
+  - name: looked_at
+  - name: past_event
+  - name: match_score
+
+- kind: PotentialEvent
+  properties:
+  - name: looked_at
+  - name: past_event
+  - name: match_score
+    direction: desc
+
 - kind: User
   properties:
   - name: __key__
