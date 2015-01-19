@@ -9,4 +9,4 @@ queue:
   rate: 20/s
   max_concurrent_requests: 4
 - name: event-publishing-queue
-  rate: 20/h
+  rate: 15/h
