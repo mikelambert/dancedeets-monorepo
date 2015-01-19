@@ -250,6 +250,7 @@ legit_dance = [
     "top\W?rock(?:s|er[sz]?|in[g']?)?", "up\W?rock(?:s|er[sz]?|in[g']?|)?",
     u'탑락', # toprock
     'houser[sz]?',
+    'afro\W?house',
     'dance house', # seen in italian
     'soul dance',
     u'ソウルダンス', # soul dance japanese
