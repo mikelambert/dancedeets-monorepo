@@ -67,9 +67,10 @@ def facebook_post(auth_token, db_event, fb_event):
     venue_id = fb_event['info'].get('venue', {}).get('id')
     if venue_id:
         post_values['place'] = venue_id
-    if fb_event['info'].get('admins'):
-        admin_ids = [x['id'] for x in fb_event['info']['admins']['data']]
-        post_values['tags'] = ','.join(admin_ids)
+        # Can only tag people if there is a place tagged too
+        if fb_event['info'].get('admins'):
+            admin_ids = [x['id'] for x in fb_event['info']['admins']['data']]
+            post_values['tags'] = ','.join(admin_ids)
 
     # At some point, set up feed targetting:
     #feed_targeting = {}
