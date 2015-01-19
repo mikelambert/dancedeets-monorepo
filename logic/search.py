@@ -168,7 +168,7 @@ class SearchQuery(object):
         if self.end_time:
             clauses += ['start_time <= %s' % self.end_time.date().strftime(self.DATE_SEARCH_FORMAT)]
         if self.keywords:
-            safe_keywords = re.sub(r'[<=>:()]', '', self.keywords)
+            safe_keywords = re.sub(r'[<=>:(),]', ' ', self.keywords)
             clauses += [safe_keywords]
         if clauses:
             full_search = ' '.join(clauses)
