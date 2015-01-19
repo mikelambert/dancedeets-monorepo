@@ -390,7 +390,8 @@ def canonicalize_event_data(fb_event, db_event, event_keywords):
     if 'country' in venue:
         address = {}
         for key in ['street', 'city', 'state', 'zip', 'country']:
-            address[key] = venue.get(key)
+            if key in venue:
+                address[key] = venue.get(key)
     geocode = None
     if 'longitude' in venue:
         geocode = {}
@@ -402,7 +403,7 @@ def canonicalize_event_data(fb_event, db_event, event_keywords):
     # - name and id and geocode
     # - name and address and id and geocode
     # - name and address (everything except zip) and id and geocode
-    # - so now address can be any subset of those fields that the venue author filled out...but will specify none, at least
+    # - so now address can be any subset of those fields that the venue author filled out...but will specify country, at least
     # ...are there more variations? write a mapreduce on recent events to check?
     event_api['venue'] = {
         'name': venue_location_name,
