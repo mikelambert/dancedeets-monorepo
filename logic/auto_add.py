@@ -77,6 +77,7 @@ def classify_events(fbl, pe_list, fb_list=None):
             ctx = context.get()
             if ctx:
                 ctx.counters.increment('auto-notadded-dance-events')
+    return results
 
 def classify_events_with_yield(*args, **kwargs):
     results = classify_events(*args, **kwargs)
