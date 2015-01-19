@@ -1,5 +1,6 @@
 import logging
 
+from google.appengine.ext import deferred
 import twitter
 
 import fb_api
@@ -32,7 +33,7 @@ def add_update_event(event_id, user_id, fbl, remapped_address=None, override_add
         event_locations.update_remapped_address(fb_event, remapped_address)
 
     e = eventdata.DBEvent.get_or_insert(event_id)
-    newly_created = (not e.creating_fb_uid)
+    newly_created = (e.creating_fb_uid is None)
     if override_address is not None:
         e.address = override_address
     e.creating_fb_uid = user_id
@@ -43,28 +44,7 @@ def add_update_event(event_id, user_id, fbl, remapped_address=None, override_add
 
     if newly_created:
         logging.info("New event, publishing to twitter/facebook")
-        # When we want to support complex queries on many types of events, perhaps we should use Prospective Search.
-        auth_tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.user_id=="701004", pubsub.OAuthToken.application==pubsub.APP_TWITTER, pubsub.OAuthToken.token_nickname=="BigTwitter").fetch(1)
-        if auth_tokens:
-            try:
-                pubsub.twitter_post(auth_tokens[0], e, fb_event)
-            except twitter.TwitterError as e:
-                logging.error("Twitter Post Error: %s", e)
-        else:
-            logging.error("Could not find Mike's BigTwitter OAuthToken")
-        auth_tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.user_id=="701004", pubsub.OAuthToken.application==pubsub.APP_FACEBOOK).fetch(5)
-        if auth_tokens:
-            filtered_auth_tokens = [x for x in auth_tokens if x.token_nickname in ["1613128148918160", "1375421172766829"]]
-            if filtered_auth_tokens:
-                auth_token = filtered_auth_tokens[0]
-                result = pubsub.facebook_post(auth_token, e, fb_event)
-                logging.info("Facebook result was %s", result)
-                if 'error' in result:
-                    logging.error("Facebook Post Error: %s", result)
-            else:
-                logging.error("Couldn't find good Facebook tokens to pubulish to: %s", auth_tokens)
-        else:
-            logging.error("Could not find a Facebook token")
+        deferred.defer(pubsub.publish_event, fbl, str(e.fb_event_id), _queue='event-publishing-queue')
 
     potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)

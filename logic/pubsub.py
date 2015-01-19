@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import json
+import logging
 import urlparse
 import oauth2 as oauth
 
@@ -18,6 +19,34 @@ consumer_secret = keys.get("twitter_consumer_secret")
 
 DATE_FORMAT = "%Y/%m/%d"
 TIME_FORMAT = "%H:%M"
+
+def publish_event(fbl, event_id):
+    event_id = str(event_id)
+    fb_event = fbl.get(fb_api.LookupEvent, event_id)
+    e = eventdata.DBEvent.get_or_insert(event_id)
+
+    # When we want to support complex queries on many types of events, perhaps we should use Prospective Search.
+    auth_tokens = OAuthToken.query(OAuthToken.user_id=="701004", OAuthToken.application==APP_TWITTER, OAuthToken.token_nickname=="BigTwitter").fetch(1)
+    if auth_tokens:
+        try:
+            twitter_post(auth_tokens[0], e, fb_event)
+        except twitter.TwitterError as e:
+            logging.error("Twitter Post Error: %s", e)
+    else:
+        logging.error("Could not find Mike's BigTwitter OAuthToken")
+    auth_tokens = OAuthToken.query(OAuthToken.user_id=="701004", OAuthToken.application==APP_FACEBOOK).fetch(5)
+    if auth_tokens:
+        filtered_auth_tokens = [x for x in auth_tokens if x.token_nickname in ["1613128148918160", "1375421172766829", "110312662362915"]]
+        if filtered_auth_tokens:
+            auth_token = filtered_auth_tokens[0]
+            result = facebook_post(auth_token, e, fb_event)
+            logging.info("Facebook result was %s", result)
+            if 'error' in result:
+                logging.error("Facebook Post Error: %s", result)
+        else:
+            logging.error("Couldn't find good Facebook tokens to pubulish to: %s", auth_tokens)
+    else:
+        logging.error("Could not find a Facebook token")
 
 def format_twitter_post(db_event, fb_event):
     url = urls.fb_event_url(fb_event['info']['id'])
