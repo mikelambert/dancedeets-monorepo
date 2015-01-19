@@ -38,6 +38,8 @@ from servlets import stats
 from servlets import tasks
 from servlets import tools
 from servlets import youtube_simple_api
+from topics import topic_servlets
+
 from util import batched_mapperworker
 
 logging.info("Finished modules")
@@ -111,11 +113,14 @@ URLS = [
     ('/feedback', feedback.FeedbackHandler),
     ('/mapreduce/worker_callback.*', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
     ('/home', home.HomeHandler),
+
+    ('/topic/([^/]+)', topic_servlets.TopicHandler),
     ('/twitter/oauth_start', pubsub_setup.TwitterOAuthStartHandler),
     ('/twitter/oauth_callback', pubsub_setup.TwitterOAuthCallbackHandler),
     ('/twitter/oauth_success', pubsub_setup.TwitterOAuthSuccessHandler),
     ('/twitter/oauth_failure', pubsub_setup.TwitterOAuthFailureHandler),
     ('/facebook/page_start', pubsub_setup.FacebookPageSetupHandler),
+
     ('/api/events/\d+/?', api.EventHandler),
     ('/api/search', api.SearchHandler),
     ('/api/auth', api.AuthHandler),
