@@ -41,9 +41,10 @@ def publish_event(fbl, event_id):
         if filtered_auth_tokens:
             auth_token = filtered_auth_tokens[0]
             result = facebook_post(auth_token, e, fb_event)
-            logging.info("Facebook result was %s", result)
             if 'error' in result:
                 logging.error("Facebook Post Error: %s", result)
+            else:
+                logging.info("Facebook result was %s", result)
         else:
             logging.error("Couldn't find good Facebook tokens to pubulish to: %s", auth_tokens)
     else:
@@ -79,15 +80,20 @@ def twitter_post(auth_token, db_event, fb_event):
     t = twitter.Twitter(
         auth=twitter.OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, consumer_key, consumer_secret))
 
+    if db_event.latitude:
+        latlong_kwargs = {'lat': db_event.latitude, 'long': db_event.longitude}
+    else:
+        latlong_kwargs = {}
+
     status = format_twitter_post(db_event, fb_event)
-    t.statuses.update(status=status)
+    t.statuses.update(status=status, **latlong_kwargs)
 
     description = fb_event['info'].get('description')
     twitter_handles = re.findall('\s@[A-za-z0-9_]+', description)
     twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+15]
     for handle in twitter_handles:
         status = format_twitter_post(db_event, fb_event, handle=handle)
-        t.statuses.update(status=status)
+        t.statuses.update(status=status, **latlong_kwargs)
 
 def facebook_post(auth_token, db_event, fb_event):
     link = urls.fb_event_url(fb_event['info']['id'])
