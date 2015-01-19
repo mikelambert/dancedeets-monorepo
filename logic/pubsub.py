@@ -66,9 +66,12 @@ def format_twitter_post(db_event, fb_event, handle=None):
     # TODO(lambert): fetch help/configuration daily to find the current value
     # as described on https://dev.twitter.com/overview/t.co
     url_length = 23
-    prefix = "%s: %s: " % (datetime_string, city)
+    prefix = ''
     if handle:
-        prefix = '%s %s' % (handle, prefix)        
+        prefix += '%s ' % handle
+    prefix += "%s: " % datetime_string
+    if city:
+        prefix += '%s: ' % city
 
     title_length = 140 - len(prefix) - len(u"… ") - url_length
     final_title = title[0:title_length]
