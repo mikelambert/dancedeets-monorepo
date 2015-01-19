@@ -270,10 +270,13 @@ class AuthHandler(ApiHandler):
 
         access_token = self.json_body.get('access_token')
         access_token_expires_with_tz = self.json_body.get('access_token_expires')
-        # strip off the timezone, since we can't easily process it
-        # TODO(lambert): using http://labix.org/python-dateutil to parse timezones would help with that
-        access_token_expires_without_tz = access_token_expires_with_tz[:-5]
-        access_token_expires = datetime.datetime.strptime(access_token_expires_without_tz, ISO_DATETIME_FORMAT)
+        if access_token_expires_with_tz:
+            # strip off the timezone, since we can't easily process it
+            # TODO(lambert): using http://labix.org/python-dateutil to parse timezones would help with that
+            access_token_expires_without_tz = access_token_expires_with_tz[:-5]
+            access_token_expires = datetime.datetime.strptime(access_token_expires_without_tz, ISO_DATETIME_FORMAT)
+        else:
+            access_token_expires = None
         location = self.json_body.get('location')
         # Don't use self.get_location_from_headers(), as I'm not sure how accurate it is if called from the API.
         # Also don't use location to update the user, if we don't actually have a location
