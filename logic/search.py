@@ -105,6 +105,7 @@ class PseudoDBEvent(object):
         if self.attendee_count == 0:
             self.attendee_count = None
         self.event_keywords = d.field('event_keywords').value.split(', ')
+        self._search_result = d
 
 class SearchQuery(object):
     def __init__(self, time_period=None, start_time=None, end_time=None, bounds=None, min_attendees=None, keywords=None):
@@ -169,7 +170,7 @@ class SearchQuery(object):
             clauses += ['start_time <= %s' % self.end_time.date().strftime(self.DATE_SEARCH_FORMAT)]
         if self.keywords:
             safe_keywords = re.sub(r'[<=>:(),]', ' ', self.keywords)
-            clauses += [safe_keywords]
+            clauses += ['(%s)' % safe_keywords]
         if clauses:
             full_search = ' '.join(clauses)
             logging.info("Doing search for %r", full_search)
@@ -188,11 +189,14 @@ class SearchQuery(object):
                     logging.error("Exception %s while constructing result for %s", e, x)
             return db_events
 
-    def get_search_results(self, fbl):
+    def get_search_results(self, fbl, prefilter=None):
         a = time.time()
         # Do datastore filtering
         db_events = self.get_candidate_dbevents()
         logging.info("Search returned %s events in %s seconds", len(db_events), time.time() - a)
+
+        if prefilter:
+            db_events = [x for x in db_events if prefilter(x)]
 
         # Now look up contents of each event...
         a = time.time()
@@ -296,7 +300,7 @@ def _create_doc_event(db_event, fb_event):
     doc_event = search.Document(
         doc_id=str(db_event.fb_event_id),
         fields=[
-            search.TextField(name='keywords', value=fb_event['info'].get('name', '') + fb_event['info'].get('description', '')),
+            search.TextField(name='keywords', value=fb_event['info'].get('name', '') + '\n\n' + fb_event['info'].get('description', '')),
             search.NumberField(name='attendee_count', value=db_event.attendee_count or 0),
             search.DateField(name='start_time', value=db_event.start_time),
             search.DateField(name='end_time', value=dates.faked_end_time(db_event.start_time, db_event.end_time)),
