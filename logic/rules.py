@@ -98,6 +98,8 @@ add(GOOD_DANCE, Any(
     commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE), keywords.EASY_DANCE),
     commutative_connected(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE),
     commutative_connected(keywords.STREET, Any(keywords.EASY_CHOREO, keywords.EASY_DANCE)),
+    # This may seem strange to list it essentially twice ,but necessary for "battles de danses breakdance"
+    commutative_connected(keywords.EASY_DANCE, keywords.DANCE),
 ))
 
 
