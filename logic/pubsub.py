@@ -2,6 +2,7 @@
 
 import json
 import logging
+import re
 import urlparse
 import oauth2 as oauth
 
@@ -48,7 +49,7 @@ def publish_event(fbl, event_id):
     else:
         logging.error("Could not find a Facebook token")
 
-def format_twitter_post(db_event, fb_event):
+def format_twitter_post(db_event, fb_event, handle=None):
     url = urls.fb_event_url(fb_event['info']['id'])
     title = fb_event['info']['name']
     city = db_event.actual_city_name
@@ -65,6 +66,8 @@ def format_twitter_post(db_event, fb_event):
     # as described on https://dev.twitter.com/overview/t.co
     url_length = 23
     prefix = "%s: %s: " % (datetime_string, city)
+    if handle:
+        prefix = '%s %s' % (handle, prefix)        
 
     title_length = 140 - len(prefix) - len(u"… ") - url_length
     final_title = title[0:title_length]
@@ -73,12 +76,18 @@ def format_twitter_post(db_event, fb_event):
     return u"%s%s %s" % (prefix, final_title, url)
 
 def twitter_post(auth_token, db_event, fb_event):
-    status = format_twitter_post(db_event, fb_event)
-
     t = twitter.Twitter(
         auth=twitter.OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, consumer_key, consumer_secret))
-    t.statuses.update(
-        status=status)
+
+    status = format_twitter_post(db_event, fb_event)
+    t.statuses.update(status=status)
+
+    description = fb_event['info'].get('description')
+    twitter_handles = re.findall('@[A-za-z0-9_]+', description)
+    twitter_handles = [x for x in twitter_handles if len(x) <= 1+15]
+    for handle in twitter_handles:
+        status = format_twitter_post(db_event, fb_event, handle=handle)
+        t.statuses.update(status=status)
 
 def facebook_post(auth_token, db_event, fb_event):
     link = urls.fb_event_url(fb_event['info']['id'])
