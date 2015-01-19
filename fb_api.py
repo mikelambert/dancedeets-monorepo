@@ -524,7 +524,13 @@ class DBCache(CacheSystem):
         cache_keys = cache_key_mapping.keys()
         for i in range(0, len(cache_keys), max_in_queries):
             objects = FacebookCachedObject.get_by_key_name(cache_keys[i:i+max_in_queries])
-            object_map.update(dict((cache_key_mapping[o.key().name()], o.decode_data()) for o in objects if o))
+            for o in objects:
+                if o:
+                    # Sometimes objects get created without json_data, so we need to manually purge those from our DB and not pass them on to clients
+                    if o.json_data:
+                        object_map[cache_key_mapping[o.key().name()]] = o.decode_data()
+                    else:
+                        o.delete()
         logging.info("BatchLookup: db lookup objects found: %s", object_map.keys())
         return object_map
 
