@@ -190,6 +190,7 @@ add(AMBIGUOUS_DANCE_MUSIC, [
     'all\W?style[zs]?',
     'tou[ts]\W?style[zs]?', # french all-styles
     'tutti gli stili', # italian all-styles
+    'kaikille tyyleille avoin', # finnish all-styles
     'be\W?bop',
     'shuffle',
     'funk',
@@ -227,6 +228,7 @@ legit_dance = [
     'poppeurs?',
     u'팝핀', # korean popping
     'commercial hip\W?hop',
+    'lyrical\Whip\W?',
     'hip\W?hop dance',
     "jerk(?:ers?|in[g']?)",
     u'스트릿', # street korean
@@ -354,6 +356,7 @@ add(STREET, [
 EASY_BATTLE = token('EASYBATTLE')
 add(EASY_BATTLE, [
     'jams?', 
+    'jamit', # finnish jams
     u'잼', # korean jam
 ])
 
@@ -628,6 +631,7 @@ add(CLASS, [
     u'warsztatów', # polish workshop
     u'seminarų', # lithuanian workshop
     'taller de', # spanish workshop
+    'workshoppien', # finnish workshops
     'intensives?',
     'intensivo', # spanish intensive
     'class with', 'master\W?class(?:es)?',
@@ -734,6 +738,7 @@ add(JUDGE, [
     'judge[sz]?',
     'jures', # french jury
     '(?:les? )?juges?', # french judges
+    'tuomar(?:it)?', # finnish judge(s)
     'giudici', # italian judges
     u'השופט', # hebrew judge
     u'השופטים', # hebrew judges

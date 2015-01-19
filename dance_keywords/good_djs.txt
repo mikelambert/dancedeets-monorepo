@@ -33,6 +33,7 @@ ohishi\W+(?:jmc\W+)?sodeep
 peven everett
 rich medina
 rubi r-tres
+ruff cut djs # finland
 sabine blazin
 sachio\W+hi-score
 stephen rigmaiden
