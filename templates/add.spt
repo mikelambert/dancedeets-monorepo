@@ -37,7 +37,7 @@ Add Dance Event
 #end def
 
 #def inner_body
-		<form action="/events/add" method=post>
+		<form action="/events_add" method=post>
 		<div>
 			#if $fb_event
 				<input type=hidden name="event_id" value="$fb_event.info.id">

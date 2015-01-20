@@ -92,7 +92,7 @@ URLS = [
     ('/events/admin_potential_events', event.AdminPotentialEventViewHandler),
     ('/events/admin_edit', event.AdminEditHandler),
     ('/events/redirect', event.RedirectToEventHandler),
-    ('/events/add', event.AddHandler),
+    ('/events_add', event.AddHandler),
     ('/events/feed', api.FeedHandler),
     ('/events/relevant', search.RelevantHandler),
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
