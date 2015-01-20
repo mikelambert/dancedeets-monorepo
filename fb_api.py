@@ -469,12 +469,6 @@ class FBAPI(CacheSystem):
                 named_results = []
             for batch_item, result in named_results:
                 object_rpc_name = batch_item['name']
-                # I used this for debugging a page-remapping on my local dev machine. May be useful in the future for similar purposes
-                #if object_key == (LookupThingFeed, '289919164441106'):
-                #    json_string = '{"error": {"message": "Page ID 289919164441106 was migrated to page ID 175608368718.  Please update your API calls to the new ID", "code": 21, "type": "OAuthException"}}'
-                #    result = {}
-                #    result['code'] = 200
-                #    result['body'] = json_string
                 if result is None:
                     logging.warning("BatchLookup: Got timeout when requesting %s", batch_item)
                     if object_rpc_name not in cls.optional_keys:
@@ -490,18 +484,19 @@ class FBAPI(CacheSystem):
                         # This means the event exists, but the current access_token is insufficient to query it
                         this_object['empty'] = EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS
                     elif error_code == 21:
-                        object_is_bad = True
                         message = object_json['error']['message']
                         # Facebook gave us a huge hack when they decided to rename/merge page ids,
                         # and so we are forced to deal with remapping by parsing strings at this lowest level.
                         # "Page ID 289919164441106 was migrated to page ID 175608368718.  Please update your API calls to the new ID"
-                        if re.search('Page ID \d+ was migrated to page ID \d+.', message):
+                        # But only do it once per object, so rely on object_is_bad to tell us whether we've been through this before
+                        if not object_is_bad and re.search('Page ID \d+ was migrated to page ID \d+.', message):
                             from_id, to_id = re.findall(r'ID (\d+)', message)
                             from logic import thing_db_fixer
                             from google.appengine.ext import deferred
                             logging.warning(message)
                             logging.warning("Executing deferred call to migrate to new ID, returning None here.")
                             deferred.defer(thing_db_fixer.function_migrate_thing_to_new_id, self, from_id, to_id)
+                        object_is_bad = True
                     elif error_code in [
                             2, # Temporary API error: An unexpected error has occurred. Please retry your request later.
                             2500, # Dependent-lookup on non-existing field: Cannot specify an empty identifier.
@@ -661,9 +656,6 @@ class FBLookup(object):
 
         # Facebook Read
         keys.update(self._object_keys_to_lookup_without_cache)
-        #keys.add((LookupThingFeed, '289919164441106'))
-        #if (LookupThingFeed, '289919164441106') in all_fetched_objects:
-        #    del all_fetched_objects[(LookupThingFeed, '289919164441106')]
 
         fetched_objects = self._cleanup_object_map(self.fb.fetch_keys(keys))
         if self.debug:
