@@ -53,6 +53,9 @@ def urlsafe_b64decode(str):
 class SignedRequestError(Exception):
     pass
 
+class AlreadyHasLongLivedToken(Exception):
+    pass
+
 def parse_signed_request(signed_request, secret):
     """
     Parse signed_request given by Facebook (usually via POST),
@@ -140,6 +143,11 @@ def get_user_from_cookie(cookies):
         file.close()
     parsed_response = cgi.parse_qs(token_response)
     logging.info("token response %r", parsed_response)
+    # This happens when we have an infinite duration token, and for some reason FB doesn't want to return a token here?
+    # I have an infinite duration token when the manage_pages permission bit is set (as part of giving access to the FB page to post)
+    # We return what we can (a user id), and rely on the calling page to fill in the remaining data using the user's existing token
+    if parsed_response == {}:
+        raise AlreadyHasLongLivedToken()
 
     expires_time = None
     if 'access_token' in parsed_response:

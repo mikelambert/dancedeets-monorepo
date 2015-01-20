@@ -213,20 +213,25 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 if self.user.fb_access_token_expires:
                     token_expires_soon = (self.user.fb_access_token_expires - datetime.datetime.now()) < datetime.timedelta(days=40)
                 else:
-                    token_expires_soon = True
+                    # These are either infinite-access tokens (which won't expire soon)
+                    # or they are ancient tokens (in which case, our User reload mapreduce has already set user.expired_oauth_token)
+                    token_expires_soon = False
                 if self.user.expired_oauth_token or token_expires_soon:
-                    access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
-                    logging.info("New access token from cookie: %s, expires %s", access_token, access_token_expires)
-                    if access_token:
-                        self.user = users.User.get_by_key_name(str(self.fb_uid))
-                        self.user.fb_access_token = access_token
-                        self.user.fb_access_token_expires = access_token_expires
-                        self.user.expired_oauth_token = False
-                        self.user.expired_oauth_token_reason = ""
-                        self.user.put() # this also sets to memcache
-                        logging.info("Stored the new access_token to the User db")
-                    else:
-                        logging.error("Got a cookie, but no access_token. Using the one from the existing user. Strange!")
+                    try:
+                        access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
+                        logging.info("New access token from cookie: %s, expires %s", access_token, access_token_expires)
+                        if access_token:
+                            self.user = users.User.get_by_key_name(str(self.fb_uid))
+                            self.user.fb_access_token = access_token
+                            self.user.fb_access_token_expires = access_token_expires
+                            self.user.expired_oauth_token = False
+                            self.user.expired_oauth_token_reason = ""
+                            self.user.put() # this also sets to memcache
+                            logging.info("Stored the new access_token to the User db")
+                        else:
+                            logging.error("Got a cookie, but no access_token. Using the one from the existing user. Strange!")
+                    except facebook.AlreadyHasLongLivedToken:
+                        logging.info("Already have long-lived token, FB wouldn't give us a new one, so no need to refresh anything.")
                 if 'web' not in self.user.clients:
                     self.user = users.User.get_by_key_name(str(self.fb_uid))
                     self.user.clients.append('web')
@@ -361,7 +366,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         # TODO(FB2.0): get rid of friends_events (when we have enough users using mobile 2.0 to keep us going)
         fb_permissions = 'user_location,rsvp_event,email,user_events,user_groups,user_likes,friends_events'
         if self.request.get('all_access'):
-            fb_permissions += ',read_friendlists'
+            fb_permissions += ',read_friendlists,manage_pages'
         self.display['fb_permissions'] = fb_permissions
 
         already_used_mobile = self.user and ('android' in self.user.clients or 'ios' in self.user.clients)
