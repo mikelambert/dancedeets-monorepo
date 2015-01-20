@@ -3,7 +3,6 @@ import logging
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
-import fb_api
 from events import eventdata
 from logic import event_classifier
 from logic import event_updates
