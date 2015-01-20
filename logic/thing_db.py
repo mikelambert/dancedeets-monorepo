@@ -121,7 +121,7 @@ class Source(db.Model):
         if fb_data: # only update these when we have feed data
             if 'likes' in fb_data['info']:
                 self.graph_type = GRAPH_TYPE_FANPAGE
-            elif 'locale' in fb_data['info']:
+            elif 'locale' in fb_data['info'] or 'first_name' in fb_data['info']:
                 self.graph_type = GRAPH_TYPE_PROFILE
             elif 'groups.facebook.com' in fb_data['info'].get('email', []):
                 self.graph_type = GRAPH_TYPE_GROUP
