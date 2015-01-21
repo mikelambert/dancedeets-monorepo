@@ -9,11 +9,11 @@ Feedback
 
 <p>Questions? Need Help? Suggestions? Improvements? Criticism? Fill it out below!
 
-<p>Subject: <input type="text" name="subject" size="80">
+<p>Subject: <input type="text" name="subject" class="form-control">
 
 <p>Message:
 <br>
-<textarea name="body" rows="20" cols="80">
+<textarea name="body" rows="20" cols="80" class="form-control">
 </textarea>
 
 <p><button class="btn">Send Email</button>
