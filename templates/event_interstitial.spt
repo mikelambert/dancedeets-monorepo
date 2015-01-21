@@ -4,6 +4,18 @@
 $format_html($event.info.name)
 #end def
 
+#def head_metatags
+<meta name="twitter:card" content="photo" />
+<meta name="twitter:site" content="@dancedeets" />
+<meta name="twitter:creator" content="@dancedeets" />
+<meta name="twitter:title" content="$format_html($event.info.name)" />
+<meta name="twitter:image:src" content="$cover.source" />
+
+<meta name="twitter:app:name:googleplay" content="DanceDeets" />
+<meta name="twitter:app:id:googleplay" content="com.dancedeets.android" />
+<meta name="twitter:app:url:googleplay" content="http://$base_hostname/events/$event.info.id" />
+#end def
+
 #def body
 <div itemscope itemtype="http://data-vocabulary.org/Event">
 
