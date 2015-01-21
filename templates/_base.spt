@@ -85,17 +85,15 @@ var _gaq = [];
 			<ul class="nav navbar-nav">
 				<li><div class="nav-text">${total_events} dance events</div></li>
 			</ul>
-      <form id="search-form" class="navbar-form navbar-left" role="search" action="/">
-        <div class="form-group">
-            <input id="keywords_input" type="text" name="keywords" placeholder="Any events" style="margin-top:-8px;width:100px"/ value="$defaults.keywords">
-            <span class="nav-text">near</span>
-            <input id="location_input" type="text" name="location" placeholder="Location" style="margin-top:-8px;width:120px"/ value="$defaults.location">
-            <input type="hidden" name="deb" value="$defaults.deb">
+      <form id="search-form" class="navbar-form navbar-left" role="search" action="/" style=".form-inline">
+        <input id="keywords_input" type="text" name="keywords" placeholder="Any events" style="width:100px"/ value="$defaults.keywords" class="form-control">
+        <span class="nav-text">near</span>
+        <input id="location_input" type="text" name="location" placeholder="Location" style="width:120px"/ value="$defaults.location" class="form-control">
+        <input type="hidden" name="deb" value="$defaults.deb">
         <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
 <!-- maybe make a small hourglass icon search box ? 
   $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
 -->
-        </div>
       </form>
 #if $fb_user
 			<ul class="nav navbar-nav navbar-right">
