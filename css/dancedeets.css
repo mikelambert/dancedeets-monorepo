@@ -139,8 +139,7 @@ html, body {
 }
 
 .tabs-after {
-	padding-bottom: 100px;
-	margin-bottom: -100px;
+	min-height: 100px;
 }
 
 .events-list {
