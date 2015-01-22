@@ -98,6 +98,9 @@ def get_location_bounds(address, distance_in_km):
         return None, None
     result = _raw_get_cached_geocoded_data(address=address)
 
+    if not result or not result['results']:
+        return None, None
+
     def to_latlng(x):
         return x['lat'], x['lng']
     try:
