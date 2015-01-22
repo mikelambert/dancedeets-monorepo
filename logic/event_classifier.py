@@ -48,8 +48,6 @@ DEPENDENT_KEYWORD = 1
 
 #TODO(lambert): maybe handle 'byronom coxom' in slovakian with these keywords
 def get_manual_dance_keywords(filename):
-    manual_keywords = []
-    dependent_manual_keywords = []
     import os
     if os.getcwd().endswith('mapreduce'): #TODO(lambert): what is going on with appengine sticking me in the wrong starting directory??
         base_dir = '..'
@@ -57,8 +55,15 @@ def get_manual_dance_keywords(filename):
         base_dir = '.'
 
     f = codecs.open('%s/dance_keywords/%s.txt' % (base_dir, filename), encoding='utf-8')
-    for line in f.readlines():
-        line = re.sub('\s*#.*', '', line.strip())
+    result = _parse_keywords(f.readlines())
+    return result
+
+def _parse_keywords(lines):
+    manual_keywords = []
+    dependent_manual_keywords = []
+    for line in lines:
+        # Strip off comments, unless backquoted escaped
+        line = re.sub(r'^((?:[^\\#]+|\\#)*)#.*$', '\\1', line).strip()
         if not line:
             continue
         if line.endswith(',0'):

@@ -1,3 +1,5 @@
+\#dapractice # we are escaping that quote, as the hashtag is relevant
+uhuru afrika
 break sm
 battle sm
 street sm

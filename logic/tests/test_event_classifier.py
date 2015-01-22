@@ -20,6 +20,11 @@ class TestDanceClass(unittest.TestCase):
         self.assertEqual(set(['dance']), classified_event.dance_matches())
         self.assertEqual(set(['class']), classified_event.event_matches())
 
+class TestKeywordLoader(unittest.TestCase):
+    def runTest(self):
+        result = event_classifier._parse_keywords(['a', 'b#c', 'c  #d', 'd\\e', 'e\\#f', 'f\\##g'])
+        self.assertEqual(result[event_classifier.DEPENDANT_KEYWORD], set(['a', 'b', 'c', 'd\\e', 'e\\#f', 'f\\#']))
+
 class TestCJK(unittest.TestCase):
     def runTest(self):
         fb_event = dict(info=dict(name="Blah", description="""
