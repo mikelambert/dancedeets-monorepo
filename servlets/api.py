@@ -198,7 +198,7 @@ class FeedHandler(ApiHandler):
 
 class SearchHandler(ApiHandler):
 
-    def get(self):
+    def get(self, major_version, minor_version):
         self.finish_preload()
 
         # Search API explicitly uses user=None
@@ -215,10 +215,11 @@ class SearchHandler(ApiHandler):
             distance_in_km = locations.miles_in_km(fe_search_query.distance)
         else:
             distance_in_km = fe_search_query.distance
-        southwest, northeast = locations.get_location_bounds(address=fe_search_query.location, distance_in_km=distance_in_km)
-
 
         self.errors_are_fatal()
+
+        # This will fail on a bad location, so let's verify the location is geocodable above first.
+        southwest, northeast = locations.get_location_bounds(address=fe_search_query.location, distance_in_km=distance_in_km)
 
         search_query = search.SearchQuery.create_from_query(fe_search_query)
 
