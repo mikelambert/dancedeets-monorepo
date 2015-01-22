@@ -14,7 +14,16 @@ def function_migrate_thing_to_new_id(fbapi_obj, old_source_id, new_source_id):
         return
 
     key = (fb_api.LookupThingFeed, new_source_id)
-    results = fbapi_obj.fetch_keys([key])
+
+    fbapi_obj.raise_on_page_redirect = True
+    try:
+        results = fbapi_obj.fetch_keys([key])
+    except fb_api.PageRedirectException as e:
+        # If our forwarding address in turn has its own forwarding address,
+        # repoint the old thing further down the chain
+        deferred.defer(function_migrate_thing_to_new_id, fbapi_obj, old_source_id, e.to_id)
+        return
+
     thing_feed = results[key]
 
     new_source = thing_db.create_source_for_id(new_source_id, thing_feed)

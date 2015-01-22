@@ -89,6 +89,10 @@ class ExpiredOAuthToken(Exception):
     pass
 class NoFetchedDataException(Exception):
     pass
+class PageRedirectException(Exception):
+    def __init__(self, from_id, to_id):
+        self.from_id = from_id
+        self.to_id = to_id
 
 
 class LookupType(object):
@@ -375,6 +379,7 @@ class FBAPI(CacheSystem):
     def __init__(self, access_token):
         self.access_token = access_token
         self.fb_fetches = 0
+        self.raise_on_page_redirect = False
 
     def fetch_keys(self, keys):
         FB_FETCH_COUNT = 10 # number of objects, each of which may be 1-5 RPCs
@@ -491,11 +496,14 @@ class FBAPI(CacheSystem):
                         # But only do it once per object, so rely on object_is_bad to tell us whether we've been through this before
                         if not object_is_bad and re.search('Page ID \d+ was migrated to page ID \d+.', message):
                             from_id, to_id = re.findall(r'ID (\d+)', message)
-                            from logic import thing_db_fixer
-                            from google.appengine.ext import deferred
-                            logging.warning(message)
-                            logging.warning("Executing deferred call to migrate to new ID, returning None here.")
-                            deferred.defer(thing_db_fixer.function_migrate_thing_to_new_id, self, from_id, to_id)
+                            if self.raise_on_page_redirect:
+                                raise PageRedirectException(from_id, to_id)
+                            else:
+                                from logic import thing_db_fixer
+                                from google.appengine.ext import deferred
+                                logging.warning(message)
+                                logging.warning("Executing deferred call to migrate to new ID, returning None here.")
+                                deferred.defer(thing_db_fixer.function_migrate_thing_to_new_id, self, from_id, to_id)
                         object_is_bad = True
                     elif error_code in [
                             2, # Temporary API error: An unexpected error has occurred. Please retry your request later.
