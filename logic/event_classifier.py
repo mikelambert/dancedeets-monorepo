@@ -62,8 +62,10 @@ def _parse_keywords(lines):
     manual_keywords = []
     dependent_manual_keywords = []
     for line in lines:
+        print line
         # Strip off comments, unless backquoted escaped
-        line = re.sub(r'^((?:[^\\#]+|\\#)*)#.*$', '\\1', line).strip()
+        line = re.sub(r'^((?:[^\\#]|\\.)*)#.*$', '\\1', line).strip()
+        print line
         if not line:
             continue
         if line.endswith(',0'):
@@ -75,6 +77,7 @@ def _parse_keywords(lines):
     result = [None, None]
     result[INDEPENDENT_KEYWORD] = manual_keywords
     result[DEPENDENT_KEYWORD] = dependent_manual_keywords
+    print result
     return result
 
 manual_keywords = {}
