@@ -98,11 +98,14 @@ function position_cover() {
 	var offset_y = $cover.offset_y;
 	var cover_w = $("#cover-box-outer").width();
 	var cover_h = $("#cover-box-outer").height();
-	var img_w = $("#cover-image").width();
-	var img_h = $("#cover-image").height();
+	var img_w = $largest_cover_info.width;
+	var img_h = $largest_cover_info.height;
 	var real_img_h = (cover_w * img_h / img_w) - cover_h;
 
-	$("#cover-image").css ({ top: parseInt (real_img_h * offset_y / 100 * -1) + "px" });
+	// Now convert it back to a percentage, so that it stays accurate as the window resizes
+	var top = real_img_h * offset_y / 100 * -1;
+	var pct_h = top / $("#cover-box-outer").width();
+	$("#cover-image").css ({ top: parseInt(pct_h) + "%" });
 }
 $(document).ready(function() {
 	position_cover();

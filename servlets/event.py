@@ -80,6 +80,8 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             return
 
         self.display['cover'] = event_info['info'].get('cover')
+        self.display['largest_cover_info'] = eventdata.get_largest_cover(event_info)
+
         self.display['pic'] = eventdata.get_event_image_url(event_info)
 
         self.display['start_time'] = dates.parse_fb_start_time(event_info)
