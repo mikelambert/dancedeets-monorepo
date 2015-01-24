@@ -60,6 +60,7 @@ $format_html($event.info.name)
 			<div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
 		#end if
 		<div class="responsive-map-wrapper">
+		## TODO(lambert): We can do a better job, checking on the server if google maps can geocode our place query q=venue/street into a place thats near the lat/long that facebook has, and if so, to point at that here instead of just a raw lat/long location.
 		<iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=$urlencode($lat_long)&key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ"></iframe>
 		</div>
 	#end if
