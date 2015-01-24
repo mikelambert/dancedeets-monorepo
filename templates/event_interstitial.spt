@@ -55,12 +55,12 @@ $format_html($event.info.name)
 	$city_state_country<br>
 	</div>
 	## not worth showing maps embed if there is no street_address
-	#if $street_address
+	#if $lat_long
 		#if 'description' in $event.info
 			<div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
 		#end if
 		<div class="responsive-map-wrapper">
-		<iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=$urlencode($street_address+", "+$city_state_country)&key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ"></iframe>
+		<iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=$urlencode($lat_long)&key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ"></iframe>
 		</div>
 	#end if
 </div>
@@ -105,8 +105,14 @@ function position_cover() {
 	// Now convert it back to a percentage, so that it stays accurate as the window resizes
 	var top = real_img_h * offset_y / 100 * -1;
 	var pct_h = top / $("#cover-box-outer").width();
+
+	// This calculation can be rewritten as this (which can also be done server-side if you know the html-div size ratio):
+	// ((img_h/img_w) - box_h/box_w) * offset_y / -100
+
 	$("#cover-image").css ({ top: parseInt(pct_h) + "%" });
+
 }
+
 $(document).ready(function() {
 	position_cover();
 });

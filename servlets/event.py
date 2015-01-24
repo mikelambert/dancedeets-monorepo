@@ -87,6 +87,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['start_time'] = dates.parse_fb_start_time(event_info)
         self.display['end_time'] = dates.parse_fb_end_time(event_info)
 
+        lat_long = None
         if 'venue' in event_info['info']:
             city_state_country = [
                 event_info['info']['venue'][x]
@@ -94,11 +95,14 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
                 if x in event_info['info']['venue']
             ]
             street_address = event_info['info']['venue'].get('street')
+            if event_info['info']['venue'].get('latitude'):
+                lat_long = "%s,%s" % (event_info['info']['venue'].get('latitude'), event_info['info']['venue'].get('longitude'))
         else:
             city_state_country = ''
             street_address = ''
         self.display['city_state_country'] = ', '.join(city_state_country)
         self.display['street_address'] = street_address
+        self.display['lat_long'] = lat_long
         self.display['event'] = event_info
         self.display['next'] =  self.request.url
         self.render_template('event_interstitial')
