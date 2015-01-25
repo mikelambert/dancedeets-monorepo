@@ -119,7 +119,7 @@ function position_cover() {
 		$("#cover-image").css ({ width: "100%", top: offset_y2 + "px" });
 	} else {
 		if (cover_w/img_w > cover_h/img_h) {
-			$("#cover-image").css ({ width: "100%", top: parseInt(offset_y_pct) + "%" });
+			$("#cover-image").css ({ width: "100%" });
 		} else {
 			$("#cover-image").css ({ height: "100%" });
 		}
