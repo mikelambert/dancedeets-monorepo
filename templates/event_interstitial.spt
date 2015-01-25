@@ -111,10 +111,12 @@ function position_cover() {
 
 		$("#cover-image").css ({ height: "100%", left: offset_x2 + "px" });
 	} else if (offset_y) {
-		// This calculation can be rewritten as this (which can also be done server-side if you know the html-div size ratio):
-		var offset_y_pct = ((img_h/img_w) - cover_h/cover_w) * offset_y / -100;
+		// This is basically centered + offset_y, which seems to work halfway decent on 1528897414056319, before I gave up on the issue.
+		var horizontal_scaling = cover_w/img_w;
+		var centered_offset_y = cover_h/2 - img_h/2 * horizontal_scaling;
+		var offset_y2 = offset_y + centered_offset_y;
 
-		$("#cover-image").css ({ width: "100%", top: parseInt(offset_y_pct) + "%" });
+		$("#cover-image").css ({ width: "100%", top: offset_y2 + "px" });
 	} else {
 		if (cover_w/img_w > cover_h/img_h) {
 			$("#cover-image").css ({ width: "100%", top: parseInt(offset_y_pct) + "%" });
