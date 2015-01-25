@@ -197,7 +197,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         location_info = event_locations.LocationInfo(fb_event, db_event=e, debug=True)
         self.display['location_info'] = location_info
-        self.display['fb_geocoded_address'] = locations.get_city_name(address=location_info.fb_address)
+        self.display['fb_geocoded_address'] = locations.get_name(address=location_info.fb_address)
 
         self.display['event'] = e
         self.display['fb_event'] = fb_event

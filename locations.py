@@ -127,18 +127,18 @@ def get_location_bounds(address, distance_in_km):
 
     return southwest, northeast # ordered more negative to more positive
 
-def get_city_name(address=None, latlng=None):
+def get_name(address=None, latlng=None):
     result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
     if not result:
         return None
-    return _get_city_name(result)
+    return _get_name(result)
 
-def get_city_name_and_latlng(address=None, latlng=None):
+def get_name_and_latlng(address=None, latlng=None):
     result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
     if not result:
         return None
     latlng = (float(result['geometry']['location']['lat']), float(result['geometry']['location']['lng']))
-    return _get_city_name(result), latlng
+    return _get_name(result), latlng
 
 def get_latlng(address=None, latlng=None):
     result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
@@ -146,7 +146,7 @@ def get_latlng(address=None, latlng=None):
         return None
     return (float(result['geometry']['location']['lat']), float(result['geometry']['location']['lng']))
 
-def _get_city_name(result):
+def _get_name(result):
     def get(name, long=True):
         components = [x[long and 'long_name' or 'short_name'] for x in result['address_components'] if name in x['types']]
         # Sometimes we see this, so return both 
@@ -175,7 +175,10 @@ def _get_city_name(result):
             city_parts.extend(get('administrative_area_level_1', long=False))
             city_parts.extend(country)
     else:
-        city_parts.extend(get('continent'))
+        if get('continent'):
+            city_parts.extend(get('continent'))
+        else:
+            city_parts.extend(get('natural_feature'))
 
     city_name = ', '.join(x for x in city_parts if x)
 

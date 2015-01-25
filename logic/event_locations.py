@@ -96,11 +96,11 @@ def update_remapped_address(fb_event, new_remapped_address):
 
 
 ONLINE_ADDRESS = 'ONLINE'
-def get_city_name_and_latlng(address=None):
+def get_name_and_latlng(address=None):
     if address == ONLINE_ADDRESS:
         return ONLINE_ADDRESS, None
     else:
-        return locations.get_city_name_and_latlng(address=address)
+        return locations.get_name_and_latlng(address=address)
 
 class LocationInfo(object):
     def __init__(self, fb_event, db_event=None, debug=False):
@@ -114,7 +114,7 @@ class LocationInfo(object):
             self.final_latlng = _get_latlng_from_event(fb_event)
             if self.final_latlng:
                 self.exact_from_event = True
-                self.final_city = locations.get_city_name(latlng=self.final_latlng)
+                self.final_city = locations.get_name(latlng=self.final_latlng)
                 self.fb_address = self.final_city
                 self.remapped_address = None
             else:
@@ -122,7 +122,7 @@ class LocationInfo(object):
                 self.remapped_address = _get_remapped_address_for(self.fb_address)
                 if self.remapped_address:
                     logging.info("Checking remapped address, which is %r", self.remapped_address)
-                result = get_city_name_and_latlng(address=self.remapped_address or self.fb_address)
+                result = get_name_and_latlng(address=self.remapped_address or self.fb_address)
                 if result:
                     self.final_city, self.final_latlng = result
                 else:
@@ -132,7 +132,7 @@ class LocationInfo(object):
         if has_overridden_address:
             self.overridden_address = db_event.address
             logging.info("Address overridden to be %r", self.overridden_address)
-            result = get_city_name_and_latlng(address=self.overridden_address)
+            result = get_name_and_latlng(address=self.overridden_address)
             if result:
                 self.final_city, self.final_latlng = result
             else:

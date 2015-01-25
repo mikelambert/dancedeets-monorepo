@@ -233,7 +233,7 @@ class SearchHandler(ApiHandler):
                 distance_in_km = fe_search_query.distance
             southwest, northeast = locations.get_location_bounds(address=fe_search_query.location, distance_in_km=distance_in_km)
             if southwest and northeast:
-                city_name = locations.get_city_name(address=fe_search_query.location)
+                city_name = locations.get_name(address=fe_search_query.location)
                 # This will fail on a bad location, so let's verify the location is geocodable above first.
             else:
                 if major_version == "1" and minor_version == "0":
