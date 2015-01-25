@@ -118,7 +118,7 @@ class Source(db.Model):
             return 0
 
     def compute_derived_properties(self, fb_data):
-        if fb_data: # only update these when we have feed data
+        if fb_data and not fb_data['empty']: # only update these when we have feed data
             if 'likes' in fb_data['info']:
                 self.graph_type = GRAPH_TYPE_FANPAGE
             elif 'locale' in fb_data['info'] or 'first_name' in fb_data['info']:
