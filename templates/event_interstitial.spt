@@ -9,7 +9,7 @@ $format_html($event.info.name)
 <meta name="twitter:site" content="@dancedeets" />
 <meta name="twitter:creator" content="@dancedeets" />
 <meta name="twitter:title" content="$format_html($event.info.name)" />
-<meta name="twitter:image:src" content="$cover.source" />
+<meta name="twitter:image:src" content="$largest_cover_info.source" />
 
 <meta name="twitter:app:name:googleplay" content="DanceDeets" />
 <meta name="twitter:app:id:googleplay" content="com.dancedeets.android" />
@@ -25,7 +25,7 @@ $format_html($event.info.name)
 		<div style="position: relative;">
 			<div id="cover-box-outer">
 				<div id="cover-box-fill">
-					<img id="cover-image" src="$cover.source" itemprop="photo">
+					<img id="cover-image" src="$largest_cover_info.source" itemprop="photo">
 					<!--style="margin-top:-${cover.offset_y}%">-->
 					<h1 class="event-page-title event-page-title-on-cover" itemprop="name">$event.info.name</h1>
 				</div>
@@ -39,7 +39,7 @@ $format_html($event.info.name)
 <div class="row">
 <div class="col-sm-4">
 	#if $cover
-		<div><b><a href="$cover.source">See Full Flyer</a></b></div>
+		<div><b><a href="$largest_cover_info.source">See Full Flyer</a></b></div>
 	#end if
 	<div><b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b></div>
 	<div><b>Time:</b></div>
@@ -96,22 +96,26 @@ region= paramter cctld
 function position_cover() {
 	/* magic positioning function. makes no sense, but it works, much better than setting it to "-top:${cover.offset_y}%" */
 	/* difficult facebook event cover ids to handle include: 448903208580641 */
+	var offset_x = $cover.offset_x;
 	var offset_y = $cover.offset_y;
 	var cover_w = $("#cover-box-outer").width();
 	var cover_h = $("#cover-box-outer").height();
 	var img_w = $largest_cover_info.width;
 	var img_h = $largest_cover_info.height;
-	var real_img_h = (cover_w * img_h / img_w) - cover_h;
-
-	// Now convert it back to a percentage, so that it stays accurate as the window resizes
-	var top = real_img_h * offset_y / 100 * -1;
-	var pct_h = top / $("#cover-box-outer").width();
 
 	// This calculation can be rewritten as this (which can also be done server-side if you know the html-div size ratio):
-	// ((img_h/img_w) - box_h/box_w) * offset_y / -100
+	var offset_y_pct = ((img_h/img_w) - cover_h/cover_w) * offset_y / -100;
 
-	$("#cover-image").css ({ top: parseInt(pct_h) + "%" });
+	// This is basically centered + offset_x, which seems to work halfway decent on 774261012620733, before I gave up on the issue.
+	var vertical_scaling = cover_h/img_h;
+	var centered_offset_x = cover_w/2 - img_w/2 * vertical_scaling;
+	var offset_x2 = offset_x + centered_offset_x;
 
+	if (offset_x) {
+		$("#cover-image").css ({ height: "100%", left: offset_x2 + "px" });
+	} else if (offset_y) {
+		$("#cover-image").css ({ width: "100%", top: parseInt(offset_y_pct) + "%" });
+	}
 }
 
 $(document).ready(function() {
