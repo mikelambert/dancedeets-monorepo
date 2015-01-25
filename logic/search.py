@@ -121,17 +121,21 @@ class SearchQuery(object):
         if self.time_period == eventdata.TIME_FUTURE and self.start_time:
                 assert self.start_time < datetime.datetime.now()
         self.bounds = bounds
-        assert self.bounds
 
         self.keywords = keywords
 
+        self.limit = 1000
+
     @classmethod
     def create_from_query(cls, query, start_end_query=False):
-        if query.distance_units == 'miles':
-            distance_in_km = locations.miles_in_km(query.distance)
+        if query.location:
+            if query.distance_units == 'miles':
+                distance_in_km = locations.miles_in_km(query.distance)
+            else:
+                distance_in_km = query.distance
+            bounds = locations.get_location_bounds(query.location, distance_in_km)
         else:
-            distance_in_km = query.distance
-        bounds = locations.get_location_bounds(query.location, distance_in_km)
+            bounds = None
         if start_end_query:
             self = cls(bounds=bounds, min_attendees=query.min_attendees, keywords=query.keywords, start_time=query.start_time, end_time=query.end_time)
         else:
@@ -177,7 +181,7 @@ class SearchQuery(object):
             doc_index = search.Index(name=index_name)
             #TODO(lambert): implement pagination
             options = search.QueryOptions(
-                limit=1000,
+                limit=self.limit,
                 returned_fields=['actual_city_name', 'attendee_count', 'event_keywords'])
             query = search.Query(query_string=full_search, options=options)
             doc_search_results = doc_index.search(query)

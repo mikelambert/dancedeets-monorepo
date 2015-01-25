@@ -198,6 +198,18 @@ class FeedHandler(ApiHandler):
 
 class SearchHandler(ApiHandler):
 
+    def _get_title(self, location, keywords):
+        if location:
+            if keywords:
+                return "Events with keywords %s" % keywords
+            else:
+                return "Events near %s" % location
+        else:
+            if keywords:
+                return "Events with keywords %s" % keywords
+            else:
+                return "Events"
+
     def get(self, major_version, minor_version):
         self.finish_preload()
 
@@ -205,34 +217,42 @@ class SearchHandler(ApiHandler):
         fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, None)
 
         if not fe_search_query.location:
-            self.add_error('Need location parameter')
-
-        city_name = locations.get_city_name(address=fe_search_query.location)
-        if city_name is None:
-            self.add_error('Could not geocode location')
-
-        if fe_search_query.distance_units == 'miles':
-            distance_in_km = locations.miles_in_km(fe_search_query.distance)
+            city_name = None
+            southwest = None
+            northeast = None
+            if not fe_search_query.keywords:
+                if major_version == "1" and minor_version == "0":
+                    self.write_json_success({'results': []})
+                    return
+                else:
+                    self.add_error('Please enter a location or keywords')                
         else:
-            distance_in_km = fe_search_query.distance
+            if fe_search_query.distance_units == 'miles':
+                distance_in_km = locations.miles_in_km(fe_search_query.distance)
+            else:
+                distance_in_km = fe_search_query.distance
+            southwest, northeast = locations.get_location_bounds(address=fe_search_query.location, distance_in_km=distance_in_km)
+            if southwest and northeast:
+                city_name = locations.get_city_name(address=fe_search_query.location)
+                # This will fail on a bad location, so let's verify the location is geocodable above first.
+            else:
+                if major_version == "1" and minor_version == "0":
+                    self.write_json_success({'results': []})
+                    return
+                else:
+                    self.add_error('Could not geocode location')
 
         self.errors_are_fatal()
 
-        # This will fail on a bad location, so let's verify the location is geocodable above first.
-        southwest, northeast = locations.get_location_bounds(address=fe_search_query.location, distance_in_km=distance_in_km)
-
         search_query = search.SearchQuery.create_from_query(fe_search_query)
+
+        # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
+        search_query.limit = 500
 
         search_results = search_query.get_search_results(self.fbl)
         #TODO(lambert): move to common library.
         now = datetime.datetime.now() - datetime.timedelta(hours=12)
         search_results = [x for x in search_results if x.start_time > now]
-        
-        title = 'Events near %(location)s' % dict(
-            location=city_name,
-        )
-        if fe_search_query.keywords:
-            title = '%s containing "%s"' % (title, fe_search_query.keywords)
 
         json_results = []
         for result in search_results:
@@ -242,11 +262,14 @@ class SearchHandler(ApiHandler):
             except Exception as e:
                 logging.error("Error processing event %s: %s" % (result.fb_event_id, e))
 
+        title = self._get_title(city_name, fe_search_query.keywords)
         json_response = {
             'results': json_results,
             'title': title,
-            'location': city_name,
-            'location_box': {
+            'location': city_name
+        }
+        if southwest and northeast:
+            json_response['location_box'] = {
                 'southwest': {
                     'latitude': southwest[0],
                     'longitude': southwest[1],
@@ -255,8 +278,7 @@ class SearchHandler(ApiHandler):
                     'latitude': northeast[0],
                     'longitude': northeast[1],
                 },
-            },
-        }
+            }
         self.write_json_success(json_response)
 
 
