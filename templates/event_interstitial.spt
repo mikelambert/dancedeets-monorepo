@@ -9,7 +9,7 @@ $format_html($event.info.name)
 <meta name="twitter:site" content="@dancedeets" />
 <meta name="twitter:creator" content="@dancedeets" />
 <meta name="twitter:title" content="$format_html($event.info.name)" />
-<meta name="twitter:image:src" content="$largest_cover_info.source" />
+<meta name="twitter:image:src" content="http://$base_hostname/events/image_proxy/$event.info.id" />
 
 <meta name="twitter:app:name:googleplay" content="DanceDeets" />
 <meta name="twitter:app:id:googleplay" content="com.dancedeets.android" />
@@ -103,18 +103,24 @@ function position_cover() {
 	var img_w = $largest_cover_info.width;
 	var img_h = $largest_cover_info.height;
 
-	// This calculation can be rewritten as this (which can also be done server-side if you know the html-div size ratio):
-	var offset_y_pct = ((img_h/img_w) - cover_h/cover_w) * offset_y / -100;
-
-	// This is basically centered + offset_x, which seems to work halfway decent on 774261012620733, before I gave up on the issue.
-	var vertical_scaling = cover_h/img_h;
-	var centered_offset_x = cover_w/2 - img_w/2 * vertical_scaling;
-	var offset_x2 = offset_x + centered_offset_x;
-
 	if (offset_x) {
+		// This is basically centered + offset_x, which seems to work halfway decent on 774261012620733, before I gave up on the issue.
+		var vertical_scaling = cover_h/img_h;
+		var centered_offset_x = cover_w/2 - img_w/2 * vertical_scaling;
+		var offset_x2 = offset_x + centered_offset_x;
+
 		$("#cover-image").css ({ height: "100%", left: offset_x2 + "px" });
 	} else if (offset_y) {
+		// This calculation can be rewritten as this (which can also be done server-side if you know the html-div size ratio):
+		var offset_y_pct = ((img_h/img_w) - cover_h/cover_w) * offset_y / -100;
+
 		$("#cover-image").css ({ width: "100%", top: parseInt(offset_y_pct) + "%" });
+	} else {
+		if (cover_w/img_w > cover_h/img_h) {
+			$("#cover-image").css ({ width: "100%", top: parseInt(offset_y_pct) + "%" });
+		} else {
+			$("#cover-image").css ({ height: "100%" });
+		}
 	}
 }
 
