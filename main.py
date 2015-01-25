@@ -22,6 +22,7 @@ from servlets import admin
 from servlets import api
 from servlets import calendar
 from servlets import event
+from servlets import event_proxy
 from servlets import feedback
 from servlets import home
 from servlets import gprediction
@@ -96,6 +97,7 @@ URLS = [
     ('/events/feed', api.FeedHandler),
     ('/events/relevant', search.RelevantHandler),
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
+    ('/events/image_proxy/(\d+)', event_proxy.ImageProxyHandler),
     (r'/events/\d+/?', event.ShowEventHandler),
     ('/city/.*', search.CityHandler),
     ('/profile/[^/]*', profile_page.ProfileHandler),
