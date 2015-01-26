@@ -3,9 +3,12 @@ from google.appengine.api import mail
 import base_servlet
 
 class HelpHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
     def get(self):
         self.finish_preload()
-        self.render_template('feedback')
+        self.render_template('help')
 
 class FeedbackHandler(base_servlet.BaseRequestHandler):
     def get(self):
