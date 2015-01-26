@@ -11,7 +11,6 @@ import fb_api
 from logic import backgrounder
 from logic import fb_reloading
 from logic import rankings
-from logic import search
 from logic import thing_scraper
 from util import timings
 
@@ -166,15 +165,6 @@ class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         fb_reloading.load_potential_events_for_user_ids(self.fbl, user_ids)
-
-class MemcacheFutureEvents(BaseTaskFacebookRequestHandler):
-    def get(self):
-        search.memcache_future_events(self.fbl)
-
-class RefreshFulltextSearchIndex(BaseTaskFacebookRequestHandler):
-    def get(self):
-        index_future = bool(int(self.request.get('index_future', 1)))
-        search.construct_fulltext_search_index(self.fbl, index_future=index_future)
 
 class TimingsKeepAlive(BaseTaskRequestHandler):
     def get(self):
