@@ -35,7 +35,11 @@ class TopicHandler(base_servlet.BaseRequestHandler):
             """
             search_result = pseudo_db_event._search_result
             title_description = search_result.field('keywords').value.lower()
-            title, description = title_description.split('\n\n', 1)
+            try:
+                title, description = title_description.split('\n\n', 1)
+            except ValueError:
+                logging.error("Could not unpack title_description from search result id %s: %s", pseudo_db_event.fb_event_id, title_description)
+                return False
             description_lines = description.split('\n')
 
             for keyword in topic.search_keywords:
@@ -64,7 +68,6 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         self.display['image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])
         self.display['description'] = topic.override_description or (fb_source and fb_source['info']['about'])
 
-        print search_results
         self.display['results'] = search_results
 
 
