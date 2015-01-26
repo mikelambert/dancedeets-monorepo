@@ -343,10 +343,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.fbl = fb_api.FBLookup(None, None)
         self.fbl.debug = 'fbl' in self.debug_list
         if self.user:
+            self.display['date_only_human_format'] = self.user.date_only_human_format
             self.display['date_human_format'] = self.user.date_human_format
             self.display['duration_human_format'] = self.user.duration_human_format
             self.display['messages'] = self.user.get_and_purge_messages()
         else:
+            self.display['date_only_human_format'] = dates.date_only_human_format
             self.display['date_human_format'] = dates.date_human_format
             self.display['duration_human_format'] = dates.duration_human_format
             self.display['login_url'] = login_url

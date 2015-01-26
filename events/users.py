@@ -71,6 +71,8 @@ class User(db.Model):
                 smemcache.set(memcache_key, user, USER_EXPIRY)
         return user
 
+    def date_only_human_format(self, d):
+        return dates.date_only_human_format(d)
     def date_human_format(self, d):
         return dates.date_human_format(d, country=self.location_country)
     def duration_human_format(self, d1, d2):

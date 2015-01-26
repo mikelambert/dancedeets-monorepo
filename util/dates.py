@@ -38,9 +38,13 @@ def time_human_format(d, country=None):
         time_string = '%d:%02d' % (int(d.strftime('%H')), d.minute)
     return time_string
 
-def date_human_format(d, country=None):
+def date_only_human_format(d):
     month_day_of_week = d.strftime('%A, %B')
     month_day = '%s %s, %s' % (month_day_of_week, d.day, d.year)
+    return month_day
+
+def date_human_format(d, country=None):
+    month_day = date_only_human_format(d)
     time_string = time_human_format(d, country=country)
     return '%s - %s' % (month_day, time_string)
 
