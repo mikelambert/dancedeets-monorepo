@@ -64,9 +64,9 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         search_query.extra_fields = ['keywords']
         search_results = search_query.get_search_results(self.fbl, prefilter=prefilter)
 
-        self.display['title'] = topic.override_title or (fb_source and fb_source['info']['name'])
-        self.display['image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])
-        self.display['description'] = topic.override_description or (fb_source and fb_source['info']['about'])
+        self.display['topic_title'] = topic.override_title or (fb_source and fb_source['info']['name'])
+        self.display['topic_image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])
+        self.display['topic_description'] = topic.override_description or (fb_source and fb_source['info']['about'])
 
         self.display['results'] = search_results
 
@@ -129,8 +129,7 @@ class AdminAddTopicHandler(base_servlet.BaseRequestHandler):
 
         topic.graph_id = real_page_id
         topic.topic_class = topic_db.TOPIC_DANCER
-        topic.url_path = 'kapela'
-        topic.search_keywords = ['kapela']
+        topic.search_keywords = self.request.get_all('search_keywords')
         topic.put()
         self.response.out.write('Added!')
 
