@@ -126,6 +126,9 @@ class SearchQuery(object):
 
         self.limit = 1000
 
+        # Extra search index fields to return
+        self.extra_fields = []
+
     @classmethod
     def create_from_query(cls, query, start_end_query=False):
         if query.location:
@@ -182,7 +185,7 @@ class SearchQuery(object):
             #TODO(lambert): implement pagination
             options = search.QueryOptions(
                 limit=self.limit,
-                returned_fields=['actual_city_name', 'attendee_count', 'event_keywords'])
+                returned_fields=['actual_city_name', 'attendee_count', 'event_keywords'] + self.extra_fields)
             query = search.Query(query_string=full_search, options=options)
             doc_search_results = doc_index.search(query)
             db_events = []

@@ -116,7 +116,8 @@ URLS = [
     ('/mapreduce/worker_callback.*', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
     ('/home', home.HomeHandler),
 
-    ('/topic/([^/]+)', topic_servlets.TopicHandler),
+    ('/topic/([^/]+)/?', topic_servlets.TopicHandler),
+    ('/topic_add', topic_servlets.AdminAddTopicHandler),
     ('/twitter/oauth_start', pubsub_setup.TwitterOAuthStartHandler),
     ('/twitter/oauth_callback', pubsub_setup.TwitterOAuthCallbackHandler),
     ('/twitter/oauth_success', pubsub_setup.TwitterOAuthSuccessHandler),

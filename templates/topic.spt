@@ -1,0 +1,58 @@
+#extends _base
+#extends _results
+#from spitfire.runtime.filters import escape_html
+#filter escape_html
+
+#def title
+$display_location dance events
+#end def
+
+#def head_stylesheet
+#end def
+
+#def body
+<div class="row">
+
+<div class="col-md-9" style="min-height:300px">
+$render_wide_results($results, use_rsvp_form=False)
+</div> ## row
+#end def
+
+
+
+
+#def bottom_javascript
+
+<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.css' />
+<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.print.css' media="print"/>
+<!--<link rel='stylesheet' type='text/css' href='//cdn.jsdelivr.net/fullcalendar/1.6.4/fullcalendar.css' />-->
+<!--<link rel='stylesheet' type='text/css' href='//cdn.jsdelivr.net/fullcalendar/1.6.4/fullcalendar.print.css' media="print"/>-->
+<!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
+<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.min.js'></script>
+<!--<script src="//cdn.jsdelivr.net/g/momentjs@2.6,fullcalendar@2.0"></script>-->
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#calendar').fullCalendar({
+		aspectRatio: 1.5,
+		ignoreTimezone: true,
+		allDayDefault: false,
+		events: '$format_js($calendar_feed_url)'
+	});
+});
+</script>
+
+
+<script src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+	$("img.lazy-narrow").show().lazyload({threshold : 500});
+	$("img.lazy-wide").show().lazyload({threshold : 500});
+});
+</script>
+
+#end def

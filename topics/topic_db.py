@@ -38,7 +38,7 @@ class LookupTopicPage(fb_api.LookupType):
     def get_lookups(cls, object_id):
         return [
             ('info', cls.url('%s' % object_id)),
-            ('picture', cls.url('%s/picture?type=large' % object_id)),
+            ('picture', cls.url('%s/picture?type=large&redirect=false' % object_id)),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):

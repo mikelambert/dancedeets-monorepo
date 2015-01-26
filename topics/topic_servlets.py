@@ -11,9 +11,9 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         return False
 
     def get(self, name):
-        topics = topic_db.Topic.query(topic_db.Topic.name==name).fetch(1)
+        topics = topic_db.Topic.query(topic_db.Topic.url_path==name).fetch(1)
         if not topics:
-            self.response.status_code = 404
+            self.response.set_status(404)
             return
 
         topic = topics[0]
@@ -31,10 +31,10 @@ class TopicHandler(base_servlet.BaseRequestHandler):
 
             We only want on-topic events here:
             - Must contain keyword in the title
-            - Must contain keyword on a line where it makes up >20% of the text (for judges, workshops, etc). We want to hide the resume-includes-classes-from-X people
+            - Must contain keyword on a line where it makes up >10% of the text (for judges, workshops, etc). We want to hide the resume-includes-classes-from-X people
             """
             search_result = pseudo_db_event._search_result
-            title_description = search_result.field('keywords').value
+            title_description = search_result.field('keywords').value.lower()
             title, description = title_description.split('\n\n', 1)
             description_lines = description.split('\n')
 
@@ -44,6 +44,10 @@ class TopicHandler(base_servlet.BaseRequestHandler):
                     return True
                 for line in description_lines:
                     result = keyword_word_re.search(line)
+                    # If the keyword is more than 10% of the text in the line:
+                    # Examples:
+                    #   "- HOUSE - KAPELA (Serial Stepperz/Wanted Posse)"
+                    #   "5th November : EVENT Judged by HIRO :"
                     if result and 1.0 * len(keyword) / len(line) > 0.2:
                         return True
 
@@ -52,13 +56,16 @@ class TopicHandler(base_servlet.BaseRequestHandler):
 
         keywords = ' OR '.join(topic.search_keywords)
         search_query = search.SearchQuery(keywords=keywords)
+        # Need these fields for the prefilter
+        search_query.extra_fields = ['keywords']
         search_results = search_query.get_search_results(self.fbl, prefilter=prefilter)
 
         self.display['title'] = topic.override_title or (fb_source and fb_source['info']['name'])
         self.display['image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])
         self.display['description'] = topic.override_description or (fb_source and fb_source['info']['about'])
 
-        self.display['search_results'] = search_results
+        print search_results
+        self.display['results'] = search_results
 
 
         # TODO:
@@ -70,3 +77,57 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         self.display['fb_page'] = fb_source
 
         self.render_template('topic')
+
+
+def get_id_from_url(url):
+    if '#' in url:
+        url = url.split('#')[1]
+    if 'facebook.com' in url:
+        url = url.split('facebook.com')[1]
+
+    path_components = url.split('/')
+    if path_components[1] == 'pages':
+        page_id = path_components[3]
+        return page_id
+    else:
+        page_name = path_components[1]
+        return page_name
+
+#"https://www.facebook.com/dancedeets"
+#"https://www.facebook.com/pages/DanceDeets-Events/1613128148918160"
+
+class AdminAddTopicHandler(base_servlet.BaseRequestHandler):
+
+    def show_barebones_page(self):
+        self.response.out.write('Bleh')
+
+    def get(self):
+        page_lookup_id = None
+        if self.request.get('page_url'):
+            page_lookup_id = get_id_from_url(self.request.get('page_url'))
+        elif self.request.get('page_id'):
+            page_lookup_id = self.request.get('page_id')
+        else:
+            self.add_error('Need to specify a page to create from')
+        self.fbl.request(topic_db.LookupTopicPage, page_lookup_id, allow_cache=False)
+        self.finish_preload()
+
+        try:
+            fb_page = self.fbl.fetched_data(topic_db.LookupTopicPage, page_lookup_id)
+        except fb_api.NoFetchedDataException:
+            return self.show_barebones_page()
+
+        self.errors_are_fatal()
+
+        real_page_id = fb_page['info']['id']
+
+        topics = topic_db.Topic.query(topic_db.Topic.graph_id==real_page_id).fetch(1)
+        topic = topics[0] if topics else topic_db.Topic()
+
+        topic.graph_id = real_page_id
+        topic.topic_class = topic_db.TOPIC_DANCER
+        topic.url_path = 'kapela'
+        topic.search_keywords = ['kapela']
+        topic.put()
+        self.response.out.write('Added!')
+
