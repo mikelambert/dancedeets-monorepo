@@ -256,7 +256,7 @@ def construct_fulltext_search_index(fbl, index_future=True):
     db_query = db.Query(eventdata.DBEvent, keys_only=True)
     if index_future:
         db_query = db_query.filter('search_time_period =', eventdata.TIME_FUTURE)
-    db_event_keys = db_query.order('start_time').fetch(MAX_EVENTS)
+    db_event_keys = db_query.fetch(MAX_EVENTS)
     db_event_ids = set(x.id_or_name() for x in db_event_keys)
 
     logging.info("Found %s db event ids for indexing", len(db_event_ids))
