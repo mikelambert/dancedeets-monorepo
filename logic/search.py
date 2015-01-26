@@ -230,9 +230,9 @@ class SearchQuery(object):
         return search_results
 
 def update_fulltext_search_index(db_event, fb_event):
+    logging.info("Adding event to search index: %s", db_event.fb_event_id)
     doc_event = _create_doc_event(db_event, fb_event)
     if not doc_event: return
-    logging.info("Adding event to search index: %s", db_event.fb_event_id)
     if db_event.search_time_period == eventdata.TIME_FUTURE:
         doc_index = search.Index(name=ALL_EVENTS_INDEX)
         doc_index.put(doc_event)
@@ -303,6 +303,12 @@ def _create_doc_event(db_event, fb_event):
     # and how do we want to return them
     # Perhaps a separate index that is combined at search-time?
     if db_event.latitude is None:
+        return None
+    # If this event has been deleted from Facebook, let's skip re-indexing it here
+    if db_event.start_time is None:
+        return None
+    if not isinstance(db_event.start_time, datetime.datetime) and not isinstance(db_event.start_time, datetime.date):
+        logging.error("DB Event %s start_time is not correct format: ", db_event.fb_event_id, db_event.start_time)
         return None
     doc_event = search.Document(
         doc_id=str(db_event.fb_event_id),
