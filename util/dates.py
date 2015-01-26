@@ -40,7 +40,7 @@ def time_human_format(d, country=None):
 
 def date_human_format(d, country=None):
     month_day_of_week = d.strftime('%A, %B')
-    month_day = '%s %s' % (month_day_of_week, d.day)
+    month_day = '%s %s, %s' % (month_day_of_week, d.day, d.year)
     time_string = time_human_format(d, country=country)
     return '%s - %s' % (month_day, time_string)
 
