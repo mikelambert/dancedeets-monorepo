@@ -39,6 +39,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
+        self.display['html_escape'] = text.html_escape
+        self.display['truncate'] = lambda text, length: text[:length]
         self.display['format_html'] = text.format_html
         self.display['linkify'] = text.linkify
         self.display['format_js'] = text.format_js
@@ -362,6 +364,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']
         self.display['prod_mode'] = self.request.app.prod_mode
         self.display['base_hostname'] = 'dancedeets.com' if self.request.app.prod_mode else 'dev-dancedeets.com'
+        self.display['full_hostname'] = 'www.dancedeets.com' if self.request.app.prod_mode else 'dev-dancedeets.com'
 
         # TODO: get rid of user_location when we can switch to IP-based geocoding (since mobile clients don't need it)
         # TODO(FB2.0): get rid of user_groups/user_likes
