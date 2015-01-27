@@ -13,6 +13,7 @@ from events import eventdata
 import fb_api
 import keys
 from util import dates
+from util import fetch
 from util import urls
 
 consumer_key = 'xzpiBnUCGqTWSqTgmE6XtLDpw'
@@ -50,6 +51,20 @@ def publish_event(fbl, event_id):
     else:
         logging.error("Could not find a Facebook token")
 
+def create_media_on_twitter(t, fb_event):
+    cover = eventdata.get_largest_cover(fb_event)
+    if not cover:
+        return None
+    mimetype, response = fetch.fetch_data(cover['source'])
+    try:
+        t.domain = 'upload.twitter.com'
+        result = t.media.upload(media=response)
+    finally:
+        t.domain = 'api.twitter.com'
+    print type(result['media_id'])
+    print repr(result['media_id'])
+    return result
+
 def format_twitter_post(db_event, fb_event, handle=None):
     url = urls.fb_event_url(fb_event['info']['id'])
     title = fb_event['info']['name']
@@ -83,13 +98,17 @@ def twitter_post(auth_token, db_event, fb_event):
     t = twitter.Twitter(
         auth=twitter.OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, consumer_key, consumer_secret))
 
+    update_params = {}
     if db_event.latitude:
-        latlong_kwargs = {'lat': db_event.latitude, 'long': db_event.longitude}
-    else:
-        latlong_kwargs = {}
+        update_params['lat'] = db_event.latitude
+        update_params['long'] = db_event.longitude
+
+    media = create_media_on_twitter(t, fb_event)
+    if media:
+        update_params['media_ids'] = media['media_id']
 
     status = format_twitter_post(db_event, fb_event)
-    t.statuses.update(status=status, **latlong_kwargs)
+    t.statuses.update(status=status, **update_params)
 
     description = fb_event['info'].get('description')
     twitter_handles = re.findall('\s@[A-za-z0-9_]+', description)

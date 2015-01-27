@@ -1,10 +1,10 @@
 
 import fb_api
-import urllib2
 import webapp2
 
 from events import eventdata
 from events import users
+from util import fetch
 
 class ImageProxyHandler(webapp2.RequestHandler):
     """Proxies images for use by twitter, where it doesn't need to respect the FB cache server's /robots.txt."""
@@ -23,8 +23,6 @@ class ImageProxyHandler(webapp2.RequestHandler):
             self.response.set_status(404)
             return
 
-        req = urllib2.Request(cover['source'])
-        response = urllib2.urlopen(req)
-        mimetype = response.info().getheader('Content-Type')
+        mimetype, response = fetch.fetch_data(cover['source'])
         self.response.headers["Content-Type"] = mimetype
-        self.response.out.write(response.read())
+        self.response.out.write(response)
