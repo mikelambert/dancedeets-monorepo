@@ -63,7 +63,7 @@ def create_media_on_twitter(t, fb_event):
         t.domain = 'api.twitter.com'
     return result
 
-def format_twitter_post(db_event, fb_event, handle=None):
+def format_twitter_post(db_event, fb_event, media, handle=None):
     url = urls.fb_event_url(fb_event['info']['id'])
     title = fb_event['info']['name']
     city = db_event.actual_city_name
@@ -75,8 +75,8 @@ def format_twitter_post(db_event, fb_event, handle=None):
     #else:
     datetime_string = start_time.strftime(DATE_FORMAT)
 
-    # twitter length is 22, so I use 23 to give buffer.
-    # TODO(lambert): fetch help/configuration daily to find the current value
+    # The "short_url_length" is 22, so I use 23 for the space beforehand.
+    # TODO(lambert): fetch help/configuration.json daily to find the current value
     # as described on https://dev.twitter.com/overview/t.co
     url_length = 23
     prefix = ''
@@ -86,7 +86,11 @@ def format_twitter_post(db_event, fb_event, handle=None):
     if city:
         prefix += '%s: ' % city
 
-    title_length = 140 - len(prefix) - len(u"… ") - url_length
+    num_urls = 1
+    if media:
+        num_urls += 1 # the "characters_reserved_per_media" is '23', which is 22 + 1 space
+
+    title_length = 140 - len(prefix) - len(u"…") - url_length*num_urls
     final_title = title[0:title_length]
     if final_title != title:
         final_title += u'…'
@@ -105,15 +109,15 @@ def twitter_post(auth_token, db_event, fb_event):
     if media:
         update_params['media_ids'] = media['media_id']
 
-    status = format_twitter_post(db_event, fb_event)
+    status = format_twitter_post(db_event, fb_event, media)
     t.statuses.update(status=status, **update_params)
 
     description = fb_event['info'].get('description')
     twitter_handles = re.findall('\s@[A-za-z0-9_]+', description)
     twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+15]
     for handle in twitter_handles:
-        status = format_twitter_post(db_event, fb_event, handle=handle)
-        t.statuses.update(status=status, **latlong_kwargs)
+        status = format_twitter_post(db_event, fb_event, media, handle=handle)
+        t.statuses.update(status=status, **update_params)
 
 def facebook_post(auth_token, db_event, fb_event):
     link = urls.fb_event_url(fb_event['info']['id'])
