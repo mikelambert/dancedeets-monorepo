@@ -649,7 +649,7 @@ add(CLASS, [
     u'堂課', # lesson chinese
     u'コース', # course japanese
     'concorso', # course italian
-    'kurs(?:y|en)?', # course german/polish
+    'kur[sz](?:y|en)?', # course german/polish/czech
     'aulas?', # portuguese class(?:es)?
     u'특강', # korean lecture
     'lektion(?:en)?', # german lecture

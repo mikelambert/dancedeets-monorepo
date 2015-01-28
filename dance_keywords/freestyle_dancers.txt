@@ -37,6 +37,7 @@ caleaf sellers
 campbellock
 candoo,0
 chaz cabonce
+chris\W+shake\W+mathis
 conrad rochester
 crazy kyo
 cricket,0
@@ -220,8 +221,8 @@ waackiesha
 wadoo\W+zero db
 wahe,0
 walid boumhami
-which\W?way sha
-whichway
+whicha?\W?way sha
+whicha?way
 wildkatz
 willie ninja
 willow,0
