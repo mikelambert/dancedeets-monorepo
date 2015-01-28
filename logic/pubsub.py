@@ -61,8 +61,6 @@ def create_media_on_twitter(t, fb_event):
         result = t.media.upload(media=response)
     finally:
         t.domain = 'api.twitter.com'
-    print type(result['media_id'])
-    print repr(result['media_id'])
     return result
 
 def format_twitter_post(db_event, fb_event, handle=None):
