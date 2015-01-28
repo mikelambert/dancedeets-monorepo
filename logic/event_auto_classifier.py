@@ -493,7 +493,13 @@ def is_bad_wrong_dance(classified_event):
     keyword_count = len(strong_classical_dance_keywords) + 0.5 * len(weak_classical_dance_keywords)
 
     just_free_style_dance = len(real_dance_keywords) == 1 and list(real_dance_keywords)[0].startswith('free')
-    if not real_dance_keywords and not has_house and len(club_only_matches) <= 1 and len(manual_keywords) <= 1 and keyword_count >= 2:
+
+    has_wrong_style_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_decent_style = classified_event.processed_title.find_with_rule(rules.DECENT_DANCE)
+
+    if has_wrong_style_title and not has_decent_style:
+        return True, 'Title is too strong a negative, without any compensating good title keywords'
+    elif not real_dance_keywords and not has_house and len(club_only_matches) <= 1 and len(manual_keywords) <= 1 and keyword_count >= 2:
         return True, 'Has strong classical keywords %s, but only real keywords %s' % (strong_classical_dance_keywords + weak_classical_dance_keywords, manual_keywords)
     elif keyword_count >= 2 and just_free_style_dance and not manual_keywords:
         return True, 'Has strong classical keywords %s with freestyle dance, but only dance keywords %s' % (strong_classical_dance_keywords + weak_classical_dance_keywords, real_dance_keywords.union(manual_keywords))

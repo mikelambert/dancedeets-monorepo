@@ -102,6 +102,11 @@ add(GOOD_DANCE, Any(
     commutative_connected(keywords.EASY_DANCE, keywords.DANCE),
 ))
 
+DECENT_DANCE = 'DECENT_DANCE'
+add(DECENT_DANCE, Any(
+    get(GOOD_DANCE),
+    keywords.AMBIGUOUS_DANCE_MUSIC,
+))
 
 WRONG_CLASS = 'WRONG_CLASS'
 add(WRONG_CLASS, commutative_connected(keywords.AMBIGUOUS_WRONG_STYLE, keywords.CLASS))
