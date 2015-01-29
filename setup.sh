@@ -74,6 +74,7 @@ function install-gcode-svn() {
 }
 
 # OAUTH2 (for authorizing twitter)
+install-git https://github.com/deactivated/python-iso3166.git iso3166
 install-git https://github.com/sixohsix/twitter.git twitter
 install-git https://github.com/simplegeo/python-oauth2.git oauth2
 install-git https://github.com/twilio/twilio-python.git twilio

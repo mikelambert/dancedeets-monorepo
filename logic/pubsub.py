@@ -5,6 +5,7 @@ import logging
 import re
 import urlparse
 import oauth2 as oauth
+import iso3166
 
 from google.appengine.ext import ndb
 import twitter
@@ -112,7 +113,7 @@ def twitter_post(auth_token, db_event, fb_event):
     status = format_twitter_post(db_event, fb_event, media)
     t.statuses.update(status=status, **update_params)
 
-    description = fb_event['info'].get('description')
+    description = fb_event['info'].get('description') or ''
     twitter_handles = re.findall('\s@[A-za-z0-9_]+', description)
     twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+15]
     for handle in twitter_handles:
@@ -127,7 +128,7 @@ def facebook_post(auth_token, db_event, fb_event):
 
     post_values = {}
     #post_values['message'] = fb_event['info']['name']
-    post_values['link'] = link#.replace('www.dancedeets.com', 'dev-dancedeets.com:8080')
+    post_values['link'] = link
     post_values['name'] = fb_event['info']['name'].encode('utf8')
     post_values['caption'] = datetime_string
     post_values['description'] = fb_event['info'].get('description', '').encode('utf8')
@@ -142,7 +143,15 @@ def facebook_post(auth_token, db_event, fb_event):
             admin_ids = [x['id'] for x in fb_event['info']['admins']['data']]
             post_values['tags'] = ','.join(admin_ids)
 
-    # At some point, set up feed targetting:
+        # Target to people in the same country as the event. Should improve signal/noise ratio.
+        country = fb_event['info']['venue'].get('country')
+        if country:
+            country = country.upper()
+            if country in iso3166.countries_by_name:
+                short_country = iso3166.countries_by_name[country].alpha2
+                post_values['countries'] = short_country
+
+    # At some point, set up feed targetting on per-city or per-region basis?
     #feed_targeting = {}
     #feed_targeting['cities'] = '' # int array
     #feed_targeting['countries'] = '', # two char country abbreviations
