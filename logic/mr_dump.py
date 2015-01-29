@@ -37,7 +37,7 @@ def mr_dump_events(fbl):
         handle_batch_size=80,
         queue=None,
         filters=[('looked_at', '=', None)],
-        output_writer_spec='mapreduce.output_writers.BlobstoreOutputWriter',
+        output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         extra_mapper_params={'mime_type': 'text/plain'},
     )
 

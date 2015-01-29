@@ -20,7 +20,7 @@ def mr_count_attendees_per_city(fbl):
         'logic.unique_attendees.map_each_attendee',
         'logic.unique_attendees.reduce_just_unique_attendees',
         'mapreduce.input_readers.DatastoreInputReader',
-        'mapreduce.output_writers.BlobstoreOutputWriter',
+        'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         mapper_params={
             'entity_kind': 'events.eventdata.DBEvent',
             'fbl_fb_uid': fbl.fb_uid,

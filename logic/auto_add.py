@@ -97,7 +97,7 @@ def mr_classify_potential_events(fbl, past_event):
         filters=filters,
         handle_batch_size=20,
         queue='fast-queue',
-        output_writer_spec='mapreduce.output_writers.BlobstoreOutputWriter',
+        output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         extra_mapper_params={'mime_type': 'text/plain'},
     )
 

@@ -74,7 +74,7 @@ def mr_generate_training_data(fbl):
         fbl=fbl,
         name='Write Training Data',
         handler_spec='logic.gprediction.map_training_data_for_pevents',
-        output_writer_spec='mapreduce.output_writers.BlobstoreOutputWriter',
+        output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         handle_batch_size=20,
         entity_kind='logic.potential_events.PotentialEvent',
         extra_mapper_params={'mime_type': 'text/plain'},
