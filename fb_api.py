@@ -165,6 +165,9 @@ class LookupUserEvents(LookupType):
     def get_lookups(cls, object_id):
         today = int(time.mktime(datetime.date.today().timetuple()[:9]))
         return [
+            # Going to have to convert this over to /<object_id>/events
+            # when we want to hit v2.1 or v2.2 (v2.0 works though).
+            # Will require downstream changes on eid-vs-id.
             ('all_event_info', cls.fql_url(ALL_EVENTS_FQL % (object_id, today))),
         ]
     @classmethod
