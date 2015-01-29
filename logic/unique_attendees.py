@@ -27,7 +27,10 @@ def mr_count_attendees_per_city(fbl):
             'fbl_access_token': fbl.access_token,
             'fbl_allow_cache': fbl.allow_cache,
         },
-        reducer_params={'mime_type': 'text/plain'},
+        output_writer={
+            'mime_type': 'text/plain',
+            'bucket_name': 'dancedeets-hrd.appspot.com',
+        },
         shards=2,
     )
     mrp.start()

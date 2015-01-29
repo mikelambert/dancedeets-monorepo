@@ -47,6 +47,9 @@ def mr_classify_potential_events(fbl):
         handle_batch_size=20,
         queue='slow-queue',
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
-        extra_mapper_params={'mime_type': 'text/plain'},
+        output_writer={
+            'mime_type': 'text/plain',
+            'bucket_name': 'dancedeets-hrd.appspot.com',
+        },
     )
 

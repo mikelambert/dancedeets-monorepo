@@ -55,7 +55,7 @@ def mapreduce_scrape_all_sources(fbl, min_potential_events=None):
         'logic.thing_scraper.map_scrape_events_from_source',
         'logic.thing_db.Source',
         handle_batch_size=10,
-        extra_mapper_params={'min_potential_events': min_potential_events},
+        output_writer={'min_potential_events': min_potential_events},
         queue='super-slow-queue',
     )
 

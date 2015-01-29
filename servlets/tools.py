@@ -83,7 +83,10 @@ def mr_private_events(fbl):
         queue=None,
         filters=[('search_time_period', '=', eventdata.TIME_FUTURE)],
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
-        extra_mapper_params={'mime_type': 'text/plain'},
+        output_writer={
+            'mime_type': 'text/plain',
+            'bucket_name': 'dancedeets-hrd.appspot.com',
+        },
     )
 
 #tasks.BaseTaskFacebookRequestHandler):#

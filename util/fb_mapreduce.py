@@ -4,9 +4,9 @@ from mapreduce import util
 
 import fb_api
 
-def start_map(fbl, name, handler_spec, entity_kind, filters=None, handle_batch_size=None, output_writer_spec=None, extra_mapper_params=None, queue='slow-queue'):
+def start_map(fbl, name, handler_spec, entity_kind, filters=None, handle_batch_size=None, output_writer_spec=None, output_writer=None, queue='slow-queue'):
     filters = filters or []
-    extra_mapper_params = extra_mapper_params or {}
+    output_writer = output_writer or {}
     mapper_params = {
         'entity_kind': entity_kind,
         'handle_batch_size': handle_batch_size,
@@ -15,8 +15,8 @@ def start_map(fbl, name, handler_spec, entity_kind, filters=None, handle_batch_s
         'fbl_allow_cache': fbl.allow_cache,
         'fbl_force_updated': fbl.force_updated,
         'filters': filters,
+        'output_writer': output_writer,
     }
-    mapper_params.update(extra_mapper_params)
     control.start_map(
         name=name,
         reader_spec='mapreduce.input_readers.DatastoreInputReader',

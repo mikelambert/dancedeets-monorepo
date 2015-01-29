@@ -38,7 +38,10 @@ def mr_dump_events(fbl):
         queue=None,
         filters=[('looked_at', '=', None)],
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
-        extra_mapper_params={'mime_type': 'text/plain'},
+        output_writer={
+            'mime_type': 'text/plain',
+            'bucket_name': 'dancedeets-hrd.appspot.com',
+        },
     )
 
 
