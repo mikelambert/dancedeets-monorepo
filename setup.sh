@@ -7,7 +7,7 @@ mkdir -p download/
 
 cd $BASE_DIR/download
 curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
-python get-pip.py
+#python get-pip.py
 sudo python get-pip.py
 
 # For testing, just install them locally. Depends on pip being installed.
@@ -15,100 +15,81 @@ sudo pip install nosegae
 sudo pip install nose
 sudo pip install webtest
 
-# TWITTER
-cd $BASE_DIR/download
-git clone https://github.com/bear/python-twitter.git
-cd twitter
-sudo python setup.py install
-ln -sf download/twitter/twitter $BASE_DIR/
+function install-git() {
+	cd $BASE_DIR/download
+	REPO_PATH=$1
+	shift
+	echo
+	echo $REPO_PATH
+	echo
+	REPO_FILENAME=$(basename $REPO_PATH)
+	REPO_DIRNAME="${REPO_FILENAME%.*}"
+	[ -e $REPO_DIRNAME ] || git clone $REPO_PATH
+	cd $REPO_DIRNAME
+	git pull
+	[ -e setup.py ] && python setup.py build
+	for MODULE in $*
+	do
+		[ -h $BASE_DIR/$(basename $MODULE) ] && rm $BASE_DIR/$(basename $MODULE)
+		cp -Rf $MODULE $BASE_DIR/
+	done
+}
+
+function install-hg() {
+	cd $BASE_DIR/download
+	REPO_PATH=$1
+	shift
+	echo
+	echo $REPO_PATH
+	echo
+	REPO_DIRNAME=$(basename $REPO_PATH)
+	[ -e $REPO_DIRNAME ] || hg clone $REPO_PATH
+	cd $REPO_DIRNAME
+	hg update
+	[ -e setup.py ] && python setup.py build
+	for MODULE in $*
+	do
+		[ -h $BASE_DIR/$(basename $MODULE) ] && rm $BASE_DIR/$(basename $MODULE)
+		cp -Rf $MODULE $BASE_DIR/
+	done
+}
+
+function install-gcode-svn() {
+	cd $BASE_DIR/download
+	REPO_PATH=$1
+	shift
+	echo
+	echo $REPO_PATH
+	echo
+	REPO_DIRNAME="${REPO_PATH}-read-only"
+	svn checkout http://$REPO_PATH.googlecode.com/svn/trunk/ $REPO_DIRNAME
+	cd $REPO_DIRNAME
+	svn up
+	[ -e setup.py ] && python setup.py build
+	for MODULE in $*
+	do
+		[ -h $BASE_DIR/$(basename $MODULE) ] && rm $BASE_DIR/$(basename $MODULE)
+		cp -Rf $MODULE $BASE_DIR/
+	done
+}
 
 # OAUTH2 (for authorizing twitter)
-cd $BASE_DIR/download
-git clone https://github.com/simplegeo/python-oauth2.git
-cd python-oauth2
-sudo python setup.py install
-ln -sf download/python-oauth2/oauth2 $BASE_DIR/
-
+install-git https://github.com/sixohsix/twitter.git twitter
+install-git https://github.com/simplegeo/python-oauth2.git oauth2
+install-git https://github.com/twilio/twilio-python.git twilio
+install-git https://github.com/simplejson/simplejson.git simplejson
+install-git https://github.com/GoogleCloudPlatform/appengine-mapreduce.git python/src/mapreduce
 
 # SIX (for TWILIO)
-cd $BASE_DIR/download
-hg clone https://mikelambert@bitbucket.org/gutworth/six/ || echo "Already have hg client"
-cd six
-hg update
-sudo python setup.py install
-ln -sf download/six/six.py $BASE_DIR/
+install-hg https://mikelambert@bitbucket.org/gutworth/six/ six.py
+install-hg https://code.google.com/p/google-api-python-client/ apiclient oauth2client uritemplate
+install-hg https://code.google.com/p/httplib2/ python2/httplib2
+install-hg https://code.google.com/p/gdata-python-client/ src/atom src/gdata
 
-# TWILIO
-cd $BASE_DIR/download
-git clone https://github.com/twilio/twilio-python.git
-cd twilio-python
-sudo python setup.py install
-ln -sf download/twilio-python/twilio $BASE_DIR/
-
-# SPITFIRE
-cd $BASE_DIR/download
-svn checkout http://spitfire.googlecode.com/svn/trunk/ spitfire-read-only
-cd spitfire-read-only
-sudo python setup.py install
-ln -sf download/spitfire-read-only/spitfire $BASE_DIR/
-
-# APICLIENT
-cd $BASE_DIR/download
-hg clone https://code.google.com/p/google-api-python-client/ || echo "Already have hg client"
-cd google-api-python-client
-hg update
-sudo python setup.py install
-ln -sf download/google-api-python-client/apiclient $BASE_DIR/
-ln -sf download/google-api-python-client/oauth2client $BASE_DIR/
-ln -sf download/google-api-python-client/uritemplate $BASE_DIR/
-
-# GDATA_PYTHON_CLIENT
-cd $BASE_DIR/download
-hg clone https://code.google.com/p/gdata-python-client/ || echo "Already have hg client"
-
-cd gdata-python-client
-hg update
-sudo python setup.py install
-ln -sf download/gdata-python-client/src/atom $BASE_DIR/
-ln -sf download/gdata-python-client/src/gdata $BASE_DIR/
-
-# GFLAGS
-cd $BASE_DIR/download
-svn checkout http://python-gflags.googlecode.com/svn/trunk/ python-gflags-read-only
-cd python-gflags-read-only
-sudo python setup.py install
-ln -sf download/python-gflags-read-only/gflags.py $BASE_DIR/
-ln -sf download/python-gflags-read-only/gflags_validators.py $BASE_DIR/
-
-# HTTPLIB2
-cd $BASE_DIR/download
-hg clone https://code.google.com/p/httplib2/ || echo "Already have hg client"
-
-cd httplib2
-hg update
-sudo python setup.py install
-ln -sf download/httplib2/python2/httplib2 $BASE_DIR/
-
-# MAPREDUCE
-cd $BASE_DIR/download
-git clone https://github.com/GoogleCloudPlatform/appengine-mapreduce.git
-cd appengine-mapreduce
-# no installation! just symlinking!
-ln -sf download/appengine-mapreduce/python/src/mapreduce $BASE_DIR/
-
-#GRAPHY (used by mapreduce)
-cd $BASE_DIR/download
-svn checkout http://graphy.googlecode.com/svn/trunk/ graphy-read-only
-cd graphy-read-only
-ln -sf download/graphy-read-only/graphy $BASE_DIR/
-
-#SIMPLEJSON (used by mapreduce)
-cd $BASE_DIR/download
-git clone https://github.com/simplejson/simplejson.git
-cd simplejson
-python setup.py build
-# no installation! just symlinking!
-ln -sf download/simplejson/simplejson $BASE_DIR/
+install-gcode-svn spitfire spitfire
+install-gcode-svn python-gflags gflags.py gflags_validators.py
+install-gcode-svn graphy graphy
 
 # Build our code
+cd $BASE_DIR
 make
