@@ -322,7 +322,6 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
 
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
-        filters = [('looked_at', '=', None), ('should_look_at', '=', True)]
 
         past_event = self.request.get('past_event', None)
         if past_event == '1':
