@@ -34,16 +34,15 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         source_potential_events = potential_events.PotentialEvent.gql('WHERE source_ids = :graph_id', graph_id=s.graph_id).fetch(1000)
         found_db_events = [x for x in eventdata.DBEvent.get_by_key_name([str(x.fb_event_id) for x in source_potential_events]) if x]
 
-
         if s.creating_fb_uid:
             creating_user = self.fbl.get(fb_api.LookupUser, s.creating_fb_uid)
         else:
             creating_user = None
 
         self.display['creating_user'] = creating_user
-        self.display['potential_events'] = source_potential_events
-        self.display['db_events'] = found_db_events
-        self.display['no_good_event_ids'] = set(x.fb_event_id for x in source_potential_events).difference(x.fb_event_id for x in found_db_events)
+        self.display['potential_events'] = sorted(source_potential_events, key=lambda x:x.fb_event_id)
+        self.display['db_events'] = sorted(found_db_events, key=lambda x:x.fb_event_id)
+        self.display['no_good_event_ids'] = sorted(list(set(x.fb_event_id for x in source_potential_events).difference(x.fb_event_id for x in found_db_events)))
 
         self.display['source'] = s
         self.display['fb_source'] = fb_source
