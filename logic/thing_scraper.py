@@ -36,7 +36,6 @@ def scrape_events_from_sources(fbl, sources):
             event_source_combos.extend(process_thing_feed(source, thing_feed))
         except fb_api.NoFetchedDataException, e:
             logging.error("Failed to fetch data for thing: %s", str(e))
-
     process_event_source_ids(event_source_combos, fbl)
 
 def scrape_events_from_source_ids(fbl, source_ids):
@@ -98,23 +97,25 @@ def process_thing_feed(source, thing_feed):
 def parse_event_source_combos_from_feed(source, feed_data):
     event_source_combos = []
     for post in feed_data:
+        links = []
         p = None
         if 'link' in post:
             link = post['link']
-            p = parsed_event_link(link)
-        else:
-            # sometimes 'pages' have events-created, but posted as status messages that we need to parse out manually
-            for x in post.get('actions', []):
-                link = x['link']
-                p = parsed_event_link(link)
-                if p:
-                    break
-            if post.get('message'):
-                # We're only looking for events, and not all possible links, so this is easier:
-                match = re.search(r'https?://\S*facebook\.com\S*/event\S+', post.get('message'))
-                if match:
-                    p = parsed_event_link(match.group(0))
-        if p:
+            links.append(link)
+        # sometimes 'pages' have events-created, but posted as status messages that we need to parse out manually
+        for x in post.get('actions', []):
+            link = x['link']
+            links.append(link)
+        if post.get('message'):
+            # We're only looking for events, and not all possible links, so this is easier:
+            links.extend(re.findall(r'https?://\S+', post.get('message')))
+        links = [x for x in links if x]
+        print '\n'.join(links)
+        # Now go over the links in this particular post, grabbing anything we need
+        for p in links:
+            p = parsed_event_link(p)
+            if not p:
+                continue
             qs = cgi.parse_qs(p.query)
             if 'eid' in qs:
                 eid = qs['eid'][0]
