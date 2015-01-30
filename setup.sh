@@ -16,15 +16,31 @@ sudo pip install nosegae
 sudo pip install nose
 sudo pip install webtest
 
-pip install --upgrade -t $BASE_DIR/lib GoogleAppEngineCloudStorageClient
-pip install --upgrade -t $BASE_DIR/lib iso3166
 # TOO OLD, broken media upload: pip install --upgrade -t $BASE_DIR/lib twitter
-pip install --upgrade -t $BASE_DIR/lib python-oauth2
-pip install --upgrade -t $BASE_DIR/lib twilio
-pip install --upgrade -t $BASE_DIR/lib GoogleAppEngineMapReduce
-pip install --upgrade -t $BASE_DIR/lib google-api-python-client
-pip install --upgrade -t $BASE_DIR/lib gdata
-pip install --upgrade -t $BASE_DIR/lib python-gflags
+
+pip install --upgrade -t $BASE_DIR/lib \
+  iso3166 \
+  python-oauth2 \
+  twilio \
+  google-api-python-client \
+  gdata \
+  python-gflags \
+  GoogleAppEngineCloudStorageClient \
+  GoogleAppEnginePipeline \
+  Graphy \
+  simplejson \
+  mock \
+  mox
+# This does not install the static files correctly, since they are not in setup.py
+#  GoogleAppEngineMapReduce
+# So instead, let's install the depencies manually:
+#  GoogleAppEngineCloudStorageClient \
+#  GoogleAppEnginePipeline \
+#  Graphy \
+#  simplejson \
+#  mock \
+#  mox
+
 
 function install-git() {
 	cd $TMP_DIR
@@ -84,21 +100,27 @@ function install-gcode-svn() {
 	done
 }
 
+# Because the current published version has a bug with media uploads
+install-git https://github.com/sixohsix/twitter.git twitter
+
+# Because the published version doesn't install static files with a pip install
+install-git https://github.com/GoogleCloudPlatform/appengine-mapreduce.git python/src/mapreduce
+
+# Because there is no pip package for this
+install-gcode-svn spitfire spitfire
+
 # OAUTH2 (for authorizing twitter)
 # SIX (for TWILIO)
 #install-git https://github.com/deactivated/python-iso3166.git iso3166
-install-git https://github.com/sixohsix/twitter.git twitter
 #install-git https://github.com/simplegeo/python-oauth2.git oauth2
 #install-git https://github.com/twilio/twilio-python.git twilio
 #install-git https://github.com/simplejson/simplejson.git simplejson
-#install-git https://github.com/GoogleCloudPlatform/appengine-mapreduce.git python/src/mapreduce
 
 #install-hg https://mikelambert@bitbucket.org/gutworth/six/ six.py
 #install-hg https://code.google.com/p/google-api-python-client/ apiclient oauth2client uritemplate
 #install-hg https://code.google.com/p/httplib2/ python2/httplib2
 #install-hg https://code.google.com/p/gdata-python-client/ src/atom src/gdata
 
-install-gcode-svn spitfire spitfire
 #install-gcode-svn python-gflags gflags.py gflags_validators.py
 #install-gcode-svn graphy graphy
 
