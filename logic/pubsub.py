@@ -149,7 +149,8 @@ def facebook_post(auth_token, db_event, fb_event):
             country = country.upper()
             if country in iso3166.countries_by_name:
                 short_country = iso3166.countries_by_name[country].alpha2
-                post_values['countries'] = short_country
+                feed_targeting = {'countries': [short_country]}
+                post_values['feed_targeting'] = json.dumps(feed_targeting)
 
     # At some point, set up feed targetting on per-city or per-region basis?
     #feed_targeting = {}
