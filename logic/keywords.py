@@ -80,6 +80,7 @@ EASY_DANCE = token('EASYDANCE')
 add(EASY_DANCE, [
     'dance style[sz]',
     'dances?', "dancin[g']?", 'dancers?',
+    u'رقص', # arabic dance
     u'댄스', # korean dance
     u'댄서', # korean dancer
     u'танцы', # russian dancing
@@ -183,6 +184,7 @@ add(AMBIGUOUS_DANCE_MUSIC, [
     'hip\W?hop',
     u'嘻哈', # chinese hiphop
     u'ההיפ הופ', # hebrew hiphop
+    u'هيب هوب', # arabic hiphop
     u'хипхоп', # macedonian hiphop
     u'ヒップホップ', # hiphop japanese
     u'힙합', # korean hiphop
@@ -233,6 +235,8 @@ legit_dance = [
     "jerk(?:ers?|in[g']?)",
     u'스트릿', # street korean
     u'ストリートダンス', # japanese streetdance
+    u'رقص الشوارع', # arabic streetdance
+    u'البريك دانس', # arabic breakdance
     u'街舞', # chinese streetdance / hiphop
     u'gatvės šokių', # lithuanian streetdance
     'katutanssi\w*', # finnish streetdance
