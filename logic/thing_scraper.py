@@ -108,9 +108,8 @@ def parse_event_source_combos_from_feed(source, feed_data):
             links.append(link)
         if post.get('message'):
             # We're only looking for events, and not all possible links, so this is easier:
-            links.extend(re.findall(r'https?://\S+', post.get('message')))
+            links.extend(re.findall("https?://[A-Za-z0-9-._~:/?#[\]@!$&\'()*+,;=%]+", post.get('message')))
         links = [x for x in links if x]
-        print '\n'.join(links)
         # Now go over the links in this particular post, grabbing anything we need
         for p in links:
             p = parsed_event_link(p)
