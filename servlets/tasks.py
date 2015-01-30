@@ -159,7 +159,8 @@ class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
 class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         min_potential_events = int(self.request.get('min_potential_events', '0'))
-        thing_scraper.mapreduce_scrape_all_sources(self.fbl, min_potential_events=min_potential_events)
+        queue = self.request.get('queue', 'super-slow-queue')
+        thing_scraper.mapreduce_scrape_all_sources(self.fbl, min_potential_events=min_potential_events, queue=queue)
 
 class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):

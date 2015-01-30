@@ -44,7 +44,7 @@ def scrape_events_from_source_ids(fbl, source_ids):
 
 map_scrape_events_from_source = fb_mapreduce.mr_wrap(scrape_events_from_sources)
 
-def mapreduce_scrape_all_sources(fbl, min_potential_events=None):
+def mapreduce_scrape_all_sources(fbl, min_potential_events=None, queue='super-slow-queue'):
     # Do not do the min_potential_events>1 filter in the mapreduce filter,
     # or it will want to do a range-shard on that property. Instead, pass-it-down
     # and use it as an early-return in the per-Source processing.
@@ -55,7 +55,7 @@ def mapreduce_scrape_all_sources(fbl, min_potential_events=None):
         'logic.thing_db.Source',
         handle_batch_size=10,
         output_writer={'min_potential_events': min_potential_events},
-        queue='super-slow-queue',
+        queue=queue,
     )
 
 def mapreduce_create_sources_from_events(fbl):
