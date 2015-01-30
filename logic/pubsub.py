@@ -150,13 +150,10 @@ def facebook_post(auth_token, db_event, fb_event):
             if country in iso3166.countries_by_name:
                 short_country = iso3166.countries_by_name[country].alpha2
                 feed_targeting = {'countries': [short_country]}
+                # We could choose to target by region or city, if we wanted to be more specific.
+                # Probably depends on how many people sign up, and how far they're willing to travel
+                # TODO(lambert): Maybe do region (aka state) based in Canada, US, and Russia, and country-based for the rest?
                 post_values['feed_targeting'] = json.dumps(feed_targeting)
-
-    # At some point, set up feed targetting on per-city or per-region basis?
-    #feed_targeting = {}
-    #feed_targeting['cities'] = '' # int array
-    #feed_targeting['countries'] = '', # two char country abbreviations
-    #and 'regions' too?
 
     page_id = auth_token.token_nickname
     endpoint = '/v2.2/%s/feed' % page_id
