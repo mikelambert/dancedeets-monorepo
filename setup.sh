@@ -98,7 +98,7 @@ function install-gcode-svn() {
 #install-hg https://code.google.com/p/httplib2/ python2/httplib2
 #install-hg https://code.google.com/p/gdata-python-client/ src/atom src/gdata
 
-install-gcode-svn spitfire 	
+install-gcode-svn spitfire spitfire
 #install-gcode-svn python-gflags gflags.py gflags_validators.py
 #install-gcode-svn graphy graphy
 
