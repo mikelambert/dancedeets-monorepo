@@ -18,7 +18,7 @@ sudo pip install webtest
 
 pip install --upgrade -t $BASE_DIR/lib GoogleAppEngineCloudStorageClient
 pip install --upgrade -t $BASE_DIR/lib iso3166
-pip install --upgrade -t $BASE_DIR/lib twitter
+# TOO OLD, broken media upload: pip install --upgrade -t $BASE_DIR/lib twitter
 pip install --upgrade -t $BASE_DIR/lib python-oauth2
 pip install --upgrade -t $BASE_DIR/lib twilio
 pip install --upgrade -t $BASE_DIR/lib GoogleAppEngineMapReduce
@@ -87,7 +87,7 @@ function install-gcode-svn() {
 # OAUTH2 (for authorizing twitter)
 # SIX (for TWILIO)
 #install-git https://github.com/deactivated/python-iso3166.git iso3166
-#install-git https://github.com/sixohsix/twitter.git twitter
+install-git https://github.com/sixohsix/twitter.git twitter
 #install-git https://github.com/simplegeo/python-oauth2.git oauth2
 #install-git https://github.com/twilio/twilio-python.git twilio
 #install-git https://github.com/simplejson/simplejson.git simplejson
