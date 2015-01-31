@@ -170,6 +170,50 @@ def create_source_from_event(fbl, db_event):
         s.put()
 map_create_source_from_event = fb_mapreduce.mr_wrap(create_source_from_event)
 
+def export_sources(fbl, sources):
+    fbl.request_multi(fb_api.LookupThingFeed, [x.graph_id for x in sources])
+    fbl.batch_fetch()
+    for source in sources:
+        try:
+            thing_feed = fbl.fetched_data(fb_api.LookupThingFeed, source.graph_id)
+            if 'info' not in thing_feed:
+                continue
+            name = thing_feed['info']['name'].encode('utf8')
+            desc = thing_feed['info'].get('description', '').encode('utf8')
+            fields = (
+                source.graph_id,
+                source.graph_type,
+                source.creation_time,
+                source.creating_fb_uid,
+                source.feed_history_in_seconds,
+                source.last_scrape_time,
+                source.num_all_events,
+                source.num_false_negatives,
+                source.num_potential_events,
+                source.num_real_events,
+                name.replace('\n', ' ').replace('\t', ' '),
+                desc.replace('\n', ' ').replace('\t', ' '),
+                )
+            yield '%s\n' % '\t'.join([str(x) for x in fields])
+        except fb_api.NoFetchedDataException, e:
+            logging.error("Failed to fetch data for thing: %s", str(e))
+map_export_sources = fb_mapreduce.mr_wrap(export_sources)
+
+def mapreduce_export_sources(fbl, queue='fast-queue'):
+    fb_mapreduce.start_map(
+        fbl,
+        'Export All Sources',
+        'logic.thing_db.map_export_sources',
+        'logic.thing_db.Source',
+        output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
+        output_writer={
+            'mime_type': 'text/plain',
+            'bucket_name': 'dancedeets-hrd.appspot.com',
+        },
+        handle_batch_size=10,
+        queue=queue,
+    )
+
 def map_clean_source_count(s):
     s.num_all_events = 0
     s.num_potential_events = 0

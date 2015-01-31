@@ -20,7 +20,7 @@ from logic import auto_add
 #from logic import mr_dump
 #from logic import mr_prediction
 #from logic import potential_events
-#from logic import thing_db
+from logic import thing_db
 import smemcache
 from servlets import tasks
 
@@ -107,6 +107,11 @@ class AutoAddPotentialEventsHandler(tasks.BaseTaskFacebookRequestHandler):
         elif past_event == '0':
             past_event = False
         auto_add.mr_classify_potential_events(self.fbl, past_event)
+
+class ExportSourcesHandler(tasks.BaseTaskFacebookRequestHandler):
+    def get(self):
+        queue = self.request.get('queue', 'fast-queue')
+        thing_db.mapreduce_export_sources(self.fbl, queue=queue)
 
 class OwnedEventsHandler(webapp2.RequestHandler):
     def get(self):

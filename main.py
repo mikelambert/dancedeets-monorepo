@@ -69,6 +69,7 @@ URLS = [
     ('/tools/delete_fb_cache', admin.DeleteFBCacheHandler),
     ('/tools/show_noowner_events', admin.ShowNoOwnerEventsHandler),
     ('/tools/show_users', admin.ShowUsersHandler),
+    ('/tools/export_sources', tools.ExportSourcesHandler),
     ('/tools/fb_data', admin.FBDataHandler),
     ('/tools/facebook_post', pubsub_setup.FacebookPostHandler),
     ('/tasks/load_events', tasks.LoadEventHandler),
