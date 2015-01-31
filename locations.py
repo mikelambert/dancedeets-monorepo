@@ -186,11 +186,15 @@ def _get_name(result):
         logging.warning("Could not get city for geocode results: %s", result)
     return city_name
 
-def get_country_for_location(location_name):
+def get_country_for_location(location_name, long_name=False):
     result = _raw_get_cached_geocoded_data(address=location_name)
     if not result:
         return None
-    countries = [x['short_name'] for x in result['address_components'] if u'country' in x['types']]
+    if long_name:
+        name = "long_name"
+    else:
+        name = "short_name"
+    countries = [x[name] for x in result['address_components'] if u'country' in x['types']]
     if len(countries) == 0:
         raise GeocodeException("Found no countries for %s: %r" % (location_name, result))
     if len(countries) > 1:

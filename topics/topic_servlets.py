@@ -3,6 +3,7 @@ import re
 
 import base_servlet
 import fb_api
+from topics import grouping
 from topics import topic_db
 from logic import search
 
@@ -70,6 +71,8 @@ class TopicHandler(base_servlet.BaseRequestHandler):
 
         self.display['results'] = search_results
 
+        self.display['group_by_date'] = grouping.group_results_by_date(search_results)
+        self.display['group_by_location'] = grouping.group_results_by_location(search_results)
 
         # TODO:
         # show points on map (future and past?)
