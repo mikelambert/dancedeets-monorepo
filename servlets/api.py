@@ -5,6 +5,8 @@ import re
 import urllib
 import xml.sax.saxutils
 
+from google.appengine.api import taskqueue
+
 import base_servlet
 import fb_api
 import locations
@@ -288,6 +290,13 @@ class AuthHandler(ApiHandler):
     requires_auth = True
 
     def post(self):
+        try:
+            self.process()
+        except:
+            taskqueue.add(method='POST', url=self.request.url, payload=self.request.body,
+                countdown=60*60)
+
+    def process(self):
         self.errors_are_fatal()
         self.finish_preload()
 
