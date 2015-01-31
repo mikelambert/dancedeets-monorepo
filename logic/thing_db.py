@@ -178,7 +178,7 @@ def export_sources(fbl, sources):
             thing_feed = fbl.fetched_data(fb_api.LookupThingFeed, source.graph_id)
             if 'info' not in thing_feed:
                 continue
-            name = thing_feed['info']['name'].encode('utf8')
+            name = thing_feed['info'].get('name', '').encode('utf8')
             desc = thing_feed['info'].get('description', '').encode('utf8')
             fields = (
                 source.graph_id,
