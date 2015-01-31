@@ -163,7 +163,7 @@ class SearchQuery(object):
             if longitudes[0] < longitudes[1]:
                 clauses += ['longitude >= %s AND longitude <= %s' % longitudes]
             else:
-                clauses += ['(longitude <= %s OR longitude >= %s)' % longitudes]
+                clauses += ['(longitude >= %s OR longitude <= %s)' % longitudes]
         index_name = ALL_EVENTS_INDEX
         if self.time_period:
             if self.time_period == eventdata.TIME_FUTURE:
