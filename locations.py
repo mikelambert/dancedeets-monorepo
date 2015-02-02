@@ -1,10 +1,6 @@
-import base64
-import hashlib
-import hmac
 import json
 import logging
 import math
-import urllib
 
 import geohash
 
@@ -19,40 +15,6 @@ except ImportError:
 MILES_COUNTRIES = ['UK', 'US']
 
 LOCATION_EXPIRY = 24 * 60 * 60
-
-class GeocodeException(Exception):
-    pass
-
-def _get_geocoded_data(address=None, latlng=None):
-    params = {}
-    if address is not None:
-        params['address'] = address.encode('utf-8')
-    if latlng is not None:
-        params['latlng'] = '%s,%s' % latlng
-    assert params
-    params['sensor'] = 'false'
-    params['client'] = 'free-dancedeets'
-    unsigned_url_path = "/maps/api/geocode/json?%s" % urllib.urlencode(params)
-    private_key = 'zj918QnslsoOQHl4kLjv-ZCgsDE='
-    decoded_key = base64.urlsafe_b64decode(private_key)
-    signature = hmac.new(decoded_key, unsigned_url_path, hashlib.sha1)
-    encoded_signature = base64.urlsafe_b64encode(signature.digest())
-
-    url = "http://maps.google.com%s&signature=%s" % (unsigned_url_path, encoded_signature)
-
-    logging.info('geocoding url: %s', url)
-    results = urllib.urlopen(url).read()
-    logging.info('geocoding results: %s', results)
-    try:
-        json_result = json.loads(results)
-    except json.decoder.JSONDecodeError, e:
-        raise GeocodeException("Error decoding json from %s: %s: %r" % (url, e, results))
-    if json_result['status'] == 'ZERO_RESULTS':
-        return ''
-    if json_result['status'] != 'OK':
-        raise GeocodeException("Got unexpected status: %s" % json_result['status'])
-    result = json_result['results'][0]
-    return result
 
 class GeoCode(db.Model):
     address = property(lambda x: int(x.key().name()))
@@ -84,7 +46,7 @@ def _raw_get_cached_geocoded_data(address=None, latlng=None):
             except:
                 logging.exception("Error decoding json data for geocode %r with latlng %s: %r", address, latlng, geocode.json_data)
         if geocoded_data is None:
-            geocoded_data = _get_geocoded_data(address=address, latlng=latlng)
+            geocoded_data = gmaps.fetch_geocode(address=address, latlng=latlng)
 
             geocode = GeoCode(key_name=geocode_key)
             geocode.json_data = json.dumps(geocoded_data)
@@ -196,9 +158,9 @@ def get_country_for_location(location_name, long_name=False):
         name = "short_name"
     countries = [x[name] for x in result['address_components'] if u'country' in x['types']]
     if len(countries) == 0:
-        raise GeocodeException("Found no countries for %s: %r" % (location_name, result))
+        raise gmaps.GeocodeException("Found no countries for %s: %r" % (location_name, result))
     if len(countries) > 1:
-        raise GeocodeException("Found too many countries for %s: %s" % (location_name, countries))
+        raise gmaps.GeocodeException("Found too many countries for %s: %s" % (location_name, countries))
     return countries[0]
 
 rad = math.pi / 180.0
