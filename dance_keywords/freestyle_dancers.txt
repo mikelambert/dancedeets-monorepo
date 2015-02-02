@@ -24,7 +24,8 @@ bobby mileage
 boogaloo sam
 boogie frantick
 bouboo soumare
-bravo brahms
+bravo\W+brahms
+brahms\W+bravo
 brian green
 brian\W+footwork\W+green
 brooklyn terry
