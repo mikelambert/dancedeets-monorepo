@@ -30,5 +30,25 @@ def get_formatting_parts(gmaps_data):
     return [x for x in components if x]
 
 def format_address(gmaps_data):
-    return ', '.join(get_formatting_parts(gmaps_data))
+    return _format_from_parts(get_formatting_parts(gmaps_data))
 
+def _format_from_parts(parts):
+    return ', '.join(parts)
+
+def format_addresses(parts_list):
+    min_length = min(len(x) for x in parts_list)
+    # If all our addresses are in the same country, or state, then trim that off as irrelevant
+    for i in range(min_length-1    ):
+        #print i, parts_list
+        index_parts = set([x[-1] for x in parts_list])
+        # If they all map to the same thing, let's trim it off
+        if len(index_parts) == 1:
+            for x in parts_list:
+                if len(x) > 1:
+                    x.pop()
+    #print parts_list
+    # Now grab the last two pieces of data, as being relevant to where we are.
+    # Anything earlier than that in the list, is too specific at the scale we are currently at.
+    parts_list = [x[-2:] for x in parts_list]
+    parts_list = [_format_from_parts(x) for x in parts_list]
+    return parts_list

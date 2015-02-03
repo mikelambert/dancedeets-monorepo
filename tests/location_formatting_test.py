@@ -11,6 +11,11 @@ def format_address(address):
     result = location_formatting.format_address(gmaps_data['results'][0])
     return result
 
+def format_address_parts(address):
+    gmaps_data = gmaps.fetch_json(address=address, fetch_raw=gmaps_local.fetch_raw_cached)
+    result = location_formatting.get_formatting_parts(gmaps_data['results'][0])
+    return result
+
 formatting_reg_data = {
     'Shibuya': 'Shibuya, Tokyo, Japan',
     u'渋谷': 'Shibuya, Tokyo, Japan',
@@ -39,10 +44,6 @@ formatting_reg_data = {
 
 class TestLocationFormatting(unittest.TestCase):
     def runTest(self):
-        print 2
-        self.test_formats()
-
-    def test_formats(self):
         for address, final_address in formatting_reg_data.iteritems():
             formatted_address = format_address(address)
             if formatted_address != final_address:
@@ -50,3 +51,23 @@ class TestLocationFormatting(unittest.TestCase):
                 print gmaps.fetch_json(address=address, fetch_raw=gmaps_local.fetch_raw_cached)
                 self.assertEqual(final_address, formatted_address)
 
+grouping_lists = [
+    (['Miami, FL', 'Soma, SF, CA', 'Williamsburg, Brooklyn'], ['Miami, FL', 'San Francisco, CA', 'New York, NY']),
+    (['Brooklyn', 'Williamsburg, Brooklyn'], ['Brooklyn', 'Williamsburg, Brooklyn']),
+    (['SOMA, SF, CA', '6 5th Street, SF, CA'], ['South of Market', 'South of Market']),
+    (['Bay Area', '6 5th Street, SF, CA'], ['San Francisco Bay Area', 'South of Market, San Francisco']),
+    (['Shibuya', 'Ginza'], ['Shibuya', 'Ginza, Chuo']),
+    (['Shibuya', 'Ginza', 'Osaka'], ['Shibuya, Tokyo', 'Chuo, Tokyo', 'Osaka, Osaka Prefecture']),
+    (['Nagoya', 'Sydney'], ['Nagoya, Aichi Prefecture, Japan', 'Sydney, NSW, Australia']),
+]
+class TestMultiLocationFormatting(unittest.TestCase):
+    def runTest(self):
+        for addresses, reformatted_addresses in grouping_lists:
+            gmaps_parts = [format_address_parts(address) for address in addresses]
+            reformatted_parts = location_formatting.format_addresses(gmaps_parts)
+            self.assertEqual(reformatted_parts, reformatted_addresses)
+
+
+if __name__ == '__main__':
+    TestLocationFormatting().runTest()
+    TestMultiLocationFormatting().runTest()
