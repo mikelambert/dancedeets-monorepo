@@ -3,6 +3,7 @@ import logging
 import math
 
 import geohash
+import gmaps
 
 from google.appengine.ext import db
 try:
