@@ -37,8 +37,21 @@ class GMapsGeocode(object):
     def __init__(self, json_data):
         self.json = json_data
 
+    def copy(self):
+        return GMapsGeocode(self.json)
+
     def address_components(self):
         return self.json['address_components']
+
+    def get_component(self, name, long=True):
+        components = [x[long and 'long_name' or 'short_name'] for x in self.json['address_components'] if name in x['types']]
+        if components:
+            return components[0]
+        else:
+            return None
+
+    def delete_component(self, name):
+        self.json['address_components'] = [x for x in self.json['address_components'] if name not in x['types']]
 
 def parse_geocode(json_string):
     try:

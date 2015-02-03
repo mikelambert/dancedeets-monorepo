@@ -12,11 +12,10 @@ def format_address(address):
     result = location_formatting.format_address(geocode)
     return result
 
-def format_address_parts(address):
+def get_geocode(address):
     gmaps_data = gmaps_local.fetch_raw_cached(address=address)
     geocode = gmaps.parse_geocode(gmaps_data)
-    result = location_formatting.get_formatting_parts(geocode)
-    return result
+    return geocode
 
 formatting_reg_data = {
     'Shibuya': 'Shibuya, Tokyo, Japan',
@@ -50,24 +49,24 @@ class TestLocationFormatting(unittest.TestCase):
             formatted_address = format_address(address)
             if formatted_address != final_address:
                 print 'formatted address for %r is %r, should be %r' % (address, formatted_address, final_address)
-                print gmaps.fetch_json(address=address, fetch_raw=gmaps_local.fetch_raw_cached)
+                print gmaps_local.fetch_raw_cached(address=address)
                 self.assertEqual(final_address, formatted_address)
 
 grouping_lists = [
-    (['Miami, FL', 'Soma, SF, CA', 'Williamsburg, Brooklyn'], ['Miami, FL', 'San Francisco, CA', 'New York, NY']),
+    (['Miami, FL', 'Soma, SF, CA', 'Williamsburg, Brooklyn'], ['Miami, FL', 'South of Market, San Francisco, CA', 'Brooklyn, New York, NY']),
     (['Brooklyn', 'Williamsburg, Brooklyn'], ['Brooklyn', 'Williamsburg, Brooklyn']),
     (['SOMA, SF, CA', '6 5th Street, SF, CA'], ['South of Market', 'South of Market']),
-    (['Bay Area', '6 5th Street, SF, CA'], ['San Francisco Bay Area', 'South of Market, San Francisco']),
-    (['Shibuya', 'Ginza'], ['Shibuya', 'Ginza, Chuo']),
-    (['Shibuya', 'Ginza', 'Osaka'], ['Shibuya, Tokyo', 'Chuo, Tokyo', 'Osaka, Osaka Prefecture']),
+    (['Bay Area', '6 5th Street, SF, CA'], ['San Francisco Bay Area, CA', 'South of Market, San Francisco, CA']),
+    (['Shibuya', 'Ginza'], ['Shibuya, Tokyo', 'Ginza, Chuo, Tokyo']),
+    (['Shibuya', 'Ginza', 'Osaka'], ['Shibuya, Tokyo', 'Ginza, Chuo, Tokyo', 'Osaka, Osaka Prefecture']),
     (['Nagoya', 'Sydney'], ['Nagoya, Aichi Prefecture, Japan', 'Sydney, NSW, Australia']),
 ]
 
 class TestMultiLocationFormatting(unittest.TestCase):
     def runTest(self):
         for addresses, reformatted_addresses in grouping_lists:
-            gmaps_parts = [format_address_parts(address) for address in addresses]
-            reformatted_parts = location_formatting.format_addresses(gmaps_parts)
+            geocodes = [get_geocode(address) for address in addresses]
+            reformatted_parts = location_formatting.format_addresses(geocodes)
             self.assertEqual(reformatted_parts, reformatted_addresses)
 
 
