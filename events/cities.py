@@ -13,24 +13,6 @@ CITY_GEOHASH_PRECISIONS = range(
 
 NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with
 
-def get_closest_city(location):
-    point = locations.get_latlng(address=location)
-    if point is None:
-        return None
-    city_distance = lambda city: locations.get_distance(point, (city.latitude, city.longitude), use_km=True)
-
-    for precision in reversed(CITY_GEOHASH_PRECISIONS):
-        geohashes = locations.get_all_geohashes_for((point, point), precision=precision)
-        cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(100)
-        if cities:
-            closest_city = min(cities, key=city_distance)
-            logging.info("For user in %s, found %s cities for user with geohash precision=%s, closest city=%s", location, len(cities), precision, closest_city.key().name())
-            if city_distance(closest_city) < 800:
-                return closest_city
-            else:
-                logging.error("For user in %s, no city within 800km", location)
-                return None
-
 def get_largest_nearby_city_name(location):
     # TODO(lambert): we should cache this entire function. use lowercase of location to determine cache key. Using DB cache too.
     logging.info("location is %s", location)
