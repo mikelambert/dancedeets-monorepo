@@ -8,7 +8,7 @@ import urllib
 class GeocodeException(Exception):
     pass
 
-def fetch_geocode(address=None, latlng=None):
+def fetch_raw(address=None, latlng=None, language=None):
     params = {}
     if address is not None:
         params['address'] = address.encode('utf-8')
@@ -17,6 +17,8 @@ def fetch_geocode(address=None, latlng=None):
     assert params
     params['sensor'] = 'false'
     params['client'] = 'free-dancedeets'
+    if language is not None:
+        params['language'] = language
     unsigned_url_path = "/maps/api/geocode/json?%s" % urllib.urlencode(params)
     private_key = 'zj918QnslsoOQHl4kLjv-ZCgsDE='
     decoded_key = base64.urlsafe_b64decode(private_key)
@@ -24,14 +26,23 @@ def fetch_geocode(address=None, latlng=None):
     encoded_signature = base64.urlsafe_b64encode(signature.digest())
 
     url = "http://maps.google.com%s&signature=%s" % (unsigned_url_path, encoded_signature)
+    print url
 
     logging.info('geocoding url: %s', url)
-    results = urllib.urlopen(url).read()
-    logging.info('geocoding results: %s', results)
+    result = urllib.urlopen(url).read()
+    logging.info('geocoding results: %s', result)
+    return result
+
+def fetch_json(address=None, latlng=None, fetch_raw=fetch_raw):
+    results = fetch_raw(address=address, latlng=latlng)
     try:
         json_result = json.loads(results)
     except json.decoder.JSONDecodeError, e:
-        raise GeocodeException("Error decoding json from %s: %s: %r" % (url, e, results))
+        raise GeocodeException("Error decoding json from %s: %s: %r" % (e, results))
+    return json_result
+
+def fetch_geocode(address=None, latlng=None):
+    json_result = fetch_raw(address=address, latlng=latlng)
     if json_result['status'] == 'ZERO_RESULTS':
         return ''
     if json_result['status'] != 'OK':
