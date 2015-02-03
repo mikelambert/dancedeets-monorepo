@@ -1,0 +1,749 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Chuo",
+               "short_name" : "Chuo",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Tokyo",
+               "short_name" : "Tokyo",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Japan",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "104-0061",
+               "short_name" : "104-0061",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Chuo, Tokyo 104-0061, Japan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 35.6760069,
+                  "lng" : 139.772494
+               },
+               "southwest" : {
+                  "lat" : 35.6630917,
+                  "lng" : 139.7584951
+               }
+            },
+            "location" : {
+               "lat" : 35.67208919999999,
+               "lng" : 139.770592
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 35.6760069,
+                  "lng" : 139.772494
+               },
+               "southwest" : {
+                  "lat" : 35.6630917,
+                  "lng" : 139.7584951
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Kumagaya",
+               "short_name" : "Kumagaya",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Saitama Prefecture",
+               "short_name" : "Saitama Prefecture",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Japan",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "360-0032",
+               "short_name" : "360-0032",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Kumagaya, Saitama Prefecture 360-0032, Japan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 36.1436129,
+                  "lng" : 139.4027739
+               },
+               "southwest" : {
+                  "lat" : 36.1353916,
+                  "lng" : 139.3924223
+               }
+            },
+            "location" : {
+               "lat" : 36.1416104,
+               "lng" : 139.3934305
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 36.1436129,
+                  "lng" : 139.4027739
+               },
+               "southwest" : {
+                  "lat" : 36.1353916,
+                  "lng" : 139.3924223
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Honjo",
+               "short_name" : "Honjo",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Saitama Prefecture",
+               "short_name" : "Saitama Prefecture",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Japan",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "367-0052",
+               "short_name" : "367-0052",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Honjo, Saitama Prefecture 367-0052, Japan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 36.240848,
+                  "lng" : 139.1892077
+               },
+               "southwest" : {
+                  "lat" : 36.2360613,
+                  "lng" : 139.1823677
+               }
+            },
+            "location" : {
+               "lat" : 36.2393343,
+               "lng" : 139.1865269
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 36.240848,
+                  "lng" : 139.1892077
+               },
+               "southwest" : {
+                  "lat" : 36.2360613,
+                  "lng" : 139.1823677
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Shimizu Ward",
+               "short_name" : "Shimizu Ward",
+               "types" : [ "ward", "locality", "political" ]
+            },
+            {
+               "long_name" : "Shizuoka",
+               "short_name" : "Shizuoka",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Shizuoka Prefecture",
+               "short_name" : "Shizuoka Prefecture",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Japan",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "424-0817",
+               "short_name" : "424-0817",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Shimizu Ward, Shizuoka, Shizuoka Prefecture 424-0817, Japan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 35.0195335,
+                  "lng" : 138.4875729
+               },
+               "southwest" : {
+                  "lat" : 35.0174135,
+                  "lng" : 138.483403
+               }
+            },
+            "location" : {
+               "lat" : 35.0186681,
+               "lng" : 138.4857778
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 35.0198224802915,
+                  "lng" : 138.4875729
+               },
+               "southwest" : {
+                  "lat" : 35.0171245197085,
+                  "lng" : 138.483403
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Okaya",
+               "short_name" : "Okaya",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Nagano Prefecture",
+               "short_name" : "Nagano Prefecture",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Japan",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "394-0022",
+               "short_name" : "394-0022",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Okaya, Nagano Prefecture 394-0022, Japan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 36.0707362,
+                  "lng" : 138.056229
+               },
+               "southwest" : {
+                  "lat" : 36.0645146,
+                  "lng" : 138.0508432
+               }
+            },
+            "location" : {
+               "lat" : 36.0670144,
+               "lng" : 138.0524946
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 36.0707362,
+                  "lng" : 138.056229
+               },
+               "southwest" : {
+                  "lat" : 36.0645146,
+                  "lng" : 138.0508432
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Shunan",
+               "short_name" : "Shunan",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Yamaguchi Prefecture",
+               "short_name" : "Yamaguchi Prefecture",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Japan",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "745-0032",
+               "short_name" : "745-0032",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Shunan, Yamaguchi Prefecture 745-0032, Japan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 34.0520838,
+                  "lng" : 131.8061918
+               },
+               "southwest" : {
+                  "lat" : 34.0494638,
+                  "lng" : 131.8035784
+               }
+            },
+            "location" : {
+               "lat" : 34.0507942,
+               "lng" : 131.805411
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 34.0521227802915,
+                  "lng" : 131.8062340802915
+               },
+               "southwest" : {
+                  "lat" : 34.0494248197085,
+                  "lng" : 131.8035361197085
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Tobata Ward",
+               "short_name" : "Tobata Ward",
+               "types" : [ "ward", "locality", "political" ]
+            },
+            {
+               "long_name" : "Kitakyushu",
+               "short_name" : "Kitakyushu",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Fukuoka Prefecture",
+               "short_name" : "Fukuoka Prefecture",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Japan",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "804-0076",
+               "short_name" : "804-0076",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Tobata Ward, Kitakyushu, Fukuoka Prefecture 804-0076, Japan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 33.9014223,
+                  "lng" : 130.8206622
+               },
+               "southwest" : {
+                  "lat" : 33.8959877,
+                  "lng" : 130.8155038
+               }
+            },
+            "location" : {
+               "lat" : 33.8983681,
+               "lng" : 130.8189646
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 33.9014223,
+                  "lng" : 130.8206622
+               },
+               "southwest" : {
+                  "lat" : 33.8959877,
+                  "lng" : 130.8155038
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Iida",
+               "short_name" : "Iida",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Nagano Prefecture",
+               "short_name" : "Nagano Prefecture",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Japan",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "395-0031",
+               "short_name" : "395-0031",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Iida, Nagano Prefecture 395-0031, Japan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 35.5161702,
+                  "lng" : 137.8280053
+               },
+               "southwest" : {
+                  "lat" : 35.51309639999999,
+                  "lng" : 137.8251763
+               }
+            },
+            "location" : {
+               "lat" : 35.5154611,
+               "lng" : 137.8270293
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 35.5161702,
+                  "lng" : 137.8280053
+               },
+               "southwest" : {
+                  "lat" : 35.51309639999999,
+                  "lng" : 137.8251763
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Kariya",
+               "short_name" : "Kariya",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Aichi Prefecture",
+               "short_name" : "Aichi Prefecture",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Japan",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "448-0845",
+               "short_name" : "448-0845",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Kariya, Aichi Prefecture 448-0845, Japan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 34.9894744,
+                  "lng" : 136.994609
+               },
+               "southwest" : {
+                  "lat" : 34.9861042,
+                  "lng" : 136.9874277
+               }
+            },
+            "location" : {
+               "lat" : 34.9877857,
+               "lng" : 136.9911107
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 34.9894744,
+                  "lng" : 136.994609
+               },
+               "southwest" : {
+                  "lat" : 34.9861042,
+                  "lng" : 136.9874277
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Tokushima",
+               "short_name" : "Tokushima",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Tokushima Prefecture",
+               "short_name" : "Tokushima Prefecture",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Japan",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "770-0916",
+               "short_name" : "770-0916",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Tokushima, Tokushima Prefecture 770-0916, Japan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 34.068858,
+                  "lng" : 134.5503026
+               },
+               "southwest" : {
+                  "lat" : 34.0682192,
+                  "lng" : 134.5484733
+               }
+            },
+            "location" : {
+               "lat" : 34.0684897,
+               "lng" : 134.5493027
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 34.0698875802915,
+                  "lng" : 134.5507369302915
+               },
+               "southwest" : {
+                  "lat" : 34.0671896197085,
+                  "lng" : 134.5480389697085
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Kanuma",
+               "short_name" : "Kanuma",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Tochigi Prefecture",
+               "short_name" : "Tochigi Prefecture",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Japan",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "322-0052",
+               "short_name" : "322-0052",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Kanuma, Tochigi Prefecture 322-0052, Japan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 36.566704,
+                  "lng" : 139.7492457
+               },
+               "southwest" : {
+                  "lat" : 36.5647876,
+                  "lng" : 139.7469051
+               }
+            },
+            "location" : {
+               "lat" : 36.565683,
+               "lng" : 139.7485347
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 36.5670947802915,
+                  "lng" : 139.7494243802915
+               },
+               "southwest" : {
+                  "lat" : 36.5643968197085,
+                  "lng" : 139.7467264197085
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "natural_feature", "establishment" ]
+            },
+            {
+               "long_name" : "Buengas",
+               "short_name" : "Buengas",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "Uige",
+               "short_name" : "Uige",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Angola",
+               "short_name" : "AO",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "Ginza, Angola",
+         "geometry" : {
+            "location" : {
+               "lat" : -6.518888899999999,
+               "lng" : 15.8897222
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : -6.517539919708497,
+                  "lng" : 15.8910711802915
+               },
+               "southwest" : {
+                  "lat" : -6.520237880291502,
+                  "lng" : 15.8883732197085
+               }
+            }
+         },
+         "types" : [ "natural_feature", "establishment" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "bus_station", "transit_station", "establishment" ]
+            },
+            {
+               "long_name" : "Essunga S",
+               "short_name" : "Essunga S",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Nossebro",
+               "short_name" : "Nossebro",
+               "types" : [ "postal_town" ]
+            },
+            {
+               "long_name" : "Västra Götalands län",
+               "short_name" : "Västra Götalands län",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Sweden",
+               "short_name" : "SE",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "46596",
+               "short_name" : "46596",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, 465 96 Nossebro, Sweden",
+         "geometry" : {
+            "location" : {
+               "lat" : 58.1290535,
+               "lng" : 12.7772262
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 58.1304024802915,
+                  "lng" : 12.7785751802915
+               },
+               "southwest" : {
+                  "lat" : 58.12770451970849,
+                  "lng" : 12.7758772197085
+               }
+            }
+         },
+         "types" : [ "bus_station", "transit_station", "establishment" ]
+      }
+   ],
+   "status" : "OK"
+}

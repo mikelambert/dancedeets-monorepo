@@ -1,0 +1,78 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "6",
+               "short_name" : "6",
+               "types" : [ "street_number" ]
+            },
+            {
+               "long_name" : "5th Street",
+               "short_name" : "5th St",
+               "types" : [ "route" ]
+            },
+            {
+               "long_name" : "South of Market",
+               "short_name" : "South of Market",
+               "types" : [ "neighborhood", "political" ]
+            },
+            {
+               "long_name" : "San Francisco",
+               "short_name" : "SF",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "San Francisco County",
+               "short_name" : "San Francisco County",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "California",
+               "short_name" : "CA",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United States",
+               "short_name" : "US",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "94103",
+               "short_name" : "94103",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "6 5th Street, San Francisco, CA 94103, USA",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 37.7839537,
+                  "lng" : -122.4080214
+               },
+               "southwest" : {
+                  "lat" : 37.7839436,
+                  "lng" : -122.4080346
+               }
+            },
+            "location" : {
+               "lat" : 37.7839436,
+               "lng" : -122.4080346
+            },
+            "location_type" : "RANGE_INTERPOLATED",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 37.7852976302915,
+                  "lng" : -122.4066790197085
+               },
+               "southwest" : {
+                  "lat" : 37.7825996697085,
+                  "lng" : -122.4093769802915
+               }
+            }
+         },
+         "types" : [ "street_address" ]
+      }
+   ],
+   "status" : "OK"
+}

@@ -1,0 +1,48 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "Taipei",
+               "short_name" : "Taipei",
+               "types" : [ "colloquial_area", "locality", "political" ]
+            },
+            {
+               "long_name" : "Taiwan",
+               "short_name" : "TW",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "Taipei, Taiwan",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 25.2443731,
+                  "lng" : 121.7300824
+               },
+               "southwest" : {
+                  "lat" : 24.7900797,
+                  "lng" : 121.2826735
+               }
+            },
+            "location" : {
+               "lat" : 25.0329694,
+               "lng" : 121.5654177
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 25.2443731,
+                  "lng" : 121.7300824
+               },
+               "southwest" : {
+                  "lat" : 24.7900797,
+                  "lng" : 121.2826735
+               }
+            }
+         },
+         "types" : [ "colloquial_area", "locality", "political" ]
+      }
+   ],
+   "status" : "OK"
+}

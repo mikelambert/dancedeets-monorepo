@@ -1,0 +1,48 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "Great Britain",
+               "short_name" : "Great Britain",
+               "types" : [ "natural_feature", "establishment" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "Great Britain, United Kingdom",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 58.6618857,
+                  "lng" : 1.6345886
+               },
+               "southwest" : {
+                  "lat" : 50.00014239999999,
+                  "lng" : -6.162762499999999
+               }
+            },
+            "location" : {
+               "lat" : 53.7190281,
+               "lng" : -2.0727839
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 58.6618857,
+                  "lng" : 1.6345886
+               },
+               "southwest" : {
+                  "lat" : 50.00014239999999,
+                  "lng" : -6.162762499999999
+               }
+            }
+         },
+         "types" : [ "natural_feature", "establishment" ]
+      }
+   ],
+   "status" : "OK"
+}
