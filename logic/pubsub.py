@@ -114,9 +114,11 @@ def twitter_post(auth_token, db_event, fb_event):
     t.statuses.update(status=status, **update_params)
 
     description = fb_event['info'].get('description') or ''
-    twitter_handles = re.findall('\s@[A-za-z0-9_]+', description)
+    twitter_handles = re.findall(r'\s@[A-za-z0-9_]+', description)
     twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+15]
-    for handle in twitter_handles:
+    twitter_handles2 = re.findall(r'twitter\.com/([A-za-z0-9_]+)', description)
+    twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1+15]
+    for handle in (twitter_handles + twitter_handles2):
         status = format_twitter_post(db_event, fb_event, media, handle=handle)
         t.statuses.update(status=status, **update_params)
 
