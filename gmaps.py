@@ -8,7 +8,7 @@ import urllib
 class GeocodeException(Exception):
     pass
 
-def fetch_raw(address=None, latlng=None, language=None):
+def fetch_raw(address=None, latlng=None, language=None, region=None):
     params = {}
     if address is not None:
         params['address'] = address.encode('utf-8')
@@ -19,6 +19,8 @@ def fetch_raw(address=None, latlng=None, language=None):
     params['client'] = 'free-dancedeets'
     if language is not None:
         params['language'] = language
+    if region is not None:
+        params['region'] = region
     unsigned_url_path = "/maps/api/geocode/json?%s" % urllib.urlencode(params)
     private_key = 'zj918QnslsoOQHl4kLjv-ZCgsDE='
     decoded_key = base64.urlsafe_b64decode(private_key)
@@ -64,10 +66,3 @@ def parse_geocode(json_string):
         return None
     else:
         raise GeocodeException("Got unexpected status: %s" % json_result['status'])
-
-def debug_types(**kwargs):
-    result = fetch_geocode(**kwargs)
-    for c in result['address_components']:
-        print c['long_name'], c['short_name'], c['types']
-    print result['formatted_address']
-    print result['types']
