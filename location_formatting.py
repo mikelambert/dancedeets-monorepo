@@ -1,6 +1,6 @@
 
-def get_formatting_parts(gmaps_data):
-    address_components = gmaps_data['address_components']
+def get_formatting_parts(geocode):
+    address_components = geocode.address_components()
 
     def get_component(name, long=True):
         components = [x[long and 'long_name' or 'short_name'] for x in address_components if name in x['types']]
@@ -29,8 +29,8 @@ def get_formatting_parts(gmaps_data):
     ])
     return [x for x in components if x]
 
-def format_address(gmaps_data):
-    return _format_from_parts(get_formatting_parts(gmaps_data))
+def format_address(geocode):
+    return _format_from_parts(get_formatting_parts(geocode))
 
 def _format_from_parts(parts):
     return ', '.join(parts)

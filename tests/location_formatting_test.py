@@ -7,13 +7,15 @@ import gmaps_local
 import location_formatting
 
 def format_address(address):
-    gmaps_data = gmaps.fetch_json(address=address, fetch_raw=gmaps_local.fetch_raw_cached)
-    result = location_formatting.format_address(gmaps_data['results'][0])
+    gmaps_data = gmaps_local.fetch_raw_cached(address=address)
+    geocode = gmaps.parse_geocode(gmaps_data)
+    result = location_formatting.format_address(geocode)
     return result
 
 def format_address_parts(address):
-    gmaps_data = gmaps.fetch_json(address=address, fetch_raw=gmaps_local.fetch_raw_cached)
-    result = location_formatting.get_formatting_parts(gmaps_data['results'][0])
+    gmaps_data = gmaps_local.fetch_raw_cached(address=address)
+    geocode = gmaps.parse_geocode(gmaps_data)
+    result = location_formatting.get_formatting_parts(geocode)
     return result
 
 formatting_reg_data = {
@@ -60,6 +62,7 @@ grouping_lists = [
     (['Shibuya', 'Ginza', 'Osaka'], ['Shibuya, Tokyo', 'Chuo, Tokyo', 'Osaka, Osaka Prefecture']),
     (['Nagoya', 'Sydney'], ['Nagoya, Aichi Prefecture, Japan', 'Sydney, NSW, Australia']),
 ]
+
 class TestMultiLocationFormatting(unittest.TestCase):
     def runTest(self):
         for addresses, reformatted_addresses in grouping_lists:

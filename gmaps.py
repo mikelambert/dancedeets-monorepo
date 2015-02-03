@@ -33,22 +33,24 @@ def fetch_raw(address=None, latlng=None, language=None):
     logging.info('geocoding results: %s', result)
     return result
 
-def fetch_json(address=None, latlng=None, fetch_raw=fetch_raw):
-    results = fetch_raw(address=address, latlng=latlng)
-    try:
-        json_result = json.loads(results)
-    except json.decoder.JSONDecodeError, e:
-        raise GeocodeException("Error decoding json from %s: %s: %r" % (e, results))
-    return json_result
+class GMapsGeocode(object):
+    def __init__(self, json_data):
+        self.json = json_data
 
-def fetch_geocode(address=None, latlng=None):
-    json_result = fetch_raw(address=address, latlng=latlng)
-    if json_result['status'] == 'ZERO_RESULTS':
-        return ''
-    if json_result['status'] != 'OK':
+    def address_components(self):
+        return self.json['address_components']
+
+def parse_geocode(json_string):
+    try:
+        json_result = json.loads(json_string)
+    except Exception as e:
+        raise GeocodeException("%s: %r" % (e, json_string))
+    if json_result['status'] == 'OK':
+        return GMapsGeocode(json_result['results'][0])
+    elif json_result['status'] == 'ZERO_RESULTS':
+        return None
+    else:
         raise GeocodeException("Got unexpected status: %s" % json_result['status'])
-    result = json_result['results'][0]
-    return result
 
 def debug_types(**kwargs):
     result = fetch_geocode(**kwargs)

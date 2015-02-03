@@ -47,7 +47,7 @@ def _raw_get_cached_geocoded_data(address=None, latlng=None):
             except:
                 logging.exception("Error decoding json data for geocode %r with latlng %s: %r", address, latlng, geocode.json_data)
         if geocoded_data is None:
-            geocoded_data = gmaps.fetch_geocode(address=address, latlng=latlng)
+            geocoded_data = gmaps.parse_geocode(gmaps.fetch_raw(address=address, latlng=latlng)).json
 
             geocode = GeoCode(key_name=geocode_key)
             geocode.json_data = json.dumps(geocoded_data)
