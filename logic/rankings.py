@@ -13,7 +13,7 @@ USER_FOR_CITY_RANKING = 'CITY_USER_RANKING'
 EVENT_FOR_USER_RANKING = 'EVENT_USER_RANKING'
 USER_FOR_USER_RANKING = 'USER_USER_RANKING'
 
-# location is a city in cities.py
+# location is a city in cities/state/country
 # time_period is one of ALL_TIME, LAST_MONTH, LAST_WEEK
 
 LAST_WEEK = 'LAST_WEEK'
@@ -43,17 +43,15 @@ def make_key_name(key_name, **kwargs):
     return '%s/%s' % (key_name, '/'.join('%s=%s' % (k, v) for (k, v) in kwargs.iteritems()))
 
 def count_event_for_city(dbevent):
-    #TODO(lambert): store largest_city in the event
     if not dbevent.start_time: # deleted event, don't count
         return
-    city = dbevent.city_name
+    city = get_ranking_location(dbevent.actual_city_name)
     for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
         yield op.counters.Increment(make_key_name("City", city=city, time_period=time_period))
 
 def count_user_for_city(user):
-    #TODO(lambert): store largest_city in the user
-    user_city = cities.get_largest_nearby_city_name(user.location)
-    for time_period in get_time_periods(user.creation_time):
+    user_city = get_ranking_location(user.location)
+     for time_period in get_time_periods(user.creation_time):
         yield op.counters.Increment(make_key_name("City", city=user_city, time_period=time_period))
 
 def begin_ranking_calculations():
@@ -214,3 +212,6 @@ def top_n_with_selected(thing_ranking, selected_name, group_size=3):
         selected_n = []
     top_n = [(i+1, sel(x), x) for (i, x) in enumerate(thing_ranking[:group_size])]
     return top_n, selected_n
+
+def get_ranking_location(location):
+    return cities.get_largest_nearby_city_name(location)

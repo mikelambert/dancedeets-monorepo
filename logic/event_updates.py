@@ -5,6 +5,7 @@ from events import eventdata
 import fb_api
 from logic import event_classifier
 from logic import event_locations
+from logic import rankings
 from logic import search
 from util import dates
 
@@ -69,7 +70,7 @@ def _inner_make_event_findable_for(db_event, fb_dict):
     if location_info.actual_city() or not db_event.actual_city_name:
         db_event.anywhere = location_info.is_online_event()
         db_event.actual_city_name = location_info.actual_city()
-        db_event.city_name = location_info.largest_nearby_city()
+        db_event.city_name = rankings.get_ranking_location(location_info.actual_city())
         if db_event.actual_city_name:
             db_event.latitude, db_event.longitude = location_info.latlong()
         else:

@@ -3,7 +3,6 @@ import re
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
-from events import cities
 import locations
 from util import abbrev
 
@@ -154,12 +153,6 @@ class LocationInfo(object):
             return None
         else:
             return self.final_city
-
-    def largest_nearby_city(self):
-        if self.is_online_event():
-            return None
-        else:
-            return cities.get_largest_nearby_city_name(self.final_city) #TODO(lambert): switch this to latlng lookup
 
     def latlong(self):
         if self.is_online_event():

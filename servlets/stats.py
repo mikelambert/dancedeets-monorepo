@@ -15,8 +15,9 @@ class RankingsHandler(base_servlet.BaseRequestHandler):
         self.display['user_rankings'] = user_rankings
         self.display['time_periods'] = rankings.TIME_PERIODS
         self.display['current_time_period'] = time_period
-        if self.user:
-            self.display['user_city'] = self.user.get_city()
+        if self.user and self.user.location:
+            self.display['user_city'] = rankings.get_ranking_location(self.location)
+
         self.display['string_translations'] = rankings.string_translations
 
         self.render_template('rankings')
