@@ -1,5 +1,5 @@
 
-def get_formatting_parts(geocode):
+def _get_formatting_parts(geocode):
     geocode = geocode.copy()
 
     components = [
@@ -31,14 +31,16 @@ def get_formatting_parts(geocode):
 
     return [x for x in components if x]
 
-def format_address(geocode):
-    return _format_from_parts(get_formatting_parts(geocode))
-
 def _format_from_parts(parts):
     return ', '.join(parts)
 
-def format_addresses(geocodes):
-    parts_list = [get_formatting_parts(geocode) for geocode in geocodes]
+def format_geocode(geocode):
+    return _format_from_parts(_get_formatting_parts(geocode))
+
+def format_geocodes(geocodes):
+    if geocodes == []:
+        return []
+    parts_list = [_get_formatting_parts(geocode) for geocode in geocodes]
     min_length = min(len(x) for x in parts_list)
     # If all our addresses are in the same country, or state, then trim that off as irrelevant
     for i in range(min_length-1):
@@ -51,5 +53,5 @@ def format_addresses(geocodes):
     # Now grab the last two pieces of data, as being relevant to where we are.
     # Anything earlier than that in the list, is too specific at the scale we are currently at.
     parts_list = [x[-2:] for x in parts_list]
-    parts_list = [_format_from_parts(x) for x in parts_list]
-    return parts_list
+    addresses_list = [_format_from_parts(x) for x in parts_list]
+    return addresses_list
