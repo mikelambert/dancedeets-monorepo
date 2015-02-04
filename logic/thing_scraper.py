@@ -13,6 +13,40 @@ from mapreduce import context
 from util import fb_mapreduce
 from util import timings
 
+
+def delete_bad_source(source):
+    if source.creating_fb_uid or source.num_real_events:
+        source.street_dance_related = True
+        source.put()
+        yield '+%s\n' % source.graph_id
+    elif source.num_potential_events:
+        source.street_dance_related = False
+        yield ' %s\n' % source.graph_id
+    else:
+        sid = source.graph_id
+        source.delete()
+        yield '-%s\n' % sid
+
+def mr_delete_bad_sources():
+    mapper_params = {
+        'entity_kind': 'logic.thing_db.Source',
+        'output_writer': {
+            'mime_type': 'text/plain',
+            'bucket_name': 'dancedeets-hrd.appspot.com',
+        },
+    }
+    from mapreduce import control
+    control.start_map(
+        name='Delete Bad Sources',
+        reader_spec='mapreduce.input_readers.DatastoreInputReader',
+        handler_spec='logic.thing_scraper.delete_bad_source',
+        output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
+        shard_count=8, # since we want to stick it in the slow-queue, and don't care how fast it executes
+        queue_name='fast-queue',
+        mapper_parameters=mapper_params,
+    )
+
+
 @timings.timed
 def scrape_events_from_sources(fbl, sources):
     ctx = context.get()

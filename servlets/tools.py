@@ -92,12 +92,8 @@ def mr_private_events(fbl):
 #tasks.BaseTaskFacebookRequestHandler):#
 class OneOffHandler(webapp2.RequestHandler):
     def get(self):
-        for u in users.User.all():
-            self.response.write('%s<br>\n' % u.fb_uid)
-            if not u.clients:
-                u.clients = ['web']
-                u.put()
-                print 'put'
+        from logic import thing_scraper
+        thing_scraper.mr_delete_bad_sources()
 
 class AutoAddPotentialEventsHandler(tasks.BaseTaskFacebookRequestHandler):
     def get(self):

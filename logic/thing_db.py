@@ -50,6 +50,7 @@ def increment_num_potential_events(source_id):
 def increment_num_real_events(source_id):
     def inc(s):
         s.num_real_events = (s.num_real_events or 0) + 1
+        s.street_dance_related = True
     run_modify_transaction_for_key(source_id, inc)
 
 def increment_num_false_negatives(source_id):
@@ -85,6 +86,8 @@ class Source(db.Model):
     # cached/derived from fb data
     name = db.StringProperty(indexed=False)
     feed_history_in_seconds = db.IntegerProperty(indexed=False)
+
+    street_dance_related = db.BooleanProperty()
 
     # probably to assume for a given event? rough weighting factor?
     # do we want to delete these now?
@@ -155,7 +158,7 @@ def link_for_fb_source(data):
         return 'http://www.facebook.com/%s/' % data['info']['id']
 
 def create_source_for_id(source_id, fb_data):
-    source = Source.get_by_key_name(str(source_id)) or Source(key_name=str(source_id))
+    source = Source.get_by_key_name(str(source_id)) or Source(key_name=str(source_id), street_dance_related=False)
     source.compute_derived_properties(fb_data)
     logging.info('Getting source for id %s: %s', source.graph_id, source.name)
     return source

@@ -1,7 +1,5 @@
-import json
 import pprint
 import re
-import urllib2
 
 import base_servlet
 from events import eventdata
@@ -65,6 +63,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             return
 
         s.creating_fb_uid = self.user.fb_uid
+        s.street_dance_related = True
         s.put()
 
         self.user.add_message("Source added!")
