@@ -33,27 +33,42 @@ def _geocode_key(address, latlng):
     else:
         return '%s,%s' % latlng
 
+NO_GEOCODE = 'NO_GEOCODE'
+
 def _raw_get_cached_geocoded_data(address=None, latlng=None):
     if not address and not latlng:
         return {}
     geocode_key = _geocode_key(address, latlng)
     memcache_key = _memcache_location_key(geocode_key)
-    geocoded_data = smemcache and smemcache.get(memcache_key)
-    if geocoded_data is None:
+    geocoded_data = None
+    if smemcache:
+        geocoded_data = smemcache.get(memcache_key)
+    if geocoded_data == NO_GEOCODE:
+        geocoded_data = None # so we return None
+    elif geocoded_data is None:
         geocode = GeoCode.get_by_key_name(geocode_key)
+        data_is_good = False
         if geocode:
+            data_is_good = True
             try:
                 geocoded_data = json.loads(geocode.json_data)
             except:
                 logging.exception("Error decoding json data for geocode %r with latlng %s: %r", address, latlng, geocode.json_data)
-        if geocoded_data is None:
-            geocoded_data = gmaps.parse_geocode(gmaps.fetch_raw(address=address, latlng=latlng)).json
-
+                data_is_good = False
+        if not data_is_good:
+            gmaps_geocode = gmaps.parse_geocode(gmaps.fetch_raw(address=address, latlng=latlng))
+            if gmaps_geocode is not None:
+                geocoded_data = gmaps_geocode.json
+            else:
+                geocoded_data = None
             geocode = GeoCode(key_name=geocode_key)
             geocode.json_data = json.dumps(geocoded_data)
             geocode.put()
         if smemcache:
-            smemcache.set(memcache_key, geocoded_data, LOCATION_EXPIRY)
+            geocoded_data_for_memcache = geocoded_data
+            if geocoded_data_for_memcache is None:
+                geocoded_data_for_memcache = NO_GEOCODE
+            smemcache.set(memcache_key, geocoded_data_for_memcache, LOCATION_EXPIRY)
     return geocoded_data
 
 def get_location_bounds(address, distance_in_km):

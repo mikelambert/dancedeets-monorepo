@@ -33,14 +33,14 @@ class TestTimeHumanFormat(TestDates):
 class TestDateHumanFormat(TestDates):
     def runTest(self):
         self.assertEqual(dates.date_human_format(self.nye),
-                         'Saturday, January 1 - 12:00am')
+                         'Saturday, January 1, 2000 - 12:00am')
 
 class TestDurationHumanFormat(TestDates):
     def runTest(self):
         self.assertEqual(dates.duration_human_format(self.nye, self.nye_plus_8),
-                         'Saturday, January 1 - 12:00am to 8:00am')
+                         'Saturday, January 1, 2000 - 12:00am to 8:00am')
         self.assertEqual(dates.duration_human_format(self.nye, self.nye_plus_2_days_plus_8),
-                         'Saturday, January 1 - 12:00am to Monday, January 3 - 8:00am')
+                         'Saturday, January 1, 2000 - 12:00am to Monday, January 3, 2000 - 8:00am')
 
 
 class TestEventDates(TestDates):

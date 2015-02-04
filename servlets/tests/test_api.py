@@ -53,7 +53,7 @@ class TestAuth(TestSearch):
             'client': 'android',
         }
         self.assertEqual(users.User.get_by_key_name(me_uid), None)
-        result = app.post_json('/api/auth', auth_request)
+        result = app.post_json('/api/v1.0/auth', auth_request)
         self.assertEqual(result.json, {'success': True})
         self.assertNotEqual(users.User.get_by_key_name(me_uid), None)
         self.assertEqual(users.User.get_by_key_name(me_uid).fb_access_token, access_token)
@@ -64,7 +64,7 @@ class TestAuth(TestSearch):
         try:
             utils.dumps = lambda *args, **kwargs: urllib.quote(old_dumps(*args, **kwargs))
             auth_request['access_token'] = new_access_token
-            result = app.post_json('/api/auth', auth_request)
+            result = app.post_json('/api/v1.0/auth', auth_request)
             self.assertEqual(result.json, {'success': True})
         finally:
             utils.dumps = old_dumps
