@@ -1,5 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
+import datetime
 import json
 import logging
 import re
@@ -23,16 +24,69 @@ consumer_secret = keys.get("twitter_consumer_secret")
 DATE_FORMAT = "%Y/%m/%d"
 TIME_FORMAT = "%H:%M"
 
+from google.appengine.api import taskqueue
+
+EVENT_PULL_QUEUE = 'event-publishing-pull-queue'
+def eventually_publish_event(fbl, event_id):
+    oauth_tokens = OAuthToken.query(OAuthToken.valid_token==True).fetch(100)
+    q = taskqueue.Queue(EVENT_PULL_QUEUE)
+    for token in oauth_tokens:
+        q.add(taskqueue.Task(payload=event_id, method='PULL', tag=token.queue_id()))
+
+def pull_and_publish_event(fbl):
+    oauth_tokens = OAuthToken.query(
+        OAuthToken.valid_token==True,
+        ndb.OR(
+            OAuthToken.next_post_time<datetime.datetime.now(),
+            OAuthToken.next_post_time==None
+        )
+    ).fetch(100)
+    q = taskqueue.Queue(EVENT_PULL_QUEUE)
+    for token in oauth_tokens:
+        logging.info("Posting to OAuthToken: %s", token)
+        next_post_time = datetime.datetime.now() + datetime.timedelta(seconds=token.time_between_posts)
+        token = token.key.get()
+        token.next_post_time = next_post_time
+        token.put()
+        tasks = q.lease_tasks_by_tag(120, 1, token.queue_id())
+        if tasks:
+            for task in tasks:
+                event_id = task.payload
+                logging.info("  Found event, posting %s", event_id)
+                post_event_id_with_authtoken(fbl, event_id, token)
+                q.delete_tasks(task)
+
+def post_event_id_with_authtoken(fbl, event_id, auth_token):
+    event_id = str(event_id)
+    fb_event = fbl.get(fb_api.LookupEvent, event_id)
+    db_event = eventdata.DBEvent.get_or_insert(event_id)
+    if auth_token.application == APP_TWITTER:
+        try:
+            twitter_post(auth_token, db_event, fb_event)
+        except Exception as e:
+            logging.error("Twitter Post Error: %s", e)
+    elif auth_token.application == APP_FACEBOOK:
+        try:
+            result = facebook_post(auth_token, db_event, fb_event)
+            if 'error' in result:
+                logging.error("Facebook Post Error: %s", result)
+            else:
+                logging.info("Facebook result was %s", result)
+        except Exception as e:
+            logging.error("Facebook Post Error: %s", e)
+    else:
+        logging.error("Unknown application for OAuthToken: %s", auth_token.application)
+
 def publish_event(fbl, event_id):
     event_id = str(event_id)
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
-    e = eventdata.DBEvent.get_or_insert(event_id)
+    db_event = eventdata.DBEvent.get_or_insert(event_id)
 
     # When we want to support complex queries on many types of events, perhaps we should use Prospective Search.
     auth_tokens = OAuthToken.query(OAuthToken.user_id=="701004", OAuthToken.application==APP_TWITTER, OAuthToken.token_nickname=="BigTwitter").fetch(1)
     if auth_tokens:
         try:
-            twitter_post(auth_tokens[0], e, fb_event)
+            twitter_post(auth_tokens[0], db_event, fb_event)
         except twitter.TwitterError as e:
             logging.error("Twitter Post Error: %s", e)
     else:
@@ -42,7 +96,7 @@ def publish_event(fbl, event_id):
         filtered_auth_tokens = [x for x in auth_tokens if x.token_nickname in ["1613128148918160", "1375421172766829", "110312662362915"]]
         if filtered_auth_tokens:
             auth_token = filtered_auth_tokens[0]
-            result = facebook_post(auth_token, e, fb_event)
+            result = facebook_post(auth_token, db_event, fb_event)
             if 'error' in result:
                 logging.error("Facebook Post Error: %s", result)
             else:
@@ -182,8 +236,15 @@ class OAuthToken(ndb.Model):
     valid_token = ndb.BooleanProperty()
     oauth_token = ndb.StringProperty()
     oauth_token_secret = ndb.StringProperty()
+
+    time_between_posts = ndb.IntegerProperty() # In seconds!
+    next_post_time = ndb.DateTimeProperty()
+
     #search criteria? location? radius? search terms?
     #post on event find? post x hours before event? multiple values?
+
+    def queue_id(self):
+        return self.key.string_id()
 
 
 def twitter_oauth1(user_id, token_nickname):
@@ -225,6 +286,7 @@ def twitter_oauth1(user_id, token_nickname):
 
 def twitter_oauth2(oauth_token, oauth_verifier):
     auth_tokens = OAuthToken.query(OAuthToken.temp_oauth_token==oauth_token, OAuthToken.application==APP_TWITTER).fetch(1)
+    print auth_tokens
     if not auth_tokens:
         return None
     auth_token = auth_tokens[0]
@@ -244,6 +306,7 @@ def twitter_oauth2(oauth_token, oauth_verifier):
     auth_token.oauth_token = access_token['oauth_token']
     auth_token.oauth_token_secret = access_token['oauth_token_secret']
     auth_token.valid_token = True
+    auth_token.time_between_posts = 5*60
     auth_token.put()
     return auth_token
 
@@ -279,6 +342,7 @@ def facebook_auth(fbl, page_uid):
     auth_token.application = APP_FACEBOOK
     auth_token.valid_token = True
     auth_token.oauth_token = page_token
+    auth_token.time_between_posts = 5*60
     auth_token.put()
     return auth_token
 

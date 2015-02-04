@@ -10,6 +10,7 @@ from events import users
 import fb_api
 from logic import backgrounder
 from logic import fb_reloading
+from logic import pubsub
 from logic import rankings
 from logic import thing_scraper
 from util import timings
@@ -166,6 +167,10 @@ class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         fb_reloading.load_potential_events_for_user_ids(self.fbl, user_ids)
+
+class SocialPublisherHandler(BaseTaskFacebookRequestHandler):
+    def get(self):
+            pubsub.pull_and_publish_event(self.fbl)
 
 class TimingsKeepAlive(BaseTaskRequestHandler):
     def get(self):

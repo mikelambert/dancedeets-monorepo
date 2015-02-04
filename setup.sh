@@ -20,6 +20,7 @@ sudo pip install webtest
 
 pip install --upgrade -t $BASE_DIR/lib \
   iso3166 \
+  oauth2 \
   python-oauth2 \
   twilio \
   google-api-python-client \

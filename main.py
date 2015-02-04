@@ -128,6 +128,7 @@ URLS = [
     ('/twitter/oauth_success', pubsub_setup.TwitterOAuthSuccessHandler),
     ('/twitter/oauth_failure', pubsub_setup.TwitterOAuthFailureHandler),
     ('/facebook/page_start', pubsub_setup.FacebookPageSetupHandler),
+    ('/tasks/social_publisher', tasks.SocialPublisherHandler),
 
     ('/api/v1.0/events/\d+/?', api.EventHandler),
     ('/api/v(\d+).(\d+)/search', api.SearchHandler),

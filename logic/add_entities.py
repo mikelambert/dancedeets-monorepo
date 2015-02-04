@@ -1,7 +1,6 @@
 import logging
 
 from google.appengine.ext import deferred
-import twitter
 
 import fb_api
 from events import eventdata
@@ -44,7 +43,7 @@ def add_update_event(event_id, user_id, fbl, remapped_address=None, override_add
 
     if newly_created:
         logging.info("New event, publishing to twitter/facebook")
-        deferred.defer(pubsub.publish_event, fbl, str(e.fb_event_id), _queue='new-event-publishing-queue')
+        deferred.defer(pubsub.eventually_publish_event, fbl, str(e.fb_event_id))
 
     potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)
