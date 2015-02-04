@@ -184,20 +184,20 @@ def is_battle(classified_event):
     has_n_x_n = classified_event.processed_text.count_tokens(keywords.N_X_N)
     has_battle = classified_event.processed_text.count_tokens(keywords.BATTLE)
     has_wrong_battle = classified_event.processed_text.find_with_rule(rules.WRONG_BATTLE)
-    is_wrong_competition = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
+    is_wrong_competition_title = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     is_wrong_style_battle_title = classified_event.processed_title.find_with_rule(rules.DANCE_WRONG_STYLE_TITLE)
     has_many_real_dance_keywords = len(set(classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches)) > 1
     has_start_judge = start_judge_keywords_regex[classified_event.boundaries].findall(search_text)
 
-    #print rules.get(rules.DANCE_BATTLE).as_token_regex()
+    #print rules.get(rules.WRONG_BATTLE).as_expanded_regex().encode('utf8')
     #print has_dance_battle
-    #print is_wrong_competition
+    #print is_wrong_competition_title
     #print is_wrong_style_battle_title
     #print has_wrong_battle
     #print has_good_dance_battle
     #print classified_event.real_dance_matches
     #print classified_event.manual_dance_keywords_matches
-    #print classified_event.processed_text.get_tokenized_text()
+    #print classified_event.processed_text.get_tokenized_text().encode('utf8')
     #print classified_event.processed_text.match_on_word_boundaries
     #print has_start_judge
     #print classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches
@@ -205,8 +205,9 @@ def is_battle(classified_event):
     if not has_good_dance_battle and not (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches):
         return (False, 'no strong dance keywords')
 
-    # TODO(lambert): Need to make this apply except when it's an n-x-n style battle. or good-style battle. 'hiphop battle' or 'n x n battle' may be ambiguous, but 'locking (solo) battle' or '1 vs 1 bboy/bgirl battle' is definitely not.
-    if has_dance_battle and not is_wrong_competition and not is_wrong_style_battle_title and not has_wrong_battle:
+    if has_good_dance_battle and not is_wrong_competition_title and not is_wrong_style_battle_title:
+        return (True, 'real dance-style battle/comp! %s' % has_good_dance_battle)
+    elif has_dance_battle and not is_wrong_competition_title and not is_wrong_style_battle_title and not has_wrong_battle:
         return (True, 'good-style real dance battle/comp! %s with keywords %s' % (has_dance_battle, (classified_event.real_dance_matches or classified_event.manual_dance_keywords_matches)))
     elif has_n_x_n and has_battle and not has_wrong_battle:
         return (True, 'battle keyword, NxN, good dance style')

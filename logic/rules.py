@@ -122,8 +122,10 @@ add(DANCE_STYLE, Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.VO
 
 # TODO: make sure this doesn't match... 'mc hiphop contest'
 GOOD_DANCE_BATTLE = 'GOOD_DANCE_BATTLE'
-good_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, get(GOOD_DANCE), keywords.HOUSE)
-ambiguous_dance = Any(keywords.EASY_DANCE, keywords.EASY_CHOREO)
+# 'hip hop battle' by itself isnt sufficient, so leave that in ambiguous_battle_dance.
+# GOOD_DANCE does include 'hip hop dance' though, to allow 'hip hop dance battle' to work.
+good_battle_dance = Any(get(GOOD_DANCE), keywords.HOUSE)
+ambiguous_battle_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE, keywords.EASY_CHOREO)
 good_battle = Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)
 ambiguous_battle = Any(keywords.EASY_BATTLE)
 add(GOOD_DANCE_BATTLE, Any(
@@ -131,19 +133,21 @@ add(GOOD_DANCE_BATTLE, Any(
     connected(keywords.BONNIE_AND_CLYDE, keywords.BATTLE),
     connected(keywords.KING_OF_THE, keywords.CYPHER),
     connected(keywords.CYPHER, keywords.KING),
-    commutative_connected(good_dance, good_battle)
+    commutative_connected(good_battle_dance, good_battle)
 ))
 
 DANCE_BATTLE = 'DANCE_BATTLE'
 add(DANCE_BATTLE, Any(
     get(GOOD_DANCE_BATTLE),
-    commutative_connected(good_dance, ambiguous_battle),
-    commutative_connected(ambiguous_dance, good_battle),
-    commutative_connected(ambiguous_dance, ambiguous_battle),
+    commutative_connected(good_battle_dance, ambiguous_battle),
+    commutative_connected(ambiguous_battle_dance, good_battle),
+    commutative_connected(ambiguous_battle_dance, ambiguous_battle),
 ))
 
 BATTLE = 'BATTLE'
 add(BATTLE, Any(keywords.BATTLE, keywords.OBVIOUS_BATTLE))
+
+good_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, get(GOOD_DANCE), keywords.HOUSE)
 
 GOOD_DANCE_CLASS = 'GOOD_DANCE_CLASS'
 add(GOOD_DANCE_CLASS, Any(

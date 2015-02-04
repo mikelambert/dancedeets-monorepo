@@ -610,7 +610,6 @@ add(BATTLE, [
     'turneringer', # danish tournament
     'preselections?',
     u'présélections?', # preselections french
-    'crew\W?v[sz]?\W?crew',
     'prelims?',
     u'初賽', # chinese preliminaries
 ])
@@ -713,7 +712,7 @@ add(EVENT, [
 def _generate_n_x_n_keywords():
     english_digit_x_keywords = [
         'v/s',
-        r'vs?\.?',
+        r'v[zs]?\.?',
         'on',
         'x',
         u'×',
@@ -728,7 +727,7 @@ def _generate_n_x_n_keywords():
     digit_x_string = '|'.join(digit_x_keywords)
     english_digit_x_string = '|'.join(english_digit_x_keywords)
     n_x_n_keywords = [u'%s[ -]?(?:%s)[ -]?%s' % (i, digit_x_string, i) for i in range(12)[1:]]
-    n_x_n_keywords += [u'%s[ -](?:%s)[ -]%s' % (i, english_digit_x_string, i) for i in ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
+    n_x_n_keywords += [u'%s[ -](?:%s)[ -]%s' % (i, english_digit_x_string, i) for i in ['crew', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
     return n_x_n_keywords
 
 N_X_N = token('NXN')
@@ -928,7 +927,7 @@ add(WRONG_BATTLE_STYLE, [
     'rap',
     'beat',
     'beatbox',
-    'dj(\W?s)?',
+    'dj(?:\W?s)?',
     'producer',
     'performance',
     'graf(?:fiti)?',
