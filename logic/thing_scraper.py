@@ -16,11 +16,14 @@ from util import timings
 
 def delete_bad_source(source):
     if source.creating_fb_uid or source.num_real_events:
-        source.street_dance_related = True
-        source.put()
+        if source.street_dance_related != True:
+            source.street_dance_related = True
+            source.put()
         yield '+%s\n' % source.graph_id
     elif source.num_potential_events:
-        source.street_dance_related = False
+        if source.street_dance_related != False:
+            source.street_dance_related = False
+            source.put()
         yield ' %s\n' % source.graph_id
     else:
         sid = source.graph_id
