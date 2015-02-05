@@ -145,11 +145,18 @@ def get_location(fb_user):
 class BaseRequestHandler(BareBaseRequestHandler):
 
     def get_location_from_headers(self):
-        location_components = [
-            self.request.headers.get("X-AppEngine-City"),
-            self.request.headers.get("X-AppEngine-Region"),
-            abbrev.countries_abbrev2full.get(self.request.headers.get("X-AppEngine-Country"), ''),
-        ]
+        iso3166_country = self.request.headers.get("X-AppEngine-Country")
+        country = abbrev.countries_abbrev2full.get(iso3166_country)
+        if country:
+            full_country = country.name
+        else:
+            full_country = iso3166_country
+
+        location_components = []
+        location_components.append(self.request.headers.get("X-AppEngine-City"))
+        if full_country in ['United States', 'Canada']:
+            location_components.append(self.request.headers.get("X-AppEngine-Region"))
+        location_components.append(full_country)
         location = ', '.join(x for x in location_components if x and x != '?')
         return location
 

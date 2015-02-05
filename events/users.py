@@ -11,6 +11,42 @@ from util import dates
 
 USER_EXPIRY = 24 * 60 * 60
 
+def cleanup_location(user):
+    import iso3166
+    if user.location is None:
+        user.location = ''
+        user.put()
+        return
+    bits = user.location.split(', ')
+    if len(bits) == 3:
+        if len(bits[-1]) == 2:
+            country = iso3166.countries_by_alpha2.get(bits[-1])
+            if country:
+                bits[-1] = country.name
+    bits = [x for x in bits if x != '?']
+    new_location = ', '.join(bits)
+    if new_location != user.location:
+        user.location = new_location
+        user.put()
+
+def cleanup_location2(user):
+    from util import abbrev
+    import iso3166
+    bits = user.location.split(', ')
+    double_country = ', '.join(bits[-2:]).upper()
+    if double_country in iso3166.countries_by_name:
+        country = iso3166.countries_by_name[double_country.upper()]
+        new_country = abbrev.countries_abbrev2full[country.alpha2]
+        bits = bits[:-2] + [new_country]
+    if len(bits) == 3 and len(bits[1]) == 2:
+        if bits[2] not in ['United States', 'Canada']:
+            bits.remove(bits[1])
+    new_location = ', '.join(bits)
+    print '%r -> %r' % (user.location, new_location)
+    if new_location != user.location:
+        user.location = new_location
+        user.put()
+
 class User(db.Model):
     # SSO
     fb_uid = property(lambda x: int(x.key().name()))
