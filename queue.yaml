@@ -8,7 +8,5 @@ queue:
 - name: fast-queue
   rate: 20/s
   max_concurrent_requests: 4
-- name: new-event-publishing-queue
-  rate: 10/h
 - name: event-publishing-pull-queue
   mode: pull

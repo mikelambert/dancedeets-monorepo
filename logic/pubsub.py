@@ -48,7 +48,9 @@ def eventually_publish_event(fbl, event_id):
             if event_country != token.country_filter:
                 continue
         logging.info("Adding task for posting!")
-        q.add(taskqueue.Task(payload=event_id, method='PULL', tag=token.queue_id()))
+        # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
+        name = 'Token_%s__Event_%s' % (token.queue_id(), event_id)
+        q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
 
 def pull_and_publish_event(fbl):
     oauth_tokens = OAuthToken.query(
@@ -77,6 +79,9 @@ def pull_and_publish_event(fbl):
 def post_event_id_with_authtoken(fbl, event_id, auth_token):
     event_id = str(event_id)
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
+    if fb_event['empty']:
+        logging.warning("Failed to post event: %s, due to %s", event_id, fb_event['empty'])
+        return
     db_event = eventdata.DBEvent.get_or_insert(event_id)
     if auth_token.application == APP_TWITTER:
         try:
@@ -94,36 +99,6 @@ def post_event_id_with_authtoken(fbl, event_id, auth_token):
             logging.error("Facebook Post Error: %s", e)
     else:
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
-
-#TODO(lambert): delete when the queue is totally empty
-def publish_event(fbl, event_id):
-    event_id = str(event_id)
-    fb_event = fbl.get(fb_api.LookupEvent, event_id)
-    db_event = eventdata.DBEvent.get_or_insert(event_id)
-
-    # When we want to support complex queries on many types of events, perhaps we should use Prospective Search.
-    auth_tokens = OAuthToken.query(OAuthToken.user_id=="701004", OAuthToken.application==APP_TWITTER, OAuthToken.token_nickname=="BigTwitter").fetch(1)
-    if auth_tokens:
-        try:
-            twitter_post(auth_tokens[0], db_event, fb_event)
-        except twitter.TwitterError as e:
-            logging.error("Twitter Post Error: %s", e)
-    else:
-        logging.error("Could not find Mike's BigTwitter OAuthToken")
-    auth_tokens = OAuthToken.query(OAuthToken.user_id=="701004", OAuthToken.application==APP_FACEBOOK).fetch(5)
-    if auth_tokens:
-        filtered_auth_tokens = [x for x in auth_tokens if x.token_nickname in ["1613128148918160", "1375421172766829", "110312662362915"]]
-        if filtered_auth_tokens:
-            auth_token = filtered_auth_tokens[0]
-            result = facebook_post(auth_token, db_event, fb_event)
-            if 'error' in result:
-                logging.error("Facebook Post Error: %s", result)
-            else:
-                logging.info("Facebook result was %s", result)
-        else:
-            logging.error("Couldn't find good Facebook tokens to pubulish to: %s", auth_tokens)
-    else:
-        logging.error("Could not find a Facebook token")
 
 def create_media_on_twitter(t, fb_event):
     cover = eventdata.get_largest_cover(fb_event)
@@ -211,7 +186,7 @@ def facebook_post(auth_token, db_event, fb_event):
     if cover:
         post_values['picture'] = cover['source']
     venue_id = fb_event['info'].get('venue', {}).get('id')
-    country = None
+    short_country = None
     if venue_id:
         post_values['place'] = venue_id
         # Can only tag people if there is a place tagged too
