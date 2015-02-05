@@ -8,11 +8,3 @@ mapreduce:
       default: events.eventdata.DBEvent
     - name: _app
       default: CITY_EVENT_RANKING
-
-- name: Rewrite User Locations
-  mapper:
-    input_reader: mapreduce.input_readers.DatastoreInputReader
-    handler: events.users.cleanup_location2
-    params:
-    - name: entity_kind
-      default: events.users.User
