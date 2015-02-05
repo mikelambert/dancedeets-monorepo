@@ -1,12 +1,13 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import datetime
+import iso3166
 import json
 import logging
-import re
-import urlparse
 import oauth2 as oauth
-import iso3166
+import re
+import time
+import urlparse
 
 from google.appengine.ext import ndb
 import twitter
@@ -29,9 +30,12 @@ TIME_FORMAT = "%H:%M"
 from google.appengine.api import taskqueue
 
 EVENT_PULL_QUEUE = 'event-publishing-pull-queue'
-def eventually_publish_event(fbl, event_id):
+
+def eventually_publish_event(fbl, event_id, token_nickname=None):
     event_id = str(event_id)
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
+    if fb_event['empty']:
+        return
     db_event = eventdata.DBEvent.get_or_insert(event_id)
     location_info = event_locations.LocationInfo(fb_event, db_event)
     logging.info("Publishing event %s with latlng %s", event_id, location_info.final_latlng)
@@ -40,7 +44,11 @@ def eventually_publish_event(fbl, event_id):
         return
     event_country = locations.get_country_for_location(latlng=location_info.final_latlng)
 
-    oauth_tokens = OAuthToken.query(OAuthToken.valid_token==True).fetch(100)
+
+    args = []
+    if token_nickname:
+        args.append(OAuthToken.token_nickname==token_nickname)
+    oauth_tokens = OAuthToken.query(OAuthToken.valid_token==True, *args).fetch(100)
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
         logging.info("Evaluating token %s", token)
@@ -49,7 +57,8 @@ def eventually_publish_event(fbl, event_id):
                 continue
         logging.info("Adding task for posting!")
         # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
-        name = 'Token_%s__Event_%s' % (token.queue_id(), event_id)
+        name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id, int(time.time()))
+        logging.info("Adding task with name %s", name)
         q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
 
 def pull_and_publish_event(fbl):
@@ -161,6 +170,10 @@ def twitter_post(auth_token, db_event, fb_event):
     status = format_twitter_post(db_event, fb_event, media)
     t.statuses.update(status=status, **update_params)
 
+    # This is the only twitter account allowed to @mention, to avoid spamming everyone...
+    if auth_token.token_nickname != 'BigTwitter':
+        return
+
     description = fb_event['info'].get('description') or ''
     twitter_handles = re.findall(r'\s@[A-za-z0-9_]+', description)
     twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+15]
@@ -250,7 +263,7 @@ class OAuthToken(ndb.Model):
     #post on event find? post x hours before event? multiple values?
 
     def queue_id(self):
-        return self.key.string_id()
+        return str(self.key.id())
 
 
 def twitter_oauth1(user_id, token_nickname, country_filter):
@@ -337,7 +350,6 @@ def facebook_auth(fbl, page_uid, country_filter):
     if not pages:
         raise ValueError("Failed to find page id in user's page permissions: %s" % page_uid)
     page = pages[0]
-    print page
     page_token = page['access_token']
 
     auth_tokens = OAuthToken.query(OAuthToken.user_id==str(fbl.fb_uid), OAuthToken.token_nickname==str(page_uid), OAuthToken.application==APP_FACEBOOK).fetch(1)

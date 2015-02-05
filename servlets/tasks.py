@@ -170,7 +170,12 @@ class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
 
 class SocialPublisherHandler(BaseTaskFacebookRequestHandler):
     def get(self):
-            pubsub.pull_and_publish_event(self.fbl)
+        pubsub.pull_and_publish_event(self.fbl)
+
+class PostJapanEventsHandler(BaseTaskFacebookRequestHandler):
+    def get(self):
+        token_nickname = self.request.get('token_nickname', None)
+        fb_reloading.mr_post_jp_events(self.fbl, token_nickname)
 
 class TimingsKeepAlive(BaseTaskRequestHandler):
     def get(self):
