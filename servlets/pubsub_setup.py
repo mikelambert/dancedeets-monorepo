@@ -12,7 +12,8 @@ class TwitterOAuthStartHandler(base_servlet.BaseRequestHandler):
             #TODO(lambert): Clean up
             self.response.write('Need token_nickname parameter')
             return
-        url = pubsub.twitter_oauth1(self.fb_uid, nickname)
+        country_filter = self.request.get('country_filter')
+        url = pubsub.twitter_oauth1(self.fb_uid, nickname, country_filter)
         self.redirect(url)
 
 class TwitterOAuthCallbackHandler(base_servlet.BaseRequestHandler):
@@ -20,8 +21,7 @@ class TwitterOAuthCallbackHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
         oauth_token = self.request.get('oauth_token')
         oauth_verifier = self.request.get('oauth_verifier')
-        country_filter = self.request.get('country_filter')
-        auth_token = pubsub.twitter_oauth2(oauth_token, oauth_verifier, country_filter)
+        auth_token = pubsub.twitter_oauth2(oauth_token, oauth_verifier)
         if auth_token:
             self.redirect('/twitter/oauth_success?nickname=' + auth_token.token_nickname)
         else:

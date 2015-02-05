@@ -22,7 +22,7 @@ cron:
   url: /tasks/reload_future_events?user_id=701004&allow_cache=0
   schedule: every 20 hours
 - description: post to social networks
-  url: tasks/social_publisher?user_id=701004
+  url: /tasks/social_publisher?user_id=701004
   schedule: every 1 minutes
 #- description: reload past facebook event data
 #  url: /tasks/reload_past_events?user_id=701004&allow_cache=0
