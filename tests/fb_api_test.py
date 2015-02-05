@@ -182,6 +182,20 @@ class TestFBAPI(unittest.TestCase):
             }}
         )
 
+class TestFBLookupPickling(unittest.TestCase):
+
+    def runTest(self):
+        import pickle
+        fbl = fb_api.FBLookup('uid', 'access_token')
+        dumped = pickle.dumps(fbl)
+        self.assertTrue(len(dumped) < 1000)
+        fbl._fetched_objects['a'] = 'x' * 10000
+        dumped = pickle.dumps(fbl)
+        self.assertTrue(len(dumped) < 1000)
+        fbl2 = pickle.loads(dumped)
+        self.assertEqual(fbl2._fetched_objects, {})
+
+
 class TestFBLookup(unittest.TestCase):
     def setUp(self):
         self.fb_api = fb_api_stub.Stub()
