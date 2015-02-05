@@ -22,6 +22,7 @@ from logic import mobile
 from logic import rankings
 from logic import search_base
 import template
+from util import abbrev
 from util import dates
 from util import text
 from util import urls
@@ -147,7 +148,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         location_components = [
             self.request.headers.get("X-AppEngine-City"),
             self.request.headers.get("X-AppEngine-Region"),
-            self.request.headers.get("X-AppEngine-Country"),
+            abbrev.countries_abbrev2full.get(self.request.headers.get("X-AppEngine-Country"), ''),
         ]
         location = ', '.join(x for x in location_components if x)
         return location
