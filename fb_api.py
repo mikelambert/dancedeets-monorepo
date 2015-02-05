@@ -566,6 +566,12 @@ class FBLookup(object):
         self.fb = FBAPI(self.access_token)
         self.debug = False
 
+    def __getstate__(self):
+        d = self.__dict__.copy()
+        d['_fetched_objects'] = {}
+        d['_db_updated_objects'] = set()
+        return d
+
     def make_passthrough(self):
         self.m = None
         self.db = None
