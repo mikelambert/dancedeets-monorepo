@@ -12,8 +12,10 @@ from google.appengine.ext import ndb
 import twitter
 
 from events import eventdata
+from logic import event_locations
 import fb_api
 import keys
+import locations
 from util import dates
 from util import fetch
 from util import urls
@@ -28,9 +30,24 @@ from google.appengine.api import taskqueue
 
 EVENT_PULL_QUEUE = 'event-publishing-pull-queue'
 def eventually_publish_event(fbl, event_id):
+    event_id = str(event_id)
+    fb_event = fbl.get(fb_api.LookupEvent, event_id)
+    db_event = eventdata.DBEvent.get_or_insert(event_id)
+    location_info = event_locations.LocationInfo(fb_event, db_event)
+    logging.info("Publishing event %s with latlng %s", event_id, location_info.final_latlng)
+    if not location_info.final_latlng:
+        # Don't post events without a location. It's too confusing...
+        return
+    event_country = locations.get_country_for_location(latlng=location_info.final_latlng)
+
     oauth_tokens = OAuthToken.query(OAuthToken.valid_token==True).fetch(100)
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
+        logging.info("Evaluating token %s", token)
+        if token.country_filter:
+            if event_country != token.country_filter:
+                continue
+        logging.info("Adding task for posting!")
         q.add(taskqueue.Task(payload=event_id, method='PULL', tag=token.queue_id()))
 
 def pull_and_publish_event(fbl):
@@ -48,6 +65,7 @@ def pull_and_publish_event(fbl):
         token = token.key.get()
         token.next_post_time = next_post_time
         token.put()
+        logging.info("Fetching tasks with queue id %s", token.queue_id())
         tasks = q.lease_tasks_by_tag(120, 1, token.queue_id())
         if tasks:
             for task in tasks:
@@ -77,6 +95,7 @@ def post_event_id_with_authtoken(fbl, event_id, auth_token):
     else:
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
 
+#TODO(lambert): delete when the queue is totally empty
 def publish_event(fbl, event_id):
     event_id = str(event_id)
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
@@ -192,6 +211,7 @@ def facebook_post(auth_token, db_event, fb_event):
     if cover:
         post_values['picture'] = cover['source']
     venue_id = fb_event['info'].get('venue', {}).get('id')
+    country = None
     if venue_id:
         post_values['place'] = venue_id
         # Can only tag people if there is a place tagged too
@@ -205,11 +225,18 @@ def facebook_post(auth_token, db_event, fb_event):
             country = country.upper()
             if country in iso3166.countries_by_name:
                 short_country = iso3166.countries_by_name[country].alpha2
-                feed_targeting = {'countries': [short_country]}
-                # We could choose to target by region or city, if we wanted to be more specific.
-                # Probably depends on how many people sign up, and how far they're willing to travel
-                # TODO(lambert): Maybe do region (aka state) based in Canada, US, and Russia, and country-based for the rest?
-                post_values['feed_targeting'] = json.dumps(feed_targeting)
+
+    if not short_country:
+        location_info = event_locations.LocationInfo(fb_event, db_event)
+        if location_info.final_latlng:
+            short_country = locations.get_country_for_location(latlng=location_info.final_latlng)
+
+    if short_country:
+        feed_targeting = {'countries': [short_country]}
+        # We could choose to target by region or city, if we wanted to be more specific.
+        # Probably depends on how many people sign up, and how far they're willing to travel
+        # TODO(lambert): Maybe do region (aka state) based in Canada, US, and Russia, and country-based for the rest?
+        post_values['feed_targeting'] = json.dumps(feed_targeting)
 
     page_id = auth_token.token_nickname
     endpoint = '/v2.2/%s/feed' % page_id
@@ -224,7 +251,7 @@ authorize_url = 'https://twitter.com/oauth/authorize'
 
 APP_TWITTER = 'APP_TWITTER'
 APP_FACEBOOK = 'APP_FACEBOOK' # a butchering of OAuthToken!
-#...fb?
+#...instagram?
 #...tumblr?
 
 class OAuthToken(ndb.Model):
@@ -240,6 +267,10 @@ class OAuthToken(ndb.Model):
     time_between_posts = ndb.IntegerProperty() # In seconds!
     next_post_time = ndb.DateTimeProperty()
 
+    # TODO(lambert): Fix this temp hack by implementing proper list-of-filters in json
+    # For the moment, use a two-character country code here.
+    country_filter = ndb.StringProperty()
+
     #search criteria? location? radius? search terms?
     #post on event find? post x hours before event? multiple values?
 
@@ -247,7 +278,7 @@ class OAuthToken(ndb.Model):
         return self.key.string_id()
 
 
-def twitter_oauth1(user_id, token_nickname):
+def twitter_oauth1(user_id, token_nickname, country_filter):
     consumer = oauth.Consumer(consumer_key, consumer_secret)
     client = oauth.Client(consumer)
 
@@ -271,6 +302,8 @@ def twitter_oauth1(user_id, token_nickname):
     auth_token.application = APP_TWITTER
     auth_token.temp_oauth_token = request_token['oauth_token']
     auth_token.temp_oauth_token_secret = request_token['oauth_token_secret']
+    if country_filter:
+        auth_token.country_filter = country_filter.upper()
     auth_token.put()
 
     # Step 2: Redirect to the provider. Since this is a CLI script we do not 
@@ -322,7 +355,7 @@ class LookupUserAccounts(fb_api.LookupType):
         return (fetching_uid, object_id, 'OBJ_USER_ACCOUNTS')
 
 
-def facebook_auth(fbl, page_uid):
+def facebook_auth(fbl, page_uid, country_filter):
     accounts = fbl.get(LookupUserAccounts, fbl.fb_uid, allow_cache=False)
     all_pages = accounts['accounts']['data']
     pages = [x for x in all_pages if x['id'] == page_uid]
@@ -343,6 +376,8 @@ def facebook_auth(fbl, page_uid):
     auth_token.valid_token = True
     auth_token.oauth_token = page_token
     auth_token.time_between_posts = 5*60
+    if country_filter:
+        auth_token.country_filter = country_filter.upper()
     auth_token.put()
     return auth_token
 

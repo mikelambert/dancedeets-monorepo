@@ -20,7 +20,8 @@ class TwitterOAuthCallbackHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
         oauth_token = self.request.get('oauth_token')
         oauth_verifier = self.request.get('oauth_verifier')
-        auth_token = pubsub.twitter_oauth2(oauth_token, oauth_verifier)
+        country_filter = self.request.get('country_filter')
+        auth_token = pubsub.twitter_oauth2(oauth_token, oauth_verifier, country_filter)
         if auth_token:
             self.redirect('/twitter/oauth_success?nickname=' + auth_token.token_nickname)
         else:
@@ -42,11 +43,12 @@ class FacebookPageSetupHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
         page_uid = self.request.get('page_uid')
+        country_filter = self.request.get('country_filter')
         if not page_uid:
             #TODO(lambert): Clean up
             self.response.write('Need page_uid parameter')
             return
-        pubsub.facebook_auth(self.fbl, page_uid)
+        pubsub.facebook_auth(self.fbl, page_uid, country_filter)
         #TODO(lambert): Clean up
         self.response.write('Authorized!')
 

@@ -164,8 +164,8 @@ def _get_name(result):
         logging.warning("Could not get city for geocode results: %s", result)
     return city_name
 
-def get_country_for_location(location_name, long_name=False):
-    result = _raw_get_cached_geocoded_data(address=location_name)
+def get_country_for_location(address=None, latlng=None, long_name=False):
+    result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
     if not result:
         return None
     if long_name:
@@ -174,9 +174,9 @@ def get_country_for_location(location_name, long_name=False):
         name = "short_name"
     countries = [x[name] for x in result['address_components'] if u'country' in x['types']]
     if len(countries) == 0:
-        raise gmaps.GeocodeException("Found no countries for %s: %r" % (location_name, result))
+        raise gmaps.GeocodeException("Found no countries for %s, %s: %r" % (address, latlng, result))
     if len(countries) > 1:
-        raise gmaps.GeocodeException("Found too many countries for %s: %s" % (location_name, countries))
+        raise gmaps.GeocodeException("Found too many countries for %s, %s: %s" % (address, latlng, countries))
     return countries[0]
 
 rad = math.pi / 180.0
