@@ -150,7 +150,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.request.headers.get("X-AppEngine-Region"),
             abbrev.countries_abbrev2full.get(self.request.headers.get("X-AppEngine-Country"), ''),
         ]
-        location = ', '.join(x for x in location_components if x)
+        location = ', '.join(x for x in location_components if x and x != '?')
         return location
 
     def get_long_lived_token_and_expires(self, request):
