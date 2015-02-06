@@ -258,7 +258,14 @@ class BaseRequestHandler(BareBaseRequestHandler):
                     return
         elif fb_cookie_uid:
             # if we don't have a user but do have a token, the user has granted us permissions, so let's construct the user now
-            access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
+            try:
+                access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
+            except facebook.AlreadyHasLongLivedToken:
+                logging.warning("Don't have user, just fb_cookie_id. And unable to get long lived token for the incoming request. Giving up and doing logged-out")
+                self.fb_uid = None
+                self.access_token = None
+                self.user = None
+                return
             self.access_token = access_token
             # Fix this ugly import hack:
             fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
