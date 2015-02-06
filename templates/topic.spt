@@ -13,9 +13,28 @@ $topic_title Events
 #def body
 <div class="row">
 
+<div class="col-md-4">
+#for $year, $month_results in $group_by_date.iteritems()
+	$year:
+	#for $month, $results in $month_results.iteritems()
+		$month ($len($results))
+	#end for
+	<br/>
+#end for
+</div>
+<div class="col-md-4">
+#for $location, $results in $group_by_location.iteritems()
+	$location: $len($results)
+	<br/>
+#end for
+</div>
+
+</div>
+
+<div class="row">
 <div class="col-md-12" style="min-height:300px">
 	<ol class="events-list">
-	#for $result in $results
+	#for $result in $all_results
 		#set $fb_event = $result.fb_event.info
 		## widths here are set to sum to 700px-50px = 650px
 		<li class="wide-event">

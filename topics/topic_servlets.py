@@ -53,8 +53,11 @@ class TopicHandler(base_servlet.BaseRequestHandler):
                     # Examples:
                     #   "- HOUSE - KAPELA (Serial Stepperz/Wanted Posse)"
                     #   "5th November : EVENT Judged by HIRO :"
-                    if result and 1.0 * len(keyword) / len(line) > 0.2:
-                        return True
+                    if result:
+                        if 1.0 * len(keyword) / len(line) > 0.1:
+                            return True
+                        else:
+                            logging.info("Found keyword %r on line, but not long enough: %r", keyword, line)
 
             logging.info("Prefilter dropping event %s with title: %r" % (pseudo_db_event.fb_event_id, title))
             return False
@@ -69,7 +72,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         self.display['topic_image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])
         self.display['topic_description'] = topic.override_description or (fb_source and fb_source['info']['about'])
 
-        self.display['results'] = search_results
+        self.display['all_results'] = search_results
 
         self.display['group_by_date'] = grouping.group_results_by_date(search_results)
         self.display['group_by_location'] = grouping.group_results_by_location(search_results)
