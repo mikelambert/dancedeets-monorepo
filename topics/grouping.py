@@ -1,4 +1,5 @@
 import collections
+import datetime
 
 import gmaps
 import location_formatting
@@ -12,7 +13,7 @@ def group_results_by_date(results):
         cur_month = start_month
         while cur_month <= end_month:
             year_months[cur_month.year][cur_month.month].append(result)
-            cur_month = cur_month.replace(month=cur_month.month+1)
+            cur_month = datetime.date(cur_month.year + (cur_month.month / 12), ((cur_month.month % 12) + 1), 1)
     return year_months
 
 
