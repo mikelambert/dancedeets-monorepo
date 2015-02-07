@@ -4,91 +4,22 @@ import math
 
 import geohash
 from loc import gmaps
+from loc import gmaps_bwcompat
+from loc import gmaps_cached
 from loc import math as loc_math
-
-from google.appengine.ext import db
-try:
-    import smemcache
-except ImportError:
-    smemcache = None
-    pass
 
 # http://en.wikipedia.org/wiki/Mile
 MILES_COUNTRIES = ['UK', 'US']
 
 LOCATION_EXPIRY = 24 * 60 * 60
 
-class GeoCode(db.Model):
-    address = property(lambda x: int(x.key().name()))
-    json_data = db.TextProperty()
-
-
-def _memcache_location_key(location):
-    return 'GoogleMaps.%s' % location
-
-def _geocode_key(address, latlng):
-    assert address or latlng
-    assert not (address and latlng)
-    if address:
-        return address
-    else:
-        return '%s,%s' % latlng
-
-NO_GEOCODE = 'NO_GEOCODE'
-
-def _raw_get_cached_geocoded_data(address=None, latlng=None):
-    if not address and not latlng:
-        return {}
-    geocode_key = _geocode_key(address, latlng)
-    memcache_key = _memcache_location_key(geocode_key)
-    geocoded_data = None
-    if smemcache:
-        geocoded_data = smemcache.get(memcache_key)
-    if geocoded_data == NO_GEOCODE:
-        geocoded_data = None # so we return None
-    elif geocoded_data is None:
-        geocode = GeoCode.get_by_key_name(geocode_key)
-        data_is_good = False
-        if geocode:
-            data_is_good = True
-            try:
-                geocoded_data = json.loads(geocode.json_data)
-            except:
-                logging.exception("Error decoding json data for geocode %r with latlng %s: %r", address, latlng, geocode.json_data)
-                data_is_good = False
-        if not data_is_good:
-            gmaps_geocode = gmaps.parse_geocode(gmaps.fetch_raw(address=address, latlng=latlng))
-            if gmaps_geocode is not None:
-                geocoded_data = gmaps_geocode.json_data
-            else:
-                geocoded_data = None
-            geocode = GeoCode(key_name=geocode_key)
-            geocode.json_data = json.dumps(geocoded_data)
-            geocode.put()
-        if smemcache:
-            geocoded_data_for_memcache = geocoded_data
-            if geocoded_data_for_memcache is None:
-                geocoded_data_for_memcache = NO_GEOCODE
-            smemcache.set(memcache_key, geocoded_data_for_memcache, LOCATION_EXPIRY)
-    return geocoded_data
-
 def get_location_bounds(address, distance_in_km):
     if not address:
         return None, None
-    result = _raw_get_cached_geocoded_data(address=address)
-
-    if not result:
+    geocode = gmaps.parse_geocode(gmaps_bwcompat.fetch_raw(address=address))
+    if not geocode:
         return None, None
-
-    def to_latlng(x):
-        return x['lat'], x['lng']
-    try:
-        northeast = to_latlng(result['geometry']['viewport']['northeast'])
-        southwest = to_latlng(result['geometry']['viewport']['southwest'])
-    except TypeError as e:
-        logging.error("Ungeocodable address %r gave result: %r", address, result)
-        #TODO(lambert): do a better job returning these as errors to the user
-        raise e
+    northeast, southwest = geocode.latlng_bounds()
 
     logging.info("1 NE %s, SW %s", northeast, southwest)
 
@@ -107,23 +38,27 @@ def get_location_bounds(address, distance_in_km):
     return southwest, northeast # ordered more negative to more positive
 
 def get_name(address=None, latlng=None):
-    result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
-    if not result:
+    geocode = gmaps.parse_geocode(gmaps_bwcompat.fetch_raw(address=address, latlng=latlng))
+    if not geocode:
         return None
-    return _get_name(result)
+    return _get_name(geocode.json_data)
 
 def get_name_and_latlng(address=None, latlng=None):
-    result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
-    if not result:
+    geocode = gmaps.parse_geocode(gmaps_bwcompat.fetch_raw(address=address, latlng=latlng))
+    if not geocode:
         return None
-    latlng = (float(result['geometry']['location']['lat']), float(result['geometry']['location']['lng']))
-    return _get_name(result), latlng
+    latlng = geocode.latlng()
+    return _get_name(geocode.json_data), latlng
 
 def get_latlng(address=None, latlng=None):
-    result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
-    if not result:
+    geocode = gmaps.parse_geocode(gmaps_bwcompat.fetch_raw(address=address, latlng=latlng))
+    if not geocode:
         return None
-    return (float(result['geometry']['location']['lat']), float(result['geometry']['location']['lng']))
+    return geocode.latlng()
+
+def get_country_for_location(address=None, latlng=None, long_name=False):
+    geocode = gmaps.parse_geocode(gmaps_bwcompat.fetch_raw(address=address, latlng=latlng))
+    return geocode.country(long=long_name)
 
 def _get_name(result):
     def get(name, long=True):
@@ -164,21 +99,6 @@ def _get_name(result):
     if not city_name:
         logging.warning("Could not get city for geocode results: %s", result)
     return city_name
-
-def get_country_for_location(address=None, latlng=None, long_name=False):
-    result = _raw_get_cached_geocoded_data(address=address, latlng=latlng)
-    if not result:
-        return None
-    if long_name:
-        name = "long_name"
-    else:
-        name = "short_name"
-    countries = [x[name] for x in result['address_components'] if u'country' in x['types']]
-    if len(countries) == 0:
-        raise gmaps.GeocodeException("Found no countries for %s, %s: %r" % (address, latlng, result))
-    if len(countries) > 1:
-        raise gmaps.GeocodeException("Found too many countries for %s, %s: %s" % (address, latlng, countries))
-    return countries[0]
 
 circumference_of_earth = 40000.0 # km
 def get_geohash_bits_for_km(km):
