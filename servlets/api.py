@@ -294,7 +294,11 @@ class AuthHandler(ApiHandler):
         try:
             self.process()
         except:
-            taskqueue.add(method='POST', url=self.request.url, payload=self.request.body,
+            url = self.request.path
+            body = self.request.body
+            logging.info("Retrying URL %s", url)
+            logging.info("With Payload %r", body)
+            taskqueue.add(method='POST', url=url, payload=body,
                 countdown=60*60)
 
     def process(self):
