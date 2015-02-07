@@ -33,33 +33,30 @@ def fetch_raw(address=None, latlng=None, language=None, region=None):
     logging.info('geocoding url: %s', url)
     result = urllib.urlopen(url).read()
     logging.info('geocoding results: %s', result)
-    return result
+
+    return json.loads(result)
 
 class GMapsGeocode(object):
     def __init__(self, json_data):
-        self.json = json_data
+        self.json_data = json_data
 
     def copy(self):
-        return GMapsGeocode(self.json)
+        return GMapsGeocode(self.json_data)
 
     def address_components(self):
-        return self.json['address_components']
+        return self.json_data['address_components']
 
     def get_component(self, name, long=True):
-        components = [x[long and 'long_name' or 'short_name'] for x in self.json['address_components'] if name in x['types']]
+        components = [x[long and 'long_name' or 'short_name'] for x in self.json_data['address_components'] if name in x['types']]
         if components:
             return components[0]
         else:
             return None
 
     def delete_component(self, name):
-        self.json['address_components'] = [x for x in self.json['address_components'] if name not in x['types']]
+        self.json_data['address_components'] = [x for x in self.json_data['address_components'] if name not in x['types']]
 
-def parse_geocode(json_string):
-    try:
-        json_result = json.loads(json_string)
-    except Exception as e:
-        raise GeocodeException("%s: %r" % (e, json_string))
+def parse_geocode(json_result):
     if json_result['status'] == 'OK':
         return GMapsGeocode(json_result['results'][0])
     elif json_result['status'] == 'ZERO_RESULTS':

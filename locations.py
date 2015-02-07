@@ -3,7 +3,7 @@ import logging
 import math
 
 import geohash
-import gmaps
+from loc import gmaps
 
 from google.appengine.ext import db
 try:
@@ -58,7 +58,7 @@ def _raw_get_cached_geocoded_data(address=None, latlng=None):
         if not data_is_good:
             gmaps_geocode = gmaps.parse_geocode(gmaps.fetch_raw(address=address, latlng=latlng))
             if gmaps_geocode is not None:
-                geocoded_data = gmaps_geocode.json
+                geocoded_data = gmaps_geocode.json_data
             else:
                 geocoded_data = None
             geocode = GeoCode(key_name=geocode_key)

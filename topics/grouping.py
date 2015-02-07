@@ -1,8 +1,8 @@
 import collections
 import datetime
 
-import gmaps
-import location_formatting
+from loc import gmaps
+from loc import formatting
 from logic import event_locations
 
 def group_results_by_date(results):
@@ -21,7 +21,7 @@ def group_results_by_location(results):
     location_map = collections.defaultdict(lambda: [])
     location_infos = [event_locations.LocationInfo(x.fb_event) for x in results]
     geocodes = [gmaps.parse_geocode(gmaps.fetch_raw(address=x.actual_city())) for x in location_infos]
-    addresses = location_formatting.format_geocodes(geocodes)
+    addresses = formatting.format_geocodes(geocodes)
     for address, result in zip(addresses, results):
         location_map[address].append(result)
     return location_map
