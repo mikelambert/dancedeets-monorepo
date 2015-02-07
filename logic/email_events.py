@@ -6,6 +6,7 @@ from google.appengine.api import mail
 from events import eventdata
 import fb_api
 import locations
+from loc import math
 from logic import friends
 from logic import rsvp
 from logic import search
@@ -26,7 +27,7 @@ def email_for_user(user, fbl, should_send=True):
     distance = int(user.distance)
     distance_units = user.distance_units
     if distance_units == 'miles':
-        distance_in_km = locations.miles_in_km(distance)
+        distance_in_km = math.miles_in_km(distance)
     else:
         distance_in_km = distance
     min_attendees = user.min_attendees

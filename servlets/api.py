@@ -10,6 +10,7 @@ from google.appengine.api import taskqueue
 import base_servlet
 import fb_api
 import locations
+from loc import math
 from events import eventdata
 from events import users
 from logic import event_locations
@@ -230,7 +231,7 @@ class SearchHandler(ApiHandler):
                     self.add_error('Please enter a location or keywords')                
         else:
             if fe_search_query.distance_units == 'miles':
-                distance_in_km = locations.miles_in_km(fe_search_query.distance)
+                distance_in_km = math.miles_in_km(fe_search_query.distance)
             else:
                 distance_in_km = fe_search_query.distance
             southwest, northeast = locations.get_location_bounds(address=fe_search_query.location, distance_in_km=distance_in_km)

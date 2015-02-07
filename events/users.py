@@ -6,6 +6,7 @@ from google.appengine.runtime import apiproxy_errors
 
 import datetime
 import locations
+from loc import math
 import smemcache
 from util import dates
 
@@ -54,7 +55,7 @@ class User(db.Model):
         elif self.distance_units == 'km':
             return int(self.distance)
         else:
-            return locations.miles_in_km(int(self.distance))
+            return math.miles_in_km(int(self.distance))
 
     @staticmethod
     def memcache_user_key(fb_user_id):

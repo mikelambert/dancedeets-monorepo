@@ -12,6 +12,7 @@ from google.appengine.ext import deferred
 from events import eventdata
 import fb_api
 import locations
+from loc import math
 from util import dates
 from util import timings
 
@@ -133,7 +134,7 @@ class SearchQuery(object):
     def create_from_query(cls, query, start_end_query=False):
         if query.location:
             if query.distance_units == 'miles':
-                distance_in_km = locations.miles_in_km(query.distance)
+                distance_in_km = math.miles_in_km(query.distance)
             else:
                 distance_in_km = query.distance
             bounds = locations.get_location_bounds(query.location, distance_in_km)

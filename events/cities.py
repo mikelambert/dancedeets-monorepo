@@ -4,6 +4,7 @@ from google.appengine.ext import db
 
 import geohash
 import locations
+from loc import math
 from util import abbrev
 
 CITY_GEOHASH_PRECISIONS = range(
@@ -23,7 +24,7 @@ def get_largest_nearby_city_name(location):
         return "Unknown"
     geohashes = locations.get_all_geohashes_for((point, point), precision=locations.get_geohash_bits_for_km(NEARBY_DISTANCE_KM))
     cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(100)
-    cities = [x for x in cities if locations.get_distance(point, (x.latitude, x.longitude), use_km=True) < NEARBY_DISTANCE_KM]
+    cities = [x for x in cities if math.get_distance(point, (x.latitude, x.longitude), use_km=True) < NEARBY_DISTANCE_KM]
     if not cities:
         return "Unknown"
     largest_nearby_city = max(cities, key=lambda x: x.population)
