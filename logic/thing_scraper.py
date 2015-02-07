@@ -104,6 +104,7 @@ def mapreduce_create_sources_from_events(fbl):
     )
 
 def parsed_event_link(url):
+    print url
     p = urlparse.urlparse(url)
     # allow relative urls
     good_domain = p.netloc in ['', 'www.facebook.com', 'm.facebook.com']
@@ -144,8 +145,7 @@ def parse_event_source_combos_from_feed(source, feed_data):
             link = x['link']
             links.append(link)
         if post.get('message'):
-            # We're only looking for events, and not all possible links, so this is easier:
-            links.extend(re.findall("https?://[A-Za-z0-9-._~:/?#[\]@!$&\'()*+,;=%]+", post.get('message')))
+            links.extend(re.findall("https?://[A-Za-z0-9-._~:/?#@!$&\'()*+,;=%]+", post.get('message')))
         links = [x for x in links if x]
         # Now go over the links in this particular post, grabbing anything we need
         for p in links:
