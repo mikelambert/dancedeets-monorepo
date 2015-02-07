@@ -47,9 +47,19 @@ Get the app now:
 
 <div class="install-div">
 Or enter your phone number, and we'll send you a link to install:
-<form class="spacing" method="post" action="/mobile_apps">
+<form class="spacing form-inline" method="post" action="/mobile_apps">
 <input type="hidden" name="action" value="send_sms" />
-<input type="text" class="form-control sms-textbox" name="phone" placeholder="+1 (123) 456-7890" />
+<select name="prefix" class="form-control">
+<option name="">Select a country below</option>
+#for $country, $code in $country_codes
+	<option value="$code"
+	#if $code == $prefix
+		selected
+	#end if
+	>$country (+$code)</option>
+#end for
+</select>
+<input type="text" class="form-control sms-textbox" name="phone" placeholder="(123) 456-7890" value="$phone"/>
 <button type="submit" value="submit" class="btn btn-primary sms-button">Send link to my phone</button>
 </form>
 </div>
