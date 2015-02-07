@@ -87,7 +87,7 @@ class User(db.Model):
             logging.error("Failed to save timezone %s: %s", fb_user['profile'].get('timezone'), e)
         if self.location:
             #TODO(lambert): wasteful dual-lookups, but two memcaches aren't that big a deal given how infrequently this is called
-            self.location_country = locations.get_country_for_location(self.location)
+            self.location_country = locations.get_country_for_location(address=self.location)
         else:
             self.location_country = None
 
