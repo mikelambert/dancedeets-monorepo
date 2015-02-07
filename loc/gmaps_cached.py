@@ -13,7 +13,7 @@ class CachedGeoCode(ndb.Model):
 
 
 def _geocode_key(**kwargs):
-    return ', '.join(sorted('%s=%r' % (k, v) for (k, v) in kwargs.items()))
+    return ', '.join(sorted('%s=%r' % (k, unicode(v).strip().lower()) for (k, v) in kwargs.items()))
 
 NO_GEOCODE = 'NO_GEOCODE'
 
