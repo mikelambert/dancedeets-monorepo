@@ -146,11 +146,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
     def get_location_from_headers(self):
         iso3166_country = self.request.headers.get("X-AppEngine-Country")
-        country = abbrev.countries_abbrev2full.get(iso3166_country)
-        if country:
-            full_country = country
-        else:
-            full_country = iso3166_country
+        full_country = abbrev.countries_abbrev2full.get(iso3166_country, iso3166_country)
 
         location_components = []
         location_components.append(self.request.headers.get("X-AppEngine-City"))
