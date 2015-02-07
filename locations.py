@@ -1,11 +1,10 @@
-import json
 import logging
 import math
 
 import geohash
 from loc import gmaps
 from loc import gmaps_bwcompat
-from loc import gmaps_cached
+from loc import gmaps_api
 from loc import math as loc_math
 
 # http://en.wikipedia.org/wiki/Mile
@@ -16,7 +15,7 @@ LOCATION_EXPIRY = 24 * 60 * 60
 def get_location_bounds(address, distance_in_km):
     if not address:
         return None, None
-    geocode = gmaps.parse_geocode(gmaps_bwcompat.fetch_raw(address=address))
+    geocode = gmaps_api.get_geocode(address=address)
     if not geocode:
         return None, None
     northeast, southwest = geocode.latlng_bounds()
@@ -37,27 +36,27 @@ def get_location_bounds(address, distance_in_km):
 
     return southwest, northeast # ordered more negative to more positive
 
-def get_name(address=None, latlng=None):
-    geocode = gmaps.parse_geocode(gmaps_bwcompat.fetch_raw(address=address, latlng=latlng))
+def get_name(**kwargs):
+    geocode = gmaps_api.get_geocode(**kwargs)
     if not geocode:
         return None
     return _get_name(geocode.json_data)
 
-def get_name_and_latlng(address=None, latlng=None):
-    geocode = gmaps.parse_geocode(gmaps_bwcompat.fetch_raw(address=address, latlng=latlng))
+def get_name_and_latlng(**kwargs):
+    geocode = gmaps_api.get_geocode(**kwargs)
     if not geocode:
         return None
     latlng = geocode.latlng()
     return _get_name(geocode.json_data), latlng
 
-def get_latlng(address=None, latlng=None):
-    geocode = gmaps.parse_geocode(gmaps_bwcompat.fetch_raw(address=address, latlng=latlng))
+def get_latlng(**kwargs):
+    geocode = gmaps_api.get_geocode(**kwargs)
     if not geocode:
         return None
     return geocode.latlng()
 
-def get_country_for_location(address=None, latlng=None, long_name=False):
-    geocode = gmaps.parse_geocode(gmaps_bwcompat.fetch_raw(address=address, latlng=latlng))
+def get_country_for_location(long_name=False, **kwargs):
+    geocode = gmaps_api.get_geocode(**kwargs)
     return geocode.country(long=long_name)
 
 def _get_name(result):

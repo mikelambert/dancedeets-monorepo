@@ -2,14 +2,10 @@
 
 import unittest
 
-from loc import gmaps
+from loc import gmaps_api
 from loc import gmaps_local
 from loc import formatting
 
-def get_geocode(address):
-    gmaps_data = gmaps_local.fetch_raw_cached(address=address)
-    geocode = gmaps.parse_geocode(gmaps_data)
-    return geocode
 
 formatting_reg_data = {
     'Shibuya': 'Shibuya, Tokyo, Japan',
@@ -37,10 +33,18 @@ formatting_reg_data = {
 }
 
 
-class TestLocationFormatting(unittest.TestCase):
+class GmapsTestCase(unittest.TestCase):
+    def setUp(self):
+        self.original_backend = gmaps_api.gmaps_backend
+        gmaps_api.gmaps_backend = gmaps_local
+
+    def tearDown(self):
+        gmaps_api.gmaps_backend = self.original_backend
+
+class TestLocationFormatting(GmapsTestCase):
     def runTest(self):
         for address, final_address in formatting_reg_data.iteritems():
-            formatted_address = formatting.format_geocode(get_geocode(address))
+            formatted_address = formatting.format_geocode(gmaps_api.get_geocode(address=address))
             if formatted_address != final_address:
                 print 'formatted address for %r is %r, should be %r' % (address, formatted_address, final_address)
                 print gmaps_local.fetch_raw_cached(address=address)
@@ -56,10 +60,10 @@ grouping_lists = [
     (['Nagoya', 'Sydney'], ['Nagoya, Aichi Prefecture, Japan', 'Sydney, NSW, Australia']),
 ]
 
-class TestMultiLocationFormatting(unittest.TestCase):
+class TestMultiLocationFormatting(GmapsTestCase):
     def runTest(self):
         for addresses, reformatted_addresses in grouping_lists:
-            geocodes = [get_geocode(address) for address in addresses]
+            geocodes = [gmaps_api.get_geocode(address=address) for address in addresses]
             reformatted_parts = formatting.format_geocodes(geocodes)
             self.assertEqual(reformatted_parts, reformatted_addresses)
 

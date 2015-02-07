@@ -14,5 +14,5 @@ class TestCityNames(unittest.TestCase):
 
 class TestGetCountry(unittest.TestCase):
     def runTest(self):
-        self.assertEqual(locations.get_country_for_location('San Francisco'), u'US')
-        self.assertEqual(locations.get_country_for_location('Tokyo'), u'JP')
+        self.assertEqual(locations.get_country_for_location(address='San Francisco'), u'US')
+        self.assertEqual(locations.get_country_for_location(address='Tokyo'), u'JP')

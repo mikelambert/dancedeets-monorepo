@@ -3,7 +3,7 @@ import os.path
 
 import gmaps
 
-def fetch_raw_cached(address=None, latlng=None, language='en'):
+def fetch_raw(address=None, latlng=None, language='en'):
 
     if address is not None:
         filename = os.path.join('test_data/gmaps/address', language, address)
