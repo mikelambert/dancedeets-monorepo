@@ -3,13 +3,14 @@ import logging
 from google.appengine.ext import db
 
 import geohash
+from loc import geohash_math
 import locations
 from loc import math
 from util import abbrev
 
 CITY_GEOHASH_PRECISIONS = range(
-    locations.get_geohash_bits_for_km(1500),
-    locations.get_geohash_bits_for_km(200) + 1,
+    geohash_math.get_geohash_bits_for_km(1500),
+    geohash_math.get_geohash_bits_for_km(200) + 1,
 )
 
 NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with
@@ -22,7 +23,7 @@ def get_largest_nearby_city_name(location):
     point = locations.get_latlng(address=location)
     if point is None:
         return "Unknown"
-    geohashes = locations.get_all_geohashes_for((point, point), precision=locations.get_geohash_bits_for_km(NEARBY_DISTANCE_KM))
+    geohashes = geohash_math.get_all_geohashes_for((point, point), precision=geohash_math.get_geohash_bits_for_km(NEARBY_DISTANCE_KM))
     cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(100)
     cities = [x for x in cities if math.get_distance(point, (x.latitude, x.longitude), use_km=True) < NEARBY_DISTANCE_KM]
     if not cities:
