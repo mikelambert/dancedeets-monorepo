@@ -1,6 +1,5 @@
 import logging
-from loc import gmaps_api
-from loc import math as loc_math
+from loc import math
 
 # http://en.wikipedia.org/wiki/Mile
 MILES_COUNTRIES = ['UK', 'US']
@@ -12,8 +11,8 @@ def get_location_bounds(geocode, distance_in_km):
 
     logging.info("1 NE %s, SW %s", northeast, southwest)
 
-    offsets_northeast = loc_math.get_lat_lng_offsets(northeast, distance_in_km)
-    offsets_southwest = loc_math.get_lat_lng_offsets(southwest, distance_in_km)
+    offsets_northeast = math.get_lat_lng_offsets(northeast, distance_in_km)
+    offsets_southwest = math.get_lat_lng_offsets(southwest, distance_in_km)
 
     def add_latlngs(x, y):
         return (x[0] + y[0], x[1] + y[1])
@@ -30,10 +29,6 @@ def get_geocoded_name(geocode):
     if not geocode:
         return None
     return _get_name(geocode.json_data)
-
-def get_name(**kwargs):
-    geocode = gmaps_api.get_geocode(**kwargs)
-    return get_geocoded_name(geocode)
 
 def _get_name(result):
     def get(name, long=True):
