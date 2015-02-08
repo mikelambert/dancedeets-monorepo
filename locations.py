@@ -1,29 +1,4 @@
 import logging
-from loc import math
-
-# http://en.wikipedia.org/wiki/Mile
-MILES_COUNTRIES = ['UK', 'US']
-
-LOCATION_EXPIRY = 24 * 60 * 60
-
-def get_location_bounds(geocode, distance_in_km):
-    northeast, southwest = geocode.latlng_bounds()
-
-    logging.info("1 NE %s, SW %s", northeast, southwest)
-
-    offsets_northeast = math.get_lat_lng_offsets(northeast, distance_in_km)
-    offsets_southwest = math.get_lat_lng_offsets(southwest, distance_in_km)
-
-    def add_latlngs(x, y):
-        return (x[0] + y[0], x[1] + y[1])
-    def sub_latlngs(x, y):
-        return (x[0] - y[0], x[1] - y[1])
-    northeast = add_latlngs(northeast, offsets_northeast)
-    southwest = sub_latlngs(southwest, offsets_southwest)
-
-    logging.info("2 NE %s, SW %s", northeast, southwest)
-
-    return southwest, northeast # ordered more negative to more positive
 
 def get_geocoded_name(geocode):
     if not geocode:

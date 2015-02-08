@@ -5,7 +5,6 @@ from google.appengine.api import mail
 
 from events import eventdata
 import fb_api
-import locations
 from loc import gmaps_api
 from loc import math
 from logic import friends
@@ -35,7 +34,7 @@ def email_for_user(user, fbl, should_send=True):
 
     # search for relevant events
     geocode = gmaps_api.get_geocode(address=user_location)
-    bounds = locations.get_location_bounds(geocode, distance_in_km)
+    bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
     query = search.SearchQuery(time_period=eventdata.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 

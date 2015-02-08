@@ -237,7 +237,7 @@ class SearchHandler(ApiHandler):
                 distance_in_km = fe_search_query.distance
             geocode = gmaps_api.get_geocode(address=fe_search_query.location)
             if geocode:
-                southwest, northeast = locations.get_location_bounds(geocode, distance_in_km=distance_in_km)
+                southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
                 city_name = locations.get_geocoded_name(geocode)
                 # This will fail on a bad location, so let's verify the location is geocodable above first.
             else:

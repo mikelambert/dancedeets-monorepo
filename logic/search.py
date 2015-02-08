@@ -11,7 +11,6 @@ from google.appengine.ext import deferred
 
 from events import eventdata
 import fb_api
-import locations
 from loc import gmaps_api
 from loc import math
 from util import dates
@@ -139,7 +138,7 @@ class SearchQuery(object):
             else:
                 distance_in_km = query.distance
             geocode = gmaps_api.get_geocode(address=query.location)
-            bounds = locations.get_location_bounds(geocode, distance_in_km)
+            bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
         else:
             bounds = None
         if start_end_query:
