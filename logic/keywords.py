@@ -101,9 +101,11 @@ add(EASY_DANCE, [
     u'רקדנים', # hebrew dancers
     u'舞者', # chinese dancer
     u'舞技', # chinese dancing
+    u'舞.?蹈', # chinese dance
     u'舞', # chinese dance
-    u'舞蹈', # chinese dance
     u'排舞', # chinese dance
+    u'蹈', # chinese dance
+    u'跳.?舞', # chinese dance
     u'แดนซ์', # dance thai
     u'เต้น', # dance thai
     u'กเต้น', # dancers thai
@@ -396,8 +398,11 @@ add(PERFORMANCE, [
     u'퍼포먼스', # korean performance
     u'쇼케이스', # korean showcase
     u'ショーケース', # japanese showcase
+    u'成果發表會', # chinese 'result presentation' (final performance)
     u'秀', # chinese show
-    u'的表演', # chinese performance
+    u'公演', # chinese performance
+    u'展', # chinese exhibition/show
+    u'果展', # chinese exhibition
     u'表演', # chinese performance
     u'vystoupení', # czech performances
     u'výkonnostních', # czech performance
@@ -587,7 +592,9 @@ add(BATTLE, [
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'battles?',
     'battlu(?:je)?', # french czech
+    u'大賽', # chinese competition
     u'比賽', # chinese battle
+    u'賽', # chinese race/competition/etc
     u'バトル', # japanese battle
     u'битката', # bulgarian battle
     'batallas', # battles spanish
@@ -650,6 +657,8 @@ add(CLASS, [
     u'課程', # course chinese
     u'課', # class chinese
     u'堂課', # lesson chinese
+    u'表演班', # performance class
+    u'專攻班', # chinese specialized class
     u'コース', # course japanese
     'concorso', # course italian
     'kur[sz](?:y|en)?', # course german/polish/czech
@@ -676,6 +685,7 @@ add(CLASS, [
     'kamp',
     'kemp',
     u'캠프', # korean camp
+    u'營', # chinese camp
     'formazione', # training italian
     'formazioni', # training italian
     u'トレーニング', # japanese training
@@ -697,6 +707,8 @@ add(AUDITION, [
     u'오디션', # korean audition
     'audizione', # italian audition
     'naborem', # polish recruitment/audition
+    'rehearsal',
+    u'綵排', # chinese rehearsal
 ])
 
 EVENT = token('EVENT')

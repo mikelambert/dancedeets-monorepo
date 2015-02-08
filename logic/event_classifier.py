@@ -384,6 +384,10 @@ class ClassifiedEvent(object):
         else:
             self.calc_inverse_keyword_density = -math.log(fraction_matched, 2)
 
+        #print self.processed_text.count_tokens(keywords.EASY_DANCE)
+        #print len(club_and_event_matches)
+        #print self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE)
+        #print self.processed_text.count_tokens(keywords.CLUB_ONLY)
         #strong = 0
         #for line in search_text.split('\n'):
         #    matches = all_regexes['good_keyword_regex'][idx].findall(line)
@@ -409,7 +413,7 @@ class ClassifiedEvent(object):
         # one critical event and a basic dance keyword and not a wrong-dance-style and not a generic-club
         elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and (len(event_matches) + self.processed_text.count_tokens(keywords.EASY_CHOREO)) >= 1 and not self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE) and self.calc_inverse_keyword_density < 5:
             self.dance_event = 'dance event thats not a bad-style'
-        elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and len(club_and_event_matches) >= 1 and not self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE) and self.processed_text.count_tokens(keywords.CLUB_ONLY) == 0:
+        elif self.processed_text.count_tokens(keywords.EASY_DANCE) >= 1 and len(self.found_event_matches) >= 1 and not self.processed_text.count_tokens(keywords.DANCE_WRONG_STYLE) and self.processed_text.count_tokens(keywords.CLUB_ONLY) == 0:
             self.dance_event = 'dance show thats not a club'
         else:
             self.dance_event = False
