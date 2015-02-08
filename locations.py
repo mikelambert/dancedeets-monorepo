@@ -40,23 +40,6 @@ def get_name(**kwargs):
     geocode = gmaps_api.get_geocode(**kwargs)
     return get_getgeocoded_name(geocode)
 
-def get_name_and_latlng(**kwargs):
-    geocode = gmaps_api.get_geocode(**kwargs)
-    if not geocode:
-        return None
-    latlng = geocode.latlng()
-    return _get_name(geocode.json_data), latlng
-
-def get_latlng(**kwargs):
-    geocode = gmaps_api.get_geocode(**kwargs)
-    if not geocode:
-        return None
-    return geocode.latlng()
-
-def get_country_for_location(long_name=False, **kwargs):
-    geocode = gmaps_api.get_geocode(**kwargs)
-    return geocode.country(long=long_name)
-
 def _get_name(result):
     def get(name, long=True):
         components = [x[long and 'long_name' or 'short_name'] for x in result['address_components'] if name in x['types']]
