@@ -12,6 +12,7 @@ import base_servlet
 from events import eventdata
 import fb_api
 import locations
+from loc import gmaps_api
 from logic import add_entities
 from logic import backgrounder
 from logic import event_auto_classifier
@@ -197,7 +198,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         location_info = event_locations.LocationInfo(fb_event, db_event=e, debug=True)
         self.display['location_info'] = location_info
-        self.display['fb_geocoded_address'] = locations.get_name(address=location_info.fb_address)
+        fb_geocode = gmaps_api.get_geocode(address=location_info.fb_address)
+        self.display['fb_geocoded_address'] = locations.get_geocoded_name(fb_geocode)
 
         self.display['event'] = e
         self.display['fb_event'] = fb_event

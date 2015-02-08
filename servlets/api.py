@@ -10,6 +10,7 @@ from google.appengine.api import taskqueue
 import base_servlet
 import fb_api
 import locations
+from loc import gmaps_api
 from loc import math
 from events import eventdata
 from events import users
@@ -234,9 +235,10 @@ class SearchHandler(ApiHandler):
                 distance_in_km = math.miles_in_km(fe_search_query.distance)
             else:
                 distance_in_km = fe_search_query.distance
-            southwest, northeast = locations.get_location_bounds(address=fe_search_query.location, distance_in_km=distance_in_km)
-            if southwest and northeast:
-                city_name = locations.get_name(address=fe_search_query.location)
+            geocode = gmaps_api.get_geocode(address=fe_search_query.location)
+            if geocode:
+                southwest, northeast = locations.get_location_bounds(geocode, distance_in_km=distance_in_km)
+                city_name = locations.get_geocoded_name(geocode)
                 # This will fail on a bad location, so let's verify the location is geocodable above first.
             else:
                 if major_version == "1" and minor_version == "0":

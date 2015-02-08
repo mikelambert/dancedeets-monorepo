@@ -7,12 +7,7 @@ MILES_COUNTRIES = ['UK', 'US']
 
 LOCATION_EXPIRY = 24 * 60 * 60
 
-def get_location_bounds(address, distance_in_km):
-    if not address:
-        return None, None
-    geocode = gmaps_api.get_geocode(address=address)
-    if not geocode:
-        return None, None
+def get_location_bounds(geocode, distance_in_km):
     northeast, southwest = geocode.latlng_bounds()
 
     logging.info("1 NE %s, SW %s", northeast, southwest)
@@ -31,14 +26,14 @@ def get_location_bounds(address, distance_in_km):
 
     return southwest, northeast # ordered more negative to more positive
 
-def get_getgeocoded_name(geocode):
+def get_geocoded_name(geocode):
     if not geocode:
         return None
     return _get_name(geocode.json_data)
 
 def get_name(**kwargs):
     geocode = gmaps_api.get_geocode(**kwargs)
-    return get_getgeocoded_name(geocode)
+    return get_geocoded_name(geocode)
 
 def _get_name(result):
     def get(name, long=True):
