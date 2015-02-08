@@ -10,9 +10,3 @@ class TestCityNames(unittest.TestCase):
         self.assertEqual(locations.get_name(address='Tokyo, Japan'), u'Tokyo, Japan')
         self.assertEqual(locations.get_name(address='Osaka'), u'Osaka, Osaka Prefecture, Japan')
         self.assertEqual(locations.get_name(address='Mexico City, Mexico'), u'Mexico City, DF, Mexico')
-
-
-class TestGetCountry(unittest.TestCase):
-    def runTest(self):
-        self.assertEqual(locations.get_country_for_location(address='San Francisco'), u'US')
-        self.assertEqual(locations.get_country_for_location(address='Tokyo'), u'JP')

@@ -3,6 +3,7 @@ import re
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
+from loc import gmaps_api
 import locations
 from util import abbrev
 
@@ -95,16 +96,22 @@ def update_remapped_address(fb_event, new_remapped_address):
 
 
 ONLINE_ADDRESS = 'ONLINE'
-def get_name_and_latlng(address=None):
-    if address == ONLINE_ADDRESS:
-        return ONLINE_ADDRESS, None
+
+def online_address(address):
+    return address == ONLINE_ADDRESS
+
+def get_geocode(address):
+    if online_address(address):
+        return None
     else:
-        return locations.get_name_and_latlng(address=address)
+        return gmaps_api.get_geocode(address=address)
 
 class LocationInfo(object):
     def __init__(self, fb_event, db_event=None, debug=False):
         has_overridden_address = db_event and db_event.address
 
+        self.online = None
+        self.geocode = None
         self.exact_from_event = False
         self.overridden_address = None
         self.fb_address = None
@@ -113,31 +120,33 @@ class LocationInfo(object):
             self.final_latlng = _get_latlng_from_event(fb_event)
             if self.final_latlng:
                 self.exact_from_event = True
-                self.final_city = locations.get_name(latlng=self.final_latlng)
-                self.fb_address = self.final_city
+                self.geocode = gmaps_api.get_geocode(latlng=self.final_latlng)
+                self.fb_address = locations.get_getgeocoded_name(self.geocode)
                 self.remapped_address = None
             else:
                 self.fb_address = get_address_for_fb_event(fb_event)
                 self.remapped_address = _get_remapped_address_for(self.fb_address)
                 if self.remapped_address:
                     logging.info("Checking remapped address, which is %r", self.remapped_address)
-                result = get_name_and_latlng(address=self.remapped_address or self.fb_address)
-                if result:
-                    self.final_city, self.final_latlng = result
-                else:
-                    self.final_city = None
-                    self.final_latlng = None
-
+                if online_address(self.remapped_address):
+                    self.online = True
+                self.geocode = get_geocode(address=self.remapped_address or self.fb_address)
         if has_overridden_address:
             self.overridden_address = db_event.address
+            if online_address(self.overridden_address):
+                self.online = True
             logging.info("Address overridden to be %r", self.overridden_address)
-            result = get_name_and_latlng(address=self.overridden_address)
-            if result:
-                self.final_city, self.final_latlng = result
-            else:
-                self.final_city = None
-                self.final_latlng = None
+            self.geocode = get_geocode(address=self.overridden_address)
 
+        if self.geocode:
+            self.final_city = locations.get_getgeocoded_name(self.geocode)
+            self.final_latlng = self.geocode.latlng()
+        elif self.online:
+            self.final_city = ONLINE_ADDRESS
+            self.final_latlng = None
+        else:
+            self.final_city = None
+            self.final_latlng = None
         logging.info("Final latlng is %r, final city is %r", self.final_latlng, self.final_city)
 
     def needs_override_address(self):

@@ -38,12 +38,11 @@ def eventually_publish_event(fbl, event_id, token_nickname=None):
         return
     db_event = eventdata.DBEvent.get_or_insert(event_id)
     location_info = event_locations.LocationInfo(fb_event, db_event)
-    logging.info("Publishing event %s with latlng %s", event_id, location_info.final_latlng)
-    if not location_info.final_latlng:
+    logging.info("Publishing event %s with latlng %s", event_id, location_info.geocode)
+    if not location_info.geocode:
         # Don't post events without a location. It's too confusing...
         return
-    event_country = locations.get_country_for_location(latlng=location_info.final_latlng)
-
+    event_country = location_info.geocode.country()
 
     args = []
     if token_nickname:
@@ -216,8 +215,8 @@ def facebook_post(auth_token, db_event, fb_event):
 
     if not short_country:
         location_info = event_locations.LocationInfo(fb_event, db_event)
-        if location_info.final_latlng:
-            short_country = locations.get_country_for_location(latlng=location_info.final_latlng)
+        if location_info.geocode:
+            short_country = location_info.geocode.country()
 
     if short_country:
         feed_targeting = {'countries': [short_country]}

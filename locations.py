@@ -36,11 +36,14 @@ def get_location_bounds(address, distance_in_km):
 
     return southwest, northeast # ordered more negative to more positive
 
-def get_name(**kwargs):
-    geocode = gmaps_api.get_geocode(**kwargs)
+def get_getgeocoded_name(geocode):
     if not geocode:
         return None
     return _get_name(geocode.json_data)
+
+def get_name(**kwargs):
+    geocode = gmaps_api.get_geocode(**kwargs)
+    return get_getgeocoded_name(geocode)
 
 def get_name_and_latlng(**kwargs):
     geocode = gmaps_api.get_geocode(**kwargs)

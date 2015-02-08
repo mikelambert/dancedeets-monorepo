@@ -12,7 +12,7 @@ class GMapsGeocode(object):
     def __init__(self, json_data):
         self.json_data = json_data
 
-    def country(self, long=True):
+    def country(self, long=False):
         return self.get_component('country', long=long)
 
     def latlng(self):
@@ -40,6 +40,8 @@ class GMapsGeocode(object):
     # This function seems very wrong and dangerous, and we should fix up the API not to need it
     def delete_component(self, name):
         self.json_data['address_components'] = [x for x in self.json_data['address_components'] if name not in x['types']]
+
+
 
 def parse_geocode(json_result):
     if json_result['status'] == 'OK':
