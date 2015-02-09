@@ -1,3 +1,4 @@
+import copy
 try:
     import gmaps_cached
     gmaps_backend = gmaps_cached
@@ -25,7 +26,7 @@ class GMapsGeocode(object):
         return northeast, southwest
 
     def copy(self):
-        return GMapsGeocode(self.json_data)
+        return GMapsGeocode(copy.deepcopy(self.json_data))
 
     def address_components(self):
         return self.json_data['address_components']
