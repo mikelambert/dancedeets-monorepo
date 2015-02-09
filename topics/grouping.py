@@ -9,7 +9,10 @@ def group_results_by_date(results):
     year_months = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
     for result in results:
         start_month = result.start_time.date().replace(day=1)
-        end_month = result.end_time.date().replace(day=1)
+        if result.end_time:
+            end_month = result.end_time.date().replace(day=1)
+        else:
+            end_month = start_month
         cur_month = start_month
         while cur_month <= end_month:
             year_months[cur_month.year][cur_month.month].append(result)
