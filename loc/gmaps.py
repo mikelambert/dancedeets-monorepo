@@ -5,7 +5,7 @@ import json
 import logging
 import urllib
 
-def fetch_raw(address=None, latlng=None, language=None, region=None):
+def fetch_raw(address=None, latlng=None, language=None, region=None, components=None):
     params = {}
     if address is not None:
         params['address'] = address.encode('utf-8')
@@ -18,6 +18,8 @@ def fetch_raw(address=None, latlng=None, language=None, region=None):
         params['language'] = language
     if region is not None:
         params['region'] = region
+    if components is not None:
+        params['components'] = components
     unsigned_url_path = "/maps/api/geocode/json?%s" % urllib.urlencode(params)
     private_key = 'zj918QnslsoOQHl4kLjv-ZCgsDE='
     decoded_key = base64.urlsafe_b64decode(private_key)
