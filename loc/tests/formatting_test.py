@@ -30,6 +30,9 @@ formatting_reg_data = {
     '6 5th Street, SF, CA': 'South of Market, San Francisco, CA, United States',
     'Irvine': 'Irvine, CA, United States',
     'New England': 'New England',
+    'The Haight': 'Haight-Ashbury, San Francisco, CA, United States',
+    'Europe': 'Europe',
+    'Asia': 'Asia',
 }
 
 

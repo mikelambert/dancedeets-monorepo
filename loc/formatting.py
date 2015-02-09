@@ -25,9 +25,11 @@ def _get_formatting_parts(geocode):
     geocode.delete_component('locality')
     geocode.delete_component('administrative_area_level_1')
     geocode.delete_component('country')
-    colloquial_area = geocode.get_component('colloquial_area')
-    if colloquial_area:
-        components = [colloquial_area] + components
+    components = [
+        geocode.get_component('colloquial_area'),
+    ] + components + [
+        geocode.get_component('continent'),
+    ]
 
     return [x for x in components if x]
 
