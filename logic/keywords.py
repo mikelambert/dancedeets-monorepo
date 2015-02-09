@@ -780,14 +780,19 @@ add(AMBIGUOUS_CLASS, [
 DANCE_WRONG_STYLE = token('DANCEWRONGSTYLE')
 add(DANCE_WRONG_STYLE, [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
+    u'サルサ', # japanese salsa
+    u'タンゴ', # japanese tango
+    u'リンディ', # japanese lindy
     u'소스', # korean salsa
     u'탱고', # korean tango
     u'린디', # korean lindy
     'latines', 'quickstep', 'rumba', 'cha\W?cha',
     u'륨바', # korean rumba
     'blues',
+    u'ブルース', # japanese blues
     'waltz',
-    u'왈츠', # korean waltzz
+    u'왈츠', # korean waltz
+    u'ワルツ', # japanese waltz
     'salsy', # salsa czech
     'salser[oa]s?',
     'kizomba',
@@ -802,11 +807,14 @@ add(DANCE_WRONG_STYLE, [
     'cheer',
     'barre',
     'butoh',
+    u'舞踏', # japanese butoh
     'contato improv\w*',
     'contact improv\w*',
+    u'コンタクトインプロビゼーション', # japanese contact improv
     'contratto mimo', # italian contact mime
     'musical theat(?:re|er)',
     'pole danc\w+', 'flirt danc\w+',
+    u'ポールダンス', # japanese pole dance
     u'폴 ?댄스', # korean pole dance
     'go\W?go',
     'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar',
@@ -817,12 +825,12 @@ add(DANCE_WRONG_STYLE, [
     'oriental\w*', 'oriente', 
     'cubana',
     'capoeira',
+    u'カポエイラ', # japanese capoeira
     'tahitian dancing',
     'tahitienne',
     'folklor\w+',
-    'kizomba',
     'burlesque',
-    u'バーレスク', # burlesque japan
+    u'バーレスク', # japanese burlesque
     'limon',
     'artist\Win\Wresidence',
     'residency',
@@ -830,7 +838,9 @@ add(DANCE_WRONG_STYLE, [
     'reflective',
     'clogging',
     'zouk',
+    u'ズーク', # japanese zouk
     'african dance',
+    u'アフリカンダンス', # african dance
     'afro dance',
     'afro mundo',
     'class?ic[ao]',
@@ -839,6 +849,7 @@ add(DANCE_WRONG_STYLE, [
     'hoop\W?dance',
     'modern dance',
     'pilates',
+    u'ピラティス', # japanese pilates
     'tribal',
     'jazz', 'tap', 'contemporary',
     u'재즈', # korean jazz
@@ -851,7 +862,9 @@ add(DANCE_WRONG_STYLE, [
     'aerial silk',
     'silk',
     'aerial',
-    'zumba', 'belly\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance',
+    'zumba',
+    'belly\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance',
+    u'ベリーダンス', # japanese bellydance
     'soca',
     'flamenco',
     'technique',
