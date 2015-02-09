@@ -104,7 +104,6 @@ def mapreduce_create_sources_from_events(fbl):
     )
 
 def parsed_event_link(url):
-    print url
     p = urlparse.urlparse(url)
     # allow relative urls
     good_domain = p.netloc in ['', 'www.facebook.com', 'm.facebook.com']
