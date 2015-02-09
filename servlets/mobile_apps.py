@@ -55,6 +55,9 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
             if not prefix:
                 self.render_page(error="Please select a country.")
                 return
+            if not phone:
+                self.render_page(error="Please enter a phone number.")
+                return
             try:
                 sms.send_email_link(phone)
             except sms.InvalidPhoneNumberException:
