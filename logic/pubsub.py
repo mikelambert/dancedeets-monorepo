@@ -16,7 +16,6 @@ from events import eventdata
 from logic import event_locations
 import fb_api
 import keys
-import locations
 from util import dates
 from util import fetch
 from util import urls

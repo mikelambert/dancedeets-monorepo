@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 
-import json
 import logging
 import re
 import urllib
-import urllib2
 
 from google.appengine.ext import deferred
 
 import base_servlet
 from events import eventdata
 import fb_api
-import locations
+from loc import formatting
 from loc import gmaps_api
 from logic import add_entities
 from logic import backgrounder
@@ -199,7 +197,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         location_info = event_locations.LocationInfo(fb_event, db_event=e, debug=True)
         self.display['location_info'] = location_info
         fb_geocode = gmaps_api.get_geocode(address=location_info.fb_address)
-        self.display['fb_geocoded_address'] = locations.get_geocoded_name(fb_geocode)
+        self.display['fb_geocoded_address'] = formatting.format_geocode(fb_geocode)
 
         self.display['event'] = e
         self.display['fb_event'] = fb_event

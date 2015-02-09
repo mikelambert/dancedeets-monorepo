@@ -61,7 +61,7 @@ class TestNoVenue(TestEventLocations):
         self.assertEqual(location_info.overridden_address, None)
         self.assertEqual(location_info.remapped_address, None)
         self.assertEqual(location_info.fb_address, 'Somewhere in San Francisco')
-        self.assertEqual(location_info.final_city, 'San Francisco, CA, US')
+        self.assertEqual(location_info.final_city, 'San Francisco, CA, United States')
         self.assertNearEqual(location_info.final_latlng, (37.774929499999999, -122.4194155))
         self.assertEqual(location_info.exact_from_event, False)
 
@@ -76,7 +76,7 @@ class TestNoVenueWithRemap(TestNoVenue):
             self.assertEqual(location_info.overridden_address, None)
             self.assertEqual(location_info.remapped_address, 'Oakland, CA')
             self.assertEqual(location_info.fb_address, 'Somewhere in San Francisco')
-            self.assertEqual(location_info.final_city, 'Oakland, CA, US')
+            self.assertEqual(location_info.final_city, 'Oakland, CA, United States')
             self.assertNearEqual(location_info.final_latlng, (37.804363700000003, -122.2711137))
             self.assertEqual(location_info.exact_from_event, False)
 
@@ -94,7 +94,7 @@ class TestOverride(TestEventLocations):
         self.assertEqual(location_info.overridden_address, 'San Jose, CA')
         self.assertEqual(location_info.remapped_address, None)
         self.assertEqual(location_info.fb_address, 'Somewhere in San Francisco')
-        self.assertEqual(location_info.final_city, 'San Jose, CA, US')
+        self.assertEqual(location_info.final_city, 'San Jose, CA, United States')
         self.assertNearEqual(location_info.final_latlng, (37.339385700000001, -121.89495549999999))
         self.assertEqual(location_info.exact_from_event, False)
 
@@ -165,8 +165,8 @@ class TestEasyLatLong(TestEventLocations):
         location_info = event_locations.LocationInfo(fb_event, debug=True)
         self.assertEqual(location_info.overridden_address, None)
         self.assertEqual(location_info.remapped_address, None)
-        self.assertEqual(location_info.fb_address, 'San Francisco, CA, US')
-        self.assertEqual(location_info.final_city, 'San Francisco, CA, US')
+        self.assertEqual(location_info.fb_address, 'San Francisco, CA, United States')
+        self.assertEqual(location_info.final_city, 'San Francisco, CA, United States')
         self.assertNearEqual(location_info.final_latlng, (37.774929499999999, -122.4194155))
         self.assertEqual(location_info.exact_from_event, True)
 

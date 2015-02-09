@@ -14,7 +14,6 @@ from events import cities
 from events import eventdata
 from events import users
 import fb_api
-import locations
 from logic import auto_add
 #from logic import event_classifier
 #from logic import mr_dump

@@ -4,7 +4,7 @@ from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
 from loc import gmaps_api
-import locations
+from loc import formatting
 from util import abbrev
 
 # TODO: do some auto-classification of ripley grier, pearl studios, champion studios, etc. People always type horrible addresses.
@@ -121,7 +121,7 @@ class LocationInfo(object):
             if self.final_latlng:
                 self.exact_from_event = True
                 self.geocode = gmaps_api.get_geocode(latlng=self.final_latlng)
-                self.fb_address = locations.get_geocoded_name(self.geocode)
+                self.fb_address = formatting.format_geocode(self.geocode)
                 self.remapped_address = None
             else:
                 self.fb_address = get_address_for_fb_event(fb_event)
@@ -139,7 +139,7 @@ class LocationInfo(object):
             self.geocode = get_geocode(address=self.overridden_address)
 
         if self.geocode:
-            self.final_city = locations.get_geocoded_name(self.geocode)
+            self.final_city = formatting.format_geocode(self.geocode)
             self.final_latlng = self.geocode.latlng()
         elif self.online:
             self.final_city = ONLINE_ADDRESS

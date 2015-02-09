@@ -9,7 +9,7 @@ from google.appengine.api import taskqueue
 
 import base_servlet
 import fb_api
-import locations
+from loc import formatting
 from loc import gmaps_api
 from loc import math
 from events import eventdata
@@ -238,7 +238,7 @@ class SearchHandler(ApiHandler):
             geocode = gmaps_api.get_geocode(address=fe_search_query.location)
             if geocode:
                 southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
-                city_name = locations.get_geocoded_name(geocode)
+                city_name = formatting.format_geocode(geocode)
                 # This will fail on a bad location, so let's verify the location is geocodable above first.
             else:
                 if major_version == "1" and minor_version == "0":

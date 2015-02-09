@@ -1,9 +1,9 @@
 
-def _get_formatting_parts(geocode):
+def _get_formatting_parts(geocode, include_neighborhood):
     geocode = geocode.copy()
 
     components = [
-        geocode.get_component('neighborhood'),
+        geocode.get_component('neighborhood') if include_neighborhood else None,
         geocode.get_component('sublocality'),
     ]
     country = geocode.get_component('country')
@@ -36,13 +36,13 @@ def _get_formatting_parts(geocode):
 def _format_from_parts(parts):
     return ', '.join(parts)
 
-def format_geocode(geocode):
-    return _format_from_parts(_get_formatting_parts(geocode))
+def format_geocode(geocode, include_neighborhood=False):
+    return _format_from_parts(_get_formatting_parts(geocode, include_neighborhood=include_neighborhood))
 
-def format_geocodes(geocodes):
+def format_geocodes(geocodes, include_neighborhood=False):
     if geocodes == []:
         return []
-    parts_list = [_get_formatting_parts(geocode) for geocode in geocodes]
+    parts_list = [_get_formatting_parts(geocode, include_neighborhood=include_neighborhood) for geocode in geocodes]
     min_length = min(len(x) for x in parts_list)
     # If all our addresses are in the same country, or state, then trim that off as irrelevant
     for i in range(min_length-1):

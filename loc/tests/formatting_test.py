@@ -33,6 +33,7 @@ formatting_reg_data = {
     'The Haight': 'Haight-Ashbury, San Francisco, CA, United States',
     'Europe': 'Europe',
     'Asia': 'Asia',
+    'Mexico City': 'Mexico City, DF, Mexico',
 }
 
 
@@ -47,10 +48,10 @@ class GmapsTestCase(unittest.TestCase):
 class TestLocationFormatting(GmapsTestCase):
     def runTest(self):
         for address, final_address in formatting_reg_data.iteritems():
-            formatted_address = formatting.format_geocode(gmaps_api.get_geocode(address=address))
+            formatted_address = formatting.format_geocode(gmaps_api.get_geocode(address=address), include_neighborhood=True)
             if formatted_address != final_address:
                 print 'formatted address for %r is %r, should be %r' % (address, formatted_address, final_address)
-                print gmaps_local.fetch_raw_cached(address=address)
+                print gmaps_local.fetch_raw(address=address)
                 self.assertEqual(final_address, formatted_address)
 
 grouping_lists = [
@@ -67,7 +68,7 @@ class TestMultiLocationFormatting(GmapsTestCase):
     def runTest(self):
         for addresses, reformatted_addresses in grouping_lists:
             geocodes = [gmaps_api.get_geocode(address=address) for address in addresses]
-            reformatted_parts = formatting.format_geocodes(geocodes)
+            reformatted_parts = formatting.format_geocodes(geocodes, include_neighborhood=True)
             self.assertEqual(reformatted_parts, reformatted_addresses)
 
 
