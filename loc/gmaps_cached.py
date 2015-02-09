@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from google.appengine.ext import ndb
 
@@ -24,8 +25,9 @@ def fetch_raw(**kwargs):
     geocode = CachedGeoCode.get_by_id(geocode_key)
     if not geocode:
         json_data = gmaps.fetch_raw(**kwargs)
-        geocode = CachedGeoCode(id=geocode_key, json_data=json_data)
-        geocode.put()
+        if json_data['status'] in ['OK', 'ZERO_RESULTS']:
+            geocode = CachedGeoCode(id=geocode_key, json_data=json_data)
+            geocode.put()
     return geocode.json_data
 
 # This should only be used by gmaps_bwcompat to populate the new cache.
@@ -36,3 +38,8 @@ def _write_cache(json_data, **kwargs):
         geocode = CachedGeoCode(id=geocode_key, json_data=json_data, date_created=datetime.datetime(2010,1,1))
         geocode.put()
     return geocode
+
+def cleanup_bad_data(geocode):
+    logging.info("%s: %s", geocode.key, geocode.json_data['status'])
+    if geocode.json_data['status'] not in ['OK', 'ZERO_RESULTS']:
+        geocode.key.delete()

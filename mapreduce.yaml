@@ -8,3 +8,10 @@ mapreduce:
       default: events.eventdata.DBEvent
     - name: _app
       default: CITY_EVENT_RANKING
+- name: Fix Bad Geocodes
+  mapper:
+    input_reader: mapreduce.input_readers.DatastoreInputReader
+    handler: loc.gmaps_cached.cleanup_bad_data
+    params:
+    - name: entity_kind
+      default: loc.gmaps_cached.CachedGeoCode
