@@ -85,10 +85,11 @@ class User(db.Model):
             self.timezone_offset = float(fb_user['profile'].get('timezone'))
         except (datastore_errors.BadValueError, TypeError) as e:
             logging.error("Failed to save timezone %s: %s", fb_user['profile'].get('timezone'), e)
+        self.location_country = None
         if self.location:
-            self.location_country = gmaps_api.get_geocode(address=self.location).country()
-        else:
-            self.location_country = None
+            geocode = gmaps_api.get_geocode(address=self.location)
+            if geocode:
+                self.location_country = geocode.country()
 
     def _populate_internal_entity(self):
         memcache_key = self.memcache_user_key(self.fb_uid)
