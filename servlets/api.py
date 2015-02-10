@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import re
+import traceback
 import urllib
 import xml.sax.saxutils
 
@@ -295,11 +296,12 @@ class AuthHandler(ApiHandler):
     def post(self):
         try:
             self.process()
-        except:
+        except Exception:
+            logging.info(traceback.format_exc())
             url = self.request.path
             body = self.request.body
-            logging.info("Retrying URL %s", url)
-            logging.info("With Payload %r", body)
+            logging.error("Retrying URL %s", url)
+            logging.error("With Payload %r", body)
             taskqueue.add(method='POST', url=url, payload=body,
                 countdown=60*60)
 
@@ -312,8 +314,12 @@ class AuthHandler(ApiHandler):
         if access_token_expires_with_tz:
             # strip off the timezone, since we can't easily process it
             # TODO(lambert): using http://labix.org/python-dateutil to parse timezones would help with that
-            access_token_expires_without_tz = access_token_expires_with_tz[:-5]
-            access_token_expires = datetime.datetime.strptime(access_token_expires_without_tz, ISO_DATETIME_FORMAT)
+            truncated_access_token_expires_without_tz = access_token_expires_with_tz[:-5]
+            try:
+                access_token_expires = datetime.datetime.strptime(truncated_access_token_expires_without_tz, ISO_DATETIME_FORMAT)
+            except ValueError as e:
+                logging.error("Received un-parseable expires date from client: %s", access_token_expires_with_tz)
+                access_token_expires = None
         else:
             access_token_expires = None
         location = self.json_body.get('location')
