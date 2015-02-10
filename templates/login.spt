@@ -7,16 +7,18 @@ DanceDeets
 #end def
 
 #def head_stylesheet
-    <meta property="og:title" content="Dance Deets"/>
+    <meta property="og:title" content="DanceDeets"/>
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="http://www.dancedeets.com/"/>
-    <meta property="og:image" content="http://www.dancedeets.com/dancedeets.png"/>
-    <meta property="og:site_name" content="Dance Deets"/>
+    <meta property="og:site_name" content="DanceDeets"/>
+    <meta property="og:image" content="http://www.dancedeets.com/images/cover.png" />
     <meta property="og:description"
-          content="A website for finding and promoting dance events to both dancers and dance fans around the world."/>
+          content="Helping you get your dance on wherever you are, with dance events both near and far."/>
 #end def
 
 #def body
+<img src="http://www.dancedeets.com/images/cover.png" style="display:none"/>
+
 <div class="container-fluid">
 
 <div class="row">
