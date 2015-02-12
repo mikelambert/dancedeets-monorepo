@@ -137,9 +137,10 @@ def yield_email_user(fbl, user):
         return None
     try:
         email = email_events.email_for_user(user, fbl, should_send=True)
+        return email
     except Exception as e:
         logging.exception("Error sending email for user %s", user.fb_uid)
-    return email
+        return None
 map_email_user = fb_mapreduce.mr_user_wrap(yield_email_user)
 email_user = fb_mapreduce.nomr_wrap(yield_email_user)
 
