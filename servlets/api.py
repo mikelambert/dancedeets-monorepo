@@ -317,7 +317,7 @@ class AuthHandler(ApiHandler):
             truncated_access_token_expires_without_tz = access_token_expires_with_tz[:-5]
             try:
                 access_token_expires = datetime.datetime.strptime(truncated_access_token_expires_without_tz, ISO_DATETIME_FORMAT)
-            except ValueError as e:
+            except ValueError:
                 logging.error("Received un-parseable expires date from client: %s", access_token_expires_with_tz)
                 access_token_expires = None
         else:
