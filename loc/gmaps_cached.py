@@ -23,12 +23,14 @@ NO_GEOCODE = 'NO_GEOCODE'
 def fetch_raw(**kwargs):
     geocode_key = _geocode_key(**kwargs)
     geocode = CachedGeoCode.get_by_id(geocode_key)
-    if not geocode:
+    if geocode:
+        json_data = geocode.json_data
+    else:
         json_data = gmaps.fetch_raw(**kwargs)
         if json_data['status'] in ['OK', 'ZERO_RESULTS']:
             geocode = CachedGeoCode(id=geocode_key, json_data=json_data)
             geocode.put()
-    return geocode.json_data
+    return json_data
 
 # This should only be used by gmaps_bwcompat to populate the new cache.
 def _write_cache(json_data, **kwargs):
