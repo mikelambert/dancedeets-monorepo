@@ -80,7 +80,7 @@ def increment_source_event_counters(source_id, potential_event, all_event, real_
 
 
 class Source(db.Model):
-    graph_id = property(lambda x: int(x.key().name()))
+    graph_id = property(lambda x: str(x.key().name()))
     graph_type = db.StringProperty(choices=GRAPH_TYPES)
 
     # cached/derived from fb data
