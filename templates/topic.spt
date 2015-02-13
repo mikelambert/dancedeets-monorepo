@@ -14,16 +14,16 @@ $topic_title Events
 <div class="row">
 
 <div class="col-md-4">
-#for $year, $month_results in $group_by_date.iteritems()
+#for $year, $month_results in $group_by_date
 	$year:
-	#for $month, $results in $month_results.iteritems()
+	#for $month, $results in $month_results
 		$month ($len($results))
 	#end for
 	<br/>
 #end for
 </div>
 <div class="col-md-4">
-#for $location, $results in $group_by_location.iteritems()
+#for $location, $results in $group_by_location
 	$location: $len($results)
 	<br/>
 #end for

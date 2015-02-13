@@ -1,8 +1,6 @@
 import collections
 import datetime
 
-from loc import gmaps_api
-from loc import formatting
 from logic import event_locations
 
 def group_results_by_date(results):
@@ -15,7 +13,8 @@ def group_results_by_date(results):
             end_month = start_month
         cur_month = start_month
         while cur_month <= end_month:
-            year_months[cur_month.year][cur_month.month].append(result)
+            month_key = cur_month.month
+            year_months[cur_month.year][month_key].append(result)
             cur_month = datetime.date(cur_month.year + (cur_month.month / 12), ((cur_month.month % 12) + 1), 1)
     return year_months
 
@@ -23,8 +22,9 @@ def group_results_by_date(results):
 def group_results_by_location(results):
     location_map = collections.defaultdict(lambda: [])
     location_infos = [event_locations.LocationInfo(x.fb_event) for x in results]
-    geocodes = [gmaps_api.get_geocode(address=x.actual_city()) for x in location_infos]
-    addresses = formatting.format_geocodes(geocodes)
+    geocodes = [x.geocode for x in location_infos]
+    addresses = [x.country(long=True) if x else None for x in geocodes]
+    #formatting.format_geocodes(geocodes)
     for address, result in zip(addresses, results):
         location_map[address].append(result)
     return location_map

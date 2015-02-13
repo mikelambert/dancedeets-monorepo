@@ -1,3 +1,4 @@
+import datetime
 import logging
 import re
 
@@ -74,8 +75,16 @@ class TopicHandler(base_servlet.BaseRequestHandler):
 
         self.display['all_results'] = search_results
 
-        self.display['group_by_date'] = grouping.group_results_by_date(search_results)
-        self.display['group_by_location'] = grouping.group_results_by_location(search_results)
+        by_year = []
+        for year, month_events in grouping.group_results_by_date(search_results).iteritems():
+            months = []
+            for month, events in sorted(month_events.items()):
+                cur_month = datetime.date(year, month, 1)
+                month_name = cur_month.strftime('%B')
+                months.append((month_name, events))
+            by_year.append((year, months))
+        self.display['group_by_date'] = by_year
+        self.display['group_by_location'] = sorted(grouping.group_results_by_location(search_results).items(), key=lambda x: (-len(x[1]), x[0]))
 
         # TODO:
         # show points on map (future and past?)
