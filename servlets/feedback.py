@@ -8,7 +8,10 @@ class HelpHandler(base_servlet.BaseRequestHandler):
 
     def get(self):
         self.finish_preload()
-        self.render_template('help')
+        if self.request.get('hl') == 'ko':
+            self.render_template('help_korea')
+        else:
+            self.render_template('help')
 
 class FeedbackHandler(base_servlet.BaseRequestHandler):
     def get(self):

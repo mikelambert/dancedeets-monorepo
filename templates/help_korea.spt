@@ -1,0 +1,77 @@
+#extends _bigbox_base
+
+#def title
+Help
+#end def
+
+#def inner_body
+<!--Hello korean people, welcome to DanceDeets!-->
+
+<p>안녕하십니까 한국 여러분, DanceDeets 에 오신 것을 환영합니다.
+
+<!--While we've got dance events from around the world, Korean events are still hard to find on DanceDeets, for korean people as well as foreigners. We need your help to fix this! Creating facebook events for your workshops, battles, and performances and promoting through facebook, will help them appear on DanceDeets for everyone to find.-->
+
+<p>세게적으로 많은 행사들이 검색되는 반면에 한국의 행사는 아직 DanceDeets 에서 검색하기 어렵습니다. 이 문제점을 해결하기 위해서 여러분의 도움이 필요합니다. 페이스북에 전 세계의 사람들이 볼 수 있게 여러분의 워크샵, 배틀, 퍼포먼스 그리고 홍보물들의 정보가 담긴 이벤트 페이지를 만들어주세요.
+
+<!--For more details, read our FAQ below.-->
+<p>더 자세한 사항은, 아래의 FAQ 를 참고하십시오. Or <a href="/help?hl=en">Full English FAQ</a>.
+
+<!--What is DanceDeets?-->
+<h3>DanceDeets 란?</h3>
+
+<!--DanceDeets is the best place to find the 'deets on street dance events worldwide. (Deets is slang for details). From NYC to LA, from Paris to Taiwan, bboy to vogue, krump to waacking, dancehall to LA style choreo, we've got the events. (And hopeful Korea soon, too)-->
+
+<p>DanceDeets 는 전 세계의 스트릿댄스 이벤트 세부사항을 찾아 볼 수 있는 최고의 장소입니다. (Deets 는 디테일의 은어입니다.) 뉴욕에서 LA 까지, 파리에서 대만까지, 비보이에서 보그까지, 크럼프에서 왁킹까지, 댄스홀에서 LA 스타일 안무까지 폭 넓은 행사를 찾을 수 있습니다.(한국의 많은 행사도 곧 찾아 볼 수 있기를 바랍니다.)  
+
+
+<!--How does DanceDeets find and include events?-->
+<h3>DanceDeets는 어떻게 이벤트를 찾고 포함시키나요?</h3>
+
+<!--DanceDeets only includes facebook events for now. So if it's not on Facebook, it's not on DanceDeets. DanceDeets searches facebook groups, pages, and the events of people who sign up, looking to bring you the best events. Our intelligent AI has been trained with a dancer's mind, to look for events that talk about "bboy workshop", 2v2 popping battle", and mention famous dancers, to understand what a good street dance event is all about.-->
+
+<p>DanceDeets는 현재 오직 페이스북 이벤트만 포함하고 있습니다. 따라서 만약 이벤트가 페이스북에 있지 않다면 DanceDeets에도 있지 않습니다. 그러나 DanceDeets는 페이스북 그룹, 페이지, 사용자들이 참가 신청한 이벤트를 검색하여 DanceDeets 페이지에 올라올 수 있도록 노력하고 있습니다. 우리의 똑똑한 인공지능 시스템은 B-boy워크샵, 2대2 팝핀배틀, 유명한 댄서가 언급된 이벤트를 찾고, 좋은 댄스이벤트가 무엇인지를 이해하기 위해 댄서의 마인드로 프로그램 되어왔습니다.
+
+<!--So for the most part, everything is automatic, and dance events get added. But if you want your event up there ASAP, or the AI isn't smart enough to find your event, you'll need to add it manually, as described below.-->
+
+<p>따라서 대부분의 이벤트들은 자동적으로 DanceDeets 페이지에 게시됩니다. 하지만 본인의 이벤트가 가능한 빨리 게시되길 원하거나, 인공지능 시스템이 이벤트를 찾을 만큼 똑똑하지 못하다면 아래의 설명된 매뉴얼에 따라 이벤트를 게시 할 수 있습니다.  
+
+<!--How can i get my event on DanceDeets?-->
+
+<h3>어떻게 저의 이벤트를 DanceDeets에 올릴 수 있나요?</h3>
+
+<!--You can always ensure your event gets added automatically, by signing up for DanceDeets, and including a link to www.dancedeets.com in your event description.-->
+
+<p>이벤트는 DanceDeets에 가입하시고 이벤트 페이지 설명에 <a href="http://www.dancedeets.com">www.dancedeets.com</a>링크를 올리시면 자동적으로 DanceDeets에 추가 될 수 있습니다.
+
+<!--Alternately, you can go to http://www.dancedeets.com/events_add , choose your event, click "Add Event", and it will be added immediately.-->
+
+<p>다른 방법으로는 <a href="http://www.dancedeets.com/events_add">http://www.dancedeets.com/events_add</a> 이 주소로 가셔서 올리고 싶으신 이벤트를 클릭하시고 Add Event를 클릭하시면 바로 이벤트에 추가됩니다.
+
+<!--I would have an idea for DanceDeets, or would like to help make DanceDeets a success in Korea. How can I help?-->
+
+<h3>많은 한국 댄서분들이 DanceDeets에 가입하시고 공유해주셔서 저희 웹사이트와 앱이 더욱 활성화 되었습니다!</h3>
+
+<!--Korea already has many people signed up for DanceDeets, thanks to people like you sharing the website and mobile apps. If you want to help DanceDeets more, here are some ideas:
+- If you are helping to promote an event, please make a facebook event with a good description and location, and add it to DanceDeets, so that both Korean dancers and foreign dancers visiting Korea can find it.
+- If you are a dancer, wanting to use DanceDeets in Korea, please ask the dance event promoters to promote their events on DanceDeets,.
+- If you have another suggestions, please email us at korea@dancedeets.com.
+-->
+<p>더 나아질 수 있도록 도와주실 수 있는 방법은 하나, 이벤트를 여실 때 꼭!
+<ul>
+<li>페이스북 이벤트 페이지를 이용하셔서 그 이벤트에 관한 정보를 자세히 써주시길 부탁드립니다. 그러면 외국댄서들이 DanceDeets를 통해 더 좋은 정보를 가지고 한국을 방문 할 수 있습니다.</li>
+<li>둘, 만약 이벤트 관계자분들이 페이스북 이벤트 페이지를 이용하시지 않으면 페이스북 이벤트 페이지를 통해 더 홍보를 할 수 있게 권장드리기를 부탁드립니다.</li>
+<li>이것외에도 혹시 좋은 아이디어나 제안이 있으시면 <a href="mailto:korea@dancedeets.com">korea@dancedeets.com</a> 이 주소로 이메일 부탁드리겠습니다. 감사합니다.</li>
+</ul>
+
+<h3>I have another question?</h3>
+
+<p>We may have your question answered in our <a href="/help?hl=en">English FAQ</a>.
+
+#end def
+
+
+
+
+
+
+
