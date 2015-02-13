@@ -50,6 +50,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
 
 
 class LookupAppFriendUsers(fb_api.LookupType):
+    # V2.0 CHANGE
     version = "v1.0"
 
     @classmethod
@@ -63,7 +64,8 @@ class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
         app_friend_list = fb_result[key]['info']
         logging.info("app_friend_list is %s", app_friend_list)
         user_friends = users.UserFriendsAtSignup.get_or_insert(self.fb_uid)
-        user_friends.registered_friend_string_ids = [x['uid'] for x in app_friend_list['data']]
+        # V2.0 CHANGE, remove str() call
+        user_friends.registered_friend_string_ids = [str(x['uid']) for x in app_friend_list['data']]
         user_friends.put()
     post=get
 
