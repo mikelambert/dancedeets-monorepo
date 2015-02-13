@@ -4,7 +4,6 @@ from google.appengine.ext import db
 
 import geohash
 from loc import geohash_math
-from loc import gmaps_api
 from loc import math
 from util import abbrev
 
@@ -15,15 +14,11 @@ CITY_GEOHASH_PRECISIONS = range(
 
 NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with
 
-def get_largest_nearby_city_name(location):
+def get_largest_nearby_city_name(point):
     # TODO(lambert): we should cache this entire function. use lowercase of location to determine cache key. Using DB cache too.
-    logging.info("location is %s", location)
+    logging.info("location is %s", point)
     # rather than return the nearest city (Sunnyvale, San Jose, etc)
     # try to find the largest city within a certain range to give us good groupings for the "scene" name of a user/event.
-    geocode = gmaps_api.get_geocode(address=location)
-    if geocode is None:
-        return "Unknown"
-    point = geocode.latlng()
     geohashes = geohash_math.get_all_geohashes_for((point, point), precision=geohash_math.get_geohash_bits_for_km(NEARBY_DISTANCE_KM))
     cities = City.gql("where geohashes in :geohashes", geohashes=geohashes).fetch(100)
     cities = [x for x in cities if math.get_distance(point, (x.latitude, x.longitude), use_km=True) < NEARBY_DISTANCE_KM]

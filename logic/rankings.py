@@ -7,6 +7,7 @@ from mapreduce import model
 from mapreduce import operation as op
 
 from events import cities
+from loc import gmaps_api
 
 EVENT_FOR_CITY_RANKING = 'CITY_EVENT_RANKING'
 USER_FOR_CITY_RANKING = 'CITY_USER_RANKING'
@@ -45,7 +46,9 @@ def make_key_name(key_name, **kwargs):
 def count_event_for_city(dbevent):
     if not dbevent.start_time: # deleted event, don't count
         return
-    city = get_ranking_location(dbevent.actual_city_name)
+    if not dbevent.latitude or not dbevent.longitude: # no-location event, don't count
+        return
+    city = get_ranking_location_latlng((dbevent.latitude, dbevent.longitude))
     for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
         yield op.counters.Increment(make_key_name("City", city=city, time_period=time_period))
 
@@ -214,4 +217,11 @@ def top_n_with_selected(thing_ranking, selected_name, group_size=3):
     return top_n, selected_n
 
 def get_ranking_location(location):
-    return cities.get_largest_nearby_city_name(location)
+    geocode = gmaps_api.get_geocode(address=location)
+    if geocode is None:
+        return "Unknown"
+    point = geocode.latlng()
+    return get_ranking_location_latlng(point)
+
+def get_ranking_location_latlng(point):
+    return cities.get_largest_nearby_city_name(point)
