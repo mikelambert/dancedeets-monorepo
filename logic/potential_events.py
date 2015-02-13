@@ -12,7 +12,7 @@ from logic import thing_db
 from util import dates
 
 class PotentialEvent(db.Model):
-    fb_event_id = property(lambda x: int(x.key().name()))
+    fb_event_id = property(lambda x: str(x.key().name()))
 
     language = db.StringProperty()
     looked_at = db.BooleanProperty()
@@ -23,6 +23,7 @@ class PotentialEvent(db.Model):
     show_even_if_no_score = db.BooleanProperty()
     should_look_at = db.BooleanProperty()
 
+    #STR_ID_MIGRATE
     source_ids = db.ListProperty(int)
     source_fields = db.ListProperty(str)
 
@@ -32,7 +33,9 @@ class PotentialEvent(db.Model):
     def has_source_with_field(self, source_id, source_field):
         has_source = False
         for source_id_, source_field_ in zip(self.source_ids, self.source_fields):
-            if source_id_ == int(source_id) and source_field_ == source_field:
+            #STR_ID_MIGRATE
+            source_id_ = str(source_id_)
+            if source_id_ == source_id and source_field_ == source_field:
                 has_source = True
         return has_source
 
@@ -118,7 +121,8 @@ def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, 
 
         _common_potential_event_setup(potential_event, fb_event)
 
-        potential_event.source_ids.append(source.graph_id)
+        #STR_ID_MIGRATE
+        potential_event.source_ids.append(long(source.graph_id))
         potential_event.source_fields.append(source_field)
 
         potential_event.show_even_if_no_score = potential_event.show_even_if_no_score or show_all_events

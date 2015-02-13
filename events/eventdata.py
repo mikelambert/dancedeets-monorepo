@@ -58,7 +58,7 @@ CM_USER = 'CM_USER'
 
 class DBEvent(db.Model):
     """Stores custom data about our Event"""
-    fb_event_id = property(lambda x: int(x.key().name()))
+    fb_event_id = property(lambda x: str(x.key().name()))
 
     # TODO(lambert): right now this is unused, but maybe we want to cache our "ish" tags or something to that effect?
     # Was originally used to track manually-applied tags
@@ -66,6 +66,7 @@ class DBEvent(db.Model):
 
     # real data
     owner_fb_uid = db.StringProperty()
+    #STR_ID_MIGRATE
     creating_fb_uid = db.IntegerProperty(indexed=False)
     creation_time = db.DateTimeProperty(indexed=False, auto_now_add=True)
     # could be AUTO, ADMIN, USER, etc? Helps for maintaining a proper training corpus

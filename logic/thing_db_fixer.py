@@ -43,17 +43,21 @@ def function_migrate_thing_to_new_id(fbapi_obj, old_source_id, new_source_id):
     old_source.delete()
 
 def migrate_potential_events(old_source_id, new_source_id):
-    potential_event_list = potential_events.PotentialEvent.gql("WHERE source_ids = %s" % old_source_id).fetch(100)
+    #STR_ID_MIGRATE
+    potential_event_list = potential_events.PotentialEvent.gql("WHERE source_ids = %s" % long(old_source_id)).fetch(100)
 
     for pe in potential_event_list:
         logging.info("old pe %s has ids: %s", pe.fb_event_id, pe.source_ids)
         source_infos = set()
         for source_info in zip(pe.source_ids, pe.source_fields):
-            if source_info[0] == long(old_source_id):
-                source_info = (long(new_source_id), source_info[1])
+            #STR_ID_MIGRATE
+            source_id = str(source_infos[0])
+            if source_id == old_source_id:
+                source_info = (new_source_id, source_info[1])
             source_infos.add(source_info)
         source_infos_list = list(source_infos)
-        pe.source_ids = [x[0] for x in source_infos_list]
+        #STR_ID_MIGRATE
+        pe.source_ids = [long(x[0]) for x in source_infos_list]
         pe.source_fields = [x[1] for x in source_infos_list]
         logging.info("new pe %s has ids: %s", pe.fb_event_id, pe.source_ids)
         pe.put()

@@ -30,9 +30,9 @@ FIELD_INVITES = 'FIELD_INVITES' # fql query on invites for signed-up users
 
 def run_modify_transaction_for_key(key, func):
     def inner_modify():
-        s = Source.get_by_key_name(str(key))
+        s = Source.get_by_key_name(key)
         if not s:
-            s = Source(key_name=str(key))
+            s = Source(key_name=key)
         func(s)
         s.put()
     db.run_in_transaction(inner_modify)
@@ -94,6 +94,7 @@ class Source(db.Model):
     freestyle = db.FloatProperty(indexed=False)
     choreo = db.FloatProperty(indexed=False)
 
+    #STR_ID_MIGRATE
     creating_fb_uid = db.IntegerProperty(indexed=False)
     creation_time = db.DateTimeProperty(indexed=False, auto_now_add=True)
     last_scrape_time = db.DateTimeProperty(indexed=False)
@@ -235,6 +236,8 @@ def map_count_potential_event(pe):
     db_event = eventdata.DBEvent.get_by_key_name(str(pe.fb_event_id))
     potential_event = classified_event.is_dance_event()
     for source_id in pe.source_ids:
+        #STR_ID_MIGRATE
+        source_id = str(source_id)
         all_event = True
         real_event = db_event != None
         false_negative = db_event and not classified_event.is_dance_event()

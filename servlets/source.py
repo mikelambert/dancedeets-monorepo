@@ -29,8 +29,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         real_source_id = fb_source['info']['id']
         s = thing_db.create_source_for_id(real_source_id, fb_source)
 
-        source_potential_events = potential_events.PotentialEvent.gql('WHERE source_ids = :graph_id', graph_id=s.graph_id).fetch(1000)
-        found_db_events = [x for x in eventdata.DBEvent.get_by_key_name([str(x.fb_event_id) for x in source_potential_events]) if x]
+        #STR_ID_MIGRATE
+        source_potential_events = potential_events.PotentialEvent.gql('WHERE source_ids = :graph_id', graph_id=long(s.graph_id)).fetch(1000)
+        found_db_events = [x for x in eventdata.DBEvent.get_by_key_name([x.fb_event_id for x in source_potential_events]) if x]
 
         if s.creating_fb_uid:
             creating_user = self.fbl.get(fb_api.LookupUser, s.creating_fb_uid)
@@ -62,7 +63,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.redirect('/sources/admin_edit?source_id=%s' % source_id)
             return
 
-        s.creating_fb_uid = self.user.fb_uid
+        #STR_ID_MIGRATE
+        s.creating_fb_uid = long(self.user.fb_uid)
         s.street_dance_related = True
         s.put()
 

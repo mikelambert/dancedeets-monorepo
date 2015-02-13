@@ -14,7 +14,7 @@ USER_EXPIRY = 24 * 60 * 60
 
 class User(db.Model):
     # SSO
-    fb_uid = property(lambda x: int(x.key().name()))
+    fb_uid = property(lambda x: str(x.key().name()))
     fb_access_token = db.StringProperty(indexed=False)
     fb_access_token_expires = db.DateTimeProperty(indexed=False)
 
@@ -22,6 +22,7 @@ class User(db.Model):
     creation_time = db.DateTimeProperty()
     last_login_time = db.DateTimeProperty()
     login_count = db.IntegerProperty()
+    #STR_ID_MIGRATE
     inviting_fb_uid = db.IntegerProperty(indexed=False)
 
     clients = db.StringListProperty()
@@ -98,7 +99,7 @@ class User(db.Model):
 
     def add_message(self, message):
         user_message = UserMessage(
-            fb_uid=self.fb_uid,
+            real_fb_uid=self.fb_uid,
             creation_time=datetime.datetime.now(),    
             message=message,
         )
@@ -109,20 +110,20 @@ class User(db.Model):
         return user_message
 
     def get_and_purge_messages(self):
-        user_messages = UserMessage.gql("WHERE fb_uid = :fb_uid ORDER BY creation_time", fb_uid=self.fb_uid).fetch(100)
+        user_messages = UserMessage.gql("WHERE real_fb_uid = :fb_uid ORDER BY creation_time", fb_uid=self.fb_uid).fetch(100)
         messages = [x.message for x in user_messages]
         for user_message in user_messages:
             user_message.delete()
         return messages
 
 class UserFriendsAtSignup(db.Model):
-    fb_uid = property(lambda x: int(x.key().name()))
+    fb_uid = property(lambda x: str(x.key().name()))
     registered_friend_string_ids = db.StringListProperty(indexed=False)
     # deprecated
     registered_friend_ids = db.ListProperty(int, indexed=False)
 
 class UserMessage(db.Model):
-    fb_uid = db.IntegerProperty()
+    real_fb_uid = db.StringProperty()
     creation_time = db.DateTimeProperty()
     message = db.TextProperty(indexed=False)
 

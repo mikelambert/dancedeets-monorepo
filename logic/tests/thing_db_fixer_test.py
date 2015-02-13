@@ -89,6 +89,7 @@ class TestThingDBFixer(unittest.TestCase):
         source.put()
 
         pe = potential_events.PotentialEvent(key_name="333")
+        #STR_ID_MIGRATE
         pe.source_ids = [111, 222]
         pe.source_fields = [thing_db.GRAPH_TYPE_PROFILE, thing_db.GRAPH_TYPE_PROFILE]
         pe.put()
@@ -96,5 +97,6 @@ class TestThingDBFixer(unittest.TestCase):
         self.mark_as_error_and_reload(fbl)
 
         pe = potential_events.PotentialEvent.get_by_key_name("333")
+        #STR_ID_MIGRATE
         self.assertEqual(pe.source_ids, [222])
         self.assertEqual(pe.source_fields, [thing_db.GRAPH_TYPE_PROFILE])

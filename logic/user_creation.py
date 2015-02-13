@@ -16,7 +16,8 @@ def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires,
     # grab the cookie to figure out who referred this user
     logging.info("Referer was: %s", referer)
     if referer:
-        user.inviting_fb_uid = int(referer)
+        #STR_ID_MIGRATE
+        user.inviting_fb_uid = long(referer)
     user.clients = [client]
 
     user.send_email = send_email
