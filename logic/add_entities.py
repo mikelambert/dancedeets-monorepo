@@ -35,7 +35,7 @@ def add_update_event(event_id, user_id, fbl, remapped_address=None, override_add
     if override_address is not None:
         e.address = override_address
     #STR_ID_MIGRATE
-    e.creating_fb_uid = long(user_id)
+    e.creating_fb_uid = long(user_id) if user_id else None
     if creating_method:
         e.creating_method = creating_method
     event_updates.update_and_save_event(e, fb_event)
