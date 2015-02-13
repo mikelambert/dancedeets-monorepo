@@ -1,5 +1,7 @@
 
 def _get_formatting_parts(geocode, include_neighborhood):
+    if not geocode:
+        return []
     geocode = geocode.copy()
 
     components = [
