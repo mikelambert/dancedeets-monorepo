@@ -259,6 +259,7 @@ class LookupThingFeed(LookupType):
         return [
             ('info', cls.url('%s' % object_id)),
             ('feed', cls.url('%s/feed' % object_id)),
+            ('events', cls.url('%s/events' % object_id)),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):

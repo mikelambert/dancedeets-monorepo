@@ -66,11 +66,11 @@ def scrape_events_from_sources(fbl, sources):
 
     logging.info("Fetched %s objects, saved %s updates", fbl.fb_fetches, fbl.db_updates)
 
-    event_source_combos = []
+    event_source_combos = set()
     for source in sources:
         try:
             thing_feed = fbl.fetched_data(fb_api.LookupThingFeed, source.graph_id)
-            event_source_combos.extend(process_thing_feed(source, thing_feed))
+            event_source_combos.update(process_thing_feed(source, thing_feed))
         except fb_api.NoFetchedDataException, e:
             logging.error("Failed to fetch data for thing: %s", str(e))
     process_event_source_ids(event_source_combos, fbl)
@@ -129,6 +129,10 @@ def process_thing_feed(source, thing_feed):
     source.put()
 
     event_source_combos = parse_event_source_combos_from_feed(source, thing_feed['feed']['data'])
+
+    # Now also grab the events that the page owns/manages itself:
+    for event in thing_feed['events']['data']:
+        event_source_combos.append((event['id'], source, source.graph_id))
     return event_source_combos
 
 def parse_event_source_combos_from_feed(source, feed_data):
@@ -161,9 +165,7 @@ def parse_event_source_combos_from_feed(source, feed_data):
                 if m:
                     eid = m.group(1)
             if eid:
-                extra_source_id = None
-                if 'from' in post:
-                    extra_source_id = post['from']['id']
+                extra_source_id = post['from']['id']
                 event_source_combos.append((eid, source, extra_source_id))
             else:
                 logging.warning("broken link is %s", urlparse.urlunparse(p))
