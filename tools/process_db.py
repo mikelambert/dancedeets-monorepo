@@ -44,7 +44,7 @@ def event_list(x):
     start_time = x.get('start_time') or datetime.datetime(1970, 1, 1)
     return [
         x.key().name(),
-        str(x['owner_fb_uid']),
+        x['owner_fb_uid'],
         ';'.join([y for y in x.get('tags', []) if not y.startswith('STYLE_')]),
         start_time.strftime('%Y%m%d')
     ]

@@ -37,7 +37,7 @@ def function_migrate_thing_to_new_id(fbapi_obj, old_source_id, new_source_id):
     new_source.num_false_negatives = (new_source.num_false_negatives or 0) + (old_source.num_false_negatives or 0)
 
     # Who has pointers to sources??
-    migrate_potential_events(int(old_source_id), int(new_source_id))
+    migrate_potential_events(old_source_id, new_source_id)
 
     new_source.put()
     old_source.delete()

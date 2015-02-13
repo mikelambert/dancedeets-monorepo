@@ -67,7 +67,7 @@ class User(db.Model):
         memcache_key = cls.memcache_user_key(uid)
         user = smemcache.get(memcache_key)
         if not user:
-            user = User.get_by_key_name(str(uid))
+            user = User.get_by_key_name(uid)
             if user:
                 smemcache.set(memcache_key, user, USER_EXPIRY)
         return user

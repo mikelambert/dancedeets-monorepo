@@ -34,7 +34,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
     def initialize(self, request, response):
         super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
 
-        self.fb_uid = int(self.request.get('user_id'))
+        self.fb_uid = self.request.get('user_id')
         self.user = users.User.get_cached(self.fb_uid)
         if self.user:
             if not self.user.fb_access_token:
@@ -62,8 +62,8 @@ class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
         fb_result = self.fbl.fb.fetch_keys([key])
         app_friend_list = fb_result[key]['info']
         logging.info("app_friend_list is %s", app_friend_list)
-        user_friends = users.UserFriendsAtSignup.get_or_insert(str(self.fb_uid))
-        user_friends.registered_friend_string_ids = [str(x['uid']) for x in app_friend_list['data']]
+        user_friends = users.UserFriendsAtSignup.get_or_insert(self.fb_uid)
+        user_friends.registered_friend_string_ids = [x['uid'] for x in app_friend_list['data']]
         user_friends.put()
     post=get
 

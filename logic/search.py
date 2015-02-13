@@ -244,14 +244,14 @@ def update_fulltext_search_index(db_event, fb_event):
         doc_index = search.Index(name=ALL_EVENTS_INDEX)
         doc_index.put(doc_event)
         doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
-        doc_index.delete(str(db_event.fb_event_id))
+        doc_index.delete(db_event.fb_event_id)
 
 def delete_from_fulltext_search_index(db_event_id):
     logging.info("Deleting event from search index: %s", db_event_id)
     doc_index = search.Index(name=ALL_EVENTS_INDEX)
-    doc_index.delete(str(db_event_id))
+    doc_index.delete(db_event_id)
     doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
-    doc_index.delete(str(db_event_id))
+    doc_index.delete(db_event_id)
 
 def construct_fulltext_search_index(fbl, index_future=True):
     logging.info("Loading DB Events")
@@ -313,7 +313,7 @@ def _create_doc_event(db_event, fb_event):
         logging.error("DB Event %s start_time is not correct format: ", db_event.fb_event_id, db_event.start_time)
         return None
     doc_event = search.Document(
-        doc_id=str(db_event.fb_event_id),
+        doc_id=db_event.fb_event_id,
         fields=[
             search.TextField(name='keywords', value=fb_event['info'].get('name', '') + '\n\n' + fb_event['info'].get('description', '')),
             search.NumberField(name='attendee_count', value=db_event.attendee_count or 0),
@@ -346,7 +346,7 @@ def save_db_event_ids(fbl, index_name, db_event_ids):
         fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
         doc_event = _create_doc_event(db_event, fb_event)
         if not doc_event:
-            delete_ids.append(str(db_event.fb_event_id))
+            delete_ids.append(db_event.fb_event_id)
             continue
         doc_events.append(doc_event)
 

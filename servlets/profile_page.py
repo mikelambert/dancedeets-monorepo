@@ -22,9 +22,9 @@ class ProfileHandler(BaseProfileHandler):
         self.finish_preload()
 
         fb_profile = self.get_profile_user()
-        fb_profile_uid = int(fb_profile['profile']['id'])
+        fb_profile_uid = fb_profile['profile']['id']
 
-        user_profile = profile.Profile.get_by_key_name(str(fb_profile_uid))
+        user_profile = profile.Profile.get_by_key_name(fb_profile_uid)
 
         primary_name = fb_profile['profile']['name']
         if user_profile:
@@ -45,7 +45,7 @@ class ProfileAddTagHandler(BaseProfileHandler):
     def post(self):
         self.finish_preload()
         fb_profile = self.get_profile_user()
-        fb_profile_uid = int(fb_profile['profile']['id'])
+        fb_profile_uid = fb_profile['profile']['id']
         video_site, video_id = tags.parse_url(self.request.get('video_url'))
         video_tag = tags.ProfileVideoTag(fb_uid=fb_profile_uid, video_site=video_site, video_id=video_id)
         video_tag.put()

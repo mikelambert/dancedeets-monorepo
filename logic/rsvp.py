@@ -8,12 +8,12 @@ class RSVPManager(object):
         fb_user = self.fbl.fetched_data(fb_api.LookupUser, self.fbl.fb_uid)
         if 'rsvp_for_future_events' in fb_user:
             rsvps_list = fb_user['rsvp_for_future_events']['data']
-            self.rsvps = dict((int(x['id']), x['rsvp_status']) for x in rsvps_list)
+            self.rsvps = dict((x['id'], x['rsvp_status']) for x in rsvps_list)
         else:
             self.rsvps = {}
 
     def get_rsvp_for_event(self, event_id):
-        rsvp = self.rsvps.get(int(event_id), 'none')
+        rsvp = self.rsvps.get(event_id, 'none')
         if rsvp == 'unsure':
             rsvp = 'maybe'
         return rsvp

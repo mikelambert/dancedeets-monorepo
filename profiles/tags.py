@@ -21,7 +21,7 @@ def parse_url(url):
     return None, None
 
 class ProfileVideoTag(db.Model):
-    fb_uid = db.IntegerProperty() # TODO: make this a proper key
+    fb_uid = db.StringProperty() # TODO: make this a proper key
     tagger_fb_uid = db.IntegerProperty()
     video_site = db.StringProperty()
     video_id = db.StringProperty()

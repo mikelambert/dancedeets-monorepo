@@ -27,7 +27,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
 
         # If they're logged in, and have an account created, update and redirect
         if self.fb_uid:
-            user = users.User.get_by_key_name(str(self.fb_uid))
+            user = users.User.get_by_key_name(self.fb_uid)
             if user and not user.expired_oauth_token:
                 self.redirect(next)
                 return

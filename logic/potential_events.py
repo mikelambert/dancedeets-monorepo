@@ -81,7 +81,7 @@ def update_scores_for_potential_event(potential_event, fb_event, fb_event_attend
         dance_bias_score, non_dance_bias_score = gprediction.predict(potential_event, fb_event, fb_event_attending, service=predict_service)
         fb_event_id = potential_event.fb_event_id
         def _internal_update_scores():
-            potential_event = PotentialEvent.get_by_key_name(str(fb_event_id))
+            potential_event = PotentialEvent.get_by_key_name(fb_event_id)
             potential_event.dance_bias_score = dance_bias_score
             potential_event.non_dance_bias_score = non_dance_bias_score
             potential_event.put()
@@ -95,9 +95,9 @@ def update_scores_for_potential_event(potential_event, fb_event, fb_event_attend
 
 def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attending):
     def _internal_add_potential_event():
-        potential_event = PotentialEvent.get_by_key_name(str(fb_event_id))
+        potential_event = PotentialEvent.get_by_key_name(fb_event_id)
         if not potential_event:
-            potential_event = PotentialEvent(key_name=str(fb_event_id))
+            potential_event = PotentialEvent(key_name=fb_event_id)
             # TODO(lambert): this may re-duplicate this work for potential events that already exist. is this okay or not?
             _common_potential_event_setup(potential_event, fb_event)
             potential_event.put()
@@ -114,7 +114,7 @@ def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, 
     # show all events from a source if enough of them slip through our automatic filters
     show_all_events = source.fraction_real_are_false_negative() > 0.05 and source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
     def _internal_add_source_for_event_id():
-        potential_event = PotentialEvent.get_by_key_name(str(fb_event_id)) or PotentialEvent(key_name=str(fb_event_id))
+        potential_event = PotentialEvent.get_by_key_name(fb_event_id) or PotentialEvent(key_name=fb_event_id)
         # If already added, return
         if potential_event.has_source_with_field(source.graph_id, source_field):
             return False, potential_event.match_score
@@ -134,7 +134,7 @@ def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, 
         new_source, match_score = db.run_in_transaction(_internal_add_source_for_event_id)
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", fb_event_id, e)
-    potential_event = PotentialEvent.get_by_key_name(str(fb_event_id))
+    potential_event = PotentialEvent.get_by_key_name(fb_event_id)
     potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
     if new_source:
         #TODO(lambert): doesn't handle the case of the match score increasing from <0 to >0 in the future

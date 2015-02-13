@@ -197,7 +197,7 @@ def process_event_source_ids(event_source_combos, fbl):
     new_source_ids = set([x for x in potential_new_source_ids if x not in existing_source_ids])
     for source_id in new_source_ids:
         #TODO(lambert): we know it doesn't exist, why does create_source_for_id check datastore?
-        s = thing_db.Source(key_name=str(source_id))
+        s = thing_db.Source(key_name=source_id)
         s.put()
     logging.info("Found %s new sources", len(new_source_ids))
 

@@ -33,7 +33,7 @@ class UnprocessFutureEventsHandler(webapp2.RequestHandler):
         #        if not event['empty']:
         #            info = event['info']
         #            if info.get('start_time') > '2011-04-05' and info['updated_time'] > '2011-04-05':
-        #                pe = potential_events.PotentialEvent.get_or_insert(str(event['info']['id']))
+        #                pe = potential_events.PotentialEvent.get_or_insert(event['info']['id'])
         #                pe.looked_at = None
         #                pe.put()
         #                logging.info("PE %s", event['info']['id'])

@@ -29,7 +29,7 @@ def cache_db_events(events):
 
 def get_largest_cover(fb_event):
     if 'cover_info' in fb_event:
-        cover = fb_event['cover_info'][str(fb_event['info']['cover']['cover_id'])]
+        cover = fb_event['cover_info'][fb_event['info']['cover']['cover_id']]
         max_cover = max(cover['images'], key=lambda x: x['height'])
         return max_cover
     else:
@@ -44,7 +44,7 @@ def get_cached_db_events(event_ids, allow_cache=True):
         logging.info("loading db events from memcache (included below) took %s seconds", time.time() - a)
     remaining_event_ids = set(event_ids).difference([x.fb_event_id for x in db_events if x])
     if remaining_event_ids:
-        new_db_events = DBEvent.get_by_key_name([str(x) for x in remaining_event_ids])
+        new_db_events = DBEvent.get_by_key_name(list(remaining_event_ids))
         new_db_events = [x for x in new_db_events if x]
         cache_db_events(new_db_events)
         db_events += new_db_events

@@ -159,7 +159,7 @@ def link_for_fb_source(data):
         return 'http://www.facebook.com/%s/' % data['info']['id']
 
 def create_source_for_id(source_id, fb_data):
-    source = Source.get_by_key_name(str(source_id)) or Source(key_name=str(source_id), street_dance_related=False)
+    source = Source.get_by_key_name(source_id) or Source(key_name=source_id, street_dance_related=False)
     source.compute_derived_properties(fb_data)
     logging.info('Getting source for id %s: %s', source.graph_id, source.name)
     return source
@@ -233,7 +233,7 @@ def map_count_potential_event(pe):
     classified_event = event_classifier.get_classified_event(fb_event, pe.language)
 
     from events import eventdata
-    db_event = eventdata.DBEvent.get_by_key_name(str(pe.fb_event_id))
+    db_event = eventdata.DBEvent.get_by_key_name(pe.fb_event_id)
     potential_event = classified_event.is_dance_event()
     for source_id in pe.source_ids:
         #STR_ID_MIGRATE

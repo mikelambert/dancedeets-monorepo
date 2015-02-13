@@ -59,7 +59,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
                 from google.appengine.api import search as search_api
 
                 doc = search_api.Document(
-                    doc_id=str(fb_event['info']['id']),
+                    doc_id=fb_event['info']['id'],
                     fields=[
                         search_api.TextField(name='event_keywords', value='dance, competition'),
                         search_api.TextField(name='actual_city_name', value='New York, NY'),

@@ -31,7 +31,7 @@ from google.appengine.api import taskqueue
 EVENT_PULL_QUEUE = 'event-publishing-pull-queue'
 
 def eventually_publish_event(fbl, event_id, token_nickname=None):
-    event_id = str(event_id)
+    event_id = event_id
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
     if fb_event['empty']:
         return
@@ -84,7 +84,7 @@ def pull_and_publish_event(fbl):
                 q.delete_tasks(task)
 
 def post_event_id_with_authtoken(fbl, event_id, auth_token):
-    event_id = str(event_id)
+    event_id = event_id
     fb_event = fbl.get(fb_api.LookupEvent, event_id)
     if fb_event['empty']:
         logging.warning("Failed to post event: %s, due to %s", event_id, fb_event['empty'])
@@ -278,12 +278,12 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
 
     request_token = dict(urlparse.parse_qsl(content))
 
-    auth_tokens = OAuthToken.query(OAuthToken.user_id==str(user_id), OAuthToken.token_nickname==token_nickname, OAuthToken.application==APP_TWITTER).fetch(1)
+    auth_tokens = OAuthToken.query(OAuthToken.user_id==user_id, OAuthToken.token_nickname==token_nickname, OAuthToken.application==APP_TWITTER).fetch(1)
     if auth_tokens:
         auth_token = auth_tokens[0]
     else:
         auth_token = OAuthToken()
-    auth_token.user_id = str(user_id)
+    auth_token.user_id = user_id
     auth_token.token_nickname = token_nickname
     auth_token.application = APP_TWITTER
     auth_token.temp_oauth_token = request_token['oauth_token']
@@ -350,13 +350,13 @@ def facebook_auth(fbl, page_uid, country_filter):
     page = pages[0]
     page_token = page['access_token']
 
-    auth_tokens = OAuthToken.query(OAuthToken.user_id==str(fbl.fb_uid), OAuthToken.token_nickname==str(page_uid), OAuthToken.application==APP_FACEBOOK).fetch(1)
+    auth_tokens = OAuthToken.query(OAuthToken.user_id==fbl.fb_uid, OAuthToken.token_nickname==page_uid, OAuthToken.application==APP_FACEBOOK).fetch(1)
     if auth_tokens:
         auth_token = auth_tokens[0]
     else:
         auth_token = OAuthToken()
-    auth_token.user_id = str(fbl.fb_uid)
-    auth_token.token_nickname = str(page_uid)
+    auth_token.user_id = fbl.fb_uid
+    auth_token.token_nickname = page_uid
     auth_token.application = APP_FACEBOOK
     auth_token.valid_token = True
     auth_token.oauth_token = page_token

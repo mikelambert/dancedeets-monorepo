@@ -263,7 +263,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             except fb_api.NoFetchedDataException, e:
                 logging.error("Could not load event info for user: %s", e)
                 events = []
-            db_events = eventdata.DBEvent.get_by_key_name([str(x['eid']) for x in events])
+            db_events = eventdata.DBEvent.get_by_key_name([x['eid'] for x in events])
             loaded_fb_event_ids = set(x.fb_event_id for x in db_events if x)
 
             for event in events:

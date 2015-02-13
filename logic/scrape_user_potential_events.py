@@ -14,7 +14,7 @@ def get_potential_dance_events(fbl, user_id, fb_user_events):
 
     # TODO(lambert): instead of this, perhaps we want to store the "previous list of ids from this users invites", or compare versus the previous all_event_info object?
     existing_potential_events = potential_events.PotentialEvent.get_by_key_name(event_ids)
-    tracked_potential_event_ids = [str(x.fb_event_id) for x in existing_potential_events if x and x.has_source_with_field(user_id, thing_db.FIELD_INVITES)]
+    tracked_potential_event_ids = [x.fb_event_id for x in existing_potential_events if x and x.has_source_with_field(user_id, thing_db.FIELD_INVITES)]
     logging.info("For user id %s, already %s tracking potential events for %s", user_id, len(tracked_potential_event_ids), tracked_potential_event_ids)
 
     event_ids = set(event_ids).difference(tracked_potential_event_ids) # only handle new ids

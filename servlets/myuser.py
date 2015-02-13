@@ -7,7 +7,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
 
         defaults = {}
-        user = users.User.get_by_key_name(str(self.fb_uid))
+        user = users.User.get_by_key_name(self.fb_uid)
         for k in dir(user):
             defaults[k] = getattr(user, k)
         for field in defaults.keys():
@@ -31,7 +31,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.redirect('/')
 
     def update_user(self):
-        user = users.User.get_by_key_name(str(self.fb_uid))
+        user = users.User.get_by_key_name(self.fb_uid)
         for field in ['location', 'distance_units']:
             form_value = self.request.get(field)
             setattr(user, field, form_value)

@@ -176,7 +176,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         response = facebook.parse_signed_request_cookie(request.cookies)
         fb_cookie_uid = None
         if response:
-            fb_cookie_uid = int(response['user_id'])
+            fb_cookie_uid = response['user_id']
         logging.info("fb cookie id is %s", fb_cookie_uid)
 
         # Load our dancedeets logged-in user/state
@@ -185,12 +185,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
         if user_login_string:
             user_login_cookie = json.loads(urllib.unquote(user_login_string))
             if validate_hashed_userlogin(user_login_cookie):
-                our_cookie_uid = int(user_login_cookie['uid'])
+                our_cookie_uid = user_login_cookie['uid']
 
         # If the user has changed facebook users, let's automatically re-login at dancedeets
         if fb_cookie_uid and fb_cookie_uid != our_cookie_uid:
             user_login_cookie = {
-                'uid': str(fb_cookie_uid),
+                'uid': fb_cookie_uid,
             }
             user_login_cookie['hash'] = generate_userlogin_hash(user_login_cookie)
             user_login_string = urllib.quote(json.dumps(user_login_cookie))
@@ -210,7 +210,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             return
 
         self.fb_uid = our_cookie_uid
-        self.user = users.User.get_cached(str(self.fb_uid))
+        self.user = users.User.get_cached(self.fb_uid)
 
         # If we have a user, grab the access token
         if self.user:
@@ -227,7 +227,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                         access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
                         logging.info("New access token from cookie: %s, expires %s", access_token, access_token_expires)
                         if access_token:
-                            self.user = users.User.get_by_key_name(str(self.fb_uid))
+                            self.user = users.User.get_by_key_name(self.fb_uid)
                             self.user.fb_access_token = access_token
                             self.user.fb_access_token_expires = access_token_expires
                             self.user.expired_oauth_token = False
@@ -239,7 +239,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                     except facebook.AlreadyHasLongLivedToken:
                         logging.info("Already have long-lived token, FB wouldn't give us a new one, so no need to refresh anything.")
                 if 'web' not in self.user.clients:
-                    self.user = users.User.get_by_key_name(str(self.fb_uid))
+                    self.user = users.User.get_by_key_name(self.fb_uid)
                     self.user.clients.append('web')
                     self.user.put()
                     logging.info("Added the web client to the User db")
@@ -274,7 +274,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             user_creation.create_user_with_fbuser(self.fb_uid, fb_user, self.access_token, access_token_expires, city, send_email=True, referer=referer, client='web')
             #TODO(lambert): handle this MUUUCH better
             logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
-            self.user = users.User.get_cached(str(self.fb_uid))
+            self.user = users.User.get_cached(self.fb_uid)
             # Should not happen:
             if not self.user:
                 logging.error("We still don't have a user!")
@@ -422,7 +422,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
 def update_last_login_time(user_id, login_time):
     def _update_last_login_time():
-        user = users.User.get_by_key_name(str(user_id))
+        user = users.User.get_by_key_name(user_id)
         user.last_login_time = login_time
         if user.login_count:
             user.login_count += 1
