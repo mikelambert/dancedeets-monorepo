@@ -25,7 +25,7 @@ def _event_time_period2(start_time, end_time):
 
 def delete_event(db_event):
     search.delete_from_fulltext_search_index(db_event.fb_event_id)
-    db_event.delete()
+    db_event.key.delete()
 
 # Even if the fb_event isn't updated, sometimes we still need to force a db_event update
 def need_forced_update(db_event):
