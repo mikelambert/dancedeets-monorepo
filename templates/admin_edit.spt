@@ -93,7 +93,7 @@ Edit Event
 			<p>
 			#if $event
 				Has a db event (<a href="https://appengine.google.com/
-datastore/edit?app_id=s~dancedeets-hrd&key=$event.key().__str__()">AE</a>).<br>
+datastore/edit?app_id=s~dancedeets-hrd&key=$event.key.urlsafe()">AE</a>).<br>
 			#end if
 			#if $potential_event
 				Has a potential event (<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=$potential_event.key().__str__()">AE</a>).<br>

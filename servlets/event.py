@@ -114,7 +114,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         if potential_event:
             self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">PE</a> ' % potential_event.key().__str__())
         if e:
-            self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">DBE</a> ' % e.key().__str__())
+            self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">DBE</a> ' % e.key.urlsafe())
 
     def handle_error_response(self, errors):
         event_id = None
