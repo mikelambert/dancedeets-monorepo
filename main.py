@@ -99,7 +99,6 @@ URLS = [
     ('/events/admin_edit', event.AdminEditHandler),
     ('/events/redirect', event.RedirectToEventHandler),
     ('/events_add', event.AddHandler),
-    ('/events/feed', api.FeedHandler),
     ('/events/relevant', search.RelevantHandler),
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/events/image_proxy/(\d+)', event_proxy.ImageProxyHandler),
