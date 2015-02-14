@@ -5,6 +5,7 @@ import re
 import urllib
 
 from google.appengine.ext import deferred
+from google.appengine.ext import ndb
 
 import base_servlet
 from events import eventdata
@@ -109,7 +110,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
 class AdminEditHandler(base_servlet.BaseRequestHandler):
     def show_barebones_page(self, fb_event_id):
         potential_event = potential_events.PotentialEvent.get_by_key_name(fb_event_id)
-        e = eventdata.DBEvent.get_by_key_name(fb_event_id)
+        e = eventdata.DBEvent.get_by_id(fb_event_id)
         if potential_event:
             self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">PE</a> ' % potential_event.key().__str__())
         if e:
@@ -163,7 +164,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
 
         # Don't insert object until we're ready to save it...
-        e = eventdata.DBEvent.get_by_key_name(event_id)
+        e = eventdata.DBEvent.get_by_id(event_id)
         if e and e.creating_fb_uid:
             creating_user = self.fbl.get(fb_api.LookupUser, e.creating_fb_uid)
         else:
@@ -213,7 +214,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         override_address = self.request.get('override_address')
 
         if self.request.get('delete'):
-            e = eventdata.DBEvent.get_by_key_name(event_id)
+            e = eventdata.DBEvent.get_by_id(event_id)
             # This e will be None if the user submits a deletion-form twice
             if e:
                 event_updates.delete_event(e)
@@ -263,7 +264,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             except fb_api.NoFetchedDataException, e:
                 logging.error("Could not load event info for user: %s", e)
                 events = []
-            db_events = eventdata.DBEvent.get_by_key_name([x['eid'] for x in events])
+            db_events = eventdata.DBEvent.get_by_ids([x['eid'] for x in events])
             loaded_fb_event_ids = set(x.fb_event_id for x in db_events if x)
 
             for event in events:
@@ -304,7 +305,7 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
         num_events = int(self.request.get('num_events', 100))
         # TODO: There are some events with city_name=Unknown and a valid latitude that are just not near any major metropolis. They are undercounted and have "No Scene", which we may want to fix at some point.
-        db_events = eventdata.DBEvent.gql("WHERE city_name = :1 AND latitude = :2 ORDER BY start_time DESC LIMIT %s" % num_events, 'Unknown', None)
+        db_events = eventdata.DBEvent.query(ndb.AND(eventdata.DBEvent.city_name=='Unknown', eventdata.DBEvent.latitude==None)).order(-eventdata.DBEvent.start_time).fetch(num_events)
         db_events = [x for x in db_events if x.anywhere == False]
         self.fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
         self.fbl.batch_fetch()
@@ -339,7 +340,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True %s ORDER BY match_score DESC LIMIT %s" % (past_event_query, number_of_events - len(unseen_potential_events))))
 
         potential_event_dict = dict((x.key().name(), x) for x in unseen_potential_events)
-        already_added_events = eventdata.DBEvent.get_by_key_name(list(potential_event_dict))
+        already_added_events = eventdata.DBEvent.get_by_ids(list(potential_event_dict))
         already_added_event_ids = [x.key().name() for x in already_added_events if x]
         # construct a list of not-added ids for display, but keep the list of all ids around so we can still mark them as processed down below
         potential_event_notadded_ids = list(set(potential_event_dict).difference(already_added_event_ids))

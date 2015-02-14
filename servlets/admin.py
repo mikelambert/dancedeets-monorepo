@@ -61,7 +61,7 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
 class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
-        all_events = eventdata.DBEvent.gql('WHERE owner_fb_uid = :1', None).fetch(1000)
+        all_events = eventdata.DBEvent.query(eventdata.DBEvent.owner_fb_uid==None).fetch(1000)
         import logging
         logging.info("found %s events", len(all_events))
         for e in all_events:

@@ -60,7 +60,7 @@ class FacebookPostHandler(base_servlet.BaseRequestHandler):
         event_id = self.request.get('event_id')
         fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
 
-        db_event = eventdata.DBEvent.get_by_key_name(event_id)
+        db_event = eventdata.DBEvent.get_by_id(event_id)
         auth_tokens = pubsub.OAuthToken.query(pubsub.OAuthToken.user_id==self.fb_uid, pubsub.OAuthToken.token_nickname==page_id).fetch(1)
         if auth_tokens:
             result = pubsub.facebook_post(auth_tokens[0], db_event, fb_event)

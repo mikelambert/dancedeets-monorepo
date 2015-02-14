@@ -110,7 +110,7 @@ class ExportSourcesHandler(tasks.BaseTaskFacebookRequestHandler):
 
 class OwnedEventsHandler(webapp2.RequestHandler):
     def get(self):
-        db_events_query = eventdata.DBEvent.gql('WHERE owner_fb_uid = :1', self.request.get('owner_id'))
+        db_events_query = eventdata.DBEvent.query(eventdata.DBEvent.owner_fb_uid==self.request.get('owner_id'))
         db_events = db_events_query.fetch(1000)
 
         print 'Content-type: text/plain\n\n'

@@ -6,7 +6,7 @@ import re
 import time
 
 from google.appengine.api import search
-from google.appengine.ext import db
+from google.appengine.ext import ndb
 from google.appengine.ext import deferred
 
 from events import eventdata
@@ -255,11 +255,12 @@ def delete_from_fulltext_search_index(db_event_id):
 
 def construct_fulltext_search_index(fbl, index_future=True):
     logging.info("Loading DB Events")
-    db_query = db.Query(eventdata.DBEvent, keys_only=True)
     if index_future:
-        db_query = db_query.filter('search_time_period =', eventdata.TIME_FUTURE)
-    db_event_keys = db_query.fetch(MAX_EVENTS)
-    db_event_ids = set(x.id_or_name() for x in db_event_keys)
+        db_query = eventdata.DBEvent.query(eventdata.DBEvent.search_time_period==eventdata.TIME_FUTURE)
+    else:
+        db_query = eventdata.DBEvent.query()
+    db_event_keys = db_query.fetch(MAX_EVENTS, keys_only=True)
+    db_event_ids = set(x.string_id() for x in db_event_keys)
 
     logging.info("Found %s db event ids for indexing", len(db_event_ids))
     if len(db_event_ids) >= MAX_EVENTS:
@@ -332,7 +333,7 @@ def _create_doc_event(db_event, fb_event):
 def save_db_event_ids(fbl, index_name, db_event_ids):
     # TODO(lambert): how will we ensure we only update changed events?
     logging.info("Loading %s DB Events", len(db_event_ids))
-    db_events = eventdata.DBEvent.get_by_key_name(db_event_ids)
+    db_events = eventdata.DBEvent.get_by_ids(db_event_ids)
     if None in db_events:
         logging.error("DB Event Lookup returned None!")
     logging.info("Loading %s FB Events", len(db_event_ids))
@@ -375,8 +376,8 @@ def _inner_cache_fb_events(fbl, event_ids):
 
 @timings.timed
 def memcache_future_events(fbl):
-    db_query = db.Query(eventdata.DBEvent, keys_only=True).filter('search_time_period =', eventdata.TIME_FUTURE)
-    event_ids = [x.id_or_name() for x in db_query.fetch(MAX_EVENTS)]
+    db_query = eventdata.DBEvent.query(eventdata.DBEvent.search_time_period==eventdata.TIME_FUTURE)
+    event_ids = [x.id() for x in db_query.fetch(MAX_EVENTS, keys_only=True)]
     logging.info("Overall loading %s events into memcache", len(event_ids))
     EVENTS_AT_A_TIME = 200
     for i in range(0, len(event_ids), EVENTS_AT_A_TIME):

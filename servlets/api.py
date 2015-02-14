@@ -509,7 +509,7 @@ class EventHandler(ApiHandler):
 
         self.errors_are_fatal()
 
-        db_event = eventdata.DBEvent.get_by_key_name(event_id)
+        db_event = eventdata.DBEvent.get_by_id(event_id)
 
         json_data = canonicalize_event_data(fb_event, db_event, None)
 

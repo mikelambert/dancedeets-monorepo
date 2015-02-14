@@ -32,7 +32,7 @@ class TestTasks(unittest.TestCase):
         #TODO(lambert): To enable this, we need to figure out how to make slow-queue exist
         #self.testbed.init_taskqueue_stub()
         
-        e = eventdata.DBEvent(key_name=EVENT_ID)
+        e = eventdata.DBEvent(id=EVENT_ID)
         e.time_period = eventdata.TIME_FUTURE
         e.put()
         m = users.User(key_name=MIKE_ID)

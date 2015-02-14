@@ -233,7 +233,7 @@ def map_count_potential_event(pe):
     classified_event = event_classifier.get_classified_event(fb_event, pe.language)
 
     from events import eventdata
-    db_event = eventdata.DBEvent.get_by_key_name(pe.fb_event_id)
+    db_event = eventdata.DBEvent.get_by_id(pe.fb_event_id)
     potential_event = classified_event.is_dance_event()
     for source_id in pe.source_ids:
         #STR_ID_MIGRATE

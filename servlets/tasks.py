@@ -78,14 +78,14 @@ class LoadFriendListHandler(BaseTaskFacebookRequestHandler):
 class LoadEventHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
-        db_events = [x for x in eventdata.DBEvent.get_by_key_name(event_ids) if x]
+        db_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
         fb_reloading.load_fb_event(self.fbl, db_events)
     post=get
 
 class LoadEventAttendingHandler(BaseTaskFacebookRequestHandler):
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
-        db_events = [x for x in eventdata.DBEvent.get_by_key_name(event_ids) if x]
+        db_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
         fb_reloading.load_fb_event_attending(self.fbl, db_events)
     post=get
 

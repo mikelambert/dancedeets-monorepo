@@ -1,7 +1,6 @@
 import logging
-import time
 
-from google.appengine.ext import db
+from google.appengine.ext import ndb
 
 from util import urls
 import smemcache
@@ -23,10 +22,6 @@ def get_event_image_url(fb_event):
         logging.error("Error loading picture for event id %s", fb_event['info']['id'])
         return urls.fb_event_image_url(fb_event['info']['id'])
 
-DBEVENT_PREFIX = 'DbEvent.%s'
-def cache_db_events(events):
-    return smemcache.safe_set_memcache(dict((DBEVENT_PREFIX % x.fb_event_id, x) for x in events), expiry=2*3600)
-
 def get_largest_cover(fb_event):
     if 'cover_info' in fb_event:
         cover = fb_event['cover_info'][fb_event['info']['cover']['cover_id']]
@@ -35,56 +30,43 @@ def get_largest_cover(fb_event):
     else:
         return None
 
-def get_cached_db_events(event_ids, allow_cache=True):
-    db_events = []
-    a = time.time()
-    if allow_cache:
-        memcache_keys = [DBEVENT_PREFIX % x for x in event_ids]
-        db_events = smemcache.get_multi(memcache_keys).values()
-        logging.info("loading db events from memcache (included below) took %s seconds", time.time() - a)
-    remaining_event_ids = set(event_ids).difference([x.fb_event_id for x in db_events if x])
-    if remaining_event_ids:
-        new_db_events = DBEvent.get_by_key_name(list(remaining_event_ids))
-        new_db_events = [x for x in new_db_events if x]
-        cache_db_events(new_db_events)
-        db_events += new_db_events
-    db_event_map = dict((x.fb_event_id, x) for x in db_events)
-    logging.info("loading cached db events took %s seconds", time.time() - a)
-    return [db_event_map.get(x, None) for x in event_ids]
-
 CM_AUTO = 'CM_AUTO'
 CM_ADMIN = 'CM_ADMIN'
 CM_USER = 'CM_USER'
 
-class DBEvent(db.Model):
+class DBEvent(ndb.Model):
     """Stores custom data about our Event"""
-    fb_event_id = property(lambda x: str(x.key().name()))
+    fb_event_id = property(lambda x: str(x.key.string_id()))
 
     # TODO(lambert): right now this is unused, but maybe we want to cache our "ish" tags or something to that effect?
     # Was originally used to track manually-applied tags
-    tags = db.StringListProperty(indexed=False)
+    tags = ndb.StringProperty(indexed=False, repeated=True)
 
     # real data
-    owner_fb_uid = db.StringProperty()
+    owner_fb_uid = ndb.StringProperty()
     #STR_ID_MIGRATE
-    creating_fb_uid = db.IntegerProperty(indexed=False)
-    creation_time = db.DateTimeProperty(indexed=False, auto_now_add=True)
+    creating_fb_uid = ndb.IntegerProperty(indexed=False)
+    creation_time = ndb.DateTimeProperty(indexed=False, auto_now_add=True)
     # could be AUTO, ADMIN, USER, etc? Helps for maintaining a proper training corpus
     #TODO(lambert): start using this field in auto-created events
-    creating_method = db.StringProperty(indexed=False)
+    creating_method = ndb.StringProperty(indexed=False)
 
     # searchable properties
-    search_time_period = db.StringProperty()
-    start_time = db.DateTimeProperty()
-    end_time = db.DateTimeProperty()
-    attendee_count = db.IntegerProperty()
+    search_time_period = ndb.StringProperty()
+    start_time = ndb.DateTimeProperty()
+    end_time = ndb.DateTimeProperty()
+    attendee_count = ndb.IntegerProperty()
 
     # extra cached properties
-    address = db.StringProperty(indexed=False) # manually overridden address
-    actual_city_name = db.StringProperty(indexed=False) # city for this event
-    city_name = db.StringProperty() # largest nearby city for this event
-    latitude = db.FloatProperty()
-    longitude = db.FloatProperty()
-    anywhere = db.BooleanProperty()
+    address = ndb.StringProperty(indexed=False) # manually overridden address
+    actual_city_name = ndb.StringProperty(indexed=False) # city for this event
+    city_name = ndb.StringProperty() # largest nearby city for this event
+    latitude = ndb.FloatProperty()
+    longitude = ndb.FloatProperty()
+    anywhere = ndb.BooleanProperty()
 
-    event_keywords = db.StringListProperty(indexed=False)
+    event_keywords = ndb.StringProperty(indexed=False, repeated=True)
+
+    @classmethod
+    def get_by_ids(cls, id_list):
+        return ndb.get_multi([ndb.Key(DBEvent, x) for x in id_list])

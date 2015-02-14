@@ -31,7 +31,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         #STR_ID_MIGRATE
         source_potential_events = potential_events.PotentialEvent.gql('WHERE source_ids = :graph_id', graph_id=long(s.graph_id)).fetch(1000)
-        found_db_events = [x for x in eventdata.DBEvent.get_by_key_name([x.fb_event_id for x in source_potential_events]) if x]
+        found_db_events = [x for x in eventdata.DBEvent.get_by_ids([x.fb_event_id for x in source_potential_events]) if x]
 
         if s.creating_fb_uid:
             creating_user = self.fbl.get(fb_api.LookupUser, s.creating_fb_uid)
