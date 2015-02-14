@@ -54,8 +54,10 @@ class TestThingDBFixer(unittest.TestCase):
         fb_api.FBAPI.results = {
             '/v2.2/111': (200, {'id': '111', 'name': 'page 1', 'likes': 1}),
             '/v2.2/111/feed': (200, {'data': []}),
+            '/v2.2/111/events': (200, {'data': []}),
             '/v2.2/222': (200, {'id': '222', 'name': 'page 2', 'likes': 1}),
             '/v2.2/222/feed': (200, {'data': []}),
+            '/v2.2/222/events': (200, {'data': []}),
         }
 
         # Fetch it and construct a source

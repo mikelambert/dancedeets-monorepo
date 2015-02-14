@@ -51,13 +51,13 @@ def migrate_potential_events(old_source_id, new_source_id):
         source_infos = set()
         for source_info in zip(pe.source_ids, pe.source_fields):
             #STR_ID_MIGRATE
-            source_id = str(source_infos[0])
+            source_id = str(source_info[0])
             if source_id == old_source_id:
-                source_info = (new_source_id, source_info[1])
+                #STR_ID_MIGRATE
+                source_info = (long(new_source_id), source_info[1])
             source_infos.add(source_info)
         source_infos_list = list(source_infos)
-        #STR_ID_MIGRATE
-        pe.source_ids = [long(x[0]) for x in source_infos_list]
+        pe.source_ids = [x[0] for x in source_infos_list]
         pe.source_fields = [x[1] for x in source_infos_list]
         logging.info("new pe %s has ids: %s", pe.fb_event_id, pe.source_ids)
         pe.put()
