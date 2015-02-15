@@ -36,3 +36,7 @@ def cleanup_bad_data(geocode):
     logging.info("%s: %s", geocode.key, geocode.json_data['status'])
     if geocode.json_data['status'] not in ['OK', 'ZERO_RESULTS']:
         geocode.key.delete()
+
+def delete(**kwargs):
+    geocode_key = _geocode_key(**kwargs)
+    ndb.Key(CachedGeoCode, geocode_key).delete()

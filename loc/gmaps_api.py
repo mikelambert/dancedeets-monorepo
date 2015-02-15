@@ -16,6 +16,7 @@ class GeocodeException(Exception):
 class GMapsGeocode(object):
     def __init__(self, json_data):
         self.json_data = json_data
+        self.lookup_kwargs = {}
 
     def country(self, long=False):
         return self.get_component('country', long=long)
@@ -60,7 +61,12 @@ def parse_geocode(json_result):
     else:
         raise GeocodeException("Got unexpected status: %s" % json_result['status'])
 
+def delete(**kwargs):
+    gmaps_backend.delete(**kwargs)
+
 def get_geocode(**kwargs):
     json_data = gmaps_backend.fetch_raw(**kwargs)
     geocode = parse_geocode(json_data)
+    if geocode:
+        geocode.lookup_kwargs = kwargs
     return geocode

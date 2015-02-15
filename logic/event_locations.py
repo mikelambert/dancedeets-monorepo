@@ -117,11 +117,12 @@ class LocationInfo(object):
 
         has_overridden_address = db_event and db_event.address
         final_address = None
+        has_geocode = db_event and db_event.has_geocode()
         if not has_overridden_address or debug:
             self.final_latlng = _get_latlng_from_event(fb_event)
             if self.final_latlng:
                 self.exact_from_event = True
-                self.geocode = db_event.get_geocode() if db_event.has_geocode() else gmaps_api.get_geocode(latlng=self.final_latlng)
+                self.geocode = db_event.get_geocode() if has_geocode else gmaps_api.get_geocode(latlng=self.final_latlng)
                 self.fb_address = formatting.format_geocode(self.geocode)
                 self.remapped_address = None
             else:
@@ -139,10 +140,25 @@ class LocationInfo(object):
             if online_address(final_address):
                 self.online = True
             logging.info("Final address is %r", final_address)
-            self.geocode = db_event.get_geocode() if db_event.has_geocode() else get_geocode(address=final_address)
+            self.geocode = db_event.get_geocode() if has_geocode else get_geocode(address=final_address)
+            try:
+                self.final_city = formatting.format_geocode(self.geocode)
+            except TypeError:
+                logging.error("1format_geocode had error, with geocode %s", self.geocode)
+                logging.error("1geocode has data %r", self.geocode.__dict__)
+                logging.error("1dbevent had geocode %r", (db_event.get_geocode().__dict__ if has_geocode else None))
+                gmaps_api.delete(address=final_address)
 
         if self.geocode:
-            self.final_city = formatting.format_geocode(self.geocode)
+            if self.geocode.lookup_kwargs and isinstance(self.geocode.json_data, (str, unicode)):
+                gmaps_api.delete(**self.geocode.lookup_kwargs)
+            try:
+                self.final_city = formatting.format_geocode(self.geocode)
+            except TypeError:
+                logging.error("2format_geocode had error, with geocode %s", self.geocode)
+                logging.error("2geocode has data %r", self.geocode.__dict__)
+                logging.error("2dbevent had geocode %r", (db_event.get_geocode().__dict__ if has_geocode else None))
+                logging.error("2looked up final address %s", final_address)
             self.final_latlng = self.geocode.latlng()
         elif self.online:
             self.final_city = ONLINE_ADDRESS
