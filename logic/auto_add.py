@@ -49,6 +49,7 @@ def classify_events(fbl, pe_list, fb_list=None):
         classified_event.classify()
         auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
         if auto_add_result[0]:
+            logging.info("Found event %s, looking up location", pe.fb_event_id)
             location_info = event_locations.LocationInfo(fb_event)
             result = '+%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, location_info.exact_from_event, location_info.final_city, location_info.final_city != None, location_info.fb_address, fb_event['info'].get('name', '')))
             try:
