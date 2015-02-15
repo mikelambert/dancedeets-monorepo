@@ -42,6 +42,8 @@ class BatchedMapperWorkerCallbackHandler(fixed_mappers.FixedMapperWorkerCallback
     # potentially end early even if we didn't process data, just so we have time to process pending all_data
     if self._time() - self._start_time > handlers._SLICE_DURATION_SEC:
       if batch_size and self.all_data:
+        for i in range(len(self.all_data) - 1): # subtract one, due to the increment() inside super._process_datum
+          ctx.counters.increment(context.COUNTER_MAPPER_CALLS)
         result = super(BatchedMapperWorkerCallbackHandler, self)._process_datum(self.all_data, input_reader, ctx, transient_shard_state)
         self.all_data = []
       logging.debug("Spent %s seconds. Rescheduling",
