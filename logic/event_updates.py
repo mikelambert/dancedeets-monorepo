@@ -74,7 +74,10 @@ def _inner_make_event_findable_for(db_event, fb_dict):
     if location_info.actual_city() or not db_event.actual_city_name:
         db_event.anywhere = location_info.is_online_event()
         db_event.actual_city_name = location_info.actual_city()
-        db_event.city_name = rankings.get_ranking_location(location_info.actual_city())
+        if location_info.geocode:
+            db_event.city_name = rankings.get_ranking_location_latlng(location_info.geocode.latlng())
+        else:
+            db_event.city_name = "Unknown"
         if db_event.actual_city_name:
             db_event.latitude, db_event.longitude = location_info.latlong()
         else:
