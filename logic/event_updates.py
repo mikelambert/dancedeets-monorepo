@@ -3,6 +3,7 @@ import logging
 
 from events import eventdata
 import fb_api
+from loc import gmaps_api
 from logic import event_classifier
 from logic import event_locations
 from logic import rankings
@@ -65,7 +66,10 @@ def _inner_make_event_findable_for(db_event, fb_dict):
     db_event.end_time = dates.parse_fb_end_time(fb_dict)
     db_event.search_time_period = _event_time_period(db_event)
 
+    # Don't use cached/stale geocode when constructing the LocationInfo here
+    db_event.location_geocode = None
     location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
+
     # If we got good values from before, don't overwrite with empty values!
     if location_info.actual_city() or not db_event.actual_city_name:
         db_event.anywhere = location_info.is_online_event()
@@ -80,3 +84,7 @@ def _inner_make_event_findable_for(db_event, fb_dict):
             logging.warning("No geocoding results for eid=%s is: %s", db_event.fb_event_id, location_info)
 
     db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
+
+    # Screw normalization, let's stuff this stuff in here and make it easier to manage later!
+    db_event.fb_event = fb_dict
+    db_event.location_geocode = gmaps_api.convert_geocode_to_json(location_info.geocode)

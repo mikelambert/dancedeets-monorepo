@@ -2,8 +2,8 @@ import logging
 
 from google.appengine.ext import ndb
 
+from loc import gmaps_api
 from util import urls
-import smemcache
 
 REGION_RADIUS = 200 # kilometers
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
@@ -65,7 +65,16 @@ class DBEvent(ndb.Model):
     longitude = ndb.FloatProperty()
     anywhere = ndb.BooleanProperty()
 
+    location_geocode = ndb.JsonProperty()
+    fb_event = ndb.JsonProperty()
+
     event_keywords = ndb.StringProperty(indexed=False, repeated=True)
+
+    def get_geocode(self):
+        return gmaps_api.parse_geocode(self.location_geocode)
+
+    def has_geocode(self):
+        return self.location_geocode is not None
 
     @classmethod
     def get_by_ids(cls, id_list):

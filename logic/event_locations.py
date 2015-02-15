@@ -108,19 +108,20 @@ def get_geocode(address):
 
 class LocationInfo(object):
     def __init__(self, fb_event, db_event=None, debug=False):
-        has_overridden_address = db_event and db_event.address
-
         self.online = None
         self.geocode = None
         self.exact_from_event = False
         self.overridden_address = None
         self.fb_address = None
         self.remapped_address = None
+
+        has_overridden_address = db_event and db_event.address
+        final_address = None
         if not has_overridden_address or debug:
             self.final_latlng = _get_latlng_from_event(fb_event)
             if self.final_latlng:
                 self.exact_from_event = True
-                self.geocode = gmaps_api.get_geocode(latlng=self.final_latlng)
+                self.geocode = db_event.get_geocode() if db_event.has_geocode() else gmaps_api.get_geocode(latlng=self.final_latlng)
                 self.fb_address = formatting.format_geocode(self.geocode)
                 self.remapped_address = None
             else:
@@ -128,15 +129,17 @@ class LocationInfo(object):
                 self.remapped_address = _get_remapped_address_for(self.fb_address)
                 if self.remapped_address:
                     logging.info("Checking remapped address, which is %r", self.remapped_address)
-                if online_address(self.remapped_address):
-                    self.online = True
-                self.geocode = get_geocode(address=self.remapped_address or self.fb_address)
+                final_address = self.remapped_address or self.fb_address
         if has_overridden_address:
             self.overridden_address = db_event.address
-            if online_address(self.overridden_address):
+            final_address = self.overridden_address
+
+        # Either a remapped, overridden, or fb address (without lat/long)
+        if final_address is not None:
+            if online_address(final_address):
                 self.online = True
-            logging.info("Address overridden to be %r", self.overridden_address)
-            self.geocode = get_geocode(address=self.overridden_address)
+            logging.info("Final address is %r", final_address)
+            self.geocode = db_event.get_geocode() if db_event.has_geocode() else get_geocode(address=final_address)
 
         if self.geocode:
             self.final_city = formatting.format_geocode(self.geocode)
