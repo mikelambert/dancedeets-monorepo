@@ -141,6 +141,7 @@ class LocationInfo(object):
                 self.online = True
             logging.info("Final address is %r", final_address)
             self.geocode = db_event.get_geocode() if has_geocode else get_geocode(address=final_address)
+            # TODO(lambert): cleanup: delete this try/except and contents
             try:
                 self.final_city = formatting.format_geocode(self.geocode)
             except TypeError:
@@ -150,6 +151,7 @@ class LocationInfo(object):
                 gmaps_api.delete(address=final_address)
 
         if self.geocode:
+            # TODO(lambert): cleanup: delete this if statement and try/except (but not the contents)
             if self.geocode.lookup_kwargs and isinstance(self.geocode.json_data, (str, unicode)):
                 gmaps_api.delete(**self.geocode.lookup_kwargs)
             try:
