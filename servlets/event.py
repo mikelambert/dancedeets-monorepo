@@ -264,17 +264,19 @@ class AddHandler(base_servlet.BaseRequestHandler):
             except fb_api.NoFetchedDataException, e:
                 logging.error("Could not load event info for user: %s", e)
                 events = []
-            db_events = eventdata.DBEvent.get_by_ids([x['eid'] for x in events])
+            #STR_ID_MIGRATE: We still get ids as ints from our FQL
+            db_events = eventdata.DBEvent.get_by_ids([str(x['eid']) for x in events])
             loaded_fb_event_ids = set(x.fb_event_id for x in db_events if x)
 
             for event in events:
                 # rewrite hack necessary for templates (and above code)
-                event['id'] = event['eid']
+                event['id'] = str(event['eid'])
                 event['loaded'] = event['id'] in loaded_fb_event_ids
 
             lastadd_key = 'LastAdd.%s' % (self.fb_uid)
             if not smemcache.get(lastadd_key):
-                backgrounder.load_events([x['eid'] for x in events])
+                #STR_ID_MIGRATE: We still get ids as ints from our FQL
+                backgrounder.load_events([str(x['eid']) for x in events])
                 smemcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
 
         self.display['events'] = events
