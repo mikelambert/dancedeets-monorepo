@@ -1,8 +1,12 @@
 import copy
+import logging
 try:
     import gmaps_cached
+    import gmaps_bwcompat
     gmaps_backend = gmaps_cached
+    gmaps_backend.gmaps_backend = gmaps_bwcompat
 except ImportError:
+    logging.error("Failed to import caching backends, defaulting to raw gmaps backend")
     import gmaps
     gmaps_backend = gmaps
 
@@ -42,7 +46,11 @@ class GMapsGeocode(object):
     def delete_component(self, name):
         self.json_data['address_components'] = [x for x in self.json_data['address_components'] if name not in x['types']]
 
-
+def convert_geocode_to_json(geocode):
+    if geocode:
+        return {'status': 'OK', 'results': [geocode.json_data]}
+    else:
+        return {'status': 'ZERO_RESULTS'}
 
 def parse_geocode(json_result):
     if json_result['status'] == 'OK':
