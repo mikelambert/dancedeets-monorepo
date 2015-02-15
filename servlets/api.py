@@ -194,6 +194,11 @@ class AuthHandler(ApiHandler):
                 access_token_expires = None
         else:
             access_token_expires = None
+
+        if not access_token:
+            logging.error("Received empty access_token from client. Payload was: %s", self.json_body)
+            return
+
         location = self.json_body.get('location')
         # Don't use self.get_location_from_headers(), as I'm not sure how accurate it is if called from the API.
         # Also don't use location to update the user, if we don't actually have a location
