@@ -7,7 +7,7 @@ import urllib
 
 import keys
 
-USE_PRIVATE_KEY = True
+USE_PRIVATE_KEY = False
 
 google_maps_private_key = keys.get("google_maps_private_key")
 google_server_key = keys.get("google_server_key")
