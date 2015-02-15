@@ -180,8 +180,12 @@ class AuthHandler(ApiHandler):
                 countdown=60*60)
 
     def process(self):
-        self.errors_are_fatal()
         access_token = self.json_body.get('access_token')
+        if not access_token:
+            logging.error("Received empty access_token from client. Payload was: %s", self.json_body)
+            return
+        self.errors_are_fatal() # Assert that our access_token is set
+
         access_token_expires_with_tz = self.json_body.get('access_token_expires')
         if access_token_expires_with_tz:
             # strip off the timezone, since we can't easily process it
@@ -195,9 +199,6 @@ class AuthHandler(ApiHandler):
         else:
             access_token_expires = None
 
-        if not access_token:
-            logging.error("Received empty access_token from client. Payload was: %s", self.json_body)
-            return
 
         location = self.json_body.get('location')
         # Don't use self.get_location_from_headers(), as I'm not sure how accurate it is if called from the API.
