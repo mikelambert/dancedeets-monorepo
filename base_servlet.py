@@ -119,6 +119,18 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         rendered = template.render_template(name, self.display)
         self.response.out.write(rendered)
 
+    def get_location_from_headers(self):
+        iso3166_country = self.request.headers.get("X-AppEngine-Country")
+        full_country = abbrev.countries_abbrev2full.get(iso3166_country, iso3166_country)
+
+        location_components = []
+        location_components.append(self.request.headers.get("X-AppEngine-City"))
+        if full_country in ['United States', 'Canada']:
+            location_components.append(self.request.headers.get("X-AppEngine-Region"))
+        location_components.append(full_country)
+        location = ', '.join(x for x in location_components if x and x != '?')
+        return location
+
 def generate_userlogin_hash(user_login_cookie):
     raw_string = ','.join('%r: %r' % (k.encode('ascii'), v.encode('ascii')) for (k, v) in sorted(user_login_cookie.items()) if k != 'hash')
     m = hashlib.md5()
@@ -143,18 +155,6 @@ def get_location(fb_user):
 
 
 class BaseRequestHandler(BareBaseRequestHandler):
-
-    def get_location_from_headers(self):
-        iso3166_country = self.request.headers.get("X-AppEngine-Country")
-        full_country = abbrev.countries_abbrev2full.get(iso3166_country, iso3166_country)
-
-        location_components = []
-        location_components.append(self.request.headers.get("X-AppEngine-City"))
-        if full_country in ['United States', 'Canada']:
-            location_components.append(self.request.headers.get("X-AppEngine-Region"))
-        location_components.append(full_country)
-        location = ', '.join(x for x in location_components if x and x != '?')
-        return location
 
     def get_long_lived_token_and_expires(self, request):
         response = facebook.get_user_from_cookie(request.cookies)
