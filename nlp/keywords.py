@@ -50,12 +50,6 @@ class Keyword(GrammarRule):
 def _key(tokens):
     return tuple(sorted(tokens))
 
-def get_regex_string(*tokens):
-    token_key = _key(tokens)
-    if token_key not in _regex_strings:
-        _regex_strings[token_key] = re_flatten.construct_regex(get(*tokens) + [token.as_token_regex() for token in tokens])
-    return _regex_strings[token_key]
-
 #TODO(lambert): move this function out of here in some way, as it is an artifact of the old-way
 def get_regex(*tokens):
     token_key = _key(tokens)

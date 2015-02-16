@@ -479,13 +479,11 @@ def is_bad_wrong_dance(classified_event):
     real_dance_keywords = set(classified_event.real_dance_matches + dance_and_music_matches)
     manual_keywords = classified_event.manual_dance_keywords_matches
 
-    #rules.GOOD_DANCE
-    trimmed_text = dance_regex[classified_event.boundaries].sub('', classified_event.search_text)
-    trimmed_text = event_classifier.all_regexes['manual_dance_keywords_regex'][classified_event.boundaries].sub('', trimmed_text)
-    #trimmed_text = event_classifier.all_regexes['dance_and_music_regex'][classified_event.boundaries].sub('', trimmed_text)
-
-    weak_classical_dance_keywords = keywords.get_regex(keywords.SEMI_BAD_DANCE)[classified_event.boundaries].findall(trimmed_text)
-    strong_classical_dance_keywords = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(trimmed_text)
+    nodance_processed_text = event_classifier.StringProcessor(classified_event.search_text, classified_event.boundaries)
+    nodance_processed_text.real_tokenize(keywords.MANUAL_DANCE)
+    nodance_processed_text.replace_rule(rules.GOOD_DANCE)
+    weak_classical_dance_keywords = nodance_processed_text.get_tokens(keywords.SEMI_BAD_DANCE)
+    strong_classical_dance_keywords = nodance_processed_text.find_with_rule(rules.DANCE_WRONG_STYLE_TITLE)
 
     has_house = classified_event.processed_text.get_tokens(keywords.HOUSE)
     club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
@@ -497,7 +495,6 @@ def is_bad_wrong_dance(classified_event):
 
     has_wrong_style_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
     has_decent_style = classified_event.processed_title.find_with_rule(rules.DECENT_DANCE)
-
     if has_wrong_style_title and not has_decent_style:
         return True, 'Title is too strong a negative, without any compensating good title keywords'
     elif not real_dance_keywords and not has_house and len(club_only_matches) <= 1 and len(manual_keywords) <= 1 and keyword_count >= 2:

@@ -230,6 +230,13 @@ class StringProcessor(object):
         #if count:
         #    self.token_originals[token].extend(keywords.get_regex(token)[self.match_on_word_boundaries].findall(self.text))
 
+    #TODO(lambert): combine this with real_tokenize
+    def replace_rule(self, rule, **kwargs):
+        def word_with_hash(match):
+            return rules.get(rule).replace_string(match.group(0))
+        regex = get_rule_regex(rule, **kwargs)
+        return regex[self.match_on_word_boundaries].subn(word_with_hash, self.text)
+
     def count_tokens(self, token):
         return len(self._get_token(token))
 

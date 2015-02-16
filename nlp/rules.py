@@ -1,4 +1,5 @@
 import itertools
+import re
 
 import keywords
 import regex_keywords
@@ -80,6 +81,30 @@ class RegexRule(keywords.GrammarRule):
     def __repr__(self):
         return 'RegexRule(%r)' % self.regex
 
+class NamedRule(keywords.GrammarRule):
+    def __init__(self, name, sub_rule):
+        self._name = name
+        self._final_name = re.sub(r'[\W_]+', '', self._name)
+        self._sub_rule = sub_rule
+
+    def replace_string(self, *args):
+        if args:
+            extra_hash = abs(hash(args[0]))
+        else:
+            extra_hash = ''
+        return '_%s%s_' % (self._final_name, extra_hash)
+
+    def children(self):
+        return [self._sub_rule]
+
+    def as_expanded_regex(self):
+        return self._sub_rule.as_expanded_regex()
+
+    def as_token_regex(self):
+        return self._sub_rule.as_token_regex()
+
+    def __repr__(self):
+        return 'NamedRule(%s, %r)' % (self._name, self._sub_rule)
 
 def connected(a, b):
     return Ordered(a, Connector(), b)
@@ -92,7 +117,7 @@ def commutative_connected(a, b):
 
 
 DANCE = 'DANCE'
-add(DANCE, Any(
+add(DANCE, NamedRule('DANCE', Any(
     keywords.DANCE,
     keywords.STYLE_BREAK,
     keywords.STYLE_ROCK,
@@ -100,10 +125,10 @@ add(DANCE, Any(
     keywords.STYLE_LOCK,
     keywords.STYLE_WAACK,
     keywords.STYLE_ALLSTYLE,
-))
+)))
 
 GOOD_DANCE = 'GOOD_DANCE'
-add(GOOD_DANCE, Any(
+add(GOOD_DANCE, NamedRule('GOOD_DANCE', Any(
     get(DANCE),
     keywords.VOGUE,
     commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE), keywords.EASY_DANCE),
@@ -111,7 +136,7 @@ add(GOOD_DANCE, Any(
     commutative_connected(keywords.STREET, Any(keywords.EASY_CHOREO, keywords.EASY_DANCE)),
     # This may seem strange to list it essentially twice ,but necessary for "battles de danses breakdance"
     commutative_connected(keywords.EASY_DANCE, get(DANCE)),
-))
+)))
 
 DECENT_DANCE = 'DECENT_DANCE'
 add(DECENT_DANCE, Any(
