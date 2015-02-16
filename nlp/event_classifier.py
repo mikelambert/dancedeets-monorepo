@@ -230,13 +230,6 @@ class StringProcessor(object):
         #if count:
         #    self.token_originals[token].extend(token.hack_double_regex()[self.match_on_word_boundaries].findall(self.text))
 
-    #TODO(lambert): combine this with real_tokenize
-    def replace_rule(self, rule, **kwargs):
-        def word_with_hash(match):
-            return rule.replace_string(match.group(0))
-        regex = get_rule_regex(rule, **kwargs)
-        return regex[self.match_on_word_boundaries].subn(word_with_hash, self.text)
-
     def count_tokens(self, token):
         return len(self._get_token(token))
 
@@ -251,12 +244,12 @@ class StringProcessor(object):
     def get_tokenized_text(self):
         return self.text
 
-    def find_with_rule(self, rule, **kwargs):
-        regex = get_rule_regex(rule, **kwargs)
+    def find_with_rule(self, rule):
+        regex = get_rule_regex(rule)
         return regex[self.match_on_word_boundaries].findall(self.text)
 
-    def delete_with_rule(self, rule, **kwargs):
-        regex = get_rule_regex(rule, **kwargs)
+    def delete_with_rule(self, rule):
+        regex = get_rule_regex(rule)
         trimmed_text = regex[self.match_on_word_boundaries].sub('', self.text)
         return StringProcessor(trimmed_text, self.match_on_word_boundaries)
 

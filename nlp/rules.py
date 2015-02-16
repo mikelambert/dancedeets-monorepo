@@ -6,6 +6,7 @@ import regex_keywords
 
 class Any(keywords.GrammarRule):
     def __init__(self, *args):
+        super(Any, self).__init__()
         self.args = args
 
     def children(self):
@@ -22,6 +23,7 @@ class Any(keywords.GrammarRule):
 
 class Ordered(keywords.GrammarRule):
     def __init__(self, *args):
+        super(Ordered, self).__init__()
         self.args = args
 
     def children(self):
@@ -52,6 +54,7 @@ class Connector(keywords.GrammarRule):
 
 class RegexRule(keywords.GrammarRule):
     def __init__(self, regex):
+        super(RegexRule, self).__init__()
         self.regex = regex
 
     def children(self):
@@ -68,6 +71,7 @@ class RegexRule(keywords.GrammarRule):
 
 class NamedRule(keywords.GrammarRule):
     def __init__(self, name, sub_rule):
+        super(NamedRule, self).__init__()
         self._name = name
         self._final_name = re.sub(r'[\W_]+', '', self._name)
         self._sub_rule = sub_rule

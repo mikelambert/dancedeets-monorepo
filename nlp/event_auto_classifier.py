@@ -481,7 +481,7 @@ def is_bad_wrong_dance(classified_event):
 
     nodance_processed_text = event_classifier.StringProcessor(classified_event.search_text, classified_event.boundaries)
     nodance_processed_text.real_tokenize(keywords.MANUAL_DANCE)
-    nodance_processed_text.replace_rule(rules.GOOD_DANCE)
+    nodance_processed_text.real_tokenize(rules.GOOD_DANCE)
     weak_classical_dance_keywords = nodance_processed_text.get_tokens(keywords.SEMI_BAD_DANCE)
     strong_classical_dance_keywords = nodance_processed_text.find_with_rule(rules.DANCE_WRONG_STYLE_TITLE)
 

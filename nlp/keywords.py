@@ -14,9 +14,17 @@ _regexes = {}
 
 class GrammarRule(object):
     """The entire grammar rule tree must be composed of these."""
+    def __init__(self):
+        self._cached_double_regex = None
+
+    def hack_double_regex(self):
+        if not self._cached_double_regex:
+            self._cached_double_regex = regex_keywords.make_regexes_raw(self.as_expanded_regex())
+        return self._cached_double_regex
 
 class Keyword(GrammarRule):
     def __init__(self, name, keywords):
+        super(Keyword, self).__init__()
         self._name = name
         self._final_name = re.sub(r'[\W_]+', '', self._name)
         self._keywords = tuple(keywords)
@@ -33,11 +41,6 @@ class Keyword(GrammarRule):
 
     def as_token_regex(self):
         return r'_%s\d*_' % self._final_name
-
-    def hack_double_regex(self):
-        if not self._cached_double_regex:
-            self._cached_double_regex = regex_keywords.make_regexes(self.get_keywords() + (self.as_token_regex(),))
-        return self._cached_double_regex
 
     def replace_string(self, *args):
         if args:
