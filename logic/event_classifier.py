@@ -83,14 +83,12 @@ dependent_manual_dance_keywords = []
 manual_dancers = []
 dependent_manual_dancers = []
 
-manual_dancer_keyword = None
 manual_dance_keyword = None
 
 def build_regexes():
     global manual_keywords
     global manual_dance_keywords, dependent_manual_dance_keywords
     global manual_dancers, dependent_manual_dancers
-    global manual_dancer_keyword, manual_dance_keyword
     if 'good_capturing_keyword_regex' in all_regexes:
         return
 
@@ -108,8 +106,7 @@ def build_regexes():
     manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD] = manual_dancers
     manual_keywords['manual_dancers'][DEPENDENT_KEYWORD] = dependent_manual_dancers
     # TODO: rename, put in a useful place, etc
-    manual_dancer_keyword = keywords.token('MANUALDANCER')
-    keywords.add(manual_dancer_keyword, manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD])
+    keywords.MANUAL_DANCER = keywords.Keyword('MANUAL_DANCER', manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD])
 
     manual_dance_keywords = manual_dancers[:]
     dependent_manual_dance_keywords = dependent_manual_dancers[:]
@@ -119,6 +116,7 @@ def build_regexes():
     manual_keywords['manual_dance_keywords'] = [None, None]
     manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD] = manual_dance_keywords + ['_MANUALDANCER\d*_']
     manual_keywords['manual_dance_keywords'][DEPENDENT_KEYWORD] = dependent_manual_dance_keywords
+    keywords.MANUAL_DANCE = keywords.Keyword('MANUAL_DANCE', manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD])
     #manual_dance_keyword = keywords.token('MANUAL_DANCE')
     #keywords.add(manual_dance_keyword, manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD])
 
@@ -163,8 +161,10 @@ def build_regexes():
         keywords.FORMAT_TYPE,
         keywords.VOGUE,
         keywords.EASY_VOGUE,
-        keywords.BONNIE_AND_CLYDE
-    ) + manual_dance_keywords + dependent_manual_dance_keywords
+        keywords.BONNIE_AND_CLYDE,
+        keywords.MANUAL_DANCE,
+        keywords.MANUAL_DANCER,
+    )
     all_regexes['good_keyword_regex'] = make_regexes(good_keywords, wrapper='(?i)%s')
     all_regexes['good_capturing_keyword_regex'] = make_regexes(good_keywords, matching=True, wrapper='(?i)%s')
 
@@ -283,7 +283,7 @@ class ClassifiedEvent(object):
         self.processed_text = StringProcessor(self.search_text, self.boundaries)
         # This must be first, to remove the fake keywords
         self.processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
-        self.processed_text.real_tokenize(manual_dancer_keyword)
+        self.processed_text.real_tokenize(keywords.MANUAL_DANCER)
         self.processed_text.real_tokenize(keywords.GOOD_INSTANCE_OF_BAD_CLUB)
         #TODO(lambert): Why do I need all these?
         self.processed_text.real_tokenize(keywords.DANCE)
@@ -306,7 +306,7 @@ class ClassifiedEvent(object):
         #    return
         a = time.time()
         b = time.time()
-        self.manual_dance_keywords_matches = all_regexes['manual_dance_keywords_regex'][idx].findall(search_text)
+        self.manual_dance_keywords_matches = self.processed_text.get_tokens(keywords.MANUAL_DANCE)
         self.times['manual_regex'] = time.time() - b
         self.real_dance_matches = self.processed_text.find_with_rule(rules.GOOD_DANCE)
         if all_regexes['romance'][idx].search(search_text):

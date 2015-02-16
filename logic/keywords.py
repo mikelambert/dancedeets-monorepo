@@ -15,8 +15,10 @@ class GrammarRule(object):
     """The entire grammar rule tree must be composed of these."""
 
 class Keyword(GrammarRule):
-    def __init__(self, keyword):
-        self.keyword = keyword
+    def __init__(self, name, keywords):
+        self._name = name
+        self._final_name = re.sub(r'[\W_]+', '', self._name)
+        self._keywords = tuple(keywords)
 
     def children(self):
         return []
@@ -25,17 +27,20 @@ class Keyword(GrammarRule):
         return get_regex_string(self)
 
     def as_token_regex(self):
-        return r'_%s\d*_' % self.keyword
+        return r'_%s\d*_' % self._final_name
 
     def replace_string(self, *args):
         if args:
             extra_hash = abs(hash(args[0]))
         else:
             extra_hash = ''
-        return '_%s%s_' % (self.keyword, extra_hash)
+        return '_%s%s_' % (self._final_name, extra_hash)
+
+    def get_keywords(self):
+        return self._keywords
 
     def __repr__(self):
-        return 'Keyword(%r)' % self.keyword
+        return 'Keyword(%r, [...])' % self._name
 
 
 def _key(tokens):
@@ -60,24 +65,15 @@ def _flatten(listOfLists):
     return list(itertools.chain.from_iterable(listOfLists))
 
 def get(*tokens):
-    return _flatten(_keywords[token] for token in tokens)
+    return _flatten(token.get_keywords() for token in tokens)
 
-def token(token_input):
-    assert not re.match('\W', token_input)
-    return Keyword(token_input)
+# Set up in event_classifier.py
+MANUAL_DANCER = None
+MANUAL_DANCE = None
 
-def add(token, keywords):
-    # If anything has been built off of these, when we want to add new stuff, then we need to raise an error
-    assert token not in _regexes
-    assert token not in _regex_strings
-    if token in _keywords:
-        _keywords[token] += keywords
-    else:
-        _keywords[token] = keywords
 
 # 'crew' biases dance one way, 'company' biases it another
-EASY_DANCE = token('EASYDANCE')
-add(EASY_DANCE, [
+EASY_DANCE = Keyword('EASY_DANCE', [
     'dance style[sz]',
     'dances?', "dancin[g']?", 'dancers?',
     u'رقص', # arabic dance
@@ -138,8 +134,7 @@ add(EASY_DANCE, [
     u'tänzer', # dancer german
 ])
 
-EASY_CHOREO = token('EASYCHOREO')
-add(EASY_CHOREO, [
+EASY_CHOREO = Keyword('EASY_CHOREO', [
     u'(?:ch|k|c)oe?re[o|ó]?gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese, danish
     'choreo',
     u'chorée', # french choreo
@@ -148,15 +143,13 @@ add(EASY_CHOREO, [
     u'안무',
 ])
 
-GOOD_INSTANCE_OF_BAD_CLUB = token('GOODINSTANCEOFBADCLUB')
-add(GOOD_INSTANCE_OF_BAD_CLUB, [
+GOOD_INSTANCE_OF_BAD_CLUB = Keyword('GOOD_INSTANCE_OF_BAD_CLUB', [
     'evelyn\W+champagne\W+king',
     'water\W?bottles?',
     'genie in (?:the|a) bottle',
 ])
 
-BAD_CLUB = token('BADCLUB')
-add(BAD_CLUB, [
+BAD_CLUB = Keyword('BAD_CLUB', [
     'bottle\W?service',
     'popping?\W?bottles?',
     'bottle\W?popping?',
@@ -167,8 +160,7 @@ add(BAD_CLUB, [
     'ciroc',
 ])
 
-CYPHER = token('CYPHER')
-add(CYPHER, [
+CYPHER = Keyword('CYPHER', [
     'c(?:y|i)ph(?:a|ers?)',
     u'サイファ', # japanese cypher
     u'サイファー', # japanese cypher
@@ -181,8 +173,7 @@ add(CYPHER, [
 
 # if somehow has funks, hiphop, and breaks, and house. or 3/4? call it a dance event?
 
-AMBIGUOUS_DANCE_MUSIC = token('AMBIGUOUSDANCEMUSIC')
-add(AMBIGUOUS_DANCE_MUSIC, [
+AMBIGUOUS_DANCE_MUSIC = Keyword('AMBIGUOUS_DANCE_MUSIC', [
     'hip\W?hop',
     u'嘻哈', # chinese hiphop
     u'ההיפ הופ', # hebrew hiphop
@@ -220,8 +211,7 @@ add(AMBIGUOUS_DANCE_MUSIC, [
     u'얼반', # korean urban
 ])
 
-STYLE_BREAK = token('STYLEBREAK')
-add(STYLE_BREAK, [
+STYLE_BREAK = Keyword('STYLE_BREAK', [
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
     u'ブレイク', # breakdance japanese
@@ -237,13 +227,11 @@ add(STYLE_BREAK, [
 ])
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
 #add(STYLE_BREAK, [x+'u' for x in legit_dance])
-STYLE_ROCK = token('STYLEROCK')
-add(STYLE_ROCK, [
+STYLE_ROCK = Keyword('STYLE_ROCK', [
     'rock\W?dan[cs]\w+',
     "top\W?rock(?:s|er[sz]?|in[g']?)?", "up\W?rock(?:s|er[sz]?|in[g']?|)?",
 ])
-STYLE_POP = token('STYLEPOP')
-add(STYLE_POP, [
+STYLE_POP = Keyword('STYLE_POP', [
     'funk\W?style[sz]?',
     'poppers?', 'popp?i?ng', # listing poppin in the ambiguous keywords
     'poppeurs?',
@@ -265,8 +253,7 @@ add(STYLE_POP, [
     "tuttin[g']?", 'tutter[sz]?',
     u'텃팅', # korean tutting
 ])
-STYLE_LOCK = token('STYLELOCK')
-add(STYLE_LOCK, [
+STYLE_LOCK = Keyword('STYLE_LOCK', [
     "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)", # dupe
     "lock(?:er[sz]?|in[g']?)?", 'lock dance',
     u'ロッカーズ', # japanese lockers
@@ -274,16 +261,14 @@ add(STYLE_LOCK, [
     u'락킹', # korean locking
     'locking4life',
 ])
-STYLE_WAACK = token('STYLEWAACK')
-add(STYLE_WAACK, [
+STYLE_WAACK = Keyword('STYLE_WAACK', [
     "[uw]h?aa?c?c?k(?:er[sz]?|inn?[g']?)", # waacking
     u'왁킹', # korean waacking
     u'ワッキング', # japanese waacking
     u'パーンキング', # japanese punking
     "paa?nc?kin[g']?", # punking
 ])
-STYLE_ALLSTYLE = token('STYLEALLSTYLE')
-add(STYLE_ALLSTYLE, [
+STYLE_ALLSTYLE = Keyword('STYLE_ALLSTYLE', [
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'all\W+open\W?style[sz]?',
     'open\W+all\W?style[sz]?',
@@ -354,11 +339,10 @@ legit_dance = [
     'baile urbai?n\w+', # spanish urban dance
     'estilo\w* urbai?n\w+', # spanish urban styles
 ]
+
 # hiphop dance. hiphop dans?
-DANCE = token('DANCE')
-add(DANCE, legit_dance)
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
-add(DANCE, [x+'u' for x in legit_dance])
+DANCE = Keyword('DANCE', legit_dance + [x+'u' for x in legit_dance])
 # TODO(lambert): Is this a safe one to add?
 # http://en.wikipedia.org/wiki/Slovak_declension
 # dance_keywords = dance_keywords + [x+'y' for x in dance_keywords] 
@@ -366,34 +350,29 @@ add(DANCE, [x+'u' for x in legit_dance])
 # hiphop dance. hiphop dans?
 
 # house battles http://www.dancedeets.com/events/admin_edit?event_id=240788332653377
-HOUSE = token('HOUSE')
-add(HOUSE, [
+HOUSE = Keyword('HOUSE', [
     'house',
     u'하우스', # korean house
     u'ハウス', # japanese house
     u'хаус', # russian house
 ])
 
-FREESTYLE = token('FREESTYLE')
-add(FREESTYLE, [
+FREESTYLE = Keyword('FREESTYLE', [
     'free\W?style(?:r?|rs?)',
 ])
 
-STREET = token('STREET')
-add(STREET, [
+STREET = Keyword('STREET', [
     'street',
     u'스트리트', # korean street
 ])
 
-EASY_BATTLE = token('EASYBATTLE')
-add(EASY_BATTLE, [
+EASY_BATTLE = Keyword('EASY_BATTLE', [
     'jams?', 
     'jamit', # finnish jams
     u'잼', # korean jam
 ])
 
-EASY_EVENT = token('EASYEVENT')
-add(EASY_EVENT, [
+EASY_EVENT = Keyword('EASY_EVENT', [
     'club', 'after\Wparty', 'pre\Wparty',
     u'클럽', # korean club
     u'クラブ',  # japanese club
@@ -402,22 +381,19 @@ add(EASY_EVENT, [
     'training',
 ])
 
-CONTEST = token('CONTEST')
-add(CONTEST, [
+CONTEST = Keyword('CONTEST', [
     'contests?',
     'concours', # french contest
     'konkurrencer', # danish contest
     'dancecontests', # dance contests german
 ])
-PRACTICE = token('PRACTICE')
-add(PRACTICE, [
+PRACTICE = Keyword('PRACTICE', [
     'sesja', # polish session
     'sessions', 'practice',
     u'연습', # korean practice/runthrough
 ])
 
-PERFORMANCE = token('PERFORMANCE')
-add(PERFORMANCE, [
+PERFORMANCE = Keyword('PERFORMANCE', [
     'shows?', 'performances?',
     'show\W?case',
     u'représentation', # french performance
@@ -439,8 +415,7 @@ add(PERFORMANCE, [
 ])
 
 
-CLUB_ONLY = token('CLUBONLY')
-add(CLUB_ONLY, [
+CLUB_ONLY = Keyword('CLUB_ONLY', [
     'club',
     'bottle service',
     'table service',
@@ -480,8 +455,7 @@ add(CLUB_ONLY, [
     'go\W?go',
 ])
 
-PREPROCESS_REMOVAL = token('PREPROCESSREMOVAL')
-add(PREPROCESS_REMOVAL, [
+PREPROCESS_REMOVAL = Keyword('PREPROCESS_REMOVAL', [
     # positive
     'tap water', # for theo and dominque's jam
 
@@ -575,8 +549,7 @@ add(PREPROCESS_REMOVAL, [
 
 #TODO(lambert): use these to filter out shows we don't really care about
 #TODO: UNUSED
-OTHER_SHOW = token('OTHERSHOW')
-add(OTHER_SHOW, [
+OTHER_SHOW = Keyword('OTHER_SHOW', [
     'comedy',
     'poetry',
     'poets?',
@@ -590,8 +563,7 @@ add(OTHER_SHOW, [
 
 
 
-BATTLE = token('BATTLE')
-add(BATTLE, [
+BATTLE = Keyword('BATTLE', [
     'battle of the year', 'boty', 'compete',
     'competitions?',
     'konkurrence', # danish competition
@@ -647,8 +619,7 @@ add(BATTLE, [
     u'初賽', # chinese preliminaries
 ])
 
-CLASS = token('CLASS')
-add(CLASS, [
+CLASS = Keyword('CLASS', [
     'work\W?shop(?:\W?s)?',
     'ws', # japanese workshop WS
     'w\.s\.', # japanese workshop W.S.
@@ -717,8 +688,7 @@ add(CLASS, [
     u'トレーニング', # japanese training
 ])
 
-AUDITION = token('AUDITION')
-add(AUDITION, [
+AUDITION = Keyword('AUDITION', [
     'try\W?outs?',
     'casting',
      'casting call',
@@ -737,8 +707,7 @@ add(AUDITION, [
     u'綵排', # chinese rehearsal
 ])
 
-EVENT = token('EVENT')
-add(EVENT, [
+EVENT = Keyword('EVENT', [
     'open circles',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     u'セッション', # japanese session
@@ -768,11 +737,9 @@ def _generate_n_x_n_keywords():
     n_x_n_keywords += [u'%s[ -](?:%s)[ -]%s' % (i, english_digit_x_string, i) for i in ['crew', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
     return n_x_n_keywords
 
-N_X_N = token('NXN')
-add(N_X_N, _generate_n_x_n_keywords())
+N_X_N = Keyword('N_X_N', _generate_n_x_n_keywords())
 
-JUDGE = token('JUDGE')
-add(JUDGE, [
+JUDGE = Keyword('JUDGE', [
     'jurys?',
     'jurados?', # spanish jury
     u'журито', # bulgarian jury
@@ -796,15 +763,13 @@ add(JUDGE, [
     u'심사', # korean judges
 ])
 
-AMBIGUOUS_CLASS = token('AMBIGUOUSCLASS')
-add(AMBIGUOUS_CLASS, [
+AMBIGUOUS_CLASS = Keyword('AMBIGUOUS_CLASS', [
     'spectacle',
     'stage',
     'stages',
 ])
 
-DANCE_WRONG_STYLE = token('DANCEWRONGSTYLE')
-add(DANCE_WRONG_STYLE, [
+DANCE_WRONG_STYLE = Keyword('DANCE_WRONG_STYLE', [
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
     u'サルサ', # japanese salsa
     u'タンゴ', # japanese tango
@@ -900,8 +865,7 @@ add(DANCE_WRONG_STYLE, [
 ])
 
 # These are okay to see in event descriptions, but we don't want it to be in the event title, or it is too strong for us
-DANCE_WRONG_STYLE_TITLE_ONLY = token('DANCEWRONGSTYLETITLEONLY')
-add(DANCE_WRONG_STYLE_TITLE_ONLY, [
+DANCE_WRONG_STYLE_TITLE_ONLY = Keyword('DANCE_WRONG_STYLE_TITLE_ONLY', [
     # Sometimes used in studio name even though it's still a hiphop class:
     'ballroom',
     'ballet',
@@ -913,8 +877,7 @@ add(DANCE_WRONG_STYLE_TITLE_ONLY, [
 
 
 #TODO(lambert): we need to remove the empty CONNECTOR here, and probably spaces as well, and handle that in the rules? or just ensure this never gets applied except as part of rules
-CONNECTOR = token('CONNECTOR')
-add(CONNECTOR, [
+CONNECTOR = Keyword('CONNECTOR', [
     ' ?',
     ' di ',
     ' de ',
@@ -927,24 +890,21 @@ add(CONNECTOR, [
 #    ' \W ',
 ])
 
-AMBIGUOUS_WRONG_STYLE = token('AMBIGUOUSWRONGSTYLE')
-add(AMBIGUOUS_WRONG_STYLE, [
+AMBIGUOUS_WRONG_STYLE = Keyword('AMBIGUOUS_WRONG_STYLE', [
     'modern',
     'ballet',
     'ballroom',
 ])
 
 
-WRONG_NUMBERED_LIST = token('WRONGNUMBEREDLIST')
-add(WRONG_NUMBERED_LIST, [
+WRONG_NUMBERED_LIST = Keyword('WRONG_NUMBERED_LIST', [
     'track(?:list(?:ing)?)?',
     'release',
     'download',
     'ep',
 ])
 
-WRONG_AUDITION = token('WRONGAUDITION')
-add(WRONG_AUDITION, [
+WRONG_AUDITION = Keyword('WRONG_AUDITION', [
     'sing(?:ers?)?',
     'singing',
     'model',
@@ -953,8 +913,7 @@ add(WRONG_AUDITION, [
     'mike portoghese', # TODO(lambert): When we get bio removal for keyword matches, we can remove this one
 ])
 
-WRONG_BATTLE = token('WRONGBATTLE')
-add(WRONG_BATTLE, [
+WRONG_BATTLE = Keyword('WRONG_BATTLE', [
     'talent',
     'beatbox',
     'rap',
@@ -971,8 +930,7 @@ add(WRONG_BATTLE, [
     'producer',
 ])
 
-WRONG_BATTLE_STYLE = token('WRONGBATTLESTYLE')
-add(WRONG_BATTLE_STYLE, [
+WRONG_BATTLE_STYLE = Keyword('WRONG_BATTLE_STYLE', [
     '(?:mc|emcee)\Whip\W?hop',
     'emcee',
     'rap',
@@ -991,8 +949,7 @@ add(WRONG_BATTLE_STYLE, [
 # team battle
 # these mean....more
 #TODO: UNUSED
-FORMAT_TYPE = token('FORMATTYPE')
-add(FORMAT_TYPE, [
+FORMAT_TYPE = Keyword('FORMAT_TYPE', [
     'solo',
     u'ソロ', # japanese solo
     u'만', # korean solo
@@ -1004,8 +961,7 @@ add(FORMAT_TYPE, [
     u'크루', # korean crew
 ])
 
-BAD_COMPETITION_TITLE_ONLY = token('BADCOMPETITIONTITLEONLY')
-add(BAD_COMPETITION_TITLE_ONLY, [
+BAD_COMPETITION_TITLE_ONLY = Keyword('BAD_COMPETITION_TITLE_ONLY', [
     'video',
     'fundrais\w+',
     'likes?',
@@ -1018,8 +974,7 @@ add(BAD_COMPETITION_TITLE_ONLY, [
 ])
 
 
-VOGUE = token('VOGUE')
-add(VOGUE, [
+VOGUE = Keyword('VOGUE', [
     'butch realness',
     'butch queen',
     'vogue fem',
@@ -1033,8 +988,7 @@ add(VOGUE, [
     'trans\W?man',
     'mini\W?ball',
 ])
-EASY_VOGUE = token('EASYVOGUE')
-add(EASY_VOGUE, [
+EASY_VOGUE = Keyword('EASY_VOGUE', [
     'never walked',
     'virgin',
     'drags?',
@@ -1057,8 +1011,7 @@ add(EASY_VOGUE, [
     'ball',
 ])
 
-SEMI_BAD_DANCE = token('SEMIBADDANCE')
-add(SEMI_BAD_DANCE, [
+SEMI_BAD_DANCE = Keyword('SEMI_BAD_DANCE', [
     'technique',
     'dance company',
     'explore',
@@ -1070,24 +1023,20 @@ add(SEMI_BAD_DANCE, [
 #TODO(lambert): should these be done here, as additional keywords?
 # Or should they be done as part of the grammar, that tries to combine these into rules of some sort?
 
-OBVIOUS_BATTLE = token('OBVIOUSBATTLE')
-add(OBVIOUS_BATTLE, [
+OBVIOUS_BATTLE = Keyword('OBVIOUS_BATTLE', [
     'apache line',
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
 ])
 
 # TODO(lambert): is it worth having all these here as super-basic keywords? Should we instead just list these directly in rules.py?
-BONNIE_AND_CLYDE = token('BONNIEANDCLYDE')
-add(BONNIE_AND_CLYDE, [
+BONNIE_AND_CLYDE = Keyword('BONNIE_AND_CLYDE', [
     'bonnie\s*(?:and|&)\s*clyde'
 ])
 
-KING_OF_THE = token('KINGOFTHE')
-add(KING_OF_THE, [
+KING_OF_THE = Keyword('KING_OF_THE', [
     'king of (?:the )?',
 ])
 
-KING = token('KING')
-add(KING, [
+KING = Keyword('KING', [
     'king'
 ])

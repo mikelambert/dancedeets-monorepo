@@ -50,7 +50,7 @@ class TestAllStylesBattleEvent(TestClassifier):
         fb_event = self.get_event(113756888764413)
         classified_event = event_classifier.get_classified_event(fb_event)
         is_battle, reasons = event_auto_classifier.is_battle(classified_event)
-        self.assertTrue(is_battle)
+        self.assertTrue(is_battle, reasons)
 
 class TestMixtapeCompetitorList(TestClassifier):
     def runTest(self):

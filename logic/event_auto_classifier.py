@@ -326,7 +326,7 @@ def is_workshop(classified_event):
     has_good_dance = classified_event.processed_text.find_with_rule(rules.GOOD_DANCE)
     has_wrong_style = classified_event.processed_text.find_with_rule(rules.DANCE_WRONG_STYLE_TITLE)
 
-    has_good_crew = classified_event.processed_text.get_tokens(event_classifier.manual_dancer_keyword)
+    has_good_crew = classified_event.processed_text.get_tokens(keywords.MANUAL_DANCER)
 
     #print has_class_title
     #print has_good_dance_title
