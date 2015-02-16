@@ -104,7 +104,7 @@ def build_regexes():
     manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD] = manual_dancers
     manual_keywords['manual_dancers'][DEPENDENT_KEYWORD] = dependent_manual_dancers
     # TODO: rename, put in a useful place, etc
-    keywords.MANUAL_DANCER = keywords.Keyword('MANUAL_DANCER', manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD])
+    keywords.MANUAL_DANCER._keywords = tuple(manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD])
 
     manual_dance_keywords = manual_dancers[:]
     dependent_manual_dance_keywords = dependent_manual_dancers[:]
@@ -114,7 +114,7 @@ def build_regexes():
     manual_keywords['manual_dance_keywords'] = [None, None]
     manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD] = manual_dance_keywords + ['_MANUALDANCER\d*_']
     manual_keywords['manual_dance_keywords'][DEPENDENT_KEYWORD] = dependent_manual_dance_keywords
-    keywords.MANUAL_DANCE = keywords.Keyword('MANUAL_DANCE', manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD])
+    keywords.MANUAL_DANCE._keywords = tuple(manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD])
     #manual_dance_keyword = keywords.token('MANUAL_DANCE')
     #keywords.add(manual_dance_keyword, manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD])
 
@@ -128,47 +128,12 @@ def build_regexes():
         else:
             all_regexes['extended_%s_regex' % keyword] = make_regexes(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
-    good_keywords = keywords.get(
-        keywords.EASY_DANCE,
-        keywords.EASY_EVENT,
-        keywords.EASY_BATTLE,
-        keywords.STYLE_BREAK,
-        keywords.STYLE_ROCK,
-        keywords.STYLE_POP,
-        keywords.STYLE_LOCK,
-        keywords.STYLE_WAACK,
-        keywords.STYLE_ALLSTYLE,
-        keywords.DANCE,
-        keywords.PRACTICE,
-        keywords.PERFORMANCE,
-        keywords.CONTEST,
-        keywords.AMBIGUOUS_DANCE_MUSIC,
-        keywords.EASY_CHOREO,
-        keywords.CLASS,
-        keywords.N_X_N,
-        keywords.BATTLE,
-        keywords.OBVIOUS_BATTLE,
-        keywords.AUDITION,
-        keywords.CYPHER,
-        keywords.JUDGE,
-        keywords.HOUSE,
-        keywords.FREESTYLE,
-        keywords.STREET,
-        keywords.EVENT,
-        keywords.AMBIGUOUS_CLASS,
-        keywords.FORMAT_TYPE,
-        keywords.VOGUE,
-        keywords.EASY_VOGUE,
-        keywords.BONNIE_AND_CLYDE,
-        keywords.MANUAL_DANCE,
-        keywords.MANUAL_DANCER,
-    )
-    all_regexes['good_keyword_regex'] = make_regexes(good_keywords, wrapper='(?i)%s')
-    all_regexes['good_capturing_keyword_regex'] = make_regexes(good_keywords, matching=True, wrapper='(?i)%s')
+    all_regexes['good_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_GOOD.as_expanded_regex(), wrapper='(?i)%s')
+    all_regexes['good_capturing_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_GOOD.as_expanded_regex(), matching=True, wrapper='(?i)%s')
 
 all_regexes['dance_wrong_style_title_regex'] = regex_keywords.make_regexes_raw(rules.DANCE_WRONG_STYLE_TITLE.as_expanded_regex())
 
-all_regexes['bad_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.CLUB_ONLY, keywords.DANCE_WRONG_STYLE), matching=True)
+all_regexes['bad_capturing_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_BAD.as_expanded_regex(), matching=True)
 
 all_regexes['romance'] = make_regexes([
     'di', 'i', 'e', 'con', # italian

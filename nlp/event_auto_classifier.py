@@ -22,10 +22,7 @@ from util import dates
 # experimental side?
 # TODO: make sure this doesn't match... 'mc hiphop contest'
 
-def regexes_for_rule(rule, **kwargs):
-    return regex_keywords.make_regexes_raw(rule.as_expanded_regex(), **kwargs)
-
-start_judge_keywords_regex = regexes_for_rule(rules.FULL_JUDGE, wrapper='^[^\w\n]*%s', flags=re.MULTILINE)
+start_judge_keywords_regex = regex_keywords.make_regexes_raw(rules.FULL_JUDGE.as_expanded_regex(), wrapper='^[^\w\n]*%s', flags=re.MULTILINE)
 
 def has_list_of_good_classes(classified_event):
     if not classified_event.is_dance_event():

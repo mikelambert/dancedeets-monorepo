@@ -7,11 +7,6 @@ import re
 from . import regex_keywords
 from util import re_flatten
 
-# The magical repository of all dance keywords
-_keywords = {}
-_regex_strings = {}
-_regexes = {}
-
 class GrammarRule(object):
     """The entire grammar rule tree must be composed of these."""
     def __init__(self):
@@ -63,8 +58,8 @@ def get(*tokens):
     return _flatten(token.get_keywords() for token in tokens)
 
 # Set up in event_classifier.py
-MANUAL_DANCER = None
-MANUAL_DANCE = None
+MANUAL_DANCER = Keyword('MANUAL_DANCER', [])
+MANUAL_DANCE = Keyword('MANUAL_DANCE', []) 
 
 
 # 'crew' biases dance one way, 'company' biases it another
