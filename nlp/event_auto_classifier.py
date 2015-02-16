@@ -403,7 +403,7 @@ def has_good_event_title(classified_event):
 
 def has_good_djs_title(classified_event):
     non_dance_title_keywords = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
-    wrong_battles_title = classified_event.processed_title.find_with_rule(rules.rules.WRONG_BATTLE)
+    wrong_battles_title = classified_event.processed_title.find_with_rule(rules.WRONG_BATTLE)
     title_keywords = event_classifier.all_regexes['good_djs_regex'][classified_event.boundaries].findall(classified_event.final_title)
 
     if title_keywords and not non_dance_title_keywords and not wrong_battles_title:
