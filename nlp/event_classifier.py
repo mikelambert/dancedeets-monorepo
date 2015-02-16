@@ -24,7 +24,6 @@ from . import rules
 USE_UNICODE = False
 
 #TODO(lambert): eliminate these as part of refactoring
-make_regex_string = regex_keywords.make_regex_string
 make_regex = regex_keywords.make_regex
 make_regexes = regex_keywords.make_regexes
 
@@ -190,11 +189,10 @@ def _flatten(listOfLists):
     return list(itertools.chain.from_iterable(listOfLists))
 
 _rule_regexes = {}
-def get_rule_regex(rule, **kwargs):
-    key = (rule, tuple(sorted(kwargs.items())))
-    if key not in _rule_regexes:
-        _rule_regexes[key] = regex_keywords.make_regexes_raw(rule.as_expanded_regex(), **kwargs)
-    return _rule_regexes[key]
+def get_rule_regex(rule):
+    if rule not in _rule_regexes:
+        _rule_regexes[rule] = regex_keywords.make_regexes_raw(rule.as_expanded_regex())
+    return _rule_regexes[rule]
 
 class StringProcessor(object):
     def __init__(self, text, match_on_word_boundaries):
