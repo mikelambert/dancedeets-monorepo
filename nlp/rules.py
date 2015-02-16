@@ -4,21 +4,6 @@ import re
 import keywords
 import regex_keywords
 
-_rules = {}
-def add(name, rule):
-    rules = [rule]
-    # Validate rule integrity
-    while rules:
-        if not all(isinstance(x, keywords.GrammarRule) for x in rules):
-            non_rules = [x for x in rules if not isinstance(x, keywords.GrammarRule)]
-            raise ValueError("Found non-GrammarRule in input rule %s: %s" % (rule, non_rules))
-        rules = list(itertools.chain(*(list(x.children()) for x in rules)))
-    _rules[name] = rule
-
-
-def get(name):
-    return _rules[name]
-
 class Any(keywords.GrammarRule):
     def __init__(self, *args):
         self.args = args
@@ -87,6 +72,14 @@ class NamedRule(keywords.GrammarRule):
         self._final_name = re.sub(r'[\W_]+', '', self._name)
         self._sub_rule = sub_rule
 
+        # Validate rule integrity
+        rules = [sub_rule]
+        while rules:
+            if not all(isinstance(x, keywords.GrammarRule) for x in rules):
+                non_rules = [x for x in rules if not isinstance(x, keywords.GrammarRule)]
+                raise ValueError("Found non-GrammarRule in input rule %s: %s" % (sub_rule, non_rules))
+            rules = list(itertools.chain(*(list(x.children()) for x in rules)))
+
     def replace_string(self, *args):
         if args:
             extra_hash = abs(hash(args[0]))
@@ -116,8 +109,10 @@ def commutative_connected(a, b):
     )
 
 
-DANCE = 'DANCE'
-add(DANCE, NamedRule('DANCE', Any(
+def get(rule):
+    return rule
+
+DANCE = NamedRule('DANCE', Any(
     keywords.DANCE,
     keywords.STYLE_BREAK,
     keywords.STYLE_ROCK,
@@ -125,10 +120,9 @@ add(DANCE, NamedRule('DANCE', Any(
     keywords.STYLE_LOCK,
     keywords.STYLE_WAACK,
     keywords.STYLE_ALLSTYLE,
-)))
+))
 
-GOOD_DANCE = 'GOOD_DANCE'
-add(GOOD_DANCE, NamedRule('GOOD_DANCE', Any(
+GOOD_DANCE = NamedRule('GOOD_DANCE', Any(
     get(DANCE),
     keywords.VOGUE,
     commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE), keywords.EASY_DANCE),
@@ -136,35 +130,32 @@ add(GOOD_DANCE, NamedRule('GOOD_DANCE', Any(
     commutative_connected(keywords.STREET, Any(keywords.EASY_CHOREO, keywords.EASY_DANCE)),
     # This may seem strange to list it essentially twice ,but necessary for "battles de danses breakdance"
     commutative_connected(keywords.EASY_DANCE, get(DANCE)),
-)))
+))
 
-DECENT_DANCE = 'DECENT_DANCE'
-add(DECENT_DANCE, Any(
+DECENT_DANCE = NamedRule('DECENT_DANCE', Any(
     get(GOOD_DANCE),
     keywords.AMBIGUOUS_DANCE_MUSIC,
 ))
 
-WRONG_CLASS = 'WRONG_CLASS'
-add(WRONG_CLASS, commutative_connected(keywords.AMBIGUOUS_WRONG_STYLE, keywords.CLASS))
+WRONG_CLASS = NamedRule('WRONG_CLASS',
+    commutative_connected(keywords.AMBIGUOUS_WRONG_STYLE, keywords.CLASS))
 
-WRONG_BATTLE = 'WRONG_BATTLE'
-add(WRONG_BATTLE, Any(
+WRONG_BATTLE = NamedRule('WRONG_BATTLE', Any(
     keywords.WRONG_BATTLE,
     commutative_connected(keywords.WRONG_BATTLE_STYLE, Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST))
 ))
 
-DANCE_STYLE = 'DANCE_STYLE'
-add(DANCE_STYLE, Any(keywords.AMBIGUOUS_DANCE_MUSIC, get(DANCE), keywords.VOGUE, keywords.HOUSE))
+DANCE_STYLE = NamedRule('DANCE_STYLE',
+    Any(keywords.AMBIGUOUS_DANCE_MUSIC, get(DANCE), keywords.VOGUE, keywords.HOUSE))
 
 # TODO: make sure this doesn't match... 'mc hiphop contest'
-GOOD_DANCE_BATTLE = 'GOOD_DANCE_BATTLE'
 # 'hip hop battle' by itself isnt sufficient, so leave that in ambiguous_battle_dance.
 # GOOD_DANCE does include 'hip hop dance' though, to allow 'hip hop dance battle' to work.
 good_battle_dance = Any(get(GOOD_DANCE), keywords.HOUSE)
 ambiguous_battle_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE, keywords.EASY_CHOREO)
 good_battle = Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)
 ambiguous_battle = Any(keywords.EASY_BATTLE)
-add(GOOD_DANCE_BATTLE, Any(
+GOOD_DANCE_BATTLE = NamedRule('GOOD_DANCE_BATTLE', Any(
     keywords.OBVIOUS_BATTLE,
     connected(keywords.BONNIE_AND_CLYDE, keywords.BATTLE),
     connected(keywords.KING_OF_THE, keywords.CYPHER),
@@ -172,31 +163,28 @@ add(GOOD_DANCE_BATTLE, Any(
     commutative_connected(good_battle_dance, good_battle)
 ))
 
-DANCE_BATTLE = 'DANCE_BATTLE'
-add(DANCE_BATTLE, Any(
+DANCE_BATTLE = NamedRule('DANCE_BATTLE', Any(
     get(GOOD_DANCE_BATTLE),
     commutative_connected(good_battle_dance, ambiguous_battle),
     commutative_connected(ambiguous_battle_dance, good_battle),
     commutative_connected(ambiguous_battle_dance, ambiguous_battle),
 ))
 
-BATTLE = 'BATTLE'
-add(BATTLE, Any(keywords.BATTLE, keywords.OBVIOUS_BATTLE))
+BATTLE = NamedRule('BATTLE',
+    Any(keywords.BATTLE, keywords.OBVIOUS_BATTLE))
 
 good_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, get(GOOD_DANCE), keywords.HOUSE)
 
-GOOD_DANCE_CLASS = 'GOOD_DANCE_CLASS'
-add(GOOD_DANCE_CLASS, Any(
+GOOD_DANCE_CLASS = NamedRule('GOOD_DANCE_CLASS', Any(
     commutative_connected(good_dance, keywords.CLASS),
     # only do one direction here, since we don't want "house stage" and "funk stage"
     connected(keywords.AMBIGUOUS_CLASS, good_dance),
 ))
 # TODO: is this one necessary? we could do it as a regex, but we could also do it as a rule...
-EXTENDED_CLASS = 'EXTENDED_CLASS'
-add(EXTENDED_CLASS, Any(keywords.CLASS, keywords.AMBIGUOUS_CLASS))
+EXTENDED_CLASS = NamedRule('EXTENDED_CLASS',
+    Any(keywords.CLASS, keywords.AMBIGUOUS_CLASS))
 
-FULL_JUDGE = 'FULL_JUDGE'
-add(FULL_JUDGE, Any(
+FULL_JUDGE = NamedRule('FULL_JUDGE', Any(
     keywords.JUDGE,
     commutative_connected(keywords.JUDGE, Any(
         get(GOOD_DANCE),
@@ -211,11 +199,11 @@ add(FULL_JUDGE, Any(
 )))
 # TODO(lambert): Maybe add a special RegexRule that I can fill with '^[^\w\n]*', and encapsulate that here instead of client code
 
-PERFORMANCE_PRACTICE = 'PERFORMANCE_PRACTICE'
-add(PERFORMANCE_PRACTICE, commutative_connected(get(GOOD_DANCE), Any(keywords.PERFORMANCE, keywords.PRACTICE)))
+PERFORMANCE_PRACTICE = NamedRule('PERFORMANCE_PRACTICE',
+    commutative_connected(get(GOOD_DANCE), Any(keywords.PERFORMANCE, keywords.PRACTICE)))
 
-DANCE_WRONG_STYLE_TITLE = 'DANCE_WRONG_STYLE_TITLE'
-add(DANCE_WRONG_STYLE_TITLE, Any(keywords.DANCE_WRONG_STYLE, keywords.DANCE_WRONG_STYLE_TITLE_ONLY))
+DANCE_WRONG_STYLE_TITLE = NamedRule('DANCE_WRONG_STYLE_TITLE',
+    Any(keywords.DANCE_WRONG_STYLE, keywords.DANCE_WRONG_STYLE_TITLE_ONLY))
 
 event_keywords = [
     keywords.CLASS,
@@ -227,8 +215,8 @@ event_keywords = [
     keywords.JUDGE,
 ]
 
-EVENT = 'EVENT'
-add(EVENT, Any(*event_keywords))
+EVENT = NamedRule('EVENT',
+    Any(*event_keywords))
 
-EVENT_WITH_ROMANCE_EVENT = 'EVENT_WITH_ROMANCE_EVENT'
-add(EVENT_WITH_ROMANCE_EVENT, Any(keywords.AMBIGUOUS_CLASS, *event_keywords))
+EVENT_WITH_ROMANCE_EVENT = NamedRule('EVENT_WITH_ROMANCE_EVENT',
+    Any(keywords.AMBIGUOUS_CLASS, *event_keywords))

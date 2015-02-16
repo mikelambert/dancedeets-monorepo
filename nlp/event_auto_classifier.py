@@ -23,9 +23,9 @@ from util import dates
 # TODO: make sure this doesn't match... 'mc hiphop contest'
 
 def regexes_for_rule(rule, **kwargs):
-    return regex_keywords.make_regexes_raw(rules.get(rule).as_expanded_regex(), **kwargs)
+    return regex_keywords.make_regexes_raw(rule.as_expanded_regex(), **kwargs)
 
-dance_regex = regex_keywords.make_regexes_raw(rules.get(rules.GOOD_DANCE).as_expanded_regex())
+dance_regex = regex_keywords.make_regexes_raw(rules.GOOD_DANCE.as_expanded_regex())
 start_judge_keywords_regex = regexes_for_rule(rules.FULL_JUDGE, wrapper='^[^\w\n]*%s', flags=re.MULTILINE)
 
 def has_list_of_good_classes(classified_event):
@@ -189,7 +189,7 @@ def is_battle(classified_event):
     has_many_real_dance_keywords = len(set(classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches)) > 1
     has_start_judge = start_judge_keywords_regex[classified_event.boundaries].findall(search_text)
 
-    #print rules.get(rules.WRONG_BATTLE).as_expanded_regex().encode('utf8')
+    #print rules.WRONG_BATTLE.as_expanded_regex().encode('utf8')
     #print has_dance_battle
     #print is_wrong_competition_title
     #print is_wrong_style_battle_title
@@ -374,7 +374,7 @@ def build_regexes():
 
     event_classifier.build_regexes()
 
-    solo_lines_regex = event_classifier.make_regexes([rules.get(rules.GOOD_DANCE).as_expanded_regex()] + event_classifier.manual_dancers)
+    solo_lines_regex = event_classifier.make_regexes([rules.GOOD_DANCE.as_expanded_regex()] + event_classifier.manual_dancers)
 
 def has_standalone_keywords(classified_event):
     build_regexes()

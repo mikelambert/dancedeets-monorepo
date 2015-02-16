@@ -168,7 +168,7 @@ def build_regexes():
     all_regexes['good_keyword_regex'] = make_regexes(good_keywords, wrapper='(?i)%s')
     all_regexes['good_capturing_keyword_regex'] = make_regexes(good_keywords, matching=True, wrapper='(?i)%s')
 
-all_regexes['dance_wrong_style_title_regex'] = regex_keywords.make_regexes_raw(rules.get(rules.DANCE_WRONG_STYLE_TITLE).as_expanded_regex())
+all_regexes['dance_wrong_style_title_regex'] = regex_keywords.make_regexes_raw(rules.DANCE_WRONG_STYLE_TITLE.as_expanded_regex())
 
 all_regexes['bad_capturing_keyword_regex'] = make_regexes(keywords.get(keywords.CLUB_ONLY, keywords.DANCE_WRONG_STYLE), matching=True)
 
@@ -193,7 +193,7 @@ _rule_regexes = {}
 def get_rule_regex(rule, **kwargs):
     key = (rule, tuple(sorted(kwargs.items())))
     if key not in _rule_regexes:
-        _rule_regexes[key] = regex_keywords.make_regexes_raw(rules.get(rule).as_expanded_regex(), **kwargs)
+        _rule_regexes[key] = regex_keywords.make_regexes_raw(rule.as_expanded_regex(), **kwargs)
     return _rule_regexes[key]
 
 class StringProcessor(object):
@@ -233,7 +233,7 @@ class StringProcessor(object):
     #TODO(lambert): combine this with real_tokenize
     def replace_rule(self, rule, **kwargs):
         def word_with_hash(match):
-            return rules.get(rule).replace_string(match.group(0))
+            return rule.replace_string(match.group(0))
         regex = get_rule_regex(rule, **kwargs)
         return regex[self.match_on_word_boundaries].subn(word_with_hash, self.text)
 
