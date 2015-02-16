@@ -225,10 +225,10 @@ class StringProcessor(object):
     def real_tokenize(self, token):
         def word_with_hash(match):
             return token.replace_string(match.group(0))
-        self.text, count = keywords.get_regex(token)[self.match_on_word_boundaries].subn(word_with_hash, self.text)
+        self.text, count = token.hack_double_regex()[self.match_on_word_boundaries].subn(word_with_hash, self.text)
         # If we want to get the matched results/keywords too, then we should only do that conditinoally on count, here:
         #if count:
-        #    self.token_originals[token].extend(keywords.get_regex(token)[self.match_on_word_boundaries].findall(self.text))
+        #    self.token_originals[token].extend(token.hack_double_regex()[self.match_on_word_boundaries].findall(self.text))
 
     #TODO(lambert): combine this with real_tokenize
     def replace_rule(self, rule, **kwargs):
@@ -242,7 +242,7 @@ class StringProcessor(object):
 
     def _get_token(self, token):
         if token not in self.token_originals:
-            self.token_originals[token] = keywords.get_regex(token)[self.match_on_word_boundaries].findall(self.text)
+            self.token_originals[token] = token.hack_double_regex()[self.match_on_word_boundaries].findall(self.text)
         return self.token_originals[token]
 
     def get_tokens(self, *tokens):

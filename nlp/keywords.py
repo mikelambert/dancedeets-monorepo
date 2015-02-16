@@ -21,6 +21,7 @@ class Keyword(GrammarRule):
         self._final_name = re.sub(r'[\W_]+', '', self._name)
         self._keywords = tuple(keywords)
         self._expanded_regex = None
+        self._cached_double_regex = None
 
     def children(self):
         return []
@@ -32,6 +33,11 @@ class Keyword(GrammarRule):
 
     def as_token_regex(self):
         return r'_%s\d*_' % self._final_name
+
+    def hack_double_regex(self):
+        if not self._cached_double_regex:
+            self._cached_double_regex = regex_keywords.make_regexes(self.get_keywords() + (self.as_token_regex(),))
+        return self._cached_double_regex
 
     def replace_string(self, *args):
         if args:
@@ -45,18 +51,6 @@ class Keyword(GrammarRule):
 
     def __repr__(self):
         return 'Keyword(%r, [...])' % self._name
-
-
-def _key(tokens):
-    return tuple(sorted(tokens))
-
-#TODO(lambert): move this function out of here in some way, as it is an artifact of the old-way
-def get_regex(*tokens):
-    token_key = _key(tokens)
-    if token_key not in _regexes:
-        # TODO(lambert): this is regexes, while function name is regex. We need to fix this (since make_regex is a different function)
-        _regexes[token_key] = regex_keywords.make_regexes(get(*tokens) + [token.as_token_regex() for token in tokens])
-    return _regexes[token_key]
 
 def _flatten(listOfLists):
     "Flatten one level of nesting"
