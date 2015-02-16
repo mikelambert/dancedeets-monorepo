@@ -7,3 +7,10 @@ def webapp_add_wsgi_middleware(app):
 # More of an optimization to save on the associated database Get/Put every second.
 mapreduce__CONTROLLER_PERIOD_SEC = 5
 
+appstats_MAX_STACK = 25
+appstats_MAX_REPR = 100
+appstats_MAX_LOCALS = 5
+
+appstats_RECORD_FRACTION = 1.0
+
+appstats_DATASTORE_DETAILS = True
