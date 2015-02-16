@@ -3,9 +3,9 @@
 import sys
 import time
 sys.path += ['.']
-from logic import event_auto_classifier
-from logic import event_classifier
 from classifiers import processing
+from nlp import event_auto_classifier
+from nlp import event_classifier
 
 positive_classifier = True
 

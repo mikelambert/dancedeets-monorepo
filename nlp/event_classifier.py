@@ -17,9 +17,9 @@ else:
 import time
 from util import cjk_detect
 from spitfire.runtime.filters import skip_filter
-from logic import keywords
-from logic import regex_keywords
-from logic import rules
+from . import keywords
+from . import regex_keywords
+from . import rules
 
 USE_UNICODE = False
 

@@ -3,8 +3,8 @@
 import sys
 sys.path += ['.']
 import time
-from logic import event_classifier
 from classifiers import processing
+from nlp import event_classifier
 
 ids_info = processing.load_ids()
 for x in ids_info:

@@ -5,7 +5,7 @@ from google.appengine.ext import db
 from mapreduce import control
 
 import fb_api
-from logic import event_classifier
+from nlp import event_classifier
 from util import fb_mapreduce
 
 GRAPH_TYPE_PROFILE = 'GRAPH_TYPE_PROFILE'

@@ -51,7 +51,7 @@ logging.info("Finished modules")
 
 class DoNothingHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
-        from logic import event_auto_classifier
+        from nlp import event_auto_classifier
         logging.info("Loading regexes")
         event_auto_classifier.build_regexes()
         logging.info("Loaded regexes")

@@ -15,11 +15,11 @@ from events import eventdata
 from events import users
 import fb_api
 from logic import auto_add
-#from logic import event_classifier
 #from logic import mr_dump
 #from logic import mr_prediction
 #from logic import potential_events
 from logic import thing_db
+#from nlp import event_classifier
 import smemcache
 from servlets import tasks
 

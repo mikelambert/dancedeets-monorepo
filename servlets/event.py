@@ -14,12 +14,12 @@ from loc import formatting
 from loc import gmaps_api
 from logic import add_entities
 from logic import backgrounder
-from logic import event_auto_classifier
-from logic import event_classifier
 from logic import event_locations
 from logic import event_updates
 from logic import potential_events
 from logic import rsvp
+from nlp import event_auto_classifier
+from nlp import event_classifier
 import smemcache
 from util import dates
 from util import urls

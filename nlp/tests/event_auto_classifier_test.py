@@ -5,8 +5,8 @@ import unittest
 from google.appengine.ext import testbed
 
 import fb_api
-from logic import event_auto_classifier
-from logic import event_classifier
+from nlp import event_auto_classifier
+from nlp import event_classifier
 from test_utils import fb_api_stub
 
 class TestSimpleMatches(unittest.TestCase):

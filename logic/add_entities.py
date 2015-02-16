@@ -4,12 +4,12 @@ from google.appengine.ext import deferred
 
 import fb_api
 from events import eventdata
-from logic import event_classifier
 from logic import event_locations
 from logic import event_updates
 from logic import potential_events
 from logic import pubsub
 from logic import thing_db
+from nlp import event_classifier
 
 class AddEventException(Exception):
     pass

@@ -10,10 +10,10 @@ except ImportError:
     re2 = None
     import re
 
-from logic import event_classifier
-from logic import keywords
-from logic import regex_keywords
-from logic import rules
+from . import event_classifier
+from . import keywords
+from . import regex_keywords
+from . import rules
 from util import dates
 
 

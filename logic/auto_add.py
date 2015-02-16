@@ -6,10 +6,10 @@ import fb_api
 
 from events import eventdata
 from logic import add_entities
-from logic import event_auto_classifier
-from logic import event_classifier
 from logic import event_locations
 from logic import potential_events
+from nlp import event_auto_classifier
+from nlp import event_classifier
 from util import fb_mapreduce
 
 def classify_events(fbl, pe_list, fb_list=None):

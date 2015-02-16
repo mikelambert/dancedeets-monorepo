@@ -3,7 +3,7 @@
 
 import unittest
 
-from logic import event_classifier
+from nlp import event_classifier
 
 
 class TestSoulSessionsOslo(unittest.TestCase):

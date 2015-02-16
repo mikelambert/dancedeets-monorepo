@@ -4,10 +4,10 @@ import logging
 from events import eventdata
 import fb_api
 from loc import gmaps_api
-from logic import event_classifier
 from logic import event_locations
 from logic import rankings
 from logic import search
+from nlp import event_classifier
 from util import dates
 
 def _event_time_period(db_event):
