@@ -136,6 +136,12 @@ def build_regexes():
         keywords.EASY_DANCE,
         keywords.EASY_EVENT,
         keywords.EASY_BATTLE,
+        keywords.STYLE_BREAK,
+        keywords.STYLE_ROCK,
+        keywords.STYLE_POP,
+        keywords.STYLE_LOCK,
+        keywords.STYLE_WAACK,
+        keywords.STYLE_ALLSTYLE,
         keywords.DANCE,
         keywords.PRACTICE,
         keywords.PERFORMANCE,
@@ -276,83 +282,24 @@ class ClassifiedEvent(object):
 
         self.processed_text = StringProcessor(self.search_text, self.boundaries)
         # This must be first, to remove the fake keywords
-        self.processed_text.tokenize(keywords.PREPROCESS_REMOVAL)
         self.processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
         self.processed_text.real_tokenize(manual_dancer_keyword)
         self.processed_text.real_tokenize(keywords.GOOD_INSTANCE_OF_BAD_CLUB)
+        #TODO(lambert): Why do I need all these?
         self.processed_text.real_tokenize(keywords.DANCE)
+        self.processed_text.real_tokenize(keywords.STYLE_BREAK)
+        self.processed_text.real_tokenize(keywords.STYLE_ROCK)
+        self.processed_text.real_tokenize(keywords.STYLE_POP)
+        self.processed_text.real_tokenize(keywords.STYLE_LOCK)
+        self.processed_text.real_tokenize(keywords.STYLE_WAACK)
+        self.processed_text.real_tokenize(keywords.STYLE_ALLSTYLE)
 
         self.final_search_text = self.processed_text.get_tokenized_text()
         search_text = self.final_search_text
 
-        # Then we apply a bunch of our regular keyword rules
-        # Not CONNECTOR, not PREPROCESS_REMOVAL.
-        # There are some overlapping keywords in here that I need to fix. Maybe can automate detection with a master-replace-regex that looks in these, to find what to replace with (and errors on multiple)
-        # But in the meantime, let's start to figure out a rough ordering for them. dance at the bottom, good-instance-of-bad-club hack at the top, etc. Hopefully the middle tier can be large and order-irrelevant.
-        desired_keywords = [
-            manual_dancer_keyword,
-            keywords.GOOD_INSTANCE_OF_BAD_CLUB,
-
-            keywords.DANCE, #jazzfunk, streetjazz, etc
-
-            keywords.CLASS,
-            keywords.N_X_N,
-            keywords.BATTLE,
-            keywords.OBVIOUS_BATTLE,
-            keywords.AUDITION,
-            keywords.CYPHER,
-            keywords.JUDGE,
-
-            # king-of-the must be before king
-            keywords.KING_OF_THE,
-            keywords.KING,
-
-            keywords.AMBIGUOUS_CLASS,
-            keywords.AMBIGUOUS_DANCE_MUSIC,
-            keywords.AMBIGUOUS_WRONG_STYLE,
-            keywords.BAD_CLUB,
-            keywords.BONNIE_AND_CLYDE,
-            keywords.CLUB_ONLY,
-            keywords.CONTEST,
-            keywords.DANCE_WRONG_STYLE,
-            keywords.EVENT,
-            keywords.FORMAT_TYPE,
-            keywords.FREESTYLE,
-            keywords.HOUSE,
-            keywords.OTHER_SHOW,
-            keywords.PERFORMANCE,
-            keywords.PRACTICE,
-            keywords.STREET,
-            keywords.VOGUE,
-            keywords.WRONG_AUDITION,
-            keywords.WRONG_BATTLE,
-            keywords.WRONG_BATTLE_STYLE,
-            keywords.WRONG_NUMBERED_LIST,
-
-            #keywords.SEMI_BAD_DANCE,
-
-            keywords.EASY_BATTLE,
-            keywords.EASY_CHOREO,
-            keywords.EASY_DANCE,
-            keywords.EASY_EVENT,
-            keywords.EASY_VOGUE,
-        ]
-        for keyword in desired_keywords:
-            self.processed_text.tokenize(keyword)
-
         self.processed_title = StringProcessor(self.title, self.boundaries)
-        self.processed_title.tokenize(keywords.PREPROCESS_REMOVAL)
         self.processed_title.real_tokenize(keywords.PREPROCESS_REMOVAL)
         self.final_title = self.processed_title.get_tokenized_text()
-        title = self.final_title
-
-        for keyword in desired_keywords:
-            self.processed_title.tokenize(keyword)
-        for keyword in [
-            keywords.BAD_COMPETITION_TITLE_ONLY,
-            keywords.DANCE_WRONG_STYLE_TITLE_ONLY,
-        ]:
-            self.processed_title.tokenize(keyword)
 
         #if not all_regexes['good_keyword_regex'][idx].search(search_text):
         #    self.dance_event = False
@@ -373,8 +320,8 @@ class ClassifiedEvent(object):
         self.found_event_matches = event_matches + self.processed_text.get_tokens(keywords.EASY_EVENT, keywords.EASY_BATTLE) + club_and_event_matches
         self.found_wrong_matches = self.processed_text.get_tokens(keywords.DANCE_WRONG_STYLE) + self.processed_text.get_tokens(keywords.CLUB_ONLY)
 
-        title_wrong_style_matches = all_regexes['dance_wrong_style_title_regex'][idx].findall(title)
-        title_good_matches = all_regexes['good_keyword_regex'][idx].findall(title)
+        title_wrong_style_matches = all_regexes['dance_wrong_style_title_regex'][idx].findall(self.final_title)
+        title_good_matches = all_regexes['good_keyword_regex'][idx].findall(self.final_title)
         combined_matches_string = ' '.join(self.found_dance_matches + self.found_event_matches)
         dummy, combined_matches = re.subn(r'\w+', '', combined_matches_string)
         dummy, words = re.subn(r'\w+', '', re.sub(r'\bhttp.*?\s', '', search_text))
@@ -401,7 +348,7 @@ class ClassifiedEvent(object):
         elif len(self.real_dance_matches) >= 1:
             self.dance_event = 'obvious dance style'
         # If the title has a bad-style and no good-styles, mark it bad
-        elif (all_regexes['dance_wrong_style_title_regex'][idx].search(title) and
+        elif (all_regexes['dance_wrong_style_title_regex'][idx].search(self.final_title) and
             not (
                 self.processed_title.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC) or
                 self.manual_dance_keywords_matches or

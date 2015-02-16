@@ -91,15 +91,26 @@ def commutative_connected(a, b):
     )
 
 
-GOOD_DANCE = 'DANCE'
-add(GOOD_DANCE, Any(
+DANCE = 'DANCE'
+add(DANCE, Any(
     keywords.DANCE,
+    keywords.STYLE_BREAK,
+    keywords.STYLE_ROCK,
+    keywords.STYLE_POP,
+    keywords.STYLE_LOCK,
+    keywords.STYLE_WAACK,
+    keywords.STYLE_ALLSTYLE,
+))
+
+GOOD_DANCE = 'GOOD_DANCE'
+add(GOOD_DANCE, Any(
+    get(DANCE),
     keywords.VOGUE,
     commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE), keywords.EASY_DANCE),
     commutative_connected(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE),
     commutative_connected(keywords.STREET, Any(keywords.EASY_CHOREO, keywords.EASY_DANCE)),
     # This may seem strange to list it essentially twice ,but necessary for "battles de danses breakdance"
-    commutative_connected(keywords.EASY_DANCE, keywords.DANCE),
+    commutative_connected(keywords.EASY_DANCE, get(DANCE)),
 ))
 
 DECENT_DANCE = 'DECENT_DANCE'
@@ -118,7 +129,7 @@ add(WRONG_BATTLE, Any(
 ))
 
 DANCE_STYLE = 'DANCE_STYLE'
-add(DANCE_STYLE, Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.DANCE, keywords.VOGUE, keywords.HOUSE))
+add(DANCE_STYLE, Any(keywords.AMBIGUOUS_DANCE_MUSIC, get(DANCE), keywords.VOGUE, keywords.HOUSE))
 
 # TODO: make sure this doesn't match... 'mc hiphop contest'
 GOOD_DANCE_BATTLE = 'GOOD_DANCE_BATTLE'

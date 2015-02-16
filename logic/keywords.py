@@ -220,60 +220,35 @@ add(AMBIGUOUS_DANCE_MUSIC, [
     u'얼반', # korean urban
 ])
 
-legit_dance = [
-    'street\W?jam',
+STYLE_BREAK = token('STYLEBREAK')
+add(STYLE_BREAK, [
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
     u'ブレイク', # breakdance japanese
-    'jazz rock',
-    u'재즈 ?록', # korean jazz rock
-    'funk\W?style[sz]?',
-    'poppers?', 'popp?i?ng', # listing poppin in the ambiguous keywords
-    'poppeurs?',
-    u'팝핀', # korean popping
-    'commercial hip\W?hop',
-    'lyrical\Whip\W?',
-    'hip\W?hop dance',
-    "jerk(?:ers?|in[g']?)",
-    u'스트릿', # street korean
-    u'ストリートダンス', # japanese streetdance
-    u'رقص الشوارع', # arabic streetdance
-    u'البريك دانس', # arabic breakdance
-    u'街舞', # chinese streetdance / hiphop
-    u'gatvės šokių', # lithuanian streetdance
-    'katutanssi\w*', # finnish streetdance
     "bre?ak\W?dancin[g']?", 'bre?ak\W?dancer?s?',
     'break\W?danc\w+',
-    'rock\W?dan[cs]\w+',
-    '(?:lite|light)\W?feet',
-    "gettin[g']?\W?(?:lite|light)",
-    "turfin(?:[g']?|er[sz])", 'turf danc\w+', "flexin[g']?", "buckin[g']?", "jookin[g']?",
-    'power\W?moves?', "footworkin[g']?",
+    'power\W?moves?',
     'b\W?(?:boy|girl)\w*',
     u'비보이', # korean bboy
     u'비걸', # korean bgirl
     u'파워무브', # powermove korean
     'breakeuse', # french bgirl
-    'footworks', # spanish footworks
-    "top\W?rock(?:s|er[sz]?|in[g']?)?", "up\W?rock(?:s|er[sz]?|in[g']?|)?",
     u'탑락', # toprock
-    'houser[sz]?',
-    'afro\W?house',
-    'dance house', # seen in italian
-    'soul dance',
-    u'ソウルダンス', # soul dance japanese
-    "lock(?:er[sz]?|in[g']?)?", 'lock dance',
-    #'soul train',...do we want this?
-    u'소울트레인', # korean soul train
-    u'ロッカーズ', # japanese lockers
-    u'ロッカ', # japanese lock
-    u'락킹', # korean locking
-    "[uw]h?aa?c?c?k(?:er[sz]?|inn?[g']?)", # waacking
-    u'왁킹', # korean waacking
-    "paa?nc?kin[g']?", # punking
-    'locking4life',
-    'dance crew[sz]?',
-    u'댄스 ?승무원', # korean dance crew
+])
+# Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
+#add(STYLE_BREAK, [x+'u' for x in legit_dance])
+STYLE_ROCK = token('STYLEROCK')
+add(STYLE_ROCK, [
+    'rock\W?dan[cs]\w+',
+    "top\W?rock(?:s|er[sz]?|in[g']?)?", "up\W?rock(?:s|er[sz]?|in[g']?|)?",
+])
+STYLE_POP = token('STYLEPOP')
+add(STYLE_POP, [
+    'funk\W?style[sz]?',
+    'poppers?', 'popp?i?ng', # listing poppin in the ambiguous keywords
+    'poppeurs?',
+    u'팝핀', # korean popping
+    "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)", # dupe
     "wavin[g']?", 'wavers?',
     'liquid\W+dance'
     'liquid\W+(?:\w+\W+)?digitz',
@@ -285,11 +260,67 @@ legit_dance = [
     "robott?in[g']?",
     u'로봇팅', # roboting
     'g\W?styl\w+',
-    'melbourne shuffle',
     'strutter[sz]?', 'strutting',
     u'스트럿팅', # strutting
     "tuttin[g']?", 'tutter[sz]?',
     u'텃팅', # korean tutting
+])
+STYLE_LOCK = token('STYLELOCK')
+add(STYLE_LOCK, [
+    "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)", # dupe
+    "lock(?:er[sz]?|in[g']?)?", 'lock dance',
+    u'ロッカーズ', # japanese lockers
+    u'ロッカ', # japanese lock
+    u'락킹', # korean locking
+    'locking4life',
+])
+STYLE_WAACK = token('STYLEWAACK')
+add(STYLE_WAACK, [
+    "[uw]h?aa?c?c?k(?:er[sz]?|inn?[g']?)", # waacking
+    u'왁킹', # korean waacking
+    u'ワッキング', # japanese waacking
+    u'パーンキング', # japanese punking
+    "paa?nc?kin[g']?", # punking
+])
+STYLE_ALLSTYLE = token('STYLEALLSTYLE')
+add(STYLE_ALLSTYLE, [
+    'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
+    'all\W+open\W?style[sz]?',
+    'open\W+all\W?style[sz]?',
+    'me against the music',
+])
+
+legit_dance = [
+    'street\W?jam',
+    'jazz rock',
+    u'재즈 ?록', # korean jazz rock
+    'commercial hip\W?hop',
+    'lyrical\Whip\W?',
+    'hip\W?hop dance',
+    "jerk(?:ers?|in[g']?)",
+    u'스트릿', # street korean
+    u'ストリートダンス', # japanese streetdance
+    u'رقص الشوارع', # arabic streetdance
+    u'البريك دانس', # arabic breakdance
+    u'街舞', # chinese streetdance / hiphop
+    u'gatvės šokių', # lithuanian streetdance
+    'katutanssi\w*', # finnish streetdance
+    '(?:lite|light)\W?feet',
+    "gettin[g']?\W?(?:lite|light)",
+    "turfin(?:[g']?|er[sz])", 'turf danc\w+', "flexin[g']?", "buckin[g']?", "jookin[g']?",
+    "footworkin[g']?",
+    'footworks', # spanish footworks
+    u'フットワーキング', # japanese footworking
+    'houser[sz]?',
+    'afro\W?house',
+    'dance house', # seen in italian
+    'soul dance',
+    u'ソウルダンス', # soul dance japanese
+    #'soul train',...do we want this?
+    u'소울트레인', # korean soul train
+    'dance crew[sz]?',
+    u'댄스 ?승무원', # korean dance crew
+    'melbourne shuffle',
     'mj\W+style', 'michael jackson style',
     'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
     'hip\W?hop\Wheels',
@@ -299,10 +330,6 @@ legit_dance = [
     'n(?:ew|u)\W?style\Whip\W?hop',
     u'뉴스타일 ?힙합', # korean new style hiphop
     'hip\W?hop\Wn(?:ew|u)\W?style',
-    'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
-    'all\W+open\W?style[sz]?',
-    'open\W+all\W?style[sz]?',
-    'me against the music',
     'krump', "krumpin[g']?", 'krumper[sz]?',
     u'크럼핑', # korean krumping
     'ragga\W?jamm?',
@@ -326,7 +353,6 @@ legit_dance = [
     'dan\w+ urbai?n\w+', # spanish/french urban dance
     'baile urbai?n\w+', # spanish urban dance
     'estilo\w* urbai?n\w+', # spanish urban styles
-    "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)",
 ]
 # hiphop dance. hiphop dans?
 DANCE = token('DANCE')
