@@ -2,7 +2,7 @@ import itertools
 import re
 
 import keywords
-import regex_keywords
+from util import re_flatten
 
 class Any(keywords.GrammarRule):
     def __init__(self, *args):
@@ -13,10 +13,10 @@ class Any(keywords.GrammarRule):
         return self.args
 
     def as_expanded_regex(self):
-        return regex_keywords.make_regex_string(x.as_expanded_regex() for x in self.args)
+        return re_flatten.construct_regex(x.as_expanded_regex() for x in self.args)
 
     def as_token_regex(self):
-        return regex_keywords.make_regex_string(x.as_token_regex() for x in self.args)
+        return re_flatten.construct_regex(x.as_token_regex() for x in self.args)
 
     def __repr__(self):
         return 'Any(*%r)' % (self.args,)

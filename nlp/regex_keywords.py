@@ -13,10 +13,6 @@ else:
     re.set_fallback_notification(re.FALLBACK_WARNING)
 from util import re_flatten
 
-def make_regex_string(strings, matching=False, word_boundaries=False, match_cjk=False, wrapper='%s'):
-    inner_regex = re_flatten.construct_regex(strings)
-    return _prep_regex(inner_regex, matching=matching, word_boundaries=word_boundaries, match_cjk=match_cjk, wrapper=wrapper)
-
 def _prep_regex(regex_string, matching=False, word_boundaries=True, match_cjk=False, wrapper='%s'):
     if matching:
         regex_string = u'(' + regex_string + u')'
@@ -39,8 +35,6 @@ def _make_regex_raw(regex_string, flags=0):
     else:
         return re.compile(regex_string, flags=flags)
 
-NO_WORD_BOUNDARIES = 0
-WORD_BOUNDARIES = 1
 def make_regexes(strings, matching=False, wrapper='%s', flags=0):
     try:
         regex_string = re_flatten.construct_regex(strings)
@@ -57,7 +51,8 @@ def make_regexes(strings, matching=False, wrapper='%s', flags=0):
         return
     return make_regexes_raw(regex_string, matching=matching, wrapper=wrapper, flags=flags)
 
-
+NO_WORD_BOUNDARIES = 0
+WORD_BOUNDARIES = 1
 def make_regexes_raw(regex_string, matching=False, wrapper='%s', flags=0):
     a = [None] * 2
     a[NO_WORD_BOUNDARIES] = _make_regex_raw(_prep_regex(regex_string, match_cjk=True, wrapper=wrapper), flags=flags)
