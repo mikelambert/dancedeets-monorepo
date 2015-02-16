@@ -56,10 +56,10 @@ class Connector(keywords.GrammarRule):
         return []
 
     def as_expanded_regex(self):
-        return keywords.get_regex_string(keywords.CONNECTOR)
+        return keywords.CONNECTOR.as_expanded_regex()
 
     def as_token_regex(self):
-        return keywords.get_regex_string(keywords.CONNECTOR)
+        return keywords.CONNECTOR.as_expanded_regex()
 
     def __repr__(self):
         return 'Connector()'

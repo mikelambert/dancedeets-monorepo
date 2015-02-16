@@ -3,7 +3,8 @@
 
 import itertools
 import re
-import regex_keywords
+
+from . import regex_keywords
 from util import re_flatten
 
 # The magical repository of all dance keywords
@@ -19,12 +20,15 @@ class Keyword(GrammarRule):
         self._name = name
         self._final_name = re.sub(r'[\W_]+', '', self._name)
         self._keywords = tuple(keywords)
+        self._expanded_regex = None
 
     def children(self):
         return []
 
     def as_expanded_regex(self):
-        return get_regex_string(self)
+        if not self._expanded_regex:
+            self._expanded_regex = re_flatten.construct_regex(self.get_keywords() + (self.as_token_regex(),))
+        return self._expanded_regex
 
     def as_token_regex(self):
         return r'_%s\d*_' % self._final_name
