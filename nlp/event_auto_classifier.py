@@ -25,7 +25,6 @@ from util import dates
 def regexes_for_rule(rule, **kwargs):
     return regex_keywords.make_regexes_raw(rule.as_expanded_regex(), **kwargs)
 
-dance_regex = regex_keywords.make_regexes_raw(rules.GOOD_DANCE.as_expanded_regex())
 start_judge_keywords_regex = regexes_for_rule(rules.FULL_JUDGE, wrapper='^[^\w\n]*%s', flags=re.MULTILINE)
 
 def has_list_of_good_classes(classified_event):
@@ -86,7 +85,7 @@ def has_list_of_good_classes(classified_event):
         for line in sub_lines:
             proc_line = event_classifier.StringProcessor(line, classified_event.boundaries)
             proc_line.tokenize(keywords.AMBIGUOUS_DANCE_MUSIC)
-            dance_class_style_matches = dance_regex[classified_event.boundaries].findall(line)
+            dance_class_style_matches = proc_line.get_tokens(rules.GOOD_DANCE)
             dance_and_music_matches = proc_line.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
             manual_dancers = event_classifier.all_regexes['manual_dancers_regex'][classified_event.boundaries].findall(line)
             dance_wrong_style_matches = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(line)
@@ -224,13 +223,12 @@ def is_audition(classified_event):
         return (False, 'not a dance event')
 
     has_audition = classified_event.processed_title.get_tokens(keywords.AUDITION)
-    has_good_dance_title = dance_regex[classified_event.boundaries].findall(classified_event.final_title)
+    has_good_dance_title = classified_event.processed_title.get_tokens(rules.GOOD_DANCE)
     has_extended_good_crew_title = event_classifier.all_regexes['extended_manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
 
 
-    search_text = classified_event.final_search_text
-    has_good_dance = dance_regex[classified_event.boundaries].findall(search_text)
-    has_wrong_style = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(search_text)
+    has_good_dance = classified_event.processed_text.get_tokens(rules.GOOD_DANCE)
+    has_wrong_style = classified_event.processed_text.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
     has_wrong_audition = classified_event.processed_text.get_tokens(keywords.WRONG_AUDITION)
 
     if has_audition and (has_good_dance_title or has_extended_good_crew_title):
