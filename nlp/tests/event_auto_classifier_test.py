@@ -7,11 +7,12 @@ from google.appengine.ext import testbed
 import fb_api
 from nlp import event_auto_classifier
 from nlp import event_classifier
+from nlp import rules
 from test_utils import fb_api_stub
 
 class TestSimpleMatches(unittest.TestCase):
         def runTest(self):
-                self.assertTrue(event_auto_classifier.dance_regex[1].findall('streetdance'))
+                self.assertTrue(rules.GOOD_DANCE.hack_double_regex()[1].findall('streetdance'))
 
 class TestClassifier(unittest.TestCase):
     def setUp(self):
