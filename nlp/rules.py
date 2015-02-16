@@ -109,9 +109,6 @@ def commutative_connected(a, b):
     )
 
 
-def get(rule):
-    return rule
-
 DANCE = NamedRule('DANCE', Any(
     keywords.DANCE,
     keywords.STYLE_BREAK,
@@ -123,17 +120,17 @@ DANCE = NamedRule('DANCE', Any(
 ))
 
 GOOD_DANCE = NamedRule('GOOD_DANCE', Any(
-    get(DANCE),
+    DANCE,
     keywords.VOGUE,
     commutative_connected(Any(keywords.HOUSE, keywords.FREESTYLE), keywords.EASY_DANCE),
     commutative_connected(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE),
     commutative_connected(keywords.STREET, Any(keywords.EASY_CHOREO, keywords.EASY_DANCE)),
     # This may seem strange to list it essentially twice ,but necessary for "battles de danses breakdance"
-    commutative_connected(keywords.EASY_DANCE, get(DANCE)),
+    commutative_connected(keywords.EASY_DANCE, DANCE),
 ))
 
 DECENT_DANCE = NamedRule('DECENT_DANCE', Any(
-    get(GOOD_DANCE),
+    GOOD_DANCE,
     keywords.AMBIGUOUS_DANCE_MUSIC,
 ))
 
@@ -146,12 +143,12 @@ WRONG_BATTLE = NamedRule('WRONG_BATTLE', Any(
 ))
 
 DANCE_STYLE = NamedRule('DANCE_STYLE',
-    Any(keywords.AMBIGUOUS_DANCE_MUSIC, get(DANCE), keywords.VOGUE, keywords.HOUSE))
+    Any(keywords.AMBIGUOUS_DANCE_MUSIC, DANCE, keywords.VOGUE, keywords.HOUSE))
 
 # TODO: make sure this doesn't match... 'mc hiphop contest'
 # 'hip hop battle' by itself isnt sufficient, so leave that in ambiguous_battle_dance.
 # GOOD_DANCE does include 'hip hop dance' though, to allow 'hip hop dance battle' to work.
-good_battle_dance = Any(get(GOOD_DANCE), keywords.HOUSE)
+good_battle_dance = Any(GOOD_DANCE, keywords.HOUSE)
 ambiguous_battle_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE, keywords.EASY_CHOREO)
 good_battle = Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)
 ambiguous_battle = Any(keywords.EASY_BATTLE)
@@ -164,7 +161,7 @@ GOOD_DANCE_BATTLE = NamedRule('GOOD_DANCE_BATTLE', Any(
 ))
 
 DANCE_BATTLE = NamedRule('DANCE_BATTLE', Any(
-    get(GOOD_DANCE_BATTLE),
+    GOOD_DANCE_BATTLE,
     commutative_connected(good_battle_dance, ambiguous_battle),
     commutative_connected(ambiguous_battle_dance, good_battle),
     commutative_connected(ambiguous_battle_dance, ambiguous_battle),
@@ -173,7 +170,7 @@ DANCE_BATTLE = NamedRule('DANCE_BATTLE', Any(
 BATTLE = NamedRule('BATTLE',
     Any(keywords.BATTLE, keywords.OBVIOUS_BATTLE))
 
-good_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, get(GOOD_DANCE), keywords.HOUSE)
+good_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, GOOD_DANCE, keywords.HOUSE)
 
 GOOD_DANCE_CLASS = NamedRule('GOOD_DANCE_CLASS', Any(
     commutative_connected(good_dance, keywords.CLASS),
@@ -187,7 +184,7 @@ EXTENDED_CLASS = NamedRule('EXTENDED_CLASS',
 FULL_JUDGE = NamedRule('FULL_JUDGE', Any(
     keywords.JUDGE,
     commutative_connected(keywords.JUDGE, Any(
-        get(GOOD_DANCE),
+        GOOD_DANCE,
         keywords.EASY_DANCE,
         keywords.AMBIGUOUS_DANCE_MUSIC,
         keywords.HOUSE,
@@ -200,7 +197,7 @@ FULL_JUDGE = NamedRule('FULL_JUDGE', Any(
 # TODO(lambert): Maybe add a special RegexRule that I can fill with '^[^\w\n]*', and encapsulate that here instead of client code
 
 PERFORMANCE_PRACTICE = NamedRule('PERFORMANCE_PRACTICE',
-    commutative_connected(get(GOOD_DANCE), Any(keywords.PERFORMANCE, keywords.PRACTICE)))
+    commutative_connected(GOOD_DANCE, Any(keywords.PERFORMANCE, keywords.PRACTICE)))
 
 DANCE_WRONG_STYLE_TITLE = NamedRule('DANCE_WRONG_STYLE_TITLE',
     Any(keywords.DANCE_WRONG_STYLE, keywords.DANCE_WRONG_STYLE_TITLE_ONLY))
