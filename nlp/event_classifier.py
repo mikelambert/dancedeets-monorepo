@@ -24,7 +24,6 @@ from . import rules
 USE_UNICODE = False
 
 #TODO(lambert): eliminate these as part of refactoring
-make_regex = regex_keywords.make_regex
 make_regexes = regex_keywords.make_regexes
 
 
