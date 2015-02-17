@@ -99,7 +99,7 @@ def init_worker():
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 def mp_partition_ids(ids, classifier=lambda x:False):
-    pool = multiprocessing.Pool(processes=8, initializer=init_worker)
+    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count(), initializer=init_worker)
     print "Generating data..."
     data = [(classifier, x) for x in processing.all_fb_data(ids)]
     print "Running multiprocessing classifier..."
