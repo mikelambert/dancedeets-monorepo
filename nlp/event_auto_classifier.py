@@ -313,7 +313,8 @@ def is_workshop(classified_event):
     has_non_dance_event_title = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     has_good_dance_title = trimmed_title.get_tokens(rules.GOOD_DANCE)
     has_extended_good_crew_title = trimmed_title.get_tokens(rules.MANUAL_DANCER[keywords.STRONG_WEAK])
-    has_wrong_style_title = trimmed_title.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
+
+    has_wrong_style_title = classified_event.processed_title.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
 
     lee_lee_hiphop = 'lee lee' in classified_event.final_title and re.findall('hip\W?hop', classified_event.final_title)
 
