@@ -3,18 +3,8 @@ from . import keywords
 from .grammar import Any
 from .grammar import Name
 
-class Connector(grammar.GrammarRule):
-    def children(self):
-        return []
-
-    def as_expanded_regex(self):
-        return keywords.CONNECTOR.as_expanded_regex()
-
-    def __repr__(self):
-        return 'Connector()'
-
 def connected(a, b):
-    return grammar.Ordered(a, Connector(), b)
+    return grammar.Ordered(a, keywords.CONNECTOR, b)
 
 def commutative_connected(a, b):
     return Any(
@@ -120,7 +110,7 @@ PERFORMANCE_PRACTICE = Name('PERFORMANCE_PRACTICE',
 DANCE_WRONG_STYLE_TITLE = Name('DANCE_WRONG_STYLE_TITLE',
     Any(keywords.DANCE_WRONG_STYLE, keywords.DANCE_WRONG_STYLE_TITLE_ONLY))
 
-event_keywords = [
+EVENT = Name('EVENT', Any(
     keywords.CLASS,
     keywords.N_X_N,
     keywords.BATTLE,
@@ -128,13 +118,10 @@ event_keywords = [
     keywords.AUDITION,
     keywords.CYPHER,
     keywords.JUDGE,
-]
-
-EVENT = Name('EVENT',
-    Any(*event_keywords))
+))
 
 EVENT_WITH_ROMANCE_EVENT = Name('EVENT_WITH_ROMANCE_EVENT',
-    Any(keywords.AMBIGUOUS_CLASS, *event_keywords))
+    Any(keywords.AMBIGUOUS_CLASS, EVENT))
 
 
 MANUAL_DANCER = [Name('MANUAL_DANCER', Any(
