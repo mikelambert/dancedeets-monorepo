@@ -4,7 +4,7 @@
 import unittest
 
 from nlp import event_classifier
-from nlp import keywords
+from nlp import grammar
 
 class TestSoulSessionsOslo(unittest.TestCase):
     def runTest(self):
@@ -22,10 +22,10 @@ class TestDanceClass(unittest.TestCase):
 
 class TestKeywordLoader(unittest.TestCase):
     def runTest(self):
-        result = keywords.FileBackedKeyword._parse_keywords(['a', 'b#c', 'c  #d', 'd\\e', 'e\\#f', 'f\\##g'])
+        result = grammar.FileBackedKeyword._parse_keywords(['a', 'b#c', 'c  #d', 'd\\e', 'e\\#f', 'f\\##g'])
         self.assertEqual(result[0], ['a', 'b', 'c', 'd\\e', 'e\\#f', 'f\\#'])
 
-        result = keywords.FileBackedKeyword._parse_keywords(['abcdefghijklmnopqrstuvwxyz#', 'ab(cd)ef #()', 'ab\(cd\)ef ###'])
+        result = grammar.FileBackedKeyword._parse_keywords(['abcdefghijklmnopqrstuvwxyz#', 'ab(cd)ef #()', 'ab\(cd\)ef ###'])
         self.assertEqual(result[0], ['abcdefghijklmnopqrstuvwxyz', 'ab(cd)ef', 'ab\(cd\)ef'])
 
 class TestCJK(unittest.TestCase):

@@ -1,116 +1,12 @@
 # -*-*- encoding: utf-8 -*-*-
 #
 
-import codecs
-import re
+from . import grammar
+from .grammar import Any
+from .grammar import Name
 
-from . import regex_keywords
-
-class GrammarRule(object):
-    """The entire grammar rule tree must be composed of these."""
-    def __init__(self):
-        self._cached_double_regex = None
-
-    def hack_double_regex(self):
-        if not self._cached_double_regex:
-            self._cached_double_regex = regex_keywords.make_regexes_raw(self.as_expanded_regex())
-        return self._cached_double_regex
-
-    def get_regex_alternations(self):
-        return [self.as_expanded_regex()]
-
-class BaseKeyword(GrammarRule):
-    def __init__(self, name):
-        super(BaseKeyword, self).__init__()
-        self._name = name
-        self._final_name = re.sub(r'[\W_]+', '', self._name)
-        self._expanded_regex = None
-        self._cached_double_regex = None
-        # Subclass must set up self._keywords
-
-    def children(self):
-        return []
-
-    def as_expanded_regex(self):
-        if not self._expanded_regex:
-            self._expanded_regex = regex_keywords.flatten_regex(self.get_regex_alternations())
-        return self._expanded_regex
-
-    def replace_string(self, *args):
-        if args:
-            extra_hash = abs(hash(args[0]))
-        else:
-            extra_hash = ''
-        return '_%s%s_' % (self._final_name, extra_hash)
-
-    def get_regex_alternations(self):
-        assert isinstance(self._keywords, tuple), "keywords are not a tuple: %s" % self._keywords
-        return self._keywords + (r'_%s\d*_' % self._final_name,)
-
-    def __repr__(self):
-        return '%s(%r, [...])' % (self.__class__.__name__, self._name)
-
-class Keyword(BaseKeyword):
-    def __init__(self, name, keywords):
-        super(Keyword, self).__init__(name)
-        self._keywords = tuple(keywords)
-
-class FileBackedKeyword(BaseKeyword):
-    def __init__(self, name, filename, strength):
-        super(FileBackedKeyword, self).__init__(name)
-        self._filename = filename
-        self._strength = strength
-        self.__keywords = None
-
-    @property
-    def _keywords(self):
-        if self.__keywords is None:
-            strong_keywords, weak_keywords = self._get_manual_dance_keywords(self._filename)
-            if self._strength == STRONG:
-                self.__keywords = tuple(strong_keywords)
-            elif self._strength == STRONG_WEAK:
-                self.__keywords = tuple(strong_keywords + weak_keywords)
-            else:
-                raise ValueError("Unknown strength %s" % self._strength)
-        return self.__keywords
-
-    #TODO(lambert): maybe handle 'byronom coxom' in slovakian with these keywords
-    @classmethod
-    def _get_manual_dance_keywords(cls, filename):
-        import os
-        if os.getcwd().endswith('mapreduce'): #TODO(lambert): what is going on with appengine sticking me in the wrong starting directory??
-            base_dir = '..'
-        else:
-            base_dir = '.'
-
-        f = codecs.open('%s/dance_keywords/%s.txt' % (base_dir, filename), encoding='utf-8')
-        result = cls._parse_keywords(f.readlines())
-        return result
-
-    @classmethod
-    def _parse_keywords(cls, lines):
-        manual_keywords = []
-        dependent_manual_keywords = []
-        for line in lines:
-            # Strip off comments, unless backquoted escaped
-            line = re.sub(r'^((?:[^\\#]|\\.)*)#.*$', '\\1', line).strip()
-            if not line:
-                continue
-            raw_line = re.sub(r'\\[A-Z]', '', line)
-            if raw_line != raw_line.lower():
-                raise Exception("Keyword contained uppercase characters: %s" % line.encode('utf8'))
-            if line.endswith(',0'):
-                line = line[:-2]
-                dependent_manual_keywords.append(line)
-            else:
-                manual_keywords.append(line)
-
-        return manual_keywords, dependent_manual_keywords
-
-STRONG = 0
-STRONG_WEAK = 1
-def GenFileBackedKeywords(*args):
-    return [FileBackedKeyword(*args, strength=i) for i in [STRONG, STRONG_WEAK]]
+def GenFileBackedKeywords(name, filename):
+    return [Name(name, grammar.FileBackedKeyword(filename, strength=i)) for i in [grammar.STRONG, grammar.STRONG_WEAK]]
 
 BBOY_CREW = GenFileBackedKeywords('BBOY_CREW', 'bboy_crews')
 BBOY_DANCER = GenFileBackedKeywords('BBOY_DANCER', 'bboys')
@@ -126,7 +22,7 @@ GOOD_DJ = GenFileBackedKeywords('GOOD_DJ', 'good_djs')
 
 
 # 'crew' biases dance one way, 'company' biases it another
-EASY_DANCE = Keyword('EASY_DANCE', [
+EASY_DANCE = Name('EASY_DANCE', Any(
     'dance style[sz]',
     'dances?', "dancin[g']?", 'dancers?',
     u'رقص', # arabic dance
@@ -185,24 +81,24 @@ EASY_DANCE = Keyword('EASY_DANCE', [
     'plesu', # dancing croatian
     u'nhảy', # dance vietnamese
     u'tänzer', # dancer german
-])
+))
 
-EASY_CHOREO = Keyword('EASY_CHOREO', [
+EASY_CHOREO = Name('EASY_CHOREO', Any(
     u'(?:ch|k|c)oe?re[o|ó]?gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese, danish
     'choreo',
     u'chorée', # french choreo
     u'chorégraph\w*', # french choreographer
     u'кореограф', # macedonian
     u'안무',
-])
+))
 
-GOOD_INSTANCE_OF_BAD_CLUB = Keyword('GOOD_INSTANCE_OF_BAD_CLUB', [
+GOOD_INSTANCE_OF_BAD_CLUB = Name('GOOD_INSTANCE_OF_BAD_CLUB', Any(
     'evelyn\W+champagne\W+king',
     'water\W?bottles?',
     'genie in (?:the|a) bottle',
-])
+))
 
-BAD_CLUB = Keyword('BAD_CLUB', [
+BAD_CLUB = Name('BAD_CLUB', Any(
     'bottle\W?service',
     'popping?\W?bottles?',
     'bottle\W?popping?',
@@ -211,9 +107,9 @@ BAD_CLUB = Keyword('BAD_CLUB', [
     'champagne',
     'belvedere',
     'ciroc',
-])
+))
 
-CYPHER = Keyword('CYPHER', [
+CYPHER = Name('CYPHER', Any(
     'c(?:y|i)ph(?:a|ers?)',
     u'サイファ', # japanese cypher
     u'サイファー', # japanese cypher
@@ -222,11 +118,11 @@ CYPHER = Keyword('CYPHER', [
     'cerchi', # italian circle/cypher
     u'ไซเฟอร์', # thai cypher
     u'싸이퍼.?', # korean cypher
-])
+))
 
 # if somehow has funks, hiphop, and breaks, and house. or 3/4? call it a dance event?
 
-AMBIGUOUS_DANCE_MUSIC = Keyword('AMBIGUOUS_DANCE_MUSIC', [
+AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
     'hip\W?hop',
     u'嘻哈', # chinese hiphop
     u'ההיפ הופ', # hebrew hiphop
@@ -262,9 +158,9 @@ AMBIGUOUS_DANCE_MUSIC = Keyword('AMBIGUOUS_DANCE_MUSIC', [
     '90\W?s hip\W?hop',
     u'フリースタイル', # japanese freestyle
     u'얼반', # korean urban
-])
+))
 
-STYLE_BREAK = Keyword('STYLE_BREAK', [
+STYLE_BREAK = Name('STYLE_BREAK', Any(
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
     u'ブレイク', # breakdance japanese
@@ -277,14 +173,14 @@ STYLE_BREAK = Keyword('STYLE_BREAK', [
     u'파워무브', # powermove korean
     'breakeuse', # french bgirl
     u'탑락', # toprock
-])
+))
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
-#add(STYLE_BREAK, [x+'u' for x in legit_dance])
-STYLE_ROCK = Keyword('STYLE_ROCK', [
+#add(STYLE_BREAK, [x+'u' for x in legit_dance))
+STYLE_ROCK = Name('STYLE_ROCK', Any(
     'rock\W?dan[cs]\w+',
     "top\W?rock(?:s|er[sz]?|in[g']?)?", "up\W?rock(?:s|er[sz]?|in[g']?|)?",
-])
-STYLE_POP = Keyword('STYLE_POP', [
+))
+STYLE_POP = Name('STYLE_POP', Any(
     'funk\W?style[sz]?',
     'poppers?', 'popp?i?ng', # listing poppin in the ambiguous keywords
     'poppeurs?',
@@ -305,28 +201,28 @@ STYLE_POP = Keyword('STYLE_POP', [
     u'스트럿팅', # strutting
     "tuttin[g']?", 'tutter[sz]?',
     u'텃팅', # korean tutting
-])
-STYLE_LOCK = Keyword('STYLE_LOCK', [
+))
+STYLE_LOCK = Name('STYLE_LOCK', Any(
     "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)", # dupe
     "lock(?:er[sz]?|in[g']?)?", 'lock dance',
     u'ロッカーズ', # japanese lockers
     u'ロッカ', # japanese lock
     u'락킹', # korean locking
     'locking4life',
-])
-STYLE_WAACK = Keyword('STYLE_WAACK', [
+))
+STYLE_WAACK = Name('STYLE_WAACK', Any(
     "[uw]h?aa?c?c?k(?:er[sz]?|inn?[g']?)", # waacking
     u'왁킹', # korean waacking
     u'ワッキング', # japanese waacking
     u'パーンキング', # japanese punking
     "paa?nc?kin[g']?", # punking
-])
-STYLE_ALLSTYLE = Keyword('STYLE_ALLSTYLE', [
+))
+STYLE_ALLSTYLE = Name('STYLE_ALLSTYLE', Any(
     'mix(?:ed)?\W?style[sz]?', 'open\W?style[sz]',
     'all\W+open\W?style[sz]?',
     'open\W+all\W?style[sz]?',
     'me against the music',
-])
+))
 
 legit_dance = [
     'street\W?jam',
@@ -395,7 +291,7 @@ legit_dance = [
 
 # hiphop dance. hiphop dans?
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
-DANCE = Keyword('DANCE', legit_dance + [x+'u' for x in legit_dance])
+DANCE = Name('DANCE', Any(*(legit_dance + [x+'u' for x in legit_dance])))
 # TODO(lambert): Is this a safe one to add?
 # http://en.wikipedia.org/wiki/Slovak_declension
 # dance_keywords = dance_keywords + [x+'y' for x in dance_keywords] 
@@ -403,50 +299,50 @@ DANCE = Keyword('DANCE', legit_dance + [x+'u' for x in legit_dance])
 # hiphop dance. hiphop dans?
 
 # house battles http://www.dancedeets.com/events/admin_edit?event_id=240788332653377
-HOUSE = Keyword('HOUSE', [
+HOUSE = Name('HOUSE', Any(
     'house',
     u'하우스', # korean house
     u'ハウス', # japanese house
     u'хаус', # russian house
-])
+))
 
-FREESTYLE = Keyword('FREESTYLE', [
+FREESTYLE = Name('FREESTYLE', Any(
     'free\W?style(?:r?|rs?)',
-])
+))
 
-STREET = Keyword('STREET', [
+STREET = Name('STREET', Any(
     'street',
     u'스트리트', # korean street
-])
+))
 
-EASY_BATTLE = Keyword('EASY_BATTLE', [
+EASY_BATTLE = Name('EASY_BATTLE', Any(
     'jams?', 
     'jamit', # finnish jams
     u'잼', # korean jam
-])
+))
 
-EASY_EVENT = Keyword('EASY_EVENT', [
+EASY_EVENT = Name('EASY_EVENT', Any(
     'club', 'after\Wparty', 'pre\Wparty',
     u'클럽', # korean club
     u'クラブ',  # japanese club
     'open sessions?',
     u'오픈 ?세션', # open session
     'training',
-])
+))
 
-CONTEST = Keyword('CONTEST', [
+CONTEST = Name('CONTEST', Any(
     'contests?',
     'concours', # french contest
     'konkurrencer', # danish contest
     'dancecontests', # dance contests german
-])
-PRACTICE = Keyword('PRACTICE', [
+))
+PRACTICE = Name('PRACTICE', Any(
     'sesja', # polish session
     'sessions', 'practice',
     u'연습', # korean practice/runthrough
-])
+))
 
-PERFORMANCE = Keyword('PERFORMANCE', [
+PERFORMANCE = Name('PERFORMANCE', Any(
     'shows?', 'performances?',
     'show\W?case',
     u'représentation', # french performance
@@ -465,10 +361,10 @@ PERFORMANCE = Keyword('PERFORMANCE', [
     u'パフォーマンス', # japanese performance
     # maybe include 'spectacle' as well?
     'esibizioni', #italian performance/exhibition
-])
+))
 
 
-CLUB_ONLY = Keyword('CLUB_ONLY', [
+CLUB_ONLY = Name('CLUB_ONLY', Any(
     'club',
     'bottle service',
     'table service',
@@ -506,9 +402,9 @@ CLUB_ONLY = Keyword('CLUB_ONLY', [
     'waiters?',
     'waitress(?:es)?',
     'go\W?go',
-])
+))
 
-PREPROCESS_REMOVAL = Keyword('PREPROCESS_REMOVAL', [
+PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     # positive
     'tap water', # for theo and dominque's jam
 
@@ -558,7 +454,7 @@ PREPROCESS_REMOVAL = Keyword('PREPROCESS_REMOVAL', [
     'lock in',
     'juste debout school',
     'baile funk',
-])
+))
 
 # battle freestyle ?
 # dj battle
@@ -602,7 +498,7 @@ PREPROCESS_REMOVAL = Keyword('PREPROCESS_REMOVAL', [
 
 #TODO(lambert): use these to filter out shows we don't really care about
 #TODO: UNUSED
-OTHER_SHOW = Keyword('OTHER_SHOW', [
+OTHER_SHOW = Name('OTHER_SHOW', Any(
     'comedy',
     'poetry',
     'poets?',
@@ -612,11 +508,11 @@ OTHER_SHOW = Keyword('OTHER_SHOW', [
     'magic',
     'singing',
     'acting',
-])
+))
 
 
 
-BATTLE = Keyword('BATTLE', [
+BATTLE = Name('BATTLE', Any(
     'battle of the year', 'boty', 'compete',
     'competitions?',
     'konkurrence', # danish competition
@@ -670,9 +566,9 @@ BATTLE = Keyword('BATTLE', [
     u'présélections?', # preselections french
     'prelims?',
     u'初賽', # chinese preliminaries
-])
+))
 
-CLASS = Keyword('CLASS', [
+CLASS = Name('CLASS', Any(
     'work\W?shop(?:\W?s)?',
     'ws', # japanese workshop WS
     'w\.s\.', # japanese workshop W.S.
@@ -739,9 +635,9 @@ CLASS = Keyword('CLASS', [
     'formazione', # training italian
     'formazioni', # training italian
     u'トレーニング', # japanese training
-])
+))
 
-AUDITION = Keyword('AUDITION', [
+AUDITION = Name('AUDITION', Any(
     'try\W?outs?',
     'casting',
      'casting call',
@@ -758,16 +654,16 @@ AUDITION = Keyword('AUDITION', [
     'naborem', # polish recruitment/audition
     'rehearsal',
     u'綵排', # chinese rehearsal
-])
+))
 
-EVENT = Keyword('EVENT', [
+EVENT = Name('EVENT', Any(
     'open circles',
     'session', # the plural 'sessions' is handled up above under club-and-event keywords
     u'セッション', # japanese session
     u'練習会', # japanese training
     u'練習', # japanese practice
     'abdc', 'america\W?s best dance crew',
-])
+))
 
 def _generate_n_x_n_keywords():
     english_digit_x_keywords = [
@@ -790,9 +686,9 @@ def _generate_n_x_n_keywords():
     n_x_n_keywords += [u'%s[ -](?:%s)[ -]%s' % (i, english_digit_x_string, i) for i in ['crew', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']]
     return n_x_n_keywords
 
-N_X_N = Keyword('N_X_N', _generate_n_x_n_keywords())
+N_X_N = Name('N_X_N', Any(*_generate_n_x_n_keywords()))
 
-JUDGE = Keyword('JUDGE', [
+JUDGE = Name('JUDGE', Any(
     'jurys?',
     'jurados?', # spanish jury
     u'журито', # bulgarian jury
@@ -814,15 +710,15 @@ JUDGE = Keyword('JUDGE', [
     u'審査員', # japanese judges
     u'ジャッジ', # japanese judges
     u'심사', # korean judges
-])
+))
 
-AMBIGUOUS_CLASS = Keyword('AMBIGUOUS_CLASS', [
+AMBIGUOUS_CLASS = Name('AMBIGUOUS_CLASS', Any(
     'spectacle',
     'stage',
     'stages',
-])
+))
 
-DANCE_WRONG_STYLE = Keyword('DANCE_WRONG_STYLE', [
+DANCE_WRONG_STYLE = Name('DANCE_WRONG_STYLE', Any(
     'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba',
     u'サルサ', # japanese salsa
     u'タンゴ', # japanese tango
@@ -915,10 +811,10 @@ DANCE_WRONG_STYLE = Keyword('DANCE_WRONG_STYLE', [
     'guest artists?',
     'partnering',
     'charleston',
-])
+))
 
 # These are okay to see in event descriptions, but we don't want it to be in the event title, or it is too strong for us
-DANCE_WRONG_STYLE_TITLE_ONLY = Keyword('DANCE_WRONG_STYLE_TITLE_ONLY', [
+DANCE_WRONG_STYLE_TITLE_ONLY = Name('DANCE_WRONG_STYLE_TITLE_ONLY', Any(
     # Sometimes used in studio name even though it's still a hiphop class:
     'ballroom',
     'ballet',
@@ -926,11 +822,11 @@ DANCE_WRONG_STYLE_TITLE_ONLY = Keyword('DANCE_WRONG_STYLE_TITLE_ONLY', [
     'talent shows?', # we don't care about talent shows that offer dance options
     'stiletto',
     '\w+ball', # basketball/baseball/football tryouts
-])
+))
 
 
 #TODO(lambert): we need to remove the empty CONNECTOR here, and probably spaces as well, and handle that in the rules? or just ensure this never gets applied except as part of rules
-CONNECTOR = Keyword('CONNECTOR', [
+CONNECTOR = Name('CONNECTOR', Any(
     ' ?',
     ' di ',
     ' de ',
@@ -941,32 +837,32 @@ CONNECTOR = Keyword('CONNECTOR', [
 #TODO(lambert): explore adding these variations, and their impact on quality
 #    r' ?[^\w\s] ?',
 #    ' \W ',
-])
+))
 
-AMBIGUOUS_WRONG_STYLE = Keyword('AMBIGUOUS_WRONG_STYLE', [
+AMBIGUOUS_WRONG_STYLE = Name('AMBIGUOUS_WRONG_STYLE', Any(
     'modern',
     'ballet',
     'ballroom',
-])
+))
 
 
-WRONG_NUMBERED_LIST = Keyword('WRONG_NUMBERED_LIST', [
+WRONG_NUMBERED_LIST = Name('WRONG_NUMBERED_LIST', Any(
     'track(?:list(?:ing)?)?',
     'release',
     'download',
     'ep',
-])
+))
 
-WRONG_AUDITION = Keyword('WRONG_AUDITION', [
+WRONG_AUDITION = Name('WRONG_AUDITION', Any(
     'sing(?:ers?)?',
     'singing',
     'model',
     'poet(?:ry|s)?',
     'act(?:ors?|ress(?:es)?)?',
     'mike portoghese', # TODO(lambert): When we get bio removal for keyword matches, we can remove this one
-])
+))
 
-WRONG_BATTLE = Keyword('WRONG_BATTLE', [
+WRONG_BATTLE = Name('WRONG_BATTLE', Any(
     'talent',
     'beatbox',
     'rap',
@@ -981,9 +877,9 @@ WRONG_BATTLE = Keyword('WRONG_BATTLE', [
     'judge jules',
     'open mic',
     'producer',
-])
+))
 
-WRONG_BATTLE_STYLE = Keyword('WRONG_BATTLE_STYLE', [
+WRONG_BATTLE_STYLE = Name('WRONG_BATTLE_STYLE', Any(
     '(?:mc|emcee)\Whip\W?hop',
     'emcee',
     'rap',
@@ -993,7 +889,7 @@ WRONG_BATTLE_STYLE = Keyword('WRONG_BATTLE_STYLE', [
     'producer',
     'performance',
     'graf(?:fiti)?',
-])
+))
 
 #TODO: use
 # solo performance
@@ -1002,7 +898,7 @@ WRONG_BATTLE_STYLE = Keyword('WRONG_BATTLE_STYLE', [
 # team battle
 # these mean....more
 #TODO: UNUSED
-FORMAT_TYPE = Keyword('FORMAT_TYPE', [
+FORMAT_TYPE = Name('FORMAT_TYPE', Any(
     'solo',
     u'ソロ', # japanese solo
     u'만', # korean solo
@@ -1012,9 +908,9 @@ FORMAT_TYPE = Keyword('FORMAT_TYPE', [
     'crew',
     u'クルー', # japanese crew
     u'크루', # korean crew
-])
+))
 
-BAD_COMPETITION_TITLE_ONLY = Keyword('BAD_COMPETITION_TITLE_ONLY', [
+BAD_COMPETITION_TITLE_ONLY = Name('BAD_COMPETITION_TITLE_ONLY', Any(
     'video',
     'fundrais\w+',
     'likes?',
@@ -1024,10 +920,10 @@ BAD_COMPETITION_TITLE_ONLY = Keyword('BAD_COMPETITION_TITLE_ONLY', [
     'support',
     'follow',
     '(?:pre)?sale',
-])
+))
 
 
-VOGUE = Keyword('VOGUE', [
+VOGUE = Name('VOGUE', Any(
     'butch realness',
     'butch queen',
     'vogue fem',
@@ -1040,8 +936,8 @@ VOGUE = Keyword('VOGUE', [
     'vou?guer[sz]?',
     'trans\W?man',
     'mini\W?ball',
-])
-EASY_VOGUE = Keyword('EASY_VOGUE', [
+))
+EASY_VOGUE = Name('EASY_VOGUE', Any(
     'never walked',
     'virgin',
     'drags?',
@@ -1062,39 +958,39 @@ EASY_VOGUE = Keyword('EASY_VOGUE', [
     'old way',
     'new way',
     'ball',
-])
+))
 
-SEMI_BAD_DANCE = Keyword('SEMI_BAD_DANCE', [
+SEMI_BAD_DANCE = Name('SEMI_BAD_DANCE', Any(
     'technique',
     'dance company',
     'explore',
     'visual',
     'stage',
     'dance collective',
-])
+))
 
 #TODO(lambert): should these be done here, as additional keywords?
 # Or should they be done as part of the grammar, that tries to combine these into rules of some sort?
 
-OBVIOUS_BATTLE = Keyword('OBVIOUS_BATTLE', [
+OBVIOUS_BATTLE = Name('OBVIOUS_BATTLE', Any(
     'apache line',
     r'(?:seven|7)\W*(?:to|two|2)\W*(?:smoke|smook|somke)',
-])
+))
 
 # TODO(lambert): is it worth having all these here as super-basic keywords? Should we instead just list these directly in rules.py?
-BONNIE_AND_CLYDE = Keyword('BONNIE_AND_CLYDE', [
+BONNIE_AND_CLYDE = Name('BONNIE_AND_CLYDE', Any(
     'bonnie\s*(?:and|&)\s*clyde'
-])
+))
 
-KING_OF_THE = Keyword('KING_OF_THE', [
+KING_OF_THE = Name('KING_OF_THE', Any(
     'king of (?:the )?',
-])
+))
 
-KING = Keyword('KING', [
+KING = Name('KING', Any(
     'king'
-])
+))
 
-ROMANCE = Keyword('ROMANCE', [
+ROMANCE = Name('ROMANCE', Any(
     'di', 'i', 'e', 'con', # italian
     "l'\w*", 'le', 'et', 'une', 'avec', u'à', 'pour', # french
-])
+))

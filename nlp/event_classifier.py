@@ -17,6 +17,7 @@ import time
 from util import cjk_detect
 from spitfire.runtime.filters import skip_filter
 from . import keywords
+from . import grammar
 from . import regex_keywords
 from . import rules
 
@@ -135,9 +136,9 @@ class ClassifiedEvent(object):
 
         # Running real_tokenize() on a rule replaces it with the name of the high-level rule.
         # Instead, let's grab the contents of the rule, which will assume is an Any(), and run on each of the Any()
-        manual_dancer = rules.MANUAL_DANCER[keywords.STRONG]
-        assert isinstance(manual_dancer, rules.NamedRule)
-        assert isinstance(manual_dancer, rules.NamedRule)
+        manual_dancer = rules.MANUAL_DANCER[grammar.STRONG]
+        assert isinstance(manual_dancer, grammar.Name)
+        assert isinstance(manual_dancer, grammar.Name)
         assert len(manual_dancer.children()) == 1
         assert isinstance(manual_dancer.children()[0], rules.Any)
         manual_dancer_children = manual_dancer.children()[0].children()
@@ -166,7 +167,7 @@ class ClassifiedEvent(object):
         #    return
         a = time.time()
         b = time.time()
-        self.manual_dance_keywords_matches = self.processed_text.get_tokens(rules.MANUAL_DANCE[keywords.STRONG])
+        self.manual_dance_keywords_matches = self.processed_text.get_tokens(rules.MANUAL_DANCE[grammar.STRONG])
         self.times['manual_regex'] = time.time() - b
         self.real_dance_matches = self.processed_text.get_tokens(rules.GOOD_DANCE)
         if self.processed_text.get_tokens(keywords.ROMANCE):
