@@ -42,8 +42,8 @@ def build_regexes():
     if 'good_capturing_keyword_regex' in all_regexes:
         return
 
-    all_regexes['good_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_GOOD.as_expanded_regex(), wrapper='(?i)%s')
-    all_regexes['good_capturing_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_GOOD.as_expanded_regex(), matching=True, wrapper='(?i)%s')
+    all_regexes['good_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_GOOD.as_expanded_regex())
+    all_regexes['good_capturing_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_GOOD.as_expanded_regex(), matching=True)
 
 all_regexes['dance_wrong_style_title_regex'] = regex_keywords.make_regexes_raw(rules.DANCE_WRONG_STYLE_TITLE.as_expanded_regex())
 

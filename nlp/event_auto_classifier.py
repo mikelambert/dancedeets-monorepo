@@ -369,7 +369,7 @@ def build_regexes():
 
     event_classifier.build_regexes()
 
-    solo_lines_regex = event_classifier.make_regexes([rules.GOOD_DANCE.as_expanded_regex()] + event_classifier.manual_dancers)
+    solo_lines_regex = event_classifier.make_regexes([rules.GOOD_DANCE.as_expanded_regex(), rules.MANUAL_DANCER[keywords.STRONG].as_expanded_regex()])
 
 def has_standalone_keywords(classified_event):
     build_regexes()
@@ -391,7 +391,7 @@ def has_standalone_keywords(classified_event):
 def has_good_event_title(classified_event):
     non_dance_title_keywords = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     wrong_battles_title = classified_event.processed_title.find_with_rule(rules.WRONG_BATTLE)
-    title_keywords = event_classifier.all_regexes['competitions_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    title_keywords = classified_event.processed_title.find_with_rule(keywords.COMPETITION[keywords.STRONG])
     if title_keywords and not non_dance_title_keywords and not wrong_battles_title:
         return True, 'looks like a good event title: %s' % title_keywords
     return False, 'no good event title'

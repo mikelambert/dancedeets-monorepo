@@ -57,6 +57,6 @@ NO_WORD_BOUNDARIES = 0
 WORD_BOUNDARIES = 1
 def make_regexes_raw(regex_string, matching=False, wrapper='%s', flags=0):
     a = [None] * 2
-    a[NO_WORD_BOUNDARIES] = _compile_regex(_wrap_regex(regex_string, match_cjk=True, wrapper=wrapper), flags=flags)
-    a[WORD_BOUNDARIES] = _compile_regex(_wrap_regex(regex_string, match_cjk=False, wrapper=wrapper), flags=flags)
+    a[NO_WORD_BOUNDARIES] = _compile_regex(_wrap_regex(regex_string, matching=matching, match_cjk=True, wrapper=wrapper), flags=flags)
+    a[WORD_BOUNDARIES] = _compile_regex(_wrap_regex(regex_string, matching=matching, match_cjk=False, wrapper=wrapper), flags=flags)
     return tuple(a)
