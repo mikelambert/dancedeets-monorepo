@@ -128,7 +128,6 @@ class ClassifiedEvent(object):
                 self.boundaries = regex_keywords.WORD_BOUNDARIES
         else:
             self.boundaries = regex_keywords.WORD_BOUNDARIES
-        idx = self.boundaries
 
         self.processed_text = StringProcessor(self.search_text, self.boundaries)
         # This must be first, to remove the fake keywords
