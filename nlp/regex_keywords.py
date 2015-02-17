@@ -50,9 +50,6 @@ def _compile_regex(regex_string, flags=0):
     else:
         return re.compile(regex_string, flags=flags)
 
-def make_regexes(strings, matching=False, wrapper='%s', flags=0):
-    return make_regexes_raw(flatten_regex(strings), matching=matching, wrapper=wrapper, flags=flags)
-
 NO_WORD_BOUNDARIES = 0
 WORD_BOUNDARIES = 1
 def make_regexes_raw(regex_string, matching=False, wrapper='%s', flags=0):
