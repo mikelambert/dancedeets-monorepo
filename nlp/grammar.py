@@ -161,7 +161,6 @@ class Name(GrammarRule):
     def children(self):
         return [self._sub_rule]
 
-    #TODO(lambert): Remove this name-only rule in favor of supporting names in each rule type directly (like keywords)
     def as_expanded_regex(self):
         return self._sub_rule.as_expanded_regex()
 
