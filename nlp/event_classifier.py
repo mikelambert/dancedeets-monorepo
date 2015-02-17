@@ -39,15 +39,14 @@ make_regexes = regex_keywords.make_regexes
 all_regexes = {}
 
 def build_regexes():
-    if 'good_capturing_keyword_regex' in all_regexes:
+    if 'good_keyword_regex' in all_regexes:
         return
 
     all_regexes['good_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_GOOD.as_expanded_regex())
-    all_regexes['good_capturing_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_GOOD.as_expanded_regex(), matching=True)
 
 all_regexes['dance_wrong_style_title_regex'] = regex_keywords.make_regexes_raw(rules.DANCE_WRONG_STYLE_TITLE.as_expanded_regex())
 
-all_regexes['bad_capturing_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_BAD.as_expanded_regex(), matching=True)
+all_regexes['bad_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_BAD.as_expanded_regex(), matching=True)
 
 all_regexes['romance'] = make_regexes([
     'di', 'i', 'e', 'con', # italian
@@ -285,8 +284,8 @@ def relevant_keywords(fb_event):
         idx = regex_keywords.NO_WORD_BOUNDARIES
     else:
         idx = regex_keywords.WORD_BOUNDARIES
-    good_keywords = all_regexes['good_capturing_keyword_regex'][idx].findall(text)
-    bad_keywords = all_regexes['bad_capturing_keyword_regex'][idx].findall(text)
+    good_keywords = all_regexes['good_keyword_regex'][idx].findall(text)
+    bad_keywords = all_regexes['bad_keyword_regex'][idx].findall(text)
     return sorted(set(good_keywords).union(bad_keywords))
 
 @skip_filter
@@ -296,8 +295,8 @@ def highlight_keywords(text):
         idx = regex_keywords.NO_WORD_BOUNDARIES
     else:
         idx = regex_keywords.WORD_BOUNDARIES
-    text = all_regexes['good_capturing_keyword_regex'][idx].sub('<span class="matched-text">\\1</span>', text)
-    text = all_regexes['bad_capturing_keyword_regex'][idx].sub('<span class="bad-matched-text">\\1</span>', text)
+    text = all_regexes['good_keyword_regex'][idx].sub(lambda match: '<span class="matched-text">%s</span>' % match.group(0), text)
+    text = all_regexes['bad_keyword_regex'][idx].sub(lambda match: '<span class="bad-matched-text">%s</span>' % match.group(0), text)
     return text
 
 if __name__ == '__main__':
