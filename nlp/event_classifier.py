@@ -91,7 +91,11 @@ class StringProcessor(object):
         return self.token_originals[token]
 
     def get_tokens(self, *tokens):
-        return _flatten(self._get_token(token) for token in tokens)
+        # This is an optimization that saves us 1+ second per 10K runs
+        if len(tokens) == 1:
+            return self._get_token(tokens[0])
+        else:
+            return _flatten([self._get_token(token) for token in tokens])
 
     def get_tokenized_text(self):
         return self.text

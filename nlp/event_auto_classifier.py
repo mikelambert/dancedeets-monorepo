@@ -358,17 +358,17 @@ def is_vogue_event(classified_event):
     return False, 'not enough vogue keywords'
 
 def has_standalone_keywords(classified_event):
-    solo_lines_regex = rules.GOOD_SOLO_LINE.hack_double_regex()
+    solo_lines_regex = rules.GOOD_SOLO_LINE.hack_double_regex()[classified_event.boundaries]
     text = classified_event.search_text
     good_matches = set()
     for line in text.split('\n'):
-        alpha_line = re.sub(r'\W', '', line)
+        alpha_line = re.sub(r'\W+', '', line)
         if not alpha_line:
             continue
-        remaining_line = solo_lines_regex[classified_event.boundaries].sub('', line)
-        alpha_remaining_line = re.sub(r'\W', '', remaining_line)
-        if 0.5 > 1.0 * len(alpha_remaining_line) / len(alpha_line):
-            good_matches.add(solo_lines_regex[classified_event.boundaries].findall(line)[0]) # at most one keyword per line
+        remaining_line = solo_lines_regex.sub('', line)
+        deleted_length = len(line) - len(remaining_line)
+        if 0.5 < 1.0 * deleted_length / len(alpha_line):
+            good_matches.add(solo_lines_regex.findall(line)[0]) # at most one keyword per line
     if len(good_matches) >= 2:
         return True, 'found good keywords on lines by themselves: %s' % set(good_matches)
     return False, 'no good keywords on lines by themselves'
