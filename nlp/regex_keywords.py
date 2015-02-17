@@ -1,6 +1,3 @@
-#
-
-
 import logging
 try:
     import re2
@@ -11,22 +8,6 @@ except ImportError:
     import re
 else:
     re.set_fallback_notification(re.FALLBACK_WARNING)
-from util import re_flatten
-
-def flatten_regex(strings):
-    try:
-        return re_flatten.construct_regex(strings)
-    except UnicodeDecodeError as e:
-        logging.exception('e %s', e)
-        # When we compile a gigantic regex and fail, let's try to compile the component pieces and see where things fall apart
-        for line in strings:
-            try:
-                line.encode('ascii')
-            except UnicodeDecodeError:
-                logging.error("failed to compile: %r: %s", line, line)
-                raise
-        logging.fatal("Error constructing regexes")
-        raise
 
 def _wrap_regex(regex_string, matching=False, word_boundaries=True, match_cjk=False, wrapper='%s'):
     if matching:

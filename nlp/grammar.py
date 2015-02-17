@@ -1,8 +1,10 @@
 import codecs
 import itertools
+import logging
 import re
 
 import regex_keywords
+from util import re_flatten
 
 def _flatten(listOfLists):
     "Flatten one level of nesting"
@@ -30,9 +32,25 @@ class _BaseAlternation(GrammarRule):
     def children(self):
         return [x for x in self._keywords if not isinstance(x, basestring)]
 
+    @staticmethod
+    def flatten_regex(strings):
+        try:
+            return re_flatten.construct_regex(strings)
+        except UnicodeDecodeError as e:
+            logging.exception('e %s', e)
+            # When we compile a gigantic regex and fail, let's try to compile the component pieces and see where things fall apart
+            for line in strings:
+                try:
+                    line.encode('ascii')
+                except UnicodeDecodeError:
+                    logging.error("failed to compile: %r: %s", line, line)
+                    raise
+            logging.fatal("Error constructing regexes")
+            raise
+
     def as_expanded_regex(self):
         if not self._expanded_regex:
-            self._expanded_regex = regex_keywords.flatten_regex(self.get_regex_alternations())
+            self._expanded_regex = self.flatten_regex(self.get_regex_alternations())
         return self._expanded_regex
 
     def get_regex_alternations(self):
