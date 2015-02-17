@@ -40,7 +40,7 @@ def has_list_of_good_classes(classified_event):
     club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
     if len(club_only_matches) > 2:
         return False, 'too many club keywords: %s' % club_only_matches
-    title_wrong_style_matches = classified_event.processed_title.get_tokens(keywords.DANCE_WRONG_STYLE)
+    title_wrong_style_matches = classified_event.processed_title.has_token(keywords.DANCE_WRONG_STYLE)
     if title_wrong_style_matches:
         return False, 'wrong style in the title: %s' % title_wrong_style_matches
     lines = text.split('\n')
@@ -84,7 +84,7 @@ def has_list_of_good_classes(classified_event):
             dance_class_style_matches = proc_line.get_tokens(rules.GOOD_DANCE)
             dance_and_music_matches = proc_line.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
             manual_dancers = proc_line.get_tokens(rules.MANUAL_DANCER[grammar.STRONG])
-            dance_wrong_style_matches = proc_line.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
+            dance_wrong_style_matches = proc_line.has_token(rules.DANCE_WRONG_STYLE_TITLE)
 
             # Sometimes we have a schedule with hiphop and ballet
             # Sometimes we have a schedule with hiphop and dj and beatbox/rap (more on music side)
@@ -107,21 +107,10 @@ def find_competitor_list(classified_event):
         if len(re.findall(r'\d ?[.:h] ?\d\d|\bam\b|\bpm\b', numbered_list)) > num_lines / 4:
             return False # good list of times! workshops, etc! performance/shows/club-set times!
         processed_numbered_list = event_classifier.StringProcessor(numbered_list, classified_event.boundaries)
-        keyword_list = [
-            keywords.CLASS,
-            keywords.N_X_N,
-            keywords.BATTLE,
-            keywords.OBVIOUS_BATTLE,
-            keywords.AUDITION,
-            keywords.CYPHER,
-            keywords.JUDGE,
-            keywords.AMBIGUOUS_CLASS,
-        ]
-        processed_numbered_list.tokenize_all(*keyword_list)
         event_keywords = processed_numbered_list.get_tokens(rules.EVENT)
         if len(event_keywords) > num_lines / 8:
             return False
-        if classified_event.processed_text.get_tokens(keywords.WRONG_NUMBERED_LIST):
+        if classified_event.processed_text.has_token(keywords.WRONG_NUMBERED_LIST):
             return False
         if num_lines > 10:
             return True
@@ -149,15 +138,15 @@ def find_competitor_list(classified_event):
 #TODO: UNUSED!
 def is_any_battle(classified_event):
     has_competitors = find_competitor_list(classified_event)
-    has_start_judges = classified_event.processed_text.get_tokens(rules.START_JUDGE)
+    has_start_judges = classified_event.processed_text.has_token(rules.START_JUDGE)
     has_n_x_n_battle = (
-        classified_event.processed_text.count_tokens(keywords.BATTLE) and
-        classified_event.processed_text.count_tokens(keywords.N_X_N)
+        classified_event.processed_text.has_token(keywords.BATTLE) and
+        classified_event.processed_text.has_token(keywords.N_X_N)
     )
     no_wrong_battles_processed = classified_event.processed_text.delete_with_rule(rules.WRONG_BATTLE)
     has_dance_battle = (
-        no_wrong_battles_processed.get_tokens(rules.DANCE_BATTLE) and
-        not classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
+        no_wrong_battles_processed.has_token(rules.DANCE_BATTLE) and
+        not classified_event.processed_title.has_token(keywords.BAD_COMPETITION_TITLE_ONLY)
     )
     return has_competitors or has_start_judges or has_n_x_n_battle or has_dance_battle
 
@@ -172,16 +161,16 @@ def is_battle(classified_event):
         return (False, 'relevant keywords too sparse')
     
     no_wrong_battles_processed = classified_event.processed_text.delete_with_rule(rules.WRONG_BATTLE)
-    has_dance_battle = no_wrong_battles_processed.get_tokens(rules.DANCE_BATTLE)
-    has_good_dance_battle = no_wrong_battles_processed.get_tokens(rules.GOOD_DANCE_BATTLE)
+    has_dance_battle = no_wrong_battles_processed.has_token(rules.DANCE_BATTLE)
+    has_good_dance_battle = no_wrong_battles_processed.has_token(rules.GOOD_DANCE_BATTLE)
 
-    has_n_x_n = classified_event.processed_text.count_tokens(keywords.N_X_N)
-    has_battle = classified_event.processed_text.count_tokens(keywords.BATTLE)
-    has_wrong_battle = classified_event.processed_text.get_tokens(rules.WRONG_BATTLE)
-    is_wrong_competition_title = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
-    is_wrong_style_battle_title = classified_event.processed_title.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
+    has_n_x_n = classified_event.processed_text.has_token(keywords.N_X_N)
+    has_battle = classified_event.processed_text.has_token(keywords.BATTLE)
+    has_wrong_battle = classified_event.processed_text.has_token(rules.WRONG_BATTLE)
+    is_wrong_competition_title = classified_event.processed_title.has_token(keywords.BAD_COMPETITION_TITLE_ONLY)
+    is_wrong_style_battle_title = classified_event.processed_title.has_token(rules.DANCE_WRONG_STYLE_TITLE)
     has_many_real_dance_keywords = len(set(classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches)) > 1
-    has_start_judge = classified_event.processed_text.get_tokens(rules.START_JUDGE)
+    has_start_judge = classified_event.processed_text.has_token(rules.START_JUDGE)
 
     #print rules.WRONG_BATTLE.as_expanded_regex().encode('utf8')
     #print has_dance_battle
@@ -217,14 +206,14 @@ def is_audition(classified_event):
     if not classified_event.is_dance_event():
         return (False, 'not a dance event')
 
-    has_audition = classified_event.processed_title.get_tokens(keywords.AUDITION)
-    has_good_dance_title = classified_event.processed_title.get_tokens(rules.GOOD_DANCE)
-    has_extended_good_crew_title = classified_event.processed_title.get_tokens(rules.MANUAL_DANCER[grammar.STRONG_WEAK])
+    has_audition = classified_event.processed_title.has_token(keywords.AUDITION)
+    has_good_dance_title = classified_event.processed_title.has_token(rules.GOOD_DANCE)
+    has_extended_good_crew_title = classified_event.processed_title.has_token(rules.MANUAL_DANCER[grammar.STRONG_WEAK])
 
 
-    has_good_dance = classified_event.processed_text.get_tokens(rules.GOOD_DANCE)
-    has_wrong_style = classified_event.processed_text.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
-    has_wrong_audition = classified_event.processed_text.get_tokens(keywords.WRONG_AUDITION)
+    has_good_dance = classified_event.processed_text.has_token(rules.GOOD_DANCE)
+    has_wrong_style = classified_event.processed_text.has_token(rules.DANCE_WRONG_STYLE_TITLE)
+    has_wrong_audition = classified_event.processed_text.has_token(keywords.WRONG_AUDITION)
 
     if has_audition and (has_good_dance_title or has_extended_good_crew_title):
         return (True, 'has audition with strong title')
@@ -304,23 +293,23 @@ def is_audition(classified_event):
 
 def is_workshop(classified_event):
     trimmed_title = classified_event.processed_title.delete_with_rule(rules.WRONG_CLASS)
-    has_class_title = trimmed_title.get_tokens(rules.EXTENDED_CLASS)
-    has_good_dance_class_title = trimmed_title.get_tokens(rules.GOOD_DANCE_CLASS)
+    has_class_title = trimmed_title.has_token(rules.EXTENDED_CLASS)
+    has_good_dance_class_title = trimmed_title.has_token(rules.GOOD_DANCE_CLASS)
 
-    has_non_dance_event_title = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
-    has_good_dance_title = trimmed_title.get_tokens(rules.GOOD_DANCE)
-    has_extended_good_crew_title = trimmed_title.get_tokens(rules.MANUAL_DANCER[grammar.STRONG_WEAK])
+    has_non_dance_event_title = classified_event.processed_title.has_token(keywords.BAD_COMPETITION_TITLE_ONLY)
+    has_good_dance_title = trimmed_title.has_token(rules.GOOD_DANCE)
+    has_extended_good_crew_title = trimmed_title.has_token(rules.MANUAL_DANCER[grammar.STRONG_WEAK])
 
-    has_wrong_style_title = classified_event.processed_title.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
+    has_wrong_style_title = classified_event.processed_title.has_token(rules.DANCE_WRONG_STYLE_TITLE)
 
     lee_lee_hiphop = 'lee lee' in classified_event.final_title and re.findall('hip\W?hop', classified_event.final_title)
 
     trimmed_text = classified_event.processed_text.delete_with_rule(rules.WRONG_CLASS)
-    has_good_dance_class = trimmed_text.get_tokens(rules.GOOD_DANCE_CLASS)
-    has_good_dance = classified_event.processed_text.get_tokens(rules.GOOD_DANCE)
-    has_wrong_style = classified_event.processed_text.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
+    has_good_dance_class = trimmed_text.has_token(rules.GOOD_DANCE_CLASS)
+    has_good_dance = classified_event.processed_text.has_token(rules.GOOD_DANCE)
+    has_wrong_style = classified_event.processed_text.has_token(rules.DANCE_WRONG_STYLE_TITLE)
 
-    has_good_crew = classified_event.processed_text.get_tokens(rules.MANUAL_DANCER[grammar.STRONG])
+    has_good_crew = classified_event.processed_text.has_token(rules.MANUAL_DANCER[grammar.STRONG])
 
     #print has_class_title
     #print has_good_dance_title
@@ -341,7 +330,7 @@ def is_workshop(classified_event):
     elif classified_event.is_dance_event() and lee_lee_hiphop and not has_wrong_style_title and not has_non_dance_event_title:
         return (True, 'has class with strong style-title: %s %s' % (has_good_dance_title, has_extended_good_crew_title))
     elif has_class_title and not has_wrong_style and (has_good_dance or has_good_crew):
-        return (True, 'has dance class title: %s, that contains strong description %s' % (has_class_title, has_good_dance + has_good_crew))
+        return (True, 'has dance class title: %s, that contains strong description %s, %s' % (has_class_title, has_good_dance, has_good_crew))
     elif has_good_dance_class_title:
         return (True, 'has good dance class title: %s' % has_good_dance_class_title)
     elif has_good_dance_class and not has_wrong_style_title:
@@ -375,17 +364,17 @@ def has_standalone_keywords(classified_event):
     return False, 'no good keywords on lines by themselves'
 
 def has_good_event_title(classified_event):
-    non_dance_title_keywords = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
-    wrong_battles_title = classified_event.processed_title.get_tokens(rules.WRONG_BATTLE)
-    title_keywords = classified_event.processed_title.get_tokens(keywords.COMPETITION[grammar.STRONG])
+    non_dance_title_keywords = classified_event.processed_title.has_token(keywords.BAD_COMPETITION_TITLE_ONLY)
+    wrong_battles_title = classified_event.processed_title.has_token(rules.WRONG_BATTLE)
+    title_keywords = classified_event.processed_title.has_token(keywords.COMPETITION[grammar.STRONG])
     if title_keywords and not non_dance_title_keywords and not wrong_battles_title:
         return True, 'looks like a good event title: %s' % title_keywords
     return False, 'no good event title'
 
 def has_good_djs_title(classified_event):
-    non_dance_title_keywords = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
-    wrong_battles_title = classified_event.processed_title.get_tokens(rules.WRONG_BATTLE)
-    title_keywords = keywords.GOOD_DJ.hack_double_regex()[classified_event.boundaries].findall(classified_event.final_title)
+    non_dance_title_keywords = classified_event.processed_title.has_token(keywords.BAD_COMPETITION_TITLE_ONLY)
+    wrong_battles_title = classified_event.processed_title.has_token(rules.WRONG_BATTLE)
+    title_keywords = classified_event.processed_title.has_token(keywords.GOOD_DJ)
 
     if title_keywords and not non_dance_title_keywords and not wrong_battles_title:
         return True, 'looks like a good dj title: %s' % title_keywords
@@ -399,7 +388,9 @@ def is_performance_or_practice(classified_event):
         pline = event_classifier.StringProcessor(line, classified_event.boundaries)
         if len(line) > 500:
             continue
-        performances_and_practices.extend(pline.get_tokens(rules.PERFORMANCE_PRACTICE))
+        pp = pline.has_token(rules.PERFORMANCE_PRACTICE)
+        if pp:
+            performances_and_practices.append(pp)
     if performances_and_practices:
         return True, 'found good performance/practice keywords: %s' % performances_and_practices
     return False, 'no good keywords'
@@ -440,12 +431,12 @@ def is_auto_add_event(classified_event):
     return (False, 'nothing')
 
 def is_bad_club(classified_event):
-    has_battles = classified_event.processed_text.get_tokens(rules.DANCE_BATTLE)
-    has_style = classified_event.processed_text.get_tokens(rules.GOOD_DANCE)
-    has_manual_keywords = classified_event.processed_text.get_tokens(rules.MANUAL_DANCE[grammar.STRONG_WEAK])
+    has_battles = classified_event.processed_text.has_token(rules.DANCE_BATTLE)
+    has_style = classified_event.processed_text.has_token(rules.GOOD_DANCE)
+    has_manual_keywords = classified_event.processed_text.has_token(rules.MANUAL_DANCE[grammar.STRONG_WEAK])
     has_cypher = classified_event.processed_text.count_tokens(keywords.CYPHER)
 
-    has_other_event_title = classified_event.processed_title.get_tokens(keywords.EVENT)
+    has_other_event_title = classified_event.processed_title.has_token(keywords.EVENT)
 
     has_ambiguous_text = has_battles or has_style or has_manual_keywords or has_cypher
     if classified_event.processed_text.count_tokens(keywords.BAD_CLUB) and not has_ambiguous_text and not has_other_event_title:
@@ -464,7 +455,7 @@ def is_bad_wrong_dance(classified_event):
     weak_classical_dance_keywords = nodance_processed_text.get_tokens(keywords.SEMI_BAD_DANCE)
     strong_classical_dance_keywords = nodance_processed_text.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
 
-    has_house = classified_event.processed_text.get_tokens(keywords.HOUSE)
+    has_house = classified_event.processed_text.has_token(keywords.HOUSE)
     club_only_matches = classified_event.processed_text.get_tokens(keywords.CLUB_ONLY)
 
 

@@ -49,11 +49,8 @@ class StringProcessor(object):
     def __init__(self, text, match_on_word_boundaries):
         self.text = text
         self.match_on_word_boundaries = match_on_word_boundaries
-        self.token_originals = collections.defaultdict(lambda: 0)
-
-    def tokenize_all(self, *tokens):
-        for token in tokens:
-            self.tokenize(token)
+        self._get_token_cache = {}
+        self._has_token_cache = {}
 
     def tokenize(self, token):
         """Tokenizes the relevant bits of this String. Replaces all instances of the token's regex, with the token's string representation.
@@ -81,15 +78,30 @@ class StringProcessor(object):
         _, count = self.replace_with(token, word_with_hash)
         # If we want to get the matched results/keywords too, then we should only do that conditinoally on count, here:
         #if count:
-        #    self.token_originals[token].extend(token.hack_double_regex()[self.match_on_word_boundaries].findall(self.text))
+        #    self._get_token_cache[token].extend(token.hack_double_regex()[self.match_on_word_boundaries].findall(self.text))
+
+    def has_token(self, token):
+        if token not in self._has_token_cache:
+            if token in self._get_token_cache:
+                if self._get_token_cache[token]:
+                    self._has_token_cache[token] = self._get_token_cache[token][0]
+                else:
+                    self._has_token_cache[token] = None
+            else:
+                match = token.hack_double_regex()[self.match_on_word_boundaries].search(self.text)
+                if match:
+                    self._has_token_cache[token] = match.group(0)
+                else:
+                    self._has_token_cache[token] = None
+        return self._has_token_cache[token]
 
     def count_tokens(self, token):
         return len(self._get_token(token))
 
     def _get_token(self, token):
-        if token not in self.token_originals:
-            self.token_originals[token] = token.hack_double_regex()[self.match_on_word_boundaries].findall(self.text)
-        return self.token_originals[token]
+        if token not in self._get_token_cache:
+            self._get_token_cache[token] = token.hack_double_regex()[self.match_on_word_boundaries].findall(self.text)
+        return self._get_token_cache[token]
 
     def get_tokens(self, *tokens):
         # This is an optimization that saves us 1+ second per 10K runs
