@@ -61,10 +61,11 @@ def scrape_events_from_sources(fbl, sources):
     # don't scrape sources that prove useless and give mostly garbage events
     #sources = [x for x in sources if x.fraction_potential_are_real() > 0.05]
 
+    logging.info("Looking up sources: %s", [x.graph_id for x in sources])
     fbl.request_multi(fb_api.LookupThingFeed, [x.graph_id for x in sources])
     fbl.batch_fetch()
 
-    logging.info("Fetched %s objects, saved %s updates", fbl.fb_fetches, fbl.db_updates)
+    logging.info("Fetched %s URLs, saved %s updates", fbl.fb_fetches, fbl.db_updates)
 
     event_source_combos = set()
     for source in sources:
@@ -73,6 +74,7 @@ def scrape_events_from_sources(fbl, sources):
             event_source_combos.update(process_thing_feed(source, thing_feed))
         except fb_api.NoFetchedDataException, e:
             logging.error("Failed to fetch data for thing: %s", str(e))
+    logging.info("Found %s event_source_combos: %s", len(event_source_combos), event_source_combos)
     process_event_source_ids(event_source_combos, fbl)
 
 def scrape_events_from_source_ids(fbl, source_ids):
@@ -117,6 +119,7 @@ def parsed_event_link(url):
 
 def process_thing_feed(source, thing_feed):
     if thing_feed['empty']:
+        logging.error("Source was empty: %s", thing_feed['empty'])
         return []
     # TODO(lambert): do we really need to scrape the 'info' to get the id, or we can we half the number of calls by just getting the feed? should we trust that the type-of-the-thing-is-legit for all time, which is one case we use 'info'?
     if 'data' not in thing_feed['feed']:
