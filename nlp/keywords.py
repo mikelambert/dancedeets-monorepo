@@ -51,7 +51,7 @@ class BaseKeyword(GrammarRule):
         return self._keywords
 
     def __repr__(self):
-        return '%s(%r, [...])' % (self.__class__, self._name)
+        return '%s(%r, [...])' % (self.__class__.__name__, self._name)
 
 class Keyword(BaseKeyword):
     def __init__(self, name, keywords):
