@@ -85,7 +85,8 @@ def has_list_of_good_classes(classified_event):
             dance_class_style_matches = proc_line.get_tokens(rules.GOOD_DANCE)
             dance_and_music_matches = proc_line.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
             manual_dancers = proc_line.get_tokens(rules.MANUAL_DANCER[keywords.STRONG])
-            dance_wrong_style_matches = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(line)
+            dance_wrong_style_matches = proc_line.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
+
             # Sometimes we have a schedule with hiphop and ballet
             # Sometimes we have a schedule with hiphop and dj and beatbox/rap (more on music side)
             # Sometimes we have a schedule with hiphop, house, and beatbox (legit, crosses boundaries)
@@ -312,7 +313,7 @@ def is_workshop(classified_event):
     has_non_dance_event_title = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     has_good_dance_title = trimmed_title.find_with_rule(rules.GOOD_DANCE)
     has_extended_good_crew_title = trimmed_title.find_with_rule(rules.MANUAL_DANCER[keywords.STRONG_WEAK])
-    has_wrong_style_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_wrong_style_title = trimmed_title.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
 
     lee_lee_hiphop = 'lee lee' in classified_event.final_title and re.findall('hip\W?hop', classified_event.final_title)
 
@@ -386,7 +387,7 @@ def has_good_event_title(classified_event):
 def has_good_djs_title(classified_event):
     non_dance_title_keywords = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     wrong_battles_title = classified_event.processed_title.find_with_rule(rules.WRONG_BATTLE)
-    title_keywords = event_classifier.all_regexes['good_djs_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    title_keywords = keywords.GOOD_DJ.hack_double_regex()[classified_event.boundaries].findall(classified_event.final_title)
 
     if title_keywords and not non_dance_title_keywords and not wrong_battles_title:
         return True, 'looks like a good dj title: %s' % title_keywords
@@ -473,7 +474,7 @@ def is_bad_wrong_dance(classified_event):
 
     just_free_style_dance = len(real_dance_keywords) == 1 and list(real_dance_keywords)[0].startswith('free')
 
-    has_wrong_style_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_wrong_style_title = classified_event.processed_title.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
     has_decent_style = classified_event.processed_title.find_with_rule(rules.DECENT_DANCE)
     if has_wrong_style_title and not has_decent_style:
         return True, 'Title is too strong a negative, without any compensating good title keywords'
