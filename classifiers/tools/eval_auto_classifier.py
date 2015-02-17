@@ -97,6 +97,8 @@ def mp_classify(arg):
 def init_worker():
     import signal
     signal.signal(signal.SIGINT, signal.SIG_IGN)
+    import os
+    os.nice(5)
 
 def mp_partition_ids(ids, classifier=lambda x:False):
     pool = multiprocessing.Pool(processes=multiprocessing.cpu_count(), initializer=init_worker)
