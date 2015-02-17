@@ -113,10 +113,6 @@ class StringProcessor(object):
     def get_tokenized_text(self):
         return self.text
 
-    def find_with_rule(self, rule):
-        regexes = rule.hack_double_regex()
-        return regexes[self.match_on_word_boundaries].findall(self.text)
-
     def delete_with_rule(self, rule):
         regexes = rule.hack_double_regex()
         trimmed_text = regexes[self.match_on_word_boundaries].sub('', self.text)
@@ -188,11 +184,11 @@ class ClassifiedEvent(object):
         b = time.time()
         self.manual_dance_keywords_matches = self.processed_text.get_tokens(rules.MANUAL_DANCE[keywords.STRONG])
         self.times['manual_regex'] = time.time() - b
-        self.real_dance_matches = self.processed_text.find_with_rule(rules.GOOD_DANCE)
+        self.real_dance_matches = self.processed_text.get_tokens(rules.GOOD_DANCE)
         if all_regexes['romance'][idx].search(search_text):
-            event_matches = self.processed_text.find_with_rule(rules.EVENT_WITH_ROMANCE_EVENT)
+            event_matches = self.processed_text.get_tokens(rules.EVENT_WITH_ROMANCE_EVENT)
         else:
-            event_matches = self.processed_text.find_with_rule(rules.EVENT)
+            event_matches = self.processed_text.get_tokens(rules.EVENT)
         club_and_event_matches = self.processed_text.get_tokens(keywords.PRACTICE, keywords.PERFORMANCE, keywords.CONTEST)
         self.times['all_regexes'] = time.time() - a
 
