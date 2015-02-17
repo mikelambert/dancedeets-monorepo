@@ -4,7 +4,7 @@
 import unittest
 
 from nlp import event_classifier
-
+from nlp import keywords
 
 class TestSoulSessionsOslo(unittest.TestCase):
     def runTest(self):
@@ -22,11 +22,11 @@ class TestDanceClass(unittest.TestCase):
 
 class TestKeywordLoader(unittest.TestCase):
     def runTest(self):
-        result = event_classifier._parse_keywords(['a', 'b#c', 'c  #d', 'd\\e', 'e\\#f', 'f\\##g'])
-        self.assertEqual(result[event_classifier.INDEPENDENT_KEYWORD], ['a', 'b', 'c', 'd\\e', 'e\\#f', 'f\\#'])
+        result = keywords.FileBackedKeyword._parse_keywords(['a', 'b#c', 'c  #d', 'd\\e', 'e\\#f', 'f\\##g'])
+        self.assertEqual(result[0], ['a', 'b', 'c', 'd\\e', 'e\\#f', 'f\\#'])
 
-        result = event_classifier._parse_keywords(['abcdefghijklmnopqrstuvwxyz#', 'ab(cd)ef #()', 'ab\(cd\)ef ###'])
-        self.assertEqual(result[event_classifier.INDEPENDENT_KEYWORD], ['abcdefghijklmnopqrstuvwxyz', 'ab(cd)ef', 'ab\(cd\)ef'])
+        result = keywords.FileBackedKeyword._parse_keywords(['abcdefghijklmnopqrstuvwxyz#', 'ab(cd)ef #()', 'ab\(cd\)ef ###'])
+        self.assertEqual(result[0], ['abcdefghijklmnopqrstuvwxyz', 'ab(cd)ef', 'ab\(cd\)ef'])
 
 class TestCJK(unittest.TestCase):
     def runTest(self):

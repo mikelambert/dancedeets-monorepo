@@ -11,8 +11,8 @@ from nlp import rules
 from test_utils import fb_api_stub
 
 class TestSimpleMatches(unittest.TestCase):
-        def runTest(self):
-                self.assertTrue(rules.GOOD_DANCE.hack_double_regex()[1].findall('streetdance'))
+    def runTest(self):
+        self.assertTrue(rules.GOOD_DANCE.hack_double_regex()[1].findall('streetdance'))
 
 class TestClassifier(unittest.TestCase):
     def setUp(self):
