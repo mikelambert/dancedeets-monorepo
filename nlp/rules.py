@@ -222,6 +222,25 @@ EVENT = NamedRule('EVENT',
 EVENT_WITH_ROMANCE_EVENT = NamedRule('EVENT_WITH_ROMANCE_EVENT',
     Any(keywords.AMBIGUOUS_CLASS, *event_keywords))
 
+
+MANUAL_DANCER = [NamedRule('MANUAL_DANCER', Any(
+    keywords.BBOY_CREW[i],
+    keywords.BBOY_DANCER[i],
+    keywords.CHOREO_CREW[i],
+    keywords.CHOREO_DANCER[i],
+    keywords.FREESTYLE_CREW[i],
+    keywords.FREESTYLE_DANCER[i],
+    )) for i in [keywords.STRONG, keywords.STRONG_WEAK]]
+
+MANUAL_DANCE = [NamedRule('MANUAL_DANCE', Any(
+    MANUAL_DANCER[i],
+    keywords.CHOREO_KEYWORD[i],
+    keywords.FREESTYLE_KEYWORD[i],
+    keywords.COMPETITION[i],
+    keywords.GOOD_DJ[i],
+    )) for i in [keywords.STRONG, keywords.STRONG_WEAK]]
+
+
 ANY_BAD = NamedRule('ANY_BAD', Any(
     keywords.CLUB_ONLY,
     keywords.DANCE_WRONG_STYLE,
@@ -259,6 +278,5 @@ ANY_GOOD = NamedRule('ANY_GOOD', Any(
     keywords.VOGUE,
     keywords.EASY_VOGUE,
     keywords.BONNIE_AND_CLYDE,
-    keywords.MANUAL_DANCE,
-    keywords.MANUAL_DANCER,
+    MANUAL_DANCE[keywords.STRONG], # includes MANUAL_DANCER
 ))

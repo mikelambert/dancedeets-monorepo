@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 #
 
+import codecs
 import itertools
 import re
 
@@ -17,14 +18,15 @@ class GrammarRule(object):
             self._cached_double_regex = regex_keywords.make_regexes_raw(self.as_expanded_regex())
         return self._cached_double_regex
 
-class Keyword(GrammarRule):
-    def __init__(self, name, keywords):
-        super(Keyword, self).__init__()
+class BaseKeyword(GrammarRule):
+
+    def __init__(self, name):
+        super(BaseKeyword, self).__init__()
         self._name = name
         self._final_name = re.sub(r'[\W_]+', '', self._name)
-        self._keywords = tuple(keywords)
         self._expanded_regex = None
         self._cached_double_regex = None
+        # Subclass must set up self._keywords
 
     def children(self):
         return []
@@ -45,10 +47,16 @@ class Keyword(GrammarRule):
         return '_%s%s_' % (self._final_name, extra_hash)
 
     def get_keywords(self):
+        assert isinstance(self._keywords, tuple), "keywords are not a tuple: %s" % self._keywords
         return self._keywords
 
     def __repr__(self):
-        return 'Keyword(%r, [...])' % self._name
+        return '%s(%r, [...])' % (self.__class__, self._name)
+
+class Keyword(BaseKeyword):
+    def __init__(self, name, keywords):
+        super(Keyword, self).__init__(name)
+        self._keywords = tuple(keywords)
 
 def _flatten(listOfLists):
     "Flatten one level of nesting"
@@ -57,9 +65,71 @@ def _flatten(listOfLists):
 def get(*tokens):
     return _flatten(token.get_keywords() for token in tokens)
 
-# Set up in event_classifier.py
-MANUAL_DANCER = Keyword('MANUAL_DANCER', [])
-MANUAL_DANCE = Keyword('MANUAL_DANCE', []) 
+class FileBackedKeyword(BaseKeyword):
+    def __init__(self, name, filename, strength):
+        super(FileBackedKeyword, self).__init__(name)
+        self._filename = filename
+        self._strength = strength
+        self.__keywords = None
+
+    @property
+    def _keywords(self):
+        if self.__keywords is None:
+            strong_keywords, weak_keywords = self._get_manual_dance_keywords(self._filename)
+            if self._strength == STRONG:
+                self.__keywords = tuple(strong_keywords)
+            elif self._strength == STRONG_WEAK:
+                self.__keywords = tuple(strong_keywords + weak_keywords)
+            else:
+                raise ValueError("Unknown strength %s" % self._strength)
+        return self.__keywords
+
+    #TODO(lambert): maybe handle 'byronom coxom' in slovakian with these keywords
+    @classmethod
+    def _get_manual_dance_keywords(cls, filename):
+        import os
+        if os.getcwd().endswith('mapreduce'): #TODO(lambert): what is going on with appengine sticking me in the wrong starting directory??
+            base_dir = '..'
+        else:
+            base_dir = '.'
+
+        f = codecs.open('%s/dance_keywords/%s.txt' % (base_dir, filename), encoding='utf-8')
+        result = cls._parse_keywords(f.readlines())
+        return result
+
+    @classmethod
+    def _parse_keywords(cls, lines):
+        manual_keywords = []
+        dependent_manual_keywords = []
+        for line in lines:
+            # Strip off comments, unless backquoted escaped
+            line = re.sub(r'^((?:[^\\#]|\\.)*)#.*$', '\\1', line).strip()
+            if not line:
+                continue
+            if line.endswith(',0'):
+                line = line[:-2]
+                dependent_manual_keywords.append(line)
+            else:
+                manual_keywords.append(line)
+
+        return manual_keywords, dependent_manual_keywords
+
+STRONG = 0
+STRONG_WEAK = 1
+def GenFileBackedKeywords(*args):
+    return [FileBackedKeyword(*args, strength=i) for i in [STRONG, STRONG_WEAK]]
+
+BBOY_CREW = GenFileBackedKeywords('BBOY_CREW', 'bboy_crews')
+BBOY_DANCER = GenFileBackedKeywords('BBOY_DANCER', 'bboys')
+CHOREO_CREW = GenFileBackedKeywords('CHOREO_CREW', 'choreo_crews')
+CHOREO_DANCER = GenFileBackedKeywords('CHOREO_DANCER', 'choreo_dancers')
+FREESTYLE_CREW = GenFileBackedKeywords('FREESTYLE_CREW', 'freestyle_crews')
+FREESTYLE_DANCER = GenFileBackedKeywords('FREESTYLE_DANCER', 'freestyle_dancers')
+
+CHOREO_KEYWORD = GenFileBackedKeywords('CHOREO_KEYWORD', 'choreo_keywords')
+FREESTYLE_KEYWORD = GenFileBackedKeywords('FREESTYLE_KEYWORD', 'freestyle_keywords')
+COMPETITION = GenFileBackedKeywords('COMPETITION', 'competitions')
+GOOD_DJ = GenFileBackedKeywords('GOOD_DJ', 'good_djs')
 
 
 # 'crew' biases dance one way, 'company' biases it another

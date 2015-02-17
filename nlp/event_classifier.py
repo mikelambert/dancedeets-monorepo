@@ -1,6 +1,5 @@
 # -*-*- encoding: utf-8 -*-*-
 
-import codecs
 import collections
 import itertools
 import logging
@@ -39,94 +38,9 @@ make_regexes = regex_keywords.make_regexes
 
 all_regexes = {}
 
-grouped_manual_dance_keywords = {}
-
-INDEPENDENT_KEYWORD = 0
-DEPENDENT_KEYWORD = 1
-
-#TODO(lambert): maybe handle 'byronom coxom' in slovakian with these keywords
-def get_manual_dance_keywords(filename):
-    import os
-    if os.getcwd().endswith('mapreduce'): #TODO(lambert): what is going on with appengine sticking me in the wrong starting directory??
-        base_dir = '..'
-    else:
-        base_dir = '.'
-
-    f = codecs.open('%s/dance_keywords/%s.txt' % (base_dir, filename), encoding='utf-8')
-    result = _parse_keywords(f.readlines())
-    return result
-
-def _parse_keywords(lines):
-    manual_keywords = []
-    dependent_manual_keywords = []
-    for line in lines:
-        # Strip off comments, unless backquoted escaped
-        line = re.sub(r'^((?:[^\\#]|\\.)*)#.*$', '\\1', line).strip()
-        if not line:
-            continue
-        if line.endswith(',0'):
-            line = line[:-2]
-            dependent_manual_keywords.append(line)
-        else:
-            manual_keywords.append(line)
-
-    result = [None, None]
-    result[INDEPENDENT_KEYWORD] = manual_keywords
-    result[DEPENDENT_KEYWORD] = dependent_manual_keywords
-    return result
-
-manual_keywords = {}
-manual_dance_keywords = []
-dependent_manual_dance_keywords = []
-manual_dancers = []
-dependent_manual_dancers = []
-
-manual_dance_keyword = None
-
 def build_regexes():
-    global manual_keywords
-    global manual_dance_keywords, dependent_manual_dance_keywords
-    global manual_dancers, dependent_manual_dancers
     if 'good_capturing_keyword_regex' in all_regexes:
         return
-
-    dancer_keyword_files = ['bboy_crews', 'bboys', 'choreo_crews', 'choreo_dancers', 'freestyle_crews', 'freestyle_dancers']
-    extra_keyword_files = ['choreo_keywords', 'freestyle_keywords', 'competitions', 'good_djs']
-
-    for filename in dancer_keyword_files + extra_keyword_files:
-        manual_keywords[filename] = get_manual_dance_keywords(filename)
-    manual_dancers = []
-    dependent_manual_dancers = []
-    for filename in dancer_keyword_files:
-        manual_dancers += manual_keywords[filename][INDEPENDENT_KEYWORD]
-        dependent_manual_dancers += manual_keywords[filename][DEPENDENT_KEYWORD]
-    manual_keywords['manual_dancers'] = [None, None]
-    manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD] = manual_dancers
-    manual_keywords['manual_dancers'][DEPENDENT_KEYWORD] = dependent_manual_dancers
-    # TODO: rename, put in a useful place, etc
-    keywords.MANUAL_DANCER._keywords = tuple(manual_keywords['manual_dancers'][INDEPENDENT_KEYWORD])
-
-    manual_dance_keywords = manual_dancers[:]
-    dependent_manual_dance_keywords = dependent_manual_dancers[:]
-    for filename in extra_keyword_files:
-        manual_dance_keywords += manual_keywords[filename][INDEPENDENT_KEYWORD]
-        dependent_manual_dance_keywords += manual_keywords[filename][DEPENDENT_KEYWORD]
-    manual_keywords['manual_dance_keywords'] = [None, None]
-    manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD] = manual_dance_keywords + ['_MANUALDANCER\d*_']
-    manual_keywords['manual_dance_keywords'][DEPENDENT_KEYWORD] = dependent_manual_dance_keywords
-    keywords.MANUAL_DANCE._keywords = tuple(manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD])
-    #manual_dance_keyword = keywords.token('MANUAL_DANCE')
-    #keywords.add(manual_dance_keyword, manual_keywords['manual_dance_keywords'][INDEPENDENT_KEYWORD])
-
-    for keyword, x in manual_keywords.iteritems():
-        if x[INDEPENDENT_KEYWORD]:
-            all_regexes['%s_regex' % keyword] = make_regexes(x[INDEPENDENT_KEYWORD])
-        else:
-            all_regexes['%s_regex' % keyword] = make_regexes(r'NEVER_MATCH_BLAGSDFSDFSEF')
-        if x[INDEPENDENT_KEYWORD] + x[DEPENDENT_KEYWORD]:
-            all_regexes['extended_%s_regex' % keyword] = make_regexes(x[INDEPENDENT_KEYWORD] + x[DEPENDENT_KEYWORD])
-        else:
-            all_regexes['extended_%s_regex' % keyword] = make_regexes(r'NEVER_MATCH_BLAGSDFSDFSEF')
 
     all_regexes['good_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_GOOD.as_expanded_regex(), wrapper='(?i)%s')
     all_regexes['good_capturing_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_GOOD.as_expanded_regex(), matching=True, wrapper='(?i)%s')
@@ -245,7 +159,18 @@ class ClassifiedEvent(object):
         self.processed_text = StringProcessor(self.search_text, self.boundaries)
         # This must be first, to remove the fake keywords
         self.processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
-        self.processed_text.real_tokenize(keywords.MANUAL_DANCER)
+
+        # Running real_tokenize() on a rule replaces it with the name of the high-level rule.
+        # Instead, let's grab the contents of the rule, which will assume is an Any(), and run on each of the Any()
+        manual_dancer = rules.MANUAL_DANCER[keywords.STRONG]
+        assert isinstance(manual_dancer, rules.NamedRule)
+        assert isinstance(manual_dancer, rules.NamedRule)
+        assert len(manual_dancer.children()) == 1
+        assert isinstance(manual_dancer.children()[0], rules.Any)
+        manual_dancer_children = manual_dancer.children()[0].children()
+        for rule in manual_dancer_children:
+            self.processed_text.real_tokenize(rule)
+
         self.processed_text.real_tokenize(keywords.GOOD_INSTANCE_OF_BAD_CLUB)
         #TODO(lambert): Why do I need all these?
         self.processed_text.real_tokenize(keywords.DANCE)
@@ -268,7 +193,7 @@ class ClassifiedEvent(object):
         #    return
         a = time.time()
         b = time.time()
-        self.manual_dance_keywords_matches = self.processed_text.get_tokens(keywords.MANUAL_DANCE)
+        self.manual_dance_keywords_matches = self.processed_text.get_tokens(rules.MANUAL_DANCE[keywords.STRONG])
         self.times['manual_regex'] = time.time() - b
         self.real_dance_matches = self.processed_text.find_with_rule(rules.GOOD_DANCE)
         if all_regexes['romance'][idx].search(search_text):

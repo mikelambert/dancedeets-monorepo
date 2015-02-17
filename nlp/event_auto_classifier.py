@@ -84,7 +84,7 @@ def has_list_of_good_classes(classified_event):
             proc_line.tokenize(keywords.AMBIGUOUS_DANCE_MUSIC)
             dance_class_style_matches = proc_line.get_tokens(rules.GOOD_DANCE)
             dance_and_music_matches = proc_line.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC)
-            manual_dancers = event_classifier.all_regexes['manual_dancers_regex'][classified_event.boundaries].findall(line)
+            manual_dancers = proc_line.get_tokens(rules.MANUAL_DANCER[keywords.STRONG])
             dance_wrong_style_matches = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(line)
             # Sometimes we have a schedule with hiphop and ballet
             # Sometimes we have a schedule with hiphop and dj and beatbox/rap (more on music side)
@@ -221,7 +221,7 @@ def is_audition(classified_event):
 
     has_audition = classified_event.processed_title.get_tokens(keywords.AUDITION)
     has_good_dance_title = classified_event.processed_title.get_tokens(rules.GOOD_DANCE)
-    has_extended_good_crew_title = event_classifier.all_regexes['extended_manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_extended_good_crew_title = classified_event.processed_title.get_tokens(rules.MANUAL_DANCER[keywords.STRONG_WEAK])
 
 
     has_good_dance = classified_event.processed_text.get_tokens(rules.GOOD_DANCE)
@@ -311,7 +311,7 @@ def is_workshop(classified_event):
 
     has_non_dance_event_title = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     has_good_dance_title = trimmed_title.find_with_rule(rules.GOOD_DANCE)
-    has_extended_good_crew_title = event_classifier.all_regexes['extended_manual_dancers_regex'][classified_event.boundaries].findall(classified_event.final_title)
+    has_extended_good_crew_title = trimmed_title.find_with_rule(rules.MANUAL_DANCER[keywords.STRONG_WEAK])
     has_wrong_style_title = event_classifier.all_regexes['dance_wrong_style_title_regex'][classified_event.boundaries].findall(classified_event.final_title)
 
     lee_lee_hiphop = 'lee lee' in classified_event.final_title and re.findall('hip\W?hop', classified_event.final_title)
@@ -321,7 +321,7 @@ def is_workshop(classified_event):
     has_good_dance = classified_event.processed_text.find_with_rule(rules.GOOD_DANCE)
     has_wrong_style = classified_event.processed_text.find_with_rule(rules.DANCE_WRONG_STYLE_TITLE)
 
-    has_good_crew = classified_event.processed_text.get_tokens(keywords.MANUAL_DANCER)
+    has_good_crew = classified_event.processed_text.get_tokens(rules.MANUAL_DANCER[keywords.STRONG])
 
     #print has_class_title
     #print has_good_dance_title
@@ -454,11 +454,9 @@ def is_auto_add_event(classified_event):
     return (False, 'nothing')
 
 def is_bad_club(classified_event):
-    text = classified_event.search_text
-
     has_battles = classified_event.processed_text.find_with_rule(rules.DANCE_BATTLE)
     has_style = classified_event.processed_text.find_with_rule(rules.GOOD_DANCE)
-    has_manual_keywords = event_classifier.all_regexes['extended_manual_dance_keywords_regex'][classified_event.boundaries].findall(text)
+    has_manual_keywords = classified_event.processed_text.find_with_rule(rules.MANUAL_DANCE[keywords.STRONG_WEAK])
     has_cypher = classified_event.processed_text.count_tokens(keywords.CYPHER)
 
     has_other_event_title = classified_event.processed_title.get_tokens(keywords.EVENT)
@@ -475,7 +473,7 @@ def is_bad_wrong_dance(classified_event):
     manual_keywords = classified_event.manual_dance_keywords_matches
 
     nodance_processed_text = event_classifier.StringProcessor(classified_event.search_text, classified_event.boundaries)
-    nodance_processed_text.real_tokenize(keywords.MANUAL_DANCE)
+    nodance_processed_text.real_tokenize(rules.MANUAL_DANCE[keywords.STRONG])
     nodance_processed_text.real_tokenize(rules.GOOD_DANCE)
     weak_classical_dance_keywords = nodance_processed_text.get_tokens(keywords.SEMI_BAD_DANCE)
     strong_classical_dance_keywords = nodance_processed_text.find_with_rule(rules.DANCE_WRONG_STYLE_TITLE)
