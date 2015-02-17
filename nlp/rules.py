@@ -241,6 +241,9 @@ MANUAL_DANCE = [NamedRule('MANUAL_DANCE', Any(
     )) for i in [keywords.STRONG, keywords.STRONG_WEAK]]
 
 
+GOOD_SOLO_LINE = NamedRule('GOOD_SOLO_LINE', Any(
+    GOOD_DANCE, MANUAL_DANCER[keywords.STRONG]))
+
 ANY_BAD = NamedRule('ANY_BAD', Any(
     keywords.CLUB_ONLY,
     keywords.DANCE_WRONG_STYLE,

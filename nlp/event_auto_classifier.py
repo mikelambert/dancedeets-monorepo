@@ -359,21 +359,8 @@ def is_vogue_event(classified_event):
         return True, 'has vogue keywords: %s' % (vogue_matches.union(easy_vogue_matches))
     return False, 'not enough vogue keywords'
 
-solo_lines_regex = None
-
-def build_regexes():
-    global solo_lines_regex
-
-    if solo_lines_regex is not None:
-        return
-
-    event_classifier.build_regexes()
-
-    solo_lines_regex = event_classifier.make_regexes([rules.GOOD_DANCE.as_expanded_regex(), rules.MANUAL_DANCER[keywords.STRONG].as_expanded_regex()])
-
 def has_standalone_keywords(classified_event):
-    build_regexes()
-
+    solo_lines_regex = rules.GOOD_SOLO_LINE.hack_double_regex()
     text = classified_event.search_text
     good_matches = set()
     for line in text.split('\n'):

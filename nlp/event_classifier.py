@@ -42,11 +42,11 @@ def build_regexes():
     if 'good_keyword_regex' in all_regexes:
         return
 
-    all_regexes['good_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_GOOD.as_expanded_regex())
+    all_regexes['good_keyword_regex'] = rules.ANY_GOOD.hack_double_regex()
 
-all_regexes['dance_wrong_style_title_regex'] = regex_keywords.make_regexes_raw(rules.DANCE_WRONG_STYLE_TITLE.as_expanded_regex())
+all_regexes['dance_wrong_style_title_regex'] = rules.DANCE_WRONG_STYLE_TITLE.hack_double_regex()
 
-all_regexes['bad_keyword_regex'] = regex_keywords.make_regexes_raw(rules.ANY_BAD.as_expanded_regex(), matching=True)
+all_regexes['bad_keyword_regex'] = rules.ANY_BAD.hack_double_regex()
 
 all_regexes['romance'] = make_regexes([
     'di', 'i', 'e', 'con', # italian
@@ -64,12 +64,6 @@ def get_relevant_text(fb_event):
 def _flatten(listOfLists):
     "Flatten one level of nesting"
     return list(itertools.chain.from_iterable(listOfLists))
-
-_rule_regexes = {}
-def get_rule_regex(rule):
-    if rule not in _rule_regexes:
-        _rule_regexes[rule] = regex_keywords.make_regexes_raw(rule.as_expanded_regex())
-    return _rule_regexes[rule]
 
 class StringProcessor(object):
     def __init__(self, text, match_on_word_boundaries):
@@ -120,12 +114,12 @@ class StringProcessor(object):
         return self.text
 
     def find_with_rule(self, rule):
-        regex = get_rule_regex(rule)
-        return regex[self.match_on_word_boundaries].findall(self.text)
+        regexes = rule.hack_double_regex()
+        return regexes[self.match_on_word_boundaries].findall(self.text)
 
     def delete_with_rule(self, rule):
-        regex = get_rule_regex(rule)
-        trimmed_text = regex[self.match_on_word_boundaries].sub('', self.text)
+        regexes = rule.hack_double_regex()
+        trimmed_text = regexes[self.match_on_word_boundaries].sub('', self.text)
         return StringProcessor(trimmed_text, self.match_on_word_boundaries)
 
 class ClassifiedEvent(object):
