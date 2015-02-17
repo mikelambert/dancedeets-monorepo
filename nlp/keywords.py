@@ -16,8 +16,10 @@ class GrammarRule(object):
             self._cached_double_regex = regex_keywords.make_regexes_raw(self.as_expanded_regex())
         return self._cached_double_regex
 
-class BaseKeyword(GrammarRule):
+    def get_regex_alternations(self):
+        return [self.as_expanded_regex()]
 
+class BaseKeyword(GrammarRule):
     def __init__(self, name):
         super(BaseKeyword, self).__init__()
         self._name = name
@@ -31,11 +33,8 @@ class BaseKeyword(GrammarRule):
 
     def as_expanded_regex(self):
         if not self._expanded_regex:
-            self._expanded_regex = regex_keywords.flatten_regex(self.get_keywords() + (self.as_token_regex(),))
+            self._expanded_regex = regex_keywords.flatten_regex(self.get_regex_alternations())
         return self._expanded_regex
-
-    def as_token_regex(self):
-        return r'_%s\d*_' % self._final_name
 
     def replace_string(self, *args):
         if args:
@@ -44,9 +43,9 @@ class BaseKeyword(GrammarRule):
             extra_hash = ''
         return '_%s%s_' % (self._final_name, extra_hash)
 
-    def get_keywords(self):
+    def get_regex_alternations(self):
         assert isinstance(self._keywords, tuple), "keywords are not a tuple: %s" % self._keywords
-        return self._keywords
+        return self._keywords + (r'_%s\d*_' % self._final_name,)
 
     def __repr__(self):
         return '%s(%r, [...])' % (self.__class__.__name__, self._name)

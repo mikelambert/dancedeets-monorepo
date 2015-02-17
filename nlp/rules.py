@@ -1,22 +1,30 @@
 import itertools
 import re
 
-import keywords
-from util import re_flatten
+from . import keywords
+from . import regex_keywords
 
+def _flatten(listOfLists):
+    "Flatten one level of nesting"
+    return list(itertools.chain.from_iterable(listOfLists))
+
+#TODO(lambert): Combine Any with the keywords.BaseKeyword stuff?
 class Any(keywords.GrammarRule):
     def __init__(self, *args):
         super(Any, self).__init__()
         self.args = args
+        self._expanded_regex = None
 
     def children(self):
         return self.args
 
     def as_expanded_regex(self):
-        return re_flatten.construct_regex(x.as_expanded_regex() for x in self.args)
+        if not self._expanded_regex:
+            self._expanded_regex = regex_keywords.flatten_regex(self.get_regex_alternations())
+        return self._expanded_regex
 
-    def as_token_regex(self):
-        return re_flatten.construct_regex(x.as_token_regex() for x in self.args)
+    def get_regex_alternations(self):
+        return _flatten(x.get_regex_alternations() for x in self.args)
 
     def __repr__(self):
         return 'Any(*%r)' % (self.args,)
@@ -32,9 +40,6 @@ class Ordered(keywords.GrammarRule):
     def as_expanded_regex(self):
         return ''.join(x.as_expanded_regex() for x in self.args)
 
-    def as_token_regex(self):
-        return ''.join(x.as_token_regex() for x in self.args)
-
     def __repr__(self):
         return 'Ordered(*%r)' % (self.args,)
 
@@ -44,9 +49,6 @@ class Connector(keywords.GrammarRule):
         return []
 
     def as_expanded_regex(self):
-        return keywords.CONNECTOR.as_expanded_regex()
-
-    def as_token_regex(self):
         return keywords.CONNECTOR.as_expanded_regex()
 
     def __repr__(self):
@@ -61,9 +63,6 @@ class RegexRule(keywords.GrammarRule):
         return []
 
     def as_expanded_regex(self):
-        return self.regex
-
-    def as_token_regex(self):
         return self.regex
 
     def __repr__(self):
@@ -94,11 +93,12 @@ class NamedRule(keywords.GrammarRule):
     def children(self):
         return [self._sub_rule]
 
+    #TODO(lambert): Remove this name-only rule in favor of supporting names in each rule type directly (like keywords)
     def as_expanded_regex(self):
         return self._sub_rule.as_expanded_regex()
 
-    def as_token_regex(self):
-        return self._sub_rule.as_token_regex()
+    def get_regex_alternations(self):
+        return self._sub_rule.get_regex_alternations()
 
     def __repr__(self):
         return 'NamedRule(%s, %r)' % (self._name, self._sub_rule)
