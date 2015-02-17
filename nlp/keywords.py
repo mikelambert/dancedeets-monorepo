@@ -33,7 +33,7 @@ class BaseKeyword(GrammarRule):
 
     def as_expanded_regex(self):
         if not self._expanded_regex:
-            self._expanded_regex = re_flatten.construct_regex(self.get_keywords() + (self.as_token_regex(),))
+            self._expanded_regex = regex_keywords.flatten_regex(self.get_keywords() + (self.as_token_regex(),))
         return self._expanded_regex
 
     def as_token_regex(self):

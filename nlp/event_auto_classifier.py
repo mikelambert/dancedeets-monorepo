@@ -22,8 +22,6 @@ from util import dates
 # experimental side?
 # TODO: make sure this doesn't match... 'mc hiphop contest'
 
-start_judge_keywords_regex = regex_keywords.make_regexes_raw(rules.FULL_JUDGE.as_expanded_regex(), wrapper='^[^\w\n]*%s', flags=re.MULTILINE)
-
 def has_list_of_good_classes(classified_event):
     if not classified_event.is_dance_event():
         return (False, 'not a dance event')
@@ -144,14 +142,13 @@ def find_competitor_list(classified_event):
 # TODO: accumulate reasons why we did/didn't accept. each event has a story
 # TODO: also track "was a battle, but not sure about kind". good for maybe-queue.
 # TODO: the above is useful for "ish" keywords, where if we know its a dance-event due to the magic bit, and it appears to be battle-ish-but-not-sure-about-dance-ish, then mark it battle-ish
-# TOOD: in an effort to simplify, can we make a "battle-ish" bit be computed separately, and then try to figure out if it's dance-y after that using other keywords?
+# TODO: in an effort to simplify, can we make a "battle-ish" bit be computed separately, and then try to figure out if it's dance-y after that using other keywords?
 # TODO: If it has certain battle names in title, include automatically? redbull bc one cypher, etc
 
 #TODO: UNUSED!
 def is_any_battle(classified_event):
-    search_text = classified_event.final_search_text
     has_competitors = find_competitor_list(classified_event)
-    has_start_judges = start_judge_keywords_regex[classified_event.boundaries].search(search_text)
+    has_start_judges = classified_event.processed_text.get_tokens(rules.START_JUDGE)
     has_n_x_n_battle = (
         classified_event.processed_text.count_tokens(keywords.BATTLE) and
         classified_event.processed_text.count_tokens(keywords.N_X_N)
@@ -167,7 +164,6 @@ def is_battle(classified_event):
     if not classified_event.is_dance_event():
         return (False, 'not a dance event')
 
-    search_text = classified_event.final_search_text
     has_sparse_keywords = classified_event.calc_inverse_keyword_density >= 5.2
     has_competitors = find_competitor_list(classified_event)
     #print has_competitors, has_sparse_keywords, classified_event.calc_inverse_keyword_density
@@ -184,7 +180,7 @@ def is_battle(classified_event):
     is_wrong_competition_title = classified_event.processed_title.get_tokens(keywords.BAD_COMPETITION_TITLE_ONLY)
     is_wrong_style_battle_title = classified_event.processed_title.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
     has_many_real_dance_keywords = len(set(classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches)) > 1
-    has_start_judge = start_judge_keywords_regex[classified_event.boundaries].findall(search_text)
+    has_start_judge = classified_event.processed_text.get_tokens(rules.START_JUDGE)
 
     #print rules.WRONG_BATTLE.as_expanded_regex().encode('utf8')
     #print has_dance_battle

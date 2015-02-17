@@ -185,7 +185,7 @@ GOOD_DANCE_CLASS = NamedRule('GOOD_DANCE_CLASS', Any(
 EXTENDED_CLASS = NamedRule('EXTENDED_CLASS',
     Any(keywords.CLASS, keywords.AMBIGUOUS_CLASS))
 
-FULL_JUDGE = NamedRule('FULL_JUDGE', Any(
+full_judge = Any(
     keywords.JUDGE,
     commutative_connected(keywords.JUDGE, Any(
         GOOD_DANCE,
@@ -197,8 +197,12 @@ FULL_JUDGE = NamedRule('FULL_JUDGE', Any(
         keywords.BATTLE,
         keywords.N_X_N
     )
-)))
-# TODO(lambert): Maybe add a special RegexRule that I can fill with '^[^\w\n]*', and encapsulate that here instead of client code
+))
+
+start_line = RegexRule(r'^(?m)[^\w\n]*')
+
+START_JUDGE = NamedRule('START_JUDGE',
+    Ordered(start_line, full_judge))
 
 PERFORMANCE_PRACTICE = NamedRule('PERFORMANCE_PRACTICE',
     commutative_connected(GOOD_DANCE, Any(keywords.PERFORMANCE, keywords.PRACTICE)))
