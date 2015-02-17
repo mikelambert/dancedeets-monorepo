@@ -106,6 +106,9 @@ class FileBackedKeyword(BaseKeyword):
             line = re.sub(r'^((?:[^\\#]|\\.)*)#.*$', '\\1', line).strip()
             if not line:
                 continue
+            raw_line = re.sub(r'\\[A-Z]', '', line)
+            if raw_line != raw_line.lower():
+                raise Exception("Keyword contained uppercase characters: %s" % line.encode('utf8'))
             if line.endswith(',0'):
                 line = line[:-2]
                 dependent_manual_keywords.append(line)
