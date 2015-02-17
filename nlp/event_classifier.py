@@ -43,9 +43,6 @@ def build_regexes():
         return
 
     all_regexes['good_keyword_regex'] = rules.ANY_GOOD.hack_double_regex()
-
-all_regexes['dance_wrong_style_title_regex'] = rules.DANCE_WRONG_STYLE_TITLE.hack_double_regex()
-
 all_regexes['bad_keyword_regex'] = rules.ANY_BAD.hack_double_regex()
 
 all_regexes['romance'] = make_regexes([
@@ -177,7 +174,7 @@ class ClassifiedEvent(object):
         self.processed_title.real_tokenize(keywords.PREPROCESS_REMOVAL)
         self.final_title = self.processed_title.get_tokenized_text()
 
-        #if not all_regexes['good_keyword_regex'][idx].search(search_text):
+        #if not self.processed_text.get_tokens(rules.ANY_GOOD):
         #    self.dance_event = False
         #    return
         a = time.time()
@@ -196,8 +193,8 @@ class ClassifiedEvent(object):
         self.found_event_matches = event_matches + self.processed_text.get_tokens(keywords.EASY_EVENT, keywords.EASY_BATTLE) + club_and_event_matches
         self.found_wrong_matches = self.processed_text.get_tokens(keywords.DANCE_WRONG_STYLE) + self.processed_text.get_tokens(keywords.CLUB_ONLY)
 
-        title_wrong_style_matches = all_regexes['dance_wrong_style_title_regex'][idx].findall(self.final_title)
-        title_good_matches = all_regexes['good_keyword_regex'][idx].findall(self.final_title)
+        title_wrong_style_matches = self.processed_title.get_tokens(rules.DANCE_WRONG_STYLE_TITLE)
+        title_good_matches = self.processed_title.get_tokens(rules.ANY_GOOD)
         combined_matches_string = ' '.join(self.found_dance_matches + self.found_event_matches)
         dummy, combined_matches = re.subn(r'\w+', '', combined_matches_string)
         dummy, words = re.subn(r'\w+', '', re.sub(r'\bhttp.*?\s', '', search_text))
@@ -224,7 +221,7 @@ class ClassifiedEvent(object):
         elif len(self.real_dance_matches) >= 1:
             self.dance_event = 'obvious dance style'
         # If the title has a bad-style and no good-styles, mark it bad
-        elif (all_regexes['dance_wrong_style_title_regex'][idx].search(self.final_title) and
+        elif (title_wrong_style_matches and
             not (
                 self.processed_title.get_tokens(keywords.AMBIGUOUS_DANCE_MUSIC) or
                 self.manual_dance_keywords_matches or
