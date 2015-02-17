@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import multiprocessing
 import os
 import re
 import sys
@@ -60,18 +61,54 @@ def partition_ids(ids, classifier=lambda x:False):
         result = classifier(fb_event)
         if result:
             successes.add(id)
-            if id not in good_ids:
-                # false positive
-                add_counts(false_positive_counts, fb_event)
+            #if id not in good_ids:
+            #    # false positive
+            #    add_counts(false_positive_counts, fb_event)
         else:
             fails.add(id)
-            if id not in bad_ids:
-                # false negative
-                add_counts(false_negative_counts, fb_event)
-        if id in good_ids:
-            add_counts(good_counts, fb_event)
-        else:
-            add_counts(bad_counts, fb_event)
+            #if id not in bad_ids:
+            #    # false negative
+            #    add_counts(false_negative_counts, fb_event)
+        #if id in good_ids:
+        #    add_counts(good_counts, fb_event)
+        #else:
+        #    add_counts(bad_counts, fb_event)
+    return successes, fails
+
+def mp_classify(arg):
+    classifier, (id, fb_event) = arg
+    result = classifier(fb_event)
+    if result:
+        return (True, id)
+        #if id not in good_ids:
+        #    # false positive
+        #    add_counts(false_positive_counts, fb_event)
+    else:
+        return (False, id)
+        #f id not in bad_ids:
+        #    # false negative
+        #    add_counts(false_negative_counts, fb_event)
+    #if id in good_ids:
+    #    add_counts(good_counts, fb_event)
+    #else:
+    #    add_counts(bad_counts, fb_event)
+
+
+def init_worker():
+    import signal
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+def mp_partition_ids(ids, classifier=lambda x:False):
+    pool = multiprocessing.Pool(processes=8, initializer=init_worker)
+    print "Generating data..."
+    data = [(classifier, x) for x in processing.all_fb_data(ids)]
+    print "Running multiprocessing classifier..."
+    async_results = pool.map_async(mp_classify, data, chunksize=100)
+    # We need to specify a timeout to get(), so that KeyboardInterrupt gets delivered properly.
+    results = async_results.get(9999999)
+    print "Multiprocessing classifier completed."
+    successes = set(x[1] for x in results if x[0])
+    fails = set(x[1] for x in results if not x[0])
     return successes, fails
 
 positive_classifier = True
@@ -109,7 +146,7 @@ false_negative_counts = {}
 
 a = time.time()
 print "Running auto classifier..."
-theory_good_ids, theory_bad_ids = partition_ids(all_ids, classifier=basic_match)
+theory_good_ids, theory_bad_ids = mp_partition_ids(all_ids, classifier=basic_match)
 print "done, %d seconds" % (time.time() - a)
 
 
