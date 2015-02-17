@@ -2,11 +2,9 @@
 #
 
 import codecs
-import itertools
 import re
 
 from . import regex_keywords
-from util import re_flatten
 
 class GrammarRule(object):
     """The entire grammar rule tree must be composed of these."""
@@ -57,13 +55,6 @@ class Keyword(BaseKeyword):
     def __init__(self, name, keywords):
         super(Keyword, self).__init__(name)
         self._keywords = tuple(keywords)
-
-def _flatten(listOfLists):
-    "Flatten one level of nesting"
-    return list(itertools.chain.from_iterable(listOfLists))
-
-def get(*tokens):
-    return _flatten(token.get_keywords() for token in tokens)
 
 class FileBackedKeyword(BaseKeyword):
     def __init__(self, name, filename, strength):
