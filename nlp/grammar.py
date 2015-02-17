@@ -21,9 +21,9 @@ class GrammarRule(object):
     def get_regex_alternations(self):
         return [self.as_expanded_regex()]
 
-class BaseAny(GrammarRule):
+class _BaseAlternation(GrammarRule):
     def __init__(self):
-        super(BaseAny, self).__init__()
+        super(_BaseAlternation, self).__init__()
         self._expanded_regex = None
         # Subclass must set up self._keywords
 
@@ -48,15 +48,18 @@ class BaseAny(GrammarRule):
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self._keywords[:20])
 
-class Any(BaseAny):
+class Any(_BaseAlternation):
     def __init__(self, *keywords):
         super(Any, self).__init__()
+        non_rule_or_string = [x for x in keywords if not isinstance(x, (GrammarRule, basestring))]
+        if non_rule_or_string:
+            raise ValueError("Any() arguments need to be str, unicode, or a GrammarRule object: %s" % non_rule_or_string)
         self._keywords = tuple(keywords)
 
 STRONG = 0
 STRONG_WEAK = 1
 
-class FileBackedKeyword(BaseAny):
+class FileBackedKeyword(_BaseAlternation):
     def __init__(self, filename, strength):
         super(FileBackedKeyword, self).__init__()
         self._filename = filename
