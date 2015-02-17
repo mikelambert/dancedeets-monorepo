@@ -1103,3 +1103,8 @@ KING_OF_THE = Keyword('KING_OF_THE', [
 KING = Keyword('KING', [
     'king'
 ])
+
+ROMANCE = Keyword('ROMANCE', [
+    'di', 'i', 'e', 'con', # italian
+    "l'\w*", 'le', 'et', 'une', 'avec', u'à', 'pour', # french
+])

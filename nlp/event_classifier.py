@@ -22,10 +22,6 @@ from . import rules
 
 USE_UNICODE = False
 
-#TODO(lambert): eliminate these as part of refactoring
-make_regexes = regex_keywords.make_regexes
-
-
 # TODO: translate to english before we try to apply the keyword matches
 # TODO: if event creator has created dance events previously, give it some weight
 # TODO: 
@@ -35,20 +31,6 @@ make_regexes = regex_keywords.make_regexes
 # TODO: for iffy events, assume @ in the title means its a club event. same with monday(s) tuesday(s) etc.
 # TODO: house class, house workshop, etc, etc. since 'house' by itself isn't sufficient
 # maybe feed keywords into auto-classifying event type? bleh.
-
-all_regexes = {}
-
-def build_regexes():
-    if 'good_keyword_regex' in all_regexes:
-        return
-
-    all_regexes['good_keyword_regex'] = rules.ANY_GOOD.hack_double_regex()
-all_regexes['bad_keyword_regex'] = rules.ANY_BAD.hack_double_regex()
-
-all_regexes['romance'] = make_regexes([
-    'di', 'i', 'e', 'con', # italian
-    "l'\w*", 'le', 'et', 'une', 'avec', u'à', 'pour', # french
-])
 
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
 
@@ -88,10 +70,14 @@ class StringProcessor(object):
         # - Do one pass for findall to get tokens, and another for sub to replace with the magic token. (+100sec)
         # Could have explored O(lgN) search options for a couple of the above, but it felt like the overhead of entering/exiting re2 was the biggest cost.
 
+    def replace_with(self, token, replace_func):
+        self.text, count = token.hack_double_regex()[self.match_on_word_boundaries].subn(replace_func, self.text)
+        return self.text, count
+
     def real_tokenize(self, token):
         def word_with_hash(match):
             return token.replace_string(match.group(0))
-        self.text, count = token.hack_double_regex()[self.match_on_word_boundaries].subn(word_with_hash, self.text)
+        _, count = self.replace_with(token, word_with_hash)
         # If we want to get the matched results/keywords too, then we should only do that conditinoally on count, here:
         #if count:
         #    self.token_originals[token].extend(token.hack_double_regex()[self.match_on_word_boundaries].findall(self.text))
@@ -129,8 +115,6 @@ class ClassifiedEvent(object):
         self.times = {}
 
     def classify(self):
-        build_regexes()
-
         #self.language not in ['ja', 'ko', 'zh-CN', 'zh-TW', 'th']:
         if cjk_detect.cjk_regex.search(self.search_text):
             cjk_chars = len(cjk_detect.cjk_regex.findall(self.search_text))
@@ -182,7 +166,7 @@ class ClassifiedEvent(object):
         self.manual_dance_keywords_matches = self.processed_text.get_tokens(rules.MANUAL_DANCE[keywords.STRONG])
         self.times['manual_regex'] = time.time() - b
         self.real_dance_matches = self.processed_text.get_tokens(rules.GOOD_DANCE)
-        if all_regexes['romance'][idx].search(search_text):
+        if self.processed_text.get_tokens(keywords.ROMANCE):
             event_matches = self.processed_text.get_tokens(rules.EVENT_WITH_ROMANCE_EVENT)
         else:
             event_matches = self.processed_text.get_tokens(rules.EVENT)
@@ -210,7 +194,8 @@ class ClassifiedEvent(object):
         #print self.processed_text.count_tokens(keywords.CLUB_ONLY)
         #strong = 0
         #for line in search_text.split('\n'):
-        #    matches = all_regexes['good_keyword_regex'][idx].findall(line)
+        #   proc_line = f(line)
+        #    matches = proc_line.get_tokens(rules.ANY_GOOD)
         #    good_parts = sum(len(x) for x in matches)
         #    if 1.0 * good_parts / len(line) > 0.1:
         #        # strong!
@@ -265,26 +250,26 @@ def get_classified_event(fb_event, language=None):
     return classified_event
 
 def relevant_keywords(fb_event):
-    build_regexes()
     text = get_relevant_text(fb_event)
     if cjk_detect.cjk_regex.search(text):
         idx = regex_keywords.NO_WORD_BOUNDARIES
     else:
         idx = regex_keywords.WORD_BOUNDARIES
-    good_keywords = all_regexes['good_keyword_regex'][idx].findall(text)
-    bad_keywords = all_regexes['bad_keyword_regex'][idx].findall(text)
+    processed_text = StringProcessor(text, idx)
+    good_keywords = processed_text.get_tokens(rules.ANY_GOOD)
+    bad_keywords = processed_text.get_tokens(rules.ANY_BAD)
     return sorted(set(good_keywords).union(bad_keywords))
 
 @skip_filter
 def highlight_keywords(text):
-    build_regexes()
     if cjk_detect.cjk_regex.search(text):
         idx = regex_keywords.NO_WORD_BOUNDARIES
     else:
         idx = regex_keywords.WORD_BOUNDARIES
-    text = all_regexes['good_keyword_regex'][idx].sub(lambda match: '<span class="matched-text">%s</span>' % match.group(0), text)
-    text = all_regexes['bad_keyword_regex'][idx].sub(lambda match: '<span class="bad-matched-text">%s</span>' % match.group(0), text)
-    return text
+    processed_text = StringProcessor(text, idx)
+    processed_text.replace_with(rules.ANY_GOOD, lambda match: '<span class="matched-text">%s</span>' % match.group(0))
+    processed_text.replace_with(rules.ANY_BAD, lambda match: '<span class="bad-matched-text">%s</span>' % match.group(0))
+    return processed_text.get_tokenized_text()
 
 if __name__ == '__main__':
     a = ['club', 'bottle service', 'table service', 'coat check', 'free before', 'vip', 'guest\\W?list', 'drink specials?', 'resident dj\\W?s?', 'dj\\W?s?', 'techno', 'trance', 'indie', 'glitch', 'bands?', 'dress to', 'mixtape', 'decks', 'r&b', 'local dj\\W?s?', 'all night', 'lounge', 'live performances?', 'doors', 'restaurant', 'hotel', 'music shows?', 'a night of', 'dance floor', 'beer', 'blues', 'bartenders?', 'waiters?', 'waitress(?:es)?', 'go\\Wgo', 'gogo', 'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba', 'waltz', 'salsy', 'milonga', 'dance partner', 'cha cha', 'hula', 'tumbling', 'exotic', 'cheer', 'barre', 'contact improv', 'contact improv\\w*', 'contratto mimo', 'musical theat(?:re|er)', 'pole dance', 'flirt dance', 'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar', 'indienne', 'persiana?', 'arabe', 'arabic', 'oriental\\w*', 'oriente', 'cubana', 'capoeira', 'tahitian dancing', 'folklor\\w+', 'kizomba', 'burlesque', 'technique', 'limon', 'clogging', 'zouk', 'afro mundo', 'class?ic[ao]', 'acroyoga', 'kirtan', 'modern dance', 'pilates', 'tribal', 'jazz', 'tap', 'contemporary', 'contempor\\w*', 'africa\\w+', 'sabar', 'silk', 'aerial', 'zumba', 'belly\\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance', 'soca', 'flamenco']
