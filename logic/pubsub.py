@@ -195,7 +195,11 @@ def facebook_post(auth_token, db_event, fb_event):
     post_values['link'] = link
     post_values['name'] = fb_event['info']['name'].encode('utf8')
     post_values['caption'] = datetime_string
-    post_values['description'] = fb_event['info'].get('description', '').encode('utf8')
+    description = fb_event['info'].get('description', '').encode('utf8')
+    if len(post_values['description']) > 10000:
+        post_values['description'] = description[:9999] + u"…"
+    else:
+        post_values['description'] = description
     cover = eventdata.get_largest_cover(fb_event)
     if cover:
         post_values['picture'] = cover['source']
