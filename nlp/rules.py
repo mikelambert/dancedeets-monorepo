@@ -59,8 +59,8 @@ ambiguous_battle = Any(keywords.EASY_BATTLE)
 GOOD_DANCE_BATTLE = Name('GOOD_DANCE_BATTLE', Any(
     keywords.OBVIOUS_BATTLE,
     connected(keywords.BONNIE_AND_CLYDE, keywords.BATTLE),
-    connected(keywords.KING_OF_THE, keywords.CYPHER),
-    connected(keywords.CYPHER, keywords.KING),
+    grammar.Ordered(Any('king of (?:the )?'), keywords.CYPHER),
+    connected(keywords.CYPHER, Any('king')),
     commutative_connected(good_battle_dance, good_battle)
 ))
 

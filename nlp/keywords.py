@@ -186,6 +186,7 @@ STYLE_POP = Name('STYLE_POP', Any(
     'poppeurs?',
     u'팝핀', # korean popping
     "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)", # dupe
+    'dubstepp?ing',
     "wavin[g']?", 'wavers?',
     'liquid\W+dance'
     'liquid\W+(?:\w+\W+)?digitz',
@@ -201,6 +202,7 @@ STYLE_POP = Name('STYLE_POP', Any(
     u'스트럿팅', # strutting
     "tuttin[g']?", 'tutter[sz]?',
     u'텃팅', # korean tutting
+    'poplock\w*',
 ))
 STYLE_LOCK = Name('STYLE_LOCK', Any(
     "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)", # dupe

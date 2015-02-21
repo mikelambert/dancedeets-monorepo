@@ -158,7 +158,9 @@ class ClassifiedEvent(object):
             self.processed_text.real_tokenize(rule)
 
         self.processed_text.real_tokenize(keywords.GOOD_INSTANCE_OF_BAD_CLUB)
-        #TODO(lambert): Why do I need all these?
+        #TODO(lambert): These grab things that are good, and keep them good, so they can't be stolen by other things.
+        # Removing them appears to drop us from 9132 true positives down to 9108 true positives.
+        # Maybe we can investigate exactly what's going on, and reduce the number of real_tokenize calls needed?
         self.processed_text.real_tokenize(keywords.DANCE)
         self.processed_text.real_tokenize(keywords.STYLE_BREAK)
         self.processed_text.real_tokenize(keywords.STYLE_ROCK)
