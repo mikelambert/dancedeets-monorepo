@@ -102,11 +102,11 @@ def post_event_id_with_authtoken(fbl, event_id, auth_token):
         try:
             result = facebook_post(auth_token, db_event, fb_event)
             if 'error' in result:
-                logging.error("Facebook Post Error: %s", result)
+                logging.error("Facebook Post Error: %r", result)
             else:
-                logging.info("Facebook result was %s", result)
+                logging.info("Facebook result was %r", result)
         except Exception as e:
-            logging.error("Facebook Post Error: %s", e)
+            logging.error("Facebook Post Exception: %s", e)
     else:
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
 

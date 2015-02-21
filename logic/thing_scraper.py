@@ -119,7 +119,7 @@ def parsed_event_link(url):
 
 def process_thing_feed(source, thing_feed):
     if thing_feed['empty']:
-        logging.error("Source was empty: %s", thing_feed['empty'])
+        logging.warning("Source %s was empty: %s", source.graph_id, thing_feed['empty'])
         return []
     # TODO(lambert): do we really need to scrape the 'info' to get the id, or we can we half the number of calls by just getting the feed? should we trust that the type-of-the-thing-is-legit for all time, which is one case we use 'info'?
     if 'data' not in thing_feed['feed']:
@@ -176,6 +176,7 @@ def parse_event_source_combos_from_feed(source, feed_data):
 
 def process_event_source_ids(event_source_combos, fbl):
     # TODO(lambert): maybe trim any ids from posts with dates "past" the last time we scraped? tricky to get correct though
+    logging.info("Loading data for %s events", len(event_source_combos))
     potential_new_source_ids = set()
     for event_id, source, posting_source_id in event_source_combos:
         fbl.request(fb_api.LookupEvent, event_id)
@@ -183,9 +184,11 @@ def process_event_source_ids(event_source_combos, fbl):
         potential_new_source_ids.add(posting_source_id)
     fbl.batch_fetch()
 
+    logging.info("Going to process fetched events and construct potential events:")
     # TODO(lambert): Maybe filter this event out for itself and its sources, before we attempt to load event-attending and recreate it?
     # TODO(lambert): like what we do with potential-events-from-invites? maybe combine those flows?
     for event_id, source, posting_source_id in event_source_combos:
+        logging.info("Processing event id %s", event_id)
         try:
             fb_event = fbl.fetched_data(fb_api.LookupEvent, event_id)
             fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
