@@ -396,6 +396,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['defaults'].deb = self.request.get('deb')
 
         self.display['deb'] = self.request.get('deb')
+        self.display['user'] = self.user
 
         self.display.update(rankings.retrieve_summary())
 
@@ -411,14 +412,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
     def finish_preload(self):
         self.fbl.batch_fetch()
-
-    def render_template(self, name):
-        # If we didn't load the user for some reason, let's load things now
-        self.finish_preload()
-        if self.fb_uid:
-            self.display['fb_user'] = self.fbl.fetched_data(fb_api.LookupUser, self.fb_uid)
-        self.display['user'] = self.user
-        super(BaseRequestHandler, self).render_template(name)
 
 
 def update_last_login_time(user_id, login_time):
