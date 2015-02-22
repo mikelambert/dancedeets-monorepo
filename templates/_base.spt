@@ -46,12 +46,12 @@ $head_javascript()
   ga('require', 'linkid', 'linkid.js');
   ga('send', 'pageview', {
     'dimension1':
-#if $fb_user
+#if $user
     'logged-in'
 #else
     'logged-out'
 #end if
-#if $fb_user
+#if $user
 ,
     'dimension2': 'has-account'
 #end if
@@ -96,9 +96,9 @@ var _gaq = [];
   $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
 -->
       </form>
-#if $fb_user
+#if $user
 			<ul class="nav navbar-nav navbar-right">
-				<li><div class="user-name nav-text">$fb_user.profile.name</div></li>
+				<li><div class="user-name nav-text">$user.full_name</div></li>
 				<li><a href="/user/edit">Settings</a></li>
 				<li><a href="#" onclick="logout(); return false;">Logout</a></li>
 #else
@@ -129,10 +129,10 @@ var _gaq = [];
 </ul></div>
 #end if
 
-#if not $suppress_promos and (not $fb_user or $show_mobile_promo)
+#if not $suppress_promos and (not $user or $show_mobile_promo)
 <div class="alert alert-warning alert-dismissible" role="alert"><ul>
 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-#if not $fb_user
+#if not $user
     <li>Are you a dancer in-the-know? Help others by sharing your dance events: <button onclick="manualLogin();" class="btn btn-default">Join dancedeets</button> today!
     <li>Are you learning to dance? <button onclick="manualLogin();" class="btn btn-default">Subscribe to a weekly email</button> of upcoming events.
 #end if

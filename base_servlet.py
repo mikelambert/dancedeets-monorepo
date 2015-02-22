@@ -417,6 +417,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.finish_preload()
         if self.fb_uid:
             self.display['fb_user'] = self.fbl.fetched_data(fb_api.LookupUser, self.fb_uid)
+        self.display['user'] = self.user
         super(BaseRequestHandler, self).render_template(name)
 
 
