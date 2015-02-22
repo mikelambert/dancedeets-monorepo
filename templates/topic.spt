@@ -13,6 +13,11 @@ $topic_title Events
 #def body
 <div class="row">
 
+<div class="col-md-12">
+<h2>$topic_title Events</h2>
+$len($all_results) events total:
+</div>
+
 <div class="col-md-4">
 #for $year, $month_results in $group_by_date
 	$year:
