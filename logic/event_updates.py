@@ -43,6 +43,9 @@ def update_and_save_event(db_event, fb_dict):
 def _inner_make_event_findable_for(db_event, fb_dict):
     # set up any cached fields or bucketing or whatnot for this event
 
+    # Screw db-normalized form, store this here (and location_geocode down below)
+    db_event.fb_event = fb_dict
+
     if fb_dict['empty'] == fb_api.EMPTY_CAUSE_DELETED:
         db_event.start_time = None
         db_event.end_time = None
@@ -88,7 +91,5 @@ def _inner_make_event_findable_for(db_event, fb_dict):
 
     db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
 
-    # Screw normalization, let's stuff this stuff in here and make it easier to manage later!
-    db_event.fb_event = fb_dict
     # This only grabs the very first result from the raw underlying geocode request, since that's all that's used to construct the Geocode object in memory
     db_event.location_geocode = gmaps_api.convert_geocode_to_json(location_info.geocode)
