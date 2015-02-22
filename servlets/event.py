@@ -343,7 +343,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
 
         potential_event_dict = dict((x.key().name(), x) for x in unseen_potential_events)
         already_added_events = eventdata.DBEvent.get_by_ids(list(potential_event_dict))
-        already_added_event_ids = [x.key.name() for x in already_added_events if x]
+        already_added_event_ids = [x.key.string_id() for x in already_added_events if x]
         # construct a list of not-added ids for display, but keep the list of all ids around so we can still mark them as processed down below
         potential_event_notadded_ids = list(set(potential_event_dict).difference(already_added_event_ids))
         potential_event_notadded_ids.sort(key=lambda x: -(potential_event_dict[x].match_score or 0))
