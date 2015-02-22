@@ -8,6 +8,16 @@ from topics import grouping
 from topics import topic_db
 from logic import search
 
+class TopicListHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
+    def get(self):
+        topics = topic_db.Topic.query().fetch(500)
+        self.display['topics'] = topics
+
+        self.render_template('topic_list')
+
 class TopicHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
@@ -63,7 +73,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
             logging.info("Prefilter dropping event %s with title: %r" % (pseudo_db_event.fb_event_id, title))
             return False
 
-        keywords = ' OR '.join(topic.search_keywords)
+        keywords = ' OR '.join('"%s"' % x for x in topic.search_keywords)
         search_query = search.SearchQuery(keywords=keywords)
         # Need these fields for the prefilter
         search_query.extra_fields = ['keywords']
@@ -71,7 +81,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
 
         self.display['topic_title'] = topic.override_title or (fb_source and fb_source['info']['name'])
         self.display['topic_image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])
-        self.display['topic_description'] = topic.override_description or (fb_source and fb_source['info']['about'])
+        self.display['topic_description'] = topic.override_description or (fb_source and fb_source['info'].get('about')) or ''
 
         self.display['all_results'] = search_results
 

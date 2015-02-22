@@ -1,0 +1,26 @@
+#extends _base
+#extends _results
+#from spitfire.runtime.filters import escape_html
+#filter escape_html
+
+#def title
+Dancers, Crews, and Events
+#end def
+
+#def head_stylesheet
+#end def
+
+#def body
+<div class="row">
+
+<ul>
+#for $topic in $topics
+<li><a href="/topic/$topic.url_path">$topic.url_path</li>
+#end for
+</ul>
+
+</div> ## row
+#end def
+
+#def bottom_javascript
+#end def
