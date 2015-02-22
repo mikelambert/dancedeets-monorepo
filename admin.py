@@ -3,6 +3,8 @@ from flask.ext.admin import Admin
 
 from flask.ext.admin.contrib import appengine
 
+import keys
+
 from events.cities import City
 from events.eventdata import DBEvent
 from events.users import User, UserFriendsAtSignup, UserMessage
@@ -17,7 +19,7 @@ from topics.topic_db import Topic
 
 app = Flask(__name__)
 app.debug = True
-app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+app.secret_key = keys.get('flask_session_key')
 
 admin = Admin(app, name="Admin")
 for model in [CachedGeoCode, City, DBEvent, FacebookCachedObject, GeoCode, LocationMapping, OAuthToken, PotentialEvent, Source, Topic, User, UserFriendsAtSignup, UserMessage]:
