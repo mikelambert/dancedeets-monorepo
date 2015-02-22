@@ -26,6 +26,9 @@ pip install --upgrade -t $BASE_DIR/lib \
   google-api-python-client \
   gdata \
   python-gflags \
+  Flask \
+  WTForms-Appengine \
+  wtforms \
   GoogleAppEngineCloudStorageClient \
   GoogleAppEnginePipeline \
   Graphy \
@@ -41,7 +44,7 @@ pip install --upgrade -t $BASE_DIR/lib \
 #  simplejson \
 #  mock \
 #  mox
-
+# We re-list them down here, since we can't stick comments inside of the \-joined command above.
 
 function install-git() {
 	cd $TMP_DIR

@@ -68,8 +68,8 @@ handlers:
 - url: /tools/.*
   script: main.application
   login: admin
-- url: /admin/.*
-  script: main.application
+- url: /admin.*
+  script: admin.app
   login: admin
 - url: /events/admin.*
   script: main.application
