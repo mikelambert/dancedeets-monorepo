@@ -114,14 +114,14 @@ function position_cover() {
 		// This is basically centered + offset_x, which seems to work halfway decent on 774261012620733, before I gave up on the issue.
 		var vertical_scaling = cover_h/img_h;
 		var centered_offset_x = cover_w/2 - img_w/2 * vertical_scaling;
-		var offset_x2 = offset_x + centered_offset_x;
+		var offset_x2 = Math.min(0, offset_x + centered_offset_x);
 
 		$("#cover-image").css ({ height: "100%", left: offset_x2 + "px" });
 	} else if (offset_y) {
 		// This is basically centered + offset_y, which seems to work halfway decent on 1528897414056319, before I gave up on the issue.
 		var horizontal_scaling = cover_w/img_w;
 		var centered_offset_y = cover_h/2 - img_h/2 * horizontal_scaling;
-		var offset_y2 = offset_y + centered_offset_y;
+		var offset_y2 = Math.min(0, offset_y + centered_offset_y);
 
 		$("#cover-image").css ({ width: "100%", top: offset_y2 + "px" });
 	} else {
