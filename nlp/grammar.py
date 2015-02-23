@@ -13,12 +13,12 @@ def _flatten(listOfLists):
 class GrammarRule(object):
     """The entire grammar rule tree must be composed of these."""
     def __init__(self):
-        self._cached_double_regex = None
+        self._cached_double_regex = {}
 
-    def hack_double_regex(self):
-        if not self._cached_double_regex:
-            self._cached_double_regex = regex_keywords.make_regexes_raw(self.as_expanded_regex())
-        return self._cached_double_regex
+    def hack_double_regex(self, flags=0):
+        if flags not in self._cached_double_regex:
+            self._cached_double_regex[flags] = regex_keywords.make_regexes_raw(self.as_expanded_regex(), flags=flags)
+        return self._cached_double_regex[flags]
 
     def get_regex_alternations(self):
         return [self.as_expanded_regex()]

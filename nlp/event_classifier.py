@@ -68,8 +68,8 @@ class StringProcessor(object):
         # - Do one pass for findall to get tokens, and another for sub to replace with the magic token. (+100sec)
         # Could have explored O(lgN) search options for a couple of the above, but it felt like the overhead of entering/exiting re2 was the biggest cost.
 
-    def replace_with(self, token, replace_func):
-        self.text, count = token.hack_double_regex()[self.match_on_word_boundaries].subn(replace_func, self.text)
+    def replace_with(self, token, replace_func, flags=0):
+        self.text, count = token.hack_double_regex(flags=flags)[self.match_on_word_boundaries].subn(replace_func, self.text)
         return self.text, count
 
     def real_tokenize(self, token):
@@ -285,7 +285,7 @@ def highlight_keywords(text):
     else:
         idx = regex_keywords.WORD_BOUNDARIES
     processed_text = StringProcessor(text, idx)
-    processed_text.replace_with(rules.ANY_GOOD, lambda match: '<span class="matched-text">%s</span>' % match.group(0))
+    processed_text.replace_with(rules.ANY_GOOD, lambda match: '<span class="matched-text">%s</span>' % match.group(0), flags=re.I)
     processed_text.replace_with(rules.ANY_BAD, lambda match: '<span class="bad-matched-text">%s</span>' % match.group(0))
     return processed_text.get_tokenized_text()
 
