@@ -217,6 +217,9 @@ class SearchQuery(object):
         search_results = []
         for real_db_event, db_event in zip(real_db_events, db_events):
             fb_event = real_db_event.fb_event
+            if not fb_event:
+                logging.error("Failed to find fb_event on db_event %s", real_db_event.fb_event_id)
+                continue
             if not fb_event['empty']:
                 if 'info' not in fb_event:
                     logging.warning('%s', fb_event)
