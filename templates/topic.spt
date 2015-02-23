@@ -18,20 +18,84 @@ $topic_title Events
 $len($all_results) events total:
 </div>
 
-<div class="col-md-4">
+<div class="col-md-6">
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<script type="text/javascript">
+	google.load("visualization", "1", {packages:["corechart"]});
+	google.setOnLoadCallback(drawTimeChart);
+	function drawTimeChart() {
+		var data = new google.visualization.DataTable();
+		data.addColumn('date', 'Month');
+		data.addColumn('number', 'Events');
+		data.addRows([
 #for $year, $month_results in $group_by_date
-	$year:
 	#for $month, $results in $month_results
-		$month ($len($results))
+			[new Date($year, $month, 1), $len($results)],
 	#end for
-	<br/>
 #end for
+		]);
+
+		var options = {
+			bar: { groupWidth: "95%" },
+			legend: { position: "none" },
+			vAxis: {baseline: 0, textPosition: 'none', gridlines: {color: 'white'} },
+		};
+		var chart = new google.visualization.ColumnChart(document.getElementById("monthly_events"));
+		chart.draw(data, options);
+	}
+</script>
+<div id="monthly_events" style="width: 100%; height: 300px"></div>
 </div>
-<div class="col-md-4">
+
+<div class="col-md-6">
+<script type="text/javascript">
+	google.load("visualization", "1", {packages:["geochart"]});
+	google.setOnLoadCallback(drawGeoChart);
+	function drawGeoChart() {
+		var data = new google.visualization.DataTable();
+		data.addColumn('string', 'Country');
+		data.addColumn('number', 'Events');
+		data.addRows([
 #for $location, $results in $group_by_location
-	$location: $len($results)
-	<br/>
+			['$location', $len($results)],
 #end for
+		]);
+
+		var options = {
+			colorAxis: {colors: ['lightblue', 'blue']}
+		}
+		var chart = new google.visualization.GeoChart(document.getElementById("country_events"));
+		chart.draw(data, options);
+	}
+</script>
+<div id="country_events" style="width: 100%; height: 300px;"></div>
+</div>
+
+
+<div class="col-md-6">
+<script type="text/javascript">
+	google.load("visualization", "1", {packages:["map"]});
+	google.setOnLoadCallback(drawMapChart);
+	function drawMapChart() {
+		var data = new google.visualization.DataTable();
+		data.addColumn('number', 'Lat');
+		data.addColumn('number', 'Long');
+		data.addColumn('string', 'Event');
+		data.addRows([
+#for $result in $all_results
+			[$result.db_event.latitude, $result.db_event.longitude, "$result.fb_event['info']['name']"],
+#end for
+		]);
+
+		var options = {
+			showTip: true,
+		}
+		var chart = new google.visualization.Map(document.getElementById("location_events"));
+		chart.draw(data, options);
+	}
+</script>
+<div id="location_events" style="width: 100%; height: 300px;"></div>
 </div>
 
 </div>
