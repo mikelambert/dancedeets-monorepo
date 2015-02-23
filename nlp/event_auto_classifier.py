@@ -342,7 +342,8 @@ def is_vogue_event(classified_event):
     # We use sets here to get unique keywords
     vogue_matches = set(classified_event.processed_text.get_tokens(keywords.VOGUE))
     easy_vogue_matches = set(classified_event.processed_text.get_tokens(keywords.EASY_VOGUE))
-    match_count = len(vogue_matches) + 0.33 * len(easy_vogue_matches)
+    match_count = len(vogue_matches) + 0.34 * len(easy_vogue_matches)
+    print vogue_matches, easy_vogue_matches, match_count
     if match_count > 2:
         return True, 'has vogue keywords: %s' % (vogue_matches.union(easy_vogue_matches))
     return False, 'not enough vogue keywords'
