@@ -21,7 +21,7 @@ def group_results_by_date(results):
 
 def group_results_by_location(results):
     location_map = collections.defaultdict(lambda: [])
-    location_infos = [event_locations.LocationInfo(x.fb_event) for x in results]
+    location_infos = [event_locations.LocationInfo(x.fb_event, db_event=x.db_event) for x in results]
     geocodes = [x.geocode for x in location_infos]
     addresses = [x.country(long=True) if x else None for x in geocodes]
     #formatting.format_geocodes(geocodes)

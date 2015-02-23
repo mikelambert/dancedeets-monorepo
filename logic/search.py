@@ -66,16 +66,17 @@ def group_results(search_results):
     return past_results, present_results, grouped_results 
 
 class SearchResult(object):
-    def __init__(self, pseudo_db_event, fb_event):
+    def __init__(self, db_event, fb_event):
+        self.db_event = db_event
         self.fb_event = fb_event
         self.fb_event_id = fb_event['info']['id']
-        self.actual_city_name = pseudo_db_event.actual_city_name
-        self.attendee_count = pseudo_db_event.attendee_count
+        self.actual_city_name = db_event.actual_city_name
+        self.attendee_count = db_event.attendee_count
         self.start_time = dates.parse_fb_start_time(self.fb_event)
         self.end_time = dates.parse_fb_end_time(self.fb_event)
         self.fake_end_time = dates.parse_fb_end_time(self.fb_event, need_result=True)
         self.rsvp_status = "unknown"
-        self.event_keywords = pseudo_db_event.event_keywords or []
+        self.event_keywords = db_event.event_keywords or []
         # These are initialized in logic/friends.py
         self.attending_friend_count = 0
         self.attending_friends = []
@@ -207,21 +208,19 @@ class SearchQuery(object):
         if prefilter:
             db_events = [x for x in db_events if prefilter(x)]
 
-        # Now look up contents of each event...
         a = time.time()
-        fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
-        fbl.batch_fetch()
-        logging.info("Loading fb data took %s seconds", time.time() - a)
+        real_db_events = eventdata.DBEvent.get_by_ids([x.fb_event_id for x in db_events])
+        logging.info("Loading DBEvents took %s seconds", time.time() - a)
 
         # ...and do filtering based on the contents inside our app
         a = time.time()
         search_results = []
-        for db_event in db_events:
-            fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
+        for real_db_event, db_event in zip(real_db_events, db_events):
+            fb_event = real_db_event.fb_event
             if not fb_event['empty']:
                 if 'info' not in fb_event:
                     logging.warning('%s', fb_event)
-                result = SearchResult(db_event, fb_event)
+                result = SearchResult(real_db_event, fb_event)
                 search_results.append(result)
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
     
