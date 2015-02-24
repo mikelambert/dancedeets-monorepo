@@ -352,26 +352,32 @@ class DBCache(CacheSystem):
 
     def save_objects(self, keys_to_objects):
         updated_objects = {}
-        for object_key, this_object in keys_to_objects.iteritems():
+        cache_keys = [self.key_to_cache_key(object_key) for object_key, this_object in keys_to_objects.iteritems()]
+        existing_objects = FacebookCachedObject.get_by_key_name(cache_keys)
+
+        db_objects_to_put = []
+        for obj, (object_key, this_object) in zip(existing_objects, keys_to_objects.iteritems()):
             if not self._is_cacheable(object_key, this_object):
                 #TODO(lambert): cache the fact that it's a private-unshowable event somehow? same as deleted events?
                 logging.warning("BatchLookup: Looked up event %s but is not cacheable.", object_key)
                 continue
-            try:
-                cache_key = self.key_to_cache_key(object_key)
-                obj = FacebookCachedObject.get_or_insert(cache_key)
-                old_json_data = obj.json_data
-                obj.encode_data(this_object)
-                if old_json_data != obj.json_data:
-                    obj.put()
-                    self.db_updates += 1
-                    #DEBUG
-                    #logging.info("OLD %s", old_json_data)
-                    #logging.info("NEW %s", obj.json_data)
-                    # Store list of updated objects for later querying
-                    updated_objects[object_key] = this_object
-            except apiproxy_errors.CapabilityDisabledError:
-                pass
+            cache_key = self.key_to_cache_key(object_key)
+            if not obj:
+                obj = FacebookCachedObject(key_name=cache_key)
+            old_json_data = obj.json_data
+            obj.encode_data(this_object)
+            if old_json_data != obj.json_data:
+                self.db_updates += 1
+                db_objects_to_put.append(obj)
+                #DEBUG
+                #logging.info("OLD %s", old_json_data)
+                #logging.info("NEW %s", obj.json_data)
+                # Store list of updated objects for later querying
+                updated_objects[object_key] = this_object
+        try:
+            db.put(db_objects_to_put)
+        except apiproxy_errors.CapabilityDisabledError:
+            pass
         return updated_objects
 
     def invalidate_keys(self, keys):
