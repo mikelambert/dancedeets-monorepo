@@ -74,7 +74,9 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         if not self.request.path.endswith('/'):
             return self.redirect(urls.fb_relative_event_url(event_id), permanent=True)
 
-        event_info = self.fbl.get(fb_api.LookupEvent, event_id)
+        # Load the db_event instead of the fb_event, as the db_event is likely to be in cache
+        db_event = eventdata.DBEvent.get_by_id(event_id)
+        event_info = db_event.fb_event
         if event_info['empty']:
             self.response.out.write('This event was %s.' % event_info['empty'])
             return
@@ -309,16 +311,10 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
         # TODO: There are some events with city_name=Unknown and a valid latitude that are just not near any major metropolis. They are undercounted and have "No Scene", which we may want to fix at some point.
         db_events = eventdata.DBEvent.query(ndb.AND(eventdata.DBEvent.city_name=='Unknown', eventdata.DBEvent.latitude==None)).order(-eventdata.DBEvent.start_time).fetch(num_events)
         db_events = [x for x in db_events if x.anywhere == False]
-        self.fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
-        self.fbl.batch_fetch()
         template_events = []
-        for e in db_events:
-            try:
-                fb_event = self.fbl.fetched_data(fb_api.LookupEvent, e.fb_event_id)
-                if not fb_event['empty']:
-                    template_events.append(dict(fb_event=fb_event, db_event=e))
-            except fb_api.NoFetchedDataException as e:
-                logging.error(e)
+        for db_event in db_events:
+            if not db_event.fb_event['empty']:
+                template_events.append(dict(fb_event=db_event.fb_event, db_event=db_event))
         self.display['events'] = template_events
         self.render_template('admin_nolocation_events')
 

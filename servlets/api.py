@@ -137,7 +137,7 @@ class SearchHandler(ApiHandler):
         json_results = []
         for result in search_results:
             try:
-                json_result = canonicalize_event_data(result.fb_event, None, result.event_keywords)
+                json_result = canonicalize_event_data(result.db_event, result.event_keywords)
                 json_results.append(json_result)
             except Exception as e:
                 logging.error("Error processing event %s: %s" % (result.fb_event_id, e))
@@ -268,7 +268,8 @@ class SettingsHandler(ApiHandler):
         self.write_json_success()
 
 
-def canonicalize_event_data(fb_event, db_event, event_keywords):
+def canonicalize_event_data(db_event, event_keywords):
+    fb_event = db_event.fb_event
     event_api = {}
     for key in ['id', 'name', 'start_time']:
         event_api[key] = fb_event['info'][key]
@@ -371,21 +372,20 @@ class EventHandler(ApiHandler):
         if len(path_bits) != 2:
             self.add_error('Path is malformed: %s' % self.request.path)
             self.response.out.write('Need an event_id.')
+            return
         else:
             try:
                 event_id = str(int(path_bits[1].strip('/')))
             except TypeError:
                 self.add_error('Event id expected: %s' % path_bits[1])
 
-            fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
-            if fb_event['empty']:
-                self.add_error('This event was %s.' % fb_event['empty'])
+            db_event = eventdata.DBEvent.get_by_id(event_id)
+            if db_event.fb_event['empty']:
+                self.add_error('This event was %s.' % db_event.fb_event['empty'])
 
         self.errors_are_fatal()
 
-        db_event = eventdata.DBEvent.get_by_id(event_id)
-
-        json_data = canonicalize_event_data(fb_event, db_event, None)
+        json_data = canonicalize_event_data(db_event, None)
 
         # Ten minute expiry on data we return
         self.response.headers['Cache-Control'] = 'max-age=%s' % (60*10)
