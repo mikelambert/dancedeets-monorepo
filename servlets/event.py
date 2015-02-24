@@ -4,6 +4,7 @@ import logging
 import re
 import urllib
 
+from google.appengine.api import memcache
 from google.appengine.ext import deferred
 from google.appengine.ext import ndb
 
@@ -20,7 +21,6 @@ from logic import potential_events
 from logic import rsvp
 from nlp import event_auto_classifier
 from nlp import event_classifier
-import smemcache
 from util import dates
 from util import urls
 
@@ -276,10 +276,10 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 event['loaded'] = event['id'] in loaded_fb_event_ids
 
             lastadd_key = 'LastAdd.%s' % (self.fb_uid)
-            if not smemcache.get(lastadd_key):
+            if not memcache.get(lastadd_key):
                 #STR_ID_MIGRATE: We still get ids as ints from our FQL
                 backgrounder.load_events([str(x['eid']) for x in events])
-                smemcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
+                memcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
 
         self.display['events'] = events
         self.display['fb_event'] = fb_event

@@ -1,6 +1,6 @@
 import datetime
 
-import smemcache
+from google.appengine.api import memcache
 
 from mapreduce import control
 from mapreduce import model
@@ -85,7 +85,7 @@ def begin_ranking_calculations():
 TOTALS_KEY = 'StatTotals'
 TOTALS_EXPIRY = 6*3600
 def retrieve_summary():
-    totals = smemcache.get(TOTALS_KEY)
+    totals = memcache.get(TOTALS_KEY)
     if not totals:
         totals = compute_summary()
     return totals
@@ -108,7 +108,7 @@ def compute_summary(expiry=TOTALS_EXPIRY):
 
     # save
     totals = dict(total_events=total_events, total_users=total_users)
-    smemcache.set(TOTALS_KEY, totals, expiry)
+    memcache.set(TOTALS_KEY, totals, expiry)
 
     return totals
 

@@ -57,11 +57,11 @@ class TestLookupEvent(unittest.TestCase):
 
 class TestMemcache(unittest.TestCase):
     def setUp(self):
-        self.smemcache = fb_api.smemcache
-        fb_api.smemcache = mock_memcache
+        self.memcache = fb_api.memcache
+        fb_api.memcache = mock_memcache
     
     def tearDown(self):
-        fb_api.smemcache = self.smemcache
+        fb_api.memcache = self.memcache
 
     def runTest(self):
         m = fb_api.Memcache('fetch_id')

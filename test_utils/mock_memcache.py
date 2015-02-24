@@ -16,6 +16,3 @@ def get_multi(keys):
 def flush_all():
     global _cache
     _cache = {}
-
-def safe_set_memcache(memcache_set, expiry, top_level=True):
-    set_multi(memcache_set, expiry)

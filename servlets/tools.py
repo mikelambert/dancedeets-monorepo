@@ -2,6 +2,7 @@
 import logging
 #import time
 import webapp2
+from google.appengine.api import memcache
 #from google.appengine.ext import db
 #from google.appengine.ext import deferred
 
@@ -20,7 +21,6 @@ from logic import auto_add
 #from logic import potential_events
 from logic import thing_db
 #from nlp import event_classifier
-import smemcache
 from servlets import tasks
 
 
@@ -127,7 +127,7 @@ class ImportCitiesHandler(webapp2.RequestHandler):
 
 class ClearMemcacheHandler(webapp2.RequestHandler):
     def get(self):
-        smemcache.flush_all()
+        memcache.flush_all()
         self.response.out.write("Flushed memcache!")
 
 

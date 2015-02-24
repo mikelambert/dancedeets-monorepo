@@ -3,8 +3,9 @@ import json
 import pprint
 import time
 import webapp2
+from google.appengine.api import memcache
 from google.appengine.ext import db
-import smemcache
+
 
 import base_servlet
 from events import eventdata
@@ -51,7 +52,7 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
                 return
             key = fb_api.generate_key(fbtype, self.request.get('arg'))
             real_key = fbl.key_to_cache_key(key)
-        memcache_result = smemcache.get(real_key)
+        memcache_result = memcache.get(real_key)
         db_result = fb_api.FacebookCachedObject.get_by_key_name(real_key)
         self.response.out.write('Memcache:\n%s\n\n' % pprint.pformat(memcache_result, width=200))
         self.response.out.write('Database:\n%s\n\n' % pprint.pformat(db_result and db_result.decode_data() or None, width=200))
@@ -91,7 +92,7 @@ class ShowUsersHandler(base_servlet.BaseRequestHandler):
 
 class ClearMemcacheHandler(webapp2.RequestHandler):
     def get(self):
-        smemcache.flush_all()
+        memcache.flush_all()
         self.response.out.write("Flushed memcache!")
 
 

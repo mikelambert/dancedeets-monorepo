@@ -2,12 +2,12 @@ import logging
 
 from google.appengine.ext import db
 from google.appengine.api import datastore_errors
+from google.appengine.api import memcache
 from google.appengine.runtime import apiproxy_errors
 
 import datetime
 from loc import gmaps_api
 from loc import math
-import smemcache
 from util import dates
 
 USER_EXPIRY = 24 * 60 * 60
@@ -65,11 +65,11 @@ class User(db.Model):
     @classmethod
     def get_cached(cls, uid):
         memcache_key = cls.memcache_user_key(uid)
-        user = smemcache.get(memcache_key)
+        user = memcache.get(memcache_key)
         if not user:
             user = User.get_by_key_name(uid)
             if user:
-                smemcache.set(memcache_key, user, USER_EXPIRY)
+                memcache.set(memcache_key, user, USER_EXPIRY)
         return user
 
     def date_only_human_format(self, d):
@@ -94,7 +94,7 @@ class User(db.Model):
 
     def _populate_internal_entity(self):
         memcache_key = self.memcache_user_key(self.fb_uid)
-        smemcache.set(memcache_key, self, USER_EXPIRY)
+        memcache.set(memcache_key, self, USER_EXPIRY)
         return super(User, self)._populate_internal_entity()
 
     def add_message(self, message):

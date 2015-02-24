@@ -8,9 +8,9 @@ import time
 import urllib
 
 import facebook
-import smemcache
 from google.appengine.ext import db
 from google.appengine.api import datastore
+from google.appengine.api import memcache
 from google.appengine.api import urlfetch
 from google.appengine.runtime import apiproxy_errors
 
@@ -304,7 +304,7 @@ class Memcache(CacheSystem):
 
     def fetch_keys(self, keys):
         cache_key_mapping = dict((self.key_to_cache_key(key), key) for key in keys)
-        objects = smemcache.get_multi(cache_key_mapping.keys())
+        objects = memcache.get_multi(cache_key_mapping.keys())
         object_map = dict((cache_key_mapping[k], v) for (k, v) in objects.iteritems())
 
         # DEBUG!
@@ -321,12 +321,12 @@ class Memcache(CacheSystem):
             if self._is_cacheable(k, v):
                 cache_key = self.key_to_cache_key(k)
                 memcache_set[cache_key] = v
-        smemcache.safe_set_memcache(memcache_set, 2*3600)
+        memcache.set_multi(memcache_set, 2*3600)
         return {}
 
     def invalidate_keys(self, keys):
         cache_keys = [self.key_to_cache_key(key) for key in keys]
-        smemcache.delete_multi(cache_keys)
+        memcache.delete_multi(cache_keys)
 
 class DBCache(CacheSystem):
     def __init__(self, fetching_uid):
