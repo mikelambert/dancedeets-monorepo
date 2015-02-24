@@ -8,6 +8,9 @@ $topic_title Events
 #end def
 
 #def head_stylesheet
+<style type="text/css">
+.event-item { width:  200px; }
+</style>
 #end def
 
 #def body
@@ -47,7 +50,7 @@ $len($all_results) events total:
 </script>
 <div id="monthly_events" style="width: 100%; height: 300px"></div>
 </div>
-
+<!--
 <div class="col-md-6">
 <script type="text/javascript">
 	google.load("visualization", "1", {packages:["geochart"]});
@@ -71,7 +74,7 @@ $len($all_results) events total:
 </script>
 <div id="country_events" style="width: 100%; height: 300px;"></div>
 </div>
-
+-->
 
 <div class="col-md-6">
 <script type="text/javascript">
@@ -101,47 +104,47 @@ $len($all_results) events total:
 </div>
 
 <div class="row">
-<div class="col-md-12" style="min-height:300px">
-	<ol class="events-list">
-	#for $result in $all_results
-		#set $fb_event = $result.fb_event.info
-		## widths here are set to sum to 700px-50px = 650px
-		<li class="wide-event">
-			<div class="event-image">
-			<a href="$fb_event_url($fb_event.id)">
-	##preload first five images
-	#if $result.index < 5
-				<img src="$result.get_image()" width="180" border="0">
-	#else
-				<img class="lazy-wide" src="/images/placeholder.gif" data-original="$result.get_image()" width="180" border="0">
-				<noscript><img src="$result.get_image()" width="180" border="0"></noscript>
-	#end if
-			</a>
-			</div>
-			<div class="event-description">
-				<h3 class="event-title">
-				<a href="$fb_event_url($fb_event.id)">
-				$format_html($fb_event.name)
-				</a>
-				</h3>
-				<div class="event-date">
-					$date_only_human_format($result.start_time)
-					#if $result.multi_day_event() and $result.end_time
-						<br>to $date_only_human_format($result.end_time)
-					#end if
-				</div>
-				<div class="event-city">
-					#if $fb_event.location
-						$fb_event.location,
-					#end if
-					$result.actual_city_name
-				</div>
-			</div>
-			<div style="clear:both;height:1px;"></div>
-		</li>
-	#end for
-	</ol>
+<div class="col-md-12">
+<div id="event-container">
 
+#for $result in $all_results
+	#set $fb_event = $result.fb_event.info
+	## widths here are set to sum to 700px-50px = 650px
+	<div class="event-item">
+		<div class="event-image">
+		<a href="$fb_event_url($fb_event.id)">
+##preload first five images
+#if $result.index < 20
+			<img src="$result.get_image()" width="180" border="0">
+#else
+			<img class="lazy-wide" src="/images/placeholder.gif" data-original="$result.get_image()" width="180" border="0">
+			<noscript><img src="$result.get_image()" width="180" border="0"></noscript>
+#end if
+		</a>
+		</div>
+		<div class="event-description">
+			<h3 class="event-title">
+			<a href="$fb_event_url($fb_event.id)">
+			$format_html($fb_event.name)
+			</a>
+			</h3>
+			<div class="event-date">
+				$date_only_human_format($result.start_time)
+				#if $result.multi_day_event() and $result.end_time
+					<br>to $date_only_human_format($result.end_time)
+				#end if
+			</div>
+			<div class="event-city">
+				#if $fb_event.location
+					$fb_event.location,
+				#end if
+				$result.actual_city_name
+			</div>
+		</div>
+	</div>
+#end for
+</div> ## event-container
+</div> ## col-md-12
 </div> ## row
 #end def
 
@@ -150,36 +153,23 @@ $len($all_results) events total:
 
 #def bottom_javascript
 
-<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.css' />
-<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.print.css' media="print"/>
-<!--<link rel='stylesheet' type='text/css' href='//cdn.jsdelivr.net/fullcalendar/1.6.4/fullcalendar.css' />-->
-<!--<link rel='stylesheet' type='text/css' href='//cdn.jsdelivr.net/fullcalendar/1.6.4/fullcalendar.print.css' media="print"/>-->
-<!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
-<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js'></script>
-<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.min.js'></script>
-<!--<script src="//cdn.jsdelivr.net/g/momentjs@2.6,fullcalendar@2.0"></script>-->
-
-
-<script type="text/javascript">
-$(document).ready(function() {
-	$('#calendar').fullCalendar({
-		aspectRatio: 1.5,
-		ignoreTimezone: true,
-		allDayDefault: false,
-		events: '$format_js($calendar_feed_url)'
-	});
-});
-</script>
-
-
 <script src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+<script src="//cdn.jsdelivr.net/masonry/3.1.5/masonry.min.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
 
 	$("img.lazy-narrow").show().lazyload({threshold : 500});
 	$("img.lazy-wide").show().lazyload({threshold : 500});
+
+	var container = $('#event-container');
+	// initialize
+	container.masonry({
+	  columnWidth: 200,
+	  itemSelector: '.event-item'
+	});
 });
+</script>
 </script>
 
 #end def
