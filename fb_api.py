@@ -314,6 +314,8 @@ class Memcache(CacheSystem):
         return object_map
 
     def save_objects(self, keys_to_objects):
+        if not keys_to_objects:
+            return
         memcache_set = {}
         for k, v in keys_to_objects.iteritems():
             if self._is_cacheable(k, v):
