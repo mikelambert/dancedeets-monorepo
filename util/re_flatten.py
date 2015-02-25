@@ -50,8 +50,3 @@ if __name__ == '__main__':
     assert ('p', 'o', 'p', '\\W{0,3}', 'l', 'o', 'c', 'k', '(?:ing?|er[sz]?)?') == tokenize_regex(r"pop\W{0,3}lock(?:ing?|er[sz]?)?")
     assert ('0', '[ -]?', 'n', 'a', '[ -]?', '0') == tokenize_regex("0[ -]?na[ -]?0"),tokenize_regex("0[ -]?na[ -]?0")
     assert ('((a))',) == tokenize_regex("((a))")
-    import logic.event_classifier
-    manual_dance_keywords = logic.event_classifier.get_manual_dance_keywords()
-    t = pytrie.Trie(dict((tokenize_regex(x), True) for x in manual_dance_keywords))
-    regex = _sub_alternation(t._root)
-    print regex
