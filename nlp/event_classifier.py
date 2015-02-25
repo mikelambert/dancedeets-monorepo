@@ -14,8 +14,8 @@ except ImportError:
 else:
     re.set_fallback_notification(re.FALLBACK_WARNING)
 import time
-from util import cjk_detect
 from spitfire.runtime.filters import skip_filter
+from . import cjk_detect
 from . import keywords
 from . import grammar
 from . import regex_keywords

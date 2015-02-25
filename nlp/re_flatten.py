@@ -1,5 +1,5 @@
 import re
-from util import pytrie
+from . import pytrie
 
 def construct_regex(elements):
     trie = pytrie.Trie(dict((tokenize_regex(x), True) for x in elements))

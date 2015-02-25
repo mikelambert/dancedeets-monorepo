@@ -3,8 +3,8 @@ import itertools
 import logging
 import re
 
-import regex_keywords
-from util import re_flatten
+from . import regex_keywords
+from . import re_flatten
 
 def _flatten(listOfLists):
     "Flatten one level of nesting"
