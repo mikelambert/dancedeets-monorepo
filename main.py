@@ -6,9 +6,17 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 import logging
 logging.info("Begin modules")
-import os
 import webapp2
 from google.appengine.ext import ereporter
+from google.appengine.ext.ndb import tasklets
+
+# We call this here to force loading _strptime module upfront,
+# because once threads come online and call strptime(), they try to load _strptime lazily,
+# and the second thread to call it while the first one is loading with the lock, triggers an exception.
+# More info:
+# http://bugs.python.org/issue7980
+# http://code-trick.com/python-bug-attribute-error-_strptime/
+import _strptime
 
 
 prod_mode = 'SERVER_SOFTWARE' in os.environ and not os.environ['SERVER_SOFTWARE'].startswith('Dev')
