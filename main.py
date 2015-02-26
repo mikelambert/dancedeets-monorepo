@@ -29,6 +29,7 @@ if not prod_mode:
 logging.info("Begin servlets")
 import base_servlet
 from event_scraper import source_servlets
+from event_scraper import scraping_tasks
 from search import search_servlets
 from search import search_tasks
 from servlets import about
@@ -90,10 +91,10 @@ URLS = [
     ('/tasks/reload_past_events', tasks.ReloadPastEventsHandler),
     ('/tasks/email_all_users', search_tasks.EmailAllUsersHandler),
     ('/tasks/email_user', search_tasks.EmailUserHandler),
-    ('/tasks/load_all_potential_events', tasks.LoadAllPotentialEventsHandler),
-    ('/tasks/load_potential_events_for_friends', tasks.LoadPotentialEventsForFriendsHandler),
-    ('/tasks/load_potential_events_for_user', tasks.LoadPotentialEventsForUserHandler),
-    ('/tasks/load_potential_events_from_wall_posts', tasks.LoadPotentialEventsFromWallPostsHandler),
+    ('/tasks/load_all_potential_events', scraping_tasks.LoadAllPotentialEventsHandler),
+    ('/tasks/load_potential_events_for_friends', scraping_tasks.LoadPotentialEventsForFriendsHandler),
+    ('/tasks/load_potential_events_for_user', scraping_tasks.LoadPotentialEventsForUserHandler),
+    ('/tasks/load_potential_events_from_wall_posts', scraping_tasks.LoadPotentialEventsFromWallPostsHandler),
     ('/tasks/compute_rankings', tasks.ComputeRankingsHandler),
     ('/tasks/memcache_future_events', search_tasks.MemcacheFutureEvents),
     ('/tasks/refresh_fulltext_search_index', search_tasks.RefreshFulltextSearchIndex),
