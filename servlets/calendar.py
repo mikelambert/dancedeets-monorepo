@@ -31,7 +31,7 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
             location_info = event_locations.LocationInfo(result.fb_event, db_event=result.db_event)
             from loc import formatting
             city = formatting.format_geocode(location_info.geocode)
-            title = '%s:\n\n%s' % (city, result.fb_event['info']['name'])
+            title = '@ %s\n\n%s' % (city, result.fb_event['info']['name'])
             json_results.append(dict(
                 id=result.fb_event['info']['id'],
                 title=title,
