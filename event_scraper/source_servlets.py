@@ -31,7 +31,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         #STR_ID_MIGRATE
         source_potential_events = potential_events.PotentialEvent.gql('WHERE source_ids = :graph_id', graph_id=long(s.graph_id)).fetch(1000)
-        found_db_events = [x for x in eventdata.DBEvent.get_by_ids([x.fb_event_id for x in source_potential_events]) if x]
+        found_db_event_ids = [x.string_id() for x in eventdata.DBEvent.get_by_ids([x.fb_event_id for x in source_potential_events], keys_only=True) if x]
 
         if s.creating_fb_uid:
             creating_user = self.fbl.get(fb_api.LookupUser, s.creating_fb_uid)
@@ -40,8 +40,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.display['creating_user'] = creating_user
         self.display['potential_events'] = sorted(source_potential_events, key=lambda x:x.fb_event_id)
-        self.display['db_events'] = sorted(found_db_events, key=lambda x:x.fb_event_id)
-        self.display['no_good_event_ids'] = sorted(list(set(x.fb_event_id for x in source_potential_events).difference(x.fb_event_id for x in found_db_events)))
+        self.display['db_event_ids'] = sorted(found_db_event_ids)
+        self.display['no_good_event_ids'] = sorted(list(set(x.fb_event_id for x in source_potential_events).difference(found_db_event_ids)))
 
         self.display['source'] = s
         self.display['fb_source'] = fb_source

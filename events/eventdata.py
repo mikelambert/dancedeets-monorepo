@@ -69,5 +69,11 @@ class DBEvent(ndb.Model):
         return self.location_geocode is not None
 
     @classmethod
-    def get_by_ids(cls, id_list):
-        return ndb.get_multi([ndb.Key(DBEvent, x) for x in id_list])
+    def get_by_ids(cls, id_list, keys_only=False):
+        if not id_list:
+            return []
+        keys = [ndb.Key(DBEvent, x) for x in id_list]
+        if keys_only:
+            return DBEvent.query(DBEvent.key.IN(keys)).fetch(len(keys), keys_only=True)
+        else:
+            return ndb.get_multi(keys)

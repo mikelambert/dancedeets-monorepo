@@ -48,9 +48,9 @@ Edit Source
 						<a href="$dd_admin_event_url($potential_event.fb_event_id)">$potential_event.fb_event_id</a>,
 					#end for
 					<p>
-					All $len($db_events) DBEvents:
-					#for $db_event in $db_events
-						<a href="$dd_admin_event_url($db_event.fb_event_id)">$db_event.fb_event_id</a>,
+					All $len($db_event_ids) DBEvents:
+					#for $db_event_id in $db_event_ids
+						<a href="$dd_admin_event_url($db_event_id)">$db_event_id</a>,
 					#end for
 					<p>
 					All $len($no_good_event_ids) No-Good PotentialEvent ids:
