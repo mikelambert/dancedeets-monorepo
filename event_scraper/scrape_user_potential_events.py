@@ -1,8 +1,8 @@
 import logging
 
 import fb_api
-from logic import potential_events
 from . import auto_add
+from . import potential_events
 from . import thing_db
 
 def get_potential_dance_events(fbl, user_id, fb_user_events):

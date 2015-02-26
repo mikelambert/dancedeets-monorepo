@@ -3,7 +3,7 @@ from google.appengine.ext import deferred
 
 import fb_api
 import logging
-from logic import potential_events
+from . import potential_events
 from . import thing_db
 
 def function_migrate_thing_to_new_id(fbapi_obj, old_source_id, new_source_id):

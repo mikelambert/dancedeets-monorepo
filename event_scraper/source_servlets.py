@@ -4,7 +4,7 @@ import re
 import base_servlet
 from events import eventdata
 import fb_api
-from logic import potential_events
+from . import potential_events
 from . import thing_db
 from . import thing_scraper
 

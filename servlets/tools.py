@@ -19,7 +19,7 @@ import fb_api
 from event_scraper import auto_add
 #from logic import mr_dump
 #from logic import mr_prediction
-#from logic import potential_events
+#from event_scraper import potential_events
 from event_scraper import thing_db
 #from nlp import event_classifier
 

@@ -3,8 +3,8 @@ import logging
 import fb_api
 
 from logic import gprediction
-from logic import potential_events
 from util import fb_mapreduce
+from . import potential_events
 
 def classify_events(fbl, pe_list):
     pe_list = [x for x in pe_list if x.match_score > 0]

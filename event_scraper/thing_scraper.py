@@ -7,10 +7,10 @@ import urlparse
 from google.appengine.ext import deferred
 
 import fb_api
-from logic import potential_events
 from mapreduce import context
 from util import fb_mapreduce
 from util import timings
+from . import potential_events
 from . import thing_db
 
 
