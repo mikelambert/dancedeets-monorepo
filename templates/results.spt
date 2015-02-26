@@ -159,12 +159,11 @@ Events near ${display_location}:
 #def bottom_javascript
 
 #if $selected_tab == 'calendar'
-<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.css' />
-<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.print.css' media="print"/>
+<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.css' />
+<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css' media="print"/>
 <!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
-<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js'></script>
-<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.min.js'></script>
-<!--<script src="//cdn.jsdelivr.net/g/momentjs@2.6,fullcalendar@2.0"></script>-->
+<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.js'></script>
 
 
 <script type="text/javascript">
@@ -174,7 +173,17 @@ $(document).ready(function() {
 		header: {
 			left: 'prev,next today',
 			center: 'title',
-			right: 'month,basicWeek'
+			right: 'month,basicWeek,basicDay'
+		},
+		views: {
+			month: {
+				eventLimit: 4,
+				eventLimitClick: 'day',
+			},
+			week: {
+				eventLimit: 8,
+				eventLimitClick: 'day',
+			}
 		},
 		ignoreTimezone: true,
 		allDayDefault: false,
