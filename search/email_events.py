@@ -9,10 +9,12 @@ from loc import gmaps_api
 from loc import math
 from logic import friends
 from logic import rsvp
-from search import search
 import template
+from util import fb_mapreduce
 from util import text
+from util import timings
 from util import urls
+from . import search
 
 def email_for_user(user, fbl, should_send=True):
     if not user.send_email or not user.email:
@@ -74,3 +76,34 @@ def email_for_user(user, fbl, should_send=True):
     if should_send:
         message.send()
     return message
+
+#TODO(lambert): do we really want yield on this one?
+@timings.timed
+def yield_email_user(fbl, user):
+    fbl.request(fb_api.LookupUser, user.fb_uid)
+    fbl.request(fb_api.LookupUserEvents, user.fb_uid)
+    try:
+        fbl.batch_fetch()
+    except fb_api.ExpiredOAuthToken as e:
+        logging.info("Auth token now expired, mark as such: %s", e)
+        user.expired_oauth_token_reason = e.args[0]
+        user.expired_oauth_token = True
+        user.put()
+        return None
+    try:
+        email = email_for_user(user, fbl, should_send=True)
+        return email
+    except Exception as e:
+        logging.exception("Error sending email for user %s", user.fb_uid)
+        return None
+map_email_user = fb_mapreduce.mr_user_wrap(yield_email_user)
+email_user = fb_mapreduce.nomr_wrap(yield_email_user)
+
+def mr_email_user(fbl):
+    fb_mapreduce.start_map(
+        fbl=fbl,
+        name='Email Users',
+        #TODO: MOVE
+        handler_spec='logic.fb_reloading.map_email_user',
+        entity_kind='events.users.User',
+    )

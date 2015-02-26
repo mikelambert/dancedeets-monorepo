@@ -2,9 +2,11 @@ import logging
 
 import base_servlet
 import fb_api
+from events import users
 from util import fb_mapreduce
 from util import timings
 from . import search
+from . import email_events
 
 def mr_refresh_index(fbl):
     fb_mapreduce.start_map(
@@ -30,6 +32,18 @@ def yield_refresh_event(fbl, db_events):
 map_refresh_event = fb_mapreduce.mr_wrap(yield_refresh_event)
 refresh_event = fb_mapreduce.nomr_wrap(yield_refresh_event)
 
+
+class EmailAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
+    def get(self):
+        email_events.mr_email_user(self.fbl)
+    post=get
+
+class EmailUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
+    def get(self):
+        user_ids = [x for x in self.request.get('user_ids').split(',') if x]
+        load_users = users.User.get_by_key_name(user_ids)
+        email_events.email_user(self.fbl, load_users[0])
+    post=get
 
 class MemcacheFutureEvents(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
