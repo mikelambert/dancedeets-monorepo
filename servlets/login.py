@@ -4,8 +4,7 @@ import logging
 
 import base_servlet
 from events import users
-
-from logic import rankings
+from rankings import rankings
 from search import search_base
 
 

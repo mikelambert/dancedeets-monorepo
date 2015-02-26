@@ -1,6 +1,8 @@
-import base_servlet
-from logic import rankings
+import webapp2
 
+import base_servlet
+from . import cities
+from . import rankings
 
 class RankingsHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -21,3 +23,13 @@ class RankingsHandler(base_servlet.BaseRequestHandler):
         self.display['string_translations'] = rankings.string_translations
 
         self.render_template('rankings')
+
+class ImportCitiesHandler(webapp2.RequestHandler):
+    def get(self):
+        cities.import_cities()
+        self.response.out.write("Imported Cities!")
+
+class ComputeRankingsHandler(webapp2.RequestHandler):
+    def get(self):
+        rankings.begin_ranking_calculations()
+

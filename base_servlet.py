@@ -19,7 +19,7 @@ import fb_api
 from logic import backgrounder
 from logic import user_creation
 from logic import mobile
-from logic import rankings
+from rankings import rankings
 from search import search_base
 import template
 from util import abbrev

@@ -6,8 +6,8 @@ from mapreduce import control
 from mapreduce import model
 from mapreduce import operation as op
 
-from events import cities
 from loc import gmaps_api
+from . import cities
 
 EVENT_FOR_CITY_RANKING = 'CITY_EVENT_RANKING'
 USER_FOR_CITY_RANKING = 'CITY_USER_RANKING'
@@ -62,7 +62,7 @@ def begin_ranking_calculations():
     control.start_map(
         name='Compute City Rankings by Events',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='logic.rankings.count_event_for_city',
+        handler_spec='rankings.rankings.count_event_for_city',
         mapper_parameters={'entity_kind': 'events.eventdata.DBEvent'},
         queue_name='slow-queue',
         shard_count=2,
@@ -72,7 +72,7 @@ def begin_ranking_calculations():
     control.start_map(
         name='Compute City Rankings by Users',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='logic.rankings.count_user_for_city',
+        handler_spec='rankings.rankings.count_user_for_city',
         mapper_parameters={'entity_kind': 'events.users.User'},
         queue_name='slow-queue',
         shard_count=2,

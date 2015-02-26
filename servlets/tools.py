@@ -11,7 +11,6 @@ from mapreduce import context
 from mapreduce import operation as op
 #from mapreduce import util
 
-from events import cities
 from events import eventdata
 import fb_api
 #from logic import mr_dump
@@ -98,11 +97,6 @@ class OwnedEventsHandler(webapp2.RequestHandler):
         for db_event, fb_event in zip(db_events, fb_events):
             real_fb_event = fb_event.decode_data()
             print db_event.tags, real_fb_event['info']['name']
-
-class ImportCitiesHandler(webapp2.RequestHandler):
-    def get(self):
-        cities.import_cities()
-        self.response.out.write("Imported Cities!")
 
 class ClearMemcacheHandler(webapp2.RequestHandler):
     def get(self):

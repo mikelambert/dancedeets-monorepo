@@ -10,7 +10,6 @@ from events import users
 import fb_api
 from logic import fb_reloading
 from logic import pubsub
-from logic import rankings
 from util import timings
 
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.
@@ -89,10 +88,6 @@ class ReloadAllEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         fb_reloading.mr_load_all_fb_event(self.fbl)
     post=get
-
-class ComputeRankingsHandler(webapp2.RequestHandler):
-    def get(self):
-        rankings.begin_ranking_calculations()
 
 class SocialPublisherHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):

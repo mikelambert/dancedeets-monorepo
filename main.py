@@ -30,6 +30,7 @@ logging.info("Begin servlets")
 import base_servlet
 from event_scraper import source_servlets
 from event_scraper import scraping_tasks
+from rankings import rankings_servlets
 from search import search_servlets
 from search import search_tasks
 from servlets import about
@@ -48,7 +49,6 @@ from servlets import privacy
 from servlets import profile_page
 from servlets import pubsub_setup
 from servlets import share
-from servlets import stats
 from servlets import tasks
 from servlets import tools
 from servlets import youtube_simple_api
@@ -72,7 +72,6 @@ URLS = [
     ('/tools/owned_events', tools.OwnedEventsHandler),
     ('/tools/unprocess_future_events', tools.UnprocessFutureEventsHandler),
     ('/tools/oneoff', tools.OneOffHandler),
-    ('/tools/import_cities', tools.ImportCitiesHandler),
     ('/tools/clear_memcache', admin.ClearMemcacheHandler),
     ('/tools/delete_fb_cache', admin.DeleteFBCacheHandler),
     ('/tools/show_noowner_events', admin.ShowNoOwnerEventsHandler),
@@ -95,14 +94,15 @@ URLS = [
     ('/tasks/load_potential_events_for_friends', scraping_tasks.LoadPotentialEventsForFriendsHandler),
     ('/tasks/load_potential_events_for_user', scraping_tasks.LoadPotentialEventsForUserHandler),
     ('/tasks/load_potential_events_from_wall_posts', scraping_tasks.LoadPotentialEventsFromWallPostsHandler),
-    ('/tasks/compute_rankings', tasks.ComputeRankingsHandler),
     ('/tasks/memcache_future_events', search_tasks.MemcacheFutureEvents),
     ('/tasks/refresh_fulltext_search_index', search_tasks.RefreshFulltextSearchIndex),
     ('/tasks/timings_keep_alive', tasks.TimingsKeepAlive),
     ('/tasks/timings_process_day', tasks.TimingsProcessDay),
     ('/', search_servlets.RelevantHandler),
     ('/_ah/warmup', DoNothingHandler),
-    ('/rankings', stats.RankingsHandler),
+    ('/tasks/compute_rankings', rankings_servlets.ComputeRankingsHandler),
+    ('/tools/import_cities', rankings_servlets.ImportCitiesHandler),
+    ('/rankings', rankings_servlets.RankingsHandler),
     ('/events/admin_nolocation_events', event.AdminNoLocationEventsHandler),
     ('/events/admin_potential_events', event.AdminPotentialEventViewHandler),
     ('/events/admin_edit', event.AdminEditHandler),

@@ -6,9 +6,9 @@ import urllib
 
 import base_servlet
 from events import eventdata
-from logic import rankings
 from logic import friends
 from logic import rsvp
+from rankings import rankings
 from util import timings
 from . import search
 from . import search_base
