@@ -6,7 +6,6 @@ from loc import gmaps_api
 from util import urls
 
 REGION_RADIUS = 200 # kilometers
-CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 
 def get_event_image_url(fb_event):
     picture_url = fb_event.get('fql_info')
