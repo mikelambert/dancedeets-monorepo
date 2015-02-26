@@ -207,8 +207,8 @@ def mapreduce_export_sources(fbl, queue='fast-queue'):
     fb_mapreduce.start_map(
         fbl,
         'Export All Sources',
-        'logic.thing_db.map_export_sources',
-        'logic.thing_db.Source',
+        'event_scraper.thing_db.map_export_sources',
+        'event_scraper.thing_db.Source',
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         output_writer={
             'mime_type': 'text/plain',
@@ -252,9 +252,9 @@ def mr_clean_source_counts():
     control.start_map(
         name='clean source counts',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='logic.thing_db.map_clean_source_count',
+        handler_spec='event_scraper.thing_db.map_clean_source_count',
         mapper_parameters={
-            'entity_kind': 'logic.thing_db.Source',
+            'entity_kind': 'event_scraper.thing_db.Source',
         },
     )
 
@@ -262,7 +262,7 @@ def mr_count_potential_events(fbl):
     fb_mapreduce.start_map(
         fbl=fbl,
         name='count potential events',
-        handler_spec='logic.thing_db.map_count_potential_event',
+        handler_spec='event_scraper.thing_db.map_count_potential_event',
         entity_kind='logic.potential_events.PotentialEvent'
     )
     

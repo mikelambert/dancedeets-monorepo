@@ -6,7 +6,7 @@ from google.appengine.ext import testbed
 import fb_api
 from test_utils import fb_api_stub
 from logic import potential_events
-from logic import thing_db
+from event_scraper import thing_db
 
 class TestThingDBFixer(unittest.TestCase):
     def setUp(self):

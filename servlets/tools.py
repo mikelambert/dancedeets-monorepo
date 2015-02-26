@@ -16,11 +16,11 @@ from events import cities
 from events import eventdata
 from events import users
 import fb_api
-from logic import auto_add
+from event_scraper import auto_add
 #from logic import mr_dump
 #from logic import mr_prediction
 #from logic import potential_events
-from logic import thing_db
+from event_scraper import thing_db
 #from nlp import event_classifier
 
 
@@ -91,7 +91,7 @@ def mr_private_events(fbl):
 #base_servlet.BaseTaskFacebookRequestHandler):#
 class OneOffHandler(webapp2.RequestHandler):
     def get(self):
-        from logic import thing_scraper
+        from event_scraper import thing_scraper
         thing_scraper.mr_delete_bad_sources()
 
 class AutoAddPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):

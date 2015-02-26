@@ -4,7 +4,7 @@ from events import eventdata
 import fb_api
 from logic import event_updates
 from logic import pubsub
-from logic import scrape_user_potential_events
+from event_scraper import scrape_user_potential_events
 from util import fb_mapreduce
 from util import timings
 

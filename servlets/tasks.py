@@ -12,7 +12,7 @@ from logic import backgrounder
 from logic import fb_reloading
 from logic import pubsub
 from logic import rankings
-from logic import thing_scraper
+from event_scraper import thing_scraper
 from util import timings
 
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.

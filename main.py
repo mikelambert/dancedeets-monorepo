@@ -28,6 +28,7 @@ if not prod_mode:
 
 logging.info("Begin servlets")
 import base_servlet
+from event_scraper import source_servlets
 from search import search_servlets
 from search import search_tasks
 from servlets import about
@@ -46,7 +47,6 @@ from servlets import privacy
 from servlets import profile_page
 from servlets import pubsub_setup
 from servlets import share
-from servlets import source
 from servlets import stats
 from servlets import tasks
 from servlets import tools
@@ -116,7 +116,7 @@ URLS = [
     ('/profile/[^/]*/add_tag', profile_page.ProfileAddTagHandler),
     ('/youtube_simple_api', youtube_simple_api.YoutubeSimpleApiHandler),
     ('/calendar/feed', calendar.CalendarFeedHandler),
-    ('/sources/admin_edit', source.AdminEditHandler),
+    ('/sources/admin_edit', source_servlets.AdminEditHandler),
     ('/user/edit', myuser.UserHandler),
     ('/login', login.LoginHandler),
     ('/mobile_apps', mobile_apps.MobileAppsHandler),

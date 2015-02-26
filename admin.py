@@ -14,7 +14,7 @@ from loc.gmaps_bwcompat import GeoCode
 from logic.event_locations import LocationMapping
 from logic.potential_events import PotentialEvent
 from logic.pubsub import OAuthToken
-from logic.thing_db import Source
+from event_scraper.thing_db import Source
 from topics.topic_db import Topic
 
 app = Flask(__name__)

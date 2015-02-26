@@ -8,7 +8,7 @@ from logic import event_locations
 from logic import event_updates
 from logic import potential_events
 from logic import pubsub
-from logic import thing_db
+from event_scraper import thing_db
 from nlp import event_classifier
 
 class AddEventException(Exception):

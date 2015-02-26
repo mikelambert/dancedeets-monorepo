@@ -7,7 +7,7 @@ from events import eventdata
 from logic import event_updates
 from logic import gprediction
 from logic import gtranslate
-from logic import thing_db
+from event_scraper import thing_db
 from nlp import event_classifier
 from util import dates
 

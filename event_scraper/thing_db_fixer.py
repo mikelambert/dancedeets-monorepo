@@ -4,7 +4,7 @@ from google.appengine.ext import deferred
 import fb_api
 import logging
 from logic import potential_events
-from logic import thing_db
+from . import thing_db
 
 def function_migrate_thing_to_new_id(fbapi_obj, old_source_id, new_source_id):
     old_source = thing_db.Source.get_by_key_name(old_source_id)

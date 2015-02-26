@@ -8,10 +8,10 @@ from google.appengine.ext import deferred
 
 import fb_api
 from logic import potential_events
-from logic import thing_db
 from mapreduce import context
 from util import fb_mapreduce
 from util import timings
+from . import thing_db
 
 
 def delete_bad_source(source):
@@ -32,7 +32,7 @@ def delete_bad_source(source):
 
 def mr_delete_bad_sources():
     mapper_params = {
-        'entity_kind': 'logic.thing_db.Source',
+        'entity_kind': 'event_scraper.thing_db.Source',
         'output_writer': {
             'mime_type': 'text/plain',
             'bucket_name': 'dancedeets-hrd.appspot.com',
@@ -42,7 +42,7 @@ def mr_delete_bad_sources():
     control.start_map(
         name='Delete Bad Sources',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='logic.thing_scraper.delete_bad_source',
+        handler_spec='event_scraper.thing_scraper.delete_bad_source',
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         shard_count=8, # since we want to stick it in the slow-queue, and don't care how fast it executes
         queue_name='fast-queue',
@@ -90,8 +90,8 @@ def mapreduce_scrape_all_sources(fbl, min_potential_events=None, queue='super-sl
     fb_mapreduce.start_map(
         fbl,
         'Scrape All Sources',
-        'logic.thing_scraper.map_scrape_events_from_source',
-        'logic.thing_db.Source',
+        'event_scraper.thing_scraper.map_scrape_events_from_source',
+        'event_scraper.thing_db.Source',
         handle_batch_size=10,
         output_writer={'min_potential_events': min_potential_events},
         queue=queue,
@@ -101,7 +101,7 @@ def mapreduce_create_sources_from_events(fbl):
     fb_mapreduce.start_map(
         fbl,
         'Create Sources from Events',
-        'logic.thing_db.map_create_source_from_event',
+        'event_scraper.thing_db.map_create_source_from_event',
         'events.eventdata.DBEvent',
     )
 

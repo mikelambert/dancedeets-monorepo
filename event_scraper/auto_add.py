@@ -93,7 +93,7 @@ def mr_classify_potential_events(fbl, past_event):
     fb_mapreduce.start_map(
         fbl,
         'Auto-Add Events',
-        'logic.auto_add.map_classify_events',
+        'event_scraper.auto_add.map_classify_events',
         'logic.potential_events.PotentialEvent',
         filters=filters,
         handle_batch_size=20,

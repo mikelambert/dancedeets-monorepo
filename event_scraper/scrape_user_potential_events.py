@@ -1,9 +1,9 @@
 import logging
 
 import fb_api
-from logic import auto_add
 from logic import potential_events
-from logic import thing_db
+from . import auto_add
+from . import thing_db
 
 def get_potential_dance_events(fbl, user_id, fb_user_events):
     # The source_id is not fbl.fb_uid, because sometimes we fetch friend's events as Mike, and the source is not Mike.

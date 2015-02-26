@@ -486,7 +486,7 @@ class FBAPI(CacheSystem):
                             if self.raise_on_page_redirect:
                                 raise PageRedirectException(from_id, to_id)
                             else:
-                                from logic import thing_db_fixer
+                                from event_scraper import thing_db_fixer
                                 from google.appengine.ext import deferred
                                 logging.warning(message)
                                 logging.warning("Executing deferred call to migrate to new ID, returning None here.")

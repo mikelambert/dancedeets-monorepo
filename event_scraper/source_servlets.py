@@ -5,8 +5,8 @@ import base_servlet
 from events import eventdata
 import fb_api
 from logic import potential_events
-from logic import thing_db
-from logic import thing_scraper
+from event_scraper import thing_db
+from . import thing_scraper
 
 def get_id_from_url(url):
     if '#' in url:
