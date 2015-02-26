@@ -8,6 +8,7 @@ gmaps_backend = gmaps
 LOCATION_EXPIRY = 24 * 60 * 60
 
 class CachedGeoCode(ndb.Model):
+    _use_cache = False
     address = property(lambda x: int(x.key().name()))
     json_data = ndb.JsonProperty()
     date_created = ndb.DateTimeProperty(auto_now_add=True, indexed=False)

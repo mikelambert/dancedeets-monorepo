@@ -15,6 +15,7 @@ ALL_TOPICS = [
 ]
 
 class Topic(ndb.Model):
+    _use_cache = False
     graph_id = ndb.StringProperty()
 
     topic_class = ndb.StringProperty(choices=ALL_TOPICS)
