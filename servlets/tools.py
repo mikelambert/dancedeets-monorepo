@@ -11,17 +11,11 @@ from mapreduce import context
 from mapreduce import operation as op
 #from mapreduce import util
 
-import base_servlet
 from events import cities
 from events import eventdata
-from events import users
 import fb_api
-from event_scraper import auto_add
 #from logic import mr_dump
 #from logic import mr_prediction
-#from event_scraper import potential_events
-from event_scraper import thing_db
-#from nlp import event_classifier
 
 
 class UnprocessFutureEventsHandler(webapp2.RequestHandler):
@@ -91,22 +85,7 @@ def mr_private_events(fbl):
 #base_servlet.BaseTaskFacebookRequestHandler):#
 class OneOffHandler(webapp2.RequestHandler):
     def get(self):
-        from event_scraper import thing_scraper
-        thing_scraper.mr_delete_bad_sources()
-
-class AutoAddPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        past_event = self.request.get('past_event', None)
-        if past_event == '1':
-            past_event = True
-        elif past_event == '0':
-            past_event = False
-        auto_add.mr_classify_potential_events(self.fbl, past_event)
-
-class ExportSourcesHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        queue = self.request.get('queue', 'fast-queue')
-        thing_db.mapreduce_export_sources(self.fbl, queue=queue)
+        pass
 
 class OwnedEventsHandler(webapp2.RequestHandler):
     def get(self):

@@ -4,12 +4,12 @@ from mapreduce import context
 
 import fb_api
 
-from event_scraper import add_entities
 from events import eventdata
 from logic import event_locations
 from nlp import event_auto_classifier
 from nlp import event_classifier
 from util import fb_mapreduce
+from . import add_entities
 from . import potential_events
 
 def classify_events(fbl, pe_list, fb_list=None):

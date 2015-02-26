@@ -3,8 +3,25 @@ import logging
 import base_servlet
 import fb_api
 from logic import backgrounder
+from . import auto_add
 from . import potential_events_reloading
+from . import thing_db
 from . import thing_scraper
+
+
+class AutoAddPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
+    def get(self):
+        past_event = self.request.get('past_event', None)
+        if past_event == '1':
+            past_event = True
+        elif past_event == '0':
+            past_event = False
+        auto_add.mr_classify_potential_events(self.fbl, past_event)
+
+class ExportSourcesHandler(base_servlet.BaseTaskFacebookRequestHandler):
+    def get(self):
+        queue = self.request.get('queue', 'fast-queue')
+        thing_db.mapreduce_export_sources(self.fbl, queue=queue)
 
 class LoadPotentialEventsForUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):

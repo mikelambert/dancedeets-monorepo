@@ -7,9 +7,9 @@ from events import eventdata
 from logic import event_updates
 from logic import gprediction
 from logic import gtranslate
-from event_scraper import thing_db
 from nlp import event_classifier
 from util import dates
+from . import thing_db
 
 class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: str(x.key().name()))
