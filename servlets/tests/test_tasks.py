@@ -33,7 +33,7 @@ class TestTasks(unittest.TestCase):
         #self.testbed.init_taskqueue_stub()
         
         e = eventdata.DBEvent(id=EVENT_ID)
-        e.time_period = eventdata.TIME_FUTURE
+        e.time_period = dates.TIME_FUTURE
         e.put()
         m = users.User(key_name=MIKE_ID)
         m.fb_access_token = "DUMMY"

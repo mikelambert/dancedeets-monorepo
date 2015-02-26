@@ -4,6 +4,7 @@ from events import eventdata
 from events import event_updates
 import fb_api
 from logic import pubsub
+from util import dates
 from util import fb_mapreduce
 from util import timings
 
@@ -87,7 +88,7 @@ def mr_load_past_fb_event(fbl):
         name='Load Past Events',
         handler_spec='logic.fb_reloading.map_load_fb_event',
         entity_kind='events.eventdata.DBEvent',
-        filters=[('search_time_period', '=', eventdata.TIME_PAST)],
+        filters=[('search_time_period', '=', dates.TIME_PAST)],
         handle_batch_size=20,
     )
 
@@ -97,7 +98,7 @@ def mr_load_future_fb_event(fbl):
         name='Load Future Events',
         handler_spec='logic.fb_reloading.map_load_fb_event',
         entity_kind='events.eventdata.DBEvent',
-        filters=[('search_time_period', '=', eventdata.TIME_FUTURE)],
+        filters=[('search_time_period', '=', dates.TIME_FUTURE)],
         handle_batch_size=20,
     )
 
@@ -128,7 +129,7 @@ def mr_post_jp_events(fbl, token_nickname):
         name='Post Future Japan Events',
         handler_spec='logic.fb_reloading.map_post_jp_event',
         entity_kind='events.eventdata.DBEvent',
-        filters=[('search_time_period', '=', eventdata.TIME_FUTURE)],
+        filters=[('search_time_period', '=', dates.TIME_FUTURE)],
         handle_batch_size=20,
         extra_mapper_params={'token_nickname': token_nickname},
     )

@@ -8,9 +8,6 @@ from util import urls
 REGION_RADIUS = 200 # kilometers
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 
-TIME_PAST = 'PAST'
-TIME_FUTURE = 'FUTURE'
-
 def get_event_image_url(fb_event):
     picture_url = fb_event.get('fql_info')
     # TODO(FB2.0): cleanup!

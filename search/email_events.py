@@ -10,6 +10,7 @@ from loc import math
 from logic import friends
 from logic import rsvp
 import template
+from util import dates
 from util import fb_mapreduce
 from util import text
 from util import timings
@@ -37,7 +38,7 @@ def email_for_user(user, fbl, should_send=True):
     # search for relevant events
     geocode = gmaps_api.get_geocode(address=user_location)
     bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
-    query = search.SearchQuery(time_period=eventdata.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
+    query = search.SearchQuery(time_period=dates.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
     search_results = query.get_search_results(fbl)

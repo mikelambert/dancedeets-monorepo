@@ -1,4 +1,3 @@
-import datetime
 import logging
 
 import fb_api
@@ -7,22 +6,10 @@ from rankings import rankings
 from search import search
 from nlp import event_classifier
 from util import dates
-from . import eventdata
 from . import event_locations
 
 def _event_time_period(db_event):
-    return _event_time_period2(db_event.start_time, db_event.end_time)
-
-def _event_time_period2(start_time, end_time):
-    if not start_time:
-        return None
-    event_end_time = dates.faked_end_time(start_time, end_time)
-    today = datetime.datetime.today() - datetime.timedelta(days=1)
-    event_relative = (event_end_time - today).total_seconds()
-    if event_relative > 0:
-        return eventdata.TIME_FUTURE
-    else:
-        return eventdata.TIME_PAST
+    return dates.event_time_period(db_event.start_time, db_event.end_time)
 
 def delete_event(db_event):
     search.delete_from_fulltext_search_index(db_event.fb_event_id)

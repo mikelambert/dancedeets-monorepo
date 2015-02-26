@@ -73,7 +73,7 @@ def mr_private_events(fbl):
         'events.eventdata.DBEvent',
         handle_batch_size=80,
         queue=None,
-        filters=[('search_time_period', '=', eventdata.TIME_FUTURE)],
+        filters=[('search_time_period', '=', dates.TIME_FUTURE)],
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         output_writer={
             'mime_type': 'text/plain',

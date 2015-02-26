@@ -3,6 +3,20 @@ import datetime
 # http://en.wikipedia.org/wiki/12-hour_clock
 AMPM_COUNTRIES = ['AU', 'BD', 'CA', 'CO', 'EG', 'IN', 'MY', 'NZ', 'PK', 'PH', 'US']
 
+TIME_PAST = 'PAST'
+TIME_FUTURE = 'FUTURE'
+
+def event_time_period(start_time, end_time):
+    if not start_time:
+        return None
+    event_end_time = faked_end_time(start_time, end_time)
+    today = datetime.datetime.today() - datetime.timedelta(days=1)
+    event_relative = (event_end_time - today).total_seconds()
+    if event_relative > 0:
+        return TIME_FUTURE
+    else:
+        return TIME_PAST
+
 def parse_fb_timestamp(fb_timestamp):
     # because of events like 23705144628 without any time information
     if not fb_timestamp:
@@ -58,3 +72,4 @@ def duration_human_format(d1, d2, country=None):
         return "%s to %s" % (first_date, second_date)
     else:
         return first_date    
+

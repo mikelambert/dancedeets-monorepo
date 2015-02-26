@@ -52,7 +52,7 @@ class PotentialEvent(db.Model):
         else:
             start_time = dates.parse_fb_start_time(fb_event)
             end_time = dates.parse_fb_end_time(fb_event)
-            past_event = (eventdata.TIME_PAST == event_updates._event_time_period2(start_time, end_time))
+            past_event = (dates.TIME_PAST == dates.event_time_period(start_time, end_time))
         changed = (self.past_event != past_event)
         self.past_event = past_event
         return changed

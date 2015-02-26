@@ -76,7 +76,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
                 search_results = [result]
 
             past_results, present_results, grouped_results = search.group_results(search_results)
-            if search_query.time_period == eventdata.TIME_FUTURE:
+            if search_query.time_period == dates.TIME_FUTURE:
                 present_results = past_results + present_results
                 past_results = []
 

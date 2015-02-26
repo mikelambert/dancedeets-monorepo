@@ -113,9 +113,9 @@ class SearchQuery(object):
         self.end_time = end_time
         if self.start_time and self.end_time:
             assert self.start_time < self.end_time
-        if self.time_period == eventdata.TIME_FUTURE and self.end_time:
+        if self.time_period == dates.TIME_FUTURE and self.end_time:
                 assert self.end_time > datetime.datetime.now()
-        if self.time_period == eventdata.TIME_FUTURE and self.start_time:
+        if self.time_period == dates.TIME_FUTURE and self.start_time:
                 assert self.start_time < datetime.datetime.now()
         self.bounds = bounds
 
@@ -141,9 +141,9 @@ class SearchQuery(object):
             self = cls(bounds=bounds, min_attendees=query.min_attendees, keywords=query.keywords, start_time=query.start_time, end_time=query.end_time)
         else:
             if query.past:
-                time_period = eventdata.TIME_PAST
+                time_period = dates.TIME_PAST
             else:
-                time_period = eventdata.TIME_FUTURE
+                time_period = dates.TIME_FUTURE
             self = cls(bounds=bounds, min_attendees=query.min_attendees, keywords=query.keywords, time_period=time_period)
         return self
 
@@ -164,7 +164,7 @@ class SearchQuery(object):
                 clauses += ['(longitude >= %s OR longitude <= %s)' % longitudes]
         index_name = ALL_EVENTS_INDEX
         if self.time_period:
-            if self.time_period == eventdata.TIME_FUTURE:
+            if self.time_period == dates.TIME_FUTURE:
                 index_name = FUTURE_EVENTS_INDEX
         if self.start_time:
             # Do we want/need this hack?
@@ -234,7 +234,7 @@ def update_fulltext_search_index(db_event, fb_event):
     logging.info("Adding event to search index: %s", db_event.fb_event_id)
     doc_event = _create_doc_event(db_event, fb_event)
     if not doc_event: return
-    if db_event.search_time_period == eventdata.TIME_FUTURE:
+    if db_event.search_time_period == dates.TIME_FUTURE:
         doc_index = search.Index(name=ALL_EVENTS_INDEX)
         doc_index.put(doc_event)
         doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
@@ -255,7 +255,7 @@ def delete_from_fulltext_search_index(db_event_id):
 def construct_fulltext_search_index(fbl, index_future=True):
     logging.info("Loading DB Events")
     if index_future:
-        db_query = eventdata.DBEvent.query(eventdata.DBEvent.search_time_period==eventdata.TIME_FUTURE)
+        db_query = eventdata.DBEvent.query(eventdata.DBEvent.search_time_period==dates.TIME_FUTURE)
     else:
         db_query = eventdata.DBEvent.query()
     db_event_keys = db_query.fetch(MAX_EVENTS, keys_only=True)
@@ -375,7 +375,7 @@ def _inner_cache_fb_events(fbl, event_ids):
 
 @timings.timed
 def memcache_future_events(fbl):
-    db_query = eventdata.DBEvent.query(eventdata.DBEvent.search_time_period==eventdata.TIME_FUTURE)
+    db_query = eventdata.DBEvent.query(eventdata.DBEvent.search_time_period==dates.TIME_FUTURE)
     event_ids = [x.id() for x in db_query.fetch(MAX_EVENTS, keys_only=True)]
     logging.info("Overall loading %s events into memcache", len(event_ids))
     EVENTS_AT_A_TIME = 200
