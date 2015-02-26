@@ -1,6 +1,8 @@
 import fb_api
 from logic import backgrounder
 
+CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
+
 class RSVPManager(object):
 
     def __init__(self, fbl):

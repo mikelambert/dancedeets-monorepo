@@ -3,7 +3,6 @@ import logging
 
 from google.appengine.api import mail
 
-from events import eventdata
 import fb_api
 from loc import gmaps_api
 from loc import math
@@ -58,7 +57,7 @@ def email_for_user(user, fbl, should_send=True):
     display['format_html'] = text.format_html
     display['fb_event_url'] = urls.fb_event_url
     display['raw_fb_event_url'] = urls.raw_fb_event_url
-    display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
+    display['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
     display['user'] = user
     display['fb_user'] = fb_user
 

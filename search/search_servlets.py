@@ -5,7 +5,6 @@ import time
 import urllib
 
 import base_servlet
-from events import eventdata
 from logic import friends
 from logic import rsvp
 from rankings import rankings
@@ -120,7 +119,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
         self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
 
-        self.display['CHOOSE_RSVPS'] = eventdata.CHOOSE_RSVPS
+        self.display['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
         self.render_template('results')
 
 class CityHandler(RelevantHandler):
