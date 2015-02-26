@@ -165,10 +165,11 @@ Events near ${display_location}:
 <script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.js'></script>
 <style type="text/css">
-// We want to see the whole city and title, so let's ensure we override 'white-space: nowrap'.
-// This is discussed in more detail here, which is when 2.1 introduced table-based event layout:
-https://code.google.com/p/fullcalendar/issues/detail?id=1992
-.fc-day-grid-event .fc-content {
+/** We want to see the whole city and title, so let's ensure we override 'white-space: nowrap'.
+  * This is discussed in more detail here, which is when 2.1 introduced table-based event layout:
+  * https://code.google.com/p/fullcalendar/issues/detail?id=1992
+  **/
+.fc-day-grid-event > .fc-content {
 	white-space: normal;
 }
 </style>
