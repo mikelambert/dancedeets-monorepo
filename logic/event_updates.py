@@ -40,6 +40,19 @@ def update_and_save_event(db_event, fb_dict):
     db_event.put()
     search.update_fulltext_search_index(db_event, fb_dict)
 
+
+def _all_attending_count(fb_event):
+    # TODO(FB2.0): cleanup!
+    data = fb_event.get('fql_info', {}).get('data')
+    if data and data[0].get('attending_count'):
+        return data[0]['attending_count']
+    else:
+        if 'info' in fb_event and fb_event['info'].get('invited_count'):
+            return fb_event['info']['attending_count']
+        else:
+            return None
+
+
 def _inner_make_event_findable_for(db_event, fb_dict):
     # set up any cached fields or bucketing or whatnot for this event
 
@@ -63,7 +76,7 @@ def _inner_make_event_findable_for(db_event, fb_dict):
     else:
         db_event.owner_fb_uid = None
 
-    db_event.attending_count = fb_api._all_members_count(fb_dict)
+    db_event.attendee_count = _all_attending_count(fb_dict)
 
     db_event.start_time = dates.parse_fb_start_time(fb_dict)
     db_event.end_time = dates.parse_fb_end_time(fb_dict)
@@ -74,7 +87,7 @@ def _inner_make_event_findable_for(db_event, fb_dict):
     location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
 
     # If we got good values from before, don't overwrite with empty values!
-    if location_info.actual_city() or not db_event.actual_city_name:
+    if location_info.actual_city() != db_event.actual_city_name or not db_event.actual_city_name:
         db_event.anywhere = location_info.is_online_event()
         db_event.actual_city_name = location_info.actual_city()
         if location_info.geocode:

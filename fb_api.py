@@ -55,23 +55,15 @@ class FacebookCachedObject(db.Model):
             self.delete() # hack fix to get these objects purged from the system
         return self.data
 
-def _all_members_count(fb_event, value=None):
+def _all_members_count(fb_event):
     # TODO(FB2.0): cleanup!
     data = fb_event.get('fql_info', {}).get('data')
     if data and data[0].get('all_members_count'):
-        if value:
-            data[0]['all_members_count'] = value
-        else:
-            return data[0]['all_members_count']
+        return data[0]['all_members_count']
     else:
         if 'info' in fb_event and fb_event['info'].get('invited_count'):
-            if value:
-                fb_event['info']['invited_count'] = value
-            else:
-                return fb_event['info']['invited_count']
+            return fb_event['info']['invited_count']
         else:
-            if value:
-                raise ValueError()
             return None
 
 def is_public_ish(fb_event):
@@ -200,23 +192,6 @@ class LookupEvent(LookupType):
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (USERLESS_UID, object_id, 'OBJ_EVENT')
-
-    @classmethod
-    def cleanup_data(cls, object_data):
-        """NOTE: modifies object_data in-place"""
-        object_data = super(LookupEvent, cls).cleanup_data(object_data)
-        # So fql_count's all_members_count can be rounded,
-        # to save on unnecessary db updates and indexing.
-        # Especially as it's only for privacy check comparison to 60
-        # So round down to most significant digit:
-        amc = _all_members_count(object_data)
-        if amc:
-            str_amc = str(amc)
-            # Yes, this timed faster than math.round and string-manip
-            new_amc = int(str_amc[0])*10**(len(str_amc)-1)
-            # Set new all_members_count data.
-            _all_members_count(object_data, new_amc)
-        return object_data
 
 class LookupEventPageComments(LookupType):
     use_access_token = False

@@ -6,7 +6,6 @@ import re
 import time
 
 from google.appengine.api import search
-from google.appengine.ext import ndb
 from google.appengine.ext import deferred
 
 from events import eventdata
@@ -101,11 +100,7 @@ class PseudoDBEvent(object):
     def __init__(self, d):
         self.fb_event_id = d.doc_id
         self.actual_city_name = d.field('actual_city_name').value
-        self.attendee_count = 0
-        # TODO(lambert): why doesn't this work?
-        # self.attendee_count = d.field('attendee_count').value
-        if self.attendee_count == 0:
-            self.attendee_count = None
+        self.attendee_count = d.field('attendee_count').value
         self.event_keywords = d.field('event_keywords').value.split(', ')
         self._search_result = d
 
@@ -181,6 +176,8 @@ class SearchQuery(object):
         if self.keywords:
             safe_keywords = re.sub(r'[<=>:(),]', ' ', self.keywords)
             clauses += ['(%s)' % safe_keywords]
+        if self.min_attendees:
+            clauses += ['attendee_count > %d' % self.min_attendees]
         if clauses:
             full_search = ' '.join(clauses)
             logging.info("Doing search for %r", full_search)
