@@ -15,6 +15,7 @@ from events import eventdata
 import fb_api
 #from logic import mr_dump
 #from logic import mr_prediction
+from util import dates
 
 
 class UnprocessFutureEventsHandler(webapp2.RequestHandler):
@@ -84,6 +85,8 @@ def mr_private_events(fbl):
 #base_servlet.BaseTaskFacebookRequestHandler):#
 class OneOffHandler(webapp2.RequestHandler):
     def get(self):
+        from google.appengine.ext import ndb
+        print eventdata.DBEvent.query(eventdata.DBEvent.key==ndb.Key(eventdata.DBEvent, "4436859591125894444")).fetch(1, keys_only=True)
         pass
 
 class OwnedEventsHandler(webapp2.RequestHandler):

@@ -38,7 +38,7 @@ def eventually_publish_event(fbl, event_id, token_nickname=None):
     end_time = dates.parse_fb_end_time(fb_event, need_result=True)
     if end_time < datetime.datetime.now():
         return
-    db_event = eventdata.DBEvent.get_or_insert(event_id)
+    db_event = eventdata.DBEvent.get_by_id(event_id)
     location_info = event_locations.LocationInfo(fb_event, db_event)
     logging.info("Publishing event %s with latlng %s", event_id, location_info.geocode)
     if not location_info.geocode:
