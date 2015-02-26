@@ -1,3 +1,5 @@
+import datetime
+
 import base_servlet
 from logic import search
 from logic import search_base
@@ -17,11 +19,18 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
 
         json_results = []
         for result in search_results:
+            start_time = dates.parse_fb_start_time(result.fb_event)
+            end_time = dates.parse_fb_end_time(result.fb_event, need_result=True)
+            duration = end_time - start_time
+            if duration > datetime.timedelta(days=5):
+                end_time = start_time
+            elif duration < datetime.timedelta(days=1):
+                end_time = start_time
             json_results.append(dict(
                 id=result.fb_event['info']['id'],
                 title=result.fb_event['info']['name'],
-                start=dates.parse_fb_start_time(result.fb_event).strftime('%Y-%m-%dT%H:%M:%SZ'),
-                end=dates.parse_fb_end_time(result.fb_event, need_result=True).strftime('%Y-%m-%dT%H:%M:%SZ'),
+                start=start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                end=end_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
                 url=urls.fb_event_url(result.fb_event['info']['id']),
             ))
         self.write_json_response(json_results)    
