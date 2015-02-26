@@ -4,7 +4,7 @@ from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
 from events import eventdata
-from logic import event_updates
+from events import event_updates
 from logic import gprediction
 from logic import gtranslate
 from nlp import event_classifier

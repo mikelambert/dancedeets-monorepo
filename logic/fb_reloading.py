@@ -1,8 +1,8 @@
 import logging
 
 from events import eventdata
+from events import event_updates
 import fb_api
-from logic import event_updates
 from logic import pubsub
 from util import fb_mapreduce
 from util import timings

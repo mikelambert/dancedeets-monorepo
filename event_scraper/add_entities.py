@@ -4,8 +4,8 @@ from google.appengine.ext import deferred
 
 import fb_api
 from events import eventdata
+from events import event_updates
 from logic import event_locations
-from logic import event_updates
 from logic import pubsub
 from nlp import event_classifier
 from . import potential_events
