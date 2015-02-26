@@ -3,6 +3,7 @@ import datetime
 import base_servlet
 from logic import search
 from logic import search_base
+from logic import event_locations
 from util import dates
 from util import urls
 
@@ -24,14 +25,20 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
             duration = end_time - start_time
             if duration > datetime.timedelta(days=5):
                 end_time = start_time
-            elif duration < datetime.timedelta(days=1):
+            elif duration <= datetime.timedelta(days=1):
                 end_time = start_time
+            all_day = False
+            location_info = event_locations.LocationInfo(result.fb_event, db_event=result.db_event)
+            from loc import formatting
+            city = formatting.format_geocode(location_info.geocode)
+            title = '%s:\n\n%s' % (city, result.fb_event['info']['name'])
             json_results.append(dict(
                 id=result.fb_event['info']['id'],
-                title=result.fb_event['info']['name'],
+                title=title,
                 start=start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
                 end=end_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
                 url=urls.fb_event_url(result.fb_event['info']['id']),
+                allDay=all_day,
             ))
         self.write_json_response(json_results)    
 

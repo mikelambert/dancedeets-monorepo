@@ -27,9 +27,9 @@ def faked_end_time(start_time, end_time):
         return end_time
     else:
         if start_time.hour or start_time.minute:
-            return start_time + datetime.timedelta(hours=24)
+            return start_time + datetime.timedelta(hours=4)
         else:
-            return start_time + datetime.timedelta(hours=4*24)
+            return start_time + datetime.timedelta(hours=24)
 
 def time_human_format(d, country=None):
     if not country or country in AMPM_COUNTRIES:

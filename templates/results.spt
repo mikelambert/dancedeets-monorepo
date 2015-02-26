@@ -161,8 +161,6 @@ Events near ${display_location}:
 #if $selected_tab == 'calendar'
 <link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.css' />
 <link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.print.css' media="print"/>
-<!--<link rel='stylesheet' type='text/css' href='//cdn.jsdelivr.net/fullcalendar/1.6.4/fullcalendar.css' />-->
-<!--<link rel='stylesheet' type='text/css' href='//cdn.jsdelivr.net/fullcalendar/1.6.4/fullcalendar.print.css' media="print"/>-->
 <!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
 <script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.1/fullcalendar.min.js'></script>
@@ -172,9 +170,15 @@ Events near ${display_location}:
 <script type="text/javascript">
 $(document).ready(function() {
 	$('#calendar').fullCalendar({
-		aspectRatio: 1.5,
+		aspectRatio: 1.8,
+		header: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'month,basicWeek'
+		},
 		ignoreTimezone: true,
 		allDayDefault: false,
+		defaultView: 'basicWeek',
 		events: '$format_js($calendar_feed_url)'
 	});
 });
