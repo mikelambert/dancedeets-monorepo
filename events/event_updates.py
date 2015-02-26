@@ -1,14 +1,14 @@
 import datetime
 import logging
 
-from events import eventdata
 import fb_api
 from loc import gmaps_api
-from logic import event_locations
 from rankings import rankings
 from search import search
 from nlp import event_classifier
 from util import dates
+from . import eventdata
+from . import event_locations
 
 def _event_time_period(db_event):
     return _event_time_period2(db_event.start_time, db_event.end_time)

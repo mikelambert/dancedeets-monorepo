@@ -13,7 +13,7 @@ from google.appengine.ext import ndb
 import twitter
 
 from events import eventdata
-from logic import event_locations
+from events import event_locations
 import fb_api
 import keys
 from util import dates

@@ -12,12 +12,12 @@ import base_servlet
 from event_scraper import add_entities
 from event_scraper import potential_events
 from events import eventdata
+from events import event_locations
 from events import event_updates
 import fb_api
 from loc import formatting
 from loc import gmaps_api
 from logic import backgrounder
-from logic import event_locations
 from logic import rsvp
 from nlp import event_auto_classifier
 from nlp import event_classifier

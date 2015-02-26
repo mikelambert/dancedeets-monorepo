@@ -5,7 +5,7 @@ from mapreduce import context
 import fb_api
 
 from events import eventdata
-from logic import event_locations
+from events import event_locations
 from nlp import event_auto_classifier
 from nlp import event_classifier
 from util import fb_mapreduce

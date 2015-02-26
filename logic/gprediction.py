@@ -4,8 +4,8 @@ import string
 import StringIO
 
 from events import eventdata
+from events import event_locations
 import fb_api
-from logic import event_locations
 from util import fb_mapreduce
 
 convert_chars = string.punctuation + '\r\n\t'

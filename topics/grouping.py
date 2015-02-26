@@ -1,7 +1,7 @@
 import collections
 import datetime
 
-from logic import event_locations
+from events import event_locations
 
 def group_results_by_date(results):
     year_months = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
