@@ -133,7 +133,7 @@ class CityHandler(RelevantHandler):
 
         # if they only care about particular types, too bad, redirect them to the main page since we don't support that anymore
         if len(path_bits) >= 4:
-            self.redirect('/'.join(path_bits[:-1]))
+            self.redirect('/'.join(path_bits[:-1]), permanent=True)
             return
 
         super(CityHandler, self).handle(city_name=city_name)
