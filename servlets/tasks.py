@@ -19,35 +19,6 @@ class LoadFriendListHandler(base_servlet.BaseTaskFacebookRequestHandler):
         self.fbl.get(fb_api.LookupFriendList, friend_list_id)
     post=get
 
-class LoadEventHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        event_ids = [x for x in self.request.get('event_ids').split(',') if x]
-        db_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
-        fb_reloading.load_fb_event(self.fbl, db_events)
-    post=get
-
-class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        event_ids = [x for x in self.request.get('event_ids').split(',') if x]
-        db_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
-        fb_reloading.load_fb_event_attending(self.fbl, db_events)
-    post=get
-
-class ReloadPastEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        fb_reloading.mr_load_past_fb_event(self.fbl)
-    post=get
-
-class ReloadFutureEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        fb_reloading.mr_load_future_fb_event(self.fbl)
-    post=get
-
-class ReloadAllEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        fb_reloading.mr_load_all_fb_event(self.fbl)
-    post=get
-
 class SocialPublisherHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         pubsub.pull_and_publish_event(self.fbl)

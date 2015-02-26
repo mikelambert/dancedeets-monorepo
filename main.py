@@ -30,6 +30,7 @@ logging.info("Begin servlets")
 import base_servlet
 from event_scraper import source_servlets
 from event_scraper import scraping_tasks
+from events import event_reloading_tasks
 from rankings import rankings_servlets
 from search import search_servlets
 from search import search_tasks
@@ -77,22 +78,25 @@ URLS = [
     ('/tools/delete_fb_cache', admin.DeleteFBCacheHandler),
     ('/tools/show_noowner_events', admin.ShowNoOwnerEventsHandler),
     ('/tools/fb_data', admin.FBDataHandler),
-    ('/tools/facebook_post', pubsub_setup.FacebookPostHandler),
-    ('/tasks/load_events', tasks.LoadEventHandler),
-    ('/tasks/load_event_attending', tasks.LoadEventAttendingHandler),
-    ('/tasks/reload_all_events', tasks.ReloadAllEventsHandler),
-    ('/tasks/reload_future_events', tasks.ReloadFutureEventsHandler),
-    ('/tasks/reload_past_events', tasks.ReloadPastEventsHandler),
-    ('/tasks/email_all_users', search_tasks.EmailAllUsersHandler),
-    ('/tasks/email_user', search_tasks.EmailUserHandler),
+
+    ('/tasks/load_events', event_reloading_tasks.LoadEventHandler),
+    ('/tasks/load_event_attending', event_reloading_tasks.LoadEventAttendingHandler),
+    ('/tasks/reload_all_events', event_reloading_tasks.ReloadAllEventsHandler),
+    ('/tasks/reload_future_events', event_reloading_tasks.ReloadFutureEventsHandler),
+    ('/tasks/reload_past_events', event_reloading_tasks.ReloadPastEventsHandler),
+
     ('/tools/export_sources', scraping_tasks.ExportSourcesHandler),
     ('/tools/auto_add_potential_events', scraping_tasks.AutoAddPotentialEventsHandler),
     ('/tasks/load_all_potential_events', scraping_tasks.LoadAllPotentialEventsHandler),
     ('/tasks/load_potential_events_for_friends', scraping_tasks.LoadPotentialEventsForFriendsHandler),
     ('/tasks/load_potential_events_for_user', scraping_tasks.LoadPotentialEventsForUserHandler),
     ('/tasks/load_potential_events_from_wall_posts', scraping_tasks.LoadPotentialEventsFromWallPostsHandler),
+
+    ('/tasks/email_all_users', search_tasks.EmailAllUsersHandler),
+    ('/tasks/email_user', search_tasks.EmailUserHandler),
     ('/tasks/memcache_future_events', search_tasks.MemcacheFutureEvents),
     ('/tasks/refresh_fulltext_search_index', search_tasks.RefreshFulltextSearchIndex),
+
     ('/tasks/timings_keep_alive', tasks.TimingsKeepAlive),
     ('/tasks/timings_process_day', tasks.TimingsProcessDay),
     ('/', search_servlets.RelevantHandler),
@@ -133,11 +137,14 @@ URLS = [
     ('/topic/?', topic_servlets.TopicListHandler),
     ('/topic/([^/]+)/?', topic_servlets.TopicHandler),
     ('/topic_add', topic_servlets.AdminAddTopicHandler),
+
+    ('/tools/facebook_post', pubsub_setup.FacebookPostHandler),
     ('/twitter/oauth_start', pubsub_setup.TwitterOAuthStartHandler),
     ('/twitter/oauth_callback', pubsub_setup.TwitterOAuthCallbackHandler),
     ('/twitter/oauth_success', pubsub_setup.TwitterOAuthSuccessHandler),
     ('/twitter/oauth_failure', pubsub_setup.TwitterOAuthFailureHandler),
     ('/facebook/page_start', pubsub_setup.FacebookPageSetupHandler),
+
     ('/tasks/social_publisher', tasks.SocialPublisherHandler),
     ('/tasks/post_japan_events', tasks.PostJapanEventsHandler),
 
