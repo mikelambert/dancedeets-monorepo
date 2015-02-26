@@ -9,7 +9,7 @@ from loc import gmaps_api
 from loc import math
 from logic import friends
 from logic import rsvp
-from logic import search
+from search import search
 import template
 from util import text
 from util import urls

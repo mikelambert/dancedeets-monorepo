@@ -9,9 +9,9 @@ from events import eventdata
 from logic import rankings
 from logic import friends
 from logic import rsvp
-from logic import search
-from logic import search_base
 from util import timings
+from . import search
+from . import search_base
 
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):

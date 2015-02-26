@@ -20,7 +20,7 @@ from logic import backgrounder
 from logic import user_creation
 from logic import mobile
 from logic import rankings
-from logic import search_base
+from search import search_base
 import template
 from util import abbrev
 from util import dates
@@ -425,4 +425,30 @@ def update_last_login_time(user_id, login_time):
         # in read-only, keep trying until we succeed
         user.put()
     db.run_in_transaction(_update_last_login_time)
+
+
+class BaseTaskRequestHandler(webapp2.RequestHandler):
+    pass
+
+class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
+    def requires_login(self):
+        return False
+
+    def initialize(self, request, response):
+        super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
+
+        self.fb_uid = self.request.get('user_id')
+        self.user = users.User.get_cached(self.fb_uid)
+        if self.user:
+            if not self.user.fb_access_token:
+                logging.error("Can't execute background task for user %s without access_token", self.fb_uid)
+            self.access_token = self.user.fb_access_token
+        else:
+            self.access_token = None
+        self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
+        force_updated = bool(int(self.request.get('force_updated', 0)))
+        self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
+        self.fbl.allow_cache = self.allow_cache
+        self.fbl.force_updated = force_updated
+
 

@@ -4,10 +4,10 @@ import urllib
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
+import base_servlet
 from logic import gprediction
-from servlets import tasks
 
-class GenerateTrainingDataHandler(tasks.BaseTaskFacebookRequestHandler):
+class GenerateTrainingDataHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         gprediction.mr_generate_training_data(self.fbl)
 

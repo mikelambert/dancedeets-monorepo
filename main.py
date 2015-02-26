@@ -28,6 +28,8 @@ if not prod_mode:
 
 logging.info("Begin servlets")
 import base_servlet
+from search import search_servlets
+from search import search_tasks
 from servlets import about
 from servlets import admin
 from servlets import api
@@ -43,8 +45,6 @@ from servlets import myuser
 from servlets import privacy
 from servlets import profile_page
 from servlets import pubsub_setup
-from servlets import search
-from servlets import search_tasks
 from servlets import share
 from servlets import source
 from servlets import stats
@@ -99,7 +99,7 @@ URLS = [
     ('/tasks/refresh_fulltext_search_index', search_tasks.RefreshFulltextSearchIndex),
     ('/tasks/timings_keep_alive', tasks.TimingsKeepAlive),
     ('/tasks/timings_process_day', tasks.TimingsProcessDay),
-    ('/', search.RelevantHandler),
+    ('/', search_servlets.RelevantHandler),
     ('/_ah/warmup', DoNothingHandler),
     ('/rankings', stats.RankingsHandler),
     ('/events/admin_nolocation_events', event.AdminNoLocationEventsHandler),
@@ -107,11 +107,11 @@ URLS = [
     ('/events/admin_edit', event.AdminEditHandler),
     ('/events/redirect', event.RedirectToEventHandler),
     ('/events_add', event.AddHandler),
-    ('/events/relevant', search.RelevantHandler),
+    ('/events/relevant', search_servlets.RelevantHandler),
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/events/image_proxy/(\d+)', event_proxy.ImageProxyHandler),
     (r'/events/\d+/?', event.ShowEventHandler),
-    ('/city/.*', search.CityHandler),
+    ('/city/.*', search_servlets.CityHandler),
     ('/profile/[^/]*', profile_page.ProfileHandler),
     ('/profile/[^/]*/add_tag', profile_page.ProfileAddTagHandler),
     ('/youtube_simple_api', youtube_simple_api.YoutubeSimpleApiHandler),

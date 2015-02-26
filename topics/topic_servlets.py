@@ -5,7 +5,7 @@ import base_servlet
 import fb_api
 from topics import grouping
 from topics import topic_db
-from logic import search
+from search import search
 
 class TopicListHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):

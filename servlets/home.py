@@ -4,7 +4,7 @@ import base_servlet
 from events import users
 
 from logic import rankings
-from logic import search_base
+from search import search_base
 
 def get_location(fb_user):
     if fb_user['profile'].get('location'):

@@ -6,7 +6,7 @@ import base_servlet
 from events import users
 
 from logic import rankings
-from logic import search_base
+from search import search_base
 
 
 class LoginHandler(base_servlet.BaseRequestHandler):

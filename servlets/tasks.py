@@ -4,7 +4,7 @@ import webapp2
 
 from google.appengine.api import mail
 
-
+import base_servlet
 from events import eventdata
 from events import users
 import fb_api
@@ -24,31 +24,6 @@ WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = %s)
 AND is_app_user = 1
 """
 
-class BaseTaskRequestHandler(webapp2.RequestHandler):
-    pass
-
-class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
-    def requires_login(self):
-        return False
-
-    def initialize(self, request, response):
-        super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
-
-        self.fb_uid = self.request.get('user_id')
-        self.user = users.User.get_cached(self.fb_uid)
-        if self.user:
-            if not self.user.fb_access_token:
-                logging.error("Can't execute background task for user %s without access_token", self.fb_uid)
-            self.access_token = self.user.fb_access_token
-        else:
-            self.access_token = None
-        self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
-        force_updated = bool(int(self.request.get('force_updated', 0)))
-        self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
-        self.fbl.allow_cache = self.allow_cache
-        self.fbl.force_updated = force_updated
-
-
 class LookupAppFriendUsers(fb_api.LookupType):
     # V2.0 CHANGE
     version = "v1.0"
@@ -57,7 +32,7 @@ class LookupAppFriendUsers(fb_api.LookupType):
     def get_lookups(cls, object_id):
         return [('info', cls.fql_url(GET_FRIEND_APP_USERS % object_id))]
 
-class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
+class TrackNewUserFriendsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         key = fb_api.generate_key(LookupAppFriendUsers, self.fb_uid)
         fb_result = self.fbl.fb.fetch_keys([key])
@@ -69,60 +44,60 @@ class TrackNewUserFriendsHandler(BaseTaskFacebookRequestHandler):
         user_friends.put()
     post=get
 
-class LoadFriendListHandler(BaseTaskFacebookRequestHandler):
+class LoadFriendListHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         friend_list_id = self.request.get('friend_list_id')
         self.fbl.get(fb_api.LookupFriendList, friend_list_id)
     post=get
 
-class LoadEventHandler(BaseTaskFacebookRequestHandler):
+class LoadEventHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
         db_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
         fb_reloading.load_fb_event(self.fbl, db_events)
     post=get
 
-class LoadEventAttendingHandler(BaseTaskFacebookRequestHandler):
+class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
         db_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
         fb_reloading.load_fb_event_attending(self.fbl, db_events)
     post=get
 
-class LoadUserHandler(BaseTaskFacebookRequestHandler):
+class LoadUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         load_users = users.User.get_by_key_name(user_ids)
         fb_reloading.load_fb_user(self.fbl, load_users[0])
     post=get
 
-class ReloadAllUsersHandler(BaseTaskFacebookRequestHandler):
+class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         # this calls a map function wrapped by mr_user_wrap, so it works correctly on a per-user basis
         fb_reloading.mr_load_fb_user(self.fbl)
     post=get
 
-class ReloadPastEventsHandler(BaseTaskFacebookRequestHandler):
+class ReloadPastEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         fb_reloading.mr_load_past_fb_event(self.fbl)
     post=get
 
-class ReloadFutureEventsHandler(BaseTaskFacebookRequestHandler):
+class ReloadFutureEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         fb_reloading.mr_load_future_fb_event(self.fbl)
     post=get
 
-class ReloadAllEventsHandler(BaseTaskFacebookRequestHandler):
+class ReloadAllEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         fb_reloading.mr_load_all_fb_event(self.fbl)
     post=get
 
-class EmailAllUsersHandler(BaseTaskFacebookRequestHandler):
+class EmailAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         fb_reloading.mr_email_user(self.fbl)
     post=get
 
-class EmailUserHandler(BaseTaskFacebookRequestHandler):
+class EmailUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         load_users = users.User.get_by_key_name(user_ids)
@@ -133,12 +108,12 @@ class ComputeRankingsHandler(webapp2.RequestHandler):
     def get(self):
         rankings.begin_ranking_calculations()
 
-class LoadAllPotentialEventsHandler(BaseTaskFacebookRequestHandler):
+class LoadAllPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         # this calls a map function wrapped by mr_user_wrap, so it works correctly on a per-user basis
         fb_reloading.mr_load_potential_events(self.fbl)
 
-class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
+class LoadPotentialEventsForFriendsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         friend_lists = []
         #TODO(lambert): extract this out into some sort of dynamic lookup based on Mike Lambert
@@ -159,31 +134,31 @@ class LoadPotentialEventsForFriendsHandler(BaseTaskFacebookRequestHandler):
             friend_ids = [x['id'] for x in fl['friend_list']['data']]
             backgrounder.load_potential_events_for_friends(self.fb_uid, friend_ids, allow_cache=self.allow_cache)
 
-class LoadPotentialEventsFromWallPostsHandler(BaseTaskFacebookRequestHandler):
+class LoadPotentialEventsFromWallPostsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         min_potential_events = int(self.request.get('min_potential_events', '0'))
         queue = self.request.get('queue', 'super-slow-queue')
         thing_scraper.mapreduce_scrape_all_sources(self.fbl, min_potential_events=min_potential_events, queue=queue)
 
-class LoadPotentialEventsForUserHandler(BaseTaskFacebookRequestHandler):
+class LoadPotentialEventsForUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         fb_reloading.load_potential_events_for_user_ids(self.fbl, user_ids)
 
-class SocialPublisherHandler(BaseTaskFacebookRequestHandler):
+class SocialPublisherHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         pubsub.pull_and_publish_event(self.fbl)
 
-class PostJapanEventsHandler(BaseTaskFacebookRequestHandler):
+class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         token_nickname = self.request.get('token_nickname', None)
         fb_reloading.mr_post_jp_events(self.fbl, token_nickname)
 
-class TimingsKeepAlive(BaseTaskRequestHandler):
+class TimingsKeepAlive(base_servlet.BaseTaskRequestHandler):
     def get(self):
         timings.keep_alive()
 
-class TimingsProcessDay(BaseTaskRequestHandler):
+class TimingsProcessDay(base_servlet.BaseTaskRequestHandler):
     def get(self):
         summary = timings.summary()
         sorted_summary = sorted(summary.items(), key=lambda x: x[1])

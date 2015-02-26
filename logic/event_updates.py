@@ -6,7 +6,7 @@ import fb_api
 from loc import gmaps_api
 from logic import event_locations
 from logic import rankings
-from logic import search
+from search import search
 from nlp import event_classifier
 from util import dates
 

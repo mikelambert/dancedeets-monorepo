@@ -1,9 +1,9 @@
 import datetime
 
 import base_servlet
-from logic import search
-from logic import search_base
 from logic import event_locations
+from search import search
+from search import search_base
 from util import dates
 from util import urls
 

@@ -15,9 +15,9 @@ from loc import gmaps_api
 from loc import math
 from events import eventdata
 from events import users
-from logic import search
-from logic import search_base
+from search import search
 from logic import user_creation
+from search import search_base
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
