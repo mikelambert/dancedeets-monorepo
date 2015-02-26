@@ -73,10 +73,6 @@ def pull_and_publish_event(fbl):
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
         logging.info("Posting to OAuthToken: %s", token)
-        next_post_time = datetime.datetime.now() + datetime.timedelta(seconds=token.time_between_posts)
-        token = token.key.get()
-        token.next_post_time = next_post_time
-        token.put()
         logging.info("Fetching tasks with queue id %s", token.queue_id())
         tasks = q.lease_tasks_by_tag(120, 1, token.queue_id())
         if tasks:
@@ -85,6 +81,10 @@ def pull_and_publish_event(fbl):
                 logging.info("  Found event, posting %s", event_id)
                 post_event_id_with_authtoken(fbl, event_id, token)
                 q.delete_tasks(task)
+            next_post_time = datetime.datetime.now() + datetime.timedelta(seconds=token.time_between_posts)
+            token = token.key.get()
+            token.next_post_time = next_post_time
+            token.put()
 
 def post_event_id_with_authtoken(fbl, event_id, auth_token):
     event_id = event_id
