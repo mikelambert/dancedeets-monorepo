@@ -105,5 +105,5 @@ def mr_email_user(fbl):
         name='Email Users',
         #TODO: MOVE
         handler_spec='logic.fb_reloading.map_email_user',
-        entity_kind='events.users.User',
+        entity_kind='users.users.User',
     )

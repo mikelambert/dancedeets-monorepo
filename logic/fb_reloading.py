@@ -57,7 +57,7 @@ def mr_load_fb_user(fbl):
         fbl=fbl,
         name='Load Users',
         handler_spec='logic.fb_reloading.map_load_fb_user',
-        entity_kind='events.users.User',
+        entity_kind='users.users.User',
     )
 
 @timings.timed

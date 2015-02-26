@@ -6,10 +6,10 @@ from webtest import utils
 
 from google.appengine.ext import testbed
 
-from events import users
 import fb_api
 import main
 from test_utils import fb_api_stub
+from users import users
 
 app = TestApp(main.application)
 

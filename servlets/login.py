@@ -3,9 +3,9 @@
 import logging
 
 import base_servlet
-from events import users
 from rankings import rankings
 from search import search_base
+from users import users
 
 
 class LoginHandler(base_servlet.BaseRequestHandler):

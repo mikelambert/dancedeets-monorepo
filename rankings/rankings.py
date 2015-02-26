@@ -73,7 +73,7 @@ def begin_ranking_calculations():
         name='Compute City Rankings by Users',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='rankings.rankings.count_user_for_city',
-        mapper_parameters={'entity_kind': 'events.users.User'},
+        mapper_parameters={'entity_kind': 'users.users.User'},
         queue_name='slow-queue',
         shard_count=2,
         _app=USER_FOR_CITY_RANKING,

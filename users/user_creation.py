@@ -4,8 +4,8 @@ import urllib
 
 from google.appengine.api import taskqueue
 
-from events import users
 from logic import backgrounder
+from . import users
 
 def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires, location, send_email=False, referer=None, client=None):
     user = users.User(key_name=fb_uid)

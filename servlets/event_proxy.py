@@ -3,7 +3,7 @@ import fb_api
 import webapp2
 
 from events import eventdata
-from events import users
+from users import users
 from util import fetch
 
 class ImageProxyHandler(webapp2.RequestHandler):

@@ -13,15 +13,15 @@ import webapp2
 from google.appengine.ext import db
 from google.appengine.ext import deferred
 
-from events import users
+from users import users
 import facebook
 import fb_api
 from logic import backgrounder
-from logic import user_creation
 from logic import mobile
 from rankings import rankings
 from search import search_base
 import template
+from users import user_creation
 from util import abbrev
 from util import dates
 from util import text

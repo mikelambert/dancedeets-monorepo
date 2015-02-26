@@ -1,7 +1,7 @@
 import base_servlet
-from events import users
 from rankings import rankings
 from search import search_base
+from users import users
 
 def get_location(fb_user):
     if fb_user['profile'].get('location'):

@@ -4,20 +4,19 @@ import logging
 import re
 import traceback
 import urllib
-import xml.sax.saxutils
 
 from google.appengine.api import taskqueue
 
 import base_servlet
 import fb_api
+from events import eventdata
 from loc import formatting
 from loc import gmaps_api
 from loc import math
-from events import eventdata
-from events import users
 from search import search
-from logic import user_creation
 from search import search_base
+from users import user_creation
+from users import users
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 

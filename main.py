@@ -44,7 +44,6 @@ from servlets import home
 from servlets import gprediction
 from servlets import login
 from servlets import mobile_apps
-from servlets import myuser
 from servlets import privacy
 from servlets import profile_page
 from servlets import pubsub_setup
@@ -53,6 +52,8 @@ from servlets import tasks
 from servlets import tools
 from servlets import youtube_simple_api
 from topics import topic_servlets
+from users import user_servlets
+from users import user_tasks
 
 from util import batched_mapperworker
 
@@ -75,14 +76,10 @@ URLS = [
     ('/tools/clear_memcache', admin.ClearMemcacheHandler),
     ('/tools/delete_fb_cache', admin.DeleteFBCacheHandler),
     ('/tools/show_noowner_events', admin.ShowNoOwnerEventsHandler),
-    ('/tools/show_users', admin.ShowUsersHandler),
     ('/tools/fb_data', admin.FBDataHandler),
     ('/tools/facebook_post', pubsub_setup.FacebookPostHandler),
     ('/tasks/load_events', tasks.LoadEventHandler),
-    ('/tasks/load_users', tasks.LoadUserHandler),
     ('/tasks/load_event_attending', tasks.LoadEventAttendingHandler),
-    ('/tasks/track_newuser_friends', tasks.TrackNewUserFriendsHandler),
-    ('/tasks/reload_all_users', tasks.ReloadAllUsersHandler),
     ('/tasks/reload_all_events', tasks.ReloadAllEventsHandler),
     ('/tasks/reload_future_events', tasks.ReloadFutureEventsHandler),
     ('/tasks/reload_past_events', tasks.ReloadPastEventsHandler),
@@ -118,7 +115,11 @@ URLS = [
     ('/youtube_simple_api', youtube_simple_api.YoutubeSimpleApiHandler),
     ('/calendar/feed', calendar.CalendarFeedHandler),
     ('/sources/admin_edit', source_servlets.AdminEditHandler),
-    ('/user/edit', myuser.UserHandler),
+    ('/tasks/track_newuser_friends', user_tasks.TrackNewUserFriendsHandler),
+    ('/tasks/load_users', user_tasks.LoadUserHandler),
+    ('/tasks/reload_all_users', user_tasks.ReloadAllUsersHandler),
+    ('/tools/show_users', user_servlets.ShowUsersHandler),
+    ('/user/edit', user_servlets.UserHandler),
     ('/login', login.LoginHandler),
     ('/mobile_apps', mobile_apps.MobileAppsHandler),
     ('/share', share.ShareHandler),

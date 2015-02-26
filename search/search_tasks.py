@@ -2,7 +2,7 @@ import logging
 
 import base_servlet
 import fb_api
-from events import users
+from users import users
 from util import fb_mapreduce
 from util import timings
 from . import search

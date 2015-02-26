@@ -1,4 +1,3 @@
-import collections
 import json
 import pprint
 import time
@@ -9,7 +8,6 @@ from google.appengine.ext import db
 
 import base_servlet
 from events import eventdata
-from events import users
 import fb_api
 from util import urls
 
@@ -67,28 +65,6 @@ class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
         logging.info("found %s events", len(all_events))
         for e in all_events:
             self.response.out.write('<a href="%s">%s</a><br>\n' % (urls.raw_fb_event_url(e.fb_event_id), e.fb_event_id))
-
-class ShowUsersHandler(base_servlet.BaseRequestHandler):
-    def get(self):
-        self.finish_preload()
-        num_fetch_users = int(self.request.get('num_users', 500))
-        order_field = self.request.get('order_field', 'creation_time')
-        all_users = users.User.all().order('-%s' % order_field).fetch(num_fetch_users)
-        all_users = sorted(all_users, key=lambda x: getattr(x, order_field), reverse=True)
-        client_counts = collections.defaultdict(lambda: 0)
-        for user in all_users:
-            for client in user.clients:
-                client_counts[client] += 1
-        user_ids = [x.fb_uid for x in all_users]
-        fb_users = self.fbl.get_multi(fb_api.LookupUser, user_ids)
-
-        self.display['client_counts'] = client_counts
-        self.display['num_users'] = len(all_users)
-        self.display['num_active_users'] = len([x for x in all_users if not x.expired_oauth_token])
-        self.display['users'] = all_users
-        self.display['fb_users'] = fb_users
-        self.display['track_google_analytics'] = False
-        self.render_template('show_users')
 
 class ClearMemcacheHandler(webapp2.RequestHandler):
     def get(self):
