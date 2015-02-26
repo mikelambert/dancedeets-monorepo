@@ -2,7 +2,7 @@ import logging
 
 from google.appengine.ext import ndb
 
-import gmaps
+from . import gmaps
 gmaps_backend = gmaps
 
 LOCATION_EXPIRY = 24 * 60 * 60

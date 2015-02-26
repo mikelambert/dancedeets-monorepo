@@ -1,7 +1,7 @@
 import json
 import os.path
 
-import gmaps
+from . import gmaps
 
 def fetch_raw(address=None, latlng=None, language='en'):
 

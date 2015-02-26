@@ -1,13 +1,13 @@
 import copy
 import logging
 try:
-    import gmaps_cached
-    import gmaps_bwcompat
+    from . import gmaps_cached
+    from . import gmaps_bwcompat
     gmaps_backend = gmaps_cached
     gmaps_backend.gmaps_backend = gmaps_bwcompat
 except ImportError:
     logging.error("Failed to import caching backends, defaulting to raw gmaps backend")
-    import gmaps
+    from . import gmaps
     gmaps_backend = gmaps
 
 class GeocodeException(Exception):
