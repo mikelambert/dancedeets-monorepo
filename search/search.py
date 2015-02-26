@@ -336,15 +336,12 @@ def save_db_event_ids(fbl, index_name, db_event_ids):
     if None in db_events:
         logging.error("DB Event Lookup returned None!")
     logging.info("Loading %s FB Events", len(db_event_ids))
-    fbl.request_multi(fb_api.LookupEvent, db_event_ids)
-    fbl.batch_fetch()
 
     delete_ids = []
     doc_events = []
     logging.info("Constructing Documents")
     for db_event in db_events:
-        fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
-        doc_event = _create_doc_event(db_event, fb_event)
+        doc_event = _create_doc_event(db_event, db_event.fb_event)
         if not doc_event:
             delete_ids.append(db_event.fb_event_id)
             continue
