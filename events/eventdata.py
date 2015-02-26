@@ -35,7 +35,6 @@ CM_ADMIN = 'CM_ADMIN'
 CM_USER = 'CM_USER'
 
 class DBEvent(ndb.Model):
-    _use_cache = False
     """Stores custom data about our Event"""
     fb_event_id = property(lambda x: str(x.key.string_id()))
 
