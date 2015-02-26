@@ -26,10 +26,6 @@ def get_largest_cover(fb_event):
     else:
         return None
 
-CM_AUTO = 'CM_AUTO'
-CM_ADMIN = 'CM_ADMIN'
-CM_USER = 'CM_USER'
-
 class DBEvent(ndb.Model):
     """Stores custom data about our Event"""
     fb_event_id = property(lambda x: str(x.key.string_id()))

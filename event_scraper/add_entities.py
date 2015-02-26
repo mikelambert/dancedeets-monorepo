@@ -11,6 +11,11 @@ from nlp import event_classifier
 from . import potential_events
 from . import thing_db
 
+# valid parameters for creating_method= argument below
+CM_AUTO = 'CM_AUTO'
+CM_ADMIN = 'CM_ADMIN'
+CM_USER = 'CM_USER'
+
 class AddEventException(Exception):
     pass
 
