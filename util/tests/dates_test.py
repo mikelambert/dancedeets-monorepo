@@ -56,9 +56,9 @@ class TestEndTime(TestDates):
     def runTest(self):
         e = {'info': {'start_time': '2012-04-17T13:30:00'}}
         self.assertEqual(dates.parse_fb_end_time(e), None)
-        self.assertEqual(dates.parse_fb_end_time(e, need_result=True), datetime.datetime(2012, 4, 18, 13, 30))
+        self.assertEqual(dates.parse_fb_end_time(e, need_result=True), datetime.datetime(2012, 4, 17, 17, 30))
         e = {'info': {'start_time': '2012-04-17T00:00:00'}}
-        self.assertEqual(dates.parse_fb_end_time(e, need_result=True), datetime.datetime(2012, 4, 21))
+        self.assertEqual(dates.parse_fb_end_time(e, need_result=True), datetime.datetime(2012, 4, 18))
 
 if __name__ == '__main__':
     unittest.main()

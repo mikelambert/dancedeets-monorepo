@@ -39,22 +39,6 @@ class TestLookupEvent(unittest.TestCase):
         cleaned_object_data = fb_api.LookupEvent.cleanup_data(deleted_object_data)
         self.assertEqual(cleaned_object_data['empty'], fb_api.EMPTY_CAUSE_DELETED)
 
-        object_data = {'fql_info': {'data': [{'all_members_count': 67}]}}
-        cleaned_object_data = fb_api.LookupEvent.cleanup_data(object_data)
-        self.assertEqual(cleaned_object_data['fql_info']['data'][0]['all_members_count'], 60)
-
-        object_data = {'fql_info': {'data': [{'all_members_count': 267}]}}
-        cleaned_object_data = fb_api.LookupEvent.cleanup_data(object_data)
-        self.assertEqual(cleaned_object_data['fql_info']['data'][0]['all_members_count'], 200)
-
-        object_data = {'info': {'invited_count': 67}}
-        cleaned_object_data = fb_api.LookupEvent.cleanup_data(object_data)
-        self.assertEqual(cleaned_object_data['info']['invited_count'], 60)
-
-        object_data = {'info': {'invited_count': 267}}
-        cleaned_object_data = fb_api.LookupEvent.cleanup_data(object_data)
-        self.assertEqual(cleaned_object_data['info']['invited_count'], 200)
-
 class TestMemcache(unittest.TestCase):
     def setUp(self):
         self.memcache = fb_api.memcache
