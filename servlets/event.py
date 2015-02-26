@@ -267,8 +267,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 logging.error("Could not load event info for user: %s", e)
                 events = []
             #STR_ID_MIGRATE: We still get ids as ints from our FQL
-            db_events = eventdata.DBEvent.get_by_ids([str(x['eid']) for x in events])
-            loaded_fb_event_ids = set(x.fb_event_id for x in db_events if x)
+            loaded_fb_event_ids = set(x.string_id() for x in eventdata.DBEvent.get_by_ids([str(x['eid']) for x in events], keys_only=True) if x)
 
             for event in events:
                 # rewrite hack necessary for templates (and above code)
@@ -338,8 +337,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             unseen_potential_events += list(potential_events.PotentialEvent.gql("WHERE looked_at = NULL AND match_score = 0 AND show_even_if_no_score = True %s ORDER BY match_score DESC LIMIT %s" % (past_event_query, number_of_events - len(unseen_potential_events))))
 
         potential_event_dict = dict((x.key().name(), x) for x in unseen_potential_events)
-        already_added_events = eventdata.DBEvent.get_by_ids(list(potential_event_dict))
-        already_added_event_ids = [x.key.string_id() for x in already_added_events if x]
+        already_added_event_ids = [x.string_id() for x in eventdata.DBEvent.get_by_ids(list(potential_event_dict), keys_only=True) if x]
         # construct a list of not-added ids for display, but keep the list of all ids around so we can still mark them as processed down below
         potential_event_notadded_ids = list(set(potential_event_dict).difference(already_added_event_ids))
         potential_event_notadded_ids.sort(key=lambda x: -(potential_event_dict[x].match_score or 0))

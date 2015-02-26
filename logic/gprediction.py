@@ -21,9 +21,7 @@ def training_data_for_pevents(fbl, pevents):
     fbl.request_multi(fb_api.LookupEventAttending, fb_event_ids)
     fbl.batch_fetch()
 
-    # TODO(lambert): ideally would use keys_only=True, but that's not supported on get_by_key_name :-(
-    db_events = eventdata.DBEvent.get_by_ids(fb_event_ids)
-    good_event_ids = [x.fb_event_id for x in db_events if x]
+    good_event_ids = [x.fb_event_id for x in eventdata.DBEvent.get_by_ids(fb_event_ids, keys_only=True) if x]
 
     csv_file = StringIO.StringIO()
     csv_writer = csv.writer(csv_file)
