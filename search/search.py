@@ -232,19 +232,28 @@ class SearchQuery(object):
         return search_results
 
 def update_fulltext_search_index(db_event, fb_event):
-    logging.info("Adding event to search index: %s", db_event.fb_event_id)
-    doc_event = _create_doc_event(db_event, fb_event)
-    if not doc_event: return
-    if db_event.search_time_period == dates.TIME_FUTURE:
-        doc_index = search.Index(name=ALL_EVENTS_INDEX)
-        doc_index.put(doc_event)
-        doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
-        doc_index.put(doc_event)
-    else:
-        doc_index = search.Index(name=ALL_EVENTS_INDEX)
-        doc_index.put(doc_event)
-        doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
-        doc_index.delete(db_event.fb_event_id)
+    update_fulltext_search_index_batch((db_event, fb_event))
+
+def update_fulltext_search_index_batch(events_to_update):
+    all_index = []
+    future_index = []
+    future_deindex_ids = []
+    for db_event, fb_event in events_to_update:
+        logging.info("Adding event to search index: %s", db_event.fb_event_id)
+        doc_event = _create_doc_event(db_event, fb_event)
+        if not doc_event:
+            continue
+        if db_event.search_time_period == dates.TIME_FUTURE:
+            all_index.append(doc_event)
+            future_index.append(doc_event)
+        else:
+            all_index.append(doc_event)
+            future_deindex_ids.append(db_event.fb_event_id)
+    doc_index = search.Index(name=ALL_EVENTS_INDEX)
+    doc_index.put(all_index)
+    doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
+    doc_index.put(future_index)
+    doc_index.delete(future_deindex_ids)
 
 def delete_from_fulltext_search_index(db_event_id):
     logging.info("Deleting event from search index: %s", db_event_id)

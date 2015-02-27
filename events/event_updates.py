@@ -1,5 +1,7 @@
 import logging
 
+from google.appengine.ext import ndb
+
 import fb_api
 from loc import gmaps_api
 from rankings import rankings
@@ -21,12 +23,15 @@ def need_forced_update(db_event):
     new_time_period = (db_event.search_time_period != _event_time_period(db_event))
     return new_time_period
 
-def update_and_save_event(db_event, fb_dict):
-    _inner_make_event_findable_for(db_event, fb_dict)
-    # We want to save it here, no matter how it was changed.
-    db_event.put()
-    search.update_fulltext_search_index(db_event, fb_dict)
+def update_and_save_event(db_event, fb_event):
+    update_and_save_event_batch((db_event, fb_event))
 
+def update_and_save_event_batch(events_to_update):
+    for db_event, fb_event in events_to_update:
+        _inner_make_event_findable_for(db_event, fb_event)
+    # We want to save it here, no matter how it was changed.
+    ndb.put_multi([x[0] for x in events_to_update])
+    search.update_fulltext_search_index_batch(events_to_update)
 
 def _all_attending_count(fb_event):
     # TODO(FB2.0): cleanup!

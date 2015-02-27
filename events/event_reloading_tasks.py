@@ -14,6 +14,7 @@ def yield_load_fb_event(fbl, db_events):
     fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
     #fbl.request_multi(fb_api.LookupEventPageComments, [x.fb_event_id for x in db_events])
     fbl.batch_fetch()
+    events_to_update = []
     for db_event in db_events:
         try:
             fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id, only_if_updated=True)
@@ -21,9 +22,10 @@ def yield_load_fb_event(fbl, db_events):
                 fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
             if fb_event:
                 logging.info("FBEvent %s changed, will try to save and index DBEvent", db_event.fb_event_id)
-                event_updates.update_and_save_event(db_event, fb_event)
+                events_to_update.append((db_event, fb_event))
         except fb_api.NoFetchedDataException, e:
             logging.info("No data fetched for event id %s: %s", db_event.fb_event_id, e)
+        event_updates.update_and_save_event_batch(events_to_update)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
