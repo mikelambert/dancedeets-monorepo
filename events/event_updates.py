@@ -24,7 +24,7 @@ def need_forced_update(db_event):
     return new_time_period
 
 def update_and_save_event(db_event, fb_event):
-    update_and_save_event_batch((db_event, fb_event))
+    update_and_save_event_batch([(db_event, fb_event)])
 
 def update_and_save_event_batch(events_to_update, update_geodata=True):
     for db_event, fb_event in events_to_update:
