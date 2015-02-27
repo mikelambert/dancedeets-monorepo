@@ -17,6 +17,7 @@ class TestSearch(unittest.TestCase):
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
+        self.testbed.init_search_stub()
         #TODO(lambert): move this into some testbed wrapper code, or port upstream
         # This is a bug in the code versions between appengine and its libraries:
         # mapreduce requires a DEFAULT_VERSION_HOSTNAME

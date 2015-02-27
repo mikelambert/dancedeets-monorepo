@@ -207,6 +207,7 @@ class SearchQuery(object):
 
         a = time.time()
         real_db_events = eventdata.DBEvent.get_by_ids([x.fb_event_id for x in db_events])
+        print real_db_events
         logging.info("Loading DBEvents took %s seconds", time.time() - a)
 
         # ...and do filtering based on the contents inside our app

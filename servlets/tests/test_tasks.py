@@ -8,6 +8,7 @@ import fb_api
 import main
 from test_utils import fb_api_stub
 from users import users
+from util import dates
 
 app = TestApp(main.application)
 
