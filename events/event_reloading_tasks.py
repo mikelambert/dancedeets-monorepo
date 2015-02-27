@@ -44,36 +44,17 @@ load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 def mr_load_fb_events(fbl, time_period=None, update_geodata=True):
     if time_period:
         filters = [('search_time_period', '=', time_period)]
+        name = 'Load %s Events' % time_period
     else:
         filters = []
+        name = 'Load All Events'
     fb_mapreduce.start_map(
         fbl=fbl,
-        name='Load %s Events' % time_period,
+        name=name,
         handler_spec='events.event_reloading_tasks.map_load_fb_event',
         entity_kind='events.eventdata.DBEvent',
         handle_batch_size=20,
         filters=filters,
-        extra_mapper_params={'update_geodata': update_geodata}
-    )
-
-def mr_load_future_fb_event(fbl, update_geodata):
-    fb_mapreduce.start_map(
-        fbl=fbl,
-        name='Load Future Events',
-        handler_spec='events.event_reloading_tasks.map_load_fb_event',
-        entity_kind='events.eventdata.DBEvent',
-        filters=[('search_time_period', '=', dates.TIME_FUTURE)],
-        handle_batch_size=20,
-        extra_mapper_params={'update_geodata': update_geodata}
-    )
-
-def mr_load_all_fb_event(fbl, update_geodata):
-    fb_mapreduce.start_map(
-        fbl=fbl,
-        name='Load All Events',
-        handler_spec='events.event_reloading_tasks.map_load_fb_event',
-        handle_batch_size=20,
-        entity_kind='events.eventdata.DBEvent',
         extra_mapper_params={'update_geodata': update_geodata}
     )
 
