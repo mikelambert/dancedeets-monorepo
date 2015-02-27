@@ -32,6 +32,8 @@ from event_scraper import source_servlets
 from event_scraper import scraping_tasks
 from events import event_reloading_tasks
 from ml import gprediction_servlets
+from pubsub import pubsub_setup
+from pubsub import pubsub_tasks
 from rankings import rankings_servlets
 from search import search_servlets
 from search import search_tasks
@@ -47,7 +49,6 @@ from servlets import login
 from servlets import mobile_apps
 from servlets import privacy
 from servlets import profile_page
-from servlets import pubsub_setup
 from servlets import share
 from servlets import tasks
 from servlets import tools
@@ -145,8 +146,8 @@ URLS = [
     ('/twitter/oauth_failure', pubsub_setup.TwitterOAuthFailureHandler),
     ('/facebook/page_start', pubsub_setup.FacebookPageSetupHandler),
 
-    ('/tasks/social_publisher', tasks.SocialPublisherHandler),
-    ('/tasks/post_japan_events', tasks.PostJapanEventsHandler),
+    ('/tasks/social_publisher', pubsub_tasks.SocialPublisherHandler),
+    ('/tasks/post_japan_events', pubsub_tasks.PostJapanEventsHandler),
 
     ('/api/v1.0/events/\d+/?', api.EventHandler),
     ('/api/v(\d+).(\d+)/search', api.SearchHandler),

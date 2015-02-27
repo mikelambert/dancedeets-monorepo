@@ -3,7 +3,6 @@ import logging
 
 import base_servlet
 import fb_api
-from logic import fb_reloading
 from util import fb_mapreduce
 from util import timings
 from . import users

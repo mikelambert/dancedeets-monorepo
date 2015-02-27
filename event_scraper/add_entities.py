@@ -6,7 +6,7 @@ import fb_api
 from events import eventdata
 from events import event_locations
 from events import event_updates
-from logic import pubsub
+from pubsub import pubsub
 from nlp import event_classifier
 from . import potential_events
 from . import thing_db

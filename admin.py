@@ -13,7 +13,7 @@ from fb_api import FacebookCachedObject
 from loc.gmaps_cached import CachedGeoCode
 from loc.gmaps_bwcompat import GeoCode
 from logic.event_locations import LocationMapping
-from logic.pubsub import OAuthToken
+from pubsub.pubsub import OAuthToken
 from topics.topic_db import Topic
 from users.users import User, UserFriendsAtSignup, UserMessage
 

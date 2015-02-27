@@ -38,7 +38,7 @@ def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires,
     # Must occur after User is put with fb_access_token
     taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': fb_uid}), queue_name='slow-queue')
     # Now load their potential events, to make "add event page" faster (and let us process/scrape their events)
-    #fb_reloading.load_potential_events_for_user_ids(fbl, [fb_uid])
+    #potential_events_reloading.load_potential_events_for_user_ids(fbl, [fb_uid])
     backgrounder.load_potential_events_for_users([fb_uid])
 
     return user

@@ -4,10 +4,7 @@ import logging
 from google.appengine.api import mail
 
 import base_servlet
-from events import eventdata
 import fb_api
-from logic import fb_reloading
-from logic import pubsub
 from util import timings
 
 # How long to wait before retrying on a failure. Intended to prevent hammering the server.
@@ -18,15 +15,6 @@ class LoadFriendListHandler(base_servlet.BaseTaskFacebookRequestHandler):
         friend_list_id = self.request.get('friend_list_id')
         self.fbl.get(fb_api.LookupFriendList, friend_list_id)
     post=get
-
-class SocialPublisherHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        pubsub.pull_and_publish_event(self.fbl)
-
-class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        token_nickname = self.request.get('token_nickname', None)
-        fb_reloading.mr_post_jp_events(self.fbl, token_nickname)
 
 class TimingsKeepAlive(base_servlet.BaseTaskRequestHandler):
     def get(self):

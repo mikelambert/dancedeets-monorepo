@@ -38,7 +38,7 @@ def mr_load_past_fb_event(fbl):
     fb_mapreduce.start_map(
         fbl=fbl,
         name='Load Past Events',
-        handler_spec='logic.fb_reloading.map_load_fb_event',
+        handler_spec='events.event_reloading_tasks.map_load_fb_event',
         entity_kind='events.eventdata.DBEvent',
         filters=[('search_time_period', '=', dates.TIME_PAST)],
         handle_batch_size=20,
@@ -48,7 +48,7 @@ def mr_load_future_fb_event(fbl):
     fb_mapreduce.start_map(
         fbl=fbl,
         name='Load Future Events',
-        handler_spec='logic.fb_reloading.map_load_fb_event',
+        handler_spec='events.event_reloading_tasks.map_load_fb_event',
         entity_kind='events.eventdata.DBEvent',
         filters=[('search_time_period', '=', dates.TIME_FUTURE)],
         handle_batch_size=20,
@@ -58,7 +58,7 @@ def mr_load_all_fb_event(fbl):
     fb_mapreduce.start_map(
         fbl=fbl,
         name='Load All Events',
-        handler_spec='logic.fb_reloading.map_load_fb_event',
+        handler_spec='events.event_reloading_tasks.map_load_fb_event',
         handle_batch_size=20,
         entity_kind='events.eventdata.DBEvent',
     )

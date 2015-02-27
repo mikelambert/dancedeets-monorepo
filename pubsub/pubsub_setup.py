@@ -1,7 +1,7 @@
 import base_servlet
 import fb_api
 from events import eventdata
-from logic import pubsub
+from . import pubsub
 
 
 class TwitterOAuthStartHandler(base_servlet.BaseRequestHandler):
