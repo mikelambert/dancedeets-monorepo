@@ -4,9 +4,10 @@ from mapreduce import util
 
 import fb_api
 
-def start_map(fbl, name, handler_spec, entity_kind, filters=None, handle_batch_size=None, output_writer_spec=None, output_writer=None, queue='slow-queue', extra_mapper_params={}):
+def start_map(fbl, name, handler_spec, entity_kind, filters=None, handle_batch_size=None, output_writer_spec=None, output_writer=None, queue='slow-queue', extra_mapper_params=None):
     filters = filters or []
     output_writer = output_writer or {}
+    extra_mapper_params = extra_mapper_params or {}
     mapper_params = {
         'entity_kind': entity_kind,
         'handle_batch_size': handle_batch_size,

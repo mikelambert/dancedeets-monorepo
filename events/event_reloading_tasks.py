@@ -1,5 +1,7 @@
 import logging
 
+from mapreduce import context
+
 import base_servlet
 import fb_api
 from util import dates
@@ -25,7 +27,10 @@ def yield_load_fb_event(fbl, db_events):
                 events_to_update.append((db_event, fb_event))
         except fb_api.NoFetchedDataException, e:
             logging.info("No data fetched for event id %s: %s", db_event.fb_event_id, e)
-        event_updates.update_and_save_event_batch(events_to_update)
+    ctx = context.get()
+    params = ctx.mapreduce_spec.mapper.params
+    update_geodata = params['update_geodata']
+    event_updates.update_and_save_event_batch(events_to_update, update_geodata=update_geodata)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
@@ -36,17 +41,22 @@ def yield_load_fb_event_attending(fbl, db_events):
 map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
 load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 
-def mr_load_past_fb_event(fbl):
+def mr_load_fb_events(fbl, time_period=None, update_geodata=True):
+    if time_period:
+        filters = [('search_time_period', '=', time_period)]
+    else:
+        filters = []
     fb_mapreduce.start_map(
         fbl=fbl,
-        name='Load Past Events',
+        name='Load %s Events' % time_period,
         handler_spec='events.event_reloading_tasks.map_load_fb_event',
         entity_kind='events.eventdata.DBEvent',
-        filters=[('search_time_period', '=', dates.TIME_PAST)],
         handle_batch_size=20,
+        filters=filters,
+        extra_mapper_params={'update_geodata': update_geodata}
     )
 
-def mr_load_future_fb_event(fbl):
+def mr_load_future_fb_event(fbl, update_geodata):
     fb_mapreduce.start_map(
         fbl=fbl,
         name='Load Future Events',
@@ -54,15 +64,17 @@ def mr_load_future_fb_event(fbl):
         entity_kind='events.eventdata.DBEvent',
         filters=[('search_time_period', '=', dates.TIME_FUTURE)],
         handle_batch_size=20,
+        extra_mapper_params={'update_geodata': update_geodata}
     )
 
-def mr_load_all_fb_event(fbl):
+def mr_load_all_fb_event(fbl, update_geodata):
     fb_mapreduce.start_map(
         fbl=fbl,
         name='Load All Events',
         handler_spec='events.event_reloading_tasks.map_load_fb_event',
         handle_batch_size=20,
         entity_kind='events.eventdata.DBEvent',
+        extra_mapper_params={'update_geodata': update_geodata}
     )
 
 class LoadEventHandler(base_servlet.BaseTaskFacebookRequestHandler):
@@ -81,15 +93,18 @@ class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
 
 class ReloadPastEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        mr_load_past_fb_event(self.fbl)
+        update_geodata = self.request.get('update_geodata') != '0'
+        mr_load_fb_events(self.fbl, time_period=dates.TIME_PAST, update_geodata=update_geodata)
     post=get
 
 class ReloadFutureEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        mr_load_future_fb_event(self.fbl)
+        update_geodata = self.request.get('update_geodata') != '0'
+        mr_load_fb_events(self.fbl, time_period=dates.TIME_FUTURE, update_geodata=update_geodata)
     post=get
 
 class ReloadAllEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        mr_load_all_fb_event(self.fbl)
+        update_geodata = self.request.get('update_geodata') != '0'
+        mr_load_fb_events(self.fbl, update_geodata=update_geodata)
     post=get

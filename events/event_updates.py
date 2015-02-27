@@ -26,9 +26,9 @@ def need_forced_update(db_event):
 def update_and_save_event(db_event, fb_event):
     update_and_save_event_batch((db_event, fb_event))
 
-def update_and_save_event_batch(events_to_update):
+def update_and_save_event_batch(events_to_update, update_geodata=True):
     for db_event, fb_event in events_to_update:
-        _inner_make_event_findable_for(db_event, fb_event)
+        _inner_make_event_findable_for(db_event, fb_event, update_geodata=update_geodata)
     # We want to save it here, no matter how it was changed.
     ndb.put_multi([x[0] for x in events_to_update])
     search.update_fulltext_search_index_batch(events_to_update)
@@ -45,7 +45,7 @@ def _all_attending_count(fb_event):
             return None
 
 
-def _inner_make_event_findable_for(db_event, fb_dict):
+def _inner_make_event_findable_for(db_event, fb_dict, update_geodata):
     # set up any cached fields or bucketing or whatnot for this event
 
     # Screw db-normalized form, store this here (and location_geocode down below)
@@ -74,27 +74,28 @@ def _inner_make_event_findable_for(db_event, fb_dict):
     db_event.end_time = dates.parse_fb_end_time(fb_dict)
     db_event.search_time_period = _event_time_period(db_event)
 
-    # Don't use cached/stale geocode when constructing the LocationInfo here
-    db_event.location_geocode = None
-    location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
-
-    # If we got good values from before, don't overwrite with empty values!
-    if location_info.actual_city() != db_event.actual_city_name or not db_event.actual_city_name:
-        db_event.anywhere = location_info.is_online_event()
-        db_event.actual_city_name = location_info.actual_city()
-        if location_info.geocode:
-            db_event.city_name = rankings.get_ranking_location_latlng(location_info.geocode.latlng())
-        else:
-            db_event.city_name = "Unknown"
-        if db_event.actual_city_name:
-            db_event.latitude, db_event.longitude = location_info.latlong()
-        else:
-            db_event.latitude = None
-            db_event.longitude = None
-            #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
-            logging.warning("No geocoding results for eid=%s is: %s", db_event.fb_event_id, location_info)
-
     db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
 
-    # This only grabs the very first result from the raw underlying geocode request, since that's all that's used to construct the Geocode object in memory
-    db_event.location_geocode = gmaps_api.convert_geocode_to_json(location_info.geocode)
+    if update_geodata:
+        # Don't use cached/stale geocode when constructing the LocationInfo here
+        db_event.location_geocode = None
+        location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
+
+        # If we got good values from before, don't overwrite with empty values!
+        if location_info.actual_city() != db_event.actual_city_name or not db_event.actual_city_name:
+            db_event.anywhere = location_info.is_online_event()
+            db_event.actual_city_name = location_info.actual_city()
+            if location_info.geocode:
+                db_event.city_name = rankings.get_ranking_location_latlng(location_info.geocode.latlng())
+            else:
+                db_event.city_name = "Unknown"
+            if db_event.actual_city_name:
+                db_event.latitude, db_event.longitude = location_info.latlong()
+            else:
+                db_event.latitude = None
+                db_event.longitude = None
+                #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
+                logging.warning("No geocoding results for eid=%s is: %s", db_event.fb_event_id, location_info)
+
+        # This only grabs the very first result from the raw underlying geocode request, since that's all that's used to construct the Geocode object in memory
+        db_event.location_geocode = gmaps_api.convert_geocode_to_json(location_info.geocode)
