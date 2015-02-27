@@ -263,7 +263,7 @@ def mr_count_potential_events(fbl):
         fbl=fbl,
         name='count potential events',
         handler_spec='event_scraper.thing_db.map_count_potential_event',
-        entity_kind='logic.potential_events.PotentialEvent'
+        entity_kind='event_scraper.potential_events.PotentialEvent'
     )
     
 

@@ -3,8 +3,8 @@ import logging
 from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
-from logic import gprediction
 from logic import gtranslate
+from ml import gprediction
 from nlp import event_classifier
 from util import dates
 from . import thing_db

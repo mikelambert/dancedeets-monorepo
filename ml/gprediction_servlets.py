@@ -5,7 +5,7 @@ from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
 import base_servlet
-from logic import gprediction
+from . import gprediction
 
 class GenerateTrainingDataHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):

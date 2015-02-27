@@ -93,7 +93,7 @@ def mr_classify_potential_events(fbl, past_event):
         fbl,
         'Auto-Add Events',
         'event_scraper.auto_add.map_classify_events',
-        'logic.potential_events.PotentialEvent',
+        'event_scraper.potential_events.PotentialEvent',
         filters=filters,
         handle_batch_size=20,
         queue='fast-queue',

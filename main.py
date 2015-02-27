@@ -31,6 +31,7 @@ import base_servlet
 from event_scraper import source_servlets
 from event_scraper import scraping_tasks
 from events import event_reloading_tasks
+from ml import gprediction_servlets
 from rankings import rankings_servlets
 from search import search_servlets
 from search import search_tasks
@@ -42,7 +43,6 @@ from servlets import event
 from servlets import event_proxy
 from servlets import feedback
 from servlets import home
-from servlets import gprediction
 from servlets import login
 from servlets import mobile_apps
 from servlets import privacy
@@ -69,8 +69,8 @@ class DoNothingHandler(base_servlet.BareBaseRequestHandler):
         return
 
 URLS = [
-    ('/tools/download_training_data/([^/]+)?', gprediction.DownloadTrainingDataHandler),
-    ('/tools/generate_training_data', gprediction.GenerateTrainingDataHandler),
+    ('/tools/download_training_data/([^/]+)?', gprediction_servlets.DownloadTrainingDataHandler),
+    ('/tools/generate_training_data', gprediction_servlets.GenerateTrainingDataHandler),
     ('/tools/owned_events', tools.OwnedEventsHandler),
     ('/tools/unprocess_future_events', tools.UnprocessFutureEventsHandler),
     ('/tools/oneoff', tools.OneOffHandler),

@@ -5,6 +5,7 @@ from flask.ext.admin.contrib import appengine
 
 import keys
 
+from event_scraper.potential_events import PotentialEvent
 from event_scraper.thing_db import Source
 from events.cities import City
 from events.eventdata import DBEvent
@@ -12,7 +13,6 @@ from fb_api import FacebookCachedObject
 from loc.gmaps_cached import CachedGeoCode
 from loc.gmaps_bwcompat import GeoCode
 from logic.event_locations import LocationMapping
-from logic.potential_events import PotentialEvent
 from logic.pubsub import OAuthToken
 from topics.topic_db import Topic
 from users.users import User, UserFriendsAtSignup, UserMessage

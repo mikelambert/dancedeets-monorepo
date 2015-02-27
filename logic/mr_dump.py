@@ -33,7 +33,7 @@ def mr_dump_events(fbl):
         fbl,
         'Dump Potential FB Event Data',
         'logic.mr_dump.map_dump_fb_json',
-        'logic.potential_events.PotentialEvent',
+        'event_scraper.potential_events.PotentialEvent',
         handle_batch_size=80,
         queue=None,
         filters=[('looked_at', '=', None)],

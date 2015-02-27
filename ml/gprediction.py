@@ -71,10 +71,10 @@ def mr_generate_training_data(fbl):
     fb_mapreduce.start_map(
         fbl=fbl,
         name='Write Training Data',
-        handler_spec='logic.gprediction.map_training_data_for_pevents',
+        handler_spec='ml.gprediction.map_training_data_for_pevents',
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         handle_batch_size=20,
-        entity_kind='logic.potential_events.PotentialEvent',
+        entity_kind='event_scraper.potential_events.PotentialEvent',
         output_writer={
             'mime_type': 'text/plain',
             'bucket_name': 'dancedeets-hrd.appspot.com',

@@ -2,9 +2,9 @@ import logging
 
 import fb_api
 
-from logic import gprediction
+from event_scraper import potential_events
+from . import gprediction
 from util import fb_mapreduce
-from . import potential_events
 
 def classify_events(fbl, pe_list):
     pe_list = [x for x in pe_list if x.match_score > 0]
@@ -41,8 +41,8 @@ def mr_classify_potential_events(fbl):
     fb_mapreduce.start_map(
         fbl,
         'Auto-Classify Events',
-        'logic.mr_prediction.map_classify_events',
-        'logic.potential_events.PotentialEvent',
+        'ml.mr_prediction.map_classify_events',
+        'event_scraper.potential_events.PotentialEvent',
         filters=[('looked_at', '=', None)],
         handle_batch_size=20,
         queue='slow-queue',
