@@ -180,7 +180,8 @@ def process_event_source_ids(event_source_combos, fbl):
     potential_new_source_ids = set()
     for event_id, source, posting_source_id in event_source_combos:
         fbl.request(fb_api.LookupEvent, event_id)
-        fbl.request(fb_api.LookupEventAttending, event_id)
+        #DISABLE_ATTENDING
+        #fbl.request(fb_api.LookupEventAttending, event_id)
         potential_new_source_ids.add(posting_source_id)
     fbl.batch_fetch()
 
@@ -191,7 +192,9 @@ def process_event_source_ids(event_source_combos, fbl):
         logging.info("Processing event id %s", event_id)
         try:
             fb_event = fbl.fetched_data(fb_api.LookupEvent, event_id)
-            fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
+            #DISABLE_ATTENDING
+            #fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
+            fb_event_attending = None
             if fb_event['empty']:
                 continue
             potential_events.make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_FEED)
