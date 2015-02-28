@@ -59,18 +59,44 @@ if NDB_LOGGING_LEVEL > 0:
         from google.appengine.ext.ndb import tasklets
         tasklets._logging_debug = logging.info
 
-# This was a failed attempt at trying to keep a deque-style FIFO ordering to the event_loop.rpcs
-RPC_ORDERING = False
+# This attempts to force a FIFO ordering on RPC execution in the eventloop (as opposed to random RPC execution)
+RPC_ORDERING = True
 if RPC_ORDERING:
     import collections
     from google.appengine.ext.ndb import eventloop
-    orig_get_event_loop = eventloop.get_event_loop
-    def new_get_event_loop():
-        event_loop = orig_get_event_loop()
-        event_loop.rpcs = collections.OrderedDict()
-        return event_loop
-    #eventloop.get_event_loop = new_get_event_loop
 
+    class OrderedEventLoop(eventloop.EventLoop):
+        def __init__(self):
+            super(OrderedEventLoop, self).__init__()
+            self.rpcs = collections.OrderedDict()
+    eventloop.EventLoop = OrderedEventLoop
+
+    from google.appengine.api import apiproxy_stub_map
+    from google.appengine.api import apiproxy_rpc
+    @classmethod
+    def __check_one(cls, rpcs):
+        rpc = None
+        logging.info('Pending RPCs: %s', rpcs)
+        for rpc in rpcs:
+            assert isinstance(rpc, cls), repr(rpc)
+            # Original:
+            # state = rpc.__rpc.state
+            # Revised:
+            state = rpc.state
+            if state == apiproxy_rpc.RPC.FINISHING:
+                # Original:
+                # rpc.__call_user_callback()
+                # Revised:
+                rpc.wait()
+                logging.info('Found finished RPC: %s', rpc)
+                return rpc, None
+            assert state != apiproxy_rpc.RPC.IDLE, repr(rpc)
+        logging.info('No finished RPCs, going to wait for first RPC: %s', rpcs[0])
+        # This is the important changed line in this whole function:
+        # We want to return the oldest RPC to execute, not a random one.
+        return None, rpcs[0]
+    assert hasattr(apiproxy_stub_map.UserRPC, '_UserRPC__check_one')
+    apiproxy_stub_map.UserRPC._UserRPC__check_one = __check_one
 
 # We don't need such real-time statistics (normally 1 second) on the mapreduce job.
 # More of an optimization to save on the associated database Get/Put every second.
