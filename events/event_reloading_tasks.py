@@ -28,8 +28,11 @@ def yield_load_fb_event(fbl, db_events):
         except fb_api.NoFetchedDataException, e:
             logging.info("No data fetched for event id %s: %s", db_event.fb_event_id, e)
     ctx = context.get()
-    params = ctx.mapreduce_spec.mapper.params
-    update_geodata = params['update_geodata']
+    if ctx:
+        params = ctx.mapreduce_spec.mapper.params
+        update_geodata = params['update_geodata']
+    else:
+        update_geodata = True
     event_updates.update_and_save_event_batch(events_to_update, update_geodata=update_geodata)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
