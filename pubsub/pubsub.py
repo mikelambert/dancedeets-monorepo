@@ -186,7 +186,6 @@ def twitter_post(auth_token, db_event, fb_event):
 
 def facebook_post(auth_token, db_event, fb_event):
     link = urls.fb_event_url(fb_event['info']['id'])
-
     start_time = dates.parse_fb_start_time(fb_event)
     datetime_string = start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
 
@@ -195,11 +194,12 @@ def facebook_post(auth_token, db_event, fb_event):
     post_values['link'] = link
     post_values['name'] = fb_event['info']['name'].encode('utf8')
     post_values['caption'] = datetime_string
-    description = fb_event['info'].get('description', '').encode('utf8')
+    description = fb_event['info'].get('description', '')
     if len(description) > 10000:
         post_values['description'] = description[:9999] + u"…"
     else:
         post_values['description'] = description
+    post_values['description'] = post_values['description'].encode('utf8')
     cover = eventdata.get_largest_cover(fb_event)
     if cover:
         post_values['picture'] = cover['source']
