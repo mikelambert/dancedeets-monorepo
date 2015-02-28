@@ -274,12 +274,6 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 event['id'] = str(event['eid'])
                 event['loaded'] = event['id'] in loaded_fb_event_ids
 
-            lastadd_key = 'LastAdd.%s' % (self.fb_uid)
-            if not memcache.get(lastadd_key):
-                #STR_ID_MIGRATE: We still get ids as ints from our FQL
-                backgrounder.load_events([str(x['eid']) for x in events])
-                memcache.set(lastadd_key, True, PREFETCH_EVENTS_INTERVAL)
-
         self.display['events'] = events
         self.display['fb_event'] = fb_event
         self.display['parse_fb_timestamp'] = dates.parse_fb_timestamp
