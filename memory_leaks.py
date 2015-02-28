@@ -1,8 +1,10 @@
+import objgraph
+import logging
+import random
+import StringIO
+import sys
+
 def gc_debug_diff(since, peak_stats={}, hide_growth=False):
-    import objgraph
-    import StringIO
-    import sys
-    import logging
     sio = StringIO.StringIO()
     orig_out = sys.stdout
     result = None
@@ -19,11 +21,6 @@ def gc_debug_diff(since, peak_stats={}, hide_growth=False):
     return result
 
 def gc_debug_backtraces(magictype=None, count=1):
-    import objgraph
-    import logging
-    import random
-    import StringIO
-    import sys
     sio = StringIO.StringIO()
     orig_out = sys.stdout
     try:
@@ -52,7 +49,7 @@ def leak_middleware(app):
                     yield value
         finally:
             result = gc_debug_diff('request', peak_stats=peak_stats)
-            for obj in ['DBEvent', 'Future', 'Context', 'EventLoop', 'google.appengine.datastore.datastore_rpc.Connection', 'OrderedDict']:
+            for obj in ['DBEvent']:#, 'Future', 'Context', 'EventLoop', 'google.appengine.datastore.datastore_rpc.Connection', 'OrderedDict']:
                 if obj in result:
-                    gc_debug_backtraces(magictype=obj, count=10)
+                    gc_debug_backtraces(magictype=obj, count=5)
     return leak_wsgi_wrapper
