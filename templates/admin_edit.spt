@@ -71,6 +71,7 @@ Edit Event
 			Dance Words: $classifier_dance_words<br>
 			Event Words: $classifier_event_words<br>
 			Auto-classified: $auto_classified_types<br>
+			Auto-categorized: $auto_categorized_types<br>
 			#if $event
 				Any Existing Tags:
 				#for $tag in $event.tags

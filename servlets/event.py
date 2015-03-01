@@ -4,7 +4,6 @@ import logging
 import re
 import urllib
 
-from google.appengine.api import memcache
 from google.appengine.ext import deferred
 from google.appengine.ext import ndb
 
@@ -17,8 +16,8 @@ from events import event_updates
 import fb_api
 from loc import formatting
 from loc import gmaps_api
-from logic import backgrounder
 from logic import rsvp
+from nlp import categories
 from nlp import event_auto_classifier
 from nlp import event_classifier
 from util import dates
@@ -196,6 +195,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             auto_classified += 'notadd: %s.\n' % notadd_result[1]
 
         self.display['auto_classified_types'] = auto_classified
+        styles = categories.find_styles(classified_event)
+        self.display['auto_categorized_types'] = ', '.join(styles)
 
         location_info = event_locations.LocationInfo(fb_event, db_event=e, debug=True)
         self.display['location_info'] = location_info

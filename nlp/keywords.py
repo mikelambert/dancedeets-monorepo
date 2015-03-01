@@ -152,23 +152,28 @@ STYLE_BREAK_WEAK = Any(
     # 'breaks', # too many false positives
     "breakin[g']?", 'breakers?',
 )
+STYLE_DANCEHALL_WEAK = Any(
+    'dance\W?hall\w*',
+    'ragga',
+    u'레게', # korean reggae
+)
+STYLE_BEBOP_WEAK = Any(
+    'be\W?bop',
+)
 AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
     STYLE_HIPHOP_WEAK,
     STYLE_POP_WEAK,
     STYLE_BREAK_WEAK,
     STYLE_ALLSTYLE_WEAK,
-    'be\W?bop',
+    STYLE_DANCEHALL_WEAK,
+    STYLE_BEBOP_WEAK,
     'shuffle',
     'funk',
-    'dance\W?hall\w*',
-    'ragga',
-    u'레게', # korean reggae
     'jerk',
     'kpop',
     u'케이팝', # korean kpop
     'hard\Whitting',
     'electro\W?dance',
-    u'フリースタイル', # japanese freestyle
     u'얼반', # korean urban
 ))
 
@@ -266,10 +271,31 @@ STYLE_HIPHOP = Name('STYLE_HIPHOP', Any(
     '(?:new|nu|middle)\W?s(?:ch|k)ool\W\W?hip\W?hop', 'hip\W?hop\W\W?(?:old|new|nu|middle)\W?s(?:ch|k)ool',
     'newstyleurs?',
 ))
+STYLE_DANCEHALL = Name('STYLE_DANCEHALL', Any(
+    'ragga\W?jamm?',
+    u'댄스 ?레게', # korean reggae dance
+    u'레게 ?댄스', # korean reggae dance
+))
+STYLE_KRUMP = Name('STYLE_KRUMP', Any(
+    'krump', "krumpin[g']?", 'krumper[sz]?',
+    u'크럼핑', # korean krumping
+))
+STYLE_TURF = Name('STYLE_TURF', Any(
+    "turfin(?:[g']?|er[sz])", 'turf danc\w+',
+))
+STYLE_LITEFEET = Name('STYLE_LITEFEET', Any(
+    '(?:lite|light)\W?feet\w*',
+    "gettin[g']?\W?(?:lite|light)",
+))
+STYLE_FLEX = Name('STYLE_FLEX', Any(
+    "flexin[g']?",
+))
+STYLE_BEBOP = Name('STYLE_BEBOP', Any(
+    'jazz\Wrock',
+    u'재즈 ?록', # korean jazz rock
+))
 legit_dance = [
     'street\W?jam',
-    'jazz rock',
-    u'재즈 ?록', # korean jazz rock
     "jerk(?:ers?|in[g']?)",
     u'스트릿', # street korean
     u'ストリートダンス', # japanese streetdance
@@ -278,9 +304,7 @@ legit_dance = [
     u'街舞', # chinese streetdance / hiphop
     u'gatvės šokių', # lithuanian streetdance
     'katutanssi\w*', # finnish streetdance
-    '(?:lite|light)\W?feet',
-    "gettin[g']?\W?(?:lite|light)",
-    "turfin(?:[g']?|er[sz])", 'turf danc\w+', "flexin[g']?", "buckin[g']?", "jookin[g']?",
+    "buckin[g']?", "jookin[g']?",
     "footworkin[g']?",
     'footworks', # spanish footworks
     u'フットワーキング', # japanese footworking
@@ -292,11 +316,6 @@ legit_dance = [
     u'댄스 ?승무원', # korean dance crew
     'melbourne shuffle',
     'mj\W+style', 'michael jackson style',
-    'krump', "krumpin[g']?", 'krumper[sz]?',
-    u'크럼핑', # korean krumping
-    'ragga\W?jamm?',
-    u'댄스 ?레게', # korean reggae dance
-    u'레게 ?댄스', # korean reggae dance
     'new\W?style hustle',
     'urban danc\w*',
     'urban style[sz]',
@@ -326,6 +345,7 @@ HOUSE = Name('HOUSE', Any(
 
 FREESTYLE = Name('FREESTYLE', Any(
     'free\W?style(?:r?|rs?)',
+    u'フリースタイル', # japanese freestyle
 ))
 
 STREET = Name('STREET', Any(
@@ -971,7 +991,6 @@ EASY_VOGUE = Name('EASY_VOGUE', Any(
     r'b\.?q\.?',
     'vogue',
     'house of',
-    'category',
     'troph(?:y|ies)',
     'old way',
     'new way',

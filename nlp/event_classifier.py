@@ -169,6 +169,12 @@ class ClassifiedEvent(object):
         self.processed_text.real_tokenize(keywords.STYLE_WAACK)
         self.processed_text.real_tokenize(keywords.STYLE_HIPHOP)
         self.processed_text.real_tokenize(keywords.STYLE_HOUSE)
+        self.processed_text.real_tokenize(keywords.STYLE_DANCEHALL)
+        self.processed_text.real_tokenize(keywords.STYLE_KRUMP)
+        self.processed_text.real_tokenize(keywords.STYLE_TURF)
+        self.processed_text.real_tokenize(keywords.STYLE_LITEFEET)
+        self.processed_text.real_tokenize(keywords.STYLE_FLEX)
+        self.processed_text.real_tokenize(keywords.STYLE_BEBOP)
         self.processed_text.real_tokenize(keywords.STYLE_ALLSTYLE)
 
         self.final_search_text = self.processed_text.get_tokenized_text()
