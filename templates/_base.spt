@@ -121,7 +121,7 @@ var _gaq = [];
 
 #if $messages
 <div class="alert alert-info">
-<button type="button" class="close aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 <ul>
 #for $message in $messages
 	<li>$format_html($message)</li>
@@ -189,6 +189,13 @@ $bottom_javascript()
       author: "DanceDeets",
       icon: '/images/ic_launcher_dancedeets.png'
     });
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
+  <script type="text/javascript">
+function initializeLocationAutocomplete() {
+  var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
+  autocomplete.setTypes(['(regions)'])
+}
   </script>
 </body>
 #end def
