@@ -21,7 +21,9 @@
 
 <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="/vcss/$version/dancedeets.css">
-<link rel="stylesheet" href="/vcss/$version/jquery.smartbanner.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -153,7 +155,7 @@ $body()
 </div> <!-- /container -->
 
 
-<script src="//cdn.jsdelivr.net/g/jquery@1.11,bootstrap@3.3.1,jquery.cookie@1.4"></script>
+<script src="//cdn.jsdelivr.net/g/jquery@2.1.3,bootstrap@3.3.2,jquery.cookie@1.4.1"></script>
 
 <script type="text/javascript">
 function manualLogin() {
@@ -182,13 +184,38 @@ $(document).ready(function(event) {
 $fb_javascript($next)
 
 $bottom_javascript()
-  <script src="/vjs/$version/jquery.smartbanner.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.js"></script>
   <script type="text/javascript">
     $.smartbanner({
       title: "DanceDeets",
       author: "DanceDeets",
       icon: '/images/ic_launcher_dancedeets.png'
     });
+  </script>
+  <script type="text/javascript">
+$(document).ready(function(event) {
+  var engine = new Bloodhound({
+    local: [{value: 'house'}],
+    datumTokenizer: function(d) {
+      return Bloodhound.tokenizers.whitespace(d.value);
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace
+  });
+
+  engine.initialize();
+  $('#keywords_input').tokenfield({
+    typeahead: [null, { source: engine.ttAdapter() }]
+  });
+  $('#keywords_input').on('tokenfield:createtoken', function (event) {
+    var existingTokens = $(this).tokenfield('getTokens');
+    $.each(existingTokens, function(index, token) {
+        if (token.value === event.attrs.value)
+            event.preventDefault();
+    });
+});
+});
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
   <script type="text/javascript">
