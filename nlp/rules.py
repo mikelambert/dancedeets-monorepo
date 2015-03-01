@@ -12,6 +12,43 @@ def commutative_connected(a, b):
         connected(b, a),
     )
 
+ANY_BREAK = Any(
+    keywords.STYLE_BREAK,
+    keywords.STYLE_BREAK_WEAK,
+    keywords.BBOY_CREW[grammar.STRONG_WEAK],
+    keywords.BBOY_DANCER[grammar.STRONG_WEAK],
+)
+
+ANY_POP = Any(
+    keywords.STYLE_POP,
+    # These two were omitted from the above,
+    # since they are not strong enough on their own.
+    # But given a dance event, they can be a very strong classifier.
+    keywords.STYLE_POP_WEAK,
+    "pop\w*",
+)
+
+ANY_LOCK = Any(
+    keywords.STYLE_LOCK,
+    "lock\w*",
+)
+
+ANY_HOUSE = Any(
+    keywords.STYLE_HOUSE,
+    "house",
+    "housing",
+)
+
+ANY_HIPHOP = Any(
+    keywords.STYLE_HIPHOP,
+    keywords.STYLE_HIPHOP_WEAK,
+)
+
+ANY_ALLSTYLE = Any(
+    keywords.STYLE_ALLSTYLE,
+    keywords.STYLE_ALLSTYLE_WEAK,
+    'all\W+style[sz]?',
+)
 
 DANCE = Name('DANCE', Any(
     keywords.DANCE,
@@ -20,6 +57,8 @@ DANCE = Name('DANCE', Any(
     keywords.STYLE_POP,
     keywords.STYLE_LOCK,
     keywords.STYLE_WAACK,
+    keywords.STYLE_HOUSE,
+    keywords.STYLE_HIPHOP,
     keywords.STYLE_ALLSTYLE,
 ))
 

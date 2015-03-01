@@ -167,6 +167,8 @@ class ClassifiedEvent(object):
         self.processed_text.real_tokenize(keywords.STYLE_POP)
         self.processed_text.real_tokenize(keywords.STYLE_LOCK)
         self.processed_text.real_tokenize(keywords.STYLE_WAACK)
+        self.processed_text.real_tokenize(keywords.STYLE_HIPHOP)
+        self.processed_text.real_tokenize(keywords.STYLE_HOUSE)
         self.processed_text.real_tokenize(keywords.STYLE_ALLSTYLE)
 
         self.final_search_text = self.processed_text.get_tokenized_text()

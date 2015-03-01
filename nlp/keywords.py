@@ -122,7 +122,12 @@ CYPHER = Name('CYPHER', Any(
 
 # if somehow has funks, hiphop, and breaks, and house. or 3/4? call it a dance event?
 
-AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
+STYLE_POP_WEAK = Any(
+    "poppin\'?",
+    'boogaloo',
+    'gliding',
+)
+STYLE_HIPHOP_WEAK = Any(
     'hip\W?hop',
     u'嘻哈', # chinese hiphop
     u'ההיפ הופ', # hebrew hiphop
@@ -131,31 +136,38 @@ AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
     u'ヒップホップ', # hiphop japanese
     u'힙합', # korean hiphop
     'hip\W?hop\w*', # lithuanian, polish hiphop
+    'hype',
+    'new\W?jack\W?swing',
+    'old\W?school hip\W?hop',
+    '90\W?s hip\W?hop',
+    'rnb',
+)
+STYLE_ALLSTYLE_WEAK = Any(
     'all\W?style[zs]?',
     'tou[ts]\W?style[zs]?', # french all-styles
     'tutti gli stili', # italian all-styles
     'kaikille tyyleille avoin', # finnish all-styles
+)
+STYLE_BREAK_WEAK = Any(
+    # 'breaks', # too many false positives
+    "breakin[g']?", 'breakers?',
+)
+AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
+    STYLE_HIPHOP_WEAK,
+    STYLE_POP_WEAK,
+    STYLE_BREAK_WEAK,
+    STYLE_ALLSTYLE_WEAK,
     'be\W?bop',
     'shuffle',
     'funk',
     'dance\W?hall\w*',
     'ragga',
     u'레게', # korean reggae
-    'hype',
-    'new\W?jack\W?swing',
-    'gliding', 
-    # 'breaks', # too many false positives
-    'boogaloo',
-    "breakin[g']?", 'breakers?',
     'jerk',
     'kpop',
     u'케이팝', # korean kpop
-    'rnb',
-    "poppin\'?",
     'hard\Whitting',
     'electro\W?dance',
-    'old\W?school hip\W?hop',
-    '90\W?s hip\W?hop',
     u'フリースタイル', # japanese freestyle
     u'얼반', # korean urban
 ))
@@ -225,14 +237,39 @@ STYLE_ALLSTYLE = Name('STYLE_ALLSTYLE', Any(
     'open\W+all\W?style[sz]?',
     'me against the music',
 ))
-
+STYLE_HOUSE = Name('STYLE_HOUSE', Any(
+    'houser[sz]?',
+    'afro\W?house',
+    'dance house', # seen in italian
+))
+# This includes anything in the broad class of hiphop dance (mtv, la style, hiphop, hype, etc)
+STYLE_HIPHOP = Name('STYLE_HIPHOP', Any(
+    'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
+    'commercial hip\W?hop',
+    'lyrical\Whip\W?',
+    'hip\W?hop dance',
+    'hip\W?hop\Wheels',
+    # only do la-style if not salsa? http://www.dancedeets.com/events/admin_edit?event_id=292605290807447
+    # 'l\W?a\W?\Wstyle',
+    'l\W?a\W?\Wdance',
+    'n(?:ew|u)\W?style\Whip\W?hop',
+    u'뉴스타일 ?힙합', # korean new style hiphop
+    'hip\W?hop\Wn(?:ew|u)\W?style',
+    'girl\W?s\W?hip\W?hop',
+    'hip\W?hopp?er[sz]?',
+    'street\W?jazz', 'street\W?funk',
+    'jazz\W?funk', 'funk\W?jazz',
+    'boom\W?crack',
+    'hype danc\w*',
+    'social hip\W?hop', 'hip\W?hop social dance[sz]', 'hip\W?hop party dance[sz]',
+    'hip\W?hop grooves',
+    '(?:new|nu|middle)\W?s(?:ch|k)ool\W\W?hip\W?hop', 'hip\W?hop\W\W?(?:old|new|nu|middle)\W?s(?:ch|k)ool',
+    'newstyleurs?',
+))
 legit_dance = [
     'street\W?jam',
     'jazz rock',
     u'재즈 ?록', # korean jazz rock
-    'commercial hip\W?hop',
-    'lyrical\Whip\W?',
-    'hip\W?hop dance',
     "jerk(?:ers?|in[g']?)",
     u'스트릿', # street korean
     u'ストリートダンス', # japanese streetdance
@@ -247,9 +284,6 @@ legit_dance = [
     "footworkin[g']?",
     'footworks', # spanish footworks
     u'フットワーキング', # japanese footworking
-    'houser[sz]?',
-    'afro\W?house',
-    'dance house', # seen in italian
     'soul dance',
     u'ソウルダンス', # soul dance japanese
     #'soul train',...do we want this?
@@ -258,29 +292,11 @@ legit_dance = [
     u'댄스 ?승무원', # korean dance crew
     'melbourne shuffle',
     'mj\W+style', 'michael jackson style',
-    'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
-    'hip\W?hop\Wheels',
-    # only do la-style if not salsa? http://www.dancedeets.com/events/admin_edit?event_id=292605290807447
-    # 'l\W?a\W?\Wstyle',
-    'l\W?a\W?\Wdance',
-    'n(?:ew|u)\W?style\Whip\W?hop',
-    u'뉴스타일 ?힙합', # korean new style hiphop
-    'hip\W?hop\Wn(?:ew|u)\W?style',
     'krump', "krumpin[g']?", 'krumper[sz]?',
     u'크럼핑', # korean krumping
     'ragga\W?jamm?',
     u'댄스 ?레게', # korean reggae dance
     u'레게 ?댄스', # korean reggae dance
-    'girl\W?s\W?hip\W?hop',
-    'hip\W?hopp?er[sz]?',
-    'street\W?jazz', 'street\W?funk',
-    'jazz\W?funk', 'funk\W?jazz',
-    'boom\W?crack',
-    'hype danc\w*',
-    'social hip\W?hop', 'hip\W?hop social dance[sz]', 'hip\W?hop party dance[sz]',
-    'hip\W?hop grooves',
-    '(?:new|nu|middle)\W?s(?:ch|k)ool\W\W?hip\W?hop', 'hip\W?hop\W\W?(?:old|new|nu|middle)\W?s(?:ch|k)ool',
-    'newstyleurs?',
     'new\W?style hustle',
     'urban danc\w*',
     'urban style[sz]',
