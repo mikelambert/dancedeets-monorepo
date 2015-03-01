@@ -1,6 +1,4 @@
 #extends _real_base
-#extends _signup
-
 
 #def headbody
 <head>
@@ -105,7 +103,7 @@ var _gaq = [];
 				<li><a href="#" onclick="logout(); return false;">Logout</a></li>
 #else
       <ul class="nav navbar-nav navbar-left">
-				<li><div class="nav-text">$fb_login_button()</div></li>
+				<li><div class="nav-text"><fb:login-button length="long" scope="$fb_permissions"></fb:login-button></div></li>
       </ul>
 #end if
 			</ul>
@@ -154,18 +152,26 @@ $body()
 
 </div> <!-- /container -->
 
+<div id="fb-root"></div>
 
 <script src="//cdn.jsdelivr.net/g/jquery@2.1.3,bootstrap@3.3.2,jquery.cookie@1.4.1"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
 <script type="text/javascript">
-function manualLogin() {
-  FB.login(function(response){}, {scope: '$fb_permissions'});
-}
+  $.smartbanner({
+    title: "DanceDeets",
+    author: "DanceDeets",
+    icon: '/images/ic_launcher_dancedeets.png'
+  });
 
-$(document).ready(function() {
-        $("body").delegate("#location_input", "click", function() { return false; });
-});
-$(document).ready(function(event) {
+  function manualLogin() {
+    FB.login(function(response){}, {scope: '$fb_permissions'});
+  }
+
+  $(document).ready(function(event) {
+    $("body").delegate("#location_input", "click", function() { return false; });
     $('#keywords_input').keydown(function(event) {
         if (event.keyCode == 13) {
             this.form.submit();
@@ -178,52 +184,89 @@ $(document).ready(function(event) {
             return false;
          }
     });
-});
+    var engine = new Bloodhound({
+      local: [{value: 'house'}],
+      datumTokenizer: function(d) {
+        return Bloodhound.tokenizers.whitespace(d.value);
+      },
+      queryTokenizer: Bloodhound.tokenizers.whitespace
+    });
+    engine.initialize();
+    $('#keywords_input').tokenfield({
+      typeahead: [null, { source: engine.ttAdapter() }]
+    });
+    $('#keywords_input').on('tokenfield:createtoken', function (event) {
+      var existingTokens = $(this).tokenfield('getTokens');
+      $.each(existingTokens, function(index, token) {
+          if (token.value === event.attrs.value)
+              event.preventDefault();
+      });
+    });
+  });
+
+  function initializeLocationAutocomplete() {
+    var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
+    autocomplete.setTypes(['(regions)'])
+  }
+
+  // Facebook/Login Code
+  (function() {
+    var e = document.createElement('script'); e.async = true;
+    e.src = document.location.protocol +
+      '//connect.facebook.net/en_US/all.js';
+    document.getElementById('fb-root').appendChild(e);
+  }());
+
+  function deleteLoginCookies() {
+    cookie_options = {domain: '.$base_hostname', path: '/'}
+    $.removeCookie('fbsr_${app_id}', cookie_options)
+    $.removeCookie('user_login', cookie_options)
+  }
+
+  function reloadWithNewToken() {
+    if (String(window.location).indexOf('?') != -1) {
+      window.location = window.location + '&nt=1';
+    } else {
+      window.location = window.location + '?nt=1';
+    }
+  }
+  function currentUser() {
+    var user_login = $.cookie('user_login');
+    if (user_login) {
+      return JSON.parse(user_login)['uid'];
+    }
+  }
+
+  function logout() {
+    FB.logout(function(response) {
+      deleteLoginCookies();
+      window.location.reload();
+    });
+  }
+  function handleStatusChange(response) {
+    if (response.status === 'connected') {
+      if (response.authResponse.userID != currentUser()) {
+        // reload through endpoint to set up new user cookie serverside
+        // TODO(lambert): Add a full-screen overlay explaining what we are doing...
+        reloadWithNewToken();
+      }
+    } else if (response.status === 'not_authorized') {
+      if (currentUser()) {
+        // the user is logged in to Facebook, but not connected to the app
+        deleteLoginCookies();
+        // TODO(lambert): Add a full-screen overlay explaining what we are doing...
+        reloadWithNewToken('not_authorized');
+      }
+    } else {
+      // the user isn't even logged in to Facebook.
+    }
+  }
+  window.fbAsyncInit = function() {
+    FB.init({appId: '$app_id', status: true, cookie: true, xfbml: true});
+    FB.Event.subscribe('auth.statusChange', handleStatusChange);
+  };
 </script>
-
-$fb_javascript($next)
-
 $bottom_javascript()
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.js"></script>
-  <script type="text/javascript">
-    $.smartbanner({
-      title: "DanceDeets",
-      author: "DanceDeets",
-      icon: '/images/ic_launcher_dancedeets.png'
-    });
-  </script>
-  <script type="text/javascript">
-$(document).ready(function(event) {
-  var engine = new Bloodhound({
-    local: [{value: 'house'}],
-    datumTokenizer: function(d) {
-      return Bloodhound.tokenizers.whitespace(d.value);
-    },
-    queryTokenizer: Bloodhound.tokenizers.whitespace
-  });
-
-  engine.initialize();
-  $('#keywords_input').tokenfield({
-    typeahead: [null, { source: engine.ttAdapter() }]
-  });
-  $('#keywords_input').on('tokenfield:createtoken', function (event) {
-    var existingTokens = $(this).tokenfield('getTokens');
-    $.each(existingTokens, function(index, token) {
-        if (token.value === event.attrs.value)
-            event.preventDefault();
-    });
-});
-});
-  </script>
-  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
-  <script type="text/javascript">
-function initializeLocationAutocomplete() {
-  var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
-  autocomplete.setTypes(['(regions)'])
-}
-  </script>
 </body>
 #end def
 
