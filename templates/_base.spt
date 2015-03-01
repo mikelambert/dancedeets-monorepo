@@ -20,14 +20,9 @@
 <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="/vcss/$version/dancedeets.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
+## We must call tokenfield-typeahead before bootstrap-tokenfield, so that CSS gets applied in-order correctly.
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
-
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-  <script src="//cdn.jsdelivr.net/g/respond@1.4,html5shiv@3.7"></script>
-<![endif]-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -185,7 +180,7 @@ $body()
          }
     });
     var engine = new Bloodhound({
-      local: [{value: 'house'}],
+      local: $jsonify($keyword_tokens),
       datumTokenizer: function(d) {
         return Bloodhound.tokenizers.whitespace(d.value);
       },

@@ -13,6 +13,9 @@ import webapp2
 from google.appengine.ext import db
 from google.appengine.ext import deferred
 
+from spitfire.runtime.filters import skip_filter
+
+
 from users import users
 import facebook
 import fb_api
@@ -20,6 +23,7 @@ from logic import backgrounder
 from logic import mobile
 from rankings import rankings
 from search import search_base
+from nlp import categories
 import template
 from users import user_creation
 from util import abbrev
@@ -45,6 +49,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.display['format_html'] = text.format_html
         self.display['linkify'] = text.linkify
         self.display['format_js'] = text.format_js
+        self.display['jsonify'] = skip_filter(json.dumps)
         self.display['urllib_quote_plus'] = urllib.quote_plus
         self.display['urlencode'] = lambda x: urllib.quote_plus(x.encode('utf8'))
 
@@ -377,6 +382,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['base_hostname'] = 'dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
         self.display['full_hostname'] = 'www.dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
 
+        self.display['keyword_tokens'] = [{'value': x.lower()} for x in categories.STYLES.keys()]
         # TODO: get rid of user_location when we can switch to IP-based geocoding (since mobile clients don't need it)
         # TODO(FB2.0): get rid of user_groups/user_likes
         # TODO(FB2.0): get rid of friends_events (when we have enough users using mobile 2.0 to keep us going)
