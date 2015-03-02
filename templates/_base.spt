@@ -76,7 +76,7 @@ var _gaq = [];
 				<span class="icon-bar"></span>
 			</button>
       <div class="navbar-brand">
-        <a href="/"><img src="/images/dancedeets-name-and-logo.png" height="100"></a>
+        <a href="/"><img src="/images/dancedeets-name-and-logo.png" width="189" height="100"></a>
         <span style="margin: 15px">
             ${total_events}+ dance events worldwide
         </span>
