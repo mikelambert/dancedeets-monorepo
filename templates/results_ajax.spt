@@ -13,4 +13,6 @@
 			#end if
 		#end for
 	#end if
+
+	$results_bottom_javascript()
 #end def

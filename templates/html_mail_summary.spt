@@ -1,6 +1,5 @@
 #extends _html_mail_base
 #extends _rsvp
-#extends _results
 
 #def html
 Hi $user.full_name,

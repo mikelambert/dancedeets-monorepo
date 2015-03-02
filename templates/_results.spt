@@ -67,7 +67,7 @@
 				</a>
 				</h3>
 				<div class="event-types">($result.event_keywords_string())</div>
-				<div class="event-date" data-start-time="$result.start_time" data-end-time="$result.end_time" data-multi-day="$result.multi_day_event()">
+				<div class="event-date" data-start-time="$fb_event.start_time" data-end-time="$fb_event.end_time" data-multi-day="$result.multi_day_event()">
 					$date_human_format($result.start_time)
 					#if $result.multi_day_event() and $result.end_time
 						<br>to $date_human_format($result.end_time)
@@ -109,6 +109,26 @@
 		</li>
 	#end for
 	</ol>
+#end def
+
+#def results_bottom_javascript
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.event-date').each(function(i, obj) {
+		var jquery_obj = $(obj);
+		var start = moment(jquery_obj.data('start-time'));
+		var end = moment(jquery_obj.data('end-time'))
+		if (end.isValid()) {
+			var duration = moment.duration(end - start);
+			//alert(duration.humanize());
+		} else {
+			//alert(start.format('llll'));
+		}
+		var all_day = jquery_obj.data('all-day');
+
+	});
+});
+</script>
 #end def
 
 #def render_result_attending_tooltip_javascript($results)

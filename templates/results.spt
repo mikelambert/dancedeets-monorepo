@@ -188,7 +188,7 @@ $display_location dance events
 #def bottom_javascript
 
 <!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
-<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
 
 <!-- see below comment near #keywords_input
 <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.js"></script>
@@ -241,6 +241,7 @@ function initializeLocationAutocomplete() {
 }
 </script>
 
+$results_bottom_javascript()
 
 #if $selected_tab == 'calendar'
 <link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.css' />
