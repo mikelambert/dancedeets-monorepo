@@ -1,5 +1,6 @@
 import csv
 import json
+import os
 
 # grep '^701004.[0-9]*.OBJ_EVENT,' local_data/FacebookCachedObject.csv > local_data/FacebookCachedObjectEvent.csv
 
@@ -7,6 +8,30 @@ class ClassifiedIds(object):
     def __init__(self, good_ids, bad_ids):
         self.good_ids = frozenset(good_ids)
         self.bad_ids = frozenset(bad_ids)
+
+class ClassifierScoreCard(object):
+    def __init__(self, training_data, classifier_data, positive_classifier):
+        if positive_classifier:
+            good_ids = training_data.good_ids
+            bad_ids = training_data.bad_ids
+        else:
+            bad_ids = training_data.good_ids
+            good_ids = training_data.bad_ids
+
+        self.false_positives = classifier_data.good_ids.difference(good_ids)
+        self.false_negatives = classifier_data.bad_ids.difference(bad_ids)
+        self.true_positives = classifier_data.good_ids.difference(bad_ids)
+        self.true_negatives = classifier_data.bad_ids.difference(good_ids)
+
+    def write_to_disk(self, directory):
+        try:
+            os.makedirs(directory)
+        except OSError:
+            pass
+        open(os.path.join(directory, 'false_positives.txt'), 'w').writelines('%s\n' % x for x in sorted(self.false_positives))
+        open(os.path.join(directory, 'false_negatives.txt'), 'w').writelines('%s\n' % x for x in sorted(self.false_negatives))
+        open(os.path.join(directory, 'true_positives.txt'), 'w').writelines('%s\n' % x for x in sorted(self.true_positives))
+        open(os.path.join(directory, 'true_negatives.txt'), 'w').writelines('%s\n' % x for x in sorted(self.true_negatives))
 
 def load_all_ids():
     result = set()

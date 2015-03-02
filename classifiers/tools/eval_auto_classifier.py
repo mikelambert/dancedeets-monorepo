@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import multiprocessing
-import os
 import sys
 import time
 sys.path += ['.']
@@ -11,7 +10,7 @@ from nlp import event_classifier
 
 
 all_ids = processing.load_all_ids()
-classified_ids = processing.load_classified_ids(all_ids)
+training_data = processing.load_classified_ids(all_ids)
 
 if len(sys.argv) > 1:
     full_run = False
@@ -47,7 +46,7 @@ def mp_partition_ids(ids, classifier=lambda x:False, workers=None):
     print "Multiprocessing classifier completed."
     successes = set(x[1] for x in results if x[0])
     fails = set(x[1] for x in results if not x[0])
-    return successes, fails
+    return processing.ClassifiedIds(successes, fails)
 
 positive_classifier = True
 def basic_match(fb_event):
@@ -56,49 +55,28 @@ def basic_match(fb_event):
         print e.processed_text.get_tokenized_text()
     if positive_classifier:
         result = event_auto_classifier.is_auto_add_event(e)
-        #result = event_auto_classifier.has_good_djs_title(e)
-        #result = event_auto_classifier.is_workshop(e)
     else:
         result = event_auto_classifier.is_auto_notadd_event(e)
-        #result = event_auto_classifier.is_bad_classical_dance(e)
     # classified as good, but not supposed to be in the good set of ids:
-    if result[0] and fb_event['info']['id'] not in good_ids:
+    if result[0] and fb_event['info']['id'] not in training_data.good_ids:
         # false positive
         print fb_event['info']['id'], result
     if not full_run:
         print fb_event['info']['id'], result
     return result[0]
 
-if positive_classifier:
-    good_ids = classified_ids.good_ids
-    bad_ids = classified_ids.bad_ids
-else:
-    bad_ids = classified_ids.good_ids
-    good_ids = classified_ids.bad_ids
-
 a = time.time()
 print "Running auto classifier..."
-theory_good_ids, theory_bad_ids = mp_partition_ids(trial_ids, classifier=basic_match)
+classifier_data = mp_partition_ids(trial_ids, classifier=basic_match)
 print "done, %d seconds" % (time.time() - a)
 
+score_card = processing.ClassifierScoreCard(training_data, classifier_data, positive_classifier)
 
-false_positives = theory_good_ids.difference(good_ids)
-false_negatives = theory_bad_ids.difference(bad_ids)
-true_positives = theory_good_ids.difference(bad_ids)
-true_negatives = theory_bad_ids.difference(good_ids)
-
-print "Found %s true-positives, %s false-positives" % (len(true_positives), len(false_positives))
-print "Leaves %s to be manually-classified" % (len(false_negatives))
-
+print "Found %s true-positives, %s false-positives" % (len(score_card.true_positives), len(score_card.false_positives))
+print "Leaves %s to be manually-classified" % (len(score_card.false_negatives))
+                
 if full_run:
-    try:
-        os.makedirs('scratch')
-    except OSError:
-        pass
-    open('scratch/false_positives.txt', 'w').writelines('%s\n' % x for x in sorted(false_positives))
-    open('scratch/false_negatives.txt', 'w').writelines('%s\n' % x for x in sorted(false_negatives))
-    open('scratch/true_positives.txt', 'w').writelines('%s\n' % x for x in sorted(true_positives))
-    open('scratch/true_negatives.txt', 'w').writelines('%s\n' % x for x in sorted(true_negatives))
+    score_card.write_to_disk('scratch/')
 
-for id in false_positives:
+for id in score_card.false_positives:
     print 'F', id
