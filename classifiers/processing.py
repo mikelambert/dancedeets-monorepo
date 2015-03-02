@@ -3,38 +3,39 @@ import json
 
 # grep '^701004.[0-9]*.OBJ_EVENT,' local_data/FacebookCachedObject.csv > local_data/FacebookCachedObjectEvent.csv
 
+class ClassifiedIds(object):
+    def __init__(self, good_ids, bad_ids):
+        self.good_ids = frozenset(good_ids)
+        self.bad_ids = frozenset(bad_ids)
 
-def load_ids():
-    result = {}
-    result['good_ids'] = set()
+def load_all_ids():
+    result = set()
     for row in csv.reader(open('local_data/DBEvent.csv')):
-        result['good_ids'].add(row[0])
-
-    result['potential_ids'] = set()
+        result.add(row[0])
     for row in csv.reader(open('local_data/PotentialEvent.csv')):
-        result['potential_ids'].add(row[0])
+        result.add(row[0])
+    return result
 
-    result['combined_ids'] = result['potential_ids'].union(result['good_ids'])
 
-    result['bad_ids'] = result['combined_ids'].difference(result['good_ids'])
+def load_classified_ids(all_ids):
+    good_ids = set()
+    for row in csv.reader(open('local_data/DBEvent.csv')):
+        good_ids.add(row[0])
 
     for line in open('local_data/added_ids.txt').readlines():
         line = line.strip()
-        result['good_ids'].add(line)
+        good_ids.add(line)
 
     for line in open('local_data/diffs.txt').readlines():
         line = line.strip()
         if line.startswith('+'):
-            result['good_ids'].add(line[1:])
-            if line[1:] in result['bad_ids']:
-                result['bad_ids'].remove(line[1:])
+            good_ids.add(line[1:])
         elif line.startswith('-'):
-            if line[1:] in result['good_ids']:
-                result['good_ids'].remove(line[1:])
-            result['bad_ids'].add(line[1:])
+            good_ids.remove(line[1:])
 
-    result = dict((k, frozenset(v)) for (k, v) in result.iteritems())
-    return result
+    bad_ids = all_ids.difference(good_ids)
+    classified_ids = ClassifiedIds(good_ids, bad_ids)
+    return classified_ids
 
 def all_fb_data(combined_ids, filename='local_data/FacebookCachedObjectEvent.csv'):
     csv.field_size_limit(1000000000)

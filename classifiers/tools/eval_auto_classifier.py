@@ -10,28 +10,15 @@ from nlp import event_auto_classifier
 from nlp import event_classifier
 
 
-ids_info = processing.load_ids()
-for x in ids_info:
-    print x, len(ids_info[x])
-classified_ids = ids_info['good_ids']
+all_ids = processing.load_all_ids()
+classified_ids = processing.load_classified_ids(all_ids)
+
 if len(sys.argv) > 1:
     full_run = False
-    all_ids = set(sys.argv[1:])
+    trial_ids = set(sys.argv[1:])
 else:
     full_run = True
-    all_ids = ids_info['combined_ids']
-
-def partition_ids(ids, classifier=lambda x:False):
-    successes = set()
-    fails = set()
-    for i, (id, fb_event) in enumerate(processing.all_fb_data(ids)):
-        if not i % 10000: print 'Processing ', i
-        result = classifier(fb_event)
-        if result:
-            successes.add(id)
-        else:
-            fails.add(id)
-    return successes, fails
+    trial_ids = all_ids
 
 def mp_classify(arg):
     classifier, (id, fb_event) = arg
@@ -47,8 +34,9 @@ def init_worker():
     import os
     os.nice(5)
 
-def mp_partition_ids(ids, classifier=lambda x:False):
-    workers = multiprocessing.cpu_count()
+def mp_partition_ids(ids, classifier=lambda x:False, workers=None):
+    if not workers:
+        workers = multiprocessing.cpu_count()
     pool = multiprocessing.Pool(processes=workers, initializer=init_worker)
     print "Generating data..."
     data = [(classifier, x) for x in processing.all_fb_data(ids)]
@@ -82,21 +70,15 @@ def basic_match(fb_event):
     return result[0]
 
 if positive_classifier:
-    good_ids = classified_ids
-    bad_ids = all_ids.difference(good_ids)
+    good_ids = classified_ids.good_ids
+    bad_ids = classified_ids.bad_ids
 else:
-    bad_ids = classified_ids
-    good_ids = all_ids.difference(bad_ids)
-
-keyword_counts = False
-good_counts = {}
-bad_counts = {}
-false_positive_counts = {}
-false_negative_counts = {}
+    bad_ids = classified_ids.good_ids
+    good_ids = classified_ids.bad_ids
 
 a = time.time()
 print "Running auto classifier..."
-theory_good_ids, theory_bad_ids = mp_partition_ids(all_ids, classifier=basic_match)
+theory_good_ids, theory_bad_ids = mp_partition_ids(trial_ids, classifier=basic_match)
 print "done, %d seconds" % (time.time() - a)
 
 
