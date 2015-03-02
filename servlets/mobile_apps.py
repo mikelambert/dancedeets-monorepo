@@ -1,6 +1,7 @@
 import base_servlet
 from logic import mobile
 from logic import sms
+from util import abbrev
 from util import country_dialing_codes
 
 IOS_URL = 'https://itunes.apple.com/us/app/dancedeets/id955212002?mt=8'
@@ -32,6 +33,7 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
 
     def render_page(self, message=None, error=None):
         total_time = 10
+
         self.display['country_codes'] = sorted(country_dialing_codes.mapping.items())
         self.display['total_time'] = total_time
         self.display['walkout_animation'] = self.get_walkout_animation(total_time, -1000)
@@ -42,7 +44,16 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
         if error:
             self.display['errors'] = [error]
         self.display['suppress_promos'] = True
-        self.display['prefix'] = self.request.get('prefix')
+        if self.request.get('prefix'):
+            self.display['prefix'] = self.request.get('prefix')
+        else:
+            iso3166_country = self.request.headers.get("X-AppEngine-Country")
+            full_country = abbrev.countries_abbrev2full.get(iso3166_country, '')
+            if ', ' in full_country:
+                parts = full_country.split(', ')
+                if len(parts) == 2:
+                    full_country = '%s, %s' % (parts[1], parts[0])
+            self.display['prefix'] = country_dialing_codes.mapping.get(full_country, '')
         self.display['phone'] = self.request.get('phone')
         self.render_template('mobile_apps')
 
