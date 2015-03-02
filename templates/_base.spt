@@ -66,7 +66,7 @@ var _gaq = [];
 
 
 <!-- Static navbar -->
-<div class="navbar navbar-inverse navbar-static-top" role="navigation">
+<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -81,30 +81,33 @@ var _gaq = [];
 			<ul class="nav navbar-nav">
 				<li><div class="nav-text">${total_events} dance events</div></li>
 			</ul>
-      <form id="search-form" class="navbar-form navbar-left" role="search" action="/" style=".form-inline">
-        <input id="keywords_input" type="text" name="keywords" placeholder="Any events" style="width:100px"/ value="$defaults.keywords" class="form-control">
-        <span class="nav-text">near</span>
-        <input id="location_input" type="text" name="location" placeholder="Location" style="width:120px"/ value="$defaults.location" class="form-control">
-        <input type="hidden" name="deb" value="$defaults.deb">
-        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-<!-- maybe make a small hourglass icon search box ? 
-  $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
--->
-      </form>
 #if $user
 			<ul class="nav navbar-nav navbar-right">
 				<li><div class="user-name nav-text">$user.full_name</div></li>
 				<li><a href="/user/edit">Settings</a></li>
 				<li><a href="#" onclick="logout(); return false;">Logout</a></li>
 #else
-      <ul class="nav navbar-nav navbar-left">
+      <ul class="nav navbar-nav navbar-right">
 				<li><div class="nav-text"><fb:login-button length="long" scope="$fb_permissions"></fb:login-button></div></li>
       </ul>
 #end if
 			</ul>
 		</div><!--/.nav-collapse -->
 	</div>
-</div>
+</nav>
+
+<form id="search-form" class="form-inline" role="search" action="/">
+  <span>Keywords:</span>
+  ## We don't use a placeholder on keyword field, since it interacts differently with bootstrap-tokentext
+  <input id="keywords_input" type="text" name="keywords" placeholder="" value="$defaults.keywords" class="form-control">
+  <span>near</span>
+  <input id="location_input" type="text" name="location" placeholder="Location" value="$defaults.location" class="form-control">
+  <input type="hidden" name="deb" value="$defaults.deb">
+  <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+<!-- maybe make a small hourglass icon search box ? 
+$("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
+-->
+</form>
 
 #if $errors
 <div class="alert alert-danger"><ul>

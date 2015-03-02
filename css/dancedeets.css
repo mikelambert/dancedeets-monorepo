@@ -313,3 +313,13 @@ footer {
 		height: 140px;
 	}
 }
+
+/* Let our form elements stay inline on one line, when the screen is large enough: */
+@media (min-width: 768px) {
+	#keywords_input {
+		width: 300px;
+	}
+	#location_input {
+		width: 300px;
+	}
+}
