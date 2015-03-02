@@ -31,11 +31,13 @@ $format_html($event.info.name)
 	#if $cover
 		<div style="position: relative;">
 			<div id="cover-box-outer">
-				<div id="cover-box-fill">
-					<img id="cover-image" src="$largest_cover_info.source" itemprop="photo">
-					<!--style="margin-top:-${cover.offset_y}%">-->
-					<h1 class="event-page-title event-page-title-on-cover" itemprop="name">$event.info.name</h1>
-				</div>
+				<a href="$largest_cover_info.source">
+					<div id="cover-box-fill">
+						<img id="cover-image" src="$largest_cover_info.source" itemprop="photo">
+						<!--style="margin-top:-${cover.offset_y}%">-->
+						<h1 class="event-page-title event-page-title-on-cover" itemprop="name">$event.info.name</h1>
+					</div>
+				</a>
 			</div>
 		</div>
 	#else
