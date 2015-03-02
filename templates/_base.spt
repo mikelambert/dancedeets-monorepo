@@ -87,10 +87,8 @@ var _gaq = [];
       </ul>
       <ul class="nav navbar-nav navbar-right">
 #if $user
-        <li><div class="nav-text">
-        <!-- img src="http://graph.facebook.com/$user.fb_uid/picture" style="border: 1px solid black" -->
-        $user.full_name</div></li>
-        <li><a href="/user/edit">Settings</a></li>
+##        <!-- img src="http://graph.facebook.com/$user.fb_uid/picture" style="border: 1px solid black" -->
+        <li><a href="/user/edit">$user.full_name</a></li>
         <li><a href="#" onclick="logout(); return false;">Logout</a></li>
 #else
 				<li><div class="nav-text"><fb:login-button length="long" scope="$fb_permissions"></fb:login-button></div></li>
