@@ -131,7 +131,7 @@ def find_styles_in_text(text, broad=True):
     return styles
 
 def find_styles(fb_event):
-    styles = find_styles_in_text(fb_event['info']['name'], broad=True)
+    styles = find_styles_in_text(fb_event['info'].get('name', ''), broad=True)
     if not styles:
         styles = find_styles_in_text(fb_event['info'].get('description', ''), broad=True)
     return styles
