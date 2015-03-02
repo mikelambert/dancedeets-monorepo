@@ -1,5 +1,4 @@
 #extends _base
-#extends _event_criteria
 
 #def title
 DanceDeets

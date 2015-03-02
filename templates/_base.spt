@@ -147,11 +147,6 @@ $body()
 
 <script src="//cdn.jsdelivr.net/g/jquery@2.1.3,bootstrap@3.3.2,jquery.cookie@1.4.1"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.js"></script>
-<!-- see below comment near #keywords_input
-<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
--->
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
 <script type="text/javascript">
   $.smartbanner({
     title: "DanceDeets",
@@ -161,49 +156,6 @@ $body()
 
   function manualLogin() {
     FB.login(function(response){}, {scope: '$fb_permissions'});
-  }
-
-  $(document).ready(function(event) {
-    $("body").delegate("#location_input", "click", function() { return false; });
-    $('#keywords_input').keydown(function(event) {
-        if (event.keyCode == 13) {
-            this.form.submit();
-            return false;
-         }
-    });
-    $('#location_input').keydown(function(event) {
-        if (event.keyCode == 13) {
-            this.form.submit();
-            return false;
-         }
-    });
-    /*Disable keywords_input autocomplete/tokenizer, until we figure out exactly how we want this to work.
-    ie, maybe we want to tokenize just magical-portions of the input. But we can make bboy-style events work
-    based off matching against the search query serverside, for the moment.
-    var engine = new Bloodhound({
-      local: $jsonify($keyword_tokens),
-      datumTokenizer: function(d) {
-        return Bloodhound.tokenizers.whitespace(d.value);
-      },
-      queryTokenizer: Bloodhound.tokenizers.whitespace
-    });
-    engine.initialize();
-    $('#keywords_input').tokenfield({
-      typeahead: [null, { source: engine.ttAdapter() }]
-    });
-    $('#keywords_input').on('tokenfield:createtoken', function (event) {
-      var existingTokens = $(this).tokenfield('getTokens');
-      $.each(existingTokens, function(index, token) {
-          if (token.value === event.attrs.value)
-              event.preventDefault();
-      });
-    });
-    */
-  });
-
-  function initializeLocationAutocomplete() {
-    var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
-    autocomplete.setTypes(['(regions)'])
   }
 
   // Facebook/Login Code

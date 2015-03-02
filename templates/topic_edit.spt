@@ -1,0 +1,83 @@
+#extends _base
+#extends _results
+#from spitfire.runtime.filters import escape_html
+#filter escape_html
+
+#def title
+Topic: $topic_title
+#end def
+
+#def head_stylesheet
+#end def
+
+#def body
+<div class="row">
+
+<div class="col-md-4">
+#for $year, $month_results in $group_by_date
+	$year:
+	#for $month, $results in $month_results
+		$month ($len($results))
+	#end for
+	<br/>
+#end for
+</div>
+<div class="col-md-4">
+#for $location, $results in $group_by_location
+	$location: $len($results)
+	<br/>
+#end for
+</div>
+
+</div>
+
+<div class="row">
+<div class="col-md-12" style="min-height:300px">
+	<ol class="events-list">
+	#for $result in $all_results
+		#set $fb_event = $result.fb_event.info
+		## widths here are set to sum to 700px-50px = 650px
+		<li class="wide-event">
+			<div class="event-image">
+			<a href="$fb_event_url($fb_event.id)">
+	##preload first five images
+	#if $result.index < 5
+				<img src="$result.get_image()" width="180" border="0">
+	#else
+				<img class="lazy-wide" src="/images/placeholder.gif" data-original="$result.get_image()" width="180" border="0">
+				<noscript><img src="$result.get_image()" width="180" border="0"></noscript>
+	#end if
+			</a>
+			</div>
+			<div class="event-description">
+				<h3 class="event-title">
+				<a href="$fb_event_url($fb_event.id)">
+				$format_html($fb_event.name)
+				</a>
+				</h3>
+				<div class="event-date">
+					$date_only_human_format($result.start_time)
+					#if $result.multi_day_event() and $result.end_time
+						<br>to $date_only_human_format($result.end_time)
+					#end if
+				</div>
+				<div class="event-city">
+					#if $fb_event.location
+						$fb_event.location,
+					#end if
+					$result.actual_city_name
+				</div>
+			</div>
+			<div style="clear:both;height:1px;"></div>
+		</li>
+	#end for
+	</ol>
+
+</div> ## row
+#end def
+
+
+
+
+#def bottom_javascript
+#end def

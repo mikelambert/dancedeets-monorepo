@@ -1,4 +1,4 @@
-#def render_narrow_results($results, $use_rsvp_form=True, $include_description=False)
+#def render_narrow_results($results, $use_rsvp_form=True)
 	<ol class="events-list">
 	#for $result in $results
 		#set $fb_event = $result.fb_event.info
@@ -37,19 +37,13 @@
 						$result.get_attendance()
 					#end if
 				</div>
-			#else
-				#if $include_description
-					<div>
-						$format_html($fb_event.get('description'))
-					</div>
-				#end if
 			#end if
 		</li>
 	#end for
 	</ol>
 #end def
 
-#def render_wide_results($results, $use_rsvp_form=True, $include_description=False)
+#def render_wide_results($results, $use_rsvp_form=True)
 	<ol class="events-list">
 	#for $result in $results
 		#set $fb_event = $result.fb_event.info
@@ -73,7 +67,7 @@
 				</a>
 				</h3>
 				<div class="event-types">($result.event_keywords_string())</div>
-				<div class="event-date">
+				<div class="event-date" data-start-time="$result.start_time" data-end-time="$result.end_time" data-multi-day="$result.multi_day_event()">
 					$date_human_format($result.start_time)
 					#if $result.multi_day_event() and $result.end_time
 						<br>to $date_human_format($result.end_time)
@@ -106,12 +100,6 @@
 							$result.get_attendance()
 						#end if
 					</div>
-				#else
-					#if $include_description
-						<div>
-							$format_html($fb_event.get('description'))
-						</div>
-					#end if
 				#end if
 			</div>
 			#if $deb == 'comments'

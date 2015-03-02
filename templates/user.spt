@@ -1,5 +1,4 @@
 #extends _bigbox_base
-#extends _event_criteria
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 
@@ -10,7 +9,37 @@ Settings
 #def inner_body
 <form action="/user/edit" method="post">
 <p>
-$event_criteria($defaults)
+<p>Events near <input id="location_input" name=location value="$defaults.location">
+<!-- distance is $defaults.distance -->
+within <select name="distance">
+#for $d in [10, 50, 100, 200, 500, 3000, 12000]
+	<option value="$d"
+	#if str($defaults.distance) == str($d)
+		selected
+	#end if
+	>
+	#if str($d) == str(12000)
+		Everywhere
+	#else
+		$d miles
+	#end if
+	</option>
+#end for
+</select>
+<input type=hidden name=distance_units value=miles>
+with
+<!-- min_attendees is $defaults.min_attendees -->
+<select name="min_attendees">
+#for $m in [0, 10, 50, 100, 500]
+	<option value="$m"
+	#if str($defaults.min_attendees) == str($m)
+		selected
+	#end if
+	>
+	${m}+ attendees
+	</option>
+#end for
+</select>
 <p>
 	Weekly Email Updates:<br>
 <ul class="inputs-list">
@@ -35,3 +64,14 @@ $event_criteria($defaults)
 </form>
 #end def
 
+
+#def bottom_javascript
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
+
+<script type="text/javascript">
+function initializeLocationAutocomplete() {
+  var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
+  autocomplete.setTypes(['(regions)'])
+}
+</script>
+#end def

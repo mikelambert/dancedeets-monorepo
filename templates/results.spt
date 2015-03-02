@@ -1,7 +1,6 @@
 #extends _base
 #extends _rsvp
 #extends _results
-#extends _event_criteria
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
@@ -47,7 +46,8 @@ $display_location dance events
 #def body
 
 <div class="row">
-<div class="col-md-9" style="margin-bottom: 25px">
+<div class="col-md-9">
+<div style="margin-bottom: 25px">
   <table><tr><td>
   <div>
   	<img id="penguin" src="/images/full_penguin_240.png" height="120" width="120">
@@ -74,7 +74,7 @@ $display_location dance events
   -->
   </form>
   </td></tr></table>
-</div>
+</div>##margin-bottom: 25px
 
 <div style="min-height:300px">
 <ul class="nav nav-tabs" data-tabs="tabs">
@@ -152,8 +152,9 @@ $display_location dance events
 
 		<div id="calendar"></div>
 	#end if
-</div>
-</div>
+</div>##min-height:300px
+</div>##col-md-9
+</div>##row
 
 <div class="col-md-3">
 	<div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="190" data-action="like" data-show-faces="true" data-share="true" style="margin-bottom: 10px;"></div>
@@ -186,11 +187,64 @@ $display_location dance events
 
 #def bottom_javascript
 
+<!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
+<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js'></script>
+
+<!-- see below comment near #keywords_input
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
+-->
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
+
+<script type="text/javascript">
+$(document).ready(function(event) {
+  $("body").delegate("#location_input", "click", function() { return false; });
+  $('#keywords_input').keydown(function(event) {
+      if (event.keyCode == 13) {
+          this.form.submit();
+          return false;
+       }
+  });
+  $('#location_input').keydown(function(event) {
+      if (event.keyCode == 13) {
+          this.form.submit();
+          return false;
+       }
+  });
+  /*Disable keywords_input autocomplete/tokenizer, until we figure out exactly how we want this to work.
+  ie, maybe we want to tokenize just magical-portions of the input. But we can make bboy-style events work
+  based off matching against the search query serverside, for the moment.
+  var engine = new Bloodhound({
+    local: $jsonify($keyword_tokens),
+    datumTokenizer: function(d) {
+      return Bloodhound.tokenizers.whitespace(d.value);
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace
+  });
+  engine.initialize();
+  $('#keywords_input').tokenfield({
+    typeahead: [null, { source: engine.ttAdapter() }]
+  });
+  $('#keywords_input').on('tokenfield:createtoken', function (event) {
+    var existingTokens = $(this).tokenfield('getTokens');
+    $.each(existingTokens, function(index, token) {
+        if (token.value === event.attrs.value)
+            event.preventDefault();
+    });
+  });
+  */
+});
+
+function initializeLocationAutocomplete() {
+  var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
+  autocomplete.setTypes(['(regions)'])
+}
+</script>
+
+
 #if $selected_tab == 'calendar'
 <link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.css' />
 <link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css' media="print"/>
-<!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
-<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.js'></script>
 <style type="text/css">
 /** We want to see the whole city and title, so let's ensure we override 'white-space: nowrap'.
