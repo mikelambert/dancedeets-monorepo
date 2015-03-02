@@ -112,8 +112,14 @@ class SearchQuery(object):
                 assert self.start_time < datetime.datetime.now()
         self.bounds = bounds
 
-        self.categories = categories.find_styles_in_text(keywords)
-        self.keywords = keywords
+        if keywords:
+            unquoted_quoted_keywords = re.sub(r'[<=>:(),]', ' ', keywords).split('"')
+            for i in range(0, len(unquoted_quoted_keywords), 2):
+                unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
+            reconstructed_keywords = '"'.join(unquoted_quoted_keywords)
+            self.keywords = reconstructed_keywords
+        else:
+            self.keywords = None
 
         self.limit = 1000
 
@@ -168,8 +174,7 @@ class SearchQuery(object):
         if self.end_time:
             clauses += ['start_time <= %s' % self.end_time.date().strftime(self.DATE_SEARCH_FORMAT)]
         if self.keywords:
-            safe_keywords = re.sub(r'[<=>:(),]', ' ', self.keywords)
-            clauses += ['(%s)' % safe_keywords]
+            clauses += ['(%s)' % self.keywords]
         if self.min_attendees:
             clauses += ['attendee_count > %d' % self.min_attendees]
         if clauses:
@@ -319,7 +324,7 @@ def _create_doc_event(db_event, fb_event):
             search.DateField(name='end_time', value=dates.faked_end_time(db_event.start_time, db_event.end_time)),
             search.NumberField(name='latitude', value=db_event.latitude),
             search.NumberField(name='longitude', value=db_event.longitude),
-            search.TextField(name='auto_categories', value=' '.join(db_event.auto_categories)),
+            search.TextField(name='categories', value=' '.join(db_event.auto_categories)),
             search.TextField(name='country', value=db_event.country),
         ],
         #language=XX, # We have no good language detection

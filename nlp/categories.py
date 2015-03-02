@@ -113,6 +113,14 @@ BROAD_STYLES = STYLES.copy()
 BROAD_STYLES['BREAK'] = ANY_BREAK_BROAD
 
 
+def format_as_search_query(text, broad=True):
+    processed_text = event_classifier.StringProcessor(text)
+    styles_list = BROAD_STYLES if broad else STYLES
+    for style, rule in styles_list.iteritems():
+        replaced, count = processed_text.replace_with(rule, lambda x: 'categories:%s' % style)
+    return processed_text.text
+
+
 def find_styles_in_text(text, broad=True):
     processed_text = event_classifier.StringProcessor(text.lower())
     styles = set()
@@ -120,8 +128,7 @@ def find_styles_in_text(text, broad=True):
     for style, rule in styles_list.iteritems():
         if processed_text.get_tokens(rule):
             styles.add(style)
-    if styles:
-        return styles
+    return styles
 
 def find_styles(fb_event):
     styles = find_styles_in_text(fb_event['info']['name'], broad=True)
