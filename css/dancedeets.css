@@ -314,14 +314,16 @@ footer {
 	}
 }
 
-/* Let our form elements stay inline on one line, when the screen is large enough: */
-@media (min-width: 768px) {
-	#keywords_input {
-		width: 250px;
-	}
-	#location_input {
-		width: 250px;
-	}
+/* Handle our search form */
+#search-form .form-group {
+	display: block;
+	margin-bottom: 0;
+	vertical-align: middle;
+}
+#search-form .form-control {
+	width: 250px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 /* http://work.smarchal.com/twbscolor/scss/8bc34a689f38ffffffffff8d1*/

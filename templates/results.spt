@@ -48,9 +48,14 @@ $display_location dance events
 
 <div class="row">
 <div class="col-md-12" style="margin-bottom: 25px">
+  <table><tr><td>
+  <div>
+  	<img id="penguin" src="/images/full_penguin_720.png" height="120" width="120">
+  </div>
+  </td><td>
   <form id="search-form" class="form-inline" role="search" action="/">
-    <div style="font-weight: bold">Searching ${total_events}+ dance events worldwide:</div>
-    <div class="form-group">
+    <div style="font-weight: bold">Searching ${total_events} dance events worldwide:</div>
+    <div class="form-group"">
       <label for="keywords_input">Keywords</label>
       ## We don't use a placeholder on keyword field, since it interacts differently with bootstrap-tokentext
       <input id="keywords_input" type="text" name="keywords" placeholder="" value="$defaults.keywords" class="form-control">
@@ -62,12 +67,13 @@ $display_location dance events
     <input type="hidden" name="deb" value="$defaults.deb">
     <button type="submit" class="btn btn-default">
       <span class="glyphicon glyphicon-search"></span>
-      <span class="visible-xs-inline">Search</span>
+      Search Events
     </button>
   <!-- maybe make a small hourglass icon search box ? 
   $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
   -->
   </form>
+  </td></tr></table>
 </div>
 </div>
 
