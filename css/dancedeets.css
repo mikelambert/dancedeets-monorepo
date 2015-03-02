@@ -37,15 +37,6 @@
     padding-bottom: 15px;
   }
 }
-/* can use a smaller padding between nav items */
-.nav > li > a {
-	padding-left: 5px;
-	padding-right: 5px;
-}
-.nav > li > .nav-text {
-	padding-left: 5px;
-	padding-right: 5px;
-}
 
 .fb_button-nav {
 	padding: 10px 10px 0px;
