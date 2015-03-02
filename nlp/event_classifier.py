@@ -46,9 +46,15 @@ def _flatten(listOfLists):
     return list(itertools.chain.from_iterable(listOfLists))
 
 class StringProcessor(object):
-    def __init__(self, text, match_on_word_boundaries):
+    def __init__(self, text, match_on_word_boundaries=None):
         self.text = text
-        self.match_on_word_boundaries = match_on_word_boundaries
+        if match_on_word_boundaries is not None:
+            self.match_on_word_boundaries = match_on_word_boundaries
+        else:
+            if cjk_detect.cjk_regex.search(text):
+                self.match_on_word_boundaries = regex_keywords.NO_WORD_BOUNDARIES
+            else:
+                self.match_on_word_boundaries = regex_keywords.WORD_BOUNDARIES
         self._get_token_cache = {}
         self._has_token_cache = {}
 
@@ -277,22 +283,14 @@ def get_classified_event(fb_event, language=None):
 
 def relevant_keywords(fb_event):
     text = get_relevant_text(fb_event)
-    if cjk_detect.cjk_regex.search(text):
-        idx = regex_keywords.NO_WORD_BOUNDARIES
-    else:
-        idx = regex_keywords.WORD_BOUNDARIES
-    processed_text = StringProcessor(text, idx)
+    processed_text = StringProcessor(text)
     good_keywords = processed_text.get_tokens(rules.ANY_GOOD)
     bad_keywords = processed_text.get_tokens(rules.ANY_BAD)
     return sorted(set(good_keywords).union(bad_keywords))
 
 @skip_filter
 def highlight_keywords(text):
-    if cjk_detect.cjk_regex.search(text):
-        idx = regex_keywords.NO_WORD_BOUNDARIES
-    else:
-        idx = regex_keywords.WORD_BOUNDARIES
-    processed_text = StringProcessor(text, idx)
+    processed_text = StringProcessor(text)
     processed_text.replace_with(rules.ANY_GOOD, lambda match: '<span class="matched-text">%s</span>' % match.group(0), flags=re.I)
     processed_text.replace_with(rules.ANY_BAD, lambda match: '<span class="bad-matched-text">%s</span>' % match.group(0))
     return processed_text.get_tokenized_text()
