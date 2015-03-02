@@ -50,7 +50,7 @@ $display_location dance events
 <div class="col-md-12" style="margin-bottom: 25px">
   <table><tr><td>
   <div>
-  	<img id="penguin" src="/images/full_penguin_720.png" height="120" width="120">
+  	<img id="penguin" src="/images/full_penguin_240.png" height="120" width="120">
   </div>
   </td><td>
   <form id="search-form" class="form-inline" role="search" action="/">
