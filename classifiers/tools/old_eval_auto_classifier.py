@@ -2,6 +2,7 @@
 
 import multiprocessing
 import os
+import re
 import sys
 import time
 sys.path += ['.']
@@ -21,6 +22,37 @@ else:
     full_run = True
     all_ids = ids_info['combined_ids']
 
+TOTAL = None # magic key
+def add_counts(base_counts, fb_event):
+    if not keyword_counts:
+        return
+    search_text = event_classifier.get_relevant_text(fb_event)
+    words = re.split(r'\s+', search_text)
+    if 1:
+        unique_words = frozenset(words)
+    else:
+        unique_words = frozenset(['%s %s' % (words[i], words[i+1]) for i in range(len(words)-1)])
+    for word in unique_words:
+        base_counts[word] = base_counts.get(word, 0) + 1
+    base_counts[TOTAL] = base_counts.get(TOTAL, 0) + 1
+
+def get_df_from_counts(counts):
+    return dict((x[0], 1.0*x[1]/counts[TOTAL]) for x in counts.items())
+
+def df_minus_df(df1, df2, negative_scale=1.0):
+    all_keys = set(df1).union(df2)
+    diff = {}
+    for key in all_keys:
+        diff[key] = df1.get(key, 0) - df2.get(key, 0) * negative_scale
+    return diff
+
+def sorted_df(df):
+    diff_list = sorted(df.items(), key=lambda x: -x[1])
+    return diff_list
+
+def print_top_for_df(df):
+    print '\n'.join(['%s: %s' % x for x in sorted_df(df)][:20])
+
 def partition_ids(ids, classifier=lambda x:False):
     successes = set()
     fails = set()
@@ -29,8 +61,18 @@ def partition_ids(ids, classifier=lambda x:False):
         result = classifier(fb_event)
         if result:
             successes.add(id)
+            #if id not in good_ids:
+            #    # false positive
+            #    add_counts(false_positive_counts, fb_event)
         else:
             fails.add(id)
+            #if id not in bad_ids:
+            #    # false negative
+            #    add_counts(false_negative_counts, fb_event)
+        #if id in good_ids:
+        #    add_counts(good_counts, fb_event)
+        #else:
+        #    add_counts(bad_counts, fb_event)
     return successes, fails
 
 def mp_classify(arg):
@@ -38,8 +80,19 @@ def mp_classify(arg):
     result = classifier(fb_event)
     if result:
         return (True, id)
+        #if id not in good_ids:
+        #    # false positive
+        #    add_counts(false_positive_counts, fb_event)
     else:
         return (False, id)
+        #f id not in bad_ids:
+        #    # false negative
+        #    add_counts(false_negative_counts, fb_event)
+    #if id in good_ids:
+    #    add_counts(good_counts, fb_event)
+    #else:
+    #    add_counts(bad_counts, fb_event)
+
 
 def init_worker():
     import signal
@@ -48,8 +101,7 @@ def init_worker():
     os.nice(5)
 
 def mp_partition_ids(ids, classifier=lambda x:False):
-    workers = multiprocessing.cpu_count()
-    pool = multiprocessing.Pool(processes=workers, initializer=init_worker)
+    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count(), initializer=init_worker)
     print "Generating data..."
     data = [(classifier, x) for x in processing.all_fb_data(ids)]
     print "Running multiprocessing classifier..."
@@ -117,6 +169,13 @@ if full_run:
     open('scratch/false_negatives.txt', 'w').writelines('%s\n' % x for x in sorted(false_negatives))
     open('scratch/true_positives.txt', 'w').writelines('%s\n' % x for x in sorted(true_positives))
     open('scratch/true_negatives.txt', 'w').writelines('%s\n' % x for x in sorted(true_negatives))
+
+if keyword_counts:
+    print "Best finds for false-negatives:"
+    print_top_for_df(df_minus_df(get_df_from_counts(false_negative_counts), get_df_from_counts(bad_counts), negative_scale=100))
+    print "Best fixes for false-positives:"
+    print_top_for_df(df_minus_df(get_df_from_counts(false_positive_counts), get_df_from_counts(good_counts), negative_scale=0.1))
+
 
 for id in false_positives:
     print 'F', id
