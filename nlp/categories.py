@@ -107,19 +107,15 @@ STYLES = {
 
 
 def find_styles(fb_event):
-    processed_title = event_classifier.StringProcessor(fb_event['info']['name'])
+    processed_title = event_classifier.StringProcessor(fb_event['info']['name'].lower())
     styles = set()
     for style, rule in STYLES.iteritems():
         if processed_title.get_tokens(rule):
             styles.add(style)
-    #DEBUG
-    #print styles, processed_title
     if styles:
         return styles
-    processed_text = event_classifier.StringProcessor(fb_event['info'].get('description', ''))
+    processed_text = event_classifier.StringProcessor(fb_event['info'].get('description', '').lower())
     for style, rule in STYLES.iteritems():
         if processed_text.get_tokens(rule):
             styles.add(style)
-    #DEBUG
-    #print styles, processed_text
     return styles
