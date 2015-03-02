@@ -66,8 +66,8 @@ var _gaq = [];
 
 
 <!-- Static navbar -->
-<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-	<div class="container-fluid">
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 				<span class="sr-only">Toggle navigation</span>
@@ -76,22 +76,22 @@ var _gaq = [];
 				<span class="icon-bar"></span>
 			</button>
       <div class="navbar-brand">
-        <a href="/"><img src="/images/dancedeets-name-and-logo.png" width="189" height="100"></a>
+        <a href="/"><img src="/images/dancedeets-horizontal.png" width="189" ></a>
       </div>
 		</div>
 		<div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="/">Search ${total_events} Events</a></li>
+        <li><a href="/mobile_apps">Mobile App</a></li>
+        <li><a href="/rankings">Cities</a></li>
+      </ul>
       <ul class="nav navbar-nav navbar-right">
 #if $user
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-          <img src="http://graph.facebook.com/$user.fb_uid/picture" style="border: 1px solid black">
-          <span>$user.full_name</span>
-          <span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="/user/edit">Settings</a></li>
-            <li><a href="#" onclick="logout(); return false;">Logout</a></li>
-          </ul>
-        </li>
+        <li><div class="nav-text">
+        <!-- img src="http://graph.facebook.com/$user.fb_uid/picture" style="border: 1px solid black" -->
+        $user.full_name</div></li>
+        <li><a href="/user/edit">Settings</a></li>
+        <li><a href="#" onclick="logout(); return false;">Logout</a></li>
 #else
 				<li><div class="nav-text"><fb:login-button length="long" scope="$fb_permissions"></fb:login-button></div></li>
 #end if
@@ -131,28 +131,7 @@ var _gaq = [];
 </ul></div>
 #end if
 
-<div class="container" style="margin-bottom: 20px">
-  <form id="search-form" class="form-inline" role="search" action="/">
-    <div style="font-weight: bold">Searching ${total_events}+ dance events worldwide:</div>
-    <div class="form-group">
-      <label for="keywords_input">Keywords</label>
-      ## We don't use a placeholder on keyword field, since it interacts differently with bootstrap-tokentext
-      <input id="keywords_input" type="text" name="keywords" placeholder="" value="$defaults.keywords" class="form-control">
-    </div>
-    <div class="form-group">
-      <label for="location_input">near location</label>
-      <input id="location_input" type="text" name="location" placeholder="Location" value="$defaults.location" class="form-control">
-    </div>
-    <input type="hidden" name="deb" value="$defaults.deb">
-    <button type="submit" class="btn btn-default">
-      <span class="glyphicon glyphicon-search"></span>
-      <span class="visible-xs-inline">Search</span>
-    </button>
-  <!-- maybe make a small hourglass icon search box ? 
-  $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
-  -->
-  </form>
-</div>
+<div class="container">
 
 $body()
 
