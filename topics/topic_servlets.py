@@ -44,23 +44,14 @@ class TopicHandler(base_servlet.BaseRequestHandler):
             - Must contain keyword in the title
             - Must contain keyword on a line where it makes up >10% of the text (for judges, workshops, etc). We want to hide the resume-includes-classes-from-X people
             """
-            # Remove this code when the search index has transitioned away from 'keywords'
-            try:
-                title_description = doc_event.field('keywords').value.lower()
-                try:
-                    title, description = title_description.split('\n\n', 1)
-                except ValueError:
-                    logging.error("Could not unpack title_description from search result id %s: %s", doc_event.doc_id, title_description)
-                    return False
-            except ValueError: # no keyword field
-                title = doc_event.field('title').value.lower()
-                description = doc_event.field('description').value.lower()
+            name = doc_event.field('name').value.lower()
+            description = doc_event.field('description').value.lower()
 
             description_lines = description.split('\n')
 
             for keyword in topic.search_keywords:
                 keyword_word_re = re.compile(r'\b%s\b' % keyword)
-                if keyword_word_re.search(title):
+                if keyword_word_re.search(name):
                     return True
                 for line in description_lines:
                     result = keyword_word_re.search(line)
@@ -74,7 +65,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
                         else:
                             logging.info("Found keyword %r on line, but not long enough: %r", keyword, line)
 
-            logging.info("Prefilter dropping event %s with title: %r" % (doc_event.fb_event_id, title))
+            logging.info("Prefilter dropping event %s with name: %r" % (doc_event.fb_event_id, name))
             return False
 
         keywords = ' OR '.join('"%s"' % x for x in topic.search_keywords)
