@@ -47,7 +47,7 @@ $display_location dance events
 #def body
 
 <div class="row">
-<div class="col-md-12" style="margin-bottom: 25px">
+<div class="col-md-9" style="margin-bottom: 25px">
   <table><tr><td>
   <div>
   	<img id="penguin" src="/images/full_penguin_240.png" height="120" width="120">
@@ -75,12 +75,8 @@ $display_location dance events
   </form>
   </td></tr></table>
 </div>
-</div>
 
-
-<div class="row">
-
-<div class="col-md-9" style="min-height:300px">
+<div style="min-height:300px">
 <ul class="nav nav-tabs" data-tabs="tabs">
 	<li
 	#if $selected_tab == 'past'
