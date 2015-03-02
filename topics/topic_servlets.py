@@ -44,6 +44,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
             - Must contain keyword in the title
             - Must contain keyword on a line where it makes up >10% of the text (for judges, workshops, etc). We want to hide the resume-includes-classes-from-X people
             """
+            logging.info("Prefiltering event %s", doc_event.doc_id)
             name = doc_event.field('name').value.lower()
             description = doc_event.field('description').value.lower()
 
@@ -65,7 +66,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
                         else:
                             logging.info("Found keyword %r on line, but not long enough: %r", keyword, line)
 
-            logging.info("Prefilter dropping event %s with name: %r" % (doc_event.fb_event_id, name))
+            logging.info("Prefilter dropping event %s with name: %r" % (doc_event.doc_id, name))
             return False
 
         keywords = ' OR '.join('"%s"' % x for x in topic.search_keywords)
