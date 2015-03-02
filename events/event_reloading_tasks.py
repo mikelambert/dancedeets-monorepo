@@ -23,7 +23,6 @@ def yield_load_fb_event(fbl, db_events):
             if event_updates.need_forced_update(db_event):
                 fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
             if fb_event:
-                logging.info("FBEvent %s changed, will try to save and index DBEvent", db_event.fb_event_id)
                 events_to_update.append((db_event, fb_event))
         except fb_api.NoFetchedDataException, e:
             logging.info("No data fetched for event id %s: %s", db_event.fb_event_id, e)

@@ -29,6 +29,7 @@ def update_and_save_event(db_event, fb_event):
 
 def update_and_save_event_batch(events_to_update, update_geodata=True):
     for db_event, fb_event in events_to_update:
+        logging.info("Updating and saving DBEvent %s", db_event.fb_event_id)
         _inner_make_event_findable_for(db_event, fb_event, update_geodata=update_geodata)
     # We want to save it here, no matter how it was changed.
     ndb.put_multi([x[0] for x in events_to_update])
