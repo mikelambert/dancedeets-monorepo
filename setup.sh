@@ -22,7 +22,7 @@ pip install --upgrade -t $BASE_DIR/lib \
   iso3166 \
   oauth2 \
   python-oauth2 \
-  twilio \
+  twilio==3.5.2 \
   google-api-python-client \
   gdata \
   python-gflags \
@@ -35,6 +35,9 @@ pip install --upgrade -t $BASE_DIR/lib \
   simplejson \
   mock \
   mox
+# We use twilio 3.5.2 since later versions use certificates and fail on appengine/googlecloud.
+# See: http://android.amberfog.com/?tag=notsupportedonthisplatform
+#
 # This does not install the static files correctly, since they are not in setup.py
 #  GoogleAppEngineMapReduce
 # So instead, let's install the depencies manually:

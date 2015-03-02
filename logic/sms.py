@@ -1,5 +1,6 @@
 from twilio.rest import TwilioRestClient 
-from twilio.rest.exceptions import TwilioRestException
+# This is the right import for 3.5.2
+from twilio import TwilioRestException
 
 import keys
 
