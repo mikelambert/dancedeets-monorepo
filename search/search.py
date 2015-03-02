@@ -97,12 +97,10 @@ class SearchResult(object):
         return self.rsvp_status
 
 class PseudoDBEvent(object):
-    def __init__(self, d):
-        self.fb_event_id = d.doc_id
-        self.actual_city_name = d.field('actual_city_name').value
-        self.attendee_count = d.field('attendee_count').value
-        self.event_keywords = d.field('event_keywords').value.split(', ')
-        self._search_result = d
+    def __init__(self, search_result):
+        self._search_result = search_result
+        self.fb_event_id = search_result.doc_id
+        self.attendee_count = search_result.field('attendee_count').value
 
 class SearchQuery(object):
     def __init__(self, time_period=None, start_time=None, end_time=None, bounds=None, min_attendees=None, keywords=None):
@@ -148,7 +146,7 @@ class SearchQuery(object):
         return self
 
     DATE_SEARCH_FORMAT = '%Y-%m-%d'
-    def get_candidate_dbevents(self):
+    def get_candidate_doc_events(self):
         clauses = []
         if self.bounds:
             # We try to keep searches as simple as possible, 
@@ -188,32 +186,25 @@ class SearchQuery(object):
                 returned_fields=['actual_city_name', 'attendee_count', 'event_keywords'] + self.extra_fields)
             query = search.Query(query_string=full_search, options=options)
             doc_search_results = doc_index.search(query)
-            db_events = []
-            for x in doc_search_results:
-                try:
-                    db_events.append(PseudoDBEvent(x))
-                except ValueError, e:
-                    logging.error("Exception %s while constructing result for %s", e, x)
-            return db_events
+            return doc_search_results.results
 
     def get_search_results(self, fbl, prefilter=None):
         a = time.time()
         # Do datastore filtering
-        db_events = self.get_candidate_dbevents()
-        logging.info("Search returned %s events in %s seconds", len(db_events), time.time() - a)
+        doc_events = self.get_candidate_doc_events()
+        logging.info("Search returned %s events in %s seconds", len(doc_events), time.time() - a)
 
         if prefilter:
-            db_events = [x for x in db_events if prefilter(x)]
+            doc_events = [x for x in doc_events if prefilter(x)]
 
         a = time.time()
-        real_db_events = eventdata.DBEvent.get_by_ids([x.fb_event_id for x in db_events])
-        print real_db_events
+        real_db_events = eventdata.DBEvent.get_by_ids([x.doc_id for x in doc_events])
         logging.info("Loading DBEvents took %s seconds", time.time() - a)
 
         # ...and do filtering based on the contents inside our app
         a = time.time()
         search_results = []
-        for real_db_event, db_event in zip(real_db_events, db_events):
+        for real_db_event in real_db_events:
             fb_event = real_db_event.fb_event
             if not fb_event:
                 logging.error("Failed to find fb_event on db_event %s", real_db_event.fb_event_id)
