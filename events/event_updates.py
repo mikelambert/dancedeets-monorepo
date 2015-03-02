@@ -6,6 +6,7 @@ import fb_api
 from loc import gmaps_api
 from rankings import rankings
 from search import search
+from nlp import categories
 from nlp import event_classifier
 from util import dates
 from . import event_locations
@@ -75,6 +76,7 @@ def _inner_make_event_findable_for(db_event, fb_dict, update_geodata):
     db_event.search_time_period = _event_time_period(db_event)
 
     db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
+    db_event.auto_categories = categories.find_styles(fb_dict)
 
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
@@ -99,3 +101,8 @@ def _inner_make_event_findable_for(db_event, fb_dict, update_geodata):
 
         # This only grabs the very first result from the raw underlying geocode request, since that's all that's used to construct the Geocode object in memory
         db_event.location_geocode = gmaps_api.convert_geocode_to_json(location_info.geocode)
+
+    #TODO: enable country
+    #    db_event.country = location_info.geocode.country() if location_info.geocode else None
+    #else:
+    #    db_event.country = db_event.get_geocode().country() if db_event.has_geocode() else None

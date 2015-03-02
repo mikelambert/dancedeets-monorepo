@@ -1,6 +1,7 @@
 import keywords
 import grammar
 from grammar import Any
+from nlp import event_classifier
 
 ANY_BREAK = Any(
     keywords.STYLE_BREAK,
@@ -105,14 +106,20 @@ STYLES = {
 }
 
 
-def find_styles(classified_event):
+def find_styles(fb_event):
+    processed_title = event_classifier.StringProcessor(fb_event['info']['name'])
     styles = set()
     for style, rule in STYLES.iteritems():
-        if classified_event.processed_title.get_tokens(rule):
+        if processed_title.get_tokens(rule):
             styles.add(style)
+    #DEBUG
+    #print styles, processed_title
     if styles:
         return styles
+    processed_text = event_classifier.StringProcessor(fb_event['info'].get('description', ''))
     for style, rule in STYLES.iteritems():
-        if classified_event.processed_text.get_tokens(rule):
+        if processed_text.get_tokens(rule):
             styles.add(style)
+    #DEBUG
+    #print styles, processed_text
     return styles

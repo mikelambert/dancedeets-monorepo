@@ -61,6 +61,9 @@ class DBEvent(ndb.Model):
     fb_event = ndb.JsonProperty()
 
     event_keywords = ndb.StringProperty(indexed=False, repeated=True)
+    auto_categories = ndb.StringProperty(indexed=False, repeated=True)
+    #TODO: enable country
+    #country = ndb.StringProperty(indexed=False)
 
     def get_geocode(self):
         return gmaps_api.parse_geocode(self.location_geocode)

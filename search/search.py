@@ -322,8 +322,9 @@ def _create_doc_event(db_event, fb_event):
             search.DateField(name='end_time', value=dates.faked_end_time(db_event.start_time, db_event.end_time)),
             search.NumberField(name='latitude', value=db_event.latitude),
             search.NumberField(name='longitude', value=db_event.longitude),
-            search.TextField(name='actual_city_name', value=db_event.actual_city_name),
-            search.TextField(name='event_keywords', value=', '.join(db_event.event_keywords)),
+            search.TextField(name='auto_categories', value=' '.join(db_event.auto_categories)),
+            #TODO: enable country
+            #search.TextField(name='country', value=db_event.country),
         ],
         #language=XX, # We have no good language detection
         rank=int(time.mktime(db_event.start_time.timetuple())),
