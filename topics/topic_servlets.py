@@ -37,19 +37,18 @@ class TopicHandler(base_servlet.BaseRequestHandler):
             fb_source = None
 
 
-        def prefilter(pseudo_db_event):
-            """Function for fitlering db results, before we spend the energy to load the corresponding Facebook data objects.
+        def prefilter(doc_event):
+            """Function for fitlering doc results, before we spend the energy to load the corresponding DBEvents.
 
             We only want on-topic events here:
             - Must contain keyword in the title
             - Must contain keyword on a line where it makes up >10% of the text (for judges, workshops, etc). We want to hide the resume-includes-classes-from-X people
             """
-            search_result = pseudo_db_event._search_result
-            title_description = search_result.field('keywords').value.lower()
+            title_description = doc_event.field('keywords').value.lower()
             try:
                 title, description = title_description.split('\n\n', 1)
             except ValueError:
-                logging.error("Could not unpack title_description from search result id %s: %s", pseudo_db_event.fb_event_id, title_description)
+                logging.error("Could not unpack title_description from search result id %s: %s", doc_event.doc_id, title_description)
                 return False
             description_lines = description.split('\n')
 
@@ -69,7 +68,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
                         else:
                             logging.info("Found keyword %r on line, but not long enough: %r", keyword, line)
 
-            logging.info("Prefilter dropping event %s with title: %r" % (pseudo_db_event.fb_event_id, title))
+            logging.info("Prefilter dropping event %s with title: %r" % (doc_event.fb_event_id, title))
             return False
 
         keywords = ' OR '.join('"%s"' % x for x in topic.search_keywords)
