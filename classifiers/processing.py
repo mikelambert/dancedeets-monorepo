@@ -1,5 +1,6 @@
 import csv
 import json
+import multiprocessing
 import os
 
 # grep '^701004.[0-9]*.OBJ_EVENT,' local_data/FacebookCachedObject.csv > local_data/FacebookCachedObjectEvent.csv
@@ -32,6 +33,37 @@ class ClassifierScoreCard(object):
         open(os.path.join(directory, 'false_negatives.txt'), 'w').writelines('%s\n' % x for x in sorted(self.false_negatives))
         open(os.path.join(directory, 'true_positives.txt'), 'w').writelines('%s\n' % x for x in sorted(self.true_positives))
         open(os.path.join(directory, 'true_negatives.txt'), 'w').writelines('%s\n' % x for x in sorted(self.true_negatives))
+
+
+class Classifier(object):
+    @staticmethod
+    def mp_classify(arg):
+        classifier, (key, value) = arg
+        result = classifier(value)
+        return (result, key)
+
+    @staticmethod
+    def init_worker():
+        import signal
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        import os
+        os.nice(5)
+
+    @staticmethod
+    def partition_data(data, classifier=lambda x:False, workers=None):
+        if not workers:
+            workers = multiprocessing.cpu_count()
+        pool = multiprocessing.Pool(processes=workers, initializer=Classifier.init_worker)
+        print "Generating data..."
+        data = [(classifier, x) for x in data]
+        print "Running multiprocessing classifier..."
+        async_results = pool.map_async(Classifier.mp_classify, data, chunksize=100)
+        # We need to specify a timeout to get(), so that KeyboardInterrupt gets delivered properly.
+        results = async_results.get(9999999)
+        print "Multiprocessing classifier completed."
+        successes = set(x[1] for x in results if x[0])
+        fails = set(x[1] for x in results if not x[0])
+        return ClassifiedIds(successes, fails)
 
 def load_all_ids():
     result = set()
