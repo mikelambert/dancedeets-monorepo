@@ -102,7 +102,6 @@ def _inner_make_event_findable_for(db_event, fb_dict, update_geodata):
         # This only grabs the very first result from the raw underlying geocode request, since that's all that's used to construct the Geocode object in memory
         db_event.location_geocode = gmaps_api.convert_geocode_to_json(location_info.geocode)
 
-    #TODO: enable country
-    #    db_event.country = location_info.geocode.country() if location_info.geocode else None
-    #else:
-    #    db_event.country = db_event.get_geocode().country() if db_event.has_geocode() else None
+        db_event.country = location_info.geocode.country() if location_info.geocode else None
+    else:
+        db_event.country = db_event.get_geocode().country() if db_event.has_geocode() else None

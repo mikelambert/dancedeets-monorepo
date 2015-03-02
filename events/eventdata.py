@@ -62,14 +62,13 @@ class DBEvent(ndb.Model):
 
     event_keywords = ndb.StringProperty(indexed=False, repeated=True)
     auto_categories = ndb.StringProperty(indexed=False, repeated=True)
-    #TODO: enable country
-    #country = ndb.StringProperty(indexed=False)
+    country = ndb.StringProperty(indexed=False)
 
     def get_geocode(self):
         return gmaps_api.parse_geocode(self.location_geocode)
 
     def has_geocode(self):
-        return self.location_geocode is not None
+        return self.location_geocode is not None and self.location_geocode.get('status') == 'OK'
 
     @classmethod
     def get_by_ids(cls, id_list, keys_only=False):
