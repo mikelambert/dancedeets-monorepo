@@ -44,12 +44,18 @@ class TopicHandler(base_servlet.BaseRequestHandler):
             - Must contain keyword in the title
             - Must contain keyword on a line where it makes up >10% of the text (for judges, workshops, etc). We want to hide the resume-includes-classes-from-X people
             """
-            title_description = doc_event.field('keywords').value.lower()
+            # Remove this code when the search index has transitioned away from 'keywords'
             try:
-                title, description = title_description.split('\n\n', 1)
-            except ValueError:
-                logging.error("Could not unpack title_description from search result id %s: %s", doc_event.doc_id, title_description)
-                return False
+                title_description = doc_event.field('keywords').value.lower()
+                try:
+                    title, description = title_description.split('\n\n', 1)
+                except ValueError:
+                    logging.error("Could not unpack title_description from search result id %s: %s", doc_event.doc_id, title_description)
+                    return False
+            except ValueError: # no keyword field
+                title = doc_event.field('title').value.lower()
+                description = doc_event.field('description').value.lower()
+
             description_lines = description.split('\n')
 
             for keyword in topic.search_keywords:
@@ -74,7 +80,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         keywords = ' OR '.join('"%s"' % x for x in topic.search_keywords)
         search_query = search.SearchQuery(keywords=keywords)
         # Need these fields for the prefilter
-        search_query.extra_fields = ['keywords']
+        search_query.extra_fields = ['name', 'description']
         search_results = search_query.get_search_results(self.fbl, prefilter=prefilter)
 
         self.display['topic_title'] = topic.override_title or (fb_source and fb_source['info']['name'])

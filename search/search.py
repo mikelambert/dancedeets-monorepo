@@ -12,6 +12,7 @@ from events import eventdata
 import fb_api
 from loc import gmaps_api
 from loc import math
+from nlp import categories
 from util import dates
 from util import timings
 
@@ -96,12 +97,6 @@ class SearchResult(object):
             return 'maybe'
         return self.rsvp_status
 
-class PseudoDBEvent(object):
-    def __init__(self, search_result):
-        self._search_result = search_result
-        self.fb_event_id = search_result.doc_id
-        self.attendee_count = search_result.field('attendee_count').value
-
 class SearchQuery(object):
     def __init__(self, time_period=None, start_time=None, end_time=None, bounds=None, min_attendees=None, keywords=None):
         self.time_period = time_period
@@ -117,6 +112,7 @@ class SearchQuery(object):
                 assert self.start_time < datetime.datetime.now()
         self.bounds = bounds
 
+        self.categories = categories.find_styles_in_text(keywords)
         self.keywords = keywords
 
         self.limit = 1000
@@ -183,7 +179,7 @@ class SearchQuery(object):
             #TODO(lambert): implement pagination
             options = search.QueryOptions(
                 limit=self.limit,
-                returned_fields=['actual_city_name', 'attendee_count', 'event_keywords'] + self.extra_fields)
+                returned_fields=self.extra_fields)
             query = search.Query(query_string=full_search, options=options)
             doc_search_results = doc_index.search(query)
             return doc_search_results.results
@@ -316,7 +312,8 @@ def _create_doc_event(db_event, fb_event):
     doc_event = search.Document(
         doc_id=db_event.fb_event_id,
         fields=[
-            search.TextField(name='keywords', value=fb_event['info'].get('name', '') + '\n\n' + fb_event['info'].get('description', '')),
+            search.TextField(name='name', value=fb_event['info'].get('name', '')),
+            search.TextField(name='description', value=fb_event['info'].get('description', '')),
             search.NumberField(name='attendee_count', value=db_event.attendee_count or 0),
             search.DateField(name='start_time', value=db_event.start_time),
             search.DateField(name='end_time', value=dates.faked_end_time(db_event.start_time, db_event.end_time)),

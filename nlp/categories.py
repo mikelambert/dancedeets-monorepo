@@ -7,6 +7,10 @@ ANY_BREAK = Any(
     keywords.STYLE_BREAK,
     keywords.STYLE_BREAK_WEAK,
     'break\w*',
+)
+
+ANY_BREAK_BROAD = Any(
+    ANY_BREAK,
     keywords.BBOY_CREW[grammar.STRONG_WEAK],
     keywords.BBOY_DANCER[grammar.STRONG_WEAK],
 )
@@ -105,17 +109,22 @@ STYLES = {
     'VOGUE': ANY_VOGUE,
 }
 
+BROAD_STYLES = STYLES.copy()
+BROAD_STYLES['BREAK'] = ANY_BREAK_BROAD
 
-def find_styles(fb_event):
-    processed_title = event_classifier.StringProcessor(fb_event['info']['name'].lower())
+
+def find_styles_in_text(text, broad=True):
+    processed_text = event_classifier.StringProcessor(text.lower())
     styles = set()
-    for style, rule in STYLES.iteritems():
-        if processed_title.get_tokens(rule):
+    styles_list = BROAD_STYLES if broad else STYLES
+    for style, rule in styles_list.iteritems():
+        if processed_text.get_tokens(rule):
             styles.add(style)
     if styles:
         return styles
-    processed_text = event_classifier.StringProcessor(fb_event['info'].get('description', '').lower())
-    for style, rule in STYLES.iteritems():
-        if processed_text.get_tokens(rule):
-            styles.add(style)
+
+def find_styles(fb_event):
+    styles = find_styles_in_text(fb_event['info']['name'], broad=True)
+    if not styles:
+        styles = find_styles_in_text(fb_event['info'].get('description', ''), broad=True)
     return styles
