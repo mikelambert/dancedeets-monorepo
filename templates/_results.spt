@@ -113,6 +113,7 @@
 
 #def results_bottom_javascript
 <script type="text/javascript">
+/* Wait until we have a use for this...
 $(document).ready(function() {
 	$('.event-date').each(function(i, obj) {
 		var jquery_obj = $(obj);
@@ -128,6 +129,7 @@ $(document).ready(function() {
 
 	});
 });
+*/
 </script>
 #end def
 
