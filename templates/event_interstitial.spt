@@ -28,6 +28,14 @@ $format_html($event.info.name)
 
 <div class="container-fluid">
 <div class="row">
+	<div class="col-xs-12" style="margin-bottom:15px">
+	See <a href="/?location=$city_state_country">more events near $city_state_country</a>.
+	##for $style in $db_event.auto_categories
+	##See <a href="/?keywords=$style">more $style events</a>.<br>
+	##end for
+	</div>
+
+	<div class="col-xs-12">
 	#if $cover
 		<div style="position: relative;">
 			<div id="cover-box-outer">
@@ -43,6 +51,7 @@ $format_html($event.info.name)
 	#else
 		<h1 class="event-page-title" itemprop="summary">$event.info.name</h1>
 	#end if
+	</div>	
 </div>
 
 <div class="row">
