@@ -228,14 +228,16 @@ def update_fulltext_search_index(db_event, fb_event):
 
 def update_fulltext_search_index_batch(events_to_update):
     all_index = []
+    all_deindex_ids = []
     future_index = []
     future_deindex_ids = []
     for db_event, fb_event in events_to_update:
         logging.info("Adding event to search index: %s", db_event.fb_event_id)
         doc_event = _create_doc_event(db_event, fb_event)
         if not doc_event:
-            continue
-        if db_event.search_time_period == dates.TIME_FUTURE:
+            all_deindex_ids.append(db_event.fb_event_id)
+            future_deindex_ids.append(db_event.fb_event_id)
+        elif db_event.search_time_period == dates.TIME_FUTURE:
             all_index.append(doc_event)
             future_index.append(doc_event)
         else:
@@ -243,6 +245,7 @@ def update_fulltext_search_index_batch(events_to_update):
             future_deindex_ids.append(db_event.fb_event_id)
     doc_index = search.Index(name=ALL_EVENTS_INDEX)
     doc_index.put(all_index)
+    doc_index.delete(all_deindex_ids)
     doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
     doc_index.put(future_index)
     doc_index.delete(future_deindex_ids)
