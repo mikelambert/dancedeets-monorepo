@@ -231,6 +231,7 @@ STYLE_LOCK = Name('STYLE_LOCK', Any(
 ))
 STYLE_WAACK = Name('STYLE_WAACK', Any(
     "[uw]h?aa?c?c?k(?:er[sz]?|inn?[g']?)", # waacking
+    'waack',
     u'왁킹', # korean waacking
     u'ワッキング', # japanese waacking
     u'パーンキング', # japanese punking
