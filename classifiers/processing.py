@@ -35,35 +35,33 @@ class ClassifierScoreCard(object):
         open(os.path.join(directory, 'true_negatives.txt'), 'w').writelines('%s\n' % x for x in sorted(self.true_negatives))
 
 
-class Classifier(object):
-    @staticmethod
-    def mp_classify(arg):
-        classifier, (key, value) = arg
-        result = classifier(value)
-        return (result, key)
 
-    @staticmethod
-    def init_worker():
-        import signal
-        signal.signal(signal.SIGINT, signal.SIG_IGN)
-        import os
-        os.nice(5)
+def _partition_classify(arg):
+    classifier, (key, value) = arg
+    result = classifier(value)
+    return (result, key)
 
-    @staticmethod
-    def partition_data(data, classifier=lambda x:False, workers=None):
-        if not workers:
-            workers = multiprocessing.cpu_count()
-        pool = multiprocessing.Pool(processes=workers, initializer=Classifier.init_worker)
-        print "Generating data..."
-        data = [(classifier, x) for x in data]
-        print "Running multiprocessing classifier..."
-        async_results = pool.map_async(Classifier.mp_classify, data, chunksize=100)
-        # We need to specify a timeout to get(), so that KeyboardInterrupt gets delivered properly.
-        results = async_results.get(9999999)
-        print "Multiprocessing classifier completed."
-        successes = set(x[1] for x in results if x[0])
-        fails = set(x[1] for x in results if not x[0])
-        return ClassifiedIds(successes, fails)
+def _partition_init_worker():
+    import signal
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+    import os
+    os.nice(5)
+
+def partition_data(data, classifier=lambda x:False, workers=None):
+    if not workers:
+        workers = multiprocessing.cpu_count()
+    pool = multiprocessing.Pool(processes=workers, initializer=_partition_init_worker)
+    print "Generating data..."
+    data = [(classifier, x) for x in data]
+    print "Running multiprocessing classifier..."
+    async_results = pool.map_async(_partition_classify, data, chunksize=100)
+    # We need to specify a timeout to get(), so that KeyboardInterrupt gets delivered properly.
+    results = async_results.get(9999999)
+    print "Multiprocessing classifier completed."
+    successes = set(x[1] for x in results if x[0])
+    fails = set(x[1] for x in results if not x[0])
+    return ClassifiedIds(successes, fails)
+
 
 def load_all_ids():
     result = set()

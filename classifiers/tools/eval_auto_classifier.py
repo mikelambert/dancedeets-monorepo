@@ -41,7 +41,7 @@ print "Running auto classifier..."
 fb_data = processing.all_fb_data(trial_ids)
 # Input fb_data is [(id, fb_event), (id, fb_event)]
 # Result will be positive ids and negative ids
-classifier_data = processing.Classifier.partition_data(fb_data, classifier=basic_match)
+classifier_data = processing.partition_data(fb_data, classifier=basic_match)
 print "done, %d seconds" % (time.time() - a)
 
 score_card = processing.ClassifierScoreCard(training_data, classifier_data, positive_classifier)
