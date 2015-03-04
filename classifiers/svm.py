@@ -14,13 +14,16 @@ from classifiers import processing
 from nlp import rules
 from nlp import keywords
 from nlp import grammar
+skip_rules = ['EVENT', 'EVENT_WITH_ROMANCE_EVENT', 'ANY_GOOD', 'ANY_BAD']
+skip_keywords = ['CONNECTOR', 'ROMANCE', 'KING']
+skip_names = ['nlp.keywords.%s' % x for x in skip_keywords] + ['nlp.rules.%s' % x for x in skip_rules]
 def get_magic_rules(module):
     rules = {}
     for var in dir(module):
         var_value = getattr(module, var)
         if isinstance(var_value, grammar.Name):
             name = '%s.%s' % (module.__name__, var)
-            if re.search(r'\.(?:CONNECTOR|ROMANCE)$', var):
+            if name not in skip_names:
                 rules[name] = var_value
     return rules
 # These are the regexes that will be our feature detectors
@@ -76,7 +79,7 @@ def process_doc(fb_event):
     classified_event = event_classifier.ClassifiedEvent(fb_event)
     classified_event.classify()
     processed_title = event_classifier.StringProcessor(fb_event['info'].get('name', ''))
-    processed_text = event_classifier.StringProcessor(fb_event['info'].get('text', ''))
+    processed_text = event_classifier.StringProcessor(fb_event['info'].get('description', ''))
     dummy, title_word_count = re.subn(r'\w+', '', processed_title.text)
     dummy, text_word_count = re.subn(r'\w+', '', processed_text.text)
     # TODO: Ideally we want this to be the rules_list of the GrammarFeatureVector
