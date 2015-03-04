@@ -487,6 +487,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'ground\W?breaking',
     '(?:second|2nd) stage',
     'open house',
+    'house band',
     'hip\W?hop\W?kempu?', # refers to hiphop music!
     'camp\W?house',
     'in\W?house',
