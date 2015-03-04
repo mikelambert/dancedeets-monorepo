@@ -20,7 +20,8 @@ def get_magic_rules(module):
         var_value = getattr(module, var)
         if isinstance(var_value, grammar.Name):
             name = '%s.%s' % (module.__name__, var)
-            rules[name] = var_value
+            if re.search(r'\.(?:CONNECTOR|ROMANCE)$', var):
+                rules[name] = var_value
     return rules
 # These are the regexes that will be our feature detectors
 named_rules = {}
@@ -83,13 +84,13 @@ def process_doc(fb_event):
         if title_word_count:
             dummy, title_token_count = processed_title.replace_with(rule, '')
             # processed_title.count_tokens(rule)
-            title_matches = 1.0 * title_token_count / title_word_count
+            title_matches = 1.0 * title_token_count# / title_word_count
         else:
             title_matches = 0
         if text_word_count:
             dummy, text_token_count = processed_text.replace_with(rule, '')
             # processed_text.count_tokens(rule)
-            text_matches = 1.0 * text_token_count / text_word_count
+            text_matches = 1.0 * text_token_count# / text_word_count
         else:
             text_matches = 0
         values.append(title_matches)
