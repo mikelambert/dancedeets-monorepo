@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-
+import re
 from sklearn import metrics
 from sklearn.feature_extraction import text
 from sklearn import cross_validation
