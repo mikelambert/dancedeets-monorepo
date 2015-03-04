@@ -52,7 +52,7 @@ process_all = True
 if process_all:
     loaded_data = list(loaded_data)
 else:
-    loaded_data = list(itertools.islice(loaded_data, 0, 1000))
+    loaded_data = list(itertools.islice(loaded_data, 0, 100))
 train.data = [process(x[1]) for x in loaded_data]
 
 print 'loaded data'
@@ -72,10 +72,15 @@ from sklearn import base
 from nlp import event_classifier
 from sklearn.externals.joblib import Parallel, delayed
 
+import re
 def process_doc(fb_event):
     values = array.array(str("f"))
     processed_title = event_classifier.StringProcessor(fb_event['info'].get('name', '').lower())
     processed_text = event_classifier.StringProcessor(fb_event['info'].get('description', '').lower())
+    dummy, title_word_count = re.subn(r'\w+', '', processed_title.text)
+    dummy, text_word_count = re.subn(r'\w+', '', processed_text.text)
+    values.append(title_word_count)
+    values.append(text_word_count)
     # TODO: Ideally we want this to be the rules_list of the GrammarFeatureVector
     for i, (name, rule) in enumerate(named_rules_list):
         title_matches = 1.0 * processed_title.count_tokens(rule)
@@ -92,6 +97,13 @@ class GrammarFeatureVector(base.BaseEstimator):
         self.binary = binary
         self.dtype = np.float64
 
+        self.features = []
+        self.features.append('title word count')
+        self.features.append('text word count')
+        for (name, rule) in self.rules_list:
+            self.features.append('%s in title' % name)
+            self.features.append('%s in text' % name)
+
     def _compute_features(self, raw_documents):
 
         values = array.array(str("f"))
@@ -106,7 +118,7 @@ class GrammarFeatureVector(base.BaseEstimator):
             values.extend(row_values)
 
         X = np.array(values)
-        X.shape = (len(raw_documents), len(self.rules_list)*2)
+        X.shape = (len(raw_documents), len(self.features))
 
         return X
 
@@ -124,21 +136,31 @@ class GrammarFeatureVector(base.BaseEstimator):
         return X
 
     def get_feature_names(self):
-        return _flatten([('%s in title' % name, '%s in text' % name) for (name, rule) in self.rules_list])
+        return self.features
 
 
 def _flatten(listOfLists):
     "Flatten one level of nesting"
     return list(itertools.chain.from_iterable(listOfLists))
 
+
 grammar_processor = GrammarFeatureVector(named_rules)
 for i, name in enumerate(grammar_processor.get_feature_names()):
     print i, name
-grammar_processed_data = grammar_processor.fit_transform(loaded_data, train.target)
+
+
+from sklearn.externals import joblib
+if process_all:
+    load_grammar = False
+else:
+    load_grammar = False
+if load_grammar:
+    grammar_processed_data = joblib.load('grammar-processed.pkl') 
+else:
+    grammar_processed_data = grammar_processor.fit_transform(loaded_data, train.target)
 processed_test_data = grammar_processed_data
 
 if process_all:
-    from sklearn.externals import joblib
     joblib.dump(grammar_processed_data, 'grammar-processed.pkl') 
 
 if False:
