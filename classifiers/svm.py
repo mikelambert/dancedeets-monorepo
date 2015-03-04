@@ -22,11 +22,15 @@ def get_magic_rules(module):
             name = '%s.%s' % (module.__name__, var)
             rules[name] = var_value
     return rules
+# These are the regexes that will be our feature detectors
 named_rules = {}
 named_rules.update(get_magic_rules(rules))
 named_rules.update(get_magic_rules(keywords))
-# These are the regexes that will be our feature detectors
-
+named_rules['nlp.rules.MANUAL_DANCE[grammar.STRONG]'] = rules.MANUAL_DANCE[grammar.STRONG]
+named_rules['nlp.rules.MANUAL_DANCE[grammar.STRONG_WEAK]'] = rules.MANUAL_DANCE[grammar.STRONG_WEAK]
+named_rules['nlp.rules.MANUAL_DANCER[grammar.STRONG]'] = rules.MANUAL_DANCER[grammar.STRONG]
+named_rules['nlp.rules.MANUAL_DANCER[grammar.STRONG_WEAK]'] = rules.MANUAL_DANCER[grammar.STRONG_WEAK]
+named_rules_list = sorted(named_rules.items())
 all_ids = processing.load_all_ids()
 training_data = processing.load_classified_ids(all_ids)
 loaded_data = processing.all_fb_data(all_ids)
@@ -40,7 +44,8 @@ train = Bunch()
 
 def process(fb_event):
     return '%s\n\n%s' % (fb_event['info'].get('name'), fb_event['info'].get('description'))
-loaded_data = list(loaded_data)
+import itertools
+loaded_data = list(itertools.islice(loaded_data, 0, 10000))
 train.data = [process(x[1]) for x in loaded_data]
 
 print 'loaded data'
@@ -49,27 +54,121 @@ def good_id(event_id):
     return event_id in training_data.good_ids
 train.target = [good_id(x[0]) for x in loaded_data]
 
-
 total_count = len(all_ids)
 good_count = len([x for x in train.target if x])
 bad_count = total_count - good_count
 assert bad_count + good_count == total_count
 sample_weights = [0.5 * total_count / (x and good_count or bad_count) for x in train.target]
 
+import array
+import re
+from sklearn import base
+from nlp import event_classifier
+import scipy.sparse as sp
+from sklearn.externals.joblib import Parallel, delayed
 
-text_processor = text.TfidfVectorizer(stop_words='english')
-processed_train_data = text_processor.fit_transform(train.data, train.target, )
-# Cheating, but what we did with eval_auto_classifier.py
+def process_doc(fb_event):
+    values = array.array(str("f"))
+    j_indices = array.array(str("i"))
+    classified_event = event_classifier.ClassifiedEvent(fb_event)
+    classified_event.classify()
+    processed_title = event_classifier.StringProcessor(fb_event['info'].get('name', ''))
+    processed_text = event_classifier.StringProcessor(fb_event['info'].get('text', ''))
+    dummy, title_word_count = re.subn(r'\w+', '', processed_title.text)
+    dummy, text_word_count = re.subn(r'\w+', '', processed_text.text)
+    # TODO: Ideally we want this to be the rules_list of the GrammarFeatureVector
+    for i, (name, rule) in enumerate(named_rules_list):
+        if title_word_count:
+            dummy, title_token_count = processed_title.replace_with(rule, '')
+            # processed_title.count_tokens(rule)
+            title_matches = 1.0 * title_token_count / title_word_count
+        else:
+            title_matches = 0
+        if text_word_count:
+            dummy, text_token_count = processed_text.replace_with(rule, '')
+            # processed_text.count_tokens(rule)
+            text_matches = 1.0 * text_token_count / text_word_count
+        else:
+            text_matches = 0
+        values.append(title_matches)
+        values.append(text_matches)
+        j_indices.append(2*i)
+        j_indices.append(2*i+1)
+    return values, j_indices
+
+class GrammarFeatureVector(base.BaseEstimator):
+    def __init__(self, rules_dict, binary=False):
+        #self.rules_dict = rules_dict
+        #self.rules_list = sorted(rules_dict.iteritems())
+        self.rules_list = named_rules_list
+        self.binary = binary
+        self.dtype = np.float64
+
+    def _compute_features(self, raw_documents):
+
+        values = array.array(str("f"))
+        j_indices = array.array(str("i"))
+        indptr = array.array(str("i"))
+        indptr.append(len(j_indices))
+        print "Computing Features"
+        result = Parallel(n_jobs=7, verbose=5)(delayed(process_doc)(fb_event) for event_id, fb_event in raw_documents)
+        for row_values, row_j_indices in result:
+            values.extend(row_values)
+            j_indices.extend(row_j_indices)
+            indptr.append(len(j_indices)) # We need elements+1 for some reason in csr_matrix
+
+        print "Generating Final Matrix"
+        # some Python/Scipy versions won't accept an array.array:
+        j_indices = np.frombuffer(j_indices, dtype=np.intc)
+        indptr = np.frombuffer(indptr, dtype=np.intc)
+        values = np.frombuffer(values, dtype=np.intc)
+
+        X = sp.csr_matrix(
+            (values, j_indices, indptr),
+            shape=(len(indptr)-1, 2*len(self.rules_list)),
+            dtype=self.dtype)
+        return X
+
+    def fit(self, raw_documents, y=None):
+        return self
+
+    def fit_transform(self, raw_documents, y=None):
+        return self.fit(raw_documents, y=y).transform(raw_documents)
+
+    def transform(self, raw_documents):
+        # use the same matrix-building strategy as fit_transform
+        X = self._compute_features(raw_documents)
+        if self.binary:
+            X.data.fill(1)
+        return X
+
+    def get_feature_names(self):
+        return _flatten([('%s in title' % name, '%s in text' % name) for (name, rule) in self.rules_list])
+
+
+def _flatten(listOfLists):
+    "Flatten one level of nesting"
+    return list(itertools.chain.from_iterable(listOfLists))
+
+grammar_processor = GrammarFeatureVector(named_rules)
+print list(enumerate(grammar_processor.get_feature_names()))
+grammar_processed_data = grammar_processor.fit_transform(loaded_data, train.target)
+processed_test_data = grammar_processed_data
+
+if False:
+    text_processor = text.TfidfVectorizer(stop_words='english')
+    processed_train_data = text_processor.fit_transform(train.data, train.target)
+    # Cheating, but what we did with eval_auto_classifier.py
+    processed_test_data = processed_train_data
+    # Correct
+    #processed_test_data = text_processor.fit_transform(train.test)
+
 test = train
-processed_test_data = processed_train_data
-# Correct
-#processed_test_data = text_processor.fit_transform(train.test)
 
-
-def eval_model(name, model):
+def eval_model(name, model, data):
     print '=' * 20
     print name, 'training'
-    model.fit(processed_train_data, train.target, sample_weight=sample_weights)
+    model.fit(data, train.target, sample_weight=sample_weights)
     print name, 'trained'
 
     predictions = model.predict(processed_test_data)
@@ -78,16 +177,21 @@ def eval_model(name, model):
     print (metrics.classification_report(test.target, predictions))
     print metrics.confusion_matrix(test.target, predictions)
 
-    print name, 'cross validation', cross_validation.cross_val_score(model, processed_train_data, train.target, scoring='f1')
+    print name, 'cross validation', cross_validation.cross_val_score(model, grammar_processed_data, train.target, scoring='f1')
     return model, predictions
 
-bayes_model, bayes_predictions = eval_model('bayes', MultinomialNB())
-svm_model, svm_predictions = eval_model('svm', SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, n_iter=5))
+bayes_model, bayes_predictions = eval_model('bayes', MultinomialNB(), grammar_processed_data)
+svm_model, svm_predictions = eval_model('svm', SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, n_iter=5), grammar_processed_data)
 
 def show_top10(classifier, vectorizer, categories):
     feature_names = np.asarray(vectorizer.get_feature_names())
     for i, category in enumerate(categories):
-        top10 = np.argsort(classifier.coef_[i])[-50:]
-        print("%s: %s" % (category, " ".join(feature_names[top10])))
+        top10 = np.argsort(classifier.coef_[i])[-10:]
+        print category
+        for j in top10:
+            print '%s: %s' % (classifier.coef_[i][j], feature_names[j])
+        bot10 = np.argsort(classifier.coef_[i])[:10]
+        for j in bot10:
+            print '%s: %s' % (classifier.coef_[i][j], feature_names[j])
 
-show_top10(bayes_model, text_processor, [False, True])
+show_top10(bayes_model, grammar_processor, ['result'])
