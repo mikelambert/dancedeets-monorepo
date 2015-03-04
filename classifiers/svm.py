@@ -45,7 +45,11 @@ train = Bunch()
 def process(fb_event):
     return '%s\n\n%s' % (fb_event['info'].get('name'), fb_event['info'].get('description'))
 import itertools
-loaded_data = list(itertools.islice(loaded_data, 0, 10000))
+process_all = True
+if process_all:
+    loaded_data = list(loaded_data)
+else:
+    loaded_data = list(itertools.islice(loaded_data, 0, 1000))
 train.data = [process(x[1]) for x in loaded_data]
 
 print 'loaded data'
@@ -64,12 +68,10 @@ import array
 import re
 from sklearn import base
 from nlp import event_classifier
-import scipy.sparse as sp
 from sklearn.externals.joblib import Parallel, delayed
 
 def process_doc(fb_event):
     values = array.array(str("f"))
-    j_indices = array.array(str("i"))
     classified_event = event_classifier.ClassifiedEvent(fb_event)
     classified_event.classify()
     processed_title = event_classifier.StringProcessor(fb_event['info'].get('name', ''))
@@ -92,9 +94,7 @@ def process_doc(fb_event):
             text_matches = 0
         values.append(title_matches)
         values.append(text_matches)
-        j_indices.append(2*i)
-        j_indices.append(2*i+1)
-    return values, j_indices
+    return values
 
 class GrammarFeatureVector(base.BaseEstimator):
     def __init__(self, rules_dict, binary=False):
@@ -107,26 +107,19 @@ class GrammarFeatureVector(base.BaseEstimator):
     def _compute_features(self, raw_documents):
 
         values = array.array(str("f"))
-        j_indices = array.array(str("i"))
-        indptr = array.array(str("i"))
-        indptr.append(len(j_indices))
+        print "Preloading regexes"
+        dummy_processor = event_classifier.StringProcessor('')
+        for name, rule in named_rules_list:
+            dummy_processor.count_tokens(rule)
+
         print "Computing Features"
         result = Parallel(n_jobs=7, verbose=5)(delayed(process_doc)(fb_event) for event_id, fb_event in raw_documents)
-        for row_values, row_j_indices in result:
+        for row_values in result:
             values.extend(row_values)
-            j_indices.extend(row_j_indices)
-            indptr.append(len(j_indices)) # We need elements+1 for some reason in csr_matrix
 
-        print "Generating Final Matrix"
-        # some Python/Scipy versions won't accept an array.array:
-        j_indices = np.frombuffer(j_indices, dtype=np.intc)
-        indptr = np.frombuffer(indptr, dtype=np.intc)
-        values = np.frombuffer(values, dtype=np.intc)
+        X = np.array(values)
+        X.shape = (len(raw_documents), len(self.rules_list)*2)
 
-        X = sp.csr_matrix(
-            (values, j_indices, indptr),
-            shape=(len(indptr)-1, 2*len(self.rules_list)),
-            dtype=self.dtype)
         return X
 
     def fit(self, raw_documents, y=None):
@@ -151,9 +144,14 @@ def _flatten(listOfLists):
     return list(itertools.chain.from_iterable(listOfLists))
 
 grammar_processor = GrammarFeatureVector(named_rules)
-print list(enumerate(grammar_processor.get_feature_names()))
+for i, name in enumerate(grammar_processor.get_feature_names()):
+    print i, name
 grammar_processed_data = grammar_processor.fit_transform(loaded_data, train.target)
 processed_test_data = grammar_processed_data
+
+if process_all:
+    from sklearn.externals import joblib
+    joblib.dump(grammar_processed_data, 'grammar-processed.pkl') 
 
 if False:
     text_processor = text.TfidfVectorizer(stop_words='english')
@@ -180,18 +178,26 @@ def eval_model(name, model, data):
     print name, 'cross validation', cross_validation.cross_val_score(model, grammar_processed_data, train.target, scoring='f1')
     return model, predictions
 
+from sklearn import tree
+tree_model, tree_predictions = eval_model('tree', tree.DecisionTreeClassifier(max_depth=10), grammar_processed_data)
+
+feature_names = np.asarray(grammar_processor.get_feature_names())
+
+with open("dtree.dot", 'w') as f:
+     f = tree.export_graphviz(tree_model, out_file=f, feature_names=feature_names)
+
 bayes_model, bayes_predictions = eval_model('bayes', MultinomialNB(), grammar_processed_data)
 svm_model, svm_predictions = eval_model('svm', SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, n_iter=5), grammar_processed_data)
 
-def show_top10(classifier, vectorizer, categories):
-    feature_names = np.asarray(vectorizer.get_feature_names())
+def show_top10(classifier, categories):
     for i, category in enumerate(categories):
         top10 = np.argsort(classifier.coef_[i])[-10:]
         print category
-        for j in top10:
+        for j in reversed(top10):
             print '%s: %s' % (classifier.coef_[i][j], feature_names[j])
+        print '...'
         bot10 = np.argsort(classifier.coef_[i])[:10]
         for j in bot10:
             print '%s: %s' % (classifier.coef_[i][j], feature_names[j])
 
-show_top10(bayes_model, grammar_processor, ['result'])
+show_top10(bayes_model, ['result'])
