@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import re
 from sklearn import metrics
 from sklearn.feature_extraction import text
 from sklearn import cross_validation
@@ -73,24 +72,23 @@ from sklearn import base
 from nlp import event_classifier
 from sklearn.externals.joblib import Parallel, delayed
 
+import re
 def process_doc(fb_event):
     values = array.array(str("f"))
-    processed_title = event_classifier.StringProcessor(fb_event['info'].get('name', ''))
-    processed_text = event_classifier.StringProcessor(fb_event['info'].get('description', ''))
-    dummy, title_word_count = 1, 1#re.subn(r'\w+', '', processed_title.text)
-    dummy, text_word_count = 1, 1#re.subn(r'\w+', '', processed_text.text)
+    processed_title = event_classifier.StringProcessor(fb_event['info'].get('name', '').lower())
+    processed_text = event_classifier.StringProcessor(fb_event['info'].get('description', '').lower())
+    dummy, title_word_count = re.subn(r'\w+', '', processed_title.text)
+    dummy, text_word_count = re.subn(r'\w+', '', processed_text.text)
     # TODO: Ideally we want this to be the rules_list of the GrammarFeatureVector
     for i, (name, rule) in enumerate(named_rules_list):
         if title_word_count:
-            dummy, title_token_count = processed_title.replace_with(rule, '')
-            # processed_title.count_tokens(rule)
-            title_matches = 1.0 * title_token_count# / title_word_count
+            title_token_count = processed_title.count_tokens(rule)
+            title_matches = 1.0 * title_token_count / title_word_count
         else:
             title_matches = 0
         if text_word_count:
-            dummy, text_token_count = processed_text.replace_with(rule, '')
-            # processed_text.count_tokens(rule)
-            text_matches = 1.0 * text_token_count# / text_word_count
+            text_token_count = processed_text.count_tokens(rule)
+            text_matches = 1.0 * text_token_count / text_word_count
         else:
             text_matches = 0
         values.append(title_matches)
@@ -114,7 +112,7 @@ class GrammarFeatureVector(base.BaseEstimator):
             dummy_processor.count_tokens(rule)
 
         print "Computing Features"
-        result = Parallel(n_jobs=7, verbose=5)(delayed(process_doc)(fb_event) for event_id, fb_event in raw_documents)
+        result = Parallel(n_jobs=7 if process_all else 1, verbose=10)(delayed(process_doc)(fb_event) for event_id, fb_event in raw_documents)
         for row_values in result:
             values.extend(row_values)
 
@@ -192,13 +190,9 @@ svm_model, svm_predictions = eval_model('svm', SGDClassifier(loss='hinge', penal
 
 def show_top10(classifier, categories):
     for i, category in enumerate(categories):
-        top10 = np.argsort(classifier.coef_[i])[-10:]
+        sorted_coeff = np.argsort(classifier.coef_[i])
         print category
-        for j in reversed(top10):
-            print '%s: %s' % (classifier.coef_[i][j], feature_names[j])
-        print '...'
-        bot10 = np.argsort(classifier.coef_[i])[:10]
-        for j in bot10:
+        for j in reversed(sorted_coeff):
             print '%s: %s' % (classifier.coef_[i][j], feature_names[j])
 
 show_top10(bayes_model, ['result'])

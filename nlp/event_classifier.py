@@ -102,7 +102,8 @@ class StringProcessor(object):
         return self._has_token_cache[token]
 
     def count_tokens(self, token):
-        return len(self._get_token(token))
+        _, count = token.hack_double_regex()[self.match_on_word_boundaries].subn('', self.text)
+        return count
 
     def _get_token(self, token):
         if token not in self._get_token_cache:
