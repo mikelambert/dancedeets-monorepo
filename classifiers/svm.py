@@ -69,19 +69,16 @@ assert bad_count + good_count == total_count
 sample_weights = [0.5 * total_count / (x and good_count or bad_count) for x in train.target]
 
 import array
-import re
 from sklearn import base
 from nlp import event_classifier
 from sklearn.externals.joblib import Parallel, delayed
 
 def process_doc(fb_event):
     values = array.array(str("f"))
-    classified_event = event_classifier.ClassifiedEvent(fb_event)
-    classified_event.classify()
     processed_title = event_classifier.StringProcessor(fb_event['info'].get('name', ''))
     processed_text = event_classifier.StringProcessor(fb_event['info'].get('description', ''))
-    dummy, title_word_count = re.subn(r'\w+', '', processed_title.text)
-    dummy, text_word_count = re.subn(r'\w+', '', processed_text.text)
+    dummy, title_word_count = 1, 1#re.subn(r'\w+', '', processed_title.text)
+    dummy, text_word_count = 1, 1#re.subn(r'\w+', '', processed_text.text)
     # TODO: Ideally we want this to be the rules_list of the GrammarFeatureVector
     for i, (name, rule) in enumerate(named_rules_list):
         if title_word_count:
