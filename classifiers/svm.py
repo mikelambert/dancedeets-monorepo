@@ -72,25 +72,14 @@ from sklearn import base
 from nlp import event_classifier
 from sklearn.externals.joblib import Parallel, delayed
 
-import re
 def process_doc(fb_event):
     values = array.array(str("f"))
     processed_title = event_classifier.StringProcessor(fb_event['info'].get('name', '').lower())
     processed_text = event_classifier.StringProcessor(fb_event['info'].get('description', '').lower())
-    dummy, title_word_count = re.subn(r'\w+', '', processed_title.text)
-    dummy, text_word_count = re.subn(r'\w+', '', processed_text.text)
     # TODO: Ideally we want this to be the rules_list of the GrammarFeatureVector
     for i, (name, rule) in enumerate(named_rules_list):
-        if title_word_count:
-            title_token_count = processed_title.count_tokens(rule)
-            title_matches = 1.0 * title_token_count / title_word_count
-        else:
-            title_matches = 0
-        if text_word_count:
-            text_token_count = processed_text.count_tokens(rule)
-            text_matches = 1.0 * text_token_count / text_word_count
-        else:
-            text_matches = 0
+        title_matches = 1.0 * processed_title.count_tokens(rule)
+        text_matches = 1.0 * processed_text.count_tokens(rule)
         values.append(title_matches)
         values.append(text_matches)
     return values
