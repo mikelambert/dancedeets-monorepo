@@ -11,6 +11,22 @@ import numpy as np
 
 from classifiers import processing
 
+from nlp import rules
+from nlp import keywords
+from nlp import grammar
+def get_magic_rules(module):
+    rules = {}
+    for var in dir(module):
+        var_value = getattr(module, var)
+        if isinstance(var_value, grammar.Name):
+            name = '%s.%s' % (module.__name__, var)
+            rules[name] = var_value
+    return rules
+named_rules = {}
+named_rules.update(get_magic_rules(rules))
+named_rules.update(get_magic_rules(keywords))
+# These are the regexes that will be our feature detectors
+
 all_ids = processing.load_all_ids()
 training_data = processing.load_classified_ids(all_ids)
 loaded_data = processing.all_fb_data(all_ids)
@@ -41,8 +57,8 @@ assert bad_count + good_count == total_count
 sample_weights = [0.5 * total_count / (x and good_count or bad_count) for x in train.target]
 
 
-text_processor = text.TfidfVectorizer()
-processed_train_data = text_processor.fit_transform(train.data, train.target)
+text_processor = text.TfidfVectorizer(stop_words='english')
+processed_train_data = text_processor.fit_transform(train.data, train.target, )
 # Cheating, but what we did with eval_auto_classifier.py
 test = train
 processed_test_data = processed_train_data
