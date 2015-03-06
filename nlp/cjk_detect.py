@@ -26,7 +26,7 @@ _chr = [[0x0E00, 0x0E7F],    # Thai characters
         [0x20000, 0x2A6D6],  # Han # Lo [42711] CJK UNIFIED IDEOGRAPH-20000, CJK UNIFIED IDEOGRAPH-2A6D6
         [0x2F800, 0x2FA1D]]  # Han # Lo [542] CJK COMPATIBILITY IDEOGRAPH-2F800, CJK COMPATIBILITY IDEOGRAPH-2FA1D
 
-def build_re():
+def build_re_string():
     L = []
     for i in _chr:
         if isinstance(i, list):
@@ -45,7 +45,11 @@ def build_re():
                 pass
 
     RE = '[%s]' % ''.join(L)
-    return re.compile(RE, re.UNICODE)
+    return RE
 
+def build_re():
+    return re.compile(build_re_string(), re.UNICODE)
+
+cjk_regex_string = build_re_string()
 cjk_regex = build_re()
 

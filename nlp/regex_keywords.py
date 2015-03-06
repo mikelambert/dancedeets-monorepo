@@ -8,6 +8,14 @@ except ImportError:
     import re
 else:
     re.set_fallback_notification(re.FALLBACK_WARNING)
+from . import cjk_detect
+
+def cjk_adjacent():
+    """Since we find it too difficult to match \b in CJK text, let's let any CJK character count as a boundary."""
+    cjk_char = cjk_detect.cjk_regex_string
+    return '(?:(?=%(char)s)|(?<=%(char)s))' % {'char': cjk_char}
+
+_CJK_ADJACENT_STRING = cjk_adjacent()
 
 def _wrap_regex(regex_string, matching=False, word_boundaries=True, match_cjk=False, wrapper='%s'):
     if matching:
@@ -18,6 +26,7 @@ def _wrap_regex(regex_string, matching=False, word_boundaries=True, match_cjk=Fa
         if match_cjk:
             if not re2:
                 regex_string = '(?u)%s' % regex_string
+            regex_string = r"(?:\b|%s)%s(?:\b|%s)" % (_CJK_ADJACENT_STRING, regex_string, _CJK_ADJACENT_STRING)
         else:
             regex_string = r"\b%s\b'?" % regex_string
     if wrapper:
