@@ -34,11 +34,15 @@ def _wrap_regex(regex_string, matching=False, word_boundaries=True, match_cjk=Fa
     return regex_string
 
 def _compile_regex(regex_string, flags=0):
-    if re2:
-        # default max_mem is 8<<20 = 8*1000*1000
-        return re.compile(regex_string, max_mem=60*1000*1000, flags=flags)
-    else:
-        return re.compile(regex_string, flags=flags)
+    try:
+        if re2:
+            # default max_mem is 8<<20 = 8*1000*1000
+            return re.compile(regex_string, max_mem=60*1000*1000, flags=flags)
+        else:
+            return re.compile(regex_string, flags=flags)
+    except:
+        logging.exception("Error compiling with flags %s for string: %s", flags, regex_string)
+        raise
 
 NO_WORD_BOUNDARIES = 0
 WORD_BOUNDARIES = 1
