@@ -5,6 +5,7 @@ import keywords
 import grammar
 from grammar import Any
 from nlp import event_classifier
+from nlp import event_auto_classifier
 
 ANY_BREAK = Any(
     keywords.STYLE_BREAK,
@@ -24,7 +25,7 @@ ANY_POP = Any(
     # since they are not strong enough on their own.
     # But given a dance event, they can be a very strong classifier.
     keywords.STYLE_POP_WEAK,
-    "pop\w*",
+    "pop", # dangerous one due to pop music
 )
 
 ANY_LOCK = Any(
@@ -37,7 +38,7 @@ ANY_LOCK = Any(
 ANY_WAACK = Any(
     keywords.STYLE_WAACK,
     "[uw]h?aa?c?c?k\w*",
-    "punk\w*",
+    "punk\w+",
 )
 
 ANY_HOUSE = Any(
@@ -68,12 +69,10 @@ ANY_TURF = Any(
 
 ANY_LITEFEET = Any(
     keywords.STYLE_LITEFEET,
-    'lite\w?\w*',
 )
 
 ANY_FLEX = Any(
     keywords.STYLE_FLEX,
-    'flex\w*',
 )
 
 ANY_BEBOP = Any(
@@ -125,16 +124,23 @@ def format_as_search_query(text, broad=True):
 
 
 def find_styles_in_text(text, broad=True):
-    processed_text = event_classifier.StringProcessor(text.lower())
-    processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
-    # Only do this for house events?
-    processed_text.real_tokenize(grammar.Name('HOUSE_OF', grammar.Any('house of')))
+    # Eliminate all competitors, before trying to determine the style
+    no_competitors_text = event_auto_classifier.find_competitor_list(text)
+    if no_competitors_text:
+        text = text.replace(no_competitors_text, '')
     styles = {}
     styles_list = BROAD_STYLES if broad else STYLES
-    for style, rule in styles_list.iteritems():
-        tokens = processed_text.get_tokens(rule)
-        if tokens:
-            styles[style] = tokens
+    for line in text.lower().split('\n'):
+        if len(line) > 500:
+            continue
+        processed_text = event_classifier.StringProcessor(line)
+        processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
+        # Only do this for house events?
+        processed_text.real_tokenize(grammar.Name('HOUSE_OF', grammar.Any('house of')))
+        for style, rule in styles_list.iteritems():
+            tokens = processed_text.get_tokens(rule)
+            if tokens:
+                styles[style] = tokens
     return styles
 
 def get_context(fb_event, keywords):
