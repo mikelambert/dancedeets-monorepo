@@ -141,7 +141,7 @@ def find_styles_in_text(text, broad=True):
             tokens = processed_text.get_tokens(rule)
             if tokens:
                 styles[style] = tokens
-    return styles
+    return styles.keys()
 
 def get_context(fb_event, keywords):
     name = fb_event['info'].get('name', '')
