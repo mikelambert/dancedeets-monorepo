@@ -65,7 +65,10 @@ total_count = len(all_ids)
 good_count = len([x for x in train.target if x])
 bad_count = total_count - good_count
 assert bad_count + good_count == total_count
-sample_weights = [0.5 * total_count / (x and good_count or bad_count) for x in train.target]
+good_bias = 1
+bad_bias = 10
+sample_weights_list = [0.5 * (x and good_bias or bad_bias) * total_count / (x and good_count or bad_count) for x in train.target]
+sample_weights = np.array(sample_weights_list, "f")
 
 import array
 from sklearn import base
@@ -151,7 +154,7 @@ for i, name in enumerate(grammar_processor.get_feature_names()):
 
 from sklearn.externals import joblib
 if process_all:
-    load_grammar = False
+    load_grammar = True
 else:
     load_grammar = False
 if load_grammar:
@@ -185,19 +188,30 @@ def eval_model(name, model, data):
     print (metrics.classification_report(test.target, predictions))
     print metrics.confusion_matrix(test.target, predictions)
 
-    print name, 'cross validation', cross_validation.cross_val_score(model, grammar_processed_data, train.target, scoring='f1')
+    print name, 'f1 cross validation', cross_validation.cross_val_score(model, grammar_processed_data, train.target, scoring='f1')
+    print name, 'precision cross validation', cross_validation.cross_val_score(model, grammar_processed_data, train.target, scoring='precision')
     return model, predictions
 
+# SVM need balance on input features, same ranges and variances and stuff like that
+svm_model, svm_predictions = eval_model('svm', SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, n_iter=5), grammar_processed_data)
+from sklearn.svm import SVC
+svm_model, svm_predictions = eval_model('svm', SVC(max_iter=10000), grammar_processed_data)
+
+
 from sklearn import tree
-tree_model, tree_predictions = eval_model('tree', tree.DecisionTreeClassifier(max_depth=10), grammar_processed_data)
-
+tree_model, tree_predictions = eval_model('tree', tree.DecisionTreeClassifier(max_leaf_nodes=1<<8), grammar_processed_data)
 feature_names = np.asarray(grammar_processor.get_feature_names())
-
 with open("dtree.dot", 'w') as f:
      f = tree.export_graphviz(tree_model, out_file=f, feature_names=feature_names)
 
+if False:
+    from sklearn.ensemble import AdaBoostClassifier
+    bdt = AdaBoostClassifier(tree.DecisionTreeClassifier(max_depth=5),
+                             algorithm="SAMME.R",
+                             n_estimators=20)
+    tree_model2, tree_predictions2 = eval_model('ada-tree', bdt, grammar_processed_data)
+
 bayes_model, bayes_predictions = eval_model('bayes', MultinomialNB(), grammar_processed_data)
-svm_model, svm_predictions = eval_model('svm', SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, n_iter=5), grammar_processed_data)
 
 def show_top10(classifier, categories):
     for i, category in enumerate(categories):
