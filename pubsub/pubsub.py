@@ -122,7 +122,7 @@ def create_media_on_twitter(t, fb_event):
         t.domain = 'api.twitter.com'
     return result
 
-def format_twitter_post(db_event, fb_event, media, handle=None):
+def format_twitter_post(db_event, fb_event, media, handles=None):
     url = urls.fb_event_url(fb_event['info']['id'])
     title = fb_event['info']['name']
     city = db_event.actual_city_name
@@ -139,21 +139,30 @@ def format_twitter_post(db_event, fb_event, media, handle=None):
     # as described on https://dev.twitter.com/overview/t.co
     url_length = 23
     prefix = ''
-    if handle:
-        prefix += '%s ' % handle
     prefix += "%s: " % datetime_string
     if city:
         prefix += '%s: ' % city
+
+    if handles:
+        handle_string = ''
+        for handle in handles:
+            new_handle_string = '%s %s' % (handle_string, handle)
+            print len(new_handle_string)
+            if len(new_handle_string) >= 48:
+                break
+            handle_string = new_handle_string
+    else:
+        handle_string = ''
 
     num_urls = 1
     if media:
         num_urls += 1 # the "characters_reserved_per_media" is '23', which is 22 + 1 space
 
-    title_length = 140 - len(prefix) - len(u"…") - url_length*num_urls
+    title_length = 140 - len(prefix) - len(u"…") - url_length*num_urls - len(handle_string)
     final_title = title[0:title_length]
     if final_title != title:
         final_title += u'…'
-    return u"%s%s %s" % (prefix, final_title, url)
+    return u"%s%s %s%s" % (prefix, final_title, url, handle_string)
 
 def twitter_post(auth_token, db_event, fb_event):
     t = twitter.Twitter(
@@ -168,9 +177,6 @@ def twitter_post(auth_token, db_event, fb_event):
     if media:
         update_params['media_ids'] = media['media_id']
 
-    status = format_twitter_post(db_event, fb_event, media)
-    t.statuses.update(status=status, **update_params)
-
     # This is the only twitter account allowed to @mention, to avoid spamming everyone...
     if auth_token.token_nickname != 'BigTwitter':
         return
@@ -180,9 +186,9 @@ def twitter_post(auth_token, db_event, fb_event):
     twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+15]
     twitter_handles2 = re.findall(r'twitter\.com/([A-za-z0-9_]+)', description)
     twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1+15]
-    for handle in (twitter_handles + twitter_handles2):
-        status = format_twitter_post(db_event, fb_event, media, handle=handle)
-        t.statuses.update(status=status, **update_params)
+    handles = (twitter_handles + twitter_handles2)
+    status = format_twitter_post(db_event, fb_event, media, handles=handles)
+    t.statuses.update(status=status, **update_params)
 
 def facebook_post(auth_token, db_event, fb_event):
     link = urls.fb_event_url(fb_event['info']['id'])
