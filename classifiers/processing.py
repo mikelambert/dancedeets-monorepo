@@ -1,5 +1,6 @@
 import csv
 import json
+import logging
 import multiprocessing
 import os
 
@@ -38,7 +39,11 @@ class ClassifierScoreCard(object):
 
 def _partition_classify(arg):
     classifier, (key, value) = arg
-    result = classifier(value)
+    try:
+        result = classifier(value)
+    except:
+        logging.exception("Error running classifier %s for key %s with argument %s", classifier, key, value)
+        raise
     return (result, key)
 
 def _partition_init_worker():
