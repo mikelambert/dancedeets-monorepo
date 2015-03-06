@@ -1,3 +1,6 @@
+# -*-*- encoding: utf-8 -*-*-
+#
+
 import keywords
 import grammar
 from grammar import Any
@@ -26,7 +29,8 @@ ANY_POP = Any(
 
 ANY_LOCK = Any(
     keywords.STYLE_LOCK,
-    "lock\w*",
+#    "lock\w*",
+    u'ロック',
 )
 
 # No extras needed here
@@ -39,7 +43,6 @@ ANY_WAACK = Any(
 ANY_HOUSE = Any(
     keywords.STYLE_HOUSE,
     keywords.HOUSE, # TODO: Rename to STYLE_HOUSE_WEAK,
-    "hous\w+",
 )
 
 ANY_HIPHOP = Any(
@@ -123,12 +126,33 @@ def format_as_search_query(text, broad=True):
 
 def find_styles_in_text(text, broad=True):
     processed_text = event_classifier.StringProcessor(text.lower())
-    styles = set()
+    processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
+    # Only do this for house events?
+    processed_text.real_tokenize(grammar.Name('HOUSE_OF', grammar.Any('house of')))
+    styles = {}
     styles_list = BROAD_STYLES if broad else STYLES
     for style, rule in styles_list.iteritems():
-        if processed_text.get_tokens(rule):
-            styles.add(style)
+        tokens = processed_text.get_tokens(rule)
+        if tokens:
+            styles[style] = tokens
     return styles
+
+def get_context(fb_event, keywords):
+    name = fb_event['info'].get('name', '')
+    description = fb_event['info'].get('description', '')
+    search_text = (name + ' ' + description).lower()
+    import re
+    contexts = []
+    for keyword in keywords:
+        try:
+            context_match = re.search(r'.{20}%s.{0,20}' % keyword, search_text, flags=re.DOTALL)
+        except re.error:
+            raise Exception("Failed to create context-regex for %r" % keyword)
+        if context_match:
+            contexts.append(context_match.group(0))
+        else:
+            contexts.append('???????????')
+    return contexts
 
 def find_styles(fb_event):
     styles = find_styles_in_text(fb_event['info'].get('name', ''), broad=True)

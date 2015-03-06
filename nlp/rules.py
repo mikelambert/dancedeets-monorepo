@@ -12,6 +12,11 @@ def commutative_connected(a, b):
         connected(b, a),
     )
 
+MUSIC = Name('MUSIC', Any(
+    keywords.AMBIGUOUS_DANCE_MUSIC,
+    keywords.MUSIC_ONLY,
+))
+
 DANCE = Name('DANCE', Any(
     keywords.DANCE,
     keywords.STYLE_BREAK,

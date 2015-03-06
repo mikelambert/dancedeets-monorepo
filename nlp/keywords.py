@@ -177,6 +177,55 @@ AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
     u'얼반', # korean urban
 ))
 
+MUSIC_ONLY = Name('MUSIC_ONLY', Any(
+    'soul',
+    'rock',
+    'punk',
+    'new wave',
+    'pop',
+    'salsa',
+    'r&b',
+    'rhythm\W?(?:and|&+)\W?blues',
+    'disco',
+    'trance',
+    'techno',
+    'alternative',
+    'folk',
+    'blues',
+    'dubstep',
+    'country',
+    'bluegrass',
+    'electro',
+    'electronica',
+    'broken beat',
+    'dub',
+    'europop',
+    'jazz',
+    'trip hop',
+    'drum\W?(and|&|+)\W?bass',
+    'dnb',
+    'd&b',
+    'synth\W?pop',
+    'breakcore',
+    'hardstyle',
+    'jumpstyle',
+    'boogie',
+    'progressive',
+    'bassline',
+    'trap',
+    'rap',
+    'bossa nova',
+    'samba',
+    'salsa',
+    'bachata',
+    'mambo',
+    'funk',
+    'house',
+    'j\W?pop',
+    'k\W?pop',
+    'c\W?pop',
+))
+
 STYLE_BREAK = Name('STYLE_BREAK', Any(
     'breakingu', #breaking polish
     u'breaktánc', # breakdance hungarian
@@ -224,6 +273,7 @@ STYLE_POP = Name('STYLE_POP', Any(
 STYLE_LOCK = Name('STYLE_LOCK', Any(
     "pop\W{0,3}(?:(?:N|and|an)\W{1,3})?lock(?:in[g']?|er[sz]?)", # dupe
     "lock(?:er[sz]?|in[g']?)?", 'lock dance',
+    u'ロックイング', # japanese locking (japanese rock/lock is too common)
     u'ロッカーズ', # japanese lockers
     u'ロッカ', # japanese lock
     u'락킹', # korean locking
@@ -459,8 +509,10 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'bottles? popping?',
     'poppin.? bottles?',
     'dance fitness',
-    'lock down',
-    'lock up',
+    'on lock',
+    'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
+    'zip\W?lock',
+    'wave\W?house', # venue in san diego
     'latin street dance',
     'whack music',
     'wack music',
@@ -491,7 +543,6 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'hip\W?hop\W?kempu?', # refers to hiphop music!
     'camp\W?house',
     'in\W?house',
-    'lock in',
     'juste debout school',
     'baile funk',
 ))
