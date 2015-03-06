@@ -9,7 +9,7 @@ DanceDeets
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="http://www.dancedeets.com/"/>
     <meta property="og:site_name" content="DanceDeets"/>
-    <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.png" />
+    <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:description"
           content="Helping you get your dance on wherever you are, with dance events both near and far."/>
 #end def
