@@ -96,3 +96,8 @@ class FixedMapperWorkerCallbackHandler(handlers.MapperWorkerCallbackHandler):
         int((self._time() - self._start_time)*1000))
 
     return finished_shard
+
+  def __return(self, shard_state, tstate, task_directive):
+    # We need to remove the context, so other requests that run after us in this thread don't mistakenly see a context when they shouldn't.
+    context.Context._set(None)
+    return super(FixedMapperWorkerCallbackHandler, self).__return(shard_state, tstate, task_directive)
