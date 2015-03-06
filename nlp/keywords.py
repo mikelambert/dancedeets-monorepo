@@ -170,7 +170,8 @@ AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
     'shuffle',
     'funk',
     'jerk',
-    'kpop',
+    'k\W?pop',
+    'pop',
     u'케이팝', # korean kpop
     'hard\Whitting',
     'electro\W?dance',
@@ -178,14 +179,9 @@ AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
 ))
 
 MUSIC_ONLY = Name('MUSIC_ONLY', Any(
-    'soul',
-    'rock',
     'punk',
     'new wave',
-    'pop',
-    'salsa',
-    'r&b',
-    'rhythm\W?(?:and|&+)\W?blues',
+    'rhythm\W?(?:and|&|\+)\W?blues',
     'disco',
     'trance',
     'techno',
@@ -200,30 +196,26 @@ MUSIC_ONLY = Name('MUSIC_ONLY', Any(
     'broken beat',
     'dub',
     'europop',
-    'jazz',
     'trip hop',
-    'drum\W?(and|&|+)\W?bass',
+    'drum\W?(?:and|&|\+)\W?bass',
     'dnb',
     'd&b',
     'synth\W?pop',
     'breakcore',
     'hardstyle',
     'jumpstyle',
-    'boogie',
     'progressive',
     'bassline',
     'trap',
     'rap',
     'bossa nova',
-    'samba',
-    'salsa',
-    'bachata',
-    'mambo',
-    'funk',
-    'house',
     'j\W?pop',
-    'k\W?pop',
     'c\W?pop',
+    # We don't want to add jazz, salsa, etc...as they are also dances,
+    # and we don't want to classify these as music (and discard events) because of that
+    # r&b is sometimes used for hiphop classes
+    # soul is very popular overseas as a dance-related term
+    # boogie is very popular as a dancer's name
 ))
 
 STYLE_BREAK = Name('STYLE_BREAK', Any(
@@ -339,7 +331,8 @@ STYLE_LITEFEET = Name('STYLE_LITEFEET', Any(
     "gettin[g']?\W?(?:lite|light)",
 ))
 STYLE_FLEX = Name('STYLE_FLEX', Any(
-    "flexin[g']?",
+    "flex(?:in[g']?|er[sz]?)",
+    "bone break(?:in[g']?|er[sz]?)",
 ))
 STYLE_BEBOP = Name('STYLE_BEBOP', Any(
     'jazz\Wrock',

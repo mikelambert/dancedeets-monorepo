@@ -98,36 +98,36 @@ def has_list_of_good_classes(classified_event):
             return True, 'found good schedule: %s: %s' % ('\n'.join(sub_lines), good_lines)
     return False, ''
 
-def find_competitor_list(classified_event):
-    text = classified_event.search_text
-    results = re.search(r'\n0*1[^\d].+\n^0*2[^\d].+\n(?:^\d+.+\n){2,}', text, re.MULTILINE)
-    if results:
-        numbered_list = results.group(0)
+def find_competitor_list(search_text):
+    processed_text = event_classifier.StringProcessor(search_text)
+    results_match = re.search(r'\n0*1[^\d].+\n^0*2[^\d].+\n(?:^\d+.+\n){2,}', processed_text.text, re.MULTILINE)
+    if results_match:
+        numbered_list = results_match.group(0)
         num_lines = numbered_list.count('\n')
         if len(re.findall(r'\d ?[.:h] ?\d\d|\bam\b|\bpm\b', numbered_list)) > num_lines / 4:
-            return False # good list of times! workshops, etc! performance/shows/club-set times!
-        processed_numbered_list = event_classifier.StringProcessor(numbered_list, classified_event.boundaries)
+            return None # good list of times! workshops, etc! performance/shows/club-set times!
+        processed_numbered_list = event_classifier.StringProcessor(numbered_list, processed_text.match_on_word_boundaries)
         event_keywords = processed_numbered_list.get_tokens(rules.EVENT)
         if len(event_keywords) > num_lines / 8:
-            return False
-        if classified_event.processed_text.has_token(keywords.WRONG_NUMBERED_LIST):
-            return False
+            return None
+        if processed_text.has_token(keywords.WRONG_NUMBERED_LIST):
+            return None
         if num_lines > 10:
-            return True
+            return numbered_list
         else:
             lines = numbered_list.split('\n')
             qualified_lines = len([x for x in lines if re.search(r'[^\d\W].*[-(]', x)])
             if qualified_lines > num_lines / 2:
-                return True
+                return numbered_list
             for type in ['crew', 'pop|boog', 'lock', 'b\W?(?:boy|girl)']:
                 qualified_lines = len([x for x in lines if re.search(type, x)])
                 if qualified_lines > num_lines / 8:
-                    return True
-            if classified_event.boundaries == regex_keywords.WORD_BOUNDARIES: # maybe separate on kana vs kanji?
+                    return numbered_list
+            if processed_text.match_on_word_boundaries == regex_keywords.WORD_BOUNDARIES: # maybe separate on kana vs kanji?
                 avg_words = 1.0 * sum([len([y for y in x.split(' ')]) for x in lines]) / num_lines
                 if avg_words < 3:
-                    return True
-    return False
+                    return numbered_list
+    return None
 
 # TODO: accumulate reasons why we did/didn't accept. each event has a story
 # TODO: also track "was a battle, but not sure about kind". good for maybe-queue.
@@ -137,7 +137,7 @@ def find_competitor_list(classified_event):
 
 #TODO: UNUSED!
 def is_any_battle(classified_event):
-    has_competitors = find_competitor_list(classified_event)
+    has_competitors = find_competitor_list(classified_event.search_text)
     has_start_judges = classified_event.processed_text.has_token(rules.START_JUDGE)
     has_n_x_n_battle = (
         classified_event.processed_text.has_token(keywords.BATTLE) and
@@ -155,7 +155,7 @@ def is_battle(classified_event):
         return (False, 'not a dance event')
 
     has_sparse_keywords = classified_event.calc_inverse_keyword_density >= 5.2
-    has_competitors = find_competitor_list(classified_event)
+    has_competitors = find_competitor_list(classified_event.search_text)
     #print has_competitors, has_sparse_keywords, classified_event.calc_inverse_keyword_density
     if not has_competitors and has_sparse_keywords:
         return (False, 'relevant keywords too sparse')
