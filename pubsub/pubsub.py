@@ -147,8 +147,7 @@ def format_twitter_post(db_event, fb_event, media, handles=None):
         handle_string = ''
         for handle in handles:
             new_handle_string = '%s %s' % (handle_string, handle)
-            print len(new_handle_string)
-            if len(new_handle_string) >= 48:
+            if len(new_handle_string) >= 40:
                 break
             handle_string = new_handle_string
     else:
