@@ -502,13 +502,21 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'bottles? popping?',
     'poppin.? bottles?',
     'dance fitness',
+
+    'eye-poppin\w+',
     'on lock',
     'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
     'zip\W?lock',
     'wave\W?house', # venue in san diego
-    'latin street dance',
     'whack music',
     'wack music',
+    'open house',
+    'house band',
+    'hip\W?hop\W?kempu?', # refers to hiphop music!
+    'camp\W?house',
+    'in\W?house',
+
+    'latin street dance',
     'marvellous dance crew',
     '1st class',
     'first class',
@@ -531,11 +539,6 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'breaking down',
     'ground\W?breaking',
     '(?:second|2nd) stage',
-    'open house',
-    'house band',
-    'hip\W?hop\W?kempu?', # refers to hiphop music!
-    'camp\W?house',
-    'in\W?house',
     'juste debout school',
     'baile funk',
 ))
@@ -1021,7 +1024,16 @@ VOGUE = Name('VOGUE', Any(
     'trans\W?man',
     'mini\W?ball',
 ))
+
+# We want to ignore these when trying to match against house events (r'\bhouse\b')
+# But at the same time, we want to include them when trying to match against vogue events (r'\bhouse of\b')
+HOUSE_OF = Name('HOUSE_OF', Any(
+    'house of',
+))
+
+
 EASY_VOGUE = Name('EASY_VOGUE', Any(
+    HOUSE_OF,
     'never walked',
     'virgin',
     'drags?',
@@ -1036,7 +1048,6 @@ EASY_VOGUE = Name('EASY_VOGUE', Any(
     r'f\.?q\.?',
     r'b\.?q\.?',
     'vogue',
-    'house of',
     'troph(?:y|ies)',
     'old way',
     'new way',

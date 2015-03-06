@@ -131,12 +131,12 @@ def find_styles_in_text(text, broad=True):
     styles = {}
     styles_list = BROAD_STYLES if broad else STYLES
     for line in text.lower().split('\n'):
-        if len(line) > 500:
+        if len(line) > 400:
             continue
         processed_text = event_classifier.StringProcessor(line)
         processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
-        # Only do this for house events?
-        processed_text.real_tokenize(grammar.Name('HOUSE_OF', grammar.Any('house of')))
+        # so we can match this with vogue, but not with house
+        processed_text.real_tokenize(keywords.HOUSE_OF)
         for style, rule in styles_list.iteritems():
             tokens = processed_text.get_tokens(rule)
             if tokens:
