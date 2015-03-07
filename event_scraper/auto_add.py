@@ -67,17 +67,8 @@ def classify_events(fbl, pe_list, fb_list):
 
 def classify_events_with_yield(fbl, pe_list):
     assert fbl.allow_cache
-    fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
-    #fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in pe_list])
-
-    fbl.batch_fetch()
-    fb_list = []
-    for pe in pe_list:
-        try:
-            fb_event = fbl.fetched_data(fb_api.LookupEvent, pe.fb_event_id)
-        except fb_api.NoFetchedDataException:
-            fb_event = None
-        fb_list.append(fb_event)
+    #DISABLE_ATTENDING
+    fb_list = fbl.get(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
     results = classify_events(fbl, pe_list, fb_list)
     yield ''.join(results).encode('utf-8')
 
