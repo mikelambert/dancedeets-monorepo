@@ -56,7 +56,7 @@ def add_update_event(event_id, fbl, creating_uid=None, visible_to_uids=None, rem
 
     if newly_created:
         logging.info("New event, publishing to twitter/facebook")
-        deferred.defer(pubsub.eventually_publish_event, fbl, e.fb_event_id)
+        deferred.defer(pubsub.eventually_publish_event, e.fb_event_id)
 
     potential_event = potential_events.make_potential_event_without_source(event_id, fb_event, fb_event_attending)
     classified_event = event_classifier.get_classified_event(fb_event, potential_event.language)

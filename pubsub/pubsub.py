@@ -30,16 +30,13 @@ from google.appengine.api import taskqueue
 
 EVENT_PULL_QUEUE = 'event-publishing-pull-queue'
 
-def eventually_publish_event(fbl, event_id, token_nickname=None):
-    event_id = event_id
-    fb_event = fbl.get(fb_api.LookupEvent, event_id)
-    if fb_event['empty']:
-        return
-    end_time = dates.parse_fb_end_time(fb_event, need_result=True)
-    if end_time < datetime.datetime.now():
-        return
+def eventually_publish_event(event_id, token_nickname=None):
     db_event = eventdata.DBEvent.get_by_id(event_id)
-    location_info = event_locations.LocationInfo(fb_event, db_event)
+    if db_event.fb_event['empty']:
+        return
+    if db_event.end_time < datetime.datetime.now():
+        return
+    location_info = event_locations.LocationInfo(db_event.fb_event, db_event)
     logging.info("Publishing event %s with latlng %s", event_id, location_info.geocode)
     if not location_info.geocode:
         # Don't post events without a location. It's too confusing...
@@ -62,7 +59,7 @@ def eventually_publish_event(fbl, event_id, token_nickname=None):
         logging.info("Adding task with name %s", name)
         q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
 
-def pull_and_publish_event(fbl):
+def pull_and_publish_event():
     oauth_tokens = OAuthToken.query(
         OAuthToken.valid_token==True,
         ndb.OR(
@@ -79,28 +76,27 @@ def pull_and_publish_event(fbl):
             for task in tasks:
                 event_id = task.payload
                 logging.info("  Found event, posting %s", event_id)
-                post_event_id_with_authtoken(fbl, event_id, token)
+                post_event_id_with_authtoken(event_id, token)
                 q.delete_tasks(task)
             next_post_time = datetime.datetime.now() + datetime.timedelta(seconds=token.time_between_posts)
             token = token.key.get()
             token.next_post_time = next_post_time
             token.put()
 
-def post_event_id_with_authtoken(fbl, event_id, auth_token):
+def post_event_id_with_authtoken(event_id, auth_token):
     event_id = event_id
-    fb_event = fbl.get(fb_api.LookupEvent, event_id)
-    if fb_event['empty']:
-        logging.warning("Failed to post event: %s, due to %s", event_id, fb_event['empty'])
-        return
     db_event = eventdata.DBEvent.get_or_insert(event_id)
+    if db_event.fb_event['empty']:
+        logging.warning("Failed to post event: %s, due to %s", event_id, db_event.fb_event['empty'])
+        return
     if auth_token.application == APP_TWITTER:
         try:
-            twitter_post(auth_token, db_event, fb_event)
+            twitter_post(auth_token, db_event)
         except Exception as e:
             logging.error("Twitter Post Error: %s", e)
     elif auth_token.application == APP_FACEBOOK:
         try:
-            result = facebook_post(auth_token, db_event, fb_event)
+            result = facebook_post(auth_token, db_event)
             if 'error' in result:
                 logging.error("Facebook Post Error: %r", result)
             else:
@@ -163,7 +159,7 @@ def format_twitter_post(db_event, fb_event, media, handles=None):
         final_title += u'…'
     return u"%s%s %s%s" % (prefix, final_title, url, handle_string)
 
-def twitter_post(auth_token, db_event, fb_event):
+def twitter_post(auth_token, db_event):
     t = twitter.Twitter(
         auth=twitter.OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, consumer_key, consumer_secret))
 
@@ -172,7 +168,7 @@ def twitter_post(auth_token, db_event, fb_event):
         update_params['lat'] = db_event.latitude
         update_params['long'] = db_event.longitude
 
-    media = create_media_on_twitter(t, fb_event)
+    media = create_media_on_twitter(t, db_event.fb_event)
     if media:
         update_params['media_ids'] = media['media_id']
 
@@ -180,16 +176,17 @@ def twitter_post(auth_token, db_event, fb_event):
     if auth_token.token_nickname != 'BigTwitter':
         return
 
-    description = fb_event['info'].get('description') or ''
+    description = db_event.fb_event['info'].get('description') or ''
     twitter_handles = re.findall(r'\s@[A-za-z0-9_]+', description)
     twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+15]
     twitter_handles2 = re.findall(r'twitter\.com/([A-za-z0-9_]+)', description)
     twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1+15]
     handles = (twitter_handles + twitter_handles2)
-    status = format_twitter_post(db_event, fb_event, media, handles=handles)
+    status = format_twitter_post(db_event, db_event.fb_event, media, handles=handles)
     t.statuses.update(status=status, **update_params)
 
-def facebook_post(auth_token, db_event, fb_event):
+def facebook_post(auth_token, db_event):
+    fb_event = db_event.fb_event
     link = urls.fb_event_url(fb_event['info']['id'])
     start_time = dates.parse_fb_start_time(fb_event)
     datetime_string = start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
