@@ -3,8 +3,6 @@
 import unittest
 import re
 
-from google.appengine.ext import testbed
-
 import fb_api
 from test_utils import fb_api_stub
 from test_utils import mock_memcache
@@ -64,15 +62,7 @@ class TestMemcache(unittest.TestCase):
 
 class TestDBCache(unittest.TestCase):
     def setUp(self):
-        # First, create an instance of the Testbed class.
-        self.testbed = testbed.Testbed()
-        # Then activate the testbed, which prepares the service stubs for use.
-        self.testbed.activate()
-        # Next, declare which service stubs you want to use.
         self.testbed.init_datastore_v3_stub()
-
-    def tearDown(self):
-        self.testbed.deactivate()
 
     def runTest(self):
         db = fb_api.DBCache('fetch_id')
@@ -182,6 +172,8 @@ class TestFBLookupPickling(unittest.TestCase):
 
 class TestFBLookup(unittest.TestCase):
     def setUp(self):
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate(disk_db=False)
 
@@ -283,6 +275,8 @@ class TestFBLookup(unittest.TestCase):
 
 class TestFBLookupProfile(unittest.TestCase):
     def setUp(self):
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate(disk_db=False)
 
@@ -307,6 +301,8 @@ class TestFBLookupProfile(unittest.TestCase):
 
 class TestEventFailureHandling(unittest.TestCase):
     def setUp(self):
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate(disk_db=False)
 

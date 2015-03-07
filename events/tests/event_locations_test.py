@@ -2,8 +2,6 @@
 
 import unittest
 
-from google.appengine.ext import testbed
-
 from events import eventdata
 from events import event_locations
 import fb_api
@@ -19,13 +17,10 @@ class TestEventLocations(unittest.TestCase):
         self.fb_api.activate()
         self.fbl = fb_api.FBLookup("dummyid", None)
 
-        self.testbed = testbed.Testbed()
-        self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
 
     def tearDown(self):
-        self.testbed.deactivate()
         self.fb_api.deactivate()
 
     def get_event(self, event_id):

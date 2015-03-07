@@ -10,8 +10,7 @@ from event_scraper import thing_db
 
 class TestThingDBFixer(unittest.TestCase):
     def setUp(self):
-        self.testbed = testbed.Testbed()
-        self.testbed.activate()
+        self.testbed.init_memcache_stub()
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_taskqueue_stub(root_path='.')
         self.taskqueue_stub = self.testbed.get_stub(testbed.TASKQUEUE_SERVICE_NAME)
@@ -20,7 +19,6 @@ class TestThingDBFixer(unittest.TestCase):
 
     def tearDown(self):
         self.fb_api.deactivate()
-        self.testbed.deactivate()
 
     def mark_as_error_and_reload(self, fbl):
         # Now let's "rename" the source to be id 222

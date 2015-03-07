@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import unittest
+
 from pubsub import pubsub
 
 FB_EVENT = {
@@ -10,6 +11,15 @@ FB_EVENT = {
         'start_time': '2010-01-01T12:00:00',
     }
 }
+
+class TestPublishEvent(unittest.TestCase):
+    def setUp(self):
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_taskqueue_stub(root_path='.')
+        self.taskqueue_stub = self.testbed.get_stub(testbed.TASKQUEUE_SERVICE_NAME)
+
+    def tearDown(self):
+        self.fb_api.deactivate()
 class TestImports(unittest.TestCase):
     def runTest(self):
         class DBEvent:
