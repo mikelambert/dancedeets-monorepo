@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from google.appengine.ext import ndb
@@ -48,23 +49,30 @@ def _all_attending_count(fb_event):
 
 
 def _inner_make_event_findable_for(db_event, fb_dict, update_geodata):
-    # set up any cached fields or bucketing or whatnot for this event
+    """set up any cached fields or bucketing or whatnot for this event"""
 
-    # Screw db-normalized form, store this here (and location_geocode down below)
-    db_event.fb_event = fb_dict
+    # Update this event with the latest time_period regardless (possibly overwritten below)
+    db_event.search_time_period = _event_time_period(db_event)
 
     if fb_dict['empty'] == fb_api.EMPTY_CAUSE_DELETED:
+        # If this event has already past, don't allow it to be deleted. We want to keep history!
+        if db_event.end_time < datetime.datetime.now() - datetime.timedelta(days=2):
+            return
         db_event.start_time = None
         db_event.end_time = None
         db_event.search_time_period = None
         db_event.address = None
         db_event.actual_city_name = None
         db_event.city_name = None
+        db_event.fb_event = fb_dict
         return
     elif fb_dict['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
         db_event.search_time_period = _event_time_period(db_event)
+        # Don't copy the fb_event over, or any of its fields
         return
 
+    # Screw db-normalized form, store this here (and location_geocode down below)
+    db_event.fb_event = fb_dict
     if 'owner' in fb_dict['info']:
         db_event.owner_fb_uid = fb_dict['info']['owner']['id']
     else:
