@@ -19,23 +19,14 @@ CM_USER = 'CM_USER'
 class AddEventException(Exception):
     pass
 
-def add_update_event(event_id, fbl, creating_uid=None, visible_to_uids=None, remapped_address=None, override_address=None, creating_method=None):
-    fbl.request(fb_api.LookupEvent, event_id, allow_cache=False)
-    #DISABLE_ATTENDING
-    #fbl.request(fb_api.LookupEventAttending, event_id, allow_cache=False)
-    fbl.batch_fetch()
-
-    fb_event = fbl.fetched_data(fb_api.LookupEvent, event_id)
-    #DISABLE_ATTENDING
-    fb_event_attending = None
-    #fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
+def add_update_event(fb_event, fbl, creating_uid=None, visible_to_uids=None, remapped_address=None, override_address=None, creating_method=None):
     if not fb_api.is_public_ish(fb_event):
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
 
     if remapped_address is not None:
         event_locations.update_remapped_address(fb_event, remapped_address)
 
-    e = eventdata.DBEvent.get_or_insert(event_id)
+    e = eventdata.DBEvent.get_or_insert(fb_event['info']['id'])
     newly_created = (e.creating_fb_uid is None)
     if override_address is not None:
         e.address = override_address
@@ -68,4 +59,3 @@ def add_update_event(event_id, fbl, creating_uid=None, visible_to_uids=None, rem
             if not classified_event.is_dance_event():
                 thing_db.increment_num_false_negatives(source_id)
     # Hmm, how do we implement this one?# thing_db.increment_num_real_events_without_potential_events(source_id)
-    return fb_event, e
