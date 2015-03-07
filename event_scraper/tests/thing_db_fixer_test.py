@@ -20,6 +20,7 @@ class TestThingDBFixer(unittest.TestCase):
 
     def tearDown(self):
         self.fb_api.deactivate()
+        self.testbed.deactivate()
 
     def mark_as_error_and_reload(self, fbl):
         # Now let's "rename" the source to be id 222
