@@ -2,3 +2,7 @@ scratch
 download
 local_data
 local_data2
+grammar-processed.*
+full-logs.txt
+scratch*
+r/*
