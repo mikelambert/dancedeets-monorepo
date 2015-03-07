@@ -1,7 +1,6 @@
 import logging
 
-import fb_api
-from . import auto_add
+from . import event_pipeline
 from . import potential_events
 from . import thing_db
 
@@ -32,29 +31,5 @@ def get_potential_dance_events(fbl, user_id, fb_user_events):
 
     logging.info("Going to look up %s events", len(event_ids))
 
-    fbl.request_multi(fb_api.LookupEvent, event_ids)
-    #DISABLE_ATTENDING
-    #fbl.request_multi(fb_api.LookupEventAttending, event_ids)
-    fbl.batch_fetch()
-
-    pe_events = []
-    fb_events = []
-    for event_id in event_ids:
-        try:
-            fb_event = fbl.fetched_data(fb_api.LookupEvent, event_id)
-            #DISABLE_ATTENDING
-            fb_event_attending = None
-            #fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
-        except fb_api.NoFetchedDataException:
-            logging.info("event id %s: no fetched data", event_id)
-            continue # must be a non-saved event, probably due to private/closed event. so ignore.
-        if fb_event['empty'] or not fb_api.is_public_ish(fb_event):
-            logging.info("event id %s: deleted, or private", event_id)
-            continue # only legit events
-        pe_event = potential_events.make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_INVITES)
-        pe_events.append(pe_event)
-        fb_events.append(fb_event)
-    logging.info("Going to classify the %s potential events", len(event_ids))
-    # Classify events on the fly as we add them as potential events, instead of waiting for the mapreduce
-    auto_add.classify_events(fbl, pe_events, fb_events)
+    event_pipeline.process_event_ids(fbl, event_ids, source, thing_db.FIELD_INVITES)
     
