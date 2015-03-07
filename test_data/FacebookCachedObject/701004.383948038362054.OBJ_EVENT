@@ -1,0 +1,41 @@
+{
+  "info": {
+    "invited_count": 400,
+    "attending_count": 64,
+    "declined_count": 16,
+    "description": "December, the month for finals, college apps and going the length in the attempt to prepare for the Holidays.\n\nIn order to properly reward you for your hard work and determination, ATWL Foundation presents... Winter Breaks!\n\nJoin us Friday December 21, 2012 as we open our doors, for another evening of; Funk, Breaks, and \"Call-Outs.\" This will be our last Cypher Jam of the year. The evening will be geared towards Cyphers, and get-downs. This event is 100% FREE and for community. Feel free to invite friends, crew-mates and family to come jam with us.\n\n::Exhibition Call-Outs::\n-TBA\n-TBA\n-TBA\n-TBA\n\n***Sorry, but we are not flying anyone out, nor paying anyone to battle**\n-Just show up, bug out, call someone out, and have FUN!\n\n\n:::Details:::\n\nAdmission: \nFree\n\nPlace: \nWeekes Community Center \n27182 Patrick Avenue  \nHayward, CA 94544\n\nTime: \n6:00pm-9:30pm.\n\nWhen:\nFriday December 21, 2012\n\nSpecial Guest DJ:\n-PowerSerge\n-Kool-Raul\n-TBA\n-TBA\n\n**THIS IS A DRUG, SMOKE, ALCOHOL, FREE EVENT**\nIf caught, you will be asked to leave.",
+    "privacy": "OPEN",
+    "start_time": "2412-12-21T18:00:00-0800",
+    "venue": {
+      "city": "Hayward",
+      "zip": "94544-4404",
+      "country": "United States",
+      "longitude": -122.07852895224,
+      "state": "CA",
+      "street": "27182 Patrick Ave",
+      "latitude": 37.633857103239,
+      "id": "110657448997061"
+    },
+    "noreply_count": 351,
+    "name": "All The Way Live | Winter Breaks 2012",
+    "is_date_only": false,
+    "maybe_count": 36,
+    "end_time": "2412-12-21T21:30:00-0800",
+    "owner": {
+      "category": "Non-profit organization",
+      "id": "126014297412318",
+      "name": "All The Way Live Foundation"
+    },
+    "timezone": "America\/Los_Angeles",
+    "updated_time": "2012-12-13T23:28:19+0000",
+    "id": "383948038362054",
+    "location": "Weeks Community Center-Park"
+  },
+  "picture": {
+    "data": {
+      "url": "https:\/\/fbcdn-profile-a.akamaihd.net\/hprofile-ak-xpa1\/t5.0-1\/276808_383948038362054_1042872677_n.jpg",
+      "is_silhouette": false
+    }
+  },
+  "empty": null
+}

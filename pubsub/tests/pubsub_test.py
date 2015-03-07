@@ -8,6 +8,7 @@ from google.appengine.ext import testbed
 import fb_api
 from events import eventdata
 from events import event_updates
+from loc.test_utils import gmaps_fake
 from pubsub import pubsub
 from test_utils import fb_api_stub
 
@@ -28,12 +29,15 @@ class TestPublishEvent(unittest.TestCase):
         self.taskqueue_stub = self.testbed.get_stub(testbed.TASKQUEUE_SERVICE_NAME)
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate()
+        gmaps_fake.activate()
 
     def tearDown(self):
         self.fb_api.deactivate()
+        gmaps_fake.deactivate()
 
     @mock.patch('oauth2.Client.request')
-    def testPull(self, Client_request):
+    @mock.patch('twitter.Twitter')
+    def testPull(self, Twitter, Client_request):
         # No-op works with with no tokens
         pubsub.pull_and_publish_event()
 
@@ -52,14 +56,10 @@ class TestPublishEvent(unittest.TestCase):
         event_updates.update_and_save_event(db_event, fb_event)
         db_event.put()
         pubsub.eventually_publish_event(event_id)
-        pubsub.pull_and_publish_event()
-        # Verify that we post what we expect to twitter. Currently we get this, but don't verify that.
-        # Also let's try to mock out the gmaps call, to avoid blowing our quota.
-        """
-        root: ERROR: Twitter Post Error: Twitter sent status 401 for URL: 1.1/statuses/update.json using parameters: (lat=37.63339&long=-122.0788905&oauth_consumer_key=xzpiBnUCGqTWSqTgmE6XtLDpw&oauth_nonce=10965968933246636156&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1425727892&oauth_token=token&oauth_version=1.0&status=2412%2F12%2F21%3A%20Hayward%2C%20CA%2C%20United%20States%3A%20All%20The%20Way%20Live%20%7C%20Winter%20Breaks%202012%20http%3A%2F%2Fwww.dancedeets.com%2Fevents%2F383948038362054%2F&oauth_signature=yF1mNWGSxsqUt9b4zXQ0rtmcp8U%3D)
-        details: {"errors":[{"code":89,"message":"Invalid or expired token."}]}
-        """
 
+        pubsub.pull_and_publish_event()
+        # Check that Twitter().statuses.update(...) was called
+        self.assertTrue(Twitter.return_value.statuses.update.called)
 
 class TestImports(unittest.TestCase):
     def runTest(self):

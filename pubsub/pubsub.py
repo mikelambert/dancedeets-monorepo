@@ -70,8 +70,8 @@ def pull_and_publish_event():
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
         logging.info("Posting to OAuthToken: %s", token)
-        logging.info("Fetching tasks with queue id %s", token.queue_id())
         tasks = q.lease_tasks_by_tag(120, 1, token.queue_id())
+        logging.info("Fetching %d tasks with queue id %s", len(tasks), token.queue_id())
         if tasks:
             for task in tasks:
                 event_id = task.payload
