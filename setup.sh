@@ -12,9 +12,7 @@ curl https://bootstrap.pypa.io/get-pip.py --output $TMP_DIR/get-pip.py
 sudo python $TMP_DIR/get-pip.py
 
 # For testing, just install them locally. Depends on pip being installed.
-sudo pip install nosegae
-sudo pip install nose
-sudo pip install webtest
+sudo pip install nosegae nose webtest --upgrade
 
 # TOO OLD, broken media upload: pip install --upgrade -t $BASE_DIR/lib twitter
 
