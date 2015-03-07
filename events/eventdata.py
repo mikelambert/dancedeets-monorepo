@@ -43,6 +43,8 @@ class DBEvent(ndb.Model):
     #TODO(lambert): start using this field in auto-created events
     creating_method = ndb.StringProperty(indexed=False)
 
+    visible_to_fb_uids = ndb.StringProperty(indexed=False, repeated=True)
+
     # searchable properties
     search_time_period = ndb.StringProperty()
     start_time = ndb.DateTimeProperty()

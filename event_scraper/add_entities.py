@@ -19,7 +19,7 @@ CM_USER = 'CM_USER'
 class AddEventException(Exception):
     pass
 
-def add_update_event(event_id, user_id, fbl, remapped_address=None, override_address=None, creating_method=None):
+def add_update_event(event_id, fbl, creating_uid=None, visible_to_uids=None, remapped_address=None, override_address=None, creating_method=None):
     fbl.request(fb_api.LookupEvent, event_id, allow_cache=False)
     #DISABLE_ATTENDING
     #fbl.request(fb_api.LookupEventAttending, event_id, allow_cache=False)
@@ -40,9 +40,17 @@ def add_update_event(event_id, user_id, fbl, remapped_address=None, override_add
     if override_address is not None:
         e.address = override_address
     #STR_ID_MIGRATE
-    e.creating_fb_uid = long(user_id) if user_id else None
+    e.creating_fb_uid = long(creating_uid) if creating_uid else None
     if creating_method:
         e.creating_method = creating_method
+
+    if visible_to_uids is None:
+        if creating_uid is not None:
+            visible_to_uids = [creating_uid]
+        else:
+            visible_to_uids = []
+    e.visible_to_uids = visible_to_uids
+
     event_updates.update_and_save_event(e, fb_event)
     thing_db.create_source_from_event(fbl, e)
 

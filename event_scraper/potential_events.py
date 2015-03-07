@@ -28,6 +28,11 @@ class PotentialEvent(db.Model):
     # This is a representation of FUTURE vs PAST, so we can filter in our mapreduce criteria for relevant future events easily
     past_event = db.BooleanProperty()
 
+    def get_invite_uids(self):
+        #STR_ID_MIGRATE
+        source_ids = [str(source_id) for source_id, source_field in zip(self.source_ids, self.source_fields) if source_field == thing_db.FIELD_INVITES]
+        return source_ids
+
     def has_source_with_field(self, source_id, source_field):
         has_source = False
         for source_id_, source_field_ in zip(self.source_ids, self.source_fields):

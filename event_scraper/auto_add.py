@@ -52,7 +52,7 @@ def classify_events(fbl, pe_list, fb_list=None):
             location_info = event_locations.LocationInfo(fb_event)
             result = '+%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, location_info.exact_from_event, location_info.final_city, location_info.final_city != None, location_info.fb_address, fb_event['info'].get('name', '')))
             try:
-                add_entities.add_update_event(pe.fb_event_id, None, fbl, creating_method=add_entities.CM_AUTO)
+                add_entities.add_update_event(pe.fb_event_id, fbl, visible_to_uids=pe.get_invite_uids(), creating_method=add_entities.CM_AUTO)
                 pe2 = potential_events.PotentialEvent.get_by_key_name(pe.fb_event_id)
                 pe2.looked_at = True
                 pe2.auto_looked_at = True
