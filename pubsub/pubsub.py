@@ -172,16 +172,17 @@ def twitter_post(auth_token, db_event):
     if media:
         update_params['media_ids'] = media['media_id']
 
-    # This is the only twitter account allowed to @mention, to avoid spamming everyone...
-    if auth_token.token_nickname != 'BigTwitter':
-        return
 
     description = db_event.fb_event['info'].get('description') or ''
     twitter_handles = re.findall(r'\s@[A-za-z0-9_]+', description)
     twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+15]
     twitter_handles2 = re.findall(r'twitter\.com/([A-za-z0-9_]+)', description)
     twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1+15]
-    handles = (twitter_handles + twitter_handles2)
+    # This is the only twitter account allowed to @mention, to avoid spamming everyone...
+    if auth_token.token_nickname == 'BigTwitter':
+        handles = (twitter_handles + twitter_handles2)
+    else:
+        handles = []
     status = format_twitter_post(db_event, db_event.fb_event, media, handles=handles)
     t.statuses.update(status=status, **update_params)
 
@@ -314,7 +315,6 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
 
 def twitter_oauth2(oauth_token, oauth_verifier):
     auth_tokens = OAuthToken.query(OAuthToken.temp_oauth_token==oauth_token, OAuthToken.application==APP_TWITTER).fetch(1)
-    print auth_tokens
     if not auth_tokens:
         return None
     auth_token = auth_tokens[0]
