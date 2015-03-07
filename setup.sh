@@ -19,7 +19,6 @@ sudo pip install nosegae nose webtest --upgrade
 pip install --upgrade -t $BASE_DIR/lib \
   iso3166 \
   oauth2 \
-  python-oauth2 \
   twilio==3.6.15 \
   google-api-python-client \
   gdata \
