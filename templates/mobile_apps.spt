@@ -50,7 +50,7 @@ Or enter your phone number, and we'll send you a link to install:
 <form class="spacing form-inline" method="post" action="/mobile_apps">
 <input type="hidden" name="action" value="send_sms" />
 <select name="prefix" class="form-control">
-<option name="">Select a country below</option>
+<option value="">Select a country below</option>
 #for $country, $code in $country_codes
 	<option value="$code"
 	#if $code == $prefix

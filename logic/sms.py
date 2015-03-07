@@ -1,4 +1,7 @@
+import logging
+
 from twilio.rest import TwilioRestClient 
+from twilio.rest.resources import base
 # This is the right import for 3.5.2
 from twilio import TwilioRestException
 
@@ -13,7 +16,11 @@ class InvalidPhoneNumberException(Exception):
 
 def send_email_link(phone_number):
     client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
+    orig_get_cert_file = base.get_cert_file
     try:
+        # We monkey patch the cert file to not use anything
+        base.get_cert_file = lambda: None
+        logging.info("Sending SMS to %s", phone_number)
         client.messages.create(
             to=phone_number, 
             from_="+12566932623", 
@@ -24,3 +31,5 @@ def send_email_link(phone_number):
             raise InvalidPhoneNumberException(e.msg)
         else:
             raise
+    finally:
+        base.get_cert_file = orig_get_cert_file

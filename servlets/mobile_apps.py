@@ -70,7 +70,7 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
                 self.render_page(error="Please enter a phone number.")
                 return
             try:
-                sms.send_email_link(phone)
+                sms.send_email_link('+' + prefix + phone)
             except sms.InvalidPhoneNumberException:
                 self.render_page(error="You entered an invalid phone number.")
                 return
