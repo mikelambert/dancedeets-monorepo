@@ -361,26 +361,3 @@ def save_db_event_ids(fbl, index_name, db_event_ids):
     # but only after looking up in this db+fb-event-data world
     logging.info("Cleaning up and deleting %s documents", len(delete_ids))
     doc_index.delete(delete_ids)
-
-# since _inner_cache_fb_events is a decorated function, it can't be pickled, which breaks deferred. so make this wrapper function here.
-def cache_fb_events(fbl, event_ids):
-    _inner_cache_fb_events(fbl, event_ids)
-
-@timings.timed
-def _inner_cache_fb_events(fbl, event_ids):
-    """Load and stick fb events into cache."""
-    # Force write to memcache for memcache-fetched objects (and db-fetched objects)
-    fbl.resave_to_memcache = True
-    fbl.request_multi(fb_api.LookupEvent, event_ids)
-    fbl.request_multi(fb_api.LookupEventAttending, event_ids)
-    logging.info("Loading %s events into memcache", len(event_ids))
-    fbl.batch_fetch()
-
-@timings.timed
-def memcache_future_events(fbl):
-    db_query = eventdata.DBEvent.query(eventdata.DBEvent.search_time_period==dates.TIME_FUTURE)
-    event_ids = [x.id() for x in db_query.fetch(MAX_EVENTS, keys_only=True)]
-    logging.info("Overall loading %s events into memcache", len(event_ids))
-    EVENTS_AT_A_TIME = 200
-    for i in range(0, len(event_ids), EVENTS_AT_A_TIME):
-        deferred.defer(cache_fb_events, fbl, event_ids[i:i+EVENTS_AT_A_TIME], _queue=SLOW_QUEUE)

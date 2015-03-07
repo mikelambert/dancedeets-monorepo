@@ -95,7 +95,6 @@ URLS = [
 
     ('/tasks/email_all_users', search_tasks.EmailAllUsersHandler),
     ('/tasks/email_user', search_tasks.EmailUserHandler),
-    ('/tasks/memcache_future_events', search_tasks.MemcacheFutureEvents),
     ('/tasks/refresh_fulltext_search_index', search_tasks.RefreshFulltextSearchIndex),
 
     ('/tasks/timings_keep_alive', tasks.TimingsKeepAlive),

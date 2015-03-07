@@ -45,10 +45,6 @@ class EmailUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
         email_events.email_user(self.fbl, load_users[0])
     post=get
 
-class MemcacheFutureEvents(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        search.memcache_future_events(self.fbl)
-
 class RefreshFulltextSearchIndex(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         index_future = bool(int(self.request.get('index_future', 1)))
