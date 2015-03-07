@@ -56,5 +56,5 @@ def get_potential_dance_events(fbl, user_id, fb_user_events):
         fb_events.append(fb_event)
     logging.info("Going to classify the %s potential events", len(event_ids))
     # Classify events on the fly as we add them as potential events, instead of waiting for the mapreduce
-    auto_add.classify_events(fbl, pe_events, fb_list=fb_events)
+    auto_add.classify_events(fbl, pe_events, fb_events)
     

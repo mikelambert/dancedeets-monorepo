@@ -11,21 +11,7 @@ from util import fb_mapreduce
 from . import add_entities
 from . import potential_events
 
-def classify_events(fbl, pe_list, fb_list=None):
-    if fb_list is None:
-        assert fbl.allow_cache
-        fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
-        #fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in pe_list])
-        
-        fbl.batch_fetch()
-        fb_list = []
-        for pe in pe_list:
-            try:
-                fb_event = fbl.fetched_data(fb_api.LookupEvent, pe.fb_event_id)
-            except fb_api.NoFetchedDataException:
-                fb_event = None
-            fb_list.append(fb_event)
-
+def classify_events(fbl, pe_list, fb_list):
     results = []
     for pe, fb_event in zip(pe_list, fb_list):
         if fb_event and fb_event['empty']:
@@ -79,8 +65,20 @@ def classify_events(fbl, pe_list, fb_list=None):
                 ctx.counters.increment('auto-notadded-dance-events')
     return results
 
-def classify_events_with_yield(*args, **kwargs):
-    results = classify_events(*args, **kwargs)
+def classify_events_with_yield(fbl, pe_list):
+    assert fbl.allow_cache
+    fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
+    #fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in pe_list])
+
+    fbl.batch_fetch()
+    fb_list = []
+    for pe in pe_list:
+        try:
+            fb_event = fbl.fetched_data(fb_api.LookupEvent, pe.fb_event_id)
+        except fb_api.NoFetchedDataException:
+            fb_event = None
+        fb_list.append(fb_event)
+    results = classify_events(fbl, pe_list, fb_list)
     yield ''.join(results).encode('utf-8')
 
 map_classify_events = fb_mapreduce.mr_wrap(classify_events_with_yield)

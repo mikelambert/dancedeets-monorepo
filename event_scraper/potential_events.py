@@ -79,6 +79,7 @@ def _common_potential_event_setup(potential_event, fb_event):
 
 def update_scores_for_potential_event(potential_event, fb_event, fb_event_attending, service=None):
     return potential_event # This prediction isn't really working, so let's turn it off for now
+    """
     if potential_event and not getattr(potential_event, 'dance_bias_score'):
         predict_service = service or gprediction.get_predict_service()
         dance_bias_score, non_dance_bias_score = gprediction.predict(potential_event, fb_event, fb_event_attending, service=predict_service)
@@ -94,6 +95,7 @@ def update_scores_for_potential_event(potential_event, fb_event, fb_event_attend
         except apiproxy_errors.CapabilityDisabledError, e:
             logging.error("Error saving potential event %s due to %s", fb_event_id, e)
     return potential_event
+    """
 
 
 def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attending):
@@ -110,7 +112,7 @@ def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attendin
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", fb_event_id, e)
 
-    potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
+    # potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
     return potential_event
 
 def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, source, source_field):
@@ -138,7 +140,7 @@ def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, 
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", fb_event_id, e)
     potential_event = PotentialEvent.get_by_key_name(fb_event_id)
-    potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
+    # potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
     if new_source:
         #TODO(lambert): doesn't handle the case of the match score increasing from <0 to >0 in the future
         if match_score > 0:
