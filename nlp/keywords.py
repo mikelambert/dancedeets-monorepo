@@ -507,14 +507,16 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'on lock',
     'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
     'zip\W?lock',
-    'wave\W?house', # venue in san diego
     'whack music',
     'wack music',
+    'wave\W?house', # venue in san diego
+    'full house',
     'open house',
+    'in the house',
     'house band',
-    'hip\W?hop\W?kempu?', # refers to hiphop music!
-    'camp\W?house',
     'in\W?house',
+    'camp\W?house',
+    'hip\W?hop\W?kempu?', # refers to hiphop music!
 
     'latin street dance',
     'marvellous dance crew',
