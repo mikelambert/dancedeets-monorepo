@@ -54,7 +54,6 @@ class LoadPotentialEventsForFriendsHandler(base_servlet.BaseTaskFacebookRequestH
         friend_lists.append('565645070588') # Choreo SF
         friend_lists.append('556389713398') # Choreo LA
         friend_lists.append('565645155418') # Choreo Elsewhere
-        print self.fbl.access_token
         for fl_id, fl in zip(friend_lists, self.fbl.get_multi(fb_api.LookupFriendList, friend_lists, allow_cache=False)):
             logging.info("Friend list %s: Searching %s friends for events", fl_id, len(fl['friend_list']['data']))
             friend_ids = [x['id'] for x in fl['friend_list']['data']]
