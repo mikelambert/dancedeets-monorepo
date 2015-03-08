@@ -13,7 +13,7 @@ class DiscoveredEvent(object):
         self.event_id = fb_event_id
         # still necessary for fraction_are_real_event checks...can we remove dependency?
         self.source = source
-        self.source_id = source.graph_id
+        self.source_id = source.graph_id if source else None
         self.source_type = source_type
         self.extra_source_id = extra_source_id
 
