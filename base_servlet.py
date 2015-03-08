@@ -215,7 +215,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             return
 
         self.fb_uid = our_cookie_uid
-        self.user = users.User.get_cached(self.fb_uid)
+        self.user = users.User.get_by_id(self.fb_uid)
 
         # If we have a user, grab the access token
         if self.user:
@@ -232,7 +232,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                         access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
                         logging.info("New access token from cookie: %s, expires %s", access_token, access_token_expires)
                         if access_token:
-                            self.user = users.User.get_by_key_name(self.fb_uid)
+                            self.user = users.User.get_by_id(self.fb_uid)
                             self.user.fb_access_token = access_token
                             self.user.fb_access_token_expires = access_token_expires
                             self.user.expired_oauth_token = False
@@ -244,7 +244,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                     except facebook.AlreadyHasLongLivedToken:
                         logging.info("Already have long-lived token, FB wouldn't give us a new one, so no need to refresh anything.")
                 if 'web' not in self.user.clients:
-                    self.user = users.User.get_by_key_name(self.fb_uid)
+                    self.user = users.User.get_by_id(self.fb_uid)
                     self.user.clients.append('web')
                     self.user.put()
                     logging.info("Added the web client to the User db")
@@ -279,7 +279,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             user_creation.create_user_with_fbuser(self.fb_uid, fb_user, self.access_token, access_token_expires, city, send_email=True, referer=referer, client='web')
             #TODO(lambert): handle this MUUUCH better
             logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
-            self.user = users.User.get_cached(self.fb_uid)
+            self.user = users.User.get_by_id(self.fb_uid)
             # Should not happen:
             if not self.user:
                 logging.error("We still don't have a user!")
@@ -422,7 +422,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
 def update_last_login_time(user_id, login_time):
     def _update_last_login_time():
-        user = users.User.get_by_key_name(user_id)
+        user = users.User.get_by_id(user_id)
         user.last_login_time = login_time
         if user.login_count:
             user.login_count += 1
@@ -444,7 +444,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
 
         self.fb_uid = self.request.get('user_id')
-        self.user = users.User.get_cached(self.fb_uid)
+        self.user = users.User.get_by_id(self.fb_uid)
         if self.user:
             if not self.user.fb_access_token:
                 logging.error("Can't execute background task for user %s without access_token", self.fb_uid)

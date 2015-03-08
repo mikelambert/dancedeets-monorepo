@@ -1,8 +1,7 @@
 import logging
 
-from google.appengine.ext import db
+from google.appengine.ext import ndb
 from google.appengine.api import datastore_errors
-from google.appengine.api import memcache
 from google.appengine.runtime import apiproxy_errors
 
 import datetime
@@ -10,45 +9,43 @@ from loc import gmaps_api
 from loc import math
 from util import dates
 
-USER_EXPIRY = 24 * 60 * 60
-
-class User(db.Model):
+class User(ndb.Model):
     # SSO
-    fb_uid = property(lambda x: str(x.key().name()))
-    fb_access_token = db.StringProperty(indexed=False)
-    fb_access_token_expires = db.DateTimeProperty(indexed=False)
+    fb_uid = property(lambda x: str(x.key.string_id()))
+    fb_access_token = ndb.StringProperty(indexed=False)
+    fb_access_token_expires = ndb.DateTimeProperty(indexed=False)
 
     # Statistics
-    creation_time = db.DateTimeProperty()
-    last_login_time = db.DateTimeProperty()
-    login_count = db.IntegerProperty()
+    creation_time = ndb.DateTimeProperty()
+    last_login_time = ndb.DateTimeProperty()
+    login_count = ndb.IntegerProperty()
     #STR_ID_MIGRATE
-    inviting_fb_uid = db.IntegerProperty(indexed=False)
+    inviting_fb_uid = ndb.IntegerProperty(indexed=False)
 
-    clients = db.StringListProperty()
+    clients = ndb.StringProperty(indexed=False, repeated=True)
 
     # Search preferences
-    location = db.StringProperty(indexed=False)
-    distance = db.StringProperty(indexed=False)
-    distance_units = db.StringProperty(indexed=False)
-    min_attendees = db.IntegerProperty(indexed=False)
+    location = ndb.StringProperty(indexed=False)
+    distance = ndb.StringProperty(indexed=False)
+    distance_units = ndb.StringProperty(indexed=False)
+    min_attendees = ndb.IntegerProperty(indexed=False)
 
     # TODO(lambert): Get rid of these eventually??
-    dance_type = db.StringProperty(indexed=False)
-    freestyle = db.StringProperty(indexed=False)
-    choreo = db.StringProperty(indexed=False)
+    dance_type = ndb.StringProperty(indexed=False)
+    freestyle = ndb.StringProperty(indexed=False)
+    choreo = ndb.StringProperty(indexed=False)
 
     # Other preferences
-    send_email = db.BooleanProperty(indexed=False)
-    location_country = db.StringProperty(indexed=False)
+    send_email = ndb.BooleanProperty(indexed=False)
+    location_country = ndb.StringProperty(indexed=False)
 
     # Derived from fb_user
-    full_name = db.StringProperty(indexed=False)
-    email = db.StringProperty(indexed=False)
-    timezone_offset = db.FloatProperty(indexed=False)
+    full_name = ndb.StringProperty(indexed=False)
+    email = ndb.StringProperty(indexed=False)
+    timezone_offset = ndb.FloatProperty(indexed=False)
 
-    expired_oauth_token = db.BooleanProperty(indexed=False)
-    expired_oauth_token_reason = db.StringProperty(indexed=False)
+    expired_oauth_token = ndb.BooleanProperty(indexed=False)
+    expired_oauth_token_reason = ndb.StringProperty(indexed=False)
 
     def distance_in_km(self):
         if not self.distance:
@@ -57,20 +54,6 @@ class User(db.Model):
             return int(self.distance)
         else:
             return math.miles_in_km(int(self.distance))
-
-    @staticmethod
-    def memcache_user_key(fb_user_id):
-        return 'User.%s' % fb_user_id
-
-    @classmethod
-    def get_cached(cls, uid):
-        memcache_key = cls.memcache_user_key(uid)
-        user = memcache.get(memcache_key)
-        if not user:
-            user = User.get_by_key_name(uid)
-            if user:
-                memcache.set(memcache_key, user, USER_EXPIRY)
-        return user
 
     def date_only_human_format(self, d):
         return dates.date_only_human_format(d)
@@ -92,11 +75,6 @@ class User(db.Model):
             if geocode:
                 self.location_country = geocode.country()
 
-    def _populate_internal_entity(self):
-        memcache_key = self.memcache_user_key(self.fb_uid)
-        memcache.set(memcache_key, self, USER_EXPIRY)
-        return super(User, self)._populate_internal_entity()
-
     def add_message(self, message):
         user_message = UserMessage(
             real_fb_uid=self.fb_uid,
@@ -110,21 +88,21 @@ class User(db.Model):
         return user_message
 
     def get_and_purge_messages(self):
-        user_messages = UserMessage.gql("WHERE real_fb_uid = :fb_uid ORDER BY creation_time", fb_uid=self.fb_uid).fetch(100)
+        user_messages = UserMessage.query(UserMessage.real_fb_uid == self.fb_uid).order(UserMessage.creation_time).fetch(100)
         messages = [x.message for x in user_messages]
         for user_message in user_messages:
             user_message.delete()
         return messages
 
-class UserFriendsAtSignup(db.Model):
-    fb_uid = property(lambda x: str(x.key().name()))
-    registered_friend_string_ids = db.StringListProperty(indexed=False)
+class UserFriendsAtSignup(ndb.Model):
+    fb_uid = property(lambda x: str(x.key.string_id()))
+    registered_friend_string_ids = ndb.StringProperty(indexed=False, repeated=True)
     # deprecated
-    registered_friend_ids = db.ListProperty(int, indexed=False)
+    registered_friend_ids = ndb.IntegerProperty(indexed=False, repeated=True)
 
-class UserMessage(db.Model):
-    real_fb_uid = db.StringProperty()
-    creation_time = db.DateTimeProperty()
-    message = db.TextProperty(indexed=False)
+class UserMessage(ndb.Model):
+    real_fb_uid = ndb.StringProperty()
+    creation_time = ndb.DateTimeProperty()
+    message = ndb.TextProperty(indexed=False)
 
 

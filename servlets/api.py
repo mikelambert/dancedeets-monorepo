@@ -205,7 +205,7 @@ class AuthHandler(ApiHandler):
         client = self.json_body.get('client')
         logging.info("Auth token from client %s is %s", client, access_token)
 
-        user = users.User.get_by_key_name(self.fb_uid)
+        user = users.User.get_by_id(self.fb_uid)
         if user:
             logging.info("User exists, updating user with new fb access token data")
             user.fb_access_token = access_token
@@ -242,7 +242,7 @@ class SettingsHandler(ApiHandler):
     requires_auth = True
 
     def get(self):
-        user = users.User.get_by_key_name(self.fb_uid)
+        user = users.User.get_by_id(self.fb_uid)
         json_data = {
             'location': user.location,
             'distance': user.distance,
@@ -252,7 +252,7 @@ class SettingsHandler(ApiHandler):
         self.write_json_success(json_data)
 
     def post(self):
-        user = users.User.get_by_key_name(self.fb_uid)
+        user = users.User.get_by_id(self.fb_uid)
         json_request = json.loads(self.request.body)
         if json_request.get('location'):
             user.location = json_request.get('location')

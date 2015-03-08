@@ -58,7 +58,7 @@ $user.distance_units
 $client
 #end for
 </td><td>
-(<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=$user.key().__str__()">AE</a>, <a href="/sources/admin_edit?source_id=$user.fb_uid">Source</a>)
+(<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=$user.key.urlsafe()">AE</a>, <a href="/sources/admin_edit?source_id=$user.fb_uid">Source</a>)
 <a href="$fb_user.profile.link">$user.full_name</a>
 #if $user.expired_oauth_token
 <span style="color:red" title="$user.expired_oauth_token_reason">(expired!)</span>

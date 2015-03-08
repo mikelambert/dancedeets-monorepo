@@ -36,7 +36,7 @@ class TrackNewUserFriendsHandler(base_servlet.BaseTaskFacebookRequestHandler):
 class LoadUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
-        load_users = users.User.get_by_key_name(user_ids)
+        load_users = users.User.get_by_id(user_ids)
         load_fb_user(self.fbl, load_users[0])
     post=get
 

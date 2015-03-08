@@ -48,11 +48,11 @@ class TestAuth(TestSearch):
             'location': 'New Location',
             'client': 'android',
         }
-        self.assertEqual(users.User.get_by_key_name(me_uid), None)
+        self.assertEqual(users.User.get_by_id(me_uid), None)
         result = app.post_json('/api/v1.0/auth', auth_request)
         self.assertEqual(result.json, {'success': True})
-        self.assertNotEqual(users.User.get_by_key_name(me_uid), None)
-        self.assertEqual(users.User.get_by_key_name(me_uid).fb_access_token, access_token)
+        self.assertNotEqual(users.User.get_by_id(me_uid), None)
+        self.assertEqual(users.User.get_by_id(me_uid).fb_access_token, access_token)
 
         # Now again, but with fully-urlquoted string.
         # This time it will update the token, but not create a new user.
@@ -65,5 +65,5 @@ class TestAuth(TestSearch):
         finally:
             utils.dumps = old_dumps
 
-        self.assertNotEqual(users.User.get_by_key_name(me_uid), None)
-        self.assertEqual(users.User.get_by_key_name(me_uid).fb_access_token, new_access_token)
+        self.assertNotEqual(users.User.get_by_id(me_uid), None)
+        self.assertEqual(users.User.get_by_id(me_uid).fb_access_token, new_access_token)

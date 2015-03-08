@@ -9,7 +9,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
 
         defaults = {}
-        user = users.User.get_by_key_name(self.fb_uid)
+        user = users.User.get_by_id(self.fb_uid)
         for k in dir(user):
             defaults[k] = getattr(user, k)
         for field in defaults.keys():
@@ -33,7 +33,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.redirect('/')
 
     def update_user(self):
-        user = users.User.get_by_key_name(self.fb_uid)
+        user = users.User.get_by_id(self.fb_uid)
         for field in ['location', 'distance_units']:
             form_value = self.request.get(field)
             setattr(user, field, form_value)
@@ -57,8 +57,7 @@ class ShowUsersHandler(base_servlet.BaseRequestHandler):
         self.finish_preload()
         num_fetch_users = int(self.request.get('num_users', 500))
         order_field = self.request.get('order_field', 'creation_time')
-        all_users = users.User.all().order('-%s' % order_field).fetch(num_fetch_users)
-        all_users = sorted(all_users, key=lambda x: getattr(x, order_field), reverse=True)
+        all_users = users.User.query().order(-getattr(users.User, order_field)).fetch(num_fetch_users)
         client_counts = collections.defaultdict(lambda: 0)
         for user in all_users:
             for client in user.clients:
