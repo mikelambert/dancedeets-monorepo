@@ -9,16 +9,16 @@ from util import dates
 from . import thing_db
 
 class DiscoveredEvent(object):
-    def __init__(self, fb_event_id, source, source_type, extra_source_id=None):
+    def __init__(self, fb_event_id, source, source_field, extra_source_id=None):
         self.event_id = fb_event_id
         # still necessary for fraction_are_real_event checks...can we remove dependency?
         self.source = source
         self.source_id = source.graph_id if source else None
-        self.source_type = source_type
+        self.source_field = source_field
         self.extra_source_id = extra_source_id
 
     def _repr(self):
-        return (self.event_id, self.source_id, self.source_type, self.extra_source_id)
+        return (self.event_id, self.source_id, self.source_field, self.extra_source_id)
 
     def __hash__(self):
         return hash(self._repr())
