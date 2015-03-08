@@ -17,6 +17,17 @@ class DiscoveredEvent(object):
         self.source_type = source_type
         self.extra_source_id = extra_source_id
 
+    def _repr(self):
+        return (self.event_id, self.source_id, self.source_type, self.extra_source_id)
+
+    def __hash__(self):
+        return hash(self._repr())
+
+    def __cmp__(self, other):
+        if isinstance(other, DiscoveredEvent):
+            return cmp(self._repr(), other._repr())
+        else:
+            return -1
 
 class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: str(x.key().name()))

@@ -46,8 +46,8 @@ class FindAccessTokensForEventsPipeline(base_handler.PipelineBase):
         # output = yield ...
         yield mapreduce_pipeline.MapreducePipeline(
             'Find valid access_tokens for events',
-            'events.event_reloading_tasks.test_user_on_events',
-            'events.event_reloading_tasks.save_valid_users_to_event',
+            'events.find_access_tokens.test_user_on_events',
+            'events.find_access_tokens.save_valid_users_to_event',
             'mapreduce.input_readers.DatastoreInputReader',
             'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
             mapper_params={

@@ -25,7 +25,7 @@ def process_discovered_events(fbl, discovered_list):
             logging.info("event id %s: deleted, or private", event_id)
             continue # only legit events
         # makes a potential event, with scored information. transactions. one. by. one.
-        discovered = potential_events.DiscoveredEvent(event_id, discovered.source, discovered.source_field)
+        discovered = potential_events.DiscoveredEvent(event_id, discovered.source, discovered.source_type)
         pe_event = potential_events.make_potential_event_with_source(fb_event, discovered)
         filtered_pe_events.append(pe_event)
         filtered_fb_events.append(fb_event)

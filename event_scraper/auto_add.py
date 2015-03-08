@@ -68,7 +68,7 @@ def classify_events(fbl, pe_list, fb_list):
 def classify_events_with_yield(fbl, pe_list):
     assert fbl.allow_cache
     #DISABLE_ATTENDING
-    fb_list = fbl.get(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
+    fb_list = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
     results = classify_events(fbl, pe_list, fb_list)
     yield ''.join(results).encode('utf-8')
 
