@@ -6,8 +6,8 @@ from mapreduce import mapreduce_pipeline
 
 import base_servlet
 import fb_api
-from events import eventdata
-from events import event_updates
+from . import eventdata
+from . import event_updates
 
 def test_user_on_events(user):
     logging.info("Trying user %s (expired %s)", user.fb_uid, user.expired_oauth_token)
