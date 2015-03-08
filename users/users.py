@@ -14,6 +14,8 @@ class User(ndb.Model):
     fb_uid = property(lambda x: str(x.key.string_id()))
     fb_access_token = ndb.StringProperty(indexed=False)
     fb_access_token_expires = ndb.DateTimeProperty(indexed=False)
+    expired_oauth_token = ndb.BooleanProperty(indexed=False)
+    expired_oauth_token_reason = ndb.StringProperty(indexed=False)
 
     # Statistics
     creation_time = ndb.DateTimeProperty()
@@ -43,9 +45,6 @@ class User(ndb.Model):
     full_name = ndb.StringProperty(indexed=False)
     email = ndb.StringProperty(indexed=False)
     timezone_offset = ndb.FloatProperty(indexed=False)
-
-    expired_oauth_token = ndb.BooleanProperty(indexed=False)
-    expired_oauth_token_reason = ndb.StringProperty(indexed=False)
 
     def distance_in_km(self):
         if not self.distance:
@@ -93,6 +92,16 @@ class User(ndb.Model):
         for user_message in user_messages:
             user_message.delete()
         return messages
+
+    @classmethod
+    def get_by_ids(cls, id_list, keys_only=False):
+        if not id_list:
+            return []
+        keys = [ndb.Key(User, x) for x in id_list]
+        if keys_only:
+            return User.query(User.key.IN(keys)).fetch(len(keys), keys_only=True)
+        else:
+            return ndb.get_multi(keys)
 
 class UserFriendsAtSignup(ndb.Model):
     fb_uid = property(lambda x: str(x.key.string_id()))

@@ -11,6 +11,8 @@ def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires,
     user = users.User(key_name=fb_uid)
     user.fb_access_token = access_token
     user.fb_access_token_expires = access_token_expires
+    user.expired_oauth_token = False
+    user.expired_oauth_token_reason = None
     user.location = location
 
     # grab the cookie to figure out who referred this user

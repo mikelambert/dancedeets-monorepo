@@ -236,7 +236,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                             self.user.fb_access_token = access_token
                             self.user.fb_access_token_expires = access_token_expires
                             self.user.expired_oauth_token = False
-                            self.user.expired_oauth_token_reason = ""
+                            self.user.expired_oauth_token_reason = None
                             self.user.put() # this also sets to memcache
                             logging.info("Stored the new access_token to the User db")
                         else:
