@@ -59,7 +59,7 @@ class OrderedEventLoop(eventloop.EventLoop):
 @classmethod
 def __check_one(cls, rpcs):
   rpc = None
-  logging.info('Pending RPCs: %s', rpcs)
+  logging.debug('Pending RPCs: %s', rpcs)
   for rpc in rpcs:
     assert isinstance(rpc, cls), repr(rpc)
     # Original:
@@ -71,10 +71,10 @@ def __check_one(cls, rpcs):
       # rpc.__call_user_callback()
       # Revised:
       rpc.wait()
-      logging.info('Found finished RPC: %s', rpc)
+      logging.debug('Found finished RPC: %s', rpc)
       return rpc, None
     assert state != apiproxy_rpc.RPC.IDLE, repr(rpc)
-  logging.info('No finished RPCs, going to wait for first RPC: %s', rpcs[0])
+  logging.debug('No finished RPCs, going to wait for first RPC: %s', rpcs[0])
   # This is the important changed line in this whole function:
   # We want to return the oldest RPC to execute, not a random one.
   return None, rpcs[0]
