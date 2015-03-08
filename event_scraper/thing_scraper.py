@@ -192,12 +192,10 @@ def process_event_source_ids(event_source_combos, fbl):
         logging.info("Processing event id %s", event_id)
         try:
             fb_event = fbl.fetched_data(fb_api.LookupEvent, event_id)
-            #DISABLE_ATTENDING
-            #fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
-            fb_event_attending = None
             if fb_event['empty']:
                 continue
-            potential_events.make_potential_event_with_source(fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_FEED)
+            discovered = potential_events.DiscoveredEvent(event_id, source, thing_db.FIELD_FEED)
+            potential_events.make_potential_event_with_source(fb_event, discovered)
         except fb_api.NoFetchedDataException:
             continue
     logging.info("Found %s potential events", len(event_source_combos))

@@ -4,10 +4,18 @@ from google.appengine.ext import db
 from google.appengine.runtime import apiproxy_errors
 
 from logic import gtranslate
-from ml import gprediction
 from nlp import event_classifier
 from util import dates
 from . import thing_db
+
+class DiscoveredEvent(object):
+    def __init__(self, fb_event_id, source, source_type):
+        self.fb_event_id = fb_event_id
+        # still necessary for fraction_are_real_event checks...can we remove dependency?
+        self.source = source
+        self.source_id = source.graph_id
+        self.source_type = source_type
+
 
 class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: str(x.key().name()))
@@ -115,21 +123,21 @@ def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attendin
     # potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
     return potential_event
 
-def make_potential_event_with_source(fb_event, fb_event_attending, source, source_field):
+def make_potential_event_with_source(fb_event, discovered):
     fb_event_id = fb_event['info']['id']
     # show all events from a source if enough of them slip through our automatic filters
-    show_all_events = source.fraction_real_are_false_negative() > 0.05 and source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
+    show_all_events = discovered.source.fraction_real_are_false_negative() > 0.05 and discovered.source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
     def _internal_add_source_for_event_id():
         potential_event = PotentialEvent.get_by_key_name(fb_event_id) or PotentialEvent(key_name=fb_event_id)
         # If already added, return
-        if potential_event.has_source_with_field(source.graph_id, source_field):
+        if potential_event.has_source_with_field(discovered.source_id, discovered.source_field):
             return False, potential_event.match_score
 
         _common_potential_event_setup(potential_event, fb_event)
 
         #STR_ID_MIGRATE
-        potential_event.source_ids.append(long(source.graph_id))
-        potential_event.source_fields.append(source_field)
+        potential_event.source_ids.append(long(discovered.source_id))
+        potential_event.source_fields.append(discovered.source_field)
 
         potential_event.show_even_if_no_score = potential_event.show_even_if_no_score or show_all_events
         potential_event.put()
@@ -145,7 +153,7 @@ def make_potential_event_with_source(fb_event, fb_event_attending, source, sourc
     if new_source:
         #TODO(lambert): doesn't handle the case of the match score increasing from <0 to >0 in the future
         if match_score > 0:
-            thing_db.increment_num_potential_events(source.graph_id)
-        thing_db.increment_num_all_events(source.graph_id)
+            thing_db.increment_num_potential_events(discovered.source_id)
+        thing_db.increment_num_all_events(discovered.source_id)
     return potential_event
 
