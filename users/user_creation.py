@@ -8,7 +8,7 @@ from logic import backgrounder
 from . import users
 
 def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires, location, send_email=False, referer=None, client=None):
-    user = users.User(key_name=fb_uid)
+    user = users.User(id=fb_uid)
     user.fb_access_token = access_token
     user.fb_access_token_expires = access_token_expires
     user.expired_oauth_token = False

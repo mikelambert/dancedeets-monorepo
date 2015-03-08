@@ -31,10 +31,10 @@ class TestTasks(unittest.TestCase):
         e = eventdata.DBEvent(id=EVENT_ID)
         e.time_period = dates.TIME_FUTURE
         e.put()
-        m = users.User(key_name=MIKE_ID)
+        m = users.User(id=MIKE_ID)
         m.fb_access_token = "DUMMY"
         m.put()
-        u = users.User(key_name=USER_ID)
+        u = users.User(id=USER_ID)
         u.fb_access_token = "DUMMY"
         u.put()
 

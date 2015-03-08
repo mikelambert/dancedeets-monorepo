@@ -61,6 +61,7 @@ class TestAuth(TestSearch):
             utils.dumps = lambda *args, **kwargs: urllib.quote(old_dumps(*args, **kwargs))
             auth_request['access_token'] = new_access_token
             result = app.post_json('/api/v1.0/auth', auth_request)
+            print result
             self.assertEqual(result.json, {'success': True})
         finally:
             utils.dumps = old_dumps
