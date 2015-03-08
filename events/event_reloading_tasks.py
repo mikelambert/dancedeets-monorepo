@@ -91,10 +91,3 @@ class ReloadAllEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
         update_geodata = self.request.get('update_geodata') != '0'
         mr_load_fb_events(self.fbl, update_geodata=update_geodata)
     post=get
-
-class FindAccessTokensForEventHandler(base_servlet.BaseTaskRequestHandler):
-    def get(self):
-        event_ids = [x for x in self.request.get('event_ids').split(',') if x]
-        db_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
-        pass
-    post=get

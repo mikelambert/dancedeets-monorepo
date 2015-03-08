@@ -31,6 +31,7 @@ import base_servlet
 from event_scraper import source_servlets
 from event_scraper import scraping_tasks
 from events import event_reloading_tasks
+from events import find_access_tokens
 from ml import gprediction_servlets
 from pubsub import pubsub_setup
 from pubsub import pubsub_tasks
@@ -85,6 +86,7 @@ URLS = [
     ('/tasks/reload_all_events', event_reloading_tasks.ReloadAllEventsHandler),
     ('/tasks/reload_future_events', event_reloading_tasks.ReloadFutureEventsHandler),
     ('/tasks/reload_past_events', event_reloading_tasks.ReloadPastEventsHandler),
+    ('/tasks/find_access_tokens_for_events', find_access_tokens.FindAccessTokensForEventsHandler),
 
     ('/tools/export_sources', scraping_tasks.ExportSourcesHandler),
     ('/tools/auto_add_potential_events', scraping_tasks.AutoAddPotentialEventsHandler),
