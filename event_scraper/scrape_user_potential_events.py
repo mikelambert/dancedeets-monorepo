@@ -31,5 +31,6 @@ def get_potential_dance_events(fbl, user_id, fb_user_events):
 
     logging.info("Going to look up %s events", len(event_ids))
 
-    event_pipeline.process_event_ids(fbl, event_ids, source, thing_db.FIELD_INVITES)
+    discovered_list = [potential_events.DiscoveredEvent(x, source, thing_db.FIELD_INVITES) for x in event_ids]
+    event_pipeline.process_discovered_events(fbl, discovered_list)
     

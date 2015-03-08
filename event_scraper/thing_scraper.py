@@ -10,9 +10,9 @@ import fb_api
 from mapreduce import context
 from util import fb_mapreduce
 from util import timings
+from . import event_pipeline
 from . import potential_events
 from . import thing_db
-
 
 def delete_bad_source(source):
     if source.creating_fb_uid or source.num_real_events:
@@ -178,30 +178,10 @@ def build_discovered_from_feed(source, feed_data):
 
 def process_event_source_ids(discovered_list, fbl):
     # TODO(lambert): maybe trim any ids from posts with dates "past" the last time we scraped? tricky to get correct though
-    logging.info("Loading data for %s events", len(discovered_list))
-    potential_new_source_ids = set()
-    for discovered in discovered_list:
-        fbl.request(fb_api.LookupEvent, discovered.event_id)
-        #DISABLE_ATTENDING
-        #fbl.request(fb_api.LookupEventAttending, discovered.event_id)
-        potential_new_source_ids.add(discovered.extra_source_id)
-    fbl.batch_fetch()
+    logging.info("Loading processing %s discovered events", len(discovered_list))
+    event_pipeline.process_discovered_events(fbl, discovered_list)
 
-    logging.info("Going to process fetched events and construct potential events:")
-    # TODO(lambert): Maybe filter this event out for itself and its sources, before we attempt to load event-attending and recreate it?
-    # TODO(lambert): like what we do with potential-events-from-invites? maybe combine those flows?
-    for discovered in discovered_list:
-        logging.info("Processing event id %s", discovered.event_id)
-        try:
-            fb_event = fbl.fetched_data(fb_api.LookupEvent, discovered.event_id)
-            if fb_event['empty']:
-                continue
-            discovered = potential_events.DiscoveredEvent(discovered.event_id, discovered.source, discovered.source_type)
-            potential_events.make_potential_event_with_source(fb_event, discovered)
-        except fb_api.NoFetchedDataException:
-            continue
-    logging.info("Found %s potential events", len(discovered_list))
-
+    potential_new_source_ids = set([x.extra_source_id for x in discovered_list if x.extra_source_id])
     existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(potential_new_source_ids) if x])
     new_source_ids = set([x for x in potential_new_source_ids if x not in existing_source_ids])
     for source_id in new_source_ids:
