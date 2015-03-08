@@ -16,7 +16,12 @@ class CachedGeoCode(ndb.Model):
 def _geocode_key(**kwargs):
     if not kwargs:
         raise ValueError("Cannot pass empty parameters to gmaps fetch function! kwargs=%r", kwargs)
-    return ', '.join(sorted('%s=%r' % (k, unicode(v).strip().lower()) for (k, v) in kwargs.items()))
+    new_kwargs = kwargs.copy()
+    for k, v in new_kwargs.items():
+        byte_length = len(repr(v))
+        if byte_length > 400:
+            new_kwargs[k] = v[:len(v)*400/byte_length]
+    return ', '.join(sorted('%s=%r' % (k, unicode(v).strip().lower()) for (k, v) in new_kwargs.items()))
 
 NO_GEOCODE = 'NO_GEOCODE'
 

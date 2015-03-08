@@ -13,7 +13,11 @@ def _geocode_key(address, latlng):
     assert address or latlng
     assert not (address and latlng)
     if address:
-        return address
+        byte_length = len(repr(address))
+        if byte_length > 450:
+            return address[:len(address)*450/byte_length]
+        else:
+            return address
     else:
         return '%s,%s' % latlng
 
