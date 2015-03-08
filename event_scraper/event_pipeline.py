@@ -24,7 +24,7 @@ def process_event_ids(fbl, event_ids, source, source_field):
         #DISABLE_ATTENDING
         fb_event_attending = None
         # makes a potential event, with scored information. transactions. one. by. one.
-        pe_event = potential_events.make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=source_field)
+        pe_event = potential_events.make_potential_event_with_source(fb_event, fb_event_attending, source=source, source_field=source_field)
         filtered_pe_events.append(pe_event)
         filtered_fb_events.append(fb_event)
     # TODO: Create new sources, update source feed values, etc? done in make_potential_events_with_source, but need more that's not done there

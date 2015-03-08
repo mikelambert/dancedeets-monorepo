@@ -115,7 +115,8 @@ def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attendin
     # potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
     return potential_event
 
-def make_potential_event_with_source(fb_event_id, fb_event, fb_event_attending, source, source_field):
+def make_potential_event_with_source(fb_event, fb_event_attending, source, source_field):
+    fb_event_id = fb_event['info']['id']
     # show all events from a source if enough of them slip through our automatic filters
     show_all_events = source.fraction_real_are_false_negative() > 0.05 and source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
     def _internal_add_source_for_event_id():

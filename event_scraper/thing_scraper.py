@@ -197,7 +197,7 @@ def process_event_source_ids(event_source_combos, fbl):
             fb_event_attending = None
             if fb_event['empty']:
                 continue
-            potential_events.make_potential_event_with_source(event_id, fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_FEED)
+            potential_events.make_potential_event_with_source(fb_event, fb_event_attending, source=source, source_field=thing_db.FIELD_FEED)
         except fb_api.NoFetchedDataException:
             continue
     logging.info("Found %s potential events", len(event_source_combos))
