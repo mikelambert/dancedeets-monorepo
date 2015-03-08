@@ -73,7 +73,7 @@ def scrape_events_from_sources(fbl, sources):
             thing_feed = fbl.fetched_data(fb_api.LookupThingFeed, source.graph_id)
             discovered_list.update(process_thing_feed(source, thing_feed))
         except fb_api.NoFetchedDataException, e:
-            logging.error("Failed to fetch data for thing: %s", str(e))
+            logging.warning("Failed to fetch data for thing: %s", str(e))
     logging.info("Discovered %s items: %s", len(discovered_list), discovered_list)
     process_event_source_ids(discovered_list, fbl)
 

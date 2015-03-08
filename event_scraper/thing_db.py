@@ -200,7 +200,7 @@ def export_sources(fbl, sources):
                 )
             yield '%s\n' % '\t'.join([str(x) for x in fields])
         except fb_api.NoFetchedDataException, e:
-            logging.error("Failed to fetch data for thing: %s", str(e))
+            logging.warning("Failed to fetch data for thing: %s", str(e))
 map_export_sources = fb_mapreduce.mr_wrap(export_sources)
 
 def mapreduce_export_sources(fbl, queue='fast-queue'):
