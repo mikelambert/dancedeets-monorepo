@@ -67,15 +67,15 @@ def scrape_events_from_sources(fbl, sources):
 
     logging.info("Fetched %s URLs, saved %s updates", fbl.fb_fetches, fbl.db_updates)
 
-    event_source_combos = set()
+    discovered_list = set()
     for source in sources:
         try:
             thing_feed = fbl.fetched_data(fb_api.LookupThingFeed, source.graph_id)
-            event_source_combos.update(process_thing_feed(source, thing_feed))
+            discovered_list.update(process_thing_feed(source, thing_feed))
         except fb_api.NoFetchedDataException, e:
             logging.error("Failed to fetch data for thing: %s", str(e))
-    logging.info("Found %s event_source_combos: %s", len(event_source_combos), event_source_combos)
-    process_event_source_ids(event_source_combos, fbl)
+    logging.info("Discovered %s items: %s", len(discovered_list), discovered_list)
+    process_event_source_ids(discovered_list, fbl)
 
 def scrape_events_from_source_ids(fbl, source_ids):
     sources = thing_db.Source.get_by_key_name(source_ids)
@@ -131,15 +131,16 @@ def process_thing_feed(source, thing_feed):
     source.last_scrape_time = datetime.datetime.now()
     source.put()
 
-    event_source_combos = parse_event_source_combos_from_feed(source, thing_feed['feed']['data'])
+    discovered_list = build_discovered_from_feed(source, thing_feed['feed']['data'])
 
     # Now also grab the events that the page owns/manages itself:
     for event in thing_feed['events']['data']:
-        event_source_combos.append((event['id'], source, source.graph_id))
-    return event_source_combos
+        discovered = potential_events.DiscoveredEvent(event['id'], source, thing_db.FIELD_FEED)
+        discovered_list.append(discovered)
+    return discovered_list
 
-def parse_event_source_combos_from_feed(source, feed_data):
-    event_source_combos = []
+def build_discovered_from_feed(source, feed_data):
+    discovered_list = []
     for post in feed_data:
         links = []
         p = None
@@ -169,36 +170,37 @@ def parse_event_source_combos_from_feed(source, feed_data):
                     eid = m.group(1)
             if eid:
                 extra_source_id = post['from']['id']
-                event_source_combos.append((eid, source, extra_source_id))
+                discovered = potential_events.DiscoveredEvent(eid, source, thing_db.FIELD_FEED, extra_source_id)
+                discovered_list.append(discovered)
             else:
                 logging.warning("broken link is %s", urlparse.urlunparse(p))
-    return event_source_combos
+    return discovered_list
 
-def process_event_source_ids(event_source_combos, fbl):
+def process_event_source_ids(discovered_list, fbl):
     # TODO(lambert): maybe trim any ids from posts with dates "past" the last time we scraped? tricky to get correct though
-    logging.info("Loading data for %s events", len(event_source_combos))
+    logging.info("Loading data for %s events", len(discovered_list))
     potential_new_source_ids = set()
-    for event_id, source, posting_source_id in event_source_combos:
-        fbl.request(fb_api.LookupEvent, event_id)
+    for discovered in discovered_list:
+        fbl.request(fb_api.LookupEvent, discovered.event_id)
         #DISABLE_ATTENDING
-        #fbl.request(fb_api.LookupEventAttending, event_id)
-        potential_new_source_ids.add(posting_source_id)
+        #fbl.request(fb_api.LookupEventAttending, discovered.event_id)
+        potential_new_source_ids.add(discovered.extra_source_id)
     fbl.batch_fetch()
 
     logging.info("Going to process fetched events and construct potential events:")
     # TODO(lambert): Maybe filter this event out for itself and its sources, before we attempt to load event-attending and recreate it?
     # TODO(lambert): like what we do with potential-events-from-invites? maybe combine those flows?
-    for event_id, source, posting_source_id in event_source_combos:
-        logging.info("Processing event id %s", event_id)
+    for discovered in discovered_list:
+        logging.info("Processing event id %s", discovered.event_id)
         try:
-            fb_event = fbl.fetched_data(fb_api.LookupEvent, event_id)
+            fb_event = fbl.fetched_data(fb_api.LookupEvent, discovered.event_id)
             if fb_event['empty']:
                 continue
-            discovered = potential_events.DiscoveredEvent(event_id, source, thing_db.FIELD_FEED)
+            discovered = potential_events.DiscoveredEvent(discovered.event_id, discovered.source, discovered.source_type)
             potential_events.make_potential_event_with_source(fb_event, discovered)
         except fb_api.NoFetchedDataException:
             continue
-    logging.info("Found %s potential events", len(event_source_combos))
+    logging.info("Found %s potential events", len(discovered_list))
 
     existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(potential_new_source_ids) if x])
     new_source_ids = set([x for x in potential_new_source_ids if x not in existing_source_ids])

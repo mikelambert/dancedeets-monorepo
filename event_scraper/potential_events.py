@@ -9,12 +9,13 @@ from util import dates
 from . import thing_db
 
 class DiscoveredEvent(object):
-    def __init__(self, fb_event_id, source, source_type):
-        self.fb_event_id = fb_event_id
+    def __init__(self, fb_event_id, source, source_type, extra_source_id=None):
+        self.event_id = fb_event_id
         # still necessary for fraction_are_real_event checks...can we remove dependency?
         self.source = source
         self.source_id = source.graph_id
         self.source_type = source_type
+        self.extra_source_id = extra_source_id
 
 
 class PotentialEvent(db.Model):

@@ -8,8 +8,11 @@ class TestSourceCreatingEvent(unittest.TestCase):
     def runTest(self):
         # tests that the event creation status post gets correctly captured
         data = fb_api_stub.get_object('701004.391260537595682.OBJ_THING_FEED')
-        event_source_combos = thing_scraper.parse_event_source_combos_from_feed(None, data['feed']['data'])
-        self.assertEqual(event_source_combos, [(u'459081844137306', None, u'391260537595682')])
+        discovered_list = thing_scraper.build_discovered_from_feed(None, data['feed']['data'])
+        discovered = discovered_list[0]
+        self.assertEqual(discovered.event_id, u'459081844137306')
+        self.assertEqual(discovered.source, None)
+        self.assertEqual(discovered.extra_source_id, u'391260537595682')
 
 class TestParseLink(unittest.TestCase):
     def runTest(self):
