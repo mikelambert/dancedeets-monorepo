@@ -7,6 +7,7 @@ from mapreduce import mapreduce_pipeline
 import base_servlet
 import fb_api
 from events import eventdata
+from events import event_updates
 
 def test_user_on_events(user):
     logging.info("Trying user %s (expired %s)", user.fb_uid, user.expired_oauth_token)
@@ -22,9 +23,18 @@ def test_user_on_events(user):
     except fb_api.ExpiredOAuthToken:
         # Not longer a valid source for access_tokens
         return
-    for fb_event, event_id in zip(fb_events, event_ids):
-        if fb_event and not fb_event['empty']:
-            yield (event_id, user.fb_uid)
+    found_fb_events = [x for x in fb_events if x and not x['empty']]
+    for fb_event in found_fb_events:
+        yield (fb_event['info']['id'], user.fb_uid)
+
+    # Found some good stuff, let's save and update the db events
+    found_db_events = eventdata.DBEvent.get_by_ids([x['info']['id'] for x in found_fb_events])
+    db_fb_events = []
+    for db_event, fb_event in zip(found_db_events, found_fb_events):
+        if not db_event.fb_event or db_event.fb_event['empty']:
+            db_fb_events.append((db_event, fb_event))
+    event_updates.update_and_save_event_batch(db_fb_events)
+
     # We can end the shard via this, though it's difficult to tell when *every* event_id has got a valid token.
     # ctx._shard_state.set_input_finished()
 
@@ -65,7 +75,7 @@ class FindAccessTokensForEventsPipeline(base_handler.PipelineBase):
                     'content_type': 'text/plain',
                 }
             },
-            shards=8,
+            shards=2,
         )
 
 class FindAccessTokensForEventsHandler(base_servlet.BaseTaskRequestHandler):
