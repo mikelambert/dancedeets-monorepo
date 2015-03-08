@@ -126,11 +126,9 @@ def format_as_search_query(text, broad=True):
 
 def find_styles_in_text(text, broad=True):
     # Eliminate all competitors, before trying to determine the style
-    print 'aaaa', text
     no_competitors_text = event_auto_classifier.find_competitor_list(text)
     if no_competitors_text:
         text = text.replace(no_competitors_text, '')
-    print 'bbbb', text
     styles = {}
     styles_list = BROAD_STYLES if broad else STYLES
     for line in text.lower().split('\n'):
