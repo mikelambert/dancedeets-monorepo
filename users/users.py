@@ -90,7 +90,7 @@ class User(ndb.Model):
         user_messages = UserMessage.query(UserMessage.real_fb_uid == self.fb_uid).order(UserMessage.creation_time).fetch(100)
         messages = [x.message for x in user_messages]
         for user_message in user_messages:
-            user_message.delete()
+            user_message.key.delete()
         return messages
 
     @classmethod
