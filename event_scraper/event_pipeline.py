@@ -38,8 +38,8 @@ def process_discovered_events(fbl, discovered_list):
         potential_events_added.append(pe_event)
     # TODO: Create new sources, update source feed values, etc? done in make_potential_events_with_source, but need more that's not done there
 
-    fb_lookup = dict((x['info']['id'], x) for x in fb_events))
-    pe_lookup = dict((x.fb_event_id, x) for x in potential_events_added))
+    fb_lookup = dict((x['info']['id'], x) for x in fb_events)
+    pe_lookup = dict((x.fb_event_id, x) for x in potential_events_added)
     potential_event_ids = pe_lookup.keys()
     logging.info("Going to classify the %s potential events", len(discovered_list))
     # Classify events on the fly as we add them as potential events, instead of waiting for the mapreduce
