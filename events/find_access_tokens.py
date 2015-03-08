@@ -57,11 +57,11 @@ class FindAccessTokensForEventsPipeline(base_handler.PipelineBase):
             },
             reducer_params={
                 'output_writer': {
-                    'bucket_name': 'dancedeets-hrd',
+                    'bucket_name': 'dancedeets-hrd.appspot.com',
                     'content_type': 'text/plain',
                 }
             },
-            shards=1
+            shards=8,
         )
 
 class FindAccessTokensForEventsHandler(base_servlet.BaseTaskRequestHandler):

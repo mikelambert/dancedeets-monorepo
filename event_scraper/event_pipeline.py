@@ -27,7 +27,7 @@ def process_discovered_events(fbl, discovered_list):
     filtered_pe_events = []
     filtered_fb_events = []
     for fb_event, discovered in zip(fb_events, discovered_list):
-        if not fb_event:
+        if not fb_event or fb_event['empty']:
             continue
         event_id = fb_event['info']['id']
         if fb_event['empty'] or not fb_api.is_public_ish(fb_event):
