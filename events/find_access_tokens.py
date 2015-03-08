@@ -9,12 +9,14 @@ import fb_api
 from events import eventdata
 
 def test_user_on_events(user):
+    logging.info("Trying user %s (expired %s)", user.fb_uid, user.expired_oauth_token)
     if user.expired_oauth_token:
         return
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
     event_ids = params['event_ids'].split(',')
     fbl = fb_api.FBLookup(user.fb_uid, user.fb_access_token)
+    fbl.allow_cache = False
     try:
         fb_events = fbl.get_multi(fb_api.LookupEvent, event_ids)
     except fb_api.ExpiredOAuthToken:
@@ -23,6 +25,8 @@ def test_user_on_events(user):
     for fb_event, event_id in zip(fb_events, event_ids):
         if fb_event and not fb_event['empty']:
             yield (event_id, user.fb_uid)
+    # We can end the shard via this, though it's difficult to tell when *every* event_id has got a valid token.
+    # ctx._shard_state.set_input_finished()
 
 def save_valid_users_to_event(event_id, user_ids):
     db_event = eventdata.DBEvent.get_by_id(event_id)
