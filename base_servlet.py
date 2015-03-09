@@ -423,11 +423,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
 def update_last_login_time(user_id, login_time):
     def _update_last_login_time():
         user = users.User.get_by_id(user_id)
-        user.last_login_time = login_time
-        if user.login_count:
-            user.login_count += 1
-        else:
-            user.login_count = 2 # once for this one, once for initial creation
+        if not user.last_login_time or user.last_login_time < login_time:
+            user.last_login_time = login_time
+            if user.login_count:
+                user.login_count += 1
+            else:
+                user.login_count = 2 # once for this one, once for initial creation
         # in read-only, keep trying until we succeed
         user.put()
     db.run_in_transaction(_update_last_login_time)
