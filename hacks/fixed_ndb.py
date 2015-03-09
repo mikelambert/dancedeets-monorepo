@@ -74,6 +74,8 @@ def __check_one(cls, rpcs):
       logging.debug('Found finished RPC: %s', rpc)
       return rpc, None
     assert state != apiproxy_rpc.RPC.IDLE, repr(rpc)
+  # If rpcs was a set, then the caller doesn't care about order, so just choose one arbitrarily
+  rpcs = list(rpcs)
   logging.debug('No finished RPCs, going to wait for first RPC: %s', rpcs[0])
   # This is the important changed line in this whole function:
   # We want to return the oldest RPC to execute, not a random one.
