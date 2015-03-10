@@ -38,6 +38,7 @@ from pubsub import pubsub_tasks
 from rankings import rankings_servlets
 from search import search_servlets
 from search import search_tasks
+from search import style_servlets
 from servlets import about
 from servlets import admin
 from servlets import api
@@ -115,6 +116,7 @@ URLS = [
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/events/image_proxy/(\d+)', event_proxy.ImageProxyHandler),
     (r'/events/\d+/?', event.ShowEventHandler),
+    (r'/styles/(\w+)/?', style_servlets.ShowStyleHandler),
     ('/city/(.*)/?', search_servlets.CityHandler),
     ('/profile/[^/]*', profile_page.ProfileHandler),
     ('/profile/[^/]*/add_tag', profile_page.ProfileAddTagHandler),
