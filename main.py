@@ -115,7 +115,7 @@ URLS = [
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/events/image_proxy/(\d+)', event_proxy.ImageProxyHandler),
     (r'/events/\d+/?', event.ShowEventHandler),
-    ('/city/.*', search_servlets.CityHandler),
+    ('/city/(.*)/?', search_servlets.CityHandler),
     ('/profile/[^/]*', profile_page.ProfileHandler),
     ('/profile/[^/]*/add_tag', profile_page.ProfileAddTagHandler),
     ('/youtube_simple_api', youtube_simple_api.YoutubeSimpleApiHandler),

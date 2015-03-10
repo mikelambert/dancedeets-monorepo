@@ -19,11 +19,11 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             return True
         return False
 
-    def get(self):
-        self.handle()
+    def get(self, *args, **kwargs):
+        self.handle(*args, **kwargs)
 
-    def post(self):
-        self.handle()
+    def post(self, *args, **kwargs):
+        self.handle(*args, **kwargs)
 
     @timings.timed
     def handle(self, city_name=None):
@@ -35,6 +35,9 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             return
 
         fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, self.user, city_name=city_name)
+        self.handle_search(fe_search_query)
+
+    def handle_search(self, fe_search_query):
         validation_errors = fe_search_query.validation_errors()
         if validation_errors:
             self.add_error('Invalid search query: %s' % ', '.join(validation_errors))
@@ -93,10 +96,10 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             del request_params['calendar'] #TODO(lambert): clean this up more
         if 'past' in request_params:
             del request_params['past'] #TODO(lambert): clean this up more
-        self.display['past_view_url'] = '/events/relevant?past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
-        self.display['upcoming_view_url'] = '/events/relevant?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
-        self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
-        self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+        self.display['past_view_url'] = '/events/relevant?past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems() if v)
+        self.display['upcoming_view_url'] = '/events/relevant?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems() if v)
+        self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems() if v)
+        self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems() if v)
 
         self.display['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
         self.render_template('results')
@@ -105,13 +108,11 @@ class CityHandler(RelevantHandler):
     def requires_login(self):
         return False
 
-    def handle(self):
-        path_bits = self.request.path.split('/')
-        city_name = urllib.unquote(path_bits[2])
-
-        # if they only care about particular types, too bad, redirect them to the main page since we don't support that anymore
-        if len(path_bits) >= 4:
-            self.redirect('/'.join(path_bits[:-1]), permanent=True)
-            return
-
-        super(CityHandler, self).handle(city_name=city_name)
+    def handle(self, city_name):
+        # TODO(lambert): Why is this still required, can we get rid of it?
+        self.fbl.batch_fetch() # to avoid bad error handler?
+        fe_search_query = search_base.FrontendSearchQuery()
+        fe_search_query.location = city_name
+        fe_search_query.distance = 50
+        fe_search_query.distance_units = 'miles'
+        self.handle_search(fe_search_query)
