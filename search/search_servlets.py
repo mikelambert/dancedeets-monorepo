@@ -15,8 +15,6 @@ from . import search_base
 
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
-        if not self.request.get('location') and not self.request.get('city_name'):
-            return True
         return False
 
     def get(self, *args, **kwargs):
@@ -34,7 +32,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             self.redirect('/user/edit')
             return
 
-        fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, self.user, city_name=city_name)
+        fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, self.user)
         self.handle_search(fe_search_query)
 
     def handle_search(self, fe_search_query):
