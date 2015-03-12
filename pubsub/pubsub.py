@@ -7,6 +7,7 @@ import logging
 import oauth2 as oauth
 import re
 import time
+import urllib
 import urlparse
 
 from google.appengine.ext import ndb
@@ -102,7 +103,7 @@ def post_event_id_with_authtoken(event_id, auth_token):
             else:
                 logging.info("Facebook result was %r", result)
         except Exception as e:
-            logging.error("Facebook Post Exception: %s", e)
+            logging.exception("Facebook Post Exception: %s", e)
     else:
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
 
@@ -186,11 +187,26 @@ def twitter_post(auth_token, db_event):
     status = format_twitter_post(db_event, db_event.fb_event, media, handles=handles)
     t.statuses.update(status=status, **update_params)
 
+
+class LookupGeoTarget(fb_api.LookupType):
+    @classmethod
+    def get_lookups(cls, query):
+        return [
+            ('search', cls.url('search?type=adgeolocation&q=%s' % urllib.quote(query))),
+        ]
+    @classmethod
+    def cache_key(cls, query, fetching_uid):
+        return (fb_api.USERLESS_UID, query, 'OBJ_GEO_TARGET')
+
 def facebook_post(auth_token, db_event):
     fb_event = db_event.fb_event
     link = urls.fb_event_url(fb_event['info']['id'])
     start_time = dates.parse_fb_start_time(fb_event)
     datetime_string = start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
+
+    page_id = auth_token.token_nickname
+    endpoint = '/v2.2/%s/feed' % page_id
+    fbl = fb_api.FBLookup(None, auth_token.oauth_token)
 
     post_values = {}
     #post_values['message'] = fb_event['info']['name']
@@ -208,6 +224,8 @@ def facebook_post(auth_token, db_event):
         post_values['picture'] = cover['source']
     venue_id = fb_event['info'].get('venue', {}).get('id')
     short_country = None
+    city_key = None
+    region_key = None
     if venue_id:
         post_values['place'] = venue_id
         # Can only tag people if there is a place tagged too
@@ -222,22 +240,50 @@ def facebook_post(auth_token, db_event):
             if country in iso3166.countries_by_name:
                 short_country = iso3166.countries_by_name[country].alpha2
 
+        # only do city-level targeting in big countries or dense dance countries
+        # we don't do city-level targeting, as we can only do a 50 mile radius on that
+        if short_country in ['US', 'CA', 'RU', 'JP']:
+            city_state_country_list = [fb_event['info']['venue'].get('city')]
+            # Strange search logic behavior I noticed in my test searches of facebook.
+            # Country is not needed (and detrimental!) when searching for a US city.
+            if short_country == 'US':
+                city_state_country_list.append(fb_event['info']['venue'].get('state'))
+            else:
+                city_state_country_list.append(fb_event['info']['venue'].get('country'))
+            city_state_country = ', '.join(x for x in city_state_country_list if x)
+            geo_target = fbl.get(LookupGeoTarget, city_state_country)
+            if short_country in 'US':
+                state = fb_event['info']['venue'].get('state')
+                # CA is a big state, so do city-level targeting
+                # NK/NJ are also lopsided states, where NJ/NY overlap in location interests.
+                # We could potentially list multiple zip codes, or states, or cities, but that's getting complex...
+                if state in ['CA', 'NY', 'NJ', 'PA']:
+                    good_targets = [x for x in geo_target['search']['data'] if x['supports_region']]
+                    if good_targets:
+                        # They give it to us as an integer, but the API doc example says they want a string
+                        region_key = str(good_targets[0]['region_id'])
+                else:
+                    good_targets = [x for x in geo_target['search']['data'] if x['supports_city']]
+                    if good_targets:
+                        city_key = good_targets[0]['key']
+
     if not short_country:
         location_info = event_locations.LocationInfo(fb_event, db_event)
         if location_info.geocode:
             short_country = location_info.geocode.country()
 
+    feed_targeting = {}
     if short_country:
-        feed_targeting = {'countries': [short_country]}
-        # We could choose to target by region or city, if we wanted to be more specific.
-        # Probably depends on how many people sign up, and how far they're willing to travel
-        # TODO(lambert): Maybe do region (aka state) based in Canada, US, and Russia, and country-based for the rest?
+        feed_targeting['countries'] = [short_country]
+        if city_key:
+            feed_targeting['cities'] = [{'key': city_key, 'radius': 50, 'distance_unit': 'mile'}]
+        if region_key:
+            feed_targeting['regions'] = [{'key': region_key}]
+    if feed_targeting:
         post_values['feed_targeting'] = json.dumps(feed_targeting)
 
-    page_id = auth_token.token_nickname
-    endpoint = '/v2.2/%s/feed' % page_id
-    fb = fb_api.FBAPI(auth_token.oauth_token)
-    result = fb.post(endpoint, None, post_values)
+    print post_values
+    result = fbl.fb.post(endpoint, None, post_values)
     return json.loads(result)
 
 
