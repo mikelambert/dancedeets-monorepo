@@ -24,9 +24,6 @@
 
 			<div class="event-types">($result.event_keywords_string())</div>
 			<div class="event-city">
-				#if $fb_event.location
-					$fb_event.location,
-				#end if
 				$result.actual_city_name
 			</div>
 			#if $result.get_attendance()
@@ -74,9 +71,6 @@
 					#end if
 				</div>
 				<div class="event-city">
-					#if $fb_event.location
-						$fb_event.location,
-					#end if
 					$result.actual_city_name
 				</div>
 				#if $result.attendee_count
