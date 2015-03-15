@@ -188,6 +188,7 @@ class SearchQuery(object):
             query = search.Query(query_string=full_search, options=options)
             doc_search_results = doc_index.search(query)
             return doc_search_results.results
+        return []
 
     def get_search_results(self, fbl, prefilter=None):
         a = time.time()
