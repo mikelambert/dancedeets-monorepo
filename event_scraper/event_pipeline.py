@@ -20,7 +20,7 @@ def process_discovered_events(fbl, discovered_list):
     orig_allow_cache = fbl.allow_cache
     try:
         fbl.allow_cache = True
-        fb_events = fbl.get_multi(fb_api.LookupEvent, [x.event_id for x in discovered_list])
+        fb_events = fbl.get_multi(fb_api.LookupEvent, [x.event_id for x in discovered_list], allow_fail=True)
     finally:
         fbl.allow_cache = orig_allow_cache
 
