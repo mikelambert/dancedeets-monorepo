@@ -15,6 +15,8 @@ from . import search_base
 
 class RelevantHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
+        if not self.request.get('location') and not self.request.get('keywords'):
+            return True
         return False
 
     def get(self, *args, **kwargs):
