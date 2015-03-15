@@ -17,6 +17,9 @@ class DiscoveredEvent(object):
         self.source_field = source_field
         self.extra_source_id = extra_source_id
 
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__.__name__, ', '.join('%s=%s' % x for x in self.__dict__.iteritems()))
+
     def _repr(self):
         return (self.event_id, self.source_id, self.source_field, self.extra_source_id)
 
