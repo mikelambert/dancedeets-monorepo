@@ -100,6 +100,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
 
     def errors_are_fatal(self):
         if self._errors:
+            logging.warning("Returning errors to the user: %s", self._errors)
             raise _ValidationError(self._errors)
 
     def handle_exception(self, e, debug):
