@@ -275,6 +275,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
             for event in events:
                 # rewrite hack necessary for templates (and above code)
+                #STR_ID_MIGRATE
                 event['id'] = str(event['eid'])
                 event['loaded'] = event['id'] in loaded_fb_event_ids
 
