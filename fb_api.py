@@ -328,7 +328,10 @@ class DBCache(CacheSystem):
     def save_objects(self, keys_to_objects):
         updated_objects = {}
         cache_keys = [self.key_to_cache_key(object_key) for object_key, this_object in keys_to_objects.iteritems()]
-        existing_objects = FacebookCachedObject.get_by_key_name(cache_keys)
+        if cache_keys:
+            existing_objects = FacebookCachedObject.get_by_key_name(cache_keys)
+        else:
+            existing_objects = []
 
         db_objects_to_put = []
         for obj, (object_key, this_object) in zip(existing_objects, keys_to_objects.iteritems()):
@@ -349,10 +352,11 @@ class DBCache(CacheSystem):
                 #logging.info("NEW %s", obj.json_data)
                 # Store list of updated objects for later querying
                 updated_objects[object_key] = this_object
-        try:
-            db.put(db_objects_to_put)
-        except apiproxy_errors.CapabilityDisabledError:
-            pass
+        if db_objects_to_put:
+            try:
+                db.put(db_objects_to_put)
+            except apiproxy_errors.CapabilityDisabledError:
+                pass
         return updated_objects
 
     def invalidate_keys(self, keys):
