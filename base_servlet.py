@@ -23,7 +23,7 @@ from logic import backgrounder
 from logic import mobile
 from rankings import rankings
 from search import search_base
-from nlp import categories
+import styles
 import template
 from users import user_creation
 from util import abbrev
@@ -383,7 +383,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['base_hostname'] = 'dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
         self.display['full_hostname'] = 'www.dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
 
-        self.display['keyword_tokens'] = [{'value': x.lower()} for x in categories.STYLES.keys()]
+        self.display['keyword_tokens'] = [{'value': x.public_name} for x in styles.STYLES]
         # TODO: get rid of user_location when we can switch to IP-based geocoding (since mobile clients don't need it)
         # TODO(FB2.0): get rid of user_groups/user_likes
         # TODO(FB2.0): get rid of friends_events (when we have enough users using mobile 2.0 to keep us going)
@@ -401,6 +401,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['defaults'].location = self.request.get('location')
         self.display['defaults'].keywords = self.request.get('keywords')
         self.display['defaults'].deb = self.request.get('deb')
+
+        self.display['styles'] = styles.STYLES
 
         self.display['deb'] = self.request.get('deb')
         self.display['user'] = self.user
