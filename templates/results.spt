@@ -4,7 +4,7 @@
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 #def title
-$display_location dance events
+$result_title
 #end def
 
 #def head_stylesheet

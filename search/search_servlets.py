@@ -89,7 +89,14 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         self.display['event_selected_n_cities'] = event_selected_n_cities
 
         self.display['defaults'] = fe_search_query
-        self.display['display_location'] = fe_search_query.location
+        if fe_search_query.location and fe_search_query.keywords:
+            self.display['result_title'] = '%s dance events near %s' % (fe_search_query.keywords, fe_search_query.location)
+        elif fe_search_query.location:
+            self.display['result_title'] = '%s dance events' % fe_search_query.location
+        elif fe_search_query.keywords:
+            self.display['result_title'] = '%s dance events' % fe_search_query.keywords
+        else:
+            self.display['result_title'] = 'Dance events'
 
         request_params = fe_search_query.url_params()
         if 'calendar' in request_params:
