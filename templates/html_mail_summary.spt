@@ -17,17 +17,16 @@ Hi $user.full_name,
 		<b style="font-size: 150%">$group.name</b><br>
 		<table cellpadding=0 cellspacing=0 border=0>
 		#for $result in $group.results
-		#set $fb_event = $result.fb_event.info
 		<tr>
 			<td width="180">
-				<a href="$fb_event_url($fb_event.id)?source=email">
+				<a href="$fb_event_url($result.fb_event_id)?source=email">
 				<img src="$result.get_image()" width="180" border="0">
 				</a>
 				<br><br>
 			</td>
 			<td valign=top>
-				<a href="$fb_event_url($fb_event.id)?source=email">
-				<b style="font-size: 110%">$format_html($fb_event.name)</b>
+				<a href="$fb_event_url($result.fb_event_id)?source=email">
+				<b style="font-size: 110%">$format_html($result.name)</b>
 				</a><br>
 				($result.event_keywords_string())<br>
 				$date_human_format($result.start_time)<br>

@@ -86,7 +86,7 @@ $len($all_results) events total:
 		data.addColumn('string', 'Event');
 		data.addRows([
 #for $result in $all_results
-			[$result.db_event.latitude, $result.db_event.longitude, "$result.fb_event['info']['name']"],
+			[$result.latitude, $result.longitude, "$result.name"],
 #end for
 		]);
 
@@ -107,11 +107,10 @@ $len($all_results) events total:
 <div id="event-container">
 
 #for $result in $all_results
-	#set $fb_event = $result.fb_event.info
 	## widths here are set to sum to 700px-50px = 650px
 	<div class="event-item">
 		<div class="event-image">
-		<a href="$fb_event_url($fb_event.id)">
+		<a href="$fb_event_url($result.fb_event_id)">
 ##preload first five images
 #if $result.index < 20
 			<img src="$result.get_image()" width="180" border="0">
@@ -123,8 +122,8 @@ $len($all_results) events total:
 		</div>
 		<div class="event-description">
 			<h3 class="event-title">
-			<a href="$fb_event_url($fb_event.id)">
-			$format_html($fb_event.name)
+			<a href="$fb_event_url($result.fb_event_id)">
+			$format_html($result.name)
 			</a>
 			</h3>
 			<div class="event-date">
@@ -134,8 +133,8 @@ $len($all_results) events total:
 				#end if
 			</div>
 			<div class="event-city">
-				#if $fb_event.location
-					$fb_event.location,
+				#if $result.location
+					$result.location,
 				#end if
 				$result.actual_city_name
 			</div>

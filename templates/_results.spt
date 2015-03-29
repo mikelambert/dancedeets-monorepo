@@ -1,17 +1,16 @@
 #def render_narrow_results($results, $use_rsvp_form=True)
 	<ol class="events-list">
 	#for $result in $results
-		#set $fb_event = $result.fb_event.info
 		## widths here are set to sum to 700px-50px = 650px
 		<li class="narrow-event">
 			<h3 class="event-title">
-			<a href="$fb_event_url($fb_event.id)">
+			<a href="$fb_event_url($result.fb_event_id)">
 			$format_html($fb_event.name)
 			</a>
 			</h3>
 
 			<div class="event-image">
-			<a href="$fb_event_url($fb_event.id)">
+			<a href="$fb_event_url($result.fb_event_id)">
 ##preload first five images
 #if $result.index < 5
 				<img src="$result.get_image()" width="180" border="0">
@@ -29,7 +28,7 @@
 			#if $result.get_attendance()
 				<div>RSVP:
 					#if $use_rsvp_form
-						$rsvp_form($fb_event.id, $result.get_attendance())
+						$rsvp_form($result.fb_event_id, $result.get_attendance())
 					#else
 						$result.get_attendance()
 					#end if
@@ -43,11 +42,10 @@
 #def render_wide_results($results, $use_rsvp_form=True)
 	<ol class="events-list">
 	#for $result in $results
-		#set $fb_event = $result.fb_event.info
 		## widths here are set to sum to 700px-50px = 650px
 		<li class="wide-event">
 			<div class="event-image">
-			<a href="$fb_event_url($fb_event.id)">
+			<a href="$fb_event_url($result.fb_event_id)">
 ##preload first five images
 #if $result.index < 5
 				<img src="$result.get_image()" width="180" border="0">
@@ -59,12 +57,12 @@
 			</div>
 			<div class="event-description">
 				<h3 class="event-title">
-				<a href="$fb_event_url($fb_event.id)">
-				$format_html($fb_event.name)
+				<a href="$fb_event_url($result.fb_event_id)">
+				$format_html($result.name)
 				</a>
 				</h3>
 				<div class="event-types">($result.event_keywords_string())</div>
-				<div class="event-date" data-start-time="$fb_event.start_time" data-end-time="$fb_event.end_time" data-multi-day="$result.multi_day_event()">
+				<div class="event-date" data-start-time="$result.start_time" data-end-time="$result.end_time" data-multi-day="$result.multi_day_event()">
 					$date_human_format($result.start_time)
 					#if $result.multi_day_event() and $result.end_time
 						<br>to $date_human_format($result.end_time)
@@ -76,7 +74,7 @@
 				#if $result.attendee_count
 					<div class="event-attending">Attending:
 					#if result.attending_friend_count
-						<span id="event-friends-$fb_event.id"
+						<span id="event-friends-$result.fb_event_id"
 						data-toggle="tooltip" data-placement="top" data-html="true"
 						title="
 						#for $friend in $result.attending_friends
@@ -89,7 +87,7 @@
 				#if $result.get_attendance()
 					<div>RSVP:
 						#if $use_rsvp_form
-							$rsvp_form($fb_event.id, $result.get_attendance())
+							$rsvp_form($result.fb_event_id, $result.get_attendance())
 						#else
 							$result.get_attendance()
 						#end if
@@ -97,7 +95,7 @@
 				#end if
 			</div>
 			#if $deb == 'comments'
-				<div><a href="#" onclick="$('#comments-$fb_event.id').toggleClass('hidden');return false;">Show all <fb:comments-count href="$fb_event_url($fb_event.id)"></fb:comments-count> comments</a>.</div>
+				<div><a href="#" onclick="$('#comments-$result.fb_event_id').toggleClass('hidden');return false;">Show all <fb:comments-count href="$fb_event_url($result.fb_event_id)"></fb:comments-count> comments</a>.</div>
 			#end if
 			<div style="clear:both;height:1px;"></div>
 		</li>
@@ -129,6 +127,6 @@ $(document).ready(function() {
 
 #def render_result_attending_tooltip_javascript($results)
 	#for $result in $results
-		$('#event-friends-$result.fb_event.info.id').tooltip();
+		$('#event-friends-$result.fb_event_id').tooltip();
 	#end for
 #end def

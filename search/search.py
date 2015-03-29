@@ -5,16 +5,15 @@ import logging
 import re
 import time
 
-from google.appengine.api import search
 from google.appengine.ext import deferred
+from google.appengine.ext import ndb
+from google.appengine.api import search
 
 from events import eventdata
-import fb_api
 from loc import gmaps_api
 from loc import math
 from nlp import categories
 from util import dates
-from util import timings
 
 SLOW_QUEUE = 'slow-queue'
 
@@ -65,18 +64,59 @@ def group_results(search_results):
     grouped_results = [x for x in grouped_results if x.results]
     return past_results, present_results, grouped_results 
 
+class DisplayEvent(ndb.Model):
+    """Subset of event data used for rendering"""
+    fb_event_id = property(lambda x: str(x.key.string_id()))
+
+    data = ndb.JsonProperty()
+
+    @classmethod
+    def can_build_from(cls, db_event):
+        """Can we build a DisplayEvent from a given DBEvent"""
+        if not db_event.fb_event:
+            return False
+        elif db_event.fb_event['empty']:
+            return False
+        else:
+            return True
+
+    @classmethod
+    def build(cls, db_event):
+        """Save off the minimal set of data necessary to render an event, for quick event loading."""
+        display_event = cls(id=db_event.fb_event_id)
+        display_event.data = {
+            'name': db_event.fb_event['info']['name'],
+            'image': eventdata.get_event_image_url(db_event.fb_event),
+            'cover': eventdata.get_largest_cover(db_event.fb_event),
+            'start_time': db_event.fb_event['info']['start_time'],
+            'end_time': db_event.fb_event['info']['end_time'],
+            'location': db_event.actual_city_name,
+            'lat': db_event.latitude,
+            'lng': db_event.longitude,
+            'attendee_count': db_event.attendee_count,
+            'keywords': db_event.event_keywords or [],
+        }
+        return display_event
+
 class SearchResult(object):
-    def __init__(self, db_event, fb_event):
+    def __init__(self, db_event, display_event):
+        self.display_event = display_event
+
         self.db_event = db_event
-        self.fb_event = fb_event
-        self.fb_event_id = fb_event['info']['id']
-        self.actual_city_name = db_event.actual_city_name
-        self.attendee_count = db_event.attendee_count
+        self.fb_event = db_event.fb_event
+
+        self.fb_event_id = display_event.fb_event_id
+        self.name = db_event.fb_event['info']['name']
+        self.actual_city_name = display_event.data['location']
+        self.attendee_count = display_event.data['attendee_count']
         self.start_time = dates.parse_fb_start_time(self.fb_event)
         self.end_time = dates.parse_fb_end_time(self.fb_event)
         self.fake_end_time = dates.parse_fb_end_time(self.fb_event, need_result=True)
+        self.latitude = display_event.data['lat']
+        self.longitude = display_event.data['lng']
+        self.event_keywords = display_event.data['keywords']
+
         self.rsvp_status = "unknown"
-        self.event_keywords = db_event.event_keywords or []
         # These are initialized in logic/friends.py
         self.attending_friend_count = 0
         self.attending_friends = []
@@ -201,12 +241,13 @@ class SearchQuery(object):
 
         a = time.time()
         real_db_events = eventdata.DBEvent.get_by_ids([x.doc_id for x in doc_events])
+        display_events = [DisplayEvent.build(x) for x in real_db_events]
         logging.info("Loading DBEvents took %s seconds", time.time() - a)
 
         # ...and do filtering based on the contents inside our app
         a = time.time()
         search_results = []
-        for real_db_event in real_db_events:
+        for real_db_event, display_event in zip(real_db_events, display_events):
             fb_event = real_db_event.fb_event
             if not fb_event:
                 logging.error("Failed to find fb_event on db_event %s", real_db_event.fb_event_id)
@@ -214,7 +255,7 @@ class SearchQuery(object):
             if not fb_event['empty']:
                 if 'info' not in fb_event:
                     logging.warning('%s', fb_event)
-                result = SearchResult(real_db_event, fb_event)
+                result = SearchResult(real_db_event, display_event)
                 search_results.append(result)
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
     
