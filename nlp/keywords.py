@@ -1026,6 +1026,8 @@ VOGUE = Name('VOGUE', Any(
     'vou?guer[sz]?',
     'trans\W?man',
     'mini\W?ball',
+    'ota face',
+    'ota realness',
 ))
 
 # We want to ignore these when trying to match against house events (r'\bhouse\b')
@@ -1034,6 +1036,10 @@ HOUSE_OF = Name('HOUSE_OF', Any(
     'house of',
 ))
 
+TOO_EASY_VOGUE = Name('TOO_EASY_VOGUE', Any(
+    'open to all',
+    'troph(?:y|ies)',
+))
 
 EASY_VOGUE = Name('EASY_VOGUE', Any(
     HOUSE_OF,
@@ -1047,11 +1053,9 @@ EASY_VOGUE = Name('EASY_VOGUE', Any(
     'couture',
     'butch',
     'ota',
-    'open to all',
     r'f\.?q\.?',
     r'b\.?q\.?',
     'vogue',
-    'troph(?:y|ies)',
     'old way',
     'new way',
     'ball',

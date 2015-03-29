@@ -173,6 +173,7 @@ ANY_GOOD = Name('ANY_GOOD', Any(
     keywords.STREET,
     keywords.VOGUE,
     keywords.EASY_VOGUE,
+    keywords.TOO_EASY_VOGUE,
     keywords.BONNIE_AND_CLYDE,
 
     EVENT,
