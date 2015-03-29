@@ -1,7 +1,7 @@
 import datetime
 
 import base_servlet
-from events import event_locations
+from loc import formatting
 from search import search
 from search import search_base
 from util import dates
@@ -28,9 +28,7 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
             elif duration <= datetime.timedelta(days=1):
                 end_time = start_time
             all_day = False
-            location_info = event_locations.LocationInfo(result.fb_event, db_event=result.db_event)
-            from loc import formatting
-            city = formatting.format_geocode(location_info.geocode)
+            city = formatting.format_geocode(result.db_event.get_geocode())
             title = '@ %s\n\n%s' % (city, result.fb_event['info']['name'])
             json_results.append(dict(
                 id=result.fb_event['info']['id'],
