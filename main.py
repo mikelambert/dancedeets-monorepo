@@ -116,7 +116,7 @@ URLS = [
     ('/events/rsvp_ajax', event.RsvpAjaxHandler),
     ('/events/image_proxy/(\d+)', event_proxy.ImageProxyHandler),
     (r'/events/\d+/?', event.ShowEventHandler),
-    (r'/styles/([\w-]+)/?', style_servlets.ShowStyleHandler),
+    (r'/style/([\w-]+)/?', style_servlets.ShowStyleHandler),
     ('/city/(.*)/?', search_servlets.CityHandler),
     ('/profile/[^/]*', profile_page.ProfileHandler),
     ('/profile/[^/]*/add_tag', profile_page.ProfileAddTagHandler),

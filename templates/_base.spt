@@ -106,7 +106,7 @@ var _gaq = [];
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dance Styles <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
 #for $style in $styles
-            <li><a href="/styles/$style.url_name">$style.public_name</a></li>
+            <li><a href="/style/$style.url_name">$style.public_name</a></li>
 #end for
           </ul>
         </li>
