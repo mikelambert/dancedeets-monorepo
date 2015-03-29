@@ -5,7 +5,7 @@ import time
 sys.path += ['.']
 from classifiers import processing
 from nlp import categories
-
+import styles
 
 all_ids = processing.load_all_ids()
 training_data = processing.load_classified_ids(all_ids)
@@ -20,19 +20,19 @@ else:
 
 positive_classifier = True
 def basic_match(fb_event):
-    styles = categories.find_styles(fb_event)
+    found_styles = categories.find_styles(fb_event)
     if not full_run:
         # debug
         print fb_event['info'].get('name', '').encode('utf-8')
         print fb_event['info'].get('description', '').encode('utf-8')
 
-    if 'LOCK' in styles:
+    if styles.LOCK in found_styles:
         print fb_event['info']['id']
         #contexts = categories.get_context(fb_event, styles['LOCK'])
         #for keyword, context in zip(styles['LOCK'], contexts):
         #    print keyword, repr(context)
 
-    return 'LOCK' in styles
+    return styles.LOCK in found_styles
 
 a = time.time()
 print "Running auto classifier..."

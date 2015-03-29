@@ -6,6 +6,7 @@ import grammar
 from grammar import Any
 from nlp import event_classifier
 from nlp import event_auto_classifier
+import styles
 
 ANY_BREAK = Any(
     keywords.STYLE_BREAK,
@@ -96,31 +97,31 @@ ANY_VOGUE = Any(
 )
 
 STYLES = {
-    'BREAK': ANY_BREAK,
-    'POP': ANY_POP,
-    'LOCK': ANY_LOCK,
-    'WAACK': ANY_WAACK,
-    'HOUSE': ANY_HOUSE,
-    'HIPHOP': ANY_HIPHOP,
-    'DANCEHALL': ANY_DANCEHALL,
-    'KRUMP': ANY_KRUMP,
-    'TURF': ANY_TURF,
-    'LITEFEET': ANY_LITEFEET,
-    'FLEX': ANY_FLEX,
-    'BEBOP': ANY_BEBOP,
-    'ALLSTYLE': ANY_ALLSTYLE,
-    'VOGUE': ANY_VOGUE,
+    styles.BREAK: ANY_BREAK,
+    styles.POP: ANY_POP,
+    styles.LOCK: ANY_LOCK,
+    styles.WAACK: ANY_WAACK,
+    styles.HOUSE: ANY_HOUSE,
+    styles.HIPHOP: ANY_HIPHOP,
+    styles.DANCEHALL: ANY_DANCEHALL,
+    styles.KRUMP: ANY_KRUMP,
+    styles.TURF: ANY_TURF,
+    styles.LITEFEET: ANY_LITEFEET,
+    styles.FLEX: ANY_FLEX,
+    styles.BEBOP: ANY_BEBOP,
+    styles.ALLSTYLE: ANY_ALLSTYLE,
+    styles.VOGUE: ANY_VOGUE,
 }
 
 BROAD_STYLES = STYLES.copy()
-BROAD_STYLES['BREAK'] = ANY_BREAK_BROAD
+BROAD_STYLES[styles.BREAK] = ANY_BREAK_BROAD
 
 
 def format_as_search_query(text, broad=True):
     processed_text = event_classifier.StringProcessor(text)
     styles_list = BROAD_STYLES if broad else STYLES
     for style, rule in styles_list.iteritems():
-        replaced, count = processed_text.replace_with(rule, lambda x: 'categories:%s' % style)
+        replaced, count = processed_text.replace_with(rule, lambda x: 'categories:%s' % style.index_name)
     return processed_text.text
 
 
@@ -129,7 +130,7 @@ def find_styles_in_text(text, broad=True):
     no_competitors_text = event_auto_classifier.find_competitor_list(text)
     if no_competitors_text:
         text = text.replace(no_competitors_text, '')
-    styles = {}
+    found_styles = {}
     styles_list = BROAD_STYLES if broad else STYLES
     for line in text.lower().split('\n'):
         if len(line) > 400:
@@ -141,8 +142,8 @@ def find_styles_in_text(text, broad=True):
         for style, rule in styles_list.iteritems():
             tokens = processed_text.get_tokens(rule)
             if tokens:
-                styles[style] = tokens
-    return styles.keys()
+                found_styles[style] = tokens
+    return found_styles.keys()
 
 def get_context(fb_event, keywords):
     name = fb_event['info'].get('name', '')
@@ -162,7 +163,7 @@ def get_context(fb_event, keywords):
     return contexts
 
 def find_styles(fb_event):
-    styles = find_styles_in_text(fb_event['info'].get('name', ''), broad=True)
-    if not styles:
-        styles = find_styles_in_text(fb_event['info'].get('description', ''), broad=True)
-    return styles
+    found_styles = find_styles_in_text(fb_event['info'].get('name', ''), broad=True)
+    if not found_styles:
+        found_styles = find_styles_in_text(fb_event['info'].get('description', ''), broad=True)
+    return found_styles

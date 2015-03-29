@@ -85,7 +85,7 @@ def _inner_make_event_findable_for(db_event, fb_dict, update_geodata):
     db_event.search_time_period = _event_time_period(db_event)
 
     db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
-    db_event.auto_categories = categories.find_styles(fb_dict)
+    db_event.auto_categories = [x.index_name for x in categories.find_styles(fb_dict)]
 
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
