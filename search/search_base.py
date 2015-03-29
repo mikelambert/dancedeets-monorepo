@@ -17,15 +17,19 @@ class FrontendSearchQuery(object):
         self.validated = False
 
     def url_params(self):
-        return {
-            'location': self.location,
-            'distance': self.distance,
-            'distance_units': self.distance_units,
-            'min_attendees': self.min_attendees,
-            'past': self.past,
-            'keywords': self.keywords,
-            'deb': self.deb,
-        }
+        d = {}
+        if self.deb:
+            d['deb'] = self.deb
+        if self.keywords:
+            d['keywords'] = self.keywords
+        if self.past:
+            d['past'] = self.past
+        if self.min_attendees:
+            d['min_attendees'] = self.min_attendees
+        d['location'] = self.location or ''
+        d['distance'] = self.distance
+        d['distance_units'] = self.distance_units
+        return d
 
     @classmethod
     def create_from_request_and_user(cls, request, user):
