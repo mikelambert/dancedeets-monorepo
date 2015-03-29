@@ -128,7 +128,7 @@ class SearchHandler(ApiHandler):
         # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
         search_query.limit = 500
 
-        search_results = search_query.get_search_results(self.fbl)
+        search_results = search_query.get_search_results(self.fbl, full_event=True)
         #TODO(lambert): move to common library.
         now = datetime.datetime.now() - datetime.timedelta(hours=12)
         search_results = [x for x in search_results if x.start_time > now]

@@ -83,6 +83,8 @@ class DisplayEvent(ndb.Model):
     @classmethod
     def build(cls, db_event):
         """Save off the minimal set of data necessary to render an event, for quick event loading."""
+        if not cls.can_build_from(db_event):
+            return None
         display_event = cls(id=db_event.fb_event_id)
         display_event.data = {
             'name': db_event.fb_event['info']['name'],
@@ -99,22 +101,23 @@ class DisplayEvent(ndb.Model):
         return display_event
 
 class SearchResult(object):
-    def __init__(self, db_event, display_event):
+    def __init__(self, display_event):
         self.display_event = display_event
 
-        self.db_event = db_event
-        self.fb_event = db_event.fb_event
-
         self.fb_event_id = display_event.fb_event_id
-        self.name = db_event.fb_event['info']['name']
+        self.name = display_event.data['name']
         self.actual_city_name = display_event.data['location']
-        self.attendee_count = display_event.data['attendee_count']
-        self.start_time = dates.parse_fb_start_time(self.fb_event)
-        self.end_time = dates.parse_fb_end_time(self.fb_event)
-        self.fake_end_time = dates.parse_fb_end_time(self.fb_event, need_result=True)
         self.latitude = display_event.data['lat']
         self.longitude = display_event.data['lng']
         self.event_keywords = display_event.data['keywords']
+        self.attendee_count = display_event.data['attendee_count']
+        fake_event = {'info': {
+            'start_time': display_event.data['start_time'],
+            'end_time': display_event.data['end_time'],
+        }}
+        self.start_time = dates.parse_fb_start_time(fake_event)
+        self.end_time = dates.parse_fb_end_time(fake_event)
+        self.fake_end_time = dates.parse_fb_end_time(fake_event, need_result=True)
 
         self.rsvp_status = "unknown"
         # These are initialized in logic/friends.py
@@ -130,7 +133,7 @@ class SearchResult(object):
         return not self.end_time or (self.end_time - self.start_time) > datetime.timedelta(hours=24)
 
     def get_image(self):
-        return eventdata.get_event_image_url(self.fb_event)
+        return self.display_event.data['image']
 
     def get_attendance(self):
         if self.rsvp_status == 'unsure':
@@ -230,7 +233,7 @@ class SearchQuery(object):
             return doc_search_results.results
         return []
 
-    def get_search_results(self, fbl, prefilter=None):
+    def get_search_results(self, fbl, prefilter=None, full_event=False):
         a = time.time()
         # Do datastore filtering
         doc_events = self.get_candidate_doc_events()
@@ -241,27 +244,22 @@ class SearchQuery(object):
 
         a = time.time()
         real_db_events = eventdata.DBEvent.get_by_ids([x.doc_id for x in doc_events])
-        display_events = [DisplayEvent.build(x) for x in real_db_events]
         logging.info("Loading DBEvents took %s seconds", time.time() - a)
 
         # ...and do filtering based on the contents inside our app
         a = time.time()
         search_results = []
-        for real_db_event, display_event in zip(real_db_events, display_events):
-            fb_event = real_db_event.fb_event
-            if not fb_event:
-                logging.error("Failed to find fb_event on db_event %s", real_db_event.fb_event_id)
-                continue
-            if not fb_event['empty']:
-                if 'info' not in fb_event:
-                    logging.warning('%s', fb_event)
-                result = SearchResult(real_db_event, display_event)
-                search_results.append(result)
+        for real_db_event in real_db_events:
+            display_event = DisplayEvent.build(real_db_event)
+            result = SearchResult(display_event)
+            if full_event:
+                result.db_event = real_db_event
+            search_results.append(result)
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
     
         # Now sort and return the results
         a = time.time()
-        search_results.sort(key=lambda x: x.fb_event['info'].get('start_time'))
+        search_results.sort(key=lambda x: x.start_time)
         logging.info("search result sorting took %s seconds", time.time() - a)
         return search_results
 
