@@ -206,7 +206,7 @@ class SearchQuery(object):
         return self
 
     DATE_SEARCH_FORMAT = '%Y-%m-%d'
-    def get_candidate_doc_events(self):
+    def _get_candidate_doc_events(self, ids_only=True):
         clauses = []
         if self.bounds:
             # We try to keep searches as simple as possible, 
@@ -240,9 +240,11 @@ class SearchQuery(object):
             logging.info("Doing search for %r", full_search)
             doc_index = search.Index(name=index_name)
             #TODO(lambert): implement pagination
-            options = search.QueryOptions(
-                limit=self.limit,
-                returned_fields=self.extra_fields)
+            if ids_only:
+                options = {'ids_only': True}
+            else:
+                options = {'returned_fields': self.extra_fields}
+            options = search.QueryOptions(limit=self.limit, **options)
             query = search.Query(query_string=full_search, options=options)
             doc_search_results = doc_index.search(query)
             return doc_search_results.results
@@ -251,7 +253,7 @@ class SearchQuery(object):
     def get_search_results(self, fbl, prefilter=None, full_event=False):
         a = time.time()
         # Do datastore filtering
-        doc_events = self.get_candidate_doc_events()
+        doc_events = self._get_candidate_doc_events(ids_only=not prefilter)
         logging.info("Search returned %s events in %s seconds", len(doc_events), time.time() - a)
 
         if prefilter:
