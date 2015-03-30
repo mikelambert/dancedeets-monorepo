@@ -86,23 +86,38 @@ class DisplayEvent(ndb.Model):
         if not cls.can_build_from(db_event):
             return None
         display_event = cls(id=db_event.fb_event_id)
+        # The event_keywords are actually _BaseValue objects, not strings.
+        # So they fail json serialization, and must be converted manually here.
+        keywords = [unicode(x) for x in db_event.event_keywords]
         display_event.data = {
             'name': db_event.fb_event['info']['name'],
             'image': eventdata.get_event_image_url(db_event.fb_event),
             'cover': eventdata.get_largest_cover(db_event.fb_event),
             'start_time': db_event.fb_event['info']['start_time'],
-            'end_time': db_event.fb_event['info']['end_time'],
+            'end_time': db_event.fb_event['info'].get('end_time'),
             'location': db_event.actual_city_name,
             'lat': db_event.latitude,
             'lng': db_event.longitude,
             'attendee_count': db_event.attendee_count,
-            'keywords': db_event.event_keywords or [],
+            'keywords': keywords or [],
         }
+        print display_event.data
         return display_event
 
+    @classmethod
+    def get_by_ids(cls, id_list, keys_only=False):
+        if not id_list:
+            return []
+        keys = [ndb.Key(cls, x) for x in id_list]
+        if keys_only:
+            return cls.query(cls.key.IN(keys)).fetch(len(keys), keys_only=True)
+        else:
+            return ndb.get_multi(keys)
+
 class SearchResult(object):
-    def __init__(self, display_event):
+    def __init__(self, display_event, db_event):
         self.display_event = display_event
+        self.db_event = db_event # May be None
 
         self.fb_event_id = display_event.fb_event_id
         self.name = display_event.data['name']
@@ -243,17 +258,34 @@ class SearchQuery(object):
             doc_events = [x for x in doc_events if prefilter(x)]
 
         a = time.time()
-        real_db_events = eventdata.DBEvent.get_by_ids([x.doc_id for x in doc_events])
+        ids = [x.doc_id for x in doc_events]
+        if full_event:
+            real_db_events = eventdata.DBEvent.get_by_ids(ids)
+            display_events =[DisplayEvent.build(x) for x in real_db_events]
+        else:
+            #This roundabout logic below is temporary while we load events, and wait for all events to be saved
+            #display_events = DisplayEvent.get_by_ids(ids)
+            real_db_events = [None for x in ids]
+
+            display_event_lookup = dict(zip(ids, DisplayEvent.get_by_ids(ids)))
+            missing_ids = [x for x in display_event_lookup if not display_event_lookup[x]]
+            if missing_ids:
+                dbevents = eventdata.DBEvent.get_by_ids(missing_ids)
+                objs_to_put = []
+                for event in dbevents:
+                    objs_to_put.append(DisplayEvent.build(event))
+                ndb.put_multi(objs_to_put)
+            display_events = [display_event_lookup[x] for x in ids]
+
         logging.info("Loading DBEvents took %s seconds", time.time() - a)
 
         # ...and do filtering based on the contents inside our app
         a = time.time()
         search_results = []
-        for real_db_event in real_db_events:
-            display_event = DisplayEvent.build(real_db_event)
-            result = SearchResult(display_event)
-            if full_event:
-                result.db_event = real_db_event
+        for display_event, db_event in zip(display_events, real_db_events):
+            if not display_event:
+                continue
+            result = SearchResult(display_event, db_event)
             search_results.append(result)
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
     

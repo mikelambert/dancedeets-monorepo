@@ -36,7 +36,7 @@ def update_and_save_event_batch(events_to_update, update_geodata=True):
     # We want to save it here, no matter how it was changed.
     db_events = [x[0] for x in events_to_update]
     objects_to_put = list(db_events)
-    objects_to_put += [eventdata.DisplayEvent.build(x) for x in db_events if eventdata.DisplayEvent.can_build_from(x)]
+    objects_to_put += [search.DisplayEvent.build(x) for x in db_events if search.DisplayEvent.can_build_from(x)]
     ndb.put_multi(objects_to_put)
     search.update_fulltext_search_index_batch(events_to_update)
 

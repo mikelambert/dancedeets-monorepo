@@ -5,7 +5,7 @@
 		<li class="narrow-event">
 			<h3 class="event-title">
 			<a href="$fb_event_url($result.fb_event_id)">
-			$format_html($fb_event.name)
+			$format_html($result.name)
 			</a>
 			</h3>
 
