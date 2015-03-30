@@ -1,8 +1,6 @@
 import collections
 import datetime
 
-from events import event_locations
-
 def group_results_by_date(results):
     year_months = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
     for result in results:
@@ -21,8 +19,7 @@ def group_results_by_date(results):
 
 def group_results_by_location(results):
     location_map = collections.defaultdict(lambda: [])
-    geocodes = [x.db_event.get_geocode() for x in results]
-    addresses = [x.country(long=True) if x else None for x in geocodes]
+    addresses = [x.actual_city_name.split(', ')[-1] for x in results]
     #formatting.format_geocodes(geocodes)
     for address, result in zip(addresses, results):
         location_map[address].append(result)
