@@ -97,9 +97,9 @@ class User(ndb.Model):
     def get_by_ids(cls, id_list, keys_only=False):
         if not id_list:
             return []
-        keys = [ndb.Key(User, x) for x in id_list]
+        keys = [ndb.Key(cls, x) for x in id_list]
         if keys_only:
-            return User.query(User.key.IN(keys)).fetch(len(keys), keys_only=True)
+            return cls.query(cls.key.IN(keys)).fetch(len(keys), keys_only=True)
         else:
             return ndb.get_multi(keys)
 
