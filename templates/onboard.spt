@@ -19,58 +19,25 @@ DanceDeets
 <div class="container">
 
 <div class="row">
-<div class="col-xs-12">
+<div class="col-xs-10">
 
-<div style="position: relative;">
-	<div style="	margin-left: auto;
-	margin-right: auto;
-	width: 80%;
-">
-		<div style="	display: block;
+		<div style="display: block;
 	position: relative;
 	width: 100%;
 	overflow:hidden;">
 			<img src="/images/choreo-competition.jpg" style="
 	width:100%;
 " width="100%">
-<!--
-			<div style="
-	padding-left: 10px;
-	position: absolute;
-	bottom: 0;
-	color: #fff;
-	text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
-	z-index: 1; /* so we are also on top of the image */
-	font-size: 140%;
-"><
-			Search all
-#if $total_events
-	$total_events
-#else
-	of our
-#end if
-streetdance events, and stay in the know on workshops, performances, jams, and parties near you! <button>Join DanceDeets Today</button>
-
-			</div>
--->
 		</div>
-	</div>
-</div>
 
-</div>
-</div>
-
-<div class="row">
-<div class="col-xs-10 col-xs-offset-1">
-
-<div style="	font-size: 120%;">
+<div style="font-size: 120%; text-align: center">
 Search all
 #if $total_events
 	$total_events
 #else
 	of our
 #end if
-streetdance events, and stay in the know on workshops, performances, jams, and parties near you:<br>
+streetdance events: workshops, performances, battles, sessions, and parties near you!<br>
 <button>Join DanceDeets Today</button>
 </div>
 
@@ -111,7 +78,7 @@ When I visited Paris, DanceDeets saved me so much time, and helped me check out 
 </div>
 
 <div class="col-sm-4">
-<span class="big-font">Share Events</span><br>
+<span class="big-font">Promote Events</span><br>
 Organizing an event? Promote your streetdance events to interested dancers!
 Otherwise, even just joining helps share your dance events!
 <div class="testimonial">
