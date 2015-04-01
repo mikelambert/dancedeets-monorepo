@@ -85,24 +85,27 @@ class DisplayEvent(ndb.Model):
         """Save off the minimal set of data necessary to render an event, for quick event loading."""
         if not cls.can_build_from(db_event):
             return None
-        display_event = cls(id=db_event.fb_event_id)
-        # The event_keywords are actually _BaseValue objects, not strings.
-        # So they fail json serialization, and must be converted manually here.
-        keywords = [unicode(x) for x in db_event.event_keywords]
-        display_event.data = {
-            'name': db_event.fb_event['info']['name'],
-            'image': eventdata.get_event_image_url(db_event.fb_event),
-            'cover': eventdata.get_largest_cover(db_event.fb_event),
-            'start_time': db_event.fb_event['info']['start_time'],
-            'end_time': db_event.fb_event['info'].get('end_time'),
-            'location': db_event.actual_city_name,
-            'lat': db_event.latitude,
-            'lng': db_event.longitude,
-            'attendee_count': db_event.attendee_count,
-            'keywords': keywords or [],
-        }
-        print display_event.data
-        return display_event
+        try:
+            display_event = cls(id=db_event.fb_event_id)
+            # The event_keywords are actually _BaseValue objects, not strings.
+            # So they fail json serialization, and must be converted manually here.
+            keywords = [unicode(x) for x in db_event.event_keywords]
+            display_event.data = {
+                'name': db_event.fb_event['info'].get('name'),
+                'image': eventdata.get_event_image_url(db_event.fb_event),
+                'cover': eventdata.get_largest_cover(db_event.fb_event),
+                'start_time': db_event.fb_event['info']['start_time'],
+                'end_time': db_event.fb_event['info'].get('end_time'),
+                'location': db_event.actual_city_name,
+                'lat': db_event.latitude,
+                'lng': db_event.longitude,
+                'attendee_count': db_event.attendee_count,
+                'keywords': keywords or [],
+            }
+            return display_event
+        except:
+            logging.exception("Failed to construct DisplayEvent for event %s", db_event.fb_event_id)
+            return None
 
     @classmethod
     def get_by_ids(cls, id_list, keys_only=False):
