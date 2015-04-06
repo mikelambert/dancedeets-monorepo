@@ -41,7 +41,7 @@ Get the app now:
 <!--set height so the relative penguin the vertical squeezing when bouncing doesn't change the height.
     set width so that when the penguin is hidden offscreen, float behavior remains the same.-->
 <div style="float: left; height: 140px; width: 140px;">
-<img id="penguin" src="/images/full_penguin_280.png" height="140" onclick="walkOut();">
+<img id="penguin" src="/images/full_penguin_280.png" height="140" onmouseover="walkOut();">
 </div>
 </div>
 
