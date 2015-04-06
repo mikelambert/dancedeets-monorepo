@@ -115,10 +115,12 @@ var _gaq = [];
       </ul>
       <ul class="nav navbar-nav navbar-right">
             
-        <li><a href="https://www.facebook.com/dancedeets" class="nav-icon icon-facebook2" target="_blank"></a></li>
-        <li><a href="https://twitter.com/dancedeets" class="nav-icon icon-twitter" target="_blank"></a></li>
-        <li><a href="https://plus.google.com/+DanceDeets" class="nav-icon icon-google-plus" target="_blank"></a></li>
-        <li><a href="https://instagram.com/dancedeets/" class="nav-icon icon-instagram" target="_blank"></a></li>
+        <li class="nav-icon-row">
+          <a href="https://www.facebook.com/dancedeets" class="nav-icon icon-facebook2" target="_blank"></a>
+          <a href="https://twitter.com/dancedeets" class="nav-icon icon-twitter" target="_blank"></a>
+          <a href="https://plus.google.com/+DanceDeets" class="nav-icon icon-google-plus" target="_blank"></a>
+          <a href="https://instagram.com/dancedeets/" class="nav-icon icon-instagram" target="_blank"></a>
+        </li>
 #if $user
 ##        <!-- img src="http://graph.facebook.com/$user.fb_uid/picture" style="border: 1px solid black" -->
         <li><a href="/user/edit">$user.full_name</a></li>
