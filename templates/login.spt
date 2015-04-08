@@ -17,7 +17,67 @@ DanceDeets
 #def body
 <img src="http://www.dancedeets.com/images/cover.png" style="display:none"/>
 
+<div class="container">
+
+<div class="row">
+
+<div class="col-sm-7" style="padding-right: 0px">
+<h2>DanceDeets</h2>
+
+
+<div class="install-div">
+Street dance events, at home and worldwide!
+<div class="spacing">
+<a href="$android_url"><img src="/images/play_store_download.png" class="store-button"></a>
+<br>
+<a href="$ios_url"><img src="/images/app_store_download.png" class="store-button"></a>
+</div>
+</div>
+
+
+
+<div class="install-div hidden-xs">
+Or enter your phone number, and we'll send you a link to install:
+<form class="spacing form-inline" method="post" action="/mobile_apps">
+<input type="hidden" name="action" value="send_sms" />
+<select name="prefix" class="form-control">
+<option value="">Select a country below</option>
+#for $country, $code in $country_codes
+	<option value="$code"
+	#if $code == $prefix
+		selected
+	#end if
+	>$country (+$code)</option>
+#end for
+</select>
+<input type="text" class="form-control sms-textbox" name="phone" placeholder="(123) 456-7890" value="$phone"/>
+<button type="submit" value="submit" class="btn btn-primary sms-button">Send link to my phone</button>
+</form>
+</div>
+
+<div class="install-div">
+Keep up with the latest dance events when you're on the go!
+<ul class="feature-list spacing">
+<li class="feature"><img class="icon" src="/images/ic_menu_search.png">Search Dance Events</li>
+<li class="feature"><img class="icon" src="/images/ic_menu_calendar.png">Add Events to Calendar</li>
+<li class="feature"><img class="icon" src="/images/ic_menu_facebook.png">View on Facebook</li>
+<li class="feature"><img class="icon" src="/images/ic_menu_map.png">Get Directions</li>
+<li class="feature"><img class="icon" src="/images/ic_menu_translate.png">Translate Languages (Android Only)</li>
+<li class="feature"><img class="icon" src="/images/ic_menu_rsvp.png">RSVP on Facebook (iOS Only)</li>
+</ul>
+</div>
+
+</div>
+
+<div class="col-sm-5">
+<img src="/images/phones.jpg" width="100%">
+</div>
+
+</div>
+</div>
+
 <div class="container-fluid">
+
 
 <div class="row">
 <div class="col-md-12" style="margin-bottom: 10px">

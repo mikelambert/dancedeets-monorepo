@@ -50,6 +50,15 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['defaults'].keywords = self.request.get('keywords')
         self.display['defaults'].deb = self.request.get('deb')
 
+
+        from util import country_dialing_codes
+        IOS_URL = 'https://itunes.apple.com/us/app/dancedeets/id955212002?mt=8'
+        ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.dancedeets.android'
+        self.display['suppress_promos'] = True
+        self.display['country_codes'] = sorted(country_dialing_codes.mapping.items())
+        self.display['android_url'] = ANDROID_URL
+        self.display['ios_url'] = IOS_URL
+
         self.display['next'] = next
         logging.info(self.display['next'])
         self.display['needs_city'] = needs_city

@@ -35,10 +35,10 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
         total_time = 10
 
         self.display['country_codes'] = sorted(country_dialing_codes.mapping.items())
-        self.display['total_time'] = total_time
-        self.display['walkout_animation'] = self.get_walkout_animation(total_time, -1000)
         self.display['android_url'] = ANDROID_URL
         self.display['ios_url'] = IOS_URL
+        self.display['total_time'] = total_time
+        self.display['walkout_animation'] = self.get_walkout_animation(total_time, -1000)
         if message:
             self.display['messages'] = [message]
         if error:
