@@ -39,7 +39,10 @@ ANY_LOCK = Any(
 # No extras needed here
 ANY_WAACK = Any(
     keywords.STYLE_WAACK,
-    "[uw]h?aa?c?c?k\w*",
+    # we don't want "wake" to trigger, so let's enforce lengthß
+    #"[uw]h?aa?c?c?k\w*",
+    "[uw]h?aac?c?k\w*",
+    "[uw]h?aa?cc?k\w*",
     "punk\w+",
 )
 
