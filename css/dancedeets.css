@@ -522,3 +522,45 @@ footer {
 .nav > .nav-icon-row {
 	padding: 10px 15px;
 }
+
+/* We don't want the banner on top of our full screen modal dialogs */
+#smartbanner {
+	z-index: 1000;
+}
+
+.fullscreen-dialog {
+  width: 90%;
+  height: 90%;
+  padding: 0;
+  margin: auto;
+}
+
+.fullscreen-content {
+  height: 100%;
+}
+
+#app-install .modal-dialog {
+	background: url(/images/flyers.jpg);
+	background-size: contain;
+}
+
+#app-install .modal-content {
+	background-color: rgba(0, 0, 0, 0.7);
+	color: white;
+	padding: 0px 10px;
+	border: 1px solid #999;
+}
+
+#app-install .feature .icon {
+	opacity: 1.0;
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+}
+
+#app-install .cancel {
+	text-align: center;
+	padding: 10px 0px;
+}
+#app-install .download-app {
+	width: 100%;
+}

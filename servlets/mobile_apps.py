@@ -4,9 +4,6 @@ from logic import sms
 from util import abbrev
 from util import country_dialing_codes
 
-IOS_URL = 'https://itunes.apple.com/us/app/dancedeets/id955212002?mt=8'
-ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.dancedeets.android'
-
 class MobileAppsHandler(base_servlet.BaseRequestHandler):
 
     def requires_login(self):
@@ -19,11 +16,11 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
         if action == 'download':
             mobile_platform = mobile.get_mobile_platform(self.request.user_agent)
             if mobile_platform == mobile.MOBILE_IOS:
-                self.redirect(IOS_URL)
+                self.redirect(mobile.IOS_URL)
             elif mobile_platform == mobile.MOBILE_KINDLE:
                 self.render_page(error="Sorry, we do not support Amazon Kindles.")
             elif mobile_platform == mobile.MOBILE_ANDROID:
-                self.redirect(ANDROID_URL)
+                self.redirect(mobile.ANDROID_URL)
             elif mobile_platform == mobile.MOBILE_WINDOWS_PHONE:
                 self.render_page(error="Sorry, we do not support Windows Phones.")
             else:
@@ -35,8 +32,8 @@ class MobileAppsHandler(base_servlet.BaseRequestHandler):
         total_time = 10
 
         self.display['country_codes'] = sorted(country_dialing_codes.mapping.items())
-        self.display['android_url'] = ANDROID_URL
-        self.display['ios_url'] = IOS_URL
+        self.display['android_url'] = mobile.ANDROID_URL
+        self.display['ios_url'] = mobile.IOS_URL
         self.display['total_time'] = total_time
         self.display['walkout_animation'] = self.get_walkout_animation(total_time, -1000)
         if message:

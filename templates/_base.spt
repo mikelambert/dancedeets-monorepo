@@ -18,11 +18,11 @@
 <meta name="apple-itunes-app" content="app-id=955212002">
 
 <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="/vcss/$version/dancedeets.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.css">
 ## We must call tokenfield-typeahead before bootstrap-tokenfield, so that CSS gets applied in-order correctly.
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
+<link rel="stylesheet" href="/vcss/$version/dancedeets.css">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -84,6 +84,31 @@ var _gaq = [];
 <body>
 ## get rid of this and merge it inline?
 
+#if $mobile_app_url and $show_mobile_app_promo
+<div class="modal fade" id="app-install" tabindex="-1" role="dialog" aria-labelledby="app-install" aria-hidden="true">
+  <div class="modal-dialog fullscreen-dialog">
+    <div class="modal-content fullscreen-content">
+      <h3>DanceDeets Mobile App</h3>
+
+      <div>
+      Keep up with the latest dance events when you're on the go!
+      <ul class="feature-list spacing">
+      <li class="feature"><img class="icon" src="/images/ic_menu_search.png">Search Worldwide</li>
+      <li class="feature"><img class="icon" src="/images/ic_menu_calendar.png">Add to Calendar</li>
+      <li class="feature"><img class="icon" src="/images/ic_menu_facebook.png">View on Facebook</li>
+      <li class="feature"><img class="icon" src="/images/ic_menu_map.png">Get Directions</li>
+      <li class="feature"><img class="icon" src="/images/ic_menu_translate.png">Translate Languages (Android Only)</li>
+      <li class="feature"><img class="icon" src="/images/ic_menu_rsvp.png">RSVP on Facebook (iOS Only)</li>
+      </ul>
+      </div>
+
+      <a href="$mobile_app_url" class="btn btn-primary download-app">Get the mobile app</a>
+      <div class="cancel" data-dismiss="modal" onclick="hideAppPromo(); return false">No thanks!</div>
+    </div>
+  </div>
+</div>
+## conditionally show this with some "close" rememberance via cookies or local storage
+#end if
 
 <!-- Static navbar -->
 <nav class="navbar navbar-default navbar-static-top" role="navigation">
@@ -247,6 +272,34 @@ $body()
     FB.init({appId: '$app_id', status: true, cookie: true, xfbml: true});
     FB.Event.subscribe('auth.statusChange', handleStatusChange);
   };
+
+#if $mobile_app_url and $show_mobile_app_promo
+  /* center modal */
+  function centerModals(){
+    $('.modal').each(function(i){
+      var clone = $(this).clone().css('display', 'block').appendTo('body');
+      var top = Math.round((clone.height() - clone.find('.modal-content').height()) / 2);
+      top = top > 0 ? top : 0;
+      clone.remove();
+      $(this).find('.modal-content').css("margin-top", top);
+    });
+  }
+  $('.modal').on('show.bs.modal', centerModals);
+  $(window).on('resize', centerModals);
+
+  $(document).ready(function() {
+    var app_promo_closed = $.cookie('ap-closed');
+    if (!app_promo_closed) {
+
+      $('#app-install').modal({});
+    }
+  });
+
+  function hideAppPromo() {
+    $.cookie('ap-closed', '1', { expires: 4 })
+  }
+
+#end if
 </script>
 $bottom_javascript()
 </body>

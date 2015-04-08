@@ -396,7 +396,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
         currently_on_mobile = mobile.get_mobile_platform(self.request.user_agent)
         show_mobile_promo = not currently_on_mobile and not already_used_mobile
         self.display['show_mobile_promo'] = show_mobile_promo
-
+        if currently_on_mobile == mobile.MOBILE_ANDROID:
+            self.display['mobile_app_url'] = mobile.ANDROID_URL
+        elif currently_on_mobile == mobile.MOBILE_IOS:
+            self.display['mobile_app_url'] = mobile.IOS_URL
         self.display['defaults'] = search_base.FrontendSearchQuery()
         self.display['defaults'].location = self.request.get('location')
         self.display['defaults'].keywords = self.request.get('keywords')

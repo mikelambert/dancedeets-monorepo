@@ -1,3 +1,6 @@
+IOS_URL = 'https://itunes.apple.com/us/app/dancedeets/id955212002?mt=8'
+ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.dancedeets.android'
+
 MOBILE_IOS = 'MOBILE_IOS'
 MOBILE_KINDLE = 'MOBILE_KINDLE'
 MOBILE_ANDROID = 'MOBILE_ANDROID'

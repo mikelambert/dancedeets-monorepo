@@ -106,6 +106,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['lat_long'] = lat_long
         self.display['event'] = event_info
         self.display['next'] =  self.request.url
+        self.display['show_mobile_app_promo'] = True
         self.render_template('event_interstitial')
 
 class AdminEditHandler(base_servlet.BaseRequestHandler):
