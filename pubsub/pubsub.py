@@ -181,7 +181,8 @@ def twitter_post(auth_token, db_event):
     twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1+15]
     # This is the only twitter account allowed to @mention, to avoid spamming everyone...
     if auth_token.token_nickname == 'BigTwitter':
-        handles = (twitter_handles + twitter_handles2)
+        # De-dupe these lists
+        handles = list(set(twitter_handles + twitter_handles2))
     else:
         handles = []
     status = format_twitter_post(db_event, db_event.fb_event, media, handles=handles)
