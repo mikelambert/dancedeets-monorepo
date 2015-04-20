@@ -544,6 +544,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     '(?:second|2nd) stage',
     'juste debout school',
     'baile funk',
+    'cherry popp\w+',
 ))
 
 # battle freestyle ?

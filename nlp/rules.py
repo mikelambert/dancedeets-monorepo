@@ -64,6 +64,7 @@ DANCE_STYLE = Name('DANCE_STYLE',
 # TODO: make sure this doesn't match... 'mc hiphop contest'
 # 'hip hop battle' by itself isnt sufficient, so leave that in ambiguous_battle_dance.
 # GOOD_DANCE does include 'hip hop dance' though, to allow 'hip hop dance battle' to work.
+# In the meantime, we miss https://www.facebook.com/events/788310961258392/ and '2v2 breakin battle'
 good_battle_dance = Any(GOOD_DANCE, keywords.HOUSE)
 ambiguous_battle_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE, keywords.EASY_CHOREO)
 good_battle = Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)
