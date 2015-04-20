@@ -3,6 +3,9 @@ class Style(object):
         self.index_name = index_name
         self.public_name = public_name
 
+    def __repr__(self):
+        return 'Style(%s, %s)' % (self.index_name, self.public_name)
+
     @property
     def url_name(self):
         return self.public_name.lower()

@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+import pprint
 import re
 import time
 
@@ -105,6 +106,7 @@ class DisplayEvent(ndb.Model):
             return display_event
         except:
             logging.exception("Failed to construct DisplayEvent for event %s", db_event.fb_event_id)
+            logging.error("FB Event data is:\n%s", pprint.pformat(db_event.fb_event, width=200))
             return None
 
     @classmethod
