@@ -8,6 +8,9 @@ $result_title
 #end def
 
 #def head_stylesheet
+    <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="$result_title" /> 
 #end def
 
 
