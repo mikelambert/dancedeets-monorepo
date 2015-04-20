@@ -4,7 +4,6 @@ import logging
 from google.appengine.ext import ndb
 
 import fb_api
-from events import eventdata
 from loc import gmaps_api
 from rankings import rankings
 from search import search
@@ -36,7 +35,9 @@ def update_and_save_event_batch(events_to_update, update_geodata=True):
     # We want to save it here, no matter how it was changed.
     db_events = [x[0] for x in events_to_update]
     objects_to_put = list(db_events)
-    objects_to_put += [search.DisplayEvent.build(x) for x in db_events if search.DisplayEvent.can_build_from(x)]
+    objects_to_put += [search.DisplayEvent.build(x) for x in db_events]
+    # Because some DisplayEvent.build() calls return None (from errors, or from inability)
+    objects_to_put = [x for x in objects_to_put if x]
     ndb.put_multi(objects_to_put)
     search.update_fulltext_search_index_batch(events_to_update)
 
