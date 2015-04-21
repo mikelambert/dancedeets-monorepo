@@ -125,15 +125,17 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         rendered = template.render_template(name, self.display)
         self.response.out.write(rendered)
 
-    def get_location_from_headers(self):
+    def get_location_from_headers(self, city=True):
         iso3166_country = self.request.headers.get("X-AppEngine-Country")
         full_country = abbrev.countries_abbrev2full.get(iso3166_country, iso3166_country)
 
         location_components = []
-        location_components.append(self.request.headers.get("X-AppEngine-City"))
+        if city:
+            location_components.append(self.request.headers.get("X-AppEngine-City"))
         if full_country in ['United States', 'Canada']:
             location_components.append(self.request.headers.get("X-AppEngine-Region"))
-        location_components.append(full_country)
+        if full_country != 'ZZ':
+            location_components.append(full_country)
         location = ', '.join(x for x in location_components if x and x != '?')
         return location
 
