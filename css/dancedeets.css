@@ -564,3 +564,8 @@ footer {
 #app-install .download-app {
 	width: 100%;
 }
+
+.nav li a {
+	padding-left: 8px;
+	padding-right: 8px;
+}

@@ -126,17 +126,39 @@ var _gaq = [];
 		</div>
 		<div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li><a href="/">Search ${total_events} Events</a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dance Styles <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dance Styles<span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
 #for $style in $styles
             <li><a href="/style/$style.url_name">$style.public_name</a></li>
 #end for
           </ul>
         </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">North America<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+#for $city in $us_cities
+            <li><a href="/?location=$city">$city</a></li>
+#end for
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Europe<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+#for $city in $eu_cities
+            <li><a href="/?location=$city">$city</a></li>
+#end for
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">World<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+#for $loc in $other
+            <li><a href="/?location=$loc">$loc</a></li>
+#end for
+          </ul>
+        </li>
         <li><a href="/mobile_apps">Mobile App</a></li>
-        <li><a href="/rankings">Cities</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
             

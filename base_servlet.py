@@ -408,6 +408,72 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['defaults'].deb = self.request.get('deb')
 
         self.display['styles'] = styles.STYLES
+        self.display['us_cities'] = [
+            'New York, NY',
+            'Los Angeles, CA', 
+            'San Francisco, CA',
+            '',
+            'Anaheim, CA',
+            'Boston, MA',
+            'Chicago, IL',
+            'Detroit, MI',
+            'Las Vegas, CA',
+            'Montreal, Canada',
+            'Ottowa, Canada',
+            'Philadelphia, PA',
+            'Phoenix, AZ',
+            'Portland, OR',
+            'Sacramento, CA',
+            'San Diego, CA',
+            'Seattle, WA',
+            'Toronto, Canada',
+            'Vancouver, Canada',
+            'Washington, DC',
+        ]
+        self.display['eu_cities'] = [
+            'Amsterdam, Netherlands',
+            'Barcelona, Spain',
+            'Berlin, Germany',
+            'Bratislava, Slovakia',
+            'Brno, Czech Republic',
+            'Brussels, Belgium',
+            'Budapest, Hungary',
+            'Copenhagen, Denmark',
+            'Frankfurt, Germany',
+            'Gdansk, Poland',
+            'Geneva, Switzerland',
+            'Helsinki, Finland',
+            'London, UK',
+            'Lyon, France',
+            'Manchester, United Kingdom',
+            'Marseille, France',
+            'Milan, Italy',
+            'Oslo, Norway',
+            'Paris, France',
+            'Rome, Italy',
+            'Stockholm, Sweden',
+            'Vienna, Austria',
+            'Warsaw, Poland',
+            'Zurich, Switzerland',
+
+        ]
+        self.display['other'] = [
+            'Argentina',
+            'Australia',
+            'Brazil',
+            'Hong Kong',
+            'India',
+            'Japan',
+            'Malaysia',
+            'New Zealand',
+            'Osaka, Japan',
+            'Peru',
+            'Philippines',
+            'Singapore',
+            'South Korea',
+            'Taiwan',
+            'United Arab Emirates',
+        ]
 
         self.display['deb'] = self.request.get('deb')
         self.display['user'] = self.user
