@@ -50,6 +50,7 @@ from servlets import home
 from servlets import login
 from servlets import mobile_apps
 from servlets import privacy
+from servlets import promote
 from servlets import profile_page
 from servlets import share
 from servlets import tasks
@@ -134,6 +135,8 @@ URLS = [
     ('/about', about.AboutHandler),
     ('/privacy', privacy.PrivacyHandler),
     ('/help', feedback.HelpHandler),
+    ('/promote', promote.PromoteHandler),
+
     ('/feedback', feedback.FeedbackHandler),
     ('/mapreduce/worker_callback.*', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
     ('/home', home.HomeHandler),

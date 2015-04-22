@@ -1,0 +1,115 @@
+#extends _bigbox_base
+
+#def title
+DanceDeets - Promoters
+#end def
+
+#def inner_body
+<p><h2>DanceDeets - Promoters</h2>
+
+<h3>Promoting dance events is hard. DanceDeets makes it easier.</h3>
+
+Promoting an event? Create a street dance Facebook event and check the promotability score:
+<form class="form" action="/promote" method="post">
+#if $user
+	<input type=text id="event_url" name="event_url" placeholder="http://www.facebook.com/events/..." class="form-control">
+	<p><button class="btn btn-primary">Check and Add Event</button>
+	<p>Or select one of your events below:
+	<p>
+	<ul id="events">
+	#for $event in $events
+		<li data-id="$event.id" class="
+			#if $event.loaded
+				ui-disabled
+			#else
+				ui-selectable
+			#end if
+			">
+			<div style="float:left;width:50px">
+				<img src="http://graph.facebook.com/$event.id/picture" width="50">
+			</div>
+			<div style="float:left;width:320px">
+				<span class="fake-a">$format_html($event.name)</span><br>
+				<div class="non-a">
+				$date_human_format($parse_fb_timestamp($event.start_time))<br>
+				#if getattr($event, "host", None)
+					(by $event.host)<br>
+				#end if
+
+				#if $event.loaded
+					ALREADY ADDED
+				#end if
+				</div>
+			</div>
+			<div style="clear:both;height:15px;"></div>
+		</li>
+	#end for
+	</ul>
+	<p><button class="btn btn-primary">Check and Add Event</button>
+#else
+	<input type=text name="event_url" placeholder="http://www.facebook.com/events/..." class="form-control">
+	<p><button class="btn btn-primary">Check and Add Event</button>
+	<p>Or log in to select one of your facebook existing events:
+	<p><button class="btn btn-default" onclick="manualLogin();">Sign up for DanceDeets with Facebook Login</button>
+#end if
+</form>
+
+<h3>Difficulty of Promotion</h3>
+
+<p>Being an event promoter is getting more challenging every year. Originally just word of mouth and distributing flyers, text message blasts became important, and then the internet exploded. It's challenging to keep up with all the changes, as Facebook and other sites change the rules mid-game.
+
+<ul>
+
+<li>
+<p><b>Difficult to promote outside the core dance scene</b>. Most event organizers and promoters promote to everyone they know, and ask their friends to do the same. Unfortunately, dancers know mostly dancers, and as a community we do a horrible job of reaching outside ourselves. We invite our friends, post on our friends' walls, and even our friends' friends are the same as our friends. So we do a poor job of reaching the people we don't know yet:
+<ul>
+<li><p><b>The recently-moved dancer</b>, who unfortunately doesn't know any dancers in his new city. Japanese dancers are moving to US/UK/Canada/Australia all the time to learn english, but don't know anyone.
+<li><p><b>The vacationing dancer</b>, on a trip with his/her family, or exploring the world solo. Disconnected, often in town for a few days or a week, there's no time to build relationships to promote.
+<li><p><b>Other styles of dancers</b>. In many cities, the bboy scene is totally different from the hiphop/house scene. Or the streetjazz / hiphop choreo scene is totally different from the freestyle scene. People end up joining the scene their friends tell them about, and it might take years for them to discover the scene they really love.
+<li><p><b>The dance fan</b>. Not a dancer, but they saw and loved Step Up 3D (seeing a dance battle in 3D! crazy!), or ABDC or SYTYCD, and want to follow their favorite dancers or crews, or just see the real thing. They rarely go to dance events, but when they decide to go and start looking, they have difficulty finding events.
+</ul>
+
+<p><b>DanceDeets puts this all online in one place!</b> If you're traveling, or outside of the core dance scene, you can still hook in and find all the dance events on DanceDeets. And for event organizers and promoters, it's a great way to reach these folks that you'd normally miss.
+
+
+<li>
+<p><b>Social platform rules keep changing</b>. The hotness keeps changing. Originally MySpace, then Facebook, and but now things keep changing. Japan is using Twitter, China uses WeChat, other countries use different blog platforms like Tumblr, Weblio, and more. Instagram and SnapChat are popular, and we're still figuring out how to take advantage all these things.
+
+<p>But the rules keep changing. MySpace died because it got too spammy and crazy. Facebook is fighting the spam now too. While you may have 5000 dance friends, Facebook has new event limits that prevent you from inviting more than 500 friends to your new facebook event. So your whole promotion network was destroyed because of one change by Facebook.
+
+<p><b>DanceDeets is a dance platform, by dancers, for dancers.</b> We need to own our own social distribution, instead of relying on the big companies like Facebook and others to support us. DanceDeets doesn't have everything we need yet, but it offers a great platform for event distribution that will only get better.
+
+
+<li>
+<p><b>Privacy settings make things tricky.</b> When everyone got scared of Facebook privacy settings, and locked things down, it also hurt the event promotion game. Now people create Facebook events for their dance events and invite their friends, not realizing that the event is only visible to their friends. The privacy settings are backfiring, and Facebook doesn't even tell you.
+
+<p><b>DanceDeets will tell you about privacy problems with your events.</b> Then when you promote your event, you can rest assured that others can see what you're promoting, instead of seeing the embarrassing:
+
+<p><img src="/images/attachment-unavailable.png" width="476" height="88">
+
+
+<li>
+<p><b>It's hard to create a presence eveywhere.</b> It's no longer enough to have a flyer, or facebook event. People find stuff through Twitter, through searching on Google, and other platforms. It's imoprtant to be in as many places as possible, so people can find your event, but that can be a lot of work.
+
+<p><b>DanceDeets auto-promotes your event on Google and Twitter</b>. We'll create a small little web page with all your event information, so that Google/Yahoo/Bing searchers can find it. And we'll post out the event and flyer to Twitter, so folks looking on Twitter can find it there. And as Instagram, SnapChat, or WeChat get popular for event promotion, we'll try to figure out a solution for you there too!
+
+</ul>
+#end def
+
+
+#def bottom_javascript
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#events").click(function(event) {
+			var selectees = $(".ui-selectable", "#events");
+			selectees.filter('.ui-selected').each(function() {
+				$(this).removeClass('ui-selected');
+			});
+			$(event.target).parents().andSelf().filter('.ui-selectable').each(function() {
+				$(this).addClass('ui-selected');
+				$('#event_url').val('https://www.facebook.com/events/' + $(this).data('id'));
+			});
+		});
+	});
+</script>
+#end def
