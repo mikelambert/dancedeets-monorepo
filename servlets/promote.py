@@ -15,33 +15,40 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
 
+    def get_events(self):
+        if not self.user:
+            return []
+
+        try:
+            user_events = self.fbl.get(fb_api.LookupUserEvents, self.fb_uid, allow_cache=False)
+            results_json = user_events['all_event_info']['data']
+            events = list(reversed(sorted(results_json, key=lambda x: x.get('start_time'))))
+        except fb_api.NoFetchedDataException, e:
+            logging.error("Could not load event info for user: %s", e)
+            events = []
+
+        fb_user = self.fbl.get(fb_api.LookupUser, self.fb_uid)
+        events = [x for x in events if x['host'] == fb_user['profile']['name']]
+
+        #STR_ID_MIGRATE: We still get ids as ints from our FQL
+        loaded_fb_event_ids = set(x.string_id() for x in eventdata.DBEvent.get_by_ids([str(x['eid']) for x in events], keys_only=True) if x)
+
+        for event in events:
+            # rewrite hack necessary for templates (and above code)
+            #STR_ID_MIGRATE
+            event['id'] = str(event['eid'])
+            event['loaded'] = event['id'] in loaded_fb_event_ids
+        return events
+
+    def render_page(self):
+        self.display['events'] = self.get_events()
+        self.display['parse_fb_timestamp'] = dates.parse_fb_timestamp
+        self.display['event_url'] = self.request.get('event_url')
+        self.render_template('promote')
+
     def get(self):
         self.finish_preload()
-        if self.user:
-            try:
-                user_events = self.fbl.get(fb_api.LookupUserEvents, self.fb_uid, allow_cache=False)
-                results_json = user_events['all_event_info']['data']
-                events = list(reversed(sorted(results_json, key=lambda x: x.get('start_time'))))
-            except fb_api.NoFetchedDataException, e:
-                logging.error("Could not load event info for user: %s", e)
-                events = []
-
-            fb_user = self.fbl.get(fb_api.LookupUser, self.fb_uid)
-            print fb_user
-            events = [x for x in events if x['host'] == fb_user['profile']['name']]
-
-            #STR_ID_MIGRATE: We still get ids as ints from our FQL
-            loaded_fb_event_ids = set(x.string_id() for x in eventdata.DBEvent.get_by_ids([str(x['eid']) for x in events], keys_only=True) if x)
-
-            for event in events:
-                # rewrite hack necessary for templates (and above code)
-                #STR_ID_MIGRATE
-                event['id'] = str(event['eid'])
-                event['loaded'] = event['id'] in loaded_fb_event_ids
-
-        self.display['events'] = events
-        self.display['parse_fb_timestamp'] = dates.parse_fb_timestamp
-        self.render_template('promote')
+        self.render_page()
 
     def post(self):
         if self.request.get('event_url'):
@@ -94,4 +101,9 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
 
         self.display['event_warnings'] = event_warnings
         self.display['event_errors'] = event_errors
-        self.render_template('promote_event')
+        self.display['event'] = fb_event
+
+        # Add Event
+        if self.request.get('force_add') or not event_errors:
+            add_entities.add_update_event(fb_event, self.fbl, visible_to_uids=pe.get_invite_uids(), creating_method=add_entities.CM_AUTO)
+        self.render_page()

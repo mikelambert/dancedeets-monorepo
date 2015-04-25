@@ -9,10 +9,25 @@ DanceDeets - Promoters
 
 <h3>Promoting dance events is hard. DanceDeets makes it easier.</h3>
 
+#if $event_errors or $event_warnings
+<div class="alert alert-danger">
+The event "$html_escape($event.info.name)" has the following problems:
+<ul>
+#for $error in $event_errors
+	<li>$format_html($error)</li>
+#end for
+#for $warning in $event_warnings
+	<li>WARNING: $format_html($warning)</li>
+#end for
+</ul>
+<a href="$html_escape($event_url)" class="btn btn-primary">Fix these problems in Facebook.</a> Then return to check your event again.
+</div>
+#end if
+
 Promoting an event? Create a street dance Facebook event and check the promotability score:
-<form class="form" action="/promote" method="post">
+<form id="events-form" class="form" action="/promote" method="post">
 #if $user
-	<input type=text id="event_url" name="event_url" placeholder="http://www.facebook.com/events/..." class="form-control">
+	<input type=text id="event_url" name="event_url" placeholder="http://www.facebook.com/events/..." value="$html_escape($event_url)" class="form-control">
 	<p><button class="btn btn-primary">Check and Add Event</button>
 	<p>Or select one of your events below:
 	<p>
@@ -45,12 +60,10 @@ Promoting an event? Create a street dance Facebook event and check the promotabi
 		</li>
 	#end for
 	</ul>
-	<p><button class="btn btn-primary">Check and Add Event</button>
 #else
 	<input type=text name="event_url" placeholder="http://www.facebook.com/events/..." class="form-control">
 	<p><button class="btn btn-primary">Check and Add Event</button>
-	<p>Or log in to select one of your facebook existing events:
-	<p><button class="btn btn-default" onclick="manualLogin();">Sign up for DanceDeets with Facebook Login</button>
+	<p>Or <button class="btn btn-primary" onclick="manualLogin();">Login to check your Facebook events</button>
 #end if
 </form>
 
@@ -109,6 +122,7 @@ Promoting an event? Create a street dance Facebook event and check the promotabi
 				$(this).addClass('ui-selected');
 				$('#event_url').val('https://www.facebook.com/events/' + $(this).data('id'));
 			});
+			$("#events-form").submit();
 		});
 	});
 </script>
