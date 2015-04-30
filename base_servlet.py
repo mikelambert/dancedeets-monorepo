@@ -391,7 +391,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         # TODO(FB2.0): get rid of friends_events (when we have enough users using mobile 2.0 to keep us going)
         fb_permissions = 'user_location,rsvp_event,email,user_events,user_groups,user_likes,friends_events'
         if self.request.get('all_access'):
-            fb_permissions += ',read_friendlists,manage_pages'
+            fb_permissions += ',read_friendlists,manage_pages,friends_likes,friends_groups'
         self.display['fb_permissions'] = fb_permissions
 
         already_used_mobile = self.user and ('android' in self.user.clients or 'ios' in self.user.clients)
