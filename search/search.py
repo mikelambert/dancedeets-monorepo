@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import collections
 import datetime
 import logging
 import pprint
@@ -296,11 +297,32 @@ class SearchQuery(object):
             search_results.append(result)
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
     
+        existing_datetime_locs = collections.defaultdict(lambda: [])
+        for r in search_results:
+            if r.db_event:
+                # This only works on full-events, aka API v1.0:
+                r_datetime = r.db_event.start_time
+                fb_event = r.db_event.fb_event
+                venue = fb_event['info'].get('venue')
+                # We only want to allow one event per time per specific-location
+                if venue and venue.get('street'):
+                    r_location = venue['id']
+                else:
+                    r_location = r.display_event.fb_event_id
+                existing_datetime_locs[(r_datetime, r_location)].append(r)
+            else:
+                existing_datetime_locs[r.display_event.fb_event_id].append(r)
+
+        deduped_results = []
+        for same_results in existing_datetime_locs.values():
+            largest_result = max(same_results, key=lambda x: x.attendee_count)
+            deduped_results.append(largest_result)
+
         # Now sort and return the results
         a = time.time()
-        search_results.sort(key=lambda x: x.start_time)
+        deduped_results.sort(key=lambda x: x.start_time)
         logging.info("search result sorting took %s seconds", time.time() - a)
-        return search_results
+        return deduped_results
 
 def update_fulltext_search_index(db_event, fb_event):
     update_fulltext_search_index_batch((db_event, fb_event))
