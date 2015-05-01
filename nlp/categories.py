@@ -18,7 +18,6 @@ ANY_BREAK_BROAD = Any(
     ANY_BREAK,
     keywords.BBOY_CREW[grammar.STRONG_WEAK],
     keywords.BBOY_DANCER[grammar.STRONG_WEAK],
-    'freestyle\W?sessions?',
 )
 
 ANY_POP = Any(
@@ -166,7 +165,9 @@ def get_context(fb_event, keywords):
     return contexts
 
 def find_styles(fb_event):
-    found_styles = find_styles_in_text(fb_event['info'].get('name', ''), broad=True)
+    name = fb_event['info'].get('name', '').lower()
+    name = name.replace('freestyle session', 'fs')
+    found_styles = find_styles_in_text(name, broad=True)
     if not found_styles:
-        found_styles = find_styles_in_text(fb_event['info'].get('description', ''), broad=True)
+        found_styles = find_styles_in_text(fb_event['info'].get('description', '').lower(), broad=True)
     return found_styles
