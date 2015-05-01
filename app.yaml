@@ -118,6 +118,7 @@ skip_files:
 - ^local_data(/.*)?
 - ^local_data2(/.*)?
 - ^download(/.*)?
+- ^snapshotted(/.*)?
 #- ^(.*/)?app\.yaml
 #- ^(.*/)?app\.yml
 #- ^(.*/)?index\.yaml

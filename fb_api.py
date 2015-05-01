@@ -132,9 +132,6 @@ class LookupProfile(LookupType):
         return (USERLESS_UID, object_id, 'OBJ_PROFILE')
 
 class LookupUser(LookupType):
-    # TODO(FB2.0): cutover whenever is convenient, not sure it makes a difference to this app
-    version = "v1.0" # still get access to 'friends', though we don't use it, so this can switch to v2.2 easily
-
     @classmethod
     def get_lookups(cls, object_id):
         return [
@@ -150,8 +147,7 @@ class LookupUser(LookupType):
 #TODO(lambert): move these LookupType subclasses out of fb_api.py into client code where they belong,
 # keeping this file infrastructure and unmodified as we add new features + LookupTypes
 class LookupUserEvents(LookupType):
-    # TODO(FB2.0): cutover at the last moment
-    version = "v1.0" # still using implicit access to friend's events
+    version = "v2.0" # Using FQL for now, need to migrate off to hit 2.1
 
     @classmethod
     def get_lookups(cls, object_id):
@@ -165,18 +161,6 @@ class LookupUserEvents(LookupType):
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_USER_EVENTS')
-
-class LookupFriendList(LookupType):
-    version = "v1.0" # still using implicit access to list of friends
-
-    @classmethod
-    def get_lookups(cls, object_id):
-        return [
-            ('friend_list', cls.url('%s/members' % object_id)),
-        ]
-    @classmethod
-    def cache_key(cls, object_id, fetching_uid):
-        return (fetching_uid, object_id, 'OBJ_FRIEND_LIST')
 
 class LookupEvent(LookupType):
     optional_keys = ['cover_info']

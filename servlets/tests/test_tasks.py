@@ -89,8 +89,6 @@ def test_9():
 
 def test_10():
     print app.get('/tasks/load_all_potential_events?user_id=701004')
-def test_11():
-    print app.get('/tasks/load_potential_events_for_friends?user_id=701004')
 def test_12():
     print app.get('/tasks/load_potential_events_for_user?user_id=701004')
 def test_13():

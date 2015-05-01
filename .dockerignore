@@ -6,3 +6,4 @@ grammar-processed.*
 full-logs.txt
 scratch*
 r/*
+snapshotted

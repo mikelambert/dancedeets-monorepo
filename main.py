@@ -93,7 +93,6 @@ URLS = [
     ('/tools/export_sources', scraping_tasks.ExportSourcesHandler),
     ('/tools/auto_add_potential_events', scraping_tasks.AutoAddPotentialEventsHandler),
     ('/tasks/load_all_potential_events', scraping_tasks.LoadAllPotentialEventsHandler),
-    ('/tasks/load_potential_events_for_friends', scraping_tasks.LoadPotentialEventsForFriendsHandler),
     ('/tasks/load_potential_events_for_user', scraping_tasks.LoadPotentialEventsForUserHandler),
     ('/tasks/load_potential_events_from_wall_posts', scraping_tasks.LoadPotentialEventsFromWallPostsHandler),
 

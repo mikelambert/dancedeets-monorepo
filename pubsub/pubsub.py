@@ -206,7 +206,7 @@ def facebook_post(auth_token, db_event):
     datetime_string = start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
 
     page_id = auth_token.token_nickname
-    endpoint = '/v2.2/%s/feed' % page_id
+    endpoint = 'v2.2/%s/feed' % page_id
     fbl = fb_api.FBLookup(None, auth_token.oauth_token)
 
     post_values = {}
