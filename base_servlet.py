@@ -386,12 +386,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['full_hostname'] = 'www.dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
 
         self.display['keyword_tokens'] = [{'value': x.public_name} for x in styles.STYLES]
-        # TODO: get rid of user_location when we can switch to IP-based geocoding (since mobile clients don't need it)
-        # TODO(FB2.0): get rid of user_groups/user_likes
-        # TODO(FB2.0): get rid of friends_events (when we have enough users using mobile 2.0 to keep us going)
-        fb_permissions = 'user_location,rsvp_event,email,user_events,user_groups,user_likes,friends_events'
+        fb_permissions = 'rsvp_event,email,user_events'
         if self.request.get('all_access'):
-            fb_permissions += ',read_friendlists,manage_pages,friends_likes,friends_groups'
+            fb_permissions += ',read_friendlists,manage_pages'
         self.display['fb_permissions'] = fb_permissions
 
         already_used_mobile = self.user and ('android' in self.user.clients or 'ios' in self.user.clients)
