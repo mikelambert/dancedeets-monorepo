@@ -10,8 +10,8 @@ from test_utils import mock_memcache
 class TestLookupUser(unittest.TestCase):
     def runTest(self):
         lookups = fb_api.LookupUser.get_lookups('id')
-        self.assertEqual(lookups[0], ('profile', '/v1.0/id'))
-        self.assertEqual(lookups[1], ('friends', '/v1.0/id/friends'))
+        self.assertEqual(lookups[0], ('profile', '/v2.2/id'))
+        self.assertEqual(lookups[1], ('friends', '/v2.2/id/friends'))
         cache_key = fb_api.LookupUser.cache_key('id', 'fetch_id')
         self.assertEqual(cache_key, ('fetch_id', 'id', 'OBJ_USER'))
 
@@ -100,10 +100,10 @@ class TestFBAPI(unittest.TestCase):
         self.assertEqual(d, {})
 
         fb_api.FBAPI.results = {
-            '/v1.0/uid': (200, {}),
-            '/v1.0/uid/events?since=yesterday': (200, {}),
-            '/v1.0/uid/friends': (200, {}),
-            '/v1.0/uid/permissions': (200, {}),
+            '/v2.2/uid': (200, {}),
+            '/v2.2/uid/events?since=yesterday': (200, {}),
+            '/v2.2/uid/friends': (200, {}),
+            '/v2.2/uid/permissions': (200, {}),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -118,10 +118,10 @@ class TestFBAPI(unittest.TestCase):
         )
 
         fb_api.FBAPI.results = {
-            '/v1.0/uid': (500, {}),
-            '/v1.0/uid/events?since=yesterday': (200, {}),
-            '/v1.0/uid/friends': (200, {}),
-            '/v1.0/uid/permissions': (200, {}),
+            '/v2.2/uid': (500, {}),
+            '/v2.2/uid/events?since=yesterday': (200, {}),
+            '/v2.2/uid/friends': (200, {}),
+            '/v2.2/uid/permissions': (200, {}),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -129,10 +129,10 @@ class TestFBAPI(unittest.TestCase):
         self.assertEqual(d, {})
 
         fb_api.FBAPI.results = {
-            '/v1.0/uid': (200, False),
-            '/v1.0/uid/events?since=yesterday': (200, False),
-            '/v1.0/uid/friends': (200, False),
-            '/v1.0/uid/permissions': (200, False),
+            '/v2.2/uid': (200, False),
+            '/v2.2/uid/events?since=yesterday': (200, False),
+            '/v2.2/uid/friends': (200, False),
+            '/v2.2/uid/permissions': (200, False),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -143,10 +143,10 @@ class TestFBAPI(unittest.TestCase):
         )
 
         fb_api.FBAPI.results = {
-            '/v1.0/uid': (200, {'error_code': 100}),
-            '/v1.0/uid/events?since=yesterday': (200, {'error_code': 100}),
-            '/v1.0/uid/friends': (200, {'error_code': 100}),
-            '/v1.0/uid/permissions': (200, {'error_code': 100}),
+            '/v2.2/uid': (200, {'error_code': 100}),
+            '/v2.2/uid/events?since=yesterday': (200, {'error_code': 100}),
+            '/v2.2/uid/friends': (200, {'error_code': 100}),
+            '/v2.2/uid/permissions': (200, {'error_code': 100}),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -185,10 +185,10 @@ class TestFBLookup(unittest.TestCase):
 
         # Set up our facebook backend
         fb_api.FBAPI.results = {
-            '/v1.0/uid': (200, {}),
-            '/v1.0/uid/events?since=yesterday': (200, {}),
-            '/v1.0/uid/friends': (200, {}),
-            '/v1.0/uid/permissions': (200, {}),
+            '/v2.2/uid': (200, {}),
+            '/v2.2/uid/events?since=yesterday': (200, {}),
+            '/v2.2/uid/friends': (200, {}),
+            '/v2.2/uid/permissions': (200, {}),
         }
         # And fetching it then populates our memcache and db
         result = fbl.get(fb_api.LookupUser, 'uid')
