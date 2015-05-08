@@ -34,6 +34,8 @@ formatting_reg_data = {
     'Europe': 'Europe',
     'Asia': 'Asia',
     'Mexico City': 'Mexico City, DF, Mexico',
+    'Taipei, Taiwan 103': 'Taipei City, Taiwan',
+    'Tangerang': 'Tangerang, Banten, Republic of Indonesia',
 }
 
 
