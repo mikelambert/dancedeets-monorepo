@@ -36,10 +36,10 @@ class TestAuth(TestSearch):
         access_token = 'BlahToken'
         new_access_token = 'BlahToken2'
         fb_api.FBAPI.results = {
-            '/v1.0/me': (200, {'id': me_uid, 'name': 'Mike Lambert'}),
-            '/v1.0/me/events?since=yesterday': (200, {}),
-            '/v1.0/me/friends': (200, {}),
-            '/v1.0/me/permissions': (200, {}),
+            '/v2.2/me': (200, {'id': me_uid, 'name': 'Mike Lambert'}),
+            '/v2.2/me/events?since=yesterday': (200, {}),
+            '/v2.2/me/friends': (200, {}),
+            '/v2.2/me/permissions': (200, {}),
         }
 
         auth_request = {
