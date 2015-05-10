@@ -2,36 +2,6 @@
 #from spitfire.runtime.filters import escape_html
 #filter escape_html
 
-#def head_stylesheet
-<style type="text/css">
-#events {
-	overflow-y: scroll;
-	width: 400px;
-	height: 500px;
-	list-style-type: none;
-	padding: 0px;
-	border: 1px solid black;
-}
-#events li {
-	display: block;
-}
-#events .ui-disabled {
-	color: black;
-	opacity:0.4;
-	filter:alpha(opacity=40);
-}
-#events .ui-selectable {
-	background: white;
-	cursor: pointer;
-	cursor: hand;
-}
-#events .ui-selected {
-	background: black;
-	color: white;
-}
-</style>
-#end def
-
 #def title
 Add Dance Event
 #end def
@@ -58,7 +28,7 @@ Add Dance Event
 				#if $events
 					Or select one of your facebook events below:<br>
 					<input id="event_id_form" type="hidden" name="event_id" value="">
-					<ul id="events">
+					<ul id="add-events">
 					#for $event in $events
 						<li data-id="$event.id" class="
 							#if $event.loaded

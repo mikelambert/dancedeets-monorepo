@@ -20,7 +20,7 @@ The event "$html_escape($event.info.name)" has the following problems:
 	<li>WARNING: $format_html($warning)</li>
 #end for
 </ul>
-<a href="$html_escape($event_url)" class="btn btn-primary">Fix these problems in Facebook.</a> Then return to check your event again.
+<a href="$html_escape($event_url)" class="btn btn-primary">Go to the FB Event to fix these problems.</a> Then return to check your event again.
 </div>
 #end if
 
@@ -31,7 +31,7 @@ Promoting an event? Create a street dance Facebook event and check the promotabi
 	<p><button class="btn btn-primary">Check and Add Event</button>
 	<p>Or select one of your events below:
 	<p>
-	<ul id="events">
+	<ul id="add-events">
 	#for $event in $events
 		<li data-id="$event.id" class="
 			#if $event.loaded
