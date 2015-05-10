@@ -17,7 +17,6 @@ formatting_reg_data = {
     'Hong Kong Island': 'Hong Kong Island, Hong Kong',
     'Shanghai': 'Shanghai, China',
     'Sao Paulo, Brazil': u'S\xe3o Paulo, Brazil',
-    'Taipei': 'Taipei, Taiwan',
     'Miami, FL': 'Miami, FL, United States',
     'Sydney': 'Sydney, NSW, Australia',
     'Paris': 'Paris, France',
@@ -35,6 +34,8 @@ formatting_reg_data = {
     'Asia': 'Asia',
     'Mexico City': 'Mexico City, DF, Mexico',
     'Taipei, Taiwan 103': 'Taipei City, Taiwan',
+    'Keelung, Taiwan 20241': 'Keelung City, Taiwan',
+    'Taipei': 'Taipei, Taiwan',
     'Tangerang': 'Tangerang, Banten, Republic of Indonesia',
 }
 

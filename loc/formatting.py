@@ -12,7 +12,7 @@ def _get_formatting_parts(geocode, include_neighborhood):
     if country in ['US', 'CA', 'AU', 'MX', 'MY', 'ID', 'JP', 'HK', 'TW']:
         mini_components = [
             geocode.get_component('locality'),
-            geocode.get_component('administrative_area_level_1', long=False),
+            geocode.get_component('administrative_area_level_1', long=False) or geocode.get_component('administrative_area_level_2', long=False),
             ]
         components.append(', '.join(x for x in mini_components if x))
     else:
