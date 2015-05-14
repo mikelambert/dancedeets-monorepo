@@ -507,6 +507,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'on lock',
     'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
     'zip\W?lock',
+    'lock\Win',
     'whack music',
     'wack music',
     'wave\W?house', # venue in san diego
