@@ -569,8 +569,6 @@ footer {
 /* for add_event/promote pages */
 #add-events {
 	overflow-y: scroll;
-	width: 400px;
-	height: 500px;
 	list-style-type: none;
 	padding: 0px;
 	border: 1px solid black;
@@ -579,7 +577,7 @@ footer {
 	display: block;
 }
 #add-events li:hover {
-	background-color: #ccc;
+	background-color: #ddd;
 }
 #add-events .ui-disabled {
 	color: black;

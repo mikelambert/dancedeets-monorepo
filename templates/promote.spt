@@ -5,11 +5,9 @@ DanceDeets - Promoters
 #end def
 
 #def inner_body
-<p><h2>DanceDeets - Promoters</h2>
+<p><h3>DanceDeets Event Promotion</h3>
 
-<h3>Promoting dance events is hard. DanceDeets makes it easier.</h3>
-
-#if $event_errors or $event_warnings
+<p>#if $event_errors or $event_warnings
 <div class="alert alert-danger">
 The event "$html_escape($event.info.name)" has the following problems:
 <ul>
@@ -24,7 +22,9 @@ The event "$html_escape($event.info.name)" has the following problems:
 </div>
 #end if
 
-Promoting an event? Create a street dance Facebook event and check the promotability score:
+<p><b>Promoting dance events is hard. DanceDeets makes it easy.</b> <a href="#promotion-is-hard">See how!</a>
+
+<p>Want to promote a street dance event? Create a Facebook event and check it for common promotion mistakes!
 <form id="events-form" class="form" action="/promote" method="post">
 #if $user
 	<input type=text id="event_url" name="event_url" placeholder="http://www.facebook.com/events/..." value="$html_escape($event_url)" class="form-control">
@@ -67,7 +67,7 @@ Promoting an event? Create a street dance Facebook event and check the promotabi
 #end if
 </form>
 
-<h3>Difficulty of Promotion</h3>
+<a name="promotion-is-hard"></a><h3>Difficulty of Promotion</h3>
 
 <p>Being an event promoter is getting more challenging every year. Originally just word of mouth and distributing flyers, text message blasts became important, and then the internet exploded. It's challenging to keep up with all the changes, as Facebook and other sites change the rules mid-game.
 
@@ -113,16 +113,16 @@ Promoting an event? Create a street dance Facebook event and check the promotabi
 #def bottom_javascript
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("#events").click(function(event) {
-			var selectees = $(".ui-selectable", "#events");
+		$("#add-events").click(function(event) {
+			var selectees = $(".ui-selectable", "#add-events");
 			selectees.filter('.ui-selected').each(function() {
 				$(this).removeClass('ui-selected');
 			});
 			$(event.target).parents().andSelf().filter('.ui-selectable').each(function() {
 				$(this).addClass('ui-selected');
 				$('#event_url').val('https://www.facebook.com/events/' + $(this).data('id'));
+				$("#events-form").submit();
 			});
-			$("#events-form").submit();
 		});
 	});
 </script>
