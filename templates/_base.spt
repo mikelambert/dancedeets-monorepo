@@ -170,7 +170,7 @@ var _gaq = [];
         </li>
 #if $user
 ##        <!-- img src="http://graph.facebook.com/$user.fb_uid/picture" style="border: 1px solid black" -->
-        <li><a href="/user/edit">$user.full_name</a></li>
+        <li><a href="/user/edit">$getattr($user, 'full_name', 'Account')</a></li>
         <li><a href="#" onclick="logout(); return false;">Logout</a></li>
 #else
 				<li><div class="nav-text"><fb:login-button length="long" scope="$fb_permissions"></fb:login-button></div></li>

@@ -62,7 +62,7 @@ class User(ndb.Model):
         return dates.duration_human_format(d1, d2, country=self.location_country)
 
     def compute_derived_properties(self, fb_user):
-        self.full_name = fb_user['profile']['name']
+        self.full_name = fb_user['profile'].get('name')
         self.email = fb_user['profile'].get('email')
         try:
             self.timezone_offset = float(fb_user['profile'].get('timezone'))

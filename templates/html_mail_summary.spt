@@ -2,7 +2,7 @@
 #extends _rsvp
 
 #def html
-Hi $user.full_name,
+Hi $getattr($user, 'full_name', ''),
 
 #if $user.expired_oauth_token
 <p>You changed your facebook password and Dance Deets has lost permission to use your account. Please <a href="http://www.dancedeets.com/?source=email">sign in to Dance Deets again</a> to ensure Dance Deets continues working for you!
