@@ -281,7 +281,11 @@ class SearchQuery(object):
                 dbevents = eventdata.DBEvent.get_by_ids(missing_ids)
                 objs_to_put = []
                 for event in dbevents:
-                    objs_to_put.append(DisplayEvent.build(event))
+                    display_event = DisplayEvent.build(event)
+                    if display_event:
+                        objs_to_put.append(display_event)
+                    else:
+                        logging.warning("Skipping event %s because no DisplayEvent", event.fb_event_id)
                 ndb.put_multi(objs_to_put)
             display_events = [display_event_lookup[x] for x in ids]
 
