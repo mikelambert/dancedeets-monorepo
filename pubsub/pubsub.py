@@ -119,8 +119,15 @@ def create_media_on_twitter(t, fb_event):
         t.domain = 'api.twitter.com'
     return result
 
+def campaign_url(eid, source):
+    return urls.fb_event_url(eid, {
+        'utm_source': source,
+        'utm_medium': 'share',
+        'utm_campaign': 'autopost'
+    })
+
 def format_twitter_post(db_event, fb_event, media, handles=None):
-    url = urls.fb_event_url(fb_event['info']['id'])
+    url = campaign_url(fb_event['info']['id'], 'twitter_feed')
     title = fb_event['info']['name']
     city = db_event.actual_city_name
 
@@ -201,7 +208,7 @@ class LookupGeoTarget(fb_api.LookupType):
 
 def facebook_post(auth_token, db_event):
     fb_event = db_event.fb_event
-    link = urls.fb_event_url(fb_event['info']['id'])
+    link = campaign_url(fb_event['info']['id'], 'fb_feed')
     start_time = dates.parse_fb_start_time(fb_event)
     datetime_string = start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
 
