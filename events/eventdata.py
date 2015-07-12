@@ -20,7 +20,8 @@ def get_event_image_url(fb_event):
 
 def get_largest_cover(fb_event):
     if 'cover_info' in fb_event:
-        cover = fb_event['cover_info'][fb_event['info']['cover']['cover_id']]
+        # Sometimes cover_id is an int or a string, but cover_info is always a string.
+        cover = fb_event['cover_info'][str(fb_event['info']['cover']['cover_id'])]
         max_cover = max(cover['images'], key=lambda x: x['height'])
         return max_cover
     else:
