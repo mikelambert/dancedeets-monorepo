@@ -39,6 +39,9 @@ $head_javascript()
 
   ga('create', 'UA-18831479-1', 'auto');
   ga('require', 'linkid', 'linkid.js');
+#if $user
+  ga('set', '&uid', '$user.fb_uid');
+#end if
   ga('send', 'pageview', {
     'dimension1':
 #if $user
@@ -51,7 +54,6 @@ $head_javascript()
     'dimension2': 'has-account'
 #end if
   });
-
 </script>
 
 #if $user
@@ -324,6 +326,27 @@ $body()
 #end if
 </script>
 $bottom_javascript()
+
+#if $user and $prod_mode
+<!-- Google Code for signup Conversion Page -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 992860743;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "Q-eJCImZgQIQx7S32QM";
+var google_remarketing_only = false;
+/* ]]> */
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/992860743/?label=Q-eJCImZgQIQx7S32QM&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
+#end if
 </body>
 #end def
 
