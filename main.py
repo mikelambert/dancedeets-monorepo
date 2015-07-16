@@ -123,11 +123,14 @@ URLS = [
     ('/youtube_simple_api', youtube_simple_api.YoutubeSimpleApiHandler),
     ('/calendar/feed', calendar.CalendarFeedHandler),
     ('/sources/admin_edit', source_servlets.AdminEditHandler),
+
     ('/tasks/track_newuser_friends', user_tasks.TrackNewUserFriendsHandler),
     ('/tasks/load_users', user_tasks.LoadUserHandler),
     ('/tasks/reload_all_users', user_tasks.ReloadAllUsersHandler),
     ('/tools/show_users', user_servlets.ShowUsersHandler),
+    ('/tools/user_emails', user_servlets.UserEmailExportHandler),
     ('/user/edit', user_servlets.UserHandler),
+
     ('/login', login.LoginHandler),
     ('/mobile_apps', mobile_apps.MobileAppsHandler),
     ('/share', share.ShareHandler),

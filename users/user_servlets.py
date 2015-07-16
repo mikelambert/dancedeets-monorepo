@@ -1,4 +1,5 @@
 import collections
+import csv
 
 import base_servlet
 import fb_api
@@ -72,3 +73,13 @@ class ShowUsersHandler(base_servlet.BaseRequestHandler):
         self.display['fb_users'] = fb_users
         self.display['track_google_analytics'] = False
         self.render_template('show_users')
+
+class UserEmailExportHandler(base_servlet.BaseRequestHandler):
+    def get(self):
+        num_fetch_users = int(self.request.get('num_users', 500))
+        order_field = self.request.get('order_field', 'creation_time')
+        all_users = users.User.query().order(-getattr(users.User, order_field)).fetch(num_fetch_users)
+        writer = csv.writer(self.response.out)
+        for user in all_users:
+            if user.email:
+                writer.writerow([user.email.encode('utf8'), (user.full_name or '').encode('utf8')])
