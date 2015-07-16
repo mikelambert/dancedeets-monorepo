@@ -15,7 +15,7 @@ AND is_app_user = 1
 
 class LookupAppFriendUsers(fb_api.LookupType):
     # V2.0 CHANGE
-    version = "v1.0"
+    version = "v2.0"
 
     @classmethod
     def get_lookups(cls, object_id):
