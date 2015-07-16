@@ -43,7 +43,10 @@ class User(ndb.Model):
 
     # Derived from fb_user
     full_name = ndb.StringProperty(indexed=False)
+    first_name = ndb.StringProperty(indexed=False)
+    last_name = ndb.StringProperty(indexed=False)
     email = ndb.StringProperty(indexed=False)
+    locale = ndb.StringProperty(indexed=False)
     timezone_offset = ndb.FloatProperty(indexed=False)
 
     def distance_in_km(self):
@@ -63,7 +66,10 @@ class User(ndb.Model):
 
     def compute_derived_properties(self, fb_user):
         self.full_name = fb_user['profile'].get('name')
+        self.first_name = fb_user['profile'].get('first_name')
+        self.last_name = fb_user['profile'].get('last_name')
         self.email = fb_user['profile'].get('email')
+        self.locale = fb_user['profile'].get('locale')
         try:
             self.timezone_offset = float(fb_user['profile'].get('timezone'))
         except (datastore_errors.BadValueError, TypeError) as e:

@@ -40,6 +40,8 @@ EMPTY_CAUSE_DELETED = 'deleted'
 #TODO(lambert): use parent_group to find additional sources to scrape
 OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins', 'parent_group', 'ticket_uri', 'timezone', 'updated_time', 'is_date_only', 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count')
 
+OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender', 'picture')
+
 USERLESS_UID = '701004'
 
 class FacebookCachedObject(db.Model):
@@ -135,7 +137,7 @@ class LookupUser(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
-            ('profile', cls.url('%s' % object_id)),
+            ('profile', cls.url('%s' % object_id, fields=OBJ_USER_FIELDS)),
             ('friends', cls.url('%s/friends' % object_id)),
             ('permissions', cls.url('%s/permissions' % object_id)),
             ('rsvp_for_future_events', cls.url('%s/events?since=yesterday' % object_id)),

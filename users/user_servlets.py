@@ -80,6 +80,16 @@ class UserEmailExportHandler(base_servlet.BaseRequestHandler):
         order_field = self.request.get('order_field', 'creation_time')
         all_users = users.User.query().order(-getattr(users.User, order_field)).fetch(num_fetch_users)
         writer = csv.writer(self.response.out)
+        writer.writerow(['Email', 'Full Name', 'First Name', 'Last Name', 'Expired Token', 'Weekly Subscription', 'Locale', 'Country'])
         for user in all_users:
             if user.email:
-                writer.writerow([user.email.encode('utf8'), (user.full_name or '').encode('utf8')])
+                writer.writerow([
+                    user.email.encode('utf8'),
+                    (user.full_name or '').encode('utf8'),
+                    (user.first_name or '').encode('utf8'),
+                    (user.last_name or '').encode('utf8'),
+                    unicode(user.expired_oauth_token),
+                    unicode(user.send_email),
+                    user.locale or '',
+                    user.location_country or '',
+                    ])
