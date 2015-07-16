@@ -76,6 +76,7 @@ class ShowUsersHandler(base_servlet.BaseRequestHandler):
 
 class UserEmailExportHandler(base_servlet.BaseRequestHandler):
     def get(self):
+        self.response.headers['Content-Type'] = 'text/plain'
         num_fetch_users = int(self.request.get('num_users', 500))
         order_field = self.request.get('order_field', 'creation_time')
         all_users = users.User.query().order(-getattr(users.User, order_field)).fetch(num_fetch_users)
@@ -83,6 +84,9 @@ class UserEmailExportHandler(base_servlet.BaseRequestHandler):
         writer.writerow(['Email', 'Full Name', 'First Name', 'Last Name', 'Expired Token', 'Weekly Subscription', 'Locale', 'Country'])
         for user in all_users:
             if user.email:
+                trimmed_locale = user.locale or ''
+                if '_' in trimmed_locale:
+                    trimmed_locale = trimmed_locale.split('_')[0]
                 writer.writerow([
                     user.email.encode('utf8'),
                     (user.full_name or '').encode('utf8'),
@@ -90,6 +94,6 @@ class UserEmailExportHandler(base_servlet.BaseRequestHandler):
                     (user.last_name or '').encode('utf8'),
                     unicode(user.expired_oauth_token),
                     unicode(user.send_email),
-                    user.locale or '',
+                    trimmed_locale,
                     user.location_country or '',
                     ])
