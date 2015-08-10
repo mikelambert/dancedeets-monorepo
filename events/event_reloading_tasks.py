@@ -43,7 +43,7 @@ def yield_load_fb_event_attending(fbl, db_events):
 map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
 load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 
-def mr_load_fb_events(fbl, time_period=None, update_geodata=True):
+def mr_load_fb_events(fbl, time_period=None, update_geodata=True, queue='slow-queue'):
     if time_period:
         filters = [('search_time_period', '=', time_period)]
         name = 'Load %s Events' % time_period
@@ -57,7 +57,8 @@ def mr_load_fb_events(fbl, time_period=None, update_geodata=True):
         entity_kind='events.eventdata.DBEvent',
         handle_batch_size=20,
         filters=filters,
-        extra_mapper_params={'update_geodata': update_geodata}
+        extra_mapper_params={'update_geodata': update_geodata},
+        queue=queue,
     )
 
 class LoadEventHandler(base_servlet.BaseTaskFacebookRequestHandler):
@@ -89,5 +90,6 @@ class ReloadFutureEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
 class ReloadAllEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         update_geodata = self.request.get('update_geodata') != '0'
-        mr_load_fb_events(self.fbl, update_geodata=update_geodata)
+        queue = self.request.get('queue', 'slow-queue')
+        mr_load_fb_events(self.fbl, update_geodata=update_geodata, queue=queue)
     post=get
