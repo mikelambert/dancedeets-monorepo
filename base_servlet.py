@@ -181,7 +181,11 @@ class BaseRequestHandler(BareBaseRequestHandler):
             for k, v in request.cookies.iteritems():
                 logging.info("DEBUG: cookie %r = %r", k, v)
         # Load Facebook cookie
-        response = facebook.parse_signed_request_cookie(request.cookies)
+        try:
+            response = facebook.parse_signed_request_cookie(request.cookies)
+        except Cookie.CookieError:
+            logging.exception("Error processing cookie: %s")
+            return
         fb_cookie_uid = None
         if response:
             fb_cookie_uid = response['user_id']
