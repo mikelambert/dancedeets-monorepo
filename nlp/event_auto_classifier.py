@@ -172,7 +172,6 @@ def is_battle(classified_event):
     has_many_real_dance_keywords = len(set(classified_event.real_dance_matches + classified_event.manual_dance_keywords_matches)) > 1
     has_start_judge = classified_event.processed_text.has_token(rules.START_JUDGE)
 
-    #print rules.WRONG_BATTLE.as_expanded_regex().encode('utf8')
     #print has_dance_battle
     #print is_wrong_competition_title
     #print is_wrong_style_battle_title

@@ -1,3 +1,5 @@
+adam rios
+anané vega
 afrika bambaataa
 afro mosaic soul
 akalepse
@@ -15,6 +17,7 @@ dj nk-soul
 dj premier
 dj spinna
 dj veusty
+dj cuba & dj dres # for ritmo y tumbao parties, where they always play together
 ep\W+extended play
 eric groove
 francois k
@@ -26,9 +29,11 @@ jellybean benitez
 kaistar
 louie vega
 manchildblack
+mark francis
 marques wyatt
 max pela
 myrto joyce
+nicky siano
 ohishi\W+(?:jmc\W+)?sodeep
 peven everett
 rich medina

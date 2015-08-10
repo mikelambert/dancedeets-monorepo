@@ -362,7 +362,7 @@ legit_dance = [
     'mj\W+style', 'michael jackson style',
     'new\W?style hustle',
     'urban danc\w*',
-    'urban style[sz]',
+    'urban style[sz]?',
     'urban contemporary',
     u'dan[çc]\w* urban\w*',
     'dan\w+ urbai?n\w+', # spanish/french urban dance
@@ -508,6 +508,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
     'zip\W?lock',
     'lock\Win',
+    'lock\W?down',
     'whack music',
     'wack music',
     'wave\W?house', # venue in san diego
