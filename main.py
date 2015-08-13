@@ -157,9 +157,9 @@ URLS = [
     ('/tasks/social_publisher', pubsub_tasks.SocialPublisherHandler),
     ('/tasks/post_japan_events', pubsub_tasks.PostJapanEventsHandler),
 
-    ('/api/v1.0/events/\d+/?', api.EventHandler),
+    ('/api/v\d+.\d+/events/\d+/?', api.EventHandler),
     ('/api/v(\d+).(\d+)/search', api.SearchHandler),
-    ('/api/v1.0/auth', api.AuthHandler),
+    ('/api/v\d+.\d+/auth', api.AuthHandler),
 ]
 
 if prod_mode:

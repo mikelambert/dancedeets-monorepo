@@ -16,6 +16,7 @@ from loc import gmaps_api
 from loc import math
 from nlp import categories
 from util import dates
+from . import search_base
 
 SLOW_QUEUE = 'slow-queue'
 
@@ -170,9 +171,9 @@ class SearchQuery(object):
         self.end_time = end_time
         if self.start_time and self.end_time:
             assert self.start_time < self.end_time
-        if self.time_period == dates.TIME_FUTURE and self.end_time:
+        if self.time_period in search_base.FUTURE_INDEX_TIMES and self.end_time:
                 assert self.end_time > datetime.datetime.now()
-        if self.time_period == dates.TIME_FUTURE and self.start_time:
+        if self.time_period in search_base.FUTURE_INDEX_TIMES and self.start_time:
                 assert self.start_time < datetime.datetime.now()
         self.bounds = bounds
 
@@ -204,10 +205,7 @@ class SearchQuery(object):
         if start_end_query:
             self = cls(bounds=bounds, min_attendees=query.min_attendees, keywords=query.keywords, start_time=query.start_time, end_time=query.end_time)
         else:
-            if query.past:
-                time_period = dates.TIME_PAST
-            else:
-                time_period = dates.TIME_FUTURE
+            time_period = query.time_period
             self = cls(bounds=bounds, min_attendees=query.min_attendees, keywords=query.keywords, time_period=time_period)
         return self
 
@@ -228,7 +226,7 @@ class SearchQuery(object):
                 clauses += ['(longitude >= %s OR longitude <= %s)' % longitudes]
         index_name = ALL_EVENTS_INDEX
         if self.time_period:
-            if self.time_period == dates.TIME_FUTURE:
+            if self.time_period in search_base.FUTURE_INDEX_TIMES:
                 index_name = FUTURE_EVENTS_INDEX
         if self.start_time:
             # Do we want/need this hack?
@@ -247,7 +245,7 @@ class SearchQuery(object):
             doc_index = search.Index(name=index_name)
             #TODO(lambert): implement pagination
             if ids_only:
-                options = {'ids_only': True}
+                options = {'returned_fields': ['start_time', 'end_time']}
             else:
                 options = {'returned_fields': self.extra_fields}
             options = search.QueryOptions(limit=self.limit, **options)
@@ -261,6 +259,15 @@ class SearchQuery(object):
         # Do datastore filtering
         doc_events = self._get_candidate_doc_events(ids_only=not prefilter)
         logging.info("Search returned %s events in %s seconds", len(doc_events), time.time() - a)
+
+        #TODO(lambert): move to common library.
+        now = datetime.datetime.now() - datetime.timedelta(hours=12)
+        if self.time_period == search_base.TIME_ONGOING:
+            doc_events = [x for x in doc_events if x.field('start_time').value < now]
+        elif self.time_period == search_base.TIME_UPCOMING:
+            doc_events = [x for x in doc_events if x.field('start_time').value > now]
+        elif self.time_period == search_base.TIME_PAST:
+            doc_events = [x for x in doc_events if x.field('end_time').value < now]
 
         if prefilter:
             doc_events = [x for x in doc_events if prefilter(x)]

@@ -92,7 +92,7 @@ class SearchHandler(ApiHandler):
 
     def get(self, major_version, minor_version):
         # Search API explicitly uses user=None
-        fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, None)
+        fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, None, major_version, minor_version)
 
         if not fe_search_query.location:
             city_name = None
@@ -129,9 +129,6 @@ class SearchHandler(ApiHandler):
         search_query.limit = 500
 
         search_results = search_query.get_search_results(self.fbl, full_event=True)
-        #TODO(lambert): move to common library.
-        now = datetime.datetime.now() - datetime.timedelta(hours=12)
-        search_results = [x for x in search_results if x.start_time > now]
 
         json_results = []
         for result in search_results:

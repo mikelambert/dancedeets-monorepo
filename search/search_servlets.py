@@ -66,7 +66,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             self.display['ongoing_results'] = present_results
             self.display['grouped_upcoming_results'] = grouped_results
 
-        if fe_search_query.past:
+        if fe_search_query.time_period == search_base.TIME_PAST:
             self.display['selected_tab'] = 'past'
         elif self.request.get('calendar'):
             self.display['selected_tab'] = 'calendar'
