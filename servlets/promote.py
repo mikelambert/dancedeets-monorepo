@@ -106,5 +106,5 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
         # Add Event
         if self.request.get('force_add') or not event_errors:
             self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
-            add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.user.fb_uid, creating_method=add_entities.CM_USER)
+            add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.user.fb_uid, creating_method=eventdata.CM_USER)
         self.render_page()
