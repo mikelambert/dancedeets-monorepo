@@ -57,6 +57,8 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['country_codes'] = sorted(country_dialing_codes.mapping.items())
         self.display['android_url'] = mobile.ANDROID_URL
         self.display['ios_url'] = mobile.IOS_URL
+        self.display['prefix'] = ''
+        self.display['phone'] = '' # Set the default, and then let any errors-and-refilling occur on /mobile_apps
 
         self.display['next'] = next
         logging.info(self.display['next'])
