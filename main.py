@@ -57,6 +57,7 @@ from servlets import tasks
 from servlets import tools
 from servlets import youtube_simple_api
 from topics import topic_servlets
+from users import user_event_tasks
 from users import user_servlets
 from users import user_tasks
 
@@ -124,6 +125,7 @@ URLS = [
     ('/calendar/feed', calendar.CalendarFeedHandler),
     ('/sources/admin_edit', source_servlets.AdminEditHandler),
 
+    ('/tasks/recompute_user_stats', user_event_tasks.RecomputeUserStatsHandler),
     ('/tasks/track_newuser_friends', user_tasks.TrackNewUserFriendsHandler),
     ('/tasks/load_users', user_tasks.LoadUserHandler),
     ('/tasks/reload_all_users', user_tasks.ReloadAllUsersHandler),

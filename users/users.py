@@ -26,6 +26,12 @@ class User(ndb.Model):
 
     clients = ndb.StringProperty(indexed=False, repeated=True)
 
+    # Event stats
+    num_auto_added_events = ndb.IntegerProperty()
+    num_auto_added_own_events = ndb.IntegerProperty()
+    num_hand_added_events = ndb.IntegerProperty()
+    num_hand_added_own_events = ndb.IntegerProperty()
+
     # Search preferences
     location = ndb.StringProperty(indexed=False)
     distance = ndb.StringProperty(indexed=False)
