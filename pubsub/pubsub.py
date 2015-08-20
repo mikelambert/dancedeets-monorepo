@@ -388,7 +388,7 @@ def twitter_oauth2(oauth_token, oauth_verifier):
     auth_token.oauth_token = access_token['oauth_token']
     auth_token.oauth_token_secret = access_token['oauth_token_secret']
     auth_token.valid_token = True
-    auth_token.time_between_posts = 5*60
+    auth_token.time_between_posts = 5*60 # every 5 minutes
     auth_token.put()
     return auth_token
 

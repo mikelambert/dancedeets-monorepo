@@ -1,5 +1,4 @@
 import base_servlet
-import fb_api
 from events import eventdata
 from . import pubsub
 
