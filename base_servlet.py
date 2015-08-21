@@ -10,6 +10,7 @@ import os
 import urllib
 import webapp2
 
+from google.appengine.api.app_identity import app_identity
 from google.appengine.ext import db
 from google.appengine.ext import deferred
 
@@ -386,8 +387,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['request'] = request
         self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']
         self.display['prod_mode'] = self.request.app.prod_mode
+
         self.display['base_hostname'] = 'dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
-        self.display['full_hostname'] = 'www.dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
+        self.display['full_hostname'] = 'www.dancedeets.com' if self.request.app.prod_mode else app_identity.get_default_version_hostname()
 
         self.display['keyword_tokens'] = [{'value': x.public_name} for x in styles.STYLES]
         fb_permissions = 'rsvp_event,email,user_events'
