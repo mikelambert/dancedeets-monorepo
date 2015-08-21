@@ -65,6 +65,10 @@ $format_html($event.info.name)
 		<div><b><a href="$largest_cover_info.source">See Full Flyer</a></b></div>
 	#end if
 	<div><b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b></div>
+	<div class="product-social-links">
+		<div class="fb-share-button" data-layout="button"></div>
+		<a class="twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
+	</div>
 	<div><b>Time:</b></div>
 	<div>$duration_human_format($start_time, $end_time)</div>
 	<div><b>Location:</b></div>
@@ -174,5 +178,23 @@ $(document).ready(function() {
 	load_map();
 });
 #end if
+
+window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+ 
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+ 
+  return t;
+}(document, "script", "twitter-wjs"));
+
 </script>
 #end def

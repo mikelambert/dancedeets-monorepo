@@ -99,7 +99,12 @@
 	left: 0;
 } 
 
+/* on event page */
+.product-social-links {
+    line-height: 10px;
+}
 
+/* on every page, for mobile overlays */
 .feature-list {
 	float:left;
 	margin-bottom: 0px;
