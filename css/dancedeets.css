@@ -100,6 +100,11 @@
 } 
 
 
+.feature-list {
+	float:left;
+	margin-bottom: 0px;
+}
+
 /* all select boxes should autosize */
 select {
 	width: auto;

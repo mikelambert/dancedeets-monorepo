@@ -92,16 +92,18 @@ var _gaq = [];
     <div class="modal-content fullscreen-content">
       <h3>DanceDeets Mobile App</h3>
 
-      <div>
-      Keep up with the latest dance events when you're on the go!
+      <div>Keep up with the latest dance events when you're on the go!</div>
       <ul class="feature-list spacing">
       <li class="feature"><img class="icon" src="/images/ic_menu_search.png">Search Worldwide</li>
       <li class="feature"><img class="icon" src="/images/ic_menu_calendar.png">Add to Calendar</li>
       <li class="feature"><img class="icon" src="/images/ic_menu_facebook.png">View on Facebook</li>
-      <li class="feature"><img class="icon" src="/images/ic_menu_map.png">Get Directions</li>
-      <li class="feature"><img class="icon" src="/images/ic_menu_translate.png">Translate Languages (Android Only)</li>
-      <li class="feature"><img class="icon" src="/images/ic_menu_rsvp.png">RSVP on Facebook (iOS Only)</li>
       </ul>
+      <ul class="feature-list spacing">
+      <li class="feature"><img class="icon" src="/images/ic_menu_map.png">Get Directions</li>
+      <li class="feature"><img class="icon" src="/images/ic_menu_translate.png">Translate Languages (Android)</li>
+      <li class="feature"><img class="icon" src="/images/ic_menu_rsvp.png">RSVP on Facebook</li>
+      </ul>
+      <div style="clearfix"/>
       </div>
 
       <a href="$mobile_app_url" class="btn btn-primary download-app">Get the mobile app</a>
@@ -297,7 +299,6 @@ $body()
     FB.Event.subscribe('auth.statusChange', handleStatusChange);
   };
 
-#if $mobile_app_url and $show_mobile_app_promo
   /* center modal */
   function centerModals(){
     $('.modal').each(function(i){
@@ -308,14 +309,16 @@ $body()
       $(this).find('.modal-content').css("margin-top", top);
     });
   }
-  $('.modal').on('show.bs.modal', centerModals);
-  $(window).on('resize', centerModals);
-
   $(document).ready(function() {
-    var app_promo_closed = $.cookie('ap-closed');
-    if (!app_promo_closed) {
+    if ($('#app-install')) {
+      $('.modal').on('show.bs.modal', centerModals);
+      $(window).on('resize', centerModals);
 
-      $('#app-install').modal({});
+      var app_promo_closed = $.cookie('ap-closed');
+      if (!app_promo_closed) {
+
+        $('#app-install').modal({});
+      }
     }
   });
 
@@ -323,7 +326,6 @@ $body()
     $.cookie('ap-closed', '1', { expires: 4 })
   }
 
-#end if
 </script>
 $bottom_javascript()
 
