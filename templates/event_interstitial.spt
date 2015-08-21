@@ -77,9 +77,7 @@ $format_html($event.info.name)
 		#if 'description' in $event.info
 			<div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
 		#end if
-		<div class="responsive-map-wrapper">
-		## TODO(lambert): We can do a better job, checking on the server if google maps can geocode our place query q=venue/street into a place thats near the lat/long that facebook has, and if so, to point at that here instead of just a raw lat/long location.
-		<iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=$urlencode($lat_long)&key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ"></iframe>
+		<div class="map-wrapper">
 		</div>
 	#end if
 </div>
@@ -144,8 +142,31 @@ function position_cover() {
 	}
 }
 
+function load_map() {
+	if ($('.map-wrapper')) {
+		if ($(document).width() > 768) {
+			## TODO(lambert): We can do a better job, checking on the server if google maps can geocode our place query q=venue/street into a place thats near the lat/long that facebook has, and if so, to point at that here instead of just a raw lat/long location.
+			$('.map-wrapper').append('<div class="responsive-map-wrapper"><iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=$urlencode($lat_long)&key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ"></iframe></div>')
+		} else {
+			var size = Math.round($(document).width() * 0.85);
+			var url = "https://maps.googleapis.com/maps/api/staticmap?center=$urlencode($lat_long)&zoom=15&maptype=roadmap&markers=label:S%7C$urlencode($lat_long)";
+			url += "&size=" + size + "x" + size;
+			var img = $('<img>');
+			img.attr('src', url);
+			img.attr('width', size);
+			img.attr('height', size);
+			var ahref = $('<a>');
+			ahref.attr('href', "http://maps.google.com/?q=$urlencode($lat_long)");
+			ahref.append(img);
+			$('.map-wrapper').append(ahref);
+		}
+	}
+}
+
 $(document).ready(function() {
 	position_cover();
+
+	load_map();
 });
 #end if
 </script>
