@@ -4,49 +4,42 @@
 #def html
 Hi $getattr($user, 'full_name', ''),
 
-#if $user.expired_oauth_token
-<p>You changed your facebook password and Dance Deets has lost permission to use your account. Please <a href="http://www.dancedeets.com/?source=email">sign in to Dance Deets again</a> to ensure Dance Deets continues working for you!
+#if $user.expired_oauth_token and $user.num_auto_added_events > 10
+<p>DanceDeets has lost access to your FB account. Please <a href="http://www.dancedeets.com/?source=email">sign in to DanceDeets again</a> to ensure DanceDeets can share your dance events with others in the scene!
 #end if
 
-<p>If you think your friends would like to know about Dance Deets, you can <a href="http://www.dancedeets.com/share?source=email">share Dance Deets on Facebook</a>. Or forward them this email.
+<p>(See the <a href="http://www.dancedeets.com/?source=email">up-to-date event listing</a>)<br>
 
-<p>(<a href="http://www.dancedeets.com/?source=email">up-to-date event listing</a> available)<br>
-
-#for $group in $grouped_results
-	#if $group.results
-		<b style="font-size: 150%">$group.name</b><br>
-		<table cellpadding=0 cellspacing=0 border=0>
-		#for $result in $group.results
-		<tr>
-			<td width="180">
-				<a href="$fb_event_url($result.fb_event_id)?source=email">
-				<img src="$result.get_image()" width="180" border="0">
-				</a>
-				<br><br>
-			</td>
-			<td valign=top>
-				<a href="$fb_event_url($result.fb_event_id)?source=email">
-				<b style="font-size: 110%">$format_html($result.name)</b>
-				</a><br>
-				($result.event_keywords_string())<br>
-				$date_human_format($result.start_time)<br>
-				#if $result.multi_day_event() and $result.end_time
-					to $date_human_format($result.end_time)<br>
-				#end if
-				#if $result.attendee_count
-					Attending:
-					#if result.attending_friend_count
-						$result.attending_friend_count friends,
-					#end if
-					$result.attendee_count total<br>
-				#end if
-				$result.actual_city_name
-			</td>
-		</tr>
-		#end for
-		</table>
-	#end if
+<table cellpadding=0 cellspacing=0 border=0>
+#for $result in $results
+<tr>
+	<td width="180">
+		<a href="$fb_event_url($result.fb_event_id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email'))">
+		<img src="$result.get_image()" width="180" border="0">
+		</a>
+		<br><br>
+	</td>
+	<td valign=top>
+		<a href="$fb_event_url($result.fb_event_id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email'))">
+		<b style="font-size: 110%">$format_html($result.name)</b>
+		</a><br>
+		($result.event_keywords_string())<br>
+		$date_human_format($result.start_time)<br>
+		#if $result.multi_day_event() and $result.end_time
+			to $date_human_format($result.end_time)<br>
+		#end if
+		#if $result.attendee_count
+			Attending:
+			#if result.attending_friend_count
+				$result.attending_friend_count friends,
+			#end if
+			$result.attendee_count total<br>
+		#end if
+		$result.actual_city_name
+	</td>
+</tr>
 #end for
+</table>
 
 <p>To unsubscribe or change your preferred city, <a href="http://www.dancedeets.com/user/edit">go to your Dance Deets settings.</a>
 #end def

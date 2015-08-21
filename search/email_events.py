@@ -61,7 +61,7 @@ def email_for_user(user, fbl, should_send=True):
     display['user'] = user
     display['fb_user'] = fb_user
 
-    display['grouped_results'] = grouped_results
+    display['results'] = [x for x in grouped_results if x.id == 'week_events'][0].results
 
     rendered = template.render_template('html_mail_summary', display)
     d = datetime.date.today()
