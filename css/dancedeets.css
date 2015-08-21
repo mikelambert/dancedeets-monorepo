@@ -118,9 +118,6 @@ select {
 html, body {
 	background-color: #FFFFFF;
 }
-.container > footer {
-	text-align: center; /* center align it with the container */
-}
 
 .top-to-bottom-fade {
 	border-width: 1px;
@@ -213,8 +210,14 @@ h3.event-title {
 
 footer {
 	text-align: center;
+	margin-top: 30px;
 }
 
+.big-facebook-login-button {
+	margin-bottom:30px;
+	margin-top: 30px;
+	width: 130px;
+}
 
 /* For use on the /mobile_apps page */
 .sms-textbox {
