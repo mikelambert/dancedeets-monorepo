@@ -88,7 +88,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['start_time'] = dates.parse_fb_start_time(event_info)
         self.display['end_time'] = dates.parse_fb_end_time(event_info)
 
-        lat_long = None
+        lat_long = ''
         if 'venue' in event_info['info']:
             city_state_country = [
                 event_info['info']['venue'][x]
