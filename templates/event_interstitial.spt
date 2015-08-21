@@ -28,12 +28,14 @@ $format_html($event.info.name)
 
 <div class="container-fluid">
 <div class="row">
-	<div class="col-xs-12" style="margin-bottom:15px">
-	See <a href="/?location=$city_state_country">more events near $city_state_country</a>.
-	##for $style in $db_event.auto_categories
-	##See <a href="/?keywords=$style">more $style events</a>.<br>
-	##end for
-	</div>
+	#if $city_state_country
+		<div class="col-xs-12" style="margin-bottom:15px">
+		See <a href="/?location=$city_state_country">more events near $city_state_country</a>.
+		##for $style in $db_event.auto_categories
+		##See <a href="/?keywords=$style">more $style events</a>.<br>
+		##end for
+		</div>
+	#end if
 
 	<div class="col-xs-12">
 	#if $cover
