@@ -20,6 +20,13 @@ class LoginHandler(base_servlet.BaseRequestHandler):
     def get(self, needs_city=False):
         next = self.request.get('next') or '/'
 
+        # If they're logged in, and have an account created, update and redirect
+        if self.fb_uid:
+            user = users.User.get_by_id(self.fb_uid)
+            if user and not user.expired_oauth_token:
+                self.redirect(next)
+                return
+
         want_specific_page = (next != '/?')
         if want_specific_page:
             self.display['next'] = next
@@ -27,13 +34,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
             logging.info(self.display['next'])
             self.render_template('login_only')
             return
-
-        # If they're logged in, and have an account created, update and redirect
-        if self.fb_uid:
-            user = users.User.get_by_id(self.fb_uid)
-            if user and not user.expired_oauth_token:
-                self.redirect(next)
-                return
 
         # Treat them like a totally logged-out user since they have no user object yet
         self.fb_uid = None

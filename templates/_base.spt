@@ -271,11 +271,13 @@ $body()
   }
 
   function logout() {
+    // Seems the logout callback isn't being called, so ensure we delete the cookie here
+    deleteLoginCookies();
     FB.logout(function(response) {
-      deleteLoginCookies();
       window.location.reload();
     });
   }
+
   function handleStatusChange(response) {
     if (response.status === 'connected') {
       if (response.authResponse.userID != currentUser()) {

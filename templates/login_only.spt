@@ -1,0 +1,33 @@
+#extends _base
+
+#def title
+DanceDeets
+#end def
+
+#def head_stylesheet
+    <meta property="og:title" content="DanceDeets"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="http://www.dancedeets.com/"/>
+    <meta property="og:site_name" content="DanceDeets"/>
+    <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
+    <meta property="og:description"
+          content="Helping you get your dance on wherever you are, with dance events both near and far."/>
+#end def
+
+#def body
+<div class="container">
+<div class="row">
+<div class="col-sm-6 col-sm-offset-3">
+
+<h2>DanceDeets</h2>
+
+<div>Sorry, that page only works when logged-in. First time here? Already got an account? Either way:</div>
+
+<div class="center-block big-facebook-login-button"><fb:login-button data-size="xlarge" scope="$fb_permissions"></fb:login-button></div>
+
+<div style="font-size:80%">Don't worry, we never post without your permission. We only use Facebook login because we depend on our dancers sharing their Facebook events to help make DanceDeets the best place for street dance events worldwide.</div>
+
+</div>
+</div>
+</div>
+#end def
