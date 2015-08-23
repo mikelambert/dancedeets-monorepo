@@ -40,7 +40,7 @@ EMPTY_CAUSE_DELETED = 'deleted'
 #TODO(lambert): use parent_group to find additional sources to scrape
 OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins', 'parent_group', 'ticket_uri', 'timezone', 'updated_time', 'is_date_only', 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count')
 
-OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender', 'picture', 'link')
+OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender', 'picture', 'link', 'timezone')
 
 USERLESS_UID = '701004'
 
