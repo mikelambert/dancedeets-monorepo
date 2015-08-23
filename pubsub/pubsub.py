@@ -198,9 +198,9 @@ def twitter_post(auth_token, db_event):
 
 class LookupGeoTarget(fb_api.LookupType):
     @classmethod
-    def get_lookups(cls, query):
+    def get_lookups(cls, urlparams):
         return [
-            ('search', cls.url('search?type=adgeolocation&q=%s' % urllib.quote(query))),
+            ('search', cls.url('search?type=adgeolocation&%s' % urlparams)),
         ]
     @classmethod
     def cache_key(cls, query, fetching_uid):
@@ -213,7 +213,7 @@ def facebook_post(auth_token, db_event):
     datetime_string = start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
 
     page_id = auth_token.token_nickname
-    endpoint = 'v2.2/%s/feed' % page_id
+    endpoint = 'v2.4/%s/feed' % page_id
     fbl = fb_api.FBLookup(None, auth_token.oauth_token)
 
     post_values = {}
@@ -231,9 +231,6 @@ def facebook_post(auth_token, db_event):
     if cover:
         post_values['picture'] = cover['source']
     venue_id = fb_event['info'].get('venue', {}).get('id')
-    short_country = None
-    city_key = None
-    region_key = None
     if venue_id:
         post_values['place'] = venue_id
         # Can only tag people if there is a place tagged too
@@ -241,6 +238,27 @@ def facebook_post(auth_token, db_event):
             admin_ids = [x['id'] for x in fb_event['info']['admins']['data']]
             post_values['tags'] = ','.join(admin_ids)
 
+    feed_targeting = get_targeting_data(fbl, fb_event, db_event)
+    if feed_targeting:
+        # Ideally we'd do this as 'feed_targeting', but Facebook appears to return errors with that due to:
+        # {u'error': {u'message': u'Invalid parameter', u'code': 100, u'is_transient': False,
+        #  u'error_user_title': u'Invalid Connection', u'error_subcode': 1487124, u'type': u'FacebookApiException',
+        #  u'error_user_msg': u'You can only specify connections to objects you are an administrator or developer of.',
+        #  u'error_data': {u'blame_field': u'targeting'}}}
+        post_values['targeting'] = json.dumps(feed_targeting)
+
+    logging.info("FB Feed Post Values: %s", post_values)
+    result = fbl.fb.post(endpoint, None, post_values)
+    return json.loads(result)
+
+
+def get_targeting_data(fbl, fb_event, db_event):
+    short_country = None
+    city_key = None
+
+    venue_id = fb_event['info'].get('venue', {}).get('id')
+
+    if venue_id:
         # Target to people in the same country as the event. Should improve signal/noise ratio.
         country = fb_event['info']['venue'].get('country')
         if country:
@@ -248,32 +266,21 @@ def facebook_post(auth_token, db_event):
             if country in iso3166.countries_by_name:
                 short_country = iso3166.countries_by_name[country].alpha2
 
-        # only do city-level targeting in big countries or dense dance countries
-        # we don't do city-level targeting, as we can only do a 50 mile radius on that
-        if short_country in ['US', 'CA', 'RU', 'JP']:
-            city_state_country_list = [fb_event['info']['venue'].get('city')]
-            # Strange search logic behavior I noticed in my test searches of facebook.
-            # Country is not needed (and detrimental!) when searching for a US city.
-            if short_country == 'US':
-                city_state_country_list.append(fb_event['info']['venue'].get('state'))
-            else:
-                city_state_country_list.append(fb_event['info']['venue'].get('country'))
-            city_state_country = ', '.join(x for x in city_state_country_list if x)
-            geo_target = fbl.get(LookupGeoTarget, city_state_country)
-            if short_country in 'US':
-                state = fb_event['info']['venue'].get('state')
-                # CA is a big state, so do city-level targeting
-                # NK/NJ are also lopsided states, where NJ/NY overlap in location interests.
-                # We could potentially list multiple zip codes, or states, or cities, but that's getting complex...
-                if state in ['CA', 'NY', 'NJ', 'PA']:
-                    good_targets = [x for x in geo_target['search']['data'] if x['supports_region']]
-                    if good_targets:
-                        # They give it to us as an integer, but the API doc example says they want a string
-                        region_key = str(good_targets[0]['region_id'])
-                else:
-                    good_targets = [x for x in geo_target['search']['data'] if x['supports_city']]
-                    if good_targets:
-                        city_key = good_targets[0]['key']
+        city_state_country_list = [
+            fb_event['info']['venue'].get('city'),
+            fb_event['info']['venue'].get('state')
+        ]
+        city_state_country = ', '.join(x for x in city_state_country_list if x)
+        kw_params = {
+            'q': city_state_country,
+            'country_code': short_country,
+        }
+        geo_target = fbl.get(LookupGeoTarget, urllib.urlencode(kw_params))
+
+        good_targets = [x for x in geo_target['search']['data'] if x['supports_city']]
+        if good_targets:
+            city_key = int(good_targets[0]['key'])
+            # if we want state-level targeting, 'region_id' would be the city's associated state
 
     if not short_country:
         location_info = event_locations.LocationInfo(fb_event, db_event)
@@ -284,15 +291,8 @@ def facebook_post(auth_token, db_event):
     if short_country:
         feed_targeting['countries'] = [short_country]
         if city_key:
-            feed_targeting['cities'] = [{'key': city_key, 'radius': 50, 'distance_unit': 'mile'}]
-        if region_key:
-            feed_targeting['regions'] = [{'key': region_key}]
-    if feed_targeting:
-        post_values['feed_targeting'] = json.dumps(feed_targeting)
-
-    logging.info("FB Feed Post Values: %s", post_values)
-    result = fbl.fb.post(endpoint, None, post_values)
-    return json.loads(result)
+            feed_targeting['cities'] = [city_key]
+    return feed_targeting
 
 
 request_token_url = 'https://twitter.com/oauth/request_token'
