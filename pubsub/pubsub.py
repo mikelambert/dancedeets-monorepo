@@ -290,7 +290,7 @@ def facebook_post(auth_token, db_event):
     if feed_targeting:
         post_values['feed_targeting'] = json.dumps(feed_targeting)
 
-    print post_values
+    logging.info("FB Feed Post Values: %s", post_values)
     result = fbl.fb.post(endpoint, None, post_values)
     return json.loads(result)
 
