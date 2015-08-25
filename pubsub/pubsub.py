@@ -272,7 +272,7 @@ def get_targeting_data(fbl, fb_event, db_event):
         ]
         city_state_country = ', '.join(x for x in city_state_country_list if x)
         kw_params = {
-            'q': city_state_country,
+            'q': city_state_country.encode('utf-8'),
             'country_code': short_country,
         }
         geo_target = fbl.get(LookupGeoTarget, urllib.urlencode(kw_params))
