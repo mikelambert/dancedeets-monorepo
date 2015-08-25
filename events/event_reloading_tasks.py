@@ -32,7 +32,7 @@ def yield_load_fb_event(fbl, db_events):
         update_geodata = params['update_geodata']
     else:
         update_geodata = True
-    event_updates.update_and_save_event_batch(events_to_update, update_geodata=update_geodata)
+    event_updates.update_and_save_events(events_to_update, update_geodata=update_geodata)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
