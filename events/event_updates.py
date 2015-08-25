@@ -25,10 +25,7 @@ def need_forced_update(db_event):
     new_time_period = (db_event.search_time_period != _event_time_period(db_event))
     return new_time_period
 
-def update_and_save_event(db_event, fb_event):
-    update_and_save_event_batch([(db_event, fb_event)])
-
-def update_and_save_event_batch(events_to_update, update_geodata=True):
+def update_and_save_events(events_to_update, update_geodata=True):
     for db_event, fb_event in events_to_update:
         logging.info("Updating and saving DBEvent %s", db_event.fb_event_id)
         _inner_make_event_findable_for(db_event, fb_event, update_geodata=update_geodata)
@@ -39,7 +36,7 @@ def update_and_save_event_batch(events_to_update, update_geodata=True):
     # Because some DisplayEvent.build() calls return None (from errors, or from inability)
     objects_to_put = [x for x in objects_to_put if x]
     ndb.put_multi(objects_to_put)
-    search.update_fulltext_search_index_batch(events_to_update)
+    search.update_fulltext_search_index_batch(db_events)
 
 def _all_attending_count(fb_event):
     # TODO(FB2.0): cleanup!

@@ -19,6 +19,6 @@ class RefreshFulltextSearchIndex(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         index_future = bool(int(self.request.get('index_future', 1)))
         if index_future:
-            search.construct_fulltext_search_index(self.fbl, index_future=index_future)
+            search.construct_fulltext_search_index(index_future=index_future)
         else:
             assert False

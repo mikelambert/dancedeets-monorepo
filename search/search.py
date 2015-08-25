@@ -16,6 +16,7 @@ from loc import gmaps_api
 from loc import math
 from nlp import categories
 from util import dates
+from . import index
 from . import search_base
 
 SLOW_QUEUE = 'slow-queue'
@@ -335,141 +336,75 @@ class SearchQuery(object):
         logging.info("search result sorting took %s seconds", time.time() - a)
         return deduped_results
 
-def update_fulltext_search_index(db_event, fb_event):
-    update_fulltext_search_index_batch((db_event, fb_event))
-
 def update_fulltext_search_index_batch(events_to_update):
-    all_index = []
-    all_deindex_ids = []
-    future_index = []
-    future_deindex_ids = []
-    for db_event, fb_event in events_to_update:
-        logging.info("Adding event to search index: %s", db_event.fb_event_id)
-        doc_event = _create_doc_event(db_event, fb_event)
-        if not doc_event:
-            all_deindex_ids.append(db_event.fb_event_id)
-            future_deindex_ids.append(db_event.fb_event_id)
-        elif db_event.search_time_period == dates.TIME_FUTURE:
-            all_index.append(doc_event)
-            future_index.append(doc_event)
+    future_events_to_update = []
+    future_events_to_deindex = []
+    for db_event in events_to_update:
+        if db_event.search_time_period == dates.TIME_FUTURE:
+            future_events_to_update.append(db_event)
         else:
-            all_index.append(doc_event)
-            future_deindex_ids.append(db_event.fb_event_id)
-    doc_index = search.Index(name=ALL_EVENTS_INDEX)
-    doc_index.put(all_index)
-    doc_index.delete(all_deindex_ids)
-    doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
-    doc_index.put(future_index)
-    doc_index.delete(future_deindex_ids)
+            future_events_to_deindex.append(db_event.fb_event_id)
+
+    FutureEventsIndex.update_index(future_events_to_update)
+    FutureEventsIndex.delete_ids(future_events_to_deindex)
+    AllEventsIndex.update_index(events_to_update)
 
 def delete_from_fulltext_search_index(db_event_id):
     logging.info("Deleting event from search index: %s", db_event_id)
-    doc_index = search.Index(name=ALL_EVENTS_INDEX)
-    doc_index.delete(db_event_id)
-    doc_index = search.Index(name=FUTURE_EVENTS_INDEX)
-    doc_index.delete(db_event_id)
+    FutureEventsIndex.delete_ids([db_event_id])
+    AllEventsIndex.delete_ids([db_event_id])
 
-def construct_fulltext_search_index(fbl, index_future=True):
-    logging.info("Loading DB Events")
+def construct_fulltext_search_index(index_future=True):
     if index_future:
-        db_query = eventdata.DBEvent.query(eventdata.DBEvent.search_time_period==dates.TIME_FUTURE)
+        FutureEventsIndex.construct_fulltext_search_index((eventdata.DBEvent.search_time_period==dates.TIME_FUTURE))
     else:
-        db_query = eventdata.DBEvent.query()
-    db_event_keys = db_query.fetch(MAX_EVENTS, keys_only=True)
-    db_event_ids = set(x.string_id() for x in db_event_keys)
+        AllEventsIndex.construct_fulltext_search_index(())
 
-    logging.info("Found %s db event ids for indexing", len(db_event_ids))
-    if len(db_event_ids) >= MAX_EVENTS:
-        logging.critical('Found %s events. Increase the MAX_EVENTS limit to search more events.', MAX_EVENTS)
-    logging.info("Loaded %s DB Events", len(db_event_ids))
+class EventsIndex(index.BaseIndex):
+    obj_type = eventdata.DBEvent
 
-    index_name = index_future and FUTURE_EVENTS_INDEX or ALL_EVENTS_INDEX
-    doc_index = search.Index(name=index_name)
+    @classmethod
+    def _get_id(self, obj):
+        return obj.fb_event_id
 
-    docs_per_group = search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST
+    @classmethod
+    def _create_doc_event(cls, db_event):
+        fb_event = db_event.fb_event
+        if fb_event['empty']:
+            return None
+        # TODO(lambert): find a way to index no-location events.
+        # As of now, the lat/long number fields cannot be None.
+        # In what radius/location should no-location events show up
+        # and how do we want to return them
+        # Perhaps a separate index that is combined at search-time?
+        if db_event.latitude is None:
+            return None
+        # If this event has been deleted from Facebook, let's skip re-indexing it here
+        if db_event.start_time is None:
+            return None
+        if not isinstance(db_event.start_time, datetime.datetime) and not isinstance(db_event.start_time, datetime.date):
+            logging.error("DB Event %s start_time is not correct format: ", db_event.fb_event_id, db_event.start_time)
+            return None
+        doc_event = search.Document(
+            doc_id=db_event.fb_event_id,
+            fields=[
+                search.TextField(name='name', value=fb_event['info'].get('name', '')),
+                search.TextField(name='description', value=fb_event['info'].get('description', '')),
+                search.NumberField(name='attendee_count', value=db_event.attendee_count or 0),
+                search.DateField(name='start_time', value=db_event.start_time),
+                search.DateField(name='end_time', value=dates.faked_end_time(db_event.start_time, db_event.end_time)),
+                search.NumberField(name='latitude', value=db_event.latitude),
+                search.NumberField(name='longitude', value=db_event.longitude),
+                search.TextField(name='categories', value=' '.join(db_event.auto_categories)),
+                search.TextField(name='country', value=db_event.country),
+            ],
+            #language=XX, # We have no good language detection
+            rank=int(time.mktime(db_event.start_time.timetuple())),
+            )
+        return doc_event
 
-    logging.info("Deleting Expired DB Events")
-    start_id = '0'
-    doc_ids_to_delete = set()
-    while True:
-        doc_ids = [x.doc_id for x in doc_index.get_range(ids_only=True, start_id=start_id, include_start_object=False)]
-        if not doc_ids:
-            break
-        new_ids_to_delete = set(doc_ids).difference(db_event_ids)
-        doc_ids_to_delete.update(new_ids_to_delete)
-        logging.info("Looking at %s doc_id candidates for deletion, will delete %s entries.", len(doc_ids), len(new_ids_to_delete))
-        start_id = doc_ids[-1]
-    if len(doc_ids_to_delete) and len(doc_ids_to_delete) < len(db_event_ids) / 10:
-        logging.critical("Deleting %s docs, more than 10% of total %s docs", len(doc_ids_to_delete), len(db_event_ids))
-    logging.info("Deleting %s Events", len(doc_ids_to_delete))
-    doc_ids_to_delete = list(doc_ids_to_delete)
-    for i in range(0,len(doc_ids_to_delete), docs_per_group):
-        doc_index.delete(doc_ids_to_delete[i:i+docs_per_group])
+class AllEventsIndex(EventsIndex):
+    index_name = ALL_EVENTS_INDEX
 
-    # Add all events
-    logging.info("Loading %s FB Events, in groups of %s", len(db_event_ids), docs_per_group)
-    db_event_ids_list = list(db_event_ids)
-    for i in range(0,len(db_event_ids_list), docs_per_group):
-        group_db_event_ids = db_event_ids_list[i:i+docs_per_group]
-        deferred.defer(save_db_event_ids, fbl, index_name, group_db_event_ids)
-
-def _create_doc_event(db_event, fb_event):
-    if fb_event['empty']:
-        return None
-    # TODO(lambert): find a way to index no-location events.
-    # As of now, the lat/long number fields cannot be None.
-    # In what radius/location should no-location events show up
-    # and how do we want to return them
-    # Perhaps a separate index that is combined at search-time?
-    if db_event.latitude is None:
-        return None
-    # If this event has been deleted from Facebook, let's skip re-indexing it here
-    if db_event.start_time is None:
-        return None
-    if not isinstance(db_event.start_time, datetime.datetime) and not isinstance(db_event.start_time, datetime.date):
-        logging.error("DB Event %s start_time is not correct format: ", db_event.fb_event_id, db_event.start_time)
-        return None
-    doc_event = search.Document(
-        doc_id=db_event.fb_event_id,
-        fields=[
-            search.TextField(name='name', value=fb_event['info'].get('name', '')),
-            search.TextField(name='description', value=fb_event['info'].get('description', '')),
-            search.NumberField(name='attendee_count', value=db_event.attendee_count or 0),
-            search.DateField(name='start_time', value=db_event.start_time),
-            search.DateField(name='end_time', value=dates.faked_end_time(db_event.start_time, db_event.end_time)),
-            search.NumberField(name='latitude', value=db_event.latitude),
-            search.NumberField(name='longitude', value=db_event.longitude),
-            search.TextField(name='categories', value=' '.join(db_event.auto_categories)),
-            search.TextField(name='country', value=db_event.country),
-        ],
-        #language=XX, # We have no good language detection
-        rank=int(time.mktime(db_event.start_time.timetuple())),
-        )
-    return doc_event
-
-def save_db_event_ids(fbl, index_name, db_event_ids):
-    # TODO(lambert): how will we ensure we only update changed events?
-    logging.info("Loading %s DB Events", len(db_event_ids))
-    db_events = eventdata.DBEvent.get_by_ids(db_event_ids)
-    if None in db_events:
-        logging.error("DB Event Lookup returned None!")
-    logging.info("Loading %s FB Events", len(db_event_ids))
-
-    delete_ids = []
-    doc_events = []
-    logging.info("Constructing Documents")
-    for db_event in db_events:
-        doc_event = _create_doc_event(db_event, db_event.fb_event)
-        if not doc_event:
-            delete_ids.append(db_event.fb_event_id)
-            continue
-        doc_events.append(doc_event)
-
-    logging.info("Adding %s documents", len(doc_events))
-    doc_index = search.Index(name=index_name)
-    doc_index.put(doc_events)
-
-    # These events could not be filtered out too early,
-    # but only after looking up in this db+fb-event-data world
-    logging.info("Cleaning up and deleting %s documents", len(delete_ids))
-    doc_index.delete(delete_ids)
+class FutureEventsIndex(EventsIndex):
+    index_name = FUTURE_EVENTS_INDEX
