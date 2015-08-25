@@ -42,6 +42,8 @@ OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner'
 
 OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender', 'picture', 'link', 'timezone')
 
+OBJ_SOURCE_FIELDS = ('about', 'cover', 'category', 'category_list', 'general_info', 'likes', 'location', 'name', 'phone', 'website')
+
 USERLESS_UID = '701004'
 
 class FacebookCachedObject(db.Model):
@@ -218,7 +220,7 @@ class LookupThingFeed(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
-            ('info', cls.url('%s' % object_id)),
+            ('info', cls.url('%s' % object_id, fields=OBJ_SOURCE_FIELDS)),
             ('feed', cls.url('%s/feed' % object_id)),
             ('events', cls.url('%s/events' % object_id)),
         ]

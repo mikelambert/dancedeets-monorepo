@@ -10,7 +10,8 @@ from test_utils import mock_memcache
 class TestLookupUser(unittest.TestCase):
     def runTest(self):
         lookups = fb_api.LookupUser.get_lookups('id')
-        self.assertEqual(lookups[0], ('profile', '/v2.2/id'))
+        info_url = re.sub('fields=[^&]*', 'fields=X', [x[1] for x in lookups if x[0] == 'profile'][0])
+        self.assertEqual(info_url, '/v2.2/id?fields=X')
         self.assertEqual(lookups[1], ('friends', '/v2.2/id/friends'))
         cache_key = fb_api.LookupUser.cache_key('id', 'fetch_id')
         self.assertEqual(cache_key, ('fetch_id', 'id', 'OBJ_USER'))
@@ -99,8 +100,11 @@ class TestFBAPI(unittest.TestCase):
         d = fb.fetch_keys([])
         self.assertEqual(d, {})
 
+        fields_str = '%2C'.join(fb_api.OBJ_USER_FIELDS)
+        url = '/v2.2/uid?fields=%s' % fields_str
+
         fb_api.FBAPI.results = {
-            '/v2.2/uid': (200, {}),
+            url: (200, {}),
             '/v2.2/uid/events?since=yesterday': (200, {}),
             '/v2.2/uid/friends': (200, {}),
             '/v2.2/uid/permissions': (200, {}),
@@ -118,7 +122,7 @@ class TestFBAPI(unittest.TestCase):
         )
 
         fb_api.FBAPI.results = {
-            '/v2.2/uid': (500, {}),
+            url: (500, {}),
             '/v2.2/uid/events?since=yesterday': (200, {}),
             '/v2.2/uid/friends': (200, {}),
             '/v2.2/uid/permissions': (200, {}),
@@ -129,7 +133,7 @@ class TestFBAPI(unittest.TestCase):
         self.assertEqual(d, {})
 
         fb_api.FBAPI.results = {
-            '/v2.2/uid': (200, False),
+            url: (200, False),
             '/v2.2/uid/events?since=yesterday': (200, False),
             '/v2.2/uid/friends': (200, False),
             '/v2.2/uid/permissions': (200, False),
@@ -143,7 +147,7 @@ class TestFBAPI(unittest.TestCase):
         )
 
         fb_api.FBAPI.results = {
-            '/v2.2/uid': (200, {'error_code': 100}),
+            url: (200, {'error_code': 100}),
             '/v2.2/uid/events?since=yesterday': (200, {'error_code': 100}),
             '/v2.2/uid/friends': (200, {'error_code': 100}),
             '/v2.2/uid/permissions': (200, {'error_code': 100}),
@@ -183,9 +187,12 @@ class TestFBLookup(unittest.TestCase):
     def runTest(self):
         fbl = fb_api.FBLookup('uid', 'access_token')
 
+        fields_str = '%2C'.join(fb_api.OBJ_USER_FIELDS)
+        url = '/v2.2/uid?fields=%s' % fields_str
+
         # Set up our facebook backend
         fb_api.FBAPI.results = {
-            '/v2.2/uid': (200, {}),
+            url: (200, {}),
             '/v2.2/uid/events?since=yesterday': (200, {}),
             '/v2.2/uid/friends': (200, {}),
             '/v2.2/uid/permissions': (200, {}),
