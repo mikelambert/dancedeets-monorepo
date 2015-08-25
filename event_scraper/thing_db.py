@@ -156,11 +156,8 @@ class Source(db.Model):
                 else:
                     self.feed_history_in_seconds = 0
                 location = fb_data['info'].get('location')
-                print location
                 if location:
-                    print 'XXXXX'
                     if location.get('latitude'):
-                        print location.get('latitude'), location.get('longitude')
                         self.latitude = location.get('latitude')
                         self.longitude = location.get('longitude')
                     else:
@@ -168,10 +165,7 @@ class Source(db.Model):
                         components = [location.get(x) for x in component_names if location.get(x)]
                         address = ', '.join(components)
                         geocode = gmaps_api.get_geocode(address=address)
-                        print address
-                        print geocode
                         if geocode:
-                            print geocode.latlng()
                             self.latitude, self.longitude = geocode.latlng()
         #TODO(lambert): at some point we need to calculate all potential events, and all real events, and update the numbers with values from them. and all fake events. we have a problem where a new source gets added, adds in the potential events and/or real events, but doesn't properly tally them all. can fix this one-off, but it's too-late now, and i imagine our data will grow inaccurate over time anyway.
 
