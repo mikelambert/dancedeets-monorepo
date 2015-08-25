@@ -28,7 +28,7 @@ class SourceIndex(index.BaseIndex):
         if not source.latitude:
             return None
 
-        country = fb_info['location']['country'].upper()
+        country = fb_info['location'].get('country', '').upper()
         if country in iso3166.countries_by_name:
             country_code = iso3166.countries_by_name[country].alpha2
         else:
