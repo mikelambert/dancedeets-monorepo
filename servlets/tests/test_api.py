@@ -32,11 +32,14 @@ class TestSearch(unittest.TestCase):
 
 class TestAuth(TestSearch):
     def runTest(self):
+        fields_str = '%2C'.join(fb_api.OBJ_USER_FIELDS)
+        url = '/v2.2/me?fields=%s' % fields_str
+
         me_uid = '701004'
         access_token = 'BlahToken'
         new_access_token = 'BlahToken2'
         fb_api.FBAPI.results = {
-            '/v2.2/me': (200, {'id': me_uid, 'name': 'Mike Lambert'}),
+            url: (200, {'id': me_uid, 'name': 'Mike Lambert'}),
             '/v2.2/me/events?since=yesterday': (200, {}),
             '/v2.2/me/friends': (200, {}),
             '/v2.2/me/permissions': (200, {}),
