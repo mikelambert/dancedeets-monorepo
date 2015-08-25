@@ -39,6 +39,7 @@ from rankings import rankings_servlets
 from search import search_servlets
 from search import search_tasks
 from search import style_servlets
+from search import search_source
 from servlets import about
 from servlets import admin
 from servlets import api
@@ -100,6 +101,8 @@ URLS = [
     ('/tasks/email_all_users', search_tasks.EmailAllUsersHandler),
     ('/tasks/email_user', search_tasks.EmailUserHandler),
     ('/tasks/refresh_fulltext_search_index', search_tasks.RefreshFulltextSearchIndex),
+
+    ('/tasks/refresh_source_index', search_source.RefreshSourceSearchIndex),
 
     ('/tasks/timings_keep_alive', tasks.TimingsKeepAlive),
     ('/tasks/timings_process_day', tasks.TimingsProcessDay),

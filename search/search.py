@@ -335,30 +335,6 @@ class SearchQuery(object):
         logging.info("search result sorting took %s seconds", time.time() - a)
         return deduped_results
 
-def update_fulltext_search_index_batch(events_to_update):
-    future_events_to_update = []
-    future_events_to_deindex = []
-    for db_event in events_to_update:
-        if db_event.search_time_period == dates.TIME_FUTURE:
-            future_events_to_update.append(db_event)
-        else:
-            future_events_to_deindex.append(db_event.fb_event_id)
-
-    FutureEventsIndex.update_index(future_events_to_update)
-    FutureEventsIndex.delete_ids(future_events_to_deindex)
-    AllEventsIndex.update_index(events_to_update)
-
-def delete_from_fulltext_search_index(db_event_id):
-    logging.info("Deleting event from search index: %s", db_event_id)
-    FutureEventsIndex.delete_ids([db_event_id])
-    AllEventsIndex.delete_ids([db_event_id])
-
-def construct_fulltext_search_index(index_future=True):
-    if index_future:
-        FutureEventsIndex.rebuild_from_query(eventdata.DBEvent.search_time_period==dates.TIME_FUTURE)
-    else:
-        AllEventsIndex.rebuild_from_query()
-
 class EventsIndex(index.BaseIndex):
     obj_type = eventdata.DBEvent
 
@@ -407,3 +383,28 @@ class AllEventsIndex(EventsIndex):
 
 class FutureEventsIndex(EventsIndex):
     index_name = FUTURE_EVENTS_INDEX
+
+def update_fulltext_search_index_batch(events_to_update):
+    future_events_to_update = []
+    future_events_to_deindex = []
+    for db_event in events_to_update:
+        if db_event.search_time_period == dates.TIME_FUTURE:
+            future_events_to_update.append(db_event)
+        else:
+            future_events_to_deindex.append(db_event.fb_event_id)
+
+    FutureEventsIndex.update_index(future_events_to_update)
+    FutureEventsIndex.delete_ids(future_events_to_deindex)
+    AllEventsIndex.update_index(events_to_update)
+
+def delete_from_fulltext_search_index(db_event_id):
+    logging.info("Deleting event from search index: %s", db_event_id)
+    FutureEventsIndex.delete_ids([db_event_id])
+    AllEventsIndex.delete_ids([db_event_id])
+
+def construct_fulltext_search_index(index_future=True):
+    if index_future:
+        FutureEventsIndex.rebuild_from_query(eventdata.DBEvent.search_time_period==dates.TIME_FUTURE)
+    else:
+        AllEventsIndex.rebuild_from_query()
+

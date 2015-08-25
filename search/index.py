@@ -1,6 +1,7 @@
 import logging
 
 from google.appengine.ext import deferred
+from google.appengine.ext import ndb
 from google.appengine.api import search
 
 MAX_OBJECTS = 100000
@@ -16,6 +17,10 @@ class BaseIndex(object):
     @classmethod
     def _create_doc_event(cls, obj):
         raise NotImplementedError()
+
+    @classmethod
+    def _is_ndb(cls):
+        return issubclass(cls, ndb.Model)
 
     @classmethod
     def search(cls, query):
@@ -46,9 +51,17 @@ class BaseIndex(object):
     @classmethod
     def rebuild_from_query(cls, *query_params):
         logging.info("Loading Index")
-        db_query = cls.obj_type.query(*query_params)
+        if cls._is_ndb():
+            db_query = cls.obj_type.query(*query_params)
+        else:
+            db_query = cls.obj_type.all()
+            for query_filter in query_params:
+                db_query = db_query.filter(*query_filter)
         object_keys = db_query.fetch(MAX_OBJECTS, keys_only=True)
-        object_ids = set(x.string_id() for x in object_keys)
+        if cls._is_ndb():
+            object_ids = set(x.string_id() for x in object_keys)
+        else:
+            object_ids = set(x.name() for x in object_keys)
 
         logging.info("Loaded %s objects for indexing", len(object_ids))
         if len(object_ids) >= MAX_OBJECTS:
@@ -87,7 +100,10 @@ class BaseIndex(object):
     def _save_ids(cls, object_ids):
         # TODO(lambert): how will we ensure we only update changed events?
         logging.info("Loading %s objects", len(object_ids))
-        objects = cls.obj_type.get_by_ids(object_ids)
+        if cls._is_ndb():
+            objects = cls.obj_type.get_by_ids(object_ids)
+        else:
+            objects = cls.obj_type.get_by_key_name(object_ids)
         if None in objects:
             logging.error("Lookup returned at least one None!")
 

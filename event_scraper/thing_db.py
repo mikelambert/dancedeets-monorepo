@@ -2,9 +2,11 @@ import datetime
 import logging
 
 from google.appengine.ext import db
+from google.appengine.ext.mapreduce import json_util
 from mapreduce import control
 
 import fb_api
+from loc import gmaps_api
 from nlp import event_classifier
 from util import fb_mapreduce
 
@@ -78,7 +80,6 @@ def increment_source_event_counters(source_id, potential_event, all_event, real_
             s.num_false_negatives += 1
     run_modify_transaction_for_key(source_id, inc)
 
-
 class Source(db.Model):
     graph_id = property(lambda x: str(x.key().name()))
     graph_type = db.StringProperty(choices=GRAPH_TYPES)
@@ -86,6 +87,10 @@ class Source(db.Model):
     # cached/derived from fb data
     name = db.StringProperty(indexed=False)
     feed_history_in_seconds = db.IntegerProperty(indexed=False)
+
+    fb_info = json_util.JsonProperty(dict, indexed=False)
+    latitude = db.FloatProperty(indexed=False)
+    longitude = db.FloatProperty(indexed=False)
 
     street_dance_related = db.BooleanProperty()
 
@@ -122,30 +127,52 @@ class Source(db.Model):
             return 0
 
     def compute_derived_properties(self, fb_data):
-        if fb_data and not fb_data['empty']: # only update these when we have feed data
-            if 'likes' in fb_data['info']:
-                self.graph_type = GRAPH_TYPE_FANPAGE
-            elif 'locale' in fb_data['info'] or 'first_name' in fb_data['info']:
-                self.graph_type = GRAPH_TYPE_PROFILE
-            elif 'groups.facebook.com' in fb_data['info'].get('email', []):
-                self.graph_type = GRAPH_TYPE_GROUP
-            elif 'start_time' in fb_data['info']:
-                self.graph_type = GRAPH_TYPE_EVENT
+        if fb_data:
+            if fb_data['empty']: # only update these when we have feed data
+                self.fb_info = {}
             else:
-                logging.info("cannot classify object type for id %s", fb_data['info']['id'])
-            if 'name' not in fb_data['info']:
-                logging.error('cannot find name for fb event data: %s, cannot update source data...', fb_data)
-                return
-            self.name = fb_data['info']['name']
-            feed = fb_data['feed']['data']
-            if len(feed):
-                dt = datetime.datetime.strptime(feed[-1]['created_time'], '%Y-%m-%dT%H:%M:%S+0000')
-                td = datetime.datetime.now() - dt
-                total_seconds = td.seconds + td.days * 24 * 3600
-                self.feed_history_in_seconds = total_seconds
-                #logging.info('feed time delta is %s', self.feed_history_in_seconds)
-            else:
-                self.feed_history_in_seconds = 0
+                self.fb_info = fb_data['info']
+                if 'likes' in fb_data['info']:
+                    self.graph_type = GRAPH_TYPE_FANPAGE
+                elif 'locale' in fb_data['info'] or 'first_name' in fb_data['info']:
+                    self.graph_type = GRAPH_TYPE_PROFILE
+                elif 'groups.facebook.com' in fb_data['info'].get('email', []):
+                    self.graph_type = GRAPH_TYPE_GROUP
+                elif 'start_time' in fb_data['info']:
+                    self.graph_type = GRAPH_TYPE_EVENT
+                else:
+                    logging.info("cannot classify object type for id %s", fb_data['info']['id'])
+                if 'name' not in fb_data['info']:
+                    logging.error('cannot find name for fb event data: %s, cannot update source data...', fb_data)
+                    return
+                self.name = fb_data['info']['name']
+                feed = fb_data['feed']['data']
+                if len(feed):
+                    dt = datetime.datetime.strptime(feed[-1]['created_time'], '%Y-%m-%dT%H:%M:%S+0000')
+                    td = datetime.datetime.now() - dt
+                    total_seconds = td.seconds + td.days * 24 * 3600
+                    self.feed_history_in_seconds = total_seconds
+                    #logging.info('feed time delta is %s', self.feed_history_in_seconds)
+                else:
+                    self.feed_history_in_seconds = 0
+                location = fb_data['info'].get('location')
+                print location
+                if location:
+                    print 'XXXXX'
+                    if location.get('latitude'):
+                        print location.get('latitude'), location.get('longitude')
+                        self.latitude = location.get('latitude')
+                        self.longitude = location.get('longitude')
+                    else:
+                        component_names = ['street', 'city', 'state', 'zip', 'region', 'country']
+                        components = [location.get(x) for x in component_names if location.get(x)]
+                        address = ', '.join(components)
+                        geocode = gmaps_api.get_geocode(address=address)
+                        print address
+                        print geocode
+                        if geocode:
+                            print geocode.latlng()
+                            self.latitude, self.longitude = geocode.latlng()
         #TODO(lambert): at some point we need to calculate all potential events, and all real events, and update the numbers with values from them. and all fake events. we have a problem where a new source gets added, adds in the potential events and/or real events, but doesn't properly tally them all. can fix this one-off, but it's too-late now, and i imagine our data will grow inaccurate over time anyway.
 
 def link_for_fb_source(data):
