@@ -18,6 +18,10 @@ class BaseIndex(object):
         raise NotImplementedError()
 
     @classmethod
+    def search(cls, query):
+        return search.Index(name=cls.index_name).search(query)
+
+    @classmethod
     def update_index(cls, objects_to_update):
         index_objs = []
         deindex_ids = []
@@ -40,7 +44,7 @@ class BaseIndex(object):
         doc_index.delete(object_ids)
 
     @classmethod
-    def rebuild_from_query(cls, query_params):
+    def rebuild_from_query(cls, *query_params):
         logging.info("Loading Index")
         db_query = cls.obj_type.query(*query_params)
         object_keys = db_query.fetch(MAX_OBJECTS, keys_only=True)
@@ -77,10 +81,10 @@ class BaseIndex(object):
         object_ids_list = list(object_ids)
         for i in range(0,len(object_ids_list), docs_per_group):
             group_object_ids = object_ids_list[i:i+docs_per_group]
-            deferred.defer(cls.save_ids, group_object_ids)
+            deferred.defer(cls._save_ids, group_object_ids)
 
     @classmethod
-    def save_ids(cls, object_ids):
+    def _save_ids(cls, object_ids):
         # TODO(lambert): how will we ensure we only update changed events?
         logging.info("Loading %s objects", len(object_ids))
         objects = cls.obj_type.get_by_ids(object_ids)

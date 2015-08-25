@@ -7,7 +7,6 @@ import pprint
 import re
 import time
 
-from google.appengine.ext import deferred
 from google.appengine.ext import ndb
 from google.appengine.api import search
 
@@ -356,9 +355,9 @@ def delete_from_fulltext_search_index(db_event_id):
 
 def construct_fulltext_search_index(index_future=True):
     if index_future:
-        FutureEventsIndex.construct_fulltext_search_index((eventdata.DBEvent.search_time_period==dates.TIME_FUTURE))
+        FutureEventsIndex.rebuild_from_query(eventdata.DBEvent.search_time_period==dates.TIME_FUTURE)
     else:
-        AllEventsIndex.construct_fulltext_search_index(())
+        AllEventsIndex.rebuild_from_query()
 
 class EventsIndex(index.BaseIndex):
     obj_type = eventdata.DBEvent

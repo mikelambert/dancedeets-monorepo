@@ -7,7 +7,7 @@ from test_utils import fb_api_stub
 app = TestApp(main.application)
 
 
-class TestSearch(unittest.TestCase):
+class BaseTestSearch(unittest.TestCase):
     def setUp(self):
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate()
@@ -25,6 +25,6 @@ class TestSearch(unittest.TestCase):
     def tearDown(self):
         self.fb_api.deactivate()
 
-class TestSearch(TestSearch):
+class TestSearch(BaseTestSearch):
     def runTest(self):
         app.get('/?location=New York&distance=50')
