@@ -2,7 +2,6 @@
 
 import logging
 import time
-import urllib
 
 import base_servlet
 from logic import friends
@@ -12,8 +11,9 @@ from util import dates
 from util import timings
 from . import search
 from . import search_base
+from . import search_pages
 
-class RelevantHandler(base_servlet.BaseRequestHandler):
+class SearchHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         if not self.request.get('location') and not self.request.get('keywords'):
             return True
@@ -37,6 +37,23 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, self.user)
         self.handle_search(fe_search_query)
 
+    def _fill_ranking_display(self, fe_search_query):
+        a = time.time()
+        ranking_location = rankings.get_ranking_location(fe_search_query.location)
+        logging.info("computing largest nearby city took %s seconds", time.time() - a)
+
+        a = time.time()
+        #TODO(lambert): perhaps produce optimized versions of these without styles/times, for use on the homepage? less pickling/loading required
+        event_top_n_cities, event_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ALL_TIME), ranking_location)
+        user_top_n_cities, user_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_user_rankings(), rankings.ALL_TIME), ranking_location)
+        logging.info("Sorting and ranking top-N cities took %s seconds", time.time() - a)
+
+        self.display['user_top_n_cities'] = user_top_n_cities
+        self.display['event_top_n_cities'] = event_top_n_cities
+        self.display['user_selected_n_cities'] = user_selected_n_cities
+        self.display['event_selected_n_cities'] = event_selected_n_cities
+
+class RelevantHandler(SearchHandler):
     def handle_search(self, fe_search_query):
         validation_errors = fe_search_query.validation_errors()
         if validation_errors:
@@ -73,20 +90,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         else:
             self.display['selected_tab'] = 'present'
 
-        a = time.time()
-        ranking_location = rankings.get_ranking_location(fe_search_query.location)
-        logging.info("computing largest nearby city took %s seconds", time.time() - a)
-
-        a = time.time()
-        #TODO(lambert): perhaps produce optimized versions of these without styles/times, for use on the homepage? less pickling/loading required
-        event_top_n_cities, event_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ALL_TIME), ranking_location)
-        user_top_n_cities, user_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_user_rankings(), rankings.ALL_TIME), ranking_location)
-        logging.info("Sorting and ranking top-N cities took %s seconds", time.time() - a)
-
-        self.display['user_top_n_cities'] = user_top_n_cities
-        self.display['event_top_n_cities'] = event_top_n_cities
-        self.display['user_selected_n_cities'] = user_selected_n_cities
-        self.display['event_selected_n_cities'] = event_selected_n_cities
+        self._fill_ranking_display(fe_search_query)
 
         self.display['defaults'] = fe_search_query
         if fe_search_query.location and fe_search_query.keywords:
@@ -123,3 +127,67 @@ class CityHandler(RelevantHandler):
         fe_search_query.distance = 50
         fe_search_query.distance_units = 'miles'
         self.handle_search(fe_search_query)
+
+
+class RelevantPageHandler(SearchHandler):
+    def requires_login(self):
+        if not self.request.get('location') and not self.request.get('keywords'):
+            return True
+        return False
+
+    def get(self, *args, **kwargs):
+        self.handle(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        self.handle(*args, **kwargs)
+
+    @timings.timed
+    def handle(self, city_name=None):
+        self.finish_preload()
+        if self.user and not self.user.location:
+            #TODO(lambert): make this an error
+            self.user.add_message("We could not retrieve your location from facebook. Please fill out a location below")
+            self.redirect('/user/edit')
+            return
+
+        fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, self.user)
+        self.handle_search(fe_search_query)
+
+    def handle_search(self, fe_search_query):
+        validation_errors = fe_search_query.validation_errors()
+        if validation_errors:
+            self.add_error('Invalid search query: %s' % ', '.join(validation_errors))
+
+        search_query = search_pages.SearchPageQuery.create_from_query(fe_search_query)
+        if fe_search_query.validated:
+            search_results = search_query.get_search_results(self.fbl)
+        else:
+            search_results = []
+
+        self.display['page_results'] = search_results
+
+        self.display['selected_tab'] = 'pages'
+
+        self._fill_ranking_display(fe_search_query)
+
+        self.display['defaults'] = fe_search_query
+        if fe_search_query.location and fe_search_query.keywords:
+            self.display['result_title'] = 'Facebook Pages near %s containing %s' % (fe_search_query.location, fe_search_query.keywords)
+        elif fe_search_query.location:
+            self.display['result_title'] = 'Facebook Pages near %s' % fe_search_query.location
+        elif fe_search_query.keywords:
+            self.display['result_title'] = 'Facebook Pages containing %s' % fe_search_query.keywords
+        else:
+            self.display['result_title'] = 'Facebook Pages'
+
+        request_params = fe_search_query.url_params()
+        if 'calendar' in request_params:
+            del request_params['calendar'] #TODO(lambert): clean this up more
+        if 'past' in request_params:
+            del request_params['past'] #TODO(lambert): clean this up more
+        self.display['past_view_url'] = '/events/relevant?past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+        self.display['upcoming_view_url'] = '/events/relevant?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+        self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+        self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+
+        self.render_template('results_pages')

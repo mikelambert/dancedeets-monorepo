@@ -107,6 +107,7 @@ URLS = [
     ('/tasks/timings_keep_alive', tasks.TimingsKeepAlive),
     ('/tasks/timings_process_day', tasks.TimingsProcessDay),
     ('/', search_servlets.RelevantHandler),
+    ('/pages/search', search_servlets.RelevantPageHandler),
     ('/_ah/warmup', DoNothingHandler),
     ('/tasks/compute_rankings', rankings_servlets.ComputeRankingsHandler),
     ('/tools/import_cities', rankings_servlets.ImportCitiesHandler),

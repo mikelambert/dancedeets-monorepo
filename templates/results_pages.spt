@@ -1,0 +1,206 @@
+#extends _base
+#extends _rsvp
+#extends _results
+#from spitfire.runtime.filters import escape_html
+#filter escape_html
+#def title
+$result_title
+#end def
+
+#def head_stylesheet
+    <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="$result_title" /> 
+#end def
+
+
+#def ranked_list($top_list, $selected_list)
+	#if $top_list
+		#for $i, $sel, $data in $top_list
+			#if $sel
+				<i>
+			#end if
+			$i: $data.key: $data.count<br>
+			#if $sel
+				</i>
+			#end if
+		#end for
+		...<br>
+		#if $selected_list
+			#set $user_i = len($selected_list)/2 + 1
+			#for $raw_i, ($i, $sel, $data) in enumerate($selected_list)
+				#if $sel
+					<i>
+				#end if
+				$i: $data.key: $data.count
+				#if $sel
+					</i>
+				#end if
+				<br>
+			#end for
+			...<br>
+		#end if
+	#else
+		No rankings yet!
+	#end if
+#end def
+
+
+#def body
+
+<div class="row">
+<div class="col-md-9">
+<div style="margin-bottom: 25px">
+  <table><tr><td>
+  <div>
+  	<img id="penguin" src="/images/full_penguin_240.png" height="120" width="120">
+  </div>
+  </td><td>
+  <form id="search-form" class="form-inline" role="search" action="/">
+    <div style="font-weight: bold">Searching ${total_events} dance events worldwide:</div>
+    <div class="form-group"">
+      <label for="keywords_input">Keywords</label>
+      ## We don't use a placeholder on keyword field, since it interacts differently with bootstrap-tokentext
+      <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="$defaults.keywords" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="location_input">near location</label>
+      <input id="location_input" type="text" name="location" placeholder="everywhere" value="$defaults.location" class="form-control">
+    </div>
+    #if $defaults.deb
+	    <input type="hidden" name="deb" value="$defaults.deb">
+	#end if
+    <button type="submit" class="btn btn-default">
+      <span class="glyphicon glyphicon-search"></span>
+      Search Events
+    </button>
+  <!-- maybe make a small hourglass icon search box ? 
+  $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
+  -->
+  </form>
+  </td></tr></table>
+</div>##margin-bottom: 25px
+
+<div style="min-height:300px">
+<ul class="nav nav-tabs" data-tabs="tabs">
+	<li
+	#if $selected_tab == 'past'
+		class="active"
+	#end if
+	><a
+	#if $selected_tab == 'past'
+		href="#"
+	#else
+		href="$past_view_url"
+	#end if
+	><span>
+	#if $selected_tab == 'past'
+		#set $num_past_results = len($past_results)
+		#if $num_past_results
+			$num_past_results
+		#end if
+	#end if
+	Past Events</span></a></li>
+
+	<li
+	#if $selected_tab == 'present'
+		class="active"
+	#end if
+	><a
+	#if $selected_tab == 'present'
+		href="#"
+	#else
+		href="$upcoming_view_url"
+	#end if
+	><span>
+	#if $selected_tab == 'present'
+		#if $num_upcoming_results
+			$num_upcoming_results
+		#end if
+	#end if
+	Upcoming Events</span></a></li>
+
+	<li
+	#if $selected_tab == 'calendar'
+		class="active"
+	#end if
+	><a
+	#if $selected_tab == 'calendar'
+		href="#"
+	#else
+		href="$calendar_view_url"
+	#end if
+	><span>Calendar</span></a></li>
+</ul>
+<div class="tabs-after top-to-bottom-fade">
+	#for $page_result in $page_results
+		$page_result.id
+		$page_result.name
+		$page_result.like_count
+	#end for
+</div>##min-height:300px
+</div>##col-md-9
+</div>##row
+
+<div class="col-md-3">
+	<div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="190" data-action="like" data-show-faces="true" data-share="true" style="margin-bottom: 10px;"></div>
+	<p>
+	<a href="/share" class="btn btn-primary">Invite Dancers and Fans</a>
+	<a href="/events_add" class="btn btn-primary">Add Dance Event</a>
+
+
+	<hr>
+
+	<div class="rankings">
+	<span class="ranking-title">Who has the most events:</span><br>
+	$ranked_list($event_top_n_cities, $event_selected_n_cities)
+	</div>
+
+	<hr>
+	<div class="rankings">
+	<span class="ranking-title">Who has the most dancers and fans:</span><br>
+	$ranked_list($user_top_n_cities, $user_selected_n_cities)
+	</div>
+
+	<hr>
+	<div class="rankings">
+	See <a href="/rankings">All Rankings</a>.
+	</div>
+</div>
+
+</div> ## row
+#end def
+
+#def bottom_javascript
+
+<!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
+
+<script type="text/javascript">
+$(document).ready(function(event) {
+  $("body").delegate("#location_input", "click", function() { return false; });
+  $('#keywords_input').keydown(function(event) {
+      if (event.keyCode == 13) {
+          this.form.submit();
+          return false;
+       }
+  });
+  $('#location_input').keydown(function(event) {
+      if (event.keyCode == 13) {
+          this.form.submit();
+          return false;
+       }
+  });
+});
+
+function initializeLocationAutocomplete() {
+  var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
+  autocomplete.setTypes(['(regions)'])
+}
+</script>
+
+$results_bottom_javascript()
+
+#end def
