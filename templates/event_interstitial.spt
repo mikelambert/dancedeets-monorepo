@@ -46,8 +46,17 @@ $format_html($event.info.name)
 			<div id="cover-box-outer">
 				<a href="$largest_cover_info.source">
 					<div id="cover-box-fill">
-						<img id="cover-image" src="$largest_cover_info.source" itemprop="photo">
-						<!--style="margin-top:-${cover.offset_y}%">-->
+						<img id="cover-image" src="$largest_cover_info.source" itemprop="photo"
+						#if $cover.offset_x
+							style="height: 100%; left: -$cover.offset_x%"
+						#else
+							#if $cover.offset_y
+								style="width: 100%; top: -$cover.offset_y%"
+							#else
+								style="width: 100%"
+							#end if
+						#end if
+						>
 						<h1 class="event-page-title event-page-title-on-cover" itemprop="name">$event.info.name</h1>
 					</div>
 				</a>
@@ -125,29 +134,6 @@ region= paramter cctld
 
 #def bottom_javascript
 <script type="text/javascript">
-#if $cover
-function position_cover() {
-	/* magic positioning function. makes no sense, but it works, much better than setting it to "-top:${cover.offset_y}%" */
-	/* difficult facebook event cover ids to handle include: 448903208580641 */
-	var offset_x = $cover.offset_x;
-	var offset_y = $cover.offset_y;
-	var cover_w = $("#cover-box-outer").width();
-	var cover_h = $("#cover-box-outer").height();
-	var img_w = $largest_cover_info.width;
-	var img_h = $largest_cover_info.height;
-
-	if (offset_x) {
-		$("#cover-image").css ({ height: "100%", left: "-" + offset_x + "%" });
-	} else if (offset_y) {
-		$("#cover-image").css ({ width: "100%", top: "-" + offset_y + "px" });
-	} else {
-		if (cover_w/img_w > cover_h/img_h) {
-			$("#cover-image").css ({ width: "100%" });
-		} else {
-			$("#cover-image").css ({ height: "100%" });
-		}
-	}
-}
 
 function load_map() {
 	if ($('.map-wrapper')) {
@@ -168,11 +154,6 @@ function load_map() {
 		});
 	}
 }
-
-$(document).ready(function() {
-	position_cover();
-});
-#end if
 
 window.twttr = (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0],
