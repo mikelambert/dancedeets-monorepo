@@ -83,7 +83,14 @@ $format_html($event.info.name)
 	<div><b>Location:</b></div>
 	<div itemprop="location">
 	#if 'location' in $event.info
-	$event.info.location<br>
+		#if 'venue' in $event.info
+			<a href="https://www.facebook.com/$event.info.venue.id">
+		#end if
+		$event.info.location
+		#if 'venue' in $event.info
+			</a>
+		#end if
+		<br>
 	#end if
 	#if $street_address
 	$street_address<br>
