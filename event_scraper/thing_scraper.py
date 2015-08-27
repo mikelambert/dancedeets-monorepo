@@ -8,6 +8,8 @@ from google.appengine.ext import deferred
 
 import fb_api
 from mapreduce import context
+from mapreduce import operation
+
 from util import fb_mapreduce
 from util import timings
 from . import event_pipeline
@@ -18,16 +20,16 @@ def delete_bad_source(source):
     if source.creating_fb_uid or source.num_real_events:
         if source.street_dance_related != True:
             source.street_dance_related = True
-            source.put()
+            yield operation.db.Put(source)
         yield '+%s\n' % source.graph_id
     elif source.num_potential_events:
         if source.street_dance_related != False:
             source.street_dance_related = False
-            source.put()
+            yield operation.db.Put(source)
         yield ' %s\n' % source.graph_id
     else:
         sid = source.graph_id
-        source.delete()
+        yield operation.db.Delete(source)
         yield '-%s\n' % sid
 
 def mr_delete_bad_sources():
@@ -44,7 +46,7 @@ def mr_delete_bad_sources():
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
         handler_spec='event_scraper.thing_scraper.delete_bad_source',
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
-        shard_count=8, # since we want to stick it in the slow-queue, and don't care how fast it executes
+        shard_count=8,
         queue_name='fast-queue',
         mapper_parameters=mapper_params,
     )
@@ -181,16 +183,18 @@ def process_event_source_ids(discovered_list, fbl):
     logging.info("Loading processing %s discovered events", len(discovered_list))
     event_pipeline.process_discovered_events(fbl, discovered_list)
 
-    potential_new_source_ids = set([x.extra_source_id for x in discovered_list if x.extra_source_id])
-    existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(potential_new_source_ids) if x])
-    new_source_ids = set([x for x in potential_new_source_ids if x not in existing_source_ids])
-    for source_id in new_source_ids:
-        #TODO(lambert): we know it doesn't exist, why does create_source_for_id check datastore?
-        s = thing_db.Source(key_name=source_id)
-        s.put()
-    logging.info("Found %s new sources", len(new_source_ids))
+    # TODO: Should only run this code on events that we actually decide are worth adding
+    if False:
+        potential_new_source_ids = set([x.extra_source_id for x in discovered_list if x.extra_source_id])
+        existing_source_ids = set([x.graph_id for x in thing_db.Source.get_by_key_name(potential_new_source_ids) if x])
+        new_source_ids = set([x for x in potential_new_source_ids if x not in existing_source_ids])
+        for source_id in new_source_ids:
+            #TODO(lambert): we know it doesn't exist, why does create_source_for_id check datastore?
+            s = thing_db.Source(key_name=source_id)
+            s.put()
+        logging.info("Found %s new sources", len(new_source_ids))
 
-    # initiate an out-of-band-scrape for our new sources we found
-    if new_source_ids:
-        deferred.defer(scrape_events_from_source_ids, fbl, new_source_ids)
+        # initiate an out-of-band-scrape for our new sources we found
+        if new_source_ids:
+            deferred.defer(scrape_events_from_source_ids, fbl, new_source_ids)
 
