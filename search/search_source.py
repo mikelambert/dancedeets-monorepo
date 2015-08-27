@@ -40,13 +40,16 @@ class SourceIndex(index.BaseIndex):
                 search.TextField(name='name', value=source.name),
                 search.TextField(name='description', value=fb_info.get('general_info', '')),
                 search.NumberField(name='like_count', value=fb_info['likes']),
+                search.TextField(name='category', value=fb_info['category']),
+                search.TextField(name='category_list', value=', '.join(str(x['name']) for x in fb_info.get('category_list', []))),
                 search.NumberField(name='latitude', value=source.latitude),
                 search.NumberField(name='longitude', value=source.longitude),
                 #search.TextField(name='categories', value=' '.join(source.auto_categories)),
                 search.TextField(name='country', value=country_code),
+                search.NumberField(name='num_real_events', value=source.num_real_events or 0),
             ],
             #language=XX, # We have no good language detection
-            rank=fb_info['likes'],
+            rank=source.num_real_events or 0,
             )
         return doc_event
 

@@ -4,16 +4,21 @@ import time
 
 from google.appengine.api import search
 
+from event_scraper import thing_db
 from loc import gmaps_api
 from loc import math
 from nlp import categories
 from . import search_source
 
 class PageResult(object):
-    def __init__(self, result):
+    def __init__(self, result, source):
         self.id = result.doc_id
         self.name = result.field('name').value
         self.like_count = result.field('like_count').value
+        self.category = result.field('category').value
+        self.category_list = result.field('category_list').value
+        self.num_real_events = result.field('num_real_events').value
+        self.source = source
 
 class SearchPageQuery(object):
     def __init__(self, bounds=None, min_likes=None, keywords=None):
@@ -90,8 +95,10 @@ class SearchPageQuery(object):
         if prefilter:
             doc_events = [x for x in doc_events if prefilter(x)]
 
+        real_sources = thing_db.Source.get_by_key_name([x.doc_id for x in doc_events])
+
         a = time.time()
-        results = [PageResult(x) for x in doc_events]
+        results = [PageResult(doc, source) for doc, source in zip(doc_events, real_sources)]
 
         logging.info("Loading DBEvents took %s seconds", time.time() - a)
 

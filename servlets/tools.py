@@ -11,6 +11,7 @@ from mapreduce import context
 from mapreduce import operation as op
 #from mapreduce import util
 
+from event_scraper import thing_db
 from events import eventdata
 import fb_api
 #from logic import mr_dump
@@ -82,12 +83,11 @@ def mr_private_events(fbl):
         },
     )
 
-#base_servlet.BaseTaskFacebookRequestHandler):#
-class OneOffHandler(webapp2.RequestHandler):
+#webapp2.RequestHandler):#
+import base_servlet
+class OneOffHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        from google.appengine.ext import ndb
-        print eventdata.DBEvent.query(eventdata.DBEvent.key==ndb.Key(eventdata.DBEvent, "4436859591125894444")).fetch(1, keys_only=True)
-        pass
+        thing_db.mr_count_potential_events(self.fbl)
 
 class OwnedEventsHandler(webapp2.RequestHandler):
     def get(self):

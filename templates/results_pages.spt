@@ -134,9 +134,18 @@ $result_title
 </ul>
 <div class="tabs-after top-to-bottom-fade">
 	#for $page_result in $page_results
-		$page_result.id
+	<p>
+		$page_result.num_real_events
+		--------
 		$page_result.name
 		$page_result.like_count
+		$page_result.category
+		$page_result.category_list
+		$page_result.id
+<!--	<div class="fb-like" data-href="http://www.facebook.com/$page_result.id" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div>
+-->
+
+    <br>
 	#end for
 </div>##min-height:300px
 </div>##col-md-9
