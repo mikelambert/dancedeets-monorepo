@@ -34,7 +34,8 @@ def run_modify_transaction_for_key(key, func):
     def inner_modify():
         s = Source.get_by_key_name(key)
         if not s:
-            s = Source(key_name=key)
+            return
+            #s = Source(key_name=key)
         func(s)
         s.put()
     db.run_in_transaction(inner_modify)
@@ -158,8 +159,8 @@ class Source(db.Model):
                 location = fb_data['info'].get('location')
                 if location:
                     if location.get('latitude'):
-                        self.latitude = location.get('latitude')
-                        self.longitude = location.get('longitude')
+                        self.latitude = float(location.get('latitude'))
+                        self.longitude = float(location.get('longitude'))
                     else:
                         component_names = ['street', 'city', 'state', 'zip', 'region', 'country']
                         components = [location.get(x) for x in component_names if location.get(x)]
