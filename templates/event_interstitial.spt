@@ -81,12 +81,20 @@ $format_html($event.info.name)
 	#end if
 	$city_state_country<br>
 	</div>
+	#if $event.info.attending_count
+		<div><b>RSVPs:</b></div>
+		<div>$event.info.attending_count Attending
+		#if $event.info.maybe_count
+			, $event.info.maybe_count Maybe
+		#end if
+		</div>
+	#end if
 	## not worth showing maps embed if there is no street_address
 	#if $lat_long
 		#if 'description' in $event.info
 			<div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
 		#end if
-		<div class="map-wrapper">
+		<div id="map-wrapper" class="responsive-map-wrapper">
 		</div>
 	#end if
 </div>
@@ -129,19 +137,9 @@ function position_cover() {
 	var img_h = $largest_cover_info.height;
 
 	if (offset_x) {
-		// This is basically centered + offset_x, which seems to work halfway decent on 774261012620733, before I gave up on the issue.
-		var vertical_scaling = cover_h/img_h;
-		var centered_offset_x = cover_w/2 - img_w/2 * vertical_scaling;
-		var offset_x2 = Math.min(0, offset_x + centered_offset_x);
-
-		$("#cover-image").css ({ height: "100%", left: offset_x2 + "px" });
+		$("#cover-image").css ({ height: "100%", left: "-" + offset_x + "%" });
 	} else if (offset_y) {
-		// This is basically centered + offset_y, which seems to work halfway decent on 1528897414056319, before I gave up on the issue.
-		var horizontal_scaling = cover_w/img_w;
-		var centered_offset_y = cover_h/2 - img_h/2 * horizontal_scaling;
-		var offset_y2 = Math.min(0, offset_y + centered_offset_y);
-
-		$("#cover-image").css ({ width: "100%", top: offset_y2 + "px" });
+		$("#cover-image").css ({ width: "100%", top: "-" + offset_y + "px" });
 	} else {
 		if (cover_w/img_w > cover_h/img_h) {
 			$("#cover-image").css ({ width: "100%" });
@@ -153,29 +151,26 @@ function position_cover() {
 
 function load_map() {
 	if ($('.map-wrapper')) {
-		if ($(document).width() > 768) {
-			## TODO(lambert): We can do a better job, checking on the server if google maps can geocode our place query q=venue/street into a place thats near the lat/long that facebook has, and if so, to point at that here instead of just a raw lat/long location.
-			$('.map-wrapper').append('<div class="responsive-map-wrapper"><iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=$urlencode($lat_long)&key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ"></iframe></div>')
-		} else {
-			var size = Math.round($(document).width() * 0.85);
-			var url = "https://maps.googleapis.com/maps/api/staticmap?center=$urlencode($lat_long)&zoom=15&maptype=roadmap&markers=label:S%7C$urlencode($lat_long)";
-			url += "&size=" + size + "x" + size;
-			var img = $('<img>');
-			img.attr('src', url);
-			img.attr('width', size);
-			img.attr('height', size);
-			var ahref = $('<a>');
-			ahref.attr('href', "http://maps.google.com/?q=$urlencode($lat_long)");
-			ahref.append(img);
-			$('.map-wrapper').append(ahref);
+		## TODO(lambert): We can do a better job, checking on the server if google maps can geocode our place query q=venue/street into a place thats near the lat/long that facebook has, and if so, to point at that here instead of just a raw lat/long location.
+		var myLatlng = new google.maps.LatLng($lat_long);
+		var mapOptions = {
+			zoom: 13,
+			scrollwheel: false,
+			draggable: false,
+			center: myLatlng
 		}
+		var map = new google.maps.Map(document.getElementById('map-wrapper'), mapOptions);
+
+		var marker = new google.maps.Marker({
+			position: myLatlng,
+			map: map,
+			title: "$event.info.location", ##TODO: escapeme
+		});
 	}
 }
 
 $(document).ready(function() {
 	position_cover();
-
-	load_map();
 });
 #end if
 
@@ -196,5 +191,7 @@ window.twttr = (function(d, s, id) {
   return t;
 }(document, "script", "twitter-wjs"));
 
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;callback=load_map">
 </script>
 #end def

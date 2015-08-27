@@ -89,15 +89,8 @@
 	padding-top: 25px;
 	height: 0;
 	padding-bottom: 100%; /* square...but only because width is 80% below, with our 80% here */
-	margin-bottom: -20%;
+	margin-bottom: 0%;
 }
-.responsive-map-wrapper iframe {
-	width: 80%;
-	height: 80%;
-	position: absolute;
-	top: 0;
-	left: 0;
-} 
 
 /* on event page */
 .product-social-links {
