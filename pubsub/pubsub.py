@@ -180,12 +180,12 @@ def twitter_post(auth_token, db_event):
     if media:
         update_params['media_ids'] = media['media_id']
 
-
+    TWITTER_HANDLE_LENGTH = 16
     description = db_event.fb_event['info'].get('description') or ''
     twitter_handles = re.findall(r'\s@[A-za-z0-9_]+', description)
-    twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+15]
+    twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+TWITTER_HANDLE_LENGTH]
     twitter_handles2 = re.findall(r'twitter\.com/([A-za-z0-9_]+)', description)
-    twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1+15]
+    twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1+TWITTER_HANDLE_LENGTH]
     # This is the only twitter account allowed to @mention, to avoid spamming everyone...
     if auth_token.token_nickname == 'BigTwitter':
         # De-dupe these lists
