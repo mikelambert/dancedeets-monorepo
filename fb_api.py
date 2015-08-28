@@ -174,7 +174,7 @@ class LookupEvent(LookupType):
         return [
             ('info', cls.url(object_id, fields=OBJ_EVENT_FIELDS)),
             # Dependent lookup for the image from the info's cover photo id:
-            ('cover_info', cls.url('', fields=['images'], ids='{result=info:$.cover.cover_id}')),
+            ('cover_info', cls.url('', fields=['images','width','height'], ids='{result=info:$.cover.cover_id}')),
             ('picture', cls.url('%s/picture?redirect=false&type=large' % object_id)),
         ]
     @classmethod
