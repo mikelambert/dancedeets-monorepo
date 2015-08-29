@@ -99,7 +99,7 @@ $result_title
 	#else
 		href="$past_view_url"
 	#end if
-	><span>
+	><span><i class="fa fa-history fa-lg"></i>
 	#if $selected_tab == 'past'
 		#set $num_past_results = len($past_results)
 		#if $num_past_results
@@ -136,7 +136,7 @@ $result_title
 	#else
 		href="$calendar_view_url"
 	#end if
-	><span>Calendar</span></a></li>
+	><span><i class="fa fa-calendar fa-lg"></i> Calendar</span></a></li>
 </ul>
 <div class="tabs-after top-to-bottom-fade">
 	#if $selected_tab == 'past'
