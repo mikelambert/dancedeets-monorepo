@@ -13,7 +13,7 @@ $format_html($event.info.name)
 #end if
 #if $cover
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:image:src" content="http://$full_hostname/events/image_proxy/$event.info.id/" />
+	<meta name="twitter:image:src" content="http://$full_hostname/events/image_proxy/$event.info.id" />
 #else
 	<meta name="twitter:card" content="summary" />
 #end if
