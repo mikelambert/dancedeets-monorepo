@@ -203,14 +203,15 @@ var _gaq = [];
 #end if
 
 #if not $suppress_promos and (not $user or $show_mobile_promo)
-<div class="alert alert-warning alert-dismissible" role="alert"><ul>
+<div class="alert alert-warning alert-dismissible" role="alert">
 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<ul>
 #if not $user
-    <li>Are you a dancer in-the-know? Help others by sharing your dance events: <button onclick="manualLogin();" class="btn btn-default">Join dancedeets</button> today!
-    <li>Are you learning to dance? <button onclick="manualLogin();" class="btn btn-default">Subscribe to a weekly email</button> of upcoming events.
+    <li>Are you a dancer in-the-know? Help others by sharing your dance events: <button onclick="manualLogin();" class="btn btn-default"><i class="fa fa-sign-in fa-lg"></i> Join dancedeets</button> today!
+    <li>Are you learning to dance? <button onclick="manualLogin();" class="btn btn-default"><i class="fa fa-envelope fa-lg"></i> Subscribe to a weekly email</button> of upcoming events.
 #end if
 #if $show_mobile_promo
-    <li>Did you know? We've got a mobile app for DanceDeets too: <a href="/mobile_apps" class="btn btn-default">Download the app</a> for Android and iPhone/iPad today!
+    <li>Did you know? We've got a mobile app for DanceDeets too: <a href="/mobile_apps" class="btn btn-default"><i class="fa fa-mobile fa-lg"></i> Download the app</a> for Android and iPhone/iPad today!
 #end if
 </ul></div>
 #end if
