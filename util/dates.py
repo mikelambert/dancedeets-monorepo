@@ -6,6 +6,11 @@ AMPM_COUNTRIES = ['AU', 'BD', 'CA', 'CO', 'EG', 'IN', 'MY', 'NZ', 'PK', 'PH', 'U
 TIME_PAST = 'PAST'
 TIME_FUTURE = 'FUTURE'
 
+DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
+
+def datetime_format(dt):
+    return dt.strftime(DATETIME_FORMAT)
+
 def event_time_period(start_time, end_time):
     if not start_time:
         return None

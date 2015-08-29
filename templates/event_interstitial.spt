@@ -27,7 +27,9 @@ $format_html($event.info.name)
 #end def
 
 #def body
-<div itemscope itemtype="http://data-vocabulary.org/Event">
+<div itemscope itemtype="http://schema.org/DanceEvent">
+
+<span itemprop="url" content=http://$full_hostname/events/$event.info.id/" />
 
 <div class="container-fluid">
 <div class="row">
@@ -46,7 +48,7 @@ $format_html($event.info.name)
 			<div id="cover-box-outer">
 				<a href="$largest_cover_info.source">
 					<div id="cover-box-fill">
-						<img id="cover-image" src="$largest_cover_info.source" itemprop="photo"
+						<img id="cover-image" src="$largest_cover_info.source" itemprop="image"
 						#if $cover.offset_x
 							style="height: 100%; left: -$cover.offset_x%"
 						#else
@@ -63,7 +65,7 @@ $format_html($event.info.name)
 			</div>
 		</div>
 	#else
-		<h1 class="event-page-title" itemprop="summary">$event.info.name</h1>
+		<h1 class="event-page-title" itemprop="name">$event.info.name</h1>
 	#end if
 	</div>	
 </div>
@@ -80,7 +82,11 @@ $format_html($event.info.name)
 		<a class="twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
 	</div></li>
 	<li><i class="fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
-	$duration_human_format($start_time, $end_time)</li>
+	<time itemprop="startDate" content="$datetime_format($start_time)">
+	$duration_human_format($start_time, $end_time)
+	</time>
+	<span itemprop="endDate" content="$datetime_format($end_time)" />
+	</li>
 	#if $event.info.attending_count
 		<li><i class="fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
 		$event.info.attending_count Attending
@@ -90,21 +96,41 @@ $format_html($event.info.name)
 		</li>
 	#end if
 	<li><i class="fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
-	<div itemprop="location" >
+	<div itemscope itemprop="location" itemtype="http://schema.org/Place">
 	#if 'location' in $event.info
 		#if 'venue' in $event.info
 			<a href="https://www.facebook.com/$event.info.venue.id">
 		#end if
+		<span itemprop="name" contents="$name">
 		$event.info.location
+		</span>
 		#if 'venue' in $event.info
 			</a>
 		#end if
 		<br>
 	#end if
+
+	<span itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">
+		<meta itemprop="latitude" content="$latitude" />
+		<meta itemprop="longitude" content="$longitude" />
+	</span>
+
+	<span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
 	#if $street_address
-	$street_address<br>
+		$street_address<br>
+		<span itemprop="streetAddress" contents="$street_address"/>
 	#end if
 	$city_state_country<br>
+	#if $city
+		<span itemprop="addressLocality" contents="$city"/>
+	#end if
+	#if $state
+		<span itemprop="addressRegion" contents="$state"/>
+	#end if
+	#if $country
+		<span itemprop="addressCountry" contents="$country"/>
+	#end if
+	</span>
 	</div></li>
 	</ul>
 	## not worth showing maps embed if there is no street_address
@@ -119,9 +145,11 @@ $format_html($event.info.name)
 </div>
 
 #if 'description' in $event.info
-	<div class="col-sm-8" itemprop="description">
+	<div class="col-sm-8">
 		<div><b>Description:</b></div>
-		$linkify($format_html($event.info.description))
+		<span itemprop="description">
+			$linkify($format_html($event.info.description))
+		</span>
 	</div>
 #end if
 </div>
@@ -148,7 +176,7 @@ region= paramter cctld
 function load_map() {
 	if ($('.map-wrapper')) {
 		## TODO(lambert): We can do a better job, checking on the server if google maps can geocode our place query q=venue/street into a place thats near the lat/long that facebook has, and if so, to point at that here instead of just a raw lat/long location.
-		var myLatlng = new google.maps.LatLng($lat_long);
+		var myLatlng = new google.maps.LatLng($latitude, $longitude);
 		var mapOptions = {
 			zoom: 13,
 			scrollwheel: false,

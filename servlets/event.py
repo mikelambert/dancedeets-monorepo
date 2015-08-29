@@ -89,20 +89,31 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['end_time'] = dates.parse_fb_end_time(event_info)
 
         lat_long = ''
+        latitude = ''
+        longitude = ''
         if 'venue' in event_info['info']:
-            city_state_country = [
-                event_info['info']['venue'][x]
-                for x in ['city', 'state', 'country']
-                if x in event_info['info']['venue']
-            ]
+            city = event_info['info']['venue'].get('city')
+            state = event_info['info']['venue'].get('state')
+            country = event_info['info']['venue'].get('country')
+            city_state_country = [x for x in [city, state, country] if x]
             street_address = event_info['info']['venue'].get('street')
             if event_info['info']['venue'].get('latitude'):
-                lat_long = "%s,%s" % (event_info['info']['venue'].get('latitude'), event_info['info']['venue'].get('longitude'))
+                latitude = event_info['info']['venue'].get('latitude')
+                longitude = event_info['info']['venue'].get('longitude')
+                lat_long = "%s,%s" % (latitude, longitude)
         else:
+            city = ''
+            state = ''
+            country = ''
             city_state_country = ''
             street_address = ''
+        self.display['city'] = city
+        self.display['state'] = state
+        self.display['country'] = country
         self.display['city_state_country'] = ', '.join(city_state_country)
         self.display['street_address'] = street_address
+        self.display['latitude'] = latitude
+        self.display['longitude'] = longitude
         self.display['lat_long'] = lat_long
         self.display['event'] = event_info
         self.display['next'] =  self.request.url
