@@ -114,6 +114,7 @@ $format_html($event.info.name)
 		#end if
 		<div id="map-wrapper" class="responsive-map-wrapper">
 		</div>
+		<p>Open in <a href="http://maps.google.com/?daddr=$urlencode($lat_long)" target="_blank">Google Maps</a>.
 	#end if
 </div>
 
