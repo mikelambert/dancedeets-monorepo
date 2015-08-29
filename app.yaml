@@ -54,9 +54,6 @@ handlers:
 - url: /favicon.ico
   static_files: favicon.ico
   upload: favicon.ico
-# bootstrap hardcodes the fonts path as ../fonts, which in /vcss/1234567890/bootstrap.css, comes to /vcss/fonts/xyz.font
-- url: /vcss/fonts
-  static_dir: css/fonts
 - url: /vcss/.*
   static_dir: css
 - url: /vjs/.*

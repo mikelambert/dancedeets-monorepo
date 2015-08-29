@@ -70,18 +70,27 @@ $format_html($event.info.name)
 
 <div class="row">
 <div class="col-sm-4">
+	<ul class="fa-ul event-ul">
 	#if $cover
-		<div><b><a href="$largest_cover_info.source">See Full Flyer</a></b></div>
+		<li><i class="fa-li fa fa-picture-o fa-lg"></i><b><a href="$largest_cover_info.source">See Full Flyer</a></b></li>
 	#end if
-	<div><b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b></div>
-	<div class="product-social-links">
+	<li><i class="fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b></li>
+	<li><div class="product-social-links" style="padding-bottom:30px;padding-top:30px">
 		<div class="fb-share-button" data-layout="button"></div>
 		<a class="twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
-	</div>
-	<div><b>Time:</b></div>
-	<div>$duration_human_format($start_time, $end_time)</div>
-	<div><b>Location:</b></div>
-	<div itemprop="location">
+	</div></li>
+	<li><i class="fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
+	$duration_human_format($start_time, $end_time)</li>
+	#if $event.info.attending_count
+		<li><i class="fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
+		$event.info.attending_count Attending
+		#if $event.info.maybe_count
+			, $event.info.maybe_count Maybe
+		#end if
+		</li>
+	#end if
+	<li><i class="fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
+	<div itemprop="location" >
 	#if 'location' in $event.info
 		#if 'venue' in $event.info
 			<a href="https://www.facebook.com/$event.info.venue.id">
@@ -96,15 +105,8 @@ $format_html($event.info.name)
 	$street_address<br>
 	#end if
 	$city_state_country<br>
-	</div>
-	#if $event.info.attending_count
-		<div><b>RSVPs:</b></div>
-		<div>$event.info.attending_count Attending
-		#if $event.info.maybe_count
-			, $event.info.maybe_count Maybe
-		#end if
-		</div>
-	#end if
+	</div></li>
+	</ul>
 	## not worth showing maps embed if there is no street_address
 	#if $lat_long
 		#if 'description' in $event.info

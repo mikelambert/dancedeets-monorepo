@@ -20,8 +20,9 @@
 <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.css">
 ## We must call tokenfield-typeahead before bootstrap-tokenfield, so that CSS gets applied in-order correctly.
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
+## <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
+## <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="/vcss/$version/dancedeets.css">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -93,15 +94,15 @@ var _gaq = [];
       <h3>DanceDeets Mobile App</h3>
 
       <div>Keep up with the latest dance events when you're on the go!</div>
-      <ul class="feature-list spacing">
-      <li class="feature"><img class="icon" src="/images/ic_menu_search.png">Search Worldwide</li>
-      <li class="feature"><img class="icon" src="/images/ic_menu_calendar.png">Add to Calendar</li>
-      <li class="feature"><img class="icon" src="/images/ic_menu_facebook.png">View on Facebook</li>
+      <ul class="feature-list spacing fa-ul">
+      <li><i class="fa-li fa fa-search fa-lg"></i>Search Worldwide</li>
+      <li><i class="fa-li fa fa-calendar fa-lg"></i>Add to Calendar</li>
+      <li><i class="fa-li fa fa-facebook-square fa-lg"></i>View on Facebook</li>
       </ul>
-      <ul class="feature-list spacing">
-      <li class="feature"><img class="icon" src="/images/ic_menu_map.png">Get Directions</li>
-      <li class="feature"><img class="icon" src="/images/ic_menu_translate.png">Translate Languages (Android)</li>
-      <li class="feature"><img class="icon" src="/images/ic_menu_rsvp.png">RSVP on Facebook</li>
+      <ul class="feature-list spacing fa-ul">
+      <li><i class="fa-li fa fa-map-marker fa-lg"></i>Get Directions</li>
+      <li><i class="fa-li fa fa-check fa-lg"></i>RSVP on Facebook</li>
+      <li><i class="fa-li fa fa-language fa-lg"></i>Translate Languages (Android Only)</li>
       </ul>
       <div style="clearfix"/>
       </div>
@@ -167,10 +168,9 @@ var _gaq = [];
       <ul class="nav navbar-nav navbar-right">
             
         <li class="nav-icon-row">
-          <a href="https://www.facebook.com/dancedeets" class="nav-icon icon-facebook2" target="_blank"></a>
-          <a href="https://twitter.com/dancedeets" class="nav-icon icon-twitter" target="_blank"></a>
-          <a href="https://plus.google.com/+DanceDeets" class="nav-icon icon-google-plus" target="_blank"></a>
-          <a href="https://instagram.com/dancedeets/" class="nav-icon icon-instagram" target="_blank"></a>
+          <a href="https://www.facebook.com/dancedeets" class="nav-icon" target="_blank"><i class="fa fa-facebook-square fa-lg"></i></a>
+          <a href="https://twitter.com/dancedeets" class="nav-icon" target="_blank"><i class="fa fa-twitter-square fa-lg"></i></a>
+          <a href="https://instagram.com/dancedeets/" class="nav-icon" target="_blank"><i class="fa fa-instagram fa-lg"></i></a>
         </li>
 #if $user
 ##        <!-- img src="http://graph.facebook.com/$user.fb_uid/picture" style="border: 1px solid black" -->

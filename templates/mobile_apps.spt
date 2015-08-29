@@ -66,13 +66,13 @@ Or enter your phone number, and we'll send you a link to install:
 
 <div class="install-div">
 Keep up with the latest dance events when you're on the go!
-<ul class="feature-list spacing">
-<li class="feature"><img class="icon" src="/images/ic_menu_search.png">Search Worldwide</li>
-<li class="feature"><img class="icon" src="/images/ic_menu_calendar.png">Add to Calendar</li>
-<li class="feature"><img class="icon" src="/images/ic_menu_facebook.png">View on Facebook</li>
-<li class="feature"><img class="icon" src="/images/ic_menu_map.png">Get Directions</li>
-<li class="feature"><img class="icon" src="/images/ic_menu_rsvp.png">RSVP on Facebook</li>
-<li class="feature"><img class="icon" src="/images/ic_menu_translate.png">Translate Languages (Android Only)</li>
+<ul class="feature-list spacing fa-ul">
+<li><i class="fa-li fa fa-search fa-lg"></i>Search Worldwide</li>
+<li><i class="fa-li fa fa-calendar fa-lg"></i>Add to Calendar</li>
+<li><i class="fa-li fa fa-facebook-square fa-lg"></i>View on Facebook</li>
+<li><i class="fa-li fa fa-map-marker fa-lg"></i>Get Directions</li>
+<li><i class="fa-li fa fa-check fa-lg"></i>RSVP on Facebook</li>
+<li><i class="fa-li fa fa-language fa-lg"></i>Translate Languages (Android Only)</li>
 </ul>
 </div>
 
