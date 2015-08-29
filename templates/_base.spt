@@ -207,11 +207,11 @@ var _gaq = [];
 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 <ul>
 #if not $user
-    <li>Are you a dancer in-the-know? Help others by sharing your dance events: <button onclick="manualLogin();" class="btn btn-default"><i class="fa fa-sign-in fa-lg"></i> Join dancedeets</button> today!
-    <li>Are you learning to dance? <button onclick="manualLogin();" class="btn btn-default"><i class="fa fa-envelope fa-lg"></i> Subscribe to a weekly email</button> of upcoming events.
+    <li>A dope dancer? <button onclick="manualLogin();" class="btn btn-default"><i class="fa fa-sign-in fa-lg"></i> Join dancedeets and share your events</button> to help others find your dance scene.
+    <li>Learning to dance? <button onclick="manualLogin();" class="btn btn-default"><i class="fa fa-envelope fa-lg"></i> Subscribe to our weekly email</button> of upcoming events.
 #end if
 #if $show_mobile_promo
-    <li>Did you know? We've got a mobile app for DanceDeets too: <a href="/mobile_apps" class="btn btn-default"><i class="fa fa-mobile fa-lg"></i> Download the app</a> for Android and iPhone/iPad today!
+    <li><a href="/mobile_apps" class="btn btn-default"><i class="fa fa-mobile fa-lg"></i> DanceDeets Mobile App</a> helps you find events on the go.
 #end if
 </ul></div>
 #end if
