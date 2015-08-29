@@ -61,11 +61,17 @@ $result_title
     <div class="form-group"">
       <label for="keywords_input">Keywords</label>
       ## We don't use a placeholder on keyword field, since it interacts differently with bootstrap-tokentext
-      <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="$defaults.keywords" class="form-control">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="$defaults.keywords" class="form-control">
+      </div>
     </div>
     <div class="form-group">
       <label for="location_input">near location</label>
-      <input id="location_input" type="text" name="location" placeholder="everywhere" value="$defaults.location" class="form-control">
+      <div class="input-group">
+		<span class="input-group-addon"><i class="fa fa-globe fa-fw"></i></span>
+        <input id="location_input" type="text" name="location" placeholder="everywhere" value="$defaults.location" class="form-control">
+      </div>
     </div>
     #if $defaults.deb
 	    <input type="hidden" name="deb" value="$defaults.deb">
