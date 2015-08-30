@@ -220,7 +220,8 @@ class LookupThingFeed(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
-            ('info', cls.url('%s' % object_id, fields=OBJ_SOURCE_FIELDS)),
+            # Can't pass fields=OBJ_SOURCE_FIELDS, because we can't guarantee it has all these fields (groups vs pages vs profiles etc)
+            ('info', cls.url('%s' % object_id)),
             ('feed', cls.url('%s/feed' % object_id)),
             ('events', cls.url('%s/events' % object_id)),
         ]
