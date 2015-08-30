@@ -2,18 +2,19 @@
 	<ol class="events-list">
 	#for $result in $results
 		## widths here are set to sum to 700px-50px = 650px
-		<li class="narrow-event">
+		<li class="narrow-event" itemscope itemtype="http://schema.org/DanceEvent">
 			<h3 class="event-title">
 			<a href="$fb_event_url($result.fb_event_id)">
-			$format_html($result.name)
+			<span itemprop="name">$format_html($result.name)</span>
 			</a>
 			</h3>
+			<meta itemprop="url" content="$fb_event_url($result.fb_event_id)" />
 
 			<div class="event-image">
 			<a href="$fb_event_url($result.fb_event_id)">
 ##preload first five images
 #if $result.index < 5
-				<img src="$result.get_image()" width="180" border="0">
+				<img src="$result.get_image()" width="180" border="0" itemprop="image">
 #else
 				<img class="lazy-narrow" src="/images/placeholder.gif" data-original="$result.get_image()" width="180" border="0">
 				<noscript><img src="$result.get_image()" width="180" border="0"></noscript>
@@ -22,7 +23,7 @@
 			</div>
 
 			<div class="event-types">($result.event_keywords_string())</div>
-			<div class="event-city">
+			<div class="event-city" itemscope itemprop="location" itemtype="http://schema.org/Place">
 				$result.actual_city_name
 			</div>
 			#if $result.get_attendance()

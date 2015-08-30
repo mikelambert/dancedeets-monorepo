@@ -6,6 +6,7 @@ import urllib
 
 from google.appengine.ext import deferred
 from google.appengine.ext import ndb
+from spitfire.runtime.filters import skip_filter
 
 import base_servlet
 from event_scraper import add_entities
@@ -88,37 +89,84 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['start_time'] = dates.parse_fb_start_time(event_info)
         self.display['end_time'] = dates.parse_fb_end_time(event_info)
 
-        lat_long = ''
-        latitude = ''
-        longitude = ''
-        if 'venue' in event_info['info']:
-            city = event_info['info']['venue'].get('city')
-            state = event_info['info']['venue'].get('state')
-            country = event_info['info']['venue'].get('country')
-            city_state_country = [x for x in [city, state, country] if x]
-            street_address = event_info['info']['venue'].get('street')
-            if event_info['info']['venue'].get('latitude'):
-                latitude = event_info['info']['venue'].get('latitude')
-                longitude = event_info['info']['venue'].get('longitude')
-                lat_long = "%s,%s" % (latitude, longitude)
-        else:
-            city = ''
-            state = ''
-            country = ''
-            city_state_country = ''
-            street_address = ''
-        self.display['city'] = city
-        self.display['state'] = state
-        self.display['country'] = country
-        self.display['city_state_country'] = ', '.join(city_state_country)
-        self.display['street_address'] = street_address
-        self.display['latitude'] = latitude
-        self.display['longitude'] = longitude
-        self.display['lat_long'] = lat_long
+        self.display['displayable_event'] = DisplayableEvent(event_info)
+
         self.display['event'] = event_info
         self.display['next'] =  self.request.url
         self.display['show_mobile_app_promo'] = True
         self.render_template('event_interstitial')
+
+class DisplayableEvent(object):
+    def __init__(self, event_info):
+        self.event_info = event_info
+    
+    @skip_filter
+    def location_schema_html(self):
+        html = [
+            '<span itemscope itemprop="location" itemtype="http://schema.org/Place">',
+            '  <meta itemprop="name" content="%s" />' % self.location_name,
+        ]
+        if self.latitude:
+            html += [
+                '  <span itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">',
+                '    <meta itemprop="latitude" content="%s" />' % self.latitude,
+                '    <meta itemprop="longitude" content="%s" />' % self.longitude,
+                '  </span>',
+            ]
+        if self.venue:
+            html += [
+                '  <span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">',
+            ]
+            if self.street_address:
+                html += ['    <meta itemprop="streetAddress" content="%s"/>' % self.street_address]
+            if self.city:
+                html += ['    <meta itemprop="addressLocality" content="%s"/>' % self.city]
+            if self.street_address:
+                html += ['    <meta itemprop="addressRegion" content="%s"/>' % self.state]
+            if self.street_address:
+                html += ['    <meta itemprop="addressCountry" content="%s"/>' % self.country]
+        html += [
+            '  </span>',
+            '</span>',
+        ]
+        return '\n'.join([x.encode('utf-8') for x in html])
+
+    @property
+    def location_name(self):
+        return self.event_info['info'].get('location')
+    
+    @property
+    def venue(self):
+        return self.event_info['info'].get('venue')
+
+    @property
+    def street_address(self):
+        return self.venue.get('street')
+
+    @property
+    def city(self):
+        return self.venue.get('city')
+
+    @property
+    def state(self):
+        return self.venue.get('state')
+
+    @property
+    def country(self):
+        return self.venue.get('country')
+
+    @property
+    def city_state_country(self):
+        city_state_country = [x for x in [self.city, self.state, self.country] if x]
+        return ', '.join(city_state_country)
+
+    @property
+    def latitude(self):
+        return self.venue.get('latitude')
+
+    @property
+    def longitude(self):
+        return self.venue.get('longitude')
 
 class AdminEditHandler(base_servlet.BaseRequestHandler):
     def show_barebones_page(self, fb_event_id):
