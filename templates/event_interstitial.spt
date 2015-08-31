@@ -82,11 +82,11 @@ $format_html($event.info.name)
 		<a class="twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
 	</div></li>
 	<li><i class="fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
-	<time itemprop="startDate" content="$datetime_format($start_time)">
-	$duration_human_format($start_time, $end_time)
+	<time itemprop="startDate" content="$datetime_format($displayable_event.start_time)">
+	$duration_human_format($displayable_event.start_time, $end_time)
 	</time>
-	#if $end_time
-		<meta itemprop="endDate" content="$datetime_format($end_time)" />
+	#if $displayable_event.end_time
+		<meta itemprop="endDate" content="$datetime_format($displayable_event.end_time)" />
 	#end if
 	</li>
 	#if $event.info.attending_count

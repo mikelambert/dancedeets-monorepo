@@ -9,6 +9,7 @@ import time
 
 from google.appengine.ext import ndb
 from google.appengine.api import search
+from spitfire.runtime.filters import skip_filter
 
 from events import eventdata
 from loc import gmaps_api
@@ -161,6 +162,25 @@ class SearchResult(object):
         if self.rsvp_status == 'unsure':
             return 'maybe'
         return self.rsvp_status
+
+    @skip_filter
+    def location_schema_html(self):
+        html = [
+            '<span itemscope itemprop="location" itemtype="http://schema.org/Place">',
+            '  <meta itemprop="name" content="%s" />' % self.actual_city_name,
+            '  <meta itemprop="address" content="%s" />' % self.actual_city_name,
+        ]
+        if self.latitude:
+            html += [
+                '  <span itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">',
+                '    <meta itemprop="latitude" content="%s" />' % self.latitude,
+                '    <meta itemprop="longitude" content="%s" />' % self.longitude,
+                '  </span>',
+            ]
+        html += [
+            '</span>',
+        ]
+        return '\n'.join(html)
 
 class SearchQuery(object):
     def __init__(self, time_period=None, start_time=None, end_time=None, bounds=None, min_attendees=None, keywords=None):

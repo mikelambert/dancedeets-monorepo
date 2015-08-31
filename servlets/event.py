@@ -76,6 +76,8 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
 
         # Load the db_event instead of the fb_event, as the db_event is likely to be in cache
         db_event = eventdata.DBEvent.get_by_id(event_id)
+        if not db_event:
+            self.abort(404)
         event_info = db_event.fb_event
         if event_info['empty']:
             self.response.out.write('This event was %s.' % event_info['empty'])
@@ -117,8 +119,8 @@ class DisplayableEvent(object):
                 html += ['    <meta itemprop="addressRegion" content="%s"/>' % self.state]
             if self.street_address:
                 html += ['    <meta itemprop="addressCountry" content="%s"/>' % self.country]
+            html += ['  </span>']
         html += [
-            '  </span>',
             '</span>',
         ]
         return '\n'.join(html)
@@ -170,11 +172,11 @@ class DisplayableEvent(object):
 
     @property
     def latitude(self):
-        return self.venue.get('latitude')
+        return self.venue and self.venue.get('latitude')
 
     @property
     def longitude(self):
-        return self.venue.get('longitude')
+        return self.venue and self.venue.get('longitude')
 
 class AdminEditHandler(base_servlet.BaseRequestHandler):
     def show_barebones_page(self, fb_event_id):

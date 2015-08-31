@@ -4,8 +4,8 @@
 		## widths here are set to sum to 700px-50px = 650px
 		<li class="narrow-event" itemscope itemtype="http://schema.org/DanceEvent">
 			<h3 class="event-title">
-			<a href="$fb_event_url($result.fb_event_id)">
-			<span itemprop="name">$format_html($result.name)</span>
+			<a href="$fb_event_url($result.fb_event_id)" itemprop="name">
+			$format_html($result.name)
 			</a>
 			</h3>
 			<meta itemprop="url" content="$fb_event_url($result.fb_event_id)" />
@@ -16,15 +16,21 @@
 #if $result.index < 5
 				<img src="$result.get_image()" width="180" border="0" itemprop="image">
 #else
-				<img class="lazy-narrow" src="/images/placeholder.gif" data-original="$result.get_image()" width="180" border="0">
-				<noscript><img src="$result.get_image()" width="180" border="0"></noscript>
+				<img class="lazy-narrow" src="/images/placeholder.gif" data-original="$result.get_image()" width="180" border="0" >
+				<noscript><img src="$result.get_image()" width="180" border="0" itemprop="image"></noscript>
 #end if
 			</a>
 			</div>
 
+			<meta itemprop="startDate" content="$datetime_format($result.start_time)" />
+			#if $result.end_time
+				<meta itemprop="endDate" content="$datetime_format($result.end_time)" />
+			#end if
+
 			<div class="event-types">($result.event_keywords_string())</div>
-			<div class="event-city" itemscope itemprop="location" itemtype="http://schema.org/Place">
+			<div class="event-city">
 				$result.actual_city_name
+				$result.location_schema_html()
 			</div>
 			#if $result.get_attendance()
 				<div>RSVP:
@@ -44,33 +50,35 @@
 	<ol class="events-list">
 	#for $result in $results
 		## widths here are set to sum to 700px-50px = 650px
-		<li class="wide-event">
+		<li class="wide-event" itemscope itemtype="http://schema.org/DanceEvent">
 			<div class="event-image">
 			<a href="$fb_event_url($result.fb_event_id)">
 ##preload first five images
 #if $result.index < 5
-				<img src="$result.get_image()" width="180" border="0">
+				<img src="$result.get_image()" width="180" border="0" itemprop="image">
 #else
 				<img class="lazy-wide" src="/images/placeholder.gif" data-original="$result.get_image()" width="180" border="0">
-				<noscript><img src="$result.get_image()" width="180" border="0"></noscript>
+				<noscript><img src="$result.get_image()" width="180" border="0" itemprop="image"></noscript>
 #end if
 			</a>
 			</div>
 			<div class="event-description">
 				<h3 class="event-title">
-				<a href="$fb_event_url($result.fb_event_id)">
+				<a href="$fb_event_url($result.fb_event_id)" itemprop="name">
 				$format_html($result.name)
 				</a>
 				</h3>
+				<meta itemprop="url" content="$fb_event_url($result.fb_event_id)" />
 				<div class="event-types">($result.event_keywords_string())</div>
-				<div class="event-date" data-start-time="$result.start_time" data-end-time="$result.end_time" data-multi-day="$result.multi_day_event()">
-					$date_human_format($result.start_time)
+				<div class="event-date">
+					<time itemprop="startDate" content="$datetime_format($result.start_time)">$date_human_format($result.start_time)</time>
 					#if $result.multi_day_event() and $result.end_time
-						<br>to $date_human_format($result.end_time)
+						<br>to <time itemprop="endDate" content="$datetime_format($result.end_time)">$date_human_format($result.end_time)</time>
 					#end if
 				</div>
 				<div class="event-city">
 					$result.actual_city_name
+					$result.location_schema_html()
 				</div>
 				#if $result.attendee_count
 					<div class="event-attending">Attending:
