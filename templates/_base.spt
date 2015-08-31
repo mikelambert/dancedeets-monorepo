@@ -224,7 +224,8 @@ $body()
 	<a href="/about">About</a> | <a href="/rankings">Rankings</a> | <a href="/help">Help</a> | <a href="/feedback">Feedback</a> | <a href="/privacy">Privacy</a>
 	<br>
 	<div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="300" data-action="like" data-show-faces="true" data-share="true"></div>
-	</footer>
+  <div><a href="https://mixpanel.com/f/partner"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></a></div>
+  </footer>
 
 </div> <!-- /container -->
 
