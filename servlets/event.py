@@ -129,7 +129,7 @@ class DisplayableEvent(object):
             '  </span>',
             '</span>',
         ]
-        return '\n'.join([x.encode('utf-8') for x in html])
+        return '\n'.join(html)
 
     @property
     def location_name(self):
