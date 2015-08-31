@@ -11,7 +11,7 @@ $format_html($event.info.name)
 #if 'description' in $event.info
 	<meta name="twitter:description" content="$html_escape($truncate($event.info.description,250))">
 #end if
-#if $cover
+#if $displayable_event.cover_metadata
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:image:src" content="http://$full_hostname/events/image_proxy/$event.info.id" />
 #else
@@ -43,17 +43,17 @@ $format_html($event.info.name)
 	#end if
 
 	<div class="col-xs-12">
-	#if $cover
+	#if $displayable_event.cover_metadata
 		<div style="position: relative;">
 			<div id="cover-box-outer">
-				<a href="$largest_cover_info.source">
+				<a href="$displayable_event.largest_cover.source">
 					<div id="cover-box-fill">
-						<img id="cover-image" src="$largest_cover_info.source" itemprop="image"
-						#if $cover.offset_x
-							style="height: 100%; left: -$cover.offset_x%"
+						<img id="cover-image" src="$displayable_event.largest_cover.source" itemprop="image"
+						#if $displayable_event.cover_metadata.offset_x
+							style="height: 100%; left: -$displayable_event.cover_metadata.offset_x%"
 						#else
-							#if $cover.offset_y
-								style="width: 100%; top: -$cover.offset_y%"
+							#if $displayable_event.cover_metadata.offset_y
+								style="width: 100%; top: -$displayable_event.cover_metadata.offset_y%"
 							#else
 								style="width: 100%"
 							#end if
@@ -73,8 +73,8 @@ $format_html($event.info.name)
 <div class="row">
 <div class="col-sm-4">
 	<ul class="fa-ul event-ul">
-	#if $cover
-		<li><i class="fa-li fa fa-picture-o fa-lg"></i><b><a href="$largest_cover_info.source">See Full Flyer</a></b></li>
+	#if $displayable_event.cover_metadata
+		<li><i class="fa-li fa fa-picture-o fa-lg"></i><b><a href="$displayable_event.largest_cover.source">See Full Flyer</a></b></li>
 	#end if
 	<li><i class="fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a href="$raw_fb_event_url($event.info.id)">See Event on Facebook</a></b></li>
 	<li><div class="product-social-links" style="padding-bottom:30px;padding-top:30px">

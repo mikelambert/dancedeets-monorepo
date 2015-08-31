@@ -81,14 +81,6 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             self.response.out.write('This event was %s.' % event_info['empty'])
             return
 
-        self.display['cover'] = event_info['info'].get('cover')
-        self.display['largest_cover_info'] = eventdata.get_largest_cover(event_info)
-
-        self.display['pic'] = eventdata.get_event_image_url(event_info)
-
-        self.display['start_time'] = dates.parse_fb_start_time(event_info)
-        self.display['end_time'] = dates.parse_fb_end_time(event_info)
-
         self.display['displayable_event'] = DisplayableEvent(event_info)
 
         self.display['event'] = event_info
@@ -130,6 +122,22 @@ class DisplayableEvent(object):
             '</span>',
         ]
         return '\n'.join(html)
+
+    @property
+    def cover_metadata(self):
+        return self.event_info['info'].get('cover')
+    
+    @property
+    def largest_cover(self):
+        return eventdata.get_largest_cover(self.event_info)
+
+    @property
+    def start_time(self):
+        return dates.parse_fb_start_time(self.event_info)
+
+    @property
+    def end_time(self):
+        return dates.parse_fb_end_time(self.event_info)
 
     @property
     def location_name(self):
