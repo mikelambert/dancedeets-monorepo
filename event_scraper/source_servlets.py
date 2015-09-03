@@ -26,6 +26,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             source_id = self.request.get('source_id')
         fb_source = self.fbl.get(fb_api.LookupThingFeed, source_id)
 
+        if fb_source['empty']:
+            self.response.out.write(fb_source['empty'])
+            return
         real_source_id = fb_source['info']['id']
         s = thing_db.create_source_for_id(real_source_id, fb_source)
 
