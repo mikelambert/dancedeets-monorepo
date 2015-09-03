@@ -330,19 +330,7 @@ class SearchQuery(object):
     
         existing_datetime_locs = collections.defaultdict(lambda: [])
         for r in search_results:
-            if r.db_event:
-                # This only works on full-events, aka API v1.0:
-                r_datetime = r.db_event.start_time
-                fb_event = r.db_event.fb_event
-                venue = fb_event['info'].get('venue')
-                # We only want to allow one event per time per specific-location
-                if venue and venue.get('street'):
-                    r_location = venue['id']
-                else:
-                    r_location = r.display_event.fb_event_id
-                existing_datetime_locs[(r_datetime, r_location)].append(r)
-            else:
-                existing_datetime_locs[r.display_event.fb_event_id].append(r)
+            existing_datetime_locs[(r.start_time, r.latitude, r.longitude)].append(r)
 
         deduped_results = []
         for same_results in existing_datetime_locs.values():
