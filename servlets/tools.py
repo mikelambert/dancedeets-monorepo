@@ -87,7 +87,9 @@ def mr_private_events(fbl):
 import base_servlet
 class OneOffHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        thing_db.mr_count_potential_events(self.fbl)
+        # thing_db.mr_count_potential_events(self.fbl)
+        from search import search
+        search.delete_from_fulltext_search_index(self.request.get('delete_event_id'))
 
 class OwnedEventsHandler(webapp2.RequestHandler):
     def get(self):
