@@ -43,30 +43,29 @@ class DBEvent(ndb.Model):
     # real data
     owner_fb_uid = ndb.StringProperty()
     #STR_ID_MIGRATE
-    creating_fb_uid = ndb.IntegerProperty(indexed=False)
-    creation_time = ndb.DateTimeProperty(indexed=False, auto_now_add=True)
+    creating_fb_uid = ndb.IntegerProperty()
+    creation_time = ndb.DateTimeProperty(auto_now_add=True)
     # could be AUTO, ADMIN, USER, etc? Helps for maintaining a proper training corpus
-    #TODO(lambert): start using this field in auto-created events
-    creating_method = ndb.StringProperty(indexed=False)
+    creating_method = ndb.StringProperty()
 
     visible_to_fb_uids = ndb.StringProperty(indexed=False, repeated=True)
 
     # searchable properties
     search_time_period = ndb.StringProperty()
-    start_time = ndb.DateTimeProperty()
-    end_time = ndb.DateTimeProperty()
-    attendee_count = ndb.IntegerProperty()
+    start_time = ndb.DateTimeProperty(indexed=False)
+    end_time = ndb.DateTimeProperty(indexed=False)
+    attendee_count = ndb.IntegerProperty(indexed=False)
 
     # extra cached properties
     address = ndb.StringProperty(indexed=False) # manually overridden address
     actual_city_name = ndb.StringProperty(indexed=False) # city for this event
-    city_name = ndb.StringProperty() # largest nearby city for this event
-    latitude = ndb.FloatProperty()
-    longitude = ndb.FloatProperty()
+    city_name = ndb.StringProperty(indexed=False) # largest nearby city for this event
+    latitude = ndb.FloatProperty(indexed=False)
+    longitude = ndb.FloatProperty(indexed=False)
     anywhere = ndb.BooleanProperty()
 
-    location_geocode = ndb.JsonProperty()
-    fb_event = ndb.JsonProperty()
+    location_geocode = ndb.JsonProperty(indexed=False)
+    fb_event = ndb.JsonProperty(indexed=False)
 
     event_keywords = ndb.StringProperty(indexed=False, repeated=True)
     auto_categories = ndb.StringProperty(indexed=False, repeated=True)
