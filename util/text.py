@@ -74,8 +74,9 @@ def linkify(value):
 @skip_filter
 def format_js(value):
     if isinstance(value, basestring):
-        value = value.replace('"', '\"')
-        value = value.replace("'", "\'")
+        value = value.replace('\\', '\\\\')
+        value = value.replace('"', '\\"')
+        value = value.replace("'", "\\'")
         value = value.replace("\n", "\\n")
         return value
     elif isinstance(value, udn.UndefinedPlaceholder):
