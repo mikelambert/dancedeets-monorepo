@@ -506,6 +506,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'eye-poppin\w+',
     'on lock',
     'lock(?:ing|ed|s)? (?:in|out|your|our|the|a|it|down|up)',
+    'lock\s*(?:and|&)\s*key',
     'zip\W?lock',
     'lock\Win',
     'lock\W?down',
@@ -721,6 +722,7 @@ CLASS = Name('CLASS', Any(
     'klasser?', # norwegian class
     'cours', 'clases?',
     'camp',
+    'festival',
     'kamp',
     'kemp',
     u'캠프', # korean camp
