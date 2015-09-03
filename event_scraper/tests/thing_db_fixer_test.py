@@ -9,8 +9,8 @@ from event_scraper import potential_events
 from event_scraper import thing_db
 
 fields_str = '%2C'.join(fb_api.OBJ_SOURCE_FIELDS)
-URL_111 = '/v2.2/111?fields=%s' % fields_str
-URL_222 = '/v2.2/222?fields=%s' % fields_str
+URL_111 = '/v2.2/111'#?fields=%s' % fields_str
+URL_222 = '/v2.2/222'#?fields=%s' % fields_str
 
 class TestThingDBFixer(unittest.TestCase):
     def setUp(self):
