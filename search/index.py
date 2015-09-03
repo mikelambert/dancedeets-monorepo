@@ -20,7 +20,7 @@ class BaseIndex(object):
 
     @classmethod
     def _is_ndb(cls):
-        return issubclass(cls, ndb.Model)
+        return issubclass(cls.obj_type, ndb.Model)
 
     @classmethod
     def search(cls, query):
