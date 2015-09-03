@@ -49,8 +49,6 @@ def email_for_user(user, fbl, should_send=True):
     rsvp.decorate_with_rsvps(fbl, search_results)
 
     past_results, present_results, grouped_results = search.group_results(search_results)
-    # Don't include results more than a month out in these emails
-    grouped_results = [x for x in grouped_results if x.id != 'year_events']
 
     display = {}
     display['date_human_format'] = user.date_human_format
