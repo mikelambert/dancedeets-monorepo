@@ -42,7 +42,7 @@ def run_modify_transaction_for_key(key, func):
 
 def increment_num_all_events(source_id):
     def inc(s):
-        s.num_all_events = (s.num_all_events or 0) + 1
+        s.num_all_events = (s.num_all_events_events or 0) + 1
     run_modify_transaction_for_key(source_id, inc)
 
 def increment_num_potential_events(source_id):
@@ -263,6 +263,7 @@ def map_count_potential_event(pe):
         all_event = True
         real_event = db_event != None
         false_negative = db_event and not classified_event.is_dance_event()
+        # TODO: NEED TO REWRITE THIS AS A PROPER MAP REDUCE TO AVOID TOO MANY INCREMENTS!!
         increment_source_event_counters(source_id,
             potential_event=potential_event,
             all_event=all_event,
