@@ -32,12 +32,10 @@ pip install --upgrade -t $BASE_DIR/lib \
   simplejson \
   mock \
   mox
-# We use twilio 3.5.2 since later versions use certificates and fail on appengine/googlecloud.
-# See: http://android.amberfog.com/?tag=notsupportedonthisplatform
-#
+
 # This does not install the static files correctly, since they are not in setup.py
 #  GoogleAppEngineMapReduce
-# So instead, let's install the depencies manually:
+# So instead, let's install the depencies manually (listed above):
 #  GoogleAppEngineCloudStorageClient \
 #  GoogleAppEnginePipeline \
 #  Graphy \
@@ -112,21 +110,6 @@ install-git https://github.com/GoogleCloudPlatform/appengine-mapreduce.git pytho
 
 # Because there is no pip package for this
 install-gcode-svn spitfire spitfire
-
-# OAUTH2 (for authorizing twitter)
-# SIX (for TWILIO)
-#install-git https://github.com/deactivated/python-iso3166.git iso3166
-#install-git https://github.com/simplegeo/python-oauth2.git oauth2
-#install-git https://github.com/twilio/twilio-python.git twilio
-#install-git https://github.com/simplejson/simplejson.git simplejson
-
-#install-hg https://mikelambert@bitbucket.org/gutworth/six/ six.py
-#install-hg https://code.google.com/p/google-api-python-client/ apiclient oauth2client uritemplate
-#install-hg https://code.google.com/p/httplib2/ python2/httplib2
-#install-hg https://code.google.com/p/gdata-python-client/ src/atom src/gdata
-
-#install-gcode-svn python-gflags gflags.py gflags_validators.py
-#install-gcode-svn graphy graphy
 
 # Build our code
 cd $BASE_DIR
