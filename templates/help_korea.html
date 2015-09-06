@@ -1,10 +1,10 @@
-#extends _bigbox_base
+{% extends "_bigbox_base.html" %}
 
-#def title
+{% block title %}
 Help
-#end def
+{% endblock %}
 
-#def inner_body
+{% block inner_body %}
 <!--Hello korean people, welcome to DanceDeets!-->
 
 <p>안녕하십니까 한국 여러분, DanceDeets 에 오신 것을 환영합니다.
@@ -67,8 +67,7 @@ Help
 
 <p>We may have your question answered in our <a href="/help?hl=en">English FAQ</a>.
 
-#end def
-
+{% endblock %}
 
 
 

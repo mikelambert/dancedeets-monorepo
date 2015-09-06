@@ -1,10 +1,10 @@
-#extends _base
+{% extends "_base.html" %}
 
-#def title
+{% block title %}
 DanceDeets
-#end def
+{% endblock %}
 
-#def head_stylesheet
+{% block head_stylesheet %}
     <meta property="og:title" content="DanceDeets"/>
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="http://www.dancedeets.com/"/>
@@ -12,9 +12,9 @@ DanceDeets
     <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:description"
           content="Helping you get your dance on wherever you are, with dance events both near and far."/>
-#end def
+{% endblock %}
 
-#def body
+{% block body %}
 <div class="container">
 
 <div class="row">
@@ -26,9 +26,9 @@ DanceDeets
 <div class="install-div">
 Street dance events, at home and worldwide!
 <div class="spacing">
-<a href="$android_url"><img src="/images/play_store_download.png" class="store-button"></a>
+<a href="{{ android_url }}"><img src="/images/play_store_download.png" class="store-button"></a>
 <br>
-<a href="$ios_url"><img src="/images/app_store_download.png" class="store-button"></a>
+<a href="{{ ios_url }}"><img src="/images/app_store_download.png" class="store-button"></a>
 </div>
 </div>
 
@@ -40,15 +40,15 @@ Or enter your phone number, and we'll send you a link to install:
 <input type="hidden" name="action" value="send_sms" />
 <select name="prefix" class="form-control">
 <option value="">Select a country below</option>
-#for $country, $code in $country_codes
-	<option value="$code"
-	#if $code == $prefix
+{% for country, code in country_codes %}
+	<option value="{{ code }}"
+	{% if code == prefix %}
 		selected
-	#end if
-	>$country (+$code)</option>
-#end for
+	{% endif %}
+	>{{ country }} (+{{ code }})</option>
+{% endfor %}
 </select>
-<input type="text" class="form-control sms-textbox" name="phone" placeholder="(123) 456-7890" value="$phone"/>
+<input type="text" class="form-control sms-textbox" name="phone" placeholder="(123) 456-7890" value="{{ phone }}"/>
 <button type="submit" value="submit" class="btn btn-primary sms-button">Send link to my phone</button>
 </form>
 </div>
@@ -81,9 +81,9 @@ Keep up with the latest dance events when you're on the go!
 <div class="col-md-12" style="margin-bottom: 10px">
 Dance Deets is your home for streetdance events: locally and internationally.<br>
 Wherever you are in the world, we’ll help you find a place to get your groove on.<br>
-#if $total_events
-Over $total_events events and growing daily!
-#end if
+{% if total_events %}
+Over {{ total_events }} events and growing daily!
+{% endif %}
 </div>
 </div>
 
@@ -91,10 +91,7 @@ Over $total_events events and growing daily!
 <div class="col-md-5">
 <span class="big-font">Discover the scene</span><br>
 <a href="/rankings">
-#if $total_events
-$total_events
-#end if
-dance events around the world
+{{ total_events }} dance events around the world
 </a>
 </div>
 
@@ -111,27 +108,27 @@ dance events reach 18,000+ dancers every month
 <div class="col-md-5">
 See events in the top north-american cities:
 <ul>
-#for $internal_city, $city in $top_cities
-	<li><a href="/?location=$urllib_quote_plus($internal_city)&amp;distance=50&amp;distance_units=miles">$city</a></li>
-#end for
+{% for internal_city, city in top_cities %}
+	<li><a href="/?location={{ internal_city|urlencode }}&amp;distance=50&amp;distance_units=miles">{{ city }}</a></li>
+{% endfor %}
 </ul>
 </div>
 
 <div class="col-md-5">
 See many more events for these european countries:
 <ul>
-#for $location in $top_european_countries
-<li><a href="/?location=$location&amp;distance=50&amp;distance_units=miles">$location</a></li>
-#end for
+{% for location in top_european_countries %}
+<li><a href="/?location={{ location|urlencode }}&amp;distance=50&amp;distance_units=miles">{{ location }}</a></li>
+{% endfor %}
 </ul>
 <p>See many more events for these continents:</p>
 <ul>
-#for $location in $top_continents
-<li><a href="/?location=$location&amp;distance=50&amp;distance_units=miles">$location</a></li>
-#end for
+{% for location in top_continents %}
+<li><a href="/?location={{ location }}&amp;distance=50&amp;distance_units=miles">{{ location }}</a></li>
+{% endfor %}
 </ul>
 </div>
 </div>
 
 </div>
-#end def
+{% endblock %}

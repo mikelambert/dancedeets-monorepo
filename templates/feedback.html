@@ -1,10 +1,10 @@
-#extends _bigbox_base
+{% extends "_bigbox_base.html" %}
 
-#def title
+{% block title %}
 Feedback
-#end def
+{% endblock %}
 
-#def inner_body
+{% block inner_body %}
 <form action="/feedback" method="post">
 
 <p>Questions? Need Help? Suggestions? Improvements? Criticism? Fill it out below!
@@ -21,4 +21,4 @@ Feedback
 
 </form>
 
-#end def
+{% endblock %}

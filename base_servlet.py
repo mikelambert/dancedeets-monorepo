@@ -3,6 +3,7 @@
 import base64
 import Cookie
 import datetime
+import jinja2
 import json
 import logging
 import hashlib
@@ -41,13 +42,16 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.display = {}
         self._errors = []
 
+        self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
+        self.jinja_env.filters['format_html'] = text.format_html
+        
         self.display['version'] = os.getenv('CURRENT_VERSION_ID').split('.')[-1]
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
         self.display['html_escape'] = text.html_escape
         self.display['truncate'] = lambda text, length: text[:length]
-        self.display['format_html'] = text.format_html
+        self.display['format_html'] = self.jinja_env.filters['format_html'] = text.format_html
         self.display['linkify'] = text.linkify
         self.display['format_js'] = text.format_js
         self.display['jsonify'] = skip_filter(json.dumps)
@@ -123,7 +127,11 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps(arg))
 
     def render_template(self, name):
-        rendered = template.render_template(name, self.display)
+        try:
+            jinja_template = self.jinja_env.get_template("%s.html" % name)
+            rendered = jinja_template.render(**self.display)
+        except jinja2.TemplateNotFound:
+            rendered = template.render_template(name, self.display)
         self.response.out.write(rendered)
 
     def get_location_from_headers(self, city=True):
@@ -370,12 +378,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.fbl.debug = 'fbl' in self.debug_list
         if self.user:
             self.display['date_only_human_format'] = self.user.date_only_human_format
-            self.display['date_human_format'] = self.user.date_human_format
+            self.display['date_human_format'] = self.jinja_env.filters['date_human_format'] = self.user.date_human_format
             self.display['duration_human_format'] = self.user.duration_human_format
             self.display['messages'] = self.user.get_and_purge_messages()
         else:
             self.display['date_only_human_format'] = dates.date_only_human_format
-            self.display['date_human_format'] = dates.date_human_format
+            self.display['date_human_format'] = self.jinja_env.filters['date_human_format'] = dates.date_human_format
             self.display['duration_human_format'] = dates.duration_human_format
             self.display['login_url'] = login_url
         self.display['datetime_format'] = dates.datetime_format

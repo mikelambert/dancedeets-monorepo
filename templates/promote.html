@@ -1,70 +1,71 @@
-#extends _bigbox_base
+{% extends "_bigbox_base.html" %}
 
-#def title
+{% block title %}
 DanceDeets - Promoters
-#end def
+{% endblock %}
 
-#def inner_body
+{% block inner_body %}
 <p><h3>DanceDeets Event Promotion</h3>
 
-<p>#if $event_errors or $event_warnings
+<p>
+{% if event_errors or event_warnings %}
 <div class="alert alert-danger">
-The event "$html_escape($event.info.name)" has the following problems:
+The event "{{ event.info.name|e }}" has the following problems:
 <ul>
-#for $error in $event_errors
-	<li>$format_html($error)</li>
-#end for
-#for $warning in $event_warnings
-	<li>WARNING: $format_html($warning)</li>
-#end for
+{% for error in event_errors %}
+	<li>{{ error|format_html }}</li>
+{% endfor %}
+{% for warning in event_warnings %}
+	<li>WARNING: {{ warning|format_html }}</li>
+{% endfor %}
 </ul>
-<a href="$html_escape($event_url)" class="btn btn-primary">Go to the FB Event to fix these problems.</a> Then return to check your event again.
+<a href="{{ event_url|e }}" class="btn btn-primary">Go to the FB Event to fix these problems.</a> Then return to check your event again.
 </div>
-#end if
+{% endif %}
 
 <p><b>Promoting dance events is hard. DanceDeets makes it easy.</b> <a href="#promotion-is-hard">See how!</a>
 
 <p>Want to promote a street dance event? Create a Facebook event and check it for common promotion mistakes!
 <form id="events-form" class="form" action="/promote" method="post">
-#if $user
-	<input type=text id="event_url" name="event_url" placeholder="http://www.facebook.com/events/..." value="$html_escape($event_url)" class="form-control">
+{% if user %}
+	<input type=text id="event_url" name="event_url" placeholder="http://www.facebook.com/events/..." value="{{ event_url|e }}" class="form-control">
 	<p><button class="btn btn-primary">Check and Add Event</button>
 	<p>Or select one of your events below:
 	<p>
 	<ul id="add-events">
-	#for $event in $events
-		<li data-id="$event.id" class="
-			#if $event.loaded
+	{% for event in events %}
+		<li data-id="{{ event.id }}" class="
+			{% if event.loaded %}
 				ui-disabled
-			#else
+			{% else %}
 				ui-selectable
-			#end if
+			{% endif %}
 			">
 			<div style="float:left;width:50px">
-				<img src="http://graph.facebook.com/$event.id/picture" width="50">
+				<img src="http://graph.facebook.com/{{ event.id }}/picture" width="50">
 			</div>
 			<div style="float:left;width:320px">
-				<span class="fake-a">$format_html($event.name)</span><br>
+				<span class="fake-a">{{ event.name|format_html }}</span><br>
 				<div class="non-a">
-				$date_human_format($parse_fb_timestamp($event.start_time))<br>
-				#if getattr($event, "host", None)
-					(by $event.host)<br>
-				#end if
+				{{ event.start_time|parse_fb_timestamp|date_human_format }}<br>
+				{% if event.host %}
+					(by {{ event.host }})<br>
+				{% endif %}
 
-				#if $event.loaded
+				{% if event.loaded %}
 					ALREADY ADDED
-				#end if
+				{% endif %}
 				</div>
 			</div>
 			<div style="clear:both;height:15px;"></div>
 		</li>
-	#end for
+	{% endfor %}
 	</ul>
-#else
+{% else %}
 	<input type=text name="event_url" placeholder="http://www.facebook.com/events/..." class="form-control">
 	<p><button class="btn btn-primary">Check and Add Event</button>
 	<p>Or <button class="btn btn-primary" onclick="manualLogin();">Login to check your Facebook events</button>
-#end if
+{% endif %}
 </form>
 
 <a name="promotion-is-hard"></a><h3>Difficulty of Promotion</h3>
@@ -107,10 +108,10 @@ The event "$html_escape($event.info.name)" has the following problems:
 <p><b>DanceDeets auto-promotes your event on Google and Twitter</b>. We'll create a small little web page with all your event information, so that Google/Yahoo/Bing searchers can find it. And we'll post out the event and flyer to Twitter, so folks looking on Twitter can find it there. And as Instagram, SnapChat, or WeChat get popular for event promotion, we'll try to figure out a solution for you there too!
 
 </ul>
-#end def
+{% endblock %}
 
 
-#def bottom_javascript
+{% block bottom_javascript %}
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#add-events").click(function(event) {
@@ -126,4 +127,4 @@ The event "$html_escape($event.info.name)" has the following problems:
 		});
 	});
 </script>
-#end def
+{% endblock %}

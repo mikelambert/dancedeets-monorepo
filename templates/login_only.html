@@ -1,10 +1,10 @@
-#extends _base
+{% extends "_base.html" %}
 
-#def title
+{% block title %}
 DanceDeets
-#end def
+{% endblock %}
 
-#def head_stylesheet
+{% block head_stylesheet %}
     <meta property="og:title" content="DanceDeets"/>
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="http://www.dancedeets.com/"/>
@@ -12,9 +12,9 @@ DanceDeets
     <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:description"
           content="Helping you get your dance on wherever you are, with dance events both near and far."/>
-#end def
+{% endblock %}
 
-#def body
+{% block body %}
 <div class="container">
 <div class="row">
 <div class="col-sm-6 col-sm-offset-3">
@@ -30,4 +30,4 @@ DanceDeets
 </div>
 </div>
 </div>
-#end def
+{% endblock %}

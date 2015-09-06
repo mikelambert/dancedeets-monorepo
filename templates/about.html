@@ -1,10 +1,10 @@
-#extends _bigbox_base
+{% extends "_bigbox_base.html" %}
 
-#def title
+{% block title %}
 About
-#end def
+{% endblock %}
 
-#def inner_body
+{% block inner_body %}
 <p><h3>What is DanceDeets?</h3>
 <p>DanceDeets is your home for dance events: nationally and internationally. Wherever you are in the world, we’ll help you find a place to get your groove on. 
 
@@ -64,4 +64,4 @@ Still don’t get it? <a href="/login">Sign up as a member</a> and try it out!
 Creator, Programmer, and Chief Slacker
 </ul>
 
-#end def
+{% endblock %}

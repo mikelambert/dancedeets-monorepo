@@ -1,10 +1,10 @@
-#extends _bigbox_base
+{% extends "_bigbox_base.html" %}
 
-#def head_javascript
+{% block head_javascript %}
 <script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
-#end def
+{% endblock %}
 
-#def head_stylesheet
+{% block head_stylesheet %}
 <style text="text/css">
 #fb-share {
 	background: transparent;
@@ -13,9 +13,9 @@
 	padding: 0px;
 }
 </style>
-#end def
+{% endblock %}
 
-#def inner_body
+{% block inner_body %}
 <p><h2>Share with your friends!</h2>
 
 <p><b>When friends ask you...</b>
@@ -39,9 +39,9 @@
 <li>Email this link: $share_url
 </ul>
 
-#end def
+{% endblock %}
 
-#def bottom_javascript
+{% block bottom_javascript %}
 <script type="text/javascript">
 function share_dancedeets() {
   FB.ui(
@@ -54,11 +54,11 @@ function share_dancedeets() {
           "Dancer or dance fan, choreography or freestyle, " +
           "Dance Deets keeps you in the loop on the scene you care about."
         ),
-        href: '$share_url',
+        href: '{{ share_url }}',
       },
       user_message_prompt: 'Share your thoughts about DanceDeets with your friends',
   });
 }
 </script>
-#end def
+{% endblock %}
 

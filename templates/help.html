@@ -1,10 +1,10 @@
-#extends _bigbox_base
+{% extends "_bigbox_base.html" %}
 
-#def title
+{% block title %}
 Help
-#end def
+{% endblock %}
 
-#def inner_body
+{% block inner_body %}
 <p><h3>How do you find all the events?</h3>
 
 <p>DanceDeets finds events in a couple ways:
@@ -36,4 +36,4 @@ There could be a few reasons why your event isn't on there:
 
 You can <a href="mailto:feedback@dancedeets.com">send us an email</a>, hit us up on <a href="http://www.facebook.com/dancedeets">Facebook</a> or <a href="http://www.twitter.com/dancedeets">Twitter</a>. The website, AI, and Android app were developed by Mike Lambert (a locker and house dancer living in NYC), and the iPhone/iPad/iPod Touch app was developed by David Xiang (a bboy living in NYC). But of course, we've had help from dozens and dozens of other dancers, who have helped with feedback, ideas, promotion, and other aspects. If you're interested in helping, definitely reach out!
 
-#end def
+{% endblock %}

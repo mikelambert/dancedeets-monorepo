@@ -42,7 +42,7 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
 
     def render_page(self):
         self.display['events'] = self.get_events()
-        self.display['parse_fb_timestamp'] = dates.parse_fb_timestamp
+        self.display['parse_fb_timestamp'] = self.jinja_env.filters['parse_fb_timestamp'] = dates.parse_fb_timestamp
         self.display['event_url'] = self.request.get('event_url')
         self.render_template('promote')
 

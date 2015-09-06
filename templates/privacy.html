@@ -1,10 +1,10 @@
-#extends _bigbox_base
+{% extends "_bigbox_base.html" %}
 
-#def title
+{% block title %}
 Privacy
-#end def
+{% endblock %}
 
-#def inner_body
+{% block inner_body %}
 <p><h3>Privacy Policy</h3>
 <p>DanceDeets finds and shares dance-related facebook events with the world. We rely on our users to help us find these events, in particular:
 <ul>
@@ -21,4 +21,4 @@ Privacy
 <p>DanceDeets is built on the Google AppEngine platform, in an attempt to avoid as much custom-development as possible, and to reduce the potential surface area available to hackers. We don't share or sell your data to anyone or any corporation. But we do fetch your data from Facebook and sometimes publish data back to Facebook (event RSVPs, explicit sharing, etc). And while we store data on the Google AppEngine platform, we do not access or connect that data with any Google Accounts in any way.
 </p>
 
-#end def
+{% endblock %}
