@@ -1,10 +1,10 @@
-#extends _base
+{% extends "_base.html" %}
 
-#def title
+{% block title %}
 DanceDeets
-#end def
+{% endblock %}
 
-#def head_stylesheet
+{% block head_stylesheet %}
     <meta property="og:title" content="Dance Deets"/>
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="http://www.dancedeets.com/"/>
@@ -12,10 +12,10 @@ DanceDeets
     <meta property="og:site_name" content="Dance Deets"/>
     <meta property="og:description"
           content="Find streetdance events around the world."/>
-#end def
+{% endblock %}
 
-#def body
-## not using container-fluid, but container, so things are more centered
+{% block body %}
+{# not using container-fluid, but container, so things are more centered #}
 <div class="container">
 
 <div class="row">
@@ -32,11 +32,7 @@ DanceDeets
 
 <div style="font-size: 120%; text-align: center">
 Search all
-#if $total_events
-	$total_events
-#else
-	of our
-#end if
+{% if total_events %}{{ total_events }}{% else %}of our{% endif %}
 streetdance events: workshops, performances, battles, sessions, and parties near you!<br>
 <button>Join DanceDeets Today</button>
 </div>
@@ -114,4 +110,4 @@ Or if you want to:
 </div>
 
 </div>
-#end def
+{% endblock %}

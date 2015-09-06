@@ -186,7 +186,7 @@
 {% if errors %}
 <div class="alert alert-danger"><ul>
 {% for error in errors %}
-	<li>{{ error|format_html }}</li>
+	<li>{{ error|e }}</li>
 {% endfor %}
 </ul></div>
 {% endif %}
@@ -196,7 +196,7 @@
 <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 <ul>
 {% for message in messages %}
-	<li>{{ message|format_html }}</li>
+	<li>{{ message|e }}</li>
 {% endfor %}
 </ul></div>
 {% endif %}

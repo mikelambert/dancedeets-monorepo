@@ -1,0 +1,65 @@
+{% extends "_bigbox_base.html" %}
+
+{% block title %}
+Rankings
+{% endblock %}
+
+{% block head_stylesheet %}
+<style type="text/css">
+.current_city {
+	background-color: LightGrey;
+}
+</style>
+{% endblock %}
+
+{% block inner_body %}
+
+<form action="/rankings">
+Rankings over <select name="time_period" onchange="this.form.submit();">
+	{% for time_period in time_periods %}
+		<option value="$time_period"
+		{% if current_time_period == time_period %}
+			selected
+		{% endif %}
+		>{{string_translations[time_period] }}
+	{% endfor %}
+</select>
+</form>
+
+<p><h2>Rankings by Dance Events:</h2>
+<table class="rankings">
+{% for rank in event_rankings %}
+	<tr
+		{% if rank.city == user_city %}
+			class="current_city"
+		{% endif %}
+	>
+	{% if rank.url %}
+		<td>
+			<a href="$rank.url">{{ rank.city }}</a>
+		</td><td>
+			<a href="$rank.url">{{ rank.count }}</a>
+		</td>
+	{% else %}
+		<td>
+			$rank.city
+		</td><td>
+			$rank.count
+		</td>
+	{% endif %}
+	</tr>
+{% endfor %}
+</tr>
+</table>
+
+<p><h2>Rankings by Dancers:</h2>
+<table class="rankings">
+{% for rank in user_rankings %}
+	<tr
+		{% if rank.city == user_city %}
+			class="current_city"
+		{% endif %}
+	><td>{{ rank.city }}</td><td>{{ rank.count }}</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -152,14 +152,14 @@ def _group_users_time_period(final_counter_map, city):
 def get_city_by_event_rankings():
     final_counter_map = _get_counter_map_for_ranking(EVENT_FOR_CITY_RANKING)
     if not final_counter_map:
-        return None
+        return {}
     cities = _group_cities_time_period(final_counter_map)
     return cities
 
 def get_city_by_user_rankings():
     final_counter_map = _get_counter_map_for_ranking(USER_FOR_CITY_RANKING)
     if not final_counter_map:
-        return None
+        return {}
     cities = _group_cities_time_period(final_counter_map)
     return cities
 

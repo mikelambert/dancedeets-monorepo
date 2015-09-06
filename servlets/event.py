@@ -88,7 +88,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['event'] = event_info
         self.display['next'] =  self.request.url
         self.display['show_mobile_app_promo'] = True
-        self.render_template('event_interstitial')
+        self.render_template('event')
 
 class DisplayableEvent(object):
     def __init__(self, event_info):
@@ -351,7 +351,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         self.display['events'] = events
         self.display['fb_event'] = fb_event
-        self.display['parse_fb_timestamp'] = dates.parse_fb_timestamp
+        self.display['parse_fb_timestamp'] = self.jinja_env.filters['parse_fb_timestamp'] = dates.parse_fb_timestamp
         self.render_template('add')
 
     def post(self):

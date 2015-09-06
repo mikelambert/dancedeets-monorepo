@@ -43,6 +43,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self._errors = []
 
         self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
+        self.jinja_env.globals['zip'] = zip
         self.jinja_env.filters['format_html'] = text.format_html
         
         self.display['version'] = os.getenv('CURRENT_VERSION_ID').split('.')[-1]
@@ -52,7 +53,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.display['html_escape'] = text.html_escape
         self.display['truncate'] = lambda text, length: text[:length]
         self.display['format_html'] = self.jinja_env.filters['format_html'] = text.format_html
-        self.display['linkify'] = text.linkify
+        self.display['linkify'] = self.jinja_env.filters['linkify'] = text.linkify
         self.display['format_js'] = text.format_js
         self.display['jsonify'] = skip_filter(json.dumps)
         self.display['urllib_quote_plus'] = urllib.quote_plus
@@ -377,19 +378,19 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.fbl = fb_api.FBLookup(None, None)
         self.fbl.debug = 'fbl' in self.debug_list
         if self.user:
-            self.display['date_only_human_format'] = self.user.date_only_human_format
+            self.display['date_only_human_format'] = self.jinja_env.filters['date_only_human_format'] = self.user.date_only_human_format
             self.display['date_human_format'] = self.jinja_env.filters['date_human_format'] = self.user.date_human_format
-            self.display['duration_human_format'] = self.user.duration_human_format
+            self.display['duration_human_format'] = self.jinja_env.globals['duration_human_format'] = self.user.duration_human_format
             self.display['messages'] = self.user.get_and_purge_messages()
         else:
-            self.display['date_only_human_format'] = dates.date_only_human_format
+            self.display['date_only_human_format'] = self.jinja_env.filters['date_only_human_format'] = dates.date_only_human_format
             self.display['date_human_format'] = self.jinja_env.filters['date_human_format'] = dates.date_human_format
-            self.display['duration_human_format'] = dates.duration_human_format
+            self.display['duration_human_format'] = self.jinja_env.globals['duration_human_format'] = self.jinja_env. dates.duration_human_format
             self.display['login_url'] = login_url
-        self.display['datetime_format'] = dates.datetime_format
+        self.display['datetime_format'] = self.jinja_env.filters['datetime_format'] = dates.datetime_format
 
-        self.display['fb_event_url'] = urls.fb_event_url
-        self.display['raw_fb_event_url'] = urls.raw_fb_event_url
+        self.display['fb_event_url'] = self.jinja_env.globals['fb_event_url'] = urls.fb_event_url
+        self.display['raw_fb_event_url'] = self.jinja_env.globals['raw_fb_event_url'] = urls.raw_fb_event_url
         self.display['dd_admin_event_url'] = urls.dd_admin_event_url
         self.display['dd_admin_source_url'] = urls.dd_admin_source_url
 

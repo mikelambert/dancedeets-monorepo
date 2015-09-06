@@ -1,0 +1,63 @@
+{% extends "_bigbox_base.html" %}
+
+{% block title %}
+List of Users
+{% endblock %}
+
+{% block head_stylesheet %}
+<style type="text/css">
+th {
+	text-align: left;
+}
+td,th {
+	padding-right: 10px;
+}
+</style>
+{% endblock %}
+
+{% block inner_body %}
+<div>There are {{ num_users }} users total, and {{ num_active_users }} active users.</div>
+
+<div>
+Users by platform:<br>
+{% for client, count in client_counts.iteritems() %}
+	{{ client }}: {{ count }}<br>
+{% endfor %}
+</div>
+
+<table>
+<tr>
+<th>Creation Time</th>
+<th>Login Count</th>
+<th>Login Time</th>
+<th>Location</th>
+<th>Distance</th>
+<th>Platforms</th>
+<th>User Links</th>
+</tr>
+{% for user, fb_user in zip(users, fb_users) %}
+<tr><td>
+{{ date_format('%Y-%m-%d %H:%M', user.creation_time) }}
+</td><td>
+{{ user.login_count }}
+</td><td>
+{{ date_format('%Y-%m-%d %H:%M', user.last_login_time) }}
+</td><td>
+{{ user.location }}
+</td><td>
+{{ user.distance }}
+{{ user.distance_units }}
+</td><td>
+{% for client in user.clients %}
+	{{ client }}
+{% endfor %}
+</td><td>
+(<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key={{ user.key.urlsafe() }}">AE</a>, <a href="/sources/admin_edit?source_id={{ user.fb_uid }}">Source</a>)
+<a href="$fb_user.profile.link">{{ user.full_name or 'Unknown Name' }}</a>
+{% if user.expired_oauth_token %}
+<span style="color:red" title="{{ user.expired_oauth_token_reason }}">(expired!)</span>
+{% endif %}
+</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

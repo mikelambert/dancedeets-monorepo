@@ -103,7 +103,7 @@ def html_escape(value):
         return ''
 
 def date_format(f, d):
-    return d.strftime(str(f))
+    return d.strftime(str(f)) if d else None
 
 def format(f, s):
     return f % s

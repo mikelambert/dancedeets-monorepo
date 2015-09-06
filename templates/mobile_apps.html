@@ -1,10 +1,10 @@
-#extends _base
+{% extends "_base.html" %}
 
-#def title
+{% block title %}
 DanceDeets - Mobile Apps
-#end def
+{% endblock %}
 
-#def head_stylesheet
+{% block head_stylesheet %}
 <style type="text/css">
 .spacing {
 	margin-top: 8px;
@@ -13,13 +13,13 @@ DanceDeets - Mobile Apps
     list-style-type: none;
 }
 
-$walkout_animation
+{{ walkout_animation }}
 
 </style>
-#end def
+{% endblock %}
 
-#def body
-## not using container-fluid, but container, so things are more centered
+{% block body %}
+{# not using container-fluid, but container, so things are more centered #}
 <div class="container">
 
 <div class="row">
@@ -32,9 +32,9 @@ $walkout_animation
 <div style="float:left">
 Get the app now:
 <div class="spacing">
-<a href="$android_url"><img src="/images/play_store_download.png" class="store-button"></a>
+<a href="{{ android_url }}"><img src="/images/play_store_download.png" class="store-button"></a>
 <br>
-<a href="$ios_url"><img src="/images/app_store_download.png" class="store-button"></a>
+<a href="{{ ios_url }}"><img src="/images/app_store_download.png" class="store-button"></a>
 </div>
 </div>
 
@@ -51,15 +51,15 @@ Or enter your phone number, and we'll send you a link to install:
 <input type="hidden" name="action" value="send_sms" />
 <select name="prefix" class="form-control">
 <option value="">Select a country below</option>
-#for $country, $code in $country_codes
-	<option value="$code"
-	#if $code == $prefix
+{% for country, code in country_codes %}
+	<option value="{{ code }}"
+	{% if code == prefix %}
 		selected
-	#end if
-	>$country (+$code)</option>
-#end for
+	{% endif %}
+	>{{ country }} (+{{ code }})</option>
+{% endfor %}
 </select>
-<input type="text" class="form-control sms-textbox" name="phone" placeholder="(123) 456-7890" value="$phone"/>
+<input type="text" class="form-control sms-textbox" name="phone" placeholder="(123) 456-7890" value="{{ phone }}"/>
 <button type="submit" value="submit" class="btn btn-primary sms-button">Send link to my phone</button>
 </form>
 </div>
@@ -84,17 +84,17 @@ Keep up with the latest dance events when you're on the go!
 
 </div>
 </div>
-#end def
+{% endblock %}
 
-#def bottom_javascript
+{% block bottom_javascript %}
 <script type="text/javascript">
 function walkOut() {
-	$('#penguin').css('webkitAnimation', 'bounce 0.5s infinite 0s, walkOut ${total_time}s');
-	$('#penguin').css('animation', 'bounce 0.5s infinite 0s, walkOut ${total_time}s');
+	$('#penguin').css('webkitAnimation', 'bounce 0.5s infinite 0s, walkOut {{ total_time }}s');
+	$('#penguin').css('animation', 'bounce 0.5s infinite 0s, walkOut {{ total_time }}s');
 	$('#penguin').bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function(){
 		$('#penguin').hide();
 	});
 
 }
 </script>
-#end def
+{% endblock %}

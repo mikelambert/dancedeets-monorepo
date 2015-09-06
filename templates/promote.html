@@ -13,10 +13,10 @@ DanceDeets - Promoters
 The event "{{ event.info.name|e }}" has the following problems:
 <ul>
 {% for error in event_errors %}
-	<li>{{ error|format_html }}</li>
+	<li>{{ error|e }}</li>
 {% endfor %}
 {% for warning in event_warnings %}
-	<li>WARNING: {{ warning|format_html }}</li>
+	<li>WARNING: {{ warning|e }}</li>
 {% endfor %}
 </ul>
 <a href="{{ event_url|e }}" class="btn btn-primary">Go to the FB Event to fix these problems.</a> Then return to check your event again.
@@ -45,7 +45,7 @@ The event "{{ event.info.name|e }}" has the following problems:
 				<img src="http://graph.facebook.com/{{ event.id }}/picture" width="50">
 			</div>
 			<div style="float:left;width:320px">
-				<span class="fake-a">{{ event.name|format_html }}</span><br>
+				<span class="fake-a">{{ event.name|e }}</span><br>
 				<div class="non-a">
 				{{ event.start_time|parse_fb_timestamp|date_human_format }}<br>
 				{% if event.host %}

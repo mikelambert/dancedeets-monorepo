@@ -1,0 +1,17 @@
+{% extends "_base.html" %}
+
+{% block title %}
+Dancers, Crews, and Events
+{% endblock %}
+
+{% block body %}
+<div class="row">
+
+<ul>
+{% for topic in topics %}
+<li><a href="/topic/{{ topic.url_path }}">{{ topic.url_path }}</li>
+{% endfor %}
+</ul>
+
+</div>
+{% endblock %}

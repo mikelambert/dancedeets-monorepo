@@ -1,20 +1,18 @@
-#extends _bigbox_base
-#from spitfire.runtime.filters import escape_html
-#filter escape_html
+{% extends "_bigbox_base.html" %}
 
-#def title
-$primary_name - DanceDeets Profile
-#end def
+{% block title %}
+{{ primary_name }} - DanceDeets Profile
+{% endblock %}
 
-#def inner_body
+{% block inner_body %}
 <img src="http://graph.facebook.com/$profile_username/picture?type=large">
 <p>
-#for $video_tag in $video_tags
-	$video_tag.get_video_embed()<br>
-	$video_tag.description<br>
-#end for
+{% for video_tag in video_tags %}
+	{{ video_tag.get_video_embed() }}<br>
+	{{ video_tag.description }}<br>
+{% endfor %}
 
-<a href="#">Tag $primary_name in More Videos</a>
+<a href="#">Tag {{ primary_name }} in More Videos</a>
 
 <script type="text/javascript">
 function loadUrl(url) {
@@ -41,10 +39,10 @@ function loadSearch(search) {
 </form>
 </td><td id="panel_two">
 </td><td id="panel_three">
-<form action="/profile/$profile_username/add_tag" method="post">
+<form action="/profile/{{ profile_username }}/add_tag" method="post">
 </form>
 </td></tr>
 </table>
 
 </div>
-#end def
+{% endblock %}
