@@ -59,7 +59,8 @@ class DBEvent(ndb.Model):
     # extra cached properties
     address = ndb.StringProperty(indexed=False) # manually overridden address
     actual_city_name = ndb.StringProperty(indexed=False) # city for this event
-    city_name = ndb.StringProperty(indexed=False) # largest nearby city for this event
+    # Index is needed for city_name=Unknown searches in admin_nolocation_events
+    city_name = ndb.StringProperty() # largest nearby city for this event
     latitude = ndb.FloatProperty(indexed=False)
     longitude = ndb.FloatProperty(indexed=False)
     anywhere = ndb.BooleanProperty()
