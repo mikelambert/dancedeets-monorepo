@@ -391,8 +391,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         self.display['fb_event_url'] = self.jinja_env.globals['fb_event_url'] = urls.fb_event_url
         self.display['raw_fb_event_url'] = self.jinja_env.globals['raw_fb_event_url'] = urls.raw_fb_event_url
-        self.display['dd_admin_event_url'] = urls.dd_admin_event_url
-        self.display['dd_admin_source_url'] = urls.dd_admin_source_url
+        self.display['dd_admin_event_url'] = self.jinja_env.globals['dd_admin_event_url'] = urls.dd_admin_event_url
+        self.display['dd_admin_source_url'] = self.jinja_env.globals['dd_admin_source_url'] = urls.dd_admin_source_url
 
         self.display['request'] = request
         self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']

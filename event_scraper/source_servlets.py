@@ -49,7 +49,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['source'] = s
         self.display['fb_source'] = fb_source
         self.display['fb_source_data'] = pprint.pformat(fb_source['feed']['data'])
-        self.display['link_for_fb_source'] = thing_db.link_for_fb_source
+        self.display['link_for_fb_source'] = self.jinja_env.globals['link_for_fb_source'] = thing_db.link_for_fb_source
 
         self.display['track_google_analytics'] = False
         self.render_template('admin_source')

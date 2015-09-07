@@ -276,7 +276,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['event'] = e
         self.display['fb_event'] = fb_event
 
-        self.display['highlight_keywords'] = event_classifier.highlight_keywords
+        self.display['highlight_keywords'] = self.jinja_env.filters['highlight_keywords'] = event_classifier.highlight_keywords
 
         self.display['track_google_analytics'] = False
         self.render_template('admin_edit')
@@ -378,7 +378,7 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
         num_events = int(self.request.get('num_events', 100))
         # TODO: There are some events with city_name=Unknown and a valid latitude that are just not near any major metropolis. They are undercounted and have "No Scene", which we may want to fix at some point.
-        db_events = eventdata.DBEvent.query(ndb.AND(eventdata.DBEvent.city_name=='Unknown', eventdata.DBEvent.latitude==None)).order(-eventdata.DBEvent.start_time).fetch(num_events)
+        db_events = eventdata.DBEvent.query(eventdata.DBEvent.city_name=='Unknown').order(-eventdata.DBEvent.start_time).fetch(num_events)
         db_events = [x for x in db_events if x.anywhere == False]
         template_events = []
         for db_event in db_events:
