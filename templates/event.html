@@ -93,7 +93,8 @@
 	{% if event.info.attending_count %}
 		<li><i class="fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
 		{{ event.info.attending_count }} Attending
-		{%- if event.info.maybe_count %}, {{ event.info.maybe_count }} Maybe
+		{%- if event.info.maybe_count -%}
+			, {{ event.info.maybe_count }} Maybe
 		{%- endif %}
 		</li>
 	{% endif %}

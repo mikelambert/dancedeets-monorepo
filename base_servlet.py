@@ -54,7 +54,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.display['truncate'] = lambda text, length: text[:length]
         self.display['format_html'] = self.jinja_env.filters['format_html'] = text.format_html
         self.display['linkify'] = self.jinja_env.filters['linkify'] = text.linkify
-        self.display['format_js'] = text.format_js
+        self.display['format_js'] = self.jinja_env.filters['format_js'] = text.format_js
         self.display['jsonify'] = skip_filter(json.dumps)
         self.display['urllib_quote_plus'] = urllib.quote_plus
         self.display['urlencode'] = lambda x: urllib.quote_plus(x.encode('utf8'))

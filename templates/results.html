@@ -1,52 +1,43 @@
-#extends _base
-#extends _rsvp
-#extends _results
-#from spitfire.runtime.filters import escape_html
-#filter escape_html
-#def title
-$result_title
-#end def
+{% extends "_base.html" %}
+{% import "_rsvp.html" as rsvp %}
+{% import "_results.html" as results %}
 
-#def head_stylesheet
+{% block title %}
+{{ result_title }}
+{% endblock %}
+
+{% block head_stylesheet %}
     <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="$result_title" /> 
-#end def
+    <meta property="og:title" content="{{ result_title }}" /> 
+{% endblock %}
 
 
-#def ranked_list($top_list, $selected_list)
-	#if $top_list
-		#for $i, $sel, $data in $top_list
-			#if $sel
-				<i>
-			#end if
-			$i: $data.key: $data.count<br>
-			#if $sel
-				</i>
-			#end if
-		#end for
+{% macro ranked_list(top_list, selected_list) %}
+	{% if top_list %}
+		{% for i, sel, data in top_list %}
+			{% if sel %}<i>{% endif -%}
+			{{ i }}: {{ data.key }}: {{ data.count }}<br>
+			{%- if sel %}</i>{% endif %}
+		{% endfor %}
 		...<br>
-		#if $selected_list
-			#set $user_i = len($selected_list)/2 + 1
-			#for $raw_i, ($i, $sel, $data) in enumerate($selected_list)
-				#if $sel
-					<i>
-				#end if
-				$i: $data.key: $data.count
-				#if $sel
-					</i>
-				#end if
+		{% if selected_list %}
+			{% set user_i = len(selected_list)/2 + 1 %}
+			{% for raw_i, (i, sel, data) in enumerate(selected_list) %}
+				{% if sel %}<i>{% endif %}
+				{{ i }}: {{ data.key }}: {{ data.count }}
+				{% if sel %}</i>{% endif %}
 				<br>
-			#end for
+			{% endfor %}
 			...<br>
-		#end if
-	#else
+		{% endif %}
+	{% else %}
 		No rankings yet!
-	#end if
-#end def
+	{% endif %}
+{% endmacro %}
 
 
-#def body
+{% block body %}
 
 <div class="row">
 <div class="col-md-9">
@@ -57,115 +48,114 @@ $result_title
   </div>
   </td><td>
   <form id="search-form" class="form-inline" role="search" action="/">
-    <div style="font-weight: bold">Searching ${total_events} dance events worldwide:</div>
-    <div class="form-group"">
+    <div style="font-weight: bold">Searching {{ total_events }} dance events worldwide:</div>
+    <div class="form-group">
       <label for="keywords_input">Keywords</label>
-      ## We don't use a placeholder on keyword field, since it interacts differently with bootstrap-tokentext
+      {# We don't use a placeholder on keyword field, since it interacts differently with bootstrap-tokentext #}
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="$defaults.keywords" class="form-control">
+        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="{{ defaults.keywords }}" class="form-control">
       </div>
     </div>
     <div class="form-group">
       <label for="location_input">near location</label>
       <div class="input-group">
 		<span class="input-group-addon"><i class="fa fa-globe fa-fw"></i></span>
-        <input id="location_input" type="text" name="location" placeholder="everywhere" value="$defaults.location" class="form-control">
+        <input id="location_input" type="text" name="location" placeholder="everywhere" value="{{ defaults.location }}" class="form-control">
       </div>
     </div>
-    #if $defaults.deb
-	    <input type="hidden" name="deb" value="$defaults.deb">
-	#end if
+    {% if defaults.deb %}
+	    <input type="hidden" name="deb" value="{{ defaults.deb }}">
+	{% endif %}
     <button type="submit" class="btn btn-default">
       <span class="glyphicon glyphicon-search"></span>
       Search Events
     </button>
-  <!-- maybe make a small hourglass icon search box ? 
-  $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
-  -->
+  {# maybe make a small hourglass icon search box ? 
+   # $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
+   #}
   </form>
   </td></tr></table>
-</div>##margin-bottom: 25px
+</div>{# margin-bottom: 25px #}
 
 <div style="min-height:300px">
 <ul class="nav nav-tabs" data-tabs="tabs">
 	<li
-	#if $selected_tab == 'past'
+	{% if selected_tab == 'past' %}
 		class="active"
-	#end if
+	{% endif %}
 	><a
-	#if $selected_tab == 'past'
+	{% if selected_tab == 'past' %}
 		href="#"
-	#else
-		href="$past_view_url"
-	#end if
+	{% else %}
+		href="{{ past_view_url }}"
+	{% endif %}
 	><span><i class="fa fa-history fa-lg"></i>
-	#if $selected_tab == 'past'
-		#set $num_past_results = len($past_results)
-		#if $num_past_results
-			$num_past_results
-		#end if
-	#end if
+	{% if selected_tab == 'past' %}
+		{% set num_past_results = len(past_results) %}
+		{% if num_past_results %}
+			{{ num_past_results }}
+		{% endif %}
+	{% endif %}
 	Past Events</span></a></li>
 
 	<li
-	#if $selected_tab == 'present'
+	{% if selected_tab == 'present' %}
 		class="active"
-	#end if
+	{% endif %}
 	><a
-	#if $selected_tab == 'present'
+	{% if selected_tab == 'present' %}
 		href="#"
-	#else
-		href="$upcoming_view_url"
-	#end if
+	{% else %}
+		href="{{ upcoming_view_url }}"
+	{% endif %}
 	><span>
-	#if $selected_tab == 'present'
-		#if $num_upcoming_results
-			$num_upcoming_results
-		#end if
-	#end if
+	{% if selected_tab == 'present' %}
+		{% if num_upcoming_results %}
+			{{ num_upcoming_results }}
+		{% endif %}
+	{% endif %}
 	Upcoming Events</span></a></li>
 
 	<li
-	#if $selected_tab == 'calendar'
+	{% if selected_tab == 'calendar' %}
 		class="active"
-	#end if
+	{% endif %}
 	><a
-	#if $selected_tab == 'calendar'
+	{% if selected_tab == 'calendar' %}
 		href="#"
-	#else
-		href="$calendar_view_url"
-	#end if
+	{% else %}
+		href="{{ calendar_view_url }}"
+	{% endif %}
 	><span><i class="fa fa-calendar fa-lg"></i> Calendar</span></a></li>
 </ul>
 <div class="tabs-after top-to-bottom-fade">
-	#if $selected_tab == 'past'
-		$render_wide_results($past_results)
-	#elif $selected_tab == 'present'
-		#if $num_upcoming_results
+	{% if selected_tab == 'past' %}
+		{{ results.render_wide_results(past_results) }}
+	{% elif selected_tab == 'present' %}
+		{% if num_upcoming_results %}
 			<div id="upcoming_events" class="col-md-8 col-xs-12">
-			#for $group in $grouped_upcoming_results
-				#if $group.results
-					<h3 class="group-title">$group.name</h3>
-					$render_wide_results($group.results)
-				#end if
-			#end for
+			{% for group in grouped_upcoming_results %}
+				{% if group.results %}
+					<h3 class="group-title">{{ group.name }}</h3>
+					{{ results.render_wide_results(group.results) }}
+				{% endif %}
+			{% endfor %}
 			</div>
-		#end if
-		#if $ongoing_results
+		{% endif %}
+		{% if ongoing_results %}
 			<div id="ongoing_events" class="col-md-4 col-xs-12" style="border-left: 1px solid lightgrey; padding-left: 5px">
 				<h3>Ongoing Events</h3>
-				$render_narrow_results($ongoing_results)
+				{{ results.render_narrow_results(ongoing_results) }}
 			</div>
-		#end if
+		{% endif %}
 		<div style="clear:both;height:1px;"></div>
-	#elif $selected_tab == 'calendar'
-
+	{% elif selected_tab == 'calendar' %}
 		<div id="calendar"></div>
-	#end if
-</div>##min-height:300px
-</div>##col-md-9
-</div>##row
+	{% endif %}
+</div>{# min-height:300px #}
+</div>{# col-md-9 #}
+</div>{# row #}
 
 <div class="col-md-3">
 	<div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="190" data-action="like" data-show-faces="true" data-share="true" style="margin-bottom: 10px;"></div>
@@ -178,13 +168,13 @@ $result_title
 
 	<div class="rankings">
 	<span class="ranking-title">Who has the most events:</span><br>
-	$ranked_list($event_top_n_cities, $event_selected_n_cities)
+	{{ ranked_list(event_top_n_cities, event_selected_n_cities) }}
 	</div>
 
 	<hr>
 	<div class="rankings">
 	<span class="ranking-title">Who has the most dancers and fans:</span><br>
-	$ranked_list($user_top_n_cities, $user_selected_n_cities)
+	{{ ranked_list(user_top_n_cities, user_selected_n_cities) }}
 	</div>
 
 	<hr>
@@ -193,10 +183,10 @@ $result_title
 	</div>
 </div>
 
-</div> ## row
-#end def
+</div> {# row #}
+{% endblock %}
 
-#def bottom_javascript
+{% block bottom_javascript %}
 
 <!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
@@ -222,11 +212,11 @@ $(document).ready(function(event) {
           return false;
        }
   });
-  /*Disable keywords_input autocomplete/tokenizer, until we figure out exactly how we want this to work.
+  {# Disable keywords_input autocomplete/tokenizer, until we figure out exactly how we want this to work.
   ie, maybe we want to tokenize just magical-portions of the input. But we can make bboy-style events work
   based off matching against the search query serverside, for the moment.
   var engine = new Bloodhound({
-    local: $jsonify($keyword_tokens),
+    local: {{ keyword_tokens|jsonify }},
     datumTokenizer: function(d) {
       return Bloodhound.tokenizers.whitespace(d.value);
     },
@@ -243,7 +233,7 @@ $(document).ready(function(event) {
             event.preventDefault();
     });
   });
-  */
+  #}
 });
 
 function initializeLocationAutocomplete() {
@@ -252,9 +242,9 @@ function initializeLocationAutocomplete() {
 }
 </script>
 
-$results_bottom_javascript()
+{{ results.results_bottom_javascript() }}
 
-#if $selected_tab == 'calendar'
+{% if selected_tab == 'calendar' %}
 <link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.css' />
 <link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css' media="print"/>
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.js'></script>
@@ -290,32 +280,32 @@ $(document).ready(function() {
 		ignoreTimezone: true,
 		allDayDefault: false,
 		defaultView: 'basicWeek',
-		events: '$format_js($calendar_feed_url)'
+		events: '{{ calendar_feed_url|format_js }}'
 	});
 });
 </script>
-#else
-$rsvp_script()
+{% else %}
+{{ rsvp.rsvp_script() }}
 
 <script src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
 
-#if $selected_tab == 'past'
-	$render_result_attending_tooltip_javascript($past_results)
-#elif $selected_tab == 'present'
-	$render_result_attending_tooltip_javascript($ongoing_results)
-	#for $group in $grouped_upcoming_results
-		#if $group.results
-			$render_result_attending_tooltip_javascript($group.results)
-		#end if
-	#end for
-#end if
+{% if selected_tab == 'past' %}
+	{{ results.render_result_attending_tooltip_javascript(past_results) }}
+{% elif selected_tab == 'present' %}
+	{{ results.render_result_attending_tooltip_javascript(ongoing_results) }}
+	{% for group in grouped_upcoming_results %}
+		{% if group.results %}
+			{{ results.render_result_attending_tooltip_javascript(group.results) }}
+		{% endif %}
+	{% endfor %}
+{% endif %}
 
 	$("img.lazy-narrow").show().lazyload({threshold : 500});
 	$("img.lazy-wide").show().lazyload({threshold : 500});
 });
 </script>
-#end if
-#end def
+{% endif %}
+{% endblock %}

@@ -1,0 +1,142 @@
+{% import "_rsvp.html" as rsvp %}
+{% macro render_narrow_results(results, use_rsvp_form=True) %}
+	<ol class="events-list">
+	{% for result in results %}
+		{# widths here are set to sum to 700px-50px = 650px #}
+		<li class="narrow-event" itemscope itemtype="http://schema.org/DanceEvent">
+			<h3 class="event-title">
+			<a href="{{ fb_event_url(result.fb_event_id) }}" itemprop="name">
+			{{ result.name|e }}
+			</a>
+			</h3>
+			<meta itemprop="url" content="{{ fb_event_url(result.fb_event_id) }}" />
+
+			<div class="event-image">
+			<a href="{{ fb_event_url(result.fb_event_id) }}">
+{# preload first five images #}
+{% if result.index < 5 %}
+				<img src="$result.get_image()" width="180" border="0" itemprop="image">
+{% else %}
+				<img class="lazy-narrow" src="/images/placeholder.gif" data-original="{{ result.get_image() }}" width="180" border="0" >
+				<noscript><img src="{{ result.get_image() }}" width="180" border="0" itemprop="image"></noscript>
+{% endif %}
+			</a>
+			</div>
+
+			<meta itemprop="startDate" content="{{ result.start_time|datetime_format }}" />
+			{% if result.end_time %}
+				<meta itemprop="endDate" content="{{ result.end_time|datetime_format }}" />
+			{% endif %}
+
+			<div class="event-types">({{result.event_keywords_string()}})</div>
+			<div class="event-city">
+				{{result.actual_city_name}}
+				{{result.location_schema_html()}}
+			</div>
+			{% if result.get_attendance() %}
+				<div>RSVP:
+					{% if use_rsvp_form %}
+						{{ rsvp.rsvp_form(result.fb_event_id, result.get_attendance()) }}
+					{% else %}
+						{{ result.get_attendance() }}
+					{% endif %}
+				</div>
+			{% endif %}
+		</li>
+	{% endfor %}
+	</ol>
+{% endmacro %}
+
+{% macro render_wide_results(results, use_rsvp_form=True) %}
+	<ol class="events-list">
+	{% for result in results %}
+		{# widths here are set to sum to 700px-50px = 650px #}
+		<li class="wide-event" itemscope itemtype="http://schema.org/DanceEvent">
+			<div class="event-image">
+			<a href="{{ fb_event_url(result.fb_event_id) }}">
+				{# preload first five images #}
+				{% if result.index < 5 %}
+					<img src="{{ result.get_image() }}" width="180" border="0" itemprop="image">
+				{% else %}
+					<img class="lazy-wide" src="/images/placeholder.gif" data-original="{{ result.get_image() }}" width="180" border="0">
+					<noscript><img src="{{ result.get_image() }}" width="180" border="0" itemprop="image"></noscript>
+				{% endif %}
+			</a>
+			</div>
+			<div class="event-description">
+				<h3 class="event-title">
+				<a href="{{ fb_event_url(result.fb_event_id) }}" itemprop="name">
+				{{ result.name|e }}
+				</a>
+				</h3>
+				<meta itemprop="url" content="{{ fb_event_url(result.fb_event_id) }}" />
+				<div class="event-types">({{ result.event_keywords_string() }})</div>
+				<div class="event-date">
+					<time itemprop="startDate" content="{{ result.start_time|datetime_format }}">{{ result.start_time|date_human_format }}</time>
+					{% if result.multi_day_event() and result.end_time %}
+						<br>to <time itemprop="endDate" content="{{ result.end_time|datetime_format }}">{{ result.end_time|date_human_format }}</time>
+					{% endif %}
+				</div>
+				<div class="event-city">
+					{{ result.actual_city_name }}
+					{{ result.location_schema_html() }}
+				</div>
+				{% if result.attendee_count %}
+					<div class="event-attending">Attending:
+					{% if result.attending_friend_count %}
+						<span id="event-friends-{{ result.fb_event_id }}"
+						data-toggle="tooltip" data-placement="top" data-html="true"
+						title="
+						{% for friend in result.attending_friends %}
+							{{ friend }}<br>
+						{% endfor %}
+						">{{ result.attending_friend_count }} friends</span>,
+					{% endif %}
+					{{ result.attendee_count }} total</div>
+				{% endif %}
+				{% if result.get_attendance() %}
+					<div>RSVP:
+						{% if use_rsvp_form %}
+							{{ rsvp.rsvp_form(result.fb_event_id, result.get_attendance()) }}
+						{% else %}
+							{{ result.get_attendance() }}
+						{% endif %}
+					</div>
+				{% endif %}
+			</div>
+			{% if deb == 'comments' %}
+				<div><a href="#" onclick="$('#comments-$result.fb_event_id').toggleClass('hidden');return false;">Show all <fb:comments-count href="{{ fb_event_url(result.fb_event_id) }}"></fb:comments-count> comments</a>.</div>
+			{% endif %}
+			<div style="clear:both;height:1px;"></div>
+		</li>
+	{% endfor %}
+	</ol>
+{% endmacro %}
+
+{% macro results_bottom_javascript() %}
+<script type="text/javascript">
+/* Wait until we have a use for this...
+$(document).ready(function() {
+	$('.event-date').each(function(i, obj) {
+		var jquery_obj = $(obj);
+		var start = moment(jquery_obj.data('start-time'));
+		var end = moment(jquery_obj.data('end-time'))
+		if (end.isValid()) {
+			var duration = moment.duration(end - start);
+			//alert(duration.humanize());
+		} else {
+			//alert(start.format('llll'));
+		}
+		var all_day = jquery_obj.data('all-day');
+
+	});
+});
+*/
+</script>
+{% endmacro %}
+
+{% macro render_result_attending_tooltip_javascript(results) %}
+	{% for result in results %}
+		$('#event-friends-$result.fb_event_id').tooltip();
+	{% endfor %}
+{% endmacro %}

@@ -1,4 +1,5 @@
 import datetime
+import jinja2
 import logging
 
 from google.appengine.api import mail
@@ -8,10 +9,8 @@ from loc import gmaps_api
 from loc import math
 from logic import friends
 from logic import rsvp
-import template
 from util import dates
 from util import fb_mapreduce
-from util import text
 from util import timings
 from util import urls
 from . import search
@@ -51,17 +50,21 @@ def email_for_user(user, fbl, should_send=True):
     past_results, present_results, grouped_results = search.group_results(search_results)
 
     display = {}
-    display['date_human_format'] = user.date_human_format
-    display['format_html'] = text.format_html
-    display['fb_event_url'] = urls.fb_event_url
-    display['raw_fb_event_url'] = urls.raw_fb_event_url
-    display['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
     display['user'] = user
     display['fb_user'] = fb_user
 
-    display['results'] = [x for x in grouped_results if x.id == 'week_events'][0].results
+    week_events = [x for x in grouped_results if x.id == 'week_events']
+    # Only send emails if we have upcoming events
+    if not week_events:
+        return None
+    display['results'] = week_events[0].results
 
-    rendered = template.render_template('html_mail_summary', display)
+    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
+    jinja_env.filters['date_human_format'] = user.date_human_format
+    jinja_env.globals['fb_event_url'] = urls.fb_event_url
+    jinja_env.globals['raw_fb_event_url'] = urls.raw_fb_event_url
+    jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
+    rendered = jinja_env.get_template('html_mail_summary.html').render(display)
     d = datetime.date.today()
     d = d - datetime.timedelta(days=d.weekday()) # round down to last monday
     logging.info("Rendered HTML:\n%s", rendered)

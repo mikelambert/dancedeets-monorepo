@@ -1,0 +1,33 @@
+{% macro rsvp_form(fb_event_id, user_rsvp) %}
+<form style="margin:0px;display:inline">
+<!--{{ user_rsvp }}-->
+<select
+	id="rsvp_{{fb_event_id}}"
+	name="rsvp_{{fb_event_id}}"
+	onchange='event_rsvp("{{fb_event_id}}", $("#rsvp_{{fb_event_id}}").val());'
+>
+{% for rsvp in CHOOSE_RSVPS %}
+	<option value="{{ rsvp }}"
+	{% if rsvp == user_rsvp %}
+		selected
+	{% endif %}
+	>{{ rsvp }}
+{% endfor %}
+{% if user_rsvp == 'none' %}
+<option value="" selected>none
+{% endif %}
+</select>
+</form>
+{% endmacro %}
+
+{% macro rsvp_script() %}
+<script type="text/javascript">
+function event_rsvp(event_id, rsvp_status) {
+  $.ajax({
+    data: {rsvp: rsvp_status, event_id: event_id},
+    type: 'POST',
+    url: '/events/rsvp_ajax',
+  });
+}
+</script>
+{% endmacro %}
