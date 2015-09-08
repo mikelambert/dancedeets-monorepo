@@ -2,7 +2,6 @@
 *.pyc
 *.swp
 app-nose.yaml
-compiled_templates
 
 # secret files
 keys.yaml

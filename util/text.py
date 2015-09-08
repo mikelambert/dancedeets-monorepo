@@ -1,13 +1,11 @@
 # -*-*- encoding: utf-8 -*-*-
 
+import jinja2
 import logging
 import re
-from spitfire.runtime import udn
-from spitfire.runtime.filters import skip_filter
 
-@skip_filter
 def format_html(value):
-    return html_escape(value).replace('\n', '<br>\n')
+    return jinja2.Markup.escape(value).replace('\n', jinja2.Markup('<br>\n'))
 
  
 # Commented multi-line version:
@@ -58,7 +56,6 @@ url_finder_re = re.compile(r"""
 """)
 
 
-@skip_filter
 def linkify(value):
     # We don't need to escape the value we send in the href, since everything should be been pre-escaped.
     def make_href(m):
@@ -68,10 +65,9 @@ def linkify(value):
         url = m.group(1)
         if not url.startswith('http'):
             url = 'http://' + url
-        return '<a href="%s">%s</a>' % (url, m.group(1))
-    return url_finder_re.sub(make_href, value)
+        return jinja2.Markup('<a href="%s">%s</a>') % (url, m.group(1))
+    return url_finder_re.sub(make_href, jinja2.Markup.escape(value))
 
-@skip_filter
 def format_js(value):
     if isinstance(value, basestring):
         value = value.replace('\\', '\\\\')
@@ -79,24 +75,6 @@ def format_js(value):
         value = value.replace("'", "\\'")
         value = value.replace("\n", "\\n")
         return value
-    elif isinstance(value, udn.UndefinedPlaceholder):
-        # trigger asplosion!
-        return str(value.name)
-    elif isinstance(value, (int, long, float)):
-        return str(value)
-    else:
-        return ''
-    
-def html_escape(value):
-    if isinstance(value, basestring):
-        value = value.replace('&', '&amp;')
-        value = value.replace('<', '&lt;')
-        value = value.replace('>', '&gt;')
-        value = value.replace('"', '&quot;')
-        return value
-    elif isinstance(value, udn.UndefinedPlaceholder):
-        # trigger asplosion!
-        return str(value.name)
     elif isinstance(value, (int, long, float)):
         return str(value)
     else:

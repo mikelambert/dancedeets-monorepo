@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
+import jinja2
 import logging
 import re
 import urllib
 
 from google.appengine.ext import deferred
-from google.appengine.ext import ndb
-from spitfire.runtime.filters import skip_filter
 
 import base_servlet
 from event_scraper import add_entities
@@ -94,7 +93,6 @@ class DisplayableEvent(object):
     def __init__(self, event_info):
         self.event_info = event_info
     
-    @skip_filter
     def location_schema_html(self):
         html = [
             '<span itemscope itemprop="location" itemtype="http://schema.org/Place">',
@@ -123,7 +121,7 @@ class DisplayableEvent(object):
         html += [
             '</span>',
         ]
-        return '\n'.join(html)
+        return jinja2.Markup('\n'.join(html))
 
     @property
     def cover_metadata(self):

@@ -2,6 +2,7 @@
 
 import collections
 import itertools
+import jinja2
 import logging
 import math
 try:
@@ -14,7 +15,6 @@ except ImportError:
 else:
     re.set_fallback_notification(re.FALLBACK_WARNING)
 import time
-from spitfire.runtime.filters import skip_filter
 from . import cjk_detect
 from . import keywords
 from . import grammar
@@ -289,12 +289,11 @@ def relevant_keywords(fb_event):
     bad_keywords = processed_text.get_tokens(rules.ANY_BAD)
     return sorted(set(good_keywords).union(bad_keywords))
 
-@skip_filter
 def highlight_keywords(text):
-    processed_text = StringProcessor(text)
-    processed_text.replace_with(rules.ANY_GOOD, lambda match: '<span class="matched-text">%s</span>' % match.group(0), flags=re.I)
-    processed_text.replace_with(rules.ANY_BAD, lambda match: '<span class="bad-matched-text">%s</span>' % match.group(0))
-    return processed_text.get_tokenized_text()
+    processed_text = StringProcessor(jinja2.Markup.escape(text))
+    processed_text.replace_with(rules.ANY_GOOD, lambda match: jinja2.Markup('<span class="matched-text">%s</span>') % match.group(0), flags=re.I)
+    processed_text.replace_with(rules.ANY_BAD, lambda match: jinja2.Markup('<span class="bad-matched-text">%s</span>') % match.group(0))
+    return jinja2.Markup(processed_text.get_tokenized_text())
 
 if __name__ == '__main__':
     a = ['club', 'bottle service', 'table service', 'coat check', 'free before', 'vip', 'guest\\W?list', 'drink specials?', 'resident dj\\W?s?', 'dj\\W?s?', 'techno', 'trance', 'indie', 'glitch', 'bands?', 'dress to', 'mixtape', 'decks', 'r&b', 'local dj\\W?s?', 'all night', 'lounge', 'live performances?', 'doors', 'restaurant', 'hotel', 'music shows?', 'a night of', 'dance floor', 'beer', 'blues', 'bartenders?', 'waiters?', 'waitress(?:es)?', 'go\\Wgo', 'gogo', 'styling', 'salsa', 'bachata', 'balboa', 'tango', 'latin', 'lindy', 'lindyhop', 'swing', 'wcs', 'samba', 'waltz', 'salsy', 'milonga', 'dance partner', 'cha cha', 'hula', 'tumbling', 'exotic', 'cheer', 'barre', 'contact improv', 'contact improv\\w*', 'contratto mimo', 'musical theat(?:re|er)', 'pole dance', 'flirt dance', 'bollywood', 'kalbeliya', 'bhawai', 'teratali', 'ghumar', 'indienne', 'persiana?', 'arabe', 'arabic', 'oriental\\w*', 'oriente', 'cubana', 'capoeira', 'tahitian dancing', 'folklor\\w+', 'kizomba', 'burlesque', 'technique', 'limon', 'clogging', 'zouk', 'afro mundo', 'class?ic[ao]', 'acroyoga', 'kirtan', 'modern dance', 'pilates', 'tribal', 'jazz', 'tap', 'contemporary', 'contempor\\w*', 'africa\\w+', 'sabar', 'silk', 'aerial', 'zumba', 'belly\\W?danc(?:e(?:rs?)?|ing)', 'bellycraft', 'worldbellydancealliance', 'soca', 'flamenco']

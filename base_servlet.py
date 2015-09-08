@@ -15,9 +15,6 @@ from google.appengine.api.app_identity import app_identity
 from google.appengine.ext import db
 from google.appengine.ext import deferred
 
-from spitfire.runtime.filters import skip_filter
-
-
 from users import users
 import facebook
 import fb_api
@@ -26,7 +23,6 @@ from logic import mobile
 from rankings import rankings
 from search import search_base
 import styles
-import template
 from users import user_creation
 from util import abbrev
 from util import dates
@@ -42,7 +38,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.display = {}
         self._errors = []
 
-        self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
+        self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"), autoescape=True)
         self.jinja_env.globals['zip'] = zip
         self.jinja_env.filters['format_html'] = text.format_html
         
@@ -50,12 +46,11 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
-        self.display['html_escape'] = text.html_escape
         self.display['truncate'] = lambda text, length: text[:length]
         self.display['format_html'] = self.jinja_env.filters['format_html'] = text.format_html
         self.display['linkify'] = self.jinja_env.filters['linkify'] = text.linkify
         self.display['format_js'] = self.jinja_env.filters['format_js'] = text.format_js
-        self.display['jsonify'] = skip_filter(json.dumps)
+        self.display['jsonify'] = json.dumps
         self.display['urllib_quote_plus'] = urllib.quote_plus
         self.display['urlencode'] = lambda x: urllib.quote_plus(x.encode('utf8'))
 
@@ -128,11 +123,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps(arg))
 
     def render_template(self, name):
-        try:
-            jinja_template = self.jinja_env.get_template("%s.html" % name)
-            rendered = jinja_template.render(**self.display)
-        except jinja2.TemplateNotFound:
-            rendered = template.render_template(name, self.display)
+        jinja_template = self.jinja_env.get_template("%s.html" % name)
+        rendered = jinja_template.render(**self.display)
         self.response.out.write(rendered)
 
     def get_location_from_headers(self, city=True):

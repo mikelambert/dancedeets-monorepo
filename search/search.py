@@ -2,6 +2,7 @@
 
 import collections
 import datetime
+import jinja2
 import logging
 import pprint
 import re
@@ -9,7 +10,6 @@ import time
 
 from google.appengine.ext import ndb
 from google.appengine.api import search
-from spitfire.runtime.filters import skip_filter
 
 from events import eventdata
 from loc import gmaps_api
@@ -163,7 +163,6 @@ class SearchResult(object):
             return 'maybe'
         return self.rsvp_status
 
-    @skip_filter
     def location_schema_html(self):
         html = [
             '<span itemscope itemprop="location" itemtype="http://schema.org/Place">',
@@ -180,7 +179,7 @@ class SearchResult(object):
         html += [
             '</span>',
         ]
-        return '\n'.join(html)
+        return jinja2.Markup('\n'.join(html))
 
 class SearchQuery(object):
     def __init__(self, time_period=None, start_time=None, end_time=None, bounds=None, min_attendees=None, keywords=None):

@@ -1,9 +1,9 @@
 import cgi
+import jinja2
 import re
 import urlparse
 
 from google.appengine.ext import db
-from spitfire.runtime.filters import skip_filter
 
 SITE_YOUTUBE = 'YOUTUBE'
 SITE_VIMEO = 'VIMEO'
@@ -41,16 +41,15 @@ class ProfileVideoTag(db.Model):
         else:
             return "unknown!"
 
-    @skip_filter
     def get_video_embed(self):
         if self.video_site == SITE_YOUTUBE:
-            return """\
+            return jinja2.Markup("""\
 <iframe title="YouTube video player" class="youtube-player" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/%(video_id)s?hd=1" frameborder="0"></iframe>
-""" % dict(video_id=self.video_id)
+""") % dict(video_id=self.video_id)
         elif self.video_site == SITE_VIMEO:
-            return """\
+            return jinja2.Markup("""\
 <iframe src="http://player.vimeo.com/video/%(video_id)s?title=0&amp;byline=0&amp;portrait=0&amp;color=7a012e" width="400" height="225" frameborder="0"></iframe>
-""" % dict(video_id=self.video_id)
+""") % dict(video_id=self.video_id)
         else:
             return "unknown!"
 

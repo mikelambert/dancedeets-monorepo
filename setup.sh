@@ -83,34 +83,9 @@ function install-hg() {
 	done
 }
 
-function install-gcode-svn() {
-	cd $TMP_DIR
-	REPO_PATH=$1
-	shift
-	echo
-	echo $REPO_PATH
-	echo
-	REPO_DIRNAME="${REPO_PATH}-read-only"
-	svn checkout http://$REPO_PATH.googlecode.com/svn/trunk/ $REPO_DIRNAME
-	cd $REPO_DIRNAME
-	svn up
-	[ -e setup.py ] && python setup.py build
-	for MODULE in $*
-	do
-		[ -h $BASE_DIR/$(basename $MODULE) ] && rm $BASE_DIR/$(basename $MODULE)
-		cp -Rf $MODULE $BASE_DIR/lib/
-	done
-}
-
 # Because the current published version has a bug with media uploads
 install-git https://github.com/sixohsix/twitter.git twitter
 
 # Because the published version doesn't install static files with a pip install
 install-git https://github.com/GoogleCloudPlatform/appengine-mapreduce.git python/src/mapreduce
 
-# Because there is no pip package for this
-install-gcode-svn spitfire spitfire
-
-# Build our code
-cd $BASE_DIR
-make
