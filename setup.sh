@@ -35,6 +35,7 @@ pip install --upgrade -t $BASE_DIR/lib \
 
 pip install --upgrade -t $BASE_DIR/lib dateparser ics
 
+# Install jinja2 library directly, so nlp/ libraries can be used directly
 pip install jinja2
 
 # This does not install the static files correctly, since they are not in setup.py
