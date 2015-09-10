@@ -33,6 +33,8 @@ pip install --upgrade -t $BASE_DIR/lib \
   mock \
   mox
 
+pip install --upgrade -t $BASE_DIR/lib dateparser
+
 # This does not install the static files correctly, since they are not in setup.py
 #  GoogleAppEngineMapReduce
 # So instead, let's install the depencies manually (listed above):
