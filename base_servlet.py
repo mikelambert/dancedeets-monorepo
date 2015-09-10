@@ -39,9 +39,14 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self._errors = []
 
         self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"), autoescape=True)
+        # This is necessary because appengine comes with Jinja 2.6 pre-installed, and this was added in 2.7+.
+        def do_urlencode(value):
+            """Escape for use in URLs."""
+            return urllib.quote(value.encode('utf8'))
+        self.jinja_env.filters['urlencode'] = do_urlencode
+        self.jinja_env.filters['format_html'] = text.format_html
         self.jinja_env.globals['zip'] = zip
         self.jinja_env.globals['len'] = len
-        self.jinja_env.filters['format_html'] = text.format_html
         
         self.display['version'] = os.getenv('CURRENT_VERSION_ID').split('.')[-1]
         # We can safely do this since there are very few ways others can modify self._errors
