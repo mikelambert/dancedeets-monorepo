@@ -5,8 +5,8 @@
 		{# widths here are set to sum to 700px-50px = 650px #}
 		<li class="narrow-event" itemscope itemtype="http://schema.org/DanceEvent">
 			<h3 class="event-title">
-			<a href="{{ fb_event_url(result.fb_event_id) }}" itemprop="name">
-			{{ result.name|e }}
+			<a href="{{ fb_event_url(result.fb_event_id) }}">
+			<span itemprop="name">{{ result.name|e }}</span>
 			</a>
 			</h3>
 			<meta itemprop="url" content="{{ fb_event_url(result.fb_event_id) }}" />
