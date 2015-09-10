@@ -11,7 +11,10 @@ def get_event_image_url(fb_event):
     picture_url = fb_event.get('fql_info')
     # TODO(FB2.0): cleanup!
     if fb_event.get('picture'):
-        return fb_event['picture']['data']['url']
+        if isinstance(fb_event['picture'], basestring):
+            return fb_event['picture']
+        else:
+            return fb_event['picture']['data']['url']
     elif picture_url and picture_url['data']:
         return picture_url['data'][0]['pic_big']
     else:
