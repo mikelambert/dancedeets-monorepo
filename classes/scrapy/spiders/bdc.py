@@ -4,6 +4,9 @@ import re
 import scrapy
 from .. import items
 
+from nlp import event_classifier
+from nlp import rules
+
 """
 class BdcStyle(scrapy.Spider):
     name = 'broadwaydancecenter.com/style'
@@ -59,6 +62,13 @@ class BdcDay(scrapy.Spider):
             start_time, end_time = parse_times(times)
             l.add_value('start_time', datetime.datetime.combine(date, start_time))
             l.add_value('end_time', datetime.datetime.combine(date, end_time))
+
+            # Use our NLP event classification keywords to figure out which BDC classes to keep
+            just_style = row.xpath('.//td[2]/text()').extract()[0]
+            processor = event_classifier.StringProcessor(just_style)
+            if not processor.has_token(rules.DANCE_STYLE):
+                continue
+
             l.add_xpath('style', './/td[2]/text() | .//td[3]/text()')
             l.add_xpath('teacher', './/td[4]//text()')
             l.add_xpath('teacher_link', '(.//td[4]//@href)[1]')

@@ -3,6 +3,9 @@ import datetime
 import scrapy
 from .. import items
 
+from nlp import event_classifier
+from nlp import rules
+
 def parse_times(time_string):
     start_string, end_string = time_string.split(' - ')
     start_time = dateparser.parse(start_string + ' pm').time()
@@ -47,7 +50,14 @@ class PMTHouseOfDance(scrapy.Spider):
                 date = dateparser.parse(day)
             item = items.ClassItem()
             item['source_page'] = response.url
-            item['style'] = row[2]
+
+            # Use our NLP event classification keywords to figure out which BDC classes to keep
+            style = row[2]
+            processor = event_classifier.StringProcessor(style)
+            if not processor.has_token(rules.DANCE_STYLE):
+                continue
+
+            item['style'] = style
             item['teacher'] = row[3]
             # do we care?? row[4]
             start_time, end_time = parse_times(row[1])

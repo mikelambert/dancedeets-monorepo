@@ -47,7 +47,7 @@ def _flatten(listOfLists):
 
 class StringProcessor(object):
     def __init__(self, text, match_on_word_boundaries=None):
-        self.text = text
+        self.text = text.lower()
         if match_on_word_boundaries is not None:
             self.match_on_word_boundaries = match_on_word_boundaries
         else:
