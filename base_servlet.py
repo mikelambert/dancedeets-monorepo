@@ -40,6 +40,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
 
         self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"), autoescape=True)
         self.jinja_env.globals['zip'] = zip
+        self.jinja_env.globals['len'] = len
         self.jinja_env.filters['format_html'] = text.format_html
         
         self.display['version'] = os.getenv('CURRENT_VERSION_ID').split('.')[-1]

@@ -23,7 +23,7 @@
 		...<br>
 		{% if selected_list %}
 			{% set user_i = len(selected_list)/2 + 1 %}
-			{% for raw_i, (i, sel, data) in enumerate(selected_list) %}
+			{% for i, sel, data in selected_list %}
 				{% if sel %}<i>{% endif %}
 				{{ i }}: {{ data.key }}: {{ data.count }}
 				{% if sel %}</i>{% endif %}
@@ -292,6 +292,7 @@ $(document).ready(function() {
 <script type="text/javascript">
 $(document).ready(function() {
 
+{#
 {% if selected_tab == 'past' %}
 	{{ results.render_result_attending_tooltip_javascript(past_results) }}
 {% elif selected_tab == 'present' %}
@@ -302,7 +303,7 @@ $(document).ready(function() {
 		{% endif %}
 	{% endfor %}
 {% endif %}
-
+#}
 	$("img.lazy-narrow").show().lazyload({threshold : 500});
 	$("img.lazy-wide").show().lazyload({threshold : 500});
 });

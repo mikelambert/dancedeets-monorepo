@@ -15,7 +15,7 @@
 			<a href="{{ fb_event_url(result.fb_event_id) }}">
 {# preload first five images #}
 {% if result.index < 5 %}
-				<img src="$result.get_image()" width="180" border="0" itemprop="image">
+				<img src="{{ result.get_image() }}" width="180" border="0" itemprop="image">
 {% else %}
 				<img class="lazy-narrow" src="/images/placeholder.gif" data-original="{{ result.get_image() }}" width="180" border="0" >
 				<noscript><img src="{{ result.get_image() }}" width="180" border="0" itemprop="image"></noscript>
@@ -105,7 +105,7 @@
 				{% endif %}
 			</div>
 			{% if deb == 'comments' %}
-				<div><a href="#" onclick="$('#comments-$result.fb_event_id').toggleClass('hidden');return false;">Show all <fb:comments-count href="{{ fb_event_url(result.fb_event_id) }}"></fb:comments-count> comments</a>.</div>
+				<div><a href="#" onclick="$('#comments-{{ result.fb_event_id }}').toggleClass('hidden');return false;">Show all <fb:comments-count href="{{ fb_event_url(result.fb_event_id) }}"></fb:comments-count> comments</a>.</div>
 			{% endif %}
 			<div style="clear:both;height:1px;"></div>
 		</li>
@@ -137,6 +137,6 @@ $(document).ready(function() {
 
 {% macro render_result_attending_tooltip_javascript(results) %}
 	{% for result in results %}
-		$('#event-friends-$result.fb_event_id').tooltip();
+		$('#event-friends-{{ result.fb_event_id }}').tooltip();
 	{% endfor %}
 {% endmacro %}
