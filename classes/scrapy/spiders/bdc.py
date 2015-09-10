@@ -50,6 +50,7 @@ class BdcDay(scrapy.Spider):
         date = dateparser.parse(date_string).date() 
         for row in table.xpath('.//tr'):
             l = items.ClassLoader(item=items.ClassItem(), selector=row)
+            l.add_value('source_page', response.url)
             if not row.xpath('.//td[1]/text()'):
                 continue
             times = row.xpath('.//td[1]/text()').extract()[0]

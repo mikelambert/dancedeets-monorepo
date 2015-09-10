@@ -29,6 +29,7 @@ class PeridanceDay(scrapy.Spider):
                 if 'Street' not in header:
                     continue
                 l = items.ClassLoader(item=items.ClassItem(), selector=row)
+                l.add_value('source_page', response.url)
                 times = row.xpath('.//td[1]/text()').extract()[0]
                 if times == 'Time':
                     continue

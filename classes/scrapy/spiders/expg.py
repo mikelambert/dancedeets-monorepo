@@ -33,6 +33,7 @@ class EXPG(scrapy.Spider):
                     real_style = '%s %s' % (level, style)
                     
                     l = items.ClassLoader(item=items.ClassItem(), selector=class_block)
+                    l.add_value('source_page', response.url)
                     l.add_value('start_time', datetime.datetime.combine(date, start_time))
                     l.add_value('end_time', datetime.datetime.combine(date, end_time))
                     l.add_value('style', real_style)

@@ -46,6 +46,7 @@ class PMTHouseOfDance(scrapy.Spider):
                     day = 'Monday'
                 date = dateparser.parse(day)
             item = items.ClassItem()
+            item['source_page'] = response.url
             item['style'] = row[2]
             item['teacher'] = row[3]
             # do we care?? row[4]

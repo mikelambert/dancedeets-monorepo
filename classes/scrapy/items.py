@@ -12,6 +12,7 @@ import string
 
 class ClassItem(scrapy.Item):
     studio = scrapy.Field()
+    source_page = scrapy.Field()
     style = scrapy.Field()
     teacher = scrapy.Field()
     teacher_link = scrapy.Field()

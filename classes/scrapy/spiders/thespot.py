@@ -43,6 +43,7 @@ class TheSpotDanceCenter(scrapy.Spider):
                     name = summary
                     teacher = None
                 item = items.ClassItem()
+                item['source_page'] = response.url
                 item['style'] = name
                 item['teacher'] = teacher
                 item['start_time'] = event.decoded('dtstart')
