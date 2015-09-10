@@ -35,6 +35,8 @@ pip install --upgrade -t $BASE_DIR/lib \
 
 pip install --upgrade -t $BASE_DIR/lib dateparser ics
 
+pip install jinja2
+
 # This does not install the static files correctly, since they are not in setup.py
 #  GoogleAppEngineMapReduce
 # So instead, let's install the depencies manually (listed above):
