@@ -377,7 +377,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         else:
             self.display['date_only_human_format'] = self.jinja_env.filters['date_only_human_format'] = dates.date_only_human_format
             self.display['date_human_format'] = self.jinja_env.filters['date_human_format'] = dates.date_human_format
-            self.display['duration_human_format'] = self.jinja_env.globals['duration_human_format'] = self.jinja_env. dates.duration_human_format
+            self.display['duration_human_format'] = self.jinja_env.globals['duration_human_format'] = dates.duration_human_format
             self.display['login_url'] = login_url
         self.display['datetime_format'] = self.jinja_env.filters['datetime_format'] = dates.datetime_format
 
