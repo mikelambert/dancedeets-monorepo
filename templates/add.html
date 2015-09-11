@@ -22,6 +22,7 @@ Add Dance Event
 			{% else %}
 				Enter your facebook event URL here:<br>
 				<input id="event_url_form" type=text name="event_url" size=60 onunfocus="loadEvent();">
+				<p><button class="btn btn-primary" onclick="return validateAdd();">Add Event by URL</button>
 				<br/>
 				{% if events %}
 					Or select one of your facebook events below:<br>
@@ -53,7 +54,6 @@ Add Dance Event
 					{% endfor %}
 					</ul>
 				{% endif %}
-				<p><button class="btn" onclick="return validateAdd();">Add Event</button>
 			{% endif %}
 		</div>
 		</form>
@@ -75,6 +75,9 @@ Add Dance Event
 				$('#event_id_form').val($(this).data('id'));
 			});
 		});
+        $("#add-events li").each(function () {
+            $(this).append($('<div class="add-button text-center"><div class="whiten"></div><button class="btn btn-primary btn-lg">Add Event</button>'));
+        });
 	});
 	function validateAdd() {
 		if ($('#event_id_form').val() || $('#event_url_form').val()) {

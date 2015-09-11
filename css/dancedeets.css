@@ -475,8 +475,9 @@ ul.feature-list {
 #add-events li {
 	display: block;
 }
-#add-events li:hover {
+#add-events .ui-selectable:hover {
 	background-color: #ddd;
+	color: black;
 }
 #add-events .ui-disabled {
 	color: black;
@@ -488,7 +489,32 @@ ul.feature-list {
 	cursor: pointer;
 	cursor: hand;
 }
-#add-events .ui-selected {
-	background: black;
-	color: white;
+/* For our Add Event buttons to be centered over the event on click */
+#add-events li {
+	position: relative;
+}
+#add-events li .add-button {
+	display: none;
+}
+#add-events li.ui-selected .add-button {
+	display: block;
+	margin: 0 auto;
+	position: absolute;
+	top: 0px;
+	height: 100%;
+	left: 0px;
+	width: 100%;
+}
+#add-events li.ui-selected .add-button .btn {
+	position: relative;
+}
+#add-events li.ui-selected .add-button .whiten {
+	top: 0px;
+	height: 100%;
+	left: 0px;
+	width: 100%;
+	position: absolute;
+	background: white;
+	opacity: 0.75;
+	filter: alpha(opacity=75);
 }
