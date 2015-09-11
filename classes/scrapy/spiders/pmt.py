@@ -48,6 +48,8 @@ class PMTHouseOfDance(scrapy.Spider):
                 if day == 'onday':
                     day = 'Monday'
                 date = dateparser.parse(day)
+                if date < datetime.date.today():
+                    date += datetime.timedelta(days=7)
             item = items.ClassItem()
             item['source_page'] = response.url
 

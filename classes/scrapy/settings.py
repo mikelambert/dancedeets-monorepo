@@ -14,7 +14,6 @@ BOT_NAME = 'class_spider'
 SPIDER_MODULES = ['classes.scrapy.spiders']
 NEWSPIDER_MODULE = 'classes.scrapy.spiders'
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'class_spider (+http://www.yourdomain.com)'
 
@@ -61,9 +60,9 @@ NEWSPIDER_MODULE = 'classes.scrapy.spiders'
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'class_spider.pipelines.SomePipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'classes.scrapy.pipelines.SaveStudioClassPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

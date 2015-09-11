@@ -8,7 +8,7 @@ def parse_times(times):
     return dateparser.parse(start).time(), dateparser.parse(end).time()
 
 class PeridanceDay(scrapy.Spider):
-    name = 'Peri'
+    name = 'Peridance'
     allowed_domains = ['peridance.com']
     start_urls = [
         'http://www.peridance.com/openclasses.cfm',
