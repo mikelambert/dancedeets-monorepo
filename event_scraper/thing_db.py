@@ -42,7 +42,7 @@ def run_modify_transaction_for_key(key, func):
 
 def increment_num_all_events(source_id):
     def inc(s):
-        s.num_all_events = (s.num_all_events_events or 0) + 1
+        s.num_all_events = (s.num_all_events or 0) + 1
     run_modify_transaction_for_key(source_id, inc)
 
 def increment_num_potential_events(source_id):
