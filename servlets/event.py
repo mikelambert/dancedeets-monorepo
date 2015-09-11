@@ -334,7 +334,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             try:
                 user_events = self.fbl.get(fb_api.LookupUserEvents, self.fb_uid, allow_cache=False)
                 results_json = user_events['all_event_info']['data']
-                events = list(reversed(sorted(results_json, key=lambda x: x.get('start_time'))))
+                events = list(sorted(results_json, key=lambda x: x.get('start_time')))
             except fb_api.NoFetchedDataException, e:
                 logging.error("Could not load event info for user: %s", e)
                 events = []

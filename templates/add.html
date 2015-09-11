@@ -28,7 +28,7 @@ Add Dance Event
 					<input id="event_id_form" type="hidden" name="event_id" value="">
 					<ul id="add-events">
 					{% for event in events %}
-						<li data-id="{{ event.id }}" class="
+						<li data-id="{{ event.id }}" style="margin-bottom: 15px" class="clearfix 
 							{% if event.loaded %}
 								ui-disabled
 							{% else %}
@@ -38,20 +38,17 @@ Add Dance Event
 							<div style="float:left;width:50px">
 								<img src="http://graph.facebook.com/{{ event.id }}/picture" width="50">
 							</div>
-							<div style="float:left">
-								<span class="fake-a">{{ event.name|e }}</span><br>
-								<div class="non-a">
-								{{ event.start_time|parse_fb_timestamp|date_human_format }}<br>
-								{% if event.host %}
-									(by {{ event.host }})<br>
-								{% endif %}
+							<div>
+							<span style="font-weight: bold">{{ event.name|e }}</span><br>
+							{{ event.start_time|parse_fb_timestamp|date_human_format }}<br>
+							{% if event.host %}
+								Hosted by {{ event.host }}<br>
+							{% endif %}
 
-								{% if event.loaded %}
-									ALREADY ADDED
-								{% endif %}
-								</div>
+							{% if event.loaded %}
+								ALREADY ADDED
+							{% endif %}
 							</div>
-							<div style="clear:both;height:15px;"></div>
 						</li>
 					{% endfor %}
 					</ul>

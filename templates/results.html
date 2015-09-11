@@ -43,33 +43,30 @@
 <div class="col-md-9">
 <div style="margin-bottom: 25px">
   <table><tr><td>
-  <div>
-  	<img id="penguin" src="/images/full_penguin_240.png" height="120" width="120">
-  </div>
+  	<img class="hidden-xs" id="penguin" src="/images/full_penguin_240.png" height="120" width="120">
   </td><td>
   <form id="search-form" class="form-inline" role="search" action="/">
-    <div style="font-weight: bold">Searching {{ total_events }} dance events worldwide:</div>
     <div class="form-group">
-      <label for="keywords_input">Keywords</label>
-      {# We don't use a placeholder on keyword field, since it interacts differently with bootstrap-tokentext #}
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="{{ defaults.keywords }}" class="form-control">
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="location_input">near location</label>
+      <div style="font-weight: bold">Where will you dance next?</div>
       <div class="input-group">
 		<span class="input-group-addon"><i class="fa fa-globe fa-fw"></i></span>
         <input id="location_input" type="text" name="location" placeholder="everywhere" value="{{ defaults.location }}" class="form-control">
       </div>
     </div>
+    <div class="form-group">
+      <div style="font-weight: bold">Looking for anything in particular?</div>
+      <div style="font-style: italic; font-size: 70%">You can enter a dance style, dancer, event name, or leave it blank!</div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="{{ defaults.keywords }}" class="form-control">
+      </div>
+    </div>
     {% if defaults.deb %}
 	    <input type="hidden" name="deb" value="{{ defaults.deb }}">
 	{% endif %}
-    <button type="submit" class="btn btn-default">
+    <button type="submit" class="btn btn-default btn-block" style="margin-top: 1em">
       <span class="glyphicon glyphicon-search"></span>
-      Search Events
+      Search our {{ total_events }} Events
     </button>
   {# maybe make a small hourglass icon search box ? 
    # $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
@@ -78,8 +75,13 @@
   </td></tr></table>
 </div>{# margin-bottom: 25px #}
 
+Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
+
+<hr>
+
 <div style="min-height:300px">
-<ul class="nav nav-tabs" data-tabs="tabs">
+
+<ul class="nav nav-tabs nav-justified" data-tabs="tabs">
 	<li
 	{% if selected_tab == 'past' %}
 		class="active"
@@ -149,7 +151,6 @@
 				{{ results.render_narrow_results(ongoing_results) }}
 			</div>
 		{% endif %}
-		<div style="clear:both;height:1px;"></div>
 	{% elif selected_tab == 'calendar' %}
 		<div id="calendar"></div>
 	{% endif %}

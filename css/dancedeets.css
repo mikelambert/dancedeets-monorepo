@@ -471,7 +471,6 @@ ul.feature-list {
 	overflow-y: scroll;
 	list-style-type: none;
 	padding: 0px;
-	border: 1px solid black;
 }
 #add-events li {
 	display: block;

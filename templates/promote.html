@@ -34,7 +34,7 @@ The event "{{ event.info.name|e }}" has the following problems:
 	<p>
 	<ul id="add-events">
 	{% for event in events %}
-		<li data-id="{{ event.id }}" class="
+		<li data-id="{{ event.id }}" style="margin-bottom: 15px" class="clearfix 
 			{% if event.loaded %}
 				ui-disabled
 			{% else %}
@@ -57,7 +57,6 @@ The event "{{ event.info.name|e }}" has the following problems:
 				{% endif %}
 				</div>
 			</div>
-			<div style="clear:both;height:15px;"></div>
 		</li>
 	{% endfor %}
 	</ul>
