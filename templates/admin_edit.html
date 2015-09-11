@@ -16,7 +16,7 @@ Edit Event
 			{% if fb_event.info.owner %}
 				(Owner: <a href="{{ dd_admin_source_url(fb_event.info.owner.id) }}">{{ fb_event.info.owner.name }}</a>
 				{%- if owner_location -%}
-				, Location: $owner_location
+				, Location: {{ owner_location }}
 				{% endif -%})
 			{% endif %}
 			<br><br>
