@@ -1,7 +1,9 @@
 2auce\W+edwards # ignore cj at front due to backtracking
 alan truong
 alex bullon
+alex fetbroth
 amanda suk
+amari marshall
 andi vega
 andrew baterina
 antoine troupe
@@ -13,12 +15,15 @@ bam\W+martin
 beau fournier
 brandon dumlao
 breeze lee
+brian friedman
 brian fucanan
 brian puspos
 bryan tanaka
 candace brown
 carlos neto
+cj salvador
 david moore,0
+denzel chisolm
 derrick caldwell
 devin jamieson
 dmoe
@@ -101,6 +106,7 @@ ricky cole
 rie hata
 rocko,0
 samath orm
+sean\W+fresh\W+redding
 shaun evaristo
 sherman soate
 sho-tyme
