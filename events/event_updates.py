@@ -58,8 +58,9 @@ def _inner_make_event_findable_for(db_event, fb_dict, update_geodata):
 
     if fb_dict['empty'] == fb_api.EMPTY_CAUSE_DELETED:
         # If this event has already past, don't allow it to be deleted. We want to keep history!
-        if db_event.end_time < datetime.datetime.now() - datetime.timedelta(days=2):
+        if db_event.end_time and db_event.end_time < datetime.datetime.now() - datetime.timedelta(days=2):
             return
+        # If we don't have a db_event.end_time, then we've got something messed up, so let's delete the event
         db_event.start_time = None
         db_event.end_time = None
         db_event.search_time_period = None
