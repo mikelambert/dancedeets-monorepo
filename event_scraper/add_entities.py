@@ -14,7 +14,7 @@ from . import thing_db
 class AddEventException(Exception):
     pass
 
-def add_update_event(fb_event, fbl, creating_uid=None, visible_to_uids=None, remapped_address=None, override_address=None, creating_method=None):
+def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, remapped_address=None, override_address=None, creating_method=None):
     if not fb_api.is_public_ish(fb_event):
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
 
@@ -30,12 +30,12 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_uids=None, rem
     if creating_method:
         e.creating_method = creating_method
 
-    if visible_to_uids is None:
+    if visible_to_fb_uids is None:
         if creating_uid is not None:
-            visible_to_uids = [creating_uid]
+            visible_to_fb_uids = [creating_uid]
         else:
-            visible_to_uids = []
-    e.visible_to_uids = visible_to_uids
+            visible_to_fb_uids = []
+    e.visible_to_fb_uids = visible_to_fb_uids
 
     event_updates.update_and_save_events([(e, fb_event)])
     thing_db.create_source_from_event(fbl, e)
