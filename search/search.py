@@ -12,9 +12,11 @@ from google.appengine.ext import ndb
 from google.appengine.api import search
 
 from events import eventdata
+import event_types
 from loc import gmaps_api
 from loc import math
 from nlp import categories
+import styles
 from util import dates
 from . import index
 from . import search_base
@@ -25,6 +27,8 @@ ALL_EVENTS_INDEX = 'AllEvents'
 FUTURE_EVENTS_INDEX = 'FutureEvents'
 
 MAX_EVENTS = 100000
+
+CATEGORY_LOOKUP = dict([(x.index_name, x.public_name) for x in styles.STYLES + event_types.EVENT_TYPES])
 
 class ResultsGroup(object): 
     def __init__(self, name, id, results, expanded, force=False): 
@@ -94,6 +98,7 @@ class DisplayEvent(ndb.Model):
             # The event_keywords are actually _BaseValue objects, not strings.
             # So they fail json serialization, and must be converted manually here.
             keywords = [unicode(x) for x in db_event.event_keywords]
+            categories = [unicode(x) for x in db_event.auto_categories]
             display_event.data = {
                 'name': db_event.fb_event['info'].get('name'),
                 'image': eventdata.get_event_image_url(db_event.fb_event),
@@ -104,7 +109,8 @@ class DisplayEvent(ndb.Model):
                 'lat': db_event.latitude,
                 'lng': db_event.longitude,
                 'attendee_count': db_event.attendee_count,
-                'keywords': keywords or [],
+                'categories': categories,
+                'keywords': keywords,
             }
             return display_event
         except:
@@ -141,6 +147,8 @@ class SearchResult(object):
         self.start_time = dates.parse_fb_start_time(fake_event)
         self.end_time = dates.parse_fb_end_time(fake_event)
         self.fake_end_time = dates.parse_fb_end_time(fake_event, need_result=True)
+        categories = display_event.data.get('categories', [])
+        self.categories = [CATEGORY_LOOKUP[x] for x in categories]
 
         self.rsvp_status = "unknown"
         # These are initialized in logic/friends.py
@@ -302,6 +310,8 @@ class SearchQuery(object):
             real_db_events = [None for x in ids]
 
             display_event_lookup = dict(zip(ids, DisplayEvent.get_by_ids(ids)))
+            # Uncomment this when we want to force DisplayEvent reloads off the existing DBEvent data
+            # display_event_lookup = dict(zip(ids, [None] * len(ids)))
             missing_ids = [x for x in display_event_lookup if not display_event_lookup[x]]
             if missing_ids:
                 dbevents = eventdata.DBEvent.get_by_ids(missing_ids)
@@ -310,6 +320,7 @@ class SearchQuery(object):
                     display_event = DisplayEvent.build(event)
                     if display_event:
                         objs_to_put.append(display_event)
+                        display_event_lookup[event.fb_event_id] = display_event
                     else:
                         logging.warning("Skipping event %s because no DisplayEvent", event.fb_event_id)
                 ndb.put_multi(objs_to_put)

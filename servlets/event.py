@@ -263,7 +263,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             auto_classified += 'notadd: %s.\n' % notadd_result[1]
 
         self.display['auto_classified_types'] = auto_classified
-        styles = categories.find_styles(fb_event)
+        styles = categories.find_styles(fb_event) + categories.find_event_types(fb_event)
         self.display['auto_categorized_types'] = ', '.join(x.public_name for x in styles)
 
         location_info = event_locations.LocationInfo(fb_event, db_event=e, debug=True)

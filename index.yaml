@@ -55,6 +55,11 @@ indexes:
 - kind: DBEvent
   properties:
   - name: search_time_period
+  - name: __scatter__
+
+- kind: DBEvent
+  properties:
+  - name: search_time_period
   - name: start_time
 
 - kind: FacebookCachedObject

@@ -403,13 +403,19 @@ EASY_BATTLE = Name('EASY_BATTLE', Any(
     u'잼', # korean jam
 ))
 
-EASY_EVENT = Name('EASY_EVENT', Any(
+EASY_CLUB = Any(
     'club', 'after\Wparty', 'pre\Wparty',
     u'클럽', # korean club
     u'クラブ',  # japanese club
+)
+EASY_SESSION = Any(
     'open sessions?',
     u'오픈 ?세션', # open session
     'training',
+)
+EASY_EVENT = Name('EASY_EVENT', Any(
+    EASY_CLUB,
+    EASY_SESSION,
 ))
 
 CONTEST = Name('CONTEST', Any(
@@ -421,11 +427,16 @@ CONTEST = Name('CONTEST', Any(
 PRACTICE = Name('PRACTICE', Any(
     'sesja', # polish session
     'sessions', 'practice',
+    'session', # the plural 'sessions' is handled up above under club-and-event keywords
+    u'セッション', # japanese session
+    u'練習会', # japanese training
+    u'練習', # japanese practice
     u'연습', # korean practice/runthrough
 ))
 
 PERFORMANCE = Name('PERFORMANCE', Any(
     'shows?', 'performances?',
+    'festival',
     'show\W?case',
     u'représentation', # french performance
     u'퍼포먼스', # korean performance
@@ -722,7 +733,6 @@ CLASS = Name('CLASS', Any(
     'klasser?', # norwegian class
     'cours', 'clases?',
     'camp',
-    'festival',
     'kamp',
     'kemp',
     u'캠프', # korean camp
@@ -751,12 +761,9 @@ AUDITION = Name('AUDITION', Any(
     u'綵排', # chinese rehearsal
 ))
 
+
 EVENT = Name('EVENT', Any(
     'open circles',
-    'session', # the plural 'sessions' is handled up above under club-and-event keywords
-    u'セッション', # japanese session
-    u'練習会', # japanese training
-    u'練習', # japanese practice
     'abdc', 'america\W?s best dance crew',
 ))
 

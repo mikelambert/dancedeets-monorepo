@@ -28,7 +28,13 @@
 				<meta itemprop="endDate" content="{{ result.end_time|datetime_format }}" />
 			{% endif %}
 
-			<div class="event-types">({{result.event_keywords_string()}})</div>
+			<div class="event-types">
+			{%- if indexing_bot -%}
+				({{ (result.categories+result.event_keywords)|join(', ') }})
+			{%- else -%}
+				({{ result.categories|join(', ') }})
+			{%- endif -%}
+			</div>
 			<div class="event-city">
 				{{result.actual_city_name}}
 				{{result.location_schema_html()}}
@@ -70,7 +76,13 @@
 				</a>
 				</h3>
 				<meta itemprop="url" content="{{ fb_event_url(result.fb_event_id) }}" />
-				<div class="event-types">({{ result.event_keywords_string() }})</div>
+				<div class="event-types">
+				{%- if indexing_bot -%}
+					({{ (result.categories+result.event_keywords)|join(', ') }})
+				{%- else -%}
+					({{ result.categories|join(', ') }})
+				{%- endif -%}
+				</div>
 				<div class="event-date">
 					<time itemprop="startDate" content="{{ result.start_time|datetime_format }}">{{ result.start_time|date_human_format }}</time>
 					{% if result.multi_day_event() and result.end_time %}

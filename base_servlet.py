@@ -76,6 +76,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         for arg in sorted(self.request.GET):
             logging.info("query %r = %r", arg, self.request.GET.getall(arg))
 
+        self.display['indexing_bot'] = 'googlebot' in self.request.user_agent.lower()
+
         logging.info("Appengine Request Headers:")
         for x in request.headers:
             if x.lower().startswith('x-appengine-'):
