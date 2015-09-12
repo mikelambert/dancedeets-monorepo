@@ -178,6 +178,29 @@ class BaseRequestHandler(BareBaseRequestHandler):
         response = facebook.get_user_from_cookie(request.cookies)
         return response['access_token'], response['access_token_expires']
 
+    def set_login_cookie(self, fb_cookie_uid, access_token_md5=None):
+        """Sets the user_login cookie that we use to track if the user is logged in.
+        Normally this is our authoritative reference, and if any discrepancies occur with the FB cookie,
+        we try to re-login as the FB cookie (which may or may not exist).
+
+        However, if the access_token_md5 is set, then we stay logged in as the user regardless,
+        which is a forcing-login function of sorts. This is used by the mobile apps,
+        to send the user to a logged-in page.
+        """
+        user_login_cookie = {
+            'uid': fb_cookie_uid,
+        }
+        if access_token_md5:
+            user_login_cookie['access_token_md5'] = access_token_md5
+        user_login_cookie['hash'] = generate_userlogin_hash(user_login_cookie)
+        user_login_string = urllib.quote(json.dumps(user_login_cookie))
+        logging.info("setting cookie response... to %s", user_login_string)
+        domain = self.request.host.replace('www.','.')
+        if ':' in domain:
+            domain = domain.split(':')[0]
+        #TODO: set_cookie() got an unexpected keyword argument 'expires'
+        self.response.set_cookie('user_login', user_login_string, max_age=30*24*60*60, path='/', domain=domain)
+
     def setup_login_state(self, request):
         #TODO(lambert): change fb api to not request access token, and instead pull it from the user
         # only request the access token from FB when it's been longer than a day, and do it out-of-band to fetch-and-update-db-and-memcache
@@ -201,6 +224,29 @@ class BaseRequestHandler(BareBaseRequestHandler):
             fb_cookie_uid = response['user_id']
         logging.info("fb cookie id is %s", fb_cookie_uid)
 
+        # If the mobile app sent the user to a /....?uid=XX&access_token_md5=YY URL,
+        # then let's verify the parameters, and log the user in as that user
+        if request.get('uid') and request.get('access_token_md5'):
+            user = users.User.get_by_id(request.get('uid'))
+            if request.get('access_token_md5') == hashlib.md5(user.fb_access_token).hexdigest():
+                # Authenticated! Now save cookie so subsequent requests can trust that this user is authenticated.
+                # The subsequent request will see a valid user_login param (though without an fb_cookie_uid)
+                self.set_login_cookie(request.get('uid'), access_token_md5=self.request.get('access_token_md5'))
+            # But regardless of whether the token was correct, let's redirect and get rid of these url params.
+            current_url_args = {}
+            for arg in sorted(self.request.GET):
+                if arg in ['uid', 'access_token_md5']:
+                    continue
+                current_url_args[arg] = [x.encode('utf-8') for x in self.request.GET.getall(arg)]
+            final_url = self.request.path + '?' + urllib.urlencode(current_url_args, doseq=True)
+            # Make sure we abort=True, since otherwise the caller will keep on running the initialize() code.
+            self.redirect(final_url, abort=True)
+            return
+
+        # Normally, our trusted source of login id is the FB cookie,
+        # though we may override it below in the case of access_token_md5
+        trusted_cookie_uid = fb_cookie_uid
+
         # Load our dancedeets logged-in user/state
         our_cookie_uid = None
         user_login_string = request.cookies.get('user_login', '')
@@ -208,23 +254,17 @@ class BaseRequestHandler(BareBaseRequestHandler):
             user_login_cookie = json.loads(urllib.unquote(user_login_string))
             if validate_hashed_userlogin(user_login_cookie):
                 our_cookie_uid = user_login_cookie['uid']
+                # If we have a browser cookie that's verified via access_token_md5,
+                # so let's trust it as authoritative here and ignore the fb cookie
+                if not trusted_cookie_uid and user_login_cookie.get('access_token_md5'):
+                    trusted_cookie_uid = our_cookie_uid
 
         # If the user has changed facebook users, let's automatically re-login at dancedeets
-        if fb_cookie_uid and fb_cookie_uid != our_cookie_uid:
-            user_login_cookie = {
-                'uid': fb_cookie_uid,
-            }
-            user_login_cookie['hash'] = generate_userlogin_hash(user_login_cookie)
-            user_login_string = urllib.quote(json.dumps(user_login_cookie))
-            logging.info("setting cookie response... to %s", user_login_string)
-            domain = request.host.replace('www.','.')
-            if ':' in domain:
-                domain = domain.split(':')[0]
-            #TODO: set_cookie() got an unexpected keyword argument 'expires'
-            self.response.set_cookie('user_login', user_login_string, max_age=30*24*60*60, path='/', domain=domain)
-            our_cookie_uid = fb_cookie_uid
+        if trusted_cookie_uid and trusted_cookie_uid != our_cookie_uid:
+            self.set_login_cookie(trusted_cookie_uid)
+            our_cookie_uid = trusted_cookie_uid
 
-        # Don't force-logout the user if there is a our_cookie_uid but not a fb_cookie_uid
+        # Don't force-logout the user if there is a our_cookie_uid but not a trusted_cookie_uid
         # The fb cookie probably expired after a couple hours, and we'd prefer to keep our users logged-in
 
         # Logged-out view, just return without setting anything up
@@ -236,7 +276,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         # If we have a user, grab the access token
         if self.user:
-            if fb_cookie_uid:
+            if trusted_cookie_uid:
                 # Long-lived tokens should last "around" 60 days, so let's refresh-renew if there's only 40 days left
                 if self.user.fb_access_token_expires:
                     token_expires_soon = (self.user.fb_access_token_expires - datetime.datetime.now()) < datetime.timedelta(days=40)
@@ -274,12 +314,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
                     self.user = None
                     self.access_token = None
                     return
-        elif fb_cookie_uid:
+        elif trusted_cookie_uid:
             # if we don't have a user but do have a token, the user has granted us permissions, so let's construct the user now
             try:
                 access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
             except facebook.AlreadyHasLongLivedToken:
-                logging.warning("Don't have user, just fb_cookie_id. And unable to get long lived token for the incoming request. Giving up and doing logged-out")
+                logging.warning("Don't have user, just trusted_cookie_uid. And unable to get long lived token for the incoming request. Giving up and doing logged-out")
                 self.fb_uid = None
                 self.access_token = None
                 self.user = None
@@ -305,8 +345,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 self.user = None
                 return
         else:
-            # no user, no fb_cookie_uid, but we have fb_uid from the user_login cookie
-            logging.error("We have a user_login cookie, but no user, and no fb_cookie_uid. Acting as logged-out")
+            # no user, no trusted_cookie_uid, but we have fb_uid from the user_login cookie
+            logging.error("We have a user_login cookie, but no user, and no trusted_cookie_uid. Acting as logged-out")
             self.fb_uid = None
             self.access_token = None
             self.user = None
