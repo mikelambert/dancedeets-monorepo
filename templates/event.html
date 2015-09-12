@@ -31,11 +31,10 @@
 
 <span itemprop="url" content="http://{{ full_hostname }}/events/{{ event.info.id }}/" />
 
-<div class="container-fluid">
 <div class="row">
-	{% if city_state_country %}
+	{% if displayable_event.city_state_country %}
 		<div class="col-xs-12" style="margin-bottom:15px">
-		See <a href="/?location={{ city_state_country }}">more events near {{ city_state_country }}</a>.
+		See <a href="/?location={{ displayable_event.city_state_country }}">more events near {{ displayable_event.city_state_country }}</a>.
 		{# for style in db_event.auto_categories
 		 #See <a href="/?keywords={{ style }}">more {{ style }} events</a>.<br>
 		 #end for
@@ -43,9 +42,10 @@
 		</div>
 	{% endif %}
 
-	<h1 class="event-page-title" itemprop="name">{{ event.info.name }}</h1>
-	</div>	
-</div>
+	<div class="col-xs-12">
+		<h1 class="event-page-title" itemprop="name">{{ event.info.name }}</h1>
+	</div>
+</div>	
 
 <div class="row">
 <div class="col-sm-5">
