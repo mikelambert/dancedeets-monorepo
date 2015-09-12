@@ -363,7 +363,8 @@ class AddHandler(base_servlet.BaseRequestHandler):
             self.add_error('missing event_url or event_id parameter')
 
         try:
-            fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
+            # Skip cache so we always get latest data for newly-added event
+            fb_event = self.fbl.get(fb_api.LookupEvent, event_id, allow_cache=False)
             add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.user.fb_uid, creating_method=eventdata.CM_USER)
         except Exception, e:
             self.add_error(str(e))
