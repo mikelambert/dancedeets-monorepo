@@ -345,12 +345,15 @@ def canonicalize_event_data(db_event, event_keywords):
     # We may have keywords from the search result that called us
     if event_keywords:
         annotations['dance_keywords'] = event_keywords
+        annotations['categories'] = event_keywords
     # or from the db_event associated with this
     elif db_event:
         annotations['dance_keywords'] = db_event.event_keywords
     # or possibly none at all, if we only received a fb_event..
     else:
         pass
+    if db_event: # TODO: When is this not true?
+        annotations['categories'] = search.humanize_categories(db_event.auto_categories)
 
     event_api['annotations'] = annotations
     # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only'

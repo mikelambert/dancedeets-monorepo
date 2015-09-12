@@ -30,6 +30,9 @@ MAX_EVENTS = 100000
 
 CATEGORY_LOOKUP = dict([(x.index_name, x.public_name) for x in styles.STYLES + event_types.EVENT_TYPES])
 
+def humanize_categories(categories):
+    return [CATEGORY_LOOKUP[x] for x in categories]
+
 class ResultsGroup(object): 
     def __init__(self, name, id, results, expanded, force=False): 
         self.name = name 
@@ -147,8 +150,7 @@ class SearchResult(object):
         self.start_time = dates.parse_fb_start_time(fake_event)
         self.end_time = dates.parse_fb_end_time(fake_event)
         self.fake_end_time = dates.parse_fb_end_time(fake_event, need_result=True)
-        categories = display_event.data.get('categories', [])
-        self.categories = [CATEGORY_LOOKUP[x] for x in categories]
+        self.categories = humanize_categories(display_event.data.get('categories', []))
 
         self.rsvp_status = "unknown"
         # These are initialized in logic/friends.py
