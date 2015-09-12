@@ -170,9 +170,10 @@ BROAD_STYLES[styles.BREAK] = ANY_BREAK_BROAD
 
 def format_as_search_query(text, broad=True):
     processed_text = event_classifier.StringProcessor(text)
-    styles_list = BROAD_STYLES if broad else STYLES
-    for style, rule in styles_list.iteritems():
-        replaced, count = processed_text.replace_with(rule, lambda x: 'categories:%s' % style.index_name)
+    category_list = EVENT_TYPES.copy()
+    category_list.update(BROAD_STYLES if broad else STYLES)
+    for category, rule in category_list.iteritems():
+        replaced, count = processed_text.replace_with(rule, lambda x: 'categories:%s' % category.index_name)
     return processed_text.text
 
 
