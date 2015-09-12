@@ -365,9 +365,16 @@ class AddHandler(base_servlet.BaseRequestHandler):
         try:
             fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
             add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.user.fb_uid, creating_method=eventdata.CM_USER)
-            self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
         except Exception, e:
             self.add_error(str(e))
+
+        if self.request.get('ajax'):
+            self.errors_are_fatal()
+            self.write_json_response({'success': True})
+            return
+        else:
+            self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
+
         self.errors_are_fatal()
 
         return self.redirect('/')
