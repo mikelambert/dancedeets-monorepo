@@ -43,45 +43,9 @@
 	text-align: right;
 }
 
-/* add the margins, and set up ourselves horizontally, where we automatically take up the space inside #cover-box-fill */
-#cover-box-outer {
-	overflow: hidden;
-	margin-left: auto;
-	margin-right: auto;
-	width: 80%;
-	/* give some space below the cover box for the event details */
-	margin-bottom: 15px;
-}
-/* fill up the entire space available to us horizontally, and "take up space" vertically, though our size will be off by some computations */
-#cover-box-fill {
-	display: block;
-	position: relative;
-	width: 100%;
-	padding-bottom: 37%; /* same ratio as facebook event page: (height/width) */;
-}
-#cover-box-fill::before {
-	background: url(/images/fade-dark.png) bottom left repeat-x;
-	z-index: 1; /* put background on top of image */
-	content: '';
-	height: 100%;
-	width: 100%;
-	position: absolute;
-}
-#cover-box-fill #cover-image {
-	position:absolute;
-}
-
 .event-page-title {
 	font-size: 2em;
 	font-weight: 500;
-}
-.event-page-title-on-cover {
-	padding-left: 10px;
-	position: absolute;
-	bottom: 0;
-	color: #fff;
-	text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
-	z-index: 1; /* so we are also on top of the image */
 }
 
 .responsive-map-wrapper {

@@ -43,44 +43,26 @@
 		</div>
 	{% endif %}
 
-	<div class="col-xs-12">
-	{% if displayable_event.cover_metadata %}
-		<div style="position: relative;">
-			<div id="cover-box-outer">
-				<a href="{{ displayable_event.largest_cover.source }}">
-					<div id="cover-box-fill">
-						<img id="cover-image" src="{{ displayable_event.largest_cover.source }}" itemprop="image"
-						{% if displayable_event.cover_metadata.offset_x %}
-							style="height: 100%; left: -{{ displayable_event.cover_metadata.offset_x }}"
-						{% else %}
-							{% if displayable_event.cover_metadata.offset_y %}
-								style="width: 100%; top: -{{ displayable_event.cover_metadata.offset_y }}"
-							{% else %}
-								style="width: 100%"
-							{% endif %}
-						{% endif %}
-						>
-						<h1 class="event-page-title event-page-title-on-cover" itemprop="name">{{ event.info.name }}</h1>
-					</div>
-				</a>
-			</div>
-		</div>
-	{% else %}
-		<h1 class="event-page-title" itemprop="name">{{ event.info.name }}</h1>
-	{% endif %}
+	<h1 class="event-page-title" itemprop="name">{{ event.info.name }}</h1>
 	</div>	
 </div>
 
 <div class="row">
-<div class="col-sm-4">
+<div class="col-sm-5">
+	{% if displayable_event.cover_metadata %}
+		<div style="position: relative; margin-bottom: 1em"><a href="{{ displayable_event.largest_cover.source }}">
+				<img src="{{ displayable_event.largest_cover.source }}" style="width: 100%" itemprop="image">
+		</a></div>
+	{% endif %}
+
 	<ul class="fa-ul event-ul">
 	{% if displayable_event.cover_metadata %}
 		<li><i class="fa-li fa fa-picture-o fa-lg"></i><b><a href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
 	{% endif %}
 	<li><i class="fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a href="{{ raw_fb_event_url(event.info.id) }}">See Event on Facebook</a></b></li>
-	<li><div class="product-social-links" style="padding-bottom:30px;padding-top:30px">
-		<div class="fb-share-button" data-layout="button"></div>
+	<li><div class="product-social-links" style="padding-bottom: 0 1em; height: 20px">
 		<a class="twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
+		<div class="fb-share-button" data-layout="button"></div>
 	</div></li>
 	<li><i class="fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
 	<time itemprop="startDate" content="{{ displayable_event.start_time|datetime_format }}">
@@ -131,7 +113,8 @@
 </div>
 
 {% if event.info.description %}
-	<div class="col-sm-8">
+	<div class="col-sm-7">
+		<h1 class="event-page-title visible-xs-block">{{ event.info.name }}</h1>
 		<div><b>Description:</b></div>
 		<span itemprop="description">
 			{{ event.info.description|format_html|linkify }}
