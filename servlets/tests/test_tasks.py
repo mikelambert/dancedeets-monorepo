@@ -58,11 +58,11 @@ class TestLoadEventAttending(TestTasks):
 
 class TestReloadFutureEvents(TestTasks):
     def runTest(self):
-        app.get('/tasks/reload_future_events?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
+        app.get('/tasks/reload_events?user_id=%s&event_ids=%s&time_period=%s' % (MIKE_ID, EVENT_ID, dates.TIME_FUTURE))
 
 class TestReloadPastEvents(TestTasks):
     def runTest(self):
-        app.get('/tasks/reload_future_events?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
+        app.get('/tasks/reload_events?user_id=%s&event_ids=%s&time_period=%s' % (MIKE_ID, EVENT_ID, dates.TIME_PAST))
 
 class TestTrackNewUserFriends(TestTasks):
     def runTest(self):

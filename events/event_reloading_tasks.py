@@ -77,24 +77,10 @@ class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
         load_fb_event_attending(self.fbl, db_events)
     post=get
 
-class ReloadPastEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
+class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         update_geodata = self.request.get('update_geodata') != '0'
         only_if_updated = self.request.get('only_if_updated') != '0'
-        mr_load_fb_events(self.fbl, time_period=dates.TIME_PAST, update_geodata=update_geodata, only_if_updated=only_if_updated)
-    post=get
-
-class ReloadFutureEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        update_geodata = self.request.get('update_geodata') != '0'
-        only_if_updated = self.request.get('only_if_updated') != '0'
-        mr_load_fb_events(self.fbl, time_period=dates.TIME_FUTURE, update_geodata=update_geodata, only_if_updated=only_if_updated)
-    post=get
-
-class ReloadAllEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        update_geodata = self.request.get('update_geodata') != '0'
-        only_if_updated = self.request.get('only_if_updated') != '0'
-        queue = self.request.get('queue', 'slow-queue')
-        mr_load_fb_events(self.fbl, update_geodata=update_geodata, only_if_updated=only_if_updated, queue=queue)
+        time_period = self.request.get('time_period', None)
+        mr_load_fb_events(self.fbl, time_period=time_period, update_geodata=update_geodata, only_if_updated=only_if_updated)
     post=get
