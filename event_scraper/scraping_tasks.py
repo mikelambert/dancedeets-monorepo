@@ -19,6 +19,11 @@ class ExportSourcesHandler(base_servlet.BaseTaskFacebookRequestHandler):
         queue = self.request.get('queue', 'fast-queue')
         thing_db.mapreduce_export_sources(self.fbl, queue=queue)
 
+class CountSourceStatsHandler(base_servlet.BaseTaskFacebookRequestHandler):
+    def get(self):
+        queue = self.request.get('queue', 'slow-queue')
+        thing_db.mr_count_potential_events(self.fbl, queue=queue)
+
 class LoadPotentialEventsForUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]

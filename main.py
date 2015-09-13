@@ -91,6 +91,7 @@ URLS = [
     ('/tasks/find_access_tokens_for_events', find_access_tokens.FindAccessTokensForEventsHandler),
     ('/tasks/find_events_needing_access_tokens', find_access_tokens.FindEventsNeedingAccessTokensHandler),
 
+    ('/tasks/count_source_stats', scraping_tasks.CountSourceStatsHandler),
     ('/tools/export_sources', scraping_tasks.ExportSourcesHandler),
     ('/tools/auto_add_potential_events', scraping_tasks.AutoAddPotentialEventsHandler),
     ('/tasks/load_all_potential_events', scraping_tasks.LoadAllPotentialEventsHandler),

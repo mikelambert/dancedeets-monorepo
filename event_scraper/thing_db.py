@@ -1,10 +1,13 @@
 import datetime
+import json
 import logging
 
 from google.appengine.ext import db
 from google.appengine.ext.mapreduce import json_util
-from mapreduce import control
+from mapreduce import mapreduce_pipeline
+from mapreduce import operation
 
+from events import eventdata
 import fb_api
 from loc import gmaps_api
 from nlp import event_classifier
@@ -28,58 +31,6 @@ GRAPH_TYPES = [
 FIELD_FEED = 'FIELD_FEED' # /feed
 FIELD_EVENTS = 'FIELD_EVENTS' # /events
 FIELD_INVITES = 'FIELD_INVITES' # fql query on invites for signed-up users
-
-
-def run_modify_transaction_for_key(key, func):
-    def inner_modify():
-        s = Source.get_by_key_name(key)
-        if not s:
-            return
-            #s = Source(key_name=key)
-        func(s)
-        s.put()
-    db.run_in_transaction(inner_modify)
-
-def increment_num_all_events(source_id):
-    def inc(s):
-        s.num_all_events = (s.num_all_events or 0) + 1
-    run_modify_transaction_for_key(source_id, inc)
-
-def increment_num_potential_events(source_id):
-    def inc(s):
-        s.num_potential_events = (s.num_potential_events or 0) + 1
-    run_modify_transaction_for_key(source_id, inc)
-
-def increment_num_real_events(source_id):
-    def inc(s):
-        s.num_real_events = (s.num_real_events or 0) + 1
-        s.street_dance_related = True
-    run_modify_transaction_for_key(source_id, inc)
-
-def increment_num_false_negatives(source_id):
-    def inc(s):
-        s.num_false_negatives = (s.num_false_negatives or 0) + 1
-    run_modify_transaction_for_key(source_id, inc)
-
-def increment_source_event_counters(source_id, potential_event, all_event, real_event, false_negative):
-    def inc(s):
-        if potential_event:
-            if not s.num_potential_events:
-                s.num_potential_events = 0
-            s.num_potential_events += 1
-        if all_event:
-            if not s.num_all_events:
-                s.num_all_events = 0
-            s.num_all_events += 1
-        if real_event:
-            if not s.num_real_events:
-                s.num_real_events = 0
-            s.num_real_events += 1
-        if false_negative:
-            if not s.num_false_negatives:
-                s.num_false_negatives = 0
-            s.num_false_negatives += 1
-    run_modify_transaction_for_key(source_id, inc)
 
 class Source(db.Model):
     graph_id = property(lambda x: str(x.key().name()))
@@ -240,55 +191,63 @@ def mapreduce_export_sources(fbl, queue='fast-queue'):
         queue=queue,
     )
 
-def map_clean_source_count(s):
-    s.num_all_events = 0
-    s.num_potential_events = 0
-    s.num_real_events = 0
-    s.num_false_negatives = 0
-    yield s.put()
 
-def map_count_potential_event(pe):
+def explode_per_source_count(pe):
     fbl = fb_mapreduce.get_fblookup()
     fb_event = fbl.get(fb_api.LookupEvent, pe.fb_event_id)
     if fb_event['empty']:
         return
-    classified_event = event_classifier.get_classified_event(fb_event, pe.language)
 
-    from events import eventdata
-    db_event = eventdata.DBEvent.get_by_id(pe.fb_event_id)
+    classified_event = event_classifier.get_classified_event(fb_event, pe.language)
     potential_event = classified_event.is_dance_event()
+
+    db_event = eventdata.DBEvent.get_by_id(pe.fb_event_id)
+
     for source_id in pe.source_ids:
         #STR_ID_MIGRATE
         source_id = str(source_id)
-        all_event = True
+        has_potential_event = potential_event != None
         real_event = db_event != None
-        false_negative = db_event and not classified_event.is_dance_event()
-        # TODO: NEED TO REWRITE THIS AS A PROPER MAP REDUCE TO AVOID TOO MANY INCREMENTS!!
-        increment_source_event_counters(source_id,
-            potential_event=potential_event,
-            all_event=all_event,
-            real_event=real_event,
-            false_negative=false_negative
-        )
+        false_negative = bool(db_event and not classified_event.is_dance_event())
+        result = (has_potential_event, real_event, false_negative)
+        yield (source_id, json.dumps(result))
 
-def mr_clean_source_counts():
-    control.start_map(
-        name='clean source counts',
-        reader_spec='mapreduce.input_readers.DatastoreInputReader',
-        handler_spec='event_scraper.thing_db.map_clean_source_count',
-        mapper_parameters={
-            'entity_kind': 'event_scraper.thing_db.Source',
-        },
-    )
+def combine_source_count(source_id, counts_to_sum):
+    s = Source.get_by_key_name(source_id)
+    if not s:
+        return
 
-def mr_count_potential_events(fbl):
-    fb_mapreduce.start_map(
-        fbl=fbl,
-        name='count potential events',
-        handler_spec='event_scraper.thing_db.map_count_potential_event',
-        entity_kind='event_scraper.potential_events.PotentialEvent'
+    print counts_to_sum
+    s.num_all_events = 0
+    s.num_potential_events = 0
+    s.num_real_events = 0
+    s.num_false_negatives = 0
+
+    for result in counts_to_sum:
+        (potential_event, real_event, false_negative) = json.loads(result)
+        s.num_all_events += 1
+        if potential_event:
+            s.num_potential_events += 1
+        if real_event:
+            s.num_real_events += 1
+        if false_negative:
+            s.num_false_negatives += 1
+    yield operation.db.Put(s)
+
+def mr_count_potential_events(fbl, queue):
+    mapper_params = {
+        'entity_kind': 'event_scraper.potential_events.PotentialEvent',
+    }
+    mapper_params.update(fb_mapreduce.get_fblookup_params(fbl))
+    pipeline = mapreduce_pipeline.MapreducePipeline(
+        'clean source counts',
+        'event_scraper.thing_db.explode_per_source_count',
+        'event_scraper.thing_db.combine_source_count',
+        'mapreduce.input_readers.DatastoreInputReader',
+        None,
+        mapper_params=mapper_params,
     )
-    
+    pipeline.start(queue_name=queue)
 
 """
 user:
