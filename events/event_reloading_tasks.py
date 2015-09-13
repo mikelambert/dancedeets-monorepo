@@ -20,14 +20,16 @@ def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated
     if fb_event:
         events_to_update.append((db_event, fb_event))
 
-def load_fb_events_using_backup_tokens(event_ids, only_if_updated, update_geodata):
+def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, update_geodata):
     db_events = eventdata.DBEvent.get_by_ids(event_ids)
     events_to_update = []
     for db_event in db_events:
         processed = False
-        logging.info("Looking for event id %s with user ids %s", db_event.fb_event_id, db_event.visible_to_fb_uids)
+        fbl = None
+        logging.info("Looking for event id %s with visible user ids %s", db_event.fb_event_id, db_event.visible_to_fb_uids)
         for user in users.User.get_by_ids(db_event.visible_to_fb_uids):
             fbl = fb_api.FBLookup(user.fb_uid, user.fb_access_token)
+            fbl.allow_cache = allow_cache
             real_fb_event = fbl.get(fb_api.LookupEvent, db_event.fb_event_id)
             if real_fb_event['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
                 add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
@@ -38,7 +40,8 @@ def load_fb_events_using_backup_tokens(event_ids, only_if_updated, update_geodat
             db_event.visible_to_fb_uids = []
             db_event.put()
             # Let's update the DBEvent as necessary (note, this uses the last-updated FBLookup)
-            add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
+            if fbl:
+                add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
     event_updates.update_and_save_events(events_to_update, update_geodata=update_geodata)
 
 
@@ -61,14 +64,16 @@ def yield_load_fb_event(fbl, db_events):
     for db_event in db_events:
         try:
             real_fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
-            if real_fb_event['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
+            # If it's an empty fb_event with our main access token, and we have other tokens we'd like to try...
+            if real_fb_event['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS and db_event.visible_to_fb_uids:
                 empty_fb_event_ids.append(db_event.fb_event_id)
             else:
+                # Otherwise if it's visible to our main token, or there are no other tokens to try, deal with it here.
                 add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
         except fb_api.NoFetchedDataException, e:
             logging.info("No data fetched for event id %s: %s", db_event.fb_event_id, e)
     # Now trigger off a background reloading of empty fb_events
-    deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, only_if_updated=only_if_updated, update_geodata=update_geodata)
+    deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, allow_cache=fbl.allow_cache, only_if_updated=only_if_updated, update_geodata=update_geodata)
     # And then re-save all the events in here
     event_updates.update_and_save_events(events_to_update, update_geodata=update_geodata)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
