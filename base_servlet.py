@@ -572,6 +572,9 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
 
         self.fb_uid = self.request.get('user_id')
+        if not self.fb_uid:
+            self.abort(400, 'Need valid user_id argument')
+            return
         self.user = users.User.get_by_id(self.fb_uid)
         if self.user:
             if not self.user.fb_access_token:
