@@ -6,8 +6,12 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 import datetime
+import urllib
+import urllib2
 
-from classes import models
+
+from classes import class_forms
+from wtforms.compat import iteritems
 
 class SaveStudioClassPipeline(object):
 
@@ -23,15 +27,9 @@ class SaveStudioClassPipeline(object):
         #studio.put()
 
     def process_item(self, item, spider):
-        studio_class = models.StudioClass()
-        studio_class.studio_name = spider.name
-        studio_class.source_page = item.source_page
-        studio_class.style = item.style
-        studio_class.teacher = item.teacher
-        studio_class.teacher_link = item.teacher_link
-        studio_class.start_time = item.start_time
-        studio_class.end_time = item.end_time
-        studio_class.scrape_time = self.scrape_time
-        studio_class.put()
+        form = class_forms.ClassForm(data=item)
+        form_dict = dict((name, f._value()) for name, f in iteritems(form._fields))
+        f = urllib2.urlopen('http://dev.dancedeets.com:8080/classes/upload', urllib.urlencode(form_dict))
+        print f.read()
 
         return item
