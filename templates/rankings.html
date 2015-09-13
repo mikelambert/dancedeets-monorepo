@@ -17,11 +17,11 @@ Rankings
 <form action="/rankings">
 Rankings over <select name="time_period" onchange="this.form.submit();">
 	{% for time_period in time_periods %}
-		<option value="$time_period"
+		<option value="{{ time_period }}"
 		{% if current_time_period == time_period %}
 			selected
 		{% endif %}
-		>{{string_translations[time_period] }}
+		>{{ string_translations[time_period] }}
 	{% endfor %}
 </select>
 </form>
@@ -36,15 +36,15 @@ Rankings over <select name="time_period" onchange="this.form.submit();">
 	>
 	{% if rank.url %}
 		<td>
-			<a href="$rank.url">{{ rank.city }}</a>
+			<a href="{{ rank.url }}">{{ rank.city }}</a>
 		</td><td>
-			<a href="$rank.url">{{ rank.count }}</a>
+			<a href="{{ rank.url }}">{{ rank.count }}</a>
 		</td>
 	{% else %}
 		<td>
-			$rank.city
+			{{ rank.city }}
 		</td><td>
-			$rank.count
+			{{ rank.count }}
 		</td>
 	{% endif %}
 	</tr>
