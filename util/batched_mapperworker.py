@@ -1,8 +1,8 @@
 import logging
 
 from mapreduce import context
-from mapreduce import handlers
 from mapreduce import input_readers
+from mapreduce import parameters
 
 from util import fixed_mappers
 
@@ -40,7 +40,7 @@ class BatchedMapperWorkerCallbackHandler(fixed_mappers.FixedMapperWorkerCallback
           return result
         return True
     # potentially end early even if we didn't process data, just so we have time to process pending all_data
-    if self._time() - self._start_time > handlers._SLICE_DURATION_SEC:
+    if self._time() - self._start_time > parameters.config._SLICE_DURATION_SEC:
       if batch_size and self.all_data:
         for i in range(len(self.all_data) - 1): # subtract one, due to the increment() inside super._process_datum
           ctx.counters.increment(context.COUNTER_MAPPER_CALLS)
