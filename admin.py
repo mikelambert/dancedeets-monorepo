@@ -5,6 +5,7 @@ from flask.ext.admin.contrib import appengine
 
 import keys
 
+from classes.models import StudioClass
 from events.eventdata import DBEvent
 from events.event_locations import LocationMapping
 from event_scraper.potential_events import PotentialEvent
@@ -23,7 +24,7 @@ app.debug = True
 app.secret_key = keys.get('flask_session_key')
 
 admin = Admin(app, name="Admin")
-for model in [CachedGeoCode, City, DBEvent, DisplayEvent, FacebookCachedObject, GeoCode, LocationMapping, OAuthToken, PotentialEvent, Source, Topic, User, UserFriendsAtSignup, UserMessage]:
+for model in [CachedGeoCode, City, DBEvent, DisplayEvent, FacebookCachedObject, GeoCode, LocationMapping, OAuthToken, PotentialEvent, Source, StudioClass, Topic, User, UserFriendsAtSignup, UserMessage]:
     admin.add_view(appengine.ModelView(model))
 
 
