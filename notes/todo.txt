@@ -9,7 +9,7 @@ BEFORE LAUNCH:
 - Set up forums using Cloud SQL? https://code.google.com/apis/sqlservice/
 http://groups.google.com/group/google-cloud-sql-discuss
 
-- If we port to EC2, use http://appscale.cs.ucsb.edu/appengine.html
+- If we port to EC2, use http://appscale.cs.ucsb.edu/appengine.html or typhoonae
 
 - Ensure this matches:
 http://www.dancedeets.com/events/admin_edit?event_id=206267406110368
