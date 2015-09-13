@@ -97,8 +97,9 @@ class FindAccessTokensForEventsHandler(base_servlet.BaseTaskRequestHandler):
             pipeline.start(queue_name='slow-queue')
     post=get
 
-def map_events_needing_access_tokens(db_events):
+def map_events_needing_access_tokens(all_db_events):
     fbl = fb_mapreduce.get_fblookup()
+    db_events = [x for x in all_db_events if not x.visible_to_fb_uids]
     try:
         fb_events = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
     except fb_api.ExpiredOAuthToken:
