@@ -1,4 +1,11 @@
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
+
 from hacks import fixed_ndb
+from hacks import fixed_mapreduce_util
+
+fixed_mapreduce_util.patch_function()
 
 # Disabled for now
 fixed_ndb.patch_logging(0)
