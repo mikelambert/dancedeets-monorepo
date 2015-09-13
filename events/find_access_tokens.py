@@ -1,13 +1,19 @@
 import logging
 
+import cloudstorage
+
 from mapreduce import base_handler
 from mapreduce import context
+from mapreduce import mapper_pipeline
 from mapreduce import mapreduce_pipeline
+from mapreduce import pipeline_base
+from mapreduce import util
 
 import base_servlet
 import fb_api
 from . import eventdata
 from . import event_updates
+from util import fb_mapreduce
 
 def test_user_on_events(user):
     logging.info("Trying user %s (expired %s)", user.fb_uid, user.expired_oauth_token)
@@ -45,7 +51,7 @@ def save_valid_users_to_event(event_id, user_ids):
         return
     db_event.visible_to_fb_uids = user_ids
     db_event.put()
-    yield '%s: %s' % (event_id, ','.join(user_ids))
+    yield '%s: %s\n' % (event_id, ','.join(user_ids))
 
 
 class FindAccessTokensForEventsPipeline(base_handler.PipelineBase):
@@ -86,4 +92,100 @@ class FindAccessTokensForEventsHandler(base_servlet.BaseTaskRequestHandler):
         if event_ids:
             pipeline = FindAccessTokensForEventsPipeline(real_event_ids)
             pipeline.start()
+    post=get
+
+def map_events_needing_access_tokens(db_events):
+    fbl = fb_mapreduce.get_fblookup()
+    try:
+        fb_events = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
+    except fb_api.ExpiredOAuthToken:
+        # Not longer a valid source for access_tokens
+        logging.exception("ExpiredOAuthToken")
+    for db_event, fb_event in zip(db_events, fb_events):
+        if fb_event['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
+            yield '%s\n' % db_event.fb_event_id
+
+def file_identity(x):
+    result = x.read()
+    yield result
+
+class CombinerPipeline(pipeline_base._OutputSlotsMixin,
+                     pipeline_base.PipelineBase):
+  output_names = mapper_pipeline.MapperPipeline.output_names
+
+  def run(self,
+          job_name,
+          reducer_spec,
+          bucket_name,
+          filenames):
+    filenames_only = (
+        util.strip_prefix_from_items("/%s/" % bucket_name, filenames))
+    params = {
+        "output_writer": {
+            "bucket_name": bucket_name,
+            "content_type": "text/plain",
+        },
+        "input_reader": {
+            "bucket_name": bucket_name,
+            "objects": filenames_only,
+        }
+    }
+    yield mapper_pipeline.MapperPipeline(
+        job_name + "-combine",
+        'events.find_access_tokens.file_identity',
+        'mapreduce.input_readers.GoogleCloudStorageInputReader',
+        'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
+        params,
+        shards=1)
+
+
+class PassFileToAccessTokenFinder(pipeline_base._OutputSlotsMixin,
+                     pipeline_base.PipelineBase):
+  output_names = mapper_pipeline.MapperPipeline.output_names
+
+  def run(self, filenames):
+    handle = cloudstorage.open(filenames[0])
+    event_ids = handle.read().split('\n')
+    handle.close()
+    yield FindAccessTokensForEventsPipeline(event_ids)
+
+class FindEventsNeedingAccessTokensPipeline(base_handler.PipelineBase):
+
+    def run(self, fbl_json):
+        time_filters = []
+        bucket_name = 'dancedeets-hrd.appspot.com'
+        params = {
+            'entity_kind': 'events.eventdata.DBEvent',
+            'filters': time_filters,
+            'handle_batch_size': 20,
+            'output_writer': {
+                'bucket_name': bucket_name,
+                'content_type': 'text/plain',
+            }
+        }
+        params.update(fbl_json)
+        # This should use cache, so we can go faster
+        find_events_needing_access_tokens = (
+            yield mapper_pipeline.MapperPipeline(
+                'Find valid events needing access_tokens',
+                'events.find_access_tokens.map_events_needing_access_tokens',
+                'mapreduce.input_readers.DatastoreInputReader',
+                'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
+                params=params,
+                shards=10,
+            ))
+        # This will be a single shard
+        single_file_of_fb_events = yield CombinerPipeline(
+            "Combine event lists into single file",
+            bucket_name,
+            find_events_needing_access_tokens)
+        # This will use more shards
+        yield PassFileToAccessTokenFinder(
+            single_file_of_fb_events)
+
+
+class FindEventsNeedingAccessTokensHandler(base_servlet.BaseTaskFacebookRequestHandler):
+    def get(self):
+        pipeline = FindEventsNeedingAccessTokensPipeline(fb_mapreduce.get_fblookup_params(self.fbl))
+        pipeline.start()
     post=get

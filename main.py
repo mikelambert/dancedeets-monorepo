@@ -89,6 +89,7 @@ URLS = [
     ('/tasks/load_event_attending', event_reloading_tasks.LoadEventAttendingHandler),
     ('/tasks/reload_events', event_reloading_tasks.ReloadEventsHandler),
     ('/tasks/find_access_tokens_for_events', find_access_tokens.FindAccessTokensForEventsHandler),
+    ('/tasks/find_events_needing_access_tokens', find_access_tokens.FindEventsNeedingAccessTokensHandler),
 
     ('/tools/export_sources', scraping_tasks.ExportSourcesHandler),
     ('/tools/auto_add_potential_events', scraping_tasks.AutoAddPotentialEventsHandler),

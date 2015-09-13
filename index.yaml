@@ -80,6 +80,11 @@ indexes:
 - kind: PotentialEvent
   properties:
   - name: looked_at
+  - name: __scatter__
+
+- kind: PotentialEvent
+  properties:
+  - name: looked_at
   - name: match_score
 
 - kind: PotentialEvent
@@ -107,6 +112,12 @@ indexes:
   - name: match_score
     direction: desc
 
+- kind: PotentialEvent
+  properties:
+  - name: looked_at
+  - name: should_look_at
+  - name: __scatter__
+
 - kind: User
   properties:
   - name: __key__
@@ -132,5 +143,11 @@ indexes:
 - kind: _AE_MR_MapreduceState
   properties:
   - name: result_status
+  - name: start_time
+    direction: desc
+
+- kind: _AE_Pipeline_Record
+  properties:
+  - name: is_root_pipeline
   - name: start_time
     direction: desc
