@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block inner_body %}
-<img src="http://graph.facebook.com/$profile_username/picture?type=large">
+<img src="http://graph.facebook.com/{{ profile_username }}/picture?type=large">
 <p>
 {% for video_tag in video_tags %}
 	{{ video_tag.get_video_embed() }}<br>
