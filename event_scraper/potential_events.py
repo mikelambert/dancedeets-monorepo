@@ -164,11 +164,14 @@ def make_potential_event_with_source(fb_event, discovered):
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", fb_event_id, e)
     potential_event = PotentialEvent.get_by_key_name(fb_event_id)
+
     # potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
     if new_source:
+        s = thing_db.Source.get_by_key_name(discovered.source_id)
         #TODO(lambert): doesn't handle the case of the match score increasing from <0 to >0 in the future
         if match_score > 0:
-            thing_db.increment_num_potential_events(discovered.source_id)
-        thing_db.increment_num_all_events(discovered.source_id)
+            s.num_potential_events = (s.num_potential_events or 0) + 1
+        s.num_all_events = (s.num_all_events or 0) + 1
+        s.put()
     return potential_event
 
