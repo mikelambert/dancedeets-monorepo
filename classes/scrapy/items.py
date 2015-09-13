@@ -21,5 +21,7 @@ class ClassItem(scrapy.Item):
 
 StripAndCombine = processors.Compose(processors.MapCompose(string.strip), processors.Join(' '), processors.MapCompose(string.strip))
 class ClassLoader(loader.ItemLoader):
+    default_output_processor = processors.TakeFirst()
+
     teacher_in = StripAndCombine
     style_in = StripAndCombine

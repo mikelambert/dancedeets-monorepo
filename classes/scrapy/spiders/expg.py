@@ -19,7 +19,9 @@ class EXPG(scrapy.Spider):
         table = response.css('div.schedule_container')
         for day_block in table.css('li.schedule_span'):
             day = day_block.css('.sdl_span_ttl').xpath('./text()').extract()[0]
-            date = dateparser.parse(day)
+            if day == 'CLASSES':
+                continue
+            date = dateparser.parse(day).date()
             if date < datetime.date.today():
                 date += datetime.timedelta(days=7)
             for schedule_block in day_block.css('li.timetable_cell_wp'):

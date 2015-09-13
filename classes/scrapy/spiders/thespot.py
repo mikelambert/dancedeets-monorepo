@@ -58,7 +58,6 @@ class TheSpotDanceCenter(scrapy.Spider):
                     duration = item['end_time'] - item['start_time']
                     for recurrance in rrule:
                         newitem = item.copy()
-                        print recurrance
                         newitem['start_time'] = recurrance
                         newitem['end_time'] = recurrance + duration
                         yield newitem

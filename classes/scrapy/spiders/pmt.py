@@ -47,7 +47,7 @@ class PMTHouseOfDance(scrapy.Spider):
                 # Hack fix for broken PMT site
                 if day == 'onday':
                     day = 'Monday'
-                date = dateparser.parse(day)
+                date = dateparser.parse(day).date()
                 if date < datetime.date.today():
                     date += datetime.timedelta(days=7)
             item = items.ClassItem()
