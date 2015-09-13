@@ -9,6 +9,7 @@ from loc import gmaps_api
 from loc import math
 from logic import friends
 from logic import rsvp
+from users import users
 from util import dates
 from util import fb_mapreduce
 from util import urls
@@ -16,6 +17,10 @@ from . import search
 
 def email_for_user(user, fbl, should_send=True):
     if not user.send_email or not user.email:
+        return
+    if user.weekly_email_send_date and user.weekly_email_send_date > datetime.datetime.now() - datetime.timedelta(days=3):
+        logging.warning("Skipping user %s (%s) because last weekly email was sent on %s", user.fb_uid, user.full_name, user.weekly_email_send_date)
+        # Sent the weekly email too recently, let's abort
         return
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
     if not 'profile' in fb_user:
@@ -74,6 +79,11 @@ def email_for_user(user, fbl, should_send=True):
         html=rendered
     )
     if should_send:
+        # Update the last-sent-time here, so we any retryable errors don't cause emails to be multi-sent
+        user = users.User.get_by_id(user.fb_uid)
+        user.weekly_email_send_date = datetime.datetime.now()
+        user.put()
+        # And send the message now.
         message.send()
     return message
 

@@ -55,6 +55,8 @@ class User(ndb.Model):
     locale = ndb.StringProperty(indexed=False)
     timezone_offset = ndb.FloatProperty(indexed=False)
 
+    weekly_email_send_date = ndb.DateTimeProperty(indexed=False)
+
     def distance_in_km(self):
         if not self.distance:
             return 0
