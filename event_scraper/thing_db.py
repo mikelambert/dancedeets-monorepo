@@ -193,23 +193,16 @@ def mapreduce_export_sources(fbl, queue='fast-queue'):
 
 
 def explode_per_source_count(pe):
-    fbl = fb_mapreduce.get_fblookup()
-    fb_event = fbl.get(fb_api.LookupEvent, pe.fb_event_id)
-    if fb_event['empty']:
-        return
-
-    classified_event = event_classifier.get_classified_event(fb_event, pe.language)
-    potential_event = classified_event.is_dance_event()
-
     db_event = eventdata.DBEvent.get_by_id(pe.fb_event_id)
+
+    is_potential_event = pe.match_score > 0
+    real_event = db_event != None
+    false_negative = bool(db_event and not is_potential_event)
+    result = (is_potential_event, real_event, false_negative)
 
     for source_id in pe.source_ids:
         #STR_ID_MIGRATE
         source_id = str(source_id)
-        has_potential_event = potential_event != None
-        real_event = db_event != None
-        false_negative = bool(db_event and not classified_event.is_dance_event())
-        result = (has_potential_event, real_event, false_negative)
         yield (source_id, json.dumps(result))
 
 def combine_source_count(source_id, counts_to_sum):
@@ -217,7 +210,6 @@ def combine_source_count(source_id, counts_to_sum):
     if not s:
         return
 
-    print counts_to_sum
     s.num_all_events = 0
     s.num_potential_events = 0
     s.num_real_events = 0
