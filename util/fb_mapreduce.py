@@ -11,13 +11,10 @@ def start_map(fbl, name, handler_spec, entity_kind, filters=None, handle_batch_s
     mapper_params = {
         'entity_kind': entity_kind,
         'handle_batch_size': handle_batch_size,
-        'fbl_fb_uid': fbl.fb_uid,
-        'fbl_access_token': fbl.access_token,
-        'fbl_allow_cache': fbl.allow_cache,
-        'fbl_force_updated': fbl.force_updated,
         'filters': filters,
         'output_writer': output_writer,
     }
+    mapper_params.update(get_fblookup_params(fbl))
     mapper_params.update(extra_mapper_params)
     control.start_map(
         name=name,
@@ -40,6 +37,13 @@ def get_fblookup(user=None):
     fbl.force_updated = params['fbl_force_updated']
     return fbl
 
+def get_fblookup_params(fbl):
+    return {
+        'fbl_fb_uid': fbl.fb_uid,
+        'fbl_access_token': fbl.access_token,
+        'fbl_allow_cache': fbl.allow_cache,
+        'fbl_force_updated': fbl.force_updated,
+    }
 
 def mr_wrap(func):
     if util.is_generator(func):
