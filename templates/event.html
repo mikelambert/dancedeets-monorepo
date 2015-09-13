@@ -83,7 +83,7 @@
 	<li><i class="fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
 	<div>
 	{% if displayable_event.location_name %}
-		{% if event.info.venue.id %}
+		{% if event.info.venue and event.info.venue.id %}
 			<a href="https://www.facebook.com/{{ event.info.venue.id }}">{{ displayable_event.location_name }}</a>
 		{% else %}
 			{{ displayable_event.location_name }}
