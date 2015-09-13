@@ -28,6 +28,7 @@ if not prod_mode:
 
 logging.info("Begin servlets")
 import base_servlet
+from classes import class_servlets
 from event_scraper import source_servlets
 from event_scraper import scraping_tasks
 from events import event_reloading_tasks
@@ -104,6 +105,7 @@ URLS = [
 
     ('/tasks/refresh_source_index', search_source.RefreshSourceSearchIndex),
 
+    ('/classes/upload', class_servlets.ClassUploadHandler),
     ('/', search_servlets.RelevantHandler),
     ('/pages/search', search_servlets.RelevantPageHandler),
     ('/_ah/warmup', DoNothingHandler),
@@ -171,4 +173,3 @@ if prod_mode:
 application = webapp2.WSGIApplication(URLS)
 application.debug = True
 application.prod_mode = prod_mode
-
