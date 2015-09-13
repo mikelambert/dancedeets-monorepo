@@ -91,7 +91,7 @@ class FindAccessTokensForEventsHandler(base_servlet.BaseTaskRequestHandler):
         logging.info("Passed IDs %s, going to run mapreduce search with IDs %s", event_ids, real_event_ids)
         if event_ids:
             pipeline = FindAccessTokensForEventsPipeline(real_event_ids)
-            pipeline.start()
+            pipeline.start(queue_name='slow-queue')
     post=get
 
 def map_events_needing_access_tokens(db_events):
@@ -115,7 +115,6 @@ class CombinerPipeline(pipeline_base._OutputSlotsMixin,
 
   def run(self,
           job_name,
-          reducer_spec,
           bucket_name,
           filenames):
     filenames_only = (
@@ -191,5 +190,5 @@ class FindEventsNeedingAccessTokensHandler(base_servlet.BaseTaskFacebookRequestH
         else:
             filters = []
         pipeline = FindEventsNeedingAccessTokensPipeline(fb_mapreduce.get_fblookup_params(self.fbl), filters)
-        pipeline.start()
+        pipeline.start(queue_name='slow-queue')
     post=get
