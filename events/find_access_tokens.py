@@ -19,6 +19,9 @@ def test_user_on_events(user):
     logging.info("Trying user %s (expired %s)", user.fb_uid, user.expired_oauth_token)
     if user.expired_oauth_token:
         return
+    # TODO: Relies on us keeping these up to date!
+    if not user.num_auto_added_events and not user.num_hand_added_events:
+        return
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
     event_ids = params['event_ids'].split(',')
@@ -102,7 +105,7 @@ def map_events_needing_access_tokens(db_events):
         # Not longer a valid source for access_tokens
         logging.exception("ExpiredOAuthToken")
     for db_event, fb_event in zip(db_events, fb_events):
-        if fb_event['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
+        if fb_event['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
             yield '%s\n' % db_event.fb_event_id
 
 def file_identity(x):
