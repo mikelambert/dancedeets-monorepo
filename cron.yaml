@@ -31,13 +31,6 @@ cron:
   url: /_ereporter?sender=mlambert@gmail.com&to=mlambert@gmail.com
   schedule: every day 00:00
   timezone: America/Los_Angeles
-- description: clear and email memcache timings
-  url: /tasks/timings_process_day?to=mlambert@gmail.com&sender=mlambert@gmail.com
-  schedule: every day 00:00
-  timezone: America/Los_Angeles
-- description: keepalive memcache timings
-  url: /tasks/timings_keep_alive
-  schedule: every 20 minutes
 - description: auto-add events daily
   url: /tools/auto_add_potential_events?user_id=701004&past_event=0
   schedule: every 3 hours

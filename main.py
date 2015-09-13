@@ -104,8 +104,6 @@ URLS = [
 
     ('/tasks/refresh_source_index', search_source.RefreshSourceSearchIndex),
 
-    ('/tasks/timings_keep_alive', tasks.TimingsKeepAlive),
-    ('/tasks/timings_process_day', tasks.TimingsProcessDay),
     ('/', search_servlets.RelevantHandler),
     ('/pages/search', search_servlets.RelevantPageHandler),
     ('/_ah/warmup', DoNothingHandler),

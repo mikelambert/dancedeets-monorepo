@@ -11,7 +11,6 @@ from mapreduce import context
 from mapreduce import operation
 
 from util import fb_mapreduce
-from util import timings
 from . import event_pipeline
 from . import potential_events
 from . import thing_db
@@ -52,7 +51,6 @@ def mr_delete_bad_sources():
     )
 
 
-@timings.timed
 def scrape_events_from_sources(fbl, sources):
     ctx = context.get()
     if ctx:

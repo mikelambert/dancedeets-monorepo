@@ -2,7 +2,6 @@ from mapreduce import control
 
 import base_servlet
 from util import dates
-from util import timings
 from . import pubsub
 
 
@@ -10,7 +9,6 @@ class SocialPublisherHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         pubsub.pull_and_publish_event()
 
-@timings.timed
 def yield_post_jp_event(db_events):
     from mapreduce import context
     ctx = context.get()

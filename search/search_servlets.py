@@ -8,7 +8,6 @@ from logic import friends
 from logic import rsvp
 from rankings import rankings
 from util import dates
-from util import timings
 from . import search
 from . import search_base
 from . import search_pages
@@ -25,7 +24,6 @@ class SearchHandler(base_servlet.BaseRequestHandler):
     def post(self, *args, **kwargs):
         self.handle(*args, **kwargs)
 
-    @timings.timed
     def handle(self, city_name=None):
         self.finish_preload()
         if self.user and not self.user.location:
@@ -141,7 +139,6 @@ class RelevantPageHandler(SearchHandler):
     def post(self, *args, **kwargs):
         self.handle(*args, **kwargs)
 
-    @timings.timed
     def handle(self, city_name=None):
         self.finish_preload()
         if self.user and not self.user.location:

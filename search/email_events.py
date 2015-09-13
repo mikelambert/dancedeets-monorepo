@@ -11,7 +11,6 @@ from logic import friends
 from logic import rsvp
 from util import dates
 from util import fb_mapreduce
-from util import timings
 from util import urls
 from . import search
 
@@ -79,7 +78,6 @@ def email_for_user(user, fbl, should_send=True):
     return message
 
 #TODO(lambert): do we really want yield on this one?
-@timings.timed
 def yield_email_user(fbl, user):
     fbl.request(fb_api.LookupUser, user.fb_uid)
     fbl.request(fb_api.LookupUserEvents, user.fb_uid)

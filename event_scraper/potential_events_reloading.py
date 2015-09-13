@@ -2,7 +2,6 @@ import logging
 
 import fb_api
 from util import fb_mapreduce
-from util import timings
 from . import scrape_user_potential_events
 
 def mr_load_potential_events(fbl):
@@ -13,7 +12,6 @@ def mr_load_potential_events(fbl):
         entity_kind='users.users.User',
     )
 
-@timings.timed
 def load_potential_events_for_user_ids(fbl, user_ids):
     user_events_list = fbl.get_multi(fb_api.LookupUserEvents, user_ids)
     # Since we've loaded the latest events from the user, allow future event lookups to come from cache

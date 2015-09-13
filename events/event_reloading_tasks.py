@@ -6,7 +6,6 @@ from mapreduce import context
 import base_servlet
 import fb_api
 from util import fb_mapreduce
-from util import timings
 from users import users
 from . import eventdata
 from . import event_updates
@@ -45,7 +44,6 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
     event_updates.update_and_save_events(events_to_update, update_geodata=update_geodata)
 
 
-@timings.timed
 def yield_load_fb_event(fbl, db_events):
     logging.info("loading db events %s", [db_event.fb_event_id for db_event in db_events])
     fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
@@ -80,7 +78,6 @@ map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
 
-@timings.timed
 def yield_load_fb_event_attending(fbl, db_events):
     fbl.get_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events])
 map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)

@@ -4,7 +4,6 @@ import logging
 import base_servlet
 import fb_api
 from util import fb_mapreduce
-from util import timings
 from . import users
 
 GET_FRIEND_APP_USERS = """
@@ -52,7 +51,6 @@ class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
     post=get
 
 
-@timings.timed
 def yield_load_fb_user(fbl, user):
     if user.expired_oauth_token:
         logging.info("Skipping user %s (%s) due to expired access_token", user.fb_uid, user.full_name)
