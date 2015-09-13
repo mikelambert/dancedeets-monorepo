@@ -151,12 +151,11 @@ class PassFileToAccessTokenFinder(pipeline_base._OutputSlotsMixin,
 
 class FindEventsNeedingAccessTokensPipeline(base_handler.PipelineBase):
 
-    def run(self, fbl_json):
-        time_filters = []
+    def run(self, fbl_json, filters):
         bucket_name = 'dancedeets-hrd.appspot.com'
         params = {
             'entity_kind': 'events.eventdata.DBEvent',
-            'filters': time_filters,
+            'filters': filters,
             'handle_batch_size': 20,
             'output_writer': {
                 'bucket_name': bucket_name,
@@ -186,6 +185,11 @@ class FindEventsNeedingAccessTokensPipeline(base_handler.PipelineBase):
 
 class FindEventsNeedingAccessTokensHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        pipeline = FindEventsNeedingAccessTokensPipeline(fb_mapreduce.get_fblookup_params(self.fbl))
+        time_period = self.request.get('time_period')
+        if time_period:
+            filters = [('search_time_period', '=', time_period)]
+        else:
+            filters = []
+        pipeline = FindEventsNeedingAccessTokensPipeline(fb_mapreduce.get_fblookup_params(self.fbl), filters)
         pipeline.start()
     post=get
