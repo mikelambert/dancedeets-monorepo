@@ -83,6 +83,7 @@ URLS = [
     ('/tools/delete_fb_cache', admin.DeleteFBCacheHandler),
     ('/tools/show_noowner_events', admin.ShowNoOwnerEventsHandler),
     ('/tools/fb_data', admin.FBDataHandler),
+    ('/tools/count_users_by_time', user_tasks.UserSignupsOverTimeHandler),
 
     ('/tasks/load_events', event_reloading_tasks.LoadEventHandler),
     ('/tasks/load_event_attending', event_reloading_tasks.LoadEventAttendingHandler),
