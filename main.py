@@ -54,8 +54,6 @@ from servlets import mobile_apps
 from servlets import privacy
 from servlets import promote
 from servlets import profile_page
-from servlets import share
-from servlets import tasks
 from servlets import tools
 from servlets import youtube_simple_api
 from topics import topic_servlets
@@ -139,7 +137,6 @@ URLS = [
 
     ('/login', login.LoginHandler),
     ('/mobile_apps', mobile_apps.MobileAppsHandler),
-    ('/share', share.ShareHandler),
     ('/about', about.AboutHandler),
     ('/privacy', privacy.PrivacyHandler),
     ('/help', feedback.HelpHandler),

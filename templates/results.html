@@ -10,6 +10,9 @@
     <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="{{ result_title }}" /> 
+    <meta property="og:site_name" content="DanceDeets"/>
+    <meta property="og:description"
+          content="Every street dance event. On the web, on your phone. At home, and when traveling."/>
 {% endblock %}
 
 
@@ -159,10 +162,10 @@ Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
 </div>{# row #}
 
 <div class="col-md-3">
-	<div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="190" data-action="like" data-show-faces="true" data-share="true" style="margin-bottom: 10px;"></div>
-	<p>
-	<a href="/share" class="btn btn-primary"><i class="fa fa-user-plus fa-lg"></i> Invite Dancers and Fans</a>
 	<a href="/events_add" class="btn btn-primary"><i class="fa fa-calendar-plus-o fa-lg"></i> Add Dance Event</a>
+	<button class="btn btn-primary" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
+	<div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="190" data-action="like" data-show-faces="true" style="margin: 10px 0;"></div>
+	<p>
 
 
 	<hr>
@@ -241,6 +244,14 @@ function initializeLocationAutocomplete() {
   var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
   autocomplete.setTypes(['(regions)'])
 }
+
+function share() {
+	FB.ui({
+		method: 'share',
+		href: 'https://www.dancedeets.com/',
+	}, function(response){}); 
+}
+
 </script>
 
 {{ results.results_bottom_javascript() }}
@@ -308,6 +319,7 @@ $(document).ready(function() {
 	$("img.lazy-narrow").show().lazyload({threshold : 500});
 	$("img.lazy-wide").show().lazyload({threshold : 500});
 });
+
 </script>
 {% endif %}
 {% endblock %}
