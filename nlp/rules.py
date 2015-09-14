@@ -68,7 +68,7 @@ DANCE_STYLE = Name('DANCE_STYLE',
 good_battle_dance = Any(GOOD_DANCE, keywords.HOUSE)
 ambiguous_battle_dance = Any(keywords.AMBIGUOUS_DANCE_MUSIC, keywords.EASY_DANCE, keywords.EASY_CHOREO)
 good_battle = Any(keywords.BATTLE, keywords.N_X_N, keywords.CONTEST)
-ambiguous_battle = Any(keywords.EASY_BATTLE)
+ambiguous_battle = Any(keywords.JAM)
 GOOD_DANCE_BATTLE = Name('GOOD_DANCE_BATTLE', Any(
     keywords.OBVIOUS_BATTLE,
     connected(keywords.BONNIE_AND_CLYDE, keywords.BATTLE),
@@ -180,7 +180,7 @@ ANY_GOOD = Name('ANY_GOOD', Any(
     EVENT,
     keywords.EVENT,
     keywords.EASY_EVENT,
-    keywords.EASY_BATTLE,
+    keywords.JAM,
     keywords.JUDGE,
     keywords.PRACTICE,
     keywords.PERFORMANCE,

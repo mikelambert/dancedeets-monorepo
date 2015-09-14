@@ -120,7 +120,7 @@ ANY_BATTLE = Any(
     keywords.JUDGE,
     keywords.OBVIOUS_BATTLE,
     keywords.BONNIE_AND_CLYDE,
-    keywords.EASY_BATTLE,
+    keywords.JAM,
     keywords.BATTLE,
     keywords.N_X_N,
     keywords.CONTEST,
@@ -137,6 +137,7 @@ ANY_WORKSHOP = Any(
 ANY_PARTY = Any(
     keywords.CYPHER,
     keywords.CLUB_ONLY,
+    keywords.JAM,
     keywords.VOGUE,
     keywords.EASY_CLUB,
 )

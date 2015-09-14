@@ -397,7 +397,7 @@ STREET = Name('STREET', Any(
     u'스트리트', # korean street
 ))
 
-EASY_BATTLE = Name('EASY_BATTLE', Any(
+JAM = Name('JAM', Any(
     'jams?', 
     'jamit', # finnish jams
     u'잼', # korean jam
