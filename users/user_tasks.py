@@ -74,12 +74,10 @@ map_load_fb_user = fb_mapreduce.mr_user_wrap(yield_load_fb_user)
 load_fb_user = fb_mapreduce.nomr_wrap(yield_load_fb_user)
 
 def explode_users_by_day(user):
-    print (user.creation_time.strftime('%Y-%m-%d'), 1)
     yield (user.creation_time.strftime('%Y-%m-%d'), 1)
 
 def sum_users_by_day(date, user_counts):
-    print date, user_counts
-    yield '%s: %s' % (date, len(user_counts))
+    yield '%s: %s\n' % (date, len(user_counts))
 
 class UserSignupsOverTimeHandler(base_servlet.BaseTaskRequestHandler):
 
@@ -99,6 +97,6 @@ class UserSignupsOverTimeHandler(base_servlet.BaseTaskRequestHandler):
                     'content_type': 'text/plain',
                 }
             },
-            shards=10,
+            shards=1,
         )
         pipeline.start()
