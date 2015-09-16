@@ -224,25 +224,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
             fb_cookie_uid = response['user_id']
         logging.info("fb cookie id is %s", fb_cookie_uid)
 
-        # If the mobile app sent the user to a /....?uid=XX&access_token_md5=YY URL,
-        # then let's verify the parameters, and log the user in as that user
-        if request.get('uid') and request.get('access_token_md5'):
-            user = users.User.get_by_id(request.get('uid'))
-            if request.get('access_token_md5') == hashlib.md5(user.fb_access_token).hexdigest():
-                # Authenticated! Now save cookie so subsequent requests can trust that this user is authenticated.
-                # The subsequent request will see a valid user_login param (though without an fb_cookie_uid)
-                self.set_login_cookie(request.get('uid'), access_token_md5=self.request.get('access_token_md5'))
-            # But regardless of whether the token was correct, let's redirect and get rid of these url params.
-            current_url_args = {}
-            for arg in sorted(self.request.GET):
-                if arg in ['uid', 'access_token_md5']:
-                    continue
-                current_url_args[arg] = [x.encode('utf-8') for x in self.request.GET.getall(arg)]
-            final_url = self.request.path + '?' + urllib.urlencode(current_url_args, doseq=True)
-            # Make sure we abort=True, since otherwise the caller will keep on running the initialize() code.
-            self.redirect(final_url, abort=True)
-            return
-
         # Normally, our trusted source of login id is the FB cookie,
         # though we may override it below in the case of access_token_md5
         trusted_cookie_uid = fb_cookie_uid
@@ -361,6 +342,26 @@ class BaseRequestHandler(BareBaseRequestHandler):
             deferred.defer(update_last_login_time, self.user.fb_uid, datetime.datetime.now(), _queue='slow-queue')
             backgrounder.load_users([self.fb_uid], allow_cache=False)
 
+    def handle_alternate_login(self, request):
+        # If the mobile app sent the user to a /....?uid=XX&access_token_md5=YY URL,
+        # then let's verify the parameters, and log the user in as that user
+        if request.get('uid') and request.get('access_token_md5'):
+            user = users.User.get_by_id(request.get('uid'))
+            if request.get('access_token_md5') == hashlib.md5(user.fb_access_token).hexdigest():
+                # Authenticated! Now save cookie so subsequent requests can trust that this user is authenticated.
+                # The subsequent request will see a valid user_login param (though without an fb_cookie_uid)
+                self.set_login_cookie(request.get('uid'), access_token_md5=self.request.get('access_token_md5'))
+            # But regardless of whether the token was correct, let's redirect and get rid of these url params.
+            current_url_args = {}
+            for arg in sorted(self.request.GET):
+                if arg in ['uid', 'access_token_md5']:
+                    continue
+                current_url_args[arg] = [x.encode('utf-8') for x in self.request.GET.getall(arg)]
+            final_url = self.request.path + '?' + urllib.urlencode(current_url_args, doseq=True)
+            # Make sure we abort=True, since otherwise the caller will keep on running the initialize() code.
+            return final_url
+        else:
+            return False
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
         self.run_handler = True
@@ -376,6 +377,13 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.debug_list = []
         logging.info("Debug list is %r", self.debug_list)
         login_url = '/login?%s' % urllib.urlencode(params)
+
+        redirect_url = self.handle_alternate_login(request)
+        if redirect_url:
+            self.run_handler = False
+            self.redirect(redirect_url)
+            return
+
         self.setup_login_state(request)
 
         self.display['attempt_autologin'] = 1
