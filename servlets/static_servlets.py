@@ -1,5 +1,3 @@
-from google.appengine.api import mail
-
 import app
 import base_servlet
 
