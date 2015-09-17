@@ -137,7 +137,8 @@ def explode_events_by_day(event):
         date = event.creation_time
     else:
         date = event.start_time
-    yield (date.strftime('%Y-%m-%d'), 1)
+    if date:
+        yield (date.strftime('%Y-%m-%d'), 1)
 
 def sum_events_by_day(date, event_counts):
     yield '%s: %s\n' % (date, len(event_counts))
