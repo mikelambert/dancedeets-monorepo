@@ -61,9 +61,11 @@ Add Dance Event
 
 {% block bottom_javascript %}
 <script type="text/javascript">
-	function myTest() {
+	function addEvent() {
 		var element = $(this);
 		var id = element.attr('id').replace('button-', '');
+
+		element.text('Adding...');
 		$.ajax({
 			method: 'POST',
 			url: '/events_add?ajax=1&event_id=' + id,
@@ -71,6 +73,8 @@ Add Dance Event
 			var liEvent = $('#event-' + id);
 			liEvent.addClass('ui-disabled');
 			liEvent.removeClass('ui-selectable').removeClass('ui-selected');
+		}).done(function () {
+			element.text('Add Event');
 		})
 		return false;
 	}
@@ -90,7 +94,7 @@ Add Dance Event
 			outerDiv.append($('<div class="whiten"></div>'));
 			outerDiv.append($('<button class="btn btn-primary" style="margin-left:60px; margin-top: 1.5em">Add Event</button>')
 				.attr('id', 'button-' + $(this).data('id'))
-				.on('click', myTest));
+				.on('click', addEvent));
 			$(this).append(outerDiv);
 			});
 		});
