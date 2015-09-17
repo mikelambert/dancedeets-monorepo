@@ -1,5 +1,6 @@
 import datetime
 
+import app
 import base_servlet
 from search import search
 from search import search_base
@@ -9,6 +10,7 @@ class LoginIfUnspecified(object):
     def requires_login(self):
         return False
 
+@app.route('/calendar/feed')
 class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()

@@ -3,6 +3,7 @@
 import logging
 import time
 
+import app
 import base_servlet
 from logic import friends
 from logic import rsvp
@@ -51,6 +52,8 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         self.display['user_selected_n_cities'] = user_selected_n_cities
         self.display['event_selected_n_cities'] = event_selected_n_cities
 
+@app.route('/')
+@app.route('/events/relevant')
 class RelevantHandler(SearchHandler):
     def handle_search(self, fe_search_query):
         validation_errors = fe_search_query.validation_errors()
@@ -113,6 +116,7 @@ class RelevantHandler(SearchHandler):
         self.display['CHOOSE_RSVPS'] = self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
         self.render_template('results')
 
+@app.route('/city/(.*)/?')
 class CityHandler(RelevantHandler):
     def requires_login(self):
         return False
@@ -126,7 +130,7 @@ class CityHandler(RelevantHandler):
         fe_search_query.distance_units = 'miles'
         self.handle_search(fe_search_query)
 
-
+@app.route('/pages/search')
 class RelevantPageHandler(SearchHandler):
     def requires_login(self):
         if not self.request.get('location') and not self.request.get('keywords'):

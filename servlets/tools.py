@@ -1,24 +1,18 @@
-#Leaving these in-but-commented-out for future ease-of-hacking:
 import logging
-#import time
 import webapp2
 from google.appengine.api import memcache
-#from google.appengine.ext import db
-#from google.appengine.ext import deferred
 
 from mapreduce import context
-#from mapreduce import control
 from mapreduce import operation as op
-#from mapreduce import util
 
-from event_scraper import thing_db
+import app
+import base_servlet
 from events import eventdata
 import fb_api
-#from logic import mr_dump
-#from logic import mr_prediction
 from util import dates
 
 
+@app.route('/tools/unprocess_future_events')
 class UnprocessFutureEventsHandler(webapp2.RequestHandler):
     def get(self):
         #TODO(lambert): reimplement if needed:
@@ -83,14 +77,14 @@ def mr_private_events(fbl):
         },
     )
 
-#webapp2.RequestHandler):#
-import base_servlet
+@app.route('/tools/oneoff')
 class OneOffHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         # thing_db.mr_count_potential_events(self.fbl)
         from search import search
         search.delete_from_fulltext_search_index(self.request.get('delete_event_id'))
 
+@app.route('/tools/owned_events')
 class OwnedEventsHandler(webapp2.RequestHandler):
     def get(self):
         db_events_query = eventdata.DBEvent.query(eventdata.DBEvent.owner_fb_uid==self.request.get('owner_id'))
@@ -103,6 +97,7 @@ class OwnedEventsHandler(webapp2.RequestHandler):
             real_fb_event = fb_event.decode_data()
             print db_event.tags, real_fb_event['info']['name']
 
+@app.route('/tools/clear_memcache')
 class ClearMemcacheHandler(webapp2.RequestHandler):
     def get(self):
         memcache.flush_all()

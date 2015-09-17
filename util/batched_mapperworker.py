@@ -1,5 +1,6 @@
 import logging
 
+import app
 from mapreduce import context
 from mapreduce import input_readers
 from mapreduce import parameters
@@ -8,6 +9,7 @@ from util import fixed_mappers
 
 # This file uses spaces instead of tabs, to make it easier to copy from the mapreduce/ code.
 
+@app.route('/mapreduce/worker_callback.*')
 class BatchedMapperWorkerCallbackHandler(fixed_mappers.FixedMapperWorkerCallbackHandler):
   def __init__(self, *args, **kwargs):
     super(BatchedMapperWorkerCallbackHandler, self).__init__(*args, **kwargs)

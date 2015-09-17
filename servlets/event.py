@@ -7,6 +7,7 @@ import urllib
 
 from google.appengine.ext import deferred
 
+import app
 import base_servlet
 from event_scraper import add_entities
 from event_scraper import potential_events
@@ -25,6 +26,7 @@ from util import urls
 
 PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
 
+@app.route('/events/rsvp_ajax')
 class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
     valid_rsvp = ['attending', 'maybe', 'declined']
 
@@ -47,7 +49,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
     def handle_error_response(self, errors):
         self.write_json_response(dict(success=False, errors=errors))
 
-
+@app.route('/events/redirect')
 class RedirectToEventHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
@@ -59,6 +61,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
             return
         return self.redirect(urls.fb_relative_event_url(event_id), permanent=True)
 
+@app.route(r'/events/\d+/?')
 class ShowEventHandler(base_servlet.BaseRequestHandler):
 
     def requires_login(self):
@@ -176,6 +179,7 @@ class DisplayableEvent(object):
     def longitude(self):
         return self.venue and self.venue.get('longitude')
 
+@app.route('/events/admin_edit')
 class AdminEditHandler(base_servlet.BaseRequestHandler):
     def show_barebones_page(self, fb_event_id):
         potential_event = potential_events.PotentialEvent.get_by_key_name(fb_event_id)
@@ -317,6 +321,7 @@ def get_id_from_url(url):
             return None
     return match.group(1)
 
+@app.route('/events_add')
 class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):
         fb_event = None
@@ -380,6 +385,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         return self.redirect('/')
 
+@app.route('/events/admin_nolocation_events')
 class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
         num_events = int(self.request.get('num_events', 100))
@@ -393,7 +399,7 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
         self.display['events'] = template_events
         self.render_template('admin_nolocation_events')
 
-
+@app.route('/events/admin_potential_events')
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
     def get(self):
 

@@ -6,11 +6,13 @@ from google.appengine.api import memcache
 from google.appengine.ext import db
 
 
+import app
 import base_servlet
 from events import eventdata
 import fb_api
 from util import urls
 
+@app.route('/tools/delete_fb_cache')
 class DeleteFBCacheHandler(webapp2.RequestHandler):
         def get(self):
                 self.response.headers['Content-Type'] = 'text/plain'
@@ -25,6 +27,7 @@ class DeleteFBCacheHandler(webapp2.RequestHandler):
                         self.response.out.write(repr(e)+'\n')
                         pass
 
+@app.route('/tools/fb_data')
 class FBDataHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
@@ -57,6 +60,7 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
         self.response.out.write('MemcacheJSON:\n%s\n\n' % json.dumps(memcache_result))
         self.response.out.write('DatabaseJSON:\n%s\n\n' % json.dumps(db_result and db_result.decode_data() or None))
 
+@app.route('/tools/show_noowner_events')
 class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
@@ -65,10 +69,4 @@ class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
         logging.info("found %s events", len(all_events))
         for e in all_events:
             self.response.out.write('<a href="%s">%s</a><br>\n' % (urls.raw_fb_event_url(e.fb_event_id), e.fb_event_id))
-
-class ClearMemcacheHandler(webapp2.RequestHandler):
-    def get(self):
-        memcache.flush_all()
-        self.response.out.write("Flushed memcache!")
-
 

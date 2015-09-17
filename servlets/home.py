@@ -1,3 +1,4 @@
+import app
 import base_servlet
 from rankings import rankings
 from search import search_base
@@ -10,6 +11,7 @@ def get_location(fb_user):
         facebook_location = None
     return facebook_location
 
+@app.route('/home')
 class HomeHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False

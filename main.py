@@ -26,148 +26,16 @@ if not prod_mode:
     from google.appengine.tools.devappserver2.python import sandbox
     sandbox._WHITE_LIST_C_MODULES += ['_ssl']
 
+# We import for the side-effects in adding routes to the wsgi app
 logging.info("Begin servlets")
-import base_servlet
-from classes import class_servlets
-from event_scraper import source_servlets
-from event_scraper import scraping_tasks
-from events import event_reloading_tasks
-from events import find_access_tokens
-from ml import gprediction_servlets
-from pubsub import pubsub_setup
-from pubsub import pubsub_tasks
-from rankings import rankings_servlets
-from search import search_servlets
-from search import search_tasks
-from search import style_servlets
-from search import search_source
-from servlets import about
-from servlets import admin
-from servlets import api
-from servlets import calendar
-from servlets import event
-from servlets import event_proxy
-from servlets import feedback
-from servlets import home
-from servlets import login
-from servlets import mobile_apps
-from servlets import privacy
-from servlets import promote
-from servlets import profile_page
-from servlets import tools
-from servlets import youtube_simple_api
-from topics import topic_servlets
-from users import user_event_tasks
-from users import user_servlets
-from users import user_tasks
-
-from util import batched_mapperworker
-
-logging.info("Finished modules")
-
-class DoNothingHandler(base_servlet.BareBaseRequestHandler):
-    def get(self):
-        from nlp import event_auto_classifier
-        logging.info("Loading regexes")
-        event_auto_classifier.build_regexes()
-        logging.info("Loaded regexes")
-        return
-
-URLS = [
-    ('/tools/download_training_data/([^/]+)?', gprediction_servlets.DownloadTrainingDataHandler),
-    ('/tools/generate_training_data', gprediction_servlets.GenerateTrainingDataHandler),
-    ('/tools/owned_events', tools.OwnedEventsHandler),
-    ('/tools/unprocess_future_events', tools.UnprocessFutureEventsHandler),
-    ('/tools/oneoff', tools.OneOffHandler),
-    ('/tools/clear_memcache', admin.ClearMemcacheHandler),
-    ('/tools/delete_fb_cache', admin.DeleteFBCacheHandler),
-    ('/tools/show_noowner_events', admin.ShowNoOwnerEventsHandler),
-    ('/tools/fb_data', admin.FBDataHandler),
-    ('/tools/count_users_by_time', user_tasks.UserSignupsOverTimeHandler),
-
-    ('/tasks/load_events', event_reloading_tasks.LoadEventHandler),
-    ('/tasks/load_event_attending', event_reloading_tasks.LoadEventAttendingHandler),
-    ('/tasks/reload_events', event_reloading_tasks.ReloadEventsHandler),
-    ('/tasks/find_access_tokens_for_events', find_access_tokens.FindAccessTokensForEventsHandler),
-    ('/tasks/find_events_needing_access_tokens', find_access_tokens.FindEventsNeedingAccessTokensHandler),
-
-    ('/tasks/count_source_stats', scraping_tasks.CountSourceStatsHandler),
-    ('/tools/export_sources', scraping_tasks.ExportSourcesHandler),
-    ('/tools/auto_add_potential_events', scraping_tasks.AutoAddPotentialEventsHandler),
-    ('/tasks/load_all_potential_events', scraping_tasks.LoadAllPotentialEventsHandler),
-    ('/tasks/load_potential_events_for_user', scraping_tasks.LoadPotentialEventsForUserHandler),
-    ('/tasks/load_potential_events_from_wall_posts', scraping_tasks.LoadPotentialEventsFromWallPostsHandler),
-
-    ('/tasks/email_all_users', search_tasks.EmailAllUsersHandler),
-    ('/tasks/email_user', search_tasks.EmailUserHandler),
-    ('/tasks/refresh_fulltext_search_index', search_tasks.RefreshFulltextSearchIndex),
-
-    ('/tasks/refresh_source_index', search_source.RefreshSourceSearchIndex),
-
-    ('/classes/upload', class_servlets.ClassUploadHandler),
-    ('/', search_servlets.RelevantHandler),
-    ('/pages/search', search_servlets.RelevantPageHandler),
-    ('/_ah/warmup', DoNothingHandler),
-    ('/tasks/compute_rankings', rankings_servlets.ComputeRankingsHandler),
-    ('/tools/import_cities', rankings_servlets.ImportCitiesHandler),
-    ('/rankings', rankings_servlets.RankingsHandler),
-    ('/events/admin_nolocation_events', event.AdminNoLocationEventsHandler),
-    ('/events/admin_potential_events', event.AdminPotentialEventViewHandler),
-    ('/events/admin_edit', event.AdminEditHandler),
-    ('/events/redirect', event.RedirectToEventHandler),
-    ('/events_add', event.AddHandler),
-    ('/events/relevant', search_servlets.RelevantHandler),
-    ('/events/rsvp_ajax', event.RsvpAjaxHandler),
-    ('/events/image_proxy/(\d+)', event_proxy.ImageProxyHandler),
-    (r'/events/\d+/?', event.ShowEventHandler),
-    (r'/style/([\w-]+)/?', style_servlets.ShowStyleHandler),
-    ('/city/(.*)/?', search_servlets.CityHandler),
-    ('/profile/[^/]*', profile_page.ProfileHandler),
-    ('/profile/[^/]*/add_tag', profile_page.ProfileAddTagHandler),
-    ('/youtube_simple_api', youtube_simple_api.YoutubeSimpleApiHandler),
-    ('/calendar/feed', calendar.CalendarFeedHandler),
-    ('/sources/admin_edit', source_servlets.AdminEditHandler),
-
-    ('/tasks/recompute_user_stats', user_event_tasks.RecomputeUserStatsHandler),
-    ('/tasks/track_newuser_friends', user_tasks.TrackNewUserFriendsHandler),
-    ('/tasks/load_users', user_tasks.LoadUserHandler),
-    ('/tasks/reload_all_users', user_tasks.ReloadAllUsersHandler),
-    ('/tools/show_users', user_servlets.ShowUsersHandler),
-    ('/tools/user_emails', user_servlets.UserEmailExportHandler),
-    ('/user/edit', user_servlets.UserHandler),
-
-    ('/login', login.LoginHandler),
-    ('/mobile_apps', mobile_apps.MobileAppsHandler),
-    ('/about', about.AboutHandler),
-    ('/privacy', privacy.PrivacyHandler),
-    ('/help', feedback.HelpHandler),
-    ('/promote', promote.PromoteHandler),
-
-    ('/feedback', feedback.FeedbackHandler),
-    ('/mapreduce/worker_callback.*', batched_mapperworker.BatchedMapperWorkerCallbackHandler),
-    ('/home', home.HomeHandler),
-
-    ('/topic/?', topic_servlets.TopicListHandler),
-    ('/topic/([^/]+)/?', topic_servlets.TopicHandler),
-    ('/topic_add', topic_servlets.AdminAddTopicHandler),
-
-    ('/tools/facebook_post', pubsub_setup.FacebookPostHandler),
-    ('/twitter/oauth_start', pubsub_setup.TwitterOAuthStartHandler),
-    ('/twitter/oauth_callback', pubsub_setup.TwitterOAuthCallbackHandler),
-    ('/twitter/oauth_success', pubsub_setup.TwitterOAuthSuccessHandler),
-    ('/twitter/oauth_failure', pubsub_setup.TwitterOAuthFailureHandler),
-    ('/facebook/page_start', pubsub_setup.FacebookPageSetupHandler),
-
-    ('/tasks/social_publisher', pubsub_tasks.SocialPublisherHandler),
-    ('/tasks/post_japan_events', pubsub_tasks.PostJapanEventsHandler),
-
-    ('/api/v\d+.\d+/events/\d+/?', api.EventHandler),
-    ('/api/v(\d+).(\d+)/search', api.SearchHandler),
-    ('/api/v\d+.\d+/auth', api.AuthHandler),
-]
+import all_servlets
+logging.info("Finished servlets")
 
 if prod_mode:
     ereporter.register_logger()
-application = webapp2.WSGIApplication(URLS)
-application.debug = True
-application.prod_mode = prod_mode
+
+from app import app
+app.debug = True
+app.prod_mode = prod_mode
+
+application = app

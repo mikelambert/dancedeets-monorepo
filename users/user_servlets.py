@@ -1,10 +1,12 @@
 import collections
 import csv
 
+import app
 import base_servlet
 import fb_api
 from . import users
 
+@app.route('/user/edit')
 class UserHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
@@ -53,6 +55,7 @@ class UserHandler(base_servlet.BaseRequestHandler):
         self.errors_are_fatal()
         user.put()
 
+@app.route('/tools/show_users')
 class ShowUsersHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
@@ -74,6 +77,7 @@ class ShowUsersHandler(base_servlet.BaseRequestHandler):
         self.display['track_google_analytics'] = False
         self.render_template('show_users')
 
+@app.route('/tools/user_emails')
 class UserEmailExportHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'

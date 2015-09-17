@@ -1,10 +1,12 @@
 from mapreduce import control
 
+import app
 import base_servlet
 from util import dates
 from . import pubsub
 
 
+@app.route('/tasks/social_publisher')
 class SocialPublisherHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         pubsub.pull_and_publish_event()
@@ -18,6 +20,7 @@ def yield_post_jp_event(db_events):
     for db_event in db_events:
         pubsub.eventually_publish_event(db_event.fb_event_id, token_nickname)
 
+@app.route('/tasks/post_japan_events')
 class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         token_nickname = self.request.get('token_nickname', None)

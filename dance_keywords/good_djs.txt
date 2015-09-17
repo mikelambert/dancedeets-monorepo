@@ -42,6 +42,7 @@ ruff cut djs # finland
 sabine blazin
 sachio\W+hi-score
 stephen rigmaiden
+still1
 sweater\W?funk
 tijo aimé
 timmy regisford

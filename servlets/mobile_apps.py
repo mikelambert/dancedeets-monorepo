@@ -1,9 +1,11 @@
+import app
 import base_servlet
 from logic import mobile
 from logic import sms
 from util import abbrev
 from util import country_dialing_codes
 
+@app.route('/mobile_apps')
 class MobileAppsHandler(base_servlet.BaseRequestHandler):
 
     def requires_login(self):

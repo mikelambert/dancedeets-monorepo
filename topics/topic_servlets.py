@@ -1,12 +1,14 @@
 import logging
 import re
 
+import app
 import base_servlet
 import fb_api
 from topics import grouping
 from topics import topic_db
 from search import search
 
+@app.route('/topic/?')
 class TopicListHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
@@ -17,6 +19,7 @@ class TopicListHandler(base_servlet.BaseRequestHandler):
 
         self.render_template('topic_list')
 
+@app.route('/topic/([^/]+)/?')
 class TopicHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False
@@ -117,6 +120,7 @@ def get_id_from_url(url):
 #"https://www.facebook.com/dancedeets"
 #"https://www.facebook.com/pages/DanceDeets-Events/1613128148918160"
 
+@app.route('/topic_add')
 class AdminAddTopicHandler(base_servlet.BaseRequestHandler):
 
     def show_barebones_page(self):

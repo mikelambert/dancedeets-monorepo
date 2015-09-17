@@ -2,7 +2,9 @@ import logging
 
 from google.appengine.ext import deferred
 from mapreduce import context
+from mapreduce import mapreduce_pipeline
 
+import app
 import base_servlet
 import fb_api
 from util import fb_mapreduce
@@ -101,6 +103,7 @@ def mr_load_fb_events(fbl, time_period=None, update_geodata=True, only_if_update
         queue=queue,
     )
 
+@app.route('tasks/load_events')
 class LoadEventHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
@@ -108,6 +111,7 @@ class LoadEventHandler(base_servlet.BaseTaskFacebookRequestHandler):
         load_fb_event(self.fbl, db_events)
     post=get
 
+@app.route('tasks/load_event_attending')
 class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
@@ -115,6 +119,7 @@ class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
         load_fb_event_attending(self.fbl, db_events)
     post=get
 
+@app.route('tasks/reload_events')
 class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         update_geodata = self.request.get('update_geodata') != '0'
@@ -122,3 +127,60 @@ class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
         time_period = self.request.get('time_period', None)
         mr_load_fb_events(self.fbl, time_period=time_period, update_geodata=update_geodata, only_if_updated=only_if_updated)
     post=get
+
+
+def explode_events_by_day(event):
+    ctx = context.get()
+    params = ctx.mapreduce_spec.mapper.params
+    date_added = params['date_added']
+    if date_added:
+        date = event.creation_time
+    else:
+        date = event.start_time
+    yield (date.strftime('%Y-%m-%d'), 1)
+
+def sum_events_by_day(date, event_counts):
+    yield '%s: %s\n' % (date, len(event_counts))
+
+@app.route('/tools/count_events_by_time')
+class EventsOverTimeHandler(base_servlet.BaseTaskRequestHandler):
+    def get(self):
+        pipeline = mapreduce_pipeline.MapreducePipeline(
+            'Count events by day-added',
+            'events.event_reloading_tasks.explode_events_by_day',
+            'events.event_reloading_tasks.sum_events_by_day',
+            'mapreduce.input_readers.DatastoreInputReader',
+            'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
+            mapper_params={
+                'entity_kind': 'events.eventdata.DBEvent',
+                'date_added': True,
+            },
+            reducer_params={
+                'output_writer': {
+                    'bucket_name': 'dancedeets-hrd.appspot.com',
+                    'content_type': 'text/plain',
+                }
+            },
+            shards=1,
+        )
+        pipeline.start()
+
+        pipeline = mapreduce_pipeline.MapreducePipeline(
+            'Count events by day-held',
+            'events.event_reloading_tasks.explode_events_by_day',
+            'events.event_reloading_tasks.sum_events_by_day',
+            'mapreduce.input_readers.DatastoreInputReader',
+            'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
+            mapper_params={
+                'entity_kind': 'events.eventdata.DBEvent',
+                'date_added': False,
+            },
+            reducer_params={
+                'output_writer': {
+                    'bucket_name': 'dancedeets-hrd.appspot.com',
+                    'content_type': 'text/plain',
+                }
+            },
+            shards=1,
+        )
+        pipeline.start()

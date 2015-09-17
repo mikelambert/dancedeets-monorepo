@@ -1,4 +1,6 @@
 import re
+
+import app
 import base_servlet
 import fb_api
 from profiles import profile
@@ -14,6 +16,7 @@ class BaseProfileHandler(base_servlet.BaseRequestHandler):
     def get_profile_user(self):
         return self.fbl.fetched_data(fb_api.LookupProfile, self.profile_username)
 
+@app.route('/profile/[^/]*')
 class ProfileHandler(BaseProfileHandler):
     def requires_login(self):
         return False
@@ -41,6 +44,7 @@ class ProfileHandler(BaseProfileHandler):
 
         return self.render_template('profile')
 
+@app.route('/profile/[^/]*/add_tag')
 class ProfileAddTagHandler(BaseProfileHandler):
     def post(self):
         self.finish_preload()

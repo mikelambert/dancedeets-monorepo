@@ -1,6 +1,7 @@
 
 from mapreduce import control
 
+import app
 import base_servlet
 from events import eventdata
 from event_scraper import potential_events
@@ -21,6 +22,7 @@ def map_compute_user_stats(user):
     update_user_qualities(user)
     user.put()
 
+@app.route('/tasks/recompute_user_stats')
 class RecomputeUserStatsHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
         control.start_map(

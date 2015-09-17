@@ -9,6 +9,7 @@ from mapreduce import mapreduce_pipeline
 from mapreduce import pipeline_base
 from mapreduce import util
 
+import app
 import base_servlet
 import fb_api
 from . import eventdata
@@ -152,8 +153,8 @@ class PassFileToAccessTokenFinder(pipeline_base._OutputSlotsMixin,
     handle.close()
     yield FindAccessTokensForEventsPipeline(event_ids)
 
+@app.route('/tasks/find_access_tokens_for_events')
 class FindEventsNeedingAccessTokensPipeline(base_handler.PipelineBase):
-
     def run(self, fbl_json, filters):
         bucket_name = 'dancedeets-hrd.appspot.com'
         params = {
@@ -186,6 +187,7 @@ class FindEventsNeedingAccessTokensPipeline(base_handler.PipelineBase):
             single_file_of_fb_events)
 
 
+@app.route('/tasks/find_events_needing_access_tokens')
 class FindEventsNeedingAccessTokensHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         time_period = self.request.get('time_period')

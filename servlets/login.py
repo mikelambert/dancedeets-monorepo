@@ -2,13 +2,14 @@
 
 import logging
 
+import app
 import base_servlet
 from logic import mobile
 from rankings import rankings
 from search import search_base
 from users import users
 
-
+@app.route('/login')
 class LoginHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False

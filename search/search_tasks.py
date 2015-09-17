@@ -1,13 +1,16 @@
+import app
 import base_servlet
 from users import users
 from . import search
 from . import email_events
 
+@app.route('/tasks/email_all_users')
 class EmailAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         email_events.mr_email_user(self.fbl)
     post=get
 
+@app.route('/tasks/email_user')
 class EmailUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
@@ -15,6 +18,7 @@ class EmailUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
         email_events.email_user(self.fbl, load_users[0])
     post=get
 
+@app.route('/tasks/refresh_fulltext_search_index')
 class RefreshFulltextSearchIndex(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         index_future = bool(int(self.request.get('index_future', 1)))

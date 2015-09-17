@@ -3,6 +3,7 @@ import logging
 
 from mapreduce import mapreduce_pipeline
 
+import app
 import base_servlet
 import fb_api
 from util import fb_mapreduce
@@ -22,6 +23,7 @@ class LookupAppFriendUsers(fb_api.LookupType):
     def get_lookups(cls, object_id):
         return [('info', cls.fql_url(GET_FRIEND_APP_USERS % object_id))]
 
+@app.route('/tasks/track_newuser_friends')
 class TrackNewUserFriendsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         key = fb_api.generate_key(LookupAppFriendUsers, self.fb_uid)
@@ -34,6 +36,7 @@ class TrackNewUserFriendsHandler(base_servlet.BaseTaskFacebookRequestHandler):
         user_friends.put()
     post=get
 
+@app.route('/tasks/load_users')
 class LoadUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
@@ -41,6 +44,7 @@ class LoadUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
         load_fb_user(self.fbl, load_users[0])
     post=get
 
+@app.route('/tasks/reload_all_users')
 class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         # this calls a map function wrapped by mr_user_wrap, so it works correctly on a per-user basis
@@ -79,8 +83,8 @@ def explode_users_by_day(user):
 def sum_users_by_day(date, user_counts):
     yield '%s: %s\n' % (date, len(user_counts))
 
+@app.route('/tools/count_users_by_time')
 class UserSignupsOverTimeHandler(base_servlet.BaseTaskRequestHandler):
-
     def get(self):
         pipeline = mapreduce_pipeline.MapreducePipeline(
             'Count users by day',

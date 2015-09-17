@@ -1,7 +1,9 @@
 import gdata.youtube.service
 
+import app
 import base_servlet
 
+@app.route('/youtube_simple_api')
 class YoutubeSimpleApiHandler(base_servlet.BareBaseRequestHandler):
     def get(self):
         action = self.request.get('action')

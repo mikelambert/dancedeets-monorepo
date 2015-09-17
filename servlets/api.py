@@ -7,6 +7,7 @@ import urllib
 
 from google.appengine.api import taskqueue
 
+import app
 import base_servlet
 import fb_api
 from events import eventdata
@@ -19,6 +20,7 @@ from users import user_creation
 from users import users
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
 
 class ApiHandler(base_servlet.BareBaseRequestHandler):
     requires_auth = False
@@ -76,6 +78,7 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
                 self.add_error("Needs access_token parameter")
 
 
+@app.route('/api/v(\d+).(\d+)/search')
 class SearchHandler(ApiHandler):
 
     def _get_title(self, location, keywords):
@@ -160,6 +163,7 @@ class SearchHandler(ApiHandler):
 
 ISO_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
+@app.route('/api/v\d+.\d+/auth')
 class AuthHandler(ApiHandler):
     requires_auth = True
 
@@ -233,7 +237,6 @@ class AuthHandler(ApiHandler):
         else:
             user_creation.create_user_with_fbuser(self.fb_uid, self.fb_user, access_token, access_token_expires, location, client=client)
         self.write_json_success()
-
 
 class SettingsHandler(ApiHandler):
     requires_auth = True
@@ -362,6 +365,7 @@ def canonicalize_event_data(db_event, event_keywords):
 
     return event_api
 
+@app.route('/api/v\d+.\d+/events/\d+/?')
 class EventHandler(ApiHandler):
     def requires_login(self):
         return False

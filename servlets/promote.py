@@ -1,6 +1,7 @@
 import datetime
 import logging
 
+import app
 import base_servlet
 from event_scraper import add_entities
 from events import event_locations
@@ -11,6 +12,7 @@ from nlp import event_classifier
 from servlets import event as servlets_event
 from util import dates
 
+@app.route('/promote')
 class PromoteHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
         return False

@@ -2,6 +2,8 @@ import iso3166
 
 from google.appengine.api import search
 
+import app
+import base_servlet
 from event_scraper import thing_db
 from . import index
 
@@ -53,7 +55,7 @@ class SourceIndex(index.BaseIndex):
             )
         return doc_event
 
-import base_servlet
+@app.route('/tasks/refresh_source_index')
 class RefreshSourceSearchIndex(base_servlet.BaseTaskRequestHandler):
     def get(self):
         SourceIndex.rebuild_from_query()

@@ -1,8 +1,9 @@
+import app
 import base_servlet
 from events import eventdata
 from . import pubsub
 
-
+@app.route('/twitter/oauth_start')
 class TwitterOAuthStartHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
@@ -15,6 +16,7 @@ class TwitterOAuthStartHandler(base_servlet.BaseRequestHandler):
         url = pubsub.twitter_oauth1(self.fb_uid, nickname, country_filter)
         self.redirect(url)
 
+@app.route('/twitter/oauth_callback')
 class TwitterOAuthCallbackHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
@@ -26,18 +28,21 @@ class TwitterOAuthCallbackHandler(base_servlet.BaseRequestHandler):
         else:
             self.redirect('/twitter/oauth_failure')
 
+@app.route('/twitter/oauth_success')
 class TwitterOAuthSuccessHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
         #TODO(lambert): Clean up
         self.response.write('Authorized!')
 
+@app.route('/twitter/oauth_failure')
 class TwitterOAuthFailureHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
         #TODO(lambert): Clean up
         self.response.write("Failure, couldn't find auth token conection!")
 
+@app.route('/facebook/page_start')
 class FacebookPageSetupHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
@@ -51,6 +56,7 @@ class FacebookPageSetupHandler(base_servlet.BaseRequestHandler):
         #TODO(lambert): Clean up
         self.response.write('Authorized!')
 
+@app.route('/tools/facebook_post')
 class FacebookPostHandler(base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()

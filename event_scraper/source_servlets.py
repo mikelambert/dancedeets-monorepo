@@ -1,6 +1,7 @@
 import pprint
 import re
 
+import app
 import base_servlet
 from events import eventdata
 import fb_api
@@ -16,6 +17,7 @@ def get_id_from_url(url):
         return None
     return match.group(1)
 
+@app.route('/sources/admin_edit')
 class AdminEditHandler(base_servlet.BaseRequestHandler):
     def get(self):
         source_id = None
