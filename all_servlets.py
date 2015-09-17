@@ -13,7 +13,6 @@ from search import search_servlets
 from search import search_tasks
 from search import style_servlets
 from search import search_source
-from servlets import about
 from servlets import admin
 from servlets import api
 from servlets import calendar
@@ -23,7 +22,7 @@ from servlets import feedback
 from servlets import home
 from servlets import login
 from servlets import mobile_apps
-from servlets import privacy
+from servlets import static_servlets
 from servlets import promote
 from servlets import profile_page
 from servlets import tools
