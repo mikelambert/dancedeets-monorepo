@@ -55,7 +55,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['defaults'].keywords = self.request.get('keywords')
         self.display['defaults'].deb = self.request.get('deb')
 
-
         from util import country_dialing_codes
         self.display['suppress_promos'] = True
         self.display['country_codes'] = sorted(country_dialing_codes.mapping.items())
@@ -63,6 +62,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['ios_url'] = mobile.IOS_URL
         self.display['prefix'] = ''
         self.display['phone'] = '' # Set the default, and then let any errors-and-refilling occur on /mobile_apps
+        self.display['mobile_show_smartbanner'] = False
 
         self.display['next'] = next
         logging.info(self.display['next'])

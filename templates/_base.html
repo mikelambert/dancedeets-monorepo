@@ -140,7 +140,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">North America<span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
 {% for city in us_cities %}
-            <li><a href="/?location={{ city }}">{{ city }}</a></li>
+            <li>{% if city %}<a href="/?location={{ city }}">{{ city }}</a>{% else %}&nbsp;{% endif %}</li>
 {% endfor %}
           </ul>
         </li>
@@ -229,13 +229,17 @@
 <div id="fb-root"></div>
 
 <script src="//cdn.jsdelivr.net/g/jquery@2.1.3,bootstrap@3.3.2,jquery.cookie@1.4.1"></script>
+{% if mobile_show_smartbanner %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.js"></script>
+{% endif %}
 <script type="text/javascript">
+  {% if mobile_show_smartbanner %}
   $.smartbanner({
     title: "DanceDeets",
     author: "DanceDeets",
     icon: '/images/ic_launcher_dancedeets.png'
   });
+  {% endif %}
 
   function manualLogin() {
     FB.login(function(response){}, {scope: '{{ fb_permissions }}'});

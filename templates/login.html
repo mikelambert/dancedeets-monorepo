@@ -12,34 +12,51 @@ DanceDeets
     <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:description"
           content="Every street dance event. On the web, on your phone. At home, and when traveling."/>
+
+<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 {% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container" style="font-family: 'Montserrat', sans-serif">
 
 <div class="row">
 
-<div class="col-sm-7" style="padding-right: 0px">
-<h2>DanceDeets</h2>
+<div class="col-sm-7 text-center" style="margin-bottom: 1em">
+
+<div class="text-center">
+<h1 style="margin-top: 0px">DanceDeets</h1>
+
+<h4>Street dance events near you.</h4>
+<h4>With over {{ total_events }} events worldwide,</h4>
+<h4>it's time to get your dance on.</h4>
 
 
-<div class="install-div">
-Street dance events, at home and worldwide!
+</div>
+
+<div class="install-div text-center">
 <div class="spacing">
-<a href="{{ android_url }}"><img src="/images/play_store_download.png" class="store-button"></a>
+{% if mobile_platform == mobile.MOBILE_IOS %}
+<a class="btn btn-primary btn-lg" href="{{ mobile.IOS_URL }}">Download App</a>
+{% elif mobile_platform == mobile.MOBILE_ANDROID %}
+<a class="btn btn-primary btn-lg" href="{{ mobile.ANDROID_URL }}">Download App</a>
+{% else %}
+<a href="{{ mobile.IOS_URL }}"><img src="/images/app_store_download.png" class="store-button"></a>
+<a href="{{ mobile.ANDROID_URL }}"><img src="/images/play_store_download.png" class="store-button"></a>
+{% endif %}
 <br>
-<a href="{{ ios_url }}"><img src="/images/app_store_download.png" class="store-button"></a>
 </div>
 </div>
 
 
 
-<div class="install-div hidden-xs">
-Or enter your phone number, and we'll send you a link to install:
+{% if mobile_platform != mobile.MOBILE_IOS and mobile_platform != mobile.MOBILE_ANDROID %}
+<div class="install-div">
+Or enter your phone number to get an install link:
 <form class="spacing form-inline" method="post" action="/mobile_apps">
 <input type="hidden" name="action" value="send_sms" />
-<select name="prefix" class="form-control">
-<option value="">Select a country below</option>
+<div class="form-group">
+<select name="prefix" class="form-control" style="width:100px; display:inline-block">
+<option value="">Country</option>
 {% for country, code in country_codes %}
 	<option value="{{ code }}"
 	{% if code == prefix %}
@@ -48,27 +65,18 @@ Or enter your phone number, and we'll send you a link to install:
 	>{{ country }} (+{{ code }})</option>
 {% endfor %}
 </select>
-<input type="text" class="form-control sms-textbox" name="phone" placeholder="(123) 456-7890" value="{{ phone }}"/>
+<input type="text" class="form-control sms-textbox" name="phone" placeholder="(123) 456-7890" value="{{ phone }}" size="15"/>
 <button type="submit" value="submit" class="btn btn-primary sms-button">Send link to my phone</button>
 </form>
 </div>
-
-<div class="install-div">
-Keep up with the latest dance events when you're on the go!
-<ul class="feature-list spacing fa-ul">
-<li><i class="fa-li fa fa-search fa-lg"></i>Search Worldwide</li>
-<li><i class="fa-li fa fa-calendar fa-lg"></i>Add to Calendar</li>
-<li><i class="fa-li fa fa-facebook-square fa-lg"></i>View on Facebook</li>
-<li><i class="fa-li fa fa-map-marker fa-lg"></i>Get Directions</li>
-<li><i class="fa-li fa fa-check fa-lg"></i>RSVP on Facebook</li>
-<li><i class="fa-li fa fa-language fa-lg"></i>Translate Languages (Android Only)</li>
-</ul>
 </div>
-
+{% endif %}
 </div>
 
 <div class="col-sm-5">
+<div class="center-block" style="width: 80%">
 <img src="/images/phones.jpg" width="100%">
+</div>
 </div>
 
 </div>
@@ -78,52 +86,69 @@ Keep up with the latest dance events when you're on the go!
 
 
 <div class="row">
-<div class="col-md-12" style="margin-bottom: 10px">
-Dance Deets is your home for streetdance events: locally and internationally.<br>
-Wherever you are in the world, we’ll help you find a place to get your groove on.<br>
-{% if total_events %}
-Over {{ total_events }} events and growing daily!
-{% endif %}
+<div class="col-sm-4">
+<h3><a href="/events/relevant?location={{ip_location}}" style="color: black"><i class="fa fa-search"></i> Find your Scene</a></h3>
+Find street dance events near you: Never miss another jam or workshop!
+</div>
+
+<div class="col-sm-4">
+<h3><i class="fa fa-globe"></i> Dance Trips</h3>
+Across the globe, or across the country: Find a spot to dance, and get re-inspired!
+</div>
+
+<div class="col-sm-4">
+<h3><a href="/events_add" style="color: black"><i class="fa fa-users"></i> Promote Events</a></h3>
+Promote your dance events to local and foreign dancers.
+Don't rely on FB network to promote: over 18,000 dancers hit DanceDeets every month!
 </div>
 </div>
 
 <div class="row">
-<div class="col-md-5">
-<span class="big-font">Discover the scene</span><br>
-<a href="/rankings">
-{{ total_events }} dance events around the world
-</a>
-</div>
-
-<div class="col-md-5">
-<span class="big-font">Promote the scene</span><br>
-<a href="/rankings">
-<!-- TODO(lambert): someday switch this to /events_add ? -->
-dance events reach 18,000+ dancers every month
-</a>
+<div class="col-xs-12">
+<h3><i class="fa fa-music"></i> Street Dance Events</h3>
+See <a href="/events/relevant?location={{ip_location}}">events near you</a>,
+browse our {{ total_events }} events worldwide below
+or <a href="/events_add">add your city's events</a> for others!
 </div>
 </div>
 
 <div class="row">
-<div class="col-md-5">
-See events in the top north-american cities:
+<div class="col-sm-3">
+<h4>Styles</h4>
 <ul>
-{% for internal_city, city in top_cities %}
-	<li><a href="/?location={{ internal_city|urlencode }}&amp;distance=50&amp;distance_units=miles">{{ city }}</a></li>
+{% for style in styles %}
+    <li><a href="/style/{{ style.url_name }}">{{ style.public_name }}</a></li>
 {% endfor %}
 </ul>
 </div>
 
-<div class="col-md-5">
-See many more events for these european countries:
+<div class="col-sm-3">
+<h4>North America</h4>
 <ul>
-{% for location in top_european_countries %}
-<li><a href="/?location={{ location|urlencode }}&amp;distance=50&amp;distance_units=miles">{{ location }}</a></li>
+{% for city in us_cities %}
+    {% if city %}
+	   <li><a href="/?location={{ city|urlencode }}&amp;distance=50&amp;distance_units=miles">{{ city }}</a>
+    {% else %}
+       </ul><ul>
+    {% endif %}
+</li>
 {% endfor %}
 </ul>
-<p>See many more events for these continents:</p>
+</div>
+
+<div class="col-sm-3">
+<h4>Europe</h4>
 <ul>
-{% for location in top_continents %}
+{% for city in eu_cities %}
+<li><a href="/?location={{ city|urlencode }}&amp;distance=50&amp;distance_units=miles">{{ city }}</a></li>
+{% endfor %}
+</ul>
+</div>
+
+<div class="col-sm-3">
+<h4>Rest of the World</h4>
+<ul>
+{% for location in other %}
 <li><a href="/?location={{ location }}&amp;distance=50&amp;distance_units=miles">{{ location }}</a></li>
 {% endfor %}
 </ul>

@@ -456,13 +456,19 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['fb_permissions'] = fb_permissions
 
         already_used_mobile = self.user and ('android' in self.user.clients or 'ios' in self.user.clients)
-        currently_on_mobile = mobile.get_mobile_platform(self.request.user_agent)
-        show_mobile_promo = not currently_on_mobile and not already_used_mobile
+        mobile_platform = mobile.get_mobile_platform(self.request.user_agent)
+        show_mobile_promo = not mobile_platform and not already_used_mobile
         self.display['show_mobile_promo'] = show_mobile_promo
-        if currently_on_mobile == mobile.MOBILE_ANDROID:
+        self.display['mobile_platform'] = mobile_platform
+        if mobile_platform == mobile.MOBILE_ANDROID:
             self.display['mobile_app_url'] = mobile.ANDROID_URL
-        elif currently_on_mobile == mobile.MOBILE_IOS:
+        elif mobile_platform == mobile.MOBILE_IOS:
             self.display['mobile_app_url'] = mobile.IOS_URL
+        self.display['mobile'] = mobile
+        self.display['mobile_show_smartbanner'] = True
+
+        self.display['ip_location'] = self.get_location_from_headers()
+
         self.display['defaults'] = search_base.FrontendSearchQuery()
         self.display['defaults'].location = self.request.get('location')
         self.display['defaults'].keywords = self.request.get('keywords')
