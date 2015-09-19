@@ -31,10 +31,14 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
         for user in users.User.get_by_ids(db_event.visible_to_fb_uids):
             fbl = fb_api.FBLookup(user.fb_uid, user.fb_access_token)
             fbl.allow_cache = allow_cache
-            real_fb_event = fbl.get(fb_api.LookupEvent, db_event.fb_event_id)
-            if real_fb_event['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
-                add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
-                processed = True
+            try:
+                real_fb_event = fbl.get(fb_api.LookupEvent, db_event.fb_event_id)
+            except fb_api.ExpiredOAuthToken:
+                logging.warning("User %s has expired oauth token", user.fb_uid)
+            else:
+                if real_fb_event['empty'] != fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS:
+                    add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
+                    processed = True
         # If we didn't process, it means none of our access_tokens are valid.
         if not processed:
             # Now mark our event as lacking in valid access_tokens, so that our pipeline can pick it up and look for a new one
