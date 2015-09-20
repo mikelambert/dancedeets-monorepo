@@ -33,7 +33,6 @@ DanceDeets
 <div class="col-sm-7 text-center" style="margin-bottom: 1em">
 
 <div class="install-div text-center">
-<div class="spacing">
 {% if mobile_platform == mobile.MOBILE_IOS %}
 <a class="btn btn-primary btn-lg" href="{{ mobile.IOS_URL }}">Download App</a>
 {% elif mobile_platform == mobile.MOBILE_ANDROID %}
@@ -42,8 +41,6 @@ DanceDeets
 <a href="{{ mobile.IOS_URL }}"><img src="/images/app_store_download.png" class="store-button"></a>
 <a href="{{ mobile.ANDROID_URL }}"><img src="/images/play_store_download.png" class="store-button"></a>
 {% endif %}
-<br>
-</div>
 </div>
 
 
@@ -51,7 +48,7 @@ DanceDeets
 {% if mobile_platform != mobile.MOBILE_IOS and mobile_platform != mobile.MOBILE_ANDROID %}
 <div class="install-div">
 Or enter your phone number to get an install link:
-<form class="spacing form-inline" method="post" action="/mobile_apps">
+<form class="form-inline" method="post" action="/mobile_apps">
 <input type="hidden" name="action" value="send_sms" />
 <div class="form-group">
 <select name="prefix" class="form-control" style="width:100px; display:inline-block">
@@ -82,28 +79,47 @@ Or enter your phone number to get an install link:
 
 <div class="row">
 <div class="col-sm-4">
-<h3><a href="/events/relevant?location={{ip_location}}" style="color: black"><i class="fa fa-search"></i> Find your Scene</a></h3>
+<h3 class="text-center"><a href="/events/relevant?location={{ip_location}}" style="color: black"><i class="fa fa-search"></i> Find your Scene</a></h3>
 Find street dance events near you: Never miss another jam or workshop!
 </div>
 
 <div class="col-sm-4">
-<h3><i class="fa fa-globe"></i> Dance Trips</h3>
+<h3 class="text-center"><i class="fa fa-globe"></i> Dance Trips</h3>
 Across the globe, or across the country: Find a spot to dance, and get re-inspired!
 </div>
 
 <div class="col-sm-4">
-<h3><a href="/events_add" style="color: black"><i class="fa fa-users"></i> Promote Events</a></h3>
-Promote your dance events to local and foreign dancers.
+<h3 class="text-center"><a href="/events_add" style="color: black"><i class="fa fa-users"></i> Promote Events</a></h3>
+Promote your dance events to the local scene and the dance tourists.
 Don't rely on FB network to promote: over 18,000 dancers hit DanceDeets every month!
 </div>
 </div>
 
 <div class="row">
+<div class="col-sm-12 text-center" style="margin-bottom: 1em">
+
+<div class="install-div text-center">
+It's time to get your dance on.
+{% if mobile_platform == mobile.MOBILE_IOS %}
+<a class="btn btn-primary btn-lg" href="{{ mobile.IOS_URL }}">Download App</a>
+{% elif mobile_platform == mobile.MOBILE_ANDROID %}
+<a class="btn btn-primary btn-lg" href="{{ mobile.ANDROID_URL }}">Download App</a>
+{% endif %}
+<br>
+</div>
+
+</div>
+</div>
+
+<div class="row">
 <div class="col-xs-12">
-<h3><i class="fa fa-music"></i> Street Dance Events</h3>
+<h2><i class="fa fa-music"></i> Street Dance Events</h2>
+{% if ip_location %}
 See <a href="/events/relevant?location={{ip_location}}">events near {{ip_location}}</a>,
-browse our {{ total_events }} events worldwide below
-or <a href="/events_add">add your city's events</a> for others!
+{% else %}
+See events near you,
+{% endif %}
+browse our {{ total_events }} events worldwide below, or <a href="/events_add">add your city's events</a> for others!
 </div>
 </div>
 
