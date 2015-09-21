@@ -339,8 +339,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         logging.info("Logged in uid %s with name %s and token %s", self.fb_uid, self.user.full_name, self.access_token)
         
         # Track last-logged-in state
-        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-        if not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < yesterday:
+        hour_ago = datetime.datetime.now() - datetime.timedelta(hours=1)
+        if not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < hour_ago:
             # Do this in a separate request so we don't increase latency on this call
             deferred.defer(update_last_login_time, self.user.fb_uid, datetime.datetime.now(), _queue='slow-queue')
             backgrounder.load_users([self.fb_uid], allow_cache=False)
@@ -574,12 +574,11 @@ class BaseRequestHandler(BareBaseRequestHandler):
 def update_last_login_time(user_id, login_time):
     def _update_last_login_time():
         user = users.User.get_by_id(user_id)
-        if not user.last_login_time or user.last_login_time < login_time:
-            user.last_login_time = login_time
-            if user.login_count:
-                user.login_count += 1
-            else:
-                user.login_count = 2 # once for this one, once for initial creation
+        user.last_login_time = login_time
+        if user.login_count:
+            user.login_count += 1
+        else:
+            user.login_count = 2 # once for this one, once for initial creation
         # in read-only, keep trying until we succeed
         user.put()
     db.run_in_transaction(_update_last_login_time)

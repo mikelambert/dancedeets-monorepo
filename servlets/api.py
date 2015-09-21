@@ -216,10 +216,11 @@ class AuthHandler(ApiHandler):
 
             # Track usage stats
             user.last_login_time = datetime.datetime.now()
-            if user.login_count:
-                user.login_count += 1
-            else:
-                user.login_count = 2 # once for this one, once for initial creation
+            if user.last_login_time < datetime.datetime.now() - datetime.timedelta(hours=1):
+                if user.login_count:
+                    user.login_count += 1
+                else:
+                    user.login_count = 2 # once for this one, once for initial creation
             if client not in user.clients:
                 user.clients.append(client)
 
