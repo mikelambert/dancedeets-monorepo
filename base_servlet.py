@@ -68,8 +68,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.display['track_google_analytics'] = True
         super(BareBaseRequestHandler, self).__init__(*args, **kwargs)
 
-    def head(self):
-        return self.get()
+    def head(self, *args, **kwargs):
+        return self.get(*args, **kwargs)
 
     def initialize(self, request, response):
         super(BareBaseRequestHandler, self).initialize(request, response)
