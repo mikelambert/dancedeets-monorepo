@@ -255,7 +255,7 @@ STYLE_POP = Name('STYLE_POP', Any(
     "bott?in[g']?",
     "robott?in[g']?",
     u'로봇팅', # roboting
-    'g\W?styl\w+',
+    r'\bg\W?styl\w+',
     'strutter[sz]?', 'strutting',
     u'스트럿팅', # strutting
     "tuttin[g']?", 'tutter[sz]?',
@@ -740,6 +740,7 @@ CLASS = Name('CLASS', Any(
     'formazione', # training italian
     'formazioni', # training italian
     u'トレーニング', # japanese training
+    'teach(?:ing?|ers?)',
 ))
 
 AUDITION = Name('AUDITION', Any(

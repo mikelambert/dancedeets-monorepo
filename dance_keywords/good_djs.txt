@@ -46,5 +46,6 @@ still1
 sweater\W?funk
 tijo aimé
 timmy regisford
+timmy richardson
 tyrone francis
 tyrone\W+mixologist\W+francis
