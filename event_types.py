@@ -11,7 +11,7 @@ class EventType(object):
     def url_name(self):
         return self.public_name.lower()
 
-BATTLE = EventType('BATTLE', 'Competitions', 'Competitions&Battles')
+BATTLE = EventType('BATTLE', 'Competition', 'Competitions')
 PERFORMANCE = EventType('PERFORMANCE', 'Performance', 'Performances')
 WORKSHOP = EventType('WORKSHOP', 'Workshop', 'Workshops')
 PARTY = EventType('PARTY', 'Party', 'Parties')
