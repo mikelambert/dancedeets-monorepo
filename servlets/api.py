@@ -84,12 +84,12 @@ class SearchHandler(ApiHandler):
     def _get_title(self, location, keywords):
         if location:
             if keywords:
-                return "Events with keywords %s" % keywords
+                return "Events near %s containing %s" % keywords
             else:
                 return "Events near %s" % location
         else:
             if keywords:
-                return "Events with keywords %s" % keywords
+                return "Events containing %s" % keywords
             else:
                 return "Events"
 
