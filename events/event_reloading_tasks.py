@@ -107,7 +107,7 @@ def mr_load_fb_events(fbl, time_period=None, update_geodata=True, only_if_update
         queue=queue,
     )
 
-@app.route('tasks/load_events')
+@app.route('/tasks/load_events')
 class LoadEventHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
@@ -115,7 +115,7 @@ class LoadEventHandler(base_servlet.BaseTaskFacebookRequestHandler):
         load_fb_event(self.fbl, db_events)
     post=get
 
-@app.route('tasks/load_event_attending')
+@app.route('/tasks/load_event_attending')
 class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
@@ -123,7 +123,7 @@ class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
         load_fb_event_attending(self.fbl, db_events)
     post=get
 
-@app.route('tasks/reload_events')
+@app.route('/tasks/reload_events')
 class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         update_geodata = self.request.get('update_geodata') != '0'
