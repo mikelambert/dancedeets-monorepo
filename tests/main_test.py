@@ -11,9 +11,9 @@ class TestImports(unittest.TestCase):
 
 class TestUrlRoutes(unittest.TestCase):
     def runTest(self):
-        import main
         from servlets import event
-        router = webapp2.Router(main.URLS)
+        from app import app
+        router = app.router
         env = {'PATH_INFO': '/events/55/'}
         route = router.match(webapp2.Request(env))
         self.assertEqual(route[0].handler, event.ShowEventHandler)
