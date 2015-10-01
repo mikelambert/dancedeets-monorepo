@@ -195,11 +195,19 @@ class BaseRequestHandler(BareBaseRequestHandler):
         user_login_cookie['hash'] = generate_userlogin_hash(user_login_cookie)
         user_login_string = urllib.quote(json.dumps(user_login_cookie))
         logging.info("setting cookie response... to %s", user_login_string)
+        self.response.set_cookie(self._get_login_cookie_name(), user_login_string, max_age=30*24*60*60, path='/', domain=self._get_login_cookie_domain())
+
+    def _get_login_cookie_domain(self):
         domain = self.request.host.replace('www.','.')
         if ':' in domain:
             domain = domain.split(':')[0]
-        #TODO: set_cookie() got an unexpected keyword argument 'expires'
-        self.response.set_cookie('user_login', user_login_string, max_age=30*24*60*60, path='/', domain=domain)
+        return domain
+
+    def _get_login_cookie_name(self):
+        return 'user_login_' + facebook.FACEBOOK_CONFIG['app_id']
+
+    def get_login_cookie(self):
+        return self.request.cookies.get(self._get_login_cookie_name(), self.request.cookies.get('user_login', ''))
 
     def setup_login_state(self, request):
         #TODO(lambert): change fb api to not request access token, and instead pull it from the user
@@ -230,7 +238,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         # Load our dancedeets logged-in user/state
         our_cookie_uid = None
-        user_login_string = request.cookies.get('user_login', '')
+        user_login_string = self.get_login_cookie()
         if user_login_string:
             user_login_cookie = json.loads(urllib.unquote(user_login_string))
             if validate_hashed_userlogin(user_login_cookie):
@@ -239,6 +247,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 # so let's trust it as authoritative here and ignore the fb cookie
                 if not trusted_cookie_uid and user_login_cookie.get('access_token_md5'):
                     trusted_cookie_uid = our_cookie_uid
+
+        if self.request.cookies.get('user_login', ''):
+            self.response.set_cookie('user_login', '', expires=datetime.datetime(1970,1,2), path='/', domain=self._get_login_cookie_domain())
 
         # If the user has changed facebook users, let's automatically re-login at dancedeets
         if trusted_cookie_uid and trusted_cookie_uid != our_cookie_uid:
