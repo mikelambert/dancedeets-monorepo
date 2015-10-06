@@ -321,15 +321,20 @@
     });
   }
   $(document).ready(function() {
+    // Only show the promo if it's the second time the user is using the app
     if ($('#app-install')) {
-      $('.modal').on('show.bs.modal', centerModals);
-      $(window).on('resize', centerModals);
+      var app_used = $.cookie('ap-used');
+      if (app_used) {
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
 
-      var app_promo_closed = $.cookie('ap-closed');
-      if (!app_promo_closed) {
+        var app_promo_closed = $.cookie('ap-closed');
+        if (!app_promo_closed) {
 
-        $('#app-install').modal({});
+          $('#app-install').modal({});
+        }
       }
+      $.cookie('ap-used', '1', { expires: 60 })
     }
   });
 
