@@ -10,6 +10,8 @@ from scrapy import loader
 from scrapy.loader import processors
 import string
 
+from nlp import categories
+
 class ClassItem(scrapy.Item):
     studio = scrapy.Field()
     source_page = scrapy.Field()
@@ -19,6 +21,7 @@ class ClassItem(scrapy.Item):
     teacher_link = scrapy.Field()
     start_time = scrapy.Field()
     end_time = scrapy.Field()
+    auto_categories = scrapy.Field()
 
 StripAndCombine = processors.Compose(processors.MapCompose(string.strip), processors.Join(' '), processors.MapCompose(string.strip))
 class ClassLoader(loader.ItemLoader):
@@ -35,3 +38,12 @@ class ClassLoader(loader.ItemLoader):
         start_time = context_loader['item'].get_output_value('start_time')
         start_time_string = start_time.strftime('Day %w: %H:%M')
         return '%s: %s: %s' % (studio, start_time_string, style)
+
+    def auto_categories_out(self, value, context_loader):
+        """Parses the fields we have and returns a list of categories for indexing.
+        Should have a list of styles, plus a class."""
+        style = context_loader['item'].get_output_value('style')
+        teacher = context_loader['item'].get_output_value('teacher')
+        class_text = '%s: %s' % (style, teacher)
+        styles = categories.find_rules_in_text(class_text, categories.BROAD_STYLES)
+        return styles
