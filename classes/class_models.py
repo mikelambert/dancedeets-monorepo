@@ -10,6 +10,8 @@ class StudioClass(ndb.Model):
     start_time = ndb.DateTimeProperty(indexed=False)
     end_time = ndb.DateTimeProperty(indexed=False)
 
+    auto_categories = ndb.StringProperty(repeated=True)
+
     latitude = ndb.FloatProperty()
     longitude = ndb.FloatProperty()
 

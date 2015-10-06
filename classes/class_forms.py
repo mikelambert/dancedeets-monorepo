@@ -11,6 +11,7 @@ class ClassForm(wtforms.Form):
     teacher_link = wtforms.StringField()
     start_time = wtforms.DateTimeField()
     end_time = wtforms.DateTimeField()
+    auto_categories = wtforms.FieldList(wtforms.StringField())
     #latitude = wtforms.FloatField()
     #longitude = wtforms.FloatField()
     #scrape_time = wtforms.DateTimeField()
