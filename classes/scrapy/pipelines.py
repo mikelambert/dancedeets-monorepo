@@ -6,15 +6,13 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 import datetime
+import json
 import urllib
 import urllib2
 
-
-from classes import class_forms
-from wtforms.compat import iteritems
+DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 class SaveStudioClassPipeline(object):
-
 
     def open_spider(self, spider):
         self.scrape_time = datetime.datetime.now()
@@ -27,7 +25,9 @@ class SaveStudioClassPipeline(object):
         #studio.put()
 
     def process_item(self, item, spider):
-        form = class_forms.ClassForm(data=item)
-        form_dict = dict((name, f._value()) for name, f in iteritems(form._fields))
-        f = urllib2.urlopen('http://dev.dancedeets.com:8080/classes/upload', urllib.urlencode(form_dict))
+        new_item = item.copy()
+        new_item['start_time'] = item['start_time'].strftime(DATETIME_FORMAT)
+        new_item['end_time'] = item['end_time'].strftime(DATETIME_FORMAT)
+        data = json.dumps(new_item)
+        f = urllib2.urlopen('http://dev.dancedeets.com:8080/classes/upload', urllib.quote(data))
         print f.read()
