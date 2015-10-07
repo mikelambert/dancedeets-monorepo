@@ -25,9 +25,13 @@ class SaveStudioClassPipeline(object):
         #studio.put()
 
     def process_item(self, item, spider):
-        new_item = item.copy()
-        new_item['start_time'] = item['start_time'].strftime(DATETIME_FORMAT)
-        new_item['end_time'] = item['end_time'].strftime(DATETIME_FORMAT)
+        new_item = dict(item)
+        new_item['start_time'] = new_item['start_time'].strftime(DATETIME_FORMAT)
+        new_item['end_time'] = new_item['end_time'].strftime(DATETIME_FORMAT)
+        new_item['auto_categories'] = [x.index_name for x in new_item['auto_categories']]
         data = json.dumps(new_item)
-        f = urllib2.urlopen('http://dev.dancedeets.com:8080/classes/upload', urllib.quote(data))
-        print f.read()
+        quoted_data = urllib.quote_plus(data)
+        f = urllib2.urlopen('http://dev.dancedeets.com:8080/classes/upload', quoted_data)
+        result = f.read()
+        if result:
+            print 'Upload returned: ', result
