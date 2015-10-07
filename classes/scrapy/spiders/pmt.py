@@ -50,21 +50,20 @@ class PMTHouseOfDance(scrapy.Spider):
                 date = dateparser.parse(day).date()
                 if date < datetime.date.today():
                     date += datetime.timedelta(days=7)
-            item = items.ClassItem()
-            item['source_page'] = response.url
-
             # Use our NLP event classification keywords to figure out which BDC classes to keep
             style = row[2]
             processor = event_classifier.StringProcessor(style)
             if not processor.has_token(rules.DANCE_STYLE):
                 continue
 
+            item = items.StudioClass()
+            item['source_page'] = response.url
             item['style'] = style
             item['teacher'] = row[3]
             # do we care?? row[4]
             start_time, end_time = parse_times(row[1])
             item['start_time'] = datetime.datetime.combine(date, start_time)
             item['end_time'] = datetime.datetime.combine(date, end_time)
-            yield item
+            yield item.polish()
 
 

@@ -52,16 +52,11 @@ class BdcDay(scrapy.Spider):
         date_string = table.css('.gridDateTitle').xpath('.//text()').extract()[0]
         date = dateparser.parse(date_string).date() 
         for row in table.xpath('.//tr'):
-            l = items.ClassLoader(item=items.ClassItem(), selector=row)
-            l.add_value('source_page', response.url)
             if not row.xpath('.//td[1]/text()'):
                 continue
             times = row.xpath('.//td[1]/text()').extract()[0]
             if '-' not in times:
                 continue
-            start_time, end_time = parse_times(times)
-            l.add_value('start_time', datetime.datetime.combine(date, start_time))
-            l.add_value('end_time', datetime.datetime.combine(date, end_time))
 
             # Use our NLP event classification keywords to figure out which BDC classes to keep
             just_style = row.xpath('.//td[2]/text()').extract()[0]
@@ -69,7 +64,13 @@ class BdcDay(scrapy.Spider):
             if not processor.has_token(rules.DANCE_STYLE):
                 continue
 
-            l.add_xpath('style', './/td[2]/text() | .//td[3]/text()')
-            l.add_xpath('teacher', './/td[4]//text()')
-            l.add_xpath('teacher_link', '(.//td[4]//@href)[1]')
-            yield l.load_item()
+            item = items.StudioClass()
+            item['source_page'] = response.url
+            start_time, end_time = parse_times(times)
+            item['start_time'] = datetime.datetime.combine(date, start_time)
+            item['end_time'] = datetime.datetime.combine(date, end_time)
+
+            item.add('style', row.xpath('.//td[2]/text() | .//td[3]/text()'))
+            item.add('teacher', row.xpath('.//td[4]//text()'))
+            item.add('teacher_link', row.xpath'(.//td[4]//@href)[1]'))
+            yield item.polish()

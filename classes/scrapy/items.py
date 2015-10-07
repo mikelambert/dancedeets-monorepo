@@ -12,38 +12,49 @@ import string
 
 from nlp import categories
 
-class ClassItem(scrapy.Item):
-    studio = scrapy.Field()
-    source_page = scrapy.Field()
-    recurrence_id = scrapy.Field()
-    style = scrapy.Field()
-    teacher = scrapy.Field()
-    teacher_link = scrapy.Field()
-    start_time = scrapy.Field()
-    end_time = scrapy.Field()
-    auto_categories = scrapy.Field()
+class StudioClass(scrapy.DictItem):
+    """This is basically a dictionary with methods.
+    Originally was using scrapy.Item and scrapy.ItemLoader,
+    but it was making the code more complex than necessary.
 
-StripAndCombine = processors.Compose(processors.MapCompose(string.strip), processors.Join(' '), processors.MapCompose(string.strip))
-class ClassLoader(loader.ItemLoader):
-    default_output_processor = processors.TakeFirst()
+    This is a more straightforward API that removes a bunch of the magic.
+    """
 
-    teacher_in = StripAndCombine
-    style_in = StripAndCombine
+    # We could get rid of the need for this by subclassing scrapy.BaseItem.
+    # But this provides some element of safety by enforcing field names.
+    fields = [
+        'studio',
+        'source_page',
+        'recurrence_id',
+        'style',
+        'teacher',
+        'teacher_link',
+        'start_time',
+        'end_time',
+        'auto_categories'
+    ]
 
-    def recurrence_id_out(self, value, context_loader):
+    def _get_recurrence(self):
         """Returns a recurrence_id using fields that remain stable week-to-week,
         and also uniquely identify a class recurrance."""
-        studio = context_loader['item'].get_output_value('studio')
-        style = context_loader['item'].get_output_value('style')
-        start_time = context_loader['item'].get_output_value('start_time')
-        start_time_string = start_time.strftime('Day %w: %H:%M')
-        return '%s: %s: %s' % (studio, start_time_string, style)
+        start_time_string = self['start_time'].strftime('Day %w: %H:%M')
+        return '%s: %s: %s' % (self['studio'], start_time_string, self['style'])
 
-    def auto_categories_out(self, value, context_loader):
+    def _get_auto_categories(self):
         """Parses the fields we have and returns a list of categories for indexing.
         Should have a list of styles, plus a class."""
-        style = context_loader['item'].get_output_value('style')
-        teacher = context_loader['item'].get_output_value('teacher')
-        class_text = '%s: %s' % (style, teacher)
+        class_text = '%s: %s' % (self['style'], self['teacher'])
         styles = categories.find_rules_in_text(class_text, categories.BROAD_STYLES)
         return styles
+
+    def polish(self):
+        self['title']
+        if 'recurrence_id' not in self:
+            self['recurrence_id'] = self._get_recurrence()
+        if 'auto_categories' not in self:
+            self['auto_categories'] = self._get_auto_categories()
+        return self
+
+    def set_selected(self, field, selected):
+        self[field] = ' '.join(x.strip() for x in selected.extract() if x.strip())
+

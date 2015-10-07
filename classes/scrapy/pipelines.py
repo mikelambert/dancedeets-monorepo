@@ -31,5 +31,3 @@ class SaveStudioClassPipeline(object):
         form_dict = dict((name, f._value()) for name, f in iteritems(form._fields))
         f = urllib2.urlopen('http://dev.dancedeets.com:8080/classes/upload', urllib.urlencode(form_dict))
         print f.read()
-
-        return item

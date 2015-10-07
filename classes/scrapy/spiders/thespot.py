@@ -42,7 +42,7 @@ class TheSpotDanceCenter(scrapy.Spider):
                 else:
                     name = summary
                     teacher = None
-                item = items.ClassItem()
+                item = items.StudioClass()
                 item['source_page'] = response.url
                 item['style'] = name
                 item['teacher'] = teacher
@@ -52,7 +52,7 @@ class TheSpotDanceCenter(scrapy.Spider):
                 else:
                     item['end_time'] = event.decoded('dtstart') + datetime.timedelta(hours=6)
                 if not 'rrule' in event:
-                    yield item
+                    yield item.polish()
                 else:
                     rrule = expand_rrule(event)
                     duration = item['end_time'] - item['start_time']
@@ -60,8 +60,9 @@ class TheSpotDanceCenter(scrapy.Spider):
                         newitem = item.copy()
                         newitem['start_time'] = recurrance
                         newitem['end_time'] = recurrance + duration
-                        yield newitem
-            except:
+                        yield newitem.polish()
+            except Exception, e:
+                print "Found error processing ical event: ", e
                 print event
                 raise
 

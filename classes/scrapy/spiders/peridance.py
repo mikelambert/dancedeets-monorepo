@@ -28,16 +28,15 @@ class PeridanceDay(scrapy.Spider):
             else:
                 if 'Street' not in header:
                     continue
-                l = items.ClassLoader(item=items.ClassItem(), selector=row)
-                l.add_value('source_page', response.url)
                 times = row.xpath('.//td[1]/text()').extract()[0]
                 if times == 'Time':
                     continue
-                print times
+                item = items.StudioClass()
+                item['source_page'] = response.url
                 start_time, end_time = parse_times(times)
-                l.add_value('start_time', datetime.datetime.combine(date, start_time))
-                l.add_value('end_time', datetime.datetime.combine(date, end_time))
-                l.add_xpath('style', './/td[2]//text()')
-                l.add_xpath('teacher', './/td[3]//text()')
-                l.add_xpath('teacher_link', './/td[3]//@href')
-                yield l.load_item()
+                item['start_time'] = datetime.datetime.combine(date, start_time)
+                item['end_time'] = datetime.datetime.combine(date, end_time)
+                item.add'style', row.xpath('.//td[2]//text()'))
+                item.add('teacher', row.xpath('.//td[3]//text()'))
+                item.add('teacher_link', row.xpath('.//td[3]//@href'))
+                yield l.polish()

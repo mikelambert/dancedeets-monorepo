@@ -14,6 +14,11 @@ class EXPG(scrapy.Spider):
     start_urls = [
         'http://expg-ny.com/schedule.html',
     ]
+    #TODO:
+    address = ''
+    latitude = ''
+    longitude = ''
+
 
     def parse(self, response):
         table = response.css('div.schedule_container')
@@ -36,13 +41,13 @@ class EXPG(scrapy.Spider):
                     level = class_block.css('.cell_txt_mbnone').xpath('./text()').extract()[0]
                     real_style = '%s %s' % (level, style)
                     
-                    l = items.ClassLoader(item=items.ClassItem(), selector=class_block)
-                    l.add_value('source_page', response.url)
-                    l.add_value('start_time', datetime.datetime.combine(date, start_time))
-                    l.add_value('end_time', datetime.datetime.combine(date, end_time))
-                    l.add_value('style', real_style)
-                    l.add_css('teacher', '.cell_txt_pc::text')
+                    item = items.StudioClass()
+                    item['source_page'] = response.url
+                    item['start_time'] = datetime.datetime.combine(date, start_time)
+                    item['end_time'] = datetime.datetime.combine(date, end_time)
+                    item['style'] = real_style
+                    item.add('teacher', class_block.css('.cell_txt_pc::text'))
                     # This information is incorrect on their website :(
                     #teacher_link = class_block.css('.table_middle_tate').xpath('./a/@href').extract()[0]
-                    #l.add_value('teacher_link', teacher_link)
-                    yield l.load_item()
+                    #item['teacher_link'] = teacher_link
+                    yield item.polish()
