@@ -65,7 +65,8 @@ class RelevantHandler(SearchHandler):
             try:
                 search_query = search.SearchQuery.create_from_query(fe_search_query)
             except search.SearchException as e:
-                self.add_error(str(e))
+                logging.warning("Bad search query: %s", fe_search_query)
+                self.add_error(unicode(e))
 
             if search_query and fe_search_query.validated:
                 search_results = search_query.get_search_results(self.fbl)

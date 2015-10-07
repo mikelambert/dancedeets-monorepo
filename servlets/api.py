@@ -280,7 +280,8 @@ def canonicalize_event_data(db_event, event_keywords):
 
     # cover images
     if fb_event.get('cover_info'):
-        cover_id = fb_event['info']['cover']['cover_id']
+        # Old FB API versions returned ints instead of strings, so let's stringify manually to ensure we can look up the cover_info
+        cover_id = str(fb_event['info']['cover']['cover_id'])
         cover_images = sorted(fb_event['cover_info'][cover_id]['images'], key=lambda x: -x['height'])
         event_api['cover'] = {
             'cover_id': cover_id,
@@ -340,7 +341,7 @@ def canonicalize_event_data(db_event, event_keywords):
         event_api['admins'] =  None
 
     annotations = {}
-    if db_event:
+    if db_event and db_event.creation_time:
         annotations['creation'] = {
             'time': db_event.creation_time.strftime(DATETIME_FORMAT),
             'method': db_event.creating_method,
@@ -362,7 +363,10 @@ def canonicalize_event_data(db_event, event_keywords):
     event_api['annotations'] = annotations
     # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only'
     rsvp_fields = ['attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count']
-    event_api['rsvp'] = dict((x, fb_event['info'][x]) for x in rsvp_fields)
+    if 'attending_count' in fb_event['info']:
+        event_api['rsvp'] = dict((x, fb_event['info'][x]) for x in rsvp_fields)
+    else:
+        event_api['rsvp'] = None
 
     return event_api
 

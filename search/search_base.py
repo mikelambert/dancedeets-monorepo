@@ -82,3 +82,6 @@ class FrontendSearchQuery(object):
                 errors.append('html in %s' % field)
         self.validated = not bool(errors)
         return errors
+
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__.__name__, self.__dict__)

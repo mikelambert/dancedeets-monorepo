@@ -11,7 +11,9 @@ except ImportError:
     gmaps_backend = gmaps
 
 class GeocodeException(Exception):
-    pass
+    def __init__(self, arg, status):
+        super(GeocodeException, self).__init__(arg)
+        self.status = status
 
 class GMapsGeocode(object):
     def __init__(self, json_data):
@@ -59,14 +61,18 @@ def parse_geocode(json_result):
     elif json_result['status'] == 'ZERO_RESULTS':
         return None
     else:
-        raise GeocodeException("Got unexpected status: %s" % json_result['status'])
+        raise GeocodeException("Got unexpected status: %s" % json_result['status'], json_result['status'])
 
 def delete(**kwargs):
     gmaps_backend.delete(**kwargs)
 
 def get_geocode(**kwargs):
     json_data = gmaps_backend.fetch_raw(**kwargs)
-    geocode = parse_geocode(json_data)
+    try:
+        geocode = parse_geocode(json_data)
+    except GeocodeException as e:
+        if e.status == 'INVALID_REQUEST':
+            return None
     if geocode:
         geocode.lookup_kwargs = kwargs
     return geocode
