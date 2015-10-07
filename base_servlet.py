@@ -249,7 +249,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                     trusted_cookie_uid = our_cookie_uid
 
         if self.request.cookies.get('user_login', ''):
-            self.response.set_cookie('user_login', '', expires=datetime.datetime(1970,1,2), path='/', domain=self._get_login_cookie_domain())
+            self.response.set_cookie('user_login', '', max_age=0, path='/', domain=self._get_login_cookie_domain())
 
         # If the user has changed facebook users, let's automatically re-login at dancedeets
         if trusted_cookie_uid and trusted_cookie_uid != our_cookie_uid:

@@ -256,7 +256,7 @@
   function deleteLoginCookies() {
     cookie_options = {domain: '.{{ base_hostname }}', path: '/'}
     $.removeCookie('fbsr_{{ app_id }}', cookie_options)
-    $.removeCookie('user_login', cookie_options)
+    $.removeCookie('user_login_{{ app_id }}', cookie_options)
   }
 
   function reloadWithNewToken() {
@@ -267,7 +267,7 @@
     }
   }
   function currentUser() {
-    var user_login = $.cookie('user_login');
+    var user_login = $.cookie('user_login_{{ app_id }}');
     if (user_login) {
       return JSON.parse(user_login)['uid'];
     }
