@@ -1,7 +1,6 @@
 import dateparser
 import datetime
 import re
-import scrapy
 from .. import items
 
 from nlp import event_classifier
@@ -39,14 +38,14 @@ def parse_times(times):
         end_time = format_tuple_as_time_using_time(end_time, start_time)
     return start_time, end_time
 
-class BdcDay(scrapy.Spider):
+class BdcDay(items.StudioScraper):
     name = 'BDC'
     allowed_domains = ['broadwaydancecenter.com']
     start_urls = [
         'http://www.broadwaydancecenter.com/schedule/9_9.shtml',
     ]
 
-    def parse(self, response):
+    def parse_classes(self, response):
         table = response.css('table.grid table.grid')
         self.logger.info('%s', table)
         date_string = table.css('.gridDateTitle').xpath('.//text()').extract()[0]
@@ -65,12 +64,11 @@ class BdcDay(scrapy.Spider):
                 continue
 
             item = items.StudioClass()
-            item['source_page'] = response.url
             start_time, end_time = parse_times(times)
             item['start_time'] = datetime.datetime.combine(date, start_time)
             item['end_time'] = datetime.datetime.combine(date, end_time)
 
             item.add('style', row.xpath('.//td[2]/text() | .//td[3]/text()'))
             item.add('teacher', row.xpath('.//td[4]//text()'))
-            item.add('teacher_link', row.xpath'(.//td[4]//@href)[1]'))
-            yield item.polish()
+            item.add('teacher_link', row.xpath('.//td[4]//@href)[1]'))
+            yield item

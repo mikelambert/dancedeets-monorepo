@@ -6,9 +6,6 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 import scrapy
-from scrapy import loader
-from scrapy.loader import processors
-import string
 
 from nlp import categories
 
@@ -34,27 +31,32 @@ class StudioClass(scrapy.DictItem):
         'auto_categories'
     ]
 
-    def _get_recurrence(self):
+    def add(self, field, selected):
+        self[field] = ' '.join(x.strip() for x in selected.extract() if x.strip())
+
+class StudioScraper(scrapy.Spider):
+    """Base class for all our studio scrapers. Does some per-item field setup that is common across studios."""
+
+    def parse_classes(self, response):
+        raise NotImplementedError()
+
+    def _get_recurrence(self, item):
         """Returns a recurrence_id using fields that remain stable week-to-week,
         and also uniquely identify a class recurrance."""
-        start_time_string = self['start_time'].strftime('Day %w: %H:%M')
-        return '%s: %s: %s' % (self['studio'], start_time_string, self['style'])
+        start_time_string = item['start_time'].strftime('Day %w: %H:%M')
+        return '%s: %s: %s' % (item['studio'], start_time_string, item['style'])
 
-    def _get_auto_categories(self):
+    def _get_auto_categories(self, item):
         """Parses the fields we have and returns a list of categories for indexing.
         Should have a list of styles, plus a class."""
-        class_text = '%s: %s' % (self['style'], self['teacher'])
+        class_text = '%s: %s' % (item['style'], item['teacher'])
         styles = categories.find_rules_in_text(class_text, categories.BROAD_STYLES)
         return styles
 
-    def polish(self):
-        self['title']
-        if 'recurrence_id' not in self:
-            self['recurrence_id'] = self._get_recurrence()
-        if 'auto_categories' not in self:
-            self['auto_categories'] = self._get_auto_categories()
-        return self
-
-    def set_selected(self, field, selected):
-        self[field] = ' '.join(x.strip() for x in selected.extract() if x.strip())
-
+    def parse(self, response):
+        for item in self.parse_classes(response):
+            item['source_page'] = response.url
+            item['studio'] = self.name
+            item['recurrence_id'] = self._get_recurrence(item)
+            item['auto_categories'] = self._get_auto_categories(item)
+            yield item

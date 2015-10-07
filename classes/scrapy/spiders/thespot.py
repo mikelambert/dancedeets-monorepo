@@ -1,7 +1,6 @@
 import datetime
 import dateutil
 import icalendar
-import scrapy
 from .. import items
 
 
@@ -20,14 +19,14 @@ def expand_rrule(event):
         rrule._until = rrule._until.replace(tzinfo=None)
     return rrule
 
-class TheSpotDanceCenter(scrapy.Spider):
+class TheSpotDanceCenter(items.StudioScraper):
     name = 'TheSpot'
     allowed_domains = ['localender.com']
     start_urls = [
         'http://www.localendar.com/public/TheSpotDanceCenter.ics',
     ]
 
-    def parse(self, response):
+    def parse_classes(self, response):
         ical_body = response.body
         calendar = icalendar.Calendar.from_ical(ical_body.replace('\xc2\xa0', ' ').encode('iso-8859-1'))
         for event in calendar.subcomponents:
@@ -43,7 +42,6 @@ class TheSpotDanceCenter(scrapy.Spider):
                     name = summary
                     teacher = None
                 item = items.StudioClass()
-                item['source_page'] = response.url
                 item['style'] = name
                 item['teacher'] = teacher
                 item['start_time'] = event.decoded('dtstart')
@@ -52,7 +50,7 @@ class TheSpotDanceCenter(scrapy.Spider):
                 else:
                     item['end_time'] = event.decoded('dtstart') + datetime.timedelta(hours=6)
                 if not 'rrule' in event:
-                    yield item.polish()
+                    yield item
                 else:
                     rrule = expand_rrule(event)
                     duration = item['end_time'] - item['start_time']
@@ -60,7 +58,7 @@ class TheSpotDanceCenter(scrapy.Spider):
                         newitem = item.copy()
                         newitem['start_time'] = recurrance
                         newitem['end_time'] = recurrance + duration
-                        yield newitem.polish()
+                        yield newitem
             except Exception, e:
                 print "Found error processing ical event: ", e
                 print event

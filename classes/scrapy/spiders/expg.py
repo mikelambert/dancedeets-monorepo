@@ -1,6 +1,5 @@
 import dateparser
 import datetime
-import scrapy
 from .. import items
 
 
@@ -8,7 +7,7 @@ def parse_times(times):
     start, end = times.split(u' - ')
     return dateparser.parse('%s pm' % start).time(), dateparser.parse('%s pm' % end).time()
 
-class EXPG(scrapy.Spider):
+class EXPG(items.StudioScraper):
     name = 'EXPG'
     allowed_domains = ['expg-ny.com']
     start_urls = [
@@ -20,7 +19,7 @@ class EXPG(scrapy.Spider):
     longitude = ''
 
 
-    def parse(self, response):
+    def parse_classes(self, response):
         table = response.css('div.schedule_container')
         for day_block in table.css('li.schedule_span'):
             day = day_block.css('.sdl_span_ttl').xpath('./text()').extract()[0]
@@ -42,7 +41,6 @@ class EXPG(scrapy.Spider):
                     real_style = '%s %s' % (level, style)
                     
                     item = items.StudioClass()
-                    item['source_page'] = response.url
                     item['start_time'] = datetime.datetime.combine(date, start_time)
                     item['end_time'] = datetime.datetime.combine(date, end_time)
                     item['style'] = real_style
@@ -50,4 +48,4 @@ class EXPG(scrapy.Spider):
                     # This information is incorrect on their website :(
                     #teacher_link = class_block.css('.table_middle_tate').xpath('./a/@href').extract()[0]
                     #item['teacher_link'] = teacher_link
-                    yield item.polish()
+                    yield item

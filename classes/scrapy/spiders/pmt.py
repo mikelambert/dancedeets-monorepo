@@ -1,6 +1,5 @@
 import dateparser
 import datetime
-import scrapy
 from .. import items
 
 from nlp import event_classifier
@@ -12,14 +11,14 @@ def parse_times(time_string):
     end_time = dateparser.parse(end_string).time()
     return start_time, end_time
 
-class PMTHouseOfDance(scrapy.Spider):
+class PMTHouseOfDance(items.StudioScraper):
     name = 'PMT'
     allowed_domains = ['pmthouseofdance.com']
     start_urls = [
         'http://www.pmthouseofdance.com/?_escaped_fragment_=schedule/c1jfb',
     ]
 
-    def parse(self, response):
+    def parse_classes(self, response):
         table = response.css('div.Text')
 
         captured_columns = []
@@ -57,13 +56,12 @@ class PMTHouseOfDance(scrapy.Spider):
                 continue
 
             item = items.StudioClass()
-            item['source_page'] = response.url
             item['style'] = style
             item['teacher'] = row[3]
             # do we care?? row[4]
             start_time, end_time = parse_times(row[1])
             item['start_time'] = datetime.datetime.combine(date, start_time)
             item['end_time'] = datetime.datetime.combine(date, end_time)
-            yield item.polish()
+            yield item
 
 
