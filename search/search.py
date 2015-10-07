@@ -191,6 +191,9 @@ class SearchResult(object):
         ]
         return jinja2.Markup('\n'.join(html))
 
+class SearchException(Exception):
+    pass
+
 class SearchQuery(object):
     def __init__(self, time_period=None, start_time=None, end_time=None, bounds=None, min_attendees=None, keywords=None):
         self.time_period = time_period
@@ -228,6 +231,8 @@ class SearchQuery(object):
             else:
                 distance_in_km = query.distance
             geocode = gmaps_api.get_geocode(address=query.location)
+            if not geocode:
+                raise SearchException("Did not understand location: %s" % query.location)
             bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
         else:
             bounds = None

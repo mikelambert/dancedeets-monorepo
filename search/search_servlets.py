@@ -61,8 +61,13 @@ class RelevantHandler(SearchHandler):
             self.add_error('Invalid search query: %s' % ', '.join(validation_errors))
 
         if not self.request.get('calendar'):
-            search_query = search.SearchQuery.create_from_query(fe_search_query)
-            if fe_search_query.validated:
+            search_query = None
+            try:
+                search_query = search.SearchQuery.create_from_query(fe_search_query)
+            except search.SearchException as e:
+                self.add_error(str(e))
+
+            if search_query and fe_search_query.validated:
                 search_results = search_query.get_search_results(self.fbl)
             else:
                 search_results = []
@@ -75,7 +80,7 @@ class RelevantHandler(SearchHandler):
             logging.info("Decorating with personal rsvp data took %s seconds", time.time() - a)
 
             past_results, present_results, grouped_results = search.group_results(search_results)
-            if search_query.time_period == dates.TIME_FUTURE:
+            if search_query and search_query.time_period == dates.TIME_FUTURE:
                 present_results = past_results + present_results
                 past_results = []
 
