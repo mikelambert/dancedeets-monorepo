@@ -163,7 +163,8 @@ class SearchHandler(ApiHandler):
 
 ISO_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
-@app.route('/api/v\d+.\d+/auth')
+# Released a version of iOS that requested from /api/v1.1auth, so let's handle that here for awhile
+@app.route('/api/v\d+.\d+/?auth')
 class AuthHandler(ApiHandler):
     requires_auth = True
 
