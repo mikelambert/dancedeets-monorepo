@@ -27,6 +27,7 @@ class TheSpotDanceCenter(items.StudioScraper):
     ]
 
     def parse_classes(self, response):
+        future_horizon = datetime.datetime.now() + datetime.timedelta(days=14)
         ical_body = response.body
         calendar = icalendar.Calendar.from_ical(ical_body.replace('\xc2\xa0', ' ').encode('iso-8859-1'))
         for event in calendar.subcomponents:
@@ -54,11 +55,12 @@ class TheSpotDanceCenter(items.StudioScraper):
                 else:
                     rrule = expand_rrule(event)
                     duration = item['end_time'] - item['start_time']
-                    for recurrance in rrule:
-                        newitem = item.copy()
-                        newitem['start_time'] = recurrance
-                        newitem['end_time'] = recurrance + duration
-                        yield newitem
+                    for recurrence in rrule:
+                        if recurrence < future_horizon:
+                            newitem = item.copy()
+                            newitem['start_time'] = recurrence
+                            newitem['end_time'] = recurrence + duration
+                            yield newitem
             except Exception, e:
                 print "Found error processing ical event: ", e
                 print event
