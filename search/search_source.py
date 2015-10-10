@@ -12,10 +12,6 @@ class SourceIndex(index.BaseIndex):
     index_name = 'AllSources'
 
     @classmethod
-    def _get_id(cls, obj):
-        return obj.graph_id
-
-    @classmethod
     def _create_doc_event(cls, source):
         fb_info = source.fb_info
         if not fb_info:

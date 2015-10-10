@@ -364,10 +364,6 @@ class EventsIndex(index.BaseIndex):
     obj_type = eventdata.DBEvent
 
     @classmethod
-    def _get_id(self, obj):
-        return obj.fb_event_id
-
-    @classmethod
     def _create_doc_event(cls, db_event):
         fb_event = db_event.fb_event
         if fb_event['empty']:

@@ -31,10 +31,6 @@ class TestIndex(index.BaseIndex):
     index_name = 'DummyIndex'
 
     @classmethod
-    def _get_id(cls, obj):
-        return obj.the_id
-
-    @classmethod
     def _create_doc_event(cls, obj):
         if not obj.indexable:
             return None

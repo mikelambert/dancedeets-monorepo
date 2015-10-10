@@ -11,10 +11,6 @@ class BaseIndex(object):
     index_name = None
 
     @classmethod
-    def _get_id(self, obj):
-        raise NotImplementedError()
-
-    @classmethod
     def _create_doc_event(cls, obj):
         raise NotImplementedError()
 
@@ -31,7 +27,11 @@ class BaseIndex(object):
         index_objs = []
         deindex_ids = []
         for obj in objects_to_update:
-            obj_id = cls._get_id(obj)
+            if cls._is_ndb():
+                obj_id = obj.key.string_id()
+            else:
+                obj_id = obj.key().name()
+
             logging.info("Adding to search index: %s", obj_id)
             doc_event = cls._create_doc_event(obj)
             if not doc_event:
