@@ -5,6 +5,7 @@ import unittest
 from events import eventdata
 from events import event_locations
 import fb_api
+from loc import gmaps_stub
 from test_utils import fb_api_stub
 
 MIKE_ID = '701004'
@@ -16,12 +17,15 @@ class TestEventLocations(unittest.TestCase):
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate()
         self.fbl = fb_api.FBLookup("dummyid", None)
+        self.gmaps_stub = gmaps_stub.Stub()
+        self.gmaps_stub.activate()
 
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
 
     def tearDown(self):
         self.fb_api.deactivate()
+        self.gmaps_stub.deactivate()
 
     def get_event(self, event_id):
         return self.fbl.get(fb_api.LookupEvent, event_id)

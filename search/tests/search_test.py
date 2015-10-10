@@ -2,6 +2,7 @@ import unittest
 from webtest import TestApp
 
 import main
+from loc import gmaps_stub
 from test_utils import fb_api_stub
 
 app = TestApp(main.application)
@@ -11,6 +12,8 @@ class BaseTestSearch(unittest.TestCase):
     def setUp(self):
         self.fb_api = fb_api_stub.Stub()
         self.fb_api.activate()
+        self.gmaps_stub = gmaps_stub.Stub()
+        self.gmaps_stub.activate()
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
         self.testbed.init_search_stub()
@@ -24,6 +27,7 @@ class BaseTestSearch(unittest.TestCase):
 
     def tearDown(self):
         self.fb_api.deactivate()
+        self.gmaps_stub.deactivate()
 
 class TestSearch(BaseTestSearch):
     def runTest(self):
