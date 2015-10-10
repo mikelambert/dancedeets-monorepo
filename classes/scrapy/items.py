@@ -5,6 +5,8 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
+import datetime
+
 import scrapy
 from scrapy import item
 
@@ -29,7 +31,8 @@ class StudioClass(item.DictItem):
         'teacher_link',
         'start_time',
         'end_time',
-        'auto_categories'
+        'auto_categories',
+        'scrape_time',
     ]
 
     def add(self, field, selected):
@@ -37,6 +40,9 @@ class StudioClass(item.DictItem):
 
 class StudioScraper(scrapy.Spider):
     """Base class for all our studio scrapers. Does some per-item field setup that is common across studios."""
+
+    #def __init__(self, *args, **kwargs):
+    #    super(StudioScraper, self).__init__(self, *args, **kwargs)
 
     def parse_classes(self, response):
         raise NotImplementedError()
@@ -55,9 +61,11 @@ class StudioScraper(scrapy.Spider):
         return styles
 
     def parse(self, response):
+        scrape_time = datetime.datetime.now()
         for studio_class in self.parse_classes(response):
             studio_class['source_page'] = response.url
             studio_class['studio'] = self.name
             studio_class['recurrence_id'] = self._get_recurrence(studio_class)
             studio_class['auto_categories'] = self._get_auto_categories(studio_class)
+            studio_class['scrape_time'] = scrape_time
             yield studio_class

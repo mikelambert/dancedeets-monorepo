@@ -2,6 +2,8 @@
 from google.appengine.ext import ndb
 
 class StudioClass(ndb.Model):
+    recurrence_id = ndb.StringProperty()
+
     studio_name = ndb.StringProperty()
     source_page = ndb.StringProperty()
     style = ndb.StringProperty()
@@ -15,4 +17,4 @@ class StudioClass(ndb.Model):
     latitude = ndb.FloatProperty()
     longitude = ndb.FloatProperty()
 
-    scrape_time = ndb.DateTimeProperty(indexed=False)
+    scrape_time = ndb.DateTimeProperty()
