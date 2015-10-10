@@ -47,6 +47,9 @@ class ClassFinishUploadhandler(JsonDataHandler):
         query = query.order(-class_models.StudioClass.start_time)
         classes_on_date = []
         processing_date = None
+        # TODO: Either need infinite query that we break out of
+        # Or need to bound the query with "today minus a couple days"
+        #query.fetch(MAX_OBJECTS, keys_only=True)
         for studio_class in query:
             class_date = studio_class.start_time.date()
             if class_date == processing_date:
@@ -56,7 +59,6 @@ class ClassFinishUploadhandler(JsonDataHandler):
                 processing_date = class_date
                 classes_on_date = [studio_class]
         dedupe_classes(classes_on_date)
-        #query.fetch(MAX_OBJECTS, keys_only=True)
         self.response.status = 200
 
 # TODO: We need to stick these in the main index? Or in an auxiliary index. (Auxiliary index for now, and just trigger searches as appropriate)
