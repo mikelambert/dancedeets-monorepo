@@ -3,14 +3,13 @@ import json
 import logging
 
 from google.appengine.ext import db
-from google.appengine.ext.mapreduce import json_util
+from mapreduce import json_util
 from mapreduce import mapreduce_pipeline
 from mapreduce import operation
 
 from events import eventdata
 import fb_api
 from loc import gmaps_api
-from nlp import event_classifier
 from util import fb_mapreduce
 
 GRAPH_TYPE_PROFILE = 'GRAPH_TYPE_PROFILE'
