@@ -346,6 +346,7 @@ legit_dance = [
     u'رقص الشوارع', # arabic streetdance
     u'البريك دانس', # arabic breakdance
     u'街舞', # chinese streetdance / hiphop
+    u'街頭舞蹈', # chinese streetdance
     u'gatvės šokių', # lithuanian streetdance
     'katutanssi\w*', # finnish streetdance
     "buckin[g']?", "jookin[g']?",

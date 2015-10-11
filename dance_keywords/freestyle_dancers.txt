@@ -81,6 +81,7 @@ hideki
 hilty\W+bosch
 hiro,0
 hiro\W+alma
+hiro sakuma
 hitmaster fish
 hozin
 hurrikane
