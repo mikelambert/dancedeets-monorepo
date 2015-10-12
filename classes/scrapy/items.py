@@ -23,7 +23,7 @@ class StudioClass(item.DictItem):
     # We could get rid of the need for this by subclassing scrapy.BaseItem.
     # But this provides some element of safety by enforcing field names.
     fields = [
-        'studio',
+        'studio_name',
         'source_page',
         'recurrence_id',
         'style',
@@ -51,7 +51,7 @@ class StudioScraper(scrapy.Spider):
         """Returns a recurrence_id using fields that remain stable week-to-week,
         and also uniquely identify a class recurrance."""
         start_time_string = studio_class['start_time'].strftime('Day %w: %H:%M')
-        return '%s: %s: %s' % (studio_class['studio'], start_time_string, studio_class['style'])
+        return '%s: %s: %s' % (studio_class['studio_name'], start_time_string, studio_class['style'])
 
     def _get_auto_categories(self, studio_class):
         """Parses the fields we have and returns a list of categories for indexing.
@@ -64,7 +64,7 @@ class StudioScraper(scrapy.Spider):
         scrape_time = datetime.datetime.now()
         for studio_class in self.parse_classes(response):
             studio_class['source_page'] = response.url
-            studio_class['studio'] = self.name
+            studio_class['studio_name'] = self.name
             studio_class['recurrence_id'] = self._get_recurrence(studio_class)
             studio_class['auto_categories'] = self._get_auto_categories(studio_class)
             studio_class['scrape_time'] = scrape_time

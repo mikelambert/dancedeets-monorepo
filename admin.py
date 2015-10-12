@@ -5,7 +5,7 @@ from flask.ext.admin.contrib import appengine
 
 import keys
 
-from classes.models import StudioClass
+from classes.class_models import StudioClass
 from events.eventdata import DBEvent
 from events.event_locations import LocationMapping
 from event_scraper.potential_events import PotentialEvent

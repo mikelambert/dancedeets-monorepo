@@ -9,7 +9,7 @@ class StudioClass(ndb.Model):
     style = ndb.StringProperty(indexed=False)
     teacher = ndb.StringProperty(indexed=False)
     teacher_link = ndb.StringProperty(indexed=False)
-    start_time = ndb.DateTimeProperty(indexed=False)
+    start_time = ndb.DateTimeProperty()
     end_time = ndb.DateTimeProperty(indexed=False)
 
     auto_categories = ndb.StringProperty(repeated=True)

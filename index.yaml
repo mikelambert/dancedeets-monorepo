@@ -118,6 +118,12 @@ indexes:
   - name: should_look_at
   - name: __scatter__
 
+- kind: StudioClass
+  properties:
+  - name: studio_name
+  - name: start_time
+    direction: desc
+
 - kind: User
   properties:
   - name: __key__
