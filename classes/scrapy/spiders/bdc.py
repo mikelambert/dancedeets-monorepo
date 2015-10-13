@@ -3,8 +3,9 @@ import datetime
 import re
 import urlparse
 
-from .. import items
+import scrapy
 
+from .. import items
 from nlp import event_classifier
 from nlp import keywords
 from nlp import rules
@@ -44,15 +45,13 @@ def parse_times(times):
 class BdcDay(items.StudioScraper):
     name = 'BDC'
     allowed_domains = ['broadwaydancecenter.com']
-    start_urls = [
-        'http://www.broadwaydancecenter.com/schedule/10_12.shtml',
-        'http://www.broadwaydancecenter.com/schedule/10_13.shtml',
-        'http://www.broadwaydancecenter.com/schedule/10_14.shtml',
-        'http://www.broadwaydancecenter.com/schedule/10_15.shtml',
-        'http://www.broadwaydancecenter.com/schedule/10_16.shtml',
-        'http://www.broadwaydancecenter.com/schedule/10_17.shtml',
-        'http://www.broadwaydancecenter.com/schedule/10_18.shtml',
-    ]
+
+    def start_requests(self):
+        today = datetime.date.today()
+        for i in range(7):
+            date_string = (today + datetime.timedelta(days=i)).strftime('%m_%d')
+            yield scrapy.Request('http://www.broadwaydancecenter.com/schedule/10_12.shtml' % date_string)
+
 
     def parse_classes(self, response):
         table = response.css('table.grid table.grid')

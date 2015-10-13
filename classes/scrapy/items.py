@@ -63,9 +63,13 @@ class StudioScraper(scrapy.Spider):
     def parse(self, response):
         scrape_time = datetime.datetime.now()
         for studio_class in self.parse_classes(response):
-            studio_class['source_page'] = response.url
-            studio_class['studio_name'] = self.name
-            studio_class['recurrence_id'] = self._get_recurrence(studio_class)
-            studio_class['auto_categories'] = self._get_auto_categories(studio_class)
-            studio_class['scrape_time'] = scrape_time
-            yield studio_class
+            if isinstance(studio_class, StudioClass):
+                studio_class['source_page'] = response.url
+                studio_class['studio_name'] = self.name
+                studio_class['recurrence_id'] = self._get_recurrence(studio_class)
+                studio_class['auto_categories'] = self._get_auto_categories(studio_class)
+                studio_class['scrape_time'] = scrape_time
+                yield studio_class
+            else:
+                # Could be a regular Request object for nested scraping
+                yield studio_class

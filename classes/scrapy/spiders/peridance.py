@@ -2,6 +2,8 @@ import dateparser
 import datetime
 import urlparse
 
+import scrapy
+
 from .. import items
 
 def parse_times(times):
@@ -11,16 +13,12 @@ def parse_times(times):
 class PeridanceDay(items.StudioScraper):
     name = 'Peridance'
     allowed_domains = ['peridance.com']
-    start_urls = [
-        'http://www.peridance.com/openclasses.cfm?testdate=10/12/2015',
-        'http://www.peridance.com/openclasses.cfm?testdate=10/13/2015',
-        'http://www.peridance.com/openclasses.cfm?testdate=10/14/2015',
-        'http://www.peridance.com/openclasses.cfm?testdate=10/15/2015',
-        'http://www.peridance.com/openclasses.cfm?testdate=10/16/2015',
-        'http://www.peridance.com/openclasses.cfm?testdate=10/17/2015',
-        'http://www.peridance.com/openclasses.cfm?testdate=10/18/2015',
-#        'http://www.peridance.com/curriculum.cfm?DTID=28&dancetype=Hip%20Hop',
-    ]
+
+    def start_requests(self):
+        today = datetime.date.today()
+        for i in range(7):
+            date_string = (today + datetime.timedelta(days=i)).strftime('%m/%d/%Y')
+            yield scrapy.Request('http://www.peridance.com/openclasses.cfm?testdate=%s' % date_string)
 
     def parse_classes(self, response):
         date_string = response.xpath('//pagesubtitle/text()').extract()[0]
