@@ -29,10 +29,10 @@ class TheSpotDanceCenter(items.StudioScraper):
     ]
 
     def parse_classes(self, response):
-        future_horizon = datetime.datetime.now() + datetime.timedelta(days=14)
+        past_horizon = datetime.datetime.today().date()
+        future_horizon = datetime.datetime.today().date() + datetime.timedelta(days=14)
         ical_body = response.body
         calendar = icalendar.Calendar.from_ical(ical_body.replace('\xc2\xa0', ' ').encode('iso-8859-1'))
-        today = datetime.datetime.today()
         for event in calendar.subcomponents:
             try:
                 if not isinstance(event, icalendar.Event):
@@ -54,12 +54,17 @@ class TheSpotDanceCenter(items.StudioScraper):
                 else:
                     item['end_time'] = event.decoded('dtstart') + datetime.timedelta(hours=6)
                 if not 'rrule' in event:
-                    yield item
+                    event_date = item['start_time']
+                    if isinstance(event_date, datetime.datetime):
+                        event_date = event_date.date()
+                    if past_horizon < event_date and event_date < future_horizon:
+                        yield item
                 else:
                     rrule = expand_rrule(event)
                     duration = item['end_time'] - item['start_time']
                     for recurrence in rrule:
-                        if today < recurrence and recurrence < future_horizon:
+                        event_date = recurrence.date()
+                        if past_horizon < event_date and event_date < future_horizon:
                             newitem = item.copy()
                             newitem['start_time'] = recurrence
                             newitem['end_time'] = recurrence + duration
