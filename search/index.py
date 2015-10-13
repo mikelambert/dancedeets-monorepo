@@ -9,6 +9,7 @@ MAX_OBJECTS = 100000
 class BaseIndex(object):
     obj_type = None
     index_name = None
+    query_params = None
 
     @classmethod
     def _create_doc_event(cls, obj):
@@ -49,13 +50,13 @@ class BaseIndex(object):
         doc_index.delete(object_ids)
 
     @classmethod
-    def rebuild_from_query(cls, *query_params):
+    def rebuild_from_query(cls):
         logging.info("Loading Index")
         if cls._is_ndb():
-            db_query = cls.obj_type.query(*query_params)
+            db_query = cls.obj_type.query(*cls.query_params)
         else:
             db_query = cls.obj_type.all()
-            for query_filter in query_params:
+            for query_filter in cls.query_params:
                 db_query = db_query.filter(*query_filter)
         object_keys = db_query.fetch(MAX_OBJECTS, keys_only=True)
         if cls._is_ndb():

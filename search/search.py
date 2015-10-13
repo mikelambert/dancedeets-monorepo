@@ -404,6 +404,7 @@ class AllEventsIndex(EventsIndex):
 
 class FutureEventsIndex(EventsIndex):
     index_name = FUTURE_EVENTS_INDEX
+    query_params = [eventdata.DBEvent.search_time_period==dates.TIME_FUTURE]
 
 def update_fulltext_search_index_batch(events_to_update):
     future_events_to_update = []
@@ -425,7 +426,7 @@ def delete_from_fulltext_search_index(db_event_id):
 
 def construct_fulltext_search_index(index_future=True):
     if index_future:
-        FutureEventsIndex.rebuild_from_query(eventdata.DBEvent.search_time_period==dates.TIME_FUTURE)
+        FutureEventsIndex.rebuild_from_query()
     else:
         AllEventsIndex.rebuild_from_query()
 
