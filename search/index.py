@@ -9,7 +9,7 @@ MAX_OBJECTS = 100000
 class BaseIndex(object):
     obj_type = None
     index_name = None
-    query_params = None
+    query_params = ()
 
     @classmethod
     def _create_doc_event(cls, obj):
