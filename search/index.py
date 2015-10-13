@@ -10,7 +10,6 @@ MAX_OBJECTS = 100000
 class BaseIndex(object):
     obj_type = None
     index_name = None
-    query_params = ()
 
     @classmethod
     def _create_doc_event(cls, obj):
@@ -23,6 +22,10 @@ class BaseIndex(object):
     @classmethod
     def search(cls, query):
         return search.Index(name=cls.index_name).search(query)
+
+    @classmethod
+    def _get_query_params_for_indexing(cls):
+        return []
 
     @classmethod
     def _get_id(cls, obj):
@@ -71,11 +74,9 @@ class BaseIndex(object):
     def rebuild_from_query(cls):
         logging.info("Loading Index")
         if cls._is_ndb():
-            db_query = cls.obj_type.query(*cls.query_params)
+            db_query = cls.obj_type.query(*cls._get_query_params_for_indexing())
         else:
             db_query = cls.obj_type.all()
-            for query_filter in cls.query_params:
-                db_query = db_query.filter(*query_filter)
         object_keys = db_query.fetch(MAX_OBJECTS, keys_only=True)
         object_ids = set(cls._get_id(x) for x in object_keys)
 
@@ -99,7 +100,7 @@ class BaseIndex(object):
             logging.info("Looking at %s doc_id candidates for deletion, will delete %s entries.", len(doc_ids), len(new_ids_to_delete))
             start_id = doc_ids[-1]
         if len(doc_ids_to_delete) and len(doc_ids_to_delete) < len(object_ids) / 10:
-            logging.critical("Deleting %s docs, more than 10% of total %s docs", len(doc_ids_to_delete), len(object_ids))
+            logging.critical("Deleting %s docs, more than 10%% of total %s docs", len(doc_ids_to_delete), len(object_ids))
         logging.info("Deleting %s docs", len(doc_ids_to_delete))
         doc_ids_to_delete = list(doc_ids_to_delete)
         for i in range(0,len(doc_ids_to_delete), docs_per_group):

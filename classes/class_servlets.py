@@ -110,6 +110,5 @@ class ClassFinishUploadhandler(JsonDataHandler):
         dedupe_classes(classes_on_date)
         self.response.status = 200
     get=post
-# TODO: We need to stick these in the main index? Or in an auxiliary index. (Auxiliary index for now, and just trigger searches as appropriate)
 # TODO: We need to optionally return these in the API
 # TODO: We need the api clients to be able to display class data

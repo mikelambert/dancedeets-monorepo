@@ -404,7 +404,10 @@ class AllEventsIndex(EventsIndex):
 
 class FutureEventsIndex(EventsIndex):
     index_name = FUTURE_EVENTS_INDEX
-    query_params = [eventdata.DBEvent.search_time_period==dates.TIME_FUTURE]
+
+    @classmethod
+    def _get_query_params_for_indexing(cls):
+        return [eventdata.DBEvent.search_time_period==dates.TIME_FUTURE]
 
 def update_fulltext_search_index_batch(events_to_update):
     future_events_to_update = []

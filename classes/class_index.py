@@ -1,4 +1,6 @@
+import datetime
 import time
+
 from google.appengine.api import search
 
 from classes import class_models
@@ -13,6 +15,11 @@ from search import index
 class StudioClassesIndex(index.BaseIndex):
     index_name = 'StudioClassIndex'
     obj_type = class_models.StudioClass
+
+    @classmethod
+    def _get_query_params_for_indexing(cls):
+        yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
+        return [(class_models.StudioClass.start_time >= yesterday)]
 
     @classmethod
     def _create_doc_event(cls, studio_class):
