@@ -6,7 +6,7 @@ api_version: 1
 module: default
 
 manual_scaling:
-  instances: 6
+  instances: 2
 
 # At some point, we must swap vm_settings for resources
 # And change runtime form 'vm' to 'custom'
