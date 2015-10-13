@@ -54,7 +54,6 @@ def dedupe_classes(classes):
 class ClassReIndexHandler(JsonDataHandler):
     def post(self):
         for cls in class_models.StudioClass.query().fetch(10000):
-            print cls.latitude
             if not cls.latitude:
                 cls.key.delete()
 
