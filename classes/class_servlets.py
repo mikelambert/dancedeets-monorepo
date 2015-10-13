@@ -79,7 +79,7 @@ class ClassFinishUploadhandler(JsonDataHandler):
                 processing_date = class_date
                 classes_on_date = [studio_class]
         if not found_unique_day:
-            loggings.error("Processed %s events for studio %s, and did not reach the end of days-with-duplicates", num_events, studio_name)
+            logging.error("Processed %s events for studio %s, and did not reach the end of days-with-duplicates", num_events, studio_name)
         self.response.status = 200
     get=post
 # TODO: We need to stick these in the main index? Or in an auxiliary index. (Auxiliary index for now, and just trigger searches as appropriate)
