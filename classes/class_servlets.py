@@ -42,6 +42,7 @@ def dedupe_classes(classes):
     logging.info('De-duping %s classes on %s' %(len(classes), classes[0].start_time.date()))
     most_recent_scrape_time = max(x.scrape_time for x in classes)
     old_classes = [x for x in classes if x.scrape_time != most_recent_scrape_time]
+    deleted = 0
     for x in old_classes:
         # See the note down below next to the StudioClass.query().
         # That query returns stale data, so we double-check the scrape time here.
@@ -53,11 +54,10 @@ def dedupe_classes(classes):
         old_class = x.key.get()
         if old_class.scrape_time != most_recent_scrape_time:
             x.key.delete()
+            deleted += 1
         else:
             logging.error("Found stale data! Went to delete stale class %s due to old scrape_time %s, but it is actually %s", x.key, x.scrape_time, old_class.scrape_time)
-    #ndb.delete_multi(x.key for x in old_classes)
-    new_classes = [x for x in classes if x.scrape_time == most_recent_scrape_time]
-    logging.info("Kept %s classes.", len(new_classes))
+    logging.info("Kept %s classes.", len(classes) - deleted)
     return bool(old_classes)
 
 
@@ -79,7 +79,7 @@ class ClassFinishUploadhandler(JsonDataHandler):
         studio_name = self.request.get('studio_name') or self.json_body['studio_name']
         if not studio_name:
             return
-        logging.info('De-duping all classes for', studio_name)
+        logging.info('De-duping all classes for %s', studio_name)
         historical_fixup = datetime.datetime.today() - datetime.timedelta(days=2)
         # TODO: sometimes this query returns stale data. In particular,
         # it returns objects that don't have the latest updated scrape_time.
@@ -107,6 +107,7 @@ class ClassFinishUploadhandler(JsonDataHandler):
                 dedupe_classes(classes_on_date)
                 processing_date = class_date
                 classes_on_date = [studio_class]
+        dedupe_classes(classes_on_date)
         self.response.status = 200
     get=post
 # TODO: We need to stick these in the main index? Or in an auxiliary index. (Auxiliary index for now, and just trigger searches as appropriate)
