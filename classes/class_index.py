@@ -20,7 +20,7 @@ class StudioClassesIndex(index.BaseIndex):
         description = studio_class.teacher_link
         # include twitter link to studio?
         doc_event = search.Document(
-            doc_id=unicode(studio_class.key.integer_id()),
+            doc_id=studio_class.key.string_id(),
             fields=[
                 search.TextField(name='name', value=title),
                 search.TextField(name='studio', value=studio_class.studio_name),

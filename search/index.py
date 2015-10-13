@@ -32,7 +32,7 @@ class BaseIndex(object):
                 key = obj.key
             else:
                 key = obj
-            obj_id = key.string_id() or key.integer_id()
+            obj_id = key.string_id()
         else:
             if not isinstance(key, db.Key):
                 # Turn objects into keys
@@ -54,7 +54,7 @@ class BaseIndex(object):
             if not doc_event:
                 deindex_ids.append(obj_id)
             else:
-                if doc_event.doc_id != unicode(cls._get_id(obj)):
+                if doc_event.doc_id != cls._get_id(obj):
                     logging.error("Error, created DocEvent with id %r instead of %r" % (doc_event.doc_id, cls._get_id(obj)))
                 index_objs.append(doc_event)
         doc_index = search.Index(name=cls.index_name)
@@ -94,7 +94,7 @@ class BaseIndex(object):
             doc_ids = [x.doc_id for x in doc_index.get_range(ids_only=True, start_id=start_id, include_start_object=False)]
             if not doc_ids:
                 break
-            new_ids_to_delete = set(doc_ids).difference([unicode(x) for x in object_ids])
+            new_ids_to_delete = set(doc_ids).difference(object_ids)
             doc_ids_to_delete.update(new_ids_to_delete)
             logging.info("Looking at %s doc_id candidates for deletion, will delete %s entries.", len(doc_ids), len(new_ids_to_delete))
             start_id = doc_ids[-1]
@@ -131,7 +131,7 @@ class BaseIndex(object):
             if not doc_event:
                 delete_ids.append(obj_id)
                 continue
-            if doc_event.doc_id != unicode(cls._get_id(obj)):
+            if doc_event.doc_id != cls._get_id(obj):
                 logging.error("Error, created DocEvent with id %s instead of %s", doc_event.doc_id, cls._get_id(obj))
             doc_events.append(doc_event)
 
