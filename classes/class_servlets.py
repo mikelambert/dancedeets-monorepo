@@ -1,5 +1,6 @@
 import datetime
 import json
+import logging
 import urllib
 import webapp2
 
@@ -45,6 +46,7 @@ def dedupe_classes(classes):
     new_classes = [x for x in classes if x.scrape_time == most_recent_scrape_time]
     print "Kept:"
     print '\n'.join(['  %s' % x.teacher.encode('utf8') for x in new_classes])
+    return bool(old_classes)
 
 @app.route('/classes/finish_upload')
 class ClassFinishUploadhandler(JsonDataHandler):
@@ -60,22 +62,24 @@ class ClassFinishUploadhandler(JsonDataHandler):
             class_models.StudioClass.start_time > historical_fixup)
         #TODO: why does this sort not work??
         # query = query.order(-class_models.StudioClass.start_time)
-        results = query.fetch(1000)
+        num_events = 1000
+        results = query.fetch(num_events)
         results = sorted(results, key=lambda x: x.start_time, reverse=True)
         classes_on_date = []
         processing_date = None
-        # TODO: Either need infinite query that we break out of
-        # Or need to bound the query with "today minus a couple days"
-        #query.fetch(MAX_OBJECTS, keys_only=True)
+        found_unique_day = False
         for studio_class in results:
             class_date = studio_class.start_time.date()
             if class_date == processing_date:
                 classes_on_date.append(studio_class)
             else:
-                dedupe_classes(classes_on_date)
+                if not dedupe_classes(classes_on_date):
+                    found_unique_day = True
+                    break
                 processing_date = class_date
                 classes_on_date = [studio_class]
-        dedupe_classes(classes_on_date)
+        if not found_unique_day:
+            loggings.error("Processed %s events for studio %s, and did not reach the end of days-with-duplicates", num_events, studio_name)
         self.response.status = 200
     get=post
 # TODO: We need to stick these in the main index? Or in an auxiliary index. (Auxiliary index for now, and just trigger searches as appropriate)
