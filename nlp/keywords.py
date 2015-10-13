@@ -196,6 +196,7 @@ MUSIC_ONLY = Name('MUSIC_ONLY', Any(
     'broken beat',
     'dub',
     'europop',
+    'pop music',
     'trip hop',
     'drum\W?(?:and|&|\+)\W?bass',
     'dnb',
@@ -513,6 +514,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'costume competition',
     'bottles? popping?',
     'poppin.? bottles?',
+    'pop music',
     'dance fitness',
 
     'eye-poppin\w+',

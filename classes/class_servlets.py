@@ -42,6 +42,9 @@ def dedupe_classes(classes):
     most_recent_scrape_time = max(x.scrape_time for x in classes)
     old_classes = [x for x in classes if x.scrape_time != most_recent_scrape_time]
     ndb.delete_multi(x.key for x in old_classes)
+    new_classes = [x for x in classes if x.scrape_time == most_recent_scrape_time]
+    print "Kept:"
+    print '\n'.join(['  %s' % x.teacher.encode('utf8') for x in new_classes])
 
 @app.route('/classes/finish_upload')
 class ClassFinishUploadhandler(JsonDataHandler):
@@ -51,7 +54,10 @@ class ClassFinishUploadhandler(JsonDataHandler):
         if not studio_name:
             return
         print 'De-duping all classes for', studio_name
-        query = class_models.StudioClass.query(class_models.StudioClass.studio_name==studio_name)
+        historical_fixup = datetime.datetime.today() - datetime.timedelta(days=2)
+        query = class_models.StudioClass.query(
+            class_models.StudioClass.studio_name==studio_name,
+            class_models.StudioClass.start_time > historical_fixup)
         #TODO: why does this sort not work??
         # query = query.order(-class_models.StudioClass.start_time)
         results = query.fetch(1000)

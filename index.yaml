@@ -122,6 +122,11 @@ indexes:
   properties:
   - name: studio_name
   - name: start_time
+
+- kind: StudioClass
+  properties:
+  - name: studio_name
+  - name: start_time
     direction: desc
 
 - kind: User

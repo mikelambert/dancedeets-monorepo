@@ -3,7 +3,6 @@ import dateutil
 import icalendar
 from .. import items
 
-
 def expand_rrule(event):
     rrulestr = event['RRULE'].to_ical().decode('utf-8')
     start = event.decoded('dtstart')
@@ -15,7 +14,7 @@ def expand_rrule(event):
         # pytz.timezones don't know any transition dates after 2038
         # either
         rrule._until = datetime.today() + datetime.timedelta(years=1)
-    elif rrule._until.tzinfo:
+    elif rrule._until and rrule._until.tzinfo:
         rrule._until = rrule._until.replace(tzinfo=None)
     return rrule
 
@@ -30,6 +29,7 @@ class TheSpotDanceCenter(items.StudioScraper):
         future_horizon = datetime.datetime.now() + datetime.timedelta(days=14)
         ical_body = response.body
         calendar = icalendar.Calendar.from_ical(ical_body.replace('\xc2\xa0', ' ').encode('iso-8859-1'))
+        today = datetime.datetime.today()
         for event in calendar.subcomponents:
             try:
                 if not isinstance(event, icalendar.Event):
@@ -56,7 +56,7 @@ class TheSpotDanceCenter(items.StudioScraper):
                     rrule = expand_rrule(event)
                     duration = item['end_time'] - item['start_time']
                     for recurrence in rrule:
-                        if recurrence < future_horizon:
+                        if today < recurrence and recurrence < future_horizon:
                             newitem = item.copy()
                             newitem['start_time'] = recurrence
                             newitem['end_time'] = recurrence + duration

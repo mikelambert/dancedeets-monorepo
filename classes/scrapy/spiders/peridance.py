@@ -1,5 +1,7 @@
 import dateparser
 import datetime
+import urlparse
+
 from .. import items
 
 def parse_times(times):
@@ -10,7 +12,13 @@ class PeridanceDay(items.StudioScraper):
     name = 'Peridance'
     allowed_domains = ['peridance.com']
     start_urls = [
-        'http://www.peridance.com/openclasses.cfm',
+        'http://www.peridance.com/openclasses.cfm?testdate=10/12/2015',
+        'http://www.peridance.com/openclasses.cfm?testdate=10/13/2015',
+        'http://www.peridance.com/openclasses.cfm?testdate=10/14/2015',
+        'http://www.peridance.com/openclasses.cfm?testdate=10/15/2015',
+        'http://www.peridance.com/openclasses.cfm?testdate=10/16/2015',
+        'http://www.peridance.com/openclasses.cfm?testdate=10/17/2015',
+        'http://www.peridance.com/openclasses.cfm?testdate=10/18/2015',
 #        'http://www.peridance.com/curriculum.cfm?DTID=28&dancetype=Hip%20Hop',
     ]
 
@@ -37,4 +45,7 @@ class PeridanceDay(items.StudioScraper):
                 item.add('style', row.xpath('.//td[2]//text()'))
                 item.add('teacher', row.xpath('.//td[3]//text()'))
                 item.add('teacher_link', row.xpath('.//td[3]//@href'))
-                yield l
+                url = urlparse.urljoin(response.url, row.xpath('.//td[3]//@href').extract()[0])
+                item['teacher_link'] = url
+
+                yield item

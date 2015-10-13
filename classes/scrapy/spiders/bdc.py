@@ -1,9 +1,12 @@
 import dateparser
 import datetime
 import re
+import urlparse
+
 from .. import items
 
 from nlp import event_classifier
+from nlp import keywords
 from nlp import rules
 
 """
@@ -42,11 +45,20 @@ class BdcDay(items.StudioScraper):
     name = 'BDC'
     allowed_domains = ['broadwaydancecenter.com']
     start_urls = [
-        'http://www.broadwaydancecenter.com/schedule/9_9.shtml',
+        'http://www.broadwaydancecenter.com/schedule/10_12.shtml',
+        'http://www.broadwaydancecenter.com/schedule/10_13.shtml',
+        'http://www.broadwaydancecenter.com/schedule/10_14.shtml',
+        'http://www.broadwaydancecenter.com/schedule/10_15.shtml',
+        'http://www.broadwaydancecenter.com/schedule/10_16.shtml',
+        'http://www.broadwaydancecenter.com/schedule/10_17.shtml',
+        'http://www.broadwaydancecenter.com/schedule/10_18.shtml',
     ]
 
     def parse_classes(self, response):
         table = response.css('table.grid table.grid')
+        # Oh BDC you have such strange HTML variations sometimes
+        if not table:
+            table = response.css('table.grid')
         self.logger.info('%s', table)
         date_string = table.css('.gridDateTitle').xpath('.//text()').extract()[0]
         date = dateparser.parse(date_string).date() 
@@ -60,6 +72,7 @@ class BdcDay(items.StudioScraper):
             # Use our NLP event classification keywords to figure out which BDC classes to keep
             just_style = row.xpath('.//td[2]/text()').extract()[0]
             processor = event_classifier.StringProcessor(just_style)
+            processor.real_tokenize(keywords.PREPROCESS_REMOVAL)
             if not processor.has_token(rules.DANCE_STYLE):
                 continue
 
@@ -70,5 +83,7 @@ class BdcDay(items.StudioScraper):
 
             item.add('style', row.xpath('.//td[2]/text() | .//td[3]/text()'))
             item.add('teacher', row.xpath('.//td[4]//text()'))
-            item.add('teacher_link', row.xpath('.//td[4]//@href)[1]'))
+            url = urlparse.urljoin(response.url, row.xpath('(.//td[4]//@href)[1]').extract()[0])
+            item['teacher_link'] = url
+
             yield item

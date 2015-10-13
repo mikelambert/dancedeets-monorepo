@@ -27,7 +27,6 @@ class SaveStudioClassPipeline(object):
         params = {
             'studio_name': spider.name,
         }
-        print params
         result = make_request('classes/finish_upload', params)
         if result:
             print 'Upload returned: ', result
