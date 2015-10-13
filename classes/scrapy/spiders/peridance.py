@@ -13,6 +13,8 @@ def parse_times(times):
 class PeridanceDay(items.StudioScraper):
     name = 'Peridance'
     allowed_domains = ['peridance.com']
+    latlong = (40.7328217, -73.9907902)
+    address = '126-128 E 13th St, New York, NY'
 
     def start_requests(self):
         today = datetime.date.today()

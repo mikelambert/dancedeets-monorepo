@@ -33,6 +33,9 @@ class StudioClass(item.DictItem):
         'end_time',
         'auto_categories',
         'scrape_time',
+        'latitude',
+        'longitude',
+        'address',
     ]
 
     def add(self, field, selected):
@@ -69,6 +72,9 @@ class StudioScraper(scrapy.Spider):
                 studio_class['recurrence_id'] = self._get_recurrence(studio_class)
                 studio_class['auto_categories'] = self._get_auto_categories(studio_class)
                 studio_class['scrape_time'] = scrape_time
+                studio_class['latitude'] = self.latlong[0]
+                studio_class['longitude'] = self.latlong[1]
+                studio_class['address'] = self.address
                 yield studio_class
             else:
                 # Could be a regular Request object for nested scraping

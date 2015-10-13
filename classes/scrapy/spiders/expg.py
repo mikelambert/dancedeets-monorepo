@@ -10,14 +10,12 @@ def parse_times(times):
 class EXPG(items.StudioScraper):
     name = 'EXPG'
     allowed_domains = ['expg-ny.com']
+    latlong = (40.7246, -73.993123)
+    address = '27 2nd Ave, New York, NY'
+
     start_urls = [
         'http://expg-ny.com/schedule.html',
     ]
-    #TODO:
-    address = ''
-    latitude = ''
-    longitude = ''
-
 
     def parse_classes(self, response):
         table = response.css('div.schedule_container')

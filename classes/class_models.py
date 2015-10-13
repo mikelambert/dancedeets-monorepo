@@ -16,5 +16,6 @@ class StudioClass(ndb.Model):
 
     latitude = ndb.FloatProperty(indexed=False)
     longitude = ndb.FloatProperty(indexed=False)
+    address = ndb.StringProperty(indexed=False)
 
     scrape_time = ndb.DateTimeProperty(indexed=False)

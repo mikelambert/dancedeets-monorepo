@@ -14,7 +14,7 @@ DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 def make_request(path, params):
     data = json.dumps(params)
     quoted_data = urllib.quote_plus(data)
-    f = urllib2.urlopen('http://dev.dancedeets.com:8080/%s' % path, quoted_data)
+    f = urllib2.urlopen('http://www.dancedeets.com/%s' % path, quoted_data)
     result = f.read()
     return result
 

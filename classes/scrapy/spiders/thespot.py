@@ -21,6 +21,9 @@ def expand_rrule(event):
 class TheSpotDanceCenter(items.StudioScraper):
     name = 'TheSpot'
     allowed_domains = ['localender.com']
+    latlong = (40.7434126, -73.9976959)
+    address = '161 W 22nd Street, New York, NY'
+
     start_urls = [
         'http://www.localendar.com/public/TheSpotDanceCenter.ics',
     ]

@@ -45,12 +45,14 @@ def parse_times(times):
 class BdcDay(items.StudioScraper):
     name = 'BDC'
     allowed_domains = ['broadwaydancecenter.com']
+    latlong = (40.7594536, -73.9918209)
+    address = '322 W 45th St, New York, NY'
 
     def start_requests(self):
         today = datetime.date.today()
         for i in range(7):
             date_string = (today + datetime.timedelta(days=i)).strftime('%m_%d')
-            yield scrapy.Request('http://www.broadwaydancecenter.com/schedule/10_12.shtml' % date_string)
+            yield scrapy.Request('http://www.broadwaydancecenter.com/schedule/%s.shtml' % date_string)
 
 
     def parse_classes(self, response):
