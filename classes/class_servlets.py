@@ -7,6 +7,7 @@ import webapp2
 from google.appengine.ext import ndb
 
 import app
+from . import class_index
 from . import class_models
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
@@ -47,6 +48,19 @@ def dedupe_classes(classes):
     print "Kept:"
     print '\n'.join(['  %s' % x.teacher.encode('utf8') for x in new_classes])
     return bool(old_classes)
+
+
+@app.route('/classes/reindex')
+class ClassReIndexHandler(JsonDataHandler):
+    def post(self):
+        for cls in class_models.StudioClass.query().fetch(10000):
+            print cls.latitude
+            if not cls.latitude:
+                cls.key.delete()
+
+        class_index.StudioClassesIndex.rebuild_from_query()
+        self.response.status = 200
+    get=post
 
 @app.route('/classes/finish_upload')
 class ClassFinishUploadhandler(JsonDataHandler):

@@ -14,8 +14,18 @@ class StudioClass(ndb.Model):
 
     auto_categories = ndb.StringProperty(repeated=True)
 
-    latitude = ndb.FloatProperty(indexed=False)
+    latitude = ndb.FloatProperty()
     longitude = ndb.FloatProperty(indexed=False)
     address = ndb.StringProperty(indexed=False)
 
     scrape_time = ndb.DateTimeProperty(indexed=False)
+
+    @classmethod
+    def get_by_ids(cls, id_list, keys_only=False):
+        if not id_list:
+            return []
+        keys = [ndb.Key(cls, x) for x in id_list]
+        if keys_only:
+            return cls.query(cls.key.IN(keys)).fetch(len(keys), keys_only=True)
+        else:
+            return ndb.get_multi(keys)

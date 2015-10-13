@@ -10,7 +10,8 @@ from search import index
 # search.Document
 # (eventually, json representation?)
 
-class EventsIndex(index.BaseIndex):
+class StudioClassesIndex(index.BaseIndex):
+    index_name = 'StudioClassIndex'
     obj_type = class_models.StudioClass
 
     @classmethod
@@ -19,7 +20,7 @@ class EventsIndex(index.BaseIndex):
         description = studio_class.teacher_link
         # include twitter link to studio?
         doc_event = search.Document(
-            doc_id=studio_class.id,
+            doc_id=unicode(studio_class.key.integer_id()),
             fields=[
                 search.TextField(name='name', value=title),
                 search.TextField(name='studio', value=studio_class.studio_name),
@@ -29,7 +30,7 @@ class EventsIndex(index.BaseIndex):
                 search.NumberField(name='latitude', value=studio_class.latitude),
                 search.NumberField(name='longitude', value=studio_class.longitude),
                 search.TextField(name='categories', value=' '.join(studio_class.auto_categories)),
-                search.TextField(name='country', value=studio_class.country),
+                #search.TextField(name='country', value=studio_class.country),
             ],
             #language=XX, # We have no good language detection
             rank=int(time.mktime(studio_class.start_time.timetuple())),
