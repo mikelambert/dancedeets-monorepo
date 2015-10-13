@@ -11,10 +11,13 @@ import urllib2
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
+SERVER = 'www.dancedeets.com'
+#SERVER = 'dev.dancedeets.com:8080'
+
 def make_request(path, params):
     data = json.dumps(params)
     quoted_data = urllib.quote_plus(data)
-    f = urllib2.urlopen('http://www.dancedeets.com/%s' % path, quoted_data)
+    f = urllib2.urlopen('http://%s/%s' % (SERVER, path), quoted_data)
     result = f.read()
     return result
 
