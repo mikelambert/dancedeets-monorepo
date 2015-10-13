@@ -72,6 +72,7 @@ class BdcDay(items.StudioScraper):
             # Use our NLP event classification keywords to figure out which BDC classes to keep
             just_style = row.xpath('.//td[2]/text()').extract()[0]
             processor = event_classifier.StringProcessor(just_style)
+            # Get rid of "Ballet with Pop Music"
             processor.real_tokenize(keywords.PREPROCESS_REMOVAL)
             if not processor.has_token(rules.DANCE_STYLE):
                 continue
