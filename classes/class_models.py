@@ -2,6 +2,29 @@
 from google.appengine.ext import ndb
 
 class StudioClass(ndb.Model):
+    # The dev_appserver's query() sometimes returns stale data
+    # for objects that were recently set. I'm not entirely sure of the cause,
+    # but this ensures that any re-fetches trigger re-loads from
+    # the backend systems, so we can check the latest data ourselves.
+    _use_cache = False
+
+    def __init__(self, **kwargs):
+        if kwargs and 'id' not in kwargs:
+            # We need to construct/use a consistent id that stays the same
+            # Both to make it easier to update fields, without turning through objects
+            # But also to ensure our search index doesn't need to de-index/re-index
+            studio_name = kwargs['studio_name']
+            start_time = kwargs['start_time']
+            teacher = kwargs['teacher']
+            computed_id = self.compute_id(studio_name, start_time, teacher)
+            kwargs['id'] = computed_id
+        super(StudioClass, self).__init__(**kwargs)
+
+    @classmethod
+    def compute_id(cls, studio_name, start_time, teacher):
+        combined_key = '%s: %s: %s' % (studio_name, start_time, teacher)
+        return combined_key[:500]
+
     recurrence_id = ndb.StringProperty()
 
     studio_name = ndb.StringProperty()
