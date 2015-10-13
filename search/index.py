@@ -24,14 +24,19 @@ class BaseIndex(object):
         return search.Index(name=cls.index_name).search(query)
 
     @classmethod
+    def _get_id(cls, key):
+        if cls._is_ndb():
+            obj_id = key.string_id() or key.integer_id()
+        else:
+            obj_id = key().name()
+        return obj_id
+
+    @classmethod
     def update_index(cls, objects_to_update):
         index_objs = []
         deindex_ids = []
         for obj in objects_to_update:
-            if cls._is_ndb():
-                obj_id = obj.key.string_id()
-            else:
-                obj_id = obj.key().name()
+            obj_id = cls._get_id(obj.key)
 
             logging.info("Adding to search index: %s", obj_id)
             doc_event = cls._create_doc_event(obj)
@@ -59,10 +64,7 @@ class BaseIndex(object):
             for query_filter in cls.query_params:
                 db_query = db_query.filter(*query_filter)
         object_keys = db_query.fetch(MAX_OBJECTS, keys_only=True)
-        if cls._is_ndb():
-            object_ids = set(x.string_id() for x in object_keys)
-        else:
-            object_ids = set(x.name() for x in object_keys)
+        object_ids = set(cls._get_id(x) for x in object_keys)
 
         logging.info("Loaded %s objects for indexing", len(object_ids))
         if len(object_ids) >= MAX_OBJECTS:
