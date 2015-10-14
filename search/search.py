@@ -23,9 +23,6 @@ from . import search_base
 
 SLOW_QUEUE = 'slow-queue'
 
-ALL_EVENTS_INDEX = 'AllEvents'
-FUTURE_EVENTS_INDEX = 'FutureEvents'
-
 MAX_EVENTS = 100000
 
 CATEGORY_LOOKUP = dict([(x.index_name, x.public_name) for x in styles.STYLES + event_types.EVENT_TYPES])
@@ -258,14 +255,14 @@ class SearchQuery(object):
                 clauses += ['longitude >= %s AND longitude <= %s' % longitudes]
             else:
                 clauses += ['(longitude >= %s OR longitude <= %s)' % longitudes]
-        index_name = ALL_EVENTS_INDEX
+        index_name = AllEventsIndex.index_name
         if self.time_period:
             if self.time_period in search_base.FUTURE_INDEX_TIMES:
-                index_name = FUTURE_EVENTS_INDEX
+                index_name = FutureEventsIndex.index_name
         if self.start_time:
             # Do we want/need this hack?
             if self.start_time > datetime.datetime.now():
-                index_name = FUTURE_EVENTS_INDEX
+                index_name = FutureEventsIndex.index_name
             clauses += ['end_time >= %s' % self.start_time.date().strftime(self.DATE_SEARCH_FORMAT)]
         if self.end_time:
             clauses += ['start_time <= %s' % self.end_time.date().strftime(self.DATE_SEARCH_FORMAT)]
@@ -400,10 +397,10 @@ class EventsIndex(index.BaseIndex):
         return doc_event
 
 class AllEventsIndex(EventsIndex):
-    index_name = ALL_EVENTS_INDEX
+    index_name = 'AllEvents'
 
 class FutureEventsIndex(EventsIndex):
-    index_name = FUTURE_EVENTS_INDEX
+    index_name = 'FutureEvents'
 
     @classmethod
     def _get_query_params_for_indexing(cls):
