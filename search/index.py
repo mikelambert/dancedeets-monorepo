@@ -20,8 +20,12 @@ class BaseIndex(object):
         return issubclass(cls.obj_type, ndb.Model)
 
     @classmethod
+    def real_index(cls):
+        return search.Index(name=cls.index_name)
+
+    @classmethod
     def search(cls, query):
-        return search.Index(name=cls.index_name).search(query)
+        return cls.real_index().search(query)
 
     @classmethod
     def _get_query_params_for_indexing(cls):
@@ -60,14 +64,14 @@ class BaseIndex(object):
                 if doc_event.doc_id != cls._get_id(obj):
                     logging.error("Error, created DocEvent with id %r instead of %r" % (doc_event.doc_id, cls._get_id(obj)))
                 index_objs.append(doc_event)
-        doc_index = search.Index(name=cls.index_name)
+        doc_index = cls.real_index()
         doc_index.put(index_objs)
         doc_index.delete(deindex_ids)
 
     @classmethod
     def delete_ids(cls, object_ids):
         logging.info("Deleting from search index: %s", object_ids)
-        doc_index = search.Index(name=cls.index_name)
+        doc_index = cls.real_index()
         doc_index.delete(object_ids)
 
     @classmethod
@@ -84,7 +88,7 @@ class BaseIndex(object):
         if len(object_ids) >= MAX_OBJECTS:
             logging.critical('Found %s objects. Increase the MAX_OBJECTS limit to search more events.', MAX_OBJECTS)
 
-        doc_index = search.Index(name=cls.index_name)
+        doc_index = cls.real_index()
 
         docs_per_group = search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST
 
@@ -137,7 +141,7 @@ class BaseIndex(object):
             doc_events.append(doc_event)
 
         logging.info("Adding %s documents", len(doc_events))
-        doc_index = search.Index(name=cls.index_name)
+        doc_index = cls.real_index()
         doc_index.put(doc_events)
 
         # These events could not be filtered out too early,

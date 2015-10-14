@@ -255,14 +255,14 @@ class SearchQuery(object):
                 clauses += ['longitude >= %s AND longitude <= %s' % longitudes]
             else:
                 clauses += ['(longitude >= %s OR longitude <= %s)' % longitudes]
-        index_name = AllEventsIndex.index_name
+        search_index = AllEventsIndex
         if self.time_period:
             if self.time_period in search_base.FUTURE_INDEX_TIMES:
-                index_name = FutureEventsIndex.index_name
+                search_index = FutureEventsIndex
         if self.start_time:
             # Do we want/need this hack?
             if self.start_time > datetime.datetime.now():
-                index_name = FutureEventsIndex.index_name
+                search_index = FutureEventsIndex
             clauses += ['end_time >= %s' % self.start_time.date().strftime(self.DATE_SEARCH_FORMAT)]
         if self.end_time:
             clauses += ['start_time <= %s' % self.end_time.date().strftime(self.DATE_SEARCH_FORMAT)]
@@ -273,7 +273,7 @@ class SearchQuery(object):
         if clauses:
             full_search = ' '.join(clauses)
             logging.info("Doing search for %r", full_search)
-            doc_index = search.Index(name=index_name)
+            doc_index = search_index.real_index()
             #TODO(lambert): implement pagination
             if ids_only:
                 options = {'returned_fields': ['start_time', 'end_time']}
