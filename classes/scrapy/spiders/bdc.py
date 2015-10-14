@@ -60,7 +60,6 @@ class BdcDay(items.StudioScraper):
         # Oh BDC you have such strange HTML variations sometimes
         if not table:
             table = response.css('table.grid')
-        self.logger.info('%s', table)
         date_string = table.css('.gridDateTitle').xpath('.//text()').extract()[0]
         date = dateparser.parse(date_string).date() 
         for row in table.xpath('.//tr'):
