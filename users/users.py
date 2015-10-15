@@ -60,10 +60,10 @@ class User(ndb.Model):
     def distance_in_km(self):
         if not self.distance:
             return 0
-        elif self.distance_units == 'km':
-            return int(self.distance)
-        else:
+        elif self.distance_units == 'miles':
             return math.miles_in_km(int(self.distance))
+        else:
+            return int(self.distance)
 
     def date_only_human_format(self, d):
         return dates.date_only_human_format(d)

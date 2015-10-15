@@ -108,13 +108,9 @@ class SearchHandler(ApiHandler):
                 else:
                     self.add_error('Please enter a location or keywords')                
         else:
-            if fe_search_query.distance_units == 'miles':
-                distance_in_km = math.miles_in_km(fe_search_query.distance)
-            else:
-                distance_in_km = fe_search_query.distance
             geocode = gmaps_api.get_geocode(address=fe_search_query.location)
             if geocode:
-                southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
+                southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), fe_search_query.distance_in_km())
                 city_name = formatting.format_geocode(geocode)
                 # This will fail on a bad location, so let's verify the location is geocodable above first.
             else:

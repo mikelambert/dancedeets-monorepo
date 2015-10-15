@@ -42,12 +42,8 @@ class SearchPageQuery(object):
     @classmethod
     def create_from_query(cls, query, start_end_query=False):
         if query.location:
-            if query.distance_units == 'miles':
-                distance_in_km = math.miles_in_km(query.distance)
-            else:
-                distance_in_km = query.distance
             geocode = gmaps_api.get_geocode(address=query.location)
-            bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
+            bounds = math.expand_bounds(geocode.latlng_bounds(), query.distance_in_km())
         else:
             bounds = None
         # min_likes=query.min_likes,

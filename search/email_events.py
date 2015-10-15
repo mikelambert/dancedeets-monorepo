@@ -29,12 +29,7 @@ def email_for_user(user, fbl, should_send=True):
     user_location = user.location
     if not user_location:
         return
-    distance = int(user.distance)
-    distance_units = user.distance_units
-    if distance_units == 'miles':
-        distance_in_km = math.miles_in_km(distance)
-    else:
-        distance_in_km = distance
+    distance_in_km = user.distance_in_km()
     min_attendees = user.min_attendees
 
     # search for relevant events

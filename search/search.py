@@ -220,14 +220,10 @@ class SearchQuery(object):
     @classmethod
     def create_from_query(cls, query, start_end_query=False):
         if query.location:
-            if query.distance_units == 'miles':
-                distance_in_km = math.miles_in_km(query.distance)
-            else:
-                distance_in_km = query.distance
             geocode = gmaps_api.get_geocode(address=query.location)
             if not geocode:
                 raise SearchException("Did not understand location: %s" % query.location)
-            bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
+            bounds = math.expand_bounds(geocode.latlng_bounds(), query.distance_in_km())
         else:
             bounds = None
         if start_end_query:

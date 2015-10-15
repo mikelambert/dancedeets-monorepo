@@ -1,5 +1,7 @@
 import datetime
 
+from loc import math
+
 TIME_PAST = 'PAST'
 TIME_ONGOING = 'ONGOING'
 TIME_UPCOMING = 'UPCOMING'
@@ -35,6 +37,13 @@ class FrontendSearchQuery(object):
         d['distance'] = self.distance
         d['distance_units'] = self.distance_units
         return d
+
+    def distance_in_km(self):
+        if self.distance_units == 'miles':
+            distance_in_km = math.miles_in_km(self.distance)
+        else:
+            distance_in_km = self.distance
+        return distance_in_km
 
     @classmethod
     def create_from_request_and_user(cls, request, user, major_version=None, minor_version=None):
