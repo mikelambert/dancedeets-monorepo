@@ -279,7 +279,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['event'] = e
         self.display['fb_event'] = fb_event
 
-        self.display['highlight_keywords'] = self.jinja_env.filters['highlight_keywords'] = event_classifier.highlight_keywords
+        self.jinja_env.filters['highlight_keywords'] = event_classifier.highlight_keywords
 
         self.display['track_google_analytics'] = False
         self.render_template('admin_edit')
@@ -370,7 +370,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
 
         self.display['events'] = events
         self.display['fb_event'] = fb_event
-        self.display['parse_fb_timestamp'] = self.jinja_env.filters['parse_fb_timestamp'] = dates.parse_fb_timestamp
+        self.jinja_env.filters['parse_fb_timestamp'] = dates.parse_fb_timestamp
         self.render_template('add')
 
     def post(self):

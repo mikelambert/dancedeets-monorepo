@@ -53,9 +53,9 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
         self.display['truncate'] = lambda text, length: text[:length]
-        self.display['format_html'] = self.jinja_env.filters['format_html'] = text.format_html
-        self.display['linkify'] = self.jinja_env.filters['linkify'] = text.linkify
-        self.display['format_js'] = self.jinja_env.filters['format_js'] = text.format_js
+        self.jinja_env.filters['format_html'] = text.format_html
+        self.jinja_env.filters['linkify'] = text.linkify
+        self.jinja_env.filters['format_js'] = text.format_js
         self.display['jsonify'] = json.dumps
         self.display['urllib_quote_plus'] = urllib.quote_plus
         self.display['urlencode'] = lambda x: urllib.quote_plus(x.encode('utf8'))
@@ -450,21 +450,21 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.fbl = fb_api.FBLookup(None, None)
         self.fbl.debug = 'fbl' in self.debug_list
         if self.user:
-            self.display['date_only_human_format'] = self.jinja_env.filters['date_only_human_format'] = self.user.date_only_human_format
-            self.display['date_human_format'] = self.jinja_env.filters['date_human_format'] = self.user.date_human_format
-            self.display['duration_human_format'] = self.jinja_env.globals['duration_human_format'] = self.user.duration_human_format
+            self.jinja_env.filters['date_only_human_format'] = self.user.date_only_human_format
+            self.jinja_env.filters['date_human_format'] = self.user.date_human_format
+            self.jinja_env.globals['duration_human_format'] = self.user.duration_human_format
             self.display['messages'] = self.user.get_and_purge_messages()
         else:
-            self.display['date_only_human_format'] = self.jinja_env.filters['date_only_human_format'] = dates.date_only_human_format
-            self.display['date_human_format'] = self.jinja_env.filters['date_human_format'] = dates.date_human_format
-            self.display['duration_human_format'] = self.jinja_env.globals['duration_human_format'] = dates.duration_human_format
+            self.jinja_env.filters['date_only_human_format'] = dates.date_only_human_format
+            self.jinja_env.filters['date_human_format'] = dates.date_human_format
+            self.jinja_env.globals['duration_human_format'] = dates.duration_human_format
             self.display['login_url'] = login_url
-        self.display['datetime_format'] = self.jinja_env.filters['datetime_format'] = dates.datetime_format
+        self.jinja_env.filters['datetime_format'] = dates.datetime_format
 
-        self.display['fb_event_url'] = self.jinja_env.globals['fb_event_url'] = urls.fb_event_url
-        self.display['raw_fb_event_url'] = self.jinja_env.globals['raw_fb_event_url'] = urls.raw_fb_event_url
-        self.display['dd_admin_event_url'] = self.jinja_env.globals['dd_admin_event_url'] = urls.dd_admin_event_url
-        self.display['dd_admin_source_url'] = self.jinja_env.globals['dd_admin_source_url'] = urls.dd_admin_source_url
+        self.jinja_env.globals['fb_event_url'] = urls.fb_event_url
+        self.jinja_env.globals['raw_fb_event_url'] = urls.raw_fb_event_url
+        self.jinja_env.globals['dd_admin_event_url'] = urls.dd_admin_event_url
+        self.jinja_env.globals['dd_admin_source_url'] = urls.dd_admin_source_url
 
         self.display['request'] = request
         self.display['app_id'] = facebook.FACEBOOK_CONFIG['app_id']

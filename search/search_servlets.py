@@ -119,7 +119,7 @@ class RelevantHandler(SearchHandler):
         self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
         self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
 
-        self.display['CHOOSE_RSVPS'] = self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
+        self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
         self.render_template('results')
 
 @app.route('/city/(.*)/?')
