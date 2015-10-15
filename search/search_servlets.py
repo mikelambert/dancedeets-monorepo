@@ -36,22 +36,6 @@ class SearchHandler(base_servlet.BaseRequestHandler):
         fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, self.user)
         self.handle_search(fe_search_query)
 
-    def _fill_ranking_display(self, fe_search_query):
-        a = time.time()
-        ranking_location = rankings.get_ranking_location(fe_search_query.location)
-        logging.info("computing largest nearby city took %s seconds", time.time() - a)
-
-        a = time.time()
-        #TODO(lambert): perhaps produce optimized versions of these without styles/times, for use on the homepage? less pickling/loading required
-        event_top_n_cities, event_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_event_rankings(), rankings.ALL_TIME), ranking_location)
-        user_top_n_cities, user_selected_n_cities = rankings.top_n_with_selected(rankings.get_thing_ranking(rankings.get_city_by_user_rankings(), rankings.ALL_TIME), ranking_location)
-        logging.info("Sorting and ranking top-N cities took %s seconds", time.time() - a)
-
-        self.display['user_top_n_cities'] = user_top_n_cities
-        self.display['event_top_n_cities'] = event_top_n_cities
-        self.display['user_selected_n_cities'] = user_selected_n_cities
-        self.display['event_selected_n_cities'] = event_selected_n_cities
-
 @app.route('/')
 @app.route('/events/relevant')
 class RelevantHandler(SearchHandler):
@@ -96,8 +80,6 @@ class RelevantHandler(SearchHandler):
             self.display['selected_tab'] = 'calendar'
         else:
             self.display['selected_tab'] = 'present'
-
-        self._fill_ranking_display(fe_search_query)
 
         self.display['defaults'] = fe_search_query
         if fe_search_query.location and fe_search_query.keywords:
@@ -174,8 +156,6 @@ class RelevantPageHandler(SearchHandler):
         self.display['page_results'] = search_results
 
         self.display['selected_tab'] = 'pages'
-
-        self._fill_ranking_display(fe_search_query)
 
         self.display['defaults'] = fe_search_query
         if fe_search_query.location and fe_search_query.keywords:
