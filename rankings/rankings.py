@@ -79,7 +79,7 @@ def begin_ranking_calculations():
         _app=USER_FOR_CITY_RANKING,
     )
     #TODO(lambert): move this into a /done callback on the above two. use pipeline api?
-    compute_summary(expiry=5*60) # 5 minutes
+    _compute_summary(expiry=5*60) # 5 minutes
 
 
 TOTALS_KEY = 'StatTotals'
@@ -87,24 +87,21 @@ TOTALS_EXPIRY = 6*3600
 def retrieve_summary():
     totals = memcache.get(TOTALS_KEY)
     if not totals:
-        totals = compute_summary()
+        totals = _compute_summary()
     return totals
 
-def compute_summary(expiry=TOTALS_EXPIRY):
+def _compute_summary(expiry=TOTALS_EXPIRY):
     # IN PROGRESS
     event_rankings = get_city_by_event_rankings()
     if event_rankings:
-        total_events = compute_sum(event_rankings, ALL_TIME)
+        total_events = _compute_sum(event_rankings, ALL_TIME)
     else:
         total_events = 0
     user_rankings = get_city_by_user_rankings()
     if user_rankings:
-        total_users = compute_sum(user_rankings, ALL_TIME)
+        total_users = _compute_sum(user_rankings, ALL_TIME)
     else:
         total_users = 0
-    #TODO(lambert): Store these in the memcache cache?
-    #event_sorted_rankings = get_thing_ranking(event_rankings, ALL_TIME)
-    #user_sorted_rankings = get_thing_ranking(user_rankings, ALL_TIME)
 
     # save
     totals = dict(total_events=total_events, total_users=total_users)
@@ -112,7 +109,7 @@ def compute_summary(expiry=TOTALS_EXPIRY):
 
     return totals
 
-def parse_key_name(full_key_name):
+def _parse_key_name(full_key_name):
     if '/' not in full_key_name:
         return None, {}
     key_name, kwargs_string = full_key_name.split('/', 1)
@@ -132,7 +129,7 @@ def _get_counter_map_for_ranking(ranking):
 def _group_cities_time_period(final_counter_map):
     cities = {}
     for k, counter in final_counter_map.iteritems():
-        prefix, kwargs = parse_key_name(k)
+        prefix, kwargs = _parse_key_name(k)
         if prefix != 'City':
             continue
         cities.setdefault(kwargs['city'], {})[kwargs['time_period']] = counter
@@ -141,7 +138,7 @@ def _group_cities_time_period(final_counter_map):
 def _group_users_time_period(final_counter_map, city):
     users = {}
     for k, counter in final_counter_map.iteritems():
-        prefix, kwargs = parse_key_name(k)
+        prefix, kwargs = _parse_key_name(k)
         if prefix != 'User':
             continue
         if city and kwargs['city'] != city:
@@ -163,7 +160,7 @@ def get_city_by_user_rankings():
     cities = _group_cities_time_period(final_counter_map)
     return cities
 
-def compute_sum(all_rankings, time_period):
+def _compute_sum(all_rankings, time_period):
     total_count = 0
     for city, times in all_rankings.iteritems():
         count = times.get(time_period, {})
@@ -184,37 +181,6 @@ def compute_city_template_rankings(all_rankings, time_period, use_url=True):
             city_ranking.append(dict(city=city, count=count, url=url))
     city_ranking = sorted(city_ranking, key=lambda x: (-x['count'], x['city']))
     return city_ranking
-
-def get_thing_ranking(all_rankings, time_period):
-    if not all_rankings:
-        return []
-    thing_ranking = []
-    for thing, times in all_rankings.iteritems():
-        if thing == 'Unknown':
-            continue
-        count = times.get(time_period, {})
-        if count:
-            thing_ranking.append(dict(key=thing, count=count))
-    thing_ranking = sorted(thing_ranking, key=lambda x: (-x['count'], x['key']))
-    return thing_ranking
-
-def top_n_with_selected(thing_ranking, selected_name, group_size=3):
-    def sel(x):
-        return x['key'] == str(selected_name)
-    selected_indices = [i for (i, x) in enumerate(thing_ranking) if sel(x)]
-    if selected_indices:
-        index = selected_indices[0]
-        min_index = index - group_size/2
-        max_index = index + group_size/2
-        if min_index+1 <= group_size:
-            group_size = max(max_index, group_size)
-            selected_n = []
-        else:
-            selected_n = [(min_index+i+1, sel(x), x) for (i, x) in enumerate(thing_ranking[min_index:max_index+1])]
-    else:
-        selected_n = []
-    top_n = [(i+1, sel(x), x) for (i, x) in enumerate(thing_ranking[:group_size])]
-    return top_n, selected_n
 
 def get_ranking_location(location):
     geocode = gmaps_api.get_geocode(address=location)
