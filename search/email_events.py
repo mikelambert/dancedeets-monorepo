@@ -39,6 +39,8 @@ def email_for_user(user, fbl, should_send=True):
 
     # search for relevant events
     geocode = gmaps_api.get_geocode(address=user_location)
+    if not geocode:
+        return None
     bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
     query = search.SearchQuery(time_period=dates.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
@@ -57,7 +59,7 @@ def email_for_user(user, fbl, should_send=True):
     display['user'] = user
     display['fb_user'] = fb_user
 
-    week_events = [x for x in grouped_results if x.id == 'week_events']
+    week_events = grouped_results[0]
     # Only send emails if we have upcoming events
     if not week_events:
         return None

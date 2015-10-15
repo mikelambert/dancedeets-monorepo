@@ -30,47 +30,44 @@ CATEGORY_LOOKUP = dict([(x.index_name, x.public_name) for x in styles.STYLES + e
 def humanize_categories(categories):
     return [CATEGORY_LOOKUP[x] for x in categories]
 
-class ResultsGroup(object): 
-    def __init__(self, name, id, results, expanded, force=False): 
-        self.name = name 
-        self.id = id 
-        self.results = results 
-        self.expanded = expanded 
-        self.force = force 
+class ResultsGroup(object):
+    def __init__(self, name, results):
+        self.name = name
+        self.results = results
 
-def group_results(search_results): 
+def group_results(search_results):
     now = datetime.datetime.now() - datetime.timedelta(hours=12)
 
-    grouped_results = [] 
-    past_results = [] 
-    present_results = [] 
-    week_results = [] 
-    month_results = [] 
+    grouped_results = []
+    past_results = []
+    present_results = []
+    week_results = []
+    month_results = []
     year_results = []
     past_index = 0
     future_index = 0
-    for result in search_results: 
+    for result in search_results:
         if result.start_time < now:
             result.index = past_index
             past_index += 1
             if result.fake_end_time > now:
                 present_results.append(result)
-            else: 
-                past_results.append(result) 
+            else:
+                past_results.append(result)
         else:
             result.index = future_index
             future_index += 1
-            if result.start_time < now + datetime.timedelta(days=7): 
+            if result.start_time < now + datetime.timedelta(days=7):
                 week_results.append(result)
-            elif result.start_time < now + datetime.timedelta(days=30): 
+            elif result.start_time < now + datetime.timedelta(days=30):
                 month_results.append(result)
-            else: 
-                year_results.append(result) 
-    grouped_results.append(ResultsGroup('Events This Week', 'week_events', week_results, expanded=True)) 
-    grouped_results.append(ResultsGroup('Events This Month', 'month_events', month_results, expanded=True)) 
-    grouped_results.append(ResultsGroup('Future Events', 'year_events', year_results, expanded=True)) 
+            else:
+                year_results.append(result)
+    grouped_results.append(ResultsGroup('Events This Week', week_results))
+    grouped_results.append(ResultsGroup('Events This Month', month_results))
+    grouped_results.append(ResultsGroup('Future Events', year_results))
     grouped_results = [x for x in grouped_results if x.results]
-    return past_results, present_results, grouped_results 
+    return past_results, present_results, grouped_results
 
 class DisplayEvent(ndb.Model):
     """Subset of event data used for rendering"""
