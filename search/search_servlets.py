@@ -7,7 +7,6 @@ import app
 import base_servlet
 from logic import friends
 from logic import rsvp
-from rankings import rankings
 from util import dates
 from . import search
 from . import search_base
