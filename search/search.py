@@ -128,6 +128,7 @@ class DisplayEvent(ndb.Model):
 class SearchResult(object):
     def __init__(self, display_event, db_event):
         self.display_event = display_event
+        # Only used by /search API calls that want to return all data
         self.db_event = db_event # May be None
 
         self.fb_event_id = display_event.fb_event_id
@@ -152,9 +153,6 @@ class SearchResult(object):
         self.attending_friends = []
 
         self.index = None
-
-    def event_keywords_string(self):
-        return ', '.join(self.event_keywords)
 
     def multi_day_event(self):
         return not self.end_time or (self.end_time - self.start_time) > datetime.timedelta(hours=24)
