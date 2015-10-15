@@ -1,6 +1,5 @@
 import app
 import base_servlet
-from rankings import rankings
 from search import search_base
 from users import users
 
