@@ -222,7 +222,7 @@ class SearchQuery(object):
             deduped_results.append(largest_result)
         return deduped_results
 
-    def get_search_results(self, fbl, prefilter=None, full_event=False):
+    def get_search_results(self, prefilter=None, full_event=False):
         a = time.time()
         # Do datastore filtering
         doc_events = self._get_candidate_doc_events(ids_only=not prefilter)

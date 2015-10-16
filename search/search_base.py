@@ -47,7 +47,7 @@ class SearchForm(wtforms.Form):
     distance_units  = wtforms.SelectField(choices=[('miles', 'Miles'), ('km', 'KM')], default='km')
     min_attendees = wtforms.IntegerField(default=0)
     time_period = wtforms.SelectField(choices=[(x, x) for x in TIME_LIST], default=TIME_ALL_FUTURE)
-    deb = wtforms.BooleanField(default=False)
+    deb = wtforms.StringField(default='')
 
     # For calendaring datetime-range queries:
     start = wtforms.DateField()
@@ -86,7 +86,7 @@ class HtmlSearchForm(SearchForm):
 
 
 class SearchResult(object):
-    def __init__(self, fb_event_id, display_event_dict, db_event):
+    def __init__(self, fb_event_id, display_event_dict, db_event=None):
         self.fb_event_id = fb_event_id
         self.data = display_event_dict
         # Only used by /search API calls that want to return all data

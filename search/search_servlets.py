@@ -62,7 +62,7 @@ class RelevantHandler(SearchHandler):
                 self.add_error(unicode(e))
 
             if search_query and validated:
-                search_results = search_query.get_search_results(self.fbl)
+                search_results = search_query.get_search_results()
             else:
                 search_results = []
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
