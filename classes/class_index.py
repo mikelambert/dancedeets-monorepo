@@ -21,26 +21,23 @@ from . import class_models
 # search.Document
 # (eventually, json representation?)
 
-def build_display_event_dict(doc_event):
-    #TODO: This line doesn't work yet, and is the magic we need to make work.
-    """
-    keywords = [unicode(x) for x in db_event.event_keywords]
-    categories = [unicode(x) for x in db_event.auto_categories]
+def build_display_event_dict(doc):
+    def get(x):
+        return doc.field(x).value
     data = {
-        'name': db_event.fb_event['info'].get('name'),
-        'image': eventdata.get_event_image_url(db_event.fb_event),
-        'cover': eventdata.get_largest_cover(db_event.fb_event),
-        'start_time': db_event.fb_event['info']['start_time'],
-        'end_time': db_event.fb_event['info'].get('end_time'),
-        'location': db_event.actual_city_name,
-        'lat': db_event.latitude,
-        'lng': db_event.longitude,
-        'attendee_count': db_event.attendee_count,
-        'categories': categories,
-        'keywords': keywords,
+        'name': get('name'),
+        'image': None,
+        'cover': None,
+        'start_time': get('start_time'),
+        'end_time': get('end_time'),
+        'location': "", #TODO: Add Location
+        'lat': get('latitude'),
+        'lng': get('longitude'),
+        'attendee_count': None,
+        'categories': get('categories').split(' '),
+        'keywords': None,
     }
     return data
-    """
 
 
 class ClassSearchQuery(object):
