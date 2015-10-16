@@ -2,6 +2,7 @@
 
 import logging
 import time
+import urllib
 
 import app
 import base_servlet
@@ -100,16 +101,10 @@ class RelevantHandler(SearchHandler):
             self.display['result_title'] = 'Dance events'
 
         request_params = form.url_params()
-        if 'calendar' in request_params:
-            del request_params['calendar'] #TODO(lambert): clean this up more
-        if 'past' in request_params:
-            del request_params['past'] #TODO(lambert): clean this up more
-        if 'time_period' in request_params:
-            del request_params['time_period'] #TODO(lambert): clean this up more
-        self.display['past_view_url'] = '/events/relevant?past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
-        self.display['upcoming_view_url'] = '/events/relevant?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
-        self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
-        self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
+        self.display['past_view_url'] = '/events/relevant?past=1&%s' % urllib.urlencode(request_params)
+        self.display['upcoming_view_url'] = '/events/relevant?%s' % urllib.urlencode(request_params)
+        self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % urllib.urlencode(request_params)
+        self.display['calendar_feed_url'] = '/calendar/feed?%s' % urllib.urlencode(request_params)
 
         self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
         self.render_template(self.template_name)

@@ -45,7 +45,6 @@ class SearchForm(wtforms.Form):
             d['keywords'] = self.keywords.data
         if self.min_attendees.data:
             d['min_attendees'] = self.min_attendees.data
-        d['time_period'] = self.time_period.data
         d['location'] = self.location.data or ''
         d['distance'] = self.distance.data
         d['distance_units'] = self.distance_units.data
