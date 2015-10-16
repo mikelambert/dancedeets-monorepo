@@ -44,19 +44,13 @@ def group_results(search_results):
     week_results = []
     month_results = []
     year_results = []
-    past_index = 0
-    future_index = 0
     for result in search_results:
         if result.start_time < now:
-            result.index = past_index
-            past_index += 1
             if result.fake_end_time > now:
                 present_results.append(result)
             else:
                 past_results.append(result)
         else:
-            result.index = future_index
-            future_index += 1
             if result.start_time < now + datetime.timedelta(days=7):
                 week_results.append(result)
             elif result.start_time < now + datetime.timedelta(days=30):
@@ -151,8 +145,6 @@ class SearchResult(object):
         # These are initialized in logic/friends.py
         self.attending_friend_count = 0
         self.attending_friends = []
-
-        self.index = None
 
     def multi_day_event(self):
         return not self.end_time or (self.end_time - self.start_time) > datetime.timedelta(hours=24)

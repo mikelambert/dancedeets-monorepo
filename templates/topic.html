@@ -110,7 +110,7 @@
 		<div class="event-image">
 		<a href="{{ fb_event_url(result.fb_event_id) }}">
 {# preload first five images #}
-{% if result.index < 20 %}
+{% if loop.index < 20 %}
 			<img src="{{ result.get_image() }}" width="180" border="0">
 {% else %}
 			<img class="lazy-wide" src="/images/placeholder.gif" data-original="{{ result.get_image() }}" width="180" border="0">

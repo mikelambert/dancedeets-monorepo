@@ -14,7 +14,7 @@
 			<div class="event-image">
 			<a href="{{ fb_event_url(result.fb_event_id) }}">
 {# preload first five images #}
-{% if result.index < 5 %}
+{% if loop.index < 5 %}
 				<img src="{{ result.get_image() }}" width="180" border="0" itemprop="image">
 {% else %}
 				<img class="lazy-narrow" src="/images/placeholder.gif" data-original="{{ result.get_image() }}" width="180" border="0" >
@@ -61,7 +61,7 @@
 			<div class="event-image">
 			<a href="{{ fb_event_url(result.fb_event_id) }}">
 				{# preload first five images #}
-				{% if result.index < 5 %}
+				{% if loop.index < 5 %}
 					<img src="{{ result.get_image() }}" width="180" border="0" itemprop="image">
 				{% else %}
 					<img class="lazy-wide" src="/images/placeholder.gif" data-original="{{ result.get_image() }}" width="180" border="0">

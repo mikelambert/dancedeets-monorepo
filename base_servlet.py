@@ -21,7 +21,6 @@ import fb_api
 from logic import backgrounder
 from logic import mobile
 from rankings import rankings
-from search import search_base
 import styles
 from users import user_creation
 from util import abbrev
