@@ -21,9 +21,31 @@ from . import class_models
 # search.Document
 # (eventually, json representation?)
 
+def build_display_event_dict(doc_event):
+    #TODO: This line doesn't work yet, and is the magic we need to make work.
+    """
+    keywords = [unicode(x) for x in db_event.event_keywords]
+    categories = [unicode(x) for x in db_event.auto_categories]
+    data = {
+        'name': db_event.fb_event['info'].get('name'),
+        'image': eventdata.get_event_image_url(db_event.fb_event),
+        'cover': eventdata.get_largest_cover(db_event.fb_event),
+        'start_time': db_event.fb_event['info']['start_time'],
+        'end_time': db_event.fb_event['info'].get('end_time'),
+        'location': db_event.actual_city_name,
+        'lat': db_event.latitude,
+        'lng': db_event.longitude,
+        'attendee_count': db_event.attendee_count,
+        'categories': categories,
+        'keywords': keywords,
+    }
+    return data
+    """
+
 
 class ClassSearchQuery(object):
-    #TODO: remove duplicated code that's shared between this and search.SearchQuery
+    #TODO: remove duplicated code that's shared between this and search.SearchQuery. Most notably:
+    #__init__, create_from_form, and _get_query_string
     def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, keywords=None):
         self.time_period = time_period
 
@@ -105,8 +127,7 @@ class ClassSearchQuery(object):
 
         # ...and do filtering based on the contents inside our app
         a = time.time()
-        #TODO: This line doesn't work yet, and is the magic we need to make work.
-        search_results = [search_base.SearchResult(MakeDisplayEvent(x)) for x in doc_events]
+        search_results = [search_base.SearchResult(x.doc_id, build_display_event_dict(x)) for x in doc_events]
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
     
         search_results = self._deduped_results(search_results)

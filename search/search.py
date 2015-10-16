@@ -145,7 +145,7 @@ class SearchQuery(object):
         if form.location.data:
             geocode = gmaps_api.get_geocode(address=form.location.data)
             if not geocode:
-                raise search_base.SearchException("Did not understand location: %s" % form.location.data)
+                raise search_base.HtmlSearchFormSearchException("Did not understand location: %s" % form.location.data)
             bounds = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
         else:
             bounds = None
@@ -261,7 +261,7 @@ class SearchQuery(object):
         for display_event, db_event in zip(display_events, real_db_events):
             if not display_event:
                 continue
-            result = search_base.SearchResult(display_event, db_event)
+            result = search_base.SearchResult(display_event.fb_event_id, display_event.data, db_event)
             search_results.append(result)
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
     
