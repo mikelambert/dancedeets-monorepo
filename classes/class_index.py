@@ -21,6 +21,8 @@ from . import class_models
 # search.Document
 # (eventually, json representation?)
 
+DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
 def build_display_event_dict(doc):
     def get(x):
         return doc.field(x).value
@@ -28,9 +30,9 @@ def build_display_event_dict(doc):
         'name': get('name'),
         'image': None,
         'cover': None,
-        'start_time': get('start_time'),
-        'end_time': get('end_time'),
-        'location': "", #TODO: Add Location
+        'start_time': get('start_time').strftime(DATETIME_FORMAT),
+        'end_time': get('end_time').strftime(DATETIME_FORMAT),
+        'location': get('studio'),
         'lat': get('latitude'),
         'lng': get('longitude'),
         'attendee_count': None,
@@ -116,19 +118,17 @@ class ClassSearchQuery(object):
         doc_search_results = doc_index.search(query)
         return doc_search_results.results
 
-    def get_search_results(self, fbl, prefilter=None, full_event=False):
+    def get_search_results(self):
         a = time.time()
         # Do datastore filtering
-        doc_events = self._get_candidate_doc_events(ids_only=not prefilter)
+        doc_events = self._get_candidate_doc_events()
         logging.info("Search returned %s events in %s seconds", len(doc_events), time.time() - a)
 
         # ...and do filtering based on the contents inside our app
         a = time.time()
-        search_results = [search_base.SearchResult(x.doc_id, build_display_event_dict(x)) for x in doc_events]
+        search_results = [search_base.SearchResult(None, build_display_event_dict(x)) for x in doc_events]
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
     
-        search_results = self._deduped_results(search_results)
-
         # Now sort and return the results
         search_results.sort(key=lambda x: x.start_time)
         return search_results
