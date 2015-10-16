@@ -64,5 +64,7 @@ class HtmlSearchForm(SearchForm):
             time_period = TIME_PAST
         else:
             time_period = TIME_ALL_FUTURE
+        if not data:
+            data = {}
         data['time_period'] = time_period
         super(HtmlSearchForm, self).__init__(formdata, data=data)

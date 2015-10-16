@@ -33,7 +33,7 @@ class SearchHandler(base_servlet.BaseRequestHandler):
             self.redirect('/user/edit')
             return
 
-        form = search_base.HtmlSearchForm(self.request.GET, data=self.user.dict_for_form())
+        form = search_base.HtmlSearchForm(self.request.GET, data=self.user.dict_for_form() if self.user else None)
         form.validated = form.validate()
         self.handle_search(form)
 
