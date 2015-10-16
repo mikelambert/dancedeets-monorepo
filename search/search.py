@@ -121,36 +121,36 @@ class DisplayEvent(ndb.Model):
 
 class SearchResult(object):
     def __init__(self, display_event, db_event):
-        self.display_event = display_event
         # Only used by /search API calls that want to return all data
         self.db_event = db_event # May be None
 
         self.fb_event_id = display_event.fb_event_id
-        self.name = display_event.data['name']
-        self.actual_city_name = display_event.data['location']
-        self.latitude = display_event.data['lat']
-        self.longitude = display_event.data['lng']
-        self.event_keywords = display_event.data['keywords']
-        self.attendee_count = display_event.data['attendee_count']
-        fake_event = {'info': {
-            'start_time': display_event.data['start_time'],
-            'end_time': display_event.data['end_time'],
-        }}
-        self.start_time = dates.parse_fb_start_time(fake_event)
-        self.end_time = dates.parse_fb_end_time(fake_event)
-        self.fake_end_time = dates.parse_fb_end_time(fake_event, need_result=True)
-        self.categories = humanize_categories(display_event.data.get('categories', []))
+        self.data = display_event.data
 
         self.rsvp_status = "unknown"
         # These are initialized in logic/friends.py
         self.attending_friend_count = 0
         self.attending_friends = []
 
+    name = property(lambda x: x.data['name'])
+    actual_city_name = property(lambda x: x.data['location'])
+    latitude = property(lambda x: x.data['lat'])
+    longitude = property(lambda x: x.data['lng'])
+    event_keywords = property(lambda x: x.data['keywords'])
+    attendee_count = property(lambda x: x.data['attendee_count'])
+
+    start_time_raw = property(lambda x: x.data['start_time'])
+    end_time_raw = property(lambda x: x.data['end_time'])
+
+    start_time = property(lambda x: dates.parse_fb_timestamp(x.start_time_raw))
+    end_time = property(lambda x: dates.parse_fb_timestamp(x.end_time_raw))
+    fake_end_time = property(lambda x: dates.faked_end_time(x.start_time, x.end_time))
+
+    categories = property(lambda x: humanize_categories(x.data.get('categories', [])))
+    image = property(lambda x: x.data['image'])
+
     def multi_day_event(self):
         return not self.end_time or (self.end_time - self.start_time) > datetime.timedelta(hours=24)
-
-    def get_image(self):
-        return self.display_event.data['image']
 
     def get_attendance(self):
         if self.rsvp_status == 'unsure':
