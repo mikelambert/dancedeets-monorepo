@@ -105,7 +105,6 @@ class RelevantHandler(SearchHandler):
         self.display['upcoming_view_url'] = '/events/relevant?%s' % urllib.urlencode(request_params)
         self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % urllib.urlencode(request_params)
         self.display['calendar_feed_url'] = '/calendar/feed?%s' % urllib.urlencode(request_params)
-
         self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
         self.render_template(self.template_name)
 

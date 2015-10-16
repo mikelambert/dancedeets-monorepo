@@ -278,7 +278,7 @@ $(document).ready(function() {
 		ignoreTimezone: true,
 		allDayDefault: false,
 		defaultView: 'basicWeek',
-		events: '{{ calendar_feed_url|format_js }}'
+		events: '{{ calendar_feed_url|format_js|safe }}'
 	});
 });
 </script>
