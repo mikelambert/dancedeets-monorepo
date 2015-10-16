@@ -277,6 +277,18 @@ class SearchQuery(object):
         doc_search_results = doc_index.search(query)
         return doc_search_results.results
 
+    @staticmethod
+    def _deduped_results(search_results):
+        existing_datetime_locs = collections.defaultdict(lambda: [])
+        for r in search_results:
+            existing_datetime_locs[(r.start_time, r.latitude, r.longitude)].append(r)
+
+        deduped_results = []
+        for same_results in existing_datetime_locs.values():
+            largest_result = max(same_results, key=lambda x: x.attendee_count)
+            deduped_results.append(largest_result)
+        return deduped_results
+
     def get_search_results(self, fbl, prefilter=None, full_event=False):
         a = time.time()
         # Do datastore filtering
@@ -306,6 +318,7 @@ class SearchQuery(object):
             display_events = [DisplayEvent.build(x) for x in real_db_events]
         else:
             display_events = DisplayEvent.get_by_ids(ids)
+            real_db_events = [None for x in ids]
 
         logging.info("Loading DBEvents took %s seconds", time.time() - a)
 
@@ -319,20 +332,13 @@ class SearchQuery(object):
             search_results.append(result)
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
     
-        existing_datetime_locs = collections.defaultdict(lambda: [])
-        for r in search_results:
-            existing_datetime_locs[(r.start_time, r.latitude, r.longitude)].append(r)
-
-        deduped_results = []
-        for same_results in existing_datetime_locs.values():
-            largest_result = max(same_results, key=lambda x: x.attendee_count)
-            deduped_results.append(largest_result)
+        search_results = self._deduped_results(search_results)
 
         # Now sort and return the results
         a = time.time()
-        deduped_results.sort(key=lambda x: x.start_time)
+        search_results.sort(key=lambda x: x.start_time)
         logging.info("search result sorting took %s seconds", time.time() - a)
-        return deduped_results
+        return search_results
 
 class EventsIndex(index.BaseIndex):
     obj_type = eventdata.DBEvent
