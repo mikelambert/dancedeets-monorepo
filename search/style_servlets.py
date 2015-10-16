@@ -11,8 +11,8 @@ class ShowStyleHandler(search_servlets.RelevantHandler):
 
     def handle(self, style):
         self.fbl.batch_fetch()
-        fe_search_query = search_base.FrontendSearchQuery()
-        fe_search_query.keywords = style
+        data = {'keywords': style}
         if not re.search('bot|crawl|spider', self.request.user_agent.lower()):
-            fe_search_query.location = self.get_location_from_headers(city=False)
-        self.handle_search(fe_search_query)
+            data['location'] = self.get_location_from_headers(city=False)
+        form = search_base.SearchForm(data=data)
+        self.handle_search(form)

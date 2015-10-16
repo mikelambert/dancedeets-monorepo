@@ -34,7 +34,7 @@ class User(ndb.Model):
 
     # Search preferences
     location = ndb.StringProperty(indexed=False)
-    distance = ndb.StringProperty(indexed=False)
+    distance = ndb.StringProperty(indexed=False) # WHY NOT INT???
     distance_units = ndb.StringProperty(indexed=False)
     min_attendees = ndb.IntegerProperty(indexed=False)
 
@@ -56,6 +56,14 @@ class User(ndb.Model):
     timezone_offset = ndb.FloatProperty(indexed=False)
 
     weekly_email_send_date = ndb.DateTimeProperty(indexed=False)
+
+    def dict_for_form(self):
+        return {
+            'location': self.location,
+            'distance': int(self.distance),
+            'distance_units': self.distance_units,
+            'min_attendees': self.min_attendees,
+        }
 
     def distance_in_km(self):
         if not self.distance:

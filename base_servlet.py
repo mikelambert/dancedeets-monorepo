@@ -493,11 +493,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         self.display['ip_location'] = self.get_location_from_headers()
 
-        self.display['defaults'] = search_base.FrontendSearchQuery()
-        self.display['defaults'].location = self.request.get('location')
-        self.display['defaults'].keywords = self.request.get('keywords')
-        self.display['defaults'].deb = self.request.get('deb')
-
         self.display['styles'] = styles.STYLES
         self.display['us_cities'] = [
             'New York, NY',

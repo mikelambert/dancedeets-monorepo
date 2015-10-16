@@ -5,7 +5,6 @@ import logging
 import app
 import base_servlet
 from logic import mobile
-from search import search_base
 from users import users
 
 @app.route('/login')
@@ -42,11 +41,6 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         # self.finish_preload()
 
         self.display['user_message'] = self.get_cookie('User-Message')
-
-        self.display['defaults'] = search_base.FrontendSearchQuery()
-        self.display['defaults'].location = self.request.get('location')
-        self.display['defaults'].keywords = self.request.get('keywords')
-        self.display['defaults'].deb = self.request.get('deb')
 
         from util import country_dialing_codes
         self.display['suppress_promos'] = True

@@ -32,26 +32,35 @@ class SearchHandler(base_servlet.BaseRequestHandler):
             self.redirect('/user/edit')
             return
 
-        fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, self.user)
-        self.handle_search(fe_search_query)
+        form = search_base.HtmlSearchForm(self.request.GET, data=self.user.dict_for_form())
+        form.validated = form.validate()
+        self.handle_search(form)
 
 @app.route('/')
 @app.route('/events/relevant')
 class RelevantHandler(SearchHandler):
-    def handle_search(self, fe_search_query):
-        validation_errors = fe_search_query.validation_errors()
-        if validation_errors:
-            self.add_error('Invalid search query: %s' % ', '.join(validation_errors))
+    template_name = 'results'
+    search_query_class = search.SearchQuery
+
+    def handle_search(self, form):
+        validated = form.validate()
+        if not validated:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    self.add_error(u"%s error: %s" % (
+                        getattr(form, field).label.text,
+                        error
+                    ))
 
         if not self.request.get('calendar'):
             search_query = None
             try:
-                search_query = search.SearchQuery.create_from_query(fe_search_query)
+                search_query = self.search_query_class.create_from_query(form)
             except search.SearchException as e:
-                logging.warning("Bad search query: %s", fe_search_query)
+                logging.warning("Bad search query: %s", form)
                 self.add_error(unicode(e))
 
-            if search_query and fe_search_query.validated:
+            if search_query and validated:
                 search_results = search_query.get_search_results(self.fbl)
             else:
                 search_results = []
@@ -73,35 +82,37 @@ class RelevantHandler(SearchHandler):
             self.display['ongoing_results'] = present_results
             self.display['grouped_upcoming_results'] = grouped_results
 
-        if fe_search_query.time_period == search_base.TIME_PAST:
+        if form.time_period.data == search_base.TIME_PAST:
             self.display['selected_tab'] = 'past'
         elif self.request.get('calendar'):
             self.display['selected_tab'] = 'calendar'
         else:
             self.display['selected_tab'] = 'present'
 
-        self.display['defaults'] = fe_search_query
-        if fe_search_query.location and fe_search_query.keywords:
-            self.display['result_title'] = '%s dance events near %s' % (fe_search_query.keywords, fe_search_query.location)
-        elif fe_search_query.location:
-            self.display['result_title'] = '%s dance events' % fe_search_query.location
-        elif fe_search_query.keywords:
-            self.display['result_title'] = '%s dance events' % fe_search_query.keywords
+        self.display['form'] = form
+        if form.location.data and form.keywords.data:
+            self.display['result_title'] = '%s dance events near %s' % (form.keywords.data, form.location.data)
+        elif form.location.data:
+            self.display['result_title'] = '%s dance events' % form.location.data
+        elif form.keywords.data:
+            self.display['result_title'] = '%s dance events' % form.keywords.data
         else:
             self.display['result_title'] = 'Dance events'
 
-        request_params = fe_search_query.url_params()
+        request_params = form.url_params()
         if 'calendar' in request_params:
             del request_params['calendar'] #TODO(lambert): clean this up more
         if 'past' in request_params:
             del request_params['past'] #TODO(lambert): clean this up more
+        if 'time_period' in request_params:
+            del request_params['time_period'] #TODO(lambert): clean this up more
         self.display['past_view_url'] = '/events/relevant?past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
         self.display['upcoming_view_url'] = '/events/relevant?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
         self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
         self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
 
         self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
-        self.render_template('results')
+        self.render_template(self.template_name)
 
 @app.route('/city/(.*)/?')
 class CityHandler(RelevantHandler):
@@ -111,69 +122,11 @@ class CityHandler(RelevantHandler):
     def handle(self, city_name):
         # TODO(lambert): Why is this still required, can we get rid of it?
         self.fbl.batch_fetch() # to avoid bad error handler?
-        fe_search_query = search_base.FrontendSearchQuery()
-        fe_search_query.location = city_name
-        fe_search_query.distance = 50
-        fe_search_query.distance_units = 'miles'
-        self.handle_search(fe_search_query)
+        form = search_base.SearchForm(data={'location': city_name, 'distance': 100, 'distance_units': 'km'})
+        self.handle_search(form)
 
 @app.route('/pages/search')
-class RelevantPageHandler(SearchHandler):
-    def requires_login(self):
-        if not self.request.get('location') and not self.request.get('keywords'):
-            return True
-        return False
+class RelevantPageHandler(RelevantHandler):
+    template_name = 'results_pages'
+    search_query_class = search_pages.SearchPageQuery
 
-    def get(self, *args, **kwargs):
-        self.handle(*args, **kwargs)
-
-    def post(self, *args, **kwargs):
-        self.handle(*args, **kwargs)
-
-    def handle(self, city_name=None):
-        self.finish_preload()
-        if self.user and not self.user.location:
-            #TODO(lambert): make this an error
-            self.user.add_message("We could not retrieve your location from facebook. Please fill out a location below")
-            self.redirect('/user/edit')
-            return
-
-        fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, self.user)
-        self.handle_search(fe_search_query)
-
-    def handle_search(self, fe_search_query):
-        validation_errors = fe_search_query.validation_errors()
-        if validation_errors:
-            self.add_error('Invalid search query: %s' % ', '.join(validation_errors))
-
-        search_query = search_pages.SearchPageQuery.create_from_query(fe_search_query)
-        if fe_search_query.validated:
-            search_results = search_query.get_search_results(self.fbl)
-        else:
-            search_results = []
-
-        self.display['page_results'] = search_results
-
-        self.display['selected_tab'] = 'pages'
-
-        self.display['defaults'] = fe_search_query
-        if fe_search_query.location and fe_search_query.keywords:
-            self.display['result_title'] = 'Facebook Pages near %s containing %s' % (fe_search_query.location, fe_search_query.keywords)
-        elif fe_search_query.location:
-            self.display['result_title'] = 'Facebook Pages near %s' % fe_search_query.location
-        elif fe_search_query.keywords:
-            self.display['result_title'] = 'Facebook Pages containing %s' % fe_search_query.keywords
-        else:
-            self.display['result_title'] = 'Facebook Pages'
-
-        request_params = fe_search_query.url_params()
-        if 'calendar' in request_params:
-            del request_params['calendar'] #TODO(lambert): clean this up more
-        if 'past' in request_params:
-            del request_params['past'] #TODO(lambert): clean this up more
-        self.display['past_view_url'] = '/events/relevant?past=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
-        self.display['upcoming_view_url'] = '/events/relevant?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
-        self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
-        self.display['calendar_feed_url'] = '/calendar/feed?%s' % '&'.join('%s=%s' % (k, v) for (k, v) in request_params.iteritems())
-
-        self.render_template('results_pages')

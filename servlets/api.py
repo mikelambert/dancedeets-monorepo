@@ -94,8 +94,17 @@ class SearchHandler(ApiHandler):
                 return "Events"
 
     def get(self, major_version, minor_version):
-        # Search API explicitly uses user=None
-        fe_search_query = search_base.FrontendSearchQuery.create_from_request_and_user(self.request, None, major_version, minor_version)
+        data = {
+            'location': self.request.get('location'),
+            'keywords': self.request.get('keywords'),
+        }
+        # If it's 1.0 clients, or web clients, then grab all data
+        if major_version == '1' and minor_version == '0':
+            time_period = search_base.TIME_UPCOMING
+        else:
+            time_period = self.request.get('time_period')
+        data['time_period'] = time_period
+        fe_search_query = search_base.SearchForm(data=data)
 
         if not fe_search_query.location:
             city_name = None

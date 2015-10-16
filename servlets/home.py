@@ -1,6 +1,5 @@
 import app
 import base_servlet
-from search import search_base
 from users import users
 
 def get_location(fb_user):
@@ -36,11 +35,6 @@ class HomeHandler(base_servlet.BaseRequestHandler):
         # self.finish_preload()
 
         self.display['user_message'] = self.get_cookie('User-Message')
-
-        self.display['defaults'] = search_base.FrontendSearchQuery()
-        self.display['defaults'].location = self.request.get('location')
-        self.display['defaults'].keywords = self.request.get('keywords')
-        self.display['defaults'].deb = self.request.get('deb')
 
         self.display['next'] = next
         self.render_template('onboard')

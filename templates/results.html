@@ -53,7 +53,7 @@
       <div style="font-weight: bold">Where will you dance next?</div>
       <div class="input-group">
 		<span class="input-group-addon"><i class="fa fa-globe fa-fw"></i></span>
-        <input id="location_input" type="text" name="location" placeholder="everywhere" value="{{ defaults.location }}" class="form-control">
+        <input id="location_input" type="text" name="location" placeholder="everywhere" value="{{ form.location.data }}" class="form-control">
       </div>
     </div>
     <div class="form-group">
@@ -61,11 +61,11 @@
       <div style="font-style: italic; font-size: 70%">You can enter a dance style, dancer, event name, or leave it blank!</div>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="{{ defaults.keywords }}" class="form-control">
+        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="{{ form.keywords.data }}" class="form-control">
       </div>
     </div>
-    {% if defaults.deb %}
-	    <input type="hidden" name="deb" value="{{ defaults.deb }}">
+    {% if form.deb.data %}
+	    <input type="hidden" name="deb" value="{{ form.deb.data }}">
 	{% endif %}
     <button type="submit" class="btn btn-default btn-block" style="margin-top: 1em">
       <span class="glyphicon glyphicon-search"></span>

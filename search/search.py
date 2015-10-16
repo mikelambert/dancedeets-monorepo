@@ -187,18 +187,18 @@ class SearchException(Exception):
     pass
 
 class SearchQuery(object):
-    def __init__(self, time_period=None, start_time=None, end_time=None, bounds=None, min_attendees=None, keywords=None):
+    def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, keywords=None):
         self.time_period = time_period
 
         self.min_attendees = min_attendees
-        self.start_time = start_time
-        self.end_time = end_time
-        if self.start_time and self.end_time:
-            assert self.start_time < self.end_time
-        if self.time_period in search_base.FUTURE_INDEX_TIMES and self.end_time:
-                assert self.end_time > datetime.datetime.now()
-        if self.time_period in search_base.FUTURE_INDEX_TIMES and self.start_time:
-                assert self.start_time < datetime.datetime.now()
+        self.start_date = start_date
+        self.end_date = end_date
+        if self.start_date and self.end_date:
+            assert self.start_date < self.end_date
+        if self.time_period in search_base.FUTURE_INDEX_TIMES and self.end_date:
+            assert self.end_date > datetime.date.today()
+        if self.time_period in search_base.FUTURE_INDEX_TIMES and self.start_date:
+            assert self.start_date < datetime.date.today()
         self.bounds = bounds
 
         if keywords:
@@ -216,19 +216,19 @@ class SearchQuery(object):
         self.extra_fields = []
 
     @classmethod
-    def create_from_query(cls, query, start_end_query=False):
-        if query.location:
-            geocode = gmaps_api.get_geocode(address=query.location)
+    def create_from_query(cls, form, start_end_query=False):
+        if form.location.data:
+            geocode = gmaps_api.get_geocode(address=form.location.data)
             if not geocode:
-                raise SearchException("Did not understand location: %s" % query.location)
-            bounds = math.expand_bounds(geocode.latlng_bounds(), query.distance_in_km())
+                raise SearchException("Did not understand location: %s" % form.location.data)
+            bounds = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
         else:
             bounds = None
+        common_fields = dict(bounds=bounds, min_attendees=form.min_attendees.data, keywords=form.keywords.data)
         if start_end_query:
-            self = cls(bounds=bounds, min_attendees=query.min_attendees, keywords=query.keywords, start_time=query.start_time, end_time=query.end_time)
+            self = cls(start_date=form.start.data, end_date=form.end.data, **common_fields)
         else:
-            time_period = query.time_period
-            self = cls(bounds=bounds, min_attendees=query.min_attendees, keywords=query.keywords, time_period=time_period)
+            self = cls(time_period=form.time_period.data, **common_fields)
         return self
 
     DATE_SEARCH_FORMAT = '%Y-%m-%d'
@@ -250,13 +250,13 @@ class SearchQuery(object):
         if self.time_period:
             if self.time_period in search_base.FUTURE_INDEX_TIMES:
                 search_index = FutureEventsIndex
-        if self.start_time:
+        if self.start_date:
             # Do we want/need this hack?
-            if self.start_time > datetime.datetime.now():
+            if self.start_date > datetime.date.today():
                 search_index = FutureEventsIndex
-            clauses += ['end_time >= %s' % self.start_time.date().strftime(self.DATE_SEARCH_FORMAT)]
-        if self.end_time:
-            clauses += ['start_time <= %s' % self.end_time.date().strftime(self.DATE_SEARCH_FORMAT)]
+            clauses += ['end_time >= %s' % self.start_date.strftime(self.DATE_SEARCH_FORMAT)]
+        if self.end_date:
+            clauses += ['start_time <= %s' % self.end_date.strftime(self.DATE_SEARCH_FORMAT)]
         if self.keywords:
             clauses += ['(%s)' % self.keywords]
         if self.min_attendees:
