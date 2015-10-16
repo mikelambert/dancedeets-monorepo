@@ -104,22 +104,30 @@ class SearchHandler(ApiHandler):
         else:
             time_period = self.request.get('time_period')
         data['time_period'] = time_period
-        fe_search_query = search_base.SearchForm(data=data)
+        form = search_base.SearchForm(data=data)
 
-        if not fe_search_query.location:
+        if not form.validate():
+            for field, errors in form.errors.items():
+                for error in errors:
+                    self.add_error(u"%s error: %s" % (
+                        getattr(form, field).label.text,
+                        error
+                    ))
+
+        if not form.location.data:
             city_name = None
             southwest = None
             northeast = None
-            if not fe_search_query.keywords:
+            if not form.keywords.data:
                 if major_version == "1" and minor_version == "0":
                     self.write_json_success({'results': []})
                     return
                 else:
                     self.add_error('Please enter a location or keywords')                
         else:
-            geocode = gmaps_api.get_geocode(address=fe_search_query.location)
+            geocode = gmaps_api.get_geocode(address=form.location.data)
             if geocode:
-                southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), fe_search_query.distance_in_km())
+                southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
                 city_name = formatting.format_geocode(geocode)
                 # This will fail on a bad location, so let's verify the location is geocodable above first.
             else:
@@ -131,7 +139,7 @@ class SearchHandler(ApiHandler):
 
         self.errors_are_fatal()
 
-        search_query = search.SearchQuery.create_from_query(fe_search_query)
+        search_query = search.SearchQuery.create_from_form(form)
 
         # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
         search_query.limit = 500
@@ -146,7 +154,7 @@ class SearchHandler(ApiHandler):
             except Exception as e:
                 logging.error("Error processing event %s: %s" % (result.fb_event_id, e))
 
-        title = self._get_title(city_name, fe_search_query.keywords)
+        title = self._get_title(city_name, form.keywords.data)
         json_response = {
             'results': json_results,
             'title': title,

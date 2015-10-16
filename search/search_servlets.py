@@ -56,7 +56,7 @@ class RelevantHandler(SearchHandler):
         if not self.request.get('calendar'):
             search_query = None
             try:
-                search_query = self.search_query_class.create_from_query(form)
+                search_query = self.search_query_class.create_from_form(form)
             except search.SearchException as e:
                 logging.warning("Bad search query: %s", form)
                 self.add_error(unicode(e))

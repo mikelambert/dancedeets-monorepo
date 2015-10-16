@@ -40,14 +40,14 @@ class SearchPageQuery(object):
         self.extra_fields = []
 
     @classmethod
-    def create_from_query(cls, query, start_end_query=False):
-        if query.location:
-            geocode = gmaps_api.get_geocode(address=query.location)
+    def create_from_form(cls, query, start_end_query=False):
+        if query.location.data:
+            geocode = gmaps_api.get_geocode(address=query.location.data)
             bounds = math.expand_bounds(geocode.latlng_bounds(), query.distance_in_km())
         else:
             bounds = None
         # min_likes=query.min_likes,
-        self = cls(bounds=bounds, keywords=query.keywords)
+        self = cls(bounds=bounds, keywords=query.keywords.data)
         return self
 
     def _get_candidate_doc_events(self, ids_only=True):

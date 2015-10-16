@@ -1,5 +1,7 @@
 import wtforms
 
+from google.appengine.api import search
+
 from loc import math
 
 TIME_PAST = 'PAST'
@@ -17,9 +19,15 @@ def no_wiki_or_html(form, field):
     if '</a>' in field.data:
         raise wtforms.ValidationError('Cannot search with html markup')
 
+def valid_query(form, field):
+    try:
+        search.search._CheckQuery(field.data)
+    except search.QueryError as e:
+        raise wtforms.ValidationError(str(e))
+
 class SearchForm(wtforms.Form):
     location = wtforms.StringField(default='', validators=[no_wiki_or_html])
-    keywords = wtforms.StringField(default='', validators=[no_wiki_or_html])
+    keywords = wtforms.StringField(default='', validators=[no_wiki_or_html, valid_query])
     distance = wtforms.IntegerField(default=50)
     distance_units  = wtforms.SelectField(choices=[('miles', 'Miles'), ('km', 'KM')], default='km')
     min_attendees = wtforms.IntegerField(default=0)

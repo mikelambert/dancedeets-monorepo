@@ -216,7 +216,7 @@ class SearchQuery(object):
         self.extra_fields = []
 
     @classmethod
-    def create_from_query(cls, form, start_end_query=False):
+    def create_from_form(cls, form, start_end_query=False):
         if form.location.data:
             geocode = gmaps_api.get_geocode(address=form.location.data)
             if not geocode:
