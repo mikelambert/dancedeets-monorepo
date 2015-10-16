@@ -15,31 +15,6 @@
           content="Every street dance event. On the web, on your phone. At home, and when traveling."/>
 {% endblock %}
 
-
-{% macro ranked_list(top_list, selected_list) %}
-	{% if top_list %}
-		{% for i, sel, data in top_list %}
-			{% if sel %}<i>{% endif -%}
-			{{ i }}: {{ data.key }}: {{ data.count }}<br>
-			{%- if sel %}</i>{% endif %}
-		{% endfor %}
-		...<br>
-		{% if selected_list %}
-			{% set user_i = len(selected_list)/2 + 1 %}
-			{% for i, sel, data in selected_list %}
-				{% if sel %}<i>{% endif %}
-				{{ i }}: {{ data.key }}: {{ data.count }}
-				{% if sel %}</i>{% endif %}
-				<br>
-			{% endfor %}
-			...<br>
-		{% endif %}
-	{% else %}
-		No rankings yet!
-	{% endif %}
-{% endmacro %}
-
-
 {% block body %}
 
 <div class="row">
