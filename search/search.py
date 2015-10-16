@@ -2,7 +2,6 @@
 
 import collections
 import datetime
-import jinja2
 import logging
 import pprint
 import re
@@ -12,11 +11,9 @@ from google.appengine.ext import ndb
 from google.appengine.api import search
 
 from events import eventdata
-import event_types
 from loc import gmaps_api
 from loc import math
 from nlp import categories
-import styles
 from util import dates
 from . import index
 from . import search_base
@@ -24,11 +21,6 @@ from . import search_base
 SLOW_QUEUE = 'slow-queue'
 
 MAX_EVENTS = 100000
-
-CATEGORY_LOOKUP = dict([(x.index_name, x.public_name) for x in styles.STYLES + event_types.EVENT_TYPES])
-
-def humanize_categories(categories):
-    return [CATEGORY_LOOKUP[x] for x in categories]
 
 class ResultsGroup(object):
     def __init__(self, name, results):
@@ -118,62 +110,6 @@ class DisplayEvent(ndb.Model):
             return cls.query(cls.key.IN(keys)).fetch(len(keys), keys_only=True)
         else:
             return ndb.get_multi(keys)
-
-class SearchResult(object):
-    def __init__(self, display_event, db_event):
-        # Only used by /search API calls that want to return all data
-        self.db_event = db_event # May be None
-
-        self.fb_event_id = display_event.fb_event_id
-        self.data = display_event.data
-
-        self.rsvp_status = "unknown"
-        # These are initialized in logic/friends.py
-        self.attending_friend_count = 0
-        self.attending_friends = []
-
-    name = property(lambda x: x.data['name'])
-    actual_city_name = property(lambda x: x.data['location'])
-    latitude = property(lambda x: x.data['lat'])
-    longitude = property(lambda x: x.data['lng'])
-    event_keywords = property(lambda x: x.data['keywords'])
-    attendee_count = property(lambda x: x.data['attendee_count'])
-
-    start_time_raw = property(lambda x: x.data['start_time'])
-    end_time_raw = property(lambda x: x.data['end_time'])
-
-    start_time = property(lambda x: dates.parse_fb_timestamp(x.start_time_raw))
-    end_time = property(lambda x: dates.parse_fb_timestamp(x.end_time_raw))
-    fake_end_time = property(lambda x: dates.faked_end_time(x.start_time, x.end_time))
-
-    categories = property(lambda x: humanize_categories(x.data.get('categories', [])))
-    image = property(lambda x: x.data['image'])
-
-    def multi_day_event(self):
-        return not self.end_time or (self.end_time - self.start_time) > datetime.timedelta(hours=24)
-
-    def get_attendance(self):
-        if self.rsvp_status == 'unsure':
-            return 'maybe'
-        return self.rsvp_status
-
-    def location_schema_html(self):
-        html = [
-            '<span itemscope itemprop="location" itemtype="http://schema.org/Place">',
-            '  <meta itemprop="name" content="%s" />' % self.actual_city_name,
-            '  <meta itemprop="address" content="%s" />' % self.actual_city_name,
-        ]
-        if self.latitude:
-            html += [
-                '  <span itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">',
-                '    <meta itemprop="latitude" content="%s" />' % self.latitude,
-                '    <meta itemprop="longitude" content="%s" />' % self.longitude,
-                '  </span>',
-            ]
-        html += [
-            '</span>',
-        ]
-        return jinja2.Markup('\n'.join(html))
 
 class SearchQuery(object):
     def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, keywords=None):
@@ -325,7 +261,7 @@ class SearchQuery(object):
         for display_event, db_event in zip(display_events, real_db_events):
             if not display_event:
                 continue
-            result = SearchResult(display_event, db_event)
+            result = search_base.SearchResult(display_event, db_event)
             search_results.append(result)
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
     

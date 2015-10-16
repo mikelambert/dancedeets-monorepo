@@ -105,7 +105,8 @@ class ClassSearchQuery(object):
 
         # ...and do filtering based on the contents inside our app
         a = time.time()
-        search_results = [SearchResult(MakeDisplayEvent(x)) for x in doc_events]
+        #TODO: This line doesn't work yet, and is the magic we need to make work.
+        search_results = [search_base.SearchResult(MakeDisplayEvent(x)) for x in doc_events]
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
     
         search_results = self._deduped_results(search_results)
