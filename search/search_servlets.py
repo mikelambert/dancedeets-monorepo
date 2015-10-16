@@ -57,7 +57,7 @@ class RelevantHandler(SearchHandler):
             search_query = None
             try:
                 search_query = self.search_query_class.create_from_form(form)
-            except search.SearchException as e:
+            except search_base.SearchException as e:
                 logging.warning("Bad search query: %s", form)
                 self.add_error(unicode(e))
 

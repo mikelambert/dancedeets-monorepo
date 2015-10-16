@@ -175,9 +175,6 @@ class SearchResult(object):
         ]
         return jinja2.Markup('\n'.join(html))
 
-class SearchException(Exception):
-    pass
-
 class SearchQuery(object):
     def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, keywords=None):
         self.time_period = time_period
@@ -212,7 +209,7 @@ class SearchQuery(object):
         if form.location.data:
             geocode = gmaps_api.get_geocode(address=form.location.data)
             if not geocode:
-                raise SearchException("Did not understand location: %s" % form.location.data)
+                raise search_base.SearchException("Did not understand location: %s" % form.location.data)
             bounds = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
         else:
             bounds = None
@@ -335,9 +332,7 @@ class SearchQuery(object):
         search_results = self._deduped_results(search_results)
 
         # Now sort and return the results
-        a = time.time()
         search_results.sort(key=lambda x: x.start_time)
-        logging.info("search result sorting took %s seconds", time.time() - a)
         return search_results
 
 class EventsIndex(index.BaseIndex):

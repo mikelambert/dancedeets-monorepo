@@ -25,6 +25,10 @@ def valid_query(form, field):
     except search.QueryError as e:
         raise wtforms.ValidationError(str(e))
 
+
+class SearchException(Exception):
+    pass
+
 class SearchForm(wtforms.Form):
     location = wtforms.StringField(default='', validators=[no_wiki_or_html])
     keywords = wtforms.StringField(default='', validators=[no_wiki_or_html, valid_query])
