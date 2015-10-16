@@ -291,6 +291,10 @@ class SearchQuery(object):
             doc_events = [x for x in doc_events if x.field('start_time').value > now]
         elif self.time_period == search_base.TIME_PAST:
             doc_events = [x for x in doc_events if x.field('end_time').value < now]
+        elif self.time_period == search_base.TIME_ALL_FUTURE:
+            pass
+        else:
+            logging.error("Unknown time period %s", self.time_period)
 
         if prefilter:
             doc_events = [x for x in doc_events if prefilter(x)]
@@ -299,28 +303,9 @@ class SearchQuery(object):
         ids = [x.doc_id for x in doc_events]
         if full_event:
             real_db_events = eventdata.DBEvent.get_by_ids(ids)
-            display_events =[DisplayEvent.build(x) for x in real_db_events]
+            display_events = [DisplayEvent.build(x) for x in real_db_events]
         else:
-            #This roundabout logic below is temporary while we load events, and wait for all events to be saved
-            #display_events = DisplayEvent.get_by_ids(ids)
-            real_db_events = [None for x in ids]
-
-            display_event_lookup = dict(zip(ids, DisplayEvent.get_by_ids(ids)))
-            # Uncomment this when we want to force DisplayEvent reloads off the existing DBEvent data
-            # display_event_lookup = dict(zip(ids, [None] * len(ids)))
-            missing_ids = [x for x in display_event_lookup if not display_event_lookup[x]]
-            if missing_ids:
-                dbevents = eventdata.DBEvent.get_by_ids(missing_ids)
-                objs_to_put = []
-                for event in dbevents:
-                    display_event = DisplayEvent.build(event)
-                    if display_event:
-                        objs_to_put.append(display_event)
-                        display_event_lookup[event.fb_event_id] = display_event
-                    else:
-                        logging.warning("Skipping event %s because no DisplayEvent", event.fb_event_id)
-                ndb.put_multi(objs_to_put)
-            display_events = [display_event_lookup[x] for x in ids]
+            display_events = DisplayEvent.get_by_ids(ids)
 
         logging.info("Loading DBEvents took %s seconds", time.time() - a)
 
