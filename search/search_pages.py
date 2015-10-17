@@ -82,7 +82,7 @@ class SearchPageQuery(object):
             return doc_search_results.results
         return []
 
-    def get_search_results(self, fbl, prefilter=None, full_event=False):
+    def get_search_results(self, prefilter=None, full_event=False):
         a = time.time()
         # Do datastore filtering
         doc_events = self._get_candidate_doc_events(ids_only=False)

@@ -144,7 +144,7 @@ class SearchHandler(ApiHandler):
         # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
         search_query.limit = 500
 
-        search_results = search_query.get_search_results(self.fbl, full_event=True)
+        search_results = search_query.get_search_results(full_event=True)
 
         json_results = []
         for result in search_results:
@@ -372,7 +372,7 @@ def canonicalize_event_data(db_event, event_keywords):
     else:
         pass
     if db_event: # TODO: When is this not true?
-        annotations['categories'] = search.humanize_categories(db_event.auto_categories)
+        annotations['categories'] = search_base.humanize_categories(db_event.auto_categories)
 
     event_api['annotations'] = annotations
     # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only'

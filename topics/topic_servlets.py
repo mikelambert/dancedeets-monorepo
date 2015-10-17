@@ -76,7 +76,7 @@ class TopicHandler(base_servlet.BaseRequestHandler):
         search_query = search.SearchQuery(keywords=keywords)
         # Need these fields for the prefilter
         search_query.extra_fields = ['name', 'description']
-        search_results = search_query.get_search_results(self.fbl, prefilter=prefilter)
+        search_results = search_query.get_search_results(prefilter=prefilter)
 
         self.display['topic_title'] = topic.override_title or (fb_source and fb_source['info']['name'])
         self.display['topic_image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])

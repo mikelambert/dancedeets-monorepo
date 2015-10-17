@@ -40,7 +40,7 @@ def email_for_user(user, fbl, should_send=True):
     query = search.SearchQuery(time_period=dates.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
-    search_results = query.get_search_results(fbl)
+    search_results = query.get_search_results()
     # Don't send email...
     if not search_results:
         return

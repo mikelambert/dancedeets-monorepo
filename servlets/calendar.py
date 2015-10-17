@@ -16,7 +16,7 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
         self.finish_preload()
         form = search_base.SearchForm(formdata=self.request.GET, data=self.user.dict_for_form() if self.user else None)
         search_query = search.SearchQuery.create_from_form(form, start_end_query=True)
-        search_results = search_query.get_search_results(self.fbl)
+        search_results = search_query.get_search_results()
 
         json_results = []
         for result in search_results:

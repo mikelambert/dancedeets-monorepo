@@ -63,11 +63,14 @@ class StudioScraper(scrapy.Spider):
         styles = categories.find_rules_in_text(class_text, categories.BROAD_STYLES)
         return styles
 
+    def _get_url(self, response):
+        return response.url
+
     def parse(self, response):
         scrape_time = datetime.datetime.now()
         for studio_class in self.parse_classes(response):
             if isinstance(studio_class, StudioClass):
-                studio_class['source_page'] = response.url
+                studio_class['source_page'] = self._get_url(response)
                 studio_class['studio_name'] = self.name
                 studio_class['recurrence_id'] = self._get_recurrence(studio_class)
                 studio_class['auto_categories'] = self._get_auto_categories(studio_class)

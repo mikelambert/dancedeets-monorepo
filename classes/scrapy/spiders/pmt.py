@@ -14,9 +14,14 @@ def parse_times(time_string):
 class PMTHouseOfDance(items.StudioScraper):
     name = 'PMT'
     allowed_domains = ['pmthouseofdance.com']
+    latlong = (40.7374272, -73.9987284)
+    address = '69 W 14th St, New York, NY'
+
     start_urls = [
         'http://www.pmthouseofdance.com/?_escaped_fragment_=schedule/c1jfb',
     ]
+    def _get_url(self, response):
+        return 'http://www.pmthouseofdance.com/#!schedule/c1jfb'
 
     def parse_classes(self, response):
         table = response.css('div.Text')
