@@ -61,7 +61,7 @@ class BdcDay(items.StudioScraper):
         if not table:
             table = response.css('table.grid')
         date_string = table.css('.gridDateTitle').xpath('.//text()').extract()[0]
-        date = dateparser.parse(date_string).date() 
+        date = dateparser.parse(date_string).date()
         for row in table.xpath('.//tr'):
             if not row.xpath('.//td[1]/text()'):
                 continue
