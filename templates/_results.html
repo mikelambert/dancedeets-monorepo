@@ -1,6 +1,10 @@
 {% import "_rsvp.html" as rsvp %}
 
 {% macro render_class(result) %}
+	<time itemprop="startDate" content="{{ result.start_time|datetime_format }}">{{ result.start_time|time_human_format }}</time>
+	{% if result.multi_day_event() and result.end_time %}
+		<br>to <time itemprop="endDate" content="{{ result.end_time|datetime_format }}">{{ result.end_time|time_human_format }}</time>
+	{% endif %}
 	<b>
 	<a href="{{ result.source_page }}">
 	<span itemprop="name">{{ result.name|e }}</span>
@@ -8,15 +12,9 @@
 	</a>
 	</b>
 	{{result.location_schema_html()}}
-	
+
 	<meta itemprop="url" content="{{ result.source_page }}" />
 
-	<div>
-		<time itemprop="startDate" content="{{ result.start_time|datetime_format }}">{{ result.start_time|date_human_format }}</time>
-		{% if result.multi_day_event() and result.end_time %}
-			<br>to <time itemprop="endDate" content="{{ result.end_time|datetime_format }}">{{ result.end_time|date_human_format }}</time>
-		{% endif %}
-	</div>
 {% endmacro %}
 
 {% macro render_narrow_results(results, use_rsvp_form=True) %}
@@ -78,8 +76,14 @@
 {% endmacro %}
 
 {% macro render_wide_results(results, use_rsvp_form=True) %}
+	{% set cur_date = None %}
 	<ol class="events-list">
 	{% for result in results %}
+		{% if cur_date != result.start_time.date() %}
+			{% set cur_date = result.start_time.date() %}
+			<li class="wide-event"><b>{{ cur_date|date_only_human_format }}</b></li>
+		{% endif %}
+
 		{# widths here are set to sum to 700px-50px = 650px #}
 		<li class="wide-event clearfix" itemscope itemtype="http://schema.org/DanceEvent">
 			{% if not result.fb_event_id %}

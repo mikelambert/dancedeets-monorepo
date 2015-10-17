@@ -12,7 +12,7 @@ import urllib2
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 SERVER = 'www.dancedeets.com'
-#SERVER = 'dev.dancedeets.com:8080'
+SERVER = 'dev.dancedeets.com:8080'
 
 def make_request(path, params):
     data = json.dumps(params)
