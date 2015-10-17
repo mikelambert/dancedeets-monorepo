@@ -81,7 +81,7 @@
 	{% for result in results %}
 		{% if cur_date != result.start_time.date() %}
 			{% set cur_date = result.start_time.date() %}
-			<li class="wide-event"><b>{{ cur_date|date_only_human_format }}</b></li>
+			<li class="wide-event day-header">{{ cur_date|date_only_human_format }}</li>
 		{% endif %}
 
 		{# widths here are set to sum to 700px-50px = 650px #}
