@@ -10,7 +10,10 @@ import datetime
 import scrapy
 from scrapy import item
 
+from nlp import event_classifier
 from nlp import categories
+from nlp import keywords
+from nlp import rules
 
 class StudioClass(item.DictItem):
     """This is basically a dictionary with methods.
@@ -46,6 +49,14 @@ class StudioScraper(scrapy.Spider):
 
     #def __init__(self, *args, **kwargs):
     #    super(StudioScraper, self).__init__(self, *args, **kwargs)
+
+    @staticmethod
+    def _street_style(style):
+        # Use our NLP event classification keywords to figure out which BDC classes to keep
+        processor = event_classifier.StringProcessor(style)
+        # Get rid of "Ballet with Pop Music"
+        processor.real_tokenize(keywords.PREPROCESS_REMOVAL)
+        return processor.has_token(rules.DANCE_STYLE)
 
     def parse_classes(self, response):
         raise NotImplementedError()

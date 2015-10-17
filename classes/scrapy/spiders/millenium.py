@@ -1,13 +1,7 @@
 import dateparser
 import datetime
-import urlparse
-
-import scrapy
 
 from .. import items
-from nlp import event_classifier
-from nlp import keywords
-from nlp import rules
 
 class Millenium(items.StudioScraper):
     name = 'Millenium'
@@ -32,11 +26,7 @@ class Millenium(items.StudioScraper):
                 if 'Adult Program' not in class_types:
                     continue
                 style = ' '.join(row.css('span.classname::text').xpath('.//text()').extract()).strip()
-                # Use our NLP event classification keywords to figure out which BDC classes to keep
-                processor = event_classifier.StringProcessor(style)
-                # Get rid of "Ballet with Pop Music"
-                processor.real_tokenize(keywords.PREPROCESS_REMOVAL)
-                if not processor.has_token(rules.DANCE_STYLE):
+                if not self._street_style(style):
                     continue
 
                 item = items.StudioClass()
