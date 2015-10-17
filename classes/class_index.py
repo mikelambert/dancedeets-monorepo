@@ -25,7 +25,11 @@ DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 def build_display_event_dict(doc):
     def get(x):
-        return doc.field(x).value
+        try:
+            return doc.field(x).value
+        except ValueError:
+            return None
+
     data = {
         'name': get('name'),
         'image': None,
@@ -36,8 +40,10 @@ def build_display_event_dict(doc):
         'lat': get('latitude'),
         'lng': get('longitude'),
         'attendee_count': None,
-        'categories': get('categories').split(' '),
+        'categories': [x for x in get('categories').split(' ') if x],
         'keywords': None,
+        # Unique to studio classes:
+        'source_page': get('source_page'),
     }
     return data
 
@@ -153,6 +159,7 @@ class StudioClassIndex(index.BaseIndex):
             fields=[
                 search.TextField(name='name', value=title),
                 search.TextField(name='studio', value=studio_class.studio_name),
+                search.TextField(name='source_page', value=studio_class.source_page),
                 search.TextField(name='description', value=description),
                 search.DateField(name='start_time', value=studio_class.start_time),
                 search.DateField(name='end_time', value=studio_class.end_time),

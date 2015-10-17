@@ -1,9 +1,32 @@
 {% import "_rsvp.html" as rsvp %}
+
+{% macro render_class(result) %}
+	<b>
+	<a href="{{ result.source_page }}">
+	<span itemprop="name">{{ result.name|e }}</span>
+	@ {{result.actual_city_name}}
+	</a>
+	</b>
+	{{result.location_schema_html()}}
+	
+	<meta itemprop="url" content="{{ result.source_page }}" />
+
+	<div>
+		<time itemprop="startDate" content="{{ result.start_time|datetime_format }}">{{ result.start_time|date_human_format }}</time>
+		{% if result.multi_day_event() and result.end_time %}
+			<br>to <time itemprop="endDate" content="{{ result.end_time|datetime_format }}">{{ result.end_time|date_human_format }}</time>
+		{% endif %}
+	</div>
+{% endmacro %}
+
 {% macro render_narrow_results(results, use_rsvp_form=True) %}
 	<ol class="events-list">
 	{% for result in results %}
 		{# widths here are set to sum to 700px-50px = 650px #}
 		<li class="narrow-event" itemscope itemtype="http://schema.org/DanceEvent">
+			{% if not result.fb_event_id %}
+				{{ render_class(result) }}
+			{% else %}
 			<h3 class="event-title">
 			<a href="{{ fb_event_url(result.fb_event_id) }}">
 			<span itemprop="name">{{ result.name|e }}</span>
@@ -48,6 +71,7 @@
 					{% endif %}
 				</div>
 			{% endif %}
+			{% endif %}{# render_class #}
 		</li>
 	{% endfor %}
 	</ol>
@@ -58,6 +82,9 @@
 	{% for result in results %}
 		{# widths here are set to sum to 700px-50px = 650px #}
 		<li class="wide-event clearfix" itemscope itemtype="http://schema.org/DanceEvent">
+			{% if not result.fb_event_id %}
+				{{ render_class(result) }}
+			{% else %}
 			<div class="event-image">
 			<a href="{{ fb_event_url(result.fb_event_id) }}">
 				{# preload first five images #}
@@ -119,6 +146,7 @@
 			{% if deb == 'comments' %}
 				<div><a href="#" onclick="$('#comments-{{ result.fb_event_id }}').toggleClass('hidden');return false;">Show all <fb:comments-count href="{{ fb_event_url(result.fb_event_id) }}"></fb:comments-count> comments</a>.</div>
 			{% endif %}
+			{% endif %}{# render_class #}
 		</li>
 	{% endfor %}
 	</ol>
