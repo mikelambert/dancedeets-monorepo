@@ -120,7 +120,8 @@ class ClassSearchQuery(object):
             return []
         logging.info("Doing search for %r", query_string)
         doc_index = StudioClassIndex.real_index()
-        query = search.Query(query_string=query_string)
+        options = search.QueryOptions(limit=self.limit)
+        query = search.Query(query_string=query_string, options=options)
         doc_search_results = doc_index.search(query)
         return doc_search_results.results
 
