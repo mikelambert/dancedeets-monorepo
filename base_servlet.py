@@ -451,11 +451,13 @@ class BaseRequestHandler(BareBaseRequestHandler):
         if self.user:
             self.jinja_env.filters['date_only_human_format'] = self.user.date_only_human_format
             self.jinja_env.filters['date_human_format'] = self.user.date_human_format
+            self.jinja_env.filters['time_human_format'] = self.user.time_human_format
             self.jinja_env.globals['duration_human_format'] = self.user.duration_human_format
             self.display['messages'] = self.user.get_and_purge_messages()
         else:
             self.jinja_env.filters['date_only_human_format'] = dates.date_only_human_format
             self.jinja_env.filters['date_human_format'] = dates.date_human_format
+            self.jinja_env.filters['time_human_format'] = dates.time_human_format
             self.jinja_env.globals['duration_human_format'] = dates.duration_human_format
             self.display['login_url'] = login_url
         self.jinja_env.filters['datetime_format'] = dates.datetime_format
