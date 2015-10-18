@@ -3,6 +3,9 @@ import datetime
 
 from .. import items
 
+def extract_text(cell):
+    return ' '.join(cell.xpath('.//text()').extract()).strip()
+
 class Millenium(items.StudioScraper):
     name = 'Millenium'
     allowed_domains = ['healcode.com']
@@ -19,13 +22,13 @@ class Millenium(items.StudioScraper):
             class_value = row.xpath('@class').extract()[0]
             classes = class_value.split(' ')
             if 'schedule_header' in classes:
-                date_string = row.css('.hc_date').xpath('.//text()').extract()[0]
+                date_string = extract_text(row.css('.hc_date'))
                 date = dateparser.parse(date_string).date()
             else:
-                class_types = row.css('span.type_group').xpath('.//text()').extract()
+                class_types = extract_text(row.css('span.type_group'))
                 if 'Adult Program' not in class_types:
                     continue
-                style = ' '.join(row.css('span.classname::text').xpath('.//text()').extract()).strip()
+                style = extract_text(row.css('span.classname::text'))
                 if not self._street_style(style):
                     continue
 
@@ -37,6 +40,6 @@ class Millenium(items.StudioScraper):
                 item['start_time'] = datetime.datetime.combine(date, start_time)
                 item['end_time'] = datetime.datetime.combine(date, end_time)
                 item['style'] = style
-                item['teacher'] = ' '.join(row.css('span.trainer').xpath('.//text()').extract()).strip()
+                item['teacher'] = extract_text(row.css('span.trainer'))
 
                 yield item
