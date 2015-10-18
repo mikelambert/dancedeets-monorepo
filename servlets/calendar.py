@@ -18,6 +18,13 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
         search_query = search.SearchQuery.create_from_form(form, start_end_query=True)
         search_results = search_query.get_search_results()
 
+        if 'class' in form.deb.data:
+            from classes import class_index
+            search_query2 = class_index.ClassSearchQuery.create_from_form(form)
+            class_results = search_query2.get_search_results()
+            search_results += class_results
+            search_results.sort(key=lambda x: x.start_time)
+
         json_results = []
         for result in search_results:
             start_time = result.start_time
