@@ -1,6 +1,6 @@
+import re
 
 from google.appengine.ext import ndb
-
 from google.appengine.api.search import search
 
 DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
@@ -28,7 +28,7 @@ class StudioClass(ndb.Model):
     @classmethod
     def compute_id(cls, studio_name, start_time, teacher):
         combined_key = '%s:%s:%s' % (studio_name, start_time.strftime(DATETIME_FORMAT), teacher)
-        combined_key = combined_key.replace(' ', '').encode('ascii', 'replace')
+        combined_key = re.sub(r'\s', '', combined_key).encode('ascii', 'replace')
         return combined_key[:500]
 
     recurrence_id = ndb.StringProperty()
