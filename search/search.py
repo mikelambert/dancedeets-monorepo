@@ -145,7 +145,7 @@ class SearchQuery(object):
         if form.location.data:
             geocode = gmaps_api.get_geocode(address=form.location.data)
             if not geocode:
-                raise search_base.HtmlSearchFormSearchException("Did not understand location: %s" % form.location.data)
+                raise search_base.SearchException("Did not understand location: %s" % form.location.data)
             bounds = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
         else:
             bounds = None
@@ -239,7 +239,8 @@ class SearchQuery(object):
         elif self.time_period == search_base.TIME_ALL_FUTURE:
             pass
         else:
-            logging.error("Unknown time period %s", self.time_period)
+            # Calendar searches that use start/end time ranges uses this
+            pass
 
         if prefilter:
             doc_events = [x for x in doc_events if prefilter(x)]
