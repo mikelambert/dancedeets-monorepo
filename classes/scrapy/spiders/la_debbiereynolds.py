@@ -57,7 +57,6 @@ class DebbieReynolds(items.StudioScraper):
                 item['end_time'] = datetime.datetime.combine(date, end_time)
                 item['style'] = full_style
                 item['teacher'] = instructor
-                item['teacher_link'] = instructor
                 # This information is incorrect on their website :(
                 teacher_link = class_block.css('.views-field-field-class-inst').xpath('./a/@href').extract()[0]
                 url = urlparse.urljoin(response.url, teacher_link)
