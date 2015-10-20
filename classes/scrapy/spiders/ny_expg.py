@@ -1,7 +1,7 @@
 import dateparser
 import datetime
 from .. import items
-
+from .. import mindbody_scraper
 
 def parse_times(times):
     start, end = times.split(u' - ')
@@ -47,3 +47,7 @@ class EXPG(items.StudioScraper):
                     #teacher_link = class_block.css('.table_middle_tate').xpath('./a/@href').extract()[0]
                     #item['teacher_link'] = teacher_link
                     yield item
+
+class EXPG2(mindbody_scraper.MindBodyScraper):
+    #site_id = 177785
+    name = 'EXPG2'
