@@ -49,5 +49,5 @@ class EXPG(items.StudioScraper):
                     yield item
 
 class EXPG2(mindbody_scraper.MindBodyScraper):
-    #site_id = 177785
+    site_id = 177785
     name = 'EXPG2'
