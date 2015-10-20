@@ -1,16 +1,10 @@
 {% import "_rsvp.html" as rsvp %}
 
 {% macro render_class(result) %}
-	<time itemprop="startDate" content="{{ result.start_time|datetime_format }}">{{ result.start_time|time_human_format }}</time>
-	{% if result.multi_day_event() and result.end_time %}
-		<br>to <time itemprop="endDate" content="{{ result.end_time|datetime_format }}">{{ result.end_time|time_human_format }}</time>
-	{% endif %}
-	<b>
+	<time itemprop="startDate" content="{{ result.start_time|datetime_format }}"></time>
 	<a href="{{ result.source_page }}">
-	<span itemprop="name">{{ result.name|e }}</span>
-	@ {{result.actual_city_name}}
+	{{result.actual_city_name}}: <span itemprop="name">{{ result.name|e }}</span>
 	</a>
-	</b>
 	{{result.location_schema_html()}}
 
 	<meta itemprop="url" content="{{ result.source_page }}" />
@@ -77,18 +71,26 @@
 
 {% macro render_wide_results(results, use_rsvp_form=True) %}
 	{% set cur_date = None %}
+	{% set cur_time = None %}
 	<ol class="events-list">
 	{% for result in results %}
 		{% if cur_date != result.start_time.date() %}
 			{% set cur_date = result.start_time.date() %}
 			<li class="wide-event day-header">{{ cur_date|date_only_human_format }}</li>
+			{% set cur_time = None %}
+		{% endif %}
+		{% if cur_time != result.start_time.time() %}
+			{% set cur_time = result.start_time.time() %}
+			<li><b>{{ cur_time|time_human_format }}</b></li>
 		{% endif %}
 
 		{# widths here are set to sum to 700px-50px = 650px #}
+		{% if not result.fb_event_id %}
+			<li itemscope itemtype="http://schema.org/DanceEvent">
+			{{ render_class(result) }}
+			</li>
+		{% else %}
 		<li class="wide-event clearfix" itemscope itemtype="http://schema.org/DanceEvent">
-			{% if not result.fb_event_id %}
-				{{ render_class(result) }}
-			{% else %}
 			<div class="event-image">
 			<a href="{{ fb_event_url(result.fb_event_id) }}">
 				{# preload first five images #}
@@ -150,8 +152,8 @@
 			{% if deb == 'comments' %}
 				<div><a href="#" onclick="$('#comments-{{ result.fb_event_id }}').toggleClass('hidden');return false;">Show all <fb:comments-count href="{{ fb_event_url(result.fb_event_id) }}"></fb:comments-count> comments</a>.</div>
 			{% endif %}
-			{% endif %}{# render_class #}
 		</li>
+		{% endif %}{# render_class #}
 	{% endfor %}
 	</ol>
 {% endmacro %}
