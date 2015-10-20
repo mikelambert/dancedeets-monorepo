@@ -28,7 +28,6 @@ class NeighborhoodStudio(items.StudioScraper):
             else:
                 style = extract_text(row.css('span.classname'))
                 style = re.sub(r' with .*', '', style)
-                print style
                 if not self._street_style(style):
                     continue
 
