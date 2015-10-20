@@ -1,5 +1,7 @@
 import datetime
 import dateutil
+import re
+
 import icalendar
 from .. import items
 
@@ -18,14 +20,14 @@ def expand_rrule(event):
         rrule._until = rrule._until.replace(tzinfo=None)
     return rrule
 
-class TheSpotDanceCenter(items.StudioScraper):
-    name = 'TheSpot'
-    allowed_domains = ['localender.com']
-    latlong = (40.7434126, -73.9976959)
-    address = '161 W 22nd Street, New York, NY'
+class Evolution(items.StudioScraper):
+    name = 'Evolution'
+    allowed_domains = ['calendar.google.com']
+    latlong = (34.1718212, -118.3664417)
+    address = '10816 Burbank Blvd, North Hollywood, CA 91601'
 
     start_urls = [
-        'http://www.localendar.com/public/TheSpotDanceCenter.ics',
+        'https://calendar.google.com/calendar/ical/evolutiondancestudios%40gmail.com/public/basic.ics',
     ]
 
     def parse_classes(self, response):
@@ -37,14 +39,22 @@ class TheSpotDanceCenter(items.StudioScraper):
             try:
                 if not isinstance(event, icalendar.Event):
                     continue
-                summary = event['summary']
-                if '-' in summary:
-                    name, teacher = summary.split('-', 1)
-                elif ' with ' in summary:
-                    name, teacher = summary.split(' with ', 1)
+                #TODO: What do we want to do with the longform event['description']
+                summary = str(event['summary'])
+                instructor_re = r' (?:w/|with) (.*?)(?: -|$)'
+                match = re.search(instructor_re, summary)
+                if match:
+                    teacher = match.group(1)
+                    name = re.sub(instructor_re, '', summary)
                 else:
                     name = summary
-                    teacher = None
+                    match = re.search(r'(?:Instructors?|Teachers?): ([^\n]*)', event['description'])
+                    if match:
+                        teacher = match.group(1).strip()
+                    else:
+                        teacher = None
+                if not self._street_style(name):
+                    continue
                 item = items.StudioClass()
                 item['style'] = name
                 item['teacher'] = teacher
