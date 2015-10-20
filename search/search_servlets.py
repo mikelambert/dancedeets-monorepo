@@ -71,7 +71,6 @@ class RelevantHandler(SearchHandler):
                 if 'class' in form.deb.data:
                     class_results = search_query2.get_search_results()
                     for result in class_results:
-                        print result.sponsor
                         sponsored_studios.setdefault(result.sponsor, set()).add(result.actual_city_name)
                     print sponsored_studios
                     search_results += class_results
