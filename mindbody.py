@@ -23,22 +23,22 @@ def fill_credentials(client, request, site_ids):
     request.SourceCredentials = source_creds
 
 
-def get_request(client, request_name, site_ids):
+def get_request(client, request_name, site_id):
     request = client.factory.create(request_name)
     if hasattr(request, 'Request'):
         request = request.Request
-    fill_credentials(client, request, site_ids)
+    fill_credentials(client, request, [site_id])
     return request
 
-def get_activation_link(site_ids):
+def get_activation_link(site_id):
     client = get_client("Site")
-    request = get_request(client, "GetActivationCode", site_ids)
+    request = get_request(client, "GetActivationCode", site_id)
     result = client.service.GetActivationCode(request)
     return result.ActivationLink
 
-def get_classes(start_time, end_time, hide_canceled_classes, site_ids):
+def get_classes(start_time, end_time, hide_canceled_classes, site_id):
     service = get_client("Class")
-    request = get_request(service, "GetClasses", site_ids)
+    request = get_request(service, "GetClasses", site_id)
 
     request.StartDateTime = start_time
     request.EndDateTime = end_time

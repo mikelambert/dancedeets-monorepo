@@ -2,32 +2,34 @@
 
 import datetime
 
+from classes.scrapy import items
 import mindbody
 
-SITE_IDS = [-99]
-print mindbody.get_activation_link(SITE_IDS)
+# Before we can use this Scraper on a MindBody site, we must first get the admin to open:
+# mindbody.get_activation_link(-99)
 
-start = datetime.datetime.combine(datetime.date.today(), datetime.time())
-end = start + datetime.timedelta(days=10)
-result = mindbody.get_classes(start_time=start, end_time=end, hide_canceled_classes=True, site_ids=SITE_IDS)
-if result.Status != 'Success':
-    print result.Status
-    print result.Message
-if result.TotalPageCount != 1:
-    print "Too many results for our query, got %s pages of data back" % result.TotalPageCount
-classes = result.Classes.Class
+class MindBodyScraper(items.StudioScraper):
+    site_id = -99
 
+    def _get_url(self):
+        return 'https://clients.mindbodyonline.com/ASP/home.asp?studioid=%s' % self.site_id
 
-for studio_class in classes:
-    address = '%s, %s' % (studio_class.Location.Address, studio_class.Location.Address2)
-    latlong = (studio_class.Location.Latitude, studio_class.Location.Longitude)
-    print studio_class.ClassDescription.Name
-    print studio_class.StartDateTime
-    print studio_class.EndDateTime
-    print studio_class.Staff.Name
-    print studio_class.Location.Name
-    #print studio_class.
-    print address
-    print latlong
-    print
+    def parse_classes(self, response):
+        start = datetime.datetime.combine(datetime.date.today(), datetime.time())
+        end = start + datetime.timedelta(days=14)
+        result = mindbody.get_classes(start_time=start, end_time=end, hide_canceled_classes=True, site_id=self.site_id)
+        if result.Status != 'Success':
+            raise IOError("MindBody gave result: %s: %s" % (result.Status, result.Message))
+        if result.TotalPageCount != 1:
+            raise IOError("Too many results for our query, got %s pages of data back" % result.TotalPageCount)
 
+        for studio_class in result.Classes.Class:
+            self.address = '%s, %s' % (studio_class.Location.Address, studio_class.Location.Address2)
+            self.latlong = (studio_class.Location.Latitude, studio_class.Location.Longitude)
+            self.name = studio_class.Location.Name
+            item = items.StudioClass()
+            item['style'] = studio_class.ClassDescription.Name
+            item['start_time'] = studio_class.StartDateTime
+            item['end_time'] = studio_class.EndDateTime
+            item['teacher'] = studio_class.Staff.Name
+            yield item
