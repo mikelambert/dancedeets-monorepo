@@ -121,6 +121,12 @@ Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
 					{{ results.render_wide_results(group.results) }}
 				{% endif %}
 			{% endfor %}
+			{% if sponsored_studios['MINDBODY'] %}
+				<div style="margin: 1em 0em; font-style: italic">
+					Studios Powered by <a href="http://www.mindbodyonline.com">MINDBODY</a>:
+					{{ sponsored_studios['MINDBODY']|join(', ') }}
+				</div>
+			{% endif %}
 			</div>
 		{% endif %}
 		{% if ongoing_results %}

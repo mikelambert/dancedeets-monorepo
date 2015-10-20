@@ -113,6 +113,7 @@ class SearchResult(object):
 
     categories = property(lambda x: humanize_categories(x.data.get('categories', [])))
     image = property(lambda x: x.data['image'])
+    sponsor = property(lambda x: x.data.get('sponsor'))
 
     # Only for use by StudioClass-indexed results
     source_page = property(lambda x: x.data['source_page'])

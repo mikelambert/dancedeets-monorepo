@@ -65,10 +65,15 @@ class RelevantHandler(SearchHandler):
                 logging.warning("Bad search query: %s", form)
                 self.add_error(unicode(e))
 
+            sponsored_studios = {}
             if search_query and validated:
                 search_results = search_query.get_search_results()
                 if 'class' in form.deb.data:
                     class_results = search_query2.get_search_results()
+                    for result in class_results:
+                        print result.sponsor
+                        sponsored_studios.setdefault(result.sponsor, set()).add(result.actual_city_name)
+                    print sponsored_studios
                     search_results += class_results
                     search_results.sort(key=lambda x: (x.start_time, x.actual_city_name, x.name))
             else:
@@ -90,6 +95,7 @@ class RelevantHandler(SearchHandler):
             self.display['past_results'] = past_results
             self.display['ongoing_results'] = present_results
             self.display['grouped_upcoming_results'] = grouped_results
+            self.display['sponsored_studios'] = sponsored_studios
 
         if form.time_period.data == search_base.TIME_PAST:
             self.display['selected_tab'] = 'past'

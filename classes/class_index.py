@@ -44,6 +44,7 @@ def build_display_event_dict(doc):
         'keywords': None,
         # Unique to studio classes:
         'source_page': get('source_page'),
+        'sponsor': get('sponsor'),
     }
     return data
 
@@ -167,6 +168,7 @@ class StudioClassIndex(index.BaseIndex):
                 search.NumberField(name='latitude', value=studio_class.latitude),
                 search.NumberField(name='longitude', value=studio_class.longitude),
                 search.TextField(name='categories', value=' '.join(studio_class.auto_categories)),
+                search.TextField(name='sponsor', value=studio_class.sponsor),
                 #search.TextField(name='country', value=studio_class.country),
             ],
             #language=XX, # We have no good language detection

@@ -9,8 +9,11 @@ import mindbody
 # Before we can use this Scraper on a MindBody site, we must first get the admin to open:
 # mindbody.get_activation_link(-99)
 
+# scrapy sets verbose logging by default, but we don't want to see suds spam.
 logger = logging.getLogger('suds')
 logger.setLevel(logging.INFO)
+
+SPONSOR_MINDBODY = 'MINDBODY'
 
 class MindBodyScraper(items.StudioScraper):
     site_id = -99
@@ -50,4 +53,5 @@ class MindBodyScraper(items.StudioScraper):
             item['start_time'] = studio_class.StartDateTime
             item['end_time'] = studio_class.EndDateTime
             item['teacher'] = studio_class.Staff.Name
+            item['sponsor'] = SPONSOR_MINDBODY
             yield item

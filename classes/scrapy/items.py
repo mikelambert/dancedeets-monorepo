@@ -39,6 +39,7 @@ class StudioClass(item.DictItem):
         'latitude',
         'longitude',
         'address',
+        'sponsor',
     ]
 
     def add(self, field, selected):
