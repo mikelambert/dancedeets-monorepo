@@ -12,6 +12,11 @@ def parse_times(times):
 def extract_text(cell):
     return ' '.join(cell.xpath('.//text()').extract()).strip()
 
+def extract_text_without_hidden(cell):
+    contents = extract_text(cell)
+    contents_hide = extract_text(cell.css('.inline-hide'))
+    return contents.replace(contents_hide, '').strip()
+
 class IDA(items.StudioScraper):
     name = 'IDA'
     allowed_domains = ['www.idahollywood.com']
@@ -32,16 +37,14 @@ class IDA(items.StudioScraper):
                 date += datetime.timedelta(days=7)
             for row in day_row.css('.quicktabs-views-group'):
 
-                style = extract_text(row.css('.views-field-field-add-class-details-'))
+                style = extract_text_without_hidden(row.css('.views-field-field-add-class-details-'))
                 if not self._street_style(style):
                     continue
 
                 times = extract_text(row.css('.time-default'))
                 start_time, end_time = parse_times(times)
                 teacher_cell = row.css('.views-field-field-instructor')
-                teacher = extract_text(teacher_cell)
-                teacher_hide = extract_text(teacher_cell.css('.inline-hide'))
-                teacher = teacher.replace(teacher_hide, '').strip()
+                teacher = extract_text_without_hidden(teacher_cell)
 
                 teacher_link = None
                 teacher_href = teacher_cell.xpath('.//a/@href')
