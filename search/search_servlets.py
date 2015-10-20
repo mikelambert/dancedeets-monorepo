@@ -70,7 +70,7 @@ class RelevantHandler(SearchHandler):
                 if 'class' in form.deb.data:
                     class_results = search_query2.get_search_results()
                     search_results += class_results
-                    search_results.sort(key=lambda x: x.start_time)
+                    search_results.sort(key=lambda x: (x.start_time, x.actual_city_name, x.name))
             else:
                 search_results = []
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
