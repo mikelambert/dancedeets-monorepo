@@ -5,72 +5,65 @@ import suds.client
 
 import keys
 
-siteIDs = [-99]
-
 SOURCE_NAME = "DanceDeets"
 SOURCE_PASSWORD = keys.get("mindbody_api_password")
 
-USER_NAME = "Siteowner"
-USER_PASSWORD = "apitest1234"
-
 SITE_IDS = [-99]
 
-def get_client(service_name):
-    url = "https://api.mindbodyonline.com/0_5/" + service_name + "Service.asmx?wsdl"
-    return suds.client.Client(url)
 
-def fill_credentials(service, request, siteIDs):
-    source_creds = service.factory.create('SourceCredentials')
+_clients = {}
+def get_client(service_name):
+    global _clients
+    if service_name not in _clients:
+        url = "https://api.mindbodyonline.com/0_5/" + service_name + "Service.asmx?wsdl"
+        _clients[service_name] = suds.client.Client(url)
+    return _clients[service_name]
+
+def fill_credentials(client, request, site_ids):
+    source_creds = client.factory.create('SourceCredentials')
     source_creds.SourceName = SOURCE_NAME
     source_creds.Password = SOURCE_PASSWORD
-    source_creds.SiteIDs.int = siteIDs
-
-    user_creds = service.factory.create('UserCredentials')
-    user_creds.Username = USER_NAME
-    user_creds.Password = USER_PASSWORD
-    user_creds.SiteIDs.int = siteIDs
+    source_creds.SiteIDs.int = site_ids
 
     request.XMLDetail = 'Full'
     request.SourceCredentials = source_creds
-    request.UserCredentials = user_creds
 
 
-def get_request(service, request_name):
-    request = service.factory.create(request_name)
+def get_request(client, request_name, site_ids):
+    request = client.factory.create(request_name)
     if hasattr(request, 'Request'):
         request = request.Request
-    fill_credentials(service, request, siteIDs)
+    fill_credentials(client, request, site_ids)
     return request
 
-def get_activation_link():
-    service = get_client("Site")
-    request = get_request(service, "GetActivationCode")
-    result = service.service.GetActivationCode(request)
+def get_activation_link(site_ids):
+    client = get_client("Site")
+    request = get_request(client, "GetActivationCode", site_ids)
+    result = client.service.GetActivationCode(request)
     return result.ActivationLink
 
-
 def get_classes(
-    startDateTime,
-    endDateTime,
-    hideCanceledClasses,
-    pageSize):
+    start_time,
+    end_time,
+    hide_canceled_classes,
+    site_ids):
     service = get_client("Class")
-    request = get_request(service, "GetClasses")
+    request = get_request(service, "GetClasses", site_ids)
 
-    request.StartDateTime = startDateTime
-    request.EndDateTime = endDateTime
-    request.HideCanceledClasses = hideCanceledClasses
+    request.StartDateTime = start_time
+    request.EndDateTime = end_time
+    request.HideCanceledClasses = hide_canceled_classes
 
     # This improves speed from 3 seconds to 2 seconds, so the additional debugging advantages outweigh the speed benefits
     #request.XMLDetail = 'Bare'
     #request.Fields = BasicRequestHelper.FillArrayType(service, ["Classes.ClassDescription.Name", "Classes.StartDateTime", "Classes.EndDateTime", "Classes.Staff.Name"], "String")
     return service.service.GetClasses(request)
 
-print get_activation_link()
+print get_activation_link(SITE_IDS)
 
 start = datetime.datetime.combine(datetime.date.today(), datetime.time())
 end = start + datetime.timedelta(days=10)
-result = get_classes(startDateTime=start, endDateTime=end, hideCanceledClasses=True, pageSize=200)
+result = get_classes(start_time=start, end_time=end, hide_canceled_classes=True, site_ids=SITE_IDS)
 if result.Status != 'Success':
     print result.Status
     print result.Message
