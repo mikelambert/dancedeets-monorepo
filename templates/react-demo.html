@@ -78,31 +78,51 @@ var classes = [];
 
 <script type="text/babel">
 
-var PopupMenu = React.createClass({
-  getValue: function() {
-    var list = [].map.call(this.refs.list.selectedOptions, function (option) {
-      return option.value;
+var SelectButton = React.createClass({
+  toggleState: function() {
+    $(this.refs.button).toggleClass('active');
+    this.props.onChange();
+  },
+  isActive: function() {
+    return $(this.refs.button).hasClass('active');
+  },
+  render: function() {
+    return (
+      <div>
+      <button
+        style={ {'borderRadius': '10px'} }
+        type="button"
+        className="btn btn-default btn-xs"
+        ref="button"
+        onClick={this.toggleState}
+        >{this.props.item}</button>
+      </div>
+    );
+  }
+});
+
+var MultiSelectList = React.createClass({
+  getValues: function() {
+    var values = [];
+    var refs = this.refs;
+    this.props.list.forEach(function(item, i) {
+      if (refs['item'+i].isActive()) {
+        values.push(item);
+      }
     });
-    return list;
+    return values;
   },
   render: function() {
     var options = [];
-    this.props.list.forEach(function(item) {
+    var onChange = this.props.onChange;
+    this.props.list.forEach(function(item, i) {
       options.push(
-        <option value={item} key={item}>{item}</option>
+        <SelectButton key={item} item={item} ref={'item'+i} onChange={onChange} />
       );
     });
     return (
       <span>
-      <select
-        size={this.props.list.length}
-        multiple={true}
-        value={this.props.value}
-        ref="list"
-        onChange={this.props.onChange}
-      >
       {options}
-      </select>
       </span>
     );
   }
@@ -120,8 +140,8 @@ var DayNavMenu = React.createClass({
 var SearchBar = React.createClass({
   onChange: function() {
     this.props.onUserInput(
-        this.refs.styles.getValue(),
-        this.refs.studios.getValue(),
+        this.refs.styles.getValues(),
+        this.refs.studios.getValues(),
         this.refs.teacher.value
     );
   },
@@ -131,7 +151,7 @@ var SearchBar = React.createClass({
         <div className="clearfix">
           <div style={ {'float': 'left'} }>
             Styles:<br/>
-            <PopupMenu
+            <MultiSelectList
               list={this.props.initial_styles}
               value={this.props.styles}
               ref="styles"
@@ -140,7 +160,7 @@ var SearchBar = React.createClass({
           </div>
           <div style={ {'float': 'left'} }>
             Studios:<br/>
-            <PopupMenu
+            <MultiSelectList
               list={this.props.initial_studios}
               value={this.props.studios}
               ref="studios"
