@@ -95,6 +95,7 @@ var PopupMenu = React.createClass({
     return (
       <span>
       <select
+        size={this.props.list.length}
         multiple={true}
         value={this.props.value}
         ref="list"
@@ -127,29 +128,35 @@ var SearchBar = React.createClass({
   render: function() {
     return (
       <form>
-        Styles:
-        <PopupMenu
-          list={['Hip-Hop', 'House', 'Popping', 'Locking']}
-          value={this.props.styles}
-          ref="styles"
-          onChange={this.onChange}
-        />
-        <br />
-        Studios:
-        <PopupMenu
-          list={['EXPG', 'BDC', 'Peridance']}
-          value={this.props.studios}
-          ref="studios"
-          onChange={this.onChange}
-        />
-        <br />
-        Teacher:
-        <input
-          type="text"
-          value={this.props.teacher}
-          ref="teacher"
-          onChange={this.onChange}
-          />
+        <div className="clearfix">
+          <div style={ {'float': 'left'} }>
+            Styles:<br/>
+            <PopupMenu
+              list={this.props.initial_styles}
+              value={this.props.styles}
+              ref="styles"
+              onChange={this.onChange}
+            />
+          </div>
+          <div style={ {'float': 'left'} }>
+            Studios:<br/>
+            <PopupMenu
+              list={this.props.initial_studios}
+              value={this.props.studios}
+              ref="studios"
+              onChange={this.onChange}
+            />
+          </div>
+          <div style={ {'float': 'left'} }>
+            Teacher:<br/>
+            <input
+              type="text"
+              value={this.props.teacher}
+              ref="teacher"
+              onChange={this.onChange}
+              />
+          </div>
+        </div>
       </form>
     );
   }
@@ -250,12 +257,13 @@ var App = React.createClass({
     return (
       <div>
         <SearchBar
+          initial_studios={this.props.studios}
+          initial_styles={this.props.styles}
           styles={this.state.styles}
           studios={this.state.studios}
           teacher={this.state.teacher}
           onUserInput={this.handleUserInput}
         />
-        <DayNavMenu />
         <StudioClasses
           classes={this.props.classes}
           styles={this.state.styles}
@@ -267,8 +275,23 @@ var App = React.createClass({
   }
 });
 
+var studios_set = {};
+var styles_set = {};
+classes.forEach(function(studio_class) {
+  studios_set[studio_class.location] = true;
+  studio_class.categories.forEach(function(category) {
+    styles_set[category] = true;
+  });
+});
+var studios = Object.keys(studios_set).sort()
+var styles = Object.keys(styles_set).sort()
+
 ReactDOM.render(
-  <App classes={classes}/>,
+  <App
+    classes={classes}
+    studios={studios}
+    styles={styles}
+  />,
   document.getElementById('app')
 );
 
