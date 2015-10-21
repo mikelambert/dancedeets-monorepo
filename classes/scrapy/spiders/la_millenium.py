@@ -28,7 +28,7 @@ class Millenium(items.StudioScraper):
                 class_types = extract_text(row.css('span.type_group'))
                 if 'Adult Program' not in class_types:
                     continue
-                style = extract_text(row.css('span.classname::text'))
+                style = extract_text(row.css('span.classname'))
                 if not self._street_style(style):
                     continue
 
