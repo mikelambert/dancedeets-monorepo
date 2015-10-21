@@ -20,28 +20,14 @@
 
 <div class="row">
 <div class="col-md-9">
-<div style="margin-bottom: 25px">
-  <b>NYC Street Dance Classes</b>
-  <br>
-  Styles: All
-  <br>
-  Studios: All
-  <br>
-  Keywords: <input type=text>
-  <br>
-  Mon | Tue | Wed | Thu | Fri | Sat | Sun {# a href->a name #}
-</div>{# margin-bottom: 25px #}
+<b>NYC Street Dance Classes</b>
 
+<div id="search_bar"></div>
+<div id="day_nav_menu"></div>
 <hr>
+<div id="class_list"></div>
 
-<div style="min-height:300px">
-
-<div class="tabs-after top-to-bottom-fade row">
-  <div id="upcoming_events" class="col-md-8 col-xs-12">
-  </div>
-</div>{# min-height:300px #}
 </div>{# col-md-9 #}
-</div>{# row #}
 
 <div class="col-md-3">
   <button class="btn btn-primary" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
@@ -57,55 +43,7 @@
 <!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
 
-<!-- see below comment near #keywords_input
-<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
--->
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
-
 <script type="text/javascript">
-$(document).ready(function(event) {
-  $("body").delegate("#location_input", "click", function() { return false; });
-  $('#keywords_input').keydown(function(event) {
-      if (event.keyCode == 13) {
-          this.form.submit();
-          return false;
-       }
-  });
-  $('#location_input').keydown(function(event) {
-      if (event.keyCode == 13) {
-          this.form.submit();
-          return false;
-       }
-  });
-  {# Disable keywords_input autocomplete/tokenizer, until we figure out exactly how we want this to work.
-  ie, maybe we want to tokenize just magical-portions of the input. But we can make bboy-style events work
-  based off matching against the search query serverside, for the moment.
-  var engine = new Bloodhound({
-    local: {{ keyword_tokens|jsonify }},
-    datumTokenizer: function(d) {
-      return Bloodhound.tokenizers.whitespace(d.value);
-    },
-    queryTokenizer: Bloodhound.tokenizers.whitespace
-  });
-  engine.initialize();
-  $('#keywords_input').tokenfield({
-    typeahead: [null, { source: engine.ttAdapter() }]
-  });
-  $('#keywords_input').on('tokenfield:createtoken', function (event) {
-    var existingTokens = $(this).tokenfield('getTokens');
-    $.each(existingTokens, function(index, token) {
-        if (token.value === event.attrs.value)
-            event.preventDefault();
-    });
-  });
-  #}
-});
-
-function initializeLocationAutocomplete() {
-  var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
-  autocomplete.setTypes(['(regions)'])
-}
 
 function share() {
   FB.ui({
@@ -113,7 +51,6 @@ function share() {
     href: 'https://www.dancedeets.com/',
   }, function(response){}); 
 }
-
 
 var classes = [];
 {% for group in grouped_upcoming_results %}
@@ -144,6 +81,36 @@ var classes = [];
 
 <script type="text/babel">
 
+var PopupMenu = React.createClass({
+  render: function() {
+    return (
+      <span>All</span>
+    )
+  }
+});
+
+var DayNavMenu = React.createClass({
+  render: function() {
+    return (
+      <span>Mon | Tue | Wed | Thu | Fri | Sat | Sun</span>
+    )
+  }
+});
+
+
+var SearchBar = React.createClass({
+  render: function() {
+    return (
+      <form>
+        Styles: <PopupMenu list={[]} />
+        <br />
+        Studios: <PopupMenu list={[]} />
+        <br />
+        Teacher: <input type="text" />
+      </form>
+    );
+  }
+});
 
 var StudioClass = React.createClass({
   render: function() {
@@ -197,8 +164,20 @@ var StudioClasses = React.createClass({
 
 ReactDOM.render(
   <StudioClasses classes={classes} />,
-  document.getElementById('upcoming_events')
+  document.getElementById('class_list')
 );
+
+ReactDOM.render(
+  <SearchBar />,
+  document.getElementById('search_bar')
+);
+
+
+ReactDOM.render(
+  <DayNavMenu />,
+  document.getElementById('day_nav_menu')
+);
+
 
 </script>
 {% endblock %}
