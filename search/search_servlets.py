@@ -74,6 +74,7 @@ class RelevantHandler(SearchHandler):
                         sponsored_studios.setdefault(result.sponsor, set()).add(result.actual_city_name)
                     search_results += class_results
                     search_results.sort(key=lambda x: (x.start_time, x.actual_city_name, x.name))
+
             else:
                 search_results = []
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
@@ -118,7 +119,10 @@ class RelevantHandler(SearchHandler):
         self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % urllib.urlencode(request_params)
         self.display['calendar_feed_url'] = '/calendar/feed?%s' % urllib.urlencode(request_params)
         self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
-        self.render_template(self.template_name)
+        if 'react' in form.deb.data:
+            self.render_template('react-demo')
+        else:
+            self.render_template(self.template_name)
 
 @app.route('/city/(.*)/?')
 class CityHandler(RelevantHandler):

@@ -1,0 +1,368 @@
+{% extends "_base.html" %}
+{% import "_rsvp.html" as rsvp %}
+{% import "_results.html" as results %}
+
+{% block title %}
+{{ result_title }}
+{% endblock %}
+
+{% block head_stylesheet %}
+    <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ result_title }}" /> 
+    <meta property="og:site_name" content="DanceDeets"/>
+    <meta property="og:description"
+          content="Every street dance event. On the web, on your phone. At home, and when traveling."/>
+    <script src="https://fb.me/react-0.14.0.js"></script>
+    <script src="https://fb.me/react-dom-0.14.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+<div class="col-md-9">
+<div style="margin-bottom: 25px">
+  <table><tr><td>
+    <img class="hidden-xs" id="penguin" src="/images/full_penguin_240.png" height="120" width="120">
+  </td><td>
+  <form id="search-form" class="form-inline" role="search" action="/">
+    <div class="form-group">
+      <div style="font-weight: bold">Where will you dance next?</div>
+      <div class="input-group">
+    <span class="input-group-addon"><i class="fa fa-globe fa-fw"></i></span>
+        <input id="location_input" type="text" name="location" placeholder="everywhere" value="{{ form.location.data }}" class="form-control">
+      </div>
+    </div>
+    <div class="form-group">
+      <div style="font-weight: bold">Looking for anything in particular?</div>
+      <div style="font-style: italic; font-size: 70%">You can enter a dance style, dancer, event name, or leave it blank!</div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="{{ form.keywords.data }}" class="form-control">
+      </div>
+    </div>
+    {% if form.deb.data %}
+      <input type="hidden" name="deb" value="{{ form.deb.data }}">
+  {% endif %}
+    <button type="submit" class="btn btn-default btn-block" style="margin-top: 1em">
+      <span class="glyphicon glyphicon-search"></span>
+      Search our {{ total_events }} Events
+    </button>
+  {# maybe make a small hourglass icon search box ? 
+   # $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
+   #}
+  </form>
+  </td></tr></table>
+</div>{# margin-bottom: 25px #}
+
+Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
+
+<hr>
+
+<div style="min-height:300px">
+
+<ul class="nav nav-tabs nav-justified" data-tabs="tabs">
+  <li
+  {% if selected_tab == 'past' %}
+    class="active"
+  {% endif %}
+  ><a
+  {% if selected_tab == 'past' %}
+    href="#"
+  {% else %}
+    href="{{ past_view_url }}"
+  {% endif %}
+  ><span><i class="fa fa-history fa-lg"></i>
+  {% if selected_tab == 'past' %}
+    {% set num_past_results = len(past_results) %}
+    {% if num_past_results %}
+      {{ num_past_results }}
+    {% endif %}
+  {% endif %}
+  Past Events</span></a></li>
+
+  <li
+  {% if selected_tab == 'present' %}
+    class="active"
+  {% endif %}
+  ><a
+  {% if selected_tab == 'present' %}
+    href="#"
+  {% else %}
+    href="{{ upcoming_view_url }}"
+  {% endif %}
+  ><span>
+  {% if selected_tab == 'present' %}
+    {% if num_upcoming_results %}
+      {{ num_upcoming_results }}
+    {% endif %}
+  {% endif %}
+  Upcoming Events</span></a></li>
+
+  <li
+  {% if selected_tab == 'calendar' %}
+    class="active"
+  {% endif %}
+  ><a
+  {% if selected_tab == 'calendar' %}
+    href="#"
+  {% else %}
+    href="{{ calendar_view_url }}"
+  {% endif %}
+  ><span><i class="fa fa-calendar fa-lg"></i> Calendar</span></a></li>
+</ul>
+<div class="tabs-after top-to-bottom-fade row">
+  {% if selected_tab == 'past' %}
+    {{ results.render_wide_results(past_results) }}
+  {% elif selected_tab == 'present' %}
+    {% if num_upcoming_results %}
+      <div id="upcoming_events" class="col-md-8 col-xs-12">
+      </div>
+    {% endif %}
+    {% if ongoing_results %}
+      <div id="ongoing_events" class="col-md-4 col-xs-12" style="border-left: 1px solid lightgrey; padding-left: 5px">
+        <h3>Ongoing Events</h3>
+        {{ results.render_narrow_results(ongoing_results) }}
+      </div>
+    {% endif %}
+  {% elif selected_tab == 'calendar' %}
+    <div id="calendar"></div>
+  {% endif %}
+</div>{# min-height:300px #}
+</div>{# col-md-9 #}
+</div>{# row #}
+
+<div class="col-md-3">
+  <a href="/events_add" class="btn btn-primary"><i class="fa fa-calendar-plus-o fa-lg"></i> Add Dance Event</a>
+  <button class="btn btn-primary" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
+  <div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="190" data-action="like" data-show-faces="true" style="margin: 10px 0;"></div>
+  <p>
+
+  <hr>
+  <div class="rankings">
+  <a href="/rankings"><i class="fa fa-list-ol fa-lg"></i> City Rankings</a>.
+  </div>
+</div>
+
+</div> {# row #}
+{% endblock %}
+
+{% block bottom_javascript %}
+
+<!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+
+<!-- see below comment near #keywords_input
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
+-->
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
+
+<script type="text/javascript">
+$(document).ready(function(event) {
+  $("body").delegate("#location_input", "click", function() { return false; });
+  $('#keywords_input').keydown(function(event) {
+      if (event.keyCode == 13) {
+          this.form.submit();
+          return false;
+       }
+  });
+  $('#location_input').keydown(function(event) {
+      if (event.keyCode == 13) {
+          this.form.submit();
+          return false;
+       }
+  });
+  {# Disable keywords_input autocomplete/tokenizer, until we figure out exactly how we want this to work.
+  ie, maybe we want to tokenize just magical-portions of the input. But we can make bboy-style events work
+  based off matching against the search query serverside, for the moment.
+  var engine = new Bloodhound({
+    local: {{ keyword_tokens|jsonify }},
+    datumTokenizer: function(d) {
+      return Bloodhound.tokenizers.whitespace(d.value);
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace
+  });
+  engine.initialize();
+  $('#keywords_input').tokenfield({
+    typeahead: [null, { source: engine.ttAdapter() }]
+  });
+  $('#keywords_input').on('tokenfield:createtoken', function (event) {
+    var existingTokens = $(this).tokenfield('getTokens');
+    $.each(existingTokens, function(index, token) {
+        if (token.value === event.attrs.value)
+            event.preventDefault();
+    });
+  });
+  #}
+});
+
+function initializeLocationAutocomplete() {
+  var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
+  autocomplete.setTypes(['(regions)'])
+}
+
+function share() {
+  FB.ui({
+    method: 'share',
+    href: 'https://www.dancedeets.com/',
+  }, function(response){}); 
+}
+
+</script>
+
+{{ results.results_bottom_javascript() }}
+
+{% if selected_tab == 'calendar' %}
+<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.css' />
+<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css' media="print"/>
+<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.js'></script>
+<style type="text/css">
+/** We want to see the whole city and title, so let's ensure we override 'white-space: nowrap'.
+  * This is discussed in more detail here, which is when 2.1 introduced table-based event layout:
+  * https://code.google.com/p/fullcalendar/issues/detail?id=1992
+  **/
+.fc-day-grid-event > .fc-content {
+  white-space: normal;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#calendar').fullCalendar({
+    aspectRatio: 1.8,
+    header: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'month,basicWeek,basicDay'
+    },
+    views: {
+      month: {
+        eventLimit: 4,
+        eventLimitClick: 'day',
+      },
+      week: {
+        eventLimit: 8,
+        eventLimitClick: 'day',
+      }
+    },
+    ignoreTimezone: true,
+    allDayDefault: false,
+    defaultView: 'basicWeek',
+    events: '{{ calendar_feed_url|format_js|safe }}'
+  });
+});
+</script>
+{% else %}
+{{ rsvp.rsvp_script() }}
+
+<script src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+{#
+{% if selected_tab == 'past' %}
+  {{ results.render_result_attending_tooltip_javascript(past_results) }}
+{% elif selected_tab == 'present' %}
+  {{ results.render_result_attending_tooltip_javascript(ongoing_results) }}
+  {% for group in grouped_upcoming_results %}
+    {% if group.results %}
+      {{ results.render_result_attending_tooltip_javascript(group.results) }}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+#}
+  $("img.lazy-narrow").show().lazyload({threshold : 500});
+  $("img.lazy-wide").show().lazyload({threshold : 500});
+});
+
+var classes = [];
+{% for group in grouped_upcoming_results %}
+  {% for result in group.results %}
+    {% if not result.fb_event_id %}
+    classes.push({
+      'url': '{{result.source_page}}',
+      'name': '{{result.name}}',
+      'location': '{{result.actual_city_name}}',
+      'start_time': moment('{{result.start_time_raw}}'),
+      'end_time': moment('{{result.end_time_raw}}'),
+      'categories': {{result.categories|safe}}, {# ideally tojson #}
+      'sponsor': '{{result.sponsor}}',
+      'key': '{{result}}',
+    });
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+/*
+      {% if sponsored_studios['MINDBODY'] %}
+        <div style="margin: 1em 0em; font-style: italic">
+          Studios Powered by <a href="http://www.mindbodyonline.com">MINDBODY</a>:
+          {{ sponsored_studios['MINDBODY']|join(', ') }}
+        </div>
+      {% endif %}
+*/
+</script>
+
+<script type="text/babel">
+
+
+var StudioClass = React.createClass({
+  render: function() {
+    return (
+      <div>
+        <a href="{this.props.studio_class.url}">
+        {this.props.studio_class.location}: {this.props.studio_class.name}
+        </a>
+      </div>
+    );
+  }
+});
+
+var DayHeader = React.createClass({
+  render: function() {
+    return (
+      <div>
+        <h4>{this.props.date.format("ddd MMM D")}</h4>
+      </div>
+    );
+  }
+});
+
+var TimeHeader = React.createClass({
+  render: function() {
+    return (
+      <div>
+        <b>{this.props.datetime.format("h:mma")}</b>
+      </div>
+    );
+  }
+});
+
+var StudioClasses = React.createClass({
+  render: function() {
+    var rows = [];
+    var last_studio_class = null;
+    this.props.classes.forEach(function(studio_class) {
+      if (last_studio_class == null || studio_class.start_time.format("YYYY-MM-DD") != last_studio_class.start_time.format("YYYY-MM-DD")) {
+        rows.push(<DayHeader date={studio_class.start_time} key={studio_class.start_time.format("YYYY-MM-DD")} />);
+      }
+      if (last_studio_class == null || studio_class.start_time.format("HH:mm") != last_studio_class.start_time.format("HH:mm")) {
+        rows.push(<TimeHeader datetime={studio_class.start_time} key={studio_class.start_time.format("YYYY-MM-DDTHH:mm")} />);
+      }
+      rows.push(<StudioClass studio_class={studio_class} key={studio_class.key} />);
+      last_studio_class = studio_class;
+    });
+    return <div>{rows}</div>;
+  }
+});
+
+ReactDOM.render(
+  <StudioClasses classes={classes} />,
+  document.getElementById('upcoming_events')
+);
+
+</script>
+{% endif %}
+{% endblock %}
