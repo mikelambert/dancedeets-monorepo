@@ -88,10 +88,7 @@ var SelectButton = React.createClass({
   },
   render: function() {
     return (
-      <div>
       <a href="#"
-        style={ {'borderRadius': '10px'} }
-        type="button"
         className="btn btn-default btn-xs"
         ref="button"
         href="javascript:void(0);"
@@ -99,7 +96,6 @@ var SelectButton = React.createClass({
         >
           {this.props.item}
         </a>
-      </div>
     );
   }
 });
@@ -124,9 +120,9 @@ var MultiSelectList = React.createClass({
       );
     });
     return (
-      <span>
+      <div className="btn-group" role="group">
       {options}
-      </span>
+      </div>
     );
   }
 });
@@ -150,35 +146,33 @@ var SearchBar = React.createClass({
   },
   render: function() {
     return (
-      <form>
-        <div className="clearfix">
-          <div style={ {'float': 'left'} }>
-            Styles:<br/>
-            <MultiSelectList
-              list={this.props.initial_styles}
-              value={this.props.styles}
-              ref="styles"
-              onChange={this.onChange}
+    <form>
+        <div>
+          Styles:
+          <MultiSelectList
+            list={this.props.initial_styles}
+            value={this.props.styles}
+            ref="styles"
+            onChange={this.onChange}
+          />
+        </div>
+        <div>
+          Studios:
+          <MultiSelectList
+            list={this.props.initial_studios}
+            value={this.props.studios}
+            ref="studios"
+            onChange={this.onChange}
+          />
+        </div>
+        <div>
+          Teacher:
+          <input
+            type="text"
+            value={this.props.teacher}
+            ref="teacher"
+            onChange={this.onChange}
             />
-          </div>
-          <div style={ {'float': 'left'} }>
-            Studios:<br/>
-            <MultiSelectList
-              list={this.props.initial_studios}
-              value={this.props.studios}
-              ref="studios"
-              onChange={this.onChange}
-            />
-          </div>
-          <div style={ {'float': 'left'} }>
-            Teacher:<br/>
-            <input
-              type="text"
-              value={this.props.teacher}
-              ref="teacher"
-              onChange={this.onChange}
-              />
-          </div>
         </div>
       </form>
     );
