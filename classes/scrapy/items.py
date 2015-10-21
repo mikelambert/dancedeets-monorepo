@@ -6,6 +6,7 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 import datetime
+import re
 
 import scrapy
 from scrapy import item
@@ -90,6 +91,8 @@ class StudioScraper(scrapy.Spider):
                 studio_class['latitude'] = self.latlong[0]
                 studio_class['longitude'] = self.latlong[1]
                 studio_class['address'] = self.address
+                studio_class['teacher'] = re.sub('\s', ' ', studio_class['teacher'])
+                studio_class['style'] = re.sub('\s', ' ', studio_class['style'])
                 yield studio_class
             else:
                 # Could be a regular Request object for nested scraping
