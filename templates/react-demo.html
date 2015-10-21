@@ -79,6 +79,12 @@ var classes = [];
 <script type="text/babel">
 
 var PopupMenu = React.createClass({
+  getValue: function() {
+    var list = [].map.call(this.refs.list.selectedOptions, function (option) {
+      return option.value;
+    });
+    return list;
+  },
   render: function() {
     var options = [];
     this.props.list.forEach(function(item) {
@@ -91,7 +97,7 @@ var PopupMenu = React.createClass({
       <select
         multiple={true}
         value={this.props.value}
-        ref={this.props.ref}
+        ref="list"
         onChange={this.props.onChange}
       >
       {options}
@@ -113,8 +119,8 @@ var DayNavMenu = React.createClass({
 var SearchBar = React.createClass({
   onChange: function() {
     this.props.onUserInput(
-        this.refs.styles.value,
-        this.refs.studios.value,
+        this.refs.styles.getValue(),
+        this.refs.studios.getValue(),
         this.refs.teacher.value
     );
   },
@@ -123,7 +129,7 @@ var SearchBar = React.createClass({
       <form>
         Styles:
         <PopupMenu
-          list={['hiphop', 'house', 'popping', 'locking']}
+          list={['Hip-Hop', 'House', 'Popping', 'Locking']}
           value={this.props.styles}
           ref="styles"
           onChange={this.onChange}
@@ -131,7 +137,7 @@ var SearchBar = React.createClass({
         <br />
         Studios:
         <PopupMenu
-          list={['expg', 'bdc', 'peri']}
+          list={['EXPG', 'BDC', 'Peridance']}
           value={this.props.studios}
           ref="studios"
           onChange={this.onChange}
@@ -185,13 +191,47 @@ var StudioClasses = React.createClass({
   render: function() {
     var rows = [];
     var last_studio_class = null;
+    var props = this.props;
+    console.log("RENDER");
+    var key;
+    for (key in this.props){
+      if (key != "classes") {
+        console.log( key + ": " + this.props[key]);
+      }
+    }
+
     this.props.classes.forEach(function(studio_class) {
+      // Class filtering logic
+      if (props.teacher) {
+        if (studio_class.name.toLowerCase().indexOf(props.teacher.toLowerCase()) == -1) {
+          return;
+        }
+      }
+      if (props.studios.length) {
+        if (props.studios.filter(function(studio) {
+          return studio == studio_class.location;
+        }).length == 0) {
+          return;
+        }
+      }
+      if (props.styles.length) {
+        if (props.styles.filter(function(search_style) {
+          var classHasStyle = studio_class.categories.filter(function(class_style) {
+            return search_style == class_style;
+          });
+          return classHasStyle.length > 0;
+        }).length == 0) {
+          return;
+        }
+      }
+      // Section header rendering
       if (last_studio_class == null || studio_class.start_time.format("YYYY-MM-DD") != last_studio_class.start_time.format("YYYY-MM-DD")) {
         rows.push(<DayHeader date={studio_class.start_time} key={studio_class.start_time.format("YYYY-MM-DD")} />);
       }
       if (last_studio_class == null || studio_class.start_time.format("HH:mm") != last_studio_class.start_time.format("HH:mm")) {
         rows.push(<TimeHeader datetime={studio_class.start_time} key={studio_class.start_time.format("YYYY-MM-DDTHH:mm")} />);
       }
+      // Class rendering
       rows.push(<StudioClass studio_class={studio_class} key={studio_class.key} />);
       last_studio_class = studio_class;
     });
@@ -213,6 +253,14 @@ var App = React.createClass({
       studios: studios,
       teacher: teacher
     });
+    console.log("STATE");
+    console.log(this.state);
+    var key;
+    for (key in this.state){
+      if (key != "classes") {
+        console.log( key + ": " + this.state[key]);
+      }
+    }
   },
   render: function() {
     return (
