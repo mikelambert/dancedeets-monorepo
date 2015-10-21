@@ -22,10 +22,7 @@
 <div class="col-md-9">
 <b>NYC Street Dance Classes</b>
 
-<div id="search_bar"></div>
-<div id="day_nav_menu"></div>
-<hr>
-<div id="class_list"></div>
+<div id="app"></div>
 
 </div>{# col-md-9 #}
 
@@ -83,9 +80,19 @@ var classes = [];
 
 var PopupMenu = React.createClass({
   render: function() {
+    var options = [];
+    this.props.list.forEach(function(item) {
+      options.push(
+        <option value={item}>{item}</option>
+      );
+    });
     return (
-      <span>All</span>
-    )
+      <span>
+      <select multiple={true}>
+      {options}
+      </select>
+      </span>
+    );
   }
 });
 
@@ -93,7 +100,7 @@ var DayNavMenu = React.createClass({
   render: function() {
     return (
       <span>Mon | Tue | Wed | Thu | Fri | Sat | Sun</span>
-    )
+    );
   }
 });
 
@@ -102,9 +109,9 @@ var SearchBar = React.createClass({
   render: function() {
     return (
       <form>
-        Styles: <PopupMenu list={[]} />
+        Styles: <PopupMenu list={['hiphop', 'house', 'popping', 'locking']} />
         <br />
-        Studios: <PopupMenu list={[]} />
+        Studios: <PopupMenu list={['expg', 'bdc', 'peri']} />
         <br />
         Teacher: <input type="text" />
       </form>
@@ -162,20 +169,21 @@ var StudioClasses = React.createClass({
   }
 });
 
-ReactDOM.render(
-  <StudioClasses classes={classes} />,
-  document.getElementById('class_list')
-);
+var App = React.createClass({
+  render: function() {
+    return (
+      <div>
+        <SearchBar />
+        <DayNavMenu />
+        <StudioClasses classes={this.props.classes} />
+      </div>
+    )
+  }
+});
 
 ReactDOM.render(
-  <SearchBar />,
-  document.getElementById('search_bar')
-);
-
-
-ReactDOM.render(
-  <DayNavMenu />,
-  document.getElementById('day_nav_menu')
+  <App classes={classes}/>,
+  document.getElementById('app')
 );
 
 
