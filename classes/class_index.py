@@ -21,7 +21,7 @@ from . import class_models
 # search.Document
 # (eventually, json representation?)
 
-DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 def build_display_event_dict(doc):
     def get(x):
