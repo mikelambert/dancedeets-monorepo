@@ -192,14 +192,6 @@ var StudioClasses = React.createClass({
     var rows = [];
     var last_studio_class = null;
     var props = this.props;
-    console.log("RENDER");
-    var key;
-    for (key in this.props){
-      if (key != "classes") {
-        console.log( key + ": " + this.props[key]);
-      }
-    }
-
     this.props.classes.forEach(function(studio_class) {
       // Class filtering logic
       if (props.teacher) {
@@ -253,14 +245,6 @@ var App = React.createClass({
       studios: studios,
       teacher: teacher
     });
-    console.log("STATE");
-    console.log(this.state);
-    var key;
-    for (key in this.state){
-      if (key != "classes") {
-        console.log( key + ": " + this.state[key]);
-      }
-    }
   },
   render: function() {
     return (
