@@ -1,6 +1,4 @@
 {% extends "_base.html" %}
-{% import "_rsvp.html" as rsvp %}
-{% import "_results.html" as results %}
 
 {% block title %}
 {{ result_title }}
@@ -23,126 +21,32 @@
 <div class="row">
 <div class="col-md-9">
 <div style="margin-bottom: 25px">
-  <table><tr><td>
-    <img class="hidden-xs" id="penguin" src="/images/full_penguin_240.png" height="120" width="120">
-  </td><td>
-  <form id="search-form" class="form-inline" role="search" action="/">
-    <div class="form-group">
-      <div style="font-weight: bold">Where will you dance next?</div>
-      <div class="input-group">
-    <span class="input-group-addon"><i class="fa fa-globe fa-fw"></i></span>
-        <input id="location_input" type="text" name="location" placeholder="everywhere" value="{{ form.location.data }}" class="form-control">
-      </div>
-    </div>
-    <div class="form-group">
-      <div style="font-weight: bold">Looking for anything in particular?</div>
-      <div style="font-style: italic; font-size: 70%">You can enter a dance style, dancer, event name, or leave it blank!</div>
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="{{ form.keywords.data }}" class="form-control">
-      </div>
-    </div>
-    {% if form.deb.data %}
-      <input type="hidden" name="deb" value="{{ form.deb.data }}">
-  {% endif %}
-    <button type="submit" class="btn btn-default btn-block" style="margin-top: 1em">
-      <span class="glyphicon glyphicon-search"></span>
-      Search our {{ total_events }} Events
-    </button>
-  {# maybe make a small hourglass icon search box ? 
-   # $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
-   #}
-  </form>
-  </td></tr></table>
+  <b>NYC Street Dance Classes</b>
+  <br>
+  Styles: All
+  <br>
+  Studios: All
+  <br>
+  Keywords: <input type=text>
+  <br>
+  Mon | Tue | Wed | Thu | Fri | Sat | Sun {# a href->a name #}
 </div>{# margin-bottom: 25px #}
-
-Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
 
 <hr>
 
 <div style="min-height:300px">
 
-<ul class="nav nav-tabs nav-justified" data-tabs="tabs">
-  <li
-  {% if selected_tab == 'past' %}
-    class="active"
-  {% endif %}
-  ><a
-  {% if selected_tab == 'past' %}
-    href="#"
-  {% else %}
-    href="{{ past_view_url }}"
-  {% endif %}
-  ><span><i class="fa fa-history fa-lg"></i>
-  {% if selected_tab == 'past' %}
-    {% set num_past_results = len(past_results) %}
-    {% if num_past_results %}
-      {{ num_past_results }}
-    {% endif %}
-  {% endif %}
-  Past Events</span></a></li>
-
-  <li
-  {% if selected_tab == 'present' %}
-    class="active"
-  {% endif %}
-  ><a
-  {% if selected_tab == 'present' %}
-    href="#"
-  {% else %}
-    href="{{ upcoming_view_url }}"
-  {% endif %}
-  ><span>
-  {% if selected_tab == 'present' %}
-    {% if num_upcoming_results %}
-      {{ num_upcoming_results }}
-    {% endif %}
-  {% endif %}
-  Upcoming Events</span></a></li>
-
-  <li
-  {% if selected_tab == 'calendar' %}
-    class="active"
-  {% endif %}
-  ><a
-  {% if selected_tab == 'calendar' %}
-    href="#"
-  {% else %}
-    href="{{ calendar_view_url }}"
-  {% endif %}
-  ><span><i class="fa fa-calendar fa-lg"></i> Calendar</span></a></li>
-</ul>
 <div class="tabs-after top-to-bottom-fade row">
-  {% if selected_tab == 'past' %}
-    {{ results.render_wide_results(past_results) }}
-  {% elif selected_tab == 'present' %}
-    {% if num_upcoming_results %}
-      <div id="upcoming_events" class="col-md-8 col-xs-12">
-      </div>
-    {% endif %}
-    {% if ongoing_results %}
-      <div id="ongoing_events" class="col-md-4 col-xs-12" style="border-left: 1px solid lightgrey; padding-left: 5px">
-        <h3>Ongoing Events</h3>
-        {{ results.render_narrow_results(ongoing_results) }}
-      </div>
-    {% endif %}
-  {% elif selected_tab == 'calendar' %}
-    <div id="calendar"></div>
-  {% endif %}
+  <div id="upcoming_events" class="col-md-8 col-xs-12">
+  </div>
 </div>{# min-height:300px #}
 </div>{# col-md-9 #}
 </div>{# row #}
 
 <div class="col-md-3">
-  <a href="/events_add" class="btn btn-primary"><i class="fa fa-calendar-plus-o fa-lg"></i> Add Dance Event</a>
   <button class="btn btn-primary" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
   <div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="190" data-action="like" data-show-faces="true" style="margin: 10px 0;"></div>
   <p>
-
-  <hr>
-  <div class="rankings">
-  <a href="/rankings"><i class="fa fa-list-ol fa-lg"></i> City Rankings</a>.
-  </div>
 </div>
 
 </div> {# row #}
@@ -210,73 +114,6 @@ function share() {
   }, function(response){}); 
 }
 
-</script>
-
-{{ results.results_bottom_javascript() }}
-
-{% if selected_tab == 'calendar' %}
-<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.css' />
-<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css' media="print"/>
-<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.js'></script>
-<style type="text/css">
-/** We want to see the whole city and title, so let's ensure we override 'white-space: nowrap'.
-  * This is discussed in more detail here, which is when 2.1 introduced table-based event layout:
-  * https://code.google.com/p/fullcalendar/issues/detail?id=1992
-  **/
-.fc-day-grid-event > .fc-content {
-  white-space: normal;
-}
-</style>
-
-<script type="text/javascript">
-$(document).ready(function() {
-  $('#calendar').fullCalendar({
-    aspectRatio: 1.8,
-    header: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'month,basicWeek,basicDay'
-    },
-    views: {
-      month: {
-        eventLimit: 4,
-        eventLimitClick: 'day',
-      },
-      week: {
-        eventLimit: 8,
-        eventLimitClick: 'day',
-      }
-    },
-    ignoreTimezone: true,
-    allDayDefault: false,
-    defaultView: 'basicWeek',
-    events: '{{ calendar_feed_url|format_js|safe }}'
-  });
-});
-</script>
-{% else %}
-{{ rsvp.rsvp_script() }}
-
-<script src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
-
-<script type="text/javascript">
-$(document).ready(function() {
-
-{#
-{% if selected_tab == 'past' %}
-  {{ results.render_result_attending_tooltip_javascript(past_results) }}
-{% elif selected_tab == 'present' %}
-  {{ results.render_result_attending_tooltip_javascript(ongoing_results) }}
-  {% for group in grouped_upcoming_results %}
-    {% if group.results %}
-      {{ results.render_result_attending_tooltip_javascript(group.results) }}
-    {% endif %}
-  {% endfor %}
-{% endif %}
-#}
-  $("img.lazy-narrow").show().lazyload({threshold : 500});
-  $("img.lazy-wide").show().lazyload({threshold : 500});
-});
 
 var classes = [];
 {% for group in grouped_upcoming_results %}
@@ -364,5 +201,4 @@ ReactDOM.render(
 );
 
 </script>
-{% endif %}
 {% endblock %}
