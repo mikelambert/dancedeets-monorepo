@@ -383,6 +383,8 @@ class AddHandler(base_servlet.BaseRequestHandler):
         else:
             self.add_error('missing event_url or event_id parameter')
 
+        self.errors_are_fatal()
+
         try:
             # Skip cache so we always get latest data for newly-added event
             fb_event = self.fbl.get(fb_api.LookupEvent, event_id, allow_cache=False)
@@ -390,14 +392,14 @@ class AddHandler(base_servlet.BaseRequestHandler):
         except Exception, e:
             self.add_error(str(e))
 
+        self.errors_are_fatal()
+
         if self.request.get('ajax'):
-            self.errors_are_fatal()
             self.write_json_response({'success': True})
             return
         else:
             self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
 
-        self.errors_are_fatal()
 
         return self.redirect('/')
 
