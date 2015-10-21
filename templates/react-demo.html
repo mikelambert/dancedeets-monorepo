@@ -83,12 +83,17 @@ var PopupMenu = React.createClass({
     var options = [];
     this.props.list.forEach(function(item) {
       options.push(
-        <option value={item}>{item}</option>
+        <option value={item} key={item}>{item}</option>
       );
     });
     return (
       <span>
-      <select multiple={true}>
+      <select
+        multiple={true}
+        value={this.props.value}
+        ref={this.props.ref}
+        onChange={this.props.onChange}
+      >
       {options}
       </select>
       </span>
@@ -106,14 +111,39 @@ var DayNavMenu = React.createClass({
 
 
 var SearchBar = React.createClass({
+  onChange: function() {
+    this.props.onUserInput(
+        this.refs.styles.value,
+        this.refs.studios.value,
+        this.refs.teacher.value
+    );
+  },
   render: function() {
     return (
       <form>
-        Styles: <PopupMenu list={['hiphop', 'house', 'popping', 'locking']} />
+        Styles:
+        <PopupMenu
+          list={['hiphop', 'house', 'popping', 'locking']}
+          value={this.props.styles}
+          ref="styles"
+          onChange={this.onChange}
+        />
         <br />
-        Studios: <PopupMenu list={['expg', 'bdc', 'peri']} />
+        Studios:
+        <PopupMenu
+          list={['expg', 'bdc', 'peri']}
+          value={this.props.studios}
+          ref="studios"
+          onChange={this.onChange}
+        />
         <br />
-        Teacher: <input type="text" />
+        Teacher:
+        <input
+          type="text"
+          value={this.props.teacher}
+          ref="teacher"
+          onChange={this.onChange}
+          />
       </form>
     );
   }
@@ -170,12 +200,36 @@ var StudioClasses = React.createClass({
 });
 
 var App = React.createClass({
+  getInitialState: function() {
+    return {
+        styles: [],
+        studios: [],
+        teacher: ''
+    };
+  },
+  handleUserInput: function(styles, studios, teacher) {
+    this.setState({
+      styles: styles,
+      studios: studios,
+      teacher: teacher
+    });
+  },
   render: function() {
     return (
       <div>
-        <SearchBar />
+        <SearchBar
+          styles={this.state.styles}
+          studios={this.state.studios}
+          teacher={this.state.teacher}
+          onUserInput={this.handleUserInput}
+        />
         <DayNavMenu />
-        <StudioClasses classes={this.props.classes} />
+        <StudioClasses
+          classes={this.props.classes}
+          styles={this.state.styles}
+          studios={this.state.studios}
+          teacher={this.state.teacher}
+        />
       </div>
     )
   }
