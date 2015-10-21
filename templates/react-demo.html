@@ -89,20 +89,23 @@ var SelectButton = React.createClass({
   render: function() {
     return (
       <div>
-      <button
+      <a href="#"
         style={ {'borderRadius': '10px'} }
         type="button"
         className="btn btn-default btn-xs"
         ref="button"
+        href="javascript:void(0);"
         onClick={this.toggleState}
-        >{this.props.item}</button>
+        >
+          {this.props.item}
+        </a>
       </div>
     );
   }
 });
 
 var MultiSelectList = React.createClass({
-  getValues: function() {
+  getValues : function() {
     var values = [];
     var refs = this.refs;
     this.props.list.forEach(function(item, i) {
