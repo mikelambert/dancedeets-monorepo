@@ -80,8 +80,11 @@ var classes = [];
 
 var SelectButton = React.createClass({
   toggleState: function() {
-    $(this.refs.button).toggleClass('active');
+    this.manualToggleState();
     this.props.onChange();
+  },
+  manualToggleState: function() {
+    $(this.refs.button).toggleClass('active');
   },
   isActive: function() {
     return $(this.refs.button).hasClass('active');
@@ -101,7 +104,7 @@ var SelectButton = React.createClass({
 });
 
 var MultiSelectList = React.createClass({
-  getValues : function() {
+  getValues: function() {
     var values = [];
     var refs = this.refs;
     this.props.list.forEach(function(item, i) {
@@ -111,12 +114,48 @@ var MultiSelectList = React.createClass({
     });
     return values;
   },
+  setAll: function() {
+    var values = [];
+    var refs = this.refs;
+    this.props.list.forEach(function(item, i) {
+      if (refs['item'+i].isActive()) {
+        refs['item'+i].manualToggleState();
+      }
+    });
+    // Ensure we leave it active
+    if (!this.refs['item-all'].isActive()) {
+      this.refs['item-all'].manualToggleState();
+    }
+    this.props.onChange();
+  },
+  unsetAll: function() {
+    if (this.refs['item-all'].isActive()) {
+      this.refs['item-all'].manualToggleState();
+    }
+
+    var anySet = false;
+    var refs = this.refs;
+    this.props.list.forEach(function(item, i) {
+      if (refs['item'+i].isActive()) {
+        anySet = true;
+      }
+    });
+    if (!anySet) {
+      this.refs['item-all'].manualToggleState();
+    }
+
+    this.props.onChange();
+  },
   render: function() {
     var options = [];
     var onChange = this.props.onChange;
+    options.push(
+      <SelectButton key="All" item="All" ref={'item-all'} onChange={this.setAll} />
+    );
+    var unsetAll = this.unsetAll;
     this.props.list.forEach(function(item, i) {
       options.push(
-        <SelectButton key={item} item={item} ref={'item'+i} onChange={onChange} />
+        <SelectButton key={item} item={item} ref={'item'+i} onChange={unsetAll} />
       );
     });
     return (
@@ -151,7 +190,6 @@ var StyleList = React.createClass({
         <div>
           Hiphop/UrbanChoreo: <MultiSelectList
             list={hiphop}
-            value={this.props.value}
             ref="list1"
             onChange={this.props.onChange}
             />
@@ -159,7 +197,6 @@ var StyleList = React.createClass({
         <div>
           Other Styles: <MultiSelectList
             list={other}
-            value={this.props.value}
             ref="list2"
             onChange={this.props.onChange}
             />
@@ -199,7 +236,6 @@ var SearchBar = React.createClass({
         <div>
           <StyleList
             list={this.props.initial_styles}
-            value={this.props.styles}
             ref="styles"
             onChange={this.onChange}
           />
@@ -208,7 +244,6 @@ var SearchBar = React.createClass({
           Studios:
           <MultiSelectList
             list={this.props.initial_studios}
-            value={this.props.studios}
             ref="studios"
             onChange={this.onChange}
           />
