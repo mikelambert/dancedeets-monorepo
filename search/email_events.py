@@ -48,7 +48,7 @@ def email_for_user(user, fbl, should_send=True):
     friends.decorate_with_friends(fbl, search_results)
     rsvp.decorate_with_rsvps(fbl, search_results)
 
-    past_results, present_results, grouped_results = search.group_results(search_results)
+    past_results, present_results, grouped_results = search.group_results(search_results, include_all=True)
 
     display = {}
     display['user'] = user
@@ -56,9 +56,9 @@ def email_for_user(user, fbl, should_send=True):
 
     week_events = grouped_results[0]
     # Only send emails if we have upcoming events
-    if not week_events:
+    if not week_events.results:
         return None
-    display['results'] = week_events[0].results
+    display['results'] = week_events.results
 
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
     jinja_env.filters['date_human_format'] = user.date_human_format

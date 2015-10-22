@@ -19,7 +19,7 @@ Hi {{ user.full_name }},
 		<a href="{{ fb_event_url(result.fb_event_id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}">
 		<b style="font-size: 110%">{{ result.name|e }}</b>
 		</a><br>
-		({{ result.event_keywords)|join(', ') }})<br>
+		({{ result.event_keywords|join(', ') }})<br>
 		{{ result.start_time|date_human_format }}<br>
 		{% if result.multi_day_event() and result.end_time %}
 			to {{ result.end_time|date_human_format }}<br>

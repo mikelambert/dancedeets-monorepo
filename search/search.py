@@ -27,7 +27,7 @@ class ResultsGroup(object):
         self.name = name
         self.results = results
 
-def group_results(search_results):
+def group_results(search_results, include_all=False):
     now = datetime.datetime.now() - datetime.timedelta(hours=12)
 
     grouped_results = []
@@ -52,7 +52,8 @@ def group_results(search_results):
     grouped_results.append(ResultsGroup('Events This Week', week_results))
     grouped_results.append(ResultsGroup('Events This Month', month_results))
     grouped_results.append(ResultsGroup('Future Events', year_results))
-    grouped_results = [x for x in grouped_results if x.results]
+    if not include_all:
+        grouped_results = [x for x in grouped_results if x.results]
     return past_results, present_results, grouped_results
 
 class DisplayEvent(ndb.Model):
