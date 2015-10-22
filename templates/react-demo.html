@@ -127,6 +127,12 @@ var MultiSelectList = React.createClass({
   }
 });
 
+
+//TODO: provide grouping of classes into broad categories
+//TODO: fix escaping issues with react
+//TODO: fix and remove hover, particularly on mobile (where its a last-known mouse position)
+//TODO: Add DayNavMenu
+//TODO: Use Affix for top nav search bar: http://getbootstrap.com/javascript/#affix
 var DayNavMenu = React.createClass({
   render: function() {
     return (
@@ -211,11 +217,42 @@ var TimeHeader = React.createClass({
   }
 });
 
+var ClassSummary = React.createClass({
+  render: function() {
+    console.log(this.props);
+    var filteredClasses = this.props.filteredClasses();
+
+
+    return (<div><b>Showing {filteredClasses.length} classes:</b></div>);
+  }
+});
+
 var StudioClasses = React.createClass({
   render: function() {
     var rows = [];
     var last_studio_class = null;
     var props = this.props;
+    var goodClasses = this.props.filteredClasses();
+    goodClasses.forEach(function(studio_class) {
+      // Section header rendering
+      if (last_studio_class == null || studio_class.start_time.format("YYYY-MM-DD") != last_studio_class.start_time.format("YYYY-MM-DD")) {
+        rows.push(<DayHeader date={studio_class.start_time} key={studio_class.start_time.format("YYYY-MM-DD")} />);
+      }
+      if (last_studio_class == null || studio_class.start_time.format("HH:mm") != last_studio_class.start_time.format("HH:mm")) {
+        rows.push(<TimeHeader datetime={studio_class.start_time} key={studio_class.start_time.format("YYYY-MM-DDTHH:mm")} />);
+      }
+      // Class rendering
+      rows.push(<StudioClass studio_class={studio_class} key={studio_class.key} />);
+      last_studio_class = studio_class;
+    });
+    return <div>{rows}</div>;
+  }
+});
+
+var App = React.createClass({
+  filteredClasses: function() {
+    var goodClasses = [];
+    var props = this.state;
     this.props.classes.forEach(function(studio_class) {
       // Class filtering logic
       if (props.teacher) {
@@ -240,22 +277,10 @@ var StudioClasses = React.createClass({
           return;
         }
       }
-      // Section header rendering
-      if (last_studio_class == null || studio_class.start_time.format("YYYY-MM-DD") != last_studio_class.start_time.format("YYYY-MM-DD")) {
-        rows.push(<DayHeader date={studio_class.start_time} key={studio_class.start_time.format("YYYY-MM-DD")} />);
-      }
-      if (last_studio_class == null || studio_class.start_time.format("HH:mm") != last_studio_class.start_time.format("HH:mm")) {
-        rows.push(<TimeHeader datetime={studio_class.start_time} key={studio_class.start_time.format("YYYY-MM-DDTHH:mm")} />);
-      }
-      // Class rendering
-      rows.push(<StudioClass studio_class={studio_class} key={studio_class.key} />);
-      last_studio_class = studio_class;
+      goodClasses.push(studio_class);
     });
-    return <div>{rows}</div>;
-  }
-});
-
-var App = React.createClass({
+    return goodClasses;
+  },
   getInitialState: function() {
     return {
         styles: [],
@@ -281,11 +306,15 @@ var App = React.createClass({
           teacher={this.state.teacher}
           onUserInput={this.handleUserInput}
         />
+        <ClassSummary
+          filteredClasses={this.filteredClasses}
+          />
         <StudioClasses
           classes={this.props.classes}
           styles={this.state.styles}
           studios={this.state.studios}
           teacher={this.state.teacher}
+          filteredClasses={this.filteredClasses}
         />
       </div>
     )
