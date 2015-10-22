@@ -27,7 +27,6 @@ def _geocode_key(**kwargs):
 
 def fetch_raw(**kwargs):
     geocode_key = _geocode_key(**kwargs)
-    print geocode_key
     try:
         return _get_object(geocode_key)
     except IOError:

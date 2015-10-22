@@ -245,6 +245,8 @@ class SearchQuery(object):
         if prefilter:
             doc_events = [x for x in doc_events if prefilter(x)]
 
+        logging.info("After filtering, we have %s events", len(doc_events))
+
         a = time.time()
         ids = [x.doc_id for x in doc_events]
         if full_event:

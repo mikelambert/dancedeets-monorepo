@@ -58,3 +58,4 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
                 s.num_false_negatives = (s.num_false_negatives or 0) + 1
             s.num_real_events = (s.num_real_events or 0) + 1
             s.put()
+    return e
