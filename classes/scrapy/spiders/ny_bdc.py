@@ -39,6 +39,18 @@ class BdcDay(items.StudioScraper):
             date_string = (today + datetime.timedelta(days=i)).strftime('%m_%d')
             yield scrapy.Request('http://www.broadwaydancecenter.com/schedule/%s.shtml' % date_string)
 
+    _acronyms = {
+        'AL': 'All Levels',
+        'Bas': 'Basic',
+        'Beg': 'Beginner',
+        'Int': 'Intermediate',
+        'Adv': 'Advanced',
+    }
+    @classmethod
+    def _expand_acronyms(cls, s):
+        for k, v in cls._acronyms.items():
+            s = re.sub(r'\b%s\b' % k, v, s)
+        return s
 
     def parse_classes(self, response):
         table = response.css('table.grid table.grid')
@@ -63,8 +75,8 @@ class BdcDay(items.StudioScraper):
             item['start_time'] = datetime.datetime.combine(date, start_time)
             item['end_time'] = datetime.datetime.combine(date, end_time)
 
-            item.add('style', row.xpath('.//td[2]/text() | .//td[3]/text()'))
-            item.add('teacher', row.xpath('.//td[4]//text()'))
+            item['style'] = self._expand_acronyms(self._extract_text(row.xpath('.//td[2] | .//td[3]'))).title()
+            item['teacher'] = self._extract_text(row.xpath('.//td[4]'))
             url = urlparse.urljoin(response.url, row.xpath('(.//td[4]//@href)[1]').extract()[0])
             item['teacher_link'] = url
 

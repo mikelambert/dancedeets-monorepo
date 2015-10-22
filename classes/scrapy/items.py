@@ -43,9 +43,6 @@ class StudioClass(item.DictItem):
         'sponsor',
     ]
 
-    def add(self, field, selected):
-        self[field] = ' '.join(x.strip() for x in selected.extract() if x.strip())
-
 class StudioScraper(scrapy.Spider):
     """Base class for all our studio scrapers. Does some per-item field setup that is common across studios."""
 
@@ -63,8 +60,11 @@ class StudioScraper(scrapy.Spider):
     @staticmethod
     def _cleanup(s):
         result = re.sub(r'\s', ' ', s).replace(u'\xa0', ' ')
-        print result
         return result
+
+    @staticmethod
+    def _extract_text(cell):
+        return ' '.join(x.strip() for x in cell.xpath('.//text()').extract() if x.strip()).strip()
 
     def parse_classes(self, response):
         raise NotImplementedError()

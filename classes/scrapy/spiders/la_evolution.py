@@ -56,8 +56,8 @@ class Evolution(items.StudioScraper):
                 if not self._street_style(name):
                     continue
                 item = items.StudioClass()
-                item['style'] = name
-                item['teacher'] = teacher
+                item['style'] = name.title()
+                item['teacher'] = teacher.title()
                 item['start_time'] = event.decoded('dtstart')
                 if 'dtend' in event:
                     item['end_time'] = event.decoded('dtend')

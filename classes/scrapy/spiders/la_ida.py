@@ -9,14 +9,6 @@ def parse_times(times):
     start, end = times.split(u' - ')
     return dateparser.parse(start).time(), dateparser.parse(end).time()
 
-def extract_text(cell):
-    return ' '.join(cell.xpath('.//text()').extract()).strip()
-
-def extract_text_without_hidden(cell):
-    contents = extract_text(cell)
-    contents_hide = extract_text(cell.css('.inline-hide'))
-    return contents.replace(contents_hide, '').strip()
-
 class IDA(items.StudioScraper):
     name = 'IDA'
     allowed_domains = ['www.idahollywood.com']
@@ -27,9 +19,15 @@ class IDA(items.StudioScraper):
         'http://www.idahollywood.com/schedule',
     ]
 
+    @classmethod
+    def extract_text_without_hidden(cls, cell):
+        contents = cls._extract_text(cell)
+        contents_hide = cls._extract_text(cell.css('.inline-hide'))
+        return contents.replace(contents_hide, '').strip()
+
     def parse_classes(self, response):
         day_li = response.css('ul.quicktabs-tabs li')
-        dates = [dateparser.parse(extract_text(day)).date() for day in day_li]
+        dates = [dateparser.parse(self._extract_text(day)).date() for day in day_li]
 
         for i, day_row in enumerate(response.css('.quicktabs-tabpage')):
             date = dates[i]
@@ -37,14 +35,14 @@ class IDA(items.StudioScraper):
                 date += datetime.timedelta(days=7)
             for row in day_row.css('.quicktabs-views-group'):
 
-                style = extract_text_without_hidden(row.css('.views-field-field-add-class-details-'))
+                style = self._extract_text_without_hidden(row.css('.views-field-field-add-class-details-'))
                 if not self._street_style(style):
                     continue
 
-                times = extract_text(row.css('.time-default'))
+                times = self._extract_text(row.css('.time-default'))
                 start_time, end_time = parse_times(times)
                 teacher_cell = row.css('.views-field-field-instructor')
-                teacher = extract_text_without_hidden(teacher_cell)
+                teacher = self._extract_text_without_hidden(teacher_cell)
 
                 teacher_link = None
                 teacher_href = teacher_cell.xpath('.//a/@href')

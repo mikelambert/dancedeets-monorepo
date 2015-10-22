@@ -42,8 +42,8 @@ class PeridanceDay(items.StudioScraper):
                 start_time, end_time = parse_times(times)
                 item['start_time'] = datetime.datetime.combine(date, start_time)
                 item['end_time'] = datetime.datetime.combine(date, end_time)
-                item.add('style', row.xpath('.//td[2]//text()'))
-                item.add('teacher', row.xpath('.//td[3]//text()'))
+                item['style'] = self._extract_text(row.xpath('.//td[2]')
+                item['teacher'] = self._extract_text(row.xpath('.//td[3]'))
                 hrefs = row.xpath('.//td[3]//@href').extract()
                 if hrefs:
                     url = urlparse.urljoin(response.url, hrefs[0])

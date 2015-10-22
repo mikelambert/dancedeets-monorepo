@@ -7,9 +7,6 @@ def parse_times(times):
     start, end = times.split(u' - ')
     return dateparser.parse(start).time(), dateparser.parse(end).time()
 
-def extract_text(cell):
-    return ' '.join(cell.xpath('.//text()').extract()).strip()
-
 class StudioV(items.StudioScraper):
     name = 'StudioV'
     allowed_domains = ['la.thestudiov.com']
@@ -26,7 +23,7 @@ class StudioV(items.StudioScraper):
             date += datetime.timedelta(days=7)
         tbody = response.css('.row-hover')
         for row in tbody.css('tr'):
-            times, style, teacher = [extract_text(x) for x in row.css('td')]
+            times, style, teacher = [self._extract_text(x) for x in row.css('td')]
             start_time, end_time = parse_times(times)
 
             item = items.StudioClass()

@@ -9,9 +9,6 @@ def parse_times(times):
     start, end = times.split(u' - ')
     return dateparser.parse(start).time(), dateparser.parse(end).time()
 
-def extract_text(cell):
-    return ' '.join(cell.xpath('.//text()').extract()).strip()
-
 class EDGE(items.StudioScraper):
     name = 'EDGE'
     allowed_domains = ['www.edgepac.com']
@@ -37,19 +34,19 @@ class EDGE(items.StudioScraper):
                 # Grab class
                 cells = row.css('td')
                 time_cell, studio_cell, style_cell, teacher_cell, date_cell, substitute_cell = cells
-                times = extract_text(time_cell)
+                times = self._extract_text(time_cell)
 
-                style = extract_text(style_cell)
+                style = self._extract_text(style_cell)
                 if not self._street_style(style):
                     continue
 
-                teacher = extract_text(teacher_cell)
+                teacher = self._extract_text(teacher_cell)
                 teacher_link = None
                 teacher_href = teacher_cell.xpath('.//a/@href')
                 if teacher_href:
                     teacher_link = teacher_href.extract()[0]
-                substitute_date_string = extract_text(date_cell)
-                substitute_teacher = extract_text(substitute_cell)
+                substitute_date_string = self._extract_text(date_cell)
+                substitute_teacher = self._extract_text(substitute_cell)
 
                 start_time, end_time = parse_times(times)
                 item = items.StudioClass()

@@ -29,13 +29,12 @@ class PMTHouseOfDance(items.StudioScraper):
         captured_columns = []
         rows_to_capture = 0
         for text_block in table:
-            if 'Tuesday' in text_block.xpath('.//text()').extract():
+            if 'Tuesday' in self._extract_text(text_block):
                 rows_to_capture = 5
             if rows_to_capture > 0:
                 cells = []
                 for row in text_block.xpath('.//p'):
-                    cell = ' '.join(row.xpath('.//text()').extract()).strip()
-                    cells.append(cell)
+                    cells.append(self._extract_text(row.xpath('.')))
                 captured_columns.append(cells)
             rows_to_capture -= 1
 

@@ -4,9 +4,6 @@ import re
 
 from .. import items
 
-def extract_text(cell):
-    return ' '.join(cell.xpath('.//text()').extract()).strip()
-
 class NeighborhoodStudio(items.StudioScraper):
     name = 'NeighborhoodStudio'
     allowed_domains = ['healcode.com']
@@ -23,10 +20,10 @@ class NeighborhoodStudio(items.StudioScraper):
             class_value = row.xpath('@class').extract()[0]
             classes = class_value.split(' ')
             if 'schedule_header' in classes:
-                date_string = extract_text(row.css('.hc_date'))
+                date_string = self._extract_text(row.css('.hc_date'))
                 date = dateparser.parse(date_string).date()
             else:
-                style = extract_text(row.css('span.classname'))
+                style = self._extract_text(row.css('span.classname'))
                 style = re.sub(r' with .*', '', style)
                 if not self._street_style(style):
                     continue
@@ -39,6 +36,6 @@ class NeighborhoodStudio(items.StudioScraper):
                 item['start_time'] = datetime.datetime.combine(date, start_time)
                 item['end_time'] = datetime.datetime.combine(date, end_time)
                 item['style'] = style
-                item['teacher'] = extract_text(row.css('span.trainer'))
+                item['teacher'] = self._extract_text(row.css('span.trainer'))
 
                 yield item
