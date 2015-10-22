@@ -1,5 +1,6 @@
 import datetime
 import jinja2
+import re
 import wtforms
 
 from google.appengine.api import search
@@ -112,6 +113,17 @@ class SearchResult(object):
     fake_end_time = property(lambda x: dates.faked_end_time(x.start_time, x.end_time))
 
     categories = property(lambda x: humanize_categories(x.data.get('categories', [])))
+    def extended_categories(self):
+        categories = self.categories
+        name = self.name.lower()
+        if re.search(r'street\W+jazz', name):
+            categories.append('Street-Jazz')
+            categories.remove('Hip-Hop')
+        if re.search(r'jazz\W+funk', name):
+            categories.append('Jazz-Funk')
+            categories.remove('Hip-Hop')
+        return categories
+
     image = property(lambda x: x.data['image'])
     sponsor = property(lambda x: x.data.get('sponsor'))
 

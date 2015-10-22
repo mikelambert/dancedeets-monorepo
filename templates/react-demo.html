@@ -59,7 +59,7 @@ var classes = [];
       'location': '{{result.actual_city_name}}',
       'start_time': moment('{{result.start_time_raw}}'),
       'end_time': moment('{{result.end_time_raw}}'),
-      'categories': {{result.categories|safe}}, {# ideally tojson #}
+      'categories': {{result.extended_categories()|safe}}, {# ideally tojson #}
       'sponsor': '{{result.sponsor}}',
       'key': '{{result}}',
     });
@@ -127,6 +127,49 @@ var MultiSelectList = React.createClass({
   }
 });
 
+var StyleList = React.createClass({
+  getValues : function() {
+    var values = [];
+    Array.prototype.push.apply(values, this.refs.list1.getValues());
+    Array.prototype.push.apply(values, this.refs.list2.getValues());
+    return values;
+  },
+  render: function() {
+    var options = [];
+    var onChange = this.props.onChange;
+    var hiphop = [];
+    var other = [];
+    this.props.list.forEach(function(item, i) {
+      if (item == 'Hip-Hop' || item == 'Street-Jazz' || item == 'Jazz-Funk') {
+        hiphop.push(item);
+      } else {
+        other.push(item);
+      }
+    });
+    return (
+      <div>
+        <div>
+          Hiphop/UrbanChoreo: <MultiSelectList
+            list={hiphop}
+            value={this.props.value}
+            ref="list1"
+            onChange={this.props.onChange}
+            />
+          </div>
+        <div>
+          Other Styles: <MultiSelectList
+            list={other}
+            value={this.props.value}
+            ref="list2"
+            onChange={this.props.onChange}
+            />
+        </div>
+      </div>
+
+    );
+  }
+})
+
 
 //TODO: provide grouping of classes into broad categories
 //TODO: fix escaping issues with react
@@ -154,8 +197,7 @@ var SearchBar = React.createClass({
     return (
     <form>
         <div>
-          Styles:
-          <MultiSelectList
+          <StyleList
             list={this.props.initial_styles}
             value={this.props.styles}
             ref="styles"
@@ -219,10 +261,7 @@ var TimeHeader = React.createClass({
 
 var ClassSummary = React.createClass({
   render: function() {
-    console.log(this.props);
     var filteredClasses = this.props.filteredClasses();
-
-
     return (<div><b>Showing {filteredClasses.length} classes:</b></div>);
   }
 });
@@ -329,8 +368,8 @@ classes.forEach(function(studio_class) {
     styles_set[category] = true;
   });
 });
-var studios = Object.keys(studios_set).sort()
-var styles = Object.keys(styles_set).sort()
+var studios = Object.keys(studios_set).sort();
+var styles = Object.keys(styles_set).sort();
 
 ReactDOM.render(
   <App
