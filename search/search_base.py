@@ -118,10 +118,12 @@ class SearchResult(object):
         name = self.name.lower()
         if re.search(r'street\W+jazz', name):
             categories.append('Street-Jazz')
-            categories.remove('Hip-Hop')
+            if 'Hip-Hop' in categories and not re.search('hip\W+hop', name):
+                categories.remove('Hip-Hop')
         if re.search(r'jazz\W+funk', name):
             categories.append('Jazz-Funk')
-            categories.remove('Hip-Hop')
+            if 'Hip-Hop' in categories and not re.search('hip\W+hop', name):
+                categories.remove('Hip-Hop')
         return categories
 
     image = property(lambda x: x.data['image'])
