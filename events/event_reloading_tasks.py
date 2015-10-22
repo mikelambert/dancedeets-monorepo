@@ -29,7 +29,7 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
         fbl = None
         logging.info("Looking for event id %s with visible user ids %s", db_event.fb_event_id, db_event.visible_to_fb_uids)
         for user in users.User.get_by_ids(db_event.visible_to_fb_uids):
-            fbl = fb_api.FBLookup(user.fb_uid, user.fb_access_token)
+            fbl = user.get_fblookup()
             fbl.allow_cache = allow_cache
             try:
                 real_fb_event = fbl.get(fb_api.LookupEvent, db_event.fb_event_id)

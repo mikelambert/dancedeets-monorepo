@@ -26,7 +26,7 @@ def test_user_on_events(user):
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
     event_ids = params['event_ids'].split(',')
-    fbl = fb_api.FBLookup(user.fb_uid, user.fb_access_token)
+    fbl = user.get_fblookup()
     fbl.allow_cache = False
     try:
         fb_events = fbl.get_multi(fb_api.LookupEvent, event_ids)

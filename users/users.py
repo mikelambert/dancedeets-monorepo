@@ -5,6 +5,7 @@ from google.appengine.api import datastore_errors
 from google.appengine.runtime import apiproxy_errors
 
 import datetime
+import fb_api
 from loc import gmaps_api
 from loc import math
 from util import dates
@@ -56,6 +57,10 @@ class User(ndb.Model):
     timezone_offset = ndb.FloatProperty(indexed=False)
 
     weekly_email_send_date = ndb.DateTimeProperty(indexed=False)
+
+    def get_fblookup(self):
+        fbl = fb_api.FBLookup(self.fb_uid, self.fb_access_token)
+        return fbl
 
     def dict_for_form(self):
         return {
