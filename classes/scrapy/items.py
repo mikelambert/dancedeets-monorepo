@@ -60,6 +60,12 @@ class StudioScraper(scrapy.Spider):
         processor.real_tokenize(keywords.PREPROCESS_REMOVAL)
         return processor.has_token(rules.DANCE_STYLE)
 
+    @staticmethod
+    def _cleanup(s):
+        result = re.sub(r'\s', ' ', s).replace(u'\xa0', ' ')
+        print result
+        return result
+
     def parse_classes(self, response):
         raise NotImplementedError()
 
@@ -83,6 +89,8 @@ class StudioScraper(scrapy.Spider):
         scrape_time = datetime.datetime.now()
         for studio_class in self.parse_classes(response):
             if isinstance(studio_class, StudioClass):
+                studio_class['teacher'] = self._cleanup(studio_class['teacher'])
+                studio_class['style'] = self._cleanup(studio_class['style'])
                 studio_class['source_page'] = self._get_url(response)
                 studio_class['studio_name'] = self.name
                 studio_class['recurrence_id'] = self._get_recurrence(studio_class)
@@ -91,8 +99,6 @@ class StudioScraper(scrapy.Spider):
                 studio_class['latitude'] = self.latlong[0]
                 studio_class['longitude'] = self.latlong[1]
                 studio_class['address'] = self.address
-                studio_class['teacher'] = re.sub('\s', ' ', studio_class['teacher'])
-                studio_class['style'] = re.sub('\s', ' ', studio_class['style'])
                 yield studio_class
             else:
                 # Could be a regular Request object for nested scraping
