@@ -54,14 +54,14 @@ var classes = [];
   {% for result in group.results %}
     {% if not result.fb_event_id %}
     classes.push({
-      'url': '{{result.source_page}}',
+      'url': '{{result.source_page||escapejs}}',
       'name': '{{result.name|escapejs}}',
       'location': '{{result.actual_city_name|escapejs}}',
       'start_time': moment('{{result.start_time_raw}}'),
       'end_time': moment('{{result.end_time_raw}}'),
       'categories': {{result.extended_categories()|safe}}, {# ideally tojson #}
-      'sponsor': '{{result.sponsor}}',
-      'key': '{{result}}',
+      'sponsor': '{{result.sponsor|escapejs}}',
+      'key': '{{result|escapejs}}',
     });
     {% endif %}
   {% endfor %}
