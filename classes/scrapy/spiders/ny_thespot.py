@@ -44,10 +44,10 @@ class TheSpotDanceCenter(items.StudioScraper):
                     name, teacher = summary.split(' with ', 1)
                 else:
                     name = summary
-                    teacher = None
+                    teacher = ''
                 item = items.StudioClass()
                 item['style'] = name
-                item['teacher'] = teacher
+                item['teacher'] = teacher.strip()
                 item['start_time'] = event.decoded('dtstart')
                 if 'dtend' in event:
                     item['end_time'] = event.decoded('dtend')
