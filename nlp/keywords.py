@@ -515,6 +515,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
     'bottles? popping?',
     'poppin.? bottles?',
     'pop music',
+    'pop video',
     'dance fitness',
 
     'eye-poppin\w+',
