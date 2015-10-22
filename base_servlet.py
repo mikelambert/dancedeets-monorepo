@@ -44,6 +44,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
             return urllib.quote(value.encode('utf8'))
         self.jinja_env.filters['urlencode'] = do_urlencode
         self.jinja_env.filters['format_html'] = text.format_html
+        self.jinja_env.filters['escapejs'] = text.escapejs
         self.jinja_env.globals['zip'] = zip
         self.jinja_env.globals['len'] = len
         

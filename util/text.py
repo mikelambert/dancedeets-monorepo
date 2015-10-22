@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import jinja2
+import markupsafe
 import logging
 import re
 
@@ -67,6 +68,33 @@ def linkify(value):
             url = 'http://' + url
         return jinja2.Markup('<a href="%s">%s</a>') % (url, m.group(1))
     return url_finder_re.sub(make_href, jinja2.Markup.escape(value))
+
+
+# This code is taken from django
+_base_js_escapes = (
+    ('\\', '\\u005C'),
+    ('\'', '\\u0027'),
+    ('"', '\\u0022'),
+    ('>', '\\u003E'),
+    ('<', '\\u003C'),
+    ('&', '\\u0026'),
+    ('=', '\\u003D'),
+    ('-', '\\u002D'),
+    (';', '\\u003B'),
+    ('\u2028', '\\u2028'),
+    ('\u2029', '\\u2029')
+)
+
+# Escape every ASCII character with a value less than 32.
+_js_escapes = (_base_js_escapes +
+               tuple([('%c' % z, '\\u%04X' % z) for z in range(32)]))
+
+def escapejs(value):
+    """Hex encodes characters for use in JavaScript strings."""
+    value = unicode(value)
+    for bad, good in _js_escapes:
+        value = value.replace(bad, good)
+    return markupsafe.Markup(value)
 
 def format_js(value):
     if isinstance(value, basestring):

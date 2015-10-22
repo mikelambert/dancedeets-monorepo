@@ -55,8 +55,8 @@ var classes = [];
     {% if not result.fb_event_id %}
     classes.push({
       'url': '{{result.source_page}}',
-      'name': '{{result.name}}',
-      'location': '{{result.actual_city_name}}',
+      'name': '{{result.name|escapejs}}',
+      'location': '{{result.actual_city_name|escapejs}}',
       'start_time': moment('{{result.start_time_raw}}'),
       'end_time': moment('{{result.end_time_raw}}'),
       'categories': {{result.extended_categories()|safe}}, {# ideally tojson #}
@@ -208,8 +208,6 @@ var StyleList = React.createClass({
 })
 
 
-//TODO: provide grouping of classes into broad categories
-//TODO: fix escaping issues with react
 //TODO: fix and remove hover, particularly on mobile (where its a last-known mouse position)
 //TODO: Add DayNavMenu
 //TODO: Use Affix for top nav search bar: http://getbootstrap.com/javascript/#affix
