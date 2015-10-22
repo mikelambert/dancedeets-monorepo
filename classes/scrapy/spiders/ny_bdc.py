@@ -7,18 +7,6 @@ import scrapy
 
 from .. import items
 
-"""
-class BdcStyle(scrapy.Spider):
-    name = 'broadwaydancecenter.com/style'
-    allowed_domains = ['broadwaydancecenter.com']
-    start_urls = [
-        'http://www.broadwaydancecenter.com/schedule/schedule_hiphop.shtml',
-    ]
-
-    def parse(self, response):
-        self.logger.info('A response from %s just arrived!', response.url)
-"""
-
 def parse_time(ts):
     if re.search(r'noon|am|pm', ts.lower()):
         return dateparser.parse(ts).time(), True
