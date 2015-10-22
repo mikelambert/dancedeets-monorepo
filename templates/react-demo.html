@@ -54,7 +54,7 @@ var classes = [];
   {% for result in group.results %}
     {% if not result.fb_event_id %}
     classes.push({
-      'url': '{{result.source_page||escapejs}}',
+      'url': '{{result.source_page|escapejs}}',
       'name': '{{result.name|escapejs}}',
       'location': '{{result.actual_city_name|escapejs}}',
       'start_time': moment('{{result.start_time_raw}}'),
@@ -84,7 +84,9 @@ var SelectButton = React.createClass({
     this.props.onChange();
   },
   manualToggleState: function() {
-    $(this.refs.button).toggleClass('active');
+    var button = $(this.refs.button);
+    button.toggleClass('active');
+    button.blur();
   },
   isActive: function() {
     return $(this.refs.button).hasClass('active');
