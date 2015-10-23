@@ -92,9 +92,13 @@ var SelectButton = React.createClass({
     return $(this.refs.button).hasClass('active');
   },
   render: function() {
+    var extraClass = '';
+    if (this.props.value) {
+      extraClass = 'active';
+    }
     return (
       <a href="#"
-        className="btn btn-default btn-xs"
+        className={"btn btn-default btn-xs " + extraClass}
         ref="button"
         href="javascript:void(0);"
         onClick={this.toggleState}
@@ -150,14 +154,16 @@ var MultiSelectList = React.createClass({
   },
   render: function() {
     var options = [];
-    var onChange = this.props.onChange;
+    var emptyList = (this.props.value.length == 0);
     options.push(
-      <SelectButton key="All" item="All" ref={'item-all'} onChange={this.setAll} />
+      <SelectButton key="All" item="All" ref={'item-all'} value={emptyList} onChange={this.setAll} />
     );
+    var value = this.props.value;
     var unsetAll = this.unsetAll;
     this.props.list.forEach(function(item, i) {
+      var selected = $.inArray(item, value) != -1;
       options.push(
-        <SelectButton key={item} item={item} ref={'item'+i} onChange={unsetAll} />
+        <SelectButton key={item} item={item} ref={'item'+i} value={selected} onChange={unsetAll} />
       );
     });
     return (
@@ -228,8 +234,6 @@ var DayLink = React.createClass({
   }
 });
 
-//TODO: "All" should be selected at startup
-//TODO: Should fix the All across two sub-categories
 var DayNavMenu = React.createClass({
   render: function() {
     var weeks = [];
@@ -267,8 +271,10 @@ var SearchBar = React.createClass({
     return (
       <form>
         <div>
-          <StyleList
+          Styles:
+          <MultiSelectList
             list={this.props.initial_styles}
+            value={this.props.styles}
             ref="styles"
             onChange={this.onChange}
           />
@@ -277,6 +283,7 @@ var SearchBar = React.createClass({
           Studios:
           <MultiSelectList
             list={this.props.initial_studios}
+            value={this.props.studios}
             ref="studios"
             onChange={this.onChange}
           />
@@ -476,7 +483,9 @@ var styles_set = {};
 classes.forEach(function(studio_class) {
   studios_set[studio_class.location] = true;
   studio_class.categories.forEach(function(category) {
-    styles_set[category] = true;
+    if (category != 'All-Styles') {
+      styles_set[category] = true;
+    }
   });
 });
 var studios = Object.keys(studios_set).sort();
