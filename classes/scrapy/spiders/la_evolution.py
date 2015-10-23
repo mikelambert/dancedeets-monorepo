@@ -52,7 +52,7 @@ class Evolution(items.StudioScraper):
                     if match:
                         teacher = match.group(1).strip()
                     else:
-                        teacher = None
+                        teacher = ''
                 if not self._street_style(name):
                     continue
                 item = items.StudioClass()

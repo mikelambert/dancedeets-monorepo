@@ -20,7 +20,7 @@ class IDA(items.StudioScraper):
     ]
 
     @classmethod
-    def extract_text_without_hidden(cls, cell):
+    def _extract_text_without_hidden(cls, cell):
         contents = cls._extract_text(cell)
         contents_hide = cls._extract_text(cell.css('.inline-hide'))
         return contents.replace(contents_hide, '').strip()
