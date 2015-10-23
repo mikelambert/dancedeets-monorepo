@@ -43,7 +43,7 @@
 	    <input type="hidden" name="deb" value="{{ form.deb.data }}">
 	{% endif %}
     <button type="submit" class="btn btn-default btn-block" style="margin-top: 1em">
-      <span class="glyphicon glyphicon-search"></span>
+      <i class="fa fa-search fa-fw"></i>
       Search our {{ total_events }} Events
     </button>
   {# maybe make a small hourglass icon search box ? 
@@ -159,15 +159,6 @@ Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
 
 {% block bottom_javascript %}
 
-<!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-
-<!-- see below comment near #keywords_input
-<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
--->
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
-
 <script type="text/javascript">
 $(document).ready(function(event) {
   $("body").delegate("#location_input", "click", function() { return false; });
@@ -220,6 +211,16 @@ function share() {
 }
 
 </script>
+
+<!-- if we ever want to add i18n, we can use http://cdnjs.com/libraries/moment.js/ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+
+<!-- see below comment near #keywords_input
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
+-->
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
+
 
 {{ results.results_bottom_javascript() }}
 
