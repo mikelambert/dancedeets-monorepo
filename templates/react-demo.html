@@ -161,7 +161,17 @@ var MultiSelectList = React.createClass({
     var value = this.props.value;
     var unsetAll = this.unsetAll;
     this.props.list.forEach(function(item, i) {
-      var selected = $.inArray(item, value) != -1;
+      var subItems = [item];
+      if (item.constructor === Array) {
+        subItems = item[1];
+        item = item[0];
+      }
+
+      var selected = true;
+      subItems.forEach(function(subItem) {
+        selected = selected && ($.inArray(subItem, value) != -1);
+      });
+
       options.push(
         <SelectButton key={item} item={item} ref={'item'+i} value={selected} onChange={unsetAll} />
       );
@@ -173,47 +183,6 @@ var MultiSelectList = React.createClass({
     );
   }
 });
-
-var StyleList = React.createClass({
-  getValues : function() {
-    var values = [];
-    Array.prototype.push.apply(values, this.refs.list1.getValues());
-    Array.prototype.push.apply(values, this.refs.list2.getValues());
-    return values;
-  },
-  render: function() {
-    var options = [];
-    var onChange = this.props.onChange;
-    var hiphop = [];
-    var other = [];
-    this.props.list.forEach(function(item, i) {
-      if (item == 'Hip-Hop' || item == 'Street-Jazz' || item == 'Jazz-Funk') {
-        hiphop.push(item);
-      } else {
-        other.push(item);
-      }
-    });
-    return (
-      <div>
-        <div>
-          Hiphop/UrbanChoreo: <MultiSelectList
-            list={hiphop}
-            ref="list1"
-            onChange={this.props.onChange}
-            />
-          </div>
-        <div>
-          Other Styles: <MultiSelectList
-            list={other}
-            ref="list2"
-            onChange={this.props.onChange}
-            />
-        </div>
-      </div>
-
-    );
-  }
-})
 
 function getDayId(dayName) {
     return dayName;
@@ -491,6 +460,16 @@ classes.forEach(function(studio_class) {
 var studios = Object.keys(studios_set).sort();
 var styles = Object.keys(styles_set).sort();
 
+var hiphopStyles = ['Hip-Hop', 'Street-Jazz', 'Jazz-Funk'];
+var freestyles = jQuery.grep(styles, function(value) {
+  return $.inArray(value, hiphopStyles) == -1;;
+});
+/*
+styles = [
+  ['All Hip-Hop/Urban-Choreo', hiphopStyles],
+  ['All Freestyle', freestyles],
+].concat(styles);
+*/
 ReactDOM.render(
   <App
     classes={classes}
