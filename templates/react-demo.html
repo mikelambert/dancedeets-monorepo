@@ -20,7 +20,6 @@
 
 <div class="row">
 <div class="col-md-9">
-<b>NYC Street Dance Classes</b>
 
 <div id="app"></div>
 
@@ -74,6 +73,7 @@ var classes = [];
         </div>
       {% endif %}
 */
+
 </script>
 
 <script type="text/babel">
@@ -211,8 +211,8 @@ var StyleList = React.createClass({
 
 
 //TODO: "All" should be selected at startup
+//TODO: Should fix the All across two sub-categories
 //TODO: Add DayNavMenu
-//TODO: Use Affix for top nav search bar: http://getbootstrap.com/javascript/#affix
 var DayNavMenu = React.createClass({
   render: function() {
     return (
@@ -232,7 +232,7 @@ var SearchBar = React.createClass({
   },
   render: function() {
     return (
-    <form>
+      <form>
         <div>
           <StyleList
             list={this.props.initial_styles}
@@ -369,27 +369,54 @@ var App = React.createClass({
       teacher: teacher
     });
   },
+  componentDidUpdate: function() {
+    // Now scroll back so the navbar is directly at the top of the screen
+    // and all of the results start fresh, beneath it
+    var normalAffixedTop = $('#navbar-container').offset().top;
+    if ($(document).scrollTop() > normalAffixedTop) {
+      window.scroll(0, normalAffixedTop);
+    }
+  },
   render: function() {
     return (
       <div>
-        <SearchBar
-          initial_studios={this.props.studios}
-          initial_styles={this.props.styles}
-          styles={this.state.styles}
-          studios={this.state.studios}
-          teacher={this.state.teacher}
-          onUserInput={this.handleUserInput}
-        />
-        <ClassSummary
-          filteredClasses={this.filteredClasses}
+        <div
+          id="navbar-container"
+          style={ {
+            marginBottom: "1em"
+            } }
+          >
+          <div
+            id="navbar"
+            style={ {
+              backgroundColor: "white",
+              paddingBottom: "0.5em",
+              boxShadow: "0 5px 4px -4px black",
+              } }
+          >
+            <b>NYC Street Dance Classes</b>
+            <SearchBar
+              initial_studios={this.props.studios}
+              initial_styles={this.props.styles}
+              styles={this.state.styles}
+              studios={this.state.studios}
+              teacher={this.state.teacher}
+              onUserInput={this.handleUserInput}
+            />
+          </div>
+        </div>
+        <div>
+          <ClassSummary
+            filteredClasses={this.filteredClasses}
+            />
+          <StudioClasses
+            classes={this.props.classes}
+            styles={this.state.styles}
+            studios={this.state.studios}
+            teacher={this.state.teacher}
+            filteredClasses={this.filteredClasses}
           />
-        <StudioClasses
-          classes={this.props.classes}
-          styles={this.state.styles}
-          studios={this.state.studios}
-          teacher={this.state.teacher}
-          filteredClasses={this.filteredClasses}
-        />
+        </div>
       </div>
     )
   }
@@ -416,5 +443,18 @@ ReactDOM.render(
 );
 
 
+$(function() {
+    $('#navbar-container').height($("#navbar").height());
+
+    $('#navbar').affix({
+        offset: { top: $('#navbar').offset().top }
+    });
+});
+
 </script>
+<style type="text/css">
+#navbar.affix {
+  top: 0px;
+}
+</style>
 {% endblock %}
