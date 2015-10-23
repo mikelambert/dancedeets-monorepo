@@ -1,36 +1,22 @@
-First, download and install mercurial here:
-http://mercurial.selenic.com/downloads/
-
-Then download and install appengine libraries here:
+First, download and install appengine libraries here:
 https://developers.google.com/appengine/downloads
+...and open the AppEngine app at least once, to set up /usr/local/google_appengine.
 
-# Install boot2docker from http://boot2docker.io/
-boot2docker init
-boot2docker start
-
-# Setup gcloud:
+Second, setup gcloud:
 curl https://sdk.cloud.google.com | bash
 gcloud components update app preview
 gcloud config set project dancedeets-hrd
 gcloud auth login
 gcloud preview app run app.yaml
 
-And open the app at least once, to set up /usr/local/google_appengine.
+Third, to setup dancedeets, run ./setup.sh. It will download and install libraries,
+and setup some in our lib/ directory for uploading to appengine.
 
-Then to set up dancedeets, run ./setup.sh first. It will download and install
-the necessary libraries, setting up symlinks for the ones that need to be
-included in the uploaded package.
+You can run:
+- ./nose.sh to run all of the included tests.
+- ./server.sh to run a local server
+- ./deploy.sh to push to production
 
-Once that's done, run 'make' to compile the templates.  This must be done after
-every change to the templates/ directory.
-
-Finally, you can run ./nose.sh to run all of the included tests. Some of them
-actually talk to google maps API server (and form a regression test to ensure we
-understand the returned data).  As such, if you run the tests too often you may
-encounter quota-exceeded errors.  Just wait a bit before re-running tests, or
-pass in a directory/filename to limit the scope of tests that are run.
-
-
-If you want to setup re2, be sure to:
-download re2 from google code, possibly applying https://gist.github.com/brantfaircloth/675539 if it is still necessary.
-download pyre2 from https://github.com/axiak/pyre2 (not the broken pypi 0.2.20 version!).
+If you are running the NLP classifier evaluations, you may want to setup re2 for speed.
+To do this, download/install from https://github.com/google/re2/
+Then install 'pip install re2' to get the python wrappers.

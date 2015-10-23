@@ -69,25 +69,6 @@ function install-git() {
 	done
 }
 
-function install-hg() {
-	cd $TMP_DIR
-	REPO_PATH=$1
-	shift
-	echo
-	echo $REPO_PATH
-	echo
-	REPO_DIRNAME=$(basename $REPO_PATH)
-	[ -e $REPO_DIRNAME ] || hg clone $REPO_PATH
-	cd $REPO_DIRNAME
-	hg update
-	[ -e setup.py ] && python setup.py build
-	for MODULE in $*
-	do
-		[ -h $BASE_DIR/$(basename $MODULE) ] && rm $BASE_DIR/$(basename $MODULE)
-		cp -Rf $MODULE $BASE_DIR/lib/
-	done
-}
-
 # Because the current published version has a bug with media uploads
 install-git https://github.com/sixohsix/twitter.git twitter
 

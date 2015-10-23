@@ -2,6 +2,7 @@
 *.pyc
 *.swp
 app-nose.yaml
+app-devserver.yaml
 
 # secret files
 keys.yaml
