@@ -19,7 +19,6 @@ from servlets import calendar
 from servlets import event
 from servlets import event_proxy
 from servlets import feedback
-from servlets import home
 from servlets import login
 from servlets import mobile_apps
 from servlets import static_servlets
