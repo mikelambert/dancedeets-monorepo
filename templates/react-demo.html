@@ -492,12 +492,18 @@ ReactDOM.render(
 );
 
 
-$(function() {
+function resetAffixedOffset() {
     $('#navbar-container').height($("#navbar").height());
-
     $('#navbar').affix({
         offset: { top: $('#navbar').offset().top }
     });
+}
+$(function() {
+    resetAffixedOffset();
+});
+
+$(window).resize(function() {
+    resetAffixedOffset();
 });
 
 </script>
