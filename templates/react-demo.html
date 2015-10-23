@@ -209,14 +209,47 @@ var StyleList = React.createClass({
   }
 })
 
+function getDayId(dayName) {
+    return dayName;
+}
+
+var DayLink = React.createClass({
+  onClick: function() {
+    var id = getDayId(this.props.dayName);
+    var scrollOffset = $('#navbar').outerHeight();
+    var nudgeOffset = 5;
+    $("html, body").animate({ scrollTop: $('#'+id).offset().top - scrollOffset - nudgeOffset }, 300);
+    // return false; // React does not require that onClick handlers return false
+  },
+  render: function() {
+    return (
+      <a href={'#'+getDayId(this.props.dayName)} onClick={this.onClick}>{this.props.dayName}</a>
+    );
+  }
+});
 
 //TODO: "All" should be selected at startup
 //TODO: Should fix the All across two sub-categories
-//TODO: Add DayNavMenu
 var DayNavMenu = React.createClass({
   render: function() {
+    var weeks = [];
+    for (var i = 0; i < 7; i++) {
+      if (i > 0) {
+        weeks.push(<span key={'|-'+i}> | </span>);
+      }
+      var dayName = moment().weekday(i).format("ddd");
+      weeks.push(
+        <DayLink
+          key={dayName}
+          dayName={dayName}
+        />
+      );
+    }
     return (
-      <span>Mon | Tue | Wed | Thu | Fri | Sat | Sun</span>
+      <span>Jump to:
+      {' '}
+      {weeks}
+      </span>
     );
   }
 });
@@ -276,20 +309,24 @@ var StudioClass = React.createClass({
 
 var DayHeader = React.createClass({
   render: function() {
-    return (
-      <div>
-        <h4>{this.props.date.format("ddd MMM D")}</h4>
-      </div>
+    var contents = (
+      <h4>{this.props.date.format("ddd MMM D")}</h4>
     );
+    if (this.props.useAnchor) {
+      contents = (
+        <div id={getDayId(this.props.date.format("ddd"))}>
+          {contents}  
+        </div>
+      );
+    }
+    return contents;
   }
 });
 
 var TimeHeader = React.createClass({
   render: function() {
     return (
-      <div>
-        <b>{this.props.datetime.format("h:mma")}</b>
-      </div>
+      <b>{this.props.datetime.format("h:mma")}</b>
     );
   }
 });
@@ -297,7 +334,9 @@ var TimeHeader = React.createClass({
 var ClassSummary = React.createClass({
   render: function() {
     var filteredClasses = this.props.filteredClasses();
-    return (<div><b>Showing {filteredClasses.length} classes:</b></div>);
+    return (
+      <div><b>Showing {filteredClasses.length} classes:</b></div>
+    );
   }
 });
 
@@ -307,10 +346,19 @@ var StudioClasses = React.createClass({
     var last_studio_class = null;
     var props = this.props;
     var goodClasses = this.props.filteredClasses();
+    var aNamedDays = {};
     goodClasses.forEach(function(studio_class) {
       // Section header rendering
       if (last_studio_class == null || studio_class.start_time.format("YYYY-MM-DD") != last_studio_class.start_time.format("YYYY-MM-DD")) {
-        rows.push(<DayHeader date={studio_class.start_time} key={studio_class.start_time.format("YYYY-MM-DD")} />);
+        var day = studio_class.start_time.format("ddd");
+        rows.push(
+          <DayHeader
+            date={studio_class.start_time}
+            key={studio_class.start_time.format("YYYY-MM-DD")}
+            useAnchor={!aNamedDays[day]}
+          />
+        );
+        aNamedDays[day] = true;
       }
       if (last_studio_class == null || studio_class.start_time.format("HH:mm") != last_studio_class.start_time.format("HH:mm")) {
         rows.push(<TimeHeader datetime={studio_class.start_time} key={studio_class.start_time.format("YYYY-MM-DDTHH:mm")} />);
@@ -403,6 +451,7 @@ var App = React.createClass({
               teacher={this.state.teacher}
               onUserInput={this.handleUserInput}
             />
+            <DayNavMenu />
           </div>
         </div>
         <div>
