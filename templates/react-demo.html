@@ -309,7 +309,7 @@ var TimeHeader = React.createClass({
 
 var ClassSummary = React.createClass({
   render: function() {
-    var filteredClasses = this.props.filteredClasses();
+    var filteredClasses = this.props.filteredClasses;
     return (
       <div><b>Showing {filteredClasses.length} classes:</b></div>
     );
@@ -321,7 +321,7 @@ var StudioClasses = React.createClass({
     var rows = [];
     var last_studio_class = null;
     var props = this.props;
-    var goodClasses = this.props.filteredClasses();
+    var goodClasses = this.props.filteredClasses;
     var aNamedDays = {};
     goodClasses.forEach(function(studio_class) {
       // Section header rendering
@@ -402,6 +402,7 @@ var App = React.createClass({
     }
   },
   render: function() {
+    var filteredClasses = this.filteredClasses()
     return (
       <div>
         <div
@@ -432,14 +433,14 @@ var App = React.createClass({
         </div>
         <div>
           <ClassSummary
-            filteredClasses={this.filteredClasses}
+            filteredClasses={filteredClasses}
             />
           <StudioClasses
             classes={this.props.classes}
             styles={this.state.styles}
             studios={this.state.studios}
             teacher={this.state.teacher}
-            filteredClasses={this.filteredClasses}
+            filteredClasses={filteredClasses}
           />
         </div>
       </div>
