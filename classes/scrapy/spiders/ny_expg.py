@@ -42,7 +42,7 @@ class EXPG(items.StudioScraper):
                     item['start_time'] = datetime.datetime.combine(date, start_time)
                     item['end_time'] = datetime.datetime.combine(date, end_time)
                     item['style'] = real_style
-                    item['teacher'] = self._extract_text(class_block.css('.cell_txt_pc'))
+                    item['teacher'] = self._extract_text(class_block.css('.cell_txt_pc')).title()
                     # This information is incorrect on their website :(
                     #teacher_link = class_block.css('.table_middle_tate').xpath('./a/@href').extract()[0]
                     #item['teacher_link'] = teacher_link
