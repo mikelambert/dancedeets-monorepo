@@ -38,14 +38,13 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         location = self.location_shortcuts.get(location, location)
         self.errors_are_fatal
         search_query = class_index.ClassSearchQuery.create_from_location(location)
+        search_query.start_date = datetime.date.today()
+        search_query.end_date = datetime.date.today() + datetime.timedelta(days=7)
 
-        sponsored_studios = {}
         search_results = search_query.get_search_results()
-        for result in search_results:
-            sponsored_studios.setdefault(result.sponsor, set()).add(result.actual_city_name)
 
         self.display['search_results'] = search_results
-        self.display['sponsored_studios'] = search_results #TODO
+        self.display['location'] = location
         self.render_template(self.template_name)
 
 

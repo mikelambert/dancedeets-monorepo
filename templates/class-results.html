@@ -61,14 +61,15 @@ var classes = [];
     'key': '{{result|escapejs}}',
   });
 {% endfor %}
-/*
+{#
+TODO: Sponsored Studios
       {% if sponsored_studios['MINDBODY'] %}
         <div style="margin: 1em 0em; font-style: italic">
           Studios Powered by <a href="http://www.mindbodyonline.com">MINDBODY</a>:
           {{ sponsored_studios['MINDBODY']|join(', ') }}
         </div>
       {% endif %}
-*/
+#}
 
 </script>
 
@@ -253,6 +254,9 @@ var SearchBar = React.createClass({
             onChange={this.onChange}
           />
         </div>
+        {% if location == 'Los Angeles, CA' %}
+          <div><i>Currently Missing: Boogiezone, mL, Quest Studio</i></div>
+        {% endif %}
         <div>
           Teacher:{' '}
           <input
