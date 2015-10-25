@@ -119,7 +119,7 @@ class ClassSearchQuery(object):
         if self.start_date:
             clauses += ['end_time >= %s' % self.start_date.strftime(self.DATE_SEARCH_FORMAT)]
         if self.end_date:
-            clauses += ['start_time <= %s' % self.end_date.strftime(self.DATE_SEARCH_FORMAT)]
+            clauses += ['start_time < %s' % self.end_date.strftime(self.DATE_SEARCH_FORMAT)]
         if self.keywords:
             clauses += ['(%s)' % self.keywords]
         if clauses:
