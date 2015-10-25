@@ -49,21 +49,17 @@ function share() {
 }
 
 var classes = [];
-{% for group in grouped_upcoming_results %}
-  {% for result in group.results %}
-    {% if not result.fb_event_id %}
-    classes.push({
-      'url': '{{result.source_page|escapejs}}',
-      'name': '{{result.name|escapejs}}',
-      'location': '{{result.actual_city_name|escapejs}}',
-      'start_time': moment('{{result.start_time_raw}}'),
-      'end_time': moment('{{result.end_time_raw}}'),
-      'categories': {{result.extended_categories()|safe}}, {# ideally tojson #}
-      'sponsor': '{{result.sponsor|escapejs}}',
-      'key': '{{result|escapejs}}',
-    });
-    {% endif %}
-  {% endfor %}
+{% for result in search_results %}
+  classes.push({
+    'url': '{{result.source_page|escapejs}}',
+    'name': '{{result.name|escapejs}}',
+    'location': '{{result.actual_city_name|escapejs}}',
+    'start_time': moment('{{result.start_time_raw}}'),
+    'end_time': moment('{{result.end_time_raw}}'),
+    'categories': {{result.extended_categories()|safe}}, {# ideally tojson #}
+    'sponsor': '{{result.sponsor|escapejs}}',
+    'key': '{{result|escapejs}}',
+  });
 {% endfor %}
 /*
       {% if sponsored_studios['MINDBODY'] %}
@@ -461,16 +457,6 @@ classes.forEach(function(studio_class) {
 var studios = Object.keys(studios_set).sort();
 var styles = Object.keys(styles_set).sort();
 
-var hiphopStyles = ['Hip-Hop', 'Street-Jazz', 'Jazz-Funk'];
-var freestyles = jQuery.grep(styles, function(value) {
-  return $.inArray(value, hiphopStyles) == -1;;
-});
-/*
-styles = [
-  ['All Hip-Hop/Urban-Choreo', hiphopStyles],
-  ['All Freestyle', freestyles],
-].concat(styles);
-*/
 ReactDOM.render(
   <App
     classes={classes}

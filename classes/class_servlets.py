@@ -5,10 +5,50 @@ import urllib
 import webapp2
 
 import app
+import base_servlet
 from . import class_index
 from . import class_models
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
+
+@app.route('/classes/([\w-]+)/')
+class RelevantHandler(base_servlet.BaseRequestHandler):
+    template_name = 'class-results'
+
+    location_shortcuts = {
+        'nyc': 'New York, NY',
+        'la': 'Los Angeles, CA',
+    }
+
+    def requires_login(self):
+        return False
+
+    def get(self, *args, **kwargs):
+        self.handle(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        self.handle(*args, **kwargs)
+
+    def handle(self, location):
+        self.finish_preload()
+
+        if location not in ['nyc', 'la']:
+            self.add_error('Bad location: %s' % location)
+        location = self.location_shortcuts.get(location, location)
+        self.errors_are_fatal
+        search_query = class_index.ClassSearchQuery.create_from_location(location)
+
+        sponsored_studios = {}
+        search_results = search_query.get_search_results()
+        for result in search_results:
+            sponsored_studios.setdefault(result.sponsor, set()).add(result.actual_city_name)
+
+        self.display['search_results'] = search_results
+        self.display['sponsored_studios'] = search_results #TODO
+        self.render_template(self.template_name)
+
+
 
 class JsonDataHandler(webapp2.RequestHandler):
     def initialize(self, request, response):

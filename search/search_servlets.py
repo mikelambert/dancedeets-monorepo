@@ -119,10 +119,7 @@ class RelevantHandler(SearchHandler):
         self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % urllib.urlencode(request_params)
         self.display['calendar_feed_url'] = '/calendar/feed?%s' % urllib.urlencode(request_params)
         self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
-        if 'react' in form.deb.data:
-            self.render_template('react-demo')
-        else:
-            self.render_template(self.template_name)
+        self.render_template(self.template_name)
 
 @app.route('/city/(.*)/?')
 class CityHandler(RelevantHandler):

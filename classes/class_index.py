@@ -82,11 +82,23 @@ class ClassSearchQuery(object):
             bounds = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
         else:
             bounds = None
-        common_fields = dict(bounds=bounds, min_attendees=form.min_attendees.data, keywords=form.keywords.data)
+        common_fields = dict(bounds=bounds, keywords=form.keywords.data)
         if start_end_query:
             self = cls(start_date=form.start.data, end_date=form.end.data, **common_fields)
         else:
             self = cls(time_period=form.time_period.data, **common_fields)
+        return self
+
+    @classmethod
+    def create_from_location(cls, location):
+        if location:
+            geocode = gmaps_api.get_geocode(address=location)
+            if not geocode:
+                raise search_base.SearchException("Did not understand location: %s" % location)
+            bounds = math.expand_bounds(geocode.latlng_bounds(), 200) # HACK?
+        else:
+            bounds = None
+        self = cls(bounds=bounds)
         return self
 
     DATE_SEARCH_FORMAT = '%Y-%m-%d'
