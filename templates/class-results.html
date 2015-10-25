@@ -236,7 +236,7 @@ var SearchBar = React.createClass({
     return (
       <form>
         <div>
-          Styles:
+          Styles:{' '}
           <MultiSelectList
             list={this.props.initial_styles}
             value={this.props.styles}
@@ -245,7 +245,7 @@ var SearchBar = React.createClass({
           />
         </div>
         <div>
-          Studios:
+          Studios:{' '}
           <MultiSelectList
             list={this.props.initial_studios}
             value={this.props.studios}
@@ -254,7 +254,7 @@ var SearchBar = React.createClass({
           />
         </div>
         <div>
-          Teacher:
+          Teacher:{' '}
           <input
             type="text"
             value={this.props.teacher}
