@@ -114,16 +114,13 @@ class SearchResult(object):
 
     categories = property(lambda x: humanize_categories(x.data.get('categories', [])))
     def extended_categories(self):
-        categories = self.categories
-        name = self.name.lower()
-        if re.search(r'street\W+jazz', name):
-            categories.append('Street-Jazz')
-            if 'Hip-Hop' in categories and not re.search('hip\W+hop', name):
-                categories.remove('Hip-Hop')
-        if re.search(r'jazz\W+funk', name):
-            categories.append('Jazz-Funk')
-            if 'Hip-Hop' in categories and not re.search('hip\W+hop', name):
-                categories.remove('Hip-Hop')
+        """Rewrites hiphop as streetjazz and jazzfunk sometimes when appropriate."""
+        categories = list(self.categories)
+        # It'd be nice to solve this in a better way, either do it at the global level
+        # Or find a way to separate them that doesn't alienate the audiences.
+        if 'Hip-Hop' in categories:
+            categories.remove('Hip-Hop')
+            categories.append('Hip-Hop & Street-Jazz')
         return categories
 
     image = property(lambda x: x.data['image'])
