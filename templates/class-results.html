@@ -1,7 +1,7 @@
 {% extends "_base.html" %}
 
 {% block title %}
-{{ result_title }}
+{{location}} Street Dance Classes
 {% endblock %}
 
 {% block head_stylesheet %}
@@ -419,7 +419,7 @@ var App = React.createClass({
               boxShadow: "0 5px 4px -4px black",
               } }
           >
-            <b>NYC Street Dance Classes</b>
+            <b>{{location}} Street Dance Classes</b>
             <SearchBar
               initial_studios={this.props.studios}
               initial_styles={this.props.styles}
