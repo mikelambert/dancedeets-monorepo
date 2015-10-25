@@ -441,6 +441,8 @@ PERFORMANCE = Name('PERFORMANCE', Any(
     'festival',
     'show\W?case',
     u'représentation', # french performance
+    'espectaculo', # spanish performance
+    u'espectáculo', # spanish performance
     u'퍼포먼스', # korean performance
     u'쇼케이스', # korean showcase
     u'ショーケース', # japanese showcase
