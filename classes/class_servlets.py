@@ -12,7 +12,7 @@ from . import class_models
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
-@app.route('/classes/([\w-]+)')
+@app.route('/classes/(nyc|la)')
 class RelevantHandler(base_servlet.BaseRequestHandler):
     template_name = 'class-results'
 
