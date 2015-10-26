@@ -48,6 +48,12 @@ function share() {
   }, function(response){}); 
 }
 
+//TODO: make a "class" page with relevant info (youtube, studio link, etc)
+//TODO: make the top-nav collapsable on mobile for screen real estate
+//TODO: add a webiew feature for android and ios
+//TODO: set up a promotion-by-search-area onebox for linking to things (for website, and eventually api?)
+//TODO: reach out to three studios to find the owners in charge
+
 var classes = [];
 {% for result in search_results %}
   classes.push({
@@ -61,15 +67,6 @@ var classes = [];
     'key': '{{result|escapejs}}',
   });
 {% endfor %}
-{#
-TODO: Sponsored Studios
-      {% if sponsored_studios['MINDBODY'] %}
-        <div style="margin: 1em 0em; font-style: italic">
-          Studios Powered by <a href="http://www.mindbodyonline.com">MINDBODY</a>:
-          {{ sponsored_studios['MINDBODY']|join(', ') }}
-        </div>
-      {% endif %}
-#}
 
 </script>
 
@@ -316,6 +313,34 @@ var ClassSummary = React.createClass({
   }
 });
 
+var SponsoredSummary = React.createClass({
+  render: function() {
+    var sponsoredStudios = {}
+    this.props.classes.forEach(function(studio_class) {
+      var sponsor = studio_class['sponsor'];
+      if (!(sponsor in sponsoredStudios)) {
+        sponsoredStudios[sponsor] = {};
+      }
+      var studio = studio_class['location'];
+      sponsoredStudios[sponsor][studio] = true;
+    });
+    var sponsorHtml = [];
+    if ('MINDBODY' in sponsoredStudios) {
+      console.log(sponsoredStudios['MINDBODY']);
+      var studioList = Object.keys(sponsoredStudios['MINDBODY']);
+      sponsorHtml.push(
+        <div key='MINDBODY' style={ {margin: '1em 0em', fontStyle: 'italic'} }>
+          Studios Powered by <a href="http://www.mindbodyonline.com">MINDBODY</a>:{' '}
+          {studioList.join(', ')}
+        </div>
+      );
+    }
+    return (
+      <div>{sponsorHtml}</div>
+    );
+  }
+});
+
 var StudioClasses = React.createClass({
   render: function() {
     var rows = [];
@@ -441,6 +466,9 @@ var App = React.createClass({
             studios={this.state.studios}
             teacher={this.state.teacher}
             filteredClasses={filteredClasses}
+          />
+          <SponsoredSummary
+            classes={this.props.classes}
           />
         </div>
       </div>
