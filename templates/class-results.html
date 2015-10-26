@@ -49,7 +49,6 @@ function share() {
 }
 
 //TODO: make a "class" page with relevant info (youtube, studio link, etc)
-//TODO: make the top-nav collapsable on mobile for screen real estate
 //TODO: add a webiew feature for android and ios
 //TODO: set up a promotion-by-search-area onebox for linking to things (for website, and eventually api?)
 //TODO: reach out to three studios to find the owners in charge
@@ -426,6 +425,16 @@ var App = React.createClass({
       window.scroll(0, normalAffixedTop);
     }
   },
+  onOpenClose: function() {
+    $('#navbar-collapsable').slideToggle('fast');
+    if ($('#navbar-collapse-button-icon').hasClass('fa-caret-square-o-up')) {
+      $('#navbar-collapse-button-icon').removeClass('fa-caret-square-o-up');
+      $('#navbar-collapse-button-icon').addClass('fa-caret-square-o-down');
+    } else {
+      $('#navbar-collapse-button-icon').removeClass('fa-caret-square-o-down');
+      $('#navbar-collapse-button-icon').addClass('fa-caret-square-o-up');
+    }
+  },
   render: function() {
     var filteredClasses = this.filteredClasses()
     return (
@@ -440,20 +449,32 @@ var App = React.createClass({
             id="navbar"
             style={ {
               backgroundColor: "white",
-              paddingBottom: "0.5em",
               boxShadow: "0 5px 4px -4px black",
               } }
           >
-            <b>{{location}} Street Dance Classes</b>
-            <SearchBar
-              initial_studios={this.props.studios}
-              initial_styles={this.props.styles}
-              styles={this.state.styles}
-              studios={this.state.studios}
-              teacher={this.state.teacher}
-              onUserInput={this.handleUserInput}
-            />
-            <DayNavMenu />
+            <div
+              id="navbar-collapsable"
+              style={ {
+                float: "left"
+              } }>
+              <b>{{location}} Street Dance Classes</b>
+              <SearchBar
+                initial_studios={this.props.studios}
+                initial_styles={this.props.styles}
+                styles={this.state.styles}
+                studios={this.state.studios}
+                teacher={this.state.teacher}
+                onUserInput={this.handleUserInput}
+              />
+              <DayNavMenu />
+            </div>
+            <i
+            id="navbar-collapse-button-icon"
+            onClick={this.onOpenClose}
+            style={ {
+              float: 'right'
+            } }
+            className="fa fa-caret-square-o-up"></i>
           </div>
         </div>
         <div>
@@ -504,6 +525,9 @@ function resetAffixedOffset() {
     $('#navbar').affix({
         offset: { top: $('#navbar').offset().top }
     });
+
+  var width = $('#navbar-container').width() - parseInt($('#navbar-container').css('paddingLeft')) - parseInt($('#navbar-container').css('paddingRight'));
+  $('#navbar').css('width', width);
 }
 $(function() {
     resetAffixedOffset();
@@ -517,6 +541,9 @@ $(window).resize(function() {
 <style type="text/css">
 #navbar.affix {
   top: 0px;
+}
+#navbar.affix-top #navbar-collapse-button-icon {
+  display: none;
 }
 </style>
 {% endblock %}
