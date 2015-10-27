@@ -1,4 +1,4 @@
-{% extends "_base.html" %}
+{% extends class_base_template %}
 
 {% block title %}
 {{location}} Street Dance Classes
@@ -30,21 +30,24 @@
 {% endblock %}
 
 {% block body %}
-
+{% if webview %}
+<div class="row">
+<div class="col-md-12">
+<div id="app"></div>
+</div>
+</div>
+{% else %}
 <div class="row">
 <div class="col-md-9">
-
 <div id="app"></div>
-
 </div>{# col-md-9 #}
-
 <div class="col-md-3">
   <button class="btn btn-primary" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
   <div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="190" data-action="like" data-show-faces="true" style="margin: 10px 0;"></div>
   <p>
 </div>
-
 </div> {# row #}
+{% endif %}
 {% endblock %}
 
 {% block bottom_javascript %}
@@ -284,7 +287,7 @@ var ClassSummary = React.createClass({
   render: function() {
     var classes = this.props.styles.join(', ');
     if (!classes) {
-      classes = 'All'
+      classes = 'All';
     }
     var studios = this.props.studios.join(', ');
     if (studios) {

@@ -45,6 +45,12 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
         self.display['search_results'] = search_results
         self.display['location'] = location
+        webview = bool(self.request.get('webview'))
+        self.display['webview'] = webview
+        if webview:
+            self.display['class_base_template'] = '_base_webview.html'
+        else:
+            self.display['class_base_template'] = '_base.html'
         self.render_template(self.template_name)
 
 

@@ -1,0 +1,100 @@
+{% extends "_real_base.html" %}
+
+{% block headbody %}
+<head>
+<title>{% block title %}{% endblock %}</title>
+<link rel="stylesheet" href="/vcss/{{version}}/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/vcss/{{version}}/dancedeets.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% block head_metatags %}{% endblock %}
+{% block head_stylesheet %}{% endblock %}
+{% block head_javascript %}{% endblock %}
+{% if prod_mode and track_google_analytics %}
+  <script>
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-18831479-1', 'auto');
+    ga('require', 'linkid', 'linkid.js');
+    ga('send', 'pageview', {
+      'webview': true,
+      'dimension1': 'logged-out'
+    });
+  </script>
+{% else %}
+  <script type="text/javascript">
+  var _gaq = [];
+  </script>
+{% endif %}
+</head>
+<body>
+
+
+<div class="container">
+{% block body %}{% endblock %}
+</div> {# /container #}
+
+<div id="fb-root"></div>
+
+<script src="//cdn.jsdelivr.net/g/jquery@2.1.3,bootstrap@3.3.2"></script>
+<script type="text/javascript">
+  // This is because of sticky touch CSS on mobile devices:
+  // https://github.com/twbs/bootstrap/issues/12832
+  // With bootstrap v4, we can replace this with:
+  // http://v4-alpha.getbootstrap.com/getting-started/browsers-devices/#sticky-hoverfocus-on-mobile
+  // For other solutions, see:
+  // http://stackoverflow.com/questions/17233804/how-to-prevent-sticky-hover-effects-for-buttons-on-touch-devices
+  // http://stackoverflow.com/questions/23885255/how-to-remove-ignore-hover-css-style-on-touch-devices?lq=1
+  $(window).load(function() {
+    var touch = window.ontouchstart
+            || navigator.MaxTouchPoints > 0
+            || navigator.msMaxTouchPoints > 0;
+
+    if (touch) { // remove all :hover stylesheets
+        try { // prevent crash on browsers not supporting DOM styleSheets properly
+            for (var si in document.styleSheets) {
+                var styleSheet = document.styleSheets[si];
+                if (!styleSheet.rules) continue;
+
+                for (var ri = styleSheet.rules.length - 1; ri >= 0; ri--) {
+                    if (!styleSheet.rules[ri].selectorText) {
+                      /*for (var rri = styleSheet.rules[ri].cssRules.length - 1; rri >= 0; rri--) {
+                        console.log("CSSRULE " + rri + ": " + styleSheet.rules[ri].cssRules[rri].selectorText);
+                        if (styleSheet.rules[ri].cssRules[rri].selectorText.match(':hover')) {
+                            stylesheet.rules[ri].deleteRule(ri);
+                        }
+                      }*/
+                    } else {
+                      if (styleSheet.rules[ri].selectorText.match(':hover')) {
+                        var st = styleSheet.rules[ri].selectorText;
+                        if (st.indexOf(',') != -1) {
+                          var selectors = st.split(',');
+                          var keepSelectors = [];
+                          selectors.forEach(function(s) {
+                            if (!s.match(':hover')) {
+                              keepSelectors.push(s);
+                            }
+                          });
+                          var newSelectorText = keepSelectors.join(',')
+                          styleSheet.rules[ri].selectorText = newSelectorText;
+                        } else {
+                          styleSheet.deleteRule(ri);
+                        }
+                      }
+                    }
+                }
+            }
+        } catch (ex) {}
+    }
+
+  });
+</script>
+{% block bottom_javascript %}{% endblock %}
+
+</body>
+{% endblock %}
+
