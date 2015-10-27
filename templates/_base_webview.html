@@ -50,7 +50,7 @@
   // http://stackoverflow.com/questions/17233804/how-to-prevent-sticky-hover-effects-for-buttons-on-touch-devices
   // http://stackoverflow.com/questions/23885255/how-to-remove-ignore-hover-css-style-on-touch-devices?lq=1
   $(window).load(function() {
-    var touch = window.ontouchstart
+    var touch = 'ontouchstart' in window
             || navigator.MaxTouchPoints > 0
             || navigator.msMaxTouchPoints > 0;
 
