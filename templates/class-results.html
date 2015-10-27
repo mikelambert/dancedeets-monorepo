@@ -11,8 +11,8 @@
     <meta property="og:site_name" content="DanceDeets"/>
     <meta property="og:description"
           content="Every street dance event. On the web, on your phone. At home, and when traveling."/>
-    <script src="https://fb.me/react-0.14.0.js"></script>
-    <script src="https://fb.me/react-dom-0.14.0.js"></script>
+    <script src="https://fb.me/react-0.14.0.min.js"></script>
+    <script src="https://fb.me/react-dom-0.14.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
 
 <style type="text/css">
@@ -65,7 +65,9 @@ function share() {
 }
 
 //TODO: make a "class" page with relevant info (youtube, studio link, etc)
-//TODO: add a webiew feature for android and ios
+//TOOD: remove browser.min.js and replace with jsx conversion. that thing is huge.
+//TODO: find a way to include our jquery/jquerydom directly, since FB gives us redirects
+//TODO: add a webview feature for ios
 //TODO: set up a promotion-by-search-area onebox for linking to things (for website, and eventually api?)
 //TODO: reach out to three studios to find the owners in charge
 
@@ -76,10 +78,12 @@ var classes = [];
     'name': '{{result.name|escapejs}}',
     'location': '{{result.actual_city_name|escapejs}}',
     'start_time': moment('{{result.start_time_raw}}'),
-    'end_time': moment('{{result.end_time_raw}}'),
+{#    'end_time': moment('{{result.end_time_raw}}'), #}
     'categories': {{result.extended_categories()|safe}}, {# ideally tojson #}
+{% if result.sponsor %}
     'sponsor': '{{result.sponsor|escapejs}}',
-    'key': '{{result|escapejs}}',
+{% endif %}
+    'key': 'result-{{loop.index}}',
   });
 {% endfor %}
 
