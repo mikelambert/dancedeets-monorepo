@@ -18,7 +18,9 @@
 <meta name="apple-itunes-app" content="app-id=955212002">
 
 <link rel="stylesheet" href="/vcss/{{version}}/bootstrap.min.css">
+{% if mobile_show_smartbanner %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.css">
+{% endif %}
 {# We must call tokenfield-typeahead before bootstrap-tokenfield, so that CSS gets applied in-order correctly.
  # <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
  # <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
