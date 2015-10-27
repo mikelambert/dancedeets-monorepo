@@ -502,7 +502,7 @@ var App = React.createClass({
             {# OK I give up...time for tables! #}
             <table><tbody><tr><td style={ {width: '100%'} }>
               <div id="navbar-collapsable" className="navmenu-height">
-                <b>{{location}} Street Dance Classes</b>
+                <b>{this.props.location} Street Dance Classes</b>
                 <SearchBar
                   initial_studios={this.props.studios}
                   initial_styles={this.props.styles}
@@ -560,9 +560,11 @@ classes.forEach(function(studio_class) {
 });
 var studios = Object.keys(studios_set).sort();
 var styles = Object.keys(styles_set).sort();
+var location = '{{location|escapejs}}';
 
 ReactDOM.render(
   <App
+    location={location}
     classes={classes}
     studios={studios}
     styles={styles}
