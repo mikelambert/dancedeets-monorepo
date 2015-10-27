@@ -14,6 +14,19 @@
     <script src="https://fb.me/react-0.14.0.js"></script>
     <script src="https://fb.me/react-dom-0.14.0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+
+<style type="text/css">
+  #navbar-collapsed-summary {
+    display: none;
+  }
+  #navbar.affix {
+    top: 0px;
+  }
+  #navbar.affix-top #navbar-collapse-button-icon {
+    visibility: hidden;
+  }
+</style>
+
 {% endblock %}
 
 {% block body %}
@@ -212,7 +225,7 @@ var DayNavMenu = React.createClass({
       );
     }
     return (
-      <span>Jump to:
+      <span className="navmenu-height">Jump to:
       {' '}
       {weeks}
       </span>
@@ -267,6 +280,29 @@ var SearchBar = React.createClass({
   }
 });
 
+var ClassSummary = React.createClass({
+  render: function() {
+    var classes = this.props.styles.join(', ');
+    if (!classes) {
+      classes = 'All'
+    }
+    var studios = this.props.studios.join(', ');
+    if (studios) {
+      studios = 'at ' + studios;
+    }
+    var query = this.props.teacher;
+    if (query) {
+      query = 'with "' + query + '"';
+    }
+
+    return (
+      <div>
+      {classes} classes {studios} {query}
+      </div>
+    );
+  }
+});
+
 var StudioClass = React.createClass({
   render: function() {
     return (
@@ -303,7 +339,7 @@ var TimeHeader = React.createClass({
   }
 });
 
-var ClassSummary = React.createClass({
+var ClassTitle = React.createClass({
   render: function() {
     var filteredClasses = this.props.filteredClasses;
     return (
@@ -325,7 +361,6 @@ var SponsoredSummary = React.createClass({
     });
     var sponsorHtml = [];
     if ('MINDBODY' in sponsoredStudios) {
-      console.log(sponsoredStudios['MINDBODY']);
       var studioList = Object.keys(sponsoredStudios['MINDBODY']);
       sponsorHtml.push(
         <div key='MINDBODY' style={ {margin: '1em 0em', fontStyle: 'italic'} }>
@@ -370,6 +405,21 @@ var StudioClasses = React.createClass({
     return <div>{rows}</div>;
   }
 });
+
+function toggleSearchBar() {
+  $('#navbar-collapsable').slideToggle('fast');
+  var icon = $('#navbar-collapse-button-icon');
+  if (icon.hasClass('fa-caret-square-o-up')) {
+    icon.removeClass('fa-caret-square-o-up');
+    icon.addClass('fa-caret-square-o-down');
+    $('#navbar-collapsed-summary').show();
+  } else {
+    icon.removeClass('fa-caret-square-o-down');
+    icon.addClass('fa-caret-square-o-up');
+    $('#navbar-collapsed-summary').hide();
+  }
+}
+
 
 var App = React.createClass({
   filteredClasses: function() {
@@ -425,16 +475,6 @@ var App = React.createClass({
       window.scroll(0, normalAffixedTop);
     }
   },
-  onOpenClose: function() {
-    $('#navbar-collapsable').slideToggle('fast');
-    if ($('#navbar-collapse-button-icon').hasClass('fa-caret-square-o-up')) {
-      $('#navbar-collapse-button-icon').removeClass('fa-caret-square-o-up');
-      $('#navbar-collapse-button-icon').addClass('fa-caret-square-o-down');
-    } else {
-      $('#navbar-collapse-button-icon').removeClass('fa-caret-square-o-down');
-      $('#navbar-collapse-button-icon').addClass('fa-caret-square-o-up');
-    }
-  },
   render: function() {
     var filteredClasses = this.filteredClasses()
     return (
@@ -452,33 +492,37 @@ var App = React.createClass({
               boxShadow: "0 5px 4px -4px black",
               } }
           >
-            <div
-              id="navbar-collapsable"
-              style={ {
-                float: "left"
-              } }>
-              <b>{{location}} Street Dance Classes</b>
-              <SearchBar
-                initial_studios={this.props.studios}
-                initial_styles={this.props.styles}
-                styles={this.state.styles}
-                studios={this.state.studios}
-                teacher={this.state.teacher}
-                onUserInput={this.handleUserInput}
-              />
+            {# OK I give up...time for tables! #}
+            <table><tbody><tr><td style={ {width: '100%'} }>
+              <div id="navbar-collapsable" className="navmenu-height">
+                <b>{{location}} Street Dance Classes</b>
+                <SearchBar
+                  initial_studios={this.props.studios}
+                  initial_styles={this.props.styles}
+                  styles={this.state.styles}
+                  studios={this.state.studios}
+                  teacher={this.state.teacher}
+                  onUserInput={this.handleUserInput}
+                />
+              </div>
+              <div id="navbar-collapsed-summary">
+                <ClassSummary
+                  styles={this.state.styles}
+                  studios={this.state.studios}
+                  teacher={this.state.teacher}
+                  />
+              </div>
               <DayNavMenu />
-            </div>
-            <i
-            id="navbar-collapse-button-icon"
-            onClick={this.onOpenClose}
-            style={ {
-              float: 'right'
-            } }
-            className="fa fa-caret-square-o-up"></i>
+            </td><td style={ { verticalAlign: 'bottom' } }>
+              <i
+              id="navbar-collapse-button-icon"
+              onClick={toggleSearchBar}
+              className="fa fa-caret-square-o-up fa-lg"></i>
+            </td></tr></tbody></table>
           </div>
         </div>
         <div>
-          <ClassSummary
+          <ClassTitle
             filteredClasses={filteredClasses}
             />
           <StudioClasses
@@ -521,10 +565,21 @@ ReactDOM.render(
 
 
 function resetAffixedOffset() {
-    $('#navbar-container').height($("#navbar").height());
-    $('#navbar').affix({
-        offset: { top: $('#navbar').offset().top }
-    });
+  var height = 0;
+  $('.navmenu-height').each(function(elem) {
+    height += $(this).height();
+  });
+  $('#navbar-container').height(height);
+  $('#navbar').affix({
+      offset: { top: $('#navbar').offset().top }
+  });
+  // When we scroll up to the top of the page,
+  // make sure we un-collapse the navbar if necessary
+  $('#navbar').bind('affixed-top.bs.affix', function() {
+    if (!$('#navbar-collapsable').is(":visible")) {
+      toggleSearchBar();
+    }
+  });
 
   var width = $('#navbar-container').width() - parseInt($('#navbar-container').css('paddingLeft')) - parseInt($('#navbar-container').css('paddingRight'));
   $('#navbar').css('width', width);
@@ -538,12 +593,4 @@ $(window).resize(function() {
 });
 
 </script>
-<style type="text/css">
-#navbar.affix {
-  top: 0px;
-}
-#navbar.affix-top #navbar-collapse-button-icon {
-  display: none;
-}
-</style>
 {% endblock %}
