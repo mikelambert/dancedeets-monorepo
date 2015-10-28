@@ -332,7 +332,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             event_id = get_id_from_url(self.request.get('event_url'))
         else:
             event_id = self.request.get('event_id')
-        if event_id:
+        if event_id and not self._errors:
             logging.info("Showing page for adding event %s", event_id)
             fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
         else:
