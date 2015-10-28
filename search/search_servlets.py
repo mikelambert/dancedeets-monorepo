@@ -56,17 +56,19 @@ class RelevantHandler(SearchHandler):
         if not self.request.get('calendar'):
             search_query = None
             search_query2 = None
-            try:
-                search_query = self.search_query_class.create_from_form(form)
-                if 'class' in form.deb.data:
-                    from classes import class_index
-                    search_query2 = class_index.ClassSearchQuery.create_from_form(form)
-            except search_base.SearchException as e:
-                logging.warning("Bad search query: %s", form)
-                self.add_error(unicode(e))
+            if validated:
+                try:
+                    search_query = self.search_query_class.create_from_form(form)
+                    if 'class' in form.deb.data:
+                        from classes import class_index
+                        search_query2 = class_index.ClassSearchQuery.create_from_form(form)
+                except search_base.SearchException as e:
+                    logging.warning("Bad search query: %s", form)
+                    self.add_error(unicode(e))
 
+            search_results = []
             sponsored_studios = {}
-            if search_query and validated:
+            if search_query:
                 search_results = search_query.get_search_results()
                 if 'class' in form.deb.data:
                     class_results = search_query2.get_search_results()
@@ -75,8 +77,6 @@ class RelevantHandler(SearchHandler):
                     search_results += class_results
                     search_results.sort(key=lambda x: (x.start_time, x.actual_city_name, x.name))
 
-            else:
-                search_results = []
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
             a = time.time()
             friends.decorate_with_friends(self.fbl, search_results)

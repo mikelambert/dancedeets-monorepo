@@ -6,7 +6,9 @@ import wtforms
 from google.appengine.api import search
 
 import event_types
+from loc import gmaps_api
 from loc import math
+from nlp import categories
 import styles
 from util import dates
 
@@ -37,12 +39,17 @@ def valid_query(form, field):
     except search.QueryError as e:
         raise wtforms.ValidationError(str(e))
 
+def geocodable_location(form, field):
+    if field.data:
+        geocode = gmaps_api.get_geocode(address=field.data)
+        if not geocode:
+            raise wtforms.ValidationError("Did not understand location: %s" % field.data)
 
 class SearchException(Exception):
     pass
 
 class SearchForm(wtforms.Form):
-    location = wtforms.StringField(default='', validators=[no_wiki_or_html])
+    location = wtforms.StringField(default='', validators=[no_wiki_or_html, geocodable_location])
     keywords = wtforms.StringField(default='', validators=[no_wiki_or_html, valid_query])
     distance = wtforms.IntegerField(default=50)
     distance_units  = wtforms.SelectField(choices=[('miles', 'Miles'), ('km', 'KM')], default='km')
@@ -73,6 +80,41 @@ class SearchForm(wtforms.Form):
         d['distance'] = self.distance.data
         d['distance_units'] = self.distance_units.data
         return d
+
+    def validate(self):
+        rv = super(SearchForm, self).validate()
+        if not rv:
+            return False
+        success = True
+        if self.start.data and self.end.data:
+            if self.start.data >= self.end.data:
+                self.start.errors.append('start must be less than end')
+                self.end.errors.append('start must be less than end')
+                success = False
+        if self.time_period.data:
+            if self.start.data:
+                self.start.errors.append('start cannot be specified if using time_period')
+                success = False
+            if self.end.data:
+                self.end.errors.append('end cannot be specified if using time_period')
+                success = False
+        return success
+
+    def get_bounds(self):
+        if self.location.data:
+            geocode = gmaps_api.get_geocode(address=self.location.data)
+            bounds = math.expand_bounds(geocode.latlng_bounds(), self.distance_in_km())
+        else:
+            bounds = None
+        return bounds
+
+    def get_parsed_keywords(self):
+        keywords = self.keywords.data
+        unquoted_quoted_keywords = re.sub(r'[<=>:(),]', ' ', keywords).split('"')
+        for i in range(0, len(unquoted_quoted_keywords), 2):
+            unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
+        reconstructed_keywords = '"'.join(unquoted_quoted_keywords)
+        return reconstructed_keywords
 
 class HtmlSearchForm(SearchForm):
     def __init__(self, formdata, data=None):

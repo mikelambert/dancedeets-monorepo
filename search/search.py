@@ -4,16 +4,12 @@ import collections
 import datetime
 import logging
 import pprint
-import re
 import time
 
 from google.appengine.ext import ndb
 from google.appengine.api import search
 
 from events import eventdata
-from loc import gmaps_api
-from loc import math
-from nlp import categories
 from util import dates
 from . import index
 from . import search_base
@@ -115,26 +111,11 @@ class DisplayEvent(ndb.Model):
 class SearchQuery(object):
     def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, keywords=None):
         self.time_period = time_period
-
         self.min_attendees = min_attendees
         self.start_date = start_date
         self.end_date = end_date
-        if self.start_date and self.end_date:
-            assert self.start_date < self.end_date
-        if self.time_period in search_base.FUTURE_INDEX_TIMES and self.end_date:
-            assert self.end_date > datetime.date.today()
-        if self.time_period in search_base.FUTURE_INDEX_TIMES and self.start_date:
-            assert self.start_date < datetime.date.today()
         self.bounds = bounds
-
-        if keywords:
-            unquoted_quoted_keywords = re.sub(r'[<=>:(),]', ' ', keywords).split('"')
-            for i in range(0, len(unquoted_quoted_keywords), 2):
-                unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
-            reconstructed_keywords = '"'.join(unquoted_quoted_keywords)
-            self.keywords = reconstructed_keywords
-        else:
-            self.keywords = None
+        self.keywords = keywords
 
         self.limit = 1000
 
@@ -143,14 +124,9 @@ class SearchQuery(object):
 
     @classmethod
     def create_from_form(cls, form, start_end_query=False):
-        if form.location.data:
-            geocode = gmaps_api.get_geocode(address=form.location.data)
-            if not geocode:
-                raise search_base.SearchException("Did not understand location: %s" % form.location.data)
-            bounds = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
-        else:
-            bounds = None
-        common_fields = dict(bounds=bounds, min_attendees=form.min_attendees.data, keywords=form.keywords.data)
+        bounds = form.get_bounds()
+        keywords = form.get_parsed_keywords()
+        common_fields = dict(bounds=bounds, min_attendees=form.min_attendees.data, keywords=keywords)
         if start_end_query:
             self = cls(start_date=form.start.data, end_date=form.end.data, **common_fields)
         else:
