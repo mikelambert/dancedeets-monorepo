@@ -116,6 +116,16 @@ class SearchForm(wtforms.Form):
         reconstructed_keywords = '"'.join(unquoted_quoted_keywords)
         return reconstructed_keywords
 
+    def build_query(self, start_end_query=False):
+        bounds = self.get_bounds()
+        keywords = self.get_parsed_keywords()
+        common_fields = dict(bounds=bounds, min_attendees=self.min_attendees.data, keywords=keywords)
+        if start_end_query:
+            query = SearchQuery(start_date=self.start.data, end_date=self.end.data, **common_fields)
+        else:
+            query = SearchQuery(time_period=self.time_period.data, **common_fields)
+        return query
+
 class HtmlSearchForm(SearchForm):
     def __init__(self, formdata, data=None):
         if formdata.get('past', '0') not in ['0', '', 'False', 'false']:
@@ -127,6 +137,15 @@ class HtmlSearchForm(SearchForm):
         data['time_period'] = time_period
         super(HtmlSearchForm, self).__init__(formdata, data=data)
 
+
+class SearchQuery(object):
+    def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, keywords=None):
+        self.time_period = time_period
+        self.min_attendees = min_attendees
+        self.start_date = start_date
+        self.end_date = end_date
+        self.bounds = bounds
+        self.keywords = keywords
 
 class SearchResult(object):
     def __init__(self, fb_event_id, display_event_dict, db_event=None):

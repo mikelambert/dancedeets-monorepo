@@ -41,7 +41,7 @@ class SearchHandler(base_servlet.BaseRequestHandler):
 @app.route('/events/relevant')
 class RelevantHandler(SearchHandler):
     template_name = 'results'
-    search_query_class = search.SearchQuery
+    search_class = search.Search
 
     def handle_search(self, form):
         validated = form.validate()
@@ -55,23 +55,15 @@ class RelevantHandler(SearchHandler):
 
         if not self.request.get('calendar'):
             search_query = None
-            search_query2 = None
-            if validated:
-                try:
-                    search_query = self.search_query_class.create_from_form(form)
-                    if 'class' in form.deb.data:
-                        from classes import class_index
-                        search_query2 = class_index.ClassSearchQuery.create_from_form(form)
-                except search_base.SearchException as e:
-                    logging.warning("Bad search query: %s", form)
-                    self.add_error(unicode(e))
 
             search_results = []
             sponsored_studios = {}
-            if search_query:
-                search_results = search_query.get_search_results()
+            if validated:
+                search_query = form.build_query()
+                search_results = self.search_class(search_query).get_search_results()
                 if 'class' in form.deb.data:
-                    class_results = search_query2.get_search_results()
+                    from classes import class_index
+                    class_results = class_index.ClassSearch(search_query).get_search_results()
                     for result in class_results:
                         sponsored_studios.setdefault(result.sponsor, set()).add(result.actual_city_name)
                     search_results += class_results
@@ -135,5 +127,5 @@ class CityHandler(RelevantHandler):
 @app.route('/pages/search')
 class RelevantPageHandler(RelevantHandler):
     template_name = 'results_pages'
-    search_query_class = search_pages.SearchPageQuery
+    search_class = search_pages.SearchPages
 

@@ -108,54 +108,36 @@ class DisplayEvent(ndb.Model):
         else:
             return ndb.get_multi(keys)
 
-class SearchQuery(object):
-    def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, keywords=None):
-        self.time_period = time_period
-        self.min_attendees = min_attendees
-        self.start_date = start_date
-        self.end_date = end_date
-        self.bounds = bounds
-        self.keywords = keywords
-
+class Search(object):
+    def __init__(self, search_query):
+        self.query = search_query
         self.limit = 1000
-
         # Extra search index fields to return
         self.extra_fields = []
-
-    @classmethod
-    def create_from_form(cls, form, start_end_query=False):
-        bounds = form.get_bounds()
-        keywords = form.get_parsed_keywords()
-        common_fields = dict(bounds=bounds, min_attendees=form.min_attendees.data, keywords=keywords)
-        if start_end_query:
-            self = cls(start_date=form.start.data, end_date=form.end.data, **common_fields)
-        else:
-            self = cls(time_period=form.time_period.data, **common_fields)
-        return self
 
     DATE_SEARCH_FORMAT = '%Y-%m-%d'
     def _get_query_string(self):
         clauses = []
-        if self.bounds:
+        if self.query.bounds:
             # We try to keep searches as simple as possible, 
             # using just AND queries on latitude/longitude.
             # But for stuff crossing +/-180 degrees,
             # we need to do an OR longitude query on each side.
-            latitudes = (self.bounds[0][0], self.bounds[1][0])
-            longitudes = (self.bounds[0][1], self.bounds[1][1])
+            latitudes = (self.query.bounds[0][0], self.query.bounds[1][0])
+            longitudes = (self.query.bounds[0][1], self.query.bounds[1][1])
             clauses += ['latitude >= %s AND latitude <= %s' % latitudes]
             if longitudes[0] < longitudes[1]:
                 clauses += ['longitude >= %s AND longitude <= %s' % longitudes]
             else:
                 clauses += ['(longitude >= %s OR longitude <= %s)' % longitudes]
-        if self.start_date:
-            clauses += ['end_time >= %s' % self.start_date.strftime(self.DATE_SEARCH_FORMAT)]
-        if self.end_date:
-            clauses += ['start_time <= %s' % self.end_date.strftime(self.DATE_SEARCH_FORMAT)]
-        if self.keywords and self.keywords.strip():
-            clauses += ['(%s)' % self.keywords.strip()]
-        if self.min_attendees:
-            clauses += ['attendee_count > %d' % self.min_attendees]
+        if self.query.start_date:
+            clauses += ['end_time >= %s' % self.query.start_date.strftime(self.DATE_SEARCH_FORMAT)]
+        if self.query.end_date:
+            clauses += ['start_time <= %s' % self.query.end_date.strftime(self.DATE_SEARCH_FORMAT)]
+        if self.query.keywords:
+            clauses += ['(%s)' % self.keywords]
+        if self.query.min_attendees:
+            clauses += ['attendee_count > %d' % self.query.min_attendees]
         if clauses:
             return ' '.join(clauses)
         else:
@@ -167,12 +149,12 @@ class SearchQuery(object):
             return []
 
         search_index = AllEventsIndex
-        if self.time_period:
-            if self.time_period in search_base.FUTURE_INDEX_TIMES:
+        if self.query.time_period:
+            if self.query.time_period in search_base.FUTURE_INDEX_TIMES:
                 search_index = FutureEventsIndex
-        if self.start_date:
+        if self.query.start_date:
             # Do we want/need this hack?
-            if self.start_date > datetime.date.today():
+            if self.query.start_date > datetime.date.today():
                 search_index = FutureEventsIndex
 
         logging.info("Doing search for %r", query_string)
@@ -207,13 +189,13 @@ class SearchQuery(object):
 
         #TODO(lambert): move to common library.
         now = datetime.datetime.now() - datetime.timedelta(hours=12)
-        if self.time_period == search_base.TIME_ONGOING:
+        if self.query.time_period == search_base.TIME_ONGOING:
             doc_events = [x for x in doc_events if x.field('start_time').value < now]
-        elif self.time_period == search_base.TIME_UPCOMING:
+        elif self.query.time_period == search_base.TIME_UPCOMING:
             doc_events = [x for x in doc_events if x.field('start_time').value > now]
-        elif self.time_period == search_base.TIME_PAST:
+        elif self.query.time_period == search_base.TIME_PAST:
             doc_events = [x for x in doc_events if x.field('end_time').value < now]
-        elif self.time_period == search_base.TIME_ALL_FUTURE:
+        elif self.query.time_period == search_base.TIME_ALL_FUTURE:
             pass
         else:
             # Calendar searches that use start/end time ranges uses this

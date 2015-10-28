@@ -139,12 +139,12 @@ class SearchHandler(ApiHandler):
 
         self.errors_are_fatal()
 
-        search_query = search.SearchQuery.create_from_form(form)
+        search_query = form.build_query()
 
+        searcher = search.Search(search_query)
         # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
-        search_query.limit = 500
-
-        search_results = search_query.get_search_results(full_event=True)
+        searcher.limit = 500
+        search_results = searcher.get_search_results(full_event=True)
 
         json_results = []
         for result in search_results:

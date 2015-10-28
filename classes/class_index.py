@@ -49,45 +49,13 @@ def build_display_event_dict(doc):
     return data
 
 
-class ClassSearchQuery(object):
-    #TODO: remove duplicated code that's shared between this and search.SearchQuery. Most notably:
-    #__init__, create_from_form, and _get_query_string
-    def __init__(self, time_period=None, start_date=None, end_date=None, bounds=None, min_attendees=None, keywords=None):
-        self.time_period = time_period
 
-        self.start_date = start_date
-        self.end_date = end_date
-        self.bounds = bounds
-
-        if keywords:
-            unquoted_quoted_keywords = re.sub(r'[<=>:(),]', ' ', keywords).split('"')
-            for i in range(0, len(unquoted_quoted_keywords), 2):
-                unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
-            reconstructed_keywords = '"'.join(unquoted_quoted_keywords)
-            self.keywords = reconstructed_keywords
-        else:
-            self.keywords = None
-
+class ClassSearch(object):
+    def __init__(self, search_query):
+        self.query = search_query
         self.limit = 1000
-
         # Extra search index fields to return
         self.extra_fields = []
-
-    @classmethod
-    def create_from_form(cls, form, start_end_query=False):
-        if form.location.data:
-            geocode = gmaps_api.get_geocode(address=form.location.data)
-            if not geocode:
-                raise search_base.SearchException("Did not understand location: %s" % form.location.data)
-            bounds = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
-        else:
-            bounds = None
-        common_fields = dict(bounds=bounds, keywords=form.keywords.data)
-        if start_end_query:
-            self = cls(start_date=form.start.data, end_date=form.end.data, **common_fields)
-        else:
-            self = cls(time_period=form.time_period.data, **common_fields)
-        return self
 
     @classmethod
     def create_from_location(cls, location):
@@ -104,24 +72,24 @@ class ClassSearchQuery(object):
     DATE_SEARCH_FORMAT = '%Y-%m-%d'
     def _get_query_string(self):
         clauses = []
-        if self.bounds:
+        if self.query.bounds:
             # We try to keep searches as simple as possible, 
             # using just AND queries on latitude/longitude.
             # But for stuff crossing +/-180 degrees,
             # we need to do an OR longitude query on each side.
-            latitudes = (self.bounds[0][0], self.bounds[1][0])
-            longitudes = (self.bounds[0][1], self.bounds[1][1])
+            latitudes = (self.query.bounds[0][0], self.query.bounds[1][0])
+            longitudes = (self.query.bounds[0][1], self.query.bounds[1][1])
             clauses += ['latitude >= %s AND latitude <= %s' % latitudes]
             if longitudes[0] < longitudes[1]:
                 clauses += ['longitude >= %s AND longitude <= %s' % longitudes]
             else:
                 clauses += ['(longitude >= %s OR longitude <= %s)' % longitudes]
-        if self.start_date:
-            clauses += ['end_time >= %s' % self.start_date.strftime(self.DATE_SEARCH_FORMAT)]
-        if self.end_date:
-            clauses += ['start_time < %s' % self.end_date.strftime(self.DATE_SEARCH_FORMAT)]
-        if self.keywords:
-            clauses += ['(%s)' % self.keywords]
+        if self.query.start_date:
+            clauses += ['end_time >= %s' % self.query.start_date.strftime(self.DATE_SEARCH_FORMAT)]
+        if self.query.end_date:
+            clauses += ['start_time < %s' % self.query.end_date.strftime(self.DATE_SEARCH_FORMAT)]
+        if self.query.keywords:
+            clauses += ['(%s)' % self.query.keywords]
         if clauses:
             return ' '.join(clauses)
         else:

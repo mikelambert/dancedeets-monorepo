@@ -13,6 +13,7 @@ from users import users
 from util import dates
 from util import fb_mapreduce
 from util import urls
+from . import search_base
 from . import search
 
 def email_for_user(user, fbl, should_send=True):
@@ -37,10 +38,10 @@ def email_for_user(user, fbl, should_send=True):
     if not geocode:
         return None
     bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
-    query = search.SearchQuery(time_period=dates.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
+    query = search_base.SearchQuery(time_period=dates.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
-    search_results = query.get_search_results()
+    search_results = search.Search(query).get_search_results()
     # Don't send email...
     if not search_results:
         return
