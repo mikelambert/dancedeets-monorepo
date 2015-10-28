@@ -1,13 +1,13 @@
 
 
-onebox_links = {
+ONEBOX_DATA = {
     (40.7029741, -74.2598655): {
         'NYC Studio Classes': 'http://www.dancedeets.com/classes/nyc',
-        'NYC Info': 'http://dance-wiki.appspot.com/New_York',
+        'NYC Wiki Info': 'http://dance-wiki.appspot.com/New_York',
     },
     (34.0201812, -118.6919122): {
-        'LA Studio Classes': 'http://www.dancedeets.com/classes/la',
-        'LA Info': 'http://dance-wiki.appspot.com/Los_Angeles',
+        'Los Angeles Studio Classes': 'http://www.dancedeets.com/classes/la',
+        'Los Angeles Wiki Info': 'http://dance-wiki.appspot.com/Los_Angeles',
     },
 }
 
@@ -24,7 +24,7 @@ def get_links_for_query(query):
 
     onebox_links = {}
 
-    for (latitude, longitude), links in onebox_links:
+    for (latitude, longitude), links in ONEBOX_DATA.iteritems():
         good_latitude = latitude >= search_latitudes[0] and latitude <= search_latitudes[1]
         if search_longitudes[0] < search_longitudes[1]:
             good_longitude = longitude >= search_longitudes[0] and longitude <= search_longitudes[1]

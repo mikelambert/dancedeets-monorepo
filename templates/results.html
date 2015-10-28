@@ -110,6 +110,17 @@ Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
 	><span><i class="fa fa-calendar fa-lg"></i> Calendar</span></a></li>
 </ul>
 <div class="tabs-after top-to-bottom-fade row">
+	{% if onebox_links %}
+	<div class="col-xs-12">
+		<div><b>Related pages:</b></div>
+		<ul>
+		{% for title, link in onebox_links.iteritems() %}
+			<li><a href="{{ link }}">{{ title }}</a></li>
+		{% endfor %}
+		</ul>
+	</div>
+	{% endif %}
+
 	{% if selected_tab == 'past' %}
 		{{ results.render_wide_results(past_results) }}
 	{% elif selected_tab == 'present' %}

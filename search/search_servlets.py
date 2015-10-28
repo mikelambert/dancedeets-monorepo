@@ -12,6 +12,7 @@ from util import dates
 from . import search
 from . import search_base
 from . import search_pages
+from . import onebox
 
 class SearchHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -58,6 +59,7 @@ class RelevantHandler(SearchHandler):
 
             search_results = []
             sponsored_studios = {}
+            onebox_links = {}
             if validated:
                 search_query = form.build_query()
                 search_results = self.search_class(search_query).get_search_results()
@@ -68,6 +70,7 @@ class RelevantHandler(SearchHandler):
                         sponsored_studios.setdefault(result.sponsor, set()).add(result.actual_city_name)
                     search_results += class_results
                     search_results.sort(key=lambda x: (x.start_time, x.actual_city_name, x.name))
+                onebox_links = onebox.get_links_for_query(search_query)
 
             # We can probably speed this up 2x by shrinking the size of the fb-event-attending objects. a list of {u'id': u'100001860311009', u'name': u'Dance InMinistry', u'rsvp_status': u'attending'} is 50% overkill.
             a = time.time()
@@ -87,6 +90,7 @@ class RelevantHandler(SearchHandler):
             self.display['ongoing_results'] = present_results
             self.display['grouped_upcoming_results'] = grouped_results
             self.display['sponsored_studios'] = sponsored_studios
+            self.display['onebox_links'] = onebox_links
 
         if form.time_period.data == search_base.TIME_PAST:
             self.display['selected_tab'] = 'past'
