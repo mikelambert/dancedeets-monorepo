@@ -12,8 +12,7 @@ gcloud preview app run app.yaml
 Third, to setup dancedeets, run ./setup.sh. It will download and install libraries,
 and setup some in our lib/ directory for uploading to appengine.
 
-Then you need to download babel (the jsx->js converter), and run:
-$ babel jsx --watch --out-dir js --compact true
+Then you need to download babel (the jsx->js converter), and run ./babel.sh
 to ensure our jsx files are processed correctly (and continuously).
 
 You can run:

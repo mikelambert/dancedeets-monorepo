@@ -6,8 +6,6 @@ import webapp2
 
 import app
 import base_servlet
-from loc import gmaps_api
-from loc import math
 from search import search_base
 from . import class_index
 from . import class_models
