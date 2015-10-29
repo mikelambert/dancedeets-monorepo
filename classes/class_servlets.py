@@ -6,6 +6,9 @@ import webapp2
 
 import app
 import base_servlet
+from loc import gmaps_api
+from loc import math
+from search import search_base
 from . import class_index
 from . import class_models
 
@@ -37,11 +40,12 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             self.add_error('Bad location: %s' % location)
         location = self.location_shortcuts.get(location, location)
         self.errors_are_fatal
-        search_query = class_index.ClassSearchQuery.create_from_location(location)
-        search_query.start_date = datetime.date.today()
-        search_query.end_date = datetime.date.today() + datetime.timedelta(days=7)
-
-        search_results = search_query.get_search_results()
+        form = search_base.SearchForm(
+            start=datetime.date.today(),
+            end=datetime.date.today() + datetime.timedelta(days=7),
+            location=location,
+            )
+        search_results = class_index.ClassSearch(form.build_query()).get_search_results()
 
         self.display['search_results'] = search_results
         self.display['location'] = location
