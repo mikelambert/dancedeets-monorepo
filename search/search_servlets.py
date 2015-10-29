@@ -9,10 +9,10 @@ import base_servlet
 from logic import friends
 from logic import rsvp
 from util import dates
+from . import onebox
 from . import search
 from . import search_base
 from . import search_pages
-from . import onebox
 
 class SearchHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):

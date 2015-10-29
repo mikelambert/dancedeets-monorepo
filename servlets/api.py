@@ -14,6 +14,7 @@ from events import eventdata
 from loc import formatting
 from loc import gmaps_api
 from loc import math
+from search import onebox
 from search import search
 from search import search_base
 from users import user_creation
@@ -146,6 +147,8 @@ class SearchHandler(ApiHandler):
         searcher.limit = 500
         search_results = searcher.get_search_results(full_event=True)
 
+        onebox_links = onebox.get_links_for_query(search_query)
+
         json_results = []
         for result in search_results:
             try:
@@ -157,8 +160,9 @@ class SearchHandler(ApiHandler):
         title = self._get_title(city_name, form.keywords.data)
         json_response = {
             'results': json_results,
+            'onebox_links': onebox_links,
             'title': title,
-            'location': city_name
+            'location': city_name,
         }
         if southwest and northeast:
             json_response['location_box'] = {
