@@ -18,7 +18,7 @@ var SelectButton = React.createClass({
       extraClass = 'active';
     }
     return (
-      <a href="#"
+      <a
         className={"btn btn-default btn-xs " + extraClass}
         ref="button"
         href="javascript:void(0);"
