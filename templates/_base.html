@@ -235,7 +235,13 @@
 
 {# Begin TrackJS #}
 {# These should be first to ensure we catch all JS errors #}
-<script type="text/javascript">window._trackJs = { token: '77a8a7079d734df7a94150f8f0d7e16f' };</script>
+<script type="text/javascript">
+window._trackJs = {
+{% if user %}
+  userId: "{{ user.fb_uid }} - {{ user.full_name }}",
+{% endif %}
+  token: '77a8a7079d734df7a94150f8f0d7e16f'
+};</script>
 <script type="text/javascript" src="https://d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js"></script>
 {# End TrackJS #}
 <!-- if we ever want to add i18n, we can use moment-with-locales instead -->
