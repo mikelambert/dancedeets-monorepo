@@ -1,4 +1,4 @@
-
+import logging
 
 ONEBOX_DATA = {
     (40.7029741, -74.2598655): {
@@ -13,7 +13,8 @@ ONEBOX_DATA = {
 
 def get_links_for_query(query):
     if not query.bounds:
-        raise ValueError('SearchQuery needs bounds')
+        # This will happen on location-less searches (worldwide)
+        return {}
 
     # We try to keep searches as simple as possible, 
     # using just AND queries on latitude/longitude.

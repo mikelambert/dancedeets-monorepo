@@ -135,7 +135,7 @@ class Search(object):
         if self.query.end_date:
             clauses += ['start_time <= %s' % self.query.end_date.strftime(self.DATE_SEARCH_FORMAT)]
         if self.query.keywords:
-            clauses += ['(%s)' % self.keywords]
+            clauses += ['(%s)' % self.query.keywords]
         if self.query.min_attendees:
             clauses += ['attendee_count > %d' % self.query.min_attendees]
         if clauses:
