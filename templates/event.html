@@ -135,6 +135,7 @@ region= paramter cctld
 {% block bottom_javascript %}
 <script type="text/javascript">
 
+{% if displayable_event.latitude %}
 function load_map() {
 	if ($('.map-wrapper')) {
 		{# TODO(lambert): We can do a better job, checking on the server if google maps can geocode our place query q=venue/street into a place thats near the lat/long that facebook has, and if so, to point at that here instead of just a raw lat/long location.
@@ -155,6 +156,7 @@ function load_map() {
 		});
 	}
 }
+{% endif %}
 
 window.twttr = (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0],
@@ -174,6 +176,8 @@ window.twttr = (function(d, s, id) {
 }(document, "script", "twitter-wjs"));
 
 </script>
+{% if displayable_event.latitude %}
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;callback=load_map">
 </script>
+{% endif %}
 {% endblock %}
