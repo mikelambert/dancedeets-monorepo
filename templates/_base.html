@@ -21,10 +21,6 @@
 {% if mobile_show_smartbanner %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.css">
 {% endif %}
-{# We must call tokenfield-typeahead before bootstrap-tokenfield, so that CSS gets applied in-order correctly.
- # <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
- # <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
- #}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="/vcss/{{version}}/dancedeets.css">
 
@@ -242,9 +238,10 @@
 <script type="text/javascript">window._trackJs = { token: '77a8a7079d734df7a94150f8f0d7e16f' };</script>
 <script type="text/javascript" src="https://d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js"></script>
 {# End TrackJS #}
-<script src="//cdn.jsdelivr.net/g/jquery@2.1.4,bootstrap@3.3.5,jquery.cookie@1.4.1"></script>
+<!-- if we ever want to add i18n, we can use moment-with-locales instead -->
+<script src="//cdn.jsdelivr.net/g/jquery@2.1.4,bootstrap@3.3.5,jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3"></script>
 {% if mobile_show_smartbanner %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.js"></script>
 {% endif %}
 <script type="text/javascript">
   {% if mobile_show_smartbanner %}
