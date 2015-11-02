@@ -71,7 +71,6 @@ class JsonDataHandler(webapp2.RequestHandler):
 @app.route('/classes/upload')
 class ClassUploadHandler(JsonDataHandler):
     def post(self):
-        #TODO: check if class already exists, and update it versus creating a new one?
         #TODO: And maybe only save/reindex if there were legit changes?
         for key, value in self.json_body.iteritems():
             if key in ['start_time', 'end_time', 'scrape_time']:
