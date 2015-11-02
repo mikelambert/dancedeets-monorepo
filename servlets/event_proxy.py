@@ -1,4 +1,5 @@
 
+import urllib
 import webapp2
 
 import app
@@ -16,6 +17,9 @@ class ImageProxyHandler(webapp2.RequestHandler):
             self.response.set_status(404)
             return
 
-        mimetype, response = fetch.fetch_data(cover['source'])
-        self.response.headers["Content-Type"] = mimetype
-        self.response.out.write(response)
+        try:
+            mimetype, response = fetch.fetch_data(cover['source'])
+            self.response.headers["Content-Type"] = mimetype
+            self.response.out.write(response)
+        except urllib.HttpError as e:
+            self.response.status = e.code
