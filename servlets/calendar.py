@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 import app
 import base_servlet
@@ -15,6 +16,10 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
     def get(self):
         self.finish_preload()
         form = search_base.SearchForm(formdata=self.request.GET, data=self.user.dict_for_form() if self.user else None)
+        if not form.validate():
+            logging.warning("Form errors: %s", form.errors)
+            self.write_json_response([])
+            return
         search_query = form.build_query(start_end_query=True)
         search_results = search.Search(search_query).get_search_results()
 
