@@ -29,97 +29,97 @@
 {% block body %}
 <div itemscope itemtype="http://schema.org/DanceEvent">
 
-<span itemprop="url" content="http://{{ full_hostname }}/events/{{ event.info.id }}/" />
+	<span itemprop="url" content="http://{{ full_hostname }}/events/{{ event.info.id }}/"></span>
 
-<div class="row">
-	{% if displayable_event.city_state_country %}
-		<div class="col-xs-12" style="margin-bottom:15px">
-		See <a href="/?location={{ displayable_event.city_state_country }}">more events near {{ displayable_event.city_state_country }}</a>.
-		{# for style in db_event.auto_categories
-		 #See <a href="/?keywords={{ style }}">more {{ style }} events</a>.<br>
-		 #end for
-		 #}
-		</div>
-	{% endif %}
-
-	<div class="col-xs-12">
-		<h1 class="event-page-title" itemprop="name">{{ event.info.name }}</h1>
-	</div>
-</div>	
-
-<div class="row">
-<div class="col-sm-5">
-	{% if displayable_event.cover_metadata %}
-		<div style="position: relative; margin-bottom: 1em"><a href="{{ displayable_event.largest_cover.source }}">
-				<img src="{{ displayable_event.largest_cover.source }}" style="width: 100%" itemprop="image">
-		</a></div>
-	{% endif %}
-
-	<ul class="fa-ul event-ul">
-	{% if displayable_event.cover_metadata %}
-		<li><i class="fa-li fa fa-picture-o fa-lg"></i><b><a href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
-	{% endif %}
-	<li><i class="fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a href="{{ raw_fb_event_url(event.info.id) }}">See Event on Facebook</a></b></li>
-	<li><div class="product-social-links" style="padding-bottom: 0 1em; height: 20px">
-		<a class="twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
-		<div class="fb-share-button" data-layout="button"></div>
-	</div></li>
-	<li><i class="fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
-	<time itemprop="startDate" content="{{ displayable_event.start_time|datetime_format }}">
-	{{ duration_human_format(displayable_event.start_time, end_time) }}
-	</time>
-	{% if displayable_event.end_time %}
-		<meta itemprop="endDate" content="{{ displayable_event.end_time|datetime_format }}" />
-	{% endif %}
-	</li>
-	{% if event.info.attending_count %}
-		<li><i class="fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
-		{{ event.info.attending_count }} Attending
-		{%- if event.info.maybe_count -%}
-			, {{ event.info.maybe_count }} Maybe
-		{%- endif %}
-		</li>
-	{% endif %}
-	<li><i class="fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
-	<div>
-	{% if displayable_event.location_name %}
-		{% if event.info.venue and event.info.venue.id %}
-			<a href="https://www.facebook.com/{{ event.info.venue.id }}">{{ displayable_event.location_name }}</a>
-		{% else %}
-			{{ displayable_event.location_name }}
+	<div class="row">
+		{% if displayable_event.city_state_country %}
+			<div class="col-xs-12" style="margin-bottom:15px">
+			See <a href="/?location={{ displayable_event.city_state_country }}">more events near {{ displayable_event.city_state_country }}</a>.
+			{# for style in db_event.auto_categories
+			 #See <a href="/?keywords={{ style }}">more {{ style }} events</a>.<br>
+			 #end for
+			 #}
+			</div>
 		{% endif %}
-		<br>
-	{% endif %}
 
-	{% if displayable_event.street_address %}
-		{{ displayable_event.street_address }}<br>
-	{% endif %}
-	{{ displayable_event.city_state_country }}<br>
+		<div class="col-xs-12">
+			<h1 class="event-page-title" itemprop="name">{{ event.info.name }}</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-5">
+			{% if displayable_event.cover_metadata %}
+				<div style="position: relative; margin-bottom: 1em"><a href="{{ displayable_event.largest_cover.source }}">
+						<img src="{{ displayable_event.largest_cover.source }}" style="width: 100%" itemprop="image">
+				</a></div>
+			{% endif %}
+
+			<ul class="fa-ul event-ul">
+			{% if displayable_event.cover_metadata %}
+				<li><i class="fa-li fa fa-picture-o fa-lg"></i><b><a href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
+			{% endif %}
+			<li><i class="fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a href="{{ raw_fb_event_url(event.info.id) }}">See Event on Facebook</a></b></li>
+			<li><div class="product-social-links" style="padding-bottom: 0 1em; height: 20px">
+				<a class="twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
+				<div class="fb-share-button" data-layout="button"></div>
+			</div></li>
+			<li><i class="fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
+			<time itemprop="startDate" content="{{ displayable_event.start_time|datetime_format }}">
+			{{ duration_human_format(displayable_event.start_time, end_time) }}
+			</time>
+			{% if displayable_event.end_time %}
+				<meta itemprop="endDate" content="{{ displayable_event.end_time|datetime_format }}" />
+			{% endif %}
+			</li>
+			{% if event.info.attending_count %}
+				<li><i class="fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
+				{{ event.info.attending_count }} Attending
+				{%- if event.info.maybe_count -%}
+					, {{ event.info.maybe_count }} Maybe
+				{%- endif %}
+				</li>
+			{% endif %}
+			<li><i class="fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
+			<div>
+			{% if displayable_event.location_name %}
+				{% if event.info.venue and event.info.venue.id %}
+					<a href="https://www.facebook.com/{{ event.info.venue.id }}">{{ displayable_event.location_name }}</a>
+				{% else %}
+					{{ displayable_event.location_name }}
+				{% endif %}
+				<br>
+			{% endif %}
+
+			{% if displayable_event.street_address %}
+				{{ displayable_event.street_address }}<br>
+			{% endif %}
+			{{ displayable_event.city_state_country }}<br>
 
 {{ displayable_event.location_schema_html() }}
-	</div></li>
-	</ul>
-	{# not worth showing maps embed if there is no street_address #}
-	{% if displayable_event.latitude %}
-		{% if event.info.description %}
-			<div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
-		{% endif %}
-		<div id="map-wrapper" class="responsive-map-wrapper">
+			</div></li>
+			</ul>
+			{# not worth showing maps embed if there is no street_address #}
+			{% if displayable_event.latitude %}
+				{% if event.info.description %}
+					<div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
+				{% endif %}
+				<div id="map-wrapper" class="responsive-map-wrapper">
+				</div>
+				<p>Open in <a href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
+			{% endif %}
 		</div>
-		<p>Open in <a href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
-	{% endif %}
-</div>
 
-{% if event.info.description %}
-	<div class="col-sm-7">
-		<h1 class="event-page-title visible-xs-block">{{ event.info.name }}</h1>
-		<div><b>Description:</b></div>
-		<span itemprop="description">
-			{{ event.info.description|format_html|linkify }}
-		</span>
+		{% if event.info.description %}
+		<div class="col-sm-7">
+			<h1 class="event-page-title visible-xs-block">{{ event.info.name }}</h1>
+			<div><b>Description:</b></div>
+			<span itemprop="description">
+				{{ event.info.description|format_html|linkify }}
+			</span>
+		</div>
+		{% endif %}
 	</div>
-{% endif %}
-</div>
 
 {#
 can add these to google-maps embed:
@@ -127,7 +127,6 @@ language= parameter
 region= paramter cctld
 #}
 
-</div>{# container-fluid #}
 </div>{# itemscope #}
 
 {% endblock %}
