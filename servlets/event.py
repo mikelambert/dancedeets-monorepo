@@ -226,14 +226,26 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         owner_location = None
         if 'owner' in fb_event['info']:
             owner_id = fb_event['info']['owner']['id']
+            print owner_id
+            location = None
             try:
                 combined_owner = self.fbl.get(fb_api.LookupProfile, owner_id)
             except fb_api.NoFetchedDataException:
-                combined_owner = None
-            if combined_owner and not combined_owner['empty']:
-                owner = combined_owner['profile']
-                if 'location' in owner:
-                    owner_location = event_locations.city_for_fb_location(owner['location'])
+                pass
+            else:
+                if combined_owner and not combined_owner['empty']:
+                    location = combined_owner['profile'].get('location')
+            if not location:
+                print owner_id
+                try:
+                    combined_owner = self.fbl.get(fb_api.LookupThingFeed, owner_id)
+                except fb_api.NoFetchedDataException:
+                    pass
+                else:
+                    if combined_owner and not combined_owner['empty']:
+                        location = combined_owner['info'].get('location')
+            if location:
+                owner_location = event_locations.city_for_fb_location(location)
         self.display['owner_location'] = owner_location
 
 
