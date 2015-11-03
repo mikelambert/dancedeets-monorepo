@@ -53,7 +53,11 @@ Users by platform:<br>
 {% endfor %}
 </td><td>
 (<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key={{ user.key.urlsafe() }}">AE</a>, <a href="/sources/admin_edit?source_id={{ user.fb_uid }}">Source</a>)
+{% if fb_user.profile %}
 <a href="{{ fb_user.profile.link }}">{{ user.full_name or 'Unknown Name' }}</a>
+{% else %}
+{{ user.full_name or 'Unknown Name' }}
+{% endif %}
 {% if user.expired_oauth_token %}
 <span style="color:red" title="{{ user.expired_oauth_token_reason }}">(expired!)</span>
 {% endif %}
