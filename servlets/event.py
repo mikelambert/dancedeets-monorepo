@@ -199,6 +199,16 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         error_string = ','.join(errors)
         return '%s\n%s' % (error_string, self.show_barebones_page(event_id))
 
+    def _get_location(self, fb_id, fb_type, key):
+        try:
+            obj = self.fbl.get(fb_type, fb_id)
+        except fb_api.NoFetchedDataException:
+            pass
+        else:
+            if obj and not obj['empty']:
+                return obj[key].get('location')
+        return None
+
     def get(self):
         event_id = None
         if self.request.get('event_url'):
@@ -226,24 +236,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         owner_location = None
         if 'owner' in fb_event['info']:
             owner_id = fb_event['info']['owner']['id']
-            print owner_id
-            location = None
-            try:
-                combined_owner = self.fbl.get(fb_api.LookupProfile, owner_id)
-            except fb_api.NoFetchedDataException:
-                pass
-            else:
-                if combined_owner and not combined_owner['empty']:
-                    location = combined_owner['profile'].get('location')
-            if not location:
-                print owner_id
-                try:
-                    combined_owner = self.fbl.get(fb_api.LookupThingFeed, owner_id)
-                except fb_api.NoFetchedDataException:
-                    pass
-                else:
-                    if combined_owner and not combined_owner['empty']:
-                        location = combined_owner['info'].get('location')
+            location = self._get_location(owner_id, fb_api.LookupProfile, 'profile') or self._get_location(owner_id, fb_api.LookupThingFeed, 'info')
             if location:
                 owner_location = event_locations.city_for_fb_location(location)
         self.display['owner_location'] = owner_location
