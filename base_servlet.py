@@ -386,6 +386,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             return final_url
         else:
             return False
+
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
         self.run_handler = True
@@ -562,6 +563,13 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         self.display['deb'] = self.request.get('deb')
         self.display['user'] = self.user
+
+        webview = bool(request.get('webview'))
+        self.display['webview'] = webview
+        if webview:
+            self.display['class_base_template'] = '_base_webview.html'
+        else:
+            self.display['class_base_template'] = '_base.html'
 
         self.display.update(rankings.retrieve_summary())
 
