@@ -358,6 +358,7 @@ legit_dance = [
     u'ソウルダンス', # soul dance japanese
     #'soul train',...do we want this?
     u'소울트레인', # korean soul train
+    "twerk(?:in[g']?)?",
     'dance crew[sz]?',
     u'댄스 ?승무원', # korean dance crew
     'melbourne shuffle',
@@ -782,6 +783,7 @@ def _generate_n_x_n_keywords():
         'x',
         u'×',
         u':',
+        u'對',
     ]
     digit_x_keywords = english_digit_x_keywords + [
         'na',

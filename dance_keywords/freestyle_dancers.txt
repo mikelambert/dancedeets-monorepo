@@ -59,10 +59,12 @@ emiko sugiyama
 eri fenesis
 eva schou
 fabio crestale
+fabrice
 fire.?lock
 flockey
 fluky luke
 fly lady di
+french squat dancas
 future ninja
 gemini,0
 genki\W+pyro
@@ -85,6 +87,7 @@ hiro sakuma
 hitmaster fish
 hozin
 hurrikane
+iacrew
 i\W?cee\W+forzesound
 iron monkey
 isaac suarez
@@ -97,6 +100,7 @@ jed flurano
 jeff selby
 jib\W+ghetto
 jimmy soul
+jonh agesilas
 jojo diggs
 jojo zolina
 jon boogz
@@ -108,6 +112,7 @@ jujubeatz
 junior almeida
 junior boogaloo
 junior boogie
+jr black eagle
 kapela,0
 kashmir,0
 katrin blantar
@@ -121,6 +126,7 @@ kool raul
 koutei
 kumari suraj
 lanaija
+laure courtellemont
 les twins
 lil b,0
 link\W+efc
@@ -192,6 +198,7 @@ shyguy
 skeeter rabbit
 slim boogie
 so\Wichiro\W+gold rush
+stephane mizrahi
 storm,0
 sugapop
 sugar? pop
