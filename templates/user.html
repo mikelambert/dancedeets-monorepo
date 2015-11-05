@@ -52,12 +52,12 @@ with
 
 
 {% block bottom_javascript %}
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
-
 <script type="text/javascript">
 function initializeLocationAutocomplete() {
   var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
   autocomplete.setTypes(['(regions)'])
 }
 </script>
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
 {% endblock %}
