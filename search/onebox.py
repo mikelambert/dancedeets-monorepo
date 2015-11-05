@@ -23,7 +23,7 @@ def get_links_for_query(query):
     search_latitudes = (query.bounds[0][0], query.bounds[1][0])
     search_longitudes = (query.bounds[0][1], query.bounds[1][1])
 
-    onebox_links = {}
+    onebox_links = []
 
     for (latitude, longitude), links in ONEBOX_DATA.iteritems():
         good_latitude = latitude >= search_latitudes[0] and latitude <= search_latitudes[1]
@@ -32,5 +32,6 @@ def get_links_for_query(query):
         else:
             good_longitude = longitude >= search_longitudes[0] or longitude <= search_longitudes[1]
         if good_latitude and good_longitude:
-            onebox_links.update(links)
-    return onebox_links
+            for title, url in links.iteritems():
+                onebox_links.append({'title': title, 'url': url})
+    return sorted(onebox_links)

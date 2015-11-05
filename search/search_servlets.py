@@ -59,7 +59,7 @@ class RelevantHandler(SearchHandler):
 
             search_results = []
             sponsored_studios = {}
-            onebox_links = {}
+            onebox_links = []
             if validated:
                 search_query = form.build_query()
                 search_results = self.search_class(search_query).get_search_results()

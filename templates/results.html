@@ -114,8 +114,8 @@ Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
 	<div class="col-xs-12">
 		<div><b>Related pages:</b></div>
 		<ul>
-		{% for title, link in onebox_links.iteritems() %}
-			<li><a href="{{ link }}">{{ title }}</a></li>
+		{% for onebox in onebox_links %}
+			<li><a href="{{ onebox.url }}">{{ onebox.title }}</a></li>
 		{% endfor %}
 		</ul>
 	</div>
