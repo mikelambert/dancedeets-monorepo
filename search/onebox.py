@@ -12,9 +12,11 @@ ONEBOX_DATA = {
 }
 
 def get_links_for_query(query):
+    onebox_links = []
+
     if not query.bounds:
         # This will happen on location-less searches (worldwide)
-        return {}
+        return onebox_links
 
     # We try to keep searches as simple as possible, 
     # using just AND queries on latitude/longitude.
@@ -22,8 +24,6 @@ def get_links_for_query(query):
     # we need to do an OR longitude query on each side.
     search_latitudes = (query.bounds[0][0], query.bounds[1][0])
     search_longitudes = (query.bounds[0][1], query.bounds[1][1])
-
-    onebox_links = []
 
     for (latitude, longitude), links in ONEBOX_DATA.iteritems():
         good_latitude = latitude >= search_latitudes[0] and latitude <= search_latitudes[1]
