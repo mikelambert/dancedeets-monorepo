@@ -19,7 +19,7 @@ var SelectButton = React.createClass({
     }
     return (
       <a
-        className={"btn btn-default btn-xs " + extraClass}
+        className={"btn btn-default btn-sm " + extraClass}
         ref="button"
         href="javascript:void(0);"
         onClick={this.toggleState}
