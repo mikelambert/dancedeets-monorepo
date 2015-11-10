@@ -118,11 +118,15 @@ function resetAffixedOffset() {
   $('#navbar').css('width', width);
 }
 $(function() {
-    resetAffixedOffset();
+  resetAffixedOffset();
+
+  $(document).on("keypress", "form", function(event) {
+    return event.keyCode != 13;
+  });
 });
 
 $(window).resize(function() {
-    resetAffixedOffset();
+  resetAffixedOffset();
 });
 
 </script>
