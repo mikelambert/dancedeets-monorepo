@@ -729,7 +729,7 @@ CLASS = Name('CLASS', Any(
     'eigoje', # lithuanian course
     'pamokas', # lithuanian lesson
     'kursai', # course lithuanian
-    'lez.', #  lesson italian
+    'lez\.', #  lesson italian
     'lezione', # lesson italian
     'lezioni', # lessons italian
     u'zajęciach', # class polish

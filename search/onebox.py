@@ -1,4 +1,3 @@
-import logging
 
 ONEBOX_DATA = {
     (40.7029741, -74.2598655): {
