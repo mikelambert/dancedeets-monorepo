@@ -334,10 +334,11 @@ def canonicalize_event_data(db_event, event_keywords):
             if key in venue:
                 address[key] = venue.get(key)
     geocode = None
-    if 'longitude' in venue:
-        geocode = {}
-        for key in ['longitude', 'latitude']:
-            geocode[key] = venue[key]
+    if db_event.longitude and db_event.latitude:
+        geocode = {
+            'longitude': db_event.longitude,
+            'latitude': db_event.latitude,
+        }
     # I have seen:
     # - no venue subfields at all (ie, we manually specify the address/location in the event or remapping), which will be returned as "" here (see above comment)
     # - name only (possibly remapped?)
