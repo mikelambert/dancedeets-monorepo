@@ -77,7 +77,9 @@ class BdcDay(items.StudioScraper):
 
             item['style'] = self._expand_acronyms(self._extract_text(row.xpath('.//td[2] | .//td[3]'))).title()
             item['teacher'] = self._extract_text(row.xpath('.//td[4]'))
-            url = urlparse.urljoin(response.url, row.xpath('(.//td[4]//@href)[1]').extract()[0])
-            item['teacher_link'] = url
+            teacher_urls = row.xpath('(.//td[4]//@href)[1]').extract()
+            if teacher_urls:
+                url = urlparse.urljoin(response.url, teacher_urls[0])
+                item['teacher_link'] = url
 
             yield item

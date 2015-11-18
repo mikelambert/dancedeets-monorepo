@@ -5,6 +5,7 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
+import dateparser
 import datetime
 import re
 
@@ -103,3 +104,42 @@ class StudioScraper(scrapy.Spider):
             else:
                 # Could be a regular Request object for nested scraping
                 yield studio_class
+
+
+class HealCodeScraper(StudioScraper):
+    allowed_domains = ['healcode.com']
+
+    healcode_id = '8113116c418'
+
+    def __init__(self, *args, **kwargs):
+        super(HealCodeScraper, self).__init__(*args, **kwargs)
+        self.start_urls = [
+            'https://widgets.healcode.com/widgets/schedules/print/%s' % self.healcode_id,
+        ]
+
+    def _valid_item(self, item, row):
+        return True
+
+    def parse_classes(self, response):
+        table = response.css('table.schedule')
+        for row in table.xpath('.//tr'):
+            class_value = row.xpath('@class').extract()[0]
+            classes = class_value.split(' ')
+            if 'schedule_header' in classes:
+                date_string = self._extract_text(row.css('.hc_date'))
+                date = dateparser.parse(date_string).date()
+            elif 'no_classes' in classes:
+                pass
+            else:
+                item = StudioClass()
+                start_time_str = row.css('.hc_starttime::text').extract()[0]
+                end_time_str = row.css('.hc_endtime::text').extract()[0].replace(' - ', '')
+                start_time = dateparser.parse(start_time_str).time()
+                end_time = dateparser.parse(end_time_str).time()
+                item['start_time'] = datetime.datetime.combine(date, start_time)
+                item['end_time'] = datetime.datetime.combine(date, end_time)
+                item['style'] = self._extract_text(row.css('span.classname'))
+                item['teacher'] = self._extract_text(row.css('span.trainer'))
+
+                if self._valid_item(item, row):
+                    yield item
