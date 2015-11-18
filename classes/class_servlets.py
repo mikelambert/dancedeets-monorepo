@@ -39,11 +39,11 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         location = self.location_shortcuts.get(location, location)
         self.errors_are_fatal
         form = search_base.SearchForm(
-            start=datetime.date.today(),
+            start=datetime.date.today() - datetime.timedelta(days=1),
             end=datetime.date.today() + datetime.timedelta(days=7),
             location=location,
             )
-        search_results = class_index.ClassSearch(form.build_query()).get_search_results()
+        search_results = class_index.ClassSearch(form.build_query(start_end_query=True)).get_search_results()
 
         self.display['search_results'] = search_results
         self.display['location'] = location

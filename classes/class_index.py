@@ -128,7 +128,7 @@ class StudioClassIndex(index.BaseIndex):
 
     @classmethod
     def _get_query_params_for_indexing(cls):
-        yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
+        yesterday = datetime.datetime.combine(datetime.date.today(), datetime.time.min.time()) - datetime.timedelta(days=1)
         return [(class_models.StudioClass.start_time >= yesterday)]
 
     @classmethod
