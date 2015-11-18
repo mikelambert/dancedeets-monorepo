@@ -47,6 +47,8 @@ class EDGE(items.StudioScraper):
                     teacher_link = teacher_href.extract()[0]
                 substitute_date_string = self._extract_text(date_cell)
                 substitute_teacher = self._extract_text(substitute_cell)
+                if substitute_teacher == 'Not Held Today':
+                    continue
 
                 start_time, end_time = parse_times(times)
                 item = items.StudioClass()
@@ -60,8 +62,6 @@ class EDGE(items.StudioScraper):
 
                 if substitute_date_string:
                     substitute_date = dateparser.parse(substitute_date_string).date()
-                    print substitute_date
-                    print date
                     if substitute_date != date:
                         # Return our existing item as-is, without any sub information
                         yield item.copy()
@@ -69,7 +69,6 @@ class EDGE(items.StudioScraper):
                         item['start_time'] = datetime.datetime.combine(substitute_date, start_time)
                         item['end_time'] = datetime.datetime.combine(substitute_date, end_time)
                     item['teacher'] = '%s sub for %s' % (substitute_teacher, teacher)
-                print item
                 yield item
 
 """
