@@ -2,14 +2,12 @@
 
 import datetime
 import logging
-import re
 import time
 
 from google.appengine.api import search
 
 from loc import gmaps_api
 from loc import math
-from nlp import categories
 from search import index
 from search import search_base
 from . import class_models
@@ -128,7 +126,7 @@ class StudioClassIndex(index.BaseIndex):
 
     @classmethod
     def _get_query_params_for_indexing(cls):
-        yesterday = datetime.datetime.combine(datetime.date.today(), datetime.time.min.time()) - datetime.timedelta(days=1)
+        yesterday = datetime.datetime.combine(datetime.date.today(), datetime.time.min) - datetime.timedelta(days=1)
         return [(class_models.StudioClass.start_time >= yesterday)]
 
     @classmethod
