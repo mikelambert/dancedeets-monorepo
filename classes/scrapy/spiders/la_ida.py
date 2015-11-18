@@ -31,8 +31,6 @@ class IDA(items.StudioScraper):
 
         for i, day_row in enumerate(response.css('.quicktabs-tabpage')):
             date = dates[i]
-            if date < datetime.date.today():
-                date += datetime.timedelta(days=7)
             for row in day_row.css('.quicktabs-views-group'):
 
                 style = self._extract_text_without_hidden(row.css('.views-field-field-add-class-details-'))
@@ -58,7 +56,8 @@ class IDA(items.StudioScraper):
                 item['teacher'] = teacher
                 item['teacher_link'] = teacher_link
 
-                yield item
+                for new_item in self._repeated_items_iterator(item):
+                    yield new_item
 
 """
                 <tr>

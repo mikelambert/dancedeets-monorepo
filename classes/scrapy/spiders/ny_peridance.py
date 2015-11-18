@@ -18,7 +18,7 @@ class PeridanceDay(items.StudioScraper):
 
     def start_requests(self):
         today = datetime.date.today()
-        for i in range(7):
+        for i in range(self._future_days):
             date_string = (today + datetime.timedelta(days=i)).strftime('%m/%d/%Y')
             yield scrapy.Request('http://www.peridance.com/openclasses.cfm?testdate=%s' % date_string)
 

@@ -19,8 +19,6 @@ class StudioV(items.StudioScraper):
 
     def parse_classes(self, response):
         date = dateparser.parse('thursday').date()
-        if date < datetime.date.today():
-            date += datetime.timedelta(days=7)
         tbody = response.css('.row-hover')
         for row in tbody.css('tr'):
             times, style, teacher = [self._extract_text(x) for x in row.css('td')]
@@ -31,4 +29,5 @@ class StudioV(items.StudioScraper):
             item['end_time'] = datetime.datetime.combine(date, end_time)
             item['style'] = style
             item['teacher'] = teacher
-            yield item
+            for new_item in self._repeated_items_iterator(item):
+                yield new_item

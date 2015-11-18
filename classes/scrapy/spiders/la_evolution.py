@@ -32,7 +32,6 @@ class Evolution(items.StudioScraper):
 
     def parse_classes(self, response):
         past_horizon = datetime.datetime.today().date()
-        future_horizon = datetime.datetime.today().date() + datetime.timedelta(days=14)
         ical_body = response.body.decode('utf-8')
         calendar = icalendar.Calendar.from_ical(ical_body)
         for event in calendar.subcomponents:
@@ -67,14 +66,14 @@ class Evolution(items.StudioScraper):
                     event_date = item['start_time']
                     if isinstance(event_date, datetime.datetime):
                         event_date = event_date.date()
-                    if past_horizon < event_date and event_date < future_horizon:
+                    if past_horizon < event_date and event_date < self._future_horizon():
                         yield item
                 else:
                     rrule = expand_rrule(event)
                     duration = item['end_time'] - item['start_time']
                     for recurrence in rrule:
                         event_date = recurrence.date()
-                        if past_horizon < event_date and event_date < future_horizon:
+                        if past_horizon < event_date and event_date < self._future_horizon():
                             newitem = item.copy()
                             newitem['start_time'] = recurrence
                             newitem['end_time'] = recurrence + duration

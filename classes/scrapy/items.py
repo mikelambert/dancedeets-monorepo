@@ -50,6 +50,8 @@ class StudioScraper(scrapy.Spider):
     #def __init__(self, *args, **kwargs):
     #    super(StudioScraper, self).__init__(self, *args, **kwargs)
 
+    _future_days = 14 # How many days of data to produce. Each iterator should check against this or self._future_horizon.
+
     @staticmethod
     def _street_style(style):
         # Use our NLP event classification keywords to figure out which BDC classes to keep
@@ -85,6 +87,24 @@ class StudioScraper(scrapy.Spider):
 
     def _get_url(self, response):
         return response.url
+
+    def _future_horizon(self):
+        return datetime.datetime.combine(datetime.date.today(), datetime.time.min) + datetime.timedelta(days=self._future_days)
+
+    def _repeated_items_iterator(self, studio_class):
+        """
+        This is an iterator that produces two copies of a studio_class, a week apart.
+        For use by subclasses that want to grab the correct datetimes for their studio_classes.
+        """
+        # If it's too old, wrap around one week
+        if studio_class['start_time'].date() < datetime.date.today() - datetime.timedelta(days=1):
+            studio_class['start_time'] += datetime.timedelta(days=7)
+            studio_class['end_time'] += datetime.timedelta(days=7)
+        while studio_class['start_time'] < self._future_horizon():
+            yield studio_class.copy()
+            # And always produce additional copies, a week at a time
+            studio_class['start_time'] += datetime.timedelta(days=7)
+            studio_class['end_time'] += datetime.timedelta(days=7)
 
     def parse(self, response):
         scrape_time = datetime.datetime.now()
@@ -142,4 +162,5 @@ class HealCodeScraper(StudioScraper):
                 item['teacher'] = self._extract_text(row.css('span.trainer'))
 
                 if self._valid_item(item, row):
-                    yield item
+                    for new_item in self._repeated_items_iterator(item):
+                        yield new_item

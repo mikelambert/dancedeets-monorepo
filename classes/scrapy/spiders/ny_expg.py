@@ -24,8 +24,6 @@ class EXPG(items.StudioScraper):
             if day == 'CLASSES':
                 continue
             date = dateparser.parse(day).date()
-            if date < datetime.date.today():
-                date += datetime.timedelta(days=7)
             for schedule_block in day_block.css('li.timetable_cell_wp'):
                 times = schedule_block.css('.sdl_span_time').xpath('./text()').extract()[0]
                 start_time, end_time = parse_times(times)
@@ -46,7 +44,8 @@ class EXPG(items.StudioScraper):
                     # This information is incorrect on their website :(
                     #teacher_link = class_block.css('.table_middle_tate').xpath('./a/@href').extract()[0]
                     #item['teacher_link'] = teacher_link
-                    yield item
+                    for new_item in self._repeated_items_iterator(item):
+                        yield new_item
 
 class EXPG2(mindbody_scraper.MindBodyScraper):
     site_id = 177785

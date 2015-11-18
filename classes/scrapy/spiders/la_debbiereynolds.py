@@ -40,8 +40,6 @@ class DebbieReynolds(items.StudioScraper):
         for i, day_block in enumerate(response.css('div.view-schedule')):
             schedule_block = day_block.css('table.views-table')
             date = dateparser.parse(days[i]).date()
-            if date < datetime.date.today():
-                date += datetime.timedelta(days=7)
             for class_block in schedule_block.css('tr'):
                 cells = class_block.xpath('td')
                 cells = [' '.join(x.xpath('.//text()').extract()).strip() for x in cells]
@@ -61,4 +59,5 @@ class DebbieReynolds(items.StudioScraper):
                 teacher_link = class_block.css('.views-field-field-class-inst').xpath('./a/@href').extract()[0]
                 url = urlparse.urljoin(response.url, teacher_link)
                 item['teacher_link'] = url
-                yield item
+                for new_item in self._repeated_items_iterator(item):
+                    yield new_item

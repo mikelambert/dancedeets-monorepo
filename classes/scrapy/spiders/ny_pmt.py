@@ -51,8 +51,6 @@ class PMTHouseOfDance(items.StudioScraper):
                 if day == 'onday':
                     day = 'Monday'
                 date = dateparser.parse(day).date()
-                if date < datetime.date.today():
-                    date += datetime.timedelta(days=7)
             # Use our NLP event classification keywords to figure out which BDC classes to keep
             style = row[2]
             processor = event_classifier.StringProcessor(style)
@@ -66,6 +64,7 @@ class PMTHouseOfDance(items.StudioScraper):
             start_time, end_time = parse_times(row[1])
             item['start_time'] = datetime.datetime.combine(date, start_time)
             item['end_time'] = datetime.datetime.combine(date, end_time)
-            yield item
+            for new_item in self._repeated_items_iterator(item):
+                yield new_item
 
 

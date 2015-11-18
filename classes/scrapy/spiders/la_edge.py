@@ -28,8 +28,6 @@ class EDGE(items.StudioScraper):
                 # Grab day-of-week
                 day = a_name.extract()[0].strip()
                 date = dateparser.parse(day).date()
-                if date < datetime.date.today():
-                    date += datetime.timedelta(days=7)
             elif date: # Don't process rows as classes until we've seen Monday
                 # Grab class
                 cells = row.css('td')
@@ -46,9 +44,6 @@ class EDGE(items.StudioScraper):
                 if teacher_href:
                     teacher_link = teacher_href.extract()[0]
                 substitute_date_string = self._extract_text(date_cell)
-                substitute_teacher = self._extract_text(substitute_cell)
-                if substitute_teacher == 'Not Held Today':
-                    continue
 
                 start_time, end_time = parse_times(times)
                 item = items.StudioClass()
@@ -60,16 +55,19 @@ class EDGE(items.StudioScraper):
                     url = urlparse.urljoin(response.url, teacher_link)
                     item['teacher_link'] = url
 
+                substitute_date = None
                 if substitute_date_string:
+                    substitute_teacher = self._extract_text(substitute_cell)
                     substitute_date = dateparser.parse(substitute_date_string).date()
-                    if substitute_date != date:
-                        # Return our existing item as-is, without any sub information
-                        yield item.copy()
-                        # But also now operate on a second copy, for the different date
-                        item['start_time'] = datetime.datetime.combine(substitute_date, start_time)
-                        item['end_time'] = datetime.datetime.combine(substitute_date, end_time)
-                    item['teacher'] = '%s sub for %s' % (substitute_teacher, teacher)
-                yield item
+
+                for new_item in self._repeated_items_iterator(item):
+                    if substitute_date == new_item['start_time'].date():
+                        # If the substitute_teacher is for today, let's overwrite with the relevant info.
+                        # And if it's a canceled class, skip it.
+                        if substitute_teacher == 'Not Held Today':
+                            continue
+                        new_item['teacher'] = '%s sub for %s' % (substitute_teacher, teacher)
+                    yield new_item
 
 """
                 <tr>

@@ -35,7 +35,7 @@ class BdcDay(items.StudioScraper):
 
     def start_requests(self):
         today = datetime.date.today()
-        for i in range(7):
+        for i in range(self._future_days):
             date_string = (today + datetime.timedelta(days=i)).strftime('%m_%d')
             yield scrapy.Request('http://www.broadwaydancecenter.com/schedule/%s.shtml' % date_string)
 
