@@ -161,8 +161,8 @@ var SearchBar = React.createClass({
     var missingDiv = null;
     if (this.props.location == 'Los Angeles, CA') {
       missingDiv = (
-        <div><i>Currently Missing:
-          <a href="https://clients.mindbodyonline.com/classic/home?studioid=133521">mL</a>,
+        <div><i>Currently Missing:{' '}
+          <a href="https://clients.mindbodyonline.com/classic/home?studioid=133521">mL</a>,{' '}
           <a href="https://clients.mindbodyonline.com/classic/home?studioid=110557">Quest Studio</a>
         </i></div>
       );
