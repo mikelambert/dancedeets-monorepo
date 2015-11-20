@@ -23,7 +23,10 @@ def make_request(server, path, params):
 
 def make_requests(path, params):
     make_request(PROD_SERVER, path, params)
-    make_request(DEV_SERVER, path, params)
+    try:
+        make_request(DEV_SERVER, path, params)
+    except urllib2.URLError:
+        pass
 
 class SaveStudioClassPipeline(object):
 
@@ -47,3 +50,4 @@ class SaveStudioClassPipeline(object):
         result = make_requests('classes/upload', new_item)
         if result:
             print 'Upload returned: ', result
+        return new_item
