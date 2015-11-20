@@ -1,13 +1,13 @@
 # -*-*- encoding: utf-8 -*-*-
 #
 
-import keywords
-import grammar
-from grammar import Any
-from nlp import event_classifier
-from nlp import event_auto_classifier
-import styles
 import event_types
+from . import event_auto_classifier
+from . import event_classifier
+from . import keywords
+from . import grammar
+from .grammar import Any
+import styles
 
 ANY_BREAK = Any(
     keywords.STYLE_BREAK,
