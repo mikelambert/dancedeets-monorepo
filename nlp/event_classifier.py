@@ -1,8 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 
-import collections
 import itertools
-import jinja2
 import logging
 import math
 try:
@@ -290,6 +288,7 @@ def relevant_keywords(fb_event):
     return sorted(set(good_keywords).union(bad_keywords))
 
 def highlight_keywords(text):
+    import jinja2
     processed_text = StringProcessor(jinja2.Markup.escape(text))
     processed_text.replace_with(rules.ANY_GOOD, lambda match: jinja2.Markup('<span class="matched-text">%s</span>') % match.group(0), flags=re.I)
     processed_text.replace_with(rules.ANY_BAD, lambda match: jinja2.Markup('<span class="bad-matched-text">%s</span>') % match.group(0))

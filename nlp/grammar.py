@@ -100,11 +100,7 @@ class FileBackedKeyword(_BaseAlternation):
     @classmethod
     def _get_manual_dance_keywords(cls, filename):
         import os
-        if os.getcwd().endswith('mapreduce'): #TODO(lambert): what is going on with appengine sticking me in the wrong starting directory??
-            base_dir = '..'
-        else:
-            base_dir = '.'
-
+        base_dir = os.path.join(os.path.dirname(__file__), '..')        
         f = codecs.open('%s/dance_keywords/%s.txt' % (base_dir, filename), encoding='utf-8')
         result = cls._parse_keywords(f.readlines())
         return result
