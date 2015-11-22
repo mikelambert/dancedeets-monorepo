@@ -7,6 +7,7 @@ import fb_api
 from topics import grouping
 from topics import topic_db
 from search import search
+from search import search_base
 
 @app.route('/topic/?')
 class TopicListHandler(base_servlet.BaseRequestHandler):
@@ -73,10 +74,10 @@ class TopicHandler(base_servlet.BaseRequestHandler):
             return False
 
         keywords = ' OR '.join('"%s"' % x for x in topic.search_keywords)
-        search_query = search.SearchQuery(keywords=keywords)
+        search_query = search_base.SearchQuery(keywords=keywords)
         # Need these fields for the prefilter
         search_query.extra_fields = ['name', 'description']
-        search_results = search_query.get_search_results(prefilter=prefilter)
+        search_results = search.Search(search_query).get_search_results(prefilter=prefilter)
 
         self.display['topic_title'] = topic.override_title or (fb_source and fb_source['info']['name'])
         self.display['topic_image'] = topic.override_image or (fb_source and fb_source['picture']['data']['url'])
