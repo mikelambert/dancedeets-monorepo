@@ -23,11 +23,13 @@
 {% macro rsvp_script() %}
 <script type="text/javascript">
 function event_rsvp(event_id, rsvp_status) {
-  $.ajax({
-    data: {rsvp: rsvp_status, event_id: event_id},
-    type: 'POST',
-    url: '/events/rsvp_ajax',
-  });
+  if (rsvp_status != "") {
+    $.ajax({
+      data: {rsvp: rsvp_status, event_id: event_id},
+      type: 'POST',
+      url: '/events/rsvp_ajax',
+    });
+  }
 }
 </script>
 {% endmacro %}
