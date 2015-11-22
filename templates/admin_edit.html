@@ -82,12 +82,12 @@ Edit Event
 				{% if creating_user %}
 					Submitted by <a href="{{ creating_user.profile.link }}">{{ creating_user.profile.name }}</a>.<br>
 				{% endif %}
-				<button class="btn">Edit Event</button>
-				<button class="btn" name="delete" value="yes">Delete Event</button>
+				<button class="btn btn-primary">Edit Event</button>
+				<button class="btn btn-danger" name="delete" value="yes">Delete Event</button>
 			{% else %}
 				Creating new event!
-				<button class="btn">Create Event</button>
-				{# <button class="btn">Not a Dance Event</button> #}
+				<button class="btn btn-primary">Create Event</button>
+				{# <button class="btn btn-default">Not a Dance Event</button> #}
 			{% endif %}
 			<p>
 			{% if event %}

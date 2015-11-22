@@ -51,7 +51,7 @@ Potential Events Classification
 		<form action="/events/admin_edit" method="post" target="dd_submit"> {# TODO(lambert): make this ajax-handled #}
 		<input type="hidden" name="event_id" value="{{ potential_event.fb_event.info.id }}">
 		<input type="hidden" name="background" value="1">
-		<button class="btn">Create Event</button>
+		<button class="btn btn-default">Create Event</button>
 		</form>
 		{% endif %}
 		</td>
@@ -69,7 +69,7 @@ Potential Events Classification
 		<td>{{ potential_event.wrong_words }}</td>
 		<td>{{ potential_event.keyword_reason }}</td>
 		<td>
-		<button class="btn" type="button" onclick="$('#sources_{{ potential_event.fb_event.info.id }}').toggle()">{{ potential_event.potential_event.source_ids|length }} Sources</button>
+		<button class="btn btn-default" type="button" onclick="$('#sources_{{ potential_event.fb_event.info.id }}').toggle()">{{ potential_event.potential_event.source_ids|length }} Sources</button>
 		<div id="sources_{{ potential_event.fb_event.info.id }}" style="display: none">
 		{% for source_id, source_field in zip(potential_event.potential_event.source_ids, potential_event.potential_event.source_fields) %}
 			<a href="http://graph.facebook.com/{{ source_id }}">{{ source_id }}</a> : {{ source_field }}<br>
@@ -86,6 +86,6 @@ Potential Events Classification
 <form action="/events/admin_potential_events" method="post">
 <input type="hidden" name="number_of_events" value="{{ number_of_events }}">
 <input type="hidden" name="processed_ids" value="{{ potential_ids }}">
-<button class="btn">Process Events</button>
+<button class="btn btn-primary">Process Events</button>
 </form>
 {% endblock %}

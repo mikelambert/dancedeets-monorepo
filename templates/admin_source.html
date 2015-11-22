@@ -24,8 +24,8 @@ Edit Source
 			{% endif %}
 			{% if source.is_saved() %}
 
-				<button class="btn">Edit Source</button>
-				<button class="btn" name="delete" value="yes">Delete Source</button>
+				<button class="btn btn-primary">Edit Source</button>
+				<button class="btn btn-danger" name="delete" value="yes">Delete Source</button>
 				<p>
 				Length-in-Seconds: {{ source.feed_history_in_seconds }}<br>
 				Num Potential Events: {{ source.num_potential_events }}<br>
@@ -53,8 +53,8 @@ Edit Source
 				<pre>{{ fb_source_data }}</pre>
 			{% else %}
 				Adding new source!
-				<button class="btn">Create Source</button>
-				<!--button class="btn">Not a Source</button-->
+				<button class="btn btn-primary">Create Source</button>
+				<!--button class="btn btn-default">Not a Source</button-->
 			{% endif %}
 			<input type="hidden" name="source_id" value="{{ fb_source.info.id }}">
 
