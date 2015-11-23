@@ -94,7 +94,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         ]
         city_state_country = ', '.join(x for x in city_state_country_list if x)
         formatted_location = fb_event['info']['location'] + ", " + city_state_country
-        self.display['description'] = '\n'.join([
+        self.display['description'] = ': '.join([
             formatted_start_time,
             formatted_location,
             fb_event['info']['description'],
