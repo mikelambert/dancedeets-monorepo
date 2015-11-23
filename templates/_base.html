@@ -233,6 +233,7 @@
 
 <div id="fb-root"></div>
 
+{% if prod_mode %}
 {# Begin TrackJS #}
 {# These should be first to ensure we catch all JS errors #}
 <script type="text/javascript">
@@ -244,6 +245,8 @@ window._trackJs = {
 };</script>
 <script type="text/javascript" src="https://d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js"></script>
 {# End TrackJS #}
+{% endif %}
+
 <!-- if we ever want to add i18n, we can use moment-with-locales instead -->
 <script src="https://cdn.jsdelivr.net/g/jquery@2.1.4,bootstrap@3.3.5,jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3" crossorigin="anonymous"></script>
 {% if mobile_show_smartbanner %}
