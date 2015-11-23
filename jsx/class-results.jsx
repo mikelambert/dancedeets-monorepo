@@ -390,8 +390,7 @@ var App = React.createClass({
     });
   },
   componentDidMount: function componentDidMount() {
-    var threshold = 150; //required min distance traveled to be considered swipe
-    var allowedTime = 200; // maximum time allowed to travel that distance
+    var allowedTime = 500; // maximum time allowed to travel that distance
     var startX;
     var startY;
     var startTime;
