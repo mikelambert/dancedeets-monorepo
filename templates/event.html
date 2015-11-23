@@ -22,6 +22,18 @@
 <meta name="twitter:app:id:googleplay" content="com.dancedeets.android" />
 <meta name="twitter:app:url:googleplay" content="http://{{ full_hostname }}/events/{{ event.info.id }}/" />
 
+<meta property="og:title" content="{{ event.info.name|e }}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="http://{{ full_hostname }}/events/{{ event.info.id }}/"/>
+<meta property="og:site_name" content="DanceDeets"/>
+<meta property="og:image" content="http://www.dancedeets.com/events/image_proxy/{{ event.info.id }}" />
+<meta property="og:description"
+      content="{{ description|e }}" />
+{% if displayable_event.latitude %}
+<meta property="place:location:latitude" content="{{ displayable_event.latitude }}" />
+<meta property="place:location:longitude" content="{{ displayable_event.longitude }}" />
+{% endif %}
+
 <link rel="canonical" href="http://{{ full_hostname }}/events/{{ event.info.id }}/"/>
 
 {% endblock %}

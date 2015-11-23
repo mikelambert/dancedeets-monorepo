@@ -81,15 +81,29 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         db_event = eventdata.DBEvent.get_by_id(event_id)
         if not db_event:
             self.abort(404)
-        event_info = db_event.fb_event
-        if event_info['empty']:
-            self.response.out.write('This event was %s.' % event_info['empty'])
+        fb_event = db_event.fb_event
+        if fb_event['empty']:
+            self.response.out.write('This event was %s.' % fb_event['empty'])
             return
 
-        self.display['displayable_event'] = DisplayableEvent(event_info)
+        start_time = dates.parse_fb_start_time(fb_event)
+        formatted_start_time = start_time.strftime('%Y/%m/%d @ %H:%M')
+        city_state_country_list = [
+            fb_event['info']['venue'].get('city'),
+            fb_event['info']['venue'].get('state'),
+        ]
+        city_state_country = ', '.join(x for x in city_state_country_list if x)
+        formatted_location = fb_event['info']['location'] + ", " + city_state_country
+        self.display['description'] = '\n'.join([
+            formatted_start_time,
+            formatted_location,
+            fb_event['info']['description'],
+        ])
 
-        self.display['event'] = event_info
-        self.display['next'] =  self.request.url
+        self.display['displayable_event'] = DisplayableEvent(fb_event)
+
+        self.display['event'] = fb_event
+        self.display['next'] = self.request.url
         self.display['show_mobile_app_promo'] = True
         self.render_template('event')
 
