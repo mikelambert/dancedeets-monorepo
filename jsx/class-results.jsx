@@ -389,6 +389,52 @@ var App = React.createClass({
       teacher: teacher
     });
   },
+  componentDidMount: function componentDidMount() {
+    var threshold = 150; //required min distance traveled to be considered swipe
+    var allowedTime = 200; // maximum time allowed to travel that distance
+    var startX;
+    var startY;
+    var startTime;
+    var skipScroll = false;
+
+    $('#navbar').on({
+      'touchstart' : function (jqueryEvent) {
+        var e = jqueryEvent.originalEvent;
+        if (!e.changedTouches) {
+          return;
+        }
+        var touchobj = e.changedTouches[0];
+        skipScroll = true;
+        startX = touchobj.pageX;
+        startY = touchobj.pageY;
+        startTime = new Date().getTime(); // record time when finger first makes contact with surface
+        console.log(touchobj.target.localName);
+      },
+      'touchmove' : function (jqueryEvent) {
+        if (skipScroll) {
+          jqueryEvent.preventDefault();
+        }
+      },
+      'touchend' : function (jqueryEvent) {
+        skipScroll = false;
+        var e = jqueryEvent.originalEvent;
+        var touchobj = e.changedTouches[0];
+        var dist = touchobj.pageY - startY; // get total dist traveled by finger while in contact with surface
+        var elapsedTime = new Date().getTime() - startTime; // get time elapsed
+        var validSwipe = elapsedTime <= allowedTime && Math.abs(touchobj.pageY - startY) > 50 && Math.abs(touchobj.pageX - startX) <= 100;
+        if (validSwipe) {
+          if ($('#navbar-collapsable').is(":visible") && touchobj.pageY < startY) {
+            toggleSearchBar();
+            e.preventDefault();
+          }
+          if (!$('#navbar-collapsable').is(":visible") && touchobj.pageY > startY) {
+            toggleSearchBar();
+            e.preventDefault();
+          }
+        }
+      }
+    });
+  },
   componentDidUpdate: function() {
     // Now scroll back so the navbar is directly at the top of the screen
     // and all of the results start fresh, beneath it
