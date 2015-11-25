@@ -88,16 +88,18 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
 
         start_time = dates.parse_fb_start_time(fb_event)
         formatted_start_time = start_time.strftime('%Y/%m/%d @ %H:%M')
-        city_state_country_list = [
-            fb_event['info']['venue'].get('city'),
-            fb_event['info']['venue'].get('state'),
-        ]
-        city_state_country = ', '.join(x for x in city_state_country_list if x)
-        formatted_location = fb_event['info']['location'] + ", " + city_state_country
-        self.display['description'] = ': '.join([
+        def join_valid(sep, lst):
+            return sep.join(x for x in lst if x)
+
+        formatted_location = join_valid(', ', [
+            fb_event['info'].get('location'),
+            fb_event['info'].get('venue', {}).get('city'),
+            fb_event['info'].get('venue', {}).get('state'),
+        ])
+        self.display['description'] = join_valid(': ', [
             formatted_start_time,
             formatted_location,
-            fb_event['info']['description'],
+            fb_event['info'].get('description'),
         ])
 
         self.display['displayable_event'] = DisplayableEvent(fb_event)
