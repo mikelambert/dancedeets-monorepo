@@ -46,7 +46,3 @@ class EXPG(items.StudioScraper):
                     #item['teacher_link'] = teacher_link
                     for new_item in self._repeated_items_iterator(item):
                         yield new_item
-
-class EXPG2(mindbody_scraper.MindBodyScraper):
-    site_id = 177785
-    name = 'EXPG2'
