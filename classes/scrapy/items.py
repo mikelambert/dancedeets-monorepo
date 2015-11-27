@@ -107,33 +107,34 @@ class StudioScraper(scrapy.Spider):
             studio_class['start_time'] += datetime.timedelta(days=7)
             studio_class['end_time'] += datetime.timedelta(days=7)
 
-    def _valid_item(self, item):
+    def _bogus_item(self, item):
         max_style = len('advanced intermediate hip hop with something else mixed in')
         max_teacher = len('someones longish-teacher and-last-name sub for crazy-long foreign-teacher different-name')
         if len(item['style']) > max_style or len(item['teacher']) > max_teacher:
             logging.error("Item contained too long properties: %s", item)
-            return False
-        return True
+            return True
+        return False
 
     def parse(self, response):
         scrape_time = datetime.datetime.now()
         for studio_class in self.parse_classes(response):
-            if self._valid_item(studio_class):
-                if isinstance(studio_class, StudioClass):
-                    studio_class['teacher'] = self._cleanup(studio_class['teacher'])
-                    studio_class['style'] = self._cleanup(studio_class['style'])
-                    studio_class['source_page'] = self._get_url(response)
-                    studio_class['studio_name'] = self.name
-                    studio_class['recurrence_id'] = self._get_recurrence(studio_class)
-                    studio_class['auto_categories'] = self._get_auto_categories(studio_class)
-                    studio_class['scrape_time'] = scrape_time
-                    studio_class['latitude'] = self.latlong[0]
-                    studio_class['longitude'] = self.latlong[1]
-                    studio_class['address'] = self.address
-                    yield studio_class
-                else:
-                    # Could be a regular Request object for nested scraping
-                    yield studio_class
+            if self._bogus_item(studio_class):
+                continue
+            if isinstance(studio_class, StudioClass):
+                studio_class['teacher'] = self._cleanup(studio_class['teacher'])
+                studio_class['style'] = self._cleanup(studio_class['style'])
+                studio_class['source_page'] = self._get_url(response)
+                studio_class['studio_name'] = self.name
+                studio_class['recurrence_id'] = self._get_recurrence(studio_class)
+                studio_class['auto_categories'] = self._get_auto_categories(studio_class)
+                studio_class['scrape_time'] = scrape_time
+                studio_class['latitude'] = self.latlong[0]
+                studio_class['longitude'] = self.latlong[1]
+                studio_class['address'] = self.address
+                yield studio_class
+            else:
+                # Could be a regular Request object for nested scraping
+                yield studio_class
 
 
 class HealCodeScraper(StudioScraper):
