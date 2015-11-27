@@ -139,9 +139,12 @@ def format_twitter_post(db_event, fb_event, media, handles=None):
     datetime_string = start_time.strftime(DATE_FORMAT)
 
     # The "short_url_length" is 22, so I use 23 for the space beforehand.
+    # And the "characters_reserved_per_media" is '23', which is 22 + 1 space
     # TODO(lambert): fetch help/configuration.json daily to find the current value
     # as described on https://dev.twitter.com/overview/t.co
-    url_length = 23
+    short_url_length = 22
+    characters_reserved_per_media = 24
+    url_length = short_url_length + 1
     prefix = ''
     prefix += "%s: " % datetime_string
     if city:
@@ -157,15 +160,15 @@ def format_twitter_post(db_event, fb_event, media, handles=None):
     else:
         handle_string = ''
 
-    num_urls = 1
+    title_length = 140 - len(prefix) - len(u"…") - url_length - len(handle_string)
     if media:
-        num_urls += 1 # the "characters_reserved_per_media" is '23', which is 22 + 1 space
+        title_length -= characters_reserved_per_media
 
-    title_length = 140 - len(prefix) - len(u"…") - url_length*num_urls - len(handle_string)
     final_title = title[0:title_length]
     if final_title != title:
         final_title += u'…'
-    return u"%s%s %s%s" % (prefix, final_title, url, handle_string)
+    result = u"%s%s %s%s" % (prefix, final_title, url, handle_string)
+    return result
 
 def twitter_post(auth_token, db_event):
     t = twitter.Twitter(
