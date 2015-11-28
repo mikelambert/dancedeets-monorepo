@@ -1,5 +1,6 @@
 
 # We import these for their side-effects in adding routes to the wsgi app
+from classes import class_pipeline
 from classes import class_servlets
 from event_scraper import source_servlets
 from event_scraper import scraping_tasks

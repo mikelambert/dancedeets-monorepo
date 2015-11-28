@@ -31,6 +31,8 @@ vm_settings:
 #  cpu_utilization:
 #    target_utilization: 0.5
 
+env_variables:
+  GAE_USE_SOCKETS_HTTPLIB : '1'
 
 inbound_services:
 - warmup
