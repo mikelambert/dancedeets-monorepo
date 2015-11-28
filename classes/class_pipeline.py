@@ -37,7 +37,7 @@ def start_spiders(spiders):
 
 class CrawlAndIndexClassesJob(pipeline.Pipeline):
     def run(self):
-        run_time = datetime.datetime()
+        run_time = datetime.datetime.now()
         # Find all spiders by looking at modules on disk
         spiders = get_spiders()
 
@@ -104,5 +104,5 @@ class FindEventsNeedingAccessTokensHandler(base_servlet.BaseTaskRequestHandler):
 
         pipeline = CrawlAndIndexClassesJob()
         pipeline.start(queue_name='slow-queue')
-        return 'OK'
+        self.response.out.write('OK')
     post=get
