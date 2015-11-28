@@ -19,7 +19,8 @@ from classes import class_index
 def get_spiders():
     return ['PMT', 'Evolution', 'Peridance', 'BDC', 'StudioV', 'NeighborhoodStudio', 'Millenium', 'EDGE', 'DebbieReynolds', 'EXPG', 'Boogiezone', 'IDA']
     # This depends on Twisted, which depends on zope.interface and lxml. And that whole ball of wax fails when run in the appengine dev sandbox.
-    #TODO: Try to grab the above list in a more automated fashion.
+    # We can't import any of classes/scrapers/ (since it all ultimately depends on scrapy), so there's no great way to get a list of classes.
+    # Instead, class_pipeline_test does depend on it safely within nosetests, and verifies the above list matches what we get from scrapy's API)
     #from scrapy.utils.project import get_project_settings
     #from scrapy.crawler import CrawlerRunner
     #runner = CrawlerRunner(get_project_settings())
