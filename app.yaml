@@ -1,6 +1,5 @@
-application: dancedeets-hrd # necessary for the appcfg.py commands we still use
 vm: true
-runtime: vm
+runtime: custom
 threadsafe: true
 api_version: 1
 module: default
@@ -37,12 +36,14 @@ env_variables:
 inbound_services:
 - warmup
 
-builtins:
-- remote_api: on
-- appstats: on
-- deferred: on
-
 handlers:
+- url: /_ah/queue/deferred
+  script: google.appengine.ext.deferred.application
+  login: admin
+- url: /_ah/stats.*
+  script: google.appengine.ext.appstats.ui.app
+- url: /_ah/remote_api(/.*)?
+  script: google.appengine.ext.remote_api.handler.application
 - url: /dancedeets.png
   static_files: dancedeets.png
   upload: dancedeets.png
