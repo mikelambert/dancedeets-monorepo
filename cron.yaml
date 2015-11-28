@@ -8,6 +8,9 @@ cron:
 - description: load potential events from special users and sources
   url: /tasks/load_potential_events_from_wall_posts?user_id=701004&allow_cache=0&min_potential_events=1
   schedule: every 21 hours
+- description: scrape all classes and index them
+  url: /tasks/crawl_and_index_classes
+  schedule: every 6 hours
 - description: email users about upcoming events
   url: /tasks/email_all_users?user_id=701004
   schedule: every wednesday 15:00
