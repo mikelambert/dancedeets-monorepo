@@ -10,11 +10,11 @@ from hubstorage import job
 from pipeline import common
 from pipeline import pipeline
 
-
 import app
 import base_servlet
 import keys
 from classes import class_index
+from util import fixed_pipelines
 
 def get_spiders():
     return ['PMT', 'Evolution', 'Peridance', 'BDC', 'StudioV', 'NeighborhoodStudio', 'Millenium', 'EDGE', 'DebbieReynolds', 'EXPG', 'Boogiezone', 'IDA']
@@ -35,7 +35,7 @@ def start_spiders(spiders):
         job_keys.append(job.key)
     return job_keys
 
-class CrawlAndIndexClassesJob(pipeline.Pipeline):
+class CrawlAndIndexClassesJob(fixed_pipelines.Pipeline):
     def run(self):
         run_time = datetime.datetime.now()
         # Find all spiders by looking at modules on disk
@@ -51,7 +51,7 @@ class CrawlAndIndexClassesJob(pipeline.Pipeline):
         yield ReindexClasses(job_keys, jobs_completed)
         yield EmailErrors(run_time, job_keys, jobs_completed)
 
-class WaitForJobs(pipeline.Pipeline):
+class WaitForJobs(fixed_pipelines.Pipeline):
     def run(self, job_keys):
         hs_client = client.HubstorageClient(keys.get('scrapinghub_key'))
         jobs = [job.Job(hs_client, x) for x in job_keys]
@@ -65,11 +65,11 @@ class WaitForJobs(pipeline.Pipeline):
         else:
             yield common.Return(True)
 
-class ReindexClasses(pipeline.Pipeline):
+class ReindexClasses(fixed_pipelines.Pipeline):
     def run(self, job_keys, jobs_completed):
         class_index.StudioClassIndex.rebuild_from_query()
 
-class EmailErrors(pipeline.Pipeline):
+class EmailErrors(fixed_pipelines.Pipeline):
     def run(self, run_time, job_keys, jobs_completed):
         hs_client = client.HubstorageClient(keys.get('scrapinghub_key'))
         jobs = [job.Job(hs_client, x) for x in job_keys]
@@ -99,7 +99,7 @@ class EmailErrors(pipeline.Pipeline):
 
 
 @app.route('/tasks/crawl_and_index_classes')
-class FindEventsNeedingAccessTokensHandler(base_servlet.BaseTaskRequestHandler):
+class CrawlAndIndexClassesHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
 
         pipeline = CrawlAndIndexClassesJob()
