@@ -86,14 +86,14 @@ class EmailErrors(fixed_pipelines.Pipeline):
         rendered = ["The following crawl errors occurred:"]
         for crawler, errors in error_lines.iteritems():
             rendered += ["%s:" % crawler]
-            rendered += [errors]
+            rendered += errors
             rendered += []
 
         message = mail.EmailMessage(
             sender="DanceDeets <dancedeets@dancedeets.com>",
             subject="Crawl Errors for %s" % run_time.strftime('%b %d, %Y: %H:%M'),
             to='dancedeets@dancedeets.com',
-            html='\n'.join(rendered)
+            html='\n'.join(rendered),
         )
         message.send()
 
