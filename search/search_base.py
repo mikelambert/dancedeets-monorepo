@@ -113,7 +113,7 @@ class SearchForm(wtforms.Form):
         unquoted_quoted_keywords = re.sub(r'[<=>:(),]', ' ', keywords).split('"')
         for i in range(0, len(unquoted_quoted_keywords), 2):
             unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
-        reconstructed_keywords = '"'.join(unquoted_quoted_keywords)
+        reconstructed_keywords = '"'.join(unquoted_quoted_keywords).strip()
         return reconstructed_keywords
 
     def build_query(self, start_end_query=False):
