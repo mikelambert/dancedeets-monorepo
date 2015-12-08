@@ -17,6 +17,7 @@ sudo pip install nosegae nose webtest --upgrade
 # TOO OLD, broken media upload: pip install --upgrade -t $BASE_DIR/lib twitter
 
 pip install --upgrade -t $BASE_DIR/lib \
+  google-python-cloud-debugger \
   hubstorage \
   iso3166 \
   oauth2 \
