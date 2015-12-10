@@ -678,6 +678,7 @@ BATTLE = Name('BATTLE', Any(
     u'présélections?', # preselections french
     'prelims?',
     u'初賽', # chinese preliminaries
+    u'קרבות', # hebrew battle
 ))
 
 CLASS = Name('CLASS', Any(
@@ -781,9 +782,10 @@ def _generate_n_x_n_keywords():
         r'v[zs]?\.?',
         'on',
         'x',
-        u'×',
+        u'×', # multiply, sometimes japanese
         u':',
-        u'對',
+        u'對', # chinese
+        u'על', # hebrew
     ]
     digit_x_keywords = english_digit_x_keywords + [
         'na',
@@ -821,6 +823,7 @@ JUDGE = Name('JUDGE', Any(
     u'審査員', # japanese judges
     u'ジャッジ', # japanese judges
     u'심사', # korean judges
+    u'שופט', # hebrew judges
 ))
 
 AMBIGUOUS_CLASS = Name('AMBIGUOUS_CLASS', Any(
