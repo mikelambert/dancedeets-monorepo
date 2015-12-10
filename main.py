@@ -1,16 +1,10 @@
 #!/usr/bin/env python
 
+import logging
 import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
-try:
-  import googleclouddebugger
-  googleclouddebugger.AttachDebugger()
-except ImportError:
-  pass
-
-import logging
 logging.info("Begin modules")
 import webapp2
 from google.appengine.ext import ereporter
