@@ -180,6 +180,16 @@ class SearchHandler(ApiHandler):
 
 ISO_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
+class LookupDebugToken(fb_api.LookupType):
+    @classmethod
+    def get_lookups(cls, object_id):
+        return [
+            ('token', cls.url('debug_token?input_token=%s' % object_id)),
+        ]
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (fb_api.USERLESS_UID, object_id, 'OBJ_DEBUG_TOKEN')
+
 # Released a version of iOS that requested from /api/v1.1auth, so let's handle that here for awhile
 @app.route('/api/v\d+.\d+/?auth')
 class AuthHandler(ApiHandler):
@@ -204,19 +214,15 @@ class AuthHandler(ApiHandler):
             return
         self.errors_are_fatal() # Assert that our access_token is set
 
-        access_token_expires_with_tz = self.json_body.get('access_token_expires')
-        if access_token_expires_with_tz:
-            # strip off the timezone, since we can't easily process it
-            # TODO(lambert): using http://labix.org/python-dateutil to parse timezones would help with that
-            truncated_access_token_expires_without_tz = access_token_expires_with_tz[:-5]
-            try:
-                access_token_expires = datetime.datetime.strptime(truncated_access_token_expires_without_tz, ISO_DATETIME_FORMAT)
-            except ValueError:
-                logging.error("Received un-parseable expires date from client: %s", access_token_expires_with_tz)
-                access_token_expires = None
+        # Fetch the access_token_expires value from Facebook, instead of demanding it via the API
+        app_fbl = fb_api.FBLookup(None, fb_api.facebook.FACEBOOK_CONFIG['app_access_token'])
+        app_fbl.allow_cache = False
+        debug_info = app_fbl.get(LookupDebugToken, access_token)
+        access_token_expires_timestamp = debug_info['token']['data'].get('expires_at')
+        if access_token_expires_timestamp:
+            access_token_expires = datetime.datetime.fromtimestamp(access_token_expires_timestamp)
         else:
             access_token_expires = None
-
 
         location = self.json_body.get('location')
         # Don't use self.get_location_from_headers(), as I'm not sure how accurate it is if called from the API.
@@ -239,7 +245,7 @@ class AuthHandler(ApiHandler):
                     user.login_count += 1
                 else:
                     user.login_count = 2 # once for this one, once for initial creation
-            if client not in user.clients:
+            if client and client not in user.clients:
                 user.clients.append(client)
 
 
