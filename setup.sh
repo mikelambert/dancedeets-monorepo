@@ -12,7 +12,7 @@ curl https://bootstrap.pypa.io/get-pip.py --output $TMP_DIR/get-pip.py
 sudo python $TMP_DIR/get-pip.py
 
 # For testing, just install them locally. Depends on pip being installed.
-sudo pip install nosegae nose webtest --upgrade
+sudo pip install nosegae nose webtest --upgrade --ignore-installed six --user
 
 # TOO OLD, broken media upload: pip install --upgrade -t $BASE_DIR/lib twitter
 
@@ -25,7 +25,6 @@ pip install --upgrade -t $BASE_DIR/lib \
   gdata \
   python-gflags \
   Flask \
-  WTForms-Appengine \
   wtforms \
   GoogleAppEngineCloudStorageClient \
   GoogleAppEnginePipeline \
@@ -72,6 +71,8 @@ function install-git() {
 
 # Because the current published version has a bug with media uploads
 install-git https://github.com/sixohsix/twitter.git twitter
+
+install-git https://github.com/mikelambert/wtforms-appengine wtforms_appengine
 
 # Because the published version doesn't install static files with a pip install
 install-git https://github.com/GoogleCloudPlatform/appengine-mapreduce.git python/src/mapreduce
