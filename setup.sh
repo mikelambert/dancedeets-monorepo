@@ -72,6 +72,8 @@ function install-git() {
 # Because the current published version has a bug with media uploads
 install-git https://github.com/sixohsix/twitter.git twitter
 
+# Because the published version doesn't work with JsonProperty:
+# https://github.com/wtforms/wtforms-appengine/pull/11
 install-git https://github.com/mikelambert/wtforms-appengine wtforms_appengine
 
 # Because the published version doesn't install static files with a pip install
