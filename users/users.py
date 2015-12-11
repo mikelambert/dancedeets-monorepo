@@ -27,6 +27,8 @@ class User(ndb.Model):
 
     clients = ndb.StringProperty(indexed=False, repeated=True)
 
+    json_data = ndb.JsonProperty()
+
     # Event stats
     num_auto_added_events = ndb.IntegerProperty()
     num_auto_added_own_events = ndb.IntegerProperty()
