@@ -177,8 +177,25 @@ class SearchHandler(ApiHandler):
             }
         self.write_json_success(json_response)
 
+class RetryException(Exception):
+    pass
 
-ISO_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
+class RetryApiHandler(ApiHandler):
+    def post(self):
+        try:
+            self.process()
+        except Exception as e:
+            logging.info(traceback.format_exc())
+            url = self.request.path
+            body = self.request.body
+            logging.error(e)
+            logging.error("Retrying URL %s", url)
+            logging.error("With Payload %r", body)
+            taskqueue.add(method='POST', url=url, payload=body,
+                countdown=60*60)
+
+    def process(self):
+        raise NotImplementedError()
 
 class LookupDebugToken(fb_api.LookupType):
     @classmethod
@@ -190,22 +207,21 @@ class LookupDebugToken(fb_api.LookupType):
     def cache_key(cls, object_id, fetching_uid):
         return (fb_api.USERLESS_UID, object_id, 'OBJ_DEBUG_TOKEN')
 
+def update_user(servlet, user, json_body):
+    location = json_body.get('location')
+    if location:
+        # If we had a geocode failure, or had a geocode bug, or we did a geocode bug and only got a country
+        if not user.location or 'null' in user.location or ',' not in user.location or re.search(r', \w\w$', user.location):
+            user.location = location
+    else:
+        # Use the IP address headers if we've got nothing better
+        if not user.location:
+            user.location = servlet.get_location_from_headers()
+
 # Released a version of iOS that requested from /api/v1.1auth, so let's handle that here for awhile
 @app.route('/api/v\d+.\d+/?auth')
-class AuthHandler(ApiHandler):
+class AuthHandler(RetryApiHandler):
     requires_auth = True
-
-    def post(self):
-        try:
-            self.process()
-        except Exception:
-            logging.info(traceback.format_exc())
-            url = self.request.path
-            body = self.request.body
-            logging.error("Retrying URL %s", url)
-            logging.error("With Payload %r", body)
-            taskqueue.add(method='POST', url=url, payload=body,
-                countdown=60*60)
 
     def process(self):
         access_token = self.json_body.get('access_token')
@@ -224,11 +240,7 @@ class AuthHandler(ApiHandler):
         else:
             access_token_expires = None
 
-        location = self.json_body.get('location')
-        # Don't use self.get_location_from_headers(), as I'm not sure how accurate it is if called from the API.
-        # Also don't use location to update the user, if we don't actually have a location
-        client = self.json_body.get('client')
-        logging.info("Auth token from client %s is %s", client, access_token)
+        logging.info("Auth tokens is %s", access_token)
 
         user = users.User.get_by_id(self.fb_uid)
         if user:
@@ -238,6 +250,10 @@ class AuthHandler(ApiHandler):
             user.expired_oauth_token = False
             user.expired_oauth_token_reason = ""
 
+            client = self.json_body.get('client')
+            if client and client not in user.clients:
+                user.clients.append(client)
+
             # Track usage stats
             user.last_login_time = datetime.datetime.now()
             if user.last_login_time < datetime.datetime.now() - datetime.timedelta(hours=1):
@@ -245,23 +261,32 @@ class AuthHandler(ApiHandler):
                     user.login_count += 1
                 else:
                     user.login_count = 2 # once for this one, once for initial creation
-            if client and client not in user.clients:
-                user.clients.append(client)
 
-
-            if location:
-                # If we had a geocode failure, or had a geocode bug, or we did a geocode bug and only got a country
-                if not user.location or 'null' in user.location or ',' not in user.location or re.search(r', \w\w$', user.location):
-                    user.location = location
-            else:
-                # Use the IP address headers if we've got nothing better
-                if not user.location:
-                    user.location = self.get_location_from_headers()
+            update_user(self, user, self.json_body)
 
             user.put() # this also sets to memcache
         else:
+            client = self.json_body.get('client')
+            location = self.json_body.get('location')
             user_creation.create_user_with_fbuser(self.fb_uid, self.fb_user, access_token, access_token_expires, location, client=client)
         self.write_json_success()
+
+@app.route('/api/v\d+.\d+/user')
+class UserUpdateHandler(RetryApiHandler):
+    requires_auth = True
+
+    def process(self):
+        self.errors_are_fatal() # Assert that our access_token is set
+
+        user = users.User.get_by_id(self.fb_uid)
+        if not user:
+            raise RetryException("User does not yet exist, cannot modify it yet.")
+
+        update_user(self, user, self.json_body)
+
+        user.put() # this also sets to memcache
+        self.write_json_success()
+
 
 class SettingsHandler(ApiHandler):
     requires_auth = True
