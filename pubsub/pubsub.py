@@ -7,9 +7,11 @@ import logging
 import oauth2 as oauth
 import re
 import time
+import traceback
 import urllib
 import urlparse
 
+from google.appengine.api import memcache
 from google.appengine.ext import ndb
 import twitter
 
@@ -95,6 +97,7 @@ def post_event_id_with_authtoken(event_id, auth_token):
             twitter_post(auth_token, db_event)
         except Exception as e:
             logging.error("Twitter Post Error: %s", e)
+            logging.error(traceback.format_exc())
     elif auth_token.application == APP_FACEBOOK:
         try:
             result = facebook_post(auth_token, db_event)
@@ -104,6 +107,7 @@ def post_event_id_with_authtoken(event_id, auth_token):
                 logging.info("Facebook result was %r", result)
         except Exception as e:
             logging.exception("Facebook Post Exception: %s", e)
+            logging.error(traceback.format_exc())
     else:
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
 
@@ -126,7 +130,17 @@ def campaign_url(eid, source):
         'utm_campaign': 'autopost'
     })
 
-def format_twitter_post(db_event, fb_event, media, handles=None):
+TWITTER_CONFIG_KEY = 'TwitterConfig'
+TWITTER_CONFIG_EXPIRY = 24*60*60
+
+def get_twitter_config(t):
+    config = memcache.get(TWITTER_CONFIG_KEY)
+    if config:
+        return json.loads(config)
+    config = t.help.configuration()
+    memcache.set(TWITTER_CONFIG_KEY, json.dumps(config), TWITTER_CONFIG_EXPIRY)
+
+def format_twitter_post(config, db_event, fb_event, media, handles=None):
     url = campaign_url(fb_event['info']['id'], 'twitter_feed')
     title = fb_event['info']['name']
     city = db_event.actual_city_name
@@ -138,12 +152,8 @@ def format_twitter_post(db_event, fb_event, media, handles=None):
     #else:
     datetime_string = start_time.strftime(DATE_FORMAT)
 
-    # The "short_url_length" is 22, so I use 23 for the space beforehand.
-    # And the "characters_reserved_per_media" is '23', which is 22 + 1 space
-    # TODO(lambert): fetch help/configuration.json daily to find the current value
-    # as described on https://dev.twitter.com/overview/t.co
-    short_url_length = 22
-    characters_reserved_per_media = 24
+    short_url_length = config['short_url_length']
+    characters_reserved_per_media = config['characters_reserved_per_media']
     url_length = short_url_length + 1
     prefix = ''
     prefix += "%s: " % datetime_string
@@ -195,7 +205,8 @@ def twitter_post(auth_token, db_event):
         handles = list(set(twitter_handles + twitter_handles2))
     else:
         handles = []
-    status = format_twitter_post(db_event, db_event.fb_event, media, handles=handles)
+    config = get_twitter_config(t)
+    status = format_twitter_post(config, db_event, db_event.fb_event, media, handles=handles)
     t.statuses.update(status=status, **update_params)
 
 
