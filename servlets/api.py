@@ -51,13 +51,8 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
         if callback:
             self.response.out.write(')')
 
-    def handle_error_response(self, errors):
-        self.write_json_error({'errors': errors})
-        return True
-
-    def initialize(self, request, response):
-        super(ApiHandler, self).initialize(request, response)
-
+    def _initialize(self, request):
+        # We use _initialize instead of webapp2's initialize, so that exceptions can be caught easily
         self.fbl = fb_api.FBLookup(None, None)
 
         if self.request.body:
@@ -78,8 +73,41 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
             elif self.requires_auth:
                 self.add_error("Needs access_token parameter")
 
+    def dispatch(self):
+        try:
+            major_version, minor_version = self.request.route_args[0:2]
+            self.request.route_args = self.request.route_args[2:]
+            self.version = (int(major_version), int(minor_version))
+            self._initialize(self.request)
+            super(ApiHandler, self).dispatch()
+        except Exception as e:
+            logging.error(traceback.format_exc())
+            self.write_json_error({'success': False, 'errors': [str(x) for x in e.args[0]]})
 
-@app.route('/api/v(\d+).(\d+)/search')
+def apiroute(path, *args, **kwargs):
+    return app.route('/api/v(\d+)\.(\d+)' + path, *args, **kwargs)
+
+class RetryException(Exception):
+    pass
+
+def retryable(func):
+    def wrapped_func(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            self = args[0]
+            logging.info(traceback.format_exc())
+            url = self.request.path
+            body = self.request.body
+            logging.error(e)
+            logging.error("Retrying URL %s", url)
+            logging.error("With Payload %r", body)
+            taskqueue.add(method='POST', url=url, payload=body,
+                countdown=60*60)
+            raise
+    return wrapped_func
+
+@apiroute('/search')
 class SearchHandler(ApiHandler):
 
     def _get_title(self, location, keywords):
@@ -94,13 +122,13 @@ class SearchHandler(ApiHandler):
             else:
                 return "Events"
 
-    def get(self, major_version, minor_version):
+    def get(self):
         data = {
             'location': self.request.get('location'),
             'keywords': self.request.get('keywords'),
         }
         # If it's 1.0 clients, or web clients, then grab all data
-        if major_version == '1' and minor_version == '0':
+        if self.version == (1, 0):
             time_period = search_base.TIME_UPCOMING
         else:
             time_period = self.request.get('time_period')
@@ -120,7 +148,7 @@ class SearchHandler(ApiHandler):
             southwest = None
             northeast = None
             if not form.keywords.data:
-                if major_version == "1" and minor_version == "0":
+                if self.version == (1, 0):
                     self.write_json_success({'results': []})
                     return
                 else:
@@ -132,7 +160,7 @@ class SearchHandler(ApiHandler):
                 city_name = formatting.format_geocode(geocode)
                 # This will fail on a bad location, so let's verify the location is geocodable above first.
             else:
-                if major_version == "1" and minor_version == "0":
+                if self.version == (1, 0):
                     self.write_json_success({'results': []})
                     return
                 else:
@@ -177,26 +205,6 @@ class SearchHandler(ApiHandler):
             }
         self.write_json_success(json_response)
 
-class RetryException(Exception):
-    pass
-
-class RetryApiHandler(ApiHandler):
-    def post(self):
-        try:
-            self.process()
-        except Exception as e:
-            logging.info(traceback.format_exc())
-            url = self.request.path
-            body = self.request.body
-            logging.error(e)
-            logging.error("Retrying URL %s", url)
-            logging.error("With Payload %r", body)
-            taskqueue.add(method='POST', url=url, payload=body,
-                countdown=60*60)
-
-    def process(self):
-        raise NotImplementedError()
-
 class LookupDebugToken(fb_api.LookupType):
     @classmethod
     def get_lookups(cls, object_id):
@@ -219,11 +227,12 @@ def update_user(servlet, user, json_body):
             user.location = servlet.get_location_from_headers()
 
 # Released a version of iOS that requested from /api/v1.1auth, so let's handle that here for awhile
-@app.route('/api/v\d+.\d+/?auth')
-class AuthHandler(RetryApiHandler):
+@apiroute('/auth')
+class AuthHandler(ApiHandler):
     requires_auth = True
 
-    def process(self):
+    @retryable
+    def post(self):
         access_token = self.json_body.get('access_token')
         if not access_token:
             logging.error("Received empty access_token from client. Payload was: %s", self.json_body)
@@ -271,11 +280,11 @@ class AuthHandler(RetryApiHandler):
             user_creation.create_user_with_fbuser(self.fb_uid, self.fb_user, access_token, access_token_expires, location, client=client)
         self.write_json_success()
 
-@app.route('/api/v\d+.\d+/user')
-class UserUpdateHandler(RetryApiHandler):
+@apiroute('/user')
+class UserUpdateHandler(ApiHandler):
     requires_auth = True
 
-    def process(self):
+    def post(self):
         self.errors_are_fatal() # Assert that our access_token is set
 
         user = users.User.get_by_id(self.fb_uid)
@@ -420,7 +429,7 @@ def canonicalize_event_data(db_event, event_keywords):
 
     return event_api
 
-@app.route('/api/v\d+.\d+/events/\d+/?')
+@apiroute('/events/\d+/?')
 class EventHandler(ApiHandler):
     def requires_login(self):
         return False
@@ -438,7 +447,9 @@ class EventHandler(ApiHandler):
                 self.add_error('Event id expected: %s' % path_bits[1])
 
             db_event = eventdata.DBEvent.get_by_id(event_id)
-            if db_event.fb_event['empty']:
+            if not db_event:
+                self.add_error('No event found')
+            elif db_event.fb_event['empty']:
                 self.add_error('This event was %s.' % db_event.fb_event['empty'])
 
         self.errors_are_fatal()
