@@ -230,10 +230,14 @@ def update_user(servlet, user, json_body):
         user.json_data = {}
     android_token = json_body.get('android_device_token')
     if android_token:
-        user.json_data.setdefault('android_device_token', []).append(android_token)
+        tokens = user.json_data.setdefault('android_device_token', [])
+        if android_token not in tokens:
+            tokens.append(android_token)
     ios_token = json_body.get('ios_device_token')
     if ios_token:
-        user.json_data.setdefault('ios_device_token', []).append(ios_token)
+        tokens = user.json_data.setdefault('ios_device_token', [])
+        if android_token not in tokens:
+            tokens.append(android_token)
 
 # Released a version of iOS that requested from /api/v1.1auth, so let's handle that here for awhile
 @apiroute('/auth')
