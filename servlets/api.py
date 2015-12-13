@@ -219,8 +219,7 @@ def update_user(servlet, user, json_body):
     location = json_body.get('location')
     if location:
         # If we had a geocode failure, or had a geocode bug, or we did a geocode bug and only got a country
-        if not user.location or 'null' in user.location or ',' not in user.location or re.search(r', \w\w$', user.location):
-            user.location = location
+        user.location = location
     else:
         # Use the IP address headers if we've got nothing better
         if not user.location:
@@ -277,12 +276,12 @@ class AuthHandler(ApiHandler):
                 user.clients.append(client)
 
             # Track usage stats
-            user.last_login_time = datetime.datetime.now()
             if user.last_login_time < datetime.datetime.now() - datetime.timedelta(hours=1):
                 if user.login_count:
                     user.login_count += 1
                 else:
                     user.login_count = 2 # once for this one, once for initial creation
+            user.last_login_time = datetime.datetime.now()
 
             update_user(self, user, self.json_body)
 
