@@ -139,6 +139,7 @@ def get_twitter_config(t):
         return json.loads(config)
     config = t.help.configuration()
     memcache.set(TWITTER_CONFIG_KEY, json.dumps(config), TWITTER_CONFIG_EXPIRY)
+    return config
 
 def format_twitter_post(config, db_event, fb_event, media, handles=None):
     url = campaign_url(fb_event['info']['id'], 'twitter_feed')

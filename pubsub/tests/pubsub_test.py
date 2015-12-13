@@ -38,6 +38,12 @@ class TestPublishEvent(unittest.TestCase):
     @mock.patch('oauth2.Client.request')
     @mock.patch('twitter.Twitter')
     def testPull(self, Twitter, Client_request):
+        twitter_instance = Twitter.return_value
+        twitter_instance.help.configuration.return_value = {
+            'short_url_length': 22,
+            'characters_reserved_per_media': 24,
+        }
+
         # No-op works with with no tokens
         pubsub.pull_and_publish_event()
 
@@ -63,17 +69,21 @@ class TestPublishEvent(unittest.TestCase):
 
 class TestImports(unittest.TestCase):
     def runTest(self):
+        config = {
+            'short_url_length': 22,
+            'characters_reserved_per_media': 24,
+        }
         class DBEvent:
             actual_city_name = 'Sacramento, CA, United States'
         url = 'http://www.dancedeets.com/events/555/?utm_campaign=autopost&utm_medium=share&utm_source=twitter_feed'
-        self.assertEqual(pubsub.format_twitter_post(DBEvent(), FB_EVENT, media=False, handles=[]),
+        self.assertEqual(pubsub.format_twitter_post(config, DBEvent(), FB_EVENT, media=False, handles=[]),
             u'2010/01/01: Sacramento, CA, United States: Some really long name here that just keeps on going and may or may not ev… %s' % url)
-        self.assertEqual(pubsub.format_twitter_post(DBEvent(), FB_EVENT, media=False, handles=['@name']),
+        self.assertEqual(pubsub.format_twitter_post(config, DBEvent(), FB_EVENT, media=False, handles=['@name']),
             u'2010/01/01: Sacramento, CA, United States: Some really long name here that just keeps on going and may or may … %s @name' % url)
-        self.assertEqual(pubsub.format_twitter_post(DBEvent(), FB_EVENT, media=False, handles=['@name1', '@name2', '@name3', '@name4', '@name5', '@name6', '@name7']),
+        self.assertEqual(pubsub.format_twitter_post(config, DBEvent(), FB_EVENT, media=False, handles=['@name1', '@name2', '@name3', '@name4', '@name5', '@name6', '@name7']),
             u'2010/01/01: Sacramento, CA, United States: Some really long name here that just k… %s @name1 @name2 @name3 @name4 @name5' % url)
-        self.assertEqual(pubsub.format_twitter_post(DBEvent(), FB_EVENT, media=False, handles=['@mspersia', '@grooveologydc', '@groovealils', '@dam_sf', '@mishmashboutique']),
+        self.assertEqual(pubsub.format_twitter_post(config, DBEvent(), FB_EVENT, media=False, handles=['@mspersia', '@grooveologydc', '@groovealils', '@dam_sf', '@mishmashboutique']),
             u'2010/01/01: Sacramento, CA, United States: Some really long name here that jus… %s @mspersia @grooveologydc @groovealils' % url)
-        self.assertEqual(pubsub.format_twitter_post(DBEvent(), FB_EVENT, media=False, handles=['@jodywisternoff', '@jodywisternoff', '@Lane8music']),
+        self.assertEqual(pubsub.format_twitter_post(config, DBEvent(), FB_EVENT, media=False, handles=['@jodywisternoff', '@jodywisternoff', '@Lane8music']),
             u'2010/01/01: Sacramento, CA, United States: Some really long name here that just keep… %s @jodywisternoff @jodywisternoff' % url)
 
