@@ -43,6 +43,12 @@ class TestAuth(TestSearch):
             '/v2.2/me/events?since=yesterday': (200, {}),
             '/v2.2/me/friends': (200, {}),
             '/v2.2/me/permissions': (200, {}),
+            '/v2.2/debug_token?input_token=BlahToken': (200, {
+                'data': {'expires_at': 0}
+                }),
+            '/v2.2/debug_token?input_token=BlahToken2': (200, {
+                'data': {'expires_at': 0}
+                }),
         }
 
         auth_request = {
