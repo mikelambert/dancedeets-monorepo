@@ -21,6 +21,7 @@ pip install --upgrade -t $BASE_DIR/lib \
   iso3166 \
   oauth2 \
   twilio \
+  python-gcm \
   google-api-python-client \
   gdata \
   python-gflags \

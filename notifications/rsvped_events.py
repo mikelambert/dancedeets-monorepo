@@ -9,6 +9,7 @@ from events import eventdata
 from users import users
 from util import dates
 from util import urls
+from . import android
 
 def setup_reminders(fb_uid, fb_user_events):
     results_json = fb_user_events['all_event_info']['data']
@@ -41,10 +42,7 @@ def notify_user(user_id, event_id):
     event_name = event.fb_event['info']['name']
     event_time = event.start_time.strftime('%H:%M')
     text = '%s: %s' % (event_time, event_name)
+    title = 'Upcoming Event!'
     url = urls.fb_event_url(event_id)
-    android_notify(user, text, url)
+    android.notify(user, title, text, url)
     # TODO: iphone_notify!
-
-def android_notify(user, text, url):
-    tokens = user.json_data['android_device_token']
-    # gcm
