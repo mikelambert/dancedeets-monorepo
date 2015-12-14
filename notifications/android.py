@@ -1,4 +1,7 @@
+import logging
+
 import gcm
+
 import keys
 
 def android_notify(user, title, text, url):
@@ -18,6 +21,8 @@ def android_notify(user, title, text, url):
                 for reg_id in reg_ids:
                     tokens.remove(reg_id)
                     changed_tokens = True
+            else:
+                logging.error("Error for user %s with url %s: %s", user.fb_uid, url, error)
 
     if 'canonical' in response:
         for reg_id, canonical_id in response['canonical'].iteritems():
