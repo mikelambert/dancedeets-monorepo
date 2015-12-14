@@ -134,6 +134,12 @@ class User(ndb.Model):
         else:
             return ndb.get_multi(keys)
 
+    def device_tokens(self, platform):
+        if platform not in ['ios', 'android']:
+            raise ValueError('invalid platform: %r' % platform)
+        device_tokens = self.json_data.setdefault('%s_device_token' % platform, [])
+        return device_tokens
+
 class UserFriendsAtSignup(ndb.Model):
     fb_uid = property(lambda x: str(x.key.string_id()))
     registered_friend_string_ids = ndb.StringProperty(indexed=False, repeated=True)

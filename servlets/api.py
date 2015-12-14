@@ -229,12 +229,12 @@ def update_user(servlet, user, json_body):
         user.json_data = {}
     android_token = json_body.get('android_device_token')
     if android_token:
-        tokens = user.json_data.setdefault('android_device_token', [])
+        tokens = user.device_tokens('android')
         if android_token not in tokens:
             tokens.append(android_token)
     ios_token = json_body.get('ios_device_token')
     if ios_token:
-        tokens = user.json_data.setdefault('ios_device_token', [])
+        tokens = user.device_tokens('ios')
         if android_token not in tokens:
             tokens.append(android_token)
 
