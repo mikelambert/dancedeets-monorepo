@@ -296,6 +296,7 @@ class DBCache(CacheSystem):
     def __init__(self, fetching_uid):
         self.fetching_uid = fetching_uid
         self.db_updates = 0
+        self.oldest_allowed = datetime.datetime.min
 
     def fetch_keys(self, keys):
         cache_key_mapping = dict((self.key_to_cache_key(key), key) for key in keys)
@@ -308,7 +309,8 @@ class DBCache(CacheSystem):
                 if o:
                     # Sometimes objects get created without json_data, so we need to manually purge those from our DB and not pass them on to clients
                     if o.json_data:
-                        object_map[cache_key_mapping[o.key().name()]] = o.decode_data()
+                        if o.date_cached > self.oldest_allowed:
+                            object_map[cache_key_mapping[o.key().name()]] = o.decode_data()
                     else:
                         o.delete()
         logging.info("BatchLookup: db lookup objects found: %s", object_map.keys())

@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from mapreduce import context
@@ -68,8 +69,15 @@ def classify_events(fbl, pe_list, fb_list):
 
 def classify_events_with_yield(fbl, pe_list):
     assert fbl.allow_cache
+    original_oldest_allowed = fbl.db.oldest_allowed
+    try:
+        # Refresh our potential event cache every N days (since they may have updated with better keywords, as often happens)
+        fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=7)
+        fb_list = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
+    finally:
+        # But revert it afterwards, since we pass this fbl in to classify_events() afterwards
+        fbl.db.oldest_allowed = original_oldest_allowed
     #DISABLE_ATTENDING
-    fb_list = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
     results = classify_events(fbl, pe_list, fb_list)
     yield ''.join(results).encode('utf-8')
 
