@@ -22,6 +22,10 @@ def event_time_period(start_time, end_time):
     else:
         return TIME_PAST
 
+def parse_fb_timestamp_exactly(fb_timestamp):
+    # All new events should be of exactly this form (no need to support bw-compat with all-day events and time-less events)
+    return datetime.datetime.strptime(fb_timestamp, '%Y-%m-%dT%H:%M:%S%z')
+
 def parse_fb_timestamp(fb_timestamp):
     # because of events like 23705144628 without any time information
     if not fb_timestamp:

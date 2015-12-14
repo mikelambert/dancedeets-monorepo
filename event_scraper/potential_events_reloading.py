@@ -1,6 +1,7 @@
 import logging
 
 import fb_api
+from notifications import rsvped_events
 from util import fb_mapreduce
 from . import scrape_user_potential_events
 
@@ -35,6 +36,7 @@ def yield_load_potential_events(fbl, user):
         # Since we've loaded the latest events from the user, allow future event lookups to come from cache
         fbl.allow_cache = True
         scrape_user_potential_events.get_potential_dance_events(fbl, user.fb_uid, user_events)
+        rsvped_events.setup_reminders(user.fb_uid, user_events)
 
 map_load_potential_events = fb_mapreduce.mr_user_wrap(yield_load_potential_events)
 load_potential_events = fb_mapreduce.nomr_wrap(yield_load_potential_events)
