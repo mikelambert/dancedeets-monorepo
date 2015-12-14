@@ -1,13 +1,14 @@
 import datetime
 import urllib
 
+from dateutil import parser
+
 from google.appengine.api import taskqueue
 
 import app
 import base_servlet
 from events import eventdata
 from users import users
-from util import dates
 from util import urls
 from . import android
 
@@ -16,20 +17,30 @@ def setup_reminders(fb_uid, fb_user_events):
     #STR_ID_MIGRATE: We still get ids as ints from our FQL
     event_ids = [str(x['eid']) for x in sorted(results_json, key=lambda x: x.get('start_time'))]
 
-    existing_events = [x for x in eventdata.DBEvent.get_by_key_name(event_ids) if x]
+
+    existing_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
     for event in existing_events:
-        start_time = dates.parse_fb_timestamp_exactly(event.fb_event['info'].get('start_time'))
+        start_time = parser.parse(event.fb_event['info'].get('start_time'))
         # Otherwise it's at a specific time (we need the time with the timezone info included)
         # Also try to get it ten minutes before the Facebook event comes in, so that we aren't seen as the "dupe".
         notify_time = start_time - datetime.timedelta(hours=1, minutes=10)
-        taskqueue.add(
-            method='GET',
-            name='notify_user-%s-%s' % (fb_uid, event.fb_event_id),
-            eta=notify_time,
-            url='/tasks/notify_user?'+urllib.urlencode(dict(
-                user_id=fb_uid,
-                event_id=event.fb_event_id)),
-        )
+
+        # I think 30 days is the limit for appengine tasks with ETA set, but it gets trickier with all the timezones
+        future_cutoff = datetime.datetime.now(notify_time.tzinfo) + datetime.timedelta(days=21)
+
+        if notify_time > future_cutoff:
+            continue
+        try:
+            taskqueue.add(
+                method='GET',
+                name='notify_user-%s-%s' % (fb_uid, event.fb_event_id),
+                eta=notify_time,
+                url='/tasks/notify_user?'+urllib.urlencode(dict(
+                    user_id=fb_uid,
+                    event_id=event.fb_event_id)),
+            )
+        except taskqueue.TaskAlreadyExistsError:
+            pass
 
 @app.route('/tasks/notify_user')
 class NotifyUserHandler(base_servlet.BaseRequestHandler):
@@ -37,6 +48,9 @@ class NotifyUserHandler(base_servlet.BaseRequestHandler):
         notify_user(self.request.get('user_id'), self.request.get('event_id'))
 
 def notify_user(user_id, event_id):
+    # Only send notifications for Mike for now
+    if user_id != '701004':
+        return
     user = users.User.get_by_id(user_id)
     event = eventdata.DBEvent.get_by_id(event_id)
     event_name = event.fb_event['info']['name']
