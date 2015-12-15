@@ -4,7 +4,7 @@ import gcm
 
 import keys
 
-def android_notify(user, title, text, url):
+def notify(user, title, text, url):
     g = gcm.GCM(keys.get('google_server_key'), debug=True)
     tokens = user.device_tokens('android')
     data = {
