@@ -1,4 +1,5 @@
 import datetime
+import logging
 import urllib
 
 from dateutil import parser
@@ -17,8 +18,8 @@ def setup_reminders(fb_uid, fb_user_events):
     #STR_ID_MIGRATE: We still get ids as ints from our FQL
     event_ids = [str(x['eid']) for x in sorted(results_json, key=lambda x: x.get('start_time'))]
 
-
     existing_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
+    logging.info("For user %s's %s events, %s are real dance events", fb_uid, len(event_ids), len(existing_events))
     for event in existing_events:
         start_time = parser.parse(event.fb_event['info'].get('start_time'))
         # Otherwise it's at a specific time (we need the time with the timezone info included)
@@ -30,6 +31,7 @@ def setup_reminders(fb_uid, fb_user_events):
 
         if notify_time > future_cutoff:
             continue
+        logging.info("For event %s, sending notifications at %s", event.fb_event_id, notify_time)
         try:
             taskqueue.add(
                 method='GET',
@@ -43,11 +45,12 @@ def setup_reminders(fb_uid, fb_user_events):
             pass
 
 @app.route('/tasks/notify_user')
-class NotifyUserHandler(base_servlet.BaseRequestHandler):
+class NotifyUserHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
         notify_user(self.request.get('user_id'), self.request.get('event_id'))
 
 def notify_user(user_id, event_id):
+    logging.info("Sending notifications to user %s about event %s", user_id, event_id)
     # Only send notifications for Mike for now
     if user_id != '701004':
         return
