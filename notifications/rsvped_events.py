@@ -26,8 +26,11 @@ def setup_reminders(fb_uid, fb_user_events):
         # Also try to get it ten minutes before the Facebook event comes in, so that we aren't seen as the "dupe".
         notify_time = start_time - datetime.timedelta(hours=1, minutes=10)
 
-        # I think 30 days is the limit for appengine tasks with ETA set, but it gets trickier with all the timezones
-        future_cutoff = datetime.datetime.now(notify_time.tzinfo) + datetime.timedelta(days=21)
+        # I think 30 days is the limit for appengine tasks with ETA set, but it gets trickier with all the timezones.
+        # And really, we run this code multiple times a day, so don't need to plan out more than a single day.
+        # Otherwise if the user un-rsvp's for an event, we'll still have a zombie task waiting to notify them.
+        # (And AppEngine doesn't like us removing-and-readding a named task item anyway)
+        future_cutoff = datetime.datetime.now(notify_time.tzinfo) + datetime.timedelta(days=1)
 
         if notify_time > future_cutoff:
             continue
