@@ -36,6 +36,7 @@ def setup_reminders(fb_uid, fb_user_events):
             taskqueue.add(
                 method='GET',
                 name='notify_user-%s-%s' % (fb_uid, event.fb_event_id),
+                queue_name='mobile-notify-queue',
                 eta=notify_time,
                 url='/tasks/notify_user?'+urllib.urlencode(dict(
                     user_id=fb_uid,
