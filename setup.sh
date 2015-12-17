@@ -17,6 +17,8 @@ sudo pip install nosegae nose webtest --upgrade --ignore-installed six --user
 # TOO OLD, broken media upload: pip install --upgrade -t $BASE_DIR/lib twitter
 
 pip install --upgrade -t $BASE_DIR/lib \
+  git+https://github.com/mikelambert/requests \
+  git+https://github.com/mikelambert/requests-toolbelt@feature/gae \
   hubstorage \
   iso3166 \
   oauth2 \

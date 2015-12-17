@@ -4,6 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 from hacks import fixed_ndb
 from hacks import fixed_mapreduce_util
+from requests_toolbelt.adapters import appengine
 
 fixed_mapreduce_util.patch_function()
 
@@ -12,6 +13,9 @@ fixed_ndb.patch_logging(0)
 
 # Fix our runaway mapreduces
 fixed_ndb.fix_rpc_ordering()
+
+# Make requests work with AppEngine's URLFetch
+appengine.monkeypatch()
 
 def webapp_add_wsgi_middleware(app):
     #from google.appengine.ext.ndb import tasklets
