@@ -3,15 +3,24 @@ import logging
 import gcm
 
 import keys
+from util import urls
 
-def notify(user, title, text, url):
+def notify(user, event, title, text):
+    # TODO: We don't want to send raw URLs, or it pops open a "open with" dialog. Pass in a custom schema instead!
+    url = urls.fb_event_url(event.fb_event_id)
+
     g = gcm.GCM(keys.get('google_server_key'), debug=True)
     tokens = user.device_tokens('android')
+    duration = 60*70 # 70 minutes
+    # or maybe better, end-datetime.datetime.now()?
     data = {
         'title': title,
         'text': text,
         'url': url,
+        'delay_while_idle': 0,
+        'time_to_live': duration,
     }
+    # TODO: what happens if we send multiple notifications. last-one wins? Can we do a better job of prioritizing and aggregating these?
     response = g.json_request(registration_ids=tokens, data=data)
 
     changed_tokens = False
