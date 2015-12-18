@@ -21,6 +21,9 @@ scratch
 # per-user sublime files:
 *.sublime-workspace
 
+# coverage file built by 'run coverage'
+.coverage
+
 .gcloud
 
 # installed libraries
