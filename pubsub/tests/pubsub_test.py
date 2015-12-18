@@ -37,7 +37,10 @@ class TestPublishEvent(unittest.TestCase):
 
     @mock.patch('oauth2.Client.request')
     @mock.patch('twitter.Twitter')
-    def testPull(self, Twitter, Client_request):
+    @mock.patch('keys.get')
+    def testPull(self, Twitter, Client_request, keys_get):
+        keys_get.return_value = 'dummy_key'
+
         twitter_instance = Twitter.return_value
         twitter_instance.help.configuration.return_value = {
             'short_url_length': 22,
