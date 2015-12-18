@@ -1,0 +1,4 @@
+app_name: Dance Deets Test
+app_id: "test_app_id"
+secret_key: "test_secret_key"
+app_access_token: "test_app_access_token"
