@@ -1,0 +1,101 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "サンパウロ",
+               "short_name" : "サンパウロ",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "サン・パウロ",
+               "short_name" : "サン・パウロ",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "サン・パウロ",
+               "short_name" : "SP",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "ブラジル",
+               "short_name" : "BR",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "ブラジル サン・パウロ サンパウロ",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : -23.3566039,
+                  "lng" : -46.3650844
+               },
+               "southwest" : {
+                  "lat" : -24.0082209,
+                  "lng" : -46.825514
+               }
+            },
+            "location" : {
+               "lat" : -23.5505199,
+               "lng" : -46.63330939999999
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : -23.3566039,
+                  "lng" : -46.3650844
+               },
+               "southwest" : {
+                  "lat" : -24.0082209,
+                  "lng" : -46.825514
+               }
+            }
+         },
+         "types" : [ "locality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "サンパウロ",
+               "short_name" : "サンパウロ",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Cocalinho",
+               "short_name" : "Cocalinho",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "マットグロッソ州",
+               "short_name" : "MT",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "ブラジル",
+               "short_name" : "BR",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "ブラジル マットグロッソ州 サンパウロ",
+         "geometry" : {
+            "location" : {
+               "lat" : -14.3652443,
+               "lng" : -51.6913553
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : -14.3638953197085,
+                  "lng" : -51.6900063197085
+               },
+               "southwest" : {
+                  "lat" : -14.3665932802915,
+                  "lng" : -51.6927042802915
+               }
+            }
+         },
+         "types" : [ "locality", "political" ]
+      }
+   ],
+   "status" : "OK"
+}

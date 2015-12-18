@@ -2,6 +2,7 @@ import json
 import logging
 import sys
 
+from . import gmaps
 from . import gmaps_api
 
 gmaps_backend = None
@@ -33,7 +34,7 @@ def fetch_raw(**kwargs):
     try:
         return _get_object(geocode_key)
     except IOError:
-        json_data = gmaps_backend.fetch_raw(**kwargs)
+        json_data = gmaps.fetch_raw(**kwargs)
         _save_object(geocode_key, json_data)
     return json_data
 

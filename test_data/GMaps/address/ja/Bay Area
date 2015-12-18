@@ -1,0 +1,53 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "サン・フランシスコ・ベイ・エリア",
+               "short_name" : "サン・フランシスコ・ベイ・エリア",
+               "types" : [ "colloquial_area", "political" ]
+            },
+            {
+               "long_name" : "カリフォルニア",
+               "short_name" : "CA",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "アメリカ合衆国",
+               "short_name" : "US",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "アメリカ合衆国 カリフォルニア サン・フランシスコ・ベイ・エリア",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 38.8642448,
+                  "lng" : -121.208178
+               },
+               "southwest" : {
+                  "lat" : 36.8941549,
+                  "lng" : -123.632497
+               }
+            },
+            "location" : {
+               "lat" : 37.7141454,
+               "lng" : -122.25
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 38.8642448,
+                  "lng" : -121.208178
+               },
+               "southwest" : {
+                  "lat" : 36.8941549,
+                  "lng" : -123.632497
+               }
+            }
+         },
+         "types" : [ "colloquial_area", "political" ]
+      }
+   ],
+   "status" : "OK"
+}

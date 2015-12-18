@@ -1,0 +1,164 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "アーバイン",
+               "short_name" : "アーバイン",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "オレンジ",
+               "short_name" : "オレンジ",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "カリフォルニア",
+               "short_name" : "CA",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "アメリカ合衆国",
+               "short_name" : "US",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "アメリカ合衆国 カリフォルニア アーバイン",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 33.7744771,
+                  "lng" : -117.678463
+               },
+               "southwest" : {
+                  "lat" : 33.5995231,
+                  "lng" : -117.870041
+               }
+            },
+            "location" : {
+               "lat" : 33.6839473,
+               "lng" : -117.7946942
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 33.7744771,
+                  "lng" : -117.678463
+               },
+               "southwest" : {
+                  "lat" : 33.5995231,
+                  "lng" : -117.870041
+               }
+            }
+         },
+         "types" : [ "locality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "アーヴァイン",
+               "short_name" : "アーヴァイン",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "エスティル",
+               "short_name" : "エスティル",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "ケンタッキー",
+               "short_name" : "KY",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "アメリカ合衆国",
+               "short_name" : "US",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "アメリカ合衆国 ケンタッキー アーヴァイン",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 37.7179539,
+                  "lng" : -83.955061
+               },
+               "southwest" : {
+                  "lat" : 37.681407,
+                  "lng" : -83.98146699999999
+               }
+            },
+            "location" : {
+               "lat" : 37.700638,
+               "lng" : -83.97381299999999
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 37.7179539,
+                  "lng" : -83.955061
+               },
+               "southwest" : {
+                  "lat" : 37.681407,
+                  "lng" : -83.98146699999999
+               }
+            }
+         },
+         "types" : [ "locality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "アーヴァイン",
+               "short_name" : "アーヴァイン",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "ブロークンストロー",
+               "short_name" : "ブロークンストロー",
+               "types" : [ "administrative_area_level_3", "political" ]
+            },
+            {
+               "long_name" : "ウォレン",
+               "short_name" : "ウォレン",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "ペンシルベニア",
+               "short_name" : "PA",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "アメリカ合衆国",
+               "short_name" : "US",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "16329",
+               "short_name" : "16329",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "アメリカ合衆国 〒16329 ペンシルベニア アーヴァイン",
+         "geometry" : {
+            "location" : {
+               "lat" : 41.8392258,
+               "lng" : -79.2683811
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 41.8405747802915,
+                  "lng" : -79.26703211970849
+               },
+               "southwest" : {
+                  "lat" : 41.83787681970851,
+                  "lng" : -79.26973008029151
+               }
+            }
+         },
+         "types" : [ "locality", "political" ]
+      }
+   ],
+   "status" : "OK"
+}

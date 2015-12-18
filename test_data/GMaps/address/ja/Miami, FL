@@ -1,0 +1,58 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "マイアミ",
+               "short_name" : "マイアミ",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "マイアミ・デイド",
+               "short_name" : "マイアミ・デイド",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "フロリダ",
+               "short_name" : "FL",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "アメリカ合衆国",
+               "short_name" : "US",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "アメリカ合衆国 フロリダ マイアミ",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 25.8556059,
+                  "lng" : -80.14240029999999
+               },
+               "southwest" : {
+                  "lat" : 25.709042,
+                  "lng" : -80.31975989999999
+               }
+            },
+            "location" : {
+               "lat" : 25.7616798,
+               "lng" : -80.1917902
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 25.8556059,
+                  "lng" : -80.14240029999999
+               },
+               "southwest" : {
+                  "lat" : 25.709042,
+                  "lng" : -80.31975989999999
+               }
+            }
+         },
+         "types" : [ "locality", "political" ]
+      }
+   ],
+   "status" : "OK"
+}

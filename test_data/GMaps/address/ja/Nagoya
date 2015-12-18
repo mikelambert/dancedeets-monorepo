@@ -1,0 +1,53 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "名古屋市",
+               "short_name" : "名古屋市",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "愛知県",
+               "short_name" : "愛知県",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "日本, 愛知県名古屋市",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 35.2604546,
+                  "lng" : 137.0609245
+               },
+               "southwest" : {
+                  "lat" : 35.0338749,
+                  "lng" : 136.7918104
+               }
+            },
+            "location" : {
+               "lat" : 35.1814464,
+               "lng" : 136.906398
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 35.1979,
+                  "lng" : 136.9607
+               },
+               "southwest" : {
+                  "lat" : 35.1382,
+                  "lng" : 136.8625
+               }
+            }
+         },
+         "types" : [ "locality", "political" ]
+      }
+   ],
+   "status" : "OK"
+}

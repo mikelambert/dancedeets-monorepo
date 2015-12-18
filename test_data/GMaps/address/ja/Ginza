@@ -1,0 +1,749 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "銀座",
+               "short_name" : "銀座",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "中央区",
+               "short_name" : "中央区",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "東京都",
+               "short_name" : "東京都",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "104-0061",
+               "short_name" : "104-0061",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "日本, 〒104-0061 東京都中央区銀座",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 35.6760069,
+                  "lng" : 139.772494
+               },
+               "southwest" : {
+                  "lat" : 35.6630917,
+                  "lng" : 139.7584951
+               }
+            },
+            "location" : {
+               "lat" : 35.67208919999999,
+               "lng" : 139.770592
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 35.6760069,
+                  "lng" : 139.772494
+               },
+               "southwest" : {
+                  "lat" : 35.6630917,
+                  "lng" : 139.7584951
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "銀座",
+               "short_name" : "銀座",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "熊谷市",
+               "short_name" : "熊谷市",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "埼玉県",
+               "short_name" : "埼玉県",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "360-0032",
+               "short_name" : "360-0032",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "日本, 〒360-0032 埼玉県熊谷市銀座",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 36.1436129,
+                  "lng" : 139.4027739
+               },
+               "southwest" : {
+                  "lat" : 36.1353916,
+                  "lng" : 139.3924223
+               }
+            },
+            "location" : {
+               "lat" : 36.1416104,
+               "lng" : 139.3934305
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 36.1436129,
+                  "lng" : 139.4027739
+               },
+               "southwest" : {
+                  "lat" : 36.1353916,
+                  "lng" : 139.3924223
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "銀座",
+               "short_name" : "銀座",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "本庄市",
+               "short_name" : "本庄市",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "埼玉県",
+               "short_name" : "埼玉県",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "367-0052",
+               "short_name" : "367-0052",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "日本, 〒367-0052 埼玉県本庄市銀座",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 36.240848,
+                  "lng" : 139.1892077
+               },
+               "southwest" : {
+                  "lat" : 36.2360613,
+                  "lng" : 139.1823677
+               }
+            },
+            "location" : {
+               "lat" : 36.2393343,
+               "lng" : 139.1865269
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 36.240848,
+                  "lng" : 139.1892077
+               },
+               "southwest" : {
+                  "lat" : 36.2360613,
+                  "lng" : 139.1823677
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "銀座",
+               "short_name" : "銀座",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "清水区",
+               "short_name" : "清水区",
+               "types" : [ "ward", "locality", "political" ]
+            },
+            {
+               "long_name" : "静岡市",
+               "short_name" : "静岡市",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "静岡県",
+               "short_name" : "静岡県",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "424-0817",
+               "short_name" : "424-0817",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "日本, 〒424-0817 静岡県静岡市清水区銀座",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 35.0195335,
+                  "lng" : 138.4875729
+               },
+               "southwest" : {
+                  "lat" : 35.0174135,
+                  "lng" : 138.483403
+               }
+            },
+            "location" : {
+               "lat" : 35.0186681,
+               "lng" : 138.4857778
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 35.0198224802915,
+                  "lng" : 138.4875729
+               },
+               "southwest" : {
+                  "lat" : 35.0171245197085,
+                  "lng" : 138.483403
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "銀座",
+               "short_name" : "銀座",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "岡谷市",
+               "short_name" : "岡谷市",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "長野県",
+               "short_name" : "長野県",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "394-0022",
+               "short_name" : "394-0022",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "日本, 〒394-0022 長野県岡谷市銀座",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 36.0707362,
+                  "lng" : 138.056229
+               },
+               "southwest" : {
+                  "lat" : 36.0645146,
+                  "lng" : 138.0508432
+               }
+            },
+            "location" : {
+               "lat" : 36.0670144,
+               "lng" : 138.0524946
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 36.0707362,
+                  "lng" : 138.056229
+               },
+               "southwest" : {
+                  "lat" : 36.0645146,
+                  "lng" : 138.0508432
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "銀座",
+               "short_name" : "銀座",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "周南市",
+               "short_name" : "周南市",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "山口県",
+               "short_name" : "山口県",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "745-0032",
+               "short_name" : "745-0032",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "日本, 〒745-0032 山口県周南市銀座",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 34.0520838,
+                  "lng" : 131.8061918
+               },
+               "southwest" : {
+                  "lat" : 34.0494638,
+                  "lng" : 131.8035784
+               }
+            },
+            "location" : {
+               "lat" : 34.0507942,
+               "lng" : 131.805411
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 34.0521227802915,
+                  "lng" : 131.8062340802915
+               },
+               "southwest" : {
+                  "lat" : 34.0494248197085,
+                  "lng" : 131.8035361197085
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "銀座",
+               "short_name" : "銀座",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "戸畑区",
+               "short_name" : "戸畑区",
+               "types" : [ "ward", "locality", "political" ]
+            },
+            {
+               "long_name" : "北九州市",
+               "short_name" : "北九州市",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "福岡県",
+               "short_name" : "福岡県",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "804-0076",
+               "short_name" : "804-0076",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "日本, 〒804-0076 福岡県北九州市戸畑区銀座",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 33.9014223,
+                  "lng" : 130.8206622
+               },
+               "southwest" : {
+                  "lat" : 33.8959877,
+                  "lng" : 130.8155038
+               }
+            },
+            "location" : {
+               "lat" : 33.8983681,
+               "lng" : 130.8189646
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 33.9014223,
+                  "lng" : 130.8206622
+               },
+               "southwest" : {
+                  "lat" : 33.8959877,
+                  "lng" : 130.8155038
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "銀座",
+               "short_name" : "銀座",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "飯田市",
+               "short_name" : "飯田市",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "長野県",
+               "short_name" : "長野県",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "395-0031",
+               "short_name" : "395-0031",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "日本, 〒395-0031 長野県飯田市銀座",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 35.5161702,
+                  "lng" : 137.8280053
+               },
+               "southwest" : {
+                  "lat" : 35.51309639999999,
+                  "lng" : 137.8251763
+               }
+            },
+            "location" : {
+               "lat" : 35.5154611,
+               "lng" : 137.8270293
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 35.5161702,
+                  "lng" : 137.8280053
+               },
+               "southwest" : {
+                  "lat" : 35.51309639999999,
+                  "lng" : 137.8251763
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "銀座",
+               "short_name" : "銀座",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "刈谷市",
+               "short_name" : "刈谷市",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "愛知県",
+               "short_name" : "愛知県",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "448-0845",
+               "short_name" : "448-0845",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "日本, 〒448-0845 愛知県刈谷市銀座",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 34.9894744,
+                  "lng" : 136.994609
+               },
+               "southwest" : {
+                  "lat" : 34.9861042,
+                  "lng" : 136.9874277
+               }
+            },
+            "location" : {
+               "lat" : 34.9877857,
+               "lng" : 136.9911107
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 34.9894744,
+                  "lng" : 136.994609
+               },
+               "southwest" : {
+                  "lat" : 34.9861042,
+                  "lng" : 136.9874277
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "銀座",
+               "short_name" : "銀座",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "徳島市",
+               "short_name" : "徳島市",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "徳島県",
+               "short_name" : "徳島県",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "770-0916",
+               "short_name" : "770-0916",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "日本, 〒770-0916 徳島県徳島市銀座",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 34.068858,
+                  "lng" : 134.5503026
+               },
+               "southwest" : {
+                  "lat" : 34.0682192,
+                  "lng" : 134.5484733
+               }
+            },
+            "location" : {
+               "lat" : 34.0684897,
+               "lng" : 134.5493027
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 34.0698875802915,
+                  "lng" : 134.5507369302915
+               },
+               "southwest" : {
+                  "lat" : 34.0671896197085,
+                  "lng" : 134.5480389697085
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "銀座",
+               "short_name" : "銀座",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "鹿沼市",
+               "short_name" : "鹿沼市",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "栃木県",
+               "short_name" : "栃木県",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "322-0052",
+               "short_name" : "322-0052",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "日本, 〒322-0052 栃木県鹿沼市銀座",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 36.566704,
+                  "lng" : 139.7492457
+               },
+               "southwest" : {
+                  "lat" : 36.5647876,
+                  "lng" : 139.7469051
+               }
+            },
+            "location" : {
+               "lat" : 36.565683,
+               "lng" : 139.7485347
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 36.5670947802915,
+                  "lng" : 139.7494243802915
+               },
+               "southwest" : {
+                  "lat" : 36.5643968197085,
+                  "lng" : 139.7467264197085
+               }
+            }
+         },
+         "types" : [ "sublocality_level_1", "sublocality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "natural_feature", "establishment" ]
+            },
+            {
+               "long_name" : "ブエンガス",
+               "short_name" : "ブエンガス",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "ウイゲ",
+               "short_name" : "ウイゲ",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "アンゴラ",
+               "short_name" : "AO",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "Ginza, アンゴラ",
+         "geometry" : {
+            "location" : {
+               "lat" : -6.518888899999999,
+               "lng" : 15.8897222
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : -6.517539919708497,
+                  "lng" : 15.8910711802915
+               },
+               "southwest" : {
+                  "lat" : -6.520237880291502,
+                  "lng" : 15.8883732197085
+               }
+            }
+         },
+         "types" : [ "natural_feature", "establishment" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Ginza",
+               "short_name" : "Ginza",
+               "types" : [ "bus_station", "transit_station", "establishment" ]
+            },
+            {
+               "long_name" : "Essunga S",
+               "short_name" : "Essunga S",
+               "types" : [ "sublocality_level_1", "sublocality", "political" ]
+            },
+            {
+               "long_name" : "Nossebro",
+               "short_name" : "Nossebro",
+               "types" : [ "postal_town" ]
+            },
+            {
+               "long_name" : "Västra Götalands län",
+               "short_name" : "Västra Götalands län",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "スウェーデン",
+               "short_name" : "SE",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "46596",
+               "short_name" : "46596",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Ginza, 465 96 Nossebro, スウェーデン",
+         "geometry" : {
+            "location" : {
+               "lat" : 58.1290535,
+               "lng" : 12.7772262
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 58.1304024802915,
+                  "lng" : 12.7785751802915
+               },
+               "southwest" : {
+                  "lat" : 58.12770451970849,
+                  "lng" : 12.7758772197085
+               }
+            }
+         },
+         "types" : [ "bus_station", "transit_station", "establishment" ]
+      }
+   ],
+   "status" : "OK"
+}

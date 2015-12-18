@@ -1,0 +1,91 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "渋谷区",
+               "short_name" : "渋谷区",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "東京都",
+               "short_name" : "東京都",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "日本, 東京都渋谷区",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 35.6921406,
+                  "lng" : 139.7238945
+               },
+               "southwest" : {
+                  "lat" : 35.6415643,
+                  "lng" : 139.6613575
+               }
+            },
+            "location" : {
+               "lat" : 35.6640352,
+               "lng" : 139.6982122
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 35.6921406,
+                  "lng" : 139.7238945
+               },
+               "southwest" : {
+                  "lat" : 35.6415643,
+                  "lng" : 139.6613575
+               }
+            }
+         },
+         "types" : [ "locality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "渋谷駅",
+               "short_name" : "渋谷駅",
+               "types" : [ "train_station", "transit_station", "establishment" ]
+            },
+            {
+               "long_name" : "東京都",
+               "short_name" : "東京都",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "日本",
+               "short_name" : "JP",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "日本, 渋谷駅（東京）",
+         "geometry" : {
+            "location" : {
+               "lat" : 35.658517,
+               "lng" : 139.701334
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 35.65986598029149,
+                  "lng" : 139.7026829802915
+               },
+               "southwest" : {
+                  "lat" : 35.6571680197085,
+                  "lng" : 139.6999850197085
+               }
+            }
+         },
+         "types" : [ "train_station", "transit_station", "establishment" ]
+      }
+   ],
+   "status" : "OK"
+}

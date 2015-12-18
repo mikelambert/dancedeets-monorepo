@@ -4,14 +4,14 @@ import logging
 import unittest
 
 from loc import gmaps_api
-from loc import gmaps_local
+from loc import gmaps_stub
 from loc import formatting
 
 
 formatting_reg_data = {
     'Shibuya': 'Shibuya, Tokyo, Japan',
     u'渋谷': 'Shibuya, Tokyo, Japan',
-    'Ginza': 'Ginza, Chuo, Tokyo, Japan',
+    'Ginza': u'Ginza, Chūō, Tokyo, Japan',
     'Osaka': 'Osaka, Osaka Prefecture, Japan',
     'Nagoya': 'Nagoya, Aichi Prefecture, Japan',
     'Kowloon': 'Kowloon, Hong Kong',
@@ -33,21 +33,22 @@ formatting_reg_data = {
     'The Haight': 'Haight-Ashbury, San Francisco, CA, United States',
     'Europe': 'Europe',
     'Asia': 'Asia',
-    'Mexico City': 'Mexico City, DF, Mexico',
+    'Mexico City': 'Mexico City, D.F., Mexico',
     'Taipei, Taiwan 103': 'Taipei City, Taiwan',
     'Keelung, Taiwan 20241': 'Keelung City, Taiwan',
     'Taipei': 'Taipei, Taiwan',
-    'Tangerang': 'Tangerang, Banten, Republic of Indonesia',
+    'Tangerang': 'Tangerang, Banten, Indonesia',
 }
 
 
 class GmapsTestCase(unittest.TestCase):
     def setUp(self):
-        self.original_backend = gmaps_api.gmaps_backend
-        gmaps_api.gmaps_backend = gmaps_local
+        self.gmaps_stub = gmaps_stub.Stub()
+        self.gmaps_stub.activate()
+        self.testbed.init_memcache_stub()
 
     def tearDown(self):
-        gmaps_api.gmaps_backend = self.original_backend
+        self.gmaps_stub.deactivate()
 
 class TestLocationFormatting(GmapsTestCase):
     def runTest(self):
@@ -56,7 +57,7 @@ class TestLocationFormatting(GmapsTestCase):
             formatted_address = formatting.format_geocode(gmaps_api.get_geocode(address=address), include_neighborhood=True)
             if formatted_address != final_address:
                 logging.error('formatted address for %r is %r, should be %r', address, formatted_address, final_address)
-                logging.error('%s', gmaps_local.fetch_raw(address=address))
+                logging.error('%s', gmaps_stub.fetch_raw(address=address))
                 self.assertEqual(final_address, formatted_address)
 
 grouping_lists = [
@@ -64,16 +65,19 @@ grouping_lists = [
     (['Brooklyn', 'Williamsburg, Brooklyn'], ['Brooklyn', 'Williamsburg, Brooklyn']),
     (['SOMA, SF, CA', '6 5th Street, SF, CA'], ['South of Market', 'South of Market']),
     (['Bay Area', '6 5th Street, SF, CA'], ['San Francisco Bay Area, CA', 'South of Market, San Francisco, CA']),
-    (['Shibuya', 'Ginza'], ['Shibuya, Tokyo', 'Ginza, Chuo, Tokyo']),
-    (['Shibuya', 'Ginza', 'Osaka'], ['Shibuya, Tokyo', 'Ginza, Chuo, Tokyo', 'Osaka, Osaka Prefecture']),
+    (['Shibuya', 'Ginza'], ['Shibuya, Tokyo', u'Ginza, Chūō, Tokyo']),
+    (['Shibuya', 'Ginza', 'Osaka'], ['Shibuya, Tokyo', u'Ginza, Chūō, Tokyo', 'Osaka, Osaka Prefecture']),
     (['Nagoya', 'Sydney'], ['Nagoya, Aichi Prefecture, Japan', 'Sydney, NSW, Australia']),
 ]
 
 class TestMultiLocationFormatting(GmapsTestCase):
     def runTest(self):
         for addresses, reformatted_addresses in grouping_lists:
+            logging.info("Formatting addresses: %s", addresses)
+            logging.info("Intended reformatted addresses: %r", reformatted_addresses)
             geocodes = [gmaps_api.get_geocode(address=address) for address in addresses]
             reformatted_parts = formatting.format_geocodes(geocodes, include_neighborhood=True)
+            logging.info("Reformatted addresses: %r", reformatted_parts)
             self.assertEqual(reformatted_parts, reformatted_addresses)
 
 
