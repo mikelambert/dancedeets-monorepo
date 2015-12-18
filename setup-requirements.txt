@@ -1,0 +1,39 @@
+# While waiting for my fixes to land...
+# https://github.com/shazow/urllib3/pull/763 (and then again to requests)
+git+https://github.com/mikelambert/requests
+# https://github.com/sigmavirus24/requests-toolbelt/pull/119
+git+https://github.com/mikelambert/requests-toolbelt@feature/gae
+# https://github.com/flask-admin/flask-admin/pull/1147
+git+https://github.com/mikelambert/flask-admin
+
+# Because the published version has a bug with media uploads:
+git+https://github.com/sixohsix/twitter
+
+# Because the published version doesn't work with JsonProperty:
+# https://github.com/wtforms/wtforms-appengine/commit/841b76c15a2658c73c7e705fb810fe7c224b104b
+git+https://github.com/wtforms/wtforms-appengine
+
+# ScrapingHub API
+hubstorage
+
+# Date Manip
+dateparser
+ics
+
+iso3166
+oauth2
+twilio
+python-gcm
+python-gflags
+jinja2
+
+# WebApps
+Flask
+wtforms
+git+https://github.com/mikelambert/wtforms-appengine
+
+# Google
+GoogleAppEngineMapReduce
+GoogleAppEnginePipeline
+google-api-python-client
+gdata
