@@ -4,8 +4,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 from hacks import fixed_ndb
 from hacks import fixed_mapreduce_util
-from requests_toolbelt.adapters import appengine
-
+from requests_toolbelt.adapters import appengine as appengine_adapter
+from requests.packages.urllib3.contrib import appengine as appengine_manager
 fixed_mapreduce_util.patch_function()
 
 # Disabled for now
@@ -15,7 +15,8 @@ fixed_ndb.patch_logging(0)
 fixed_ndb.fix_rpc_ordering()
 
 # Make requests work with AppEngine's URLFetch
-appengine.monkeypatch()
+if appengine_manager.is_local_appengine():
+    appengine_adapter.monkeypatch()
 
 def webapp_add_wsgi_middleware(app):
     #from google.appengine.ext.ndb import tasklets
