@@ -73,6 +73,7 @@ def get_geocode(**kwargs):
     except GeocodeException as e:
         if e.status == 'INVALID_REQUEST':
             return None
+        raise
     if geocode:
         geocode.lookup_kwargs = kwargs
     return geocode
