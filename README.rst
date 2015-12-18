@@ -1,3 +1,17 @@
+.. image:: https://travis-ci.org/dancedeets/dancedeets.svg?branch=master
+   :target: https://travis-ci.org/dancedeets/dancedeets
+
+.. image:: https://coveralls.io/repos/dancedeets/dancedeets/badge.svg?branch=master&service=github
+   :target: https://coveralls.io/github/dancedeets/dancedeets?branch=master
+
+DanceDeets
+==========
+
+The magic behind http://www.dancedeets.com/.
+
+Setup
+-----
+
 First, download and install appengine libraries here:
 https://developers.google.com/appengine/downloads
 ...and open the AppEngine app at least once, to set up /usr/local/google_appengine.
