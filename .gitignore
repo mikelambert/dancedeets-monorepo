@@ -6,7 +6,7 @@ app-devserver.yaml
 
 # secret files
 keys.yaml
-facebook.yaml
+facebook-dev.yaml
 facebook-prod.yaml
 
 # temp files not for git
