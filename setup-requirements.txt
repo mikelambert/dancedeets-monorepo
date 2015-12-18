@@ -17,6 +17,9 @@ git+https://github.com/wtforms/wtforms-appengine
 hubstorage
 scrapy
 
+# MindBody
+suds
+
 # Date Manip
 dateparser
 icalendar
