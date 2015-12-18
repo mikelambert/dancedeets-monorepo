@@ -10,7 +10,7 @@ from search import search
 from users import users
 from users import user_creation
 
-def create_event(event_id='event_id', start_time=None, location='NYC'):
+def create_event(event_id='1000001', start_time=None, location='NYC'):
     if not start_time:
         start_time = datetime.datetime.now()
     fields_str = '%2C'.join(fb_api.OBJ_EVENT_FIELDS)

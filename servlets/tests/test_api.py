@@ -8,6 +8,7 @@ import fb_api
 from loc import gmaps_stub
 import main
 from test_utils import fb_api_stub
+from test_utils import fixtures
 from users import users
 
 app = TestApp(main.application)
@@ -21,6 +22,7 @@ class TestSearch(unittest.TestCase):
         self.gmaps_stub.activate()
         self.testbed.init_memcache_stub()
         self.testbed.init_datastore_v3_stub()
+        self.testbed.init_search_stub()
         self.testbed.init_taskqueue_stub(root_path='.')
         #TODO(lambert): move this into some testbed wrapper code, or port upstream
         # This is a bug in the code versions between appengine and its libraries:
@@ -33,6 +35,11 @@ class TestSearch(unittest.TestCase):
         self.fb_api.deactivate()
         self.gmaps_stub.deactivate()
 
+class TestEvent(TestSearch):
+    def runTest(self):
+        event = fixtures.create_event()
+        result = app.get('/api/v1.0/events/%s' % event.fb_event_id)
+        self.assertEqual(result.json['id'], event.fb_event_id)
 
 class TestAuth(TestSearch):
     def runTest(self):
