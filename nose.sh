@@ -29,7 +29,8 @@ cat app.yaml | sed 's/runtime: vm/runtime: python27/' > app-nose.yaml
 if [ -d lib ]; then
 	rm -rf lib/tests # this is pulled in via twilio, and messes with our excludes
 	MODULES=$(find lib -maxdepth 1 | grep -v info | cut -f2- -d/ | sed 's/\.py//' | paste -s -d "|" -)
+	EXCLUDE=--exclude="$MODULES"
 else
-	MODULES=""
+	EXCLUDE=""
 fi
-PYTHONPATH=lib $COVERAGE_PREFIX `which nosetests` --with-gae --gae-application=app-nose.yaml --exclude="$MODULES" ${NOSE_ARGS[@]}
+PYTHONPATH=lib $COVERAGE_PREFIX `which nosetests` --with-gae --gae-application=app-nose.yaml $EXCLUDE ${NOSE_ARGS[@]}
