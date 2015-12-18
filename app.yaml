@@ -42,8 +42,9 @@ handlers:
 - url: /_ah/queue/deferred
   script: google.appengine.ext.deferred.application
   login: admin
-- url: /_ah/stats.*
-  script: google.appengine.ext.appstats.ui.app
+# Disable appstats since it may be resulting in NDB OOM issues
+#- url: /_ah/stats.*
+#  script: google.appengine.ext.appstats.ui.app
 - url: /_ah/remote_api(/.*)?
   script: google.appengine.ext.remote_api.handler.application
 - url: /dancedeets.png
