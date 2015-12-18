@@ -161,6 +161,7 @@ class LookupUserEvents(LookupType):
             # when we want to hit v2.1 or v2.2 (v2.0 works though).
             # Will require downstream changes on eid-vs-id.
             ('all_event_info', cls.fql_url(ALL_EVENTS_FQL % (object_id, today))),
+            ('events', cls.url('%s/events' % object_id)),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
