@@ -41,6 +41,6 @@ class TestSearch(BaseTestSearch):
         fbl.get(fb_api.LookupUser, user.fb_uid)
 
         message = email_events.email_for_user(user, fbl, should_send=False)
-        self.assertIn('http://www.dancedeets.com/events/event_id/', message.html)
+        self.assertIn('http://www.dancedeets.com/events/%s/' % event.fb_event_id, message.html)
         self.assertTrue(message, "Emailer did not email the user")
         
