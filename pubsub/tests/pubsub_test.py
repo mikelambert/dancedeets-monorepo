@@ -35,9 +35,9 @@ class TestPublishEvent(unittest.TestCase):
         self.fb_api.deactivate()
         gmaps_fake.deactivate()
 
+    @mock.patch('keys.get')
     @mock.patch('oauth2.Client.request')
     @mock.patch('twitter.Twitter')
-    @mock.patch('keys.get')
     def testPull(self, Twitter, Client_request, keys_get):
         keys_get.return_value = 'dummy_key'
 
