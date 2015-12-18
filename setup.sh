@@ -13,6 +13,6 @@ sudo python $TMP_DIR/get-pip.py
 
 # For testing, just install them locally. Depends on pip being installed.
 # Install jinja2 library directly, so nlp/ libraries can be used directly
-sudo pip install nosegae nose webtest jinja2 --upgrade --ignore-installed six --user
+pip install --upgrade --user -r $BASE_DIR/test-requirements.txt
 
 pip install --upgrade -t $BASE_DIR/lib -r $BASE_DIR/setup-requirements.txt

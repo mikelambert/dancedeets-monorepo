@@ -1,0 +1,5 @@
+coverage
+nosegae
+nose
+webtest
+jinja2

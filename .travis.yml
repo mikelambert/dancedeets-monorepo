@@ -3,6 +3,7 @@ python:
   - 2.7
 
 install:
+  - "pip install -r test-requirements.txt"
   - "pip install -r setup-requirements.txt"
   # Download the latest version of the GAE Python SDK
   - "wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.30.zip -nv -O downloaded_appengine.zip"
