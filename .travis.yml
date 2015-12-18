@@ -13,7 +13,7 @@ install:
   - "rm -rf google_appengine/lib/fancy_urllib/__init__.py"
 
 # command to run tests
-script: "coverage run --source=wtforms_appengine ./nose.sh --gae-lib-root=google_appengine"
+script: "./nose.sh --coverage --gae-lib-root=google_appengine"
 
 after_success:
   - pip install coveralls
