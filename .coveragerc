@@ -1,0 +1,4 @@
+[run]
+source = .
+omit = google_appengine
+
