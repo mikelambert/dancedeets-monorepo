@@ -1,4 +1,5 @@
 import json
+import logging
 import sys
 
 from . import gmaps_api
@@ -8,7 +9,9 @@ gmaps_backend = None
 LOCATION_EXPIRY = 24 * 60 * 60
 
 def _get_object(string_key):
-    return json.loads(open('test_data/GMaps/%s' % string_key).read())
+    filename = 'test_data/GMaps/%s' % string_key
+    logging.info('Attempting to load file: %s', filename)
+    return json.loads(open(filename).read())
 
 def _save_object(string_key, json_data):
     return open('test_data/GMaps/%s' % string_key, 'w').write(json.dumps(json_data))
