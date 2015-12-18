@@ -1,6 +1,6 @@
 [run]
-source = .
+include = */dancedeets*
 omit =
     google_appengine/*
     lib/*
-
+    */tests/*
