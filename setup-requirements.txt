@@ -15,6 +15,7 @@ git+https://github.com/wtforms/wtforms-appengine
 
 # ScrapingHub API
 hubstorage
+scrapy
 
 # Date Manip
 dateparser
