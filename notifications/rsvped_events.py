@@ -1,13 +1,13 @@
 import datetime
+from dateutil import parser
 import logging
 import urllib
-
-from dateutil import parser
 
 from google.appengine.api import taskqueue
 
 import app
 import base_servlet
+import fb_api
 from events import eventdata
 from users import users
 from . import android
@@ -54,8 +54,22 @@ def setup_reminders(fb_uid, fb_user_events):
                     user_id=fb_uid,
                     event_id=event.fb_event_id)),
             )
-        except (taskqueue.TaskAlreadyExistsError, taskqueue.TombstonedTaskError) as e:
+        except (taskqueue.TaskAlreadyExistsError, taskqueue.TombstonedTaskError):
             pass
+
+def _is_attending(user, event_id):
+    fbl = user.get_fblookup()
+    # For now, for simplicity, and because it's fast enough,
+    # just load the user's entire events here via /user_id/events .
+    # Instead of the targeted query via /event_id/attending/user_id .
+    user_events = fbl.get(fb_api.LookupUserEvents, user.fb_uid, allow_cache=False)
+    found_events = [x for x in user_events['events']['data'] if x['id'] == event_id]
+    if not found_events:
+        return False
+    found_event = found_events[0]
+    if found_event['rsvp_status'] != 'attending':
+        return False
+    return True
 
 @app.route('/tasks/notify_user')
 class NotifyUserHandler(base_servlet.BaseTaskRequestHandler):
@@ -71,6 +85,12 @@ def notify_user(user_id, event_id):
     if not user:
         logging.error("No user found: %s", user_id)
         return
+
+    # Only send notifications if the user has RSVP-ed as attending:
+    if not _is_attending(user, event_id):
+        logging.info("User not attending event, aborting.")
+        return
+
     event = eventdata.DBEvent.get_by_id(event_id)
     if not event:
         logging.error("No event found: %s", event_id)
