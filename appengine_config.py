@@ -19,17 +19,16 @@ if appengine_manager.is_local_appengine():
     appengine_adapter.monkeypatch()
 
 def webapp_add_wsgi_middleware(app):
-    #from google.appengine.ext.ndb import tasklets
-    from google.appengine.ext.appstats import recording
-
-    app = recording.appstats_wsgi_middleware(app)
+    # Disable appstats since it may be resulting in NDB OOM issues
+    #from google.appengine.ext.appstats import recording
+    #app = recording.appstats_wsgi_middleware(app)
 
     # Clean up per-thread NDB memory "leaks", though don't try to finish all RPCs calls (which includes runaway iterators)
     app = fixed_ndb.tasklets_toplevel(app)
 
     # Should only use this in cases of serialized execution of requests in a multi-threaded processes.
     # So setdeploy manually, and test from there. Never a live server, as it would be both broken *and* slow.
-    # from hacks import memory_leaks
+    #from hacks import memory_leaks
     #app = memory_leaks.leak_middleware(app)
 
     return app
