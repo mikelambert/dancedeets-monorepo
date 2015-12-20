@@ -1,3 +1,5 @@
+import datetime
+from dateutil import parser
 import logging
 
 import gcm
@@ -5,20 +7,33 @@ import gcm
 import keys
 from util import urls
 
+def _get_duration_seconds(event):
+    start_time = parser.parse(event.fb_event['info'].get('start_time'))
+    if 'end_time' in event.fb_event['info']:
+        end_notify_window = parser.parse(event.fb_event['info'].get('end_time'))
+    else:
+        end_notify_window = start_time
+    now = datetime.datetime.now(start_time.tzinfo)
+    duration = (end_notify_window - now)
+    max_duration = 4 * 7 * 24 * 60 * 60 # 4 weeks
+    duration_seconds = duration.seconds + duration.days * 24 * 60 * 60
+    duration_seconds = min(duration_seconds, max_duration)
+    return duration_seconds
+
 def notify(user, event, title, text):
     # TODO: We don't want to send raw URLs, or it pops open a "open with" dialog. Pass in a custom schema instead!
     url = urls.fb_event_url(event.fb_event_id)
 
     g = gcm.GCM(keys.get('google_server_key'), debug=True)
     tokens = user.device_tokens('android')
-    duration = 60*70 # 70 minutes
-    # or maybe better, end-datetime.datetime.now()?
+
+    duration_seconds = _get_duration_seconds(event)
     data = {
         'title': title,
         'text': text,
         'url': url,
         'delay_while_idle': 0,
-        'time_to_live': duration,
+        'time_to_live': duration_seconds,
     }
     # TODO: what happens if we send multiple notifications. last-one wins? Can we do a better job of prioritizing and aggregating these?
     response = g.json_request(registration_ids=tokens, data=data)
