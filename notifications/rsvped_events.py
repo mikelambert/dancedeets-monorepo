@@ -54,7 +54,7 @@ def setup_reminders(fb_uid, fb_user_events):
                     user_id=fb_uid,
                     event_id=event.fb_event_id)),
             )
-        except taskqueue.TaskAlreadyExistsError:
+        except (taskqueue.TaskAlreadyExistsError, taskqueue.TombstonedTaskError) as e:
             pass
 
 @app.route('/tasks/notify_user')
