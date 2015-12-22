@@ -4,7 +4,6 @@ import logging
 
 import gcm
 
-from events import eventdata
 import keys
 from util import urls
 
