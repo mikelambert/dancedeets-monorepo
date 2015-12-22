@@ -4,8 +4,11 @@ import logging
 
 import gcm
 
+from events import eventdata
 import keys
 from util import urls
+
+EVENT_REMINDER = 'EVENT_REMINDER'
 
 def _get_duration_seconds(event):
     start_time = parser.parse(event.fb_event['info'].get('start_time'))
@@ -28,11 +31,18 @@ def notify(user, event, title, text):
     tokens = user.device_tokens('android')
 
     duration_seconds = _get_duration_seconds(event)
+    # for image stuff, we want to set subtext as required (with text optional)
+    # for regular styles, both are optional (and we probably want text)
     data = {
-        'title': title,
-        'text': text,
-        'url': url,
+        'notification_type': EVENT_REMINDER,
+
+        # Important data for clientside lookups
+        'event_id': event.fb_event_id,
+
+        # Deliver the message immediately
         'delay_while_idle': 0,
+        # Keep trying to deliver it, as long as the event is scheduled
+        # If the phone doesn't come online until after the event is completed, ignore it.
         'time_to_live': duration_seconds,
     }
     # TODO: what happens if we send multiple notifications. last-one wins? Can we do a better job of prioritizing and aggregating these?
