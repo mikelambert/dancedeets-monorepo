@@ -77,10 +77,8 @@ class NotifyUserHandler(base_servlet.BaseTaskRequestHandler):
         notify_user(self.request.get('user_id'), self.request.get('event_id'))
 
 def notify_user(user_id, event_id):
-    logging.info("Sending notifications to user %s about event %s", user_id, event_id)
+    logging.info("Notifying user %s about event %s", user_id, event_id)
     # Only send notifications for Mike for now
-    if user_id != '701004':
-        return
     user = users.User.get_by_id(user_id)
     if not user:
         logging.error("No user found: %s", user_id)
@@ -99,5 +97,7 @@ def notify_user(user_id, event_id):
     event_time = event.start_time.strftime('%H:%M')
     text = '%s: %s' % (event_time, event_name)
     title = 'Upcoming Event!'
-    android.notify(user, event, title, text)
+    if android.notify(user, event, title, text):
+        logging.info("Sent notification!")
+
     # TODO: iphone_notify!

@@ -8,6 +8,8 @@ import keys
 from util import urls
 
 EVENT_REMINDER = 'EVENT_REMINDER'
+#TODO: start sending out these notifications too
+EVENT_ADDED = 'EVENT_ADDED'
 
 def _get_duration_seconds(event):
     start_time = parser.parse(event.fb_event['info'].get('start_time'))
@@ -28,6 +30,8 @@ def notify(user, event, title, text):
 
     g = gcm.GCM(keys.get('google_server_key'), debug=True)
     tokens = user.device_tokens('android')
+    if not tokens:
+        return
 
     duration_seconds = _get_duration_seconds(event)
     # for image stuff, we want to set subtext as required (with text optional)
