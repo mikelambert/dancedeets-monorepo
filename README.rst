@@ -1,8 +1,8 @@
-.. image:: https://travis-ci.org/dancedeets/dancedeets.svg?branch=master
-   :target: https://travis-ci.org/dancedeets/dancedeets
+.. image:: https://travis-ci.org/mikelambert/dancedeets.svg?branch=master
+   :target: https://travis-ci.org/mikelambert/dancedeets
 
-.. image:: https://coveralls.io/repos/dancedeets/dancedeets/badge.svg?branch=master&service=github
-   :target: https://coveralls.io/github/dancedeets/dancedeets?branch=master
+.. image:: https://coveralls.io/repos/mikelambert/dancedeets/badge.svg?branch=master&service=github
+   :target: https://coveralls.io/github/mikelambert/dancedeets?branch=master
 
 DanceDeets
 ==========
