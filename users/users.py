@@ -137,7 +137,7 @@ class User(ndb.Model):
     def device_tokens(self, platform):
         if platform not in ['ios', 'android']:
             raise ValueError('invalid platform: %r' % platform)
-        device_tokens = self.json_data.setdefault('%s_device_token' % platform, [])
+        device_tokens = (self.json_data or {}).setdefault('%s_device_token' % platform, [])
         return device_tokens
 
 class UserFriendsAtSignup(ndb.Model):
