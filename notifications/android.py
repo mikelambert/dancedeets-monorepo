@@ -31,6 +31,7 @@ def notify(user, event, title, text):
     g = gcm.GCM(keys.get('google_server_key'), debug=True)
     tokens = user.device_tokens('android')
     if not tokens:
+        logging.info("No android GCM tokens.")
         return
 
     duration_seconds = _get_duration_seconds(event)
