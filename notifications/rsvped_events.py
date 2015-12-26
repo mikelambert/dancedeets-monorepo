@@ -84,6 +84,9 @@ def notify_user(user_id, event_id):
     if not user:
         logging.error("No user found: %s", user_id)
         return
+    if user.expired_oauth_token:
+        logging.info("User has expired token, aborting: %s", user_id)
+        return
 
     # Only send notifications if the user has RSVP-ed as attending:
     if not _is_attending(user, event_id):
