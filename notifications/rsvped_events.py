@@ -13,14 +13,15 @@ from users import users
 from . import android
 
 def setup_reminders(fb_uid, fb_user_events):
-    results_json = fb_user_events['all_event_info']['data']
-    #STR_ID_MIGRATE: We still get ids as ints from our FQL
-    event_ids = [str(x['eid']) for x in sorted(results_json, key=lambda x: x.get('start_time'))]
-
-    existing_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
+    event_results_json = fb_user_events['events']['data']
+    event_ids = [x['id'] for x in event_results_json]
+    existing_events = [x.string_id() for x in eventdata.DBEvent.get_by_ids(event_ids, keys_only=True) if x]
     logging.info("For user %s's %s events, %s are real dance events", fb_uid, len(event_ids), len(existing_events))
-    for event in existing_events:
-        start_time = parser.parse(event.fb_event['info'].get('start_time'))
+    for event in event_results_json:
+        if event['id'] not in existing_events:
+            continue
+        logging.info("%s is dance event, checking dates..", event['id'])
+        start_time = parser.parse(event['start_time'])
         # Otherwise it's at a specific time (we need the time with the timezone info included)
         # Also try to get it ten minutes before the Facebook event comes in, so that we aren't seen as the "dupe".
         start_notify_window = start_time - datetime.timedelta(hours=1, minutes=10)
@@ -32,8 +33,8 @@ def setup_reminders(fb_uid, fb_user_events):
         now = datetime.datetime.now(start_time.tzinfo)
         future_cutoff = now + datetime.timedelta(days=1)
 
-        if 'end_time' in event.fb_event['info']:
-            end_notify_window = parser.parse(event.fb_event['info'].get('end_time'))
+        if 'end_time' in event:
+            end_notify_window = parser.parse(event['end_time'])
         else:
             end_notify_window = start_time
 
@@ -43,16 +44,16 @@ def setup_reminders(fb_uid, fb_user_events):
         # And ignore events that are too far in the future to care about yet
         if start_notify_window > future_cutoff:
             continue
-        logging.info("For event %s, sending notifications at %s", event.fb_event_id, start_notify_window)
+        logging.info("For event %s, sending notifications at %s", event['id'], start_notify_window)
         try:
             taskqueue.add(
                 method='GET',
-                name='notify_user-%s-%s' % (fb_uid, event.fb_event_id),
+                name='notify_user-%s-%s' % (fb_uid, event['id']),
                 queue_name='mobile-notify-queue',
                 eta=start_notify_window,
                 url='/tasks/notify_user?'+urllib.urlencode(dict(
                     user_id=fb_uid,
-                    event_id=event.fb_event_id)),
+                    event_id=event['id'])),
             )
         except (taskqueue.TaskAlreadyExistsError, taskqueue.TombstonedTaskError):
             pass
