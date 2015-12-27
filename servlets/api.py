@@ -82,7 +82,7 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
             super(ApiHandler, self).dispatch()
         except Exception as e:
             logging.error(traceback.format_exc())
-            self.write_json_error({'success': False, 'errors': [str(x) for x in e.args[0]]})
+            self.write_json_error({'success': False, 'errors': [unicode(x) for x in e.args[0]]})
 
 def apiroute(path, *args, **kwargs):
     return app.route('/api/v(\d+)\.(\d+)' + path, *args, **kwargs)

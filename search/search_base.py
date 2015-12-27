@@ -37,7 +37,7 @@ def valid_query(form, field):
     try:
         search.search._CheckQuery(field.data)
     except search.QueryError as e:
-        raise wtforms.ValidationError(str(e))
+        raise wtforms.ValidationError(unicode(e))
 
 def geocodable_location(form, field):
     if field.data:
