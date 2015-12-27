@@ -34,8 +34,9 @@ def no_wiki_or_html(form, field):
         raise wtforms.ValidationError('Cannot search with html markup')
 
 def valid_query(form, field):
+    keywords = _get_parsed_keywords(field.data)
     try:
-        search.search._CheckQuery(field.data)
+        search.search._CheckQuery(keywords)
     except search.QueryError as e:
         raise wtforms.ValidationError(unicode(e))
 
@@ -44,6 +45,14 @@ def geocodable_location(form, field):
         geocode = gmaps_api.get_geocode(address=field.data)
         if not geocode:
             raise wtforms.ValidationError("Did not understand location: %s" % field.data)
+
+def _get_parsed_keywords(keywords):
+    cleaned_keywords = re.sub(r'[<=>:(),]', ' ', keywords).replace(' - ',' ')
+    unquoted_quoted_keywords = cleaned_keywords.split('"')
+    for i in range(0, len(unquoted_quoted_keywords), 2):
+        unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
+    reconstructed_keywords = '"'.join(unquoted_quoted_keywords).strip()
+    return reconstructed_keywords
 
 class SearchException(Exception):
     pass
@@ -108,17 +117,9 @@ class SearchForm(wtforms.Form):
             bounds = None
         return bounds
 
-    def get_parsed_keywords(self):
-        keywords = self.keywords.data
-        unquoted_quoted_keywords = re.sub(r'[<=>:(),]', ' ', keywords).split('"')
-        for i in range(0, len(unquoted_quoted_keywords), 2):
-            unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
-        reconstructed_keywords = '"'.join(unquoted_quoted_keywords).strip()
-        return reconstructed_keywords
-
     def build_query(self, start_end_query=False):
         bounds = self.get_bounds()
-        keywords = self.get_parsed_keywords()
+        keywords = _get_parsed_keywords(self.keywords.data)
         common_fields = dict(bounds=bounds, min_attendees=self.min_attendees.data, keywords=keywords)
         if start_end_query:
             query = SearchQuery(start_date=self.start.data, end_date=self.end.data, **common_fields)
