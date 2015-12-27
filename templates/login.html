@@ -48,7 +48,7 @@ DanceDeets
 {% if mobile_platform != mobile.MOBILE_IOS and mobile_platform != mobile.MOBILE_ANDROID %}
 <div class="install-div">
 Or enter your phone number to get an install link:
-<form class="form-inline" method="post" action="/mobile_apps">
+<form class="form-inline" method="post" action="/mobile_apps" accept-charset="UTF-8">
 <input type="hidden" name="action" value="send_sms" />
 <div class="form-group">
 <select name="prefix" class="form-control" style="width:100px; display:inline-block">

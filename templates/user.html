@@ -5,7 +5,7 @@ Settings
 {% endblock %}
 
 {% block inner_body %}
-<form action="/user/edit" method="post">
+<form action="/user/edit" method="post" accept-charset="UTF-8">
 <p>
 <p>Events near <input id="location_input" name=location value="{{ defaults.location or '' }}">
 {# distance is defaults.distance #}
