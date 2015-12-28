@@ -53,6 +53,9 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
             #STR_ID_MIGRATE
             source_id = str(source_id)
             s = thing_db.Source.get_by_key_name(source_id)
+            if not s:
+                logging.warning("Couldn't find source %s when updating event %s", source_id, fb_event.fb_event_id)
+                continue
             #TODO(lambert): doesn't handle the case of the match score increasing from <0 to >0 in the future
             if not classified_event.is_dance_event():
                 s.num_false_negatives = (s.num_false_negatives or 0) + 1
