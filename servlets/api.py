@@ -82,7 +82,11 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
             super(ApiHandler, self).dispatch()
         except Exception as e:
             logging.error(traceback.format_exc())
-            self.write_json_error({'success': False, 'errors': [unicode(x) for x in e.args[0]]})
+            result = e.args[0]
+            # If it's a string or a regular object
+            if not hasattr(result, '__iter__'):
+                result = [result]
+            self.write_json_error({'success': False, 'errors': [unicode(x) for x in result]})
 
 def apiroute(path, *args, **kwargs):
     return app.route('/api/v(\d+)\.(\d+)' + path, *args, **kwargs)
@@ -168,13 +172,25 @@ class SearchHandler(ApiHandler):
 
         self.errors_are_fatal()
 
-        search_query = form.build_query()
+        search_results = []
+        distances = [50, 100, 200, 400, 1000, 2000, 5000, 25000]
+        distance_index = 0
+        while not search_results:
+            form.distance.data = distances[distance_index]
+            form.distance_units.data = 'miles'
+            search_query = form.build_query()
+            searcher = search.Search(search_query)
+            # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
+            searcher.limit = 500
+            search_results = searcher.get_search_results(full_event=True)
 
-        searcher = search.Search(search_query)
-        # TODO(lambert): Increase the size limit when our clients can handle it. And improve our result sorting to return the 'best' results.
-        searcher.limit = 500
-        search_results = searcher.get_search_results(full_event=True)
+            # Increase our search distance in the hopes of finding something
+            distance_index += 1
+            if distance_index == len(distances):
+                # If we searched the world, then break
+                break
 
+        logging.info("Found %r events within %s %s of %s", form.keywords.data form.distance.data, form.distance_units.data, form.location.data)
         onebox_links = onebox.get_links_for_query(search_query)
 
         json_results = []
