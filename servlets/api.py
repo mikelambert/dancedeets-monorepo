@@ -190,7 +190,7 @@ class SearchHandler(ApiHandler):
                 # If we searched the world, then break
                 break
 
-        logging.info("Found %r events within %s %s of %s", form.keywords.data form.distance.data, form.distance_units.data, form.location.data)
+        logging.info("Found %r events within %s %s of %s", form.keywords.data, form.distance.data, form.distance_units.data, form.location.data)
         onebox_links = onebox.get_links_for_query(search_query)
 
         json_results = []
