@@ -103,8 +103,8 @@ class BaseIndex(object):
             doc_ids_to_delete.update(new_ids_to_delete)
             logging.info("Looking at %s doc_id candidates for deletion, will delete %s entries.", len(doc_ids), len(new_ids_to_delete))
             start_id = doc_ids[-1]
-        if len(doc_ids_to_delete) and len(doc_ids_to_delete) < len(object_ids) / 30:
-            logging.critical("Deleting %s docs, more than 10%% of total %s docs", len(doc_ids_to_delete), len(object_ids))
+        if len(doc_ids_to_delete) and len(doc_ids_to_delete) > len(object_ids) / 30:
+            logging.critical("Deleting %s docs, more than 30%% of total %s docs", len(doc_ids_to_delete), len(object_ids))
             return
         logging.info("Deleting %s docs", len(doc_ids_to_delete))
         doc_ids_to_delete = list(doc_ids_to_delete)
