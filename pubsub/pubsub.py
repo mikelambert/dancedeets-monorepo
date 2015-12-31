@@ -53,7 +53,7 @@ def eventually_publish_event(event_id, token_nickname=None):
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
         logging.info("Evaluating token %s", token)
-        if event_country not in token.country_filters:
+        if token.country_filters and event_country not in token.country_filters:
             continue
         logging.info("Adding task for posting!")
         # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
