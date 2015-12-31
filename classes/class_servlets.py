@@ -108,7 +108,7 @@ class ClassReIndexHandler(JsonDataHandler):
             if not cls.latitude:
                 cls.key.delete()
 
-        class_index.StudioClassIndex.rebuild_from_query()
+        class_index.StudioClassIndex.rebuild_from_query(force=True)
         self.response.status = 200
     get=post
 

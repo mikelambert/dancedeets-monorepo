@@ -75,7 +75,7 @@ class BaseIndex(object):
         doc_index.delete(object_ids)
 
     @classmethod
-    def rebuild_from_query(cls):
+    def rebuild_from_query(cls, force=False):
         logging.info("Loading Index")
         if cls._is_ndb():
             db_query = cls.obj_type.query(*cls._get_query_params_for_indexing())
@@ -103,8 +103,9 @@ class BaseIndex(object):
             doc_ids_to_delete.update(new_ids_to_delete)
             logging.info("Looking at %s doc_id candidates for deletion, will delete %s entries.", len(doc_ids), len(new_ids_to_delete))
             start_id = doc_ids[-1]
-        if len(doc_ids_to_delete) and len(doc_ids_to_delete) > len(object_ids) / 30:
-            logging.critical("Deleting %s docs, more than 30%% of total %s docs", len(doc_ids_to_delete), len(object_ids))
+        threshold = 0.20
+        if not force and len(doc_ids_to_delete) and len(doc_ids_to_delete) > len(object_ids) * threshold:
+            logging.critical("Deleting %s docs, more than %d%% of total %s docs", len(doc_ids_to_delete), threshold*100, len(object_ids))
             return
         logging.info("Deleting %s docs", len(doc_ids_to_delete))
         doc_ids_to_delete = list(doc_ids_to_delete)
