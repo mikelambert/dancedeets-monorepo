@@ -8,7 +8,8 @@ from util import urls
 REGION_RADIUS = 200 # kilometers
 
 def get_event_image_url(fb_event):
-    picture_url = fb_event.get('fql_info')
+    # old school data
+    picture_url = fb_event.get('fql_info') or fb_event.get('picture_urls')
     # TODO(FB2.0): cleanup!
     if fb_event.get('picture'):
         if isinstance(fb_event['picture'], basestring):
