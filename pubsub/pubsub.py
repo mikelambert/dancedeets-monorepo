@@ -53,9 +53,8 @@ def eventually_publish_event(event_id, token_nickname=None):
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
         logging.info("Evaluating token %s", token)
-        if token.country_filter:
-            if event_country != token.country_filter:
-                continue
+        if event_country not in token.country_filters:
+            continue
         logging.info("Adding task for posting!")
         # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
         name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id, int(time.time()))
@@ -72,7 +71,7 @@ def pull_and_publish_event():
     ).fetch(100)
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
-        logging.info("Posting to OAuthToken: %s", token)
+        logging.info("Can post to OAuthToken: %s", token)
         tasks = q.lease_tasks_by_tag(120, 1, token.queue_id())
         logging.info("Fetching %d tasks with queue id %s", len(tasks), token.queue_id())
         if tasks:
@@ -332,15 +331,19 @@ class OAuthToken(ndb.Model):
     time_between_posts = ndb.IntegerProperty() # In seconds!
     next_post_time = ndb.DateTimeProperty()
 
-    # TODO(lambert): Fix this temp hack by implementing proper list-of-filters in json
-    # For the moment, use a two-character country code here.
-    country_filter = ndb.StringProperty()
+    json_data = ndb.JsonProperty()
 
     #search criteria? location? radius? search terms?
     #post on event find? post x hours before event? multiple values?
 
     def queue_id(self):
         return str(self.key.id())
+
+    @property
+    def country_filters(self):
+        if self.json_data is None:
+            self.json_data = {}
+        return self.json_data.setdefault('country_filters', [])
 
 
 def twitter_oauth1(user_id, token_nickname, country_filter):
@@ -368,7 +371,7 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
     auth_token.temp_oauth_token = request_token['oauth_token']
     auth_token.temp_oauth_token_secret = request_token['oauth_token_secret']
     if country_filter:
-        auth_token.country_filter = country_filter.upper()
+        auth_token.country_filters += country_filter.upper()
     auth_token.put()
 
     # Step 2: Redirect to the provider. Since this is a CLI script we do not 
@@ -440,7 +443,7 @@ def facebook_auth(fbl, page_uid, country_filter):
     auth_token.oauth_token = page_token
     auth_token.time_between_posts = 5*60
     if country_filter:
-        auth_token.country_filter = country_filter.upper()
+        auth_token.country_filters += country_filter.upper()
     auth_token.put()
     return auth_token
 
