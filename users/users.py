@@ -56,7 +56,7 @@ class User(ndb.Model):
     last_name = ndb.StringProperty(indexed=False)
     email = ndb.StringProperty(indexed=False)
     locale = ndb.StringProperty(indexed=False)
-    timezone_offset = ndb.FloatProperty(indexed=False)
+    timezone_offset = ndb.FloatProperty()
 
     weekly_email_send_date = ndb.DateTimeProperty(indexed=False)
 

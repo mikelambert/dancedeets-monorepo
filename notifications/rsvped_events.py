@@ -57,7 +57,7 @@ def setup_reminders(fb_uid, fb_user_events):
                 name='notify_user-%s-%s' % (fb_uid, event['id']),
                 queue_name='mobile-notify-queue',
                 eta=start_notify_window,
-                url='/tasks/notify_user?'+urllib.urlencode(dict(
+                url='/tasks/remind_user?'+urllib.urlencode(dict(
                     user_id=fb_uid,
                     event_id=event['id'])),
             )
@@ -78,12 +78,14 @@ def _is_attending(user, event_id):
         return False
     return True
 
+#TODO: Delete old space eventually
 @app.route('/tasks/notify_user')
-class NotifyUserHandler(base_servlet.BaseTaskRequestHandler):
+@app.route('/tasks/remind_user')
+class RemindUserHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
-        notify_user(self.request.get('user_id'), self.request.get('event_id'))
+        remind_user(self.request.get('user_id'), self.request.get('event_id'))
 
-def notify_user(user_id, event_id):
+def remind_user(user_id, event_id):
     logging.info("Notifying user %s about event %s", user_id, event_id)
     # Only send notifications for Mike for now
     user = users.User.get_by_id(user_id)

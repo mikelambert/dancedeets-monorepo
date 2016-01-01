@@ -266,6 +266,7 @@ class EventsIndex(index.BaseIndex):
                 search.NumberField(name='longitude', value=db_event.longitude),
                 search.TextField(name='categories', value=' '.join(db_event.auto_categories)),
                 search.TextField(name='country', value=db_event.country),
+                search.DateField(name='creation_time', value=db_event.creation_time),
             ],
             #language=XX, # We have no good language detection
             rank=int(time.mktime(db_event.start_time.timetuple())),
