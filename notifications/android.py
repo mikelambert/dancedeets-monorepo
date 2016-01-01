@@ -8,8 +8,9 @@ import keys
 from util import urls
 
 EVENT_REMINDER = 'EVENT_REMINDER'
-#TODO: start sending out these notifications too
 EVENT_ADDED = 'EVENT_ADDED'
+
+gcm.GCM.enable_logging()
 
 def _get_duration_seconds(event):
     start_time = parser.parse(event.fb_event['info'].get('start_time'))
@@ -31,6 +32,7 @@ def rsvp_notify(user, event):
 
         # Deliver the message immediately
         'delay_while_idle': 0,
+
         # Keep trying to deliver it, as long as the event is scheduled
         # If the phone doesn't come online until after the event is completed, ignore it.
         'time_to_live': duration_seconds,
@@ -47,7 +49,9 @@ def real_notify(user, event_id, extra_data):
     # TODO: We don't want to send raw URLs, or it pops open a "open with" dialog. Pass in a custom schema instead!
     url = urls.fb_event_url(event_id)
 
-    g = gcm.GCM(keys.get('google_server_key'), debug=True)
+    # We don't pass debug=True, because gcm.py library keeps adding more loggers ad-infinitum.
+    # Instead we call GCM.enable_logging() once at the top-level.
+    g = gcm.GCM(keys.get('google_server_key'))
     tokens = user.device_tokens('android')
     if not tokens:
         logging.info("No android GCM tokens.")
