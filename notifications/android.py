@@ -24,24 +24,10 @@ def _get_duration_seconds(event):
     duration_seconds = min(duration_seconds, max_duration)
     return duration_seconds
 
-def notify(user, event):
-    # TODO: We don't want to send raw URLs, or it pops open a "open with" dialog. Pass in a custom schema instead!
-    url = urls.fb_event_url(event.fb_event_id)
-
-    g = gcm.GCM(keys.get('google_server_key'), debug=True)
-    tokens = user.device_tokens('android')
-    if not tokens:
-        logging.info("No android GCM tokens.")
-        return
-
+def rsvp_notify(user, event):
     duration_seconds = _get_duration_seconds(event)
-    # for image stuff, we want to set subtext as required (with text optional)
-    # for regular styles, both are optional (and we probably want text)
-    data = {
+    extra_data = {
         'notification_type': EVENT_REMINDER,
-
-        # Important data for clientside lookups
-        'event_id': event.fb_event_id,
 
         # Deliver the message immediately
         'delay_while_idle': 0,
@@ -49,6 +35,29 @@ def notify(user, event):
         # If the phone doesn't come online until after the event is completed, ignore it.
         'time_to_live': duration_seconds,
     }
+    real_notify(user, event.fb_event_id, extra_data)
+
+def add_notify(user, event_id):
+    extra_data = {
+        'notification_type': EVENT_ADDED,
+    }
+    real_notify(user, event_id, extra_data)
+
+def real_notify(user, event_id, extra_data):
+    # TODO: We don't want to send raw URLs, or it pops open a "open with" dialog. Pass in a custom schema instead!
+    url = urls.fb_event_url(event_id)
+
+    g = gcm.GCM(keys.get('google_server_key'), debug=True)
+    tokens = user.device_tokens('android')
+    if not tokens:
+        logging.info("No android GCM tokens.")
+        return
+
+    data = {
+        # Important data for clientside lookups
+        'event_id': event_id,
+    }
+    data.update(extra_data)
     response = g.json_request(registration_ids=tokens, data=data)
 
     changed_tokens = False

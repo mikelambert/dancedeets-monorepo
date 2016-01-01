@@ -103,7 +103,7 @@ def notify_user(user_id, event_id):
     if not event:
         logging.error("No event found: %s", event_id)
         return
-    if android.notify(user, event):
+    if android.rsvp_notify(user, event):
         logging.info("Sent notification!")
 
     # TODO: iphone_notify!
