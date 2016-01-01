@@ -38,6 +38,12 @@ def setup_reminders(fb_uid, fb_user_events):
         else:
             end_notify_window = start_time
 
+        # Any time after start_notify_window, we could have sent a notification.
+        # If we try to re-add the taskqueue after that timestamp has passed,
+        # we may re-add a task that has already completed, and re-notify a user.
+        # Double-check in our logs that this does not occur....(it shouldn't!)
+        #end_notify_window = start_notify_window
+
         # Ignore events that started in the past
         if end_notify_window < now:
             continue
@@ -97,11 +103,7 @@ def notify_user(user_id, event_id):
     if not event:
         logging.error("No event found: %s", event_id)
         return
-    event_name = event.fb_event['info']['name']
-    event_time = event.start_time.strftime('%H:%M')
-    text = '%s: %s' % (event_time, event_name)
-    title = 'Upcoming Event!'
-    if android.notify(user, event, title, text):
+    if android.notify(user, event):
         logging.info("Sent notification!")
 
     # TODO: iphone_notify!

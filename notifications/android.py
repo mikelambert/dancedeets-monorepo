@@ -24,7 +24,7 @@ def _get_duration_seconds(event):
     duration_seconds = min(duration_seconds, max_duration)
     return duration_seconds
 
-def notify(user, event, title, text):
+def notify(user, event):
     # TODO: We don't want to send raw URLs, or it pops open a "open with" dialog. Pass in a custom schema instead!
     url = urls.fb_event_url(event.fb_event_id)
 
