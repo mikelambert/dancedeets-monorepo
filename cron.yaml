@@ -10,7 +10,7 @@ cron:
   schedule: every 21 hours
 - description: notify about newly-added events
   url: /tasks/promote_new_events
-  schedule: every hour
+  schedule: every 1 hours
 - description: scrape all classes and index them
   url: /tasks/crawl_and_index_classes
   schedule: every 6 hours
