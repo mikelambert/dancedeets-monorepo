@@ -2,6 +2,7 @@ import logging
 import webapp2
 from google.appengine.api import memcache
 
+from mapreduce import control
 from mapreduce import context
 from mapreduce import operation as op
 
@@ -102,5 +103,21 @@ class ClearMemcacheHandler(webapp2.RequestHandler):
     def get(self):
         memcache.flush_all()
         self.response.out.write("Flushed memcache!")
+
+def resave_table(obj):
+    yield op.db.Put(obj)
+
+@app.route('/tools/resave_table')
+class ResaveUsersHandler(webapp2.RequestHandler):
+    def get(self):
+        table = self.request.get('table') # users.users.User or events.eventdata.DBEvent or ...
+        control.start_map(
+            name='Resave %s' % table,
+            reader_spec='mapreduce.input_readers.DatastoreInputReader',
+            handler_spec='servlets.tools.resave_table',
+            mapper_parameters={
+                'entity_kind': table,
+            },
+        )
 
 
