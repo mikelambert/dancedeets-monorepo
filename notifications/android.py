@@ -49,7 +49,6 @@ def notify(user, event):
         # If the phone doesn't come online until after the event is completed, ignore it.
         'time_to_live': duration_seconds,
     }
-    # TODO: what happens if we send multiple notifications. last-one wins? Can we do a better job of prioritizing and aggregating these?
     response = g.json_request(registration_ids=tokens, data=data)
 
     changed_tokens = False
