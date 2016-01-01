@@ -7,6 +7,8 @@ from event_scraper import scraping_tasks
 from events import event_reloading_tasks
 from events import find_access_tokens
 from ml import gprediction_servlets
+from notifications import added_events
+from notifications import rsvped_events
 from pubsub import pubsub_setup
 from pubsub import pubsub_tasks
 from rankings import rankings_servlets

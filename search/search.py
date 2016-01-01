@@ -161,7 +161,7 @@ class Search(object):
         doc_index = search_index.real_index()
         #TODO(lambert): implement pagination
         if ids_only:
-            options = {'returned_fields': ['start_time', 'end_time']}
+            options = {'returned_fields': ['start_time', 'end_time'] + self.extra_fields}
         else:
             options = {'returned_fields': self.extra_fields}
         options = search.QueryOptions(limit=self.limit, **options)
@@ -266,7 +266,9 @@ class EventsIndex(index.BaseIndex):
                 search.NumberField(name='longitude', value=db_event.longitude),
                 search.TextField(name='categories', value=' '.join(db_event.auto_categories)),
                 search.TextField(name='country', value=db_event.country),
-                search.DateField(name='creation_time', value=db_event.creation_time),
+                # Use NumberField instead of DateField since we care about hours/minutes/seconds,
+                # which are otherwise discarded with a DateField.
+                search.NumberField(name='creation_time', value=int(time.mktime(db_event.creation_time.timetuple()))),
             ],
             #language=XX, # We have no good language detection
             rank=int(time.mktime(db_event.start_time.timetuple())),
@@ -303,7 +305,8 @@ def delete_from_fulltext_search_index(db_event_id):
 
 def construct_fulltext_search_index(index_future=True):
     if index_future:
-        FutureEventsIndex.rebuild_from_query()
+        index = FutureEventsIndex
     else:
-        AllEventsIndex.rebuild_from_query()
+        index = AllEventsIndex
+    index.rebuild_from_query(force=True)
 

@@ -1,14 +1,16 @@
 import datetime
 import logging
+import time
+
+from mapreduce import control
 
 import app
 import base_servlet
 from loc import gmaps_api
+from loc import math
 from search import search
 from search import search_base
 from users import users
-from util import dates
-from util import math
 from . import android
 
 """
@@ -28,19 +30,25 @@ def get_time_offset():
 
 # TODO: call hourly
 @app.route('/tasks/promote_new_events')
-class RemindUserHandler(base_servlet.BaseTaskRequestHandler):
+class RemindUserMapReduceHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
-        pass
-        # called hourly:
-        #mapreduce.start(
-        #    offset=get_time_offset(),
-        #    call_func=promote_events_to_user)
+        offset = get_time_offset()
+        string_offset = '%+d00' % offset
+        control.start_map(
+            name='Send New Events to Users in TZ%s' % string_offset,
+            reader_spec='mapreduce.input_readers.DatastoreInputReader',
+            handler_spec='notifications.added_events.promote_events_to_user',
+            mapper_parameters={'entity_kind': 'users.users.User'},
+            shard_count=1,
+        )
 
 # for development only, usually this will be called via mapreduce
-@app.route('/tasks/promote_events_to_user')
+@app.route('/tasks/promote_new_events_to_user')
 class RemindUserHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
-        promote_events_to_user(self.request.get('user_id'))
+        user_id = self.request.get('user_id')
+        user = users.User.get_by_id(user_id)
+        promote_events_to_user(user)
 
 def promote_events_to_user(user):
     logging.info("Promoting new events to user %s", user.fb_uid)
@@ -64,18 +72,20 @@ def promote_events_to_user(user):
     if not geocode:
         return None
     bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
-    query = search_base.SearchQuery(time_period=dates.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
+    query = search_base.SearchQuery(time_period=search_base.TIME_UPCOMING, bounds=bounds, min_attendees=min_attendees)
 
-    one_day_ago = datetime.datetime.now() - datetime.timedelta(hours=24)
+    one_day_ago = time.mktime((datetime.datetime.now() - datetime.timedelta(hours=24)).timetuple())
 
     search_query = search.Search(query)
     search_query.extra_fields = ['creation_time']
     search_results = search_query._get_candidate_doc_events()
     # TODO: can we move this filter into the search query itself??
-    recent_events = [x.field('doc_id') for x in search_results if x.field('creation_time').value > one_day_ago]
+    recent_events = [x.doc_id for x in search_results if x.field('creation_time').value > one_day_ago]
 
+    logging.info("Found %s search_results, %s new events", len(search_results), len(recent_events))
     for event_id in recent_events:
-        if android.notify(user, event_id):
+        logging.info("Notifying about new event %s", event_id)
+        if android.add_notify(user, event_id):
             logging.info("Sent notification! %s", event_id)
     # TODO: iphone_notify!
 
