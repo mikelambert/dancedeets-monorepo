@@ -31,7 +31,10 @@ def get_time_offset():
 @app.route('/tasks/promote_new_events')
 class RemindUserMapReduceHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
-        offset = get_time_offset()
+        if self.request.get('offset'):
+            offset = int(self.request.get('offset'))
+        else:
+            offset = get_time_offset()
         string_offset = '%+03d00' % offset
         logging.info("Got time offset %s for our run", string_offset)
         control.start_map(
