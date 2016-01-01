@@ -81,7 +81,7 @@ class RelevantHandler(SearchHandler):
             logging.info("Decorating with personal rsvp data took %s seconds", time.time() - a)
 
             past_results, present_results, grouped_results = search.group_results(search_results)
-            if search_query and search_query.time_period == dates.TIME_FUTURE:
+            if search_query and search_query.time_period in search_base.TIME_ALL_FUTURE:
                 present_results = past_results + present_results
                 past_results = []
 

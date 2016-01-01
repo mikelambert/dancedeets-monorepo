@@ -10,7 +10,6 @@ from loc import math
 from logic import friends
 from logic import rsvp
 from users import users
-from util import dates
 from util import fb_mapreduce
 from util import urls
 from . import search_base
@@ -38,7 +37,7 @@ def email_for_user(user, fbl, should_send=True):
     if not geocode:
         return None
     bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)
-    query = search_base.SearchQuery(time_period=dates.TIME_FUTURE, bounds=bounds, min_attendees=min_attendees)
+    query = search_base.SearchQuery(time_period=search_base.TIME_UPCOMING, bounds=bounds, min_attendees=min_attendees)
     fb_user = fbl.fetched_data(fb_api.LookupUser, fbl.fb_uid)
 
     search_results = search.Search(query).get_search_results()
