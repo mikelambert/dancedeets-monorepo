@@ -28,17 +28,23 @@ def get_time_offset():
         offset -= 24
     return offset
 
-# TODO: call hourly
 @app.route('/tasks/promote_new_events')
 class RemindUserMapReduceHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
         offset = get_time_offset()
-        string_offset = '%+d00' % offset
+        string_offset = '%+03d00' % offset
+        logging.info("Got time offset %s for our run", string_offset)
         control.start_map(
             name='Send New Events to Users in TZ%s' % string_offset,
             reader_spec='mapreduce.input_readers.DatastoreInputReader',
             handler_spec='notifications.added_events.promote_events_to_user',
-            mapper_parameters={'entity_kind': 'users.users.User'},
+            mapper_parameters={
+                'entity_kind': 'users.users.User',
+                'filters': [
+                    ('timezone_offset', '>=', offset),
+                    ('timezone_offset', '<', offset+1),
+                ],
+            },
             shard_count=1,
         )
 
