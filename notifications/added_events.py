@@ -97,7 +97,7 @@ def promote_events_to_user(user):
 
     logging.info("Found %s search_results, %s new events", len(search_results), len(recent_events))
     for event_id in recent_events:
-        logging.info("Notifying about new event %s", event_id)
+        logging.info("Notifying %s about new event %s", user_id, event_id)
         if android.add_notify(user, event_id):
             logging.info("Sent notification! %s", event_id)
     # TODO: iphone_notify!
