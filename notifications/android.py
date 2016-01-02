@@ -37,25 +37,27 @@ def rsvp_notify(user, event):
         # If the phone doesn't come online until after the event is completed, ignore it.
         'time_to_live': duration_seconds,
     }
-    real_notify(user, event.fb_event_id, extra_data)
+    return real_notify(user, event.fb_event_id, extra_data)
 
 def add_notify(user, event_id):
     extra_data = {
         'notification_type': EVENT_ADDED,
     }
-    real_notify(user, event_id, extra_data)
+    return real_notify(user, event_id, extra_data)
+
+def can_notify(user):
+    tokens = user.device_tokens('android')
+    return bool(tokens)
 
 def real_notify(user, event_id, extra_data):
-    # TODO: We don't want to send raw URLs, or it pops open a "open with" dialog. Pass in a custom schema instead!
-    url = urls.fb_event_url(event_id)
+    if not can_notify(user):
+        logging.info("No android GCM tokens.")
+        return
 
     # We don't pass debug=True, because gcm.py library keeps adding more loggers ad-infinitum.
     # Instead we call GCM.enable_logging() once at the top-level.
     g = gcm.GCM(keys.get('google_server_key'))
     tokens = user.device_tokens('android')
-    if not tokens:
-        logging.info("No android GCM tokens.")
-        return
 
     data = {
         # Important data for clientside lookups
@@ -72,7 +74,7 @@ def real_notify(user, event_id, extra_data):
                     tokens.remove(reg_id)
                     changed_tokens = True
             else:
-                logging.error("Error for user %s with url %s: %s", user.fb_uid, url, error)
+                logging.error("Error for user %s with event %s: %s", user.fb_uid, event_id, error)
 
     if 'canonical' in response:
         for reg_id, canonical_id in response['canonical'].iteritems():

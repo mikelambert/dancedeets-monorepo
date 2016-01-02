@@ -96,6 +96,11 @@ def remind_user(user_id, event_id):
         logging.info("User has expired token, aborting: %s", user_id)
         return
 
+    # TODO: Adjust when we have iphone notifications
+    if not android.can_notify(user):
+        logging.info("No android GCM tokens.")
+        return
+
     # Only send notifications if the user has RSVP-ed as attending:
     if not _is_attending(user, event_id):
         logging.info("User not attending event, aborting.")

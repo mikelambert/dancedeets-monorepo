@@ -48,7 +48,6 @@ class RemindUserMapReduceHandler(base_servlet.BaseTaskRequestHandler):
                     ('timezone_offset', '<', offset+1),
                 ],
             },
-            shard_count=1,
         )
 
 # for development only, usually this will be called via mapreduce
@@ -60,6 +59,11 @@ class RemindUserHandler(base_servlet.BaseTaskRequestHandler):
         promote_events_to_user(user)
 
 def promote_events_to_user(user):
+    # TODO: Adjust when we have iphone notifications
+    if not android.can_notify(user):
+        logging.info("No android GCM tokens.")
+        return
+
     logging.info("Promoting new events to user %s", user.fb_uid)
     # Only send notifications for Mike for now
     user = users.User.get_by_id(user.fb_uid)
