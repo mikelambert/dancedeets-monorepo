@@ -160,6 +160,9 @@ class LookupUserEvents(LookupType):
             # Going to have to convert this over to /<object_id>/events
             # when we want to hit v2.1 or v2.2 (v2.0 works though).
             # Will require downstream changes on eid-vs-id.
+            # TODO: We have to cutover by August 7, 2016.
+            # Beware that 'events' only contains attending/maybe events.
+            # We will need to do separate queries for not_replied/declined events (and created events)
             ('all_event_info', cls.fql_url(ALL_EVENTS_FQL % (object_id, today))),
             ('events', cls.url('%s/events' % object_id)),
         ]
