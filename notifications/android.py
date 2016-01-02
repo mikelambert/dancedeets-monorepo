@@ -5,12 +5,9 @@ import logging
 import gcm
 
 import keys
-from util import urls
 
 EVENT_REMINDER = 'EVENT_REMINDER'
 EVENT_ADDED = 'EVENT_ADDED'
-
-gcm.GCM.enable_logging()
 
 def _get_duration_seconds(event):
     start_time = parser.parse(event.fb_event['info'].get('start_time'))
@@ -84,6 +81,8 @@ def real_notify(user, event_id, extra_data):
 
     if changed_tokens:
         user.put()
+
+    logging.info("User %s (%s), event %s: sent notification!", user.fb_uid, user.full_name, event_id)
 
     return 'success' in response
 

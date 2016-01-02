@@ -61,7 +61,6 @@ class RemindUserHandler(base_servlet.BaseTaskRequestHandler):
 def promote_events_to_user(user):
     # TODO: Adjust when we have iphone notifications
     if not android.can_notify(user):
-        logging.info("No android GCM tokens.")
         return
 
     logging.info("Promoting new events to user %s", user.fb_uid)
@@ -97,8 +96,7 @@ def promote_events_to_user(user):
 
     logging.info("Found %s search_results, %s new events", len(search_results), len(recent_events))
     for event_id in recent_events:
-        logging.info("Notifying %s about new event %s", user_id, event_id)
         if android.add_notify(user, event_id):
-            logging.info("Sent notification! %s", event_id)
+            logging.info("Sent notification!")
     # TODO: iphone_notify!
 

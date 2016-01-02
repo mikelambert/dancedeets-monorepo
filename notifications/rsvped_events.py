@@ -98,7 +98,6 @@ def remind_user(user_id, event_id):
 
     # TODO: Adjust when we have iphone notifications
     if not android.can_notify(user):
-        logging.info("No android GCM tokens.")
         return
 
     # Only send notifications if the user has RSVP-ed as attending:

@@ -22,7 +22,6 @@ def load_potential_events_for_user_ids(fbl, user_ids):
 
 def map_load_potential_events(user):
     fbl = fb_mapreduce.get_fblookup(user)
-    print fbl, fbl.__dict__
     if user.expired_oauth_token:
         return
     try:
