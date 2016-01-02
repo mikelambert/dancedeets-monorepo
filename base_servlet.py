@@ -610,17 +610,22 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
     def initialize(self, request, response):
         super(BaseTaskFacebookRequestHandler, self).initialize(request, response)
 
-        self.fb_uid = self.request.get('user_id')
-        if not self.fb_uid:
-            self.abort(400, 'Need valid user_id argument')
-            return
-        self.user = users.User.get_by_id(self.fb_uid)
-        if self.user:
-            if not self.user.fb_access_token:
-                logging.error("Can't execute background task for user %s without access_token", self.fb_uid)
-            self.access_token = self.user.fb_access_token
-        else:
+        if self.request.get('user_id') == 'dummy':
+            self.fb_uid = None
+            self.user = None
             self.access_token = None
+        else:
+            self.fb_uid = self.request.get('user_id')
+            if not self.fb_uid:
+                self.abort(400, 'Need valid user_id argument')
+                return
+            self.user = users.User.get_by_id(self.fb_uid)
+            if self.user:
+                if not self.user.fb_access_token:
+                    logging.error("Can't execute background task for user %s without access_token", self.fb_uid)
+                self.access_token = self.user.fb_access_token
+            else:
+                self.access_token = None
         self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
         force_updated = bool(int(self.request.get('force_updated', 0)))
         self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)

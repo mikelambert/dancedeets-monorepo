@@ -20,7 +20,9 @@ def load_potential_events_for_user_ids(fbl, user_ids):
     for user_id, user_events in zip(user_ids, user_events_list):
         scrape_user_potential_events.get_potential_dance_events(fbl, user_id, user_events)
 
-def yield_load_potential_events(fbl, user):
+def map_load_potential_events(user):
+    fbl = fb_mapreduce.get_fblookup(user)
+    print fbl, fbl.__dict__
     if user.expired_oauth_token:
         return
     try:
@@ -37,6 +39,3 @@ def yield_load_potential_events(fbl, user):
         fbl.allow_cache = True
         scrape_user_potential_events.get_potential_dance_events(fbl, user.fb_uid, user_events)
         rsvped_events.setup_reminders(user.fb_uid, user_events)
-
-map_load_potential_events = fb_mapreduce.mr_user_wrap(yield_load_potential_events)
-load_potential_events = fb_mapreduce.nomr_wrap(yield_load_potential_events)

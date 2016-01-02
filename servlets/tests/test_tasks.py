@@ -81,14 +81,14 @@ class TestTrackNewUserFriends(TestTasks):
 def test_2():
     print app.get('/tasks/load_users?user_id=701004&user_ids=701004')
 def test_5():
-    print app.get('/tasks/reload_all_users?user_id=701004')
+    print app.get('/tasks/reload_all_users')
 def test_8():
     print app.get('/tasks/email_all_users?user_id=701004')
 def test_9():
     print app.get('/tasks/email_user?user_id=701004')
 
 def test_10():
-    print app.get('/tasks/load_all_potential_events?user_id=701004')
+    print app.get('/tasks/load_all_potential_events?user_id=dummy')
 def test_12():
     print app.get('/tasks/load_potential_events_for_user?user_id=701004')
 def test_13():

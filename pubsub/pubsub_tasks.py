@@ -7,7 +7,7 @@ from . import pubsub
 
 
 @app.route('/tasks/social_publisher')
-class SocialPublisherHandler(base_servlet.BaseTaskFacebookRequestHandler):
+class SocialPublisherHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
         pubsub.pull_and_publish_event()
 
