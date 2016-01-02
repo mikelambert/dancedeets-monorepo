@@ -26,17 +26,18 @@ def get_time_offset():
         offset += 24
     if offset > 12:
         offset -= 24
-    return offset
+    return float(offset)
 
 @app.route('/tasks/promote_new_events')
 class RemindUserMapReduceHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
         if self.request.get('offset'):
-            offset = int(self.request.get('offset'))
+            offset = float(self.request.get('offset'))
         else:
             offset = get_time_offset()
         string_offset = '%+03d00' % offset
         logging.info("Got time offset %s for our run", string_offset)
+        # offset needs to be of type float, or this doesn't work
         control.start_map(
             name='Send New Events to Users in TZ%s' % string_offset,
             reader_spec='mapreduce.input_readers.DatastoreInputReader',
@@ -48,6 +49,7 @@ class RemindUserMapReduceHandler(base_servlet.BaseTaskRequestHandler):
                     ('timezone_offset', '<', offset+1),
                 ],
             },
+            shard_count=1,
         )
 
 # for development only, usually this will be called via mapreduce
