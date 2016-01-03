@@ -1,47 +1,24 @@
-import unittest
 import urllib
 
 from webtest import TestApp
 from webtest import utils
 
 import fb_api
-from loc import gmaps_stub
 import main
-from test_utils import fb_api_stub
 from test_utils import fixtures
+from test_utils import unittest
 from users import users
 
 app = TestApp(main.application)
 
 
-class TestSearch(unittest.TestCase):
-    def setUp(self):
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate()
-        self.gmaps_stub = gmaps_stub.Stub()
-        self.gmaps_stub.activate()
-        self.testbed.init_memcache_stub()
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_search_stub()
-        self.testbed.init_taskqueue_stub(root_path='.')
-        #TODO(lambert): move this into some testbed wrapper code, or port upstream
-        # This is a bug in the code versions between appengine and its libraries:
-        # mapreduce requires a DEFAULT_VERSION_HOSTNAME
-        self.testbed.setup_env(overwrite=True,
-            DEFAULT_VERSION_HOSTNAME='localhost',
-        )
-
-    def tearDown(self):
-        self.fb_api.deactivate()
-        self.gmaps_stub.deactivate()
-
-class TestEvent(TestSearch):
+class TestEvent(unittest.TestCase):
     def runTest(self):
         event = fixtures.create_event()
         result = app.get('/api/v1.0/events/%s' % event.fb_event_id)
         self.assertEqual(result.json['id'], event.fb_event_id)
 
-class TestAuth(TestSearch):
+class TestAuth(unittest.TestCase):
     def runTest(self):
         fields_str = '%2C'.join(fb_api.OBJ_USER_FIELDS)
         url = '/v2.2/me?fields=%s' % fields_str

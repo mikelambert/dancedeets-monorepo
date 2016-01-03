@@ -1,16 +1,12 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import mock
-import unittest
-
-from google.appengine.ext import testbed
 
 import fb_api
 from events import eventdata
 from events import event_updates
-from loc.test_utils import gmaps_fake
 from pubsub import pubsub
-from test_utils import fb_api_stub
+from test_utils import unittest
 
 FB_EVENT = {
     'info': {
@@ -21,20 +17,6 @@ FB_EVENT = {
 }
 
 class TestPublishEvent(unittest.TestCase):
-    def setUp(self):
-        self.testbed.init_memcache_stub()
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_search_stub()
-        self.testbed.init_taskqueue_stub(root_path='.')
-        self.taskqueue_stub = self.testbed.get_stub(testbed.TASKQUEUE_SERVICE_NAME)
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate()
-        gmaps_fake.activate()
-
-    def tearDown(self):
-        self.fb_api.deactivate()
-        gmaps_fake.deactivate()
-
     @mock.patch('keys.get')
     @mock.patch('oauth2.Client.request')
     @mock.patch('twitter.Twitter')

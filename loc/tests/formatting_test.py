@@ -1,11 +1,11 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import logging
-import unittest
 
 from loc import gmaps_api
 from loc import gmaps_stub
 from loc import formatting
+from test_utils import unittest
 
 
 formatting_reg_data = {
@@ -41,16 +41,7 @@ formatting_reg_data = {
 }
 
 
-class GmapsTestCase(unittest.TestCase):
-    def setUp(self):
-        self.gmaps_stub = gmaps_stub.Stub()
-        self.gmaps_stub.activate()
-        self.testbed.init_memcache_stub()
-
-    def tearDown(self):
-        self.gmaps_stub.deactivate()
-
-class TestLocationFormatting(GmapsTestCase):
+class TestLocationFormatting(unittest.TestCase):
     def runTest(self):
         for address, final_address in formatting_reg_data.iteritems():
             logging.info('%s should be formatted as %s', address, final_address)
@@ -70,7 +61,7 @@ grouping_lists = [
     (['Nagoya', 'Sydney'], ['Nagoya, Aichi Prefecture, Japan', 'Sydney, NSW, Australia']),
 ]
 
-class TestMultiLocationFormatting(GmapsTestCase):
+class TestMultiLocationFormatting(unittest.TestCase):
     def runTest(self):
         for addresses, reformatted_addresses in grouping_lists:
             logging.info("Formatting addresses: %s", addresses)

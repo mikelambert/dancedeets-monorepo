@@ -1,12 +1,10 @@
 # -*-*- encoding: utf-8 -*-*-
 
-import unittest
-
 import fb_api
 from nlp import event_auto_classifier
 from nlp import event_classifier
 from nlp import rules
-from test_utils import fb_api_stub
+from test_utils import unittest
 
 class TestSimpleMatches(unittest.TestCase):
     def runTest(self):
@@ -14,15 +12,8 @@ class TestSimpleMatches(unittest.TestCase):
 
 class TestClassifier(unittest.TestCase):
     def setUp(self):
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate()
+        super(TestClassifier, self).setUp()
         self.fbl = fb_api.FBLookup("dummyid", None)
-
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
-
-    def tearDown(self):
-        self.fb_api.deactivate()
 
     def get_event(self, event_id):
         return self.fbl.get(fb_api.LookupEvent, event_id)

@@ -1,6 +1,5 @@
 import base64
 import pickle
-import unittest
 
 from google.appengine.ext import ndb
 from google.appengine.api import search
@@ -8,6 +7,7 @@ from google.appengine.ext import testbed
 
 from search import index
 from test_utils import fb_api_stub
+from test_utils import unittest
 
 
 class TestModel(ndb.Model):
@@ -45,27 +45,7 @@ class TestIndex(index.BaseIndex):
         return doc_event
 
 
-class BaseTestSearch(unittest.TestCase):
-    def setUp(self):
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate()
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
-        self.testbed.init_search_stub()
-        self.testbed.init_taskqueue_stub(root_path='.')
-        self.taskqueue_stub = self.testbed.get_stub(testbed.TASKQUEUE_SERVICE_NAME)
-        #TODO(lambert): move this into some testbed wrapper code, or port upstream
-        # This is a bug in the code versions between appengine and its libraries:
-        # mapreduce requires a DEFAULT_VERSION_HOSTNAME
-        self.testbed.setup_env(overwrite=True,
-            DEFAULT_VERSION_HOSTNAME='localhost',
-        )
-
-
-    def tearDown(self):
-        self.fb_api.deactivate()
-
-class TestIndexFunctionality(BaseTestSearch):
+class TestIndexFunctionality(unittest.TestCase):
     def run_taskqueue(self):
         taskq = self.taskqueue_stub
         tasks = taskq.GetTasks("default")

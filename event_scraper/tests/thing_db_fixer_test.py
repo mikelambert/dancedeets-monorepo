@@ -1,5 +1,3 @@
-import unittest
-
 from google.appengine.ext import deferred
 from google.appengine.ext import testbed
 
@@ -7,6 +5,7 @@ import fb_api
 from test_utils import fb_api_stub
 from event_scraper import potential_events
 from event_scraper import thing_db
+from test_utils import unittest
 
 fields_str = '%2C'.join(fb_api.OBJ_SOURCE_FIELDS)
 URL_111 = '/v2.2/111'#?fields=%s' % fields_str

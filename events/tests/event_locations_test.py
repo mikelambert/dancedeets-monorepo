@@ -1,12 +1,11 @@
 #!/usr/bin/python
 
-import unittest
-
 from events import eventdata
 from events import event_locations
 import fb_api
 from loc import gmaps_stub
 from test_utils import fb_api_stub
+from test_utils import unittest
 
 MIKE_ID = '701004'
 USER_ID = '1000'

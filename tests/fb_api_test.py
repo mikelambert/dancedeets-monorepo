@@ -1,11 +1,12 @@
 #!/usr/bin/python
 
-import unittest
 import re
+import unittest
 
 import fb_api
 from test_utils import fb_api_stub
 from test_utils import mock_memcache
+from test_utils import unittest as full_unittest
 
 class TestLookupUser(unittest.TestCase):
     def runTest(self):
@@ -87,14 +88,7 @@ class TestDBCache(unittest.TestCase):
         db.save_objects({user_key: user_modified})
         self.assertEqual(db.db_updates, 2)
 
-class TestFBAPI(unittest.TestCase):
-    def setUp(self):
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate()
-
-    def tearDown(self):
-        self.fb_api.deactivate()
-
+class TestFBAPI(full_unittest.TestCase):
     def runTest(self):
         fb = fb_api.FBAPI('access_token')
         d = fb.fetch_keys([])
@@ -161,7 +155,6 @@ class TestFBAPI(unittest.TestCase):
         )
 
 class TestFBLookupPickling(unittest.TestCase):
-
     def runTest(self):
         import pickle
         fbl = fb_api.FBLookup('uid', 'access_token')
@@ -174,16 +167,15 @@ class TestFBLookupPickling(unittest.TestCase):
         self.assertEqual(fbl2._fetched_objects, {})
 
 
-class TestFBLookup(unittest.TestCase):
+class FBApiTestCase(full_unittest.TestCase):
     def setUp(self):
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
-        self.fb_api = fb_api_stub.Stub()
+        super(FBApiTestCase, self).setUp()
+        # Renitialize it with no db-backing
+        self.fb_api.deactivate()
         self.fb_api.activate(disk_db=False)
 
-    def tearDown(self):
-        self.fb_api.deactivate()
 
+class TestFBLookup(FBApiTestCase):
     def runTest(self):
         fbl = fb_api.FBLookup('uid', 'access_token')
 
@@ -280,16 +272,7 @@ class TestFBLookup(unittest.TestCase):
         fbl.clear_local_cache()
         self.assertRaises(fb_api.NoFetchedDataException, fbl.get, fb_api.LookupUser, 'uid')
 
-class TestFBLookupProfile(unittest.TestCase):
-    def setUp(self):
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate(disk_db=False)
-
-    def tearDown(self):
-        self.fb_api.deactivate()
-
+class TestFBLookupProfile(FBApiTestCase):
     def runTest(self):
         fbl = fb_api.FBLookup('uid', 'access_token')
 
@@ -306,16 +289,7 @@ class TestFBLookupProfile(unittest.TestCase):
             }
         )
 
-class TestEventFailureHandling(unittest.TestCase):
-    def setUp(self):
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate(disk_db=False)
-
-    def tearDown(self):
-        self.fb_api.deactivate()
-
+class TestEventFailureHandling(FBApiTestCase):
     def runTest(self):
         fbl = fb_api.FBLookup('uid', 'access_token')
         fbl.allow_cache = False
@@ -392,14 +366,7 @@ class TestEventFailureHandling(unittest.TestCase):
         fb_api.FBAPI.do_timeout = False
         fbl.clear_local_cache()
 
-class TestUserFailureHandling(unittest.TestCase):
-    def setUp(self):
-        self.fb_api = fb_api_stub.Stub()
-        self.fb_api.activate(disk_db=False)
-
-    def tearDown(self):
-        self.fb_api.deactivate()
-
+class TestUserFailureHandling(FBApiTestCase):
     def runTest(self):
         fbl = fb_api.FBLookup('uid', fb_api_stub.EXPIRED_ACCESS_TOKEN)
         fbl.allow_cache = False
