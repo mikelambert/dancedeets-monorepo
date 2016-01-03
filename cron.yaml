@@ -23,8 +23,8 @@ cron:
 - description: post to social networks
   url: /tasks/social_publisher
   schedule: every 1 minutes
-- description: auto-add events daily
-  url: /tools/auto_add_potential_events?user_id=701004&past_event=0
+- description: auto-add events
+  url: /tools/auto_add_potential_events?user_id=701004&past_event=0&expiry_days=10
   schedule: every 3 hours
 - description: notify about newly-added events
   url: /tasks/promote_new_events

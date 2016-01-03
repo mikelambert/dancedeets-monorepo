@@ -70,9 +70,15 @@ def classify_events(fbl, pe_list, fb_list):
 def classify_events_with_yield(fbl, pe_list):
     assert fbl.allow_cache
     original_oldest_allowed = fbl.db.oldest_allowed
+
+    ctx = context.get()
+    params = ctx.mapreduce_spec.mapper.params
+    expiry_days = params.get('expiry_days')
+
     try:
-        # Refresh our potential event cache every N days (since they may have updated with better keywords, as often happens)
-        fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=10)
+        if expiry_days:
+            # Refresh our potential event cache every N days (since they may have updated with better keywords, as often happens)
+            fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
         fb_list = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
     finally:
         # But revert it afterwards, since we pass this fbl in to classify_events() afterwards
@@ -83,7 +89,7 @@ def classify_events_with_yield(fbl, pe_list):
 
 map_classify_events = fb_mapreduce.mr_wrap(classify_events_with_yield)
 
-def mr_classify_potential_events(fbl, past_event):
+def mr_classify_potential_events(fbl, past_event, expiry_days):
     filters = [('looked_at', '=', None), ('should_look_at', '=', True)]
     if past_event is not None:
         filters.append(('past_event', '=', past_event))
@@ -99,6 +105,9 @@ def mr_classify_potential_events(fbl, past_event):
         output_writer={
             'mime_type': 'text/plain',
             'bucket_name': 'dancedeets-hrd.appspot.com',
+        },
+        extra_mapper_params={
+            'expiry_days': expiry_days,
         },
     )
 

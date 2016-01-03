@@ -13,7 +13,8 @@ class AutoAddPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler)
             past_event = True
         elif past_event == '0':
             past_event = False
-        auto_add.mr_classify_potential_events(self.fbl, past_event)
+        expiry_days = int(self.request.get('expiry_days', 0)) or None
+        auto_add.mr_classify_potential_events(self.fbl, past_event, expiry_days)
 
 @app.route('/tools/export_sources')
 class ExportSourcesHandler(base_servlet.BaseTaskFacebookRequestHandler):

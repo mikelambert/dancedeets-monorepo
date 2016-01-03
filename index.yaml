@@ -115,6 +115,13 @@ indexes:
 - kind: PotentialEvent
   properties:
   - name: looked_at
+  - name: past_event
+  - name: should_look_at
+  - name: __scatter__
+
+- kind: PotentialEvent
+  properties:
+  - name: looked_at
   - name: should_look_at
   - name: __scatter__
 
