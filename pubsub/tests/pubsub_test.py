@@ -20,7 +20,7 @@ class TestPublishEvent(unittest.TestCase):
     @mock.patch('keys.get')
     @mock.patch('oauth2.Client.request')
     @mock.patch('twitter.Twitter')
-    def testPull(self, Twitter, Client_request, keys_get):
+    def runTest(self, Twitter, Client_request, keys_get):
         keys_get.return_value = 'dummy_key'
 
         twitter_instance = Twitter.return_value
