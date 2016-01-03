@@ -3,6 +3,7 @@ from webtest import TestApp
 
 from events import eventdata
 import fb_api
+from loc import gmaps_stub
 import main
 from test_utils import fb_api_stub
 from users import users
@@ -22,6 +23,8 @@ class TestTasks(unittest.TestCase):
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_search_stub()
         self.testbed.init_taskqueue_stub(root_path='.')
+        self.gmaps_stub = gmaps_stub.Stub()
+        self.gmaps_stub.activate()
         #TODO(lambert): move this into some testbed wrapper code, or port upstream
         # This is a bug in the code versions between appengine and its libraries:
         # mapreduce requires a DEFAULT_VERSION_HOSTNAME
