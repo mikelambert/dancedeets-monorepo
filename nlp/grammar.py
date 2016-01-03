@@ -137,7 +137,7 @@ class Ordered(GrammarRule):
         return ''.join(x.as_expanded_regex() for x in self.args)
 
     def __repr__(self):
-        return 'Ordered(*%r)' % (self.args,)
+        return '%s(*%r)' % (self.__class__.__name__, self.args)
 
 class RegexRule(GrammarRule):
     def __init__(self, regex):
@@ -151,7 +151,7 @@ class RegexRule(GrammarRule):
         return self.regex
 
     def __repr__(self):
-        return 'RegexRule(%r)' % self.regex
+        return '%s(%r)' % (self.__class__.__name__, self.regex)
 
 class Name(GrammarRule):
     def __init__(self, name, sub_rule):
@@ -185,4 +185,4 @@ class Name(GrammarRule):
         return self._sub_rule.get_regex_alternations() + [r'_%s\d*_' % self._final_name]
 
     def __repr__(self):
-        return 'Name(%s, %r)' % (self._name, self._sub_rule)
+        return '%s(%r, %r)' % (self.__class__.__name__, self._name, self._sub_rule)
