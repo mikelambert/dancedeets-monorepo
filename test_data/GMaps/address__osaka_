@@ -1,0 +1,119 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "Osaka", 
+                    "short_name": "Osaka", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Osaka Prefecture", 
+                    "short_name": "Osaka Prefecture", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Japan", 
+                    "short_name": "JP", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Osaka, Osaka Prefecture, Japan", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 34.7687543, 
+                        "lng": 135.5991712
+                    }, 
+                    "southwest": {
+                        "lat": 34.5861474, 
+                        "lng": 135.3728875
+                    }
+                }, 
+                "location": {
+                    "lat": 34.6937378, 
+                    "lng": 135.5021651
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 34.7109, 
+                        "lng": 135.5177
+                    }, 
+                    "southwest": {
+                        "lat": 34.6459, 
+                        "lng": 135.4726
+                    }
+                }
+            }, 
+            "place_id": "ChIJ4eIGNFXmAGAR5y9q5G7BW8U", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }, 
+        {
+            "address_components": [
+                {
+                    "long_name": "Osaka Prefecture", 
+                    "short_name": "Osaka Prefecture", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Japan", 
+                    "short_name": "JP", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Osaka Prefecture, Japan", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 35.051282, 
+                        "lng": 135.7467919
+                    }, 
+                    "southwest": {
+                        "lat": 34.2715368, 
+                        "lng": 135.0919495
+                    }
+                }, 
+                "location": {
+                    "lat": 34.6862971, 
+                    "lng": 135.5196609
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 35.051282, 
+                        "lng": 135.7467919
+                    }, 
+                    "southwest": {
+                        "lat": 34.2715368, 
+                        "lng": 135.0919495
+                    }
+                }
+            }, 
+            "place_id": "ChIJ13DMKmvoAGARbVkfgUj_maM", 
+            "types": [
+                "administrative_area_level_1", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

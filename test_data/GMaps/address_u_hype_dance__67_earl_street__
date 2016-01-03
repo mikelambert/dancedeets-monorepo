@@ -1,0 +1,94 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "67", 
+                    "short_name": "67", 
+                    "types": [
+                        "street_number"
+                    ]
+                }, 
+                {
+                    "long_name": "Earl Street", 
+                    "short_name": "Earl St", 
+                    "types": [
+                        "route"
+                    ]
+                }, 
+                {
+                    "long_name": "Sheffield", 
+                    "short_name": "Sheffield", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Sheffield", 
+                    "short_name": "Sheffield", 
+                    "types": [
+                        "postal_town"
+                    ]
+                }, 
+                {
+                    "long_name": "South Yorkshire", 
+                    "short_name": "South York", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United Kingdom", 
+                    "short_name": "GB", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "S1 4PY", 
+                    "short_name": "S1 4PY", 
+                    "types": [
+                        "postal_code"
+                    ]
+                }
+            ], 
+            "formatted_address": "67 Earl St, Sheffield, South Yorkshire S1 4PY, UK", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 53.3753738, 
+                        "lng": -1.4704864
+                    }, 
+                    "southwest": {
+                        "lat": 53.3750621, 
+                        "lng": -1.470917
+                    }
+                }, 
+                "location": {
+                    "lat": 53.375218, 
+                    "lng": -1.4707017
+                }, 
+                "location_type": "ROOFTOP", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 53.3765669302915, 
+                        "lng": -1.469352719708498
+                    }, 
+                    "southwest": {
+                        "lat": 53.3738689697085, 
+                        "lng": -1.472050680291502
+                    }
+                }
+            }, 
+            "partial_match": true, 
+            "place_id": "ChIJc7nsu4aCeUgRy2xNdujVx3k", 
+            "types": [
+                "premise"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

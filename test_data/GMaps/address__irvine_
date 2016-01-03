@@ -1,0 +1,143 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "Irvine", 
+                    "short_name": "Irvine", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Orange County", 
+                    "short_name": "Orange County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "California", 
+                    "short_name": "CA", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Irvine, CA, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 33.7744771, 
+                        "lng": -117.678463
+                    }, 
+                    "southwest": {
+                        "lat": 33.5995231, 
+                        "lng": -117.870041
+                    }
+                }, 
+                "location": {
+                    "lat": 33.6839473, 
+                    "lng": -117.7946942
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 33.7744771, 
+                        "lng": -117.678463
+                    }, 
+                    "southwest": {
+                        "lat": 33.5995231, 
+                        "lng": -117.870041
+                    }
+                }
+            }, 
+            "place_id": "ChIJ40CRaA7d3IAROZpKYHW1eqc", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }, 
+        {
+            "address_components": [
+                {
+                    "long_name": "Irvine", 
+                    "short_name": "Irvine", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Estill County", 
+                    "short_name": "Estill County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Kentucky", 
+                    "short_name": "KY", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Irvine, KY, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 37.7179539, 
+                        "lng": -83.955061
+                    }, 
+                    "southwest": {
+                        "lat": 37.681407, 
+                        "lng": -83.981467
+                    }
+                }, 
+                "location": {
+                    "lat": 37.700638, 
+                    "lng": -83.97381299999999
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.7179539, 
+                        "lng": -83.955061
+                    }, 
+                    "southwest": {
+                        "lat": 37.681407, 
+                        "lng": -83.981467
+                    }
+                }
+            }, 
+            "place_id": "ChIJ4SlozP0MQ4gRpK3EjwuIXGc", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

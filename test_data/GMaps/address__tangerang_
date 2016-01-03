@@ -1,0 +1,74 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "Tangerang", 
+                    "short_name": "Tangerang", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Tangerang City", 
+                    "short_name": "Kota Tangerang", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Banten", 
+                    "short_name": "Banten", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Indonesia", 
+                    "short_name": "ID", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Tangerang, Tangerang City, Banten, Indonesia", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": -6.097141, 
+                        "lng": 106.748612
+                    }, 
+                    "southwest": {
+                        "lat": -6.256234099999999, 
+                        "lng": 106.551456
+                    }
+                }, 
+                "location": {
+                    "lat": -6.2023936, 
+                    "lng": 106.6527099
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": -6.097141, 
+                        "lng": 106.748612
+                    }, 
+                    "southwest": {
+                        "lat": -6.256234099999999, 
+                        "lng": 106.551456
+                    }
+                }
+            }, 
+            "place_id": "ChIJjePSU-j4aS4RwLn-FG1XAQM", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

@@ -1,0 +1,74 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "Oakland", 
+                    "short_name": "Oakland", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Alameda County", 
+                    "short_name": "Alameda County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "California", 
+                    "short_name": "CA", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Oakland, CA, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 37.88472489999999, 
+                        "lng": -122.1149235
+                    }, 
+                    "southwest": {
+                        "lat": 37.699198, 
+                        "lng": -122.3426648
+                    }
+                }, 
+                "location": {
+                    "lat": 37.8043637, 
+                    "lng": -122.2711137
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.88472489999999, 
+                        "lng": -122.1149235
+                    }, 
+                    "southwest": {
+                        "lat": 37.699198, 
+                        "lng": -122.3426648
+                    }
+                }
+            }, 
+            "place_id": "ChIJA-2qKIt9hYARZ5N1NdUVtHE", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

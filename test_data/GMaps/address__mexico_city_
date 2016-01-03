@@ -1,0 +1,142 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "Mexico City", 
+                    "short_name": "M\u00e9xico D.F.", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Federal District", 
+                    "short_name": "D.F.", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Mexico", 
+                    "short_name": "MX", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Mexico City, Federal District, Mexico", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 19.5927571, 
+                        "lng": -98.9604482
+                    }, 
+                    "southwest": {
+                        "lat": 19.1887101, 
+                        "lng": -99.3267771
+                    }
+                }, 
+                "location": {
+                    "lat": 19.4326077, 
+                    "lng": -99.133208
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 19.5927571, 
+                        "lng": -98.9604482
+                    }, 
+                    "southwest": {
+                        "lat": 19.1887101, 
+                        "lng": -99.3267771
+                    }
+                }
+            }, 
+            "place_id": "ChIJB3UJ2yYAzoURQeheJnYQBlQ", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }, 
+        {
+            "address_components": [
+                {
+                    "long_name": "Mexico", 
+                    "short_name": "Mexico", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Audrain County", 
+                    "short_name": "Audrain County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Missouri", 
+                    "short_name": "MO", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "65265", 
+                    "short_name": "65265", 
+                    "types": [
+                        "postal_code"
+                    ]
+                }
+            ], 
+            "formatted_address": "Mexico, MO 65265, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 39.20780389999999, 
+                        "lng": -91.8054779
+                    }, 
+                    "southwest": {
+                        "lat": 39.1116249, 
+                        "lng": -91.923513
+                    }
+                }, 
+                "location": {
+                    "lat": 39.1730652, 
+                    "lng": -91.887271
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 39.20780389999999, 
+                        "lng": -91.8054779
+                    }, 
+                    "southwest": {
+                        "lat": 39.1116249, 
+                        "lng": -91.923513
+                    }
+                }
+            }, 
+            "place_id": "ChIJqbupTzL43IcRsSPj0zv9kLo", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

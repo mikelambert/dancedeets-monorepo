@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 import sys
 
 from . import gmaps
@@ -15,27 +16,25 @@ def _get_object(string_key):
     return json.loads(open(filename).read())
 
 def _save_object(string_key, json_data):
-    return open('test_data/GMaps/%s' % string_key, 'w').write(json.dumps(json_data))
+    return open('test_data/GMaps/%s' % string_key, 'w').write(json.dumps(json_data, indent=4, sort_keys=True))
 
+CLEANUP_RE = re.compile(r'[^\w]')
 def _geocode_key(**kwargs):
     if not kwargs:
         raise ValueError("Cannot pass empty parameters to gmaps fetch function! kwargs=%r", kwargs)
     new_kwargs = kwargs.copy()
     for k, v in new_kwargs.items():
-        byte_length = len(repr(v))
-        if byte_length > 30:
-            new_kwargs[k] = v[:len(v)*30/byte_length]
-    joined = ','.join(sorted('%s=%r' % (k, unicode(v).strip().lower()) for (k, v) in new_kwargs.items()))
-    joined = joined.replace("'", '_')
+        flattened_v = repr(v)
+        flattened_v = CLEANUP_RE.sub('_', flattened_v)
+        new_kwargs[k] = flattened_v[:30]
+    joined = '_'.join(sorted('%s_%s' % (k, unicode(v).strip().lower()) for (k, v) in new_kwargs.items()))
     return joined
 
 def fetch_raw(**kwargs):
     geocode_key = _geocode_key(**kwargs)
-    print 'fetch_raw', repr(kwargs)
     try:
         return _get_object(geocode_key)
     except IOError:
-        print 'IOError, calling ', gmaps, gmaps.fetch_raw
         json_data = gmaps.fetch_raw(**kwargs)
         _save_object(geocode_key, json_data)
     return json_data

@@ -1,0 +1,72 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "103", 
+                    "short_name": "103", 
+                    "types": [
+                        "postal_code"
+                    ]
+                }, 
+                {
+                    "long_name": "Datong District", 
+                    "short_name": "Datong District", 
+                    "types": [
+                        "administrative_area_level_3", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Taipei City", 
+                    "short_name": "Taipei City", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Taiwan", 
+                    "short_name": "TW", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Datong District, Taipei City, Taiwan 103", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 25.0808718, 
+                        "lng": 121.5223005
+                    }, 
+                    "southwest": {
+                        "lat": 25.0481337, 
+                        "lng": 121.5043292
+                    }
+                }, 
+                "location": {
+                    "lat": 25.0646679, 
+                    "lng": 121.5135884
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 25.0808718, 
+                        "lng": 121.5223005
+                    }, 
+                    "southwest": {
+                        "lat": 25.0481337, 
+                        "lng": 121.5043292
+                    }
+                }
+            }, 
+            "place_id": "ChIJoXsMUT-pQjQRcxVGUKTCuXk", 
+            "types": [
+                "postal_code"
+            ]
+        }
+    ], 
+    "status": "OK"
+}
