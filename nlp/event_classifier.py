@@ -44,8 +44,8 @@ def _flatten(listOfLists):
     return list(itertools.chain.from_iterable(listOfLists))
 
 class StringProcessor(object):
-    def __init__(self, text, match_on_word_boundaries=None):
-        self.text = text.lower()
+    def __init__(self, text, match_on_word_boundaries=None, lowercase=True):
+        self.text = text.lower() if lowercase else text
         if match_on_word_boundaries is not None:
             self.match_on_word_boundaries = match_on_word_boundaries
         else:
@@ -121,7 +121,7 @@ class StringProcessor(object):
     def delete_with_rule(self, rule):
         regexes = rule.hack_double_regex()
         trimmed_text = regexes[self.match_on_word_boundaries].sub('', self.text)
-        return StringProcessor(trimmed_text, self.match_on_word_boundaries)
+        return StringProcessor(trimmed_text, self.match_on_word_boundaries, lowercase=False)
 
 class ClassifiedEvent(object):
     def __init__(self, fb_event, language=None):
