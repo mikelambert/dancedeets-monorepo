@@ -25,7 +25,8 @@ GOOD_DJ = GenFileBackedKeywords('GOOD_DJ', 'good_djs')
 EASY_DANCE = Name('EASY_DANCE', Any(
     'dance style[sz]',
     'dances?', "dancin[g']?", 'dancers?',
-    u'رقص', # arabic dance
+    u'رقص', # arabic dance native
+    u'دانس', # arabic dance transliteration
     u'댄스', # korean dance
     u'댄서', # korean dancer
     u'танцы', # russian dancing
@@ -132,6 +133,7 @@ STYLE_HIPHOP_WEAK = Any(
     u'嘻哈', # chinese hiphop
     u'ההיפ הופ', # hebrew hiphop
     u'هيب هوب', # arabic hiphop
+    u'الهيب هوب.', # arabic 'the hiphop'
     u'хипхоп', # macedonian hiphop
     u'ヒップホップ', # hiphop japanese
     u'힙합', # korean hiphop
@@ -173,6 +175,7 @@ AMBIGUOUS_DANCE_MUSIC = Name('AMBIGUOUS_DANCE_MUSIC', Any(
     'k\W?pop',
     'pop',
     u'케이팝', # korean kpop
+    u'كي بوب', # arabic kpop
     'hard\Whitting',
     'electro\W?dance',
     u'얼반', # korean urban
@@ -232,6 +235,7 @@ STYLE_BREAK = Name('STYLE_BREAK', Any(
     u'파워무브', # powermove korean
     'breakeuse', # french bgirl
     u'탑락', # toprock
+    u'بريك دانس', # arabic breakdance
 ))
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
 #add(STYLE_BREAK, [x+'u' for x in legit_dance))
@@ -393,6 +397,7 @@ HOUSE = Name('HOUSE', Any(
 FREESTYLE = Name('FREESTYLE', Any(
     'free\W?style(?:r?|rs?)',
     u'フリースタイル', # japanese freestyle
+    u'فريز ستايل', # arabic freestyle
 ))
 
 STREET = Name('STREET', Any(
@@ -679,6 +684,9 @@ BATTLE = Name('BATTLE', Any(
     'prelims?',
     u'初賽', # chinese preliminaries
     u'קרבות', # hebrew battle
+    u'منافسات', # arabic competitions
+    u'مسابقات', # arabic contests
+    u'معركة', # arabic battle
 ))
 
 CLASS = Name('CLASS', Any(
