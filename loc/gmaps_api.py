@@ -68,6 +68,7 @@ def delete(**kwargs):
 
 def get_geocode(**kwargs):
     json_data = gmaps_backend.fetch_raw(**kwargs)
+    print 'gmaps_backend is ', gmaps_backend
     try:
         geocode = parse_geocode(json_data)
     except GeocodeException as e:

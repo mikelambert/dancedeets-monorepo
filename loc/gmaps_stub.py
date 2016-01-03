@@ -31,9 +31,11 @@ def _geocode_key(**kwargs):
 
 def fetch_raw(**kwargs):
     geocode_key = _geocode_key(**kwargs)
+    print 'fetch_raw', repr(kwargs)
     try:
         return _get_object(geocode_key)
     except IOError:
+        print 'IOError, calling ', gmaps, gmaps.fetch_raw
         json_data = gmaps.fetch_raw(**kwargs)
         _save_object(geocode_key, json_data)
     return json_data
