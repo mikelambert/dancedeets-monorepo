@@ -25,6 +25,7 @@
 a4o
 academy of shock
 academy of villians
+allshool'z
 ancut stonez
 aov,0
 art of tec[hk]nique
@@ -124,6 +125,7 @@ hex bex
 hilty (?:&|and|\+) bosch
 hiphop junkeez
 hipnotic boogie
+hotclan crew
 house of dangerkat
 house of ebony
 house of evisu
@@ -141,6 +143,7 @@ j\W?soul brothers
 jabbawockeez
 jack\W?baskets
 jazz\W?cotech
+kamikaze crew
 kamikaze clownz
 kinematik dance
 klandeskillz
