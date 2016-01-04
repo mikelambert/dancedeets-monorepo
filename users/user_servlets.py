@@ -67,7 +67,7 @@ class ShowUsersHandler(base_servlet.BaseRequestHandler):
             for client in user.clients:
                 client_counts[client] += 1
         user_ids = [x.fb_uid for x in all_users]
-        fb_users = self.fbl.get_multi(fb_api.LookupUser, user_ids)
+        fb_users = self.fbl.get_multi(fb_api.LookupUser, user_ids, allow_fail=True)
 
         self.display['client_counts'] = client_counts
         self.display['num_users'] = len(all_users)
