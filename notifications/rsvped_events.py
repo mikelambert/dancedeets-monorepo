@@ -85,9 +85,15 @@ class RemindUserHandler(base_servlet.BaseTaskRequestHandler):
     def get(self):
         remind_user(self.request.get('user_id'), self.request.get('event_id'))
 
+DISABLED_USERS = [
+    "10205048264624649",
+]
 def remind_user(user_id, event_id):
     logging.info("Notifying user %s about event %s", user_id, event_id)
-    # Only send notifications for Mike for now
+    if user_id in DISABLED_USERS:
+        logging.info("User's app crashes when it attempts to vibrate without permissions, so avoiding notifications altogether.")
+        return
+
     user = users.User.get_by_id(user_id)
     if not user:
         logging.error("No user found: %s", user_id)
