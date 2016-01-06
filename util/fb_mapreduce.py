@@ -56,6 +56,7 @@ def _get_fblookup(user=None):
         access_token)
     fbl.allow_cache = params['fbl_allow_cache']
     fbl.force_updated = params['fbl_force_updated']
+    fbl.db.oldest_allowed = params['fbl_oldest_allowed']
     return fbl
 
 def _get_fblookup_params(fbl, randomize_tokens=False):
@@ -63,6 +64,7 @@ def _get_fblookup_params(fbl, randomize_tokens=False):
         'fbl_fb_uid': fbl.fb_uid,
         'fbl_allow_cache': fbl.allow_cache,
         'fbl_force_updated': fbl.force_updated,
+        'fbl_oldest_allowed': fbl.db.oldest_allowed,
     }
     if randomize_tokens:
         params['fbl_access_tokens'] = _get_multiple_tokens(token_count=20)
