@@ -9,6 +9,12 @@ cron:
 - description: reload future facebook event data
   url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE
   schedule: every 20 hours
+- description: auto-add events
+  url: /tools/auto_add_potential_events?user_id=701004&past_event=0&expiry_days=10
+  schedule: every 3 hours
+#- description: reload past facebook event data
+#  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE
+#  schedule: every monday 2:00
 # These don't rely on a magical user_id
 - description: load potential events from our users
   url: /tasks/load_all_potential_events?user_id=dummy&allow_cache=0
@@ -23,9 +29,6 @@ cron:
 - description: post to social networks
   url: /tasks/social_publisher
   schedule: every 1 minutes
-- description: auto-add events
-  url: /tools/auto_add_potential_events?user_id=701004&past_event=0&expiry_days=10
-  schedule: every 3 hours
 - description: notify about newly-added events
   url: /tasks/promote_new_events
   schedule: every 1 hours
@@ -35,9 +38,6 @@ cron:
 - description: calculate periodic statistics and rankings
   url: /tasks/compute_rankings
   schedule: every 48 hours
-#- description: reload past facebook event data
-#  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE
-#  schedule: every monday 2:00
 - description: daily exception report
   url: /_ereporter?sender=mlambert@gmail.com&to=mlambert@gmail.com
   schedule: every day 00:00
