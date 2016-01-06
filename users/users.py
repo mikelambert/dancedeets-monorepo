@@ -15,7 +15,7 @@ class User(ndb.Model):
     fb_uid = property(lambda x: str(x.key.string_id()))
     fb_access_token = ndb.StringProperty(indexed=False)
     fb_access_token_expires = ndb.DateTimeProperty(indexed=False)
-    expired_oauth_token = ndb.BooleanProperty(indexed=False)
+    expired_oauth_token = ndb.BooleanProperty()
     expired_oauth_token_reason = ndb.StringProperty(indexed=False)
 
     # Statistics

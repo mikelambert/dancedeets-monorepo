@@ -8,6 +8,7 @@ from google.appengine.ext import deferred
 
 import fb_api
 from mapreduce import context
+from mapreduce import control
 from mapreduce import operation
 
 from util import fb_mapreduce
@@ -39,7 +40,6 @@ def mr_delete_bad_sources():
             'bucket_name': 'dancedeets-hrd.appspot.com',
         },
     }
-    from mapreduce import control
     control.start_map(
         name='Delete Bad Sources',
         reader_spec='mapreduce.input_readers.DatastoreInputReader',
@@ -81,20 +81,22 @@ def scrape_events_from_source_ids(fbl, source_ids):
     sources = thing_db.Source.get_by_key_name(source_ids)
     scrape_events_from_sources(fbl, sources)
 
-map_scrape_events_from_source = fb_mapreduce.mr_wrap(scrape_events_from_sources)
+map_scrape_events_from_sources = fb_mapreduce.mr_wrap(scrape_events_from_sources)
 
 def mapreduce_scrape_all_sources(fbl, min_potential_events=None, queue='super-slow-queue'):
     # Do not do the min_potential_events>1 filter in the mapreduce filter,
     # or it will want to do a range-shard on that property. Instead, pass-it-down
     # and use it as an early-return in the per-Source processing.
+    # TODO:....maybe we do want a range-shard filter? save on loading all the useless sources...
     fb_mapreduce.start_map(
         fbl,
         'Scrape All Sources',
-        'event_scraper.thing_scraper.map_scrape_events_from_source',
+        'event_scraper.thing_scraper.map_scrape_events_from_sources',
         'event_scraper.thing_db.Source',
         handle_batch_size=10,
-        output_writer={'min_potential_events': min_potential_events},
+        extra_mapper_params={'min_potential_events': min_potential_events},
         queue=queue,
+        randomize_tokens=True,
     )
 
 def mapreduce_create_sources_from_events(fbl):
