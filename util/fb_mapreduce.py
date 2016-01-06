@@ -44,7 +44,7 @@ def start_map(
         mapper_parameters=mapper_params,
     )
 
-def _get_fblookup(user=None):
+def get_fblookup(user=None):
     ctx = context.get()
     params = ctx.mapreduce_spec.mapper.params
     if params.get('fbl_access_tokens'):
@@ -83,19 +83,19 @@ def _get_multiple_tokens(token_count):
 def mr_wrap(func):
     if util.is_generator(func):
         def map_func(*args, **kwargs):
-            fbl = _get_fblookup()
+            fbl = get_fblookup()
             # this passes the generator on to the client as a generator, while still having this function be detected as a generator (instead of just returning the generator directly, which would work but not let this function be detected as a generator)
             for x in func(fbl, *args, **kwargs):
                 yield x
     else:
         def map_func(*args, **kwargs):
-            fbl = _get_fblookup()
+            fbl = get_fblookup()
             return func(fbl, *args, **kwargs)
     return map_func
 
 def mr_user_wrap(func):
     def map_func(user, *args, **kwargs):
-        fbl = _get_fblookup(user=user)
+        fbl = get_fblookup(user=user)
         return func(fbl, user, *args, **kwargs)
     return map_func
 
