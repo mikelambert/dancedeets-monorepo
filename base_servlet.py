@@ -634,4 +634,5 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
 
         # Refresh our potential event cache every N days (since they may have updated with better keywords, as often happens)
         expiry_days = int(self.request.get('expiry_days', 0)) or None
-        self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
+        if expiry_days:
+            self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
