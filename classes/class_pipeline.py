@@ -89,11 +89,14 @@ class EmailErrors(fixed_pipelines.Pipeline):
             rendered += errors
             rendered += []
 
+        body = '\n'.join(rendered)
+        logging.warning("%s", body)
+
         message = mail.EmailMessage(
             sender="DanceDeets <dancedeets@dancedeets.com>",
             subject="Crawl Errors for %s" % run_time.strftime('%b %d, %Y: %H:%M'),
             to='dancedeets@dancedeets.com',
-            html='\n'.join(rendered),
+            html=body,
         )
         message.send()
 
