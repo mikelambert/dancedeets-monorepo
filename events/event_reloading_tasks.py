@@ -69,15 +69,25 @@ def yield_load_fb_event(fbl, db_events):
         try:
             real_fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
             # If it's an empty fb_event with our main access token, and we have other tokens we'd like to try...
+            # If there are no visible_to_fb_uids and we don't have permissions, then we don't do this...
+            #
+            # TODO: This would happen on event deletion?
+            #
+            # TODO: Also, who sets visible_to_fb_uids?
+            #
+            # TODO: And what happens if we have a deleted event, with visible_to_fb_uids, that we attempt to run and query, and nothing happens?
+            #
+            # TODO: Why doesn't this update the event? Because add_event_tuple_if_updating seems to do nothing, probably because no fb_event is returned
             if real_fb_event['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS and db_event.visible_to_fb_uids:
                 empty_fb_event_ids.append(db_event.fb_event_id)
             else:
                 # Otherwise if it's visible to our main token, or there are no other tokens to try, deal with it here.
                 add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
-        except fb_api.NoFetchedDataException, e:
+        except fb_api.NoFetchedDataException as e:
             logging.info("No data fetched for event id %s: %s", db_event.fb_event_id, e)
     # Now trigger off a background reloading of empty fb_events
-    deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, allow_cache=fbl.allow_cache, only_if_updated=only_if_updated, update_geodata=update_geodata)
+    if empty_fb_event_ids:
+        deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, allow_cache=fbl.allow_cache, only_if_updated=only_if_updated, update_geodata=update_geodata)
     # And then re-save all the events in here
     event_updates.update_and_save_events(events_to_update, update_geodata=update_geodata)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
