@@ -4,7 +4,7 @@
 		{
 			"follow_symlinks": true,
 			"path": ".",
-			"folder_exclude_patterns": ["download"],
+			"folder_exclude_patterns": ["download", "build"],
 		},
     ],
     "build_systems":
