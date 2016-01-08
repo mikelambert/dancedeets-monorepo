@@ -22,5 +22,5 @@ setup(
         ('', ['keys.yaml']),
     ],
     include_package_data=True,
-    entry_points = {'scraper': ['settings = classes.scraper.settings']},
+    entry_points = {'scrapy': ['settings = classes.scraper.settings']},
 )
