@@ -54,7 +54,7 @@ def count_event_for_city(dbevent):
 
 def count_user_for_city(user):
     user_city = get_ranking_location(user.location)
-     for time_period in get_time_periods(user.creation_time):
+    for time_period in get_time_periods(user.creation_time):
         yield op.counters.Increment(make_key_name("City", city=user_city, time_period=time_period))
 
 def begin_ranking_calculations():
