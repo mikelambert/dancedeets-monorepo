@@ -327,7 +327,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         else:
             try:
                 add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.user.fb_uid, remapped_address=remapped_address, override_address=override_address, creating_method=eventdata.CM_ADMIN)
-            except Exception, e:
+            except Exception as e:
                 self.add_error(str(e))
             self.errors_are_fatal()
             self.user.add_message("Changes saved!")
@@ -336,9 +336,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 def get_id_from_url(url):
     if '#' in url:
         url = url.split('#')[1]
-    match = re.search('eid=(\d+)', url)
+    match = re.search(r'eid=(\d+)', url)
     if not match:
-        match = re.search('/events/(\d+)(?:/|$)', url)
+        match = re.search(r'/events/(\d+)(?:/|$)', url)
         if not match:
             return None
     return match.group(1)
@@ -410,7 +410,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
             # Skip cache so we always get latest data for newly-added event
             fb_event = self.fbl.get(fb_api.LookupEvent, event_id, allow_cache=False)
             add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.user.fb_uid, creating_method=eventdata.CM_USER)
-        except Exception, e:
+        except Exception as e:
             self.add_error(str(e))
 
         self.errors_are_fatal()
@@ -499,7 +499,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
             location_info = event_locations.LocationInfo(fb_event, debug=True)
             potential_event_dict[e] = potential_events.update_scores_for_potential_event(potential_event_dict[e], fb_event, fb_event_attending)
             template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, wrong_words=wrong_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
-        self.display['number_of_events']  = number_of_events 
+        self.display['number_of_events'] = number_of_events
         self.display['total_potential_events'] = '%s + %s' % (non_zero_events, zero_events)
         self.display['has_more_events'] = has_more_events
         self.display['potential_events_listing'] = template_events

@@ -127,7 +127,7 @@ def process_thing_feed(source, thing_feed):
     if 'data' not in thing_feed['feed']:
         logging.error("No 'data' found in: %s", thing_feed['feed'])
         return []
-    
+
     # save new name, feed_history_in_seconds
     source.compute_derived_properties(thing_feed)
     source.last_scrape_time = datetime.datetime.now()

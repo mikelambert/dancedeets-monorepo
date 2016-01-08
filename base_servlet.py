@@ -47,7 +47,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.jinja_env.filters['escapejs'] = text.escapejs
         self.jinja_env.globals['zip'] = zip
         self.jinja_env.globals['len'] = len
-        
+
         self.display['version'] = os.getenv('CURRENT_VERSION_ID').split('.')[-1]
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
@@ -67,6 +67,9 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         # set to false on various admin pages
         self.display['track_google_analytics'] = True
         super(BareBaseRequestHandler, self).__init__(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        raise NotImplementedError()
 
     def head(self, *args, **kwargs):
         return self.get(*args, **kwargs)
@@ -173,6 +176,12 @@ def get_location(fb_user):
 
 
 class BaseRequestHandler(BareBaseRequestHandler):
+
+    def __init__(self, *args, **kwargs):
+        super(BaseRequestHandler, self).__init__(*args, **kwargs)
+        self.fb_uid = None
+        self.user = None
+        self.access_token = None
 
     def get_long_lived_token_and_expires(self, request):
         response = facebook.get_user_from_cookie(request.cookies)
@@ -324,7 +333,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
             fbl.debug = 'fbl' in self.debug_list
             fb_user = fbl.get(fb_api.LookupUser, self.fb_uid)
-            
+
             referer = self.get_cookie('User-Referer')
             city = self.request.get('city') or self.get_location_from_headers() or get_location(fb_user)
             logging.info("User passed in a city of %r, facebook city is %s", self.request.get('city'), get_location(fb_user))
@@ -348,7 +357,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             return
 
         logging.info("Logged in uid %s with name %s and token %s", self.fb_uid, self.user.full_name, self.access_token)
-        
+
         # Track last-logged-in state
         hour_ago = datetime.datetime.now() - datetime.timedelta(hours=1)
         if not getattr(self.user, 'last_login_time', None) or self.user.last_login_time < hour_ago:
@@ -499,7 +508,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['styles'] = styles.STYLES
         self.display['us_cities'] = [
             'New York, NY',
-            'Los Angeles, CA', 
+            'Los Angeles, CA',
             'San Francisco, CA',
             '',
             'Anaheim, CA',
