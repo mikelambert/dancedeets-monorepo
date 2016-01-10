@@ -115,7 +115,7 @@ def file_identity(x):
     yield result
 
 class CombinerPipeline(pipeline_base._OutputSlotsMixin,
-                     pipeline_base.PipelineBase):
+                       pipeline_base.PipelineBase):
   output_names = mapper_pipeline.MapperPipeline.output_names
 
   def run(self,
@@ -153,7 +153,6 @@ class PassFileToAccessTokenFinder(pipeline_base._OutputSlotsMixin,
     handle.close()
     yield FindAccessTokensForEventsPipeline(event_ids)
 
-@app.route('/tasks/find_access_tokens_for_events')
 class FindEventsNeedingAccessTokensPipeline(base_handler.PipelineBase):
     def run(self, fbl_json, filters):
         bucket_name = 'dancedeets-hrd.appspot.com'
