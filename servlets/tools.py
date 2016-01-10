@@ -38,14 +38,11 @@ def map_delete_cached_with_wrong_user_id(fbo):
 
 
 def count_private_events(fbl, e_list):
-    fbl.get(fb_api.LookupEvent, [x.fb_event_id for x in e_list])
-    fbl.batch_fetch()
-
     ctx = context.get()
 
     for e in e_list:
         try:
-            fbe = fbl.fetched_data(fb_api.LookupEvent, e.fb_event_id)
+            fbe = e.fb_event
             if 'info' not in fbe:
                 logging.error("skipping row2 for event id %s", e.fb_event_id)
                 continue
@@ -55,7 +52,8 @@ def count_private_events(fbl, e_list):
                 ctx.counters.increment('nonpublic-and-large')
             ctx.counters.increment('privacy-%s' % privacy)
 
-            yield e.fb_event_id, privacy, attendees
+            start_date = e.start_time.strftime('%Y-%m-%d') if e.start_time else ''
+            yield '%s\n' % '\t'.join(str(x) for x in [e.fb_event_id, start_date, privacy, attendees])
         except fb_api.NoFetchedDataException:
             logging.error("skipping row for event id %s", e.fb_event_id)
 
@@ -70,7 +68,6 @@ def mr_private_events(fbl):
         'events.eventdata.DBEvent',
         handle_batch_size=80,
         queue=None,
-        filters=[('search_time_period', '=', dates.TIME_FUTURE)],
         output_writer_spec='mapreduce.output_writers.GoogleCloudStorageOutputWriter',
         output_writer={
             'mime_type': 'text/plain',
@@ -81,9 +78,7 @@ def mr_private_events(fbl):
 @app.route('/tools/oneoff')
 class OneOffHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        # thing_db.mr_count_potential_events(self.fbl)
-        from search import search
-        search.delete_from_fulltext_search_index(self.request.get('delete_event_id'))
+        mr_private_events(self.fbl)
 
 @app.route('/tools/owned_events')
 class OwnedEventsHandler(webapp2.RequestHandler):
