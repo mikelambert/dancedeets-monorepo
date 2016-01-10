@@ -32,7 +32,7 @@ def start_map(
         'filters': filters,
         'output_writer': output_writer,
     }
-    mapper_params.update(_get_fblookup_params(fbl, randomize_tokens=randomize_tokens))
+    mapper_params.update(get_fblookup_params(fbl, randomize_tokens=randomize_tokens))
     mapper_params.update(extra_mapper_params)
     control.start_map(
         name=name,
@@ -61,7 +61,7 @@ def get_fblookup(user=None):
         fbl.db.oldest_allowed = params['fbl_oldest_allowed']
     return fbl
 
-def _get_fblookup_params(fbl, randomize_tokens=False):
+def get_fblookup_params(fbl, randomize_tokens=False):
     params = {
         'fbl_fb_uid': fbl.fb_uid,
         'fbl_allow_cache': fbl.allow_cache,
