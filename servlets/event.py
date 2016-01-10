@@ -357,13 +357,19 @@ class AddHandler(base_servlet.BaseRequestHandler):
             logging.info("Showing page for adding event %s", event_id)
             fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
         else:
-            logging.info("Showing page for selecting an event to add")
+            logging.info("Showing page for selecting an event to add. Querying user %s", self.fb_uid)
             try:
                 user_events = self.fbl.get(fb_api.LookupUserEvents, self.fb_uid, allow_cache=False)
+            except fb_api.NoFetchedDataException as e:
+                try:
+                    user_events = self.fbl.get(fb_api.LookupUserEvents, self.fb_uid)
+                except fb_api.NoFetchedDataException, e:
+                    logging.error("Could not load event info for user: %s", e)
+                    user_events = None
+            if user_events is not None:
                 results_json = user_events['all_event_info']['data']
                 events = list(sorted(results_json, key=lambda x: x.get('start_time')))
-            except fb_api.NoFetchedDataException, e:
-                logging.error("Could not load event info for user: %s", e)
+            else:
                 events = []
             #STR_ID_MIGRATE: We still get ids as ints from our FQL
             loaded_fb_events = eventdata.DBEvent.get_by_ids([str(x['eid']) for x in events])
