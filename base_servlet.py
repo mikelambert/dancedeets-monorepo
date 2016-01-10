@@ -178,10 +178,10 @@ def get_location(fb_user):
 class BaseRequestHandler(BareBaseRequestHandler):
 
     def __init__(self, *args, **kwargs):
-        super(BaseRequestHandler, self).__init__(*args, **kwargs)
         self.fb_uid = None
         self.user = None
         self.access_token = None
+        super(BaseRequestHandler, self).__init__(*args, **kwargs)
 
     def get_long_lived_token_and_expires(self, request):
         response = facebook.get_user_from_cookie(request.cookies)
