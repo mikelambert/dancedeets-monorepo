@@ -93,9 +93,9 @@ class EmailErrors(fixed_pipelines.Pipeline):
         logging.warning("%s", body)
 
         message = mail.EmailMessage(
-            sender="DanceDeets <dancedeets@dancedeets.com>",
+            sender="DanceDeets Reports <reports@dancedeets.com>",
             subject="Crawl Errors for %s" % run_time.strftime('%b %d, %Y: %H:%M'),
-            to='dancedeets@dancedeets.com',
+            to='reports@dancedeets.com',
             html=body,
         )
         message.send()
