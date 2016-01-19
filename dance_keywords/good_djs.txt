@@ -49,3 +49,4 @@ timmy regisford
 timmy richardson
 tyrone francis
 tyrone\W+mixologist\W+francis
+vjuan allure # vogue
