@@ -6,7 +6,13 @@ from .. import items
 
 
 def parse_times(times):
-    start, end = times.split(u' - ')
+    sep = u' - '
+    if sep in times:
+        start, end = times.split(sep)
+    else:
+        second_sep = '.m.'
+        start, end = times.split(second_sep, 1)
+        start += second_sep
     return dateparser.parse(start).time(), dateparser.parse(end).time()
 
 class EDGE(items.StudioScraper):
@@ -44,6 +50,8 @@ class EDGE(items.StudioScraper):
                 if teacher_href:
                     teacher_link = teacher_href.extract()[0]
                 substitute_date_string = self._extract_text(date_cell)
+                # There was some bogus data in one of the cells
+                substitute_date_string = substitute_date_string.replace("'", "")
 
                 start_time, end_time = parse_times(times)
                 item = items.StudioClass()
