@@ -8,7 +8,11 @@ ONEBOX_DATA = {
         'Los Angeles Studio Classes': 'http://www.dancedeets.com/classes/la',
         'Los Angeles Wiki Info': 'http://dance-wiki.appspot.com/Los_Angeles',
     },
+    (1.3147298, 103.7769793): {
+        'Singapore Blog: Dance Meets': 'http://www.dancemeets.com/',
+    }
 }
+
 
 def get_links_for_query(query):
     onebox_links = []
