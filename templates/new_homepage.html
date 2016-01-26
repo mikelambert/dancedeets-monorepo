@@ -151,10 +151,30 @@
     <!--=== End Header v6 ===-->
 
     <!-- Interactive Slider v2 -->
-    <div class="interactive-slider-v2 img-v2">
-        <div class="container">
-            <h1>Welcome to Unify</h1>
-            <p>Clean and fully responsive Template.</p>
+    <!--TODO: maybe fullscreen is too large, and we just want a horizontal slice-->
+    <div class="fullscreen-static-image fullheight bg-color-darker">
+        <div class="container valign__middle text-center">
+            <span class="dancedeets-tagline color-light margin-bottom-10 animated fadeInUp wow" data-wow-duration="1.0s" data-wow-delay="0.0s">
+                STREET DANCE EVENTS.
+            </span>
+            <span class="dancedeets-tagline color-light margin-bottom-10 animated fadeInUp wow" data-wow-duration="1.0s" data-wow-delay="1.0s">
+            WORLDWIDE.
+            </span>
+            <div class="dancedeets-tagline-small color-light margin-bottom-100 animated fadeInDown wow" data-wow-duration="1.0s" data-wow-delay="2.0s">
+                Get up offa that thing, and dance 'til you feel better – James Brown
+            </div>
+            <div class="col-md-6 col-md-offset-3 animated fadeInUp wow" data-wow-duration="1.0s" data-wow-delay="2.0s">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Enter a city or country">
+                    <span class="input-group-btn">
+                        <button class="btn-u" type="button"><i class="fa fa-search"></i> FIND EVENTS</button>
+                    </span>
+                </div>
+                <div style="padding: 0.5em">
+                    OR TRACK EVENTS FROM YOUR PHONE
+                </div>
+                <button class="btn-u" type="button"><i class="fa fa-mobile"></i> DOWNLOAD DANCEDEETS</button>
+            </div>
         </div>
     </div>
     <!-- End Interactive Slider v2 -->
@@ -300,6 +320,8 @@
 <!-- JS Implementing Plugins -->
 <script type="text/javascript" src="assets/plugins/back-to-top.js"></script>
 <script type="text/javascript" src="assets/plugins/jquery.parallax.js"></script>
+<script type="text/javascript" src="assets/plugins/backstretch/backstretch-ini.js"></script>
+<script type="text/javascript" src="assets/plugins/wow-animations/js/wow.min.js"></script>
 <!-- JS Customization -->
 <script type="text/javascript" src="assets/js/custom.js"></script>
 <!-- JS Page Level -->
@@ -308,6 +330,7 @@
 <script type="text/javascript">
     jQuery(document).ready(function() {
         App.init();
+        new WOW().init();
         StyleSwitcher.initStyleSwitcher();
     });
 </script>
