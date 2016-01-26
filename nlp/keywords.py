@@ -1030,6 +1030,7 @@ FORMAT_TYPE = Name('FORMAT_TYPE', Any(
     'crew',
     u'クルー', # japanese crew
     u'크루', # korean crew
+    u'đội', # vietnamese team
 ))
 
 BAD_COMPETITION_TITLE_ONLY = Name('BAD_COMPETITION_TITLE_ONLY', Any(
@@ -1042,6 +1043,10 @@ BAD_COMPETITION_TITLE_ONLY = Name('BAD_COMPETITION_TITLE_ONLY', Any(
     'support',
     'follow',
     '(?:pre)?sale',
+))
+
+PRIZE = Name('PRIZE', Any(
+    'giải thưởng', # vietnamese prize
 ))
 
 
