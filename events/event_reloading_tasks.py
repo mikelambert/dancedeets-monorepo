@@ -73,9 +73,11 @@ def yield_load_fb_event(fbl, db_events):
             #
             # TODO: This would happen on event deletion?
             #
-            # TODO: Also, who sets visible_to_fb_uids?
+            # TODO: Also, who sets visible_to_fb_uids? Why didn't this event have any?
+            # TODO: Who re-sets visible_to_fb_uids after it goes empty? Can we ensure that keeps going?
             #
             # TODO: And what happens if we have a deleted event, with visible_to_fb_uids, that we attempt to run and query, and nothing happens?
+            # Should we distinguish between deleted (and inaccessible) and permissions-lost-to-token (and inaccessible)?
             #
             # TODO: Why doesn't this update the event? Because add_event_tuple_if_updating seems to do nothing, probably because no fb_event is returned
             if real_fb_event['empty'] == fb_api.EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS and db_event.visible_to_fb_uids:
