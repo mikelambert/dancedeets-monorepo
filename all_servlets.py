@@ -24,6 +24,7 @@ from servlets import event_proxy
 from servlets import feedback
 from servlets import login
 from servlets import mobile_apps
+from servlets import new_homepage
 from servlets import static_servlets
 from servlets import promote
 from servlets import profile_page
