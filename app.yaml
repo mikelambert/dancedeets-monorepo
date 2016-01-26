@@ -63,6 +63,30 @@ handlers:
   static_dir: css
 - url: /js
   static_dir: js
+- url: /assets/css
+  static_dir: assets/css
+- url: /assets/css/headers
+  static_dir: assets/css/headers
+- url: /assets/css/footers
+  static_dir: assets/css/footers
+- url: /assets/plugins
+  static_dir: assets/plugins
+- url: /assets/plugins/bootstrap/css
+  static_dir: assets/plugins/bootstrap/css
+- url: /assets/plugins/bootstrap/js
+  static_dir: assets/plugins/bootstrap/js
+- url: /assets/plugins/font-awesome/css
+  static_dir: assets/plugins/font-awesome/css
+- url: /assets/plugins/jquery
+  static_dir: assets/plugins/jquery
+- url: /assets/plugins/line-icons
+  static_dir: assets/plugins/line-icons
+- url: /assets/img
+  static_dir: assets/img
+- url: /assets/js
+  static_dir: assets/js
+- url: /assets/js/plugins
+  static_dir: assets/js/plugins
 - url: /images
   static_dir: images
 - url: /tools/.*
