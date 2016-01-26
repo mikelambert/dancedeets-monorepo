@@ -2,6 +2,10 @@
 
 {% block headbody %}
 <head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <link rel="icon" href="/images/fav32.png" sizes="32x32" type="image/x-icon">
 <link rel="icon" href="/images/fav64.png" sizes="64x64" type="image/x-icon">
 <link rel="icon" href="/images/fav128.png" sizes="128x128" type="image/x-icon">
@@ -18,13 +22,18 @@
 <meta name="apple-itunes-app" content="app-id=955212002">
 
 <link rel="stylesheet" href="/vcss/{{version}}/bootstrap.min.css">
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+
 {% if mobile_show_smartbanner %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.smartbanner/1.0.0/jquery.smartbanner.min.css">
 {% endif %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="/vcss/{{version}}/dancedeets.css">
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <meta property="fb:app_id" content="{{ app_id }}"/>
 {% block head_metatags %}{% endblock %}
@@ -209,8 +218,8 @@
 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 <ul>
 {% if not user %}
-    <li>A dope dancer? <button onclick="manualLogin();" class="btn btn-default"><i class="fa fa-sign-in fa-lg"></i> Join dancedeets and share your events</button> to help others find your dance scene.
-    <li>Learning to dance? <button onclick="manualLogin();" class="btn btn-default"><i class="fa fa-envelope fa-lg"></i> Subscribe to our weekly email</button> of upcoming events.
+    <li>A dope dancer? <button type="button" onclick="manualLogin();" class="btn btn-default"><i class="fa fa-sign-in fa-lg"></i> Join dancedeets and share your events</button> to help others find your dance scene.
+    <li>Learning to dance? <button type="button" onclick="manualLogin();" class="btn btn-default"><i class="fa fa-envelope fa-lg"></i> Subscribe to our weekly email</button> of upcoming events.
 {% endif %}
 {% if show_mobile_promo %}
     <li><a href="/mobile_apps" class="btn btn-default"><i class="fa fa-mobile fa-lg"></i> DanceDeets Mobile App</a> helps you find events on the go.
