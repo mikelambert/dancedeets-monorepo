@@ -61,9 +61,9 @@ body, h1, h2, h3, h4, h5, h6 {
 }
 
 .zoom img {
-    -moz-filter: brightness(0.8);
-    -webkit-filter: brightness(0.8);
-    filter: brightness(0.8);
+    -moz-filter: brightness(0.7);
+    -webkit-filter: brightness(0.7);
+    filter: brightness(0.7);
 }
 
 .text-overlay {

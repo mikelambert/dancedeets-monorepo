@@ -280,6 +280,11 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-3 col-sm-offset-9" style="text-align: right">
+                See more cities.
+            </div>
+        </div>
     </div>
 
     <!--=== Cube-Portfdlio ===-->
@@ -329,6 +334,11 @@
                 </div>
             </div>
         </div><!--/end Grid Container-->
+        <div class="row">
+            <div class="col-sm-3 col-sm-offset-9" style="text-align: right">
+                See more styles.
+            </div>
+        </div>
     </div>
     <!--=== End Cube-Portfdlio ===-->
 
@@ -395,22 +405,24 @@
 </div><!--/wrapper-->
 <div id="fb-root"></div>
 
-<!-- JS Global Compulsory -->
 <script type="text/javascript" src="assets/plugins/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-<!-- JS Implementing Plugins -->
-<script type="text/javascript" src="assets/plugins/backstretch/backstretch-ini.js"></script>
 <script type="text/javascript" src="assets/plugins/wow-animations/js/wow.min.js"></script>
-<!-- JS Customization -->
-<script type="text/javascript" src="assets/js/custom.js"></script>
-<!-- JS Page Level -->
 <script type="text/javascript" src="assets/js/app.js"></script>
 <script type="text/javascript">
     jQuery(document).ready(function() {
         App.init();
         new WOW().init();
 
-        //
+        // background-image rotation
+        $.getScript("assets/plugins/backstretch/jquery.backstretch.min.js", function(){
+            $(".fullscreen-static-image").backstretch([
+                "assets/img/header-boty.jpg",
+                "assets/img/header-bay-choreo.jpg",
+            ], {duration: 4000, fade: 800});
+        });
+
+        // animate-on-hover
         $(".animate-on-hover").hover(function(){
             $(this).addClass('animated ' + $(this).data('action'));
         });
