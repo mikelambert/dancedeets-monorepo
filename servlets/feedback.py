@@ -2,6 +2,7 @@ from google.appengine.api import mail
 
 import app
 import base_servlet
+import fb_api
 
 @app.route('/feedback')
 class FeedbackHandler(base_servlet.BaseRequestHandler):
@@ -11,9 +12,10 @@ class FeedbackHandler(base_servlet.BaseRequestHandler):
 
     def post(self):
         self.finish_preload()
+        fb_user = self.fbl.fetched_data(fb_api.LookupUser, self.fb_uid)
         from_line = 'From: %s <%s>' % (
-            self.fbl.fetched_data(self.fb_uid)['profile']['name'],
-            self.fbl.fetched_data(self.fb_uid)['profile']['email']
+            fb_user['profile']['name'],
+            fb_user['profile']['email']
         )
         message = mail.EmailMessage(
             sender="DanceDeets Feedback Form <events@dancedeets.com>",
