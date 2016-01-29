@@ -5,7 +5,7 @@ require('bootstrap')
 var WOW = require('wow')
 var App = require('./assets/js/app')
 
-//<!--from old site: jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3-->
+//from old site: jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3
 
 jQuery(document).ready(function() {
     App.init()
