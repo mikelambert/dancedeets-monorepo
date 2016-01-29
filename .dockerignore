@@ -1,12 +1,15 @@
 scratch
+bower_components
 download
 local_data
 local_data2
 local_data3
 grammar-processed.*
 full-logs.txt
+node_modules
 scratch*
 r/*
 snapshotted
 tmp
 build
+

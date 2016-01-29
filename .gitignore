@@ -28,3 +28,5 @@ scratch
 
 # installed libraries
 lib/
+bower_components/
+node_modules/

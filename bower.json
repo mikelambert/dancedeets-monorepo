@@ -1,0 +1,31 @@
+{
+  "name": "dancedeets",
+  "homepage": "http://github.com/dancedeets/",
+  "authors": [
+    "Mike Lambert <mlambert@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-backstretch-2": "^2.1.2",
+    "animate.css": "^3.5.1",
+    "bootstrap": "^3.3.6",
+    "jquery": "^2.2.0",
+    "jquery.cookie": "^1.4.1",
+    "jquery_lazyload": "jquery.lazyload#^1.9.7",
+    "wow": "wowjs#^1.1.2"
+  },
+  "resolutions": {
+    "jquery": "~1.9.1"
+  }
+}

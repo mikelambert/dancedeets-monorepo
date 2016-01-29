@@ -3,7 +3,7 @@
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
 <!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
 <head>
-    <title>Header v6 Semi Dark Transparent | Unify - Responsive Website Template</title>
+    <title>DanceDeets: Street Dance Events. Worldwide.</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
@@ -14,32 +14,19 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="favicon.ico">
 
-
-    <script>
-        function loadJS(u){var r = document.getElementsByTagName( "script" )[ 0 ], s = document.createElement( "script" );s.src = u;r.parentNode.insertBefore( s, r );}
-
-        if(!window.HTMLPictureElement){
-            document.createElement('picture');
-            loadJS("respimage.min.js");
-        }
-    </script>
     <!-- Web Fonts -->
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700&amp;subset=latin">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu:400,700&amp;subset=latin">
 
     <!-- CSS Global Compulsory -->
-    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-
-    <!-- CSS Header and Footer -->
-    <link rel="stylesheet" href="assets/css/headers/header-v6.css">
-    <link rel="stylesheet" href="assets/css/footers/footer-v2.css">
+    <link rel="stylesheet" href="/vcss/{{version}}/bootstrap.min.css">
 
     <!-- CSS Implementing Plugins -->
-    <link rel="stylesheet" href="assets/plugins/animate.css">
-    <link rel="stylesheet" href="assets/plugins/line-icons/line-icons.css">
-    <link rel="stylesheet" href="assets/plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.1/animate.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-    <!-- CSS Theme -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/headers/header-v6.css">
+    <link rel="stylesheet" href="assets/css/footers/footer-v2.css">
     <link rel="stylesheet" href="assets/css/theme-colors/default.css" id="style_color">
     <link rel="stylesheet" href="assets/css/theme-skins/dark.css">
 
@@ -426,32 +413,10 @@
 </div><!--/wrapper-->
 <div id="fb-root"></div>
 
-<script type="text/javascript" src="assets/plugins/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="assets/plugins/wow-animations/js/wow.min.js"></script>
-<script type="text/javascript" src="assets/js/app.js"></script>
+<!--from old site: jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3-->
+
+<script type="text/javascript" src="dist/js/main.js"></script>
 <script type="text/javascript">
-    jQuery(document).ready(function() {
-        App.init();
-        new WOW().init();
-
-        // background-image rotation
-        $.getScript("assets/plugins/backstretch/jquery.backstretch.min.js", function(){
-            $(".fullscreen-static-image").backstretch([
-                "assets/img/header-boty.jpg",
-                "assets/img/header-bay-choreo.jpg",
-            ], {duration: 4000, fade: 800});
-        });
-
-        // animate-on-hover
-        $(".animate-on-hover").hover(function(){
-            $(this).addClass('animated ' + $(this).data('action'));
-        });
-        $(".animate-on-hover").bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
-            $(this).removeClass('animated ' + $(this).data('action'));
-        });
-    });
-
 // Facebook/Login Code
 (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];

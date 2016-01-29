@@ -3,12 +3,23 @@
   "version": "0.0.1",
   "description": "DanceDeets Build rules",
   "devDependencies": {
+    "browserify": "^13.0.0",
     "concurrent-transform": "^1.0.0",
+    "debowerify": "^1.3.1",
     "gulp": "^3.9.0",
     "gulp-changed": "^1.3.0",
-    "gulp-responsive-images": "0.0.3"
+    "gulp-responsive-images": "0.0.3",
+    "gulp-uglify": "^1.5.1",
+    "vinyl-transform": "^1.0.0"
   },
   "dependencies": {
     "respimage": "^1.4.2"
-  }
+  },
+  "style": [
+    "assets/css/style.css",
+    "assets/css/headers/header-v6.css",
+    "assets/css/footers/footer-v2.css",
+    "assets/css/theme-colors/default.css",
+    "assets/css/theme-skins/dark.css"
+  ]
 }
