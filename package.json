@@ -1,0 +1,14 @@
+{
+  "name": "DanceDeets",
+  "version": "0.0.1",
+  "description": "DanceDeets Build rules",
+  "devDependencies": {
+    "concurrent-transform": "^1.0.0",
+    "gulp": "^3.9.0",
+    "gulp-changed": "^1.3.0",
+    "gulp-responsive-images": "0.0.3"
+  },
+  "dependencies": {
+    "respimage": "^1.4.2"
+  }
+}

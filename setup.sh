@@ -16,3 +16,8 @@ sudo python $TMP_DIR/get-pip.py
 pip install --upgrade --user -r $BASE_DIR/test-requirements.txt
 
 pip install --upgrade -t $BASE_DIR/lib -r $BASE_DIR/setup-requirements.txt
+
+# TODO: install node
+# TODO: install npm?
+brew install homebrew/science/vips --with-webp --with-graphicsmagick
+brew install graphicsmagick

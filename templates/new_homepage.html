@@ -14,6 +14,15 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="favicon.ico">
 
+
+    <script>
+        function loadJS(u){var r = document.getElementsByTagName( "script" )[ 0 ], s = document.createElement( "script" );s.src = u;r.parentNode.insertBefore( s, r );}
+
+        if(!window.HTMLPictureElement){
+            document.createElement('picture');
+            loadJS("respimage.min.js");
+        }
+    </script>
     <!-- Web Fonts -->
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700&amp;subset=latin">
 
@@ -197,7 +206,11 @@
             <div class="row text-center">
                 <div class="col-md-4 md-margin-bottom-50">
                     <a href="javscript:void(0);" class="animate-on-hover" data-action="flip">
-                        <img alt="" src="assets/img/deets-dancing.png"
+                        <img alt="" 
+                        srcset="
+                            dist/img/deets-activity-dancing.png 1x,
+                            dist/img/deets-activity-dancing.svg 2x"
+                        src="dist/img/deets-activity-dancing.png"
                         class="deets-activity-image margin-bottom-20 animated fadeIn wow"
                         data-wow-duration="1.0s">
                     </a>
@@ -208,7 +221,11 @@
                 </div>
                 <div class="col-md-4 flat-service md-margin-bottom-50">
                     <a href="javscript:void(0);" class="animate-on-hover" data-action="flip">
-                        <img alt="" src="assets/img/deets-traveling.png"
+                        <img alt=""
+                        srcset="
+                            dist/img/deets-activity-traveling.png 1x,
+                            dist/img/deets-activity-traveling.svg 2x"
+                        src="dist/img/deets-activity-traveling.png"
                         class="deets-activity-image margin-bottom-20 animated fadeIn wow"
                         data-wow-duration="1.0s">
                     </a>
@@ -219,7 +236,11 @@
                 </div>
                 <div class="col-md-4 flat-service">
                     <a href="javscript:void(0);" class="animate-on-hover" data-action="flip">
-                        <img alt="" src="assets/img/deets-flyering.png"
+                        <img alt=""
+                        srcset="
+                            dist/img/deets-activity-flyering.png 1x,
+                            dist/img/deets-activity-flyering.svg 2x"
+                        src="dist/img/deets-activity-flyering.png"
                         class="deets-activity-image margin-bottom-20 animated fadeIn wow"
                         data-wow-duration="1.0s">
                     </a>
@@ -248,7 +269,7 @@
                             <div class="text-overlay">
                                 New York
                             </div>
-                            <img src="assets/img/location-new-york.jpg" alt="" />
+                            <img src="dist/img/location-new-york.jpg" alt="" />
                         </a>
                     </div>
                 </div>
@@ -261,7 +282,7 @@
                             <div class="text-overlay">
                                 Los Angeles
                             </div>
-                            <img src="assets/img/location-los-angeles.jpg" alt="" />
+                            <img src="dist/img/location-los-angeles.jpg" alt="" />
                         </a>
                     </div>
                 </div>
@@ -274,7 +295,7 @@
                             <div class="text-overlay">
                                 Paris
                             </div>
-                            <img src="assets/img/location-paris.jpg" alt="" />
+                            <img src="dist/img/location-paris.jpg" alt="" />
                         </a>
                     </div>
                 </div>
@@ -301,7 +322,7 @@
                             <div class="text-overlay">
                                 Breaking
                             </div>
-                            <img src="assets/img/style-bboy.jpg" alt="" />
+                            <img src="dist/img/style-bboy.jpg" alt="" />
                         </a>
                     </div>
                 </div>
@@ -314,7 +335,7 @@
                             <div class="text-overlay">
                                 Popping
                             </div>
-                            <img src="assets/img/style-popping.png" alt="" />
+                            <img src="dist/img/style-popping.jpg" alt="" />
                         </a>
                     </div>
                 </div>
@@ -328,7 +349,7 @@
                                 Hip-Hop &amp;<br/>
                                 Street-Jazz
                             </div>
-                            <img src="assets/img/style-hiphop.jpg" alt="" />
+                            <img src="dist/img/style-hiphop.jpg" alt="" />
                         </a>
                     </div>
                 </div>
