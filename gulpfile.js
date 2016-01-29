@@ -6,9 +6,10 @@ var gulp = require('gulp');
 var gutil = require('gutil');
 var responsive = require('gulp-responsive-images');
 var os = require("os");
-var sourcemaps = require('gulp-sourcemaps');
+var parcelify = require("parcelify");
 var reactify   = require('reactify');
 var source     = require('vinyl-source-stream');
+var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 var watchify = require('watchify');
 const username = require('username')
@@ -29,8 +30,63 @@ var config = {
       },
     ],
     dest: dest + '/js'
+  },
+  css: {
+    src: src + '/javascript_app/**/*.{js,jsx}',
+    rootFiles: [
+      {
+        src  : src + '/main.js',
+        dest : 'main.css'
+      },
+    ],
+    dest: dest + '/css'
   }
 };
+
+gulp.task('parcelify', compileCss(true));
+
+function compileCss() {
+  return function (callback, watch) {
+    var files = config.css.rootFiles;
+
+    files.forEach(function (file) {
+      var b = browserify({
+          entries: file.src, // Only need initial file, browserify finds the deps
+          debug: true        // Enable sourcemaps
+      });
+      b.transform(debowerify);
+      // Convert JSX, if we see it
+      b.transform(reactify);
+
+      var p = parcelify(b, {
+        watch: watch,
+        bundles: {
+          style: config.css.dest + '/' + file.dest,
+        }
+      })
+        .on('done', function() {
+            console.log('parcelify done'); })
+
+        .on('error', function(err) {
+            console.log('parcelify error', err);
+            this.emit('end');
+        })
+
+        .on('packageCreated', function(package, isMain) {
+            // console.log('parcelify package created', package, isMain);
+         })
+
+        .on('bundleWritten', function() {
+            console.log('bundle written');
+        })
+
+        .on('assetUpdated', function(eventType, asset) {
+            // inject the css without reloading the page.
+            console.log('parcelify assetUpdated', eventType, asset); });
+      b.bundle();
+    });
+  }
+}
 
 gulp.task('browserify', compileJavascript(false));
 gulp.task('watchify', compileJavascript(true));
@@ -106,4 +162,9 @@ gulp.task('resize-deets', function () {
 gulp.task('copy-svg', function () {
   gulp.src(baseAssetsDir + 'img/*.svg')
     .pipe(gulp.dest('dist/img'));
+});
+
+gulp.task('copy-icons', function () {
+  gulp.src('assets/img/icons/social/*.png')
+    .pipe(gulp.dest('dist/img/icons/social/'));
 });

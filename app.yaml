@@ -67,6 +67,8 @@ handlers:
   static_dir: dist/img
 - url: /dist/js
   static_dir: dist/js
+- url: /dist/css
+  static_dir: dist/css
 - url: /assets/css
   static_dir: assets/css
 - url: /assets/css/headers

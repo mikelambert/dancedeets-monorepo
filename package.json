@@ -11,6 +11,7 @@
     "gulp-responsive-images": "0.0.3",
     "gulp-uglify": "^1.5.1",
     "gutil": "^1.6.4",
+    "parcelify": "^2.1.0",
     "vinyl-transform": "^1.0.0",
     "watchify": "^3.7.0"
   },
@@ -19,9 +20,18 @@
   },
   "style": [
     "assets/css/style.css",
+    "assets/css/ie8.css",
+    "assets/css/blocks.css",
+    "assets/css/plugins.css",
+    "assets/css/app.css",
+    "assets/css/one-theme.css",
     "assets/css/headers/header-v6.css",
     "assets/css/footers/footer-v2.css",
     "assets/css/theme-colors/default.css",
-    "assets/css/theme-skins/dark.css"
+    "assets/css/theme-skins/dark.css",
+
+    "bower_components/font-awesome/css/font-awesome.css",
+    "bower_components/animate.css/animate.css",
+    "assets/css/custom.css"
   ]
 }

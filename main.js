@@ -1,5 +1,5 @@
 require('jquery')
-require('jquery-backstretch')
+require('jquery-backstretch-2')
 
 require('bootstrap')
 var WOW = require('wow')
