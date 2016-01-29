@@ -34,7 +34,13 @@ body, h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
 }
 
-.panel { position: relative; overflow: hidden; display: block; border-radius: 0 !important;  }
+.panel {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    border-radius: 0 !important;
+    margin-bottom: 10px;
+}
 .panel-default { border-color: #ebedef !important; }
 .panel .panel-body { position: relative; padding: 0 !important; overflow: hidden; height: auto; }
 .panel .panel-body a { overflow: hidden; }
