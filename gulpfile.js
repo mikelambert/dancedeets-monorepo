@@ -168,3 +168,8 @@ gulp.task('copy-icons', function () {
   gulp.src('assets/img/icons/social/*.png')
     .pipe(gulp.dest('dist/img/icons/social/'));
 });
+
+gulp.task('copy-fonts', function () {
+  gulp.src('bower_components/font-awesome/fonts/*.*')
+    .pipe(gulp.dest('dist/fonts/'));
+});
