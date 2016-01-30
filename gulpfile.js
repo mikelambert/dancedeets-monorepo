@@ -8,6 +8,7 @@ var gutil = require('gutil');
 var responsive = require('gulp-responsive-images');
 var os = require("os");
 var reactify   = require('reactify');
+var rename = require('gulp-rename');
 var source     = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
@@ -48,7 +49,6 @@ var css_files = [
     "bower_components/bootstrap/dist/css/bootstrap.css",
     "assets/css/style.css",
     "assets/css/ie8.css",
-    "assets/css/blocks.css",
     "assets/css/plugins.css",
     "assets/css/app.css",
     "assets/css/one-theme.css",
@@ -61,18 +61,22 @@ var css_files = [
     "assets/css/custom.css"
 ];
 
-gulp.task('minify-css', function () {
+gulp.task('compile-css', function () {
     return gulp.src(css_files)
         .pipe(concatcss('main.css'))
+        .pipe(gulp.dest('dist/css'))
         .pipe(uncss({
             html: ['templates/new_homepage.html'],
             ignore: ['.animated.flip']
         }))
+        .pipe(rename({ extname: '.trim.css' }))
+        .pipe(gulp.dest('dist/css'))
         .pipe(cssnano())
+        .pipe(rename({ extname: '.min.css', basename: 'main' }))
         .pipe(gulp.dest('dist/css'));
 });
 
-gulp.task('browserify', compileJavascript(false));
+gulp.task('compile-js', compileJavascript(false));
 gulp.task('watchify', compileJavascript(true));
 
 function compileJavascript(watch) {
@@ -101,8 +105,11 @@ function compileJavascript(watch) {
           .pipe(source(file.dest))
           .pipe(buffer())
 
+          .pipe(gulp.dest(config.javascript.dest))
           .pipe(sourcemaps.init({loadMaps: true}))
             .pipe(uglify())
+            .on('error', gutil.log)
+            .pipe(rename({ extname: '.min.js' }))
           .pipe(sourcemaps.write('.'))
 
           .pipe(gulp.dest(config.javascript.dest));
@@ -118,7 +125,7 @@ function compileJavascript(watch) {
 }
 
 // builds resized style/location jpg files
-gulp.task('resize-style-location', function () {
+gulp.task('compile-images-style-location', function () {
   gulp.src(baseAssetsDir + 'img/**/*.jpg')
     .pipe(responsive({
       '{location,style}-*.jpg': [{
@@ -132,7 +139,7 @@ gulp.task('resize-style-location', function () {
 });
 
 // builds resized deets-activity png files
-gulp.task('resize-deets', function () {
+gulp.task('compile-images-deets-activity', function () {
   gulp.src(baseAssetsDir + 'img/**/*.{png,jpg}')
     .pipe(responsive({
       'deets-activity-*.png': [{
@@ -143,17 +150,19 @@ gulp.task('resize-deets', function () {
 });
 
 // gets deets-activity svg files
-gulp.task('copy-svg', function () {
+gulp.task('compile-svg', function () {
   gulp.src(baseAssetsDir + 'img/*.svg')
     .pipe(gulp.dest('dist/img'));
 });
 
-gulp.task('copy-icons', function () {
+gulp.task('compile-icons', function () {
   gulp.src('assets/img/icons/social/*.png')
     .pipe(gulp.dest('dist/img/icons/social/'));
 });
 
-gulp.task('copy-fonts', function () {
+gulp.task('compile-fonts', function () {
   gulp.src('bower_components/font-awesome/fonts/*.*')
     .pipe(gulp.dest('dist/fonts/'));
 });
+
+gulp.task('compile', ['compile-js', 'compile-css', 'compile-images-style-location', 'compile-images-deets-activity', 'compile-svg', 'compile-icons', 'compile-fonts']);
