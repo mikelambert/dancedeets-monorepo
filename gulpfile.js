@@ -64,6 +64,10 @@ var css_files = [
 gulp.task('minify-css', function () {
     return gulp.src(css_files)
         .pipe(concatcss('main.css'))
+        .pipe(uncss({
+            html: ['templates/new_homepage.html'],
+            ignore: ['.animated.flip']
+        }))
         .pipe(cssnano())
         .pipe(gulp.dest('dist/css'));
 });
