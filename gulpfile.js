@@ -1,16 +1,17 @@
 var browserify = require('browserify');
 var buffer     = require('vinyl-buffer');
-var changed = require("gulp-changed");
+var concatcss = require('gulp-concat-css');
+var cssnano = require('gulp-cssnano');
 var debowerify = require("debowerify");
 var gulp = require('gulp');
 var gutil = require('gutil');
 var responsive = require('gulp-responsive-images');
 var os = require("os");
-var parcelify = require("parcelify");
 var reactify   = require('reactify');
 var source     = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
+var uncss = require('gulp-uncss');
 var watchify = require('watchify');
 const username = require('username')
 
@@ -43,50 +44,29 @@ var config = {
   }
 };
 
-gulp.task('parcelify', compileCss(true));
+var css_files = [
+    "bower_components/bootstrap/dist/css/bootstrap.css",
+    "assets/css/style.css",
+    "assets/css/ie8.css",
+    "assets/css/blocks.css",
+    "assets/css/plugins.css",
+    "assets/css/app.css",
+    "assets/css/one-theme.css",
+    "assets/css/headers/header-v6.css",
+    "assets/css/footers/footer-v2.css",
+    "assets/css/theme-colors/default.css",
+    "assets/css/theme-skins/dark.css",
+    "bower_components/font-awesome/css/font-awesome.css",
+    "bower_components/bootstrap/dist/css/bootstrap.css",
+    "assets/css/custom.css"
+];
 
-function compileCss() {
-  return function (callback, watch) {
-    var files = config.css.rootFiles;
-
-    files.forEach(function (file) {
-      var b = browserify({
-          entries: file.src, // Only need initial file, browserify finds the deps
-          debug: true        // Enable sourcemaps
-      });
-      b.transform(debowerify);
-      // Convert JSX, if we see it
-      b.transform(reactify);
-
-      var p = parcelify(b, {
-        watch: watch,
-        bundles: {
-          style: config.css.dest + '/' + file.dest,
-        }
-      })
-        .on('done', function() {
-            console.log('parcelify done'); })
-
-        .on('error', function(err) {
-            console.log('parcelify error', err);
-            this.emit('end');
-        })
-
-        .on('packageCreated', function(package, isMain) {
-            // console.log('parcelify package created', package, isMain);
-         })
-
-        .on('bundleWritten', function() {
-            console.log('bundle written');
-        })
-
-        .on('assetUpdated', function(eventType, asset) {
-            // inject the css without reloading the page.
-            console.log('parcelify assetUpdated', eventType, asset); });
-      b.bundle();
-    });
-  }
-}
+gulp.task('minify-css', function () {
+    return gulp.src(css_files)
+        .pipe(concatcss('main.css'))
+        .pipe(cssnano())
+        .pipe(gulp.dest('dist/css'));
+});
 
 gulp.task('browserify', compileJavascript(false));
 gulp.task('watchify', compileJavascript(true));
