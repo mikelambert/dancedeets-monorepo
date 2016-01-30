@@ -57,7 +57,7 @@ var css_files = [
     "assets/css/theme-colors/default.css",
     "assets/css/theme-skins/dark.css",
     "bower_components/font-awesome/css/font-awesome.css",
-    "bower_components/bootstrap/dist/css/bootstrap.css",
+    "bower_components/animate.css/animate.css",
     "assets/css/custom.css"
 ];
 
