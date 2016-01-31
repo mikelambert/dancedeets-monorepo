@@ -46,8 +46,10 @@ var config = {
 };
 
 var css_files = [
-    "bower_components/bootstrap/dist/css/bootstrap.css",
+    // url() will be relative to the first file I think,
+    // so let's prioritize font-awesome since it references relative font files
     "bower_components/font-awesome/css/font-awesome.css",
+    "bower_components/bootstrap/dist/css/bootstrap.css",
     "bower_components/animate.css/animate.css",
     "assets/css/style.css",
     "assets/css/ie8.css",
@@ -73,7 +75,7 @@ gulp.task('compile-css-individual-debug', function () {
         .pipe(gulp.dest('dist/css-debug'));
 });
 
-gulp.task('compile-css', function () {
+gulp.task('compile-css-combined', function () {
     return gulp.src(css_files)
         .pipe(concatcss('main.css'))
         .pipe(gulp.dest('dist/css'))
@@ -87,6 +89,8 @@ gulp.task('compile-css', function () {
         .pipe(rename({ extname: '.min.css', basename: 'main' }))
         .pipe(gulp.dest('dist/css'));
 });
+
+gulp.task('compile-css', ['compile-css-individual-debug', 'compile-css-combined']);
 
 gulp.task('compile-js', compileJavascript(false));
 gulp.task('watchify', compileJavascript(true));
@@ -177,4 +181,4 @@ gulp.task('compile-fonts', function () {
     .pipe(gulp.dest('dist/fonts/'));
 });
 
-gulp.task('compile', ['compile-js', 'compile-css', 'compile-css-individual-debug', 'compile-images-style-location', 'compile-images-deets-activity', 'compile-svg', 'compile-icons', 'compile-fonts']);
+gulp.task('compile', ['compile-js', 'compile-css', 'compile-images-style-location', 'compile-images-deets-activity', 'compile-svg', 'compile-icons', 'compile-fonts']);
