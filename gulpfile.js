@@ -47,6 +47,8 @@ var config = {
 
 var css_files = [
     "bower_components/bootstrap/dist/css/bootstrap.css",
+    "bower_components/font-awesome/css/font-awesome.css",
+    "bower_components/animate.css/animate.css",
     "assets/css/style.css",
     "assets/css/ie8.css",
     "assets/css/plugins.css",
@@ -54,12 +56,22 @@ var css_files = [
     "assets/css/one-theme.css",
     "assets/css/headers/header-v6.css",
     "assets/css/footers/footer-v2.css",
-    "assets/css/theme-colors/default.css",
     "assets/css/theme-skins/dark.css",
-    "bower_components/font-awesome/css/font-awesome.css",
-    "bower_components/animate.css/animate.css",
     "assets/css/custom.css"
 ];
+
+gulp.task('compile-css-individual-debug', function () {
+    return gulp.src(css_files)
+        .pipe(uncss({
+            html: ['templates/new_homepage.html'],
+            ignore: ['.animated.flip']
+        }))
+        .pipe(rename({ extname: '.trim.css' }))
+        .pipe(gulp.dest('dist/css-debug'))
+        .pipe(cssnano())
+        .pipe(rename({ extname: '.min.css', }))
+        .pipe(gulp.dest('dist/css-debug'));
+});
 
 gulp.task('compile-css', function () {
     return gulp.src(css_files)
@@ -165,4 +177,4 @@ gulp.task('compile-fonts', function () {
     .pipe(gulp.dest('dist/fonts/'));
 });
 
-gulp.task('compile', ['compile-js', 'compile-css', 'compile-images-style-location', 'compile-images-deets-activity', 'compile-svg', 'compile-icons', 'compile-fonts']);
+gulp.task('compile', ['compile-js', 'compile-css', 'compile-css-individual-debug', 'compile-images-style-location', 'compile-images-deets-activity', 'compile-svg', 'compile-icons', 'compile-fonts']);

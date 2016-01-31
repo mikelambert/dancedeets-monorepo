@@ -90,4 +90,9 @@ body, h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
 }
 
+/* Found this in our main page. Where does it go? */
+.dropdown-submenu.last-menu > .dropdown-menu {
+    left: -100% !important;
+}
+
 

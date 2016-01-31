@@ -16,18 +16,8 @@
 
     <!-- Web Fonts -->
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu:400,700&amp;subset=latin">
-
-
-    <!-- CSS Implementing Plugins -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-
     <link rel="stylesheet" href="dist/css/main.css">
 
-    <style type="text/css">
-        .dropdown-submenu.last-menu > .dropdown-menu {
-          left: -100% !important;
-        }
-    </style>
     <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="{{ result_title }}" /> 
@@ -129,10 +119,16 @@
                                 </ul>
                             </li>
 
-                            <li class="dropdown">
+                            <li>
                                 <a href="/events_add">
                                     Add Event
                                 </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <button class="btn-u">Login</button>
+                                </a>
+                                <!--<div class="nav-text"><fb:login-button length="long" scope="{{fb_permissions}}"></fb:login-button></div>-->
                             </li>
                         </ul>
                     </div>
@@ -285,7 +281,7 @@
     </div>
 
     <!--=== Cube-Portfdlio ===-->
-    <div class="cube-portfolio container margin-bottom-60">
+    <div class="container margin-bottom-60">
         <h2>
             Popular Styles
         </h2>
