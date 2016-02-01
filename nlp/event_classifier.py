@@ -127,7 +127,7 @@ class ClassifiedEvent(object):
     def __init__(self, fb_event, language=None):
         self.fb_event = fb_event
         if 'name' not in fb_event['info']:
-            logging.info("fb event id is %s has no name, with value %s", fb_event['info']['id'], fb_event)
+            logging.info("fb event id is %s has no name, with value %s", fb_event['info'].get('id'), fb_event)
             self.search_text = ''
             self.title = ''
         else:

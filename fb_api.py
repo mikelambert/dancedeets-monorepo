@@ -255,15 +255,22 @@ class CacheSystem(object):
     def _is_cacheable(self, object_key, this_object):
         cls, oid = break_key(object_key)
         #TODO: clean this up with inheritance
-        if cls != LookupEvent:
-            return True
-        # intentionally empty object
-        elif this_object.get('empty'):
-            return True
-        elif this_object.get('info') and is_public_ish(this_object):
-            return True
-        else:
-            return False
+        if cls == LookupEvent:
+            # intentionally empty object
+            if this_object.get('empty'):
+                return True
+            elif this_object.get('info') and is_public_ish(this_object):
+                return True
+            else:
+                return False
+        elif cls == LookupUser:
+            # Always should be able to get something for a given User.
+            # If we don't have it, let's avoid caching, and just retry later.
+            if this_object.get('empty'):
+                return False
+            else:
+                return True
+        return True
 
 
 class Memcache(CacheSystem):
