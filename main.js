@@ -13,8 +13,19 @@ jQuery(document).ready(function() {
 
     // background-image rotation
     $(".fullscreen-static-image").backstretch([
-        "assets/img/header-boty.jpg",
-        "assets/img/header-bay-choreo.jpg",
+        "dist/img/background-show-locking.jpg",
+        "dist/img/background-class-overhead.jpg",
+        "dist/img/background-club-turntable.jpg",
+        "dist/img/background-show-awards.jpg",
+
+        "dist/img/background-class-kids.jpg",
+        "dist/img/background-show-pose.jpg",
+        "dist/img/background-club-smoke-cypher.jpg",
+        "dist/img/background-class-rocking.jpg",
+        "dist/img/background-club-hustle.jpg",
+        "dist/img/background-show-dj.jpg",
+        "dist/img/background-club-headspin.jpg",
+
     ], {duration: 4000, fade: 800});
 
     // animate-on-hover

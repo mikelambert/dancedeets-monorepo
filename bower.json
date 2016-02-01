@@ -23,7 +23,10 @@
     "jquery": "^2.2.0",
     "jquery.cookie": "^1.4.1",
     "jquery_lazyload": "jquery.lazyload#^1.9.7",
-    "wow": "wowjs#^1.1.2"
+    "wow": "wowjs#^1.1.2",
+    "html5shiv": "^3.7.3",
+    "jquery.placeholder": "^0.2.4",
+    "respond": "^1.4.2"
   },
   "resolutions": {
     "jquery": "~1.9.1"

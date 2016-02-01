@@ -25,17 +25,24 @@ var src  = './';
 var dest = './dist';
 var config = {
   javascript: {
-    src: src + '/javascript_app/**/*.{js,jsx}',
     rootFiles: [
       {
         src  : src + '/main.js',
         dest : 'main.js'
       },
+      {
+        src  : src + '/ie8.js',
+        dest : 'ie8.js'
+      },
     ],
     dest: dest + '/js'
   },
   css: {
-    source_files: [
+    ignoreRules: [
+        '.animated.flip',
+        new RegExp('.header-v6(.header-dark-transparent)?.header-fixed-shrink'),
+    ],
+    sourceFiles: [
         // url() will be relative to the first file I think,
         // so let's prioritize font-awesome since it references relative font files
         "bower_components/font-awesome/css/font-awesome.css",
@@ -45,40 +52,41 @@ var config = {
         "assets/css/app.css",
         "assets/css/headers/header-v6.css",
         "assets/css/footers/footer-v2.css",
+        "assets/css/deets-purple.css",
         "assets/css/custom.css"
     ],
-    combo_file: 'main.css',
+    comboFile: 'main.css',
     dest: dest + '/css',
-    dest_debug: dest + '/css-debug'
+    destDebug: dest + '/css-debug'
   }
 };
 
 
 gulp.task('compile-css-individual-debug', function () {
-    return gulp.src(config.css.source_files)
+    return gulp.src(config.css.sourceFiles)
         .pipe(uncss({
             html: ['templates/new_homepage.html'],
-            ignore: ['.animated.flip']
+            ignore: config.css.ignoreRules,
         }))
         .pipe(rename({ extname: '.trim.css' }))
-        .pipe(gulp.dest(config.css.dest_debug))
+        .pipe(gulp.dest(config.css.destDebug))
         .pipe(cssnano())
         .pipe(rename({ extname: '.min.css', }))
-        .pipe(gulp.dest(config.css.dest_debug));
+        .pipe(gulp.dest(config.css.destDebug));
 });
 
 gulp.task('compile-css-combined', function () {
-    return gulp.src(config.css.source_files)
-        .pipe(concatcss(config.css.combo_file))
+    return gulp.src(config.css.sourceFiles)
+        .pipe(concatcss(config.css.comboFile))
         .pipe(gulp.dest(config.css.dest))
         .pipe(uncss({
             html: ['templates/new_homepage.html'],
-            ignore: ['.animated.flip']
+            ignore: config.css.ignoreRules,
         }))
         .pipe(rename({ extname: '.trim.css' }))
         .pipe(gulp.dest(config.css.dest))
         .pipe(cssnano())
-        .pipe(rename({ extname: '.min.css', basename: path.basename(config.css.combo_file, '.css') }))
+        .pipe(rename({ extname: '.min.css', basename: path.basename(config.css.comboFile, '.css') }))
         .pipe(gulp.dest(config.css.dest));
 });
 
@@ -132,9 +140,8 @@ function compileJavascript(watch) {
   };
 }
 
-// builds resized style/location jpg files
-gulp.task('compile-images-style-location', function () {
-  gulp.src(baseAssetsDir + 'img/**/*.jpg')
+gulp.task('compile-images-resize', function () {
+  gulp.src(baseAssetsDir + 'img/**/*.{png,jpg}')
     .pipe(responsive({
       '{location,style}-*.jpg': [{
         width: 450,
@@ -142,20 +149,18 @@ gulp.task('compile-images-style-location', function () {
         crop: 'true',
         quality: 60,
       }],
-    }))
-    .pipe(gulp.dest('dist/img'));
-});
-
-// builds resized deets-activity png files
-gulp.task('compile-images-deets-activity', function () {
-  gulp.src(baseAssetsDir + 'img/**/*.{png,jpg}')
-    .pipe(responsive({
       'deets-activity-*.png': [{
         height: 100,
+      }],
+      'background*.jpg': [{
+        width: 1600,
+        quality: 60,
       }],
     }))
     .pipe(gulp.dest('dist/img'));
 });
+
+gulp.task('compile-images', ['compile-images-resize', 'compile-svg', 'compile-icons']);
 
 // gets deets-activity svg files
 gulp.task('compile-svg', function () {
@@ -173,4 +178,4 @@ gulp.task('compile-fonts', function () {
     .pipe(gulp.dest('dist/fonts/'));
 });
 
-gulp.task('compile', ['compile-js', 'compile-css', 'compile-images-style-location', 'compile-images-deets-activity', 'compile-svg', 'compile-icons', 'compile-fonts']);
+gulp.task('compile', ['compile-js', 'compile-css', 'compile-images', 'compile-fonts']);
