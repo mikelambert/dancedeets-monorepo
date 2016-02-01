@@ -147,6 +147,7 @@ skip_files:
 - ^local_data(/.*)?
 - ^local_data2(/.*)?
 - ^local_data3(/.*)?
+- ^assets(/.*)?
 - ^bower_components(/.*)?
 - ^download(/.*)?
 - ^node_modules(/.*)?

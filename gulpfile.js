@@ -5,11 +5,12 @@ var cssnano = require('gulp-cssnano');
 var debowerify = require("debowerify");
 var gulp = require('gulp');
 var gutil = require('gutil');
-var responsive = require('gulp-responsive-images');
+var lodash = require('lodash')
 var os = require("os");
 var path = require('path');
 var reactify   = require('reactify');
 var rename = require('gulp-rename');
+var responsive = require('gulp-responsive-images');
 var source     = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
@@ -42,18 +43,22 @@ var config = {
         '.animated.flip',
         new RegExp('.header-v6(.header-dark-transparent)?.header-fixed-shrink'),
     ],
-    sourceFiles: [
-        // url() will be relative to the first file I think,
-        // so let's prioritize font-awesome since it references relative font files
+    bowerSourceFiles: [
+        // url() will be relative to the first file,
+        // so let's prioritize font-awesome since it references font files
         "bower_components/font-awesome/css/font-awesome.css",
         "bower_components/bootstrap/dist/css/bootstrap.css",
         "bower_components/animate.css/animate.css",
-        "assets/css/style.css",
+    ],
+    assetsSourceFiles: [
+        // url() will be relative to the first file I think,
+        // so let's prioritize app since it references social-icon images
         "assets/css/app.css",
+        "assets/css/style.css",
         "assets/css/headers/header-v6.css",
         "assets/css/footers/footer-v2.css",
-        "assets/css/deets-purple.css",
-        "assets/css/custom.css"
+        "assets/css/colors.css",
+        "assets/css/custom.css",
     ],
     comboFile: 'main.css',
     dest: dest + '/css',
@@ -63,7 +68,7 @@ var config = {
 
 
 gulp.task('compile-css-individual-debug', function () {
-    return gulp.src(config.css.sourceFiles)
+    return gulp.src(lodash.concat(config.css.bowerSourceFiles, config.css.assetsSourceFiles))
         .pipe(uncss({
             html: ['templates/new_homepage.html'],
             ignore: config.css.ignoreRules,
@@ -75,8 +80,24 @@ gulp.task('compile-css-individual-debug', function () {
         .pipe(gulp.dest(config.css.destDebug));
 });
 
-gulp.task('compile-css-combined', function () {
-    return gulp.src(config.css.sourceFiles)
+gulp.task('compile-css-combined-bower', function () {
+    return gulp.src(config.css.bowerSourceFiles)
+        .pipe(concatcss('bower.css'))
+        .pipe(gulp.dest(config.css.dest));
+});
+
+gulp.task('compile-css-combined-assets', function () {
+    return gulp.src(config.css.assetsSourceFiles)
+        .pipe(concatcss('assets.css'))
+        .pipe(gulp.dest(config.css.dest));
+});
+
+gulp.task('compile-css-combined', ['compile-css-combined-bower', 'compile-css-combined-assets'], function () {
+
+    return gulp.src([
+            config.css.dest + '/bower.css',
+            config.css.dest + '/assets.css'
+        ])
         .pipe(concatcss(config.css.comboFile))
         .pipe(gulp.dest(config.css.dest))
         .pipe(uncss({
@@ -155,6 +176,8 @@ gulp.task('compile-images-resize', function () {
       'background*.jpg': [{
         width: 1600,
         quality: 60,
+      }],
+      'deets-head-and-title-on-black.png': [{
       }],
     }))
     .pipe(gulp.dest('dist/img'));
