@@ -7,6 +7,7 @@ var gulp = require('gulp');
 var gutil = require('gutil');
 var responsive = require('gulp-responsive-images');
 var os = require("os");
+var path = require('path');
 var reactify   = require('reactify');
 var rename = require('gulp-rename');
 var source     = require('vinyl-source-stream');
@@ -34,60 +35,51 @@ var config = {
     dest: dest + '/js'
   },
   css: {
-    src: src + '/javascript_app/**/*.{js,jsx}',
-    rootFiles: [
-      {
-        src  : src + '/main.js',
-        dest : 'main.css'
-      },
+    source_files: [
+        // url() will be relative to the first file I think,
+        // so let's prioritize font-awesome since it references relative font files
+        "bower_components/font-awesome/css/font-awesome.css",
+        "bower_components/bootstrap/dist/css/bootstrap.css",
+        "bower_components/animate.css/animate.css",
+        "assets/css/style.css",
+        "assets/css/app.css",
+        "assets/css/headers/header-v6.css",
+        "assets/css/footers/footer-v2.css",
+        "assets/css/custom.css"
     ],
-    dest: dest + '/css'
+    combo_file: 'main.css',
+    dest: dest + '/css',
+    dest_debug: dest + '/css-debug'
   }
 };
 
-var css_files = [
-    // url() will be relative to the first file I think,
-    // so let's prioritize font-awesome since it references relative font files
-    "bower_components/font-awesome/css/font-awesome.css",
-    "bower_components/bootstrap/dist/css/bootstrap.css",
-    "bower_components/animate.css/animate.css",
-    "assets/css/style.css",
-    "assets/css/ie8.css",
-    "assets/css/plugins.css",
-    "assets/css/app.css",
-    "assets/css/one-theme.css",
-    "assets/css/headers/header-v6.css",
-    "assets/css/footers/footer-v2.css",
-    "assets/css/theme-skins/dark.css",
-    "assets/css/custom.css"
-];
 
 gulp.task('compile-css-individual-debug', function () {
-    return gulp.src(css_files)
+    return gulp.src(config.css.source_files)
         .pipe(uncss({
             html: ['templates/new_homepage.html'],
             ignore: ['.animated.flip']
         }))
         .pipe(rename({ extname: '.trim.css' }))
-        .pipe(gulp.dest('dist/css-debug'))
+        .pipe(gulp.dest(config.css.dest_debug))
         .pipe(cssnano())
         .pipe(rename({ extname: '.min.css', }))
-        .pipe(gulp.dest('dist/css-debug'));
+        .pipe(gulp.dest(config.css.dest_debug));
 });
 
 gulp.task('compile-css-combined', function () {
-    return gulp.src(css_files)
-        .pipe(concatcss('main.css'))
-        .pipe(gulp.dest('dist/css'))
+    return gulp.src(config.css.source_files)
+        .pipe(concatcss(config.css.combo_file))
+        .pipe(gulp.dest(config.css.dest))
         .pipe(uncss({
             html: ['templates/new_homepage.html'],
             ignore: ['.animated.flip']
         }))
         .pipe(rename({ extname: '.trim.css' }))
-        .pipe(gulp.dest('dist/css'))
+        .pipe(gulp.dest(config.css.dest))
         .pipe(cssnano())
-        .pipe(rename({ extname: '.min.css', basename: 'main' }))
-        .pipe(gulp.dest('dist/css'));
+        .pipe(rename({ extname: '.min.css', basename: path.basename(config.css.combo_file, '.css') }))
+        .pipe(gulp.dest(config.css.dest));
 });
 
 gulp.task('compile-css', ['compile-css-individual-debug', 'compile-css-combined']);
@@ -159,7 +151,7 @@ gulp.task('compile-images-deets-activity', function () {
   gulp.src(baseAssetsDir + 'img/**/*.{png,jpg}')
     .pipe(responsive({
       'deets-activity-*.png': [{
-        width: 100,
+        height: 100,
       }],
     }))
     .pipe(gulp.dest('dist/img'));
