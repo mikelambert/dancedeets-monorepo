@@ -4,7 +4,7 @@
 		{
 			"follow_symlinks": true,
 			"path": ".",
-			"folder_exclude_patterns": ["download", "build"],
+			"folder_exclude_patterns": ["download", "build", "node_modules", "bower_components"],
 		},
     ],
     "build_systems":
