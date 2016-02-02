@@ -75,7 +75,7 @@ var config = {
 
 function compileCssTo(destDir, destFilename) {
     return function() {
-        return gulp.src(lodash.concat(config.css.sourceFiles))
+        return gulp.src(config.css.sourceFiles)
             .pipe(sourcemaps.init({loadMaps: true}))
                 .pipe(gulpif('*.{sass,scss}', sass().on('error', sass.logError)))
                 .pipe(postcss([ autoprefixer({ browsers: ['> 2%'] }) ]))
