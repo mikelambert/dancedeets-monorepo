@@ -11,7 +11,7 @@ jQuery(document).ready(function() {
     new WOW.WOW().init(live=false);
 
     // background-image rotation
-    $(".fullscreen-static-image").backstretch([
+    var images = [
         "dist/img/background-show-locking.jpg",
         "dist/img/background-class-overhead.jpg",
         "dist/img/background-club-turntable.jpg",
@@ -24,8 +24,13 @@ jQuery(document).ready(function() {
         "dist/img/background-club-hustle.jpg",
         "dist/img/background-show-dj.jpg",
         "dist/img/background-club-headspin.jpg",
-
-    ], {duration: 4000, fade: 800});
+    ]
+    if ($(document).width() > 900) {
+        images = images.map(function(x) {
+            return x.replace('.jpg', '@2x.jpg');
+        });
+    }
+    $(".fullscreen-static-image").backstretch(images, {duration: 8000, fade: 1500});
 
     // animate-on-hover
     $(".animate-on-hover").hover(function(){

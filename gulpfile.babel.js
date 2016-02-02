@@ -184,16 +184,24 @@ gulp.task('compile-images-resize', () => {
         height: 100,
       }],
       'background*.jpg': [{
-        width: 1600,
+        width: 1200,
+        quality: 60,
+        suffix: '@2x',
+      }, {
+        width: 600,
         quality: 60,
       }],
       'deets-head-and-title-on-black.png': [{
+        height: 64*2,
+        suffix: '@2x',
+      }, {
+        height: 64,
       }],
     }))
-    .pipe($.cache($.imagemin({
+    .pipe($.imagemin({
       progressive: true,
       interlaced: true
-    })))
+    }))
     .pipe(gulp.dest('dist/img'));
 });
 
@@ -202,11 +210,19 @@ gulp.task('compile-images', ['compile-images-resize', 'compile-svg', 'compile-ic
 // gets deets-activity svg files
 gulp.task('compile-svg', () => {
   return gulp.src(baseAssetsDir + 'img/*.svg')
+    .pipe($.cache($.imagemin({
+      progressive: true,
+      interlaced: true
+    })))
     .pipe(gulp.dest('dist/img'));
 });
 
 gulp.task('compile-icons', () => {
   return gulp.src('assets/img/icons/social/*.png')
+    .pipe($.cache($.imagemin({
+      progressive: true,
+      interlaced: true
+    })))
     .pipe(gulp.dest('dist/img/icons/social/'));
 });
 
