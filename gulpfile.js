@@ -12,6 +12,8 @@ var path = require('path');
 var reactify   = require('reactify');
 var rename = require('gulp-rename');
 var responsive = require('gulp-responsive-images');
+var runSequence = require('run-sequence');
+var shell = require('gulp-shell');
 var source     = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
@@ -59,71 +61,67 @@ var config = {
     ],
     comboFile: 'main.css',
     dest: dest + '/css',
-    destDebug: dest + '/css-debug'
+    destDebug: dest + '/css-debug',
 
     // uncss parameters
-    ignoreRules: [
-        '.animated.flip',
-        new RegExp('.header-v6(.header-dark-transparent)?.header-fixed-shrink'),
-    ],
-    htmlFiles = [
-        'templates/new_homepage.html'
-    ],
+    uncssArgs: {
+        ignore: [
+            '.animated.flip',
+            new RegExp('.header-v6(.header-dark-transparent)?.header-fixed-shrink'),
+        ],
+        html: [
+            'templates/new_homepage.html'
+        ]
+    }
   }
 };
 
+var compileCss = function(srcs, destDir) {
+    return srcs
+        .pipe(sourcemaps.init({loadMaps: true}))
+            .pipe(uncss(config.css.uncssArgs))
+            .pipe(rename({ extname: '.trim.css' }))
+            .pipe(gulp.dest(destDir))
+            .pipe(cssnano({sourcemap: true}))
+            .pipe(rename({ extname: '.min.css', basename: path.basename(config.css.comboFile, '.css') }))
+            .pipe(gulp.dest(destDir))
+        .pipe(sourcemaps.write('.'));
+}
 
-gulp.task('compile-css-individual-debug', function () {
-    return gulp.src(lodash.concat(config.css.bowerSourceFiles, config.css.assetsSourceFiles))
-        .pipe(uncss({
-            html: config.css.htmlFiles,
-            ignore: config.css.ignoreRules,
-        }))
-        .pipe(rename({ extname: '.trim.css' }))
-        .pipe(gulp.dest(config.css.destDebug))
-        .pipe(cssnano({sourcemap: true}))
-        .pipe(rename({ extname: '.min.css', }))
-        .pipe(gulp.dest(config.css.destDebug));
-});
-
-gulp.task('compile-css-combined-bower', function () {
-    return gulp.src(config.css.bowerSourceFiles)
+var concatCss = function(srcs, destFilename) {
+    return srcs
         .pipe(sourcemaps.init())
-          .pipe(concat('bower.css'))
+            .pipe(concat(destFilename))
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(config.css.dest));
+}
+
+gulp.task('compile-css-combined-bower', function () {
+    return concatCss(
+        gulp.src(config.css.bowerSourceFiles),
+        'bower.css');
 });
 
 gulp.task('compile-css-combined-assets', function () {
-    return gulp.src(config.css.assetsSourceFiles)
-        .pipe(sourcemaps.init())
-          .pipe(concat('assets.css'))
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest(config.css.dest));
+    return concatCss(
+        gulp.src(config.css.assetsSourceFiles),
+        'assets.css');
 });
 
-gulp.task('compile-css-combined', ['compile-css-combined-bower', 'compile-css-combined-assets'], function () {
-
-    return gulp.src([
+gulp.task('compile-css', ['compile-css-combined-bower', 'compile-css-combined-assets'], function () {
+    return compileCss(
+        gulp.src([
             config.css.dest + '/bower.css',
             config.css.dest + '/assets.css'
-        ])
-        .pipe(sourcemaps.init({loadMaps: true}))
-          .pipe(concat(config.css.comboFile))
-          .pipe(gulp.dest(config.css.dest))
-          .pipe(uncss({
-              html: config.css.htmlFiles,
-              ignore: config.css.ignoreRules,
-          }))
-          .pipe(rename({ extname: '.trim.css' }))
-          .pipe(gulp.dest(config.css.dest))
-          .pipe(cssnano())
-          .pipe(rename({ extname: '.min.css', basename: path.basename(config.css.comboFile, '.css') }))
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(config.css.dest));
+        ]),
+        config.css.dest);
 });
 
-gulp.task('compile-css', ['compile-css-individual-debug', 'compile-css-combined']);
+gulp.task('compile-css-individual-debug', function () {
+    return compileCss(
+        gulp.src(lodash.concat(config.css.bowerSourceFiles, config.css.assetsSourceFiles)),
+        config.css.destDebug);
+});
 
 gulp.task('compile-js', compileJavascript(false));
 gulp.task('watchify', compileJavascript(true));
@@ -150,7 +148,7 @@ function compileJavascript(watch) {
       b.transform(reactify);
 
       function buildBundle() {
-        b.bundle()
+        return b.bundle()
           .pipe(source(file.dest))
           .pipe(buffer())
 
@@ -166,7 +164,7 @@ function compileJavascript(watch) {
       // On any dependency update, re-runs the bundler
       b.on('update', buildBundle);
       // And we need to run the builder once, to start things off.
-      buildBundle();
+      return buildBundle();
     });
 
     callback();
@@ -174,7 +172,7 @@ function compileJavascript(watch) {
 }
 
 gulp.task('compile-images-resize', function () {
-  gulp.src(baseAssetsDir + 'img/**/*.{png,jpg}')
+  return gulp.src(baseAssetsDir + 'img/**/*.{png,jpg}')
     .pipe(responsive({
       '{location,style}-*.jpg': [{
         width: 450,
@@ -199,18 +197,30 @@ gulp.task('compile-images', ['compile-images-resize', 'compile-svg', 'compile-ic
 
 // gets deets-activity svg files
 gulp.task('compile-svg', function () {
-  gulp.src(baseAssetsDir + 'img/*.svg')
+  return gulp.src(baseAssetsDir + 'img/*.svg')
     .pipe(gulp.dest('dist/img'));
 });
 
 gulp.task('compile-icons', function () {
-  gulp.src('assets/img/icons/social/*.png')
+  return gulp.src('assets/img/icons/social/*.png')
     .pipe(gulp.dest('dist/img/icons/social/'));
 });
 
 gulp.task('compile-fonts', function () {
-  gulp.src('bower_components/font-awesome/fonts/*.*')
+  return gulp.src('bower_components/font-awesome/fonts/*.*')
     .pipe(gulp.dest('dist/fonts/'));
 });
 
 gulp.task('compile', ['compile-js', 'compile-css', 'compile-images', 'compile-fonts']);
+
+gulp.task('clean', function() {
+  return del.sync('dist');
+})
+
+gulp.task('test', shell.task(['./nose.sh']));
+
+gulp.task('clean-build-test', function (callback) {
+    runSequence('clean', 'compile', 'test', callback);
+});
+
+gulp.task('deploy', ['clean-build-test'], shell.task(['./deploy.sh']));
