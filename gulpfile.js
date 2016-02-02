@@ -14,6 +14,7 @@ var reactify   = require('reactify');
 var rename = require('gulp-rename');
 var responsive = require('gulp-responsive-images');
 var runSequence = require('run-sequence');
+var postcss = require('gulp-postcss');
 var sass = require('gulp-sass');
 var shell = require('gulp-shell');
 var source     = require('vinyl-source-stream');
