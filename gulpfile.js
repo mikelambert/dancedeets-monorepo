@@ -5,6 +5,7 @@ var cssnano = require('gulp-cssnano');
 var debowerify = require("debowerify");
 var del = require('del');
 var gulp = require('gulp');
+var gulpif = require('gulp-if');
 var gutil = require('gutil');
 var lodash = require('lodash')
 var os = require("os");
@@ -76,55 +77,33 @@ var config = {
   }
 };
 
-var compileCss = function(srcs, destDir) {
-    return srcs
-        .pipe(sourcemaps.init({loadMaps: true}))
-            .pipe(uncss(config.css.uncssArgs))
-            .pipe(rename({ extname: '.trim.css' }))
-            .pipe(gulp.dest(destDir))
-            .pipe(cssnano({sourcemap: true}))
-            .pipe(rename({ extname: '.min.css', basename: path.basename(config.css.comboFile, '.css') }))
-            .pipe(gulp.dest(destDir))
-        .pipe(sourcemaps.write('.'));
+function compileCssTo(destDir, destFilename) {
+    return function() {
+        return gulp.src(lodash.concat(config.css.bowerSourceFiles, config.css.assetsSourceFiles))
+            .pipe(sourcemaps.init({loadMaps: true}))
+                .pipe(gulpif(destFilename != null, concat(destFilename || 'dummyArgSoConstructorPasses')))
+                .pipe(gulp.dest(destDir))
+                .pipe(uncss(config.css.uncssArgs))
+                .pipe(rename({ extname: '.trim.css' }))
+                .pipe(gulp.dest(destDir))
+                .pipe(cssnano({sourcemap: true}))
+                .pipe(rename({ extname: '.min.css', basename: path.basename(config.css.comboFile, '.css') }))
+                .pipe(gulp.dest(destDir))
+            .pipe(sourcemaps.write('.'));
+    }
 }
 
-var concatCss = function(srcs, destFilename) {
-    return srcs
-        .pipe(sourcemaps.init())
-            .pipe(concat(destFilename))
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest(config.css.dest));
-}
-
-gulp.task('compile-css-combined-bower', function () {
-    return concatCss(
-        gulp.src(config.css.bowerSourceFiles),
-        'bower.css');
-});
-
-gulp.task('compile-css-combined-assets', function () {
-    return concatCss(
-        gulp.src(config.css.assetsSourceFiles),
-        'assets.css');
-});
-
-gulp.task('compile-css', ['compile-css-combined-bower', 'compile-css-combined-assets'], function () {
-    return compileCss(
-        gulp.src([
-            config.css.dest + '/bower.css',
-            config.css.dest + '/assets.css'
-        ]),
-        config.css.dest);
-});
-
-gulp.task('compile-css-individual-debug', function () {
-    return compileCss(
-        gulp.src(lodash.concat(config.css.bowerSourceFiles, config.css.assetsSourceFiles)),
-        config.css.destDebug);
-});
+gulp.task('compile-css', compileCssTo(config.css.destDebug, 'main.css'));
+gulp.task('compile-css-individual-debug', compileCssTo(config.css.destDebug));
 
 gulp.task('compile-js', compileJavascript(false));
 gulp.task('watchify', compileJavascript(true));
+
+gulp.task('sass', function () {
+    gulp.src('./sass/**/*.scss')
+       .pipe(sass({outputStyle: 'compressed'}))
+       .pipe(gulp.dest('./css'));
+});
 
 function compileJavascript(watch) {
   return function (callback) {
