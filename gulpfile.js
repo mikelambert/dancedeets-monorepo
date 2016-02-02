@@ -1,8 +1,9 @@
 var browserify = require('browserify');
 var buffer     = require('vinyl-buffer');
-var concatcss = require('gulp-concat-css');
+var concat = require('gulp-concat');
 var cssnano = require('gulp-cssnano');
 var debowerify = require("debowerify");
+var del = require('del');
 var gulp = require('gulp');
 var gutil = require('gutil');
 var lodash = require('lodash')
@@ -39,10 +40,6 @@ var config = {
     dest: dest + '/js'
   },
   css: {
-    ignoreRules: [
-        '.animated.flip',
-        new RegExp('.header-v6(.header-dark-transparent)?.header-fixed-shrink'),
-    ],
     bowerSourceFiles: [
         // url() will be relative to the first file,
         // so let's prioritize font-awesome since it references font files
@@ -63,6 +60,15 @@ var config = {
     comboFile: 'main.css',
     dest: dest + '/css',
     destDebug: dest + '/css-debug'
+
+    // uncss parameters
+    ignoreRules: [
+        '.animated.flip',
+        new RegExp('.header-v6(.header-dark-transparent)?.header-fixed-shrink'),
+    ],
+    htmlFiles = [
+        'templates/new_homepage.html'
+    ],
   }
 };
 
@@ -70,25 +76,29 @@ var config = {
 gulp.task('compile-css-individual-debug', function () {
     return gulp.src(lodash.concat(config.css.bowerSourceFiles, config.css.assetsSourceFiles))
         .pipe(uncss({
-            html: ['templates/new_homepage.html'],
+            html: config.css.htmlFiles,
             ignore: config.css.ignoreRules,
         }))
         .pipe(rename({ extname: '.trim.css' }))
         .pipe(gulp.dest(config.css.destDebug))
-        .pipe(cssnano())
+        .pipe(cssnano({sourcemap: true}))
         .pipe(rename({ extname: '.min.css', }))
         .pipe(gulp.dest(config.css.destDebug));
 });
 
 gulp.task('compile-css-combined-bower', function () {
     return gulp.src(config.css.bowerSourceFiles)
-        .pipe(concatcss('bower.css'))
+        .pipe(sourcemaps.init())
+          .pipe(concat('bower.css'))
+        .pipe(sourcemaps.write())
         .pipe(gulp.dest(config.css.dest));
 });
 
 gulp.task('compile-css-combined-assets', function () {
     return gulp.src(config.css.assetsSourceFiles)
-        .pipe(concatcss('assets.css'))
+        .pipe(sourcemaps.init())
+          .pipe(concat('assets.css'))
+        .pipe(sourcemaps.write())
         .pipe(gulp.dest(config.css.dest));
 });
 
@@ -98,16 +108,18 @@ gulp.task('compile-css-combined', ['compile-css-combined-bower', 'compile-css-co
             config.css.dest + '/bower.css',
             config.css.dest + '/assets.css'
         ])
-        .pipe(concatcss(config.css.comboFile))
-        .pipe(gulp.dest(config.css.dest))
-        .pipe(uncss({
-            html: ['templates/new_homepage.html'],
-            ignore: config.css.ignoreRules,
-        }))
-        .pipe(rename({ extname: '.trim.css' }))
-        .pipe(gulp.dest(config.css.dest))
-        .pipe(cssnano())
-        .pipe(rename({ extname: '.min.css', basename: path.basename(config.css.comboFile, '.css') }))
+        .pipe(sourcemaps.init({loadMaps: true}))
+          .pipe(concat(config.css.comboFile))
+          .pipe(gulp.dest(config.css.dest))
+          .pipe(uncss({
+              html: config.css.htmlFiles,
+              ignore: config.css.ignoreRules,
+          }))
+          .pipe(rename({ extname: '.trim.css' }))
+          .pipe(gulp.dest(config.css.dest))
+          .pipe(cssnano())
+          .pipe(rename({ extname: '.min.css', basename: path.basename(config.css.comboFile, '.css') }))
+        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(config.css.dest));
 });
 
