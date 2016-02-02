@@ -30,6 +30,7 @@ twilio
 python-gcm
 python-gflags
 jinja2
+htmlmin
 
 # WebApps
 Flask

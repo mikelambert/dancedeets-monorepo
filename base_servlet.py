@@ -5,11 +5,13 @@ import Cookie
 import datetime
 import jinja2
 import json
+import htmlmin
 import logging
 import hashlib
 import os
 import urllib
 import webapp2
+
 
 from google.appengine.api.app_identity import app_identity
 from google.appengine.ext import db
@@ -136,6 +138,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
     def render_template(self, name):
         jinja_template = self.jinja_env.get_template("%s.html" % name)
         rendered = jinja_template.render(**self.display)
+        if 'clean' not in self.debug_list:
+            rendered = htmlmin.minify(rendered)
         self.response.out.write(rendered)
 
     def get_location_from_headers(self, city=True):
