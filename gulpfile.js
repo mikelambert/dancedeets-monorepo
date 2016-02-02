@@ -14,6 +14,7 @@ var reactify   = require('reactify');
 var rename = require('gulp-rename');
 var responsive = require('gulp-responsive-images');
 var runSequence = require('run-sequence');
+var sass = require('gulp-sass');
 var shell = require('gulp-shell');
 var source     = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
@@ -51,7 +52,7 @@ var config = {
         "assets/css/style.css",
         "assets/css/headers/header-v6.css",
         "assets/css/footers/footer-v2.css",
-        "assets/css/colors.css",
+        "assets/css/colors.scss",
         "assets/css/custom.css",
     ],
     comboFile: 'main.css',
@@ -75,6 +76,7 @@ function compileCssTo(destDir, destFilename) {
     return function() {
         return gulp.src(lodash.concat(config.css.sourceFiles))
             .pipe(sourcemaps.init({loadMaps: true}))
+                .pipe(gulpif('*.{sass,scss}', sass().on('error', sass.logError)))
                 .pipe(gulpif(destFilename != null, concat(destFilename || 'dummyArgSoConstructorPasses')))
                 .pipe(gulp.dest(destDir))
                 .pipe(uncss(config.css.uncssArgs))
