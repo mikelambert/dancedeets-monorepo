@@ -94,12 +94,6 @@ gulp.task('compile-css-individual-debug', compileCssTo(config.css.destDebug));
 gulp.task('compile-js', compileJavascript(false));
 gulp.task('watchify', compileJavascript(true));
 
-gulp.task('sass', function () {
-    gulp.src('./sass/**/*.scss')
-       .pipe(sass({outputStyle: 'compressed'}))
-       .pipe(gulp.dest('./css'));
-});
-
 function compileJavascript(watch) {
   return function (callback) {
     var files = config.javascript.rootFiles;
