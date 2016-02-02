@@ -219,7 +219,7 @@ gulp.task('compile-fonts', () => {
 // Run PageSpeed Insights
 gulp.task('pagespeed', cb =>
   // Update the below URL to the public URL of your site
-  pagespeed('www.dancedeets.com', {
+  pagespeed('http://www.dancedeets.com/new_homepage', {
     strategy: 'mobile'
     // By default we use the PageSpeed Insights free (no API key) tier.
     // Use a Google Developer API key if you have one: http://goo.gl/RkN0vE
