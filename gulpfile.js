@@ -1,3 +1,4 @@
+var autoprefixer = require('autoprefixer');
 var browserify = require('browserify');
 var buffer     = require('vinyl-buffer');
 var concat = require('gulp-concat');
@@ -76,6 +77,7 @@ function compileCssTo(destDir, destFilename) {
         return gulp.src(lodash.concat(config.css.sourceFiles))
             .pipe(sourcemaps.init({loadMaps: true}))
                 .pipe(gulpif('*.{sass,scss}', sass().on('error', sass.logError)))
+                .pipe(postcss([ autoprefixer({ browsers: ['> 2%'] }) ]))
                 .pipe(gulpif(destFilename != null, concat(destFilename || 'dummyArgSoConstructorPasses')))
                 .pipe(gulp.dest(destDir))
                 .pipe(uncss(config.css.uncssArgs))

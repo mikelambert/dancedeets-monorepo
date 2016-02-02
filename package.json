@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "DanceDeets Build rules",
   "devDependencies": {
+    "autoprefixer": "^6.3.1",
     "browserify": "^13.0.0",
     "del": "^2.2.0",
     "gulp": "^3.9.0",
