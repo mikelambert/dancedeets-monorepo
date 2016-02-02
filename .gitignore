@@ -3,6 +3,7 @@
 *.swp
 app-nose.yaml
 app-devserver.yaml
+dist/
 
 # secret files
 keys.yaml
