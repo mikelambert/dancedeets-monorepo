@@ -3,21 +3,31 @@
   "version": "0.0.1",
   "description": "DanceDeets Build rules",
   "devDependencies": {
-    "autoprefixer": "^6.3.1",
+    "babel-core": "^6.4.5",
+    "babel-preset-es2015": "^6.3.13",
     "browserify": "^13.0.0",
     "del": "^2.2.0",
+    "eslint-config-google": "^0.3.0",
     "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-cache": "^0.4.2",
     "gulp-cssnano": "^2.1.0",
-    "gulp-postcss": "^6.0.1",
+    "gulp-eslint": "^1.1.1",
+    "gulp-if": "^2.0.0",
+    "gulp-imagemin": "^2.4.0",
+    "gulp-load-plugins": "^1.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-responsive-images": "0.0.3",
     "gulp-sass": "^2.1.1",
     "gulp-shell": "^0.5.2",
+    "gulp-size": "^2.0.0",
+    "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^1.5.1",
     "gulp-uncss": "^1.0.4",
     "gutil": "^1.6.4",
     "lodash": "^4.1.0",
     "run-sequence": "^1.1.5",
+    "vinyl-source-stream": "^1.1.0",
     "vinyl-transform": "^1.0.0",
     "watchify": "^3.7.0"
   },
@@ -29,5 +39,12 @@
     "jquery.placeholder": "^2.0.7",
     "respond.js": "^1.4.2",
     "wow.js": "^1.1.2"
+  },
+  "engines": {
+    "node": ">=0.12"
+  },
+  "private": true,
+  "eslintConfig": {
+    "extends": "google"
   }
 }
