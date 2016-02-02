@@ -91,7 +91,7 @@ function compileCssTo(destDir, destFilename) {
     }
 }
 
-gulp.task('compile-css', compileCssTo(config.css.destDebug, 'main.css'));
+gulp.task('compile-css', compileCssTo(config.css.dest, 'main.css'));
 gulp.task('compile-css-individual-debug', compileCssTo(config.css.destDebug));
 
 gulp.task('compile-js', compileJavascript(false));
@@ -192,4 +192,6 @@ gulp.task('clean-build-test', function (callback) {
     runSequence('clean', 'compile', 'test', callback);
 });
 
+// TODO: someday we may want something more elaborate like:
+// https://github.com/gulpjs/gulp/blob/master/docs/recipes/automate-release-workflow.md
 gulp.task('deploy', ['clean-build-test'], shell.task(['./deploy.sh']));
