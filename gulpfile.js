@@ -34,11 +34,11 @@ var config = {
   javascript: {
     rootFiles: [
       {
-        src  : src + '/main.js',
+        src  : src + '/assets/js/main.js',
         dest : 'main.js'
       },
       {
-        src  : src + '/ie8.js',
+        src  : src + '/assets/js/ie8.js',
         dest : 'ie8.js'
       },
     ],
