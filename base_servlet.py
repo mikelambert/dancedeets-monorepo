@@ -139,7 +139,11 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         jinja_template = self.jinja_env.get_template("%s.html" % name)
         rendered = jinja_template.render(**self.display)
         if 'clean' not in self.debug_list:
-            rendered = htmlmin.minify(rendered)
+            rendered = htmlmin.minify(rendered,
+                remove_comments=True,
+                remove_empty_space=True,
+                reduce_boolean_attributes=True,
+            )
         self.response.out.write(rendered)
 
     def get_location_from_headers(self, city=True):
