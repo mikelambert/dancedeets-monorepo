@@ -39,7 +39,6 @@
     "jquery.backstretch": "^2.1.1",
     "jquery.placeholder": "^2.0.7",
     "respond.js": "^1.4.2",
-    "wow.js": "^1.1.2"
   },
   "engines": {
     "node": ">=0.12"

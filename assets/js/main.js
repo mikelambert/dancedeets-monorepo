@@ -1,14 +1,14 @@
 global.jQuery = global.$ = require('jquery');
 require('jquery.backstretch');
 require('bootstrap');
-var WOW = require('wow.js');
+//var WOW = require('wow.js');
 var App = require('./app');
 
 //from old site: jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3
 
 jQuery(document).ready(function() {
     App.init()
-    new WOW.WOW().init(live=false);
+//    new WOW.WOW().init(live=false);
 
     // background-image rotation
     var images = [
