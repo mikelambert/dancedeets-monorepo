@@ -1,9 +1,8 @@
-require('jquery')
-require('jquery-backstretch-2')
-
-require('bootstrap')
-var WOW = require('wow')
-var App = require('./assets/js/app')
+global.jQuery = global.$ = require('jquery');
+require('jquery.backstretch');
+require('bootstrap');
+var WOW = require('wow.js');
+var App = require('./assets/js/app');
 
 //from old site: jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3
 

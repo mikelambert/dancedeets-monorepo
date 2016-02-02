@@ -2,7 +2,6 @@ var browserify = require('browserify');
 var buffer     = require('vinyl-buffer');
 var concat = require('gulp-concat');
 var cssnano = require('gulp-cssnano');
-var debowerify = require("debowerify");
 var del = require('del');
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
@@ -45,9 +44,9 @@ var config = {
   },
   css: {
     sourceFiles: [
-        "bower_components/font-awesome/css/font-awesome.css",
-        "bower_components/bootstrap/dist/css/bootstrap.css",
-        "bower_components/animate.css/animate.css",
+        "node_modules/font-awesome/css/font-awesome.css",
+        "node_modules/bootstrap/dist/css/bootstrap.css",
+        "node_modules/animate.css/animate.css",
         "assets/css/app.css",
         "assets/css/style.css",
         "assets/css/headers/header-v6.css",
@@ -117,8 +116,6 @@ function compileJavascript(watch) {
       // Output build logs to terminal
       b.on('log', gutil.log);
 
-      // Allow us to use raw Bower modules
-      b.transform(debowerify);
       // Convert JSX, if we see it
       b.transform(reactify);
 
