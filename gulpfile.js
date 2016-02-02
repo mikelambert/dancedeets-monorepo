@@ -43,16 +43,10 @@ var config = {
     dest: dest + '/js'
   },
   css: {
-    bowerSourceFiles: [
-        // url() will be relative to the first file,
-        // so let's prioritize font-awesome since it references font files
+    sourceFiles: [
         "bower_components/font-awesome/css/font-awesome.css",
         "bower_components/bootstrap/dist/css/bootstrap.css",
         "bower_components/animate.css/animate.css",
-    ],
-    assetsSourceFiles: [
-        // url() will be relative to the first file I think,
-        // so let's prioritize app since it references social-icon images
         "assets/css/app.css",
         "assets/css/style.css",
         "assets/css/headers/header-v6.css",
@@ -79,7 +73,7 @@ var config = {
 
 function compileCssTo(destDir, destFilename) {
     return function() {
-        return gulp.src(lodash.concat(config.css.bowerSourceFiles, config.css.assetsSourceFiles))
+        return gulp.src(lodash.concat(config.css.sourceFiles))
             .pipe(sourcemaps.init({loadMaps: true}))
                 .pipe(gulpif(destFilename != null, concat(destFilename || 'dummyArgSoConstructorPasses')))
                 .pipe(gulp.dest(destDir))
