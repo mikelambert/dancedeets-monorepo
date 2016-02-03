@@ -6,8 +6,6 @@
 // You can read more about the new JavaScript features here:
 // https://babeljs.io/docs/learn-es2015/
 
-
-import autoprefixer from 'autoprefixer';
 import browserify from 'browserify';
 import buffer from 'vinyl-buffer';
 import del from 'del';
@@ -15,7 +13,6 @@ import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import gutil from 'gutil';
 import mqpacker from 'css-mqpacker';
-import os from 'os';
 import path from 'path';
 import reactify from 'reactify';
 import runSequence from 'run-sequence';
@@ -26,35 +23,34 @@ import {output as pagespeed} from 'psi';
 
 const $ = gulpLoadPlugins();
 
-var baseAssetsDir = '/Users/' + username.sync() + '/Dropbox/dancedeets-art/build-assets/'
-
-var src  = './';
+var baseAssetsDir = '/Users/' + username.sync() + '/Dropbox/dancedeets-art/build-assets/';
+var src = './';
 var dest = './dist';
 var config = {
   javascript: {
     rootFiles: [
       {
-        src  : src + '/assets/js/main.js',
-        dest : 'main.js'
+        src: src + '/assets/js/main.js',
+        dest: 'main.js',
       },
       {
-        src  : src + '/assets/js/ie8.js',
-        dest : 'ie8.js'
+        src: src + '/assets/js/ie8.js',
+        dest: 'ie8.js',
       },
     ],
-    dest: dest + '/js'
+    dest: dest + '/js',
   },
   css: {
     sourceFiles: [
-        "node_modules/font-awesome/css/font-awesome.css",
-        "node_modules/bootstrap/dist/css/bootstrap.css",
-        "node_modules/animate.css/animate.css",
-        "assets/css/app.css",
-        "assets/css/style.css",
-        "assets/css/headers/header-v6.css",
-        "assets/css/footers/footer-v2.css",
-        "assets/css/colors.scss",
-        "assets/css/custom.css",
+      'node_modules/font-awesome/css/font-awesome.css',
+      'node_modules/bootstrap/dist/css/bootstrap.css',
+      'node_modules/animate.css/animate.css',
+      'assets/css/app.css',
+      'assets/css/style.css',
+      'assets/css/headers/header-v6.css',
+      'assets/css/footers/footer-v2.css',
+      'assets/css/colors.scss',
+      'assets/css/custom.css',
     ],
     comboFile: 'main.css',
     dest: dest + '/css',
@@ -62,75 +58,72 @@ var config = {
 
     // uncss parameters
     uncssArgs: {
-        ignore: [
-            '.animated.flip',
-            new RegExp('.header-v6(.header-dark-transparent)?.header-fixed-shrink'),
-        ],
-        html: [
-            'templates/new_homepage.html'
-        ]
-    }
-  }
+      ignore: [
+        '.animated.flip',
+        new RegExp('.header-v6(.header-dark-transparent)?.header-fixed-shrink'),
+      ],
+      html: [
+        'templates/new_homepage.html',
+      ],
+    },
+  },
 };
-
 
 // Lint JavaScript
 gulp.task('lint', () => {
   return gulp.src('assets/js/**/*.js')
     .pipe($.eslint())
     .pipe($.eslint.format())
-    .pipe($.eslint.failAfterError())
+    .pipe($.eslint.failAfterError());
 });
 
 // Do we want this?
 //    .pipe($.newer('.tmp/styles'))
 function compileCssTo(destDir, destFilename) {
-    return () => {
-        return gulp.src(config.css.sourceFiles)
-            .pipe($.sourcemaps.init())
-                // This handles a bunch for us:
-                // sass: Preprocesses your CSS using Sass.
-                // autoprefixer: Adds vendor prefixes to CSS, using Autoprefixer.
-                // filters: Converts CSS shorthand filters to SVG equivalent
-                // rem: Generates pixel fallbacks for rem units
-                // pseudoElements: Converts pseudo-elements using CSS3 syntax
-                //   (two-colons notation like ::after, ::before, ::first-line and ::first-letter) with the old one
-                // opacity: Adds opacity filter for IE8 when using opacity property
-                // import: Inlines @import styles, using postcss-import and rebases URLs if needed.
-                //
-                // We intentionally don't do any minification, since we'd prefer to:
-                // - use cssnano instead of csswring
-                // - run uncss first
-                .pipe($.pleeease({
-                    sass: true,
-                    browsers: ['> 2%'],
-                    minifier: false,
-                }))
-                // Combine our files into a single output file
-                .pipe($.if(destFilename != null, $.concat(destFilename || 'dummyArgSoConstructorPasses')))
-                .pipe(gulp.dest(destDir))
-                // Remove unused css, as judged by the config's html files
-                .pipe($.uncss(config.css.uncssArgs))
-                .pipe($.rename({ extname: '.trim.css' }))
-                .pipe(gulp.dest(destDir))
-                // Save our media-query packer until after we combine all our css files.
-                // This could be run before or after uncss, but it really doesn't make a difference.
-                // However, there is no gulp-mqpacker, so we have to use postcss manually like this.
-                .pipe($.postcss([
-                    mqpacker(),
-                ]))
-                // Now finally minimize the css.
-                // For some reason, sticking the cssnano in the postcss breaks sourcemaps,
-                // but using gulp-cssnano here works fine.
-                .pipe($.cssnano())
-                .pipe($.size({title: 'styles'}))
-                .pipe($.rename({ extname: '.min.css', basename: path.basename(config.css.comboFile, '.css') }))
-                .pipe(gulp.dest(destDir))
-            .pipe($.sourcemaps.write('.'));
-    }
+  return () => {
+    return gulp.src(config.css.sourceFiles)
+        .pipe($.sourcemaps.init())
+            // This handles a bunch for us:
+            // sass: Preprocesses your CSS using Sass.
+            // autoprefixer: Adds vendor prefixes to CSS, using Autoprefixer.
+            // filters: Converts CSS shorthand filters to SVG equivalent
+            // rem: Generates pixel fallbacks for rem units
+            // pseudoElements: Converts pseudo-elements using CSS3 syntax
+            //   (two-colons notation like ::after, ::before, ::first-line and ::first-letter) with the old one
+            // opacity: Adds opacity filter for IE8 when using opacity property
+            // import: Inlines @import styles, using postcss-import and rebases URLs if needed.
+            //
+            // We intentionally don't do any minification, since we'd prefer to:
+            // - use cssnano instead of csswring
+            // - run uncss first
+            .pipe($.pleeease({
+              sass: true,
+              browsers: ['> 2%'],
+              minifier: false,
+            }))
+            // Combine our files into a single output file
+            .pipe($.if(destFilename !== null, $.concat(destFilename || 'dummyArgSoConstructorPasses')))
+            .pipe(gulp.dest(destDir))
+            // Remove unused css, as judged by the config's html files
+            .pipe($.uncss(config.css.uncssArgs))
+            .pipe($.rename({extname: '.trim.css'}))
+            .pipe(gulp.dest(destDir))
+            // Save our media-query packer until after we combine all our css files.
+            // This could be run before or after uncss, but it really doesn't make a difference.
+            // However, there is no gulp-mqpacker, so we have to use postcss manually like this.
+            .pipe($.postcss([
+              mqpacker(),
+            ]))
+            // Now finally minimize the css.
+            // For some reason, sticking the cssnano in the postcss breaks sourcemaps,
+            // but using gulp-cssnano here works fine.
+            .pipe($.cssnano())
+            .pipe($.size({title: 'styles'}))
+            .pipe($.rename({extname: '.min.css', basename: path.basename(config.css.comboFile, '.css')}))
+            .pipe(gulp.dest(destDir))
+        .pipe($.sourcemaps.write('.'));
+  };
 }
-
-
 
 gulp.task('compile-css', compileCssTo(config.css.dest, 'main.css'));
 gulp.task('compile-css-individual-debug', compileCssTo(config.css.destDebug));
@@ -142,10 +135,10 @@ function compileJavascript(watch) {
   return function(callback) {
     var files = config.javascript.rootFiles;
 
-    files.forEach(function (file) {
+    files.forEach(function(file) {
       var b = browserify({
-          entries: file.src, // Only need initial file, browserify finds the deps
-          debug: true        // Enable sourcemaps
+        entries: file.src, // Only need initial file, browserify finds the deps
+        debug: true,       // Enable sourcemaps
       });
       // Optionally start a long-lived watchify session
       if (watch) {
@@ -166,7 +159,7 @@ function compileJavascript(watch) {
             .pipe($.babel())
             .pipe($.uglify())
             .on('error', gutil.log)
-            .pipe($.rename({ extname: '.min.js' }))
+            .pipe($.rename({extname: '.min.js'}))
             .pipe($.size({title: 'scripts'}))
           .pipe($.sourcemaps.write('.'))
 
@@ -203,7 +196,7 @@ gulp.task('compile-images-resize', () => {
         quality: 60,
       }],
       'deets-head-and-title-on-black.png': [{
-        height: 64*2,
+        height: 64 * 2,
         suffix: '@2x',
       }, {
         height: 64,
@@ -211,7 +204,7 @@ gulp.task('compile-images-resize', () => {
     }))
     .pipe($.imagemin({
       progressive: true,
-      interlaced: true
+      interlaced: true,
     }))
     .pipe(gulp.dest('dist/img'));
 });
@@ -223,7 +216,7 @@ gulp.task('compile-svg', () => {
   return gulp.src(baseAssetsDir + 'img/*.svg')
     .pipe($.cache($.imagemin({
       progressive: true,
-      interlaced: true
+      interlaced: true,
     })))
     .pipe(gulp.dest('dist/img'));
 });
@@ -232,7 +225,7 @@ gulp.task('compile-icons', () => {
   return gulp.src('assets/img/icons/social/*.png')
     .pipe($.cache($.imagemin({
       progressive: true,
-      interlaced: true
+      interlaced: true,
     })))
     .pipe(gulp.dest('dist/img/icons/social/'));
 });
@@ -242,31 +235,29 @@ gulp.task('compile-fonts', () => {
     .pipe(gulp.dest('dist/fonts/'));
 });
 
-
 // Run PageSpeed Insights
 gulp.task('pagespeed', cb =>
   // Update the below URL to the public URL of your site
   pagespeed('http://www.dancedeets.com/new_homepage', {
-    strategy: 'mobile'
+    strategy: 'mobile',
     // By default we use the PageSpeed Insights free (no API key) tier.
     // Use a Google Developer API key if you have one: http://goo.gl/RkN0vE
     // key: 'YOUR_API_KEY'
   }, cb)
 );
 
-
 gulp.task('compile', ['compile-js', 'compile-css', 'compile-images', 'compile-fonts']);
 
 gulp.task('clean', () => {
   return del.sync('dist');
-})
+});
 
 gulp.task('test', $.shell.task(['./nose.sh']));
 
-gulp.task('clean-build-test', function (callback) {
-    runSequence('clean', 'compile', 'lint', 'test', callback);
+gulp.task('clean-build-test', function(callback) {
+  runSequence('clean', 'compile', 'lint', 'test', callback);
 });
 
-// TODO: someday we may want something more elaborate like:
+// Someday we may want something more elaborate like:
 // https://github.com/gulpjs/gulp/blob/master/docs/recipes/automate-release-workflow.md
 gulp.task('deploy', ['clean-build-test'], $.shell.task(['./deploy.sh']));
