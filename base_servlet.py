@@ -30,6 +30,7 @@ from util import dates
 from util import text
 from util import urls
 
+
 class _ValidationError(Exception):
     pass
 
@@ -40,6 +41,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self._errors = []
 
         self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"), autoescape=True)
+
         # This is necessary because appengine comes with Jinja 2.6 pre-installed, and this was added in 2.7+.
         def do_urlencode(value):
             """Escape for use in URLs."""
@@ -123,14 +125,16 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
             handled = self.handle_error_response(self._errors)
         if not handled:
             raise
-            #super(BareBaseRequestHandler, self).handle_exception(e, debug)
+            # super(BareBaseRequestHandler, self).handle_exception(e, debug)
 
     def handle_error_response(self, errors):
         if self.request.method == 'POST':
-            self.get() # call get response handler if we have post validation errors
+            # call get response handler if we have post validation errors
+            self.get()
             return True
         else:
-            return False # let exception handling code operate normally
+            # let exception handling code operate normally
+            return False
 
     def write_json_response(self, arg):
         self.response.out.write(json.dumps(arg))
@@ -139,7 +143,8 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         jinja_template = self.jinja_env.get_template("%s.html" % name)
         rendered = jinja_template.render(**self.display)
         if 'clean' not in self.debug_list:
-            rendered = htmlmin.minify(rendered,
+            rendered = htmlmin.minify(
+                rendered,
                 remove_comments=True,
                 remove_empty_space=True,
                 reduce_boolean_attributes=True,
@@ -160,6 +165,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         location = ', '.join(x for x in location_components if x and x != '?')
         return location
 
+
 def generate_userlogin_hash(user_login_cookie):
     raw_string = ','.join('%r: %r' % (k.encode('ascii'), v.encode('ascii')) for (k, v) in sorted(user_login_cookie.items()) if k != 'hash')
     m = hashlib.md5()
@@ -168,12 +174,14 @@ def generate_userlogin_hash(user_login_cookie):
     m.update(facebook.FACEBOOK_CONFIG['secret_key'])
     return m.hexdigest()
 
+
 def validate_hashed_userlogin(user_login_cookie):
     passed_hash = user_login_cookie['hash']
     computed_hash = generate_userlogin_hash(user_login_cookie)
     if passed_hash != computed_hash:
         logging.error("For user_login_data %s, passed_in_hash %s != computed_hash %s", user_login_cookie, passed_hash, computed_hash)
     return passed_hash == computed_hash
+
 
 def get_location(fb_user):
     if fb_user['profile'].get('location'):
@@ -215,7 +223,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.response.set_cookie(self._get_login_cookie_name(), user_login_string, max_age=30*24*60*60, path='/', domain=self._get_login_cookie_domain())
 
     def _get_login_cookie_domain(self):
-        domain = self.request.host.replace('www.','.')
+        domain = self.request.host.replace('www.', '.')
         if ':' in domain:
             domain = domain.split(':')[0]
         return domain
@@ -308,7 +316,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
                             self.user.fb_access_token_expires = access_token_expires
                             self.user.expired_oauth_token = False
                             self.user.expired_oauth_token_reason = None
-                            self.user.put() # this also sets to memcache
+                            # this also sets to memcache
+                            self.user.put()
                             logging.info("Stored the new access_token to the User db")
                         else:
                             logging.error("Got a cookie, but no access_token. Using the one from the existing user. Strange!")
@@ -346,7 +355,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             city = self.request.get('city') or self.get_location_from_headers() or get_location(fb_user)
             logging.info("User passed in a city of %r, facebook city is %s", self.request.get('city'), get_location(fb_user))
             user_creation.create_user_with_fbuser(self.fb_uid, fb_user, self.access_token, access_token_expires, city, send_email=True, referer=referer, client='web')
-            #TODO(lambert): handle this MUUUCH better
+            # TODO(lambert): handle this MUUUCH better
             logging.info("Not a /login request and there is no user object, constructed one realllly-quick, and continuing on.")
             self.user = users.User.get_by_id(self.fb_uid)
             # Should not happen:
@@ -612,7 +621,8 @@ def update_last_login_time(user_id, login_time):
         if user.login_count:
             user.login_count += 1
         else:
-            user.login_count = 2 # once for this one, once for initial creation
+            # once for this one, once for initial creation
+            user.login_count = 2
         # in read-only, keep trying until we succeed
         user.put()
     db.run_in_transaction(_update_last_login_time)
@@ -620,6 +630,7 @@ def update_last_login_time(user_id, login_time):
 
 class BaseTaskRequestHandler(webapp2.RequestHandler):
     pass
+
 
 class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
     def requires_login(self):
