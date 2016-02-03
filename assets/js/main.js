@@ -1,12 +1,15 @@
-global.jQuery = global.$ = require('jquery');
+'use strict';
+
+global.jQuery = require('jquery');
 require('jquery.backstretch');
 require('bootstrap');
 var App = require('./app');
 
+var $ = global.jQuery;
 // From old site: jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3
 
 $(document).ready(function() {
-  App.init()
+  App.init($);
 
   // background-image rotation
   var images = [

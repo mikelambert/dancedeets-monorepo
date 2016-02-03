@@ -76,7 +76,15 @@ var config = {
 // Lint JavaScript
 gulp.task('lint', () => {
   return gulp.src('assets/js/**/*.js')
-    .pipe($.eslint())
+    .pipe($.eslint({
+      envs: {
+          browser: true,
+          es6: true,
+      },
+      rules: {
+        "comma-dangle": 0, // allow dangling commas, babel rewriter will fix them
+      },
+    }))
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError())
 });
