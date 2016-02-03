@@ -4,8 +4,9 @@
 * Author: @htmlstream
 * Website: http://htmlstream.com
 */
+var jQuery = require('jquery');
 
-var App = (function(jQuery) {
+var App = (function() {
   var $ = jQuery;
   // Fixed Header
   function handleHeader() {
@@ -143,6 +144,6 @@ var App = (function(jQuery) {
       }
     },
   };
-})(jQuery);
+})();
 
 module.exports = App;
