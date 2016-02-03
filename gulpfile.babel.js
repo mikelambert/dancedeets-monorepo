@@ -23,19 +23,6 @@ import watchify from 'watchify';
 import username from 'username';
 import {output as pagespeed} from 'psi';
 
-import gulpif from 'gulp-if';
-var concat = require('gulp-concat');
-var cssnano = require('gulp-cssnano');
-var lodash = require('lodash')
-var rename = require('gulp-rename');
-var responsive = require('gulp-responsive-images');
-var postcss = require('gulp-postcss');
-var sass = require('gulp-sass');
-var shell = require('gulp-shell');
-var sourcemaps = require('gulp-sourcemaps');
-var uglify = require('gulp-uglify');
-var uncss = require('gulp-uncss');
-
 const $ = gulpLoadPlugins();
 
 var baseAssetsDir = '/Users/' + username.sync() + '/Dropbox/dancedeets-art/build-assets/'
@@ -106,7 +93,7 @@ function compileCssTo(destDir, destFilename) {
                 .pipe($.autoprefixer({
                     browsers: ['> 2%']
                 }))
-                .pipe($.if(destFilename != null, concat(destFilename || 'dummyArgSoConstructorPasses')))
+                .pipe($.if(destFilename != null, $.concat(destFilename || 'dummyArgSoConstructorPasses')))
                 .pipe(gulp.dest(destDir))
                 .pipe($.uncss(config.css.uncssArgs))
                 .pipe($.rename({ extname: '.trim.css' }))
