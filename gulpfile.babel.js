@@ -14,6 +14,7 @@ import del from 'del';
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import gutil from 'gutil';
+import mqpacker from 'css-mqpacker';
 import os from 'os';
 import path from 'path';
 import reactify from 'reactify';
@@ -95,17 +96,40 @@ function compileCssTo(destDir, destFilename) {
     return () => {
         return gulp.src(config.css.sourceFiles)
             .pipe($.sourcemaps.init())
-                .pipe($.sass({
-                    'precision': 10
-                }).on('error', $.sass.logError))
-                .pipe($.autoprefixer({
-                    browsers: ['> 2%']
+                // This handles a bunch for us:
+                // sass: Preprocesses your CSS using Sass.
+                // autoprefixer: Adds vendor prefixes to CSS, using Autoprefixer.
+                // filters: Converts CSS shorthand filters to SVG equivalent
+                // rem: Generates pixel fallbacks for rem units
+                // pseudoElements: Converts pseudo-elements using CSS3 syntax
+                //   (two-colons notation like ::after, ::before, ::first-line and ::first-letter) with the old one
+                // opacity: Adds opacity filter for IE8 when using opacity property
+                // import: Inlines @import styles, using postcss-import and rebases URLs if needed.
+                //
+                // We intentionally don't do any minification, since we'd prefer to:
+                // - use cssnano instead of csswring
+                // - run uncss first
+                .pipe($.pleeease({
+                    sass: true,
+                    browsers: ['> 2%'],
+                    minifier: false,
                 }))
+                // Combine our files into a single output file
                 .pipe($.if(destFilename != null, $.concat(destFilename || 'dummyArgSoConstructorPasses')))
                 .pipe(gulp.dest(destDir))
+                // Remove unused css, as judged by the config's html files
                 .pipe($.uncss(config.css.uncssArgs))
                 .pipe($.rename({ extname: '.trim.css' }))
                 .pipe(gulp.dest(destDir))
+                // Save our media-query packer until after we combine all our css files.
+                // This could be run before or after uncss, but it really doesn't make a difference.
+                // However, there is no gulp-mqpacker, so we have to use postcss manually like this.
+                .pipe($.postcss([
+                    mqpacker(),
+                ]))
+                // Now finally minimize the css.
+                // For some reason, sticking the cssnano in the postcss breaks sourcemaps,
+                // but using gulp-cssnano here works fine.
                 .pipe($.cssnano())
                 .pipe($.size({title: 'styles'}))
                 .pipe($.rename({ extname: '.min.css', basename: path.basename(config.css.comboFile, '.css') }))

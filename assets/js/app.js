@@ -143,6 +143,6 @@ var App = (function(jQuery) {
       }
     },
   };
-})();
+})(jQuery);
 
 module.exports = App;
