@@ -8,7 +8,6 @@
     "browserify": "^13.0.0",
     "css-mqpacker": "^4.0.0",
     "del": "^2.2.0",
-    "eslint-config-google": "^0.3.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-babel": "^6.1.2",
@@ -47,8 +46,5 @@
   "engines": {
     "node": ">=0.12"
   },
-  "private": true,
-  "eslintConfig": {
-    "extends": "google"
-  }
+  "private": true
 }
