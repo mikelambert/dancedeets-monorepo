@@ -29,6 +29,10 @@
                     "${project}/lib",
                     "${home}/google-cloud-sdk/platform/google_appengine",
                 ],
+            },
+            "pep8": {
+                "ignore": "E501"
+                // E501: line too long
             }
         }
     },
