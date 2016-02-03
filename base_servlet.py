@@ -579,6 +579,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         ]
 
         self.display['deb'] = self.request.get('deb')
+        self.display['debug_list'] = self.debug_list
         self.display['user'] = self.user
 
         webview = bool(request.get('webview'))

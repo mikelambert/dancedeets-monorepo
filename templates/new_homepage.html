@@ -16,7 +16,7 @@
 
     <!-- Web Fonts -->
 
-    <link rel="stylesheet" href="/dist-{{version}}/css/main.min.css">
+    <link rel="stylesheet" href="/dist-{{version}}/css/main.{% if 'clean' not in debug_list %}min.{% endif %}css">
     <!-- Inlined: http://fonts.googleapis.com/css?family=Ubuntu:400,700 -->
     <style type="text/css">
 /* cyrillic-ext */
@@ -506,7 +506,7 @@
 <div id="fb-root"></div>
 
 <!--from old site: jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3-->
-<script async type="text/javascript" src="/dist-{{version}}/js/main.min.js"></script>
+<script async type="text/javascript" src="/dist-{{version}}/js/main.{% if 'clean' not in debug_list %}min.{% endif %}js"></script>
 
 <script type="text/javascript">
 // Facebook/Login Code
