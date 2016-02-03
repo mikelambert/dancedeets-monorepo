@@ -85,7 +85,7 @@ var App = (function(jQuery) {
     /* Bootstrap Carousel */
     jQuery('.carousel').carousel({
       interval: 15000,
-      pause: 'hover'
+      pause: 'hover',
     });
 
     /* Tooltips */

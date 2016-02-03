@@ -82,7 +82,7 @@ gulp.task('lint', () => {
           es6: true,
       },
       rules: {
-        "comma-dangle": 0, // allow dangling commas, babel rewriter will fix them
+        "comma-dangle": [2, "always-multiline"], // allow dangling commas, babel rewriter will fix them
       },
     }))
     .pipe($.eslint.format())
