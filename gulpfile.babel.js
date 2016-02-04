@@ -59,6 +59,7 @@ var config = {
     // uncss parameters
     uncssArgs: {
       ignore: [
+        '.animated',
         '.animated.flip',
         new RegExp('.header-v6(.header-dark-transparent)?.header-fixed-shrink'),
       ],
