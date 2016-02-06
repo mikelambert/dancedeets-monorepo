@@ -42,7 +42,10 @@ module.exports = {
       },
       {
         test: /\.png$/,
-        loader: 'file-loader?name=../img/[name].[ext]',
+        loaders: [
+          'url-loader?limit=10000&minetype=application/font-woff&name=../img/[name].[ext]',
+          'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false',
+        ],
       },
       {
         test: /\.jpg$/,
