@@ -261,16 +261,25 @@
                     Get up offa that thing, and dance 'til you feel better – James Brown
                 </div>
                 <div class="col-md-6 col-md-offset-3">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Enter a city or country">
-                        <span class="input-group-btn">
-                            <button class="btn-u" type="button"><i class="fa fa-search"></i> Find Events</button>
-                        </span>
-                    </div>
+                    <form action="/">
+                        <div class="input-group">
+                            <input name="location" type="text" class="form-control" placeholder="Enter a city or country">
+                            <span class="input-group-btn">
+                                <button class="btn-u" type="button"><i class="fa fa-search"></i> Find Events</button>
+                            </span>
+                        </div>
+                    </form>
                     <div style="padding: 0.5em">
                         or track events from your phone
                     </div>
-                    <button class="btn-u" type="button"><i class="fa fa-mobile"></i> Download DanceDeets</button>
+                    {% if mobile_platform == mobile.MOBILE_IOS %}
+                    <a class="btn btn-primary btn-lg" href="{{ mobile.IOS_URL }}">Download App</a>
+                    {% elif mobile_platform == mobile.MOBILE_ANDROID %}
+                    <a class="btn btn-primary btn-lg" href="{{ mobile.ANDROID_URL }}">Download App</a>
+                    {% else %}
+                    <a href="{{ mobile.IOS_URL }}"><img src="/images/app_store_download.png" class="store-button"></a>
+                    <a href="{{ mobile.ANDROID_URL }}"><img src="/images/play_store_download.png" class="store-button"></a>
+                    {% endif %}
                 </div>
             </div>
         </div>
