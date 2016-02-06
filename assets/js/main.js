@@ -1,5 +1,16 @@
 'use strict';
 
+require('../../node_modules/font-awesome//css/font-awesome.css');
+require('../../node_modules/bootstrap/dist/css/bootstrap.css');
+require('../../node_modules/animate.css/animate.css');
+
+require('../css/app.css');
+require('../css/style.css');
+require('../css/headers/header-v6.css');
+require('../css/footers/footer-v2.css');
+require('../css/colors.scss');
+require('../css/custom.css');
+
 global.jQuery = require('jquery');
 require('jquery.backstretch');
 require('bootstrap');
