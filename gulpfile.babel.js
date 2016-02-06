@@ -18,6 +18,7 @@ import reactify from 'reactify';
 import runSequence from 'run-sequence';
 import source from 'vinyl-source-stream';
 import watchify from 'watchify';
+import uncss from 'uncss';
 import username from 'username';
 import {output as pagespeed} from 'psi';
 
@@ -106,7 +107,9 @@ function compileCssTo(destDir, destFilename) {
             .pipe($.if(destFilename !== null, $.concat(destFilename || 'dummyArgSoConstructorPasses')))
             .pipe(gulp.dest(destDir))
             // Remove unused css, as judged by the config's html files
-            .pipe($.uncss(config.css.uncssArgs))
+            .pipe($.postcss([
+              uncss.postcssPlugin(config.css.uncssArgs),
+            ]))
             .pipe($.rename({extname: '.trim.css'}))
             .pipe(gulp.dest(destDir))
             // Save our media-query packer until after we combine all our css files.
@@ -121,8 +124,8 @@ function compileCssTo(destDir, destFilename) {
             .pipe($.cssnano())
             .pipe($.size({title: 'styles'}))
             .pipe($.rename({extname: '.min.css', basename: path.basename(config.css.comboFile, '.css')}))
-            .pipe(gulp.dest(destDir))
-        .pipe($.sourcemaps.write('.'));
+        .pipe($.sourcemaps.write('.'))
+        .pipe(gulp.dest(destDir));
   };
 }
 
@@ -156,7 +159,7 @@ function compileJavascript(watch) {
           .pipe(source(file.dest))
           .pipe(buffer())
           .pipe(gulp.dest(config.javascript.dest))
-          .pipe($.sourcemaps.init({loadMaps: true}))
+          .pipe($.sourcemaps.init({}))
             .pipe($.babel())
             .pipe($.uglify())
             .on('error', gutil.log)
