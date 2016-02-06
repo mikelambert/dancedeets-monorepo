@@ -6,178 +6,16 @@
 // You can read more about the new JavaScript features here:
 // https://babeljs.io/docs/learn-es2015/
 
-import browserify from 'browserify';
-import buffer from 'vinyl-buffer';
 import del from 'del';
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
-import gutil from 'gutil';
-import mqpacker from 'css-mqpacker';
-import path from 'path';
-import reactify from 'reactify';
 import runSequence from 'run-sequence';
-import source from 'vinyl-source-stream';
-import watchify from 'watchify';
-import uncss from 'uncss';
-import username from 'username';
 import {output as pagespeed} from 'psi';
+import username from 'username';
 
 const $ = gulpLoadPlugins();
 
 var baseAssetsDir = '/Users/' + username.sync() + '/Dropbox/dancedeets-art/build-assets/';
-var src = './';
-var dest = './dist';
-var config = {
-  javascript: {
-    rootFiles: [
-      {
-        src: src + '/assets/js/main.js',
-        dest: 'main.js',
-      },
-      {
-        src: src + '/assets/js/ie8.js',
-        dest: 'ie8.js',
-      },
-    ],
-    dest: dest + '/js',
-  },
-  css: {
-    sourceFiles: [
-      'node_modules/font-awesome/css/font-awesome.css',
-      'node_modules/bootstrap/dist/css/bootstrap.css',
-      'node_modules/animate.css/animate.css',
-      'assets/css/app.css',
-      'assets/css/style.css',
-      'assets/css/headers/header-v6.css',
-      'assets/css/footers/footer-v2.css',
-      'assets/css/colors.scss',
-      'assets/css/custom.css',
-    ],
-    comboFile: 'main.css',
-    dest: dest + '/css',
-    destDebug: dest + '/css-debug',
-
-    // uncss parameters
-    uncssArgs: {
-      ignore: [
-        '.animated',
-        '.animated.flip',
-        new RegExp('.header-v6(.header-dark-transparent)?.header-fixed-shrink'),
-      ],
-      html: [
-        'templates/new_homepage.html',
-      ],
-    },
-  },
-};
-
-// Lint JavaScript
-gulp.task('lint', () => {
-  return gulp.src('assets/js/**/*.js')
-    .pipe($.eslint())
-    .pipe($.eslint.format())
-    .pipe($.eslint.failAfterError());
-});
-
-// Do we want this?
-//    .pipe($.newer('.tmp/styles'))
-function compileCssTo(destDir, destFilename) {
-  return () => {
-    return gulp.src(config.css.sourceFiles)
-        .pipe($.sourcemaps.init())
-            // This handles a bunch for us:
-            // sass: Preprocesses your CSS using Sass.
-            // autoprefixer: Adds vendor prefixes to CSS, using Autoprefixer.
-            // filters: Converts CSS shorthand filters to SVG equivalent
-            // rem: Generates pixel fallbacks for rem units
-            // pseudoElements: Converts pseudo-elements using CSS3 syntax
-            //   (two-colons notation like ::after, ::before, ::first-line and ::first-letter) with the old one
-            // opacity: Adds opacity filter for IE8 when using opacity property
-            // import: Inlines @import styles, using postcss-import and rebases URLs if needed.
-            //
-            // We intentionally don't do any minification, since we'd prefer to:
-            // - use cssnano instead of csswring
-            // - run uncss first
-            .pipe($.pleeease({
-              sass: true,
-              browsers: ['> 2%'],
-              minifier: false,
-            }))
-            // Combine our files into a single output file
-            .pipe($.if(destFilename !== null, $.concat(destFilename || 'dummyArgSoConstructorPasses')))
-            .pipe(gulp.dest(destDir))
-            // Remove unused css, as judged by the config's html files
-            .pipe($.postcss([
-              uncss.postcssPlugin(config.css.uncssArgs),
-            ]))
-            .pipe($.rename({extname: '.trim.css'}))
-            .pipe(gulp.dest(destDir))
-            // Save our media-query packer until after we combine all our css files.
-            // This could be run before or after uncss, but it really doesn't make a difference.
-            // However, there is no gulp-mqpacker, so we have to use postcss manually like this.
-            .pipe($.postcss([
-              mqpacker(),
-            ]))
-            // Now finally minimize the css.
-            // For some reason, sticking the cssnano in the postcss breaks sourcemaps,
-            // but using gulp-cssnano here works fine.
-            .pipe($.cssnano())
-            .pipe($.size({title: 'styles'}))
-            .pipe($.rename({extname: '.min.css', basename: path.basename(config.css.comboFile, '.css')}))
-        .pipe($.sourcemaps.write('.'))
-        .pipe(gulp.dest(destDir));
-  };
-}
-
-gulp.task('compile-css', compileCssTo(config.css.dest, 'main.css'));
-gulp.task('compile-css-individual-debug', compileCssTo(config.css.destDebug));
-
-gulp.task('compile-js', compileJavascript(false));
-gulp.task('watchify', compileJavascript(true));
-
-function compileJavascript(watch) {
-  return function(callback) {
-    var files = config.javascript.rootFiles;
-
-    files.forEach(function(file) {
-      var b = browserify({
-        entries: file.src, // Only need initial file, browserify finds the deps
-        debug: true,       // Enable sourcemaps
-      });
-      // Optionally start a long-lived watchify session
-      if (watch) {
-        b = watchify(b);
-      }
-      // Output build logs to terminal
-      b.on('log', gutil.log);
-
-      // Convert JSX, if we see it
-      b.transform(reactify);
-
-      function buildBundle() {
-        return b.bundle()
-          .pipe(source(file.dest))
-          .pipe(buffer())
-          .pipe(gulp.dest(config.javascript.dest))
-          .pipe($.sourcemaps.init({}))
-            .pipe($.babel())
-            .pipe($.uglify())
-            .on('error', gutil.log)
-            .pipe($.rename({extname: '.min.js'}))
-            .pipe($.size({title: 'scripts'}))
-          .pipe($.sourcemaps.write('.'))
-
-          .pipe(gulp.dest(config.javascript.dest));
-      }
-      // On any dependency update, re-runs the bundler
-      b.on('update', buildBundle);
-      // And we need to run the builder once, to start things off.
-      return buildBundle();
-    });
-
-    callback();
-  };
-}
 
 gulp.task('compile-images-resize', () => {
   return gulp.src(baseAssetsDir + 'img/**/*.{png,jpg}')
@@ -250,7 +88,10 @@ gulp.task('pagespeed', cb =>
   }, cb)
 );
 
-gulp.task('compile', ['compile-js', 'compile-css', 'compile-images', 'compile-fonts']);
+gulp.task('compile-css-js', $.shell.task(['webpack --color --progress']));
+gulp.task('watch', $.shell.task(['webpack --color --progress --watch']));
+
+gulp.task('compile', ['compile-css-js', 'compile-images', 'compile-fonts']);
 
 gulp.task('clean', () => {
   return del.sync('dist');
@@ -259,9 +100,10 @@ gulp.task('clean', () => {
 gulp.task('test', $.shell.task(['./nose.sh']));
 
 gulp.task('clean-build-test', function(callback) {
-  runSequence('clean', 'compile', 'lint', 'test', callback);
+  runSequence('clean', 'compile', 'test', callback);
 });
 
 // Someday we may want something more elaborate like:
 // https://github.com/gulpjs/gulp/blob/master/docs/recipes/automate-release-workflow.md
 gulp.task('deploy', ['clean-build-test'], $.shell.task(['./deploy.sh']));
+
