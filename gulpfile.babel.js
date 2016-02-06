@@ -51,7 +51,7 @@ gulp.task('compile-images-resize', () => {
     .pipe(gulp.dest('dist/img'));
 });
 
-gulp.task('compile-images', ['compile-images-resize', 'compile-svg', 'compile-icons']);
+gulp.task('compile-images', ['compile-images-resize', 'compile-svg']);
 
 // gets deets-activity svg files
 gulp.task('compile-svg', () => {
@@ -61,15 +61,6 @@ gulp.task('compile-svg', () => {
       interlaced: true,
     })))
     .pipe(gulp.dest('dist/img'));
-});
-
-gulp.task('compile-icons', () => {
-  return gulp.src('assets/img/icons/social/*.png')
-    .pipe($.cache($.imagemin({
-      progressive: true,
-      interlaced: true,
-    })))
-    .pipe(gulp.dest('dist/img/icons/social/'));
 });
 
 gulp.task('compile-fonts', () => {
