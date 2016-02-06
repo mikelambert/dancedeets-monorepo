@@ -1,27 +1,28 @@
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var PurifyPlugin = require('purifycss-webpack-plugin');
-var autoprefixer = require('autoprefixer');
-var mqpacker = require('css-mqpacker');
+var path = require('path');
 var postcssImport = require('postcss-import');
 var uncss = require('uncss');
 
 module.exports = {
-  entry: './assets/js/main.js',
+  entry: {
+    main: './assets/js/main.js',
+    ie8: './assets/js/ie8.js',
+  },
   output: {
-    path: './dist/js',
-    filename: 'main.js',
+    path: path.join(__dirname, "dist/js"),
+    filename: '[name].js',
   },
   devtool: 'source-map',
   plugins: [
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({minimize: true}),
+    new webpack.optimize.UglifyJsPlugin(),
     new ExtractTextPlugin('../css/[name].css'),
   ],
   module: {
     preLoaders: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         loader: 'eslint-loader',
         exclude: /node_modules/,
       },
