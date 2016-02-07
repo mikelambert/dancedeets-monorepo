@@ -15,7 +15,8 @@ class FeedbackHandler(base_servlet.BaseRequestHandler):
         fb_user = self.fbl.fetched_data(fb_api.LookupUser, self.fb_uid)
         from_line = 'From: %s <%s>' % (
             fb_user['profile']['name'],
-            fb_user['profile']['email']
+            # Ugh, email is no longer a requied field ...?
+            fb_user['profile'].get('email', 'User %s' % self.fb_uid),
         )
         message = mail.EmailMessage(
             sender="DanceDeets Feedback Form <events@dancedeets.com>",
