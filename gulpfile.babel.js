@@ -7,6 +7,8 @@
 // https://babeljs.io/docs/learn-es2015/
 
 import del from 'del';
+import favicons from 'gulp-favicons';
+import gutil from 'gutil';
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import runSequence from 'run-sequence';
@@ -16,6 +18,32 @@ import username from 'username';
 const $ = gulpLoadPlugins();
 
 var baseAssetsDir = '/Users/' + username.sync() + '/Dropbox/dancedeets-art/build-assets/';
+
+gulp.task('compile-favicons', function() {
+  return gulp.src('assets/image/deets-head.png')
+  .pipe(favicons({
+    appName: 'DanceDeets',
+    appDescription: 'Street Dance Events. Worldwide.',
+    developerName: 'DanceDeets',
+    developerURL: 'http://www.dancedeets.com/',
+    background: '#fff',
+    path: '/dist/favicons/',
+    url: 'http://www.dancedeets.com/',
+    display: 'standalone',
+    orientation: 'portrait',
+    version: 1.0,
+    logging: false,
+    online: true,
+    icons: {
+      opengraph: false,
+      twitter: false,
+    },
+    html: './dist/html/favicon_tags.html',
+    replace: true,
+  }))
+  .on('error', gutil.log)
+  .pipe(gulp.dest('./dist/img/favicons2/'));
+});
 
 gulp.task('compile-images-resize', () => {
   return gulp.src(baseAssetsDir + 'img/**/*.{png,jpg}')
@@ -51,7 +79,7 @@ gulp.task('compile-images-resize', () => {
     .pipe(gulp.dest('dist/img'));
 });
 
-gulp.task('compile-images', ['compile-images-resize', 'compile-svg']);
+gulp.task('compile-images', ['compile-favicons', 'compile-images-resize', 'compile-svg']);
 
 // gets deets-activity svg files
 gulp.task('compile-svg', () => {
