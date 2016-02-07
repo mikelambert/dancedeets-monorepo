@@ -10,7 +10,7 @@ module.exports = {
     ie8: './assets/js/ie8.js',
   },
   output: {
-    path: path.join(__dirname, "dist/js"),
+    path: path.join(__dirname, 'dist/js'),
     filename: '[name].js',
   },
   devtool: 'source-map',
@@ -38,7 +38,7 @@ module.exports = {
       },
       {
         test: /\.s?css$/,
-        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap', 'sass-loader', 'pleeease-loader', 'postcss-loader']),
+        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap', 'sass-loader?sourceMap', 'pleeease-loader', 'postcss-loader']),
       },
       {
         test: /\.png$/,
