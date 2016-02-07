@@ -1,4 +1,4 @@
-/*   
+/*
  * Template Name: Unify - Responsive Bootstrap Template
  * Description: Business, Corporate, Portfolio, E-commerce, Blog and One Page Template.
  * Version: 1.8
@@ -33,7 +33,7 @@
 .ie8 .sticker-left {
 	width: 90px;
 	text-align: right;
-	background: #72c02c;
+	background: $deetsYellowColor;
 }
 
 .ie8 .sticker-right {
@@ -50,7 +50,7 @@
 
 .ie8 .rgba-red {background: #e74c3c;}
 .ie8 .rgba-blue {background: #3498db;}
-.ie8 .rgba-default {background: #72c02c;}
+.ie8 .rgba-default {background: $deetsYellowColor;}
 .ie8 .rgba-purple {background: #9b6bcc;}
 .ie8 .rgba-aqua {background: #27d7e7;}
 .ie8 .rgba-yellow {background: #f1c40f;}
@@ -66,12 +66,12 @@
 	background: url(../img/transparent/white.png) repeat;
 }
 
-.ie8 .job-img .job-banner, 
+.ie8 .job-img .job-banner,
 .ie8 .job-img .job-img-inputs,
-.ie8 .parallax-team:before, 
+.ie8 .parallax-team:before,
 .ie8 .image-block .company-description,
 .ie8 .search-block:before,
 .ie8 .parallax-counter .counters,
 .ie8 .carousel-v1 .carousel-caption {
-	background: url(../img/transparent/black.png) repeat;	
+	background: url(../img/transparent/black.png) repeat;
 }

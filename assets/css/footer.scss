@@ -1,0 +1,64 @@
+@import 'config.scss';
+
+/*Footer-v2
+------------------------------------*/
+.footer {
+	padding: 40px 0;
+	background: #f7f7f7;
+	border-top: 3px solid #eee;
+}
+
+.footer p {
+	color: #555;
+}
+
+.footer-logo {
+  margin: 17px 0 20px;
+}
+
+/*Link List*/
+.link-list li {
+  border-top: solid 1px #eee;
+}
+
+.link-list li:first-child {
+    border-top: none !important;
+}
+
+.link-list a {
+    color: #555;
+    font-size: 11px;
+    padding: 6px 0px;
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+.link-list li i {
+    color: #bbb;
+    float: right;
+    margin-top: 10px;
+}
+
+address {
+	color: #555;
+	line-height: 23px;
+}
+
+address i {
+	min-width: 20px;
+	margin-right: 5px;
+	text-align: center;
+}
+
+/*Copyright*/
+.copyright {
+	border-top: none;
+	background: #eee;
+	padding: 20px 0 15px;
+}
+
+.copyright p {
+	color: #555;
+	margin-bottom: 0;
+}
+

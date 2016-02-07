@@ -1,6 +1,3 @@
-$color: #FFBA01;
-$hoverColor: #8283A9;
-$extraColor: #D5EEF0;
 
 /*
 Other colors:
@@ -11,33 +8,33 @@ yellow: #FFBA01
 */
 
 a {
-  color: $color;
+  color: $deetsYellowColor;
 }
-a:focus, 
-a:hover, 
+a:focus,
+a:hover,
 a:active {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .color-green {
-    color: $color;
+    color: $deetsYellowColor;
 }
-a.read-more:hover { 
-    color:$color; 
+a.read-more:hover {
+    color:$deetsYellowColor;
 }
 .linked:hover {
-    color:$color;
+    color:$deetsYellowColor;
 }
 
 /* Headers Default
 ------------------------------------*/
 .header .navbar-nav > .active > a {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .header .navbar-nav > .active > a {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 .header .dropdown-menu {
-    border-top: solid 2px $color;
+    border-top: solid 2px $deetsYellowColor;
 }
 .header .navbar-nav > li:hover > a {
   color: $hoverColor;
@@ -48,7 +45,7 @@ a.read-more:hover {
 }
 .header .navbar-nav > li > a:hover,
 .header .navbar-nav > .active > a {
-  border-bottom-color: $color;
+  border-bottom-color: $deetsYellowColor;
 }
 .header .navbar-toggle {
   border-color: $hoverColor;
@@ -56,7 +53,7 @@ a.read-more:hover {
 .header .navbar-toggle,
 .header .navbar-toggle:hover,
 .header .navbar-toggle:focus {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 .header .navbar-toggle:hover {
   background:  $hoverColor !important;
@@ -64,7 +61,7 @@ a.read-more:hover {
 .header .navbar-nav > .open > a,
 .header .navbar-nav > .open > a:hover,
 .header .navbar-nav > .open > a:focus {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Design for max-width: 991px */
@@ -72,14 +69,14 @@ a.read-more:hover {
     .header .navbar-nav > .active > a,
     .header .navbar-nav > .active > a:hover,
     .header .navbar-nav > .active > a:focus {
-      background:  $color;
+      background:  $deetsYellowColor;
       color: #fff !important;
     }
     .header .navbar-nav > .active > a {
       border-color: #eee;
     }
     .header .nav > li > .search:hover {
-      background:  $color;
+      background:  $deetsYellowColor;
     }
 }
 
@@ -87,25 +84,25 @@ a.read-more:hover {
 ------------------------------------*/
 /*Fix hover color for the little icons v1.9*/
 .header-v1 .topbar-v1 .top-v1-data li a:hover i {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 .header-v1 .navbar-default .navbar-nav > .active > a,
 .header-v1 .navbar-default .navbar-nav > li > a:hover,
 .header-v1 .navbar-default .navbar-nav > li > a:focus {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .header-v1 .dropdown-menu {
-  border-color: $color
+  border-color: $deetsYellowColor
 }
 .header-v1 .navbar-default .navbar-nav > li:hover > a {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .header-v1 .navbar .nav > li > .search:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .header-v1 .navbar .nav > li > .search:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .header-v1 .navbar-default .navbar-toggle {
   border-color: $hoverColor;
@@ -113,7 +110,7 @@ a.read-more:hover {
 .header-v1 .navbar-toggle,
 .header-v1 .navbar-default .navbar-toggle:hover,
 .header-v1 .navbar-default .navbar-toggle:focus {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 .header-v1 .navbar-toggle:hover {
   background:  $hoverColor !important;
@@ -127,20 +124,20 @@ a.read-more:hover {
     .header-v1 .navbar-default .navbar-nav > .active > a,
     .header-v1 .navbar-default .navbar-nav > .active > a:hover,
     .header-v1 .navbar-default .navbar-nav > .active > a:focus {
-      background-color: $color;
+      background-color: $deetsYellowColor;
     }
     .header-v1 .navbar-default .navbar-nav > .active > a {
       border-color: #eee;
     }
     .header-v1 .navbar .nav > li > .search:hover {
-      background-color: $color;
+      background-color: $deetsYellowColor;
     }
 }
 
 /* Headers v2
 ------------------------------------*/
 .header-v2 .dropdown-menu {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 .header-v2 .navbar-default .navbar-toggle {
   border-color: $hoverColor;
@@ -148,7 +145,7 @@ a.read-more:hover {
 .header-v2 .navbar-toggle,
 .header-v2 .navbar-default .navbar-toggle:hover,
 .header-v2 .navbar-default .navbar-toggle:focus {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 .header-v2 .navbar-toggle:hover {
   background:  $hoverColor !important;
@@ -159,24 +156,24 @@ a.read-more:hover {
     .header-v2 .navbar-default .navbar-nav > .active > a,
     .header-v2 .navbar-default .navbar-nav > .active > a:hover,
     .header-v2 .navbar-default .navbar-nav > .active > a:focus {
-      background:  $color;
+      background:  $deetsYellowColor;
       color: #fff !important;
     }
     .header-v2 .navbar-default .navbar-nav > li > a:hover {
-    color: $color;
+    color: $deetsYellowColor;
     }
-}   
+}
 
 /* Headers v3
 ------------------------------------*/
 .header-v3 .navbar-default .navbar-nav > .active > a {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .header-v3 .navbar-default .navbar-nav > li:hover > a {
   color: $hoverColor;
 }
 .header-v3 .dropdown-menu {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 .header-v3 .navbar-default .navbar-toggle {
   border-color: $hoverColor;
@@ -184,14 +181,14 @@ a.read-more:hover {
 .header-v3 .navbar-toggle,
 .header-v3 .navbar-default .navbar-toggle:hover,
 .header-v3 .navbar-default .navbar-toggle:focus {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 .header-v3 .navbar-toggle:hover {
   background:  $hoverColor !important;
 }
 .header-v3 .navbar .nav > li > .search:hover {
   background: inherit;
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Design for max-width: 991px */
@@ -200,41 +197,41 @@ a.read-more:hover {
     .header-v3 .navbar-default .navbar-nav > .active > a,
     .header-v3 .navbar-default .navbar-nav > .active > a:hover,
     .header-v3 .navbar-default .navbar-nav > .active > a:focus {
-      background:  $color;
+      background:  $deetsYellowColor;
       color: #fff !important;
     }
     .header-v3 .navbar-default .navbar-nav > .active > a {
       border-color: #eee;
     }
     .header-v3 .navbar .nav > li > .search:hover {
-      background:  $color;
+      background:  $deetsYellowColor;
     }
-}   
+}
 
 /* Headers v4
 ------------------------------------*/
 /*Fix hover color for the little icons v1.9*/
 .topbar-v1 .top-v1-data li a:hover i {
-    color: $color;
+    color: $deetsYellowColor;
 }
-.header-v4 .navbar-default .navbar-nav > li > a:hover, 
+.header-v4 .navbar-default .navbar-nav > li > a:hover,
 .header-v4 .navbar-default .navbar-nav > .active > a {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 .header-v4 .navbar-default .navbar-nav > .active > a {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .header-v4 .navbar-default .navbar-nav > li:hover > a {
-  border-color:  $color;
+  border-color:  $deetsYellowColor;
   color: $hoverColor;
 }
 .header-v4 .navbar .nav > li > .search:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .header-v4 .navbar-default .navbar-nav > .open > a,
 .header-v4 .navbar-default .navbar-nav > .open > a:hover,
 .header-v4 .navbar-default .navbar-nav > .open > a:focus {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Design for max-width: 991px */
@@ -245,13 +242,13 @@ a.read-more:hover {
     .header-v4 .navbar-default .navbar-nav > .active > a,
     .header-v4 .navbar-default .navbar-nav > .active > a:hover,
     .header-v4 .navbar-default .navbar-nav > .active > a:focus {
-      color: $color !important;
+      color: $deetsYellowColor !important;
     }
     .header-v4 .navbar-default .navbar-nav > .active > a {
       border-color: #eee;
     }
     .header-v4 .navbar .nav > li > .search:hover {
-      background:  $color;
+      background:  $deetsYellowColor;
     }
 }
 
@@ -261,43 +258,43 @@ a.read-more:hover {
 @media (min-width: 992px) {
     .header-v5 .navbar-default .navbar-nav > li > a:hover,
     .header-v5 .navbar-default .navbar-nav > .active > a {
-      border-top: 2px solid $color;
+      border-top: 2px solid $deetsYellowColor;
     }
 }
 .header-v5 .navbar-default .navbar-nav > .active > a {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .header-v5 .navbar-default .navbar-nav > li:hover > a {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .header-v5 .navbar-default .navbar-nav > .open > a,
 .header-v5 .navbar-default .navbar-nav > .open > a:hover,
 .header-v5 .navbar-default .navbar-nav > .open > a:focus {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .header-v5 .dropdown-menu li > a:hover {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 .header-v5 .dropdown-menu .active > a,
 .header-v5 .dropdown-menu li > a:hover {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 .header-v5 .dropdown-menu {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 .header-v5 .dropdown-menu li.dropdown-submenu:hover > a {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 .header-v5 .dropdown-menu .style-list li > a:hover {
   background: none;
 }
 .header-v5 .style-list li a:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /*bug fixed v1.9*/
 .header-v5 .subtotal .subtotal-cost {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /*bug fixed v1.9*/
@@ -306,7 +303,7 @@ a.read-more:hover {
     .header-v5 .navbar-default .navbar-nav > .active > a,
     .header-v5 .navbar-default .navbar-nav > .active > a:hover,
     .header-v5 .navbar-default .navbar-nav > .active > a:focus {
-        background: $color !important;
+        background: $deetsYellowColor !important;
     }
 }
 
@@ -314,28 +311,28 @@ a.read-more:hover {
 ------------------------------------*/
 /*Keeping the cart gray v1.9*/
 /*.header-v5 .shop-badge.badge-icons i {
-  color: $color;
+  color: $deetsYellowColor;
 }*/
 .header-v5 .shop-badge span.badge-sea {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 .header-v5 .badge-open {
-  border-top: 2px solid $color;
-  box-shadow: 0 5px 5px 0 rgba($color, 0.075);
+  border-top: 2px solid $deetsYellowColor;
+  box-shadow: 0 5px 5px 0 rgba($deetsYellowColor, 0.075);
 }
 
 /* Header v6
 ------------------------------------*/
 /* Search */
 .header-v6 .shopping-cart .shopping-cart-open {
-    border-top-color: $color !important;
+    border-top-color: $deetsYellowColor !important;
 }
 .header-v6 li.menu-icons span.badge {
-    background: $color;
+    background: $deetsYellowColor;
 }
 /* Dropdown Menu */
 .header-v6 .dropdown-menu {
-    border-top-color: $color;
+    border-top-color: $deetsYellowColor;
 }
 
 /* Media Queries */
@@ -344,7 +341,7 @@ a.read-more:hover {
     .header-v6 .navbar-nav > .active > a,
     .header-v6 .navbar-nav > .active > a:hover,
     .header-v6 .navbar-nav > .active > a:focus {
-        color: $color !important;
+        color: $deetsYellowColor !important;
     }
     .header-v6 .nav .open > a,
     .header-v6 .nav .open > a:hover,
@@ -357,21 +354,21 @@ a.read-more:hover {
     .header-v6 .navbar-nav .open .dropdown-menu > .active > a,
     .header-v6 .navbar-nav .open .dropdown-menu > .active > a:hover,
     .header-v6 .navbar-nav .open .dropdown-menu > .active > a:focus {
-        color: $color !important;
+        color: $deetsYellowColor !important;
     }
     .header-v6 .mega-menu .equal-height-list li a:hover {
-        color: $color !important;
+        color: $deetsYellowColor !important;
     }
 
     /* Classic Dark */
     .header-v6 .mega-menu .equal-height-list li a:hover {
-        color: $color;
+        color: $deetsYellowColor;
     }
 
     /* Dark Responsive Navbar */
     .header-v6.header-dark-res-nav .navbar-nav > li a:hover,
     .header-v6.header-dark-res-nav .navbar-nav .open .dropdown-menu > li > a:hover {
-        color: $color;
+        color: $deetsYellowColor;
     }
     .header-v6.header-dark-res-nav .nav .open > a,
     .header-v6.header-dark-res-nav .nav .open > a:hover,
@@ -384,23 +381,23 @@ a.read-more:hover {
     /* Default Style */
     .header-fixed .header-v6.header-fixed-shrink .navbar-nav .active > a,
     .header-fixed .header-v6.header-fixed-shrink .navbar-nav li > a:hover {
-        color: $color !important;
+        color: $deetsYellowColor !important;
     }
     .header-v6 .dropdown-menu .active > a,
     .header-v6 .dropdown-menu li > a:hover,
     .header-fixed .header-v6.header-fixed-shrink .dropdown-menu .active > a,
     .header-fixed .header-v6.header-fixed-shrink .dropdown-menu li > a:hover {
-        color: $color !important;
+        color: $deetsYellowColor !important;
     }
     .header-fixed .header-v6.header-fixed-shrink .navbar-nav .active > a,
     .header-fixed .header-v6.header-fixed-shrink .navbar-nav li > a:hover {
-        color: $color;
+        color: $deetsYellowColor;
     }
 
     /* Classic White */
     .header-fixed .header-v6.header-classic-white .navbar-nav .active > a,
     .header-fixed .header-v6.header-classic-white .navbar-nav li > a:hover {
-        color: $color;
+        color: $deetsYellowColor;
     }
 
     /* Classic Dark */
@@ -408,23 +405,23 @@ a.read-more:hover {
     .header-v6.header-classic-dark .navbar-nav li > a:hover,
     .header-fixed .header-v6.header-classic-dark.header-fixed-shrink .navbar-nav .active > a,
     .header-fixed .header-v6.header-classic-dark.header-fixed-shrink .navbar-nav li > a:hover {
-        color: $color;
+        color: $deetsYellowColor;
     }
     .header-v6.header-classic-dark .dropdown-menu .active > a,
     .header-v6.header-classic-dark .dropdown-menu li > a:hover {
-        color: $color !important;
+        color: $deetsYellowColor !important;
     }
 
     /* Dark Dropdown */
     .header-v6.header-dark-dropdown .dropdown-menu .active > a,
     .header-v6.header-dark-dropdown .dropdown-menu li > a:hover {
-        color: $color;
+        color: $deetsYellowColor;
     }
 
     /* Dark Scroll */
     .header-fixed .header-v6.header-dark-scroll.header-fixed-shrink .navbar-nav .active > a,
     .header-fixed .header-v6.header-dark-scroll.header-fixed-shrink .navbar-nav li > a:hover {
-        color: $color;
+        color: $deetsYellowColor;
     }
 }
 
@@ -432,29 +429,29 @@ a.read-more:hover {
 ------------------------------------*/
 .header-v7 .navbar-default .navbar-nav > li > a:hover,
 .header-v7 .navbar-default .navbar-nav > li.active > a {
-    color: $color !important;
+    color: $deetsYellowColor !important;
 }
 .header-v7 .dropdown-menu .active > a,
 .header-v7 .dropdown-menu li > a:focus,
 .header-v7 .dropdown-menu li > a:hover {
-    color: $color !important;
+    color: $deetsYellowColor !important;
 }
 .header-v7 .navbar-default .navbar-nav > li > a:hover,
 .header-v7 .navbar-default .navbar-nav > li > a:focus,
 .header-v7 .navbar-default .navbar-nav > .active > a,
 .header-v7 .navbar-default .navbar-nav > .active > a:hover,
 .header-v7 .navbar-default .navbar-nav > .active > a:focus {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .header-socials li a:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Sliders
 ------------------------------------*/
 /* Main Parallax Sldier */
 .da-slide h2 i {
-    background-color: rgba($color, 0.8);
+    background-color: rgba($deetsYellowColor, 0.8);
 }
 
 /* Sequence Parallax Sldier */
@@ -467,21 +464,21 @@ a.read-more:hover {
   background: linear-gradient(#fff, #d5eef0)
 }
 #sequence-theme h2 {
-    background: rgba($color, 0.8);
+    background: rgba($deetsYellowColor, 0.8);
 }
 #sequence-theme .info p {
-    background: rgba($color, 0.8);
+    background: rgba($deetsYellowColor, 0.8);
 }
 
 /* Buttons
 ------------------------------------*/
 .btn-u {
-    background: $color;
+    background: $deetsYellowColor;
 }
-.btn-u:hover, 
-.btn-u:focus, 
-.btn-u:active, 
-.btn-u.active, 
+.btn-u:hover,
+.btn-u:focus,
+.btn-u:active,
+.btn-u.active,
 .open .dropdown-toggle.btn-u {
     background: $hoverColor;
     color: #fff;
@@ -494,34 +491,34 @@ a.read-more:hover {
 
 /* Bordered Buttons */
 .btn-u.btn-brd {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 .btn-u.btn-brd:hover {
   color: $hoverColor;
   border-color: $hoverColor;
 }
 .btn-u.btn-brd.btn-brd-hover:hover {
-  background: $hoverColor;   
+  background: $hoverColor;
 }
 
 /* Service
 ------------------------------------*/
 .service .service-icon {
-    color:$color;  
+    color:$deetsYellowColor;
 }
 
 /* Service Blocks */
-.service-alternative .service:hover { 
-    background:$color;
-} 
+.service-alternative .service:hover {
+    background:$deetsYellowColor;
+}
 
 /* Thumbnail (Recent Work)
 ------------------------------------*/
 .thumbnail-style h3 a:hover {
-    color:$color;
+    color:$deetsYellowColor;
 }
 .thumbnail-style a.btn-more {
-    background:$color;
+    background:$deetsYellowColor;
 }
 .thumbnail-style a.btn-more:hover {
     box-shadow:0 0 0 2px $hoverColor;
@@ -530,21 +527,21 @@ a.read-more:hover {
 /* Typography
 ------------------------------------*/
 /* Heading */
-.headline h2, 
-.headline h3, 
-.headline h4 {
-    border-bottom:2px solid $color;
+.footer-headline h2,
+.footer-headline h3,
+.footer-headline h4 {
+    border-bottom:2px solid $deetsYellowColor;
 }
 
 /* Blockquote */
 blockquote:hover {
-    border-left-color:$color; 
+    border-left-color:$deetsYellowColor;
 }
 .hero {
-    border-left-color: $color;
+    border-left-color: $deetsYellowColor;
 }
 blockquote.hero.hero-default {
-  background: $color;
+  background: $deetsYellowColor;
 }
 blockquote.hero.hero-default:hover {
   background: $hoverColor;
@@ -553,203 +550,194 @@ blockquote.hero.hero-default:hover {
 /* Carousel
 ------------------------------------*/
 .carousel-arrow a.carousel-control:hover {
-    color: $color;
-}
-
-/* Footer
-------------------------------------*/
-.footer a,
-.copyright a,
-.footer a:hover,
-.copyright a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Footer Blog */
 .footer .dl-horizontal a:hover {
-    color:$color !important;
+    color:$deetsYellowColor !important;
 }
 
 /* Blog Posts
 ------------------------------------*/
-.posts .dl-horizontal a:hover { 
-    color:$color; 
+.posts .dl-horizontal a:hover {
+    color:$deetsYellowColor;
 }
 .posts .dl-horizontal:hover dt img,
-.posts .dl-horizontal:hover dd a { 
-    color: $color;
-    border-color: $color !important;
+.posts .dl-horizontal:hover dd a {
+    color: $deetsYellowColor;
+    border-color: $deetsYellowColor !important;
 }
 
 /* Post Comment */
-.post-comment h3, 
+.post-comment h3,
 .blog-item .media h3,
 .blog-item .media h4.media-heading span a {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Tabs
 ------------------------------------*/
 /* Tabs v1 */
-.tab-v1 .nav-tabs { 
-    border-bottom: solid 2px $color;   
+.tab-v1 .nav-tabs {
+    border-bottom: solid 2px $deetsYellowColor;
 }
-.tab-v1 .nav-tabs > .active > a, 
-.tab-v1 .nav-tabs > .active > a:hover, 
-.tab-v1 .nav-tabs > .active > a:focus { 
-    background: $color; 
+.tab-v1 .nav-tabs > .active > a,
+.tab-v1 .nav-tabs > .active > a:hover,
+.tab-v1 .nav-tabs > .active > a:focus {
+    background: $deetsYellowColor;
 }
-.tab-v1 .nav-tabs > li > a:hover { 
-    background: $color; 
+.tab-v1 .nav-tabs > li > a:hover {
+    background: $deetsYellowColor;
 }
 
 /* Tabs v2 */
 .tab-v2 .nav-tabs li.active a {
-    border-top: solid 2px $color;
+    border-top: solid 2px $deetsYellowColor;
 }
 
 /* Tabs v3 */
 .tab-v3 .nav-pills li a:hover,
 .tab-v3 .nav-pills li.active a {
-    background: $color;
+    background: $deetsYellowColor;
     border: solid 1px $hoverColor;
 }
 
 /* Accardion
 ------------------------------------*/
 .acc-home a.active,
-.acc-home a.accordion-toggle:hover { 
-    color:$color; 
+.acc-home a.accordion-toggle:hover {
+    color:$deetsYellowColor;
 }
-.acc-home .collapse.in { 
-    border-bottom:solid 1px $color; 
+.acc-home .collapse.in {
+    border-bottom:solid 1px $deetsYellowColor;
 }
 
 /* Testimonials
 ------------------------------------*/
 .testimonials .testimonial-info {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .testimonials .carousel-arrow i:hover {
-    background: $color;
+    background: $deetsYellowColor;
 }
 
 /* Info Blocks
 ------------------------------------*/
 .info-blocks:hover i.icon-info-blocks {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Breadcrumb
 ------------------------------------*/
 .breadcrumb li.active,
 .breadcrumb li a:hover {
-    color:$color;
+    color:$deetsYellowColor;
 }
 
 /* About Page
 ------------------------------------*/
 .team .thumbnail-style:hover h3 a {
-    color:$color !important;
+    color:$deetsYellowColor !important;
 }
 
 /* Social Icons */
 .team ul.team-socail li i:hover {
-    background: $color;
+    background: $deetsYellowColor;
 }
 
 /* Right Sidebar
 ------------------------------------*/
 /* Right Sidebar */
 .who li i,
-.who li:hover i, 
-.who li:hover a { 
-    color:$color; 
+.who li:hover i,
+.who li:hover a {
+    color:$deetsYellowColor;
 }
 
 /* Privacy Page
 ------------------------------------*/
 .privacy a:hover {
-    color:$color; 
+    color:$deetsYellowColor;
 }
 
 /* Portfolio Page
 ------------------------------------*/
 /* Portfolio v1 */
 .view a.info:hover {
-    background: $color;
+    background: $deetsYellowColor;
 }
 
 /* Portfolio v2 */
 .sorting-block .sorting-nav li.active {
-    color: $color;
-    border-bottom: solid 1px $color;
+    color: $deetsYellowColor;
+    border-bottom: solid 1px $deetsYellowColor;
 }
 .sorting-block .sorting-grid li a:hover span.sorting-cover {
-    background: $color;
+    background: $deetsYellowColor;
 }
 
 /* Blog Page
 ------------------------------------*/
 .blog h3 {
-    color:$color;
+    color:$deetsYellowColor;
 }
 .blog li a:hover {
-    color:$color;
+    color:$deetsYellowColor;
 }
 
 /* Blog Tags */
 ul.blog-tags a:hover {
-    background: $color;
+    background: $deetsYellowColor;
 }
 .blog-post-tags ul.blog-tags a:hover {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 
 /* Blog Photos */
 .blog-photos li img:hover {
-    box-shadow: 0 0 0 2px $color;
+    box-shadow: 0 0 0 2px $deetsYellowColor;
 }
 
 /* Blog Latest Tweets */
 .blog-twitter .blog-twitter-inner:hover {
-    border-color: $color;
-    border-top-color: $color;  
+    border-color: $deetsYellowColor;
+    border-top-color: $deetsYellowColor;
 }
 .blog-twitter .blog-twitter-inner:hover:after {
-    border-top-color: $color;  
+    border-top-color: $deetsYellowColor;
 }
 .blog-twitter .blog-twitter-inner a {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Blog Item Page
 ------------------------------------*/
 .blog-item h4.media-heading span a {
-    color:$color;
+    color:$deetsYellowColor;
 }
 
 /* Coming Soon Page
 ------------------------------------*/
 .coming-soon-border {
-    border-top: solid 3px $color;
+    border-top: solid 3px $deetsYellowColor;
 }
 
 /* Search Page
 ------------------------------------*/
 .booking-blocks p a {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Icons Page
 ------------------------------------*/
-.icon-page li:hover { 
-    color:$color;
+.icon-page li:hover {
+    color:$deetsYellowColor;
 }
 
 /* Glyphicons */
 .glyphicons-demo a:hover {
-    color: $color;
+    color: $deetsYellowColor;
     text-decoration: none;
 }
 
@@ -757,176 +745,176 @@ ul.blog-tags a:hover {
 ------------------------------------*/
 .social-icons-v1 i:hover {
   color: #fff;
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 /* Magazine Page
 ------------------------------------*/
 /* Magazine News */
 .magazine-news .by-author strong {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 .magazine-news a.read-more {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Magazine Mini News */
 .magazine-mini-news .post-author strong {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .news-read-more i {
-    background: $color;
+    background: $deetsYellowColor;
 }
 
 /* Sidebar Features */
 .magazine-page h3 a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Page Features
 ------------------------------------*/
 /* Tag Boxes v1 */
 .tag-box-v1 {
-    border-top: solid 2px $color;
+    border-top: solid 2px $deetsYellowColor;
 }
 
 /* Tag Boxes v2 */
 .tag-box-v2 {
-    border-left: solid 2px $color;
+    border-left: solid 2px $deetsYellowColor;
 }
 
 /* Tag Boxes v7 */
 .tag-box-v7 {
-    border-bottom: solid 2px $color;
+    border-bottom: solid 2px $deetsYellowColor;
 }
 
 /* Font Awesome Icon Page Style */
-.fa-icons li:hover { 
-  color: $color;
+.fa-icons li:hover {
+  color: $deetsYellowColor;
 }
 .fa-icons li:hover i {
-  background: $color; 
+  background: $deetsYellowColor;
 }
 
 /* GLYPHICONS Icons Page Style */
 .bs-glyphicons li:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Navigation
 ------------------------------------*/
 /* Pagination */
-.pagination > .active > a, 
-.pagination > .active > span, 
-.pagination > .active > a:hover, 
-.pagination > .active > span:hover, 
-.pagination > .active > a:focus, 
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
 .pagination > .active > span:focus {
-  background-color: $color;
-  border-color: $color;
+  background-color: $deetsYellowColor;
+  border-color: $deetsYellowColor;
 }
 .pagination li a:hover {
   background: $hoverColor;
-  border-color: $hoverColor;   
+  border-color: $hoverColor;
 }
 
 /* Pager */
-.pager li > a:hover, 
+.pager li > a:hover,
 .pager li > a:focus {
   background: $hoverColor;
-  border-color: $hoverColor;   
+  border-color: $hoverColor;
 }
-.pager.pager-v2 li > a:hover, 
+.pager.pager-v2 li > a:hover,
 .pager.pager-v2 li > a:focus,
-.pager.pager-v3 li > a:hover, 
+.pager.pager-v3 li > a:hover,
 .pager.pager-v3 li > a:focus {
   color: #fff;
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 /* Registration and Login Page v2
 ------------------------------------*/
 .reg-block {
-    border-top: solid 2px $color;
+    border-top: solid 2px $deetsYellowColor;
 }
 
 /*Image Hover
 ------------------------------------*/
 /* Image-hover */
 #effect-2 figure .img-hover {
-    background: $color;
+    background: $deetsYellowColor;
 }
 
 /* Blog Large Page
 ------------------------------------*/
 .blog h2 a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Timeline v1 Page
 ------------------------------------*/
 .timeline-v1 > li > .timeline-badge i:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .timeline-v1 .timeline-footer .likes:hover i {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Timeline v2 Page
 ------------------------------------*/
 /* The icons */
 .timeline-v2 > li .cbp_tmicon {
-    background: $color;
+    background: $deetsYellowColor;
 }
 
 /* Progress Bar
 ------------------------------------*/
 .progress-bar-u {
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 /* Job Inner Page
 ------------------------------------*/
 .job-description .save-job a:hover,
 .block-description .save-job a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 .job-description .p-chart .overflow-h li i,
 .job-description .p-chart .overflow-h li a,
 .block-description .p-chart .overflow-h li i,
 .block-description .p-chart .overflow-h li a {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Colorful-ul */
 .job-description .colorful-ul li a {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Search Inner Page
 ------------------------------------*/
 .s-results .related-search a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .s-results .inner-results h3 a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .s-results .up-ul li a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .s-results .down-ul li a {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Funny Boxes
 ------------------------------------*/
 .funny-boxes p a {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .funny-boxes .funny-boxes-img li i {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .funny-boxes-colored p, .funny-boxes-colored h2 a, .funny-boxes-colored .funny-boxes-img li, .funny-boxes-colored .funny-boxes-img li i {
   color: #fff;
@@ -936,47 +924,47 @@ ul.blog-tags a:hover {
 ------------------------------------*/
 .sidebar-nav-v1 ul li:hover a,
 .sidebar-nav-v1 ul li.active a {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Blockquote
 ------------------------------------*/
 blockquote.bq-green {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 blockquote:hover,
 blockquote.text-right:hover {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 .quote-v1 p::before {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Green Left Bordered Funny Box */
 .funny-boxes-left-green {
-  border-left: solid 2px $color;
+  border-left: solid 2px $deetsYellowColor;
 }
 .funny-boxes-left-green:hover {
-  border-left-color: $color;
+  border-left-color: $deetsYellowColor;
 }
 
 /* Testimonials Default
 ------------------------------------*/
 /* Testimonials */
 .testimonials .carousel-arrow i:hover {
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 /* Testimonials Default */
 .testimonials-bg-default .item p {
-  background: $color;
+  background: $deetsYellowColor;
 }
 .testimonials.testimonials-bg-default .item p:after,
 .testimonials.testimonials-bg-default .item p:after {
-  border-top-color: $color;
+  border-top-color: $deetsYellowColor;
 }
 .testimonials-bg-default .carousel-arrow i {
-  background: $color;
+  background: $deetsYellowColor;
 }
 .testimonials.testimonials-bg-default .carousel-arrow i:hover {
   background: $hoverColor;
@@ -985,159 +973,159 @@ blockquote.text-right:hover {
 /* Promo Page
 ------------------------------------*/
 /* Promo Box */
-.promo-box:hover strong, 
+.promo-box:hover strong,
 .promo-box:hover strong a {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Typography
 ------------------------------------*/
 .dropcap {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 .dropcap-bg {
     color: #fff;
-    background: $color;
+    background: $deetsYellowColor;
 }
 
 /* Breadcrumbs
-------------------------------------*/ 
+------------------------------------*/
 span.label-u,
 span.badge-u {
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 /* Icons
 ------------------------------------*/
 /* Icon Link*/
 .link-icon:hover i {
-  color: $color;
-  border: solid 1px $color;
+  color: $deetsYellowColor;
+  border: solid 1px $deetsYellowColor;
 }
 
 .link-bg-icon:hover i {
-  color: $color;
-  background: $color !important;
-  border-color: $color;
+  color: $deetsYellowColor;
+  background: $deetsYellowColor !important;
+  border-color: $deetsYellowColor;
 }
 
 /* Icons Backgroun Color
-------------------------------------*/ 
+------------------------------------*/
 i.icon-color-u {
-  color: $color;
-  border: solid 1px $color;
+  color: $deetsYellowColor;
+  border: solid 1px $deetsYellowColor;
 }
 i.icon-bg-u {
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 /* Line Icon Page
 ------------------------------------*/
 .line-icon-page .item:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Colored Content Boxes
 ------------------------------------*/
 .service-block-u {
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 /* Panels (Portlets)
 ------------------------------------*/
 .panel-u {
-    border-color: $color;
+    border-color: $deetsYellowColor;
 }
 .panel-u > .panel-heading {
-   background: $color;
+   background: $deetsYellowColor;
 }
 
 /* Owl Carousel
 ------------------------------------*/
 .owl-btn:hover {
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 /* Counter
 ------------------------------------*/
 .counters span.counter-icon i {
-    background: $color;
+    background: $deetsYellowColor;
 }
 .counters span.counter-icon i:after {
-    border-top: 7px solid $color;
+    border-top: 7px solid $deetsYellowColor;
 }
 
 /* SKy-Forms
 ------------------------------------*/
 /* Buttons */
 .sky-form .button {
-    background: $color;
+    background: $deetsYellowColor;
 }
 
 /* Rating */
 .sky-form .rating input:checked ~ label {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* Message */
 .sky-form .message {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .sky-form .message i {
-    border-color: $color;
+    border-color: $deetsYellowColor;
 }
 
 /* Profile
 ------------------------------------*/
 .profile .profile-post:hover span.profile-post-numb {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .profile .date-formats {
-    background: $color;
+    background: $deetsYellowColor;
 }
 .profile .name-location span i,
 .profile .name-location span a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .share-list li i {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .profile .comment-list-v2 li:hover i,
 .profile .comment-list li:hover i {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .profile .profile-post.color-one {
-    border-color: $color;
+    border-color: $deetsYellowColor;
 }
 
 /* Pricing Page
 ------------------------------------*/
 /* Pricing Head */
 .pricing:hover h4 {
-    color:$color;
+    color:$deetsYellowColor;
 }
 .pricing-head h3 {
-    background:$color;
-    text-shadow: 0 1px 0 $hoverColor;   
+    background:$deetsYellowColor;
+    text-shadow: 0 1px 0 $hoverColor;
 }
 .pricing-head h4 {
     color:#999;
     background:#fcfcfc;
     border-bottom:solid 1px #d5eef0;
 }
-    
+
 /* Pricing Content */
 .pricing-content li {
     border-bottom:solid 1px #d5eef0;
 }
 .pricing-content li i {
-    color:$color;
+    color:$deetsYellowColor;
 }
 
 /* Pricing Extra */
 .sticker-left {
-    background: $color;
+    background: $deetsYellowColor;
 }
 
 /* Pricing Footer */
@@ -1148,14 +1136,14 @@ i.icon-bg-u {
 
 /* Pricing Active */
 .price-active h4 {
-    color:$color;
+    color:$deetsYellowColor;
 }
 .no-space-pricing .price-active .pricing-head h4,
 .no-space-pricing .pricing:hover .pricing-head h4 {
-    color:$color;
+    color:$deetsYellowColor;
 }
 
-/* Mega Pricing Tables 
+/* Mega Pricing Tables
 ------------------------------------*/
 .pricing-mega-v1 .pricing-head h3,
 .pricing-mega-v2 .pricing-head h3,
@@ -1166,19 +1154,19 @@ i.icon-bg-u {
 /* Pricing Table Mega v1 Version
 ------------------------------------*/
 .pricing-mega-v1 .pricing:hover h4 i {
-    color:$color;
+    color:$deetsYellowColor;
 }
 .pricing-mega-v1 .pricing-content li i {
-    color: $color; 
+    color: $deetsYellowColor;
 }
 
 /* Pricing Table Colored Background Version
 ------------------------------------*/
-.pricing-bg-colored .pricing:hover {    
-    background: $color;
+.pricing-bg-colored .pricing:hover {
+    background: $deetsYellowColor;
 }
 .pricing-bg-colored .pricing-head i {
-    color:$color;
+    color:$deetsYellowColor;
 }
 .pricing-bg-colored .pricing-footer .btn-u {
     border: 1px solid #fff;
@@ -1187,24 +1175,24 @@ i.icon-bg-u {
   border-bottom: 1px solid #d5eef0;
 }
 
-/* Pricing Table Mega v2 
+/* Pricing Table Mega v2
 ------------------------------------*/
 .pricing-mega-v2 .block:hover .bg-color {
-    background: $color;
+    background: $deetsYellowColor;
 }
 .pricing-mega-v2 .block:hover h3,
-.pricing-mega-v2 .block:hover h4, 
-.pricing-mega-v2 .block:hover li, 
+.pricing-mega-v2 .block:hover h4,
+.pricing-mega-v2 .block:hover li,
 .pricing-mega-v2 .block:hover li i,
 .pricing-mega-v2 .block:hover h4 i {
-    background: $color;
+    background: $deetsYellowColor;
 }
 
-/* Pricing Table Mega v3 
+/* Pricing Table Mega v3
 ------------------------------------*/
 .pricing-mega-v1 .btn-group .dropdown-menu,
 .pricing-mega-v3 .btn-group .dropdown-menu {
-    background: $color !important;
+    background: $deetsYellowColor !important;
 }
 
 .pricing-mega-v1 .btn-group .dropdown-menu li a:hover,
@@ -1212,51 +1200,51 @@ i.icon-bg-u {
     background: $hoverColor;
 }
 
-/* Grid Block v2 
+/* Grid Block v2
 ------------------------------------*/
 .grid-block-v2 li:hover .grid-block-v2-info {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 
-/* Testimonials v3 Title 
+/* Testimonials v3 Title
 ------------------------------------*/
 .testimonials-v3 .testimonials-v3-title p {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 .testimonials-v3 .owl-buttons .owl-prev:hover,
 .testimonials-v3 .owl-buttons .owl-next:hover {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 
-/* Content Boxes v4 
+/* Content Boxes v4
 ------------------------------------*/
 .content-boxes-v4 i {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
-/* Thumbnails v1 
+/* Thumbnails v1
 ------------------------------------*/
 .thumbnails-v1 .read-more {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
-/* Thumbnails v6 
+/* Thumbnails v6
 ------------------------------------*/
 .testimonials-v6 .testimonials-info:hover {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 
-/* Team v1 
+/* Team v1
 ------------------------------------*/
 .team-v1 li:hover > p:before {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 
 /* Team v4
 ------------------------------------*/
 .team-v4 .team-social-v4 a:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Team v5 & v6 & v7
@@ -1264,154 +1252,154 @@ i.icon-bg-u {
 .team-v5 small,
 .team-v6 small,
 .team-v7 .team-v7-position {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Headliner Center
 ------------------------------------*/
 .headline-center h2:after {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 
 /* Headliner Left
 ------------------------------------*/
 .headline-left .headline-brd:after {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 
 /* Portfolio Box
 ------------------------------------*/
 .portfolio-box .portfolio-box-in i {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 
 /* Flat Background Block v1
 ------------------------------------*/
 .flat-bg-block-v1 .checked-list i {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Owl Carousel v5
 ------------------------------------*/
 .owl-carousel-v5 .owl-controls .owl-page.active span,
 .owl-carousel-v5 .owl-controls.clickable .owl-page:hover span {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 
 /* Content Boxes v5
 ------------------------------------*/
 .content-boxes-v5:hover i {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 
 /* Block Grid v1
 ------------------------------------*/
 .block-grid-v1:hover {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 
 /* Block Grid v2
 ------------------------------------*/
 .block-grid-v2 li:hover .block-grid-v2-info {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 
 /* Content Boxes v6
 ------------------------------------*/
 .content-boxes-v6:hover i:after {
-  border-color: $color;
+  border-color: $deetsYellowColor;
 }
 .content-boxes-v6:hover i {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 
 /* Portfolio Box-v2
 ------------------------------------*/
 .portfolio-box-v2 .portfolio-box-v2-in i {
-  background:  rgba($color, 0.8);
+  background:  rgba($deetsYellowColor, 0.8);
 }
 .portfolio-box-v2 .portfolio-box-v2-in i:hover {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 
 /* Service Block v1
 ------------------------------------*/
 .service-block-v1 i {
-  background:  $color;
+  background:  $deetsYellowColor;
 }
 
 /* Service Block v4
 ------------------------------------*/
 .service-block-v4 .service-desc i {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Service Block v7
 ------------------------------------*/
 .service-block-v7 i {
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 /* Service Block v8
 ------------------------------------*/
 .service-block-v8 .service-block-desc h3::after {
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 /* Testimonials bs
 ------------------------------------*/
 .testimonials-bs .carousel-control-v2 i:hover {
-  border-color: $color;
-  color: $color;
+  border-color: $deetsYellowColor;
+  color: $deetsYellowColor;
 }
 
 /* Fusion Portfolio
 ------------------------------------*/
 .fusion-portfolio #filters-container .cbp-filter-item-active {
-  background:  $color;
-  border-color: $color;
+  background:  $deetsYellowColor;
+  border-color: $deetsYellowColor;
 }
 
  .fusion-portfolio #filters-container .cbp-filter-item:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 .blog_masonry_3col h3 a:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Cube Portfolio
 ------------------------------------*/
 .cube-portfolio .cbp-l-filters-text .cbp-filter-item.cbp-filter-item-active, .cube-portfolio .cbp-l-filters-text .cbp-filter-item:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .cube-portfolio .link-captions li i:hover {
     color: #fff;
-    background: $color;    
+    background: $deetsYellowColor;
 }
 .cube-portfolio .cbp-caption-activeWrap.default-transparent-hover {
-  background: rgba($color, .9) !important;
+  background: rgba($deetsYellowColor, .9) !important;
 }
 
 /* Recent Works
 ------------------------------------*/
 .owl-work-v1 .item a:hover span {
-  border-bottom-color: $color;
+  border-bottom-color: $deetsYellowColor;
 }
 
 /* Footer Default
 ------------------------------------*/
 .footer-default .footer .dl-horizontal a:hover {
-  color: $color !important;
+  color: $deetsYellowColor !important;
 }
 .footer-default .footer a {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .footer-default .footer a:hover {
   color: $hoverColor;
 }
 .footer-default .copyright a {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .footer-default .copyright a:hover {
   color: $hoverColor;
@@ -1420,168 +1408,168 @@ i.icon-bg-u {
 /* Footer v4
 ------------------------------------*/
 .footer-v4 .copyright a {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Title v1
 ------------------------------------*/
 .title-v1 h1:after, .title-v1 h2:after {
-  background-color: $color;
+  background-color: $deetsYellowColor;
 }
 
 /* Copyright Section
 ------------------------------------*/
 .copyright-section i.back-to-top:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Top Control
 ------------------------------------*/
 #topcontrol:hover {
-  background-color: $color;
+  background-color: $deetsYellowColor;
 }
 
 /* News Info
 ------------------------------------*/
 .news-v1 .news-v1-info li a:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 .news-v1 h3 a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .news-v2 .news-v2-desc h3 a:hover {
-    color: $color !important;
+    color: $deetsYellowColor !important;
 }
 .news-v3 .post-shares li span {
-  background: $color;
+  background: $deetsYellowColor;
 }
 .news-v3 .posted-info li a:hover {
-  color: $color !important;
+  color: $deetsYellowColor !important;
 }
 .news-v3 h2 a:hover {
-  color: $color !important;
+  color: $deetsYellowColor !important;
 }
 
 /* Blog Trending
 ------------------------------------*/
 .blog-trending small a:hover {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Blog Masonry
 ------------------------------------*/
 .blog_masonry_3col ul.grid-boxes-news li a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 /* List v1
 ------------------------------------*/
 .lists-v1 i {
-    background: $color;
+    background: $deetsYellowColor;
 }
 
 /* List v2
 ------------------------------------*/
 .lists-v2 i {
-  color: $color;
+  color: $deetsYellowColor;
 }
 
 /* Process v1
 ------------------------------------*/
 .process-v1 .process-in > li i {
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 /* Featured Blog
 ------------------------------------*/
 .featured-blog h2::after {
-  background: $color;
+  background: $deetsYellowColor;
 }
 .featured-blog .featured-img i:hover {
   color: #fff;
-  background: $color;
+  background: $deetsYellowColor;
 }
 
 .rgba-default {
-  background-color: rgba($color, 1);
+  background-color: rgba($deetsYellowColor, 1);
 }
 
 /* Blog Latest Posts
 ------------------------------------*/
 .blog-latest-posts h3 a:hover {
-    color: $color !important;
+    color: $deetsYellowColor !important;
 }
 
 /* Blog Trending
 ------------------------------------*/
 .blog-trending h3 a:hover {
-    color: $color !important;
+    color: $deetsYellowColor !important;
 }
 
 /*Blog Thumb Colors
 ------------------------------------*/
 .blog-thumb .blog-thumb-hover:hover:after {
-  background: rgba($color, 0.9);
+  background: rgba($deetsYellowColor, 0.9);
 }
 .blog-grid .blog-grid-grad i:hover {
-  background: rgba($color, 1);
+  background: rgba($deetsYellowColor, 1);
 }
 
 /*Footer Theme Color
 ------------------------------------*/
 .footer-v8 .footer .column-one a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .footer-v8 .footer .tags-v4 a:hover {
-    border-color: $color;
-    background-color: $color;
+    border-color: $deetsYellowColor;
+    background-color: $deetsYellowColor;
 }
 .footer-v8 .footer .footer-lists li a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .footer-v8 .footer .latest-news h3 a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .footer-v8 .footer .input-group-btn .input-btn {
-    background: $color;
+    background: $deetsYellowColor;
 }
 .footer-v8 .footer .social-icon-list li i:hover {
-    background: $color;
-    border-color: $color;
+    background: $deetsYellowColor;
+    border-color: $deetsYellowColor;
 }
 
 /*Header Theme Color
 ------------------------------------*/
 .header-v8 .dropdown-menu {
-    border-top: solid 3px $color;
+    border-top: solid 3px $deetsYellowColor;
 }
 .header-v8 .dropdown-menu .active > a,
 .header-v8 .dropdown-menu li > a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .header-v8 .navbar-nav .open .dropdown-menu > li > a:hover,
 .header-v8 .navbar-nav .open .dropdown-menu > li > a:focus {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .header-v8 .navbar-nav .open .dropdown-menu > .active > a,
 .header-v8 .navbar-nav .open .dropdown-menu > .active > a:hover,
 .header-v8 .navbar-nav .open .dropdown-menu > .active > a:focus {
-    color: $color;
+    color: $deetsYellowColor;
 }
 
 .header-v8 .navbar-nav .open .dropdown-menu > .disabled > a,
 .header-v8 .navbar-nav .open .dropdown-menu > .disabled > a:hover,
 .header-v8 .navbar-nav .open .dropdown-menu > .disabled > a:focus {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .header-v8 .navbar-nav > li > a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }
 .header-v8 .navbar-nav > .active > a,
 .header-v8 .navbar-nav > .active > a:hover,
 .header-v8 .navbar-nav > .active > a:focus {
-    color: $color !important;
+    color: $deetsYellowColor !important;
 }
 .header-v8 .mega-menu .mega-menu-fullwidth .dropdown-link-list li a:hover {
-    color: $color;
+    color: $deetsYellowColor;
 }

@@ -1,0 +1,106 @@
+@import 'config.scss';
+
+.margin-bottom-5,
+.margin-bottom-10,
+.margin-bottom-15,
+.margin-bottom-20,
+.margin-bottom-25,
+.margin-bottom-30,
+.margin-bottom-35,
+.margin-bottom-40,
+.margin-bottom-45,
+.margin-bottom-50,
+.margin-bottom-55,
+.margin-bottom-60,
+.margin-bottom-100 {
+   clear:both;
+}
+.margin-bottom-5  { margin-bottom:5px;}
+.margin-bottom-10 { margin-bottom:10px;}
+.margin-bottom-15 { margin-bottom:15px;}
+.margin-bottom-20 { margin-bottom:20px;}
+.margin-bottom-25 { margin-bottom:25px;}
+.margin-bottom-30 { margin-bottom:30px;}
+.margin-bottom-35 { margin-bottom:35px;}
+.margin-bottom-40 { margin-bottom:40px;}
+.margin-bottom-45 { margin-bottom:45px;}
+.margin-bottom-50 { margin-bottom:50px;}
+.margin-bottom-55 { margin-bottom:55px;}
+.margin-bottom-60 { margin-bottom:60px;}
+.margin-bottom-100 { margin-bottom:100px;}
+
+.color-light { color: #ffffff;}
+.bg-color-darker { background-color: #222 !important;}
+.btn {
+   box-shadow: none;
+   border-radius: 0;
+}
+.btn-u {
+   border: 0;
+   color: #fff;
+   font-size: 14px;
+   cursor: pointer;
+   font-weight: 400;
+   padding: 6px 13px;
+   position: relative;
+   background: $deetsYellowColor;
+   white-space: nowrap;
+   display: inline-block;
+   text-decoration: none;
+}
+.btn-u:hover {
+  color: #fff;
+  text-decoration: none;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+.content-md {
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+h1 {
+  font-size: 28px;
+  line-height: 35px;
+}
+h2 {
+  font-size: 24px;
+  line-height: 33px;
+}
+h3 {
+  font-size: 20px;
+  line-height: 27px;
+}
+h4 {
+  line-height: 25px;
+}
+h5 {
+  line-height: 20px;
+}
+h6 {
+  line-height: 18px;
+}
+
+
+.headline {
+  margin: 10px 0 25px 0;
+  border-bottom: 1px dotted #e4e9f0;
+}
+
+.headline h2 {
+  font-size: 22px;
+  color: #585f69;
+}
+
+.headline h2,
+.headline h3,
+.headline h4 {
+  margin: 0 0 -2px 0;
+  padding-bottom: 5px;
+  display: inline-block;
+  border-bottom: 2px solid $deetsYellowColor;
+}
+
