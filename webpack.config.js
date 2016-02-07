@@ -38,7 +38,7 @@ module.exports = {
       },
       {
         test: /\.s?css$/,
-        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap', 'sass-loader?sourceMap', 'pleeease-loader', 'postcss-loader']),
+        loader: ExtractTextPlugin.extract('style-loader', ['css-loader?sourceMap', 'pleeease-loader', 'postcss-loader', 'sass-loader?sourceMap']),
       },
       {
         test: /\.png$/,
