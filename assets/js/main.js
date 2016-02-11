@@ -3,7 +3,6 @@
 require('../../node_modules/font-awesome/css/font-awesome.css');
 require('../../node_modules/animate.css/animate.css');
 
-require('../css/bootstrap-custom.scss');
 require('../css/dancedeets.scss');
 require('../css/social-hovers.scss');
 require('../css/header.scss');

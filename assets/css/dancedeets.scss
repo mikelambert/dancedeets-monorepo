@@ -1,5 +1,7 @@
 @import 'config.scss';
 
+@import 'bootstrap-custom.scss';
+
 .margin-bottom-5,
 .margin-bottom-10,
 .margin-bottom-15,
@@ -31,24 +33,22 @@
 
 .color-light { color: #ffffff;}
 .bg-color-darker { background-color: #222 !important;}
-.btn {
-   box-shadow: none;
-   border-radius: 0;
+
+.btn-cta {
+  box-shadow: none;
+  border-radius: 0;
+  text-transform: uppercase;
+  color: #fff;
+  background: #4F5086;
 }
-.btn-u {
-   border: 0;
-   color: #fff;
-   font-size: 14px;
-   cursor: pointer;
-   font-weight: 400;
-   padding: 6px 13px;
-   position: relative;
-   background: $deetsYellowColor;
-   white-space: nowrap;
-   display: inline-block;
-   text-decoration: none;
+
+.btn-cta:hover,
+.btn-cta:focus,
+.btn-cta:active {
+    background: #333452;
 }
-.btn-u:hover {
+
+.btn:hover {
   color: #fff;
   text-decoration: none;
   -webkit-transition: all 0.3s ease-in-out;
