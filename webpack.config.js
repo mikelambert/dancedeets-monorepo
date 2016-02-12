@@ -13,8 +13,13 @@ module.exports = {
     path: path.join(__dirname, 'dist/js'),
     filename: '[name].js',
   },
-  devtool: 'source-map',
+  devtool: 'eval-cheap-module-source-map',
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': { // eslint-disable-line quote-props
+        'NODE_ENV': JSON.stringify('production'),
+      },
+    }),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin(),
     new ExtractTextPlugin('../css/[name].css'),
@@ -89,7 +94,8 @@ module.exports = {
         ignore: [
           '.animated',
           '.animated.flip',
-          new RegExp('.header-v6(.header-dark-transparent)?.header-fixed-shrink'),
+          new RegExp('\\.(in|open|collapsing)\\b'),
+          new RegExp('\\.header-v6(\\.header-dark-transparent)?\\.header-fixed-shrink'),
         ],
         html: ['templates/new_homepage.html'],
       }),
