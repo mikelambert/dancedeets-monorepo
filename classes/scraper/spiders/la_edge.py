@@ -32,7 +32,8 @@ class EDGE(items.StudioScraper):
             a_name = row.xpath('.//a[@name]//text()')
             if a_name:
                 # Grab day-of-week
-                day = a_name.extract()[0].strip()
+                # Once had: 'S ATURDAY'
+                day = a_name.extract()[0].strip().replace(' ', '')
                 date = dateparser.parse(day).date()
             elif date: # Don't process rows as classes until we've seen Monday
                 # Grab class
