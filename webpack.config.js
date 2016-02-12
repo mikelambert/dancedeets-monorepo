@@ -94,10 +94,11 @@ module.exports = {
         ignore: [
           '.animated',
           '.animated.flip',
+          new RegExp('\\.alert\w+\\b'),
           new RegExp('\\.(in|open|collapsing)\\b'),
           new RegExp('\\.header-v6(\\.header-dark-transparent)?\\.header-fixed-shrink'),
         ],
-        html: ['templates/new_homepage.html'],
+        html: ['example_html/new_homepage.html'],
       }),
     ];
   },

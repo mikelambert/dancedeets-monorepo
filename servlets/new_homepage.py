@@ -10,4 +10,5 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         return False
 
     def get(self):
+        self.display['suppress_promos'] = True
         self.render_template('new_homepage')
