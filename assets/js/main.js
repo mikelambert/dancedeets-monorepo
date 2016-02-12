@@ -1,5 +1,14 @@
 'use strict';
 
+global.jQuery = require('jquery');
+require('jquery.backstretch');
+
+require('jquery.smartbanner');
+require('../../node_modules/jquery.smartbanner/jquery.smartbanner.css');
+
+require('bootstrap');
+require('../css/bootstrap-custom.scss');
+
 require('../../node_modules/font-awesome/css/font-awesome.css');
 require('../../node_modules/animate.css/animate.css');
 
@@ -9,9 +18,6 @@ require('../css/header.scss');
 require('../css/footer.scss');
 require('../css/custom.scss');
 
-global.jQuery = require('jquery');
-require('jquery.backstretch');
-require('bootstrap');
 var App = require('./app');
 
 var $ = global.jQuery;

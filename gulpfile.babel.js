@@ -20,7 +20,7 @@ const $ = gulpLoadPlugins();
 var baseAssetsDir = '/Users/' + username.sync() + '/Dropbox/dancedeets-art/build-assets/';
 
 gulp.task('compile-favicons', function() {
-  return gulp.src('assets/image/deets-head.png')
+  return gulp.src('assets/img/deets-head.png')
   .pipe(favicons({
     appName: 'DanceDeets',
     appDescription: 'Street Dance Events. Worldwide.',
@@ -38,11 +38,11 @@ gulp.task('compile-favicons', function() {
       opengraph: false,
       twitter: false,
     },
-    html: './dist/html/favicon_tags.html',
+    html: './dist/templates/favicon_tags.html',
     replace: true,
   }))
   .on('error', gutil.log)
-  .pipe(gulp.dest('./dist/img/favicons2/'));
+  .pipe(gulp.dest('./dist/img/favicons/'));
 });
 
 gulp.task('compile-images-resize', () => {

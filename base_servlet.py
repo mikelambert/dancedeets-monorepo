@@ -40,7 +40,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.display = {}
         self._errors = []
 
-        self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"), autoescape=True)
+        self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(['templates', 'dist/templates']), autoescape=True)
 
         # This is necessary because appengine comes with Jinja 2.6 pre-installed, and this was added in 2.7+.
         def do_urlencode(value):
