@@ -262,12 +262,10 @@
                     <div class="color-light margin-bottom-20">
                         or track events from your phone
                     </div>
-                    {% if mobile_platform == mobile.MOBILE_IOS %}
-                    <a class="btn btn-primary btn-lg" href="{{ mobile.IOS_URL }}">Download App</a>
-                    {% elif mobile_platform == mobile.MOBILE_ANDROID %}
-                    <a class="btn btn-primary btn-lg" href="{{ mobile.ANDROID_URL }}">Download App</a>
-                    {% else %}
+                    {% if mobile_platform != mobile.MOBILE_ANDROID %}
                     <a href="{{ mobile.IOS_URL }}"><img src="/images/app_store_download.png" class="store-button"></a>
+                    {% endif %}
+                    {% if mobile_platform != mobile.MOBILE_IOS %}
                     <a href="{{ mobile.ANDROID_URL }}"><img src="/images/play_store_download.png" class="store-button"></a>
                     {% endif %}
                 </div>
