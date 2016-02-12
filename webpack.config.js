@@ -13,7 +13,7 @@ module.exports = {
     path: path.join(__dirname, 'dist/js'),
     filename: '[name].js',
   },
-  devtool: 'eval-cheap-module-source-map',
+  devtool: 'source-map',
   plugins: [
     new webpack.DefinePlugin({
       'process.env': { // eslint-disable-line quote-props
