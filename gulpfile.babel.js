@@ -27,7 +27,7 @@ gulp.task('compile-favicons', function() {
     developerName: 'DanceDeets',
     developerURL: 'http://www.dancedeets.com/',
     background: '#fff',
-    path: '/dist/favicons/',
+    path: '/dist/img/favicons/',
     url: 'http://www.dancedeets.com/',
     display: 'standalone',
     orientation: 'portrait',
