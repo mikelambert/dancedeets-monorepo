@@ -595,7 +595,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
         webview = bool(request.get('webview'))
         self.display['webview'] = webview
         if webview:
-            self.display['class_base_template'] = '_base_webview.html'
+            if bool(request.get('nd')):
+                self.display['class_base_template'] = '_new_base_webview.html'
+            else:
+                self.display['class_base_template'] = '_base_webview.html'
         else:
             if bool(request.get('nd')):
                 self.display['class_base_template'] = '_new_base.html'
