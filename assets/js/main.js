@@ -4,7 +4,9 @@ if (window.prod_mode) {
   require('trackjs');
 }
 
-var $ = global.$ = global.jQuery = require('jquery');
+var $ = require('jquery');
+global.$ = global.jQuery = $;
+
 require('jquery.backstretch');
 
 require('jquery.smartbanner');
