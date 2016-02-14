@@ -68,8 +68,8 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
     FB.init({version: 'v2.0', appId: fbAppId, status: true, cookie: true, xfbml: true});
     FB.Event.subscribe('auth.statusChange', handleStatusChange);
 
-    jQuery('.click-login').on('click', login);
-    jQuery('.click-logout').on('click', logout);
+    jQuery('.onclick-login').on('click', login);
+    jQuery('.onclick-logout').on('click', logout);
   }
 
   window.fbAsyncInit = function() {
@@ -83,7 +83,8 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
     if (d.getElementById(id)) {
       return;
     }
-    js = d.createElement(s); js.id = id;
+    js = d.createElement(s);
+    js.id = id;
     js.src = '//connect.facebook.net/en_US/sdk.js';
     fjs.parentNode.insertBefore(js, fjs);
   })(document, 'script', 'facebook-jssdk');

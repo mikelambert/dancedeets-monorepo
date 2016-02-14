@@ -28,12 +28,26 @@ var App = require('./app');
 
 var fbSetup = require('./fb');
 
+var fixStickyTouch = require('./sticky-touch');
+
+var appInstallPromos = require('./app-install-promo');
+
 // From old site: jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3
 
 fbSetup(window, window.fbPermissions, window.fbAppId, window.baseHostname);
 
+if (window.showSmartBanner) {
+  $.smartbanner({
+    title: 'DanceDeets',
+    author: 'DanceDeets',
+    icon: '/images/ic_launcher_dancedeets.png',
+  });
+}
+
 $(document).ready(function() {
   App.init($);
+  fixStickyTouch(window);
+  appInstallPromos(window);
 
   // background-image rotation
   var images = [

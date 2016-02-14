@@ -204,11 +204,11 @@
                         </li>
                         <li>
                             {% if user %}
-                              <a href="javascript:void(0)" class="click-logout">
+                              <a href="javascript:void(0)" class="onclick-logout">
                                   Logout
                               </a>
                             {% else %}
-                              <a href="javascript:void(0)" class="click-login">
+                              <a href="javascript:void(0)" class="onclick-login">
                                   Login
                               </a>
                             {% endif %}
@@ -245,8 +245,8 @@
 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 <ul>
 {% if not user %}
-    <li>A dope dancer? <button type="button" onclick="manualLogin();" class="btn btn-default"><i class="fa fa-sign-in fa-lg"></i> Join dancedeets and share your events</button> to help others find your dance scene.
-    <li>Learning to dance? <button type="button" onclick="manualLogin();" class="btn btn-default"><i class="fa fa-envelope fa-lg"></i> Subscribe to our weekly email</button> of upcoming events.
+    <li>A dope dancer? <button type="button" class="btn btn-default onclick-login"><i class="fa fa-sign-in fa-lg"></i> Join dancedeets and share your events</button> to help others find your dance scene.
+    <li>Learning to dance? <button type="button" class="btn btn-default onclick-login"><i class="fa fa-envelope fa-lg"></i> Subscribe to our weekly email</button> of upcoming events.
 {% endif %}
 {% if show_mobile_promo %}
     <li><a href="/mobile_apps" class="btn btn-default"><i class="fa fa-mobile fa-lg"></i> DanceDeets Mobile App</a> helps you find events on the go.
@@ -317,7 +317,6 @@
     <!--=== End Footer v2 ===-->
 </footer>
 
-<div id="fb-root"></div>
 <script type="text/javascript">
 window._trackJs = {
 {% if user %}
@@ -328,7 +327,15 @@ window._trackJs = {
 window.fbPermissions = {{ fb_permissions|tojson }};
 window.fbAppId = {{ app_id|tojson }};
 window.baseHostname = {{ base_hostname|tojson }};
-window.prodMode = {{prod_mode|tojson}};
+window.prodMode = {{ prod_mode|tojson }};
+window.showSmartBanner = {{ mobile_show_smartbanner|tojson }};
+
+var google_conversion_id = 992860743;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "Q-eJCImZgQIQx7S32QM";
+var google_remarketing_only = false;
 </script>
 
 <script async type="text/javascript" src="/dist-{{version}}/js/main.js"></script>
@@ -340,120 +347,19 @@ window.prodMode = {{prod_mode|tojson}};
 <![endif]-->
 
 
-<script type="text/javascript">
-  {% if mobile_show_smartbanner %}
-  $.smartbanner({
-    title: "DanceDeets",
-    author: "DanceDeets",
-    icon: '/images/ic_launcher_dancedeets.png'
-  });
-  {% endif %}
-
-  /* center modal */
-  function centerModals(){
-    $('.modal').each(function(i){
-      var clone = $(this).clone().css('display', 'block').appendTo('body');
-      var top = Math.round((clone.height() - clone.find('.modal-content').height()) / 2);
-      top = top > 0 ? top : 0;
-      clone.remove();
-      $(this).find('.modal-content').css("margin-top", top);
-    });
-  }
-  $(document).ready(function() {
-    // Only show the promo if it's the second time the user is using the app
-    if ($('#app-install')) {
-      var app_used = $.cookie('ap-used');
-      if (app_used) {
-        $('.modal').on('show.bs.modal', centerModals);
-        $(window).on('resize', centerModals);
-
-        var app_promo_closed = $.cookie('ap-closed');
-        if (!app_promo_closed) {
-
-          $('#app-install').modal({});
-        }
-      }
-      $.cookie('ap-used', '1', { expires: 60 })
-    }
-  });
-  // This is because of sticky touch CSS on mobile devices:
-  // https://github.com/twbs/bootstrap/issues/12832
-  // With bootstrap v4, we can replace this with:
-  // http://v4-alpha.getbootstrap.com/getting-started/browsers-devices/#sticky-hoverfocus-on-mobile
-  // For other solutions, see:
-  // http://stackoverflow.com/questions/17233804/how-to-prevent-sticky-hover-effects-for-buttons-on-touch-devices
-  // http://stackoverflow.com/questions/23885255/how-to-remove-ignore-hover-css-style-on-touch-devices?lq=1
-  $(window).load(function() {
-    var touch = window.ontouchstart
-            || navigator.MaxTouchPoints > 0
-            || navigator.msMaxTouchPoints > 0;
-
-    if (touch) { // remove all :hover stylesheets
-        try { // prevent crash on browsers not supporting DOM styleSheets properly
-            for (var si in document.styleSheets) {
-                var styleSheet = document.styleSheets[si];
-                if (!styleSheet.rules) continue;
-
-                for (var ri = styleSheet.rules.length - 1; ri >= 0; ri--) {
-                    if (!styleSheet.rules[ri].selectorText) {
-                      /*for (var rri = styleSheet.rules[ri].cssRules.length - 1; rri >= 0; rri--) {
-                        console.log("CSSRULE " + rri + ": " + styleSheet.rules[ri].cssRules[rri].selectorText);
-                        if (styleSheet.rules[ri].cssRules[rri].selectorText.match(':hover')) {
-                            stylesheet.rules[ri].deleteRule(ri);
-                        }
-                      }*/
-                    } else {
-                      if (styleSheet.rules[ri].selectorText.match(':hover')) {
-                        var st = styleSheet.rules[ri].selectorText;
-                        if (st.indexOf(',') != -1) {
-                          var selectors = st.split(',');
-                          var keepSelectors = [];
-                          selectors.forEach(function(s) {
-                            if (!s.match(':hover')) {
-                              keepSelectors.push(s);
-                            }
-                          });
-                          var newSelectorText = keepSelectors.join(',')
-                          styleSheet.rules[ri].selectorText = newSelectorText;
-                        } else {
-                          styleSheet.deleteRule(ri);
-                        }
-                      }
-                    }
-                }
-            }
-        } catch (ex) {}
-    }
-
-  });
-
-  function hideAppPromo() {
-    $.cookie('ap-closed', '1', { expires: 4 })
-  }
-
-</script>
 {% block bottom_javascript %}{% endblock %}
 
 {% if user and prod_mode %}
-{# Google Code for signup Conversion Page #}
-<script type="text/javascript">
-/* <![CDATA[ */
-var google_conversion_id = 992860743;
-var google_conversion_language = "en";
-var google_conversion_format = "3";
-var google_conversion_color = "ffffff";
-var google_conversion_label = "Q-eJCImZgQIQx7S32QM";
-var google_remarketing_only = false;
-/* ]]> */
-</script>
-<script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js">
-</script>
-<noscript>
-<div style="display:inline;">
-<img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/992860743/?label=Q-eJCImZgQIQx7S32QM&amp;guid=ON&amp;script=0"/>
-</div>
-</noscript>
+  {# Google Code for signup Conversion Page #}
+  <script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js">
+  </script>
+  <noscript>
+    <div style="display:inline;">
+      <img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/992860743/?label=Q-eJCImZgQIQx7S32QM&amp;guid=ON&amp;script=0"/>
+    </div>
+  </noscript>
 {% endif %}
+
 </body>
 {% endblock %}
 
