@@ -1,0 +1,3 @@
+# Caught hammering my site, caused an outage for other users.
+User-agent: SearchmetricsBot
+Disallow: /hidden.html
