@@ -5,7 +5,6 @@
 * Website: http://htmlstream.com
 */
 var jQuery = require('jquery');
-var $ = jQuery;
 
 var App = (function() {
   // Fixed Header
@@ -25,61 +24,6 @@ var App = (function() {
       e.stopPropagation();
     });
   }
-
-  // Equal Height Columns
-  function handleEqualHeightColumns() {
-    var equalHeightColumns = function() {
-      $('.equal-height-columns').each(function() {
-        var heights = [];
-        $('.equal-height-column', this).each(function() {
-          $(this).removeAttr('style');
-          // write column's heights to the array
-          heights.push($(this).height());
-        });
-        // find and set max
-        $('.equal-height-column', this).height(Math.max.apply(Math, heights));
-      });
-    };
-
-    equalHeightColumns();
-    $(window).resize(function() {
-      equalHeightColumns();
-    });
-    $(window).load(function() {
-      equalHeightColumns('img.equal-height-column');
-    });
-  }
-
-  // Full Screen
-  var handleFullscreen = function() {
-    var WindowHeight = $(window).height();
-    var HeaderHeight;
-
-    if ($(document.body).hasClass('promo-padding-top')) {
-      HeaderHeight = $('.header').height();
-    } else {
-      HeaderHeight = 0;
-    }
-
-    $('.fullheight').css('height', WindowHeight - HeaderHeight);
-
-    $(window).resize(function() {
-      var WindowHeight = $(window).height();
-      $('.fullheight').css('height', WindowHeight - HeaderHeight);
-    });
-  };
-
-  // Align Middle
-  var handleValignMiddle = function() {
-    $('.valign__middle').each(function() {
-      $(this).css('padding-top', $(this).parent().height() / 2 - $(this).height() / 2);
-    });
-    $(window).resize(function() {
-      $('.valign__middle').each(function() {
-        $(this).css('padding-top', $(this).parent().height() / 2 - $(this).height() / 2);
-      });
-    });
-  };
 
   // Bootstrap Tooltips and Popovers
   function handleBootstrap() {
@@ -109,9 +53,6 @@ var App = (function() {
       handleBootstrap();
       handleHeader();
       handleMegaMenu();
-      handleFullscreen();
-      handleValignMiddle();
-      handleEqualHeightColumns();
     },
 
     // Parallax Backgrounds

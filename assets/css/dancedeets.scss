@@ -1,5 +1,21 @@
 @import 'config.scss';
 
+.fullscreen-static-image {
+    height: 100vh;
+}
+.fullscreen-darken-image {
+    background: rgba(41, 35, 0, 0.5);
+    width: 100%;
+    height: 100%;
+}
+
+.vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
 .animate-on-hover {
   display: block;
 }

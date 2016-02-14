@@ -15,11 +15,22 @@
 </head>
 
 {% block body %}
+<style type="text/css">
+{# By default, the page is pushed down below the header.
+ # But in the case of our homepage with a fullstretch image,
+ # we want it to slide under the header as appropriate,
+ # so that 100vh is exactly one screen height.
+ # We need to specify the body.class, so that CSS precedence works.
+ #}
+body.header-fixed-space {
+  padding-top: 0px;
+}
+</style>
     <!-- Interactive Slider v2 -->
     <!--TODO: maybe fullscreen is too large, and we just want a horizontal slice-->
-    <div class="fullscreen-static-image fullheight bg-color-darker" style="height:100%">
-        <div style="background: rgba(41, 35, 0, 0.5);width: 100%;height: 100%">
-            <div class="container valign__middle text-center">
+    <div class="fullscreen-static-image bg-color-darker">
+        <div class="fullscreen-darken-image">
+            <div class="container text-center vertical-center">
                 <div class="dancedeets-tagline color-light margin-bottom-30">
                     Street Dance Events. Worldwide.
                 </div>
