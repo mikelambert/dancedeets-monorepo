@@ -79,16 +79,8 @@ html, body {
 .top-to-bottom-fade {
 	border-width: 1px;
 	border-style: solid;
-	-webkit-border-image: 
-		-webkit-gradient(linear, 0 0, 0 100%, from(lightgrey), to(rgba(0, 0, 0, 0))) 1 100%;
-	-webkit-border-image: 
-		-webkit-linear-gradient(lightgrey, rgba(0, 0, 0, 0)) 1 100%;
-	-moz-border-image:
-		-moz-linear-gradient(lightgrey, rgba(0, 0, 0, 0)) 1 100%;    
-	-o-border-image:
-		-o-linear-gradient(lightgrey, rgba(0, 0, 0, 0)) 1 100%;
 	border-image:
-		linear-gradi	ent(to bottom, lightgrey, rgba(0, 0, 0, 0)) 1 100%;
+		linear-gradient(to bottom, lightgrey, rgba(0, 0, 0, 0)) 1 100%;
 }
 
 .tabs-after {
