@@ -5,9 +5,9 @@
 * Website: http://htmlstream.com
 */
 var jQuery = require('jquery');
+var $ = jQuery;
 
 var App = (function() {
-  var $ = jQuery;
   // Fixed Header
   function handleHeader() {
     jQuery(window).scroll(function() {
