@@ -1,3 +1,7 @@
+/* global $ */
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 var SelectButton = React.createClass({
   toggleState: function() {
     this.manualToggleState();
@@ -17,14 +21,13 @@ var SelectButton = React.createClass({
       extraClass = 'active';
     }
     return (
-      <a
+      <button
         className={'btn btn-default btn-sm ' + extraClass}
         ref="button"
-        href="javascript:void(0);"
         onClick={this.toggleState}
         >
           {this.props.item}
-        </a>
+        </button>
     );
   },
 });
@@ -112,7 +115,7 @@ var DayLink = React.createClass({
     var id = getDayId(this.props.dayName);
     var scrollOffset = $('#navbar').outerHeight();
     var nudgeOffset = 5;
-    $('html, body').animate({ scrollTop: $('#' + id).offset().top - scrollOffset - nudgeOffset }, 300);
+    $('html, body').animate({scrollTop: $('#' + id).offset().top - scrollOffset - nudgeOffset}, 300);
     // return false; // React does not require that onClick handlers return false
   },
   render: function() {
@@ -272,7 +275,7 @@ var ClassTitle = React.createClass({
 
 var SponsoredSummary = React.createClass({
   render: function() {
-    var sponsoredStudios = {}
+    var sponsoredStudios = {};
     this.props.classes.forEach(function(studioClass) {
       var sponsor = studioClass.sponsor;
       if (!(sponsor in sponsoredStudios)) {
@@ -507,10 +510,10 @@ var App = React.createClass({
 
 ReactDOM.render(
   <App
-    location={searchLocation}
-    classes={classes}
-    studios={studios}
-    styles={styles}
+    location={window.searchLocation}
+    classes={window.classes}
+    studios={window.studios}
+    styles={window.styles}
   />,
   document.getElementById('app')
 );

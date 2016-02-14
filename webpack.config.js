@@ -1,14 +1,14 @@
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var path = require('path');
-var postcssImport = require('postcss-import');
 var uncss = require('uncss');
 
 module.exports = {
   entry: {
-    main: './assets/js/main.js',
-    ie8: './assets/js/ie8.js',
-    calendar: './assets/js/calendar.js',
+    'main': './assets/js/main.js',
+    'ie8': './assets/js/ie8.js',
+    'calendar': './assets/js/calendar.js',
+    'class-results': './assets/js/class-results.jsx',
   },
   output: {
     path: path.join(__dirname, 'dist/js'),
@@ -25,6 +25,9 @@ module.exports = {
     new webpack.optimize.UglifyJsPlugin(),
     new ExtractTextPlugin('../css/[name].css'),
   ],
+  resolve: {
+    extensions: ['', '.js', '.jsx'],
+  },
   module: {
     preLoaders: [
       {
@@ -39,7 +42,7 @@ module.exports = {
         exclude: /(node_modules|bower_components)/,
         loader: 'babel',
         query: {
-          presets: ['react', 'es2015'],
+          presets: ['react'],
         },
       },
       {
@@ -87,10 +90,6 @@ module.exports = {
   },
   postcss: function() {
     return [
-      // TODO: maybe we want to do this here, so imports get counted against webpack depedencies for reloading?
-      //postcssImport({
-      //  addDependencyTo: webpack,
-      //}),
       /*uncss.postcssPlugin({
         ignore: [
           '.animated',
