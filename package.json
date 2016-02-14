@@ -32,12 +32,14 @@
   },
   "dependencies": {
     "bootstrap-sass": "^3.3.6",
+    "fullcalendar": "^2.6.0",
     "html5shiv": "^3.7.3",
     "jquery": "^2.2.0",
     "jquery.backstretch": "^2.1.1",
     "jquery.cookie": "^1.4.1",
     "jquery.placeholder": "^2.0.7",
     "jquery.smartbanner": "^0.1.0",
+    "moment": "^2.11.2",
     "react": "^0.14.7",
     "respond.js": "^1.4.2",
     "trackjs": "^2.2.0"

@@ -158,28 +158,6 @@
 	</ol>
 {% endmacro %}
 
-{% macro results_bottom_javascript() %}
-<script type="text/javascript">
-/* Wait until we have a use for this...
-$(document).ready(function() {
-	$('.event-date').each(function(i, obj) {
-		var jquery_obj = $(obj);
-		var start = moment(jquery_obj.data('start-time'));
-		var end = moment(jquery_obj.data('end-time'))
-		if (end.isValid()) {
-			var duration = moment.duration(end - start);
-			//alert(duration.humanize());
-		} else {
-			//alert(start.format('llll'));
-		}
-		var all_day = jquery_obj.data('all-day');
-
-	});
-});
-*/
-</script>
-{% endmacro %}
-
 {% macro render_result_attending_tooltip_javascript(results) %}
 	{% for result in results %}
 		$('#event-friends-{{ result.fb_event_id }}').tooltip();

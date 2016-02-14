@@ -8,6 +8,7 @@ module.exports = {
   entry: {
     main: './assets/js/main.js',
     ie8: './assets/js/ie8.js',
+    calendar: './assets/js/calendar.js',
   },
   output: {
     path: path.join(__dirname, 'dist/js'),
@@ -90,7 +91,7 @@ module.exports = {
       //postcssImport({
       //  addDependencyTo: webpack,
       //}),
-      uncss.postcssPlugin({
+      /*uncss.postcssPlugin({
         ignore: [
           '.animated',
           '.animated.flip',
@@ -99,7 +100,7 @@ module.exports = {
           new RegExp('\\.header-v6(\\.header-dark-transparent)?\\.header-fixed-shrink'),
         ],
         html: ['example_html/new_homepage.html'],
-      }),
+      }),*/
     ];
   },
 };
