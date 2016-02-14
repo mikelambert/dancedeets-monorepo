@@ -71,7 +71,7 @@
   </script>
 {% endif %}
 </head>
-<body class="header-fixed">
+<body class="header-fixed header-fixed-space">
 {# get rid of this and merge it inline? #}
 
 {% if mobile_app_url and show_mobile_app_promo %}
@@ -101,7 +101,7 @@
 {% endif %}
 
 <!--=== Header v6 ===-->
-<nav class="header-v6 header-dark-transparent header-sticky">
+<nav class="header-v6 header-classic-dark header-sticky">
     <!-- Navbar -->
     <div class="navbar mega-menu" role="navigation">
         <div class="container">
@@ -203,10 +203,15 @@
                             </a>
                         </li>
                         <li>
-                            <a href="javascript:void(0)">
-                                Login
-                            </a>
-                            <!--<div class="nav-text"><fb:login-button length="long" scope="{{fb_permissions}}"></fb:login-button></div>-->
+                            {% if user %}
+                              <a href="javascript:void(0)" class="click-logout">
+                                  Logout
+                              </a>
+                            {% else %}
+                              <a href="javascript:void(0)" class="click-login">
+                                  Login
+                              </a>
+                            {% endif %}
                         </li>
                     </ul>
                 </div>
@@ -313,22 +318,21 @@
 </footer>
 
 <div id="fb-root"></div>
-{% if prod_mode %}
-{# Begin TrackJS #}
-{# These should be first to ensure we catch all JS errors #}
 <script type="text/javascript">
 window._trackJs = {
 {% if user %}
   userId: "{{ user.fb_uid }} - {{ user.full_name }}",
 {% endif %}
   token: '77a8a7079d734df7a94150f8f0d7e16f'
-};</script>
-<script type="text/javascript" src="https://d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js"></script>
-{# End TrackJS #}
-{% endif %}
+};
+window.fbPermissions = {{ fb_permissions|tojson }};
+window.fbAppId = {{ app_id|tojson }};
+window.baseHostname = {{ base_hostname|tojson }};
+window.prodMode = {{prod_mode|tojson}};
+</script>
 
 <script async type="text/javascript" src="/dist-{{version}}/js/main.js"></script>
-<!--from old template: jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3-->
+<!--from old template: momentjs@2.10.6,jquery.lazyload@1.9.3-->
 <!-- if we ever want to add i18n, we can use moment-with-locales instead -->
 
 <!--[if lt IE 9]>
@@ -344,74 +348,6 @@ window._trackJs = {
     icon: '/images/ic_launcher_dancedeets.png'
   });
   {% endif %}
-
-  function manualLogin() {
-    FB.login(function(response){}, {scope: '{{ fb_permissions }}'});
-  }
-
-  // Facebook/Login Code
-  (function() {
-    var e = document.createElement('script'); e.async = true;
-    e.src = 'https://connect.facebook.net/en_US/all.js';
-    document.getElementById('fb-root').appendChild(e);
-  }());
-
-  function deleteLoginCookies() {
-    cookie_options = {domain: '.{{ base_hostname }}', path: '/'}
-    $.removeCookie('fbsr_{{ app_id }}', cookie_options)
-    $.removeCookie('user_login_{{ app_id }}', cookie_options)
-  }
-
-  function reloadWithNewToken() {
-    if (String(window.location).indexOf('?') != -1) {
-      window.location = window.location + '&nt=1';
-    } else {
-      window.location = window.location + '?nt=1';
-    }
-  }
-  function currentUser() {
-    var user_login = $.cookie('user_login_{{ app_id }}');
-    if (user_login) {
-      return JSON.parse(user_login)['uid'];
-    }
-  }
-
-  function logout() {
-    // Seems the logout callback isn't being called, so ensure we delete the cookie here
-    deleteLoginCookies();
-    FB.getLoginStatus(function(response) {
-      if (response.status === 'connected') {
-        FB.logout(function(response) {
-          window.location.reload();
-        });
-      } else {
-        window.location.reload();
-      }
-    });
-  }
-
-  function handleStatusChange(response) {
-    if (response.status === 'connected') {
-      if (response.authResponse.userID != currentUser()) {
-        // reload through endpoint to set up new user cookie serverside
-        // TODO(lambert): Add a full-screen overlay explaining what we are doing...
-        reloadWithNewToken();
-      }
-    } else if (response.status === 'not_authorized') {
-      if (currentUser()) {
-        // the user is logged in to Facebook, but not connected to the app
-        deleteLoginCookies();
-        // TODO(lambert): Add a full-screen overlay explaining what we are doing...
-        reloadWithNewToken('not_authorized');
-      }
-    } else {
-      // the user isn't even logged in to Facebook.
-    }
-  }
-  window.fbAsyncInit = function() {
-    FB.init({appId: '{{ app_id }}', status: true, cookie: true, xfbml: true});
-    FB.Event.subscribe('auth.statusChange', handleStatusChange);
-  };
 
   /* center modal */
   function centerModals(){

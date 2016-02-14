@@ -1,6 +1,10 @@
 'use strict';
 
-global.jQuery = require('jquery');
+if (window.prod_mode) {
+  require('trackjs');
+}
+
+var $ = global.$ = global.jQuery = require('jquery');
 require('jquery.backstretch');
 
 require('jquery.smartbanner');
@@ -18,11 +22,15 @@ require('../css/social-hovers.scss');
 require('../css/header.scss');
 require('../css/footer.scss');
 require('../css/custom.scss');
+require('../../css/dancedeets.css');
 
 var App = require('./app');
 
-var $ = global.jQuery;
+var fbSetup = require('./fb');
+
 // From old site: jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3
+
+fbSetup(window, window.fbPermissions, window.fbAppId, window.baseHostname);
 
 $(document).ready(function() {
   App.init($);
@@ -38,7 +46,6 @@ $(document).ready(function() {
     'dist/img/background-show-pose.jpg',
     'dist/img/background-club-smoke-cypher.jpg',
     'dist/img/background-class-rocking.jpg',
-    'dist/img/background-club-hustle.jpg',
     'dist/img/background-show-dj.jpg',
     'dist/img/background-club-headspin.jpg',
   ];
