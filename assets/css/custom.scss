@@ -62,29 +62,18 @@ body, h1, h2, h3, h4, h5, h6 {
 .panel .panel-body a { overflow: hidden; }
 .panel .panel-body a img { display: block; margin: 0; width: 100%; height: auto;
     transition: all 0.5s;
-    -moz-transition: all 0.5s;
-    -webkit-transition: all 0.5s;
-    -o-transition: all 0.5s;
 }
-.panel .panel-body a.zoom:hover img { transform: scale(1.2); -ms-transform: scale(1.2); -webkit-transform: scale(1.2); -o-transform: scale(1.2); -moz-transform: scale(1.2); }
-.panel .panel-body a.zoom span.overlay { position: absolute; top: 0; left: 0; visibility: visible; height: 100%; width: 100%; background-color: #000; opacity: 0.55; -moz-opacity: 0.55; -webkit-opacity: 0.55; filter: alpha(opacity=65); -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=65)";
+.panel .panel-body a.zoom:hover img { transform: scale(1.2); }
+.panel .panel-body a.zoom span.overlay { position: absolute; top: 0; left: 0; visibility: visible; height: 100%; width: 100%; background-color: #000; opacity: 0.55;
     transition: opacity .25s ease-out;
-    -moz-transition: opacity .25s ease-out;
-    -webkit-transition: opacity .25s ease-out;
-    -o-transition: opacity .25s ease-out;
 }
 .panel .panel-body a.zoom:hover span.overlay { display: block; visibility: hidden; opacity: 0;  }
 .panel .panel-body a.zoom:hover span.overlay i { position: absolute; top: 45%; left: 0%; width: 100%; font-size: 2.25em; color: #fff !important; text-align: center;
     opacity: 1;
-    -moz-opacity: 1;
-    -webkit-opacity: 1;
     filter: alpha(opacity=1);
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=1)";
 }
 
 .zoom img {
-    -moz-filter: brightness(0.7);
-    -webkit-filter: brightness(0.7);
     filter: brightness(0.7);
 }
 
