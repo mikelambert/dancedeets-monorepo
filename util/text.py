@@ -1,14 +1,16 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import jinja2
+import json
 import markupsafe
 import logging
 import re
 
+
 def format_html(value):
     return jinja2.Markup.escape(value).replace('\n', jinja2.Markup('<br>\n'))
 
- 
+
 # Commented multi-line version:
 url_finder_re = re.compile(r"""
 (?xi)
@@ -89,12 +91,14 @@ _base_js_escapes = (
 _js_escapes = (_base_js_escapes +
                tuple([('%c' % z, '\\u%04X' % z) for z in range(32)]))
 
+
 def escapejs(value):
     """Hex encodes characters for use in JavaScript strings."""
     value = unicode(value)
     for bad, good in _js_escapes:
         value = value.replace(bad, good)
     return markupsafe.Markup(value)
+
 
 def format_js(value):
     if isinstance(value, basestring):
@@ -108,9 +112,50 @@ def format_js(value):
     else:
         return ''
 
+
 def date_format(f, d):
     return d.strftime(str(f)) if d else None
+
 
 def format(f, s):
     return f % s
 
+
+# Figure out if simplejson escapes slashes.  This behavior was changed
+# from one version to another without reason.
+_slash_escape = '\\/' not in json.dumps('/')
+
+
+def htmlsafe_json_dumps(obj, **kwargs):
+    """Works exactly like :func:`dumps` but is safe for use in ``<script>``
+    tags.  It accepts the same arguments and returns a JSON string.  Note that
+    this is available in templates through the ``|tojson`` filter which will
+    also mark the result as safe.  Due to how this function escapes certain
+    characters this is safe even if used outside of ``<script>`` tags.
+    The following characters are escaped in strings:
+    -   ``<``
+    -   ``>``
+    -   ``&``
+    -   ``'``
+    This makes it safe to embed such strings in any place in HTML with the
+    notable exception of double quoted attributes.  In that case single
+    quote your attributes or HTML escape it in addition.
+    .. versionchanged:: 0.10
+       This function's return value is now always safe for HTML usage, even
+       if outside of script tags or if used in XHTML.  This rule does not
+       hold true when using this function in HTML attributes that are double
+       quoted.  Always single quote attributes if you use the ``|tojson``
+       filter.  Alternatively use ``|tojson|forceescape``.
+    """
+    rv = json.dumps(obj, **kwargs) \
+        .replace(u'<', u'\\u003c') \
+        .replace(u'>', u'\\u003e') \
+        .replace(u'&', u'\\u0026') \
+        .replace(u"'", u'\\u0027')
+    if not _slash_escape:
+        rv = rv.replace('\\/', '/')
+    return rv
+
+
+def tojson_filter(obj, **kwargs):
+    return jinja2.Markup(htmlsafe_json_dumps(obj, **kwargs))

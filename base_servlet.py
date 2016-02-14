@@ -49,6 +49,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.jinja_env.filters['urlencode'] = do_urlencode
         self.jinja_env.filters['format_html'] = text.format_html
         self.jinja_env.filters['escapejs'] = text.escapejs
+        self.jinja_env.filters['tojson'] = text.tojson_filter
         self.jinja_env.globals['zip'] = zip
         self.jinja_env.globals['len'] = len
 
@@ -596,7 +597,10 @@ class BaseRequestHandler(BareBaseRequestHandler):
         if webview:
             self.display['class_base_template'] = '_base_webview.html'
         else:
-            self.display['class_base_template'] = '_base.html'
+            if bool(request.get('nd')):
+                self.display['class_base_template'] = '_new_base.html'
+            else:
+                self.display['class_base_template'] = '_base.html'
 
         self.display.update(rankings.retrieve_summary())
 

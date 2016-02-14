@@ -9,14 +9,14 @@
 {% block head_stylesheet %}
     <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="{{ result_title }}" /> 
+    <meta property="og:title" content="{{ result_title }}" />
     <meta property="og:site_name" content="DanceDeets"/>
     <meta property="og:description"
           content="Every street dance event. On the web, on your phone. At home, and when traveling."/>
 {% endblock %}
 
 {% block body %}
-
+<div class="container">
 <div class="row">
 <div class="col-md-9">
 <div style="margin-bottom: 25px">
@@ -46,7 +46,7 @@
       <i class="fa fa-search fa-fw"></i>
       Search our {{ total_events }} Events
     </button>
-  {# maybe make a small hourglass icon search box ? 
+  {# maybe make a small hourglass icon search box ?
    # $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
    #}
   </form>
@@ -166,6 +166,7 @@ Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
 </div>
 
 </div> {# row #}
+</div> {# container #}
 {% endblock %}
 
 {% block bottom_javascript %}
@@ -196,7 +197,7 @@ function share() {
 	FB.ui({
 		method: 'share',
 		href: 'https://www.dancedeets.com/',
-	}, function(response){}); 
+	}, function(response){});
 }
 
 </script>

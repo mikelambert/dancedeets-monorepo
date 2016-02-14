@@ -7,10 +7,11 @@
 {% block head_stylesheet %}
     <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="{{ result_title }}" /> 
+    <meta property="og:title" content="{{ result_title }}" />
 {% endblock %}
 
 {% block body %}
+<div class="container">
 <div class="row">
 <div class="col-md-9">
 <div style="margin-bottom: 25px">
@@ -43,7 +44,7 @@
       <i class="fa fa-search fa-fw"></i>
       Search Events
     </button>
-  {# maybe make a small hourglass icon search box ? 
+  {# maybe make a small hourglass icon search box ?
    # $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
    #}
   </form>
@@ -131,6 +132,7 @@
 </div>
 
 </div> {# row #}
+</div> {# container #}
 {# endblock #}
 
 {# block bottom_javascript #}

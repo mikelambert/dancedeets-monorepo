@@ -7,7 +7,7 @@
 {% block head_stylesheet %}
     <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="{{ result_title }}" /> 
+    <meta property="og:title" content="{{ result_title }}" />
     <meta property="og:site_name" content="DanceDeets"/>
     <meta property="og:description"
           content="Every street dance event. On the web, on your phone. At home, and when traveling."/>
@@ -28,12 +28,15 @@
 
 {% block body %}
 {% if webview %}
+<div class="container">
 <div class="row">
 <div class="col-md-12">
 <div id="app"></div>
 </div>
 </div>
+</div>
 {% else %}
+<div class="container">
 <div class="row">
 <div class="col-md-9">
 <div id="app"></div>
@@ -44,6 +47,7 @@
   <p>
 </div>
 </div> {# row #}
+</div>
 {% endif %}
 {% endblock %}
 
@@ -56,7 +60,7 @@ function share() {
   FB.ui({
     method: 'share',
     href: 'https://www.dancedeets.com/',
-  }, function(response){}); 
+  }, function(response){});
 }
 
 //TODO: make a "class" page with relevant info (youtube, studio link, etc)
@@ -66,14 +70,14 @@ function share() {
 var classes = [];
 {% for result in search_results %}
   classes.push({
-    'url': '{{result.source_page|escapejs}}',
-    'name': '{{result.name|escapejs}}',
-    'location': '{{result.actual_city_name|escapejs}}',
+    'url': {{result.source_page|tojson}},
+    'name': {{result.name|tojson}},
+    'location': {{result.actual_city_name|tojson}},
     'start_time': moment('{{result.start_time_raw}}'),
 {#    'end_time': moment('{{result.end_time_raw}}'), #}
-    'categories': {{result.extended_categories()|safe}}, {# ideally tojson #}
+    'categories': {{result.extended_categories()|tojson}},
 {% if result.sponsor %}
-    'sponsor': '{{result.sponsor|escapejs}}',
+    'sponsor': {{result.sponsor|tojson}},
 {% endif %}
     'key': 'result-{{loop.index}}',
   });

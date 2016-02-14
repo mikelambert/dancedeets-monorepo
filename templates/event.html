@@ -44,6 +44,7 @@
 {% endblock %}
 
 {% block body %}
+<div class="container">
 <div itemscope itemtype="http://schema.org/DanceEvent">
 
 	<span itemprop="url" content="http://{{ full_hostname }}/events/{{ event.info.id }}/"></span>
@@ -145,7 +146,7 @@ region= paramter cctld
 #}
 
 </div>{# itemscope #}
-
+</div>
 {% endblock %}
 
 {% block bottom_javascript %}
@@ -182,12 +183,12 @@ window.twttr = (function(d, s, id) {
   js.id = id;
   js.src = "https://platform.twitter.com/widgets.js";
   fjs.parentNode.insertBefore(js, fjs);
- 
+
   t._e = [];
   t.ready = function(f) {
     t._e.push(f);
   };
- 
+
   return t;
 }(document, "script", "twitter-wjs"));
 
