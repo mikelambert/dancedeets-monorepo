@@ -24,7 +24,7 @@ from util import fetch
 from util import urls
 
 consumer_key = 'xzpiBnUCGqTWSqTgmE6XtLDpw'
-consumer_secret = keys.get("twitter_consumer_secret") 
+consumer_secret = keys.get("twitter_consumer_secret")
 
 DATE_FORMAT = "%Y/%m/%d"
 TIME_FORMAT = "%H:%M"
@@ -293,7 +293,8 @@ def get_targeting_data(fbl, fb_event, db_event):
 
         good_targets = [x for x in geo_target['search']['data'] if x['supports_city']]
         if good_targets:
-            city_key = int(good_targets[0]['key'])
+            # Is usually an integer, but in the case of HK and SG (city/country combos), it can be a string
+            city_key = good_targets[0]['key']
             # if we want state-level targeting, 'region_id' would be the city's associated state
 
     if not short_country:
@@ -350,8 +351,8 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
     consumer = oauth.Consumer(consumer_key, consumer_secret)
     client = oauth.Client(consumer)
 
-    # Step 1: Get a request token. This is a temporary token that is used for 
-    # having the user authorize an access token and to sign the request to obtain 
+    # Step 1: Get a request token. This is a temporary token that is used for
+    # having the user authorize an access token and to sign the request to obtain
     # said access token.
 
     resp, content = client.request(request_token_url, "GET")
@@ -374,7 +375,7 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
         auth_token.country_filters += country_filter.upper()
     auth_token.put()
 
-    # Step 2: Redirect to the provider. Since this is a CLI script we do not 
+    # Step 2: Redirect to the provider. Since this is a CLI script we do not
     # redirect. In a web application you would redirect the user to the URL
     # below.
 
@@ -391,9 +392,9 @@ def twitter_oauth2(oauth_token, oauth_verifier):
         return None
     auth_token = auth_tokens[0]
     # Step 3: Once the consumer has redirected the user back to the oauth_callback
-    # URL you can request the access token the user has approved. You use the 
+    # URL you can request the access token the user has approved. You use the
     # request token to sign this request. After this is done you throw away the
-    # request token and use the access token returned. You should store this 
+    # request token and use the access token returned. You should store this
     # access token somewhere safe, like a database, for future use.
     token = oauth.Token(oauth_token,
         auth_token.temp_oauth_token_secret)
