@@ -1,6 +1,7 @@
 /* global $ */
 import React from 'react';
 import ReactDOM from 'react-dom';
+import dateFormat from 'date-fns/format';
 
 var SelectButton = React.createClass({
   toggleState: function() {
@@ -243,11 +244,11 @@ var StudioClass = React.createClass({
 var DayHeader = React.createClass({
   render: function() {
     var contents = (
-      <h4>{this.props.date.format('ddd MMM D')}</h4>
+      <h4>{dateFormat(this.props.date, 'ddd MMM D')}</h4>
     );
     if (this.props.useAnchor) {
       contents = (
-        <div id={getDayId(this.props.date.format('ddd'))}>
+        <div id={getDayId(dateFormat(this.props.date, 'ddd'))}>
           {contents}
         </div>
       );
@@ -259,7 +260,7 @@ var DayHeader = React.createClass({
 var TimeHeader = React.createClass({
   render: function() {
     return (
-      <b>{this.props.datetime.format('h:mma')}</b>
+      <b>{dateFormat(this.props.datetime, 'h:mma')}</b>
     );
   },
 });
@@ -308,19 +309,19 @@ var StudioClasses = React.createClass({
     var aNamedDays = {};
     goodClasses.forEach(function(studioClass) {
       // Section header rendering
-      if (lastStudioClass === null || studioClass.start_time.format('YYYY-MM-DD') !== lastStudioClass.start_time.format('YYYY-MM-DD')) {
-        var day = studioClass.start_time.format('ddd');
+      if (lastStudioClass === null || dateFormat(studioClass.start_time, 'YYYY-MM-DD') !== dateFormat(lastStudioClass.start_time, 'YYYY-MM-DD')) {
+        var day = dateFormat(studioClass.start_time, 'ddd');
         rows.push(
           <DayHeader
             date={studioClass.start_time}
-            key={studioClass.start_time.format('YYYY-MM-DD')}
+            key={dateFormat(studioClass.start_time, 'YYYY-MM-DD')}
             useAnchor={!aNamedDays[day]}
           />
         );
         aNamedDays[day] = true;
       }
-      if (lastStudioClass === null || studioClass.start_time.format('HH:mm') !== lastStudioClass.start_time.format('HH:mm')) {
-        rows.push(<TimeHeader datetime={studioClass.start_time} key={studioClass.start_time.format('YYYY-MM-DDTHH:mm')} />);
+      if (lastStudioClass === null || dateFormat(studioClass.start_time, 'HH:mm') !== dateFormat(lastStudioClass.start_time, 'HH:mm')) {
+        rows.push(<TimeHeader datetime={studioClass.start_time} key={dateFormat(studioClass.start_time, 'YYYY-MM-DDTHH:mm')} />);
       }
       // Class rendering
       rows.push(<StudioClass studio_class={studioClass} key={studioClass.key} />);

@@ -34,7 +34,7 @@ var fixStickyTouch = require('./sticky-touch');
 
 var appInstallPromos = require('./app-install-promo');
 
-// From old site: jquery.cookie@1.4.1,momentjs@2.10.6,jquery.lazyload@1.9.3
+// TODO: From old site: jquery.lazyload@1.9.3
 
 fbSetup(window, window.fbPermissions, window.fbAppId, window.baseHostname);
 

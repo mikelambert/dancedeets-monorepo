@@ -42,13 +42,12 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             start=datetime.date.today() - datetime.timedelta(days=1),
             end=datetime.date.today() + datetime.timedelta(days=7),
             location=location,
-            )
+        )
         search_results = class_index.ClassSearch(form.build_query(start_end_query=True)).get_search_results()
 
         self.display['search_results'] = search_results
         self.display['location'] = location
         self.render_template(self.template_name)
-
 
 
 class JsonDataHandler(webapp2.RequestHandler):
@@ -74,12 +73,13 @@ class ClassUploadHandler(JsonDataHandler):
         logging.info("Saving %s with scrape_time %s", studio_class.key, studio_class.scrape_time)
         self.response.status = 200
 
+
 def dedupe_classes(classes):
     """Returns true if there were classes de-duped, or empty classes and we don't know.
     Returns false once we get a full day of classes without dupes."""
     if not classes:
         return True
-    logging.info('De-duping %s classes on %s' %(len(classes), classes[0].start_time.date()))
+    logging.info('De-duping %s classes on %s' % (len(classes), classes[0].start_time.date()))
     most_recent_scrape_time = max(x.scrape_time for x in classes)
     old_classes = [x for x in classes if x.scrape_time != most_recent_scrape_time]
     deleted = 0
@@ -112,10 +112,11 @@ class ClassReIndexHandler(JsonDataHandler):
         self.response.status = 200
     get=post
 
+
 @app.route('/classes/finish_upload')
 class ClassFinishUploadhandler(JsonDataHandler):
     def post(self):
-        #studio_name = self.json_body['studio_name']
+        # studio_name = self.json_body['studio_name']
         studio_name = self.request.get('studio_name') or self.json_body['studio_name']
         if not studio_name:
             return
@@ -128,9 +129,9 @@ class ClassFinishUploadhandler(JsonDataHandler):
         # Disabling the memcache and incontext NDB caches doesn't appear to help,
         # since the stale objects are returned from the dev_apperver DB directly.
         query = class_models.StudioClass.query(
-            class_models.StudioClass.studio_name==studio_name,
+            class_models.StudioClass.studio_name == studio_name,
             class_models.StudioClass.start_time >= historical_fixup)
-        #TODO: why does this sort not work??
+        # TODO: why does this sort not work??
         # query = query.order(-class_models.StudioClass.start_time)
         num_events = 1000
         results = query.fetch(num_events)

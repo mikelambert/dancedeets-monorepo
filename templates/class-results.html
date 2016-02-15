@@ -63,8 +63,12 @@ function share() {
 }
 
 //TODO: make a "class" page with relevant info (youtube, studio link, etc)
-//TODO: add a webview feature for ios
 //TODO: reach out to three LA studios to find the owners in charge
+
+function parseISO(s) {
+  s = s.split(/\D/);
+  return new Date(+s[0], --s[1], +s[2], +s[3], +s[4], +s[5], 0);
+}
 
 var classes = [];
 {% for result in search_results %}
@@ -72,8 +76,8 @@ var classes = [];
     'url': {{result.source_page|tojson}},
     'name': {{result.name|tojson}},
     'location': {{result.actual_city_name|tojson}},
-    'start_time': moment('{{result.start_time_raw}}'),
-{#    'end_time': moment('{{result.end_time_raw}}'), #}
+    'start_time': parseISO('{{result.start_time_raw}}'),
+{#    'end_time': parseISO('{{result.end_time_raw}}'), #}
     'categories': {{result.extended_categories()|tojson}},
 {% if result.sponsor %}
     'sponsor': {{result.sponsor|tojson}},
