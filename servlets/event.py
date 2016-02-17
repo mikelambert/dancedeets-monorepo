@@ -407,6 +407,9 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 event['id'] = str(event['eid'])
                 event['loaded'] = event['id'] in loaded_fb_event_lookup
 
+            if self.request.get('new_only') == '1':
+                events = [x for x in events if not x['loaded']]
+
             # HACK: if we detected different data between the FB pseudo-event data and our local events, trigger a refresh
             # This can happen if a user takes an 'old' event that has become PAST, and puts the event in the future,
             # bypassing our optimization attempts to only refresh FUTURE/ONGOING events. This is a fail-safe for that.
