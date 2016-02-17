@@ -8,6 +8,7 @@ var $ = require('jquery');
 global.$ = global.jQuery = $;
 
 require('jquery.backstretch');
+require('jquery-lazyload');
 
 require('jquery.smartbanner');
 require('../../node_modules/jquery.smartbanner/jquery.smartbanner.css');
