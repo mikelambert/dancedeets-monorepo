@@ -39,8 +39,10 @@
 /*--------------------------------------------------
 	[1. Header - Navbar]
 ----------------------------------------------------*/
-body.header-fixed-space {
-    padding-top: 94px;
+@media (min-width: 992px) {
+  body.header-fixed-space {
+      padding-top: 94px;
+  }
 }
 
 /*Header v6*/

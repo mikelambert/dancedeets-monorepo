@@ -10,10 +10,12 @@ except ImportError:
     from . import gmaps
     gmaps_backend = gmaps
 
+
 class GeocodeException(Exception):
     def __init__(self, arg, status):
         super(GeocodeException, self).__init__(arg)
         self.status = status
+
 
 class GMapsGeocode(object):
     def __init__(self, json_data):
@@ -49,11 +51,13 @@ class GMapsGeocode(object):
     def delete_component(self, name):
         self.json_data['address_components'] = [x for x in self.json_data['address_components'] if name not in x['types']]
 
+
 def convert_geocode_to_json(geocode):
     if geocode:
         return {'status': 'OK', 'results': [geocode.json_data]}
     else:
         return {'status': 'ZERO_RESULTS'}
+
 
 def parse_geocode(json_result):
     if json_result['status'] == 'OK':
@@ -63,12 +67,13 @@ def parse_geocode(json_result):
     else:
         raise GeocodeException("Got unexpected status: %s" % json_result['status'], json_result['status'])
 
+
 def delete(**kwargs):
     gmaps_backend.delete(**kwargs)
 
+
 def get_geocode(**kwargs):
     json_data = gmaps_backend.fetch_raw(**kwargs)
-    print 'gmaps_backend is ', gmaps_backend
     try:
         geocode = parse_geocode(json_data)
     except GeocodeException as e:

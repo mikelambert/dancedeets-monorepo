@@ -22,10 +22,12 @@ from logic import rsvp
 from nlp import categories
 from nlp import event_auto_classifier
 from nlp import event_classifier
+from search import search_base
 from util import dates
 from util import urls
 
 PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
+
 
 @app.route('/events/rsvp_ajax')
 class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
@@ -50,6 +52,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
     def handle_error_response(self, errors):
         self.write_json_response(dict(success=False, errors=errors))
 
+
 @app.route('/events/redirect')
 class RedirectToEventHandler(base_servlet.BaseRequestHandler):
     def requires_login(self):
@@ -61,6 +64,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
             self.response.out.write('Need an event_id.')
             return
         return self.redirect(urls.fb_relative_event_url(event_id), permanent=True)
+
 
 @app.route(r'/events/\d+/?')
 class ShowEventHandler(base_servlet.BaseRequestHandler):
@@ -88,6 +92,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
 
         start_time = dates.parse_fb_start_time(fb_event)
         formatted_start_time = start_time.strftime('%Y/%m/%d @ %H:%M')
+
         def join_valid(sep, lst):
             return sep.join(x for x in lst if x)
 
@@ -102,17 +107,22 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             fb_event['info'].get('description'),
         ])
 
-        self.display['displayable_event'] = DisplayableEvent(fb_event)
+        self.display['displayable_event'] = DisplayableEvent(db_event, fb_event)
 
         self.display['event'] = fb_event
         self.display['next'] = self.request.url
         self.display['show_mobile_app_promo'] = True
+        self.jinja_env.filters['make_category_link'] = lambda lst: [jinja2.Markup('<a href="/?keywords=%s">%s</a>') % (x, x) for x in lst]
+
         self.render_template('event')
 
+
 class DisplayableEvent(object):
-    def __init__(self, event_info):
+    def __init__(self, db_event, event_info):
+        # TODO: This doesn't use the overriden lat/long at all, yet. It relies on FB data 100%.
+        self.db_event = db_event
         self.event_info = event_info
-    
+
     def location_schema_html(self):
         html = [
             '<span itemscope itemprop="location" itemtype="http://schema.org/Place">',
@@ -144,9 +154,13 @@ class DisplayableEvent(object):
         return jinja2.Markup('\n'.join(html))
 
     @property
+    def categories(self):
+        return search_base.humanize_categories(self.db_event.auto_categories)
+
+    @property
     def cover_metadata(self):
         return self.event_info['info'].get('cover')
-    
+
     @property
     def largest_cover(self):
         return eventdata.get_largest_cover(self.event_info)
@@ -162,7 +176,7 @@ class DisplayableEvent(object):
     @property
     def location_name(self):
         return self.event_info['info'].get('location')
-    
+
     @property
     def venue(self):
         return self.event_info['info'].get('venue')
@@ -195,6 +209,17 @@ class DisplayableEvent(object):
     @property
     def longitude(self):
         return self.venue and self.venue.get('longitude')
+
+    @property
+    def admins(self):
+        admins = self.event_info['info'].get('admins', {}).get('data')
+        if not admins:
+            if self.event_info['info'].get('owner'):
+                admins = [self.event_info['info'].get('owner')]
+            else:
+                admins = []
+        return admins
+
 
 @app.route('/events/admin_edit')
 class AdminEditHandler(base_servlet.BaseRequestHandler):
@@ -232,15 +257,15 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
         self.fbl.request(fb_api.LookupEvent, event_id, allow_cache=False)
-        #DISABLE_ATTENDING
-        #self.fbl.request(fb_api.LookupEventAttending, event_id, allow_cache=False)
+        # DISABLE_ATTENDING
+        # self.fbl.request(fb_api.LookupEventAttending, event_id, allow_cache=False)
         self.finish_preload()
 
         try:
             fb_event = self.fbl.fetched_data(fb_api.LookupEvent, event_id)
-            #DISABLE_ATTENDING
+            # DISABLE_ATTENDING
             fb_event_attending = None
-            #fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
+            # fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
         except fb_api.NoFetchedDataException:
             return self.show_barebones_page(event_id)
 
@@ -256,7 +281,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             if location:
                 owner_location = event_locations.city_for_fb_location(location)
         self.display['owner_location'] = owner_location
-
 
         # Don't insert object until we're ready to save it...
         e = eventdata.DBEvent.get_by_id(event_id)
@@ -333,6 +357,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             self.user.add_message("Changes saved!")
             return self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
+
 def get_id_from_url(url):
     if '#' in url:
         url = url.split('#')[1]
@@ -342,6 +367,7 @@ def get_id_from_url(url):
         if not match:
             return None
     return match.group(1)
+
 
 @app.route('/events_add')
 class AddHandler(base_servlet.BaseRequestHandler):
@@ -371,13 +397,13 @@ class AddHandler(base_servlet.BaseRequestHandler):
                 events = list(sorted(results_json, key=lambda x: x.get('start_time')))
             else:
                 events = []
-            #STR_ID_MIGRATE: We still get ids as ints from our FQL
+            # STR_ID_MIGRATE: We still get ids as ints from our FQL
             loaded_fb_events = eventdata.DBEvent.get_by_ids([str(x['eid']) for x in events])
             loaded_fb_event_lookup = dict((x.key.string_id(), x) for x in loaded_fb_events if x)
 
             for event in events:
                 # rewrite hack necessary for templates (and above code)
-                #STR_ID_MIGRATE
+                # STR_ID_MIGRATE
                 event['id'] = str(event['eid'])
                 event['loaded'] = event['id'] in loaded_fb_event_lookup
 
@@ -427,22 +453,23 @@ class AddHandler(base_servlet.BaseRequestHandler):
         else:
             self.user.add_message('Your event "%s" has been added.' % fb_event['info']['name'])
 
-
         return self.redirect('/')
+
 
 @app.route('/events/admin_nolocation_events')
 class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
     def get(self):
         num_events = int(self.request.get('num_events', 100))
         # TODO: There are some events with city_name=Unknown and a valid latitude that are just not near any major metropolis. They are undercounted and have "No Scene", which we may want to fix at some point.
-        db_events = eventdata.DBEvent.query(eventdata.DBEvent.city_name=='Unknown').order(-eventdata.DBEvent.start_time).fetch(num_events)
-        db_events = [x for x in db_events if x.anywhere == False]
+        db_events = eventdata.DBEvent.query(eventdata.DBEvent.city_name == 'Unknown').order(-eventdata.DBEvent.start_time).fetch(num_events)
+        db_events = [x for x in db_events if x.anywhere is False]
         template_events = []
         for db_event in db_events:
             if not db_event.fb_event['empty']:
                 template_events.append(dict(fb_event=db_event.fb_event, db_event=db_event))
         self.display['events'] = template_events
         self.render_template('admin_nolocation_events')
+
 
 @app.route('/events/admin_potential_events')
 class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
@@ -509,7 +536,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         self.display['total_potential_events'] = '%s + %s' % (non_zero_events, zero_events)
         self.display['has_more_events'] = has_more_events
         self.display['potential_events_listing'] = template_events
-        self.display['potential_ids'] = ','.join(already_added_event_ids + potential_event_notadded_ids) # use all ids, since we want to mark already-added ids as processed as well. but only the top N of the potential event ids that we're showing to the user.
+        self.display['potential_ids'] = ','.join(already_added_event_ids + potential_event_notadded_ids)  # use all ids, since we want to mark already-added ids as processed as well. but only the top N of the potential event ids that we're showing to the user.
         self.display['track_google_analytics'] = False
         self.render_template('admin_potential_events')
 

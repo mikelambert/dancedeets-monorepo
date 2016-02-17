@@ -37,7 +37,7 @@
 <meta property="og:site_name" content="DanceDeets" />
 <meta property="og:image" content="http://www.dancedeets.com/events/image_proxy/{{ event.info.id }}" />
 <meta property="og:description"
-      content="{{ description|e }}" />
+			content="{{ description|e }}" />
 
 <link rel="canonical" href="http://{{ full_hostname }}/events/{{ event.info.id }}/" />
 
@@ -50,17 +50,20 @@
 	<span itemprop="url" content="http://{{ full_hostname }}/events/{{ event.info.id }}/"></span>
 
 	<div class="row">
-		{% if displayable_event.city_state_country %}
-			<div class="col-xs-12" style="margin-bottom:15px">
-			See <a href="/?location={{ displayable_event.city_state_country }}">more events near {{ displayable_event.city_state_country }}</a>.
-			{# for style in db_event.auto_categories
-			 #See <a href="/?keywords={{ style }}">more {{ style }} events</a>.<br>
-			 #end for
-			 #}
-			</div>
-		{% endif %}
-
 		<div class="col-xs-12">
+			{% if displayable_event.city_state_country or displayable_event.categories %}
+				See more events:
+				<ul>
+					{% if displayable_event.city_state_country %}
+						<li>in <a href="/?location={{ displayable_event.city_state_country }}">{{ displayable_event.city_state_country }}</a>.
+					{% endif %}
+					{% if displayable_event.categories %}
+						<li>categorized as:
+						{{ displayable_event.categories|make_category_link|join(', ') }}
+					{% endif %}
+				</ul>
+			{% endif %}
+
 			<h1 class="event-page-title" itemprop="name">{{ event.info.name }}</h1>
 		</div>
 	</div>
@@ -75,14 +78,14 @@
 
 			<ul class="fa-ul event-ul">
 			{% if displayable_event.cover_metadata %}
-				<li><i class="fa-li fa fa-picture-o fa-lg"></i><b><a href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
+				<li><i class="event-info-icon fa-li fa fa-picture-o fa-lg"></i><b><a href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
 			{% endif %}
-			<li><i class="fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a href="{{ raw_fb_event_url(event.info.id) }}">See Event on Facebook</a></b></li>
+			<li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a href="{{ raw_fb_event_url(event.info.id) }}">See Event on Facebook</a></b></li>
 			<li><div class="product-social-links" style="padding-bottom: 0 1em; height: 20px">
 				<a class="twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
 				<div class="fb-share-button" data-layout="button"></div>
 			</div></li>
-			<li><i class="fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
+			<li><i class="event-info-icon fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
 			<time itemprop="startDate" content="{{ displayable_event.start_time|datetime_format }}">
 			{{ duration_human_format(displayable_event.start_time, end_time) }}
 			</time>
@@ -91,14 +94,23 @@
 			{% endif %}
 			</li>
 			{% if event.info.attending_count %}
-				<li><i class="fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
+				<li><i class="event-info-icon fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
 				{{ event.info.attending_count }} Attending
 				{%- if event.info.maybe_count -%}
 					, {{ event.info.maybe_count }} Maybe
 				{%- endif %}
 				</li>
 			{% endif %}
-			<li><i class="fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
+			{% if displayable_event.admins %}
+				<li><i class="event-info-icon fa-li fa fa-user fa-lg"></i><b>Admins:</b><br>
+				<ul>
+				{% for admin in displayable_event.admins %}
+					<li><a href="https://www.facebook.com/{{ admin.id }} ">{{ admin.name }}</a></li>
+				{% endfor %}
+				</ul>
+				</li>
+			{% endif %}
+			<li><i class="event-info-icon fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
 			<div>
 			{% if displayable_event.location_name %}
 				{% if event.info.venue and event.info.venue.id %}
@@ -108,7 +120,6 @@
 				{% endif %}
 				<br>
 			{% endif %}
-
 			{% if displayable_event.street_address %}
 				{{ displayable_event.street_address }}<br>
 			{% endif %}
@@ -119,12 +130,12 @@
 			</ul>
 			{# not worth showing maps embed if there is no street_address #}
 			{% if displayable_event.latitude %}
+				<p>Open in <a href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
 				{% if event.info.description %}
 					<div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
 				{% endif %}
 				<div id="map-wrapper" class="responsive-map-wrapper">
 				</div>
-				<p>Open in <a href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
 			{% endif %}
 		</div>
 
@@ -176,20 +187,20 @@ function load_map() {
 {% endif %}
 
 window.twttr = (function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0],
-    t = window.twttr || {};
-  if (d.getElementById(id)) return t;
-  js = d.createElement(s);
-  js.id = id;
-  js.src = "https://platform.twitter.com/widgets.js";
-  fjs.parentNode.insertBefore(js, fjs);
+	var js, fjs = d.getElementsByTagName(s)[0],
+		t = window.twttr || {};
+	if (d.getElementById(id)) return t;
+	js = d.createElement(s);
+	js.id = id;
+	js.src = "https://platform.twitter.com/widgets.js";
+	fjs.parentNode.insertBefore(js, fjs);
 
-  t._e = [];
-  t.ready = function(f) {
-    t._e.push(f);
-  };
+	t._e = [];
+	t.ready = function(f) {
+		t._e.push(f);
+	};
 
-  return t;
+	return t;
 }(document, "script", "twitter-wjs"));
 
 </script>
