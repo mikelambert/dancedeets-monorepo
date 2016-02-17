@@ -12,6 +12,7 @@ from users import users
 from . import eventdata
 from . import event_updates
 
+
 def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated):
     fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id, only_if_updated=only_if_updated)
     # This happens when an event moves from TIME_FUTURE into TIME_PAST
@@ -20,6 +21,7 @@ def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated
     # If we have an event in need of updating, record that
     if fb_event:
         events_to_update.append((db_event, fb_event))
+
 
 def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, update_geodata):
     db_events = eventdata.DBEvent.get_by_ids(event_ids)
@@ -53,7 +55,7 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
 def yield_load_fb_event(fbl, db_events):
     logging.info("loading db events %s", [db_event.fb_event_id for db_event in db_events])
     fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
-    #fbl.request_multi(fb_api.LookupEventPageComments, [x.fb_event_id for x in db_events])
+    # fbl.request_multi(fb_api.LookupEventPageComments, [x.fb_event_id for x in db_events])
     fbl.batch_fetch()
     events_to_update = []
     ctx = context.get()
@@ -101,23 +103,31 @@ def yield_load_fb_event_attending(fbl, db_events):
 map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
 load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 
-def mr_load_fb_events(fbl, time_period=None, update_geodata=True, only_if_updated=True, queue='slow-queue'):
+
+def mr_load_fb_events(fbl, load_attending=False, time_period=None, update_geodata=True, only_if_updated=True, queue='slow-queue'):
+    if load_attending:
+        event_or_attending = 'Event Attendings'
+        mr_func = 'map_load_fb_event_attending'
+    else:
+        event_or_attending = 'Events'
+        mr_func = 'map_load_fb_event'
     if time_period:
         filters = [('search_time_period', '=', time_period)]
-        name = 'Load %s Events' % time_period
+        name = 'Load %s %s' % (time_period, event_or_attending)
     else:
         filters = []
-        name = 'Load All Events'
+        name = 'Load All %s' % (event_or_attending)
     fb_mapreduce.start_map(
         fbl=fbl,
         name=name,
-        handler_spec='events.event_reloading_tasks.map_load_fb_event',
+        handler_spec='events.event_reloading_tasks.%s' % mr_func,
         entity_kind='events.eventdata.DBEvent',
         handle_batch_size=20,
         filters=filters,
         extra_mapper_params={'update_geodata': update_geodata, 'only_if_updated': only_if_updated},
         queue=queue,
     )
+
 
 @app.route('/tasks/load_events')
 class LoadEventHandler(base_servlet.BaseTaskFacebookRequestHandler):
@@ -127,6 +137,7 @@ class LoadEventHandler(base_servlet.BaseTaskFacebookRequestHandler):
         load_fb_event(self.fbl, db_events)
     post=get
 
+
 @app.route('/tasks/load_event_attending')
 class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
@@ -135,13 +146,15 @@ class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
         load_fb_event_attending(self.fbl, db_events)
     post=get
 
+
 @app.route('/tasks/reload_events')
 class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         update_geodata = self.request.get('update_geodata') != '0'
         only_if_updated = self.request.get('only_if_updated') != '0'
         time_period = self.request.get('time_period', None)
-        mr_load_fb_events(self.fbl, time_period=time_period, update_geodata=update_geodata, only_if_updated=only_if_updated)
+        load_attending = self.request.get('load_attending') != '0'
+        mr_load_fb_events(self.fbl, load_attending=load_attending, time_period=time_period, update_geodata=update_geodata, only_if_updated=only_if_updated)
     post=get
 
 
@@ -156,8 +169,10 @@ def explode_events_by_day(event):
     if date:
         yield (date.strftime('%Y-%m-%d'), 1)
 
+
 def sum_events_by_day(date, event_counts):
     yield '%s: %s\n' % (date, len(event_counts))
+
 
 @app.route('/tools/count_events_by_time')
 class EventsOverTimeHandler(base_servlet.BaseTaskRequestHandler):
