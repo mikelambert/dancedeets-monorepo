@@ -2,6 +2,7 @@ import os
 import sys
 sys.path = [os.path.join(os.path.dirname(__file__), 'lib')] + sys.path
 
+from hacks import fixed_jinja2
 from hacks import fixed_ndb
 from hacks import fixed_mapreduce_util
 from requests_toolbelt.adapters import appengine as appengine_adapter
@@ -13,6 +14,9 @@ fixed_ndb.patch_logging(0)
 
 # Fix our runaway mapreduces
 fixed_ndb.fix_rpc_ordering()
+
+# Improve jinja2 stacktraces
+fixed_jinja2.fix_stacktraces()
 
 # Make requests work with AppEngine's URLFetch
 if appengine_manager.is_local_appengine():
