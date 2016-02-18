@@ -170,3 +170,9 @@ browse our {{ total_events }} events worldwide below, or <a href="/events_add">a
 </div>
 </div>
 {% endblock %}
+
+{% block bottom_javascript %}
+<script type="text/javascript">
+mixpanel.track("Homepage");
+</script>
+{% endblock %}

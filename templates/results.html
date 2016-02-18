@@ -115,7 +115,7 @@ Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
 		<div><b>Related pages:</b></div>
 		<ul>
 		{% for onebox in onebox_links %}
-			<li><a href="{{ onebox.url }}">{{ onebox.title }}</a></li>
+			<li><a class="link-onebox" href="{{ onebox.url }}">{{ onebox.title }}</a></li>
 		{% endfor %}
 		</ul>
 	</div>
@@ -219,6 +219,17 @@ function share() {
 </style>
 
 <script type="text/javascript">
+mixpanel.track("Search Events", {
+  "Location", {{ form.location.data|tojson }},
+  "Keywords", {{ form.keywords.data|tojson }};
+});
+
+mixpanel.track("Searched Results", {
+  "Location", {{ form.location.data|tojson }},
+  "Keywords", {{ form.keywords.data|tojson }},
+  "Tab", "CALENDAR"
+});
+
 $(document).ready(function() {
 	$('#calendar').fullCalendar({
 		aspectRatio: 1.8,
@@ -245,6 +256,32 @@ $(document).ready(function() {
 });
 </script>
 {% else %}
+mixpanel.track("Search Events", {
+  "Location", {{ form.location.data|tojson }},
+  "Keywords", {{ form.keywords.data|tojson }};
+});
+
+{% if selected_tab == 'past' %}
+  var num_results = {{ len(past_results) }};
+  var tab = 'PAST';
+{% elif selected_tab == 'present' %}
+  var num_results = {{ num_upcoming_results }};
+  var tab = 'UPCOMING';
+{% else %}
+  var tab = null;
+{% endif %}
+
+if (tab != null) {
+  mixpanel.track("Searched Results", {
+    "Location", {{ form.location.data|tojson }},
+    "Keywords", {{ form.keywords.data|tojson }},
+    "Tab", tab,
+    "Result Count", num_results,
+    "Onebox Count", {{ len(onebox_links) }}
+  });
+}
+mixpanel.track_links(".link-onebox", "Onebox");
+
 {{ rsvp.rsvp_script() }}
 
 <script type="text/javascript">

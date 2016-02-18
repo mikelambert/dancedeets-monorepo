@@ -74,7 +74,7 @@ class ShowUsersHandler(base_servlet.BaseRequestHandler):
         self.display['num_active_users'] = len([x for x in all_users if not x.expired_oauth_token])
         self.display['users'] = all_users
         self.display['fb_users'] = fb_users
-        self.display['track_google_analytics'] = False
+        self.display['track_analytics'] = False
         self.render_template('show_users')
 
 @app.route('/tools/user_emails')

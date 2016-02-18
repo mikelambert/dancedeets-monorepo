@@ -70,7 +70,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.display['next'] = ''
 
         # set to false on various admin pages
-        self.display['track_google_analytics'] = True
+        self.display['track_analytics'] = True
         super(BareBaseRequestHandler, self).__init__(*args, **kwargs)
 
     def get(self, *args, **kwargs):
@@ -85,6 +85,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
             logging.info("query %r = %r", arg, self.request.GET.getall(arg))
 
         self.display['indexing_bot'] = 'googlebot' in (self.request.user_agent or '').lower()
+        self.display['mixpanel_api_key'] = 'f5d9d18ed1bbe3b190f9c7c7388df243' if self.request.app.prod_mode else '668941ad91e251d2ae9408b1ea80f67b'
 
         logging.info("Appengine Request Headers:")
         for x in request.headers:

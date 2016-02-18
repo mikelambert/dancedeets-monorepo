@@ -326,7 +326,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
 
         self.jinja_env.filters['highlight_keywords'] = event_classifier.highlight_keywords
 
-        self.display['track_google_analytics'] = False
+        self.display['track_analytics'] = False
         self.render_template('admin_edit')
 
     def post(self):
@@ -540,7 +540,7 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         self.display['has_more_events'] = has_more_events
         self.display['potential_events_listing'] = template_events
         self.display['potential_ids'] = ','.join(already_added_event_ids + potential_event_notadded_ids)  # use all ids, since we want to mark already-added ids as processed as well. but only the top N of the potential event ids that we're showing to the user.
-        self.display['track_google_analytics'] = False
+        self.display['track_analytics'] = False
         self.render_template('admin_potential_events')
 
     def post(self):

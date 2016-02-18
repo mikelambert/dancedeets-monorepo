@@ -230,3 +230,9 @@ body.header-fixed-space {
     </div>
     <!--=== End Cube-Portfdlio ===-->
 {% endblock %}
+
+{% block bottom_javascript %}
+<script type="text/javascript">
+mixpanel.track("Homepage");
+</script>
+{% endblock %}

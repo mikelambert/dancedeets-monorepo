@@ -16,31 +16,22 @@
 <![endif]-->
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="/vcss/{{version}}/dancedeets.css">
+<link rel="styleshee" href="/vcss/{{version}}/dancedeets.css">
 
 {% block head_metatags %}{% endblock %}
 {% block head_stylesheet %}{% endblock %}
+<script type="text/javascript">
+{{
+  analytics_javascript(
+    {
+      'old_design': true,
+      'webview': true
+    },
+    {}
+  )
+}}
 {% block head_javascript %}{% endblock %}
-{% if prod_mode and track_google_analytics %}
-  <script>
-
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-18831479-1', 'auto');
-    ga('require', 'linkid', 'linkid.js');
-    ga('send', 'pageview', {
-      'webview': true,
-      'dimension1': 'webview'
-    });
-  </script>
-{% else %}
-  <script type="text/javascript">
-  var _gaq = [];
-  </script>
-{% endif %}
+</script>
 </head>
 <body>
 
