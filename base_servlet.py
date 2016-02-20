@@ -388,7 +388,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                     self.set_login_cookie(request.get('uid'), access_token_md5=access_token_md5)
             if request.get('access_token_md5'):
                 user = users.User.get_by_id(request.get('uid'))
-                if request.get('access_token_md5') == hashlib.md5(user.fb_access_token).hexdigest():
+                if user and request.get('access_token_md5') == hashlib.md5(user.fb_access_token).hexdigest():
                     # Authenticated! Now save cookie so subsequent requests can trust that this user is authenticated.
                     # The subsequent request will see a valid user_login param (though without an fb_cookie_uid)
                     self.set_login_cookie(request.get('uid'), access_token_md5=self.request.get('access_token_md5'))
