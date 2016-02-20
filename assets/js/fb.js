@@ -2,6 +2,8 @@ var jQuery = require('jquery');
 require('jquery.cookie');
 
 var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
+  var loginPressed = false;
+
   function deleteLoginCookies() {
     var cookieOptions = {
       domain: '.' + baseHostname,
@@ -18,6 +20,7 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
       window.location += '&nt=1';
     }
   }
+
   function currentUser() {
     var userLogin = jQuery.cookie('user_login_' + fbAppId);
     if (userLogin) {
@@ -28,6 +31,10 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
   function handleStatusChange(response) {
     if (response.status === 'connected') {
       if (response.authResponse.userID !== currentUser()) {
+        if (loginPressed) {
+          // Only do this for explicit logins, not for auto-logins
+          window.mixpanel.track('Login - Completed');
+        }
         // reload through endpoint to set up new user cookie serverside
         // TODO(lambert): Add a full-screen overlay explaining what we are doing...
         reloadWithNewToken();
@@ -46,12 +53,15 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
 
   function initFBCode(FB) {
     function login() {
+      loginPressed = true;
+      window.mixpanel.track("Login - FBLogin Button Pressed");
       FB.login(function(/* response */) {}, {
         scope: fbPermissions,
       });
     }
 
     function logout() {
+      window.mixpanel.track('Logout');
       // Seems the logout callback isn't being called, so ensure we delete the cookie here
       deleteLoginCookies();
       FB.getLoginStatus(function(response) {
@@ -75,6 +85,13 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
   window.fbAsyncInit = function() {
     initFBCode(window.FB);
   };
+
+  /**
+   * It'd be nice to stick this in the html page directly, for faster FB loading.
+   * But we need this code to run *after* we set window.fbAsyncInit above.
+   * TODO: If we want to speed this up, we need to ensure the race conditions
+   * can work if FB code loads before this fb.js code (as part of the merged bundle).
+   */
 
   // Facebook/Login Code
   (function(d, s, id) {
