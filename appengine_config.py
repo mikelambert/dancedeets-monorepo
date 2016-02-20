@@ -16,7 +16,7 @@ fixed_ndb.patch_logging(0)
 fixed_ndb.fix_rpc_ordering()
 
 # Improve jinja2 stacktraces
-fixed_jinja2.fix_stacktraces()
+# fixed_jinja2.fix_stacktraces()
 
 # Make requests work with AppEngine's URLFetch
 if appengine_manager.is_local_appengine():
