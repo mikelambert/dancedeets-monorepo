@@ -54,7 +54,7 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
   function initFBCode(FB) {
     function login() {
       loginPressed = true;
-      window.mixpanel.track("Login - FBLogin Button Pressed");
+      window.mixpanel.track('Login - FBLogin Button Pressed');
       FB.login(function(/* response */) {}, {
         scope: fbPermissions,
       });
