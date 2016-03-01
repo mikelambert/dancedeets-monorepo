@@ -1,4 +1,3 @@
-import datetime
 import logging
 
 from mapreduce import context
@@ -12,6 +11,7 @@ from nlp import event_classifier
 from util import fb_mapreduce
 from . import add_entities
 from . import potential_events
+
 
 def classify_events(fbl, pe_list, fb_list):
     results = []
@@ -38,7 +38,7 @@ def classify_events(fbl, pe_list, fb_list):
         if auto_add_result[0]:
             logging.info("Found event %s, looking up location", pe.fb_event_id)
             location_info = event_locations.LocationInfo(fb_event)
-            result = '+%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, location_info.exact_from_event, location_info.final_city, location_info.final_city != None, location_info.fb_address, fb_event['info'].get('name', '')))
+            result = '+%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, location_info.exact_from_event, location_info.final_city, location_info.final_city is not None, location_info.fb_address, fb_event['info'].get('name', '')))
             try:
                 add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=pe.get_invite_uids(), creating_method=eventdata.CM_AUTO)
                 pe2 = potential_events.PotentialEvent.get_by_key_name(pe.fb_event_id)
@@ -67,14 +67,16 @@ def classify_events(fbl, pe_list, fb_list):
                 ctx.counters.increment('auto-notadded-dance-events')
     return results
 
+
 def classify_events_with_yield(fbl, pe_list):
     assert fbl.allow_cache
-    fb_list = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list])
-    #DISABLE_ATTENDING
+    fb_list = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in pe_list], allow_fail=True)
+    # DISABLE_ATTENDING
     results = classify_events(fbl, pe_list, fb_list)
     yield ''.join(results).encode('utf-8')
 
 map_classify_events = fb_mapreduce.mr_wrap(classify_events_with_yield)
+
 
 def mr_classify_potential_events(fbl, past_event):
     filters = [('looked_at', '=', None), ('should_look_at', '=', True)]
@@ -94,4 +96,3 @@ def mr_classify_potential_events(fbl, past_event):
             'bucket_name': 'dancedeets-hrd.appspot.com',
         },
     )
-
