@@ -1,7 +1,7 @@
 cron:
 # These rely on 701004
 - description: reload future facebook event data
-  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE
+  url: /tasks/reload_events?user_id=701004&allow_cache=0&time_period=FUTURE&load_attending=0
   schedule: every 20 hours
 # These don't rely on a magical user_id
 - description: auto-add events
