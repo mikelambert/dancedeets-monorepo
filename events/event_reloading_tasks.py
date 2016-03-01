@@ -150,10 +150,10 @@ class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
 @app.route('/tasks/reload_events')
 class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
-        update_geodata = self.request.get('update_geodata') != '0'
-        only_if_updated = self.request.get('only_if_updated') != '0'
+        update_geodata = self.request.get('update_geodata', '1') != '0'
+        only_if_updated = self.request.get('only_if_updated', '1') != '0'
         time_period = self.request.get('time_period', None)
-        load_attending = self.request.get('load_attending') != '0'
+        load_attending = self.request.get('load_attending', '0') != '0'
         mr_load_fb_events(self.fbl, load_attending=load_attending, time_period=time_period, update_geodata=update_geodata, only_if_updated=only_if_updated)
     post=get
 
