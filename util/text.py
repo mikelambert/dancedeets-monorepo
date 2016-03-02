@@ -147,7 +147,7 @@ def htmlsafe_json_dumps(obj, **kwargs):
        quoted.  Always single quote attributes if you use the ``|tojson``
        filter.  Alternatively use ``|tojson|forceescape``.
     """
-    if obj is None:
+    if obj is None or isinstance(obj, jinja2.Undefined):
         return 'null'
     rv = json.dumps(obj, **kwargs) \
         .replace(u'<', u'\\u003c') \
