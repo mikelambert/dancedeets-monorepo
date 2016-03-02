@@ -256,9 +256,10 @@ $(document).ready(function() {
 });
 </script>
 {% else %}
+<script type="text/javascript">
 mixpanel.track("Search Events", {
-  "Location", {{ form.location.data|tojson }},
-  "Keywords", {{ form.keywords.data|tojson }};
+  "Location": {{ form.location.data|tojson }},
+  "Keywords": {{ form.keywords.data|tojson }}
 });
 
 {% if selected_tab == 'past' %}
@@ -273,14 +274,15 @@ mixpanel.track("Search Events", {
 
 if (tab != null) {
   mixpanel.track("Searched Results", {
-    "Location", {{ form.location.data|tojson }},
-    "Keywords", {{ form.keywords.data|tojson }},
-    "Tab", tab,
-    "Result Count", num_results,
-    "Onebox Count", {{ len(onebox_links) }}
+    "Location": {{ form.location.data|tojson }},
+    "Keywords": {{ form.keywords.data|tojson }},
+    "Tab": tab,
+    "Result Count": num_results,
+    "Onebox Count": {{ len(onebox_links) }}
   });
 }
 mixpanel.track_links(".link-onebox", "Onebox");
+</script>
 
 {{ rsvp.rsvp_script() }}
 
