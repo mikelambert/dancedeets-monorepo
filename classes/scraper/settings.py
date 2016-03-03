@@ -61,7 +61,7 @@ NEWSPIDER_MODULE = 'classes.scraper.spiders'
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'classes.scraper.pipelines.SaveStudioClassPipeline': 300,
+    'classes.scraper.pipelines.BatchSaveStudioClassPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
