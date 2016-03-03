@@ -7,15 +7,18 @@ import scrapy
 
 from .. import items
 
+
 def parse_time(ts):
     if re.search(r'noon|am|pm', ts.lower()):
         return dateparser.parse(ts).time(), True
     else:
         return dateparser.parse(ts).time(), False
 
+
 def format_tuple_as_time_using_time(unsure_time, time):
     formatted_time = '%s %s' % (unsure_time.strftime('%I:%M'), time.strftime('%p'))
     return dateparser.parse(formatted_time).time()
+
 
 def parse_times(times):
     start_time_string, end_time_string = re.split(r' ?- ?', times)
@@ -27,6 +30,7 @@ def parse_times(times):
         end_time = format_tuple_as_time_using_time(end_time, start_time)
     return start_time, end_time
 
+
 class BdcDay(items.StudioScraper):
     name = 'BDC'
     allowed_domains = ['broadwaydancecenter.com']
@@ -36,7 +40,8 @@ class BdcDay(items.StudioScraper):
     def start_requests(self):
         today = datetime.date.today()
         for i in range(self._future_days):
-            date_string = (today + datetime.timedelta(days=i)).strftime('%m_%d')
+            date = (today + datetime.timedelta(days=i))
+            date_string = '%s_%s' % (date.month, date.day)
             yield scrapy.Request('http://www.broadwaydancecenter.com/schedule/%s.shtml' % date_string)
 
     _acronyms = {
@@ -46,6 +51,7 @@ class BdcDay(items.StudioScraper):
         'Int': 'Intermediate',
         'Adv': 'Advanced',
     }
+
     @classmethod
     def _expand_acronyms(cls, s):
         for k, v in cls._acronyms.items():
