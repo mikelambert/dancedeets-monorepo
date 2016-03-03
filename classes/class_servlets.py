@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import keys
 import urllib
 import webapp2
 
@@ -61,16 +62,64 @@ class JsonDataHandler(webapp2.RequestHandler):
             self.json_body = None
 
 
+def process_uploaded_item(json_body):
+    #TODO: And maybe only save/reindex if there were legit changes?
+    for key, value in json_body.iteritems():
+        if key in ['start_time', 'end_time', 'scrape_time']:
+            json_body[key] = datetime.datetime.strptime(value, DATETIME_FORMAT)
+    studio_class = class_models.StudioClass(**json_body)
+    studio_class.put()
+    logging.info("Saving %s with scrape_time %s", studio_class.key, studio_class.scrape_time)
+
+
+def process_upload_finalization(studio_name):
+    logging.info('De-duping all classes for %s', studio_name)
+    historical_fixup = datetime.datetime.today() - datetime.timedelta(days=2)
+    # TODO: sometimes this query returns stale data. In particular,
+    # it returns objects that don't have the latest updated scrape_time.
+    # This then confuses dedupe_classes() logic, which wants to delete
+    # these presumed-dead classes, when in fact they are still alive.
+    # Disabling the memcache and incontext NDB caches doesn't appear to help,
+    # since the stale objects are returned from the dev_apperver DB directly.
+    query = class_models.StudioClass.query(
+        class_models.StudioClass.studio_name == studio_name,
+        class_models.StudioClass.start_time >= historical_fixup)
+    # TODO: why does this sort not work??
+    # query = query.order(-class_models.StudioClass.start_time)
+    num_events = 1000
+    results = query.fetch(num_events)
+    results = sorted(results, key=lambda x: x.start_time, reverse=True)
+    if len(results) == num_events:
+        logging.error("Processing %s events for studio %s, and did not reach the end of days-with-duplicates", num_events, studio_name)
+    classes_on_date = []
+    processing_date = None
+    for studio_class in results:
+        class_date = studio_class.start_time.date()
+        if class_date == processing_date:
+            classes_on_date.append(studio_class)
+        else:
+            dedupe_classes(classes_on_date)
+            processing_date = class_date
+            classes_on_date = [studio_class]
+    dedupe_classes(classes_on_date)
+
+
 @app.route('/classes/upload')
 class ClassUploadHandler(JsonDataHandler):
     def post(self):
-        #TODO: And maybe only save/reindex if there were legit changes?
-        for key, value in self.json_body.iteritems():
-            if key in ['start_time', 'end_time', 'scrape_time']:
-                self.json_body[key] = datetime.datetime.strptime(value, DATETIME_FORMAT)
-        studio_class = class_models.StudioClass(**self.json_body)
-        studio_class.put()
-        logging.info("Saving %s with scrape_time %s", studio_class.key, studio_class.scrape_time)
+        process_uploaded_item(self.json_body)
+        self.response.status = 200
+
+
+@app.route('/classes/upload_multi')
+class ClassMultiUploadHandler(JsonDataHandler):
+    def post(self):
+        if self.json_body['scrapinghub_key'] != keys.get('scrapinghub_key'):
+            self.response.status = 403
+            return
+        for item in self.json_body['items']:
+            process_uploaded_item(item)
+        process_upload_finalization(self.json_body['studio_name'])
         self.response.status = 200
 
 
@@ -116,39 +165,10 @@ class ClassReIndexHandler(JsonDataHandler):
 @app.route('/classes/finish_upload')
 class ClassFinishUploadhandler(JsonDataHandler):
     def post(self):
-        # studio_name = self.json_body['studio_name']
         studio_name = self.request.get('studio_name') or self.json_body['studio_name']
         if not studio_name:
             return
-        logging.info('De-duping all classes for %s', studio_name)
-        historical_fixup = datetime.datetime.today() - datetime.timedelta(days=2)
-        # TODO: sometimes this query returns stale data. In particular,
-        # it returns objects that don't have the latest updated scrape_time.
-        # This then confuses dedupe_classes() logic, which wants to delete
-        # these presumed-dead classes, when in fact they are still alive.
-        # Disabling the memcache and incontext NDB caches doesn't appear to help,
-        # since the stale objects are returned from the dev_apperver DB directly.
-        query = class_models.StudioClass.query(
-            class_models.StudioClass.studio_name == studio_name,
-            class_models.StudioClass.start_time >= historical_fixup)
-        # TODO: why does this sort not work??
-        # query = query.order(-class_models.StudioClass.start_time)
-        num_events = 1000
-        results = query.fetch(num_events)
-        results = sorted(results, key=lambda x: x.start_time, reverse=True)
-        if len(results) == num_events:
-            logging.error("Processing %s events for studio %s, and did not reach the end of days-with-duplicates", num_events, studio_name)
-        classes_on_date = []
-        processing_date = None
-        for studio_class in results:
-            class_date = studio_class.start_time.date()
-            if class_date == processing_date:
-                classes_on_date.append(studio_class)
-            else:
-                dedupe_classes(classes_on_date)
-                processing_date = class_date
-                classes_on_date = [studio_class]
-        dedupe_classes(classes_on_date)
+        process_upload_finalization(studio_name)
         self.response.status = 200
     get=post
 # TODO: We need to optionally return these in the API
