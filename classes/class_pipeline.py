@@ -16,15 +16,17 @@ import keys
 from classes import class_index
 from util import fixed_pipelines
 
+
 def get_spiders():
-    return ['PMT', 'Evolution', 'Peridance', 'BDC', 'StudioV', 'NeighborhoodStudio', 'Millenium', 'EDGE', 'DebbieReynolds', 'EXPG', 'Boogiezone', 'IDA']
+    return ['PMT', 'Evolution', 'Peridance', 'BDC', 'NeighborhoodStudio', 'Millenium', 'EDGE', 'DebbieReynolds', 'EXPG', 'Boogiezone', 'IDA']
     # This depends on Twisted, which depends on zope.interface and lxml. And that whole ball of wax fails when run in the appengine dev sandbox.
     # We can't import any of classes/scrapers/ (since it all ultimately depends on scrapy), so there's no great way to get a list of classes.
     # Instead, class_pipeline_test does depend on it safely within nosetests, and verifies the above list matches what we get from scrapy's API)
-    #from scrapy.utils.project import get_project_settings
-    #from scrapy.crawler import CrawlerRunner
-    #runner = CrawlerRunner(get_project_settings())
-    #return runner.spider_loader.list()
+    # from scrapy.utils.project import get_project_settings
+    # from scrapy.crawler import CrawlerRunner
+    # runner = CrawlerRunner(get_project_settings())
+    # return runner.spider_loader.list()
+
 
 def start_spiders(spiders):
     hs_client = client.HubstorageClient(keys.get('scrapinghub_key'))
@@ -34,6 +36,7 @@ def start_spiders(spiders):
         job = hs_client.push_job(27474, spider)
         job_keys.append(job.key)
     return job_keys
+
 
 class CrawlAndIndexClassesJob(fixed_pipelines.Pipeline):
     def run(self):
@@ -51,6 +54,7 @@ class CrawlAndIndexClassesJob(fixed_pipelines.Pipeline):
         yield ReindexClasses(job_keys, jobs_completed)
         yield EmailErrors(run_time, job_keys, jobs_completed)
 
+
 class WaitForJobs(fixed_pipelines.Pipeline):
     def run(self, job_keys):
         hs_client = client.HubstorageClient(keys.get('scrapinghub_key'))
@@ -65,9 +69,11 @@ class WaitForJobs(fixed_pipelines.Pipeline):
         else:
             yield common.Return(True)
 
+
 class ReindexClasses(fixed_pipelines.Pipeline):
     def run(self, job_keys, jobs_completed):
         class_index.StudioClassIndex.rebuild_from_query()
+
 
 class EmailErrors(fixed_pipelines.Pipeline):
     def run(self, run_time, job_keys, jobs_completed):
