@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import keys
 import urllib
 import webapp2
 
@@ -113,6 +114,9 @@ class ClassUploadHandler(JsonDataHandler):
 @app.route('/classes/upload_multi')
 class ClassMultiUploadHandler(JsonDataHandler):
     def post(self):
+        if self.json_body['scrapinghub_key'] != keys.get('scrapinghub_key'):
+            self.response.status = 403
+            return
         for item in self.json_body['items']:
             process_uploaded_item(item)
         process_upload_finalization(self.json_body['studio_name'])

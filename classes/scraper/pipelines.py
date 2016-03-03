@@ -6,7 +6,7 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 import json
-import logging
+import keys
 import urllib
 import urllib2
 
@@ -17,7 +17,9 @@ DEV_SERVER = 'dev.dancedeets.com:8080'
 
 
 def make_request(server, path, params):
-    data = json.dumps(params)
+    new_params = params.copy()
+    new_params['scrapinghub_key'] = keys.get('scrapinghub_key')
+    data = json.dumps(new_params)
     quoted_data = urllib.quote_plus(data)
     f = urllib2.urlopen('http://%s/%s' % (server, path), quoted_data)
     result = f.read()
@@ -29,13 +31,13 @@ def make_requests(path, params):
     try:
         result = make_request(PROD_SERVER, path, params)
     except urllib2.URLError as e:
-        result = {'Error': e}
+        result = {'Error': e.reason}
         pass
     dev_result = None
     try:
         dev_result = make_request(DEV_SERVER, path, params)
     except urllib2.URLError as e:
-        dev_result = {'Error': e}
+        dev_result = {'Error': e.reason}
     return {'prod_result': result, 'dev_result': dev_result}
 
 
