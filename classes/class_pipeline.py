@@ -81,7 +81,11 @@ class EmailErrors(fixed_pipelines.Pipeline):
         jobs = [job.Job(hs_client, x) for x in job_keys]
 
         error_lines = {}
+
         for spider_job in jobs:
+            if not spider_job.metadata['items_scraped']:
+                error_lines.setdefault(spider_job.metadata['spider'], []).append('Could not find any items.')
+
             for line in list(spider_job.logs.iter_values()):
                 if line['level'] >= 40:
                     error_lines.setdefault(spider_job.metadata['spider'], []).append(line['message'])
