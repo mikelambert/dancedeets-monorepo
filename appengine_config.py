@@ -6,13 +6,18 @@ from hacks import fixed_ndb
 from hacks import fixed_mapreduce_util
 from requests_toolbelt.adapters import appengine as appengine_adapter
 from requests.packages.urllib3.contrib import appengine as appengine_manager
-fixed_mapreduce_util.patch_function()
 
 # Disabled for now
 fixed_ndb.patch_logging(0)
 
 # Fix our runaway mapreduces
 fixed_ndb.fix_rpc_ordering()
+
+# Improve jinja2 stacktraces
+fixed_jinja2.fix_stacktraces()
+
+# Fix mapreduce to not require a certain version
+fixed_mapreduce_util.patch_function()
 
 # Make requests work with AppEngine's URLFetch
 if appengine_manager.is_local_appengine():
