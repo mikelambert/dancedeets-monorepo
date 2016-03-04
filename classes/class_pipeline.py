@@ -5,10 +5,9 @@ import logging
 
 from google.appengine.api import mail
 
-from hubstorage import client
-from hubstorage import job
 from pipeline import common
 from pipeline import pipeline
+import scrapinghub
 
 import app
 import base_servlet
@@ -28,13 +27,19 @@ def get_spiders():
     # return runner.spider_loader.list()
 
 
-def start_spiders(spiders):
-    hs_client = client.HubstorageClient(keys.get('scrapinghub_key'))
+def get_shub_project():
+    conn = scrapinghub.Connection(keys.get('scrapinghub_key'))
+    project = scrapinghub.Project(conn, 27474)
+    return project
 
+
+def start_spiders(spiders):
+    project = get_shub_project()
     job_keys = []
     for spider in spiders:
-        job = hs_client.push_job(27474, spider)
-        job_keys.append(job.key)
+        job_id = project.schedule(spider)
+        job_keys.append(job_id)
+    logging.info("Scheduled jobs: %s", job_keys)
     return job_keys
 
 
@@ -57,9 +62,9 @@ class CrawlAndIndexClassesJob(fixed_pipelines.Pipeline):
 
 class WaitForJobs(fixed_pipelines.Pipeline):
     def run(self, job_keys):
-        hs_client = client.HubstorageClient(keys.get('scrapinghub_key'))
-        jobs = [job.Job(hs_client, x) for x in job_keys]
-        unfinished = [x for x in jobs if x.metadata['state'] != 'finished']
+        project = get_shub_project()
+        jobs = [project.job(x) for x in job_keys]
+        unfinished = [x for x in jobs if x.info['state'] != 'finished']
         logging.info("Waiting for %s unfinished spiders", len(unfinished))
         if unfinished:
             # Try again in 30 seconds
@@ -77,18 +82,18 @@ class ReindexClasses(fixed_pipelines.Pipeline):
 
 class EmailErrors(fixed_pipelines.Pipeline):
     def run(self, run_time, job_keys, jobs_completed):
-        hs_client = client.HubstorageClient(keys.get('scrapinghub_key'))
-        jobs = [job.Job(hs_client, x) for x in job_keys]
+        project = get_shub_project()
+        jobs = [project.job(x) for x in job_keys]
 
         error_lines = {}
 
         for spider_job in jobs:
-            if not spider_job.metadata['items_scraped']:
-                error_lines.setdefault(spider_job.metadata['spider'], []).append('Could not find any items.')
+            if not spider_job.info['items_scraped']:
+                error_lines.setdefault(spider_job.info['spider'], []).append('Could not find any items.')
 
-            for line in list(spider_job.logs.iter_values()):
+            for line in spider_job.log():
                 if line['level'] >= 40:
-                    error_lines.setdefault(spider_job.metadata['spider'], []).append(line['message'])
+                    error_lines.setdefault(spider_job.info['spider'], []).append(line['message'])
 
         if not error_lines:
             return
