@@ -4,9 +4,10 @@ import ReactDOM from 'react-dom';
 import dateFormat from 'date-fns/format';
 
 var SelectButton = React.createClass({
-  toggleState: function() {
+  toggleState: function(e) {
     this.manualToggleState();
     this.props.onChange();
+    e.preventDefault();
   },
   manualToggleState: function() {
     var button = $(this.refs.button);
