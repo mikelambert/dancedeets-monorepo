@@ -596,12 +596,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
         webview = bool(request.get('webview'))
         self.display['webview'] = webview
         if webview:
-            if bool(request.get('nd')):
+            if bool(request.get('nd', 1)):
                 self.display['class_base_template'] = '_new_base_webview.html'
             else:
                 self.display['class_base_template'] = '_base_webview.html'
         else:
-            if bool(request.get('nd')):
+            if bool(request.get('nd', 1)):
                 self.display['class_base_template'] = '_new_base.html'
             else:
                 self.display['class_base_template'] = '_base.html'
