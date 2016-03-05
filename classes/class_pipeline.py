@@ -111,7 +111,7 @@ class EmailErrors(fixed_pipelines.Pipeline):
             sender="DanceDeets Reports <reports@dancedeets.com>",
             subject="Crawl Errors for %s" % run_time.strftime('%b %d, %Y: %H:%M'),
             to='reports@dancedeets.com',
-            html=body,
+            body=body,
         )
         message.send()
 
