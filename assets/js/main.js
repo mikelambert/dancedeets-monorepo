@@ -54,17 +54,17 @@ $(document).ready(function() {
 
   // background-image rotation
   var images = [
-    'dist/img/background-show-locking.jpg',
-    'dist/img/background-class-overhead.jpg',
-    'dist/img/background-club-turntable.jpg',
-    'dist/img/background-show-awards.jpg',
+    'dist/img/background-show-locking.jpg', // slim
+    'dist/img/background-class-overhead.jpg', // cricket
+    'dist/img/background-club-turntable.jpg', // mario
+    'dist/img/background-show-awards.jpg', // slim
 
-    'dist/img/background-class-kids.jpg',
-    'dist/img/background-show-pose.jpg',
-    'dist/img/background-club-smoke-cypher.jpg',
-    'dist/img/background-class-rocking.jpg',
-    'dist/img/background-show-dj.jpg',
-    'dist/img/background-club-headspin.jpg',
+    'dist/img/background-class-kids.jpg', // mario
+    'dist/img/background-show-pose.jpg', // slim
+    'dist/img/background-club-smoke-cypher.jpg', // mario
+    'dist/img/background-class-rocking.jpg', // mario
+    'dist/img/background-show-dj.jpg', // slim
+//    'dist/img/background-club-headspin.jpg',
   ];
   if ($(document).width() > 900) {
     images = images.map(function(x) {
