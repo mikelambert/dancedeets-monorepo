@@ -1,15 +1,18 @@
 import dateparser
 import datetime
+import re
 from .. import items
 
 from nlp import event_classifier
 from nlp import rules
 
+
 def parse_times(time_string):
-    start_string, end_string = time_string.split(' - ')
+    start_string, end_string = re.split(r'[\s\xa0]-[\s\xa0]', time_string)
     start_time = dateparser.parse(start_string + ' pm').time()
     end_time = dateparser.parse(end_string).time()
     return start_time, end_time
+
 
 class PMTHouseOfDance(items.StudioScraper):
     name = 'PMT'
@@ -20,6 +23,7 @@ class PMTHouseOfDance(items.StudioScraper):
     start_urls = [
         'http://www.pmthouseofdance.com/?_escaped_fragment_=schedule/c1jfb',
     ]
+
     def _get_url(self, response):
         return 'http://www.pmthouseofdance.com/#!schedule/c1jfb'
 
@@ -40,7 +44,7 @@ class PMTHouseOfDance(items.StudioScraper):
 
         row_by_row = zip(*captured_columns)
 
-        day = None # Keep track of this row-to-row
+        day = None  # Keep track of this row-to-row
         for row in row_by_row:
             if not row[1] or '---' in row[1]:
                 continue
@@ -66,5 +70,3 @@ class PMTHouseOfDance(items.StudioScraper):
             item['end_time'] = datetime.datetime.combine(date, end_time)
             for new_item in self._repeated_items_iterator(item):
                 yield new_item
-
-
