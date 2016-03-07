@@ -55,7 +55,7 @@ class LoginHandler(base_servlet.BaseRequestHandler):
         self.display['next'] = next_url
         logging.info(self.display['next'])
 
-        if bool(self.request.get('nd')):
+        if bool(self.request.get('nd', 1)):
             self.render_template('new_homepage')
         else:
             self.render_template('login')
