@@ -35,7 +35,7 @@ cd $BASE_DIR
 echo "Installing npm modules"
 npm install
 
-if [ "$TRAVIS" == true]; then
+if [ "$TRAVIS" == true ]; then
   echo "Compiling CSS and JS"
   gulp compile-css-js
 else
