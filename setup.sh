@@ -21,3 +21,8 @@ pip install --upgrade -t $BASE_DIR/lib -r $BASE_DIR/setup-requirements.txt
 # TODO: install npm?
 brew install homebrew/science/vips --with-webp --with-graphicsmagick
 brew install graphicsmagick
+
+npm install
+
+webpack --debug --config webpack.config.js
+webpack --debug --config webpack.amp.config.js
