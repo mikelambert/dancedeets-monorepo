@@ -137,7 +137,7 @@
     "indent": [2, 2, {"SwitchCase": 1}],
     "jsx-quotes": 2,
     "key-spacing": [2, {"beforeColon": false, "afterColon": true}],
-    "keywords-spacing": [2, "always"],
+    "keyword-spacing": [2, "always"],
     "linebreak-style": [2, "unix"],
     "max-nested-callbacks": [1, 4],
     "new-cap": [2, {"newIsCap": true, "capIsNew": true}],
