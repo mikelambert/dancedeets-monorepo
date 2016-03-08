@@ -4,23 +4,24 @@ from setuptools import setup, find_packages
 import glob
 
 setup(
-    name         = 'project',
-    version      = '1.0',
-    packages     = find_packages(),
-    install_requires = [
+    name='project',
+    version='1.0',
+    packages=find_packages(),
+    install_requires=[
         'icalendar',
         'dateparser',
     ],
-    py_modules = [
+    py_modules=[
         'event_types',
         'keys',
         'mindbody',
         'styles',
+        'scrapy_settings',
     ],
-    data_files   = [
+    data_files=[
         ('dance_keywords', glob.glob('dance_keywords/*.txt')),
         ('', ['keys.yaml']),
     ],
     include_package_data=True,
-    entry_points = {'scrapy': ['settings = classes.scraper.settings']},
+    entry_points={'scrapy': ['settings = scrapy_settings']},
 )
