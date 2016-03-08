@@ -36,6 +36,8 @@ class _ValidationError(Exception):
 
 
 class BareBaseRequestHandler(webapp2.RequestHandler):
+    allow_minify = True
+
     def __init__(self, *args, **kwargs):
         self.display = {}
         self._errors = []
@@ -144,7 +146,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
     def render_template(self, name):
         jinja_template = self.jinja_env.get_template("%s.html" % name)
         rendered = jinja_template.render(**self.display)
-        if 'clean' not in self.debug_list:
+        if self.allow_minify and 'clean' not in self.debug_list:
             rendered = htmlmin.minify(
                 rendered,
                 remove_comments=True,

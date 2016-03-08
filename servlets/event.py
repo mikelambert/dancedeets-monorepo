@@ -115,6 +115,9 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.jinja_env.filters['make_category_link'] = lambda lst: [jinja2.Markup('<a href="/?keywords=%s">%s</a>') % (x, x) for x in lst]
 
         if self.request.get('amp'):
+            # Because minification interferes with html-validity when producing:
+            # <meta name=viewport content=width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no>
+            self.allow_minify = False
             self.render_template('event_amp')
         else:
             self.render_template('event')
