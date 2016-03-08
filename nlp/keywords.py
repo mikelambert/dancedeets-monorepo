@@ -5,6 +5,7 @@ from . import grammar
 from .grammar import Any
 from .grammar import Name
 
+
 def GenFileBackedKeywords(name, filename):
     return [Name(name, grammar.FileBackedKeyword(filename, strength=i)) for i in [grammar.STRONG, grammar.STRONG_WEAK]]
 
@@ -85,7 +86,7 @@ EASY_DANCE = Name('EASY_DANCE', Any(
 ))
 
 EASY_CHOREO = Name('EASY_CHOREO', Any(
-    u'(?:ch|k|c)oe?re[o|ó]?gra(?:ph|f)\w*', #english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese, danish
+    u'(?:ch|k|c)oe?re[o|ó]?gra(?:ph|f)\w*', # english, italian, finnish, swedish, german, lithuanian, polish, italian, spanish, portuguese, danish
     'choreo',
     u'chorée', # french choreo
     u'chorégraph\w*', # french choreographer
@@ -223,7 +224,7 @@ MUSIC_ONLY = Name('MUSIC_ONLY', Any(
 ))
 
 STYLE_BREAK = Name('STYLE_BREAK', Any(
-    'breakingu', #breaking polish
+    'breakingu', # breaking polish
     u'breaktánc', # breakdance hungarian
     u'ブレイク', # breakdance japanese
     "bre?ak\W?dancin[g']?", 'bre?ak\W?dancer?s?',
@@ -238,7 +239,7 @@ STYLE_BREAK = Name('STYLE_BREAK', Any(
     u'بريك دانس', # arabic breakdance
 ))
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
-#add(STYLE_BREAK, [x+'u' for x in legit_dance))
+# add(STYLE_BREAK, [x+'u' for x in legit_dance))
 STYLE_ROCK = Name('STYLE_ROCK', Any(
     'rock\W?dan[cs]\w+',
     "top\W?rock(?:s|er[sz]?|in[g']?)?", "up\W?rock(?:s|er[sz]?|in[g']?|)?",
@@ -360,7 +361,7 @@ legit_dance = [
     u'フットワーキング', # japanese footworking
     'soul dance',
     u'ソウルダンス', # soul dance japanese
-    #'soul train',...do we want this?
+     #'soul train',...do we want this?
     u'소울트레인', # korean soul train
     "twerk(?:in[g']?)?",
     'dance crew[sz]?',
@@ -379,7 +380,7 @@ legit_dance = [
 
 # hiphop dance. hiphop dans?
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
-DANCE = Name('DANCE', Any(*(legit_dance + [x+'u' for x in legit_dance])))
+DANCE = Name('DANCE', Any(*(legit_dance + [x + 'u' for x in legit_dance])))
 # TODO(lambert): Is this a safe one to add?
 # http://en.wikipedia.org/wiki/Slovak_declension
 # dance_keywords = dance_keywords + [x+'y' for x in dance_keywords]
@@ -414,7 +415,7 @@ JAM = Name('JAM', Any(
 EASY_CLUB = Any(
     'club', 'after\Wparty', 'pre\Wparty',
     u'클럽', # korean club
-    u'クラブ',  # japanese club
+    u'クラブ',   # japanese club
 )
 EASY_SESSION = Any(
     'open sessions?',
@@ -463,7 +464,7 @@ PERFORMANCE = Name('PERFORMANCE', Any(
     u'изпълнението', # bulgarian performance
     u'パフォーマンス', # japanese performance
     # maybe include 'spectacle' as well?
-    'esibizioni', #italian performance/exhibition
+    'esibizioni', # italian performance/exhibition
 ))
 
 
@@ -472,12 +473,12 @@ CLUB_ONLY = Name('CLUB_ONLY', Any(
     'bottle service',
     'table service',
     'coat check',
-    #'rsvp',
+    # 'rsvp',
     'free before',
-    #'dance floor',
-    #'bar',
-    #'live',
-    #'and up',
+    # 'dance floor',
+    # 'bar',
+    # 'live',
+    # 'and up',
     'vip',
     'guest\W?list',
     'drink specials?',
@@ -582,13 +583,13 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
 # beat
 # 'open cyphers'
 # freestyle
-#in\Whouse  ??
+# in\Whouse  ??
 # 'brad houser'
 
 # open mic
 
-#dj.*bboy
-#dj.*bgirl
+# dj.*bboy
+# dj.*bgirl
 
 # 'vote for xx' in the subject
 # 'vote on' 'vote for' in body, but small body of text
@@ -613,8 +614,8 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
 # free style if not salsa?
 
 
-#TODO(lambert): use these to filter out shows we don't really care about
-#TODO: UNUSED
+# TODO(lambert): use these to filter out shows we don't really care about
+# TODO: UNUSED
 OTHER_SHOW = Name('OTHER_SHOW', Any(
     'comedy',
     'poetry',
@@ -628,7 +629,6 @@ OTHER_SHOW = Name('OTHER_SHOW', Any(
 ))
 
 
-
 BATTLE = Name('BATTLE', Any(
     'battle of the year', 'boty', 'compete',
     'competitions?',
@@ -637,7 +637,7 @@ BATTLE = Name('BATTLE', Any(
     u'competición', # spanish competition
     u'compétition', # french competition
     u'thi nhảy', # dance competition vietnam
-    'kilpailu\w*' # finish competition
+    'kilpailu\w*', # finish competition
     'konkursams', # lithuanian competition
     'verseny', # hungarian competition
     'championships?',
@@ -718,7 +718,7 @@ CLASS = Name('CLASS', Any(
     u'мастер-класса?', # russian master class
     u'классa?', # russian class
     'class(?:es)?', 'lessons?', 'courses?',
-    #TODO: should i do a "class(?!ic)"
+    # TODO: should i do a "class(?!ic)"
     'klass(?:en)?', # slovakian class
     u'수업', # korean class
     u'수업을', # korean classes
@@ -740,7 +740,7 @@ CLASS = Name('CLASS', Any(
     'eigoje', # lithuanian course
     'pamokas', # lithuanian lesson
     'kursai', # course lithuanian
-    'lez\.', #  lesson italian
+    'lez\.', # lesson italian
     'lezione', # lesson italian
     'lezioni', # lessons italian
     u'zajęciach', # class polish
@@ -764,7 +764,7 @@ CLASS = Name('CLASS', Any(
 AUDITION = Name('AUDITION', Any(
     'try\W?outs?',
     'casting',
-     'casting call',
+    'casting call',
     'castingul', # romanian casting
     'auditions?',
     'audicija', # audition croatia
@@ -785,6 +785,7 @@ EVENT = Name('EVENT', Any(
     'open circles',
     'abdc', 'america\W?s best dance crew',
 ))
+
 
 def _generate_n_x_n_keywords():
     english_digit_x_keywords = [
@@ -949,7 +950,7 @@ DANCE_WRONG_STYLE_TITLE_ONLY = Name('DANCE_WRONG_STYLE_TITLE_ONLY', Any(
 ))
 
 
-#TODO(lambert): we need to remove the empty CONNECTOR here, and probably spaces as well, and handle that in the rules? or just ensure this never gets applied except as part of rules
+# TODO(lambert): we need to remove the empty CONNECTOR here, and probably spaces as well, and handle that in the rules? or just ensure this never gets applied except as part of rules
 CONNECTOR = Name('CONNECTOR', Any(
     ' ?',
     ' di ',
@@ -958,9 +959,9 @@ CONNECTOR = Name('CONNECTOR', Any(
     u'な', # japanese
     u'の', # japanese
     u'的', # chinese
-#TODO(lambert): explore adding these variations, and their impact on quality
-#    r' ?[^\w\s] ?',
-#    ' \W ',
+    # TODO(lambert): explore adding these variations, and their impact on quality
+    # r' ?[^\w\s] ?',
+    # ' \W ',
 ))
 
 AMBIGUOUS_WRONG_STYLE = Name('AMBIGUOUS_WRONG_STYLE', Any(
@@ -1015,13 +1016,13 @@ WRONG_BATTLE_STYLE = Name('WRONG_BATTLE_STYLE', Any(
     'graf(?:fiti)?',
 ))
 
-#TODO: use
+# TODO: use
 # solo performance
 # solo battle
 # crew battle
 # team battle
 # these mean....more
-#TODO: UNUSED
+# TODO: UNUSED
 FORMAT_TYPE = Name('FORMAT_TYPE', Any(
     'solo',
     u'ソロ', # japanese solo
@@ -1109,7 +1110,7 @@ SEMI_BAD_DANCE = Name('SEMI_BAD_DANCE', Any(
     'dance collective',
 ))
 
-#TODO(lambert): should these be done here, as additional keywords?
+# TODO(lambert): should these be done here, as additional keywords?
 # Or should they be done as part of the grammar, that tries to combine these into rules of some sort?
 
 OBVIOUS_BATTLE = Name('OBVIOUS_BATTLE', Any(
