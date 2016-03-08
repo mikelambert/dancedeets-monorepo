@@ -55,7 +55,9 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.jinja_env.globals['zip'] = zip
         self.jinja_env.globals['len'] = len
 
-        self.display['version'] = os.getenv('CURRENT_VERSION_ID').split('.')[-1]
+        # 'version' is also used by event-amp's css rewriting:
+        self.static_version = os.getenv('CURRENT_VERSION_ID').split('.')[-1]
+        self.display['version'] = self.static_version
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
         # functions, add these to some base display setup

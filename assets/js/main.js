@@ -11,21 +11,10 @@ require('jquery.backstretch');
 require('jquery-lazyload');
 
 require('jquery.smartbanner');
-require('../../node_modules/jquery.smartbanner/jquery.smartbanner.css');
 
 require('bootstrap');
-require('../css/bootstrap-custom.scss');
 
-require('../../node_modules/font-awesome/css/font-awesome.css');
-require('../../node_modules/animate.css/animate.css');
-
-require('../css/fonts.scss');
-require('../css/dancedeets.scss');
-require('../css/social-hovers.scss');
-require('../css/header.scss');
-require('../css/footer.scss');
-require('../css/custom.scss');
-require('../../css/dancedeets.css');
+require('./all-css');
 
 var App = require('./app');
 
