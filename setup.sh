@@ -35,9 +35,16 @@ cd $BASE_DIR
 echo "Installing npm modules"
 npm install
 
+ls node_modules
+echo 'XX FA'
+find node_modules/font-awesome/
+echo 'XX AC'
+find node_modules/animate.css/
+
+
 if [ "$TRAVIS" == true ]; then
   echo "Compiling CSS and JS"
-  gulp compile-css-js
+  gulp compile-css-js compile-favicons
 else
   echo "Installing necessary brew libraries"
   brew install homebrew/science/vips --with-webp --with-graphicsmagick
