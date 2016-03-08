@@ -13,6 +13,7 @@ python $TMP_DIR/get-pip.py --user
 
 # For testing, just install them locally. Depends on pip being installed.
 USER_FLAG='--user'
+echo "Travis is $TRAVIS"
 if [ "$TRAVIS" == true ]; then
   USER_FLAG=''
 fi
@@ -27,5 +28,4 @@ brew install graphicsmagick
 
 npm install
 
-webpack --debug --config webpack.config.js
-webpack --debug --config webpack.amp.config.js
+gulp compile
