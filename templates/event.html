@@ -39,7 +39,8 @@
 <meta property="og:description"
 			content="{{ description|e }}" />
 
-<link rel="canonical" href="http://{{ full_hostname }}/events/{{ event.info.id }}/" />
+<link rel="canonical" href="{{ canonical_url }}" />
+<link rel="amphtml" href="{{ canonical_url }}/?amp=1" />
 
 {% endblock %}
 

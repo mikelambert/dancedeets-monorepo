@@ -70,6 +70,9 @@ gulp.task('compile-images-resize', () => {
         suffix: '@2x',
       }, {
         height: 64,
+      }, {
+        height: 60,
+        suffix: '-60px',
       }],
     }))
     .pipe($.imagemin({

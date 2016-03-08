@@ -15,6 +15,7 @@
     "file-loader": "^0.8.5",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.2",
+    "gulp-cache": "^0.4.2",
     "gulp-favicons": "^2.2.5",
     "gulp-imagemin": "^2.4.0",
     "gulp-load-plugins": "^1.2.0",

@@ -55,9 +55,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
         self.jinja_env.globals['zip'] = zip
         self.jinja_env.globals['len'] = len
 
-        # 'version' is also used by event-amp's css rewriting:
-        self.static_version = os.getenv('CURRENT_VERSION_ID').split('.')[-1]
-        self.display['version'] = self.static_version
+        self.display['version'] = self._get_static_version()
         # We can safely do this since there are very few ways others can modify self._errors
         self.display['errors'] = self._errors
         # functions, add these to some base display setup
@@ -170,6 +168,9 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
             location_components.append(full_country)
         location = ', '.join(x for x in location_components if x and x != '?')
         return location
+
+    def _get_static_version(self):
+        return os.getenv('CURRENT_VERSION_ID').split('.')[-1]
 
 
 def generate_userlogin_hash(user_login_cookie):
@@ -419,6 +420,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
         else:
             return False
 
+    def _get_full_hostname(self):
+        return 'www.dancedeets.com' if self.request.app.prod_mode else app_identity.get_default_version_hostname()
+
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
         self.run_handler = True
@@ -506,7 +510,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['prod_mode'] = self.request.app.prod_mode
 
         self.display['base_hostname'] = 'dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
-        self.display['full_hostname'] = 'www.dancedeets.com' if self.request.app.prod_mode else app_identity.get_default_version_hostname()
+        self.display['full_hostname'] = self._get_full_hostname()
+
 
         self.display['keyword_tokens'] = [{'value': x.public_name} for x in styles.STYLES]
         fb_permissions = 'rsvp_event,email,user_events'
