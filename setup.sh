@@ -8,26 +8,40 @@ TMP_DIR=/tmp/dancedeets-download/
 mkdir -p $TMP_DIR
 
 cd $TMP_DIR
+echo "Downloading get-pip"
 curl https://bootstrap.pypa.io/get-pip.py --output $TMP_DIR/get-pip.py
 
-# For testing, just install them locally. Depends on pip being installed.
-USER_FLAG='--user'
-echo "Travis is $TRAVIS"
 if [ "$TRAVIS" == true ]; then
   USER_FLAG=''
+else
+  USER_FLAG='--user'
 fi
 
+echo "Installing pip"
 python $TMP_DIR/get-pip.py $USER_FLAG
 
+echo "Installing test libraries"
+# For testing, just install them locally (not in the lib/ dir).
 pip install --upgrade $USER_FLAG -r $BASE_DIR/test-requirements.txt
 
+echo "Installing production libraries"
 pip install --upgrade -t $BASE_DIR/lib -r $BASE_DIR/setup-requirements.txt
 
 # TODO: install node
 # TODO: install npm?
-brew install homebrew/science/vips --with-webp --with-graphicsmagick
-brew install graphicsmagick
 
+cd $BASE_DIR
+
+echo "Installing npm modules"
 npm install
 
-gulp compile
+if [ "$TRAVIS" == true]; then
+  echo "Compiling CSS and JS"
+  gulp compile-css-js
+else
+  echo "Installing necessary brew libraries"
+  brew install homebrew/science/vips --with-webp --with-graphicsmagick
+  brew install graphicsmagick
+  echo "Compiling everything"
+  gulp compile
+fi
