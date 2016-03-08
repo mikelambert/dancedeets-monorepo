@@ -18,6 +18,7 @@ from nlp import categories
 from nlp import keywords
 from nlp import rules
 
+
 class StudioClass(item.DictItem):
     """This is basically a dictionary with methods.
     Originally was using scrapy.Item and scrapy.ItemLoader,
@@ -45,13 +46,17 @@ class StudioClass(item.DictItem):
         'sponsor',
     ]
 
+
 class StudioScraper(scrapy.Spider):
     """Base class for all our studio scrapers. Does some per-item field setup that is common across studios."""
 
-    #def __init__(self, *args, **kwargs):
-    #    super(StudioScraper, self).__init__(self, *args, **kwargs)
-
     _future_days = 14 # How many days of data to produce. Each iterator should check against this or self._future_horizon.
+
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'classes.scraper.pipelines.BatchSaveStudioClassPipeline': 300,
+        }
+    }
 
     @staticmethod
     def _street_style(style):
