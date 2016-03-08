@@ -12,9 +12,9 @@ curl https://bootstrap.pypa.io/get-pip.py --output $TMP_DIR/get-pip.py
 python $TMP_DIR/get-pip.py --user
 
 # For testing, just install them locally. Depends on pip being installed.
-USER_FLAG=''
+USER_FLAG='--user'
 if [ "$TRAVIS" == true ]; then
-  USER_FLAG='--user'
+  USER_FLAG=''
 fi
 pip install --upgrade $USER_FLAG -r $BASE_DIR/test-requirements.txt
 
