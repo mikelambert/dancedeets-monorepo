@@ -16,7 +16,6 @@ install:
   - npm install
   # Set up and compile our project
   - "./setup.sh"
-  - "find ."
 
 # command to run tests
 script: "./nose.sh --coverage --gae-lib-root=google_appengine"
