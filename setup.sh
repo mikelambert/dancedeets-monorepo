@@ -12,8 +12,11 @@ curl https://bootstrap.pypa.io/get-pip.py --output $TMP_DIR/get-pip.py
 python $TMP_DIR/get-pip.py --user
 
 # For testing, just install them locally. Depends on pip being installed.
-# Install jinja2 library directly, so nlp/ libraries can be used directly
-pip install --upgrade --user -r $BASE_DIR/test-requirements.txt
+USER_FLAG=''
+if [ "$TRAVIS" == true ]; then
+  USER_FLAG='--user'
+fi
+pip install --upgrade $USER_FLAG -r $BASE_DIR/test-requirements.txt
 
 pip install --upgrade -t $BASE_DIR/lib -r $BASE_DIR/setup-requirements.txt
 
