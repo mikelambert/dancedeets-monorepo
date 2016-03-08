@@ -60,7 +60,7 @@ EASY_DANCE = Name('EASY_DANCE', Any(
     u'tane?[cč][íú\w]*', # dance slovak/czech
     u'zatanč\w*', # dance czech
     u'tańe?c\w*', # dance polish/czech
-    u'danç\w*', # dance portuguese
+    u'danç\w*', # dance/dancers portuguese
     'danza\w*', # dance italian
     u'šok\w*', # dance lithuanian
     'tanz\w*', # dance german
@@ -382,7 +382,7 @@ legit_dance = [
 DANCE = Name('DANCE', Any(*(legit_dance + [x+'u' for x in legit_dance])))
 # TODO(lambert): Is this a safe one to add?
 # http://en.wikipedia.org/wiki/Slovak_declension
-# dance_keywords = dance_keywords + [x+'y' for x in dance_keywords] 
+# dance_keywords = dance_keywords + [x+'y' for x in dance_keywords]
 
 # hiphop dance. hiphop dans?
 
@@ -406,7 +406,7 @@ STREET = Name('STREET', Any(
 ))
 
 JAM = Name('JAM', Any(
-    'jams?', 
+    'jams?',
     'jamit', # finnish jams
     u'잼', # korean jam
 ))
@@ -579,7 +579,7 @@ PREPROCESS_REMOVAL = Name('PREPROCESS_REMOVAL', Any(
 # http://www.dancedeets.com/events/admin_edit?event_id=208662995897296
 # mc performances
 # beatbox performances
-# beat 
+# beat
 # 'open cyphers'
 # freestyle
 #in\Whouse  ??
@@ -656,6 +656,8 @@ BATTLE = Name('BATTLE', Any(
     'crew battle[sz]?', 'exhibition battle[sz]?',
     'battles?',
     'battlu(?:je)?', # french czech
+    'batalhas?', # portuguese battles
+    u'competiç\w+', # portuguese competitions
     u'大賽', # chinese competition
     u'比賽', # chinese battle
     u'賽', # chinese race/competition/etc
@@ -884,7 +886,7 @@ DANCE_WRONG_STYLE = Name('DANCE_WRONG_STYLE', Any(
     'indienne',
     'persiana?',
     'arabe', 'arabic', 'araba',
-    'oriental\w*', 'oriente', 
+    'oriental\w*', 'oriente',
     'cubana',
     'capoeira',
     u'カポエイラ', # japanese capoeira
