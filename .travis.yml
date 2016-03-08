@@ -1,8 +1,6 @@
 language: python
 python:
   - 2.7
-node_js:
-  - "stable"
 
 install:
   # Download the latest version of the GAE Python SDK
@@ -11,6 +9,12 @@ install:
   # This is a quick hack, necessary to get fancy_urllib working,
   # by exposing the lib/fancy_urllib/fancy_urllib/ dirctory within for use by appengine.
   - "rm -rf google_appengine/lib/fancy_urllib/__init__.py"
+  # Install latest version of node
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
+  - npm install
+  # Set up and compile our project
   - "./setup.sh"
   - "find ."
 
