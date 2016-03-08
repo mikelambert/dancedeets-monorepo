@@ -1,0 +1,270 @@
+<!doctype html>
+<html amp lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ event.info.name|e }}</title>
+    <link rel="canonical" href="http://{{ full_hostname }}/events/{{ event.info.id }}/" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="stylesheet" href="/dist-{{version}}/css/main.css" />
+
+<meta property="fb:app_id" content="{{ app_id }}"/>
+
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <style amp-custom>
+      /*TODO: add style-sheet*/
+    </style>
+    <script type="application/ld+json">
+    {#
+        //
+        // The document referenced in mainEntityOfPage should be the same as the
+        // canonical link above.
+        //
+        // Also, please be aware that some platforms that use AMP HTML have
+        // further restrictions with regards to some schema components.
+        //
+        // For example:
+        //
+        //   * The leader "image" referenced in the markup below must appear
+        //   somewhere on the AMP HTML document itself.
+        //
+        //   * The URL for that "image" must precisely match the src of the
+        //   amp-img tag.
+        //
+        //   * All marked-up URLs should be absolute.
+        //
+        //   * The "logo" dimensions must not exceed 600x60.
+    #}
+      {
+        "@context": "http://schema.org",
+        "@type": "NewsArticle",
+        "mainEntityOfPage": "http://cdn.ampproject.org/article-metadata.html",
+        "headline": "{{ event.info.name|e }}",
+        "datePublished": "1907-05-05T12:02:41Z",
+        "dateModified": "1907-05-05T12:02:41Z",
+        "description": "{{ event.info.description|e }}",
+        "author": {
+          "@type": "Person",
+          "name": "Jordan M Adler"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "DanceDeets",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "http://cdn.ampproject.org/logo.jpg",
+            "width": 600,
+            "height": 60
+          }
+        },
+        "image": {
+          "@type": "ImageObject",
+          "url": "{{ displayable_event.largest_cover.source }}",
+          "height": {{ displayable_event.largest_cover.height }},
+          "width": {{ displayable_event.largest_cover.width }}
+        }
+      }
+    </script>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+    <script async custom-element="amp-analytics"
+        src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
+    <script async custom-element="amp-iframe"
+        src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script>
+  </head>
+  <body>
+    <amp-analytics type="googleanalytics">
+      <script type="application/json">
+      {
+        "vars": {
+            "account": "UA-18831479-1"
+        },
+        "triggers": {
+          "trackPageview": {
+            "on": "visible",
+            "request": "pageview"
+          }
+        }
+      }
+      </script>
+  </amp-analytics>
+
+<!--=== Header v6 ===-->
+<nav class="header-v6 header-classic-dark header-sticky">
+    <!-- Navbar -->
+    <div class="navbar mega-menu" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="menu-container">
+                <!-- Navbar Brand -->
+                <div class="navbar-brand">
+                    <a href="/">
+                        <span class="dancedeets-logo"
+                        ><amp-img layout="fixed" width="262" height="64"
+                        class="default-logo"
+                        srcset="
+/dist-{{version}}/img/deets-head-and-title-on-black.png 1x,
+/dist-{{version}}/img/deets-head-and-title-on-black@2x.png 2x"
+                        src="/dist-{{version}}/img/deets-head-and-title-on-black.png" alt="DanceDeets"
+                        ></span>
+                    </a>
+                </div>
+                <!-- ENd Navbar Brand -->
+            </div>
+        </div>
+    </div>
+    <!-- End Navbar -->
+</nav>
+<!--=== End Header v6 ===-->
+
+<div class="body-contents margin-bottom-60">
+<div class="container">
+<div>
+
+  <div class="row">
+      <h1 class="event-page-title">{{ event.info.name }}</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-5">
+      {% if displayable_event.cover_metadata %}
+        <div class="event-flyer"><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">
+            <amp-img src="{{ displayable_event.largest_cover.source }}" layout="responsive" width="{{ displayable_event.largest_cover.width }}" height="{{ displayable_event.largest_cover.height }}">
+        </a></div>
+      {% endif %}
+
+      <ul class="fa-ul event-ul">
+      {% if displayable_event.cover_metadata %}
+        <li><i class="event-info-icon fa-li fa fa-picture-o fa-lg"></i><b><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
+      {% endif %}
+      <li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ raw_fb_event_url(event.info.id) }}">See Event on Facebook</a></b></li>
+      <li><i class="event-info-icon fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
+      {{ duration_human_format(displayable_event.start_time, end_time) }}
+      </li>
+      {% if event.info.attending_count %}
+        <li><i class="event-info-icon fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
+        {{ event.info.attending_count }} Attending
+        {%- if event.info.maybe_count -%}
+          , {{ event.info.maybe_count }} Maybe
+        {%- endif %}
+        </li>
+      {% endif %}
+      {% if displayable_event.admins %}
+        <li><i class="event-info-icon fa-li fa fa-user fa-lg"></i><b>Admins:</b><br>
+        <ul>
+        {% for admin in displayable_event.admins %}
+          <li><a class="link-event-admin" href="https://www.facebook.com/{{ admin.id }} ">{{ admin.name }}</a></li>
+        {% endfor %}
+        </ul>
+        </li>
+      {% endif %}
+      <li><i class="event-info-icon fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
+      <div>
+      {% if displayable_event.location_name %}
+        {% if event.info.venue and event.info.venue.id %}
+          <a class="link-event-venue" href="https://www.facebook.com/{{ event.info.venue.id }}">{{ displayable_event.location_name }}</a>
+        {% else %}
+          {{ displayable_event.location_name }}
+        {% endif %}
+        <br>
+      {% endif %}
+      {% if displayable_event.street_address %}
+        {{ displayable_event.street_address }}<br>
+      {% endif %}
+      {{ displayable_event.city_state_country }}<br>
+
+{{ displayable_event.location_schema_html() }}
+      </div></li>
+      </ul>
+      {# not worth showing maps embed if there is no street_address #}
+      {% if displayable_event.latitude %}
+        <p>Open in <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
+        <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">
+          <amp-img src="http://www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;size=450x450&amp;scale=2&amp;zoom=13&amp;center={{ displayable_event.latitude }},{{ displayable_event.longitude }}&amp;markers=color:blue%7C{{ displayable_event.latitude }},{{ displayable_event.longitude }}" layout="responsive" width="300" height="300">
+          </amp-img>
+        </a>
+      {% endif %}
+    </div>
+
+    {% if event.info.description %}
+    <div class="col-sm-7">
+      <h1 class="event-page-title visible-xs-block">{{ event.info.name }}</h1>
+      <div><b>Description:</b></div>
+      <span>
+        {{ event.info.description|format_html|linkify }}
+      </span>
+    </div>
+    {% endif %}
+  </div>
+
+{#
+can add these to google-maps embed:
+language= parameter
+region= paramter cctld
+#}
+
+</div>{# itemscope #}
+</div>
+
+</div>{#body#}
+
+<footer>
+    <!--=== Footer v2 ===-->
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <!-- About -->
+                <div class="col-md-4 md-margin-bottom-40">
+                    <a href="index.html"><amp-img layout="fixed" width="205" height="50" id="logo-footer" class="footer-logo" src="/dist-{{version}}/img/deets-head-and-title-on-black.png" alt=""></a>
+                    <p class="margin-bottom-20">DanceDeets is <em>the</em> source for street dance events worldwide.</p>
+                    <div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="280" data-action="like" data-show-faces="true" data-share="true"></div>
+                </div>
+                <!-- End About -->
+
+                <!-- Link List -->
+                <div class="col-md-4 md-margin-bottom-40">
+                    <div class="headline"><h2>Useful Links</h2></div>
+                    <ul class="list-unstyled link-list">
+                        <li><a href="/about">About</a><i class="fa fa-angle-right"></i></li>
+                        <li><a href="/rankings">Rankings</a><i class="fa fa-angle-right"></i></li>
+                        <li><a href="/help">Help</a><i class="fa fa-angle-right"></i></li>
+                        <li><a href="/feedback">Contact</a><i class="fa fa-angle-right"></i></li>
+                        <li><a href="/privacy">Privacy</a><i class="fa fa-angle-right"></i></li>
+                    </ul>
+                </div>
+                <!-- End Link List -->
+
+                <!-- Address -->
+                <div class="col-md-4 md-margin-bottom-40">
+                    <div class="headline"><h2>Contact Us</h2></div>
+                    <address class="md-margin-bottom-40">
+                        <i class="fa fa-globe"></i>Website: <a href="#">www.dancedeets.com</a> <br />
+                        <i class="fa fa-envelope"></i>Email: <a href="mailto:info@dancedeets.com">info@dancedeets.com</a><br />
+                        <i class="fa fa-home"></i>Or find us in the clubs of New York<br />
+                    </address>
+
+                    <!-- Social Links -->
+                    <ul class="social-icons">
+                        <li><a href="https://www.facebook.com/dancedeets" data-original-title="Facebook" class="rounded-x social_facebook"></a></li>
+                        <li><a href="https://www.twitter.com/dancedeets" data-original-title="Twitter" class="rounded-x social_twitter"></a></li>
+                        <li><a href="https://plus.google.com/+dancedeets" data-original-title="Google Plus" class="rounded-x social_googleplus"></a></li>
+                        <li><a href="https://www.instagram.com/dancedeets" data-original-title="Instagram" class="rounded-x social_instagram"></a></li>
+                    </ul>
+                    <!-- End Social Links -->
+                </div>
+                <!-- End Address -->
+            </div>
+        </div>
+    </div><!--/footer-->
+
+    <div class="copyright">
+        <div class="container">
+            <p class="text-center">
+                2016 &copy; DanceDeets. All Rights Reserved.<br/>
+            </p>
+        </div>
+    </div><!--/copyright-->
+    <!--=== End Footer v2 ===-->
+</footer>
+
+</body>
+</html>

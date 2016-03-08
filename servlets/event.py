@@ -114,7 +114,10 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['show_mobile_app_promo'] = True
         self.jinja_env.filters['make_category_link'] = lambda lst: [jinja2.Markup('<a href="/?keywords=%s">%s</a>') % (x, x) for x in lst]
 
-        self.render_template('event')
+        if self.request.get('amp'):
+            self.render_template('event_amp')
+        else:
+            self.render_template('event')
 
 
 class DisplayableEvent(object):
