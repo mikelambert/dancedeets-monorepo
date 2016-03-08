@@ -237,6 +237,7 @@ STYLE_BREAK = Name('STYLE_BREAK', Any(
     'breakeuse', # french bgirl
     u'탑락', # toprock
     u'بريك دانس', # arabic breakdance
+    u'霹靂舞', # chinese breakdance
 ))
 # Crazy polish sometimes does lockingu and lockingy. Maybe we need to do this more generally though.
 # add(STYLE_BREAK, [x+'u' for x in legit_dance))
