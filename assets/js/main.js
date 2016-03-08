@@ -24,8 +24,6 @@ var fixStickyTouch = require('./sticky-touch');
 
 var appInstallPromos = require('./app-install-promo');
 
-// TODO: From old site: jquery.lazyload@1.9.3
-
 fbSetup(window, window.fbPermissions, window.fbAppId, window.baseHostname);
 
 if (window.showSmartBanner) {
