@@ -111,12 +111,12 @@ gulp.task('pagespeed', cb =>
 );
 
 gulp.task('compile-css-js', $.shell.task([
-  'webpack --color --progress webpack.amp.config.js',
-  'webpack --color --progress webpack.config.js',
+  'webpack --color --progress --config webpack.amp.config.js',
+  'webpack --color --progress --config webpack.config.js',
 ]));
 gulp.task('watch', $.shell.task([
-  'webpack --color --progress --watch webpack.amp.config.js',
-  'webpack --color --progress --watch webpack.config.js',
+  'webpack --color --progress --watch --config webpack.amp.config.js',
+  'webpack --color --progress --watch --config webpack.config.js',
 ]));
 
 gulp.task('compile', ['compile-css-js', 'compile-images', 'compile-fonts']);
