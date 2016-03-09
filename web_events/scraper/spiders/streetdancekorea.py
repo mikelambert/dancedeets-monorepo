@@ -89,7 +89,7 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
         item = items.WebEvent()
         qs = urlparse.parse_qs(urlparse.urlparse(response.url).query)
         item['id'] = qs['seq'][0]
-        item['website'] = 'StreetDanceKorea'
+        item['website'] = self.name
         item['title'] = self._extract_text(response.xpath('.//h3'))
         image_url = response.xpath('//img[@id="imgPoster"]/@src').extract()[0]
         if not image_url:
