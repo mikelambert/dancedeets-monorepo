@@ -11,7 +11,10 @@
 
 BOT_NAME = 'DanceDeets'
 
-SPIDER_MODULES = ['classes.scraper.spiders']
+SPIDER_MODULES = [
+    'classes.scraper.spiders',
+    'web_events.scraper.spiders',
+]
 #NEWSPIDER_MODULE = 'classes.scraper.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
