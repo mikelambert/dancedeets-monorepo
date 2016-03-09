@@ -36,7 +36,10 @@ def _extract_time(m, time_default=None):
         ampm_offset = 0
     else:
         ampm_offset = 12
-    return datetime.time(int(m.group('hour')) + ampm_offset, minute)
+    hour = int(m.group('hour'))
+    if hour == 12:
+        hour = 0
+    return datetime.time(hour + ampm_offset, minute)
 
 
 def parse_times(s):
