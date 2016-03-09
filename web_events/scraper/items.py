@@ -44,6 +44,14 @@ class WebEvent(item.DictItem):
     ]
 
 
+class AddFacebookEvent(item.BaseItem):
+    def __init__(self, url):
+        self.fb_url = url
+
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__.__name__, self.fb_url)
+
+
 class WebEventScraper(scrapy.Spider):
     """Base class for all our web event scrapers. Does some per-item field setup that is common across web events."""
 
