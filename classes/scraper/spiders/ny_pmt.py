@@ -7,8 +7,8 @@ from nlp import event_classifier
 from nlp import rules
 
 
-def parse_times(time_string):
-    start_string, end_string = re.split(r'[\s\xa0]-[\s\xa0]', time_string)
+def parse_times(times):
+    start_string, end_string = times.split(' - ')
     start_time = dateparser.parse(start_string + ' pm').time()
     end_time = dateparser.parse(end_string).time()
     return start_time, end_time
@@ -65,7 +65,7 @@ class PMTHouseOfDance(items.StudioScraper):
             item['style'] = style
             item['teacher'] = row[3]
             # do we care?? row[4]
-            start_time, end_time = parse_times(row[1])
+            start_time, end_time = parse_times(self._cleanup(row[1]))
             item['start_time'] = datetime.datetime.combine(date, start_time)
             item['end_time'] = datetime.datetime.combine(date, end_time)
             for new_item in self._repeated_items_iterator(item):
