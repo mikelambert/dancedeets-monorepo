@@ -1,11 +1,13 @@
 # -*-*- encoding: utf-8 -*-*-
 
+import datetime
 import logging
 import re
+import urllib
+import urlparse
 
 import scrapy
 
-import urlparse
 from util import korean_dates
 from .. import items
 
@@ -25,8 +27,11 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
     allowed_domains = ['www.streetdancekorea.com']
 
     def start_requests(self):
-        for i in range(96, 163):
-            yield scrapy.Request('http://www.streetdancekorea.com/Event/View.aspx?seq=%s&bid=Event' % i)
+        today = datetime.date.today()
+        # Query for next six months of events
+        for i in range(6):
+            d = today.replace(month=today.month + i)
+            yield scrapy.Request('http://www.streetdancekorea.com/Event/MainListGetMore.aspx?page=1&bid=Event&ge=&et=&od=&kw=&year=%s&month=%s' % (d.year, d.month))
 
     def _validate(self, split_on_br_nodes):
         """
@@ -63,6 +68,24 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
         )
 
     def parse(self, response):
+        if 'MainListGetMore.aspx' in response.url:
+            return self.parseEventList(response)
+        elif 'View.aspx' in response.url:
+            return self.parseEvent(response)
+
+    def parseEventList(self, response):
+        event_ids = re.findall(r"openEventView\('(\d+)'\)", response.body)
+        for i in event_ids:
+            yield scrapy.Request('http://www.streetdancekorea.com/Event/View.aspx?seq=%s&bid=Event' % i)
+        # As long as we found some events, keep fetching more pages of results
+        if event_ids:
+            qs = urlparse.parse_qs(urlparse.urlparse(response.url).query)
+            qs = dict((k, v[0]) for (k, v) in qs.iteritems())
+            qs['page'] = int(qs['page']) + 1
+            url = 'http://www.streetdancekorea.com/Event/MainListGetMore.aspx'
+            yield scrapy.Request('%s?%s' % (url, urllib.urlencode(qs)))
+
+    def parseEvent(self, response):
         item = items.WebEvent()
         qs = urlparse.parse_qs(urlparse.urlparse(response.url).query)
         item['id'] = qs['seq'][0]
