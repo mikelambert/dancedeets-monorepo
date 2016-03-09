@@ -7,7 +7,7 @@ import urlparse
 import scrapy
 from scrapy.selector import Selector
 
-from loc import places
+from loc import gmaps
 from .. import items
 
 
@@ -103,9 +103,9 @@ class DewsScraper(items.WebEventScraper):
         item['location_name'] = _get('location')
 
         # TODO: needs caching
-        results = places.fetch_raw(query='%s, japan' % item['location_name'])
+        results = gmaps.fetch_places_raw(query='%s, japan' % item['location_name'])
         if results['status'] == 'ZERO_RESULTS':
-            results = places.fetch_raw(query=item['location_name'])
+            results = gmaps.fetch_places_raw(query=item['location_name'])
 
         item['location_address'] = results['results'][0]['formatted_address']
         latlng = results['results'][0]['geometry']['location']
