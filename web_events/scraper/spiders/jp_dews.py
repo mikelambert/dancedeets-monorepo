@@ -7,6 +7,7 @@ import urlparse
 import scrapy
 from scrapy.selector import Selector
 
+from loc import places
 from .. import items
 
 
@@ -86,8 +87,8 @@ class DewsScraper(items.WebEventScraper):
 
         def _definition(term):
             return self._extract_text(response.xpath(u'//dt[contains(., "%s")]/following-sibling::dd' % term))
+
         item = items.WebEvent()
-        print response.url
         item['id'] = re.search(r'/event/(\w+)\.html', response.url).group(1)
         item['website'] = self.name
         item['title'] = _get('name')
@@ -100,6 +101,15 @@ class DewsScraper(items.WebEventScraper):
         item['starttime'], item['endtime'] = parse_date_times(_get('startDate'), _definition(u'時間'))
 
         item['location_name'] = _get('location')
-        item['location_address'] = None
+
+        # TODO: needs caching
+        results = places.fetch_raw(query='%s, japan' % item['location_name'])
+        if results['status'] == 'ZERO_RESULTS':
+            results = places.fetch_raw(query=item['location_name'])
+
+        item['location_address'] = results['results'][0]['formatted_address']
+        latlng = results['results'][0]['geometry']['location']
+        item['latitude'] = latlng['lat']
+        item['longitude'] = latlng['lng']
 
         yield item
