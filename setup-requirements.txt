@@ -16,6 +16,7 @@ git+https://github.com/wtforms/wtforms-appengine
 # ScrapingHub API
 scrapinghub
 scrapy
+html2text
 
 # MindBody
 suds
