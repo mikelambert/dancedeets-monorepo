@@ -119,7 +119,7 @@ class Search(object):
     def _get_query_string(self):
         clauses = []
         if self.query.bounds:
-            # We try to keep searches as simple as possible, 
+            # We try to keep searches as simple as possible,
             # using just AND queries on latitude/longitude.
             # But for stuff crossing +/-180 degrees,
             # we need to do an OR longitude query on each side.
@@ -226,7 +226,7 @@ class Search(object):
             result = search_base.SearchResult(display_event.fb_event_id, display_event.data, db_event)
             search_results.append(result)
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
-    
+
         search_results = self._deduped_results(search_results)
 
         # Now sort and return the results
@@ -268,7 +268,9 @@ class EventsIndex(index.BaseIndex):
                 search.TextField(name='country', value=db_event.country),
                 # Use NumberField instead of DateField since we care about hours/minutes/seconds,
                 # which are otherwise discarded with a DateField.
-                search.NumberField(name='creation_time', value=int(time.mktime(db_event.creation_time.timetuple()))),
+                # We want this to know what events have been added in the last 24 hours,
+                # so we can promote them to users when we send out daily notifications.
+                search.NumberField(name='creation_time', value=int(time.mktime(db_event.creation_time.timetuple())) if db_event.creation_time else 0),
             ],
             #language=XX, # We have no good language detection
             rank=int(time.mktime(db_event.start_time.timetuple())),
