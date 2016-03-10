@@ -12,7 +12,7 @@ from .. import items
 
 
 date_re = ur'(\d\d\d\d)(?:年|\s*[/.]|)\s*(\d\d?)(?:月|\s*[/.]|)\s*(\d\d?)日?'
-open_time_re = ur'OPEN\W+\b(\d+):(\d+)\b|(\d+):(\d+)\W+OPEN'
+open_time_re = ur'OPEN\W+\b(\d+):(\d+)\b|(\d+):(\d+)\W*OPEN'
 close_time_re = ur'CLOSE\W+\b(\d+):(\d+)\b'
 open_close_time_re = ur'(\d+):(\d+)～(\d+):(\d+)'
 
@@ -31,6 +31,10 @@ def parse_date_times(date_str):
     open_match = re.search(open_time_re, date_str)
     if open_match:
         open_time = _intall(open_match.groups())
+        if open_time[0] is not None:
+            open_time = open_time[0:2]
+        else:
+            open_time = open_time[2:4]
         close_match = re.search(close_time_re, date_str)
         if close_match:
             close_time = _intall(close_match.groups())
@@ -80,6 +84,17 @@ tests = {
     (datetime.datetime(2016, 3, 5, 14, 30), None),
     u"""2016年3月5日(土)""":
     (datetime.date(2016, 3, 5), None),
+    u"""2016 3/13(sun）
+    OPEN 15:00 START 15:30""":
+    (datetime.datetime(2016, 3, 13, 15), None),
+    u"""2016/4/2(土)
+    18:00open/18:30star""":
+    (datetime.datetime(2016, 4, 2, 18), None),
+    u"""2016.04.23 (土)
+    OPEN：14:00
+    START：14:45
+    CLOSE予定：20:00""":
+    (datetime.datetime(2016, 4, 23, 14), datetime.datetime(2016, 4, 23, 20)),
 }
 
 for test, expected_result in tests.iteritems():
