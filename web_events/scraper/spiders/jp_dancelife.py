@@ -4,7 +4,6 @@ import datetime
 import re
 import urlparse
 
-import html2text
 import scrapy
 
 from loc import japanese_addresses
