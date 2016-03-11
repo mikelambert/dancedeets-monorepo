@@ -1,5 +1,6 @@
 
 import datetime
+import unittest
 
 from web_events.scraper.spiders import jp_dancelife
 
@@ -38,10 +39,9 @@ tests = {
     (datetime.datetime(2016, 4, 23, 14), datetime.datetime(2016, 4, 23, 20)),
 }
 
-for test, expected_result in tests.iteritems():
-    result = jp_dancelife.parse_date_times(test)
-    if result != expected_result:
-        print "ERROR:"
-        print test
-        print result
-        print expected_result
+
+class TestParseFbTimestamp(unittest.TestCase):
+    def runTest(self):
+        for test, expected_result in tests.iteritems():
+            result = jp_dancelife.parse_date_times(test)
+            self.assertEqual(result, expected_result)
