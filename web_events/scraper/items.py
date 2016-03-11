@@ -10,6 +10,7 @@ import datetime
 import logging
 import re
 
+import html2text
 import scrapy
 from scrapy import item
 
@@ -52,6 +53,20 @@ class AddFacebookEvent(item.BaseItem):
         return '%s(%r)' % (self.__class__.__name__, self.fb_url)
 
 
+def _extract_text(cell):
+    return _format_text(' '.join(cell.extract()))
+
+
+def _format_text(html):
+    text = re.sub(' +\n', '\n', html2text.html2text(html).replace('\n\n', '\n')).strip()
+    # If we have too many header lines, strip them out (bad html formatter that does <h1> on everything)
+    lines = text.count('\n')
+    header_lines = len(re.findall(r'^# ', text, re.MULTILINE))
+    if header_lines > lines / 8:
+        text = re.sub('\n# ', '', text)
+    return text
+
+
 class WebEventScraper(scrapy.Spider):
     """Base class for all our web event scrapers. Does some per-item field setup that is common across web events."""
 
@@ -65,7 +80,7 @@ class WebEventScraper(scrapy.Spider):
 
     @staticmethod
     def _street_style(style):
-        # Use our NLP event classification keywords to figure out which BDC classes to keep
+        # Use our NLP event classifition keywords to figure out which BDC classes to keep
         processor = event_classifier.StringProcessor(style)
         # Get rid of "Ballet with Pop Music"
         processor.real_tokenize(keywords.PREPROCESS_REMOVAL)
@@ -78,7 +93,7 @@ class WebEventScraper(scrapy.Spider):
 
     @staticmethod
     def _extract_text(cell):
-        return ' '.join(x.strip() for x in cell.xpath('.//text()').extract() if x.strip()).strip()
+        return _extract_text(cell)
 
     def _get_recurrence(self, studio_class):
         """Returns a recurrence_id using fields that remain stable week-to-week,

@@ -12,18 +12,16 @@ from .. import items
 
 
 date_re = ur'(\d\d\d\d)(?:年|\s*[/.]|)\s*(\d\d?)(?:月|\s*[/.]|)\s*(\d\d?)日?'
-open_time_re = ur'OPEN\W+\b(\d+):(\d+)\b|(\d+):(\d+)\W*OPEN'
-close_time_re = ur'CLOSE\W+\b(\d+):(\d+)\b'
-open_close_time_re = ur'(\d+):(\d+)～(\d+):(\d+)'
+open_time_re = ur'OPEN\W+\b(\d\d?):(\d\d)\b|(\d\d?):(\d\d)\W*OPEN|(\d\d?):(\d\d)\s*～'
+close_time_re = ur'CLOSE(?:\s*予定)?\W+\b(\d+):(\d\d)\b'
+open_close_time_re = ur'(\d\d?):(\d\d)\s*～\s*(\d\d?):(\d\d)'
 
 
 def _intall(lst):
     return [None if x is None else int(x) for x in lst]
 
 
-def parse_date_times(date_str):
-    date_str = date_str.upper()
-    start_date = datetime.date(*_intall(re.search(date_re, date_str).groups()))
+def parse_date_times(start_date, date_str):
 
     open_time = None
     close_time = None
@@ -31,10 +29,9 @@ def parse_date_times(date_str):
     open_match = re.search(open_time_re, date_str)
     if open_match:
         open_time = _intall(open_match.groups())
-        if open_time[0] is not None:
-            open_time = open_time[0:2]
-        else:
-            open_time = open_time[2:4]
+        # Keep trimming off groups of 2 until we find valid values
+        while open_time[0] is None:
+            open_time = open_time[2:]
         close_match = re.search(close_time_re, date_str)
         if close_match:
             close_time = _intall(close_match.groups())
@@ -61,53 +58,8 @@ def parse_date_times(date_str):
     return start_datetime, end_datetime
 
 
-# TODO: move to test file
-tests = {
-    u"""2016年3月25日（金）
-    OPEN 12:00
-    CLOSE 19:00""":
-    (datetime.datetime(2016, 3, 25, 12), datetime.datetime(2016, 3, 25, 19)),
-    u"""2016/3/27（日曜）
-    12:00～22:00""":
-    (datetime.datetime(2016, 3, 27, 12), datetime.datetime(2016, 3, 27, 22)),
-    u"""2016/3/26[SAT]
-    13:00～20:30""":
-    (datetime.datetime(2016, 3, 26, 13), datetime.datetime(2016, 3, 26, 20, 30)),
-    u"""2016年3月5日(土)
-    OPEN 12:00 START 13:00""":
-    (datetime.datetime(2016, 3, 5, 12), None),
-    # http://www.tokyo-dancelife.com/event/2016_03/29491.php
-    u"""2016年3月5日(土)
-    ...and later in the body/description:
-    【日本代表決定戦】
-    OPEN 14:30 START 15:00""":
-    (datetime.datetime(2016, 3, 5, 14, 30), None),
-    u"""2016年3月5日(土)""":
-    (datetime.date(2016, 3, 5), None),
-    u"""2016 3/13(sun）
-    OPEN 15:00 START 15:30""":
-    (datetime.datetime(2016, 3, 13, 15), None),
-    u"""2016/4/2(土)
-    18:00open/18:30star""":
-    (datetime.datetime(2016, 4, 2, 18), None),
-    u"""2016.04.23 (土)
-    OPEN：14:00
-    START：14:45
-    CLOSE予定：20:00""":
-    (datetime.datetime(2016, 4, 23, 14), datetime.datetime(2016, 4, 23, 20)),
-}
-
-for test, expected_result in tests.iteritems():
-    result = parse_date_times(test)
-    if result != expected_result:
-        print "ERROR:"
-        print test
-        print result
-        print expected_result
-
-
 def html_to_newlines(html):
-    return html2text.html2text(html).replace('\n\n', '\n')
+    return items._format_text(html)
 
 
 class TokyoDanceLifeScraper(items.WebEventScraper):
@@ -124,7 +76,7 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
             return self.parseEvent(response)
 
     def parseList(self, response):
-        PAST_EVENTS = False
+        PAST_EVENTS = True
         if PAST_EVENTS:
             monthly_page_urls = response.css('div#pastevent-area').xpath('.//a/@href').extract()
             for url in monthly_page_urls:
@@ -133,6 +85,14 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
         event_urls = response.xpath('//div[@class="name"]/a/@href').extract()
         for url in event_urls:
             yield scrapy.Request(urlparse.urljoin(response.url, url))
+
+    def parseDateTimes(self, response):
+        day_text = self._extract_text(response.css('div.day'))
+        month, day = re.search(r'(\d+)\.(\d+)', day_text).groups()
+        year = re.search(r'/(\d\d\d\d)_\d+/', response.url).group(1)
+        start_date = datetime.date(int(year), int(month), int(day))
+
+        return parse_date_times(start_date, self._extract_text(response.xpath('//dl')))
 
     def parseEvent(self, response):
         print response.url
@@ -168,45 +128,37 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
                 if not found_term:
                     return None
                 value = html_to_newlines(found_term[0]).strip()
-                self.dl_text = self.dl_text.replace(self._definition(term).extract()[0], "")
-                self.dl_text = self.dl_text.replace(self._term(term).extract()[0], "")
                 return value
 
             def get_remaining_dl(self):
                 return self.dl_text
 
         dl = Definitions(response.xpath('//dl'))
-        start_date = dl.extract_definition(u'日程')
         venue_address = dl.extract_definition(u'場所')
 
         if venue_address:
+            from loc import japanese_addresses
+            print ''.join( ['ZZZ %s' % x.encode('utf-8') for x in japanese_addresses.find_addresses(venue_address)] )
             venue_components = [x.strip() for x in venue_address.split('\n')]
             if len(venue_components) == 2:
                 item['location_name'], item['location_address'] = venue_components
             else:
                 item['location_name'] = venue_components[0]
-                results = gmaps.fetch_places_raw(query='%s, japan' % item['location_name'])
+                results = {'status': 'FAIL'}
+                #results = gmaps.fetch_places_raw(query='%s, japan' % item['location_name'])
                 if results['status'] == 'ZERO_RESULTS':
                     results = gmaps.fetch_places_raw(query=item['location_name'])
-                if results['status'] != 'ZERO_RESULTS':
+                if results['status'] == 'OK':
                     item['location_address'] = results['results'][0]['formatted_address']
                     latlng = results['results'][0]['geometry']['location']
                     item['latitude'] = latlng['lat']
                     item['longitude'] = latlng['lng']
 
-        main_description = dl.extract_definition(u'詳細')
-        description = main_description
         # Because dt otherwise remains flush up against the end of the previous dd, we insert manual breaks.
-        description += html_to_newlines(dl.get_remaining_dl().replace('<dt>', '<dt><br><br>'))
-        item['description'] = description
+        item['description'] = html_to_newlines(dl.get_remaining_dl().replace('<dt>', '<dt><br><br>'))
 
-        if not start_date:
-            raise ValueError()
+        item['starttime'], item['endtime'] = self.parseDateTimes(response)
 
-        try:
-            item['starttime'], item['endtime'] = parse_date_times(start_date)
-        except:
-            item['starttime'], item['endtime'] = parse_date_times(start_date + '\n\n' + description)
         #item['latitude'] = latlng['lat']
         #item['longitude'] = latlng['lng']
 
