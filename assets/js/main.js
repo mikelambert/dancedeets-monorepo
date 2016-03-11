@@ -1,6 +1,6 @@
 'use strict';
 
-if (window.prod_mode) {
+if (window.prodMode) {
   require('trackjs');
 }
 
