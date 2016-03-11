@@ -7,6 +7,7 @@ import urlparse
 import html2text
 import scrapy
 
+from loc import japanese_addresses
 from loc import gmaps
 from .. import items
 
@@ -62,6 +63,22 @@ def html_to_newlines(html):
     return items._format_text(html)
 
 
+def _get_line_after(text, regex):
+    desc_lines = text.split('\n')
+    return_next_line = False
+    for line in desc_lines:
+        if return_next_line:
+            if line:
+                return line
+        if re.search(regex, line):
+            after_keyword = re.split(regex, line, 1)[1]
+            # If it's a "keyword: something"...return the same line
+            if len(after_keyword) > 4:
+                return after_keyword.replace(u'：', '').strip()
+            return_next_line = True
+    return None
+
+
 class TokyoDanceLifeScraper(items.WebEventScraper):
     name = 'TokyoDanceLife'
     allowed_domains = ['www.tokyo-dancelife.com']
@@ -109,53 +126,30 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
             item['photo'] = None
 
         category = response.css('div.event-detail-koumoku').xpath('./img/@alt').extract()[0]
-        print category.encode('utf-8')
-        #TODO!!!
-
-        class Definitions(object):
-            def __init__(self, dl):
-                self.dl = dl
-                self.dl_text = dl.extract()[0]
-
-            def _term(self, term):
-                return self.dl.xpath(u'//dt[contains(., "%s")]' % term)
-
-            def _definition(self, term):
-                return self.dl.xpath(u'//dt[contains(., "%s")]/following-sibling::dd[1]' % term)
-
-            def extract_definition(self, term):
-                found_term = self._definition(term).extract()
-                if not found_term:
-                    return None
-                value = html_to_newlines(found_term[0]).strip()
-                return value
-
-            def get_remaining_dl(self):
-                return self.dl_text
-
-        dl = Definitions(response.xpath('//dl'))
-        venue_address = dl.extract_definition(u'場所')
-
-        if venue_address:
-            from loc import japanese_addresses
-            print ''.join( ['ZZZ %s' % x.encode('utf-8') for x in japanese_addresses.find_addresses(venue_address)] )
-            venue_components = [x.strip() for x in venue_address.split('\n')]
-            if len(venue_components) == 2:
-                item['location_name'], item['location_address'] = venue_components
-            else:
-                item['location_name'] = venue_components[0]
-                results = {'status': 'FAIL'}
-                #results = gmaps.fetch_places_raw(query='%s, japan' % item['location_name'])
-                if results['status'] == 'ZERO_RESULTS':
-                    results = gmaps.fetch_places_raw(query=item['location_name'])
-                if results['status'] == 'OK':
-                    item['location_address'] = results['results'][0]['formatted_address']
-                    latlng = results['results'][0]['geometry']['location']
-                    item['latitude'] = latlng['lat']
-                    item['longitude'] = latlng['lng']
-
         # Because dt otherwise remains flush up against the end of the previous dd, we insert manual breaks.
-        item['description'] = html_to_newlines(dl.get_remaining_dl().replace('<dt>', '<dt><br><br>'))
+        full_description = html_to_newlines(response.xpath('//dl').extract()[0].replace('<dt>', '<dt><br><br>'))
+        item['description'] = '%s\n\n%s' % (category, full_description)
+
+        jp_addresses = japanese_addresses.find_addresses(item['description'])
+        if jp_addresses:
+            item['location_address'] = jp_addresses[0]
+
+        venue_address = _get_line_after(item['description'], ur'場所|会場')
+        if venue_address:
+            # remove markdown bolding
+            item['location_name'] = venue_address.replace('**', '')
+
+        if 'location_name' in item and 'location_address' not in item:
+            # Let's look it up on Google
+            results = {'status': 'FAIL'}
+            #results = gmaps.fetch_places_raw(query='%s, japan' % item['location_name'])
+            if results['status'] == 'ZERO_RESULTS':
+                results = gmaps.fetch_places_raw(query=item['location_name'])
+            if results['status'] == 'OK':
+                item['location_address'] = results['results'][0]['formatted_address']
+                latlng = results['results'][0]['geometry']['location']
+                item['latitude'] = latlng['lat']
+                item['longitude'] = latlng['lng']
 
         item['starttime'], item['endtime'] = self.parseDateTimes(response)
 
