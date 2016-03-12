@@ -11,7 +11,6 @@ from loc import gmaps
 from .. import items
 
 
-date_re = ur'(\d\d\d\d)(?:年|\s*[/.]|)\s*(\d\d?)(?:月|\s*[/.]|)\s*(\d\d?)日?'
 open_time_re = ur'OPEN\W+\b(\d\d?):(\d\d)\b|(\d\d?):(\d\d)\W*OPEN|(\d\d?):(\d\d)\s*～'
 close_time_re = ur'CLOSE(?:\s*予定)?\W+\b(\d+):(\d\d)\b'
 open_close_time_re = ur'(\d\d?):(\d\d)\s*～\s*(\d\d?):(\d\d)'
@@ -22,7 +21,7 @@ def _intall(lst):
 
 
 def parse_date_times(start_date, date_str):
-
+    date_str = date_str.upper()
     open_time = None
     close_time = None
 
