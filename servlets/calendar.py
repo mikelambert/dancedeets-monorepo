@@ -7,9 +7,11 @@ from search import search
 from search import search_base
 from util import urls
 
+
 class LoginIfUnspecified(object):
     def requires_login(self):
         return False
+
 
 @app.route('/calendar/feed')
 class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
@@ -48,5 +50,4 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
                 url=urls.fb_event_url(result.fb_event_id),
                 allDay=all_day,
             ))
-        self.write_json_response(json_results)    
-
+        self.write_json_response(json_results)
