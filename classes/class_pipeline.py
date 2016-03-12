@@ -17,7 +17,10 @@ from util import fixed_pipelines
 
 
 def get_spiders():
-    return ['PMT', 'Evolution', 'Peridance', 'BDC', 'NeighborhoodStudio', 'Millenium', 'EDGE', 'DebbieReynolds', 'EXPG', 'Boogiezone', 'IDA']
+    return [
+        'PMT', 'Evolution', 'Peridance', 'BDC', # NY
+        'NeighborhoodStudio', 'Millenium', 'EDGE', 'DebbieReynolds', 'EXPG', 'Boogiezone', 'IDA', 'mL', 'Quest', # LA
+    ]
     # This depends on Twisted, which depends on zope.interface and lxml. And that whole ball of wax fails when run in the appengine dev sandbox.
     # We can't import any of classes/scrapers/ (since it all ultimately depends on scrapy), so there's no great way to get a list of classes.
     # Instead, class_pipeline_test does depend on it safely within nosetests, and verifies the above list matches what we get from scrapy's API)
