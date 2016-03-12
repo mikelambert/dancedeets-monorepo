@@ -7,3 +7,7 @@ class Quest(browser_scraper.MindBodyBrowserScraper):
     address = '11976 Artesia Blvd, Artesia CA'
 
     mindbody_studio_id = 110557
+    mindbody_tab_id = 7
+
+    def _valid_item(self, item, row):
+        return self._street_style(item['style'])

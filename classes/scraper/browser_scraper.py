@@ -31,6 +31,7 @@ class MindBodyBrowserScraper(items.StudioScraper):
     allowed_domains = ['clients.mindbodyonline.com']
 
     mindbody_studio_id = 0
+    mindbody_tab_id = 102
 
     # So we can log in to our scrapinghub splash instance
     http_user = keys.get('scrapinghub_key')
@@ -59,12 +60,12 @@ class MindBodyBrowserScraper(items.StudioScraper):
             -- We need to click on the "CLASSES" tab.
             -- Unfortunately, attempts to call click() or evaljs onclick don't seem to work...
             -- So instead load the tab's URL directly in our main browser window
-            splash:go("https://clients.mindbodyonline.com/classic/mainclass?fl=true&tabID=102")
+            splash:go("https://clients.mindbodyonline.com/classic/mainclass?fl=true&tabID=%s")
             splash:wait(1)
-            %s
+            %%s
             return splash:evaljs("document.getElementById('classSchedule-mainTable').outerHTML")
         end
-        """
+        """ % self.mindbody_tab_id
 
         # default week
         yield scrapy.Request(
