@@ -1,10 +1,8 @@
 import dateparser
 import datetime
 import re
-from w3lib import http
 
 import scrapy
-from scrapy.http import headers
 import scrapyjs
 
 import keys
@@ -18,7 +16,9 @@ SERVER_URL = 'https://b54f18og-splash.scrapinghub.com'
 # http://splash.readthedocs.org/en/latest/install.html
 # For Mac OS X, I ran Docker Quickstart Terminal, and then ran the command from the docs:
 # $ docker run -p 5023:5023 -p 8050:8050 -p 8051:8051 scrapinghub/splash
-# Then configure the SERVER_URL to point at your local instance.
+# Then configure the SERVER_URL to point at your local instance,
+# in my case: 192.168.99.100
+# SERVER_URL = 'http://192.168.99.100:8050'
 
 
 def adjust_caps(s):
@@ -61,25 +61,42 @@ class MindBodyBrowserScraper(items.StudioScraper):
             -- So instead load the tab's URL directly in our main browser window
             splash:go("https://clients.mindbodyonline.com/classic/mainclass?fl=true&tabID=102")
             splash:wait(1)
+            %s
             return splash:evaljs("document.getElementById('classSchedule-mainTable').outerHTML")
         end
         """
 
+        # default week
         yield scrapy.Request(
             'https://clients.mindbodyonline.com/ASP/home.asp?studioid=%s' % self.mindbody_studio_id,
             meta={
                 'splash': {
                     'args': {
-                        'lua_source': script,
+                        'lua_source': script % "",
                     },
                     'endpoint': 'execute',
                     # optional parameters
                     'slot_policy': scrapyjs.SlotPolicy.PER_DOMAIN,
                 }
             },
-            #headers=headers.Headers({
-            #    'Authorization': http.basic_auth_header(keys.get('scrapinghub_key'), ''),
-            #})
+        )
+
+        # week 2!
+        yield scrapy.Request(
+            'https://clients.mindbodyonline.com/ASP/home.asp?studioid=%s' % self.mindbody_studio_id,
+            meta={
+                'splash': {
+                    'args': {
+                        'lua_source': script % """
+                            splash:runjs("document.getElementById('week-arrow-r').click()")
+                            splash:wait(3)
+                        """,
+                    },
+                    'endpoint': 'execute',
+                    # optional parameters
+                    'slot_policy': scrapyjs.SlotPolicy.PER_DOMAIN,
+                }
+            },
         )
 
     def _valid_item(self, item, row):
