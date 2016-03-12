@@ -23,6 +23,7 @@ TIME_LIST = [TIME_PAST, TIME_ONGOING, TIME_UPCOMING, TIME_ALL_FUTURE]
 
 CATEGORY_LOOKUP = dict([(x.index_name, x.public_name) for x in styles.STYLES + event_types.EVENT_TYPES])
 
+
 def humanize_categories(categories):
     return [CATEGORY_LOOKUP[x] for x in categories]
 
@@ -33,6 +34,7 @@ def no_wiki_or_html(form, field):
     if '</a>' in field.data:
         raise wtforms.ValidationError('Cannot search with html markup')
 
+
 def valid_query(form, field):
     keywords = _get_parsed_keywords(field.data)
     try:
@@ -40,28 +42,32 @@ def valid_query(form, field):
     except search.QueryError as e:
         raise wtforms.ValidationError(unicode(e))
 
+
 def geocodable_location(form, field):
     if field.data:
         geocode = gmaps_api.get_geocode(address=field.data)
         if not geocode:
             raise wtforms.ValidationError("Did not understand location: %s" % field.data)
 
+
 def _get_parsed_keywords(keywords):
-    cleaned_keywords = re.sub(r'[<=>:(),]', ' ', keywords).replace(' - ',' ')
+    cleaned_keywords = re.sub(r'[<=>:(),]', ' ', keywords).replace(' - ', ' ')
     unquoted_quoted_keywords = cleaned_keywords.split('"')
     for i in range(0, len(unquoted_quoted_keywords), 2):
         unquoted_quoted_keywords[i] = categories.format_as_search_query(unquoted_quoted_keywords[i])
     reconstructed_keywords = '"'.join(unquoted_quoted_keywords).strip()
     return reconstructed_keywords
 
+
 class SearchException(Exception):
     pass
+
 
 class SearchForm(wtforms.Form):
     location = wtforms.StringField(default='', validators=[no_wiki_or_html, geocodable_location])
     keywords = wtforms.StringField(default='', validators=[no_wiki_or_html, valid_query])
     distance = wtforms.IntegerField(default=50)
-    distance_units  = wtforms.SelectField(choices=[('miles', 'Miles'), ('km', 'KM')], default='km')
+    distance_units = wtforms.SelectField(choices=[('miles', 'Miles'), ('km', 'KM')], default='km')
     min_attendees = wtforms.IntegerField(default=0)
     time_period = wtforms.SelectField(choices=[(x, x) for x in TIME_LIST], default=TIME_ALL_FUTURE)
     deb = wtforms.StringField(default='')
@@ -100,13 +106,6 @@ class SearchForm(wtforms.Form):
                 self.start.errors.append('start must be less than end')
                 self.end.errors.append('start must be less than end')
                 success = False
-        if self.time_period.data:
-            if self.start.data:
-                self.start.errors.append('start cannot be specified if using time_period')
-                success = False
-            if self.end.data:
-                self.end.errors.append('end cannot be specified if using time_period')
-                success = False
         return success
 
     def get_bounds(self):
@@ -126,6 +125,7 @@ class SearchForm(wtforms.Form):
         else:
             query = SearchQuery(time_period=self.time_period.data, **common_fields)
         return query
+
 
 class HtmlSearchForm(SearchForm):
     def __init__(self, formdata, data=None):
@@ -147,6 +147,7 @@ class SearchQuery(object):
         self.end_date = end_date
         self.bounds = bounds
         self.keywords = keywords
+
 
 class SearchResult(object):
     def __init__(self, fb_event_id, display_event_dict, db_event=None):
@@ -175,6 +176,7 @@ class SearchResult(object):
     fake_end_time = property(lambda x: dates.faked_end_time(x.start_time, x.end_time))
 
     categories = property(lambda x: humanize_categories(x.data.get('categories', [])))
+
     def extended_categories(self):
         """Rewrites hiphop as streetjazz and jazzfunk sometimes when appropriate."""
         categories = list(self.categories)
