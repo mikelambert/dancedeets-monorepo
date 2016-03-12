@@ -27,6 +27,9 @@ pip install --upgrade $USER_FLAG -r $BASE_DIR/test-requirements.txt
 echo "Installing production libraries"
 pip install --upgrade -t $BASE_DIR/lib -r $BASE_DIR/setup-requirements.txt
 
+# So we can import zope.interface
+touch lib/zope/__init__.py
+
 # TODO: install node
 # TODO: install npm?
 
