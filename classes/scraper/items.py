@@ -73,7 +73,7 @@ class StudioScraper(scrapy.Spider):
 
     @staticmethod
     def _extract_text(cell):
-        return ' '.join(x.strip() for x in cell.xpath('.//text()').extract() if x.strip()).strip()
+        return StudioScraper._cleanup(' '.join(x.strip() for x in cell.xpath('.//text()').extract() if x.strip()).strip())
 
     def parse_classes(self, response):
         raise NotImplementedError()
@@ -178,5 +178,4 @@ class HealCodeScraper(StudioScraper):
                 item['teacher'] = self._extract_text(row.css('span.trainer'))
 
                 if self._valid_item(item, row):
-                    for new_item in self._repeated_items_iterator(item):
-                        yield new_item
+                    yield item
