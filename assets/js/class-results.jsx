@@ -163,15 +163,6 @@ var SearchBar = React.createClass({
     );
   },
   render: function() {
-    var missingDiv = null;
-    if (this.props.location === 'Los Angeles, CA') {
-      missingDiv = (
-        <div><i>Currently Missing:{' '}
-          <a href="https://clients.mindbodyonline.com/classic/home?studioid=133521">mL</a>,{' '}
-          <a href="https://clients.mindbodyonline.com/classic/home?studioid=110557">Quest Studio</a>
-        </i></div>
-      );
-    }
     return (
       <form>
         <div>
@@ -192,7 +183,6 @@ var SearchBar = React.createClass({
             onChange={this.onChange}
           />
         </div>
-        {missingDiv}
         <div>
           Teacher:{' '}
           <input
