@@ -9,7 +9,7 @@ from scrapy.selector import Selector
 
 from loc import gmaps
 from .. import items
-
+from .. import jp_spider
 
 date_re = ur'(\d+)年\s*(\d+)月\s*(\d+)日'
 # We separate these so we can handle "OPEN : 12:00 / 14:30 / CLOSE : 14:30 / 16:00"
@@ -17,21 +17,17 @@ open_time_re = ur'OPEN : (\d+):(\d+) ' # first open time
 close_time_re = ur'CLOSE : .*\b(\d+):(\d+)\b' # last close time
 
 
-def _intall(lst):
-    return [None if x is None else int(x) for x in lst]
-
-
 def parse_date_times(date_str, time_str):
-    start_date = datetime.date(*_intall(re.search(date_re, date_str).groups()))
+    start_date = datetime.date(*jp_spider._intall(re.search(date_re, date_str).groups()))
     if time_str:
-        open_time = _intall(re.search(open_time_re, time_str).groups())
+        open_time = jp_spider._intall(re.search(open_time_re, time_str).groups())
 
         # We use timedelta instead of time, so that we can handle hours=24 or hours=25 as is sometimes used in Japan
         start_timedelta = datetime.timedelta(hours=open_time[0], minutes=open_time[1])
         start_datetime = datetime.datetime.combine(start_date, datetime.time()) + start_timedelta
         close_match = re.search(close_time_re, time_str)
         if close_match:
-            close_time = _intall(close_match.groups())
+            close_time = jp_spider._intall(close_match.groups())
             end_timedelta = datetime.timedelta(hours=close_time[0], minutes=close_time[1])
             end_datetime = datetime.datetime.combine(start_date, datetime.time()) + end_timedelta
             if end_datetime < start_datetime:

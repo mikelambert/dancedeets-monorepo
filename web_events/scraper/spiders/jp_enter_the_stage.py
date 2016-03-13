@@ -7,7 +7,7 @@ import urlparse
 import scrapy
 
 from .. import items
-
+from .. import jp_spider
 
 time_re = ur'(\d+)時(\d+)分'
 date_time_re = ur'(\d+)年(\d+)月(\d+)日 %s' % time_re
@@ -24,15 +24,15 @@ def parse_times(s):
     start_match = re.match(date_time_re, start_str)
     if not start_match:
         raise ValueError("Could not parse start time: %s" % start_str)
-    start_datetime = datetime.datetime(*_intall(start_match.groups()))
+    start_datetime = datetime.datetime(*jp_spider._intall(start_match.groups()))
 
     end_match = re.match(date_time_re, end_str)
     if end_match:
-        end_datetime = datetime.datetime(*_intall(end_match.groups()))
+        end_datetime = datetime.datetime(*jp_spider._intall(end_match.groups()))
     else:
         end_match = re.match(time_re, end_str)
         if end_match:
-            end_time = datetime.time(*_intall(end_match.groups()))
+            end_time = datetime.time(*jp_spider._intall(end_match.groups()))
             end_datetime = datetime.datetime.combine(start_datetime.date(), end_time)
         else:
             raise ValueError("Could not parse end time: %s" % end_str)

@@ -58,13 +58,29 @@ def _extract_text(cell):
 
 
 def _format_text(html):
-    text = re.sub(' +\n', '\n', html2text.html2text(html).replace('\n\n', '\n')).strip()
+    text = re.sub(' +\n', '\n', html2text.html2text(html, bodywidth=0).replace('\n\n', '\n')).strip()
     # If we have too many header lines, strip them out (bad html formatter that does <h1> on everything)
     lines = text.count('\n')
     header_lines = len(re.findall(r'^# ', text, re.MULTILINE))
     if header_lines > lines / 8:
         text = re.sub('\n# ', '', text)
     return text
+
+
+def get_line_after(text, regex):
+    desc_lines = text.split('\n')
+    return_next_line = False
+    for line in desc_lines:
+        if return_next_line:
+            if line:
+                return line
+        if re.search(regex, line):
+            after_keyword = re.split(regex, line, 1)[1]
+            # If it's a "keyword: something"...return the same line
+            if len(after_keyword) > 4:
+                return after_keyword.replace(u'：', '').strip()
+            return_next_line = True
+    return None
 
 
 class WebEventScraper(scrapy.Spider):
