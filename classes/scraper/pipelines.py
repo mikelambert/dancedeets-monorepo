@@ -41,31 +41,6 @@ def make_requests(path, params):
     return {'prod_result': result, 'dev_result': dev_result}
 
 
-class SaveStudioClassPipeline(object):
-
-    def open_spider(self, spider):
-        pass
-
-    def close_spider(self, spider):
-        params = {
-            'studio_name': spider.name,
-        }
-        result = make_requests('classes/finish_upload', params)
-        if result:
-            print 'Upload returned: ', result
-
-    def process_item(self, item, spider):
-        new_item = dict(item)
-        for key in ['start_time', 'end_time', 'scrape_time']:
-            new_item[key] = new_item[key].strftime(DATETIME_FORMAT)
-        new_item['auto_categories'] = [x.index_name for x in new_item['auto_categories']]
-        print new_item
-        result = make_requests('classes/upload', new_item)
-        if result:
-            print 'Upload returned: ', result
-        return new_item
-
-
 class BatchSaveStudioClassPipeline(object):
 
     def open_spider(self, spider):

@@ -104,13 +104,6 @@ def process_upload_finalization(studio_name):
     dedupe_classes(classes_on_date)
 
 
-@app.route('/classes/upload')
-class ClassUploadHandler(JsonDataHandler):
-    def post(self):
-        process_uploaded_item(self.json_body)
-        self.response.status = 200
-
-
 @app.route('/classes/upload_multi')
 class ClassMultiUploadHandler(JsonDataHandler):
     def post(self):
