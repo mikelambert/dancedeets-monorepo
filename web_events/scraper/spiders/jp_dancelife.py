@@ -1,5 +1,4 @@
- # -*-*- encoding: utf-8 -*-*-
-
+# -*-*- encoding: utf-8 -*-*-
 import datetime
 import re
 import urlparse
@@ -7,7 +6,6 @@ import urlparse
 import scrapy
 
 from loc import japanese_addresses
-from loc import gmaps
 from .. import items
 from .. import jp_spider
 
@@ -64,25 +62,8 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
         item['description'] = '%s\n\n%s' % (category, full_description)
 
         jp_addresses = japanese_addresses.find_addresses(item['description'])
-        if jp_addresses:
-            item['location_address'] = jp_addresses[0]
-
-        venue_address = items.get_line_after(item['description'], ur'場所|会場')
-        if venue_address:
-            # remove markdown bolding
-            item['location_name'] = venue_address.replace('**', '')
-
-        if 'location_name' in item and 'location_address' not in item:
-            # Let's look it up on Google
-            results = {'status': 'FAIL'}
-            #results = gmaps.fetch_places_raw(query='%s, japan' % item['location_name'])
-            if results['status'] == 'ZERO_RESULTS':
-                results = gmaps.fetch_places_raw(query=item['location_name'])
-            if results['status'] == 'OK':
-                item['location_address'] = results['results'][0]['formatted_address']
-                latlng = results['results'][0]['geometry']['location']
-                item['latitude'] = latlng['lat']
-                item['longitude'] = latlng['lng']
+        venue = items.get_line_after(item['description'], ur'場所|会場')
+        jp_spider.setup_location(venue, jp_addresses, item)
 
         item['starttime'], item['endtime'] = self.parseDateTimes(response)
 

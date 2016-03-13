@@ -3,6 +3,8 @@
 import datetime
 import re
 
+from loc import gmaps
+
 open_time_re = ur'OPEN\W+\b(\d\d?):(\d\d)\b|(\d\d?):(\d\d)\W*OPEN|(\d\d?):(\d\d)\s*～'
 close_time_re = ur'CLOSE(?:\s*予定)?\W+\b(\d+):(\d\d)\b'
 open_close_time_re = ur'(\d\d?):(\d\d)\s*[～\-]\s*(\d\d?):(\d\d)'
@@ -10,6 +12,30 @@ open_close_time_re = ur'(\d\d?):(\d\d)\s*[～\-]\s*(\d\d?):(\d\d)'
 
 def _intall(lst):
     return [None if x is None else int(x) for x in lst]
+
+
+def setup_location(venue, addresses, item):
+    # TODO: needs caching
+    if venue:
+        item['location_name'] = venue
+    if addresses:
+        address = addresses[0]
+        item['location_address'] = address
+    else:
+        address = None
+
+    if venue and not address:
+        # Let's look it up on Google...we probably need to delay this until we get to the appengine side!
+        results = {'status': 'FAIL'}
+        #results = gmaps.fetch_places_raw(query='%s, japan' % address)
+        if results['status'] == 'ZERO_RESULTS':
+            results = gmaps.fetch_places_raw(query=address)
+
+        if results['status'] == 'OK':
+            item['location_address'] = results['results'][0]['formatted_address']
+            latlng = results['results'][0]['geometry']['location']
+            item['latitude'] = latlng['lat']
+            item['longitude'] = latlng['lng']
 
 
 def parse_date_times(start_date, date_str):

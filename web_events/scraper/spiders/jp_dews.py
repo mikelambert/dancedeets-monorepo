@@ -7,7 +7,6 @@ import urlparse
 import scrapy
 from scrapy.selector import Selector
 
-from loc import gmaps
 from .. import items
 from .. import jp_spider
 
@@ -96,16 +95,6 @@ class DewsScraper(items.WebEventScraper):
 
         item['starttime'], item['endtime'] = parse_date_times(_get('startDate'), _definition(u'時間'))
 
-        item['location_name'] = _get('location')
-
-        # TODO: needs caching
-        results = gmaps.fetch_places_raw(query='%s, japan' % item['location_name'])
-        if results['status'] == 'ZERO_RESULTS':
-            results = gmaps.fetch_places_raw(query=item['location_name'])
-
-        item['location_address'] = results['results'][0]['formatted_address']
-        latlng = results['results'][0]['geometry']['location']
-        item['latitude'] = latlng['lat']
-        item['longitude'] = latlng['lng']
+        jp_spider.setup_location(_get('location'), None, item)
 
         yield item
