@@ -53,6 +53,9 @@ class MindBodyBrowserScraper(items.StudioScraper):
     def __init__(self, *args, **kwargs):
         super(MindBodyBrowserScraper, self).__init__(*args, **kwargs)
 
+    def _main_mindbody_url(self):
+        return 'https://clients.mindbodyonline.com/ASP/home.asp?studioid=%s' % self.mindbody_studio_id
+
     def _generate_request(self, post_load=''):
         script = """
         function main(splash)
@@ -69,7 +72,7 @@ class MindBodyBrowserScraper(items.StudioScraper):
         """
         url_args = urllib.urlencode({'tabID': self.mindbody_tab_id})
         return scrapy.Request(
-            'https://clients.mindbodyonline.com/ASP/home.asp?studioid=%s' % self.mindbody_studio_id,
+            self._main_mindbody_url(),
             meta={
                 'splash': {
                     'args': {
@@ -81,6 +84,9 @@ class MindBodyBrowserScraper(items.StudioScraper):
                 }
             },
         )
+
+    def _get_url(self, response):
+        return self._main_mindbody_url()
 
     def start_requests(self):
         yield self._generate_request()
