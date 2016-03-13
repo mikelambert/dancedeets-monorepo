@@ -4,6 +4,7 @@
 app-nose.yaml
 app-devserver.yaml
 dist/
+dist-includes/
 
 # secret files
 keys.yaml
