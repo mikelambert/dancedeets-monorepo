@@ -1,6 +1,7 @@
 import dateparser
 import datetime
 import re
+import urllib
 
 import scrapy
 import scrapyjs
@@ -52,7 +53,7 @@ class MindBodyBrowserScraper(items.StudioScraper):
     def __init__(self, *args, **kwargs):
         super(MindBodyBrowserScraper, self).__init__(*args, **kwargs)
 
-    def start_requests(self):
+    def _generate_request(self, post_load=''):
         script = """
         function main(splash)
             assert(splash:go(splash.args.url))
@@ -60,20 +61,19 @@ class MindBodyBrowserScraper(items.StudioScraper):
             -- We need to click on the "CLASSES" tab.
             -- Unfortunately, attempts to call click() or evaljs onclick don't seem to work...
             -- So instead load the tab's URL directly in our main browser window
-            splash:go("https://clients.mindbodyonline.com/classic/mainclass?fl=true&tabID=%s")
+            splash:go("https://clients.mindbodyonline.com/classic/mainclass?fl=true&%s")
             splash:wait(1)
-            %%s
+            %s
             return splash:evaljs("document.getElementById('classSchedule-mainTable').outerHTML")
         end
-        """ % self.mindbody_tab_id
-
-        # default week
-        yield scrapy.Request(
+        """
+        url_args = urllib.urlencode({'tabID': self.mindbody_tab_id})
+        return scrapy.Request(
             'https://clients.mindbodyonline.com/ASP/home.asp?studioid=%s' % self.mindbody_studio_id,
             meta={
                 'splash': {
                     'args': {
-                        'lua_source': script % "",
+                        'lua_source': script % (url_args, post_load),
                     },
                     'endpoint': 'execute',
                     # optional parameters
@@ -82,23 +82,12 @@ class MindBodyBrowserScraper(items.StudioScraper):
             },
         )
 
-        # week 2!
-        yield scrapy.Request(
-            'https://clients.mindbodyonline.com/ASP/home.asp?studioid=%s' % self.mindbody_studio_id,
-            meta={
-                'splash': {
-                    'args': {
-                        'lua_source': script % """
-                            splash:runjs("document.getElementById('week-arrow-r').click()")
-                            splash:wait(3)
-                        """,
-                    },
-                    'endpoint': 'execute',
-                    # optional parameters
-                    'slot_policy': scrapyjs.SlotPolicy.PER_DOMAIN,
-                }
-            },
-        )
+    def start_requests(self):
+        yield self._generate_request()
+        yield self._generate_request("""
+            splash:runjs("autoSubmitDateTo(false, true)")
+            splash:wait(3)
+        """)
 
     def _valid_item(self, item, row):
         return True
