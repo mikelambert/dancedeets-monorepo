@@ -4,7 +4,7 @@ import datetime
 import logging
 import unittest
 
-from web_events.scraper.spiders import jp_dancelife
+from web_events.scraper import jp_spider
 
 tests = {
     u"""OPEN 12:00
@@ -31,9 +31,9 @@ tests = {
 }
 
 
-class TestParseFbTimestamp(unittest.TestCase):
+class TestParseTimes(unittest.TestCase):
     def runTest(self):
         for test, expected_result in tests.iteritems():
             logging.info("Testing: %s", test)
-            result = jp_dancelife.parse_date_times(datetime.date(2016, 4, 1), test)
+            result = jp_spider.parse_date_times(datetime.date(2016, 4, 1), test)
             self.assertEqual(result, expected_result, test)
