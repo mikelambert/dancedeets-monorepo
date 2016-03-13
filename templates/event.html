@@ -40,7 +40,12 @@
 			content="{{ description|e }}" />
 
 <link rel="canonical" href="{{ canonical_url }}" />
+{% if displayable_event.largest_cover %}
+{# because NewsArticles requires an image:
+ # https://developers.google.com/structured-data/rich-snippets/articles#article_markup_properties
+ #}
 <link rel="amphtml" href="{{ canonical_url }}?amp=1" />
+{% endif %}
 
 {% endblock %}
 

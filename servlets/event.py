@@ -118,16 +118,19 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['canonical_url'] = 'http://%s/events/%s/' % (self._get_full_hostname(), db_event.fb_event_id)
 
         if self.request.get('amp'):
-            # Because minification interferes with html-validity when producing:
-            # <meta name=viewport content=width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no>
-            self.allow_minify = False
-            event_amp_css_filename = os.path.join(os.path.dirname(__file__), '..', 'dist-includes/css/event-amp.css')
-            event_amp_css = open(event_amp_css_filename).read()
-            event_amp_css = re.sub(r'@-ms-viewport\s*{.*?}', '', event_amp_css)
-            event_amp_css = re.sub(r'!important', '', event_amp_css)
-            event_amp_css = event_amp_css.replace('url(..', 'url(/dist-' + self._get_static_version())
-            self.display['event_amp_stylesheet'] = event_amp_css
-            self.render_template('event_amp')
+            if self.display['displayable_event'].largest_cover:
+                # Because minification interferes with html-validity when producing:
+                # <meta name=viewport content=width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no>
+                self.allow_minify = False
+                event_amp_css_filename = os.path.join(os.path.dirname(__file__), '..', 'dist-includes/css/event-amp.css')
+                event_amp_css = open(event_amp_css_filename).read()
+                event_amp_css = re.sub(r'@-ms-viewport\s*{.*?}', '', event_amp_css)
+                event_amp_css = re.sub(r'!important', '', event_amp_css)
+                event_amp_css = event_amp_css.replace('url(..', 'url(/dist-' + self._get_static_version())
+                self.display['event_amp_stylesheet'] = event_amp_css
+                self.render_template('event_amp')
+            else:
+                self.abort(404)
         else:
             self.render_template('event')
 
