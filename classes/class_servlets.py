@@ -84,24 +84,24 @@ def process_upload_finalization(studio_name):
     query = class_models.StudioClass.query(
         class_models.StudioClass.studio_name == studio_name,
         class_models.StudioClass.start_time >= historical_fixup)
-    # TODO: why does this sort not work??
-    # query = query.order(-class_models.StudioClass.start_time)
     num_events = 1000
     results = query.fetch(num_events)
-    results = sorted(results, key=lambda x: x.start_time, reverse=True)
     if len(results) == num_events:
         logging.error("Processing %s events for studio %s, and did not reach the end of days-with-duplicates", num_events, studio_name)
-    classes_on_date = []
-    processing_date = None
+
+    max_scrape_time = max(results, key=lambda x: x.scrape_time).scrape_time
+
+    classes_by_date = {}
     for studio_class in results:
-        class_date = studio_class.start_time.date()
-        if class_date == processing_date:
-            classes_on_date.append(studio_class)
+        classes_by_date.setdefault(studio_class.start_time.date(), []).append(studio_class)
+    for date, classes in classes_by_date.iteritems():
+        # RISKY!!! uses current date (in what timezone??)
+        if date < datetime.date.today():
+            scrape_time_to_keep = max(classes, key=lambda x: x.scrape_time).scrape_time
         else:
-            dedupe_classes(classes_on_date)
-            processing_date = class_date
-            classes_on_date = [studio_class]
-    dedupe_classes(classes_on_date)
+            scrape_time_to_keep = max_scrape_time
+        print date, scrape_time_to_keep, classes
+        dedupe_classes(scrape_time_to_keep, classes)
 
 
 @app.route('/classes/upload_multi')
@@ -116,13 +116,12 @@ class ClassMultiUploadHandler(JsonDataHandler):
         self.response.status = 200
 
 
-def dedupe_classes(classes):
+def dedupe_classes(most_recent_scrape_time, classes):
     """Returns true if there were classes de-duped, or empty classes and we don't know.
     Returns false once we get a full day of classes without dupes."""
     if not classes:
         return True
     logging.info('De-duping %s classes on %s' % (len(classes), classes[0].start_time.date()))
-    most_recent_scrape_time = max(x.scrape_time for x in classes)
     old_classes = [x for x in classes if x.scrape_time != most_recent_scrape_time]
     deleted = 0
     for x in old_classes:
