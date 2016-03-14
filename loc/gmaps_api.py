@@ -1,14 +1,23 @@
 import copy
 import logging
+
+from . import gmaps
+
+USE_PRIVATE_KEY = False
+
+live_places_api = gmaps.LiveBackend('https://maps.googleapis.com', '/maps/api/place/textsearch/json', use_private_key=False)
+live_geocode_api = gmaps.LiveBackend('https://maps.google.com', '/maps/api/geocode/json', use_private_key=USE_PRIVATE_KEY)
+
 try:
     from . import gmaps_cached
     from . import gmaps_bwcompat
-    gmaps_backend = gmaps_cached
-    gmaps_backend.gmaps_backend = gmaps_bwcompat
-except ImportError:
+    places_api = gmaps_cached.CachedBackend(live_places_api)
+    # No point to checking the Cached backend on this one
+    geocode_api = gmaps_bwcompat.BwCachedBackend(gmaps_cached.CachedBackend(live_geocode_api))
+except:
     logging.error("Failed to import caching backends, defaulting to raw gmaps backend")
-    from . import gmaps
-    gmaps_backend = gmaps
+    places_api = live_places_api
+    geocode_api = live_geocode_api
 
 
 class GeocodeException(Exception):
@@ -17,16 +26,25 @@ class GeocodeException(Exception):
         self.status = status
 
 
-class GMapsGeocode(object):
+class _GMapsResult(object):
+    def __init__(self, json_data):
+        self.json_data = json_data
+        self.lookup_kwargs = {}
+
+    def latlng(self):
+        return (float(self.json_data['geometry']['location']['lat']), float(self.json_data['geometry']['location']['lng']))
+
+    def formatted_address(self):
+        return self.json['formatted_address']
+
+
+class GMapsGeocode(_GMapsResult):
     def __init__(self, json_data):
         self.json_data = json_data
         self.lookup_kwargs = {}
 
     def country(self, long=False):
         return self.get_component('country', long=long)
-
-    def latlng(self):
-        return (float(self.json_data['geometry']['location']['lat']), float(self.json_data['geometry']['location']['lng']))
 
     def latlng_bounds(self):
         viewport = self.json_data['geometry']['viewport']
@@ -52,6 +70,10 @@ class GMapsGeocode(object):
         self.json_data['address_components'] = [x for x in self.json_data['address_components'] if name not in x['types']]
 
 
+def GMapsPlace(_GMapsResult):
+    pass
+
+
 def convert_geocode_to_json(geocode):
     if geocode:
         return {'status': 'OK', 'results': [geocode.json_data]}
@@ -69,11 +91,11 @@ def parse_geocode(json_result):
 
 
 def delete(**kwargs):
-    gmaps_backend.delete(**kwargs)
+    geocode_api.delete(**kwargs)
 
 
 def get_geocode(**kwargs):
-    json_data = gmaps_backend.fetch_raw(**kwargs)
+    json_data = _fetch_geocode_as_json(**kwargs)
     try:
         geocode = parse_geocode(json_data)
     except GeocodeException as e:
@@ -83,3 +105,29 @@ def get_geocode(**kwargs):
     if geocode:
         geocode.lookup_kwargs = kwargs
     return geocode
+
+
+def _fetch_geocode_as_json(address=None, latlng=None, language=None, region=None, components=None):
+    params = {}
+    if address is not None:
+        params['address'] = address
+    if latlng is not None:
+        params['latlng'] = '%s,%s' % latlng
+    assert params
+    if language is not None:
+        params['language'] = language
+    if region is not None:
+        params['region'] = region
+    if components is not None:
+        params['components'] = components
+
+    return geocode_api.get_json(**params)
+
+
+def _fetch_place_as_json(query=None, language=None):
+    params = {}
+    params['query'] = query.encode('utf-8')
+    if language is not None:
+        params['language'] = language
+
+    return places_api.get_json(**params)

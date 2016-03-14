@@ -3,9 +3,10 @@ import logging
 from google.appengine.ext import ndb
 
 from . import gmaps
-gmaps_backend = gmaps
+from . import gmaps_backends
 
 LOCATION_EXPIRY = 24 * 60 * 60
+
 
 class CachedGeoCode(ndb.Model):
     address = property(lambda x: int(x.key().name()))
@@ -13,35 +14,36 @@ class CachedGeoCode(ndb.Model):
     date_created = ndb.DateTimeProperty(auto_now_add=True, indexed=False)
 
 
-def _geocode_key(**kwargs):
-    if not kwargs:
-        raise ValueError("Cannot pass empty parameters to gmaps fetch function! kwargs=%r", kwargs)
-    new_kwargs = kwargs.copy()
-    for k, v in new_kwargs.items():
-        byte_length = len(repr(v))
-        if byte_length > 400:
-            new_kwargs[k] = v[:len(v)*400/byte_length]
-    return ', '.join(sorted('%s=%r' % (k, unicode(v).strip().lower()) for (k, v) in new_kwargs.items()))
+class CachedBackend(gmaps_backends.GMapsBackend):
+    def __init__(self, backend):
+        self.backend = backend
 
-NO_GEOCODE = 'NO_GEOCODE'
+    @staticmethod
+    def _geocode_key(**kwargs):
+        if not kwargs:
+            raise ValueError("Cannot pass empty parameters to gmaps fetch function! kwargs=%r", kwargs)
+        new_kwargs = kwargs.copy()
+        if 'latlng' in new_kwargs:
+            new_kwargs['latlng'] = '(%s, %s)' % new_kwargs['latlng'].split(',')
+        for k, v in new_kwargs.items():
+            byte_length = len(repr(v))
+            if byte_length > 400:
+                new_kwargs[k] = v[:(len(v) * 400 / byte_length)]
+        return ', '.join(sorted('%s=%r' % (k, unicode(v).strip().lower()) for (k, v) in new_kwargs.items()))
 
-def fetch_raw(**kwargs):
-    geocode_key = _geocode_key(**kwargs)
-    geocode = CachedGeoCode.get_by_id(geocode_key)
-    if geocode:
-        json_data = geocode.json_data
-    else:
-        json_data = gmaps_backend.fetch_raw(**kwargs)
-        if json_data['status'] in ['OK', 'ZERO_RESULTS']:
-            geocode = CachedGeoCode(id=geocode_key, json_data=json_data)
-            geocode.put()
-    return json_data
+    def get_json(self, **kwargs):
+        geocode_key = self._geocode_key(**kwargs)
+        geocode = CachedGeoCode.get_by_id(geocode_key)
+        if geocode:
+            json_data = geocode.json_data
+        else:
+            json_data = self.backend.get_json(**kwargs)
+            if json_data['status'] in ['OK', 'ZERO_RESULTS']:
+                geocode = CachedGeoCode(id=geocode_key, json_data=json_data)
+                geocode.put()
+        return json_data
 
-def cleanup_bad_data(geocode):
-    logging.info("%s: %s", geocode.key, geocode.json_data['status'])
-    if geocode.json_data['status'] not in ['OK', 'ZERO_RESULTS']:
-        geocode.key.delete()
-
-def delete(**kwargs):
-    geocode_key = _geocode_key(**kwargs)
-    ndb.Key(CachedGeoCode, geocode_key).delete()
+    def delete(self, **kwargs):
+        geocode_key = self._geocode_key(**kwargs)
+        ndb.Key(CachedGeoCode, geocode_key).delete()
+        self.backend.delete(**kwargs)

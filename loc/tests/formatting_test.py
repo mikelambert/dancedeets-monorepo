@@ -48,7 +48,7 @@ class TestLocationFormatting(unittest.TestCase):
             formatted_address = formatting.format_geocode(gmaps_api.get_geocode(address=address), include_neighborhood=True)
             if formatted_address != final_address:
                 logging.error('formatted address for %r is %r, should be %r', address, formatted_address, final_address)
-                logging.error('%s', gmaps_stub.fetch_raw(address=address))
+                logging.error('%s', gmaps_api._fetch_geocode_as_json(address=address))
                 self.assertEqual(final_address, formatted_address)
 
 grouping_lists = [

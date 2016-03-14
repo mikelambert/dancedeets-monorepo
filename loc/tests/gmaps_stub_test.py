@@ -14,7 +14,8 @@ formatting_reg_data = {
 
 class TestLocationFormatting(unittest.TestCase):
     def runTest(self):
+        backend = gmaps_stub.StubCacheBackend(None)
         for key, params in formatting_reg_data.iteritems():
             logging.info('%r should be formatted as %s', params, key)
-            string_key = gmaps_stub._geocode_key(**params)
+            string_key = backend._geocode_key(**params)
             self.assertEqual(string_key, key)

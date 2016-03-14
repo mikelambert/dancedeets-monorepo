@@ -3,7 +3,7 @@
 import datetime
 import re
 
-from loc import gmaps
+from loc import gmaps_api
 
 open_time_re = ur'OPEN\W+\b(\d\d?):(\d\d)\b|(\d\d?):(\d\d)\W*OPEN|(\d\d?):(\d\d)\s*～'
 close_time_re = ur'CLOSE(?:\s*予定)?\W+\b(\d+):(\d\d)\b'
@@ -25,11 +25,10 @@ def setup_location(venue, addresses, item):
         address = None
 
     if venue and not address:
-        # Let's look it up on Google...we probably need to delay this until we get to the appengine side!
-        results = {'status': 'FAIL'}
-        #results = gmaps.fetch_places_raw(query='%s, japan' % address)
+        # TODO: Let's look it up on Google...we probably need to delay this until we get to the appengine side!
+        results = gmaps_api._fetch_place_as_json(query='%s, japan' % venue)
         if results['status'] == 'ZERO_RESULTS':
-            results = gmaps.fetch_places_raw(query=address)
+            results = gmaps_api._fetch_place_as_json(query=venue)
 
         if results['status'] == 'OK':
             item['location_address'] = results['results'][0]['formatted_address']
