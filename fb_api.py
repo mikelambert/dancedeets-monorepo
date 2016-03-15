@@ -25,15 +25,6 @@ from util import urls
 
 DEADLINE = 20
 
-ALL_EVENTS_FQL = """
-SELECT eid, name, start_time, end_time, host
-FROM event 
-WHERE eid IN (SELECT eid FROM event_member WHERE uid = %s) 
-AND start_time >= %d
-ORDER BY start_time
-"""
-
-
 EMPTY_CAUSE_INSUFFICIENT_PERMISSIONS = 'insufficient_permissions'
 EMPTY_CAUSE_DELETED = 'deleted'
 
@@ -142,7 +133,7 @@ class LookupUser(LookupType):
             ('profile', cls.url('%s' % object_id, fields=OBJ_USER_FIELDS)),
             ('friends', cls.url('%s/friends' % object_id)),
             ('permissions', cls.url('%s/permissions' % object_id)),
-            ('rsvp_for_future_events', cls.url('%s/events?since=yesterday' % object_id)),
+            ('rsvp_for_future_events', cls.url('%s/events?since=yesterday&fields=id,rsvp_status' % object_id)),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -151,21 +142,30 @@ class LookupUser(LookupType):
 #TODO(lambert): move these LookupType subclasses out of fb_api.py into client code where they belong,
 # keeping this file infrastructure and unmodified as we add new features + LookupTypes
 class LookupUserEvents(LookupType):
-    version = "v2.0" # Using FQL for now, need to migrate off to hit 2.1
+    version = "v2.5"
 
     @classmethod
     def get_lookups(cls, object_id):
-        today = int(time.mktime(datetime.date.today().timetuple()[:9]))
+        common = 'limit=1000&since=yesterday&fields=id,name,start_time,host,rsvp_status'
         return [
-            # Going to have to convert this over to /<object_id>/events
-            # when we want to hit v2.1 or v2.2 (v2.0 works though).
-            # Will require downstream changes on eid-vs-id.
-            # TODO: We have to cutover by August 7, 2016.
-            # Beware that 'events' only contains attending/maybe events.
-            # We will need to do separate queries for not_replied/declined events (and created events)
-            ('all_event_info', cls.fql_url(ALL_EVENTS_FQL % (object_id, today))),
-            ('events', cls.url('%s/events' % object_id)),
+            ('events', cls.url('%s/events?%s' % (object_id, common))), # attending and unsure
+            ('events_declined', cls.url('%s/events?type=declined&%s' % (object_id, common))),
+            ('events_not_replied', cls.url('%s/events?type=not_replied&%s' % (object_id, common))),
         ]
+
+    @classmethod
+    def all_events(cls, fb_data):
+        try:
+            return (
+                fb_data['events']['data'] +
+                fb_data['events_declined']['data'] +
+                fb_data['events_not_replied']['data'] +
+                []
+            )
+        except KeyError:
+            print 'x',len(fb_data['events']['data'])
+            return fb_data['events']['data']
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_USER_EVENTS')
@@ -568,7 +568,7 @@ class FBLookup(object):
 
     def request(self, cls, object_id, allow_cache=True):
         self.request_multi(cls, (object_id,), allow_cache=allow_cache)
-        
+
     def request_multi(self, cls, object_ids, allow_cache=True):
         for object_id in object_ids:
             key = generate_key(cls, object_id)
@@ -623,7 +623,7 @@ class FBLookup(object):
 
     def clear_local_cache(self):
         self._fetched_objects = {}
-        
+
     def _lookup(self):
         keys = self._keys_to_fetch
         all_fetched_objects = {}

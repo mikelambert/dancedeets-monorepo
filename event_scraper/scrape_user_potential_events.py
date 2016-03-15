@@ -1,14 +1,15 @@
 import logging
 
+import fb_api
 from . import event_pipeline
 from . import potential_events
 from . import thing_db
 
+
 def get_potential_dance_events(fbl, user_id, fb_user_events):
-    # The source_id is not fbl.fb_uid, because sometimes we fetch friend's events as Mike, and the source is not Mike.
-    results_json = fb_user_events['all_event_info']['data']
-    #STR_ID_MIGRATE: We still get ids as ints from our FQL
-    event_ids = [str(x['eid']) for x in sorted(results_json, key=lambda x: x.get('start_time'))]
+    results_json = fb_api.LookupUserEvents.all_events(fb_user_events)
+
+    event_ids = [x['id'] for x in sorted(results_json, key=lambda x: x.get('start_time'))]
 
     logging.info("For user id %s, found %s invited events %s", user_id, len(event_ids), event_ids)
 
@@ -33,4 +34,4 @@ def get_potential_dance_events(fbl, user_id, fb_user_events):
 
     discovered_list = [potential_events.DiscoveredEvent(x, source, thing_db.FIELD_INVITES) for x in event_ids]
     event_pipeline.process_discovered_events(fbl, discovered_list)
-    
+

@@ -28,7 +28,7 @@ class TestAuth(unittest.TestCase):
         new_access_token = 'BlahToken2'
         fb_api.FBAPI.results = {
             url: (200, {'id': me_uid, 'name': 'Mike Lambert'}),
-            '/v2.2/me/events?since=yesterday': (200, {}),
+            '/v2.2/me/events?since=yesterday&fields=id,rsvp_status': (200, {}),
             '/v2.2/me/friends': (200, {}),
             '/v2.2/me/permissions': (200, {}),
             '/v2.2/debug_token?input_token=BlahToken': (200, {

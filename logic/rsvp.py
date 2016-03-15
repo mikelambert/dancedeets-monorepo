@@ -3,8 +3,8 @@ from logic import backgrounder
 
 CHOOSE_RSVPS = ['attending', 'maybe', 'declined']
 
-class RSVPManager(object):
 
+class RSVPManager(object):
     def __init__(self, fbl):
         self.fbl = fbl
         fb_user = self.fbl.fetched_data(fb_api.LookupUser, self.fbl.fb_uid)
@@ -26,6 +26,7 @@ class RSVPManager(object):
         backgrounder.load_users([self.fbl.fb_uid], allow_cache=False)
         backgrounder.load_event_attending([event_id], allow_cache=False)
         return result
+
 
 def decorate_with_rsvps(fbl, search_results):
     if fbl.fb_uid:

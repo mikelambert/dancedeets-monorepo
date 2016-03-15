@@ -415,18 +415,14 @@ class AddHandler(base_servlet.BaseRequestHandler):
                     logging.error("Could not load event info for user: %s", e)
                     user_events = None
             if user_events is not None:
-                results_json = user_events['all_event_info']['data']
+                results_json = fb_api.LookupUserEvents.all_events(user_events)
                 events = list(sorted(results_json, key=lambda x: x.get('start_time')))
             else:
                 events = []
-            # STR_ID_MIGRATE: We still get ids as ints from our FQL
-            loaded_fb_events = eventdata.DBEvent.get_by_ids([str(x['eid']) for x in events])
+            loaded_fb_events = eventdata.DBEvent.get_by_ids([x['id'] for x in events])
             loaded_fb_event_lookup = dict((x.key.string_id(), x) for x in loaded_fb_events if x)
 
             for event in events:
-                # rewrite hack necessary for templates (and above code)
-                # STR_ID_MIGRATE
-                event['id'] = str(event['eid'])
                 event['loaded'] = event['id'] in loaded_fb_event_lookup
 
             if self.request.get('new_only') == '1':

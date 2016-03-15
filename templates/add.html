@@ -29,7 +29,7 @@ Add Dance Event
 					<input id="event_id_form" type="hidden" name="event_id" value="">
 					<ul id="add-events">
 					{% for event in events %}
-						<li data-id="{{ event.id }}" id="event-{{ event.id }}" style="margin-bottom: 15px" class="clearfix 
+						<li data-id="{{ event.id }}" id="event-{{ event.id }}" style="margin-bottom: 15px" class="clearfix
 							{% if event.loaded %}
 								ui-disabled
 							{% else %}
@@ -42,10 +42,6 @@ Add Dance Event
 							<div>
 							<span style="font-weight: bold">{{ event.name|e }}</span><br>
 							{{ event.start_time|parse_fb_timestamp|date_human_format }}<br>
-							{% if event.host %}
-								Hosted by {{ event.host }}<br>
-							{% endif %}
-
 							{% if event.loaded %}
 								ALREADY ADDED
 							{% endif %}
