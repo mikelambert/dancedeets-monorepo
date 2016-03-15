@@ -91,6 +91,7 @@ def parse_geocode(json_result):
 
 
 def delete(**kwargs):
+    # Use the geocode api since it's the more complete one that lets us delete from more backends.
     geocode_api.delete(**kwargs)
 
 
