@@ -24,7 +24,7 @@ class CachedBackend(gmaps_backends.GMapsBackend):
             raise ValueError("Cannot pass empty parameters to gmaps fetch function! kwargs=%r", kwargs)
         new_kwargs = kwargs.copy()
         if 'latlng' in new_kwargs:
-            new_kwargs['latlng'] = '(%s, %s)' % new_kwargs['latlng'].split(',')
+            new_kwargs['latlng'] = '(%s, %s)' % tuple(new_kwargs['latlng'].split(','))
         for k, v in new_kwargs.items():
             byte_length = len(repr(v))
             if byte_length > 400:

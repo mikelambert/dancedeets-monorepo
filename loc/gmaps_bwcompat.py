@@ -20,7 +20,7 @@ class BwCachedBackend(gmaps_backends.GMapsBackend):
         assert address or latlng
         assert not (address and latlng)
         if latlng:
-            latlng = '(%s, %s)' % latlng.split(',')
+            latlng = '(%s, %s)' % tuple(latlng.split(','))
         if address:
             byte_length = len(repr(address))
             if byte_length > 450:
@@ -28,7 +28,7 @@ class BwCachedBackend(gmaps_backends.GMapsBackend):
             else:
                 return address
         else:
-            return '%s,%s' % latlng
+            return latlng
 
     def get_json(self, **kwargs):
         extra_keys = set(kwargs.keys()).difference(['address', 'latlng'])
