@@ -1,43 +1,43 @@
 {% extends class_base_template %}
 
 {% block title %}
-{{ event.info.name|e }}
+{{ displayable_event.name|e }}
 {% endblock %}
 
 {% block head_metatags %}
 <meta name="twitter:site" content="@dancedeets" />
 <meta name="twitter:creator" content="@dancedeets" />
-<meta name="twitter:title" content="{{ event.info.name|e }}" />
-{% if event.info.description %}
-	<meta name="twitter:description" content="{{ event.info.description|truncate(250)|e }}">
+<meta name="twitter:title" content="{{ displayable_event.name|e }}" />
+{% if displayable_event.description %}
+	<meta name="twitter:description" content="{{ displayable_event.description|truncate(250)|e }}">
 {% endif %}
 {% if displayable_event.cover_metadata %}
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:image:src" content="http://{{ full_hostname }}/events/image_proxy/{{ event.info.id }}" />
+	<meta name="twitter:image:src" content="http://{{ full_hostname }}/events/image_proxy/{{ displayable_event.id }}" />
 {% else %}
 	<meta name="twitter:card" content="summary" />
 {% endif %}
 
 <meta name="twitter:app:name:googleplay" content="DanceDeets" />
 <meta name="twitter:app:id:googleplay" content="com.dancedeets.android" />
-<meta name="twitter:app:url:googleplay" content="http://{{ full_hostname }}/events/{{ event.info.id }}/" />
+<meta name="twitter:app:url:googleplay" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/" />
 {#
-<meta property="al:ios:url" content="http://{{ full_hostname }}/events/{{ event.info.id }}/" />
+<meta property="al:ios:url" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/" />
 <meta property="al:ios:app_store_id" content="955212002" />
 <meta property="al:ios:app_name" content="DanceDeets" />
 #}
 
-<meta property="al:android:url" content="http://{{ full_hostname }}/events/{{ event.info.id }}/" />
+<meta property="al:android:url" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/" />
 <meta property="al:android:package" content="com.dancedeets.android" />
 <meta property="al:android:app_name" content="DanceDeets" />
 
-<meta property="og:title" content="{{ event.info.name|e }}" />
+<meta property="og:title" content="{{ displayable_event.name|e }}" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="http://{{ full_hostname }}/events/{{ event.info.id }}/" />
+<meta property="og:url" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/" />
 <meta property="og:site_name" content="DanceDeets" />
-<meta property="og:image" content="http://www.dancedeets.com/events/image_proxy/{{ event.info.id }}" />
+<meta property="og:image" content="http://www.dancedeets.com/events/image_proxy/{{ displayable_event.id }}" />
 <meta property="og:description"
-			content="{{ description|e }}" />
+			content="{{ displayable_event.meta_description|e }}" />
 
 <link rel="canonical" href="{{ canonical_url }}" />
 {% if displayable_event.largest_cover %}
@@ -53,7 +53,7 @@
 <div class="container">
 <div itemscope itemtype="http://schema.org/DanceEvent">
 
-	<span itemprop="url" content="http://{{ full_hostname }}/events/{{ event.info.id }}/"></span>
+	<span itemprop="url" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/"></span>
 
 	<div class="row">
 		<div class="col-xs-12">
@@ -70,7 +70,7 @@
 				</ul>
 			{% endif %}
 
-			<h1 class="event-page-title" itemprop="name">{{ event.info.name }}</h1>
+			<h1 class="event-page-title" itemprop="name">{{ displayable_event.name }}</h1>
 		</div>
 	</div>
 
@@ -86,7 +86,7 @@
 			{% if displayable_event.cover_metadata %}
 				<li><i class="event-info-icon fa-li fa fa-picture-o fa-lg"></i><b><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
 			{% endif %}
-			<li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ raw_fb_event_url(event.info.id) }}">See Event on Facebook</a></b></li>
+			<li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ raw_fb_event_url(displayable_event.id) }}">See Event on Facebook</a></b></li>
 			<li><div class="product-social-links" style="padding-bottom: 0 1em; height: 20px">
 				<a class="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
 				<div class="link-event-share fb-share-button" data-layout="button"></div>
@@ -99,11 +99,11 @@
 				<meta itemprop="endDate" content="{{ displayable_event.end_time|datetime_format }}" />
 			{% endif %}
 			</li>
-			{% if event.info.attending_count %}
+			{% if displayable_event.attending_count %}
 				<li><i class="event-info-icon fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
-				{{ event.info.attending_count }} Attending
-				{%- if event.info.maybe_count -%}
-					, {{ event.info.maybe_count }} Maybe
+				{{ displayable_event.attending_count }} Attending
+				{%- if displayable_event.maybe_count -%}
+					, {{ displayable_event.maybe_count }} Maybe
 				{%- endif %}
 				</li>
 			{% endif %}
@@ -119,8 +119,8 @@
 			<li><i class="event-info-icon fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
 			<div>
 			{% if displayable_event.location_name %}
-				{% if event.info.venue and event.info.venue.id %}
-					<a class="link-event-venue" href="https://www.facebook.com/{{ event.info.venue.id }}">{{ displayable_event.location_name }}</a>
+				{% if displayable_event.venue and displayable_event.venue.id %}
+					<a class="link-event-venue" href="https://www.facebook.com/{{ displayable_event.venue.id }}">{{ displayable_event.location_name }}</a>
 				{% else %}
 					{{ displayable_event.location_name }}
 				{% endif %}
@@ -137,7 +137,7 @@
 			{# not worth showing maps embed if there is no street_address #}
 			{% if displayable_event.latitude %}
 				<p>Open in <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
-				{% if event.info.description %}
+				{% if displayable_event.description %}
 					<div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
 				{% endif %}
 				<div id="map-wrapper" class="responsive-map-wrapper">
@@ -145,13 +145,13 @@
 			{% endif %}
 		</div>
 
-		{% if event.info.description %}
+		{% if displayable_event.description %}
 		<div class="col-sm-7">
-			<h1 class="event-page-title visible-xs-block">{{ event.info.name }}</h1>
+			<h1 class="event-page-title visible-xs-block">{{ displayable_event.name }}</h1>
 			<div><b>Description:</b></div>
       <div style="height: 25px" id="google_translate_element"></div>
 			<span itemprop="description">
-				{{ event.info.description|format_html|linkify }}
+				{{ displayable_event.description|format_html|linkify }}
 			</span>
 		</div>
 		{% endif %}
@@ -171,7 +171,7 @@ region= paramter cctld
 <script type="text/javascript">
 
 mixpanel.track('View Event', {
-  'Event ID': {{ event.info.id|tojson }},
+  'Event ID': {{ displayable_event.id|tojson }},
   'Event City': {{ displayable_event.city|tojson }},
   'Event Country': {{ displayable_event.country|tojson }},
 });
@@ -200,7 +200,7 @@ function load_map() {
 		var marker = new google.maps.Marker({
 			position: myLatlng,
 			map: map,
-			title: "{{ event.info.location|e }}",
+			title: "{{ displayable_event.location_name|e }}",
 		});
 	}
 }

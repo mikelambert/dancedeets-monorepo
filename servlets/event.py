@@ -91,26 +91,8 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             self.response.out.write('This event was %s.' % fb_event['empty'])
             return
 
-        start_time = dates.parse_fb_start_time(fb_event)
-        formatted_start_time = start_time.strftime('%Y/%m/%d @ %H:%M')
-
-        def join_valid(sep, lst):
-            return sep.join(x for x in lst if x)
-
-        formatted_location = join_valid(', ', [
-            fb_event['info'].get('location'),
-            fb_event['info'].get('venue', {}).get('city'),
-            fb_event['info'].get('venue', {}).get('state'),
-        ])
-        self.display['description'] = join_valid(': ', [
-            formatted_start_time,
-            formatted_location,
-            fb_event['info'].get('description'),
-        ])
-
         self.display['displayable_event'] = DisplayableEvent(db_event, fb_event)
 
-        self.display['event'] = fb_event
         self.display['next'] = self.request.url
         self.display['show_mobile_app_promo'] = True
         self.jinja_env.filters['make_category_link'] = lambda lst: [jinja2.Markup('<a href="/?keywords=%s">%s</a>') % (x, x) for x in lst]
@@ -135,7 +117,13 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             self.render_template('event')
 
 
+def join_valid(sep, lst):
+    return sep.join(x for x in lst if x)
+
+
 class DisplayableEvent(object):
+    """Encapsulates all the data (and relevant accessor methods) for showing an event on the event page."""
+
     def __init__(self, db_event, event_info):
         # TODO: This doesn't use the overriden lat/long at all, yet. It relies on FB data 100%.
         self.db_event = db_event
@@ -170,6 +158,34 @@ class DisplayableEvent(object):
             '</span>',
         ]
         return jinja2.Markup('\n'.join(html))
+
+    @property
+    def meta_description(self):
+        start_time = dates.parse_fb_start_time(self.event_info)
+        formatted_start_time = start_time.strftime('%Y/%m/%d @ %H:%M')
+
+        formatted_location = join_valid(', ', [
+            self.event_info['info'].get('location'),
+            self.event_info['info'].get('venue', {}).get('city'),
+            self.event_info['info'].get('venue', {}).get('state'),
+        ])
+        return join_valid(': ', [
+            formatted_start_time,
+            formatted_location,
+            self.event_info['info'].get('description'),
+        ])
+
+    @property
+    def id(self):
+        return self.event_info['info']['id']
+
+    @property
+    def name(self):
+        return self.event_info['info'].get('name')
+
+    @property
+    def description(self):
+        return self.event_info['info'].get('description')
 
     @property
     def creation_time(self):
@@ -231,6 +247,14 @@ class DisplayableEvent(object):
     @property
     def longitude(self):
         return self.venue and self.venue.get('longitude')
+
+    @property
+    def attending_count(self):
+        return self.event_info['info'].get('attending_count')
+
+    @property
+    def maybe_count(self):
+        return self.event_info['info'].get('maybe_count')
 
     @property
     def admins(self):
