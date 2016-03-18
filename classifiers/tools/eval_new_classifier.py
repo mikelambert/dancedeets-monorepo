@@ -24,7 +24,7 @@ def handle_new_false_positive(id, ec):
 
 START_EVENT = 0
 END_EVENT = 0
-def partition_ids(old_true_positive, old_true_negative, classifier=event_classifier.ClassifiedEvent):
+def partition_ids(old_true_positive, old_true_negative, classifier=event_classifier.classified_event_from_fb_event):
     success = set()
     fail = set()
     a = time.time()
@@ -95,7 +95,7 @@ print 'list of used-to-be-positive now-negative dance events (things we will mis
 for id in false_negative.difference(old_false_negative):
     print id
     continue
-    
+
 print ''
 print ''
 

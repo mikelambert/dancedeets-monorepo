@@ -32,7 +32,7 @@ def classify_events(fbl, pe_list, fb_list):
         if not pe.should_look_at or pe.looked_at:
             continue
 
-        classified_event = event_classifier.ClassifiedEvent(fb_event)
+        classified_event = event_classifier.classified_event_from_fb_event(fb_event)
         classified_event.classify()
         auto_add_result = event_auto_classifier.is_auto_add_event(classified_event)
         if auto_add_result[0]:

@@ -19,11 +19,13 @@ from . import grammar
 from . import regex_keywords
 from . import rules
 
+from util import dates
+
 USE_UNICODE = False
 
 # TODO: translate to english before we try to apply the keyword matches
 # TODO: if event creator has created dance events previously, give it some weight
-# TODO: 
+# TODO:
 
 # TODO: for each style-keyword, give it some weight. don't be a requirement but yet-another-bayes-input
 # TODO: add a bunch of classifier logic
@@ -123,16 +125,24 @@ class StringProcessor(object):
         trimmed_text = regexes[self.match_on_word_boundaries].sub('', self.text)
         return StringProcessor(trimmed_text, self.match_on_word_boundaries, lowercase=False)
 
+
+def classified_event_from_fb_event(fb_event, language=None):
+    return ClassifiedEvent(
+        fb_event['info'].get('name', ''),
+        fb_event['info'].get('description', ''),
+        dates.parse_fb_start_time(fb_event),
+        dates.parse_fb_end_time(fb_event),
+        language=language
+    )
+
+
 class ClassifiedEvent(object):
-    def __init__(self, fb_event, language=None):
-        self.fb_event = fb_event
-        if 'name' not in fb_event['info']:
-            logging.info("fb event id is %s has no name, with value %s", fb_event['info'].get('id'), fb_event)
-            self.search_text = ''
-            self.title = ''
-        else:
-            self.search_text = get_relevant_text(fb_event)
-            self.title = fb_event['info'].get('name', '').lower()
+    def __init__(self, name, description, start_time, end_time, language=None):
+        self.title = name.lower()
+        # use a separator here, so 'actors workshop' 'breaking boundaries...' doesn't match 'workshop breaking'
+        self.search_text = ('%s . . . . %s' % (name, description)).lower()
+        self.start_time = start_time
+        self.end_time = end_time
         self.language = language
         self.times = {}
 
@@ -276,7 +286,7 @@ class ClassifiedEvent(object):
 
 
 def get_classified_event(fb_event, language=None):
-    classified_event = ClassifiedEvent(fb_event, language)
+    classified_event = classified_event_from_fb_event(fb_event, language)
     classified_event.classify()
     return classified_event
 
