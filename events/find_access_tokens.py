@@ -191,7 +191,7 @@ class FindEventsNeedingAccessTokensHandler(base_servlet.BaseTaskFacebookRequestH
     def get(self):
         time_period = self.request.get('time_period')
         # TODO: WEB_EVENTS
-        filters = [('namespace', eventdata.NAMESPACE_FB)]
+        filters = [('namespace', '=', eventdata.NAMESPACE_FACEBOOK)]
         if time_period:
             filters.append(('search_time_period', '=', time_period))
         pipeline = FindEventsNeedingAccessTokensPipeline(fb_mapreduce.get_fblookup_params(self.fbl), filters)
