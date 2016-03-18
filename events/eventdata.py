@@ -7,6 +7,7 @@ from util import urls
 
 REGION_RADIUS = 200 # kilometers
 
+
 def get_event_image_url(fb_event):
     # old school data
     picture_url = fb_event.get('fql_info') or fb_event.get('picture_urls')
@@ -22,6 +23,7 @@ def get_event_image_url(fb_event):
         logging.error("Error loading picture for event id %s", fb_event['info']['id'])
         return urls.fb_event_image_url(fb_event['info']['id'])
 
+
 def get_largest_cover(fb_event):
     if 'cover_info' in fb_event:
         # Sometimes cover_id is an int or a string, but cover_info is always a string.
@@ -36,23 +38,54 @@ CM_AUTO = 'CM_AUTO'
 CM_ADMIN = 'CM_ADMIN'
 CM_USER = 'CM_USER'
 
+NAMESPACE_FACEBOOK = 'FB'
+
+
 class DBEvent(ndb.Model):
     """Stores custom data about our Event"""
-    fb_event_id = property(lambda x: str(x.key.string_id()))
 
-    # TODO(lambert): right now this is unused, but maybe we want to cache our "ish" tags or something to that effect?
-    # Was originally used to track manually-applied tags
-    tags = ndb.StringProperty(indexed=False, repeated=True)
+    def __get_namespace_and_id(self):
+        real_id = str(self.key.string_id())
+        if ':' in real_id:
+            namespace, namespaced_id = real_id.split(':')
+        else:
+            namespace = NAMESPACE_FACEBOOK
+            namespaced_id = real_id
+        return namespace, namespaced_id
 
-    # real data
+    @property
+    def namespace(self):
+        return self.__get_namespace_and_id()[0]
+
+    @property
+    def namespaced_id(self):
+        return self.__get_namespace_and_id()[1]
+
+    @property
+    def is_facebook_event(self):
+        return self.namespace == NAMESPACE_FACEBOOK
+
+    @property
+    def fb_event_id(self):
+        if self.is_facebook_event:
+            return self.namespaced_id
+        else:
+            raise ValueError("Not an FB Event: %s" % self.real_id)
+
+    # Fields unique to Facebook:
     owner_fb_uid = ndb.StringProperty()
-    #STR_ID_MIGRATE
+    visible_to_fb_uids = ndb.StringProperty(indexed=False, repeated=True)
+    # derived data from fb_event itself
+    fb_event = ndb.JsonProperty(indexed=False)
+
+    #STR_ID_MIGRATE (Old, to be migrated...to namespaced_creator)
     creating_fb_uid = ndb.IntegerProperty()
+    # TODO: IMPLEMENT AND MIGRATE
+    # namespaced_creator = ndb.StringProperty()
+
     creation_time = ndb.DateTimeProperty(auto_now_add=True)
     # could be AUTO, ADMIN, USER, etc? Helps for maintaining a proper training corpus
     creating_method = ndb.StringProperty()
-
-    visible_to_fb_uids = ndb.StringProperty(indexed=False, repeated=True)
 
     # searchable properties
     search_time_period = ndb.StringProperty()
@@ -70,11 +103,14 @@ class DBEvent(ndb.Model):
     anywhere = ndb.BooleanProperty()
 
     location_geocode = ndb.JsonProperty(indexed=False)
-    fb_event = ndb.JsonProperty(indexed=False)
 
     event_keywords = ndb.StringProperty(indexed=False, repeated=True)
     auto_categories = ndb.StringProperty(indexed=False, repeated=True)
     country = ndb.StringProperty(indexed=False)
+
+    # TODO(lambert): right now this is unused, but maybe we want to cache our "ish" tags or something to that effect?
+    # Was originally used to track manually-applied tags, and contains that data for some old events...
+    tags = ndb.StringProperty(indexed=False, repeated=True)
 
     def get_geocode(self):
         return gmaps_api.parse_geocode(self.location_geocode)
