@@ -190,10 +190,10 @@ class FindEventsNeedingAccessTokensPipeline(base_handler.PipelineBase):
 class FindEventsNeedingAccessTokensHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         time_period = self.request.get('time_period')
+        # TODO: WEB_EVENTS
+        filters = [('namespace', eventdata.NAMESPACE_FB)]
         if time_period:
-            filters = [('search_time_period', '=', time_period)]
-        else:
-            filters = []
+            filters.append(('search_time_period', '=', time_period))
         pipeline = FindEventsNeedingAccessTokensPipeline(fb_mapreduce.get_fblookup_params(self.fbl), filters)
         pipeline.start(queue_name='slow-queue')
     post=get

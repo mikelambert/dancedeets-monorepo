@@ -80,7 +80,7 @@ class DBEvent(ndb.Model):
 
     #STR_ID_MIGRATE (Old, to be migrated...to namespaced_creator)
     creating_fb_uid = ndb.IntegerProperty()
-    # TODO: IMPLEMENT AND MIGRATE
+    # # TODO: WEB_EVENTS: IMPLEMENT AND MIGRATE DATA
     # namespaced_creator = ndb.StringProperty()
 
     creation_time = ndb.DateTimeProperty(auto_now_add=True)

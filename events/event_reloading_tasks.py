@@ -111,11 +111,12 @@ def mr_load_fb_events(fbl, load_attending=False, time_period=None, update_geodat
     else:
         event_or_attending = 'Events'
         mr_func = 'map_load_fb_event'
+    # TODO: WEB_EVENTS
+    filters = [('namespace', eventdata.NAMESPACE_FB)]
     if time_period:
-        filters = [('search_time_period', '=', time_period)]
+        filters.append(('search_time_period', '=', time_period))
         name = 'Load %s %s' % (time_period, event_or_attending)
     else:
-        filters = []
         name = 'Load All %s' % (event_or_attending)
     fb_mapreduce.start_map(
         fbl=fbl,
