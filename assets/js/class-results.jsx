@@ -449,6 +449,7 @@ var App = React.createClass({
             style={ {
               backgroundColor: 'white',
               boxShadow: '0 5px 4px -4px black',
+              zIndex: 50,
             } }
           >
             <table><tbody><tr><td style={ {width: '100%'} }>
