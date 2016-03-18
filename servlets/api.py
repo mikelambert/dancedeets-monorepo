@@ -156,7 +156,7 @@ class SearchHandler(ApiHandler):
                     self.write_json_success({'results': []})
                     return
                 else:
-                    self.add_error('Please enter a location or keywords')                
+                    self.add_error('Please enter a location or keywords')
         else:
             geocode = gmaps_api.get_geocode(address=form.location.data)
             if geocode:
@@ -173,7 +173,7 @@ class SearchHandler(ApiHandler):
         self.errors_are_fatal()
 
         search_results = []
-        distances = [50, 100, 200, 400, 1000, 2000, 5000, 25000]
+        distances = [50, 100, 170, 300]
         distance_index = 0
         while not search_results:
             form.distance.data = distances[distance_index]
