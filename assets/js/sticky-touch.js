@@ -6,7 +6,7 @@
 // http://stackoverflow.com/questions/17233804/how-to-prevent-sticky-hover-effects-for-buttons-on-touch-devices
 // http://stackoverflow.com/questions/23885255/how-to-remove-ignore-hover-css-style-on-touch-devices?lq=1
 function fixStickyTouch(window) {
-  var touch = window.ontouchstart ||
+  var touch = 'ontouchstart' in window ||
           window.navigator.MaxTouchPoints > 0 ||
           window.navigator.msMaxTouchPoints > 0;
 
@@ -26,9 +26,9 @@ function fixStickyTouch(window) {
           }
 
           for (var ri = styleSheet.rules.length - 1; ri >= 0; ri--) {
-            if (styleSheet.rules[ri].selectorText) {
-              if (styleSheet.rules[ri].selectorText.match(':hover')) {
-                var st = styleSheet.rules[ri].selectorText;
+            var st = styleSheet.rules[ri].selectorText;
+            if (st) {
+              if (st.match(':hover')) {
                 if (st.indexOf(',') === -1) {
                   styleSheet.deleteRule(ri);
                 } else {
