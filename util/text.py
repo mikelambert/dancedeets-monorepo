@@ -8,7 +8,7 @@ import re
 
 
 def format_html(value):
-    return jinja2.Markup.escape(value).replace('\n', jinja2.Markup('<br>\n'))
+    return jinja2.Markup('<span>%s</span>' % jinja2.Markup.escape(value).replace('\n', jinja2.Markup('</span><br>\n<span>')))
 
 
 # Commented multi-line version:
