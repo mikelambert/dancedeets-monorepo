@@ -114,8 +114,10 @@ gulp.task('compile-css-js', $.shell.task([
   'webpack --color --progress --config webpack.amp.config.js',
   'webpack --color --progress --config webpack.config.js',
 ]));
-gulp.task('watch', $.shell.task([
+gulp.task('compile-amp', $.shell.task([
   'webpack --color --progress --watch --config webpack.amp.config.js',
+]));
+gulp.task('compile-main', $.shell.task([
   'webpack --color --progress --watch --config webpack.config.js',
 ]));
 
