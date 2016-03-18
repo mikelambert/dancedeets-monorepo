@@ -70,7 +70,7 @@ class DisplayEvent(ndb.Model):
 
     @classmethod
     def build(cls, db_event):
-        """Save off the minimal set of data necessary to render an event, for quick event loading."""
+        """Save off the minimal set of data necessary to render an event on the list page, for quicker loading/serialization from memcache/db."""
         if not cls.can_build_from(db_event):
             return None
         try:
@@ -86,8 +86,8 @@ class DisplayEvent(ndb.Model):
                 'start_time': db_event.fb_event['info']['start_time'],
                 'end_time': db_event.fb_event['info'].get('end_time'),
                 'location': db_event.actual_city_name,
-                'lat': db_event.latitude,
-                'lng': db_event.longitude,
+                'lat': db_event.latitude, # used for de-duping events
+                'lng': db_event.longitude, # used for de-duping events
                 'attendee_count': db_event.attendee_count,
                 'categories': categories,
                 'keywords': keywords,
@@ -232,6 +232,7 @@ class Search(object):
         # Now sort and return the results
         search_results.sort(key=lambda x: x.start_time)
         return search_results
+
 
 class EventsIndex(index.BaseIndex):
     obj_type = eventdata.DBEvent
