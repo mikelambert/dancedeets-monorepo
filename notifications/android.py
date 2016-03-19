@@ -10,11 +10,8 @@ EVENT_REMINDER = 'EVENT_REMINDER'
 EVENT_ADDED = 'EVENT_ADDED'
 
 def _get_duration_seconds(event):
-    start_time = parser.parse(event.fb_event['info'].get('start_time'))
-    if 'end_time' in event.fb_event['info']:
-        end_notify_window = parser.parse(event.fb_event['info'].get('end_time'))
-    else:
-        end_notify_window = start_time
+    start_time = event.start_time
+    end_notify_window = event.end_time or event.start_time
     now = datetime.datetime.now(start_time.tzinfo)
     duration = (end_notify_window - now)
     max_duration = 4 * 7 * 24 * 60 * 60 # 4 weeks
