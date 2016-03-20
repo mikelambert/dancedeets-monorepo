@@ -150,18 +150,15 @@ class LocationInfo(object):
                 self.online = True
             logging.info("Final address is %r", final_address)
             self.geocode = db_event.get_geocode() if has_geocode else get_geocode(address=final_address)
-            self.final_city = formatting.format_geocode(self.geocode)
 
+    @property
+    def final_city(self):
         if self.geocode:
-            self.final_city = formatting.format_geocode(self.geocode)
-            self.final_latlng = self.geocode.latlng()
+            return formatting.format_geocode(self.geocode)
         elif self.online:
-            self.final_city = ONLINE_ADDRESS
-            self.final_latlng = None
+            return ONLINE_ADDRESS
         else:
-            self.final_city = None
-            self.final_latlng = None
-        logging.info("Final latlng is %r, final city is %r", self.final_latlng, self.final_city)
+            return None
 
     def needs_override_address(self):
         address = self.remapped_address or self.fb_address or ''
@@ -178,7 +175,7 @@ class LocationInfo(object):
             return self.final_city
 
     def latlong(self):
-        if self.is_online_event():
-            return None, None
+        if self.geocode:
+            return self.geocode.latlng()
         else:
-            return self.final_latlng
+            return None, None
