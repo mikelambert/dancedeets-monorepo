@@ -104,28 +104,16 @@ def update_remapped_address(fb_event, new_remapped_address):
         _save_remapped_address_for(location_info.fb_address, new_remapped_address)
 
 
-def online_address(address):
-    return address == ONLINE_ADDRESS
-
-
-def get_geocode(address):
-    if online_address(address):
-        return None
-    else:
-        return gmaps_api.get_geocode(address=address)
-
-
 class LocationInfo(object):
     def __init__(self, fb_event, db_event=None, debug=False):
-        self.online = None
         self.geocode = None
         self.exact_from_event = False
         self.overridden_address = None
         self.fb_address = None
         self.remapped_address = None
+        self.final_address = None
 
         has_overridden_address = db_event and db_event.address
-        final_address = None
         has_geocode = db_event and db_event.has_geocode()
         if not has_overridden_address or debug:
             self.final_latlng = _get_latlng_from_event(fb_event)
@@ -139,17 +127,24 @@ class LocationInfo(object):
                 self.remapped_address = _get_remapped_address_for(self.fb_address)
                 if self.remapped_address:
                     logging.info("Checking remapped address, which is %r", self.remapped_address)
-                final_address = self.remapped_address or self.fb_address
+                self.final_address = self.remapped_address or self.fb_address
         if has_overridden_address:
             self.overridden_address = db_event.address
-            final_address = self.overridden_address
+            self.final_address = self.overridden_address
 
         # Either a remapped, overridden, or fb address (without lat/long)
-        if final_address is not None:
-            if online_address(final_address):
-                self.online = True
-            logging.info("Final address is %r", final_address)
-            self.geocode = db_event.get_geocode() if has_geocode else get_geocode(address=final_address)
+        if self.final_address is not None:
+            logging.info("Final address is %r", self.final_address)
+            if self.online:
+                self.geocode = None
+            elif has_geocode:
+                self.geocode = db_event.get_geocode()
+            else:
+                self.geocode = gmaps_api.get_geocode(address=self.final_address)
+
+    @property
+    def online(self):
+        return self.final_address == ONLINE_ADDRESS
 
     @property
     def final_city(self):
