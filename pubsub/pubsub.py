@@ -111,8 +111,8 @@ def post_event_id_with_authtoken(event_id, auth_token):
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
 
 
-def create_media_on_twitter(t, fb_event):
-    cover = eventdata.get_largest_cover(fb_event)
+def create_media_on_twitter(t, db_event):
+    cover = eventdata.get_largest_cover(db_event.fb_event)
     if not cover:
         return None
     mimetype, response = fetch.fetch_data(cover['source'])
@@ -144,9 +144,9 @@ def get_twitter_config(t):
     return config
 
 
-def format_twitter_post(config, db_event, fb_event, media, handles=None):
+def format_twitter_post(config, db_event, media, handles=None):
     url = campaign_url(db_event.fb_event_id, 'twitter_feed')
-    title = fb_event['info']['name']
+    title = db_event.name
     city = db_event.actual_city_name
 
     datetime_string = db_event.start_time.strftime(DATE_FORMAT)
@@ -189,12 +189,12 @@ def twitter_post(auth_token, db_event):
         update_params['lat'] = db_event.latitude
         update_params['long'] = db_event.longitude
 
-    media = create_media_on_twitter(t, db_event.fb_event)
+    media = create_media_on_twitter(t, db_event)
     if media:
         update_params['media_ids'] = media['media_id']
 
     TWITTER_HANDLE_LENGTH = 16
-    description = db_event.fb_event['info'].get('description') or ''
+    description = db_event.description
     twitter_handles = re.findall(r'\s@[A-za-z0-9_]+', description)
     twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1 + TWITTER_HANDLE_LENGTH]
     twitter_handles2 = re.findall(r'twitter\.com/([A-za-z0-9_]+)', description)
@@ -206,7 +206,7 @@ def twitter_post(auth_token, db_event):
     else:
         handles = []
     config = get_twitter_config(t)
-    status = format_twitter_post(config, db_event, db_event.fb_event, media, handles=handles)
+    status = format_twitter_post(config, db_event, media, handles=handles)
     t.statuses.update(status=status, **update_params)
 
 
@@ -223,7 +223,6 @@ class LookupGeoTarget(fb_api.LookupType):
 
 
 def facebook_post(auth_token, db_event):
-    fb_event = db_event.fb_event
     link = campaign_url(db_event.fb_event_id, 'fb_feed')
     datetime_string = db_event.start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
 
@@ -232,28 +231,28 @@ def facebook_post(auth_token, db_event):
     fbl = fb_api.FBLookup(None, auth_token.oauth_token)
 
     post_values = {}
-    # post_values['message'] = fb_event['info']['name']
+    # post_values['message'] = db_event.name
     post_values['link'] = link
-    post_values['name'] = fb_event['info']['name'].encode('utf8')
+    post_values['name'] = db_event.name.encode('utf8')
     post_values['caption'] = datetime_string
-    description = fb_event['info'].get('description', '')
+    description = db_event.description
     if len(description) > 10000:
         post_values['description'] = description[:9999] + u"…"
     else:
         post_values['description'] = description
     post_values['description'] = post_values['description'].encode('utf8')
-    cover = eventdata.get_largest_cover(fb_event)
+    cover = eventdata.get_largest_cover(db_event.fb_event)
     if cover:
         post_values['picture'] = cover['source']
-    venue_id = fb_event['info'].get('venue', {}).get('id')
+    venue_id = db_event.venue.get('id')
     if venue_id:
         post_values['place'] = venue_id
         # Can only tag people if there is a place tagged too
-        if fb_event['info'].get('admins'):
-            admin_ids = [x['id'] for x in fb_event['info']['admins']['data']]
-            post_values['tags'] = ','.join(admin_ids)
+        admins = db_event.admins
+        if admins:
+            post_values['tags'] = ','.join(x['id'] for x in admins)
 
-    feed_targeting = get_targeting_data(fbl, fb_event, db_event)
+    feed_targeting = get_targeting_data(fbl, db_event)
     if feed_targeting:
         # Ideally we'd do this as 'feed_targeting', but Facebook appears to return errors with that due to:
         # {u'error': {u'message': u'Invalid parameter', u'code': 100, u'is_transient': False,
@@ -267,23 +266,22 @@ def facebook_post(auth_token, db_event):
     return json.loads(result)
 
 
-def get_targeting_data(fbl, fb_event, db_event):
+def get_targeting_data(fbl, db_event):
     short_country = None
     city_key = None
 
-    venue_id = fb_event['info'].get('venue', {}).get('id')
+    venue_id = db_event.venue.get('id')
 
     if venue_id:
         # Target to people in the same country as the event. Should improve signal/noise ratio.
-        country = fb_event['info']['venue'].get('country')
-        if country:
-            country = country.upper()
+        if db_event.country:
+            country = db_event.country.upper()
             if country in iso3166.countries_by_name:
                 short_country = iso3166.countries_by_name[country].alpha2
 
         city_state_country_list = [
-            fb_event['info']['venue'].get('city'),
-            fb_event['info']['venue'].get('state')
+            db_event.city,
+            db_event.state
         ]
         city_state_country = ', '.join(x for x in city_state_country_list if x)
         kw_params = {
