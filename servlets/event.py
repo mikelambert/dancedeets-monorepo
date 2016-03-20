@@ -86,12 +86,11 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         db_event = eventdata.DBEvent.get_by_id(event_id)
         if not db_event:
             self.abort(404)
-        fb_event = db_event.fb_event
-        if fb_event['empty']:
-            self.response.out.write('This event was %s.' % fb_event['empty'])
+        if db_event.is_empty():
+            self.response.out.write('This event was %s.' % db_event.empty_reason)
             return
 
-        self.display['displayable_event'] = DisplayableEvent(db_event, fb_event)
+        self.display['displayable_event'] = DisplayableEvent(db_event)
 
         self.display['next'] = self.request.url
         self.display['show_mobile_app_promo'] = True
@@ -124,10 +123,9 @@ def join_valid(sep, lst):
 class DisplayableEvent(object):
     """Encapsulates all the data (and relevant accessor methods) for showing an event on the event page."""
 
-    def __init__(self, db_event, event_info):
-        # TODO: This doesn't use the overriden lat/long at all, yet. It relies on FB data 100%.
+    def __init__(self, db_event):
         self.db_event = db_event
-        self.event_info = event_info
+        self.event_info = db_event.fb_event
 
     def location_schema_html(self):
         html = [
@@ -173,6 +171,9 @@ class DisplayableEvent(object):
             formatted_location,
             self.event_info['info'].get('description'),
         ])
+
+    def __getattr__(self, name):
+        return getattr(self.db_event, name)
 
 
 @app.route('/events/admin_edit')

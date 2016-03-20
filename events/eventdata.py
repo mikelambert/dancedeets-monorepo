@@ -133,6 +133,13 @@ class DBEvent(ndb.Model):
         else:
             return ndb.get_multi(keys)
 
+    def is_empty(self):
+        return self.fb_event['empty']
+
+    @property
+    def empty_reason(self):
+        return self.fb_event['empty']
+
     @property
     def name(self):
         return self.fb_event['info'].get('name')
