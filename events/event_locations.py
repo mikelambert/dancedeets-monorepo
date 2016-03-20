@@ -127,7 +127,7 @@ class LocationInfo(object):
                 self.remapped_address = _get_remapped_address_for(self.fb_address)
                 if self.remapped_address:
                     logging.info("Checking remapped address, which is %r", self.remapped_address)
-                self.final_address = self.remapped_address or self.fb_address
+            self.final_address = self.remapped_address or self.fb_address
         if has_overridden_address:
             self.overridden_address = db_event.address
             self.final_address = self.overridden_address
