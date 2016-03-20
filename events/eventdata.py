@@ -24,16 +24,6 @@ def get_event_image_url(fb_event):
         logging.error("Error loading picture for event id %s", fb_event['info']['id'])
         return urls.fb_event_image_url(fb_event['info']['id'])
 
-
-def get_largest_cover(fb_event):
-    if 'cover_info' in fb_event:
-        # Sometimes cover_id is an int or a string, but cover_info is always a string.
-        cover = fb_event['cover_info'][str(fb_event['info']['cover']['cover_id'])]
-        max_cover = max(cover['images'], key=lambda x: x['height'])
-        return max_cover
-    else:
-        return None
-
 # valid parameters for creating_method= argument below
 CM_AUTO = 'CM_AUTO'
 CM_ADMIN = 'CM_ADMIN'
@@ -158,7 +148,13 @@ class DBEvent(ndb.Model):
 
     @property
     def largest_cover(self):
-        return get_largest_cover(self.fb_event)
+        if 'cover_info' in self.fb_event:
+            # Sometimes cover_id is an int or a string, but cover_info is always a string.
+            cover = self.fb_event['cover_info'][str(self.fb_event['info']['cover']['cover_id'])]
+            max_cover = max(cover['images'], key=lambda x: x['height'])
+            return max_cover
+        else:
+            return None
 
     @property
     def location_name(self):

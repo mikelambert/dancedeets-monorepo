@@ -83,7 +83,7 @@ class DisplayEvent(ndb.Model):
             display_event.data = {
                 'name': db_event.fb_event['info'].get('name'),
                 'image': eventdata.get_event_image_url(db_event.fb_event),
-                'cover': eventdata.get_largest_cover(db_event.fb_event),
+                'cover': db_event.largest_cover,
                 'start_time': db_event.fb_event['info']['start_time'],
                 'end_time': db_event.fb_event['info'].get('end_time'),
                 'location': db_event.actual_city_name,

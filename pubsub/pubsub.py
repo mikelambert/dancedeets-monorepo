@@ -112,7 +112,7 @@ def post_event_id_with_authtoken(event_id, auth_token):
 
 
 def create_media_on_twitter(t, db_event):
-    cover = eventdata.get_largest_cover(db_event.fb_event)
+    cover = db_event.largest_cover
     if not cover:
         return None
     mimetype, response = fetch.fetch_data(cover['source'])
@@ -241,7 +241,7 @@ def facebook_post(auth_token, db_event):
     else:
         post_values['description'] = description
     post_values['description'] = post_values['description'].encode('utf8')
-    cover = eventdata.get_largest_cover(db_event.fb_event)
+    cover = db_event.db_event.largest_cover
     if cover:
         post_values['picture'] = cover['source']
     venue_id = db_event.venue.get('id')
