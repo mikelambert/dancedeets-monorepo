@@ -366,10 +366,10 @@ def canonicalize_event_data(db_event, event_keywords):
     event_api = {}
     event_api['id'] = db_event.fb_event_id
     event_api['name'] = db_event.name
-    event_api['start_time'] = db_event.fb_event['info']['start_time']
+    event_api['start_time'] = db_event.start_time_string
     event_api['description'] = db_event.description
     # end time can be optional, especially on single-day events that are whole-day events
-    event_api['end_time'] = db_event.fb_event['info'].get('end_time')
+    event_api['end_time'] = db_event.end_time_string
 
     # cover images
     cover_images = db_event.cover_images

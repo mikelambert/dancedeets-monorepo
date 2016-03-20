@@ -84,8 +84,8 @@ class DisplayEvent(ndb.Model):
                 'name': db_event.name,
                 'image': db_event.image_url,
                 'cover': db_event.largest_cover,
-                'start_time': db_event.fb_event['info']['start_time'],
-                'end_time': db_event.fb_event['info'].get('end_time'),
+                'start_time': db_event.start_time_string,
+                'end_time': db_event.end_time_string,
                 'location': db_event.actual_city_name,
                 'lat': db_event.latitude, # used for de-duping events
                 'lng': db_event.longitude, # used for de-duping events
