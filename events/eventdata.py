@@ -14,7 +14,62 @@ CM_AUTO = 'CM_AUTO'
 CM_ADMIN = 'CM_ADMIN'
 CM_USER = 'CM_USER'
 
-NAMESPACE_FACEBOOK = 'FB'
+
+class Namespace(object):
+    KOREA_SDK = 'korea-sdk'
+    JAPAN_DD = 'japan-dancedelight'
+    JAPAN_DL = 'japan-dancelife'
+    JAPAN_DEWS = 'japan-dews'
+    JAPAN_ETS = 'japan-enterthestage'
+    FACEBOOK = 'FB'
+
+    def __init__(self, short_name, long_name, domain_url, event_url):
+        self.short_name = short_name
+        self.long_name = long_name
+        self.domain_url = domain_url
+        self.event_url = event_url
+
+NAMESPACE_LIST = [
+    Namespace(
+        Namespace.FACEBOOK,
+        'Facebook',
+        'https://www.facebook.com/events/',
+        'https://www.facebook.com/%s/',
+    ),
+    Namespace(
+        Namespace.JAPAN_DD,
+        'Dance Delight',
+        'http://et-stage.net/event_list.php',
+        lambda x: 'http://et-stage.net/event/%s/' % x.namespaced_id,
+    ),
+    Namespace(
+        Namespace.JAPAN_DL,
+        'Dance Life',
+        'http://www.tokyo-dancelife.com/event/',
+        lambda x: 'http://www.tokyo-dancelife.com/event/%s/%s.php' % (x.start_time.strftime('%Y_%m'), x.namespaced_id),
+    ),
+    Namespace(
+        Namespace.JAPAN_DEWS,
+        'DEWS',
+        'http://dews365.com/eventinformation',
+        lambda x: 'http://dews365.com/event/%s.html' % x.namespaced_id,
+    ),
+    Namespace(
+        Namespace.JAPAN_ETS,
+        'Enter The Stage',
+        'http://et-stage.net/event_list.php',
+        lambda x: 'http://et-stage.net/event/%s/' % x.namespaced_id,
+    ),
+    Namespace(
+        Namespace.KOREA_SDK,
+        'Street Dance Korea',
+        'http://www.streetdancekorea.com',
+        # I wish we could link to the event page directly, but alas there is none...
+        lambda x: 'http://www.streetdancekorea.com/',
+    ),
+]
+
+NAMESPACES = dict((x.short_name, x) for x in NAMESPACE_LIST)
 
 
 class DBEvent(ndb.Model):
@@ -29,7 +84,7 @@ class DBEvent(ndb.Model):
         if ':' in real_id:
             namespace, namespaced_id = real_id.split(':')
         else:
-            namespace = NAMESPACE_FACEBOOK
+            namespace = Namespace.FACEBOOK
             namespaced_id = real_id
         return namespace, namespaced_id
 
@@ -43,7 +98,7 @@ class DBEvent(ndb.Model):
 
     @property
     def is_facebook_event(self):
-        return self.namespace == NAMESPACE_FACEBOOK
+        return self.namespace == Namespace.FACEBOOK
 
     @property
     def fb_event_id(self):
