@@ -132,12 +132,19 @@ class DBEvent(ndb.Model):
         return self.fb_event['info'].get('cover')
 
     @property
-    def largest_cover(self):
+    def cover_images(self):
         if 'cover_info' in self.fb_event:
-            # Sometimes cover_id is an int or a string, but cover_info is always a string.
+            # Old FB API versions returned ints instead of strings, so let's stringify manually to ensure we can look up the cover_info
             cover = self.fb_event['cover_info'][str(self.fb_event['info']['cover']['cover_id'])]
-            max_cover = max(cover['images'], key=lambda x: x['height'])
-            return max_cover
+            return cover['images']
+        else:
+            return []
+
+    @property
+    def largest_cover(self):
+        cover_images = self.cover_images
+        if cover_images:
+            return max(cover_images, key=lambda x: x['height'])
         else:
             return None
 
@@ -159,11 +166,11 @@ class DBEvent(ndb.Model):
 
     @property
     def location_name(self):
-        return self.fb_event['info'].get('location')
+        return self.fb_event['info'].get('location', '')
 
     @property
     def venue(self):
-        return self.fb_event['info'].get('venue')
+        return self.fb_event['info'].get('venue', {})
 
     @property
     def street_address(self):

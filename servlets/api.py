@@ -363,31 +363,27 @@ class SettingsHandler(ApiHandler):
 
 
 def canonicalize_event_data(db_event, event_keywords):
-    fb_event = db_event.fb_event
     event_api = {}
-    for key in ['id', 'name', 'start_time']:
-        event_api[key] = fb_event['info'][key]
-    # Return an empty description, if we don't have a description for some reason
-    event_api['description'] = fb_event['info'].get('description', '')
+    event_api['id'] = db_event.fb_event_id
+    event_api['name'] = db_event.name
+    event_api['start_time'] = db_event.fb_event['info']['start_time']
+    event_api['description'] = db_event.description
     # end time can be optional, especially on single-day events that are whole-day events
-    event_api['end_time'] = fb_event['info'].get('end_time')
+    event_api['end_time'] = db_event.fb_event['info'].get('end_time')
 
     # cover images
-    if fb_event.get('cover_info'):
-        # Old FB API versions returned ints instead of strings, so let's stringify manually to ensure we can look up the cover_info
-        cover_id = str(fb_event['info']['cover']['cover_id'])
-        cover_images = sorted(fb_event['cover_info'][cover_id]['images'], key=lambda x: -x['height'])
+    cover_images = db_event.cover_images
+    if cover_images:
         event_api['cover'] = {
-            'cover_id': cover_id,
-            'images': cover_images,
+            'images': sorted(cover_images, key=lambda x: -x['height']),
         }
     else:
         event_api['cover'] = None
     event_api['picture'] = db_event.image_url
 
     # location data
-    if 'location' in fb_event['info']:
-        venue_location_name = fb_event['info']['location']
+    if db_event.location_name:
+        venue_location_name = db_event.location_name
     # We could do something like this...
     # elif db_event and db_event.actual_city_name:
     #    venue_location_name = db_event.actual_city_name
@@ -397,9 +393,9 @@ def canonicalize_event_data(db_event, event_keywords):
         # In these very rare cases (where we've manually set the location on a location-less event), return ''
         # TODO: We'd ideally like to return None, but unfortunately Android expects this to be non-null in 1.0.3 and earlier.
         venue_location_name = ""
-    venue = fb_event['info'].get('venue', {})
+    venue = db_event.venue
     if 'name' in venue and venue['name'] != venue_location_name:
-        logging.error("For event %s, venue name %r is different from location name %r", fb_event['info']['id'], venue['name'], venue_location_name)
+        logging.error("For event %s, venue name %r is different from location name %r", db_event.fb_event_id, venue['name'], venue_location_name)
     venue_id = None
     if 'id' in venue:
         venue_id = venue['id']
@@ -430,10 +426,7 @@ def canonicalize_event_data(db_event, event_keywords):
         'geocode': geocode,
     }
     # people data
-    if 'admins' in fb_event['info']:
-        event_api['admins'] = fb_event['info']['admins']['data']
-    else:
-        event_api['admins'] = None
+    event_api['admins'] = db_event.admins
 
     annotations = {}
     if db_event and db_event.creation_time:
@@ -457,9 +450,12 @@ def canonicalize_event_data(db_event, event_keywords):
 
     event_api['annotations'] = annotations
     # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only'
-    rsvp_fields = ['attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count']
-    if 'attending_count' in fb_event['info']:
-        event_api['rsvp'] = dict((x, fb_event['info'][x]) for x in rsvp_fields)
+    # rsvp_fields = ['attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count']
+    if db_event.attending_count or db_event.maybe_count:
+        event_api['rsvp'] = {
+            'attending_count': db_event.attending_count or 0,
+            'maybe_count': db_event.maybe_count or 0,
+        }
     else:
         event_api['rsvp'] = None
 
