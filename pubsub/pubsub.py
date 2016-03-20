@@ -17,7 +17,6 @@ from google.appengine.api import taskqueue
 import twitter
 
 from events import eventdata
-from events import event_locations
 import fb_api
 import keys
 from util import fetch
