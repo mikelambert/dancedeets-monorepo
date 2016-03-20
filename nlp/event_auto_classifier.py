@@ -15,7 +15,6 @@ from . import keywords
 from . import grammar
 from . import regex_keywords
 from . import rules
-from util import dates
 
 
 # house side?
@@ -92,8 +91,8 @@ def has_list_of_good_classes(classified_event):
             # TODO: Should do a better job of classifying the ambiguous music/dance types, based on the presence of non-ambiguous dance types too
             if (dance_class_style_matches or manual_dancers or dance_and_music_matches) and not dance_wrong_style_matches:
                 good_lines.append(dance_class_style_matches + manual_dancers + dance_and_music_matches)
-        start_time = dates.parse_fb_start_time(classified_event.fb_event)
-        end_time = dates.parse_fb_end_time(classified_event.fb_event)
+        start_time = classified_event.start_time
+        end_time = classified_event.end_time
         if len(good_lines) > len(sub_lines) / 10 and (not end_time or end_time.time() > datetime.time(12) or end_time - start_time > datetime.timedelta(hours=12)):
             return True, 'found good schedule: %s: %s' % ('\n'.join(sub_lines), good_lines)
     return False, ''
@@ -159,7 +158,7 @@ def is_battle(classified_event):
     #print has_competitors, has_sparse_keywords, classified_event.calc_inverse_keyword_density
     if not has_competitors and has_sparse_keywords:
         return (False, 'relevant keywords too sparse')
-    
+
     no_wrong_battles_processed = classified_event.processed_text.delete_with_rule(rules.WRONG_BATTLE)
     has_dance_battle = no_wrong_battles_processed.has_token(rules.DANCE_BATTLE)
     has_good_dance_battle = no_wrong_battles_processed.has_token(rules.GOOD_DANCE_BATTLE)
@@ -221,8 +220,8 @@ def is_audition(classified_event):
     return (False, 'no audition')
 
 # Workshop examples to search for:
-# - (Locking) 9.30am to 11.00am- 
-# - (Popping) 11.15am to 12.45pm 
+# - (Locking) 9.30am to 11.00am-
+# - (Popping) 11.15am to 12.45pm
 
 # - 16:30 - 17:30 - Maniek
 # - 17:40 - 18:40 - Sandy
@@ -233,7 +232,7 @@ def is_audition(classified_event):
 # 17H00 – 18H30 HOUSEDANCE
 # 18H30 – 20H00 POPPING
 
-# -------- 17:00 CLASE GRATUITA de House Dance con Crazy Toe 
+# -------- 17:00 CLASE GRATUITA de House Dance con Crazy Toe
 
 # Sala 2 Danza Contemporanea Inter Atzewi Dance
 # Company
@@ -252,20 +251,20 @@ def is_audition(classified_event):
 # Alex Wong - Ballet/Jazz
 # Mikey Trasoras - Hip Hop
 
-# Di 5. Juni 2012 
+# Di 5. Juni 2012
 # Performance Practice / Workshop Hip-Hop
-# 
-# Mi 6. Juni 2012 
+#
+# Mi 6. Juni 2012
 # Performance Practice / Workshop BodyParkour / Performance im öffentlichen Raum / Österreich TANZT - Abend 1 / Österreich TANZT – Eröffnungsfest im Café Publik
 
-# Commercial Dance 
+# Commercial Dance
 # Úterky od 29.5. - 26.6. v 18:30-19:30 hod. (60 min.)
 
 # LEECO & GIANINNI - SATURDAY, JUNE 16, 2012 @ 4:30PM
 # somehow combined with bios below?
 
 # SATURDAY July 14th, 2012
-# 11:00 -12:25 Krumpin - Valerie Chartier 
+# 11:00 -12:25 Krumpin - Valerie Chartier
 # 12:30 - 1:55 House - JoJo Diggs
 # 2:30 - 3:55 Dancehall - Neeks
 # 4:00 - 5:30 Waacking - Cherry & Ebony
@@ -285,7 +284,7 @@ def is_audition(classified_event):
 # ALREADY CONFIRMED INSTRUCTORS!
 # As of 06.14.12
 # Subject to Change
-# 
+#
 # Nika Kjlun
 # Mr. Lucky
 

@@ -161,8 +161,7 @@ class DisplayableEvent(object):
 
     @property
     def meta_description(self):
-        start_time = dates.parse_fb_start_time(self.event_info)
-        formatted_start_time = start_time.strftime('%Y/%m/%d @ %H:%M')
+        formatted_start_time = self.db_event.start_time.strftime('%Y/%m/%d @ %H:%M')
 
         formatted_location = join_valid(', ', [
             self.event_info['info'].get('location'),
@@ -205,11 +204,11 @@ class DisplayableEvent(object):
 
     @property
     def start_time(self):
-        return dates.parse_fb_start_time(self.event_info)
+        return self.db_event.start_time
 
     @property
     def end_time(self):
-        return dates.parse_fb_end_time(self.event_info)
+        return self.db_event.end_time
 
     @property
     def location_name(self):
