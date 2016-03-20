@@ -7,7 +7,6 @@ from . import event_classifier
 from . import keywords
 from . import grammar
 from .grammar import Any
-import styles
 
 ANY_BREAK = Any(
     keywords.STYLE_BREAK,
@@ -100,20 +99,20 @@ ANY_VOGUE = Any(
 )
 
 STYLES = {
-    styles.BREAK: ANY_BREAK,
-    styles.POP: ANY_POP,
-    styles.LOCK: ANY_LOCK,
-    styles.WAACK: ANY_WAACK,
-    styles.HOUSE: ANY_HOUSE,
-    styles.HIPHOP: ANY_HIPHOP,
-    styles.DANCEHALL: ANY_DANCEHALL,
-    styles.KRUMP: ANY_KRUMP,
-    styles.TURF: ANY_TURF,
-    styles.LITEFEET: ANY_LITEFEET,
-    styles.FLEX: ANY_FLEX,
-    styles.BEBOP: ANY_BEBOP,
-    styles.ALLSTYLE: ANY_ALLSTYLE,
-    styles.VOGUE: ANY_VOGUE,
+    event_types.BREAK: ANY_BREAK,
+    event_types.POP: ANY_POP,
+    event_types.LOCK: ANY_LOCK,
+    event_types.WAACK: ANY_WAACK,
+    event_types.HOUSE: ANY_HOUSE,
+    event_types.HIPHOP: ANY_HIPHOP,
+    event_types.DANCEHALL: ANY_DANCEHALL,
+    event_types.KRUMP: ANY_KRUMP,
+    event_types.TURF: ANY_TURF,
+    event_types.LITEFEET: ANY_LITEFEET,
+    event_types.FLEX: ANY_FLEX,
+    event_types.BEBOP: ANY_BEBOP,
+    event_types.ALLSTYLE: ANY_ALLSTYLE,
+    event_types.VOGUE: ANY_VOGUE,
 }
 
 ANY_BATTLE = Any(
@@ -151,10 +150,6 @@ ANY_AUDITION = Any(
     keywords.AUDITION,
 )
 
-ANY_REGULAR_CLASS = None#Any(
-# Hah, pull this in from studio classes site/subproject
-#)
-
 EVENT_TYPES = {
     event_types.BATTLE: ANY_BATTLE,
     event_types.PERFORMANCE: ANY_PERFORMANCE,
@@ -162,11 +157,10 @@ EVENT_TYPES = {
     event_types.PARTY: ANY_PARTY,
     event_types.SESSION: ANY_SESSION,
     event_types.AUDITION: ANY_AUDITION,
-    #event_types.REGULAR_CLASS: ANY_REGULAR_CLASS,
 }
 
 BROAD_STYLES = STYLES.copy()
-BROAD_STYLES[styles.BREAK] = ANY_BREAK_BROAD
+BROAD_STYLES[event_types.BREAK] = ANY_BREAK_BROAD
 
 
 def format_as_search_query(text, broad=True):
@@ -197,6 +191,7 @@ def find_rules_in_text(text, rule_dict):
                 found_styles[style] = tokens
     return found_styles.keys()
 
+
 def get_context(fb_event, keywords):
     name = fb_event['info'].get('name', '')
     description = fb_event['info'].get('description', '')
@@ -214,6 +209,7 @@ def get_context(fb_event, keywords):
             contexts.append('???????????')
     return contexts
 
+
 def find_rules(fb_event, styles):
     name = fb_event['info'].get('name', '').lower()
     name = name.replace('freestyle session', 'fs')
@@ -222,8 +218,10 @@ def find_rules(fb_event, styles):
         found_styles = find_rules_in_text(fb_event['info'].get('description', '').lower(), styles)
     return found_styles
 
+
 def find_styles(fb_event):
     return find_rules(fb_event, BROAD_STYLES)
+
 
 def find_event_types(fb_event):
     return find_rules(fb_event, EVENT_TYPES)

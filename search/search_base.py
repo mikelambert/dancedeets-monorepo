@@ -9,7 +9,6 @@ import event_types
 from loc import gmaps_api
 from loc import math
 from nlp import categories
-import styles
 from util import dates
 
 TIME_PAST = 'PAST'
@@ -20,12 +19,6 @@ TIME_ALL_FUTURE = 'ALL_FUTURE'
 FUTURE_INDEX_TIMES = [TIME_ONGOING, TIME_UPCOMING, TIME_ALL_FUTURE]
 
 TIME_LIST = [TIME_PAST, TIME_ONGOING, TIME_UPCOMING, TIME_ALL_FUTURE]
-
-CATEGORY_LOOKUP = dict([(x.index_name, x.public_name) for x in styles.STYLES + event_types.EVENT_TYPES])
-
-
-def humanize_categories(categories):
-    return [CATEGORY_LOOKUP[x] for x in categories]
 
 
 def no_wiki_or_html(form, field):
@@ -175,7 +168,7 @@ class SearchResult(object):
     end_time = property(lambda x: dates.parse_fb_timestamp(x.end_time_raw))
     fake_end_time = property(lambda x: dates.faked_end_time(x.start_time, x.end_time))
 
-    categories = property(lambda x: humanize_categories(x.data.get('categories', [])))
+    categories = property(lambda x: event_types.humanize_categories(x.data.get('categories', [])))
 
     def extended_categories(self):
         """Rewrites hiphop as streetjazz and jazzfunk sometimes when appropriate."""

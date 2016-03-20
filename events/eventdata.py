@@ -2,6 +2,7 @@ import logging
 
 from google.appengine.ext import ndb
 
+import event_types
 from loc import gmaps_api
 from util import urls
 
@@ -44,8 +45,12 @@ NAMESPACE_FACEBOOK = 'FB'
 class DBEvent(ndb.Model):
     """Stores custom data about our Event"""
 
+    @property
+    def id(self):
+        return str(self.key.string_id())
+
     def __get_namespace_and_id(self):
-        real_id = str(self.key.string_id())
+        real_id = self.id
         if ':' in real_id:
             namespace, namespaced_id = real_id.split(':')
         else:
@@ -127,3 +132,78 @@ class DBEvent(ndb.Model):
             return cls.query(cls.key.IN(keys)).fetch(len(keys), keys_only=True)
         else:
             return ndb.get_multi(keys)
+
+    @property
+    def name(self):
+        return self.fb_event['info'].get('name')
+
+    @property
+    def description(self):
+        return self.fb_event['info'].get('description')
+
+    @property
+    def categories(self):
+        return event_types.humanize_categories(self.auto_categories)
+
+    @property
+    def cover_metadata(self):
+        return self.fb_event['info'].get('cover')
+
+    @property
+    def largest_cover(self):
+        return get_largest_cover(self.fb_event)
+
+    @property
+    def location_name(self):
+        return self.fb_event['info'].get('location')
+
+    @property
+    def venue(self):
+        return self.fb_event['info'].get('venue')
+
+    @property
+    def street_address(self):
+        return self.venue.get('street')
+
+    @property
+    def city(self):
+        return self.venue.get('city')
+
+    @property
+    def state(self):
+        return self.venue.get('state')
+
+    @property
+    def city_state_country(self):
+        city_state_country = [x for x in [self.city, self.state, self.country] if x]
+        return ', '.join(city_state_country)
+
+    # @property
+    # def country(self):
+    #     return self.venue.get('country')
+    #
+    # @property
+    # def latitude(self):
+    #     return self.venue and self.venue.get('latitude')
+    #
+    # @property
+    # def longitude(self):
+    #     return self.venue and self.venue.get('longitude')
+
+    @property
+    def attending_count(self):
+        return self.fb_event['info'].get('attending_count')
+
+    @property
+    def maybe_count(self):
+        return self.fb_event['info'].get('maybe_count')
+
+    @property
+    def admins(self):
+        admins = self.fb_event['info'].get('admins', {}).get('data')
+        if not admins:
+            if self.fb_event['info'].get('owner'):
+                admins = [self.fb_event['info'].get('owner')]
+            else:
+                admins = []
+        return admins

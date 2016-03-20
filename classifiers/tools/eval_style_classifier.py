@@ -2,10 +2,12 @@
 
 import sys
 import time
+
 sys.path += ['.']
+
 from classifiers import processing
+import event_types
 from nlp import categories
-import styles
 
 all_ids = processing.load_all_ids()
 training_data = processing.load_classified_ids(all_ids)
@@ -26,13 +28,13 @@ def basic_match(fb_event):
         print fb_event['info'].get('name', '').encode('utf-8')
         print fb_event['info'].get('description', '').encode('utf-8')
 
-    if styles.LOCK in found_styles:
+    if event_types.LOCK in found_styles:
         print fb_event['info']['id']
         #contexts = categories.get_context(fb_event, styles['LOCK'])
         #for keyword, context in zip(styles['LOCK'], contexts):
         #    print keyword, repr(context)
 
-    return styles.LOCK in found_styles
+    return event_types.LOCK in found_styles
 
 a = time.time()
 print "Running auto classifier..."
@@ -46,7 +48,7 @@ score_card = processing.ClassifierScoreCard(training_data, classifier_data, posi
 
 print "Found %s true-positives, %s false-positives" % (len(score_card.true_positives), len(score_card.false_positives))
 print "Leaves %s to be manually-classified" % (len(score_card.false_negatives))
-                
+
 if full_run:
     score_card.write_to_disk('scratch/')
 

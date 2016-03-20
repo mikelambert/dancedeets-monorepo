@@ -18,12 +18,12 @@ from google.appengine.ext import db
 from google.appengine.ext import deferred
 
 from users import users
+import event_types
 import facebook
 import fb_api
 from logic import backgrounder
 from logic import mobile
 from rankings import rankings
-import styles
 from users import user_creation
 from util import abbrev
 from util import dates
@@ -513,7 +513,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['full_hostname'] = self._get_full_hostname()
 
 
-        self.display['keyword_tokens'] = [{'value': x.public_name} for x in styles.STYLES]
+        self.display['keyword_tokens'] = [{'value': x.public_name} for x in event_types.STYLES]
         fb_permissions = 'rsvp_event,email,user_events'
         if self.request.get('all_access'):
             fb_permissions += ',read_friendlists,manage_pages'
@@ -533,7 +533,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         self.display['ip_location'] = self.get_location_from_headers()
 
-        self.display['styles'] = styles.STYLES
+        self.display['styles'] = event_types.STYLES
         self.display['us_cities'] = [
             'New York, NY',
             'Los Angeles, CA',

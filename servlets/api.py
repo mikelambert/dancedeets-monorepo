@@ -1,7 +1,6 @@
 import datetime
 import json
 import logging
-import re
 import traceback
 import urllib
 
@@ -9,6 +8,7 @@ from google.appengine.api import taskqueue
 
 import app
 import base_servlet
+import event_types
 import fb_api
 from events import eventdata
 from loc import formatting
@@ -445,7 +445,7 @@ def canonicalize_event_data(db_event, event_keywords):
     else:
         pass
     if db_event: # TODO: When is this not true?
-        annotations['categories'] = search_base.humanize_categories(db_event.auto_categories)
+        annotations['categories'] = event_types.humanize_categories(db_event.auto_categories)
 
     event_api['annotations'] = annotations
     # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only'
