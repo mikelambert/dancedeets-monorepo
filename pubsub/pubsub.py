@@ -37,7 +37,7 @@ def eventually_publish_event(event_id, token_nickname=None):
     db_event = eventdata.DBEvent.get_by_id(event_id)
     if db_event.fb_event['empty']:
         return
-    if dates.parse_fb_end_time(db_event.fb_event, need_result=True) < datetime.datetime.now():
+    if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
         return
     location_info = event_locations.LocationInfo(db_event.fb_event, db_event)
     logging.info("Publishing event %s with latlng %s", event_id, location_info.geocode)
@@ -141,16 +141,11 @@ def get_twitter_config(t):
     return config
 
 def format_twitter_post(config, db_event, fb_event, media, handles=None):
-    url = campaign_url(fb_event['info']['id'], 'twitter_feed')
+    url = campaign_url(db_event.fb_event_id, 'twitter_feed')
     title = fb_event['info']['name']
     city = db_event.actual_city_name
 
-    start_time = dates.parse_fb_start_time(fb_event)
-    #TODO(lambert): Some day, when we are doing more local relevant data, list the time here, and do it at the right time accounting for timezone offsets
-    #if start_time.date() == datetime.date.today():
-    #    datetime_string = start_time.strftime(TIME_FORMAT)
-    #else:
-    datetime_string = start_time.strftime(DATE_FORMAT)
+    datetime_string = db_event.start_time.strftime(DATE_FORMAT)
 
     short_url_length = config['short_url_length']
     characters_reserved_per_media = config['characters_reserved_per_media']
@@ -222,9 +217,8 @@ class LookupGeoTarget(fb_api.LookupType):
 
 def facebook_post(auth_token, db_event):
     fb_event = db_event.fb_event
-    link = campaign_url(fb_event['info']['id'], 'fb_feed')
-    start_time = dates.parse_fb_start_time(fb_event)
-    datetime_string = start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
+    link = campaign_url(db_event.fb_event_id, 'fb_feed')
+    datetime_string = db_event.start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
 
     page_id = auth_token.token_nickname
     endpoint = 'v2.4/%s/feed' % page_id
