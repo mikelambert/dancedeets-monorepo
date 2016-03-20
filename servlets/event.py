@@ -125,18 +125,17 @@ class DisplayableEvent(object):
 
     def __init__(self, db_event):
         self.db_event = db_event
-        self.event_info = db_event.fb_event
 
     def location_schema_html(self):
         html = [
             '<span itemscope itemprop="location" itemtype="http://schema.org/Place">',
-            '  <meta itemprop="name" content="%s" />' % self.location_name,
+            '  <meta itemprop="name" content="%s" />' % self.db_event.location_name,
         ]
         if self.latitude:
             html += [
                 '  <span itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">',
-                '    <meta itemprop="latitude" content="%s" />' % self.latitude,
-                '    <meta itemprop="longitude" content="%s" />' % self.longitude,
+                '    <meta itemprop="latitude" content="%s" />' % self.db_event.latitude,
+                '    <meta itemprop="longitude" content="%s" />' % self.db_event.longitude,
                 '  </span>',
             ]
         if self.venue:
@@ -144,13 +143,13 @@ class DisplayableEvent(object):
                 '  <span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">',
             ]
             if self.street_address:
-                html += ['    <meta itemprop="streetAddress" content="%s"/>' % self.street_address]
+                html += ['    <meta itemprop="streetAddress" content="%s"/>' % self.db_event.street_address]
             if self.city:
-                html += ['    <meta itemprop="addressLocality" content="%s"/>' % self.city]
+                html += ['    <meta itemprop="addressLocality" content="%s"/>' % self.db_event.city]
             if self.street_address:
-                html += ['    <meta itemprop="addressRegion" content="%s"/>' % self.state]
+                html += ['    <meta itemprop="addressRegion" content="%s"/>' % self.db_event.state]
             if self.street_address:
-                html += ['    <meta itemprop="addressCountry" content="%s"/>' % self.country]
+                html += ['    <meta itemprop="addressCountry" content="%s"/>' % self.db_event.country]
             html += ['  </span>']
         html += [
             '</span>',
@@ -162,14 +161,14 @@ class DisplayableEvent(object):
         formatted_start_time = self.db_event.start_time.strftime('%Y/%m/%d @ %H:%M')
 
         formatted_location = join_valid(', ', [
-            self.event_info['info'].get('location'),
-            self.event_info['info'].get('venue', {}).get('city'),
-            self.event_info['info'].get('venue', {}).get('state'),
+            self.db_event.location_name,
+            self.db_event.city,
+            self.db_event.state,
         ])
         return join_valid(': ', [
             formatted_start_time,
             formatted_location,
-            self.event_info['info'].get('description'),
+            self.db_event.description,
         ])
 
     def __getattr__(self, name):
