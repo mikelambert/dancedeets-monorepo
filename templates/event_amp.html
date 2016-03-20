@@ -2,7 +2,7 @@
 <html amp lang="en">
   <head>
     <meta charset="utf-8">
-    <title>{{ event.info.name|e }}</title>
+    <title>{{ displayable_event.name|e }}</title>
     <link rel="canonical" href="{{ canonical_url }}" />
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no">
 
@@ -35,9 +35,9 @@
         "@context": "http://schema.org",
         "@type": "NewsArticle",
         "mainEntityOfPage": "{{ canonical_url }}",
-        "headline": "{{ event.info.name|e }}",
+        "headline": "{{ displayable_event.name|e }}",
         "datePublished": "{{ date_format('%Y-%m-%dT%H:%M:00Z', displayable_event.creation_time) }}",
-        "description": "{{ event.info.description|e }}",
+        "description": "{{ displayable_event.description|e }}",
         "author": {
           "@type": "Organization",
           "name": "DanceDeets"
@@ -115,7 +115,7 @@
 <div class="container">
 
   <div class="row">
-    <h1 class="event-page-title">{{ event.info.name }}</h1>
+    <h1 class="event-page-title">{{ displayable_event.name }}</h1>
   </div>
 
   <div class="row">
@@ -130,15 +130,15 @@
       {% if displayable_event.cover_metadata %}
         <li><i class="event-info-icon fa-li fa fa-picture-o fa-lg"></i><b><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
       {% endif %}
-      <li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ raw_fb_event_url(event.info.id) }}">See Event on Facebook</a></b></li>
+      <li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ displayable_event.source_url }}">See Event on Facebook</a></b></li>
       <li><i class="event-info-icon fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
       {{ duration_human_format(displayable_event.start_time, end_time) }}
       </li>
-      {% if event.info.attending_count %}
+      {% if displayable_event.attending_count %}
         <li><i class="event-info-icon fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
-        {{ event.info.attending_count }} Attending
-        {%- if event.info.maybe_count -%}
-          , {{ event.info.maybe_count }} Maybe
+        {{ displayable_event.attending_count }} Attending
+        {%- if displayable_event.maybe_count -%}
+          , {{ displayable_event.maybe_count }} Maybe
         {%- endif %}
         </li>
       {% endif %}
@@ -154,8 +154,8 @@
       <li><i class="event-info-icon fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
       <div>
       {% if displayable_event.location_name %}
-        {% if event.info.venue and event.info.venue.id %}
-          <a class="link-event-venue" href="https://www.facebook.com/{{ event.info.venue.id }}">{{ displayable_event.location_name }}</a>
+        {% if displayable_event.venue and displayable_event.venue.id %}
+          <a class="link-event-venue" href="https://www.facebook.com/{{ displayable_event.venue.id }}">{{ displayable_event.location_name }}</a>
         {% else %}
           {{ displayable_event.location_name }}
         {% endif %}
@@ -177,12 +177,12 @@
       {% endif %}
     </div>
 
-    {% if event.info.description %}
+    {% if displayable_event.description %}
     <div class="col-sm-7">
-      <h1 class="event-page-title visible-xs-block">{{ event.info.name }}</h1>
+      <h1 class="event-page-title visible-xs-block">{{ displayable_event.name }}</h1>
       <div><b>Description:</b></div>
       <span>
-        {{ event.info.description|format_html|linkify }}
+        {{ displayable_event.description|format_html|linkify }}
       </span>
     </div>
     {% endif %}

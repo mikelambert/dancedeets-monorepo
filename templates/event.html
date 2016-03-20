@@ -86,7 +86,7 @@
 			{% if displayable_event.cover_metadata %}
 				<li><i class="event-info-icon fa-li fa fa-picture-o fa-lg"></i><b><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
 			{% endif %}
-			<li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ raw_fb_event_url(displayable_event.id) }}">See Event on Facebook</a></b></li>
+			<li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ displayable_event.source_url }}">See Event on Facebook</a></b></li>
 			<li><div class="product-social-links" style="padding-bottom: 0 1em; height: 20px">
 				<a class="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
 				<div class="link-event-share fb-share-button" data-layout="button"></div>

@@ -111,11 +111,17 @@ class DBEvent(ndb.Model):
     def has_content(self):
         return not self.fb_event['empty']
 
+    @property
     def start_time_string(self):
         return self.fb_event['info']['start_time']
 
+    @property
     def end_time_string(self):
         return self.fb_event['info'].get('end_time')
+
+    @property
+    def source_url(self):
+        return urls.raw_fb_event_url(self.fb_event_id)
 
     @property
     def empty_reason(self):
