@@ -383,7 +383,7 @@ def canonicalize_event_data(db_event, event_keywords):
         }
     else:
         event_api['cover'] = None
-    event_api['picture'] = eventdata.get_event_image_url(fb_event)
+    event_api['picture'] = db_event.image_url
 
     # location data
     if 'location' in fb_event['info']:

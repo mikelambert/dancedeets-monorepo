@@ -9,21 +9,6 @@ from util import urls
 REGION_RADIUS = 200 # kilometers
 
 
-def get_event_image_url(fb_event):
-    # old school data
-    picture_url = fb_event.get('fql_info') or fb_event.get('picture_urls')
-    # TODO(FB2.0): cleanup!
-    if fb_event.get('picture'):
-        if isinstance(fb_event['picture'], basestring):
-            return fb_event['picture']
-        else:
-            return fb_event['picture']['data']['url']
-    elif picture_url and picture_url['data']:
-        return picture_url['data'][0]['pic_big']
-    else:
-        logging.error("Error loading picture for event id %s", fb_event['info']['id'])
-        return urls.fb_event_image_url(fb_event['info']['id'])
-
 # valid parameters for creating_method= argument below
 CM_AUTO = 'CM_AUTO'
 CM_ADMIN = 'CM_ADMIN'
@@ -155,6 +140,22 @@ class DBEvent(ndb.Model):
             return max_cover
         else:
             return None
+
+    @property
+    def image_url(self):
+        # old school data
+        picture_url = self.fb_event.get('fql_info') or self.fb_event.get('picture_urls')
+        # TODO(FB2.0): cleanup!
+        if self.fb_event.get('picture'):
+            if isinstance(self.fb_event['picture'], basestring):
+                return self.fb_event['picture']
+            else:
+                return self.fb_event['picture']['data']['url']
+        elif picture_url and picture_url['data']:
+            return picture_url['data'][0]['pic_big']
+        else:
+            logging.error("Error loading picture for event id %s", self.fb_event['info']['id'])
+            return urls.fb_event_image_url(self.fb_event['info']['id'])
 
     @property
     def location_name(self):

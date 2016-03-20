@@ -81,8 +81,8 @@ class DisplayEvent(ndb.Model):
             keywords = [unicode(x) for x in db_event.event_keywords]
             categories = [unicode(x) for x in db_event.auto_categories]
             display_event.data = {
-                'name': db_event.fb_event['info'].get('name'),
-                'image': eventdata.get_event_image_url(db_event.fb_event),
+                'name': db_event.name,
+                'image': db_event.image_url,
                 'cover': db_event.largest_cover,
                 'start_time': db_event.fb_event['info']['start_time'],
                 'end_time': db_event.fb_event['info'].get('end_time'),
