@@ -88,11 +88,14 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
                 result = [result]
             self.write_json_error({'success': False, 'errors': [unicode(x) for x in result]})
 
+
 def apiroute(path, *args, **kwargs):
     return app.route('/api/v(\d+)\.(\d+)' + path, *args, **kwargs)
 
+
 class RetryException(Exception):
     pass
+
 
 def retryable(func):
     def wrapped_func(*args, **kwargs):
@@ -106,10 +109,10 @@ def retryable(func):
             logging.error(e)
             logging.error("Retrying URL %s", url)
             logging.error("With Payload %r", body)
-            taskqueue.add(method='POST', url=url, payload=body,
-                countdown=60*60)
+            taskqueue.add(method='POST', url=url, payload=body, countdown=60 * 60)
             raise
     return wrapped_func
+
 
 @apiroute('/search')
 class SearchHandler(ApiHandler):
@@ -221,15 +224,18 @@ class SearchHandler(ApiHandler):
             }
         self.write_json_success(json_response)
 
+
 class LookupDebugToken(fb_api.LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
             ('token', cls.url('debug_token?input_token=%s' % object_id)),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fb_api.USERLESS_UID, object_id, 'OBJ_DEBUG_TOKEN')
+
 
 def update_user(servlet, user, json_body):
     location = json_body.get('location')
@@ -253,6 +259,7 @@ def update_user(servlet, user, json_body):
         tokens = user.device_tokens('ios')
         if android_token not in tokens:
             tokens.append(android_token)
+
 
 # Released a version of iOS that requested from /api/v1.1auth, so let's handle that here for awhile
 @apiroute('/auth')
@@ -307,6 +314,7 @@ class AuthHandler(ApiHandler):
             location = self.json_body.get('location')
             user_creation.create_user_with_fbuser(self.fb_uid, self.fb_user, access_token, access_token_expires, location, client=client)
         self.write_json_success()
+
 
 @apiroute('/user')
 class UserUpdateHandler(ApiHandler):
@@ -381,7 +389,7 @@ def canonicalize_event_data(db_event, event_keywords):
     if 'location' in fb_event['info']:
         venue_location_name = fb_event['info']['location']
     # We could do something like this...
-    #elif db_event and db_event.actual_city_name:
+    # elif db_event and db_event.actual_city_name:
     #    venue_location_name = db_event.actual_city_name
     # ...but really, this would return the overridden/remapped address name, which would likely just be a "City" anyway.
     # A city isn't particularly useful for our clients trying to display the event on a map.
@@ -425,7 +433,7 @@ def canonicalize_event_data(db_event, event_keywords):
     if 'admins' in fb_event['info']:
         event_api['admins'] = fb_event['info']['admins']['data']
     else:
-        event_api['admins'] =  None
+        event_api['admins'] = None
 
     annotations = {}
     if db_event and db_event.creation_time:
@@ -457,6 +465,7 @@ def canonicalize_event_data(db_event, event_keywords):
 
     return event_api
 
+
 @apiroute('/events/\d+/?')
 class EventHandler(ApiHandler):
     def requires_login(self):
@@ -477,15 +486,13 @@ class EventHandler(ApiHandler):
             db_event = eventdata.DBEvent.get_by_id(event_id)
             if not db_event:
                 self.add_error('No event found')
-            elif db_event.fb_event['empty']:
-                self.add_error('This event was %s.' % db_event.fb_event['empty'])
+            elif not db_event.has_content():
+                self.add_error('This event was empty: %s.' % db_event.empty_reason)
 
         self.errors_are_fatal()
 
         json_data = canonicalize_event_data(db_event, None)
 
         # Ten minute expiry on data we return
-        self.response.headers['Cache-Control'] = 'max-age=%s' % (60*10)
+        self.response.headers['Cache-Control'] = 'max-age=%s' % (60 * 10)
         self.write_json_success(json_data)
-
-

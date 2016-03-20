@@ -133,8 +133,8 @@ class DBEvent(ndb.Model):
         else:
             return ndb.get_multi(keys)
 
-    def is_empty(self):
-        return self.fb_event['empty']
+    def has_content(self):
+        return not self.fb_event['empty']
 
     @property
     def empty_reason(self):
@@ -142,11 +142,11 @@ class DBEvent(ndb.Model):
 
     @property
     def name(self):
-        return self.fb_event['info'].get('name')
+        return self.fb_event['info'].get('name', '')
 
     @property
     def description(self):
-        return self.fb_event['info'].get('description')
+        return self.fb_event['info'].get('description', '')
 
     @property
     def categories(self):

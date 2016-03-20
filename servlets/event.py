@@ -86,7 +86,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         db_event = eventdata.DBEvent.get_by_id(event_id)
         if not db_event:
             self.abort(404)
-        if db_event.is_empty():
+        if not db_event.has_content():
             self.response.out.write('This event was %s.' % db_event.empty_reason)
             return
 
@@ -419,7 +419,7 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
         db_events = [x for x in db_events if x.anywhere is False]
         template_events = []
         for db_event in db_events:
-            if not db_event.fb_event['empty']:
+            if db_event.has_content():
                 template_events.append(dict(fb_event=db_event.fb_event, db_event=db_event))
         self.display['events'] = template_events
         self.render_template('admin_nolocation_events')

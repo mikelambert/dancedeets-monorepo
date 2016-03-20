@@ -13,13 +13,13 @@ import urlparse
 
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
+from google.appengine.api import taskqueue
 import twitter
 
 from events import eventdata
 from events import event_locations
 import fb_api
 import keys
-from util import dates
 from util import fetch
 from util import urls
 
@@ -29,13 +29,12 @@ consumer_secret = keys.get("twitter_consumer_secret")
 DATE_FORMAT = "%Y/%m/%d"
 TIME_FORMAT = "%H:%M"
 
-from google.appengine.api import taskqueue
-
 EVENT_PULL_QUEUE = 'event-publishing-pull-queue'
+
 
 def eventually_publish_event(event_id, token_nickname=None):
     db_event = eventdata.DBEvent.get_by_id(event_id)
-    if db_event.fb_event['empty']:
+    if not db_event.has_content():
         return
     if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
         return
@@ -48,8 +47,8 @@ def eventually_publish_event(event_id, token_nickname=None):
 
     args = []
     if token_nickname:
-        args.append(OAuthToken.token_nickname==token_nickname)
-    oauth_tokens = OAuthToken.query(OAuthToken.valid_token==True, *args).fetch(100)
+        args.append(OAuthToken.token_nickname == token_nickname)
+    oauth_tokens = OAuthToken.query(OAuthToken.valid_token == True, *args).fetch(100)
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
         logging.info("Evaluating token %s", token)
@@ -61,12 +60,13 @@ def eventually_publish_event(event_id, token_nickname=None):
         logging.info("Adding task with name %s", name)
         q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
 
+
 def pull_and_publish_event():
     oauth_tokens = OAuthToken.query(
-        OAuthToken.valid_token==True,
+        OAuthToken.valid_token == True,
         ndb.OR(
-            OAuthToken.next_post_time<datetime.datetime.now(),
-            OAuthToken.next_post_time==None
+            OAuthToken.next_post_time < datetime.datetime.now(),
+            OAuthToken.next_post_time == None
         )
     ).fetch(100)
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
@@ -85,11 +85,12 @@ def pull_and_publish_event():
             token.next_post_time = next_post_time
             token.put()
 
+
 def post_event_id_with_authtoken(event_id, auth_token):
     event_id = event_id
     db_event = eventdata.DBEvent.get_or_insert(event_id)
-    if db_event.fb_event['empty']:
-        logging.warning("Failed to post event: %s, due to %s", event_id, db_event.fb_event['empty'])
+    if not db_event.has_content():
+        logging.warning("Failed to post event: %s, due to %s", event_id, db_event.empty_reason)
         return
     if auth_token.application == APP_TWITTER:
         try:
@@ -110,6 +111,7 @@ def post_event_id_with_authtoken(event_id, auth_token):
     else:
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
 
+
 def create_media_on_twitter(t, fb_event):
     cover = eventdata.get_largest_cover(fb_event)
     if not cover:
@@ -122,6 +124,7 @@ def create_media_on_twitter(t, fb_event):
         t.domain = 'api.twitter.com'
     return result
 
+
 def campaign_url(eid, source):
     return urls.fb_event_url(eid, {
         'utm_source': source,
@@ -130,7 +133,8 @@ def campaign_url(eid, source):
     })
 
 TWITTER_CONFIG_KEY = 'TwitterConfig'
-TWITTER_CONFIG_EXPIRY = 24*60*60
+TWITTER_CONFIG_EXPIRY = 24 * 60 * 60
+
 
 def get_twitter_config(t):
     config = memcache.get(TWITTER_CONFIG_KEY)
@@ -139,6 +143,7 @@ def get_twitter_config(t):
     config = t.help.configuration()
     memcache.set(TWITTER_CONFIG_KEY, json.dumps(config), TWITTER_CONFIG_EXPIRY)
     return config
+
 
 def format_twitter_post(config, db_event, fb_event, media, handles=None):
     url = campaign_url(db_event.fb_event_id, 'twitter_feed')
@@ -175,6 +180,7 @@ def format_twitter_post(config, db_event, fb_event, media, handles=None):
     result = u"%s%s %s%s" % (prefix, final_title, url, handle_string)
     return result
 
+
 def twitter_post(auth_token, db_event):
     t = twitter.Twitter(
         auth=twitter.OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, consumer_key, consumer_secret))
@@ -191,9 +197,9 @@ def twitter_post(auth_token, db_event):
     TWITTER_HANDLE_LENGTH = 16
     description = db_event.fb_event['info'].get('description') or ''
     twitter_handles = re.findall(r'\s@[A-za-z0-9_]+', description)
-    twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+TWITTER_HANDLE_LENGTH]
+    twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1 + TWITTER_HANDLE_LENGTH]
     twitter_handles2 = re.findall(r'twitter\.com/([A-za-z0-9_]+)', description)
-    twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1+TWITTER_HANDLE_LENGTH]
+    twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1 + TWITTER_HANDLE_LENGTH]
     # This is the only twitter account allowed to @mention, to avoid spamming everyone...
     if auth_token.token_nickname == 'BigTwitter':
         # De-dupe these lists
@@ -211,9 +217,11 @@ class LookupGeoTarget(fb_api.LookupType):
         return [
             ('search', cls.url('search?type=adgeolocation&%s' % urlparams)),
         ]
+
     @classmethod
     def cache_key(cls, query, fetching_uid):
         return (fb_api.USERLESS_UID, query, 'OBJ_GEO_TARGET')
+
 
 def facebook_post(auth_token, db_event):
     fb_event = db_event.fb_event
@@ -225,7 +233,7 @@ def facebook_post(auth_token, db_event):
     fbl = fb_api.FBLookup(None, auth_token.oauth_token)
 
     post_values = {}
-    #post_values['message'] = fb_event['info']['name']
+    # post_values['message'] = fb_event['info']['name']
     post_values['link'] = link
     post_values['name'] = fb_event['info']['name'].encode('utf8')
     post_values['caption'] = datetime_string
@@ -310,8 +318,7 @@ authorize_url = 'https://twitter.com/oauth/authorize'
 
 APP_TWITTER = 'APP_TWITTER'
 APP_FACEBOOK = 'APP_FACEBOOK' # a butchering of OAuthToken!
-#...instagram?
-#...tumblr?
+
 
 class OAuthToken(ndb.Model):
     user_id = ndb.StringProperty()
@@ -328,8 +335,8 @@ class OAuthToken(ndb.Model):
 
     json_data = ndb.JsonProperty()
 
-    #search criteria? location? radius? search terms?
-    #post on event find? post x hours before event? multiple values?
+    # search criteria? location? radius? search terms?
+    # post on event find? post x hours before event? multiple values?
 
     def queue_id(self):
         return str(self.key.id())
@@ -355,7 +362,11 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
 
     request_token = dict(urlparse.parse_qsl(content))
 
-    auth_tokens = OAuthToken.query(OAuthToken.user_id==user_id, OAuthToken.token_nickname==token_nickname, OAuthToken.application==APP_TWITTER).fetch(1)
+    auth_tokens = OAuthToken.query(
+        OAuthToken.user_id == user_id,
+        OAuthToken.token_nickname == token_nickname,
+        OAuthToken.application == APP_TWITTER
+    ).fetch(1)
     if auth_tokens:
         auth_token = auth_tokens[0]
     else:
@@ -375,13 +386,17 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
 
     return "%s?oauth_token=%s" % (authorize_url, request_token['oauth_token'])
 
-#user comes to:
-#/sign-in-with-twitter/?
+# user comes to:
+# /sign-in-with-twitter/?
 #        oauth_token=NPcudxy0yU5T3tBzho7iCotZ3cnetKwcTIRlX0iwRl0&
 #        oauth_verifier=uw7NjWHT6OJ1MpJOXsHfNxoAhPKpgI8BlYDhxEjIBY
 
+
 def twitter_oauth2(oauth_token, oauth_verifier):
-    auth_tokens = OAuthToken.query(OAuthToken.temp_oauth_token==oauth_token, OAuthToken.application==APP_TWITTER).fetch(1)
+    auth_tokens = OAuthToken.query(
+        OAuthToken.temp_oauth_token == oauth_token,
+        OAuthToken.application == APP_TWITTER
+    ).fetch(1)
     if not auth_tokens:
         return None
     auth_token = auth_tokens[0]
@@ -390,8 +405,7 @@ def twitter_oauth2(oauth_token, oauth_verifier):
     # request token to sign this request. After this is done you throw away the
     # request token and use the access token returned. You should store this
     # access token somewhere safe, like a database, for future use.
-    token = oauth.Token(oauth_token,
-        auth_token.temp_oauth_token_secret)
+    token = oauth.Token(oauth_token, auth_token.temp_oauth_token_secret)
     token.set_verifier(oauth_verifier)
     consumer = oauth.Consumer(consumer_key, consumer_secret)
     client = oauth.Client(consumer, token)
@@ -401,7 +415,7 @@ def twitter_oauth2(oauth_token, oauth_verifier):
     auth_token.oauth_token = access_token['oauth_token']
     auth_token.oauth_token_secret = access_token['oauth_token_secret']
     auth_token.valid_token = True
-    auth_token.time_between_posts = 5*60 # every 5 minutes
+    auth_token.time_between_posts = 5 * 60 # every 5 minutes
     auth_token.put()
     return auth_token
 
@@ -412,6 +426,7 @@ class LookupUserAccounts(fb_api.LookupType):
         return [
             ('accounts', cls.url('%s/accounts' % object_id)),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_USER_ACCOUNTS')
@@ -426,7 +441,7 @@ def facebook_auth(fbl, page_uid, country_filter):
     page = pages[0]
     page_token = page['access_token']
 
-    auth_tokens = OAuthToken.query(OAuthToken.user_id==fbl.fb_uid, OAuthToken.token_nickname==page_uid, OAuthToken.application==APP_FACEBOOK).fetch(1)
+    auth_tokens = OAuthToken.query(OAuthToken.user_id == fbl.fb_uid, OAuthToken.token_nickname == page_uid, OAuthToken.application == APP_FACEBOOK).fetch(1)
     if auth_tokens:
         auth_token = auth_tokens[0]
     else:
@@ -436,9 +451,8 @@ def facebook_auth(fbl, page_uid, country_filter):
     auth_token.application = APP_FACEBOOK
     auth_token.valid_token = True
     auth_token.oauth_token = page_token
-    auth_token.time_between_posts = 5*60
+    auth_token.time_between_posts = 5 * 60
     if country_filter:
         auth_token.country_filters += country_filter.upper()
     auth_token.put()
     return auth_token
-
