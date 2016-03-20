@@ -38,12 +38,12 @@ def eventually_publish_event(event_id, token_nickname=None):
         return
     if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
         return
-    location_info = event_locations.LocationInfo(db_event.fb_event, db_event)
-    logging.info("Publishing event %s with latlng %s", event_id, location_info.geocode)
-    if not location_info.geocode:
+    geocode = db_event.get_geocode()
+    logging.info("Publishing event %s with latlng %s", event_id, geocode)
+    if not geocode:
         # Don't post events without a location. It's too confusing...
         return
-    event_country = location_info.geocode.country()
+    event_country = geocode.country()
 
     args = []
     if token_nickname:
@@ -300,9 +300,9 @@ def get_targeting_data(fbl, fb_event, db_event):
             # if we want state-level targeting, 'region_id' would be the city's associated state
 
     if not short_country:
-        location_info = event_locations.LocationInfo(fb_event, db_event)
-        if location_info.geocode:
-            short_country = location_info.geocode.country()
+        geocode = db_event.get_geocode()
+        if geocode:
+            short_country = geocode.country()
 
     feed_targeting = {}
     if short_country:

@@ -106,7 +106,6 @@ def update_remapped_address(fb_event, new_remapped_address):
 
 class LocationInfo(object):
     def __init__(self, fb_event, db_event=None, debug=False):
-        self.geocode = None
         self.exact_from_event = False
         self.overridden_address = None
         self.fb_address = None
@@ -114,12 +113,11 @@ class LocationInfo(object):
         self.final_address = None
 
         has_overridden_address = db_event and db_event.address
-        has_geocode = db_event and db_event.has_geocode()
         if not has_overridden_address or debug:
             self.final_latlng = _get_latlng_from_event(fb_event)
             if self.final_latlng:
                 self.exact_from_event = True
-                self.geocode = db_event.get_geocode() if has_geocode else gmaps_api.get_geocode(latlng=self.final_latlng)
+                self.geocode = gmaps_api.get_geocode(latlng=self.final_latlng)
                 self.fb_address = formatting.format_geocode(self.geocode)
                 self.remapped_address = None
             else:
@@ -132,15 +130,14 @@ class LocationInfo(object):
             self.overridden_address = db_event.address
             self.final_address = self.overridden_address
 
-        # Either a remapped, overridden, or fb address (without lat/long)
-        if self.final_address is not None:
+        if not self.exact_from_event:
             logging.info("Final address is %r", self.final_address)
             if self.online:
                 self.geocode = None
-            elif has_geocode:
-                self.geocode = db_event.get_geocode()
-            else:
+            elif self.final_address is not None:
                 self.geocode = gmaps_api.get_geocode(address=self.final_address)
+            else:
+                self.geocode = None
 
     @property
     def online(self):
