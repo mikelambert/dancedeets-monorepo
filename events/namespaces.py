@@ -1,7 +1,7 @@
 
 KOREA_SDK = 'street-dance-korea'
 JAPAN_DD = 'dance-delight'
-JAPAN_DL = 'dance-life'
+JAPAN_TDL = 'tokyo-dance-life'
 JAPAN_DEWS = 'dews'
 JAPAN_ETS = 'enter-the-stage'
 FACEBOOK = 'FB'
@@ -24,11 +24,11 @@ _NAMESPACE_LIST = [
     Namespace(
         JAPAN_DD,
         'Dance Delight',
-        'http://et-stage.net/event_list.php',
+        'http://www.dancedelight.net/wordpress/?cat=6',
         lambda x: 'http://et-stage.net/event/%s/' % x.namespaced_id,
     ),
     Namespace(
-        JAPAN_DL,
+        JAPAN_TDL,
         'Dance Life',
         'http://www.tokyo-dancelife.com/event/',
         lambda x: 'http://www.tokyo-dancelife.com/event/%s/%s.php' % (x.start_time.strftime('%Y_%m'), x.namespaced_id),
