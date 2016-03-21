@@ -41,7 +41,7 @@ def make_requests(path, params):
     return {'prod_result': result, 'dev_result': dev_result}
 
 
-class BatchSaveToServerPipeline(object):
+class SaveToServerPipeline(object):
     server_path = None
 
     def open_spider(self, spider):

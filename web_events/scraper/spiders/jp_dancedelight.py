@@ -71,7 +71,7 @@ class DanceDelightScraper(items.WebEventScraper):
         jp_spider.setup_location(venue, jp_addresses, item)
 
         content_date = ''.join(response.css('.contentdate').xpath('.//text()').extract())
-        item['starttime'], item['endtime'] = self.parseDateTimes(content_date, full_description)
+        item['start_time'], item['end_time'] = self.parseDateTimes(content_date, full_description)
 
         #item['latitude'] = latlng['lat']
         #item['longitude'] = latlng['lng']

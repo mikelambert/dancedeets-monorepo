@@ -72,7 +72,7 @@ class EnterTheStageScraper(items.WebEventScraper):
         # email = _get('u512-4')
 
         item['description'] = _get('u468-156')
-        item['starttime'], item['endtime'] = parse_times(_get('u506-2'))
+        item['start_time'], item['end_time'] = parse_times(_get('u506-2'))
 
         item['location_name'] = _get('u507-4')
         item['location_address'] = _get('u509-11')

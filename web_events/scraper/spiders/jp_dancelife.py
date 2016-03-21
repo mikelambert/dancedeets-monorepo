@@ -65,7 +65,7 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
         venue = items.get_line_after(item['description'], ur'場所|会場')
         jp_spider.setup_location(venue, jp_addresses, item)
 
-        item['starttime'], item['endtime'] = self.parseDateTimes(response)
+        item['start_time'], item['end_time'] = self.parseDateTimes(response)
 
         #item['latitude'] = latlng['lat']
         #item['longitude'] = latlng['lng']

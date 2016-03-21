@@ -104,7 +104,7 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
 
         item['description'] = self._extract_text(response.css('.tab_info.desc'))
 
-        item['starttime'], item['endtime'] = korean_dates.parse_times(date_string)
+        item['start_time'], item['end_time'] = korean_dates.parse_times(date_string)
 
         # 'lg1=37.501771&lg2=126.770348&title=JB Dance Academy (부천시 원미구 중동 1151-4 이스트타워)'
         extract_location = r"lg1=(?P<latitude>[\d.]+)&lg2=(?P<longitude>[\d.]+)&title=(?P<venue>[^']+?)\((?P<address>[^']+?)\)'"

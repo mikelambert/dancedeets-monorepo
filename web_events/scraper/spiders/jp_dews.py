@@ -93,7 +93,7 @@ class DewsScraper(items.WebEventScraper):
         description = self._get_description(response)
         item['description'] = genre + description
 
-        item['starttime'], item['endtime'] = parse_date_times(_get('startDate'), _definition(u'時間'))
+        item['start_time'], item['end_time'] = parse_date_times(_get('startDate'), _definition(u'時間'))
 
         jp_spider.setup_location(_get('location'), None, item)
 
