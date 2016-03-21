@@ -5,6 +5,7 @@ from google.appengine.ext import ndb
 import event_types
 from loc import gmaps_api
 from util import urls
+from . import namespaces
 
 REGION_RADIUS = 200 # kilometers
 
@@ -15,65 +16,15 @@ CM_ADMIN = 'CM_ADMIN'
 CM_USER = 'CM_USER'
 
 
-class Namespace(object):
-    KOREA_SDK = 'street-dance-korea'
-    JAPAN_DD = 'dance-delight'
-    JAPAN_DL = 'dance-life'
-    JAPAN_DEWS = 'dews'
-    JAPAN_ETS = 'enter-the-stage'
-    FACEBOOK = 'FB'
-
-    def __init__(self, short_name, long_name, domain_url, event_url):
-        self.short_name = short_name
-        self.long_name = long_name
-        self.domain_url = domain_url
-        self.event_url = event_url
-
-NAMESPACE_LIST = [
-    Namespace(
-        Namespace.FACEBOOK,
-        'Facebook',
-        'https://www.facebook.com/events/',
-        'https://www.facebook.com/%s/',
-    ),
-    Namespace(
-        Namespace.JAPAN_DD,
-        'Dance Delight',
-        'http://et-stage.net/event_list.php',
-        lambda x: 'http://et-stage.net/event/%s/' % x.namespaced_id,
-    ),
-    Namespace(
-        Namespace.JAPAN_DL,
-        'Dance Life',
-        'http://www.tokyo-dancelife.com/event/',
-        lambda x: 'http://www.tokyo-dancelife.com/event/%s/%s.php' % (x.start_time.strftime('%Y_%m'), x.namespaced_id),
-    ),
-    Namespace(
-        Namespace.JAPAN_DEWS,
-        'DEWS',
-        'http://dews365.com/eventinformation',
-        lambda x: 'http://dews365.com/event/%s.html' % x.namespaced_id,
-    ),
-    Namespace(
-        Namespace.JAPAN_ETS,
-        'Enter The Stage',
-        'http://et-stage.net/event_list.php',
-        lambda x: 'http://et-stage.net/event/%s/' % x.namespaced_id,
-    ),
-    Namespace(
-        Namespace.KOREA_SDK,
-        'Street Dance Korea',
-        'http://www.streetdancekorea.com',
-        # I wish we could link to the event page directly, but alas there is none...
-        lambda x: 'http://www.streetdancekorea.com/',
-    ),
-]
-
-NAMESPACES = dict((x.short_name, x) for x in NAMESPACE_LIST)
-
-
 class DBEvent(ndb.Model):
     """Stores custom data about our Event"""
+
+    @classmethod
+    def generate_id(cls, namespace, namespaced_id):
+        if namespace == namespaces.FACEBOOK:
+            return namespaced_id
+        else:
+            return '%s:%s' % (namespace, namespaced_id)
 
     @property
     def id(self):
@@ -84,7 +35,7 @@ class DBEvent(ndb.Model):
         if ':' in real_id:
             namespace, namespaced_id = real_id.split(':')
         else:
-            namespace = Namespace.FACEBOOK
+            namespace = namespaces.FACEBOOK
             namespaced_id = real_id
         return namespace, namespaced_id
 
@@ -98,7 +49,7 @@ class DBEvent(ndb.Model):
 
     @property
     def is_facebook_event(self):
-        return self.namespace == Namespace.FACEBOOK
+        return self.namespace == namespaces.FACEBOOK
 
     @property
     def fb_event_id(self):

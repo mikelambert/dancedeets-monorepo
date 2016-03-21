@@ -1,5 +1,4 @@
 # -*-*- encoding: utf-8 -*-*-
-
 import datetime
 import re
 import urlparse
@@ -7,6 +6,7 @@ import urlparse
 import scrapy
 from scrapy.selector import Selector
 
+from events import namespaces
 from .. import items
 from .. import jp_spider
 
@@ -41,6 +41,7 @@ def parse_date_times(date_str, time_str):
 class DewsScraper(items.WebEventScraper):
     name = 'Dews'
     allowed_domains = ['dews365.com']
+    namespace = namespaces.JAPAN_DEWS
 
     def start_requests(self):
         yield scrapy.Request('http://dews365.com/eventinformation')
@@ -84,8 +85,8 @@ class DewsScraper(items.WebEventScraper):
             return self._extract_text(response.xpath(u'//dt[contains(., "%s")]/following-sibling::dd' % term))
 
         item = items.WebEvent()
-        item['id'] = re.search(r'/event/(\w+)\.html', response.url).group(1)
-        item['website'] = self.name
+        item['namespace'] = self.namespace
+        item['namespaced_id'] = re.search(r'/event/(\w+)\.html', response.url).group(1)
         item['title'] = _get('name')
         item['photo'] = _get('image', 'content')
 

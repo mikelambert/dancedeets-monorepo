@@ -29,7 +29,8 @@ class WebEvent(item.DictItem):
     # We could get rid of the need for this by subclassing scrapy.BaseItem.
     # But this provides some element of safety by enforcing field names.
     fields = [
-        'id',
+        'namespace',
+        'namespaced_id',
         'website',
         'title',
         'description',

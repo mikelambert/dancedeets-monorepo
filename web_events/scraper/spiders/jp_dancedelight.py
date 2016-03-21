@@ -6,6 +6,7 @@ import urlparse
 
 import scrapy
 
+from events import namespaces
 from loc import japanese_addresses
 from .. import items
 from .. import jp_spider
@@ -15,6 +16,7 @@ from util import strip_markdown
 class DanceDelightScraper(items.WebEventScraper):
     name = 'DanceDelight'
     allowed_domains = ['www.dancedelight.net']
+    namespace = namespaces.JAPAN_DD
 
     def start_requests(self):
         yield scrapy.Request('http://www.dancedelight.net/wordpress/?cat=6')
@@ -47,8 +49,8 @@ class DanceDelightScraper(items.WebEventScraper):
         print response.url
 
         item = items.WebEvent()
-        item['id'] = re.search(r'\?p=(\d+)', response.url).group(1)
-        item['website'] = self.name
+        item['namespace'] = self.namespace
+        item['namespaced_id'] = re.search(r'\?p=(\d+)', response.url).group(1)
         item['title'] = self._extract_text(response.xpath('//a[@rel="bookmark"]/text()'))
 
         post = response.css('.entry-content')

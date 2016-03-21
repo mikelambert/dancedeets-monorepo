@@ -63,6 +63,7 @@ class SaveToServerPipeline(object):
         for key in ['start_time', 'end_time', 'scrape_time']:
             if new_item.get(key):
                 new_item[key] = new_item[key].strftime(DATETIME_FORMAT)
-        new_item['auto_categories'] = [x.index_name for x in new_item['auto_categories']]
+        if 'auto_categories' in new_item:
+            new_item['auto_categories'] = [x.index_name for x in new_item['auto_categories']]
         self.items.append(new_item)
         return new_item

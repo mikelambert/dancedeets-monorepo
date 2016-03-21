@@ -5,6 +5,7 @@ import urlparse
 
 import scrapy
 
+from events import namespaces
 from loc import japanese_addresses
 from .. import items
 from .. import jp_spider
@@ -13,6 +14,7 @@ from .. import jp_spider
 class TokyoDanceLifeScraper(items.WebEventScraper):
     name = 'TokyoDanceLife'
     allowed_domains = ['www.tokyo-dancelife.com']
+    namespace = namespaces.JAPAN_DL
 
     def start_requests(self):
         yield scrapy.Request('http://www.tokyo-dancelife.com/event/')
@@ -46,8 +48,8 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
         print response.url
 
         item = items.WebEvent()
-        item['id'] = re.search(r'/(\d+)\.php', response.url).group(1)
-        item['website'] = self.name
+        item['namespace'] = self.namespace
+        item['namespaced_id'] = re.search(r'/(\d+)\.php', response.url).group(1)
         item['title'] = self._extract_text(response.css('div.event-detail-name'))
 
         photos = response.css('div.event-detail-img').xpath('./a/@href').extract()

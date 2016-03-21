@@ -6,6 +6,7 @@ import urlparse
 
 import scrapy
 
+from events import namespaces
 from .. import items
 from .. import jp_spider
 
@@ -42,6 +43,7 @@ def parse_times(s):
 class EnterTheStageScraper(items.WebEventScraper):
     name = 'EnterTheStage'
     allowed_domains = ['et-stage.net']
+    namespace = namespaces.JAPAN_ETS
 
     def start_requests(self):
         yield scrapy.Request('http://et-stage.net/event_list.php')
@@ -56,14 +58,15 @@ class EnterTheStageScraper(items.WebEventScraper):
         urls = response.xpath('//a[@class="block"]/@href').extract()
         for url in urls:
             yield scrapy.Request(urlparse.urljoin(response.url, url))
+            return
 
     def parseEvent(self, response):
         def _get(css_id):
             return self._extract_text(response.css('#%s' % css_id))
 
         item = items.WebEvent()
-        item['id'] = re.search(r'/event/(\w+)/', response.url).group(1)
-        item['website'] = self.name
+        item['namespace'] = self.namespace
+        item['namespaced_id'] = re.search(r'/event/(\w+)/', response.url).group(1)
         item['title'] = _get('u474-4')
         image_url = response.xpath('//img[@id="u469_img"]/@src').extract()[0]
         item['photo'] = urlparse.urljoin(response.url, image_url)
