@@ -248,9 +248,11 @@ class EventsIndex(index.BaseIndex):
         # and how do we want to return them
         # Perhaps a separate index that is combined at search-time?
         if db_event.latitude is None:
+            logging.warning("Skipping event without latitude: %s", db_event.id)
             return None
         # If this event has been deleted from Facebook, let's skip re-indexing it here
         if db_event.start_time is None:
+            logging.warning("Skipping event without start_time: %s", db_event.id)
             return None
         if not isinstance(db_event.start_time, datetime.datetime) and not isinstance(db_event.start_time, datetime.date):
             logging.error("DB Event %s start_time is not correct format: ", db_event.id, db_event.start_time)
