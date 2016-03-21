@@ -117,7 +117,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, update_geodata):
 
 
 def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata):
-    logging.info("Making web_event %s findable.")
+    logging.info("Making web_event %s findable." % db_event.id)
     db_event.web_event = json_body
 
     db_event.fb_event = None
@@ -152,9 +152,11 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
                 logging.info("Have regular location_name, checking if it is a place: %s", json_body.get('location_name'))
                 results = gmaps_api.fetch_place_as_json(query=json_body['location_name'])
         if results and results['status'] == 'OK':
-            json_body['location_address'] = results['results'][0]['formatted_address']
+            result = results['results'][0]
+            json_body['location_name'] = result['name']
+            json_body['location_address'] = result['formatted_address']
             logging.info("Found an address: %s", json_body['location_address'])
-            latlng = results['results'][0]['geometry']['location']
+            latlng = result['geometry']['location']
             json_body['latitude'] = latlng['lat']
             json_body['longitude'] = latlng['lng']
 
