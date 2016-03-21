@@ -64,10 +64,7 @@ class DisplayEvent(ndb.Model):
     @classmethod
     def can_build_from(cls, db_event):
         """Can we build a DisplayEvent from a given DBEvent"""
-        if not db_event.fb_event:
-            return False
-        else:
-            return db_event.has_content()
+        return db_event.has_content()
 
     @classmethod
     def build(cls, db_event):
@@ -215,6 +212,7 @@ class Search(object):
             real_db_events = eventdata.DBEvent.get_by_ids(ids)
             display_events = [DisplayEvent.build(x) for x in real_db_events]
         else:
+            print ids
             display_events = DisplayEvent.get_by_ids(ids)
             real_db_events = [None for x in ids]
 

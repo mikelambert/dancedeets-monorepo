@@ -67,7 +67,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         return self.redirect(urls.fb_relative_event_url(event_id), permanent=True)
 
 
-@app.route(r'/events/\d+/?')
+@app.route(r'/events/(?:\d+|[^/?#]+:[^/?#]+)/?')
 class ShowEventHandler(base_servlet.BaseRequestHandler):
 
     def requires_login(self):
@@ -96,7 +96,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['show_mobile_app_promo'] = True
         self.jinja_env.filters['make_category_link'] = lambda lst: [jinja2.Markup('<a href="/?keywords=%s">%s</a>') % (x, x) for x in lst]
 
-        self.display['canonical_url'] = 'http://%s/events/%s/' % (self._get_full_hostname(), db_event.fb_event_id)
+        self.display['canonical_url'] = 'http://%s/events/%s/' % (self._get_full_hostname(), db_event.id)
 
         if self.request.get('amp'):
             if self.display['displayable_event'].largest_cover:

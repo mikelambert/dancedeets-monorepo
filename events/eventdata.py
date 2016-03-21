@@ -170,12 +170,19 @@ class DBEvent(ndb.Model):
 
     @property
     def cover_images(self):
-        if 'cover_info' in self.fb_event:
-            # Old FB API versions returned ints instead of strings, so let's stringify manually to ensure we can look up the cover_info
-            cover = self.fb_event['cover_info'][str(self.fb_event['info']['cover']['cover_id'])]
-            return cover['images']
+        if self.web_event:
+            return [{
+                'source': self.image_url,
+                'height': 0,  # TODO: WEB_EVENTS find these fields
+                'width': 0,
+            }]
         else:
-            return []
+            if 'cover_info' in self.fb_event:
+                # Old FB API versions returned ints instead of strings, so let's stringify manually to ensure we can look up the cover_info
+                cover = self.fb_event['cover_info'][str(self.fb_event['info']['cover']['cover_id'])]
+                return cover['images']
+            else:
+                return []
 
     @property
     def largest_cover(self):
@@ -187,27 +194,37 @@ class DBEvent(ndb.Model):
 
     @property
     def image_url(self):
-        # old school data
-        picture_url = self.fb_event.get('fql_info') or self.fb_event.get('picture_urls')
-        # TODO(FB2.0): cleanup!
-        if self.fb_event.get('picture'):
-            if isinstance(self.fb_event['picture'], basestring):
-                return self.fb_event['picture']
-            else:
-                return self.fb_event['picture']['data']['url']
-        elif picture_url and picture_url['data']:
-            return picture_url['data'][0]['pic_big']
+        if self.web_event:
+            return self.web_event['photo']
         else:
-            logging.error("Error loading picture for event id %s", self.fb_event['info']['id'])
-            return urls.fb_event_image_url(self.fb_event['info']['id'])
+            # old school data
+            picture_url = self.fb_event.get('fql_info') or self.fb_event.get('picture_urls')
+            # TODO(FB2.0): cleanup!
+            if self.fb_event.get('picture'):
+                if isinstance(self.fb_event['picture'], basestring):
+                    return self.fb_event['picture']
+                else:
+                    return self.fb_event['picture']['data']['url']
+            elif picture_url and picture_url['data']:
+                return picture_url['data'][0]['pic_big']
+            else:
+                logging.error("Error loading picture for event id %s", self.fb_event['info']['id'])
+                return urls.fb_event_image_url(self.fb_event['info']['id'])
 
     @property
     def location_name(self):
-        return self.fb_event['info'].get('location', '')
+        if self.web_event:
+            return self.web_event['location_name']
+        else:
+            return self.fb_event['info'].get('location', '')
 
     @property
     def venue(self):
-        return self.fb_event['info'].get('venue', {})
+        if self.web_event:
+            # TODO: WEB_EVENTS
+            return None
+        else:
+            return self.fb_event['info'].get('venue', {})
 
     @property
     def street_address(self):
@@ -240,18 +257,24 @@ class DBEvent(ndb.Model):
 
     @property
     def attending_count(self):
-        return self.fb_event['info'].get('attending_count')
+        return self.attendee_count
 
     @property
     def maybe_count(self):
-        return self.fb_event['info'].get('maybe_count')
+        if self.web_event:
+            return 0
+        else:
+            return self.fb_event['info'].get('maybe_count')
 
     @property
     def admins(self):
-        admins = self.fb_event['info'].get('admins', {}).get('data')
-        if not admins:
-            if self.fb_event['info'].get('owner'):
-                admins = [self.fb_event['info'].get('owner')]
-            else:
-                admins = []
-        return admins
+        if self.web_event:
+            return []
+        else:
+            admins = self.fb_event['info'].get('admins', {}).get('data')
+            if not admins:
+                if self.fb_event['info'].get('owner'):
+                    admins = [self.fb_event['info'].get('owner')]
+                else:
+                    admins = []
+            return admins
