@@ -143,6 +143,10 @@ class DBEvent(ndb.Model):
         return namespaces.NAMESPACES[self.namespace].event_url_func(self)
 
     @property
+    def source_name(self):
+        return namespaces.NAMESPACES[self.namespace].long_name
+
+    @property
     def empty_reason(self):
         return self.fb_event['empty']
 
@@ -228,6 +232,7 @@ class DBEvent(ndb.Model):
 
     @property
     def street_address(self):
+        # TODO: WEB_EVENTS (why doesn't our location show up in the event page?)
         return self.venue.get('street')
 
     @property
