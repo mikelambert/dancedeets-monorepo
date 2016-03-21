@@ -55,7 +55,7 @@ def eventually_publish_event(event_id, token_nickname=None):
             continue
         logging.info("Adding task for posting!")
         # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
-        name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id, int(time.time()))
+        name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id.replace(':', '-'), int(time.time()))
         logging.info("Adding task with name %s", name)
         q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
 

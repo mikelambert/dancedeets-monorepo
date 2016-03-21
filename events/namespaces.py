@@ -54,4 +54,11 @@ _NAMESPACE_LIST = [
     ),
 ]
 
+# Ensure our namespaces don't conflict with each other.
+# This is especially important when we have to remove the ':' in our taskqueue task names.
+for a in _NAMESPACE_LIST:
+    for b in _NAMESPACE_LIST:
+        if a != b and a.short_name.startswith(b.short_name):
+            raise ValueError("Namespaces need different prefixes: %r, %r", a.short_name, b.short_name)
+
 NAMESPACES = dict((x.short_name, x) for x in _NAMESPACE_LIST)
