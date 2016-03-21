@@ -17,24 +17,9 @@ def setup_location(venue, addresses, item):
     # TODO: needs caching
     if venue:
         item['location_name'] = venue
+        item['geolocate_location_name'] = '%s, japan' % venue
     if addresses:
-        address = addresses[0]
-        item['location_address'] = address
-    else:
-        address = None
-
-    if venue and not address:
-        # TODO: Let's look it up on Google...we probably need to delay this until we get to the appengine side!
-        from loc import gmaps_api
-        results = gmaps_api._fetch_place_as_json(query='%s, japan' % venue)
-        if results['status'] == 'ZERO_RESULTS':
-            results = gmaps_api._fetch_place_as_json(query=venue)
-
-        if results['status'] == 'OK':
-            item['location_address'] = results['results'][0]['formatted_address']
-            latlng = results['results'][0]['geometry']['location']
-            item['latitude'] = latlng['lat']
-            item['longitude'] = latlng['lng']
+        item['location_address'] = addresses[0]
 
 
 def parse_date_times(start_date, date_str):

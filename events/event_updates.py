@@ -134,6 +134,25 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
 
     db_event.address = json_body['location_address']
 
+    geocode = None
+    if json_body.get('location_address'):
+        geocode = gmaps_api.get_geocode(address=json_body['location_address'])
+        if geocode is None:
+            logging.warning("Received a location_address that was not geocodeable, treating as empty: %s", json_body['location_address'])
+    if geocode is None:
+        results = None
+        if json_body.get('geolocate_location_name'):
+            results = gmaps_api.fetch_place_as_json(query=json_body['geolocate_location_name'])
+        if not results or results['status'] == 'ZERO_RESULTS':
+            if json_body.get('location_name'):
+                print json_body['location_name'].encode('utf-8')
+                results = gmaps_api.fetch_place_as_json(query=json_body['location_name'])
+        if results['status'] == 'OK':
+            json_body['location_address'] = results['results'][0]['formatted_address']
+            latlng = results['results'][0]['geometry']['location']
+            json_body['latitude'] = latlng['lat']
+            json_body['longitude'] = latlng['lng']
+
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
         db_event.location_geocode = None

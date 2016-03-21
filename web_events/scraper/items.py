@@ -39,6 +39,7 @@ class WebEvent(item.DictItem):
         'end_time',
         'location_name',
         'location_address',
+        'geolocate_location_name', # used to geolocate this event
         'latitude',
         'longitude',
     ]
