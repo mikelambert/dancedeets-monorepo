@@ -81,7 +81,7 @@ def get_line_after(text, regex):
     return None
 
 
-class SaveWebEventPipeline(pipelines.BatchSaveToServerPipeline):
+class SaveWebEventPipeline(pipelines.SaveToServerPipeline):
     server_path = 'web_events/upload_multi'
 
 
