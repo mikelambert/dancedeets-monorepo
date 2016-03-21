@@ -63,7 +63,7 @@ def _format_text(html):
     lines = text.count('\n')
     header_lines = len(re.findall(r'^# ', text, re.MULTILINE))
     if header_lines > lines / 8:
-        text = re.sub('\n# ', '', text)
+        text = re.sub('^# ', '', text)
     return text
 
 
