@@ -27,7 +27,7 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
         e.address = override_address
     #STR_ID_MIGRATE
     e.creating_fb_uid = long(creating_uid) if creating_uid else None
-    if creating_method:
+    if newly_created and creating_method:
         e.creating_method = creating_method
 
     if visible_to_fb_uids is None:
