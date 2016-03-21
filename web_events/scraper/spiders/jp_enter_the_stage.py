@@ -6,6 +6,7 @@ import re
 import scrapy
 
 from events import namespaces
+from util import strip_markdown
 from .. import items
 from .. import jp_spider
 
@@ -57,7 +58,6 @@ class EnterTheStageScraper(items.WebEventScraper):
         urls = response.xpath('//a[@class="block"]/@href').extract()
         for url in urls:
             yield scrapy.Request(self.abs_url(response, url))
-            return
 
     def parseEvent(self, response):
         def _get(css_id):
@@ -66,7 +66,7 @@ class EnterTheStageScraper(items.WebEventScraper):
         item = items.WebEvent()
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'/event/(\w+)/', response.url).group(1)
-        item['name'] = _get('u474-4')
+        item['name'] = strip_markdown.strip(_get('u474-4'))
         image_url = response.xpath('//img[@id="u469_img"]/@src').extract()[0]
         item['photo'] = self.abs_url(response, image_url)
 
