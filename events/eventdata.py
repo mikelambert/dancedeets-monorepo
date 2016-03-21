@@ -231,7 +231,7 @@ class DBEvent(ndb.Model):
             return self.fb_event['info'].get('venue', {})
 
     @property
-    def address(self):
+    def full_address(self):
         if self.web_event:
             return self.web_event['location_address']
         else:
