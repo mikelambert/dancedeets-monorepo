@@ -69,13 +69,18 @@ class DanceDelightScraper(items.WebEventScraper):
         item['description'] = strip_markdown.strip(full_description)
 
         jp_addresses = japanese_addresses.find_addresses(item['description'])
-        venue = items.get_line_after(item['description'], ur'場所|会場')
+        venue = items.get_line_after(item['description'], ur'場所|会場|LOCATION')
+        if not venue:
+            # This is because some far-future events have no event information other than:
+            # "2016年12月11日（日）@CONPASS", and we'd like to extract these locations as a last resort.
+            # So grab whatever comes after the @ sign as our venue name,
+            # but ignore lowercase stuff (twitter handles, email address domains)
+            at_match = re.search(r'@([^a-z\n]+)\n', item['description'])
+            if at_match:
+                venue = at_match.group(1)
         jp_spider.setup_location(venue, jp_addresses, item)
 
         content_date = ''.join(response.css('.contentdate').xpath('.//text()').extract())
         item['start_time'], item['end_time'] = self.parseDateTimes(content_date, full_description)
-
-        #item['latitude'] = latlng['lat']
-        #item['longitude'] = latlng['lng']
 
         yield item
