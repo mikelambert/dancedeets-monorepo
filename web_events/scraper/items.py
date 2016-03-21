@@ -5,8 +5,6 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import dateparser
-import datetime
 import logging
 import re
 
@@ -15,9 +13,9 @@ import scrapy
 from scrapy import item
 
 from nlp import event_classifier
-from nlp import categories
 from nlp import keywords
 from nlp import rules
+from scrapers import pipelines
 
 
 class WebEvent(item.DictItem):
@@ -83,6 +81,10 @@ def get_line_after(text, regex):
     return None
 
 
+class SaveWebEventPipeline(pipelines.BatchSaveToServerPipeline):
+    server_path = 'web_events/upload_multi'
+
+
 class WebEventScraper(scrapy.Spider):
     """Base class for all our web event scrapers. Does some per-item field setup that is common across web events."""
 
@@ -90,7 +92,7 @@ class WebEventScraper(scrapy.Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            # 'classes.scraper.pipelines.BatchSaveStudioClassPipeline': 300,
+            'web_events.scraper.items.SaveWebEventPipeline': 300,
         }
     }
 
