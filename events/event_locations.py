@@ -105,7 +105,7 @@ def update_remapped_address(fb_event, new_remapped_address):
 
 
 class LocationInfo(object):
-    def __init__(self, fb_event, db_event=None, debug=False):
+    def __init__(self, fb_event=None, db_event=None, debug=False):
         self.exact_from_event = False
         self.overridden_address = None
         self.fb_address = None
@@ -113,6 +113,8 @@ class LocationInfo(object):
         self.final_address = None
 
         has_overridden_address = db_event and db_event.address
+        if not has_overridden_address and not fb_event:
+            raise ValueError("Must pass a db_event with the address set, or a valid fb_event. DBEvent %s" % db_event.id)
         if not has_overridden_address or debug:
             self.final_latlng = _get_latlng_from_event(fb_event)
             if self.final_latlng:

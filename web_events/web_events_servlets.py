@@ -7,8 +7,7 @@ import webapp2
 
 import app
 from events import eventdata
-
-DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+from events import event_updates
 
 
 class JsonDataHandler(webapp2.RequestHandler):
@@ -23,19 +22,7 @@ class JsonDataHandler(webapp2.RequestHandler):
 
 
 def process_uploaded_item(json_body):
-    #TODO: And maybe only save/reindex if there were legit changes?
-    for key, value in json_body.iteritems():
-        if key in ['start_time', 'end_time', 'scrape_time']:
-            json_body[key] = datetime.datetime.strptime(value, DATETIME_FORMAT)
-    print json_body
-    event_id = eventdata.DBEvent.generate_id(json_body['namespace'], json_body['namespaced_id'])
-    del json_body['namespace']
-    del json_body['namespaced_id']
-    event = eventdata.DBEvent(id=event_id, **json_body)
-    print event.key
-    print event
-    # event.put()
-    logging.info("Saving %s with scrape_time %s", event.key, studio_class.scrape_time)
+    return e
 
 
 def process_upload_finalization(studio_name):
@@ -77,7 +64,11 @@ class ClassMultiUploadHandler(JsonDataHandler):
         if self.json_body['scrapinghub_key'] != keys.get('scrapinghub_key'):
             self.response.status = 403
             return
-        for item in self.json_body['items']:
-            process_uploaded_item(item)
+        events_to_update = []
+        for json_body in self.json_body['items']:
+            event_id = eventdata.DBEvent.generate_id(json_body['namespace'], json_body['namespaced_id'])
+            e = eventdata.DBEvent.get_or_insert(event_id)
+            events_to_update.append((e, json_body))
+        event_updates.update_and_save_web_events(events_to_update)
         process_upload_finalization(self.json_body['studio_name'])
         self.response.status = 200

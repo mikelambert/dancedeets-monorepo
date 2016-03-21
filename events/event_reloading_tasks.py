@@ -49,7 +49,7 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
             # Let's update the DBEvent as necessary (note, this uses the last-updated FBLookup)
             if fbl:
                 add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
-    event_updates.update_and_save_events(events_to_update, update_geodata=update_geodata)
+    event_updates.update_and_save_fb_events(events_to_update, update_geodata=update_geodata)
 
 
 def yield_load_fb_event(fbl, db_events):
@@ -93,7 +93,7 @@ def yield_load_fb_event(fbl, db_events):
     if empty_fb_event_ids:
         deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, allow_cache=fbl.allow_cache, only_if_updated=only_if_updated, update_geodata=update_geodata)
     # And then re-save all the events in here
-    event_updates.update_and_save_events(events_to_update, update_geodata=update_geodata)
+    event_updates.update_and_save_fb_events(events_to_update, update_geodata=update_geodata)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 

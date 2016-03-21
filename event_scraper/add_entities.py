@@ -37,7 +37,7 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
             visible_to_fb_uids = []
     e.visible_to_fb_uids = visible_to_fb_uids
 
-    event_updates.update_and_save_events([(e, fb_event)])
+    event_updates.update_and_save_fb_events([(e, fb_event)])
     thing_db.create_source_from_event(fbl, e)
 
     if newly_created:

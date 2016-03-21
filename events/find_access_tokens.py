@@ -44,7 +44,7 @@ def test_user_on_events(user):
     for db_event, new_fb_event in zip(found_db_events, found_fb_events):
         if db_event.has_content():
             db_fb_events.append((db_event, new_fb_event))
-    event_updates.update_and_save_events(db_fb_events)
+    event_updates.update_and_save_fb_events(db_fb_events)
 
     # We can end the shard via this, though it's difficult to tell when *every* event_id has got a valid token.
     # ctx._shard_state.set_input_finished()

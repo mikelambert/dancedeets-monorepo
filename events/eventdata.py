@@ -14,6 +14,7 @@ REGION_RADIUS = 200 # kilometers
 CM_AUTO = 'CM_AUTO'
 CM_ADMIN = 'CM_ADMIN'
 CM_USER = 'CM_USER'
+CM_WEB_SCRAPE = 'CM_WEB_SCRAPE'
 
 
 class DBEvent(ndb.Model):
@@ -56,7 +57,7 @@ class DBEvent(ndb.Model):
         if self.is_facebook_event:
             return self.namespaced_id
         else:
-            raise ValueError("Not an FB Event: %s" % self.real_id)
+            raise ValueError("Not an FB Event: %s" % self.id)
 
     # Fields unique to Facebook:
     owner_fb_uid = ndb.StringProperty()
@@ -68,6 +69,9 @@ class DBEvent(ndb.Model):
     creating_fb_uid = ndb.IntegerProperty()
     # # TODO: WEB_EVENTS: IMPLEMENT AND MIGRATE DATA
     # namespaced_creator = ndb.StringProperty()
+
+    # The blob of data that we received from the scraper
+    web_event = ndb.JsonProperty(indexed=False)
 
     creation_time = ndb.DateTimeProperty(auto_now_add=True)
     # could be AUTO, ADMIN, USER, etc? Helps for maintaining a proper training corpus

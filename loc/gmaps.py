@@ -20,9 +20,9 @@ class LiveBackend(gmaps_backends.GMapsBackend):
         self.use_private_key = use_private_key
 
     def get_json(self, **kwargs):
+        kwargs = dict((k.encode('utf-8'), v.encode('utf-8')) for k, v in kwargs.items())
         if self.use_private_key:
             kwargs['client'] = 'free-dancedeets'
-            kwargs = dict((k.encode('utf-8'), v.encode('utf-8')) for k, v in kwargs.items())
             unsigned_url_path = "%s?%s" % (self.path, urllib.urlencode(kwargs))
             private_key = google_maps_private_key
             decoded_key = base64.urlsafe_b64decode(private_key)
