@@ -31,8 +31,7 @@ class WebEvent(item.DictItem):
     fields = [
         'namespace',
         'namespaced_id',
-        'website',
-        'title',
+        'name',
         'description',
         'photo',
         'start_time',

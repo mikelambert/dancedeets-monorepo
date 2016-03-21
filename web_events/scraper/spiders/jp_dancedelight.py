@@ -51,7 +51,7 @@ class DanceDelightScraper(items.WebEventScraper):
         item = items.WebEvent()
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'\?p=(\d+)', response.url).group(1)
-        item['title'] = self._extract_text(response.xpath('//a[@rel="bookmark"]/text()'))
+        item['name'] = self._extract_text(response.xpath('//a[@rel="bookmark"]/text()'))
 
         post = response.css('.entry-content')
 

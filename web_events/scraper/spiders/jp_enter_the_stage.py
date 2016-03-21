@@ -67,7 +67,7 @@ class EnterTheStageScraper(items.WebEventScraper):
         item = items.WebEvent()
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'/event/(\w+)/', response.url).group(1)
-        item['title'] = _get('u474-4')
+        item['name'] = _get('u474-4')
         image_url = response.xpath('//img[@id="u469_img"]/@src').extract()[0]
         item['photo'] = urlparse.urljoin(response.url, image_url)
 

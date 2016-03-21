@@ -8,11 +8,11 @@ FACEBOOK = 'FB'
 
 
 class Namespace(object):
-    def __init__(self, short_name, long_name, domain_url, event_url):
+    def __init__(self, short_name, long_name, domain_url, event_url_func):
         self.short_name = short_name
         self.long_name = long_name
         self.domain_url = domain_url
-        self.event_url = event_url
+        self.event_url_func = event_url_func
 
 _NAMESPACE_LIST = [
     Namespace(

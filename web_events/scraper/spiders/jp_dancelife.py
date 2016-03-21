@@ -50,7 +50,7 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
         item = items.WebEvent()
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'/(\d+)\.php', response.url).group(1)
-        item['title'] = self._extract_text(response.css('div.event-detail-name'))
+        item['name'] = self._extract_text(response.css('div.event-detail-name'))
 
         photos = response.css('div.event-detail-img').xpath('./a/@href').extract()
         if photos:

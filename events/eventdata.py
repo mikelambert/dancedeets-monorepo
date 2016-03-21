@@ -119,19 +119,28 @@ class DBEvent(ndb.Model):
             return ndb.get_multi(keys)
 
     def has_content(self):
-        return not self.fb_event['empty']
+        if self.web_event:
+            return True
+        else:
+            return not self.fb_event['empty']
 
     @property
     def start_time_string(self):
-        return self.fb_event['info']['start_time']
+        if self.web_event:
+            return self.web_event['start_time']
+        else:
+            return self.fb_event['info']['start_time']
 
     @property
     def end_time_string(self):
-        return self.fb_event['info'].get('end_time')
+        if self.web_event:
+            return self.web_event['end_time']
+        else:
+            return self.fb_event['info'].get('end_time')
 
     @property
     def source_url(self):
-        return urls.raw_fb_event_url(self.fb_event_id)
+        return namespaces.NAMESPACES[self.namespace].event_url_func(self)
 
     @property
     def empty_reason(self):
@@ -139,11 +148,17 @@ class DBEvent(ndb.Model):
 
     @property
     def name(self):
-        return self.fb_event['info'].get('name', '')
+        if self.web_event:
+            return self.web_event['name']
+        else:
+            return self.fb_event['info'].get('name', '')
 
     @property
     def description(self):
-        return self.fb_event['info'].get('description', '')
+        if self.web_event:
+            return self.web_event['description']
+        else:
+            return self.fb_event['info'].get('description', '')
 
     @property
     def categories(self):

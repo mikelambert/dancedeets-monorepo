@@ -87,7 +87,7 @@ class DewsScraper(items.WebEventScraper):
         item = items.WebEvent()
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'/event/(\w+)\.html', response.url).group(1)
-        item['title'] = _get('name')
+        item['name'] = _get('name')
         item['photo'] = _get('image', 'content')
 
         genre = _definition(u'ジャンル')
