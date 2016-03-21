@@ -117,6 +117,7 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, update_geodata):
 
 
 def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata):
+    logging.info("Making web_event %s findable.")
     db_event.web_event = json_body
 
     db_event.fb_event = None
@@ -132,26 +133,29 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
     # db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
     # db_event.auto_categories = [x.index_name for x in categories.find_styles(fb_dict) + categories.find_event_types(fb_dict)]
 
-    db_event.address = json_body['location_address']
-
     geocode = None
     if json_body.get('location_address'):
+        logging.info("Have location address, checking if it is geocodable: %s", json_body.get('location_address'))
         geocode = gmaps_api.get_geocode(address=json_body['location_address'])
         if geocode is None:
             logging.warning("Received a location_address that was not geocodeable, treating as empty: %s", json_body['location_address'])
     if geocode is None:
         results = None
         if json_body.get('geolocate_location_name'):
+            logging.info("Have magic geolocate_location_name, checking if it is a place: %s", json_body.get('geolocate_location_name'))
             results = gmaps_api.fetch_place_as_json(query=json_body['geolocate_location_name'])
         if not results or results['status'] == 'ZERO_RESULTS':
             if json_body.get('location_name'):
-                print json_body['location_name'].encode('utf-8')
+                logging.info("Have regular location_name, checking if it is a place: %s", json_body.get('location_name'))
                 results = gmaps_api.fetch_place_as_json(query=json_body['location_name'])
         if results['status'] == 'OK':
             json_body['location_address'] = results['results'][0]['formatted_address']
+            logging.info("Found an address: %s", json_body['location_address'])
             latlng = results['results'][0]['geometry']['location']
             json_body['latitude'] = latlng['lat']
             json_body['longitude'] = latlng['lng']
+
+    db_event.address = json_body['location_address']
 
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
