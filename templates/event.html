@@ -130,10 +130,7 @@
 				{% endif %}
 				<br>
 			{% endif %}
-			{% if displayable_event.street_address %}
-				{{ displayable_event.street_address }}<br>
-			{% endif %}
-			{{ displayable_event.city_state_country }}<br>
+			{{ displayable_event.address|format_html }}
 
 {{ displayable_event.location_schema_html() }}
 			</div></li>

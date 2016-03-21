@@ -231,6 +231,16 @@ class DBEvent(ndb.Model):
             return self.fb_event['info'].get('venue', {})
 
     @property
+    def address(self):
+        if self.web_event:
+            return self.web_event['location_address']
+        else:
+            if self.street_address:
+                return '%s\n%s' % (self.street_address, self.city_state_country)
+            else:
+                return self.city_state_country
+
+    @property
     def street_address(self):
         # TODO: WEB_EVENTS (why doesn't our location show up in the event page?)
         return self.venue.get('street')
