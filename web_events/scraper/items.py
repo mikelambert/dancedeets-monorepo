@@ -7,6 +7,7 @@
 
 import logging
 import re
+import urlparse
 
 import html2text
 import scrapy
@@ -112,6 +113,16 @@ class WebEventScraper(scrapy.Spider):
     @staticmethod
     def _extract_text(cell):
         return _extract_text(cell)
+
+    def base_url(self, response):
+        base_href = response.xpath('//base[@href]/@href')
+        if base_href:
+            return base_href.extract()[0]
+        else:
+            return response.url
+
+    def abs_url(self, response, url):
+        return urlparse.urljoin(self.base_url(response), url)
 
     def _get_recurrence(self, studio_class):
         """Returns a recurrence_id using fields that remain stable week-to-week,

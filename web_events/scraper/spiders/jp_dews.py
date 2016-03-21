@@ -1,7 +1,6 @@
 # -*-*- encoding: utf-8 -*-*-
 import datetime
 import re
-import urlparse
 
 import scrapy
 from scrapy.selector import Selector
@@ -55,11 +54,11 @@ class DewsScraper(items.WebEventScraper):
     def parseList(self, response):
         urls = response.xpath('//a/@href').extract()
         for url in [x for x in urls if '/event/' in x]:
-            yield scrapy.Request(urlparse.urljoin(response.url, url))
+            yield scrapy.Request(self.abs_url(response, url))
 
         next_urls = response.xpath('//a[@rel="next"]/@href').extract()
         for url in next_urls:
-            yield scrapy.Request(urlparse.urljoin(response.url, url))
+            yield scrapy.Request(self.abs_url(response, url))
 
     def _get_description(self, response):
         description_paragraphs = response.css('div.detail').xpath('./following-sibling::p').extract()
@@ -88,7 +87,7 @@ class DewsScraper(items.WebEventScraper):
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'/event/(\w+)\.html', response.url).group(1)
         item['name'] = _get('name')
-        item['photo'] = _get('image', 'content')
+        item['photo'] = self.abs_url(response, _get('image', 'content'))
 
         genre = _definition(u'ジャンル')
         description = self._get_description(response)

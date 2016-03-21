@@ -57,7 +57,7 @@ class DanceDelightScraper(items.WebEventScraper):
 
         photos = post.css('img.size-full').xpath('./@src').extract()
         if photos:
-            item['photo'] = photos[0]
+            item['photo'] = self.abs_url(response, photos[0])
         else:
             item['photo'] = None
 

@@ -2,7 +2,6 @@
 
 import datetime
 import re
-import urlparse
 
 import scrapy
 
@@ -57,7 +56,7 @@ class EnterTheStageScraper(items.WebEventScraper):
     def parseList(self, response):
         urls = response.xpath('//a[@class="block"]/@href').extract()
         for url in urls:
-            yield scrapy.Request(urlparse.urljoin(response.url, url))
+            yield scrapy.Request(self.abs_url(response, url))
             return
 
     def parseEvent(self, response):
@@ -69,7 +68,7 @@ class EnterTheStageScraper(items.WebEventScraper):
         item['namespaced_id'] = re.search(r'/event/(\w+)/', response.url).group(1)
         item['name'] = _get('u474-4')
         image_url = response.xpath('//img[@id="u469_img"]/@src').extract()[0]
-        item['photo'] = urlparse.urljoin(response.url, image_url)
+        item['photo'] = self.abs_url(response, image_url)
 
         # cost = _get('u511-7')
         # email = _get('u512-4')

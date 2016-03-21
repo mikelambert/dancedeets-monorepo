@@ -30,11 +30,11 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
         if PAST_EVENTS:
             monthly_page_urls = response.css('div#pastevent-area').xpath('.//a/@href').extract()
             for url in monthly_page_urls:
-                yield scrapy.Request(urlparse.urljoin(response.url, url))
+                yield scrapy.Request(self.abs_url(response, url))
 
         event_urls = response.xpath('//div[@class="name"]/a/@href').extract()
         for url in event_urls:
-            yield scrapy.Request(urlparse.urljoin(response.url, url))
+            yield scrapy.Request(self.abs_url(response, url))
 
     def parseDateTimes(self, response):
         day_text = self._extract_text(response.css('div.day'))
@@ -54,7 +54,7 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
 
         photos = response.css('div.event-detail-img').xpath('./a/@href').extract()
         if photos:
-            item['photo'] = photos[0]
+            item['photo'] = self.abs_url(response, photos[0])
         else:
             item['photo'] = None
 
