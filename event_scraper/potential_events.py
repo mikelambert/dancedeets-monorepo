@@ -35,21 +35,21 @@ class DiscoveredEvent(object):
 class PotentialEvent(db.Model):
     fb_event_id = property(lambda x: str(x.key().name()))
 
-    language = db.StringProperty()
-    looked_at = db.BooleanProperty()
-    auto_looked_at = db.BooleanProperty()
-    dance_bias_score = db.FloatProperty()
-    non_dance_bias_score = db.FloatProperty()
-    match_score = db.IntegerProperty()
-    show_even_if_no_score = db.BooleanProperty()
-    should_look_at = db.BooleanProperty()
+    language = db.StringProperty(indexed=False)
+    looked_at = db.BooleanProperty(indexed=False)
+    auto_looked_at = db.BooleanProperty(indexed=False)
+    dance_bias_score = db.FloatProperty(indexed=False)
+    non_dance_bias_score = db.FloatProperty(indexed=False)
+    match_score = db.IntegerProperty(indexed=False)
+    show_even_if_no_score = db.BooleanProperty(indexed=False)
+    should_look_at = db.BooleanProperty(indexed=False)
 
     #STR_ID_MIGRATE
     source_ids = db.ListProperty(int)
-    source_fields = db.ListProperty(str)
+    source_fields = db.ListProperty(str, indexed=False)
 
     # This is a representation of FUTURE vs PAST, so we can filter in our mapreduce criteria for relevant future events easily
-    past_event = db.BooleanProperty()
+    past_event = db.BooleanProperty(indexed=False)
 
     def get_invite_uids(self):
         #STR_ID_MIGRATE
