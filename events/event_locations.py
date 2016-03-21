@@ -114,8 +114,8 @@ class LocationInfo(object):
 
         has_overridden_address = db_event and db_event.address
         if not has_overridden_address and not fb_event:
-            raise ValueError("Must pass a db_event with the address set, or a valid fb_event. DBEvent %s" % db_event.id)
-        if not has_overridden_address or debug:
+            logging.warning("Passed a db_event without an address, and no fb_event to pull from: %s" % db_event.id)
+        if (not has_overridden_address and fb_event) or debug:
             self.final_latlng = _get_latlng_from_event(fb_event)
             if self.final_latlng:
                 self.exact_from_event = True

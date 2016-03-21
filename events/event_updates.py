@@ -126,7 +126,10 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
     db_event.attendee_count = 0 # Maybe someday set attending counts when we fetch them?
 
     db_event.start_time = datetime.datetime.strptime(json_body['start_time'], DATETIME_FORMAT)
-    db_event.end_time = datetime.datetime.strptime(json_body['end_time'], DATETIME_FORMAT)
+    if json_body.get('end_time'):
+        db_event.end_time = datetime.datetime.strptime(json_body['end_time'], DATETIME_FORMAT)
+    else:
+        db_event.end_time = None
     db_event.search_time_period = _event_time_period(db_event)
 
     # TODO: WEB_EVENTS: Pass on these for now...need to rework the APIs a bit.
@@ -148,14 +151,14 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
             if json_body.get('location_name'):
                 logging.info("Have regular location_name, checking if it is a place: %s", json_body.get('location_name'))
                 results = gmaps_api.fetch_place_as_json(query=json_body['location_name'])
-        if results['status'] == 'OK':
+        if results and results['status'] == 'OK':
             json_body['location_address'] = results['results'][0]['formatted_address']
             logging.info("Found an address: %s", json_body['location_address'])
             latlng = results['results'][0]['geometry']['location']
             json_body['latitude'] = latlng['lat']
             json_body['longitude'] = latlng['lng']
 
-    db_event.address = json_body['location_address']
+    db_event.address = json_body.get('location_address')
 
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
