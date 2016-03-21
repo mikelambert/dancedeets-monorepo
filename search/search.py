@@ -212,7 +212,6 @@ class Search(object):
             real_db_events = eventdata.DBEvent.get_by_ids(ids)
             display_events = [DisplayEvent.build(x) for x in real_db_events]
         else:
-            print ids
             display_events = DisplayEvent.get_by_ids(ids)
             real_db_events = [None for x in ids]
 
