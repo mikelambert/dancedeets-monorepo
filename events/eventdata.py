@@ -16,11 +16,11 @@ CM_USER = 'CM_USER'
 
 
 class Namespace(object):
-    KOREA_SDK = 'korea-sdk'
-    JAPAN_DD = 'japan-dancedelight'
-    JAPAN_DL = 'japan-dancelife'
-    JAPAN_DEWS = 'japan-dews'
-    JAPAN_ETS = 'japan-enterthestage'
+    KOREA_SDK = 'street-dance-korea'
+    JAPAN_DD = 'dance-delight'
+    JAPAN_DL = 'dance-life'
+    JAPAN_DEWS = 'dews'
+    JAPAN_ETS = 'enter-the-stage'
     FACEBOOK = 'FB'
 
     def __init__(self, short_name, long_name, domain_url, event_url):
