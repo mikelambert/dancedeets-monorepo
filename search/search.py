@@ -57,7 +57,7 @@ def group_results(search_results, include_all=False):
 
 class DisplayEvent(ndb.Model):
     """Subset of event data used for rendering"""
-    fb_event_id = property(lambda x: str(x.key.string_id()))
+    id = property(lambda x: str(x.key.string_id()))
 
     data = ndb.JsonProperty()
 
@@ -75,7 +75,7 @@ class DisplayEvent(ndb.Model):
         if not cls.can_build_from(db_event):
             return None
         try:
-            display_event = cls(id=db_event.fb_event_id)
+            display_event = cls(id=db_event.id)
             # The event_keywords are actually _BaseValue objects, not strings.
             # So they fail json serialization, and must be converted manually here.
             keywords = [unicode(x) for x in db_event.event_keywords]
@@ -95,7 +95,7 @@ class DisplayEvent(ndb.Model):
             }
             return display_event
         except:
-            logging.exception("Failed to construct DisplayEvent for event %s", db_event.fb_event_id)
+            logging.exception("Failed to construct DisplayEvent for event %s", db_event.id)
             logging.error("FB Event data is:\n%s", pprint.pformat(db_event.fb_event, width=200))
             return None
 
@@ -226,7 +226,7 @@ class Search(object):
         for display_event, db_event in zip(display_events, real_db_events):
             if not display_event:
                 continue
-            result = search_base.SearchResult(display_event.fb_event_id, display_event.data, db_event)
+            result = search_base.SearchResult(display_event.id, display_event.data, db_event)
             search_results.append(result)
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
 
@@ -255,10 +255,10 @@ class EventsIndex(index.BaseIndex):
         if db_event.start_time is None:
             return None
         if not isinstance(db_event.start_time, datetime.datetime) and not isinstance(db_event.start_time, datetime.date):
-            logging.error("DB Event %s start_time is not correct format: ", db_event.fb_event_id, db_event.start_time)
+            logging.error("DB Event %s start_time is not correct format: ", db_event.id, db_event.start_time)
             return None
         doc_event = search.Document(
-            doc_id=db_event.fb_event_id,
+            doc_id=db_event.id,
             fields=[
                 search.TextField(name='name', value=db_event.name),
                 search.TextField(name='description', value=db_event.description),
@@ -300,7 +300,7 @@ def update_fulltext_search_index_batch(events_to_update):
         if db_event.search_time_period == dates.TIME_FUTURE:
             future_events_to_update.append(db_event)
         else:
-            future_events_to_deindex.append(db_event.fb_event_id)
+            future_events_to_deindex.append(db_event.id)
 
     FutureEventsIndex.update_index(future_events_to_update)
     FutureEventsIndex.delete_ids(future_events_to_deindex)
