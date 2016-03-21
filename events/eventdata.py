@@ -218,7 +218,7 @@ class DBEvent(ndb.Model):
     @property
     def location_name(self):
         if self.web_event:
-            return self.web_event['location_name']
+            return self.web_event.get('location_name')
         else:
             return self.fb_event['info'].get('location', '')
 
@@ -233,7 +233,7 @@ class DBEvent(ndb.Model):
     @property
     def full_address(self):
         if self.web_event:
-            return self.web_event['location_address']
+            return self.web_event.get('location_address')
         else:
             if self.street_address:
                 return '%s\n%s' % (self.street_address, self.city_state_country)
