@@ -25,6 +25,7 @@ class JsonDataHandler(webapp2.RequestHandler):
 
 
 def process_upload_finalization(studio_name):
+    return # TODO: WEB_EVENTS If the webpage disappears, we need to delete the event.
     logging.info('De-duping all classes for %s', studio_name)
     historical_fixup = datetime.datetime.today() - datetime.timedelta(days=2)
     # TODO: sometimes this query returns stale data. In particular,

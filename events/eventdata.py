@@ -49,12 +49,12 @@ class DBEvent(ndb.Model):
         return self.__get_namespace_and_id()[1]
 
     @property
-    def is_facebook_event(self):
+    def is_fb_event(self):
         return self.namespace == namespaces.FACEBOOK
 
     @property
     def fb_event_id(self):
-        if self.is_facebook_event:
+        if self.is_fb_event:
             return self.namespaced_id
         else:
             raise ValueError("Not an FB Event: %s" % self.id)
@@ -225,7 +225,7 @@ class DBEvent(ndb.Model):
     @property
     def venue(self):
         if self.web_event:
-            # TODO: WEB_EVENTS
+            # TODO: WEB_EVENTS: We need to enable this if we want to support location_schema_html() in Google Search
             return None
         else:
             return self.fb_event['info'].get('venue', {})
@@ -242,7 +242,6 @@ class DBEvent(ndb.Model):
 
     @property
     def street_address(self):
-        # TODO: WEB_EVENTS (why doesn't our location show up in the event page?)
         return self.venue.get('street')
 
     @property

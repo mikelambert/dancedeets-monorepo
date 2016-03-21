@@ -101,7 +101,7 @@ class FindAccessTokensForEventsHandler(base_servlet.BaseTaskRequestHandler):
 
 def map_events_needing_access_tokens(all_db_events):
     fbl = fb_mapreduce.get_fblookup()
-    db_events = [x for x in all_db_events if not x.visible_to_fb_uids]
+    db_events = [x for x in all_db_events if x.is_fb_event and not x.visible_to_fb_uids]
     try:
         fb_events = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
     except fb_api.ExpiredOAuthToken:
@@ -191,8 +191,7 @@ class FindEventsNeedingAccessTokensPipeline(base_handler.PipelineBase):
 class FindEventsNeedingAccessTokensHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         time_period = self.request.get('time_period')
-        # TODO: WEB_EVENTS
-        filters = [('namespace', '=', namespaces.FACEBOOK)]
+        filters = []
         if time_period:
             filters.append(('search_time_period', '=', time_period))
         pipeline = FindEventsNeedingAccessTokensPipeline(fb_mapreduce.get_fblookup_params(self.fbl), filters)
