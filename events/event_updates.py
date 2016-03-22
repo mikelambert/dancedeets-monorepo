@@ -166,11 +166,12 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
 
     db_event.address = json_body.get('location_address')
 
-    mimetype, image_data = fetch.fetch_data(db_event.image_url)
-    image = images.Image(image_data)
-    json_body['photo_width'] = image.width
-    json_body['photo_height'] = image.height
-    logging.info("Found image width size %sx%s", image.width, image.height)
+    if db_event.image_url:
+        mimetype, image_data = fetch.fetch_data(db_event.image_url)
+        image = images.Image(image_data)
+        json_body['photo_width'] = image.width
+        json_body['photo_height'] = image.height
+        logging.info("Found image width size %sx%s", image.width, image.height)
 
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
