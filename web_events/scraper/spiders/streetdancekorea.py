@@ -8,7 +8,9 @@ import urlparse
 
 import scrapy
 
+from events import namespaces
 from util import korean_dates
+from util import strip_markdown
 from .. import items
 
 
@@ -25,6 +27,7 @@ def split_list_on_element(lst, split_elem):
 class StreetDanceKoreaScraper(items.WebEventScraper):
     name = 'StreetDanceKorea'
     allowed_domains = ['www.streetdancekorea.com']
+    namespace = namespaces.KOREA_SDK
 
     def start_requests(self):
         today = datetime.date.today()
@@ -88,9 +91,9 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
     def parseEvent(self, response):
         item = items.WebEvent()
         qs = urlparse.parse_qs(urlparse.urlparse(response.url).query)
-        item['id'] = qs['seq'][0]
-        item['website'] = self.name
-        item['title'] = self._extract_text(response.xpath('.//h3'))
+        item['namespace'] = self.namespace
+        item['namespaced_id'] = qs['seq'][0]
+        item['name'] = strip_markdown.strip(self._extract_text(response.xpath('.//h3')))
         image_url = response.xpath('//img[@id="imgPoster"]/@src').extract()[0]
         if not image_url:
             return
