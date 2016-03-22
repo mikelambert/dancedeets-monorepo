@@ -75,9 +75,16 @@ def get_line_after(text, regex):
         if return_next_line and line.strip():
             value = line.strip()
             value = re.sub(ur'[＠@]', '', value)
+            paren_re = ur'[(（]'
+            if re.search(paren_re, value):
+                value = re.split(paren_re, value, 1)[0]
             return value
         if re.search(regex, line):
-            value = re.split(regex, line, 1)[1]
+            prefix, value = re.split(regex, line, 1)
+            # If it's part of a longish text like this, ignore:
+            # ＊HIPHOP&HOUSEエントリー者は11:30までに会場集合
+            if len(prefix) > 3:
+                continue
             colon_re = ur'[：:】]'
             # If it's a "keyword: something"...return the same line
             if re.search(colon_re, value):
