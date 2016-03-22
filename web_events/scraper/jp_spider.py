@@ -30,14 +30,15 @@ _VENUE_REMAP = {
     u'JANUS': u'JANUS, Osaka',
     u'江坂CAT HALL': u'キャットミュージックカレッジ',
     u'HARLEM': u'Harlem, Shibuya',
-    u'HAREM': u'Harlem, Shibuya',
+    u'渋谷HAREM': u'Harlem, Shibuya',
     u'HARLEM PLUS': u'Harlem, Shibuya',
+    u'Neo Brotherz': u'Space Zero, 宮城',
+    u'ARCHE': u'大宮アルシェ',
 }
 
 
 def setup_location(venue, addresses, item):
     if venue:
-        print repr(venue)
         if venue in _VENUE_REMAP:
             logging.info('Rewriting venue %s as %s', venue, _VENUE_REMAP[venue])
             venue = _VENUE_REMAP[venue]
