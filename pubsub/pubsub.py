@@ -145,7 +145,7 @@ def get_twitter_config(t):
 
 
 def format_twitter_post(config, db_event, media, handles=None):
-    url = campaign_url(db_event.fb_event_id, 'twitter_feed')
+    url = campaign_url(db_event.id, 'twitter_feed')
     title = db_event.name
     city = db_event.actual_city_name
 
@@ -223,7 +223,7 @@ class LookupGeoTarget(fb_api.LookupType):
 
 
 def facebook_post(auth_token, db_event):
-    link = campaign_url(db_event.fb_event_id, 'fb_feed')
+    link = campaign_url(db_event.id, 'fb_feed')
     datetime_string = db_event.start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
 
     page_id = auth_token.token_nickname

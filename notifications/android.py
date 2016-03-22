@@ -31,7 +31,7 @@ def rsvp_notify(user, event):
         # If the phone doesn't come online until after the event is completed, ignore it.
         'time_to_live': duration_seconds,
     }
-    return real_notify(user, event.fb_event_id, extra_data)
+    return real_notify(user, event.id, extra_data)
 
 def add_notify(user, event_id):
     extra_data = {
