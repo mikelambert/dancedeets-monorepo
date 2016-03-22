@@ -50,7 +50,7 @@ class DanceDelightScraper(items.WebEventScraper):
         item = items.WebEvent()
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'\?p=(\d+)', response.url).group(1)
-        item['name'] = self._extract_text(response.xpath('//a[@rel="bookmark"]/text()'))
+        item['name'] = items.extract_text(response.xpath('//a[@rel="bookmark"]/text()'))
 
         post = response.css('.entry-content')
 
@@ -64,7 +64,7 @@ class DanceDelightScraper(items.WebEventScraper):
         post_top = response.css('.social4i').extract()[0]
         post_html = post_html.replace(post_top, '')
 
-        full_description = items._format_text(post_html)
+        full_description = items.format_text(post_html)
         item['description'] = full_description
 
         jp_addresses = japanese_addresses.find_addresses(item['description'])

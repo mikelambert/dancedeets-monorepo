@@ -93,7 +93,7 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
         qs = urlparse.parse_qs(urlparse.urlparse(response.url).query)
         item['namespace'] = self.namespace
         item['namespaced_id'] = qs['seq'][0]
-        item['name'] = strip_markdown.strip(self._extract_text(response.xpath('.//h3')))
+        item['name'] = strip_markdown.strip(items.extract_text(response.xpath('.//h3')))
         image_url = response.xpath('//img[@id="imgPoster"]/@src').extract()[0]
         if not image_url:
             return
@@ -105,7 +105,7 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
 
         date_string, style, event_type = self._validate(split_on_br_nodes)
 
-        item['description'] = self._extract_text(response.css('.tab_info.desc'))
+        item['description'] = items.extract_text(response.css('.tab_info.desc'))
 
         item['start_time'], item['end_time'] = korean_dates.parse_times(date_string)
 

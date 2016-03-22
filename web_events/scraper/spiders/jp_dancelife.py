@@ -36,12 +36,12 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
             yield scrapy.Request(self.abs_url(response, url))
 
     def parseDateTimes(self, response):
-        day_text = self._extract_text(response.css('div.day'))
+        day_text = items.extract_text(response.css('div.day'))
         month, day = re.search(r'(\d+)\.(\d+)', day_text).groups()
         year = re.search(r'/(\d\d\d\d)_\d+/', response.url).group(1)
         start_date = datetime.date(int(year), int(month), int(day))
 
-        return jp_spider.parse_date_times(start_date, self._extract_text(response.xpath('//dl')))
+        return jp_spider.parse_date_times(start_date, items.extract_text(response.xpath('//dl')))
 
     def parseEvent(self, response):
         print response.url
@@ -49,7 +49,7 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
         item = items.WebEvent()
         item['namespace'] = self.namespace
         item['namespaced_id'] = re.search(r'/(\d+)\.php', response.url).group(1)
-        item['name'] = self._extract_text(response.css('div.event-detail-name'))
+        item['name'] = items.extract_text(response.css('div.event-detail-name'))
 
         photos = response.css('div.event-detail-img').xpath('./a/@href').extract()
         if photos:
@@ -59,7 +59,7 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
 
         category = response.css('div.event-detail-koumoku').xpath('./img/@alt').extract()[0]
         # Because dt otherwise remains flush up against the end of the previous dd, we insert manual breaks.
-        full_description = items._format_text(response.xpath('//dl').extract()[0].replace('<dt>', '<dt><br><br>'))
+        full_description = items.format_text(response.xpath('//dl').extract()[0].replace('<dt>', '<dt><br><br>'))
         item['description'] = '%s\n\n%s' % (category, full_description)
 
         jp_addresses = japanese_addresses.find_addresses(item['description'])

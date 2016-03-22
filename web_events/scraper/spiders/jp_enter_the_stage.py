@@ -60,7 +60,7 @@ class EnterTheStageScraper(items.WebEventScraper):
 
     def parseEvent(self, response):
         def _get(css_id):
-            return items._format_text(response.css('#%s' % css_id))
+            return items.format_text(response.css('#%s' % css_id))
 
         item = items.WebEvent()
         item['namespace'] = self.namespace

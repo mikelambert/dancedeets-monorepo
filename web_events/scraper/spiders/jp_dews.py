@@ -78,10 +78,10 @@ class DewsScraper(items.WebEventScraper):
             if attr:
                 return node.xpath('./@%s' % attr).extract()[0]
             else:
-                return self._extract_text(node)
+                return items.extract_text(node)
 
         def _definition(term):
-            return self._extract_text(response.xpath(u'//dt[contains(., "%s")]/following-sibling::dd' % term))
+            return items.extract_text(response.xpath(u'//dt[contains(., "%s")]/following-sibling::dd' % term))
 
         item = items.WebEvent()
         item['namespace'] = self.namespace

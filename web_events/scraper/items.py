@@ -55,11 +55,11 @@ class AddFacebookEvent(item.BaseItem):
         return '%s(%r)' % (self.__class__.__name__, self.fb_url)
 
 
-def _extract_text(cell):
-    return _format_text(' '.join(cell.extract()))
+def extract_text(cell):
+    return format_text(' '.join(cell.extract()))
 
 
-def _format_text(html):
+def format_text(html):
     text = html2text.html2text(html, bodywidth=0).replace('\n\n', '\n')
     text = HTMLParser.HTMLParser().unescape(text)
     text = strip_markdown.strip(text)
@@ -115,10 +115,6 @@ class WebEventScraper(scrapy.Spider):
     def _cleanup(s):
         result = re.sub(r'\s', ' ', s).replace(u'\xa0', ' ')
         return result
-
-    @staticmethod
-    def _extract_text(cell):
-        return _extract_text(cell)
 
     def base_url(self, response):
         base_href = response.xpath('//base[@href]/@href')
