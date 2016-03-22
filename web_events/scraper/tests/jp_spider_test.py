@@ -51,5 +51,5 @@ class TestAtVenue(unittest.TestCase):
     def runTest(self):
         for test, expected_result in self.tests.iteritems():
             logging.info("Testing: %s", test)
-            result = jp_spider.find_at_venue(test)
+            result = jp_spider._find_at_venue(test)
             self.assertEqual(result, expected_result, test)
