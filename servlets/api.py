@@ -1,7 +1,6 @@
 import datetime
 import json
 import logging
-import re
 import traceback
 import urllib
 
@@ -9,6 +8,7 @@ from google.appengine.api import taskqueue
 
 import app
 import base_servlet
+import event_types
 import fb_api
 from events import eventdata
 from loc import formatting
@@ -81,18 +81,21 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
             self._initialize(self.request)
             super(ApiHandler, self).dispatch()
         except Exception as e:
-            logging.error(traceback.format_exc())
+            logging.exception("API failure")
             result = e.args[0]
             # If it's a string or a regular object
             if not hasattr(result, '__iter__'):
                 result = [result]
             self.write_json_error({'success': False, 'errors': [unicode(x) for x in result]})
 
+
 def apiroute(path, *args, **kwargs):
     return app.route('/api/v(\d+)\.(\d+)' + path, *args, **kwargs)
 
+
 class RetryException(Exception):
     pass
+
 
 def retryable(func):
     def wrapped_func(*args, **kwargs):
@@ -100,16 +103,16 @@ def retryable(func):
             return func(*args, **kwargs)
         except Exception as e:
             self = args[0]
-            logging.info(traceback.format_exc())
+            logging.exception("API retry failure")
             url = self.request.path
             body = self.request.body
             logging.error(e)
             logging.error("Retrying URL %s", url)
             logging.error("With Payload %r", body)
-            taskqueue.add(method='POST', url=url, payload=body,
-                countdown=60*60)
+            taskqueue.add(method='POST', url=url, payload=body, countdown=60 * 60)
             raise
     return wrapped_func
+
 
 @apiroute('/search')
 class SearchHandler(ApiHandler):
@@ -199,7 +202,7 @@ class SearchHandler(ApiHandler):
                 json_result = canonicalize_event_data(result.db_event, result.event_keywords)
                 json_results.append(json_result)
             except Exception as e:
-                logging.error("Error processing event %s: %s" % (result.fb_event_id, e))
+                logging.exception("Error processing event %s: %s" % (result.event_id, e))
 
         title = self._get_title(city_name, form.keywords.data)
         json_response = {
@@ -221,15 +224,18 @@ class SearchHandler(ApiHandler):
             }
         self.write_json_success(json_response)
 
+
 class LookupDebugToken(fb_api.LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
             ('token', cls.url('debug_token?input_token=%s' % object_id)),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fb_api.USERLESS_UID, object_id, 'OBJ_DEBUG_TOKEN')
+
 
 def update_user(servlet, user, json_body):
     location = json_body.get('location')
@@ -253,6 +259,7 @@ def update_user(servlet, user, json_body):
         tokens = user.device_tokens('ios')
         if android_token not in tokens:
             tokens.append(android_token)
+
 
 # Released a version of iOS that requested from /api/v1.1auth, so let's handle that here for awhile
 @apiroute('/auth')
@@ -308,6 +315,7 @@ class AuthHandler(ApiHandler):
             user_creation.create_user_with_fbuser(self.fb_uid, self.fb_user, access_token, access_token_expires, location, client=client)
         self.write_json_success()
 
+
 @apiroute('/user')
 class UserUpdateHandler(ApiHandler):
     requires_auth = True
@@ -355,33 +363,30 @@ class SettingsHandler(ApiHandler):
 
 
 def canonicalize_event_data(db_event, event_keywords):
-    fb_event = db_event.fb_event
     event_api = {}
-    for key in ['id', 'name', 'start_time']:
-        event_api[key] = fb_event['info'][key]
-    # Return an empty description, if we don't have a description for some reason
-    event_api['description'] = fb_event['info'].get('description', '')
+    event_api['id'] = db_event.id
+    event_api['name'] = db_event.name
+    event_api['start_time'] = db_event.start_time_string
+    event_api['description'] = db_event.description
     # end time can be optional, especially on single-day events that are whole-day events
-    event_api['end_time'] = fb_event['info'].get('end_time')
+    event_api['end_time'] = db_event.end_time_string
 
     # cover images
-    if fb_event.get('cover_info'):
-        # Old FB API versions returned ints instead of strings, so let's stringify manually to ensure we can look up the cover_info
-        cover_id = str(fb_event['info']['cover']['cover_id'])
-        cover_images = sorted(fb_event['cover_info'][cover_id]['images'], key=lambda x: -x['height'])
+    cover_images = db_event.cover_images
+    if cover_images:
         event_api['cover'] = {
-            'cover_id': cover_id,
-            'images': cover_images,
+            'cover_id': 'dummy', # Android (v1.1) expects this value, even though it does nothing with it.
+            'images': sorted(cover_images, key=lambda x: -x['height']),
         }
     else:
         event_api['cover'] = None
-    event_api['picture'] = eventdata.get_event_image_url(fb_event)
+    event_api['picture'] = db_event.image_url
 
     # location data
-    if 'location' in fb_event['info']:
-        venue_location_name = fb_event['info']['location']
+    if db_event.location_name:
+        venue_location_name = db_event.location_name
     # We could do something like this...
-    #elif db_event and db_event.actual_city_name:
+    # elif db_event and db_event.actual_city_name:
     #    venue_location_name = db_event.actual_city_name
     # ...but really, this would return the overridden/remapped address name, which would likely just be a "City" anyway.
     # A city isn't particularly useful for our clients trying to display the event on a map.
@@ -389,9 +394,9 @@ def canonicalize_event_data(db_event, event_keywords):
         # In these very rare cases (where we've manually set the location on a location-less event), return ''
         # TODO: We'd ideally like to return None, but unfortunately Android expects this to be non-null in 1.0.3 and earlier.
         venue_location_name = ""
-    venue = fb_event['info'].get('venue', {})
+    venue = db_event.venue
     if 'name' in venue and venue['name'] != venue_location_name:
-        logging.error("For event %s, venue name %r is different from location name %r", fb_event['info']['id'], venue['name'], venue_location_name)
+        logging.error("For event %s, venue name %r is different from location name %r", db_event.fb_event_id, venue['name'], venue_location_name)
     venue_id = None
     if 'id' in venue:
         venue_id = venue['id']
@@ -422,10 +427,7 @@ def canonicalize_event_data(db_event, event_keywords):
         'geocode': geocode,
     }
     # people data
-    if 'admins' in fb_event['info']:
-        event_api['admins'] = fb_event['info']['admins']['data']
-    else:
-        event_api['admins'] =  None
+    event_api['admins'] = db_event.admins
 
     annotations = {}
     if db_event and db_event.creation_time:
@@ -445,17 +447,21 @@ def canonicalize_event_data(db_event, event_keywords):
     else:
         pass
     if db_event: # TODO: When is this not true?
-        annotations['categories'] = search_base.humanize_categories(db_event.auto_categories)
+        annotations['categories'] = event_types.humanize_categories(db_event.auto_categories)
 
     event_api['annotations'] = annotations
     # maybe handle: 'ticket_uri', 'timezone', 'updated_time', 'is_date_only'
-    rsvp_fields = ['attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count']
-    if 'attending_count' in fb_event['info']:
-        event_api['rsvp'] = dict((x, fb_event['info'][x]) for x in rsvp_fields)
+    # rsvp_fields = ['attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count']
+    if db_event.attending_count or db_event.maybe_count:
+        event_api['rsvp'] = {
+            'attending_count': db_event.attending_count or 0,
+            'maybe_count': db_event.maybe_count or 0,
+        }
     else:
         event_api['rsvp'] = None
 
     return event_api
+
 
 @apiroute('/events/\d+/?')
 class EventHandler(ApiHandler):
@@ -477,15 +483,13 @@ class EventHandler(ApiHandler):
             db_event = eventdata.DBEvent.get_by_id(event_id)
             if not db_event:
                 self.add_error('No event found')
-            elif db_event.fb_event['empty']:
-                self.add_error('This event was %s.' % db_event.fb_event['empty'])
+            elif not db_event.has_content():
+                self.add_error('This event was empty: %s.' % db_event.empty_reason)
 
         self.errors_are_fatal()
 
         json_data = canonicalize_event_data(db_event, None)
 
         # Ten minute expiry on data we return
-        self.response.headers['Cache-Control'] = 'max-age=%s' % (60*10)
+        self.response.headers['Cache-Control'] = 'max-age=%s' % (60 * 10)
         self.write_json_success(json_data)
-
-

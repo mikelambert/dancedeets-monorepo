@@ -11,7 +11,7 @@ from util import fb_mapreduce
 from users import users
 from . import eventdata
 from . import event_updates
-
+from . import namespaces
 
 def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated):
     fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id, only_if_updated=only_if_updated)
@@ -49,15 +49,10 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
             # Let's update the DBEvent as necessary (note, this uses the last-updated FBLookup)
             if fbl:
                 add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
-    event_updates.update_and_save_events(events_to_update, update_geodata=update_geodata)
+    event_updates.update_and_save_fb_events(events_to_update, update_geodata=update_geodata)
 
 
-def yield_load_fb_event(fbl, db_events):
-    logging.info("loading db events %s", [db_event.fb_event_id for db_event in db_events])
-    fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
-    # fbl.request_multi(fb_api.LookupEventPageComments, [x.fb_event_id for x in db_events])
-    fbl.batch_fetch()
-    events_to_update = []
+def yield_load_fb_event(fbl, all_events):
     ctx = context.get()
     if ctx:
         params = ctx.mapreduce_spec.mapper.params
@@ -66,6 +61,22 @@ def yield_load_fb_event(fbl, db_events):
     else:
         update_geodata = True
         only_if_updated = True
+
+    # Process web_events
+    web_events = [x for x in all_events if not x.is_fb_event]
+    events_to_update = []
+    for web_event in web_events:
+        if event_updates.need_forced_update(web_event):
+            events_to_update.append((web_event, web_event.web_event))
+    event_updates.update_and_save_web_events(events_to_update, update_geodata=update_geodata)
+
+    # Now process fb_events
+    db_events = [x for x in all_events if x.is_fb_event]
+    logging.info("loading db events %s", [db_event.fb_event_id for db_event in db_events])
+    fbl.request_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
+    # fbl.request_multi(fb_api.LookupEventPageComments, [x.fb_event_id for x in db_events])
+    fbl.batch_fetch()
+    events_to_update = []
     empty_fb_event_ids = []
     for db_event in db_events:
         try:
@@ -93,12 +104,13 @@ def yield_load_fb_event(fbl, db_events):
     if empty_fb_event_ids:
         deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, allow_cache=fbl.allow_cache, only_if_updated=only_if_updated, update_geodata=update_geodata)
     # And then re-save all the events in here
-    event_updates.update_and_save_events(events_to_update, update_geodata=update_geodata)
+    event_updates.update_and_save_fb_events(events_to_update, update_geodata=update_geodata)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)
 load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
 
-def yield_load_fb_event_attending(fbl, db_events):
+def yield_load_fb_event_attending(fbl, all_events):
+    db_events = [x for x in all_events if x.is_fb_event]
     fbl.get_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events])
 map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
 load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
@@ -111,11 +123,11 @@ def mr_load_fb_events(fbl, load_attending=False, time_period=None, update_geodat
     else:
         event_or_attending = 'Events'
         mr_func = 'map_load_fb_event'
+    filters = []
     if time_period:
-        filters = [('search_time_period', '=', time_period)]
+        filters.append(('search_time_period', '=', time_period))
         name = 'Load %s %s' % (time_period, event_or_attending)
     else:
-        filters = []
         name = 'Load All %s' % (event_or_attending)
     fb_mapreduce.start_map(
         fbl=fbl,

@@ -5,19 +5,20 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import dateparser
-import datetime
 import logging
 import re
+import urlparse
 
 import html2text
+import HTMLParser
 import scrapy
 from scrapy import item
 
 from nlp import event_classifier
-from nlp import categories
 from nlp import keywords
 from nlp import rules
+from scrapers import pipelines
+from util import strip_markdown
 
 
 class WebEvent(item.DictItem):
@@ -31,15 +32,16 @@ class WebEvent(item.DictItem):
     # We could get rid of the need for this by subclassing scrapy.BaseItem.
     # But this provides some element of safety by enforcing field names.
     fields = [
-        'id',
-        'website',
-        'title',
+        'namespace',
+        'namespaced_id',
+        'name',
         'description',
         'photo',
-        'starttime',
-        'endtime',
+        'start_time',
+        'end_time',
         'location_name',
         'location_address',
+        'geolocate_location_name', # used to geolocate this event
         'latitude',
         'longitude',
     ]
@@ -53,17 +55,16 @@ class AddFacebookEvent(item.BaseItem):
         return '%s(%r)' % (self.__class__.__name__, self.fb_url)
 
 
-def _extract_text(cell):
-    return _format_text(' '.join(cell.extract()))
+def extract_text(cell):
+    return format_text(' '.join(cell.extract()))
 
 
-def _format_text(html):
-    text = re.sub(' +\n', '\n', html2text.html2text(html, bodywidth=0).replace('\n\n', '\n')).strip()
-    # If we have too many header lines, strip them out (bad html formatter that does <h1> on everything)
-    lines = text.count('\n')
-    header_lines = len(re.findall(r'^# ', text, re.MULTILINE))
-    if header_lines > lines / 8:
-        text = re.sub('\n# ', '', text)
+def format_text(html):
+    text = html2text.html2text(html, bodywidth=0).replace('\n\n', '\n')
+    text = HTMLParser.HTMLParser().unescape(text)
+    text = strip_markdown.strip(text)
+    text = re.sub(' +\n', '\n', text).strip()
+    text = re.sub('\n\n\n', '\n\n', text)
     return text
 
 
@@ -83,6 +84,10 @@ def get_line_after(text, regex):
     return None
 
 
+class SaveWebEventPipeline(pipelines.SaveToServerPipeline):
+    server_path = 'web_events/upload_multi'
+
+
 class WebEventScraper(scrapy.Spider):
     """Base class for all our web event scrapers. Does some per-item field setup that is common across web events."""
 
@@ -90,7 +95,7 @@ class WebEventScraper(scrapy.Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            # 'classes.scraper.pipelines.BatchSaveStudioClassPipeline': 300,
+            'web_events.scraper.items.SaveWebEventPipeline': 300,
         }
     }
 
@@ -107,9 +112,15 @@ class WebEventScraper(scrapy.Spider):
         result = re.sub(r'\s', ' ', s).replace(u'\xa0', ' ')
         return result
 
-    @staticmethod
-    def _extract_text(cell):
-        return _extract_text(cell)
+    def base_url(self, response):
+        base_href = response.xpath('//base[@href]/@href')
+        if base_href:
+            return base_href.extract()[0]
+        else:
+            return response.url
+
+    def abs_url(self, response, url):
+        return urlparse.urljoin(self.base_url(response), url)
 
     def _get_recurrence(self, studio_class):
         """Returns a recurrence_id using fields that remain stable week-to-week,

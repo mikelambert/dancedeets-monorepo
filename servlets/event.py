@@ -67,7 +67,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         return self.redirect(urls.fb_relative_event_url(event_id), permanent=True)
 
 
-@app.route(r'/events/\d+/?')
+@app.route(r'/events/(?:\d+|[^/?#]+:[^/?#]+)/?')
 class ShowEventHandler(base_servlet.BaseRequestHandler):
 
     def requires_login(self):
@@ -86,18 +86,17 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         db_event = eventdata.DBEvent.get_by_id(event_id)
         if not db_event:
             self.abort(404)
-        fb_event = db_event.fb_event
-        if fb_event['empty']:
-            self.response.out.write('This event was %s.' % fb_event['empty'])
+        if not db_event.has_content():
+            self.response.out.write('This event was %s.' % db_event.empty_reason)
             return
 
-        self.display['displayable_event'] = DisplayableEvent(db_event, fb_event)
+        self.display['displayable_event'] = DisplayableEvent(db_event)
 
         self.display['next'] = self.request.url
         self.display['show_mobile_app_promo'] = True
         self.jinja_env.filters['make_category_link'] = lambda lst: [jinja2.Markup('<a href="/?keywords=%s">%s</a>') % (x, x) for x in lst]
 
-        self.display['canonical_url'] = 'http://%s/events/%s/' % (self._get_full_hostname(), db_event.fb_event_id)
+        self.display['canonical_url'] = 'http://%s/events/%s/' % (self._get_full_hostname(), db_event.id)
 
         if self.request.get('amp'):
             if self.display['displayable_event'].largest_cover:
@@ -124,21 +123,19 @@ def join_valid(sep, lst):
 class DisplayableEvent(object):
     """Encapsulates all the data (and relevant accessor methods) for showing an event on the event page."""
 
-    def __init__(self, db_event, event_info):
-        # TODO: This doesn't use the overriden lat/long at all, yet. It relies on FB data 100%.
+    def __init__(self, db_event):
         self.db_event = db_event
-        self.event_info = event_info
 
     def location_schema_html(self):
         html = [
             '<span itemscope itemprop="location" itemtype="http://schema.org/Place">',
-            '  <meta itemprop="name" content="%s" />' % self.location_name,
+            '  <meta itemprop="name" content="%s" />' % self.db_event.location_name,
         ]
         if self.latitude:
             html += [
                 '  <span itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">',
-                '    <meta itemprop="latitude" content="%s" />' % self.latitude,
-                '    <meta itemprop="longitude" content="%s" />' % self.longitude,
+                '    <meta itemprop="latitude" content="%s" />' % self.db_event.latitude,
+                '    <meta itemprop="longitude" content="%s" />' % self.db_event.longitude,
                 '  </span>',
             ]
         if self.venue:
@@ -146,13 +143,13 @@ class DisplayableEvent(object):
                 '  <span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">',
             ]
             if self.street_address:
-                html += ['    <meta itemprop="streetAddress" content="%s"/>' % self.street_address]
+                html += ['    <meta itemprop="streetAddress" content="%s"/>' % self.db_event.street_address]
             if self.city:
-                html += ['    <meta itemprop="addressLocality" content="%s"/>' % self.city]
+                html += ['    <meta itemprop="addressLocality" content="%s"/>' % self.db_event.city]
             if self.street_address:
-                html += ['    <meta itemprop="addressRegion" content="%s"/>' % self.state]
+                html += ['    <meta itemprop="addressRegion" content="%s"/>' % self.db_event.state]
             if self.street_address:
-                html += ['    <meta itemprop="addressCountry" content="%s"/>' % self.country]
+                html += ['    <meta itemprop="addressCountry" content="%s"/>' % self.db_event.country]
             html += ['  </span>']
         html += [
             '</span>',
@@ -164,106 +161,18 @@ class DisplayableEvent(object):
         formatted_start_time = self.db_event.start_time.strftime('%Y/%m/%d @ %H:%M')
 
         formatted_location = join_valid(', ', [
-            self.event_info['info'].get('location'),
-            self.event_info['info'].get('venue', {}).get('city'),
-            self.event_info['info'].get('venue', {}).get('state'),
+            self.db_event.location_name,
+            self.db_event.city,
+            self.db_event.state,
         ])
         return join_valid(': ', [
             formatted_start_time,
             formatted_location,
-            self.event_info['info'].get('description'),
+            self.db_event.description,
         ])
 
-    @property
-    def id(self):
-        return self.event_info['info']['id']
-
-    @property
-    def name(self):
-        return self.event_info['info'].get('name')
-
-    @property
-    def description(self):
-        return self.event_info['info'].get('description')
-
-    @property
-    def creation_time(self):
-        return self.db_event.creation_time
-
-    @property
-    def categories(self):
-        return search_base.humanize_categories(self.db_event.auto_categories)
-
-    @property
-    def cover_metadata(self):
-        return self.event_info['info'].get('cover')
-
-    @property
-    def largest_cover(self):
-        return eventdata.get_largest_cover(self.event_info)
-
-    @property
-    def start_time(self):
-        return self.db_event.start_time
-
-    @property
-    def end_time(self):
-        return self.db_event.end_time
-
-    @property
-    def location_name(self):
-        return self.event_info['info'].get('location')
-
-    @property
-    def venue(self):
-        return self.event_info['info'].get('venue')
-
-    @property
-    def street_address(self):
-        return self.venue.get('street')
-
-    @property
-    def city(self):
-        return self.venue.get('city')
-
-    @property
-    def state(self):
-        return self.venue.get('state')
-
-    @property
-    def country(self):
-        return self.venue.get('country')
-
-    @property
-    def city_state_country(self):
-        city_state_country = [x for x in [self.city, self.state, self.country] if x]
-        return ', '.join(city_state_country)
-
-    @property
-    def latitude(self):
-        return self.venue and self.venue.get('latitude')
-
-    @property
-    def longitude(self):
-        return self.venue and self.venue.get('longitude')
-
-    @property
-    def attending_count(self):
-        return self.event_info['info'].get('attending_count')
-
-    @property
-    def maybe_count(self):
-        return self.event_info['info'].get('maybe_count')
-
-    @property
-    def admins(self):
-        admins = self.event_info['info'].get('admins', {}).get('data')
-        if not admins:
-            if self.event_info['info'].get('owner'):
-                admins = [self.event_info['info'].get('owner')]
-            else:
-                admins = []
-        return admins
+    def __getattr__(self, name):
+        return getattr(self.db_event, name)
 
 
 @app.route('/events/admin_edit')
@@ -509,7 +418,7 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
         db_events = [x for x in db_events if x.anywhere is False]
         template_events = []
         for db_event in db_events:
-            if not db_event.fb_event['empty']:
+            if db_event.has_content():
                 template_events.append(dict(fb_event=db_event.fb_event, db_event=db_event))
         self.display['events'] = template_events
         self.render_template('admin_nolocation_events')

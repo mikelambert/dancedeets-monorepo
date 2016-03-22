@@ -16,6 +16,8 @@ class TestEvent(unittest.TestCase):
     def runTest(self):
         event = fixtures.create_event()
         result = app.get('/api/v1.0/events/%s' % event.fb_event_id)
+        if 'success' in result.json and not result.json['success']:
+            self.fail(result.json)
         self.assertEqual(result.json['id'], event.fb_event_id)
 
 class TestAuth(unittest.TestCase):
@@ -58,7 +60,6 @@ class TestAuth(unittest.TestCase):
             utils.dumps = lambda *args, **kwargs: urllib.quote(old_dumps(*args, **kwargs))
             auth_request['access_token'] = new_access_token
             result = app.post_json('/api/v1.0/auth', auth_request)
-            print result
             self.assertEqual(result.json, {'success': True})
         finally:
             utils.dumps = old_dumps

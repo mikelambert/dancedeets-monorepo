@@ -17,6 +17,7 @@ from nlp import event_classifier
 from nlp import categories
 from nlp import keywords
 from nlp import rules
+from scrapers import pipelines
 
 
 class StudioClass(item.DictItem):
@@ -47,6 +48,10 @@ class StudioClass(item.DictItem):
     ]
 
 
+class SaveStudioClassPipeline(pipelines.SaveToServerPipeline):
+    server_path = 'classes/upload_multi'
+
+
 class StudioScraper(scrapy.Spider):
     """Base class for all our studio scrapers. Does some per-item field setup that is common across studios."""
 
@@ -54,7 +59,7 @@ class StudioScraper(scrapy.Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'classes.scraper.pipelines.BatchSaveStudioClassPipeline': 300,
+            'classes.scraper.items.SaveStudioClassPipeline': 300,
         }
     }
 

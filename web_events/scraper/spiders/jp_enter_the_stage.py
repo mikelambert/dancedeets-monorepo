@@ -2,10 +2,10 @@
 
 import datetime
 import re
-import urlparse
 
 import scrapy
 
+from events import namespaces
 from .. import items
 from .. import jp_spider
 
@@ -42,6 +42,7 @@ def parse_times(s):
 class EnterTheStageScraper(items.WebEventScraper):
     name = 'EnterTheStage'
     allowed_domains = ['et-stage.net']
+    namespace = namespaces.JAPAN_ETS
 
     def start_requests(self):
         yield scrapy.Request('http://et-stage.net/event_list.php')
@@ -55,24 +56,24 @@ class EnterTheStageScraper(items.WebEventScraper):
     def parseList(self, response):
         urls = response.xpath('//a[@class="block"]/@href').extract()
         for url in urls:
-            yield scrapy.Request(urlparse.urljoin(response.url, url))
+            yield scrapy.Request(self.abs_url(response, url))
 
     def parseEvent(self, response):
         def _get(css_id):
-            return self._extract_text(response.css('#%s' % css_id))
+            return items.format_text(response.css('#%s' % css_id))
 
         item = items.WebEvent()
-        item['id'] = re.search(r'/event/(\w+)/', response.url).group(1)
-        item['website'] = self.name
-        item['title'] = _get('u474-4')
+        item['namespace'] = self.namespace
+        item['namespaced_id'] = re.search(r'/event/(\w+)/', response.url).group(1)
+        item['name'] = _get('u474-4')
         image_url = response.xpath('//img[@id="u469_img"]/@src').extract()[0]
-        item['photo'] = urlparse.urljoin(response.url, image_url)
+        item['photo'] = self.abs_url(response, image_url)
 
         # cost = _get('u511-7')
         # email = _get('u512-4')
 
         item['description'] = _get('u468-156')
-        item['starttime'], item['endtime'] = parse_times(_get('u506-2'))
+        item['start_time'], item['end_time'] = parse_times(_get('u506-2'))
 
         item['location_name'] = _get('u507-4')
         item['location_address'] = _get('u509-11')

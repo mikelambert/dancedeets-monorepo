@@ -18,11 +18,12 @@ def decorate_with_friends(fbl, search_results):
         friend_map = dict((x['id'], x['name']) for x in friends_list if 'name' in x)
         friend_ids = set(friend_map.keys())
 
-        fbl.request_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in search_results])
+        # TODO: WEB_EVENTS: filter out non-FB events for lookup
+        fbl.request_multi(fb_api.LookupEventAttending, [x.event_id for x in search_results])
         fbl.batch_fetch()
 
         for result in search_results:
-            event_attendees = fbl.fetched_data(fb_api.LookupEventAttending, result.data.fb_event_id)['attending']['data']
+            event_attendees = fbl.fetched_data(fb_api.LookupEventAttending, result.data.id)['attending']['data']
             event_attendee_ids = [x['id'] for x in event_attendees]
             event_friend_attendees = friend_ids.intersection(event_attendee_ids)
             result.attending_friends = sorted(friend_map[x] for x in event_friend_attendees)
@@ -31,4 +32,4 @@ def decorate_with_friends(fbl, search_results):
             result.attending_friends = []
     for result in search_results:
         result.attending_friend_count = len(result.attending_friends)
-        
+

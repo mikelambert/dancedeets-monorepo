@@ -13,13 +13,12 @@ import urlparse
 
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
+from google.appengine.api import taskqueue
 import twitter
 
 from events import eventdata
-from events import event_locations
 import fb_api
 import keys
-from util import dates
 from util import fetch
 from util import urls
 
@@ -29,27 +28,26 @@ consumer_secret = keys.get("twitter_consumer_secret")
 DATE_FORMAT = "%Y/%m/%d"
 TIME_FORMAT = "%H:%M"
 
-from google.appengine.api import taskqueue
-
 EVENT_PULL_QUEUE = 'event-publishing-pull-queue'
+
 
 def eventually_publish_event(event_id, token_nickname=None):
     db_event = eventdata.DBEvent.get_by_id(event_id)
-    if db_event.fb_event['empty']:
+    if not db_event.has_content():
         return
     if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
         return
-    location_info = event_locations.LocationInfo(db_event.fb_event, db_event)
-    logging.info("Publishing event %s with latlng %s", event_id, location_info.geocode)
-    if not location_info.geocode:
+    geocode = db_event.get_geocode()
+    logging.info("Publishing event %s with latlng %s", event_id, geocode)
+    if not geocode:
         # Don't post events without a location. It's too confusing...
         return
-    event_country = location_info.geocode.country()
+    event_country = geocode.country()
 
     args = []
     if token_nickname:
-        args.append(OAuthToken.token_nickname==token_nickname)
-    oauth_tokens = OAuthToken.query(OAuthToken.valid_token==True, *args).fetch(100)
+        args.append(OAuthToken.token_nickname == token_nickname)
+    oauth_tokens = OAuthToken.query(OAuthToken.valid_token == True, *args).fetch(100)
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
         logging.info("Evaluating token %s", token)
@@ -57,16 +55,17 @@ def eventually_publish_event(event_id, token_nickname=None):
             continue
         logging.info("Adding task for posting!")
         # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
-        name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id, int(time.time()))
+        name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id.replace(':', '-'), int(time.time()))
         logging.info("Adding task with name %s", name)
         q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
 
+
 def pull_and_publish_event():
     oauth_tokens = OAuthToken.query(
-        OAuthToken.valid_token==True,
+        OAuthToken.valid_token == True,
         ndb.OR(
-            OAuthToken.next_post_time<datetime.datetime.now(),
-            OAuthToken.next_post_time==None
+            OAuthToken.next_post_time < datetime.datetime.now(),
+            OAuthToken.next_post_time == None
         )
     ).fetch(100)
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
@@ -85,11 +84,12 @@ def pull_and_publish_event():
             token.next_post_time = next_post_time
             token.put()
 
+
 def post_event_id_with_authtoken(event_id, auth_token):
     event_id = event_id
     db_event = eventdata.DBEvent.get_or_insert(event_id)
-    if db_event.fb_event['empty']:
-        logging.warning("Failed to post event: %s, due to %s", event_id, db_event.fb_event['empty'])
+    if not db_event.has_content():
+        logging.warning("Failed to post event: %s, due to %s", event_id, db_event.empty_reason)
         return
     if auth_token.application == APP_TWITTER:
         try:
@@ -110,8 +110,9 @@ def post_event_id_with_authtoken(event_id, auth_token):
     else:
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
 
-def create_media_on_twitter(t, fb_event):
-    cover = eventdata.get_largest_cover(fb_event)
+
+def create_media_on_twitter(t, db_event):
+    cover = db_event.largest_cover
     if not cover:
         return None
     mimetype, response = fetch.fetch_data(cover['source'])
@@ -122,6 +123,7 @@ def create_media_on_twitter(t, fb_event):
         t.domain = 'api.twitter.com'
     return result
 
+
 def campaign_url(eid, source):
     return urls.fb_event_url(eid, {
         'utm_source': source,
@@ -130,7 +132,8 @@ def campaign_url(eid, source):
     })
 
 TWITTER_CONFIG_KEY = 'TwitterConfig'
-TWITTER_CONFIG_EXPIRY = 24*60*60
+TWITTER_CONFIG_EXPIRY = 24 * 60 * 60
+
 
 def get_twitter_config(t):
     config = memcache.get(TWITTER_CONFIG_KEY)
@@ -140,9 +143,10 @@ def get_twitter_config(t):
     memcache.set(TWITTER_CONFIG_KEY, json.dumps(config), TWITTER_CONFIG_EXPIRY)
     return config
 
-def format_twitter_post(config, db_event, fb_event, media, handles=None):
-    url = campaign_url(db_event.fb_event_id, 'twitter_feed')
-    title = fb_event['info']['name']
+
+def format_twitter_post(config, db_event, media, handles=None):
+    url = campaign_url(db_event.id, 'twitter_feed')
+    title = db_event.name
     city = db_event.actual_city_name
 
     datetime_string = db_event.start_time.strftime(DATE_FORMAT)
@@ -175,6 +179,7 @@ def format_twitter_post(config, db_event, fb_event, media, handles=None):
     result = u"%s%s %s%s" % (prefix, final_title, url, handle_string)
     return result
 
+
 def twitter_post(auth_token, db_event):
     t = twitter.Twitter(
         auth=twitter.OAuth(auth_token.oauth_token, auth_token.oauth_token_secret, consumer_key, consumer_secret))
@@ -184,16 +189,16 @@ def twitter_post(auth_token, db_event):
         update_params['lat'] = db_event.latitude
         update_params['long'] = db_event.longitude
 
-    media = create_media_on_twitter(t, db_event.fb_event)
+    media = create_media_on_twitter(t, db_event)
     if media:
         update_params['media_ids'] = media['media_id']
 
     TWITTER_HANDLE_LENGTH = 16
-    description = db_event.fb_event['info'].get('description') or ''
+    description = db_event.description
     twitter_handles = re.findall(r'\s@[A-za-z0-9_]+', description)
-    twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1+TWITTER_HANDLE_LENGTH]
+    twitter_handles = [x.strip() for x in twitter_handles if len(x) <= 1 + TWITTER_HANDLE_LENGTH]
     twitter_handles2 = re.findall(r'twitter\.com/([A-za-z0-9_]+)', description)
-    twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1+TWITTER_HANDLE_LENGTH]
+    twitter_handles2 = ['@%s' % x.strip() for x in twitter_handles2 if len(x) <= 1 + TWITTER_HANDLE_LENGTH]
     # This is the only twitter account allowed to @mention, to avoid spamming everyone...
     if auth_token.token_nickname == 'BigTwitter':
         # De-dupe these lists
@@ -201,7 +206,7 @@ def twitter_post(auth_token, db_event):
     else:
         handles = []
     config = get_twitter_config(t)
-    status = format_twitter_post(config, db_event, db_event.fb_event, media, handles=handles)
+    status = format_twitter_post(config, db_event, media, handles=handles)
     t.statuses.update(status=status, **update_params)
 
 
@@ -211,13 +216,14 @@ class LookupGeoTarget(fb_api.LookupType):
         return [
             ('search', cls.url('search?type=adgeolocation&%s' % urlparams)),
         ]
+
     @classmethod
     def cache_key(cls, query, fetching_uid):
         return (fb_api.USERLESS_UID, query, 'OBJ_GEO_TARGET')
 
+
 def facebook_post(auth_token, db_event):
-    fb_event = db_event.fb_event
-    link = campaign_url(db_event.fb_event_id, 'fb_feed')
+    link = campaign_url(db_event.id, 'fb_feed')
     datetime_string = db_event.start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
 
     page_id = auth_token.token_nickname
@@ -225,28 +231,28 @@ def facebook_post(auth_token, db_event):
     fbl = fb_api.FBLookup(None, auth_token.oauth_token)
 
     post_values = {}
-    #post_values['message'] = fb_event['info']['name']
+    # post_values['message'] = db_event.name
     post_values['link'] = link
-    post_values['name'] = fb_event['info']['name'].encode('utf8')
+    post_values['name'] = db_event.name.encode('utf8')
     post_values['caption'] = datetime_string
-    description = fb_event['info'].get('description', '')
+    description = db_event.description
     if len(description) > 10000:
         post_values['description'] = description[:9999] + u"…"
     else:
         post_values['description'] = description
     post_values['description'] = post_values['description'].encode('utf8')
-    cover = eventdata.get_largest_cover(fb_event)
+    cover = db_event.largest_cover
     if cover:
         post_values['picture'] = cover['source']
-    venue_id = fb_event['info'].get('venue', {}).get('id')
+    venue_id = db_event.venue.get('id')
     if venue_id:
         post_values['place'] = venue_id
         # Can only tag people if there is a place tagged too
-        if fb_event['info'].get('admins'):
-            admin_ids = [x['id'] for x in fb_event['info']['admins']['data']]
-            post_values['tags'] = ','.join(admin_ids)
+        admins = db_event.admins
+        if admins:
+            post_values['tags'] = ','.join(x['id'] for x in admins)
 
-    feed_targeting = get_targeting_data(fbl, fb_event, db_event)
+    feed_targeting = get_targeting_data(fbl, db_event)
     if feed_targeting:
         # Ideally we'd do this as 'feed_targeting', but Facebook appears to return errors with that due to:
         # {u'error': {u'message': u'Invalid parameter', u'code': 100, u'is_transient': False,
@@ -260,23 +266,22 @@ def facebook_post(auth_token, db_event):
     return json.loads(result)
 
 
-def get_targeting_data(fbl, fb_event, db_event):
+def get_targeting_data(fbl, db_event):
     short_country = None
     city_key = None
 
-    venue_id = fb_event['info'].get('venue', {}).get('id')
+    venue_id = db_event.venue.get('id')
 
     if venue_id:
         # Target to people in the same country as the event. Should improve signal/noise ratio.
-        country = fb_event['info']['venue'].get('country')
-        if country:
-            country = country.upper()
+        if db_event.country:
+            country = db_event.country.upper()
             if country in iso3166.countries_by_name:
                 short_country = iso3166.countries_by_name[country].alpha2
 
         city_state_country_list = [
-            fb_event['info']['venue'].get('city'),
-            fb_event['info']['venue'].get('state')
+            db_event.city,
+            db_event.state
         ]
         city_state_country = ', '.join(x for x in city_state_country_list if x)
         kw_params = {
@@ -292,9 +297,9 @@ def get_targeting_data(fbl, fb_event, db_event):
             # if we want state-level targeting, 'region_id' would be the city's associated state
 
     if not short_country:
-        location_info = event_locations.LocationInfo(fb_event, db_event)
-        if location_info.geocode:
-            short_country = location_info.geocode.country()
+        geocode = db_event.get_geocode()
+        if geocode:
+            short_country = geocode.country()
 
     feed_targeting = {}
     if short_country:
@@ -310,8 +315,7 @@ authorize_url = 'https://twitter.com/oauth/authorize'
 
 APP_TWITTER = 'APP_TWITTER'
 APP_FACEBOOK = 'APP_FACEBOOK' # a butchering of OAuthToken!
-#...instagram?
-#...tumblr?
+
 
 class OAuthToken(ndb.Model):
     user_id = ndb.StringProperty()
@@ -328,8 +332,8 @@ class OAuthToken(ndb.Model):
 
     json_data = ndb.JsonProperty()
 
-    #search criteria? location? radius? search terms?
-    #post on event find? post x hours before event? multiple values?
+    # search criteria? location? radius? search terms?
+    # post on event find? post x hours before event? multiple values?
 
     def queue_id(self):
         return str(self.key.id())
@@ -355,7 +359,11 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
 
     request_token = dict(urlparse.parse_qsl(content))
 
-    auth_tokens = OAuthToken.query(OAuthToken.user_id==user_id, OAuthToken.token_nickname==token_nickname, OAuthToken.application==APP_TWITTER).fetch(1)
+    auth_tokens = OAuthToken.query(
+        OAuthToken.user_id == user_id,
+        OAuthToken.token_nickname == token_nickname,
+        OAuthToken.application == APP_TWITTER
+    ).fetch(1)
     if auth_tokens:
         auth_token = auth_tokens[0]
     else:
@@ -375,13 +383,17 @@ def twitter_oauth1(user_id, token_nickname, country_filter):
 
     return "%s?oauth_token=%s" % (authorize_url, request_token['oauth_token'])
 
-#user comes to:
-#/sign-in-with-twitter/?
+# user comes to:
+# /sign-in-with-twitter/?
 #        oauth_token=NPcudxy0yU5T3tBzho7iCotZ3cnetKwcTIRlX0iwRl0&
 #        oauth_verifier=uw7NjWHT6OJ1MpJOXsHfNxoAhPKpgI8BlYDhxEjIBY
 
+
 def twitter_oauth2(oauth_token, oauth_verifier):
-    auth_tokens = OAuthToken.query(OAuthToken.temp_oauth_token==oauth_token, OAuthToken.application==APP_TWITTER).fetch(1)
+    auth_tokens = OAuthToken.query(
+        OAuthToken.temp_oauth_token == oauth_token,
+        OAuthToken.application == APP_TWITTER
+    ).fetch(1)
     if not auth_tokens:
         return None
     auth_token = auth_tokens[0]
@@ -390,8 +402,7 @@ def twitter_oauth2(oauth_token, oauth_verifier):
     # request token to sign this request. After this is done you throw away the
     # request token and use the access token returned. You should store this
     # access token somewhere safe, like a database, for future use.
-    token = oauth.Token(oauth_token,
-        auth_token.temp_oauth_token_secret)
+    token = oauth.Token(oauth_token, auth_token.temp_oauth_token_secret)
     token.set_verifier(oauth_verifier)
     consumer = oauth.Consumer(consumer_key, consumer_secret)
     client = oauth.Client(consumer, token)
@@ -401,7 +412,7 @@ def twitter_oauth2(oauth_token, oauth_verifier):
     auth_token.oauth_token = access_token['oauth_token']
     auth_token.oauth_token_secret = access_token['oauth_token_secret']
     auth_token.valid_token = True
-    auth_token.time_between_posts = 5*60 # every 5 minutes
+    auth_token.time_between_posts = 5 * 60 # every 5 minutes
     auth_token.put()
     return auth_token
 
@@ -412,6 +423,7 @@ class LookupUserAccounts(fb_api.LookupType):
         return [
             ('accounts', cls.url('%s/accounts' % object_id)),
         ]
+
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_USER_ACCOUNTS')
@@ -426,7 +438,7 @@ def facebook_auth(fbl, page_uid, country_filter):
     page = pages[0]
     page_token = page['access_token']
 
-    auth_tokens = OAuthToken.query(OAuthToken.user_id==fbl.fb_uid, OAuthToken.token_nickname==page_uid, OAuthToken.application==APP_FACEBOOK).fetch(1)
+    auth_tokens = OAuthToken.query(OAuthToken.user_id == fbl.fb_uid, OAuthToken.token_nickname == page_uid, OAuthToken.application == APP_FACEBOOK).fetch(1)
     if auth_tokens:
         auth_token = auth_tokens[0]
     else:
@@ -436,9 +448,8 @@ def facebook_auth(fbl, page_uid, country_filter):
     auth_token.application = APP_FACEBOOK
     auth_token.valid_token = True
     auth_token.oauth_token = page_token
-    auth_token.time_between_posts = 5*60
+    auth_token.time_between_posts = 5 * 60
     if country_filter:
         auth_token.country_filters += country_filter.upper()
     auth_token.put()
     return auth_token
-

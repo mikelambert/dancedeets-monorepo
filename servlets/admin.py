@@ -68,5 +68,4 @@ class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
         import logging
         logging.info("found %s events", len(all_events))
         for e in all_events:
-            self.response.out.write('<a href="%s">%s</a><br>\n' % (urls.raw_fb_event_url(e.fb_event_id), e.fb_event_id))
-
+            self.response.out.write('<a href="%s">%s</a><br>\n' % (e.source_url, e.fb_event_id))

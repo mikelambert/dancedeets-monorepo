@@ -18,10 +18,12 @@ SLOW_QUEUE = 'slow-queue'
 
 MAX_EVENTS = 100000
 
+
 class ResultsGroup(object):
     def __init__(self, name, results):
         self.name = name
         self.results = results
+
 
 def group_results(search_results, include_all=False):
     now = datetime.datetime.now() - datetime.timedelta(hours=12)
@@ -52,21 +54,17 @@ def group_results(search_results, include_all=False):
         grouped_results = [x for x in grouped_results if x.results]
     return past_results, present_results, grouped_results
 
+
 class DisplayEvent(ndb.Model):
     """Subset of event data used for rendering"""
-    fb_event_id = property(lambda x: str(x.key.string_id()))
+    id = property(lambda x: str(x.key.string_id()))
 
     data = ndb.JsonProperty()
 
     @classmethod
     def can_build_from(cls, db_event):
         """Can we build a DisplayEvent from a given DBEvent"""
-        if not db_event.fb_event:
-            return False
-        elif db_event.fb_event['empty']:
-            return False
-        else:
-            return True
+        return db_event.has_content()
 
     @classmethod
     def build(cls, db_event):
@@ -74,17 +72,17 @@ class DisplayEvent(ndb.Model):
         if not cls.can_build_from(db_event):
             return None
         try:
-            display_event = cls(id=db_event.fb_event_id)
+            display_event = cls(id=db_event.id)
             # The event_keywords are actually _BaseValue objects, not strings.
             # So they fail json serialization, and must be converted manually here.
             keywords = [unicode(x) for x in db_event.event_keywords]
             categories = [unicode(x) for x in db_event.auto_categories]
             display_event.data = {
-                'name': db_event.fb_event['info'].get('name'),
-                'image': eventdata.get_event_image_url(db_event.fb_event),
-                'cover': eventdata.get_largest_cover(db_event.fb_event),
-                'start_time': db_event.fb_event['info']['start_time'],
-                'end_time': db_event.fb_event['info'].get('end_time'),
+                'name': db_event.name,
+                'image': db_event.image_url,
+                'cover': db_event.largest_cover,
+                'start_time': db_event.start_time_string,
+                'end_time': db_event.end_time_string,
                 'location': db_event.actual_city_name,
                 'lat': db_event.latitude, # used for de-duping events
                 'lng': db_event.longitude, # used for de-duping events
@@ -94,7 +92,7 @@ class DisplayEvent(ndb.Model):
             }
             return display_event
         except:
-            logging.exception("Failed to construct DisplayEvent for event %s", db_event.fb_event_id)
+            logging.exception("Failed to construct DisplayEvent for event %s", db_event.id)
             logging.error("FB Event data is:\n%s", pprint.pformat(db_event.fb_event, width=200))
             return None
 
@@ -108,14 +106,16 @@ class DisplayEvent(ndb.Model):
         else:
             return ndb.get_multi(keys)
 
+
 class Search(object):
+    DATE_SEARCH_FORMAT = '%Y-%m-%d'
+
     def __init__(self, search_query):
         self.query = search_query
         self.limit = 1000
         # Extra search index fields to return
         self.extra_fields = []
 
-    DATE_SEARCH_FORMAT = '%Y-%m-%d'
     def _get_query_string(self):
         clauses = []
         if self.query.bounds:
@@ -223,7 +223,7 @@ class Search(object):
         for display_event, db_event in zip(display_events, real_db_events):
             if not display_event:
                 continue
-            result = search_base.SearchResult(display_event.fb_event_id, display_event.data, db_event)
+            result = search_base.SearchResult(display_event.id, display_event.data, db_event)
             search_results.append(result)
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
 
@@ -239,8 +239,7 @@ class EventsIndex(index.BaseIndex):
 
     @classmethod
     def _create_doc_event(cls, db_event):
-        fb_event = db_event.fb_event
-        if fb_event['empty']:
+        if not db_event.has_content():
             return None
         # TODO(lambert): find a way to index no-location events.
         # As of now, the lat/long number fields cannot be None.
@@ -248,18 +247,20 @@ class EventsIndex(index.BaseIndex):
         # and how do we want to return them
         # Perhaps a separate index that is combined at search-time?
         if db_event.latitude is None:
+            logging.warning("Skipping event without latitude: %s", db_event.id)
             return None
         # If this event has been deleted from Facebook, let's skip re-indexing it here
         if db_event.start_time is None:
+            logging.warning("Skipping event without start_time: %s", db_event.id)
             return None
         if not isinstance(db_event.start_time, datetime.datetime) and not isinstance(db_event.start_time, datetime.date):
-            logging.error("DB Event %s start_time is not correct format: ", db_event.fb_event_id, db_event.start_time)
+            logging.error("DB Event %s start_time is not correct format: ", db_event.id, db_event.start_time)
             return None
         doc_event = search.Document(
-            doc_id=db_event.fb_event_id,
+            doc_id=db_event.id,
             fields=[
-                search.TextField(name='name', value=fb_event['info'].get('name', '')),
-                search.TextField(name='description', value=fb_event['info'].get('description', '')),
+                search.TextField(name='name', value=db_event.name),
+                search.TextField(name='description', value=db_event.description),
                 search.NumberField(name='attendee_count', value=db_event.attendee_count or 0),
                 search.DateField(name='start_time', value=db_event.start_time),
                 search.DateField(name='end_time', value=dates.faked_end_time(db_event.start_time, db_event.end_time)),
@@ -273,20 +274,23 @@ class EventsIndex(index.BaseIndex):
                 # so we can promote them to users when we send out daily notifications.
                 search.NumberField(name='creation_time', value=int(time.mktime(db_event.creation_time.timetuple())) if db_event.creation_time else 0),
             ],
-            #language=XX, # We have no good language detection
+            # language=XX, # We have no good language detection
             rank=int(time.mktime(db_event.start_time.timetuple())),
-            )
+        )
         return doc_event
+
 
 class AllEventsIndex(EventsIndex):
     index_name = 'AllEvents'
+
 
 class FutureEventsIndex(EventsIndex):
     index_name = 'FutureEvents'
 
     @classmethod
     def _get_query_params_for_indexing(cls):
-        return [eventdata.DBEvent.search_time_period==dates.TIME_FUTURE]
+        return [eventdata.DBEvent.search_time_period == dates.TIME_FUTURE]
+
 
 def update_fulltext_search_index_batch(events_to_update):
     future_events_to_update = []
@@ -295,16 +299,18 @@ def update_fulltext_search_index_batch(events_to_update):
         if db_event.search_time_period == dates.TIME_FUTURE:
             future_events_to_update.append(db_event)
         else:
-            future_events_to_deindex.append(db_event.fb_event_id)
+            future_events_to_deindex.append(db_event.id)
 
     FutureEventsIndex.update_index(future_events_to_update)
     FutureEventsIndex.delete_ids(future_events_to_deindex)
     AllEventsIndex.update_index(events_to_update)
 
+
 def delete_from_fulltext_search_index(db_event_id):
     logging.info("Deleting event from search index: %s", db_event_id)
     FutureEventsIndex.delete_ids([db_event_id])
     AllEventsIndex.delete_ids([db_event_id])
+
 
 def construct_fulltext_search_index(index_future=True):
     if index_future:
@@ -312,4 +318,3 @@ def construct_fulltext_search_index(index_future=True):
     else:
         index = AllEventsIndex
     index.rebuild_from_query(force=True)
-

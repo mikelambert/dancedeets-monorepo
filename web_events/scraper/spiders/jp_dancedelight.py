@@ -6,15 +6,16 @@ import urlparse
 
 import scrapy
 
+from events import namespaces
 from loc import japanese_addresses
 from .. import items
 from .. import jp_spider
-from util import strip_markdown
 
 
 class DanceDelightScraper(items.WebEventScraper):
     name = 'DanceDelight'
     allowed_domains = ['www.dancedelight.net']
+    namespace = namespaces.JAPAN_DD
 
     def start_requests(self):
         yield scrapy.Request('http://www.dancedelight.net/wordpress/?cat=6')
@@ -47,15 +48,15 @@ class DanceDelightScraper(items.WebEventScraper):
         print response.url
 
         item = items.WebEvent()
-        item['id'] = re.search(r'\?p=(\d+)', response.url).group(1)
-        item['website'] = self.name
-        item['title'] = self._extract_text(response.xpath('//a[@rel="bookmark"]/text()'))
+        item['namespace'] = self.namespace
+        item['namespaced_id'] = re.search(r'\?p=(\d+)', response.url).group(1)
+        item['name'] = items.extract_text(response.xpath('//a[@rel="bookmark"]/text()'))
 
         post = response.css('.entry-content')
 
         photos = post.css('img.size-full').xpath('./@src').extract()
         if photos:
-            item['photo'] = photos[0]
+            item['photo'] = self.abs_url(response, photos[0])
         else:
             item['photo'] = None
 
@@ -63,17 +64,16 @@ class DanceDelightScraper(items.WebEventScraper):
         post_top = response.css('.social4i').extract()[0]
         post_html = post_html.replace(post_top, '')
 
-        full_description = items._format_text(post_html)
-        item['description'] = strip_markdown.strip(full_description)
+        full_description = items.format_text(post_html)
+        item['description'] = full_description
 
         jp_addresses = japanese_addresses.find_addresses(item['description'])
-        venue = items.get_line_after(item['description'], ur'場所|会場')
+        venue = items.get_line_after(item['description'], ur'場所|会場|LOCATION')
+        if not venue:
+            venue = jp_spider.find_at_venue(item['description'])
         jp_spider.setup_location(venue, jp_addresses, item)
 
         content_date = ''.join(response.css('.contentdate').xpath('.//text()').extract())
-        item['starttime'], item['endtime'] = self.parseDateTimes(content_date, full_description)
-
-        #item['latitude'] = latlng['lat']
-        #item['longitude'] = latlng['lng']
+        item['start_time'], item['end_time'] = self.parseDateTimes(content_date, full_description)
 
         yield item

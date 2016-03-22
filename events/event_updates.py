@@ -1,6 +1,7 @@
 import datetime
 import logging
 
+from google.appengine.api import images
 from google.appengine.ext import ndb
 
 import fb_api
@@ -10,14 +11,20 @@ from search import search
 from nlp import categories
 from nlp import event_classifier
 from util import dates
+from util import fetch
 from . import event_locations
+
+DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
 
 def _event_time_period(db_event):
     return dates.event_time_period(db_event.start_time, db_event.end_time)
 
+
 def delete_event(db_event):
-    search.delete_from_fulltext_search_index(db_event.fb_event_id)
+    search.delete_from_fulltext_search_index(db_event.id)
     db_event.key.delete()
+
 
 # Even if the fb_event isn't updated, sometimes we still need to force a db_event update
 def need_forced_update(db_event):
@@ -25,18 +32,32 @@ def need_forced_update(db_event):
     new_time_period = (db_event.search_time_period != _event_time_period(db_event))
     return new_time_period
 
-def update_and_save_events(events_to_update, update_geodata=True):
+
+def update_and_save_fb_events(events_to_update, update_geodata=True):
     for db_event, fb_event in events_to_update:
-        logging.info("Updating and saving DBEvent %s", db_event.fb_event_id)
-        _inner_make_event_findable_for(db_event, fb_event, update_geodata=update_geodata)
+        logging.info("Updating and saving DBEvent %s", db_event.id)
+        _inner_make_event_findable_for_fb_event(db_event, fb_event, update_geodata=update_geodata)
     # We want to save it here, no matter how it was changed.
     db_events = [x[0] for x in events_to_update]
+    _save_events(db_events)
+
+
+def update_and_save_web_events(events_to_update, update_geodata=True):
+    for db_event, json_body in events_to_update:
+        logging.info("Updating and saving DBEvent %s", db_event.id)
+        _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata=update_geodata)
+    db_events = [x[0] for x in events_to_update]
+    _save_events(db_events)
+
+
+def _save_events(db_events):
     objects_to_put = list(db_events)
     objects_to_put += [search.DisplayEvent.build(x) for x in db_events]
     # Because some DisplayEvent.build() calls return None (from errors, or from inability)
     objects_to_put = [x for x in objects_to_put if x]
     ndb.put_multi(objects_to_put)
     search.update_fulltext_search_index_batch(db_events)
+
 
 def _all_attending_count(fb_event):
     # TODO(FB2.0): cleanup!
@@ -50,7 +71,7 @@ def _all_attending_count(fb_event):
             return None
 
 
-def _inner_make_event_findable_for(db_event, fb_dict, update_geodata):
+def _inner_make_event_findable_for_fb_event(db_event, fb_dict, update_geodata):
     """set up any cached fields or bucketing or whatnot for this event"""
 
     # Update this event with the latest time_period regardless (possibly overwritten below)
@@ -94,26 +115,89 @@ def _inner_make_event_findable_for(db_event, fb_dict, update_geodata):
         # Don't use cached/stale geocode when constructing the LocationInfo here
         db_event.location_geocode = None
         location_info = event_locations.LocationInfo(fb_dict, db_event=db_event)
+        _update_geodata(db_event, location_info)
 
-        # If we got good values from before, don't overwrite with empty values!
-        if location_info.actual_city() != db_event.actual_city_name or not db_event.actual_city_name:
-            db_event.anywhere = location_info.is_online_event()
-            db_event.actual_city_name = location_info.actual_city()
-            if location_info.geocode:
-                db_event.city_name = rankings.get_ranking_location_latlng(location_info.geocode.latlng())
-            else:
-                db_event.city_name = "Unknown"
-            if db_event.actual_city_name:
-                db_event.latitude, db_event.longitude = location_info.latlong()
-            else:
-                db_event.latitude = None
-                db_event.longitude = None
-                #TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
-                logging.warning("No geocoding results for eid=%s is: %s", db_event.fb_event_id, location_info)
 
-        # This only grabs the very first result from the raw underlying geocode request, since that's all that's used to construct the Geocode object in memory
-        db_event.location_geocode = gmaps_api.convert_geocode_to_json(location_info.geocode)
+def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata):
+    logging.info("Making web_event %s findable." % db_event.id)
+    db_event.web_event = json_body
 
-        db_event.country = location_info.geocode.country() if location_info.geocode else None
+    db_event.fb_event = None
+    db_event.owner_fb_uid = None
+
+    db_event.attendee_count = 0 # Maybe someday set attending counts when we fetch them?
+
+    db_event.start_time = datetime.datetime.strptime(json_body['start_time'], DATETIME_FORMAT)
+    if json_body.get('end_time'):
+        db_event.end_time = datetime.datetime.strptime(json_body['end_time'], DATETIME_FORMAT)
     else:
-        db_event.country = db_event.get_geocode().country() if db_event.has_geocode() else None
+        db_event.end_time = None
+    db_event.search_time_period = _event_time_period(db_event)
+
+    db_event.event_keywords = event_classifier.relevant_keywords(db_event)
+    db_event.auto_categories = [x.index_name for x in categories.find_styles(db_event) + categories.find_event_types(db_event)]
+
+    geocode = None
+    if json_body.get('location_address'):
+        logging.info("Have location address, checking if it is geocodable: %s", json_body.get('location_address'))
+        geocode = gmaps_api.get_geocode(address=json_body['location_address'])
+        if geocode is None:
+            logging.warning("Received a location_address that was not geocodeable, treating as empty: %s", json_body['location_address'])
+    if geocode is None:
+        results = None
+        if json_body.get('geolocate_location_name'):
+            logging.info("Have magic geolocate_location_name, checking if it is a place: %s", json_body.get('geolocate_location_name'))
+            results = gmaps_api.fetch_place_as_json(query=json_body['geolocate_location_name'])
+        if not results or results['status'] == 'ZERO_RESULTS':
+            if json_body.get('location_name'):
+                logging.info("Have regular location_name, checking if it is a place: %s", json_body.get('location_name'))
+                results = gmaps_api.fetch_place_as_json(query=json_body['location_name'])
+        if results and results['status'] == 'OK':
+            result = results['results'][0]
+            json_body['location_name'] = result['name']
+            json_body['location_address'] = result['formatted_address']
+            logging.info("Found an address: %s", json_body['location_address'])
+            # BIG HACK!!!
+            if 'Japan' not in json_body['location_address'] and 'Korea' not in json_body['location_address']:
+                logging.error("Found incorrect address for venue!")
+            latlng = result['geometry']['location']
+            json_body['latitude'] = latlng['lat']
+            json_body['longitude'] = latlng['lng']
+
+    db_event.address = json_body.get('location_address')
+
+    if db_event.image_url:
+        mimetype, image_data = fetch.fetch_data(db_event.image_url)
+        image = images.Image(image_data)
+        json_body['photo_width'] = image.width
+        json_body['photo_height'] = image.height
+        logging.info("Found image width size %sx%s", image.width, image.height)
+
+    if update_geodata:
+        # Don't use cached/stale geocode when constructing the LocationInfo here
+        db_event.location_geocode = None
+        location_info = event_locations.LocationInfo(db_event=db_event)
+        _update_geodata(db_event, location_info)
+
+
+def _update_geodata(db_event, location_info):
+    # If we got good values from before, don't overwrite with empty values!
+    if location_info.actual_city() != db_event.actual_city_name or not db_event.actual_city_name:
+        db_event.anywhere = location_info.is_online_event()
+        db_event.actual_city_name = location_info.actual_city()
+        if location_info.geocode:
+            db_event.city_name = rankings.get_ranking_location_latlng(location_info.geocode.latlng())
+        else:
+            db_event.city_name = "Unknown"
+        if db_event.actual_city_name:
+            db_event.latitude, db_event.longitude = location_info.latlong()
+        else:
+            db_event.latitude = None
+            db_event.longitude = None
+            # TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
+            logging.warning("No geocoding results for eid=%s is: %s", db_event.id, location_info)
+
+    # This only grabs the very first result from the raw underlying geocode request, since that's all that's used to construct the Geocode object in memory
+    db_event.location_geocode = gmaps_api.convert_geocode_to_json(location_info.geocode)
+
+    db_event.country = location_info.geocode.country() if location_info.geocode else None

@@ -1,12 +1,11 @@
 # -*-*- encoding: utf-8 -*-*-
-
 import datetime
 import re
-import urlparse
 
 import scrapy
 from scrapy.selector import Selector
 
+from events import namespaces
 from .. import items
 from .. import jp_spider
 
@@ -41,6 +40,7 @@ def parse_date_times(date_str, time_str):
 class DewsScraper(items.WebEventScraper):
     name = 'Dews'
     allowed_domains = ['dews365.com']
+    namespace = namespaces.JAPAN_DEWS
 
     def start_requests(self):
         yield scrapy.Request('http://dews365.com/eventinformation')
@@ -54,11 +54,11 @@ class DewsScraper(items.WebEventScraper):
     def parseList(self, response):
         urls = response.xpath('//a/@href').extract()
         for url in [x for x in urls if '/event/' in x]:
-            yield scrapy.Request(urlparse.urljoin(response.url, url))
+            yield scrapy.Request(self.abs_url(response, url))
 
         next_urls = response.xpath('//a[@rel="next"]/@href').extract()
         for url in next_urls:
-            yield scrapy.Request(urlparse.urljoin(response.url, url))
+            yield scrapy.Request(self.abs_url(response, url))
 
     def _get_description(self, response):
         description_paragraphs = response.css('div.detail').xpath('./following-sibling::p').extract()
@@ -78,22 +78,22 @@ class DewsScraper(items.WebEventScraper):
             if attr:
                 return node.xpath('./@%s' % attr).extract()[0]
             else:
-                return self._extract_text(node)
+                return items.extract_text(node)
 
         def _definition(term):
-            return self._extract_text(response.xpath(u'//dt[contains(., "%s")]/following-sibling::dd' % term))
+            return items.extract_text(response.xpath(u'//dt[contains(., "%s")]/following-sibling::dd' % term))
 
         item = items.WebEvent()
-        item['id'] = re.search(r'/event/(\w+)\.html', response.url).group(1)
-        item['website'] = self.name
-        item['title'] = _get('name')
-        item['photo'] = _get('image', 'content')
+        item['namespace'] = self.namespace
+        item['namespaced_id'] = re.search(r'/event/(\w+)\.html', response.url).group(1)
+        item['name'] = _get('name')
+        item['photo'] = self.abs_url(response, _get('image', 'content'))
 
         genre = _definition(u'ジャンル')
         description = self._get_description(response)
         item['description'] = genre + description
 
-        item['starttime'], item['endtime'] = parse_date_times(_get('startDate'), _definition(u'時間'))
+        item['start_time'], item['end_time'] = parse_date_times(_get('startDate'), _definition(u'時間'))
 
         jp_spider.setup_location(_get('location'), None, item)
 

@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import datetime
+import logging
 import re
 
 
@@ -13,28 +14,38 @@ def _intall(lst):
     return [None if x is None else int(x) for x in lst]
 
 
+def find_at_venue(text):
+    # This is because some far-future events have no event information other than:
+    # "2016年12月11日（日）@CONPASS", and we'd like to extract these locations as a last resort.
+    at_lines = re.findall(r'@([^\n]+)\n', text)
+    for x in at_lines:
+        # So grab whatever comes after the @ sign as our venue name,
+        # but ignore lowercase stuff (twitter handles, email address domains)
+        if not re.match(r'^[a-z._\-]+$', x):
+            return x
+    return None
+
+
+_VENUE_REMAP = {
+    u'JANUS': u'JANUS, Osaka',
+    u'江坂CAT HALL': u'キャットミュージックカレッジ',
+    u'HARLEM': u'Harlem, Shibuya',
+    u'渋谷HAREM': u'Harlem, Shibuya',
+    u'HARLEM PLUS': u'Harlem, Shibuya',
+    u'Neo Brotherz': u'Space Zero, 宮城',
+    u'ARCHE': u'大宮アルシェ',
+}
+
+
 def setup_location(venue, addresses, item):
-    # TODO: needs caching
     if venue:
+        if venue in _VENUE_REMAP:
+            logging.info('Rewriting venue %s as %s', venue, _VENUE_REMAP[venue])
+            venue = _VENUE_REMAP[venue]
         item['location_name'] = venue
+        item['geolocate_location_name'] = '%s, japan' % venue
     if addresses:
-        address = addresses[0]
-        item['location_address'] = address
-    else:
-        address = None
-
-    if venue and not address:
-        # TODO: Let's look it up on Google...we probably need to delay this until we get to the appengine side!
-        from loc import gmaps_api
-        results = gmaps_api._fetch_place_as_json(query='%s, japan' % venue)
-        if results['status'] == 'ZERO_RESULTS':
-            results = gmaps_api._fetch_place_as_json(query=venue)
-
-        if results['status'] == 'OK':
-            item['location_address'] = results['results'][0]['formatted_address']
-            latlng = results['results'][0]['geometry']['location']
-            item['latitude'] = latlng['lat']
-            item['longitude'] = latlng['lng']
+        item['location_address'] = addresses[0]
 
 
 def parse_date_times(start_date, date_str):

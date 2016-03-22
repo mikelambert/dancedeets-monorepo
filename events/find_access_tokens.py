@@ -14,6 +14,7 @@ import base_servlet
 import fb_api
 from . import eventdata
 from . import event_updates
+from . import namespaces
 from util import fb_mapreduce
 
 def test_user_on_events(user):
@@ -40,10 +41,10 @@ def test_user_on_events(user):
     # Found some good stuff, let's save and update the db events
     found_db_events = eventdata.DBEvent.get_by_ids([x['info']['id'] for x in found_fb_events])
     db_fb_events = []
-    for db_event, fb_event in zip(found_db_events, found_fb_events):
-        if not db_event.fb_event or db_event.fb_event['empty']:
-            db_fb_events.append((db_event, fb_event))
-    event_updates.update_and_save_events(db_fb_events)
+    for db_event, new_fb_event in zip(found_db_events, found_fb_events):
+        if db_event.has_content():
+            db_fb_events.append((db_event, new_fb_event))
+    event_updates.update_and_save_fb_events(db_fb_events)
 
     # We can end the shard via this, though it's difficult to tell when *every* event_id has got a valid token.
     # ctx._shard_state.set_input_finished()
@@ -100,7 +101,7 @@ class FindAccessTokensForEventsHandler(base_servlet.BaseTaskRequestHandler):
 
 def map_events_needing_access_tokens(all_db_events):
     fbl = fb_mapreduce.get_fblookup()
-    db_events = [x for x in all_db_events if not x.visible_to_fb_uids]
+    db_events = [x for x in all_db_events if x.is_fb_event and not x.visible_to_fb_uids]
     try:
         fb_events = fbl.get_multi(fb_api.LookupEvent, [x.fb_event_id for x in db_events])
     except fb_api.ExpiredOAuthToken:
@@ -190,10 +191,9 @@ class FindEventsNeedingAccessTokensPipeline(base_handler.PipelineBase):
 class FindEventsNeedingAccessTokensHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         time_period = self.request.get('time_period')
+        filters = []
         if time_period:
-            filters = [('search_time_period', '=', time_period)]
-        else:
-            filters = []
+            filters.append(('search_time_period', '=', time_period))
         pipeline = FindEventsNeedingAccessTokensPipeline(fb_mapreduce.get_fblookup_params(self.fbl), filters)
         pipeline.start(queue_name='slow-queue')
     post=get

@@ -125,9 +125,9 @@ def _fetch_geocode_as_json(address=None, latlng=None, language=None, region=None
     return geocode_api.get_json(**params)
 
 
-def _fetch_place_as_json(query=None, language=None):
+def fetch_place_as_json(query=None, language=None):
     params = {}
-    params['query'] = query.encode('utf-8')
+    params['query'] = query
     if language is not None:
         params['language'] = language
 

@@ -11,7 +11,7 @@
 {% if displayable_event.description %}
 	<meta name="twitter:description" content="{{ displayable_event.description|truncate(250)|e }}">
 {% endif %}
-{% if displayable_event.cover_metadata %}
+{% if displayable_event.cover_images %}
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:image:src" content="http://{{ full_hostname }}/events/image_proxy/{{ displayable_event.id }}" />
 {% else %}
@@ -76,17 +76,21 @@
 
 	<div class="row">
 		<div class="col-sm-5">
-			{% if displayable_event.cover_metadata %}
+			{% if displayable_event.cover_images %}
 				<div style="position: relative; margin-bottom: 1em"><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">
 						<img src="{{ displayable_event.largest_cover.source }}" style="width: 100%" itemprop="image">
 				</a></div>
 			{% endif %}
 
 			<ul class="fa-ul event-ul">
-			{% if displayable_event.cover_metadata %}
+			{% if displayable_event.cover_images %}
 				<li><i class="event-info-icon fa-li fa fa-picture-o fa-lg"></i><b><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
 			{% endif %}
-			<li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ raw_fb_event_url(displayable_event.id) }}">See Event on Facebook</a></b></li>
+			{% if displayable_event.web_event %}
+				<li><i class="event-info-icon fa-li fa fa-external-link fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ displayable_event.source_url }}">See Event on {{ displayable_event.source_name }}</a></b></li>
+			{% else %}
+				<li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ displayable_event.source_url }}">See Event on Facebook</a></b></li>
+			{% endif %}
 			<li><div class="product-social-links" style="padding-bottom: 0 1em; height: 20px">
 				<a class="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
 				<div class="link-event-share fb-share-button" data-layout="button"></div>
@@ -126,10 +130,7 @@
 				{% endif %}
 				<br>
 			{% endif %}
-			{% if displayable_event.street_address %}
-				{{ displayable_event.street_address }}<br>
-			{% endif %}
-			{{ displayable_event.city_state_country }}<br>
+			{{ displayable_event.full_address|format_html }}
 
 {{ displayable_event.location_schema_html() }}
 			</div></li>
@@ -149,7 +150,7 @@
 		<div class="col-sm-7">
 			<h1 class="event-page-title visible-xs-block">{{ displayable_event.name }}</h1>
 			<div><b>Description:</b></div>
-      <div style="height: 25px" id="google_translate_element"></div>
+			<div style="height: 25px" id="google_translate_element"></div>
 			<span itemprop="description">
 				{{ displayable_event.description|format_html|linkify }}
 			</span>
@@ -171,9 +172,9 @@ region= paramter cctld
 <script type="text/javascript">
 
 mixpanel.track('View Event', {
-  'Event ID': {{ displayable_event.id|tojson }},
-  'Event City': {{ displayable_event.city|tojson }},
-  'Event Country': {{ displayable_event.country|tojson }},
+	'Event ID': {{ displayable_event.id|tojson }},
+	'Event City': {{ displayable_event.city|tojson }},
+	'Event Country': {{ displayable_event.country|tojson }},
 });
 mixpanel.track_links(".link-event-flyer", "View Flyer");
 mixpanel.track_links(".link-event-on-fb", "Open in Facebook");
@@ -224,12 +225,12 @@ window.twttr = (function(d, s, id) {
 }(document, "script", "twitter-wjs"));
 
 function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-    multilanguagePage: true,
-    gaTrack: true,
-    gaId: 'UA-18831479-1'
-  }, 'google_translate_element');
+	new google.translate.TranslateElement({
+		layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+		multilanguagePage: true,
+		gaTrack: true,
+		gaId: 'UA-18831479-1'
+	}, 'google_translate_element');
 }
 </script>
 {% if displayable_event.latitude %}

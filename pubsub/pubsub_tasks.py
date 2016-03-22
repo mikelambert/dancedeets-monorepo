@@ -18,7 +18,7 @@ def yield_post_jp_event(db_events):
     token_nickname = params.get('token_nickname')
     db_events = [x for x in db_events if x.actual_city_name and x.actual_city_name.endswith('Japan')]
     for db_event in db_events:
-        pubsub.eventually_publish_event(db_event.fb_event_id, token_nickname)
+        pubsub.eventually_publish_event(db_event.id, token_nickname)
 
 @app.route('/tasks/post_japan_events')
 class PostJapanEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):

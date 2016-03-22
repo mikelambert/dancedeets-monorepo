@@ -35,9 +35,26 @@ USE_UNICODE = False
 
 # NOTE: Eventually we can extend this with more intelligent heuristics, trained models, etc, based on multiple keyword weights, names of teachers and crews and whatnot
 
-def get_relevant_text(fb_event):
+
+def _name(obj):
+    prop = 'name'
+    if hasattr(obj, prop):
+        return getattr(obj, prop)
+    else:
+        return obj['info'].get(prop, '')
+
+
+def _desc(obj):
+    prop = 'description'
+    if hasattr(obj, prop):
+        return getattr(obj, prop)
+    else:
+        return obj['info'].get(prop, '')
+
+
+def get_relevant_text(event):
     # use a separator here, so 'actors workshop' 'breaking boundaries...' doesn't match 'workshop breaking'
-    search_text = (fb_event['info'].get('name', '') + ' . . . . ' + fb_event['info'].get('description', '')).lower()
+    search_text = _name(event) + ' . . . . ' + _desc(event).lower()
     return search_text
 
 
@@ -223,7 +240,7 @@ class ClassifiedEvent(object):
         combined_matches_string = ' '.join(self.found_dance_matches + self.found_event_matches)
         dummy, combined_matches = re.subn(r'\w+', '', combined_matches_string)
         dummy, words = re.subn(r'\w+', '', re.sub(r'\bhttp.*?\s', '', search_text))
-        fraction_matched = 1.0 * (combined_matches+1) / (words+1)
+        fraction_matched = 1.0 * (combined_matches + 1) / (words + 1)
         if not fraction_matched:
             self.calc_inverse_keyword_density = 100
         else:
@@ -267,20 +284,26 @@ class ClassifiedEvent(object):
 
     def is_dance_event(self):
         return bool(self.dance_event)
+
     def reason(self):
         return self.dance_event
+
     def dance_matches(self):
         return set(self.found_dance_matches)
+
     def event_matches(self):
         return set(self.found_event_matches)
+
     def wrong_matches(self):
         return set(self.found_wrong_matches)
+
     def match_score(self):
         if self.is_dance_event():
             combined_matches = self.found_dance_matches + self.found_event_matches
             return len(combined_matches)
         else:
             return 0
+
     def inverse_keyword_density(self):
         return self.calc_inverse_keyword_density
 
@@ -290,12 +313,14 @@ def get_classified_event(fb_event, language=None):
     classified_event.classify()
     return classified_event
 
-def relevant_keywords(fb_event):
-    text = get_relevant_text(fb_event)
+
+def relevant_keywords(event):
+    text = get_relevant_text(event)
     processed_text = StringProcessor(text)
     good_keywords = processed_text.get_tokens(rules.ANY_GOOD)
     bad_keywords = processed_text.get_tokens(rules.ANY_BAD)
     return sorted(set(good_keywords).union(bad_keywords))
+
 
 def highlight_keywords(text):
     import jinja2
