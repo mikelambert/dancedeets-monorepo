@@ -72,14 +72,22 @@ def get_line_after(text, regex):
     desc_lines = text.split('\n')
     return_next_line = False
     for line in desc_lines:
-        if return_next_line:
-            if line:
-                return line
+        if return_next_line and line.strip():
+            venue = line.strip()
+            venue = re.sub(ur'[＠@]', '', venue)
+            return venue
         if re.search(regex, line):
-            after_keyword = re.split(regex, line, 1)[1]
+            venue = re.split(regex, line, 1)[1]
+            colon_re = ur'[：:]'
             # If it's a "keyword: something"...return the same line
-            if len(after_keyword) > 4:
-                return after_keyword.replace(u'：', '').strip()
+            if re.search(colon_re, venue):
+                venue = re.split(colon_re, venue, 1)[1]
+            elif re.search(r'\s', venue):
+                # Or if it's a 【会場】 HARLEM, grab everything after the first space
+                venue = re.split(r'\s', venue, 1)[1]
+            venue = venue.strip()
+            if len(venue) > 2:
+                return venue
             return_next_line = True
     return None
 

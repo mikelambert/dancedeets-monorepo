@@ -45,6 +45,7 @@ class TestAtVenue(unittest.TestCase):
         u'@gmail.com\n': None,
         u'@some_twitter\n': None,
         u'@The Voodoo Lounge\n': 'The Voodoo Lounge',
+        u'＠JapaneseAt\n': 'JapaneseAt',
     }
 
     def runTest(self):

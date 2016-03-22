@@ -17,7 +17,7 @@ def _intall(lst):
 def find_at_venue(text):
     # This is because some far-future events have no event information other than:
     # "2016年12月11日（日）@CONPASS", and we'd like to extract these locations as a last resort.
-    at_lines = re.findall(r'@([^\n]+)\n', text)
+    at_lines = re.findall(ur'[＠@]([^\n]+)\n', text)
     for x in at_lines:
         # So grab whatever comes after the @ sign as our venue name,
         # but ignore lowercase stuff (twitter handles, email address domains)
@@ -34,6 +34,7 @@ _VENUE_REMAP = {
     u'HARLEM PLUS': u'Harlem, Shibuya',
     u'Neo Brotherz': u'Space Zero, 宮城',
     u'ARCHE': u'大宮アルシェ',
+    u'天神 club selecta': u'club selecta 福岡県',
 }
 
 
