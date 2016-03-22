@@ -81,7 +81,7 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
             self._initialize(self.request)
             super(ApiHandler, self).dispatch()
         except Exception as e:
-            logging.error(traceback.format_exc())
+            logging.exception("API failure")
             result = e.args[0]
             # If it's a string or a regular object
             if not hasattr(result, '__iter__'):
@@ -103,7 +103,7 @@ def retryable(func):
             return func(*args, **kwargs)
         except Exception as e:
             self = args[0]
-            logging.info(traceback.format_exc())
+            logging.exception("API retry failure")
             url = self.request.path
             body = self.request.body
             logging.error(e)
@@ -202,7 +202,7 @@ class SearchHandler(ApiHandler):
                 json_result = canonicalize_event_data(result.db_event, result.event_keywords)
                 json_results.append(json_result)
             except Exception as e:
-                logging.error("Error processing event %s: %s" % (result.event_id, e))
+                logging.exception("Error processing event %s: %s" % (result.event_id, e))
 
         title = self._get_title(city_name, form.keywords.data)
         json_response = {
@@ -375,6 +375,7 @@ def canonicalize_event_data(db_event, event_keywords):
     cover_images = db_event.cover_images
     if cover_images:
         event_api['cover'] = {
+            'cover_id': 'dummy', # Android (v1.1) expects this value, even though it does nothing with it.
             'images': sorted(cover_images, key=lambda x: -x['height']),
         }
     else:
