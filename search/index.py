@@ -72,7 +72,8 @@ class BaseIndex(object):
     def delete_ids(cls, object_ids):
         logging.info("Deleting from search index: %s", object_ids)
         doc_index = cls.real_index()
-        doc_index.delete(object_ids)
+        for i in range(0, len(object_ids), search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST):
+            doc_index.delete(object_ids[i:i + search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST])
 
     @classmethod
     def rebuild_from_query(cls, force=False):
