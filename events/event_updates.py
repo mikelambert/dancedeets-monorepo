@@ -132,9 +132,8 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
         db_event.end_time = None
     db_event.search_time_period = _event_time_period(db_event)
 
-    # TODO: WEB_EVENTS: Pass on these for now...need to rework the APIs a bit.
-    # db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
-    # db_event.auto_categories = [x.index_name for x in categories.find_styles(fb_dict) + categories.find_event_types(fb_dict)]
+    db_event.event_keywords = event_classifier.relevant_keywords(db_event)
+    db_event.auto_categories = [x.index_name for x in categories.find_styles(db_event) + categories.find_event_types(db_event)]
 
     geocode = None
     if json_body.get('location_address'):

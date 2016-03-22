@@ -210,18 +210,34 @@ def get_context(fb_event, keywords):
     return contexts
 
 
-def find_rules(fb_event, styles):
-    name = fb_event['info'].get('name', '').lower()
+def _name(obj):
+    prop = 'name'
+    if hasattr(obj, prop):
+        return getattr(obj, prop)
+    else:
+        return obj['info'].get(prop, '')
+
+
+def _desc(obj):
+    prop = 'description'
+    if hasattr(obj, prop):
+        return getattr(obj, prop)
+    else:
+        return obj['info'].get(prop, '')
+
+
+def find_rules(event, styles):
+    name = _name(event).lower()
     name = name.replace('freestyle session', 'fs')
     found_styles = find_rules_in_text(name, styles)
     if not found_styles:
-        found_styles = find_rules_in_text(fb_event['info'].get('description', '').lower(), styles)
+        found_styles = find_rules_in_text(_desc(event).lower(), styles)
     return found_styles
 
 
-def find_styles(fb_event):
-    return find_rules(fb_event, BROAD_STYLES)
+def find_styles(event):
+    return find_rules(event, BROAD_STYLES)
 
 
-def find_event_types(fb_event):
-    return find_rules(fb_event, EVENT_TYPES)
+def find_event_types(event):
+    return find_rules(event, EVENT_TYPES)
