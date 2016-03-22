@@ -43,6 +43,7 @@ def make_requests(path, params):
 
 class SaveToServerPipeline(object):
     server_path = None
+    batch_size = None
 
     def open_spider(self, spider):
         assert self.server_path, "Must set the server_path member variable."
@@ -50,11 +51,15 @@ class SaveToServerPipeline(object):
         pass
 
     def close_spider(self, spider):
+        self.send_batch(spider)
+
+    def send_batch(self, spider):
         params = {
             'studio_name': spider.name,
             'items': self.items,
         }
         result = make_requests(self.server_path, params)
+        self.items = []
         if result:
             print 'Upload returned: ', result
 
@@ -66,4 +71,6 @@ class SaveToServerPipeline(object):
         if 'auto_categories' in new_item:
             new_item['auto_categories'] = [x.index_name for x in new_item['auto_categories']]
         self.items.append(new_item)
+        if self.batch_size and len(self.items) > self.batch_size:
+            self.send_batch(spider)
         return new_item
