@@ -4,6 +4,7 @@ import datetime
 import logging
 import re
 
+from . import items
 
 open_time_re = ur'OPEN\W+\b(\d\d?):(\d\d)\b|(\d\d?):(\d\d)\W*OPEN|(\d\d?):(\d\d)\s*～'
 close_time_re = ur'CLOSE(?:\s*予定)?\W+\b(\d+):(\d\d)\b'
@@ -14,7 +15,7 @@ def _intall(lst):
     return [None if x is None else int(x) for x in lst]
 
 
-def find_at_venue(text):
+def _find_at_venue(text):
     # This is because some far-future events have no event information other than:
     # "2016年12月11日（日）@CONPASS", and we'd like to extract these locations as a last resort.
     at_lines = re.findall(ur'[＠@]([^\n]+)\n', text)
@@ -27,6 +28,17 @@ def find_at_venue(text):
     return None
 
 
+def _good_venue(venue):
+    return (u'年' not in venue)
+
+
+def get_venue_from_description(description):
+    venue = items.get_line_after(description, ur'場所|会場|LOCATION|アクセス')
+    if not _good_venue(venue):
+        venue = _find_at_venue(description)
+    return venue
+
+
 _VENUE_REMAP = {
     u'JANUS': u'JANUS, Osaka',
     u'江坂CAT HALL': u'キャットミュージックカレッジ',
@@ -36,7 +48,8 @@ _VENUE_REMAP = {
     u'Neo Brotherz': u'Space Zero, 宮城',
     u'ARCHE': u'大宮アルシェ',
     u'天神 club selecta': u'club selecta 福岡県',
-    u'ＨＡＴＣＨ！！～ＳＨＩＢＵＹＡ　ＲＥＮＴＡＬ　ＳＴＵＤＩＯ～': 'Studio Hatch, Shibuya'
+    u'ＨＡＴＣＨ！！～ＳＨＩＢＵＹＡ　ＲＥＮＴＡＬ　ＳＴＵＤＩＯ～': 'Studio Hatch, Shibuya',
+    u'うめきた広場 テントステージ': u'グランフロント大阪 うめきた広場テントステージ',
 }
 
 
@@ -49,10 +62,6 @@ def setup_location(venue, addresses, item):
         item['geolocate_location_name'] = '%s, japan' % venue
     if addresses:
         item['location_address'] = addresses[0]
-
-
-def good_venue(venue):
-    return (u'年' not in venue)
 
 
 def parse_date_times(start_date, date_str):

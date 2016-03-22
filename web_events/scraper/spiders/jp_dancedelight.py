@@ -68,9 +68,7 @@ class DanceDelightScraper(items.WebEventScraper):
         item['description'] = full_description
 
         jp_addresses = japanese_addresses.find_addresses(item['description'])
-        venue = items.get_line_after(item['description'], ur'場所|会場|LOCATION|アクセス')
-        if not jp_spider.good_venue(venue):
-            venue = jp_spider.find_at_venue(item['description'])
+        venue = jp_spider.get_venue_from_description(item['description'])
         jp_spider.setup_location(venue, jp_addresses, item)
 
         content_date = ''.join(response.css('.contentdate').xpath('.//text()').extract())

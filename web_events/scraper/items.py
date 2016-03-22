@@ -78,8 +78,10 @@ def get_line_after(text, regex):
             return value
         if re.search(regex, line):
             value = re.split(regex, line, 1)[1]
-            colon_re = ur'[：:]'
+            colon_re = ur'[：:】]'
             # If it's a "keyword: something"...return the same line
+            print value
+            print re.search(colon_re, value)
             if re.search(colon_re, value):
                 value = re.split(colon_re, value, 1)[1]
             elif re.search(r'\s', value):

@@ -95,6 +95,9 @@ class DewsScraper(items.WebEventScraper):
 
         item['start_time'], item['end_time'] = parse_date_times(_get('startDate'), _definition(u'時間'))
 
-        jp_spider.setup_location(_get('location'), None, item)
+        venue = _get('location')
+        if not venue:
+            venue = jp_spider.get_venue_from_description(item['description'])
+        jp_spider.setup_location(venue, None, item)
 
         yield item
