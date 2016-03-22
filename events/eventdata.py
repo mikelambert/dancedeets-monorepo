@@ -231,7 +231,7 @@ class DBEvent(ndb.Model):
     def venue(self):
         if self.web_event:
             # TODO: WEB_EVENTS: We need to enable this if we want to support location_schema_html() in Google Search
-            return None
+            return {}
         else:
             return self.fb_event['info'].get('venue', {})
 
