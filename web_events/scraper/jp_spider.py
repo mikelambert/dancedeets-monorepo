@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import datetime
+import logging
 import re
 
 
@@ -25,9 +26,21 @@ def find_at_venue(text):
     return None
 
 
+_VENUE_REMAP = {
+    u'JANUS': u'JANUS, Osaka',
+    u'江坂CAT HALL': u'キャットミュージックカレッジ',
+    u'HARLEM': u'Harlem, Shibuya',
+    u'HAREM': u'Harlem, Shibuya',
+    u'HARLEM PLUS': u'Harlem, Shibuya',
+}
+
+
 def setup_location(venue, addresses, item):
-    # TODO: needs caching
     if venue:
+        print repr(venue)
+        if venue in _VENUE_REMAP:
+            logging.info('Rewriting venue %s as %s', venue, _VENUE_REMAP[venue])
+            venue = _VENUE_REMAP[venue]
         item['location_name'] = venue
         item['geolocate_location_name'] = '%s, japan' % venue
     if addresses:
