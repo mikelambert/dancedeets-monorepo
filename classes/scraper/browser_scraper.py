@@ -46,7 +46,7 @@ class MindBodyBrowserScraper(items.StudioScraper):
         'DUPEFILTER_CLASS': 'scrapyjs.SplashAwareDupeFilter',
         'HTTPCACHE_STORAGE': 'scrapyjs.SplashAwareFSCacheStorage',
         'ITEM_PIPELINES': {
-            'classes.scraper.pipelines.BatchSaveStudioClassPipeline': 300,
+            'classes.scraper.items.SaveStudioClassPipeline': 300,
         }
     }
 
