@@ -7,6 +7,7 @@
 
 import json
 import keys
+import logging
 import urllib
 import urllib2
 
@@ -54,6 +55,7 @@ class SaveToServerPipeline(object):
         self.send_batch(spider)
 
     def send_batch(self, spider):
+        logging.info('Sending batch of %s items', len(self.items))
         params = {
             'studio_name': spider.name,
             'items': self.items,
@@ -61,7 +63,7 @@ class SaveToServerPipeline(object):
         result = make_requests(self.server_path, params)
         self.items = []
         if result:
-            print 'Upload returned: ', result
+            logging.info('Upload returned: %s', result)
 
     def process_item(self, item, spider):
         new_item = dict(item)
@@ -71,6 +73,6 @@ class SaveToServerPipeline(object):
         if 'auto_categories' in new_item:
             new_item['auto_categories'] = [x.index_name for x in new_item['auto_categories']]
         self.items.append(new_item)
-        if self.batch_size and len(self.items) > self.batch_size:
+        if self.batch_size and len(self.items) >= self.batch_size:
             self.send_batch(spider)
         return new_item
