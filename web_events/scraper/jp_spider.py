@@ -13,6 +13,18 @@ def _intall(lst):
     return [None if x is None else int(x) for x in lst]
 
 
+def find_at_venue(text):
+    # This is because some far-future events have no event information other than:
+    # "2016年12月11日（日）@CONPASS", and we'd like to extract these locations as a last resort.
+    at_lines = re.findall(r'@([^\n]+)\n', text)
+    for x in at_lines:
+        # So grab whatever comes after the @ sign as our venue name,
+        # but ignore lowercase stuff (twitter handles, email address domains)
+        if not re.match(r'^[a-z._\-]+$', x):
+            return x
+    return None
+
+
 def setup_location(venue, addresses, item):
     # TODO: needs caching
     if venue:
