@@ -10,6 +10,7 @@ import re
 import urlparse
 
 import html2text
+import HTMLParser
 import scrapy
 from scrapy import item
 
@@ -58,7 +59,9 @@ def _extract_text(cell):
 
 
 def _format_text(html):
-    text = re.sub(' +\n', '\n', html2text.html2text(html, bodywidth=0).replace('\n\n', '\n')).strip()
+    text = html2text.html2text(html, bodywidth=0).replace('\n\n', '\n')
+    text = HTMLParser.HTMLParser().unescape(text)
+    text = re.sub(' +\n', '\n', text).strip()
     # If we have too many header lines, strip them out (bad html formatter that does <h1> on everything)
     lines = text.count('\n')
     header_lines = len(re.findall(r'^# ', text, re.MULTILINE))
