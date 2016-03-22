@@ -25,7 +25,7 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
             return self.parseEvent(response)
 
     def parseList(self, response):
-        PAST_EVENTS = True
+        PAST_EVENTS = False
         if PAST_EVENTS:
             monthly_page_urls = response.css('div#pastevent-area').xpath('.//a/@href').extract()
             for url in monthly_page_urls:
