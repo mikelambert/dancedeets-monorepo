@@ -110,7 +110,7 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
         item['start_time'], item['end_time'] = korean_dates.parse_times(date_string)
 
         # 'lg1=37.501771&lg2=126.770348&title=JB Dance Academy (부천시 원미구 중동 1151-4 이스트타워)'
-        extract_location = r"lg1=(?P<latitude>[\d.]+)&lg2=(?P<longitude>[\d.]+)&title=(?P<venue>[^']+?)\((?P<address>[^']+?)\)'"
+        extract_location = r"lg1=(?P<latitude>[\d.]+)&lg2=(?P<longitude>[\d.]+)&title=(?P<venue>[^']+?)\((?P<address>[^']+?)\)\s*'"
         match = re.search(extract_location, response.body)
         if match:
             item['location_name'] = match.group('venue')
@@ -119,5 +119,5 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
             item['longitude'] = match.group('longitude')
         else:
             # TODO: ...default to generic korea?
-            logging.error("Found event with empty location: %s: %s", item['id'], item['title'])
+            logging.error("Found event with empty location: %s: %s", item['namespaced_id'], item['name'])
         yield item
