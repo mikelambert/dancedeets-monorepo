@@ -32,7 +32,8 @@ def decorate_with_rsvps(fbl, search_results):
     if fbl.fb_uid:
         rsvps = RSVPManager(fbl)
         for result in search_results:
-            result.rsvp_status = rsvps.get_rsvp_for_event(result.fb_event_id)
+            # TODO: WEB_EVENTS: filter out non-FB events for lookup
+            result.rsvp_status = rsvps.get_rsvp_for_event(result.event_id)
     else:
         for result in search_results:
             result.rsvp_status = None

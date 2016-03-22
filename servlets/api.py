@@ -202,7 +202,7 @@ class SearchHandler(ApiHandler):
                 json_result = canonicalize_event_data(result.db_event, result.event_keywords)
                 json_results.append(json_result)
             except Exception as e:
-                logging.error("Error processing event %s: %s" % (result.fb_event_id, e))
+                logging.error("Error processing event %s: %s" % (result.event_id, e))
 
         title = self._get_title(city_name, form.keywords.data)
         json_response = {
@@ -364,7 +364,7 @@ class SettingsHandler(ApiHandler):
 
 def canonicalize_event_data(db_event, event_keywords):
     event_api = {}
-    event_api['id'] = db_event.fb_event_id
+    event_api['id'] = db_event.id
     event_api['name'] = db_event.name
     event_api['start_time'] = db_event.start_time_string
     event_api['description'] = db_event.description

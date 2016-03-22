@@ -143,8 +143,8 @@ class SearchQuery(object):
 
 
 class SearchResult(object):
-    def __init__(self, fb_event_id, display_event_dict, db_event=None):
-        self.fb_event_id = fb_event_id
+    def __init__(self, event_id, display_event_dict, db_event=None):
+        self.event_id = event_id
         self.data = display_event_dict
         # Only used by /search API calls that want to return all data
         self.db_event = db_event # May be None

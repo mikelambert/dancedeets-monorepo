@@ -109,7 +109,7 @@
 	{# widths here are set to sum to 700px-50px = 650px #}
 	<div class="event-item">
 		<div class="event-image">
-		<a href="{{ fb_event_url(result.fb_event_id) }}">
+		<a href="{{ fb_event_url(result.event_id) }}">
 {# preload first five images #}
 {% if loop.index < 20 %}
 			<img src="{{ result.image }}" width="180" border="0">
@@ -121,7 +121,7 @@
 		</div>
 		<div class="event-description">
 			<h3 class="event-title">
-			<a href="{{ fb_event_url(result.fb_event_id) }}">
+			<a href="{{ fb_event_url(result.event_id) }}">
 			{{ result.name|e }}
 			</a>
 			</h3>

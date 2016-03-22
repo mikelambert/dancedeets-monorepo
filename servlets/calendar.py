@@ -43,11 +43,11 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
             all_day = False
             title = '@ %s\n\n%s' % (result.actual_city_name, result.name)
             json_results.append(dict(
-                id=result.fb_event_id,
+                id=result.event_id,
                 title=title,
                 start=start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
                 end=end_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                url=urls.fb_event_url(result.fb_event_id),
+                url=urls.fb_event_url(result.event_id),
                 allDay=all_day,
             ))
         self.write_json_response(json_results)
