@@ -169,10 +169,6 @@ class DBEvent(ndb.Model):
         return event_types.humanize_categories(self.auto_categories)
 
     @property
-    def cover_metadata(self):
-        return self.fb_event['info'].get('cover')
-
-    @property
     def cover_images(self):
         if self.web_event:
             # Only return a cover image here if we have a width/height,
