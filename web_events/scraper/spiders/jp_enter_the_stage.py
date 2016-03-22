@@ -68,7 +68,10 @@ class EnterTheStageScraper(items.WebEventScraper):
         item['namespaced_id'] = re.search(r'/event/(\w+)/', response.url).group(1)
         item['name'] = _get('u474-4')
         image_url = response.xpath('//img[@id="u469_img"]/@src').extract()[0]
-        item['photo'] = self.abs_url(response, image_url)
+        image_url = self.abs_url(response, image_url)
+        if image_url == 'http://et-stage.net/event_image/no_image_big.jpg':
+            image_url = None
+        item['photo'] = image_url
 
         # cost = _get('u511-7')
         # email = _get('u512-4')
@@ -77,6 +80,8 @@ class EnterTheStageScraper(items.WebEventScraper):
         item['start_time'], item['end_time'] = parse_times(_get('u506-2'))
 
         venue = _get('u507-4')
+        if not venue:
+            venue = jp_spider.get_venue_from_description(item['description'])
         jp_addresses = japanese_addresses.find_addresses(_get('u509-11'))
         jp_spider.setup_location(venue, jp_addresses, item)
 
