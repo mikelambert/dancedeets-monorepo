@@ -241,7 +241,7 @@ def facebook_post(auth_token, db_event):
     else:
         post_values['description'] = description
     post_values['description'] = post_values['description'].encode('utf8')
-    cover = db_event.db_event.largest_cover
+    cover = db_event.largest_cover
     if cover:
         post_values['picture'] = cover['source']
     venue_id = db_event.venue.get('id')
