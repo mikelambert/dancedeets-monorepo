@@ -157,6 +157,9 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
             json_body['location_name'] = result['name']
             json_body['location_address'] = result['formatted_address']
             logging.info("Found an address: %s", json_body['location_address'])
+            # BIG HACK!!!
+            if 'Japan' not in json_body['location_address'] and 'Korea' not in json_body['location_address']:
+                logging.error("Found incorrect address for venue!")
             latlng = result['geometry']['location']
             json_body['latitude'] = latlng['lat']
             json_body['longitude'] = latlng['lng']
