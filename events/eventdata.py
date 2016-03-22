@@ -175,11 +175,16 @@ class DBEvent(ndb.Model):
     @property
     def cover_images(self):
         if self.web_event:
-            return [{
-                'source': self.image_url,
-                'height': 0,  # TODO: WEB_EVENTS find these fields
-                'width': 0,
-            }]
+            # Only return a cover image here if we have a width/height,
+            # as iOS will probably crash with zero-sized width/heights
+            if self.web_event.get('photo_width') and self.web_event.get('photo_height'):
+                return [{
+                    'source': self.image_url,
+                    'width': self.web_event['photo_width'],
+                    'height': self.web_event['photo_height'],
+                }]
+            else:
+                return []
         else:
             if 'cover_info' in self.fb_event:
                 # Old FB API versions returned ints instead of strings, so let's stringify manually to ensure we can look up the cover_info

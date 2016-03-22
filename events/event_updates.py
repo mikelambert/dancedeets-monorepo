@@ -1,6 +1,7 @@
 import datetime
 import logging
 
+from google.appengine.api import images
 from google.appengine.ext import ndb
 
 import fb_api
@@ -10,6 +11,7 @@ from search import search
 from nlp import categories
 from nlp import event_classifier
 from util import dates
+from util import fetch
 from . import event_locations
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
@@ -160,6 +162,12 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
             json_body['longitude'] = latlng['lng']
 
     db_event.address = json_body.get('location_address')
+
+    mimetype, image_data = fetch.fetch_data(db_event.image_url)
+    image = images.Image(image_data)
+    json_body['photo_width'] = image.width
+    json_body['photo_height'] = image.height
+    logging.info("Found image width size %sx%s", image.width, image.height)
 
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
