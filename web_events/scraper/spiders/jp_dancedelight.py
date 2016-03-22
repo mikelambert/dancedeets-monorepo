@@ -10,7 +10,6 @@ from events import namespaces
 from loc import japanese_addresses
 from .. import items
 from .. import jp_spider
-from util import strip_markdown
 
 
 class DanceDelightScraper(items.WebEventScraper):
@@ -66,7 +65,7 @@ class DanceDelightScraper(items.WebEventScraper):
         post_html = post_html.replace(post_top, '')
 
         full_description = items._format_text(post_html)
-        item['description'] = strip_markdown.strip(full_description)
+        item['description'] = full_description
 
         jp_addresses = japanese_addresses.find_addresses(item['description'])
         venue = items.get_line_after(item['description'], ur'場所|会場|LOCATION')

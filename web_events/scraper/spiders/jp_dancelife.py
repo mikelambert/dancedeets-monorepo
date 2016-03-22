@@ -8,7 +8,6 @@ from events import namespaces
 from loc import japanese_addresses
 from .. import items
 from .. import jp_spider
-from util import strip_markdown
 
 
 class TokyoDanceLifeScraper(items.WebEventScraper):
@@ -60,11 +59,11 @@ class TokyoDanceLifeScraper(items.WebEventScraper):
 
         category = response.css('div.event-detail-koumoku').xpath('./img/@alt').extract()[0]
         # Because dt otherwise remains flush up against the end of the previous dd, we insert manual breaks.
-        full_description = strip_markdown.strip(items._format_text(response.xpath('//dl').extract()[0].replace('<dt>', '<dt><br><br>')))
+        full_description = items._format_text(response.xpath('//dl').extract()[0].replace('<dt>', '<dt><br><br>'))
         item['description'] = '%s\n\n%s' % (category, full_description)
 
         jp_addresses = japanese_addresses.find_addresses(item['description'])
-        venue = items.get_line_after(strip_markdown.strip(item['description']), ur'場所|会場|LOCATION')
+        venue = items.get_line_after(item['description'], ur'場所|会場|LOCATION')
         jp_spider.setup_location(venue, jp_addresses, item)
 
         item['start_time'], item['end_time'] = self.parseDateTimes(response)
