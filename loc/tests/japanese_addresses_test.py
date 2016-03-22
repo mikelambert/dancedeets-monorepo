@@ -14,8 +14,15 @@ examples = [
     u'大阪市北区神山町14－3　アド神山302',
 ]
 
+negative_examples = [
+    # Don't match on "wards"
+    u'WORLD OF DANCEのSNSは、世界30万人を超えイベントに参加することで、全世界にプロモーションすることができます。作品性が認められれば、自分のPR以外に世界からのオファーや、企業がスポンサーに付くなど可能性が広がります。そして、ダンサーの栄誉でもある"World of Dance Awards"へのチャンスにもなります。',
+]
+
 
 class TestParseFbTimestamp(unittest.TestCase):
     def runTest(self):
         for s in examples:
             self.assert_(japanese_addresses.find_addresses(s), s.encode('utf-8'))
+        for s in negative_examples:
+            self.assertFalse(japanese_addresses.find_addresses(s), s.encode('utf-8'))
