@@ -64,11 +64,7 @@ def format_text(html):
     text = HTMLParser.HTMLParser().unescape(text)
     text = strip_markdown.strip(text)
     text = re.sub(' +\n', '\n', text).strip()
-    # If we have too many header lines, strip them out (bad html formatter that does <h1> on everything)
-    lines = text.count('\n')
-    header_lines = len(re.findall(r'^# ', text, re.MULTILINE))
-    if header_lines > lines / 8:
-        text = re.sub('^# ', '', text)
+    text = re.sub('\n\n\n', '\n\n', text)
     return text
 
 
