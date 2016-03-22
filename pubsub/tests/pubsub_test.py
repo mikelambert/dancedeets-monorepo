@@ -61,7 +61,7 @@ class TestImports(unittest.TestCase):
         }
 
         class DBEvent(eventdata.DBEvent):
-            fb_event_id = '555'
+            id = '555'
             start_time = datetime.datetime(2010, 1, 1, 12)
             actual_city_name = 'Sacramento, CA, United States'
             fb_event = FB_EVENT
