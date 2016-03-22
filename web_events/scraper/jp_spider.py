@@ -22,6 +22,7 @@ def find_at_venue(text):
         # So grab whatever comes after the @ sign as our venue name,
         # but ignore lowercase stuff (twitter handles, email address domains)
         if not re.match(r'^[a-z._\-]+$', x):
+            x = re.sub(r'\(.*\)', '', x)
             return x
     return None
 
@@ -31,10 +32,11 @@ _VENUE_REMAP = {
     u'江坂CAT HALL': u'キャットミュージックカレッジ',
     u'HARLEM': u'Harlem, Shibuya',
     u'渋谷HAREM': u'Harlem, Shibuya',
-    u'HARLEM PLUS': u'Harlem, Shibuya',
+    u'HARLEM　PLUS': u'Harlem, Shibuya',
     u'Neo Brotherz': u'Space Zero, 宮城',
     u'ARCHE': u'大宮アルシェ',
     u'天神 club selecta': u'club selecta 福岡県',
+    u'ＨＡＴＣＨ！！～ＳＨＩＢＵＹＡ　ＲＥＮＴＡＬ　ＳＴＵＤＩＯ～': 'Studio Hatch, Shibuya'
 }
 
 
@@ -47,6 +49,10 @@ def setup_location(venue, addresses, item):
         item['geolocate_location_name'] = '%s, japan' % venue
     if addresses:
         item['location_address'] = addresses[0]
+
+
+def good_venue(venue):
+    return (u'年' not in venue)
 
 
 def parse_date_times(start_date, date_str):
