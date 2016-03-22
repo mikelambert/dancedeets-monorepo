@@ -19,7 +19,7 @@ _NAMESPACE_LIST = [
         FACEBOOK,
         'Facebook',
         'https://www.facebook.com/events/',
-        'https://www.facebook.com/%s/',
+        lambda x: 'https://www.facebook.com/%s/' % x.fb_event_id,
     ),
     Namespace(
         JAPAN_DD,
