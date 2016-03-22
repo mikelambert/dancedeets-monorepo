@@ -64,9 +64,14 @@ class BaseIndex(object):
                 if doc_event.doc_id != cls._get_id(obj):
                     logging.error("Error, created DocEvent with id %r instead of %r" % (doc_event.doc_id, cls._get_id(obj)))
                 index_objs.append(doc_event)
+        cls.put_objects(index_objs)
+        cls.delete_ids(deindex_ids)
+
+    @classmethod
+    def put_objects(cls, objects):
         doc_index = cls.real_index()
-        doc_index.put(index_objs)
-        doc_index.delete(deindex_ids)
+        for i in range(0, len(objects), search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST):
+            doc_index.put(objects[i:i + search.MAXIMUM_DOCUMENTS_PER_PUT_REQUEST])
 
     @classmethod
     def delete_ids(cls, object_ids):
@@ -144,10 +149,9 @@ class BaseIndex(object):
             doc_events.append(doc_event)
 
         logging.info("Adding %s documents", len(doc_events))
-        doc_index = cls.real_index()
-        doc_index.put(doc_events)
+        cls.put_objects(doc_event)
 
         # These events could not be filtered out too early,
         # but only after looking up in this db+fb-event-data world
         logging.info("Cleaning up and deleting %s documents", len(delete_ids))
-        doc_index.delete(delete_ids)
+        cls.delete_ids(delete_ids)
