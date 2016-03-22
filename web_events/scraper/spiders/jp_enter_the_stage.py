@@ -6,6 +6,7 @@ import re
 import scrapy
 
 from events import namespaces
+from loc import japanese_addresses
 from .. import items
 from .. import jp_spider
 
@@ -60,7 +61,7 @@ class EnterTheStageScraper(items.WebEventScraper):
 
     def parseEvent(self, response):
         def _get(css_id):
-            return items.format_text(response.css('#%s' % css_id))
+            return items.extract_text(response.css('#%s' % css_id))
 
         item = items.WebEvent()
         item['namespace'] = self.namespace
@@ -75,7 +76,8 @@ class EnterTheStageScraper(items.WebEventScraper):
         item['description'] = _get('u468-156')
         item['start_time'], item['end_time'] = parse_times(_get('u506-2'))
 
-        item['location_name'] = _get('u507-4')
-        item['location_address'] = _get('u509-11')
+        venue = _get('u507-4')
+        jp_addresses = japanese_addresses.find_addresses(_get('u509-11'))
+        jp_spider.setup_location(venue, jp_addresses, item)
 
         yield item
