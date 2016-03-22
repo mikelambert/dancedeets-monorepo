@@ -25,7 +25,7 @@ _NAMESPACE_LIST = [
         JAPAN_DD,
         'Dance Delight',
         'http://www.dancedelight.net/wordpress/?cat=6',
-        lambda x: 'http://et-stage.net/event/%s/' % x.namespaced_id,
+        lambda x: 'http://www.dancedelight.net/wordpress/?p=%s' % x.namespaced_id,
     ),
     Namespace(
         JAPAN_TDL,
