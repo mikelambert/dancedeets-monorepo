@@ -11,7 +11,6 @@ from util import fb_mapreduce
 from users import users
 from . import eventdata
 from . import event_updates
-from . import namespaces
 
 def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated):
     fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id, only_if_updated=only_if_updated)
