@@ -413,8 +413,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
             for arg in sorted(self.request.GET):
                 if arg in ['uid', 'access_token', 'access_token_md5']:
                     continue
-                current_url_args[arg] = [x.encode('utf-8') for x in self.request.GET.getall(arg)]
-            final_url = self.request.path + '?' + urllib.urlencode(current_url_args, doseq=True)
+                current_url_args[arg] = self.request.GET.getall(arg)
+            final_url = self.request.path + '?' + urls.urlencode(current_url_args, doseq=True)
             # Make sure we abort=True, since otherwise the caller will keep on running the initialize() code.
             return final_url
         else:
@@ -426,10 +426,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
         self.run_handler = True
-        current_url_args = {}
-        for arg in sorted(self.request.GET):
-            current_url_args[arg] = [x.encode('utf-8') for x in self.request.GET.getall(arg)]
-        final_url = self.request.path + '?' + urllib.urlencode(current_url_args, doseq=True)
+        final_url = self.request.path + '?' + urls.urlencode(self.request.GET, doseq=True)
         params = dict(next=final_url)
         if 'deb' in self.request.arguments():
             params['deb'] = self.request.get('deb')
@@ -437,7 +434,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
         else:
             self.debug_list = []
         logging.info("Debug list is %r", self.debug_list)
-        login_url = '/login?%s' % urllib.urlencode(params)
+        login_url = '/login?%s' % urls.urlencode(params)
 
         redirect_url = self.handle_alternate_login(request)
         if redirect_url:

@@ -1,11 +1,12 @@
 import datetime
 import logging
-import urllib
 
 from google.appengine.api import taskqueue
 
 from logic import backgrounder
+from util import urls
 from . import users
+
 
 def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires, location, send_email=False, referer=None, client=None):
     user = users.User(id=fb_uid)
@@ -38,10 +39,9 @@ def create_user_with_fbuser(fb_uid, fb_user, access_token, access_token_expires,
 
     logging.info("Requesting background load of user's friends")
     # Must occur after User is put with fb_access_token
-    taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urllib.urlencode({'user_id': fb_uid}), queue_name='slow-queue')
+    taskqueue.add(method='GET', url='/tasks/track_newuser_friends?' + urls.urlencode({'user_id': fb_uid}), queue_name='slow-queue')
     # Now load their potential events, to make "add event page" faster (and let us process/scrape their events)
     #potential_events_reloading.load_potential_events_for_user_ids(fbl, [fb_uid])
     backgrounder.load_potential_events_for_users([fb_uid])
 
     return user
-

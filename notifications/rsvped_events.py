@@ -1,7 +1,6 @@
 import datetime
 from dateutil import parser
 import logging
-import urllib
 
 from google.appengine.api import taskqueue
 
@@ -10,6 +9,7 @@ import base_servlet
 import fb_api
 from events import eventdata
 from users import users
+from util import urls
 from . import android
 
 def setup_reminders(fb_uid, fb_user_events):
@@ -50,7 +50,7 @@ def setup_reminders(fb_uid, fb_user_events):
                 name='notify_user-%s-%s' % (fb_uid, event['id']),
                 queue_name='mobile-notify-queue',
                 eta=start_notify_window,
-                url='/tasks/remind_user?'+urllib.urlencode(dict(
+                url='/tasks/remind_user?' + urls.urlencode(dict(
                     user_id=fb_uid,
                     event_id=event['id'])),
             )

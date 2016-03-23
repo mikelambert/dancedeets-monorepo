@@ -8,6 +8,7 @@ import urllib
 import keys
 
 from . import gmaps_backends
+from util import urls
 
 google_maps_private_key = keys.get("google_maps_private_key")
 google_server_key = keys.get("google_server_key")
@@ -20,17 +21,16 @@ class LiveBackend(gmaps_backends.GMapsBackend):
         self.use_private_key = use_private_key
 
     def get_json(self, **kwargs):
-        kwargs = dict((k.encode('utf-8'), v.encode('utf-8')) for k, v in kwargs.items())
         if self.use_private_key:
             kwargs['client'] = 'free-dancedeets'
-            unsigned_url_path = "%s?%s" % (self.path, urllib.urlencode(kwargs))
+            unsigned_url_path = "%s?%s" % (self.path, urls.urlencode(kwargs))
             private_key = google_maps_private_key
             decoded_key = base64.urlsafe_b64decode(private_key)
             signature = hmac.new(decoded_key, unsigned_url_path, hashlib.sha1)
             encoded_signature = base64.urlsafe_b64encode(signature.digest())
             url = "%s%s&signature=%s" % (self.protocol_host, unsigned_url_path, encoded_signature)
         else:
-            unsigned_url_path = "%s?%s" % (self.path, urllib.urlencode(kwargs))
+            unsigned_url_path = "%s?%s" % (self.path, urls.urlencode(kwargs))
             url = "%s%s&key=%s" % (self.protocol_host, unsigned_url_path, google_server_key)
 
         logging.info('geocoding url: %s', url)

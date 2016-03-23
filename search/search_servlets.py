@@ -2,13 +2,12 @@
 
 import logging
 import time
-import urllib
 
 import app
 import base_servlet
 from logic import friends
 from logic import rsvp
-from util import dates
+from util import urls
 from . import onebox
 from . import search
 from . import search_base
@@ -110,10 +109,10 @@ class RelevantHandler(SearchHandler):
             self.display['result_title'] = 'Dance events'
 
         request_params = form.url_params()
-        self.display['past_view_url'] = '/events/relevant?past=1&%s' % urllib.urlencode(request_params)
-        self.display['upcoming_view_url'] = '/events/relevant?%s' % urllib.urlencode(request_params)
-        self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % urllib.urlencode(request_params)
-        self.display['calendar_feed_url'] = '/calendar/feed?%s' % urllib.urlencode(request_params)
+        self.display['past_view_url'] = '/events/relevant?past=1&%s' % urls.urlencode(request_params)
+        self.display['upcoming_view_url'] = '/events/relevant?%s' % urls.urlencode(request_params)
+        self.display['calendar_view_url'] = '/events/relevant?calendar=1&%s' % urls.urlencode(request_params)
+        self.display['calendar_feed_url'] = '/calendar/feed?%s' % urls.urlencode(request_params)
         self.jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
         self.render_template(self.template_name)
 

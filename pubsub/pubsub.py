@@ -8,7 +8,6 @@ import oauth2 as oauth
 import re
 import time
 import traceback
-import urllib
 import urlparse
 
 from google.appengine.api import memcache
@@ -315,7 +314,7 @@ def get_targeting_data(fbl, db_event):
             'q': city_state_country.encode('utf-8'),
             'country_code': short_country,
         }
-        geo_target = fbl.get(LookupGeoTarget, urllib.urlencode(kw_params))
+        geo_target = fbl.get(LookupGeoTarget, urls.urlencode(kw_params))
 
         good_targets = [x for x in geo_target['search']['data'] if x['supports_city']]
         if good_targets:

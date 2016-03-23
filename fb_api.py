@@ -90,13 +90,13 @@ class LookupType(object):
     @classmethod
     def url(cls, path, fields=None, **kwargs):
         if fields:
-            return '/%s/%s?%s' % (cls.version, path, urllib.urlencode(dict(fields=','.join(fields), **kwargs)))
+            return '/%s/%s?%s' % (cls.version, path, urls.urlencode(dict(fields=','.join(fields), **kwargs)))
         else:
             return '/%s/%s' % (cls.version, path)
 
     @classmethod
     def fql_url(cls, fql):
-        return "/%s/fql?%s" % (cls.version, urllib.urlencode(dict(q=fql)))
+        return "/%s/fql?%s" % (cls.version, urls.urlencode(dict(q=fql)))
 
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
@@ -394,10 +394,10 @@ class FBAPI(CacheSystem):
                 post_args["access_token"] = self.access_token
             else:
                 args["access_token"] = self.access_token
-        post_data = None if post_args is None else urllib.urlencode(post_args)
+        post_data = None if post_args is None else urls.urlencode(post_args)
         f = urllib.urlopen(
                 "https://graph.facebook.com/" + path + "?" +
-                urllib.urlencode(args), post_data)
+                urls.urlencode(args), post_data)
         result = f.read()
         return result
 
@@ -421,7 +421,7 @@ class FBAPI(CacheSystem):
         else:
             post_args["access_token"] = '%s|%s' % (facebook.FACEBOOK_CONFIG['app_id'], facebook.FACEBOOK_CONFIG['secret_key'])
         post_args["include_headers"] = False # Don't need to see all the caching headers per response
-        post_data = None if post_args is None else urllib.urlencode(post_args)
+        post_data = None if post_args is None else urls.urlencode(post_args)
         rpc = urlfetch.create_rpc(deadline=DEADLINE)
         urlfetch.make_fetch_call(rpc, "https://graph.facebook.com/", post_data, "POST")
         self.fb_fetches += len(batch_list)
