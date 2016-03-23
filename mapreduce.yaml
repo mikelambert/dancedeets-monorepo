@@ -8,3 +8,15 @@ mapreduce:
       default: events.eventdata.DBEvent
     - name: _app
       default: CITY_EVENT_RANKING
+- name: Post to All Events
+  mapper:
+    input_reader: mapreduce.input_readers.DatastoreInputReader
+    handler: pubsub.pubsub.post_on_event_wall
+    params_validator: util.mapreduce_helpers.process_mr_params
+    params:
+    - name: entity_kind
+      default: events.eventdata.DBEvent
+    - name: filters
+      default: '[["search_time_period", "=", "FUTURE"]]'
+    - name: queue_name
+      default: slow-queue

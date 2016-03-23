@@ -65,10 +65,12 @@ def eventually_publish_event(event_id, token_nickname=None):
 
 
 def post_on_event_wall(db_event):
+    if not db_event.is_fb_event:
+        return
     fbl = get_dancedeets_fbl()
     if not fbl:
         return
-    url = campaign_url('fb_event_wall')
+    url = campaign_url(db_event.id, 'fb_event_wall')
     # STR_ID_MIGRATE
     if db_event.creating_fb_uid and db_event.creating_fb_uid != 701004:
         user = users.User.get_by_id(str(db_event.creating_fb_uid))
@@ -79,7 +81,7 @@ def post_on_event_wall(db_event):
         'Congrats, %s listed this dance event on DanceDeets, the site for street dance events worldwide! '
         'You can find this event in the DanceDeets mobile app, or on our website here: %s' % (name, url)
     )
-    return fbl.post('%s/feed' % db_event.fb_event_id, None, {
+    return fbl.fb.post('%s/feed' % db_event.fb_event_id, None, {
         'message': message,
         'link': url,
     })
