@@ -69,7 +69,6 @@ def post_on_event_wall(db_event):
     fbl = get_dancedeets_fbl()
     if not fbl:
         return
-    logging.info("Posting promotion on event wall: %s", db_event.fb_event_id)
     url = campaign_url(db_event.id, 'fb_event_wall')
     # STR_ID_MIGRATE
     if db_event.creating_fb_uid and db_event.creating_fb_uid != 701004:
@@ -81,10 +80,17 @@ def post_on_event_wall(db_event):
         'Congrats, %s listed this dance event on DanceDeets, the site for street dance events worldwide! '
         'You can find this event in the DanceDeets mobile app, or on our website here: %s' % (name, url)
     )
-    return fbl.fb.post('%s/feed' % db_event.fb_event_id, None, {
+    result = fbl.fb.post('%s/feed' % db_event.fb_event_id, None, {
         'message': message,
         'link': url,
     })
+
+    logging.info("Posting promotion on event %s's wall")
+    if 'error' in result:
+        logging.error("Returned: %s", db_event.fb_event_id, result)
+    else:
+        logging.info("Returned: %s", db_event.fb_event_id, result)
+    return result
 
 
 def pull_and_publish_event():
