@@ -101,7 +101,7 @@ def get_line_after(text, regex):
 
 class SaveWebEventPipeline(pipelines.SaveToServerPipeline):
     server_path = 'web_events/upload_multi'
-    batch_size = 50
+    batch_size = 20
 
 
 class WebEventScraper(scrapy.Spider):
