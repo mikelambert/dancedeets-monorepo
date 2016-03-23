@@ -64,10 +64,16 @@ def eventually_publish_event(event_id, token_nickname=None):
 
 
 def post_on_event_wall(db_event):
+    logging.info("Considering posting on event wall for %s", db_event.id)
     if not db_event.is_fb_event:
+        logging.info("Event is not FB event")
+        return
+    if not db_event.public:
+        logging.info("Event is not public")
         return
     fbl = get_dancedeets_fbl()
     if not fbl:
+        logging.error("Failed to find DanceDeets page access token.")
         return
     url = campaign_url(db_event.id, 'fb_event_wall')
     # STR_ID_MIGRATE
@@ -77,15 +83,13 @@ def post_on_event_wall(db_event):
     else:
         name = "we've"
     message = (
-        'Congrats, %s listed this dance event on DanceDeets, the site for street dance events worldwide! '
-        'You can find this event in the DanceDeets mobile app, or on our website here: %s' % (name, url)
+        'Congrats, %s added this dance event to DanceDeets, the site for street dance events worldwide! '
+        'Dancers can discover this event in our DanceDeets mobile app, or on our website here: %s' % (name, url)
     )
-    result = fbl.fb.post('%s/feed' % db_event.fb_event_id, None, {
+    result = fbl.fb.post('v2.5/%s/feed' % db_event.fb_event_id, None, {
         'message': message,
         'link': url,
     })
-
-    logging.info("Posting promotion on event %s's wall")
     if 'error' in result:
         logging.error("Returned: %s", db_event.fb_event_id, result)
     else:
@@ -467,7 +471,6 @@ def get_dancedeets_fbl():
     if tokens:
         return fb_api.FBLookup(None, tokens[0].oauth_token)
     else:
-        logging.error("Failed to find DanceDeets page access token.")
         return None
 
 

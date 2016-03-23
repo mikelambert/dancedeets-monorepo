@@ -165,6 +165,13 @@ class DBEvent(ndb.Model):
             return self.fb_event['info'].get('description', '')
 
     @property
+    def public(self):
+        if self.web_event:
+            return True
+        else:
+            return self.fb_event['info'].get('privacy', 'OPEN') == 'OPEN'
+
+    @property
     def categories(self):
         return event_types.humanize_categories(self.auto_categories)
 
