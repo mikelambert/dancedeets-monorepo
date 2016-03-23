@@ -149,7 +149,7 @@ class BaseIndex(object):
             doc_events.append(doc_event)
 
         logging.info("Adding %s documents", len(doc_events))
-        cls.put_objects(doc_event)
+        cls.put_objects([doc_event])
 
         # These events could not be filtered out too early,
         # but only after looking up in this db+fb-event-data world
