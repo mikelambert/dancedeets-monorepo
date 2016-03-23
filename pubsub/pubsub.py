@@ -38,6 +38,9 @@ def eventually_publish_event(event_id, token_nickname=None):
     if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
         return
     geocode = db_event.get_geocode()
+
+    post_on_event_wall(db_event)
+
     logging.info("Publishing event %s with latlng %s", event_id, geocode)
     if not geocode:
         # Don't post events without a location. It's too confusing...
@@ -58,6 +61,18 @@ def eventually_publish_event(event_id, token_nickname=None):
         name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id.replace(':', '-'), int(time.time()))
         logging.info("Adding task with name %s", name)
         q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
+
+
+def post_on_event_wall(db_event):
+    fbl = get_dancedeets_fbl()
+    url = campaign_url('fb_event_wall')
+    fbl.post('%s/feed' % db_event.fb_event_id, None, {
+        'message': (
+            "Congrats, we've listed this dance event on DanceDeets, the site for street dance events worldwide! "
+            "You can find this event in the mobile app, or on our website here: %s" % url
+        ),
+        'link': url,
+    })
 
 
 def pull_and_publish_event():
@@ -427,6 +442,12 @@ class LookupUserAccounts(fb_api.LookupType):
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
         return (fetching_uid, object_id, 'OBJ_USER_ACCOUNTS')
+
+
+def get_dancedeets_fbl():
+    token = OAuthToken.query(OAuthToken.user_id == '701004', OAuthToken.token_nickname == '110312662362915', OAuthToken.application == APP_FACEBOOK).fetch(1)
+    fbl = fb_api.FBLookup(None, token.oauth_token)
+    return fbl
 
 
 def facebook_auth(fbl, page_uid, country_filter):
