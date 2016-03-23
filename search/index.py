@@ -111,18 +111,18 @@ class BaseIndex(object):
             start_id = doc_ids[-1]
         threshold = 0.20
         if not force and len(doc_ids_to_delete) and len(doc_ids_to_delete) > len(object_ids) * threshold:
-            logging.critical("Deleting %s docs, more than %d%% of total %s docs", len(doc_ids_to_delete), threshold*100, len(object_ids))
+            logging.critical("Deleting %s docs, more than %d%% of total %s docs", len(doc_ids_to_delete), threshold * 100, len(object_ids))
             return
         logging.info("Deleting %s docs", len(doc_ids_to_delete))
         doc_ids_to_delete = list(doc_ids_to_delete)
-        for i in range(0,len(doc_ids_to_delete), docs_per_group):
-            doc_index.delete(doc_ids_to_delete[i:i+docs_per_group])
+        for i in range(0, len(doc_ids_to_delete), docs_per_group):
+            doc_index.delete(doc_ids_to_delete[i:i + docs_per_group])
 
         # Add all events
         logging.info("Loading %s docs, in groups of %s", len(object_ids), docs_per_group)
         object_ids_list = list(object_ids)
-        for i in range(0,len(object_ids_list), docs_per_group):
-            group_object_ids = object_ids_list[i:i+docs_per_group]
+        for i in range(0, len(object_ids_list), docs_per_group):
+            group_object_ids = object_ids_list[i:i + docs_per_group]
             deferred.defer(cls._save_ids, group_object_ids)
 
     @classmethod
@@ -149,7 +149,7 @@ class BaseIndex(object):
             doc_events.append(doc_event)
 
         logging.info("Adding %s documents", len(doc_events))
-        cls.put_objects([doc_event])
+        cls.put_objects(doc_events)
 
         # These events could not be filtered out too early,
         # but only after looking up in this db+fb-event-data world
