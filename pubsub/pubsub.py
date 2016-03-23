@@ -19,6 +19,7 @@ import twitter
 from events import eventdata
 import fb_api
 import keys
+from users import users
 from util import fetch
 from util import urls
 
@@ -65,12 +66,21 @@ def eventually_publish_event(event_id, token_nickname=None):
 
 def post_on_event_wall(db_event):
     fbl = get_dancedeets_fbl()
+    if not fbl:
+        return
     url = campaign_url('fb_event_wall')
-    fbl.post('%s/feed' % db_event.fb_event_id, None, {
-        'message': (
-            "Congrats, we've listed this dance event on DanceDeets, the site for street dance events worldwide! "
-            "You can find this event in the mobile app, or on our website here: %s" % url
-        ),
+    # STR_ID_MIGRATE
+    if db_event.creating_fb_uid and db_event.creating_fb_uid != 701004:
+        user = users.User.get_by_id(str(db_event.creating_fb_uid))
+        name = user.full_name
+    else:
+        name = "we've"
+    message = (
+        'Congrats, %s listed this dance event on DanceDeets, the site for street dance events worldwide! '
+        'You can find this event in the DanceDeets mobile app, or on our website here: %s' % (name, url)
+    )
+    return fbl.post('%s/feed' % db_event.fb_event_id, None, {
+        'message': message,
         'link': url,
     })
 
@@ -445,9 +455,12 @@ class LookupUserAccounts(fb_api.LookupType):
 
 
 def get_dancedeets_fbl():
-    token = OAuthToken.query(OAuthToken.user_id == '701004', OAuthToken.token_nickname == '110312662362915', OAuthToken.application == APP_FACEBOOK).fetch(1)
-    fbl = fb_api.FBLookup(None, token.oauth_token)
-    return fbl
+    tokens = OAuthToken.query(OAuthToken.user_id == '701004', OAuthToken.token_nickname == '110312662362915', OAuthToken.application == APP_FACEBOOK).fetch(1)
+    if tokens:
+        return fb_api.FBLookup(None, tokens[0].oauth_token)
+    else:
+        logging.error("Failed to find DanceDeets page access token.")
+        return None
 
 
 def facebook_auth(fbl, page_uid, country_filter):
