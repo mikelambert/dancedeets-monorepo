@@ -81,10 +81,10 @@ class SearchForm(wtforms.Form):
         if self.deb.data:
             d['deb'] = self.deb.data
         if self.keywords.data:
-            d['keywords'] = self.keywords.data.encode('utf-8')
+            d['keywords'] = self.keywords.data
         if self.min_attendees.data:
             d['min_attendees'] = self.min_attendees.data
-        d['location'] = self.location.data.encode('utf-8') or ''
+        d['location'] = self.location.data or ''
         d['distance'] = self.distance.data
         d['distance_units'] = self.distance_units.data
         return d

@@ -270,14 +270,14 @@ def facebook_post(auth_token, db_event):
     post_values = {}
     # post_values['message'] = db_event.name
     post_values['link'] = link
-    post_values['name'] = db_event.name.encode('utf8')
+    post_values['name'] = db_event.name
     post_values['caption'] = datetime_string
     description = db_event.description
     if len(description) > 10000:
         post_values['description'] = description[:9999] + u"…"
     else:
         post_values['description'] = description
-    post_values['description'] = post_values['description'].encode('utf8')
+    post_values['description'] = post_values['description']
     cover = db_event.largest_cover
     if cover:
         post_values['picture'] = cover['source']
@@ -322,7 +322,7 @@ def get_targeting_data(fbl, db_event):
         ]
         city_state_country = ', '.join(x for x in city_state_country_list if x)
         kw_params = {
-            'q': city_state_country.encode('utf-8'),
+            'q': city_state_country,
             'country_code': short_country,
         }
         geo_target = fbl.get(LookupGeoTarget, urls.urlencode(kw_params))
