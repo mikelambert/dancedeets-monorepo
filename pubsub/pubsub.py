@@ -69,6 +69,7 @@ def post_on_event_wall(db_event):
     fbl = get_dancedeets_fbl()
     if not fbl:
         return
+    logging.info("Posting promotion on event wall: %s", db_event.fb_event_id)
     url = campaign_url(db_event.id, 'fb_event_wall')
     # STR_ID_MIGRATE
     if db_event.creating_fb_uid and db_event.creating_fb_uid != 701004:
