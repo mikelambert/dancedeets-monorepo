@@ -389,6 +389,16 @@ class BaseRequestHandler(BareBaseRequestHandler):
             deferred.defer(update_last_login_time, self.user.fb_uid, datetime.datetime.now(), _queue='slow-queue')
             backgrounder.load_users([self.fb_uid], allow_cache=False)
 
+    def handle_exception(self, e, debug):
+        if isinstance(e, fb_api.ExpiredOAuthToken):
+            user = users.User.get_by_id(self.fb_uid)
+            user.expired_oauth_token_reason = e.args[0]
+            user.expired_oauth_token = True
+            user.put()
+            self.redirect(self.get_login_url())
+            return
+        super(BaseRequestHandler, self).handle_exception(e, debug)
+
     def handle_alternate_login(self, request):
         # If the mobile app sent the user to a /....?uid=XX&access_token_md5=YY URL,
         # then let's verify the parameters, and log the user in as that user
@@ -423,10 +433,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
     def _get_full_hostname(self):
         return 'www.dancedeets.com' if self.request.app.prod_mode else app_identity.get_default_version_hostname()
 
-    def initialize(self, request, response):
-        super(BaseRequestHandler, self).initialize(request, response)
-        self.run_handler = True
-        final_url = self.request.path + '?' + urls.urlencode(self.request.GET, doseq=True)
+    def get_login_url(self):
+        final_url = self.request.path + '?' + urls.urlencode(self.request.GET)
         params = dict(next=final_url)
         if 'deb' in self.request.arguments():
             params['deb'] = self.request.get('deb')
@@ -435,7 +443,12 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.debug_list = []
         logging.info("Debug list is %r", self.debug_list)
         login_url = '/login?%s' % urls.urlencode(params)
+        return login_url
 
+    def initialize(self, request, response):
+        super(BaseRequestHandler, self).initialize(request, response)
+        self.run_handler = True
+        login_url = self.get_login_url()
         redirect_url = self.handle_alternate_login(request)
         if redirect_url:
             self.run_handler = False
@@ -508,7 +521,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
 
         self.display['base_hostname'] = 'dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
         self.display['full_hostname'] = self._get_full_hostname()
-
 
         self.display['keyword_tokens'] = [{'value': x.public_name} for x in event_types.STYLES]
         fb_permissions = 'rsvp_event,email,user_events'
