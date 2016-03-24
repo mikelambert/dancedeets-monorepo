@@ -48,6 +48,10 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
       }
     } else {
       // the user isn't even logged in to Facebook.
+
+      // This can happen if the user changes their password, and Facebook auto-deletes the Facebook cookie.
+      // So delete the user_login_ cookies here, so that we correctly detect a login (when they've re-logged in)
+      deleteLoginCookies();
     }
   }
 
@@ -77,6 +81,9 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
 
     FB.init({version: 'v2.0', appId: fbAppId, status: true, cookie: true, xfbml: true});
     FB.Event.subscribe('auth.statusChange', handleStatusChange);
+    FB.getLoginStatus(function(response) {
+      handleStatusChange(response);
+    });
 
     jQuery('.onclick-login').on('click', login);
     jQuery('.onclick-logout').on('click', logout);
