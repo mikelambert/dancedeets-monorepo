@@ -10,6 +10,7 @@ MAX_OBJECTS = 100000
 class BaseIndex(object):
     obj_type = None
     index_name = None
+    delete_threshold = 0.20
 
     @classmethod
     def _create_doc_event(cls, obj):
@@ -109,9 +110,8 @@ class BaseIndex(object):
             doc_ids_to_delete.update(new_ids_to_delete)
             logging.info("Looking at %s doc_id candidates for deletion, will delete %s entries.", len(doc_ids), len(new_ids_to_delete))
             start_id = doc_ids[-1]
-        threshold = 0.20
-        if not force and len(doc_ids_to_delete) and len(doc_ids_to_delete) > len(object_ids) * threshold:
-            logging.critical("Deleting %s docs, more than %d%% of total %s docs", len(doc_ids_to_delete), threshold * 100, len(object_ids))
+        if not force and len(doc_ids_to_delete) and len(doc_ids_to_delete) > len(object_ids) * cls.delete_threshold:
+            logging.critical("Deleting %s docs, more than %d%% of total %s docs", len(doc_ids_to_delete), cls.delete_threshold * 100, len(object_ids))
             return
         logging.info("Deleting %s docs", len(doc_ids_to_delete))
         doc_ids_to_delete = list(doc_ids_to_delete)
