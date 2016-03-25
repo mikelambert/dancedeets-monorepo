@@ -127,7 +127,7 @@
         </a></div>
       {% endif %}
 
-      {{ event_common.event_info_as_icon_list(displayable_event, canonical_url) }}
+      {{ event_common.event_info_as_icon_list(displayable_event, canonical_url, social_links=False) }}
       {# not worth showing maps embed if there is no street_address #}
       {% if displayable_event.latitude %}
         <p>Open in <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
