@@ -130,6 +130,8 @@ def pull_and_publish_event():
 def post_event_id_with_authtoken(event_id, auth_token):
     event_id = event_id
     db_event = eventdata.DBEvent.get_or_insert(event_id)
+    if not db_event:
+        logging.warning("Failed to post event: %s, dbevent deleted in dancedeets", event_id)
     if not db_event.has_content():
         logging.warning("Failed to post event: %s, due to %s", event_id, db_event.empty_reason)
         return
