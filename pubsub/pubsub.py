@@ -282,7 +282,13 @@ def facebook_post(auth_token, db_event):
     name = _get_posting_user(db_event)
 
     human_date = db_event.start_time.strftime('%B %d')
-    post_values['message'] = "Hey %s, %s just added a dance event! Coming up on %s at %s." % (db_event.city, name, human_date, db_event.location_name)
+    # TODO: Sometimes we definitely know the City (from a lat/long), but FB doesn't give us a city.
+    # Hopefully in the Great Event Location Cleanup, can take care of this...
+    if db_event.city:
+        location = '%s ' % db_event.city
+    else:
+        location = ''
+    post_values['message'] = "Hey %sdancers, %s just added a dance event! Coming up on %s at %s." % (location, name, human_date, db_event.location_name)
 
     description = db_event.description
     if len(description) > 10000:
