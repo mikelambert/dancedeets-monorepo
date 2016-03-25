@@ -9,13 +9,13 @@
 <meta name="twitter:creator" content="@dancedeets" />
 <meta name="twitter:title" content="{{ displayable_event.name|e }}" />
 {% if displayable_event.description %}
-	<meta name="twitter:description" content="{{ displayable_event.description|truncate(250)|e }}">
+  <meta name="twitter:description" content="{{ displayable_event.description|truncate(250)|e }}">
 {% endif %}
 {% if displayable_event.cover_images %}
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:image:src" content="http://{{ full_hostname }}/events/image_proxy/{{ displayable_event.id }}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image:src" content="http://{{ full_hostname }}/events/image_proxy/{{ displayable_event.id }}" />
 {% else %}
-	<meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary" />
 {% endif %}
 
 <meta name="twitter:app:name:googleplay" content="DanceDeets" />
@@ -37,7 +37,7 @@
 <meta property="og:site_name" content="DanceDeets" />
 <meta property="og:image" content="http://www.dancedeets.com/events/image_proxy/{{ displayable_event.id }}" />
 <meta property="og:description"
-			content="{{ displayable_event.meta_description|e }}" />
+      content="{{ displayable_event.meta_description|e }}" />
 
 <link rel="canonical" href="{{ canonical_url }}" />
 {% if displayable_event.largest_cover %}
@@ -53,113 +53,113 @@
 <div class="container">
 <div itemscope itemtype="http://schema.org/DanceEvent">
 
-	<span itemprop="url" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/"></span>
+  <span itemprop="url" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/"></span>
 
-	<div class="row">
-		<div class="col-xs-12">
-			{% if displayable_event.city_state_country or displayable_event.categories %}
-				See more events:
-				<ul>
-					{% if displayable_event.city_state_country %}
-						<li>in <a href="/?location={{ displayable_event.city_state_country }}">{{ displayable_event.city_state_country }}</a>.
-					{% endif %}
-					{% if displayable_event.categories %}
-						<li>categorized as:
-						{{ displayable_event.categories|make_category_link|join(', ') }}
-					{% endif %}
-				</ul>
-			{% endif %}
+  <div class="row">
+    <div class="col-xs-12">
+      {% if displayable_event.city_state_country or displayable_event.categories %}
+        See more events:
+        <ul>
+          {% if displayable_event.city_state_country %}
+            <li>in <a href="/?location={{ displayable_event.city_state_country }}">{{ displayable_event.city_state_country }}</a>.
+          {% endif %}
+          {% if displayable_event.categories %}
+            <li>categorized as:
+            {{ displayable_event.categories|make_category_link|join(', ') }}
+          {% endif %}
+        </ul>
+      {% endif %}
 
-			<h1 class="event-page-title" itemprop="name">{{ displayable_event.name }}</h1>
-		</div>
-	</div>
+      <h1 class="event-page-title" itemprop="name">{{ displayable_event.name }}</h1>
+    </div>
+  </div>
 
-	<div class="row">
-		<div class="col-sm-5">
-			{% if displayable_event.cover_images %}
-				<div style="position: relative; margin-bottom: 1em"><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">
-						<img src="{{ displayable_event.largest_cover.source }}" style="width: 100%" itemprop="image">
-				</a></div>
-			{% endif %}
+  <div class="row">
+    <div class="col-sm-5">
+      {% if displayable_event.cover_images %}
+        <div style="position: relative; margin-bottom: 1em"><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">
+            <img src="{{ displayable_event.largest_cover.source }}" style="width: 100%" itemprop="image">
+        </a></div>
+      {% endif %}
 
-			<ul class="fa-ul event-ul">
-			{% if displayable_event.cover_images %}
-				<li><i class="event-info-icon fa-li fa fa-picture-o fa-lg"></i><b><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
-			{% endif %}
-			{% if displayable_event.web_event %}
-				<li><i class="event-info-icon fa-li fa fa-external-link fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ displayable_event.source_url }}">See Event on {{ displayable_event.source_name }}</a></b></li>
-			{% else %}
-				<li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ displayable_event.source_url }}">See Event on Facebook</a></b></li>
-			{% endif %}
-			<li><div class="product-social-links" style="padding-bottom: 0 1em; height: 20px">
-				<a class="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
-				<div class="link-event-share fb-share-button" data-layout="button"></div>
-			</div></li>
-			<li><i class="event-info-icon fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
-			<time itemprop="startDate" content="{{ displayable_event.start_time|datetime_format }}">
-			{{ duration_human_format(displayable_event.start_time, end_time) }}
-			</time>
-			{% if displayable_event.end_time %}
-				<meta itemprop="endDate" content="{{ displayable_event.end_time|datetime_format }}" />
-			{% endif %}
-			</li>
+      <ul class="fa-ul event-ul">
+      {% if displayable_event.cover_images %}
+        <li><i class="event-info-icon fa-li fa fa-picture-o fa-lg"></i><b><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">See Full Flyer</a></b></li>
+      {% endif %}
+      {% if displayable_event.web_event %}
+        <li><i class="event-info-icon fa-li fa fa-external-link fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ displayable_event.source_url }}">See Event on {{ displayable_event.source_name }}</a></b></li>
+      {% else %}
+        <li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><b><a class="link-event-on-fb" href="{{ displayable_event.source_url }}">See Event on Facebook</a></b></li>
+      {% endif %}
+      <li><div class="product-social-links" style="padding-bottom: 0 1em; height: 20px">
+        <a class="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
+        <div class="link-event-share fb-share-button" data-layout="button"></div>
+      </div></li>
+      <li><i class="event-info-icon fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
+      <time itemprop="startDate" content="{{ displayable_event.start_time|datetime_format }}">
+      {{ duration_human_format(displayable_event.start_time, end_time) }}
+      </time>
+      {% if displayable_event.end_time %}
+        <meta itemprop="endDate" content="{{ displayable_event.end_time|datetime_format }}" />
+      {% endif %}
+      </li>
       <li><i class="event-info-icon fa-li fa fa-calendar-plus-o fa-lg"></i>
       <a href="https://www.google.com/calendar/render?action=TEMPLATE&amp;text={{ displayable_event.name|urlencode }}&amp;dates={{displayable_event.calendar_start_end|urlencode }}&amp;details=Latest Event 'Deets:{{ '\n'|urlencode }}{{ canonical_url|urlencode }}&amp;location={{ displayable_event.full_address.replace('\n', ", ")|urlencode }}&amp;sf=true&amp;output=xml">Add to Google Calendar</a>
       </li>
-			{% if displayable_event.attending_count %}
-				<li><i class="event-info-icon fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
-				{{ displayable_event.attending_count }} Attending
-				{%- if displayable_event.maybe_count -%}
-					, {{ displayable_event.maybe_count }} Maybe
-				{%- endif %}
-				</li>
-			{% endif %}
-			{% if displayable_event.admins %}
-				<li><i class="event-info-icon fa-li fa fa-user fa-lg"></i><b>Admins:</b><br>
-				<ul>
-				{% for admin in displayable_event.admins %}
-					<li><a class="link-event-admin" href="https://www.facebook.com/{{ admin.id }} ">{{ admin.name }}</a></li>
-				{% endfor %}
-				</ul>
-				</li>
-			{% endif %}
-			<li><i class="event-info-icon fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
-			<div>
-			{% if displayable_event.location_name %}
-				{% if displayable_event.venue and displayable_event.venue.id %}
-					<a class="link-event-venue" href="https://www.facebook.com/{{ displayable_event.venue.id }}">{{ displayable_event.location_name }}</a>
-				{% else %}
-					{{ displayable_event.location_name }}
-				{% endif %}
-				<br>
-			{% endif %}
-			{{ displayable_event.full_address|format_html }}
+      {% if displayable_event.attending_count %}
+        <li><i class="event-info-icon fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
+        {{ displayable_event.attending_count }} Attending
+        {%- if displayable_event.maybe_count -%}
+          , {{ displayable_event.maybe_count }} Maybe
+        {%- endif %}
+        </li>
+      {% endif %}
+      {% if displayable_event.admins %}
+        <li><i class="event-info-icon fa-li fa fa-user fa-lg"></i><b>Admins:</b><br>
+        <ul>
+        {% for admin in displayable_event.admins %}
+          <li><a class="link-event-admin" href="https://www.facebook.com/{{ admin.id }} ">{{ admin.name }}</a></li>
+        {% endfor %}
+        </ul>
+        </li>
+      {% endif %}
+      <li><i class="event-info-icon fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
+      <div>
+      {% if displayable_event.location_name %}
+        {% if displayable_event.venue and displayable_event.venue.id %}
+          <a class="link-event-venue" href="https://www.facebook.com/{{ displayable_event.venue.id }}">{{ displayable_event.location_name }}</a>
+        {% else %}
+          {{ displayable_event.location_name }}
+        {% endif %}
+        <br>
+      {% endif %}
+      {{ displayable_event.full_address|format_html }}
 
 {{ displayable_event.location_schema_html() }}
-			</div></li>
-			</ul>
-			{# not worth showing maps embed if there is no street_address #}
-			{% if displayable_event.latitude %}
-				<p>Open in <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
-				{% if displayable_event.description %}
-					<div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
-				{% endif %}
-				<div id="map-wrapper" class="responsive-map-wrapper">
-				</div>
-			{% endif %}
-		</div>
+      </div></li>
+      </ul>
+      {# not worth showing maps embed if there is no street_address #}
+      {% if displayable_event.latitude %}
+        <p>Open in <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
+        {% if displayable_event.description %}
+          <div class="visible-xs" style="font-style: italic">Event description is below the map.</div>
+        {% endif %}
+        <div id="map-wrapper" class="responsive-map-wrapper">
+        </div>
+      {% endif %}
+    </div>
 
-		{% if displayable_event.description %}
-		<div class="col-sm-7">
-			<h1 class="event-page-title visible-xs-block">{{ displayable_event.name }}</h1>
-			<div><b>Description:</b></div>
-			<div style="height: 25px" id="google_translate_element"></div>
-			<span itemprop="description">
-				{{ displayable_event.description|format_html|linkify }}
-			</span>
-		</div>
-		{% endif %}
-	</div>
+    {% if displayable_event.description %}
+    <div class="col-sm-7">
+      <h1 class="event-page-title visible-xs-block">{{ displayable_event.name }}</h1>
+      <div><b>Description:</b></div>
+      <div style="height: 25px" id="google_translate_element"></div>
+      <span itemprop="description">
+        {{ displayable_event.description|format_html|linkify }}
+      </span>
+    </div>
+    {% endif %}
+  </div>
 
 {#
 can add these to google-maps embed:
@@ -175,9 +175,9 @@ region= paramter cctld
 <script type="text/javascript">
 
 mixpanel.track('View Event', {
-	'Event ID': {{ displayable_event.id|tojson }},
-	'Event City': {{ displayable_event.city|tojson }},
-	'Event Country': {{ displayable_event.country|tojson }},
+  'Event ID': {{ displayable_event.id|tojson }},
+  'Event City': {{ displayable_event.city|tojson }},
+  'Event Country': {{ displayable_event.country|tojson }},
 });
 mixpanel.track_links(".link-event-flyer", "View Flyer");
 mixpanel.track_links(".link-event-on-fb", "Open in Facebook");
@@ -189,51 +189,51 @@ mixpanel.track_links(".link-event-map", "View on Map");
 
 {% if displayable_event.latitude %}
 function load_map() {
-	if ($('.map-wrapper')) {
-		{# TODO(lambert): We can do a better job, checking on the server if google maps can geocode our place query q=venue/street into a place thats near the lat/long that facebook has, and if so, to point at that here instead of just a raw lat/long location.
-		#}
-		var myLatlng = new google.maps.LatLng({{ displayable_event.latitude }}, {{ displayable_event.longitude }});
-		var mapOptions = {
-			zoom: 13,
-			scrollwheel: false,
-			draggable: false,
-			center: myLatlng
-		}
-		var map = new google.maps.Map(document.getElementById('map-wrapper'), mapOptions);
+  if ($('.map-wrapper')) {
+    {# TODO(lambert): We can do a better job, checking on the server if google maps can geocode our place query q=venue/street into a place thats near the lat/long that facebook has, and if so, to point at that here instead of just a raw lat/long location.
+    #}
+    var myLatlng = new google.maps.LatLng({{ displayable_event.latitude }}, {{ displayable_event.longitude }});
+    var mapOptions = {
+      zoom: 13,
+      scrollwheel: false,
+      draggable: false,
+      center: myLatlng
+    }
+    var map = new google.maps.Map(document.getElementById('map-wrapper'), mapOptions);
 
-		var marker = new google.maps.Marker({
-			position: myLatlng,
-			map: map,
-			title: "{{ displayable_event.location_name|e }}",
-		});
-	}
+    var marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+      title: "{{ displayable_event.location_name|e }}",
+    });
+  }
 }
 {% endif %}
 
 window.twttr = (function(d, s, id) {
-	var js, fjs = d.getElementsByTagName(s)[0],
-		t = window.twttr || {};
-	if (d.getElementById(id)) return t;
-	js = d.createElement(s);
-	js.id = id;
-	js.src = "https://platform.twitter.com/widgets.js";
-	fjs.parentNode.insertBefore(js, fjs);
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
 
-	t._e = [];
-	t.ready = function(f) {
-		t._e.push(f);
-	};
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
 
-	return t;
+  return t;
 }(document, "script", "twitter-wjs"));
 
 function googleTranslateElementInit() {
-	new google.translate.TranslateElement({
-		layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-		multilanguagePage: true,
-		gaTrack: true,
-		gaId: 'UA-18831479-1'
-	}, 'google_translate_element');
+  new google.translate.TranslateElement({
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    multilanguagePage: true,
+    gaTrack: true,
+    gaId: 'UA-18831479-1'
+  }, 'google_translate_element');
 }
 </script>
 {% if displayable_event.latitude %}
