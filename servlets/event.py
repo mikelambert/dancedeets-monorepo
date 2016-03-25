@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import jinja2
 import logging
 import os
@@ -23,7 +24,6 @@ from logic import rsvp
 from nlp import categories
 from nlp import event_auto_classifier
 from nlp import event_classifier
-from search import search_base
 from util import dates
 from util import urls
 
@@ -172,6 +172,17 @@ class DisplayableEvent(object):
             formatted_location,
             self.db_event.description,
         ])
+
+    @property
+    def calendar_start_end(self):
+        fmt = '%Y%m%dT%H%M%SZ'
+        start_time = dates.to_utc(self.start_time_with_tz).strftime(fmt)
+        if self.end_time:
+            end_time = dates.to_utc(self.end_time_with_tz).strftime(fmt)
+        else:
+            end_time = dates.to_utc(self.start_time_with_tz + datetime.timedelta(hours=2)).strftime(fmt)
+        dt = '%s/%s' % (start_time, end_time)
+        return dt
 
     def __getattr__(self, name):
         return getattr(self.db_event, name)

@@ -1,5 +1,4 @@
 import datetime
-from dateutil import parser
 import logging
 
 import gcm

@@ -1,3 +1,4 @@
+import dateutil
 import logging
 
 from google.appengine.ext import ndb
@@ -102,6 +103,14 @@ class DBEvent(ndb.Model):
     # Was originally used to track manually-applied tags, and contains that data for some old events...
     tags = ndb.StringProperty(indexed=False, repeated=True)
 
+    # Things that would be nice to have in DBEvent:
+    # - event privacy
+    # - has image?
+    # - location_name / venue name
+    # - city
+    # - state
+    # - admin ids/names
+
     def get_geocode(self):
         return gmaps_api.parse_geocode(self.location_geocode)
 
@@ -118,6 +127,13 @@ class DBEvent(ndb.Model):
         else:
             return ndb.get_multi(keys)
 
+    @property
+    def web_tz(self):
+        if self.web_event:
+            return dateutil.tz.tzoffset(None, 9 * 60 * 60)
+        else:
+            raise ValueError("Can't get timezone offset for fb events")
+
     def has_content(self):
         if self.web_event:
             return True
@@ -132,11 +148,25 @@ class DBEvent(ndb.Model):
             return self.fb_event['info']['start_time']
 
     @property
+    def start_time_with_tz(self):
+        if self.web_event:
+            return self.start_time.replace(tzinfo=self.web_tz)
+        else:
+            return dateutil.parser.parse(self.start_time_string)
+
+    @property
     def end_time_string(self):
         if self.web_event:
             return self.web_event['end_time']
         else:
             return self.fb_event['info'].get('end_time')
+
+    @property
+    def end_time_with_tz(self):
+        if self.web_event:
+            return self.end_time.replace(tzinfo=self.web_tz)
+        else:
+            return dateutil.parser.parse(self.end_time_string)
 
     @property
     def source_url(self):

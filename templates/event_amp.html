@@ -134,6 +134,9 @@
       <li><i class="event-info-icon fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
       {{ duration_human_format(displayable_event.start_time, end_time) }}
       </li>
+      <li><i class="event-info-icon fa-li fa fa-calendar-plus-o fa-lg"></i>
+      <a href="https://www.google.com/calendar/render?action=TEMPLATE&amp;text={{ displayable_event.name|urlencode }}&amp;dates={{displayable_event.calendar_start_end|urlencode }}&amp;details=Latest Event 'Deets:{{ '\n'|urlencode }}{{ canonical_url|urlencode }}&amp;location={{ displayable_event.full_address.replace('\n', ", ")|urlencode }}&amp;sf=true&amp;output=xml">Add to Google Calendar</a>
+      </li>
       {% if displayable_event.attending_count %}
         <li><i class="event-info-icon fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
         {{ displayable_event.attending_count }} Attending
