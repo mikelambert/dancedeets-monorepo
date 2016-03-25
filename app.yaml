@@ -1,5 +1,5 @@
 vm: true
-runtime: custom
+runtime: python27
 threadsafe: true
 api_version: 1
 module: default
