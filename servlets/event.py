@@ -98,6 +98,8 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
 
         self.display['canonical_url'] = 'http://%s/events/%s/' % (self._get_full_hostname(), db_event.id)
 
+        self.display['email_suffix'] = '+event-%s' % db_event.id
+
         if self.request.get('amp'):
             if self.display['displayable_event'].largest_cover:
                 # Because minification interferes with html-validity when producing:

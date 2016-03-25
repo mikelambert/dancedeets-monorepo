@@ -522,6 +522,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
         self.display['base_hostname'] = 'dancedeets.com' if self.request.app.prod_mode else 'dev.dancedeets.com'
         self.display['full_hostname'] = self._get_full_hostname()
 
+        self.display['email_suffix'] = ''
+
         self.display['keyword_tokens'] = [{'value': x.public_name} for x in event_types.STYLES]
         fb_permissions = 'rsvp_event,email,user_events'
         if self.request.get('all_access'):
