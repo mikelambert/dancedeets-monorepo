@@ -40,8 +40,8 @@ class PotentialEvent(db.Model):
     auto_looked_at = db.BooleanProperty(indexed=False)
     dance_bias_score = db.FloatProperty(indexed=False)
     non_dance_bias_score = db.FloatProperty(indexed=False)
-    match_score = db.IntegerProperty(indexed=False)
-    show_even_if_no_score = db.BooleanProperty(indexed=False)
+    match_score = db.IntegerProperty()
+    show_even_if_no_score = db.BooleanProperty()
     should_look_at = db.BooleanProperty()
 
     #STR_ID_MIGRATE
