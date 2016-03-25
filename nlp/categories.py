@@ -2,8 +2,8 @@
 #
 
 import event_types
-from . import event_auto_classifier
 from . import event_classifier
+from . import event_structure
 from . import keywords
 from . import grammar
 from .grammar import Any
@@ -174,7 +174,7 @@ def format_as_search_query(text, broad=True):
 
 def find_rules_in_text(text, rule_dict):
     # Eliminate all competitors, before trying to determine the style
-    no_competitors_text = event_auto_classifier.find_competitor_list(text)
+    no_competitors_text = event_structure.find_competitor_list(text)
     if no_competitors_text:
         text = text.replace(no_competitors_text, '')
     found_styles = {}
@@ -211,19 +211,21 @@ def get_context(fb_event, keywords):
 
 
 def _name(obj):
-    prop = 'name'
-    if hasattr(obj, prop):
-        return getattr(obj, prop)
-    else:
-        return obj['info'].get(prop, '')
+    if hasattr(obj, 'name'):  # DBEvent
+        return getattr(obj, 'name')
+    elif hasattr(obj, 'title'):  # ClassifiedEvent
+        return getattr(obj, 'title')
+    else:  # FBEvent
+        return obj['info'].get('name', '')
 
 
 def _desc(obj):
-    prop = 'description'
-    if hasattr(obj, prop):
-        return getattr(obj, prop)
-    else:
-        return obj['info'].get(prop, '')
+    if hasattr(obj, 'description'):  # DBEvent
+        return getattr(obj, 'description')
+    elif hasattr(obj, 'search_text'):  # ClassifiedEvent
+        return getattr(obj, 'search_text')
+    else:  # FBEvent
+        return obj['info'].get('description', '')
 
 
 def find_rules(event, styles):
