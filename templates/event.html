@@ -129,6 +129,7 @@ mixpanel.track('View Event', {
   'Event City': {{ displayable_event.city|tojson }},
   'Event Country': {{ displayable_event.country|tojson }},
 });
+mixpanel.track_links(".link-event-add-to-calendar", "Add to Calendar");
 mixpanel.track_links(".link-event-flyer", "View Flyer");
 mixpanel.track_links(".link-event-on-fb", "Open in Facebook");
 mixpanel.track_links(".link-event-share", "Share Event");
