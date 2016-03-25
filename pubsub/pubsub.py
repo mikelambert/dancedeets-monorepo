@@ -91,9 +91,9 @@ def post_on_event_wall(db_event):
         'link': url,
     })
     if 'error' in result:
-        logging.error("Returned: %s", db_event.fb_event_id, result)
+        logging.error("Returned: %s", result)
     else:
-        logging.info("Returned: %s", db_event.fb_event_id, result)
+        logging.info("Returned: %s", result)
     return result
 
 
