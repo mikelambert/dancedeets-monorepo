@@ -13,7 +13,7 @@ def run(cmd):
     logging.info('Running: %s', cmd)
     status, output = commands.getstatusoutput(cmd)
     if status:
-        raise IOError("Error %s running command:\n%s:\n%s" % (status, cmd, output))
+        raise IOError('Error %s running command:\n%s:\n%s' % (status, cmd, output))
     return output
 
 
@@ -35,12 +35,15 @@ def get_versions():
         if d['TRAFFIC_SPLIT'] == '1.0':
             live = d['VERSION']
 
-    versions.sort(reverse=True)
+    versions.sort()
     return versions, live
 
 
 def get_previous_version(versions, live):
-    prev_version = versions[versions.index(live) - 1]
+    new_version = versions.index(live)
+    if new_version == 0:
+        raise ValueError('No old versions to revert to, %s is the oldest version!' % live)
+    prev_version = versions[new_version - 1]
     return prev_version
 
 if len(sys.argv) > 1:
