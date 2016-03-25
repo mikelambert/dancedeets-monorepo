@@ -76,31 +76,3 @@ def yield_load_fb_user(fbl, user):
         user.put()
 map_load_fb_user = fb_mapreduce.mr_user_wrap(yield_load_fb_user)
 load_fb_user = fb_mapreduce.nomr_wrap(yield_load_fb_user)
-
-def explode_users_by_day(user):
-    yield (user.creation_time.strftime('%Y-%m-%d'), 1)
-
-def sum_users_by_day(date, user_counts):
-    yield '%s: %s\n' % (date, len(user_counts))
-
-@app.route('/tools/count_users_by_time')
-class UserSignupsOverTimeHandler(base_servlet.BaseTaskRequestHandler):
-    def get(self):
-        pipeline = mapreduce_pipeline.MapreducePipeline(
-            'Count users by day',
-            'users.user_tasks.explode_users_by_day',
-            'users.user_tasks.sum_users_by_day',
-            'mapreduce.input_readers.DatastoreInputReader',
-            'mapreduce.output_writers.GoogleCloudStorageOutputWriter',
-            mapper_params={
-                'entity_kind': 'users.users.User',
-            },
-            reducer_params={
-                'output_writer': {
-                    'bucket_name': 'dancedeets-hrd.appspot.com',
-                    'content_type': 'text/plain',
-                }
-            },
-            shards=1,
-        )
-        pipeline.start()
