@@ -63,6 +63,16 @@ def eventually_publish_event(event_id, token_nickname=None):
         q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
 
 
+def _get_posting_user(db_event):
+    # STR_ID_MIGRATE
+    if db_event.creating_fb_uid and db_event.creating_fb_uid != 701004:
+        user = users.User.get_by_id(str(db_event.creating_fb_uid))
+        name = user.full_name
+    else:
+        name = "we've"
+    return name
+
+
 def post_on_event_wall(db_event):
     logging.info("Considering posting on event wall for %s", db_event.id)
     if not db_event.is_fb_event:
@@ -76,12 +86,7 @@ def post_on_event_wall(db_event):
         logging.error("Failed to find DanceDeets page access token.")
         return
     url = campaign_url(db_event.id, 'fb_event_wall')
-    # STR_ID_MIGRATE
-    if db_event.creating_fb_uid and db_event.creating_fb_uid != 701004:
-        user = users.User.get_by_id(str(db_event.creating_fb_uid))
-        name = user.full_name
-    else:
-        name = "we've"
+    name = _get_posting_user(db_event)
     message = (
         'Congrats, %s added this dance event to DanceDeets, the site for street dance events worldwide! '
         'Dancers can discover this event in our DanceDeets mobile app, or on our website here: %s' % (name, url)
@@ -264,7 +269,7 @@ def facebook_post(auth_token, db_event):
     datetime_string = db_event.start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
 
     page_id = auth_token.token_nickname
-    endpoint = 'v2.4/%s/feed' % page_id
+    endpoint = 'v2.5/%s/feed' % page_id
     fbl = fb_api.FBLookup(None, auth_token.oauth_token)
 
     post_values = {}
@@ -272,6 +277,11 @@ def facebook_post(auth_token, db_event):
     post_values['link'] = link
     post_values['name'] = db_event.name
     post_values['caption'] = datetime_string
+    name = _get_posting_user(db_event)
+
+    human_date = db_event.start_time.strftime('%B %d')
+    post_values['message'] = "Hey %s, %s just added a dance event! Coming up on %s at %s." % (db_event.city, name, human_date, db_event.location_name)
+
     description = db_event.description
     if len(description) > 10000:
         post_values['description'] = description[:9999] + u"…"
@@ -284,7 +294,8 @@ def facebook_post(auth_token, db_event):
     venue_id = db_event.venue.get('id')
     if venue_id:
         post_values['place'] = venue_id
-        # Can only tag people if there is a place tagged too
+        # Can only tag people if there is a place tagged too...
+        # But this never works since we can't tag people (or pages, without review)
         admins = db_event.admins
         if admins:
             post_values['tags'] = ','.join(x['id'] for x in admins)
