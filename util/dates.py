@@ -11,7 +11,10 @@ DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
 
 def to_utc(dt):
-    return dt.astimezone(dateutil.tz.tzoffset('UTC', 0))
+    if dt.tzinfo:
+        return dt.astimezone(dateutil.tz.tzoffset('UTC', 0))
+    else:
+        return dt.replace(tzinfo=dateutil.tz.tzoffset('UTC', 0))
 
 
 def datetime_format(dt):
