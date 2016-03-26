@@ -189,6 +189,7 @@ MUSIC_ONLY = Name('MUSIC_ONLY', Any(
     'disco',
     'trance',
     'techno',
+    'techy',
     'alternative',
     'folk',
     'blues',
@@ -216,6 +217,11 @@ MUSIC_ONLY = Name('MUSIC_ONLY', Any(
     'bossa nova',
     'j\W?pop',
     'c\W?pop',
+    'top 40\w?',
+    'radio',
+    'deep uptempo',
+    'elektro',
+
     # We don't want to add jazz, salsa, etc...as they are also dances,
     # and we don't want to classify these as music (and discard events) because of that
     # r&b is sometimes used for hiphop classes

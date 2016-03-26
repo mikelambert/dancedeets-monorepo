@@ -178,17 +178,16 @@ def find_rules_in_text(text, rule_dict):
     if no_competitors_text:
         text = text.replace(no_competitors_text, '')
     found_styles = {}
-    for line in text.lower().split('\n'):
-        if len(line) > 400:
-            continue
-        processed_text = event_classifier.StringProcessor(line)
-        processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
-        # so we can match this with vogue, but not with house
-        processed_text.real_tokenize(keywords.HOUSE_OF)
-        for style, rule in rule_dict.iteritems():
-            tokens = processed_text.get_tokens(rule)
-            if tokens:
-                found_styles[style] = tokens
+    # Only grab the first 400 lines
+    trimmed_text = '\n'.join(text.lower().split('\n')[:400])
+    processed_text = event_classifier.StringProcessor(trimmed_text)
+    processed_text.real_tokenize(keywords.PREPROCESS_REMOVAL)
+    # so we can match this with vogue, but not with house
+    processed_text.real_tokenize(keywords.HOUSE_OF)
+    for style, rule in rule_dict.iteritems():
+        tokens = processed_text.get_tokens(rule)
+        if tokens:
+            found_styles[style] = tokens
     return found_styles.keys()
 
 

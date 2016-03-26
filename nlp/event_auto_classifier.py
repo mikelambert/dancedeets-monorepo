@@ -10,12 +10,31 @@ except ImportError:
     re2 = None
     import re
 
+import event_types
+from . import categories
 from . import event_classifier
 from . import event_structure
 from . import keywords
 from . import grammar
 from . import rules
 
+
+def has_many_street_styles(classified_event):
+    title_wrong_style_matches = classified_event.processed_title.has_token(keywords.DANCE_WRONG_STYLE)
+    if title_wrong_style_matches:
+        return False, 'wrong style in the title: %s' % title_wrong_style_matches
+
+    styles = categories.find_styles(classified_event)
+    et = categories.find_event_types(classified_event)
+    music_only = classified_event.processed_text.get_tokens(keywords.MUSIC_ONLY)
+    # If they mention too many other styles of music, then our dance styles were probably just referring to music
+    # If they are at a party, then it's also probably referring to music
+    # Instead we're left with classes, camps, battles, shows, etc that showcase real dance styles
+    if len(music_only) <= 1 and len(styles) >= 4 and event_types.PARTY not in et:
+        styles = [x.public_name for x in styles]
+        et = [x.public_name for x in et]
+        return (True, 'Found enough street styles: %s: %s, with music: %s' % (et, styles, music_only))
+    return False, ''
 
 # house side?
 # lock side?
@@ -403,6 +422,9 @@ def is_auto_add_event(classified_event):
     if result[0]:
         return result
     result = is_performance_or_practice(classified_event)
+    if result[0]:
+        return result
+    result = has_many_street_styles(classified_event)
     if result[0]:
         return result
     return (False, 'nothing')
