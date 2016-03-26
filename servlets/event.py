@@ -64,7 +64,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         if not event_id:
             self.response.out.write('Need an event_id.')
             return
-        return self.redirect(urls.fb_relative_event_url(event_id), permanent=True)
+        return self.redirect(urls.dd_relative_event_url(event_id), permanent=True)
 
 
 @app.route(r'/events/(?:\d+|[^/?#]+:[^/?#]+)/?')
@@ -80,7 +80,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             self.response.out.write('Need an event_id.')
             return
         if not self.request.path.endswith('/'):
-            return self.redirect(urls.fb_relative_event_url(event_id), permanent=True)
+            return self.redirect(urls.dd_relative_event_url(event_id), permanent=True)
 
         # Load the db_event instead of the fb_event, as the db_event is likely to be in cache
         db_event = eventdata.DBEvent.get_by_id(event_id)

@@ -170,7 +170,7 @@ def create_media_on_twitter(t, db_event):
 
 
 def campaign_url(eid, source):
-    return urls.fb_event_url(eid, {
+    return urls.dd_event_url(eid, {
         'utm_source': source,
         'utm_medium': 'share',
         'utm_campaign': 'autopost'

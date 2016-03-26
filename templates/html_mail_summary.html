@@ -10,13 +10,13 @@ Hi {{ user.full_name }},
 {% for result in results %}
 <tr>
 	<td width="180">
-		<a href="{{ fb_event_url(result.event_id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}">
+		<a href="{{ dd_event_url(result.event_id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}">
 		<img src="{{ result.image }}" width="180" border="0">
 		</a>
 		<br><br>
 	</td>
 	<td valign=top>
-		<a href="{{ fb_event_url(result.event_id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}">
+		<a href="{{ dd_event_url(result.event_id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}">
 		<b style="font-size: 110%">{{ result.name|e }}</b>
 		</a><br>
 		({{ result.event_keywords|join(', ') }})<br>

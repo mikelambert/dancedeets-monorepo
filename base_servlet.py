@@ -510,7 +510,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             self.display['login_url'] = login_url
         self.jinja_env.filters['datetime_format'] = dates.datetime_format
 
-        self.jinja_env.globals['fb_event_url'] = urls.fb_event_url
+        self.jinja_env.globals['dd_event_url'] = urls.dd_event_url
         self.jinja_env.globals['raw_fb_event_url'] = urls.raw_fb_event_url
         self.jinja_env.globals['dd_admin_event_url'] = urls.dd_admin_event_url
         self.jinja_env.globals['dd_admin_source_url'] = urls.dd_admin_source_url

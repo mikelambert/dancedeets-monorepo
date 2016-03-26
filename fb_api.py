@@ -192,7 +192,7 @@ class LookupEventPageComments(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
         return [
-            ('comments', cls.url('/comments/?ids=%s' % urls.fb_event_url(object_id))),
+            ('comments', cls.url('/comments/?ids=%s' % urls.dd_event_url(object_id))),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):

@@ -47,7 +47,7 @@ class CalendarFeedHandler(LoginIfUnspecified, base_servlet.BaseRequestHandler):
                 title=title,
                 start=start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
                 end=end_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                url=urls.fb_event_url(result.event_id),
+                url=urls.dd_event_url(result.event_id),
                 allDay=all_day,
             ))
         self.write_json_response(json_results)

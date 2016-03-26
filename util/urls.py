@@ -1,12 +1,12 @@
 import urllib
 
 
-def fb_event_url(eid, kwargs=None):
+def dd_event_url(eid, kwargs=None):
     kwarg_string = '?%s' % urlencode(kwargs) if kwargs else ''
-    return 'http://www.dancedeets.com%s%s' % (fb_relative_event_url(eid), kwarg_string)
+    return 'http://www.dancedeets.com%s%s' % (dd_relative_event_url(eid), kwarg_string)
 
 
-def fb_relative_event_url(eid):
+def dd_relative_event_url(eid):
     return '/events/%s/' % eid
 
 

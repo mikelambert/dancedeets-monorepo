@@ -62,7 +62,7 @@ def email_for_user(user, fbl, should_send=True):
 
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
     jinja_env.filters['date_human_format'] = user.date_human_format
-    jinja_env.globals['fb_event_url'] = urls.fb_event_url
+    jinja_env.globals['dd_event_url'] = urls.dd_event_url
     jinja_env.globals['raw_fb_event_url'] = urls.raw_fb_event_url
     jinja_env.globals['CHOOSE_RSVPS'] = rsvp.CHOOSE_RSVPS
     rendered = jinja_env.get_template('html_mail_summary.html').render(display)
