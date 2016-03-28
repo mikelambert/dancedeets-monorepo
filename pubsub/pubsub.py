@@ -282,7 +282,7 @@ def facebook_post(auth_token, db_event):
     post_values['caption'] = datetime_string
     name = _get_posting_user(db_event)
 
-    human_date = db_event.start_time.strftime('%B %d')
+    human_date = db_event.start_time.strftime('%B %-d')
     # TODO: Sometimes we definitely know the City (from a lat/long), but FB doesn't give us a city.
     # Hopefully in the Great Event Location Cleanup, can take care of this...
     if db_event.city:
@@ -319,8 +319,7 @@ def facebook_post(auth_token, db_event):
         post_values['targeting'] = json.dumps(feed_targeting)
 
     logging.info("FB Feed Post Values: %s", post_values)
-    result = fbl.fb.post(endpoint, None, post_values)
-    return json.loads(result)
+    return fbl.fb.post(endpoint, None, post_values)
 
 
 def get_targeting_data(fbl, db_event):
@@ -487,7 +486,9 @@ class LookupUserAccounts(fb_api.LookupType):
 
 
 def get_dancedeets_fbl():
-    tokens = OAuthToken.query(OAuthToken.user_id == '701004', OAuthToken.token_nickname == '110312662362915', OAuthToken.application == APP_FACEBOOK).fetch(1)
+    page_id = '110312662362915'
+    #page_id = '1375421172766829'
+    tokens = OAuthToken.query(OAuthToken.user_id == '701004', OAuthToken.token_nickname == page_id, OAuthToken.application == APP_FACEBOOK).fetch(1)
     if tokens:
         return fb_api.FBLookup(None, tokens[0].oauth_token)
     else:

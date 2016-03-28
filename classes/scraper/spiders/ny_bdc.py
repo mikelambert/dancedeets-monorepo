@@ -41,7 +41,7 @@ class BdcDay(items.StudioScraper):
         today = datetime.date.today()
         for i in range(self._future_days):
             date = (today + datetime.timedelta(days=i))
-            date_string = '%s_%s' % (date.month, date.day)
+            date_string = date.strftime('%m_%-d')
             yield scrapy.Request('http://www.broadwaydancecenter.com/schedule/%s.shtml' % date_string)
 
     _acronyms = {

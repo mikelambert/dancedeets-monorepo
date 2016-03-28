@@ -400,7 +400,7 @@ class FBAPI(CacheSystem):
                 "https://graph.facebook.com/" + path + "?" +
                 urls.urlencode(args), post_data)
         result = f.read()
-        return result
+        return json.loads(result)
 
     @staticmethod
     def _map_rpc_to_data(object_rpc):

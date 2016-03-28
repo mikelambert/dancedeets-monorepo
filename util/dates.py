@@ -74,9 +74,7 @@ def time_human_format(d, country=None):
 
 
 def date_only_human_format(d):
-    month_day_of_week = d.strftime('%A, %B')
-    month_day = '%s %s, %s' % (month_day_of_week, d.day, d.year)
-    return month_day
+    return d.strftime('%A, %B %-d, %Y')
 
 
 def date_human_format(d, country=None):
