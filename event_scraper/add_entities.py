@@ -90,6 +90,6 @@ def like_event_admin_pages(db_event_id):
                 logging.info('Liking post with id %s', item['id'])
                 result = fbl.fb.post('v2.5/%s/likes' % item['id'], None, {})
                 if 'error' in result:
-                    logging.error("Returned: %s", result)
+                    logging.error("Post 'like' returned: %s", result)
                 else:
-                    logging.info("Returned: %s", result)
+                    logging.info("Post 'like' returned: %s", result)
