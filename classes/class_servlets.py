@@ -145,10 +145,6 @@ def dedupe_classes(most_recent_scrape_time, classes):
 @app.route('/classes/reindex')
 class ClassReIndexHandler(JsonDataHandler):
     def post(self):
-        for cls in class_models.StudioClass.query().fetch(10000):
-            if not cls.latitude:
-                cls.key.delete()
-
         class_index.StudioClassIndex.rebuild_from_query(force=True)
         self.response.status = 200
     get=post

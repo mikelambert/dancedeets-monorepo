@@ -71,7 +71,7 @@ class ClassSearch(object):
     def _get_query_string(self):
         clauses = []
         if self.query.bounds:
-            # We try to keep searches as simple as possible, 
+            # We try to keep searches as simple as possible,
             # using just AND queries on latitude/longitude.
             # But for stuff crossing +/-180 degrees,
             # we need to do an OR longitude query on each side.
@@ -114,7 +114,7 @@ class ClassSearch(object):
         a = time.time()
         search_results = [search_base.SearchResult(None, build_display_event_dict(x)) for x in doc_events]
         logging.info("SearchResult construction took %s seconds, giving %s results", time.time() - a, len(search_results))
-    
+
         # Now sort and return the results
         search_results.sort(key=lambda x: x.start_time)
         return search_results
@@ -123,6 +123,7 @@ class ClassSearch(object):
 class StudioClassIndex(index.BaseIndex):
     index_name = 'StudioClassIndex'
     obj_type = class_models.StudioClass
+    delete_threshold = 0.40
 
     @classmethod
     def _get_query_params_for_indexing(cls):

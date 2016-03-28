@@ -114,9 +114,7 @@ class BaseIndex(object):
             logging.critical("Deleting %s docs, more than %d%% of total %s docs", len(doc_ids_to_delete), cls.delete_threshold * 100, len(object_ids))
             return
         logging.info("Deleting %s docs", len(doc_ids_to_delete))
-        doc_ids_to_delete = list(doc_ids_to_delete)
-        for i in range(0, len(doc_ids_to_delete), docs_per_group):
-            doc_index.delete(doc_ids_to_delete[i:i + docs_per_group])
+        cls.delete_ids(list(doc_ids_to_delete))
 
         # Add all events
         logging.info("Loading %s docs, in groups of %s", len(object_ids), docs_per_group)
