@@ -39,8 +39,6 @@ def eventually_publish_event(event_id, token_nickname=None):
         return
     geocode = db_event.get_geocode()
 
-    post_on_event_wall(db_event)
-
     logging.info("Publishing event %s with latlng %s", event_id, geocode)
     if not geocode:
         # Don't post events without a location. It's too confusing...
@@ -91,14 +89,12 @@ def post_on_event_wall(db_event):
         'Congrats, %s added this dance event to DanceDeets, the site for street dance events worldwide! '
         'Dancers can discover this event in our DanceDeets mobile app, or on our website here: %s' % (name, url)
     )
+    logging.error('Cancelling wall post while we wait for spam block to expire')
+    return
     result = fbl.fb.post('v2.5/%s/feed' % db_event.fb_event_id, None, {
         'message': message,
         'link': url,
     })
-    if 'error' in result:
-        logging.error("Returned: %s", result)
-    else:
-        logging.info("Returned: %s", result)
     return result
 
 
@@ -144,6 +140,12 @@ def post_event_id_with_authtoken(event_id, auth_token):
             logging.error(traceback.format_exc())
     elif auth_token.application == APP_FACEBOOK:
         try:
+            result = post_on_event_wall(db_event)
+            if 'error' in result:
+                logging.error("Facebook WallPost Error: %r", result)
+            else:
+                logging.info("Facebook result was %r", result)
+
             result = facebook_post(auth_token, db_event)
             if 'error' in result:
                 logging.error("Facebook Post Error: %r", result)
