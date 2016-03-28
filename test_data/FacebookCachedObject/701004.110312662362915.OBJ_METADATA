@@ -1,0 +1,604 @@
+{
+  "fb_metadata": {
+    "metadata": {
+      "connections": {
+        "feed": "https://graph.facebook.com/v2.5/110312662362915/feed?access_token=access_token",
+        "picture": "https://graph.facebook.com/v2.5/110312662362915/picture?access_token=access_token",
+        "tagged": "https://graph.facebook.com/v2.5/110312662362915/tagged?access_token=access_token",
+        "place_topics": "https://graph.facebook.com/v2.5/110312662362915/place_topics?access_token=access_token",
+        "global_brand_children": "https://graph.facebook.com/v2.5/110312662362915/global_brand_children?access_token=access_token",
+        "videos": "https://graph.facebook.com/v2.5/110312662362915/videos?access_token=access_token",
+        "call_to_actions": "https://graph.facebook.com/v2.5/110312662362915/call_to_actions?access_token=access_token",
+        "tabs": "https://graph.facebook.com/v2.5/110312662362915/tabs?access_token=access_token",
+        "leadgen_whitelisted_users": "https://graph.facebook.com/v2.5/110312662362915/leadgen_whitelisted_users?access_token=access_token",
+        "settings": "https://graph.facebook.com/v2.5/110312662362915/settings?access_token=access_token",
+        "subscribed_apps": "https://graph.facebook.com/v2.5/110312662362915/subscribed_apps?access_token=access_token",
+        "locations": "https://graph.facebook.com/v2.5/110312662362915/locations?access_token=access_token",
+        "agencies": "https://graph.facebook.com/v2.5/110312662362915/agencies?access_token=access_token",
+        "saved_filters": "https://graph.facebook.com/v2.5/110312662362915/saved_filters?access_token=access_token",
+        "notifications": "https://graph.facebook.com/v2.5/110312662362915/notifications?access_token=access_token",
+        "page_backed_instagram_accounts": "https://graph.facebook.com/v2.5/110312662362915/page_backed_instagram_accounts?access_token=access_token",
+        "threads": "https://graph.facebook.com/v2.5/110312662362915/threads?access_token=access_token",
+        "leadgen_forms": "https://graph.facebook.com/v2.5/110312662362915/leadgen_forms?access_token=access_token",
+        "questions": "https://graph.facebook.com/v2.5/110312662362915/questions?access_token=access_token",
+        "albums": "https://graph.facebook.com/v2.5/110312662362915/albums?access_token=access_token",
+        "rtb_dynamic_posts": "https://graph.facebook.com/v2.5/110312662362915/rtb_dynamic_posts?access_token=access_token",
+        "blocked": "https://graph.facebook.com/v2.5/110312662362915/blocked?access_token=access_token",
+        "ratings": "https://graph.facebook.com/v2.5/110312662362915/ratings?access_token=access_token",
+        "milestones": "https://graph.facebook.com/v2.5/110312662362915/milestones?access_token=access_token",
+        "video_lists": "https://graph.facebook.com/v2.5/110312662362915/video_lists?access_token=access_token",
+        "roles": "https://graph.facebook.com/v2.5/110312662362915/roles?access_token=access_token",
+        "promotable_posts": "https://graph.facebook.com/v2.5/110312662362915/promotable_posts?access_token=access_token",
+        "notes": "https://graph.facebook.com/v2.5/110312662362915/notes?access_token=access_token",
+        "screennames": "https://graph.facebook.com/v2.5/110312662362915/screennames?access_token=access_token",
+        "businesssettinglogs": "https://graph.facebook.com/v2.5/110312662362915/businesssettinglogs?access_token=access_token",
+        "photos": "https://graph.facebook.com/v2.5/110312662362915/photos?access_token=access_token",
+        "posts": "https://graph.facebook.com/v2.5/110312662362915/posts?access_token=access_token",
+        "leadgen_qualifiers": "https://graph.facebook.com/v2.5/110312662362915/leadgen_qualifiers?access_token=access_token",
+        "offers": "https://graph.facebook.com/v2.5/110312662362915/offers?access_token=access_token",
+        "instant_articles_insights": "https://graph.facebook.com/v2.5/110312662362915/instant_articles_insights?access_token=access_token",
+        "featured_videos_collection": "https://graph.facebook.com/v2.5/110312662362915/featured_videos_collection?access_token=access_token",
+        "conversations": "https://graph.facebook.com/v2.5/110312662362915/conversations?access_token=access_token",
+        "instagram_accounts": "https://graph.facebook.com/v2.5/110312662362915/instagram_accounts?access_token=access_token",
+        "insights": "https://graph.facebook.com/v2.5/110312662362915/insights?access_token=access_token",
+        "rich_media_documents": "https://graph.facebook.com/v2.5/110312662362915/rich_media_documents?access_token=access_token",
+        "events": "https://graph.facebook.com/v2.5/110312662362915/events?access_token=access_token"
+      },
+      "fields": [
+        {
+          "type": "numeric string",
+          "name": "id",
+          "description": "Page ID. No access token is required to access this field"
+        },
+        {
+          "type": "string",
+          "name": "about",
+          "description": "Information about the Page"
+        },
+        {
+          "type": "string",
+          "name": "access_token",
+          "description": "The access token you can use to act as the Page. Only visible to Page Admins"
+        },
+        {
+          "type": "adcampaign",
+          "name": "ad_campaign",
+          "description": "The Page's currently running promotion campaign"
+        },
+        {
+          "type": "string",
+          "name": "affiliation",
+          "description": "Affiliation of this person. Applicable to Pages representing people"
+        },
+        {
+          "type": "id",
+          "name": "app_id",
+          "description": "App ID for app-owned Pages and app Pages"
+        },
+        {
+          "type": "applinks",
+          "name": "app_links",
+          "description": "AppLinks data associated with the Page's URL"
+        },
+        {
+          "type": "string",
+          "name": "artists_we_like",
+          "description": "Artists the band likes. Applicable to Bands"
+        },
+        {
+          "type": "float",
+          "name": "asset_score",
+          "description": "relevance score of an asset"
+        },
+        {
+          "type": "string",
+          "name": "attire",
+          "description": "Dress code of the business. Applicable to Restaurants or Nightlife. Can be one of Casual, Dressy or Unspecified"
+        },
+        {
+          "type": "string",
+          "name": "awards",
+          "description": "The awards information of the film. Applicable to Films"
+        },
+        {
+          "type": "string",
+          "name": "band_interests",
+          "description": "Band interests. Applicable to Bands"
+        },
+        {
+          "type": "string",
+          "name": "band_members",
+          "description": "Members of the band. Applicable to Bands"
+        },
+        {
+          "type": "page",
+          "name": "best_page",
+          "description": "The best available Page on Facebook for the concept represented by this Page. The best available Page takes into account authenticity and the number of likes"
+        },
+        {
+          "type": "string",
+          "name": "bio",
+          "description": "Biography of the band. Applicable to Bands"
+        },
+        {
+          "type": "string",
+          "name": "birthday",
+          "description": "Birthday of this person. Applicable to Pages representing people"
+        },
+        {
+          "type": "string",
+          "name": "booking_agent",
+          "description": "Booking agent of the band. Applicable to Bands"
+        },
+        {
+          "type": "string",
+          "name": "built",
+          "description": "Year vehicle was built. Applicable to Vehicles"
+        },
+        {
+          "name": "business",
+          "description": "The Business associated with this Page.  Visible only with a page access token or a user access token that has admin rights on the page"
+        },
+        {
+          "type": "bool",
+          "name": "can_checkin",
+          "description": "Whether this page has checkin functionality enabled"
+        },
+        {
+          "type": "bool",
+          "name": "can_post",
+          "description": "Whether the current session user can post on this Page"
+        },
+        {
+          "type": "string",
+          "name": "category",
+          "description": "The Page's category. e.g. Product/Service, Computers/Technology"
+        },
+        {
+          "type": "list<pagecategory>",
+          "name": "category_list",
+          "description": "The Page's sub-categories"
+        },
+        {
+          "type": "unsigned int32",
+          "name": "checkins",
+          "description": "Number of checkins at a place represented by a Page"
+        },
+        {
+          "type": "string",
+          "name": "company_overview",
+          "description": "The company overview. Applicable to Companies"
+        },
+        {
+          "type": "mailingaddress",
+          "name": "contact_address",
+          "description": "The mailing or contact address for this page. This field will be blank if the contact address is the same as the physical address"
+        },
+        {
+          "type": "opengraphcontext",
+          "name": "context",
+          "description": "Social context for this Page"
+        },
+        {
+          "type": "unsigned int32",
+          "name": "country_page_likes",
+          "description": "If this is a Page in a Global Pages hierarchy, the number of people who are being directed to this Page."
+        },
+        {
+          "type": "coverphoto",
+          "name": "cover",
+          "description": "Information about the page's cover photo"
+        },
+        {
+          "type": "string",
+          "name": "culinary_team",
+          "description": "Culinary team of the business. Applicable to Restaurants or Nightlife"
+        },
+        {
+          "type": "string",
+          "name": "current_location",
+          "description": "Current location of the Page"
+        },
+        {
+          "type": "string",
+          "name": "description",
+          "description": "The description of the Page"
+        },
+        {
+          "type": "string",
+          "name": "description_html",
+          "description": "The description of the Page in raw HTML"
+        },
+        {
+          "type": "string",
+          "name": "directed_by",
+          "description": "The director of the film. Applicable to Films"
+        },
+        {
+          "type": "string",
+          "name": "display_subtext",
+          "description": "Subtext about the Page being viewed"
+        },
+        {
+          "type": "list<string>",
+          "name": "emails",
+          "description": "The emails listed in the About section of a Page"
+        },
+        {
+          "type": "engagement",
+          "name": "engagement",
+          "description": "The social sentence and like count information for this Page. This is the same info used for the like button"
+        },
+        {
+          "type": "video",
+          "name": "featured_video",
+          "description": "Video Featured by the Page.  Only visible to the Page admin"
+        },
+        {
+          "type": "string",
+          "name": "features",
+          "description": "Features of the vehicle. Applicable to Vehicles"
+        },
+        {
+          "type": "list<string>",
+          "name": "food_styles",
+          "description": "The restaurant's food styles. Applicable to Restaurants"
+        },
+        {
+          "type": "string",
+          "name": "founded",
+          "description": "When the company was founded. Applicable to Pages in the Company category"
+        },
+        {
+          "type": "string",
+          "name": "general_info",
+          "description": "General information provided by the Page"
+        },
+        {
+          "type": "string",
+          "name": "general_manager",
+          "description": "General manager of the business. Applicable to Restaurants or Nightlife"
+        },
+        {
+          "type": "string",
+          "name": "genre",
+          "description": "The genre of the film. Applicable to Films"
+        },
+        {
+          "type": "string",
+          "name": "global_brand_page_name",
+          "description": "The name of the Page with country codes appended for Global Brand Pages. Only visible to the Page admin"
+        },
+        {
+          "type": "numeric string",
+          "name": "global_brand_root_id",
+          "description": "This brand's global Root ID"
+        },
+        {
+          "type": "bool",
+          "name": "has_added_app",
+          "description": "Indicates whether this Page has added the app making the query in a Page tab"
+        },
+        {
+          "type": "string",
+          "name": "hometown",
+          "description": "Hometown of the band. Applicable to Bands"
+        },
+        {
+          "type": "map<string, string>",
+          "name": "hours",
+          "description": "Indicates a single range of opening hours for a day. Each day can have 2 different hours ranges. The keys in the map are in the form of `{day}_{number}_{status}`.  `{day}` should be the first 3 characters of the day of the week, `{number}` should be either 1 or 2 to allow for the two different hours ranges per day. `{status}` should be either `open` or `close` to delineate the start or end of a time range. An example would be `mon_1_open` with value `17:00` and `mon_1_close` with value `21:15` which would represent a single opening range of 5pm to 9:15pm on Mondays"
+        },
+        {
+          "type": "string",
+          "name": "impressum",
+          "description": "Legal information about the Page publishers"
+        },
+        {
+          "type": "string",
+          "name": "influences",
+          "description": "Influences on the band. Applicable to Bands"
+        },
+        {
+          "type": "bool",
+          "name": "is_always_open",
+          "description": "Indicates whether this location is always open"
+        },
+        {
+          "type": "bool",
+          "name": "is_community_page",
+          "description": "Indicates whether the Page is a community Page"
+        },
+        {
+          "type": "bool",
+          "name": "is_permanently_closed",
+          "description": "Whether the business corresponding to this Page is permanently closed"
+        },
+        {
+          "type": "bool",
+          "name": "is_published",
+          "description": "Indicates whether the Page is published and visible to non-admins"
+        },
+        {
+          "type": "bool",
+          "name": "is_unclaimed",
+          "description": "Indicates whether the Page is unclaimed"
+        },
+        {
+          "type": "bool",
+          "name": "is_verified",
+          "description": "Pages with a large number of followers can be manually verified by Facebook as [having an authentic identity](https://www.facebook.com/help/196050490547892). This field indicates whether the page is verified by this process"
+        },
+        {
+          "type": "datetime",
+          "name": "last_used_time",
+          "description": "last used time of this object by the current viewer"
+        },
+        {
+          "type": "bool",
+          "name": "leadgen_tos_accepted",
+          "description": "Indicates whether a user has accepted the TOS for running LeadGen Ads on the Page"
+        },
+        {
+          "type": "unsigned int32",
+          "name": "likes",
+          "description": "The number of users who like the Page. For Global Brand Pages this is the count for all pages across the brand."
+        },
+        {
+          "type": "string",
+          "name": "link",
+          "description": "The Page's Facebook URL"
+        },
+        {
+          "type": "location",
+          "name": "location",
+          "description": "The location of this place. Applicable to all Places"
+        },
+        {
+          "type": "string",
+          "name": "members",
+          "description": "Members of this org. Applicable to Pages representing Team Orgs"
+        },
+        {
+          "type": "string",
+          "name": "mission",
+          "description": "The company mission. Applicable to Companies"
+        },
+        {
+          "type": "string",
+          "name": "mpg",
+          "description": "MPG of the vehicle. Applicable to Vehicles"
+        },
+        {
+          "type": "string",
+          "name": "name",
+          "description": "The name of the Page"
+        },
+        {
+          "type": "string",
+          "name": "name_with_location_descriptor",
+          "description": "The name of the Page with its location and/or global brand descriptor"
+        },
+        {
+          "type": "string",
+          "name": "network",
+          "description": "The TV network for the TV show. Applicable to TV Shows"
+        },
+        {
+          "type": "unsigned int32",
+          "name": "new_like_count",
+          "description": "The number of people who have liked the Page, since the last login. Only visible to a page admin"
+        },
+        {
+          "type": "bool",
+          "name": "offer_eligible",
+          "description": "Offer eligibility status. Only visible to a page admin"
+        },
+        {
+          "type": "business",
+          "name": "owner_business",
+          "description": "owner business of this object"
+        },
+        {
+          "type": "page",
+          "name": "parent_page",
+          "description": "Parent Page for this Page"
+        },
+        {
+          "type": "pageparking",
+          "name": "parking",
+          "description": "Parking information. Applicable to Businesses and Places"
+        },
+        {
+          "type": "pagepaymentoptions",
+          "name": "payment_options",
+          "description": "Payment options accepted by the business. Applicable to Restaurants or Nightlife"
+        },
+        {
+          "type": "string",
+          "name": "personal_info",
+          "description": "Personal information. Applicable to Pages representing People"
+        },
+        {
+          "type": "string",
+          "name": "personal_interests",
+          "description": "Personal interests. Applicable to Pages representing People"
+        },
+        {
+          "type": "string",
+          "name": "pharma_safety_info",
+          "description": "Pharmacy safety information. Applicable to Pharmaceutical companies"
+        },
+        {
+          "type": "string",
+          "name": "phone",
+          "description": "Phone number provided by a Page"
+        },
+        {
+          "type": "enum",
+          "name": "place_type",
+          "description": "For places, the category of the place"
+        },
+        {
+          "type": "string",
+          "name": "plot_outline",
+          "description": "The plot outline of the film. Applicable to Films"
+        },
+        {
+          "type": "string",
+          "name": "press_contact",
+          "description": "Press contact information of the band. Applicable to Bands"
+        },
+        {
+          "type": "string",
+          "name": "price_range",
+          "description": "Price range of the business. Applicable to Restaurants or Nightlife. Can be one of `$` (0-10), `$$` (10-30), `$$$` (30-50), `$$$$` (50+) or `Unspecified`"
+        },
+        {
+          "type": "string",
+          "name": "produced_by",
+          "description": "The productor of the film. Applicable to Films"
+        },
+        {
+          "type": "string",
+          "name": "products",
+          "description": "The products of this company. Applicable to Companies"
+        },
+        {
+          "type": "bool",
+          "name": "promotion_eligible",
+          "description": "Reason why a post isn't eligible for boosting. Only visible to Page Admins"
+        },
+        {
+          "type": "string",
+          "name": "promotion_ineligible_reason",
+          "description": "Reason, for which boosted posts are not eligible. Only visible to a page admin"
+        },
+        {
+          "type": "string",
+          "name": "public_transit",
+          "description": "Public transit to the business. Applicable to Restaurants or Nightlife"
+        },
+        {
+          "type": "string",
+          "name": "record_label",
+          "description": "Record label of the band. Applicable to Bands"
+        },
+        {
+          "type": "string",
+          "name": "release_date",
+          "description": "The film's release date. Applicable to Films"
+        },
+        {
+          "type": "pagerestaurantservices",
+          "name": "restaurant_services",
+          "description": "Services the restaurant provides. Applicable to Restaurants"
+        },
+        {
+          "type": "pagerestaurantspecialties",
+          "name": "restaurant_specialties",
+          "description": "The restaurant's specialties. Applicable to Restaurants"
+        },
+        {
+          "type": "string",
+          "name": "schedule",
+          "description": "The air schedule of the TV show. Applicable to TV Shows"
+        },
+        {
+          "type": "string",
+          "name": "screenplay_by",
+          "description": "The screenwriter of the film. Applicable to Films"
+        },
+        {
+          "type": "string",
+          "name": "season",
+          "description": "The season information of the TV Show. Applicable to TV Shows"
+        },
+        {
+          "type": "string",
+          "name": "single_line_address",
+          "description": "The page address, if any, in a simple single line format."
+        },
+        {
+          "type": "string",
+          "name": "starring",
+          "description": "The cast of the film. Applicable to Films"
+        },
+        {
+          "type": "pagestartinfo",
+          "name": "start_info",
+          "description": "Information about when the entity represented by the Page was started"
+        },
+        {
+          "type": "string",
+          "name": "store_location_descriptor",
+          "description": "Location Page's store location descriptor"
+        },
+        {
+          "type": "unsigned int32",
+          "name": "store_number",
+          "description": "Unique store number for this location Page"
+        },
+        {
+          "type": "string",
+          "name": "studio",
+          "description": "The studio for the film production. Applicable to Films"
+        },
+        {
+          "type": "unsigned int32",
+          "name": "talking_about_count",
+          "description": "The number of people talking about this Page"
+        },
+        {
+          "type": "unsigned int32",
+          "name": "unread_message_count",
+          "description": "Unread message count for the Page. Only visible to a page admin"
+        },
+        {
+          "type": "unsigned int32",
+          "name": "unread_notif_count",
+          "description": "Number of unread notifications. Only visible to a page admin"
+        },
+        {
+          "type": "unsigned int32",
+          "name": "unseen_message_count",
+          "description": "Unseen message count for the Page. Only visible to a page admin"
+        },
+        {
+          "type": "string",
+          "name": "username",
+          "description": "The alias of the Page. For example, for www.facebook.com/platform the username is 'platform'"
+        },
+        {
+          "type": "string",
+          "name": "verification_status",
+          "description": "Showing whether this Page is verified and in what color\n        e.g. blue verified, gray verified or not verified"
+        },
+        {
+          "type": "voipinfo",
+          "name": "voip_info",
+          "description": "Voip info"
+        },
+        {
+          "type": "string",
+          "name": "website",
+          "description": "The URL of the Page's website"
+        },
+        {
+          "type": "unsigned int32",
+          "name": "were_here_count",
+          "description": "The number of visits to this Page's location. If the Page setting *Show map, check-ins and star ratings on the Page* (under *Page Settings > Page Info > Address*) is disabled, then this value will also be disabled"
+        },
+        {
+          "type": "string",
+          "name": "written_by",
+          "description": "The writer of the TV show. Applicable to TV Shows"
+        }
+      ],
+      "type": "page"
+    },
+    "id": "110312662362915",
+    "name": "DanceDeets"
+  },
+  "empty": null
+}
