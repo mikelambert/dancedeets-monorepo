@@ -80,6 +80,10 @@ class StudioScraper(scrapy.Spider):
     def _extract_text(cell):
         return StudioScraper._cleanup(' '.join(x.strip() for x in cell.xpath('.//text()').extract() if x.strip()).strip())
 
+    def __init__(self, **kwargs):
+        super(StudioScraper, self).__init__(**kwargs)
+        self.scrape_time = datetime.datetime.now()
+
     def parse_classes(self, response):
         raise NotImplementedError()
 
@@ -126,7 +130,6 @@ class StudioScraper(scrapy.Spider):
         return False
 
     def parse(self, response):
-        scrape_time = datetime.datetime.now()
         for studio_class in self.parse_classes(response):
             if self._bogus_item(studio_class):
                 continue
@@ -137,7 +140,7 @@ class StudioScraper(scrapy.Spider):
                 studio_class['studio_name'] = self.name
                 studio_class['recurrence_id'] = self._get_recurrence(studio_class)
                 studio_class['auto_categories'] = self._get_auto_categories(studio_class)
-                studio_class['scrape_time'] = scrape_time
+                studio_class['scrape_time'] = self.scrape_time
                 studio_class['latitude'] = self.latlong[0]
                 studio_class['longitude'] = self.latlong[1]
                 studio_class['address'] = self.address

@@ -101,7 +101,7 @@ def process_upload_finalization(studio_name):
             scrape_time_to_keep = max(classes, key=lambda x: x.scrape_time).scrape_time
         else:
             scrape_time_to_keep = max_scrape_time
-        print date, scrape_time_to_keep, classes
+        logging.info('Date %s: ScrapeTime To Keep %s: %s classes', date, scrape_time_to_keep, len(classes))
         dedupe_classes(scrape_time_to_keep, classes)
 
 
@@ -123,7 +123,11 @@ def dedupe_classes(most_recent_scrape_time, classes):
     if not classes:
         return True
     logging.info('De-duping %s classes on %s' % (len(classes), classes[0].start_time.date()))
+    logging.info('Assuming most recent scrape time is %s', most_recent_scrape_time)
+    class_scrape_times = set(x.scrape_time for x in classes)
+    logging.info('Class scrape times are: %s', class_scrape_times)
     old_classes = [x for x in classes if x.scrape_time != most_recent_scrape_time]
+    logging.info('Found %s old classes', len(old_classes))
     deleted = 0
     for x in old_classes:
         # See the note down below next to the StudioClass.query().
