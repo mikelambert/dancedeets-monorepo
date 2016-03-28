@@ -61,4 +61,35 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
                 s.num_false_negatives = (s.num_false_negatives or 0) + 1
             s.num_real_events = (s.num_real_events or 0) + 1
             s.put()
+
+    # like the fb page?
+    deferred.defer(like_event_admin_pages, e.fb_event_id)
+
     return e
+
+
+def like_event_admin_pages(db_event_id):
+    db_event = eventdata.DBEvent.get_by_id(db_event_id)
+    logging.info("Liking the admin's posts about event %s", db_event.id)
+    if not db_event.is_fb_event:
+        logging.info("Event is not FB event")
+        return
+    if not db_event.public:
+        logging.info("Event is not public")
+        return
+    fbl = pubsub.get_dancedeets_fbl()
+    if not fbl:
+        logging.error("Failed to find DanceDeets page access token.")
+        return
+    for admin in db_event.admins:
+        logging.info('Liking wall posts for admin %s (%s)', admin['id'], admin['name'])
+        result_feed = fbl.fb.post('v2.5/%s/feed' % admin['id'], {'fields': 'link'}, None)
+        for item in result_feed['data']:
+            logging.info('Found link to %s', item.get('link', ''))
+            if '/events/%s' % db_event.fb_event_id in item.get('link', ''):
+                logging.info('Liking post with id %s', item['id'])
+                result = fbl.fb.post('v2.5/%s/likes' % item['id'], None, {})
+                if 'error' in result:
+                    logging.error("Returned: %s", result)
+                else:
+                    logging.info("Returned: %s", result)
