@@ -54,6 +54,8 @@ class BaseIndex(object):
     def update_index(cls, objects_to_update):
         index_objs = []
         deindex_ids = []
+
+        logging.info("Constructing Documents")
         for obj in objects_to_update:
             obj_id = cls._get_id(obj)
 
@@ -65,7 +67,11 @@ class BaseIndex(object):
                 if doc_event.doc_id != cls._get_id(obj):
                     logging.error("Error, created DocEvent with id %r instead of %r" % (doc_event.doc_id, cls._get_id(obj)))
                 index_objs.append(doc_event)
+        logging.info("Adding %s documents", len(index_objs))
         cls.put_objects(index_objs)
+        # These events could not be filtered out too early,
+        # but only after looking up in this db+fb-event-data world
+        logging.info("Cleaning up and deleting %s documents", len(deindex_ids))
         cls.delete_ids(deindex_ids)
 
     @classmethod
@@ -118,7 +124,9 @@ class BaseIndex(object):
 
         # Add all events
         logging.info("Loading %s docs, in groups of %s", len(object_ids), docs_per_group)
-        object_ids_list = list(object_ids)
+        object_ids_list = sorted(object_ids)
+        for x in object_ids_list:
+            logging.info('index: %s', x)
         for i in range(0, len(object_ids_list), docs_per_group):
             group_object_ids = object_ids_list[i:i + docs_per_group]
             deferred.defer(cls._save_ids, group_object_ids)
@@ -134,22 +142,4 @@ class BaseIndex(object):
         if None in objects:
             logging.error("Lookup returned at least one None!")
 
-        delete_ids = []
-        doc_events = []
-        logging.info("Constructing Documents")
-        for obj_id, obj in zip(object_ids, objects):
-            doc_event = cls._create_doc_event(obj)
-            if not doc_event:
-                delete_ids.append(obj_id)
-                continue
-            if doc_event.doc_id != cls._get_id(obj):
-                logging.error("Error, created DocEvent with id %s instead of %s", doc_event.doc_id, cls._get_id(obj))
-            doc_events.append(doc_event)
-
-        logging.info("Adding %s documents", len(doc_events))
-        cls.put_objects(doc_events)
-
-        # These events could not be filtered out too early,
-        # but only after looking up in this db+fb-event-data world
-        logging.info("Cleaning up and deleting %s documents", len(delete_ids))
-        cls.delete_ids(delete_ids)
+        cls.update_index(objects)
