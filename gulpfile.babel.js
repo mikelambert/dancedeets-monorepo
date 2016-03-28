@@ -74,6 +74,9 @@ gulp.task('compile-images-resize', () => {
         height: 60,
         suffix: '-60px',
       }],
+      'fb-login.png': [
+      {},
+      ],
     }))
     .pipe($.imagemin({
       progressive: true,
