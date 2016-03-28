@@ -3,6 +3,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import dateFormat from 'date-fns/format';
 
+var StudioImage = React.createClass({
+  contextTypes: {
+    imagePath: React.PropTypes.string,
+  },
+  render: function() {
+    var imageSrc = this.context.imagePath + this.props.studioName.toLowerCase() + '.png';
+    return (
+      <img src={imageSrc} width="16" height="16" />
+    );
+  },
+});
+
 var SelectButton = React.createClass({
   toggleState: function(e) {
     this.manualToggleState();
@@ -22,13 +34,20 @@ var SelectButton = React.createClass({
     if (this.props.value) {
       extraClass = 'active';
     }
+    var contents = [];
+    console.log('BB ' + this.props.thumbnail);
+    if (this.props.thumbnail) {
+      contents.push(<StudioImage studioName={this.props.item} />);
+    }
+    contents.push(this.props.item);
+
     return (
       <button
         className={'btn btn-default btn-sm ' + extraClass}
         ref="button"
         onClick={this.toggleState}
         >
-          {this.props.item}
+        {contents}
         </button>
     );
   },
@@ -82,6 +101,7 @@ var MultiSelectList = React.createClass({
     options.push(
       <SelectButton key="All" item="All" ref={'item-all'} value={emptyList} onChange={this.setAll} />
     );
+    var thumbnails = this.props.thumbnails;
     var value = this.props.value;
     var unsetAll = this.unsetAll;
     this.props.list.forEach(function(item, i) {
@@ -97,7 +117,7 @@ var MultiSelectList = React.createClass({
       });
 
       options.push(
-        <SelectButton key={item} item={item} ref={'item' + i} value={selected} onChange={unsetAll} />
+        <SelectButton key={item} item={item} ref={'item' + i} value={selected} onChange={unsetAll} thumbnail={thumbnails} />
       );
     });
     return (
@@ -181,6 +201,7 @@ var SearchBar = React.createClass({
             value={this.props.studios}
             ref="studios"
             onChange={this.onChange}
+            thumbnails={true}
           />
         </div>
         <div>
@@ -225,6 +246,7 @@ var StudioClass = React.createClass({
     return (
       <div>
         <a href={this.props.studio_class.url}>
+        <StudioImage studioName={this.props.studio_class.location} />
         {this.props.studio_class.location}: {this.props.studio_class.name}
         </a>
       </div>
@@ -337,25 +359,32 @@ function toggleSearchBar() {
 }
 
 var App = React.createClass({
+  childContextTypes: {
+    imagePath: React.PropTypes.string,
+  },
+  getChildContext: function() {
+    console.log(this.props);
+    return {imagePath: this.props.imagePath};
+  },
   filteredClasses: function() {
     var goodClasses = [];
-    var props = this.state;
+    var state = this.state;
     this.props.classes.forEach(function(studioClass) {
       // Class filtering logic
-      if (props.teacher) {
-        if (studioClass.name.toLowerCase().indexOf(props.teacher.toLowerCase()) === -1) {
+      if (state.teacher) {
+        if (studioClass.name.toLowerCase().indexOf(state.teacher.toLowerCase()) === -1) {
           return;
         }
       }
-      if (props.studios.length) {
-        if (props.studios.filter(function(studio) {
+      if (state.studios.length) {
+        if (state.studios.filter(function(studio) {
           return studio === studioClass.location;
         }).length === 0) {
           return;
         }
       }
-      if (props.styles.length) {
-        if (props.styles.filter(function(searchStyle) {
+      if (state.styles.length) {
+        if (state.styles.filter(function(searchStyle) {
           var classHasStyle = studioClass.categories.filter(function(classStyle) {
             return searchStyle === classStyle;
           });
@@ -503,6 +532,7 @@ var App = React.createClass({
 
 ReactDOM.render(
   <App
+    imagePath={window.imagePath}
     location={window.searchLocation}
     classes={window.classes}
     studios={window.studios}

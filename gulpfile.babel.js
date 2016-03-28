@@ -48,6 +48,11 @@ gulp.task('compile-favicons', function() {
 gulp.task('compile-images-resize', () => {
   return gulp.src(baseAssetsDir + 'img/**/*.{png,jpg}')
     .pipe($.responsiveImages({
+      'classes/la/*.*': [{
+        width: 32,
+        height: 32,
+        format: 'png',
+      }],
       '{location,style}-*.jpg': [{
         width: 450,
         height: 300,

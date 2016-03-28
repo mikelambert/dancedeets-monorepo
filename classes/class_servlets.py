@@ -37,17 +37,18 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
 
         if location not in ['nyc', 'la']:
             self.add_error('Bad location: %s' % location)
-        location = self.location_shortcuts.get(location, location)
+        full_location = self.location_shortcuts.get(location, location)
         self.errors_are_fatal
         form = search_base.SearchForm(
             start=datetime.date.today() - datetime.timedelta(days=1),
             end=datetime.date.today() + datetime.timedelta(days=7),
-            location=location,
+            location=full_location,
         )
         search_results = class_index.ClassSearch(form.build_query(start_end_query=True)).get_search_results()
 
         self.display['search_results'] = search_results
         self.display['location'] = location
+        self.display['full_location'] = full_location
         self.render_template(self.template_name)
 
 

@@ -1,7 +1,7 @@
 {% extends class_base_template %}
 
 {% block title %}
-{{location}} Street Dance Classes
+{{full_location}} Street Dance Classes
 {% endblock %}
 
 {% block head_stylesheet %}
@@ -63,7 +63,6 @@ function share() {
 }
 
 //TODO: make a "class" page with relevant info (youtube, studio link, etc)
-//TODO: reach out to three LA studios to find the owners in charge
 
 function parseISO(s) {
   s = s.split(/\D/);
@@ -96,9 +95,10 @@ classes.forEach(function(studio_class) {
     }
   });
 });
+var imagePath = '/dist-{{version}}/img/classes/{{location|escapejs}}/';
 var studios = Object.keys(studios_set).sort();
 var styles = Object.keys(styles_set).sort();
-var searchLocation = '{{location|escapejs}}';
+var searchLocation = {{full_location|tojson}};
 
 
 function resetAffixedOffset() {
