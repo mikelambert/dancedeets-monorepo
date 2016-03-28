@@ -161,3 +161,19 @@ def htmlsafe_json_dumps(obj, **kwargs):
 
 def tojson_filter(obj, **kwargs):
     return jinja2.Markup(htmlsafe_json_dumps(obj, **kwargs))
+
+
+def human_list(elems):
+    elems = list(unicode(x) for x in elems)
+    s = []
+    for i, elem in enumerate(elems):
+        if i == 0:
+            s += [elem]
+        elif i == len(elems) - 1:
+            if i > 1:
+                s += [', and ', elem]
+            else:
+                s += [' and ', elem]
+        else:
+            s += [', ', elem]
+    return ''.join(s)
