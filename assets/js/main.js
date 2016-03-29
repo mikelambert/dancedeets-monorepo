@@ -67,4 +67,8 @@ $(document).ready(function() {
   $('.animate-on-hover').bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', function() {
     $(this).removeClass('animated ' + $(this).data('action'));
   });
+
+  $('#location_submit').click(function() {
+    return Boolean($('#location').val());
+  });
 });
