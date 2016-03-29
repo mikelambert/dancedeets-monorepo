@@ -302,7 +302,15 @@ def facebook_post(auth_token, db_event):
         page_admin_ids = fb_api_util.filter_by_type(fbl, admin_ids, 'page')
         host = text.human_list('@[%s]' % x for x in page_admin_ids)
 
-    message = "Hey %sdancers, upcoming dance event on %s at %s. Hosted by our friends at %s." % (location, human_date, db_event.location_name, host)
+    # Tag it if we can
+    if db_event.venue.get('id'):
+        venue = '@[%s]' % db_event.venue.get('id')
+    else:
+        venue = db_event.location_name
+
+    message = "Hey %sdancers, time to dance! New dance event on %s at %s." % (location, human_date, venue)
+    if host and host != venue:
+        message += ' Hosted by our friends at %s.' % host
     if name:
         message += ' Thanks to %s for adding it to DanceDeets!' % name
     post_values['message'] = message
