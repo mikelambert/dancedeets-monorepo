@@ -46,7 +46,7 @@ def count_private_events(fbl, e_list):
             if 'info' not in fbe:
                 logging.error("skipping row2 for event id %s", e.fb_event_id)
                 continue
-            attendees = fb_api._all_members_count(fbe)
+            attendees = fb_api.get_all_members_count(fbe)
             privacy = fbe['info'].get('privacy', 'OPEN')
             if privacy != 'OPEN' and attendees > 60:
                 ctx.counters.increment('nonpublic-and-large')

@@ -5,6 +5,7 @@ import iso3166
 import json
 import logging
 import oauth2 as oauth
+import random
 import re
 import time
 import traceback
@@ -85,13 +86,31 @@ def post_on_event_wall(db_event):
     if not fbl:
         logging.error("Failed to find DanceDeets page access token.")
         return
+    invited = fb_api.get_all_members_count(db_event.fb_event)
+    if invited < 100:
+        logging.warning("Skipping event due to <100 invitees: %s", invited)
+    if invited > 2000:
+        logging.warning("Skipping event due to 2000+ invitees: %s", invited)
+    if db_event.attendee_count < 50:
+        logging.warning("Skipping event due to <50 attendees: %s", db_event.attendee_count)
+    if db_event.attendee_count > 1000:
+        logging.warning("Skipping event due to 1000+ attendees: %s", db_event.attendee_count)
+
     url = campaign_url(db_event.id, 'fb_event_wall')
     name = _get_posting_user(db_event) or "we've"
-    message = (
-        'Congrats, %s added this dance event to DanceDeets, the site for street dance events worldwide! '
-        'Dancers can discover this event in our DanceDeets mobile app, or on our website here: %s' % (name, url)
-    )
-    logging.error('Cancelling wall post while we wait for spam block to expire')
+    messages = [
+        ('Congrats, %(name)s added this dance event to DanceDeets, the site for street dance events worldwide! '
+         'Dancers can discover this event in our DanceDeets mobile app, or on our website here: %(url)s'),
+        ('Yay, %(name)s included your event on our DanceDeets website and mobile app for interested dancers. '
+         'You can check it out here, and good luck with your event! %(url)s'),
+        ('Hey there, %(name)s listed this event on DanceDeets, the website/mobile-app for street dancers worldwide. '
+         "We're sure you'll have a great event, but we hope our site can help with that in a small way... %(url)s"),
+        ('Awesome, %(name)s added your street dnacedance to DanceDeets, to help more dancers discover it. '
+         "Hopefully you don't mind the extra help in promoting your event! %(url)s"),
+    ]
+    message = random.choice(messages) % {'name': name, 'url': url}
+    logging.info("Attempting to post on event wall for %s", db_event.id)
+    logging.error("Aborting!")
     return
     result = fbl.fb.post('v2.5/%s/feed' % db_event.fb_event_id, None, {
         'message': message,

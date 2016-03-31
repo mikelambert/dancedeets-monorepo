@@ -51,7 +51,7 @@ class FacebookCachedObject(db.Model):
             self.delete() # hack fix to get these objects purged from the system
         return self.data
 
-def _all_members_count(fb_event):
+def get_all_members_count(fb_event):
     # TODO(FB2.0): cleanup!
     data = fb_event.get('fql_info', {}).get('data')
     if data and data[0].get('all_members_count'):
@@ -67,9 +67,9 @@ def is_public_ish(fb_event):
     return not fb_event['empty'] and (
         fb_event['info'].get('privacy', 'OPEN') == 'OPEN' or
         (fb_event['info'].get('privacy', 'OPEN') == 'FRIENDS' and
-         _all_members_count(fb_event) >= 60) or
+         get_all_members_count(fb_event) >= 60) or
         (fb_event['info'].get('privacy', 'OPEN') == 'SECRET' and
-         _all_members_count(fb_event) >= 200)
+         get_all_members_count(fb_event) >= 200)
     )
 
 
@@ -387,6 +387,9 @@ class FBAPI(CacheSystem):
         raise NotImplementedError("Cannot save anything to FB")
     def invalidate_keys(self, keys):
         raise NotImplementedError("Cannot invalidate anything in FB")
+
+    def get(self, path, args):
+        return self.post(path, args, None)
 
     def post(self, path, args, post_args):
         if not args: args = {}

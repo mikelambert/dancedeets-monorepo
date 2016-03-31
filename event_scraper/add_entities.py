@@ -83,7 +83,10 @@ def like_event_admin_pages(db_event_id):
         return
     for admin in db_event.admins:
         logging.info('Liking wall posts for admin %s (%s)', admin['id'], admin['name'])
-        result_feed = fbl.fb.post('v2.5/%s/feed' % admin['id'], {'fields': 'link'}, None)
+        result_feed = fbl.fb.get('v2.5/%s/feed' % admin['id'], {'fields': 'link'})
+        if result_feed.get('error'):
+            logging.error("Could not find event %s's admin with id %s: %s", db_event_id, admin['id'], result_feed['error'])
+            continue
         for item in result_feed['data']:
             logging.info('Found link to %s', item.get('link', ''))
             if '/events/%s' % db_event.fb_event_id in item.get('link', ''):
