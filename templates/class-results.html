@@ -96,8 +96,13 @@ classes.forEach(function(studio_class) {
   });
 });
 var imagePath = '/dist-{{version}}/img/classes/{{location|escapejs}}/';
-var studios = Object.keys(studios_set).sort();
-var styles = Object.keys(styles_set).sort();
+
+function caseInsensitiveSort(a, b) {
+    return a.toLowerCase().localeCompare(b.toLowerCase());
+}
+
+var studios = Object.keys(studios_set).sort(caseInsensitiveSort);
+var styles = Object.keys(styles_set).sort(caseInsensitiveSort);
 var searchLocation = {{full_location|tojson}};
 
 
