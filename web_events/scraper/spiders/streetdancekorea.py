@@ -1,6 +1,7 @@
 # -*-*- encoding: utf-8 -*-*-
 
 import datetime
+from dateutil import relativedelta
 import logging
 import re
 import urllib
@@ -33,7 +34,7 @@ class StreetDanceKoreaScraper(items.WebEventScraper):
         today = datetime.date.today()
         # Query for next six months of events
         for i in range(6):
-            d = today.replace(month=today.month + i)
+            d = today + relativedelta.relativedelta(months=i)
             yield scrapy.Request('http://www.streetdancekorea.com/Event/MainListGetMore.aspx?page=1&bid=Event&ge=&et=&od=&kw=&year=%s&month=%s' % (d.year, d.month))
 
     def _validate(self, split_on_br_nodes):
