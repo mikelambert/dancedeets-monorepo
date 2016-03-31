@@ -132,10 +132,6 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
         db_event.end_time = datetime.datetime.strptime(json_body['end_time'], DATETIME_FORMAT)
     else:
         db_event.end_time = None
-    if timezone:
-        db_event.start_time = db_event.start_time.replace(tzinfo=XX)
-        if db_event.end_time:
-            db_event.end_time = db_event.end_time.replace(tzinfo=XX)
     db_event.search_time_period = _event_time_period(db_event)
 
     db_event.event_keywords = event_classifier.relevant_keywords(db_event)
