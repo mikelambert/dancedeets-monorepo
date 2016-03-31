@@ -7,3 +7,4 @@ class EXPG(browser_scraper.MindBodyBrowserScraper):
     address = '27 2nd Ave, New York, NY'
 
     mindbody_studio_id = 177785
+    mindbody_tab_id = 102

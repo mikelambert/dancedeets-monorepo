@@ -32,7 +32,7 @@ class MindBodyBrowserScraper(items.StudioScraper):
     allowed_domains = ['clients.mindbodyonline.com']
 
     mindbody_studio_id = 0
-    mindbody_tab_id = 102
+    mindbody_tab_id = 0
 
     # So we can log in to our scrapinghub splash instance
     http_user = keys.get('scrapinghub_key')
@@ -42,6 +42,7 @@ class MindBodyBrowserScraper(items.StudioScraper):
         'SPLASH_URL': SERVER_URL,
         'DOWNLOADER_MIDDLEWARES': {
             'scrapyjs.SplashMiddleware': 725,
+            'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware': 800,
         },
         'DUPEFILTER_CLASS': 'scrapyjs.SplashAwareDupeFilter',
         'HTTPCACHE_STORAGE': 'scrapyjs.SplashAwareFSCacheStorage',
