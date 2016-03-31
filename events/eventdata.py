@@ -17,6 +17,8 @@ CM_ADMIN = 'CM_ADMIN'
 CM_USER = 'CM_USER'
 CM_WEB_SCRAPE = 'CM_WEB_SCRAPE'
 
+EVENT_ID_REGEX = r'(?:\d+|[^/?#]+:[^/?#]+)'
+
 
 class DBEvent(ndb.Model):
     """Stores custom data about our Event"""
@@ -169,16 +171,16 @@ class DBEvent(ndb.Model):
 
     @property
     def end_time_with_tz(self):
-        if self.web_event:
-            if self.end_time:
+        if self.end_time:
+            if self.web_event:
                 if self.end_time.tzinfo:
                     return self.end_time
                 else:
                     return self.end_time.replace(tzinfo=self.web_tz)
             else:
-                return None
+                return dateutil.parser.parse(self.end_time_string)
         else:
-            return dateutil.parser.parse(self.end_time_string)
+            return None
 
     @property
     def source_url(self):
