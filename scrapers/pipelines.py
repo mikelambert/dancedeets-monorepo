@@ -5,12 +5,14 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
+import datetime
 import json
 import keys
 import logging
 import urllib
 import urllib2
 
+DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 PROD_SERVER = 'www.dancedeets.com'
@@ -69,7 +71,11 @@ class SaveToServerPipeline(object):
         new_item = dict(item)
         for key in ['start_time', 'end_time', 'scrape_time']:
             if new_item.get(key):
-                new_item[key] = new_item[key].strftime(DATETIME_FORMAT)
+                dt = new_item[key]
+                if isinstance(dt, datetime.datetime) and dt.tzinfo:
+                    new_item[key] = dt.strftime(DATETIME_FORMAT_TZ)
+                else:
+                    new_item[key] = dt.strftime(DATETIME_FORMAT)
         if 'auto_categories' in new_item:
             new_item['auto_categories'] = [x.index_name for x in new_item['auto_categories']]
         self.items.append(new_item)
