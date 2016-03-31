@@ -183,6 +183,8 @@ def compute_city_template_rankings(all_rankings, time_period, use_url=True):
     return city_ranking
 
 def get_ranking_location(location):
+    if location is None:
+        return "Unknown"
     geocode = gmaps_api.get_geocode(address=location)
     if geocode is None:
         return "Unknown"
