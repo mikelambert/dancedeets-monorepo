@@ -470,7 +470,7 @@ def canonicalize_event_data(db_event, event_keywords):
     return event_api
 
 
-@apiroute('/events/\d+/?')
+@apiroute(r'/events/%s' % eventdata.EVENT_ID_REGEX)
 class EventHandler(ApiHandler):
     def requires_login(self):
         return False

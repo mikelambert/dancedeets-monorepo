@@ -7,7 +7,7 @@ from events import eventdata
 from util import fetch
 
 
-@app.route('/events/image_proxy/(\d+)')
+@app.route(r'/events/image_proxy/(%s)/?' % eventdata.EVENT_ID_REGEX)
 class ImageProxyHandler(webapp2.RequestHandler):
     """Proxies images for use by twitter, where it doesn't need to respect the FB cache server's /robots.txt."""
 

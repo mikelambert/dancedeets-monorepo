@@ -67,7 +67,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         return self.redirect(urls.dd_relative_event_url(event_id), permanent=True)
 
 
-@app.route(r'/events/(?:\d+|[^/?#]+:[^/?#]+)/?')
+@app.route(r'/events/%s/?' % eventdata.EVENT_ID_REGEX)
 class ShowEventHandler(base_servlet.BaseRequestHandler):
 
     def requires_login(self):
@@ -330,7 +330,7 @@ def get_id_from_url(url):
         url = url.split('#')[1]
     match = re.search(r'eid=(\d+)', url)
     if not match:
-        match = re.search(r'/events/(\d+)(?:/|$)', url)
+        match = re.search(r'/events/(%s)(?:/|$)' % eventdata.EVENT_ID_REGEX, url)
         if not match:
             return None
     return match.group(1)
