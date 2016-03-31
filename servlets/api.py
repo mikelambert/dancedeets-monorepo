@@ -21,7 +21,7 @@ from users import user_creation
 from users import users
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
-
+DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"
 
 class ApiHandler(base_servlet.BareBaseRequestHandler):
     requires_auth = False
@@ -366,10 +366,17 @@ def canonicalize_event_data(db_event, event_keywords):
     event_api = {}
     event_api['id'] = db_event.id
     event_api['name'] = db_event.name
-    event_api['start_time'] = db_event.start_time_string
+    event_api['start_time'] = db_event.start_time_with_tz.strftime(DATETIME_FORMAT_TZ)
     event_api['description'] = db_event.description
     # end time can be optional, especially on single-day events that are whole-day events
-    event_api['end_time'] = db_event.end_time_string
+    if db_event.end_time_with_tz:
+        event_api['end_time'] = db_event.end_time_with_tz.strftime(DATETIME_FORMAT_TZ)
+    else:
+        event_api['end_time'] = None
+    event_api['source'] = {
+        'name': db_event.source_name,
+        'url': db_event.source_url,
+    }
 
     # cover images
     cover_images = db_event.cover_images

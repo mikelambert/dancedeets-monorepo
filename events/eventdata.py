@@ -130,6 +130,9 @@ class DBEvent(ndb.Model):
     @property
     def web_tz(self):
         if self.web_event:
+            # TODO: when we fix our hardcoded dates (that only work for korea/japan)
+            # We probably need to start incorporating this API:
+            # https://developers.google.com/maps/documentation/timezone/intro?hl=en#Requests
             return dateutil.tz.tzoffset(None, 9 * 60 * 60)
         else:
             raise ValueError("Can't get timezone offset for fb events")
@@ -150,7 +153,10 @@ class DBEvent(ndb.Model):
     @property
     def start_time_with_tz(self):
         if self.web_event:
-            return self.start_time.replace(tzinfo=self.web_tz)
+            if self.start_time.tzinfo:
+                return self.start_time
+            else:
+                return self.start_time.replace(tzinfo=self.web_tz)
         else:
             return dateutil.parser.parse(self.start_time_string)
 
@@ -164,7 +170,13 @@ class DBEvent(ndb.Model):
     @property
     def end_time_with_tz(self):
         if self.web_event:
-            return self.end_time.replace(tzinfo=self.web_tz)
+            if self.end_time:
+                if self.end_time.tzinfo:
+                    return self.end_time
+                else:
+                    return self.end_time.replace(tzinfo=self.web_tz)
+            else:
+                return None
         else:
             return dateutil.parser.parse(self.end_time_string)
 
