@@ -261,7 +261,7 @@ var DayHeader = React.createClass({
     );
     if (this.props.useAnchor) {
       contents = (
-        <div id={getDayId(dateFormat(this.props.date, 'ddd'))}>
+        <div id={getDayId(dateFormat(this.props.date, 'dddd'))}>
           {contents}
         </div>
       );
@@ -323,7 +323,7 @@ var StudioClasses = React.createClass({
     goodClasses.forEach(function(studioClass) {
       // Section header rendering
       if (lastStudioClass === null || dateFormat(studioClass.start_time, 'YYYY-MM-DD') !== dateFormat(lastStudioClass.start_time, 'YYYY-MM-DD')) {
-        var day = dateFormat(studioClass.start_time, 'ddd');
+        var day = dateFormat(studioClass.start_time, 'dddd');
         rows.push(
           <DayHeader
             date={studioClass.start_time}
