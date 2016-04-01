@@ -93,8 +93,8 @@ def post_on_event_wall(db_event):
     if invited > 2000:
         logging.warning("Skipping event due to 2000+ invitees: %s", invited)
         return
-    if db_event.attendee_count < 50:
-        logging.warning("Skipping event due to <50 attendees: %s", db_event.attendee_count)
+    if db_event.attendee_count < 20:
+        logging.warning("Skipping event due to <20 attendees: %s", db_event.attendee_count)
         return
     if db_event.attendee_count > 1000:
         logging.warning("Skipping event due to 1000+ attendees: %s", db_event.attendee_count)
