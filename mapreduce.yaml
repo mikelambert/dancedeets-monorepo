@@ -12,7 +12,7 @@ mapreduce:
   mapper:
     input_reader: mapreduce.input_readers.DatastoreInputReader
     handler: pubsub.pubsub.post_on_event_wall
-    params_validator: util.mapreduce_helpers.process_mr_params
+    params_validator: util.mr.process_mr_params
     params:
     - name: entity_kind
       default: events.eventdata.DBEvent

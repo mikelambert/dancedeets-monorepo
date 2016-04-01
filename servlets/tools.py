@@ -3,14 +3,13 @@ import webapp2
 from google.appengine.api import memcache
 
 from mapreduce import control
-from mapreduce import context
 from mapreduce import operation as op
 
 import app
 import base_servlet
 from events import eventdata
 import fb_api
-from util import dates
+from util import mr
 
 
 @app.route('/tools/unprocess_future_events')
@@ -38,8 +37,6 @@ def map_delete_cached_with_wrong_user_id(fbo):
 
 
 def count_private_events(fbl, e_list):
-    ctx = context.get()
-
     for e in e_list:
         try:
             fbe = e.fb_event
@@ -49,8 +46,8 @@ def count_private_events(fbl, e_list):
             attendees = fb_api.get_all_members_count(fbe)
             privacy = fbe['info'].get('privacy', 'OPEN')
             if privacy != 'OPEN' and attendees > 60:
-                ctx.counters.increment('nonpublic-and-large')
-            ctx.counters.increment('privacy-%s' % privacy)
+                mr.increment('nonpublic-and-large')
+            mr.increment('privacy-%s' % privacy)
 
             start_date = e.start_time.strftime('%Y-%m-%d') if e.start_time else ''
             yield '%s\n' % '\t'.join(str(x) for x in [e.fb_event_id, start_date, privacy, attendees])

@@ -1,7 +1,5 @@
 import logging
 
-from mapreduce import context
-
 import fb_api
 
 from events import eventdata
@@ -9,6 +7,7 @@ from events import event_locations
 from nlp import event_auto_classifier
 from nlp import event_classifier
 from util import fb_mapreduce
+from util import mr
 from . import add_entities
 from . import potential_events
 
@@ -47,9 +46,7 @@ def classify_events(fbl, pe_list, fb_list):
                 pe2.put()
                 # TODO(lambert): handle un-add-able events differently
                 results.append(result)
-                ctx = context.get()
-                if ctx:
-                    ctx.counters.increment('auto-added-dance-events')
+                mr.increment('auto-added-dance-events')
             except fb_api.NoFetchedDataException as e:
                 logging.error("Error adding event %s, no fetched data: %s", pe.fb_event_id, e)
             except add_entities.AddEventException as e:
@@ -62,9 +59,7 @@ def classify_events(fbl, pe_list, fb_list):
             pe2.put()
             result = '-%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, fb_event['info'].get('name', '')))
             results.append(result)
-            ctx = context.get()
-            if ctx:
-                ctx.counters.increment('auto-notadded-dance-events')
+            mr.increment('auto-notadded-dance-events')
     return results
 
 
