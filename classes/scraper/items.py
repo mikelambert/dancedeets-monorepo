@@ -97,6 +97,7 @@ class StudioScraper(scrapy.Spider):
         """Parses the fields we have and returns a list of categories for indexing.
         Should have a list of styles, plus a class."""
         class_text = '%s: %s' % (studio_class['style'], studio_class['teacher'])
+        class_text = re.sub(r'\b(?:[kj]\W?pop|pop up)\b', 'OTHER', class_text.lower())
         styles = categories.find_rules_in_text(class_text, categories.BROAD_STYLES)
         return styles
 
