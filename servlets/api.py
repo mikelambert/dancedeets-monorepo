@@ -1,7 +1,6 @@
 import datetime
 import json
 import logging
-import traceback
 import urllib
 
 from google.appengine.api import taskqueue
@@ -482,11 +481,7 @@ class EventHandler(ApiHandler):
             self.response.out.write('Need an event_id.')
             return
         else:
-            try:
-                event_id = path_bits[1].strip('/')
-            except TypeError:
-                self.add_error('Event id expected: %s' % path_bits[1])
-
+            event_id = urllib.unquote_plus(path_bits[1].strip('/'))
             db_event = eventdata.DBEvent.get_by_id(event_id)
             if not db_event:
                 self.add_error('No event found')
