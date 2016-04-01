@@ -4,6 +4,7 @@ from classes import class_pipeline
 from classes import class_servlets
 from event_scraper import source_servlets
 from event_scraper import scraping_tasks
+from event_scraper import thing_scraper2
 from events import event_reloading_tasks
 from events import find_access_tokens
 from ml import gprediction_servlets

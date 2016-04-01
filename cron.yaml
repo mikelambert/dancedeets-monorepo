@@ -8,10 +8,10 @@ cron:
   url: /tools/auto_add_potential_events?user_id=dummy&past_event=0&expiry_days=10
   schedule: every 3 hours
 - description: reload all sources
-  url: /tasks/load_potential_events_from_wall_posts?user_id=dummy&allow_cache=0&min_potential_events=0
+  url: /tasks/scrape_sources_and_process_events?user_id=dummy&allow_cache=0&min_potential_events=0
   schedule: every monday 00:00
 - description: load potential events from special users and sources
-  url: /tasks/load_potential_events_from_wall_posts?user_id=dummy&allow_cache=0&min_potential_events=1
+  url: /tasks/scrape_sources_and_process_events?user_id=dummy&allow_cache=0&min_potential_events=1
   schedule: every 21 hours
 - description: load potential events from our users
   url: /tasks/load_all_potential_events?user_id=dummy&allow_cache=0

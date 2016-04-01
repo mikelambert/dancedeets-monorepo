@@ -52,6 +52,11 @@ def mr_delete_bad_sources():
 
 
 def scrape_events_from_sources(fbl, sources):
+    discovered_list = discover_events_from_sources(fbl, sources)
+    process_event_source_ids(discovered_list, fbl)
+
+
+def discover_events_from_sources(fbl, sources):
     ctx = context.get()
     if ctx:
         params = ctx.mapreduce_spec.mapper.params
@@ -75,7 +80,7 @@ def scrape_events_from_sources(fbl, sources):
         except fb_api.NoFetchedDataException, e:
             logging.warning("Failed to fetch data for thing: %s", str(e))
     logging.info("Discovered %s items: %s", len(discovered_list), discovered_list)
-    process_event_source_ids(discovered_list, fbl)
+    return discovered_list
 
 def scrape_events_from_source_ids(fbl, source_ids):
     sources = thing_db.Source.get_by_key_name(source_ids)

@@ -56,6 +56,9 @@ class PotentialEvent(db.Model):
         source_ids = [str(source_id) for source_id, source_field in zip(self.source_ids, self.source_fields) if source_field == thing_db.FIELD_INVITES]
         return source_ids
 
+    def has_discovered(self, discovered_event):
+        return self.has_source_with_field(discovered_event.source_id, discovered_event.source_field)
+
     def has_source_with_field(self, source_id, source_field):
         has_source = False
         for source_id_, source_field_ in zip(self.source_ids, self.source_fields):
@@ -141,7 +144,10 @@ def make_potential_event_without_source(fb_event_id, fb_event, fb_event_attendin
 def make_potential_event_with_source(fb_event, discovered):
     fb_event_id = fb_event['info']['id']
     # show all events from a source if enough of them slip through our automatic filters
-    show_all_events = discovered.source.fraction_real_are_false_negative() > 0.05 and discovered.source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
+    if discovered.source is not None:
+        show_all_events = discovered.source.fraction_real_are_false_negative() > 0.05 and discovered.source_field != thing_db.FIELD_INVITES # never show all invites, privacy invasion
+    else:
+        show_all_events = discovered.source_field != thing_db.FIELD_INVITES
     def _internal_add_source_for_event_id():
         potential_event = PotentialEvent.get_by_key_name(fb_event_id) or PotentialEvent(key_name=fb_event_id)
         # If already added, return
