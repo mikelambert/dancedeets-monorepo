@@ -483,7 +483,7 @@ class EventHandler(ApiHandler):
             return
         else:
             try:
-                event_id = str(int(path_bits[1].strip('/')))
+                event_id = path_bits[1].strip('/')
             except TypeError:
                 self.add_error('Event id expected: %s' % path_bits[1])
 
