@@ -89,12 +89,16 @@ def post_on_event_wall(db_event):
     invited = fb_api.get_all_members_count(db_event.fb_event)
     if invited < 100:
         logging.warning("Skipping event due to <100 invitees: %s", invited)
+        return
     if invited > 2000:
         logging.warning("Skipping event due to 2000+ invitees: %s", invited)
+        return
     if db_event.attendee_count < 50:
         logging.warning("Skipping event due to <50 attendees: %s", db_event.attendee_count)
+        return
     if db_event.attendee_count > 1000:
         logging.warning("Skipping event due to 1000+ attendees: %s", db_event.attendee_count)
+        return
 
     url = campaign_url(db_event.id, 'fb_event_wall')
     name = _get_posting_user(db_event) or "we've"
