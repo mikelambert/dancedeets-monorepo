@@ -106,10 +106,13 @@ class MindBodyBrowserScraper(items.StudioScraper):
             cells = row.css('td')
             if header:
                 date = dateparser.parse(self._extract_text(header)).date()
-            elif len(cells) == 6:
+            elif len(cells) in [5, 6]:
                 item = items.StudioClass()
                 lst = row.css('td')
-                start_time, dummy, class_name, teacher, room, duration = [self._extract_text(x) for x in lst]
+                if len(lst) == 5:
+                    start_time, dummy, class_name, teacher, duration = [self._extract_text(x) for x in lst]
+                elif len(lst) == 6:
+                    start_time, dummy, class_name, teacher, room, duration = [self._extract_text(x) for x in lst]
                 if 'Cancelled' in teacher:
                     continue
                 start_time = dateparser.parse(start_time).time()
