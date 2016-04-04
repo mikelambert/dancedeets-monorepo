@@ -13,7 +13,7 @@ def get_unprocessed_discovered_events(discovered_list):
         discovered_list_for_event = [x for x in discovered_list if x.event_id == fb_event_id]
         if pe:
             # TODO: Performance Issue!!! O(N*M)
-            discovered_to_process.extend([x for x in discovered_list if not pe.has_discovered(x)])
+            discovered_to_process.extend([x for x in discovered_list_for_event if not pe.has_discovered(x)])
         else:
             discovered_to_process.extend(discovered_list_for_event)
     return discovered_to_process
