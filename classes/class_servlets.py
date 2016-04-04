@@ -112,6 +112,7 @@ class ClassMultiUploadHandler(JsonDataHandler):
             self.response.status = 403
             return
         for item in self.json_body['items']:
+            logging.info('Processing %s', item)
             process_uploaded_item(item)
         process_upload_finalization(self.json_body['studio_name'])
         self.response.status = 200
