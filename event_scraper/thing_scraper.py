@@ -84,6 +84,8 @@ def discover_events_from_sources(fbl, sources):
 
 def scrape_events_from_source_ids(fbl, source_ids):
     sources = thing_db.Source.get_by_key_name(source_ids)
+    sources = [x for x in sources if x]
+    logging.info("Looking up %s source_ids, found %s sources", len(source_ids), len(sources))
     scrape_events_from_sources(fbl, sources)
 
 map_scrape_events_from_sources = fb_mapreduce.mr_wrap(scrape_events_from_sources)
