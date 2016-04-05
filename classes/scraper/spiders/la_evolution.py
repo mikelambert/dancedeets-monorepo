@@ -57,9 +57,9 @@ class Evolution(items.StudioScraper):
                 item = items.StudioClass()
                 item['style'] = name.title()
                 item['teacher'] = teacher.title()
-                item['start_time'] = event.decoded('dtstart')
+                item['start_time'] = event.decoded('dtstart').replace(tzinfo=None)
                 if 'dtend' in event:
-                    item['end_time'] = event.decoded('dtend')
+                    item['end_time'] = event.decoded('dtend').replace(tzinfo=None)
                 else:
                     item['end_time'] = event.decoded('dtstart') + datetime.timedelta(hours=6)
                 if not 'rrule' in event:
