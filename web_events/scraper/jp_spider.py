@@ -42,6 +42,8 @@ def get_venue_from_description(description):
 _VENUE_REMAP = {
     u'JANUS': u'JANUS, Osaka',
     u'江坂CAT HALL': u'キャットミュージックカレッジ',
+    u'CATHALL': u'キャットミュージックカレッジ',
+    u'CAT HALL': u'キャットミュージックカレッジ',
     u'HARLEM': u'Harlem, Shibuya',
     u'渋谷HAREM': u'Harlem, Shibuya',
     u'HARLEM　PLUS': u'Harlem, Shibuya',
