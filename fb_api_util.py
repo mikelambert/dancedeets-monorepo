@@ -17,5 +17,5 @@ class LookupMetadata(fb_api.LookupType):
 
 def filter_by_type(fbl, id_list, obj_type):
     metadatas = fbl.get_multi(LookupMetadata, id_list)
-    ids = [x['fb_metadata']['id'] for x in metadatas if x['fb_metadata']['metadata']['type'] == obj_type]
+    ids = [x['fb_metadata']['id'] for x in metadatas if not x['empty'] and x['fb_metadata']['metadata']['type'] == obj_type]
     return ids
