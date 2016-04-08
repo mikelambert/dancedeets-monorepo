@@ -63,7 +63,7 @@ def _should_post_event(auth_token, db_event):
         return False
     event_country = geocode.country()
     if auth_token.country_filters and event_country not in auth_token.country_filters:
-        logging.info("")
+        logging.info("Skipping event due to country filters")
         return False
     # Additional filtering for FB Wall postings, since they are heavily-rate-limited by FB.
     if auth_token.application == APP_FACEBOOK_WALL:
