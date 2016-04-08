@@ -40,13 +40,6 @@ def eventually_publish_event(event_id, token_nickname=None):
         return
     if (db_event.end_time or db_event.start_time) < datetime.datetime.now():
         return
-    geocode = db_event.get_geocode()
-
-    logging.info("Publishing event %s with latlng %s", event_id, geocode)
-    if not geocode:
-        # Don't post events without a location. It's too confusing...
-        return
-    event_country = geocode.country()
 
     args = []
     if token_nickname:
@@ -55,13 +48,46 @@ def eventually_publish_event(event_id, token_nickname=None):
     q = taskqueue.Queue(EVENT_PULL_QUEUE)
     for token in oauth_tokens:
         logging.info("Evaluating token %s", token)
-        if token.country_filters and event_country not in token.country_filters:
-            continue
-        logging.info("Adding task for posting!")
-        # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
-        name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id.replace(':', '-'), int(time.time()))
-        logging.info("Adding task with name %s", name)
-        q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
+        if _should_post_event(token, db_event):
+            logging.info("Adding task for posting!")
+            # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
+            name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id.replace(':', '-'), int(time.time()))
+            logging.info("Adding task with name %s", name)
+            q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
+
+
+def _should_post_event(auth_token, db_event):
+    geocode = db_event.get_geocode()
+    if not geocode:
+        # Don't post events without a location. It's too confusing...
+        return False
+    event_country = geocode.country()
+    if auth_token.country_filters and event_country not in auth_token.country_filters:
+        logging.info("")
+        return False
+    # Additional filtering for FB Wall postings, since they are heavily-rate-limited by FB.
+    if auth_token.application == APP_FACEBOOK_WALL:
+        if not db_event.is_fb_event:
+            logging.info("Event is not FB event")
+            return False
+        if not db_event.public:
+            logging.info("Event is not public")
+            return False
+        if db_event.attendee_count < 20:
+            logging.warning("Skipping event due to <20 attendees: %s", db_event.attendee_count)
+            return False
+        if db_event.attendee_count > 1000:
+            logging.warning("Skipping event due to 1000+ attendees: %s", db_event.attendee_count)
+            return False
+        invited = fb_api.get_all_members_count(db_event.fb_event)
+        if invited < 100:
+            logging.warning("Skipping event due to <100 invitees: %s", invited)
+            return False
+        if invited > 2000:
+            logging.warning("Skipping event due to 2000+ invitees: %s", invited)
+            return False
+    logging.info("Publishing event %s with latlng %s", db_event.id, geocode)
+    return True
 
 
 def _get_posting_user(db_event):
@@ -76,28 +102,9 @@ def _get_posting_user(db_event):
 
 def post_on_event_wall(db_event):
     logging.info("Considering posting on event wall for %s", db_event.id)
-    if not db_event.is_fb_event:
-        logging.info("Event is not FB event")
-        return
-    if not db_event.public:
-        logging.info("Event is not public")
-        return
     fbl = get_dancedeets_fbl()
     if not fbl:
         logging.error("Failed to find DanceDeets page access token.")
-        return
-    invited = fb_api.get_all_members_count(db_event.fb_event)
-    if invited < 100:
-        logging.warning("Skipping event due to <100 invitees: %s", invited)
-        return
-    if invited > 2000:
-        logging.warning("Skipping event due to 2000+ invitees: %s", invited)
-        return
-    if db_event.attendee_count < 20:
-        logging.warning("Skipping event due to <20 attendees: %s", db_event.attendee_count)
-        return
-    if db_event.attendee_count > 1000:
-        logging.warning("Skipping event due to 1000+ attendees: %s", db_event.attendee_count)
         return
 
     url = campaign_url(db_event.id, 'fb_event_wall')
@@ -114,8 +121,6 @@ def post_on_event_wall(db_event):
     ]
     message = random.choice(messages) % {'name': name, 'url': url}
     logging.info("Attempting to post on event wall for %s", db_event.id)
-    logging.error("Aborting!")
-    return
     result = fbl.fb.post('v2.5/%s/feed' % db_event.fb_event_id, None, {
         'message': message,
         'link': url,
@@ -157,32 +162,31 @@ def post_event_id_with_authtoken(event_id, auth_token):
     if not db_event.has_content():
         logging.warning("Failed to post event: %s, due to %s", event_id, db_event.empty_reason)
         return
-    if auth_token.application == APP_TWITTER:
-        try:
-            twitter_post(auth_token, db_event)
-        except Exception as e:
-            logging.error("Twitter Post Error: %s", e)
-            logging.error(traceback.format_exc())
-    elif auth_token.application == APP_FACEBOOK:
-        try:
-            result = post_on_event_wall(db_event)
-            if result:
-                if 'error' in result:
-                    logging.error("Facebook WallPost Error: %r", result)
-                else:
-                    logging.info("Facebook result was %r", result)
+    try:
+        _post_event(auth_token, db_event)
+    except Exception as e:
+        logging.exception("Facebook Post Exception: %s", e)
+        logging.error(traceback.format_exc())
 
-            result = facebook_post(auth_token, db_event)
+
+def _post_event(auth_token, db_event):
+    if auth_token.application == APP_TWITTER:
+        twitter_post(auth_token, db_event)
+    elif auth_token.application == APP_FACEBOOK:
+        result = facebook_post(auth_token, db_event)
+        if 'error' in result:
+            logging.error("Facebook Post Error: %r", result)
+        else:
+            logging.info("Facebook result was %r", result)
+    elif auth_token.application == APP_FACEBOOK_WALL:
+        result = post_on_event_wall(db_event)
+        if result:
             if 'error' in result:
-                logging.error("Facebook Post Error: %r", result)
+                logging.error("Facebook WallPost Error: %r", result)
             else:
                 logging.info("Facebook result was %r", result)
-        except Exception as e:
-            logging.exception("Facebook Post Exception: %s", e)
-            logging.error(traceback.format_exc())
     else:
         logging.error("Unknown application for OAuthToken: %s", auth_token.application)
-
 
 def create_media_on_twitter(t, db_event):
     cover = db_event.largest_cover
@@ -412,7 +416,8 @@ access_token_url = 'https://twitter.com/oauth/access_token'
 authorize_url = 'https://twitter.com/oauth/authorize'
 
 APP_TWITTER = 'APP_TWITTER'
-APP_FACEBOOK = 'APP_FACEBOOK' # a butchering of OAuthToken!
+APP_FACEBOOK = 'APP_FACEBOOK'  # a butchering of OAuthToken!
+APP_FACEBOOK_WALL = 'APP_FACEBOOK_WALL'  # a further butchering!
 
 
 class OAuthToken(ndb.Model):
