@@ -30,8 +30,8 @@ def urlencode(kwargs, doseq=False):
     if doseq:
         new_kwargs = {}
         for k, v in kwargs.iteritems():
-            new_kwargs[k.encode('utf-8')] = [unicode(v_x).encode('utf-8') for v_x in v]
+            new_kwargs[unicode(k).encode('utf-8')] = [unicode(v_x).encode('utf-8') for v_x in v]
         kwargs = new_kwargs
     else:
-        kwargs = dict((k.encode('utf-8'), unicode(v).encode('utf-8')) for (k, v) in kwargs.iteritems())
+        kwargs = dict((unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for (k, v) in kwargs.iteritems())
     return urllib.urlencode(kwargs, doseq=doseq)
