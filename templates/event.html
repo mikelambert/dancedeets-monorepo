@@ -22,11 +22,10 @@
 <meta name="twitter:app:name:googleplay" content="DanceDeets" />
 <meta name="twitter:app:id:googleplay" content="com.dancedeets.android" />
 <meta name="twitter:app:url:googleplay" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/" />
-{#
+
 <meta property="al:ios:url" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/" />
 <meta property="al:ios:app_store_id" content="955212002" />
 <meta property="al:ios:app_name" content="DanceDeets" />
-#}
 
 <meta property="al:android:url" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/" />
 <meta property="al:android:package" content="com.dancedeets.android" />
@@ -131,7 +130,7 @@ mixpanel.track('View Event', {
 });
 mixpanel.track_links(".link-event-add-to-calendar", "Add to Calendar");
 mixpanel.track_links(".link-event-flyer", "View Flyer");
-mixpanel.track_links(".link-event-on-fb", "Open in Facebook");
+mixpanel.track_links(".link-event-source", "Open Source");
 mixpanel.track_links(".link-event-share", "Share Event");
 mixpanel.track_links(".link-event-admin", "View Event Admin");
 mixpanel.track_links(".link-event-venue", "View Event Venue");
