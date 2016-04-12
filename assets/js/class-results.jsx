@@ -35,7 +35,6 @@ var SelectButton = React.createClass({
       extraClass = 'active';
     }
     var contents = [];
-    console.log('BB ' + this.props.thumbnail);
     if (this.props.thumbnail) {
       contents.push(<StudioImage studioName={this.props.item} />);
     }
@@ -135,6 +134,9 @@ function getDayId(dayName) {
 var DayLink = React.createClass({
   onClick: function() {
     var id = getDayId(this.props.dayName);
+    if ($('#' + id).length === 0) {
+      return;
+    }
     var scrollOffset = $('#navbar').outerHeight();
     var nudgeOffset = 5;
     $('html, body').animate({scrollTop: $('#' + id).offset().top - scrollOffset - nudgeOffset}, 300);
