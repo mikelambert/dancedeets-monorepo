@@ -70,6 +70,9 @@ def _should_post_event(auth_token, db_event):
         if not db_event.is_fb_event:
             logging.info("Event is not FB event")
             return False
+        if db_event.is_page_owned:
+            logging.info("Event is not owned by page")
+            return False
         if not db_event.public:
             logging.info("Event is not public")
             return False

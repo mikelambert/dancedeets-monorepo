@@ -130,6 +130,13 @@ class DBEvent(ndb.Model):
             return ndb.get_multi(keys)
 
     @property
+    def is_page_owned(self):
+        if self.web_event:
+            return False
+        else:
+            return self.fb_event['info'].get('is_page_owned', None)
+
+    @property
     def web_tz(self):
         if self.web_event:
             # TODO: when we fix our hardcoded dates (that only work for korea/japan)
