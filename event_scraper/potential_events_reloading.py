@@ -5,6 +5,7 @@ from notifications import rsvped_events
 from util import fb_mapreduce
 from . import scrape_user_potential_events
 
+
 def mr_load_potential_events(fbl):
     fb_mapreduce.start_map(
         fbl=fbl,
@@ -13,12 +14,20 @@ def mr_load_potential_events(fbl):
         entity_kind='users.users.User',
     )
 
+
+def load_potential_events_for_user(user):
+    fbl = fb_api.FBLookup(user.fb_uid, user.fb_access_token)
+    fbl.allow_cache = False
+    load_potential_events_for_user_ids(fbl, [user.fb_uid])
+
+
 def load_potential_events_for_user_ids(fbl, user_ids):
     user_events_list = fbl.get_multi(fb_api.LookupUserEvents, user_ids)
     # Since we've loaded the latest events from the user, allow future event lookups to come from cache
     fbl.allow_cache = True
     for user_id, user_events in zip(user_ids, user_events_list):
         scrape_user_potential_events.get_potential_dance_events(fbl, user_id, user_events)
+
 
 def map_load_potential_events(user):
     fbl = fb_mapreduce.get_fblookup(user)
