@@ -5,11 +5,16 @@ import urllib
 import webapp2
 
 import app
+import facebook
+import fb_api
+import hashlib
+import hmac
 import keys
 from . import potential_events_reloading
 from users import users
 
 
+# curl 'http://dev.dancedeets.com:8080/webhooks/user' --data '{"object": "user","entry":[{"changed_fields":["events"],"id": "701004"}]}'
 @app.route('/webhooks/user')
 class WebhookPageHandler(webapp2.RequestHandler):
     def requires_login(self):
@@ -25,7 +30,12 @@ class WebhookPageHandler(webapp2.RequestHandler):
             logging.critical('Unknown hub.mode received: %s', self.request.get('hub.mode'))
 
     def post(self):
-        # TODO: Check X-Hub-Signature to verify validity
+        signature = self.request.headers.get('X_HUB_SIGNATURE')
+        digest = hmac.new(facebook.FACEBOOK_CONFIG['secret_key'], self.request.body, hashlib.sha1).hexdigest()
+        computed = 'sha1=%s' % digest
+        if signature != computed:
+            logging.error('Digest failed: Signature %s, Computed %s', signature, computed)
+
         if not self.request.body:
             logging.critical('No request.body to process')
             return
@@ -38,4 +48,8 @@ class WebhookPageHandler(webapp2.RequestHandler):
             user_ids = [x['id'] for x in json_body['entry'] if 'events' in x['changed_fields']]
             changed_users = users.User.get_by_ids(user_ids)
             for user in changed_users:
-                potential_events_reloading.load_potential_events_for_user(user)
+                try:
+                    potential_events_reloading.load_potential_events_for_user(user)
+                except fb_api.ExpiredOAuthToken:
+                    logging.warning("Found ExpiredOAuthtoken when reloading events for User: %s", user.fb_uid)
+                    logging.warning("User's Clients: %s, Last Login: %s, Expiration: %s", user.clients, user.last_login_time, user.fb_access_token_expires)
