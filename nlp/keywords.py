@@ -737,6 +737,7 @@ CLASS = Name('CLASS', Any(
     u'專攻班', # chinese specialized class
     u'コース', # course japanese
     'concorso', # course italian
+    'concurso', # course spanish
     'kur[sz](?:y|en)?', # course german/polish/czech
     'aulas?', # portuguese class(?:es)?
     u'특강', # korean lecture
