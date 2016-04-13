@@ -83,9 +83,9 @@ class Event {
 class SubEventLine extends Component {
   render() {
     return (
-      <View style={eventStyles.subEventLine}>
-        <Image key="image" source={this.icon()} style={eventStyles.subIcon} />
-        <View style={eventStyles.subEventRightSide}>{this.textRender()}</View>
+      <View style={eventStyles.detailLine}>
+        <Image key="image" source={this.icon()} style={eventStyles.detailIcon} />
+        {this.textRender()}
       </View>
     );
   }
@@ -152,7 +152,7 @@ class EventRow extends Component {
         <Text
           numberOfLines={2}
           style={eventStyles.rowTitle}>{this.props.event.name}</Text>
-        <View style={eventStyles.subRow}>
+        <View style={eventStyles.eventIndent}>
           <EventCategories categories={this.props.event.annotations.categories} />
           <EventDateTime start={this.props.event.start_time} end={this.props.event.date_time} />
           <EventVenue venue={this.props.event.venue} />
@@ -220,23 +220,7 @@ class DancedeetsReact extends Component {
       })
       .done();
   }
-
 }
-
-var Dummy2 = React.createClass({
-  render: function() {
-    return      (
-  <View style={styles.container}>
-
-        <View style={styles.descriptionContainer}>
-          <View style={styles.padding}/>
-          <Text style={styles.descriptionText} numberOfLines={1} >
-            Here is a really long text that you can do nothing about, its gonna be long wether you like it or not, so be prepared for it to go off screen. Right? Right..!
-          </Text>
-        </View>
-  </View>);
-  }
-});
 
 const eventStyles = StyleSheet.create({
   thumbnail: {
@@ -260,17 +244,11 @@ const eventStyles = StyleSheet.create({
   rowText: {
     color: 'white',
   },
-  subRow: {
+  detailLine: {
     marginLeft: 20,
-  },
-  subEventLine: {
     flexDirection: 'row',
-    justifyContent: 'center',
   },
-  subEventRightSide: {
-    flex: 1.0,
-  },
-  subIcon: {
+  detailIcon: {
     marginTop: 5,
     marginRight: 5,
     height: 12,
