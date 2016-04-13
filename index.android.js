@@ -6,162 +6,13 @@
 import React, {
   AppRegistry,
   Component,
-  Image,
   ListView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 
-var ProportionalImage = React.createClass({
-  getInitialState() {
-    return {
-      style: {}
-    };
-  },
-
-  propTypes: {
-    originalWidth: React.PropTypes.number.isRequired,
-    originalHeight: React.PropTypes.number.isRequired,
-  },
-
-  onLayout(e) {
-    var layout = e.nativeEvent.layout;
-    var aspectRatio = this.props.originalWidth / this.props.originalHeight;
-    var measuredHeight = layout.width / aspectRatio;
-    var currentHeight = layout.height;
-
-    if (measuredHeight != currentHeight) {
-      this.setState({
-        style: {
-          height: measuredHeight
-        }
-      });
-    }
-  },
-
-  render() {
-    // We catch the onLayout in the view, find the size, then resize the child (before it is laid out?)
-    return (
-      <View
-        onLayout={this.onLayout}
-        >
-        <Image
-          {...this.props}
-          style={[this.props.style, this.state.style]}
-        />
-      </View>
-    );
-  }
-});
-
-class Event {
-  constructor(eventData) {
-    for (var attr in eventData) {
-      if (eventData.hasOwnProperty(attr)) {
-        this[attr] = eventData[attr];
-      }
-    }
-    return this;
-  }
-
-  getImageProps() {
-    var url = this.picture;
-    var width = 100;
-    var height = 100;
-    if (this.cover != null && this.cover.images.length > 0) {
-      var image = this.cover.images[0];
-      url = image.source;
-      width = image.width;
-      height = image.height;
-    }
-    return {url, width, height};
-  }
-
-}
-
-class SubEventLine extends Component {
-  render() {
-    return (
-      <View style={eventStyles.detailLine}>
-        <Image key="image" source={this.icon()} style={eventStyles.detailIcon} />
-        {this.textRender()}
-      </View>
-    );
-  }
-}
-
-class EventCategories extends SubEventLine {
-  icon() {
-    return require('./images/event-icons/categories.png');
-  }
-  textRender() {
-    if (this.props.categories.length > 0) {
-      return <Text
-        numberOfLines={1}
-        style={eventStyles.rowText} 
-        >({this.props.categories.slice(0,8).join(', ')})</Text>
-    } else {
-      return null;
-    }
-  }
-}
-
-class EventDateTime extends SubEventLine {
-  icon() {
-    return require('./images/event-icons/datetime.png');
-  }
-  textRender() {
-    if (this.props.start) {
-      return <Text style={eventStyles.rowDateTime}>{this.props.start}</Text>
-    } else {
-      return null;
-    }
-  }
-}
-
-class EventVenue extends SubEventLine {
-  icon() {
-    return require('./images/event-icons/location.png');
-  }
-  textRender() {
-    var components = [];
-    if (this.props.venue.name) {
-      components.push(<Text key="line1" style={eventStyles.rowText}>{this.props.venue.name}</Text>);
-    }
-    if (this.props.venue.address) {
-      components.push(<Text key="line2" style={eventStyles.rowText}>{this.props.venue.address.city + ', ' + this.props.venue.address.country}</Text>);
-    }
-    return <View>{components}</View>
-  }
-}
-
-class EventRow extends Component {
-
-  render() {
-    console.log(this.props.event);
-    var imageProps = this.props.event.getImageProps();
-    return (
-      <View style={eventStyles.row}>
-        <ProportionalImage
-          source={{uri: imageProps.url}}
-          originalWidth={imageProps.width}
-          originalHeight={imageProps.height}
-          style={eventStyles.thumbnail}
-        />
-        <Text
-          numberOfLines={2}
-          style={eventStyles.rowTitle}>{this.props.event.name}</Text>
-        <View style={eventStyles.eventIndent}>
-          <EventCategories categories={this.props.event.annotations.categories} />
-          <EventDateTime start={this.props.event.start_time} end={this.props.event.date_time} />
-          <EventVenue venue={this.props.event.venue} />
-        </View>
-      </View>
-    );
-  }
-}
-
+import { EventListView } from './common/events';
 
 class DancedeetsReact extends Component {
   constructor(props) {
@@ -186,14 +37,7 @@ class DancedeetsReact extends Component {
     return (
       <View
         style={styles.container}>
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={(e) => <EventRow event={new Event(e)} />}
-          style={styles.listView}
-          initialListSize={50}
-          pageSize={30}
-
-        />
+        <EventListView dataSource={this.state.dataSource} />
       </View>
     );
   }
@@ -221,40 +65,6 @@ class DancedeetsReact extends Component {
       .done();
   }
 }
-
-const eventStyles = StyleSheet.create({
-  thumbnail: {
-    flex: 1,
-  },
-  row: {
-    flex: 1,
-    marginLeft: 5,
-    marginRight: 5,
-    marginBottom: 20,
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-  },
-  rowTitle: {
-    fontSize: 24,
-    color: '#70C0FF',
-  },
-  rowDateTime: {
-    color: '#C0FFC0',
-  },
-  rowText: {
-    color: 'white',
-  },
-  detailLine: {
-    marginLeft: 20,
-    flexDirection: 'row',
-  },
-  detailIcon: {
-    marginTop: 5,
-    marginRight: 5,
-    height: 12,
-    width: 12,
-  }
-});
 
 const styles = StyleSheet.create({
   container: {
