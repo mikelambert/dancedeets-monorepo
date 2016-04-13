@@ -80,36 +80,59 @@ class Event {
 
 }
 
-class EventCategories extends Component {
+class SubEventLine extends Component {
   render() {
+    return (
+      <View style={eventStyles.subEventLine}>
+        <Image key="image" source={this.icon()} style={eventStyles.subIcon} />
+        <View style={eventStyles.subEventRightSide}>{this.textRender()}</View>
+      </View>
+    );
+  }
+}
+
+class EventCategories extends SubEventLine {
+  icon() {
+    return require('./images/event-icons/categories.png');
+  }
+  textRender() {
     if (this.props.categories.length > 0) {
       return <Text
         numberOfLines={1}
-        style={eventStyles.rowText}
-        >({this.props.categories.join(', ')})</Text>
+        style={eventStyles.rowText} 
+        >({this.props.categories.slice(0,8).join(', ')})</Text>
     } else {
       return null;
     }
   }
 }
 
-class EventDateTime extends Component {
-  render() {
-    if (this.props.datetime) {
-      return <Text style={eventStyles.rowText}>{this.props.datetime}</Text>
+class EventDateTime extends SubEventLine {
+  icon() {
+    return require('./images/event-icons/datetime.png');
+  }
+  textRender() {
+    if (this.props.start) {
+      return <Text style={eventStyles.rowDateTime}>{this.props.start}</Text>
     } else {
       return null;
     }
   }
 }
 
-class EventVenue extends Component {
-  render() {
+class EventVenue extends SubEventLine {
+  icon() {
+    return require('./images/event-icons/location.png');
+  }
+  textRender() {
+    var components = [];
     if (this.props.venue.name) {
-      return <Text style={eventStyles.rowText}>{this.props.venue.name}</Text>
-    } else {
-      return null;
+      components.push(<Text key="line1" style={eventStyles.rowText}>{this.props.venue.name}</Text>);
     }
+    if (this.props.venue.address) {
+      components.push(<Text key="line2" style={eventStyles.rowText}>{this.props.venue.address.city + ', ' + this.props.venue.address.country}</Text>);
+    }
+    return <View>{components}</View>
   }
 }
 
@@ -131,7 +154,7 @@ class EventRow extends Component {
           style={eventStyles.rowTitle}>{this.props.event.name}</Text>
         <View style={eventStyles.subRow}>
           <EventCategories categories={this.props.event.annotations.categories} />
-          <EventDateTime datetime={this.props.event.start_time} />
+          <EventDateTime start={this.props.event.start_time} end={this.props.event.date_time} />
           <EventVenue venue={this.props.event.venue} />
         </View>
       </View>
@@ -200,6 +223,21 @@ class DancedeetsReact extends Component {
 
 }
 
+var Dummy2 = React.createClass({
+  render: function() {
+    return      (
+  <View style={styles.container}>
+
+        <View style={styles.descriptionContainer}>
+          <View style={styles.padding}/>
+          <Text style={styles.descriptionText} numberOfLines={1} >
+            Here is a really long text that you can do nothing about, its gonna be long wether you like it or not, so be prepared for it to go off screen. Right? Right..!
+          </Text>
+        </View>
+  </View>);
+  }
+});
+
 const eventStyles = StyleSheet.create({
   thumbnail: {
     flex: 1,
@@ -225,6 +263,19 @@ const eventStyles = StyleSheet.create({
   subRow: {
     marginLeft: 20,
   },
+  subEventLine: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  subEventRightSide: {
+    flex: 1.0,
+  },
+  subIcon: {
+    marginTop: 5,
+    marginRight: 5,
+    height: 12,
+    width: 12,
+  }
 });
 
 const styles = StyleSheet.create({
@@ -232,7 +283,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 
