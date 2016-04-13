@@ -94,7 +94,11 @@ class EventRow extends Component {
           style={eventStyles.thumbnail}
         />
         <Text style={eventStyles.rowTitle}>{this.props.event.name}</Text>
-        <Text style={eventStyles.rowDateTime}>{this.props.event.start_time}</Text>
+        <View style={eventStyles.subRow}>
+          <Text style={eventStyles.rowText}>{this.props.event.annotations.categories+' '}</Text>
+          <Text style={eventStyles.rowDateTime}>{this.props.event.start_time+' '}</Text>
+          <Text style={eventStyles.rowText}>{this.props.event.venue.name+' '}</Text>
+        </View>
       </View>
     );
   }
@@ -122,14 +126,17 @@ class DancedeetsReact extends Component {
     }
 
     return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={(e) => <EventRow event={new Event(e)} />}
-        style={styles.listView}
-        initialListSize={50}
-        pageSize={30}
+      <View
+        style={styles.container}>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={(e) => <EventRow event={new Event(e)} />}
+          style={styles.listView}
+          initialListSize={50}
+          pageSize={30}
 
-      />
+        />
+      </View>
     );
   }
 
@@ -164,22 +171,33 @@ const eventStyles = StyleSheet.create({
   },
   row: {
     flex: 1,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 20,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    backgroundColor: '#F5FCFF',
   },
   rowTitle: {
-    fontWeight: 'bold',
+    fontSize: 24,
+    color: '#70C0FF',
   },
-
+  rowDateTime: {
+    color: '#C0FFC0',
+  },
+  rowText: {
+    color: 'white',
+  },
+  subRow: {
+    marginLeft: 20,
+  },
 });
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#000',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
 });
 
