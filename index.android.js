@@ -80,6 +80,39 @@ class Event {
 
 }
 
+class EventCategories extends Component {
+  render() {
+    if (this.props.categories.length > 0) {
+      return <Text
+        numberOfLines={1}
+        style={eventStyles.rowText}
+        >({this.props.categories.join(', ')})</Text>
+    } else {
+      return null;
+    }
+  }
+}
+
+class EventDateTime extends Component {
+  render() {
+    if (this.props.datetime) {
+      return <Text style={eventStyles.rowText}>{this.props.datetime}</Text>
+    } else {
+      return null;
+    }
+  }
+}
+
+class EventVenue extends Component {
+  render() {
+    if (this.props.venue.name) {
+      return <Text style={eventStyles.rowText}>{this.props.venue.name}</Text>
+    } else {
+      return null;
+    }
+  }
+}
+
 class EventRow extends Component {
 
   render() {
@@ -93,11 +126,13 @@ class EventRow extends Component {
           originalHeight={imageProps.height}
           style={eventStyles.thumbnail}
         />
-        <Text style={eventStyles.rowTitle}>{this.props.event.name}</Text>
+        <Text
+          numberOfLines={2}
+          style={eventStyles.rowTitle}>{this.props.event.name}</Text>
         <View style={eventStyles.subRow}>
-          <Text style={eventStyles.rowText}>{this.props.event.annotations.categories+' '}</Text>
-          <Text style={eventStyles.rowDateTime}>{this.props.event.start_time+' '}</Text>
-          <Text style={eventStyles.rowText}>{this.props.event.venue.name+' '}</Text>
+          <EventCategories categories={this.props.event.annotations.categories} />
+          <EventDateTime datetime={this.props.event.start_time} />
+          <EventVenue venue={this.props.event.venue} />
         </View>
       </View>
     );
