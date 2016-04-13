@@ -6,28 +6,161 @@
 import React, {
   AppRegistry,
   Component,
+  Image,
+  ListView,
   StyleSheet,
   Text,
-  View
+  View,
 } from 'react-native';
 
-class DancedeetsReact extends Component {
+var ProportionalImage = React.createClass({
+  getInitialState() {
+    return {
+      style: {}
+    };
+  },
+
+  propTypes: {
+    originalWidth: React.PropTypes.number.isRequired,
+    originalHeight: React.PropTypes.number.isRequired,
+  },
+
+  onLayout(e) {
+    var layout = e.nativeEvent.layout;
+    var aspectRatio = this.props.originalWidth / this.props.originalHeight;
+    var measuredHeight = layout.width / aspectRatio;
+    var currentHeight = layout.height;
+
+    if (measuredHeight != currentHeight) {
+      this.setState({
+        style: {
+          height: measuredHeight
+        }
+      });
+    }
+  },
+
   render() {
+    // We catch the onLayout in the view, find the size, then resize the child (before it is laid out?)
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Shake or press menu button for dev menu
-        </Text>
+      <View
+        onLayout={this.onLayout}
+        >
+        <Image
+          {...this.props}
+          style={[this.props.style, this.state.style]}
+        />
+      </View>
+    );
+  }
+});
+
+
+class EventRow extends Component {
+
+  getImageProps() {
+    var url = this.props.event.picture;
+    var width = 100;
+    var height = 100;
+    if (this.props.event.cover != null && this.props.event.cover.images.length > 0) {
+      var image = this.props.event.cover.images[0];
+      url = image.source;
+      width = image.width;
+      height = image.height;
+    }
+    return {url, width, height};
+  }
+
+  render() {
+    var imageProps = this.getImageProps();
+    return (
+      <View style={eventStyles.row}>
+        <ProportionalImage
+          source={{uri: imageProps.url}}
+          originalWidth={imageProps.width}
+          originalHeight={imageProps.height}
+          style={eventStyles.thumbnail}
+        />
+        <Text style={eventStyles.rowTitle}>{this.props.event.name}</Text>
+        <Text style={eventStyles.rowDateTime}>{this.props.event.start_time}</Text>
       </View>
     );
   }
 }
+
+
+class DancedeetsReact extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (row1, row2) => row1 !== row2,
+      }),
+      loaded: false,
+    };
+  }
+
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  render() {
+    if (!this.state.loaded) {
+      return this.renderLoadingView();
+    }
+
+    return (
+      <ListView
+        dataSource={this.state.dataSource}
+        renderRow={(e) => <EventRow event={e} />}
+        style={styles.listView}
+        initialListSize={50}
+        pageSize={30}
+
+      />
+    );
+  }
+
+  renderLoadingView() {
+    return (
+      <View style={styles.container}>
+        <Text>
+          Loading events...
+        </Text>
+      </View>
+    );
+  }
+
+  fetchData() {
+    fetch("http://www.dancedeets.com/api/v1.2/search?location=Taipei&time_period=UPCOMING")
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+        this.setState({
+          dataSource: this.state.dataSource.cloneWithRows(responseData.results),
+          loaded: true,
+        });
+      })
+      .done();
+  }
+
+}
+
+const eventStyles = StyleSheet.create({
+  thumbnail: {
+    flex: 1,
+  },
+  row: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+    backgroundColor: '#F5FCFF',
+  },
+  rowTitle: {
+    fontWeight: 'bold',
+  },
+
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -35,16 +168,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
 });
 
