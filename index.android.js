@@ -55,15 +55,22 @@ var ProportionalImage = React.createClass({
   }
 });
 
-
-class EventRow extends Component {
+class Event {
+  constructor(eventData) {
+    for (var attr in eventData) {
+      if (eventData.hasOwnProperty(attr)) {
+        this[attr] = eventData[attr];
+      }
+    }
+    return this;
+  }
 
   getImageProps() {
-    var url = this.props.event.picture;
+    var url = this.picture;
     var width = 100;
     var height = 100;
-    if (this.props.event.cover != null && this.props.event.cover.images.length > 0) {
-      var image = this.props.event.cover.images[0];
+    if (this.cover != null && this.cover.images.length > 0) {
+      var image = this.cover.images[0];
       url = image.source;
       width = image.width;
       height = image.height;
@@ -71,8 +78,13 @@ class EventRow extends Component {
     return {url, width, height};
   }
 
+}
+
+class EventRow extends Component {
+
   render() {
-    var imageProps = this.getImageProps();
+    console.log(this.props.event);
+    var imageProps = this.props.event.getImageProps();
     return (
       <View style={eventStyles.row}>
         <ProportionalImage
@@ -112,7 +124,7 @@ class DancedeetsReact extends Component {
     return (
       <ListView
         dataSource={this.state.dataSource}
-        renderRow={(e) => <EventRow event={e} />}
+        renderRow={(e) => <EventRow event={new Event(e)} />}
         style={styles.listView}
         initialListSize={50}
         pageSize={30}
