@@ -1,72 +1,22 @@
+import React, { Component } from 'react-native'
+import { createStore, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
 
-import React, {
-  Component,
-  ListView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import reducers from './reducers'
+import AppContainer from './containers/AppContainer'
 
-import { EventListView } from './events';
+const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
+const store = createStoreWithMiddleware(reducers)
 
-class DancedeetsReact extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 !== row2,
-      }),
-      loaded: false,
-    };
-  }
-
-  componentDidMount() {
-    this.fetchData();
-  }
-
-  render() {
-    if (!this.state.loaded) {
-      return this.renderLoadingView();
+export default class App extends Component {
+    render() {
+        return (
+            <Provider store={store}>
+                <AppContainer />
+            </Provider>
+        )
     }
-
-    return (
-      <View
-        style={styles.container}>
-        <EventListView dataSource={this.state.dataSource} />
-      </View>
-    );
-  }
-
-  renderLoadingView() {
-    return (
-      <View style={styles.container}>
-        <Text>
-          Loading events...
-        </Text>
-      </View>
-    );
-  }
-
-  fetchData() {
-    fetch("http://www.dancedeets.com/api/v1.2/search?location=Taipei&time_period=UPCOMING")
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(responseData);
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(responseData.results),
-          loaded: true,
-        });
-      })
-      .done();
-  }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#000',
-    flex: 1,
-    justifyContent: 'center',
-  },
-});
-
-module.exports = DancedeetsReact;
+module.exports = App;

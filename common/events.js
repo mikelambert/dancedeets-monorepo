@@ -5,6 +5,7 @@ import React, {
   ListView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -73,20 +74,22 @@ class EventRow extends Component {
     var imageProps = this.props.event.getImageProps();
     return (
       <View style={eventStyles.row}>
-        <ProportionalImage
-          source={{uri: imageProps.url}}
-          originalWidth={imageProps.width}
-          originalHeight={imageProps.height}
-          style={eventStyles.thumbnail}
-        />
-        <Text
-          numberOfLines={2}
-          style={eventStyles.rowTitle}>{this.props.event.name}</Text>
-        <View style={eventStyles.eventIndent}>
-          <EventCategories categories={this.props.event.annotations.categories} />
-          <EventDateTime start={this.props.event.start_time} end={this.props.event.date_time} />
-          <EventVenue venue={this.props.event.venue} />
-        </View>
+        <TouchableOpacity onPress={this.props.onEventSelected} activeOpacity={0.5}>
+          <ProportionalImage
+            source={{uri: imageProps.url}}
+            originalWidth={imageProps.width}
+            originalHeight={imageProps.height}
+            style={eventStyles.thumbnail}
+          />
+          <Text
+            numberOfLines={2}
+            style={eventStyles.rowTitle}>{this.props.event.name}</Text>
+          <View style={eventStyles.eventIndent}>
+            <EventCategories categories={this.props.event.annotations.categories} />
+            <EventDateTime start={this.props.event.start_time} end={this.props.event.date_time} />
+            <EventVenue venue={this.props.event.venue} />
+          </View>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -94,15 +97,21 @@ class EventRow extends Component {
 
 
 class EventListView extends Component {
-  renderRow(e) {
-    return <EventRow event={new Event(e)} />
+  constructor(props) {
+    super(props);
   }
-
   render() {
+    var onEventSelected = this.props.onEventSelected;
     return (
         <ListView
           dataSource={this.props.dataSource}
-          renderRow={this.renderRow}
+          renderRow={function(e) {
+    return <EventRow
+      event={new Event(e)}
+      onEventSelected={onEventSelected}
+    />
+  }}
+
           initialListSize={50}
           pageSize={30}
         />
