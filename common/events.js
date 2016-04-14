@@ -74,7 +74,7 @@ class EventRow extends Component {
     var imageProps = this.props.event.getImageProps();
     return (
       <View style={eventStyles.row}>
-        <TouchableOpacity onPress={this.props.onEventSelected} activeOpacity={0.5}>
+        <TouchableOpacity onPress={() => {this.props.onEventSelected(this.props.event)}} activeOpacity={0.5}>
           <ProportionalImage
             source={{uri: imageProps.url}}
             originalWidth={imageProps.width}

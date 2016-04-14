@@ -11,8 +11,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		onEventSelected: () => {
-			dispatch(navigatePush('EventView'))
+		onEventSelected: (event) => {
+			dispatch(navigatePush(event.name))
 		}
 	}
 }

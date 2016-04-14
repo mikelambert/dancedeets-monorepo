@@ -3,6 +3,9 @@
 import React, { NavigationExperimental, View, StyleSheet, PropTypes } from 'react-native'
 import { connect } from 'react-redux'
 
+// My overrides
+import NavigationHeaderTitle from '../react-navigation'
+
 import EventListContainer from './EventListContainer'
 import Second from './Second'
 import Third from './Third'
@@ -36,11 +39,16 @@ class AppContainer extends React.Component {
 					// Also note that we must explicity pass <NavigationHeader /> an onNavigate prop
 					// because we are no longer relying on an onNavigate function being available in
 					// the context (something NavigationRootContainer would have given us).
-					<NavigationHeader
+					props.scene.index > 0 ? <NavigationHeader
 						{...props}
-						getTitle={state => state.key}
-						onNavigate={onBack}
-					/>
+						navigationProps={props}
+						renderTitleComponent={(props) => {
+						  return <NavigationHeaderTitle>{props.scene.navigationState.key}</NavigationHeaderTitle>;
+						}}
+						renderLeftComponent={(props) => {
+						  return props.scene.index > 0 ? <NavigationHeader.BackButton onNavigate={onBack}/> : null;
+						}}
+					/> : null
 				)}
 				renderScene={props => (
 					// Again, we pass our navigationState from the Redux store to <NavigationCard />.
