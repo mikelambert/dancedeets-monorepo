@@ -31,7 +31,7 @@ class AppContainer extends React.Component {
 				navigationState={navigationState}
 				style={styles.outerContainer}
 				onNavigate={(action) => {
-					if (action.type === 'back') {
+					if (action.type === 'back' || action.type === 'BackAction') {
 						onBack();
 					}
 				}}
@@ -40,13 +40,9 @@ class AppContainer extends React.Component {
 					// because we are no longer relying on an onNavigate function being available in
 					// the context (something NavigationRootContainer would have given us).
 					props.scene.index > 0 ? <NavigationHeader
-						{...props}
-						navigationProps={props}
+                        {...props}
 						renderTitleComponent={(props) => {
-						  return <NavigationHeaderTitle>{props.scene.navigationState.key}</NavigationHeaderTitle>;
-						}}
-						renderLeftComponent={(props) => {
-						  return props.scene.index > 0 ? <NavigationHeader.BackButton onNavigate={onBack}/> : null;
+						  return <NavigationHeaderTitle>{props.scene.navigationState.title}</NavigationHeaderTitle>;
 						}}
 					/> : null
 				)}
