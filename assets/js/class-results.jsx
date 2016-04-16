@@ -249,8 +249,8 @@ var StudioClass = React.createClass({
       <div>
         <a href={this.props.studio_class.url}>
         <StudioImage studioName={this.props.studio_class.location} />
-        {this.props.studio_class.location}: {this.props.studio_class.name}
         </a>
+        {this.props.studio_class.location}: {this.props.studio_class.name}
       </div>
     );
   },
