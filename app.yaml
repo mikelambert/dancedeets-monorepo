@@ -78,6 +78,12 @@ handlers:
 - url: /tools/.*
   script: main.application
   login: admin
+- url: /graphql.*
+  script: graphql_server.app
+- url: /graphiql.*
+  script: graphql_server.app
+- url: /static/graphql.*
+  script: graphql_server.app
 - url: /admin.*
   script: admin.app
   login: admin

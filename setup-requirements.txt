@@ -39,6 +39,10 @@ Flask
 wtforms
 git+https://github.com/mikelambert/wtforms-appengine
 
+# Relay / GraphQL
+flask_graphql
+graphene
+
 # Google
 GoogleAppEngineMapReduce
 GoogleAppEnginePipeline
