@@ -47,7 +47,10 @@ class WebhookPageHandler(webapp2.RequestHandler):
         if json_body['object'] == 'user':
             user_ids = [x['id'] for x in json_body['entry'] if 'events' in x['changed_fields']]
             changed_users = users.User.get_by_ids(user_ids)
-            for user in changed_users:
+            for user_ids, user in zip(user_ids, changed_users):
+                if not user:
+                    logging.error("Received webhook call for user id %s, but no User object.", user_id)
+                    continue
                 try:
                     potential_events_reloading.load_potential_events_for_user(user)
                 except fb_api.ExpiredOAuthToken:
