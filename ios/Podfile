@@ -1,0 +1,40 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+target 'DanceDeets' do
+  pod 'Mixpanel'
+  #pod 'Google-Mobile-Ads-SDK', '~> 7.0'
+  pod 'React', :subspecs => [
+    'Core',
+    'RCTActionSheet',
+    'RCTImage',
+    'RCTNetwork',
+    'RCTText',
+    'RCTWebSocket',
+    'RCTPushNotification',
+    'RCTLinkingIOS',
+    'RCTVibration',
+  ], :path => '../node_modules/react-native'
+  pod 'react-native-fbsdkcore', :path => '../node_modules/react-native-fbsdk/iOS/core'
+  pod 'react-native-fbsdklogin', :path => '../node_modules/react-native-fbsdk/iOS/login'
+  pod 'react-native-fbsdkshare', :path => '../node_modules/react-native-fbsdk/iOS/share'
+end
+
+# Start the React Native JS packager server when running the project in Xcode.
+
+start_packager = %q(
+if nc -w 5 -z localhost 8081 ; then
+  if ! curl -s "http://localhost:8081/status" | grep -q "packager-status:running" ; then
+    echo "Port 8081 already in use, packager is either not running or not running correctly"
+    exit 2
+  fi
+else
+  open $SRCROOT/../../node_modules/react-native/packager/launchPackager.command || echo "Can't start packager automatically"
+fi
+)
+
+post_install do |installer|
+  target = installer.pods_project.targets.select{|t| 'React' == t.name}.first
+  phase = target.new_shell_script_build_phase('Run Script')
+  phase.shell_script = start_packager
+end
+

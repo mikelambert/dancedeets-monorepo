@@ -1,4 +1,4 @@
-rootProject.name = 'DancedeetsReact'
+rootProject.name = 'DanceDeets'
 
 include ':app'
 include ':react-native-fbsdk'
