@@ -6,7 +6,7 @@ const initialNavState = {
 	key: 'MainNavigation',
 	index: 0,
 	children: [
-		{ key: 'EventList' }
+		{ key: 'EventList', title: 'DanceDeets' }
 	]
 }
 
@@ -40,6 +40,6 @@ function navigationState(state = initialNavState, action) {
 
 const appReducers = combineReducers({
 	navigationState
-})
+});
 
 export default appReducers

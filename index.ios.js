@@ -1,4 +1,4 @@
 import React, { AppRegistry } from 'react-native'
-import App from './common/app'
+import setup from './common/setup'
 
-AppRegistry.registerComponent('DancedeetsReact', () => App);
+AppRegistry.registerComponent('DancedeetsReact', setup);
