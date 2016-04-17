@@ -1,15 +1,21 @@
 package com.dancedeetsreact;
 
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.facebook.react.ReactActivity;
-import com.kevinejohn.RNMixpanel.RNMixpanel;
-import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
+import com.kevinejohn.RNMixpanel.RNMixpanel;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends ReactActivity {
+    CallbackManager mCallbackManager;
 
     /**
      * Returns the name of the main component registered from JavaScript.
@@ -38,7 +44,19 @@ public class MainActivity extends ReactActivity {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
             new RNMixpanel(),
-            new FBSDKPackage()
+            new FBSDKPackage(mCallbackManager)
         );
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }
