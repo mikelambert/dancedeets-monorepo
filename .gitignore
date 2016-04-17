@@ -20,7 +20,10 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-project.xcworkspace
+# Let's make this one visible...since it's existence can break us when run-ios attempts its auto-detection:
+# xcodebuild: error: 'project.xcworkspace' does not exist.
+# xcodebuild: error: The workspace named "DanceDeets" does not contain a scheme named "project". The "-list" option can be used to find the names of the schemes in the workspace
+# project.xcworkspace
 
 # CocoaPods
 Pods
