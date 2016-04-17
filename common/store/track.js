@@ -24,8 +24,8 @@
 
 'use strict';
 
-const MixPanel = require('react-native-mixpanel');
-const {AppEventsLogger} = require('react-native-fbsdk');
+import Mixpanel from 'react-native-mixpanel';
+import {AppEventsLogger} from 'react-native-fbsdk';
 
 import type {Action} from '../actions/types';
 
