@@ -29,8 +29,8 @@ var createStoreWithMiddleware = applyMiddleware(thunk, promise, array, analytics
 function configureStore(onComplete: ?() => void) {
   // TODO(frantic): reconsider usage of redux-persist, maybe add cache breaker
   // Create a fresh store:
-  // const store = createStoreWithMiddleware(reducers);
-  const store = autoRehydrate()(createStoreWithMiddleware)(reducers);
+  const store = createStoreWithMiddleware(reducers);
+  // const store = autoRehydrate()(createStoreWithMiddleware)(reducers);
   persistStore(store, {storage: AsyncStorage}, onComplete);
   if (isDebuggingInChrome) {
     window.store = store;
