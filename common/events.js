@@ -31,7 +31,7 @@ class EventCategories extends SubEventLine {
     if (this.props.categories.length > 0) {
       return <Text
         numberOfLines={1}
-        style={eventStyles.rowText} 
+        style={eventStyles.rowText}
         >({this.props.categories.slice(0,8).join(', ')})</Text>
     } else {
       return null;
@@ -106,12 +106,11 @@ class EventListView extends Component {
         <ListView
           dataSource={this.props.dataSource}
           renderRow={function(e) {
-    return <EventRow
-      event={new Event(e)}
-      onEventSelected={onEventSelected}
-    />
-  }}
-
+            return <EventRow
+              event={new Event(e)}
+              onEventSelected={onEventSelected}
+            />
+          }}
           initialListSize={50}
           pageSize={30}
         />
@@ -131,6 +130,8 @@ const eventStyles = StyleSheet.create({
     marginBottom: 20,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
+    // http://stackoverflow.com/questions/36605906/what-is-the-row-container-for-a-listview-component
+    overflow: 'hidden',
   },
   rowTitle: {
     fontSize: 24,
