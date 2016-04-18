@@ -100,6 +100,7 @@ class LoginScreen extends React.Component {
     };
   }
 }
+export default connect(select)(LoginScreen);
 
 const scale = Dimensions.get('window').width / 375;
 
@@ -153,5 +154,3 @@ var styles = StyleSheet.create({
     padding: 15,
   },
 });
-
-module.exports = connect()(LoginScreen);

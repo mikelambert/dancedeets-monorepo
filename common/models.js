@@ -1,4 +1,4 @@
-class Event {
+export class Event {
   constructor(eventData) {
     for (var attr in eventData) {
       if (eventData.hasOwnProperty(attr)) {
@@ -20,9 +20,4 @@ class Event {
     }
     return {url, width, height};
   }
-
-}
-
-module.exports = {
-    Event,
 }

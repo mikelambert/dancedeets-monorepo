@@ -96,7 +96,7 @@ class EventRow extends Component {
 }
 
 
-class EventListView extends Component {
+export class EventListView extends Component {
   constructor(props) {
     super(props);
   }
@@ -154,7 +154,3 @@ const eventStyles = StyleSheet.create({
     width: 12,
   }
 });
-
-module.exports = {
-    EventListView,
-};

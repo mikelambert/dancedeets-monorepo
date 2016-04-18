@@ -18,7 +18,14 @@ import StatusBar from 'StatusBar';
 import { connect } from 'react-redux';
 import { version } from './env.js';
 
-class App extends React.Component {
+
+function select(store) {
+  return {
+    isLoggedIn: store.user.isLoggedIn || store.user.hasSkippedLogin,
+  };
+}
+
+export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.loadAppData = this.loadAppData.bind(this);
@@ -62,19 +69,11 @@ class App extends React.Component {
     );
   }
   // Add <PushNotificationsController /> back in to <View>...
-
 }
+export default connect(select)(App);
 
 var styles = StyleSheet.create({
   container: {
     flex: 1,
   },
 });
-
-function select(store) {
-  return {
-    isLoggedIn: store.user.isLoggedIn || store.user.hasSkippedLogin,
-  };
-}
-
-module.exports = connect(select)(App);

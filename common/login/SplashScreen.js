@@ -48,6 +48,8 @@ class SplashScreen extends React.Component {
     //<LoginButton source="First screen" />
   }
 }
+export default connect()(SplashScreen);
+
 var styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -58,5 +60,3 @@ var styles = StyleSheet.create({
     height: undefined,
   }
 });
-
-module.exports = connect()(SplashScreen);

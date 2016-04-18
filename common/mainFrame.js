@@ -9,7 +9,7 @@ import React, {
 
 import { EventListView } from './events';
 
-class EventListContainer extends Component {
+export default class EventListContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -70,5 +70,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-module.exports = EventListContainer;

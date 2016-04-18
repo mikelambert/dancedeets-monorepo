@@ -14,7 +14,7 @@ import configureStore from '../store/configureStore';
 import {serverURL} from './env';
 import Mixpanel from 'react-native-mixpanel';
 
-function setup(): React.Component {
+export default function setup(): React.Component {
   console.disableYellowBox = true;
 
   if (__DEV__) {
@@ -52,5 +52,3 @@ global.LOG = (...args) => {
   console.log('\\------------------------------/');
   return args[args.length - 1];
 };
-
-module.exports = setup;

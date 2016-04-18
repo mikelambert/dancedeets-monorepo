@@ -32,7 +32,7 @@ import type {Action} from '../actions/types';
 // Implement Mixpanel
 // Implement https://github.com/lwansbrough/react-native-google-analytics ?
 
-function track(action: Action): void {
+export default function track(action: Action): void {
   switch (action.type) {
     case 'LOGGED_IN':
       AppEventsLogger.logEvent('Login', 1, {source: action.source || ''});
@@ -54,5 +54,3 @@ function track(action: Action): void {
       break;
   }
 }
-
-module.exports = track;

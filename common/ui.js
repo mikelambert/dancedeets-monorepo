@@ -2,19 +2,17 @@
 import React, {
   Image,
   View,
+  Component,
 } from 'react-native';
 
-var ProportionalImage = React.createClass({
-  getInitialState() {
-    return {
+export class ProportionalImage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       style: {}
-    };
-  },
-
-  propTypes: {
-    originalWidth: React.PropTypes.number.isRequired,
-    originalHeight: React.PropTypes.number.isRequired,
-  },
+    }
+    this.onLayout = this.onLayout.bind(this);
+  }
 
   onLayout(e) {
     var layout = e.nativeEvent.layout;
@@ -29,7 +27,7 @@ var ProportionalImage = React.createClass({
         }
       });
     }
-  },
+  }
 
   render() {
     // We catch the onLayout in the view, find the size, then resize the child (before it is laid out?)
@@ -44,8 +42,9 @@ var ProportionalImage = React.createClass({
       </View>
     );
   }
-});
-
-module.exports = {
-    ProportionalImage,
 }
+
+ProportionalImage.propTypes = {
+  originalWidth: React.PropTypes.number.isRequired,
+  originalHeight: React.PropTypes.number.isRequired,
+};

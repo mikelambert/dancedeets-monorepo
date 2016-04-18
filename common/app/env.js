@@ -6,8 +6,6 @@
 
 'use strict';
 
-module.exports = {
-  testMenuEnabled: true,
-  serverURL: 'http://localhost:8080',
-  version: 24,
-};
+export const testMenuEnabled = true;
+export const serverURL = 'http://localhost:8080';
+export const version = 24;

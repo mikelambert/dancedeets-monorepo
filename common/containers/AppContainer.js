@@ -25,7 +25,7 @@ class AppContainer extends React.Component {
 		return (
 
 			// Note that we are not using a NavigationRootContainer here because Redux is handling
-			// the reduction of our state for us. Instead, we grab the navigationState we have in 
+			// the reduction of our state for us. Instead, we grab the navigationState we have in
 			// our Redux store and pass it directly to the <NavigationAnimatedView />.
 			<NavigationAnimatedView
 				navigationState={navigationState}
@@ -61,7 +61,7 @@ class AppContainer extends React.Component {
 
 	_renderScene({scene}) {
 		const { navigationState } = scene
-		
+
 		switch(navigationState.key) {
 		case 'EventList':
 			return <EventListContainer />
@@ -79,15 +79,6 @@ AppContainer.propTypes = {
 	onBack: PropTypes.func.isRequired
 }
 
-const styles = StyleSheet.create({
-	outerContainer: {
-		flex: 1
-	},
-	container: {
-		flex: 1
-	}
-})
-
 export default connect(
 	state => ({
 		navigationState: state.navigationState
@@ -96,4 +87,14 @@ export default connect(
 		onNavigate: (destState) => dispatch(navigatePush(destState)),
 		onBack: () => dispatch(navigatePop())
 	})
-)(AppContainer)
+)(AppContainer);
+
+
+const styles = StyleSheet.create({
+	outerContainer: {
+		flex: 1
+	},
+	container: {
+		flex: 1
+	}
+})
