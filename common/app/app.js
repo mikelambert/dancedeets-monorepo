@@ -9,7 +9,7 @@
 
 import React from 'React';
 import AppState from 'AppState';
-import LoginScreen from '../login/LoginScreen';
+import SplashScreen from '../login/SplashScreen';
 import StyleSheet from 'StyleSheet';
 import AppContainer from '../containers/AppContainer';
 // import CodePush from 'react-native-code-push';
@@ -48,7 +48,7 @@ class App extends React.Component {
 
   render() {
     if (!this.props.isLoggedIn) {
-      return <LoginScreen />;
+      return <SplashScreen />;
     }
     return (
       <View style={styles.container}>

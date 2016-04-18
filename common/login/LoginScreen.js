@@ -13,7 +13,7 @@ import StatusBarIOS from 'StatusBarIOS';
 import StyleSheet from 'StyleSheet';
 import View from 'View';
 // TODO: Maybe when we have styles, use a DDText.js file?
-import { Text } from 'React';
+import { Text } from 'react-native';
 // TODO: import LoginButton from '../common/LoginButton';
 import TouchableOpacity from 'TouchableOpacity';
 
@@ -34,51 +34,52 @@ class LoginScreen extends React.Component {
   }
 
   render() {
-    return null;
-    /*
     return (
       <Image
         style={styles.container}
-        source={require('./img/login-background.png')}>
-        <TouchableOpacity
-          accessibilityLabel="Skip login"
-          accessibilityTraits="button"
-          style={styles.skip}
-          onPress={() => this.props.dispatch(skipLogin())}>
-          <Animated.Image
-            style={this.fadeIn(2800)}
-            source={require('./img/x.png')}
-          />
-        </TouchableOpacity>
-        <View style={styles.section}>
-          <Animated.Image
-            style={this.fadeIn(0)}
-            source={require('./img/devconf-logo.png')}
-          />
-        </View>
-        <View style={styles.section}>
-          <Animated.Text style={[styles.h1, this.fadeIn(700, -20)]}>
-            code to
-          </Animated.Text>
-          <Animated.Text style={[styles.h1, {marginTop: -30}, this.fadeIn(700, 20)]}>
-            connect
-          </Animated.Text>
-          <Animated.Text style={[styles.h2, this.fadeIn(1000, 10)]}>
-            April 12 + 13 / Fort Mason Center
-          </Animated.Text>
-          <Animated.Text style={[styles.h3, this.fadeIn(1200, 10)]}>
-            SAN FRANCISCO, CALIFORNIA
-          </Animated.Text>
-        </View>
-        <Animated.View style={[styles.section, styles.last, this.fadeIn(2500, 20)]}>
-          <Text style={styles.loginComment}>
-            Use Facebook to find your friends at F8.
-          </Text>
-        </Animated.View>
-        <LoginButton source="First screen" />
+        source={require('./images/LaunchScreen.jpg')}>
+        <Image
+          style={styles.container}
+            source={require('./images/LaunchScreenText.png')}>
+          <TouchableOpacity
+            accessibilityLabel="Skip login"
+            accessibilityTraits="button"
+            style={styles.skip}
+            onPress={() => this.props.dispatch(skipLogin())}>
+            <Animated.Image
+              style={this.fadeIn(2800)}
+              source={require('./images/x.png')}
+            />
+          </TouchableOpacity>
+          <View style={styles.section}>
+            <Animated.Image
+              style={this.fadeIn(0)}
+              source={require('./images/devconf-logo.png')}
+            />
+          </View>
+          <View style={styles.section}>
+            <Animated.Text style={[styles.h1, this.fadeIn(700, -20)]}>
+              code to
+            </Animated.Text>
+            <Animated.Text style={[styles.h1, {marginTop: -30}, this.fadeIn(700, 20)]}>
+              connect
+            </Animated.Text>
+            <Animated.Text style={[styles.h2, this.fadeIn(1000, 10)]}>
+              April 12 + 13 / Fort Mason Center
+            </Animated.Text>
+            <Animated.Text style={[styles.h3, this.fadeIn(1200, 10)]}>
+              SAN FRANCISCO, CALIFORNIA
+            </Animated.Text>
+          </View>
+          <Animated.View style={[styles.section, styles.last, this.fadeIn(2500, 20)]}>
+            <Text style={styles.loginComment}>
+              Use Facebook to find your friends at F8.
+            </Text>
+          </Animated.View>
+        </Image>
       </Image>
     );
-    */
+    //<LoginButton source="First screen" />
   }
 
   fadeIn(delay, from = 0) {
