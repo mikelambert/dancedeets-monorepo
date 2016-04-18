@@ -22,7 +22,7 @@
 
 'use strict';
 
-const track = require('./track');
+import track from './track';
 
 module.exports = store => next => action => {
   track(action);

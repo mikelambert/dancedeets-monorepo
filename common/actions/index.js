@@ -5,10 +5,10 @@
 
 'use strict';
 
-import login from './login';
-import navigation from './navigation';
+import * as login from './login';
+import * as navigation from './navigation';
 
-export default {
+module.exports = {
   ...login,
   ...navigation,
 };

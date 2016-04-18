@@ -6,10 +6,10 @@
 
 'use strict';
 
-const FacebookSDK = require('FacebookSDK');
-const ActionSheetIOS = require('ActionSheetIOS');
-const {Platform} = require('react-native');
-const Alert = require('Alert');
+import FacebookSDK from 'FacebookSDK';
+import ActionSheetIOS from 'ActionSheetIOS';
+import {Platform} from 'react-native';
+import Alert from 'Alert';
 
 import type { Action, ThunkAction } from './types';
 

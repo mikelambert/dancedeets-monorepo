@@ -4,21 +4,21 @@
  */
 'use strict';
 
-var Animated = require('Animated');
-var Dimensions = require('Dimensions');
-var F8Colors = require('../Colors');
-var Image = require('Image');
-var React = require('React');
-var StatusBarIOS = require('StatusBarIOS');
-var StyleSheet = require('StyleSheet');
-var View = require('View');
+import Animated from 'Animated';
+import Dimensions from 'Dimensions';
+import F8Colors from '../Colors';
+import Image from 'Image';
+import React from 'React';
+import StatusBarIOS from 'StatusBarIOS';
+import StyleSheet from 'StyleSheet';
+import View from 'View';
 // TODO: Maybe when we have styles, use a DDText.js file?
-var { Text } = require('React');
-// TODO: var LoginButton = require('../common/LoginButton');
-var TouchableOpacity = require('TouchableOpacity');
+import { Text } from 'React';
+// TODO: import LoginButton from '../common/LoginButton';
+import TouchableOpacity from 'TouchableOpacity';
 
-var { skipLogin } = require('../actions');
-var { connect } = require('react-redux');
+import { skipLogin } from '../actions';
+import { connect } from 'react-redux';
 
 class LoginScreen extends React.Component {
   constructor(props) {

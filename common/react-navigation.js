@@ -27,7 +27,7 @@
  */
 'use strict';
 
-const React = require('react-native');
+import React from 'react-native';
 
 const {
   Platform,

@@ -7,16 +7,16 @@
 
 'use strict';
 
-var React = require('React');
-var AppState = require('AppState');
-var LoginScreen = require('../login/LoginScreen');
-var StyleSheet = require('StyleSheet');
-var AppContainer = require('../containers/AppContainer');
-// var CodePush = require('react-native-code-push');
-var View = require('View');
-var StatusBar = require('StatusBar');
-var { connect } = require('react-redux');
-var { version } = require('./env.js');
+import React from 'React';
+import AppState from 'AppState';
+import LoginScreen from '../login/LoginScreen';
+import StyleSheet from 'StyleSheet';
+import AppContainer from '../containers/AppContainer';
+// import CodePush from 'react-native-code-push';
+import View from 'View';
+import StatusBar from 'StatusBar';
+import { connect } from 'react-redux';
+import { version } from './env.js';
 
 class App extends React.Component {
   constructor(props) {

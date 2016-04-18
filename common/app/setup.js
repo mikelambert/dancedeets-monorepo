@@ -7,7 +7,7 @@
 'use strict';
 
 import App from './app';
-//var FacebookSDK = require('FacebookSDK');
+//import FacebookSDK from 'FacebookSDK';
 import React from 'React';
 import {Provider} from 'react-redux';
 import configureStore from '../store/configureStore';
