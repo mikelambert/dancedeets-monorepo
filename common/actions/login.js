@@ -36,46 +36,26 @@ async function queryFacebookAPI(path, ...args): Promise {
     });
   });
 }
-
-async function _logInWithFacebook(source: ?string): Promise<Array<Action>> {
-  await FacebookLogin('public_profile,email,user_friends');
-  const profile = await queryFacebookAPI('/me', {fields: 'name,email'});
-
-  // TODO: Save user to Mixpanel, as well as to our server with authtoken
-
-  const action = {
-    type: 'LOGGED_IN',
-    source,
-    data: {
-      id: profile.id,
-      name: profile.name,
-    },
+export function loginWaitingForState(): Action {
+  return {
+    type: 'LOGIN_LOADING',
   };
-
-  return Promise.all([
-    Promise.resolve(action),
-  ]);
+}
+export function loginStartTutorial(): Action {
+  return {
+    type: 'LOGIN_START_TUTORIAL',
+  };
 }
 
-export function logInWithFacebook(source: ?string): ThunkAction {
-  return (dispatch) => {
-    const login = _logInWithFacebook(source);
-
-    // Loading friends schedules shouldn't block the login process
-    login.then(
-      (result) => {
-        dispatch(result);
-        // TODO: Load other things in the background (ie after we sent off the state)
-        // that shouldn't block the login process
-      }
-    );
-    return login;
+export function loginComplete(): Action {
+  return {
+    type: 'LOGIN_LOGGED_IN',
   };
 }
 
 export function skipLogin(): Action {
   return {
-    type: 'SKIPPED_LOGIN',
+    type: 'LOGIN_SKIPPED',
   };
 }
 
@@ -86,7 +66,7 @@ export function logOut(): ThunkAction {
 
     // TODO: Make sure reducers clear their state
     return dispatch({
-      type: 'LOGGED_OUT',
+      type: 'LOGIN_LOGGED_OUT',
     });
   };
 }

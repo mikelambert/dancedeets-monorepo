@@ -27,8 +27,11 @@
 type Event = Object;
 
 export type Action =
-    { type: 'LOGGED_IN', source: ?string }
-  | { type: 'LOGGED_OUT' }
+    { type: 'LOGIN_LOADING' }
+  | { type: 'LOGIN_START_TUTORIAL' }
+  | { type: 'LOGIN_LOGGED_IN' }
+  | { type: 'LOGIN_LOGGED_OUT' }
+  | { type: 'LOGIN_SKIPPED' }
   | { type: 'VIEW_EVENT', data: Event }
   ;
 
