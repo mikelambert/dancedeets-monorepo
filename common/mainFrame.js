@@ -54,7 +54,6 @@ class EventListContainer extends Component {
     fetch("http://www.dancedeets.com/api/v1.2/search?location=Taipei&time_period=UPCOMING")
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
         this.setState({
           dataSource: this.state.dataSource.cloneWithRows(responseData.results),
           loaded: true,

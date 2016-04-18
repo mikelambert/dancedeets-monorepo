@@ -6,11 +6,11 @@
 
 'use strict';
 
-import AppContainer from './containers/AppContainer';
+import App from './app';
 //var FacebookSDK = require('FacebookSDK');
 import React from 'React';
 import {Provider} from 'react-redux';
-import configureStore from './store/configureStore';
+import configureStore from '../store/configureStore';
 import {serverURL} from './env';
 import Mixpanel from 'react-native-mixpanel';
 
@@ -37,7 +37,7 @@ function setup(): React.Component {
       }
       return (
         <Provider store={this.state.store}>
-          <AppContainer />
+          <App />
         </Provider>
       );
     }
