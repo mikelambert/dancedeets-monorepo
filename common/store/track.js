@@ -29,6 +29,9 @@ import {AppEventsLogger} from 'react-native-fbsdk';
 
 import type {Action} from '../actions/types';
 
+// Implement Mixpanel
+// Implement https://github.com/lwansbrough/react-native-google-analytics ?
+
 function track(action: Action): void {
   switch (action.type) {
     case 'LOGGED_IN':
