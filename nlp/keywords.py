@@ -307,7 +307,7 @@ STYLE_HOUSE = Name('STYLE_HOUSE', Any(
 STYLE_HIPHOP = Name('STYLE_HIPHOP', Any(
     'mtv\W?style', 'mtv\W?dance', 'videoclip\w+', 'videodance',
     'commercial hip\W?hop',
-    'lyrical\Whip\W?',
+    'lyrical\Whip\W?hop',
     'hip\W?hop dance',
     'hip\W?hop\Wheels',
     # only do la-style if not salsa? http://www.dancedeets.com/events/admin_edit?event_id=292605290807447
@@ -822,6 +822,7 @@ N_X_N = Name('N_X_N', Any(*_generate_n_x_n_keywords()))
 
 JUDGE = Name('JUDGE', Any(
     'jurys?',
+    'juryleden',
     'jurados?', # spanish jury
     u'журито', # bulgarian jury
     'judge[sz]?',
