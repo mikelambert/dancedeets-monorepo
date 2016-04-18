@@ -27,7 +27,7 @@ PODS:
     - FBSDKCoreKit
     - FBSDKShareKit
     - React
-  - react-native-mixpanel (0.0.1):
+  - react-native-mixpanel (0.0.6):
     - Mixpanel
   - React/Core (0.24.0-rc5)
   - React/RCTActionSheet (0.24.0-rc5):
@@ -53,7 +53,7 @@ DEPENDENCIES:
   - react-native-fbsdkcore (from `../node_modules/react-native-fbsdk/iOS/core`)
   - react-native-fbsdklogin (from `../node_modules/react-native-fbsdk/iOS/login`)
   - react-native-fbsdkshare (from `../node_modules/react-native-fbsdk/iOS/share`)
-  - react-native-mixpanel (from `../node_modules/react-native-mixpanel/RNMixpanel.podspec`)
+  - react-native-mixpanel (from `../node_modules/react-native-mixpanel`)
   - React/Core (from `../node_modules/react-native`)
   - React/RCTActionSheet (from `../node_modules/react-native`)
   - React/RCTImage (from `../node_modules/react-native`)
@@ -74,7 +74,7 @@ EXTERNAL SOURCES:
   react-native-fbsdkshare:
     :path: "../node_modules/react-native-fbsdk/iOS/share"
   react-native-mixpanel:
-    :path: "../node_modules/react-native-mixpanel/RNMixpanel.podspec"
+    :path: "../node_modules/react-native-mixpanel"
 
 SPEC CHECKSUMS:
   Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
@@ -86,6 +86,6 @@ SPEC CHECKSUMS:
   react-native-fbsdkcore: 4b4f0d94b9d19dc8d21427fbb0fe54180486885c
   react-native-fbsdklogin: 9857d698accf58ab07039fd39320df9476eb40a6
   react-native-fbsdkshare: 30022ca3609aa4bfe5daf0a77a7444084e8e7c9f
-  react-native-mixpanel: c53d97fc4d72193afae0d702a22c0f8f7ec41b9e
+  react-native-mixpanel: 1e7937b363cde6aa993bdabdc8c045065fb4515c
 
 COCOAPODS: 0.39.0
