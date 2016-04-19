@@ -17,6 +17,9 @@
 .*/node_modules/fbjs/lib/Map.js
 .*/node_modules/fbjs/lib/fetch.js
 .*/node_modules/fbjs/lib/ExecutionEnvironment.js
+.*/node_modules/fbjs/lib/Promise.js
+.*/node_modules/fbjs/lib/isEmpty.js
+.*/node_modules/fbjs/lib/crc32.js
 .*/node_modules/fbjs/lib/ErrorUtils.js
 
 # Flow has a built-in definition for the 'react' module which we prefer to use
@@ -24,11 +27,6 @@
 .*/node_modules/react/react.js
 .*/node_modules/react/lib/React.js
 .*/node_modules/react/lib/ReactDOM.js
-
-.*/__mocks__/.*
-.*/__tests__/.*
-
-.*/commoner/test/source/widget/share.js
 
 # Ignore commoner tests
 .*/node_modules/commoner/test/.*
@@ -39,8 +37,7 @@
 # Ignore jest
 .*/node_modules/jest-cli/.*
 
-# Ignore Website
-.*/website/.*
+.*/node_modules/react-native-push-notification/.*
 
 .*/node_modules/is-my-json-valid/test/.*\.json
 .*/node_modules/iconv-lite/encodings/tables/.*\.json
@@ -58,13 +55,18 @@
 .*/node_modules/joi/.*\.json
 .*/node_modules/isemail/.*\.json
 .*/node_modules/tr46/.*\.json
+.*/node_modules/jmespath/.*\.json
+.*/node_modules/fbjs-scripts/node_modules/js-tokens/test/fixtures/.*\.json
+.*/node_modules/protobufjs/src/.*\.json
+
 
 [include]
 
 [libs]
 node_modules/react-native/Libraries/react-native/react-native-interface.js
-node_modules/react-native/flow
+node_modules/react-native/flow/
 flow/
+js/flow-lib.js
 
 [options]
 module.system=haste
@@ -77,13 +79,14 @@ munge_underscores=true
 module.name_mapper='^image![a-zA-Z0-9$_-]+$' -> 'GlobalImageStub'
 module.name_mapper='^[./a-zA-Z0-9$_-]+\.\(bmp\|gif\|jpg\|jpeg\|png\|psd\|svg\|webp\|m4v\|mov\|mp4\|mpeg\|mpg\|webm\|aac\|aiff\|caf\|m4a\|mp3\|wav\|html\)$' -> 'RelativeImageStub'
 
+
 suppress_type=$FlowIssue
 suppress_type=$FlowFixMe
 suppress_type=$FixMe
 
-suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(2[0-2]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)
-suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(2[0-2]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)?:? #[0-9]+
+suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(2[0-0]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)
+suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(2[0-0]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)?:? #[0-9]+
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixedInNextDeploy
 
 [version]
-0.22.0
+0.23.0
