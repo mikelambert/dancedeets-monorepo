@@ -28,7 +28,7 @@ function select(store) {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.loadAppData = this.loadAppData.bind(this);
+    this.handleAppStateChange = this.handleAppStateChange.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
   }
   loadAppData() {
