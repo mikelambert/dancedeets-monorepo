@@ -7,6 +7,7 @@ import React, {
   TouchableOpacity,
   View,
 } from 'react-native';
+import LoginButton from './LoginButton';
 
 var PAGES = [
   'Page 0',
@@ -102,7 +103,7 @@ export default class TutorialScreen extends React.Component {
             "Reach dancers worldwide\nand join our 90,000 events",
           ]} />
           <View style={[styles.centerItems, styles.bottomBox]}>
-            <TouchableOpacity activeOpacity={0.7}><Text style={[styles.bottomLink, styles.purpleButton]}>LOGIN WITH FACEBOOK</Text></TouchableOpacity>
+            <LoginButton icon={require('./icons/facebook.png')} type="primary" caption="Login with Facebook"></LoginButton>
             <TouchableOpacity activeOpacity={0.7}><Text style={[styles.bottomLink, styles.bottomLowerLink, styles.bottomThinLink]}>DON'T WANT TO LOGIN?</Text></TouchableOpacity>
           </View>
         </Image>
@@ -150,13 +151,6 @@ var styles = StyleSheet.create({
   },
   bottomThinLink: {
     fontWeight: 'normal',
-  },
-  purpleButton: {
-    paddingVertical: 7,
-    paddingHorizontal: 15,
-    borderWidth: 1,
-    borderColor: 'white',
-    backgroundColor: '#4F5086',
   },
   centerItems: {
     alignItems: 'center',
