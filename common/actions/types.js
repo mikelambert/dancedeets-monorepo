@@ -32,7 +32,7 @@ export type Action =
   | { type: 'LOGIN_LOGGED_IN' }
   | { type: 'LOGIN_LOGGED_OUT' }
   | { type: 'LOGIN_SKIPPED' }
-  | { type: 'VIEW_EVENT', data: Event }
+  | { type: 'VIEW_EVENT', event: Event }
   ;
 
 export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;

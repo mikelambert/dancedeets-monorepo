@@ -25,7 +25,7 @@ function select(store) {
   };
 }
 
-export default class App extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.loadAppData = this.loadAppData.bind(this);
@@ -48,7 +48,7 @@ export default class App extends React.Component {
 
   handleAppStateChange(appState) {
     if (appState === 'active') {
-      loadAppData();
+      this.loadAppData();
       // CodePush.sync({installMode: CodePush.InstallMode.ON_NEXT_RESUME});
     }
   }

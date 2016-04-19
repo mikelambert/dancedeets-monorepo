@@ -4,7 +4,6 @@
  */
 'use strict';
 
-import F8Colors from '../Colors';
 import StatusBarIOS from 'StatusBarIOS';
 import React, {
   Animated,
@@ -27,7 +26,7 @@ import TutorialScreen from './TutorialScreen';
 
 import { skipLogin, loginWaitingForState, loginStartTutorial, loginComplete } from '../actions';
 import { connect } from 'react-redux';
-
+import type { Dispatch } from '../actions/types';
 
 
 function select(store) {
@@ -37,7 +36,13 @@ function select(store) {
   };
 }
 
+
 class SplashScreen extends React.Component {
+
+
+  state: {
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -57,7 +62,7 @@ class SplashScreen extends React.Component {
     return (
       <TouchableWithoutFeedback
         //onPress={() => this.props.dispatch(skipLogin())}>
-        onPress={onPress}>
+        >
         <Image
           style={styles.container}
           source={require('./images/LaunchScreen.jpg')}>
@@ -77,7 +82,7 @@ async function loginOrLogout() {
   console.log("loginOrLogout");
   try {
     var loginResult = await LoginManager.logInWithReadPermissions(["public_profile", "email", "user_friends", "user_events"]);
-    console.log("LoginResult is " + loginResult);
+    console.log("LoginResult is " + String(loginResult));
     if (loginResult.isCancelled) {
       LoginManager.logOut();
     }
@@ -86,15 +91,15 @@ async function loginOrLogout() {
   }
 }
 
-async function performLoginTransitions(dispatch) {
+async function performLoginTransitions(dispatch: Dispatch) {
   //await dispatch(loginWaitingForState())
   const accessToken = await AccessToken.getCurrentAccessToken();
-  console.log("AccessToken is " + accessToken);
+  console.log("AccessToken is " + String(accessToken))
   if (!accessToken) {
     console.log("Wait for click!");
     return dispatch(loginStartTutorial());
   } else {
-    var howLongAgo = Math.round((Date.now() - accessToken.refreshDate) / 1000);
+    var howLongAgo = Math.round((Date.now() - accessToken.lastRefreshTime) / 1000);
     if (howLongAgo < 60 * 60) {
       console.log("Good click, logging in!");
       return dispatch(loginComplete())
@@ -110,7 +115,7 @@ async function performLoginTransitions(dispatch) {
         LoginManager.logOut();
       }
     }
-    return performLoginTransitions();
+    return performLoginTransitions(dispatch);
   }
 }
 

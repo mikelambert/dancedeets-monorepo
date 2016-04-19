@@ -1,4 +1,9 @@
 [ignore]
+# Get a bunch of warnings we'd rather not see
+.*/node_modules/react-native/Libraries/CustomComponents/Navigator/Navigation/NavigationRouteStack.js
+.*/node_modules/react-native/local-cli/generator/templates/
+.*/node_modules/fbjs/lib/Deferred.js.flow
+
 
 # We fork some components by platform.
 .*/*.web.js
@@ -58,7 +63,6 @@
 .*/node_modules/jmespath/.*\.json
 .*/node_modules/fbjs-scripts/node_modules/js-tokens/test/fixtures/.*\.json
 .*/node_modules/protobufjs/src/.*\.json
-
 
 [include]
 
