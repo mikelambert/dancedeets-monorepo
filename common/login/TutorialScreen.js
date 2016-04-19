@@ -7,6 +7,7 @@ import React, {
   TouchableOpacity,
   View,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import LoginButton from './LoginButton';
 
 var PAGES = [
@@ -56,11 +57,28 @@ export default class TutorialScreen extends React.Component {
     );
   }
 
-  _renderPage(data: Object, pageID: number | string,) {
+  _renderPage(data: Object, pageId: number | string) {
+    var contents = this._renderPageContents(data, pageId);
+    return <View style={{flex: 1}}>
+    {contents}
+    </View>
+  }
+
+  _renderPageContents(data: Object, pageID: number | string) {
+    // We manually insert a bottomFade into each page below,
+    // so that we can stick buttons/links/text on top of the fade.
+
+    var bottomFade = <LinearGradient
+      start={[0.0, 0.0]} end={[0.0, 0.9]}
+      colors={['#00000000', '#000000CC']}
+      style={styles.bottomFade}>
+    </LinearGradient>;
+
     if (pageID == 0) {
       return <Image
         style={styles.container}
         source={require('./images/LaunchScreen.jpg')}>
+        {bottomFade}
         <Image
           style={styles.container}
           source={require('./images/LaunchScreenText.png')}>
@@ -70,6 +88,7 @@ export default class TutorialScreen extends React.Component {
       return <Image
         style={styles.container}
         source={require('./images/Onboard1.jpg')}>
+        {bottomFade}
         <Image
         style={[styles.container, styles.centerItems]}
           source={require('./images/Onboard1Text.png')}>
@@ -83,6 +102,7 @@ export default class TutorialScreen extends React.Component {
       return <Image
         style={[styles.container, styles.centerItems]}
         source={require('./images/Onboard2.jpg')}>
+        {bottomFade}
         <TopView header="Learn to Dance:" items={[
           "Take a class",
           "Watch a show",
@@ -94,6 +114,7 @@ export default class TutorialScreen extends React.Component {
       <Image
         style={styles.container}
         source={require('./images/Onboard3.jpg')}>
+        {bottomFade}
         <Image
           style={[styles.container, styles.centerItems, styles.topAndBottom]}
           source={require('./images/Onboard3Text.png')}>
@@ -116,11 +137,6 @@ export default class TutorialScreen extends React.Component {
 var styles = StyleSheet.create({
   topAndBottom: {
     justifyContent: 'space-between',
-  },
-  absolute: {
-    position: 'absolute',
-    flex: 1,
-    alignItems: 'center',
   },
   onboardHeader: {
     color: 'white',
@@ -154,6 +170,14 @@ var styles = StyleSheet.create({
   },
   centerItems: {
     alignItems: 'center',
+  },
+  bottomFade: {
+    position: 'absolute',
+    flex: 1,
+    height: 100,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   container: {
     flex: 1,
