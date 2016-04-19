@@ -4,22 +4,25 @@
  */
 'use strict';
 
-import Animated from 'Animated';
-import Dimensions from 'Dimensions';
 import F8Colors from '../Colors';
-import Image from 'Image';
-import React from 'React';
 import StatusBarIOS from 'StatusBarIOS';
-import StyleSheet from 'StyleSheet';
-import View from 'View';
+import React, {
+  Animated,
+  Component,
+  Dimensions,
+  Image,
+  ListView,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import {
   LoginManager,
   AccessToken,
 } from 'react-native-fbsdk';
 // TODO: Maybe when we have styles, use a DDText.js file?
-import Text from 'Text';
 // TODO: import LoginButton from '../common/LoginButton';
-import TouchableWithoutFeedback from 'TouchableWithoutFeedback';
 
 import { skipLogin, loginWaitingForState, loginStartTutorial, loginComplete } from '../actions';
 import { connect } from 'react-redux';
@@ -75,7 +78,7 @@ async function loginOrLogout() {
     var loginResult = await LoginManager.logInWithReadPermissions(["public_profile", "email", "user_friends", "user_events"]);
     console.log("LoginResult is " + loginResult);
     if (loginResult.isCancelled) {
-      LoginManager.getInstance().logOut();
+      LoginManager.logOut();
     }
   } catch (exc) {
     console.log('Error calling logInWithReadPermissions' + exc);
@@ -103,7 +106,7 @@ async function performLoginTransitions(dispatch) {
         }
       } catch (exc) {
         console.log("Exception refreshing or logging in: " + exc);
-        LoginManager.getInstance().logOut();
+        LoginManager.logOut();
       }
     }
     return performLoginTransitions();
