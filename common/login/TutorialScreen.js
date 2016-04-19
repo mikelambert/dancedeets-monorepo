@@ -1,12 +1,14 @@
 import ViewPager from 'react-native-viewpager';
 import React, {
   Component,
+  Dimensions,
   Image,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import Carousel from 'react-native-carousel';
 import LinearGradient from 'react-native-linear-gradient';
 import LoginButton from './LoginButton';
 
@@ -20,7 +22,7 @@ var PAGES = [
 class TopView extends React.Component {
   render() {
     var listItems = [];
-    for (i in this.props.items) {
+    for (var i in this.props.items) {
       listItems.push(<Text style={styles.onboardListItem}>{this.props.items[i]}</Text>);
     }
     return (
@@ -47,21 +49,34 @@ export default class TutorialScreen extends React.Component {
   }
 
   render() {
-    return (
-      <ViewPager
-        style={this.props.style}
-        dataSource={this.state.dataSource}
-        renderPage={this._renderPage}
-        isLoop={false}
-        autoPlay={false}/>
-    );
+    var pages = [];
+    for (var i in PAGES) {
+      pages.push(this._renderPage(PAGES[i], i));
+    }
+    return <Carousel
+      indicatorOffset={0}
+      indicatorColor="#FFFFFF"
+      indicatorSize={25}
+      indicatorSpace={15}
+      animate={false}
+      loop={false}
+      >
+      {pages}
+    </Carousel>;
   }
 
   _renderPage(data: Object, pageId: number | string) {
     var contents = this._renderPageContents(data, pageId);
-    return <View style={{flex: 1}}>
+    var windowSize = Dimensions.get('window');
+    return <View
+      style={{
+        flex: 1,
+        width: windowSize.width,
+        height: windowSize.height,
+      }}
+      key={pageId}>
     {contents}
-    </View>
+    </View>;
   }
 
   _renderPageContents(data: Object, pageID: number | string) {
@@ -69,10 +84,10 @@ export default class TutorialScreen extends React.Component {
     // so that we can stick buttons/links/text on top of the fade.
 
     var bottomFade = <LinearGradient
-      start={[0.0, 0.0]} end={[0.0, 0.9]}
-      colors={['#00000000', '#000000CC']}
-      style={styles.bottomFade}>
-    </LinearGradient>;
+      start={[0.0, 0.0]} end={[0.0, 1.0]}
+      locations={[0.0, 0.8, 1.0]}
+      colors={['#00000000', '#000000CC', '#000000CC']}
+      style={styles.bottomFade} />
 
     if (pageID == 0) {
       return <Image
