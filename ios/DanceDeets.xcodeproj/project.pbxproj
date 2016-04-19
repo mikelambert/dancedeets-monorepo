@@ -211,7 +211,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = YHC6HKS696;
+						DevelopmentTeam = 5C2TNLFT44;
 						SystemCapabilities = {
 							com.apple.Push = {
 								enabled = 1;
