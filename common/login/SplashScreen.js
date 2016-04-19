@@ -21,6 +21,7 @@ import {
   LoginManager,
   AccessToken,
 } from 'react-native-fbsdk';
+import TutorialScreen from './TutorialScreen';
 // TODO: Maybe when we have styles, use a DDText.js file?
 // TODO: import LoginButton from '../common/LoginButton';
 
@@ -50,7 +51,7 @@ class SplashScreen extends React.Component {
 
   render() {
     if (this.props.inTutorial) {
-      return <Text>Heeeeey</Text>;
+      return <TutorialScreen />;
     }
     var onPress=null;
     return (

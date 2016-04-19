@@ -10,6 +10,7 @@
     "react-native": "^0.24.0-rc",
     "react-native-fbsdk": "^0.1.0",
     "react-native-mixpanel": "0.0.7",
+    "react-native-viewpager": "^0.2.1",
     "react-redux": "^4.4.4",
     "redux": "^3.4.0",
     "redux-logger": "^2.6.1",
