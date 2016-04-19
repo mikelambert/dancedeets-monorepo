@@ -15,6 +15,23 @@ var PAGES = [
   'Page 3',
 ];
 
+class TopView extends React.Component {
+  render() {
+    var listItems = [];
+    for (i in this.props.items) {
+      listItems.push(<Text style={styles.onboardListItem}>{this.props.items[i]}</Text>);
+    }
+    return (
+      <View style={styles.centerItems} >
+        <Text style={styles.onboardHeader}>{this.props.header.toUpperCase()}</Text>
+        <View style={styles.onboardList}>
+          {listItems}
+        </View>
+      </View>
+    );
+  }
+}
+
 export default class TutorialScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -55,23 +72,21 @@ export default class TutorialScreen extends React.Component {
         <Image
         style={[styles.container, styles.centerItems]}
           source={require('./images/Onboard1Text.png')}>
-          <Text style={styles.onboardHeader}>Take a Trip:</Text>
-          <View style={styles.onboardList}>
-            <Text style={styles.onboardListItem}>Meet local dancers</Text>
-            <Text style={styles.onboardListItem}>Hit up dance events</Text>
-          </View>
+          <TopView header="Take a Trip:" items={[
+            "Meet local dancers",
+            "Hit up dance events",
+          ]}/>
         </Image>
       </Image>;
     } else if (pageID == 2) {
       return <Image
         style={[styles.container, styles.centerItems]}
         source={require('./images/Onboard2.jpg')}>
-        <Text style={styles.onboardHeader}>Learn to Dance:</Text>
-        <View style={styles.onboardList}>
-          <Text style={styles.onboardListItem}>Take a class</Text>
-          <Text style={styles.onboardListItem}>Watch a show</Text>
-          <Text style={styles.onboardListItem}>Hit the clubs</Text>
-        </View>
+        <TopView header="Learn to Dance:" items={[
+          "Take a class",
+          "Watch a show",
+          "Hit the clubs",
+        ]}/>
       </Image>;
     } else if (pageID == 3) {
       return <View style={styles.container}>
@@ -81,18 +96,14 @@ export default class TutorialScreen extends React.Component {
         <Image
           style={[styles.container, styles.centerItems, styles.topAndBottom]}
           source={require('./images/Onboard3Text.png')}>
-          <View style={styles.centerItems}>
-            <Text style={styles.onboardHeader}>Promote your Scene:</Text>
-            <View style={styles.onboardList}>
-              <Text style={styles.onboardListItem}>Share your event</Text>
-              <Text style={styles.onboardListItem}>Share your cities' events</Text>
-              <Text style={styles.onboardListItem}>Reach dancers worldwide</Text>
-              <Text style={styles.onboardListItem}>and join our 90,000+ events</Text>
-            </View>
-          </View>
+          <TopView header="Promote your event:" items={[
+            "Share your event",
+            "Share your city's events",
+            "Reach dancers worldwide\nand join our 90,000 events",
+          ]} />
           <View style={[styles.centerItems, styles.bottomBox]}>
-            <TouchableOpacity activeOpacity={0.7}><Text style={[styles.bottomLink, styles.purpleButton]}>Login with Facebook</Text></TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.7}><Text style={[styles.bottomLink, styles.bottomLowerLink, styles.bottomThinLink]}>Don't want to login?</Text></TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.7}><Text style={[styles.bottomLink, styles.purpleButton]}>LOGIN WITH FACEBOOK</Text></TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.7}><Text style={[styles.bottomLink, styles.bottomLowerLink, styles.bottomThinLink]}>DON'T WANT TO LOGIN?</Text></TouchableOpacity>
           </View>
         </Image>
       </Image>
@@ -131,7 +142,7 @@ var styles = StyleSheet.create({
   bottomLink: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 14,
     top: 0,
   },
   bottomLowerLink: {
