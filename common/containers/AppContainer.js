@@ -15,7 +15,7 @@ import NavigationHeaderTitle from '../react-navigation';
 import EventListContainer from './EventListContainer';
 import { navigatePush, navigatePop } from '../actions';
 
-import type { ThunkAction, PromiseAction, Dispatch } from './types';
+import type { ThunkAction, PromiseAction, Dispatch } from '../actions/types';
 import type { NavigationParentState, NavigationState } from 'NavigationTypeDefinition';
 
 const {
@@ -27,13 +27,13 @@ const {
 class AppContainer extends React.Component {
 	props: {
 		navigationState: NavigationParentState,
-		onNavigate: (NavigationState) => ThunkAction,
+		onNavigate: (x: NavigationState) => ThunkAction,
 		onBack: () => ThunkAction,
 	};
 
 	constructor(props) {
 		super(props);
-		this._renderScene = this._renderScene.bind(this);
+		(this: any)._renderScene = this._renderScene.bind(this);
 	}
 
 	render() {
@@ -99,10 +99,10 @@ export default connect(
 	state => ({
 		navigationState: state.navigationState
 	}),
-	dispatch: Dispatch => ({
+	(dispatch: Dispatch) => ({
 		onNavigate: (destState) => dispatch(navigatePush(destState)),
 		onBack: () => dispatch(navigatePop())
-	})
+	}),
 )(AppContainer);
 
 

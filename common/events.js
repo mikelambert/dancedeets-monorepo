@@ -5,7 +5,6 @@
  */
 
 import React, {
-  Component,
   Image,
   ListView,
   StyleSheet,
@@ -17,7 +16,7 @@ import React, {
 import { ProportionalImage } from './ui';
 import { Event } from './models';
 
-class SubEventLine extends Component {
+class SubEventLine extends React.Component {
   icon() {
     throw('Not Implemented!');
   }
@@ -81,9 +80,9 @@ class EventVenue extends SubEventLine {
   }
 }
 
-class EventRow extends Component {
+class EventRow extends React.Component {
   props: {
-    onEventSelected: (Event) => void,
+    onEventSelected: (x: Event) => void,
     event: Event,
   };
 
@@ -113,9 +112,9 @@ class EventRow extends Component {
 }
 
 
-export class EventListView extends Component {
+export class EventListView extends React.Component {
   props: {
-    onEventSelected: (Event) => void,
+    onEventSelected: (x: Event) => void,
     dataSource: ListView.DataSource,
   };
 

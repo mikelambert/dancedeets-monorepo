@@ -5,7 +5,6 @@
  */
 
 import React, {
-  Component,
   ListView,
   StyleSheet,
   Text,
@@ -16,9 +15,9 @@ import { EventListView } from './events';
 
 import type { Event } from './models';
 
-export default class EventListContainer extends Component {
+export default class EventListContainer extends React.Component {
   props: {
-    onEventSelected: (Event) => void,
+    onEventSelected: (x: Event) => void,
   };
 
   state: {
