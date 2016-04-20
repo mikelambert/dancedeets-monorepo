@@ -17,6 +17,11 @@ const {
 
 
 class AppContainer extends React.Component {
+	constructor(props) {
+		super(props);
+		this._renderScene = this._renderScene.bind(this);
+	}
+
 	render() {
 		let { navigationState, onBack } = this.props;
 
@@ -59,10 +64,13 @@ class AppContainer extends React.Component {
 
 	_renderScene({scene}) {
 		const { navigationState } = scene;
-
 		switch (navigationState.key) {
 		case 'EventList':
-			return <EventListContainer />;
+			return <EventListContainer
+				onEventSelected={(event)=>this.props.onNavigate({key: 'EventView', title: event.name})}
+			/>;
+		case 'EventView':
+			return null;
 		}
 	}
 }

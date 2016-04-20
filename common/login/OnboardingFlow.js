@@ -2,7 +2,7 @@ import React from 'react-native';
 import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
 import { loginComplete } from '../actions';
-import { NoLoginScreen, StillNoLoginScreen } from './NoLoginScreen';
+import { NoLoginScreen } from './NoLoginScreen';
 
 const mapDispatchToProps = (dispatch) => {
   return {
