@@ -2,10 +2,9 @@ import React, {
   Image,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import LoginButton from './LoginButton';
+import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 
 const NoLoginText =
 `Almost all our dance events are
@@ -29,16 +28,20 @@ our website without any login:
 http://www.dancedeets.com/
 `;
 
-class NoLoginBase extends React.Component {
+export default class NoLoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
         <Image
           style={[styles.container, styles.centerItems, styles.topAndBottom]}
           source={require('./images/Onboard4.jpg')}>
-          <Text style={styles.topText}>{this.props.headerText}</Text>
+          <Text style={styles.topText}>{NoLoginText}</Text>
           <View style={[styles.centerItems, styles.bottomBox]}>
-            {this.props.children}
+            <LoginButtonWithAlternate
+              onLogin={this.props.onLogin}
+              onNoLogin={this.props.onNoLogin}
+              noLoginText="USE WEBSITE WITHOUT LOGIN"
+              />
           </View>
         </Image>
       </View>
@@ -46,54 +49,15 @@ class NoLoginBase extends React.Component {
   }
 }
 
-export class NoLoginScreen extends React.Component {
-  render() {
-    return (
-      <NoLoginBase headerText={NoLoginText}>
-        <LoginButton
-          icon={require('./icons/facebook.png')}
-          type="primary"
-          caption="Login with Facebook"
-          onPress={this.props.onLogin}
-        />
-        <TouchableOpacity
-          style={styles.bottomLowerLink}
-          activeOpacity={0.7}
-          onPress={this.props.onNoLogin}
-        >
-          <Text style={[styles.bottomLink, styles.bottomThinLink]}>USE WEBSITE WITHOUT LOGIN</Text>
-        </TouchableOpacity>
-      </NoLoginBase>
-    );
-  }
-}
-
 const styles = StyleSheet.create({
   topAndBottom: {
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   topText: {
     top: 40,
     color: 'white',
     fontSize: 15,
-  },
-  bottomBox: {
-    height: 125,
-  },
-  bottomLink: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 14,
-    top: 0,
-  },
-  bottomLowerLink: {
-    top: 10,
-  },
-  bottomThinLink: {
-    fontWeight: 'normal',
-  },
-  centerItems: {
-    alignItems: 'center',
   },
   container: {
     flex: 1,

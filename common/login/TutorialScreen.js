@@ -3,12 +3,11 @@ import React, {
   Image,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import Carousel from 'react-native-carousel';
 import LinearGradient from 'react-native-linear-gradient';
-import LoginButton from './LoginButton';
+import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 
 var PAGES = [
   'Page 0',
@@ -120,21 +119,11 @@ export default class TutorialScreen extends React.Component {
               "Share your city's events",
               'Reach dancers worldwide\nand join our 90,000 events',
             ]} />
-            <View style={[styles.centerItems, styles.bottomBox]}>
-              <LoginButton
-                icon={require('./icons/facebook.png')}
-                type="primary"
-                caption="Login with Facebook"
-                onPress={this.props.onLogin}
+            <LoginButtonWithAlternate
+              onLogin={this.props.onLogin}
+              onNoLogin={this.props.onNoLogin}
+              noLoginText="DON'T WANT TO LOGIN?"
               />
-              <TouchableOpacity
-                style={styles.bottomLowerLink}
-                activeOpacity={0.7}
-                onPress={this.props.onNoLogin}
-              >
-                <Text style={[styles.bottomLink, styles.bottomThinLink]}>DON'T WANT TO LOGIN?</Text>
-              </TouchableOpacity>
-            </View>
           </Image>
         </Image>
       </View>;
@@ -160,21 +149,6 @@ const styles = StyleSheet.create({
     lineHeight: 35,
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  bottomBox: {
-    height: 125,
-  },
-  bottomLink: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 14,
-    top: 0,
-  },
-  bottomLowerLink: {
-    top: 10,
-  },
-  bottomThinLink: {
-    fontWeight: 'normal',
   },
   centerItems: {
     alignItems: 'center',
