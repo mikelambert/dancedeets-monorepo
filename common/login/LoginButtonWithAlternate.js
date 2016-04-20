@@ -1,3 +1,9 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import React, {
   StyleSheet,
   Text,
@@ -8,6 +14,12 @@ import LoginButton from './LoginButton';
 
 
 export default class LoginButtonWithAlternate extends React.Component {
+  props: {
+    noLoginText: string,
+    onLogin: () => void,
+    onNoLogin: () => void,
+  };
+
   render() {
     return (
       <View style={[styles.centerItems, styles.bottomBox]}>
@@ -22,7 +34,7 @@ export default class LoginButtonWithAlternate extends React.Component {
           activeOpacity={0.7}
           onPress={this.props.onNoLogin}
         >
-          <Text style={[styles.bottomLink]}>{this.props.noLoginText}</Text>
+          <Text style={styles.bottomLink}>{this.props.noLoginText}</Text>
         </TouchableOpacity>
       </View>
     );

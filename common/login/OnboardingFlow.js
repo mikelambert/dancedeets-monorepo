@@ -1,7 +1,13 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import React from 'react-native';
 import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
-import { NoLoginScreen } from './NoLoginScreen';
+import NoLoginScreen from './NoLoginScreen';
 import { loginButtonPressed } from './logic';
 
 const mapDispatchToProps = (dispatch) => {
@@ -10,16 +16,26 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+type ScreenState = 'CAROUSEL' | 'NO_LOGIN';
+
 class OnboardingFlow extends React.Component {
+  props: {
+    onLogin: () => void,
+  };
+
+  state: {
+    screen: ScreenState,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       screen: 'CAROUSEL',
     };
-    this._transition = this._transition.bind(this);
+    (this: any)._transition = this._transition.bind(this);
   }
 
-  _transition(newState) {
+  _transition(newState: ScreenState) {
     this.setState({...this.state, screen: newState});
   }
 

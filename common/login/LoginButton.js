@@ -21,7 +21,7 @@ export default class LoginButton extends React.Component {
     type: 'primary' | 'secondary' | 'bordered';
     icon: number;
     caption: string;
-    style: any;
+    style?: any;
     onPress: () => void;
   };
 

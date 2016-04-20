@@ -1,3 +1,9 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import {
   LoginManager,
   AccessToken,
@@ -14,7 +20,7 @@ export async function loginButtonPressed(dispatch: Dispatch) {
   }
 }
 
-export async function autoLoginAtStartup(dispatch: Dispatch, allowRecursion = true) {
+export async function autoLoginAtStartup(dispatch: Dispatch, allowRecursion: boolean = true) {
   // When they open the app, check for their existing FB token.
   if (await isLoggedOut()) {
     console.log('Wait for onboarding!');

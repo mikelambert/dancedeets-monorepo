@@ -1,7 +1,9 @@
 /**
  * Copyright 2016 DanceDeets.
+ *
  * @flow
  */
+
 'use strict';
 
 import React, {

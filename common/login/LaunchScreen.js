@@ -1,5 +1,6 @@
 /**
- * Copyright DanceDeets.
+ * Copyright 2016 DanceDeets.
+ *
  * @flow
  */
 
