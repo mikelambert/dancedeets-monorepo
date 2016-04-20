@@ -3,6 +3,7 @@
  *
  * @flow
  */
+'use strict';
 
 import React, {
   Image,
