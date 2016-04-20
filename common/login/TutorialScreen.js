@@ -122,7 +122,13 @@ export default class TutorialScreen extends React.Component {
             ]} />
             <View style={[styles.centerItems, styles.bottomBox]}>
               <LoginButton icon={require('./icons/facebook.png')} type="primary" caption="Login with Facebook" />
-              <TouchableOpacity style={styles.bottomLowerLink} activeOpacity={0.7}><Text style={[styles.bottomLink, styles.bottomThinLink]}>DON'T WANT TO LOGIN?</Text></TouchableOpacity>
+              <TouchableOpacity
+                style={styles.bottomLowerLink}
+                activeOpacity={0.7}
+                onPress={this.props.onNoLogin}
+              >
+                <Text style={[styles.bottomLink, styles.bottomThinLink]}>DON'T WANT TO LOGIN?</Text>
+              </TouchableOpacity>
             </View>
           </Image>
         </Image>

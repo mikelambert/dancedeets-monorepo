@@ -14,11 +14,11 @@ import {
   LoginManager,
   AccessToken,
 } from 'react-native-fbsdk';
-import TutorialScreen from './TutorialScreen';
+import OnboardingFlow from './OnboardingFlow';
 // TODO: Maybe when we have styles, use a DDText.js file?
 // TODO: import LoginButton from '../common/LoginButton';
 
-import { loginStartTutorial, loginComplete } from '../actions';
+import { loginStartOnboard, loginComplete } from '../actions';
 import { connect } from 'react-redux';
 import type { Dispatch } from '../actions/types';
 
@@ -26,7 +26,7 @@ import type { Dispatch } from '../actions/types';
 function select(store) {
   return {
     isLoggedIn: store.user.isLoggedIn,
-    inTutorial: store.user.inTutorial,
+    isOnboarding: store.user.isOnboarding,
   };
 }
 
@@ -49,8 +49,8 @@ class SplashScreen extends React.Component {
   }
 
   render() {
-    if (this.props.inTutorial) {
-      return <TutorialScreen />;
+    if (this.props.isOnboarding) {
+      return <OnboardingFlow />;
     }
     return (
       <TouchableWithoutFeedback
@@ -89,7 +89,7 @@ async function performLoginTransitions(dispatch: Dispatch) {
   console.log('AccessToken is ' + String(accessToken));
   if (!accessToken) {
     console.log('Wait for click!');
-    return dispatch(loginStartTutorial());
+    return dispatch(loginStartOnboard());
   } else {
     var howLongAgo = Math.round((Date.now() - accessToken.lastRefreshTime) / 1000);
     if (howLongAgo < 60 * 60) {

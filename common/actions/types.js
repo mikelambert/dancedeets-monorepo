@@ -28,10 +28,12 @@ type Event = Object;
 
 export type Action =
     { type: 'LOGIN_LOADING' }
-  | { type: 'LOGIN_START_TUTORIAL' }
+  | { type: 'LOGIN_START_ONBOARD' }
   | { type: 'LOGIN_LOGGED_IN' }
   | { type: 'LOGIN_LOGGED_OUT' }
   | { type: 'LOGIN_SKIPPED' }
+  | { type: 'ONBOARD_NO_LOGIN' }
+  | { type: 'ONBOARD_STILL_NO_LOGIN' }
   | { type: 'VIEW_EVENT', event: Event }
   ;
 

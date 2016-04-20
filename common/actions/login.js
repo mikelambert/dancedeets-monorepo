@@ -41,9 +41,10 @@ export function loginWaitingForState(): Action {
     type: 'LOGIN_LOADING',
   };
 }
-export function loginStartTutorial(): Action {
+
+export function loginStartOnboard(): Action {
   return {
-    type: 'LOGIN_START_TUTORIAL',
+    type: 'LOGIN_START_ONBOARD',
   };
 }
 
