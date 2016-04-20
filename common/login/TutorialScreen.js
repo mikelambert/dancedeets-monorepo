@@ -1,4 +1,3 @@
-import ViewPager from 'react-native-viewpager';
 import React, {
   Dimensions,
   Image,
