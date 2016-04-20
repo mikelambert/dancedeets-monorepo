@@ -1,7 +1,8 @@
-import React, {Text} from 'react-native';
+import React from 'react-native';
 import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
 import { loginComplete } from '../actions';
+import { NoLoginScreen, StillNoLoginScreen } from './NoLoginScreen';
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -11,27 +12,36 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+
 class OnboardingScreens extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       screen: 'CAROUSEL',
     };
-    this._onNoLogin = this._onNoLogin.bind(this);
+    this._transition = this._transition.bind(this);
   }
 
-  _onNoLogin() {
-    this.setState({...this.state, screen: 'NO_LOGIN'});
+  _transition(newState) {
+    this.setState({...this.state, screen: newState});
   }
 
   render() {
     if (this.state.screen === 'CAROUSEL') {
       return <TutorialScreen
         onLogin={this.props.onLogin}
-        onNoLogin={this._onNoLogin}
+        onNoLogin={() => this._transition('NO_LOGIN')}
       />;
-    } else {
-      return <Text>Heeey</Text>;
+    } else if (this.state.screen === 'NO_LOGIN') {
+      return <NoLoginScreen
+        onLogin={this.props.onLogin}
+        onNoLogin={() => this._transition('STILL_NO_LOGIN')}
+        />;
+    } else if (this.state.screen === 'STILL_NO_LOGIN') {
+      return <StillNoLoginScreen
+        onLogin={this.props.onLogin}
+        onNoLogin={() => console.log('open website')}
+        />;
     }
   }
 }

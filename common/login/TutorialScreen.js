@@ -142,7 +142,7 @@ export default class TutorialScreen extends React.Component {
   }
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   topAndBottom: {
     justifyContent: 'space-between',
   },
