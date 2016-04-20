@@ -7,8 +7,6 @@ import { connect } from 'react-redux';
 import NavigationHeaderTitle from '../react-navigation';
 
 import EventListContainer from './EventListContainer';
-import Second from './Second';
-import Third from './Third';
 import { navigatePush, navigatePop } from '../actions';
 
 const {
@@ -65,10 +63,6 @@ class AppContainer extends React.Component {
 		switch (navigationState.key) {
 		case 'EventList':
 			return <EventListContainer />;
-		case 'Second':
-			return <Second />;
-		case 'Third':
-			return <Third />;
 		}
 	}
 }
