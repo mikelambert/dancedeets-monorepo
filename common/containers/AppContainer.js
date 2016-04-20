@@ -1,3 +1,9 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 'use strict';
 
 import React, { NavigationExperimental, StyleSheet, PropTypes } from 'react-native';
@@ -9,18 +15,26 @@ import NavigationHeaderTitle from '../react-navigation';
 import EventListContainer from './EventListContainer';
 import { navigatePush, navigatePop } from '../actions';
 
+import type { ThunkAction, PromiseAction, Dispatch } from './types';
+import type { NavigationParentState, NavigationState } from 'NavigationTypeDefinition';
+
 const {
 	AnimatedView: NavigationAnimatedView,
 	Card: NavigationCard,
 	Header: NavigationHeader
 } = NavigationExperimental;
 
-
 class AppContainer extends React.Component {
 	constructor(props) {
 		super(props);
 		this._renderScene = this._renderScene.bind(this);
 	}
+
+	props: {
+		navigationState: NavigationParentState,
+		onNavigate: (NavigationState) => ThunkAction,
+		onBack: () => ThunkAction,
+	};
 
 	render() {
 		let { navigationState, onBack } = this.props;
@@ -85,7 +99,7 @@ export default connect(
 	state => ({
 		navigationState: state.navigationState
 	}),
-	dispatch => ({
+	dispatch: Dispatch => ({
 		onNavigate: (destState) => dispatch(navigatePush(destState)),
 		onBack: () => dispatch(navigatePop())
 	})
