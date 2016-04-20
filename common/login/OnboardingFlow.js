@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
 import { loginComplete } from '../actions';
 import { NoLoginScreen } from './NoLoginScreen';
-import { loginOrLogout } from '../FacebookSDK';
+import { loginOrLogout } from './logic';
 
 const mapDispatchToProps = (dispatch) => {
   return {
