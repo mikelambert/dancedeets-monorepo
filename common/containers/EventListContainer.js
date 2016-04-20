@@ -1,3 +1,9 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
 import { connect } from 'react-redux';
 import React, { View, PropTypes, StyleSheet } from 'react-native';
 import { navigatePush } from '../actions';
@@ -16,22 +22,23 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-const EventListScreen = (props) => {
+const EventListContainer = (props) => {
     return (
         <View style={styles.container}>
             <MainFrame onEventSelected={props.onEventSelected}/>
         </View>
     );
 };
+
+EventListContainer.propTypes = {
+    onEventSelected: PropTypes.func.isRequired
+};
+
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(EventListScreen);
+)(EventListContainer);
 
-EventListScreen.propTypes = {
-    onEventSelected: PropTypes.func.isRequired
-};
-export default EventListScreen;
 
 const styles = StyleSheet.create({
     container: {

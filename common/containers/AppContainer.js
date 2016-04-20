@@ -25,16 +25,16 @@ const {
 } = NavigationExperimental;
 
 class AppContainer extends React.Component {
-	constructor(props) {
-		super(props);
-		this._renderScene = this._renderScene.bind(this);
-	}
-
 	props: {
 		navigationState: NavigationParentState,
 		onNavigate: (NavigationState) => ThunkAction,
 		onBack: () => ThunkAction,
 	};
+
+	constructor(props) {
+		super(props);
+		this._renderScene = this._renderScene.bind(this);
+	}
 
 	render() {
 		let { navigationState, onBack } = this.props;
