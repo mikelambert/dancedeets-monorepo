@@ -28,7 +28,7 @@ export async function autoLoginAtStartup(dispatch: Dispatch, allowRecursion = tr
     refreshFullToken();
     // Okay, now we've either refreshed with a new valid authtoken, or we've logged the user out.
     // Let's send them back into the flow, which will start onboarding or start the main app.
-    return performLoginTransitions(dispatch, false);
+    return autoLoginAtStartup(dispatch, false);
   } else {
     // This "Shouldn't Happen"...the recursive case should have been handled
     // by one of the first two functions. But in either case, let's log as best we can.
