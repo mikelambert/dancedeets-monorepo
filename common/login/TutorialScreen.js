@@ -20,10 +20,9 @@ var PAGES = [
 
 class TopView extends React.Component {
   render() {
-    var listItems = [];
-    for (var i in this.props.items) {
-      listItems.push(<Text style={styles.onboardListItem}>{this.props.items[i]}</Text>);
-    }
+    var listItems = this.props.items.map((val, i) =>
+      <Text key={i} style={styles.onboardListItem}>{val}</Text>
+    );
     return (
       <View style={styles.centerItems} >
         <Text style={styles.onboardHeader}>{this.props.header.toUpperCase()}</Text>
@@ -48,10 +47,7 @@ export default class TutorialScreen extends React.Component {
   }
 
   render() {
-    var pages = [];
-    for (var i in PAGES) {
-      pages.push(this._renderPage(PAGES[i], i));
-    }
+    var pages = PAGES.map((val, i) => this._renderPage(i));
     return <Carousel
       indicatorOffset={0}
       indicatorColor="#FFFFFF"
@@ -64,8 +60,8 @@ export default class TutorialScreen extends React.Component {
     </Carousel>;
   }
 
-  _renderPage(data: Object, pageId: number | string) {
-    var contents = this._renderPageContents(data, pageId);
+  _renderPage(pageId: number) {
+    var contents = this._renderPageContents(pageId);
     var windowSize = Dimensions.get('window');
     return <View
       style={{
@@ -78,7 +74,7 @@ export default class TutorialScreen extends React.Component {
     </View>;
   }
 
-  _renderPageContents(data: Object, pageID: number | string) {
+  _renderPageContents(pageID: number) {
     // We manually insert a bottomFade into each page below,
     // so that we can stick buttons/links/text on top of the fade.
 
