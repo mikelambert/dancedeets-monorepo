@@ -12,7 +12,7 @@ export class Event {
     var url = this.picture;
     var width = 100;
     var height = 100;
-    if (this.cover != null && this.cover.images.length > 0) {
+    if (this.cover !== null && this.cover.images.length > 0) {
       var image = this.cover.images[0];
       url = image.source;
       width = image.width;

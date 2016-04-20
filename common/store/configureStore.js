@@ -26,7 +26,7 @@ var logger = createLogger({
 
 var createStoreWithMiddleware = applyMiddleware(thunk, promise, array, analytics, logger)(createStore);
 
-function configureStore(onComplete: ?() => void) {
+export default function configureStore(onComplete: ?() => void) {
   // TODO(frantic): reconsider usage of redux-persist, maybe add cache breaker
   // Create a fresh store:
   const store = createStoreWithMiddleware(reducers);
@@ -37,5 +37,3 @@ function configureStore(onComplete: ?() => void) {
   }
   return store;
 }
-
-export default configureStore

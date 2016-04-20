@@ -10,7 +10,7 @@ export class ProportionalImage extends Component {
     super(props);
     this.state = {
       style: {}
-    }
+    };
     this.onLayout = this.onLayout.bind(this);
   }
 
@@ -20,7 +20,7 @@ export class ProportionalImage extends Component {
     var measuredHeight = layout.width / aspectRatio;
     var currentHeight = layout.height;
 
-    if (measuredHeight != currentHeight) {
+    if (measuredHeight !== currentHeight) {
       this.setState({
         style: {
           height: measuredHeight

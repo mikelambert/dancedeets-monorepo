@@ -51,7 +51,7 @@ export default class EventListContainer extends Component {
   }
 
   fetchData() {
-    fetch("http://www.dancedeets.com/api/v1.2/search?location=Taipei&time_period=UPCOMING")
+    fetch('http://www.dancedeets.com/api/v1.2/search?location=Taipei&time_period=UPCOMING')
       .then((response) => response.json())
       .then((responseData) => {
         this.setState({

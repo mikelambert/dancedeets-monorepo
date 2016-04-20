@@ -1,26 +1,26 @@
-'use strict'
+'use strict';
 
-import React, { NavigationExperimental, View, StyleSheet, PropTypes } from 'react-native'
-import { connect } from 'react-redux'
+import React, { NavigationExperimental, StyleSheet, PropTypes } from 'react-native';
+import { connect } from 'react-redux';
 
 // My overrides
-import NavigationHeaderTitle from '../react-navigation'
+import NavigationHeaderTitle from '../react-navigation';
 
-import EventListContainer from './EventListContainer'
-import Second from './Second'
-import Third from './Third'
-import { navigatePush, navigatePop } from '../actions'
+import EventListContainer from './EventListContainer';
+import Second from './Second';
+import Third from './Third';
+import { navigatePush, navigatePop } from '../actions';
 
 const {
 	AnimatedView: NavigationAnimatedView,
 	Card: NavigationCard,
 	Header: NavigationHeader
-} = NavigationExperimental
+} = NavigationExperimental;
 
 
 class AppContainer extends React.Component {
 	render() {
-		let { navigationState, onNavigate, onBack } = this.props
+		let { navigationState, onBack } = this.props;
 
 		return (
 
@@ -41,8 +41,8 @@ class AppContainer extends React.Component {
 					// the context (something NavigationRootContainer would have given us).
 					props.scene.index > 0 ? <NavigationHeader
                         {...props}
-						renderTitleComponent={(props) => {
-						  return <NavigationHeaderTitle>{props.scene.navigationState.title}</NavigationHeaderTitle>;
+						renderTitleComponent={(props2) => {
+							return <NavigationHeaderTitle>{props2.scene.navigationState.title}</NavigationHeaderTitle>;
 						}}
 					/> : null
 				)}
@@ -56,19 +56,19 @@ class AppContainer extends React.Component {
 					/>
 				)}
 			/>
-		)
+		);
 	}
 
 	_renderScene({scene}) {
-		const { navigationState } = scene
+		const { navigationState } = scene;
 
-		switch(navigationState.key) {
+		switch (navigationState.key) {
 		case 'EventList':
-			return <EventListContainer />
+			return <EventListContainer />;
 		case 'Second':
-			return <Second />
+			return <Second />;
 		case 'Third':
-			return <Third />
+			return <Third />;
 		}
 	}
 }
@@ -77,7 +77,7 @@ AppContainer.propTypes = {
 	navigationState: PropTypes.object,
 	onNavigate: PropTypes.func.isRequired,
 	onBack: PropTypes.func.isRequired
-}
+};
 
 export default connect(
 	state => ({
@@ -97,4 +97,4 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1
 	}
-})
+});

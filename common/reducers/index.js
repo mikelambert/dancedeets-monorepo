@@ -5,9 +5,9 @@
 
 'use strict';
 
-import { combineReducers } from 'redux'
-import {user} from './user'
-import {navigationState} from './navigation'
+import {combineReducers} from 'redux';
+import {user} from './user';
+import {navigationState} from './navigation';
 
 export default combineReducers({
 	navigationState,

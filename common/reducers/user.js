@@ -35,7 +35,7 @@ export function user(state: State = initialState, action: Action): State {
       inTutorial: true,
       id: null,
       name: null,
-    }
+    };
   }
   if (action.type === 'LOGIN_LOGGED_IN') {
     return {

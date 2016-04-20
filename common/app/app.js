@@ -16,7 +16,6 @@ import AppContainer from '../containers/AppContainer';
 import View from 'View';
 import StatusBar from 'StatusBar';
 import { connect } from 'react-redux';
-import { version } from './env.js';
 
 
 function select(store) {
@@ -31,6 +30,7 @@ class App extends React.Component {
     this.handleAppStateChange = this.handleAppStateChange.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
   }
+
   loadAppData() {
     // TODO: Download any app-wide data we need, here.
   }

@@ -32,7 +32,7 @@ class EventCategories extends SubEventLine {
       return <Text
         numberOfLines={1}
         style={eventStyles.rowText}
-        >({this.props.categories.slice(0,8).join(', ')})</Text>
+        >({this.props.categories.slice(0,8).join(', ')})</Text>;
     } else {
       return null;
     }
@@ -45,7 +45,7 @@ class EventDateTime extends SubEventLine {
   }
   textRender() {
     if (this.props.start) {
-      return <Text style={eventStyles.rowDateTime}>{this.props.start}</Text>
+      return <Text style={eventStyles.rowDateTime}>{this.props.start}</Text>;
     } else {
       return null;
     }
@@ -64,7 +64,7 @@ class EventVenue extends SubEventLine {
     if (this.props.venue.address) {
       components.push(<Text key="line2" style={eventStyles.rowText}>{this.props.venue.address.city + ', ' + this.props.venue.address.country}</Text>);
     }
-    return <View>{components}</View>
+    return <View>{components}</View>;
   }
 }
 
@@ -74,7 +74,7 @@ class EventRow extends Component {
     var imageProps = this.props.event.getImageProps();
     return (
       <View style={eventStyles.row}>
-        <TouchableOpacity onPress={() => {this.props.onEventSelected(this.props.event)}} activeOpacity={0.5}>
+        <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
           <ProportionalImage
             source={{uri: imageProps.url}}
             originalWidth={imageProps.width}
@@ -105,12 +105,12 @@ export class EventListView extends Component {
     return (
         <ListView
           dataSource={this.props.dataSource}
-          renderRow={function(e) {
-            return <EventRow
+          renderRow={(e) =>
+            <EventRow
               event={new Event(e)}
               onEventSelected={onEventSelected}
             />
-          }}
+          }
           initialListSize={50}
           pageSize={30}
         />

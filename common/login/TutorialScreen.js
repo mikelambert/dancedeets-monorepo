@@ -1,6 +1,5 @@
 import ViewPager from 'react-native-viewpager';
 import React, {
-  Component,
   Dimensions,
   Image,
   StyleSheet,
@@ -44,7 +43,7 @@ export default class TutorialScreen extends React.Component {
     });
     this.state = {
       dataSource: dataSource.cloneWithPages(PAGES),
-    }
+    };
     this._renderPage = this._renderPage.bind(this);
   }
 
@@ -87,19 +86,18 @@ export default class TutorialScreen extends React.Component {
       start={[0.0, 0.0]} end={[0.0, 1.0]}
       locations={[0.0, 0.8, 1.0]}
       colors={['#00000000', '#000000CC', '#000000CC']}
-      style={styles.bottomFade} />
+      style={styles.bottomFade} />;
 
-    if (pageID == 0) {
+    if (pageID === 0) {
       return <Image
         style={styles.container}
         source={require('./images/LaunchScreen.jpg')}>
         {bottomFade}
         <Image
           style={styles.container}
-          source={require('./images/LaunchScreenText.png')}>
-        </Image>
+          source={require('./images/LaunchScreenText.png')} />
       </Image>;
-    } else if (pageID == 1) {
+    } else if (pageID === 1) {
       return <Image
         style={styles.container}
         source={require('./images/Onboard1.jpg')}>
@@ -108,43 +106,43 @@ export default class TutorialScreen extends React.Component {
         style={[styles.container, styles.centerItems]}
           source={require('./images/Onboard1Text.png')}>
           <TopView header="Take a Trip:" items={[
-            "Meet local dancers",
-            "Hit up dance events",
+            'Meet local dancers',
+            'Hit up dance events',
           ]}/>
         </Image>
       </Image>;
-    } else if (pageID == 2) {
+    } else if (pageID === 2) {
       return <Image
         style={[styles.container, styles.centerItems]}
         source={require('./images/Onboard2.jpg')}>
         {bottomFade}
         <TopView header="Learn to Dance:" items={[
-          "Take a class",
-          "Watch a show",
-          "Hit the clubs",
+          'Take a class',
+          'Watch a show',
+          'Hit the clubs',
         ]}/>
       </Image>;
-    } else if (pageID == 3) {
+    } else if (pageID === 3) {
       return <View style={styles.container}>
-      <Image
-        style={styles.container}
-        source={require('./images/Onboard3.jpg')}>
-        {bottomFade}
         <Image
-          style={[styles.container, styles.centerItems, styles.topAndBottom]}
-          source={require('./images/Onboard3Text.png')}>
-          <TopView header="Promote your event:" items={[
-            "Share your event",
-            "Share your city's events",
-            "Reach dancers worldwide\nand join our 90,000 events",
-          ]} />
-          <View style={[styles.centerItems, styles.bottomBox]}>
-            <LoginButton icon={require('./icons/facebook.png')} type="primary" caption="Login with Facebook"></LoginButton>
-            <TouchableOpacity style={styles.bottomLowerLink} activeOpacity={0.7}><Text style={[styles.bottomLink, styles.bottomThinLink]}>DON'T WANT TO LOGIN?</Text></TouchableOpacity>
-          </View>
+          style={styles.container}
+          source={require('./images/Onboard3.jpg')}>
+          {bottomFade}
+          <Image
+            style={[styles.container, styles.centerItems, styles.topAndBottom]}
+            source={require('./images/Onboard3Text.png')}>
+            <TopView header="Promote your event:" items={[
+              'Share your event',
+              "Share your city's events",
+              'Reach dancers worldwide\nand join our 90,000 events',
+            ]} />
+            <View style={[styles.centerItems, styles.bottomBox]}>
+              <LoginButton icon={require('./icons/facebook.png')} type="primary" caption="Login with Facebook" />
+              <TouchableOpacity style={styles.bottomLowerLink} activeOpacity={0.7}><Text style={[styles.bottomLink, styles.bottomThinLink]}>DON'T WANT TO LOGIN?</Text></TouchableOpacity>
+            </View>
+          </Image>
         </Image>
-      </Image>
-      </View>
+      </View>;
     }
   }
 }

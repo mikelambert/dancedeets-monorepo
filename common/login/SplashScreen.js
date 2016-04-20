@@ -6,15 +6,9 @@
 
 import StatusBarIOS from 'StatusBarIOS';
 import React, {
-  Animated,
-  Component,
-  Dimensions,
   Image,
-  ListView,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
-  View,
 } from 'react-native';
 import {
   LoginManager,
@@ -24,7 +18,7 @@ import TutorialScreen from './TutorialScreen';
 // TODO: Maybe when we have styles, use a DDText.js file?
 // TODO: import LoginButton from '../common/LoginButton';
 
-import { skipLogin, loginWaitingForState, loginStartTutorial, loginComplete } from '../actions';
+import { loginStartTutorial, loginComplete } from '../actions';
 import { connect } from 'react-redux';
 import type { Dispatch } from '../actions/types';
 
@@ -58,7 +52,6 @@ class SplashScreen extends React.Component {
     if (this.props.inTutorial) {
       return <TutorialScreen />;
     }
-    var onPress=null;
     return (
       <TouchableWithoutFeedback
         //onPress={() => this.props.dispatch(skipLogin())}>
@@ -68,8 +61,7 @@ class SplashScreen extends React.Component {
           source={require('./images/LaunchScreen.jpg')}>
           <Image
             style={styles.container}
-            source={require('./images/LaunchScreenText.png')}>
-          </Image>
+            source={require('./images/LaunchScreenText.png')} />
         </Image>
       </TouchableWithoutFeedback>
     );
@@ -79,10 +71,10 @@ class SplashScreen extends React.Component {
 export default connect(select)(SplashScreen);
 
 async function loginOrLogout() {
-  console.log("loginOrLogout");
+  console.log('loginOrLogout');
   try {
-    var loginResult = await LoginManager.logInWithReadPermissions(["public_profile", "email", "user_friends", "user_events"]);
-    console.log("LoginResult is " + String(loginResult));
+    var loginResult = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends', 'user_events']);
+    console.log('LoginResult is ' + String(loginResult));
     if (loginResult.isCancelled) {
       LoginManager.logOut();
     }
@@ -94,24 +86,24 @@ async function loginOrLogout() {
 async function performLoginTransitions(dispatch: Dispatch) {
   //await dispatch(loginWaitingForState())
   const accessToken = await AccessToken.getCurrentAccessToken();
-  console.log("AccessToken is " + String(accessToken))
+  console.log('AccessToken is ' + String(accessToken));
   if (!accessToken) {
-    console.log("Wait for click!");
+    console.log('Wait for click!');
     return dispatch(loginStartTutorial());
   } else {
     var howLongAgo = Math.round((Date.now() - accessToken.lastRefreshTime) / 1000);
     if (howLongAgo < 60 * 60) {
-      console.log("Good click, logging in!");
-      return dispatch(loginComplete())
+      console.log('Good click, logging in!');
+      return dispatch(loginComplete());
     } else {
       try {
         const token = await AccessToken.refreshCurrentAccessTokenAsync();
-        console.log("Refreshed Token result is " + token);
-        if (!token.hasGranted("user_events")) {
+        console.log('Refreshed Token result is ' + token);
+        if (!token.hasGranted('user_events')) {
           await loginOrLogout();
         }
       } catch (exc) {
-        console.log("Exception refreshing or logging in: " + exc);
+        console.log('Exception refreshing or logging in: ' + exc);
         LoginManager.logOut();
       }
     }
