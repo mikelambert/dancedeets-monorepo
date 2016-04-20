@@ -1,3 +1,8 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
 
 import React, {
   Component,
@@ -13,6 +18,14 @@ import { ProportionalImage } from './ui';
 import { Event } from './models';
 
 class SubEventLine extends Component {
+  icon() {
+    throw('Not Implemented!');
+  }
+
+  textRender() {
+    throw('Not Implemented!');
+  }
+
   render() {
     return (
       <View style={eventStyles.detailLine}>
@@ -69,6 +82,10 @@ class EventVenue extends SubEventLine {
 }
 
 class EventRow extends Component {
+  props: {
+    onEventSelected: (Event) => void,
+    event: Event,
+  };
 
   render() {
     var imageProps = this.props.event.getImageProps();
@@ -97,9 +114,11 @@ class EventRow extends Component {
 
 
 export class EventListView extends Component {
-  constructor(props) {
-    super(props);
-  }
+  props: {
+    onEventSelected: (Event) => void,
+    dataSource: ListView.DataSource,
+  };
+
   render() {
     var onEventSelected = this.props.onEventSelected;
     return (
