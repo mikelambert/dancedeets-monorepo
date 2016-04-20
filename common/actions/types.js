@@ -26,8 +26,16 @@
 
 type Event = Object;
 
+import type { NavigationState } from 'NavigationTypeDefinition';
+
+
 export type Action =
-    { type: 'LOGIN_START_ONBOARD' }
+    { type: 'NAV_PUSH', state: NavigationState }
+  | { type: 'NAV_POP' }
+  | { type: 'NAV_JUMP_TO_KEY', key: string }
+  | { type: 'NAV_JUMP_TO_INDEX', index: number }
+  | { type: 'NAV_RESET', index: number, children: Array<NavigationState> }
+  | { type: 'LOGIN_START_ONBOARD' }
   | { type: 'LOGIN_LOGGED_IN' }
   | { type: 'LOGIN_LOGGED_OUT' }
   | { type: 'LOGIN_SKIPPED' }

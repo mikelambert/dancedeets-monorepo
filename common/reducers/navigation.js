@@ -1,9 +1,18 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
+import type { NavigationParentState } from 'NavigationTypeDefinition';
 
 import * as NavigationStateUtils from 'NavigationStateUtils';
 
 import { NAV_PUSH, NAV_POP, NAV_JUMP_TO_KEY, NAV_JUMP_TO_INDEX, NAV_RESET } from '../actions';
 
-const initialNavState = {
+import type { Action } from '../actions/types';
+
+const initialNavState: NavigationParentState = {
 	key: 'MainNavigation',
 	index: 0,
 	children: [
@@ -11,7 +20,7 @@ const initialNavState = {
 	]
 };
 
-export function navigationState(state = initialNavState, action) {
+export function navigationState(state: NavigationParentState = initialNavState, action: Action) {
 	switch (action.type) {
 	case NAV_PUSH:
 		if (state.children[state.index].key === (action.state && action.state.key)) {
