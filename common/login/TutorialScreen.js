@@ -121,7 +121,12 @@ export default class TutorialScreen extends React.Component {
               'Reach dancers worldwide\nand join our 90,000 events',
             ]} />
             <View style={[styles.centerItems, styles.bottomBox]}>
-              <LoginButton icon={require('./icons/facebook.png')} type="primary" caption="Login with Facebook" />
+              <LoginButton
+                icon={require('./icons/facebook.png')}
+                type="primary"
+                caption="Login with Facebook"
+                onPress={this.props.onLogin}
+              />
               <TouchableOpacity
                 style={styles.bottomLowerLink}
                 activeOpacity={0.7}

@@ -1,35 +1,34 @@
 import React, {Text} from 'react-native';
 import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
-import { loginComplete, loginTutorialNoLogin, loginTutorialStillNoLogin } from '../actions';
-
-const mapStateToProps = (state) => {
-  return {
-    onboarding: state.onboarding,
-  };
-};
+import { loginComplete } from '../actions';
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onLogin: (event) => {
       dispatch(loginComplete());
     },
-    onNoLogin: (event) => {
-      dispatch(loginTutorialNoLogin());
-    },
-    onStillNoLogin: (event) => {
-      dispatch(loginTutorialStillNoLogin());
-    },
   };
 };
 
 class OnboardingScreens extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      screen: 'CAROUSEL',
+    };
+    this._onNoLogin = this._onNoLogin.bind(this);
+  }
+
+  _onNoLogin() {
+    this.setState({...this.state, screen: 'NO_LOGIN'});
+  }
+
   render() {
-    console.log(this.props);
-    if (this.props.onboarding.type === 'CAROUSEL') {
+    if (this.state.screen === 'CAROUSEL') {
       return <TutorialScreen
         onLogin={this.props.onLogin}
-        onNoLogin={this.props.onNoLogin}
+        onNoLogin={this._onNoLogin}
       />;
     } else {
       return <Text>Heeey</Text>;
@@ -38,6 +37,6 @@ class OnboardingScreens extends React.Component {
 }
 
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
 )(OnboardingScreens);

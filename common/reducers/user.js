@@ -37,24 +37,6 @@ export function user(state: State = initialState, action: Action): State {
       name: null,
     };
   }
-  if (action.type === 'LOGIN_TUTORIAL_NOLOGIN') {
-    return {
-      isLoggedIn: false,
-      hasSkippedLogin: false,
-      isOnboarding: true,
-      id: null,
-      name: null,
-    };
-  }
-  if (action.type === 'LOGIN_TUTORIAL_STILL_NOLOGIN') {
-    return {
-      isLoggedIn: false,
-      hasSkippedLogin: false,
-      isOnboarding: true,
-      id: null,
-      name: null,
-    };
-  }
   if (action.type === 'LOGIN_LOGGED_IN') {
     return {
       isLoggedIn: true,
