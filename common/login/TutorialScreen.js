@@ -140,7 +140,7 @@ export default class TutorialScreen extends React.Component {
           ]} />
           <View style={[styles.centerItems, styles.bottomBox]}>
             <LoginButton icon={require('./icons/facebook.png')} type="primary" caption="Login with Facebook"></LoginButton>
-            <TouchableOpacity activeOpacity={0.7}><Text style={[styles.bottomLink, styles.bottomLowerLink, styles.bottomThinLink]}>DON'T WANT TO LOGIN?</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.bottomLowerLink} activeOpacity={0.7}><Text style={[styles.bottomLink, styles.bottomThinLink]}>DON'T WANT TO LOGIN?</Text></TouchableOpacity>
           </View>
         </Image>
       </Image>
@@ -178,7 +178,7 @@ var styles = StyleSheet.create({
     top: 0,
   },
   bottomLowerLink: {
-    top: 20,
+    top: 10,
   },
   bottomThinLink: {
     fontWeight: 'normal',
