@@ -25,9 +25,6 @@ const initialState = {
 };
 
 export function user(state: State = initialState, action: Action): State {
-  if (action.type === 'LOGIN_LOADING') {
-    return initialState;
-  }
   if (action.type === 'LOGIN_START_ONBOARD') {
     return {
       isLoggedIn: false,

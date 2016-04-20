@@ -24,11 +24,6 @@ async function queryFacebookAPI(path, ...args): Promise {
     });
   });
 }
-export function loginWaitingForState(): Action {
-  return {
-    type: 'LOGIN_LOADING',
-  };
-}
 
 export function loginStartOnboard(): Action {
   return {
