@@ -13,7 +13,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 
-class OnboardingScreens extends React.Component {
+class OnboardingFlow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,11 +35,6 @@ class OnboardingScreens extends React.Component {
     } else if (this.state.screen === 'NO_LOGIN') {
       return <NoLoginScreen
         onLogin={this.props.onLogin}
-        onNoLogin={() => this._transition('STILL_NO_LOGIN')}
-        />;
-    } else if (this.state.screen === 'STILL_NO_LOGIN') {
-      return <StillNoLoginScreen
-        onLogin={this.props.onLogin}
         onNoLogin={() => console.log('open website')}
         />;
     }
@@ -49,4 +44,4 @@ class OnboardingScreens extends React.Component {
 export default connect(
     null,
     mapDispatchToProps
-)(OnboardingScreens);
+)(OnboardingFlow);

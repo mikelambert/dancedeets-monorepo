@@ -7,36 +7,27 @@ import React, {
 } from 'react-native';
 import LoginButton from './LoginButton';
 
-const NoLoginText1 = 
-`DANCEDEETS NEEDS YOU!
+const NoLoginText =
+`Almost all our dance events are
+found when dancers like you log in.
 
-Almost all our dance events are
-discovered through dancers who log in.
+Logging in shares your dance events
+with DanceDeets, so our algorithm
+can sort through everyone's events,
+and share them with dancers everywhere.
 
-When dancers login with Facebook,
-we can discover and share their events
-with the rest of the dance scene,
-helping bring people closer together.
-
-But without logged-in dancers,
+But without any logged-in dancers,
 we’d have nothing to share,
-and dance promotion would be harder.
+and promoting your events gets harder.
 
-So you can help DanceDeets,
-and help the dance culture,
-by logging in below.`;
+So please consider logging in,
+to help us help your dance scene.
 
-const NoLoginText2 = 
-`Sorry to hear you don’t want to login!
+But if not, you're always able to use
+our website without any login:
 
-You can always use our website,
-without any login requirements:
 http://www.dancedeets.com/
-
-But unfortunately, we require that 
-you log in to use the mobile app.
-
-Hope you’ll forgive us!`;
+`;
 
 class NoLoginBase extends React.Component {
   render() {
@@ -58,7 +49,7 @@ class NoLoginBase extends React.Component {
 export class NoLoginScreen extends React.Component {
   render() {
     return (
-      <NoLoginBase headerText={NoLoginText1}>
+      <NoLoginBase headerText={NoLoginText}>
         <LoginButton
           icon={require('./icons/facebook.png')}
           type="primary"
@@ -70,29 +61,7 @@ export class NoLoginScreen extends React.Component {
           activeOpacity={0.7}
           onPress={this.props.onNoLogin}
         >
-          <Text style={[styles.bottomLink, styles.bottomThinLink]}>STILL DON'T WANT TO LOGIN?</Text>
-        </TouchableOpacity>
-      </NoLoginBase>
-    );
-  }
-}
-
-export class StillNoLoginScreen extends React.Component {
-  render() {
-    return (
-      <NoLoginBase headerText={NoLoginText2}>
-        <LoginButton
-          icon={require('./icons/facebook.png')}
-          type="primary"
-          caption="Login with Facebook"
-          onPress={this.props.onLogin}
-        />
-        <TouchableOpacity
-          style={styles.bottomLowerLink}
-          activeOpacity={0.7}
-          onPress={this.props.onNoLogin}
-        >
-          <Text style={[styles.bottomLink, styles.bottomThinLink]}>GO TO WEBSITE</Text>
+          <Text style={[styles.bottomLink, styles.bottomThinLink]}>USE WEBSITE WITHOUT LOGIN</Text>
         </TouchableOpacity>
       </NoLoginBase>
     );
