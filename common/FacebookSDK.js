@@ -47,12 +47,12 @@ type LoginCallback = (result: {authResponse?: AuthResponse, error?: Error}) => v
 
 let _authResponse: ?AuthResponse = null;
 
-async function loginWithFacebookSDK(options: LoginOptions): Promise<AuthResponse> {
-  const scope = options.scope || 'public_profile';
-  const permissions = scope.split(',');
-
-  const loginResult = await LoginManager.logInWithReadPermissions(permissions);
+export async function loginOrLogout() {
+  console.log('Presenting FB Login Dialog...');
+  const loginResult = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends', 'user_events']);
+  console.log('LoginResult is ' + String(loginResult));
   if (loginResult.isCancelled) {
+    LoginManager.logOut();
     throw new Error('Canceled by user');
   }
 
@@ -60,6 +60,12 @@ async function loginWithFacebookSDK(options: LoginOptions): Promise<AuthResponse
   if (!accessToken) {
     throw new Error('No access token');
   }
+  return accessToken;
+}
+
+
+async function loginWithFacebookSDK(options: LoginOptions): Promise<AuthResponse> {
+  const accessToken = await loginOrLogout();
 
   _authResponse = {
     userID: accessToken.userID, // FIXME: RNFBSDK bug: userId -> userID
@@ -144,5 +150,4 @@ var FacebookSDK = {
     new GraphRequestManager().addRequest(request).start();
   }
 };
-
-module.exports = FacebookSDK;
+export default FacebookSDK;

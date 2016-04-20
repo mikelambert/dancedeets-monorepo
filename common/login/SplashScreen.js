@@ -17,7 +17,7 @@ import {
 import OnboardingFlow from './OnboardingFlow';
 // TODO: Maybe when we have styles, use a DDText.js file?
 // TODO: import LoginButton from '../common/LoginButton';
-
+import { loginOrLogout } from '../FacebookSDK';
 import { loginStartOnboard, loginComplete } from '../actions';
 import { connect } from 'react-redux';
 import type { Dispatch } from '../actions/types';
@@ -70,40 +70,30 @@ class SplashScreen extends React.Component {
 }
 export default connect(select)(SplashScreen);
 
-async function loginOrLogout() {
-  console.log('loginOrLogout');
-  try {
-    var loginResult = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends', 'user_events']);
-    console.log('LoginResult is ' + String(loginResult));
-    if (loginResult.isCancelled) {
-      LoginManager.logOut();
-    }
-  } catch (exc) {
-    console.log('Error calling logInWithReadPermissions' + exc);
-  }
-}
-
 async function performLoginTransitions(dispatch: Dispatch) {
   //await dispatch(loginWaitingForState())
   const accessToken = await AccessToken.getCurrentAccessToken();
-  console.log('AccessToken is ' + String(accessToken));
+  console.log('AccessToken is:', accessToken);
   if (!accessToken) {
-    console.log('Wait for click!');
+    console.log('Wait for onboarding!');
     return dispatch(loginStartOnboard());
   } else {
     var howLongAgo = Math.round((Date.now() - accessToken.lastRefreshTime) / 1000);
     if (howLongAgo < 60 * 60) {
-      console.log('Good click, logging in!');
+      console.log('Good access token, finishing login!');
       return dispatch(loginComplete());
     } else {
       try {
-        const token = await AccessToken.refreshCurrentAccessTokenAsync();
-        console.log('Refreshed Token result is ' + token);
-        if (!token.hasGranted('user_events')) {
+        await AccessToken.refreshCurrentAccessTokenAsync();
+        const newAccessToken = await AccessToken.getCurrentAccessToken();
+        console.log('Refreshed Token result:', newAccessToken);
+        // We intentionally use != instead of !== due to the need to protect against undefined:
+        // described more in http://flowtype.org/docs/nullable-types.html
+        if (newAccessToken != null && !newAccessToken.getPermissions().includes('user_events')) {
           await loginOrLogout();
         }
       } catch (exc) {
-        console.log('Exception refreshing or logging in: ' + exc);
+        console.log('Exception refreshing or logging in:', exc);
         LoginManager.logOut();
       }
     }

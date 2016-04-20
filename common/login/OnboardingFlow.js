@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
 import { loginComplete } from '../actions';
 import { NoLoginScreen } from './NoLoginScreen';
+import { loginOrLogout } from '../FacebookSDK';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onLogin: (event) => {
+    onLogin: async function (event) {
+      await loginOrLogout();
       dispatch(loginComplete());
     },
   };
