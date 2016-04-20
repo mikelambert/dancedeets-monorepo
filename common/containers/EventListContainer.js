@@ -1,23 +1,43 @@
 import { connect } from 'react-redux';
-
-import EventListScreen from '../components/EventListScreen';
+import React, { View, PropTypes, StyleSheet } from 'react-native';
 import { navigatePush } from '../actions';
-
+import MainFrame from '../mainFrame';
 
 const mapStateToProps = (state) => {
-	return {
-	};
+    return {
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
-	return {
-		onEventSelected: (event) => {
-			dispatch(navigatePush({key: 'Event View', title: event.name}));
-		}
-	};
+    return {
+        onEventSelected: (event) => {
+            dispatch(navigatePush({key: 'Event View', title: event.name}));
+        }
+    };
 };
 
+const EventListScreen = (props) => {
+    return (
+        <View style={styles.container}>
+            <MainFrame onEventSelected={props.onEventSelected}/>
+        </View>
+    );
+};
 export default connect(
-	mapStateToProps,
-	mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(EventListScreen);
+
+EventListScreen.propTypes = {
+    onEventSelected: PropTypes.func.isRequired
+};
+export default EventListScreen;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#2F9CB2',
+    },
+});
+
+
