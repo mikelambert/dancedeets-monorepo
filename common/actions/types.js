@@ -24,10 +24,8 @@
 
 'use strict';
 
-type Event = Object;
-
 import type { NavigationState } from 'NavigationTypeDefinition';
-
+import { Event } from '../models';
 
 export type Action =
     { type: 'NAV_PUSH', state: NavigationState }

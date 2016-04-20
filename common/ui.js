@@ -1,24 +1,39 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
 
 import React, {
   Image,
   View,
-  Component,
 } from 'react-native';
 
-export class ProportionalImage extends Component {
+export class ProportionalImage extends React.Component {
+  props: {
+    originalWidth: number,
+    originalHeight: number,
+    style?: any,
+  };
+
+  state: {
+    style: {height: number} | {},
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       style: {}
     };
-    this.onLayout = this.onLayout.bind(this);
+    (this: any).onLayout = this.onLayout.bind(this);
   }
 
-  onLayout(e) {
-    var layout = e.nativeEvent.layout;
-    var aspectRatio = this.props.originalWidth / this.props.originalHeight;
-    var measuredHeight = layout.width / aspectRatio;
-    var currentHeight = layout.height;
+  onLayout(e: SyntheticEvent) {
+    const nativeEvent: any = e.nativeEvent;
+    const layout = nativeEvent.layout;
+    const aspectRatio = this.props.originalWidth / this.props.originalHeight;
+    const measuredHeight = layout.width / aspectRatio;
+    const currentHeight = layout.height;
 
     if (measuredHeight !== currentHeight) {
       this.setState({
@@ -44,7 +59,3 @@ export class ProportionalImage extends Component {
   }
 }
 
-ProportionalImage.propTypes = {
-  originalWidth: React.PropTypes.number.isRequired,
-  originalHeight: React.PropTypes.number.isRequired,
-};

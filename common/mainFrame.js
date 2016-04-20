@@ -1,3 +1,8 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
 
 import React, {
   Component,
@@ -9,7 +14,18 @@ import React, {
 
 import { EventListView } from './events';
 
+import type { Event } from './models';
+
 export default class EventListContainer extends Component {
+  props: {
+    onEventSelected: (Event) => void,
+  };
+
+  state: {
+    dataSource: ListView.DataSource,
+    loaded: boolean,
+  };
+
   constructor(props) {
     super(props);
     this.state = {

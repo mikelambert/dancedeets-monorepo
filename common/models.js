@@ -1,8 +1,18 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
+type JSON = | string | number | boolean | null | JSONObject | JSONArray;
+type JSONObject = { [key:string]: JSON };
+type JSONArray = Array<JSON>;
+
 export class Event {
-  constructor(eventData) {
+  constructor(eventData: JSONObject) {
     for (var attr in eventData) {
       if (eventData.hasOwnProperty(attr)) {
-        this[attr] = eventData[attr];
+        (this: any)[attr] = eventData[attr];
       }
     }
     return this;
