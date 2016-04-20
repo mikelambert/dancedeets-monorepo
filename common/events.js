@@ -18,11 +18,11 @@ import { Event } from './models';
 
 class SubEventLine extends React.Component {
   icon() {
-    throw('Not Implemented!');
+    throw ('Not Implemented!');
   }
 
   textRender() {
-    throw('Not Implemented!');
+    throw ('Not Implemented!');
   }
 
   render() {
