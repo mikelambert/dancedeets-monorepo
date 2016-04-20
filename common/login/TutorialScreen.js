@@ -35,17 +35,6 @@ class TopView extends React.Component {
 }
 
 export default class TutorialScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    var dataSource = new ViewPager.DataSource({
-      pageHasChanged: (p1, p2) => p1 !== p2,
-    });
-    this.state = {
-      dataSource: dataSource.cloneWithPages(PAGES),
-    };
-    this._renderPage = this._renderPage.bind(this);
-  }
-
   render() {
     var pages = PAGES.map((val, i) => this._renderPage(i));
     return <Carousel
