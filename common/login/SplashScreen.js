@@ -8,7 +8,6 @@ import StatusBarIOS from 'StatusBarIOS';
 import React, {
   Image,
   StyleSheet,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import OnboardingFlow from './OnboardingFlow';
 // TODO: Maybe when we have styles, use a DDText.js file?
@@ -23,17 +22,22 @@ function select(store) {
   };
 }
 
-
+class LaunchScreen extends React.Component {
+  render() {
+    return (
+      <Image
+        style={styles.container}
+        source={require('./images/LaunchScreen.jpg')}>
+        <Image
+          style={styles.container}
+          source={require('./images/LaunchScreenText.png')} />
+      </Image>
+    );
+  }
+}
 class SplashScreen extends React.Component {
-
-
-  state: {
-  };
-
   constructor(props) {
     super(props);
-    this.state = {
-    };
   }
 
   componentDidMount() {
@@ -44,21 +48,11 @@ class SplashScreen extends React.Component {
   render() {
     if (this.props.isOnboarding) {
       return <OnboardingFlow />;
+    } else {
+      // This is used when we're starting up, before we know
+      // whether to drop them into the <OnboardingFlow/> process.
+      return <LaunchScreen />;
     }
-    return (
-      <TouchableWithoutFeedback
-        //onPress={() => this.props.dispatch(skipLogin())}>
-        >
-        <Image
-          style={styles.container}
-          source={require('./images/LaunchScreen.jpg')}>
-          <Image
-            style={styles.container}
-            source={require('./images/LaunchScreenText.png')} />
-        </Image>
-      </TouchableWithoutFeedback>
-    );
-    //<LoginButton source="First screen" />
   }
 }
 export default connect(select)(SplashScreen);
