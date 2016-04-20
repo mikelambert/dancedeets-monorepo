@@ -4,13 +4,12 @@
  * @flow
  */
 
-import type { NavigationParentState } from 'NavigationTypeDefinition';
-
 import * as NavigationStateUtils from 'NavigationStateUtils';
 
 import { NAV_PUSH, NAV_POP, NAV_JUMP_TO_KEY, NAV_JUMP_TO_INDEX, NAV_RESET } from '../actions';
 
 import type { Action } from '../actions/types';
+import type { NavigationParentState } from 'NavigationTypeDefinition';
 
 const initialNavState: NavigationParentState = {
 	key: 'MainNavigation',
