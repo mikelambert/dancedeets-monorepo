@@ -14,7 +14,7 @@ import OnboardingFlow from './OnboardingFlow';
 // TODO: Maybe when we have styles, use a DDText.js file?
 // TODO: import LoginButton from '../common/LoginButton';
 import { connect } from 'react-redux';
-import { performLoginTransitions } from './logic';
+import { autoLoginAtStartup } from './logic';
 
 function select(store) {
   return {
@@ -38,7 +38,7 @@ class SplashScreen extends React.Component {
 
   componentDidMount() {
     StatusBarIOS && StatusBarIOS.setStyle('default');
-    performLoginTransitions(this.props.dispatch);
+    autoLoginAtStartup(this.props.dispatch);
   }
 
   render() {

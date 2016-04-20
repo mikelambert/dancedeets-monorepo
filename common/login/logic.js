@@ -5,7 +5,41 @@ import {
 import { loginStartOnboard, loginComplete } from '../actions';
 import type { Dispatch } from '../actions/types';
 
-export async function loginOrLogout() {
+export async function loginButtonPressed(dispatch: Dispatch) {
+  try {
+    await loginOrLogout();
+    dispatch(loginComplete());
+  } catch (exc) {
+    console.log('Staying on this screen, failed to login: ', exc);
+  }
+}
+
+export async function autoLoginAtStartup(dispatch: Dispatch, allowRecursion = true) {
+  // When they open the app, check for their existing FB token.
+  if (await isLoggedOut()) {
+    console.log('Wait for onboarding!');
+    return dispatch(loginStartOnboard());
+  // Now let's check how old the token is. We want to refresh old tokens,
+  // but not delay/block users who have recently refreshed.
+  } else if (await isRecentlyLoggedIn()) {
+    console.log('Fresh access token, completing login!');
+    return dispatch(loginComplete());
+  } else if (allowRecursion) {
+    refreshFullToken();
+    // Okay, now we've either refreshed with a new valid authtoken, or we've logged the user out.
+    // Let's send them back into the flow, which will start onboarding or start the main app.
+    return performLoginTransitions(dispatch, false);
+  } else {
+    // This "Shouldn't Happen"...the recursive case should have been handled
+    // by one of the first two functions. But in either case, let's log as best we can.
+    // And then ensure the user still has a pleasant experience.
+    // The user didn't pass isLoggedOut, so they must be loggedIn with an old token.
+    // That should be good enough to use our app and associated FB SDK calls!
+    return dispatch(loginComplete());
+  }
+}
+
+async function loginOrLogout() {
   console.log('Presenting FB Login Dialog...');
   const loginResult = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends', 'user_events']);
   console.log('LoginResult is ', loginResult);
@@ -67,30 +101,5 @@ async function refreshFullToken() {
     // This effectively drops them back in the onboarding flow.
     console.log('Exception refreshing or logging in:', exc);
     LoginManager.logOut();
-  }
-}
-
-export async function performLoginTransitions(dispatch: Dispatch, allowRecursion = true) {
-  // When they open the app, check for their existing FB token.
-  if (await isLoggedOut()) {
-    console.log('Wait for onboarding!');
-    return dispatch(loginStartOnboard());
-  // Now let's check how old the token is. We want to refresh old tokens,
-  // but not delay/block users who have recently refreshed.
-  } else if (await isRecentlyLoggedIn()) {
-    console.log('Fresh access token, completing login!');
-    return dispatch(loginComplete());
-  } else if (allowRecursion) {
-    refreshFullToken();
-    // Okay, now we've either refreshed with a new valid authtoken, or we've logged the user out.
-    // Let's send them back into the flow, which will start onboarding or start the main app.
-    return performLoginTransitions(dispatch, false);
-  } else {
-    // This "Shouldn't Happen"...the recursive case should have been handled
-    // by one of the first two functions. But in either case, let's log as best we can.
-    // And then ensure the user still has a pleasant experience.
-    // The user didn't pass isLoggedOut, so they must be loggedIn with an old token.
-    // That should be good enough to use our app and associated FB SDK calls!
-    return dispatch(loginComplete());
   }
 }

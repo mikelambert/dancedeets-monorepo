@@ -1,19 +1,14 @@
 import React from 'react-native';
 import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
-import { loginComplete } from '../actions';
 import { NoLoginScreen } from './NoLoginScreen';
-import { loginOrLogout } from './logic';
+import { loginButtonPressed } from './logic';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onLogin: async function (event) {
-      await loginOrLogout();
-      dispatch(loginComplete());
-    },
+    onLogin: (e) => loginButtonPressed(dispatch),
   };
 };
-
 
 class OnboardingFlow extends React.Component {
   constructor(props) {
