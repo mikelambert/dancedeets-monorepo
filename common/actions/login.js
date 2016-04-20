@@ -13,18 +13,6 @@ import Alert from 'Alert';
 
 import type { Action, ThunkAction } from './types';
 
-async function FacebookLogin(scope): Promise {
-  return new Promise((resolve, reject) => {
-    FacebookSDK.login((response) => {
-      if (response && !response.error) {
-        resolve(response);
-      } else {
-        reject(response && response.error);
-      }
-    }, {scope});
-  });
-}
-
 async function queryFacebookAPI(path, ...args): Promise {
   return new Promise((resolve, reject) => {
     FacebookSDK.api(path, ...args, (response) => {

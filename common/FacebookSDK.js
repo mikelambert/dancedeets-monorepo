@@ -29,7 +29,6 @@
 
 import {
   LoginManager,
-  AccessToken,
   GraphRequest,
   GraphRequestManager,
 } from 'react-native-fbsdk';
@@ -37,59 +36,10 @@ import {
 const emptyFunction = () => {};
 import mapObject from 'fbjs/lib/mapObject';
 
-type AuthResponse = {
-  userID: string;
-  accessToken: string;
-  expiresIn: number;
-};
-type LoginOptions = { scope: string };
-type LoginCallback = (result: {authResponse?: AuthResponse, error?: Error}) => void;
-
-let _authResponse: ?AuthResponse = null;
-
-export async function loginOrLogout() {
-  console.log('Presenting FB Login Dialog...');
-  const loginResult = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends', 'user_events']);
-  console.log('LoginResult is ' + String(loginResult));
-  if (loginResult.isCancelled) {
-    LoginManager.logOut();
-    throw new Error('Canceled by user');
-  }
-
-  const accessToken = await AccessToken.getCurrentAccessToken();
-  if (!accessToken) {
-    throw new Error('No access token');
-  }
-  return accessToken;
-}
-
-
-async function loginWithFacebookSDK(options: LoginOptions): Promise<AuthResponse> {
-  const accessToken = await loginOrLogout();
-
-  _authResponse = {
-    userID: accessToken.userID, // FIXME: RNFBSDK bug: userId -> userID
-    accessToken: accessToken.accessToken,
-    expiresIn: Math.round((accessToken.expirationTime - Date.now()) / 1000),
-  };
-  return _authResponse;
-}
-
 var FacebookSDK = {
   init() {
     // This is needed by Parse
     window.FB = FacebookSDK;
-  },
-
-  login(callback: LoginCallback, options: LoginOptions) {
-    loginWithFacebookSDK(options).then(
-      (authResponse) => callback({authResponse}),
-      (error) => callback({error})
-    );
-  },
-
-  getAuthResponse(): ?AuthResponse {
-    return _authResponse;
   },
 
   logout() {
