@@ -7,14 +7,15 @@
 
 'use strict';
 
-import React from 'React';
-import AppState from 'AppState';
-import SplashScreen from '../login/SplashScreen';
-import StyleSheet from 'StyleSheet';
+import React, {
+  AppState,
+  StatusBar,
+  StyleSheet,
+  View,
+} from 'react-native';
+import LoginFlow from '../login/LoginFlow';
 import AppContainer from '../containers/AppContainer';
 // import CodePush from 'react-native-code-push';
-import View from 'View';
-import StatusBar from 'StatusBar';
 import { connect } from 'react-redux';
 
 
@@ -27,8 +28,8 @@ function select(store) {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.handleAppStateChange = this.handleAppStateChange.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
+    (this: any).handleAppStateChange = this.handleAppStateChange.bind(this);
+    (this: any).componentDidMount = this.componentDidMount.bind(this);
   }
 
   loadAppData() {
@@ -55,7 +56,7 @@ class App extends React.Component {
 
   render() {
     if (!this.props.isLoggedIn) {
-      return <SplashScreen />;
+      return <LoginFlow />;
     }
     return (
       <View style={styles.container}>
