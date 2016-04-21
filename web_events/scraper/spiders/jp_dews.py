@@ -11,7 +11,7 @@ from .. import jp_spider
 
 date_re = ur'(\d+)年\s*(\d+)月\s*(\d+)日'
 # We separate these so we can handle "OPEN : 12:00 / 14:30 / CLOSE : 14:30 / 16:00"
-open_time_re = ur'OPEN : (\d+):(\d+) ' # first open time
+open_time_re = ur'OPEN : (\d+):(\d+)\b' # first open time
 close_time_re = ur'CLOSE : .*\b(\d+):(\d+)\b' # last close time
 
 

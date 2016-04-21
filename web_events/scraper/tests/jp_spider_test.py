@@ -30,6 +30,8 @@ class TestParseTimes(unittest.TestCase):
         START：14:45
         CLOSE予定：20:00""":
         (datetime.datetime(2016, 4, 1, 14), datetime.datetime(2016, 4, 1, 20)),
+        u"""OPEN : 15:00~ / 17:30~ / CLOSE : 16:30 / 19:00""":
+        (datetime.datetime(2016, 4, 1, 15), datetime.datetime(2016, 4, 1, 16, 30)),
     }
 
     def runTest(self):

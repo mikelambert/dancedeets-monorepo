@@ -9,9 +9,9 @@ DAWN = 6 # sun rises at 6am-ish
 _DATETIME_SPAN_SEPARATOR = ur'(?:~|/|부터)'  # '부터' = 'from'
 
 
-_D_DATE = ur'(?P<day>\d+)일'
+_D_DATE = ur'(?P<day>\d+)[일\(]'
 _MD_DATE = ur'(?:(?P<month>\d+)월\s*)?' + _D_DATE
-_YMD_DATE = ur'(?:(?P<year>\d+)년\s*)?' + _MD_DATE
+_YMD_DATE = ur'(?:(?P<year>\d+)[년녀]\s*)?' + _MD_DATE
 
 # WEEKDAY = r'(?:\(.\)| ..일)?'
 

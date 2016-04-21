@@ -46,7 +46,9 @@ examples = {
     u'2016년 2월 20일 토요일, 힙합 예선 2시, 왁킹 예선 3시, 본선 5시 30분부터': (datetime.datetime(2016, 2, 20, 12 + 2), None), # hiphop pm 2, waacking pm 3, main 5 : 30 from
     u'2016년 2월 14일 일요일': (datetime.date(2016, 2, 14), None),
     u'2016년 4월 3일(일), 오전 11시': (datetime.datetime(2016, 4, 3, 11), None), # am 11
-    u'2016년 3월 19일(토), 오후 12시': (datetime.datetime(2016, 3, 19, 12), None) # pm 12 (make sure it's noon!)
+    u'2016년 3월 19일(토), 오후 12시': (datetime.datetime(2016, 3, 19, 12), None), # pm 12 (make sure it's noon!)
+    u'2016녀 5월 5일(목), 오후 2시부터': (datetime.datetime(2016, 5, 5, 12 + 2), None),
+    u'2016년 4월 15(금), 오후 8시 ~ 10시': (datetime.datetime(2016, 4, 15, 12 + 8), datetime.datetime(2016, 4, 15, 12 + 10)),
 }
 
 
