@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 // My overrides
 import NavigationHeaderTitle from '../react-navigation';
 
-import EventListContainer from './EventListContainer';
+import EventListContainer from '../EventListContainer';
 import { navigatePush, navigatePop } from '../actions';
 
 import type { ThunkAction, PromiseAction, Dispatch } from '../actions/types';

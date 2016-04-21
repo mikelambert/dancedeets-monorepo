@@ -12,6 +12,8 @@ import React, {
 } from 'react-native';
 
 import { EventListView } from './events';
+import { navigatePush } from './actions';
+import { connect } from 'react-redux';
 
 import type { Event } from './models';
 
@@ -19,7 +21,15 @@ type Props = {
   onEventSelected: (x: Event) => void,
 };
 
-export default class EventListContainer extends React.Component {
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onEventSelected: (event: Event) => {
+            dispatch(navigatePush({key: 'Event View', title: event.name}));
+        }
+    };
+};
+
+class EventListContainer extends React.Component {
   props: Props;
 
   state: {
@@ -77,6 +87,12 @@ export default class EventListContainer extends React.Component {
     });
   }
 }
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(EventListContainer);
+
 
 const styles = StyleSheet.create({
   container: {
