@@ -20,6 +20,7 @@ export class Event extends Object {
   annotations: {categories: Array<string>};
 
   constructor(eventData: JSONObject) {
+    super();
     for (var attr in eventData) {
       if (eventData.hasOwnProperty(attr)) {
         (this: any)[attr] = eventData[attr];
