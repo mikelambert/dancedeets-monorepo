@@ -80,7 +80,7 @@ class EventVenue extends SubEventLine {
   }
 }
 
-class EventRow extends React.Component {
+export class EventRow extends React.Component {
   props: {
     onEventSelected: (x: Event) => void,
     event: Event,
@@ -110,32 +110,6 @@ class EventRow extends React.Component {
     );
   }
 }
-
-
-export class EventListView extends React.Component {
-  props: {
-    onEventSelected: (x: Event) => void,
-    dataSource: ListView.DataSource,
-  };
-
-  render() {
-    var onEventSelected = this.props.onEventSelected;
-    return (
-        <ListView
-          dataSource={this.props.dataSource}
-          renderRow={(e) =>
-            <EventRow
-              event={new Event(e)}
-              onEventSelected={onEventSelected}
-            />
-          }
-          initialListSize={50}
-          pageSize={30}
-        />
-    );
-  }
-}
-
 
 const eventStyles = StyleSheet.create({
   thumbnail: {

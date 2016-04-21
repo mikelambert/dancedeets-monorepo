@@ -11,11 +11,11 @@ import React, {
   View,
 } from 'react-native';
 
-import { EventListView } from './events';
+import { EventRow } from './events';
 import { navigatePush } from './actions';
 import { connect } from 'react-redux';
 
-import type { Event } from './models';
+import { Event } from './models';
 
 type Props = {
   onEventSelected: (x: Event) => void,
@@ -55,13 +55,19 @@ class EventListContainer extends React.Component {
     if (!this.state.loaded) {
       return this.renderLoadingView();
     }
-
+    var onEventSelected = this.props.onEventSelected;
     return (
-      <View
-        style={styles.container}>
-        <EventListView
+      <View style={styles.container}>
+        <ListView
           dataSource={this.state.dataSource}
-          onEventSelected={this.props.onEventSelected}
+          renderRow={(e) =>
+            <EventRow
+              event={new Event(e)}
+              onEventSelected={onEventSelected}
+            />
+          }
+          initialListSize={50}
+          pageSize={30}
         />
       </View>
     );
