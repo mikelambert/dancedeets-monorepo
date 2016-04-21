@@ -52,34 +52,35 @@ class EventListContainer extends React.Component {
   }
 
   render() {
-    if (!this.state.loaded) {
-      return this.renderLoadingView();
-    }
-    var onEventSelected = this.props.onEventSelected;
     return (
       <View style={styles.container}>
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={(e) =>
-            <EventRow
-              event={new Event(e)}
-              onEventSelected={onEventSelected}
-            />
-          }
-          initialListSize={50}
-          pageSize={30}
-        />
+        {this.state.loaded ? this.renderListView() : this.renderLoadingView()}
       </View>
+    );
+  }
+
+  renderListView() {
+    var onEventSelected = this.props.onEventSelected;
+    return (
+      <ListView
+        dataSource={this.state.dataSource}
+        renderRow={(e) =>
+          <EventRow
+            event={new Event(e)}
+            onEventSelected={onEventSelected}
+          />
+        }
+        initialListSize={50}
+        pageSize={30}
+      />
     );
   }
 
   renderLoadingView() {
     return (
-      <View style={styles.container}>
-        <Text>
-          Loading events...
-        </Text>
-      </View>
+      <Text style={styles.loading}>
+        Loading events...
+      </Text>
     );
   }
 
@@ -106,4 +107,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  loading: {
+    color: 'white',
+    textAlign: 'center',
+  }
 });
