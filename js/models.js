@@ -8,7 +8,17 @@ type JSON = | string | number | boolean | null | JSONObject | JSONArray;
 type JSONObject = { [key:string]: JSON };
 type JSONArray = Array<JSON>;
 
-export class Event {
+export class Event extends Object {
+  id: string;
+  city: string;
+  country: string;
+  venue: string;
+  picture: string;
+  name: string;
+  start_time: Date;
+  end_time: Date;
+  annotations: {categories: Array<string>};
+
   constructor(eventData: JSONObject) {
     for (var attr in eventData) {
       if (eventData.hasOwnProperty(attr)) {
