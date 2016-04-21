@@ -10,18 +10,20 @@ import React, {
   View,
 } from 'react-native';
 
+type Props = {
+  originalWidth: number,
+  originalHeight: number,
+  style?: any,
+};
+
 export class ProportionalImage extends React.Component {
-  props: {
-    originalWidth: number,
-    originalHeight: number,
-    style?: any,
-  };
+  props: Props;
 
   state: {
     style: {height: number} | {},
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       style: {}

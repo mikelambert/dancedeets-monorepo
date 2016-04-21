@@ -15,17 +15,19 @@ import { EventListView } from './events';
 
 import type { Event } from './models';
 
+type Props = {
+  onEventSelected: (x: Event) => void,
+};
+
 export default class EventListContainer extends React.Component {
-  props: {
-    onEventSelected: (x: Event) => void,
-  };
+  props: Props;
 
   state: {
     dataSource: ListView.DataSource,
     loaded: boolean,
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       dataSource: new ListView.DataSource({
