@@ -65,16 +65,14 @@ export default class EventListContainer extends React.Component {
     );
   }
 
-  fetchData() {
-    fetch('http://www.dancedeets.com/api/v1.2/search?location=Taipei&time_period=UPCOMING')
-      .then((response) => response.json())
-      .then((responseData) => {
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(responseData.results),
-          loaded: true,
-        });
-      })
-      .done();
+  async fetchData() {
+    const response = await fetch('http://www.dancedeets.com/api/v1.2/search?location=South Africa&time_period=UPCOMING');
+    // TODO: This is the slow part. :( Can we request less data?
+    var responseData = await response.json();
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(responseData.results),
+      loaded: true,
+    });
   }
 }
 
