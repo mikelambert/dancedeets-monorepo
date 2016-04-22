@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dancedeetsreact">
+    package="com.dancedeets.androidreact">
 
     <!--TODO: Add this if/when we ever do a version bump:
         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

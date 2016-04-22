@@ -1,4 +1,4 @@
-package com.dancedeetsreact;
+package com.dancedeets.androidreact;
 
 import android.content.Intent;
 import android.os.Bundle;
