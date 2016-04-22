@@ -18,6 +18,20 @@
 	<string>1.4</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>f827a34a7ab66071f1fc473cdfa00f94403b241b</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -39,20 +53,6 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>24</string>
-	<key>Fabric</key>
-	<dict>
-		<key>APIKey</key>
-		<string>f827a34a7ab66071f1fc473cdfa00f94403b241b</string>
-		<key>Kits</key>
-		<array>
-			<dict>
-				<key>KitInfo</key>
-				<dict/>
-				<key>KitName</key>
-				<string>Crashlytics</string>
-			</dict>
-		</array>
-	</dict>
 	<key>FacebookAppID</key>
 	<string>2347064084</string>
 	<key>FacebookDisplayName</key>

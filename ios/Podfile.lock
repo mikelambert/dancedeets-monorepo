@@ -5,6 +5,9 @@ PODS:
   - Bolts/AppLinks (1.7.0):
     - Bolts/Tasks
   - Bolts/Tasks (1.7.0)
+  - Crashlytics (3.7.0):
+    - Fabric (~> 1.6.3)
+  - Fabric (1.6.7)
   - FBSDKCoreKit (4.11.0):
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.11.0):
@@ -49,6 +52,8 @@ PODS:
     - React/Core
 
 DEPENDENCIES:
+  - Crashlytics
+  - Fabric
   - Mixpanel
   - react-native-fbsdkcore (from `../node_modules/react-native-fbsdk/iOS/core`)
   - react-native-fbsdklogin (from `../node_modules/react-native-fbsdk/iOS/login`)
@@ -78,6 +83,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
+  Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
+  Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   FBSDKCoreKit: 686ac982723a14ec9ddb85e2f81235d7706c891b
   FBSDKLoginKit: bade9fc78277764149ccc5bfaadbf13c83175c6a
   FBSDKShareKit: 2d1746144cfc8a9dbbd24997c34ee0471be51b6a

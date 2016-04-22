@@ -2,6 +2,8 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 target 'DanceDeets' do
   pod 'Mixpanel'
+  pod 'Fabric'
+  pod 'Crashlytics'
   #pod 'Google-Mobile-Ads-SDK', '~> 7.0'
   pod 'React', :subspecs => [
     'Core',
