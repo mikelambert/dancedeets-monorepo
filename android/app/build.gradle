@@ -81,8 +81,8 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.dancedeets.androidreact"
-        minSdkVersion 15
+        applicationId "com.dancedeets.android"
+        minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -127,12 +127,15 @@ android {
 dependencies {
     compile project(':react-native-fabric')
     compile project(':react-native-linear-gradient')
-    compile project(':RNMixpanel')
     compile project(':react-native-fbsdk')
+    compile project(':RNMixpanel')
+    //compile "com.mixpanel.android:mixpanel-android:4.+"
+    //compile 'com.facebook.android:facebook-android-sdk:4.+'
+
     compile fileTree(dir: "libs", include: ["*.jar"])
-    compile "com.android.support:appcompat-v7:23.0.1"
+    compile "com.android.support:appcompat-v7:23.3.0"
     compile "com.facebook.react:react-native:+"  // From node_modules
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
         transitive = true;
     }
 }

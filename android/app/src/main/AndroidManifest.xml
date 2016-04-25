@@ -1,5 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dancedeets.androidreact">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.dancedeets.android">
+
+    <!--<uses-sdk tools:overrideLibrary="com.facebook.react, com.BV.LinearGradient, com.kevinejohn.RNMixpanel"/>-->
 
     <!--TODO: Add this if/when we ever do a version bump:
         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -31,11 +35,15 @@
             android:value="@string/facebook_app_id"
             />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="f827a34a7ab66071f1fc473cdfa00f94403b241b" />
+
         <meta-data android:name="com.mixpanel.android.MPConfig.DisableAppOpenEvent"
             android:value="false" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.dancedeets.android.MainActivity"
             android:label="@string/app_name"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
             <intent-filter>
@@ -49,10 +57,6 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="f827a34a7ab66071f1fc473cdfa00f94403b241b" />
     </application>
 
 </manifest>
