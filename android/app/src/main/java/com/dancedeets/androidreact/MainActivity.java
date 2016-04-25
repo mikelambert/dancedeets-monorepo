@@ -3,18 +3,22 @@ package com.dancedeets.androidreact;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactActivity;
-import com.BV.LinearGradient.LinearGradientPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.kevinejohn.RNMixpanel.RNMixpanel;
+import com.smixx.fabric.FabricPackage;
 
 import java.util.Arrays;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends ReactActivity {
     CallbackManager mCallbackManager;
@@ -43,8 +47,10 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected List<ReactPackage> getPackages() {
+        mCallbackManager = CallbackManager.Factory.create();
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new FabricPackage(null),
             new LinearGradientPackage(),
             new RNMixpanel(),
             new FBSDKPackage(mCallbackManager)
@@ -55,6 +61,7 @@ public class MainActivity extends ReactActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        Fabric.with(this, new Crashlytics());
     }
 
     @Override
@@ -66,13 +73,7 @@ public class MainActivity extends ReactActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppEventsLogger.activateApp(getApplicationContext());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        AppEventsLogger.deactivateApp(getApplicationContext());
+        AppEventsLogger.activateApp(getApplication());
     }
 
     @Override
