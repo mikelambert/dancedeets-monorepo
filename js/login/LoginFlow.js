@@ -6,9 +6,7 @@
 
 'use strict';
 
-import {
-  Component,
-} from 'react-native';
+import React from 'react-native';
 import LaunchScreen from './LaunchScreen';
 import OnboardingFlow from './OnboardingFlow';
 import { connect } from 'react-redux';
@@ -20,7 +18,7 @@ function select(store) {
   };
 }
 
-class LoginFlow extends Component {
+class LoginFlow extends React.Component {
   constructor(props) {
     super(props);
   }
