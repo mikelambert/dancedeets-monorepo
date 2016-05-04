@@ -16,6 +16,7 @@ import { navigatePush } from './actions';
 import { connect } from 'react-redux';
 
 import { Event } from './models';
+import { search } from './api';
 
 type Props = {
   onEventSelected: (x: Event) => void,
@@ -85,7 +86,8 @@ class EventListContainer extends React.Component {
   }
 
   async fetchData() {
-    const response = await fetch('http://www.dancedeets.com/api/v1.2/search?location=South Africa&time_period=UPCOMING');
+    const response = await search('South Africa', '', 'UPCOMING');
+    console.log(response);
     // TODO: This is the slow part. :( Can we request less data?
     var responseData = await response.json();
     this.setState({
