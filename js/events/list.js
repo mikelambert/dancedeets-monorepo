@@ -11,16 +11,16 @@ import React, {
   View,
 } from 'react-native';
 
-import { EventRow } from './events';
-import { navigatePush } from '../actions';
+import { EventRow } from './uicomponents';
 import { connect } from 'react-redux';
 
-import { Event } from '../models';
+import { Event } from './models';
 import { search } from '../api';
 
 type Props = {
   onEventSelected: (x: Event) => void,
 };
+
 
 class EventListContainer extends React.Component {
   props: Props;

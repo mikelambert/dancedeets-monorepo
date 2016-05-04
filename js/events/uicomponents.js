@@ -13,7 +13,7 @@ import React, {
 } from 'react-native';
 
 import { ProportionalImage } from '../ui';
-import { Event } from '../models';
+import { Event } from './models';
 
 class SubEventLine extends React.Component {
   icon() {
@@ -119,28 +119,30 @@ export class FullEventView extends React.Component {
   render() {
     var imageProps = this.props.event.getImageProps();
     return (
-      <View style={eventStyles.row}>
-        <TouchableOpacity onPress={() => this.props.onFlyerSelected(this.props.event)} activeOpacity={0.5}>
-          <ProportionalImage
-            source={{uri: imageProps.url}}
-            originalWidth={imageProps.width}
-            originalHeight={imageProps.height}
-            style={eventStyles.thumbnail}
-          />
-        </TouchableOpacity>
-        <Text
-          numberOfLines={2}
-          style={eventStyles.rowTitle}>{this.props.event.name}</Text>
-        <View style={eventStyles.eventIndent}>
-          {/*<EventSource>*/}
-          <EventCategories categories={this.props.event.annotations.categories} />
-          <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-          {/*<EventRsvp>*/}
-          <EventVenue venue={this.props.event.venue} />
-          {/*<ShareView>*/}
+      <View style={eventStyles.container}>
+        <View style={eventStyles.row}>
+          <TouchableOpacity onPress={() => this.props.onFlyerSelected(this.props.event)} activeOpacity={0.5}>
+            <ProportionalImage
+              source={{uri: imageProps.url}}
+              originalWidth={imageProps.width}
+              originalHeight={imageProps.height}
+              style={eventStyles.thumbnail}
+            />
+          </TouchableOpacity>
+          <Text
+            numberOfLines={2}
+            style={eventStyles.rowTitle}>{this.props.event.name}</Text>
+          <View style={eventStyles.eventIndent}>
+            {/*<EventSource>*/}
+            <EventCategories categories={this.props.event.annotations.categories} />
+            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
+            {/*<EventRsvp>*/}
+            <EventVenue venue={this.props.event.venue} />
+            {/*<ShareView>*/}
+          </View>
+          {/*<EventDescription>*/}
+          {/*<EventMap>*/}
         </View>
-        {/*<EventDescription>*/}
-        {/*<EventMap>*/}
       </View>
     );
   }
@@ -149,6 +151,9 @@ export class FullEventView extends React.Component {
 const eventStyles = StyleSheet.create({
   thumbnail: {
     flex: 1,
+  },
+  container: {
+    backgroundColor: '#000',
   },
   row: {
     flex: 1,

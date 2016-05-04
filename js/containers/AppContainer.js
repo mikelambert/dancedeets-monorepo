@@ -12,8 +12,8 @@ import { connect } from 'react-redux';
 // My overrides
 import NavigationHeaderTitle from '../react-navigation';
 
-import EventListContainer from '../eventlist/EventListContainer';
-import { FullEventView } from '../eventlist/events';
+import EventListContainer from '../events/list';
+import { FullEventView } from '../events/uicomponents';
 import { navigatePush, navigatePop } from '../actions';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
