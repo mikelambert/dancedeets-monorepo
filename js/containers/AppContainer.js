@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import NavigationHeaderTitle from '../react-navigation';
 
 import EventListContainer from '../eventlist/EventListContainer';
+import { FullEventView } from '../eventlist/events';
 import { navigatePush, navigatePop } from '../actions';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
@@ -81,10 +82,13 @@ class AppContainer extends React.Component {
 		switch (navigationState.key) {
 		case 'EventList':
 			return <EventListContainer
-				onEventSelected={(event)=>this.props.onNavigate({key: 'EventView', title: event.name})}
+				onEventSelected={(event)=>this.props.onNavigate({key: 'EventView', title: event.name, event: event})}
 			/>;
 		case 'EventView':
-			return null;
+			return <FullEventView
+				onFlyerSelected={(x) => null}
+				event={navigationState.event}
+			/>;
 		}
 	}
 }

@@ -22,14 +22,6 @@ type Props = {
   onEventSelected: (x: Event) => void,
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onEventSelected: (event: Event) => {
-            dispatch(navigatePush({key: 'Event View', title: event.name}));
-        }
-    };
-};
-
 class EventListContainer extends React.Component {
   props: Props;
 
@@ -100,10 +92,7 @@ class EventListContainer extends React.Component {
   }
 }
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(EventListContainer);
+export default connect()(EventListContainer);
 
 
 const styles = StyleSheet.create({

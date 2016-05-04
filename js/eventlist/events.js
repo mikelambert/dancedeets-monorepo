@@ -110,6 +110,42 @@ export class EventRow extends React.Component {
   }
 }
 
+export class FullEventView extends React.Component {
+  props: {
+    onFlyerSelected: (x: Event) => void,
+    event: Event,
+  };
+
+  render() {
+    var imageProps = this.props.event.getImageProps();
+    return (
+      <View style={eventStyles.row}>
+        <TouchableOpacity onPress={() => this.props.onFlyerSelected(this.props.event)} activeOpacity={0.5}>
+          <ProportionalImage
+            source={{uri: imageProps.url}}
+            originalWidth={imageProps.width}
+            originalHeight={imageProps.height}
+            style={eventStyles.thumbnail}
+          />
+        </TouchableOpacity>
+        <Text
+          numberOfLines={2}
+          style={eventStyles.rowTitle}>{this.props.event.name}</Text>
+        <View style={eventStyles.eventIndent}>
+          {/*<EventSource>*/}
+          <EventCategories categories={this.props.event.annotations.categories} />
+          <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
+          {/*<EventRsvp>*/}
+          <EventVenue venue={this.props.event.venue} />
+          {/*<ShareView>*/}
+        </View>
+        {/*<EventDescription>*/}
+        {/*<EventMap>*/}
+      </View>
+    );
+  }
+}
+
 const eventStyles = StyleSheet.create({
   thumbnail: {
     flex: 1,
