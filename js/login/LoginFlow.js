@@ -6,9 +6,6 @@
 
 'use strict';
 
-import React, {
-  StatusBarIOS,
-} from 'react-native';
 import LaunchScreen from './LaunchScreen';
 import OnboardingFlow from './OnboardingFlow';
 import { connect } from 'react-redux';
@@ -26,7 +23,6 @@ class LoginFlow extends React.Component {
   }
 
   componentDidMount() {
-    StatusBarIOS && StatusBarIOS.setStyle('default');
     autoLoginAtStartup(this.props.dispatch);
   }
 
