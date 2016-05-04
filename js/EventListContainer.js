@@ -87,7 +87,6 @@ class EventListContainer extends React.Component {
 
   async fetchData() {
     const response = await search('South Africa', '', 'UPCOMING');
-    console.log(response);
     // TODO: This is the slow part. :( Can we request less data?
     var responseData = await response.json();
     this.setState({

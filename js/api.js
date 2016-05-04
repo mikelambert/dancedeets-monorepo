@@ -21,7 +21,6 @@ function getUrl(path: string, args: Object) {
 }
 
 function performRequest(path: string, args: Object, postArgs: ?Object | null) {
-  console.log(getUrl(path, args));
   return fetch(getUrl(path, args), {
     method: postArgs ? 'POST' : 'GET',
     headers: {
