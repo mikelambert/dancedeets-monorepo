@@ -269,6 +269,7 @@ class AuthHandler(ApiHandler):
     def post(self):
         access_token = self.json_body.get('access_token')
         if not access_token:
+            self.write_json_error({'success': False, 'errors': ['No access token']})
             logging.error("Received empty access_token from client. Payload was: %s", self.json_body)
             return
         self.errors_are_fatal() # Assert that our access_token is set
