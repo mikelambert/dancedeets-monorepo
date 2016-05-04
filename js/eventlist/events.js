@@ -6,15 +6,14 @@
 
 import React, {
   Image,
-  ListView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 
-import { ProportionalImage } from './ui';
-import { Event } from './models';
+import { ProportionalImage } from '../ui';
+import { Event } from '../models';
 
 class SubEventLine extends React.Component {
   icon() {
@@ -37,7 +36,7 @@ class SubEventLine extends React.Component {
 
 class EventCategories extends SubEventLine {
   icon() {
-    return require('../images/event-icons/categories.png');
+    return require('./images/categories.png');
   }
   textRender() {
     if (this.props.categories.length > 0) {
@@ -53,7 +52,7 @@ class EventCategories extends SubEventLine {
 
 class EventDateTime extends SubEventLine {
   icon() {
-    return require('../images/event-icons/datetime.png');
+    return require('./images/datetime.png');
   }
   textRender() {
     if (this.props.start) {
@@ -66,7 +65,7 @@ class EventDateTime extends SubEventLine {
 
 class EventVenue extends SubEventLine {
   icon() {
-    return require('../images/event-icons/location.png');
+    return require('./images/location.png');
   }
   textRender() {
     var components = [];
@@ -102,7 +101,7 @@ export class EventRow extends React.Component {
             style={eventStyles.rowTitle}>{this.props.event.name}</Text>
           <View style={eventStyles.eventIndent}>
             <EventCategories categories={this.props.event.annotations.categories} />
-            <EventDateTime start={this.props.event.start_time} end={this.props.event.date_time} />
+            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
             <EventVenue venue={this.props.event.venue} />
           </View>
         </TouchableOpacity>

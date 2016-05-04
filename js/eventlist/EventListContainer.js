@@ -12,11 +12,11 @@ import React, {
 } from 'react-native';
 
 import { EventRow } from './events';
-import { navigatePush } from './actions';
+import { navigatePush } from '../actions';
 import { connect } from 'react-redux';
 
-import { Event } from './models';
-import { search } from './api';
+import { Event } from '../models';
+import { search } from '../api';
 
 type Props = {
   onEventSelected: (x: Event) => void,
