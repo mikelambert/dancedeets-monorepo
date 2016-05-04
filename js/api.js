@@ -44,7 +44,7 @@ export async function auth(token: Object) {
   var expirationTime = new Date(token.expirationTime).toISOString();
   return performRequest('auth', {}, {
     client: Platform.OS,
-    access_token: token.tokenString,
+    access_token: token.accessToken,
     access_token_expires: expirationTime,
   });
 }

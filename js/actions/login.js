@@ -33,7 +33,7 @@ export function loginStartOnboard(): Action {
 }
 
 export function loginComplete(token: Object): Action {
-  auth(token).catch(x => console.error('Error sending /auth data:', x));
+  auth(token).catch(x => console.warn('Error sending /auth data:', x));
   return {
     type: 'LOGIN_LOGGED_IN',
     token: token,
