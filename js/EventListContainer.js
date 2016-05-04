@@ -86,13 +86,17 @@ class EventListContainer extends React.Component {
   }
 
   async fetchData() {
-    const response = await search('South Africa', '', 'UPCOMING');
-    // TODO: This is the slow part. :( Can we request less data?
-    var responseData = await response.json();
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(responseData.results),
-      loaded: true,
-    });
+    try {
+      const responseData = await search('South Africa', '', 'UPCOMING');
+      // TODO: This is the slow part. :( Can we request less data?
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(responseData.results),
+        loaded: true,
+      });
+    } catch (e) {
+      // TODO: error fetching events.
+      console.log('error fetching events', e);
+    }
   }
 }
 

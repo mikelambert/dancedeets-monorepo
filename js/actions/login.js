@@ -10,6 +10,7 @@ import FacebookSDK from 'FacebookSDK';
 import ActionSheetIOS from 'ActionSheetIOS';
 import {Platform} from 'react-native';
 import Alert from 'Alert';
+import { auth } from '../api';
 
 import type { Action, ThunkAction } from './types';
 
@@ -31,9 +32,11 @@ export function loginStartOnboard(): Action {
   };
 }
 
-export function loginComplete(): Action {
+export function loginComplete(token: Object): Action {
+  auth(token).catch(x => console.error('Error sending /auth data:', x));
   return {
     type: 'LOGIN_LOGGED_IN',
+    token: token,
   };
 }
 

@@ -14,7 +14,7 @@ import type { Dispatch } from '../actions/types';
 export async function loginButtonPressed(dispatch: Dispatch) {
   try {
     await loginOrLogout();
-    dispatch(loginComplete());
+    dispatch(loginComplete(await AccessToken.getCurrentAccessToken()));
   } catch (exc) {
     console.log('Staying on this screen, failed to login: ', exc);
   }
@@ -29,9 +29,10 @@ export async function autoLoginAtStartup(dispatch: Dispatch, allowRecursion: boo
   // but not delay/block users who have recently refreshed.
   } else if (await isRecentlyLoggedIn()) {
     console.log('Fresh access token, completing login!');
-    return dispatch(loginComplete());
+    // TODO: send up /auth /user API call now
+    return dispatch(loginComplete(await AccessToken.getCurrentAccessToken()));
   } else if (allowRecursion) {
-    refreshFullToken();
+    await refreshFullToken();
     // Okay, now we've either refreshed with a new valid authtoken, or we've logged the user out.
     // Let's send them back into the flow, which will start onboarding or start the main app.
     return autoLoginAtStartup(dispatch, false);
@@ -41,7 +42,7 @@ export async function autoLoginAtStartup(dispatch: Dispatch, allowRecursion: boo
     // And then ensure the user still has a pleasant experience.
     // The user didn't pass isLoggedOut, so they must be loggedIn with an old token.
     // That should be good enough to use our app and associated FB SDK calls!
-    return dispatch(loginComplete());
+    return dispatch(loginComplete(await AccessToken.getCurrentAccessToken()));
   }
 }
 

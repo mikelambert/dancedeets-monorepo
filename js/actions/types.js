@@ -34,7 +34,7 @@ export type Action =
   | { type: 'NAV_JUMP_TO_INDEX', index: number }
   | { type: 'NAV_RESET', index: number, children: Array<NavigationState> }
   | { type: 'LOGIN_START_ONBOARD' }
-  | { type: 'LOGIN_LOGGED_IN' }
+  | { type: 'LOGIN_LOGGED_IN', token: Object }
   | { type: 'LOGIN_LOGGED_OUT' }
   | { type: 'LOGIN_SKIPPED' }
   | { type: 'VIEW_EVENT', event: Event }
