@@ -65,4 +65,8 @@ export class Event {
     }
     return {url, width, height};
   }
+
+  getUrl() {
+    return 'http://www.dancedeets.com/events/' + this.id + '/';
+  }
 }

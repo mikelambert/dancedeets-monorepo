@@ -18,6 +18,7 @@ import React, {
 import { ProportionalImage } from '../ui';
 import { Event } from './models';
 import MapView from 'react-native-maps';
+import { ShareButton } from 'react-native-fbsdk';
 
 class SubEventLine extends React.Component {
   icon() {
@@ -200,6 +201,18 @@ export class EventRow extends React.Component {
   }
 }
 
+class EventShare extends React.Component {
+  render() {
+    var shareContent = {
+      contentType: 'link',
+      contentUrl: this.props.event.getUrl(),
+    };
+    return <View style={eventStyles.shareIndent}>
+      <ShareButton shareContent={shareContent} />
+    </View>;
+  }
+}
+
 export class FullEventView extends React.Component {
   props: {
     onFlyerSelected: (x: Event) => void,
@@ -226,9 +239,9 @@ export class FullEventView extends React.Component {
             <EventSource source={this.props.event.source} />
             <EventCategories categories={this.props.event.annotations.categories} />
             <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
+            <EventShare event={this.props.event} />
             <EventRsvp rsvp={this.props.event.rsvp} />
             <EventVenue venue={this.props.event.venue} />
-            {/*<ShareView>*/}
           </View>
           <EventDescription description={this.props.event.description} />
           <EventMap venue={this.props.event.venue} />
@@ -264,6 +277,9 @@ const eventStyles = StyleSheet.create({
   },
   rowText: {
     color: 'white',
+  },
+  shareIndent: {
+    marginLeft: 37,
   },
   detailLine: {
     marginLeft: 20,
