@@ -86,10 +86,10 @@ class EventVenue extends SubEventLine {
   textRender() {
     var components = [];
     if (this.props.venue.name) {
-      components.push(<Text key="line1" style={eventStyles.rowText}>{this.props.venue.name}</Text>);
+      components.push(<Text key="line1" style={eventStyles.rowLink}>{this.props.venue.name}</Text>);
     }
     if (this.props.venue.address) {
-      components.push(<Text key="line2" style={eventStyles.rowText}>{this.props.venue.address.city + ', ' + this.props.venue.address.country}</Text>);
+      components.push(<Text key="line2" style={eventStyles.rowLink}>{this.props.venue.address.city + ', ' + this.props.venue.address.country}</Text>);
     }
     return <View>{components}</View>;
   }
@@ -106,17 +106,15 @@ class EventSource extends SubEventLine {
   onPress() {
     Linking.openURL(this.props.source.url).catch(err => console.error('Error opening event source:', err));
   }
-  render() {
-    return (
-      <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
-        {super.render()}
-      </TouchableOpacity>
-    );
-  }
   textRender() {
     if (this.props.source) {
       return (
-        <Text style={eventStyles.rowText}>Source: {this.props.source.name}</Text>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={eventStyles.rowText}>Source: </Text>
+          <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
+            <Text style={eventStyles.rowLink}>{this.props.source.name}</Text>
+          </TouchableOpacity>
+        </View>
       );
     } else {
       return null;
@@ -247,11 +245,15 @@ export class FullEventView extends React.Component {
             numberOfLines={2}
             style={eventStyles.rowTitle}>{this.props.event.name}</Text>
           <View style={eventStyles.eventIndent}>
-            <EventSource source={this.props.event.source} />
             <EventCategories categories={this.props.event.annotations.categories} />
-            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-            <EventShare event={this.props.event} />
-            <EventRsvp rsvp={this.props.event.rsvp} />
+            <EventSource source={this.props.event.source} />
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <View style={{flex: 1, flexDirection: 'column'}}>
+                <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
+                <EventRsvp rsvp={this.props.event.rsvp} />
+              </View>
+              <EventShare event={this.props.event} />
+            </View>
             <EventVenue venue={this.props.event.venue} />
           </View>
           <EventDescription description={this.props.event.description} />
@@ -281,10 +283,13 @@ const eventStyles = StyleSheet.create({
   },
   rowTitle: {
     fontSize: 24,
-    color: '#70C0FF',
+    color: 'white',
   },
   rowDateTime: {
     color: '#C0FFC0',
+  },
+  rowLink: {
+    color: '#70C0FF',
   },
   rowText: {
     color: 'white',
