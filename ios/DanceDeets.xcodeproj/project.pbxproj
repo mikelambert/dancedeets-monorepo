@@ -12,6 +12,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		4636DFAF5A5D4A7AB7005601 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 059076B7FC8F4A299A6723B6 /* libAirMaps.a */; };
 		7A7931406B2560B8A7347FB6 /* libPods-DanceDeets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD44AA9DD03A6B80ABA2B850 /* libPods-DanceDeets.a */; };
 		E178E74C986041BFB7273A05 /* libSMXCrashlytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFA7D60B6C68406EA54D5FAB /* libSMXCrashlytics.a */; };
 /* End PBXBuildFile section */
@@ -38,12 +39,20 @@
 			remoteGlobalIDString = D8D9DB831C6D03DB009FBC0E;
 			remoteInfo = SMXCrashlytics;
 		};
+		1D5025D41CDAE0090042C6F7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 930B8DA0D4264A2DA9CCF846 /* AirMaps.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 11FA5C511C4A1296003AC2EE;
+			remoteInfo = AirMaps;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		00E356EE1AD99517003FC87E /* DanceDeetsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DanceDeetsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		02B4DE5D732F4B2BA4DD4F6A /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
+		059076B7FC8F4A299A6723B6 /* libAirMaps.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAirMaps.a; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* DanceDeets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DanceDeets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = DanceDeets/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = DanceDeets/AppDelegate.m; sourceTree = "<group>"; };
@@ -53,6 +62,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = DanceDeets/main.m; sourceTree = "<group>"; };
 		3F2AE10902A4B3DF9B9ADD12 /* Pods-DanceDeets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.release.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.release.xcconfig"; sourceTree = "<group>"; };
 		5B6AE41C6D774CBAB1B330D9 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
+		930B8DA0D4264A2DA9CCF846 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
 		AC693429287C251DA7465449 /* Pods-DanceDeets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.debug.xcconfig"; sourceTree = "<group>"; };
 		AD44AA9DD03A6B80ABA2B850 /* libPods-DanceDeets.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DanceDeets.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFA7D60B6C68406EA54D5FAB /* libSMXCrashlytics.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSMXCrashlytics.a; sourceTree = "<group>"; };
@@ -74,6 +84,7 @@
 				7A7931406B2560B8A7347FB6 /* libPods-DanceDeets.a in Frameworks */,
 				12734E6430A8417381283D0F /* libBVLinearGradient.a in Frameworks */,
 				E178E74C986041BFB7273A05 /* libSMXCrashlytics.a in Frameworks */,
+				4636DFAF5A5D4A7AB7005601 /* libAirMaps.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +136,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1D5025D11CDAE0090042C6F7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D5025D51CDAE0090042C6F7 /* libAirMaps.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		3F4DDA6DC90E123F105F7DF6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -138,6 +157,7 @@
 			children = (
 				5B6AE41C6D774CBAB1B330D9 /* BVLinearGradient.xcodeproj */,
 				FDBFCC372EEA426AA160013B /* SMXCrashlytics.xcodeproj */,
+				930B8DA0D4264A2DA9CCF846 /* AirMaps.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -253,6 +273,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 1D5025D11CDAE0090042C6F7 /* Products */;
+					ProjectRef = 930B8DA0D4264A2DA9CCF846 /* AirMaps.xcodeproj */;
+				},
+				{
 					ProductGroup = 1D124EB31CC655C200C49AEB /* Products */;
 					ProjectRef = 5B6AE41C6D774CBAB1B330D9 /* BVLinearGradient.xcodeproj */;
 				},
@@ -282,6 +306,13 @@
 			fileType = archive.ar;
 			path = libSMXCrashlytics.a;
 			remoteRef = 1D500D361CCA50D6002FB714 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1D5025D51CDAE0090042C6F7 /* libAirMaps.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libAirMaps.a;
+			remoteRef = 1D5025D41CDAE0090042C6F7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -439,6 +470,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets.app/DanceDeets";
@@ -461,6 +493,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets.app/DanceDeets";
@@ -481,6 +514,7 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
+					"$(SRCROOT)/../node_modules/react-native-maps/ios/AirMaps/**",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -508,6 +542,7 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
+					"$(SRCROOT)/../node_modules/react-native-maps/ios/AirMaps/**",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -563,6 +598,7 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
+					"$(SRCROOT)/../node_modules/react-native-maps/ios/AirMaps/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -605,6 +641,7 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
+					"$(SRCROOT)/../node_modules/react-native-maps/ios/AirMaps/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
