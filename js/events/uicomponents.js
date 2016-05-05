@@ -19,6 +19,13 @@ import { ProportionalImage } from '../ui';
 import { Event } from './models';
 import MapView from 'react-native-maps';
 import { ShareButton } from 'react-native-fbsdk';
+import moment from 'moment';
+
+const {
+  Globalize,
+} = require('react-native-globalize');
+
+var en = new Globalize('en');
 
 class SubEventLine extends React.Component {
   icon() {
@@ -60,8 +67,12 @@ class EventDateTime extends SubEventLine {
     return require('./images/datetime.png');
   }
   textRender() {
+    var dateFormatter = en.getDateFormatter({skeleton: 'yMMMdhm'});
+    var start = moment(this.props.start, moment.ISO_8601);
+    var formattedStart = dateFormatter(start.toDate());
+
     if (this.props.start) {
-      return <Text style={eventStyles.rowDateTime}>{this.props.start}</Text>;
+      return <Text style={eventStyles.rowDateTime}>{formattedStart}</Text>;
     } else {
       return null;
     }
