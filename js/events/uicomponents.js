@@ -109,6 +109,34 @@ class EventSource extends SubEventLine {
   }
 }
 
+class EventRsvp extends SubEventLine {
+  constructor(props: Object) {
+    super(props);
+  }
+  icon() {
+    return require('./images/attending.png');
+  }
+  textRender() {
+    console.log(this.props.rsvp);
+    if (this.props.rsvp) {
+      var components = [];
+      if (this.props.rsvp.attending_count) {
+        components.push(this.props.rsvp.attending_count + ' attending');
+      }
+      if (this.props.rsvp.maybe_count) {
+        components.push(this.props.rsvp.maybe_count + ' maybe');
+      }
+      const counts = components.join(', ');
+      console.log(counts);
+      return (
+        <Text style={eventStyles.rowText}>{counts}</Text>
+      );
+    } else {
+      return null;
+    }
+  }
+}
+
 export class EventRow extends React.Component {
   props: {
     onEventSelected: (x: Event) => void,
@@ -166,7 +194,7 @@ export class FullEventView extends React.Component {
             <EventSource source={this.props.event.source} />
             <EventCategories categories={this.props.event.annotations.categories} />
             <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-            {/*<EventRsvp>*/}
+            <EventRsvp rsvp={this.props.event.rsvp} />
             <EventVenue venue={this.props.event.venue} />
             {/*<ShareView>*/}
           </View>

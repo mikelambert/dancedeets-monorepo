@@ -17,7 +17,17 @@ export class Event {
   name: string;
   start_time: Date;
   end_time: Date;
-  annotations: {categories: Array<string>};
+  annotations: {
+    categories: Array<string>,
+  };
+  source: {
+    url: string,
+    name: string,
+  };
+  rsvp: {
+    attendingCount: number,
+    maybeCount: number,
+  };
 
   constructor(eventData: JSONObject) {
     for (var attr in eventData) {
