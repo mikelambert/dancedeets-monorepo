@@ -4,7 +4,9 @@
  * @flow
  */
 
-import React from 'react-native';
+import React, {
+  Linking
+} from 'react-native';
 import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
 import NoLoginScreen from './NoLoginScreen';
@@ -33,10 +35,15 @@ class OnboardingFlow extends React.Component {
       screen: 'CAROUSEL',
     };
     (this: any)._transition = this._transition.bind(this);
+    (this: any).onOpenWebsite = this.onOpenWebsite.bind(this);
   }
 
   _transition(newState: ScreenState) {
     this.setState({...this.state, screen: newState});
+  }
+
+  onOpenWebsite() {
+    Linking.openURL('http://www.dancedeets.com/').catch(err => console.error('Error opening dancedeets.com:', err));
   }
 
   render() {
@@ -48,7 +55,7 @@ class OnboardingFlow extends React.Component {
     } else if (this.state.screen === 'NO_LOGIN') {
       return <NoLoginScreen
         onLogin={this.props.onLogin}
-        onNoLogin={() => console.log('open website')}
+        onNoLogin={this.onOpenWebsite}
         />;
     }
   }
