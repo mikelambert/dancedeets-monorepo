@@ -7,6 +7,7 @@
 import React, {
   Image,
   Linking,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -117,7 +118,6 @@ class EventRsvp extends SubEventLine {
     return require('./images/attending.png');
   }
   textRender() {
-    console.log(this.props.rsvp);
     if (this.props.rsvp) {
       var components = [];
       if (this.props.rsvp.attending_count) {
@@ -127,13 +127,18 @@ class EventRsvp extends SubEventLine {
         components.push(this.props.rsvp.maybe_count + ' maybe');
       }
       const counts = components.join(', ');
-      console.log(counts);
       return (
         <Text style={eventStyles.rowText}>{counts}</Text>
       );
     } else {
       return null;
     }
+  }
+}
+
+class EventDescription extends React.Component {
+  render() {
+    return <Text style={eventStyles.description}>{this.props.description}</Text>;
   }
 }
 
@@ -177,7 +182,7 @@ export class FullEventView extends React.Component {
   render() {
     var imageProps = this.props.event.getImageProps();
     return (
-      <View style={eventStyles.container}>
+      <ScrollView style={eventStyles.container}>
         <View style={eventStyles.row}>
           <TouchableOpacity onPress={() => this.props.onFlyerSelected(this.props.event)} activeOpacity={0.5}>
             <ProportionalImage
@@ -198,10 +203,10 @@ export class FullEventView extends React.Component {
             <EventVenue venue={this.props.event.venue} />
             {/*<ShareView>*/}
           </View>
-          {/*<EventDescription>*/}
+          <EventDescription description={this.props.event.description} />
           {/*<EventMap>*/}
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -242,5 +247,12 @@ const eventStyles = StyleSheet.create({
     marginRight: 5,
     height: 12,
     width: 12,
-  }
+  },
+  eventIndent: {
+    marginBottom: 20,
+  },
+  description: {
+    color: 'white',
+    marginBottom: 20,
+  },
 });
