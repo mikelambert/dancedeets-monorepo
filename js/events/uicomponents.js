@@ -6,6 +6,7 @@
 
 import React, {
   Image,
+  Linking,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -79,6 +80,35 @@ class EventVenue extends SubEventLine {
   }
 }
 
+class EventSource extends SubEventLine {
+  constructor(props: Object) {
+    super(props);
+    (this: any).onPress = this.onPress.bind(this);
+  }
+  icon() {
+    return require('./images/location.png');
+  }
+  onPress() {
+    Linking.openURL(this.props.source.url).catch(err => console.error('Error opening event source:', err));
+  }
+  render() {
+    return (
+      <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
+        {super.render()}
+      </TouchableOpacity>
+    );
+  }
+  textRender() {
+    if (this.props.source) {
+      return (
+        <Text style={eventStyles.rowText}>Source: {this.props.source.name}</Text>
+      );
+    } else {
+      return null;
+    }
+  }
+}
+
 export class EventRow extends React.Component {
   props: {
     onEventSelected: (x: Event) => void,
@@ -133,7 +163,7 @@ export class FullEventView extends React.Component {
             numberOfLines={2}
             style={eventStyles.rowTitle}>{this.props.event.name}</Text>
           <View style={eventStyles.eventIndent}>
-            {/*<EventSource>*/}
+            <EventSource source={this.props.event.source} />
             <EventCategories categories={this.props.event.annotations.categories} />
             <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
             {/*<EventRsvp>*/}
