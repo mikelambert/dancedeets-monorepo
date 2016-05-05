@@ -79,7 +79,7 @@ class EventListContainer extends React.Component {
 
   async fetchData() {
     try {
-      const responseData = await search('South Africa', '', 'UPCOMING');
+      const responseData = await search('NYC', '', 'UPCOMING');
       // TODO: This is the slow part. :( Can we request less data?
       this.setState({
         dataSource: this.state.dataSource.cloneWithRows(responseData.results),

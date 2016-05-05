@@ -61,4 +61,3 @@ export class ProportionalImage extends React.Component {
     );
   }
 }
-

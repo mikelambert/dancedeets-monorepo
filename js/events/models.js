@@ -15,6 +15,7 @@ export class Event {
   venue: string;
   picture: string;
   name: string;
+  description: string;
   start_time: Date;
   end_time: Date;
   annotations: {
@@ -27,6 +28,20 @@ export class Event {
   rsvp: {
     attendingCount: number,
     maybeCount: number,
+  };
+  venue: {
+    geocode: {
+      latitude: number,
+      longitude: number,
+    },
+    address: {
+      city: string,
+      street: string,
+      zip: string,
+      country: string,
+    },
+    name: string,
+    id: string,
   };
 
   constructor(eventData: JSONObject) {

@@ -7,6 +7,7 @@
 import React, {
   Image,
   Linking,
+  //MapView,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,6 +17,7 @@ import React, {
 
 import { ProportionalImage } from '../ui';
 import { Event } from './models';
+import MapView from 'react-native-maps';
 
 class SubEventLine extends React.Component {
   icon() {
@@ -142,6 +144,31 @@ class EventDescription extends React.Component {
   }
 }
 
+class EventMap extends React.Component {
+  render() {
+    return <MapView
+        style={eventStyles.eventMap}
+        region={{
+          latitude: this.props.venue.geocode.latitude,
+          longitude: this.props.venue.geocode.longitude,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
+        }}
+        zoomEnabled={false}
+        rotateEnabled={false}
+        scrollEnabled={false}
+        pitchEnabled={false}
+      >
+        <MapView.Marker
+          coordinate={{
+            latitude: this.props.venue.geocode.latitude,
+            longitude: this.props.venue.geocode.longitude,
+          }}
+        />
+      </MapView>;
+  }
+}
+
 export class EventRow extends React.Component {
   props: {
     onEventSelected: (x: Event) => void,
@@ -204,7 +231,7 @@ export class FullEventView extends React.Component {
             {/*<ShareView>*/}
           </View>
           <EventDescription description={this.props.event.description} />
-          {/*<EventMap>*/}
+          <EventMap venue={this.props.event.venue} />
         </View>
       </ScrollView>
     );
@@ -254,5 +281,10 @@ const eventStyles = StyleSheet.create({
   description: {
     color: 'white',
     marginBottom: 20,
+  },
+  eventMap: {
+    left: 0,
+    height: 200,
+    right: 0,
   },
 });
