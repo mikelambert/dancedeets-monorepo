@@ -63,8 +63,9 @@ class EventListContainer extends React.Component {
             onEventSelected={onEventSelected}
           />
         }
-        initialListSize={50}
-        pageSize={30}
+        initialListSize={10}
+        pageSize={5}
+        scrollRenderAheadDistance={10000}
       />
     );
   }
