@@ -7,7 +7,7 @@
 import React, {
   Image,
   Linking,
-  //MapView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,6 +15,7 @@ import React, {
   View,
 } from 'react-native';
 
+import querystring from 'querystring';
 import { ProportionalImage } from '../ui';
 import { Event } from './models';
 import MapView from 'react-native-maps';
@@ -161,8 +162,8 @@ class EventMap extends React.Component {
         region={{
           latitude: this.props.venue.geocode.latitude,
           longitude: this.props.venue.geocode.longitude,
-          latitudeDelta: 0.02,
-          longitudeDelta: 0.02,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
         }}
         zoomEnabled={false}
         rotateEnabled={false}
@@ -228,12 +229,106 @@ export class FullEventView extends React.Component {
     event: Event,
   };
 
+  constructor(props: Object) {
+    super(props);
+    (this: any).onLocationClicked = this.onLocationClicked.bind(this);
+    (this: any).onFlyerClicked = this.onFlyerClicked.bind(this);
+  }
+
+  async onLocationClicked() {
+/*
+            if UIApplication.sharedApplication().canOpenURL(NSURL(string: "comgooglemaps://")!) {
+                var encodedVenue:String
+                if event.venue?.name != nil {
+                    encodedVenue = event.venue!.name!.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+                } else {
+                    encodedVenue = "\(coordinate.latitude),\(coordinate.longitude)"
+                }
+
+                let url = "comgooglemaps://?q=\(encodedVenue)&center=\(coordinate.latitude),\(coordinate.longitude)&zoom=15"
+                UIApplication.sharedApplication().openURL(NSURL(string:url)!)
+            }
+
+            let placemark = MKPlacemark(coordinate: coordinate, addressDictionary: event.venue?.fullAddressDictionary)
+            let mapItem:MKMapItem = MKMapItem(placemark: placemark)
+            mapItem.openInMapsWithLaunchOptions(nil)
+            addr = [NSString stringWithFormat: @"maps://saddr=%f,%f&daddr=%f,%f", newLocation.coordinate.latitude, newLocation.coordinate.longitude, oldLatitude, oldLongitude];
+            NSURL *url = [NSURL URLWithString:addr];
+            [[UIApplication sharedApplication] openURL:url];
+        }
+
+    public Uri getOpenMapUrl() {
+        Uri mapUrl;
+        if (latLong != null) {
+            mapUrl = Uri.parse("geo:0,0?q=" + latLong.getLatitude() + "," + latLong.getLongitude() + "(" + Uri.encode(getVenue().getName()) + ")");
+        } else {
+            mapUrl = Uri.parse("geo:0,0?q=" + Uri.encode(getVenue().getName()));
+        }
+        return mapUrl;
+    }
+}*/
+    const venue = this.props.event.venue;
+    const latLong = venue.geocode.latitude + ',' + venue.geocode.longitude;
+    const venueName = venue.name || '(' + latLong + ')';
+
+    var url: string = '';
+    if (Platform.OS === 'ios') {
+      if (await Linking.canOpenURL('comgooglemaps://')) {
+        const qs = querystring.stringify({
+          q: venueName,
+          center: latLong,
+          zoom: 15,
+        });
+        url = 'comgooglemaps://?' + qs;
+      } else {
+        const qs = querystring.stringify({
+          q: venueName,
+          ll: latLong,
+          z: 5,
+        });
+        url = 'http://maps.apple.com/?' + qs;
+      }
+    } else if (Platform.OS === 'android') {
+        // "geo:lat,lng?q=query
+        // "geo:0,0?q=lat,lng(label)"
+        // "geo:0,0?q=my+street+address"
+        /*
+         * We must support a few use cases:
+         * 1) Venue Name: Each One Teach One
+         * Street/City/State/Zip/Country: Lehman College 250 Bedford Prk Blvd Speech & Theatre Bldg the SET Room B20, Bronx, NY, 10468, United States
+         * Lat, Long: 40.8713753364, -73.8879763323
+         * 2) Venue Name: Queens Theatre in the Park
+         * Street/City/State/Zip/Country: New York, NY, 11368, United States
+         * Lat, Long: 40.7441611111, -73.8444222222
+         * 3) Venue Name: "Hamburg"
+         * Street/City/State/Zip/Country: null
+         * Lat, Long: null
+         * 4) More normal scenarios, like a good venue and street address
+         *
+         * Given this, our most reliable source is lat/long.
+         * We don't want to do a search around it because of #1 and #2 will search for the wrong things.
+         * So instead, the best we can do is to label the lat/long point
+         */
+      const q = latLong ? (latLong + '(' + venueName + ')') : venueName;
+      const qs = querystring.stringify({q: q});
+      url = 'geo:0,0?' + qs;
+    } else {
+      console.error('Unknown platform: ', Platform.OS);
+    }
+
+    Linking.openURL(url).catch(err => console.error('Error opening map URL:', url, ', with Error:', err));
+  }
+
+  onFlyerClicked() {
+    this.props.onFlyerSelected(this.props.event);
+  }
+
   render() {
     var imageProps = this.props.event.getImageProps();
     return (
       <ScrollView style={eventStyles.container}>
         <View style={eventStyles.row}>
-          <TouchableOpacity onPress={() => this.props.onFlyerSelected(this.props.event)} activeOpacity={0.5}>
+          <TouchableOpacity onPress={this.onFlyerClicked} activeOpacity={0.5}>
             <ProportionalImage
               source={{uri: imageProps.url}}
               originalWidth={imageProps.width}
@@ -254,10 +349,14 @@ export class FullEventView extends React.Component {
               </View>
               <EventShare event={this.props.event} />
             </View>
-            <EventVenue venue={this.props.event.venue} />
+            <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
+              <EventVenue venue={this.props.event.venue} />
+            </TouchableOpacity>
           </View>
           <EventDescription description={this.props.event.description} />
-          <EventMap venue={this.props.event.venue} />
+          <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
+            <EventMap venue={this.props.event.venue} />
+          </TouchableOpacity>
         </View>
       </ScrollView>
     );
@@ -302,7 +401,7 @@ const eventStyles = StyleSheet.create({
     flexDirection: 'row',
   },
   detailIcon: {
-    marginTop: 5,
+    marginTop: 2,
     marginRight: 5,
     height: 12,
     width: 12,
