@@ -33,6 +33,7 @@ Pods
 .idea
 .gradle
 local.properties
+crashlytics-build.properties
 
 # node.js
 #
