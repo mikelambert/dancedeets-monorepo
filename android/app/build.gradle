@@ -78,14 +78,12 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.dancedeets.android"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -99,14 +97,27 @@ android {
             include "armeabi-v7a", "x86"
         }
     }
+    signingConfigs {
+        release {
+            storeFile file(DANCEDEETS_RELEASE_STORE_FILE)
+            storePassword DANCEDEETS_RELEASE_STORE_PASSWORD
+            keyAlias DANCEDEETS_RELEASE_KEY_ALIAS
+            keyPassword DANCEDEETS_RELEASE_KEY_PASSWORD
+        }
+    }
     buildTypes {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            shrinkResources true
+            zipAlignEnabled true
+            manifestPlaceholders = [applicationIdSuffix: ""]
+            signingConfig signingConfigs.release
         }
         debug {
             applicationIdSuffix ".debug"
-            manifestPlaceholders = [ applicationIdSuffix:".debug" ]
+            manifestPlaceholders = [applicationIdSuffix: ".debug"]
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
@@ -132,10 +143,10 @@ dependencies {
     compile project(':RNMixpanel')
     //compile "com.mixpanel.android:mixpanel-android:4.+"
     //compile 'com.facebook.android:facebook-android-sdk:4.+'
-
-    compile fileTree(dir: "libs", include: ["*.jar"])
-    compile "com.android.support:appcompat-v7:23.3.0"
-    compile "com.facebook.react:react-native:+"  // From node_modules
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.facebook.react:react-native:+'
+    // From node_modules
     compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
         transitive = true;
     }
