@@ -8,6 +8,21 @@ type JSON = | string | number | boolean | null | JSONObject | JSONArray;
 type JSONObject = { [key:string]: JSON };
 type JSONArray = Array<JSON>;
 
+export type Venue = {
+  geocode: {
+    latitude: number,
+    longitude: number,
+  },
+  address: {
+    city: string,
+    street: string,
+    zip: string,
+    country: string,
+  },
+  name: string,
+  id: string,
+};
+
 export class Event {
   id: string;
   city: string;
@@ -29,20 +44,7 @@ export class Event {
     attendingCount: number,
     maybeCount: number,
   };
-  venue: {
-    geocode: {
-      latitude: number,
-      longitude: number,
-    },
-    address: {
-      city: string,
-      street: string,
-      zip: string,
-      country: string,
-    },
-    name: string,
-    id: string,
-  };
+  venue: Venue;
 
   constructor(eventData: JSONObject) {
     for (var attr in eventData) {
