@@ -6,14 +6,17 @@
 
 import React, {
   ListView,
+  StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 
-import { EventRow } from './uicomponents';
+import { BlurView } from 'react-native-blur';
 import { connect } from 'react-redux';
 
+import { EventRow } from './uicomponents';
 import { Event } from './models';
 import { search } from '../api';
 
@@ -21,6 +24,15 @@ type Props = {
   onEventSelected: (x: Event) => void,
 };
 
+
+class SearchHeader extends React.Component {
+  render() {
+    return <BlurView style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]} blurType="dark">
+      <TextInput placeholder="Location" style={styles.searchField} />
+      <TextInput placeholder="Keywords" style={styles.searchField} />
+    </BlurView>;
+  }
+}
 
 class EventListContainer extends React.Component {
   props: Props;
@@ -48,12 +60,13 @@ class EventListContainer extends React.Component {
     return (
       <View style={styles.container}>
         {this.state.loaded ? this.renderListView() : this.renderLoadingView()}
+        <SearchHeader />
       </View>
     );
   }
 
   renderListView() {
-    var onEventSelected = this.props.onEventSelected;
+    const onEventSelected = this.props.onEventSelected;
     return (
       <ListView
         dataSource={this.state.dataSource}
@@ -66,6 +79,7 @@ class EventListContainer extends React.Component {
         initialListSize={10}
         pageSize={5}
         scrollRenderAheadDistance={10000}
+        scrollsToTop={false}
       />
     );
   }
@@ -101,6 +115,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     flex: 1,
     justifyContent: 'center',
+  },
+  floatTop: {
+    position: 'absolute',
+    paddingTop: 15,
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  statusBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+  },
+  searchField: {
+    borderRadius: 5,
+    height: 30,
+    flex: 1,
+    margin: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
   },
   loading: {
     color: 'white',
