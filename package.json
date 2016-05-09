@@ -11,6 +11,7 @@
     "querystring": "^0.2.0",
     "react": "^0.14.8",
     "react-native": "^0.24.0",
+    "react-native-blur": "^0.7.11",
     "react-native-carousel": "^0.5.0",
     "react-native-fabric": "^0.2.0",
     "react-native-fabric-crashlytics": "git://github.com/mikelambert/react-native-fabric-crashlytics.gitß",
