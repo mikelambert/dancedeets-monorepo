@@ -39,6 +39,7 @@ class SearchInput extends React.Component {
       placeholderTextColor="rgba(255, 255, 255, 0.5)"
       backgroundColor="rgba(255, 255, 255, 0.2)"
       keyboardAppearance="dark"
+      selectTextOnFocus={true}
       autoCorrect={false}
       autoCapitalize="none"
     />;
@@ -50,16 +51,12 @@ class SearchInput extends React.Component {
 }
 
 class SearchHeader extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return <BlurView style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]} blurType="dark">
       <SearchInput
         placeholder="Location"
         returnKeyType="next"
-        onSubmitEditing={() => {this.refs.keywords.focus()}}
+        onSubmitEditing={() => this.refs.keywords.focus()}
       />
       <SearchInput
         ref="keywords"
