@@ -26,21 +26,46 @@ type Props = {
 
 
 class SearchInput extends React.Component {
+  constructor(props) {
+    super(props);
+    (this: any).focus = this.focus.bind(this);
+  }
+
   render() {
     const { style, ...otherProps } = { style: {}, ...this.props };
-    return <TextInput {...otherProps} style={[style, styles.searchField]}
+    return <TextInput {...otherProps}
+      ref="textInput"
+      style={[style, styles.searchField]}
       placeholderTextColor="rgba(255, 255, 255, 0.5)"
       backgroundColor="rgba(255, 255, 255, 0.2)"
-      keyboardAppearance={true}
+      keyboardAppearance="dark"
+      autoCorrect={false}
+      autoCapitalize="none"
     />;
+  }
+
+  focus() {
+    this.refs.textInput.focus();
   }
 }
 
 class SearchHeader extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return <BlurView style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]} blurType="dark">
-      <SearchInput placeholder="Location"/>
-      <SearchInput placeholder="Keywords"/>
+      <SearchInput
+        placeholder="Location"
+        returnKeyType="next"
+        onSubmitEditing={() => {this.refs.keywords.focus()}}
+      />
+      <SearchInput
+        ref="keywords"
+        placeholder="Keywords"
+        returnKeyType="search"
+      />
     </BlurView>;
   }
 }
