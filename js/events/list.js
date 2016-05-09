@@ -25,11 +25,22 @@ type Props = {
 };
 
 
+class SearchInput extends React.Component {
+  render() {
+    const { style, ...otherProps } = { style: {}, ...this.props };
+    return <TextInput {...otherProps} style={[style, styles.searchField]}
+      placeholderTextColor="rgba(255, 255, 255, 0.5)"
+      backgroundColor="rgba(255, 255, 255, 0.2)"
+      keyboardAppearance={true}
+    />;
+  }
+}
+
 class SearchHeader extends React.Component {
   render() {
     return <BlurView style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]} blurType="dark">
-      <TextInput placeholder="Location" style={styles.searchField} />
-      <TextInput placeholder="Keywords" style={styles.searchField} />
+      <SearchInput placeholder="Location"/>
+      <SearchInput placeholder="Keywords"/>
     </BlurView>;
   }
 }
@@ -126,9 +137,10 @@ const styles = StyleSheet.create({
   statusBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   searchField: {
+    color: 'white',
     borderRadius: 5,
     height: 30,
     flex: 1,
