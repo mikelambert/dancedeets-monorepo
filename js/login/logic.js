@@ -52,7 +52,7 @@ export async function autoLoginAtStartup(dispatch: Dispatch, allowRecursion: boo
       // Log in with our old/expired token
       return dispatch(loginComplete(token));
     } else {
-      console.error("We aren't logged out, but we still don't have a token??"");
+      console.error("We aren't logged out, but we still don't have a token??");
     }
   }
 }
