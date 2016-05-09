@@ -8,6 +8,7 @@
 
 import querystring from 'querystring';
 import { Platform } from 'react-native';
+import { AccessToken } from 'react-native-fbsdk';
 
 const DEV_SERVER = false;
 
@@ -40,7 +41,7 @@ async function performRequest(path: string, args: Object, postArgs: ?Object | nu
   }
 }
 
-export async function auth(token: Object) {
+export async function auth(token: AccessToken) {
   var expirationTime = new Date(token.expirationTime).toISOString();
   return performRequest('auth', {}, {
     client: Platform.OS,

@@ -6,6 +6,7 @@
 
 'use strict';
 
+import { AccessToken } from 'react-native-fbsdk';
 import FacebookSDK from 'FacebookSDK';
 import ActionSheetIOS from 'ActionSheetIOS';
 import {Platform} from 'react-native';
@@ -32,7 +33,7 @@ export function loginStartOnboard(): Action {
   };
 }
 
-export function loginComplete(token: Object): Action {
+export function loginComplete(token: AccessToken): Action {
   auth(token).catch(x => console.error('Error sending /auth data:', x));
   return {
     type: 'LOGIN_LOGGED_IN',

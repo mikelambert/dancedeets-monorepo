@@ -13,8 +13,8 @@ import type { Dispatch } from '../actions/types';
 
 export async function loginButtonPressed(dispatch: Dispatch) {
   try {
-    await loginOrLogout();
-    dispatch(loginComplete(await AccessToken.getCurrentAccessToken()));
+    const token = await loginOrLogout();
+    dispatch(loginComplete(token));
   } catch (exc) {
     console.log('Staying on this screen, failed to login: ', exc);
   }
@@ -30,7 +30,12 @@ export async function autoLoginAtStartup(dispatch: Dispatch, allowRecursion: boo
   } else if (await isRecentlyLoggedIn()) {
     console.log('Fresh access token, completing login!');
     // TODO: send up /auth /user API call now
-    return dispatch(loginComplete(await AccessToken.getCurrentAccessToken()));
+    const token = await AccessToken.getCurrentAccessToken();
+    if (token != null) {
+      return dispatch(loginComplete(token));
+    } else {
+      console.error('We have a recently logged-in token, but no token??');
+    }
   } else if (allowRecursion) {
     await refreshFullToken();
     // Okay, now we've either refreshed with a new valid authtoken, or we've logged the user out.
@@ -42,11 +47,17 @@ export async function autoLoginAtStartup(dispatch: Dispatch, allowRecursion: boo
     // And then ensure the user still has a pleasant experience.
     // The user didn't pass isLoggedOut, so they must be loggedIn with an old token.
     // That should be good enough to use our app and associated FB SDK calls!
-    return dispatch(loginComplete(await AccessToken.getCurrentAccessToken()));
+    const token = await AccessToken.getCurrentAccessToken();
+    if (token != null) {
+      // Log in with our old/expired token
+      return dispatch(loginComplete(token));
+    } else {
+      console.error("We aren't logged out, but we still don't have a token??"");
+    }
   }
 }
 
-async function loginOrLogout() {
+async function loginOrLogout(): Promise<AccessToken> {
   console.log('Presenting FB Login Dialog...');
   const loginResult = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends', 'user_events']);
   console.log('LoginResult is ', loginResult);
@@ -55,11 +66,12 @@ async function loginOrLogout() {
     throw new Error('Canceled by user');
   }
 
-  const accessToken = await AccessToken.getCurrentAccessToken();
-  if (!accessToken) {
+  var accessToken = await AccessToken.getCurrentAccessToken();
+  if (accessToken != null) {
+    return accessToken;
+  } else {
     throw new Error('No access token');
   }
-  return accessToken;
 }
 
 
