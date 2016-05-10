@@ -48,7 +48,7 @@ class SearchInput extends React.Component {
 class SearchHeader extends React.Component {
   constructor(props) {
     super(props);
-    this.onLayout = this.onLayout.bind(this);
+    (this: any).onLayout = this.onLayout.bind(this);
   }
 
   onLayout(e: SyntheticEvent) {

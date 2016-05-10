@@ -35,7 +35,7 @@ class EventListContainer extends React.Component {
       dataSource,
     };
     this.state = this._getNewState(this.props);
-    this.onUpdateHeaderHeight = this.onUpdateHeaderHeight.bind(this);
+    (this: any).onUpdateHeaderHeight = this.onUpdateHeaderHeight.bind(this);
   }
 
   _getNewState(props) {
