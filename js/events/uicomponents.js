@@ -22,6 +22,7 @@ import type { Venue } from './models';
 import MapView from 'react-native-maps';
 import { ShareButton } from 'react-native-fbsdk';
 import moment from 'moment';
+import AutoLink from 'react-native-autolink';
 
 const {
   Globalize,
@@ -88,7 +89,11 @@ class EventVenue extends SubEventLine {
   textRender() {
     var components = [];
     if (this.props.venue.name) {
-      components.push(<Text key="line1" style={eventStyles.rowLink}>{this.props.venue.name}</Text>);
+      components.push(<AutoLink
+        key="line1"
+        style={eventStyles.rowLink}
+        text={this.props.venue.name}
+        />);
     }
     if (this.props.venue.address) {
       components.push(<Text key="line2" style={eventStyles.rowLink}>{this.props.venue.address.city + ', ' + this.props.venue.address.country}</Text>);
@@ -152,7 +157,12 @@ class EventRsvp extends SubEventLine {
 
 class EventDescription extends React.Component {
   render() {
-    return <Text style={eventStyles.description}>{this.props.description}</Text>;
+    return <AutoLink
+      style={eventStyles.description}
+      text={this.props.description}
+      hashtag="instagram"
+      twitter
+    />;
   }
 }
 
