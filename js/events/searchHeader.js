@@ -46,8 +46,24 @@ class SearchInput extends React.Component {
 }
 
 class SearchHeader extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onLayout = this.onLayout.bind(this);
+  }
+
+  onLayout(e: SyntheticEvent) {
+    console.log(e);
+    const nativeEvent: any = e.nativeEvent;
+    const layout = nativeEvent.layout;
+    this.props.onUpdateHeight(layout.height);
+  }
+
   render() {
-    return <BlurView style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]} blurType="dark">
+    return <BlurView
+      onLayout={this.onLayout}
+      style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]}
+      blurType="dark"
+    >
       <SearchInput
         ref="location"
         placeholder="Location"

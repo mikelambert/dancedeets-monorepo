@@ -24,20 +24,24 @@ import {
 class EventListContainer extends React.Component {
   state: {
     dataSource: ListView.DataSource,
+    headerHeight: number,
   };
 
   constructor(props) {
     super(props);
     var dataSource = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2});
     this.state = {
+      headerHeight: 0,
       dataSource,
     };
     this.state = this._getNewState(this.props);
+    this.onUpdateHeaderHeight = this.onUpdateHeaderHeight.bind(this);
   }
 
   _getNewState(props) {
     const results = props.search.results;
     const state = {
+      ...this.state,
       dataSource: this.state.dataSource.cloneWithRows(results ? results.results : []),
     };
     return state;
@@ -51,11 +55,18 @@ class EventListContainer extends React.Component {
     this.props.performSearch(this.props.search.searchQuery);
   }
 
+  onUpdateHeaderHeight(headerHeight: number) {
+    this.setState({
+      ...this.state,
+      headerHeight,
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
         {this.props.search.loading ? this.renderLoadingView() : this.renderListView()}
-        <SearchHeader />
+        <SearchHeader onUpdateHeight={this.onUpdateHeaderHeight}/>
       </View>
     );
   }
@@ -64,6 +75,7 @@ class EventListContainer extends React.Component {
     const onEventSelected = this.props.onEventSelected;
     return (
       <ListView
+        style={{marginTop: this.state.headerHeight}}
         dataSource={this.state.dataSource}
         renderRow={(e) =>
           <EventRow
