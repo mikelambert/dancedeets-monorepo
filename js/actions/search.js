@@ -14,6 +14,7 @@ import { search } from '../api';
 
 export function performSearch(searchQuery: SearchQuery) {
   return async function(dispatch: Dispatch) {
+    dispatch(searchStart());
     try {
       const responseData = await search(searchQuery.location, searchQuery.keywords, searchQuery.timePeriod);
       dispatch(searchComplete(responseData));
@@ -35,6 +36,12 @@ export function updateKeywords(keywords: string): Action {
   return {
     type: 'UPDATE_KEYWORDS',
     keywords,
+  };
+}
+
+function searchStart(): Action {
+  return {
+    type: 'START_SEARCH',
   };
 }
 

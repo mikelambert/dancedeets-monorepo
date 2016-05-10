@@ -42,6 +42,7 @@ export type Action =
   | { type: 'VIEW_EVENT', event: Event }
   | { type: 'UPDATE_LOCATION', location: string }
   | { type: 'UPDATE_KEYWORDS', keywords: string }
+  | { type: 'START_SEARCH' }
   | { type: 'SEARCH_COMPLETE', results: SearchResults }
   | { type: 'SEARCH_FAILED' }
   ;

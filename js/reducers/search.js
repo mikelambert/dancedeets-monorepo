@@ -20,6 +20,7 @@ const initialState = {
     keywords: '',
     timePeriod: 'UPCOMING',
   },
+  loading: false,
   results: null,
 };
 
@@ -32,7 +33,6 @@ export function search(state: State = initialState, action: Action): State {
     return {
       ...state,
       searchQuery,
-      results: null,
     };
   }
   if (action.type === 'UPDATE_KEYWORDS') {
@@ -43,18 +43,26 @@ export function search(state: State = initialState, action: Action): State {
     return {
       ...state,
       searchQuery,
+    };
+  }
+  if (action.type === 'START_SEARCH') {
+    return {
+      ...state,
+      loading: true,
       results: null,
     };
   }
   if (action.type === 'SEARCH_COMPLETE') {
     return {
       ...state,
+      loading: false,
       results: action.results,
     };
   }
   if (action.type === 'SEARCH_FAILED') {
     return {
       ...state,
+      loading: false,
       results: null,
     };
   }
