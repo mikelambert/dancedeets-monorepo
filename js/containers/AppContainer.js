@@ -86,7 +86,7 @@ class AppContainer extends React.Component {
 			/>;
 		case 'EventView':
 			return <FullEventView
-				onFlyerSelected={(x) => null}
+				onFlyerSelected={(x) => {}}
 				event={navigationState.event}
 			/>;
 		}

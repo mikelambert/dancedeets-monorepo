@@ -17,7 +17,8 @@ import React, {
 
 import querystring from 'querystring';
 import { ProportionalImage } from '../ui';
-import { Event, Venue } from './models';
+import { Event } from './models';
+import type { Venue } from './models';
 import MapView from 'react-native-maps';
 import { ShareButton } from 'react-native-fbsdk';
 import moment from 'moment';

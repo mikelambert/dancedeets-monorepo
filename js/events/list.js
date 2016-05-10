@@ -19,6 +19,11 @@ import { connect } from 'react-redux';
 import { EventRow } from './uicomponents';
 import { Event } from './models';
 import { search } from '../api';
+import {
+  performSearch,
+  updateLocation,
+  updateKeywords
+} from '../actions';
 
 type Props = {
   onEventSelected: (x: Event) => void,
@@ -54,18 +59,47 @@ class SearchHeader extends React.Component {
   render() {
     return <BlurView style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]} blurType="dark">
       <SearchInput
+        ref="location"
         placeholder="Location"
         returnKeyType="next"
-        onSubmitEditing={() => this.refs.keywords.focus()}
+        onChangeText={(text) => this.props.updateLocation(text)}
+        unSubmitEnd={() => this.props.performSearch()}
+        value={this.props.search.location}
       />
       <SearchInput
         ref="keywords"
         placeholder="Keywords"
         returnKeyType="search"
+        onChangeText={(text) => this.props.updateKeywords(text)}
+        unSubmitEnd={() => this.props.performSearch()}
+        value={this.props.search.keywords}
       />
     </BlurView>;
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    search: state.search,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateLocation: (location) => {
+      dispatch(updateLocation(location));
+    },
+    updateKeywords: (keywords) => {
+      dispatch(updateKeywords(keywords));
+    },
+    performSearch: () => {
+      dispatch(performSearch());
+    },
+  };
+};
+SearchHeader = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchHeader);
 
 class EventListContainer extends React.Component {
   props: Props;

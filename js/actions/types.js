@@ -27,6 +27,7 @@
 import type { NavigationState } from 'NavigationTypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
 import { Event } from '../events/models';
+import type { SearchResults } from '../events/search';
 
 export type Action =
     { type: 'NAV_PUSH', state: NavigationState }
@@ -39,6 +40,10 @@ export type Action =
   | { type: 'LOGIN_LOGGED_OUT' }
   | { type: 'LOGIN_SKIPPED' }
   | { type: 'VIEW_EVENT', event: Event }
+  | { type: 'UPDATE_LOCATION', location: string }
+  | { type: 'UPDATE_KEYWORDS', keywords: string }
+  | { type: 'SEARCH_COMPLETE', results: SearchResults }
+  | { type: 'SEARCH_FAILED' }
   ;
 
 export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;

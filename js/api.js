@@ -9,6 +9,7 @@
 import querystring from 'querystring';
 import { Platform } from 'react-native';
 import { AccessToken } from 'react-native-fbsdk';
+import type { TimePeriod } from './events/search';
 
 const DEV_SERVER = false;
 
@@ -49,8 +50,6 @@ export async function auth(token: AccessToken) {
     access_token_expires: expirationTime,
   });
 }
-
-export type TimePeriod = 'UPCOMING' | 'ONGOING' | 'PAST' | 'ALL_FUTURE';
 
 export async function search(location: string, keywords: string, time_period: TimePeriod) {
   return performRequest('search', {

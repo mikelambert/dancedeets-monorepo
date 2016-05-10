@@ -8,8 +8,10 @@
 
 import * as login from './login';
 import * as navigation from './navigation';
+import * as search from './search';
 
 module.exports = {
   ...login,
   ...navigation,
+  ...search,
 };
