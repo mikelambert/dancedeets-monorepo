@@ -37,11 +37,9 @@ class EventListContainer extends React.Component {
 
   _getNewState(props) {
     const results = props.search.results;
-    console.log('newstate 0', results);
     const state = {
       dataSource: this.state.dataSource.cloneWithRows(results ? results.results : []),
     };
-    console.log('newstate', state);
     return state;
   }
 
@@ -54,7 +52,6 @@ class EventListContainer extends React.Component {
   }
 
   render() {
-    console.log(this.props.search);
     return (
       <View style={styles.container}>
         {this.props.search.loading ? this.renderLoadingView() : this.renderListView()}
