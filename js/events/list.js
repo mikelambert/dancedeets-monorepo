@@ -37,7 +37,6 @@ class SectionHeader extends React.Component {
   };
 
   render() {
-    console.log(this.props);
     return <Text style={{color: 'white'}}>{this.props.title}</Text>;
   }
 }
