@@ -136,6 +136,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-geocoder')
     compile project(':react-native-maps')
     compile project(':react-native-fabric')
     compile project(':react-native-linear-gradient')

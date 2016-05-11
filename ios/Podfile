@@ -8,6 +8,7 @@ target 'DanceDeets' do
   pod 'React', :subspecs => [
     'Core',
     'RCTActionSheet',
+    'RCTGeolocation',
     'RCTImage',
     'RCTNetwork',
     'RCTText',

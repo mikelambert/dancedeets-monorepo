@@ -9,6 +9,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactActivity;
+import com.devfd.RNGeocoder.RNGeocoderPackage;
 import com.AirMaps.AirPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -51,6 +52,7 @@ public class MainActivity extends ReactActivity {
         mCallbackManager = CallbackManager.Factory.create();
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RNGeocoderPackage(),
             new AirPackage(),
             new FabricPackage(null),
             new LinearGradientPackage(),

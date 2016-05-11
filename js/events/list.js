@@ -7,6 +7,7 @@
 import React, {
   Linking,
   ListView,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -24,7 +25,7 @@ import {
   performSearch,
 } from '../actions';
 import { linkColor } from '../Colors';
-
+import Geocoder from 'react-native-geocoder';
 const {
   Globalize,
 } = require('react-native-globalize');
@@ -140,6 +141,17 @@ class EventListContainer extends React.Component {
   }
 
   componentDidMount() {
+    const highAccuracy = Platform.OS == 'ios';
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const location = await Geocoder.reverseGeocodeLocation(position.coords);
+        // TODO: Send out API request with user location
+        // TODO: Set up location in search query
+        //this.setState({initialPosition});
+      },
+      (error) => console.error('Error getting current position:', error.message),
+      {enableHighAccuracy: highAccuracy, timeout: 5 * 1000, maximumAge: 60 * 1000}
+    );
     this.props.performSearch(this.props.search.searchQuery);
   }
 
