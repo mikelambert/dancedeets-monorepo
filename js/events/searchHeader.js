@@ -52,7 +52,6 @@ class SearchHeader extends React.Component {
   }
 
   onLayout(e: SyntheticEvent) {
-    console.log(e);
     const nativeEvent: any = e.nativeEvent;
     const layout = nativeEvent.layout;
     this.props.onUpdateHeight(layout.height);
