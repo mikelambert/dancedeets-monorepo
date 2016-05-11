@@ -29,6 +29,9 @@ import Geocoder from 'react-native-geocoder';
 const {
   Globalize,
 } = require('react-native-globalize');
+import { auth } from '../api';
+import type { Address } from './formatAddress';
+import { format } from './formatAddress';
 
 var en = new Globalize('en');
 
@@ -144,8 +147,8 @@ class EventListContainer extends React.Component {
     const highAccuracy = Platform.OS == 'ios';
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        const location = await Geocoder.reverseGeocodeLocation(position.coords);
-        // TODO: Send out API request with user location
+        const address: Address = await Geocoder.reverseGeocodeLocation(position.coords);
+        auth(null, {location: format(address[0])});
         // TODO: Set up location in search query
         //this.setState({initialPosition});
       },

@@ -34,7 +34,7 @@ export function loginStartOnboard(): Action {
 }
 
 export function loginComplete(token: AccessToken): Action {
-  auth(token).catch(x => console.error('Error sending /auth data:', x));
+  auth(token);
   return {
     type: 'LOGIN_LOGGED_IN',
     token: token,

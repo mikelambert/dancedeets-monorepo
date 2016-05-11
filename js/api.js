@@ -25,30 +25,45 @@ function getUrl(path: string, args: Object) {
 }
 
 async function performRequest(path: string, args: Object, postArgs: ?Object | null) {
-  console.log('JSON API:', getUrl(path, args));
-  const result = await fetch(getUrl(path, args), {
-    method: postArgs ? 'POST' : 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: postArgs ? JSON.stringify(postArgs) : null,
-  });
-  const json = await result.json();
-  // 'undefined' means success, 'false' means error
-  if (json['success'] === false) {
-    throw json['errors'];
-  } else {
-    return json;
+  try {
+    console.log('JSON API:', getUrl(path, args));
+    const result = await fetch(getUrl(path, args), {
+      method: postArgs ? 'POST' : 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: postArgs ? JSON.stringify(postArgs) : null,
+    });
+    const json = await result.json();
+    // 'undefined' means success, 'false' means error
+    if (json['success'] === false) {
+      throw json['errors'];
+    } else {
+      return json;
+    }
+  } catch (e) {
+    console.warn('Error on API call:', path, 'withArgs:', args, '. Error:', e);
+    throw e;
   }
 }
 
-export async function auth(token: AccessToken) {
+export async function auth(token: ?AccessToken, data: ?Object) {
+  if (!token) {
+    token = await AccessToken.getCurrentAccessToken();
+  }
+  if (!token) {
+    return;
+  }
+  if (data == null) {
+    data = {};
+  }
   var expirationTime = new Date(token.expirationTime).toISOString();
-  return performRequest('auth', {}, {
+  const postData = Object.assign({}, {
     client: Platform.OS,
     access_token: token.accessToken,
     access_token_expires: expirationTime,
-  });
+  }, data);
+  return performRequest('auth', {}, postData);
 }
 
 export async function search(location: string, keywords: string, time_period: TimePeriod) {
