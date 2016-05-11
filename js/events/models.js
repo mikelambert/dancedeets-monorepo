@@ -23,6 +23,12 @@ export type Venue = {
   id: string,
 };
 
+export type Cover = {
+  source: string,
+  height: number,
+  width: number,
+};
+
 export class Event {
   id: string;
   city: string;
@@ -43,6 +49,10 @@ export class Event {
   rsvp: {
     attendingCount: number,
     maybeCount: number,
+  };
+  cover: {
+    cover_id: string,
+    images: Array<Cover>,
   };
   venue: Venue;
 

@@ -22,6 +22,6 @@ export type Onebox = {
 };
 
 export type SearchResults = {
-  oneboxes: Array<Onebox>;
-  events: Array<Event>;
+  onebox_links: Array<Onebox>;
+  results: Array<Event>;
 };
