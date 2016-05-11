@@ -40,6 +40,7 @@ export type Action =
   | { type: 'LOGIN_LOGGED_OUT' }
   | { type: 'LOGIN_SKIPPED' }
   | { type: 'VIEW_EVENT', event: Event }
+  | { type: 'DETECTED_LOCATION', location: string }
   | { type: 'UPDATE_LOCATION', location: string }
   | { type: 'UPDATE_KEYWORDS', keywords: string }
   | { type: 'START_SEARCH' }

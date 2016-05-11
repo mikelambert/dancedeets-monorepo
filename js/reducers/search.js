@@ -25,7 +25,9 @@ const initialState = {
 };
 
 export function search(state: State = initialState, action: Action): State {
-  if (action.type === 'UPDATE_LOCATION') {
+  if (action.type === 'UPDATE_LOCATION' ||
+      // Only set location from GPS if user hasn't entered any location
+      (action.type === 'DETECTED_LOCATION' && state.searchQuery.location == "")) {
     var searchQuery = {
       ...state.searchQuery,
       location: action.location,

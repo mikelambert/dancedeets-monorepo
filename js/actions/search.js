@@ -17,7 +17,7 @@ export function performSearch(searchQuery: SearchQuery) {
     dispatch(searchStart());
     try {
       const responseData = await search(searchQuery.location, searchQuery.keywords, searchQuery.timePeriod);
-      dispatch(searchComplete(responseData));
+      await dispatch(searchComplete(responseData));
     } catch (e) {
       // TODO: error fetching events.
       console.log('error fetching events', e);
@@ -25,6 +25,17 @@ export function performSearch(searchQuery: SearchQuery) {
     }
   };
 }
+
+export function detectedLocation(location: string): Action {
+  return async function(dispatch: Dispatch) {
+    await dispatch({
+      type: 'DETECTED_LOCATION',
+      location,
+    });
+    await dispatch(searchStart());
+  };
+}
+
 export function updateLocation(location: string): Action {
   return {
     type: 'UPDATE_LOCATION',

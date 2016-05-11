@@ -22,6 +22,25 @@ export type Address = {
   thoroughfare: string;
 };
 
+/*
+{
+  "postalCode":"10024",
+  "subAdministrativeArea":"New York",
+  "name":"Central Park",
+  "locality":"New York",
+  "subThoroughfare":"1000",
+  "administrativeArea":"NY",
+  "position":{
+    "lat":40.7964708,
+    "lng":-73.9545696
+  },
+  "country":"United States",
+  "subLocality":"Manhattan",
+  "thoroughfare":"5th Ave"
+}
+*/
+
+
 export function format(address: Address) {
   var components = [];
   // We really need *something* smaller than the AdminArea/State level.

@@ -22,6 +22,7 @@ import SearchHeader from './searchHeader';
 import type { SearchResults } from './search';
 import moment from 'moment';
 import {
+  detectedLocation,
   performSearch,
 } from '../actions';
 import { linkColor } from '../Colors';
@@ -148,9 +149,9 @@ class EventListContainer extends React.Component {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const address: Address = await Geocoder.reverseGeocodeLocation(position.coords);
-        auth(null, {location: format(address[0])});
-        // TODO: Set up location in search query
-        //this.setState({initialPosition});
+        const formattedAddress = format(address[0]);
+        auth(null, {location: formattedAddress});
+        this.props.detectedLocation(formattedAddress);
       },
       (error) => console.error('Error getting current position:', error.message),
       {enableHighAccuracy: highAccuracy, timeout: 5 * 1000, maximumAge: 60 * 1000}
@@ -217,6 +218,9 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
+    detectedLocation: (location) => {
+      dispatch(detectedLocation(location));
+    },
     performSearch: (searchQuery) => {
       dispatch(performSearch(searchQuery));
     },
