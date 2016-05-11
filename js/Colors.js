@@ -14,3 +14,5 @@ export const darkText = '#032250';
 export const lightText = '#7F91A7';
 export const cellBorder = '#EEEEEE';
 export const darkBackground = '#183E63';
+
+export const linkColor = '#70C0FF';

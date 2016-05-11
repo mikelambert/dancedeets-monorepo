@@ -23,6 +23,7 @@ import MapView from 'react-native-maps';
 import { ShareButton } from 'react-native-fbsdk';
 import moment from 'moment';
 import AutoLink from 'react-native-autolink';
+import { linkColor } from '../Colors';
 
 const {
   Globalize,
@@ -91,12 +92,15 @@ class EventVenue extends SubEventLine {
     if (this.props.venue.name) {
       components.push(<AutoLink
         key="line1"
-        style={eventStyles.rowLink}
+        style={[eventStyles.rowText, this.props.style]}
         text={this.props.venue.name}
         />);
     }
     if (this.props.venue.address) {
-      components.push(<Text key="line2" style={eventStyles.rowLink}>{this.props.venue.address.city + ', ' + this.props.venue.address.country}</Text>);
+      components.push(<Text
+        key="line2"
+        style={[eventStyles.rowText, this.props.style]}
+      >{this.props.venue.address.city + ', ' + this.props.venue.address.country}</Text>);
     }
     return <View>{components}</View>;
   }
@@ -293,7 +297,7 @@ export class EventRow extends React.Component {
           />
           <Text
             numberOfLines={2}
-            style={eventStyles.rowTitle}>{this.props.event.name}</Text>
+            style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
           <View style={eventStyles.eventIndent}>
             <EventCategories categories={this.props.event.annotations.categories} />
             <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
@@ -364,7 +368,7 @@ export class FullEventView extends React.Component {
               <EventShare event={this.props.event} />
             </View>
             <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
-              <EventVenue venue={this.props.event.venue} />
+              <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
             </TouchableOpacity>
           </View>
           <EventDescription description={this.props.event.description} />
@@ -395,14 +399,15 @@ const eventStyles = StyleSheet.create({
     overflow: 'hidden',
   },
   rowTitle: {
-    fontSize: 24,
+    fontSize: 18,
+    fontWeight: 'bold',
     color: 'white',
   },
   rowDateTime: {
     color: '#C0FFC0',
   },
   rowLink: {
-    color: '#70C0FF',
+    color: linkColor,
   },
   rowText: {
     color: 'white',

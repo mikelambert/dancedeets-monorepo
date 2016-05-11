@@ -23,6 +23,7 @@ import moment from 'moment';
 import {
   performSearch,
 } from '../actions';
+import { linkColor } from '../Colors';
 
 const {
   Globalize,
@@ -37,7 +38,9 @@ class SectionHeader extends React.Component {
   };
 
   render() {
-    return <Text style={{color: 'white'}}>{this.props.title}</Text>;
+    return <View style={styles.sectionHeader}>
+      <Text style={styles.sectionHeaderText}>{this.props.title}</Text>
+    </View>;
   }
 }
 
@@ -61,10 +64,11 @@ class Onebox extends React.Component {
   render() {
     return (
       <TouchableOpacity
+        style={styles.onebox}
         onPress={this.oneboxClicked}
         activeOpacity={0.5}
       >
-        <Text style={{color: 'white'}}>{this.props.onebox.title}</Text>
+        <Text style={styles.oneboxText}>{this.props.onebox.title}</Text>
       </TouchableOpacity>
     );
   }
@@ -218,5 +222,26 @@ const styles = StyleSheet.create({
   loading: {
     color: 'white',
     textAlign: 'center',
-  }
+  },
+  sectionHeader: {
+    height: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#222',
+  },
+  sectionHeaderText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  onebox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 50,
+  },
+  oneboxText: {
+    color: linkColor,
+    marginLeft: 10,
+    fontSize: 18,
+  },
 });
