@@ -79,12 +79,12 @@ def _should_post_event(auth_token, db_event):
         if db_event.attendee_count < 20:
             logging.warning("Skipping event due to <20 attendees: %s", db_event.attendee_count)
             return False
-        if db_event.attendee_count > 1000:
-            logging.warning("Skipping event due to 1000+ attendees: %s", db_event.attendee_count)
+        if db_event.attendee_count > 600:
+            logging.warning("Skipping event due to 600+ attendees: %s", db_event.attendee_count)
             return False
         invited = fb_api.get_all_members_count(db_event.fb_event)
-        if invited < 100:
-            logging.warning("Skipping event due to <100 invitees: %s", invited)
+        if invited < 200:
+            logging.warning("Skipping event due to <200 invitees: %s", invited)
             return False
         if invited > 2000:
             logging.warning("Skipping event due to 2000+ invitees: %s", invited)
