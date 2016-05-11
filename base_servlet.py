@@ -10,6 +10,7 @@ import logging
 import hashlib
 import os
 import urllib
+import urlparse
 import webapp2
 
 
@@ -448,11 +449,26 @@ class BaseRequestHandler(BareBaseRequestHandler):
     def initialize(self, request, response):
         super(BaseRequestHandler, self).initialize(request, response)
         self.run_handler = True
+
+        # Redirect from the bare 'dancedeets.com' to the full 'www.dancedeets.com'
+        url = urlparse.urlsplit(self.request.url)
+        if url.netloc != self._get_full_hostname():
+            logging.info("Redirecting from %s to %s: %s", url.netloc, self._get_full_hostname(), self.request.url)
+            new_url = urlparse.urlunsplit([
+                url.scheme,
+                self._get_full_hostname(),
+                url.path,
+                url.query,
+                url.fragment,
+            ])
+            self.run_handler = False
+            self.redirect(new_url, abort=True)
+            return
         login_url = self.get_login_url()
         redirect_url = self.handle_alternate_login(request)
         if redirect_url:
             self.run_handler = False
-            self.redirect(redirect_url)
+            self.redirect(redirect_url, abort=True)
             return
 
         self.setup_login_state(request)
