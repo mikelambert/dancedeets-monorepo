@@ -11,12 +11,12 @@ export type Address = {
     lng: number;
   };
   locality: string;
-  adminArea: string;
+  administrativeArea: string;
   country: string;
   countryCode: string;
   locale: string;
   postalCode: string;
-  subAdminArea: string;
+  subAdministrativeArea: string;
   subLocality: string;
   subThoroughfare: string;
   thoroughfare: string;
@@ -53,14 +53,14 @@ export function format(address: Address) {
       // SubAdminArea=null
       // AdminArea=Tokyo
       components.push(address.locality);
-  } else if (address.subAdminArea != null) {
+  } else if (address.subAdministrativeArea != null) {
       // Sometimes there is only a SubAdminArea:
       // LatLong=60.1836354,24.9206748
       // SubLocality=null
       // Locality=null
       // SubAdminArea=Helsinki
       // AdminArea=null
-      components.push(address.subAdminArea);
+      components.push(address.subAdministrativeArea);
   } else if (address.subLocality != null) {
       // Sometimes there is only a SubLocality:
       // LatLong=40.790278,-73.959722
@@ -81,8 +81,8 @@ export function format(address: Address) {
   // In this case, we just want to grab the Locality (first if-block above)
 
   // Then grab the States/Province/etc (for those who have it)
-  if (address.adminArea != null) {
-      components.push(address.adminArea);
+  if (address.administrativeArea != null) {
+      components.push(address.administrativeArea);
   }
   // And finally the Country, which should always be there...unless....I'm on a boat!
   // So let's be safe and make this optional, in which case we basically take whatever we can get
