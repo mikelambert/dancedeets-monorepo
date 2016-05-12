@@ -98,6 +98,7 @@ class EventListContainer extends React.Component {
     this.state = this._getNewState(this.props);
     (this: any).onUpdateHeaderHeight = this.onUpdateHeaderHeight.bind(this);
     (this: any)._renderRow = this._renderRow.bind(this);
+    (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
   }
 
   _buidDataBlobAndHeaders(results: SearchResults) {
@@ -144,19 +145,27 @@ class EventListContainer extends React.Component {
     this.setState(this._getNewState(nextProps));
   }
 
+  async setLocationAndSearch(formattedAddress: string) {
+    await this.props.detectedLocation(formattedAddress);
+    await this.props.performSearch(this.props.search.searchQuery);
+  }
+
   componentDidMount() {
     const highAccuracy = Platform.OS == 'ios';
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const address: Address = await Geocoder.reverseGeocodeLocation(position.coords);
         const formattedAddress = format(address[0]);
+        // Trigger this search without waiting around
         auth(null, {location: formattedAddress});
-        this.props.detectedLocation(formattedAddress);
+        // And likewise with our attempt to search
+        this.setLocationAndSearch(formattedAddress);
       },
       (error) => console.error('Error getting current position:', error.message),
       {enableHighAccuracy: highAccuracy, timeout: 5 * 1000, maximumAge: 60 * 1000}
     );
-    this.props.performSearch(this.props.search.searchQuery);
+    // TODO: Tie this search in with some attempt to pull in a saved search query
+    // this.props.performSearch(this.props.search.searchQuery);
   }
 
   onUpdateHeaderHeight(headerHeight: number) {

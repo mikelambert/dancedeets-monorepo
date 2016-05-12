@@ -32,7 +32,6 @@ export function detectedLocation(location: string): Action {
       type: 'DETECTED_LOCATION',
       location,
     });
-    await dispatch(searchStart());
   };
 }
 
