@@ -31,6 +31,10 @@ export class ProportionalImage extends React.Component {
     (this: any).onLayout = this.onLayout.bind(this);
   }
 
+  setNativeProps(nativeProps) {
+    this._root.setNativeProps(nativeProps);
+  }
+
   onLayout(e: SyntheticEvent) {
     const nativeEvent: any = e.nativeEvent;
     const layout = nativeEvent.layout;
@@ -52,6 +56,8 @@ export class ProportionalImage extends React.Component {
     return (
       <View
         onLayout={this.onLayout}
+        ref={component => this._root = component}
+        {...this.props}
         >
         <Image
           {...this.props}
