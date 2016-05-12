@@ -107,12 +107,12 @@ class EventListContainer extends React.Component {
     var sectionHeaders = [];
 
     if (results) {
-      if (results.onebox_links) {
+      if (results.onebox_links != null && results.onebox_links.length > 0) {
         const oneboxKey = 'Special Links';
         dataBlob[oneboxKey] = results.onebox_links.map((x) => x);
         sectionHeaders.push(oneboxKey);
       }
-      if (results.results) {
+      if (results.results != null && results.results.length > 0) {
         for (var e of results.results) {
           var start = moment(e.start_time, moment.ISO_8601);
           var formattedStart = dateFormatter(start.toDate());
