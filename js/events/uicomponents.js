@@ -162,6 +162,7 @@ class EventRsvp extends SubEventLine {
 class EventDescription extends React.Component {
   render() {
     return <AutoLink
+      linkStyle={eventStyles.rowLink}
       style={eventStyles.description}
       text={this.props.description}
       hashtag="instagram"
