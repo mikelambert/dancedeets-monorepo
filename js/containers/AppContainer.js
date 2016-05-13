@@ -15,6 +15,7 @@ import NavigationHeaderTitle from '../react-navigation';
 import EventListContainer from '../events/list';
 import { FullEventView } from '../events/uicomponents';
 import { navigatePush, navigatePop } from '../actions';
+import ZoomableImage from '../ZoomableImage';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
 import type { NavigationParentState, NavigationState } from 'NavigationTypeDefinition';
@@ -86,8 +87,16 @@ class AppContainer extends React.Component {
 			/>;
 		case 'EventView':
 			return <FullEventView
-				onFlyerSelected={(x) => {}}
+				onFlyerSelected={(event)=>this.props.onNavigate({key: 'FlyerView', image: event.cover.images[0].source,
+					width: event.cover.images[0].width,
+					height: event.cover.images[0].height,})}
 				event={navigationState.event}
+			/>;
+		case 'FlyerView':
+			return <ZoomableImage
+				url={navigationState.image}
+				width={navigationState.width}
+				height={navigationState.height}
 			/>;
 		}
 	}
