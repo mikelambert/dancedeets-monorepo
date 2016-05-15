@@ -33,6 +33,7 @@ const {
 import { auth } from '../api';
 import type { Address } from './formatAddress';
 import { format } from './formatAddress';
+import ProgressSpinner from '../ProgressSpinner';
 
 var en = new Globalize('en');
 
@@ -215,9 +216,12 @@ class EventListContainer extends React.Component {
 
   renderLoadingView() {
     return (
-      <Text style={styles.loading}>
-        Loading events...
-      </Text>
+      <View>
+        <Text style={styles.loading}>
+          Loading events...
+        </Text>
+        <ProgressSpinner />
+      </View>
     );
   }
 }
@@ -251,6 +255,7 @@ const styles = StyleSheet.create({
   loading: {
     color: 'white',
     textAlign: 'center',
+    marginBottom: 50,
   },
   sectionHeader: {
     height: 30,
