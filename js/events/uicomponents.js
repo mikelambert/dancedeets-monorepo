@@ -403,7 +403,6 @@ const eventStyles = StyleSheet.create({
   },
   rowTitle: {
     fontSize: 18,
-    fontWeight: '300',
   },
   rowDateTime: {
     color: '#C0FFC0',
