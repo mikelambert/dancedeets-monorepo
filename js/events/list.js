@@ -33,7 +33,7 @@ const {
 import { auth } from '../api';
 import type { Address } from './formatAddress';
 import { format } from './formatAddress';
-import ProgressSpinner from '../ProgressSpinner';
+import { ProgressSpinner } from '../ui';
 
 var en = new Globalize('en');
 
@@ -264,6 +264,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#222',
   },
   sectionHeaderText: {
+    fontFamily: 'Ubuntu',
     color: 'white',
     fontWeight: 'bold',
     fontSize: 15,

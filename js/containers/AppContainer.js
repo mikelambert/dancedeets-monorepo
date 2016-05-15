@@ -15,7 +15,7 @@ import NavigationHeaderTitle from '../react-navigation';
 import EventListContainer from '../events/list';
 import { FullEventView } from '../events/uicomponents';
 import { navigatePush, navigatePop } from '../actions';
-import ZoomableImage from '../ZoomableImage';
+import { ZoomableImage } from '../ui';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
 import type { NavigationParentState, NavigationState } from 'NavigationTypeDefinition';

@@ -16,7 +16,7 @@ type Props = {
   style?: any,
 };
 
-export class ProportionalImage extends React.Component {
+export default class ProportionalImage extends React.Component {
   props: Props;
 
   state: {

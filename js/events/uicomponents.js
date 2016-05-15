@@ -401,17 +401,20 @@ const eventStyles = StyleSheet.create({
   },
   rowTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '300',
+    fontFamily: 'Ubuntu',
     color: 'white',
   },
   rowDateTime: {
     color: '#C0FFC0',
+    fontFamily: 'Ubuntu',
   },
   rowLink: {
     color: linkColor,
   },
   rowText: {
     color: 'white',
+    fontFamily: 'Ubuntu',
   },
   shareIndent: {
     marginLeft: 37,
