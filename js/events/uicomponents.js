@@ -10,19 +10,21 @@ import React, {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 
 import querystring from 'querystring';
-import { ProportionalImage } from '../ui';
+import {
+  ProportionalImage,
+  Text,
+  AutoLink,
+} from '../ui';
 import { Event } from './models';
 import type { Venue } from './models';
 import MapView from 'react-native-maps';
 import { ShareButton } from 'react-native-fbsdk';
 import moment from 'moment';
-import AutoLink from 'react-native-autolink';
 import { linkColor } from '../Colors';
 
 const {
@@ -402,19 +404,14 @@ const eventStyles = StyleSheet.create({
   rowTitle: {
     fontSize: 18,
     fontWeight: '300',
-    fontFamily: 'Ubuntu',
-    color: 'white',
   },
   rowDateTime: {
     color: '#C0FFC0',
-    fontFamily: 'Ubuntu',
   },
   rowLink: {
     color: linkColor,
   },
   rowText: {
-    color: 'white',
-    fontFamily: 'Ubuntu',
   },
   shareIndent: {
     marginLeft: 37,
@@ -433,7 +430,6 @@ const eventStyles = StyleSheet.create({
     marginBottom: 20,
   },
   description: {
-    color: 'white',
     marginBottom: 20,
   },
   eventMap: {

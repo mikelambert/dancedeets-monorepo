@@ -6,11 +6,11 @@
 
 import React, {
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import LoginButton from './LoginButton';
+import { Text } from '../ui';
 
 
 export default class LoginButtonWithAlternate extends React.Component {

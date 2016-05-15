@@ -12,6 +12,7 @@ import React, {
 
 import { BlurView } from 'react-native-blur';
 import { connect } from 'react-redux';
+import { defaultFont } from '../ui';
 
 import {
   performSearch,
@@ -30,7 +31,7 @@ class SearchInput extends React.Component {
     const { style, ...otherProps } = { style: {}, ...this.props };
     return <TextInput {...otherProps}
       ref="textInput"
-      style={[style, styles.searchField]}
+      style={[style, styles.searchField, defaultFont]}
       placeholderTextColor="rgba(255, 255, 255, 0.5)"
       backgroundColor="rgba(255, 255, 255, 0.2)"
       keyboardAppearance="dark"

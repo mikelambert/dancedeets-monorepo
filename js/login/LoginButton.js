@@ -11,10 +11,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import React, {
   Image,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View
 } from 'react-native';
+import { Text } from '../ui';
 
 export default class LoginButton extends React.Component {
   props: {

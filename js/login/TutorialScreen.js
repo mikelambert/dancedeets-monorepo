@@ -8,12 +8,12 @@ import React, {
   Dimensions,
   Image,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import Carousel from 'react-native-carousel';
 import LinearGradient from 'react-native-linear-gradient';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
+import { Text } from '../ui';
 
 var PAGES = [
   'Page 0',

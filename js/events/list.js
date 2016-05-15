@@ -9,7 +9,6 @@ import React, {
   ListView,
   Platform,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -33,7 +32,10 @@ const {
 import { auth } from '../api';
 import type { Address } from './formatAddress';
 import { format } from './formatAddress';
-import { ProgressSpinner } from '../ui';
+import {
+  ProgressSpinner,
+  Text,
+} from '../ui';
 
 var en = new Globalize('en');
 

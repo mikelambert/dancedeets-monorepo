@@ -7,10 +7,10 @@
 import React, {
   Image,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
+import { Text } from '../ui';
 
 const NoLoginText =
 `Almost all our dance events are
