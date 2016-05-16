@@ -33,9 +33,9 @@ function normalize(size: number): number {
 }
 
 export const defaultFont = {
-    fontFamily: 'Ubuntu',
-    fontWeight: '300',
-    color: 'white',
+  fontFamily: 'Ubuntu',
+  fontWeight: '300',
+  color: 'white',
 };
 
 const styles = StyleSheet.create({
