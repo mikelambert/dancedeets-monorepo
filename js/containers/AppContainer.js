@@ -6,7 +6,8 @@
 
 'use strict';
 
-import React, { NavigationExperimental, StyleSheet, PropTypes } from 'react-native';
+import React from 'react';
+import { NavigationExperimental, StyleSheet, PropTypes } from 'react-native';
 import { connect } from 'react-redux';
 
 // My overrides

@@ -4,7 +4,8 @@
  * @flow
  */
 
-import React, {
+import React from 'react';
+import {
   Linking
 } from 'react-native';
 import { connect } from 'react-redux';

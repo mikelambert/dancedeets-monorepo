@@ -7,7 +7,8 @@
 
 'use strict';
 
-import React, {
+import React from 'react';
+import {
   AppState,
   StatusBar,
   StyleSheet,

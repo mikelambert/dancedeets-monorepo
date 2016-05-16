@@ -6,7 +6,7 @@
 
 'use strict';
 
-import React from 'react-native';
+import React from 'react';
 import LaunchScreen from './LaunchScreen';
 import OnboardingFlow from './OnboardingFlow';
 import { connect } from 'react-redux';

@@ -27,14 +27,15 @@
  */
 'use strict';
 
-import React from 'react-native';
+import React from 'react';
 
-const {
+import {
   Platform,
+  PropTypes,
   StyleSheet,
   View,
   Text,
-} = React;
+} from 'react-native';
 
 type Props = {
   children: ReactElement;
@@ -48,7 +49,7 @@ var NavigationHeaderTitle = ({ children, style, textStyle }: Props) => (
   </View>
 );
 NavigationHeaderTitle.propTypes = {
-  children: React.PropTypes.string.isRequired,
+  children: PropTypes.string.isRequired,
   style: View.propTypes.style,
   textStyle: Text.propTypes.style
 };

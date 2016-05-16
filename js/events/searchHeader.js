@@ -4,7 +4,8 @@
  * @flow
  */
 
-import React, {
+import React from 'react';
+import {
   StatusBar,
   StyleSheet,
   TextInput,

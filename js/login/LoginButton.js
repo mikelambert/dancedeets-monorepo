@@ -8,7 +8,8 @@
 
 import * as Colors from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
-import React, {
+import React from 'react';
+import {
   Image,
   StyleSheet,
   TouchableOpacity,
