@@ -13,7 +13,7 @@ import {Provider} from 'react-redux';
 import configureStore from '../store/configureStore';
 import Mixpanel from 'react-native-mixpanel';
 
-export default function setup(): React.Component {
+export default function setup(): Class<Object> {
   console.disableYellowBox = true;
 
   if (__DEV__) {
@@ -23,6 +23,11 @@ export default function setup(): React.Component {
   }
 
   class Root extends React.Component {
+    state: {
+      isLoading: boolean,
+      store: any,
+    };
+
     constructor() {
       super();
       this.state = {
@@ -30,6 +35,7 @@ export default function setup(): React.Component {
         store: configureStore(() => this.setState({isLoading: false})),
       };
     }
+
     render() {
       if (this.state.isLoading) {
         return null;

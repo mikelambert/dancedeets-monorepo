@@ -24,6 +24,8 @@ export default class ProportionalImage extends React.Component {
     style: {height: number} | {},
   };
 
+  _root: { setNativeProps(props: Object): void };
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -32,7 +34,7 @@ export default class ProportionalImage extends React.Component {
     (this: any).onLayout = this.onLayout.bind(this);
   }
 
-  setNativeProps(nativeProps) {
+  setNativeProps(nativeProps: Object) {
     this._root.setNativeProps(nativeProps);
   }
 
@@ -57,7 +59,7 @@ export default class ProportionalImage extends React.Component {
     return (
       <View
         onLayout={this.onLayout}
-        ref={component => this._root = component}
+        ref={function (component) { this._root = component; }}
         {...this.props}
         >
         <Image

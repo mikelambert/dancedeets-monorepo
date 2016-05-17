@@ -63,6 +63,8 @@
 .*/node_modules/jmespath/.*\.json
 .*/node_modules/fbjs-scripts/node_modules/js-tokens/test/fixtures/.*\.json
 .*/node_modules/protobufjs/src/.*\.json
+.*/node_modules/config-chain/test/broken.json
+.*/node_modules/npmconf/test/fixtures/package.json
 
 [include]
 
@@ -92,4 +94,4 @@ suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(2[0-0]\\|1[0-9]\\|[0-9
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixedInNextDeploy
 
 [version]
-0.23.0
+0.25.0

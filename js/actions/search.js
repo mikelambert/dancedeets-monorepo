@@ -6,7 +6,7 @@
 
 'use strict';
 
-import type { Action } from './types';
+import type { Action, ThunkAction } from './types';
 import type { SearchQuery, SearchResults } from '../events/search';
 import type { Dispatch } from '../actions/types';
 
@@ -26,7 +26,7 @@ export function performSearch(searchQuery: SearchQuery) {
   };
 }
 
-export function detectedLocation(location: string): Action {
+export function detectedLocation(location: string): ThunkAction {
   return async function(dispatch: Dispatch) {
     await dispatch({
       type: 'DETECTED_LOCATION',
