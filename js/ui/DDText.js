@@ -7,7 +7,8 @@
 
 'use strict';
 
-import React, {StyleSheet, Dimensions} from 'react-native';
+import React from 'react';
+import {StyleSheet, Dimensions} from 'react-native';
 import RealAutoLink from 'react-native-autolink';
 
 export function Text({style, ...props}: Object): ReactElement {
