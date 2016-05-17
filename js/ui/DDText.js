@@ -10,7 +10,7 @@
 import React from 'react';
 import {Text as RealText} from 'react-native';
 import {StyleSheet, Dimensions} from 'react-native';
-import {Autolink as RealAutolink} from 'react-native-autolink';
+import {default as RealAutolink} from 'react-native-autolink';
 
 export function Text({style, ...props}: Object): ReactElement {
   return <RealText style={[styles.font, styles.text, style]} {...props} />;
