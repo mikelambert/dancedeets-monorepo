@@ -1,7 +1,7 @@
 /**
  * Copyright 2016 DanceDeets.
  *
- * @providesModule F8Text
+ * @providesModule DDText
  * @flow
  */
 
