@@ -19,7 +19,7 @@ import querystring from 'querystring';
 import {
   ProportionalImage,
   Text,
-  AutoLink,
+  Autolink,
 } from '../ui';
 import { Event } from './models';
 import type { Venue } from './models';
@@ -94,7 +94,7 @@ class EventVenue extends SubEventLine {
   textRender() {
     var components = [];
     if (this.props.venue.name) {
-      components.push(<AutoLink
+      components.push(<Autolink
         key="line1"
         style={[eventStyles.rowText, this.props.style]}
         text={this.props.venue.name}
@@ -165,7 +165,7 @@ class EventRsvp extends SubEventLine {
 
 class EventDescription extends React.Component {
   render() {
-    return <AutoLink
+    return <Autolink
       linkStyle={eventStyles.rowLink}
       style={eventStyles.description}
       text={this.props.description}

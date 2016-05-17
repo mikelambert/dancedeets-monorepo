@@ -8,23 +8,24 @@
 'use strict';
 
 import React from 'react';
+import {Text as RealText} from 'react-native';
 import {StyleSheet, Dimensions} from 'react-native';
-import RealAutoLink from 'react-native-autolink';
+import {Autolink as RealAutolink} from 'react-native-autolink';
 
 export function Text({style, ...props}: Object): ReactElement {
-  return <React.Text style={[styles.font, styles.text, style]} {...props} />;
+  return <RealText style={[styles.font, styles.text, style]} {...props} />;
 }
 
 export function Heading1({style, ...props}: Object): ReactElement {
-  return <React.Text style={[styles.font, styles.h1, style]} {...props} />;
+  return <RealText style={[styles.font, styles.h1, style]} {...props} />;
 }
 
 export function Paragraph({style, ...props}: Object): ReactElement {
-  return <React.Text style={[styles.font, styles.p, style]} {...props} />;
+  return <RealText style={[styles.font, styles.p, style]} {...props} />;
 }
 
-export function AutoLink({style, ...props}: Object): ReactElement {
-  return <RealAutoLink style={[styles.font, style]} {...props} />;
+export function Autolink({style, ...props}: Object): ReactElement {
+  return <RealAutolink style={[styles.font, style]} {...props} />;
 }
 
 const scale = Dimensions.get('window').width / 375;
