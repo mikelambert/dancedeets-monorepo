@@ -13,7 +13,10 @@ import {
 
 import { BlurView } from 'react-native-blur';
 import { connect } from 'react-redux';
-import { defaultFont } from '../ui';
+import {
+  defaultFont,
+  Autocomplete
+} from '../ui';
 
 import {
   performSearch,
@@ -34,7 +37,7 @@ class SearchInput extends React.Component {
       ref="textInput"
       style={[style, styles.searchField, defaultFont]}
       placeholderTextColor="rgba(255, 255, 255, 0.5)"
-      backgroundColor="rgba(255, 255, 255, 0.2)"
+      //backgroundColor="rgba(255, 255, 255, 0.2)"
       keyboardAppearance="dark"
       selectTextOnFocus={true}
       autoCorrect={false}
@@ -65,10 +68,8 @@ class SearchHeader extends React.Component {
       style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]}
       blurType="dark"
     >
-      <SearchInput
+      <Autocomplete
         ref="location"
-        placeholder="Location"
-        returnKeyType="search"
         onChangeText={(text) => this.props.updateLocation(text)}
         onSubmitEditing={() => this.props.performSearch(this.props.searchQuery)}
         value={this.props.searchQuery.location}
@@ -128,6 +129,6 @@ const styles = StyleSheet.create({
     height: 30,
     flex: 1,
     margin: 3,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
 });
