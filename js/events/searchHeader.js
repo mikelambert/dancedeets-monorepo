@@ -96,15 +96,22 @@ const locations = [
 
 
 class SearchHeader extends React.Component {
+  state: {
+    height: number;
+  };
   constructor(props) {
     super(props);
+    this.state = {
+      height: 0,
+    };
     (this: any).onLayout = this.onLayout.bind(this);
   }
 
   onLayout(e: SyntheticEvent) {
     const nativeEvent: any = e.nativeEvent;
-    const layout = nativeEvent.layout;
-    this.props.onUpdateHeight(layout.height);
+    const height = nativeEvent.layout.height;
+    this.setState({height});
+    this.props.onUpdateHeight(height);
   }
 
   render() {
@@ -143,6 +150,7 @@ class SearchHeader extends React.Component {
       </BlurView>
       <AutocompleteList
         ref="location_autocomplete"
+        style={{top: this.state.height}}
         textValue={()=>this.props.searchQuery.location}
         onLocationSelected={(text) => {
           this.props.updateLocation(text);

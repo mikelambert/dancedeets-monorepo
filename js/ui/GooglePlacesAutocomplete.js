@@ -15,7 +15,6 @@ const defaultStyles = {
   listView: {
     position: 'absolute',
     backgroundColor: 'black',
-    top: 70,
     // flex: 1,
   },
   row: {
@@ -58,6 +57,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
 
 
   props: {
+    style: any,
     onLocationSelected: () => void,
     minLength: number,
     fetchDetails: boolean,
@@ -85,8 +85,8 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     },
     GoogleReverseGeocodingQuery: {
     },
-    styles: {
-    },
+    style: {},
+    styles: {},
     predefinedPlaces: [],
     currentLocation: true,
     currentLocationLabel: 'Current location',
@@ -362,18 +362,19 @@ export default class GooglePlacesAutocompleteList extends React.Component {
   }
 
   render() {
+    var {style, ...otherProps} = this.props;
     if ((this.props.textValue() !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
         <ListView
           scrollEnabled={false}
           keyboardShouldPersistTaps={true}
           keyboardDismissMode="on-drag"
-          style={[defaultStyles.listView, this.props.styles.listView]}
+          style={[defaultStyles.listView, this.props.styles.listView, style]}
           dataSource={this.state.dataSource}
           renderRow={this._renderRow}
           automaticallyAdjustContentInsets={false}
 
-          {...this.props}
+          {...otherProps}
         />
       );
     }
