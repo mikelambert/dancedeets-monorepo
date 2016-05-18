@@ -36,7 +36,7 @@ class SearchInput extends React.Component {
     const { style, ...otherProps } = { style: {}, ...this.props };
     return <TextInput {...otherProps}
       ref="textInput"
-      style={[style, styles.searchField, defaultFont]}
+      style={[style, styles.searchField, this.refs.textInput && this.refs.textInput.isFocused() ? styles.focusedField : {}, defaultFont]}
       placeholderTextColor="rgba(255, 255, 255, 0.5)"
       //backgroundColor="rgba(255, 255, 255, 0.2)"
       keyboardAppearance="dark"
@@ -44,6 +44,8 @@ class SearchInput extends React.Component {
       autoCorrect={false}
       autoCapitalize="none"
       clearButtonMode="while-editing"
+      onFocus={()=>{this.forceUpdate();}}
+      onBlur={()=>{this.forceUpdate();}}
     />;
   }
 
@@ -162,5 +164,8 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 3,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  focusedField: {
+    flex: 3,
   },
 });
