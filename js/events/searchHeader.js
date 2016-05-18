@@ -107,7 +107,11 @@ class SearchHeader extends React.Component {
       </BlurView>
       <AutocompleteList
         ref="location_autocomplete"
-        getTextValue={()=>this.props.searchQuery.location}
+        textValue={()=>this.props.searchQuery.location}
+        onLocationSelected={(text)=> {
+          this.props.updateLocation(text);
+          this.props.performSearch(this.props.searchQuery);
+        }}
         predefinedPlaces={locations}
       />
     </View>;

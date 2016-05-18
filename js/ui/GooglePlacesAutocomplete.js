@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import {TextInput, View, ListView, Image, TouchableHighlight, Platform, ActivityIndicatorIOS, ProgressBarAndroid} from 'react-native';
+import {View, ListView, TouchableHighlight, Platform, ActivityIndicatorIOS, ProgressBarAndroid} from 'react-native';
 import {Text} from './DDText';
 import Qs from 'qs';
 
@@ -15,6 +15,7 @@ const defaultStyles = {
   listView: {
     position: 'absolute',
     backgroundColor: 'black',
+    top: 70,
     // flex: 1,
   },
   row: {
@@ -52,7 +53,6 @@ type Result = {
 
 export default class GooglePlacesAutocompleteList extends React.Component {
   state: {
-    text: string,
     dataSource: ListView.DataSource,
     listViewDisplayed: boolean,
   };
@@ -64,15 +64,15 @@ export default class GooglePlacesAutocompleteList extends React.Component {
   props: {
     placeholder: string,
     onPress: () => void,
+    onLocationSelected: () => void,
     minLength: number,
     fetchDetails: boolean,
     autoFocus: boolean,
-    getDefaultValue: () => string,
+    textValue: () => string,
     timeout: number,
     onTimeout: () => void,
     query: Object,
     GoogleReverseGeocodingQuery: Object,
-    GooglePlacesSearchQuery: Object,
     styles: Object,
     textInputProps: Object,
     predefinedPlaces: [Result],
@@ -86,10 +86,11 @@ export default class GooglePlacesAutocompleteList extends React.Component {
   static defaultProps = {
     placeholder: 'Search',
     onPress: () => {},
+    onLocationSelected: (x) => {},
     minLength: 0,
     fetchDetails: false,
     autoFocus: false,
-    getDefaultValue: () => '',
+    textValue: () => '',
     timeout: 20000,
     onTimeout: () => console.warn('google places autocomplete: request timeout'),
     query: {
@@ -100,10 +101,6 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     },
     GoogleReverseGeocodingQuery: {
     },
-    GooglePlacesSearchQuery: {
-      rankby: 'distance',
-      types: 'food',
-    },
     styles: {
     },
     textInputProps: {},
@@ -111,7 +108,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     currentLocation: true,
     currentLocationLabel: 'Current location',
     nearbyPlacesAPI: 'GoogleReverseGeocoding',
-    filterReverseGeocodingByTypes: ['locality', 'administrative_area_level_3'],
+    filterReverseGeocodingByTypes: ['political', 'locality', 'administrative_area_level_3'],
     predefinedPlacesAlwaysVisible: false,
   };
 
@@ -125,7 +122,6 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       return r1 !== r2;
     }});
     this.state = {
-      text: this.props.getDefaultValue(),
       dataSource: ds.cloneWithRows(this.buildRowsFromResults([])),
       listViewDisplayed: false,
     };
@@ -230,7 +226,6 @@ export default class GooglePlacesAutocompleteList extends React.Component {
   }
 
   _onPress(rowData: Result) {
-    console.log("PRESSSSS!!!!!", rowData);
     if (rowData.isPredefinedPlace !== true && this.props.fetchDetails === true) {
       if (rowData.isLoading === true) {
         // already requesting
@@ -258,9 +253,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
             this._disableRowLoaders();
             this._onBlur();
 
-            this.setState({
-              text: rowData.description,
-            });
+            this.props.onLocationSelected(rowData.description);
 
             delete rowData.isLoading;
             this.props.onPress(rowData, details);
@@ -285,9 +278,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       this._enableRowLoader(rowData);
 
 
-      this.setState({
-        text: rowData.description,
-      });
+      //this.props.onLocationSelected(rowData.description);
       this.triggerBlur(); // hide keyboard but not the results
 
       delete rowData.isLoading;
@@ -295,9 +286,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       this.getCurrentLocation();
 
     } else {
-      this.setState({
-        text: rowData.description,
-      });
+      this.props.onLocationSelected(rowData.description);
 
       this._onBlur();
 
@@ -366,10 +355,14 @@ export default class GooglePlacesAutocompleteList extends React.Component {
             } else {
               results = responseJSON.results;
             }
+            if (results.length > 0) {
+              const result = results[0].formatted_address;
 
-            this.setState({
-              dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(results)),
-            });
+              this._onBlur();
+              this.props.onLocationSelected(result);
+
+              this.props.onPress(result);
+            }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
             console.warn('google places autocomplete: ' + responseJSON.error_message);
@@ -380,20 +373,12 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       };
 
       let url = '';
-      if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
-        // your key must be allowed to use Google Maps Geocoding API
-        url = 'https://maps.googleapis.com/maps/api/geocode/json?' + Qs.stringify({
-          latlng: latitude + ',' + longitude,
-          key: this.props.query.key,
-          ...this.props.GoogleReverseGeocodingQuery,
-        });
-      } else {
-        url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?' + Qs.stringify({
-          location: latitude + ',' + longitude,
-          key: this.props.query.key,
-          ...this.props.GooglePlacesSearchQuery,
-        });
-      }
+      // your key must be allowed to use Google Maps Geocoding API
+      url = 'https://maps.googleapis.com/maps/api/geocode/json?' + Qs.stringify({
+        latlng: latitude + ',' + longitude,
+        key: this.props.query.key,
+        ...this.props.GoogleReverseGeocodingQuery,
+      });
 
       request.open('GET', url);
       request.send();
@@ -444,9 +429,9 @@ export default class GooglePlacesAutocompleteList extends React.Component {
   onTextInputChangeText(text: string) {
     this._request(text);
     this.setState({
-      text: text,
       listViewDisplayed: true,
     });
+    this.props.onLocationSelected(text);
   }
 
   _getRowLoader() {
@@ -515,7 +500,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
   }
 
   render() {
-    if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
+    if ((this.props.textValue() !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
         <ListView
           keyboardShouldPersistTaps={true}
