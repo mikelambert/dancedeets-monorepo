@@ -278,7 +278,6 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       this._enableRowLoader(rowData);
 
 
-      //this.props.onLocationSelected(rowData.description);
       this.triggerBlur(); // hide keyboard but not the results
 
       delete rowData.isLoading;
@@ -431,7 +430,6 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     this.setState({
       listViewDisplayed: true,
     });
-    this.props.onLocationSelected(text);
   }
 
   _getRowLoader() {
@@ -503,6 +501,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     if ((this.props.textValue() !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
         <ListView
+          scrollEnabled={false}
           keyboardShouldPersistTaps={true}
           keyboardDismissMode="on-drag"
           style={[defaultStyles.listView, this.props.styles.listView]}
