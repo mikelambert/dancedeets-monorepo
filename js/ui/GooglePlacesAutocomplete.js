@@ -156,7 +156,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
   getCurrentLocation() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        this._requestNearby(position.coords.latitude, position.coords.longitude);
+        this._requestLocationName(position.coords.latitude, position.coords.longitude);
       },
       (error) => {
         this._disableRowLoaders();
@@ -258,7 +258,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     return new Promise(f.bind(this));
   }
 
-  _requestNearby(latitude: number, longitude: number) {
+  _requestLocationName(latitude: number, longitude: number) {
     this._abortRequests();
     if (latitude !== undefined && longitude !== undefined && latitude !== null && longitude !== null) {
       const url = 'https://maps.googleapis.com/maps/api/geocode/json?' + Qs.stringify({
@@ -273,7 +273,6 @@ export default class GooglePlacesAutocompleteList extends React.Component {
           results = this._filterResultsByTypes(responseJSON, this.props.filterReverseGeocodingByTypes);
           if (results.length > 0) {
             const result = results[0].formatted_address;
-
             this.props.onLocationSelected(result);
           }
         }
