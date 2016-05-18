@@ -42,13 +42,9 @@ const defaultStyles = {
 };
 
 type Result = {
-  description?: string;
-  formatted_address?: string;
-  name?: string;
+  description: string;
   isCurrentLocation?: boolean;
   isLoading?: boolean;
-  isPredefinedPlace?: boolean;
-  place_id?: string;
 };
 
 export default class GooglePlacesAutocompleteList extends React.Component {
@@ -132,13 +128,6 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       res = [];
     }
 
-    res = res.map(function(place) {
-      return {
-        ...place,
-        isPredefinedPlace: true,
-      };
-    });
-
     return [...res, ...results];
   }
 
@@ -170,7 +159,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
 
     let rows = this.buildRowsFromResults(this._results);
     for (let i = 0; i < rows.length; i++) {
-      if ((rows[i].place_id === rowData.place_id) || (rows[i].isCurrentLocation === true && rowData.isCurrentLocation === true)) {
+      if (rows[i].isCurrentLocation === true && rowData.isCurrentLocation === true) {
         rows[i].isLoading = true;
         this.setState({
           dataSource: this.state.dataSource.cloneWithRows(rows),
@@ -201,18 +190,6 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       this.props.onLocationSelected(rowData.description);
       delete rowData.isLoading;
     }
-  }
-
-  _getPredefinedPlace(rowData: Result) {
-    if (rowData.isPredefinedPlace !== true) {
-      return rowData;
-    }
-    for (let i = 0; i < this.props.predefinedPlaces.length; i++) {
-      if (this.props.predefinedPlaces[i].description === rowData.description) {
-        return this.props.predefinedPlaces[i];
-      }
-    }
-    return rowData;
   }
 
   _filterResultsByTypes(responseJSON: Object, types: [string]) {
@@ -297,6 +274,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       this.createRequest(url).then((responseJSON) => {
         if (typeof responseJSON.predictions !== 'undefined') {
           this._results = responseJSON.predictions;
+          console.log(responseJSON.predictions);
           this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(responseJSON.predictions)),
           });
@@ -350,8 +328,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     return null;
   }
 
-  _renderRow(rowData: Result = {}) {
-    rowData.description = rowData.description || rowData.formatted_address || rowData.name;
+  _renderRow(rowData: Result) {
 
     return (
       <TouchableHighlight
@@ -361,9 +338,9 @@ export default class GooglePlacesAutocompleteList extends React.Component {
         underlayColor="#c8c7cc"
       >
         <View>
-          <View style={[defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
+          <View style={[defaultStyles.row, this.props.styles.row]}>
             <Text
-              style={[{flex: 1}, defaultStyles.description, this.props.styles.description, rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {}]}
+              style={[{flex: 1}, defaultStyles.description, this.props.styles.description]}
               numberOfLines={1}
             >
               {rowData.description}

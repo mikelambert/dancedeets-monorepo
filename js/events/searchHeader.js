@@ -147,7 +147,6 @@ class SearchHeader extends React.Component {
         onLocationSelected={(text) => {
           this.props.updateLocation(text);
           this.props.performSearch(this.props.searchQuery);
-          console.log(this.refs);
           this.refs.location.blur();
         }}
         predefinedPlaces={locations}
