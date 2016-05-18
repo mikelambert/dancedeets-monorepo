@@ -60,8 +60,18 @@ class SearchInput extends React.Component {
       autoCorrect={false}
       autoCapitalize="none"
       clearButtonMode="while-editing"
-      onFocus={this.animatedRelayout}
-      onBlur={this.animatedRelayout}
+      onFocus={() => {
+        this.animatedRelayout();
+        if (this.props.onFocus) {
+          this.props.onFocus();
+        }
+      }}
+      onBlur={() => {
+        this.animatedRelayout();
+        if (this.props.onBlur) {
+          this.props.onBlur();
+        }
+      }}
     />;
   }
 
@@ -109,6 +119,9 @@ class SearchHeader extends React.Component {
           }}
           onFocus={() => {
             this.refs.location_autocomplete.onTextInputFocus();
+          }}
+          onBlur={() => {
+            this.refs.location_autocomplete.onTextInputBlur();
           }}
           onSubmitEditing={() => this.props.performSearch(this.props.searchQuery)}
           value={this.props.searchQuery.location}

@@ -251,7 +251,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
           if (responseJSON.status === 'OK') {
             const details = responseJSON.result;
             this._disableRowLoaders();
-            this._onBlur();
+            this.onTextInputBlur();
 
             this.props.onLocationSelected(rowData.description);
 
@@ -287,7 +287,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     } else {
       this.props.onLocationSelected(rowData.description);
 
-      this._onBlur();
+      this.onTextInputBlur();
 
       delete rowData.isLoading;
 
@@ -357,7 +357,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
             if (results.length > 0) {
               const result = results[0].formatted_address;
 
-              this._onBlur();
+              this.onTextInputBlur();
               this.props.onLocationSelected(result);
 
               this.props.onPress(result);
@@ -488,7 +488,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     );
   }
 
-  _onBlur() {
+  onTextInputBlur() {
     this.triggerBlur();
     this.setState({listViewDisplayed: false});
   }
