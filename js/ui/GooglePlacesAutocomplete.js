@@ -197,7 +197,7 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       return responseJSON.results;
     }
 
-    var results: [Result] = [];
+    var results: [Object] = [];
     for (let i = 0; i < responseJSON.results.length; i++) {
       let found = false;
       for (let j = 0; j < types.length; j++) {
