@@ -29,15 +29,22 @@ import {
 
 
 class SearchInput extends React.Component {
+  state: {
+    focused: boolean,
+  };
+
   constructor(props) {
     super(props);
     (this: any).focus = this.focus.bind(this);
     (this: any).animatedRelayout = this.animatedRelayout.bind(this);
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+    this.state = {
+      focused: false,
+    };
   }
 
   animatedRelayout() {
-    this.forceUpdate();
+    this.setState({focused: this.refs.textInput.isFocused()});
     LayoutAnimation.easeInEaseOut();
   }
 
@@ -45,7 +52,7 @@ class SearchInput extends React.Component {
     const { style, ...otherProps } = { style: {}, ...this.props };
     return <TextInput {...otherProps}
       ref="textInput"
-      style={[style, styles.searchField, this.refs.textInput && this.refs.textInput.isFocused() ? styles.focusedField : {}, defaultFont]}
+      style={[style, styles.searchField, this.state.focused ? styles.focusedField : {}, defaultFont]}
       placeholderTextColor="rgba(255, 255, 255, 0.5)"
       //backgroundColor="rgba(255, 255, 255, 0.2)"
       keyboardAppearance="dark"
