@@ -6,6 +6,8 @@
 
 import React from 'react';
 import {
+  UIManager,
+  LayoutAnimation,
   StatusBar,
   StyleSheet,
   TextInput,
@@ -30,6 +32,13 @@ class SearchInput extends React.Component {
   constructor(props) {
     super(props);
     (this: any).focus = this.focus.bind(this);
+    (this: any).animatedRelayout = this.animatedRelayout.bind(this);
+    UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+
+  animatedRelayout() {
+    this.forceUpdate();
+    LayoutAnimation.easeInEaseOut();
   }
 
   render() {
@@ -44,8 +53,8 @@ class SearchInput extends React.Component {
       autoCorrect={false}
       autoCapitalize="none"
       clearButtonMode="while-editing"
-      onFocus={()=>{this.forceUpdate();}}
-      onBlur={()=>{this.forceUpdate();}}
+      onFocus={this.animatedRelayout}
+      onBlur={this.animatedRelayout}
     />;
   }
 
