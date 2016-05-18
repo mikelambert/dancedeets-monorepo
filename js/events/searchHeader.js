@@ -9,13 +9,14 @@ import {
   StatusBar,
   StyleSheet,
   TextInput,
+  View,
 } from 'react-native';
 
 import { BlurView } from 'react-native-blur';
 import { connect } from 'react-redux';
 import {
   defaultFont,
-  Autocomplete
+  AutocompleteList
 } from '../ui';
 
 import {
@@ -42,6 +43,7 @@ class SearchInput extends React.Component {
       selectTextOnFocus={true}
       autoCorrect={false}
       autoCapitalize="none"
+      clearButtonMode="while-editing"
     />;
   }
 
@@ -49,6 +51,16 @@ class SearchInput extends React.Component {
     this.refs.textInput.focus();
   }
 }
+
+const locations = [
+  {description: 'New York City', geometry: { location: { lat: 40.7058254, lng: -74.1180861 } }},
+  {description: 'Los Angeles', geometry: { location: { lat: 34.0207504, lng: -118.691914 } }},
+  {description: 'Paris', geometry: { location: { lat: 48.8589101, lng: 2.3125376 } }},
+  {description: 'Tokyo', geometry: { location: { lat: 35.6735408, lng: 139.5703049 } }},
+  {description: 'Osaka', geometry: { location: { lat: 34.678434, lng: 135.4776404 } }},
+  {description: 'Taipei', geometry: { location: { lat: 25.0855451, lng: 121.4932093 } }},
+];
+
 
 class SearchHeader extends React.Component {
   constructor(props) {
@@ -63,26 +75,42 @@ class SearchHeader extends React.Component {
   }
 
   render() {
-    return <BlurView
-      onLayout={this.onLayout}
-      style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]}
-      blurType="dark"
-    >
-      <Autocomplete
-        ref="location"
-        onChangeText={(text) => this.props.updateLocation(text)}
-        onSubmitEditing={() => this.props.performSearch(this.props.searchQuery)}
-        value={this.props.searchQuery.location}
+    return <View style={{flex: 1,top:0, left:0, right:0,position: 'absolute'}}>
+      <BlurView
+        onLayout={this.onLayout}
+        style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]}
+        blurType="dark"
+      >
+        <SearchInput
+          ref="location"
+          placeholder="Location"
+          returnKeyType="search"
+          onChangeText={(text) => {
+            this.props.updateLocation(text);
+            this.refs.location_autocomplete.onTextInputChangeText(text);
+          }}
+          onFocus={() => {
+            this.refs.location_autocomplete.onTextInputFocus();
+          }}
+          onSubmitEditing={() => this.props.performSearch(this.props.searchQuery)}
+          value={this.props.searchQuery.location}
+        />
+        <SearchInput
+          ref="keywords"
+          placeholder="Keywords"
+          returnKeyType="search"
+          onChangeText={(text) => this.props.updateKeywords(text)}
+          onSubmitEditing={() => this.props.performSearch(this.props.searchQuery)}
+          value={this.props.searchQuery.keywords}
+        />
+
+      </BlurView>
+      <AutocompleteList
+        ref="location_autocomplete"
+        getTextValue={()=>this.props.searchQuery.location}
+        predefinedPlaces={locations}
       />
-      <SearchInput
-        ref="keywords"
-        placeholder="Keywords"
-        returnKeyType="search"
-        onChangeText={(text) => this.props.updateKeywords(text)}
-        onSubmitEditing={() => this.props.performSearch(this.props.searchQuery)}
-        value={this.props.searchQuery.keywords}
-      />
-    </BlurView>;
+    </View>;
   }
 }
 

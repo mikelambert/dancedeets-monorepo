@@ -14,6 +14,7 @@ const defaultStyles = {
   },
   listView: {
     position: 'absolute',
+    backgroundColor: 'black',
     // flex: 1,
   },
   row: {
@@ -26,6 +27,7 @@ const defaultStyles = {
     backgroundColor: '#c8c7cc',
   },
   description: {
+    color: 'white',
   },
   loader: {
     // flex: 1,
@@ -48,11 +50,7 @@ type Result = {
   place_id?: string;
 };
 
-class AutocompleteList extends React.Component {
-
-};
-
-export class GooglePlacesAutocomplete extends React.Component {
+export default class GooglePlacesAutocompleteList extends React.Component {
   state: {
     text: string,
     dataSource: ListView.DataSource,
@@ -95,9 +93,10 @@ export class GooglePlacesAutocomplete extends React.Component {
     timeout: 20000,
     onTimeout: () => console.warn('google places autocomplete: request timeout'),
     query: {
-      key: 'missing api key',
-      language: 'en',
-      types: 'geocode',
+      key: 'AIzaSyDEHGAeT9NkW-CvcaDMLbz4B6-abdvPi4I',
+      language: 'en', // language of the results
+      types: '(regions)', // default: 'geocode'
+      //types: 'geocode',
     },
     GoogleReverseGeocodingQuery: {
     },
@@ -109,10 +108,10 @@ export class GooglePlacesAutocomplete extends React.Component {
     },
     textInputProps: {},
     predefinedPlaces: [],
-    currentLocation: false,
+    currentLocation: true,
     currentLocationLabel: 'Current location',
-    nearbyPlacesAPI: 'GooglePlacesSearch',
-    filterReverseGeocodingByTypes: [],
+    nearbyPlacesAPI: 'GoogleReverseGeocoding',
+    filterReverseGeocodingByTypes: ['locality', 'administrative_area_level_3'],
     predefinedPlacesAlwaysVisible: false,
   };
 
@@ -130,9 +129,9 @@ export class GooglePlacesAutocomplete extends React.Component {
       dataSource: ds.cloneWithRows(this.buildRowsFromResults([])),
       listViewDisplayed: false,
     };
-    (this: any)._onFocus = this._onFocus.bind(this);
+    (this: any).onTextInputFocus = this.onTextInputFocus.bind(this);
     (this: any)._onPress = this._onPress.bind(this);
-    (this: any)._onChangeText = this._onChangeText.bind(this);
+    (this: any).onTextInputChangeText = this.onTextInputChangeText.bind(this);
     (this: any)._renderRow = this._renderRow.bind(this);
   }
 
@@ -442,7 +441,7 @@ export class GooglePlacesAutocomplete extends React.Component {
     }
   }
 
-  _onChangeText(text: string) {
+  onTextInputChangeText(text: string) {
     this._request(text);
     this.setState({
       text: text,
@@ -511,11 +510,11 @@ export class GooglePlacesAutocomplete extends React.Component {
     this.setState({listViewDisplayed: false});
   }
 
-  _onFocus() {
+  onTextInputFocus() {
     this.setState({listViewDisplayed: true});
   }
 
-  _getListView() {
+  render() {
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
         <ListView
@@ -532,27 +531,5 @@ export class GooglePlacesAutocomplete extends React.Component {
     }
 
     return null;
-  }
-
-  render() {
-    let { onChangeText, onFocus, ...userProps } = this.props.textInputProps;
-    return (
-      <View
-        style={[{flex: 1}, this.props.styles.container]}
-      >
-        <TextInput
-          { ...userProps }
-          ref="textInput"
-          autoFocus={this.props.autoFocus}
-          style={[defaultStyles.textInput, this.props.styles.textInput]}
-          onChangeText={onChangeText ? text => {this._onChangeText(text); onChangeText(text);} : this._onChangeText}
-          value={this.state.text}
-          placeholder={this.props.placeholder}
-          onFocus={onFocus ? () => {this._onFocus(); onFocus();} : this._onFocus}
-          clearButtonMode="while-editing"
-        />
-        {this._getListView()}
-      </View>
-    );
   }
 }
