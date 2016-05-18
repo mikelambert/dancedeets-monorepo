@@ -62,32 +62,24 @@ export default class GooglePlacesAutocompleteList extends React.Component {
 
 
   props: {
-    placeholder: string,
-    onPress: () => void,
     onLocationSelected: () => void,
     minLength: number,
     fetchDetails: boolean,
-    autoFocus: boolean,
     textValue: () => string,
     query: Object,
     GoogleReverseGeocodingQuery: Object,
     styles: Object,
-    textInputProps: Object,
     predefinedPlaces: [Result],
     currentLocation: boolean,
     currentLocationLabel: string,
-    nearbyPlacesAPI: string,
     filterReverseGeocodingByTypes: [string],
     predefinedPlacesAlwaysVisible: boolean,
   };
 
   static defaultProps = {
-    placeholder: 'Search',
-    onPress: () => {},
     onLocationSelected: (x) => {},
     minLength: 0,
     fetchDetails: false,
-    autoFocus: false,
     textValue: () => '',
     query: {
       key: 'AIzaSyDEHGAeT9NkW-CvcaDMLbz4B6-abdvPi4I',
@@ -99,11 +91,9 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     },
     styles: {
     },
-    textInputProps: {},
     predefinedPlaces: [],
     currentLocation: true,
     currentLocationLabel: 'Current location',
-    nearbyPlacesAPI: 'GoogleReverseGeocoding',
     filterReverseGeocodingByTypes: ['political', 'locality', 'administrative_area_level_3'],
     predefinedPlacesAlwaysVisible: false,
   };
@@ -163,26 +153,6 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     this._requests = [];
   }
 
-  /**
-   * This method is exposed to parent components to focus on textInput manually.
-   * @public
-   */
-  triggerFocus() {
-    if (this.refs.textInput) {
-      this.refs.textInput.focus();
-    }
-  }
-
-  /**
-   * This method is exposed to parent components to blur textInput manually.
-   * @public
-   */
-  triggerBlur() {
-    if (this.refs.textInput) {
-      this.refs.textInput.blur();
-    }
-  }
-
   getCurrentLocation() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -222,63 +192,14 @@ export default class GooglePlacesAutocompleteList extends React.Component {
   }
 
   _onPress(rowData: Result) {
-    if (rowData.isPredefinedPlace !== true && this.props.fetchDetails === true) {
-      if (rowData.isLoading === true) {
-        // already requesting
-        return;
-      }
-
-      this._abortRequests();
-
+    if (rowData.isCurrentLocation === true) {
       // display loader
       this._enableRowLoader(rowData);
-
-      // fetch details
-      const url = 'https://maps.googleapis.com/maps/api/place/details/json?' + Qs.stringify({
-        key: this.props.query.key,
-        placeid: rowData.place_id,
-        language: this.props.query.language,
-      });
-      this.createRequest(url).then((responseJSON) => {
-        if (responseJSON.status === 'OK') {
-          const details = responseJSON.result;
-          this._disableRowLoaders();
-          this.onTextInputBlur();
-
-          this.props.onLocationSelected(rowData.description);
-
-          delete rowData.isLoading;
-          this.props.onPress(rowData, details);
-        } else {
-          this._disableRowLoaders();
-          console.warn('google places autocomplete: ' + responseJSON.status);
-        }
-      }).catch(() => {
-        this._disableRowLoaders();
-      });
-    } else if (rowData.isCurrentLocation === true) {
-
-      // display loader
-      this._enableRowLoader(rowData);
-
-
-      this.triggerBlur(); // hide keyboard but not the results
-
       delete rowData.isLoading;
-
       this.getCurrentLocation();
-
     } else {
       this.props.onLocationSelected(rowData.description);
-
-      this.onTextInputBlur();
-
       delete rowData.isLoading;
-
-      let predefinedPlace = this._getPredefinedPlace(rowData);
-
-      // sending predefinedPlace as details for predefined places
-      this.props.onPress(predefinedPlace, predefinedPlace);
     }
   }
 
@@ -349,18 +270,11 @@ export default class GooglePlacesAutocompleteList extends React.Component {
         this._disableRowLoaders();
         if (typeof responseJSON.results !== 'undefined') {
           var results = [];
-          if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
-            results = this._filterResultsByTypes(responseJSON, this.props.filterReverseGeocodingByTypes);
-          } else {
-            results = responseJSON.results;
-          }
+          results = this._filterResultsByTypes(responseJSON, this.props.filterReverseGeocodingByTypes);
           if (results.length > 0) {
             const result = results[0].formatted_address;
 
-            this.onTextInputBlur();
             this.props.onLocationSelected(result);
-
-            this.props.onPress(result);
           }
         }
         if (typeof responseJSON.error_message !== 'undefined') {
@@ -464,7 +378,6 @@ export default class GooglePlacesAutocompleteList extends React.Component {
   }
 
   onTextInputBlur() {
-    this.triggerBlur();
     this.setState({listViewDisplayed: false});
   }
 

@@ -36,6 +36,7 @@ class SearchInput extends React.Component {
   constructor(props) {
     super(props);
     (this: any).focus = this.focus.bind(this);
+    (this: any).blur = this.blur.bind(this);
     (this: any).animatedRelayout = this.animatedRelayout.bind(this);
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
     this.state = {
@@ -73,6 +74,10 @@ class SearchInput extends React.Component {
         }
       }}
     />;
+  }
+
+  blur() {
+    this.refs.textInput.blur();
   }
 
   focus() {
@@ -139,9 +144,11 @@ class SearchHeader extends React.Component {
       <AutocompleteList
         ref="location_autocomplete"
         textValue={()=>this.props.searchQuery.location}
-        onLocationSelected={(text)=> {
+        onLocationSelected={(text) => {
           this.props.updateLocation(text);
           this.props.performSearch(this.props.searchQuery);
+          console.log(this.refs);
+          this.refs.location.blur();
         }}
         predefinedPlaces={locations}
       />
