@@ -18,7 +18,7 @@ import SegmentedControlAndroid from 'react-native-segmented-android';
 type Props = {
   values: [string],
   defaultIndex: number,
-  onChange: (index: number) => void,
+  onChange: (index: number, oldIndex: number) => void,
   tintColor: string,
   style: any,
 };
@@ -33,7 +33,7 @@ export default class SegmentedControl extends React.Component {
   static defaultProps = {
     values: [],
     defaultIndex: -1,
-    onChange: () => {},
+    onChange: (index, oldIndex) => {},
     tintColor: 'blue',
     style: {},
   };
@@ -46,10 +46,16 @@ export default class SegmentedControl extends React.Component {
     };
   }
 
-  onChange(index: number) {
+  async onChange(index: number) {
+    const oldIndex = this.state.selectedIndex;
     this.setState({selectedIndex: index});
     if (this.props.onChange) {
-      this.props.onChange(index);
+      try {
+        await this.props.onChange(index, oldIndex);
+      } catch (error) {
+        console.warn('Undoing SegmentedControl due to rrror setting RSVP:', error);
+        this.setState({selectedIndex: oldIndex});
+      }
     }
   }
 

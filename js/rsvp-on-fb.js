@@ -20,25 +20,21 @@ export default class RsvpOnFB {
   }
 
   async send() {
-    console.log('a');
     try {
-    console.log('b');
       const result = await this.sendRsvp();
-      console.log('success', result);
+      return result;
     } catch (error) {
       console.log('error', error);
       if (error.code === '403') {
-        try {
-          const result = await LoginManager.logInWithPublishPermissions(['rsvp_event']);
-          if (result.isCancelled) {
-            console.log('canceled!'); // TODO: we need to undo the segmented control!??
-          } else {
-            // try again!
-            return this.send();
-          }
-        } catch (error2) {
-          console.log('error 2', error2);
+        const result = await LoginManager.logInWithPublishPermissions(['rsvp_event']);
+        if (result.isCancelled) {
+          throw 'Request for RSVP Permission was Cancelled';
+        } else {
+          // try again!
+          return this.send();
         }
+      } else {
+        throw error;
       }
     }
   }

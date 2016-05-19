@@ -156,8 +156,9 @@ class EventRsvp extends SubEventLine {
     return require('./images/attending.png');
   }
 
-  onRsvpChange(index: number) {
-    new RsvpOnFB(this.props.event.id, EventRsvp.RSVPs[index].apiValue).send();
+  async onRsvpChange(index: number, oldIndex: number) {
+    const rsvpManager = new RsvpOnFB(this.props.event.id, EventRsvp.RSVPs[index].apiValue);
+    await rsvpManager.send();
   }
 
   textRender() {
