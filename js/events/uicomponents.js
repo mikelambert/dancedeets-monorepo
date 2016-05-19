@@ -62,7 +62,7 @@ class EventCategories extends SubEventLine {
     if (this.props.categories.length > 0) {
       return <Text
         numberOfLines={1}
-        style={eventStyles.rowText}
+        style={eventStyles.detailText}
         >({this.props.categories.slice(0,8).join(', ')})</Text>;
     } else {
       return null;
@@ -80,7 +80,7 @@ class EventDateTime extends SubEventLine {
     var formattedStart = dateFormatter(start.toDate());
 
     if (this.props.start) {
-      return <Text style={eventStyles.rowDateTime}>{formattedStart}</Text>;
+      return <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{formattedStart}</Text>;
     } else {
       return null;
     }
@@ -96,14 +96,14 @@ class EventVenue extends SubEventLine {
     if (this.props.venue.name) {
       components.push(<Autolink
         key="line1"
-        style={[eventStyles.rowText, this.props.style]}
+        style={[eventStyles.detailText, this.props.style]}
         text={this.props.venue.name}
         />);
     }
     if (this.props.venue.address) {
       components.push(<Text
         key="line2"
-        style={[eventStyles.rowText, this.props.style]}
+        style={[eventStyles.detailText, this.props.style]}
       >{this.props.venue.address.city + ', ' + this.props.venue.address.country}</Text>);
     }
     return <View>{components}</View>;
@@ -125,9 +125,9 @@ class EventSource extends SubEventLine {
     if (this.props.source) {
       return (
         <View style={{flexDirection: 'row'}}>
-          <Text style={eventStyles.rowText}>Source: </Text>
+          <Text style={eventStyles.detailText}>Source: </Text>
           <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
-            <Text style={eventStyles.rowLink}>{this.props.source.name}</Text>
+            <Text style={eventStyles.detailText, eventStyles.rowLink}>{this.props.source.name}</Text>
           </TouchableOpacity>
         </View>
       );
@@ -155,7 +155,7 @@ class EventRsvp extends SubEventLine {
       }
       const counts = components.join(', ');
       return (
-        <Text style={eventStyles.rowText}>{counts}</Text>
+        <Text style={eventStyles.detailText}>{counts}</Text>
       );
     } else {
       return null;
@@ -386,6 +386,8 @@ export class FullEventView extends React.Component {
   }
 }
 
+const detailHeight = 16;
+
 const eventStyles = StyleSheet.create({
   thumbnail: {
     flex: 1,
@@ -412,20 +414,21 @@ const eventStyles = StyleSheet.create({
   rowLink: {
     color: linkColor,
   },
-  rowText: {
+  detailText: {
+    fontSize: detailHeight,
   },
   shareIndent: {
-    marginLeft: 37,
   },
   detailLine: {
     marginLeft: 20,
     flexDirection: 'row',
+    marginBottom: 10,
   },
   detailIcon: {
     marginTop: 2,
     marginRight: 5,
-    height: 12,
-    width: 12,
+    height: detailHeight,
+    width: detailHeight,
   },
   eventIndent: {
     marginBottom: 20,
