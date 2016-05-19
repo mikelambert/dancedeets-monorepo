@@ -5,16 +5,23 @@
  */
 
 import {
+  AccessToken,
   GraphRequest,
   GraphRequestManager,
   LoginManager,
 } from 'react-native-fbsdk';
 
 export default class RsvpOnFB {
+  static RSVPs = [
+    { text: 'Going', apiValue: 'attending' },
+    { text: 'Interested', apiValue: 'maybe' },
+    { text: 'Not Interested', apiValue: 'declined' },
+  ];
 
   async send(eventId: string, rsvpApiValue: string) {
     try {
-      const result = await this.sendRsvp(eventId, rsvpApiValue);
+      const path = '/' + eventId + '/' + rsvpApiValue;
+      const result = await this.sendRequest('POST', path);
       return result;
     } catch (error) {
       if (error.code === '403') {
@@ -31,11 +38,11 @@ export default class RsvpOnFB {
     }
   }
 
-  sendRsvp(eventId: string, rsvpApiValue: string) {
-    const f = function (resolve, reject) {
-      const rsvpRequest = new GraphRequest(
-        '/' + eventId + '/' + rsvpApiValue,
-        {httpMethod: 'POST'},
+  sendRequest(method: string, path: string) {
+    return new Promise((resolve, reject) => {
+      const request = new GraphRequest(
+        path,
+        {httpMethod: method},
         function(error: ?Object, result: ?Object) {
           if (error) {
             reject(error);
@@ -44,12 +51,38 @@ export default class RsvpOnFB {
           }
         }
       );
-      new GraphRequestManager().addRequest(rsvpRequest).start();
-    };
-    return new Promise(f.bind(this));
+      new GraphRequestManager().addRequest(request).start();
+    });
+  }
+
+  sendRsvpRequests(eventId: string) {
+    return new Promise(async (resolve, reject) => {
+      const accessToken = await AccessToken.getCurrentAccessToken();
+      if (accessToken == null) {
+        throw new Error('No access token');
+      }
+      const graphManager = new GraphRequestManager();
+      RsvpOnFB.RSVPs.forEach((x) => {
+        const path = '/' + eventId + '/' + x.apiValue + '/' + accessToken.userID;
+        const request = new GraphRequest(
+          path,
+          null,
+          function(error: ?Object, result: ?Object) {
+            if (error) {
+              reject(error);
+            } else if (result && result.data.length > 0) {
+              resolve(x.apiValue);
+            }
+          }
+        );
+        graphManager.addRequest(request);
+      });
+      graphManager.start();
+    });
   }
 
   async get(eventId: string) {
-    return 'maybe';
+    const result = await this.sendRsvpRequests(eventId);
+    return result;
   }
 }

@@ -39,6 +39,7 @@ const {
 var en = new Globalize('en');
 
 class SubEventLine extends React.Component {
+
   icon() {
     throw ('Not Implemented!');
   }
@@ -141,12 +142,6 @@ class EventSource extends SubEventLine {
 }
 
 class EventRsvp extends SubEventLine {
-  static RSVPs = [
-    { text: 'Going', apiValue: 'attending' },
-    { text: 'Interested', apiValue: 'maybe' },
-    { text: 'Not Interested', apiValue: 'declined' },
-  ];
-
   state: {
     defaultRsvp: number,
   };
@@ -162,8 +157,8 @@ class EventRsvp extends SubEventLine {
   async loadRsvp() {
     const rsvp = await new RsvpOnFB().get(this.props.event.id);
     var rsvpIndex = -1;
-    for (var i = 0; i < EventRsvp.RSVPs.length; i++) {
-      if (EventRsvp.RSVPs[i].apiValue === rsvp) {
+    for (var i = 0; i < RsvpOnFB.RSVPs.length; i++) {
+      if (RsvpOnFB.RSVPs[i].apiValue === rsvp) {
         rsvpIndex = i;
       }
     }
@@ -179,7 +174,7 @@ class EventRsvp extends SubEventLine {
   }
 
   async onRsvpChange(index: number, oldIndex: number) {
-    const rsvp = EventRsvp.RSVPs[index].apiValue;
+    const rsvp = RsvpOnFB.RSVPs[index].apiValue;
     // We await on this, so exceptions are propagated up (and segmentedControl can undo actions)
     await new RsvpOnFB().send(this.props.event.id, rsvp);
     console.log('Successfully RSVPed as ' + rsvp + ' to event ' + this.props.event.id);
@@ -200,7 +195,7 @@ class EventRsvp extends SubEventLine {
       if (this.state.defaultRsvp !== -1) {
         rsvpForEvent = <SegmentedControl
           refs="segmentedControl"
-          values={EventRsvp.RSVPs.map((x)=>x.text)}
+          values={RsvpOnFB.RSVPs.map((x)=>x.text)}
           defaultIndex={this.state.defaultRsvp}
           tintColor="#ffffff"
           style={{marginTop: 5}}
