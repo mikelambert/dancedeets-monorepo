@@ -10,42 +10,6 @@ import {Text} from './DDText';
 import Qs from 'qs';
 import emojiFlags from 'emoji-flags';
 
-const defaultStyles = {
-  textInput: {
-  },
-  listView: {
-    position: 'absolute',
-    backgroundColor: '#333',
-    // flex: 1,
-    left: 0,
-    right: 0,
-  },
-  row: {
-    padding: 13,
-    height: 44,
-    flexDirection: 'row',
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#c8c7cc',
-  },
-  description: {
-    color: 'white',
-  },
-  loader: {
-    // flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    height: 20,
-  },
-  androidLoader: {
-    marginRight: -15,
-  },
-  flag: {
-    width: 30,
-  }
-};
-
 type Result = {
   description: string;
   isCurrentLocation?: boolean;
@@ -53,7 +17,7 @@ type Result = {
   flag?: string;
 };
 
-export default class GooglePlacesAutocompleteList extends React.Component {
+export default class AutocompleteList extends React.Component {
   state: {
     dataSource: ListView.DataSource,
     listViewDisplayed: boolean,
@@ -64,14 +28,14 @@ export default class GooglePlacesAutocompleteList extends React.Component {
 
 
   props: {
-    style: any,
+    style: Object, // style for ListView
+    styles: Object, // styles for subcomponents
     onLocationSelected: () => void,
     minLength: number,
     fetchDetails: boolean,
     textValue: () => string,
     query: Object,
     GoogleReverseGeocodingQuery: Object,
-    styles: Object,
     predefinedPlaces: [Result],
     currentLocation: boolean,
     currentLocationLabel: string,
@@ -400,3 +364,39 @@ export default class GooglePlacesAutocompleteList extends React.Component {
     return null;
   }
 }
+
+const defaultStyles = {
+  textInput: {
+  },
+  listView: {
+    position: 'absolute',
+    backgroundColor: '#333',
+    // flex: 1,
+    left: 0,
+    right: 0,
+  },
+  row: {
+    padding: 13,
+    height: 44,
+    flexDirection: 'row',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#c8c7cc',
+  },
+  description: {
+    color: 'white',
+  },
+  loader: {
+    // flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    height: 20,
+  },
+  androidLoader: {
+    marginRight: -15,
+  },
+  flag: {
+    width: 30,
+  }
+};

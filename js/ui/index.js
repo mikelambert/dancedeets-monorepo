@@ -6,7 +6,7 @@
 
 'use strict';
 
-import AutocompleteList from './GooglePlacesAutocomplete';
+import AutocompleteList from './AutocompleteList';
 import ProgressSpinner from './ProgressSpinner';
 import ProportionalImage from './ProportionalImage';
 import ZoomableImage from './ZoomableImage';
