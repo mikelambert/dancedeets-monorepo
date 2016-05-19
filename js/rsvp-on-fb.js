@@ -11,17 +11,10 @@ import {
 } from 'react-native-fbsdk';
 
 export default class RsvpOnFB {
-  eventId: string;
-  rsvpApiValue: string;
 
-  constructor(eventId: string, rsvpApiValue: string) {
-    this.eventId = eventId;
-    this.rsvpApiValue = rsvpApiValue;
-  }
-
-  async send() {
+  async send(eventId: string, rsvpApiValue: string) {
     try {
-      const result = await this.sendRsvp();
+      const result = await this.sendRsvp(eventId, rsvpApiValue);
       return result;
     } catch (error) {
       if (error.code === '403') {
@@ -30,7 +23,7 @@ export default class RsvpOnFB {
           throw 'Request for RSVP Permission was Cancelled';
         } else {
           // try again!
-          return this.send();
+          return this.send(eventId, rsvpApiValue);
         }
       } else {
         throw error;
@@ -38,10 +31,10 @@ export default class RsvpOnFB {
     }
   }
 
-  sendRsvp() {
+  sendRsvp(eventId: string, rsvpApiValue: string) {
     const f = function (resolve, reject) {
       const rsvpRequest = new GraphRequest(
-        '/' + this.eventId + '/' + this.rsvpApiValue,
+        '/' + eventId + '/' + rsvpApiValue,
         {httpMethod: 'POST'},
         function(error: ?Object, result: ?Object) {
           if (error) {
@@ -54,5 +47,9 @@ export default class RsvpOnFB {
       new GraphRequestManager().addRequest(rsvpRequest).start();
     };
     return new Promise(f.bind(this));
+  }
+
+  async get(eventId: string) {
+    return 'maybe';
   }
 }

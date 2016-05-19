@@ -18,7 +18,7 @@ import SegmentedControlAndroid from 'react-native-segmented-android';
 type Props = {
   values: [string],
   defaultIndex: number,
-  onChange: (index: number, oldIndex: number) => void,
+  onChange: any, // Promise version of (index: number, oldIndex: number) => void,
   tintColor: string,
   style: any,
 };
