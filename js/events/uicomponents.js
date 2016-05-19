@@ -162,7 +162,6 @@ class EventRsvpControl extends React.Component {
 
   async loadRsvp() {
     const rsvpIndex = await new RsvpOnFB().getRsvpIndex(this.props.event.id);
-    console.log(rsvpIndex);
     this.setState({defaultRsvp: rsvpIndex, loading: false});
   }
 
