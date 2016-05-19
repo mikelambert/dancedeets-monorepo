@@ -18,6 +18,7 @@
     "react-native-fabric": "^0.2.0",
     "react-native-fabric-crashlytics": "^0.1.2",
     "react-native-fbsdk": "^0.1.0",
+    "react-native-geocoder": "^0.3.1",
     "react-native-globalize": "../react-native-globalize",
     "react-native-linear-gradient": "^1.5.3",
     "react-native-maps": "^0.4.2",
