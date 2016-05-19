@@ -141,7 +141,7 @@ class EventSource extends SubEventLine {
   }
 }
 
-class EventRsvp extends SubEventLine {
+class EventRsvpControl extends React.Component {
   state: {
     loading: boolean,
     defaultRsvp: number,
@@ -156,18 +156,14 @@ class EventRsvp extends SubEventLine {
     (this: any).onRsvpChange = this.onRsvpChange.bind(this);
   }
 
-  async loadRsvp() {
-    const rsvpIndex = await new RsvpOnFB().getRsvpIndex(this.props.event.id);
-    console.log(rsvpIndex);
-    this.setState({defaultRsvp: rsvpIndex, loading: false});
-  }
-
   componentDidMount() {
     this.loadRsvp();
   }
 
-  icon() {
-    return require('./images/attending.png');
+  async loadRsvp() {
+    const rsvpIndex = await new RsvpOnFB().getRsvpIndex(this.props.event.id);
+    console.log(rsvpIndex);
+    this.setState({defaultRsvp: rsvpIndex, loading: false});
   }
 
   async onRsvpChange(index: number, oldIndex: number) {
@@ -175,6 +171,33 @@ class EventRsvp extends SubEventLine {
     // We await on this, so exceptions are propagated up (and segmentedControl can undo actions)
     await new RsvpOnFB().send(this.props.event.id, rsvp);
     console.log('Successfully RSVPed as ' + rsvp + ' to event ' + this.props.event.id);
+  }
+
+  render() {
+    var rsvpForEvent = null;
+    if (this.state.loading) {
+      // We construct a "different" SegmentedControl here (forcing it via key=),
+      // so that when we flip to having a defaultRsvp, we construct a *new* SegmentedControl.
+      // This ensures that the SegmentedControl's constructo runs (and pulls in the defaultRsvp)
+      rsvpForEvent = <SegmentedControl key="different" />;
+    } else {
+      rsvpForEvent = <SegmentedControl
+        refs="segmentedControl"
+        values={RsvpOnFB.RSVPs.map((x)=>x.text)}
+        defaultIndex={this.state.defaultRsvp}
+        tintColor="#ffffff"
+        style={{marginTop: 5}}
+        onChange={this.onRsvpChange}
+        />;
+    }
+    return rsvpForEvent;
+  }
+}
+
+class EventRsvp extends SubEventLine {
+
+  icon() {
+    return require('./images/attending.png');
   }
 
   textRender() {
@@ -188,23 +211,10 @@ class EventRsvp extends SubEventLine {
       }
       const counts = components.join(', ');
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
-      var rsvpForEvent = null;
-      if (this.state.loading) {
-        // We construct a "different" SegmentedControl here (forcing it via key=),
-        // so that when we flip to having a defaultRsvp, we construct a *new* SegmentedControl.
-        // This ensures that the SegmentedControl's constructo runs (and pulls in the defaultRsvp)
-        rsvpForEvent = <SegmentedControl key="different" />;
-      } else {
-        rsvpForEvent = <SegmentedControl
-          refs="segmentedControl"
-          values={RsvpOnFB.RSVPs.map((x)=>x.text)}
-          defaultIndex={this.state.defaultRsvp}
-          tintColor="#ffffff"
-          style={{marginTop: 5}}
-          onChange={this.onRsvpChange}
-          />;
-      }
-      return <View style={{width: 300}}>{countsText}{rsvpForEvent}</View>;
+      return <View style={{width: 300}}>
+        {countsText}
+        <EventRsvpControl event={this.props.event} />
+      </View>;
     } else {
       return null;
     }
