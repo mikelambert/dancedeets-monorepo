@@ -14,7 +14,7 @@ const defaultStyles = {
   },
   listView: {
     position: 'absolute',
-    backgroundColor: 'black',
+    backgroundColor: '#333',
     // flex: 1,
     left: 0,
     right: 0,
