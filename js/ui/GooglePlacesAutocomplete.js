@@ -16,6 +16,8 @@ const defaultStyles = {
     position: 'absolute',
     backgroundColor: 'black',
     // flex: 1,
+    left: 0,
+    right: 0,
   },
   row: {
     padding: 13,
