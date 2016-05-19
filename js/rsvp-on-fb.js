@@ -55,14 +55,14 @@ export default class RsvpOnFB {
     });
   }
 
-  sendRsvpRequests(eventId: string) {
+  getRsvpIndex(eventId: string) {
     return new Promise(async (resolve, reject) => {
       const accessToken = await AccessToken.getCurrentAccessToken();
       if (accessToken == null) {
         throw new Error('No access token');
       }
       const graphManager = new GraphRequestManager();
-      RsvpOnFB.RSVPs.forEach((x) => {
+      RsvpOnFB.RSVPs.forEach((x, index) => {
         const path = '/' + eventId + '/' + x.apiValue + '/' + accessToken.userID;
         const request = new GraphRequest(
           path,
@@ -71,18 +71,19 @@ export default class RsvpOnFB {
             if (error) {
               reject(error);
             } else if (result && result.data.length > 0) {
-              resolve(x.apiValue);
+              resolve(index);
             }
           }
         );
         graphManager.addRequest(request);
       });
+      graphManager.addBatchCallback((error: ?Object, result: ?Object) => {
+        // If we haven't already called resolve(),
+        // let's call it now with "unknown" as our result.
+        // if it was called, then this result will be ignored.
+        resolve(-1);
+      });
       graphManager.start();
     });
-  }
-
-  async get(eventId: string) {
-    const result = await this.sendRsvpRequests(eventId);
-    return result;
   }
 }

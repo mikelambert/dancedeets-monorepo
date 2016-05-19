@@ -143,26 +143,23 @@ class EventSource extends SubEventLine {
 
 class EventRsvp extends SubEventLine {
   state: {
+    loading: boolean,
     defaultRsvp: number,
   };
 
   constructor(props: Object) {
     super(props);
     this.state = {
+      loading: true,
       defaultRsvp: -1,
     };
     (this: any).onRsvpChange = this.onRsvpChange.bind(this);
   }
 
   async loadRsvp() {
-    const rsvp = await new RsvpOnFB().get(this.props.event.id);
-    var rsvpIndex = -1;
-    for (var i = 0; i < RsvpOnFB.RSVPs.length; i++) {
-      if (RsvpOnFB.RSVPs[i].apiValue === rsvp) {
-        rsvpIndex = i;
-      }
-    }
-    this.setState({defaultRsvp: rsvpIndex});
+    const rsvpIndex = await new RsvpOnFB().getRsvpIndex(this.props.event.id);
+    console.log(rsvpIndex);
+    this.setState({defaultRsvp: rsvpIndex, loading: false});
   }
 
   componentDidMount() {
@@ -192,7 +189,12 @@ class EventRsvp extends SubEventLine {
       const counts = components.join(', ');
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
       var rsvpForEvent = null;
-      if (this.state.defaultRsvp !== -1) {
+      if (this.state.loading) {
+        // We construct a "different" SegmentedControl here (forcing it via key=),
+        // so that when we flip to having a defaultRsvp, we construct a *new* SegmentedControl.
+        // This ensures that the SegmentedControl's constructo runs (and pulls in the defaultRsvp)
+        rsvpForEvent = <SegmentedControl key="different" />;
+      } else {
         rsvpForEvent = <SegmentedControl
           refs="segmentedControl"
           values={RsvpOnFB.RSVPs.map((x)=>x.text)}
@@ -201,11 +203,6 @@ class EventRsvp extends SubEventLine {
           style={{marginTop: 5}}
           onChange={this.onRsvpChange}
           />;
-      } else {
-        // We construct a "different" SegmentedControl here (forcing it via key=),
-        // so that when we flip to having a defaultRsvp, we construct a *new* SegmentedControl.
-        // This ensures that the SegmentedControl's constructo runs (and pulls in the defaultRsvp)
-        rsvpForEvent = <SegmentedControl key="different" />;
       }
       return <View style={{width: 300}}>{countsText}{rsvpForEvent}</View>;
     } else {
