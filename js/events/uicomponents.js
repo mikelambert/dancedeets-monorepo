@@ -127,7 +127,7 @@ class EventSource extends SubEventLine {
         <View style={{flexDirection: 'row'}}>
           <Text style={eventStyles.detailText}>Source: </Text>
           <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
-            <Text style={eventStyles.detailText, eventStyles.rowLink}>{this.props.source.name}</Text>
+            <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{this.props.source.name}</Text>
           </TouchableOpacity>
         </View>
       );
