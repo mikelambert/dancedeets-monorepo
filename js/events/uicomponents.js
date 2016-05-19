@@ -30,6 +30,8 @@ import { ShareButton } from 'react-native-fbsdk';
 import moment from 'moment';
 import { linkColor } from '../Colors';
 
+import RsvpOnFB from '../rsvp-on-fb';
+
 const {
   Globalize,
 } = require('react-native-globalize');
@@ -139,12 +141,25 @@ class EventSource extends SubEventLine {
 }
 
 class EventRsvp extends SubEventLine {
+  static RSVPs = [
+    { text: 'Going', apiValue: 'attending' },
+    { text: 'Interested', apiValue: 'maybe' },
+    { text: 'Not Interested', apiValue: 'declined' },
+  ];
+
   constructor(props: Object) {
     super(props);
+    (this: any).onRsvpChange = this.onRsvpChange.bind(this);
   }
+
   icon() {
     return require('./images/attending.png');
   }
+
+  onRsvpChange(index: number) {
+    new RsvpOnFB(this.props.event.id, EventRsvp.RSVPs[index].apiValue).send();
+  }
+
   textRender() {
     if (this.props.event.rsvp) {
       var components = [];
@@ -157,9 +172,10 @@ class EventRsvp extends SubEventLine {
       const counts = components.join(', ');
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
       const rsvpForEvent = <SegmentedControl
-        values={['Going', 'Interested', 'Not Interested']}
+        values={EventRsvp.RSVPs.map((x)=>x.text)}
         tintColor="#ffffff"
         style={{marginTop: 5}}
+        onChange={this.onRsvpChange}
         />;
       return <View style={{width: 300}}>{countsText}{rsvpForEvent}</View>;
     } else {
