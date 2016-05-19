@@ -56,6 +56,7 @@ public class MainActivity extends ReactActivity {
             new AirPackage(),
             new FabricPackage(null),
             new LinearGradientPackage(),
+            new AndroidSegmentedPackage(),
             new RNMixpanel(),
             new FBSDKPackage(mCallbackManager)
         );

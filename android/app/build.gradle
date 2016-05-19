@@ -136,11 +136,12 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-geocoder')
-    compile project(':react-native-maps')
     compile project(':react-native-fabric')
-    compile project(':react-native-linear-gradient')
     compile project(':react-native-fbsdk')
+    compile project(':react-native-geocoder')
+    compile project(':react-native-linear-gradient')
+    compile project(':react-native-maps')
+    compile project(':react-native-segmented-android')
     compile project(':RNMixpanel')
     //compile "com.mixpanel.android:mixpanel-android:4.+"
     //compile 'com.facebook.android:facebook-android-sdk:4.+'
