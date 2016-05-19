@@ -8,6 +8,7 @@ import React from 'react';
 import {View, ListView, TouchableHighlight, Platform, ActivityIndicatorIOS, ProgressBarAndroid} from 'react-native';
 import {Text} from './DDText';
 import Qs from 'qs';
+import emojiFlags from 'emoji-flags';
 
 const defaultStyles = {
   textInput: {
@@ -40,12 +41,16 @@ const defaultStyles = {
   androidLoader: {
     marginRight: -15,
   },
+  flag: {
+    width: 30,
+  }
 };
 
 type Result = {
   description: string;
   isCurrentLocation?: boolean;
   isLoading?: boolean;
+  flag?: string;
 };
 
 export default class GooglePlacesAutocompleteList extends React.Component {
@@ -130,7 +135,14 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       res = [];
     }
 
-    return [...res, ...results];
+    var fullResults = [...res, ...results];
+    fullResults.forEach((x) => {
+      const components = x.description.split(', ');
+      const country = components[components.length - 1];
+      const flag = emojiFlags.data.find((c) => c.name == country);
+      x.flag = flag != null ? flag.emoji : '';
+    });
+    return fullResults;
   }
 
   componentWillUnmount() {
@@ -276,7 +288,6 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       this.createRequest(url).then((responseJSON) => {
         if (typeof responseJSON.predictions !== 'undefined') {
           this._results = responseJSON.predictions;
-          console.log(responseJSON.predictions);
           this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(responseJSON.predictions)),
           });
@@ -341,6 +352,11 @@ export default class GooglePlacesAutocompleteList extends React.Component {
       >
         <View>
           <View style={[defaultStyles.row, this.props.styles.row]}>
+            <Text
+              style={[defaultStyles.flag, defaultStyles.description, this.props.styles.description]}>
+              {rowData.flag}
+            </Text>
+
             <Text
               style={[{flex: 1}, defaultStyles.description, this.props.styles.description]}
               numberOfLines={1}

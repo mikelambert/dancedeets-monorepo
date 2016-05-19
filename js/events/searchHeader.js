@@ -86,13 +86,13 @@ class SearchInput extends React.Component {
 }
 
 const locations = [
-  {description: 'New York City, USA'},
-  {description: 'Los Angeles, USA'},
+  {description: 'New York City, United States'},
+  {description: 'Los Angeles, United States'},
   {description: 'Paris, France'},
-  {description: 'London, UK'},
+  {description: 'London, United Kingdom'},
   {description: 'Tokyo, Japan'},
   {description: 'Osaka, Japan'},
-  {description: 'Seoul, Korea'},
+  {description: 'Seoul, South Korea'},
   {description: 'Taipei, Taiwan'},
 ];
 
