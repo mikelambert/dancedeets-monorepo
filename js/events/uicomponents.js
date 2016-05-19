@@ -186,7 +186,7 @@ class EventRsvpControl extends React.Component {
         defaultIndex={this.state.defaultRsvp}
         tintColor="#ffffff"
         style={{marginTop: 5}}
-        onChange={this.onRsvpChange}
+        tryOnChange={this.onRsvpChange}
         />;
     }
     return rsvpForEvent;
