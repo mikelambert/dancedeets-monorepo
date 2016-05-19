@@ -24,7 +24,6 @@ export default class RsvpOnFB {
       const result = await this.sendRsvp();
       return result;
     } catch (error) {
-      console.log('error', error);
       if (error.code === '403') {
         const result = await LoginManager.logInWithPublishPermissions(['rsvp_event']);
         if (result.isCancelled) {
