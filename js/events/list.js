@@ -9,6 +9,7 @@ import {
   Linking,
   ListView,
   Platform,
+  RefreshControl,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -87,6 +88,7 @@ class EventListContainer extends React.Component {
   state: {
     dataSource: ListView.DataSource,
     headerHeight: number,
+    refreshing: boolean,
   };
 
   constructor(props) {
@@ -98,6 +100,7 @@ class EventListContainer extends React.Component {
     this.state = {
       headerHeight: 0,
       dataSource,
+      refreshing: false,
     };
     this.state = this._getNewState(this.props);
     (this: any).onUpdateHeaderHeight = this.onUpdateHeaderHeight.bind(this);
@@ -154,6 +157,10 @@ class EventListContainer extends React.Component {
     await this.props.performSearch(this.props.search.searchQuery);
   }
 
+  async _onRefresh() {
+    this.props.performSearch(this.props.search.searchQuery);
+  }
+
   componentDidMount() {
     const highAccuracy = Platform.OS == 'ios';
     navigator.geolocation.getCurrentPosition(
@@ -182,7 +189,7 @@ class EventListContainer extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.props.search.loading ? this.renderLoadingView() : this.renderListView()}
+        {this.renderListView()}
         <SearchHeader onUpdateHeight={this.onUpdateHeaderHeight}/>
       </View>
     );
@@ -204,6 +211,12 @@ class EventListContainer extends React.Component {
       <ListView
         style={{marginTop: this.state.headerHeight}}
         dataSource={this.state.dataSource}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.search.loading}
+            onRefresh={this._onRefresh.bind(this)}
+          />
+        }
         renderRow={this._renderRow}
         renderSectionHeader={(data, sectionID) =>
           <SectionHeader title={sectionID}/>
@@ -214,17 +227,6 @@ class EventListContainer extends React.Component {
         scrollsToTop={false}
         indicatorStyle="white"
       />
-    );
-  }
-
-  renderLoadingView() {
-    return (
-      <View>
-        <Text style={styles.loading}>
-          Loading events...
-        </Text>
-        <ProgressSpinner />
-      </View>
     );
   }
 }
