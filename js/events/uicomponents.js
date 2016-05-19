@@ -17,9 +17,10 @@ import {
 
 import querystring from 'querystring';
 import {
-  ProportionalImage,
-  Text,
   Autolink,
+  ProportionalImage,
+  SegmentedControl,
+  Text,
 } from '../ui';
 import { Event } from './models';
 import type { Venue } from './models';
@@ -145,18 +146,22 @@ class EventRsvp extends SubEventLine {
     return require('./images/attending.png');
   }
   textRender() {
-    if (this.props.rsvp) {
+    if (this.props.event.rsvp) {
       var components = [];
-      if (this.props.rsvp.attending_count) {
-        components.push(this.props.rsvp.attending_count + ' attending');
+      if (this.props.event.rsvp.attending_count) {
+        components.push(this.props.event.rsvp.attending_count + ' attending');
       }
-      if (this.props.rsvp.maybe_count) {
-        components.push(this.props.rsvp.maybe_count + ' maybe');
+      if (this.props.event.rsvp.maybe_count) {
+        components.push(this.props.event.rsvp.maybe_count + ' maybe');
       }
       const counts = components.join(', ');
-      return (
-        <Text style={eventStyles.detailText}>{counts}</Text>
-      );
+      const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
+      const rsvpForEvent = <SegmentedControl
+        values={['Going', 'Interested', 'Not Interested']}
+        tintColor="#ffffff"
+        style={{marginTop: 5}}
+        />;
+      return <View style={{width: 300}}>{countsText}{rsvpForEvent}</View>;
     } else {
       return null;
     }
@@ -201,37 +206,6 @@ class EventMap extends React.Component {
 }
 
 async function openVenueWithApp(venue: Venue) {
-  /*
-            if UIApplication.sharedApplication().canOpenURL(NSURL(string: "comgooglemaps://")!) {
-                var encodedVenue:String
-                if event.venue?.name != nil {
-                    encodedVenue = event.venue!.name!.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
-                } else {
-                    encodedVenue = "\(coordinate.latitude),\(coordinate.longitude)"
-                }
-
-                let url = "comgooglemaps://?q=\(encodedVenue)&center=\(coordinate.latitude),\(coordinate.longitude)&zoom=15"
-                UIApplication.sharedApplication().openURL(NSURL(string:url)!)
-            }
-
-            let placemark = MKPlacemark(coordinate: coordinate, addressDictionary: event.venue?.fullAddressDictionary)
-            let mapItem:MKMapItem = MKMapItem(placemark: placemark)
-            mapItem.openInMapsWithLaunchOptions(nil)
-            addr = [NSString stringWithFormat: @"maps://saddr=%f,%f&daddr=%f,%f", newLocation.coordinate.latitude, newLocation.coordinate.longitude, oldLatitude, oldLongitude];
-            NSURL *url = [NSURL URLWithString:addr];
-            [[UIApplication sharedApplication] openURL:url];
-        }
-
-    public Uri getOpenMapUrl() {
-        Uri mapUrl;
-        if (latLong != null) {
-            mapUrl = Uri.parse("geo:0,0?q=" + latLong.getLatitude() + "," + latLong.getLongitude() + "(" + Uri.encode(getVenue().getName()) + ")");
-        } else {
-            mapUrl = Uri.parse("geo:0,0?q=" + Uri.encode(getVenue().getName()));
-        }
-        return mapUrl;
-    }
-  }*/
   const latLong = venue.geocode.latitude + ',' + venue.geocode.longitude;
   const venueName = venue.name || '(' + latLong + ')';
 
@@ -364,17 +338,17 @@ export class FullEventView extends React.Component {
             style={eventStyles.rowTitle}>{this.props.event.name}</Text>
           <View style={eventStyles.eventIndent}>
             <EventCategories categories={this.props.event.annotations.categories} />
-            <EventSource source={this.props.event.source} />
             <View style={{flex: 1, flexDirection: 'row'}}>
               <View style={{flex: 1, flexDirection: 'column'}}>
                 <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-                <EventRsvp rsvp={this.props.event.rsvp} />
               </View>
               <EventShare event={this.props.event} />
             </View>
+            <EventRsvp event={this.props.event} />
             <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
               <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
             </TouchableOpacity>
+            <EventSource source={this.props.event.source} />
           </View>
           <EventDescription description={this.props.event.description} />
           <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
