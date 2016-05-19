@@ -86,12 +86,14 @@ class SearchInput extends React.Component {
 }
 
 const locations = [
-  {description: 'New York City', geometry: { location: { lat: 40.7058254, lng: -74.1180861 } }},
-  {description: 'Los Angeles', geometry: { location: { lat: 34.0207504, lng: -118.691914 } }},
-  {description: 'Paris', geometry: { location: { lat: 48.8589101, lng: 2.3125376 } }},
-  {description: 'Tokyo', geometry: { location: { lat: 35.6735408, lng: 139.5703049 } }},
-  {description: 'Osaka', geometry: { location: { lat: 34.678434, lng: 135.4776404 } }},
-  {description: 'Taipei', geometry: { location: { lat: 25.0855451, lng: 121.4932093 } }},
+  {description: 'New York City, USA'},
+  {description: 'Los Angeles, USA'},
+  {description: 'Paris, France'},
+  {description: 'London, UK'},
+  {description: 'Tokyo, Japan'},
+  {description: 'Osaka, Japan'},
+  {description: 'Seoul, Korea'},
+  {description: 'Taipei, Taiwan'},
 ];
 
 
