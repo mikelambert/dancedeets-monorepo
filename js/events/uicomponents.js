@@ -116,7 +116,7 @@ class EventSource extends SubEventLine {
     (this: any).onPress = this.onPress.bind(this);
   }
   icon() {
-    return require('./images/location.png');
+    return require('./images/website.png');
   }
   onPress() {
     Linking.openURL(this.props.source.url).catch(err => console.error('Error opening event source:', err));
