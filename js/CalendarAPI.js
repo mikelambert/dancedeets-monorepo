@@ -46,7 +46,7 @@ function OkCancelAlert(title: string, message: string): Promise {
 
 async function addIOS(event: Event) {
   var status = await authorizationStatus();
-  status = 'undetermined';
+
   if (status === 'undetermined') {
     try {
       await OkCancelAlert('Add to Calendar', 'To add this event to your calendar, you need to allow access to your calendar.');
@@ -72,9 +72,12 @@ async function addIOS(event: Event) {
   if (!end) {
     end = start.add(1.5, 'hours');
   }
+
+  const description = event.getUrl() + '\n\n' + event.description;
+
   CalendarEventsIOS.saveEvent(event.name, {
     location: event.venue.fullAddress(),
-    notes: event.description, // TODO: add url!
+    notes: description,
     startDate: start.toISOString(),
     endDate: end ? end.toISOString() : null,
   });
