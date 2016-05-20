@@ -56,8 +56,8 @@ export class Event extends JsonDerivedObject {
   picture: string;
   name: string;
   description: string;
-  start_time: Date;
-  end_time: Date;
+  start_time: string;
+  end_time: string;
   annotations: {
     categories: Array<string>,
   };
