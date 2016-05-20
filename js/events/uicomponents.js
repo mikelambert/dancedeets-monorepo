@@ -52,7 +52,9 @@ class SubEventLine extends React.Component {
     return (
       <View style={eventStyles.detailLine}>
         <Image key="image" source={this.icon()} style={eventStyles.detailIcon} />
+        <View style={{eventStyles.detailTextContainer}}>
         {this.textRender()}
+        </View>
       </View>
     );
   }
@@ -433,12 +435,16 @@ const eventStyles = StyleSheet.create({
   },
   rowTitle: {
     fontSize: 18,
+    marginBottom: 10,
   },
   rowDateTime: {
     color: '#C0FFC0',
   },
   rowLink: {
     color: linkColor,
+  },
+  detailTextContainer: {
+    flex: 1,
   },
   detailText: {
     fontSize: detailHeight,
