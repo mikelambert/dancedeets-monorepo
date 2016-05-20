@@ -28,6 +28,7 @@ import MapView from 'react-native-maps';
 import { ShareButton } from 'react-native-fbsdk';
 import moment from 'moment';
 import { linkColor } from '../Colors';
+import { add as CalendarAdd } from '../CalendarAPI';
 
 import RsvpOnFB from '../rsvp-on-fb';
 
@@ -75,6 +76,14 @@ class EventCategories extends SubEventLine {
   }
 }
 
+class AddToCalendarButton extends React.Component {
+  render() {
+    return <TouchableOpacity onPress={()=> CalendarAdd(this.props.event)} activeOpacity={0.5}>
+      <Text>Add to Calendar</Text>
+    </TouchableOpacity>;
+  }
+}
+
 class EventDateTime extends SubEventLine {
   icon() {
     return require('./images/datetime.png');
@@ -85,7 +94,10 @@ class EventDateTime extends SubEventLine {
     var formattedStart = dateFormatter(start.toDate());
 
     if (this.props.start) {
-      return <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{formattedStart}</Text>;
+      return <View>
+        <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{formattedStart}</Text>
+        {this.props.children}
+      </View>;
     } else {
       return null;
     }
@@ -393,7 +405,9 @@ export class FullEventView extends React.Component {
             <EventCategories categories={this.props.event.annotations.categories} />
             <View style={{flex: 1, flexDirection: 'row'}}>
               <View style={{flex: 1, flexDirection: 'column'}}>
-                <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
+                <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time}>
+                  <AddToCalendarButton event={this.props.event} />
+                </EventDateTime>
               </View>
               <EventShare event={this.props.event} />
             </View>
