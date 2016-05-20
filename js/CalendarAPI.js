@@ -29,7 +29,7 @@ function authorizeEventStore(): Promise {
   });
 }
 
-function OkAlert(title: string, message: string, cancel=false): Promise {
+function OkAlert(title: string, message: string, cancel = false): Promise {
   return new Promise((resolve, reject) => {
     var buttons = [];
     if (cancel) {
