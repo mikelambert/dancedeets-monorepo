@@ -22,8 +22,7 @@ import {
   SegmentedControl,
   Text,
 } from '../ui';
-import { Event } from './models';
-import type { Venue } from './models';
+import { Event, Venue } from './models';
 import type { ThunkAction } from '../actions/types';
 import MapView from 'react-native-maps';
 import { ShareButton } from 'react-native-fbsdk';
@@ -110,7 +109,7 @@ class EventVenue extends SubEventLine {
       components.push(<Text
         key="line2"
         style={[eventStyles.detailText, this.props.style]}
-      >{this.props.venue.address.city + ', ' + this.props.venue.address.country}</Text>);
+      >{this.props.venue.cityStateCountry()}</Text>);
     }
     return <View>{components}</View>;
   }

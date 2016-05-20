@@ -4,24 +4,9 @@
  * @flow
  */
 
-type JSON = | string | number | boolean | null | JSONObject | JSONArray;
+type JSON = string | number | boolean | null | JSONObject | JSONArray;
 type JSONObject = { [key:string]: JSON };
 type JSONArray = Array<JSON>;
-
-export type Venue = {
-  geocode: {
-    latitude: number,
-    longitude: number,
-  },
-  address: {
-    city: string,
-    street: string,
-    zip: string,
-    country: string,
-  },
-  name: string,
-  id: string,
-};
 
 export type Cover = {
   source: string,
@@ -29,7 +14,41 @@ export type Cover = {
   width: number,
 };
 
-export class Event {
+export class JsonDerivedObject {
+  constructor(data: any) {
+    for (var attr in data) {
+      if (data.hasOwnProperty(attr)) {
+        (this: any)[attr] = data[attr];
+      }
+    }
+  }
+}
+
+export class Venue extends JsonDerivedObject {
+  geocode: {
+    latitude: number,
+    longitude: number,
+  };
+  address: {
+    street: string,
+    city: string,
+    state: string,
+    zip: string,
+    country: string,
+  };
+  name: string;
+  id: string;
+
+  fullAddress() {
+    return [this.name, this.address.street, this.address.city, this.address.state, this.address.country].filter((x) => x).join(', ');
+  }
+
+  cityStateCountry() {
+    return [this.address.city, this.address.state, this.address.country].filter((x) => x).join(', ');
+  }
+}
+
+export class Event extends JsonDerivedObject {
   id: string;
   city: string;
   country: string;
@@ -57,12 +76,8 @@ export class Event {
   venue: Venue;
 
   constructor(eventData: JSONObject) {
-    for (var attr in eventData) {
-      if (eventData.hasOwnProperty(attr)) {
-        (this: any)[attr] = eventData[attr];
-      }
-    }
-    return this;
+    super(eventData);
+    this.venue = new Venue(eventData['venue']);
   }
 
   getImageProps() {
