@@ -12,6 +12,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1B7DC27979B2496DA46D6C0D /* libRNCalendarEvents.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5934DC5729E04D51B1D73D18 /* libRNCalendarEvents.a */; };
 		1D18DC741CE64F60008916EF /* Ubuntu 300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D18DC711CE64F40008916EF /* Ubuntu 300.ttf */; };
 		1D18DC751CE64F60008916EF /* Ubuntu 500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D18DC721CE64F40008916EF /* Ubuntu 500.ttf */; };
 		1D18DC761CE64F60008916EF /* Ubuntu 700.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D18DC731CE64F40008916EF /* Ubuntu 700.ttf */; };
@@ -65,6 +66,13 @@
 			remoteGlobalIDString = 11FA5C511C4A1296003AC2EE;
 			remoteInfo = AirMaps;
 		};
+		1DC40AC61CEED15700E5A485 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 425FCD0A3674418EBCA185AB /* RNCalendarEvents.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BEC43C6A1C723089001221C6;
+			remoteInfo = RNCalendarEvents;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +92,8 @@
 		1D18DC731CE64F40008916EF /* Ubuntu 700.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 700.ttf"; sourceTree = "<group>"; };
 		23D9826590F4451E87AC7FA4 /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
 		3F2AE10902A4B3DF9B9ADD12 /* Pods-DanceDeets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.release.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.release.xcconfig"; sourceTree = "<group>"; };
+		425FCD0A3674418EBCA185AB /* RNCalendarEvents.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCalendarEvents.xcodeproj; path = "../node_modules/react-native-calendar-events/RNCalendarEvents.xcodeproj"; sourceTree = "<group>"; };
+		5934DC5729E04D51B1D73D18 /* libRNCalendarEvents.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCalendarEvents.a; sourceTree = "<group>"; };
 		5B6AE41C6D774CBAB1B330D9 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		91C7134613AF432FA9CBE282 /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
 		930B8DA0D4264A2DA9CCF846 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
@@ -113,6 +123,7 @@
 				4636DFAF5A5D4A7AB7005601 /* libAirMaps.a in Frameworks */,
 				65290086BA6F49519FC629F9 /* libRNBlur.a in Frameworks */,
 				D7C586A0CC09467A8950FA63 /* libRNGeocoder.a in Frameworks */,
+				1B7DC27979B2496DA46D6C0D /* libRNCalendarEvents.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,6 +210,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1DC40AC01CEED15700E5A485 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1DC40AC71CEED15700E5A485 /* libRNCalendarEvents.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		3F4DDA6DC90E123F105F7DF6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -215,6 +234,7 @@
 				930B8DA0D4264A2DA9CCF846 /* AirMaps.xcodeproj */,
 				23D9826590F4451E87AC7FA4 /* RNBlur.xcodeproj */,
 				DCB818C83BE24BAC9E7A12D7 /* RNGeocoder.xcodeproj */,
+				425FCD0A3674418EBCA185AB /* RNCalendarEvents.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -343,6 +363,10 @@
 					ProjectRef = 23D9826590F4451E87AC7FA4 /* RNBlur.xcodeproj */;
 				},
 				{
+					ProductGroup = 1DC40AC01CEED15700E5A485 /* Products */;
+					ProjectRef = 425FCD0A3674418EBCA185AB /* RNCalendarEvents.xcodeproj */;
+				},
+				{
 					ProductGroup = 1D18DC5D1CE2E03F008916EF /* Products */;
 					ProjectRef = DCB818C83BE24BAC9E7A12D7 /* RNGeocoder.xcodeproj */;
 				},
@@ -393,6 +417,13 @@
 			fileType = archive.ar;
 			path = libAirMaps.a;
 			remoteRef = 1D5025D41CDAE0090042C6F7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1DC40AC71CEED15700E5A485 /* libRNCalendarEvents.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNCalendarEvents.a;
+			remoteRef = 1DC40AC61CEED15700E5A485 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -571,6 +602,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets.app/DanceDeets";
@@ -591,6 +623,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -619,6 +652,7 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/AirMaps/**",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
+					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -649,6 +683,7 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/AirMaps/**",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
+					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -707,6 +742,7 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/AirMaps/**",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
+					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -752,6 +788,7 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/AirMaps/**",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
+					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
