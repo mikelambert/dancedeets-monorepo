@@ -52,7 +52,7 @@ class SubEventLine extends React.Component {
     return (
       <View style={eventStyles.detailLine}>
         <Image key="image" source={this.icon()} style={eventStyles.detailIcon} />
-        <View style={{eventStyles.detailTextContainer}}>
+        <View style={eventStyles.detailTextContainer}>
         {this.textRender()}
         </View>
       </View>
