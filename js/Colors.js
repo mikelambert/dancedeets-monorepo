@@ -21,11 +21,10 @@ export const purpleColors = [
   '#333452',
 ];
 
-export const blueColor = '#70C0FF';
+const fbBlueColor = '#415DAE';
+const blueColor = '#70C0FF';
 
 //TODO: update this colors to reflect our color scheme?
-export const lightText = '#7F91A7';
+export const lightText = yellowColors[0];
 
-const fbBlue = '#415DAE';
 export const linkColor = blueColor;
-//yellowColors[1];
