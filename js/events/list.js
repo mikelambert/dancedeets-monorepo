@@ -172,7 +172,7 @@ class EventListContainer extends React.Component {
         this.setLocationAndSearch(formattedAddress);
       },
       (error) => console.warn('Error getting current position:', error.message),
-      {enableHighAccuracy: highAccuracy, timeout: 5 * 1000, maximumAge: 60 * 1000}
+      {enableHighAccuracy: highAccuracy, timeout: 5 * 1000, maximumAge: 10 * 60 * 1000}
     );
   }
 
