@@ -15,8 +15,8 @@ export async function loginButtonPressed(dispatch: Dispatch) {
   try {
     const token = await loginOrLogout();
     dispatch(loginComplete(token));
-  } catch (exc) {
-    console.log('Staying on this screen, failed to login: ', exc);
+  } catch (e) {
+    console.log('Staying on this screen, failed to login: ', e, e.stack);
   }
 }
 
@@ -114,11 +114,11 @@ async function refreshFullToken() {
     if (newAccessToken != null && !newAccessToken.getPermissions().includes('user_events')) {
       await loginOrLogout();
     }
-  } catch (exc) {
+  } catch (e) {
     // Something strange happened!
     // Let's log them out, and send them back in from the top without a token.
     // This effectively drops them back in the onboarding flow.
-    console.log('Exception refreshing or logging in:', exc);
+    console.log('Exception refreshing or logging in:', e, e.stack);
     LoginManager.logOut();
   }
 }

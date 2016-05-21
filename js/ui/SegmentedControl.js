@@ -90,8 +90,8 @@ export default class SegmentedControl extends React.Component {
     if (this.props.tryOnChange) {
       try {
         await this.props.tryOnChange(index, oldIndex);
-      } catch (error) {
-        console.warn('Undoing SegmentedControl due to error calling tryOnChange:', error);
+      } catch (e) {
+        console.warn('Undoing SegmentedControl due to error calling tryOnChange:', e, e.stack);
         this.setState({selectedIndex: oldIndex});
       }
     } else {

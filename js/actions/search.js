@@ -20,7 +20,7 @@ export function performSearch(searchQuery: SearchQuery) {
       await dispatch(searchComplete(responseData));
     } catch (e) {
       // TODO: error fetching events.
-      console.log('error fetching events', e);
+      console.log('error fetching events', e, e.stack);
       dispatch(searchFailed());
     }
   };
