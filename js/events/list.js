@@ -160,7 +160,7 @@ class EventListContainer extends React.Component {
     this.props.performSearch(this.props.search.searchQuery);
   }
 
-  componentDidMount() {
+  fetchLocationAndSearch() {
     const highAccuracy = Platform.OS == 'ios';
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -174,6 +174,10 @@ class EventListContainer extends React.Component {
       (error) => console.warn('Error getting current position:', error.message),
       {enableHighAccuracy: highAccuracy, timeout: 5 * 1000, maximumAge: 60 * 1000}
     );
+  }
+
+  componentDidMount() {
+    this.fetchLocationAndSearch();
     // TODO: Tie this search in with some attempt to pull in a saved search query
     // this.props.performSearch(this.props.search.searchQuery);
   }
