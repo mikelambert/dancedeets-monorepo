@@ -122,15 +122,16 @@ export default class AutocompleteList extends React.Component {
   }
 
   getCurrentLocation() {
+    const highAccuracy = Platform.OS == 'ios';
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this._requestLocationName(position.coords.latitude, position.coords.longitude);
       },
       (error) => {
         this._disableRowLoaders();
-        alert(error.message);
+        console.warn(error.message);
       },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+      {enableHighAccuracy: highAccuracy, timeout: 5 * 1000, maximumAge: 1000}
     );
   }
 
