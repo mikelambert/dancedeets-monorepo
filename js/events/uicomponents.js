@@ -179,30 +179,38 @@ class EventRsvpControl extends React.Component {
   }
 
   async onRsvpChange(index: number, oldIndex: number) {
+    // Android's SegmentedControl doesn't upport enabled=,
+    // so it's possible onRsvpChange will be called while we are loading.
+    // Setting an RSVP while an RSVP is in-progress breaks the underlying FB API.
+    // So let's skip sending any RSVPs while we are setting-and-reloading the value.
+    // We enforce this by throwing an exception,
+    // which guarantees the SegmentedControl 'undoes' the selection.
+    if (this.state.loading) {
+      throw 'Already loading values, do not allow any changes!';
+    }
     const rsvp = RsvpOnFB.RSVPs[index].apiValue;
     // We await on this, so exceptions are propagated up (and segmentedControl can undo actions)
+    this.setState({...this.state, loading: true});
     await new RsvpOnFB().send(this.props.event.id, rsvp);
     console.log('Successfully RSVPed as ' + rsvp + ' to event ' + this.props.event.id);
+    // Now while the state is still 'loading', let's reload the latest RSVP from the server.
+    // And when we receive it, we'll unset state.loading, re-render this component.
+    await this.loadRsvp();
   }
 
   render() {
-    var rsvpForEvent = null;
-    if (this.state.loading) {
-      // We construct a "different" SegmentedControl here (forcing it via key=),
+    return <SegmentedControl
+      // When loading, we construct a "different" SegmentedControl here (forcing it via key=),
       // so that when we flip to having a defaultRsvp, we construct a *new* SegmentedControl.
-      // This ensures that the SegmentedControl's constructo runs (and pulls in the defaultRsvp)
-      rsvpForEvent = <SegmentedControl key="different" />;
-    } else {
-      rsvpForEvent = <SegmentedControl
-        refs="segmentedControl"
-        values={RsvpOnFB.RSVPs.map((x)=>x.text)}
-        defaultIndex={this.state.defaultRsvp}
-        tintColor="#ffffff"
-        style={{marginTop: 5}}
-        tryOnChange={this.onRsvpChange}
-        />;
-    }
-    return rsvpForEvent;
+      // This ensures that the SegmentedControl's constructor runs (and pulls in the defaultRsvp).
+      key={ this.state.loading ? 'loading' : 'segmentedControl' }
+      enabled={ !this.state.loading } // only works on iOS
+      values={RsvpOnFB.RSVPs.map((x)=>x.text)}
+      defaultIndex={this.state.defaultRsvp}
+      tintColor="#fffff"
+      style={{marginTop: 5}}
+      tryOnChange={this.onRsvpChange}
+      />;
   }
 }
 

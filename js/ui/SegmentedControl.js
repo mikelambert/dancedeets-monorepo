@@ -18,6 +18,7 @@ import SegmentedControlAndroid from 'react-native-segmented-android';
 type Props = {
   values: [string],
   defaultIndex: number,
+  enabled: boolean,
   tryOnChange: (index: number, oldIndex: number) => Promise,
   tintColor: string,
   style: any,
@@ -33,6 +34,7 @@ export default class SegmentedControl extends React.Component {
   static defaultProps = {
     values: [],
     defaultIndex: -1,
+    enabled: true,
     tryOnChange: async (index, oldIndex) => {},
     tintColor: 'blue',
     style: {},
@@ -64,6 +66,7 @@ export default class SegmentedControl extends React.Component {
       return <SegmentedControlIOS
         style={this.props.style}
         values={this.props.values}
+        enabled={this.props.enabled}
         selectedIndex={this.state.selectedIndex}
         onChange={(event) => this.onChange(event.nativeEvent.selectedSegmentIndex)}
         tintColor={this.props.tintColor}
