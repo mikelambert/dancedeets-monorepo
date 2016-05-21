@@ -3,17 +3,19 @@ package com.dancedeets.android;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.AirMaps.AirPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
+import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.crashlytics.android.Crashlytics;
+import com.devfd.RNGeocoder.RNGeocoderPackage;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactActivity;
-import com.devfd.RNGeocoder.RNGeocoderPackage;
-import com.AirMaps.AirPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
+import com.higo.zhangyp.segmented.AndroidSegmentedPackage;
 import com.kevinejohn.RNMixpanel.RNMixpanel;
 import com.smixx.fabric.FabricPackage;
 
@@ -58,6 +60,7 @@ public class MainActivity extends ReactActivity {
             new LinearGradientPackage(),
             new AndroidSegmentedPackage(),
             new RNMixpanel(),
+            new RNSendIntentPackage(),
             new FBSDKPackage(mCallbackManager)
         );
     }

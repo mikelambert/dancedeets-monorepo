@@ -25,6 +25,7 @@
     "react-native-maps": "^0.4.2",
     "react-native-mixpanel": "0.0.10",
     "react-native-segmented-android": "^1.0.4",
+    "react-native-send-intent": "^1.0.8",
     "react-native-trackjs": "^0.1.1",
     "react-redux": "^4.4.4",
     "redux": "^3.4.0",
