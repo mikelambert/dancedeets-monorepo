@@ -18,6 +18,7 @@ import {
 import querystring from 'querystring';
 import {
   Autolink,
+  Button,
   ProportionalImage,
   SegmentedControl,
   Text,
@@ -27,7 +28,7 @@ import type { ThunkAction } from '../actions/types';
 import MapView from 'react-native-maps';
 import { ShareButton } from 'react-native-fbsdk';
 import moment from 'moment';
-import { linkColor } from '../Colors';
+import { linkColor, purpleColors } from '../Colors';
 import { add as CalendarAdd } from '../CalendarAPI';
 
 import RsvpOnFB from '../rsvp-on-fb';
@@ -78,9 +79,12 @@ class EventCategories extends SubEventLine {
 
 class AddToCalendarButton extends React.Component {
   render() {
-    return <TouchableOpacity onPress={()=> CalendarAdd(this.props.event)} activeOpacity={0.5}>
-      <Text>Add to Calendar</Text>
-    </TouchableOpacity>;
+    return <Button
+      icon={require('./images/add_calendar.png')}
+      caption="Add to Calendar"
+      type="primary"
+      onPress={()=> CalendarAdd(this.props.event)}
+    />;
   }
 }
 
@@ -202,12 +206,12 @@ class EventRsvpControl extends React.Component {
     return <SegmentedControl
       // When loading, we construct a "different" SegmentedControl here (forcing it via key=),
       // so that when we flip to having a defaultRsvp, we construct a *new* SegmentedControl.
-      // This ensures that the SegmentedControl's constructor runs (and pulls in the defaultRsvp).
+      // This ensures that the SegmentedControl's constructor runs (and pulls in the new defaultRsvp).
       key={ this.state.loading ? 'loading' : 'segmentedControl' }
       enabled={ !this.state.loading } // only works on iOS
       values={RsvpOnFB.RSVPs.map((x)=>x.text)}
       defaultIndex={this.state.defaultRsvp}
-      tintColor="#fffff"
+      tintColor={purpleColors[0]}
       style={{marginTop: 5}}
       tryOnChange={this.onRsvpChange}
       />;
@@ -411,19 +415,15 @@ export class FullEventView extends React.Component {
             style={eventStyles.rowTitle}>{this.props.event.name}</Text>
           <View style={eventStyles.eventIndent}>
             <EventCategories categories={this.props.event.annotations.categories} />
-            <View style={{flex: 1, flexDirection: 'row'}}>
-              <View style={{flex: 1, flexDirection: 'column'}}>
-                <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time}>
-                  <AddToCalendarButton event={this.props.event} />
-                </EventDateTime>
-              </View>
-              <EventShare event={this.props.event} />
-            </View>
+            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time}>
+              <AddToCalendarButton event={this.props.event} />
+            </EventDateTime>
             <EventRsvp event={this.props.event} />
             <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
               <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
             </TouchableOpacity>
             <EventSource source={this.props.event.source} />
+            <EventShare event={this.props.event} />
           </View>
           <EventDescription description={this.props.event.description} />
           <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>

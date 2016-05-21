@@ -7,6 +7,7 @@
 'use strict';
 
 import AutocompleteList from './AutocompleteList';
+import Button from './Button';
 import ProgressSpinner from './ProgressSpinner';
 import ProportionalImage from './ProportionalImage';
 import SegmentedControl from './SegmentedControl';
@@ -15,6 +16,7 @@ import * as DDText from './DDText';
 
 module.exports = {
   AutocompleteList,
+  Button,
   ProgressSpinner,
   ProportionalImage,
   SegmentedControl,

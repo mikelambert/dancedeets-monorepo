@@ -7,12 +7,23 @@
 
 'use strict';
 
-//TODO: update these colors to reflect our color scheme
-export const actionText = '#3FB4CF';
-export const inactiveText = '#9B9B9B';
-export const darkText = '#032250';
-export const lightText = '#7F91A7';
-export const cellBorder = '#EEEEEE';
-export const darkBackground = '#183E63';
 
-export const linkColor = '#70C0FF';
+export const yellowColors = [
+  '#FFF3B0',
+  '#FFEA73',
+  '#FFD802',
+  '#FFCA01',
+];
+
+export const purpleColors = [
+  '#8283A9',
+  '#4C4D81',
+  '#333452',
+];
+
+export const blueColor = '#70C0FF';
+
+//TODO: update this colors to reflect our color scheme?
+export const lightText = '#7F91A7';
+
+export const linkColor = yellowColors[1];
