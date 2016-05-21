@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import CalendarEventsIOS from 'react-native-calendar-events';
+import SendIntentAndroid from 'react-native-send-intent';
 import { Event } from './events/models';
 import moment from 'moment';
 
@@ -44,6 +45,20 @@ function OkCancelAlert(title: string, message: string): Promise {
   return OkAlert(title, message, true);
 }
 
+function getDescription(event: Event): string {
+  return event.getUrl() + '\n\n' + event.description;
+}
+
+function getStartEndTime(event: Event) {
+  // Parse dates-with-timezones, and use them to construct an event
+  var start = moment(event.start_time, moment.ISO_8601);
+  var end = moment(event.end_time, moment.ISO_8601);
+  if (!end) {
+    end = start.add(1.5, 'hours');
+  }
+  return { start, end };
+}
+
 async function addIOS(event: Event) {
   var status = await authorizationStatus();
 
@@ -63,32 +78,42 @@ async function addIOS(event: Event) {
         Linking.openURL('app-settings:');
       } catch (err) {}
     }
-    return;
+    return false;
   }
 
-  // Parse dates-with-timezones, and use them to construct an event
-  var start = moment(event.start_time, moment.ISO_8601);
-  var end = moment(event.end_time, moment.ISO_8601);
-  if (!end) {
-    end = start.add(1.5, 'hours');
-  }
-
-  const description = event.getUrl() + '\n\n' + event.description;
+  const { start, end } = getStartEndTime(event);
 
   CalendarEventsIOS.saveEvent(event.name, {
     location: event.venue.fullAddress(),
-    notes: description,
+    notes: getDescription(event),
     startDate: start.toISOString(),
     endDate: end ? end.toISOString() : null,
   });
 
-  // TODO: added!
+  return true;
 }
 
+function androidDate(date: Date) {
+  // 2016-01-01 01:00
+  return date.toISOString().replace(/T/, ' ').slice(0, 16);
+}
+
+function addAndroid(event: Event) {
+  const { start, end } = getStartEndTime(event);
+
+  SendIntentAndroid.addCalendarEvent({
+    title: event.name,
+    description: getDescription(event),
+    startDate: androidDate(start),
+    endDate: androidDate(end),
+    location: event.venue.fullAddress(),
+    recurrence: '',
+  });
+}
 export function add(event: Event) {
   if (Platform.OS == 'ios') {
-    addIOS(event);
+    return addIOS(event);
   } else {
-    //TODO: implement
+    return addAndroid(event);
   }
 }
