@@ -20,6 +20,7 @@ import {
   Autolink,
   Button,
   FBShareButton,
+  HorizontalView,
   ProportionalImage,
   SegmentedControl,
   Text,
@@ -51,12 +52,12 @@ class SubEventLine extends React.Component {
 
   render() {
     return (
-      <View style={eventStyles.detailLine}>
+      <HorizontalView style={eventStyles.detailLine}>
         <Image key="image" source={this.icon()} style={eventStyles.detailIcon} />
         <View style={eventStyles.detailTextContainer}>
         {this.textRender()}
         </View>
-      </View>
+      </HorizontalView>
     );
   }
 }
@@ -146,12 +147,12 @@ class EventSource extends SubEventLine {
   textRender() {
     if (this.props.source) {
       return (
-        <View style={{flexDirection: 'row'}}>
+        <HorizontalView>
           <Text style={eventStyles.detailText}>Source: </Text>
           <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
             <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{this.props.source.name}</Text>
           </TouchableOpacity>
-        </View>
+        </HorizontalView>
       );
     } else {
       return null;
@@ -422,10 +423,10 @@ export class FullEventView extends React.Component {
               <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
             </TouchableOpacity>
             <EventSource source={this.props.event.source} />
-            <View style={{flexDirection: 'row'}}>
-              <EventShare event={this.props.event} />
+            <HorizontalView style={{justifyContent: 'space-between'}}>
               <AddToCalendarButton event={this.props.event} />
-            </View>
+              <EventShare event={this.props.event} />
+            </HorizontalView>
           </View>
           <EventDescription description={this.props.event.description} />
           <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
@@ -476,7 +477,6 @@ const eventStyles = StyleSheet.create({
   },
   detailLine: {
     marginLeft: 20,
-    flexDirection: 'row',
     marginBottom: 10,
   },
   detailIcon: {
