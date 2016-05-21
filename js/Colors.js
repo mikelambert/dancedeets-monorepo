@@ -26,4 +26,6 @@ export const blueColor = '#70C0FF';
 //TODO: update this colors to reflect our color scheme?
 export const lightText = '#7F91A7';
 
-export const linkColor = yellowColors[1];
+const fbBlue = '#415DAE';
+export const linkColor = blueColor;
+//yellowColors[1];

@@ -22,6 +22,11 @@ class Button extends React.Component {
     caption: string;
     style: any;
     onPress: () => void;
+    size: string;
+  };
+
+  static defaultProps = {
+    size: 'large',
   };
 
   render() {
@@ -31,12 +36,13 @@ class Button extends React.Component {
       icon = <Image source={this.props.icon} style={styles.icon} />;
     }
     let content;
+    const size = this.props.size === 'small' ? styles.smallButton : styles.largeButton;
     if (this.props.type === 'primary' || this.props.type === undefined) {
       content = (
         <LinearGradient
           start={[0.2, 0]} end={[0.8, 1]}
           colors={[purpleColors[1], purpleColors[2]]}
-          style={[styles.button, styles.primaryButton]}>
+          style={[styles.button, size, styles.primaryButton]}>
           {icon}
           <Text style={[styles.caption, styles.primaryCaption]}>
             {caption}
@@ -44,9 +50,8 @@ class Button extends React.Component {
         </LinearGradient>
       );
     } else {
-      var border = this.props.type === 'bordered' && styles.border;
       content = (
-        <View style={[styles.button, border]}>
+        <View style={[styles.button, size, this.props.type === 'bordered' && styles.border]}>
           {icon}
           <Text style={[styles.caption, styles.secondaryCaption]}>
             {caption}
@@ -59,39 +64,39 @@ class Button extends React.Component {
         accessibilityTraits="button"
         onPress={this.props.onPress}
         activeOpacity={0.8}
-        style={[styles.container, this.props.style]}>
+        style={[this.props.style]}>
         {content}
       </TouchableOpacity>
     );
   }
 }
 
-const HEIGHT = 30;
-
 var styles = StyleSheet.create({
-  container: {
-    height: HEIGHT,
-    // borderRadius: HEIGHT / 2,
-    // borderWidth: 1 / PixelRatio.get(),
-  },
   button: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 40,
+  },
+  smallButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  largeButton: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 20,
   },
   border: {
     borderWidth: 1,
     borderColor: 'white',
-    borderRadius: HEIGHT / 2,
   },
   primaryButton: {
-    borderRadius: HEIGHT / 2,
     backgroundColor: 'transparent',
   },
   icon: {
-    marginRight: 12,
+    marginRight: 10,
   },
   caption: {
     letterSpacing: 1,

@@ -13,6 +13,8 @@ import ProportionalImage from './ProportionalImage';
 import SegmentedControl from './SegmentedControl';
 import ZoomableImage from './ZoomableImage';
 import * as DDText from './DDText';
+import * as Misc from './Misc';
+import * as FBButtons from './FBButtons';
 
 module.exports = {
   AutocompleteList,
@@ -21,5 +23,7 @@ module.exports = {
   ProportionalImage,
   SegmentedControl,
   ZoomableImage,
+  ...FBButtons,
+  ...Misc,
   ...DDText,
 };

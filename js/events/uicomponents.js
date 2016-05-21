@@ -19,6 +19,7 @@ import querystring from 'querystring';
 import {
   Autolink,
   Button,
+  FBShareButton,
   ProportionalImage,
   SegmentedControl,
   Text,
@@ -26,7 +27,6 @@ import {
 import { Event, Venue } from './models';
 import type { ThunkAction } from '../actions/types';
 import MapView from 'react-native-maps';
-import { ShareButton } from 'react-native-fbsdk';
 import moment from 'moment';
 import { linkColor, purpleColors } from '../Colors';
 import { add as CalendarAdd } from '../CalendarAPI';
@@ -83,6 +83,7 @@ class AddToCalendarButton extends React.Component {
       icon={require('./images/add_calendar.png')}
       caption="Add to Calendar"
       type="primary"
+      size="small"
       onPress={()=> CalendarAdd(this.props.event)}
     />;
   }
@@ -98,7 +99,7 @@ class EventDateTime extends SubEventLine {
     var formattedStart = dateFormatter(start.toDate());
 
     if (this.props.start) {
-      return <View>
+      return <View style={{alignItems: 'flex-start'}}>
         <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{formattedStart}</Text>
         {this.props.children}
       </View>;
@@ -372,7 +373,7 @@ class EventShare extends React.Component {
       contentUrl: this.props.event.getUrl(),
     };
     return <View style={eventStyles.shareIndent}>
-      <ShareButton shareContent={shareContent} />
+      <FBShareButton shareContent={shareContent} />
     </View>;
   }
 }
@@ -415,15 +416,16 @@ export class FullEventView extends React.Component {
             style={eventStyles.rowTitle}>{this.props.event.name}</Text>
           <View style={eventStyles.eventIndent}>
             <EventCategories categories={this.props.event.annotations.categories} />
-            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time}>
-              <AddToCalendarButton event={this.props.event} />
-            </EventDateTime>
+            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
             <EventRsvp event={this.props.event} />
             <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
               <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
             </TouchableOpacity>
             <EventSource source={this.props.event.source} />
-            <EventShare event={this.props.event} />
+            <View style={{flexDirection: 'row'}}>
+              <EventShare event={this.props.event} />
+              <AddToCalendarButton event={this.props.event} />
+            </View>
           </View>
           <EventDescription description={this.props.event.description} />
           <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
@@ -487,6 +489,7 @@ const eventStyles = StyleSheet.create({
     marginBottom: 20,
   },
   description: {
+    lineHeight: 20,
     marginBottom: 20,
   },
   eventMap: {
