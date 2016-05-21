@@ -6,6 +6,7 @@
 
 import React from 'react';
 import {View, ListView, TouchableHighlight, Platform, ActivityIndicatorIOS, ProgressBarAndroid} from 'react-native';
+import {HorizontalView} from './Misc';
 import {Text} from './DDText';
 import Qs from 'qs';
 import emojiFlags from 'emoji-flags';
@@ -295,11 +296,11 @@ export default class AutocompleteList extends React.Component {
   _renderLoader(rowData: Result) {
     if (rowData.isLoading === true) {
       return (
-        <View
+        <HorizontalView
           style={[defaultStyles.loader, this.props.styles.loader]}
         >
           {this._getRowLoader()}
-        </View>
+        </HorizontalView>
       );
     }
     return null;
@@ -315,7 +316,7 @@ export default class AutocompleteList extends React.Component {
         underlayColor="#c8c7cc"
       >
         <View>
-          <View style={[defaultStyles.row, this.props.styles.row]}>
+          <HorizontalView style={[defaultStyles.row, this.props.styles.row]}>
             <Text
               style={[defaultStyles.flag, defaultStyles.description, this.props.styles.description]}>
               {rowData.flag}
@@ -328,7 +329,7 @@ export default class AutocompleteList extends React.Component {
               {rowData.description}
             </Text>
             {this._renderLoader(rowData)}
-          </View>
+          </HorizontalView>
           <View style={[defaultStyles.separator, this.props.styles.separator]} />
         </View>
       </TouchableHighlight>
@@ -378,7 +379,6 @@ const defaultStyles = {
   row: {
     padding: 13,
     height: 44,
-    flexDirection: 'row',
   },
   separator: {
     height: 1,
@@ -389,7 +389,6 @@ const defaultStyles = {
   },
   loader: {
     // flex: 1,
-    flexDirection: 'row',
     justifyContent: 'flex-end',
     height: 20,
   },

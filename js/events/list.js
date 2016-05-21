@@ -35,7 +35,6 @@ import { auth } from '../api';
 import type { Address } from './formatAddress';
 import { format } from './formatAddress';
 import {
-  ProgressSpinner,
   Text,
 } from '../ui';
 
@@ -264,7 +263,6 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     height: 30,
-    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#222',
   },
@@ -275,7 +273,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   onebox: {
-    flexDirection: 'row',
     alignItems: 'center',
     height: 50,
   },
