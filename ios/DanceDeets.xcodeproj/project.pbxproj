@@ -17,8 +17,8 @@
 		1D18DC751CE64F60008916EF /* Ubuntu 500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D18DC721CE64F40008916EF /* Ubuntu 500.ttf */; };
 		1D18DC761CE64F60008916EF /* Ubuntu 700.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D18DC731CE64F40008916EF /* Ubuntu 700.ttf */; };
 		4636DFAF5A5D4A7AB7005601 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 059076B7FC8F4A299A6723B6 /* libAirMaps.a */; };
+		51A4421653AC25699AD8FDD5 /* libPods-DanceDeets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BFD514F05D309F180986C3D /* libPods-DanceDeets.a */; };
 		65290086BA6F49519FC629F9 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91C7134613AF432FA9CBE282 /* libRNBlur.a */; };
-		7A7931406B2560B8A7347FB6 /* libPods-DanceDeets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD44AA9DD03A6B80ABA2B850 /* libPods-DanceDeets.a */; };
 		D7C586A0CC09467A8950FA63 /* libRNGeocoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD44F5BB7D3E4E26BD56B7AA /* libRNGeocoder.a */; };
 		E178E74C986041BFB7273A05 /* libSMXCrashlytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFA7D60B6C68406EA54D5FAB /* libSMXCrashlytics.a */; };
 /* End PBXBuildFile section */
@@ -91,17 +91,17 @@
 		1D18DC721CE64F40008916EF /* Ubuntu 500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 500.ttf"; sourceTree = "<group>"; };
 		1D18DC731CE64F40008916EF /* Ubuntu 700.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 700.ttf"; sourceTree = "<group>"; };
 		23D9826590F4451E87AC7FA4 /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
-		3F2AE10902A4B3DF9B9ADD12 /* Pods-DanceDeets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.release.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.release.xcconfig"; sourceTree = "<group>"; };
 		425FCD0A3674418EBCA185AB /* RNCalendarEvents.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCalendarEvents.xcodeproj; path = "../node_modules/react-native-calendar-events/RNCalendarEvents.xcodeproj"; sourceTree = "<group>"; };
 		5934DC5729E04D51B1D73D18 /* libRNCalendarEvents.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCalendarEvents.a; sourceTree = "<group>"; };
 		5B6AE41C6D774CBAB1B330D9 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
+		8BFD514F05D309F180986C3D /* libPods-DanceDeets.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DanceDeets.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		91C7134613AF432FA9CBE282 /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
 		930B8DA0D4264A2DA9CCF846 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
-		AC693429287C251DA7465449 /* Pods-DanceDeets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.debug.xcconfig"; sourceTree = "<group>"; };
-		AD44AA9DD03A6B80ABA2B850 /* libPods-DanceDeets.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DanceDeets.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA7D4DDE63CF8892CDAB3ABD /* Pods-DanceDeets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.release.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.release.xcconfig"; sourceTree = "<group>"; };
 		DCB818C83BE24BAC9E7A12D7 /* RNGeocoder.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGeocoder.xcodeproj; path = "../node_modules/react-native-geocoder/RNGeocoder.xcodeproj"; sourceTree = "<group>"; };
 		DD44F5BB7D3E4E26BD56B7AA /* libRNGeocoder.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGeocoder.a; sourceTree = "<group>"; };
 		DFA7D60B6C68406EA54D5FAB /* libSMXCrashlytics.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSMXCrashlytics.a; sourceTree = "<group>"; };
+		E4444C9AF1BD0856CDA9C12E /* Pods-DanceDeets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.debug.xcconfig"; sourceTree = "<group>"; };
 		FDBFCC372EEA426AA160013B /* SMXCrashlytics.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SMXCrashlytics.xcodeproj; path = "../node_modules/react-native-fabric/ios/SMXCrashlytics.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -117,13 +117,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7A7931406B2560B8A7347FB6 /* libPods-DanceDeets.a in Frameworks */,
 				12734E6430A8417381283D0F /* libBVLinearGradient.a in Frameworks */,
 				E178E74C986041BFB7273A05 /* libSMXCrashlytics.a in Frameworks */,
 				4636DFAF5A5D4A7AB7005601 /* libAirMaps.a in Frameworks */,
 				65290086BA6F49519FC629F9 /* libRNBlur.a in Frameworks */,
 				D7C586A0CC09467A8950FA63 /* libRNGeocoder.a in Frameworks */,
 				1B7DC27979B2496DA46D6C0D /* libRNCalendarEvents.a in Frameworks */,
+				51A4421653AC25699AD8FDD5 /* libPods-DanceDeets.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,12 +218,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		3F4DDA6DC90E123F105F7DF6 /* Frameworks */ = {
+		385750238ADF409D5CBAE3F3 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				AD44AA9DD03A6B80ABA2B850 /* libPods-DanceDeets.a */,
+				E4444C9AF1BD0856CDA9C12E /* Pods-DanceDeets.debug.xcconfig */,
+				CA7D4DDE63CF8892CDAB3ABD /* Pods-DanceDeets.release.xcconfig */,
 			);
-			name = Frameworks;
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -246,8 +247,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* DanceDeetsTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
-				A88F1250496FA60ECD0257F0 /* Pods */,
-				3F4DDA6DC90E123F105F7DF6 /* Frameworks */,
+				385750238ADF409D5CBAE3F3 /* Pods */,
+				CC238AF6F95350AB36FB2B27 /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -262,13 +263,12 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A88F1250496FA60ECD0257F0 /* Pods */ = {
+		CC238AF6F95350AB36FB2B27 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				AC693429287C251DA7465449 /* Pods-DanceDeets.debug.xcconfig */,
-				3F2AE10902A4B3DF9B9ADD12 /* Pods-DanceDeets.release.xcconfig */,
+				8BFD514F05D309F180986C3D /* libPods-DanceDeets.a */,
 			);
-			name = Pods;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -296,15 +296,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "DanceDeets" */;
 			buildPhases = (
-				BE0B165BA96102DAE4AF6D67 /* 📦 Check Pods Manifest.lock */,
+				C530B98B3F046A93FB7816C8 /* 📦 Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				789BB91E5A251077BA8A4EE8 /* 📦 Embed Pods Frameworks */,
 				1D500D2E1CCA4460002FB714 /* ShellScript */,
-				F391BEA07F3C4EAAEE2D8F23 /* 📦 Copy Pods Resources */,
-				816AF02C62538C883941BE43 /* Embed Pods Frameworks */,
+				0A77AFC81C2DA9D67962EB14 /* 📦 Embed Pods Frameworks */,
+				4A0895545E2F8645CACE300B /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -465,20 +464,7 @@
 			shellPath = /bin/sh;
 			shellScript = "../node_modules/react-native/packager/react-native-xcode.sh\n../scripts/store-ip.sh";
 		};
-		1D500D2E1CCA4460002FB714 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "./Pods/Fabric/run f827a34a7ab66071f1fc473cdfa00f94403b241b 5ca03b8142243c84d2a6de3bd37dfebc06f7b5b986ece6a61d6474b3b7d6602b";
-		};
-		789BB91E5A251077BA8A4EE8 /* 📦 Embed Pods Frameworks */ = {
+		0A77AFC81C2DA9D67962EB14 /* 📦 Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -493,37 +479,20 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		816AF02C62538C883941BE43 /* Embed Pods Frameworks */ = {
+		1D500D2E1CCA4460002FB714 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "./Pods/Fabric/run f827a34a7ab66071f1fc473cdfa00f94403b241b 5ca03b8142243c84d2a6de3bd37dfebc06f7b5b986ece6a61d6474b3b7d6602b";
 		};
-		BE0B165BA96102DAE4AF6D67 /* 📦 Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "📦 Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		F391BEA07F3C4EAAEE2D8F23 /* 📦 Copy Pods Resources */ = {
+		4A0895545E2F8645CACE300B /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -536,6 +505,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C530B98B3F046A93FB7816C8 /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -637,7 +621,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AC693429287C251DA7465449 /* Pods-DanceDeets.debug.xcconfig */;
+			baseConfigurationReference = E4444C9AF1BD0856CDA9C12E /* Pods-DanceDeets.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -669,7 +653,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3F2AE10902A4B3DF9B9ADD12 /* Pods-DanceDeets.release.xcconfig */;
+			baseConfigurationReference = CA7D4DDE63CF8892CDAB3ABD /* Pods-DanceDeets.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
