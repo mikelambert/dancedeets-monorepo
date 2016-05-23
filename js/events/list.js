@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     height: 30,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     backgroundColor: '#222',
   },
   sectionHeaderText: {
