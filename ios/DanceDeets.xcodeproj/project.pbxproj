@@ -16,7 +16,11 @@
 		1D18DC741CE64F60008916EF /* Ubuntu 300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D18DC711CE64F40008916EF /* Ubuntu 300.ttf */; };
 		1D18DC751CE64F60008916EF /* Ubuntu 500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D18DC721CE64F40008916EF /* Ubuntu 500.ttf */; };
 		1D18DC761CE64F60008916EF /* Ubuntu 700.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D18DC731CE64F40008916EF /* Ubuntu 700.ttf */; };
+		1D2B996F1CF40507008EC850 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D2B996C1CF40507008EC850 /* FBSDKCoreKit.framework */; };
+		1D2B99701CF40507008EC850 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D2B996D1CF40507008EC850 /* FBSDKLoginKit.framework */; };
+		1D2B99711CF40507008EC850 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D2B996E1CF40507008EC850 /* FBSDKShareKit.framework */; };
 		4636DFAF5A5D4A7AB7005601 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 059076B7FC8F4A299A6723B6 /* libAirMaps.a */; };
+		4BCC1BF50FA04A2F9753C8C4 /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27359B7E03C543A2A9E04391 /* libRCTFBSDK.a */; };
 		51A4421653AC25699AD8FDD5 /* libPods-DanceDeets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BFD514F05D309F180986C3D /* libPods-DanceDeets.a */; };
 		65290086BA6F49519FC629F9 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91C7134613AF432FA9CBE282 /* libRNBlur.a */; };
 		D7C586A0CC09467A8950FA63 /* libRNGeocoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD44F5BB7D3E4E26BD56B7AA /* libRNGeocoder.a */; };
@@ -51,6 +55,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = BF8FCF941BFFB184000FCD37;
 			remoteInfo = RNGeocoder;
+		};
+		1D2B994A1CF401A8008EC850 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9F98951C42EA4C49A7CA0029 /* RCTFBSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9350E0F11CE3B0920041D815;
+			remoteInfo = RCTFBSDK;
 		};
 		1D500D361CCA50D6002FB714 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -90,13 +101,18 @@
 		1D18DC711CE64F40008916EF /* Ubuntu 300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 300.ttf"; sourceTree = "<group>"; };
 		1D18DC721CE64F40008916EF /* Ubuntu 500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 500.ttf"; sourceTree = "<group>"; };
 		1D18DC731CE64F40008916EF /* Ubuntu 700.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 700.ttf"; sourceTree = "<group>"; };
+		1D2B996C1CF40507008EC850 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../Documents/FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		1D2B996D1CF40507008EC850 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../../Documents/FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		1D2B996E1CF40507008EC850 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../../Documents/FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		23D9826590F4451E87AC7FA4 /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
+		27359B7E03C543A2A9E04391 /* libRCTFBSDK.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBSDK.a; sourceTree = "<group>"; };
 		425FCD0A3674418EBCA185AB /* RNCalendarEvents.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCalendarEvents.xcodeproj; path = "../node_modules/react-native-calendar-events/RNCalendarEvents.xcodeproj"; sourceTree = "<group>"; };
 		5934DC5729E04D51B1D73D18 /* libRNCalendarEvents.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCalendarEvents.a; sourceTree = "<group>"; };
 		5B6AE41C6D774CBAB1B330D9 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		8BFD514F05D309F180986C3D /* libPods-DanceDeets.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DanceDeets.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		91C7134613AF432FA9CBE282 /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
 		930B8DA0D4264A2DA9CCF846 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
+		9F98951C42EA4C49A7CA0029 /* RCTFBSDK.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBSDK.xcodeproj; path = "../node_modules/react-native-fbsdk/iOS/RCTFBSDK.xcodeproj"; sourceTree = "<group>"; };
 		CA7D4DDE63CF8892CDAB3ABD /* Pods-DanceDeets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.release.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.release.xcconfig"; sourceTree = "<group>"; };
 		DCB818C83BE24BAC9E7A12D7 /* RNGeocoder.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGeocoder.xcodeproj; path = "../node_modules/react-native-geocoder/RNGeocoder.xcodeproj"; sourceTree = "<group>"; };
 		DD44F5BB7D3E4E26BD56B7AA /* libRNGeocoder.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGeocoder.a; sourceTree = "<group>"; };
@@ -119,11 +135,15 @@
 			files = (
 				12734E6430A8417381283D0F /* libBVLinearGradient.a in Frameworks */,
 				E178E74C986041BFB7273A05 /* libSMXCrashlytics.a in Frameworks */,
+				1D2B99701CF40507008EC850 /* FBSDKLoginKit.framework in Frameworks */,
 				4636DFAF5A5D4A7AB7005601 /* libAirMaps.a in Frameworks */,
 				65290086BA6F49519FC629F9 /* libRNBlur.a in Frameworks */,
 				D7C586A0CC09467A8950FA63 /* libRNGeocoder.a in Frameworks */,
+				1D2B99711CF40507008EC850 /* FBSDKShareKit.framework in Frameworks */,
 				1B7DC27979B2496DA46D6C0D /* libRNCalendarEvents.a in Frameworks */,
 				51A4421653AC25699AD8FDD5 /* libPods-DanceDeets.a in Frameworks */,
+				1D2B996F1CF40507008EC850 /* FBSDKCoreKit.framework in Frameworks */,
+				4BCC1BF50FA04A2F9753C8C4 /* libRCTFBSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +214,14 @@
 			name = Fonts;
 			sourceTree = "<group>";
 		};
+		1D2B99451CF401A8008EC850 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D2B994B1CF401A8008EC850 /* libRCTFBSDK.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		1D500D321CCA50D6002FB714 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -236,6 +264,7 @@
 				23D9826590F4451E87AC7FA4 /* RNBlur.xcodeproj */,
 				DCB818C83BE24BAC9E7A12D7 /* RNGeocoder.xcodeproj */,
 				425FCD0A3674418EBCA185AB /* RNCalendarEvents.xcodeproj */,
+				9F98951C42EA4C49A7CA0029 /* RCTFBSDK.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -266,6 +295,9 @@
 		CC238AF6F95350AB36FB2B27 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1D2B996C1CF40507008EC850 /* FBSDKCoreKit.framework */,
+				1D2B996D1CF40507008EC850 /* FBSDKLoginKit.framework */,
+				1D2B996E1CF40507008EC850 /* FBSDKShareKit.framework */,
 				8BFD514F05D309F180986C3D /* libPods-DanceDeets.a */,
 			);
 			name = Frameworks;
@@ -358,6 +390,10 @@
 					ProjectRef = 5B6AE41C6D774CBAB1B330D9 /* BVLinearGradient.xcodeproj */;
 				},
 				{
+					ProductGroup = 1D2B99451CF401A8008EC850 /* Products */;
+					ProjectRef = 9F98951C42EA4C49A7CA0029 /* RCTFBSDK.xcodeproj */;
+				},
+				{
 					ProductGroup = 1D18DC511CDECAD5008916EF /* Products */;
 					ProjectRef = 23D9826590F4451E87AC7FA4 /* RNBlur.xcodeproj */;
 				},
@@ -402,6 +438,13 @@
 			fileType = archive.ar;
 			path = libRNGeocoder.a;
 			remoteRef = 1D18DC631CE2E03F008916EF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1D2B994B1CF401A8008EC850 /* libRCTFBSDK.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTFBSDK.a;
+			remoteRef = 1D2B994A1CF401A8008EC850 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		1D500D371CCA50D6002FB714 /* libSMXCrashlytics.a */ = {
@@ -587,6 +630,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets.app/DanceDeets";
@@ -613,6 +657,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets.app/DanceDeets";
@@ -627,6 +672,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -637,6 +686,7 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -658,6 +708,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -668,6 +722,7 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -703,6 +758,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "~/Documents/FacebookSDK";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -727,6 +783,7 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -756,6 +813,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "~/Documents/FacebookSDK";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -773,6 +831,7 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

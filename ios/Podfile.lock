@@ -1,35 +1,10 @@
 PODS:
-  - Bolts (1.7.0):
-    - Bolts/AppLinks (= 1.7.0)
-    - Bolts/Tasks (= 1.7.0)
-  - Bolts/AppLinks (1.7.0):
-    - Bolts/Tasks
-  - Bolts/Tasks (1.7.0)
   - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
   - Fabric (1.6.7)
-  - FBSDKCoreKit (4.11.0):
-    - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.11.0):
-    - FBSDKCoreKit
-  - FBSDKShareKit (4.11.0):
-    - FBSDKCoreKit
   - Mixpanel (2.9.6):
     - Mixpanel/Mixpanel (= 2.9.6)
   - Mixpanel/Mixpanel (2.9.6)
-  - React (0.25.1):
-    - React/Core (= 0.25.1)
-  - react-native-fbsdkcore (0.1.0):
-    - FBSDKCoreKit
-    - React
-  - react-native-fbsdklogin (0.1.0):
-    - FBSDKCoreKit
-    - FBSDKLoginKit
-    - React
-  - react-native-fbsdkshare (0.1.0):
-    - FBSDKCoreKit
-    - FBSDKShareKit
-    - React
   - react-native-mixpanel (0.0.6):
     - Mixpanel
   - React/Core (0.25.1)
@@ -57,9 +32,6 @@ DEPENDENCIES:
   - Crashlytics
   - Fabric
   - Mixpanel
-  - react-native-fbsdkcore (from `../node_modules/react-native-fbsdk/iOS/core`)
-  - react-native-fbsdklogin (from `../node_modules/react-native-fbsdk/iOS/login`)
-  - react-native-fbsdkshare (from `../node_modules/react-native-fbsdk/iOS/share`)
   - react-native-mixpanel (from `../node_modules/react-native-mixpanel`)
   - React/Core (from `../node_modules/react-native`)
   - React/RCTActionSheet (from `../node_modules/react-native`)
@@ -75,29 +47,16 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   React:
     :path: "../node_modules/react-native"
-  react-native-fbsdkcore:
-    :path: "../node_modules/react-native-fbsdk/iOS/core"
-  react-native-fbsdklogin:
-    :path: "../node_modules/react-native-fbsdk/iOS/login"
-  react-native-fbsdkshare:
-    :path: "../node_modules/react-native-fbsdk/iOS/share"
   react-native-mixpanel:
     :path: "../node_modules/react-native-mixpanel"
 
 SPEC CHECKSUMS:
-  Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
-  FBSDKCoreKit: 686ac982723a14ec9ddb85e2f81235d7706c891b
-  FBSDKLoginKit: bade9fc78277764149ccc5bfaadbf13c83175c6a
-  FBSDKShareKit: 2d1746144cfc8a9dbbd24997c34ee0471be51b6a
   Mixpanel: 048a9f2512ac1bb8bfdecf719da024873f50a9c2
   React: b35b2b2e07273da1f7266ab2975e0d1033bd913d
-  react-native-fbsdkcore: 4b4f0d94b9d19dc8d21427fbb0fe54180486885c
-  react-native-fbsdklogin: 9857d698accf58ab07039fd39320df9476eb40a6
-  react-native-fbsdkshare: 30022ca3609aa4bfe5daf0a77a7444084e8e7c9f
   react-native-mixpanel: 1e7937b363cde6aa993bdabdc8c045065fb4515c
 
-PODFILE CHECKSUM: 3f46e83a694e13eb90ae2ae19739e183a9181409
+PODFILE CHECKSUM: 6f3bad74d93abaa232583dd1ecf58db3a5ed419e
 
 COCOAPODS: 1.0.0
