@@ -12,7 +12,7 @@
     "querystring": "^0.2.0",
     "react": "^0.14.8",
     "react-native": "^0.25.0",
-    "react-native-autolink": "^0.2.2",
+    "react-native-autolink": "mikelambert/react-native-autolink",
     "react-native-blur": "^0.8.0",
     "react-native-calendar-events": "^0.1.4",
     "react-native-carousel": "^0.8.0",
