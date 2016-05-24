@@ -31,7 +31,7 @@ import Geocoder from 'react-native-geocoder';
 const {
   Globalize,
 } = require('react-native-globalize');
-import { auth } from '../api';
+import { auth } from '../api/dancedeets';
 import type { Address } from './formatAddress';
 import { format } from './formatAddress';
 import {

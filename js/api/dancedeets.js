@@ -9,7 +9,7 @@
 import querystring from 'querystring';
 import { Platform } from 'react-native';
 import { AccessToken } from 'react-native-fbsdk';
-import type { TimePeriod } from './events/search';
+import type { TimePeriod } from '../events/search';
 
 const DEV_SERVER = false;
 

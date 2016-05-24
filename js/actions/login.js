@@ -6,26 +6,17 @@
 
 'use strict';
 
-import { AccessToken } from 'react-native-fbsdk';
-import FacebookSDK from 'FacebookSDK';
+import {
+  AccessToken,
+  LoginManager,
+} from 'react-native-fbsdk';
 import ActionSheetIOS from 'ActionSheetIOS';
 import {Platform} from 'react-native';
 import Alert from 'Alert';
-import { auth } from '../api';
+import { auth } from '../api/dancedeets';
 
 import type { Action, ThunkAction } from './types';
 
-async function queryFacebookAPI(path, ...args): Promise {
-  return new Promise((resolve, reject) => {
-    FacebookSDK.api(path, ...args, (response) => {
-      if (response && !response.error) {
-        resolve(response);
-      } else {
-        reject(response && response.error);
-      }
-    });
-  });
-}
 
 export function loginStartOnboard(): Action {
   return {
@@ -50,7 +41,7 @@ export function skipLogin(): Action {
 export function logOut(): ThunkAction {
   return (dispatch) => {
     // TODO: Mixpanel logout
-    FacebookSDK.logout();
+    LoginManager.logOut();
 
     // TODO: Make sure reducers clear their state
     return dispatch({

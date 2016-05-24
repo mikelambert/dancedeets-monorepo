@@ -10,6 +10,7 @@ import {
   GraphRequestManager,
   LoginManager,
 } from 'react-native-fbsdk';
+import { performRequest } from './fb';
 
 export default class RsvpOnFB {
   static RSVPs = [
@@ -21,7 +22,7 @@ export default class RsvpOnFB {
   async send(eventId: string, rsvpApiValue: string) {
     try {
       const path = '/' + eventId + '/' + rsvpApiValue;
-      const result = await this.sendRequest('POST', path);
+      const result = await performRequest('POST', path);
       return result;
     } catch (error) {
       if (error.code === '403') {
@@ -36,23 +37,6 @@ export default class RsvpOnFB {
         throw error;
       }
     }
-  }
-
-  sendRequest(method: string, path: string) {
-    return new Promise((resolve, reject) => {
-      const request = new GraphRequest(
-        path,
-        {httpMethod: method},
-        function(error: ?Object, result: ?Object) {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        }
-      );
-      new GraphRequestManager().addRequest(request).start();
-    });
   }
 
   getRsvpIndex(eventId: string) {

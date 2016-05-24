@@ -17,6 +17,10 @@ declare module 'react-native-linear-gradient' {
   declare var exports: any;
 }
 
+declare module 'react-native-segmented-android' {
+  declare var exports: any;
+}
+
 declare module 'react-native-push-notification' {
   declare var exports: any;
 }

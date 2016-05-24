@@ -32,8 +32,8 @@ import type { ThunkAction } from '../actions/types';
 import MapView from 'react-native-maps';
 import moment from 'moment';
 import { linkColor, purpleColors } from '../Colors';
-import { add as CalendarAdd } from '../CalendarAPI';
-import RsvpOnFB from '../rsvp-on-fb';
+import { add as CalendarAdd } from '../api/calendar';
+import RsvpOnFB from '../api/fb-event-rsvp';
 
 const {
   Globalize,

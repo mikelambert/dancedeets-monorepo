@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import CalendarEventsIOS from 'react-native-calendar-events';
 import SendIntentAndroid from 'react-native-send-intent';
-import { Event } from './events/models';
+import { Event } from '../events/models';
 import moment from 'moment';
 
 function authorizationStatus(): Promise {

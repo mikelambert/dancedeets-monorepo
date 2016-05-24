@@ -10,7 +10,7 @@ import type { Action, ThunkAction } from './types';
 import type { SearchQuery, SearchResults } from '../events/search';
 import type { Dispatch } from '../actions/types';
 
-import { search } from '../api';
+import { search } from '../api/dancedeets';
 
 export function performSearch(searchQuery: SearchQuery) {
   return async function(dispatch: Dispatch) {
