@@ -47,7 +47,7 @@ export default class RsvpOnFB {
       }
       const graphManager = new GraphRequestManager();
       RsvpOnFB.RSVPs.forEach((x, index) => {
-        const path = '/' + eventId + '/' + x.apiValue + '/' + accessToken.userID;
+        const path = '/' + eventId + '/' + x.apiValue + '/' + accessToken.userID + '?fields=id';
         const request = new GraphRequest(
           path,
           null,
