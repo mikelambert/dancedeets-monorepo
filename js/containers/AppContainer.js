@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import NavigationHeaderTitle from '../react-navigation';
 
 import EventListContainer from '../events/list';
-import { FullEventView } from '../events/uicomponents';
+import EventPager from '../events/EventPager';
 import { navigatePush, navigatePop } from '../actions';
 import { ZoomableImage } from '../ui';
 
@@ -89,11 +89,14 @@ class AppContainer extends React.Component {
 				onEventSelected={(event)=>this.props.onNavigate({key: 'EventView', title: event.name, event: event})}
 			/>;
 		case 'EventView':
-			return <FullEventView
-				onFlyerSelected={(event)=>this.props.onNavigate({key: 'FlyerView', image: event.cover.images[0].source,
+      return <EventPager
+				onFlyerSelected={(event)=>this.props.onNavigate({
+          key: 'FlyerView',
+          image: event.cover.images[0].source,
 					width: event.cover.images[0].width,
-					height: event.cover.images[0].height,})}
-				event={navigationState.event}
+					height: event.cover.images[0].height,
+        })}
+				selectedEvent={navigationState.event}
 			/>;
 		case 'FlyerView':
 			return <ZoomableImage
