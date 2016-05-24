@@ -4,6 +4,8 @@
  * @flow
  */
 
+'use strict';
+
 import React from 'react';
 import {
   Image,
@@ -31,7 +33,6 @@ import MapView from 'react-native-maps';
 import moment from 'moment';
 import { linkColor, purpleColors } from '../Colors';
 import { add as CalendarAdd } from '../CalendarAPI';
-
 import RsvpOnFB from '../rsvp-on-fb';
 
 const {
