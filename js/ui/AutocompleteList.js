@@ -10,6 +10,7 @@ import {HorizontalView} from './Misc';
 import {Text} from './DDText';
 import Qs from 'qs';
 import emojiFlags from 'emoji-flags';
+import { googleKey } from '../keys';
 
 type Result = {
   description: string;
@@ -50,7 +51,7 @@ export default class AutocompleteList extends React.Component {
     fetchDetails: false,
     textValue: () => '',
     query: {
-      key: 'AIzaSyDEHGAeT9NkW-CvcaDMLbz4B6-abdvPi4I',
+      key: googleKey,
       language: 'en', // language of the results
       types: '(regions)', // default: 'geocode'
       //types: 'geocode',
