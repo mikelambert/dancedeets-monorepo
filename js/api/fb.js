@@ -18,6 +18,8 @@ export function performRequest(method: string, path: string) {
       function(error: ?Object, result: ?Object) {
         if (error) {
           reject(error);
+        } else if (result == null) {
+          reject('Empty result');
         } else {
           resolve(result);
         }

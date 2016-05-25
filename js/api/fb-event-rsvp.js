@@ -21,7 +21,7 @@ export default class RsvpOnFB {
 
   async send(eventId: string, rsvpApiValue: string) {
     try {
-      const path = '/' + eventId + '/' + rsvpApiValue;
+      const path = eventId + '/' + rsvpApiValue;
       const result = await performRequest('POST', path);
       return result;
     } catch (error) {
@@ -47,7 +47,7 @@ export default class RsvpOnFB {
       }
       const graphManager = new GraphRequestManager();
       RsvpOnFB.RSVPs.forEach((x, index) => {
-        const path = '/' + eventId + '/' + x.apiValue + '/' + accessToken.userID + '?fields=id';
+        const path = eventId + '/' + x.apiValue + '/' + accessToken.userID + '?fields=id';
         const request = new GraphRequest(
           path,
           null,
