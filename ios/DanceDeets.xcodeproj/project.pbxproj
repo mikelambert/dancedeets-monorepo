@@ -49,13 +49,6 @@
 			remoteGlobalIDString = A68BD7BC1BC31318005F02DF;
 			remoteInfo = RNBlur;
 		};
-		1D18DC631CE2E03F008916EF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DCB818C83BE24BAC9E7A12D7 /* RNGeocoder.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BF8FCF941BFFB184000FCD37;
-			remoteInfo = RNGeocoder;
-		};
 		1D2B994A1CF401A8008EC850 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9F98951C42EA4C49A7CA0029 /* RCTFBSDK.xcodeproj */;
@@ -83,6 +76,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = BEC43C6A1C723089001221C6;
 			remoteInfo = RNCalendarEvents;
+		};
+		1DE850751CF5FCB800397243 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 936D8EFFDF8740AFBD1C726E /* RNGeocoder.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BF8FCF941BFFB184000FCD37;
+			remoteInfo = RNGeocoder;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -112,9 +112,9 @@
 		8BFD514F05D309F180986C3D /* libPods-DanceDeets.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DanceDeets.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		91C7134613AF432FA9CBE282 /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
 		930B8DA0D4264A2DA9CCF846 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
+		936D8EFFDF8740AFBD1C726E /* RNGeocoder.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGeocoder.xcodeproj; path = "../node_modules/react-native-geocoder/ios/RNGeocoder.xcodeproj"; sourceTree = "<group>"; };
 		9F98951C42EA4C49A7CA0029 /* RCTFBSDK.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBSDK.xcodeproj; path = "../node_modules/react-native-fbsdk/iOS/RCTFBSDK.xcodeproj"; sourceTree = "<group>"; };
 		CA7D4DDE63CF8892CDAB3ABD /* Pods-DanceDeets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.release.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.release.xcconfig"; sourceTree = "<group>"; };
-		DCB818C83BE24BAC9E7A12D7 /* RNGeocoder.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGeocoder.xcodeproj; path = "../node_modules/react-native-geocoder/RNGeocoder.xcodeproj"; sourceTree = "<group>"; };
 		DD44F5BB7D3E4E26BD56B7AA /* libRNGeocoder.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGeocoder.a; sourceTree = "<group>"; };
 		DFA7D60B6C68406EA54D5FAB /* libSMXCrashlytics.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSMXCrashlytics.a; sourceTree = "<group>"; };
 		E4444C9AF1BD0856CDA9C12E /* Pods-DanceDeets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.debug.xcconfig"; sourceTree = "<group>"; };
@@ -196,14 +196,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1D18DC5D1CE2E03F008916EF /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1D18DC641CE2E03F008916EF /* libRNGeocoder.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		1D18DC6B1CE64F32008916EF /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -246,6 +238,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1DE8506D1CF5FCB800397243 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1DE850761CF5FCB800397243 /* libRNGeocoder.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		385750238ADF409D5CBAE3F3 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -262,9 +262,9 @@
 				FDBFCC372EEA426AA160013B /* SMXCrashlytics.xcodeproj */,
 				930B8DA0D4264A2DA9CCF846 /* AirMaps.xcodeproj */,
 				23D9826590F4451E87AC7FA4 /* RNBlur.xcodeproj */,
-				DCB818C83BE24BAC9E7A12D7 /* RNGeocoder.xcodeproj */,
 				425FCD0A3674418EBCA185AB /* RNCalendarEvents.xcodeproj */,
 				9F98951C42EA4C49A7CA0029 /* RCTFBSDK.xcodeproj */,
+				936D8EFFDF8740AFBD1C726E /* RNGeocoder.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -402,8 +402,8 @@
 					ProjectRef = 425FCD0A3674418EBCA185AB /* RNCalendarEvents.xcodeproj */;
 				},
 				{
-					ProductGroup = 1D18DC5D1CE2E03F008916EF /* Products */;
-					ProjectRef = DCB818C83BE24BAC9E7A12D7 /* RNGeocoder.xcodeproj */;
+					ProductGroup = 1DE8506D1CF5FCB800397243 /* Products */;
+					ProjectRef = 936D8EFFDF8740AFBD1C726E /* RNGeocoder.xcodeproj */;
 				},
 				{
 					ProductGroup = 1D500D321CCA50D6002FB714 /* Products */;
@@ -433,13 +433,6 @@
 			remoteRef = 1D18DC561CDECAD5008916EF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1D18DC641CE2E03F008916EF /* libRNGeocoder.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNGeocoder.a;
-			remoteRef = 1D18DC631CE2E03F008916EF /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		1D2B994B1CF401A8008EC850 /* libRCTFBSDK.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -466,6 +459,13 @@
 			fileType = archive.ar;
 			path = libRNCalendarEvents.a;
 			remoteRef = 1DC40AC61CEED15700E5A485 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1DE850761CF5FCB800397243 /* libRNGeocoder.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNGeocoder.a;
+			remoteRef = 1DE850751CF5FCB800397243 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -687,6 +687,7 @@
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-geocoder/ios/RNGeocoder",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -723,6 +724,7 @@
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-geocoder/ios/RNGeocoder",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -784,6 +786,7 @@
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-geocoder/ios/RNGeocoder",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -832,6 +835,7 @@
 					"$(SRCROOT)/../node_modules/react-native-geocoder/RNGeocoder/**",
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-geocoder/ios/RNGeocoder",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

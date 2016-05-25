@@ -27,10 +27,10 @@ import {
   performSearch,
 } from '../actions';
 import { linkColor } from '../Colors';
-import Geocoder from 'react-native-geocoder';
 const {
   Globalize,
 } = require('react-native-globalize');
+import Geocoder from '../api/geocoder';
 import { auth } from '../api/dancedeets';
 import type { Address } from './formatAddress';
 import { format } from './formatAddress';
@@ -164,7 +164,8 @@ class EventListContainer extends React.Component {
     const highAccuracy = Platform.OS == 'ios';
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        const address: Address = await Geocoder.reverseGeocodeLocation(position.coords);
+        const newCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
+        const address: Address = await Geocoder.geocodePosition(newCoords);
         const formattedAddress = format(address[0]);
         // Trigger this search without waiting around
         auth(null, {location: formattedAddress});

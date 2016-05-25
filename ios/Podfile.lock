@@ -7,25 +7,25 @@ PODS:
   - Mixpanel/Mixpanel (2.9.6)
   - react-native-mixpanel (0.0.6):
     - Mixpanel
-  - React/Core (0.25.1)
-  - React/RCTActionSheet (0.25.1):
+  - React/Core (0.26.2)
+  - React/RCTActionSheet (0.26.2):
     - React/Core
-  - React/RCTGeolocation (0.25.1):
+  - React/RCTGeolocation (0.26.2):
     - React/Core
-  - React/RCTImage (0.25.1):
+  - React/RCTImage (0.26.2):
     - React/Core
     - React/RCTNetwork
-  - React/RCTLinkingIOS (0.25.1):
+  - React/RCTLinkingIOS (0.26.2):
     - React/Core
-  - React/RCTNetwork (0.25.1):
+  - React/RCTNetwork (0.26.2):
     - React/Core
-  - React/RCTPushNotification (0.25.1):
+  - React/RCTPushNotification (0.26.2):
     - React/Core
-  - React/RCTText (0.25.1):
+  - React/RCTText (0.26.2):
     - React/Core
-  - React/RCTVibration (0.25.1):
+  - React/RCTVibration (0.26.2):
     - React/Core
-  - React/RCTWebSocket (0.25.1):
+  - React/RCTWebSocket (0.26.2):
     - React/Core
 
 DEPENDENCIES:
@@ -54,7 +54,7 @@ SPEC CHECKSUMS:
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   Mixpanel: 048a9f2512ac1bb8bfdecf719da024873f50a9c2
-  React: b35b2b2e07273da1f7266ab2975e0d1033bd913d
+  React: a764d67f6cf360723120951301cba3ee5ee05ce2
   react-native-mixpanel: 1e7937b363cde6aa993bdabdc8c045065fb4515c
 
 PODFILE CHECKSUM: 6f3bad74d93abaa232583dd1ecf58db3a5ed419e

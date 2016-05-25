@@ -12,6 +12,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactActivity;
+import com.kevinejohn.RNMixpanel.RNMixpanel;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
@@ -54,6 +55,7 @@ public class MainActivity extends ReactActivity {
         mCallbackManager = CallbackManager.Factory.create();
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RNMixpanel(),
             new RNGeocoderPackage(),
             new AirPackage(),
             new FabricPackage(null),
