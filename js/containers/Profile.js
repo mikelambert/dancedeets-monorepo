@@ -80,6 +80,7 @@ class Profile extends React.Component {
     this.state = {
       name: null,
       url: null,
+      friendCount: null,
     };
   }
 
@@ -112,7 +113,7 @@ class Profile extends React.Component {
       <Text>{this.state.name}</Text>
       <Text>show current city?</Text>
 
-      <Text>{this.state.friendCount} friends using DanceDeets</Text>
+      {this.state.friendCount?<Text>{this.state.friendCount} friends using DanceDeets</Text>:null}
       <Button caption="Invite more friends"/>
 
       <Button
