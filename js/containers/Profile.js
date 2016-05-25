@@ -24,29 +24,16 @@ import type { Dispatch } from '../actions/types';
 
 const credits = [
   [
-    'Website, App, Programming',
-    ['DanceDeets'],
+    'Web & App Programming',
+    ['Mike Lambert'],
   ],
   [
     'Logo',
-    ['Cricket'],
+    ['James "Cricket" Colter'],
   ],
   [
-    'Mobile App Photos',
+    'App Login Photos',
     ['dancephotos.ch'],
-  ],
-  [
-    'Japan Events',
-    [
-      'Enter The Stage',
-      'Dance Delight',
-      'DEWS',
-      'Tokyo Dance Life',
-    ],
-  ],
-  [
-    'Korea Events',
-    ['Street Dance Korea'],
   ],
 ];
 
@@ -59,7 +46,7 @@ class CreditSubList extends React.Component {
 
 class Credits extends React.Component {
   render() {
-    const creditHeader = <Text style={{fontWeight: 'bold', fontSize: 20}}>Credits</Text>
+    const creditHeader = <Text style={{fontWeight: 'bold', fontSize: 20}}>Dancedeets Credits</Text>
     const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
     return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
   }
