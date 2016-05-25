@@ -42,9 +42,8 @@ class Profile extends React.Component {
   }
 
   async setupProfilePhoto() {
-    const profileData = await performRequest('GET', 'me?fields=picture');
-    const pictureData = profileData.picture.data;
-    this.setState({...this.state, url: pictureData.url});
+    const pictureData = await performRequest('GET', 'me/picture?type=large&fields=url&redirect=0');
+    this.setState({...this.state, url: pictureData.data.url});
   }
 
   componentWillMount() {
@@ -80,7 +79,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   profileImage: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
   }
 });

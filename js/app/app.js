@@ -15,7 +15,6 @@ import {
   View,
 } from 'react-native';
 import LoginFlow from '../login/LoginFlow';
-import AppContainer from '../containers/AppContainer';
 // import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';
 import TabbedApp from './TabbedApp';
