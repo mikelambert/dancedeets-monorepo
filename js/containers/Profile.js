@@ -52,7 +52,7 @@ const credits = [
 
 class CreditSubList extends React.Component {
   render() {
-    const subcreditGroups = this.props.list.map((x) => <Text style={{left: 10}}>- {x}</Text>);
+    const subcreditGroups = this.props.list.map((x) => <Text key={x} style={{left: 10}}>- {x}</Text>);
     return <View>{subcreditGroups}</View>;
   }
 }
@@ -60,7 +60,7 @@ class CreditSubList extends React.Component {
 class Credits extends React.Component {
   render() {
     const creditHeader = <Text style={{fontWeight: 'bold', fontSize: 20}}>Credits</Text>
-    const creditGroups = credits.map((x) => <View><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
+    const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
     return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
   }
 }
@@ -107,7 +107,6 @@ class Profile extends React.Component {
 
   render() {
     const image = this.state.url ? <Image style={styles.profileImage} source={{uri: this.state.url}}/> : null;
-    console.log(image);
     return <View style={styles.container}>
       {image}
       <Text>{this.state.name}</Text>
