@@ -18,7 +18,7 @@ import LoginFlow from '../login/LoginFlow';
 import AppContainer from '../containers/AppContainer';
 // import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';
-
+import TabbedApp from './TabbedApp';
 
 function select(store) {
   return {
@@ -66,7 +66,7 @@ class App extends React.Component {
           backgroundColor="rgba(0, 0, 0, 0.2)"
           barStyle="light-content"
          />
-        <AppContainer />
+        <TabbedApp />
       </View>
     );
   }
