@@ -17,7 +17,7 @@ import {
 import LoginFlow from '../login/LoginFlow';
 // import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';
-import TabbedApp from './TabbedApp';
+import TabbedApp from '../containers/TabbedApp';
 
 function select(store) {
   return {

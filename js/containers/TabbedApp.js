@@ -7,7 +7,10 @@
 'use strict';
 
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import {
+  Image,
+  StyleSheet
+} from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import AppContainer from '../containers/AppContainer';
 import Profile from '../containers/Profile';
@@ -44,8 +47,8 @@ export default class TabbedAppView extends React.Component {
         title="Events"
         titleStyle={styles.titleStyle}
         selectedTitleStyle={styles.selectedTitleStyle}
-        //renderIcon={() => <Image source={...} />}
-        //renderSelectedIcon={() => <Image source={...} />}
+        renderIcon={() => <Image source={require('../containers/icons/events.png')} />}
+        renderSelectedIcon={() => <Image source={require('../containers/icons/events-highlighted.png')} />}
         onPress={() => this.setState({ selectedTab: 'home' })}>
         <AppContainer />
       </TabNavigator.Item>
@@ -54,8 +57,8 @@ export default class TabbedAppView extends React.Component {
         title="Profile"
         titleStyle={styles.titleStyle}
         selectedTitleStyle={styles.selectedTitleStyle}
-        //renderIcon={() => <Image source={...} />}
-        //renderSelectedIcon={() => <Image source={...} />}
+        renderIcon={() => <Image source={require('../containers/icons/profile.png')} />}
+        renderSelectedIcon={() => <Image source={require('../containers/icons/profile-highlighted.png')} />}
         onPress={() => this.setState({ selectedTab: 'profile' })}>
         <Profile />
       </TabNavigator.Item>
@@ -73,6 +76,6 @@ let styles = StyleSheet.create({
     color: 'white',
   },
   selectedTitleStyle: {
-    color: yellowColors[yellowColors.length-1],
+    color: yellowColors[1],
   },
 });
