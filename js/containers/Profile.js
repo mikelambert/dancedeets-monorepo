@@ -16,8 +16,54 @@ import { connect } from 'react-redux';
 
 import { navigatePush, navigatePop } from '../actions';
 import { performRequest } from '../api/fb';
-import { Text } from '../ui';
+import {
+  Button,
+  Text,
+} from '../ui';
 import type { Dispatch } from '../actions/types';
+
+const credits = [
+  [
+    'Website, App, Programming',
+    ['DanceDeets'],
+  ],
+  [
+    'Logo',
+    ['Cricket'],
+  ],
+  [
+    'Mobile App Photos',
+    ['dancephotos.ch'],
+  ],
+  [
+    'Japan Events',
+    [
+      'Enter The Stage',
+      'Dance Delight',
+      'DEWS',
+      'Tokyo Dance Life',
+    ],
+  ],
+  [
+    'Korea Events',
+    ['Street Dance Korea'],
+  ],
+];
+
+class CreditSubList extends React.Component {
+  render() {
+    const subcreditGroups = this.props.list.map((x) => <Text style={{left: 10}}>- {x}</Text>);
+    return <View>{subcreditGroups}</View>;
+  }
+}
+
+class Credits extends React.Component {
+  render() {
+    const creditHeader = <Text style={{fontWeight: 'bold', fontSize: 20}}>Credits</Text>
+    const creditGroups = credits.map((x) => <View><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
+    return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
+  }
+}
 
 class Profile extends React.Component {
   props: {
@@ -26,6 +72,7 @@ class Profile extends React.Component {
   state: {
     name: ?string,
     url: ?string,
+    friendCount: ?number,
   };
 
   constructor(props) {
@@ -46,9 +93,15 @@ class Profile extends React.Component {
     this.setState({...this.state, url: pictureData.data.url});
   }
 
+  async setupProfileFriends() {
+    const friendData = await performRequest('GET', 'me/friends?limit=1000&fields=id');
+    this.setState({...this.state, friendCount: friendData.data.length});
+  }
+
   componentWillMount() {
     this.setupProfilePhoto();
     this.setupProfileName();
+    this.setupProfileFriends();
   }
 
   render() {
@@ -57,6 +110,19 @@ class Profile extends React.Component {
     return <View style={styles.container}>
       {image}
       <Text>{this.state.name}</Text>
+      <Text>show current city?</Text>
+
+      <Text>{this.state.friendCount} friends using DanceDeets</Text>
+      <Button caption="Invite more friends"/>
+
+      <Button
+        icon={require('../login/icons/facebook.png')}
+        caption="Logout"
+        />
+
+      <Button caption="Send Feedback" />
+
+      <Credits style={{marginTop: 20}}/>
     </View>;
   }
 }
