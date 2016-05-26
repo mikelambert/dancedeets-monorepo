@@ -130,7 +130,7 @@ class SearchHeader extends React.Component {
     return <View style={{flex: 1}}>
       <View
         onLayout={this.onLayout}
-        style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]}
+        style={[{paddingTop: StatusBar.currentHeight || 15}, styles.floatTop, styles.statusBar]}
         blurType="dark"
       >
         <SearchInput
@@ -202,7 +202,6 @@ export default connect(
 
 const styles = StyleSheet.create({
   floatTop: {
-    paddingTop: 15,
     top: 0,
     left: 0,
     right: 0,
