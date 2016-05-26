@@ -95,7 +95,8 @@ async function addIOS(event: Event) {
 
 function androidDate(date: Date) {
   // 2016-01-01 01:00
-  return date.toISOString().replace(/T/, ' ').slice(0, 16);
+  const tzOffset = new Date().getTimezoneOffset() * 60000;
+  return new Date(date - tzOffset).toISOString().replace(/T/, ' ').slice(0, 16);
 }
 
 function addAndroid(event: Event) {
