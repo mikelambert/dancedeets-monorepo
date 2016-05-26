@@ -111,12 +111,12 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             shrinkResources true
             zipAlignEnabled true
-            manifestPlaceholders = [applicationIdSuffix: ""]
+            //manifestPlaceholders = [applicationIdSuffix: ""]
             signingConfig signingConfigs.release
         }
         debug {
-            applicationIdSuffix ".debug"
-            manifestPlaceholders = [applicationIdSuffix: ".debug"]
+            //applicationIdSuffix ".debug"
+            //manifestPlaceholders = [applicationIdSuffix: ".debug"]
             signingConfig signingConfigs.release
         }
     }
@@ -136,6 +136,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-admob')
     compile project(':react-native-mixpanel')
     compile project(':react-native-fabric')
     compile project(':react-native-fbsdk')
@@ -143,7 +144,6 @@ dependencies {
     compile project(':react-native-linear-gradient')
     compile project(':react-native-maps')
     compile project(':react-native-segmented-android')
-    compile project(':RNMixpanel')
     compile project(':RNSendIntentModule')
     //compile "com.mixpanel.android:mixpanel-android:4.+"
     //compile 'com.facebook.android:facebook-android-sdk:4.+'
@@ -152,7 +152,10 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.facebook.react:react-native:+'
     // From node_modules
+    compile 'com.google.firebase:firebase-ads:9.0.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
         transitive = true;
     }
 }
+
+apply plugin: 'com.google.gms.google-services'

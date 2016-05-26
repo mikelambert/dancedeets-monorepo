@@ -12,12 +12,12 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactActivity;
-import com.kevinejohn.RNMixpanel.RNMixpanel;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.higo.zhangyp.segmented.AndroidSegmentedPackage;
 import com.kevinejohn.RNMixpanel.RNMixpanel;
+import com.sbugert.rnadmob.RNAdMobPackage;
 import com.smixx.fabric.FabricPackage;
 
 import java.util.Arrays;
@@ -55,13 +55,13 @@ public class MainActivity extends ReactActivity {
         mCallbackManager = CallbackManager.Factory.create();
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RNAdMobPackage(),
             new RNMixpanel(),
             new RNGeocoderPackage(),
             new AirPackage(),
             new FabricPackage(null),
             new LinearGradientPackage(),
             new AndroidSegmentedPackage(),
-            new RNMixpanel(),
             new RNSendIntentPackage(),
             new FBSDKPackage(mCallbackManager)
         );

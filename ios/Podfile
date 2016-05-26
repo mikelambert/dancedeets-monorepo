@@ -4,6 +4,8 @@ target 'DanceDeets' do
   pod 'Mixpanel'
   pod 'Fabric'
   pod 'Crashlytics'
+  pod 'Firebase/Core'
+  pod 'Firebase/AdMob'
   #pod 'Google-Mobile-Ads-SDK', '~> 7.0'
   pod 'React', :subspecs => [
     'Core',

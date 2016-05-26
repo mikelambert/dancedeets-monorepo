@@ -23,6 +23,7 @@
 		4BCC1BF50FA04A2F9753C8C4 /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27359B7E03C543A2A9E04391 /* libRCTFBSDK.a */; };
 		51A4421653AC25699AD8FDD5 /* libPods-DanceDeets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BFD514F05D309F180986C3D /* libPods-DanceDeets.a */; };
 		65290086BA6F49519FC629F9 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91C7134613AF432FA9CBE282 /* libRNBlur.a */; };
+		79B16F4DA9F74B5587F8690E /* libRNAdMobManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15763EA3DB1B4A748D10D521 /* libRNAdMobManager.a */; };
 		D7C586A0CC09467A8950FA63 /* libRNGeocoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD44F5BB7D3E4E26BD56B7AA /* libRNGeocoder.a */; };
 		E178E74C986041BFB7273A05 /* libSMXCrashlytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFA7D60B6C68406EA54D5FAB /* libSMXCrashlytics.a */; };
 /* End PBXBuildFile section */
@@ -84,6 +85,13 @@
 			remoteGlobalIDString = BF8FCF941BFFB184000FCD37;
 			remoteInfo = RNGeocoder;
 		};
+		1DE850851CF688B400397243 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BA2EB35DFEF34C00A88A8C02 /* RNAdMobManager.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A96DA7741C146D7200FC639B;
+			remoteInfo = RNAdMobManager;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +106,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = DanceDeets/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = DanceDeets/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = DanceDeets/main.m; sourceTree = "<group>"; };
+		15763EA3DB1B4A748D10D521 /* libRNAdMobManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAdMobManager.a; sourceTree = "<group>"; };
 		1D18DC711CE64F40008916EF /* Ubuntu 300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 300.ttf"; sourceTree = "<group>"; };
 		1D18DC721CE64F40008916EF /* Ubuntu 500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 500.ttf"; sourceTree = "<group>"; };
 		1D18DC731CE64F40008916EF /* Ubuntu 700.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 700.ttf"; sourceTree = "<group>"; };
@@ -114,6 +123,7 @@
 		930B8DA0D4264A2DA9CCF846 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
 		936D8EFFDF8740AFBD1C726E /* RNGeocoder.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGeocoder.xcodeproj; path = "../node_modules/react-native-geocoder/ios/RNGeocoder.xcodeproj"; sourceTree = "<group>"; };
 		9F98951C42EA4C49A7CA0029 /* RCTFBSDK.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBSDK.xcodeproj; path = "../node_modules/react-native-fbsdk/iOS/RCTFBSDK.xcodeproj"; sourceTree = "<group>"; };
+		BA2EB35DFEF34C00A88A8C02 /* RNAdMobManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNAdMobManager.xcodeproj; path = "../node_modules/react-native-admob/ios/RNAdMobManager.xcodeproj"; sourceTree = "<group>"; };
 		CA7D4DDE63CF8892CDAB3ABD /* Pods-DanceDeets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.release.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.release.xcconfig"; sourceTree = "<group>"; };
 		DD44F5BB7D3E4E26BD56B7AA /* libRNGeocoder.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGeocoder.a; sourceTree = "<group>"; };
 		DFA7D60B6C68406EA54D5FAB /* libSMXCrashlytics.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSMXCrashlytics.a; sourceTree = "<group>"; };
@@ -144,6 +154,7 @@
 				51A4421653AC25699AD8FDD5 /* libPods-DanceDeets.a in Frameworks */,
 				1D2B996F1CF40507008EC850 /* FBSDKCoreKit.framework in Frameworks */,
 				4BCC1BF50FA04A2F9753C8C4 /* libRCTFBSDK.a in Frameworks */,
+				79B16F4DA9F74B5587F8690E /* libRNAdMobManager.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +257,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1DE8507F1CF688B400397243 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1DE850861CF688B400397243 /* libRNAdMobManager.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		385750238ADF409D5CBAE3F3 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -265,6 +284,7 @@
 				425FCD0A3674418EBCA185AB /* RNCalendarEvents.xcodeproj */,
 				9F98951C42EA4C49A7CA0029 /* RCTFBSDK.xcodeproj */,
 				936D8EFFDF8740AFBD1C726E /* RNGeocoder.xcodeproj */,
+				BA2EB35DFEF34C00A88A8C02 /* RNAdMobManager.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -394,6 +414,10 @@
 					ProjectRef = 9F98951C42EA4C49A7CA0029 /* RCTFBSDK.xcodeproj */;
 				},
 				{
+					ProductGroup = 1DE8507F1CF688B400397243 /* Products */;
+					ProjectRef = BA2EB35DFEF34C00A88A8C02 /* RNAdMobManager.xcodeproj */;
+				},
+				{
 					ProductGroup = 1D18DC511CDECAD5008916EF /* Products */;
 					ProjectRef = 23D9826590F4451E87AC7FA4 /* RNBlur.xcodeproj */;
 				},
@@ -466,6 +490,13 @@
 			fileType = archive.ar;
 			path = libRNGeocoder.a;
 			remoteRef = 1DE850751CF5FCB800397243 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1DE850861CF688B400397243 /* libRNAdMobManager.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNAdMobManager.a;
+			remoteRef = 1DE850851CF688B400397243 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -631,6 +662,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets.app/DanceDeets";
@@ -651,6 +683,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -688,6 +721,7 @@
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/ios/RNGeocoder",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -725,6 +759,7 @@
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/ios/RNGeocoder",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -787,6 +822,7 @@
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/ios/RNGeocoder",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -836,6 +872,7 @@
 					"$(SRCROOT)/../node_modules/react-native-calendar-events",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/iOS/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/react-native-geocoder/ios/RNGeocoder",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

@@ -37,6 +37,7 @@ import { format } from './formatAddress';
 import {
   Text,
 } from '../ui';
+import { AdMobBanner } from 'react-native-admob';
 
 var en = new Globalize('en');
 
@@ -103,6 +104,7 @@ class EventListContainer extends React.Component {
     };
     this.state = this._getNewState(this.props);
     (this: any).onUpdateHeaderHeight = this.onUpdateHeaderHeight.bind(this);
+    (this: any)._renderHeader = this._renderHeader.bind(this);
     (this: any)._renderRow = this._renderRow.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
   }
@@ -210,11 +212,34 @@ class EventListContainer extends React.Component {
     }
   }
 
+  bannerError(e) {
+    console.log(e);
+  }
+
+  _renderHeader() {
+    let adUnitID = null;
+    if (__DEV__) {
+      adUnitID = 'ca-app-pub-3940256099942544/6300978111';
+    } else if (Platform.OS === 'ios') {
+      adUnitID = 'ca-app-pub-9162736050652644/3634975775';
+    } else if (Platform.OS === 'android') {
+      adUnitID = 'ca-app-pub-9162736050652644/9681509378';
+    } else {
+      return null;
+    }
+    return <AdMobBanner
+      bannerSize={"smartBannerPortrait"}
+      adUnitID={adUnitID}
+      didFailToReceiveAdWithError={this.bannerError}
+    />;
+  }
+
   renderListView() {
     return (
       <ListView
         style={{marginTop: this.state.headerHeight}}
         dataSource={this.state.dataSource}
+        renderHeader={this._renderHeader}
         refreshControl={
           <RefreshControl
             refreshing={this.props.search.loading}
