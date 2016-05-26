@@ -185,8 +185,9 @@ class EventListContainer extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <SearchHeader/>
-        {this.renderListView()}
+        <SearchHeader>
+          {this.renderListView()}
+        </SearchHeader>
       </View>
     );
   }

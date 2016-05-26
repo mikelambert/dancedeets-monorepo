@@ -127,7 +127,7 @@ class SearchHeader extends React.Component {
   }
 
   render() {
-    return <View>
+    return <View style={{flex: 1}}>
       <View
         onLayout={this.onLayout}
         style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]}
@@ -160,6 +160,7 @@ class SearchHeader extends React.Component {
         />
 
       </View>
+      {this.props.children}
       <AutocompleteList
         ref="location_autocomplete"
         style={{top: this.state.height}}
