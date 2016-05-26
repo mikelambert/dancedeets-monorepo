@@ -13,7 +13,6 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-
 import { navigatePush, navigatePop } from '../actions';
 import { performRequest } from '../api/fb';
 import {
@@ -72,17 +71,17 @@ class Profile extends React.Component {
   }
 
   async setupProfileName() {
-    const profileData = await performRequest('GET', 'me?fields=name');
+    const profileData = await performRequest('GET', 'me', {fields: 'name'});
     this.setState({...this.state, name: profileData.name});
   }
 
   async setupProfilePhoto() {
-    const pictureData = await performRequest('GET', 'me/picture?type=large&fields=url&redirect=0');
+    const pictureData = await performRequest('GET', 'me/picture', {type: 'large', fields: 'url', redirect: '0'});
     this.setState({...this.state, url: pictureData.data.url});
   }
 
   async setupProfileFriends() {
-    const friendData = await performRequest('GET', 'me/friends?limit=1000&fields=id');
+    const friendData = await performRequest('GET', 'me/friends', {limit: '1000', fields: 'id'});
     this.setState({...this.state, friendCount: friendData.data.length});
   }
 
@@ -99,7 +98,7 @@ class Profile extends React.Component {
       <Text>{this.state.name}</Text>
       <Text>show current city?</Text>
 
-      {this.state.friendCount?<Text>{this.state.friendCount} friends using DanceDeets</Text>:null}
+      {this.state.friendCount ? <Text>{this.state.friendCount} friends using DanceDeets</Text> : null}
       <Button caption="Invite more friends"/>
 
       <Button
