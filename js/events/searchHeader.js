@@ -14,7 +14,6 @@ import {
   View,
 } from 'react-native';
 
-import { BlurView } from 'react-native-blur';
 import { connect } from 'react-redux';
 import {
   defaultFont,
@@ -73,6 +72,18 @@ class SearchInput extends React.Component {
           this.props.onBlur();
         }
       }}
+      onEndEditing={() => {
+        this.animatedRelayout();
+        if (this.props.onBlur) {
+          this.props.onBlur();
+        }
+      }}
+      onSubmitEditing={() => {
+        this.animatedRelayout();
+        if (this.props.onBlur) {
+          this.props.onBlur();
+        }
+      }}
     />;
   }
 
@@ -113,12 +124,11 @@ class SearchHeader extends React.Component {
     const nativeEvent: any = e.nativeEvent;
     const height = nativeEvent.layout.height;
     this.setState({height});
-    this.props.onUpdateHeight(height);
   }
 
   render() {
-    return <View style={{flex: 1,top:0, left:0, right:0,position: 'absolute'}}>
-      <BlurView
+    return <View>
+      <View
         onLayout={this.onLayout}
         style={[{paddingTop: StatusBar.currentHeight}, styles.floatTop, styles.statusBar]}
         blurType="dark"
@@ -149,7 +159,7 @@ class SearchHeader extends React.Component {
           value={this.props.searchQuery.keywords}
         />
 
-      </BlurView>
+      </View>
       <AutocompleteList
         ref="location_autocomplete"
         style={{top: this.state.height}}
@@ -191,7 +201,6 @@ export default connect(
 
 const styles = StyleSheet.create({
   floatTop: {
-    position: 'absolute',
     paddingTop: 15,
     top: 0,
     left: 0,

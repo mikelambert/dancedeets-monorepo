@@ -87,7 +87,6 @@ class Onebox extends React.Component {
 class EventListContainer extends React.Component {
   state: {
     dataSource: ListView.DataSource,
-    headerHeight: number,
     refreshing: boolean,
   };
 
@@ -98,12 +97,10 @@ class EventListContainer extends React.Component {
       sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
     });
     this.state = {
-      headerHeight: 0,
       dataSource,
       refreshing: false,
     };
     this.state = this._getNewState(this.props);
-    (this: any).onUpdateHeaderHeight = this.onUpdateHeaderHeight.bind(this);
     (this: any)._renderHeader = this._renderHeader.bind(this);
     (this: any)._renderRow = this._renderRow.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
@@ -185,18 +182,11 @@ class EventListContainer extends React.Component {
     // this.props.performSearch(this.props.search.searchQuery);
   }
 
-  onUpdateHeaderHeight(headerHeight: number) {
-    this.setState({
-      ...this.state,
-      headerHeight,
-    });
-  }
-
   render() {
     return (
       <View style={styles.container}>
+        <SearchHeader/>
         {this.renderListView()}
-        <SearchHeader onUpdateHeight={this.onUpdateHeaderHeight}/>
       </View>
     );
   }
@@ -237,7 +227,7 @@ class EventListContainer extends React.Component {
   renderListView() {
     return (
       <ListView
-        style={{marginTop: this.state.headerHeight}}
+        style={[styles.listView]}
         dataSource={this.state.dataSource}
         renderHeader={this._renderHeader}
         refreshControl={
@@ -281,6 +271,10 @@ export default connect(
 
 
 const styles = StyleSheet.create({
+  listView: {
+    flex: 1,
+    top: 0,
+  },
   container: {
     backgroundColor: '#000',
     flex: 1,
