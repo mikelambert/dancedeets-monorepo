@@ -35,5 +35,8 @@
     "redux-persist": "^3.1.1",
     "redux-thunk": "^2.0.1",
     "undefined": "^0.1.0"
+  },
+  "devDependencies": {
+    "rnpm-plugin-upgrade": "^0.26.0"
   }
 }

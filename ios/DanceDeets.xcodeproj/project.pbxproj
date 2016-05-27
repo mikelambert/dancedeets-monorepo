@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		12734E6430A8417381283D0F /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 02B4DE5D732F4B2BA4DD4F6A /* libBVLinearGradient.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -666,6 +665,10 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets.app/DanceDeets";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+				);
 			};
 			name = Debug;
 		};
@@ -694,6 +697,10 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets.app/DanceDeets";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+				);
 			};
 			name = Release;
 		};
