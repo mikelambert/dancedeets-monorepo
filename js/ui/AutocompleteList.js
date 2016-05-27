@@ -5,12 +5,22 @@
  */
 
 import React from 'react';
-import {View, ListView, TouchableHighlight, Platform, ActivityIndicatorIOS, ProgressBarAndroid} from 'react-native';
+import {
+  ActivityIndicatorIOS,
+  ListView,
+  Platform,
+  ProgressBarAndroid,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import {HorizontalView} from './Misc';
 import {Text} from './DDText';
 import Qs from 'qs';
 import emojiFlags from 'emoji-flags';
 import { googleKey } from '../keys';
+import Geocoder from '../api/geocoder';
+import type { Address } from '../events/formatAddress';
+import { format } from '../events/formatAddress';
 
 type Result = {
   description: string;
@@ -216,30 +226,17 @@ export default class AutocompleteList extends React.Component {
     return new Promise(f.bind(this));
   }
 
-  _requestLocationName(latitude: number, longitude: number) {
+  async _requestLocationName(latitude: number, longitude: number) {
     this._abortRequests();
     if (latitude !== undefined && longitude !== undefined && latitude !== null && longitude !== null) {
-      const url = 'https://maps.googleapis.com/maps/api/geocode/json?' + Qs.stringify({
-        latlng: latitude + ',' + longitude,
-        key: this.props.query.key,
-        ...this.props.GoogleReverseGeocodingQuery,
-      });
-      this.createRequest(url).then((responseJSON) => {
-        this._disableRowLoaders();
-        if (typeof responseJSON.results !== 'undefined') {
-          var results = [];
-          results = this._filterResultsByTypes(responseJSON, this.props.filterReverseGeocodingByTypes);
-          if (results.length > 0) {
-            const result = results[0].formatted_address;
-            this.props.onLocationSelected(result);
-          }
+        try {
+          const coords = { lat: latitude, lng: longitude };
+          const address: Address = await Geocoder.geocodePosition(coords);
+          const formattedAddress = format(address[0]);
+          this.props.onLocationSelected(formattedAddress);
+        } catch (e) {
+          this._disableRowLoaders();
         }
-        if (typeof responseJSON.error_message !== 'undefined') {
-          console.warn('google places autocomplete: ' + responseJSON.error_message);
-        }
-      }).catch(() => {
-        this._disableRowLoaders();
-      });
     } else {
       this._results = [];
       this.setState({
