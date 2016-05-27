@@ -204,7 +204,7 @@ class EventListContainer extends React.Component {
   }
 
   bannerError(e) {
-    console.log(e);
+    console.log('didFailToReceiveAdWithError', e);
   }
 
   _renderHeader() {
@@ -257,11 +257,11 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    detectedLocation: (location) => {
-      dispatch(detectedLocation(location));
+    detectedLocation: async (location) => {
+      await dispatch(detectedLocation(location));
     },
-    performSearch: (searchQuery) => {
-      dispatch(performSearch(searchQuery));
+    performSearch: async (searchQuery) => {
+      await dispatch(performSearch(searchQuery));
     },
   };
 };
