@@ -13,7 +13,7 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { navigatePush, navigatePop } from '../actions';
+import { logOutWithPrompt } from '../actions';
 import { performRequest } from '../api/fb';
 import {
   Button,
@@ -51,10 +51,7 @@ class Credits extends React.Component {
   }
 }
 
-class Profile extends React.Component {
-  props: {
-  };
-
+class _ProfileComponent extends React.Component {
   state: {
     name: ?string,
     url: ?string,
@@ -93,35 +90,41 @@ class Profile extends React.Component {
 
   render() {
     const image = this.state.url ? <Image style={styles.profileImage} source={{uri: this.state.url}}/> : null;
-    return <View style={styles.container}>
+    return <View style={this.props.style}>
       {image}
       <Text>{this.state.name}</Text>
       <Text>show current city?</Text>
 
       {this.state.friendCount ? <Text>{this.state.friendCount} friends using DanceDeets</Text> : null}
-      <Button caption="Invite more friends"/>
+      <Button size="small" caption="Invite more friends"/>
 
       <Button
+        size="small"
         icon={require('../login/icons/facebook.png')}
         caption="Logout"
+        onPress={this.props.logOutWithPrompt}
         />
+    </View>;
+  }
+}
+const ProfileComponent = connect(
+  state => ({
+  }),
+  (dispatch: Dispatch) => ({
+    logOutWithPrompt: () => dispatch(logOutWithPrompt()),
+  }),
+)(_ProfileComponent);
 
-      <Button caption="Send Feedback" />
+export default class Profile extends React.Component {
+  render() {
+    return <View style={styles.container}>
+      <ProfileComponent style={{height:300}}/>
+      <Button size="small" caption="Send Feedback" />
 
       <Credits style={{marginTop: 20}}/>
     </View>;
   }
 }
-
-export default connect(
-  state => ({
-    navigationState: state.navigationState
-  }),
-  (dispatch: Dispatch) => ({
-    onNavigate: (destState) => dispatch(navigatePush(destState)),
-    onBack: () => dispatch(navigatePop())
-  }),
-)(Profile);
 
 
 const styles = StyleSheet.create({
