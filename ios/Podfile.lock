@@ -24,28 +24,6 @@ PODS:
   - Mixpanel (2.9.9):
     - Mixpanel/Mixpanel (= 2.9.9)
   - Mixpanel/Mixpanel (2.9.9)
-  - react-native-mixpanel (0.0.6):
-    - Mixpanel
-  - React/Core (0.26.2)
-  - React/RCTActionSheet (0.26.2):
-    - React/Core
-  - React/RCTGeolocation (0.26.2):
-    - React/Core
-  - React/RCTImage (0.26.2):
-    - React/Core
-    - React/RCTNetwork
-  - React/RCTLinkingIOS (0.26.2):
-    - React/Core
-  - React/RCTNetwork (0.26.2):
-    - React/Core
-  - React/RCTPushNotification (0.26.2):
-    - React/Core
-  - React/RCTText (0.26.2):
-    - React/Core
-  - React/RCTVibration (0.26.2):
-    - React/Core
-  - React/RCTWebSocket (0.26.2):
-    - React/Core
 
 DEPENDENCIES:
   - Crashlytics
@@ -53,23 +31,6 @@ DEPENDENCIES:
   - Firebase/AdMob
   - Firebase/Core
   - Mixpanel
-  - react-native-mixpanel (from `../node_modules/react-native-mixpanel`)
-  - React/Core (from `../node_modules/react-native`)
-  - React/RCTActionSheet (from `../node_modules/react-native`)
-  - React/RCTGeolocation (from `../node_modules/react-native`)
-  - React/RCTImage (from `../node_modules/react-native`)
-  - React/RCTLinkingIOS (from `../node_modules/react-native`)
-  - React/RCTNetwork (from `../node_modules/react-native`)
-  - React/RCTPushNotification (from `../node_modules/react-native`)
-  - React/RCTText (from `../node_modules/react-native`)
-  - React/RCTVibration (from `../node_modules/react-native`)
-  - React/RCTWebSocket (from `../node_modules/react-native`)
-
-EXTERNAL SOURCES:
-  React:
-    :path: "../node_modules/react-native"
-  react-native-mixpanel:
-    :path: "../node_modules/react-native-mixpanel"
 
 SPEC CHECKSUMS:
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
@@ -82,9 +43,7 @@ SPEC CHECKSUMS:
   GoogleSymbolUtilities: 33117db1b5f290c6fbf259585e4885b4c84b98d7
   GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
   Mixpanel: 818d1940c2d9402453b349545022a86968097f57
-  React: a764d67f6cf360723120951301cba3ee5ee05ce2
-  react-native-mixpanel: 1e7937b363cde6aa993bdabdc8c045065fb4515c
 
-PODFILE CHECKSUM: bcd8b2756e7e1c5460c30dad8b9fe4538e195b90
+PODFILE CHECKSUM: 18e84af3cb27d4c696a909a21db77036ee84c10a
 
 COCOAPODS: 1.0.0
