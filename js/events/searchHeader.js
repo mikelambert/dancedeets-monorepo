@@ -147,7 +147,9 @@ class SearchHeader extends React.Component {
           onBlur={() => {
             this.refs.location_autocomplete.onTextInputBlur();
           }}
-          onSubmitEditing={() => this.props.performSearch(this.props.searchQuery)}
+          onSubmitEditing={() => {
+            this.props.performSearch(this.props.searchQuery);
+          }}
           value={this.props.searchQuery.location}
         />
         <SearchInput
@@ -165,10 +167,10 @@ class SearchHeader extends React.Component {
         ref="location_autocomplete"
         style={{top: this.state.height}}
         textValue={()=>this.props.searchQuery.location}
-        onLocationSelected={(text) => {
-          this.props.updateLocation(text);
-          this.props.performSearch(this.props.searchQuery);
+        onLocationSelected={async (text) => {
+          await this.props.updateLocation(text);
           this.refs.location.blur();
+          await this.props.performSearch(this.props.searchQuery);
         }}
         predefinedPlaces={locations}
       />
@@ -183,14 +185,14 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateLocation: (location) => {
-      dispatch(updateLocation(location));
+    updateLocation: async (location) => {
+      await dispatch(updateLocation(location));
     },
-    updateKeywords: (keywords) => {
-      dispatch(updateKeywords(keywords));
+    updateKeywords: async (keywords) => {
+      await dispatch(updateKeywords(keywords));
     },
-    performSearch: (searchQuery) => {
-      dispatch(performSearch(searchQuery));
+    performSearch: async (searchQuery) => {
+      await dispatch(performSearch(searchQuery));
     },
   };
 };
@@ -214,9 +216,9 @@ const styles = StyleSheet.create({
   searchField: {
     color: 'white',
     borderRadius: 5,
-    height: 30,
     flex: 1,
-    margin: 3,
+    marginLeft: 3,
+    marginRight: 3,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   focusedField: {
