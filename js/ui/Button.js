@@ -40,7 +40,7 @@ class Button extends React.Component {
     if (this.props.type === 'primary' || this.props.type === undefined) {
       content = (
         <LinearGradient
-          start={[0.2, 0]} end={[0.8, 1]}
+          start={[0, 0]} end={[0, 1]}
           colors={[purpleColors[1], purpleColors[2]]}
           style={[styles.button, size, styles.primaryButton]}>
           {icon}
