@@ -121,7 +121,7 @@ export default class SegmentedControl extends React.Component {
       const tintColor = this.props.enabled ? this.props.tintColor : disabledColor(this.props.tintColor);
       return <SegmentedControlAndroid
         key="selected"
-        style={this.props.style}
+        style={[{height: 30}, this.props.style]}
         childText={this.props.values}
         orientation="horizontal"
         onChange={(event) => this.onChange(event.selected)}
