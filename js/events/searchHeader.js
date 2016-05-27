@@ -164,6 +164,7 @@ class SearchHeader extends React.Component {
           value={this.props.searchQuery.keywords}
         />
         <Button
+          size="small"
           icon={this.props.listLayout ? require('./search-images/large-flyer.png') : require('./search-images/small-flyer.png')}
           onPress={this.props.toggleLayout}
           />

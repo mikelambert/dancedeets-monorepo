@@ -33,7 +33,7 @@ class Button extends React.Component {
     const caption = this.props.caption;
     let icon;
     if (this.props.icon) {
-      icon = <Image source={this.props.icon} style={styles.icon} />;
+      icon = <Image source={this.props.icon} style={caption ? styles.iconSpacing : {}} />;
     }
     let content;
     const size = this.props.size === 'small' ? styles.smallButton : styles.largeButton;
@@ -95,7 +95,7 @@ var styles = StyleSheet.create({
   primaryButton: {
     backgroundColor: 'transparent',
   },
-  icon: {
+  iconSpacing: {
     marginRight: 10,
   },
   caption: {
