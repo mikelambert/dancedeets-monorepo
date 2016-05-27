@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Ubuntu 300.ttf</string>
-		<string>Ubuntu 500.ttf</string>
-		<string>Ubuntu 700.ttf</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -24,20 +18,6 @@
 	<string>1.4</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>Fabric</key>
-	<dict>
-		<key>APIKey</key>
-		<string>f827a34a7ab66071f1fc473cdfa00f94403b241b</string>
-		<key>Kits</key>
-		<array>
-			<dict>
-				<key>KitInfo</key>
-				<dict/>
-				<key>KitName</key>
-				<string>Crashlytics</string>
-			</dict>
-		</array>
-	</dict>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -59,6 +39,20 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>24</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>f827a34a7ab66071f1fc473cdfa00f94403b241b</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>FacebookAppID</key>
 	<string>2347064084</string>
 	<key>FacebookDisplayName</key>
@@ -129,6 +123,12 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Ubuntu 300.ttf</string>
+		<string>Ubuntu 500.ttf</string>
+		<string>Ubuntu 700.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
