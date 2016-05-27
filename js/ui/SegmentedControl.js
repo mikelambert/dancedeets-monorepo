@@ -70,6 +70,13 @@ export default class SegmentedControl extends React.Component {
   }
 
   async onChange(index: number) {
+    // On android, we get called anytime it changes, including when initializing to the passed-in selectedPosition.
+    // We don't want to trigger a "set" (and associated reloads) if there's been no change (init-ing),
+    // as that triggers a set and get, potentially triggering infinite cycle of reloads.
+    // Instead, we eary-exit if this is a no-op change.
+    if (this.state.selectedIndex === index) {
+      return;
+    }
     // If we're not enabled, don't actually attempt to do anything
     // This is important for Android, which doesn't support enabled natively,
     // and so will still call onChange.
@@ -112,22 +119,15 @@ export default class SegmentedControl extends React.Component {
       />;
     } else {
       const tintColor = this.props.enabled ? this.props.tintColor : disabledColor(this.props.tintColor);
-      const segmentedControlProps = {
-        style: this.props.style,
-        childText: this.props.values,
-        orientation: 'horizontal',
-        onChange: (event) => this.onChange(event.selected),
-        tintColor: [tintColor, '#000000ff'],
-      };
-      // Given the Android API, we cannot unselect a radio button once selected.
-      // Nor can we select index -1 (which gives an error).
-      // So instead, let's treat -1 as a new SegmentedControlAndroid with its own key="",
-      // distinct from the SegmentedControlAndroid with a valid selection.
-      if (this.state.selectedIndex == -1) {
-        return <SegmentedControlAndroid key="unselected" {...segmentedControlProps} />;
-      } else {
-        return <SegmentedControlAndroid key="selected" selectedPosition={this.state.selectedIndex} {...segmentedControlProps} />;
-      }
+      return <SegmentedControlAndroid
+        key="selected"
+        style={this.props.style}
+        childText={this.props.values}
+        orientation="horizontal"
+        onChange={(event) => this.onChange(event.selected)}
+        tintColor={[tintColor, '#000000']}
+        selectedPosition={this.state.selectedIndex}
+        />;
     }
   }
 }
