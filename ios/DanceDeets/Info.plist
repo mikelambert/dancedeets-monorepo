@@ -127,7 +127,7 @@
 	<array>
 		<string>Ubuntu 300.ttf</string>
 		<string>Ubuntu 500.ttf</string>
-		<string>Ubuntu 700.ttf</string>
+		<string>Ubuntu regular.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
