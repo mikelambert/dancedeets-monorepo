@@ -148,6 +148,7 @@ class SearchHeader extends React.Component {
             this.refs.location_autocomplete.onTextInputBlur();
           }}
           onSubmitEditing={() => {
+            this.refs.location_autocomplete.onTextInputBlur();
             this.props.performSearch(this.props.searchQuery);
           }}
           value={this.props.searchQuery.location}
