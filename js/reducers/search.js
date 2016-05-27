@@ -12,6 +12,7 @@ import type { SearchQuery, SearchResults } from '../events/search';
 export type State = {
   searchQuery: SearchQuery;
   results: ?SearchResults;
+  listLayout: boolean;
 };
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
   },
   loading: false,
   results: null,
+  listLayout: false,
 };
 
 export function search(state: State = initialState, action: Action): State {
@@ -35,6 +37,12 @@ export function search(state: State = initialState, action: Action): State {
     return {
       ...state,
       searchQuery,
+    };
+  }
+  if (action.type === 'TOGGLE_LAYOUT') {
+    return {
+      ...state,
+      listLayout: !state.listLayout,
     };
   }
   if (action.type === 'UPDATE_KEYWORDS') {

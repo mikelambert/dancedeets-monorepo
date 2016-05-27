@@ -26,6 +26,12 @@ export function performSearch(searchQuery: SearchQuery) {
   };
 }
 
+export function toggleLayout(): Action {
+  return {
+    type: 'TOGGLE_LAYOUT',
+  };
+}
+
 export function detectedLocation(location: string): ThunkAction {
   return async function(dispatch: Dispatch) {
     await dispatch({

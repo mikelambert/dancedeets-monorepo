@@ -16,14 +16,16 @@ import {
 
 import { connect } from 'react-redux';
 import {
+  Button,
   defaultFont,
   AutocompleteList
 } from '../ui';
 
 import {
   performSearch,
+  toggleLayout,
   updateLocation,
-  updateKeywords
+  updateKeywords,
 } from '../actions';
 
 
@@ -161,7 +163,10 @@ class SearchHeader extends React.Component {
           onSubmitEditing={() => this.props.performSearch(this.props.searchQuery)}
           value={this.props.searchQuery.keywords}
         />
-
+        <Button
+          icon={this.props.listLayout ? require('./search-images/large-flyer.png') : require('./search-images/small-flyer.png')}
+          onPress={this.props.toggleLayout}
+          />
       </View>
       {this.props.children}
       <AutocompleteList
@@ -181,6 +186,7 @@ class SearchHeader extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
+    listLayout: state.search.listLayout,
     searchQuery: state.search.searchQuery,
   };
 };
@@ -194,6 +200,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     performSearch: async (searchQuery) => {
       await dispatch(performSearch(searchQuery));
+    },
+    toggleLayout: async () => {
+      await dispatch(toggleLayout());
     },
   };
 };

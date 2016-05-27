@@ -41,6 +41,7 @@ export type Action =
   | { type: 'LOGIN_SKIPPED' }
   | { type: 'VIEW_EVENT', event: Event }
   | { type: 'DETECTED_LOCATION', location: string }
+  | { type: 'TOGGLE_LAYOUT' }
   | { type: 'UPDATE_LOCATION', location: string }
   | { type: 'UPDATE_KEYWORDS', keywords: string }
   | { type: 'START_SEARCH' }

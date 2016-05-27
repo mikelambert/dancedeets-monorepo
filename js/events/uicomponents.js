@@ -27,6 +27,7 @@ import {
   SegmentedControl,
   Text,
 } from '../ui';
+import { connect } from 'react-redux';
 import { Event, Venue } from './models';
 import type { ThunkAction } from '../actions/types';
 import MapView from 'react-native-maps';
@@ -342,36 +343,71 @@ async function openVenueWithApp(venue: Venue) {
   Linking.openURL(url).catch(err => console.error('Error opening map URL:', url, ', with Error:', err));
 }
 
-export class EventRow extends React.Component {
+class _EventRow extends React.Component {
   props: {
     onEventSelected: (x: Event) => void,
     event: Event,
+    listLayout: boolean,
   };
 
   render() {
-    var imageProps = this.props.event.getImageProps();
-    return (
-      <View style={eventStyles.row}>
-        <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
-          <ProportionalImage
-            source={{uri: imageProps.url}}
-            originalWidth={imageProps.width}
-            originalHeight={imageProps.height}
-            style={eventStyles.thumbnail}
-          />
-          <Text
-            numberOfLines={2}
-            style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
-          <View style={eventStyles.eventIndent}>
-            <EventCategories categories={this.props.event.annotations.categories} />
-            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-            <EventVenue venue={this.props.event.venue} />
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
+    if (this.props.listLayout) {
+      var imageProps = this.props.event.getImageProps();
+      return (
+        <View style={eventStyles.row}>
+          <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
+            <Text
+              numberOfLines={2}
+              style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
+            <HorizontalView>
+              <View style={{width: 100}}>
+                <Image
+                  source={{uri: imageProps.url}}
+                  originalWidth={imageProps.width}
+                  originalHeight={imageProps.height}
+                  style={eventStyles.thumbnail}
+                />
+              </View>
+              <View style={eventStyles.eventIndent}>
+                <EventCategories categories={this.props.event.annotations.categories} />
+                <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
+                <EventVenue venue={this.props.event.venue} />
+              </View>
+            </HorizontalView>
+          </TouchableOpacity>
+        </View>
+      );
+    } else {
+      var imageProps = this.props.event.getImageProps();
+      return (
+        <View style={eventStyles.row}>
+          <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
+            <ProportionalImage
+              source={{uri: imageProps.url}}
+              originalWidth={imageProps.width}
+              originalHeight={imageProps.height}
+              style={eventStyles.thumbnail}
+            />
+            <Text
+              numberOfLines={2}
+              style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
+            <View style={eventStyles.eventIndent}>
+              <EventCategories categories={this.props.event.annotations.categories} />
+              <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
+              <EventVenue venue={this.props.event.venue} />
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
+    }
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    listLayout: state.search.listLayout,
+  };
+};
+export const EventRow = connect(mapStateToProps)(_EventRow);
 
 class EventShare extends React.Component {
   render() {
