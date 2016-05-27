@@ -50,7 +50,7 @@ export default class RsvpOnFB {
         const path = eventId + '/' + x.apiValue + '/' + accessToken.userID;
         const request = new GraphRequest(
           path,
-          {fields: 'id'},
+          {parameters: {fields: {string: 'id'}}},
           function(error: ?Object, result: ?Object) {
             if (error) {
               reject(error);
