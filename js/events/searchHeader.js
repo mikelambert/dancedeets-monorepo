@@ -151,7 +151,7 @@ class SearchHeader extends React.Component {
           }}
           onSubmitEditing={() => {
             this.refs.location_autocomplete.onTextInputBlur();
-            this.props.performSearch(this.props.searchQuery);
+            this.props.performSearch();
           }}
           value={this.props.searchQuery.location}
         />
@@ -177,7 +177,7 @@ class SearchHeader extends React.Component {
         onLocationSelected={async (text) => {
           await this.props.updateLocation(text);
           this.refs.location.blur();
-          await this.props.performSearch(this.props.searchQuery);
+          await this.props.performSearch();
         }}
         predefinedPlaces={locations}
       />
@@ -199,8 +199,8 @@ const mapDispatchToProps = (dispatch) => {
     updateKeywords: async (keywords) => {
       await dispatch(updateKeywords(keywords));
     },
-    performSearch: async (searchQuery) => {
-      await dispatch(performSearch(searchQuery));
+    performSearch: async () => {
+      await dispatch(performSearch());
     },
     toggleLayout: async () => {
       await dispatch(toggleLayout());

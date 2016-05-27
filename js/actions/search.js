@@ -7,15 +7,16 @@
 'use strict';
 
 import type { Action, ThunkAction } from './types';
-import type { SearchQuery, SearchResults } from '../events/search';
+import type { SearchResults } from '../events/search';
 import type { Dispatch } from '../actions/types';
 
 import { search } from '../api/dancedeets';
 
-export function performSearch(searchQuery: SearchQuery) {
-  return async function(dispatch: Dispatch) {
+export function performSearch(): ThunkAction {
+  return async (dispatch: Dispatch, getState) => {
     await dispatch(searchStart());
     try {
+      const searchQuery = getState().search.searchQuery;
       const responseData = await search(searchQuery.location, searchQuery.keywords, searchQuery.timePeriod);
       await dispatch(searchComplete(responseData));
     } catch (e) {

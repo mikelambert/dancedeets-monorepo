@@ -152,11 +152,11 @@ class EventListContainer extends React.Component {
 
   async setLocationAndSearch(formattedAddress: string) {
     await this.props.detectedLocation(formattedAddress);
-    await this.props.performSearch(this.props.search.searchQuery);
+    await this.props.performSearch();
   }
 
   async _onRefresh() {
-    this.props.performSearch(this.props.search.searchQuery);
+    this.props.performSearch();
   }
 
   fetchLocationAndSearch() {
@@ -179,7 +179,7 @@ class EventListContainer extends React.Component {
   componentDidMount() {
     this.fetchLocationAndSearch();
     // TODO: Tie this search in with some attempt to pull in a saved search query
-    // this.props.performSearch(this.props.search.searchQuery);
+    // this.props.performSearch();
   }
 
   render() {
@@ -260,8 +260,8 @@ const mapDispatchToProps = (dispatch) => {
     detectedLocation: async (location) => {
       await dispatch(detectedLocation(location));
     },
-    performSearch: async (searchQuery) => {
-      await dispatch(performSearch(searchQuery));
+    performSearch: async () => {
+      await dispatch(performSearch());
     },
   };
 };
