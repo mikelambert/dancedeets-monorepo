@@ -14,14 +14,14 @@ import { search } from '../api/dancedeets';
 
 export function performSearch(searchQuery: SearchQuery) {
   return async function(dispatch: Dispatch) {
-    dispatch(searchStart());
+    await dispatch(searchStart());
     try {
       const responseData = await search(searchQuery.location, searchQuery.keywords, searchQuery.timePeriod);
       await dispatch(searchComplete(responseData));
     } catch (e) {
       // TODO: error fetching events.
       console.log('error fetching events', e, e.stack);
-      dispatch(searchFailed());
+      await dispatch(searchFailed());
     }
   };
 }

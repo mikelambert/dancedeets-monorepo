@@ -32,7 +32,7 @@ export default class AutocompleteList extends React.Component {
   props: {
     style: Object, // style for ListView
     styles: Object, // styles for subcomponents
-    onLocationSelected: () => void,
+    onLocationSelected: () => void | Promise,
     minLength: number,
     fetchDetails: boolean,
     textValue: () => string,
@@ -168,8 +168,8 @@ export default class AutocompleteList extends React.Component {
       delete rowData.isLoading;
       this.getCurrentLocation();
     } else {
-      this.props.onLocationSelected(rowData.description);
       delete rowData.isLoading;
+      this.props.onLocationSelected(rowData.description);
     }
   }
 

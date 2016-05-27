@@ -80,8 +80,8 @@ class SearchInput extends React.Component {
       }}
       onSubmitEditing={() => {
         this.animatedRelayout();
-        if (this.props.onBlur) {
-          this.props.onBlur();
+        if (this.props.onSubmitEditing) {
+          this.props.onSubmitEditing();
         }
       }}
     />;
