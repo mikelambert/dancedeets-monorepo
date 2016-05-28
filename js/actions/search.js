@@ -70,6 +70,6 @@ function searchComplete(results: SearchResults): Action {
 
 function searchFailed(): Action {
   return {
-    type: 'SEARCH_COMPLETE',
+    type: 'SEARCH_FAILED',
   };
 }
