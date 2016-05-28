@@ -34,20 +34,25 @@ def _decorate_with_loaded(events):
     loaded_fb_event_lookup = dict((x.key.string_id(), x) for x in loaded_fb_events if x)
 
     for event in events:
-        loaded_event = loaded_fb_event_lookup.get(event['id'])
-        event['loaded'] = bool(loaded_event)
-        if event['loaded']:
-            if loaded_event.start_time != dates.parse_fb_timestamp(event['start_time']):
-                event['mismatched_time'] = True
+        event['loaded'] = event['id'] in loaded_fb_events
 
-    _hack_reload(events)
+    _hack_reload(loaded_fb_event_lookup, events)
+
+    keys = ['id', 'loaded', 'start_time', 'name']
+    canonicalized_events = [dict(e[x] for x in keys) for e in events]
+    return canonicalized_events
 
 
-def _hack_reload(events):
+def _hack_reload(loaded_fb_event_lookup, events):
     # HACK: if we detected different data between the FB pseudo-event data and our local events, trigger a refresh
     # This can happen if a user takes an 'old' event that has become PAST, and puts the event in the future,
     # bypassing our optimization attempts to only refresh FUTURE/ONGOING events. This is a fail-safe for that.
-    reload_event_ids = [event['id'] for event in events if event.get('mismatched_time')]
+    reload_event_ids = []
+    for event in events:
+        loaded_event = loaded_fb_event_lookup.get(event['id'])
+        if loaded_event and loaded_event.start_time != dates.parse_fb_timestamp(event['start_time']):
+            reload_event_ids.append(event['id'])
+
     if reload_event_ids:
-        backgrounder.load_events(reload_event_ids, allow_cache=False)
         logging.info("Dates changed, reloading events: %s", reload_event_ids)
+        backgrounder.load_events(reload_event_ids, allow_cache=False)
