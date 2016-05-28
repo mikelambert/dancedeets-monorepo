@@ -145,9 +145,11 @@ class LookupUser(LookupType):
 class LookupUserEvents(LookupType):
     version = "v2.5"
 
+    fields = ['id', 'name', 'start_time', 'host', 'rsvp_status']
+
     @classmethod
     def get_lookups(cls, object_id):
-        common = 'limit=1000&since=yesterday&fields=id,name,start_time,host,rsvp_status'
+        common = 'limit=1000&since=yesterday&fields=%s' % ','.join(cls.fields)
         return [
             ('events', cls.url('%s/events?%s' % (object_id, common))), # attending and unsure
             ('events_declined', cls.url('%s/events?type=declined&%s' % (object_id, common))),

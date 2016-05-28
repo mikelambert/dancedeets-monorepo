@@ -38,7 +38,7 @@ def _decorate_with_loaded(events):
 
     _hack_reload(loaded_fb_event_lookup, events)
 
-    keys = ['id', 'loaded', 'start_time', 'name']
+    keys = ['loaded'] + fb_api.LookupUserEvents.fields
     canonicalized_events = [dict(e[x] for x in keys) for e in events]
     return canonicalized_events
 
