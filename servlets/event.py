@@ -13,9 +13,9 @@ import app
 import base_servlet
 from event_scraper import add_entities
 from event_scraper import potential_events
+from events import add_events
 from events import eventdata
 from events import event_locations
-from events import event_reloading_tasks
 from events import event_updates
 import fb_api
 from loc import formatting
@@ -351,41 +351,10 @@ class AddHandler(base_servlet.BaseRequestHandler):
             fb_event = self.fbl.get(fb_api.LookupEvent, event_id)
         else:
             logging.info("Showing page for selecting an event to add. Querying user %s", self.fb_uid)
-            try:
-                user_events = self.fbl.get(fb_api.LookupUserEvents, self.fb_uid, allow_cache=False)
-            except fb_api.NoFetchedDataException as e:
-                try:
-                    user_events = self.fbl.get(fb_api.LookupUserEvents, self.fb_uid)
-                except fb_api.NoFetchedDataException, e:
-                    logging.error("Could not load event info for user: %s", e)
-                    user_events = None
-            if user_events is not None:
-                results_json = fb_api.LookupUserEvents.all_events(user_events)
-                events = list(sorted(results_json, key=lambda x: x.get('start_time')))
-            else:
-                events = []
-            loaded_fb_events = eventdata.DBEvent.get_by_ids([x['id'] for x in events])
-            loaded_fb_event_lookup = dict((x.key.string_id(), x) for x in loaded_fb_events if x)
-
-            for event in events:
-                event['loaded'] = event['id'] in loaded_fb_event_lookup
+            events = add_events.get_decorated_user_events(self.fbl)
 
             if self.request.get('new_only') == '1':
                 events = [x for x in events if not x['loaded']]
-
-            # HACK: if we detected different data between the FB pseudo-event data and our local events, trigger a refresh
-            # This can happen if a user takes an 'old' event that has become PAST, and puts the event in the future,
-            # bypassing our optimization attempts to only refresh FUTURE/ONGOING events. This is a fail-safe for that.
-            reload_events = []
-            for event in events:
-                loaded_event = loaded_fb_event_lookup.get(event['id'])
-                if loaded_event:
-                    if loaded_event.start_time != dates.parse_fb_timestamp(event['start_time']):
-                        reload_events.append(loaded_event)
-            if reload_events:
-                self.fbl.allow_cache = False
-                logging.info("Dates changed, reloading events: %s", [x.key.string_id() for x in reload_events])
-                event_reloading_tasks.load_fb_event(self.fbl, reload_events)
 
         self.display['events'] = events
         self.display['fb_event'] = fb_event
