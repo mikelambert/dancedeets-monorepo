@@ -42,7 +42,7 @@ export default class AutocompleteList extends React.Component {
   props: {
     style: Object, // style for ListView
     styles: Object, // styles for subcomponents
-    onLocationSelected: () => void | Promise,
+    onLocationSelected: (location: string) => void | Promise,
     minLength: number,
     fetchDetails: boolean,
     textValue: () => string,

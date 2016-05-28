@@ -113,8 +113,8 @@ function addAndroid(event: Event) {
 }
 export function add(event: Event) {
   if (Platform.OS == 'ios') {
-    return addIOS(event);
+    addIOS(event);
   } else {
-    return addAndroid(event);
+    addAndroid(event);
   }
 }

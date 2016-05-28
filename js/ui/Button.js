@@ -18,14 +18,19 @@ var View = require('View');
 class Button extends React.Component {
   props: {
     type: 'primary' | 'secondary' | 'bordered';
-    icon: number;
+    icon: ?number;
     caption: string;
     style: any;
     onPress: () => void;
-    size: string;
+    size: 'small' | 'large';
   };
 
   static defaultProps = {
+    caption: '',
+    icon: null,
+    style: null,
+    onPress: () => {},
+    type: 'primary',
     size: 'large',
   };
 
@@ -37,7 +42,7 @@ class Button extends React.Component {
     }
     let content;
     const size = this.props.size === 'small' ? styles.smallButton : styles.largeButton;
-    if (this.props.type === 'primary' || this.props.type === undefined) {
+    if (this.props.type === 'primary') {
       content = (
         <LinearGradient
           start={[0, 0]} end={[0, 1]}

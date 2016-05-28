@@ -446,7 +446,8 @@ export class FullEventView extends React.Component {
   }
 
   render() {
-    var imageProps = this.props.event.getImagePropsForWidth();
+    const width = Dimensions.get('window').width;
+    const imageProps = this.props.event.getImagePropsForWidth(width);
     return (
       <ScrollView style={eventStyles.container}>
         <View style={eventStyles.row}>
