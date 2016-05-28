@@ -16,6 +16,9 @@ export type AddEventData = {
 
   // From DanceDeets
   loaded: boolean;
+
+  // From our app:
+  pending: ?boolean;
 };
 
 export type AddEventList = Array<AddEventData>;

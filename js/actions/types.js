@@ -51,6 +51,9 @@ export type Action =
   | { type: 'ADD_EVENTS_RELOAD' }
   | { type: 'ADD_EVENTS_RELOAD_COMPLETE', results: AddEventList }
   | { type: 'ADD_EVENTS_RELOAD_FAILED' }
+  | { type: 'ADD_EVENTS_UPDATE_LOADED',
+      status: 'PENDING' | 'LOADED' | 'UNLOADED',
+      eventId: string }
   ;
 
 export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;

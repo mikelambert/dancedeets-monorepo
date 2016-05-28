@@ -31,6 +31,7 @@ import {
 import { connect } from 'react-redux';
 import { Event, Venue } from './models';
 import type { ThunkAction } from '../actions/types';
+import type { AddEventData } from '../addEventsModels';
 import MapView from 'react-native-maps';
 import moment from 'moment';
 import { linkColor, purpleColors } from '../Colors';
@@ -412,6 +413,39 @@ const mapStateToProps = (state) => {
   };
 };
 export const EventRow = connect(mapStateToProps)(_EventRow);
+
+export class AddEventRow extends React.Component {
+  props: {
+    onEventSelected: (event: AddEventData) => void,
+    event: AddEventData,
+  };
+
+  render() {
+    //TODO: use event.loaded and event.pending to grey things out and disable touching
+    const width = 100;
+    const imageUrl = 'http://graph.facebook.com/' + this.props.event.id + '/picture';
+    return (
+      <View style={eventStyles.row}>
+        <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
+          <Text
+            numberOfLines={2}
+            style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
+          <HorizontalView>
+            <View style={{width: width}}>
+              <Image
+                source={{uri: imageUrl}}
+                style={eventStyles.thumbnail}
+              />
+            </View>
+            <View style={eventStyles.eventIndent}>
+              <EventDateTime start={this.props.event.start_time} />
+            </View>
+          </HorizontalView>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
 
 class EventShare extends React.Component {
   render() {

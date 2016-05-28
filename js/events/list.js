@@ -87,7 +87,6 @@ class Onebox extends React.Component {
 class EventListContainer extends React.Component {
   state: {
     dataSource: ListView.DataSource,
-    refreshing: boolean,
   };
 
   constructor(props) {
@@ -98,12 +97,10 @@ class EventListContainer extends React.Component {
     });
     this.state = {
       dataSource,
-      refreshing: false,
     };
     this.state = this._getNewState(this.props);
     (this: any)._renderHeader = this._renderHeader.bind(this);
     (this: any)._renderRow = this._renderRow.bind(this);
-    (this: any)._onRefresh = this._onRefresh.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
   }
 
@@ -154,10 +151,6 @@ class EventListContainer extends React.Component {
   async setLocationAndSearch(formattedAddress: string) {
     await this.props.detectedLocation(formattedAddress);
     await this.props.performSearch();
-  }
-
-  async _onRefresh() {
-    this.props.performSearch();
   }
 
   fetchLocationAndSearch() {
@@ -235,7 +228,7 @@ class EventListContainer extends React.Component {
         refreshControl={
           <RefreshControl
             refreshing={this.props.search.loading}
-            onRefresh={this._onRefresh}
+            onRefresh={() => this.props.performSearch()}
           />
         }
         renderRow={this._renderRow}

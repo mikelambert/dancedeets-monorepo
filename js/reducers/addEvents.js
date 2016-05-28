@@ -8,7 +8,7 @@
 
 import type {Action} from '../actions/types';
 
-import type { AddEventList } from '../addEventsModels';
+import type { AddEventData, AddEventList } from '../addEventsModels';
 
 export type SortOrder = 'ByDate' | 'ByName';
 
@@ -63,6 +63,41 @@ export function addEvents(state: State = initialState, action: Action): State {
         ...state.displayOptions,
         sortOrder: (state.displayOptions.sortOrder === 'ByDate' ? 'ByName' : 'ByDate'),
       },
+    };
+  }
+  if (action.type === 'ADD_EVENTS_UPDATE_LOADED') {
+    if (!state.results) {
+      // Ignore any callbacks that don't correspond to a valid search results
+      return state;
+    }
+    const constAction = action; // Because flow doesn't trust this to stay inside the map()
+    const newResults = state.results.map((x: AddEventData) => {
+      if (x.id === constAction.eventId) {
+        if (constAction.status === 'UNLOADED') {
+          return {
+            ...x,
+            loaded: false,
+            pending: false,
+          };
+        } else if (constAction.status === 'PENDING') {
+          return {
+            ...x,
+            loaded: false,
+            pending: true,
+          };
+        } else if (constAction.status === 'LOADED') {
+          return {
+            ...x,
+            loaded: true,
+            pending: false,
+          };
+        }
+      }
+      return x;
+    });
+    return {
+      ...state,
+      results: newResults,
     };
   }
   return state;
