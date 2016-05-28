@@ -114,7 +114,7 @@ async function refreshFullToken() {
     // This != fixes Flow, but then flags with ESLint!
     // Can remove _.includes when RN 0.27 is released:
     // https://github.com/facebook/react-native/commit/ed47efe4a17a6fa3f0a2a8a36600efdcd1c65b86
-    if (newAccessToken != null && !_.includes(p, 'user_events')) {
+    if (newAccessToken != null && !_.includes(newAccessToken.getPermissions(), 'user_events')) {
       await loginOrLogout();
     }
   } catch (e) {
