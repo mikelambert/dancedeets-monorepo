@@ -8,6 +8,7 @@
 
 import React from 'react';
 import {
+  AlertIOS,
   Image,
   StyleSheet,
   View,
@@ -20,6 +21,7 @@ import {
   Text,
 } from '../ui';
 import type { Dispatch } from '../actions/types';
+const Mailer = require('NativeModules').RNMail;
 
 const credits = [
   [
@@ -49,6 +51,18 @@ class Credits extends React.Component {
     const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
     return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
   }
+}
+
+function sendEmail() {
+  Mailer.mail({
+      subject: 'DanceDeets Feeback',
+      recipients: ['feedback@dancedeets.com'],
+      body: '',
+    }, (error, event) => {
+        if (error) {
+          AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
+        }
+    });
 }
 
 class _ProfileComponent extends React.Component {
@@ -119,7 +133,7 @@ export default class Profile extends React.Component {
   render() {
     return <View style={styles.container}>
       <ProfileComponent style={{height:300}}/>
-      <Button size="small" caption="Send Feedback" />
+      <Button size="small" caption="Send Feedback" onPress={sendEmail}/>
 
       <Credits style={{marginTop: 20}}/>
     </View>;
