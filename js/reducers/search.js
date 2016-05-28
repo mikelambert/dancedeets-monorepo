@@ -10,20 +10,21 @@ import type {Action} from '../actions/types';
 import type { SearchQuery, SearchResults } from '../events/search';
 
 export type State = {
-  searchQuery: SearchQuery;
-  results: ?SearchResults;
-  listLayout: boolean;
+  listLayout: boolean; // should show list view or expanded view
+  loading: boolean; // loading indicator
+  searchQuery: SearchQuery; // our current search query
+  results: ?SearchResults; // our last-searched results
 };
 
 const initialState = {
+  listLayout: false,
+  loading: false,
   searchQuery: {
     location: '',
     keywords: '',
     timePeriod: 'UPCOMING',
   },
-  loading: false,
   results: null,
-  listLayout: false,
 };
 
 export function search(state: State = initialState, action: Action): State {

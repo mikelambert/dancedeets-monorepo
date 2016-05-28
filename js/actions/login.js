@@ -25,7 +25,7 @@ export function loginStartOnboard(): Action {
 }
 
 export function loginComplete(token: AccessToken): Action {
-  auth(token);
+  auth();
   return {
     type: 'LOGIN_LOGGED_IN',
     token: token,

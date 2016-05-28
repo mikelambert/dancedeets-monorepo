@@ -103,6 +103,7 @@ class EventListContainer extends React.Component {
     this.state = this._getNewState(this.props);
     (this: any)._renderHeader = this._renderHeader.bind(this);
     (this: any)._renderRow = this._renderRow.bind(this);
+    (this: any)._onRefresh = this._onRefresh.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
   }
 
@@ -167,7 +168,7 @@ class EventListContainer extends React.Component {
         const address: Address = await Geocoder.geocodePosition(newCoords);
         const formattedAddress = format(address[0]);
         // Trigger this search without waiting around
-        auth(null, {location: formattedAddress});
+        auth({location: formattedAddress});
         // And likewise with our attempt to search
         this.setLocationAndSearch(formattedAddress);
       },
@@ -234,7 +235,7 @@ class EventListContainer extends React.Component {
         refreshControl={
           <RefreshControl
             refreshing={this.props.search.loading}
-            onRefresh={this._onRefresh.bind(this)}
+            onRefresh={this._onRefresh}
           />
         }
         renderRow={this._renderRow}

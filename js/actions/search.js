@@ -6,9 +6,8 @@
 
 'use strict';
 
-import type { Action, ThunkAction } from './types';
+import type { Action, ThunkAction, Dispatch } from './types';
 import type { SearchResults } from '../events/search';
-import type { Dispatch } from '../actions/types';
 
 import { search } from '../api/dancedeets';
 
@@ -71,6 +70,6 @@ function searchComplete(results: SearchResults): Action {
 
 function searchFailed(): Action {
   return {
-    type: 'SEARCH_FAILED',
+    type: 'SEARCH_COMPLETE',
   };
 }

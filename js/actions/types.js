@@ -28,6 +28,7 @@ import type { NavigationState } from 'NavigationTypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
 import { Event } from '../events/models';
 import type { SearchResults } from '../events/search';
+import type { AddEventList } from '../addEventsModels';
 
 export type Action =
     { type: 'NAV_PUSH', state: NavigationState }
@@ -47,6 +48,9 @@ export type Action =
   | { type: 'START_SEARCH' }
   | { type: 'SEARCH_COMPLETE', results: SearchResults }
   | { type: 'SEARCH_FAILED' }
+  | { type: 'ADD_EVENTS_RELOAD' }
+  | { type: 'ADD_EVENTS_RELOAD_COMPLETE', results: AddEventList }
+  | { type: 'ADD_EVENTS_RELOAD_FAILED' }
   ;
 
 export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;

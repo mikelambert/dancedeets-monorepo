@@ -7,11 +7,13 @@
 'use strict';
 
 import {combineReducers} from 'redux';
+import {addEvents} from './addEvents';
 import {user} from './user';
 import {navigationState} from './navigation';
 import {search} from './search';
 
 export default combineReducers({
+  addEvents,
   navigationState,
   user,
   search,

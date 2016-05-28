@@ -15,8 +15,7 @@ const DEV_SERVER = false;
 
 function getUrl(path: string, args: Object) {
   const baseUrl = DEV_SERVER ? 'http://dev.dancedeets.com:8080/api/v1.2/' : 'http://www.dancedeets.com/api/v1.2/';
-  const fullArgs = Object.assign({}, args, {client: Platform.OS});
-  const formattedArgs = querystring.stringify(fullArgs);
+  const formattedArgs = querystring.stringify(args);
   var fullPath = baseUrl + path;
   if (formattedArgs) {
     fullPath += '?' + formattedArgs;
@@ -26,13 +25,24 @@ function getUrl(path: string, args: Object) {
 
 async function performRequest(path: string, args: Object, postArgs: ?Object | null) {
   try {
-    console.log('JSON API:', getUrl(path, args));
+    // Standardize our API args with additional data
+    const client = 'react-' + Platform.OS;
+    const fullArgs = Object.assign({}, args, {
+      client,
+    });
+    const token = await AccessToken.getCurrentAccessToken();
+    const fullPostData = Object.assign({}, postArgs, {
+      client,
+      'access_token': token ? token.accessToken : null,
+    });
+
+    console.log('JSON API:', getUrl(path, fullArgs));
     const result = await fetch(getUrl(path, args), {
-      method: postArgs ? 'POST' : 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: postArgs ? JSON.stringify(postArgs) : null,
+      body: JSON.stringify(fullPostData),
     });
     const json = await result.json();
     // 'undefined' means success, 'false' means error
@@ -47,21 +57,16 @@ async function performRequest(path: string, args: Object, postArgs: ?Object | nu
   }
 }
 
-export async function auth(token: ?AccessToken, data: ?Object) {
+async function verifyAuthenticated() {
+  const token = await AccessToken.getCurrentAccessToken();
   if (!token) {
-    token = await AccessToken.getCurrentAccessToken();
+    throw 'Not authenticated!';
   }
-  if (!token) {
-    return;
-  }
-  if (data == null) {
-    data = {};
-  }
-  const postData = Object.assign({}, {
-    client: Platform.OS,
-    access_token: token.accessToken,
-  }, data);
-  return performRequest('auth', {}, postData);
+}
+
+export async function auth(data: ?Object) {
+  await verifyAuthenticated();
+  return performRequest('auth', {}, data);
 }
 
 export async function search(location: string, keywords: string, time_period: TimePeriod) {
@@ -70,5 +75,10 @@ export async function search(location: string, keywords: string, time_period: Ti
     keywords,
     time_period,
   });
+}
+
+export async function getAddEvents() {
+  await verifyAuthenticated();
+  return performRequest('events_list_to_add', {});
 }
 
