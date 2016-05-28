@@ -8,6 +8,7 @@
 
 import React from 'react';
 import {
+  Dimensions,
   Image,
   Linking,
   Platform,
@@ -343,6 +344,7 @@ async function openVenueWithApp(venue: Venue) {
   Linking.openURL(url).catch(err => console.error('Error opening map URL:', url, ', with Error:', err));
 }
 
+
 class _EventRow extends React.Component {
   props: {
     onEventSelected: (x: Event) => void,
@@ -352,7 +354,8 @@ class _EventRow extends React.Component {
 
   render() {
     if (this.props.listLayout) {
-      var imageProps = this.props.event.getImageProps();
+      const width = 100;
+      const imageProps = this.props.event.getImagePropsForWidth(width);
       return (
         <View style={eventStyles.row}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
@@ -360,9 +363,9 @@ class _EventRow extends React.Component {
               numberOfLines={2}
               style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
             <HorizontalView>
-              <View style={{width: 100}}>
+              <View style={{width: width}}>
                 <Image
-                  source={{uri: imageProps.url}}
+                  source={{uri: imageProps.source}}
                   originalWidth={imageProps.width}
                   originalHeight={imageProps.height}
                   style={eventStyles.thumbnail}
@@ -378,12 +381,13 @@ class _EventRow extends React.Component {
         </View>
       );
     } else {
-      var imageProps = this.props.event.getImageProps();
+      const width = Dimensions.get('window').width;
+      const imageProps = this.props.event.getImagePropsForWidth(width);
       return (
         <View style={eventStyles.row}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
             <ProportionalImage
-              source={{uri: imageProps.url}}
+              source={{uri: imageProps.source}}
               originalWidth={imageProps.width}
               originalHeight={imageProps.height}
               style={eventStyles.thumbnail}
@@ -442,13 +446,13 @@ export class FullEventView extends React.Component {
   }
 
   render() {
-    var imageProps = this.props.event.getImageProps();
+    var imageProps = this.props.event.getImagePropsForWidth();
     return (
       <ScrollView style={eventStyles.container}>
         <View style={eventStyles.row}>
           <TouchableOpacity onPress={this.onFlyerClicked} activeOpacity={0.5}>
             <ProportionalImage
-              source={{uri: imageProps.url}}
+              source={{uri: imageProps.source}}
               originalWidth={imageProps.width}
               originalHeight={imageProps.height}
               style={eventStyles.thumbnail}
