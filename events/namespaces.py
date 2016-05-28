@@ -17,7 +17,7 @@ class Namespace(object):
 _NAMESPACE_LIST = [
     Namespace(
         FACEBOOK,
-        'Facebook',
+        'Facebook Event',
         'https://www.facebook.com/events/',
         lambda x: 'https://www.facebook.com/%s/' % x.fb_event_id,
     ),
@@ -29,7 +29,7 @@ _NAMESPACE_LIST = [
     ),
     Namespace(
         JAPAN_TDL,
-        'Dance Life',
+        'Tokyo Dance Life',
         'http://www.tokyo-dancelife.com/event/',
         lambda x: 'http://www.tokyo-dancelife.com/event/%s/%s.php' % (x.start_time.strftime('%Y_%m'), x.namespaced_id),
     ),
