@@ -9,6 +9,8 @@ import app
 import base_servlet
 import event_types
 import fb_api
+from event_scraper import add_entities
+from events import add_events
 from events import eventdata
 from loc import formatting
 from loc import gmaps_api
@@ -111,7 +113,6 @@ def retryable(func):
             taskqueue.add(method='POST', url=url, payload=body, countdown=60 * 60)
             raise
     return wrapped_func
-
 
 @apiroute('/search')
 class SearchHandler(ApiHandler):
@@ -470,11 +471,26 @@ def canonicalize_event_data(db_event, event_keywords):
     return event_api
 
 
+@apiroute('/events_add')
+class AddHandler(ApiHandler):
+    requires_auth = True
+
+    def get(self):
+        events = add_events.get_decorated_user_events(self.fbl)
+        self.write_json_success({'events': events})
+
+    def post(self):
+        event_id = self.json_body.get('event_id')
+        if event_id:
+            self.add_error('Need to pass event_id argument')
+        self.errors_are_fatal()
+        fb_event = self.fbl.get(fb_api.LookupEvent, event_id, allow_cache=False)
+        add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.fbl.fb_uid, creating_method=eventdata.CM_USER)
+        self.write_json_success()
+
+
 @apiroute(r'/events/%s' % eventdata.EVENT_ID_REGEX)
 class EventHandler(ApiHandler):
-    def requires_login(self):
-        return False
-
     def get(self):
         path_bits = self.request.path.split('/events/')
         if len(path_bits) != 2:
