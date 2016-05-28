@@ -439,6 +439,8 @@ export class AddEventRow extends React.Component {
             </View>
             <View style={eventStyles.eventIndent}>
               <EventDateTime start={this.props.event.start_time} />
+              <Text>loaded: {this.props.event.loaded}</Text>
+              <Text>pending {this.props.event.pending}</Text>
             </View>
           </HorizontalView>
         </TouchableOpacity>
