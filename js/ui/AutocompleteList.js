@@ -329,7 +329,6 @@ export default class AutocompleteList extends React.Component {
             </Text>
             {this._renderLoader(rowData)}
           </HorizontalView>
-          <View style={[defaultStyles.separator, this.props.styles.separator]} />
         </View>
       </TouchableHighlight>
     );
@@ -370,14 +369,15 @@ const defaultStyles = {
   },
   listView: {
     position: 'absolute',
-    backgroundColor: '#333',
+    backgroundColor: '#222',
     // flex: 1,
     left: 0,
     right: 0,
   },
   row: {
-    padding: 13,
-    height: 44,
+    alignItems: 'center',
+    paddingLeft: 15,
+    height: 40,
   },
   separator: {
     height: 1,
