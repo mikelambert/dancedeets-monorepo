@@ -85,7 +85,7 @@ async function isRecentlyLoggedIn() {
   const accessToken = await AccessToken.getCurrentAccessToken();
   if (accessToken != null) {
     var howLongAgo = Math.round((Date.now() - accessToken.lastRefreshTime) / 1000);
-    return (howLongAgo < 60 * 60);
+    return (howLongAgo < 24 * 60 * 60);
   } else {
     // This shouldn't happen, since we check isLoggedOut() before isRecentlyLoggedIn().
     // But let's handle it correctly anyway.
