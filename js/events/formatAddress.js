@@ -10,19 +10,28 @@ export type Address = {
     lat: number;
     lng: number;
   };
+  locale: string;
+
+  thoroughfare: string;
+  subThoroughfare: string;
+
+  subLocality: string;
   locality: string;
+  postalCode: string;
+
+  // Why do we sometimes get one or the other?! :(
+  subAdminArea: string;
+  subAdministrativeArea: string;
+  // Why do we sometimes get one or the other?! :(
+  adminArea: string;
   administrativeArea: string;
+
   country: string;
   countryCode: string;
-  locale: string;
-  postalCode: string;
-  subAdministrativeArea: string;
-  subLocality: string;
-  subThoroughfare: string;
-  thoroughfare: string;
 };
 
 /*
+// Uses subAdministrativeArea
 {
   "postalCode":"10024",
   "subAdministrativeArea":"New York",
@@ -38,6 +47,22 @@ export type Address = {
   "subLocality":"Manhattan",
   "thoroughfare":"5th Ave"
 }
+
+// Uses subAdminArea, has formattedAddress
+{
+  adminArea: "CA"
+  country: "United States"
+  countryCode: "US"
+  feature: null
+  formattedAddress: "I-280 N,Los Altos, CA  94022,United States"
+  locality: "Los Altos Hills"
+  position: Object
+  postalCode: "94022",
+  streetName: "I-280 N",
+  streetNumber: null.
+  subAdminArea: "Santa Clara",
+  subLocality: null,
+}
 */
 
 
@@ -52,7 +77,11 @@ export function format(address: Address) {
       // Locality=Shibuya
       // SubAdminArea=null
       // AdminArea=Tokyo
+      //
+      // Los Altos Hills, CA (ignores Santa Clara County in subadminarea)
       components.push(address.locality);
+  } else if (address.subAdminArea != null) {
+      components.push(address.subAdminArea);
   } else if (address.subAdministrativeArea != null) {
       // Sometimes there is only a SubAdminArea:
       // LatLong=60.1836354,24.9206748
@@ -81,6 +110,9 @@ export function format(address: Address) {
   // In this case, we just want to grab the Locality (first if-block above)
 
   // Then grab the States/Province/etc (for those who have it)
+  if (address.adminArea != null) {
+      components.push(address.adminArea);
+  }
   if (address.administrativeArea != null) {
       components.push(address.administrativeArea);
   }
