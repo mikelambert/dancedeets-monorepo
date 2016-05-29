@@ -34,7 +34,9 @@ import Geocoder from '../api/geocoder';
 import { auth } from '../api/dancedeets';
 import type { Address } from './formatAddress';
 import { format } from './formatAddress';
+import AddEvents from '../containers/AddEvents';
 import {
+  Button,
   Text,
 } from '../ui';
 import { AdMobBanner } from 'react-native-admob';
@@ -81,6 +83,15 @@ class Onebox extends React.Component {
         <Text style={styles.oneboxText}>{this.props.onebox.title}</Text>
       </TouchableOpacity>
     );
+  }
+}
+
+class AddEventButton extends React.Component {
+  render() {
+    return <Button
+      style={styles.addEventButton}
+      //onPress={null}
+    >Add Event!</Button>;
   }
 }
 
@@ -159,6 +170,7 @@ class EventListContainer extends React.Component {
       async (position) => {
         const newCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
         const address: Address = await Geocoder.geocodePosition(newCoords);
+        console.log(address);
         const formattedAddress = format(address[0]);
         // Trigger this search without waiting around
         auth({location: formattedAddress});
@@ -174,16 +186,6 @@ class EventListContainer extends React.Component {
     this.fetchLocationAndSearch();
     // TODO: Tie this search in with some attempt to pull in a saved search query
     // this.props.performSearch();
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <SearchHeader>
-          {this.renderListView()}
-        </SearchHeader>
-      </View>
-    );
   }
 
   _renderRow(row) {
@@ -243,6 +245,17 @@ class EventListContainer extends React.Component {
       />
     );
   }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <SearchHeader>
+          {this.renderListView()}
+        </SearchHeader>
+        <AddEventButton />
+      </View>
+    );
+  }
 }
 const mapStateToProps = (state) => {
   return {
@@ -300,4 +313,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 18,
   },
+  addEventButton: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+  }
 });
