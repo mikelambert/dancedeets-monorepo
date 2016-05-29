@@ -52,11 +52,17 @@ class _AddEventList extends React.Component {
   }
 
   _getNewState(props) {
+    console.log(props);
     const state = {
       ...this.state,
-      dataSource: this.state.dataSource.cloneWithRows(props.addEvents.results),
+      dataSource: this.state.dataSource.cloneWithRows(props.addEvents.results || []),
     };
+    console.log(state);
     return state;
+  }
+
+  componentDidMount() {
+    this.props.reloadAddEvents();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -72,20 +78,20 @@ class _AddEventList extends React.Component {
 
   render() {
     return <ListView
-        style={[styles.listView]}
-        dataSource={this.state.dataSource}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.props.addEvents.loading}
-            onRefresh={() => this.props.reloadAddEvents()}
-          />
-        }
-        renderRow={this._renderRow}
-        initialListSize={10}
-        pageSize={5}
-        scrollRenderAheadDistance={10000}
-        scrollsToTop={false}
-        indicatorStyle="white"
+      style={[styles.listView]}
+      dataSource={this.state.dataSource}
+      refreshControl={
+        <RefreshControl
+          refreshing={this.props.addEvents.loading}
+          onRefresh={() => this.props.reloadAddEvents()}
+        />
+      }
+      renderRow={this._renderRow}
+      initialListSize={10}
+      pageSize={5}
+      scrollRenderAheadDistance={10000}
+      scrollsToTop={false}
+      indicatorStyle="white"
      />;
   }
 }
