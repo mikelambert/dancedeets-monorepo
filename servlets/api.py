@@ -223,7 +223,7 @@ class SearchHandler(ApiHandler):
                 },
             }
         self.write_json_success(json_response)
-
+    post=get
 
 class LookupDebugToken(fb_api.LookupType):
     @classmethod
@@ -471,13 +471,18 @@ def canonicalize_event_data(db_event, event_keywords):
     return event_api
 
 
-@apiroute('/events_add')
+@apiroute('/events_list_to_add')
 class AddHandler(ApiHandler):
     requires_auth = True
 
-    def get(self):
+    def post(self):
         events = add_events.get_decorated_user_events(self.fbl)
         self.write_json_success({'events': events})
+
+
+@apiroute('/events_add')
+class AddHandler(ApiHandler):
+    requires_auth = True
 
     def post(self):
         event_id = self.json_body.get('event_id')
@@ -512,3 +517,4 @@ class EventHandler(ApiHandler):
         # Ten minute expiry on data we return
         self.response.headers['Cache-Control'] = 'max-age=%s' % (60 * 10)
         self.write_json_success(json_data)
+    post=get
