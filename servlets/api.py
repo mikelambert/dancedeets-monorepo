@@ -70,6 +70,7 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
                 self.fbl.make_passthrough()
                 self.fb_user = self.fbl.get(fb_api.LookupUser, 'me')
                 self.fb_uid = self.fb_user['profile']['id']
+                self.fbl.fb_uid = self.fb_uid
                 logging.info("Access token for user ID %s", self.fb_uid)
             elif self.requires_auth:
                 self.add_error("Needs access_token parameter")
