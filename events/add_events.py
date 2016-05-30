@@ -8,7 +8,7 @@ from util import dates
 
 def get_decorated_user_events(fbl):
     events = _get_user_events(fbl)
-    _decorate_with_loaded(events)
+    events = _decorate_with_loaded(events)
     return events
 
 
@@ -39,7 +39,7 @@ def _decorate_with_loaded(events):
     _hack_reload(loaded_fb_event_lookup, events)
 
     keys = ['loaded'] + fb_api.LookupUserEvents.fields
-    canonicalized_events = [dict(e[x] for x in keys) for e in events]
+    canonicalized_events = [dict((k, e[k]) for k in keys if k in e) for e in events]
     return canonicalized_events
 
 
