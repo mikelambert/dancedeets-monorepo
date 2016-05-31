@@ -214,7 +214,7 @@ class EventRsvpControl extends React.Component {
       // so that when we flip to having a defaultRsvp, we construct a *new* SegmentedControl.
       // This ensures that the SegmentedControl's constructor runs (and pulls in the new defaultRsvp).
       key={ this.state.loading ? 'loading' : 'segmentedControl' }
-      enabled={ !this.state.loading } // only works on iOS
+      enabled={ !this.state.loading }
       values={RsvpOnFB.RSVPs.map((x)=>x.text)}
       defaultIndex={this.state.defaultRsvp}
       tintColor={purpleColors[0]}
