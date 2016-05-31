@@ -59,7 +59,6 @@ export function addEvents(state: State = initialState, action: Action): State {
     };
   }
   if (action.type === 'ADD_EVENTS_SET_SORT_ORDER') {
-    console.log(action, state);
     return {
       ...state,
       displayOptions: {

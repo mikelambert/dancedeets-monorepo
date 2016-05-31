@@ -159,11 +159,9 @@ class _AddEventList extends React.Component {
       results = results.filter((x) => !x.loaded);
     }
     if (props.addEvents.displayOptions.sortOrder === 'ByName') {
-      results.sort((a, b) => {
-        return a.name.localeCompare(b.name);
-      });
+      results = results.slice().sort((a, b) => a.name.localeCompare(b.name));
     } else if (props.addEvents.displayOptions.sortOrder === 'ByDate') {
-      results.sort((a, b) => a.start_time.localeCompare(b.start_time));
+      results = results.slice().sort((a, b) => a.start_time.localeCompare(b.start_time));
     }
     return results;
   }
