@@ -43,7 +43,6 @@ class AddEventRow extends React.Component {
   };
 
   render() {
-    //TODO: use event.loaded and event.pending to grey things out and disable touching
     const width = 75;
     const pixelWidth = width * PixelRatio.get();
     const imageUrl = 'https://graph.facebook.com/' + this.props.event.id + '/picture?type=large&width=' + pixelWidth + '&height=' + pixelWidth;
@@ -52,18 +51,49 @@ class AddEventRow extends React.Component {
         <ProgressSpinner/>
       </View>
     : null);
+    const addedBanner = (this.props.event.loaded ?
+      <View style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#00000088'
+      }}>
+        <View style={{
+          position: 'absolute',
+          transform: [{rotate: '-30deg'}],
+          backgroundColor: '#c00',
+          borderColor: 'black',
+          borderWidth: 0.5,
+          left: -width,
+          top: width / 2 - 10,
+          right: -width,
+
+          alignItems: 'center',
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}>
+          <Text style={{fontSize: 16}}>
+          ADDED
+          </Text>
+        </View>
+      </View> : null);
+    const textColor = (this.props.event.loaded || this.props.event.pending) ? '#888' : 'white';
     const row = (
       <HorizontalView>
-        <Image
-          source={{uri: imageUrl}}
-          style={{width: width, height: width}}
-        />
+        <View style={{flex:0.3}}>
+          <View style={{width: width}}>
+            <Image
+              source={{uri: imageUrl}}
+              style={{width: width, height: width}}
+            />
+            {addedBanner}
+          </View>
+        </View>
         <View style={{flex: 1, marginLeft: 5}}>
-          <Text
-            numberOfLines={2}
-            >{this.props.event.name}</Text>
-          <Text>{this.props.event.start_time}</Text>
-          <Text>loaded: {this.props.event.loaded ? 'Yes' : 'No'}</Text>
+          <Text style={{color: textColor}} numberOfLines={2}>{this.props.event.name}</Text>
+          <Text style={{color: textColor}}>{this.props.event.start_time}</Text>
           {spinner}
         </View>
       </HorizontalView>
@@ -76,7 +106,7 @@ class AddEventRow extends React.Component {
       );
     } else {
       return (
-        <View style={[styles.row, {backgroundColor: '#333'}]}>
+        <View style={styles.row}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
             {row}
           </TouchableOpacity>
@@ -120,7 +150,9 @@ class _AddEventList extends React.Component {
   }
 
   componentDidMount() {
-    //this.props.reloadAddEvents();
+    if (!this.props.addEvents.results) {
+      this.props.reloadAddEvents();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
