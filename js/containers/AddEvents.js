@@ -35,10 +35,10 @@ import {
 
 class _FilterHeader extends React.Component {
   render() {
-    return <View style={{marginTop: 70}}>
+    return <View style={styles.header}>
 
-    <HorizontalView style={{alignItems: 'center', marginBottom: 5}}>
-      <Text style={{marginRight: 5}}>Show events:</Text>
+    <HorizontalView style={styles.headerRow}>
+      <Text style={styles.headerText}>Show events:</Text>
       <SegmentedControl
         values={['All', 'Not-yet-added only']}
         style={{flex: 1}}
@@ -48,8 +48,8 @@ class _FilterHeader extends React.Component {
       />
     </HorizontalView>
 
-    <HorizontalView style={{alignItems: 'center', marginBottom: 5}}>
-      <Text style={{marginRight: 5}}>Sort:</Text>
+    <HorizontalView style={styles.headerRow}>
+      <Text style={styles.headerText}>Sort:</Text>
       <SegmentedControl
         values={['By Start Date', 'By Name']}
         style={{flex: 1}}
@@ -277,5 +277,16 @@ const styles = StyleSheet.create({
   rightTextDescription: {
     flex: 1,
     marginLeft: 5,
+  },
+  header: {
+    backgroundColor: purpleColors[2],
+    marginTop: 63, // HACK
+  },
+  headerRow: {
+    alignItems: 'center',
+    margin: 5,
+  },
+  headerText: {
+    marginRight: 5,
   },
 });
