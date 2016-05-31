@@ -23,15 +23,36 @@ import {
   addEvent,
   reloadAddEvents,
 } from '../actions';
+import { purpleColors } from '../Colors';
 import {
   HorizontalView,
   ProgressSpinner,
+  SegmentedControl,
   Text,
 } from '../ui';
 
 class FilterHeader extends React.Component {
   render() {
-    return <View />;
+    return <View style={{marginTop: 70}}>
+
+    <HorizontalView style={{alignItems: 'center', marginBottom: 5}}>
+      <Text style={{marginRight: 5}}>Show events:</Text>
+      <SegmentedControl
+        values={['All', 'Not-yet-added only']}
+        style={{flex: 1}}
+        tintColor={purpleColors[0]}
+      />
+    </HorizontalView>
+
+    <HorizontalView style={{alignItems: 'center', marginBottom: 5}}>
+      <Text style={{marginRight: 5}}>Sort:</Text>
+      <SegmentedControl
+        values={['By Start Date', 'By Name']}
+        style={{flex: 1}}
+        tintColor={purpleColors[0]}
+      />
+    </HorizontalView>
+    </View>;
   }
 }
 
