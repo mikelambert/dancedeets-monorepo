@@ -414,41 +414,6 @@ const mapStateToProps = (state) => {
 };
 export const EventRow = connect(mapStateToProps)(_EventRow);
 
-export class AddEventRow extends React.Component {
-  props: {
-    onEventSelected: (event: AddEventData) => void,
-    event: AddEventData,
-  };
-
-  render() {
-    //TODO: use event.loaded and event.pending to grey things out and disable touching
-    const width = 75;
-    const imageUrl = 'https://graph.facebook.com/' + this.props.event.id + '/picture';
-    return (
-      <View style={eventStyles.row}>
-        <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
-          <HorizontalView>
-            <Image
-              source={{uri: imageUrl}}
-              width={width}
-              height={width}
-              style={{width: width, height: width}}
-            />
-            <View style={eventStyles.eventIndent}>
-              <Text
-                numberOfLines={2}
-                style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
-              <EventDateTime start={this.props.event.start_time} />
-              <Text>loaded: {this.props.event.loaded}</Text>
-              <Text>pending: {this.props.event.pending}</Text>
-            </View>
-          </HorizontalView>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
-
 class EventShare extends React.Component {
   render() {
     var shareContent = {

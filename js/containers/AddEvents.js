@@ -8,23 +8,65 @@
 
 import React from 'react';
 import {
+  Image,
   RefreshControl,
   ListView,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
 import type { AddEventData } from '../addEventsModels';
-import { AddEventRow } from '../events/uicomponents';
 import type { State } from '../reducers/addEvents';
 import {
   addEvent,
   reloadAddEvents,
 } from '../actions';
+import {
+  HorizontalView,
+  Text,
+} from '../ui';
 
 class FilterHeader extends React.Component {
   render() {
     return <View />;
+  }
+}
+
+
+class AddEventRow extends React.Component {
+  props: {
+    onEventSelected: (event: AddEventData) => void,
+    event: AddEventData,
+  };
+
+  render() {
+    //TODO: use event.loaded and event.pending to grey things out and disable touching
+    const width = 75;
+    const imageUrl = 'https://graph.facebook.com/' + this.props.event.id + '/picture';
+    return (
+      <View style={styles.row}>
+        <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
+          <HorizontalView>
+            <Image
+              source={{uri: imageUrl}}
+              width={width}
+              height={width}
+              style={{width: width, height: width}}
+            />
+            <View style={{flex: 1}}>
+          <Text
+            numberOfLines={2}
+            style={{flexWrap: 'wrap', flex: 1}}
+            >{this.props.event.name}</Text>
+              <Text>{this.props.event.start_time}</Text>
+              <Text>loaded: {this.props.event.loaded ? 'Yes' : 'No'}</Text>
+              <Text>pending: {this.props.event.pending ? 'Yes' : 'No'}</Text>
+            </View>
+          </HorizontalView>
+        </TouchableOpacity>
+      </View>
+    );
   }
 }
 
@@ -62,7 +104,7 @@ class _AddEventList extends React.Component {
   }
 
   componentDidMount() {
-    this.props.reloadAddEvents();
+    //this.props.reloadAddEvents();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -119,9 +161,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
-    alignItems: 'center'
   },
   listView: {
     flex: 1,
-  }
+  },
+  row: {
+    flex: 1,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 20,
+    // http://stackoverflow.com/questions/36605906/what-is-the-row-container-for-a-listview-component
+    overflow: 'hidden',
+  },
 });
