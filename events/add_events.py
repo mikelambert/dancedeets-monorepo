@@ -8,6 +8,7 @@ from util import dates
 
 def get_decorated_user_events(fbl):
     events = _get_user_events(fbl)
+    logging.info('Found %s events for user', len(events))
     events = _decorate_with_loaded(events)
     return events
 
@@ -32,9 +33,10 @@ def _get_user_events(fbl):
 def _decorate_with_loaded(events):
     loaded_fb_events = eventdata.DBEvent.get_by_ids([x['id'] for x in events])
     loaded_fb_event_lookup = dict((x.key.string_id(), x) for x in loaded_fb_events if x)
+    logging.info('Loaded %d DBEvents for %s FB events', len(loaded_fb_event_lookup), len(events))
 
     for event in events:
-        event['loaded'] = event['id'] in loaded_fb_events
+        event['loaded'] = event['id'] in loaded_fb_event_lookup
 
     _hack_reload(loaded_fb_event_lookup, events)
 
