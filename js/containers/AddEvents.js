@@ -22,6 +22,8 @@ import type { State } from '../reducers/addEvents';
 import {
   addEvent,
   reloadAddEvents,
+  setOnlyUnadded,
+  setSortOrder,
 } from '../actions';
 import { purpleColors } from '../Colors';
 import {
@@ -31,7 +33,7 @@ import {
   Text,
 } from '../ui';
 
-class FilterHeader extends React.Component {
+class _FilterHeader extends React.Component {
   render() {
     return <View style={{marginTop: 70}}>
 
@@ -40,7 +42,9 @@ class FilterHeader extends React.Component {
       <SegmentedControl
         values={['All', 'Not-yet-added only']}
         style={{flex: 1}}
+        defaultIndex={this.props.displayOptions.onlyUnadded ? 1 : 0}
         tintColor={purpleColors[0]}
+        tryOnChange={(index)=>{this.props.setOnlyUnadded(index == 1);}}
       />
     </HorizontalView>
 
@@ -50,12 +54,22 @@ class FilterHeader extends React.Component {
         values={['By Start Date', 'By Name']}
         style={{flex: 1}}
         tintColor={purpleColors[0]}
+        defaultIndex={this.props.displayOptions.sortOrder === 'ByName' ? 1 : 0}
+        tryOnChange={(index)=>{this.props.setSortOrder(index == 1 ? 'ByName' : 'ByDate');}}
       />
     </HorizontalView>
     </View>;
   }
 }
-
+const FilterHeader = connect(
+  state => ({
+    displayOptions: state.addEvents.displayOptions,
+  }),
+  dispatch => ({
+    setOnlyUnadded: (x) => dispatch(setOnlyUnadded(x)),
+    setSortOrder: (x) => dispatch(setSortOrder(x)),
+  }),
+)(_FilterHeader);
 
 class AddEventRow extends React.Component {
   props: {
@@ -140,13 +154,26 @@ class _AddEventList extends React.Component {
     (this: any)._renderRow = this._renderRow.bind(this);
   }
 
+  applyFilterSorts(props, results) {
+    if (props.addEvents.displayOptions.onlyUnadded) {
+      results = results.filter((x) => !x.loaded);
+    }
+    if (props.addEvents.displayOptions.sortOrder === 'ByName') {
+      results.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+    } else if (props.addEvents.displayOptions.sortOrder === 'ByDate') {
+      results.sort((a, b) => a.start_time.localeCompare(b.start_time));
+    }
+    return results;
+  }
+
   _getNewState(props) {
-    console.log(props);
+    const results = this.applyFilterSorts(props, props.addEvents.results || []);
     const state = {
       ...this.state,
-      dataSource: this.state.dataSource.cloneWithRows(props.addEvents.results || []),
+      dataSource: this.state.dataSource.cloneWithRows(results),
     };
-    console.log(state);
     return state;
   }
 

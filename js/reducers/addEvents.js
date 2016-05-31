@@ -8,9 +8,7 @@
 
 import type {Action} from '../actions/types';
 
-import type { AddEventData, AddEventList } from '../addEventsModels';
-
-export type SortOrder = 'ByDate' | 'ByName';
+import type { AddEventData, AddEventList, SortOrder } from '../addEventsModels';
 
 export type RsvpFilter = 'attending' | 'maybe' | 'declined' | 'unsure' | null;
 
@@ -51,21 +49,22 @@ export function addEvents(state: State = initialState, action: Action): State {
       loading: false,
     };
   }
-  if (action.type === 'ADD_EVENTS_TOGGLE_ONLY_UNADDED') {
+  if (action.type === 'ADD_EVENTS_SET_ONLY_UNADDED') {
     return {
       ...state,
       displayOptions: {
         ...state.displayOptions,
-        onlyUnadded: !state.displayOptions.onlyUnadded,
+        onlyUnadded: action.value,
       },
     };
   }
-  if (action.type === 'ADD_EVENTS_TOGGLE_SORT_ORDER') {
+  if (action.type === 'ADD_EVENTS_SET_SORT_ORDER') {
+    console.log(action, state);
     return {
       ...state,
       displayOptions: {
         ...state.displayOptions,
-        sortOrder: (state.displayOptions.sortOrder === 'ByDate' ? 'ByName' : 'ByDate'),
+        sortOrder: action.value,
       },
     };
   }

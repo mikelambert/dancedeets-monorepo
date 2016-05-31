@@ -28,7 +28,7 @@ import type { NavigationState } from 'NavigationTypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
 import { Event } from '../events/models';
 import type { SearchResults } from '../events/search';
-import type { AddEventList } from '../addEventsModels';
+import type { AddEventList, SortOrder } from '../addEventsModels';
 
 export type Action =
     { type: 'NAV_PUSH', state: NavigationState }
@@ -54,6 +54,8 @@ export type Action =
   | { type: 'ADD_EVENTS_UPDATE_LOADED',
       status: 'PENDING' | 'LOADED' | 'UNLOADED',
       eventId: string }
+  | { type: 'ADD_EVENTS_SET_ONLY_UNADDED', value: boolean }
+  | { type: 'ADD_EVENTS_SET_SORT_ORDER', value: SortOrder }
   ;
 
 export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;

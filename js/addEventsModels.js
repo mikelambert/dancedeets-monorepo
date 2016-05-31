@@ -23,3 +23,4 @@ export type AddEventData = {
 
 export type AddEventList = Array<AddEventData>;
 
+export type SortOrder = 'ByDate' | 'ByName';

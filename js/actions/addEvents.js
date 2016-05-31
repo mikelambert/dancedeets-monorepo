@@ -7,7 +7,10 @@
 'use strict';
 
 import type { Action, ThunkAction, Dispatch } from './types';
-import type { AddEventList } from '../addEventsModels';
+import type {
+  AddEventList,
+  SortOrder,
+} from '../addEventsModels';
 
 import { getAddEvents, addEvent as reallyAddEvent } from '../api/dancedeets';
 
@@ -94,5 +97,19 @@ export function addEvent(eventId: string): ThunkAction {
     } catch (e) {
       await dispatch(markAsUnLoaded(eventId));
     }
+  };
+}
+
+export function setOnlyUnadded(value: boolean): Action {
+  return {
+    type: 'ADD_EVENTS_SET_ONLY_UNADDED',
+    value,
+  };
+}
+
+export function setSortOrder(value: SortOrder): Action {
+  return {
+    type: 'ADD_EVENTS_SET_SORT_ORDER',
+    value,
   };
 }
