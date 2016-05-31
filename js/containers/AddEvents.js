@@ -11,6 +11,7 @@ import {
   Image,
   RefreshControl,
   ListView,
+  PixelRatio,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -24,6 +25,7 @@ import {
 } from '../actions';
 import {
   HorizontalView,
+  ProgressSpinner,
   Text,
 } from '../ui';
 
@@ -43,30 +45,44 @@ class AddEventRow extends React.Component {
   render() {
     //TODO: use event.loaded and event.pending to grey things out and disable touching
     const width = 75;
-    const imageUrl = 'https://graph.facebook.com/' + this.props.event.id + '/picture';
-    return (
-      <View style={styles.row}>
-        <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
-          <HorizontalView>
-            <Image
-              source={{uri: imageUrl}}
-              width={width}
-              height={width}
-              style={{width: width, height: width}}
-            />
-            <View style={{flex: 1}}>
+    const pixelWidth = width * PixelRatio.get();
+    const imageUrl = 'https://graph.facebook.com/' + this.props.event.id + '/picture?type=large&width=' + pixelWidth + '&height=' + pixelWidth;
+    const spinner = (this.props.event.pending ?
+      <View style={{position: 'absolute', top: 20, left: 0}}>
+        <ProgressSpinner/>
+      </View>
+    : null);
+    const row = (
+      <HorizontalView>
+        <Image
+          source={{uri: imageUrl}}
+          style={{width: width, height: width}}
+        />
+        <View style={{flex: 1, marginLeft: 5}}>
           <Text
             numberOfLines={2}
-            style={{flexWrap: 'wrap', flex: 1}}
             >{this.props.event.name}</Text>
-              <Text>{this.props.event.start_time}</Text>
-              <Text>loaded: {this.props.event.loaded ? 'Yes' : 'No'}</Text>
-              <Text>pending: {this.props.event.pending ? 'Yes' : 'No'}</Text>
-            </View>
-          </HorizontalView>
-        </TouchableOpacity>
-      </View>
+          <Text>{this.props.event.start_time}</Text>
+          <Text>loaded: {this.props.event.loaded ? 'Yes' : 'No'}</Text>
+          {spinner}
+        </View>
+      </HorizontalView>
     );
+    if (this.props.event.loaded || this.props.event.pending) {
+      return (
+        <View style={styles.row}>
+          {row}
+        </View>
+      );
+    } else {
+      return (
+        <View style={[styles.row, {backgroundColor: '#333'}]}>
+          <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
+            {row}
+          </TouchableOpacity>
+        </View>
+      );
+    }
   }
 }
 
