@@ -83,7 +83,7 @@ class AddEventRow extends React.Component {
     const row = (
       <HorizontalView>
         <View style={{flex:0.3}}>
-          <View style={{width: width}}>
+          <View style={{width: width, overflow: 'hidden'}}>
             <Image
               source={{uri: imageUrl}}
               style={{width: width, height: width}}
