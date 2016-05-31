@@ -20,7 +20,7 @@ type Props = {
   values: [string],
   defaultIndex: number,
   enabled: boolean,
-  tryOnChange: (index: number, oldIndex: number) => Promise,
+  tryOnChange: ((index: number, oldIndex: number) => void) | ((index: number, oldIndex: number) => Promise),
   tintColor: string,
   style: any,
 };
@@ -57,7 +57,7 @@ export default class SegmentedControl extends React.Component {
     values: [],
     defaultIndex: -1,
     enabled: true,
-    tryOnChange: (index, oldIndex) => {} | async (index, oldIndex) => {},
+    tryOnChange: (index, oldIndex) => {},
     tintColor: 'blue',
     style: {},
   };
