@@ -77,6 +77,10 @@ export default class SegmentedControl extends React.Component {
     if (this.state.selectedIndex === index) {
       return;
     }
+    // Android does this automatically before we come in. But iOS does not, so enforce it here.
+    if (Platform.OS == 'ios') {
+      this.setState({selectedIndex: index});
+    }
     // If we're not enabled, don't actually attempt to do anything
     // This is important for Android, which doesn't support enabled natively,
     // and so will still call onChange.
