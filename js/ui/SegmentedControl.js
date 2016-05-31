@@ -57,7 +57,7 @@ export default class SegmentedControl extends React.Component {
     values: [],
     defaultIndex: -1,
     enabled: true,
-    tryOnChange: async (index, oldIndex) => {},
+    tryOnChange: (index, oldIndex) => {} | async (index, oldIndex) => {},
     tintColor: 'blue',
     style: {},
   };
