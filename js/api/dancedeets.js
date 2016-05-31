@@ -82,3 +82,8 @@ export async function getAddEvents() {
   return performRequest('events_list_to_add', {});
 }
 
+export async function addEvent(eventId: string) {
+  await verifyAuthenticated();
+  return performRequest('events_add', {event_id: eventId}, {event_id: eventId});
+}
+

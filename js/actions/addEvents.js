@@ -9,7 +9,7 @@
 import type { Action, ThunkAction, Dispatch } from './types';
 import type { AddEventList } from '../addEventsModels';
 
-import { getAddEvents } from '../api/dancedeets';
+import { getAddEvents, addEvent as reallyAddEvent } from '../api/dancedeets';
 
 export function reloadAddEvents(): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
@@ -89,7 +89,7 @@ export function addEvent(eventId: string): ThunkAction {
         return;
       }
       await dispatch(markAsPending(eventId));
-      await addEvent(eventId);
+      await reallyAddEvent(eventId);
       await dispatch(markAsLoaded(eventId));
     } catch (e) {
       await dispatch(markAsUnLoaded(eventId));
