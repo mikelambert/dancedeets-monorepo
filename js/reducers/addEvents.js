@@ -17,7 +17,7 @@ export type RsvpFilter = 'attending' | 'maybe' | 'declined' | 'unsure' | null;
 export type DisplayOptions = {
   onlyUnadded: boolean;
   sortOrder: SortOrder;
-  rsvpFilter: RsvpFilter;
+  //rsvpFilter: RsvpFilter;
 };
 
 export type State = {
@@ -30,7 +30,7 @@ const initialState = {
   displayOptions: {
     onlyUnadded: false,
     sortOrder: 'ByDate',
-    rsvpFilter: null,
+    //rsvpFilter: null,
   },
   loading: false,
   results: null,
