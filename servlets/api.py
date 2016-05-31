@@ -84,7 +84,7 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
             super(ApiHandler, self).dispatch()
         except Exception as e:
             logging.exception("API failure")
-            result = e.args[0]
+            result = e.args and e.args[0] or e
             # If it's a string or a regular object
             if not hasattr(result, '__iter__'):
                 result = [result]
@@ -277,7 +277,7 @@ class AuthHandler(ApiHandler):
         self.errors_are_fatal() # Assert that our access_token is set
 
         # Fetch the access_token_expires value from Facebook, instead of demanding it via the API
-        app_fbl = fb_api.FBLookup(None, fb_api.facebook.FACEBOOK_CONFIG['app_access_token'])
+        app_fbl = fb_api.FBLookup(None, access_token)
         app_fbl.allow_cache = False
         debug_info = app_fbl.get(LookupDebugToken, access_token)
         access_token_expires_timestamp = debug_info['token']['data'].get('expires_at')
@@ -473,7 +473,7 @@ def canonicalize_event_data(db_event, event_keywords):
 
 
 @apiroute('/events_list_to_add')
-class AddHandler(ApiHandler):
+class ListAddHandler(ApiHandler):
     requires_auth = True
 
     def post(self):
@@ -482,12 +482,12 @@ class AddHandler(ApiHandler):
 
 
 @apiroute('/events_add')
-class AddHandler(ApiHandler):
+class EventAddHandler(ApiHandler):
     requires_auth = True
 
     def post(self):
         event_id = self.json_body.get('event_id')
-        if event_id:
+        if not event_id:
             self.add_error('Need to pass event_id argument')
         self.errors_are_fatal()
         fb_event = self.fbl.get(fb_api.LookupEvent, event_id, allow_cache=False)
