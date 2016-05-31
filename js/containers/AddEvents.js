@@ -52,29 +52,9 @@ class AddEventRow extends React.Component {
       </View>
     : null);
     const addedBanner = (this.props.event.loaded ?
-      <View style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: '#00000088'
-      }}>
-        <View style={{
-          position: 'absolute',
-          transform: [{rotate: '-30deg'}],
-          backgroundColor: '#c00',
-          borderColor: 'black',
-          borderWidth: 0.5,
-          left: -width,
-          top: width / 2 - 10,
-          right: -width,
-
-          alignItems: 'center',
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}>
-          <Text style={{fontSize: 16}}>
+      <View style={styles.disabledOverlay}>
+        <View style={[styles.redRibbon, {top: width / 2 - 10}]}>
+          <Text style={styles.redRibbonText}>
           ADDED
           </Text>
         </View>
@@ -82,7 +62,7 @@ class AddEventRow extends React.Component {
     const textColor = (this.props.event.loaded || this.props.event.pending) ? '#888' : 'white';
     const row = (
       <HorizontalView>
-        <View style={{flex:0.3}}>
+        <View style={styles.leftEventImage}>
           <View style={{width: width, overflow: 'hidden'}}>
             <Image
               source={{uri: imageUrl}}
@@ -91,7 +71,7 @@ class AddEventRow extends React.Component {
             {addedBanner}
           </View>
         </View>
-        <View style={{flex: 1, marginLeft: 5}}>
+        <View style={styles.rightTextDescription}>
           <Text style={{color: textColor}} numberOfLines={2}>{this.props.event.name}</Text>
           <Text style={{color: textColor}}>{this.props.event.start_time}</Text>
           {spinner}
@@ -220,5 +200,36 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     // http://stackoverflow.com/questions/36605906/what-is-the-row-container-for-a-listview-component
     overflow: 'hidden',
+  },
+  disabledOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#00000088',
+  },
+  redRibbon: {
+    position: 'absolute',
+    transform: [{rotate: '-30deg'}],
+    backgroundColor: '#c00',
+    borderColor: 'black',
+    borderWidth: 0.5,
+    left: -100,
+    right: -100,
+
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  redRibbonText: {
+    fontSize: 18,
+  },
+  leftEventImage: {
+    flex: 0.3,
+  },
+  rightTextDescription: {
+    flex: 1,
+    marginLeft: 5,
   },
 });
