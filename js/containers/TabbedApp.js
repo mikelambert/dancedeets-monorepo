@@ -17,7 +17,7 @@ import Profile from '../containers/Profile';
 import { yellowColors } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 
-class GrandientTabBar extends React.Component {
+class GradientTabBar extends React.Component {
   render() {
     return <LinearGradient
       start={[0.0, 0.0]} end={[0.0, 1]}
@@ -41,7 +41,7 @@ export default class TabbedAppView extends React.Component {
   }
 
   render() {
-    return <TabNavigator tabBarStyle={styles.tabBarStyle} tabBarClass={GrandientTabBar}>
+    return <TabNavigator tabBarStyle={styles.tabBarStyle} tabBarClass={GradientTabBar}>
       <TabNavigator.Item
         selected={this.state.selectedTab === 'home'}
         title="Events"
