@@ -47,7 +47,7 @@ class CreditSubList extends React.Component {
 
 class Credits extends React.Component {
   render() {
-    const creditHeader = <Text style={{fontWeight: 'bold', fontSize: 20}}>Dancedeets Credits</Text>
+    const creditHeader = <Text style={{fontWeight: 'bold', fontSize: 20}}>Dancedeets Credits</Text>;
     const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
     return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
   }
@@ -111,6 +111,7 @@ class _ProfileComponent extends React.Component {
 
       {this.state.friendCount ? <Text>{this.state.friendCount} friends using DanceDeets</Text> : null}
       <Button size="small" caption="Invite more friends"/>
+      <Button size="small" caption="Notification Settings"/>
 
       <Button
         size="small"
