@@ -8,7 +8,6 @@ import React from 'react';
 import {
   UIManager,
   LayoutAnimation,
-  StatusBar,
   StyleSheet,
   TextInput,
   View,
@@ -131,7 +130,7 @@ class SearchHeader extends React.Component {
     return <View style={{flex: 1}}>
       <View
         onLayout={this.onLayout}
-        style={[{paddingTop: StatusBar.currentHeight || 15}, styles.floatTop, styles.statusBar]}
+        style={[styles.floatTop, styles.statusBar]}
         blurType="dark"
       >
         <SearchInput
