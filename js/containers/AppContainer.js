@@ -10,6 +10,7 @@ import React, {
 	PropTypes,
 } from 'react';
 import {
+	Image,
 	NavigationExperimental,
 	Platform,
 	StyleSheet,
@@ -19,7 +20,6 @@ import { connect } from 'react-redux';
 
 // My overrides
 import { NavigationHeaderTitle } from '../react-navigation';
-import NavigationHeaderBackButton from 'react-native/Libraries/CustomComponents/NavigationExperimental/NavigationHeaderBackButton';
 
 import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
@@ -58,6 +58,7 @@ class GradientBar extends React.Component {
 		</LinearGradient>;
 	}
 }
+
 class AppContainer extends React.Component {
 	props: {
 		navigationState: NavigationParentState,
@@ -72,7 +73,13 @@ class AppContainer extends React.Component {
 	}
 
 	renderLeft(props) {
-		return props.scene.index > 0 ? <NavigationHeaderBackButton /> : null;
+		if (!props.scene.index) {
+			return null;
+		}
+		const icon = Platform.OS == 'ios' ? require('./navbar-icons/back-ios.png') : require('./navbar-icons/back-android.png');
+		return <TouchableOpacity style={styles.centeredContainer} onPress={() => props.onNavigate({type: 'BackAction'})}>
+			<Image style={{height: 18, width: 18}} source={icon} />
+		</TouchableOpacity>;
 	}
 
 	renderTitle(props) {
@@ -86,7 +93,7 @@ class AppContainer extends React.Component {
 	renderRight(props) {
 		if (props.scene.navigationState.event) {
 			return (
-				<TouchableOpacity onPress={()=>shareEvent(props.scene.navigationState.event)} style={styles.rightContainer}>
+				<TouchableOpacity onPress={()=>shareEvent(props.scene.navigationState.event)} style={styles.centeredContainer}>
 					{shareIcon}
 				</TouchableOpacity>
 			);
@@ -206,9 +213,10 @@ const styles = StyleSheet.create({
 		right: 0,
 		top: 0,
 	},
-	rightContainer: {
+	centeredContainer: {
 		flex: 1,
 		justifyContent: 'center',
-		marginRight: 5,
+		marginLeft: 10,
+		marginRight: 10,
 	},
 });
