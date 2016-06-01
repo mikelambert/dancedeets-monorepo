@@ -89,6 +89,8 @@ class Onebox extends React.Component {
 class AddEventButton extends React.Component {
   render() {
     return <Button
+      caption="Add Event"
+      textStyle={{fontWeight: 'bold', fontSize: 14}}
       style={styles.addEventButton}
       onPress={this.props.onPress}
     >Add Event!</Button>;

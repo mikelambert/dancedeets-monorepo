@@ -23,6 +23,7 @@ class Button extends React.Component {
     style: any;
     onPress: () => void;
     size: 'small' | 'large';
+    textStyle: any;
   };
 
   static defaultProps = {
@@ -32,6 +33,7 @@ class Button extends React.Component {
     onPress: () => {},
     type: 'primary',
     size: 'large',
+    textStyle: {},
   };
 
   render() {
@@ -49,7 +51,7 @@ class Button extends React.Component {
           colors={[purpleColors[1], purpleColors[2]]}
           style={[styles.button, size, styles.primaryButton]}>
           {icon}
-          <Text style={[styles.caption, styles.primaryCaption]}>
+          <Text style={[styles.caption, styles.primaryCaption, this.props.textStyle]}>
             {caption}
           </Text>
         </LinearGradient>
