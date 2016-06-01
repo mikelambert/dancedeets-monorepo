@@ -21,12 +21,14 @@ import type { AddEventData } from '../addEventsModels';
 import type { State } from '../reducers/addEvents';
 import {
   addEvent,
+  clickEvent,
   reloadAddEvents,
   setOnlyUnadded,
   setSortOrder,
 } from '../actions';
 import { purpleColors } from '../Colors';
 import {
+  Button,
   HorizontalView,
   ProgressSpinner,
   SegmentedControl,
@@ -73,7 +75,8 @@ const FilterHeader = connect(
 
 class AddEventRow extends React.Component {
   props: {
-    onEventSelected: (event: AddEventData) => void,
+    onEventClicked: (event: AddEventData) => void,
+    onEventAdded: (event: AddEventData) => void,
     event: AddEventData,
   };
 
@@ -81,11 +84,17 @@ class AddEventRow extends React.Component {
     const width = 75;
     const pixelWidth = width * PixelRatio.get();
     const imageUrl = 'https://graph.facebook.com/' + this.props.event.id + '/picture?type=large&width=' + pixelWidth + '&height=' + pixelWidth;
-    const spinner = (this.props.event.pending ?
-      <View style={{position: 'absolute', top: 20, left: 0}}>
+    let tempOverlay = null;
+    console.log(this.props.event.confirming);
+    if (this.props.event.confirming) {
+      tempOverlay = <View style={{position: 'absolute', top: 20, left: 0}}>
+        <Button size="small" caption="Add Event" onPress={()=>{this.props.onEventAdded(this.props.event);}}></Button>
+      </View>;
+    } else if (this.props.event.pending) {
+      tempOverlay = <View style={{position: 'absolute', top: 20, left: 0}}>
         <ProgressSpinner/>
-      </View>
-    : null);
+      </View>;
+    }
     const addedBanner = (this.props.event.loaded ?
       <View style={styles.disabledOverlay}>
         <View style={[styles.redRibbon, {top: width / 2 - 10}]}>
@@ -94,7 +103,7 @@ class AddEventRow extends React.Component {
           </Text>
         </View>
       </View> : null);
-    const textColor = (this.props.event.loaded || this.props.event.pending) ? '#888' : 'white';
+    const textColor = (this.props.event.loaded || tempOverlay) ? '#888' : 'white';
     const row = (
       <HorizontalView>
         <View style={styles.leftEventImage}>
@@ -109,7 +118,7 @@ class AddEventRow extends React.Component {
         <View style={styles.rightTextDescription}>
           <Text style={{color: textColor}} numberOfLines={2}>{this.props.event.name}</Text>
           <Text style={{color: textColor}}>{this.props.event.start_time}</Text>
-          {spinner}
+          {tempOverlay}
         </View>
       </HorizontalView>
     );
@@ -122,7 +131,7 @@ class AddEventRow extends React.Component {
     } else {
       return (
         <View style={styles.row}>
-          <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
+          <TouchableOpacity onPress={() => this.props.onEventClicked(this.props.event)} activeOpacity={0.5}>
             {row}
           </TouchableOpacity>
         </View>
@@ -134,6 +143,7 @@ class AddEventRow extends React.Component {
 class _AddEventList extends React.Component {
   props: {
     addEvent: (eventId: string) => void;
+    clickEvent: (eventId: string) => void;
     addEvents: State;
     reloadAddEvents: () => void;
   };
@@ -188,7 +198,8 @@ class _AddEventList extends React.Component {
   _renderRow(row: AddEventData) {
     return <AddEventRow
       event={row}
-      onEventSelected={(event: AddEventData) => {this.props.addEvent(event.id);}}
+      onEventClicked={(event: AddEventData) => {this.props.clickEvent(event.id);}}
+      onEventAdded={(event: AddEventData) => {this.props.addEvent(event.id);}}
     />;
   }
 
@@ -216,6 +227,7 @@ const AddEventList = connect(
     addEvents: state.addEvents,
   }),
   dispatch => ({
+    clickEvent: (eventId: string) => dispatch(clickEvent(eventId)),
     addEvent: (eventId: string) => dispatch(addEvent(eventId)),
     reloadAddEvents: () => dispatch(reloadAddEvents()),
   }),

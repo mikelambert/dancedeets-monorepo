@@ -84,6 +84,14 @@ function alreadyProcessing(getState, eventId: string) {
   });
 }
 
+export function clickEvent(eventId: string) {
+  return {
+    type: 'ADD_EVENTS_UPDATE_LOADED',
+    status: 'CONFIRMING',
+    eventId: eventId,
+  };
+}
+
 export function addEvent(eventId: string): ThunkAction {
   return async (dispatch, getState) => {
     try {

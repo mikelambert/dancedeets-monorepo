@@ -79,18 +79,28 @@ export function addEvents(state: State = initialState, action: Action): State {
           return {
             ...x,
             loaded: false,
+            confirming: false,
+            pending: false,
+          };
+        } else if (constAction.status === 'CONFIRMING') {
+          return {
+            ...x,
+            loaded: false,
+            confirming: true,
             pending: false,
           };
         } else if (constAction.status === 'PENDING') {
           return {
             ...x,
             loaded: false,
+            confirming: false,
             pending: true,
           };
         } else if (constAction.status === 'LOADED') {
           return {
             ...x,
             loaded: true,
+            confirming: false,
             pending: false,
           };
         }
