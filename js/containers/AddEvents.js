@@ -89,7 +89,7 @@ class AddEventRow extends React.Component {
     let tempOverlay = null;
     if (this.props.event.clickedConfirming) {
       tempOverlay = <View style={{position: 'absolute', top: 20, left: 0}}>
-        <Button size="small" caption="Add Event" onPress={()=>{this.props.onEventAdded(this.props.event);}}></Button>
+        <Button size="small" caption="Add Event" onPress={()=>{this.props.onEventAdded(this.props.event);}} />
       </View>;
     } else if (this.props.event.pending) {
       tempOverlay = <View style={{position: 'absolute', top: 20, left: 0}}>
