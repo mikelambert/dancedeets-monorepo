@@ -90,7 +90,7 @@ class AddEventButton extends React.Component {
   render() {
     return <Button
       style={styles.addEventButton}
-      //onPress={null}
+      onPress={this.props.onPress}
     >Add Event!</Button>;
   }
 }
@@ -252,7 +252,7 @@ class EventListContainer extends React.Component {
         <SearchHeader>
           {this.renderListView()}
         </SearchHeader>
-        <AddEventButton />
+        <AddEventButton onPress={this.props.onAddEventClicked} />
       </View>
     );
   }

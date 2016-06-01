@@ -19,6 +19,7 @@ import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
 import { navigatePush, navigatePop } from '../actions';
 import { ZoomableImage } from '../ui';
+import AddEvents from '../containers/AddEvents';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
 import type { NavigationParentState, NavigationState } from 'NavigationTypeDefinition';
@@ -87,6 +88,7 @@ class AppContainer extends React.Component {
 		case 'EventList':
 			return <EventListContainer
 				onEventSelected={(event)=>this.props.onNavigate({key: 'EventView', title: event.name, event: event})}
+				onAddEventClicked={()=>this.props.onNavigate({key: 'AddEvent', title: 'Add Event'})}
 			/>;
 		case 'EventView':
       return <EventPager
@@ -104,6 +106,8 @@ class AppContainer extends React.Component {
 				width={navigationState.width}
 				height={navigationState.height}
 			/>;
+		case 'AddEvent':
+			return <AddEvents />;
 		}
 	}
 }
