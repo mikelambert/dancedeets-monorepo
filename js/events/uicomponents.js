@@ -31,7 +31,6 @@ import {
 import { connect } from 'react-redux';
 import { Event, Venue } from './models';
 import type { ThunkAction } from '../actions/types';
-import type { AddEventData } from '../addEventsModels';
 import MapView from 'react-native-maps';
 import moment from 'moment';
 import { linkColor, purpleColors } from '../Colors';
@@ -42,7 +41,7 @@ const {
   Globalize,
 } = require('react-native-globalize');
 
-var en = new Globalize('en');
+const en = new Globalize('en');
 
 class SubEventLine extends React.Component {
 
@@ -99,9 +98,9 @@ class EventDateTime extends SubEventLine {
     return require('./images/datetime.png');
   }
   textRender() {
-    var dateFormatter = en.getDateFormatter({skeleton: 'yMMMdhm'});
-    var start = moment(this.props.start, moment.ISO_8601);
-    var formattedStart = dateFormatter(start.toDate());
+    const dateFormatter = en.getDateFormatter({skeleton: 'yMMMdhm'});
+    const start = moment(this.props.start, moment.ISO_8601);
+    const formattedStart = dateFormatter(start.toDate());
 
     if (this.props.start) {
       return <View style={{alignItems: 'flex-start'}}>
