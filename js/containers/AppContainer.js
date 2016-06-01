@@ -12,7 +12,6 @@ import React, {
 import {
 	NavigationExperimental,
 	StyleSheet,
-	View,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -27,7 +26,7 @@ import AddEvents from '../containers/AddEvents';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
 import type { NavigationParentState, NavigationState } from 'NavigationTypeDefinition';
-
+import { purpleColors } from '../Colors';
 const {
 	AnimatedView: NavigationAnimatedView,
 	Card: NavigationCard,
@@ -66,13 +65,17 @@ class AppContainer extends React.Component {
 					// Also note that we must explicity pass <NavigationHeader /> an onNavigate prop
 					// because we are no longer relying on an onNavigate function being available in
 					// the context (something NavigationRootContainer would have given us).
-					true ? <NavigationHeader
-                        {...props}
+					<NavigationHeader
+							style={{backgroundColor: purpleColors[2]}}
+              {...props}
 						renderTitleComponent={(props2) => {
-							return <NavigationHeaderTitle>{props2.scene.navigationState.title}</NavigationHeaderTitle>;
+							return <NavigationHeaderTitle
+								textStyle={{color: 'white', fontSize: 24}}
+							>{props2.scene.navigationState.title}</NavigationHeaderTitle>;
 						}}
-					/> : null
+					/>
 				)}
+
 				renderScene={props => (
 					// Again, we pass our navigationState from the Redux store to <NavigationCard />.
 					// Finally, we'll render out our scene based on navigationState in _renderScene().
