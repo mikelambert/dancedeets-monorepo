@@ -11,8 +11,8 @@ import React, {
 } from 'react';
 import {
 	NavigationExperimental,
+	Platform,
 	StyleSheet,
-	Text,
 	TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -25,7 +25,6 @@ import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
 import { navigatePush, navigatePop } from '../actions';
 import {
-	HorizontalView,
 	ZoomableImage,
 } from '../ui';
 import AddEvents from '../containers/AddEvents';
@@ -37,13 +36,28 @@ import {
 
 import type { ThunkAction, Dispatch } from '../actions/types';
 import type { NavigationParentState, NavigationState } from 'NavigationTypeDefinition';
-import { purpleColors } from '../Colors';
+
 const {
 	AnimatedView: NavigationAnimatedView,
 	Card: NavigationCard,
 	Header: NavigationHeader
 } = NavigationExperimental;
+import LinearGradient from 'react-native-linear-gradient';
 
+// These are basically copied from NavigationHeader.js
+const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
+
+class GradientBar extends React.Component {
+	render() {
+		return <LinearGradient
+			start={[0.0, 0.0]} end={[0.0, 1]}
+			colors={['#5F70B6', '#4F5086']}
+			style={this.props.style}>
+			{this.props.children}
+		</LinearGradient>;
+	}
+}
 class AppContainer extends React.Component {
 	props: {
 		navigationState: NavigationParentState,
@@ -53,7 +67,8 @@ class AppContainer extends React.Component {
 
 	constructor(props) {
 		super(props);
-		(this: any)._renderScene = this._renderScene.bind(this);
+		(this: any).renderScene = this.renderScene.bind(this);
+		(this: any).renderOverlay = this.renderOverlay.bind(this);
 	}
 
 	renderLeft(props) {
@@ -79,6 +94,18 @@ class AppContainer extends React.Component {
 		return null;
 	}
 
+	renderOverlay(props) {
+		return <GradientBar style={styles.navHeader}>
+			<NavigationHeader
+				style={{backgroundColor: 'transparent'}}
+				{...props}
+				renderLeftComponent={this.renderLeft}
+				renderTitleComponent={this.renderTitle}
+				renderRightComponent={this.renderRight}
+			/>
+		</GradientBar>;
+	}
+
 	render() {
 		let { navigationState, onBack } = this.props;
 
@@ -95,19 +122,7 @@ class AppContainer extends React.Component {
 						onBack();
 					}
 				}}
-				renderOverlay={props => (
-					// Also note that we must explicity pass <NavigationHeader /> an onNavigate prop
-					// because we are no longer relying on an onNavigate function being available in
-					// the context (something NavigationRootContainer would have given us).
-					<NavigationHeader
-							style={{backgroundColor: purpleColors[2], alignItems: 'stretch'}}
-							{...props}
-							renderLeftComponent={this.renderLeft}
-							renderTitleComponent={this.renderTitle}
-							renderRightComponent={this.renderRight}
-					/>
-				)}
-
+				renderOverlay={this.renderOverlay}
 				renderScene={props => (
 					// Again, we pass our navigationState from the Redux store to <NavigationCard />.
 					// Finally, we'll render out our scene based on navigationState in _renderScene().
@@ -115,14 +130,14 @@ class AppContainer extends React.Component {
 						{...props}
 						key={props.scene.navigationState.key}
 						style={{marginTop: 63}}
-						renderScene={this._renderScene}
+						renderScene={this.renderScene}
 					/>
 				)}
 			/>
 		);
 	}
 
-	_renderScene({scene}) {
+	renderScene({scene}) {
 		const { navigationState } = scene;
 		switch (navigationState.key) {
 		case 'EventList':
@@ -131,13 +146,13 @@ class AppContainer extends React.Component {
 				onAddEventClicked={()=>this.props.onNavigate({key: 'AddEvent', title: 'Add Event'})}
 			/>;
 		case 'EventView':
-      return <EventPager
+			return <EventPager
 				onFlyerSelected={(event)=>this.props.onNavigate({
-          key: 'FlyerView',
-          image: event.cover.images[0].source,
+					key: 'FlyerView',
+					image: event.cover.images[0].source,
 					width: event.cover.images[0].width,
 					height: event.cover.images[0].height,
-        })}
+				})}
 				selectedEvent={navigationState.event}
 			/>;
 		case 'FlyerView':
@@ -175,6 +190,21 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		flex: 1
+	},
+	// These are basically copied from NavigationHeader.js
+	navHeader: {
+		alignItems: 'center',
+		borderBottomColor: 'rgba(0, 0, 0, .15)',
+		borderBottomWidth: Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 0,
+		elevation: 1,
+		flexDirection: 'row',
+		height: APPBAR_HEIGHT + STATUSBAR_HEIGHT,
+		justifyContent: 'flex-start',
+		left: 0,
+		marginBottom: 16, // This is needed for elevation shadow
+		position: 'absolute',
+		right: 0,
+		top: 0,
 	},
 	rightContainer: {
 		flex: 1,
