@@ -9,7 +9,11 @@
 import React, {
 	PropTypes,
 } from 'react';
-import { NavigationExperimental, StyleSheet } from 'react-native';
+import {
+	NavigationExperimental,
+	StyleSheet,
+	View,
+} from 'react-native';
 import { connect } from 'react-redux';
 
 // My overrides
@@ -62,7 +66,7 @@ class AppContainer extends React.Component {
 					// Also note that we must explicity pass <NavigationHeader /> an onNavigate prop
 					// because we are no longer relying on an onNavigate function being available in
 					// the context (something NavigationRootContainer would have given us).
-					props.scene.index > 0 ? <NavigationHeader
+					true ? <NavigationHeader
                         {...props}
 						renderTitleComponent={(props2) => {
 							return <NavigationHeaderTitle>{props2.scene.navigationState.title}</NavigationHeaderTitle>;
@@ -75,6 +79,7 @@ class AppContainer extends React.Component {
 					<NavigationCard
 						{...props}
 						key={props.scene.navigationState.key}
+						style={{marginTop: 63}}
 						renderScene={this._renderScene}
 					/>
 				)}
