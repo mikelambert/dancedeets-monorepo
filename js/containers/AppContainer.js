@@ -12,6 +12,8 @@ import React, {
 import {
 	NavigationExperimental,
 	StyleSheet,
+	Text,
+	TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -23,10 +25,15 @@ import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
 import { navigatePush, navigatePop } from '../actions';
 import {
-	Text,
+	HorizontalView,
 	ZoomableImage,
 } from '../ui';
 import AddEvents from '../containers/AddEvents';
+
+import {
+	shareEvent,
+	shareIcon,
+} from '../api/share';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
 import type { NavigationParentState, NavigationState } from 'NavigationTypeDefinition';
@@ -63,7 +70,11 @@ class AppContainer extends React.Component {
 
 	renderRight(props) {
 		if (props.scene.navigationState.event) {
-			return <Text>Share</Text>;
+			return (
+				<TouchableOpacity onPress={()=>shareEvent(props.scene.navigationState.event)} style={styles.rightContainer}>
+					{shareIcon}
+				</TouchableOpacity>
+			);
 		}
 		return null;
 	}
@@ -89,11 +100,11 @@ class AppContainer extends React.Component {
 					// because we are no longer relying on an onNavigate function being available in
 					// the context (something NavigationRootContainer would have given us).
 					<NavigationHeader
-							style={{backgroundColor: purpleColors[2]}}
-              {...props}
-              renderLeftComponent={this.renderLeft}
-						  renderTitleComponent={this.renderTitle}
-						  renderRightComponent={this.renderRight}
+							style={{backgroundColor: purpleColors[2], alignItems: 'stretch'}}
+							{...props}
+							renderLeftComponent={this.renderLeft}
+							renderTitleComponent={this.renderTitle}
+							renderRightComponent={this.renderRight}
 					/>
 				)}
 
@@ -164,5 +175,10 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		flex: 1
-	}
+	},
+	rightContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		marginRight: 5,
+	},
 });
