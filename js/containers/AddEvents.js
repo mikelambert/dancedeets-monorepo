@@ -35,6 +35,12 @@ import {
   Text,
 } from '../ui';
 
+import moment from 'moment';
+const {
+  Globalize,
+} = require('react-native-globalize');
+const en = new Globalize('en');
+
 class _FilterHeader extends React.Component {
   render() {
     return <View style={styles.header}>
@@ -105,6 +111,12 @@ class AddEventRow extends React.Component {
         </View>
       </View> : null);
     const textColor = (this.props.event.loaded || tempOverlay) ? '#888' : 'white';
+
+    const dateFormatter = en.getDateFormatter({skeleton: 'yMMMdhm'});
+    const start = moment(this.props.event.start_time, moment.ISO_8601);
+    const formattedStart = dateFormatter(start.toDate());
+
+
     const row = (
       <HorizontalView>
         <View style={styles.leftEventImage}>
@@ -118,7 +130,7 @@ class AddEventRow extends React.Component {
         </View>
         <View style={styles.rightTextDescription}>
           <Text style={{color: textColor}} numberOfLines={2}>{this.props.event.name}</Text>
-          <Text style={{color: textColor}}>{this.props.event.start_time}</Text>
+          <Text style={{color: textColor}}>{formattedStart}</Text>
           {tempOverlay}
         </View>
       </HorizontalView>
@@ -293,7 +305,6 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: purpleColors[2],
-    marginTop: 63, // HACK
   },
   headerRow: {
     alignItems: 'center',
