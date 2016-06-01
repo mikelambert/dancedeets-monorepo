@@ -39,6 +39,8 @@ class _FilterHeader extends React.Component {
   render() {
     return <View style={styles.header}>
 
+    <Text style={styles.headerRow}>DanceDeets works when users add their events.{'\n'}Should we add any of your events below?</Text>
+
     <HorizontalView style={styles.headerRow}>
       <Text style={styles.headerText}>Show events:</Text>
       <SegmentedControl
