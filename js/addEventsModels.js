@@ -19,7 +19,7 @@ export type AddEventData = {
 
   // From our app:
   pending: ?boolean;
-  confirming: ?boolean;
+  clickedConfirming: ?boolean;
 };
 
 export type AddEventList = Array<AddEventData>;

@@ -87,7 +87,7 @@ function alreadyProcessing(getState, eventId: string) {
 export function clickEvent(eventId: string) {
   return {
     type: 'ADD_EVENTS_UPDATE_LOADED',
-    status: 'CONFIRMING',
+    status: 'CLICKED',
     eventId: eventId,
   };
 }

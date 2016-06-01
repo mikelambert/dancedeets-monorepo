@@ -79,28 +79,29 @@ export function addEvents(state: State = initialState, action: Action): State {
           return {
             ...x,
             loaded: false,
-            confirming: false,
+            clickedConfirming: false,
             pending: false,
           };
-        } else if (constAction.status === 'CONFIRMING') {
+        } else if (constAction.status === 'CLICKED') {
+          console.log('hey, clicked', x);
           return {
             ...x,
             loaded: false,
-            confirming: true,
+            clickedConfirming: !x.clickedConfirming,
             pending: false,
           };
         } else if (constAction.status === 'PENDING') {
           return {
             ...x,
             loaded: false,
-            confirming: false,
+            clickedConfirming: false,
             pending: true,
           };
         } else if (constAction.status === 'LOADED') {
           return {
             ...x,
             loaded: true,
-            confirming: false,
+            clickedConfirming: false,
             pending: false,
           };
         }

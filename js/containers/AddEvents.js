@@ -85,8 +85,7 @@ class AddEventRow extends React.Component {
     const pixelWidth = width * PixelRatio.get();
     const imageUrl = 'https://graph.facebook.com/' + this.props.event.id + '/picture?type=large&width=' + pixelWidth + '&height=' + pixelWidth;
     let tempOverlay = null;
-    console.log(this.props.event.confirming);
-    if (this.props.event.confirming) {
+    if (this.props.event.clickedConfirming) {
       tempOverlay = <View style={{position: 'absolute', top: 20, left: 0}}>
         <Button size="small" caption="Add Event" onPress={()=>{this.props.onEventAdded(this.props.event);}}></Button>
       </View>;
