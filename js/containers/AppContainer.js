@@ -16,12 +16,16 @@ import {
 import { connect } from 'react-redux';
 
 // My overrides
-import NavigationHeaderTitle from '../react-navigation';
+import { NavigationHeaderTitle } from '../react-navigation';
+import NavigationHeaderBackButton from 'react-native/Libraries/CustomComponents/NavigationExperimental/NavigationHeaderBackButton';
 
 import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
 import { navigatePush, navigatePop } from '../actions';
-import { ZoomableImage } from '../ui';
+import {
+	Text,
+	ZoomableImage,
+} from '../ui';
 import AddEvents from '../containers/AddEvents';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
@@ -43,6 +47,25 @@ class AppContainer extends React.Component {
 	constructor(props) {
 		super(props);
 		(this: any)._renderScene = this._renderScene.bind(this);
+	}
+
+	renderLeft(props) {
+		return props.scene.index > 0 ? <NavigationHeaderBackButton /> : null;
+	}
+
+	renderTitle(props) {
+		return <NavigationHeaderTitle
+			textStyle={{color: 'white', fontSize: 24}}
+		>
+			{props.scene.navigationState.title}
+		</NavigationHeaderTitle>;
+	}
+
+	renderRight(props) {
+		if (props.scene.navigationState.event) {
+			return <Text>Share</Text>;
+		}
+		return null;
 	}
 
 	render() {
@@ -68,11 +91,9 @@ class AppContainer extends React.Component {
 					<NavigationHeader
 							style={{backgroundColor: purpleColors[2]}}
               {...props}
-						renderTitleComponent={(props2) => {
-							return <NavigationHeaderTitle
-								textStyle={{color: 'white', fontSize: 24}}
-							>{props2.scene.navigationState.title}</NavigationHeaderTitle>;
-						}}
+              renderLeftComponent={this.renderLeft}
+						  renderTitleComponent={this.renderTitle}
+						  renderRightComponent={this.renderRight}
 					/>
 				)}
 

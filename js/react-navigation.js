@@ -42,19 +42,20 @@ type Props = {
   children: ReactElement;
   style: any;
   textStyle: any;
+  viewProps: any;
 }
 
-var NavigationHeaderTitle = ({ children, style, textStyle }: Props) => (
-  <View style={[ styles.title, style ]}>
+export const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }: Props) => (
+  <View style={[ styles.title, style ]} {...viewProps}>
     <Text numberOfLines={1} style={[ styles.titleText, textStyle ]}>{children}</Text>
   </View>
 );
+
 NavigationHeaderTitle.propTypes = {
-  children: PropTypes.string.isRequired,
+  children: React.PropTypes.string.isRequired,
   style: View.propTypes.style,
   textStyle: Text.propTypes.style
 };
-export default NavigationHeaderTitle;
 
 const styles = StyleSheet.create({
   title: {
