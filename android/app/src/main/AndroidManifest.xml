@@ -58,6 +58,14 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter android:label="@string/filter_title_viewevent">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http"
+                    android:host="www.dancedeets.com"
+                    android:pathPrefix="/events/" />
+            </intent-filter>
         </activity>
         <activity android:name="com.mixpanel.android.surveys.SurveyActivity" />
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
