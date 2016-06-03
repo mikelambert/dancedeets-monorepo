@@ -25,6 +25,8 @@ import moment from 'moment';
 import {
   detectedLocation,
   performSearch,
+  updateLocation,
+  updateKeywords,
 } from '../actions';
 import { linkColor } from '../Colors';
 const {
@@ -34,13 +36,12 @@ import Geocoder from '../api/geocoder';
 import { auth } from '../api/dancedeets';
 import type { Address } from './formatAddress';
 import { format } from './formatAddress';
-import AddEvents from '../containers/AddEvents';
 import {
   Button,
   Text,
 } from '../ui';
 import { AdMobBanner } from 'react-native-admob';
-
+import WebsiteUrl from '../websiteUrl';
 var en = new Globalize('en');
 
 
@@ -184,10 +185,26 @@ class EventListContainer extends React.Component {
     );
   }
 
+  async initialize() {
+    const url = await Linking.getInitialURL();
+    const processedUrl = new WebsiteUrl(url);
+    if (processedUrl.isEventUrl()) {
+      const eventId = processedUrl.eventId();
+      const event = await fetch(eventId);
+      this.props.onEventSelected(event);
+    } if (processedUrl.isSearchUrl()) {
+      this.props.updateLocation(processedUrl.location());
+      this.props.updateKeywords(processedUrl.keywords());
+      this.props.performSearch();
+    } else {
+      this.fetchLocationAndSearch();
+      // TODO: Tie this search in with some attempt to pull in a saved search query
+      // this.props.performSearch();
+    }
+  }
+
   componentDidMount() {
-    this.fetchLocationAndSearch();
-    // TODO: Tie this search in with some attempt to pull in a saved search query
-    // this.props.performSearch();
+    this.initialize();
   }
 
   _renderRow(row) {
@@ -271,6 +288,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     performSearch: async () => {
       await dispatch(performSearch());
+    },
+    updateLocation: async (location) => {
+      await dispatch(updateLocation(location));
+    },
+    updateKeywords: async (keywords) => {
+      await dispatch(updateKeywords(keywords));
     },
   };
 };
