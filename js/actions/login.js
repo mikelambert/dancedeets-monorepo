@@ -14,6 +14,7 @@ import ActionSheetIOS from 'ActionSheetIOS';
 import {Platform} from 'react-native';
 import Alert from 'Alert';
 import { auth } from '../api/dancedeets';
+import { trackLogin, trackLogout } from '../store/track';
 
 import type { Action, ThunkAction } from './types';
 
@@ -26,6 +27,7 @@ export function loginStartOnboard(): Action {
 
 export function loginComplete(token: AccessToken): Action {
   auth();
+  trackLogin();
   return {
     type: 'LOGIN_LOGGED_IN',
     token: token,
@@ -41,6 +43,7 @@ export function skipLogin(): Action {
 export function logOut(): ThunkAction {
   return (dispatch) => {
     LoginManager.logOut();
+    trackLogout();
     return dispatch({
       type: 'LOGIN_LOGGED_OUT',
     });

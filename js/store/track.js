@@ -86,21 +86,20 @@ async function setupPersonProperties(token: AccessToken) {
   Mixpanel.setOnce('$created', now);
 }
 
-export default function trackDispatches(action: Action): void {
-  switch (action.type) {
-    case 'LOGIN_LOGGED_IN':
-      // We must call identify *first*, before calling setDeviceToken() or login().
-      // This ensures the latter functions operate against the correct user.
-      // TODO: Retrieve push token
-      //Mixpanel.addPushDeviceToken(...);
-      setupPersonProperties(action.token);
-      track('Login - Completed');
-      break;
+export function trackLogin() {
+  // We must call identify *first*, before calling setDeviceToken() or login().
+  // This ensures the latter functions operate against the correct user.
+  // TODO: Retrieve push token
+  //Mixpanel.addPushDeviceToken(...);
+  setupPersonProperties(action.token);
+  track('Login - Completed');
+}
 
-    case 'LOGIN_LOGGED_OUT':
-      track('Logout');
-      Mixpanel.removePushToken();
-      Mixpanel.reset();
-      break;
-  }
+export function trackLogout() {
+  track('Logout');
+  Mixpanel.removePushToken();
+  Mixpanel.reset();
+}
+
+export default function trackDispatches(action: Action): void {
 }
