@@ -46,20 +46,26 @@ function initMixpanel() {
 
 initMixpanel();
 
-function track(eventName: string) {
-  AppEventsLogger.logEvent(eventName, 1);
-  Mixpanel.track(eventName);
+type Params = {[key: string]: string | number};
+
+function track(eventName: string, params: ?Params) {
+  if (params) {
+    AppEventsLogger.logEvent(eventName, 1, params);
+    Mixpanel.trackWithProperties(eventName, params);
+  } else {
+    AppEventsLogger.logEvent(eventName, 1);
+    Mixpanel.track(eventName);
+  }
 }
 
 function trackWithEvent(eventName: string, event: Event) {
   const venue = event.venue || null;
-  const extraParams = {
+  const extraParams: Params = {
     'Event ID': event.id,
     'Event City': venue ? venue.cityStateCountry() : '',
     'Event Country': venue.address ? venue.address.country : '',
   };
-  AppEventsLogger.logEvent('View Event', extraParams);
-  Mixpanel.trackWithProperties('View Event', extraParams);
+  track(eventName, extraParams);
 }
 
 export default function trackDispatches(action: Action): void {
@@ -74,6 +80,13 @@ export default function trackDispatches(action: Action): void {
 
     case 'VIEW_EVENT':
       trackWithEvent('View Event', action.event);
+      break;
+
+    case 'START_SEARCH':
+      track('Search Events', {
+        'Location': action.searchQuery.location,
+        'Keywords': action.searchQuery.keywords,
+      });
       break;
   }
 }

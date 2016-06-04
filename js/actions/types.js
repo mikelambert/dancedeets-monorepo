@@ -27,7 +27,7 @@
 import type { NavigationState } from 'NavigationTypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
 import { Event } from '../events/models';
-import type { SearchResults } from '../events/search';
+import type { SearchQuery, SearchResults } from '../events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
 
 export type Action =
@@ -45,7 +45,7 @@ export type Action =
   | { type: 'TOGGLE_LAYOUT' }
   | { type: 'UPDATE_LOCATION', location: string }
   | { type: 'UPDATE_KEYWORDS', keywords: string }
-  | { type: 'START_SEARCH' }
+  | { type: 'START_SEARCH', searchQuery: SearchQuery }
   | { type: 'SEARCH_COMPLETE', results: SearchResults }
   | { type: 'SEARCH_FAILED' }
   | { type: 'ADD_EVENTS_RELOAD' }
