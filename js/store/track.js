@@ -70,20 +70,26 @@ export function trackWithEvent(eventName: string, event: Event, params: ?Params)
   track(eventName, extraParams);
 }
 
-async function setupPersonProperties(token: AccessToken) {
+async function setupPersonProperties() {
+  const token = await AccessToken.getCurrentAccessToken();
+  if (!token) {
+    return;
+  }
   Mixpanel.identify(token.userID);
 
   const user = await performRequest('GET', 'me', {fields: 'id,name,first_name,last_name,gender,locale,timezone,email,link'});
-  Mixpanel.set('$first_name', user.first_name);
-  Mixpanel.set('$last_name', user.last_name);
-  Mixpanel.set('FB Gender', user.gender);
-  Mixpanel.set('FB Locale', user.locale);
-  Mixpanel.set('FB Timezone', user.timezone);
-  Mixpanel.set('$email', user.email);
-
   const now = new Date().toISOString().slice(0,19); // Trim off the fractional seconds from our ISO?UTC time
-  Mixpanel.set('Last Login', now);
-  Mixpanel.setOnce('$created', now);
+
+  Mixpanel.set({
+    '$first_name': user.first_name,
+    '$last_name': user.last_name,
+    'FB Gender': user.gender,
+    'FB Locale': user.locale,
+    'FB Timezone': user.timezone,
+    '$email': user.email,
+    'Last Login': now,
+  });
+  Mixpanel.setOnce({'$created': now});
 }
 
 export function trackLogin() {
@@ -91,7 +97,7 @@ export function trackLogin() {
   // This ensures the latter functions operate against the correct user.
   // TODO: Retrieve push token
   //Mixpanel.addPushDeviceToken(...);
-  setupPersonProperties(action.token);
+  setupPersonProperties();
   track('Login - Completed');
 }
 
