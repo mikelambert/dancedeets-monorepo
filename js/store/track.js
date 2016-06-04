@@ -28,29 +28,51 @@ import Mixpanel from 'react-native-mixpanel';
 import {AppEventsLogger} from 'react-native-fbsdk';
 
 import type {Action} from '../actions/types';
+import type {Event} from '../events/models';
 
-// Implement Mixpanel
-// Implement https://github.com/lwansbrough/react-native-google-analytics ?
+// TODO: Implement GA: https://github.com/lwansbrough/react-native-google-analytics ?
+// TODO: Implement Firebase Analytics
+
+function initMixpanel() {
+  let mixpanelApiKey = null;
+  if (__DEV__) {
+    mixpanelApiKey = '668941ad91e251d2ae9408b1ea80f67b';
+  } else {
+    mixpanelApiKey = 'f5d9d18ed1bbe3b190f9c7c7388df243';
+  }
+
+  return Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
+}
+
+initMixpanel();
+
+function track(eventName: string) {
+  AppEventsLogger.logEvent(eventName, 1);
+  Mixpanel.track(eventName);
+}
+
+function trackWithEvent(eventName: string, event: Event) {
+  const extraParams = {
+    'Event ID': event.id,
+    'Event City': event.city,
+    'Event Country': event.country,
+  };
+  AppEventsLogger.logEvent('View Event', extraParams);
+  Mixpanel.trackWithProperties('View Event', extraParams);
+}
 
 export default function track(action: Action): void {
   switch (action.type) {
     case 'LOGGED_IN':
-      AppEventsLogger.logEvent('Login', 1, {source: action.source || ''});
-      //Mixpanel.track('Login');
+      track('Login');
       break;
 
     case 'LOGGED_OUT':
-      AppEventsLogger.logEvent('Logout', 1);
-      //Mixpanel.track('Logout');
+      track('Logout');
       break;
 
     case 'VIEW_EVENT':
-      AppEventsLogger.logEvent('View Event', 1);
-      Mixpanel.trackWithProperties('View Event', {
-        'Event ID': action.event.id,
-        'Event City': action.event.city,
-        'Event Country': action.event.country,
-      });
+      trackWithEvent('View Event', action.event);
       break;
   }
 }
