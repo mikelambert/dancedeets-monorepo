@@ -36,12 +36,13 @@ class OnboardingFlow extends React.Component {
     this.state = {
       screen: 'CAROUSEL',
     };
-    (this: any)._transition = this._transition.bind(this);
+    (this: any).onDontWantLoginPressed = this.onDontWantLoginPressed.bind(this);
     (this: any).onOpenWebsite = this.onOpenWebsite.bind(this);
   }
 
-  _transition(newState: ScreenState) {
-    this.setState({...this.state, screen: newState});
+  onDontWantLoginPressed() {
+    track('Login - Without Facebook');
+    this.setState({...this.state, screen: 'NO_LOGIN'});
   }
 
   onOpenWebsite() {
@@ -53,7 +54,7 @@ class OnboardingFlow extends React.Component {
     if (this.state.screen === 'CAROUSEL') {
       return <TutorialScreen
         onLogin={this.props.onLogin}
-        onNoLogin={() => this._transition('NO_LOGIN')}
+        onNoLogin={this.onDontWantLoginPressed}
       />;
     } else if (this.state.screen === 'NO_LOGIN') {
       return <NoLoginScreen
