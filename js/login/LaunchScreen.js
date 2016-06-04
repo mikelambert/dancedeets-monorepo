@@ -12,15 +12,11 @@ import {
 
 export default class LaunchScreen extends React.Component {
   render() {
-    return (
-      <Image
-        style={styles.container}
-        source={require('./images/LaunchScreen.jpg')}>
-        <Image
-          style={styles.container}
-          source={require('./images/LaunchScreenText.png')} />
-      </Image>
-    );
+    return <Image
+      style={styles.container}
+      source={require('./images/LaunchScreen.jpg')}>
+      {this.props.children}
+    </Image>;
   }
 }
 

@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import Carousel from 'react-native-carousel';
+import LaunchScreen from './LaunchScreen';
 import LinearGradient from 'react-native-linear-gradient';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 import { Text } from '../ui';
@@ -79,14 +80,7 @@ export default class TutorialScreen extends React.Component {
       style={styles.bottomFade} />;
 
     if (pageID === 0) {
-      return <Image
-        style={styles.container}
-        source={require('./images/LaunchScreen.jpg')}>
-        {bottomFade}
-        <Image
-          style={styles.container}
-          source={require('./images/LaunchScreenText.png')} />
-      </Image>;
+      return <LaunchScreen>{bottomFade}</LaunchScreen>
     } else if (pageID === 1) {
       return <Image
         style={styles.container}
