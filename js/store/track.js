@@ -60,13 +60,13 @@ export function track(eventName: string, params: ?Params) {
   }
 }
 
-export function trackWithEvent(eventName: string, event: Event) {
+export function trackWithEvent(eventName: string, event: Event, params: ?Params) {
   const venue = event.venue || null;
-  const extraParams: Params = {
+  const extraParams: Params = Object.assign({}, params, {
     'Event ID': event.id,
     'Event City': venue ? venue.cityStateCountry() : '',
     'Event Country': venue.address ? venue.address.country : '',
-  };
+  });
   track(eventName, extraParams);
 }
 

@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
 import NoLoginScreen from './NoLoginScreen';
 import { loginButtonPressed } from './logic';
+import { track } from '../store/track';
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -44,6 +45,7 @@ class OnboardingFlow extends React.Component {
   }
 
   onOpenWebsite() {
+    track('Login - Use Website');
     Linking.openURL('http://www.dancedeets.com/').catch(err => console.error('Error opening dancedeets.com:', err));
   }
 

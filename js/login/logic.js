@@ -27,6 +27,7 @@ export async function autoLoginAtStartup(dispatch: Dispatch, allowRecursion: boo
   // When they open the app, check for their existing FB token.
   if (await isLoggedOut()) {
     console.log('Wait for onboarding!');
+    track('Login - Not Logged In');
     return dispatch(loginStartOnboard());
   // Now let's check how old the token is. We want to refresh old tokens,
   // but not delay/block users who have recently refreshed.

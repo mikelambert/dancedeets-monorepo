@@ -203,6 +203,7 @@ class EventRsvpControl extends React.Component {
       throw 'Already loading values, do not allow any changes!';
     }
     const rsvp = RsvpOnFB.RSVPs[index].apiValue;
+    trackWithEvent('RSVP', this.props.event, {'RSVP Value': rsvp});
     // We await on this, so exceptions are propagated up (and segmentedControl can undo actions)
     this.setState({...this.state, loading: true});
     await new RsvpOnFB().send(this.props.event.id, rsvp);
