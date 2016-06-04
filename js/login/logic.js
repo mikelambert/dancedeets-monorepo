@@ -11,8 +11,10 @@ import {
 } from 'react-native-fbsdk';
 import { loginStartOnboard, loginComplete } from '../actions';
 import type { Dispatch } from '../actions/types';
+import { track } from '../store/track';
 
 export async function loginButtonPressed(dispatch: Dispatch) {
+  track('Login - FBLogin Button Pressed');
   try {
     const token = await loginOrLogout();
     dispatch(loginComplete(token));

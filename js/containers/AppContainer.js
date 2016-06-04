@@ -33,6 +33,7 @@ import {
 	shareEvent,
 	shareIcon,
 } from '../api/share';
+import { track, trackWithEvent } from '../store/track';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
 import type { NavigationParentState, NavigationState } from 'NavigationTypeDefinition';
@@ -149,17 +150,26 @@ class AppContainer extends React.Component {
 		switch (navigationState.key) {
 		case 'EventList':
 			return <EventListContainer
-				onEventSelected={(event)=>this.props.onNavigate({key: 'EventView', title: event.name, event: event})}
-				onAddEventClicked={()=>this.props.onNavigate({key: 'AddEvent', title: 'Add Event'})}
+				onEventSelected={(event)=> {
+					trackWithEvent('View Event', event);
+					this.props.onNavigate({key: 'EventView', title: event.name, event: event});
+				}}
+				onAddEventClicked={()=> {
+					track('Add Event');
+					this.props.onNavigate({key: 'AddEvent', title: 'Add Event'});
+				}}
 			/>;
 		case 'EventView':
 			return <EventPager
-				onFlyerSelected={(event)=>this.props.onNavigate({
-					key: 'FlyerView',
-					image: event.cover.images[0].source,
-					width: event.cover.images[0].width,
-					height: event.cover.images[0].height,
-				})}
+				onFlyerSelected={(event)=> {
+					trackWithEvent('View Flyer', event);
+					this.props.onNavigate({
+						key: 'FlyerView',
+						image: event.cover.images[0].source,
+						width: event.cover.images[0].width,
+						height: event.cover.images[0].height,
+					});
+				}}
 				selectedEvent={navigationState.event}
 			/>;
 		case 'FlyerView':

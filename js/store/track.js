@@ -50,7 +50,7 @@ initMixpanel();
 
 type Params = {[key: string]: string | number};
 
-function track(eventName: string, params: ?Params) {
+export function track(eventName: string, params: ?Params) {
   if (params) {
     AppEventsLogger.logEvent(eventName, 1, params);
     Mixpanel.trackWithProperties(eventName, params);
@@ -60,7 +60,7 @@ function track(eventName: string, params: ?Params) {
   }
 }
 
-function trackWithEvent(eventName: string, event: Event) {
+export function trackWithEvent(eventName: string, event: Event) {
   const venue = event.venue || null;
   const extraParams: Params = {
     'Event ID': event.id,
@@ -94,7 +94,7 @@ export default function trackDispatches(action: Action): void {
       // TODO: Retrieve push token
       //Mixpanel.addPushDeviceToken(...);
       setupPersonProperties(action.token);
-      track('Login');
+      track('Login - Completed');
       break;
 
     case 'LOGIN_LOGGED_OUT':
