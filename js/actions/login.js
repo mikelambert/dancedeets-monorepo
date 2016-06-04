@@ -40,10 +40,7 @@ export function skipLogin(): Action {
 
 export function logOut(): ThunkAction {
   return (dispatch) => {
-    // TODO: Mixpanel logout
     LoginManager.logOut();
-
-    // TODO: Make sure reducers clear their state
     return dispatch({
       type: 'LOGIN_LOGGED_OUT',
     });

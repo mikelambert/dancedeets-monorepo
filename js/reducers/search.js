@@ -28,6 +28,9 @@ const initialState = {
 };
 
 export function search(state: State = initialState, action: Action): State {
+  if (action.type === 'LOGIN_LOGGED_OUT') {
+    return initialState;
+  }
   if (action.type === 'UPDATE_LOCATION' ||
       // Only set location from GPS if user hasn't entered any location
       (action.type === 'DETECTED_LOCATION' && state.searchQuery.location === '')) {

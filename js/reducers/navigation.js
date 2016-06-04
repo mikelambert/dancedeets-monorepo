@@ -20,6 +20,9 @@ const initialNavState: NavigationParentState = {
 };
 
 export function navigationState(state: NavigationParentState = initialNavState, action: Action) {
+  if (action.type === 'LOGIN_LOGGED_OUT') {
+    return initialNavState;
+  }
 	switch (action.type) {
 	case NAV_PUSH:
 		if (state.children[state.index].key === (action.state && action.state.key)) {

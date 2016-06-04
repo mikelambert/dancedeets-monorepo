@@ -26,6 +26,9 @@ const initialState = {
 };
 
 export function user(state: State = initialState, action: Action): State {
+  if (action.type === 'LOGIN_LOGGED_OUT') {
+    return initialState;
+  }
   if (action.type === 'LOGIN_START_ONBOARD') {
     return {
       isLoggedIn: false,
@@ -52,9 +55,6 @@ export function user(state: State = initialState, action: Action): State {
       id: null,
       name: null,
     };
-  }
-  if (action.type === 'LOGIN_LOGGED_OUT') {
-    return initialState;
   }
   return state;
 }

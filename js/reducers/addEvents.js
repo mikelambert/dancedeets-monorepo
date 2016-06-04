@@ -35,6 +35,9 @@ const initialState = {
 };
 
 export function addEvents(state: State = initialState, action: Action): State {
+  if (action.type === 'LOGIN_LOGGED_OUT') {
+    return initialState;
+  }
   if (action.type === 'ADD_EVENTS_RELOAD') {
     return {
       ...state,
