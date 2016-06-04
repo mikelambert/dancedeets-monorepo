@@ -36,6 +36,7 @@ import moment from 'moment';
 import { linkColor, purpleColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
 import RsvpOnFB from '../api/fb-event-rsvp';
+import { trackWithEvent } from '../store/track';
 
 const {
   Globalize,
@@ -88,7 +89,10 @@ class AddToCalendarButton extends React.Component {
       caption="Add to Calendar"
       type="primary"
       size="small"
-      onPress={()=> CalendarAdd(this.props.event)}
+      onPress={() => {
+        trackWithEvent('Add to Calendar', this.props.event);
+        CalendarAdd(this.props.event);
+      }}
     />;
   }
 }
@@ -145,15 +149,16 @@ class EventSource extends SubEventLine {
     return require('./images/website.png');
   }
   onPress() {
-    Linking.openURL(this.props.source.url).catch(err => console.error('Error opening event source:', err));
+    trackWithEvent('Open Source', this.props.event);
+    Linking.openURL(this.props.event.source.url).catch(err => console.error('Error opening event source:', err));
   }
   textRender() {
-    if (this.props.source) {
+    if (this.props.event.source) {
       return (
         <HorizontalView>
           <Text style={eventStyles.detailText}>Source: </Text>
           <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
-            <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{this.props.source.name}</Text>
+            <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{this.props.event.source.name}</Text>
           </TouchableOpacity>
         </HorizontalView>
       );
@@ -438,6 +443,7 @@ export class FullEventView extends React.Component {
   }
 
   async onLocationClicked() {
+    trackWithEvent('View on Map', this.props.event);
     openVenueWithApp(this.props.event.venue);
   }
 
@@ -469,7 +475,7 @@ export class FullEventView extends React.Component {
             <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
               <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
             </TouchableOpacity>
-            <EventSource source={this.props.event.source} />
+            <EventSource event={this.props.event} />
             <HorizontalView style={{justifyContent: 'space-between'}}>
               <AddToCalendarButton event={this.props.event} />
               <EventShare event={this.props.event} />

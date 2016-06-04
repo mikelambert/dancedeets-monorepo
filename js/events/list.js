@@ -40,6 +40,7 @@ import {
   Button,
   Text,
 } from '../ui';
+import { track } from '../store/track';
 import { AdMobBanner } from 'react-native-admob';
 import WebsiteUrl from '../websiteUrl';
 var en = new Globalize('en');
@@ -64,7 +65,10 @@ class Onebox extends React.Component {
   }
 
   oneboxClicked() {
-    var url = this.props.onebox.url;
+    let url = this.props.onebox.url;
+    // We want to track the pre-augmented URL
+    track('Onebox', {URL: url});
+
     // TOOD: Set up and use a webview to keep things "in-app" ?
     if (url.indexOf('?') > -1) {
       url += '&webview=1';

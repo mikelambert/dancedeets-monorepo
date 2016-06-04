@@ -94,7 +94,10 @@ class AppContainer extends React.Component {
 	renderRight(props) {
 		if (props.scene.navigationState.event) {
 			return (
-				<TouchableOpacity onPress={()=>shareEvent(props.scene.navigationState.event)} style={styles.centeredContainer}>
+				<TouchableOpacity onPress={() => {
+					trackWithEvent('Add to Calendar', props.scene.navigationState.event);
+					shareEvent(props.scene.navigationState.event);
+				}} style={styles.centeredContainer}>
 					{shareIcon}
 				</TouchableOpacity>
 			);
@@ -154,7 +157,7 @@ class AppContainer extends React.Component {
 					trackWithEvent('View Event', event);
 					this.props.onNavigate({key: 'EventView', title: event.name, event: event});
 				}}
-				onAddEventClicked={()=> {
+				onAddEventClicked={() => {
 					track('Add Event');
 					this.props.onNavigate({key: 'AddEvent', title: 'Add Event'});
 				}}
