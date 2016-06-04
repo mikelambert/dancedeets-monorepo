@@ -177,7 +177,6 @@ class EventListContainer extends React.Component {
       async (position) => {
         const newCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
         const address: Address = await Geocoder.geocodePosition(newCoords);
-        console.log(address);
         const formattedAddress = format(address[0]);
         // Trigger this search without waiting around
         auth({location: formattedAddress});
