@@ -17,6 +17,7 @@ export async function loginButtonPressed(dispatch: Dispatch) {
   track('Login - FBLogin Button Pressed');
   try {
     const token = await loginOrLogout();
+    track('Login - Completed');
     dispatch(loginComplete(token));
   } catch (e) {
     console.log('Staying on this screen, failed to login: ', e, e.stack);

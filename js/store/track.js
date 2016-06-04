@@ -24,9 +24,9 @@
 
 'use strict';
 
+import { Platform } from 'react-native';
 import Mixpanel from 'react-native-mixpanel';
-import {AppEventsLogger} from 'react-native-fbsdk';
-import { AccessToken } from 'react-native-fbsdk';
+import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { performRequest } from '../api/fb';
 
 import type {Action} from '../actions/types';
@@ -43,6 +43,7 @@ function initMixpanel() {
     mixpanelApiKey = 'f5d9d18ed1bbe3b190f9c7c7388df243';
   }
 
+  track('$app_open');
   return Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
 }
 
@@ -64,7 +65,7 @@ export function trackWithEvent(eventName: string, event: Event, params: ?Params)
   const venue = event.venue || null;
   const extraParams: Params = Object.assign({}, params, {
     'Event ID': event.id,
-    'Event City': venue ? venue.cityStateCountry() : '',
+    'Event City': venue.address ? venue.cityStateCountry() : '',
     'Event Country': venue.address ? venue.address.country : '',
   });
   track(eventName, extraParams);
@@ -98,7 +99,6 @@ export function trackLogin() {
   // TODO: Retrieve push token
   //Mixpanel.addPushDeviceToken(...);
   setupPersonProperties();
-  track('Login - Completed');
 }
 
 export function trackLogout() {

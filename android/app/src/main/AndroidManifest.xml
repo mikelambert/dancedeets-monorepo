@@ -42,9 +42,6 @@
         <!-- We specify this explicitly, otherwise MixPanel uses applicationId+applicationIdSuffix, instead of just applicationId -->
         <meta-data android:name="com.mixpanel.android.MPConfig.ResourcePackageName" android:value="com.dancedeets.android" />
 
-        <meta-data android:name="com.mixpanel.android.MPConfig.DisableAppOpenEvent"
-            android:value="false" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDEHGAeT9NkW-CvcaDMLbz4B6-abdvPi4I"/>
