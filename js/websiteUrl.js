@@ -9,36 +9,43 @@
 import urllib from 'url';
 
 export default class WebsiteUrl {
-  url: Object;
+  url: ?Object;
 
   constructor(url: string) {
-    this.url = urllib.parse(url, true);
+    this.url = url ? urllib.parse(url, true) : null;
   }
 
   isEventUrl() {
-    return this.url.pathname.startsWith('/event/');
+    return this.url && this.url.pathname.startsWith('/event/');
   }
 
   eventId() {
-    if (!this.isEventUrl()) {
+    if (!this.url || !this.isEventUrl()) {
       return null;
     }
-    const elems = this.url.pathname.split('/');
+    const pathname = this.url.pathname;
+    const elems = pathname.split('/');
     if (elems[1] != 'event') {
-      throw 'Confusing pathname: ' + this.url.pathname;
+      throw 'Confusing pathname: ' + pathname;
     }
     return elems[2];
   }
 
   isSearchUrl() {
-    return (this.url.query.location || this.url.query.keywords);
+    return this.url ? (this.url.query.location || this.url.query.keywords) : false;
   }
 
   location() {
+    if (!this.url || !this.isSearchUrl()) {
+      return null;
+    }
     return this.url.query.location;
   }
 
   keywords() {
+    if (!this.url || !this.isSearchUrl()) {
+      return null;
+    }
     return this.url.query.keywords;
   }
 }
