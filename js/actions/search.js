@@ -10,13 +10,25 @@ import type { Action, ThunkAction, Dispatch } from './types';
 import type { SearchQuery, SearchResults } from '../events/search';
 
 import { search } from '../api/dancedeets';
+import { track } from '../store/track';
 
 export function performSearch(): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
     const searchQuery = getState().search.searchQuery;
-    await dispatch(searchStart(searchQuery));
+    track('Search Events', {
+      'Location': searchQuery.location,
+      'Keywords': searchQuery.keywords,
+    });
+    await dispatch(searchStart());
     try {
       const responseData = await search(searchQuery.location, searchQuery.keywords, searchQuery.timePeriod);
+      track('Searched Results', {
+        'Location': searchQuery.location,
+        'Keywords': searchQuery.keywords,
+        'Tab': searchQuery.timePeriod,
+        'Result Count': responseData.results.length,
+        'Onebox Count': responseData.onebox_links.length,
+      });
       await dispatch(searchComplete(responseData));
     } catch (e) {
       // TODO: error fetching events.
@@ -55,10 +67,9 @@ export function updateKeywords(keywords: string): Action {
   };
 }
 
-function searchStart(searchQuery: SearchQuery): Action {
+function searchStart(): Action {
   return {
     type: 'START_SEARCH',
-    searchQuery,
   };
 }
 

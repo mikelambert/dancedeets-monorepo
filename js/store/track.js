@@ -102,16 +102,5 @@ export default function trackDispatches(action: Action): void {
       Mixpanel.removePushToken();
       Mixpanel.reset();
       break;
-
-    case 'VIEW_EVENT':
-      trackWithEvent('View Event', action.event);
-      break;
-
-    case 'START_SEARCH':
-      track('Search Events', {
-        'Location': action.searchQuery.location,
-        'Keywords': action.searchQuery.keywords,
-      });
-      break;
   }
 }

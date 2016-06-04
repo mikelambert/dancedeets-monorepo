@@ -40,12 +40,11 @@ export type Action =
   | { type: 'LOGIN_LOGGED_IN', token: AccessToken }
   | { type: 'LOGIN_LOGGED_OUT' }
   | { type: 'LOGIN_SKIPPED' }
-  | { type: 'VIEW_EVENT', event: Event }
   | { type: 'DETECTED_LOCATION', location: string }
   | { type: 'TOGGLE_LAYOUT' }
   | { type: 'UPDATE_LOCATION', location: string }
   | { type: 'UPDATE_KEYWORDS', keywords: string }
-  | { type: 'START_SEARCH', searchQuery: SearchQuery }
+  | { type: 'START_SEARCH' }
   | { type: 'SEARCH_COMPLETE', results: SearchResults }
   | { type: 'SEARCH_FAILED' }
   | { type: 'ADD_EVENTS_RELOAD' }
