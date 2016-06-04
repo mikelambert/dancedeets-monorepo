@@ -52,8 +52,6 @@ export class Venue extends JsonDerivedObject {
 
 export class Event extends JsonDerivedObject {
   id: string;
-  city: string;
-  country: string;
   venue: string;
   picture: string;
   name: string;

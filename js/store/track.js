@@ -52,16 +52,17 @@ function track(eventName: string) {
 }
 
 function trackWithEvent(eventName: string, event: Event) {
+  const venue = event.venue || null;
   const extraParams = {
     'Event ID': event.id,
-    'Event City': event.city,
-    'Event Country': event.country,
+    'Event City': venue ? venue.cityStateCountry() : '',
+    'Event Country': venue.address ? venue.address.country : '',
   };
   AppEventsLogger.logEvent('View Event', extraParams);
   Mixpanel.trackWithProperties('View Event', extraParams);
 }
 
-export default function track(action: Action): void {
+export default function trackDispatches(action: Action): void {
   switch (action.type) {
     case 'LOGGED_IN':
       track('Login');
