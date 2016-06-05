@@ -22,6 +22,7 @@ class EventPager extends React.Component {
   props: {
     onFlyerSelected: (x: Event) => ThunkAction,
     search: State,
+    selectedEvent: Event,
   };
 
 
@@ -58,7 +59,17 @@ class EventPager extends React.Component {
     this.setState(this._getNewState(nextProps));
   }
 
+  componentDidMount() {
+    if (this.props.search.results && this.props.search.results.results) {
+      const initialPage = this.props.search.results.results.findIndex((x) => x.id === this.props.selectedEvent.id);
+      this.refs.view_pager.goToPage(initialPage, false);
+    }
+  }
+
   render() {
+    // We use react-native-viewpager instead of react-native-carousel,
+    // because we only want to render a few pages in the big list
+    // (as opposed to a fully rendered pageable/scrollable view, which will scale poorly)
     return <ViewPager
       dataSource={this.state.dataSource}
       renderPage={this.renderEvent}
