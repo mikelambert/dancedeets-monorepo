@@ -11,7 +11,7 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="684"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchScreen" translatesAutoresizingMaskIntoConstraints="NO" id="A3h-c5-1cv">
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_screen" translatesAutoresizingMaskIntoConstraints="NO" id="A3h-c5-1cv">
                     <rect key="frame" x="-144" y="0.0" width="768" height="684"/>
                 </imageView>
             </subviews>
@@ -27,6 +27,6 @@
         </view>
     </objects>
     <resources>
-        <image name="LaunchScreen" width="768" height="1024"/>
+        <image name="launch_screen" width="768" height="1024"/>
     </resources>
 </document>
