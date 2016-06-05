@@ -24,7 +24,6 @@
 
 'use strict';
 
-import { Platform } from 'react-native';
 import Mixpanel from 'react-native-mixpanel';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { performRequest } from '../api/fb';
@@ -43,8 +42,9 @@ function initMixpanel() {
     mixpanelApiKey = 'f5d9d18ed1bbe3b190f9c7c7388df243';
   }
 
+  const mixpanel = Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
   track('$app_open');
-  return Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
+  return mixpanel;
 }
 
 initMixpanel();
