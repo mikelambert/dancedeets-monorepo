@@ -71,6 +71,7 @@ class EventPager extends React.Component {
     // because we only want to render a few pages in the big list
     // (as opposed to a fully rendered pageable/scrollable view, which will scale poorly)
     return <ViewPager
+      ref="view_pager"
       dataSource={this.state.dataSource}
       renderPage={this.renderEvent}
       renderPageIndicator={false}
