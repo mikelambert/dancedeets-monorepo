@@ -12,10 +12,9 @@ import {
 
 export default class LaunchScreen extends React.Component {
   render() {
-    console.log('launch screen!');
     return <Image
       style={styles.container}
-      source={{uri: 'launch_screen.jpg', isStatic: true}}
+      source={{uri: Platform.OS === 'ios' ? 'launch_screen.jpg' : 'launch_screen'}}
       >
       {this.props.children}
     </Image>;
