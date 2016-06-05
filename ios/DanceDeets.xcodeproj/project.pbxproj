@@ -25,6 +25,7 @@
 		16FE77C3722A4B5B8F2D6EAA /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3C70CA84024A018934C0C5 /* libAirMaps.a */; };
 		182FD04263C4415F8EF0327B /* libRNMail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD682DC01E1C4BD5A7ABA711 /* libRNMail.a */; };
 		1D449AAA1D04A69300195AF6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D449AA91D04A69300195AF6 /* libz.tbd */; };
+		1D449AD71D04C1AF00195AF6 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1D89584E1CF913100029E37E /* Ubuntu 300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584B1CF9125D0029E37E /* Ubuntu 300.ttf */; };
 		1D89584F1CF913130029E37E /* Ubuntu 500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584C1CF9125D0029E37E /* Ubuntu 500.ttf */; };
 		1D8958501CF913150029E37E /* Ubuntu regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584D1CF9125D0029E37E /* Ubuntu regular.ttf */; };
@@ -268,6 +269,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D449AD71D04C1AF00195AF6 /* libReact.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1099,6 +1101,7 @@
 			baseConfigurationReference = F33F4F5DCEB28B5ACFB6FDF7 /* Pods-DanceDeets.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODEPUSH_KEY = VBTS2ItpJyp8Z5qu8V8ZMzxPtQeB4kVrpLamW;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
@@ -1130,7 +1133,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dancedeets.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dancedeets.ios.debug;
 				PRODUCT_NAME = DanceDeets;
 				PROVISIONING_PROFILE = "";
 			};
@@ -1141,6 +1144,7 @@
 			baseConfigurationReference = CEA565539668378262D1903D /* Pods-DanceDeets.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODEPUSH_KEY = Y7pvbyukGzTiz1R25OmdmkiRrygh4kVrpLamW;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
