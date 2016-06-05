@@ -43,7 +43,8 @@ function initMixpanel() {
   }
 
   const mixpanel = Mixpanel.sharedInstanceWithToken(mixpanelApiKey);
-  track('$app_open');
+  // Don't use global track(), since this is a Mixpanel-only event:
+  Mixpanel.track('$app_open');
   return mixpanel;
 }
 
