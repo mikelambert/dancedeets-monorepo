@@ -37,7 +37,8 @@ export default function setup(): Class<Object> {
     }
 
     componentDidMount() {
-      codePush.sync();
+      // Reload with the latest code, whenever we've been backgrounded for 5 minutes
+      codePush.sync({ installMode: codePush.InstallMode.ON_NEXT_RESUME, minimumBackgroundDuration: 60 * 5 });
     }
 
     render() {
