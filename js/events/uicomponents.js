@@ -455,17 +455,23 @@ export class FullEventView extends React.Component {
   render() {
     const width = Dimensions.get('window').width;
     const imageProps = this.props.event.getImagePropsForWidth(width);
+    const flyerImage =
+      <ProportionalImage
+        source={{uri: imageProps.source}}
+        originalWidth={imageProps.width}
+        originalHeight={imageProps.height}
+        style={eventStyles.thumbnail}
+      />;
+
+    const clickableFlyer =
+      <TouchableOpacity onPress={this.onFlyerClicked} activeOpacity={0.5}>
+        {flyerImage}
+      </TouchableOpacity>;
+
     return (
       <ScrollView style={eventStyles.container}>
         <View style={eventStyles.row}>
-          <TouchableOpacity onPress={this.onFlyerClicked} activeOpacity={0.5}>
-            <ProportionalImage
-              source={{uri: imageProps.source}}
-              originalWidth={imageProps.width}
-              originalHeight={imageProps.height}
-              style={eventStyles.thumbnail}
-            />
-          </TouchableOpacity>
+          {this.props.event.cover ? clickableFlyer : flyerImage}
           <Text
             numberOfLines={2}
             style={eventStyles.rowTitle}>{this.props.event.name}</Text>
