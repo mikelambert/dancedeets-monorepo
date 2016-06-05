@@ -12,6 +12,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactActivity;
+import com.microsoft.codepush.react.CodePush;
 import cl.json.RNSharePackage;
 import com.chirag.RNMail.RNMail;
 import com.facebook.react.ReactPackage;
@@ -48,6 +49,11 @@ public class MainActivity extends ReactActivity {
         return BuildConfig.DEBUG;
     }
 
+    @Override
+    protected String getJSBundleFile() {
+        return CodePush.getBundleUrl();
+    }
+
     /**
      * A list of packages used by the app. If the app uses additional views
      * or modules besides the default ones, add more packages here.
@@ -57,6 +63,7 @@ public class MainActivity extends ReactActivity {
         mCallbackManager = CallbackManager.Factory.create();
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new CodePush(this.getResources().getString(R.strings.reactNativeCodePush_androidDeploymentKey), this, BuildConfig.DEBUG),
             new RNSharePackage(),
             new RNMail(),
             new RNAdMobPackage(),
