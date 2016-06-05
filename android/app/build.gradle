@@ -112,13 +112,15 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             shrinkResources true
             zipAlignEnabled true
-            //manifestPlaceholders = [applicationIdSuffix: ""]
+            manifestPlaceholders = [applicationIdSuffix: ""]
             signingConfig signingConfigs.release
+            buildConfigField "String", "CODEPUSH_KEY", "\"Y7pvbyukGzTiz1R25OmdmkiRrygh4kVrpLamW\""
         }
         debug {
-            //applicationIdSuffix ".debug"
-            //manifestPlaceholders = [applicationIdSuffix: ".debug"]
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [applicationIdSuffix: ".debug"]
             signingConfig signingConfigs.release
+            buildConfigField "String", "CODEPUSH_KEY", "\"VBTS2ItpJyp8Z5qu8V8ZMzxPtQeB4kVrpLamW\""
         }
     }
     // applicationVariants are e.g. debug, release

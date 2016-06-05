@@ -6,26 +6,26 @@ import android.os.Bundle;
 import com.AirMaps.AirPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
+import com.chirag.RNMail.RNMail;
 import com.crashlytics.android.Crashlytics;
 import com.devfd.RNGeocoder.RNGeocoderPackage;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactActivity;
-import com.microsoft.codepush.react.CodePush;
-import cl.json.RNSharePackage;
-import com.chirag.RNMail.RNMail;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.higo.zhangyp.segmented.AndroidSegmentedPackage;
 import com.kevinejohn.RNMixpanel.RNMixpanel;
+import com.microsoft.codepush.react.CodePush;
 import com.sbugert.rnadmob.RNAdMobPackage;
 import com.smixx.fabric.FabricPackage;
 
 import java.util.Arrays;
 import java.util.List;
 
+import cl.json.RNSharePackage;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends ReactActivity {
@@ -63,7 +63,7 @@ public class MainActivity extends ReactActivity {
         mCallbackManager = CallbackManager.Factory.create();
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
-            new CodePush(this.getResources().getString(R.strings.reactNativeCodePush_androidDeploymentKey), this, BuildConfig.DEBUG),
+            new CodePush(BuildConfig.CODEPUSH_KEY, this, BuildConfig.DEBUG),
             new RNSharePackage(),
             new RNMail(),
             new RNAdMobPackage(),
