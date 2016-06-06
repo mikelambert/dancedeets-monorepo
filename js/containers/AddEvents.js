@@ -26,7 +26,11 @@ import {
   setOnlyUnadded,
   setSortOrder,
 } from '../actions';
-import { purpleColors } from '../Colors';
+import {
+  purpleColors,
+  yellowColors,
+  gradientTop,
+} from '../Colors';
 import {
   Button,
   HorizontalView,
@@ -53,7 +57,7 @@ class _FilterHeader extends React.Component {
         values={['All', 'Not-yet-added only']}
         style={{flex: 1}}
         defaultIndex={this.props.displayOptions.onlyUnadded ? 1 : 0}
-        tintColor={purpleColors[0]}
+        tintColor={yellowColors[1]}
         tryOnChange={(index)=>{this.props.setOnlyUnadded(index == 1);}}
       />
     </HorizontalView>
@@ -63,7 +67,7 @@ class _FilterHeader extends React.Component {
       <SegmentedControl
         values={['By Start Date', 'By Name']}
         style={{flex: 1}}
-        tintColor={purpleColors[0]}
+        tintColor={yellowColors[1]}
         defaultIndex={this.props.displayOptions.sortOrder === 'ByName' ? 1 : 0}
         tryOnChange={(index)=>{this.props.setSortOrder(index == 1 ? 'ByName' : 'ByDate');}}
       />
@@ -304,7 +308,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   header: {
-    backgroundColor: purpleColors[2],
+    backgroundColor: gradientTop,
   },
   headerRow: {
     alignItems: 'center',
