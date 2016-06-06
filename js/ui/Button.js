@@ -29,7 +29,7 @@ class Button extends React.Component {
   static defaultProps = {
     caption: '',
     icon: null,
-    style: null,
+    style: {},
     onPress: () => {},
     type: 'primary',
     size: 'large',
