@@ -259,7 +259,7 @@ class EventListContainer extends React.Component {
         renderSectionHeader={(data, sectionID) =>
           <SectionHeader title={sectionID}/>
         }
-        initialListSize={10}
+        initialListSize={5}
         pageSize={5}
         scrollRenderAheadDistance={10000}
         scrollsToTop={false}
