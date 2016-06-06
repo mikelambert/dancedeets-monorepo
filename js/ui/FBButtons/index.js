@@ -20,7 +20,6 @@ export class FBShareButton extends React.Component {
           caption="Share"
           size="small"
           onPress={() => {
-            console.log(this.props.shareContent);
             ShareDialog.show(this.props.shareContent);
           }}
           {...this.props}
