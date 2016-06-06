@@ -15,6 +15,7 @@ import {
 	Platform,
 	StyleSheet,
 	TouchableOpacity,
+	View,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -28,11 +29,7 @@ import {
 	ZoomableImage,
 } from '../ui';
 import AddEvents from '../containers/AddEvents';
-
-import {
-	shareEvent,
-	shareIcon,
-} from '../api/share';
+import ShareEventIcon from './ShareEventIcon';
 import { track, trackWithEvent } from '../store/track';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
@@ -93,14 +90,7 @@ class AppContainer extends React.Component {
 
 	renderRight(props) {
 		if (props.scene.navigationState.event) {
-			return (
-				<TouchableOpacity onPress={() => {
-					trackWithEvent('Share Event', props.scene.navigationState.event);
-					shareEvent(props.scene.navigationState.event);
-				}} style={styles.centeredContainer}>
-					{shareIcon}
-				</TouchableOpacity>
-			);
+			return <View style={styles.centeredContainer}><ShareEventIcon event={props.scene.navigationState.event} /></View>;
 		}
 		return null;
 	}
