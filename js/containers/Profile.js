@@ -24,6 +24,7 @@ import {
   HorizontalView,
   Text,
 } from '../ui';
+import { track } from '../store/track';
 import type { Dispatch } from '../actions/types';
 const Mailer = require('NativeModules').RNMail;
 
@@ -61,6 +62,7 @@ class Credits extends React.Component {
 }
 
 function sendEmail() {
+  track('Send Feedback');
   Mailer.mail({
       subject: 'DanceDeets Feeback',
       recipients: ['feedback@dancedeets.com'],

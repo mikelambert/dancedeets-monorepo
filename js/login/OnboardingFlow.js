@@ -14,12 +14,6 @@ import NoLoginScreen from './NoLoginScreen';
 import { loginButtonPressed } from './logic';
 import { track } from '../store/track';
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onLogin: (e) => loginButtonPressed(dispatch),
-  };
-};
-
 type ScreenState = 'CAROUSEL' | 'NO_LOGIN';
 
 class OnboardingFlow extends React.Component {
@@ -53,12 +47,18 @@ class OnboardingFlow extends React.Component {
   render() {
     if (this.state.screen === 'CAROUSEL') {
       return <TutorialScreen
-        onLogin={this.props.onLogin}
+        onLogin={() => {
+          track('Login - FB Login Button Pressed - First Prompt');
+          this.props.onLogin();
+        }}
         onNoLogin={this.onDontWantLoginPressed}
       />;
     } else if (this.state.screen === 'NO_LOGIN') {
       return <NoLoginScreen
-        onLogin={this.props.onLogin}
+        onLogin={() => {
+          track('Login - FB Login Button Pressed - Second Prompt');
+          this.props.onLogin();
+        }}
         onNoLogin={this.onOpenWebsite}
         />;
     }
@@ -67,5 +67,9 @@ class OnboardingFlow extends React.Component {
 
 export default connect(
     null,
-    mapDispatchToProps
+    (dispatch) => {
+      return {
+        onLogin: (e) => loginButtonPressed(dispatch),
+      };
+    },
 )(OnboardingFlow);
