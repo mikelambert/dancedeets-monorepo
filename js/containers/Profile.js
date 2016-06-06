@@ -10,18 +10,25 @@ import React from 'react';
 import {
   AlertIOS,
   Image,
+  Platform,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { logOutWithPrompt } from '../actions';
 import { performRequest } from '../api/fb';
+import { linkColor } from '../Colors';
 import {
   Button,
+  HorizontalView,
   Text,
 } from '../ui';
 import type { Dispatch } from '../actions/types';
 const Mailer = require('NativeModules').RNMail;
+
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
+
 
 const credits = [
   [
@@ -105,20 +112,22 @@ class _ProfileComponent extends React.Component {
   render() {
     const image = this.state.url ? <Image style={styles.profileImage} source={{uri: this.state.url}}/> : null;
     return <View style={this.props.style}>
-      {image}
-      <Text>{this.state.name}</Text>
-      <Text>show current city?</Text>
+      <HorizontalView>
+        {image}
+        <View>
+          <Text style={styles.profileName}>{this.state.name}</Text>
+          {this.state.friendCount ? <Text>{this.state.friendCount} friends using DanceDeets</Text> : null}
+          <TouchableOpacity onPress={this.props.logOutWithPrompt}>
+            <Text style={styles.link}>Logout</Text>
+          </TouchableOpacity>
+        </View>
+      </HorizontalView>
 
-      {this.state.friendCount ? <Text>{this.state.friendCount} friends using DanceDeets</Text> : null}
-      <Button size="small" caption="Invite more friends"/>
+      <HorizontalView style={{marginTop: 10}}>
+      <Button style={{marginRight: 10}} size="small" caption="Invite more friends"/>
       <Button size="small" caption="Notification Settings"/>
+      </HorizontalView>
 
-      <Button
-        size="small"
-        icon={require('../login/icons/facebook.png')}
-        caption="Logout"
-        onPress={this.props.logOutWithPrompt}
-        />
     </View>;
   }
 }
@@ -133,7 +142,7 @@ const ProfileComponent = connect(
 export default class Profile extends React.Component {
   render() {
     return <View style={styles.container}>
-      <ProfileComponent style={{height:300}}/>
+      <ProfileComponent style={styles.profileComponent}/>
       <Button size="small" caption="Send Feedback" onPress={sendEmail}/>
 
       <Credits style={{marginTop: 20}}/>
@@ -141,15 +150,25 @@ export default class Profile extends React.Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  profileName: {
+    fontSize: 22,
+  },
+  profileComponent: {
+    top: STATUSBAR_HEIGHT,
+    height: 300,
   },
   profileImage: {
-    width: 150,
-    height: 150,
-  }
+    marginRight: 10,
+    width: 100,
+    height: 100,
+  },
+  link: {
+    color: linkColor,
+  },
 });

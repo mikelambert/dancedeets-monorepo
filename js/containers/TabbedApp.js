@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import AppContainer from '../containers/AppContainer';
-import Profile from '../containers/Profile';
+import AboutApp from '../containers/Profile';
 import { yellowColors } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -53,14 +53,14 @@ export default class TabbedAppView extends React.Component {
         <AppContainer />
       </TabNavigator.Item>
       <TabNavigator.Item
-        selected={this.state.selectedTab === 'profile'}
-        title="Profile"
+        selected={this.state.selectedTab === 'about'}
+        title="App"
         titleStyle={styles.titleStyle}
         selectedTitleStyle={styles.selectedTitleStyle}
         renderIcon={() => <Image source={require('../containers/icons/profile.png')} />}
         renderSelectedIcon={() => <Image source={require('../containers/icons/profile-highlighted.png')} />}
-        onPress={() => this.setState({ selectedTab: 'profile' })}>
-        <Profile />
+        onPress={() => this.setState({ selectedTab: 'about' })}>
+        <AboutApp />
       </TabNavigator.Item>
     </TabNavigator>;
   }
