@@ -16,6 +16,7 @@ import {
   View
 } from 'react-native';
 import { Text } from '../ui';
+import { gradientBottom, gradientTop } from '../Colors';
 
 export default class LoginButton extends React.Component {
   props: {
@@ -37,7 +38,7 @@ export default class LoginButton extends React.Component {
       content = (
         <LinearGradient
           start={[0.0, 0.0]} end={[0.0, 1]}
-          colors={['#5F70B6', '#4F5086']}
+          colors={[gradientBottom, gradientTop]}
           style={[styles.button, styles.primaryButton]}>
           {icon}
           <Text style={[styles.caption, styles.primaryCaption]}>

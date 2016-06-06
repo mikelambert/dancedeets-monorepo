@@ -20,7 +20,7 @@ import { connect } from 'react-redux';
 
 // My overrides
 import { NavigationHeaderTitle } from '../react-navigation';
-
+import { gradientBottom, gradientTop } from '../Colors';
 import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
 import { navigatePush, navigatePop } from '../actions';
@@ -53,7 +53,7 @@ class GradientBar extends React.Component {
 	render() {
 		return <LinearGradient
 			start={[0.0, 0.0]} end={[0.0, 1]}
-			colors={['#5F70B6', '#4F5086']}
+			colors={[gradientBottom, gradientTop]}
 			style={this.props.style}>
 			{this.props.children}
 		</LinearGradient>;
@@ -108,7 +108,7 @@ class AppContainer extends React.Component {
 	renderOverlay(props) {
 		return <GradientBar style={styles.navHeader}>
 			<NavigationHeader
-				style={{backgroundColor: 'transparent'}}
+				style={{backgroundColor: 'transparent', borderBottomWidth: 0}}
 				{...props}
 				renderLeftComponent={this.renderLeft}
 				renderTitleComponent={this.renderTitle}
@@ -215,8 +215,6 @@ const styles = StyleSheet.create({
 	// These are basically copied from NavigationHeader.js
 	navHeader: {
 		alignItems: 'center',
-		borderBottomColor: 'rgba(0, 0, 0, .15)',
-		borderBottomWidth: Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 0,
 		elevation: 1,
 		flexDirection: 'row',
 		height: APPBAR_HEIGHT + STATUSBAR_HEIGHT,

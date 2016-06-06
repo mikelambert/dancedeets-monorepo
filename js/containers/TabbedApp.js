@@ -14,14 +14,14 @@ import {
 import TabNavigator from 'react-native-tab-navigator';
 import AppContainer from '../containers/AppContainer';
 import AboutApp from '../containers/Profile';
-import { yellowColors } from '../Colors';
+import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 
 class GradientTabBar extends React.Component {
   render() {
     return <LinearGradient
       start={[0.0, 0.0]} end={[0.0, 1]}
-      colors={['#5F70B6', '#4F5086']}
+      colors={[gradientTop, gradientBottom]}
       style={this.props.style}>
       {this.props.children}
     </LinearGradient>;

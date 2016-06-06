@@ -28,3 +28,6 @@ const blueColor = '#70C0FF';
 export const lightText = yellowColors[0];
 
 export const linkColor = blueColor;
+
+export const gradientTop = '#5F70B6';
+export const gradientBottom = '#4F5086';

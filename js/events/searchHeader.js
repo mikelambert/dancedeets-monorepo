@@ -27,6 +27,9 @@ import {
   updateKeywords,
 } from '../actions';
 
+import {
+  gradientTop,
+} from '../Colors';
 
 class SearchInput extends React.Component {
   state: {
@@ -163,6 +166,7 @@ class SearchHeader extends React.Component {
         />
         <Button
           size="small"
+          style={styles.toggleButton}
           icon={this.props.listLayout ? require('./search-images/large-flyer.png') : require('./search-images/small-flyer.png')}
           onPress={this.props.toggleLayout}
           />
@@ -220,15 +224,18 @@ const styles = StyleSheet.create({
   statusBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: gradientTop,
+    paddingBottom: 4,
   },
   searchField: {
     color: 'white',
     borderRadius: 5,
     flex: 1,
-    marginLeft: 3,
-    marginRight: 3,
+    marginHorizontal: 4,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  toggleButton: {
+    marginHorizontal: 4,
   },
   focusedField: {
     flex: 3,
