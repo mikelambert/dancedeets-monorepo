@@ -323,7 +323,8 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     height: 30,
-    alignItems: 'flex-start',
+    alignItems: 'flex-start', // left align
+    justifyContent: 'center', // vertically center
     backgroundColor: '#222',
   },
   sectionHeaderText: {
@@ -333,7 +334,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   onebox: {
-    alignItems: 'center',
+    alignItems: 'flex-start', // left align
+    justifyContent: 'center', // vertically center
     height: 50,
   },
   oneboxText: {
