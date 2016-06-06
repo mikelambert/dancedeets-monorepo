@@ -16,6 +16,7 @@ import AppContainer from '../containers/AppContainer';
 import AboutApp from '../containers/Profile';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
+import { track } from '../store/track';
 
 class GradientTabBar extends React.Component {
   render() {
@@ -49,17 +50,23 @@ export default class TabbedAppView extends React.Component {
         selectedTitleStyle={styles.selectedTitleStyle}
         renderIcon={() => <Image source={require('../containers/icons/events.png')} />}
         renderSelectedIcon={() => <Image source={require('../containers/icons/events-highlighted.png')} />}
-        onPress={() => this.setState({ selectedTab: 'home' })}>
+        onPress={() => {
+          track('Tab Selected', {Tab: 'Home'});
+          this.setState({ selectedTab: 'home' });
+        }}>
         <AppContainer />
       </TabNavigator.Item>
       <TabNavigator.Item
         selected={this.state.selectedTab === 'about'}
-        title="App"
+        title="About"
         titleStyle={styles.titleStyle}
         selectedTitleStyle={styles.selectedTitleStyle}
         renderIcon={() => <Image source={require('../containers/icons/profile.png')} />}
         renderSelectedIcon={() => <Image source={require('../containers/icons/profile-highlighted.png')} />}
-        onPress={() => this.setState({ selectedTab: 'about' })}>
+        onPress={() => {
+          track('Tab Selected', {Tab: 'About'});
+          this.setState({ selectedTab: 'about' });
+        }}>
         <AboutApp />
       </TabNavigator.Item>
     </TabNavigator>;

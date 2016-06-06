@@ -48,7 +48,7 @@ class OnboardingFlow extends React.Component {
     if (this.state.screen === 'CAROUSEL') {
       return <TutorialScreen
         onLogin={() => {
-          track('Login - FB Login Button Pressed - First Prompt');
+          track('Login - FBLogin Button Pressed', {'Button': 'First Screen'});
           this.props.onLogin();
         }}
         onNoLogin={this.onDontWantLoginPressed}
@@ -56,7 +56,7 @@ class OnboardingFlow extends React.Component {
     } else if (this.state.screen === 'NO_LOGIN') {
       return <NoLoginScreen
         onLogin={() => {
-          track('Login - FB Login Button Pressed - Second Prompt');
+          track('Login - FBLogin Button Pressed', {'Button': 'Second Screen'});
           this.props.onLogin();
         }}
         onNoLogin={this.onOpenWebsite}
