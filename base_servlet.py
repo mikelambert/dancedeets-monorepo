@@ -227,7 +227,6 @@ class BaseRequestHandler(BareBaseRequestHandler):
             user_login_cookie['access_token_md5'] = access_token_md5
         user_login_cookie['hash'] = generate_userlogin_hash(user_login_cookie)
         user_login_string = urllib.quote(json.dumps(user_login_cookie))
-        logging.info("setting cookie response... to %s", user_login_string)
         self.response.set_cookie(self._get_login_cookie_name(), user_login_string, max_age=30*24*60*60, path='/', domain=self._get_login_cookie_domain())
 
     def _get_login_cookie_domain(self):
@@ -426,7 +425,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                     continue
                 current_url_args[arg] = self.request.GET.getall(arg)
             final_url = self.request.path + '?' + urls.urlencode(current_url_args, doseq=True)
-            # Make sure we abort=True, since otherwise the caller will keep on running the initialize() code.
+            # Make sure we immediately stop running the initialize() code if we return a URL here
             return final_url
         else:
             return False
@@ -468,7 +467,9 @@ class BaseRequestHandler(BareBaseRequestHandler):
         redirect_url = self.handle_alternate_login(request)
         if redirect_url:
             self.run_handler = False
-            self.redirect(redirect_url, abort=True)
+            # We need to run with abort=False here, or otherwise our set_cookie calls don't work. :(
+            # Reported in https://github.com/GoogleCloudPlatform/webapp2/issues/111
+            self.redirect(redirect_url, abort=False)
             return
 
         self.setup_login_state(request)
