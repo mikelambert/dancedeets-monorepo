@@ -65,6 +65,7 @@ else:
     filename = 'facebook-test.yaml'
 
 FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
+_PROD_FACEBOOK_CONFIG = yaml.load(file('facebook-prod.yaml', 'r'))
 
 # This new code pulled from: https://gist.github.com/1190267
 # aka: Hacked version of "official" (but now unsupported) Facebook Python SDK to support OAuth 2.0

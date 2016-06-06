@@ -705,3 +705,23 @@ class FBLookup(object):
             object_map[k] = cls.cleanup_data(v)
         return object_map
 
+
+class _LookupDebugToken(LookupType):
+    @classmethod
+    def get_lookups(cls, object_id):
+        return [
+            ('token', cls.url('debug_token?input_token=%s' % object_id)),
+        ]
+
+    @classmethod
+    def cache_key(cls, object_id, fetching_uid):
+        return (USERLESS_UID, object_id, 'OBJ_DEBUG_TOKEN')
+
+
+def lookup_debug_token(access_token):
+    # We use a prod config here, so we can lookup access tokens from prod apps
+    app_fbl = FBLookup(None, facebook._PROD_FACEBOOK_CONFIG['app_access_token'])
+    app_fbl.allow_cache = False
+    return app_fbl.get(_LookupDebugToken, access_token)
+
+

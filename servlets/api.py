@@ -66,10 +66,13 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
 
         if self.requires_auth or self.supports_auth:
             if self.json_body.get('access_token'):
-                self.fbl = fb_api.FBLookup(None, self.json_body.get('access_token'))
+                access_token = self.json_body.get('access_token')
+                self.fbl = fb_api.FBLookup(None, access_token)
                 self.fbl.make_passthrough()
-                self.fb_user = self.fbl.get(fb_api.LookupUser, 'me')
-                self.fb_uid = self.fb_user['profile']['id']
+
+                debug_info = fb_api.lookup_debug_token(access_token)
+                print debug_info
+                self.fb_uid = debug_info['token']['data']['user_id']
                 self.fbl.fb_uid = self.fb_uid
                 logging.info("Access token for user ID %s", self.fb_uid)
             elif self.requires_auth:
@@ -226,17 +229,6 @@ class SearchHandler(ApiHandler):
         self.write_json_success(json_response)
     post=get
 
-class LookupDebugToken(fb_api.LookupType):
-    @classmethod
-    def get_lookups(cls, object_id):
-        return [
-            ('token', cls.url('debug_token?input_token=%s' % object_id)),
-        ]
-
-    @classmethod
-    def cache_key(cls, object_id, fetching_uid):
-        return (fb_api.USERLESS_UID, object_id, 'OBJ_DEBUG_TOKEN')
-
 
 def update_user(servlet, user, json_body):
     location = json_body.get('location')
@@ -277,9 +269,7 @@ class AuthHandler(ApiHandler):
         self.errors_are_fatal() # Assert that our access_token is set
 
         # Fetch the access_token_expires value from Facebook, instead of demanding it via the API
-        app_fbl = fb_api.FBLookup(None, fb_api.facebook.FACEBOOK_CONFIG['app_access_token'])
-        app_fbl.allow_cache = False
-        debug_info = app_fbl.get(LookupDebugToken, access_token)
+        debug_info = fb_api.lookup_debug_token(access_token)
         if debug_info['empty']:
             logging.error('Error: %s', debug_info['empty'])
             raise Exception(debug_info['empty'])
@@ -317,7 +307,8 @@ class AuthHandler(ApiHandler):
         else:
             client = self.json_body.get('client')
             location = self.json_body.get('location')
-            user_creation.create_user_with_fbuser(self.fb_uid, self.fb_user, access_token, access_token_expires, location, client=client)
+            fb_user = self.fbl.get(fb_api.LookupUser, 'me')
+            user_creation.create_user_with_fbuser(self.fb_uid, fb_user, access_token, access_token_expires, location, client=client)
         self.write_json_success()
 
 
