@@ -95,7 +95,7 @@ class AppContainer extends React.Component {
 		if (props.scene.navigationState.event) {
 			return (
 				<TouchableOpacity onPress={() => {
-					trackWithEvent('Add to Calendar', props.scene.navigationState.event);
+					trackWithEvent('Share Event', props.scene.navigationState.event);
 					shareEvent(props.scene.navigationState.event);
 				}} style={styles.centeredContainer}>
 					{shareIcon}
