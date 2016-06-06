@@ -26,6 +26,9 @@ import {
 } from '../ui';
 import { track } from '../store/track';
 import type { Dispatch } from '../actions/types';
+import { ShareDialog, MessageDialog } from 'react-native-fbsdk';
+import Share from 'react-native-share';
+
 const Mailer = require('NativeModules').RNMail;
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
@@ -58,6 +61,47 @@ class Credits extends React.Component {
     const creditHeader = <Text style={{fontWeight: 'bold', fontSize: 20}}>Dancedeets Credits</Text>;
     const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
     return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
+  }
+}
+
+const shareLinkContent = {
+  contentType: 'link',
+  contentUrl: 'http://www.dancedeets.com',
+  contentDescription: 'Street Dance Events, Worldwide!',
+};
+
+class ShareButtons extends React.Component {
+  render() {
+    return (
+      <View>
+        <Text>Share DanceDeets:</Text>
+
+        <Button caption="Share on FB"
+          onPress={() => {
+            track('Share - Share FB Post');
+            ShareDialog.show(shareLinkContent);
+          }}
+        />
+        <Button caption="Send FB Message"
+          onPress={() => {
+            track('Share - Send FB Message');
+            MessageDialog.show(shareLinkContent);
+          }}
+        />
+        <Button caption="Send Message"
+          onPress={() => {
+            track('Share - Send Native');
+            Share.open({
+              share_text: shareLinkContent.contentDescription,
+              share_URL: shareLinkContent.contentUrl,
+              title: 'DanceDeets',
+            }, (e) => {
+              console.warn(e);
+            });
+          }}
+        />
+      </View>
+    );
   }
 }
 
@@ -125,8 +169,9 @@ class _ProfileComponent extends React.Component {
         </View>
       </HorizontalView>
 
+      <ShareButtons />
+
       <HorizontalView style={{marginTop: 10}}>
-      <Button style={{marginRight: 10}} size="small" caption="Invite more friends"/>
       <Button size="small" caption="Notification Settings"/>
       </HorizontalView>
 
