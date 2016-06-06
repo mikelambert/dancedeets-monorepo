@@ -27,7 +27,6 @@ import {
   setSortOrder,
 } from '../actions';
 import {
-  purpleColors,
   yellowColors,
   gradientTop,
 } from '../Colors';

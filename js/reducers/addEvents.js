@@ -86,7 +86,6 @@ export function addEvents(state: State = initialState, action: Action): State {
             pending: false,
           };
         } else if (constAction.status === 'CLICKED') {
-          console.log('hey, clicked', x);
           return {
             ...x,
             loaded: false,
