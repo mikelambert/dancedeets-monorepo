@@ -3,6 +3,7 @@ import json
 import logging
 import urllib
 
+from google.appengine.api import memcache
 from google.appengine.api import taskqueue
 
 import app
@@ -23,6 +24,17 @@ from users import users
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"
+
+
+def get_user_id_for_token(access_token):
+    key = 'AccessTokenToID: %s' % access_token
+    user_id = memcache.get(key)
+    if not user_id:
+        result = fb_api.FBAPI(access_token).get('me', {'fields': 'id'})
+        user_id = result['id']
+        memcache.set(key, user_id)
+    return user_id
+
 
 class ApiHandler(base_servlet.BareBaseRequestHandler):
     requires_auth = False
@@ -67,13 +79,8 @@ class ApiHandler(base_servlet.BareBaseRequestHandler):
         if self.requires_auth or self.supports_auth:
             if self.json_body.get('access_token'):
                 access_token = self.json_body.get('access_token')
-                self.fbl = fb_api.FBLookup(None, access_token)
-                self.fbl.make_passthrough()
-
-                debug_info = fb_api.lookup_debug_token(access_token)
-                print debug_info
-                self.fb_uid = debug_info['token']['data']['user_id']
-                self.fbl.fb_uid = self.fb_uid
+                self.fb_uid = get_user_id_for_token(access_token)
+                self.fbl = fb_api.FBLookup(self.fb_uid, access_token)
                 logging.info("Access token for user ID %s", self.fb_uid)
             elif self.requires_auth:
                 self.add_error("Needs access_token parameter")
