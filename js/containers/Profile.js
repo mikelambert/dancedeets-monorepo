@@ -78,19 +78,19 @@ class ShareButtons extends React.Component {
 
         <Button caption="Share on FB"
           onPress={() => {
-            track('Share - Share FB Post');
+            track('Share App', {Button: 'Share FB Post'});
             ShareDialog.show(shareLinkContent);
           }}
         />
         <Button caption="Send FB Message"
           onPress={() => {
-            track('Share - Send FB Message');
+            track('Share', {Button: 'Send FB Message'});
             MessageDialog.show(shareLinkContent);
           }}
         />
         <Button caption="Send Message"
           onPress={() => {
-            track('Share - Send Native');
+            track('Share', {Button: 'Send Native'});
             Share.open({
               share_text: shareLinkContent.contentDescription,
               share_URL: shareLinkContent.contentUrl,
