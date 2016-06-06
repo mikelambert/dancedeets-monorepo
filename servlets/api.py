@@ -281,8 +281,8 @@ class AuthHandler(ApiHandler):
         app_fbl.allow_cache = False
         debug_info = app_fbl.get(LookupDebugToken, access_token)
         if debug_info['empty']:
-            logging.error('Error: %s', debug_info['error'])
-            raise Exception(debug_info['error'])
+            logging.error('Error: %s', debug_info['empty'])
+            raise Exception(debug_info['empty'])
         access_token_expires_timestamp = debug_info['token']['data'].get('expires_at')
         if access_token_expires_timestamp:
             access_token_expires = datetime.datetime.fromtimestamp(access_token_expires_timestamp)
