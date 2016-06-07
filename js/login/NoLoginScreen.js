@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 import { Text } from '../ui';
+import { linkColor } from '../Colors';
 
 const NoLoginText =
 `Almost all our dance events are
@@ -23,16 +24,13 @@ can sort through everyone's events,
 and share them with dancers everywhere.
 
 But without any logged-in dancers,
-we’d have nothing to share,
-and promoting your events gets harder.
+we’d have nothing to share with you.
 
 So please consider logging in,
 to help us help your dance scene.
 
-But if not, you're always able to use
+Otherwise, you're always able to use
 our website without any login:
-
-http://www.dancedeets.com/
 `;
 
 export default class NoLoginScreen extends React.Component {
@@ -42,7 +40,12 @@ export default class NoLoginScreen extends React.Component {
         <Image
           style={[styles.container, styles.centerItems, styles.topAndBottom]}
           source={require('./images/Onboard4.jpg')}>
-          <Text style={styles.topText}>{NoLoginText}</Text>
+          <Text style={styles.topText}>{NoLoginText}
+            <Text
+              style={{color: linkColor}}
+              onPress={this.props.onNoLogin}
+              >http://www.dancedeets.com/</Text>
+          </Text>
           <View style={[styles.centerItems, styles.bottomBox]}>
             <LoginButtonWithAlternate
               onLogin={this.props.onLogin}
