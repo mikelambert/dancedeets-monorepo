@@ -94,17 +94,17 @@ async function setupPersonProperties() {
   Mixpanel.setOnce({'$created': now});
 }
 
-export function trackLogin() {
+export async function trackLogin() {
   // We must call identify *first*, before calling setDeviceToken() or login().
   // This ensures the latter functions operate against the correct user.
   // TODO: Retrieve push token
+  await setupPersonProperties();
   //Mixpanel.addPushDeviceToken(...);
-  setupPersonProperties();
 }
 
 export function trackLogout() {
   track('Logout');
-  Mixpanel.removePushToken();
+  //Mixpanel.removePushToken();
   Mixpanel.reset();
 }
 
