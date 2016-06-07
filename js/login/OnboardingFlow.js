@@ -39,8 +39,8 @@ class OnboardingFlow extends React.Component {
     this.setState({...this.state, screen: 'NO_LOGIN'});
   }
 
-  onOpenWebsite() {
-    track('Login - Use Website');
+  onOpenWebsite(button: string) {
+    track('Login - Use Website', {'Button': button});
     Linking.openURL('http://www.dancedeets.com/').catch(err => console.error('Error opening dancedeets.com:', err));
   }
 

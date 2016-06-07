@@ -43,13 +43,13 @@ export default class NoLoginScreen extends React.Component {
           <Text style={styles.topText}>{NoLoginText}
             <Text
               style={{color: linkColor}}
-              onPress={this.props.onNoLogin}
+              onPress={() => this.props.onNoLogin('Text Link')}
               >http://www.dancedeets.com/</Text>
           </Text>
           <View style={[styles.centerItems, styles.bottomBox]}>
             <LoginButtonWithAlternate
               onLogin={this.props.onLogin}
-              onNoLogin={this.props.onNoLogin}
+              onNoLogin={() => this.props.onNoLogin('Bottom Button')}
               noLoginText="USE WEBSITE WITHOUT LOGIN"
               />
           </View>
