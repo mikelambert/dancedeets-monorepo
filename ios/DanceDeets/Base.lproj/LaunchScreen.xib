@@ -11,7 +11,7 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="684"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_screen" translatesAutoresizingMaskIntoConstraints="NO" id="A3h-c5-1cv">
+                <imageView clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_screen.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="A3h-c5-1cv">
                     <rect key="frame" x="-144" y="0.0" width="768" height="684"/>
                 </imageView>
             </subviews>
@@ -23,10 +23,10 @@
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="548" y="524"/>
+            <point key="canvasLocation" x="414" y="540"/>
         </view>
     </objects>
     <resources>
-        <image name="launch_screen" width="768" height="1024"/>
+        <image name="launch_screen.jpg" width="768" height="1024"/>
     </resources>
 </document>

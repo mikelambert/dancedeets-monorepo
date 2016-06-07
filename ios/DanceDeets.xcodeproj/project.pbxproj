@@ -23,6 +23,7 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		16FE77C3722A4B5B8F2D6EAA /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3C70CA84024A018934C0C5 /* libAirMaps.a */; };
 		182FD04263C4415F8EF0327B /* libRNMail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD682DC01E1C4BD5A7ABA711 /* libRNMail.a */; };
+		1D2694F31D077C5F000E1BD3 /* launch_screen.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1D2694F21D077C5F000E1BD3 /* launch_screen.jpg */; };
 		1D449AAA1D04A69300195AF6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D449AA91D04A69300195AF6 /* libz.tbd */; };
 		1D449AD71D04C1AF00195AF6 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1D449B301D04D70500195AF6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D449B2F1D04D70400195AF6 /* Images.xcassets */; };
@@ -235,6 +236,7 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		179107B6F87A4081B9E9E42C /* RNMixpanel.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNMixpanel.xcodeproj; path = "../node_modules/react-native-mixpanel/RNMixpanel.xcodeproj"; sourceTree = "<group>"; };
 		1B8D0C43D6CF4EEC8A1DBFAC /* libCodePush.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libCodePush.a; sourceTree = "<group>"; };
+		1D2694F21D077C5F000E1BD3 /* launch_screen.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = launch_screen.jpg; sourceTree = "<group>"; };
 		1D449AA91D04A69300195AF6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		1D449B2F1D04D70400195AF6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = DanceDeets/Images.xcassets; sourceTree = "<group>"; };
 		1D89584B1CF9125D0029E37E /* Ubuntu 300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 300.ttf"; sourceTree = "<group>"; };
@@ -385,6 +387,7 @@
 		13B07FAE1A68108700A75B9A /* DanceDeets */ = {
 			isa = PBXGroup;
 			children = (
+				1D2694F21D077C5F000E1BD3 /* launch_screen.jpg */,
 				1D8958471CF912260029E37E /* Fonts */,
 				1D449B2F1D04D70400195AF6 /* Images.xcassets */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -928,6 +931,7 @@
 			files = (
 				1D89584E1CF913100029E37E /* Ubuntu 300.ttf in Resources */,
 				1D8958501CF913150029E37E /* Ubuntu regular.ttf in Resources */,
+				1D2694F31D077C5F000E1BD3 /* launch_screen.jpg in Resources */,
 				1D449B301D04D70500195AF6 /* Images.xcassets in Resources */,
 				1D89584F1CF913130029E37E /* Ubuntu 500.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
