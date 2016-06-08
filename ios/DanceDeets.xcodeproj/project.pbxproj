@@ -1069,7 +1069,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets.app/DanceDeets";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets Debug.app/DanceDeets Debug";
 			};
 			name = Debug;
 		};
