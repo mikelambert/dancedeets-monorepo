@@ -74,7 +74,13 @@ export class Event extends JsonDerivedObject {
     images: Array<Cover>,
   };
   venue: Venue;
-
+  annotations: {
+    creation: {
+      creator: ?string,
+      method: string,
+      time: string,
+    },
+  };
   constructor(eventData: JSONObject) {
     super(eventData);
     this.venue = new Venue(eventData['venue']);
