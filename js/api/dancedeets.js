@@ -77,6 +77,10 @@ export async function search(location: string, keywords: string, time_period: Ti
   });
 }
 
+export async function event(id: string) {
+  return performRequest('events/' + id, {});
+}
+
 export async function getAddEvents() {
   await verifyAuthenticated();
   return performRequest('events_list_to_add', {});
