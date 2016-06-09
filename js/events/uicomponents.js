@@ -35,6 +35,8 @@ import MapView from 'react-native-maps';
 import moment from 'moment';
 import { linkColor, purpleColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
+import { event as getEvent } from '../api/dancedeets';
+import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
 
@@ -168,6 +170,59 @@ class EventSource extends SubEventLine {
   }
 }
 
+class EventAddedBy extends SubEventLine {
+  state: {
+    addedBy: ?string,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      addedBy: null,
+    };
+  }
+
+  icon() {
+    //TODO: Fix image
+    return require('./images/website.png');
+  }
+
+  async loadProfileName() {
+    const creation = this.props.event.annotations.creation;
+    if (creation && creation.creator && creation.creator.toString() != '701004') {
+      console.log('looking up ', creation.creator);
+      const result = await performRequest('GET', creation.creator.toString(), {fields: 'name'});
+      this.setState({...this.state, addedBy: result.name});
+    }
+  }
+
+  componentDidMount() {
+    this.loadProfileName();
+  }
+
+  render() {
+    if (this.state.addedBy) {
+      return super.render();
+    } else {
+      return null;
+    }
+  }
+
+  textRender() {
+    if (this.state.addedBy) {
+      //TODO: When we add Profiles, let's link to the Profile view itself: eventStyles.rowLink
+      return (
+        <HorizontalView>
+          <Text style={eventStyles.detailText}>Added By: </Text>
+          <Text style={[eventStyles.detailText]}>{this.state.addedBy}</Text>
+        </HorizontalView>
+      );
+    } else {
+      return null;
+    }
+  }
+}
+
 class EventRsvpControl extends React.Component {
   state: {
     loading: boolean,
@@ -244,6 +299,7 @@ class EventRsvp extends SubEventLine {
       if (this.props.event.rsvp.maybe_count) {
         components.push(this.props.event.rsvp.maybe_count + ' maybe');
       }
+      //TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
       const counts = components.join(', ');
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
       return <View style={{width: 300}}>
@@ -486,6 +542,7 @@ export class FullEventView extends React.Component {
               <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
             </TouchableOpacity>
             <EventSource event={this.props.event} />
+            <EventAddedBy event={this.props.event} />
             <HorizontalView style={{justifyContent: 'space-between'}}>
               <AddToCalendarButton event={this.props.event} />
               <EventShare event={this.props.event} />
