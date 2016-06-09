@@ -189,8 +189,8 @@ class EventAddedBy extends SubEventLine {
 
   async loadProfileName() {
     const creation = this.props.event.annotations.creation;
+    //TODO: remove toString() when we're able to push the server
     if (creation && creation.creator && creation.creator.toString() != '701004') {
-      console.log('looking up ', creation.creator);
       const result = await performRequest('GET', creation.creator.toString(), {fields: 'name'});
       this.setState({...this.state, addedBy: result.name});
     }
