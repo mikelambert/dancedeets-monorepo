@@ -14,6 +14,7 @@ export const NAV_POP = 'NAV_POP';
 export const NAV_JUMP_TO_KEY = 'NAV_JUMP_TO_KEY';
 export const NAV_JUMP_TO_INDEX = 'NAV_JUMP_TO_INDEX';
 export const NAV_RESET = 'NAV_RESET';
+export const NAV_SWAP = 'NAV_SWAP';
 
 // *** Action Creators ***
 // The following action creators were derived from NavigationStackReducer
@@ -42,6 +43,14 @@ export function navigateJumpToIndex(index: number): Action {
 	return {
 		type: NAV_JUMP_TO_INDEX,
 		index
+	};
+}
+
+export function navigateSwap(key: string, newState: NavigationState): Action {
+	return {
+		type: NAV_SWAP,
+		key,
+		newState,
 	};
 }
 

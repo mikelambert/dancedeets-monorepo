@@ -21,6 +21,7 @@ class EventPager extends React.Component {
   };
   props: {
     onFlyerSelected: (x: Event) => ThunkAction,
+    onEventNavigated: (x: Event) => void,
     search: State,
     selectedEvent: Event,
   };
@@ -75,6 +76,7 @@ class EventPager extends React.Component {
       dataSource={this.state.dataSource}
       renderPage={this.renderEvent}
       renderPageIndicator={false}
+      onChangePage={ (i) => this.props.onEventNavigated(this.state.dataSource.getPageData(i)) }
     />;
   }
 }

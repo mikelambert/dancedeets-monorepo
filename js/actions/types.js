@@ -36,6 +36,7 @@ export type Action =
   | { type: 'NAV_JUMP_TO_KEY', key: string }
   | { type: 'NAV_JUMP_TO_INDEX', index: number }
   | { type: 'NAV_RESET', index: number, children: Array<NavigationState> }
+  | { type: 'NAV_SWAP', key: string, newState: NavigationState }
   | { type: 'LOGIN_START_ONBOARD' }
   | { type: 'LOGIN_LOGGED_IN', token: AccessToken }
   | { type: 'LOGIN_LOGGED_OUT' }

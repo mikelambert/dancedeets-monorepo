@@ -6,7 +6,7 @@
 
 import * as NavigationStateUtils from 'NavigationStateUtils';
 
-import { NAV_PUSH, NAV_POP, NAV_JUMP_TO_KEY, NAV_JUMP_TO_INDEX, NAV_RESET } from '../actions';
+import { NAV_PUSH, NAV_POP, NAV_JUMP_TO_KEY, NAV_JUMP_TO_INDEX, NAV_RESET, NAV_SWAP } from '../actions';
 
 import type { Action } from '../actions/types';
 import type { NavigationParentState } from 'NavigationTypeDefinition';
@@ -41,6 +41,9 @@ export function navigationState(state: NavigationParentState = initialNavState, 
 
 	case NAV_JUMP_TO_INDEX:
 		return NavigationStateUtils.jumpToIndex(state, action.index);
+
+	case NAV_SWAP:
+		return NavigationStateUtils.replaceAt(state, action.key, action.newState);
 
 	case NAV_RESET:
 		return {

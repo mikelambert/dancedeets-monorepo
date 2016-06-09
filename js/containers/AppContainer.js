@@ -24,7 +24,7 @@ import { NavigationHeaderTitle } from '../react-navigation';
 import { gradientBottom, gradientTop } from '../Colors';
 import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
-import { navigatePush, navigatePop } from '../actions';
+import { navigatePush, navigatePop, navigateSwap } from '../actions';
 import {
 	ZoomableImage,
 } from '../ui';
@@ -62,6 +62,7 @@ class AppContainer extends React.Component {
 		navigationState: NavigationParentState,
 		onNavigate: (x: NavigationState) => ThunkAction,
 		onBack: () => ThunkAction,
+		onSwap: (key: string, newState: NavigationState) => ThunkAction,
 	};
 
 	constructor(props) {
@@ -154,6 +155,10 @@ class AppContainer extends React.Component {
 			/>;
 		case 'EventView':
 			return <EventPager
+				onEventNavigated={(event)=> {
+					console.log('ep', event);
+					this.props.onSwap('EventView', {key: 'EventView', title: event.name, event: event});
+				}}
 				onFlyerSelected={(event)=> {
 					trackWithEvent('View Flyer', event);
 					this.props.onNavigate({
@@ -181,7 +186,8 @@ class AppContainer extends React.Component {
 AppContainer.propTypes = {
 	navigationState: PropTypes.object,
 	onNavigate: PropTypes.func.isRequired,
-	onBack: PropTypes.func.isRequired
+	onBack: PropTypes.func.isRequired,
+	onSwap: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -190,7 +196,8 @@ export default connect(
 	}),
 	(dispatch: Dispatch) => ({
 		onNavigate: (destState) => dispatch(navigatePush(destState)),
-		onBack: () => dispatch(navigatePop())
+		onBack: () => dispatch(navigatePop()),
+		onSwap: (key, newState) => dispatch(navigateSwap(key, newState)),
 	}),
 )(AppContainer);
 
