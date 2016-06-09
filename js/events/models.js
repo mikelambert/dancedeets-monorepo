@@ -50,6 +50,11 @@ export class Venue extends JsonDerivedObject {
   }
 }
 
+export type Admin = {
+  id: string;
+  name: string;
+};
+
 export class Event extends JsonDerivedObject {
   id: string;
   venue: string;
@@ -81,6 +86,8 @@ export class Event extends JsonDerivedObject {
       time: string,
     },
   };
+  admins: Array<Admin>;
+
   constructor(eventData: JSONObject) {
     super(eventData);
     this.venue = new Venue(eventData['venue']);
