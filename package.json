@@ -11,7 +11,7 @@
     "moment": "^2.13.0",
     "querystring": "^0.2.0",
     "react": "15.1.0",
-    "react-native": "^0.27.1",
+    "react-native": "mikelambert/react-native",
     "react-native-admob": "^1.0.0",
     "react-native-autolink": "mikelambert/react-native-autolink",
     "react-native-calendar-events": "^0.1.4",
