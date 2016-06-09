@@ -139,24 +139,48 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-code-push')
-    compile project(':react-native-share')
-    compile project(':react-native-mail')
-    compile project(':react-native-admob')
-    compile project(':react-native-mixpanel')
-    compile project(':react-native-fabric')
-    compile project(':react-native-fbsdk')
-    compile project(':react-native-geocoder')
-    compile project(':react-native-linear-gradient')
-    compile project(':react-native-maps')
-    compile project(':react-native-segmented-android')
-    compile project(':RNSendIntentModule')
+    compile project(':ReactAndroid')
+    compile (project(':react-native-code-push')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-share')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-mail')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-admob')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-mixpanel')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-fabric')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-fbsdk')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-geocoder')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-linear-gradient')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-maps')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-segmented-android')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':RNSendIntentModule')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
     //compile "com.mixpanel.android:mixpanel-android:4.+"
     //compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
-    compile 'com.facebook.react:react-native:+'
     // From node_modules
     compile 'com.google.firebase:firebase-ads:9.0.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
