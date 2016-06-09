@@ -444,7 +444,7 @@ def canonicalize_event_data(db_event, event_keywords):
         annotations['creation'] = {
             'time': db_event.creation_time.strftime(DATETIME_FORMAT),
             'method': db_event.creating_method,
-            'creator': db_event.creating_fb_uid,
+            'creator': str(db_event.creating_fb_uid), #STR_ID_MIGRATE
         }
     # We may have keywords from the search result that called us
     if event_keywords:
