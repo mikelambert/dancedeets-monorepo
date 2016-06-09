@@ -189,9 +189,8 @@ class EventAddedBy extends SubEventLine {
 
   async loadProfileName() {
     const creation = this.props.event.annotations.creation;
-    //TODO: remove toString() when we're able to push the server
-    if (creation && creation.creator && creation.creator.toString() != '701004') {
-      const result = await performRequest('GET', creation.creator.toString(), {fields: 'name'});
+    if (creation && creation.creator && creation.creator != '701004') {
+      const result = await performRequest('GET', creation.creator, {fields: 'name'});
       this.setState({...this.state, addedBy: result.name});
     }
   }
@@ -220,6 +219,27 @@ class EventAddedBy extends SubEventLine {
     } else {
       return null;
     }
+  }
+}
+
+
+class EventOrganizers extends SubEventLine {
+  icon() {
+    //TODO: Fix image
+    return require('./images/website.png');
+  }
+
+  textRender() {
+    //TODO: Link these to FB for now?
+    let organizers = this.props.event.admins.map((admin) => {
+      return <Text style={[eventStyles.detailText]}>{admin.name}</Text>;
+    });
+    return (
+      <HorizontalView>
+        <Text style={eventStyles.detailText}>Organizers: </Text>
+        {organizers}
+      </HorizontalView>
+    );
   }
 }
 
@@ -543,6 +563,7 @@ export class FullEventView extends React.Component {
             </TouchableOpacity>
             <EventSource event={this.props.event} />
             <EventAddedBy event={this.props.event} />
+            <EventOrganizers event={this.props.event} />
             <HorizontalView style={{justifyContent: 'space-between'}}>
               <AddToCalendarButton event={this.props.event} />
               <EventShare event={this.props.event} />
