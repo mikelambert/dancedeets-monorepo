@@ -142,7 +142,7 @@ export default class AutocompleteList extends React.Component {
         this._disableRowLoaders();
         console.warn(error.message);
       },
-      {enableHighAccuracy: highAccuracy, timeout: 5 * 1000, maximumAge: 10 * 60 * 1000}
+      {enableHighAccuracy: highAccuracy, timeout: 10 * 1000, maximumAge: 10 * 60 * 1000}
     );
   }
 
