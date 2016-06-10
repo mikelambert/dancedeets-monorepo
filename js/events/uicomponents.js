@@ -262,18 +262,22 @@ class EventOrganizers extends SubEventLine {
 
   textRender() {
     let organizers = this.props.event.admins.map((admin) => {
-      return <TouchableOpacity
-        key={admin.id}
-        onPress={() => {
-          this._openAdmin(admin.id);
-        }}
-      ><Text style={[eventStyles.detailText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>;
+      return <HorizontalView>
+        <Text style={eventStyles.detailListText}> – </Text>
+        <TouchableOpacity
+          key={admin.id}
+          onPress={() => {
+            this._openAdmin(admin.id);
+          }}
+        ><Text style={[eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>
+      </HorizontalView>
+      ;
     });
     return (
-      <HorizontalView>
+      <View>
         <Text style={eventStyles.detailText}>Organizers: </Text>
-        <View>{organizers}</View>
-      </HorizontalView>
+        {organizers}
+      </View>
     );
   }
 }
@@ -649,6 +653,10 @@ const eventStyles = StyleSheet.create({
   },
   detailTextContainer: {
     flex: 1,
+  },
+  detailListText: {
+    fontSize: detailHeight,
+    marginTop: 5,
   },
   detailText: {
     fontSize: detailHeight,
