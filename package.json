@@ -34,7 +34,7 @@
     "run-sequence": "^1.1.5",
     "sass-loader": "^3.1.2",
     "style-loader": "^0.13.0",
-    "uncss": "^0.13.0",
+    "uncss": "giakki/uncss",
     "url-loader": "^0.5.7",
     "username": "^2.1.0",
     "webpack": "^1.12.13"
@@ -42,7 +42,7 @@
   "dependencies": {
     "animate.css": "^3.5.1",
     "bootstrap-sass": "^3.3.6",
-    "date-fns": "^1.0.0-rc19",
+    "date-fns": "^1.3.0",
     "font-awesome": "^4.5.0",
     "fullcalendar": "^2.6.0",
     "html5shiv": "^3.7.3",
