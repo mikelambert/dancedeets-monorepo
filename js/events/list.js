@@ -213,7 +213,7 @@ class EventListContainer extends React.Component {
   _renderRow(row) {
     if ('id' in row) {
       return <EventRow
-        event={new Event(row)}
+        event={row}
         onEventSelected={this.props.onEventSelected}
       />;
     } else {

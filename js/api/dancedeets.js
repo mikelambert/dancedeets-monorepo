@@ -10,6 +10,7 @@ import querystring from 'querystring';
 import { Platform } from 'react-native';
 import { AccessToken } from 'react-native-fbsdk';
 import type { TimePeriod } from '../events/search';
+import { Event } from '../events/models';
 
 const DEV_SERVER = false;
 
@@ -70,15 +71,18 @@ export async function auth(data: ?Object) {
 }
 
 export async function search(location: string, keywords: string, time_period: TimePeriod) {
-  return performRequest('search', {
+  let results = await performRequest('search', {
     location,
     keywords,
     time_period,
   });
+  results.results = results.results.map((x) => new Event(x));
+  return results;
 }
 
 export async function event(id: string) {
-  return performRequest('events/' + id, {});
+  const eventData = await performRequest('events/' + id, {});
+  return new Event(eventData);
 }
 
 export async function getAddEvents() {

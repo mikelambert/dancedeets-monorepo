@@ -63,9 +63,6 @@ export class Event extends JsonDerivedObject {
   description: string;
   start_time: string;
   end_time: string;
-  annotations: {
-    categories: Array<string>,
-  };
   source: {
     url: string,
     name: string,
@@ -80,6 +77,7 @@ export class Event extends JsonDerivedObject {
   };
   venue: Venue;
   annotations: {
+    categories: Array<string>,
     creation: {
       creator: ?string,
       method: string,

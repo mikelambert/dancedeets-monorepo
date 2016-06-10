@@ -43,7 +43,7 @@ class EventPager extends React.Component {
   renderEvent(eventData: Object, pageID: number | string) {
     return <FullEventView
       onFlyerSelected={this.props.onFlyerSelected}
-      event={new Event(eventData)}
+      event={eventData}
     />;
   }
 
