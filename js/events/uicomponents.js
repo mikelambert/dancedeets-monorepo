@@ -35,7 +35,6 @@ import MapView from 'react-native-maps';
 import moment from 'moment';
 import { linkColor, purpleColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
-import { event as getEvent } from '../api/dancedeets';
 import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
@@ -232,12 +231,12 @@ class EventOrganizers extends SubEventLine {
   textRender() {
     //TODO: Link these to FB for now?
     let organizers = this.props.event.admins.map((admin) => {
-      return <Text style={[eventStyles.detailText]}>{admin.name}</Text>;
+      return <Text key={admin.id} style={[eventStyles.detailText]}>{admin.name}</Text>;
     });
     return (
       <HorizontalView>
         <Text style={eventStyles.detailText}>Organizers: </Text>
-        {organizers}
+        <View>{organizers}</View>
       </HorizontalView>
     );
   }
