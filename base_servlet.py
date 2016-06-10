@@ -85,7 +85,9 @@ class BareBaseRequestHandler(webapp2.RequestHandler):
     def initialize(self, request, response):
         super(BareBaseRequestHandler, self).initialize(request, response)
         for arg in sorted(self.request.GET):
-            logging.info("query %r = %r", arg, self.request.GET.getall(arg))
+            logging.info("GET %r = %r", arg, self.request.GET.getall(arg))
+        for arg in sorted(self.request.POST):
+            logging.info("POST %r = %r", arg, self.request.POST.getall(arg))
 
         self.display['indexing_bot'] = 'googlebot' in (self.request.user_agent or '').lower()
         self.display['mixpanel_api_key'] = 'f5d9d18ed1bbe3b190f9c7c7388df243' if self.request.app.prod_mode else '668941ad91e251d2ae9408b1ea80f67b'
@@ -268,19 +270,25 @@ class BaseRequestHandler(BareBaseRequestHandler):
         # though we may override it below in the case of access_token_md5
         trusted_cookie_uid = fb_cookie_uid
 
+        # for k, v in self.request.cookies.iteritems():
+        #     logging.info('cookie %s = %s', k, v)
+
         # Load our dancedeets logged-in user/state
         our_cookie_uid = None
         user_login_string = self.get_login_cookie()
         if user_login_string:
             user_login_cookie = json.loads(urllib.unquote(user_login_string))
+            logging.info("Got login cookie: %s", user_login_cookie)
             if validate_hashed_userlogin(user_login_cookie):
                 our_cookie_uid = user_login_cookie['uid']
                 # If we have a browser cookie that's verified via access_token_md5,
                 # so let's trust it as authoritative here and ignore the fb cookie
                 if not trusted_cookie_uid and user_login_cookie.get('access_token_md5'):
                     trusted_cookie_uid = our_cookie_uid
+                    logging.info("Validated cookie, logging in as %s", our_cookie_uid)
 
         if self.request.cookies.get('user_login', ''):
+            logging.info("Deleting old-style user_login cookie")
             self.response.set_cookie('user_login', '', max_age=0, path='/', domain=self._get_login_cookie_domain())
 
         # If the user has changed facebook users, let's automatically re-login at dancedeets
