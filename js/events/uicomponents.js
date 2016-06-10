@@ -151,7 +151,12 @@ class EventSource extends SubEventLine {
   }
   onPress() {
     trackWithEvent('Open Source', this.props.event);
-    Linking.openURL(this.props.event.source.url).catch(err => console.error('Error opening event source:', err));
+    const url = this.props.event.source.url;
+    try {
+      Linking.openURL(url);
+    } catch (err) {
+      console.error('Error opening:', url, ', with Error:', err);
+    }
   }
   textRender() {
     if (this.props.event.source) {
@@ -228,10 +233,28 @@ class EventOrganizers extends SubEventLine {
     return require('./images/website.png');
   }
 
+  async _openAdmin(adminId) {
+    let url = null;
+    if (await Linking.canOpenURL('fb://')) {
+      url = 'fb://page/' + adminId;
+    } else {
+      url = 'https://www.facebook.com/' + adminId;
+    }
+    try {
+      Linking.openURL(url);
+    } catch (err) {
+      console.error('Error opening FB admin page:', url, ', with Error:', err);
+    }
+  }
+
   textRender() {
-    //TODO: Link these to FB for now?
     let organizers = this.props.event.admins.map((admin) => {
-      return <Text key={admin.id} style={[eventStyles.detailText]}>{admin.name}</Text>;
+      return <TouchableOpacity
+        key={admin.id}
+        onPress={() => {
+          this._openAdmin(admin.id);
+        }}
+      ><Text style={[eventStyles.detailText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>;
     });
     return (
       <HorizontalView>
@@ -425,7 +448,11 @@ async function openVenueWithApp(venue: Venue) {
     console.error('Unknown platform: ', Platform.OS);
   }
 
-  Linking.openURL(url).catch(err => console.error('Error opening map URL:', url, ', with Error:', err));
+  try {
+    Linking.openURL(url);
+  } catch (err) {
+    console.error('Error opening map URL:', url, ', with Error:', err);
+  }
 }
 
 
