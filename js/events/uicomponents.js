@@ -235,8 +235,21 @@ class EventOrganizers extends SubEventLine {
 
   async _openAdmin(adminId) {
     let url = null;
-    if (await Linking.canOpenURL('fb://')) {
-      url = 'fb://page/' + adminId;
+    // On Android, just send them to the URL and let the native URL intecerpetor send it to FB.
+    if (Platform.OS === 'ios' && await Linking.canOpenURL('fb://')) {
+      const metadata = await performRequest('GET', adminId, {metadata: '1'});
+      const idType = metadata.metadata.type;
+      if (idType === 'user') {
+        // This should work, but doesn't...
+        // url = 'fb://profile/' + adminId;
+        // So let's send them to the URL directly:
+        url = 'https://www.facebook.com/' + adminId;
+      } else if (idType === 'page') {
+        url = 'fb://page/?id=' + adminId;
+      }
+      // Every event lists all members of the event who created it
+      // Group events only list members (not the group, which is in a different field)
+      // Page events list the members and the page id, too
     } else {
       url = 'https://www.facebook.com/' + adminId;
     }
