@@ -279,12 +279,13 @@ window._trackJs = {
         reloadWithNewToken();
       }
     } else if (response.status === 'not_authorized') {
-      if (currentUser()) {
-        // the user is logged in to Facebook, but not connected to the app
-        deleteLoginCookies();
-        // TODO(lambert): Add a full-screen overlay explaining what we are doing...
-        reloadWithNewToken('not_authorized');
-      }
+      // Disabled as long as we have the App Tokens creating logged-in users without a proper FB token
+      // if (currentUser()) {
+      //   // the user is logged in to Facebook, but not connected to the app
+      //   deleteLoginCookies();
+      //   // TODO(lambert): Add a full-screen overlay explaining what we are doing...
+      //   reloadWithNewToken('not_authorized');
+      // }
     } else {
       // the user isn't even logged in to Facebook.
     }
