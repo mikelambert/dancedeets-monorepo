@@ -2,7 +2,7 @@ vm: true
 runtime: python27
 threadsafe: true
 api_version: 1
-module: default
+service: default
 
 manual_scaling:
   instances: 1
