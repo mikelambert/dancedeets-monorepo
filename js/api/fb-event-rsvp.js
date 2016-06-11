@@ -14,9 +14,9 @@ import { performRequest } from './fb';
 
 export default class RsvpOnFB {
   static RSVPs = [
-    { text: 'Going', apiValue: 'attending' },
-    { text: 'Interested', apiValue: 'maybe' },
-    { text: 'Not Interested', apiValue: 'declined' },
+    { text: "I'll be there!", apiValue: 'attending' },
+    { text: "I might flake…", apiValue: 'maybe' },
+    { text: 'No thanks.', apiValue: 'declined' },
   ];
 
   async send(eventId: string, rsvpApiValue: string) {
