@@ -38,6 +38,7 @@ import { add as CalendarAdd } from '../api/calendar';
 import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
+import LinearGradient from 'react-native-linear-gradient';
 
 const {
   Globalize,
@@ -595,16 +596,20 @@ export class FullEventView extends React.Component {
       <ScrollView style={eventStyles.container}>
         <View style={eventStyles.row}>
           {this.props.event.cover ? clickableFlyer : flyerImage}
-          <Text
-            numberOfLines={2}
-            style={eventStyles.rowTitle}>{this.props.event.name}</Text>
-          <View style={eventStyles.eventIndent}>
+          <LinearGradient
+            start={[0.0, 0.0]} end={[0.4, 1]}
+            colors={['#223', '#223', 'black']}
+            locations={[0.0, 0.3, 1.0]}
+            style={eventStyles.eventIndent}>
+            <Text
+              numberOfLines={2}
+              style={eventStyles.rowTitle}>{this.props.event.name}</Text>
             <EventCategories categories={this.props.event.annotations.categories} />
             <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-            <EventRsvp event={this.props.event} />
             <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
               <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
             </TouchableOpacity>
+            <EventRsvp event={this.props.event} />
             <EventSource event={this.props.event} />
             <EventAddedBy event={this.props.event} />
             <EventOrganizers event={this.props.event} />
@@ -612,7 +617,7 @@ export class FullEventView extends React.Component {
               <AddToCalendarButton event={this.props.event} />
               <EventShare event={this.props.event} />
             </HorizontalView>
-          </View>
+          </LinearGradient>
           <EventDescription description={this.props.event.description} />
           <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
             <EventMap venue={this.props.event.venue} />
@@ -634,9 +639,6 @@ const eventStyles = StyleSheet.create({
   },
   row: {
     flex: 1,
-    marginLeft: 5,
-    marginRight: 5,
-    marginBottom: 20,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     // http://stackoverflow.com/questions/36605906/what-is-the-row-container-for-a-listview-component
@@ -645,6 +647,8 @@ const eventStyles = StyleSheet.create({
   rowTitle: {
     fontSize: 18,
     marginBottom: 10,
+    marginLeft: 5,
+    marginRight: 5,
   },
   rowDateTime: {
     color: '#C0FFC0',
@@ -680,6 +684,8 @@ const eventStyles = StyleSheet.create({
   description: {
     lineHeight: 20,
     marginBottom: 20,
+    marginLeft: 5,
+    marginRight: 5,
   },
   eventMap: {
     left: 0,

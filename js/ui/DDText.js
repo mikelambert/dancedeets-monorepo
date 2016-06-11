@@ -38,6 +38,7 @@ export const defaultFont = {
   fontFamily: 'Ubuntu',
   fontWeight: '300',
   color: 'white',
+  backgroundColor: 'transparent',
 };
 
 const styles = StyleSheet.create({
