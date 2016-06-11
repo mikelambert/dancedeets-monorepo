@@ -33,7 +33,7 @@ import { Event, Venue } from './models';
 import type { ThunkAction } from '../actions/types';
 import MapView from 'react-native-maps';
 import moment from 'moment';
-import { linkColor, purpleColors } from '../Colors';
+import { linkColor, yellowColors, purpleColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
 import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
@@ -229,6 +229,17 @@ class EventAddedBy extends SubEventLine {
 
 
 class EventOrganizers extends SubEventLine {
+  state: {
+    opened: boolean,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      opened: false,
+    };
+  }
+
   icon() {
     //TODO: Fix image
     return require('./images/website.png');
@@ -262,25 +273,43 @@ class EventOrganizers extends SubEventLine {
     }
   }
 
+  adminLink(admin) {
+    return <TouchableOpacity
+      key={admin.id}
+      onPress={() => {
+        this._openAdmin(admin.id);
+      }}
+    ><Text style={[eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>;
+  }
+
   textRender() {
-    let organizers = this.props.event.admins.map((admin) => {
-      return <HorizontalView>
-        <Text style={eventStyles.detailListText}> – </Text>
-        <TouchableOpacity
-          key={admin.id}
-          onPress={() => {
-            this._openAdmin(admin.id);
-          }}
-        ><Text style={[eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>
-      </HorizontalView>
-      ;
-    });
-    return (
-      <View>
-        <Text style={eventStyles.detailText}>Organizers: </Text>
-        {organizers}
-      </View>
-    );
+    if (this.props.event.admins.length === 1) {
+      return (
+        <HorizontalView>
+          <Text style={eventStyles.detailText}>Organizer: </Text>
+          {this.adminLink(this.props.event.admins[0])}
+        </HorizontalView>
+      );
+    } else {
+      let organizers = this.props.event.admins.map((admin) => {
+        return <HorizontalView>
+          <Text style={eventStyles.detailListText}> – </Text>
+          {this.adminLink(admin)}
+        </HorizontalView>;
+      });
+      return (
+        <View>
+          <TouchableOpacity
+          onPress={()=>{this.setState({opened: !this.state.opened});}}
+          >
+            <Text style={[eventStyles.detailText, {marginBottom: 5}]}>
+              {this.state.opened ? 'Hide Organizers' : 'Show ' + this.props.event.admins.length + ' Organizers'}
+            </Text>
+          </TouchableOpacity>
+          {this.state.opened ? organizers : null}
+        </View>
+      );
+    }
   }
 }
 
@@ -338,7 +367,7 @@ class EventRsvpControl extends React.Component {
       enabled={ !this.state.loading }
       values={RsvpOnFB.RSVPs.map((x)=>x.text)}
       defaultIndex={this.state.defaultRsvp}
-      tintColor={purpleColors[0]}
+      tintColor={yellowColors[0]}
       style={{marginTop: 5}}
       tryOnChange={this.onRsvpChange}
       />;
@@ -487,7 +516,7 @@ class _EventRow extends React.Component {
       const width = 100;
       const imageProps = this.props.event.getImagePropsForWidth(width);
       return (
-        <View style={eventStyles.row}>
+        <View style={eventStyles.row, eventStyles.rowSpacing}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
             <Text
               numberOfLines={2}
@@ -501,7 +530,7 @@ class _EventRow extends React.Component {
                   style={eventStyles.thumbnail}
                 />
               </View>
-              <View style={eventStyles.eventIndent}>
+              <View>
                 <EventCategories categories={this.props.event.annotations.categories} />
                 <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
                 <EventVenue venue={this.props.event.venue} />
@@ -514,7 +543,7 @@ class _EventRow extends React.Component {
       const width = Dimensions.get('window').width;
       const imageProps = this.props.event.getImagePropsForWidth(width);
       return (
-        <View style={eventStyles.row}>
+        <View style={eventStyles.row, eventStyles.rowSpacing}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
             <ProportionalImage
               source={{uri: imageProps.source}}
@@ -525,11 +554,9 @@ class _EventRow extends React.Component {
             <Text
               numberOfLines={2}
               style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
-            <View style={eventStyles.eventIndent}>
-              <EventCategories categories={this.props.event.annotations.categories} />
-              <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-              <EventVenue venue={this.props.event.venue} />
-            </View>
+            <EventCategories categories={this.props.event.annotations.categories} />
+            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
+            <EventVenue venue={this.props.event.venue} />
           </TouchableOpacity>
         </View>
       );
@@ -597,9 +624,9 @@ export class FullEventView extends React.Component {
         <View style={eventStyles.row}>
           {this.props.event.cover ? clickableFlyer : flyerImage}
           <LinearGradient
-            start={[0.0, 0.0]} end={[0.4, 1]}
-            colors={['#223', '#223', 'black']}
-            locations={[0.0, 0.3, 1.0]}
+            start={[0.0, 0.0]} end={[0.0, 1]}
+            colors={['#333344', '#171728', 'black']}
+            locations={[0.0, 0.8, 1.0]}
             style={eventStyles.eventIndent}>
             <Text
               numberOfLines={2}
@@ -612,12 +639,12 @@ export class FullEventView extends React.Component {
             <EventRsvp event={this.props.event} />
             <EventSource event={this.props.event} />
             <EventAddedBy event={this.props.event} />
-            <EventOrganizers event={this.props.event} />
-            <HorizontalView style={{justifyContent: 'space-between'}}>
-              <AddToCalendarButton event={this.props.event} />
-              <EventShare event={this.props.event} />
-            </HorizontalView>
           </LinearGradient>
+          <EventOrganizers event={this.props.event} />
+          <HorizontalView style={{marginHorizontal: 5, justifyContent: 'space-between'}}>
+            <AddToCalendarButton event={this.props.event} />
+            <EventShare event={this.props.event} />
+          </HorizontalView>
           <EventDescription description={this.props.event.description} />
           <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
             <EventMap venue={this.props.event.venue} />
@@ -644,6 +671,9 @@ const eventStyles = StyleSheet.create({
     // http://stackoverflow.com/questions/36605906/what-is-the-row-container-for-a-listview-component
     overflow: 'hidden',
   },
+  rowSpacing: {
+    marginBottom: 20,
+  },
   rowTitle: {
     fontSize: 18,
     marginBottom: 10,
@@ -661,7 +691,7 @@ const eventStyles = StyleSheet.create({
   },
   detailListText: {
     fontSize: detailHeight,
-    marginTop: 5,
+    marginBottom: 5,
   },
   detailText: {
     fontSize: detailHeight,
@@ -677,9 +707,6 @@ const eventStyles = StyleSheet.create({
     marginRight: 5,
     height: detailHeight,
     width: detailHeight,
-  },
-  eventIndent: {
-    marginBottom: 20,
   },
   description: {
     lineHeight: 20,
