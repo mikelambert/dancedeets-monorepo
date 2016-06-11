@@ -58,7 +58,7 @@ class SearchInput extends React.Component {
       ref="textInput"
       style={[style, styles.searchField, this.state.focused ? styles.focusedField : {}, defaultFont]}
       placeholderTextColor="rgba(255, 255, 255, 0.5)"
-      //backgroundColor="rgba(255, 255, 255, 0.2)"
+      backgroundColor="rgba(255, 255, 255, 0.2)"
       keyboardAppearance="dark"
       selectTextOnFocus={true}
       autoCorrect={false}
