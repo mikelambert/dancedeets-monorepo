@@ -115,8 +115,16 @@ export class Event extends JsonDerivedObject {
       bestImageProps = this.cover.images[0];
       this.cover.images.forEach((i) => {
         // Get the best image that is *smaller* than our screen size in pixels (ie, round down)
-        if (bestImageProps.width < i.width && i.width < rawPixelWidth) {
-          bestImageProps = i;
+        if (bestImageProps.width > rawPixelWidth) {
+          // Find the smaller image, since the one we have is too large
+          if (i.width < bestImageProps.width) {
+            bestImageProps = i;
+          }
+        } else {
+          // Find the better quality image that is still smaller than our screen
+          if (bestImageProps.width < i.width && i.width < rawPixelWidth) {
+            bestImageProps = i;
+          }
         }
       });
     }
