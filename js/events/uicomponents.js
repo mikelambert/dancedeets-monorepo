@@ -237,7 +237,8 @@ class EventOrganizers extends SubEventLine {
     let url = null;
     // On Android, just send them to the URL and let the native URL intecerpetor send it to FB.
     if (Platform.OS === 'ios' && await Linking.canOpenURL('fb://')) {
-      const metadata = await performRequest('GET', adminId, {metadata: '1'});
+      // We don't really need to pass fields=, but the FB SDK complains if we don't
+      const metadata = await performRequest('GET', adminId, {metadata: '1', fields: ''});
       const idType = metadata.metadata.type;
       if (idType === 'user') {
         // This should work, but doesn't...
