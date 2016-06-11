@@ -11,6 +11,7 @@ import {
   Dimensions,
   Image,
   Linking,
+  ListView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -24,6 +25,7 @@ import {
   Button,
   FBShareButton,
   HorizontalView,
+  ProgressiveLayout,
   ProportionalImage,
   SegmentedControl,
   Text,
@@ -618,39 +620,38 @@ export class FullEventView extends React.Component {
       <TouchableOpacity onPress={this.onFlyerClicked} activeOpacity={0.5}>
         {flyerImage}
       </TouchableOpacity>;
-
     return (
-      <ScrollView style={eventStyles.container}>
-        <View style={eventStyles.row}>
-          {this.props.event.cover ? clickableFlyer : flyerImage}
-          <LinearGradient
-            start={[0.0, 0.0]} end={[0.0, 1]}
-            colors={['#333344', '#171728', 'black']}
-            locations={[0.0, 0.8, 1.0]}
-            style={eventStyles.eventIndent}>
-            <Text
-              numberOfLines={2}
-              style={eventStyles.rowTitle}>{this.props.event.name}</Text>
-            <EventCategories categories={this.props.event.annotations.categories} />
-            <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-            <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
-              <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
-            </TouchableOpacity>
-            <EventRsvp event={this.props.event} />
-            <EventSource event={this.props.event} />
-            <EventAddedBy event={this.props.event} />
-          </LinearGradient>
-          <EventOrganizers event={this.props.event} />
-          <HorizontalView style={{marginHorizontal: 5, justifyContent: 'space-between'}}>
-            <AddToCalendarButton event={this.props.event} />
-            <EventShare event={this.props.event} />
-          </HorizontalView>
-          <EventDescription description={this.props.event.description} />
+      <ProgressiveLayout
+        style={[eventStyles.container, {width: width}]}
+      >
+        {this.props.event.cover ? clickableFlyer : flyerImage}
+        <LinearGradient
+          start={[0.0, 0.0]} end={[0.0, 1]}
+          colors={['#333344', '#171728', 'black']}
+          locations={[0.0, 0.8, 1.0]}
+          style={eventStyles.eventIndent}>
+          <Text
+            numberOfLines={2}
+            style={eventStyles.rowTitle}>{this.props.event.name}</Text>
+          <EventCategories categories={this.props.event.annotations.categories} />
+          <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
           <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
-            <EventMap venue={this.props.event.venue} />
+            <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
           </TouchableOpacity>
-        </View>
-      </ScrollView>
+          <EventRsvp event={this.props.event} />
+          <EventSource event={this.props.event} />
+          <EventAddedBy event={this.props.event} />
+        </LinearGradient>
+        <EventOrganizers event={this.props.event} />
+        <HorizontalView style={{marginHorizontal: 5, justifyContent: 'space-between'}}>
+          <AddToCalendarButton event={this.props.event} />
+          <EventShare event={this.props.event} />
+        </HorizontalView>
+        <EventDescription description={this.props.event.description} />
+        <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
+          <EventMap venue={this.props.event.venue} />
+        </TouchableOpacity>
+      </ProgressiveLayout>
     );
   }
 }
