@@ -19,6 +19,8 @@ export const purpleColors = [
   '#8283A9',
   '#4C4D81',
   '#333452',
+  '#222238',
+  '#171728',
 ];
 
 const fbBlueColor = '#415DAE';

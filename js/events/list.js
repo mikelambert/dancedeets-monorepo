@@ -28,7 +28,7 @@ import {
   updateLocation,
   updateKeywords,
 } from '../actions';
-import { linkColor } from '../Colors';
+import { linkColor, purpleColors } from '../Colors';
 const {
   Globalize,
 } = require('react-native-globalize');
@@ -164,6 +164,7 @@ class EventListContainer extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState(this._getNewState(nextProps));
+    this.refs.list_view.scrollTo({x: 0, y: 0, animated: false});
   }
 
   async setLocationAndSearch(formattedAddress: string) {
@@ -246,6 +247,7 @@ class EventListContainer extends React.Component {
   renderListView() {
     return (
       <ListView
+        ref="list_view"
         style={[styles.listView]}
         dataSource={this.state.dataSource}
         renderHeader={this._renderHeader}
@@ -260,8 +262,8 @@ class EventListContainer extends React.Component {
           <SectionHeader title={sectionID}/>
         }
         initialListSize={5}
-        pageSize={5}
-        scrollRenderAheadDistance={10000}
+        pageSize={1}
+        scrollRenderAheadDistance={5000}
         scrollsToTop={false}
         indicatorStyle="white"
       />
@@ -325,7 +327,7 @@ const styles = StyleSheet.create({
     height: 30,
     alignItems: 'flex-start', // left align
     justifyContent: 'center', // vertically center
-    backgroundColor: '#222',
+    backgroundColor: purpleColors[2],
   },
   sectionHeaderText: {
     fontFamily: 'Ubuntu',
