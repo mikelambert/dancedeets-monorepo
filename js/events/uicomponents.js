@@ -191,7 +191,7 @@ class EventAddedBy extends SubEventLine {
 
   icon() {
     //TODO: Fix image
-    return require('./images/website.png');
+    return require('./images/user-add.png');
   }
 
   async loadProfileName() {
