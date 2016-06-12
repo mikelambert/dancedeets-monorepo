@@ -18,14 +18,14 @@ export type State = {
   isLoggedIn: boolean;
   hasSkippedLogin: boolean;
   isOnboarding: boolean;
-  user: ?User;
+  fbUserData: ?User;
 };
 
 const initialState = {
   isLoggedIn: false,
   hasSkippedLogin: false,
   isOnboarding: false,
-  user: null,
+  fbUserData: null,
 };
 
 export function user(state: State = initialState, action: Action): State {
@@ -36,7 +36,7 @@ export function user(state: State = initialState, action: Action): State {
   if (action.type === 'LOGIN_LOADED_USER') {
     return {
       ...state,
-      user: action.user,
+      fbUserData: action.user,
     };
   }
   if (action.type === 'LOGIN_START_ONBOARD') {
@@ -44,7 +44,7 @@ export function user(state: State = initialState, action: Action): State {
       isLoggedIn: false,
       hasSkippedLogin: false,
       isOnboarding: true,
-      user: null,
+      fbUserData: null,
     };
   }
   if (action.type === 'LOGIN_LOGGED_IN') {
@@ -52,7 +52,7 @@ export function user(state: State = initialState, action: Action): State {
       isLoggedIn: true,
       hasSkippedLogin: false,
       isOnboarding: false,
-      user: null,
+      fbUserData: null,
     };
   }
   if (action.type === 'LOGIN_SKIPPED') {
@@ -60,7 +60,7 @@ export function user(state: State = initialState, action: Action): State {
       isLoggedIn: false,
       hasSkippedLogin: true,
       isOnboarding: false,
-      user: null,
+      fbUserData: null,
     };
   }
   return state;

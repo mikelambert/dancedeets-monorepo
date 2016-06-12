@@ -152,7 +152,7 @@ class _ProfileCard extends React.Component {
 }
 const ProfileCard = connect(
   state => ({
-    user: state.user.user,
+    user: state.user.fbUserData,
   }),
   (dispatch: Dispatch) => ({
     logOutWithPrompt: () => dispatch(logOutWithPrompt()),

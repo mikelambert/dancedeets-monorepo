@@ -91,12 +91,12 @@ export function logOut(): ThunkAction {
 
 export function logOutWithPrompt(): ThunkAction {
   return (dispatch, getState) => {
-    let name = getState().user.name || 'there';
+    let name = getState().user.fbUserData.profile.name || 'there';
 
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          title: `Hi, ${name}`,
+          title: `Log out from ${name}?`,
           options: ['Log out', 'Cancel'],
           destructiveButtonIndex: 0,
           cancelButtonIndex: 1,
