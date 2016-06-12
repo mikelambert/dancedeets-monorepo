@@ -24,7 +24,7 @@ import { NavigationHeaderTitle } from '../react-navigation';
 import { gradientBottom, gradientTop } from '../Colors';
 import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
-import { navigatePush, navigatePop, navigateSwap } from '../actions';
+import { navigatePush, navigatePop, navigateSwap, navigateJumpToIndex } from '../actions';
 import {
 	ZoomableImage,
 } from '../ui';
@@ -139,6 +139,10 @@ class AppContainer extends React.Component {
 		);
 	}
 
+  backToHome() {
+    this.props.goHome();
+  }
+
 	renderScene({scene}) {
 		const { navigationState } = scene;
 		switch (navigationState.key) {
@@ -156,6 +160,7 @@ class AppContainer extends React.Component {
 		case 'EventView':
 			return <EventPager
 				onEventNavigated={(event)=> {
+          console.log('HEYHEYHEYHEYHEY');
 					trackWithEvent('View Event', event);
 					this.props.onSwap('EventView', {key: 'EventView', title: event.name, event: event});
 				}}
@@ -196,6 +201,10 @@ export default connect(
 	}),
 	(dispatch: Dispatch) => ({
 		onNavigate: (destState) => dispatch(navigatePush(destState)),
+    goHome: async () => {
+      await dispatch(navigatePop());
+      await dispatch(navigatePop());
+    },
 		onBack: () => dispatch(navigatePop()),
 		onSwap: (key, newState) => dispatch(navigateSwap(key, newState)),
 	}),

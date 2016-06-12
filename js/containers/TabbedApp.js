@@ -51,10 +51,14 @@ export default class TabbedAppView extends React.Component {
         renderIcon={() => <Image source={require('../containers/icons/events.png')} />}
         renderSelectedIcon={() => <Image source={require('../containers/icons/events-highlighted.png')} />}
         onPress={() => {
-          track('Tab Selected', {Tab: 'Home'});
-          this.setState({ selectedTab: 'home' });
+          if (this.state.selectedTab === 'home') {
+            this.refs.app_container.dispatchProps.goHome();
+          } else {
+            track('Tab Selected', {Tab: 'Home'});
+            this.setState({ selectedTab: 'home' });
+          }
         }}>
-        <AppContainer />
+        <AppContainer ref="app_container" />
       </TabNavigator.Item>
       <TabNavigator.Item
         selected={this.state.selectedTab === 'about'}
@@ -64,8 +68,10 @@ export default class TabbedAppView extends React.Component {
         renderIcon={() => <Image source={require('../containers/icons/profile.png')} />}
         renderSelectedIcon={() => <Image source={require('../containers/icons/profile-highlighted.png')} />}
         onPress={() => {
-          track('Tab Selected', {Tab: 'About'});
-          this.setState({ selectedTab: 'about' });
+          if (this.state.selectedTab !== 'about') {
+            track('Tab Selected', {Tab: 'About'});
+            this.setState({ selectedTab: 'about' });
+          }
         }}>
         <AboutApp />
       </TabNavigator.Item>
