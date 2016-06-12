@@ -11,7 +11,6 @@ import React from 'react';
 import {Provider} from 'react-redux';
 import configureStore from '../store/configureStore';
 import Mixpanel from 'react-native-mixpanel';
-import codePush from 'react-native-code-push';
 
 export default function setup(): Class<Object> {
   console.disableYellowBox = true;
@@ -34,11 +33,6 @@ export default function setup(): Class<Object> {
         isLoading: true,
         store: configureStore(() => this.setState({isLoading: false})),
       };
-    }
-
-    componentDidMount() {
-      // Reload with the latest code, whenever we've been backgrounded for 5 minutes
-      codePush.sync({ installMode: codePush.InstallMode.ON_NEXT_RESUME, minimumBackgroundDuration: 60 * 5 });
     }
 
     render() {

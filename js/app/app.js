@@ -15,7 +15,7 @@ import {
   View,
 } from 'react-native';
 import LoginFlow from '../login/LoginFlow';
-// import CodePush from 'react-native-code-push';
+import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';
 import TabbedApp from '../containers/TabbedApp';
 
@@ -39,8 +39,7 @@ class App extends React.Component {
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
     this.loadAppData();
-    // TODO: Enable CodePush at some point before launch
-    // CodePush.sync({installMode: CodePush.InstallMode.ON_NEXT_RESUME});
+    CodePush.sync({installMode: CodePush.InstallMode.ON_NEXT_RESUME, minimumBackgroundDuration: 60 * 5});
   }
 
   componentWillUnmount() {
@@ -50,7 +49,7 @@ class App extends React.Component {
   handleAppStateChange(appState) {
     if (appState === 'active') {
       this.loadAppData();
-      // CodePush.sync({installMode: CodePush.InstallMode.ON_NEXT_RESUME});
+      CodePush.sync({installMode: CodePush.InstallMode.ON_NEXT_RESUME, minimumBackgroundDuration: 60 * 5});
     }
   }
 
