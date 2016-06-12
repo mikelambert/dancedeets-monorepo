@@ -49,7 +49,7 @@ class Button extends React.Component {
         <LinearGradient
           start={[0, 0]} end={[0, 1]}
           colors={[purpleColors[1], purpleColors[2]]}
-          style={[styles.button, size, styles.primaryButton]}>
+          style={[styles.button, size, styles.primaryButton, this.props.style]}>
           {icon}
           <Text style={[styles.caption, styles.primaryCaption, this.props.textStyle]}>
             {caption}
@@ -58,7 +58,7 @@ class Button extends React.Component {
       );
     } else {
       content = (
-        <View style={[styles.button, size, this.props.type === 'bordered' && styles.border]}>
+        <View style={[styles.button, size, this.props.type === 'bordered' && styles.border, this.props.style]}>
           {icon}
           <Text style={[styles.caption, styles.secondaryCaption]}>
             {caption}

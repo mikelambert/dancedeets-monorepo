@@ -76,19 +76,26 @@ class ShareButtons extends React.Component {
       <View>
         <Text>Share DanceDeets:</Text>
 
-        <Button caption="Share on FB"
+        <Button
+          caption="Share on FB"
+          icon={require('../login/icons/facebook.png')}
           onPress={() => {
             track('Share DanceDeets', {Button: 'Share FB Post'});
             ShareDialog.show(shareLinkContent);
           }}
+          style={styles.noFlex}
         />
         <Button caption="Send FB Message"
+          icon={require('../login/icons/facebook-messenger.png')}
           onPress={() => {
             track('Share DanceDeets', {Button: 'Send FB Message'});
             MessageDialog.show(shareLinkContent);
           }}
+          style={styles.noFlex}
         />
-        <Button caption="Send Message"
+        <Button
+          caption="Send Message"
+          icon={Platform.OS === 'ios' ? require('./share-icons/small-share-ios.png') : require('./share-icons/small-share-android.png')}
           onPress={() => {
             track('Share DanceDeets', {Button: 'Send Native'});
             Share.open({
@@ -99,6 +106,7 @@ class ShareButtons extends React.Component {
               console.warn(e);
             });
           }}
+          style={styles.noFlex}
         />
       </View>
     );
@@ -157,6 +165,9 @@ class _ProfileComponent extends React.Component {
 
   render() {
     const image = this.state.url ? <Image style={styles.profileImage} source={{uri: this.state.url}}/> : null;
+    //TODO: show location
+    //TODO: show upcoming events
+    //TODO: show suggested dance styles
     return <View style={this.props.style}>
       <HorizontalView>
         {image}
@@ -198,6 +209,9 @@ export default class Profile extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  noFlex: {
+    flex: 0,
+  },
   container: {
     flex: 1,
     backgroundColor: 'black',
