@@ -8,34 +8,43 @@
 
 import type {Action} from '../actions/types';
 
+type User = {
+  profile: any;
+  picture: {data: {url: string}};
+  friends: any;
+};
+
 export type State = {
   isLoggedIn: boolean;
   hasSkippedLogin: boolean;
   isOnboarding: boolean;
-  id: ?string;
-  name: ?string;
+  user: ?User;
 };
 
 const initialState = {
   isLoggedIn: false,
   hasSkippedLogin: false,
   isOnboarding: false,
-  //TODO: do we want/need these?
-  id: null,
-  name: null,
+  user: null,
 };
 
 export function user(state: State = initialState, action: Action): State {
+  console.log(action);
   if (action.type === 'LOGIN_LOGGED_OUT') {
     return initialState;
+  }
+  if (action.type === 'LOGIN_LOADED_USER') {
+    return {
+      ...state,
+      user: action.user,
+    };
   }
   if (action.type === 'LOGIN_START_ONBOARD') {
     return {
       isLoggedIn: false,
       hasSkippedLogin: false,
       isOnboarding: true,
-      id: null,
-      name: null,
+      user: null,
     };
   }
   if (action.type === 'LOGIN_LOGGED_IN') {
@@ -43,8 +52,7 @@ export function user(state: State = initialState, action: Action): State {
       isLoggedIn: true,
       hasSkippedLogin: false,
       isOnboarding: false,
-      id: null,
-      name: null,
+      user: null,
     };
   }
   if (action.type === 'LOGIN_SKIPPED') {
@@ -52,8 +60,7 @@ export function user(state: State = initialState, action: Action): State {
       isLoggedIn: false,
       hasSkippedLogin: true,
       isOnboarding: false,
-      id: null,
-      name: null,
+      user: null,
     };
   }
   return state;

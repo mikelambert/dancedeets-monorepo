@@ -17,7 +17,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { logOutWithPrompt } from '../actions';
-import { performRequest } from '../api/fb';
 import { linkColor } from '../Colors';
 import {
   Button,
@@ -133,52 +132,17 @@ function sendEmail() {
 }
 
 class _ProfileCard extends React.Component {
-  state: {
-    name: ?string,
-    url: ?string,
-    friendCount: ?number,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: null,
-      url: null,
-      friendCount: null,
-    };
-  }
-
-  async setupProfileName() {
-    const profileData = await performRequest('GET', 'me', {fields: 'name'});
-    this.setState({...this.state, name: profileData.name});
-  }
-
-  async setupProfilePhoto() {
-    const pictureData = await performRequest('GET', 'me/picture', {type: 'large', fields: 'url', redirect: '0'});
-    this.setState({...this.state, url: pictureData.data.url});
-  }
-
-  async setupProfileFriends() {
-    const friendData = await performRequest('GET', 'me/friends', {limit: '1000', fields: 'id'});
-    this.setState({...this.state, friendCount: friendData.data.length});
-  }
-
-  componentWillMount() {
-    this.setupProfilePhoto();
-    this.setupProfileName();
-    this.setupProfileFriends();
-  }
-
   render() {
-    const image = this.state.url ? <Image style={styles.profileImageSize} source={{uri: this.state.url}}/> : null;
+    const user = this.props.user;
+    const image = user.picture ? <Image style={styles.profileImageSize} source={{uri: user.picture.data.url}}/> : null;
     //TODO: show location
     //TODO: show upcoming events
     //TODO: show suggested dance styles
     return <HorizontalView style={styles.profileCard}>
         <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
         <View>
-          <Text style={styles.profileName}>{this.state.name || ' '}</Text>
-          <Text>{this.state.friendCount || 0} friends using DanceDeets</Text>
+          <Text style={styles.profileName}>{user.profile.name || ' '}</Text>
+          <Text>{user.friends.data.length || 0} friends using DanceDeets</Text>
           <TouchableOpacity onPress={this.props.logOutWithPrompt}>
             <Text style={styles.link}>Logout</Text>
           </TouchableOpacity>
@@ -188,6 +152,7 @@ class _ProfileCard extends React.Component {
 }
 const ProfileCard = connect(
   state => ({
+    user: state.user.user,
   }),
   (dispatch: Dispatch) => ({
     logOutWithPrompt: () => dispatch(logOutWithPrompt()),

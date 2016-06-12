@@ -293,6 +293,7 @@ class EventOrganizers extends SubEventLine {
         </HorizontalView>
       );
     } else {
+      // TODO: fetch the types of each admin, and sort them with the page first (or show only the page?)
       let organizers = this.props.event.admins.map((admin) => {
         return <HorizontalView>
           <Text style={eventStyles.detailListText}> – </Text>

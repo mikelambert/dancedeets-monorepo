@@ -15,8 +15,9 @@ import {Platform} from 'react-native';
 import Alert from 'Alert';
 import { auth } from '../api/dancedeets';
 import { trackLogin, trackLogout } from '../store/track';
-
-import type { Action, ThunkAction } from './types';
+import { performRequest } from '../api/fb';
+import _ from 'lodash/array';
+import type { Action, Dispatch, hunkAction } from './types';
 
 
 export function loginStartOnboard(): Action {
@@ -26,12 +27,50 @@ export function loginStartOnboard(): Action {
 }
 
 export function loginComplete(token: AccessToken): Action {
-  auth();
-  trackLogin();
-  return {
-    type: 'LOGIN_LOGGED_IN',
-    token: token,
+  // Kick these off and let them happen in the background
+  return (dispatch: Dispatch) => {
+    auth();
+    trackLogin();
+    loadUserData(dispatch);
+    // But mark us as logged-in here
+    dispatch({
+      type: 'LOGIN_LOGGED_IN',
+      token: token,
+    });
   };
+}
+
+/*
+export function performSearch(): ThunkAction {
+  return async (dispatch: Dispatch, getState) => {
+    const searchQuery = getState().search.searchQuery;
+    track('Search Events', {
+      'Location': searchQuery.location,
+      'Keywords': searchQuery.keywords,
+    });
+    await dispatch(searchStart());
+    try {
+*/
+async function loadUserData(dispatch) {
+  const requests = {
+    profile: performRequest('GET', 'me', {fields: 'id,name'}),
+    picture: performRequest('GET', 'me/picture', {type: 'large', fields: 'url', redirect: '0'}),
+    friends: performRequest('GET', 'me/friends', {limit: '1000', fields: 'id'}),
+  };
+
+  const keys = Object.keys(requests);
+  const promises = keys.map((x) => requests[x]);
+  const values = await Promise.all(promises);
+  // Now await each of them and stick them in our user Object
+  const user = {};
+  _.zip(keys, values).forEach(async (kv) => {
+    user[kv[0]] = kv[1];
+  });
+
+  dispatch({
+    type: 'LOGIN_LOADED_USER',
+    user,
+  });
 }
 
 export function skipLogin(): Action {
