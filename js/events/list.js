@@ -164,7 +164,9 @@ class EventListContainer extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState(this._getNewState(nextProps));
-    this.refs.list_view.scrollTo({x: 0, y: 0, animated: false});
+    if (nextProps.search.results !== this.props.search.results) {
+      this.refs.list_view.scrollTo({x: 0, y: 0, animated: false});
+    }
   }
 
   async setLocationAndSearch(formattedAddress: string) {
