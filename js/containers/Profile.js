@@ -21,9 +21,11 @@ import { performRequest } from '../api/fb';
 import { linkColor } from '../Colors';
 import {
   Button,
+  Heading1,
   HorizontalView,
   Text,
 } from '../ui';
+import { purpleColors } from '../Colors';
 import { track } from '../store/track';
 import type { Dispatch } from '../actions/types';
 import { ShareDialog, MessageDialog } from 'react-native-fbsdk';
@@ -58,7 +60,7 @@ class CreditSubList extends React.Component {
 
 class Credits extends React.Component {
   render() {
-    const creditHeader = <Text style={{fontWeight: 'bold', fontSize: 20}}>Dancedeets Credits</Text>;
+    const creditHeader = <Heading1>Dancedeets Credits</Heading1>;
     const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
     return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
   }
@@ -74,9 +76,10 @@ class ShareButtons extends React.Component {
   render() {
     return (
       <View>
-        <Text>Share DanceDeets:</Text>
+        <Heading1>Share DanceDeets</Heading1>
 
         <Button
+          size="small"
           caption="Share on FB"
           icon={require('../login/icons/facebook.png')}
           onPress={() => {
@@ -85,7 +88,9 @@ class ShareButtons extends React.Component {
           }}
           style={styles.noFlex}
         />
-        <Button caption="Send FB Message"
+        <Button
+          size="small"
+          caption="Send FB Message"
           icon={require('../login/icons/facebook-messenger.png')}
           onPress={() => {
             track('Share DanceDeets', {Button: 'Send FB Message'});
@@ -94,6 +99,7 @@ class ShareButtons extends React.Component {
           style={styles.noFlex}
         />
         <Button
+          size="small"
           caption="Send Message"
           icon={Platform.OS === 'ios' ? require('./share-icons/small-share-ios.png') : require('./share-icons/small-share-android.png')}
           onPress={() => {
@@ -126,7 +132,7 @@ function sendEmail() {
     });
 }
 
-class _ProfileComponent extends React.Component {
+class _ProfileCard extends React.Component {
   state: {
     name: ?string,
     url: ?string,
@@ -164,46 +170,44 @@ class _ProfileComponent extends React.Component {
   }
 
   render() {
-    const image = this.state.url ? <Image style={styles.profileImage} source={{uri: this.state.url}}/> : null;
+    const image = this.state.url ? <Image style={styles.profileImageSize} source={{uri: this.state.url}}/> : null;
     //TODO: show location
     //TODO: show upcoming events
     //TODO: show suggested dance styles
-    return <View style={this.props.style}>
-      <HorizontalView>
-        {image}
+    return <HorizontalView style={styles.profileCard}>
+        <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
         <View>
-          <Text style={styles.profileName}>{this.state.name}</Text>
-          {this.state.friendCount ? <Text>{this.state.friendCount} friends using DanceDeets</Text> : null}
+          <Text style={styles.profileName}>{this.state.name || ' '}</Text>
+          <Text>{this.state.friendCount || 0} friends using DanceDeets</Text>
           <TouchableOpacity onPress={this.props.logOutWithPrompt}>
             <Text style={styles.link}>Logout</Text>
           </TouchableOpacity>
         </View>
-      </HorizontalView>
-
-      <ShareButtons />
-
-      <HorizontalView style={{marginTop: 10}}>
-      <Button size="small" caption="Notification Settings"/>
-      </HorizontalView>
-
-    </View>;
+      </HorizontalView>;
   }
 }
-const ProfileComponent = connect(
+const ProfileCard = connect(
   state => ({
   }),
   (dispatch: Dispatch) => ({
     logOutWithPrompt: () => dispatch(logOutWithPrompt()),
   }),
-)(_ProfileComponent);
+)(_ProfileCard);
 
 export default class Profile extends React.Component {
   render() {
     return <View style={styles.container}>
-      <ProfileComponent style={styles.profileComponent}/>
-      <Button size="small" caption="Send Feedback" onPress={sendEmail}/>
+      <ProfileCard />
+
+      <View style={styles.bottomSpacedContent}>
+      <Button size="small" caption="Notification Settings"/>
+
+      <ShareButtons />
 
       <Credits style={{marginTop: 20}}/>
+
+      <Button size="small" caption="Send Feedback" onPress={sendEmail}/>
+      </View>
     </View>;
   }
 }
@@ -216,18 +220,36 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     alignItems: 'center',
+    justifyContent: 'space-around',
   },
   profileName: {
     fontSize: 22,
   },
-  profileComponent: {
+  profileCard: {
     top: STATUSBAR_HEIGHT,
-    height: 300,
+    margin: 10,
+    padding: 10,
+    backgroundColor: purpleColors[3],
+    borderColor: purpleColors[0],
+    borderWidth: 1,
+    borderRadius: 10,
+    // So it looks okay one wide screen devices
+    width: 350,
+  },
+  profileImageSize: {
+    width: 100,
+    height: 100,
+    borderRadius: 5,
   },
   profileImage: {
     marginRight: 10,
-    width: 100,
-    height: 100,
+    borderWidth: 1,
+    borderColor: purpleColors[0],
+  },
+  bottomSpacedContent: {
+    flex: 1,
+    marginTop: 20,
+    justifyContent: 'space-around',
   },
   link: {
     color: linkColor,
