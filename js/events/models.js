@@ -45,6 +45,10 @@ export class Venue extends JsonDerivedObject {
     return [this.name, this.address.street, this.address.city, this.address.state, this.address.country].filter((x) => x).join(', ');
   }
 
+  cityState() {
+    return [this.address.city, this.address.state].filter((x) => x).join(', ');
+  }
+
   cityStateCountry() {
     return [this.address.city, this.address.state, this.address.country].filter((x) => x).join(', ');
   }

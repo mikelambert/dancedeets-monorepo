@@ -23,6 +23,7 @@ import querystring from 'querystring';
 import {
   Autolink,
   Button,
+  Card,
   FBShareButton,
   HorizontalView,
   ProgressiveLayout,
@@ -77,9 +78,8 @@ class EventCategories extends SubEventLine {
   textRender() {
     if (this.props.categories.length > 0) {
       return <Text
-        numberOfLines={1}
         style={eventStyles.detailText}
-        >({this.props.categories.slice(0,8).join(', ')})</Text>;
+        >{this.props.categories.slice(0,8).join(', ')}</Text>;
     } else {
       return null;
     }
@@ -138,7 +138,11 @@ class EventVenue extends SubEventLine {
       components.push(<Text
         key="line2"
         style={[eventStyles.detailText, this.props.style]}
-      >{this.props.venue.cityStateCountry()}</Text>);
+      >{this.props.venue.cityState()}</Text>);
+      components.push(<Text
+        key="line3"
+        style={[eventStyles.detailText, this.props.style]}
+      >{this.props.venue.address.country}</Text>);
     }
     return <View>{components}</View>;
   }
@@ -519,7 +523,8 @@ class _EventRow extends React.Component {
       const width = 100;
       const imageProps = this.props.event.getImagePropsForWidth(width);
       return (
-        <View style={eventStyles.row, eventStyles.rowSpacing}>
+        <Card>
+        <View style={eventStyles.row}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
             <Text
               numberOfLines={2}
@@ -533,7 +538,7 @@ class _EventRow extends React.Component {
                   style={eventStyles.thumbnail}
                 />
               </View>
-              <View>
+              <View style={{flex: 1}}>
                 <EventCategories categories={this.props.event.annotations.categories} />
                 <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
                 <EventVenue venue={this.props.event.venue} />
@@ -541,12 +546,14 @@ class _EventRow extends React.Component {
             </HorizontalView>
           </TouchableOpacity>
         </View>
+        </Card>
       );
     } else {
       const width = Dimensions.get('window').width;
       const imageProps = this.props.event.getImagePropsForWidth(width);
       return (
-        <View style={eventStyles.row, eventStyles.rowSpacing}>
+        <Card>
+        <View style={eventStyles.row}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
             <ProportionalImage
               source={{uri: imageProps.source}}
@@ -562,6 +569,7 @@ class _EventRow extends React.Component {
             <EventVenue venue={this.props.event.venue} />
           </TouchableOpacity>
         </View>
+        </Card>
       );
     }
   }
@@ -673,11 +681,9 @@ const eventStyles = StyleSheet.create({
     // http://stackoverflow.com/questions/36605906/what-is-the-row-container-for-a-listview-component
     overflow: 'hidden',
   },
-  rowSpacing: {
-    marginBottom: 20,
-  },
   rowTitle: {
     fontSize: 18,
+    lineHeight: 22,
     marginBottom: 10,
     marginLeft: 5,
     marginRight: 5,
