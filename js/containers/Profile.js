@@ -143,11 +143,9 @@ class _UserProfile extends React.Component {
     }
 
     return <HorizontalView>
-        <View>
+        <View style={styles.profileLeft}>
           <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
-          <TouchableOpacity onPress={this.props.logOutWithPrompt}>
-            <Text style={styles.link}>Logout</Text>
-          </TouchableOpacity>
+          <Button size="small" caption="Logout" onPress={this.props.logOutWithPrompt} />
         </View>
         <View>
           <Heading1>{user.profile.name || ' '}</Heading1>
@@ -212,13 +210,16 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 22,
   },
+  profileLeft: {
+    marginRight: 10,
+  },
   profileImageSize: {
     width: 100,
     height: 100,
     borderRadius: 5,
   },
   profileImage: {
-    marginRight: 10,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: purpleColors[0],
   },
