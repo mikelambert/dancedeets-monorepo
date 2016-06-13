@@ -631,9 +631,6 @@ export class FullEventView extends React.Component {
       >
         {this.props.event.cover ? clickableFlyer : flyerImage}
         <Card
-          start={[0.0, 0.0]} end={[0.0, 1]}
-          colors={[purpleColors[2], purpleColors[4], 'black']}
-          locations={[0.0, 0.8, 1.0]}
           style={eventStyles.eventIndent}>
           <Text
             numberOfLines={2}

@@ -28,7 +28,7 @@ import {
   updateLocation,
   updateKeywords,
 } from '../actions';
-import { linkColor, purpleColors } from '../Colors';
+import { linkColor, purpleColors, yellowColors } from '../Colors';
 const {
   Globalize,
 } = require('react-native-globalize');
@@ -43,6 +43,7 @@ import {
 import { track } from '../store/track';
 import { AdMobBanner } from 'react-native-admob';
 import WebsiteUrl from '../websiteUrl';
+import LinearGradient from 'react-native-linear-gradient';
 var en = new Globalize('en');
 
 
@@ -52,9 +53,13 @@ class SectionHeader extends React.Component {
   };
 
   render() {
-    return <View style={styles.sectionHeader}>
+    return <LinearGradient
+        start={[0.0, 0.0]} end={[0.0, 1]}
+        colors={[purpleColors[4], purpleColors[1], purpleColors[1], purpleColors[4]]}
+        locations={[0.0, 0.4, 0.6, 1.0]}
+        style={styles.sectionHeader}>
       <Text style={styles.sectionHeaderText}>{this.props.title}</Text>
-    </View>;
+    </LinearGradient>;
   }
 }
 
@@ -329,13 +334,11 @@ const styles = StyleSheet.create({
     height: 30,
     alignItems: 'flex-start', // left align
     justifyContent: 'center', // vertically center
-    backgroundColor: purpleColors[2],
+    backgroundColor: purpleColors[1],
   },
   sectionHeaderText: {
-    fontFamily: 'Ubuntu',
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 15,
   },
   onebox: {
     alignItems: 'flex-start', // left align
