@@ -6,7 +6,7 @@
 
 'use strict';
 
-var { purpleColors } = require('../Colors');
+var { purpleColors, yellowColors } = require('../Colors');
 var Image = require('Image');
 var LinearGradient = require('react-native-linear-gradient');
 var React = require('React');
@@ -17,13 +17,13 @@ var View = require('View');
 
 class Button extends React.Component {
   props: {
-    type: 'primary' | 'secondary' | 'bordered';
     icon: ?number;
     caption: string;
     style: any;
     onPress: () => void;
     size: 'small' | 'large';
     textStyle: any;
+    color: 'purple' | 'color';
   };
 
   static defaultProps = {
@@ -31,9 +31,9 @@ class Button extends React.Component {
     icon: null,
     style: {},
     onPress: () => {},
-    type: 'primary',
     size: 'large',
     textStyle: {},
+    color: 'purple',
   };
 
   render() {
@@ -42,30 +42,20 @@ class Button extends React.Component {
     if (this.props.icon) {
       icon = <Image source={this.props.icon} style={caption ? styles.iconSpacing : {}} />;
     }
-    let content;
     const size = this.props.size === 'small' ? styles.smallButton : styles.largeButton;
-    if (this.props.type === 'primary') {
-      content = (
-        <LinearGradient
-          start={[0, 0]} end={[0, 1]}
-          colors={[purpleColors[1], purpleColors[2]]}
-          style={[styles.button, size, styles.primaryButton, this.props.style]}>
-          {icon}
-          <Text style={[styles.caption, styles.primaryCaption, this.props.textStyle]}>
-            {caption}
-          </Text>
-        </LinearGradient>
-      );
-    } else {
-      content = (
-        <View style={[styles.button, size, this.props.type === 'bordered' && styles.border, this.props.style]}>
-          {icon}
-          <Text style={[styles.caption, styles.secondaryCaption]}>
-            {caption}
-          </Text>
-        </View>
-      );
-    }
+    const colors = this.props.color === 'purple' ? [purpleColors[1], purpleColors[2], purpleColors[2]] : [yellowColors[1], yellowColors[4], yellowColors[4]];
+    const content = (
+      <LinearGradient
+        start={[0, 0]} end={[0, 1]}
+        locations={[0.0, 0.7, 1.0]}
+        colors={colors}
+        style={[styles.button, size, this.props.style]}>
+        {icon}
+        <Text style={[styles.caption, this.props.textStyle]}>
+          {caption}
+        </Text>
+      </LinearGradient>
+    );
     return (
       <TouchableOpacity
         accessibilityTraits="button"
@@ -84,6 +74,7 @@ var styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
   smallButton: {
     paddingHorizontal: 8,
@@ -99,17 +90,12 @@ var styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'white',
   },
-  primaryButton: {
-    backgroundColor: 'transparent',
-  },
   iconSpacing: {
     marginRight: 10,
   },
   caption: {
     letterSpacing: 1,
     fontSize: 16,
-  },
-  primaryCaption: {
     color: 'white',
   },
   secondaryCaption: {

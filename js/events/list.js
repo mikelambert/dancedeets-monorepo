@@ -100,6 +100,7 @@ class AddEventButton extends React.Component {
   render() {
     return <Button
       caption="Add Event"
+      color="yellow"
       textStyle={{fontWeight: 'bold', fontSize: 14}}
       style={styles.addEventButton}
       onPress={this.props.onPress}

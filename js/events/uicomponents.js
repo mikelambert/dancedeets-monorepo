@@ -91,7 +91,6 @@ class AddToCalendarButton extends React.Component {
     return <Button
       icon={require('./images/add_calendar.png')}
       caption="Add to Calendar"
-      type="primary"
       size="small"
       onPress={() => {
         trackWithEvent('Add to Calendar', this.props.event);

@@ -13,6 +13,7 @@ export const yellowColors = [
   '#FFEA73',
   '#FFD802',
   '#FFCA01',
+  '#C0A000',
 ];
 
 export const purpleColors = [

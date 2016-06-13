@@ -26,7 +26,6 @@ export default class LoginButtonWithAlternate extends React.Component {
       <View style={[styles.centerItems, styles.bottomBox]}>
         <LoginButton
           icon={require('./icons/facebook.png')}
-          type="primary"
           caption="Login with Facebook"
           onPress={this.props.onLogin}
         />
