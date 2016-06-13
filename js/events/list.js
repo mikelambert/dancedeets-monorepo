@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
   },
   addEventButton: {
     position: 'absolute',
-    right: 20,
-    bottom: 20,
+    right: 10,
+    bottom: 10,
   }
 });

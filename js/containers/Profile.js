@@ -11,6 +11,7 @@ import {
   AlertIOS,
   Image,
   Platform,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -61,7 +62,7 @@ class Credits extends React.Component {
   render() {
     const creditHeader = <Heading1>Dancedeets Credits</Heading1>;
     const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
-    return <View style={[styles.card, this.props.style]}>{creditHeader}{creditGroups}</View>;
+    return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
   }
 }
 
@@ -85,7 +86,7 @@ class ShareButtons extends React.Component {
             track('Share DanceDeets', {Button: 'Share FB Post'});
             ShareDialog.show(shareLinkContent);
           }}
-          style={styles.noFlex}
+          style={styles.noFlexButton}
         />
         <Button
           size="small"
@@ -95,7 +96,7 @@ class ShareButtons extends React.Component {
             track('Share DanceDeets', {Button: 'Send FB Message'});
             MessageDialog.show(shareLinkContent);
           }}
-          style={styles.noFlex}
+          style={styles.noFlexButton}
         />
         <Button
           size="small"
@@ -111,7 +112,7 @@ class ShareButtons extends React.Component {
               console.warn(e);
             });
           }}
-          style={styles.noFlex}
+          style={styles.noFlexButton}
         />
       </View>
     );
@@ -131,19 +132,16 @@ function sendEmail() {
     });
 }
 
-class _ProfileCard extends React.Component {
+class _UserProfile extends React.Component {
   render() {
     const user = this.props.user;
     const image = user.picture ? <Image style={styles.profileImageSize} source={{uri: user.picture.data.url}}/> : null;
-    //TODO: show location
-    //TODO: show upcoming events
-    //TODO: show suggested dance styles
     let friendsCopy = <Text style={{marginBottom: 10}}>{user.friends.data.length || 0} friends using DanceDeets</Text>;
     if (user.friends.data.length === 0) {
       friendsCopy = null;
     }
 
-    return <HorizontalView style={[styles.profileCard, styles.card]}>
+    return <HorizontalView>
         <View>
           <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
           <TouchableOpacity onPress={this.props.logOutWithPrompt}>
@@ -161,38 +159,57 @@ class _ProfileCard extends React.Component {
       </HorizontalView>;
   }
 }
-const ProfileCard = connect(
+const UserProfile = connect(
   state => ({
     user: state.user.userData,
   }),
   (dispatch: Dispatch) => ({
     logOutWithPrompt: () => dispatch(logOutWithPrompt()),
   }),
-)(_ProfileCard);
+)(_UserProfile);
+
+class Card extends React.Component {
+  render() {
+    return <View style={styles.card}>
+    {this.props.children}
+    </View>
+  }
+}
 
 export default class Profile extends React.Component {
   render() {
-    return <View style={styles.container}>
-      <ProfileCard />
+    return <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
+      <Card>
+        <UserProfile />
+      </Card>
 
-      <View style={styles.bottomSpacedContent}>
+      <Card>
+        <ShareButtons />
+      </Card>
+
       <Button size="small" caption="Notification Settings"/>
 
-      <ShareButtons />
+      <Button size="small" caption="Send Feedback" onPress={sendEmail} style={{marginTop: 5}}/>
 
-      <Credits style={{marginTop: 20}}/>
+      <Card>
+        <Credits />
+      </Card>
 
-      <Button size="small" caption="Send Feedback" onPress={sendEmail}/>
-      </View>
-    </View>;
+    </ScrollView>;
   }
 }
 
 const styles = StyleSheet.create({
-  noFlex: {
+  noFlexButton: {
     flex: 0,
+    marginTop: 5,
   },
   container: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  containerContent: {
+    top: STATUSBAR_HEIGHT,
     flex: 1,
     backgroundColor: 'black',
     alignItems: 'center',
@@ -207,9 +224,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-  },
-  profileCard: {
-    top: STATUSBAR_HEIGHT,
     margin: 10,
     // So it looks okay one wide screen devices
     width: 350,
