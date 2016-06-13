@@ -30,10 +30,10 @@ class User(ndb.Model):
     json_data = ndb.JsonProperty()
 
     # Event stats
-    num_auto_added_events = ndb.IntegerProperty()
-    num_auto_added_own_events = ndb.IntegerProperty()
-    num_hand_added_events = ndb.IntegerProperty()
-    num_hand_added_own_events = ndb.IntegerProperty()
+    num_auto_added_events = ndb.IntegerProperty(indexed=False)
+    num_auto_added_own_events = ndb.IntegerProperty(indexed=False)
+    num_hand_added_events = ndb.IntegerProperty(indexed=False)
+    num_hand_added_own_events = ndb.IntegerProperty(indexed=False)
 
     # Search preferences
     location = ndb.StringProperty(indexed=False)
