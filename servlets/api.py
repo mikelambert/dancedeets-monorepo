@@ -234,7 +234,7 @@ class SearchHandler(ApiHandler):
                 },
             }
         self.write_json_success(json_response)
-    post=get
+    post = get
 
 
 def update_user(servlet, user, json_body):
@@ -444,7 +444,7 @@ def canonicalize_event_data(db_event, event_keywords):
         annotations['creation'] = {
             'time': db_event.creation_time.strftime(DATETIME_FORMAT),
             'method': db_event.creating_method,
-            'creator': str(db_event.creating_fb_uid), #STR_ID_MIGRATE
+            'creator': str(db_event.creating_fb_uid) if db_event.creating_fb_uid else None, #STR_ID_MIGRATE
         }
     # We may have keywords from the search result that called us
     if event_keywords:
@@ -472,6 +472,25 @@ def canonicalize_event_data(db_event, event_keywords):
 
     return event_api
 
+
+@apiroute('/user/info')
+class UserInfoHandler(ApiHandler):
+    requires_auth = True
+
+    def get(self):
+        self.errors_are_fatal()
+
+        user = users.User.get_by_id(self.fb_uid)
+        results = {
+            'location': user.location,
+            'creation_time': user.creation_time.strftime(DATETIME_FORMAT_TZ),
+            'num_auto_added_events': user.num_auto_added_events,
+            'num_auto_added_own_events': user.num_auto_added_own_events,
+            'num_hand_added_events': user.num_hand_added_events,
+            'num_hand_added_own_events': user.num_hand_added_own_events,
+        }
+        self.write_json_success(results)
+    post = get
 
 @apiroute('/events_list_to_add')
 class ListAddHandler(ApiHandler):
@@ -519,4 +538,4 @@ class EventHandler(ApiHandler):
         # Ten minute expiry on data we return
         self.response.headers['Cache-Control'] = 'max-age=%s' % (60 * 10)
         self.write_json_success(json_data)
-    post=get
+    post = get
