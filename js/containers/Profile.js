@@ -61,7 +61,7 @@ class Credits extends React.Component {
   render() {
     const creditHeader = <Heading1>Dancedeets Credits</Heading1>;
     const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
-    return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
+    return <View style={[styles.card, this.props.style]}>{creditHeader}{creditGroups}</View>;
   }
 }
 
@@ -143,7 +143,7 @@ class _ProfileCard extends React.Component {
       friendsCopy = null;
     }
 
-    return <HorizontalView style={styles.profileCard}>
+    return <HorizontalView style={[styles.profileCard, styles.card]}>
         <View>
           <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
           <TouchableOpacity onPress={this.props.logOutWithPrompt}>
@@ -151,7 +151,7 @@ class _ProfileCard extends React.Component {
           </TouchableOpacity>
         </View>
         <View>
-          <Text style={styles.profileName}>{user.profile.name || ' '}</Text>
+          <Heading1>{user.profile.name || ' '}</Heading1>
           <Text style={{fontStyle: 'italic', marginBottom: 10}}>{user.ddUser.location || ' '}</Text>
           {friendsCopy}
           <Text style={{fontWeight: 'bold'}}>Dance Events:</Text>
@@ -201,14 +201,16 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 22,
   },
-  profileCard: {
-    top: STATUSBAR_HEIGHT,
-    margin: 10,
-    padding: 10,
+  card: {
     backgroundColor: purpleColors[3],
     borderColor: purpleColors[0],
     borderWidth: 1,
     borderRadius: 10,
+    padding: 10,
+  },
+  profileCard: {
+    top: STATUSBAR_HEIGHT,
+    margin: 10,
     // So it looks okay one wide screen devices
     width: 350,
   },
