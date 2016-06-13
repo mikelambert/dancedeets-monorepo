@@ -27,7 +27,7 @@
     </li>
   {% endif %}
   {% if displayable_event.admins %}
-    <li><i class="event-info-icon fa-li fa fa-user fa-lg"></i><b>Admins:</b><br>
+    <li><i class="event-info-icon fa-li fa fa-user fa-lg"></i><b>Organizers:</b><br>
     <ul>
     {% for admin in displayable_event.admins %}
       <li><a class="link-event-admin" href="https://www.facebook.com/{{ admin.id }} ">{{ admin.name }}</a></li>
