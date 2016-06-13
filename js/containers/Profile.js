@@ -21,6 +21,7 @@ import { logOutWithPrompt } from '../actions';
 import { linkColor } from '../Colors';
 import {
   Button,
+  Card,
   Heading1,
   HorizontalView,
   Text,
@@ -168,13 +169,6 @@ const UserProfile = connect(
   }),
 )(_UserProfile);
 
-class Card extends React.Component {
-  render() {
-    return <View style={styles.card}>
-    {this.props.children}
-    </View>
-  }
-}
 
 export default class Profile extends React.Component {
   render() {
@@ -217,16 +211,6 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: 22,
-  },
-  card: {
-    backgroundColor: purpleColors[3],
-    borderColor: purpleColors[0],
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    margin: 10,
-    // So it looks okay one wide screen devices
-    width: 350,
   },
   profileImageSize: {
     width: 100,
