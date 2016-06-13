@@ -1,5 +1,6 @@
 import datetime
 import logging
+import urllib2
 
 from google.appengine.api import images
 from google.appengine.ext import ndb
@@ -167,11 +168,14 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
     db_event.address = json_body.get('location_address')
 
     if db_event.image_url:
-        mimetype, image_data = fetch.fetch_data(db_event.image_url)
-        image = images.Image(image_data)
-        json_body['photo_width'] = image.width
-        json_body['photo_height'] = image.height
-        logging.info("Found image width size %sx%s", image.width, image.height)
+        try:
+            mimetype, image_data = fetch.fetch_data(db_event.image_url)
+            image = images.Image(image_data)
+            json_body['photo_width'] = image.width
+            json_body['photo_height'] = image.height
+            logging.info("Found image width size %sx%s", image.width, image.height)
+        except urllib2.HTTPError:
+            logging.warning("Couldn't find image: %s", db_event.image_url)
 
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
