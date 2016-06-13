@@ -138,21 +138,32 @@ class _ProfileCard extends React.Component {
     //TODO: show location
     //TODO: show upcoming events
     //TODO: show suggested dance styles
+    let friendsCopy = <Text style={{marginBottom: 10}}>{user.friends.data.length || 0} friends using DanceDeets</Text>;
+    if (user.friends.data.length === 0) {
+      friendsCopy = null;
+    }
+
     return <HorizontalView style={styles.profileCard}>
-        <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
         <View>
-          <Text style={styles.profileName}>{user.profile.name || ' '}</Text>
-          <Text>{user.friends.data.length || 0} friends using DanceDeets</Text>
+          <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
           <TouchableOpacity onPress={this.props.logOutWithPrompt}>
             <Text style={styles.link}>Logout</Text>
           </TouchableOpacity>
+        </View>
+        <View>
+          <Text style={styles.profileName}>{user.profile.name || ' '}</Text>
+          <Text style={{fontStyle: 'italic', marginBottom: 10}}>{user.ddUser.location || ' '}</Text>
+          {friendsCopy}
+          <Text style={{fontWeight: 'bold'}}>Dance Events:</Text>
+          <Text>– Added: {user.ddUser.num_hand_added_events || 0}</Text>
+          <Text>– Auto-contributed: {user.ddUser.num_auto_added_events || 0}</Text>
         </View>
       </HorizontalView>;
   }
 }
 const ProfileCard = connect(
   state => ({
-    user: state.user.fbUserData,
+    user: state.user.userData,
   }),
   (dispatch: Dispatch) => ({
     logOutWithPrompt: () => dispatch(logOutWithPrompt()),

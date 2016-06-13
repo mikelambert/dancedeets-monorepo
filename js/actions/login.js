@@ -16,6 +16,7 @@ import Alert from 'Alert';
 import { auth } from '../api/dancedeets';
 import { trackLogin, trackLogout } from '../store/track';
 import { performRequest } from '../api/fb';
+import { userInfo } from '../api/dancedeets';
 import _ from 'lodash/array';
 import type { Action, Dispatch, hunkAction } from './types';
 
@@ -56,6 +57,7 @@ async function loadUserData(dispatch) {
     profile: performRequest('GET', 'me', {fields: 'id,name'}),
     picture: performRequest('GET', 'me/picture', {type: 'large', fields: 'url', redirect: '0'}),
     friends: performRequest('GET', 'me/friends', {limit: '1000', fields: 'id'}),
+    ddUser: userInfo(),
   };
 
   const keys = Object.keys(requests);
@@ -91,7 +93,7 @@ export function logOut(): ThunkAction {
 
 export function logOutWithPrompt(): ThunkAction {
   return (dispatch, getState) => {
-    let name = getState().user.fbUserData.profile.name || 'there';
+    let name = getState().user.userData.profile.name || 'there';
 
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(

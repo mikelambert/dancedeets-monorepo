@@ -30,6 +30,7 @@
 		1D89584E1CF913100029E37E /* Ubuntu 300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584B1CF9125D0029E37E /* Ubuntu 300.ttf */; };
 		1D89584F1CF913130029E37E /* Ubuntu 500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584C1CF9125D0029E37E /* Ubuntu 500.ttf */; };
 		1D8958501CF913150029E37E /* Ubuntu regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584D1CF9125D0029E37E /* Ubuntu regular.ttf */; };
+		1D8BF8071D0E442D00B7243F /* Ubuntu italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D8BF7F01D0E43F800B7243F /* Ubuntu italic.ttf */; };
 		1D9EDD1D1CF9097F00871235 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D9EDD1A1CF9097F00871235 /* FBSDKCoreKit.framework */; };
 		1D9EDD1E1CF9097F00871235 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D9EDD1B1CF9097F00871235 /* FBSDKLoginKit.framework */; };
 		1D9EDD1F1CF9097F00871235 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D9EDD1C1CF9097F00871235 /* FBSDKShareKit.framework */; };
@@ -242,6 +243,7 @@
 		1D89584B1CF9125D0029E37E /* Ubuntu 300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 300.ttf"; sourceTree = "<group>"; };
 		1D89584C1CF9125D0029E37E /* Ubuntu 500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 500.ttf"; sourceTree = "<group>"; };
 		1D89584D1CF9125D0029E37E /* Ubuntu regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu regular.ttf"; sourceTree = "<group>"; };
+		1D8BF7F01D0E43F800B7243F /* Ubuntu italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu italic.ttf"; sourceTree = "<group>"; };
 		1D9EDD1A1CF9097F00871235 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../Documents/FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		1D9EDD1B1CF9097F00871235 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../../Documents/FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		1D9EDD1C1CF9097F00871235 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../../Documents/FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
@@ -430,6 +432,7 @@
 				1D89584B1CF9125D0029E37E /* Ubuntu 300.ttf */,
 				1D89584C1CF9125D0029E37E /* Ubuntu 500.ttf */,
 				1D89584D1CF9125D0029E37E /* Ubuntu regular.ttf */,
+				1D8BF7F01D0E43F800B7243F /* Ubuntu italic.ttf */,
 			);
 			name = Fonts;
 			sourceTree = "<group>";
@@ -931,6 +934,7 @@
 			files = (
 				1D89584E1CF913100029E37E /* Ubuntu 300.ttf in Resources */,
 				1D8958501CF913150029E37E /* Ubuntu regular.ttf in Resources */,
+				1D8BF8071D0E442D00B7243F /* Ubuntu italic.ttf in Resources */,
 				1D2694F31D077C5F000E1BD3 /* launch_screen.jpg in Resources */,
 				1D449B301D04D70500195AF6 /* Images.xcassets in Resources */,
 				1D89584F1CF913130029E37E /* Ubuntu 500.ttf in Resources */,

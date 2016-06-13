@@ -44,6 +44,8 @@ export const defaultFont = {
 const styles = StyleSheet.create({
   font: Object.assign({}, defaultFont),
   text: {
+    fontSize: normalize(15),
+    lineHeight: normalize(18),
   },
   h1: {
     fontSize: normalize(24),
