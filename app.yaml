@@ -1,5 +1,5 @@
 vm: true
-runtime: python27
+runtime: python-compat
 threadsafe: true
 api_version: 1
 service: default
@@ -7,17 +7,9 @@ service: default
 manual_scaling:
   instances: 1
 
-# At some point, we must swap vm_settings for resources
-# And change runtime form 'vm' to 'custom'
-vm_settings:
-  machine_type: n1-standard-1
-  vm_runtime: python27
-#resources:
-#  cpu: .5
-#  memory_gb: 1.3
-
-
-#  has_docker_image: 'True'
+resources:
+  cpu: 1.0
+  memory_gb: 1.3
 
 #automatic_scaling:
 #  max_idle_instances: 1
