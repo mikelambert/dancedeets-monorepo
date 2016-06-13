@@ -375,7 +375,7 @@ class EventRsvpControl extends React.Component {
       values={RsvpOnFB.RSVPs.map((x)=>x.text)}
       defaultIndex={this.state.defaultRsvp}
       tintColor={yellowColors[0]}
-      style={{marginTop: 5}}
+      style={{marginTop: 5, flex: 1}}
       tryOnChange={this.onRsvpChange}
       />;
   }
@@ -399,7 +399,7 @@ class EventRsvp extends SubEventLine {
       //TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
       const counts = components.join(', ');
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
-      return <View style={{width: 300}}>
+      return <View>
         {countsText}
         <EventRsvpControl event={this.props.event} />
       </View>;
@@ -523,8 +523,7 @@ class _EventRow extends React.Component {
       const width = 100;
       const imageProps = this.props.event.getImagePropsForWidth(width);
       return (
-        <Card>
-        <View style={eventStyles.row}>
+        <Card style={eventStyles.row}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
             <Text
               numberOfLines={2}
@@ -545,15 +544,13 @@ class _EventRow extends React.Component {
               </View>
             </HorizontalView>
           </TouchableOpacity>
-        </View>
         </Card>
       );
     } else {
       const width = Dimensions.get('window').width;
       const imageProps = this.props.event.getImagePropsForWidth(width);
       return (
-        <Card>
-        <View style={eventStyles.row}>
+        <Card style={eventStyles.row}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
             <ProportionalImage
               source={{uri: imageProps.source}}
@@ -568,7 +565,6 @@ class _EventRow extends React.Component {
             <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
             <EventVenue venue={this.props.event.venue} />
           </TouchableOpacity>
-        </View>
         </Card>
       );
     }
@@ -634,7 +630,7 @@ export class FullEventView extends React.Component {
         style={[eventStyles.container, {width: width}]}
       >
         {this.props.event.cover ? clickableFlyer : flyerImage}
-        <LinearGradient
+        <Card
           start={[0.0, 0.0]} end={[0.0, 1]}
           colors={[purpleColors[2], purpleColors[4], 'black']}
           locations={[0.0, 0.8, 1.0]}
@@ -650,12 +646,12 @@ export class FullEventView extends React.Component {
           <EventRsvp event={this.props.event} />
           <EventSource event={this.props.event} />
           <EventAddedBy event={this.props.event} />
-        </LinearGradient>
-        <EventOrganizers event={this.props.event} />
-        <HorizontalView style={{marginHorizontal: 5, justifyContent: 'space-between'}}>
-          <AddToCalendarButton event={this.props.event} />
-          <EventShare event={this.props.event} />
-        </HorizontalView>
+          <EventOrganizers event={this.props.event} />
+          <HorizontalView style={{marginHorizontal: 5, justifyContent: 'space-between'}}>
+            <AddToCalendarButton event={this.props.event} />
+            <EventShare event={this.props.event} />
+          </HorizontalView>
+        </Card>
         <EventDescription description={this.props.event.description} />
         <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
           <EventMap venue={this.props.event.venue} />
