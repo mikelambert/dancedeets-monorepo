@@ -657,6 +657,7 @@ const detailHeight = 16;
 const eventStyles = StyleSheet.create({
   thumbnail: {
     flex: 1,
+    borderRadius: 5,
   },
   container: {
     backgroundColor: '#000',
