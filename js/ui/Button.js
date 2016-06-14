@@ -6,7 +6,7 @@
 
 'use strict';
 
-var { purpleColors, yellowColors } = require('../Colors');
+var { purpleColors, yellowColors, redColors } = require('../Colors');
 var Image = require('Image');
 var LinearGradient = require('react-native-linear-gradient');
 var React = require('React');
@@ -43,7 +43,13 @@ class Button extends React.Component {
       icon = <Image source={this.props.icon} style={caption ? styles.iconSpacing : {}} />;
     }
     const size = this.props.size === 'small' ? styles.smallButton : styles.largeButton;
-    const colors = this.props.color === 'purple' ? [purpleColors[1], purpleColors[2], purpleColors[2]] : [yellowColors[1], yellowColors[4], yellowColors[4]];
+    let colors = null;
+    if (this.props.color === 'purple') {
+      colors = [purpleColors[1], purpleColors[2], purpleColors[2]];
+    } else {
+      colors = [yellowColors[1], yellowColors[4], yellowColors[4]];
+      colors = [redColors[0], redColors[1], redColors[1]]
+    }
     const content = (
       <LinearGradient
         start={[0, 0]} end={[0, 1]}
