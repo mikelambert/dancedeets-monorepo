@@ -61,7 +61,7 @@ class CreditSubList extends React.Component {
 
 class Credits extends React.Component {
   render() {
-    const creditHeader = <Heading1>Dancedeets Credits</Heading1>;
+    const creditHeader = <Heading1 style={{marginBottom: 5}}>Dancedeets Credits</Heading1>;
     const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
     return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
   }
@@ -133,6 +133,19 @@ function sendEmail() {
     });
 }
 
+function sendAdvertisingEmail() {
+  track('Advertising');
+  Mailer.mail({
+      subject: 'Advertising/Promotion Interest',
+      recipients: ['advertising@dancedeets.com'],
+      body: '',
+    }, (error, event) => {
+        if (error) {
+          AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
+        }
+    });
+}
+
 class _UserProfile extends React.Component {
   render() {
     const user = this.props.user;
@@ -179,9 +192,11 @@ export default class Profile extends React.Component {
         <ShareButtons />
       </Card>
 
-      <Button size="small" caption="Notification Settings"/>
+      <Button size="small" caption="Notification Settings(TODO)"/>
 
-      <Button size="small" caption="Send Feedback" onPress={sendEmail} style={{marginTop: 5}}/>
+      <Button size="small" caption="Send Feedback" onPress={sendEmail} style={{marginTop: 10}}/>
+
+      <Button size="small" caption="Advertise/Promote" onPress={sendAdvertisingEmail} style={{marginTop: 10}}/>
 
       <Card>
         <Credits />
@@ -202,7 +217,6 @@ const styles = StyleSheet.create({
   },
   containerContent: {
     top: STATUSBAR_HEIGHT,
-    flex: 1,
     backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'space-around',
