@@ -102,6 +102,7 @@ var styles = StyleSheet.create({
   caption: {
     letterSpacing: 1,
     fontSize: 16,
+    lineHeight: 19,
     color: 'white',
   },
   secondaryCaption: {
