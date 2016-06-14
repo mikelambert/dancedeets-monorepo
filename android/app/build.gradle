@@ -151,6 +151,7 @@ dependencies {
     }
     compile (project(':react-native-admob')) {
         exclude group: 'com.facebook.react', module: 'react-native'
+        exclude group: 'com.google.android.gms', module: 'play-services-ads'
     }
     compile (project(':react-native-mixpanel')) {
         exclude group: 'com.facebook.react', module: 'react-native'
@@ -169,6 +170,8 @@ dependencies {
     }
     compile (project(':react-native-maps')) {
         exclude group: 'com.facebook.react', module: 'react-native'
+        exclude group: 'com.google.android.gms', module: 'play-services-base'
+        exclude group: 'com.google.android.gms', module: 'play-services-maps'
     }
     compile (project(':react-native-segmented-android')) {
         exclude group: 'com.facebook.react', module: 'react-native'
@@ -181,8 +184,14 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
-    // From node_modules
-    compile 'com.google.firebase:firebase-ads:9.0.0'
+
+    compile 'com.google.firebase:firebase-core:9.0.0'
+    // The excludes above and includes below are due to version incompatibilities
+    // between 8.4 and 9.0 libraries.
+    // https://github.com/lelandrichardson/react-native-maps/issues/249
+    compile 'com.google.android.gms:play-services-base:9.0.0'
+    compile 'com.google.android.gms:play-services-ads:9.0.0'
+    compile 'com.google.android.gms:play-services-maps:9.0.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
         transitive = true;
     }

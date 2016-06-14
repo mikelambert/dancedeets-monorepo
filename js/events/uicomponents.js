@@ -425,11 +425,6 @@ class EventDescription extends React.Component {
 
 class EventMap extends React.Component {
   render() {
-    // TODO: Disabled while we wait for:
-    // https://github.com/lelandrichardson/react-native-maps/issues/249
-    if (Platform.OS === 'android') {
-      return null;
-    }
     return <MapView
         style={eventStyles.eventMap}
         region={{
