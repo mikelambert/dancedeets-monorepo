@@ -138,12 +138,12 @@ const styles = StyleSheet.create({
   },
   onboardHeader: {
     color: 'white',
-    top: 60,
     fontSize: 30,
+    lineHeight: 40,
     fontWeight: 'bold',
+    height: 60,
   },
   onboardList: {
-    top: 80,
   },
   onboardListItem: {
     color: 'white',
@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
   },
   centerItems: {
     alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   bottomFade: {
     position: 'absolute',
