@@ -131,7 +131,7 @@ class AppContainer extends React.Component {
 					<NavigationCard
 						{...props}
 						key={props.scene.navigationState.key}
-						style={{marginTop: 63}}
+						style={{marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT}}
 						renderScene={this.renderScene}
 					/>
 				)}
