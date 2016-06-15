@@ -7,6 +7,7 @@
 
 import React from 'react';
 import {
+  Animated,
   Image,
   View,
 } from 'react-native';
@@ -15,21 +16,31 @@ type Props = {
   originalWidth: number,
   originalHeight: number,
   style?: any,
+  duration: number,
 };
 
 export default class ProportionalImage extends React.Component {
   props: Props;
 
   state: {
-    style: {height: number} | {},
+    height: ?number,
+    opacity: any,
   };
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      style: {}
+      height: null,
+      opacity: new Animated.Value(0),
     };
     (this: any).onLayout = this.onLayout.bind(this);
+    (this: any).onLoad = this.onLoad.bind(this);
+  }
+
+  getDefaultProps() {
+    return {
+      duration: 200,
+    };
   }
 
   setNativeProps(nativeProps: Object) {
@@ -45,11 +56,17 @@ export default class ProportionalImage extends React.Component {
 
     if (measuredHeight !== currentHeight) {
       this.setState({
-        style: {
-          height: measuredHeight
-        }
+        ...this.state,
+        height: measuredHeight,
       });
     }
+  }
+
+  onLoad() {
+    Animated.timing(this.state.opacity, {
+      toValue: 1,
+      duration: this.props.duration,
+    }).start();
   }
 
   render() {
@@ -60,9 +77,10 @@ export default class ProportionalImage extends React.Component {
         ref="view"
         {...this.props}
         >
-        <Image
+        <Animated.Image
           {...this.props}
-          style={[this.props.style, this.state.style]}
+          style={[{opacity: this.state.opacity, height: this.state.height}, this.props.style]}
+          onLoad={this.onLoad}
         />
       </View>
     );
