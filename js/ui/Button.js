@@ -46,16 +46,17 @@ class Button extends React.Component {
     let colors = null;
     if (this.props.color === 'purple') {
       colors = [purpleColors[1], purpleColors[2], purpleColors[2]];
-    } else {
+    } else if (this.props.color === 'yellow') {
       colors = [yellowColors[1], yellowColors[4], yellowColors[4]];
-      colors = [redColors[0], redColors[1], redColors[1]]
+    } else if (this.props.color === 'red') {
+      colors = [redColors[0], redColors[1], redColors[1]];
     }
     const content = (
       <LinearGradient
         start={[0, 0]} end={[0, 1]}
         locations={[0.0, 0.7, 1.0]}
         colors={colors}
-        style={[styles.button, size, this.props.style]}>
+        style={[styles.button, size]}>
         {icon}
         <Text style={[styles.caption, this.props.textStyle]}>
           {caption}

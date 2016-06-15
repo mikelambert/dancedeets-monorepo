@@ -100,11 +100,11 @@ class AddEventButton extends React.Component {
   render() {
     return <Button
       caption="Add Event"
-      color="yellow"
+      color="red"
       textStyle={{fontWeight: 'bold', fontSize: 14}}
       style={styles.addEventButton}
       onPress={this.props.onPress}
-    >Add Event!</Button>;
+    >Add Event</Button>;
   }
 }
 
@@ -289,6 +289,7 @@ class EventListContainer extends React.Component {
     );
   }
 }
+
 const mapStateToProps = (state) => {
   return {
     search: state.search,
@@ -353,7 +354,7 @@ const styles = StyleSheet.create({
   },
   addEventButton: {
     position: 'absolute',
-    right: 10,
-    bottom: 10,
+    right: 20,
+    bottom: 30,
   }
 });
