@@ -160,7 +160,6 @@ class AppContainer extends React.Component {
 		case 'EventView':
 			return <EventPager
 				onEventNavigated={(event)=> {
-          console.log('HEYHEYHEYHEYHEY');
 					trackWithEvent('View Event', event);
 					this.props.onSwap('EventView', {key: 'EventView', title: event.name, event: event});
 				}}
