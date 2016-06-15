@@ -18,7 +18,7 @@ import { trackLogin, trackLogout } from '../store/track';
 import { performRequest } from '../api/fb';
 import { userInfo } from '../api/dancedeets';
 import _ from 'lodash/array';
-import type { Action, Dispatch, hunkAction } from './types';
+import type { Action, Dispatch, ThunkAction } from './types';
 
 
 export function loginStartOnboard(): Action {
