@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     lineHeight: 40,
     fontWeight: 'bold',
+    marginTop: 20,
     height: 60,
   },
   onboardList: {
