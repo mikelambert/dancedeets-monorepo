@@ -132,14 +132,20 @@ export default class TutorialScreen extends React.Component {
   }
 }
 
+const scale = Dimensions.get('window').width / 375;
+
+function normalize(size: number): number {
+  return Math.round(scale * size);
+}
+
 const styles = StyleSheet.create({
   topAndBottom: {
     justifyContent: 'space-between',
   },
   onboardHeader: {
     color: 'white',
-    fontSize: 30,
-    lineHeight: 40,
+    fontSize: normalize(30),
+    lineHeight: normalize(40),
     fontWeight: 'bold',
     marginTop: 20,
     height: 60,
@@ -148,8 +154,8 @@ const styles = StyleSheet.create({
   },
   onboardListItem: {
     color: 'white',
-    lineHeight: 35,
-    fontSize: 20,
+    lineHeight: normalize(35),
+    fontSize: normalize(20),
     fontWeight: 'bold',
   },
   centerItems: {
