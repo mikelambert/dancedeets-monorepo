@@ -70,7 +70,7 @@ async function loadUserData(dispatch) {
     user[kv[0]] = kv[1];
   });
 
-  // Since ddUser.location could be a full string, let's get just the city
+  // Since ddUser.location could be a full address, let's get just the city
   const address = await Geocoder.geocodeAddress(user.ddUser.location);
   const formattedCity = format(address[0]);
   user.ddUser.formattedCity = formattedCity;
