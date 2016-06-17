@@ -59,15 +59,23 @@ class SubEventLine extends React.Component {
     throw ('Not Implemented!');
   }
 
+  shouldRender() {
+    return true;
+  }
+
   render() {
-    return (
-      <HorizontalView style={eventStyles.detailLine}>
-        <Image key="image" source={this.icon()} style={eventStyles.detailIcon} />
-        <View style={eventStyles.detailTextContainer}>
-        {this.textRender()}
-        </View>
-      </HorizontalView>
-    );
+    if (this.shouldRender()) {
+      return (
+        <HorizontalView style={eventStyles.detailLine}>
+          <Image key="image" source={this.icon()} style={eventStyles.detailIcon} />
+          <View style={eventStyles.detailTextContainer}>
+          {this.textRender()}
+          </View>
+        </HorizontalView>
+      );
+    } else {
+      return null;
+    }
   }
 }
 
@@ -209,12 +217,8 @@ class EventAddedBy extends SubEventLine {
     this.loadProfileName();
   }
 
-  render() {
-    if (this.state.addedBy) {
-      return super.render();
-    } else {
-      return null;
-    }
+  shouldRender() {
+    return this.state.addedBy;
   }
 
   textRender() {
@@ -285,6 +289,10 @@ class EventOrganizers extends SubEventLine {
         this._openAdmin(admin.id);
       }}
     ><Text style={[eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>;
+  }
+
+  shouldRender() {
+    return this.props.event.admins.length;
   }
 
   textRender() {
@@ -384,6 +392,11 @@ class EventRsvp extends SubEventLine {
 
   icon() {
     return require('./images/attending.png');
+  }
+
+
+  shouldRender() {
+    return this.props.event.rsvp;
   }
 
   textRender() {
