@@ -394,7 +394,6 @@ class EventRsvp extends SubEventLine {
     return require('./images/attending.png');
   }
 
-
   shouldRender() {
     return this.props.event.rsvp;
   }
@@ -411,9 +410,10 @@ class EventRsvp extends SubEventLine {
       //TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
       const counts = components.join(', ');
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
+      const rsvpControl = (this.props.event.source.name === 'Facebook Event') ? <EventRsvpControl event={this.props.event} /> : null;
       return <View>
         {countsText}
-        <EventRsvpControl event={this.props.event} />
+        {rsvpControl}
       </View>;
     } else {
       return null;
