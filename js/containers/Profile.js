@@ -192,7 +192,7 @@ export default class Profile extends React.Component {
         <ShareButtons />
       </Card>
 
-      <Button size="small" caption="Notification Settings(TODO)"/>
+      {Platform.OS === 'android' ? <Button size="small" caption="Notification Settings(TODO)"/> : null}
 
       <Button size="small" caption="Send Feedback" onPress={sendEmail} style={{marginTop: 10}}/>
 
