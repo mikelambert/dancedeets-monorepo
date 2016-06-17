@@ -10,7 +10,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import LoginButton from './LoginButton';
+import {
+  Button
+} from '../ui';
 import { Text } from '../ui';
 
 
@@ -24,7 +26,7 @@ export default class LoginButtonWithAlternate extends React.Component {
   render() {
     return (
       <View style={[styles.centerItems, styles.bottomBox]}>
-        <LoginButton
+        <Button
           icon={require('./icons/facebook.png')}
           caption="Login with Facebook"
           onPress={this.props.onLogin}
