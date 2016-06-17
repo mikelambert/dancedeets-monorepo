@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Dimensions,
   StyleSheet,
   View,
 } from 'react-native';
@@ -20,6 +21,6 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     // So it looks okay one wide screen devices
-    width: 350,
+    width: Dimensions.get('window').width - 25,
   },
 });

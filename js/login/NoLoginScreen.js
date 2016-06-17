@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 import { Text } from '../ui';
+import normalize from '../ui/normalize';
 import { linkColor } from '../Colors';
 
 const NoLoginText =
@@ -50,7 +51,7 @@ export default class NoLoginScreen extends React.Component {
             <LoginButtonWithAlternate
               onLogin={this.props.onLogin}
               onNoLogin={() => this.props.onNoLogin('Bottom Button')}
-              noLoginText="USE WEBSITE WITHOUT LOGIN"
+              noLoginText="Use website without login"
               />
           </View>
         </Image>
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   topText: {
     top: 40,
     color: 'white',
-    fontSize: 15,
+    fontSize: normalize(15),
   },
   container: {
     flex: 1,

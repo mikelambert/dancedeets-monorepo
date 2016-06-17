@@ -10,11 +10,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { yellowColors } from '../Colors';
 import {
-  Button
+  Button,
+  Text,
 } from '../ui';
-import { Text } from '../ui';
-
+import normalize from '../ui/normalize';
 
 export default class LoginButtonWithAlternate extends React.Component {
   props: {
@@ -30,6 +31,7 @@ export default class LoginButtonWithAlternate extends React.Component {
           icon={require('./icons/facebook.png')}
           caption="Login with Facebook"
           onPress={this.props.onLogin}
+          textStyle={styles.buttonStyle}
         />
         <TouchableOpacity
           style={styles.bottomLinkBox}
@@ -46,14 +48,17 @@ export default class LoginButtonWithAlternate extends React.Component {
 const styles = StyleSheet.create({
   bottomBox: {
     alignItems: 'center',
-    height: 125,
+    height: normalize(100),
   },
   bottomLink: {
-    color: 'white',
     fontWeight: 'normal',
-    fontSize: 14,
+    color: yellowColors[0],
   },
   bottomLinkBox: {
-    top: 10,
+    top: normalize(15),
+  },
+  buttonStyle: {
+    fontSize: normalize(14),
+    lineHeight: normalize(18),
   },
 });

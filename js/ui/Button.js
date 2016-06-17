@@ -14,6 +14,7 @@ var StyleSheet = require('StyleSheet');
 var { Text } = require('./DDText');
 var TouchableOpacity = require('TouchableOpacity');
 var View = require('View');
+import normalize from './normalize';
 
 class Button extends React.Component {
   props: {
@@ -40,7 +41,7 @@ class Button extends React.Component {
     const caption = this.props.caption;
     let icon;
     if (this.props.icon) {
-      icon = <Image source={this.props.icon} style={caption ? styles.iconSpacing : {}} />;
+      icon = <Image source={this.props.icon} style={[caption ? styles.iconSpacing : {}, styles.iconSize]} />;
     }
     const size = this.props.size === 'small' ? styles.smallButton : styles.largeButton;
     let colors = null;
@@ -93,6 +94,10 @@ var styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
   },
+  iconSize: {
+    width: normalize(18),
+    height: normalize(18),
+  },
   border: {
     borderWidth: 1,
     borderColor: 'white',
@@ -102,8 +107,8 @@ var styles = StyleSheet.create({
   },
   caption: {
     letterSpacing: 1,
-    fontSize: 16,
-    lineHeight: 19,
+    fontSize: normalize(16),
+    lineHeight: normalize(19),
     color: 'white',
   },
   secondaryCaption: {

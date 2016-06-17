@@ -42,6 +42,7 @@ import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
 import LinearGradient from 'react-native-linear-gradient';
+import normalize from '../ui/normalize';
 
 const {
   Globalize,
@@ -632,6 +633,14 @@ export class FullEventView extends React.Component {
       <TouchableOpacity onPress={this.onFlyerClicked} activeOpacity={0.5}>
         {flyerImage}
       </TouchableOpacity>;
+
+    const map = this.props.event.venue.geocode
+      ? <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
+          <EventMap venue={this.props.event.venue} />
+        </TouchableOpacity>
+      : null;
+
+
     return (
       <ProgressiveLayout
         style={[eventStyles.container, {width: width}]}
@@ -657,15 +666,13 @@ export class FullEventView extends React.Component {
           </HorizontalView>
         </Card>
         <EventDescription description={this.props.event.description} />
-        <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
-          <EventMap venue={this.props.event.venue} />
-        </TouchableOpacity>
+        {map}
       </ProgressiveLayout>
     );
   }
 }
 
-const detailHeight = 16;
+const detailHeight = 15;
 
 const eventStyles = StyleSheet.create({
   thumbnail: {
@@ -683,8 +690,8 @@ const eventStyles = StyleSheet.create({
     overflow: 'hidden',
   },
   rowTitle: {
-    fontSize: 18,
-    lineHeight: 22,
+    fontSize: normalize(18),
+    lineHeight: normalize(22),
     marginBottom: 10,
     marginLeft: 5,
     marginRight: 5,
@@ -699,11 +706,11 @@ const eventStyles = StyleSheet.create({
     flex: 1,
   },
   detailListText: {
-    fontSize: detailHeight,
+    fontSize: normalize(detailHeight),
     marginBottom: 5,
   },
   detailText: {
-    fontSize: detailHeight,
+    fontSize: normalize(detailHeight),
   },
   shareIndent: {
   },
@@ -714,11 +721,12 @@ const eventStyles = StyleSheet.create({
   detailIcon: {
     marginTop: 2,
     marginRight: 5,
-    height: detailHeight,
-    width: detailHeight,
+    height: normalize(detailHeight),
+    width: normalize(detailHeight),
   },
   description: {
-    lineHeight: 20,
+    fontSize: normalize(15),
+    lineHeight: normalize(16),
     marginBottom: 20,
     marginLeft: 5,
     marginRight: 5,

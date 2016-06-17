@@ -16,6 +16,7 @@ import LaunchScreen from './LaunchScreen';
 import LinearGradient from 'react-native-linear-gradient';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
 import { Text } from '../ui';
+import normalize from '../ui/normalize';
 
 var PAGES = [
   'Page 0',
@@ -123,19 +124,13 @@ export default class TutorialScreen extends React.Component {
             <LoginButtonWithAlternate
               onLogin={this.props.onLogin}
               onNoLogin={this.props.onNoLogin}
-              noLoginText="DON'T WANT TO LOGIN?"
+              noLoginText="don't want to login?"
               />
           </Image>
         </Image>
       </View>;
     }
   }
-}
-
-const scale = Dimensions.get('window').width / 375;
-
-function normalize(size: number): number {
-  return Math.round(scale * size);
 }
 
 const styles = StyleSheet.create({
