@@ -1145,6 +1145,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.DanceDeets.ios$(BUNDLE_ID_SUFFIX)";
 				PRODUCT_NAME = "DanceDeets Debug";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -1188,6 +1189,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.DanceDeets.ios$(BUNDLE_ID_SUFFIX)";
 				PRODUCT_NAME = DanceDeets;
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
