@@ -6,13 +6,7 @@
 
 'use strict';
 
-import type {Action} from '../actions/types';
-
-type User = {
-  profile: any;
-  picture: {data: {url: string}};
-  friends: any;
-};
+import type {Action, User} from '../actions/types';
 
 export type State = {
   isLoggedIn: boolean;
@@ -33,7 +27,6 @@ export function user(state: State = initialState, action: Action): State {
     return initialState;
   }
   if (action.type === 'LOGIN_LOADED_USER') {
-    console.log(action.user);
     return {
       ...state,
       userData: action.user,

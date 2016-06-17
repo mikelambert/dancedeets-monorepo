@@ -18,8 +18,9 @@ import { trackLogin, trackLogout } from '../store/track';
 import { performRequest } from '../api/fb';
 import { userInfo } from '../api/dancedeets';
 import _ from 'lodash/array';
-import type { Action, Dispatch, ThunkAction } from './types';
-
+import type { Action, Dispatch, ThunkAction, User } from './types';
+import Geocoder from '../api/geocoder';
+import {format} from '../events/formatAddress';
 
 export function loginStartOnboard(): Action {
   return {
@@ -64,10 +65,15 @@ async function loadUserData(dispatch) {
   const promises = keys.map((x) => requests[x]);
   const values = await Promise.all(promises);
   // Now await each of them and stick them in our user Object
-  const user = {};
-  _.zip(keys, values).forEach(async (kv) => {
+  const user: any = {};
+  _.zip(keys, values).forEach((kv) => {
     user[kv[0]] = kv[1];
   });
+
+  // Since ddUser.location could be a full string, let's get just the city
+  const address = await Geocoder.geocodeAddress(user.ddUser.location);
+  const formattedCity = format(address[0]);
+  user.ddUser.formattedCity = formattedCity;
 
   dispatch({
     type: 'LOGIN_LOADED_USER',

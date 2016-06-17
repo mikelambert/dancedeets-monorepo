@@ -162,7 +162,7 @@ class _UserProfile extends React.Component {
         </View>
         <View>
           <Heading1>{user.profile.name || ' '}</Heading1>
-          <Text style={{fontStyle: 'italic', marginBottom: 10}}>{user.ddUser.location || ' '}</Text>
+          <Text style={{fontStyle: 'italic', marginBottom: 10}}>{user.ddUser.formattedCity || ' '}</Text>
           {friendsCopy}
           <Text style={{fontWeight: 'bold'}}>Dance Events:</Text>
           <Text>– Added: {user.ddUser.num_hand_added_events || 0}</Text>

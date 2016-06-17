@@ -26,9 +26,15 @@
 
 import type { NavigationState } from 'NavigationTypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
-import { Event } from '../events/models';
-import type { SearchQuery, SearchResults } from '../events/search';
+import type { SearchResults } from '../events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
+
+export type User = {
+  profile: any;
+  picture: {data: {url: string}};
+  friends: any;
+  ddUser: any;
+};
 
 export type Action =
     { type: 'NAV_PUSH', state: NavigationState }
@@ -40,6 +46,7 @@ export type Action =
   | { type: 'LOGIN_START_ONBOARD' }
   | { type: 'LOGIN_LOGGED_IN', token: AccessToken }
   | { type: 'LOGIN_LOGGED_OUT' }
+  | { type: 'LOGIN_LOADED_USER', user: User }
   | { type: 'LOGIN_SKIPPED' }
   | { type: 'DETECTED_LOCATION', location: string }
   | { type: 'TOGGLE_LAYOUT' }
