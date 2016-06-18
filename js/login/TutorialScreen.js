@@ -15,8 +15,10 @@ import Carousel from 'react-native-carousel';
 import LaunchScreen from './LaunchScreen';
 import LinearGradient from 'react-native-linear-gradient';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
-import { Text } from '../ui';
-import normalize from '../ui/normalize';
+import {
+  normalize,
+  Text,
+} from '../ui';
 
 var PAGES = [
   'Page 0',

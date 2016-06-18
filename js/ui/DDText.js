@@ -8,10 +8,14 @@
 'use strict';
 
 import React from 'react';
-import {Text as RealText} from 'react-native';
-import {StyleSheet} from 'react-native';
+import {
+  Text as RealText,
+  StyleSheet,
+} from 'react-native';
 import {default as RealAutolink} from 'react-native-autolink';
-import normalize from '../ui/normalize';
+import {
+  normalize,
+} from '../ui/normalize';
 
 export function Text({style, ...props}: Object): ReactElement {
   return <RealText style={[styles.font, styles.text, style]} {...props} />;

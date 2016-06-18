@@ -26,6 +26,7 @@ import {
   Card,
   FBShareButton,
   HorizontalView,
+  normalize,
   ProgressiveLayout,
   ProportionalImage,
   SegmentedControl,
@@ -42,7 +43,6 @@ import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
 import LinearGradient from 'react-native-linear-gradient';
-import normalize from '../ui/normalize';
 
 const {
   Globalize,

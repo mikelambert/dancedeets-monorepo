@@ -11,8 +11,10 @@ import {
   View,
 } from 'react-native';
 import LoginButtonWithAlternate from './LoginButtonWithAlternate';
-import { Text } from '../ui';
-import normalize from '../ui/normalize';
+import {
+  normalize,
+  Text,
+} from '../ui';
 import { linkColor } from '../Colors';
 
 const NoLoginText =

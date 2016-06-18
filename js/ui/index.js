@@ -17,6 +17,7 @@ import ZoomableImage from './ZoomableImage';
 import * as DDText from './DDText';
 import * as Misc from './Misc';
 import * as FBButtons from './FBButtons';
+import * as normalize from './normalize';
 
 module.exports = {
   AutocompleteList,
@@ -30,4 +31,5 @@ module.exports = {
   ...FBButtons,
   ...Misc,
   ...DDText,
+  ...normalize,
 };

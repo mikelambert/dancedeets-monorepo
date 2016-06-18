@@ -33,11 +33,11 @@ import {
 import {
   Button,
   HorizontalView,
+  normalize,
   ProgressSpinner,
   SegmentedControl,
   Text,
 } from '../ui';
-import normalize from '../ui/normalize';
 import moment from 'moment';
 const {
   Globalize,

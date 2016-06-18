@@ -13,9 +13,9 @@ import {
 import { yellowColors } from '../Colors';
 import {
   Button,
+  normalize,
   Text,
 } from '../ui';
-import normalize from '../ui/normalize';
 
 export default class LoginButtonWithAlternate extends React.Component {
   props: {

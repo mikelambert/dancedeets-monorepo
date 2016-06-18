@@ -9,6 +9,10 @@ import { Dimensions } from 'react-native';
 
 const scale = Dimensions.get('window').width / 375;
 
-export default function normalize(size: number): number {
+export function normalize(size: number): number {
   return Math.round(scale * size);
+}
+
+export function semiNormalize(size: number): number {
+  return size + 0.7 * (normalize(size) - size);
 }

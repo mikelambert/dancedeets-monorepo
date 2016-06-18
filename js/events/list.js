@@ -38,13 +38,13 @@ import type { Address } from './formatAddress';
 import { format } from './formatAddress';
 import {
   Button,
+  normalize,
   Text,
 } from '../ui';
 import { track } from '../store/track';
 import { AdMobBanner } from 'react-native-admob';
 import WebsiteUrl from '../websiteUrl';
 import LinearGradient from 'react-native-linear-gradient';
-import normalize from '../ui/normalize';
 
 var en = new Globalize('en');
 

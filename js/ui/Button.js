@@ -14,7 +14,9 @@ var StyleSheet = require('StyleSheet');
 var { Text } = require('./DDText');
 var TouchableOpacity = require('TouchableOpacity');
 var View = require('View');
-import normalize from './normalize';
+import {
+  normalize,
+} from './normalize';
 
 class Button extends React.Component {
   props: {

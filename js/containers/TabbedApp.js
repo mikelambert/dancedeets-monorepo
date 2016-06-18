@@ -17,7 +17,9 @@ import AboutApp from '../containers/Profile';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import { track } from '../store/track';
-import normalize from '../ui/normalize';
+import {
+  normalize,
+} from '../ui';
 
 class GradientTabBar extends React.Component {
   render() {
