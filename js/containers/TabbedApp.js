@@ -18,7 +18,7 @@ import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import { track } from '../store/track';
 import {
-  normalize,
+  semiNormalize,
 } from '../ui';
 
 class GradientTabBar extends React.Component {
@@ -49,7 +49,11 @@ export default class TabbedAppView extends React.Component {
   }
 
   render() {
-    return <TabNavigator tabBarStyle={styles.tabBarStyle} tabBarClass={GradientTabBar}>
+    return <TabNavigator
+        tabBarStyle={styles.tabBarStyle}
+        sceneStyle={styles.tabBarSceneStyle}
+        tabBarClass={GradientTabBar}
+      >
       <TabNavigator.Item
         selected={this.state.selectedTab === 'home'}
         title="Events"
@@ -87,18 +91,23 @@ export default class TabbedAppView extends React.Component {
 }
 
 
+var tabBarHeight = semiNormalize(52);
+
 let styles = StyleSheet.create({
   icon: {
-    width: normalize(28),
-    height: normalize(28),
+    width: semiNormalize(28),
+    height: semiNormalize(28),
   },
   tabBarStyle: {
     backgroundColor: 'transparent',
-    height: normalize(52),
+    height: tabBarHeight,
+  },
+  tabBarSceneStyle: {
+    paddingBottom: tabBarHeight,
   },
   titleStyle: {
     color: 'white',
-    fontSize: normalize(14),
+    fontSize: semiNormalize(14),
   },
   selectedTitleStyle: {
     color: yellowColors[1],
