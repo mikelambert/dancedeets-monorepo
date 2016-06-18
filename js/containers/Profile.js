@@ -160,7 +160,7 @@ class _UserProfile extends React.Component {
           <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
           <Button size="small" caption="Logout" onPress={this.props.logOutWithPrompt} />
         </View>
-        <View>
+        <View style={styles.profileRight}>
           <Heading1>{user.profile.name || ' '}</Heading1>
           <Text style={{fontStyle: 'italic', marginBottom: 10}}>{user.ddUser.formattedCity || ' '}</Text>
           {friendsCopy}
@@ -226,6 +226,9 @@ const styles = StyleSheet.create({
   },
   profileLeft: {
     marginRight: 10,
+  },
+  profileRight: {
+    flex: 1,
   },
   profileImageSize: {
     width: 100,
