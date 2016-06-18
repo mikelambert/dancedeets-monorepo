@@ -17,6 +17,7 @@ import AboutApp from '../containers/Profile';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import { track } from '../store/track';
+import normalize from '../ui/normalize';
 
 class GradientTabBar extends React.Component {
   render() {
@@ -41,6 +42,10 @@ export default class TabbedAppView extends React.Component {
     };
   }
 
+  icon(source) {
+    return <Image source={source} style={styles.icon}/>;
+  }
+
   render() {
     return <TabNavigator tabBarStyle={styles.tabBarStyle} tabBarClass={GradientTabBar}>
       <TabNavigator.Item
@@ -48,8 +53,8 @@ export default class TabbedAppView extends React.Component {
         title="Events"
         titleStyle={styles.titleStyle}
         selectedTitleStyle={styles.selectedTitleStyle}
-        renderIcon={() => <Image source={require('../containers/icons/events.png')} />}
-        renderSelectedIcon={() => <Image source={require('../containers/icons/events-highlighted.png')} />}
+        renderIcon={() => this.icon(require('../containers/icons/events.png'))}
+        renderSelectedIcon={() => this.icon(require('../containers/icons/events-highlighted.png'))}
         onPress={() => {
           if (this.state.selectedTab === 'home') {
             this.refs.app_container.dispatchProps.goHome();
@@ -65,8 +70,8 @@ export default class TabbedAppView extends React.Component {
         title="About"
         titleStyle={styles.titleStyle}
         selectedTitleStyle={styles.selectedTitleStyle}
-        renderIcon={() => <Image source={require('../containers/icons/profile.png')} />}
-        renderSelectedIcon={() => <Image source={require('../containers/icons/profile-highlighted.png')} />}
+        renderIcon={() => this.icon(require('../containers/icons/profile.png'))}
+        renderSelectedIcon={() => this.icon(require('../containers/icons/profile-highlighted.png'))}
         onPress={() => {
           if (this.state.selectedTab !== 'about') {
             track('Tab Selected', {Tab: 'About'});
@@ -81,12 +86,17 @@ export default class TabbedAppView extends React.Component {
 
 
 let styles = StyleSheet.create({
-
+  icon: {
+    width: normalize(30),
+    height: normalize(30),
+  },
   tabBarStyle: {
     backgroundColor: 'transparent',
+    height: normalize(49),
   },
   titleStyle: {
     color: 'white',
+    fontSize: normalize(14),
   },
   selectedTitleStyle: {
     color: yellowColors[1],

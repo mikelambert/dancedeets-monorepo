@@ -725,8 +725,8 @@ const eventStyles = StyleSheet.create({
     width: normalize(detailHeight),
   },
   description: {
-    fontSize: normalize(15),
-    lineHeight: normalize(16),
+    fontSize: normalize(detailHeight),
+    lineHeight: normalize(20),
     marginBottom: 20,
     marginLeft: 5,
     marginRight: 5,
