@@ -24,6 +24,7 @@ import {
   Card,
   Heading1,
   HorizontalView,
+  normalize,
   Text,
 } from '../ui';
 import { purpleColors } from '../Colors';
@@ -194,9 +195,9 @@ export default class Profile extends React.Component {
 
       {Platform.OS === 'android' ? <Button size="small" caption="Notification Settings(TODO)"/> : null}
 
-      <Button size="small" caption="Send Feedback" onPress={sendEmail} style={{marginTop: 10}}/>
+      <Button size="small" caption="Send Feedback" onPress={sendEmail} style={styles.noFlexButton}/>
 
-      <Button size="small" caption="Advertise/Promote" onPress={sendAdvertisingEmail} style={{marginTop: 10}}/>
+      <Button size="small" caption="Advertise/Promote" onPress={sendAdvertisingEmail} style={styles.noFlexButton}/>
 
       <Card>
         <Credits />
@@ -209,7 +210,7 @@ export default class Profile extends React.Component {
 const styles = StyleSheet.create({
   noFlexButton: {
     flex: 0,
-    marginTop: 5,
+    marginTop: normalize(10),
   },
   container: {
     flex: 1,
