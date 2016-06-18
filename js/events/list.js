@@ -39,6 +39,7 @@ import { format } from './formatAddress';
 import {
   Button,
   normalize,
+  semiNormalize,
   Text,
 } from '../ui';
 import { track } from '../store/track';
@@ -335,7 +336,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   sectionHeader: {
-    height: 30,
+    height: semiNormalize(30),
     alignItems: 'flex-start', // left align
     justifyContent: 'center', // vertically center
     backgroundColor: purpleColors[1],
@@ -347,12 +348,12 @@ const styles = StyleSheet.create({
   onebox: {
     alignItems: 'flex-start', // left align
     justifyContent: 'center', // vertically center
-    height: 50,
+    height: semiNormalize(50),
   },
   oneboxText: {
     color: linkColor,
     marginLeft: 10,
-    fontSize: 18,
+    fontSize: semiNormalize(18),
   },
   addEventButton: {
     position: 'absolute',

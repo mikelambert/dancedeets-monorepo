@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import {default as RealAutolink} from 'react-native-autolink';
 import {
-  normalize,
+  semiNormalize,
 } from '../ui/normalize';
 
 export function Text({style, ...props}: Object): ReactElement {
@@ -43,17 +43,17 @@ export const defaultFont = {
 const styles = StyleSheet.create({
   font: Object.assign({}, defaultFont),
   text: {
-    fontSize: normalize(15),
-    lineHeight: normalize(21),
+    fontSize: semiNormalize(15),
+    lineHeight: semiNormalize(21),
   },
   h1: {
-    fontSize: normalize(24),
-    lineHeight: normalize(27),
+    fontSize: semiNormalize(24),
+    lineHeight: semiNormalize(27),
     fontWeight: 'bold',
     letterSpacing: -1,
   },
   p: {
-    fontSize: normalize(15),
-    lineHeight: normalize(23),
+    fontSize: semiNormalize(15),
+    lineHeight: semiNormalize(23),
   },
 });

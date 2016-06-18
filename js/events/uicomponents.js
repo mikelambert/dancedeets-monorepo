@@ -26,10 +26,10 @@ import {
   Card,
   FBShareButton,
   HorizontalView,
-  normalize,
   ProgressiveLayout,
   ProportionalImage,
   SegmentedControl,
+  semiNormalize,
   Text,
 } from '../ui';
 import { connect } from 'react-redux';
@@ -690,8 +690,8 @@ const eventStyles = StyleSheet.create({
     overflow: 'hidden',
   },
   rowTitle: {
-    fontSize: normalize(18),
-    lineHeight: normalize(22),
+    fontSize: semiNormalize(18),
+    lineHeight: semiNormalize(22),
     marginBottom: 10,
     marginLeft: 5,
     marginRight: 5,
@@ -704,13 +704,14 @@ const eventStyles = StyleSheet.create({
   },
   detailTextContainer: {
     flex: 1,
-  },
+   },
   detailListText: {
-    fontSize: normalize(detailHeight),
+    fontSize: semiNormalize(detailHeight),
     marginBottom: 5,
   },
   detailText: {
-    fontSize: normalize(detailHeight),
+    fontSize: semiNormalize(detailHeight),
+    lineHeight: semiNormalize(detailHeight+2),
   },
   shareIndent: {
   },
@@ -721,12 +722,12 @@ const eventStyles = StyleSheet.create({
   detailIcon: {
     marginTop: 2,
     marginRight: 5,
-    height: normalize(detailHeight),
-    width: normalize(detailHeight),
+    height: semiNormalize(detailHeight),
+    width: semiNormalize(detailHeight),
   },
   description: {
-    fontSize: normalize(detailHeight),
-    lineHeight: normalize(20),
+    fontSize: semiNormalize(detailHeight),
+    lineHeight: semiNormalize(20),
     marginBottom: 20,
     marginLeft: 5,
     marginRight: 5,

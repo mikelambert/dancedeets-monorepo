@@ -14,5 +14,5 @@ export function normalize(size: number): number {
 }
 
 export function semiNormalize(size: number): number {
-  return size + 0.7 * (normalize(size) - size);
+  return size + 0.4 * (normalize(size) - size);
 }

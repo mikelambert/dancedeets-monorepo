@@ -36,6 +36,7 @@ import {
   normalize,
   ProgressSpinner,
   SegmentedControl,
+  semiNormalize,
   Text,
 } from '../ui';
 import moment from 'moment';
@@ -92,8 +93,8 @@ class AddEventRow extends React.Component {
   };
 
   render() {
-    const width = normalize(75);
-    const pixelWidth = width * PixelRatio.get();
+    const width = semiNormalize(75);
+    const pixelWidth = Math.ceil(width * PixelRatio.get());
     const imageUrl = 'https://graph.facebook.com/' + this.props.event.id + '/picture?type=large&width=' + pixelWidth + '&height=' + pixelWidth;
     let tempOverlay = null;
     if (this.props.event.clickedConfirming) {
@@ -132,8 +133,8 @@ class AddEventRow extends React.Component {
           </View>
         </View>
         <View style={styles.rightTextDescription}>
-          <Text style={{color: textColor}} numberOfLines={2}>{this.props.event.name}</Text>
-          <Text style={{color: textColor}}>{formattedStart}</Text>
+          <Text style={[styles.title, {color: textColor}]} numberOfLines={2}>{this.props.event.name}</Text>
+          <Text style={[styles.title, {color: textColor}]}>{formattedStart}</Text>
           {tempOverlay}
         </View>
       </HorizontalView>
@@ -297,14 +298,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   redRibbonText: {
-    fontSize: normalize(18),
+    fontSize: semiNormalize(18),
   },
   leftEventImage: {
-    flex: 0.3,
   },
   rightTextDescription: {
     flex: 1,
-    marginLeft: 5,
+    marginLeft: normalize(5),
   },
   header: {
     backgroundColor: gradientTop,
@@ -315,5 +315,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     marginRight: 5,
+  },
+  title: {
   },
 });

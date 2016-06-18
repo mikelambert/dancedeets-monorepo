@@ -15,7 +15,7 @@ var { Text } = require('./DDText');
 var TouchableOpacity = require('TouchableOpacity');
 var View = require('View');
 import {
-  normalize,
+  semiNormalize,
 } from './normalize';
 
 class Button extends React.Component {
@@ -97,8 +97,8 @@ var styles = StyleSheet.create({
     borderRadius: 20,
   },
   iconSize: {
-    width: normalize(18),
-    height: normalize(18),
+    width: semiNormalize(18),
+    height: semiNormalize(18),
   },
   border: {
     borderWidth: 1,
@@ -109,8 +109,8 @@ var styles = StyleSheet.create({
   },
   caption: {
     letterSpacing: 1,
-    fontSize: normalize(16),
-    lineHeight: normalize(19),
+    fontSize: semiNormalize(16),
+    lineHeight: semiNormalize(19),
     color: 'white',
   },
   secondaryCaption: {

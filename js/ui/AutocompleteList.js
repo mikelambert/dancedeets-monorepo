@@ -21,6 +21,9 @@ import { googleKey } from '../keys';
 import Geocoder from '../api/geocoder';
 import type { Address } from '../events/formatAddress';
 import { format } from '../events/formatAddress';
+import {
+  semiNormalize,
+} from '../ui/normalize';
 
 type Result = {
   description: string;
@@ -377,7 +380,7 @@ const defaultStyles = {
   row: {
     alignItems: 'center',
     paddingLeft: 15,
-    height: 40,
+    height: semiNormalize(30),
   },
   separator: {
     height: 1,
@@ -385,6 +388,7 @@ const defaultStyles = {
   },
   description: {
     color: 'white',
+    fontSize: semiNormalize(16),
   },
   loader: {
     // flex: 1,
