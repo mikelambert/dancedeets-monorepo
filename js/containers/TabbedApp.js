@@ -87,12 +87,12 @@ export default class TabbedAppView extends React.Component {
 
 let styles = StyleSheet.create({
   icon: {
-    width: normalize(30),
-    height: normalize(30),
+    width: normalize(28),
+    height: normalize(28),
   },
   tabBarStyle: {
     backgroundColor: 'transparent',
-    height: normalize(49),
+    height: normalize(52),
   },
   titleStyle: {
     color: 'white',
