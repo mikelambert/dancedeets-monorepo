@@ -26,6 +26,7 @@ import {
   Card,
   FBShareButton,
   HorizontalView,
+  normalize,
   ProgressiveLayout,
   ProportionalImage,
   SegmentedControl,
@@ -734,7 +735,7 @@ const eventStyles = StyleSheet.create({
   },
   eventMap: {
     left: 0,
-    height: 200,
+    height: normalize(200),
     right: 0,
   },
 });
