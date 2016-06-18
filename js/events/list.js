@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
   },
   addEventButton: {
     position: 'absolute',
-    right: normalize(20),
-    bottom: normalize(30),
+    right: normalize(10),
+    bottom: normalize(20),
   }
 });
