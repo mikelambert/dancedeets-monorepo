@@ -37,7 +37,7 @@ import {
   SegmentedControl,
   Text,
 } from '../ui';
-
+import normalize from '../ui/normalize';
 import moment from 'moment';
 const {
   Globalize,
@@ -92,7 +92,7 @@ class AddEventRow extends React.Component {
   };
 
   render() {
-    const width = 75;
+    const width = normalize(75);
     const pixelWidth = width * PixelRatio.get();
     const imageUrl = 'https://graph.facebook.com/' + this.props.event.id + '/picture?type=large&width=' + pixelWidth + '&height=' + pixelWidth;
     let tempOverlay = null;
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   redRibbonText: {
-    fontSize: 18,
+    fontSize: normalize(18),
   },
   leftEventImage: {
     flex: 0.3,

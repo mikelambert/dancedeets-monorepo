@@ -44,6 +44,8 @@ import { track } from '../store/track';
 import { AdMobBanner } from 'react-native-admob';
 import WebsiteUrl from '../websiteUrl';
 import LinearGradient from 'react-native-linear-gradient';
+import normalize from '../ui/normalize';
+
 var en = new Globalize('en');
 
 
@@ -101,7 +103,7 @@ class AddEventButton extends React.Component {
     return <Button
       caption="Add Event"
       color="red"
-      textStyle={{fontWeight: 'bold', fontSize: 14}}
+      textStyle={{fontWeight: 'bold'}}
       style={styles.addEventButton}
       onPress={this.props.onPress}
     >Add Event</Button>;
@@ -354,7 +356,7 @@ const styles = StyleSheet.create({
   },
   addEventButton: {
     position: 'absolute',
-    right: 20,
-    bottom: 30,
+    right: normalize(20),
+    bottom: normalize(30),
   }
 });
