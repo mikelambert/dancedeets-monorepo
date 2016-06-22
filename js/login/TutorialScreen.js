@@ -19,6 +19,10 @@ import {
   normalize,
   Text,
 } from '../ui';
+import {
+  defineMessages,
+  injectIntl,
+} from 'react-intl';
 
 var PAGES = [
   'Page 0',
@@ -27,21 +31,56 @@ var PAGES = [
   'Page 3',
 ];
 
-class TopView extends React.Component {
+const messages = defineMessages({
+  'tutorial.0.header': {
+    id: 'tutorial.0.header',
+    defaultMessage: 'Take a Trip:',
+    description: 'Intro screen header',
+  },
+  'tutorial.0.body': {
+    id: 'tutorial.0.body',
+    defaultMessage: 'Meet local dancers\nHit up dance events',
+    description: 'Intro screen list of features',
+  },
+  'tutorial.1.header': {
+    id: 'tutorial.1.header',
+    defaultMessage: 'Learn to Dance:',
+    description: 'Intro screen header',
+  },
+  'tutorial.1.body': {
+    id: 'tutorial.1.body',
+    defaultMessage: 'Take a class\nWatch a show\nHit the clubs',
+    description: 'Intro screen list of features',
+  },
+  'tutorial.2.header': {
+    id: 'tutorial.2.header',
+    defaultMessage: 'Promote your event:',
+    description: 'Intro screen header',
+  },
+  'tutorial.2.body': {
+    id: 'tutorial.2.body',
+    defaultMessage: 'Share your event\nShare your city\'s events\nReach dancers worldwide\nand join our 90,000 events',
+    description: 'Intro screen list of features',
+  },
+});
+
+class _TopView extends React.Component {
   render() {
-    var listItems = this.props.items.map((val, i) =>
-      <Text key={i} style={styles.onboardListItem}>{val}</Text>
-    );
+    const page = this.props.page;
+    const intl = this.props.intl;
+    const header = intl.formatMessage(messages[`tutorial.${page}.header`]);
+    const body = intl.formatMessage(messages[`tutorial.${page}.body`]);
     return (
       <View style={styles.centerItems} >
-        <Text style={styles.onboardHeader}>{this.props.header.toUpperCase()}</Text>
+        <Text style={styles.onboardHeader}>{header.toUpperCase()}</Text>
         <View style={styles.onboardList}>
-          {listItems}
+          <Text style={styles.onboardListItem}>{body}</Text>
         </View>
       </View>
     );
   }
 }
+const TopView = injectIntl(_TopView);
 
 export default class TutorialScreen extends React.Component {
   render() {
@@ -92,10 +131,7 @@ export default class TutorialScreen extends React.Component {
         <Image
         style={[styles.container, styles.centerItems]}
           source={require('./images/Onboard1Text.png')}>
-          <TopView header="Take a Trip:" items={[
-            'Meet local dancers',
-            'Hit up dance events',
-          ]}/>
+          <TopView page={0} />
         </Image>
       </Image>;
     } else if (pageID === 2) {
@@ -103,11 +139,7 @@ export default class TutorialScreen extends React.Component {
         style={[styles.container, styles.centerItems]}
         source={require('./images/Onboard2.jpg')}>
         {bottomFade}
-        <TopView header="Learn to Dance:" items={[
-          'Take a class',
-          'Watch a show',
-          'Hit the clubs',
-        ]}/>
+        <TopView page={1} />
       </Image>;
     } else if (pageID === 3) {
       return <View style={styles.container}>
@@ -118,15 +150,11 @@ export default class TutorialScreen extends React.Component {
           <Image
             style={[styles.container, styles.centerItems, styles.topAndBottom]}
             source={require('./images/Onboard3Text.png')}>
-            <TopView header="Promote your event:" items={[
-              'Share your event',
-              "Share your city's events",
-              'Reach dancers worldwide\nand join our 90,000 events',
-            ]} />
+            <TopView page={2} />
             <LoginButtonWithAlternate
               onLogin={this.props.onLogin}
               onNoLogin={this.props.onNoLogin}
-              noLoginText="don't want to login?"
+              noLoginText="Don't want to login?"
               />
           </Image>
         </Image>

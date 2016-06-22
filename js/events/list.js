@@ -43,7 +43,6 @@ import { track } from '../store/track';
 import { AdMobBanner } from 'react-native-admob';
 import WebsiteUrl from '../websiteUrl';
 import LinearGradient from 'react-native-linear-gradient';
-
 import {
   injectIntl,
   defineMessages,

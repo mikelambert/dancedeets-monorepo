@@ -1,3 +1,11 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
+'use strict';
+
 import React, { PropTypes } from 'react';
 import { IntlProvider } from 'react-intl';
 import Locale from 'react-native-locale';
