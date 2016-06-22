@@ -51,6 +51,13 @@ const credits = [
     'App Login Photos',
     ['dancephotos.ch'],
   ],
+  [
+    'Translations',
+    [
+      'French: Mai Le',
+      'Korean: Sun Kim and Yoda',
+    ]
+  ]
 ];
 
 class CreditSubList extends React.Component {
