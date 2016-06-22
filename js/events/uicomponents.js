@@ -44,12 +44,11 @@ import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
 import LinearGradient from 'react-native-linear-gradient';
-
-const {
-  Globalize,
-} = require('react-native-globalize');
-
-const en = new Globalize('en');
+import {
+  injectIntl,
+  defineMessages,
+} from 'react-intl';
+import { weekdayDateTime } from '../formats';
 
 class SubEventLine extends React.Component {
 
@@ -110,14 +109,13 @@ class AddToCalendarButton extends React.Component {
   }
 }
 
-class EventDateTime extends SubEventLine {
+class _EventDateTime extends SubEventLine {
   icon() {
     return require('./images/datetime.png');
   }
   textRender() {
-    const dateFormatter = en.getDateFormatter({skeleton: 'yMMMdhm'});
     const start = moment(this.props.start, moment.ISO_8601);
-    const formattedStart = dateFormatter(start.toDate());
+    const formattedStart = this.props.intl.formatDate(start.toDate(), weekdayDateTime);
 
     if (this.props.start) {
       return <View style={{alignItems: 'flex-start'}}>
@@ -129,6 +127,7 @@ class EventDateTime extends SubEventLine {
     }
   }
 }
+const EventDateTime = injectIntl(_EventDateTime);
 
 class EventVenue extends SubEventLine {
   icon() {

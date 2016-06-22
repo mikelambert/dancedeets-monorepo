@@ -40,16 +40,17 @@ import {
   Text,
 } from '../ui';
 import moment from 'moment';
-const {
-  Globalize,
-} = require('react-native-globalize');
-const en = new Globalize('en');
+import {
+  injectIntl,
+  defineMessages,
+} from 'react-intl';
+import { weekdayDateTime } from '../formats';
 
 class _FilterHeader extends React.Component {
   render() {
     return <View style={styles.header}>
 
-    <Text style={styles.headerRow}>DanceDeets works when users add their events.{'\n'}Should we add any of your events below?</Text>
+    <Text style={styles.headerRow}>DanceDeets works when users add their Facebook events.{'\n'}Should we add any of your events below?</Text>
 
     <HorizontalView style={styles.headerRow}>
       <Text style={styles.headerText}>Show events:</Text>
@@ -85,7 +86,7 @@ const FilterHeader = connect(
   }),
 )(_FilterHeader);
 
-class AddEventRow extends React.Component {
+class _AddEventRow extends React.Component {
   props: {
     onEventClicked: (event: AddEventData) => void,
     onEventAdded: (event: AddEventData) => void,
@@ -116,9 +117,8 @@ class AddEventRow extends React.Component {
       </View> : null);
     const textColor = (this.props.event.loaded || tempOverlay) ? '#888' : 'white';
 
-    const dateFormatter = en.getDateFormatter({skeleton: 'yMMMdhm'});
     const start = moment(this.props.event.start_time, moment.ISO_8601);
-    const formattedStart = dateFormatter(start.toDate());
+    const formattedStart = this.props.intl.formatDate(start.toDate(), weekdayDateTime);
 
 
     const row = (
@@ -156,6 +156,7 @@ class AddEventRow extends React.Component {
     }
   }
 }
+const AddEventRow = injectIntl(_AddEventRow);
 
 class _AddEventList extends React.Component {
   props: {

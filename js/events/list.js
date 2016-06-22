@@ -29,9 +29,6 @@ import {
   updateKeywords,
 } from '../actions';
 import { linkColor, purpleColors, yellowColors } from '../Colors';
-const {
-  Globalize,
-} = require('react-native-globalize');
 import Geocoder from '../api/geocoder';
 import { auth } from '../api/dancedeets';
 import type { Address } from './formatAddress';
@@ -47,8 +44,12 @@ import { AdMobBanner } from 'react-native-admob';
 import WebsiteUrl from '../websiteUrl';
 import LinearGradient from 'react-native-linear-gradient';
 
-var en = new Globalize('en');
+import {
+  injectIntl,
+  defineMessages,
+} from 'react-intl';
 
+import { weekdayDate } from '../formats';
 
 class SectionHeader extends React.Component {
   props: {
@@ -131,10 +132,9 @@ class EventListContainer extends React.Component {
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
   }
 
-  _buidDataBlobAndHeaders(results: SearchResults) {
-    const dateFormatter = en.getDateFormatter({skeleton: 'yMMMd'});
-    var dataBlob = {};
-    var sectionHeaders = [];
+  _buildDataBlobAndHeaders(results: SearchResults) {
+    const dataBlob = {};
+    const sectionHeaders = [];
 
     if (results) {
       if (results.onebox_links != null && results.onebox_links.length > 0) {
@@ -144,8 +144,8 @@ class EventListContainer extends React.Component {
       }
       if (results.results != null && results.results.length > 0) {
         for (var e of results.results) {
-          var start = moment(e.start_time, moment.ISO_8601);
-          var formattedStart = dateFormatter(start.toDate());
+          const start = moment(e.start_time, moment.ISO_8601);
+          const formattedStart = this.props.intl.formatDate(start.toDate(), weekdayDate);
           if (!(formattedStart in dataBlob)) {
             dataBlob[formattedStart] = [];
           }
@@ -163,7 +163,7 @@ class EventListContainer extends React.Component {
   }
 
   _getNewState(props) {
-    const { dataBlob, sectionHeaders } = this._buidDataBlobAndHeaders(props.search.results);
+    const { dataBlob, sectionHeaders } = this._buildDataBlobAndHeaders(props.search.results);
     const state = {
       ...this.state,
       dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlob, sectionHeaders),
@@ -293,13 +293,11 @@ class EventListContainer extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
+export default connect(
+  (state) => ({
     search: state.search,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
+  }),
+  (dispatch) => ({
     detectedLocation: async (location) => {
       await dispatch(detectedLocation(location));
     },
@@ -312,12 +310,8 @@ const mapDispatchToProps = (dispatch) => {
     updateKeywords: async (keywords) => {
       await dispatch(updateKeywords(keywords));
     },
-  };
-};
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EventListContainer);
+  })
+)(injectIntl(EventListContainer));
 
 
 const styles = StyleSheet.create({

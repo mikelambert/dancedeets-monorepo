@@ -23,7 +23,7 @@ import {
 import {
   injectIntl,
   defineMessages,
-} from 'react-intl'
+} from 'react-intl';
 
 class GradientTabBar extends React.Component {
   render() {
@@ -39,11 +39,13 @@ class GradientTabBar extends React.Component {
 const messages = defineMessages({
   events: {
     id: 'tab.events',
-    defaultMessag: 'Events',
+    defaultMessage: 'Events',
+    description: 'Tab button to show list of events',
   },
   about: {
     id: 'tab.about',
-    defaultMessag: 'About',
+    defaultMessage: 'About',
+    description: 'Tab button to show general info about Dancedeets, Profile, and Share info',
   },
 });
 
