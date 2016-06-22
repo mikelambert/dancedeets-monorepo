@@ -14,8 +14,9 @@ const getCurrentLocale = () => {
     : defaultLocale;
 };
 
+import ja from './messages/ja';
 const messages = {
-  id: 'string',
+  ja,
 };
 
 // https://github.com/yahoo/intl-locales-supported#usage

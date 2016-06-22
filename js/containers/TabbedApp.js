@@ -20,6 +20,10 @@ import { track } from '../store/track';
 import {
   semiNormalize,
 } from '../ui';
+import {
+  injectIntl,
+  defineMessages,
+} from 'react-intl'
 
 class GradientTabBar extends React.Component {
   render() {
@@ -32,7 +36,18 @@ class GradientTabBar extends React.Component {
   }
 }
 
-export default class TabbedAppView extends React.Component {
+const messages = defineMessages({
+  events: {
+    id: 'tab.events',
+    defaultMessag: 'Events',
+  },
+  about: {
+    id: 'tab.about',
+    defaultMessag: 'About',
+  },
+});
+
+class _TabbedAppView extends React.Component {
   state: {
     selectedTab: string,
   };
@@ -49,6 +64,7 @@ export default class TabbedAppView extends React.Component {
   }
 
   render() {
+    const {intl} = this.props;
     return <TabNavigator
         tabBarStyle={styles.tabBarStyle}
         sceneStyle={styles.tabBarSceneStyle}
@@ -56,7 +72,7 @@ export default class TabbedAppView extends React.Component {
       >
       <TabNavigator.Item
         selected={this.state.selectedTab === 'home'}
-        title="Events"
+        title={intl.formatMessage(messages.events)}
         titleStyle={styles.titleStyle}
         selectedTitleStyle={styles.selectedTitleStyle}
         renderIcon={() => this.icon(require('../containers/icons/events.png'))}
@@ -73,7 +89,7 @@ export default class TabbedAppView extends React.Component {
       </TabNavigator.Item>
       <TabNavigator.Item
         selected={this.state.selectedTab === 'about'}
-        title="About"
+        title={intl.formatMessage(messages.about)}
         titleStyle={styles.titleStyle}
         selectedTitleStyle={styles.selectedTitleStyle}
         renderIcon={() => this.icon(require('../containers/icons/profile.png'))}
@@ -89,7 +105,7 @@ export default class TabbedAppView extends React.Component {
     </TabNavigator>;
   }
 }
-
+export default injectIntl(_TabbedAppView);
 
 var tabBarHeight = semiNormalize(52);
 
