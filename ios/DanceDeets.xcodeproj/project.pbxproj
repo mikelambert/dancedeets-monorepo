@@ -39,6 +39,7 @@
 		66B019328C694B138BC015A5 /* libRNCalendarEvents.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0F2BCED993949CDA4946B12 /* libRNCalendarEvents.a */; };
 		77AB17F454634EC085F66FE5 /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CD7F89E182545FF841C97F0 /* libRCTFBSDK.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		854D59D0A80E4AE693D5192B /* libRCTLocale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D354B51278E84DA1A4ED481B /* libRCTLocale.a */; };
 		B52A722DB2DB50D8717E8277 /* libPods-DanceDeets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8567A00E98C3585092A33483 /* libPods-DanceDeets.a */; };
 		D4744BBB27F146BF9D352A74 /* libRNAdMobManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A76C0B0DA2F34975BD38175E /* libRNAdMobManager.a */; };
 		DC3E1A96615B4602B852EBA5 /* libRNMixpanel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE54775FE8646DF9CEA6CE5 /* libRNMixpanel.a */; };
@@ -194,6 +195,13 @@
 			remoteGlobalIDString = 11FA5C511C4A1296003AC2EE;
 			remoteInfo = AirMaps;
 		};
+		1DC3339F1D1A6AAD00CA2332 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE159458369D4258A832C90E /* RCTLocale.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DB248BF21C18396500105A5D;
+			remoteInfo = RCTLocale;
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -261,8 +269,10 @@
 		9FB17C7A31CC407198A9ECFB /* CodePush.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/ios/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		A76C0B0DA2F34975BD38175E /* libRNAdMobManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAdMobManager.a; sourceTree = "<group>"; };
 		AD682DC01E1C4BD5A7ABA711 /* libRNMail.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNMail.a; sourceTree = "<group>"; };
+		AE159458369D4258A832C90E /* RCTLocale.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTLocale.xcodeproj; path = "../node_modules/react-native-locale/RCTLocale.xcodeproj"; sourceTree = "<group>"; };
 		B5E50033B5A04263AF050C44 /* RNMail.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNMail.xcodeproj; path = "../node_modules/react-native-mail/RNMail.xcodeproj"; sourceTree = "<group>"; };
 		CEA565539668378262D1903D /* Pods-DanceDeets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.release.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.release.xcconfig"; sourceTree = "<group>"; };
+		D354B51278E84DA1A4ED481B /* libRCTLocale.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTLocale.a; sourceTree = "<group>"; };
 		DFE54775FE8646DF9CEA6CE5 /* libRNMixpanel.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNMixpanel.a; sourceTree = "<group>"; };
 		F0F2BCED993949CDA4946B12 /* libRNCalendarEvents.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCalendarEvents.a; sourceTree = "<group>"; };
 		F33F4F5DCEB28B5ACFB6FDF7 /* Pods-DanceDeets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.debug.xcconfig"; sourceTree = "<group>"; };
@@ -307,6 +317,7 @@
 				182FD04263C4415F8EF0327B /* libRNMail.a in Frameworks */,
 				438545139E5E477895CD9993 /* libRNShare.a in Frameworks */,
 				0FD5F3C63FE849A2B7974E78 /* libCodePush.a in Frameworks */,
+				854D59D0A80E4AE693D5192B /* libRCTLocale.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,6 +533,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		1DC333941D1A6AAD00CA2332 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1DC333A01D1A6AAD00CA2332 /* libRCTLocale.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		6DD4C3E63C393B4CADD50C49 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -563,6 +582,7 @@
 				B5E50033B5A04263AF050C44 /* RNMail.xcodeproj */,
 				01542AFFEFC14D76A132A046 /* RNShare.xcodeproj */,
 				9FB17C7A31CC407198A9ECFB /* CodePush.xcodeproj */,
+				AE159458369D4258A832C90E /* RCTLocale.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -701,6 +721,10 @@
 				{
 					ProductGroup = 78C398B11ACF4ADC00677621 /* Products */;
 					ProjectRef = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
+				},
+				{
+					ProductGroup = 1DC333941D1A6AAD00CA2332 /* Products */;
+					ProjectRef = AE159458369D4258A832C90E /* RCTLocale.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302D41ABCB9D200DB3ED1 /* Products */;
@@ -904,6 +928,13 @@
 			remoteRef = 1D9EDD0B1CF9089400871235 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		1DC333A01D1A6AAD00CA2332 /* libRCTLocale.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTLocale.a;
+			remoteRef = 1DC3339F1D1A6AAD00CA2332 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1071,6 +1102,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets Debug.app/DanceDeets Debug";
@@ -1087,6 +1119,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1134,6 +1167,7 @@
 					"$(SRCROOT)/../node_modules/react-native-mail/RNMail",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
+					"$(SRCROOT)/../node_modules/react-native-locale/RCTLocale",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1178,6 +1212,7 @@
 					"$(SRCROOT)/../node_modules/react-native-mail/RNMail",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
+					"$(SRCROOT)/../node_modules/react-native-locale/RCTLocale",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1242,6 +1277,7 @@
 					"$(SRCROOT)/../node_modules/react-native-mail/RNMail",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
+					"$(SRCROOT)/../node_modules/react-native-locale/RCTLocale",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1293,6 +1329,7 @@
 					"$(SRCROOT)/../node_modules/react-native-mail/RNMail",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
+					"$(SRCROOT)/../node_modules/react-native-locale/RCTLocale",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">DanceDeets</string>
     <string name="facebook_app_id" translatable="false">2347064084</string>
 </resources>

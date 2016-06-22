@@ -23,6 +23,7 @@
     "react-native-geocoder": "mikelambert/react-native-geocoder",
     "react-native-globalize": "mikelambert/react-native-globalize",
     "react-native-linear-gradient": "^1.5.9",
+    "react-native-locale": "0.0.10",
     "react-native-mail": "mikelambert/react-native-mail",
     "react-native-maps": "^0.4.2",
     "react-native-mixpanel": "0.0.10",
