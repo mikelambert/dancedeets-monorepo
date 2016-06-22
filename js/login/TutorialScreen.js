@@ -62,14 +62,18 @@ const messages = defineMessages({
     defaultMessage: 'Share your event\nShare your city\'s events\nReach dancers worldwide\nand join our 90,000 events',
     description: 'Intro screen list of features',
   },
+  'nologin': {
+    id: 'tutorial.nologin',
+    defaultMessage: 'Don\'t want to login?',
+    description: 'Link to a page for users who don\'t want to FB login',
+  },
 });
 
 class _TopView extends React.Component {
   render() {
     const page = this.props.page;
-    const intl = this.props.intl;
-    const header = intl.formatMessage(messages[`tutorial.${page}.header`]);
-    const body = intl.formatMessage(messages[`tutorial.${page}.body`]);
+    const header = this.props.intl.formatMessage(messages[`tutorial.${page}.header`]);
+    const body = this.props.intl.formatMessage(messages[`tutorial.${page}.body`]);
     return (
       <View style={styles.centerItems} >
         <Text style={styles.onboardHeader}>{header.toUpperCase()}</Text>
@@ -82,7 +86,7 @@ class _TopView extends React.Component {
 }
 const TopView = injectIntl(_TopView);
 
-export default class TutorialScreen extends React.Component {
+class _TutorialScreen extends React.Component {
   render() {
     var pages = PAGES.map((val, i) => this._renderPage(i));
     return <Carousel
@@ -154,7 +158,7 @@ export default class TutorialScreen extends React.Component {
             <LoginButtonWithAlternate
               onLogin={this.props.onLogin}
               onNoLogin={this.props.onNoLogin}
-              noLoginText="Don't want to login?"
+              noLoginText={this.props.intl.formatMessage(messages.nologin)}
               />
           </Image>
         </Image>
@@ -162,6 +166,7 @@ export default class TutorialScreen extends React.Component {
     }
   }
 }
+export default injectIntl(_TutorialScreen);
 
 const styles = StyleSheet.create({
   topAndBottom: {

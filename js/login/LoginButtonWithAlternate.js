@@ -16,12 +16,26 @@ import {
   normalize,
   Text,
 } from '../ui';
+import {
+  defineMessages,
+  injectIntl,
+  intlShape,
+} from 'react-intl';
 
-export default class LoginButtonWithAlternate extends React.Component {
+const messages = defineMessages({
+  loginButton: {
+    id: 'tutorial.login',
+    defaultMessage: 'Login with Facebook',
+    description: 'Login button',
+  },
+});
+
+class _LoginButtonWithAlternate extends React.Component {
   props: {
     noLoginText: string,
     onLogin: () => void,
     onNoLogin: () => void,
+    intl: intlShape.isRequired,
   };
 
   render() {
@@ -29,7 +43,7 @@ export default class LoginButtonWithAlternate extends React.Component {
       <View style={[styles.centerItems, styles.bottomBox]}>
         <Button
           icon={require('./icons/facebook.png')}
-          caption="Login with Facebook"
+          caption={this.props.intl.formatMessage(messages.loginButton)}
           onPress={this.props.onLogin}
           textStyle={styles.buttonStyle}
         />
@@ -44,6 +58,7 @@ export default class LoginButtonWithAlternate extends React.Component {
     );
   }
 }
+export default injectIntl(_LoginButtonWithAlternate);
 
 const styles = StyleSheet.create({
   bottomBox: {

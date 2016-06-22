@@ -16,9 +16,20 @@ import {
   Text,
 } from '../ui';
 import { linkColor } from '../Colors';
+import {
+  defineMessages,
+  injectIntl,
+} from 'react-intl';
 
-const NoLoginText =
-`Almost all our dance events are
+const messages = defineMessages({
+  useWebsite: {
+    id: 'tutorial.nologin.website',
+    defaultMessage: 'Use website without login',
+    description: 'Link to use the website without logging into the app',
+  },
+  loginJustification: {
+    id: 'tutorial.nologin.justification',
+    defaultMessage: `Almost all our dance events are
 found when dancers like you log in.
 
 Logging in shares your dance events
@@ -34,16 +45,19 @@ to help us help your dance scene.
 
 Otherwise, you're always able to use
 our website without any login:
-`;
+`,
+    description: 'A long explanation of why we need login',
+  }
+});
 
-export default class NoLoginScreen extends React.Component {
+class _NoLoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
         <Image
           style={[styles.container, styles.centerItems, styles.topAndBottom]}
           source={require('./images/Onboard4.jpg')}>
-          <Text style={styles.topText}>{NoLoginText}
+          <Text style={styles.topText}>{this.props.intl.formatMessage(messages.loginJustification)}
             <Text
               style={{color: linkColor}}
               onPress={() => this.props.onNoLogin('Text Link')}
@@ -53,7 +67,7 @@ export default class NoLoginScreen extends React.Component {
             <LoginButtonWithAlternate
               onLogin={this.props.onLogin}
               onNoLogin={() => this.props.onNoLogin('Bottom Button')}
-              noLoginText="Use website without login"
+              noLoginText={this.props.intl.formatMessage(messages.useWebsite)}
               />
           </View>
         </Image>
@@ -61,6 +75,7 @@ export default class NoLoginScreen extends React.Component {
     );
   }
 }
+export default injectIntl(_NoLoginScreen);
 
 const styles = StyleSheet.create({
   topAndBottom: {
