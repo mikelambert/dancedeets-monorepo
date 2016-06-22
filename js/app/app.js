@@ -18,6 +18,7 @@ import LoginFlow from '../login/LoginFlow';
 import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';
 import TabbedApp from '../containers/TabbedApp';
+import intl from '../intl';
 
 function select(store) {
   return {
@@ -70,7 +71,7 @@ class App extends React.Component {
   }
   // Add <PushNotificationsController /> back in to <View>...
 }
-export default connect(select)(App);
+export default intl(connect(select)(App));
 
 var styles = StyleSheet.create({
   container: {

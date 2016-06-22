@@ -10,12 +10,10 @@ import * as addEvents from './addEvents';
 import * as login from './login';
 import * as navigation from './navigation';
 import * as search from './search';
-import * as intl from './intl';
 
 module.exports = {
   ...addEvents,
   ...login,
   ...navigation,
   ...search,
-  ...intl,
 };
