@@ -61,9 +61,9 @@ function languageFilter(locale) {
 
 function saveCombinedList(combined) {
   let fileData = 'export default ';
-  fileData = JSON.stringify(combined);
+  fileData += JSON.stringify(combined);
   mkdirpSync('js/data');
-  writeFile('js/data/localizedCountries.js', fileData).then(() => console.log('AAA'));
+  writeFile('js/data/localizedCountries.js', fileData).then(() => null);
 }
 
 downloadCountryList(combineCountryList(languageFilter, saveCombinedList));

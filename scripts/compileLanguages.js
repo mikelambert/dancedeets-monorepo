@@ -1,2 +1,2 @@
 require('babel/register');
-require('./compileLanguageCountriesData.js');
+require('./compileLanguagesCore.js');
