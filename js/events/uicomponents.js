@@ -91,6 +91,21 @@ const messages = defineMessages({
     defaultMessage: '{attendingCount} attending, {maybeCount} maybe',
     description: 'Count of people maybe-attending this event',
   },
+  attending: {
+    id: 'event.rsvp.attending',
+    defaultMessage: 'I\'ll be there!',
+    description: 'Clickable text for when a user wants to attend an event'
+  },
+  maybe: {
+    id: 'event.rsvp.maybe',
+    defaultMessage: 'I might flake…',
+    description: 'Clickable text for when a user wants to attend an event'
+  },
+  declined: {
+    id: 'event.rsvp.declined',
+    defaultMessage: 'No thanks.',
+    description: 'Clickable text for when a user wants to attend an event'
+  },
 });
 
 class SubEventLine extends React.Component {
@@ -379,7 +394,8 @@ class _EventOrganizers extends SubEventLine {
 }
 const EventOrganizers = injectIntl(_EventOrganizers);
 
-class EventRsvpControl extends React.Component {
+
+class _EventRsvpControl extends React.Component {
   state: {
     loading: boolean,
     defaultRsvp: number,
@@ -413,7 +429,7 @@ class EventRsvpControl extends React.Component {
     if (this.state.loading) {
       throw 'Already loading values, do not allow any changes!';
     }
-    const rsvp = RsvpOnFB.RSVPs[index].apiValue;
+    const rsvp = RsvpOnFB.RSVPs[index];
     trackWithEvent('RSVP', this.props.event, {'RSVP Value': rsvp});
     // We await on this, so exceptions are propagated up (and segmentedControl can undo actions)
     this.setState({...this.state, loading: true});
@@ -431,7 +447,7 @@ class EventRsvpControl extends React.Component {
       // This ensures that the SegmentedControl's constructor runs (and pulls in the new defaultRsvp).
       key={ this.state.loading ? 'loading' : 'segmentedControl' }
       enabled={ !this.state.loading }
-      values={RsvpOnFB.RSVPs.map((x)=>x.text)}
+      values={RsvpOnFB.RSVPs.map((x)=>this.props.intl.formatMessage(messages[x]))}
       defaultIndex={this.state.defaultRsvp}
       tintColor={yellowColors[0]}
       style={{marginTop: 5, flex: 1}}
@@ -439,6 +455,7 @@ class EventRsvpControl extends React.Component {
       />;
   }
 }
+const EventRsvpControl = injectIntl(_EventRsvpControl);
 
 class _EventRsvp extends SubEventLine {
 

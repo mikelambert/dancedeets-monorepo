@@ -13,11 +13,7 @@ import {
 import { performRequest } from './fb';
 
 export default class RsvpOnFB {
-  static RSVPs = [
-    { text: "I'll be there!", apiValue: 'attending' },
-    { text: "I might flake…", apiValue: 'maybe' },
-    { text: 'No thanks.', apiValue: 'declined' },
-  ];
+  static RSVPs = ['attending', 'maybe', 'declined'];
 
   async send(eventId: string, rsvpApiValue: string) {
     try {
@@ -46,8 +42,8 @@ export default class RsvpOnFB {
         throw new Error('No access token');
       }
       const graphManager = new GraphRequestManager();
-      RsvpOnFB.RSVPs.forEach((x, index) => {
-        const path = eventId + '/' + x.apiValue + '/' + accessToken.userID;
+      RsvpOnFB.RSVPs.forEach((apiValue, index) => {
+        const path = eventId + '/' + apiValue + '/' + accessToken.userID;
         const request = new GraphRequest(
           path,
           {parameters: {fields: {string: 'id'}}},
