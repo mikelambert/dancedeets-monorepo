@@ -41,6 +41,24 @@ const {
 	Header: NavigationHeader
 } = NavigationExperimental;
 import LinearGradient from 'react-native-linear-gradient';
+import {
+  injectIntl,
+  intlShape,
+  defineMessages,
+} from 'react-intl';
+
+const messages = defineMessages({
+	addEvent: {
+		id: 'navigator.addEvent',
+		defaultMessage: 'Add Event',
+		description: 'Title Bar for Adding Event',
+	},
+	viewFlyer: {
+		id: 'navigator.viewFlyer',
+		defaultMessage: 'View Flyer',
+		description: 'Title Bar for Viewing Flyer',
+	},
+});
 
 // These are basically copied from NavigationHeader.js
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
@@ -57,12 +75,13 @@ class GradientBar extends React.Component {
 	}
 }
 
-class AppContainer extends React.Component {
+class _AppContainer extends React.Component {
 	props: {
 		navigationState: NavigationParentState,
 		onNavigate: (x: NavigationState) => ThunkAction,
 		onBack: () => ThunkAction,
 		onSwap: (key: string, newState: NavigationState) => ThunkAction,
+		intl: intlShape.isRequired,
 	};
 
 	constructor(props) {
@@ -154,7 +173,7 @@ class AppContainer extends React.Component {
 				}}
 				onAddEventClicked={() => {
 					track('Add Event');
-					this.props.onNavigate({key: 'AddEvent', title: 'Add Event'});
+					this.props.onNavigate({key: 'AddEvent', title: this.props.intl.formatMessage(messages.addEvent)});
 				}}
 			/>;
 		case 'EventView':
@@ -167,7 +186,7 @@ class AppContainer extends React.Component {
 					trackWithEvent('View Flyer', event);
 					this.props.onNavigate({
 						key: 'FlyerView',
-						title: 'Event Flyer',
+						title: this.props.intl.formatMesssage(messages.viewFlyer),
 						image: event.cover.images[0].source,
 						width: event.cover.images[0].width,
 						height: event.cover.images[0].height,
@@ -186,7 +205,7 @@ class AppContainer extends React.Component {
 		}
 	}
 }
-
+const AppContainer = injectIntl(_AppContainer);
 AppContainer.propTypes = {
 	navigationState: PropTypes.object,
 	onNavigate: PropTypes.func.isRequired,

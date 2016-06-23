@@ -53,4 +53,6 @@ our website without any login:
   'event.rsvp.attending': '参加',
   'event.rsvp.maybe': '興味あり',
   'event.rsvp.declined': '参加しない',
+  'navigator.addEvent': 'イベントを追加',
+  'navigator.viewFlyer': 'フライヤー',
 };
