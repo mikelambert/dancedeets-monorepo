@@ -24,12 +24,17 @@ import { format } from '../events/formatAddress';
 import {
   semiNormalize,
 } from '../ui/normalize';
+import lookupCountryCode from '../util/lookupCountryCode';
 
+type Term = {
+  value: string;
+};
 type Result = {
   description: string;
   isCurrentLocation?: boolean;
   isLoading?: boolean;
   flag?: string;
+  terms?: Array<Term>;
 };
 
 export default class AutocompleteList extends React.Component {
@@ -117,9 +122,15 @@ export default class AutocompleteList extends React.Component {
 
     var fullResults = [...res, ...results];
     fullResults.forEach((x) => {
-      const components = x.description.split(', ');
-      const country = components[components.length - 1];
-      const flag = emojiFlags.data.find((c) => c.name == country);
+      if (!x.terms) {
+        return;
+      }
+      // Usually Google maps returns the country last, but sometimes it is returned first.
+      // So let's handle both cases.
+      const firstTerm = x.terms[0].value;
+      const lastTerm = x.terms[x.terms.length - 1].value;
+      const code = lookupCountryCode(lastTerm) || lookupCountryCode(firstTerm);
+      const flag = emojiFlags.data.find((c) => c.code == code);
       x.flag = flag != null ? flag.emoji : '';
     });
     return fullResults;
