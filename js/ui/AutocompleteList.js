@@ -56,6 +56,7 @@ export default class AutocompleteList extends React.Component {
     currentLocationLabel: string,
     filterReverseGeocodingByTypes: [string],
     predefinedPlacesAlwaysVisible: boolean,
+    queryLanguage: string,
   };
 
   static defaultProps = {
@@ -63,9 +64,9 @@ export default class AutocompleteList extends React.Component {
     minLength: 0,
     fetchDetails: false,
     textValue: () => '',
+    queryLanguage: 'en', // language of the results
     query: {
       key: googleKey,
-      language: 'en', // language of the results
       types: '(regions)', // default: 'geocode'
       //types: 'geocode',
     },
@@ -251,7 +252,8 @@ export default class AutocompleteList extends React.Component {
   _request(text: string) {
     this._abortRequests();
     if (text.length >= this.props.minLength) {
-      const url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURI(text) + '&' + Qs.stringify(this.props.query);
+      const query = Object.assign({}, this.props.query, {language: this.props.queryLanguage});
+      const url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURI(text) + '&' + Qs.stringify(query);
       this.createRequest(url).then((responseJSON) => {
         if (typeof responseJSON.predictions !== 'undefined') {
           this._results = responseJSON.predictions;

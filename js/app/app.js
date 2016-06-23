@@ -71,7 +71,7 @@ class App extends React.Component {
   }
   // Add <PushNotificationsController /> back in to <View>...
 }
-export default intl(connect(select)(App));
+export default connect(select)(intl(App));
 
 var styles = StyleSheet.create({
   container: {

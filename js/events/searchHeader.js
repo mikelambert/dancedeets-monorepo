@@ -31,6 +31,7 @@ import {
   defineMessages,
   injectIntl,
 } from 'react-intl';
+import { getLocale } from '../intl';
 
 const messages = defineMessages({
   location: {
@@ -47,6 +48,11 @@ const messages = defineMessages({
     id: 'search.autocompleteLocations',
     defaultMessage: 'New York City, United States\nTokyo, Japan\nParis, France\nTaipei, Taiwan\nSan Francisco, United States\nLondon, United Kingdom\nSeoul, South Korea',
     description: 'A list of locations that we should show in our autocomplete',
+  },
+  currentLocation: {
+    id: 'search.autocompleteCurrentLocation',
+    defaultMessage: 'Current Location',
+    description: 'The autocomplete item that will ask the GPS for the current location to perform a search with',
   },
 });
 
@@ -184,6 +190,8 @@ class _SearchHeader extends React.Component {
         ref="location_autocomplete"
         style={{top: this.state.height}}
         textValue={()=>this.props.searchQuery.location}
+        queryLanguage={this.props.intl.locale}
+        currentLocationLabel={this.props.intl.formatMessage(messages.currentLocation)}
         onLocationSelected={async (text) => {
           await this.props.updateLocation(text);
           this.refs.location.blur();

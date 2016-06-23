@@ -49,4 +49,5 @@ our website without any login:
   'event.attendingCount': '{attendingCount} 参加予定',
   'event.attendingMaybeCount': '{attendingCount} 参加予定、{maybeCount} 味あり"',
   'buttons.share': '共有…',
+  'search.autocompleteCurrentLocation': '現在の場所',
 };
