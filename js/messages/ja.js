@@ -35,4 +35,18 @@ to help us help your dance scene.
 Otherwise, you're always able to use
 our website without any login:
 `,
+  'addEvent.addEvent': 'イベントを追加',
+  'onebox.specialLinks': '特別なリンク',
+  'search.locationPlaceholder': '場所',
+  'search.keywordsPlaceholder': 'キーワード',
+  'search.autocompleteLocations': '東京\n大阪\nソウル\n香港\n台北\nシンガポール\nニューヨーク市\nロサンゼルス\nサンフランシスコ\nパリ\nロンドン',
+  'event.addToCalendar': 'カレンダーに予定が追加',
+  'event.addedBy': 'によって追加：',
+  'event.source': 'ソース：',
+  'event.hideOrganizers': '主催者を非表示',
+  'event.showOrganizers': '{count}主催者を表示',
+  'event.organizer': '主催者：',
+  'event.attendingCount': '{attendingCount} 参加予定',
+  'event.attendingMaybeCount': '{attendingCount} 参加予定、{maybeCount} 味あり"',
+  'buttons.share': '共有…',
 };

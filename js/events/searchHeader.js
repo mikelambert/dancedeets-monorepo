@@ -12,24 +12,43 @@ import {
   TextInput,
   View,
 } from 'react-native';
-
 import { connect } from 'react-redux';
 import {
   Button,
   defaultFont,
   AutocompleteList
 } from '../ui';
-
 import {
   performSearch,
   toggleLayout,
   updateLocation,
   updateKeywords,
 } from '../actions';
-
 import {
   gradientTop,
 } from '../Colors';
+import {
+  defineMessages,
+  injectIntl,
+} from 'react-intl';
+
+const messages = defineMessages({
+  location: {
+    id: 'search.locationPlaceholder',
+    defaultMessage: 'Location',
+    description: 'The placeholder for the text field where you enter the location',
+  },
+  keywords: {
+    id: 'search.keywordsPlaceholder',
+    defaultMessage: 'Keywords',
+    description: 'The placeholder for the text field where you enter the keywords',
+  },
+  locations: {
+    id: 'search.autocompleteLocations',
+    defaultMessage: 'New York City, United States\nTokyo, Japan\nParis, France\nTaipei, Taiwan\nSan Francisco, United States\nLondon, United Kingdom\nSeoul, South Korea',
+    description: 'A list of locations that we should show in our autocomplete',
+  },
+});
 
 class SearchInput extends React.Component {
   state: {
@@ -100,18 +119,7 @@ class SearchInput extends React.Component {
   }
 }
 
-const locations = [
-  {description: 'New York City, United States'},
-  {description: 'Tokyo, Japan'},
-  {description: 'Paris, France'},
-  {description: 'Taipei, Taiwan'},
-  {description: 'San Francisco, United States'},
-  {description: 'London, United Kingdom'},
-  {description: 'Seoul, South Korea'},
-];
-
-
-class SearchHeader extends React.Component {
+class _SearchHeader extends React.Component {
   state: {
     height: number;
   };
@@ -138,7 +146,7 @@ class SearchHeader extends React.Component {
       >
         <SearchInput
           ref="location"
-          placeholder="Location"
+          placeholder={this.props.intl.formatMessage(messages.location)}
           returnKeyType="search"
           onChangeText={(text) => {
             this.props.updateLocation(text);
@@ -158,7 +166,7 @@ class SearchHeader extends React.Component {
         />
         <SearchInput
           ref="keywords"
-          placeholder="Keywords"
+          placeholder={this.props.intl.formatMessage(messages.keywords)}
           returnKeyType="search"
           onChangeText={(text) => this.props.updateKeywords(text)}
           onSubmitEditing={() => this.props.performSearch(this.props.searchQuery)}
@@ -181,11 +189,12 @@ class SearchHeader extends React.Component {
           this.refs.location.blur();
           await this.props.performSearch();
         }}
-        predefinedPlaces={locations}
+        predefinedPlaces={this.props.intl.formatMessage(messages.locations).split('\n').map((x) => ({description: x}))}
       />
     </View>;
   }
 }
+const SearchHeader = injectIntl(_SearchHeader);
 
 const mapStateToProps = (state) => {
   return {

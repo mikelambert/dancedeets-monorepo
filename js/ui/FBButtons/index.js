@@ -10,14 +10,26 @@ import React from 'react';
 import { View } from 'react-native';
 import { ShareDialog } from 'react-native-fbsdk';
 import Button from '../Button';
+import {
+  injectIntl,
+  defineMessages,
+} from 'react-intl';
 
-export class FBShareButton extends React.Component {
+const messages = defineMessages({
+  share: {
+    id: 'buttons.share',
+    defaultMessage: 'Share…',
+    description: 'Button to share something on FB',
+  },
+});
+
+class _FBShareButton extends React.Component {
 
   render() {
     return (
         <View style={{flexDirection: 'row'}}><Button
           icon={require('./images/facebook.png')}
-          caption="Share"
+          caption={this.props.intl.formatMessage(messages.share)}
           size="small"
           onPress={() => {
             ShareDialog.show(this.props.shareContent);
@@ -27,3 +39,4 @@ export class FBShareButton extends React.Component {
     );
   }
 }
+export const FBShareButton = injectIntl(_FBShareButton);

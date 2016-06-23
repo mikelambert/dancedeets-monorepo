@@ -50,6 +50,19 @@ import {
 
 import { weekdayDate } from '../formats';
 
+const messages = defineMessages({
+  addEvent: {
+    id: 'addEvent.addEvent',
+    defaultMessage: 'Add Event',
+    description: 'Button to open the Add Event screen',
+  },
+  specialLinks: {
+    id: 'onebox.specialLinks',
+    defaultMessage: 'Special Links',
+    description: 'Header for all the links/blogs/wikis/etc relevant to this search',
+  },
+});
+
 class SectionHeader extends React.Component {
   props: {
     title: string,
@@ -99,10 +112,10 @@ class Onebox extends React.Component {
   }
 }
 
-class AddEventButton extends React.Component {
+class _AddEventButton extends React.Component {
   render() {
     return <Button
-      caption="Add Event"
+      caption={this.props.intl.formatMessage(messages.addEvent)}
       color="red"
       textStyle={{fontWeight: 'bold'}}
       style={styles.addEventButton}
@@ -110,8 +123,9 @@ class AddEventButton extends React.Component {
     >Add Event</Button>;
   }
 }
+const AddEventButton = injectIntl(_AddEventButton);
 
-class EventListContainer extends React.Component {
+class _EventListContainer extends React.Component {
   state: {
     dataSource: ListView.DataSource,
   };
@@ -137,7 +151,7 @@ class EventListContainer extends React.Component {
 
     if (results) {
       if (results.onebox_links != null && results.onebox_links.length > 0) {
-        const oneboxKey = 'Special Links';
+        const oneboxKey = this.props.intl.formatMessage(messages.specialLinks);
         dataBlob[oneboxKey] = results.onebox_links.map((x) => x);
         sectionHeaders.push(oneboxKey);
       }
@@ -291,6 +305,7 @@ class EventListContainer extends React.Component {
     );
   }
 }
+const EventListContainer = injectIntl(_EventListContainer);
 
 export default connect(
   (state) => ({

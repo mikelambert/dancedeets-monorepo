@@ -44,11 +44,54 @@ import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
 import LinearGradient from 'react-native-linear-gradient';
+import { weekdayDateTime } from '../formats';
 import {
   injectIntl,
   defineMessages,
 } from 'react-intl';
-import { weekdayDateTime } from '../formats';
+
+const messages = defineMessages({
+  addToCalendar: {
+    id: 'event.addToCalendar',
+    defaultMessage: 'Add to Calendar',
+    description: 'Button to add this event to the user\'s calendar',
+  },
+  addedBy: {
+    id: 'event.addedBy',
+    defaultMessage: 'Added By:',
+    description: 'Describes who added this event to DanceDeets',
+  },
+  source: {
+    id: 'event.source',
+    defaultMessage: 'Source:',
+    description: 'The original website from which we discovered this event',
+  },
+  hideOrganizers: {
+    id: 'event.hideOrganizers',
+    defaultMessage: 'Hide Organizers',
+    description: 'Will hide the list of organizers for this event',
+  },
+  showOrganizers: {
+    id: 'event.showOrganizers',
+    defaultMessage: 'Show {count} Organizers', // Always 2-and-more, so don't need to deal with singular case
+    description: 'Will show the list of organizers for this event',
+  },
+  organizer: {
+    id: 'event.organizer',
+    defaultMessage: 'Organizer:',
+    description: 'Describes the one person who created this event',
+  },
+  attendingCount: {
+    id: 'event.attendingCount',
+    defaultMessage: '{attendingCount} attending',
+    description: 'Count of people attending this event',
+  },
+  attendingMaybeCount: {
+    id: 'event.attendingMaybeCount',
+    defaultMessage: '{attendingCount} attending, {maybeCount} maybe',
+    description: 'Count of people maybe-attending this event',
+  },
+});
 
 class SubEventLine extends React.Component {
 
@@ -95,11 +138,11 @@ class EventCategories extends SubEventLine {
   }
 }
 
-class AddToCalendarButton extends React.Component {
+class _AddToCalendarButton extends React.Component {
   render() {
     return <Button
       icon={require('./images/add_calendar.png')}
-      caption="Add to Calendar"
+      caption={this.props.intl.formatMessage(messages.addToCalendar)}
       size="small"
       onPress={() => {
         trackWithEvent('Add to Calendar', this.props.event);
@@ -108,6 +151,7 @@ class AddToCalendarButton extends React.Component {
     />;
   }
 }
+const AddToCalendarButton = injectIntl(_AddToCalendarButton);
 
 class _EventDateTime extends SubEventLine {
   icon() {
@@ -156,7 +200,7 @@ class EventVenue extends SubEventLine {
   }
 }
 
-class EventSource extends SubEventLine {
+class _EventSource extends SubEventLine {
   constructor(props: Object) {
     super(props);
     (this: any).onPress = this.onPress.bind(this);
@@ -177,7 +221,7 @@ class EventSource extends SubEventLine {
     if (this.props.event.source) {
       return (
         <HorizontalView>
-          <Text style={eventStyles.detailText}>Source: </Text>
+          <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.source)}{' '}</Text>
           <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
             <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{this.props.event.source.name}</Text>
           </TouchableOpacity>
@@ -188,6 +232,7 @@ class EventSource extends SubEventLine {
     }
   }
 }
+const EventSource = injectIntl(_EventSource);
 
 class EventAddedBy extends SubEventLine {
   state: {
@@ -227,8 +272,7 @@ class EventAddedBy extends SubEventLine {
       //TODO: When we add Profiles, let's link to the Profile view itself: eventStyles.rowLink
       return (
         <HorizontalView>
-          <Text style={eventStyles.detailText}>Added By: </Text>
-          <Text style={[eventStyles.detailText]}>{this.state.addedBy}</Text>
+          <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.addedBy)} {this.state.addedBy}</Text>
         </HorizontalView>
       );
     } else {
@@ -238,7 +282,7 @@ class EventAddedBy extends SubEventLine {
 }
 
 
-class EventOrganizers extends SubEventLine {
+class _EventOrganizers extends SubEventLine {
   state: {
     opened: boolean,
   };
@@ -300,7 +344,7 @@ class EventOrganizers extends SubEventLine {
     if (this.props.event.admins.length === 1) {
       return (
         <HorizontalView>
-          <Text style={eventStyles.detailText}>Organizer: </Text>
+          <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.organizer)}{' '}</Text>
           {this.adminLink(this.props.event.admins[0])}
         </HorizontalView>
       );
@@ -312,13 +356,19 @@ class EventOrganizers extends SubEventLine {
           {this.adminLink(admin)}
         </HorizontalView>;
       });
+      let text = '';
+      if (this.state.opened) {
+        text = this.props.intl.formatMessage(messages.hideOrganizers);
+      } else {
+        text = this.props.intl.formatMessage(messages.showOrganizers, {count: this.props.event.admins.length});
+      }
       return (
         <View>
           <TouchableOpacity
           onPress={()=>{this.setState({opened: !this.state.opened});}}
           >
             <Text style={[eventStyles.detailText, {marginBottom: 5}]}>
-              {this.state.opened ? 'Hide Organizers' : 'Show ' + this.props.event.admins.length + ' Organizers'}
+              {text}
             </Text>
           </TouchableOpacity>
           {this.state.opened ? organizers : null}
@@ -327,6 +377,7 @@ class EventOrganizers extends SubEventLine {
     }
   }
 }
+const EventOrganizers = injectIntl(_EventOrganizers);
 
 class EventRsvpControl extends React.Component {
   state: {
@@ -389,7 +440,7 @@ class EventRsvpControl extends React.Component {
   }
 }
 
-class EventRsvp extends SubEventLine {
+class _EventRsvp extends SubEventLine {
 
   icon() {
     return require('./images/attending.png');
@@ -401,15 +452,18 @@ class EventRsvp extends SubEventLine {
 
   textRender() {
     if (this.props.event.rsvp) {
-      var components = [];
+      let counts = '';
       if (this.props.event.rsvp.attending_count) {
-        components.push(this.props.event.rsvp.attending_count + ' attending');
-      }
-      if (this.props.event.rsvp.maybe_count) {
-        components.push(this.props.event.rsvp.maybe_count + ' maybe');
+        if (this.props.event.rsvp.maybe_count) {
+          counts = this.props.intl.formatMessage(messages.attendingMaybeCount, {
+            attendingCount: this.props.event.rsvp.maybe_count,
+            maybeCount: this.props.event.rsvp.maybe_count,
+          });
+        } else {
+          counts = this.props.intl.formatMessage(messages.attendingCount, {attendingCount: this.props.event.rsvp.maybe_count});
+        }
       }
       //TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
-      const counts = components.join(', ');
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
       const rsvpControl = (this.props.event.source.name === 'Facebook Event') ? <EventRsvpControl event={this.props.event} /> : null;
       return <View>
@@ -421,6 +475,7 @@ class EventRsvp extends SubEventLine {
     }
   }
 }
+const EventRsvp = injectIntl(_EventRsvp);
 
 class EventDescription extends React.Component {
   render() {
