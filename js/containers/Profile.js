@@ -107,7 +107,7 @@ const messages = defineMessages({
     id: 'profile.detailsContents',
     defaultMessage: '– Added: {handAdded}\n– Auto-contributed: {autoAdded}',
     description: 'Details about the user',
-  }
+  },
 });
 
 const credits = [
