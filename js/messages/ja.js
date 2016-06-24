@@ -55,4 +55,13 @@ our website without any login:
   'event.rsvp.declined': '参加しない',
   'navigator.addEvent': 'イベントを追加',
   'navigator.viewFlyer': 'フライヤー',
+  'addEvents.introText': 'イベントを参加してください！　DanceDeets works best when dancers like you, share the dance events you know about.',
+  'addEvents.showEvents': 'イベント表示：',
+  'addEvents.showEvents.all': '全て',
+  'addEvents.showEvents.notYetAdded': 'まだ追加してないのみ',
+  'addEvents.sort': '並べ替え：',
+  'addEvents.sort.byStartDate': '開始日時順',
+  'addEvents.sort.byName': '名前順',
+  'addEvents.button': 'イベントを追加',
+  'addEvents.banner': '追加済み',
 };

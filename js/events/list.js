@@ -120,7 +120,7 @@ class _AddEventButton extends React.Component {
       textStyle={{fontWeight: 'bold'}}
       style={styles.addEventButton}
       onPress={this.props.onPress}
-    >Add Event</Button>;
+    />;
   }
 }
 const AddEventButton = injectIntl(_AddEventButton);

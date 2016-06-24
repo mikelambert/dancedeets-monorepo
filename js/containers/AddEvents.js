@@ -42,20 +42,69 @@ import {
 import moment from 'moment';
 import {
   injectIntl,
+  intlShape,
   defineMessages,
 } from 'react-intl';
 import { weekdayDateTime } from '../formats';
+
+const messages = defineMessages({
+  introText: {
+    id: 'addEvents.introText',
+    defaultMessage: 'DanceDeets works best when dancers like you, share the dance events you know about.',
+    description: 'At the top of the Add Event panel, explaining how things work.',
+  },
+  showEvents: {
+    id: 'addEvents.showEvents',
+    defaultMessage: 'Show events:',
+    description: 'The filter setting before offering All and Not-yet-added-only filters.',
+  },
+  showEventsAll: {
+    id: 'addEvents.showEvents.all',
+    defaultMessage: 'All',
+    description: 'Show all events, already-added and not-yet-added',
+  },
+  showEventsNotYetAdded: {
+    id: 'addEvents.showEvents.notYetAdded',
+    defaultMessage: 'Not-yet-added only',
+    description: 'Show only not-yet-added events',
+  },
+  sort: {
+    id: 'addEvents.sort',
+    defaultMessage: 'Sort:',
+    description: 'The filter setting before offering All and Not-yet-added-only filters.',
+  },
+  sortByStartDate: {
+    id: 'addEvents.sort.byStartDate',
+    defaultMessage: 'By Start Date',
+    description: 'Sort events by start date',
+  },
+  sortByName: {
+    id: 'addEvents.sort.byName',
+    defaultMessage: 'By Name',
+    description: 'Sort events by name',
+  },
+  addEventButton: {
+    id: 'addEvents.button',
+    defaultMessage: 'Add Event',
+    description: 'Add Event Button',
+  },
+  addedBanner: {
+    id: 'addEvents.banner',
+    defaultMessage: 'ADDED',
+    description: 'Red Banner over the event photo',
+  }
+});
 
 class _FilterHeader extends React.Component {
   render() {
     return <View style={styles.header}>
 
-    <Text style={styles.headerRow}>DanceDeets works best, when dancers like you share the dance events you know about.</Text>
+    <Text style={styles.headerRow}>{this.props.intl.formatMessage(messages.introText)}</Text>
 
     <HorizontalView style={styles.headerRow}>
-      <Text style={styles.headerText}>Show events:</Text>
+      <Text style={styles.headerText}>{this.props.intl.formatMessage(messages.showEvents)}</Text>
       <SegmentedControl
-        values={['All', 'Not-yet-added only']}
+        values={[this.props.intl.formatMessage(messages.showEventsAll), this.props.intl.formatMessage(messages.showEventsNotYetAdded)]}
         style={{flex: 1}}
         defaultIndex={this.props.displayOptions.onlyUnadded ? 1 : 0}
         tintColor={yellowColors[1]}
@@ -64,9 +113,9 @@ class _FilterHeader extends React.Component {
     </HorizontalView>
 
     <HorizontalView style={styles.headerRow}>
-      <Text style={styles.headerText}>Sort:</Text>
+      <Text style={styles.headerText}>{this.props.intl.formatMessage(messages.sort)}</Text>
       <SegmentedControl
-        values={['By Start Date', 'By Name']}
+        values={[this.props.intl.formatMessage(messages.sortByStartDate), this.props.intl.formatMessage(messages.sortByName)]}
         style={{flex: 1}}
         tintColor={yellowColors[1]}
         defaultIndex={this.props.displayOptions.sortOrder === 'ByName' ? 1 : 0}
@@ -84,13 +133,14 @@ const FilterHeader = connect(
     setOnlyUnadded: (x) => dispatch(setOnlyUnadded(x)),
     setSortOrder: (x) => dispatch(setSortOrder(x)),
   }),
-)(_FilterHeader);
+)(injectIntl(_FilterHeader));
 
 class _AddEventRow extends React.Component {
   props: {
     onEventClicked: (event: AddEventData) => void,
     onEventAdded: (event: AddEventData) => void,
     event: AddEventData,
+    intl: intlShape.isRequired,
   };
 
   render() {
@@ -100,7 +150,7 @@ class _AddEventRow extends React.Component {
     let tempOverlay = null;
     if (this.props.event.clickedConfirming) {
       tempOverlay = <View style={{position: 'absolute', top: 20, left: 0}}>
-        <Button size="small" caption="Add Event" onPress={()=>{this.props.onEventAdded(this.props.event);}} />
+        <Button size="small" caption={this.props.intl.formatMessage(messages.addEventButton)} onPress={()=>{this.props.onEventAdded(this.props.event);}} />
       </View>;
     } else if (this.props.event.pending) {
       tempOverlay = <View style={{position: 'absolute', top: 20, left: 0}}>
@@ -111,7 +161,7 @@ class _AddEventRow extends React.Component {
       <View style={styles.disabledOverlay}>
         <View style={[styles.redRibbon, {top: width / 2 - 10}]}>
           <Text style={styles.redRibbonText}>
-          ADDED
+          {this.props.intl.formatMessage(messages.addedBanner)}
           </Text>
         </View>
       </View> : null);
