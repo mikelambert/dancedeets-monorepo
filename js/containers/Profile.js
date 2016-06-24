@@ -32,11 +32,83 @@ import { track } from '../store/track';
 import type { Dispatch } from '../actions/types';
 import { ShareDialog, MessageDialog } from 'react-native-fbsdk';
 import Share from 'react-native-share';
+import {
+  injectIntl,
+  intlShape,
+  defineMessages,
+} from 'react-intl';
 
 const Mailer = require('NativeModules').RNMail;
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 
+const messages = defineMessages({
+  credits: {
+    id: 'credits.title',
+    defaultMessage: 'Dancedeets Credits',
+    description: 'Header of our Credits section',
+  },
+  tagline: {
+    id: 'dancedeets.tagline',
+    defaultMessage: 'Street Dance Events. Worldwide.',
+    description: 'Our tagline for DanceDeets, used when sharing the app/site'
+  },
+  shareTitle: {
+    id: 'share.title',
+    defaultMessage: 'Share DanceDeets',
+    description: 'Title for our card with all the share buttons, to share the app',
+  },
+  shareFacebook: {
+    id: 'share.facebook',
+    defaultMessage: 'Share on FB',
+    description: 'Share this on Facebook wall',
+  },
+  shareFacebookMessenger: {
+    id: 'share.facebookMessenger',
+    defaultMessage: 'Send FB Message',
+    description: 'Share this through Facebook message',
+  },
+  shareGeneric: {
+    id: 'share.generic',
+    defaultMessage: 'Send Message',
+    description: 'Share this using the native mobile share experience',
+  },
+  friendsUsing: {
+    id: 'profile.friendsUsing',
+    defaultMessage: '{count} friends using DanceDeets',
+    description: 'A count of how many of the user\'s friends are using the app',
+  },
+  logout: {
+    id: 'profile.logout',
+    defaultMessage: 'Logout',
+    description: 'Button to log out of the app',
+  },
+  buttonNotificationSettings: {
+    id: 'buttons.notificationSettings',
+    defaultMessage: 'Notification Settings(TODO)',
+    description: 'Configure the app notification preferences',
+  },
+  buttonSendFeedback: {
+    id: 'buttons.sendFeedback',
+    defaultMessage: 'Send Feedback',
+    description: 'Button to send feedback to DanceDeets about the app/site',
+  },
+  buttonAdvertisePromote: {
+    id: 'buttons.advertisePromote',
+    defaultMessage: 'Advertise/Promote',
+    description: 'Button to contact DanceDeets about advertising/promoting events in the app',
+  },
+  profileDetailsHeader: {
+    id: 'profile.detailsHeader',
+    defaultMessage: 'Dance Events:',
+    description: 'Header for details about the user',
+  },
+  profileDetailsContents: {
+    id: 'profile.detailsContents',
+    defaultMessage: '– Added: {handAdded}\n– Auto-contributed: {autoAdded}',
+    description: 'Details about the user',
+  }
+});
 
 const credits = [
   [
@@ -67,55 +139,61 @@ class CreditSubList extends React.Component {
   }
 }
 
-class Credits extends React.Component {
+class _Credits extends React.Component {
   render() {
-    const creditHeader = <Heading1 style={{marginBottom: 5}}>Dancedeets Credits</Heading1>;
+    const creditHeader = <Heading1 style={{marginBottom: 5}}>{this.props.intl.formatMessage(messages.credits)}</Heading1>;
     const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
     return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
   }
 }
+const Credits = injectIntl(_Credits);
 
 const shareLinkContent = {
   contentType: 'link',
   contentUrl: 'http://www.dancedeets.com',
-  contentDescription: 'Street Dance Events, Worldwide!',
+  contentDescription: null,
 };
 
-class ShareButtons extends React.Component {
+class _ShareButtons extends React.Component {
+  getShareLinkContent() {
+    return Object.assign({}, shareLinkContent, {contentDescription: this.props.intl.formatMessage(messages.tagline)});
+  }
+
   render() {
     return (
       <View>
-        <Heading1>Share DanceDeets</Heading1>
+        <Heading1>{this.props.intl.formatMessage(messages.shareTitle)}</Heading1>
 
         <Button
           size="small"
-          caption="Share on FB"
+          caption={this.props.intl.formatMessage(messages.shareFacebook)}
           icon={require('../login/icons/facebook.png')}
           onPress={() => {
             track('Share DanceDeets', {Button: 'Share FB Post'});
-            ShareDialog.show(shareLinkContent);
+            ShareDialog.show(this.getShareLinkContent());
           }}
           style={styles.noFlexButton}
         />
         <Button
           size="small"
-          caption="Send FB Message"
+          caption={this.props.intl.formatMessage(messages.shareFacebookMessenger)}
           icon={require('../login/icons/facebook-messenger.png')}
           onPress={() => {
             track('Share DanceDeets', {Button: 'Send FB Message'});
-            MessageDialog.show(shareLinkContent);
+            MessageDialog.show(this.getShareLinkContent());
           }}
           style={styles.noFlexButton}
         />
         <Button
           size="small"
-          caption="Send Message"
+          caption={this.props.intl.formatMessage(messages.shareGeneric)}
           icon={Platform.OS === 'ios' ? require('./share-icons/small-share-ios.png') : require('./share-icons/small-share-android.png')}
           onPress={() => {
             track('Share DanceDeets', {Button: 'Send Native'});
+            const localizedShareLinkContent = this.getShareLinkContent();
             Share.open({
-              share_text: shareLinkContent.contentDescription,
-              share_URL: shareLinkContent.contentUrl,
+              share_text: localizedShareLinkContent.contentDescription,
+              share_URL: localizedShareLinkContent.contentUrl,
               title: 'DanceDeets',
             }, (e) => {
               console.warn(e);
@@ -127,6 +205,7 @@ class ShareButtons extends React.Component {
     );
   }
 }
+const ShareButtons = injectIntl(_ShareButtons);
 
 function sendEmail() {
   track('Send Feedback');
@@ -157,24 +236,27 @@ function sendAdvertisingEmail() {
 class _UserProfile extends React.Component {
   render() {
     const user = this.props.user;
+    const friendCount = user.friends.data.length || 0;
     const image = user.picture ? <Image style={styles.profileImageSize} source={{uri: user.picture.data.url}}/> : null;
-    let friendsCopy = <Text style={{marginBottom: 10}}>{user.friends.data.length || 0} friends using DanceDeets</Text>;
-    if (user.friends.data.length === 0) {
-      friendsCopy = null;
+    let friendsCopy = null;
+    if (friendCount !== 0) {
+      friendsCopy = <Text style={{marginBottom: 10}}>{this.props.intl.formatMessage(messages.friendsUsing, {count: friendCount})}</Text>;
     }
 
     return <HorizontalView>
         <View style={styles.profileLeft}>
           <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
-          <Button size="small" caption="Logout" onPress={this.props.logOutWithPrompt} />
+          <Button size="small" caption={this.props.intl.formatMessage(messages.logout)} onPress={this.props.logOutWithPrompt} />
         </View>
         <View style={styles.profileRight}>
           <Heading1>{user.profile.name || ' '}</Heading1>
           <Text style={{fontStyle: 'italic', marginBottom: 10}}>{user.ddUser.formattedCity || ' '}</Text>
           {friendsCopy}
-          <Text style={{fontWeight: 'bold'}}>Dance Events:</Text>
-          <Text>– Added: {user.ddUser.num_hand_added_events || 0}</Text>
-          <Text>– Auto-contributed: {user.ddUser.num_auto_added_events || 0}</Text>
+          <Text style={{fontWeight: 'bold'}}>{this.props.intl.formatMessage(messages.profileDetailsHeader)}</Text>
+          <Text>{this.props.intl.formatMessage(messages.profileDetailsContents, {
+            handAdded: user.ddUser.num_hand_added_events || 0,
+            autoAdded: user.ddUser.num_auto_added_events || 0,
+          })}</Text>
         </View>
       </HorizontalView>;
   }
@@ -186,10 +268,10 @@ const UserProfile = connect(
   (dispatch: Dispatch) => ({
     logOutWithPrompt: () => dispatch(logOutWithPrompt()),
   }),
-)(_UserProfile);
+)(injectIntl(_UserProfile));
 
 
-export default class Profile extends React.Component {
+class _Profile extends React.Component {
   render() {
     return <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
       <Card>
@@ -200,11 +282,11 @@ export default class Profile extends React.Component {
         <ShareButtons />
       </Card>
 
-      {Platform.OS === 'android' ? <Button size="small" caption="Notification Settings(TODO)"/> : null}
+      {Platform.OS === 'android' ? <Button size="small" caption={this.props.intl.formatMessage(messages.buttonNotificationSettings)}/> : null}
 
-      <Button size="small" caption="Send Feedback" onPress={sendEmail} style={styles.noFlexButton}/>
+      <Button size="small" caption={this.props.intl.formatMessage(messages.buttonSendFeedback)} onPress={sendEmail} style={styles.noFlexButton}/>
 
-      <Button size="small" caption="Advertise/Promote" onPress={sendAdvertisingEmail} style={styles.noFlexButton}/>
+      <Button size="small" caption={this.props.intl.formatMessage(messages.buttonAdvertisePromote)} onPress={sendAdvertisingEmail} style={styles.noFlexButton}/>
 
       <Card>
         <Credits />
@@ -213,6 +295,7 @@ export default class Profile extends React.Component {
     </ScrollView>;
   }
 }
+export default injectIntl(_Profile);
 
 const styles = StyleSheet.create({
   noFlexButton: {
