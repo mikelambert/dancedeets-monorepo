@@ -171,8 +171,8 @@ class _AppContainer extends React.Component {
 					trackWithEvent('View Event', event);
 					this.props.onNavigate({key: 'EventView', title: event.name, event: event});
 				}}
-				onAddEventClicked={() => {
-					track('Add Event');
+				onAddEventClicked={(source) => {
+					track('Add Event', {source: source});
 					this.props.onNavigate({key: 'AddEvent', title: this.props.intl.formatMessage(messages.addEvent)});
 				}}
 			/>;

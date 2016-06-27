@@ -183,6 +183,12 @@ class _SearchHeader extends React.Component {
         <Button
           size="small"
           style={styles.toggleButton}
+          icon={require('./images/add_calendar.png')}
+          onPress={this.props.onAddEvent}
+          />
+        <Button
+          size="small"
+          style={styles.toggleButton}
           icon={this.props.listLayout ? require('./search-images/large-flyer.png') : require('./search-images/small-flyer.png')}
           onPress={this.props.toggleLayout}
           />

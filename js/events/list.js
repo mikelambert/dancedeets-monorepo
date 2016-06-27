@@ -297,10 +297,14 @@ class _EventListContainer extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <SearchHeader>
+        <SearchHeader onAddEvent={() => {
+          this.props.onAddEventClicked('Search Header');
+        }} >
           {this.renderListView()}
         </SearchHeader>
-        <AddEventButton onPress={this.props.onAddEventClicked} />
+        <AddEventButton onPress={() => {
+          this.props.onAddEventClicked('Floating Button');
+        }} />
       </View>
     );
   }
