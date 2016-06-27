@@ -156,7 +156,7 @@ class EventCategories extends SubEventLine {
 class _AddToCalendarButton extends React.Component {
   render() {
     return <Button
-      icon={require('./images/add_calendar.png')}
+      icon={require('./images/calendar.png')}
       caption={this.props.intl.formatMessage(messages.addToCalendar)}
       size="small"
       onPress={() => {
