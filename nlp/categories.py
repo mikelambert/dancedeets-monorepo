@@ -33,6 +33,8 @@ ANY_LOCK = Any(
     keywords.STYLE_LOCK,
 #    "lock\w*",
     u'ロック',
+    'funk\w*',
+    'funky',
 )
 
 # No extras needed here
@@ -43,6 +45,7 @@ ANY_WAACK = Any(
     "[uw]h?aac?c?k\w*",
     "[uw]h?aa?cc?k\w*",
     "punk\w+",
+    'disco',
 )
 
 ANY_HOUSE = Any(
