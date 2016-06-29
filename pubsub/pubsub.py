@@ -119,7 +119,7 @@ def post_on_event_wall(db_event):
          'You can check it out here, and good luck with your event! %(url)s'),
         ('Hey there, %(name)s listed this event on DanceDeets, the website/mobile-app for street dancers worldwide. '
          "We're sure you'll have a great event, but we hope our site can help with that in a small way... %(url)s"),
-        ('Awesome, %(name)s added your street dnacedance to DanceDeets, to help more dancers discover it. '
+        ('Awesome, %(name)s added your street dance event to DanceDeets, to help more dancers discover it. '
          "Hopefully you don't mind the extra help in promoting your event! %(url)s"),
     ]
     message = random.choice(messages) % {'name': name, 'url': url}
