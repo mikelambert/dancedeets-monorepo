@@ -16,15 +16,18 @@ const defaultLocale = 'en';
 const locales = ['en', 'ja', 'fr', 'zh', 'ko'];
 
 const getCurrentLocale = () => {
-  const currentLocale = Locale.constants().localeIdentifier.split('_')[0];
+  const currentLocale = Locale.constants().localeIdentifier.split('_')[0].split('-')[0];
+  console.log(currentLocale);
   return locales.indexOf(currentLocale) !== -1
     ? currentLocale
     : defaultLocale;
 };
 
 import ja from './messages/ja';
+import zh from './messages/zh';
 const messages = {
   ja,
+  zh,
 };
 
 // https://github.com/yahoo/intl-locales-supported#usage

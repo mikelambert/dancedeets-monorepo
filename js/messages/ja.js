@@ -76,5 +76,5 @@ our website without any login:
   'buttons.sendFeedback': 'フィードバックの送信',
   'buttons.advertisePromote': '広告と宣伝の問い合わせ',
   'profile.detailsHeader': 'ダンスイベント：',
-  'profile.detailsContents': '– 参加しました： {handAdded}\n– 見つけて参加されました：　{autoAdded}',
+  'profile.detailsContents': '– 参加しました： {handAdded}\n– 見つけて参加されました： {autoAdded}',
 };
