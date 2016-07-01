@@ -109,6 +109,7 @@ BAD_CLUB = Name('BAD_CLUB', Any(
     'champagne',
     'belvedere',
     'ciroc',
+    'ital zion crew', # accidentally added one of their private events once.
 ))
 
 CYPHER = Name('CYPHER', Any(
