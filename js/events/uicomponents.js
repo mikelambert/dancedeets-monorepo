@@ -382,7 +382,7 @@ class _EventOrganizers extends SubEventLine {
           <TouchableOpacity
           onPress={()=>{this.setState({opened: !this.state.opened});}}
           >
-            <Text style={[eventStyles.detailText, {marginBottom: 5}]}>
+            <Text style={[eventStyles.detailText, eventStyles.rowLink, {marginBottom: 5}]}>
               {text}
             </Text>
           </TouchableOpacity>
