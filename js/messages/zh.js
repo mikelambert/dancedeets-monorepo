@@ -39,7 +39,7 @@ our website without any login:
   'onebox.specialLinks': '特別的珍藏',
   'search.locationPlaceholder': '位置',
   'search.keywordsPlaceholder': '關鍵字',
-  'search.autocompleteLocations': '台北\n高雄市\n臺中\n香港\n東京\n大阪\肩升\n新加坡\n紐約市\n洛杉磯\n舊金山\n巴黎\n倫敦',
+  'search.autocompleteLocations': '台湾 台北\n台湾 高雄市\n台湾 臺中\n香港\n日本 東京\n日本 大阪\n新加坡\n美國 紐約市\n美國 洛杉磯\n美國 舊金山\n法國 巴黎\n英國 倫敦',
   'event.addToCalendar': '新增到行事曆',
   'event.addedBy': '已新增的人：',
   'event.source': '来源：',

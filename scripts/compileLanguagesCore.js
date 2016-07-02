@@ -26,7 +26,7 @@ function writeFile(filename, contents) {
 
 const REPO_PATH = 'build/country-list';
 
-const locales = ['en', 'fr', 'zh', 'ja', 'de', 'it', 'nl', 'ru', 'ko', 'es'];
+const locales = ['en', 'fr', 'zh_Hans', 'zh_Hant', 'ja', 'de', 'it', 'nl', 'ru', 'ko', 'es'];
 
 function downloadCountryList(cb) {
   mkdirpSync('build');
@@ -38,12 +38,11 @@ function getLocaleFrom(filename) {
   return components[components.length - 2];
 }
 
-function combineCountryList(languageFilter, cb) {
+function combineCountryList(filter, cb) {
   const combined = glob.sync(`${REPO_PATH}/data/*/country.json`)
     .filter((filename) => {
       const locale = getLocaleFrom(filename);
-      const justLocale = locale.indexOf('_') === -1;
-      return justLocale && (!languageFilter || languageFilter(locale));
+      return filter(locale);
     })
     .reduce((reduced, filename) => {
       const locale = getLocaleFrom(filename);

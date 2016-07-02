@@ -109,7 +109,12 @@ export default class AutocompleteList extends React.Component {
     var res: ?[Result] = null;
 
     if (results.length === 0 || this.props.predefinedPlacesAlwaysVisible === true) {
-      res = [...this.props.predefinedPlaces];
+      res = this.props.predefinedPlaces.map((x) => {
+        return {
+          description: x.description,
+          terms: x.description.split(new RegExp('[, ]+')).map((value) => {return {value: value};}),
+        };
+      });
       if (this.props.currentLocation === true) {
         res.unshift({
           description: this.props.currentLocationLabel,

@@ -14,6 +14,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
 import {
   Button,
@@ -48,7 +49,7 @@ const messages = defineMessages({
   },
   locations: {
     id: 'search.autocompleteLocations',
-    defaultMessage: 'New York City, United States\nTokyo, Japan\nParis, France\nTaipei, Taiwan\nSan Francisco, United States\nLondon, United Kingdom\nSeoul, South Korea',
+    defaultMessage: 'New York City, United States\nLos Angeles, United States\nSan Francisco, United States\nWashington DC, United States\nLondon, United Kingdom\nParis, France\nTokyo, Japan\nTaipei, Taiwan\nSeoul, South Korea',
     description: 'A list of locations that we should show in our autocomplete',
   },
   currentLocation: {
@@ -198,7 +199,7 @@ class _SearchHeader extends React.Component {
         ref="location_autocomplete"
         style={{top: this.state.height}}
         textValue={()=>this.props.searchQuery.location}
-        queryLanguage={this.props.intl.locale}
+        queryLanguage={Locale.constants().localeIdentifier}
         currentLocationLabel={this.props.intl.formatMessage(messages.currentLocation)}
         onLocationSelected={async (text) => {
           await this.props.updateLocation(text);

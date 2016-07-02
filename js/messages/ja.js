@@ -39,7 +39,7 @@ our website without any login:
   'onebox.specialLinks': '特別なリンク',
   'search.locationPlaceholder': '場所',
   'search.keywordsPlaceholder': 'キーワード',
-  'search.autocompleteLocations': '東京\n大阪\nソウル\n香港\n台北\nシンガポール\nニューヨーク市\nロサンゼルス\nサンフランシスコ\nパリ\nロンドン',
+  'search.autocompleteLocations': '日本 東京\n日本 大阪\n大韓民国 ソウル\n香港\n台湾 台北\nシンガポール\nアメリカ合衆国 ニューヨーク市\nアメリカ合衆国 ロサンゼルス\nアメリカ合衆国 サンフランシスコ\nフランス パリ\nイギリス ロンドン',
   'event.addToCalendar': 'カレンダーに予定が追加',
   'event.addedBy': 'によって追加：',
   'event.source': 'ソース：',
