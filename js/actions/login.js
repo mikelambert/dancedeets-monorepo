@@ -21,6 +21,29 @@ import _ from 'lodash/array';
 import type { Action, Dispatch, ThunkAction, User } from './types';
 import Geocoder from '../api/geocoder';
 import {format} from '../events/formatAddress';
+import {
+  defineMessages,
+  intlShape,
+} from 'react-intl';
+
+const messages = defineMessages({
+  logoutButton: {
+    id: 'login.logout',
+    defaultMessage: 'Logout',
+    description: 'Button to log out of the app',
+  },
+  cancelButton: {
+    id: 'buttons.cancel',
+    defaultMessage: 'Cancel',
+    description: 'Button to cancel',
+  },
+  logoutPrompt: {
+    id: 'login.logoutPrompt',
+    defaultMessage: 'Logout from {name}',
+    description: 'Prompt to show the user before logging out',
+  }
+});
+
 
 export function loginStartOnboard(): Action {
   return {
@@ -97,15 +120,15 @@ export function logOut(): ThunkAction {
   };
 }
 
-export function logOutWithPrompt(): ThunkAction {
+export function logOutWithPrompt(intl: intlShape): ThunkAction {
   return (dispatch, getState) => {
-    let name = getState().user.userData.profile.name || 'there';
+    let name = getState().user.userData.profile.name || 'DanceDeets';
 
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          title: `Log out from ${name}?`,
-          options: ['Log out', 'Cancel'],
+          title: intl.formatMessage(messages.logoutPrompt, {name}),
+          options: [intl.formatMessage(messages.logoutButton), intl.formatMessage(messages.cancelButton)],
           destructiveButtonIndex: 0,
           cancelButtonIndex: 1,
         },
@@ -117,11 +140,11 @@ export function logOutWithPrompt(): ThunkAction {
       );
     } else {
       Alert.alert(
-        `Hi, ${name}`,
-        'Log out from DanceDeets?',
+        intl.formatMessage(messages.logoutButton),
+        intl.formatMessage(messages.logoutPrompt, {name}),
         [
-          { text: 'Cancel' },
-          { text: 'Log out', onPress: () => dispatch(logOut()) },
+          { text: intl.formatMessage(messages.cancelButton) },
+          { text: intl.formatMessage(messages.logoutButton), onPress: () => dispatch(logOut()) },
         ]
       );
     }

@@ -79,7 +79,7 @@ const messages = defineMessages({
     description: 'A count of how many of the user\'s friends are using the app',
   },
   logout: {
-    id: 'profile.logout',
+    id: 'login.logout',
     defaultMessage: 'Logout',
     description: 'Button to log out of the app',
   },
@@ -236,6 +236,10 @@ function sendAdvertisingEmail() {
 class _UserProfile extends React.Component {
   render() {
     const user = this.props.user;
+    if (!user) {
+      // Don't render anything if we don't yet have a user
+      return null;
+    }
     const friendCount = user.friends.data.length || 0;
     const image = user.picture ? <Image style={styles.profileImageSize} source={{uri: user.picture.data.url}}/> : null;
     let friendsCopy = null;
@@ -246,7 +250,7 @@ class _UserProfile extends React.Component {
     return <HorizontalView>
         <View style={styles.profileLeft}>
           <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
-          <Button size="small" caption={this.props.intl.formatMessage(messages.logout)} onPress={this.props.logOutWithPrompt} />
+          <Button size="small" caption={this.props.intl.formatMessage(messages.logout)} onPress={() => this.props.logOutWithPrompt(this.props.intl)} />
         </View>
         <View style={styles.profileRight}>
           <Heading1>{user.profile.name || ' '}</Heading1>
@@ -266,7 +270,7 @@ const UserProfile = connect(
     user: state.user.userData,
   }),
   (dispatch: Dispatch) => ({
-    logOutWithPrompt: () => dispatch(logOutWithPrompt()),
+    logOutWithPrompt: (intl) => dispatch(logOutWithPrompt(intl)),
   }),
 )(injectIntl(_UserProfile));
 

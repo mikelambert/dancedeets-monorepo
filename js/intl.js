@@ -17,7 +17,6 @@ const locales = ['en', 'ja', 'fr', 'zh', 'ko'];
 
 const getCurrentLocale = () => {
   const currentLocale = Locale.constants().localeIdentifier.split('_')[0].split('-')[0];
-  console.log(currentLocale);
   return locales.indexOf(currentLocale) !== -1
     ? currentLocale
     : defaultLocale;
