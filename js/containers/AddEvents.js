@@ -90,7 +90,7 @@ const messages = defineMessages({
   },
   addedBanner: {
     id: 'addEvents.banner',
-    defaultMessage: 'ADDED',
+    defaultMessage: 'Added',
     description: 'Red Banner over the event photo',
   }
 });
@@ -161,7 +161,7 @@ class _AddEventRow extends React.Component {
       <View style={styles.disabledOverlay}>
         <View style={[styles.redRibbon, {top: width / 2 - 10}]}>
           <Text style={styles.redRibbonText}>
-          {this.props.intl.formatMessage(messages.addedBanner)}
+          {this.props.intl.formatMessage(messages.addedBanner).toUpperCase()}
           </Text>
         </View>
       </View> : null);
