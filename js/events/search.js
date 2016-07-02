@@ -24,4 +24,5 @@ export type Onebox = {
 export type SearchResults = {
   onebox_links: Array<Onebox>;
   results: Array<Event>;
+  query: SearchQuery;
 };

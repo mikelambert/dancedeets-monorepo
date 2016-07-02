@@ -61,6 +61,21 @@ const messages = defineMessages({
     defaultMessage: 'Special Links',
     description: 'Header for all the links/blogs/wikis/etc relevant to this search',
   },
+  eventsWithLocation: {
+    id: 'search.eventsWithLocation',
+    defaultMessage: 'Events near {location}',
+    description: 'Header to show with search results',
+  },
+  eventsWithKeywords: {
+    id: 'search.eventsWithKeywords',
+    defaultMessage: 'Events near %1$s with keywords "{keywords}"',
+    description: 'Header to show with search results',
+  },
+  eventsWithLocationKeywords: {
+    id: 'search.eventsWithLocationKeywords',
+    defaultMessage: 'Events near {location} with keywords "{keywords}"',
+    description: 'Header to show with search results',
+  },
 });
 
 class SectionHeader extends React.Component {
@@ -251,6 +266,27 @@ class _EventListContainer extends React.Component {
   }
 
   _renderHeader() {
+    let message = null;
+    const query = this.props.search.results && this.props.search.results.query;
+    if (!query) {
+      return;
+    }
+    if (query.location && query.keywords) {
+      message = messages.eventsWithLocationKeywords;
+    } else if (query.location) {
+      message = messages.eventsWithLocation;
+    } else if (query.keywords) {
+      message = messages.eventsWithKeywords;
+    } else {
+      // Don't show any header for non-existent search queries/results
+      return null;
+    }
+    const header = this.props.intl.formatMessage(message, {location: query.location, keywords: query.keywords});
+    return <Text>{header}</Text>;
+  }
+
+  renderAd() {
+    // This is dead code. Hide our ads for now, until/unless we decide we have data we really care about.
     let adUnitID = null;
     if (__DEV__) {
       adUnitID = 'ca-app-pub-3940256099942544/6300978111';
