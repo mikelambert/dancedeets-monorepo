@@ -216,11 +216,13 @@ class SearchHandler(ApiHandler):
                 logging.exception("Error processing event %s: %s" % (result.event_id, e))
 
         title = self._get_title(city_name, form.keywords.data)
+
         json_response = {
             'results': json_results,
             'onebox_links': onebox_links,
             'title': title,
             'location': city_name,
+            'query': data,
         }
         if southwest and northeast:
             json_response['location_box'] = {
