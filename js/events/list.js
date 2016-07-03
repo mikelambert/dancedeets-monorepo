@@ -51,6 +51,16 @@ import {
 import { weekdayDate } from '../formats';
 
 const messages = defineMessages({
+  fetchEventsError: {
+    id: 'errors.fetchEventsError',
+    defaultMessage: 'There was a problem fetching events.',
+    description: 'Error message shown when there is an error loading data over the network',
+  },
+  networkRetry: {
+    id: 'errors.networkRetry',
+    defaultMessage: 'Check your network connection and try again.',
+    description: 'Message shown when the user should attempt a reload',
+  },
   addEvent: {
     id: 'addEvent.addEvent',
     defaultMessage: 'Add Event',
@@ -266,6 +276,22 @@ class _EventListContainer extends React.Component {
   }
 
   _renderHeader() {
+    if (this.props.search.error) {
+      return this.renderErrorView();
+    }
+    return this.renderSummaryView();
+  }
+
+  renderErrorView() {
+    return <View style={styles.errorView}>
+      <Text style={styles.errorText}>
+        {this.props.intl.formatMessage(messages.fetchEventsError)}{' '}
+        {this.props.intl.formatMessage(messages.networkRetry)}
+      </Text>
+    </View>;
+  }
+
+  renderSummaryView() {
     let message = null;
     const query = this.props.search.results && this.props.search.results.query;
     if (!query) {
@@ -305,9 +331,6 @@ class _EventListContainer extends React.Component {
   }
 
   renderListView() {
-    if (this.props.search.error) {
-      return <Text>Error</Text>;
-    }
     return (
       <ListView
         ref="list_view"
@@ -395,6 +418,18 @@ const styles = StyleSheet.create({
   sectionHeaderText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  errorView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: 200,
+  },
+  errorText: {
+    fontSize: semiNormalize(20),
+    lineHeight: semiNormalize(24),
+    textAlign: 'center',
+    marginHorizontal: 30,
   },
   onebox: {
     alignItems: 'flex-start', // left align
