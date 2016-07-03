@@ -723,7 +723,9 @@ export class FullEventView extends React.Component {
             numberOfLines={2}
             style={eventStyles.rowTitle}>{this.props.event.name}</Text>
           <EventCategories categories={this.props.event.annotations.categories} />
-          <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
+          <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} >
+            <AddToCalendarButton event={this.props.event} />
+          </EventDateTime>
           <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
             <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
           </TouchableOpacity>
@@ -731,10 +733,7 @@ export class FullEventView extends React.Component {
           <EventSource event={this.props.event} />
           <EventAddedBy event={this.props.event} />
           <EventOrganizers event={this.props.event} />
-          <HorizontalView style={{marginHorizontal: 5, justifyContent: 'space-between'}}>
-            <AddToCalendarButton event={this.props.event} />
-            <EventShare event={this.props.event} />
-          </HorizontalView>
+          <EventShare event={this.props.event} />
         </Card>
         <EventDescription description={this.props.event.description} />
         {map}
