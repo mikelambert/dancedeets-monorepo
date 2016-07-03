@@ -110,6 +110,7 @@ BAD_CLUB = Name('BAD_CLUB', Any(
     'belvedere',
     'ciroc',
     'ital zion crew', # accidentally added one of their private events once.
+    'johnny soultrain', # some artist in SF who is named 'soultrain'
 ))
 
 CYPHER = Name('CYPHER', Any(
