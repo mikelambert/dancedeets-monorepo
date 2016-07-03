@@ -22,9 +22,11 @@ const getCurrentLocale = () => {
     : defaultLocale;
 };
 
-import ja from './messages/ja';
-import zh from './messages/zh';
+import fr from './messages/fr.json';
+import ja from './messages/ja.json';
+import zh from './messages/zh.json';
 const messages = {
+  fr,
   ja,
   zh,
 };

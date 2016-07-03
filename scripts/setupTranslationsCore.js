@@ -45,7 +45,6 @@ function walk(dir) {
 
 function writeFile(filename, contents) {
   return new Promise((resolve, reject) => {
-    console.log(filename);
     fs.writeFile(filename, contents, (err) => {
       if (err) {
         reject(err);
@@ -56,9 +55,12 @@ function writeFile(filename, contents) {
   });
 }
 
-function generateFile(translations) {
+function generateJsonFile(translations) {
   // TODO: do we want to write out js files or json files?
-  // return stableJsonStringify(translations, {space: 2});
+  return stableJsonStringify(translations, {space: 2});
+}
+
+function generateJsFile(translations) {
   let data = `/**
  * Copyright 2016 DanceDeets.
  *
@@ -76,21 +78,21 @@ export default
 
 const locales = ['fr', 'ja', 'zh'];
 
+function loadJsonFile(filename) {
+  return JSON.parse(fs.readFileSync(filename, 'utf8'));
+}
 
 async function updateWithTranslations(englishTranslation) {
-  const data = generateFile(englishTranslation);
-  await writeFile(path.resolve('./js/messages/en.js'), data);
-
   const promises = locales.map((locale) => {
-    const filename = path.resolve(`./js/messages/${locale}.js`);
-    // TODO: For some reason, this fails to load anything, and causes the problem to abort
-    const localeTranslation = require(filename);
+    const filename = path.resolve(`./js/messages/${locale}.json`);
+    const localeTranslation = locale === 'en' ? {} : loadJsonFile(filename);
     Object.keys(englishTranslation).forEach((key) => {
       if (!localeTranslation[key]) {
         localeTranslation[key] = englishTranslation[key];
       }
     });
-    return writeFile(filename, generateFile(localeTranslation));
+    console.log('Writing ', filename);
+    return writeFile(filename, generateJsonFile(localeTranslation));
   });
   // Write out all files
   await Promise.all(promises);
