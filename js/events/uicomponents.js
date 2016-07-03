@@ -236,7 +236,7 @@ class _EventSource extends SubEventLine {
     if (this.props.event.source) {
       return (
         <HorizontalView>
-          <Text style={eventStyles.detailText}>A</Text><Text style={eventStyles.detailText}>A啊{this.props.intl.formatMessage(messages.source)}{' '}</Text>
+          <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.source)}{' '}</Text>
           <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
             <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{this.props.event.source.name}</Text>
           </TouchableOpacity>
