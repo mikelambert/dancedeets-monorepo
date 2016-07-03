@@ -11,6 +11,7 @@ import * as path from 'path';
 import * as glob from 'glob';
 import clone from 'git-clone';
 import {sync as mkdirpSync} from 'mkdirp';
+import stableJsonStringify from 'json-stable-stringify';
 
 function walk(dir) {
   var results = [];
@@ -45,28 +46,9 @@ function walk(dir) {
   });
 }
 
-async function run() {
-  const filenames = await walk('build/messages');
-  const jsons = filenames.map((file) => require(file));
-  const json = jsons.reduce((result, json) => {
-    result = result.concat(json);
-    return result;
-  }, []);
-  console.log(json);
-}
-
-run();
-/*
-function(err, results) {
-  if (err) {
-    throw err;
-  }
-  console.log(results);
-});
-*/
-
 function writeFile(filename, contents) {
   return new Promise((resolve, reject) => {
+    console.log(filename);
     fs.writeFile(filename, contents, (err) => {
       if (err) {
         reject(err);
@@ -76,6 +58,48 @@ function writeFile(filename, contents) {
     });
   });
 }
+
+function generateFile(translations) {
+  let data = `/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
+
+'use strict';
+
+export default 
+`;
+  data += stableJsonStringify(translations, {space: 2});
+  return data;
+}
+
+async function run() {
+  const filenames = await walk('build/messages');
+  const jsons = filenames.map((file) => require(file));
+  const json = jsons.reduce((result, jsList) => {
+    result = result.concat(jsList);
+    return result;
+  }, []);
+  var translationLookup = {};
+  json.forEach((x) => {
+    translationLookup[x.id] = x.defaultMessage;
+  });
+  const data = generateFile(translationLookup);
+  console.log(data);
+  await writeFile('js/messages/en.js', data);
+}
+
+run().then(() => null);
+/*
+function(err, results) {
+  if (err) {
+    throw err;
+  }
+  console.log(results);
+});
+*/
+
 
 const REPO_PATH = 'build/country-list';
 
