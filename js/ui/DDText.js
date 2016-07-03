@@ -34,7 +34,9 @@ export function Autolink({style, ...props}: Object): ReactElement {
 }
 
 export const defaultFont = {
-  fontFamily: 'Ubuntu',
+  // Disable this due to alignment issues:
+  // https://github.com/facebook/react-native/issues/8540
+  // fontFamily: 'Ubuntu',
   fontWeight: '300',
   color: 'white',
   backgroundColor: 'transparent',
