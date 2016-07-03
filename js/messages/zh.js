@@ -43,6 +43,8 @@ our website without any login:
   'search.eventsWithLocation': '{location}附近活動',
   'search.eventsWithLocationKeywords': '{location}附近活動: {keywords}',
   'search.eventsWithKeywords': '活動: {keywords}',
+  'errors.fetchEventsError': '抱歉，載入活動時發生問題。',
+  'errors.networkRetry': '請檢查您的網路連線，然後再試一次。',
   'event.addToCalendar': '新增到行事曆',
   'event.addedBy': '已新增的人:',
   'event.source': '来源:',

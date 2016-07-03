@@ -43,6 +43,8 @@ our website without any login:
 'search.eventsWithLocation': 'Événements à proximié de {location}',
 'search.eventsWithLocationKeywords': 'Événements à proximité de {location} contenant les mots-clés "{keywords}"',
 'search.eventsWithKeywords': 'Événements contenant les mots-clés "{keywords}"',
+'errors.fetchEventsError': 'Désolé, un problème s’est produit lors du chargement des événements.',
+'errors.networkRetry': 'Vérifiez votre connexion réseau, puis réessayez.',
 'event.addToCalendar': 'Ajouter au calendrier',
 'event.addedBy': 'Ajouté par:',
 'event.source': 'Source:',

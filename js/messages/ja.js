@@ -43,6 +43,8 @@ our website without any login:
   'search.eventsWithLocation': '{location}に近いイベント',
   'search.eventsWithLocationKeywords': '「{keywords}」を含む{location}に近いイベント',
   'search.eventsWithKeywords': '{keywords}」を含むイベント',
+  'errors.fetchEventsError': 'イベントの読み込み中に問題が発生しました。',
+  'errors.networkRetry': 'ネットワーク接続を確かめて、やり直してください。',
   'event.addToCalendar': 'カレンダーに予定が追加',
   'event.addedBy': 'によって追加:',
   'event.source': 'ソース:',
