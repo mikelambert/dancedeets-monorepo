@@ -236,7 +236,7 @@ class _EventSource extends SubEventLine {
     if (this.props.event.source) {
       return (
         <HorizontalView>
-          <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.source)}{' '}</Text>
+          <Text style={eventStyles.detailText}>A</Text><Text style={eventStyles.detailText}>A啊{this.props.intl.formatMessage(messages.source)}{' '}</Text>
           <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
             <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{this.props.event.source.name}</Text>
           </TouchableOpacity>
@@ -347,7 +347,7 @@ class _EventOrganizers extends SubEventLine {
       onPress={() => {
         this._openAdmin(admin.id);
       }}
-    ><Text style={[eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>;
+    ><Text style={[eventStyles.detailText, eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>;
   }
 
   shouldRender() {
@@ -366,7 +366,7 @@ class _EventOrganizers extends SubEventLine {
       // TODO: fetch the types of each admin, and sort them with the page first (or show only the page?)
       let organizers = this.props.event.admins.map((admin) => {
         return <HorizontalView>
-          <Text style={eventStyles.detailListText}> – </Text>
+          <Text style={[eventStyles.detailText, eventStyles.detailListText]}> – </Text>
           {this.adminLink(admin)}
         </HorizontalView>;
       });
@@ -774,9 +774,8 @@ const eventStyles = StyleSheet.create({
   },
   detailTextContainer: {
     flex: 1,
-   },
+  },
   detailListText: {
-    fontSize: semiNormalize(detailHeight),
     marginBottom: 5,
   },
   detailText: {
