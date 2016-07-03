@@ -211,7 +211,7 @@ function sendEmail() {
   track('Send Feedback');
   Mailer.mail({
       subject: 'DanceDeets Feeback',
-      recipients: ['feedback@dancedeets.com'],
+      recipients: [`feedback+${Platform.OS}@dancedeets.com`],
       body: '',
     }, (error, event) => {
         if (error) {
