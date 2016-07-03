@@ -11,6 +11,7 @@ import { Platform } from 'react-native';
 import { AccessToken } from 'react-native-fbsdk';
 import type { TimePeriod } from '../events/search';
 import { Event } from '../events/models';
+import { timeout, retryWithBackoff } from './timeouts';
 
 const DEV_SERVER = false;
 
@@ -58,6 +59,14 @@ async function performRequest(path: string, args: Object, postArgs: ?Object | nu
   }
 }
 
+function createRequest(path: string, args: Object, postArgs: ?Object | null) {
+  return () => performRequest(path, args, postArgs);
+}
+
+function idempotentRetry(timeoutMs: number, promiseGenerator: () => Promise) {
+  return retryWithBackoff(timeoutMs, 2, 5, promiseGenerator);
+}
+
 async function verifyAuthenticated() {
   const token = await AccessToken.getCurrentAccessToken();
   if (!token) {
@@ -67,36 +76,36 @@ async function verifyAuthenticated() {
 
 export async function auth(data: ?Object) {
   await verifyAuthenticated();
-  return performRequest('auth', {}, data);
+  return idempotentRetry(2000, createRequest('auth', {}, data));
 }
 
 export async function search(location: string, keywords: string, time_period: TimePeriod) {
-  let results = await performRequest('search', {
+  let results = await timeout(10000, performRequest('search', {
     location,
     keywords,
     time_period,
-  });
+  }));
   results.results = results.results.map((x) => new Event(x));
   return results;
 }
 
 export async function event(id: string) {
-  const eventData = await performRequest('events/' + id, {});
+  const eventData = await timeout(5000, performRequest('events/' + id, {}));
   return new Event(eventData);
 }
 
 export async function getAddEvents() {
   await verifyAuthenticated();
-  return performRequest('events_list_to_add', {});
+  return await timeout(10000, performRequest('events_list_to_add', {}));
 }
 
 export async function userInfo() {
   await verifyAuthenticated();
-  return performRequest('user/info', {});
+  return await retryWithBackoff(2000, 2, 5, createRequest('user/info', {}));
 }
 
 export async function addEvent(eventId: string) {
   await verifyAuthenticated();
-  return performRequest('events_add', {event_id: eventId}, {event_id: eventId});
+  return await retryWithBackoff(1000, 2, 3, createRequest('events_add', {event_id: eventId}, {event_id: eventId}));
 }
 
