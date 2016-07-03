@@ -495,7 +495,7 @@ const EventRsvp = injectIntl(_EventRsvp);
 
 class EventDescription extends React.Component {
   render() {
-    return <Autolink
+    return <Card><Autolink
       linkStyle={eventStyles.rowLink}
       style={eventStyles.description}
       text={this.props.description}
@@ -504,7 +504,7 @@ class EventDescription extends React.Component {
       textProps={{selectable: true}}
       hashtag="instagram"
       twitter
-    />;
+    /></Card>;
   }
 }
 
