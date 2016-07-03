@@ -282,7 +282,7 @@ class _EventListContainer extends React.Component {
       return null;
     }
     const header = this.props.intl.formatMessage(message, {location: query.location, keywords: query.keywords});
-    return <Text>{header}</Text>;
+    return <Text style={styles.listHeader}>{header}</Text>;
   }
 
   renderAd() {
@@ -407,5 +407,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: normalize(10),
     bottom: normalize(20),
-  }
+  },
+  listHeader: {
+    fontWeight: 'bold',
+    fontSize: semiNormalize(18),
+    lineHeight: semiNormalize(24),
+  },
 });
