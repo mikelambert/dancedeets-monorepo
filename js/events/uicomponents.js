@@ -310,8 +310,7 @@ class _EventOrganizers extends SubEventLine {
   }
 
   icon() {
-    //TODO: Fix image
-    return require('./images/website.png');
+    return require('./images/organizer.png');
   }
 
   async _openAdmin(adminId) {
