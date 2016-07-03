@@ -49,6 +49,7 @@ import {
   injectIntl,
   defineMessages,
 } from 'react-intl';
+import geolib from 'geolib';
 
 const messages = defineMessages({
   addToCalendar: {
@@ -211,6 +212,7 @@ class EventVenue extends SubEventLine {
         style={[eventStyles.detailText, this.props.style]}
       >{this.props.venue.address.country}</Text>);
     }
+    //const distance = geolib.getDistance({})
     return <View>{components}</View>;
   }
 }

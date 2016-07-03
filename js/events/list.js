@@ -29,10 +29,7 @@ import {
   updateKeywords,
 } from '../actions';
 import { linkColor, purpleColors, yellowColors } from '../Colors';
-import Geocoder from '../api/geocoder';
 import { auth } from '../api/dancedeets';
-import type { Address } from './formatAddress';
-import { format } from './formatAddress';
 import {
   Button,
   normalize,
@@ -47,7 +44,7 @@ import {
   injectIntl,
   defineMessages,
 } from 'react-intl';
-
+import { getAddress } from '../util/geo';
 import { weekdayDate } from '../formats';
 
 const messages = defineMessages({
@@ -221,21 +218,12 @@ class _EventListContainer extends React.Component {
     await this.props.performSearch();
   }
 
-  fetchLocationAndSearch() {
-    const highAccuracy = Platform.OS == 'ios';
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const newCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
-        const address: Address = await Geocoder.geocodePosition(newCoords);
-        const formattedAddress = format(address[0]);
-        // Trigger this search without waiting around
-        auth({location: formattedAddress});
-        // And likewise with our attempt to search
-        this.setLocationAndSearch(formattedAddress);
-      },
-      (error) => console.warn('Error getting current position:', error),
-      {enableHighAccuracy: highAccuracy, timeout: 10 * 1000, maximumAge: 10 * 60 * 1000}
-    );
+  async fetchLocationAndSearch() {
+    const address = await getAddress();
+    // Trigger this search without waiting around
+    auth({location: address});
+    // And likewise with our attempt to search
+    this.setLocationAndSearch(address);
   }
 
   async initialize() {

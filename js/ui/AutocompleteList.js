@@ -25,6 +25,7 @@ import {
   semiNormalize,
 } from '../ui/normalize';
 import lookupCountryCode from '../util/lookupCountryCode';
+import { getAddress } from '../util/geo';
 
 type Term = {
   value: string;
@@ -152,18 +153,15 @@ export default class AutocompleteList extends React.Component {
     this._requests = [];
   }
 
-  getCurrentLocation() {
-    const highAccuracy = Platform.OS == 'ios';
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this._requestLocationName(position.coords.latitude, position.coords.longitude);
-      },
-      (error) => {
-        this._disableRowLoaders();
-        console.warn(error.message);
-      },
-      {enableHighAccuracy: highAccuracy, timeout: 10 * 1000, maximumAge: 10 * 60 * 1000}
-    );
+  async getCurrentLocation() {
+    this._abortRequests();
+    try {
+      const address = await getAddress();
+      this.props.onLocationSelected(address);
+    } catch (e) {
+      this._disableRowLoaders();
+      console.warn(e);
+    }
   }
 
   _enableRowLoader(rowData: Result) {
@@ -244,25 +242,6 @@ export default class AutocompleteList extends React.Component {
       request.send();
     };
     return new Promise(f.bind(this));
-  }
-
-  async _requestLocationName(latitude: number, longitude: number) {
-    this._abortRequests();
-    if (latitude !== undefined && longitude !== undefined && latitude !== null && longitude !== null) {
-        try {
-          const coords = { lat: latitude, lng: longitude };
-          const address: Address = await Geocoder.geocodePosition(coords);
-          const formattedAddress = format(address[0]);
-          this.props.onLocationSelected(formattedAddress);
-        } catch (e) {
-          this._disableRowLoaders();
-        }
-    } else {
-      this._results = [];
-      this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults([])),
-      });
-    }
   }
 
   _request(text: string) {
