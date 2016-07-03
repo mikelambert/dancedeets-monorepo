@@ -12,50 +12,50 @@ import * as glob from 'glob';
 import clone from 'git-clone';
 import {sync as mkdirpSync} from 'mkdirp';
 
-function walk(dir, done) {
+function walk(dir) {
   var results = [];
-  fs.readdir(dir, function(err, list) {
-    if (err) {
-      return done(err);
-    }
-    var pending = list.length;
-    if (!pending) {
-      return done(null, results);
-    }
-    list.forEach(function(file) {
-      file = path.resolve(dir, file);
-      fs.stat(file, function(err2, stat) {
-        if (stat && stat.isDirectory()) {
-          walk(file, function(err3, res) {
-            results = results.concat(res);
+  return new Promise((resolve, reject) => {
+    fs.readdir(dir, function(err, list) {
+      if (err) {
+        return reject(err);
+      }
+      var pending = list.length;
+      if (!pending) {
+        return resolve(results);
+      }
+      list.forEach(function(file) {
+        file = path.resolve(dir, file);
+        fs.stat(file, function(err2, stat) {
+          if (stat && stat.isDirectory()) {
+            walk(file).then(function(res) {
+              results = results.concat(res);
+              if (!--pending) {
+                resolve(results);
+              }
+            });
+          } else {
+            results.push(file);
             if (!--pending) {
-              done(null, results);
+              resolve(results);
             }
-          });
-        } else {
-          results.push(file);
-          if (!--pending) {
-            done(null, results);
           }
-        }
+        });
       });
     });
   });
-};
-
-function combineFiles(err, files) {
-  if (!files) {
-    return;
-  }
-  const results = files.
-    map((file) => require(file)).
-    reduce((result, json) => {
-      Array.prototype.push.apply(result, json);
-      return result;
-    }, []);
-  console.log(results);
 }
-walk('build/messages', combineFiles);
+
+async function run() {
+  const filenames = await walk('build/messages');
+  const jsons = filenames.map((file) => require(file));
+  const json = jsons.reduce((result, json) => {
+    result = result.concat(json);
+    return result;
+  }, []);
+  console.log(json);
+}
+
+run();
 /*
 function(err, results) {
   if (err) {
