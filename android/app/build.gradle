@@ -190,9 +190,9 @@ dependencies {
     // The excludes above and includes below are due to version incompatibilities
     // between 8.4 and 9.0 libraries.
     // https://github.com/lelandrichardson/react-native-maps/issues/249
-    compile 'com.google.android.gms:play-services-base:9.0.0'
-    compile 'com.google.android.gms:play-services-ads:9.0.0'
-    compile 'com.google.android.gms:play-services-maps:9.0.0'
+    compile 'com.google.android.gms:play-services-base:9.2.0+'
+    compile 'com.google.android.gms:play-services-ads:9.2.0+'
+    compile 'com.google.android.gms:play-services-maps:9.2.0+'
     compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
         transitive = true;
     }
