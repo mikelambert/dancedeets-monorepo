@@ -8,9 +8,6 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as glob from 'glob';
-import clone from 'git-clone';
-import {sync as mkdirpSync} from 'mkdirp';
 import stableJsonStringify from 'json-stable-stringify';
 
 function walk(dir) {
@@ -60,6 +57,8 @@ function writeFile(filename, contents) {
 }
 
 function generateFile(translations) {
+  // TODO: do we want to write out js files or json files?
+  // return stableJsonStringify(translations, {space: 2});
   let data = `/**
  * Copyright 2016 DanceDeets.
  *
@@ -71,7 +70,30 @@ function generateFile(translations) {
 export default 
 `;
   data += stableJsonStringify(translations, {space: 2});
+  data += ';\n';
   return data;
+}
+
+const locales = ['fr', 'ja', 'zh'];
+
+
+async function updateWithTranslations(englishTranslation) {
+  const data = generateFile(englishTranslation);
+  await writeFile(path.resolve('./js/messages/en.js'), data);
+
+  const promises = locales.map((locale) => {
+    const filename = path.resolve(`./js/messages/${locale}.js`);
+    // TODO: For some reason, this fails to load anything, and causes the problem to abort
+    const localeTranslation = require(filename);
+    Object.keys(englishTranslation).forEach((key) => {
+      if (!localeTranslation[key]) {
+        localeTranslation[key] = englishTranslation[key];
+      }
+    });
+    return writeFile(filename, generateFile(localeTranslation));
+  });
+  // Write out all files
+  await Promise.all(promises);
 }
 
 async function run() {
@@ -85,59 +107,11 @@ async function run() {
   json.forEach((x) => {
     translationLookup[x.id] = x.defaultMessage;
   });
-  const data = generateFile(translationLookup);
-  console.log(data);
-  await writeFile('js/messages/en.js', data);
+  await updateWithTranslations(translationLookup);
 }
 
-run().then(() => null);
-/*
-function(err, results) {
-  if (err) {
-    throw err;
-  }
-  console.log(results);
-});
-*/
-
-
-const REPO_PATH = 'build/country-list';
-
-const locales = ['en', 'fr', 'zh_Hans', 'zh_Hant', 'ja', 'de', 'it', 'nl', 'ru', 'ko', 'es'];
-
-function downloadCountryList(cb) {
-  mkdirpSync('build');
-  clone('https://github.com/umpirsky/country-list.git', REPO_PATH, {shallow: true}, cb);
-}
-
-function getLocaleFrom(filename) {
-  const components = filename.split('/');
-  return components[components.length - 2];
-}
-
-function combineCountryList(filter, cb) {
-  const combined = glob.sync(`${REPO_PATH}/data/*/country.json`)
-    .filter((filename) => {
-      const locale = getLocaleFrom(filename);
-      return filter(locale);
-    })
-    .reduce((reduced, filename) => {
-      const locale = getLocaleFrom(filename);
-      const data = require(`../${filename}`);
-      reduced[locale] = data;
-      return reduced;
-    }, {});
-
-  cb(combined);
-}
-
-function languageFilter(locale) {
-  return locales.indexOf(locale) !== -1;
-}
-
-function saveCombinedList(combined) {
-  let fileData = 'export default ';
-  fileData += JSON.stringify(combined);
-  mkdirpSync('js/data');
-  writeFile('js/data/localizedCountries.js', fileData).then(() => null);
+try {
+  run();
+} catch (e) {
+  console.warn(e);
 }
