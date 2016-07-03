@@ -14,6 +14,7 @@ export type State = {
   loading: boolean; // loading indicator
   searchQuery: SearchQuery; // our current search query
   results: ?SearchResults; // our last-searched results
+  error: boolean; // whether there was an error fetching the current results
 };
 
 const initialState = {
@@ -25,6 +26,7 @@ const initialState = {
     timePeriod: 'UPCOMING',
   },
   results: null,
+  error: false,
 };
 
 export function search(state: State = initialState, action: Action): State {
@@ -63,6 +65,7 @@ export function search(state: State = initialState, action: Action): State {
     return {
       ...state,
       loading: true,
+      error: false,
     };
   }
   if (action.type === 'SEARCH_COMPLETE') {
@@ -77,6 +80,7 @@ export function search(state: State = initialState, action: Action): State {
       ...state,
       loading: false,
       results: null,
+      error: true,
     };
   }
   return state;

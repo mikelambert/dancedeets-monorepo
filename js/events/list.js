@@ -305,6 +305,9 @@ class _EventListContainer extends React.Component {
   }
 
   renderListView() {
+    if (this.props.search.error) {
+      return <Text>Error</Text>;
+    }
     return (
       <ListView
         ref="list_view"

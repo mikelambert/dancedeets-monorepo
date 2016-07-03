@@ -8,7 +8,6 @@
 
 export function timeout(timeoutMs: number, promise: Promise) {
   return new Promise(function(resolve, reject) {
-    console('running with timeout', timeoutMs);
     setTimeout(function() {
       reject(new Error('timeout'));
     }, timeoutMs);
@@ -18,7 +17,6 @@ export function timeout(timeoutMs: number, promise: Promise) {
 
 export async function retryWithBackoff(startTimeoutMs: number, backoffFactor: number, retries: number, getPromise: () => Promise) {
   try {
-    console('remaining tries', retries);
     return await timeout(startTimeoutMs, getPromise());
   } catch (e) {
     if (retries > 0) {
