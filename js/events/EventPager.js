@@ -35,42 +35,44 @@ class EventPager extends React.Component {
     super(props);
     var dataSource = new ViewPager.DataSource({
       pageHasChanged: (row1, row2) => row1 !== row2,
-
     });
     this.state = {
       position: null,
       dataSource,
     };
-    this.state = this._getNewState(this.props);
+    this.state = this._getNewState(this.props, null);
     (this: any).renderEvent = this.renderEvent.bind(this);
   }
 
   renderEvent(eventData: Object, pageID: number | string) {
     return <FullEventView
       onFlyerSelected={this.props.onFlyerSelected}
-      event={eventData}
-      currentPosition={this.state.position}
+      event={eventData.event}
+      currentPosition={eventData.position}
     />;
   }
 
-  _getNewState(props) {
+  _getNewState(props, position) {
     const results = props.search.results;
+    let finalResults = [];
+    position = position || this.state.position;
+    if (results && results.results) {
+      finalResults = results.results.map((event) => {return {event, position};});
+    }
     const state = {
       ...this.state,
-      dataSource: this.state.dataSource.cloneWithPages(results ? results.results : []),
+      dataSource: this.state.dataSource.cloneWithPages(finalResults),
     };
     return state;
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(this._getNewState(nextProps));
+    this.setState(this._getNewState(nextProps, this.state.position));
   }
 
   async loadLocation() {
-    console.log('loadloc');
     const position = await getPosition();
-    console.log('loadloc', position);
-    this.setState({position});
+    this.setState(this._getNewState(this.props, position));
   }
 
   componentWillMount() {
@@ -93,7 +95,7 @@ class EventPager extends React.Component {
       dataSource={this.state.dataSource}
       renderPage={this.renderEvent}
       renderPageIndicator={false}
-      onChangePage={ (i) => this.props.onEventNavigated(this.state.dataSource.getPageData(i)) }
+      onChangePage={ (i) => this.props.onEventNavigated(this.state.dataSource.getPageData(i).event) }
     />;
   }
 }

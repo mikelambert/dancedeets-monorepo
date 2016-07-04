@@ -33,10 +33,8 @@ export default class ProgressiveLayout extends React.Component {
   }
 
   _getNewState(props: Props) {
-    const length = props.children ? props.children.length : 0;
-    const dataBlob = Array(length).fill().map((x,i)=>i);
     return {
-      dataSource: this.state.dataSource.cloneWithRows(dataBlob),
+      dataSource: this.state.dataSource.cloneWithRows(props.children),
     };
   }
 
@@ -45,10 +43,7 @@ export default class ProgressiveLayout extends React.Component {
   }
 
   _renderRow(elem: number) {
-    if (!this.props.children) {
-      return null;
-    }
-    return this.props.children[elem];
+    return elem;
   }
 
   render() {
