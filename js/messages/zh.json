@@ -16,6 +16,8 @@
   "buttons.share": "分享…",
   "credits.title": "Dancedeets的製作群",
   "dancedeets.tagline": "Street Dance Events. Worldwide.",
+  "distance.km": "{km}公里遠",
+  "distance.miles": "{miles}英里遠",
   "errors.fetchEventsError": "抱歉，載入活動時發生問題。",
   "errors.networkRetry": "請檢查您的網路連線，然後再試一次。",
   "event.addToCalendar": "新增到行事曆",

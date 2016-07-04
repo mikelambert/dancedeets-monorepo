@@ -107,6 +107,16 @@ const messages = defineMessages({
     defaultMessage: 'No thanks.',
     description: 'Clickable text for when a user wants to attend an event'
   },
+  milesAway: {
+    id: 'distance.miles',
+    defaultMessage: '{miles} {miles, plural, one {mile} other {miles}} away',
+    description: 'Distance of something from the user',
+  },
+  kmAway: {
+    id: 'distance.km',
+    defaultMessage: '{km} km away',
+    description: 'Distance of something from the user',
+  },
 });
 
 class SubEventLine extends React.Component {
@@ -189,7 +199,18 @@ class _EventDateTime extends SubEventLine {
 }
 const EventDateTime = injectIntl(_EventDateTime);
 
-class EventVenue extends SubEventLine {
+function formatDistance(intl, distanceKm) {
+  const useKm = (intl.locale !== 'en');
+  if (useKm) {
+    const km = Math.round(distanceKm);
+    return intl.formatMessage(messages.kmAway, {km});
+  } else {
+    const miles = distanceKm * 0.621371;
+    return intl.formatMessage(messages.milesAway, {miles});
+  }
+}
+
+class _EventVenue extends SubEventLine {
   icon() {
     return require('./images/location.png');
   }
@@ -215,11 +236,12 @@ class EventVenue extends SubEventLine {
     let distanceComponent = null;
     if (this.props.venue.geocode && this.props.currentPosition) {
       const km = geolib.getDistance(this.props.currentPosition.coords, this.props.venue.geocode) / 1000;
-      distanceComponent = <Text>{Math.round(km)} km away</Text>;
+      distanceComponent = <Text>{formatDistance(this.props.intl, km)}</Text>;
     }
     return <View>{distanceComponent}{components}</View>;
   }
 }
+const EventVenue = injectIntl(_EventVenue);
 
 class _EventSource extends SubEventLine {
   constructor(props: Object) {

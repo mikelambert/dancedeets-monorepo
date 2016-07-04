@@ -16,6 +16,8 @@
   "buttons.share": "Partager…",
   "credits.title": "Dancedeets Bande Annonce",
   "dancedeets.tagline": "Street Dance Events. Worldwide.",
+  "distance.km": "{km} km loin",
+  "distance.miles": "{miles} {miles, plural, one {mile} other {miles}} loin",
   "errors.fetchEventsError": "Désolé, un problème s’est produit lors du chargement des événements.",
   "errors.networkRetry": "Vérifiez votre connexion réseau, puis réessayez.",
   "event.addToCalendar": "Ajouter au calendrier",
