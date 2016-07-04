@@ -144,6 +144,7 @@ class SearchHandler(ApiHandler):
         data = {
             'location': self.request.get('location'),
             'keywords': self.request.get('keywords'),
+            'locale': self.request.get('locale'),
         }
         # If it's 1.0 clients, or web clients, then grab all data
         if self.version == (1, 0):
@@ -172,10 +173,11 @@ class SearchHandler(ApiHandler):
                 else:
                     self.add_error('Please enter a location or keywords')
         else:
-            geocode = gmaps_api.get_geocode(address=form.location.data)
-            if geocode:
+            place = gmaps_api.fetch_place_as_json(query=form.location.data, language=form.locale.data)
+            if place['status'] == 'OK' and place['results']:
+                geocode = gmaps_api.GMapsGeocode(place['results'][0])
                 southwest, northeast = math.expand_bounds(geocode.latlng_bounds(), form.distance_in_km())
-                city_name = formatting.format_geocode(geocode)
+                city_name = place['results'][0]['formatted_address']
                 # This will fail on a bad location, so let's verify the location is geocodable above first.
             else:
                 if self.version == (1, 0):

@@ -61,6 +61,7 @@ class SearchForm(wtforms.Form):
     keywords = wtforms.StringField(default='', validators=[no_wiki_or_html, valid_query])
     distance = wtforms.IntegerField(default=50)
     distance_units = wtforms.SelectField(choices=[('miles', 'Miles'), ('km', 'KM')], default='km')
+    locale = wtforms.StringField(default='')
     min_attendees = wtforms.IntegerField(default=0)
     time_period = wtforms.SelectField(choices=[(x, x) for x in TIME_LIST], default=TIME_ALL_FUTURE)
     deb = wtforms.StringField(default='')
@@ -87,6 +88,7 @@ class SearchForm(wtforms.Form):
         d['location'] = self.location.data or ''
         d['distance'] = self.distance.data
         d['distance_units'] = self.distance_units.data
+        d['locale'] = self.locale.data
         return d
 
     def validate(self):
@@ -102,11 +104,12 @@ class SearchForm(wtforms.Form):
         return success
 
     def get_bounds(self):
+        bounds = None
         if self.location.data:
-            geocode = gmaps_api.get_geocode(address=self.location.data)
-            bounds = math.expand_bounds(geocode.latlng_bounds(), self.distance_in_km())
-        else:
-            bounds = None
+            place = gmaps_api.fetch_place_as_json(query=self.location.data, language=self.locale.data)
+            if place['status'] == 'OK' and place['results']:
+                geocode = gmaps_api.GMapsGeocode(place['results'][0])
+                bounds = math.expand_bounds(geocode.latlng_bounds(), self.distance_in_km())
         return bounds
 
     def build_query(self, start_end_query=False):
