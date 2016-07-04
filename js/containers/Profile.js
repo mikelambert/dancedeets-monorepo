@@ -127,7 +127,8 @@ const credits = [
     'Translations',
     [
       'French: Mai Le',
-      'Korean: Sun Kim and Yoda',
+      'Japanese: Huu Rock',
+      'Chinese: Wei and King Kong',
     ]
   ]
 ];
