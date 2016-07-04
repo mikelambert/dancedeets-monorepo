@@ -44,7 +44,10 @@ import {
   injectIntl,
   defineMessages,
 } from 'react-intl';
-import { getAddress } from '../util/geo';
+import {
+  getAddress,
+  getPosition,
+} from '../util/geo';
 import { weekdayDate } from '../formats';
 
 const messages = defineMessages({
@@ -149,6 +152,7 @@ const AddEventButton = injectIntl(_AddEventButton);
 
 class _EventListContainer extends React.Component {
   state: {
+    position: ?Object,
     dataSource: ListView.DataSource,
   };
 
@@ -159,6 +163,7 @@ class _EventListContainer extends React.Component {
       sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
     });
     this.state = {
+      position: null,
       dataSource,
     };
     this.state = this._getNewState(this.props);
@@ -244,6 +249,15 @@ class _EventListContainer extends React.Component {
     }
   }
 
+  async loadLocation() {
+    const position = await getPosition();
+    this.setState({position});
+  }
+
+  componentWillMount() {
+    this.loadLocation();
+  }
+
   componentDidMount() {
     this.initialize();
   }
@@ -253,6 +267,7 @@ class _EventListContainer extends React.Component {
       return <EventRow
         event={row}
         onEventSelected={this.props.onEventSelected}
+        currentPosition={this.state.position}
       />;
     } else {
       return <Onebox onebox={row}/>;

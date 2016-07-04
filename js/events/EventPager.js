@@ -14,10 +14,14 @@ import { connect } from 'react-redux';
 import { Event } from './models';
 import { FullEventView } from './uicomponents';
 import type { ThunkAction } from '../actions/types';
+import {
+  getPosition,
+} from '../util/geo';
 
 class EventPager extends React.Component {
   state: {
     dataSource: ViewPager.DataSource,
+    position: ?Object,
   };
   props: {
     onFlyerSelected: (x: Event) => ThunkAction,
@@ -34,6 +38,7 @@ class EventPager extends React.Component {
 
     });
     this.state = {
+      position: null,
       dataSource,
     };
     this.state = this._getNewState(this.props);
@@ -44,6 +49,7 @@ class EventPager extends React.Component {
     return <FullEventView
       onFlyerSelected={this.props.onFlyerSelected}
       event={eventData}
+      currentPosition={this.state.position}
     />;
   }
 
@@ -58,6 +64,17 @@ class EventPager extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState(this._getNewState(nextProps));
+  }
+
+  async loadLocation() {
+    console.log('loadloc');
+    const position = await getPosition();
+    console.log('loadloc', position);
+    this.setState({position});
+  }
+
+  componentWillMount() {
+    this.loadLocation();
   }
 
   componentDidMount() {

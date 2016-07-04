@@ -212,8 +212,12 @@ class EventVenue extends SubEventLine {
         style={[eventStyles.detailText, this.props.style]}
       >{this.props.venue.address.country}</Text>);
     }
-    //const distance = geolib.getDistance({})
-    return <View>{components}</View>;
+    let distanceComponent = null;
+    if (this.props.venue.geocode && this.props.currentPosition) {
+      const km = geolib.getDistance(this.props.currentPosition.coords, this.props.venue.geocode) / 1000;
+      distanceComponent = <Text>{Math.round(km)} km away</Text>;
+    }
+    return <View>{distanceComponent}{components}</View>;
   }
 }
 
@@ -597,9 +601,13 @@ class _EventRow extends React.Component {
     onEventSelected: (x: Event) => void,
     event: Event,
     listLayout: boolean,
+    currentPosition: any,
   };
 
   render() {
+    if (!this.props.event.venue.geocode) {
+      console.log(this.props.event);
+    }
     if (this.props.listLayout) {
       const width = 100;
       const imageProps = this.props.event.getImagePropsForWidth(width);
@@ -621,7 +629,7 @@ class _EventRow extends React.Component {
               <View style={{flex: 1}}>
                 <EventCategories categories={this.props.event.annotations.categories} />
                 <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-                <EventVenue venue={this.props.event.venue} />
+                <EventVenue venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
               </View>
             </HorizontalView>
           </TouchableOpacity>
@@ -644,7 +652,7 @@ class _EventRow extends React.Component {
               style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
             <EventCategories categories={this.props.event.annotations.categories} />
             <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} />
-            <EventVenue venue={this.props.event.venue} />
+            <EventVenue venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
           </TouchableOpacity>
         </Card>
       );
@@ -674,6 +682,7 @@ export class FullEventView extends React.Component {
   props: {
     onFlyerSelected: (x: Event) => ThunkAction,
     event: Event,
+    currentPosition: any,
   };
 
   constructor(props: Object) {
@@ -713,7 +722,6 @@ export class FullEventView extends React.Component {
         </TouchableOpacity>
       : null;
 
-
     return (
       <ProgressiveLayout
         style={[eventStyles.container, {width: width}]}
@@ -729,7 +737,7 @@ export class FullEventView extends React.Component {
             <AddToCalendarButton event={this.props.event} />
           </EventDateTime>
           <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
-            <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} />
+            <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
           </TouchableOpacity>
           <EventRsvp event={this.props.event} />
           <EventSource event={this.props.event} />
