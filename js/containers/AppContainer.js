@@ -81,6 +81,7 @@ class _AppContainer extends React.Component {
 		onNavigate: (x: NavigationState) => ThunkAction,
 		onBack: () => ThunkAction,
 		onSwap: (key: string, newState: NavigationState) => ThunkAction,
+		goHome: () => ThunkAction,
 		intl: intlShape.isRequired,
 	};
 
