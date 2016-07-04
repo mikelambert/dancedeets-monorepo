@@ -12,6 +12,7 @@ import { AccessToken } from 'react-native-fbsdk';
 import type { TimePeriod } from '../events/search';
 import { Event } from '../events/models';
 import { timeout, retryWithBackoff } from './timeouts';
+import Locale from 'react-native-locale';
 
 const DEV_SERVER = false;
 
@@ -33,8 +34,10 @@ async function performRequest(path: string, args: Object, postArgs: ?Object | nu
       client,
     });
     const token = await AccessToken.getCurrentAccessToken();
+    const locale = Locale.constants().localeIdentifier.split('_')[0].split('-')[0];
     const fullPostData = Object.assign({}, postArgs, {
       client,
+      locale,
       'access_token': token ? token.accessToken : null,
     });
 
