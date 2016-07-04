@@ -63,7 +63,7 @@ export default injectIntl(_LoginButtonWithAlternate);
 const styles = StyleSheet.create({
   bottomBox: {
     alignItems: 'center',
-    height: normalize(100),
+    height: normalize(130),
   },
   bottomLink: {
     fontWeight: 'normal',
