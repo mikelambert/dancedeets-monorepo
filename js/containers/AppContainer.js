@@ -186,7 +186,7 @@ class _AppContainer extends React.Component {
 					trackWithEvent('View Flyer', event);
 					this.props.onNavigate({
 						key: 'FlyerView',
-						title: this.props.intl.formatMesssage(messages.viewFlyer),
+						title: this.props.intl.formatMessage(messages.viewFlyer),
 						image: event.cover.images[0].source,
 						width: event.cover.images[0].width,
 						height: event.cover.images[0].height,
