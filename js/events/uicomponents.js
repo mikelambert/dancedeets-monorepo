@@ -216,6 +216,13 @@ class _EventDateTime extends SubEventLine {
       {this.props.children}
     </View>;
   }
+  componentDidMount() {
+    // refresh our 'relative start offset' every minute
+    this.interval = setInterval(() => this.forceUpdate(), 60*1000);
+  }
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
 }
 const EventDateTime = injectIntl(_EventDateTime);
 
