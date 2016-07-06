@@ -204,9 +204,13 @@ class _EventDateTime extends SubEventLine {
       const formattedDate = this.props.intl.formatDate(start.toDate(), weekdayDateTime);
       textFields.push(formattedStart);
     }
-    const relativeStartOffset = moment.duration(start.diff(now)).humanize(true);
-    textFields.push('\n');
-    textFields.push(relativeStartOffset);
+    // Ensure we do some sort of timer refresh update on this
+    const relativeStart = start.diff(now);
+    if (relativeStart < moment.duration(2, 'weeks')) {
+      const relativeStartOffset = moment.duration(relativeStart).humanize(true);
+      textFields.push('\n');
+      textFields.push(relativeStartOffset);
+    }
     return <View style={{alignItems: 'flex-start'}}>
       <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{textFields.join('')}</Text>
       {this.props.children}
