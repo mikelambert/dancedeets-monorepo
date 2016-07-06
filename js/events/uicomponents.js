@@ -184,15 +184,33 @@ class _EventDateTime extends SubEventLine {
     return require('./images/datetime.png');
   }
   textRender() {
+    const textFields = [];
+    const now = moment();
     const start = moment(this.props.start, moment.ISO_8601);
     const formattedStart = this.props.intl.formatDate(start.toDate(), weekdayDateTime);
-
-    if (this.props.start) {
-      return <View style={{alignItems: 'flex-start'}}>
-        <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{formattedStart}</Text>
-        {this.props.children}
-      </View>;
+    if (this.props.end) {
+      const end = moment(this.props.end, moment.ISO_8601);
+      const duration = end.diff(start);
+      if (duration > moment.duration(1, 'days')) {
+        const formattedEnd = this.props.intl.formatDate(end, weekdayDateTime);
+        textFields.push(formattedStart + ' - \n' + formattedEnd);
+      } else {
+        const formattedEndTime = this.props.intl.formatTime(end);
+        textFields.push(formattedStart + ' - ' + formattedEndTime);
+      }
+      const relativeDuration = moment.duration(duration).humanize();
+      textFields.push(` (${relativeDuration})`);
+    } else {
+      const formattedDate = this.props.intl.formatDate(start.toDate(), weekdayDateTime);
+      textFields.push(formattedStart);
     }
+    const relativeStartOffset = moment.duration(start.diff(now)).humanize(true);
+    textFields.push('\n');
+    textFields.push(relativeStartOffset);
+    return <View style={{alignItems: 'flex-start'}}>
+      <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{textFields.join('')}</Text>
+      {this.props.children}
+    </View>;
   }
 }
 const EventDateTime = injectIntl(_EventDateTime);

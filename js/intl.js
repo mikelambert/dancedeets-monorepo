@@ -22,6 +22,9 @@ const getCurrentLocale = () => {
     : defaultLocale;
 };
 
+import 'moment/locale/fr';
+import 'moment/locale/ja';
+import 'moment/locale/zh-tw';
 import fr from './messages/fr.json';
 import ja from './messages/ja.json';
 import zh from './messages/zh.json';
