@@ -192,8 +192,6 @@ class _EventDateTime extends SubEventLine {
         <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{formattedStart}</Text>
         {this.props.children}
       </View>;
-    } else {
-      return null;
     }
   }
 }
@@ -277,7 +275,7 @@ class _EventSource extends SubEventLine {
 }
 const EventSource = injectIntl(_EventSource);
 
-class EventAddedBy extends SubEventLine {
+class _EventAddedBy extends SubEventLine {
   state: {
     addedBy: ?string,
   };
@@ -315,7 +313,7 @@ class EventAddedBy extends SubEventLine {
       //TODO: When we add Profiles, let's link to the Profile view itself: eventStyles.rowLink
       return (
         <HorizontalView>
-          <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.addedBy)} {this.state.addedBy}</Text>
+          <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.addedBy, {name: this.state.addedBy})}</Text>
         </HorizontalView>
       );
     } else {
@@ -323,7 +321,7 @@ class EventAddedBy extends SubEventLine {
     }
   }
 }
-
+const EventAddedBy = injectIntl(_EventAddedBy);
 
 class _EventOrganizers extends SubEventLine {
   state: {

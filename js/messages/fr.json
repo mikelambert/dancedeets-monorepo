@@ -21,7 +21,7 @@
   "errors.fetchEventsError": "Désolé, un problème s’est produit lors du chargement des événements.",
   "errors.networkRetry": "Vérifiez votre connexion réseau, puis réessayez.",
   "event.addToCalendar": "Ajouter au calendrier",
-  "event.addedBy": "Ajouté par:",
+  "event.addedBy": "Ajouté par: {name}",
   "event.attendingCount": "{attendingCount} participants",
   "event.attendingMaybeCount": "{attendingCount} participants, {maybeCount} intéressés",
   "event.hideOrganizers": "Masquer les organisateur",
