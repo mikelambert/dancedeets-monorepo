@@ -1,16 +1,25 @@
 vm: true
-runtime: python-compat
+runtime: python27
 threadsafe: true
 api_version: 1
 service: default
 
 manual_scaling:
-  instances: 2
+  instances: 1
 
-resources:
-  memory_gb: 0.6
-#  cpu: 1.0
-#  memory_gb: 1.3
+# At some point, we must swap vm_settings for resources
+# And change runtime form 'vm' to 'custom'
+vm_settings:
+  machine_type: n1-standard-1
+  vm_runtime: python27
+#resources:
+#  memory_gb: 0.6
+##  cpu: 1.0
+##  memory_gb: 1.3
+
+
+#  has_docker_image: 'True'
+>>>>>>> parent of b5f3f52... Switch to the proper, supported python-compat vm flexible runtime environment. Hopefully this will get us debugger support soon, too.
 
 #automatic_scaling:
 #  max_idle_instances: 1
