@@ -19,7 +19,6 @@ vm_settings:
 
 
 #  has_docker_image: 'True'
->>>>>>> parent of b5f3f52... Switch to the proper, supported python-compat vm flexible runtime environment. Hopefully this will get us debugger support soon, too.
 
 #automatic_scaling:
 #  max_idle_instances: 1
