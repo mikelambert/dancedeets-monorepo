@@ -68,7 +68,7 @@ const messages = defineMessages({
   },
   specialLinks: {
     id: 'onebox.specialLinks',
-    defaultMessage: 'Other Links',
+    defaultMessage: 'Additional Links',
     description: 'Header for all the links/blogs/wikis/etc relevant to this search',
   },
   eventsWithLocation: {

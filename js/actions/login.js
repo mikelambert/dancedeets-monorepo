@@ -39,7 +39,7 @@ const messages = defineMessages({
   },
   logoutPrompt: {
     id: 'login.logoutPrompt',
-    defaultMessage: 'Logout from {name}',
+    defaultMessage: 'Logout from my account',
     description: 'Prompt to show the user before logging out',
   }
 });
