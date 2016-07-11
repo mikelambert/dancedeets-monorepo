@@ -64,7 +64,7 @@ class DisplayEvent(ndb.Model):
     @classmethod
     def can_build_from(cls, db_event):
         """Can we build a DisplayEvent from a given DBEvent"""
-        return db_event.has_content()
+        return db_event and db_event.has_content()
 
     @classmethod
     def build(cls, db_event):
