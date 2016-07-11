@@ -1,5 +1,5 @@
 import trackjs from 'react-native-trackjs';
-import crashlytics_reporter from 'react-native-crashlytics-reporter';
+import crashlytics_reporter from 'react-native-fabric-crashlytics';
 
 export default function init() {
   if (__DEV__) {
