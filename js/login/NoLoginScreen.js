@@ -58,6 +58,7 @@ class _NoLoginScreen extends React.Component {
           style={[styles.container, styles.centerItems, styles.topAndBottom]}
           source={require('./images/Onboard4.jpg')}>
           <Text style={styles.topText}>{this.props.intl.formatMessage(messages.loginJustification)}
+            {'\n'}
             <Text
               style={{color: linkColor}}
               onPress={() => this.props.onNoLogin('Text Link')}
