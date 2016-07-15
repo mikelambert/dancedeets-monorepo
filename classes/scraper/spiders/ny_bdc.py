@@ -75,7 +75,7 @@ class BdcDay(items.StudioScraper):
             if '-' not in times:
                 continue
 
-            just_style = row.xpath('.//td[2]/text()').extract()[0]
+            just_style = row.xpath('.//td[2]//text()').extract()[0]
             if not self._street_style(just_style):
                 continue
 
