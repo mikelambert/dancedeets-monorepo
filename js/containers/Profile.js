@@ -248,22 +248,26 @@ class _UserProfile extends React.Component {
       friendsCopy = <Text style={{marginBottom: 10}}>{this.props.intl.formatMessage(messages.friendsUsing, {count: friendCount})}</Text>;
     }
 
-    return <HorizontalView>
+    return <View>
+      <HorizontalView>
         <View style={styles.profileLeft}>
           <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
-          <Button size="small" caption={this.props.intl.formatMessage(messages.logout)} onPress={() => this.props.logOutWithPrompt(this.props.intl)} />
         </View>
         <View style={styles.profileRight}>
           <Heading1>{user.profile.name || ' '}</Heading1>
           <Text style={{fontStyle: 'italic', marginBottom: 10}}>{user.ddUser.formattedCity || ' '}</Text>
-          {friendsCopy}
-          <Text style={{fontWeight: 'bold'}}>{this.props.intl.formatMessage(messages.profileDetailsHeader)}</Text>
-          <Text>{this.props.intl.formatMessage(messages.profileDetailsContents, {
-            handAdded: user.ddUser.num_hand_added_events || 0,
-            autoAdded: user.ddUser.num_auto_added_events || 0,
-          })}</Text>
+          <Button size="small" caption={this.props.intl.formatMessage(messages.logout)} onPress={() => this.props.logOutWithPrompt(this.props.intl)} />
         </View>
-      </HorizontalView>;
+      </HorizontalView>
+      <View>
+        {friendsCopy}
+        <Text style={{fontWeight: 'bold'}}>{this.props.intl.formatMessage(messages.profileDetailsHeader)}</Text>
+        <Text>{this.props.intl.formatMessage(messages.profileDetailsContents, {
+          handAdded: user.ddUser.num_hand_added_events || 0,
+          autoAdded: user.ddUser.num_auto_added_events || 0,
+        })}</Text>
+      </View>
+    </View>;
   }
 }
 const UserProfile = connect(
