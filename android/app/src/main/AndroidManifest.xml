@@ -22,6 +22,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
+      android:application=".MainApplication"
       android:allowBackup="true"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
@@ -47,7 +48,7 @@
             android:value="AIzaSyDEHGAeT9NkW-CvcaDMLbz4B6-abdvPi4I"/>
 
         <activity
-            android:name="com.dancedeets.android.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="portrait"

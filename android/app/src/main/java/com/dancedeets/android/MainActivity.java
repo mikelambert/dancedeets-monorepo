@@ -41,45 +41,6 @@ public class MainActivity extends ReactActivity {
         return "DanceDeets";
     }
 
-    /**
-     * Returns whether dev mode should be enabled.
-     * This enables e.g. the dev menu.
-     */
-    @Override
-    protected boolean getUseDeveloperSupport() {
-        return BuildConfig.DEBUG;
-    }
-
-    @Override
-    protected String getJSBundleFile() {
-        return CodePush.getBundleUrl();
-    }
-
-    /**
-     * A list of packages used by the app. If the app uses additional views
-     * or modules besides the default ones, add more packages here.
-     */
-    @Override
-    protected List<ReactPackage> getPackages() {
-        mCallbackManager = CallbackManager.Factory.create();
-        return Arrays.<ReactPackage>asList(
-            new MainReactPackage(),
-            new RCTLocalePackage(),
-            new CodePush(BuildConfig.CODEPUSH_KEY, this, BuildConfig.DEBUG),
-            new RNSharePackage(),
-            new RNMail(),
-            new RNAdMobPackage(),
-            new RNMixpanel(),
-            new RNGeocoderPackage(),
-            new AirPackage(),
-            new FabricPackage(null),
-            new LinearGradientPackage(),
-            new AndroidSegmentedPackage(),
-            new RNSendIntentPackage(),
-            new FBSDKPackage(mCallbackManager)
-        );
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
