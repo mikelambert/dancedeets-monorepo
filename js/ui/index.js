@@ -9,7 +9,6 @@
 import AutocompleteList from './AutocompleteList';
 import Button from './Button';
 import Card from './Card';
-import ProgressSpinner from './ProgressSpinner';
 import ProgressiveLayout from './ProgressiveLayout';
 import ProportionalImage from './ProportionalImage';
 import SegmentedControl from './SegmentedControl';
@@ -23,7 +22,6 @@ module.exports = {
   AutocompleteList,
   Button,
   Card,
-  ProgressSpinner,
   ProgressiveLayout,
   ProportionalImage,
   SegmentedControl,

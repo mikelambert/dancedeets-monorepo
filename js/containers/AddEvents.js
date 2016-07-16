@@ -8,6 +8,7 @@
 
 import React from 'react';
 import {
+  ActivityIndicator,
   Image,
   RefreshControl,
   ListView,
@@ -34,7 +35,6 @@ import {
   Button,
   HorizontalView,
   normalize,
-  ProgressSpinner,
   SegmentedControl,
   semiNormalize,
   Text,
@@ -154,7 +154,7 @@ class _AddEventRow extends React.Component {
       </View>;
     } else if (this.props.event.pending) {
       tempOverlay = <View style={{position: 'absolute', top: 20, left: 0}}>
-        <ProgressSpinner/>
+        <ActivityIndicator color="white" size="large" />
       </View>;
     }
     const addedBanner = (this.props.event.loaded ?
