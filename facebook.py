@@ -67,8 +67,9 @@ else:
 FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
 try:
     _PROD_FACEBOOK_CONFIG = yaml.load(file('facebook-prod.yaml', 'r'))
-except IOError:
-    _PROD_FACEBOOK_CONFIG = {}
+except IOError as e:
+    logging.info("Cannot find facebook-prod.yaml, using non-prod config: %s", e)
+    _PROD_FACEBOOK_CONFIG = FACEBOOK_CONFIG.copy()
 
 # This new code pulled from: https://gist.github.com/1190267
 # aka: Hacked version of "official" (but now unsupported) Facebook Python SDK to support OAuth 2.0
