@@ -166,7 +166,6 @@ class _AppContainer extends React.Component {
 
 	renderScene({scene}) {
 		const { route } = scene;
-    console.log(scene);
 		switch (route.key) {
 		case 'EventList':
 			return <EventListContainer
