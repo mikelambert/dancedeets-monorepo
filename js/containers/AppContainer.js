@@ -33,7 +33,7 @@ import ShareEventIcon from './ShareEventIcon';
 import { track, trackWithEvent } from '../store/track';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
-import type { NavigationParentState, NavigationState } from 'NavigationTypeDefinition';
+import type { NavigationState, NavigationRoute } from 'NavigationTypeDefinition';
 
 const {
 	AnimatedView: NavigationAnimatedView,
@@ -77,10 +77,10 @@ class GradientBar extends React.Component {
 
 class _AppContainer extends React.Component {
 	props: {
-		navigationState: NavigationParentState,
-		onNavigate: (x: NavigationState) => ThunkAction,
+		navigationState: NavigationState,
+		onNavigate: (x: NavigationRoute) => ThunkAction,
 		onBack: () => ThunkAction,
-		onSwap: (key: string, newState: NavigationState) => ThunkAction,
+		onSwap: (key: string, newState: NavigationRoute) => ThunkAction,
 		goHome: () => ThunkAction,
 		intl: intlShape.isRequired,
 	};
@@ -96,7 +96,7 @@ class _AppContainer extends React.Component {
 			return null;
 		}
 		const icon = Platform.OS == 'ios' ? require('./navbar-icons/back-ios.png') : require('./navbar-icons/back-android.png');
-		return <TouchableOpacity style={styles.centeredContainer} onPress={() => props.onNavigate({type: 'BackAction'})}>
+		return <TouchableOpacity style={styles.centeredContainer} onPress={props.onNavigateBack}>
 			<Image style={{height: 18, width: 18}} source={icon} />
 		</TouchableOpacity>;
 	}
@@ -105,13 +105,13 @@ class _AppContainer extends React.Component {
 		return <NavigationHeaderTitle
 			textStyle={{color: 'white', fontSize: 24}}
 		>
-			{props.scene.navigationState.title}
+			{props.scene.route.title}
 		</NavigationHeaderTitle>;
 	}
 
 	renderRight(props) {
-		if (props.scene.navigationState.event) {
-			return <View style={styles.centeredContainer}><ShareEventIcon event={props.scene.navigationState.event} /></View>;
+		if (props.scene.route.event) {
+			return <View style={styles.centeredContainer}><ShareEventIcon event={props.scene.route.event} /></View>;
 		}
 		return null;
 	}
@@ -124,6 +124,8 @@ class _AppContainer extends React.Component {
 				renderLeftComponent={this.renderLeft}
 				renderTitleComponent={this.renderTitle}
 				renderRightComponent={this.renderRight}
+        // Use this.props here, instead of passed-in props
+        onNavigateBack={this.props.onBack}
 			/>
 		</GradientBar>;
 	}
@@ -136,21 +138,20 @@ class _AppContainer extends React.Component {
 			// Note that we are not using a NavigationRootContainer here because Redux is handling
 			// the reduction of our state for us. Instead, we grab the navigationState we have in
 			// our Redux store and pass it directly to the <NavigationAnimatedView />.
+      //
+      // In RN 0.30, convert to NavigationTransitioner:
+      // https://github.com/jmurzy/react-native/commit/e040531b6fb75243f72611acf998300b32ca111e
 			<NavigationAnimatedView
 				navigationState={navigationState}
 				style={styles.outerContainer}
-				onNavigate={(action) => {
-					if (action.type === 'back' || action.type === 'BackAction') {
-						onBack();
-					}
-				}}
+				onBack={onBack}
 				renderOverlay={this.renderOverlay}
 				renderScene={props => (
 					// Again, we pass our navigationState from the Redux store to <NavigationCard />.
 					// Finally, we'll render out our scene based on navigationState in _renderScene().
 					<NavigationCard
 						{...props}
-						key={props.scene.navigationState.key}
+						key={props.scene.route.key}
 						style={{marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT}}
 						renderScene={this.renderScene}
 					/>
@@ -164,8 +165,9 @@ class _AppContainer extends React.Component {
   }
 
 	renderScene({scene}) {
-		const { navigationState } = scene;
-		switch (navigationState.key) {
+		const { route } = scene;
+    console.log(scene);
+		switch (route.key) {
 		case 'EventList':
 			return <EventListContainer
 				onEventSelected={(event)=> {
@@ -193,13 +195,13 @@ class _AppContainer extends React.Component {
 						height: event.cover.images[0].height,
 					});
 				}}
-				selectedEvent={navigationState.event}
+				selectedEvent={route.event}
 			/>;
 		case 'FlyerView':
 			return <ZoomableImage
-				url={navigationState.image}
-				width={navigationState.width}
-				height={navigationState.height}
+				url={route.image}
+				width={route.width}
+				height={route.height}
 			/>;
 		case 'AddEvent':
 			return <AddEvents />;

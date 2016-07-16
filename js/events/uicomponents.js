@@ -812,7 +812,6 @@ const eventStyles = StyleSheet.create({
     backgroundColor: '#000',
   },
   row: {
-    flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     // http://stackoverflow.com/questions/36605906/what-is-the-row-container-for-a-listview-component

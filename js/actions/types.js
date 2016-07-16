@@ -24,7 +24,7 @@
 
 'use strict';
 
-import type { NavigationState } from 'NavigationTypeDefinition';
+import type { NavigationRoute } from 'NavigationTypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
 import type { SearchResults } from '../events/search';
 import type { AddEventList, SortOrder } from '../addEventsModels';
@@ -37,12 +37,12 @@ export type User = {
 };
 
 export type Action =
-    { type: 'NAV_PUSH', state: NavigationState }
+    { type: 'NAV_PUSH', state: NavigationRoute }
   | { type: 'NAV_POP' }
   | { type: 'NAV_JUMP_TO_KEY', key: string }
   | { type: 'NAV_JUMP_TO_INDEX', index: number }
-  | { type: 'NAV_RESET', index: number, children: Array<NavigationState> }
-  | { type: 'NAV_SWAP', key: string, newState: NavigationState }
+  | { type: 'NAV_RESET', index: number, children: Array<NavigationRoute> }
+  | { type: 'NAV_SWAP', key: string, newState: NavigationRoute }
   | { type: 'LOGIN_START_ONBOARD' }
   | { type: 'LOGIN_LOGGED_IN', token: AccessToken }
   | { type: 'LOGIN_LOGGED_OUT' }

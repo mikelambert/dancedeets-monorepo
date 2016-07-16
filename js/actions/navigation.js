@@ -5,7 +5,7 @@
  */
 
 import type { Action } from './types';
-import type { NavigationState } from 'NavigationTypeDefinition';
+import type { NavigationRoute } from 'NavigationTypeDefinition';
 
 // *** Action Types ***
 export const NAVIGATE = 'NAVIGATE';
@@ -18,7 +18,7 @@ export const NAV_SWAP = 'NAV_SWAP';
 
 // *** Action Creators ***
 // The following action creators were derived from NavigationStackReducer
-export function navigatePush(state: string | NavigationState): Action {
+export function navigatePush(state: string | NavigationRoute): Action {
 	state = typeof state === 'string' ? { key: state } : state;
 	return {
 		type: NAV_PUSH,
@@ -46,7 +46,7 @@ export function navigateJumpToIndex(index: number): Action {
 	};
 }
 
-export function navigateSwap(key: string, newState: NavigationState): Action {
+export function navigateSwap(key: string, newState: NavigationRoute): Action {
 	return {
 		type: NAV_SWAP,
 		key,
@@ -54,7 +54,7 @@ export function navigateSwap(key: string, newState: NavigationState): Action {
 	};
 }
 
-export function navigateReset(children: Array<NavigationState>, index: number): Action {
+export function navigateReset(children: Array<NavigationRoute>, index: number): Action {
 	return {
 		type: NAV_RESET,
 		index,

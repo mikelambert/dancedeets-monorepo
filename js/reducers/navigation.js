@@ -9,29 +9,29 @@ import * as NavigationStateUtils from 'NavigationStateUtils';
 import { NAV_PUSH, NAV_POP, NAV_JUMP_TO_KEY, NAV_JUMP_TO_INDEX, NAV_RESET, NAV_SWAP } from '../actions';
 
 import type { Action } from '../actions/types';
-import type { NavigationParentState } from 'NavigationTypeDefinition';
+import type { NavigationState } from 'NavigationTypeDefinition';
 
-const initialNavState: NavigationParentState = {
+const initialNavState: NavigationState = {
 	key: 'MainNavigation',
 	index: 0,
-	children: [
+	routes: [
 		{ key: 'EventList', title: 'DanceDeets' }
 	]
 };
 
-export function navigationState(state: NavigationParentState = initialNavState, action: Action) {
+export function navigationState(state: NavigationState = initialNavState, action: Action) {
   if (action.type === 'LOGIN_LOGGED_OUT') {
     return initialNavState;
   }
 	switch (action.type) {
 	case NAV_PUSH:
-		if (state.children[state.index].key === (action.state && action.state.key)) {
+		if (state.routes[state.index].key === (action.state && action.state.key)) {
 			return state;
 		}
 		return NavigationStateUtils.push(state, action.state);
 
 	case NAV_POP:
-		if (state.index === 0 || state.children.length === 1) {
+		if (state.index === 0 || state.routes.length === 1) {
 			return state;
 		}
 		return NavigationStateUtils.pop(state);
@@ -49,7 +49,7 @@ export function navigationState(state: NavigationParentState = initialNavState, 
 		return {
 			...state,
 			index: action.index,
-			children: action.children
+			routes: action.routes,
 		};
 
 	default:
