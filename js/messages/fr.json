@@ -31,6 +31,7 @@
   "event.rsvp.maybe": "Je sais pas",
   "event.showOrganizers": "Afficher les {count} organisateurs",
   "event.source": "Source :",
+  "event.translate": "Traduire",
   "login.logout": "Se déconnecter",
   "login.logoutPrompt": "Se déconnecter de mon compte",
   "navigator.addEvent": "Ajouter un événement",

@@ -57,6 +57,11 @@ const messages = defineMessages({
     defaultMessage: 'Add to Calendar',
     description: 'Button to add this event to the user\'s calendar',
   },
+  translate: {
+    id: 'event.translate',
+    defaultMessage: 'Translate',
+    description: 'Button to translate the event into the device\'s native language',
+  },
   addedBy: {
     id: 'event.addedBy',
     defaultMessage: 'Added By:',
@@ -727,6 +732,19 @@ class EventShare extends React.Component {
   }
 }
 
+class _EventTranslate extends React.Component {
+  render() {
+    return <Button
+      icon={require('./images/translate.png')}
+      caption={this.props.intl.formatMessage(messages.translate)}
+      size="small"
+      onPress={() => {
+      }}
+    />;
+  }
+}
+export const EventTranslate = injectIntl(_EventTranslate);
+
 export class FullEventView extends React.Component {
   props: {
     onFlyerSelected: (x: Event) => ThunkAction,
@@ -792,7 +810,10 @@ export class FullEventView extends React.Component {
           <EventSource event={this.props.event} />
           <EventAddedBy event={this.props.event} />
           <EventOrganizers event={this.props.event} />
-          <EventShare event={this.props.event} />
+          <HorizontalView style={eventStyles.splitButtons}>
+            <EventShare event={this.props.event} />
+            <EventTranslate event={this.props.event} />
+          </HorizontalView>
         </Card>
         <EventDescription description={this.props.event.description} />
         {map}
@@ -810,6 +831,9 @@ const eventStyles = StyleSheet.create({
   },
   container: {
     backgroundColor: '#000',
+  },
+  splitButtons: {
+    justifyContent: 'space-between',
   },
   row: {
     justifyContent: 'flex-start',

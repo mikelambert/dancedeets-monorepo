@@ -31,6 +31,7 @@
   "event.rsvp.maybe": "有興趣",
   "event.showOrganizers": "顯示{count}個召集人",
   "event.source": "来源:",
+  "event.translate": "翻譯",
   "login.logout": "登出",
   "login.logoutPrompt": "登出{name}",
   "navigator.addEvent": "新增活動",
