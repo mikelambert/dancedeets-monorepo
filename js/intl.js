@@ -52,11 +52,6 @@ if (global.Intl) {
 export default function intl(Wrapped) {
   class Internationalize extends React.Component {
 
-    static propTypes = {
-      intl: PropTypes.object.isRequired,
-      start: PropTypes.func.isRequired,
-    };
-
     render() {
       const currentLocale = getCurrentLocale();
       return (
