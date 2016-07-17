@@ -5,14 +5,16 @@ import urllib
 
 from google.appengine.api import memcache
 from google.appengine.api import taskqueue
+from googleapiclient.discovery import build
 
 import app
 import base_servlet
 import event_types
-import fb_api
 from event_scraper import add_entities
 from events import add_events
 from events import eventdata
+import fb_api
+import keys
 from loc import formatting
 from loc import gmaps_api
 from loc import math
@@ -495,6 +497,32 @@ class UserInfoHandler(ApiHandler):
         }
         self.write_json_success(results)
     post = get
+
+@apiroute('/events_translate')
+class EventTranslateHandler(ApiHandler):
+    requires_auth = True
+
+    def post(self):
+        if self.json_body:
+            event_id = self.json_body.get('event_id')
+            language = self.json_body.get('language')
+            if not event_id:
+                self.add_error('Need to pass event_id argument')
+            if not language:
+                self.add_error('Need to pass language argument')
+        else:
+            self.add_error('Need to pass a post body of json params')
+        self.errors_are_fatal()
+        fb_event = self.fbl.get(fb_api.LookupEvent, event_id, allow_cache=False)
+        service = build('translate', 'v2', developerKey=keys.get('google_server_key'))
+        result = service.translations().list(
+          target=language,
+          format='text',
+          q=[fb_event['info'].get('name', ''), fb_event['info'].get('description', '')]
+        ).execute()
+        translations = [x['translatedText'] for x in result['translations']]
+        self.write_json_success({'name': translations[0], 'description': translations[1]})
+    get = post
 
 @apiroute('/events_list_to_add')
 class ListAddHandler(ApiHandler):
