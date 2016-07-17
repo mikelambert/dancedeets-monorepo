@@ -9,8 +9,8 @@
 import React, { PropTypes } from 'react';
 import { IntlProvider } from 'react-intl';
 import Locale from 'react-native-locale';
-import areIntlLocalesSupported  from 'intl-locales-supported';
-
+import areIntlLocalesSupported from 'intl-locales-supported';
+import moment from 'moment';
 
 const defaultLocale = 'en';
 const locales = ['en', 'ja', 'fr', 'zh', 'ko'];
@@ -54,6 +54,7 @@ export default function intl(Wrapped) {
 
     render() {
       const currentLocale = getCurrentLocale();
+      moment.locale(currentLocale);
       return (
         <IntlProvider
           defaultLocale={defaultLocale}
