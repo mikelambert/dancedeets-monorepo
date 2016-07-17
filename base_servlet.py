@@ -581,7 +581,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             'Detroit, MI',
             'Las Vegas, CA',
             'Montreal, Canada',
-            'Ottowa, Canada',
+            'Ottawa, Canada',
             'Philadelphia, PA',
             'Phoenix, AZ',
             'Portland, OR',
