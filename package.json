@@ -36,7 +36,7 @@
     "react-native-share": "^1.0.10",
     "react-native-tab-navigator": "mikelambert/react-native-tab-navigator",
     "react-native-trackjs": "^0.1.2",
-    "react-native-viewpager": "mikelambert/react-native-viewpager",
+    "react-native-viewpager": "^0.2.11",
     "react-redux": "^4.4.4",
     "redux": "^3.4.0",
     "redux-logger": "^2.6.1",
