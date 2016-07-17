@@ -236,10 +236,15 @@ function sendAdvertisingEmail() {
 
 class _UserProfile extends React.Component {
   render() {
+    const logoutButton = <Button
+      size="small"
+      caption={this.props.intl.formatMessage(messages.logout)}
+      onPress={() => this.props.logOutWithPrompt(this.props.intl)}
+    />;
     const user = this.props.user;
     if (!user) {
       // Don't render anything if we don't yet have a user
-      return null;
+      return logoutButton;
     }
     const friendCount = user.friends.data.length || 0;
     const image = user.picture ? <Image style={styles.profileImageSize} source={{uri: user.picture.data.url}}/> : null;
@@ -256,7 +261,7 @@ class _UserProfile extends React.Component {
         <View style={styles.profileRight}>
           <Heading1>{user.profile.name || ' '}</Heading1>
           <Text style={{fontStyle: 'italic', marginBottom: 10}}>{user.ddUser.formattedCity || ' '}</Text>
-          <Button size="small" caption={this.props.intl.formatMessage(messages.logout)} onPress={() => this.props.logOutWithPrompt(this.props.intl)} />
+          {logoutButton}
         </View>
       </HorizontalView>
       <View>
