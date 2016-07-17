@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 
 import { connect } from 'react-redux';
-
+import _ from 'lodash/string';
 import { EventRow } from './uicomponents';
 import { Event } from './models';
 import SearchHeader from './searchHeader';
@@ -348,7 +348,7 @@ class _EventListContainer extends React.Component {
         }
         renderRow={this._renderRow}
         renderSectionHeader={(data, sectionID) =>
-          <SectionHeader title={sectionID}/>
+          <SectionHeader title={_.upperFirst(sectionID)}/>
         }
         initialListSize={5}
         pageSize={1}
