@@ -112,3 +112,9 @@ export async function addEvent(eventId: string) {
   return await retryWithBackoff(1000, 2, 3, createRequest('events_add', {event_id: eventId}, {event_id: eventId}));
 }
 
+export async function translateEvent(eventId: string, language: string) {
+  await verifyAuthenticated();
+  const params = {event_id: eventId, language};
+  return await timeout(10000, performRequest('events_translate', params, params));
+}
+

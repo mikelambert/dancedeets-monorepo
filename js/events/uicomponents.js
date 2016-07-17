@@ -18,7 +18,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
+import _ from 'lodash/string';
 import querystring from 'querystring';
 import {
   Autolink,
@@ -50,6 +50,7 @@ import {
   defineMessages,
 } from 'react-intl';
 import geolib from 'geolib';
+import { translateEvent } from '../actions';
 
 const messages = defineMessages({
   addToCalendar: {
@@ -192,12 +193,12 @@ class _EventDateTime extends SubEventLine {
     const textFields = [];
     const now = moment();
     const start = moment(this.props.start, moment.ISO_8601);
-    const formattedStart = this.props.intl.formatDate(start.toDate(), weekdayDateTime);
+    const formattedStart = _.upperFirst(this.props.intl.formatDate(start.toDate(), weekdayDateTime));
     if (this.props.end) {
       const end = moment(this.props.end, moment.ISO_8601);
       const duration = end.diff(start);
       if (duration > moment.duration(1, 'days')) {
-        const formattedEnd = this.props.intl.formatDate(end, weekdayDateTime);
+        const formattedEnd = _.upperFirst(this.props.intl.formatDate(end, weekdayDateTime));
         textFields.push(formattedStart + ' - \n' + formattedEnd);
       } else {
         const formattedEndTime = this.props.intl.formatTime(end);
@@ -206,7 +207,7 @@ class _EventDateTime extends SubEventLine {
       const relativeDuration = moment.duration(duration).humanize();
       textFields.push(` (${relativeDuration})`);
     } else {
-      const formattedDate = this.props.intl.formatDate(start.toDate(), weekdayDateTime);
+      const formattedDate = _.upperFirst(this.props.intl.formatDate(start.toDate(), weekdayDateTime));
       textFields.push(formattedStart);
     }
     // Ensure we do some sort of timer refresh update on this
@@ -713,12 +714,13 @@ class _EventRow extends React.Component {
     }
   }
 }
-const mapStateToProps = (state) => {
-  return {
-    listLayout: state.search.listLayout,
-  };
-};
-export const EventRow = connect(mapStateToProps)(_EventRow);
+export const EventRow = connect(
+  (state) => {
+    return {
+      listLayout: state.search.listLayout,
+    };
+  },
+)(_EventRow);
 
 class EventShare extends React.Component {
   render() {
@@ -739,13 +741,20 @@ class _EventTranslate extends React.Component {
       caption={this.props.intl.formatMessage(messages.translate)}
       size="small"
       onPress={() => {
+        trackWithEvent('Translate', this.props.event);
+        this.props.translateEvent(this.props.event.id, this.props.intl.locale)
       }}
     />;
   }
 }
-export const EventTranslate = injectIntl(_EventTranslate);
+const EventTranslate = connect(
+  null,
+  (dispatch: Dispatch) => ({
+    translateEvent: (eventId, language) => dispatch(translateEvent(eventId, language)),
+  }),
+)(injectIntl(_EventTranslate));
 
-export class FullEventView extends React.Component {
+class _FullEventView extends React.Component {
   props: {
     onFlyerSelected: (x: Event) => ThunkAction,
     event: Event,
@@ -789,6 +798,14 @@ export class FullEventView extends React.Component {
         </TouchableOpacity>
       : null;
 
+    let name = this.props.event.name;
+    let description = this.props.event.description;
+    const translated = this.props.translatedEvents[this.props.event.id];
+    if (translated) {
+      name = translated.name;
+      description = translated.description;
+    }
+
     return (
       <ProgressiveLayout
         style={[eventStyles.container, {width: width}]}
@@ -798,7 +815,7 @@ export class FullEventView extends React.Component {
           style={eventStyles.eventIndent}>
           <Text
             numberOfLines={2}
-            style={eventStyles.rowTitle}>{this.props.event.name}</Text>
+            style={eventStyles.rowTitle}>{name}</Text>
           <EventCategories categories={this.props.event.annotations.categories} />
           <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} >
             <AddToCalendarButton event={this.props.event} />
@@ -815,12 +832,19 @@ export class FullEventView extends React.Component {
             <EventTranslate event={this.props.event} />
           </HorizontalView>
         </Card>
-        <EventDescription description={this.props.event.description} />
+        <EventDescription description={description} />
         {map}
       </ProgressiveLayout>
     );
   }
 }
+export const FullEventView = connect(
+  (state) => {
+    return {
+      translatedEvents: state.translate.events,
+    };
+  },
+)(_FullEventView);
 
 const detailHeight = 15;
 
