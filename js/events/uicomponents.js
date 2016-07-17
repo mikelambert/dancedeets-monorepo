@@ -50,7 +50,7 @@ import {
   defineMessages,
 } from 'react-intl';
 import geolib from 'geolib';
-import { translateEvent } from '../actions';
+import { toggleEventTranslation } from '../actions';
 
 const messages = defineMessages({
   addToCalendar: {
@@ -62,6 +62,11 @@ const messages = defineMessages({
     id: 'event.translate',
     defaultMessage: 'Translate',
     description: 'Button to translate the event into the device\'s native language',
+  },
+  untranslate: {
+    id: 'event.untranslate',
+    defaultMessage: 'Original',
+    description: 'Button to show the event\'s original untranslated version',
   },
   addedBy: {
     id: 'event.addedBy',
@@ -736,21 +741,29 @@ class EventShare extends React.Component {
 
 class _EventTranslate extends React.Component {
   render() {
+    const translatedEvent = this.props.translatedEvents[this.props.event.id];
+    const translatedText = (translatedEvent && translatedEvent.visible)
+      ? this.props.intl.formatMessage(messages.untranslate)
+      : this.props.intl.formatMessage(messages.translate);
     return <Button
       icon={require('./images/translate.png')}
-      caption={this.props.intl.formatMessage(messages.translate)}
+      caption={translatedText}
       size="small"
       onPress={() => {
         trackWithEvent('Translate', this.props.event);
-        this.props.translateEvent(this.props.event.id, this.props.intl.locale)
+        this.props.toggleEventTranslation(this.props.event.id, this.props.intl.locale)
       }}
     />;
   }
 }
 const EventTranslate = connect(
-  null,
+  (state) => {
+    return {
+      translatedEvents: state.translate.events,
+    };
+  },
   (dispatch: Dispatch) => ({
-    translateEvent: (eventId, language) => dispatch(translateEvent(eventId, language)),
+    toggleEventTranslation: (eventId, language) => dispatch(toggleEventTranslation(eventId, language)),
   }),
 )(injectIntl(_EventTranslate));
 
@@ -800,10 +813,10 @@ class _FullEventView extends React.Component {
 
     let name = this.props.event.name;
     let description = this.props.event.description;
-    const translated = this.props.translatedEvents[this.props.event.id];
-    if (translated) {
-      name = translated.name;
-      description = translated.description;
+    const translatedEvent = this.props.translatedEvents[this.props.event.id];
+    if (translatedEvent && translatedEvent.visible) {
+      name = translatedEvent.translation.name;
+      description = translatedEvent.translation.description;
     }
 
     return (

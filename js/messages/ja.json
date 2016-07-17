@@ -32,6 +32,7 @@
   "event.showOrganizers": "{count}人の主催者を表示",
   "event.source": "ソース:",
   "event.translate": "翻訳",
+  "event.untranslate": "原文",
   "login.logout": "ログアウト",
   "login.logoutPrompt": "{name}からログアウト",
   "navigator.addEvent": "イベントを追加",

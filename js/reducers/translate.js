@@ -17,10 +17,24 @@ export function translate(state: State = initialState, action: Action): State {
       ...state,
       events: {
         ...state.events,
-        [action.eventId]: action.translations,
+        [action.eventId]: {
+          visible: true,
+          translation: action.translations,
+        },
       },
     }
-    return initialState;
+  }
+  if (action.type === 'TRANSLATE_EVENT_TOGGLE') {
+    return {
+      ...state,
+      events: {
+        ...state.events,
+        [action.eventId]: {
+          ...state.events[action.eventId],
+          visible: !state.events[action.eventId].visible,
+        },
+      },
+    }
   }
   return state;
 }
