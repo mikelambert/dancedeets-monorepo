@@ -57,10 +57,10 @@ class _NoLoginScreen extends React.Component {
         <Image
           style={[styles.container, styles.centerItems, styles.topAndBottom]}
           source={require('./images/Onboard4.jpg')}>
-          <Text style={styles.topText}>{this.props.intl.formatMessage(messages.loginJustification)}
+          <Text style={[styles.topText, styles.text]}>{this.props.intl.formatMessage(messages.loginJustification)}
             {'\n'}
             <Text
-              style={{color: linkColor}}
+              style={[{color: linkColor}, styles.text]}
               onPress={() => this.props.onNoLogin('Text Link')}
               >http://www.dancedeets.com/</Text>
           </Text>
@@ -83,10 +83,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  text: {
+    fontSize: normalize(15),
+    lineHeight: normalize(18),
+  },
   topText: {
     top: 40,
     color: 'white',
-    fontSize: normalize(15),
   },
   container: {
     flex: 1,

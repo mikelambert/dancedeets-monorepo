@@ -15,6 +15,7 @@ import {
   Button,
   normalize,
   Text,
+  semiNormalize,
 } from '../ui';
 import {
   defineMessages,
@@ -63,14 +64,14 @@ export default injectIntl(_LoginButtonWithAlternate);
 const styles = StyleSheet.create({
   bottomBox: {
     alignItems: 'center',
-    height: normalize(130),
+    height: semiNormalize(120),
   },
   bottomLink: {
     fontWeight: 'normal',
     color: yellowColors[0],
   },
   bottomLinkBox: {
-    top: normalize(15),
+    top: semiNormalize(15),
   },
   buttonStyle: {
     fontSize: normalize(14),
