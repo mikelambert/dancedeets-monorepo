@@ -20,7 +20,5 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     margin: 10,
-    // So it looks okay one wide screen devices
-    width: Dimensions.get('window').width - 25,
   },
 });

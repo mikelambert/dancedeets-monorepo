@@ -286,8 +286,10 @@ const UserProfile = connect(
 
 
 class _Profile extends React.Component {
+
   render() {
     return <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
+
       <Card>
         <UserProfile />
       </Card>
@@ -333,7 +335,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   profileRight: {
-    flex: 1,
   },
   profileImageSize: {
     width: 90,
