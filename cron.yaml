@@ -26,9 +26,11 @@ cron:
 - description: post to social networks
   url: /tasks/social_publisher
   schedule: every 1 minutes
-- description: notify about newly-added events
-  url: /tasks/promote_new_events
-  schedule: every 1 hours
+# This seems to be too spammy, and has a negative effect on users :(
+# So let's disable it for now, until we can find a better threshold/metric for whether to notify users
+#- description: notify about newly-added events
+#  url: /tasks/promote_new_events
+#  schedule: every 1 hours
 - description: scrape all classes and index them
   url: /tasks/crawl_and_index_classes
   schedule: every 6 hours
