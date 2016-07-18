@@ -42,7 +42,7 @@
   "profile.detailsHeader": "Événements :",
   "profile.friendsUsing": "{count} {count, plural, one {ami} other {amis}} sur DanceDeets",
   "search.autocompleteCurrentLocation": "Emplacement actuel",
-  "search.autocompleteLocations": "Paris, France\nLondres, Royaume Uni\nBerlin, Allemagne\nNew York, États-Unis\nLos Angeles, États-Unis\nSan Francisco, États-Unis\nTokyo, Japon\nSéoul, Corée\nTaipei, Taïwan",
+  "search.autocompleteLocations": "Paris, France\nLondres, Royaume-Uni\nBerlin, Allemagne\nNew York, États-Unis\nLos Angeles, États-Unis\nSan Francisco, États-Unis\nTokyo, Japon\nSéoul, Corée du Sud\nTaipei, Taïwan",
   "search.eventsWithKeywords": "Événements contenant les mots-clés '{keywords}'",
   "search.eventsWithLocation": "Événements à proximité de {location}",
   "search.eventsWithLocationKeywords": "Événements à proximité de {location} contenant les mots-clés '{keywords}'",
