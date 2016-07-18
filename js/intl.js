@@ -54,7 +54,14 @@ export default function intl(Wrapped) {
 
     render() {
       const currentLocale = getCurrentLocale();
-      moment.locale(currentLocale);
+      // Our Locale.contstants().localeIdentifier returns zh-Hant_US.
+      // But moment locales are zh-tw (traditional) and zh-cn (simplified).
+      // So manually convert the getCurrentLocale() 'zh' to the 'zh-tw' moment needs:
+      let momentLocale = currentLocale;
+      if (momentLocale === 'zh') {
+        momentLocale = 'zh-tw';
+      }
+      moment.locale(momentLocale);
       return (
         <IntlProvider
           defaultLocale={defaultLocale}
