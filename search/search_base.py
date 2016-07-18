@@ -106,10 +106,8 @@ class SearchForm(wtforms.Form):
     def get_bounds(self):
         bounds = None
         if self.location.data:
-            place = gmaps_api.fetch_place_as_json(query=self.location.data, language=self.locale.data)
-            if place['status'] == 'OK' and place['results']:
-                geocode = gmaps_api.GMapsGeocode(place['results'][0])
-                bounds = math.expand_bounds(geocode.latlng_bounds(), self.distance_in_km())
+            geocode = gmaps_api.get_geocode(address=self.location.data, language=self.locale.data)
+            bounds = math.expand_bounds(geocode.latlng_bounds(), self.distance_in_km())
         return bounds
 
     def build_query(self, start_end_query=False):
