@@ -20,7 +20,7 @@
     "react-native-admob": "^1.0.0",
     "react-native-autolink": "mikelambert/react-native-autolink",
     "react-native-calendar-events": "^0.1.4",
-    "react-native-carousel": "^0.8.0",
+    "react-native-carousel": "^0.9.0",
     "react-native-code-push": "^1.12.0-beta",
     "react-native-fabric": "^0.2.0",
     "react-native-fabric-crashlytics": "^0.1.2",
