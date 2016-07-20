@@ -19,9 +19,9 @@ from util import fixed_pipelines
 def get_spiders():
     return [
         # NY
-        'PMT', 'Evolution', 'Peridance', 'BDC',
+        'PMT', 'Evolution', 'Peridance', 'BDC', 'EXPG',
         # LA
-        'NeighborhoodStudio', 'Millenium', 'EDGE', 'DebbieReynolds', 'EXPG', 'Boogiezone', 'IDA', 'mL', 'Quest',
+        'NeighborhoodStudio', 'Millenium', 'EDGE', 'DebbieReynolds', 'Boogiezone', 'IDA', 'mL',
     ]
     # This depends on Twisted, which depends on zope.interface and lxml. And that whole ball of wax fails when run in the appengine dev sandbox.
     # We can't import any of classes/scrapers/ (since it all ultimately depends on scrapy), so there's no great way to get a list of classes.
