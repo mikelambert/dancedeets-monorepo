@@ -49,6 +49,7 @@ import {
   getPosition,
 } from '../util/geo';
 import { weekdayDate } from '../formats';
+import { loadUserData } from '../actions/login';
 
 const messages = defineMessages({
   fetchEventsError: {
@@ -223,10 +224,17 @@ class _EventListContainer extends React.Component {
     await this.props.performSearch();
   }
 
+  async authAndReloadProfile(address) {
+    await auth({location: address});
+    // After sending an auth to update the user's address,
+    // we should reload our local user's data too.
+    this.props.loadUserData();
+  }
+
   async fetchLocationAndSearch() {
     const address = await getAddress();
     // Trigger this search without waiting around
-    auth({location: address});
+    this.authAndReloadProfile(address);
     // And likewise with our attempt to search
     this.setLocationAndSearch(address);
   }
@@ -392,6 +400,9 @@ export default connect(
     },
     updateKeywords: async (keywords) => {
       await dispatch(updateKeywords(keywords));
+    },
+    loadUserData: async () => {
+      await loadUserData(dispatch);
     },
   })
 )(injectIntl(EventListContainer));

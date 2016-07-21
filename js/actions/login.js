@@ -76,7 +76,7 @@ export function performSearch(): ThunkAction {
     await dispatch(searchStart());
     try {
 */
-async function loadUserData(dispatch) {
+export async function loadUserData(dispatch) {
   const requests = {
     profile: performRequest('GET', 'me', {fields: 'id,name'}),
     picture: performRequest('GET', 'me/picture', {type: 'large', fields: 'url', redirect: '0'}),
