@@ -125,7 +125,11 @@ export function logOut(): ThunkAction {
 
 export function logOutWithPrompt(intl: intlShape): ThunkAction {
   return (dispatch, getState) => {
-    let name = getState().user.userData.profile.name || 'DanceDeets';
+    let name = 'DanceDeets';
+    const userData = getState().user.userData;
+    if (userData && userData.profile) {
+      name = userData.profile.name;
+    }
 
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
