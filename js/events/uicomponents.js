@@ -33,6 +33,7 @@ import {
   semiNormalize,
   Text,
 } from '../ui';
+import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
 import { Event, Venue } from './models';
 import type { ThunkAction } from '../actions/types';
@@ -238,7 +239,7 @@ class _EventDateTime extends SubEventLine {
 const EventDateTime = injectIntl(_EventDateTime);
 
 function formatDistance(intl, distanceKm) {
-  const useKm = (intl.locale !== 'en');
+  const useKm = Locale.constants().usesMetricSystem;
   if (useKm) {
     const km = Math.round(distanceKm);
     return intl.formatMessage(messages.kmAway, {km});
