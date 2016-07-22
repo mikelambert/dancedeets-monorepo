@@ -243,7 +243,7 @@ function formatDistance(intl, distanceKm) {
     const km = Math.round(distanceKm);
     return intl.formatMessage(messages.kmAway, {km});
   } else {
-    const miles = distanceKm * 0.621371;
+    const miles = Math.round(distanceKm * 0.621371);
     return intl.formatMessage(messages.milesAway, {miles});
   }
 }
