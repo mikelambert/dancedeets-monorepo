@@ -20,6 +20,7 @@ import {
 import { connect } from 'react-redux';
 import type { AddEventData } from '../addEventsModels';
 import type { State } from '../reducers/addEvents';
+import { track } from '../store/track';
 import {
   addEvent,
   clickEvent,
@@ -267,7 +268,10 @@ class _AddEventList extends React.Component {
     return <AddEventRow
       event={row}
       onEventClicked={(event: AddEventData) => {this.props.clickEvent(event.id);}}
-      onEventAdded={(event: AddEventData) => {this.props.addEvent(event.id);}}
+      onEventAdded={(event: AddEventData) => {
+        track('Add Event To Site', {'Event ID': event.id});
+        this.props.addEvent(event.id);
+      }}
     />;
   }
 

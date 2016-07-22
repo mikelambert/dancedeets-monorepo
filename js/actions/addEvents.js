@@ -11,7 +11,7 @@ import type {
   AddEventList,
   SortOrder,
 } from '../addEventsModels';
-
+import { track } from '../store/track';
 import { getAddEvents, addEvent as reallyAddEvent } from '../api/dancedeets';
 
 export function reloadAddEvents(): ThunkAction {
@@ -19,6 +19,7 @@ export function reloadAddEvents(): ThunkAction {
     await dispatch(reloadStart());
     try {
       const responseData = await getAddEvents();
+      track('Add Event Loaded', {'Potential Events': responseData.events.length});
       await dispatch(reloadComplete(responseData.events));
     } catch (e) {
       console.log('error fetching events', e, e.stack);
