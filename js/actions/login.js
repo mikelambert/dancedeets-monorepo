@@ -53,8 +53,11 @@ export function loginStartOnboard(): Action {
 
 export function loginComplete(token: AccessToken): Action {
   // Kick these off and let them happen in the background
-  return (dispatch: Dispatch) => {
-    auth();
+  return async (dispatch: Dispatch) => {
+    // This could be the first time this user is created.
+    // So let's ensure the user is successfully created,
+    // before we try to loadUserData and pull in empty data.
+    await auth();
     trackLogin();
     loadUserData(dispatch);
     // But mark us as logged-in here
