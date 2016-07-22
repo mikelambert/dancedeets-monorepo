@@ -13,7 +13,7 @@ import areIntlLocalesSupported from 'intl-locales-supported';
 import moment from 'moment';
 
 const defaultLocale = 'en';
-const locales = ['en', 'ja', 'fr', 'zh', 'ko'];
+const locales = ['en', 'ja', 'fr', 'zh'];
 
 const getCurrentLocale = () => {
   const currentLocale = Locale.constants().localeIdentifier.split('_')[0].split('-')[0];
