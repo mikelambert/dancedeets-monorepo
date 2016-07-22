@@ -21,7 +21,7 @@ export default class RsvpOnFB {
       const result = await performRequest('POST', path);
       return result;
     } catch (error) {
-      if (error.code === '403') {
+      if (error.code === '403' || error.code === 'ECOM.FACEBOOK.SDK.CORE8') {
         const result = await LoginManager.logInWithPublishPermissions(['rsvp_event']);
         if (result.isCancelled) {
           throw 'Request for RSVP Permission was Cancelled';
