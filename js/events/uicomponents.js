@@ -276,7 +276,7 @@ class _EventVenue extends SubEventLine {
       const km = geolib.getDistance(this.props.currentPosition.coords, this.props.venue.geocode) / 1000;
       distanceComponent = <Text>{formatDistance(this.props.intl, km)}</Text>;
     }
-    return <View>{distanceComponent}{components}</View>;
+    return <View>{components}{distanceComponent}</View>;
   }
 }
 const EventVenue = injectIntl(_EventVenue);
