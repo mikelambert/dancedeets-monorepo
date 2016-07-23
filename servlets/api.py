@@ -487,16 +487,27 @@ class UserInfoHandler(ApiHandler):
         self.errors_are_fatal()
 
         user = users.User.get_by_id(self.fb_uid)
-        results = {
-            'location': user.location,
-            'creation_time': user.creation_time.strftime(DATETIME_FORMAT_TZ),
-            'num_auto_added_events': user.num_auto_added_events,
-            'num_auto_added_own_events': user.num_auto_added_own_events,
-            'num_hand_added_events': user.num_hand_added_events,
-            'num_hand_added_own_events': user.num_hand_added_own_events,
-        }
+        if not user:
+            results = {
+                'location': '',
+                'creation_time': datetime.datetime.now().strftime(DATETIME_FORMAT_TZ),
+                'num_auto_added_events': 0,
+                'num_auto_added_own_events': 0,
+                'num_hand_added_events': 0,
+                'num_hand_added_own_events': 0,
+            }
+        else:
+            results = {
+                'location': user.location,
+                'creation_time': user.creation_time.strftime(DATETIME_FORMAT_TZ),
+                'num_auto_added_events': user.num_auto_added_events,
+                'num_auto_added_own_events': user.num_auto_added_own_events,
+                'num_hand_added_events': user.num_hand_added_events,
+                'num_hand_added_own_events': user.num_hand_added_own_events,
+            }
         self.write_json_success(results)
     post = get
+
 
 @apiroute('/events_translate')
 class EventTranslateHandler(ApiHandler):
@@ -523,6 +534,7 @@ class EventTranslateHandler(ApiHandler):
         translations = [x['translatedText'] for x in result['translations']]
         self.write_json_success({'name': translations[0], 'description': translations[1]})
     get = post
+
 
 @apiroute('/events_list_to_add')
 class ListAddHandler(ApiHandler):
