@@ -13,6 +13,9 @@ class ImageProxyHandler(webapp2.RequestHandler):
 
     def get(self, event_id):
         db_event = eventdata.DBEvent.get_by_id(event_id)
+        if not db_event:
+            self.response.set_status(404)
+            return
         cover = db_event.largest_cover
         if not cover:
             self.response.set_status(404)
