@@ -513,12 +513,12 @@ class EventTranslateHandler(ApiHandler):
         else:
             self.add_error('Need to pass a post body of json params')
         self.errors_are_fatal()
-        fb_event = self.fbl.get(fb_api.LookupEvent, event_id, allow_cache=False)
+        db_event = eventdata.DBEvent.get_by_id(event_id)
         service = build('translate', 'v2', developerKey=keys.get('google_server_key'))
         result = service.translations().list(
-          target=language,
-          format='text',
-          q=[fb_event['info'].get('name', ''), fb_event['info'].get('description', '')]
+            target=language,
+            format='text',
+            q=[db_event.name or '', db_event.description or '']
         ).execute()
         translations = [x['translatedText'] for x in result['translations']]
         self.write_json_success({'name': translations[0], 'description': translations[1]})
