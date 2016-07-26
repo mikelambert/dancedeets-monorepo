@@ -30,11 +30,12 @@ async function performRequest(path: string, args: Object, postArgs: ?Object | nu
   try {
     // Standardize our API args with additional data
     const client = 'react-' + Platform.OS;
+    const locale = Locale.constants().localeIdentifier.split('_')[0].split('-')[0];
     const fullArgs = Object.assign({}, args, {
       client,
+      locale,
     });
     const token = await AccessToken.getCurrentAccessToken();
-    const locale = Locale.constants().localeIdentifier.split('_')[0].split('-')[0];
     const fullPostData = Object.assign({}, postArgs, {
       client,
       locale,
@@ -112,9 +113,9 @@ export async function addEvent(eventId: string) {
   return await retryWithBackoff(1000, 2, 3, createRequest('events_add', {event_id: eventId}, {event_id: eventId}));
 }
 
-export async function translateEvent(eventId: string, language: string) {
+export async function translateEvent(eventId: string) {
   await verifyAuthenticated();
-  const params = {event_id: eventId, language};
+  const params = {event_id: eventId};
   return await timeout(10000, performRequest('events_translate', params, params));
 }
 

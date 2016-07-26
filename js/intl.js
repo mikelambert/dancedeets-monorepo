@@ -13,10 +13,9 @@ import areIntlLocalesSupported from 'intl-locales-supported';
 import moment from 'moment';
 
 const defaultLocale = 'en';
-const locales = ['en', 'ja', 'fr', 'zh'];
+const locales = ['en', 'ja', 'fr', 'zh-Hant'];
 
 const getCurrentLocale = () => {
-  console.log(Locale.constants().localeIdentifier);
   const currentLocale = Locale.constants().localeIdentifier.split('_')[0];
   return locales.indexOf(currentLocale) !== -1
     ? currentLocale
@@ -32,7 +31,7 @@ import zh from './messages/zh.json';
 const messages = {
   fr,
   ja,
-  zh,
+  'zh-Hant': zh,
 };
 
 // https://github.com/yahoo/intl-locales-supported#usage
@@ -55,13 +54,11 @@ export default function intl(Wrapped) {
 
     render() {
       let currentLocale = getCurrentLocale();
-      // Strip off 'zh-Hant' suffix
-      currentLocale = currentLocale.split('-')[0];
       // Our Locale.contstants().localeIdentifier returns zh-Hant_US.
       // But moment locales are zh-tw (traditional) and zh-cn (simplified).
       // So manually convert the getCurrentLocale() 'zh' to the 'zh-tw' moment needs:
       let momentLocale = currentLocale;
-      if (momentLocale === 'zh') {
+      if (momentLocale === 'zh-Hant') {
         momentLocale = 'zh-tw';
       }
       moment.locale(momentLocale);
