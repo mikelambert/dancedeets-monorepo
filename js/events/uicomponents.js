@@ -12,9 +12,7 @@ import {
   Dimensions,
   Image,
   Linking,
-  ListView,
   Platform,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -37,15 +35,14 @@ import {
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
 import { Event, Venue } from './models';
-import type { ThunkAction } from '../actions/types';
 import MapView from 'react-native-maps';
 import moment from 'moment';
-import { linkColor, yellowColors, purpleColors } from '../Colors';
+import { linkColor, yellowColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
 import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
-import LinearGradient from 'react-native-linear-gradient';
+import type { ThunkAction, Dispatch } from './types';
 import { weekdayDateTime } from '../formats';
 import {
   injectIntl,
@@ -62,8 +59,8 @@ const messages = defineMessages({
   },
   addedToCalendar: {
     id: 'event.addedToCalendar',
-    defaultMessage: 'Added to iOS Calendar',
-    description: 'Confirmation message for iOS after adding to the OS calendar'
+    defaultMessage: 'Added to Calendar',
+    description: 'Confirmation message for iOS after adding to the OS calendar',
   },
   translate: {
     id: 'event.translate',
@@ -201,6 +198,8 @@ class _AddToCalendarButton extends React.Component {
 const AddToCalendarButton = injectIntl(_AddToCalendarButton);
 
 class _EventDateTime extends SubEventLine {
+  interval: number;
+
   icon() {
     return require('./images/datetime.png');
   }
@@ -761,7 +760,7 @@ class _EventTranslate extends React.Component {
       size="small"
       onPress={() => {
         trackWithEvent('Translate', this.props.event);
-        this.props.toggleEventTranslation(this.props.event.id, this.props.intl.locale)
+        this.props.toggleEventTranslation(this.props.event.id, this.props.intl.locale);
       }}
     />;
   }
@@ -782,6 +781,7 @@ class _FullEventView extends React.Component {
     onFlyerSelected: (x: Event) => ThunkAction,
     event: Event,
     currentPosition: any,
+    //translatedEvents: [string: Event];
   };
 
   constructor(props: Object) {
