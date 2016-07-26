@@ -7,6 +7,8 @@ import os
 import re
 import urllib
 
+from slugify import slugify
+
 from google.appengine.ext import deferred
 
 import app
@@ -67,7 +69,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         return self.redirect(urls.dd_relative_event_url(event_id), permanent=True)
 
 
-@app.route(r'/events/%s/?' % eventdata.EVENT_ID_REGEX)
+@app.route(r'/events/%s(?:/.*)?' % eventdata.EVENT_ID_REGEX)
 class ShowEventHandler(base_servlet.BaseRequestHandler):
 
     def requires_login(self):
@@ -79,8 +81,6 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         if not event_id:
             self.response.out.write('Need an event_id.')
             return
-        if not self.request.path.endswith('/'):
-            return self.redirect(urls.dd_relative_event_url(event_id), permanent=True)
 
         # Load the db_event instead of the fb_event, as the db_event is likely to be in cache
         db_event = eventdata.DBEvent.get_by_id(event_id)
@@ -96,7 +96,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['show_mobile_app_promo'] = True
         self.jinja_env.filters['make_category_link'] = lambda lst: [jinja2.Markup('<a href="/?keywords=%s">%s</a>') % (x, x) for x in lst]
 
-        self.display['canonical_url'] = 'http://%s/events/%s/' % (self._get_full_hostname(), db_event.id)
+        self.display['canonical_url'] = 'http://%s/events/%s/%s' % (self._get_full_hostname(), db_event.id, slugify(db_event.name))
 
         self.display['email_suffix'] = '+event-%s' % db_event.id
 
