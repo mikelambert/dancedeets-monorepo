@@ -64,7 +64,8 @@ export type Action =
   | { type: 'ADD_EVENTS_SET_ONLY_UNADDED', value: boolean }
   | { type: 'ADD_EVENTS_SET_SORT_ORDER', value: SortOrder }
   | { type: 'SET_CURRENT_LOCALE', locale: string }
-  | { type: 'TRANSLATE_EVENT', eventId: number }
+  | { type: 'TRANSLATE_EVENT_TOGGLE', eventId: string }
+  | { type: 'TRANSLATE_EVENT_DONE', eventId: string, translations: Object }
   ;
 
 export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;

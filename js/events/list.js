@@ -146,6 +146,7 @@ class _AddEventButton extends React.Component {
       textStyle={{fontWeight: 'bold'}}
       style={styles.addEventButton}
       onPress={this.props.onPress}
+      testID="addEvents"
     />;
   }
 }
@@ -240,7 +241,10 @@ class _EventListContainer extends React.Component {
   }
 
   async initialize() {
-    const url = await Linking.getInitialURL();
+    const url: ?string = await Linking.getInitialURL();
+    if (!url) {
+      return;
+    }
     const processedUrl = new WebsiteUrl(url);
     if (processedUrl.isEventUrl()) {
       const eventId = processedUrl.eventId();

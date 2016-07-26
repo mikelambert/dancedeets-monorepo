@@ -6,6 +6,19 @@
 
 'use strict';
 
+import type {Action} from '../actions/types';
+
+export type TranslatedEvent = {
+  visible: boolean;
+  translation: {
+    name: string;
+    description: string;
+  };
+};
+
+type State = {
+  events: {[key: string]: TranslatedEvent};
+};
 
 const initialState = {
   events: {},
@@ -22,7 +35,7 @@ export function translate(state: State = initialState, action: Action): State {
           translation: action.translations,
         },
       },
-    }
+    };
   }
   if (action.type === 'TRANSLATE_EVENT_TOGGLE') {
     return {
@@ -34,7 +47,7 @@ export function translate(state: State = initialState, action: Action): State {
           visible: !state.events[action.eventId].visible,
         },
       },
-    }
+    };
   }
   return state;
 }

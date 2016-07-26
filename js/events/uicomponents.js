@@ -42,7 +42,8 @@ import { add as CalendarAdd } from '../api/calendar';
 import { performRequest } from '../api/fb';
 import RsvpOnFB from '../api/fb-event-rsvp';
 import { trackWithEvent } from '../store/track';
-import type { ThunkAction, Dispatch } from './types';
+import type { ThunkAction, Dispatch } from '../actions/types';
+import type { TranslatedEvent } from '../reducers/translate';
 import { weekdayDateTime } from '../formats';
 import {
   injectIntl,
@@ -402,6 +403,8 @@ class _EventOrganizers extends SubEventLine {
         url = 'https://www.facebook.com/' + adminId;
       } else if (idType === 'page') {
         url = 'fb://page/?id=' + adminId;
+      } else {
+        url = 'https://www.facebook.com/' + adminId;
       }
       // Every event lists all members of the event who created it
       // Group events only list members (not the group, which is in a different field)
@@ -781,7 +784,7 @@ class _FullEventView extends React.Component {
     onFlyerSelected: (x: Event) => ThunkAction,
     event: Event,
     currentPosition: any,
-    //translatedEvents: [string: Event];
+    translatedEvents: {[key: string]: TranslatedEvent};
   };
 
   constructor(props: Object) {

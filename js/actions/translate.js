@@ -7,6 +7,7 @@
 'use strict';
 
 import { translateEvent as translateEventApi } from '../api/dancedeets';
+import type { Action, Dispatch, ThunkAction } from './types';
 
 export function toggleEventTranslation(eventId: string, language: string): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
@@ -17,7 +18,7 @@ export function toggleEventTranslation(eventId: string, language: string): Thunk
     } else {
       await dispatch(reallyToggleEventTranslation(eventId));
     }
-  }
+  };
 }
 
 function reallyToggleEventTranslation(eventId: string): Action {

@@ -49,7 +49,7 @@ export function navigationState(state: NavigationState = initialNavState, action
 		return {
 			...state,
 			index: action.index,
-			routes: action.routes,
+			routes: action.children,
 		};
 
 	default:

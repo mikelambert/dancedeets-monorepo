@@ -37,9 +37,9 @@ export default class ProportionalImage extends React.Component {
     (this: any).onLoad = this.onLoad.bind(this);
   }
 
-  defaultProps: {
+  static defaultProps = {
     duration: 200,
-  }
+  };
 
   setNativeProps(nativeProps: Object) {
     this.refs.view.setNativeProps(nativeProps);

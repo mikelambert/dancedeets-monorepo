@@ -16,7 +16,8 @@ const defaultLocale = 'en';
 const locales = ['en', 'ja', 'fr', 'zh'];
 
 const getCurrentLocale = () => {
-  const currentLocale = Locale.constants().localeIdentifier.split('_')[0].split('-')[0];
+  console.log(Locale.constants().localeIdentifier);
+  const currentLocale = Locale.constants().localeIdentifier.split('_')[0];
   return locales.indexOf(currentLocale) !== -1
     ? currentLocale
     : defaultLocale;
@@ -53,7 +54,9 @@ export default function intl(Wrapped) {
   class Internationalize extends React.Component {
 
     render() {
-      const currentLocale = getCurrentLocale();
+      let currentLocale = getCurrentLocale();
+      // Strip off 'zh-Hant' suffix
+      currentLocale = currentLocale.split('-')[0];
       // Our Locale.contstants().localeIdentifier returns zh-Hant_US.
       // But moment locales are zh-tw (traditional) and zh-cn (simplified).
       // So manually convert the getCurrentLocale() 'zh' to the 'zh-tw' moment needs:

@@ -47,6 +47,7 @@ class _LoginButtonWithAlternate extends React.Component {
           caption={this.props.intl.formatMessage(messages.loginButton)}
           onPress={this.props.onLogin}
           textStyle={styles.buttonStyle}
+          testID="loginButton"
         />
         <TouchableOpacity
           style={styles.bottomLinkBox}
