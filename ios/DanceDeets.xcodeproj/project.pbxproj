@@ -23,6 +23,7 @@
 		16FE77C3722A4B5B8F2D6EAA /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3C70CA84024A018934C0C5 /* libAirMaps.a */; };
 		182FD04263C4415F8EF0327B /* libRNMail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD682DC01E1C4BD5A7ABA711 /* libRNMail.a */; };
 		1D2694F31D077C5F000E1BD3 /* launch_screen.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1D2694F21D077C5F000E1BD3 /* launch_screen.jpg */; };
+		1D2F15E61D48015600BA0D43 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D2F15E41D4800D000BA0D43 /* CoreFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		1D449AAA1D04A69300195AF6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D449AA91D04A69300195AF6 /* libz.tbd */; };
 		1D449B301D04D70500195AF6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D449B2F1D04D70400195AF6 /* Images.xcassets */; };
 		1D89584E1CF913100029E37E /* Ubuntu 300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584B1CF9125D0029E37E /* Ubuntu 300.ttf */; };
@@ -287,6 +288,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D2F15E61D48015600BA0D43 /* CoreFoundation.framework in Frameworks */,
 				1D449AAA1D04A69300195AF6 /* libz.tbd in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
