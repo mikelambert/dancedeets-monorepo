@@ -8,6 +8,7 @@
 
 import React from 'react';
 import {
+  AlertIOS,
   Dimensions,
   Image,
   Linking,
@@ -58,6 +59,11 @@ const messages = defineMessages({
     id: 'event.addToCalendar',
     defaultMessage: 'Add to Calendar',
     description: 'Button to add this event to the user\'s calendar',
+  },
+  addedToCalendar: {
+    id: 'event.addedToCalendar',
+    defaultMessage: 'Added to iOS Calendar',
+    description: 'Confirmation message for iOS after adding to the OS calendar'
   },
   translate: {
     id: 'event.translate',
@@ -185,6 +191,9 @@ class _AddToCalendarButton extends React.Component {
       onPress={() => {
         trackWithEvent('Add to Calendar', this.props.event);
         CalendarAdd(this.props.event);
+        if (Platform.OS == 'ios') {
+          AlertIOS.alert(this.props.intl.formatMessage(messages.addedToCalendar));
+        }
       }}
     />;
   }

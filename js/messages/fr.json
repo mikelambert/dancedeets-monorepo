@@ -22,6 +22,7 @@
   "errors.networkRetry": "Vérifiez votre connexion réseau, puis réessayez.",
   "event.addToCalendar": "Ajouter au calendrier",
   "event.addedBy": "Ajouté par : {name}",
+  "event.addedToCalendar": "Ajouté au calendrier",
   "event.attendingCount": "{attendingCount} participants",
   "event.attendingMaybeCount": "{attendingCount} participants, {maybeCount} intéressés",
   "event.hideOrganizers": "Masquer les organisateurs",

@@ -22,6 +22,7 @@
   "errors.networkRetry": "請檢查您的網路連線，然後再試一次。",
   "event.addToCalendar": "新增到行事曆",
   "event.addedBy": "已新增的人:{name}",
+  "event.addedToCalendar": "Added to iOS Calendar",
   "event.attendingCount": "{attendingCount} 參加",
   "event.attendingMaybeCount": "{attendingCount} 參加、{maybeCount} 有興趣",
   "event.hideOrganizers": "不顯示召集人",

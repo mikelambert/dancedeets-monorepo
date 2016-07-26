@@ -22,6 +22,7 @@
   "errors.networkRetry": "ネットワーク接続を確かめて、やり直してください。",
   "event.addToCalendar": "カレンダーに予定を追加",
   "event.addedBy": "{name}によって追加",
+  "event.addedToCalendar": "カレンダーに予定を追加しました",
   "event.attendingCount": "{attendingCount} 人参加予定",
   "event.attendingMaybeCount": "{attendingCount} 人参加予定、{maybeCount} 人興味あり",
   "event.hideOrganizers": "主催者を非表示",
