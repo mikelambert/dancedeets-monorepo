@@ -516,13 +516,20 @@ class EventTranslateHandler(ApiHandler):
     def post(self):
         if self.json_body:
             event_id = self.json_body.get('event_id')
-            language = self.json_body.get('language')
+            language = self.json_body.get('language') or self.json_body.get('locale')
             if not event_id:
                 self.add_error('Need to pass event_id argument')
             if not language:
-                self.add_error('Need to pass language argument')
+                self.add_error('Need to pass language/locale argument')
         else:
             self.add_error('Need to pass a post body of json params')
+        # Remap our traditional/simplified chinese languages
+        if language == 'zh':
+            language = 'zh-TW'
+        elif language == 'zh-Hant':
+            language = 'zh-TW'
+        elif language == 'zh-Hans':
+            language = 'zh-CN'
         self.errors_are_fatal()
         db_event = eventdata.DBEvent.get_by_id(event_id)
         service = build('translate', 'v2', developerKey=keys.get('google_server_key'))
