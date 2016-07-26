@@ -12,7 +12,6 @@
 		00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
-		00E356F31AD99517003FC87E /* DanceDeetsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* DanceDeetsTests.m */; };
 		0FD5F3C63FE849A2B7974E78 /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B8D0C43D6CF4EEC8A1DBFAC /* libCodePush.a */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
@@ -25,12 +24,13 @@
 		182FD04263C4415F8EF0327B /* libRNMail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD682DC01E1C4BD5A7ABA711 /* libRNMail.a */; };
 		1D2694F31D077C5F000E1BD3 /* launch_screen.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1D2694F21D077C5F000E1BD3 /* launch_screen.jpg */; };
 		1D449AAA1D04A69300195AF6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D449AA91D04A69300195AF6 /* libz.tbd */; };
-		1D449AD71D04C1AF00195AF6 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1D449B301D04D70500195AF6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D449B2F1D04D70400195AF6 /* Images.xcassets */; };
 		1D89584E1CF913100029E37E /* Ubuntu 300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584B1CF9125D0029E37E /* Ubuntu 300.ttf */; };
 		1D89584F1CF913130029E37E /* Ubuntu 500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584C1CF9125D0029E37E /* Ubuntu 500.ttf */; };
 		1D8958501CF913150029E37E /* Ubuntu regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584D1CF9125D0029E37E /* Ubuntu regular.ttf */; };
 		1D8BF8071D0E442D00B7243F /* Ubuntu italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D8BF7F01D0E43F800B7243F /* Ubuntu italic.ttf */; };
+		1D902A661D42B7FB00B938F3 /* DanceDeetsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D902A651D42B7FB00B938F3 /* DanceDeetsUITests.swift */; };
+		1D902A851D42B81700B938F3 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D902A841D42B81700B938F3 /* SnapshotHelper.swift */; };
 		1D9EDD1D1CF9097F00871235 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D9EDD1A1CF9097F00871235 /* FBSDKCoreKit.framework */; };
 		1D9EDD1E1CF9097F00871235 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D9EDD1B1CF9097F00871235 /* FBSDKLoginKit.framework */; };
 		1D9EDD1F1CF9097F00871235 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D9EDD1C1CF9097F00871235 /* FBSDKShareKit.framework */; };
@@ -82,13 +82,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 832C81801AAF6DEF007FA2F7;
 			remoteInfo = RCTVibration;
-		};
-		00E356F41AD99517003FC87E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = DanceDeets;
 		};
 		139105C01AF99BAD00B5F7CC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -145,6 +138,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNShare;
+		};
+		1D902A681D42B7FB00B938F3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
+			remoteInfo = DanceDeets;
 		};
 		1D9EDCED1CF9089400871235 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -225,7 +225,6 @@
 		00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTImage.xcodeproj; path = "../node_modules/react-native/Libraries/Image/RCTImage.xcodeproj"; sourceTree = "<group>"; };
 		00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTNetwork.xcodeproj; path = "../node_modules/react-native/Libraries/Network/RCTNetwork.xcodeproj"; sourceTree = "<group>"; };
 		00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTVibration.xcodeproj; path = "../node_modules/react-native/Libraries/Vibration/RCTVibration.xcodeproj"; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* DanceDeetsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DanceDeetsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* DanceDeetsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DanceDeetsTests.m; sourceTree = "<group>"; };
 		01542AFFEFC14D76A132A046 /* RNShare.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNShare.xcodeproj; path = "../node_modules/react-native-share/ios/RNShare.xcodeproj"; sourceTree = "<group>"; };
@@ -246,12 +245,17 @@
 		179107B6F87A4081B9E9E42C /* RNMixpanel.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNMixpanel.xcodeproj; path = "../node_modules/react-native-mixpanel/RNMixpanel.xcodeproj"; sourceTree = "<group>"; };
 		1B8D0C43D6CF4EEC8A1DBFAC /* libCodePush.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libCodePush.a; sourceTree = "<group>"; };
 		1D2694F21D077C5F000E1BD3 /* launch_screen.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = launch_screen.jpg; sourceTree = "<group>"; };
+		1D2F15E41D4800D000BA0D43 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		1D449AA91D04A69300195AF6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		1D449B2F1D04D70400195AF6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = DanceDeets/Images.xcassets; sourceTree = "<group>"; };
 		1D89584B1CF9125D0029E37E /* Ubuntu 300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 300.ttf"; sourceTree = "<group>"; };
 		1D89584C1CF9125D0029E37E /* Ubuntu 500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 500.ttf"; sourceTree = "<group>"; };
 		1D89584D1CF9125D0029E37E /* Ubuntu regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu regular.ttf"; sourceTree = "<group>"; };
 		1D8BF7F01D0E43F800B7243F /* Ubuntu italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu italic.ttf"; sourceTree = "<group>"; };
+		1D902A631D42B7FB00B938F3 /* DanceDeetsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DanceDeetsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D902A651D42B7FB00B938F3 /* DanceDeetsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DanceDeetsUITests.swift; sourceTree = "<group>"; };
+		1D902A671D42B7FB00B938F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1D902A841D42B81700B938F3 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		1D9EDD1A1CF9097F00871235 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../Documents/FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		1D9EDD1B1CF9097F00871235 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../../Documents/FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		1D9EDD1C1CF9097F00871235 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../../Documents/FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
@@ -279,14 +283,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		00E356EB1AD99517003FC87E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1D449AD71D04C1AF00195AF6 /* libReact.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -318,6 +314,13 @@
 				438545139E5E477895CD9993 /* libRNShare.a in Frameworks */,
 				0FD5F3C63FE849A2B7974E78 /* libCodePush.a in Frameworks */,
 				854D59D0A80E4AE693D5192B /* libRCTLocale.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D902A601D42B7FB00B938F3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,6 +468,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1D902A641D42B7FB00B938F3 /* DanceDeetsUITests */ = {
+			isa = PBXGroup;
+			children = (
+				1D902A841D42B81700B938F3 /* SnapshotHelper.swift */,
+				1D902A651D42B7FB00B938F3 /* DanceDeetsUITests.swift */,
+				1D902A671D42B7FB00B938F3 /* Info.plist */,
+			);
+			path = DanceDeetsUITests;
+			sourceTree = "<group>";
+		};
 		1D9EDCE11CF9089400871235 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -524,6 +537,7 @@
 		1D9EDD131CF9091F00871235 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1D2F15E41D4800D000BA0D43 /* CoreFoundation.framework */,
 				1D449AA91D04A69300195AF6 /* libz.tbd */,
 				1D9EDD1A1CF9097F00871235 /* FBSDKCoreKit.framework */,
 				1D9EDD1B1CF9097F00871235 /* FBSDKLoginKit.framework */,
@@ -599,6 +613,7 @@
 			isa = PBXGroup;
 			children = (
 				13B07FAE1A68108700A75B9A /* DanceDeets */,
+				1D902A641D42B7FB00B938F3 /* DanceDeetsUITests */,
 				1D9EDD131CF9091F00871235 /* Frameworks */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* DanceDeetsTests */,
@@ -613,7 +628,7 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* DanceDeets Debug.app */,
-				00E356EE1AD99517003FC87E /* DanceDeetsTests.xctest */,
+				1D902A631D42B7FB00B938F3 /* DanceDeetsUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -621,24 +636,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* DanceDeetsTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "DanceDeetsTests" */;
-			buildPhases = (
-				00E356EA1AD99517003FC87E /* Sources */,
-				00E356EB1AD99517003FC87E /* Frameworks */,
-				00E356EC1AD99517003FC87E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				00E356F51AD99517003FC87E /* PBXTargetDependency */,
-			);
-			name = DanceDeetsTests;
-			productName = DanceDeetsTests;
-			productReference = 00E356EE1AD99517003FC87E /* DanceDeetsTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		13B07F861A680F5B00A75B9A /* DanceDeets */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "DanceDeets" */;
@@ -660,21 +657,40 @@
 			productReference = 13B07F961A680F5B00A75B9A /* DanceDeets Debug.app */;
 			productType = "com.apple.product-type.application";
 		};
+		1D902A621D42B7FB00B938F3 /* DanceDeetsUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D902A831D42B7FB00B938F3 /* Build configuration list for PBXNativeTarget "DanceDeetsUITests" */;
+			buildPhases = (
+				1D902A5F1D42B7FB00B938F3 /* Sources */,
+				1D902A601D42B7FB00B938F3 /* Frameworks */,
+				1D902A611D42B7FB00B938F3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1D902A691D42B7FB00B938F3 /* PBXTargetDependency */,
+			);
+			name = DanceDeetsUITests;
+			productName = DanceDeetsUITests;
+			productReference = 1D902A631D42B7FB00B938F3 /* DanceDeetsUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 610;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
-					00E356ED1AD99517003FC87E = {
-						CreatedOnToolsVersion = 6.2;
-						TestTargetID = 13B07F861A680F5B00A75B9A;
-					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 5C2TNLFT44;
+					};
+					1D902A621D42B7FB00B938F3 = {
+						CreatedOnToolsVersion = 7.3.1;
+						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 				};
 			};
@@ -782,7 +798,7 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* DanceDeets */,
-				00E356ED1AD99517003FC87E /* DanceDeetsTests */,
+				1D902A621D42B7FB00B938F3 /* DanceDeetsUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -952,13 +968,6 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
-		00E356EC1AD99517003FC87E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		13B07F8E1A680F5B00A75B9A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -970,6 +979,13 @@
 				1D449B301D04D70500195AF6 /* Images.xcassets in Resources */,
 				1D89584F1CF913130029E37E /* Ubuntu 500.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D902A611D42B7FB00B938F3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1038,14 +1054,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		00E356EA1AD99517003FC87E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00E356F31AD99517003FC87E /* DanceDeetsTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1055,13 +1063,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1D902A5F1D42B7FB00B938F3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D902A661D42B7FB00B938F3 /* DanceDeetsUITests.swift in Sources */,
+				1D902A851D42B81700B938F3 /* SnapshotHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
+		1D902A691D42B7FB00B938F3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* DanceDeets */;
-			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+			targetProxy = 1D902A681D42B7FB00B938F3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1078,65 +1095,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		00E356F61AD99517003FC87E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = DanceDeetsTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets Debug.app/DanceDeets Debug";
-			};
-			name = Debug;
-		};
-		00E356F71AD99517003FC87E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = DanceDeetsTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DanceDeets.app/DanceDeets";
-			};
-			name = Release;
-		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F33F4F5DCEB28B5ACFB6FDF7 /* Pods-DanceDeets.debug.xcconfig */;
@@ -1225,6 +1183,39 @@
 				PRODUCT_NAME = DanceDeets;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1D902A6A1D42B7FB00B938F3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = DanceDeetsUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.dancedeets.ios.DanceDeetsUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TEST_TARGET_NAME = DanceDeets;
+			};
+			name = Debug;
+		};
+		1D902A6B1D42B7FB00B938F3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = DanceDeetsUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.dancedeets.ios.DanceDeetsUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = DanceDeets;
 			};
 			name = Release;
 		};
@@ -1341,20 +1332,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "DanceDeetsTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				00E356F61AD99517003FC87E /* Debug */,
-				00E356F71AD99517003FC87E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "DanceDeets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1D902A831D42B7FB00B938F3 /* Build configuration list for PBXNativeTarget "DanceDeetsUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D902A6A1D42B7FB00B938F3 /* Debug */,
+				1D902A6B1D42B7FB00B938F3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

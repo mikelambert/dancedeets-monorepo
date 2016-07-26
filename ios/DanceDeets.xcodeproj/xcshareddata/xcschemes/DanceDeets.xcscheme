@@ -52,6 +52,16 @@
                ReferencedContainer = "container:DanceDeets.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1D902A621D42B7FB00B938F3"
+               BuildableName = "DanceDeetsUITests.xctest"
+               BlueprintName = "DanceDeetsUITests"
+               ReferencedContainer = "container:DanceDeets.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
