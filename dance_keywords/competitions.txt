@@ -120,7 +120,7 @@ freedom dance party
 
 afro\W+bang
 soir[eé]e atmosph[eè]re
-coney island boardwalk
+#coney island boardwalk
 the floor improv night
 dance culture
 jump\W+n\W+funk
