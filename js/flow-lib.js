@@ -25,4 +25,8 @@ declare module 'react-native-push-notification' {
   declare var exports: any;
 }
 
+declare module 'react-native-locale' {
+  declare var exports: any;
+}
+
 declare var requestAnimationFrame: (callback: () => void) => number;
