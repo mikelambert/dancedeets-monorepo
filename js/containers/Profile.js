@@ -37,6 +37,7 @@ import {
   intlShape,
   defineMessages,
 } from 'react-intl';
+import NativeEnv from 'react-native-native-env';
 
 const Mailer = require('NativeModules').RNMail;
 
@@ -144,7 +145,12 @@ class _Credits extends React.Component {
   render() {
     const creditHeader = <Heading1 style={{marginBottom: 5}}>{this.props.intl.formatMessage(messages.credits)}</Heading1>;
     const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
-    return <View style={this.props.style}>{creditHeader}{creditGroups}</View>;
+    const version = <Text style={styles.versionStyle}>Version: {NativeEnv.get('VERSION_NAME')}</Text>;
+    return <View style={this.props.style}>
+      {creditHeader}
+      {version}
+      {creditGroups}
+    </View>;
   }
 }
 const Credits = injectIntl(_Credits);
@@ -353,5 +359,8 @@ const styles = StyleSheet.create({
   },
   link: {
     color: linkColor,
+  },
+  versionStyle: {
+    fontStyle: 'italic',
   },
 });
