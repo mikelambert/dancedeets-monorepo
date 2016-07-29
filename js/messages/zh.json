@@ -26,7 +26,7 @@
   "event.attendingCount": "{attendingCount} 參加",
   "event.attendingMaybeCount": "{attendingCount} 參加、{maybeCount} 有興趣",
   "event.hideOrganizers": "不顯示召集人",
-  "event.organizer": "顯示:",
+  "event.organizer": "召集人:",
   "event.rsvp.attending": "參加",
   "event.rsvp.declined": "拒絕",
   "event.rsvp.maybe": "有興趣",
