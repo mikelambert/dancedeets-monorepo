@@ -31,6 +31,7 @@
     "react-native-mail": "mikelambert/react-native-mail",
     "react-native-maps": "^0.4.2",
     "react-native-mixpanel": "../react-native-mixpanel",
+    "react-native-native-env": "0.0.3",
     "react-native-segmented-android": "mikelambert/react-native-segmented-android",
     "react-native-send-intent": "^1.0.8",
     "react-native-share": "^1.0.10",

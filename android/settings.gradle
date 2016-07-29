@@ -1,6 +1,8 @@
 rootProject.name = 'DanceDeets'
 
 include ':app'
+include ':react-native-native-env'
+project(':react-native-native-env').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-native-env/android')
 include ':react-native-locale'
 project(':react-native-locale').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-locale/android')
 include ':ReactAndroid'

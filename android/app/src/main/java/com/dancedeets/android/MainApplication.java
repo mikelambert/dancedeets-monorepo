@@ -7,6 +7,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.xgfe.reactnativeenv.RCTNativeEnvPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +25,7 @@ public class MainApplication extends Application implements ReactApplication {
         mCallbackManager = CallbackManager.Factory.create();
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RCTNativeEnvPackage(BuildConfig.class),
             new RCTLocalePackage(),
             new CodePush(BuildConfig.CODEPUSH_KEY, this, BuildConfig.DEBUG),
             new RNSharePackage(),

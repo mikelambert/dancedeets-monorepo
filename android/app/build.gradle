@@ -139,6 +139,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-native-env')
     compile project(':react-native-locale')
     compile project(':ReactAndroid')
     compile (project(':react-native-code-push')) {
