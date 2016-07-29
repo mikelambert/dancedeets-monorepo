@@ -1,27 +1,18 @@
 
 import logging
 
-from mapreduce import mapreduce_pipeline
-
 import app
 import base_servlet
 import fb_api
 from util import fb_mapreduce
 from . import users
 
-GET_FRIEND_APP_USERS = """
-SELECT uid FROM user
-WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = %s)
-AND is_app_user = 1
-"""
 
 class LookupAppFriendUsers(fb_api.LookupType):
-    # V2.0 CHANGE
-    version = "v2.0"
-
     @classmethod
     def get_lookups(cls, object_id):
-        return [('info', cls.fql_url(GET_FRIEND_APP_USERS % object_id))]
+        return [('info', cls.url('%s/friends' % object_id))]
+
 
 @app.route('/tasks/track_newuser_friends')
 class TrackNewUserFriendsHandler(base_servlet.BaseTaskFacebookRequestHandler):
@@ -34,7 +25,8 @@ class TrackNewUserFriendsHandler(base_servlet.BaseTaskFacebookRequestHandler):
         # V2.0 CHANGE, remove str() call
         user_friends.registered_friend_string_ids = [str(x['uid']) for x in app_friend_list['data']]
         user_friends.put()
-    post=get
+    post = get
+
 
 @app.route('/tasks/load_users')
 class LoadUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
@@ -42,7 +34,8 @@ class LoadUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
         user_ids = [x for x in self.request.get('user_ids').split(',') if x]
         load_users = users.User.get_by_ids(user_ids)
         load_fb_user(self.fbl, load_users[0])
-    post=get
+    post = get
+
 
 @app.route('/tasks/reload_all_users')
 class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
@@ -54,7 +47,7 @@ class ReloadAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
             handler_spec='users.user_tasks.map_load_fb_user',
             entity_kind='users.users.User',
         )
-    post=get
+    post = get
 
 
 def yield_load_fb_user(fbl, user):
