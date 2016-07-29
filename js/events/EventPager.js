@@ -61,6 +61,7 @@ class EventPager extends React.Component {
     }
     const state = {
       ...this.state,
+      position: position,
       dataSource: this.state.dataSource.cloneWithPages(finalResults),
     };
     return state;
