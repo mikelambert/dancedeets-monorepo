@@ -43,7 +43,7 @@ async function performRequest(path: string, args: Object, postArgs: ?Object | nu
     });
 
     console.log('JSON API:', getUrl(path, fullArgs));
-    const result = await fetch(getUrl(path, args), {
+    const result = await fetch(getUrl(path, fullArgs), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
