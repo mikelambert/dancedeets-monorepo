@@ -93,6 +93,11 @@ const messages = defineMessages({
     defaultMessage: 'Show {count} Organizers', // Always 2-and-more, so don't need to deal with singular case
     description: 'Will show the list of organizers for this event',
   },
+  eventDetails: {
+    id: 'event.details',
+    defaultMessage: 'Event Details:',
+    description: 'Title for the event description card',
+  },
   organizer: {
     id: 'event.organizer',
     defaultMessage: 'Organizer:',
@@ -183,6 +188,7 @@ class EventCategories extends SubEventLine {
 class _AddToCalendarButton extends React.Component {
   render() {
     return <Button
+      style={this.props.style}
       icon={require('./images/calendar.png')}
       caption={this.props.intl.formatMessage(messages.addToCalendar)}
       size="small"
@@ -571,30 +577,44 @@ class _EventRsvp extends SubEventLine {
 }
 const EventRsvp = injectIntl(_EventRsvp);
 
-class EventDescription extends React.Component {
+class _EventDescription extends React.Component {
   render() {
-    return <Card><Autolink
-      linkStyle={eventStyles.rowLink}
-      style={eventStyles.description}
-      text={this.props.description}
-      // Currently only works on Android with my recent change:
-      // https://github.com/mikelambert/react-native/commit/90a79cc11ee493f0dd6a8a2a5fa2a01cb2d12cad
-      textProps={{selectable: true}}
-      hashtag="instagram"
-      twitter
-    /></Card>;
+    return <Card title={
+      <HorizontalView style={[eventStyles.splitButtons, {
+        margin: 5,
+        alignItems: 'center',
+      }]}>
+          <Text style={eventStyles.rowTitle}>{this.props.intl.formatMessage(messages.eventDetails)}</Text>
+        <EventTranslate event={this.props.event} />
+      </HorizontalView>
+    }>
+      {this.props.children}
+      <Autolink
+        linkStyle={eventStyles.rowLink}
+        style={eventStyles.description}
+        text={this.props.event.description}
+        // Currently only works on Android with my recent change:
+        // https://github.com/mikelambert/react-native/commit/90a79cc11ee493f0dd6a8a2a5fa2a01cb2d12cad
+        textProps={{selectable: true}}
+        hashtag="instagram"
+        twitter
+      />
+    </Card>;
   }
 }
+const EventDescription = injectIntl(_EventDescription);
+
 
 class EventMap extends React.Component {
+
   render() {
     return <MapView
-        style={eventStyles.eventMap}
+        style={[eventStyles.eventMap, this.props.style]}
         region={{
           latitude: this.props.venue.geocode.latitude,
           longitude: this.props.venue.geocode.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
+          latitudeDelta: this.props.defaultSize,
+          longitudeDelta: this.props.defaultSize,
         }}
         zoomEnabled={false}
         rotateEnabled={false}
@@ -819,9 +839,7 @@ class _FullEventView extends React.Component {
       </TouchableOpacity>;
 
     const map = this.props.event.venue.geocode
-      ? <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
-          <EventMap venue={this.props.event.venue} />
-        </TouchableOpacity>
+      ? <EventMap venue={this.props.event.venue} style={eventStyles.eventMap} defaultSize={0.005} />
       : null;
 
     let name = this.props.event.name;
@@ -838,28 +856,29 @@ class _FullEventView extends React.Component {
       >
         {this.props.event.cover ? clickableFlyer : flyerImage}
         <Card
-          style={eventStyles.eventIndent}>
-          <Text
-            numberOfLines={2}
-            style={eventStyles.rowTitle}>{name}</Text>
+          style={eventStyles.eventIndent}
+          title={
+            <Text
+              numberOfLines={2}
+              style={eventStyles.rowTitle}>{name}</Text>
+          }>
           <EventCategories categories={this.props.event.annotations.categories} />
+          <EventRsvp event={this.props.event} />
           <EventDateTime start={this.props.event.start_time} end={this.props.event.end_time} >
-            <AddToCalendarButton event={this.props.event} />
+            <AddToCalendarButton event={this.props.event} style={{marginTop: 5}}/>
           </EventDateTime>
           <TouchableOpacity onPress={this.onLocationClicked} activeOpacity={0.5}>
             <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
+            {map}
           </TouchableOpacity>
-          <EventRsvp event={this.props.event} />
           <EventSource event={this.props.event} />
           <EventAddedBy event={this.props.event} />
           <EventOrganizers event={this.props.event} />
           <HorizontalView style={eventStyles.splitButtons}>
             <EventShare event={this.props.event} />
-            <EventTranslate event={this.props.event} />
           </HorizontalView>
         </Card>
-        <EventDescription description={description} />
-        {map}
+        <EventDescription event={this.props.event} />
       </ProgressiveLayout>
     );
   }
@@ -894,9 +913,7 @@ const eventStyles = StyleSheet.create({
   rowTitle: {
     fontSize: semiNormalize(18),
     lineHeight: semiNormalize(22),
-    marginBottom: 10,
-    marginLeft: 5,
-    marginRight: 5,
+    margin: 5,
   },
   rowDateTime: {
     color: '#C0FFC0',
@@ -917,7 +934,7 @@ const eventStyles = StyleSheet.create({
   shareIndent: {
   },
   detailLine: {
-    marginLeft: 20,
+    marginLeft: 5,
     marginBottom: 10,
   },
   detailIcon: {
@@ -934,8 +951,11 @@ const eventStyles = StyleSheet.create({
     marginRight: 5,
   },
   eventMap: {
-    left: 0,
-    height: normalize(200),
-    right: 0,
+    flex: 1,
+    paddingHorizontal: 10,
+    height: normalize(150),
+    marginLeft: 25,
+    marginBottom: 10,
+    borderRadius: 5,
   },
 });

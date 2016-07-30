@@ -25,6 +25,7 @@
   "event.addedToCalendar": "カレンダーに予定を追加しました",
   "event.attendingCount": "{attendingCount} 人参加予定",
   "event.attendingMaybeCount": "{attendingCount} 人参加予定、{maybeCount} 人興味あり",
+  "event.details": "イベントの詳細:",
   "event.hideOrganizers": "主催者を非表示",
   "event.organizer": "主催者:",
   "event.rsvp.attending": "行く",

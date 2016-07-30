@@ -25,6 +25,7 @@
   "event.addedToCalendar": "已加入行事曆",
   "event.attendingCount": "{attendingCount} 參加",
   "event.attendingMaybeCount": "{attendingCount} 參加、{maybeCount} 有興趣",
+  "event.details": "活動細節:",
   "event.hideOrganizers": "不顯示召集人",
   "event.organizer": "召集人:",
   "event.rsvp.attending": "參加",

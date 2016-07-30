@@ -25,6 +25,7 @@
   "event.addedToCalendar": "Ajouté au calendrier",
   "event.attendingCount": "{attendingCount} participants",
   "event.attendingMaybeCount": "{attendingCount} participants, {maybeCount} intéressés",
+  "event.details": "Détails de l'évènement :",
   "event.hideOrganizers": "Masquer les organisateurs",
   "event.organizer": "Organisateur :",
   "event.rsvp.attending": "J'y vais",
