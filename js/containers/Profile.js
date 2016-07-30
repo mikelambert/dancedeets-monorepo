@@ -146,11 +146,11 @@ class _Credits extends React.Component {
     const creditHeader = <Heading1 style={{marginBottom: 5}}>{this.props.intl.formatMessage(messages.credits)}</Heading1>;
     const creditGroups = credits.map((x) => <View key={x[0]} ><Text style={{fontWeight: 'bold'}}>{x[0]}:</Text><CreditSubList list={x[1]}/></View>);
     const version = <Text style={styles.versionStyle}>Version: {NativeEnv.get('VERSION_NAME')}</Text>;
-    return <View style={this.props.style}>
+    return <Card style={this.props.style}>
       {creditHeader}
       {version}
       {creditGroups}
-    </View>;
+    </Card>;
   }
 }
 const Credits = injectIntl(_Credits);
@@ -168,7 +168,7 @@ class _ShareButtons extends React.Component {
 
   render() {
     return (
-      <View>
+      <Card>
         <Heading1>{this.props.intl.formatMessage(messages.shareTitle)}</Heading1>
 
         <Button
@@ -208,7 +208,7 @@ class _ShareButtons extends React.Component {
           }}
           style={styles.noFlexButton}
         />
-      </View>
+      </Card>
     );
   }
 }
@@ -259,7 +259,7 @@ class _UserProfile extends React.Component {
       friendsCopy = <Text style={{marginBottom: 10}}>{this.props.intl.formatMessage(messages.friendsUsing, {count: friendCount})}</Text>;
     }
 
-    return <View>
+    return <Card>
       <HorizontalView>
         <View style={styles.profileLeft}>
           <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
@@ -278,7 +278,7 @@ class _UserProfile extends React.Component {
           autoAdded: user.ddUser.num_auto_added_events || 0,
         })}</Text>
       </View>
-    </View>;
+    </Card>;
   }
 }
 const UserProfile = connect(
@@ -296,13 +296,9 @@ class _Profile extends React.Component {
   render() {
     return <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
 
-      <Card>
-        <UserProfile />
-      </Card>
+      <UserProfile />
 
-      <Card>
-        <ShareButtons />
-      </Card>
+      <ShareButtons />
 
       {Platform.OS === 'android' ? <Button size="small" caption={this.props.intl.formatMessage(messages.buttonNotificationSettings)}/> : null}
 
@@ -310,9 +306,7 @@ class _Profile extends React.Component {
 
       <Button size="small" caption={this.props.intl.formatMessage(messages.buttonAdvertisePromote)} onPress={sendAdvertisingEmail} style={styles.noFlexButton}/>
 
-      <Card>
-        <Credits />
-      </Card>
+      <Credits />
 
     </ScrollView>;
   }
