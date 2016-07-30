@@ -242,15 +242,12 @@ class _EventListContainer extends React.Component {
 
   async initialize() {
     const url: ?string = await Linking.getInitialURL();
-    if (!url) {
-      return;
-    }
-    const processedUrl = new WebsiteUrl(url);
-    if (processedUrl.isEventUrl()) {
+    const processedUrl = url ? new WebsiteUrl(url) : null;
+    if (processedUrl && processedUrl.isEventUrl()) {
       const eventId = processedUrl.eventId();
       const event = await fetch(eventId);
       this.props.onEventSelected(event);
-    } if (processedUrl.isSearchUrl()) {
+    } if (processedUrl && processedUrl.isSearchUrl()) {
       this.props.updateLocation(processedUrl.location());
       this.props.updateKeywords(processedUrl.keywords());
       this.props.performSearch();
