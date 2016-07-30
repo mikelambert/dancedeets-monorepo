@@ -97,7 +97,7 @@ class SectionHeader extends React.Component {
   render() {
     return <LinearGradient
         start={[0.0, 0.0]} end={[0.0, 1]}
-        colors={[purpleColors[4], purpleColors[1], purpleColors[1], purpleColors[4]]}
+        colors={[purpleColors[5], purpleColors[2], purpleColors[2], purpleColors[5]]}
         locations={[0.0, 0.4, 0.6, 1.0]}
         style={styles.sectionHeader}>
       <Text style={styles.sectionHeaderText}>{this.props.title}</Text>
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     height: semiNormalize(30),
     alignItems: 'flex-start', // left align
     justifyContent: 'center', // vertically center
-    backgroundColor: purpleColors[1],
+    backgroundColor: purpleColors[2],
   },
   sectionHeaderText: {
     color: 'white',

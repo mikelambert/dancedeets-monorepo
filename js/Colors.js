@@ -18,6 +18,7 @@ export const yellowColors = [
 
 export const purpleColors = [
   '#8283A9',
+  '#656595',
   '#4C4D81',
   '#333452',
   '#222238',

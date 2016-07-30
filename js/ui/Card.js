@@ -17,7 +17,7 @@ export default class Card extends React.Component {
 
 const styles = StyleSheet.create({
   titleBackground: {
-    backgroundColor: purpleColors[1],
+    backgroundColor: purpleColors[2],
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   card: {
-    backgroundColor: purpleColors[3],
+    backgroundColor: purpleColors[4],
     borderColor: purpleColors[0],
     //borderWidth: 1,
     borderRadius: 10,

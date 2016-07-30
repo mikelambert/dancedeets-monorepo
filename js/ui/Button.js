@@ -50,7 +50,7 @@ class Button extends React.Component {
     const size = this.props.size === 'small' ? styles.smallButton : styles.largeButton;
     let colors = null;
     if (this.props.color === 'purple') {
-      colors = [purpleColors[1], purpleColors[2], purpleColors[2]];
+      colors = [purpleColors[1], purpleColors[3], purpleColors[3]];
     } else if (this.props.color === 'yellow') {
       colors = [yellowColors[1], yellowColors[4], yellowColors[4]];
     } else if (this.props.color === 'red') {
