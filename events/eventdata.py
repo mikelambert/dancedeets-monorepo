@@ -190,6 +190,13 @@ class DBEvent(ndb.Model):
             return None
 
     @property
+    def ticket_uri(self):
+        if self.web_event:
+            return None
+        else:
+            return self.fb_event['info'].get('ticket_uri')
+
+    @property
     def source_url(self):
         return namespaces.NAMESPACES[self.namespace].event_url_func(self)
 
