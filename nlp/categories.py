@@ -233,9 +233,11 @@ def _desc(obj):
 def find_rules(event, styles):
     name = _name(event).lower()
     name = name.replace('freestyle session', 'fs')
-    found_styles = find_rules_in_text(name, styles)
-    if not found_styles:
-        found_styles = find_rules_in_text(_desc(event).lower(), styles)
+    found_styles = find_rules_in_text(name + _desc(event).lower(), styles)
+    # Old attempt that prioritized the title:
+    # found_styles = find_rules_in_text(name, styles)
+    # if not found_styles:
+    #     found_styles = find_rules_in_text(_desc(event).lower(), styles)
     return found_styles
 
 
