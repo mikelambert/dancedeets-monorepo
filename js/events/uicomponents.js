@@ -75,7 +75,7 @@ const messages = defineMessages({
   },
   addedBy: {
     id: 'event.addedBy',
-    defaultMessage: 'Added By:',
+    defaultMessage: 'Added By: {name}',
     description: 'Describes who added this event to DanceDeets',
   },
   source: {
