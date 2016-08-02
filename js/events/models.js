@@ -89,6 +89,7 @@ export class Event extends JsonDerivedObject {
     },
   };
   admins: Array<Admin>;
+  ticket_uri: string;
 
   constructor(eventData: JSONObject) {
     super(eventData);

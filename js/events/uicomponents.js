@@ -51,6 +51,7 @@ import {
 } from 'react-intl';
 import geolib from 'geolib';
 import { toggleEventTranslation } from '../actions';
+import url from 'url';
 
 const messages = defineMessages({
   addToCalendar: {
@@ -799,6 +800,37 @@ const EventTranslate = connect(
   }),
 )(injectIntl(_EventTranslate));
 
+class EventTickets extends SubEventLine {
+  constructor(props) {
+    super(props);
+    (this: any).onTicketClicked = this.onTicketClicked.bind(this);
+  }
+
+  onTicketClicked() {
+    trackWithEvent('Tickets Link', this.props.event);
+    try {
+      Linking.openURL(this.props.event.ticket_uri);
+    } catch (err) {
+      console.error('Error opening:', this.props.event.ticket_uri, ', with Error:', err);
+    }
+  }
+
+  shouldRender() {
+    return this.props.event.ticket_uri;
+  }
+
+  icon() {
+    return require('./images/ticket.png');
+  }
+
+  textRender() {
+    const hostname = url.parse(this.props.event.ticket_uri).hostname;
+    return <TouchableOpacity onPress={this.onTicketClicked} activeOpacity={0.5}>
+      <Text style={[eventStyles.detailText, eventStyles.rowLink]}>Buy Tickets at {hostname}</Text>
+    </TouchableOpacity>;
+  }
+}
+
 class _FullEventView extends React.Component {
   props: {
     onFlyerSelected: (x: Event) => ThunkAction,
@@ -871,6 +903,7 @@ class _FullEventView extends React.Component {
             <EventVenue style={eventStyles.rowLink} venue={this.props.event.venue} currentPosition={this.props.currentPosition} />
             {map}
           </TouchableOpacity>
+          <EventTickets event={this.props.event} />
           <EventSource event={this.props.event} />
           <EventAddedBy event={this.props.event} />
           <EventOrganizers event={this.props.event} />
