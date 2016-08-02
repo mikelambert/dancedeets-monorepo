@@ -585,12 +585,18 @@ const EventRsvp = injectIntl(_EventRsvp);
 
 class _EventDescription extends React.Component {
   render() {
+    let description = this.props.event.description;
+    const translatedEvent = this.props.translatedEvents[this.props.event.id];
+    if (translatedEvent && translatedEvent.visible) {
+      description = translatedEvent.translation.description;
+    }
+
     return <Card title={
       <HorizontalView style={[eventStyles.splitButtons, {
         margin: 5,
         alignItems: 'center',
       }]}>
-          <Text style={eventStyles.rowTitle}>{this.props.intl.formatMessage(messages.eventDetails)}</Text>
+        <Text style={eventStyles.rowTitle}>{this.props.intl.formatMessage(messages.eventDetails)}</Text>
         <EventTranslate event={this.props.event} />
       </HorizontalView>
     }>
@@ -598,7 +604,7 @@ class _EventDescription extends React.Component {
       <Autolink
         linkStyle={eventStyles.rowLink}
         style={eventStyles.description}
-        text={this.props.event.description}
+        text={description}
         // Currently only works on Android with my recent change:
         // https://github.com/mikelambert/react-native/commit/90a79cc11ee493f0dd6a8a2a5fa2a01cb2d12cad
         textProps={{selectable: true}}
@@ -608,7 +614,14 @@ class _EventDescription extends React.Component {
     </Card>;
   }
 }
-const EventDescription = injectIntl(_EventDescription);
+
+const EventDescription = connect(
+  (state) => {
+    return {
+      translatedEvents: state.translate.events,
+    };
+  },
+)(injectIntl(_EventDescription));
 
 
 class EventMap extends React.Component {
@@ -884,11 +897,9 @@ class _FullEventView extends React.Component {
       : null;
 
     let name = this.props.event.name;
-    let description = this.props.event.description;
     const translatedEvent = this.props.translatedEvents[this.props.event.id];
     if (translatedEvent && translatedEvent.visible) {
       name = translatedEvent.translation.name;
-      description = translatedEvent.translation.description;
     }
 
     return (
