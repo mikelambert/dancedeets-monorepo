@@ -30,6 +30,9 @@ class Evolution(items.StudioScraper):
         'https://calendar.google.com/calendar/ical/evolutiondancestudios%40gmail.com/public/basic.ics',
     ]
 
+    def _get_url(self, response):
+        return 'http://www.evolutiondancestudios.com/#!classes/c22j2'
+
     def parse_classes(self, response):
         past_horizon = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         ical_body = response.body.decode('utf-8')
