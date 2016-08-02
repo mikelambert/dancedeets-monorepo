@@ -313,11 +313,11 @@ class _EventSource extends SubEventLine {
   }
   onPress() {
     trackWithEvent('Open Source', this.props.event);
-    const url = this.props.event.source.url;
+    const sourceUrl = this.props.event.source.url;
     try {
-      Linking.openURL(url);
+      Linking.openURL(sourceUrl);
     } catch (err) {
-      console.error('Error opening:', url, ', with Error:', err);
+      console.error('Error opening:', sourceUrl, ', with Error:', err);
     }
   }
   textRender() {
@@ -402,7 +402,7 @@ class _EventOrganizers extends SubEventLine {
   }
 
   async _openAdmin(adminId) {
-    let url = null;
+    let adminUrl = null;
     // On Android, just send them to the URL and let the native URL intecerpetor send it to FB.
     if (Platform.OS === 'ios' && await Linking.canOpenURL('fb://')) {
       // We don't really need to pass fields=, but the FB SDK complains if we don't
@@ -410,24 +410,24 @@ class _EventOrganizers extends SubEventLine {
       const idType = metadata.metadata.type;
       if (idType === 'user') {
         // This should work, but doesn't...
-        // url = 'fb://profile/' + adminId;
+        // adminUrl = 'fb://profile/' + adminId;
         // So let's send them to the URL directly:
-        url = 'https://www.facebook.com/' + adminId;
+        adminUrl = 'https://www.facebook.com/' + adminId;
       } else if (idType === 'page') {
-        url = 'fb://page/?id=' + adminId;
+        adminUrl = 'fb://page/?id=' + adminId;
       } else {
-        url = 'https://www.facebook.com/' + adminId;
+        adminUrl = 'https://www.facebook.com/' + adminId;
       }
       // Every event lists all members of the event who created it
       // Group events only list members (not the group, which is in a different field)
       // Page events list the members and the page id, too
     } else {
-      url = 'https://www.facebook.com/' + adminId;
+      adminUrl = 'https://www.facebook.com/' + adminId;
     }
     try {
-      Linking.openURL(url);
+      Linking.openURL(adminUrl);
     } catch (err) {
-      console.error('Error opening FB admin page:', url, ', with Error:', err);
+      console.error('Error opening FB admin page:', adminUrl, ', with Error:', err);
     }
   }
 
@@ -654,7 +654,7 @@ async function openVenueWithApp(venue: Venue) {
   const latLong = venue.geocode.latitude + ',' + venue.geocode.longitude;
   const venueName = venue.name || '(' + latLong + ')';
 
-  var url: string = '';
+  var venueUrl: string = '';
   if (Platform.OS === 'ios') {
     if (await Linking.canOpenURL('comgooglemaps://')) {
       const qs = querystring.stringify({
@@ -662,14 +662,14 @@ async function openVenueWithApp(venue: Venue) {
         center: latLong,
         zoom: 15,
       });
-      url = 'comgooglemaps://?' + qs;
+      venueUrl = 'comgooglemaps://?' + qs;
     } else {
       const qs = querystring.stringify({
         q: venueName,
         ll: latLong,
         z: 5,
       });
-      url = 'http://maps.apple.com/?' + qs;
+      venueUrl = 'http://maps.apple.com/?' + qs;
     }
   } else if (Platform.OS === 'android') {
       // "geo:lat,lng?q=query
@@ -694,15 +694,15 @@ async function openVenueWithApp(venue: Venue) {
        */
     const q = latLong ? (latLong + '(' + venueName + ')') : venueName;
     const qs = querystring.stringify({q: q});
-    url = 'geo:0,0?' + qs;
+    venueUrl = 'geo:0,0?' + qs;
   } else {
     console.error('Unknown platform: ', Platform.OS);
   }
 
   try {
-    Linking.openURL(url);
+    Linking.openURL(venueUrl);
   } catch (err) {
-    console.error('Error opening map URL:', url, ', with Error:', err);
+    console.error('Error opening map URL:', venueUrl, ', with Error:', err);
   }
 }
 
