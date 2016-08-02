@@ -16,6 +16,10 @@ def parse_times(times):
     start_time_string, end_time_string = re.split(r'-', times, 1)
     start_time = dateparser.parse(start_time_string).time()
     end_time = dateparser.parse(end_time_string).time()
+    if start_time.hour < 12:
+        start_time = start_time.replace(start_time.hour + 12)
+    if end_time.hour < 12:
+        end_time = end_time.replace(end_time.hour + 12)
     return start_time, end_time
 
 
