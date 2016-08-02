@@ -27,6 +27,7 @@ import base64
 import cgi
 import hmac
 import json
+import logging
 import os
 import hashlib
 import urllib
@@ -64,9 +65,14 @@ elif is_prod_appengine() or is_prod_appengine_mvms():
 else:
     filename = 'facebook-test.yaml'
 
-FACEBOOK_CONFIG = yaml.load(file(filename, 'r'))
+
+def load_yaml(filename):
+    abs_filename = os.path.join(os.path.dirname(__file__), filename)
+    return yaml.load(file(abs_filename, 'r'))
+
+FACEBOOK_CONFIG = load_yaml(filename)
 try:
-    _PROD_FACEBOOK_CONFIG = yaml.load(file('facebook-prod.yaml', 'r'))
+    _PROD_FACEBOOK_CONFIG = load_yaml('facebook-prod.yaml')
 except IOError as e:
     logging.info("Cannot find facebook-prod.yaml, using non-prod config: %s", e)
     _PROD_FACEBOOK_CONFIG = FACEBOOK_CONFIG.copy()

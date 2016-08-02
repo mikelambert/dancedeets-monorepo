@@ -16,6 +16,7 @@ setup(
     ],
     py_modules=[
         'event_types',
+        'facebook',
         'keys',
         'mindbody',
         'styles',
@@ -23,7 +24,11 @@ setup(
     ],
     data_files=[
         ('dance_keywords', glob.glob('dance_keywords/*.txt')),
-        ('', ['keys.yaml']),
+        ('', [
+            'keys.yaml',
+            'facebook-prod.yaml',
+            'facebook-test.yaml',
+        ]),
     ],
     include_package_data=True,
     entry_points={'scrapy': ['settings = scrapy_settings']},
