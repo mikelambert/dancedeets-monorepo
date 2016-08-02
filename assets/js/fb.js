@@ -81,7 +81,7 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
       });
     }
 
-    FB.init({version: 'v2.0', appId: fbAppId, status: true, cookie: true, xfbml: true});
+    FB.init({version: 'v2.7', appId: fbAppId, status: true, cookie: true, xfbml: true});
     FB.Event.subscribe('auth.statusChange', handleStatusChange);
     FB.getLoginStatus(function(response) {
       handleStatusChange(response);
