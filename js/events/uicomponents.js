@@ -556,7 +556,7 @@ class _EventRsvp extends SubEventLine {
       if (this.props.event.rsvp.attending_count) {
         if (this.props.event.rsvp.maybe_count) {
           counts = this.props.intl.formatMessage(messages.attendingMaybeCount, {
-            attendingCount: this.props.event.rsvp.maybe_count,
+            attendingCount: this.props.event.rsvp.attending_count,
             maybeCount: this.props.event.rsvp.maybe_count,
           });
         } else {
