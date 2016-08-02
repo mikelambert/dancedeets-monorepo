@@ -104,6 +104,11 @@ const messages = defineMessages({
     defaultMessage: 'Organizer:',
     description: 'Describes the one person who created this event',
   },
+  ticketsLink: {
+    id: 'event.tickets',
+    defaultMessage: 'Tickets:',
+    description: 'Link to see/buy tickets for this event',
+  },
   attendingCount: {
     id: 'event.attendingCount',
     defaultMessage: '{attendingCount} attending',
@@ -800,7 +805,7 @@ const EventTranslate = connect(
   }),
 )(injectIntl(_EventTranslate));
 
-class EventTickets extends SubEventLine {
+class _EventTickets extends SubEventLine {
   constructor(props) {
     super(props);
     (this: any).onTicketClicked = this.onTicketClicked.bind(this);
@@ -825,11 +830,15 @@ class EventTickets extends SubEventLine {
 
   textRender() {
     const hostname = url.parse(this.props.event.ticket_uri).hostname;
-    return <TouchableOpacity onPress={this.onTicketClicked} activeOpacity={0.5}>
-      <Text style={[eventStyles.detailText, eventStyles.rowLink]}>Buy Tickets at {hostname}</Text>
-    </TouchableOpacity>;
+    return <HorizontalView>
+      <Text style={[eventStyles.detailText]}>{this.props.intl.formatMessage(messages.ticketsLink)}{' '}</Text>
+      <TouchableOpacity onPress={this.onTicketClicked} activeOpacity={0.5}>
+        <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{hostname}</Text>
+      </TouchableOpacity>
+    </HorizontalView>;
   }
 }
+const EventTickets = injectIntl(_EventTickets);
 
 class _FullEventView extends React.Component {
   props: {

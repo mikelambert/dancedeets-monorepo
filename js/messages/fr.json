@@ -33,6 +33,7 @@
   "event.rsvp.maybe": "Je sais pas",
   "event.showOrganizers": "Afficher les {count} organisateurs",
   "event.source": "Source :",
+  "event.tickets": "Billets :",
   "event.translate": "Traduire",
   "event.untranslate": "Originale",
   "login.logout": "Se déconnecter",
