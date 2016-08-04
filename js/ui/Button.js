@@ -29,6 +29,7 @@ class Button extends React.Component {
     size: 'small' | 'large';
     textStyle: any;
     color: 'purple' | 'color';
+    testId: string;
   };
 
   static defaultProps = {
@@ -39,6 +40,7 @@ class Button extends React.Component {
     size: 'large',
     textStyle: {},
     color: 'purple',
+    testId: null,
   };
 
   render() {
@@ -73,7 +75,8 @@ class Button extends React.Component {
         accessibilityTraits="button"
         onPress={this.props.onPress}
         activeOpacity={0.8}
-        style={[this.props.style]}>
+        style={[this.props.style]}
+        testID={this.props.testID}>
         {content}
       </TouchableOpacity>
     );
