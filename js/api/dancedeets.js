@@ -16,6 +16,12 @@ import Locale from 'react-native-locale';
 
 const DEV_SERVER = false;
 
+let writesDisabled = false;
+
+export function disableWrites() {
+  writesDisabled = true;
+}
+
 function getUrl(path: string, args: Object) {
   const baseUrl = DEV_SERVER ? 'http://dev.dancedeets.com:8080/api/v1.2/' : 'http://www.dancedeets.com/api/v1.2/';
   const formattedArgs = querystring.stringify(args);
@@ -53,7 +59,7 @@ async function performRequest(path: string, args: Object, postArgs: ?Object | nu
     const json = await result.json();
     // 'undefined' means success, 'false' means error
     if (json['success'] === false) {
-      throw json['errors'];
+      throw new Error(json['errors']);
     } else {
       return json;
     }
@@ -74,11 +80,14 @@ function idempotentRetry(timeoutMs: number, promiseGenerator: () => Promise) {
 async function verifyAuthenticated() {
   const token = await AccessToken.getCurrentAccessToken();
   if (!token) {
-    throw 'Not authenticated!';
+    throw new Error('Not authenticated!');
   }
 }
 
 export async function auth(data: ?Object) {
+  if (writesDisabled) {
+    return;
+  }
   await verifyAuthenticated();
   return idempotentRetry(2000, createRequest('auth', {}, data));
 }
@@ -109,6 +118,9 @@ export async function userInfo() {
 }
 
 export async function addEvent(eventId: string) {
+  if (writesDisabled) {
+    return;
+  }
   await verifyAuthenticated();
   return await retryWithBackoff(2000, 2, 3, createRequest('events_add', {event_id: eventId}, {event_id: eventId}));
 }

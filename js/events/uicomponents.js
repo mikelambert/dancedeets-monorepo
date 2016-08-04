@@ -149,11 +149,11 @@ const messages = defineMessages({
 class SubEventLine extends React.Component {
 
   icon() {
-    throw ('Not Implemented!');
+    throw new Error('Not Implemented!');
   }
 
   textRender() {
-    throw ('Not Implemented!');
+    throw new Error('Not Implemented!');
   }
 
   shouldRender() {
@@ -516,7 +516,7 @@ class _EventRsvpControl extends React.Component {
     // We enforce this by throwing an exception,
     // which guarantees the SegmentedControl 'undoes' the selection.
     if (this.state.loading) {
-      throw 'Already loading values, do not allow any changes!';
+      throw new Error('Already loading values, do not allow any changes!');
     }
     const rsvp = RsvpOnFB.RSVPs[index];
     trackWithEvent('RSVP', this.props.event, {'RSVP Value': rsvp});

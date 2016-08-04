@@ -26,7 +26,7 @@ export default class WebsiteUrl {
     const pathname = this.url.pathname;
     const elems = pathname.split('/');
     if (elems[1] != 'event') {
-      throw 'Confusing pathname: ' + pathname;
+      throw new Error('Confusing pathname: ' + pathname);
     }
     return elems[2];
   }
