@@ -11,6 +11,7 @@ import React from 'react';
 import {Provider} from 'react-redux';
 import configureStore from '../store/configureStore';
 import Mixpanel from 'react-native-mixpanel';
+import ScreenshotSlideshow from '../ScreenshotSlideshow';
 
 export default function setup(): Class<Object> {
   console.disableYellowBox = true;
@@ -39,9 +40,13 @@ export default function setup(): Class<Object> {
       if (this.state.isLoading) {
         return null;
       }
+      let app = <App />;
+      if (false) {
+        app = <ScreenshotSlideshow>{app}</ScreenshotSlideshow>;
+      }
       return (
         <Provider store={this.state.store}>
-          <App />
+          {app}
         </Provider>
       );
     }
