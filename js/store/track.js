@@ -31,10 +31,18 @@ import { performRequest } from '../api/fb';
 import type {Action} from '../actions/types';
 import type {Event} from '../events/models';
 
+let trackingEnabled = true;
 // TODO: Implement GA: https://github.com/lwansbrough/react-native-google-analytics ?
 // TODO: Implement Firebase Analytics
 
+export function disableTracking() {
+  trackingEnabled = false;
+}
+
 function initMixpanel() {
+  if (!trackingEnabled) {
+    return;
+  }
   let mixpanelApiKey = null;
   if (__DEV__) {
     mixpanelApiKey = '668941ad91e251d2ae9408b1ea80f67b';
@@ -53,6 +61,9 @@ initMixpanel();
 type Params = {[key: string]: string | number};
 
 export function track(eventName: string, params: ?Params) {
+  if (!trackingEnabled) {
+    return;
+  }
   if (params) {
     AppEventsLogger.logEvent(eventName, 1, params);
     Mixpanel.trackWithProperties(eventName, params);
@@ -63,6 +74,9 @@ export function track(eventName: string, params: ?Params) {
 }
 
 export function trackWithEvent(eventName: string, event: Event, params: ?Params) {
+  if (!trackingEnabled) {
+    return;
+  }
   const venue = event.venue || null;
   const extraParams: Params = Object.assign({}, params, {
     'Event ID': event.id,
@@ -95,6 +109,9 @@ async function setupPersonProperties() {
 }
 
 export async function trackLogin() {
+  if (!trackingEnabled) {
+    return;
+  }
   // We must call identify *first*, before calling setDeviceToken() or login().
   // This ensures the latter functions operate against the correct user.
   // TODO: Retrieve push token
@@ -103,10 +120,16 @@ export async function trackLogin() {
 }
 
 export function trackLogout() {
+  if (!trackingEnabled) {
+    return;
+  }
   track('Logout');
   //Mixpanel.removePushToken();
   Mixpanel.reset();
 }
 
 export default function trackDispatches(action: Action): void {
+  if (!trackingEnabled) {
+    return;
+  }
 }
