@@ -33,7 +33,6 @@ export async function autoLoginAtStartup(dispatch: Dispatch, allowRecursion: boo
   // but not delay/block users who have recently refreshed.
   } else if (await isRecentlyLoggedIn()) {
     console.log('Fresh access token, completing login!');
-    // TODO: send up /auth /user API call now
     const token = await AccessToken.getCurrentAccessToken();
     if (token != null) {
       return dispatch(loginComplete(token));
