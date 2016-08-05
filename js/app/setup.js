@@ -12,6 +12,7 @@ import {Provider} from 'react-redux';
 import configureStore from '../store/configureStore';
 import Mixpanel from 'react-native-mixpanel';
 import ScreenshotSlideshow from '../ScreenshotSlideshow';
+import intl from '../intl';
 
 export default function setup(): Class<Object> {
   console.disableYellowBox = true;
@@ -52,7 +53,7 @@ export default function setup(): Class<Object> {
     }
   }
 
-  return Root;
+  return intl(Root);
 }
 
 global.LOG = (...args) => {
