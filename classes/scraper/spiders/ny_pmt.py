@@ -1,3 +1,5 @@
+# -*-*- encoding: utf-8 -*-*-
+
 import dateparser
 import datetime
 import re
@@ -49,7 +51,7 @@ class PMTHouseOfDance(items.StudioScraper):
             if not row[1] or '---' in row[1]:
                 continue
             potential_day = row[0]
-            if potential_day:
+            if potential_day and potential_day != u'\u200b':
                 day = potential_day
                 # Hack fix for broken PMT site
                 if day == 'onday':
