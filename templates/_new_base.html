@@ -279,6 +279,7 @@
 </footer>
 
 <script type="text/javascript">
+/* <![CDATA[ */
 window._trackJs = {
 {% if user %}
   userId: "{{ user.fb_uid }} - {{ user.full_name }}",
@@ -296,7 +297,10 @@ var google_conversion_language = "en";
 var google_conversion_format = "3";
 var google_conversion_color = "ffffff";
 var google_conversion_label = "Q-eJCImZgQIQx7S32QM";
+var google_conversion_value = 0;
+var google_conversion_currency = 'USD';
 var google_remarketing_only = false;
+/* ]]> */
 </script>
 
 <script type="text/javascript" src="/dist-{{version}}/js/main.js"></script>
@@ -316,7 +320,7 @@ var google_remarketing_only = false;
   </script>
   <noscript>
     <div style="display:inline;">
-      <img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/992860743/?label=Q-eJCImZgQIQx7S32QM&amp;guid=ON&amp;script=0"/>
+      <img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/992860743/?value=0.00&amp;currency_code=USD&amp;label=Q-eJCImZgQIQx7S32QM&amp;guid=ON&amp;script=0"/>
     </div>
   </noscript>
 {% endif %}
