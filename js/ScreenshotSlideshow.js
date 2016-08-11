@@ -85,7 +85,7 @@ class _ScreenshotSlideshow extends React.Component {
       case 2:
         //await this.setupAddEventView(dispatch);
         break;
-      case :
+      case 3:
         //await this.setupProfileView(dispatch);
         break;
     }
