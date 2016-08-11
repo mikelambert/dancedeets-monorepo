@@ -13,6 +13,7 @@ import configureStore from '../store/configureStore';
 import Mixpanel from 'react-native-mixpanel';
 import ScreenshotSlideshow from '../ScreenshotSlideshow';
 import intl from '../intl';
+import ProcessInfo from 'react-native-processinfo';
 
 export default function setup(): Class<Object> {
   console.disableYellowBox = true;
@@ -42,7 +43,7 @@ export default function setup(): Class<Object> {
         return null;
       }
       let app = <App />;
-      if (false) {
+      if (ProcessInfo.environment.UITest) {
         app = <ScreenshotSlideshow>{app}</ScreenshotSlideshow>;
       }
       return (

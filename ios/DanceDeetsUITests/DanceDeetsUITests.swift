@@ -19,6 +19,7 @@ class DanceDeetsUITests: XCTestCase {
         continueAfterFailure = false
         // UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.
         let app = XCUIApplication()
+        app.launchEnvironment = [ "UITest": "1" ]
         setupSnapshot(app)
         app.launch()
 
@@ -31,25 +32,24 @@ class DanceDeetsUITests: XCTestCase {
     }
     
     func testExample() {
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-
-      
       let app = XCUIApplication()
 
-      NSThread.sleepForTimeInterval(5)
+      expectationForPredicate(NSPredicate(format: "exists == true"), evaluatedWithObject: app.otherElements["mainButton"], handler: nil)
+      waitForExpectationsWithTimeout(20, handler:      {(error: Any?) -> Void in
+        NSLog("C0 Error is \(error)")
+        NSLog("C1 %@", app.debugDescription)
+      })
 
-      app.buttons.elementBoundByIndex(0).tap()
-      app.buttons.matchingIdentifier("addEvents").element.tap()
-      app.buttons.matchingIdentifier("facebookLogin").element.tap()
-      //TODO: login
+      snapshot("0")
+      app.otherElements["mainButton"].tap()
 
-      NSLog("Hey2")
-      app.textFields.elementBoundByIndex(0).typeText("nyc")
-      NSLog("Hey2")
-      snapshot("ListView")
+      expectationForPredicate(NSPredicate(format: "exists == true"), evaluatedWithObject: app.otherElements["mainButton"], handler: nil)
+      waitForExpectationsWithTimeout(20, handler:      {(error: Any?) -> Void in
+        NSLog("C0 Error is \(error)")
+        NSLog("C1 %@", app.debugDescription)
+      })
 
-        
+      snapshot("1")
+
     }
-    
 }
