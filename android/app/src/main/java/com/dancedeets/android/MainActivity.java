@@ -13,6 +13,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactActivity;
+import org.jall.reactnative.firebase.FirebasePackage;
 import io.fixd.rctlocale.RCTLocalePackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
