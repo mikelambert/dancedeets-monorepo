@@ -8,8 +8,10 @@
 
 import React from 'react';
 import {
-  ScrollView,
+  ListView,
+  RefreshControl,
   StyleSheet,
+  View,
 } from 'react-native';
 import {
   Text,
@@ -80,52 +82,84 @@ class BlogPost extends React.Component {
   }
 }
 
-type Props = {};
+class BlogPostList extends React.Component {
+  state: {
+    dataSource: ListView.DataSource,
+  };
 
-export default class LearnApp extends React.Component {
-
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
-    this.state = {
-      feeds: [],
-    };
+    var dataSource = new ListView.DataSource({
+      rowHasChanged: (row1, row2) => row1 !== row2,
+    });
+    this.state = {dataSource};
+    (this: any)._renderRow = this._renderRow.bind(this);
   }
 
-  state: {
-    feeds: [[Post]];
-  };
+  _getNewState(posts) {
+    const results = posts || [];
+    const state = {
+      ...this.state,
+      dataSource: this.state.dataSource.cloneWithRows(results),
+    };
+    return state;
+  }
 
   async loadFeeds() {
     const blogs = await getRemoteBlogs();
     const blogData = await Promise.all(blogs.map((x) => getMediumFeed(x)));
-    this.setState({feeds: blogData});
+    this.setState(this._getNewState(blogData[0]));
   }
 
   componentWillMount() {
     this.loadFeeds();
   }
 
+  _renderRow(post: Post) {
+    return <BlogPost
+      post={post}
+      //onEventClicked={(post: Post) => {this.props.clickEvent(post);}}
+    />;
+  }
+
   render() {
-    if (!this.state.feeds.length) {
-      return null;
-    }
-    const posts = this.state.feeds[0].map((x: Post) => <BlogPost key={x.title} post={x} />);
-    return <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
-      {posts}
-    </ScrollView>;
+    return <ListView
+      style={[styles.listView]}
+      dataSource={this.state.dataSource}
+      refreshControl={
+        <RefreshControl
+          refreshing={false}
+          //refreshing={are-we-refreshing?}
+          //onRefresh={() => this.props.reloadAddEvents()}
+        />
+      }
+      renderRow={this._renderRow}
+      initialListSize={10}
+      pageSize={5}
+      scrollRenderAheadDistance={10000}
+      scrollsToTop={false}
+      indicatorStyle="white"
+     />;
+  }
+}
+
+export default class LearnApp extends React.Component {
+
+  render() {
+    return <View style={styles.container}>
+      <BlogPostList />
+    </View>;
   }
 }
 
 
 const styles = StyleSheet.create({
   container: {
+    //top: STATUSBAR_HEIGHT,
     flex: 1,
     backgroundColor: 'black',
   },
-  containerContent: {
-    //top: STATUSBAR_HEIGHT,
-    backgroundColor: 'black',
-    alignItems: 'center',
-    justifyContent: 'space-around',
+  listView: {
+    flex: 1,
   },
 });
