@@ -64,9 +64,7 @@ class MediumFeed {
       previous[x] = users[x].name;
       return previous;
     }, {});
-    console.log(this.url);
     this.posts = realPosts.map((x) => this.parseMediumPost(x));
-    console.log(this.posts);
   }
 
   parseMediumPost(realPost): Post {
@@ -96,10 +94,15 @@ class BlogPost extends React.Component {
   }
 }
 
+type BlogPostProps = {
+  blog: MediumFeed;
+};
+
 class BlogPostList extends React.Component {
   state: {
     dataSource: ListView.DataSource,
   };
+  props: BlogPostProps;
 
   constructor(props) {
     super(props);
@@ -107,6 +110,7 @@ class BlogPostList extends React.Component {
       rowHasChanged: (row1, row2) => row1 !== row2,
     });
     this.state = {dataSource};
+    this.state = this._getNewState(this.props.blog);
     (this: any)._renderRow = this._renderRow.bind(this);
   }
 
@@ -117,16 +121,6 @@ class BlogPostList extends React.Component {
       dataSource: this.state.dataSource.cloneWithRows(results),
     };
     return state;
-  }
-
-  async loadFeeds() {
-    const blogs = await getRemoteBlogs();
-    const blogData = await Promise.all(blogs.map((x) => MediumFeed.load(x)));
-    this.setState(this._getNewState(blogData[0]));
-  }
-
-  componentWillMount() {
-    this.loadFeeds();
   }
 
   _renderRow(post: Post) {
@@ -157,11 +151,39 @@ class BlogPostList extends React.Component {
   }
 }
 
+class BlogList extends React.Component {
+  state: {
+    blogs: [MediumFeed];
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {blogs: []};
+  }
+
+  async loadFeeds() {
+    const blogs = await getRemoteBlogs();
+    const blogData = await Promise.all(blogs.map((x) => MediumFeed.load(x)));
+    this.setState({blogs: blogData});
+  }
+
+  componentWillMount() {
+    this.loadFeeds();
+  }
+
+  render() {
+    if (!this.state.blogs.length) {
+      return null;
+    }
+    return <BlogPostList blog={this.state.blogs[0]} />;
+  }
+}
+
 export default class LearnApp extends React.Component {
 
   render() {
     return <View style={styles.container}>
-      <BlogPostList />
+      <BlogList />
     </View>;
   }
 }
