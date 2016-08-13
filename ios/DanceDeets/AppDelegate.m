@@ -14,6 +14,7 @@
 #import "CodePush.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+@import Firebase;
 
 @implementation AppDelegate
 
@@ -22,6 +23,7 @@
   [Fabric with:@[[Crashlytics class]]];
   [[FBSDKApplicationDelegate sharedInstance] application:application
                            didFinishLaunchingWithOptions:launchOptions];
+  [FIRApp configure];
 
   NSURL *jsCodeLocation;
 

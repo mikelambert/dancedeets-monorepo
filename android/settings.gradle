@@ -1,8 +1,8 @@
 rootProject.name = 'DanceDeets'
 
 include ':app'
-include ':react-native-firebase'
-project(':react-native-firebase').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-firebase/android')
+include ':react-native-firebase3'
+project(':react-native-firebase3').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-firebase3/android')
 include ':react-native-native-env'
 project(':react-native-native-env').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-native-env/android')
 include ':react-native-locale'

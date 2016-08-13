@@ -35,6 +35,7 @@
 		1D9EDD1D1CF9097F00871235 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D9EDD1A1CF9097F00871235 /* FBSDKCoreKit.framework */; };
 		1D9EDD1E1CF9097F00871235 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D9EDD1B1CF9097F00871235 /* FBSDKLoginKit.framework */; };
 		1D9EDD1F1CF9097F00871235 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D9EDD1C1CF9097F00871235 /* FBSDKShareKit.framework */; };
+		1DC8881E1D5D451F001FAFF3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1DC8881D1D5D451F001FAFF3 /* GoogleService-Info.plist */; };
 		2312D6D3E2D0472DB5DF3722 /* libFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18032D5E38004733B7DBE5FE /* libFirebase.a */; };
 		438545139E5E477895CD9993 /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69DF053482B14CFA82541231 /* libRNShare.a */; };
 		43F126C439644A9581360363 /* libRNGeocoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D61C988AD745E38AA1B170 /* libRNGeocoder.a */; };
@@ -220,9 +221,9 @@
 			remoteGlobalIDString = EB2648DF1C7BE17A00B8F155;
 			remoteInfo = RNProcessInfo;
 		};
-		1DC887691D5D06E8001FAFF3 /* PBXContainerItemProxy */ = {
+		1DC888031D5D342E001FAFF3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = D7825296E6504B4A8E1ECA66 /* Firebase.xcodeproj */;
+			containerPortal = 8A3026A53B5F413CB53C73E1 /* Firebase.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = D8D9DB831C6D03DB009FBC0E;
 			remoteInfo = Firebase;
@@ -285,6 +286,7 @@
 		1D9EDD1A1CF9097F00871235 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../Documents/FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		1D9EDD1B1CF9097F00871235 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../../Documents/FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		1D9EDD1C1CF9097F00871235 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../../Documents/FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
+		1DC8881D1D5D451F001FAFF3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		254B3AE074504C77AF0DFAC5 /* RNProcessInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNProcessInfo.xcodeproj; path = "../node_modules/react-native-processinfo/RNProcessInfo.xcodeproj"; sourceTree = "<group>"; };
 		313C3BEEBF0E44A6A00988F5 /* libSMXCrashlytics.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSMXCrashlytics.a; sourceTree = "<group>"; };
 		4A686EFB3416466F9E8C20BF /* SMXCrashlytics.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SMXCrashlytics.xcodeproj; path = "../node_modules/react-native-fabric/ios/SMXCrashlytics.xcodeproj"; sourceTree = "<group>"; };
@@ -299,6 +301,7 @@
 		8153A686C12B4C4581BC7BC5 /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8541EED8B42541BC81B43DE2 /* libRNProcessInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNProcessInfo.a; sourceTree = "<group>"; };
+		8A3026A53B5F413CB53C73E1 /* Firebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Firebase.xcodeproj; path = "../node_modules/react-native-firebase3/ios/Firebase.xcodeproj"; sourceTree = "<group>"; };
 		9FB17C7A31CC407198A9ECFB /* CodePush.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/ios/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		A76C0B0DA2F34975BD38175E /* libRNAdMobManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAdMobManager.a; sourceTree = "<group>"; };
 		AD682DC01E1C4BD5A7ABA711 /* libRNMail.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNMail.a; sourceTree = "<group>"; };
@@ -307,7 +310,6 @@
 		C11775CF6CE546DD8997D4BC /* LRDRCTNativeEnv.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = LRDRCTNativeEnv.xcodeproj; path = "../node_modules/react-native-native-env/ios/LRDRCTNativeEnv.xcodeproj"; sourceTree = "<group>"; };
 		CEA565539668378262D1903D /* Pods-DanceDeets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.release.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.release.xcconfig"; sourceTree = "<group>"; };
 		D354B51278E84DA1A4ED481B /* libRCTLocale.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTLocale.a; sourceTree = "<group>"; };
-		D7825296E6504B4A8E1ECA66 /* Firebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Firebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/Firebase.xcodeproj"; sourceTree = "<group>"; };
 		DFE54775FE8646DF9CEA6CE5 /* libRNMixpanel.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNMixpanel.a; sourceTree = "<group>"; };
 		F0F2BCED993949CDA4946B12 /* libRNCalendarEvents.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCalendarEvents.a; sourceTree = "<group>"; };
 		F33F4F5DCEB28B5ACFB6FDF7 /* Pods-DanceDeets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.debug.xcconfig"; sourceTree = "<group>"; };
@@ -606,10 +608,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1DC887631D5D06E8001FAFF3 /* Products */ = {
+		1DC887FD1D5D342E001FAFF3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1DC8876A1D5D06E8001FAFF3 /* libFirebase.a */,
+				1DC888041D5D342E001FAFF3 /* libFirebase.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -658,7 +660,7 @@
 				AE159458369D4258A832C90E /* RCTLocale.xcodeproj */,
 				C11775CF6CE546DD8997D4BC /* LRDRCTNativeEnv.xcodeproj */,
 				254B3AE074504C77AF0DFAC5 /* RNProcessInfo.xcodeproj */,
-				D7825296E6504B4A8E1ECA66 /* Firebase.xcodeproj */,
+				8A3026A53B5F413CB53C73E1 /* Firebase.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -674,6 +676,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				1DC8881D1D5D451F001FAFF3 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* DanceDeets */,
 				1D902A641D42B7FB00B938F3 /* DanceDeetsUITests */,
 				1D9EDD131CF9091F00871235 /* Frameworks */,
@@ -781,8 +784,8 @@
 					ProjectRef = 9FB17C7A31CC407198A9ECFB /* CodePush.xcodeproj */;
 				},
 				{
-					ProductGroup = 1DC887631D5D06E8001FAFF3 /* Products */;
-					ProjectRef = D7825296E6504B4A8E1ECA66 /* Firebase.xcodeproj */;
+					ProductGroup = 1DC887FD1D5D342E001FAFF3 /* Products */;
+					ProjectRef = 8A3026A53B5F413CB53C73E1 /* Firebase.xcodeproj */;
 				},
 				{
 					ProductGroup = 1D2F16451D4C06A100BA0D43 /* Products */;
@@ -1039,11 +1042,11 @@
 			remoteRef = 1DC8872F1D5449D7001FAFF3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1DC8876A1D5D06E8001FAFF3 /* libFirebase.a */ = {
+		1DC888041D5D342E001FAFF3 /* libFirebase.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libFirebase.a;
-			remoteRef = 1DC887691D5D06E8001FAFF3 /* PBXContainerItemProxy */;
+			remoteRef = 1DC888031D5D342E001FAFF3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
@@ -1069,6 +1072,7 @@
 			files = (
 				1D89584E1CF913100029E37E /* Ubuntu 300.ttf in Resources */,
 				1D8958501CF913150029E37E /* Ubuntu regular.ttf in Resources */,
+				1DC8881E1D5D451F001FAFF3 /* GoogleService-Info.plist in Resources */,
 				1D8BF8071D0E442D00B7243F /* Ubuntu italic.ttf in Resources */,
 				1D2694F31D077C5F000E1BD3 /* launch_screen.jpg in Resources */,
 				1D449B301D04D70500195AF6 /* Images.xcassets in Resources */,
@@ -1223,7 +1227,7 @@
 					"$(SRCROOT)/../node_modules/react-native-locale/RCTLocale",
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
-					"$(SRCROOT)/../node_modules/react-native-firebase/ios/Firebase",
+					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1277,7 +1281,7 @@
 					"$(SRCROOT)/../node_modules/react-native-locale/RCTLocale",
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
-					"$(SRCROOT)/../node_modules/react-native-firebase/ios/Firebase",
+					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1378,7 +1382,7 @@
 					"$(SRCROOT)/../node_modules/react-native-locale/RCTLocale",
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
-					"$(SRCROOT)/../node_modules/react-native-firebase/ios/Firebase",
+					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1433,7 +1437,7 @@
 					"$(SRCROOT)/../node_modules/react-native-locale/RCTLocale",
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
-					"$(SRCROOT)/../node_modules/react-native-firebase/ios/Firebase",
+					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
