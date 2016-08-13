@@ -44,37 +44,51 @@ type Post = {
   preview: string;
   postTime: number;
   author: string;
+  url: string;
 };
 
-function parseMediumPost(realPost, authorLookup): Post {
-  return {
-    title: realPost.title,
-    preview: realPost.virtuals.snippet,
-    postTime: realPost.createdAt,
-    author: authorLookup[realPost.creatorId],
-  };
-}
+class MediumFeed {
+  title: string;
+  description: string;
+  url: string;
+  authorLookup: [];
+  posts: [Post];
 
-async function getMediumFeed(name) {
-  const feedName = `https://medium.com/${name}?format=json`;
-  const result = await fetch(feedName);
-  const fullText = await result.text();
-  const text = fullText.substring(fullText.indexOf('{'));
-  const json = JSON.parse(text);
-  return processMediumFeed(json);
-}
+  constructor(json) {
+    const realPosts: [any] = Object.values(json.payload.references.Post);
+    const users = json.payload.references.User;
+    this.title = json.payload.value.name;
+    this.description = json.payload.value.shortDescription;
+    this.url = `https://medium.com/${json.payload.value.slug}`;
+    this.authorLookup = Object.keys(users).reduce(function(previous, x) {
+      previous[x] = users[x].name;
+      return previous;
+    }, {});
+    console.log(this.url);
+    this.posts = realPosts.map((x) => this.parseMediumPost(x));
+    console.log(this.posts);
+  }
 
-function processMediumFeed(json) {
-  const realPosts: [any] = Object.values(json.payload.references.Post);
-  const users = json.payload.references.User;
-  const authorLookup = Object.keys(users).reduce(function(previous, x) {
-    previous[x] = users[x].name;
-    return previous;
-  }, {});
-  const posts: [Post] = realPosts.map((x) => parseMediumPost(x, authorLookup));
-  return posts;
-}
+  parseMediumPost(realPost): Post {
+    const url = `${this.url}/${realPost.uniqueSlug}`;
+    return {
+      title: realPost.title,
+      preview: realPost.virtuals.snippet,
+      postTime: realPost.createdAt,
+      author: this.authorLookup[realPost.creatorId],
+      url: url,
+    };
+  }
 
+  static async load(name) {
+    const feedName = `https://medium.com/${name}?format=json`;
+    const result = await fetch(feedName);
+    const fullText = await result.text();
+    const text = fullText.substring(fullText.indexOf('{'));
+    const json = JSON.parse(text);
+    return new MediumFeed(json);
+  }
+}
 
 class BlogPost extends React.Component {
   render() {
@@ -96,8 +110,8 @@ class BlogPostList extends React.Component {
     (this: any)._renderRow = this._renderRow.bind(this);
   }
 
-  _getNewState(posts) {
-    const results = posts || [];
+  _getNewState(blog: MediumFeed) {
+    const results = blog.posts || [];
     const state = {
       ...this.state,
       dataSource: this.state.dataSource.cloneWithRows(results),
@@ -107,7 +121,7 @@ class BlogPostList extends React.Component {
 
   async loadFeeds() {
     const blogs = await getRemoteBlogs();
-    const blogData = await Promise.all(blogs.map((x) => getMediumFeed(x)));
+    const blogData = await Promise.all(blogs.map((x) => MediumFeed.load(x)));
     this.setState(this._getNewState(blogData[0]));
   }
 
