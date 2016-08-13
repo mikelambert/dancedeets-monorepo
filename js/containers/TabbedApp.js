@@ -14,6 +14,7 @@ import {
 import TabNavigator from 'react-native-tab-navigator';
 import AppContainer from '../containers/AppContainer';
 import AboutApp from '../containers/Profile';
+import LearnApp from '../containers/Learn';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import { track } from '../store/track';
@@ -41,6 +42,11 @@ const messages = defineMessages({
     id: 'tab.events',
     defaultMessage: 'Events',
     description: 'Tab button to show list of events',
+  },
+  learn: {
+    id: 'tab.learn',
+    defaultMessage: 'Learn',
+    description: 'Tab button to help folks learn about dance',
   },
   about: {
     id: 'tab.about',
@@ -88,6 +94,21 @@ class _TabbedAppView extends React.Component {
           }
         }}>
         <AppContainer ref="app_container" />
+      </TabNavigator.Item>
+      <TabNavigator.Item
+        selected={this.state.selectedTab === 'learn'}
+        title={intl.formatMessage(messages.learn)}
+        titleStyle={styles.titleStyle}
+        selectedTitleStyle={styles.selectedTitleStyle}
+        renderIcon={() => this.icon(require('../containers/icons/learn.png'))}
+        renderSelectedIcon={() => this.icon(require('../containers/icons/learn-highlighted.png'))}
+        onPress={() => {
+          if (this.state.selectedTab !== 'learn') {
+            track('Tab Selected', {Tab: 'Learn'});
+            this.setState({ selectedTab: 'learn' });
+          }
+        }}>
+        <LearnApp />
       </TabNavigator.Item>
       <TabNavigator.Item
         selected={this.state.selectedTab === 'about'}
