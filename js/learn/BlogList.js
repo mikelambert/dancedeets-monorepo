@@ -31,7 +31,7 @@ class MediumFeed {
   title: string;
   description: string;
   url: string;
-  authorLookup: [];
+  authorLookup: { [key: string]: string };
   posts: [Post];
 
   constructor(json) {
