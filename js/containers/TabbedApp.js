@@ -25,7 +25,11 @@ import {
 } from 'react-intl';
 import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
-import BlogList from '../learn/BlogList';
+import {
+  BlogList,
+  BlogPostList,
+  BlogPost,
+} from '../learn/BlogList';
 import {
   ZoomableImage,
 } from '../ui';
@@ -37,7 +41,7 @@ const EventNavigator = generateNavigator('EVENT_NAV');
 setDefaultState('EVENT_NAV', { key: 'EventList', title: 'DanceDeets' });
 
 const LearnNavigator = generateNavigator('LEARN_NAV');
-setDefaultState('LEARN_NAV', { key: 'BlogType', title: 'Learn' });
+setDefaultState('LEARN_NAV', { key: 'BlogList', title: 'Learn' });
 
 class GradientTabBar extends React.Component {
   render() {
@@ -100,7 +104,7 @@ class _TabbedAppView extends React.Component {
     switch (route.key) {
     case 'EventList':
       return <EventListContainer
-        onEventSelected={(event)=> {
+        onEventSelected={(event) => {
           trackWithEvent('View Event', event);
           navigatable.onNavigate({key: 'EventView', title: event.name, event: event});
         }}
@@ -140,10 +144,22 @@ class _TabbedAppView extends React.Component {
 
   renderLearnScene(scene, navigatable) {
     const { route } = scene;
-    console.log(scene);
     switch (route.key) {
-    case 'BlogType':
-      return <BlogList />;
+    case 'BlogList':
+      return <BlogList
+        onSelected={(blog) => {
+          trackWithEvent('Blog Selected', blog);
+          navigatable.onNavigate({key: 'BlogPostList', title: blog.title, blog: blog});
+        }}
+        />;
+    case 'BlogPostList':
+      return <BlogPostList
+        blog={route.blog}
+        />;
+    case 'BlogPost':
+      return <BlogPost
+        blog={route.blog}
+        />;
     }
   }
 

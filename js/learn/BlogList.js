@@ -68,7 +68,7 @@ class MediumFeed {
   }
 }
 
-class BlogPost extends React.Component {
+export class BlogPost extends React.Component {
   render() {
     return <Text>{this.props.post.title}</Text>;
   }
@@ -78,7 +78,7 @@ type BlogPostProps = {
   blog: MediumFeed;
 };
 
-class BlogPostList extends React.Component {
+export class BlogPostList extends React.Component {
   state: {
     dataSource: ListView.DataSource,
   };
@@ -133,7 +133,7 @@ class BlogPostList extends React.Component {
 
 type Props = {};
 
-export default class BlogList extends React.Component {
+export class BlogList extends React.Component {
   state: {
     blogs: [MediumFeed];
   };
