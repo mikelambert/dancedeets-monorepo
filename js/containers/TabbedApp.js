@@ -12,7 +12,7 @@ import {
   StyleSheet
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
-import AppContainer from '../containers/AppContainer';
+import generateAppContainer from '../containers/generateAppContainer';
 import AboutApp from '../containers/Profile';
 import LearnApp from '../containers/Learn';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
@@ -31,6 +31,8 @@ import {
 } from '../ui';
 import AddEvents from '../containers/AddEvents';
 import { track, trackWithEvent } from '../store/track';
+
+const AppContainer = generateAppContainer('EVENT_NAV');
 
 class GradientTabBar extends React.Component {
   render() {
@@ -88,7 +90,7 @@ class _TabbedAppView extends React.Component {
     return <Image source={source} style={styles.icon}/>;
   }
 
-  renderScene(scene, navigatable) {
+  renderEventScene(scene, navigatable) {
     const { route } = scene;
     switch (route.key) {
     case 'EventList':
@@ -155,7 +157,7 @@ class _TabbedAppView extends React.Component {
         }}>
         <AppContainer
           ref="app_container"
-          renderScene={this.renderScene}
+          renderScene={this.renderEventScene}
           />
       </TabNavigator.Item>
       <TabNavigator.Item

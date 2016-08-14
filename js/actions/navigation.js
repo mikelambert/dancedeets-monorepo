@@ -18,37 +18,42 @@ export const NAV_SWAP = 'NAV_SWAP';
 
 // *** Action Creators ***
 // The following action creators were derived from NavigationStackReducer
-export function navigatePush(state: string | NavigationRoute): Action {
+export function navigatePush(navigator: string, state: string | NavigationRoute): Action {
 	state = typeof state === 'string' ? { key: state } : state;
 	return {
 		type: NAV_PUSH,
-		state
+		navigator,
+		state,
 	};
 }
 
-export function navigatePop(): Action {
+export function navigatePop(navigator: string): Action {
 	return {
-		type: NAV_POP
+		type: NAV_POP,
+		navigator,
 	};
 }
 
-export function navigateJumpToKey(key: string): Action {
+export function navigateJumpToKey(navigator: string, key: string): Action {
 	return {
 		type: NAV_JUMP_TO_KEY,
-		key
+		navigator,
+		key,
 	};
 }
 
-export function navigateJumpToIndex(index: number): Action {
+export function navigateJumpToIndex(navigator: string, index: number): Action {
 	return {
 		type: NAV_JUMP_TO_INDEX,
-		index
+		navigator,
+		index,
 	};
 }
 
-export function navigateSwap(key: string, newState: NavigationRoute): Action {
+export function navigateSwap(navigator: string, key: string, newState: NavigationRoute): Action {
 	return {
 		type: NAV_SWAP,
+		navigator,
 		key,
 		newState,
 	};
@@ -57,7 +62,8 @@ export function navigateSwap(key: string, newState: NavigationRoute): Action {
 export function navigateReset(children: Array<NavigationRoute>, index: number): Action {
 	return {
 		type: NAV_RESET,
+		navigator,
 		index,
-		children
+		children,
 	};
 }

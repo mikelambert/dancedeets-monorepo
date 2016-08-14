@@ -24,7 +24,7 @@ import { NavigationHeaderTitle } from '../react-navigation';
 import { gradientBottom, gradientTop } from '../Colors';
 import { navigatePush, navigatePop, navigateSwap, navigateJumpToIndex } from '../actions';
 import ShareEventIcon from './ShareEventIcon';
-
+import { getNamedState } from '../reducers/navigation';
 import type { ThunkAction, Dispatch } from '../actions/types';
 import type {
 	NavigationRoute,
@@ -151,28 +151,23 @@ class AppContainer extends React.Component {
     this.props.goHome();
   }
 }
-AppContainer.propTypes = {
-	navigationState: PropTypes.object,
-	onNavigate: PropTypes.func.isRequired,
-	onBack: PropTypes.func.isRequired,
-	onSwap: PropTypes.func.isRequired,
-};
 
-export default connect(
-	state => ({
-		navigationState: state.navigationState
-	}),
-	(dispatch: Dispatch) => ({
-		onNavigate: (destState) => dispatch(navigatePush(destState)),
-    goHome: async () => {
-      await dispatch(navigatePop());
-      await dispatch(navigatePop());
-    },
-		onBack: () => dispatch(navigatePop()),
-		onSwap: (key, newState) => dispatch(navigateSwap(key, newState)),
-	}),
-)(AppContainer);
-
+export default function(navName: string) {
+	return connect(
+		state => ({
+			navigationState: getNamedState(state.navigationState, navName),
+		}),
+		(dispatch: Dispatch) => ({
+			onNavigate: (destState) => dispatch(navigatePush(navName, destState)),
+			goHome: async () => {
+				await dispatch(navigatePop(navName));
+				await dispatch(navigatePop(navName));
+			},
+			onBack: () => dispatch(navigatePop(navName)),
+			onSwap: (key, newState) => dispatch(navigateSwap(navName, key, newState)),
+		}),
+	)(AppContainer);
+}
 
 const styles = StyleSheet.create({
 	outerContainer: {

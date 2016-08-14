@@ -15,44 +15,82 @@ const initialNavState: NavigationState = {
 	key: 'MainNavigation',
 	index: 0,
 	routes: [
+		//TODO: Abstract out this hardcoded initial state value!
 		{ key: 'EventList', title: 'DanceDeets' }
 	]
 };
 
-export function navigationState(state: NavigationState = initialNavState, action: Action) {
-  if (action.type === 'LOGIN_LOGGED_OUT') {
-    return initialNavState;
-  }
+type AllNavigationStates = {
+	states: { [key: string]: NavigationState };
+};
+
+const initialNavStates: AllNavigationStates = {
+	states: {},
+};
+
+export function getNamedState(allStates: AllNavigationStates, navigator: string) {
+	return allStates[navigator] || initialNavState;
+}
+
+export function navigationState(allStates: AllNavigationStates = initialNavStates, action: Action) {
+	if (action.type === 'LOGIN_LOGGED_OUT') {
+		return {};
+	}
+	let state = null;
 	switch (action.type) {
 	case NAV_PUSH:
+		state = getNamedState(allStates, action.navigator);
 		if (state.routes[state.index].key === (action.state && action.state.key)) {
 			return state;
 		}
-		return NavigationStateUtils.push(state, action.state);
+		return {
+			...allStates,
+			[action.navigator]: NavigationStateUtils.push(state, action.state),
+		};
 
 	case NAV_POP:
+		state = getNamedState(allStates, action.navigator);
 		if (state.index === 0 || state.routes.length === 1) {
 			return state;
 		}
-		return NavigationStateUtils.pop(state);
+		return {
+			...allStates,
+			[action.navigator]: NavigationStateUtils.pop(state),
+		};
 
 	case NAV_JUMP_TO_KEY:
-		return NavigationStateUtils.jumpTo(state, action.key);
+		state = getNamedState(allStates, action.navigator);
+		return {
+			...allStates,
+			[action.navigator]: NavigationStateUtils.jumpTo(state, action.key),
+		};
 
 	case NAV_JUMP_TO_INDEX:
-		return NavigationStateUtils.jumpToIndex(state, action.index);
+		state = getNamedState(allStates, action.navigator);
+		return {
+			...allStates,
+			[action.navigator]: NavigationStateUtils.jumpToIndex(state, action.index),
+		};
 
 	case NAV_SWAP:
-		return NavigationStateUtils.replaceAt(state, action.key, action.newState);
+		state = getNamedState(allStates, action.navigator);
+		return {
+			...allStates,
+			[action.navigator]: NavigationStateUtils.replaceAt(state, action.key, action.newState),
+		};
 
 	case NAV_RESET:
+		state = getNamedState(allStates, action.navigator);
 		return {
-			...state,
-			index: action.index,
-			routes: action.children,
+			...allStates,
+			[action.navigator]: {
+				...state,
+				index: action.index,
+				routes: action.children,
+			}
 		};
 
 	default:
-		return state;
+		return allStates;
 	}
 }
