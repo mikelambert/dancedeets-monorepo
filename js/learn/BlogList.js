@@ -19,64 +19,19 @@ import {
 import {
   getRemoteBlogs
 } from './learnConfig';
+import {
+  BlogPost,
+  MediumBlog,
+} from './models';
 
-type Post = {
-  title: string;
-  preview: string;
-  postTime: number;
-  author: string;
-  url: string;
-};
-
-class MediumFeed {
-  title: string;
-  description: string;
-  url: string;
-  authorLookup: { [key: string]: string };
-  posts: [Post];
-
-  constructor(json) {
-    const realPosts: [any] = Object.values(json.payload.references.Post);
-    const users = json.payload.references.User;
-    this.title = json.payload.value.name;
-    this.description = json.payload.value.shortDescription;
-    this.url = `https://medium.com/${json.payload.value.slug}`;
-    this.authorLookup = Object.keys(users).reduce(function(previous, x) {
-      previous[x] = users[x].name;
-      return previous;
-    }, {});
-    this.posts = realPosts.map((x) => this.parseMediumPost(x));
-  }
-
-  parseMediumPost(realPost): Post {
-    const url = `${this.url}/${realPost.uniqueSlug}`;
-    return {
-      title: realPost.title,
-      preview: realPost.virtuals.snippet,
-      postTime: realPost.createdAt,
-      author: this.authorLookup[realPost.creatorId],
-      url: url,
-    };
-  }
-
-  static async load(name) {
-    const feedName = `https://medium.com/${name}?format=json`;
-    const result = await fetch(feedName);
-    const fullText = await result.text();
-    const text = fullText.substring(fullText.indexOf('{'));
-    const json = JSON.parse(text);
-    return new MediumFeed(json);
-  }
-}
-
-export class BlogPost extends React.Component {
+export class BlogPostItem extends React.Component {
   render() {
     return <Text>{this.props.post.title}</Text>;
   }
 }
 
 type BlogPostProps = {
-  blog: MediumFeed;
+  blog: MediumBlog;
 };
 
 export class BlogPostList extends React.Component {
@@ -95,7 +50,7 @@ export class BlogPostList extends React.Component {
     (this: any)._renderRow = this._renderRow.bind(this);
   }
 
-  _getNewState(blog: MediumFeed) {
+  _getNewState(blog: MediumBlog) {
     const results = blog.posts || [];
     const state = {
       ...this.state,
@@ -104,10 +59,10 @@ export class BlogPostList extends React.Component {
     return state;
   }
 
-  _renderRow(post: Post) {
-    return <BlogPost
+  _renderRow(post: BlogPost) {
+    return <BlogPostItem
       post={post}
-      //onEventClicked={(post: Post) => {this.props.clickEvent(post);}}
+      //onEventClicked={(post: BlogPost) => {this.props.clickEvent(post);}}
     />;
   }
 
@@ -136,7 +91,7 @@ type Props = {};
 
 export class BlogList extends React.Component {
   state: {
-    blogs: [MediumFeed];
+    blogs: [MediumBlog];
   };
 
   constructor(props: Props) {
@@ -146,7 +101,7 @@ export class BlogList extends React.Component {
 
   async loadFeeds() {
     const blogs = await getRemoteBlogs();
-    const blogData = await Promise.all(blogs.map((x) => MediumFeed.load(x)));
+    const blogData = await Promise.all(blogs.map((x) => MediumBlog.load(x)));
     this.setState({blogs: blogData});
   }
 
