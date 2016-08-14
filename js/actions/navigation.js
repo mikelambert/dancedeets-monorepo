@@ -59,11 +59,11 @@ export function navigateSwap(navigator: string, key: string, newState: Navigatio
 	};
 }
 
-export function navigateReset(children: Array<NavigationRoute>, index: number): Action {
+export function navigateReset(navigator: string, routes: Array<NavigationRoute>, index: number): Action {
 	return {
 		type: NAV_RESET,
 		navigator,
 		index,
-		children,
+		routes,
 	};
 }

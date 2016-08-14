@@ -9,16 +9,11 @@ import * as NavigationStateUtils from 'NavigationStateUtils';
 import { NAV_PUSH, NAV_POP, NAV_JUMP_TO_KEY, NAV_JUMP_TO_INDEX, NAV_RESET, NAV_SWAP } from '../actions';
 
 import type { Action } from '../actions/types';
-import type { NavigationState } from 'NavigationTypeDefinition';
+import type { NavigationState, NavigationRoute } from 'NavigationTypeDefinition';
 
-const initialNavState: NavigationState = {
-	key: 'MainNavigation',
-	index: 0,
-	routes: [
-		//TODO: Abstract out this hardcoded initial state value!
-		{ key: 'EventList', title: 'DanceDeets' }
-	]
-};
+// This is used to track the 'default' route for each possible navigator,
+// that can be configured from outside of this module
+const defaultNavigatorRoutes = {};
 
 type AllNavigationStates = {
 	states: { [key: string]: NavigationState };
@@ -28,8 +23,15 @@ const initialNavStates: AllNavigationStates = {
 	states: {},
 };
 
+export function setDefaultState(navigator: string, route: NavigationRoute) {
+	defaultNavigatorRoutes[navigator] = route;
+}
+
 export function getNamedState(allStates: AllNavigationStates, navigator: string) {
-	return allStates[navigator] || initialNavState;
+	return allStates[navigator] || {
+		index: 0,
+		routes: [defaultNavigatorRoutes[navigator]],
+	};
 }
 
 export function navigationState(allStates: AllNavigationStates = initialNavStates, action: Action) {
@@ -86,7 +88,7 @@ export function navigationState(allStates: AllNavigationStates = initialNavState
 			[action.navigator]: {
 				...state,
 				index: action.index,
-				routes: action.children,
+				routes: action.routes,
 			}
 		};
 

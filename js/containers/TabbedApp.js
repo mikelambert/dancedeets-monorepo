@@ -31,8 +31,10 @@ import {
 } from '../ui';
 import AddEvents from '../containers/AddEvents';
 import { track, trackWithEvent } from '../store/track';
+import { setDefaultState } from '../reducers/navigation';
 
 const AppContainer = generateAppContainer('EVENT_NAV');
+setDefaultState('EVENT_NAV', { key: 'EventList', title: 'DanceDeets' });
 
 class GradientTabBar extends React.Component {
   render() {
