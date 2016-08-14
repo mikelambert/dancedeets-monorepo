@@ -17,7 +17,6 @@ import AboutApp from '../containers/Profile';
 import LearnApp from '../containers/Learn';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
-import { track } from '../store/track';
 import {
   semiNormalize,
 } from '../ui';
@@ -25,6 +24,13 @@ import {
   injectIntl,
   defineMessages,
 } from 'react-intl';
+import EventListContainer from '../events/list';
+import EventPager from '../events/EventPager';
+import {
+  ZoomableImage,
+} from '../ui';
+import AddEvents from '../containers/AddEvents';
+import { track, trackWithEvent } from '../store/track';
 
 class GradientTabBar extends React.Component {
   render() {
@@ -53,7 +59,18 @@ const messages = defineMessages({
     defaultMessage: 'About',
     description: 'Tab button to show general info about Dancedeets, Profile, and Share info',
   },
+  addEvent: {
+    id: 'navigator.addEvent',
+    defaultMessage: 'Add Event',
+    description: 'Title Bar for Adding Event',
+  },
+  viewFlyer: {
+    id: 'navigator.viewFlyer',
+    defaultMessage: 'View Flyer',
+    description: 'Title Bar for Viewing Flyer',
+  },
 });
+
 
 class _TabbedAppView extends React.Component {
   state: {
@@ -69,6 +86,49 @@ class _TabbedAppView extends React.Component {
 
   icon(source) {
     return <Image source={source} style={styles.icon}/>;
+  }
+
+  renderScene(scene, navigatable) {
+    const { route } = scene;
+    switch (route.key) {
+    case 'EventList':
+      return <EventListContainer
+        onEventSelected={(event)=> {
+          trackWithEvent('View Event', event);
+          navigatable.onNavigate({key: 'EventView', title: event.name, event: event});
+        }}
+        onAddEventClicked={(source) => {
+          track('Add Event', {source: source});
+          navigatable.onNavigate({key: 'AddEvent', title: this.props.intl.formatMessage(messages.addEvent)});
+        }}
+      />;
+    case 'EventView':
+      return <EventPager
+        onEventNavigated={(event)=> {
+          trackWithEvent('View Event', event);
+          navigatable.onSwap('EventView', {key: 'EventView', title: event.name, event: event});
+        }}
+        onFlyerSelected={(event)=> {
+          trackWithEvent('View Flyer', event);
+          navigatable.onNavigate({
+            key: 'FlyerView',
+            title: this.props.intl.formatMessage(messages.viewFlyer),
+            image: event.cover.images[0].source,
+            width: event.cover.images[0].width,
+            height: event.cover.images[0].height,
+          });
+        }}
+        selectedEvent={route.event}
+      />;
+    case 'FlyerView':
+      return <ZoomableImage
+        url={route.image}
+        width={route.width}
+        height={route.height}
+      />;
+    case 'AddEvent':
+      return <AddEvents />;
+    }
   }
 
   render() {
@@ -93,7 +153,10 @@ class _TabbedAppView extends React.Component {
             this.setState({ selectedTab: 'home' });
           }
         }}>
-        <AppContainer ref="app_container" />
+        <AppContainer
+          ref="app_container"
+          renderScene={this.renderScene}
+          />
       </TabNavigator.Item>
       <TabNavigator.Item
         selected={this.state.selectedTab === 'learn'}

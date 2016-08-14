@@ -22,18 +22,15 @@ import { connect } from 'react-redux';
 // My overrides
 import { NavigationHeaderTitle } from '../react-navigation';
 import { gradientBottom, gradientTop } from '../Colors';
-import EventListContainer from '../events/list';
-import EventPager from '../events/EventPager';
 import { navigatePush, navigatePop, navigateSwap, navigateJumpToIndex } from '../actions';
-import {
-	ZoomableImage,
-} from '../ui';
-import AddEvents from '../containers/AddEvents';
 import ShareEventIcon from './ShareEventIcon';
-import { track, trackWithEvent } from '../store/track';
 
 import type { ThunkAction, Dispatch } from '../actions/types';
-import type { NavigationState, NavigationRoute } from 'NavigationTypeDefinition';
+import type {
+	NavigationRoute,
+	NavigationScene,
+	NavigationState,
+} from 'NavigationTypeDefinition';
 
 const {
 	AnimatedView: NavigationAnimatedView,
@@ -41,24 +38,7 @@ const {
 	Header: NavigationHeader
 } = NavigationExperimental;
 import LinearGradient from 'react-native-linear-gradient';
-import {
-  injectIntl,
-  intlShape,
-  defineMessages,
-} from 'react-intl';
 
-const messages = defineMessages({
-	addEvent: {
-		id: 'navigator.addEvent',
-		defaultMessage: 'Add Event',
-		description: 'Title Bar for Adding Event',
-	},
-	viewFlyer: {
-		id: 'navigator.viewFlyer',
-		defaultMessage: 'View Flyer',
-		description: 'Title Bar for Viewing Flyer',
-	},
-});
 
 // These are basically copied from NavigationHeader.js
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
@@ -75,19 +55,26 @@ class GradientBar extends React.Component {
 	}
 }
 
-class _AppContainer extends React.Component {
-	props: {
-		navigationState: NavigationState,
-		onNavigate: (x: NavigationRoute) => ThunkAction,
-		onBack: () => ThunkAction,
-		onSwap: (key: string, newState: NavigationRoute) => ThunkAction,
-		goHome: () => ThunkAction,
-		intl: intlShape.isRequired,
-	};
+type Navigatable = {
+	onNavigate: (x: NavigationRoute) => ThunkAction;
+	onBack: () => ThunkAction;
+	onSwap: (key: string, newState: NavigationRoute) => ThunkAction;
+	goHome: () => ThunkAction;
+};
+
+type AppContainerProps = {
+	navigationState: NavigationState,
+};
+
+type CallingProps = {
+	renderScene: (scene: NavigationScene, nav: Navigatable) => React.Component;
+};
+
+class AppContainer extends React.Component {
+	props: AppContainerProps & Navigatable & CallingProps;
 
 	constructor(props) {
 		super(props);
-		(this: any).renderScene = this.renderScene.bind(this);
 		(this: any).renderOverlay = this.renderOverlay.bind(this);
 	}
 
@@ -153,7 +140,7 @@ class _AppContainer extends React.Component {
 						{...props}
 						key={props.scene.route.key}
 						style={{marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT}}
-						renderScene={this.renderScene}
+						renderScene={({scene}) => this.props.renderScene(scene, this.props)}
 					/>
 				)}
 			/>
@@ -163,51 +150,7 @@ class _AppContainer extends React.Component {
   backToHome() {
     this.props.goHome();
   }
-
-	renderScene({scene}) {
-		const { route } = scene;
-		switch (route.key) {
-		case 'EventList':
-			return <EventListContainer
-				onEventSelected={(event)=> {
-					trackWithEvent('View Event', event);
-					this.props.onNavigate({key: 'EventView', title: event.name, event: event});
-				}}
-				onAddEventClicked={(source) => {
-					track('Add Event', {source: source});
-					this.props.onNavigate({key: 'AddEvent', title: this.props.intl.formatMessage(messages.addEvent)});
-				}}
-			/>;
-		case 'EventView':
-			return <EventPager
-				onEventNavigated={(event)=> {
-					trackWithEvent('View Event', event);
-					this.props.onSwap('EventView', {key: 'EventView', title: event.name, event: event});
-				}}
-				onFlyerSelected={(event)=> {
-					trackWithEvent('View Flyer', event);
-					this.props.onNavigate({
-						key: 'FlyerView',
-						title: this.props.intl.formatMessage(messages.viewFlyer),
-						image: event.cover.images[0].source,
-						width: event.cover.images[0].width,
-						height: event.cover.images[0].height,
-					});
-				}}
-				selectedEvent={route.event}
-			/>;
-		case 'FlyerView':
-			return <ZoomableImage
-				url={route.image}
-				width={route.width}
-				height={route.height}
-			/>;
-		case 'AddEvent':
-			return <AddEvents />;
-		}
-	}
 }
-const AppContainer = injectIntl(_AppContainer);
 AppContainer.propTypes = {
 	navigationState: PropTypes.object,
 	onNavigate: PropTypes.func.isRequired,
