@@ -6,9 +6,7 @@
 
 'use strict';
 
-import React, {
-	PropTypes,
-} from 'react';
+import React from 'react';
 import {
 	Image,
 	NavigationExperimental,
@@ -22,7 +20,7 @@ import { connect } from 'react-redux';
 // My overrides
 import { NavigationHeaderTitle } from '../react-navigation';
 import { gradientBottom, gradientTop } from '../Colors';
-import { navigatePush, navigatePop, navigateSwap, navigateJumpToIndex } from '../actions';
+import { navigatePush, navigatePop, navigateSwap } from '../actions';
 import ShareEventIcon from './ShareEventIcon';
 import { getNamedState } from '../reducers/navigation';
 import type { ThunkAction, Dispatch } from '../actions/types';

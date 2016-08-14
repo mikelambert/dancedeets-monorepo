@@ -12,9 +12,8 @@ import {
   StyleSheet
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
-import generateAppContainer from '../containers/generateAppContainer';
+import generateNavigator from '../containers/generateNavigator';
 import AboutApp from '../containers/Profile';
-import LearnApp from '../containers/Learn';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -26,6 +25,7 @@ import {
 } from 'react-intl';
 import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
+import BlogList from '../learn/BlogList';
 import {
   ZoomableImage,
 } from '../ui';
@@ -33,8 +33,11 @@ import AddEvents from '../containers/AddEvents';
 import { track, trackWithEvent } from '../store/track';
 import { setDefaultState } from '../reducers/navigation';
 
-const AppContainer = generateAppContainer('EVENT_NAV');
+const EventNavigator = generateNavigator('EVENT_NAV');
 setDefaultState('EVENT_NAV', { key: 'EventList', title: 'DanceDeets' });
+
+const LearnNavigator = generateNavigator('LEARN_NAV');
+setDefaultState('LEARN_NAV', { key: 'BlogType', title: 'Learn' });
 
 class GradientTabBar extends React.Component {
   render() {
@@ -135,6 +138,15 @@ class _TabbedAppView extends React.Component {
     }
   }
 
+  renderLearnScene(scene, navigatable) {
+    const { route } = scene;
+    console.log(scene);
+    switch (route.key) {
+    case 'BlogType':
+      return <BlogList />;
+    }
+  }
+
   render() {
     const {intl} = this.props;
     return <TabNavigator
@@ -151,14 +163,14 @@ class _TabbedAppView extends React.Component {
         renderSelectedIcon={() => this.icon(require('../containers/icons/events-highlighted.png'))}
         onPress={() => {
           if (this.state.selectedTab === 'home') {
-            this.refs.app_container.dispatchProps.goHome();
+            this.refs.event_navigator.dispatchProps.goHome();
           } else {
             track('Tab Selected', {Tab: 'Home'});
             this.setState({ selectedTab: 'home' });
           }
         }}>
-        <AppContainer
-          ref="app_container"
+        <EventNavigator
+          ref="event_navigator"
           renderScene={this.renderEventScene}
           />
       </TabNavigator.Item>
@@ -170,12 +182,17 @@ class _TabbedAppView extends React.Component {
         renderIcon={() => this.icon(require('../containers/icons/learn.png'))}
         renderSelectedIcon={() => this.icon(require('../containers/icons/learn-highlighted.png'))}
         onPress={() => {
-          if (this.state.selectedTab !== 'learn') {
+          if (this.state.selectedTab === 'learn') {
+            this.refs.learn_navigator.dispatchProps.goHome();
+          } else {
             track('Tab Selected', {Tab: 'Learn'});
             this.setState({ selectedTab: 'learn' });
           }
         }}>
-        <LearnApp />
+        <LearnNavigator
+          ref="learn_navigator"
+          renderScene={this.renderLearnScene}
+          />
       </TabNavigator.Item>
       <TabNavigator.Item
         selected={this.state.selectedTab === 'about'}
