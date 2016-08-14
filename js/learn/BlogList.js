@@ -11,6 +11,7 @@ import {
   ListView,
   RefreshControl,
   StyleSheet,
+  View,
 } from 'react-native';
 import {
   Text,
@@ -155,7 +156,7 @@ export class BlogList extends React.Component {
 
   render() {
     if (!this.state.blogs.length) {
-      return null;
+      return <View style={styles.listView} />;
     }
     return <BlogPostList blog={this.state.blogs[0]} />;
   }
