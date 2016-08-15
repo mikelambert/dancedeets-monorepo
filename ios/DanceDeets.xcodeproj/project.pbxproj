@@ -46,6 +46,7 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		854D59D0A80E4AE693D5192B /* libRCTLocale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D354B51278E84DA1A4ED481B /* libRCTLocale.a */; };
 		ABB70639A40F48EF8A691DF7 /* libLRDRCTNativeEnv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 564C432DD80B4D3BAFB4A00B /* libLRDRCTNativeEnv.a */; };
+		BD9D18A357884C1E8D162B85 /* libRCTWKWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 955630BCF78245818448763C /* libRCTWKWebView.a */; };
 		D4744BBB27F146BF9D352A74 /* libRNAdMobManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A76C0B0DA2F34975BD38175E /* libRNAdMobManager.a */; };
 		DC3E1A96615B4602B852EBA5 /* libRNMixpanel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE54775FE8646DF9CEA6CE5 /* libRNMixpanel.a */; };
 		DD59D63343E94D6D8944B63C /* libSMXCrashlytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 313C3BEEBF0E44A6A00988F5 /* libSMXCrashlytics.a */; };
@@ -228,6 +229,13 @@
 			remoteGlobalIDString = D8D9DB831C6D03DB009FBC0E;
 			remoteInfo = Firebase;
 		};
+		1DC888811D627A6D001FAFF3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D42DA3102D9A4EB5B6B39CFA /* RCTWKWebView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0974579A1D2A440A000D9368;
+			remoteInfo = RCTWKWebView;
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -302,6 +310,7 @@
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8541EED8B42541BC81B43DE2 /* libRNProcessInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNProcessInfo.a; sourceTree = "<group>"; };
 		8A3026A53B5F413CB53C73E1 /* Firebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Firebase.xcodeproj; path = "../node_modules/react-native-firebase3/ios/Firebase.xcodeproj"; sourceTree = "<group>"; };
+		955630BCF78245818448763C /* libRCTWKWebView.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTWKWebView.a; sourceTree = "<group>"; };
 		9FB17C7A31CC407198A9ECFB /* CodePush.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/ios/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		A76C0B0DA2F34975BD38175E /* libRNAdMobManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAdMobManager.a; sourceTree = "<group>"; };
 		AD682DC01E1C4BD5A7ABA711 /* libRNMail.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNMail.a; sourceTree = "<group>"; };
@@ -310,6 +319,7 @@
 		C11775CF6CE546DD8997D4BC /* LRDRCTNativeEnv.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = LRDRCTNativeEnv.xcodeproj; path = "../node_modules/react-native-native-env/ios/LRDRCTNativeEnv.xcodeproj"; sourceTree = "<group>"; };
 		CEA565539668378262D1903D /* Pods-DanceDeets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.release.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.release.xcconfig"; sourceTree = "<group>"; };
 		D354B51278E84DA1A4ED481B /* libRCTLocale.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTLocale.a; sourceTree = "<group>"; };
+		D42DA3102D9A4EB5B6B39CFA /* RCTWKWebView.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTWKWebView.xcodeproj; path = "../node_modules/react-native-wkwebview/ios/RCTWKWebView.xcodeproj"; sourceTree = "<group>"; };
 		DFE54775FE8646DF9CEA6CE5 /* libRNMixpanel.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNMixpanel.a; sourceTree = "<group>"; };
 		F0F2BCED993949CDA4946B12 /* libRNCalendarEvents.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCalendarEvents.a; sourceTree = "<group>"; };
 		F33F4F5DCEB28B5ACFB6FDF7 /* Pods-DanceDeets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.debug.xcconfig"; sourceTree = "<group>"; };
@@ -351,6 +361,7 @@
 				52C54A70D3B14B52BE6E62C4 /* libRNProcessInfo.a in Frameworks */,
 				2312D6D3E2D0472DB5DF3722 /* libFirebase.a in Frameworks */,
 				7057BE383E1EDE3CB1BAEEE4 /* libPods-DanceDeets.a in Frameworks */,
+				BD9D18A357884C1E8D162B85 /* libRCTWKWebView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -616,6 +627,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1DC8886E1D627A6D001FAFF3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1DC888821D627A6D001FAFF3 /* libRCTWKWebView.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		6DD4C3E63C393B4CADD50C49 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -661,6 +680,7 @@
 				C11775CF6CE546DD8997D4BC /* LRDRCTNativeEnv.xcodeproj */,
 				254B3AE074504C77AF0DFAC5 /* RNProcessInfo.xcodeproj */,
 				8A3026A53B5F413CB53C73E1 /* Firebase.xcodeproj */,
+				D42DA3102D9A4EB5B6B39CFA /* RCTWKWebView.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -834,6 +854,10 @@
 				{
 					ProductGroup = 139FDEE71B06529A00C62182 /* Products */;
 					ProjectRef = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
+				},
+				{
+					ProductGroup = 1DC8886E1D627A6D001FAFF3 /* Products */;
+					ProjectRef = D42DA3102D9A4EB5B6B39CFA /* RCTWKWebView.xcodeproj */;
 				},
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
@@ -1049,6 +1073,13 @@
 			remoteRef = 1DC888031D5D342E001FAFF3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		1DC888821D627A6D001FAFF3 /* libRCTWKWebView.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTWKWebView.a;
+			remoteRef = 1DC888811D627A6D001FAFF3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1228,11 +1259,13 @@
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
+					"$(SRCROOT)/../node_modules/react-native-wkwebview/ios/RCTWKWebView",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/DanceDeets Debug\"",
 					"\"$(SRCROOT)/DanceDeets Debug\"",
 					"\"$(SRCROOT)/DanceDeets Debug\"",
 					"\"$(SRCROOT)/DanceDeets Debug\"",
@@ -1282,6 +1315,7 @@
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
+					"$(SRCROOT)/../node_modules/react-native-wkwebview/ios/RCTWKWebView",
 				);
 				INFOPLIST_FILE = DanceDeets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1383,6 +1417,7 @@
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
+					"$(SRCROOT)/../node_modules/react-native-wkwebview/ios/RCTWKWebView",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1438,6 +1473,7 @@
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
+					"$(SRCROOT)/../node_modules/react-native-wkwebview/ios/RCTWKWebView",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
