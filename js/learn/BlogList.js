@@ -11,6 +11,7 @@ import {
   ListView,
   RefreshControl,
   StyleSheet,
+  TouchableHighlight,
   View,
 } from 'react-native';
 import {
@@ -90,10 +91,22 @@ export class BlogPostList extends React.Component {
   }
 }
 
+class BlogTitle extends React.Component {
+  render() {
+    return <TouchableHighlight onPress={() => {
+      this.props.onPress(this.props.blog);
+    }}>
+      <View>
+        <Text>{this.props.blog.title}</Text>
+      </View>
+    </TouchableHighlight>;
+  }
+}
+
 type BlogProps = {
   blogs: [Blog];
+  onSelected: (blog: Blog) => void;
 };
-
 
 export class BlogList extends React.Component {
   state: {
@@ -129,7 +142,6 @@ export class BlogList extends React.Component {
 
   _getNewState(blogs: [Blog]) {
     const results = blogs || [];
-    console.log(blogs);
     const state = {
       ...this.state,
       dataSource: this.state.dataSource.cloneWithRows(results),
@@ -138,10 +150,10 @@ export class BlogList extends React.Component {
   }
 
   _renderRow(blog: Blog) {
-    return <Text>{blog.title}</Text>;
-//      post={post}
-//      onEventClicked={(post: BlogPost) => {this.props.clickEvent(post);}}
-//    />;
+    return <BlogTitle
+      blog={blog}
+      onPress={this.props.onSelected}
+    />;
   }
 
   render() {
