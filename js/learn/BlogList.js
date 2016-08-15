@@ -51,7 +51,7 @@ export class BlogPostTitle extends React.Component {
 
 type BlogPostProps = {
   blog: MediumBlog;
-  onSelected: (post: Post) => void;
+  onSelected: (post: BlogPost) => void;
 };
 
 export class BlogPostList extends React.Component {
