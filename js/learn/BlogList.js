@@ -13,6 +13,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   View,
+  WebView,
 } from 'react-native';
 import {
   Text,
@@ -31,9 +32,10 @@ import {
 
 export class BlogPostContents extends React.Component {
   render() {
-    return <View style={styles.listView}>
-      <Text>{this.props.post.preview}</Text>
-    </View>;
+    return <WebView
+      source={{uri: this.props.post.url}}
+      style={styles.listView}
+      />;
   }
 }
 

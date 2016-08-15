@@ -28,7 +28,7 @@ import EventPager from '../events/EventPager';
 import {
   BlogList,
   BlogPostList,
-  BlogPost,
+  BlogPostContents,
 } from '../learn/BlogList';
 import {
   ZoomableImage,
@@ -148,17 +148,23 @@ class _TabbedAppView extends React.Component {
     case 'BlogList':
       return <BlogList
         onSelected={(blog) => {
-          trackWithEvent('Blog Selected', blog);
+          // TODO: Track blog details
+          track('Blog Selected');
           navigatable.onNavigate({key: 'BlogPostList', title: blog.title, blog: blog});
         }}
         />;
     case 'BlogPostList':
       return <BlogPostList
         blog={route.blog}
+        onSelected={(post) => {
+          // TODO: Track post details
+          track('Blog Post Selected');
+          navigatable.onNavigate({key: 'BlogPostItem', title: post.title, post: post});
+        }}
         />;
-    case 'BlogPost':
-      return <BlogPost
-        blog={route.blog}
+    case 'BlogPostItem':
+      return <BlogPostContents
+        post={route.post}
         />;
     }
   }
