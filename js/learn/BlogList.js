@@ -29,14 +29,29 @@ import {
   FeedBlog,
 } from './models';
 
-export class BlogPostItem extends React.Component {
+export class BlogPostContents extends React.Component {
   render() {
-    return <Text>{this.props.post.title}</Text>;
+    return <View style={styles.listView}>
+      <Text>{this.props.post.preview}</Text>
+    </View>;
+  }
+}
+
+export class BlogPostTitle extends React.Component {
+  render() {
+    return <TouchableHighlight onPress={() => {
+      this.props.onPress(this.props.post);
+    }}>
+      <View>
+        <Text>{this.props.post.title}</Text>
+      </View>
+    </TouchableHighlight>;
   }
 }
 
 type BlogPostProps = {
   blog: MediumBlog;
+  onSelected: (post: Post) => void;
 };
 
 export class BlogPostList extends React.Component {
@@ -65,9 +80,9 @@ export class BlogPostList extends React.Component {
   }
 
   _renderRow(post: BlogPost) {
-    return <BlogPostItem
+    return <BlogPostTitle
       post={post}
-      onEventClicked={(post: BlogPost) => {this.props.clickEvent(post);}}
+      onPress={this.props.onSelected}
     />;
   }
 
