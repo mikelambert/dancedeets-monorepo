@@ -23,6 +23,7 @@ import type {
   BlogPost,
 } from './models';
 import {
+  Blog,
   MediumBlog,
   FeedBlog,
 } from './models';
@@ -43,7 +44,7 @@ export class BlogPostList extends React.Component {
   };
   props: BlogPostProps;
 
-  constructor(props) {
+  constructor(props: BlogPostProps) {
     super(props);
     var dataSource = new ListView.DataSource({
       rowHasChanged: (row1, row2) => row1 !== row2,
@@ -84,22 +85,30 @@ export class BlogPostList extends React.Component {
       initialListSize={10}
       pageSize={5}
       scrollRenderAheadDistance={10000}
-      scrollsToTop={false}
       indicatorStyle="white"
      />;
   }
 }
 
-type Props = {};
+type BlogProps = {
+  blogs: [Blog];
+};
+
 
 export class BlogList extends React.Component {
   state: {
-    blogs: [MediumBlog];
+    dataSource: ListView.DataSource,
   };
+  props: BlogProps;
 
-  constructor(props: Props) {
+  constructor(props: BlogProps) {
     super(props);
-    this.state = {blogs: []};
+    var dataSource = new ListView.DataSource({
+      rowHasChanged: (row1, row2) => row1 !== row2,
+    });
+    this.state = {dataSource};
+    this.state = this._getNewState(this.props.blogs);
+    (this: any)._renderRow = this._renderRow.bind(this);
   }
 
   async loadFeeds() {
@@ -111,18 +120,40 @@ export class BlogList extends React.Component {
         return MediumBlog.load(x);
       }
     }));
-    this.setState({blogs: blogData});
+    this.setState(this._getNewState(blogData));
   }
 
   componentWillMount() {
     this.loadFeeds();
   }
 
+  _getNewState(blogs: [Blog]) {
+    const results = blogs || [];
+    console.log(blogs);
+    const state = {
+      ...this.state,
+      dataSource: this.state.dataSource.cloneWithRows(results),
+    };
+    return state;
+  }
+
+  _renderRow(blog: Blog) {
+    return <Text>{blog.title}</Text>;
+//      post={post}
+//      onEventClicked={(post: BlogPost) => {this.props.clickEvent(post);}}
+//    />;
+  }
+
   render() {
-    if (!this.state.blogs.length) {
-      return <View style={styles.listView} />;
-    }
-    return <BlogPostList blog={this.state.blogs[0]} />;
+    return <ListView
+      style={[styles.listView]}
+      dataSource={this.state.dataSource}
+      renderRow={this._renderRow}
+      initialListSize={10}
+      pageSize={5}
+      scrollRenderAheadDistance={10000}
+      indicatorStyle="white"
+     />;
   }
 }
 

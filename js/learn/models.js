@@ -16,7 +16,7 @@ export type BlogPost = {
   url: string;
 };
 
-class Blog {
+export class Blog {
   title: string;
   description: string;
   url: string;
@@ -64,9 +64,9 @@ export class FeedBlog extends Blog {
   constructor(json: any) {
     super();
     const realPosts: [any] = json.entries;
-    this.title = json.title;
-    this.description = json.subtitle;
-    this.url = json.link;
+    this.title = json.feed.title;
+    this.description = json.feed.subtitle;
+    this.url = json.feed.link;
     this.posts = realPosts.map((x) => this.parseFeedPost(x));
   }
 
@@ -82,7 +82,6 @@ export class FeedBlog extends Blog {
 
   static async load(url) {
     const json = await feed(url);
-    console.log(json);
     return new FeedBlog(json);
   }
 }
