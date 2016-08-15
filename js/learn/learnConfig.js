@@ -10,6 +10,27 @@ import { RemoteConfig } from 'react-native-firebase3';
 
 const defaultBlogs = [
   'http://www.thebboyspot.com/feed/',
+  'http://loftpractice.com/?format=feed&type=atom',
+  'http://blog.steezy.co/feed/',
+  'http://www.ilovethisdance.com/feed/',
+  'http://www.stepxstepdance.com/feed/',
+  'http://www.hiphopinternational.com/feed/',
+  'http://www.udeftour.org/feed/',
+  'http://www.dancedelight.net/wordpress/?feed=atom',
+  'http://houseofmovementny.com/blog?format=RSS',
+  'http://www.onecypher.com/feed/',
+  'http://www.funkstylers.tv/feed/',
+  'http://urbanartistrydc.blogspot.com/feeds/posts/default',
+  'https://thespreadlovedanceproject.wordpress.com/feed/',
+  'http://event.juste-debout.com/feed/',
+  'http://www.juste-debout-tv.com/feed/',
+  'https://wzhotdog.wordpress.com/feed/',
+  'http://populathoughts.blogspot.com/feeds/posts/default',
+  'http://fuckyeadance.tumblr.com/rss',
+  'http://www.scramblelock.com/feed/',
+  'http://dews365.com/feed',
+  'http://www.dancemeets.com/feed/',
+  // This is a Medium magazine
   'rue-magazine',
 ];
 
