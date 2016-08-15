@@ -143,14 +143,20 @@ export class BlogList extends React.Component {
 
   async loadFeeds() {
     const blogs = await getRemoteBlogs();
-    const blogData = await Promise.all(blogs.map((x) => {
-      if (x.indexOf('http') > -1) {
-        return FeedBlog.load(x);
-      } else {
-        return MediumBlog.load(x);
+    const blogData = await Promise.all(blogs.map(async (x) => {
+      try {
+        if (x.indexOf('http') > -1) {
+          return await FeedBlog.load(x);
+        } else {
+          return await MediumBlog.load(x);
+        }
+      } catch (e) {
+        console.warn('Error opening ', x);
+        return new Promise((resolve, reject) => resolve());
       }
     }));
-    this.setState(this._getNewState(blogData));
+    const filteredBlogData = blogData.filter((x) => x);
+    this.setState(this._getNewState(filteredBlogData));
   }
 
   componentWillMount() {
