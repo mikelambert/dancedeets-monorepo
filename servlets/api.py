@@ -1,6 +1,8 @@
 import datetime
+import feedparser
 import json
 import logging
+import time
 import urllib
 
 from google.appengine.api import memcache
@@ -584,10 +586,38 @@ class EventHandler(ApiHandler):
                 self.add_error('This event was empty: %s.' % db_event.empty_reason)
 
         self.errors_are_fatal()
+        # '?locale=' + self.request.get('locale')
+        # get venue address and stuffs
+        # pass in as rewritten db_event for computing json_data
 
         json_data = canonicalize_event_data(db_event, None)
 
         # Ten minute expiry on data we return
         self.response.headers['Cache-Control'] = 'max-age=%s' % (60 * 10)
         self.write_json_success(json_data)
+    post = get
+
+DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
+
+
+class DateHandlingJSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, time.struct_time):
+            return time.strftime(DATETIME_FORMAT, o)
+        else:
+            return json.JSONEncoder.default(self, o)
+
+
+@apiroute(r'/feed')
+class FeedHandler(ApiHandler):
+    def get(self):
+        if self.json_body:
+            url = self.json_body.get('url')
+        else:
+            url = self.request.get('url')
+        feed = feedparser.parse(url)
+        json_string = json.dumps(feed, cls=DateHandlingJSONEncoder)
+        json_data = json.loads(json_string)
+        self.write_json_success(json_data)
+
     post = get
