@@ -13,7 +13,6 @@ import {
   StyleSheet,
   TouchableHighlight,
   View,
-  WebView,
 } from 'react-native';
 import {
   Text,
@@ -29,10 +28,11 @@ import {
   MediumBlog,
   FeedBlog,
 } from './models';
+import WKWebView from 'react-native-wkwebview';
 
 export class BlogPostContents extends React.Component {
   render() {
-    return <WebView
+    return <WKWebView
       source={{uri: this.props.post.url}}
       style={styles.listView}
       />;
