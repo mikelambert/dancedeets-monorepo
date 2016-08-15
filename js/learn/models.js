@@ -63,7 +63,6 @@ export class MediumBlog extends Blog {
 export class FeedBlog extends Blog {
   constructor(json: any) {
     super();
-    console.log(json);
     const realPosts: [any] = json.entries;
     this.title = json.title;
     this.description = json.subtitle;
