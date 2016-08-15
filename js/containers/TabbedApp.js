@@ -84,6 +84,7 @@ const messages = defineMessages({
 
 
 class _TabbedAppView extends React.Component {
+  //TODO: move this to redux state!
   state: {
     selectedTab: string,
   };
