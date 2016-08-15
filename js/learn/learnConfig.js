@@ -9,6 +9,7 @@
 import { RemoteConfig } from 'react-native-firebase3';
 
 const defaultBlogs = [
+  'http://www.thebboyspot.com/feed/',
   'rue-magazine',
 ];
 

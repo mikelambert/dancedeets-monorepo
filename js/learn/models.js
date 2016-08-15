@@ -6,6 +6,8 @@
 
 'use strict';
 
+import { feed } from '../api/dancedeets';
+
 export type BlogPost = {
   title: string;
   preview: string;
@@ -14,14 +16,17 @@ export type BlogPost = {
   url: string;
 };
 
-export class MediumBlog {
+class Blog {
   title: string;
   description: string;
   url: string;
   authorLookup: { [key: string]: string };
   posts: [BlogPost];
+}
 
+export class MediumBlog extends Blog {
   constructor(json: any) {
+    super();
     const realPosts: [any] = Object.values(json.payload.references.Post);
     const users = json.payload.references.User;
     this.title = json.payload.value.name;
@@ -52,5 +57,33 @@ export class MediumBlog {
     const text = fullText.substring(fullText.indexOf('{'));
     const json = JSON.parse(text);
     return new MediumBlog(json);
+  }
+}
+
+export class FeedBlog extends Blog {
+  constructor(json: any) {
+    super();
+    console.log(json);
+    const realPosts: [any] = json.entries;
+    this.title = json.title;
+    this.description = json.subtitle;
+    this.url = json.link;
+    this.posts = realPosts.map((x) => this.parseFeedPost(x));
+  }
+
+  parseFeedPost(realPost: any): BlogPost {
+    return {
+      title: realPost.title,
+      preview: realPost.summary,
+      postTime: realPost.published_parsed,
+      author: realPost.author,
+      url: realPost.link,
+    };
+  }
+
+  static async load(url) {
+    const json = await feed(url);
+    console.log(json);
+    return new FeedBlog(json);
   }
 }

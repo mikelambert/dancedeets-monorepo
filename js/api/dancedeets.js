@@ -92,6 +92,15 @@ export async function auth(data: ?Object) {
   return idempotentRetry(2000, createRequest('auth', {}, data));
 }
 
+export async function feed(url: string) {
+  let results = await timeout(10000, performRequest('feed', {
+    url,
+  }, {
+    url,
+  }));
+  return results;
+}
+
 export async function search(location: string, keywords: string, time_period: TimePeriod) {
   let results = await timeout(10000, performRequest('search', {
     location,

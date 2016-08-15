@@ -19,9 +19,12 @@ import {
 import {
   getRemoteBlogs
 } from './learnConfig';
-import {
+import type {
   BlogPost,
+} from './models';
+import {
   MediumBlog,
+  FeedBlog,
 } from './models';
 
 export class BlogPostItem extends React.Component {
@@ -62,7 +65,7 @@ export class BlogPostList extends React.Component {
   _renderRow(post: BlogPost) {
     return <BlogPostItem
       post={post}
-      //onEventClicked={(post: BlogPost) => {this.props.clickEvent(post);}}
+      onEventClicked={(post: BlogPost) => {this.props.clickEvent(post);}}
     />;
   }
 
@@ -101,7 +104,13 @@ export class BlogList extends React.Component {
 
   async loadFeeds() {
     const blogs = await getRemoteBlogs();
-    const blogData = await Promise.all(blogs.map((x) => MediumBlog.load(x)));
+    const blogData = await Promise.all(blogs.map((x) => {
+      if (x.indexOf('http') > -1) {
+        return FeedBlog.load(x);
+      } else {
+        return MediumBlog.load(x);
+      }
+    }));
     this.setState({blogs: blogData});
   }
 
