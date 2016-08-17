@@ -89,12 +89,12 @@ export class FeedBlog extends Blog {
 }
 
 export class YoutubePlaylistBlog extends Blog {
-  constructor(json: any) {
+  constructor(playlistJson: any, playlistItemsJson: any) {
     super();
-    this.title = 'Youtube Playlist';
-    this.description = 'Desc';
-    this.url = 'url';
-    this.posts = json.items.map((x) => this.parsePlaylistItem(x));
+    this.title = playlistJson.items[0].snippet.title;
+    this.description = playlistJson.items[0].snippet.description;
+    this.url = `https://www.youtube.com/playlist?list=${playlistJson.items[0].id}`;
+    this.posts = playlistItemsJson.items.map((x) => this.parsePlaylistItem(x));
   }
 
   parsePlaylistItem(item: any): BlogPost {
@@ -104,6 +104,7 @@ export class YoutubePlaylistBlog extends Blog {
       postTime: item.snippet.publishedAt,
       author: item.snippet.channelTitle,
       url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
+      youtubeId: item.snippet.resourceId.videoId,
     };
   }
 
@@ -118,15 +119,21 @@ export class YoutubePlaylistBlog extends Blog {
   }
 
   static async load(playlistId) {
-    const url = YoutubePlaylistBlog.getUrl('https://www.googleapis.com/youtube/v3/playlistItems',
+    const playlistItemsUrl = YoutubePlaylistBlog.getUrl('https://www.googleapis.com/youtube/v3/playlistItems',
     {
       playlistId: playlistId,
       maxResults: 50,
       part: 'snippet',
       key: YoutubeKey,
     });
-    const result = await fetch(url);
-    const resultJson = await result.json();
-    return new YoutubePlaylistBlog(resultJson);
+    const playlistUrl = YoutubePlaylistBlog.getUrl('https://www.googleapis.com/youtube/v3/playlists',
+    {
+      id: playlistId,
+      part: 'snippet',
+      key: YoutubeKey,
+    });
+    const playlistItemsResult = await (await fetch(playlistItemsUrl)).json();
+    const playlistResult = await (await fetch(playlistUrl)).json();
+    return new YoutubePlaylistBlog(playlistResult, playlistItemsResult);
   }
 }

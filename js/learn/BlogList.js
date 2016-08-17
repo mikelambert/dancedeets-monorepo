@@ -30,13 +30,26 @@ import {
   YoutubePlaylistBlog,
 } from './models';
 import WKWebView from 'react-native-wkwebview';
+import YouTube from 'react-native-youtube';
 
 export class BlogPostContents extends React.Component {
   render() {
-    return <WKWebView
-      source={{uri: this.props.post.url}}
-      style={styles.listView}
-      />;
+    if (this.props.post.youtubeId) {
+      return <YouTube
+        ref="youtubePlayer"
+        videoId={this.props.post.youtubeId}
+        play={true}
+        hidden={true}
+        playsInline={true}
+        loop={false}
+        style={{alignSelf: 'stretch', height: 300, backgroundColor: 'black'}}
+        />;
+    } else {
+      return <WKWebView
+        source={{uri: this.props.post.url}}
+        style={styles.listView}
+        />;
+    }
   }
 }
 
@@ -154,7 +167,7 @@ export class BlogList extends React.Component {
           return await MediumBlog.load(x);
         }
       } catch (e) {
-        console.warn('Error opening ', x);
+        console.error(`Error opening ${x}: ${e}`);
         return new Promise((resolve, reject) => resolve());
       }
     }));
