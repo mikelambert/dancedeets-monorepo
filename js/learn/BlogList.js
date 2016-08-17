@@ -25,8 +25,9 @@ import type {
 } from './models';
 import {
   Blog,
-  MediumBlog,
   FeedBlog,
+  MediumBlog,
+  YoutubePlaylistBlog,
 } from './models';
 import WKWebView from 'react-native-wkwebview';
 
@@ -147,6 +148,8 @@ export class BlogList extends React.Component {
       try {
         if (x.indexOf('http') > -1) {
           return await FeedBlog.load(x);
+        } else if (x.indexOf('y:') > -1) {
+          return await YoutubePlaylistBlog.load(x.substr(2));
         } else {
           return await MediumBlog.load(x);
         }

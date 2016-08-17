@@ -8,6 +8,8 @@
 
 import { feed } from '../api/dancedeets';
 
+const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
+
 export type BlogPost = {
   title: string;
   preview: string;
@@ -83,5 +85,48 @@ export class FeedBlog extends Blog {
   static async load(url) {
     const json = await feed(url);
     return new FeedBlog(json);
+  }
+}
+
+export class YoutubePlaylistBlog extends Blog {
+  constructor(json: any) {
+    super();
+    this.title = 'Youtube Playlist';
+    this.description = 'Desc';
+    this.url = 'url';
+    this.posts = json.items.map((x) => this.parsePlaylistItem(x));
+  }
+
+  parsePlaylistItem(item: any): BlogPost {
+    return {
+      title: item.snippet.title,
+      preview: item.snippet.description,
+      postTime: item.snippet.publishedAt,
+      author: item.snippet.channelTitle,
+      url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
+    };
+  }
+
+  static getUrl(path: string, args: Object) {
+    const querystring = require('querystring');
+    const formattedArgs = querystring.stringify(args);
+    var fullPath = path;
+    if (formattedArgs) {
+      fullPath += '?' + formattedArgs;
+    }
+    return fullPath;
+  }
+
+  static async load(playlistId) {
+    const url = YoutubePlaylistBlog.getUrl('https://www.googleapis.com/youtube/v3/playlistItems',
+    {
+      playlistId: playlistId,
+      maxResults: 50,
+      part: 'snippet',
+      key: YoutubeKey,
+    });
+    const result = await fetch(url);
+    const resultJson = await result.json();
+    return new YoutubePlaylistBlog(resultJson);
   }
 }

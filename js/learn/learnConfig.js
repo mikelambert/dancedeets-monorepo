@@ -9,6 +9,9 @@
 import { RemoteConfig } from 'react-native-firebase3';
 
 const defaultBlogs = [
+  'y:PLB9CAA2877007AC02',
+];
+const extraBlogs = [
   'http://www.thebboyspot.com/feed/',
   'http://loftpractice.com/?format=feed&type=atom',
   'http://blog.steezy.co/feed/',
@@ -16,7 +19,8 @@ const defaultBlogs = [
   'http://www.stepxstepdance.com/feed/',
   'http://www.hiphopinternational.com/feed/',
   'http://www.udeftour.org/feed/',
-  'http://www.dancedelight.net/wordpress/?feed=atom',
+  'https://studiogdmv.wordpress.com/feed/',
+  //'http://www.dancedelight.net/wordpress/?feed=atom',
   'http://houseofmovementny.com/blog?format=RSS',
   'http://www.onecypher.com/feed/',
   'http://www.funkstylers.tv/feed/',
@@ -34,7 +38,8 @@ const defaultBlogs = [
   'rue-magazine',
 ];
 
-const defaultTutorials = [];
+const defaultTutorials = [
+];
 
 async function loadConfig() {
   RemoteConfig.setNamespacedDefaults({
