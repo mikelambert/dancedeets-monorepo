@@ -9,7 +9,8 @@
 import { RemoteConfig } from 'react-native-firebase3';
 
 const defaultBlogs = [
-  'y:PLB9CAA2877007AC02',
+  'y:PLB9CAA2877007AC02', // Jardy: basic
+  'y:PLE839D54D07A8ABC2', // Jardy: advanced
 ];
 const extraBlogs = [
   'http://www.thebboyspot.com/feed/',

@@ -9,7 +9,8 @@
 import React from 'react';
 import {
   Image,
-  StyleSheet
+  StyleSheet,
+  View,
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import generateNavigator from '../containers/generateNavigator';
@@ -36,6 +37,8 @@ import {
 import AddEvents from '../containers/AddEvents';
 import { track, trackWithEvent } from '../store/track';
 import { setDefaultState } from '../reducers/navigation';
+import YouTube from 'react-native-youtube';
+
 
 const EventNavigator = generateNavigator('EVENT_NAV');
 setDefaultState('EVENT_NAV', { key: 'EventList', title: 'DanceDeets' });
@@ -82,6 +85,8 @@ const messages = defineMessages({
   },
 });
 
+// TODO HACK: this is a huge hack. We need to store it as a member variable of an object somewhere
+const app = {};
 
 class _TabbedAppView extends React.Component {
   //TODO: move this to redux state!
@@ -151,9 +156,49 @@ class _TabbedAppView extends React.Component {
         onSelected={(blog) => {
           // TODO: Track blog details
           track('Blog Selected');
-          navigatable.onNavigate({key: 'BlogPostList', title: blog.title, blog: blog});
+          //navigatable.onNavigate({key: 'BlogPostList', title: blog.title, blog: blog});
+          navigatable.onNavigate({key: 'VideoList', title: blog.title, blog: blog});
         }}
         />;
+    case 'VideoList':
+    // TODO: fix videoID on the main youtube docs?
+    // also explain setNativeProps
+    // push up our fixes?
+    //
+    // for my client feature-bar (if i support scrub bar):
+    // speed-rate, play/pause, back-ten-seconds, airplay
+      return <View>
+        <YouTube
+          ref={(x) => {
+            app.youtubePlayer = x;
+          }}
+          videoId={route.blog.posts[0].youtubeId}
+          play={false}
+          hidden={false}
+          playsInline={true}
+          loop={false}
+          rel={false}
+          showinfo={true}
+          modestbranding={true}
+          style={{alignSelf: 'stretch', height: 220, backgroundColor: 'black'}}
+          />
+        <BlogPostList
+          blog={route.blog}
+          onSelected={(post) => {
+            // TODO: Track post details
+            track('Blog Post Selected');
+            // Hacks because of how the imperative API works
+            app.youtubePlayer.setNativeProps({
+              videoId: post.youtubeId,
+              play: false,
+            });
+            app.youtubePlayer.setNativeProps({
+              play: true,
+            });
+            //navigatable.onNavigate({key: 'BlogPostItem', title: post.title, post: post});
+          }}
+          />
+      </View>;
     case 'BlogPostList':
       return <BlogPostList
         blog={route.blog}
