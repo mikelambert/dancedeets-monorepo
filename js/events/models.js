@@ -4,6 +4,8 @@
  * @flow
  */
 
+'use strict';
+
 type JSON = string | number | boolean | null | JSONObject | JSONArray;
 type JSONObject = { [key:string]: JSON };
 type JSONArray = Array<JSON>;
