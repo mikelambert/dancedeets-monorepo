@@ -97,6 +97,8 @@ class _TabbedAppView extends React.Component {
     this.state = {
       selectedTab: 'home',
     };
+    (this: any).renderEventScene = this.renderEventScene.bind(this);
+    (this: any).renderLearnScene = this.renderLearnScene.bind(this);
   }
 
   icon(source) {
