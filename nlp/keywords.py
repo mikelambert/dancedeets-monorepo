@@ -670,6 +670,7 @@ BATTLE = Name('BATTLE', Any(
     u'大賽', # chinese competition
     u'比賽', # chinese battle
     u'賽', # chinese race/competition/etc
+    u'交流賽', # chinese battle exchange
     u'バトル', # japanese battle
     u'битката', # bulgarian battle
     'batallas', # battles spanish
