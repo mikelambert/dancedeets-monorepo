@@ -298,7 +298,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['fb_geocoded_address'] = formatting.format_geocode(fb_geocode)
 
         self.display['event'] = e
-        self.display['event_id'] = e.id
+        self.display['event_id'] = event_id
         self.display['fb_event'] = fb_event
 
         self.jinja_env.filters['highlight_keywords'] = event_classifier.highlight_keywords
