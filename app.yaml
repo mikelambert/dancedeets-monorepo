@@ -5,12 +5,12 @@ api_version: 1
 service: default
 
 manual_scaling:
-  instances: 1
+  instances: 2
 
 # At some point, we must swap vm_settings for resources
 # And change runtime form 'vm' to 'custom'
 vm_settings:
-  machine_type: n1-standard-1
+  machine_type: g1-small
   vm_runtime: python27
 #resources:
 #  memory_gb: 0.6
