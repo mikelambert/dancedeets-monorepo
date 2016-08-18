@@ -10,7 +10,6 @@ import React from 'react';
 import {
   Image,
   StyleSheet,
-  View,
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import generateNavigator from '../containers/generateNavigator';
@@ -37,8 +36,7 @@ import {
 import AddEvents from '../containers/AddEvents';
 import { track, trackWithEvent } from '../store/track';
 import { setDefaultState } from '../reducers/navigation';
-import YouTube from 'react-native-youtube';
-
+import { VideoList } from '../learn/Playlist';
 
 const EventNavigator = generateNavigator('EVENT_NAV');
 setDefaultState('EVENT_NAV', { key: 'EventList', title: 'DanceDeets' });
@@ -167,38 +165,9 @@ class _TabbedAppView extends React.Component {
     //
     // for my client feature-bar (if i support scrub bar):
     // speed-rate, play/pause, back-ten-seconds, airplay
-      return <View>
-        <YouTube
-          ref={(x) => {
-            app.youtubePlayer = x;
-          }}
-          videoId={route.blog.posts[0].youtubeId}
-          play={false}
-          hidden={false}
-          playsInline={true}
-          loop={false}
-          rel={false}
-          showinfo={true}
-          modestbranding={true}
-          style={{alignSelf: 'stretch', height: 220, backgroundColor: 'black'}}
-          />
-        <BlogPostList
-          blog={route.blog}
-          onSelected={(post) => {
-            // TODO: Track post details
-            track('Blog Post Selected');
-            // Hacks because of how the imperative API works
-            app.youtubePlayer.setNativeProps({
-              videoId: post.youtubeId,
-              play: false,
-            });
-            app.youtubePlayer.setNativeProps({
-              play: true,
-            });
-            //navigatable.onNavigate({key: 'BlogPostItem', title: post.title, post: post});
-          }}
-          />
-      </View>;
+      return <VideoList
+        playlist={route.blog}
+        />;
     case 'BlogPostList':
       return <BlogPostList
         blog={route.blog}

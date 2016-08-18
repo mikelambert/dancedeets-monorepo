@@ -60,39 +60,65 @@ export class BlogPostTitle extends React.Component {
     }}>
       <View>
         <Text>{this.props.post.title}</Text>
+        <Text>{this.props.post.author}</Text>
+        <Text>{this.props.post.durationSeconds}</Text>
       </View>
     </TouchableHighlight>;
   }
 }
 
-type BlogPostProps = {
-  blog: MediumBlog;
-  onSelected: (post: BlogPost) => void;
+type FeedProps = {
+  items: [any];
+  renderRow: (post: BlogPost) => any;
 };
 
-export class BlogPostList extends React.Component {
+export class FeedListView extends React.Component {
   state: {
     dataSource: ListView.DataSource,
   };
-  props: BlogPostProps;
+  props: FeedProps;
 
-  constructor(props: BlogPostProps) {
+  constructor(props: FeedProps) {
     super(props);
     var dataSource = new ListView.DataSource({
       rowHasChanged: (row1, row2) => row1 !== row2,
     });
     this.state = {dataSource};
-    this.state = this._getNewState(this.props.blog);
-    (this: any)._renderRow = this._renderRow.bind(this);
+    this.state = this._getNewState(this.props.items);
   }
 
-  _getNewState(blog: MediumBlog) {
-    const results = blog.posts || [];
+  _getNewState(items: [any]) {
+    const results = items || [];
     const state = {
       ...this.state,
       dataSource: this.state.dataSource.cloneWithRows(results),
     };
     return state;
+  }
+
+  render() {
+    return <ListView
+      style={[styles.listView]}
+      dataSource={this.state.dataSource}
+      renderRow={this.props.renderRow}
+      initialListSize={10}
+      pageSize={5}
+      scrollRenderAheadDistance={10000}
+      indicatorStyle="white"
+     />;
+  }
+}
+
+type BlogPostProps = {
+  blog: Blog;
+  onSelected: (post: BlogPost) => void;
+};
+
+export class BlogPostList extends React.Component {
+
+  constructor(props: BlogPostProps) {
+    super(props);
+    (this: any)._renderRow = this._renderRow.bind(this);
   }
 
   _renderRow(post: BlogPost) {
@@ -103,22 +129,10 @@ export class BlogPostList extends React.Component {
   }
 
   render() {
-    return <ListView
-      style={[styles.listView]}
-      dataSource={this.state.dataSource}
-      refreshControl={
-        <RefreshControl
-          refreshing={false}
-          //refreshing={are-we-refreshing?}
-          //onRefresh={() => this.props.reloadAddEvents()}
-        />
-      }
+    return <FeedListView
+      items={this.props.blog.posts}
       renderRow={this._renderRow}
-      initialListSize={10}
-      pageSize={5}
-      scrollRenderAheadDistance={10000}
-      indicatorStyle="white"
-     />;
+      />;
   }
 }
 
