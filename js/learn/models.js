@@ -107,6 +107,15 @@ export class YoutubePlaylistBlog extends Blog {
     this.posts = filteredPlaylistItems.map((x) => this.parsePlaylistItem(x.snippet, contentDetailsLookup[x.snippet.resourceId.videoId]));
   }
 
+  author() {
+    //TODO: Fix this!
+    return this.posts[0].author;
+  }
+
+  durationSeconds() {
+    return this.posts.reduce((prev, current) => prev + current.durationSeconds, 0);
+  }
+
   parsePlaylistItem(snippet: any, contentDetails: any): BlogPost {
     return {
       title: snippet.title,

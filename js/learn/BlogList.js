@@ -70,6 +70,7 @@ export class BlogPostTitle extends React.Component {
 type FeedProps = {
   items: [any];
   renderRow: (post: BlogPost) => any;
+  renderHeader: ?() => any;
 };
 
 export class FeedListView extends React.Component {
@@ -101,6 +102,7 @@ export class FeedListView extends React.Component {
       style={[styles.listView]}
       dataSource={this.state.dataSource}
       renderRow={this.props.renderRow}
+      renderHeader={this.props.renderHeader}
       initialListSize={10}
       pageSize={5}
       scrollRenderAheadDistance={10000}
