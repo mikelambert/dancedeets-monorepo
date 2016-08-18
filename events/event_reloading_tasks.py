@@ -2,7 +2,6 @@ import logging
 
 from google.appengine.ext import deferred
 from mapreduce import context
-from mapreduce import mapreduce_pipeline
 
 import app
 import base_servlet
@@ -12,11 +11,14 @@ from users import users
 from . import eventdata
 from . import event_updates
 
+
 def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated):
     fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id, only_if_updated=only_if_updated)
     # This happens when an event moves from TIME_FUTURE into TIME_PAST
+    logging.info("Event %s is%s updated.", db_event.id, "not" if not fb_event else "")
     if event_updates.need_forced_update(db_event):
-        fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
+        fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.id)
+        logging.info("Event %s is being saved via forced update", db_event.fb_event_id)
     # If we have an event in need of updating, record that
     if fb_event:
         events_to_update.append((db_event, fb_event))
@@ -101,7 +103,9 @@ def yield_load_fb_event(fbl, all_events):
             logging.info("No data fetched for event id %s: %s", db_event.fb_event_id, e)
     # Now trigger off a background reloading of empty fb_events
     if empty_fb_event_ids:
+        logging.info("Couldn't fetch, using backup tokens for events: %s", empty_fb_event_ids)
         deferred.defer(load_fb_events_using_backup_tokens, empty_fb_event_ids, allow_cache=fbl.allow_cache, only_if_updated=only_if_updated, update_geodata=update_geodata)
+    logging.info("Updating events: %s", [x.id for x in events_to_update])
     # And then re-save all the events in here
     event_updates.update_and_save_fb_events(events_to_update, update_geodata=update_geodata)
 map_load_fb_event = fb_mapreduce.mr_wrap(yield_load_fb_event)

@@ -31,6 +31,7 @@ def delete_event(db_event):
 def need_forced_update(db_event):
     # If the expected time period is not the same as what we've computed and stored, we need to force update
     new_time_period = (db_event.search_time_period != _event_time_period(db_event))
+    logging.info("Event %s with time %s - %s: has search_time_period %s, expecting %s", db_event.id, db_event.start_time, db_event.end_time, db_event.search_time_period, _event_time_period(db_event))
     return new_time_period
 
 
