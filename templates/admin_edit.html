@@ -90,12 +90,17 @@ Edit Event
 				{# <button class="btn btn-default">Not a Dance Event</button> #}
 			{% endif %}
 			<p>
+      <a href="https://developers.facebook.com/tools/explorer/{{ app_id }}?method=GET&path={{ event.id }}">FB Event Live</a><br>
+      <a href="https://www.facebook.com/events/{{ event.id }}/">FB.com Event</a><br>
+      <a href="/tools/fb_data?key=701004.{{ event.id }}.OBJ_EVENT">FB Event Cache</a><br>
 			{% if event %}
-				Has a db event (<a href="https://appengine.google.com/
-datastore/edit?app_id=s~dancedeets-hrd&key={{ event.key.urlsafe() }}">AE</a>).<br>
-			{% endif %}
+        <a href="/admin/displayevent/edit/?url=%2Fadmin%2Fdisplayevent%2F&id={{ display_event.key.urlsafe() }}">DisplayEvent</a><br>
+      {% endif %}
+      {% if event %}
+				<a href="/admin/dbevent/edit/?url=%2Fadmin%2Fdbevent%2F&id={{ event.key.urlsafe() }}">DBEvent</a><br>
+      {% endif %}
 			{% if potential_event %}
-				Has a potential event (<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key={{ potential_event.key().__str__() }}">AE</a>).<br>
+				<a href="/admin/potentialevent/edit/?url=%2Fadmin%2Fpotentialevent%2F&id={{ potential_event.key().__str__() }}">Potential Event</a><br>
 				Language: {{ potential_event.language }}<br>
 				Dance Bias Score is {{ potential_event.dance_bias_score }}.<br>
 				Non Dance Bias Score is {{ potential_event.non_dance_bias_score }}.<br>

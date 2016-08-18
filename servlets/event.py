@@ -26,6 +26,7 @@ from logic import rsvp
 from nlp import categories
 from nlp import event_auto_classifier
 from nlp import event_classifier
+from search import search
 from util import dates
 from util import urls
 
@@ -249,6 +250,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
                 owner_location = event_locations.city_for_fb_location(location)
         self.display['owner_location'] = owner_location
 
+        display_event = search.DisplayEvent.get_by_id(event_id)
         # Don't insert object until we're ready to save it...
         e = eventdata.DBEvent.get_by_id(event_id)
         if e and e.creating_fb_uid:
@@ -270,6 +272,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['creating_user'] = creating_user
 
         self.display['potential_event'] = potential_event
+        self.display['display_event'] = display_event
 
         add_result = event_auto_classifier.is_auto_add_event(classified_event)
         notadd_result = event_auto_classifier.is_auto_notadd_event(classified_event, auto_add_result=add_result)
