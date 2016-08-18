@@ -33,21 +33,23 @@ Potential Events Classification
 		<a href="/events/admin_edit?event_id={{ potential_event.fb_event.info.id }}">
 		{{ potential_event.fb_event.info.name }}
 		</a></td>
-		<td>
-		{% if potential_event.location_info.exact_from_event %}
-			{{ potential_event.location_info.final_city }}
-		{% else %}
-			<a href="http://www.google.com/search?q={{ potential_event.location_info.fb_address|urlencode }}">{{ potential_event.location_info.fb_address|format_html }}</a><br>
-			{{ potential_event.location_info.final_city }}
-			{% if potential_event.location_info.overridden_address %}
-				(Overridden)
-			{% elif potential_event.location_info.remapped_address %}
-				(Remapped)
+		{% if potential_event.location_info %}
+			<td>
+			{% if potential_event.location_info.exact_from_event %}
+				{{ potential_event.location_info.final_city }}
+			{% else %}
+				<a href="http://www.google.com/search?q={{ potential_event.location_info.fb_address|urlencode }}">{{ potential_event.location_info.fb_address|format_html }}</a><br>
+				{{ potential_event.location_info.final_city }}
+				{% if potential_event.location_info.overridden_address %}
+					(Overridden)
+				{% elif potential_event.location_info.remapped_address %}
+					(Remapped)
+				{% endif %}
 			{% endif %}
+			</td>
 		{% endif %}
-		</td>
 		<td style="white-space: nowrap">
-		{% if potential_event.location_info.final_city %}
+		{% if not potential_event.location_info or potential_event.location_info.final_city %}
 		<form action="/events/admin_edit" method="post" target="dd_submit"> {# TODO(lambert): make this ajax-handled #}
 		<input type="hidden" name="event_id" value="{{ potential_event.fb_event.info.id }}">
 		<input type="hidden" name="background" value="1">

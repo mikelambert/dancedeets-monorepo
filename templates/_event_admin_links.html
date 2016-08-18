@@ -1,0 +1,14 @@
+<a href="https://developers.facebook.com/tools/explorer/{{ app_id }}?method=GET&path={{ event_id }}">FB Event Live</a><br>
+<a href="https://www.facebook.com/events/{{ event_id }}/">FB.com Event</a><br>
+<a href="/tools/fb_data?key=701004.{{ event_id }}.OBJ_EVENT">FB Event Cache</a><br>
+{% if display_event %}
+  <a href="/admin/displayevent/edit/?url=%2Fadmin%2Fdisplayevent%2F&id={{ display_event.key.urlsafe() }}">DisplayEvent</a><br>
+  <a href="https://console.cloud.google.com/datastore/entities/edit?key=0%2F%7C12%2FDisplayEvent%7C21%2Fname:{{ display_event.id }}&project=dancedeets-hrd">DisplayEvent Datastore</a><br>
+{% endif %}
+{% if event %}
+  <a href="/admin/dbevent/edit/?url=%2Fadmin%2Fdbevent%2F&id={{ event.key.urlsafe() }}">DBEvent</a><br>
+  <a href="https://console.cloud.google.com/datastore/entities/edit?key=0%2F%7C7%2FDBEvent%7C21%2Fname:{{ event.id }}&project=dancedeets-hrd">DBEvent Datastore</a><br>
+{% endif %}
+{% if potential_event %}
+  <a href="/admin/potentialevent/edit/?url=%2Fadmin%2Fpotentialevent%2F&id={{ potential_event.key().__str__() }}">
+{% endif %}

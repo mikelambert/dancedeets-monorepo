@@ -55,7 +55,7 @@ class RsvpAjaxHandler(base_servlet.BaseRequestHandler):
 
     def handle_error_response(self, errors):
         self.write_json_response(dict(success=False, errors=errors))
-
+        return True
 
 @app.route('/events/redirect')
 class RedirectToEventHandler(base_servlet.BaseRequestHandler):
@@ -191,13 +191,18 @@ class DisplayableEvent(object):
 
 @app.route('/events/admin_edit')
 class AdminEditHandler(base_servlet.BaseRequestHandler):
-    def show_barebones_page(self, fb_event_id):
+    def show_barebones_page(self, fb_event_id, error_string):
         potential_event = potential_events.PotentialEvent.get_by_key_name(fb_event_id)
         e = eventdata.DBEvent.get_by_id(fb_event_id)
-        if potential_event:
-            self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">PE</a> ' % potential_event.key().__str__())
-        if e:
-            self.response.out.write('<a href="https://appengine.google.com/datastore/edit?app_id=s~dancedeets-hrd&key=%s">DBE</a> ' % e.key.urlsafe())
+        display_event = search.DisplayEvent.get_by_id(fb_event_id)
+        fb_event = self.fbl.get(fb_api.LookupEvent, fb_event_id)
+        self.display['potential_event'] = potential_event
+        self.display['display_event'] = display_event
+        self.display['event'] = e
+        self.display['fb_event'] = fb_event
+        self.display['event_id'] = fb_event_id
+        self.response.out.write('%s<br>\n' % error_string)
+        self.render_template('_event_admin_links')
 
     def handle_error_response(self, errors):
         event_id = None
@@ -206,7 +211,8 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
         error_string = ','.join(errors)
-        return '%s\n%s' % (error_string, self.show_barebones_page(event_id))
+        self.show_barebones_page(event_id, error_string)
+        return True
 
     def _get_location(self, fb_id, fb_type, key):
         try:
@@ -235,7 +241,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             fb_event_attending = None
             # fb_event_attending = fbl.fetched_data(fb_api.LookupEventAttending, event_id)
         except fb_api.NoFetchedDataException:
-            return self.show_barebones_page(event_id)
+            return self.show_barebones_page(event_id, "No fetched data")
 
         if not fb_api.is_public_ish(fb_event):
             self.add_error('Cannot add secret/closed events to dancedeets!')
@@ -292,6 +298,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['fb_geocoded_address'] = formatting.format_geocode(fb_geocode)
 
         self.display['event'] = e
+        self.display['event_id'] = e.id
         self.display['fb_event'] = fb_event
 
         self.jinja_env.filters['highlight_keywords'] = event_classifier.highlight_keywords
@@ -443,14 +450,14 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
         potential_event_notadded_ids = potential_event_notadded_ids[:number_of_events]
 
         self.fbl.request_multi(fb_api.LookupEvent, potential_event_notadded_ids)
-        self.fbl.request_multi(fb_api.LookupEventAttending, potential_event_notadded_ids)
+        # self.fbl.request_multi(fb_api.LookupEventAttending, potential_event_notadded_ids)
         self.finish_preload()
 
         template_events = []
         for e in potential_event_notadded_ids:
             try:
                 fb_event = self.fbl.fetched_data(fb_api.LookupEvent, e)
-                fb_event_attending = self.fbl.fetched_data(fb_api.LookupEventAttending, e)
+                fb_event_attending = None # self.fbl.fetched_data(fb_api.LookupEventAttending, e)
             except KeyError:
                 logging.error("Failed to load event id %s", e)
                 continue
@@ -467,9 +474,10 @@ class AdminPotentialEventViewHandler(base_servlet.BaseRequestHandler):
                 dance_words_str = 'NONE'
                 event_words_str = 'NONE'
                 wrong_words_str = 'NONE'
-            location_info = event_locations.LocationInfo(fb_event, debug=True)
+            location_info = None # event_locations.LocationInfo(fb_event, debug=True)
             potential_event_dict[e] = potential_events.update_scores_for_potential_event(potential_event_dict[e], fb_event, fb_event_attending)
             template_events.append(dict(fb_event=fb_event, classified_event=classified_event, dance_words=dance_words_str, event_words=event_words_str, wrong_words=wrong_words_str, keyword_reason=reason, potential_event=potential_event_dict[e], location_info=location_info))
+        template_events = sorted(template_events, key=lambda x: -len(x['potential_event'].source_ids))
         self.display['number_of_events'] = number_of_events
         self.display['total_potential_events'] = '%s + %s' % (non_zero_events, zero_events)
         self.display['has_more_events'] = has_more_events
