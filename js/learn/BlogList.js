@@ -59,9 +59,9 @@ export class BlogPostTitle extends React.Component {
       this.props.onPress(this.props.post);
     }}>
       <View>
-        <Text>{this.props.post.title}</Text>
-        <Text>{this.props.post.author}</Text>
-        <Text>{this.props.post.durationSeconds}</Text>
+        <Text style={styles.text}>{this.props.post.title}</Text>
+        <Text style={styles.text}>{this.props.post.author}</Text>
+        <Text style={styles.text}>{this.props.post.durationSeconds}</Text>
       </View>
     </TouchableHighlight>;
   }
@@ -143,8 +143,8 @@ class BlogTitle extends React.Component {
     return <TouchableHighlight onPress={() => {
       this.props.onPress(this.props.blog);
     }}>
-      <View>
-        <Text>{this.props.blog.title}</Text>
+      <View style={{margin: 7}}>
+        <Text style={styles.text}>{this.props.blog.title}</Text>
       </View>
     </TouchableHighlight>;
   }
@@ -227,6 +227,8 @@ export class BlogList extends React.Component {
 const styles = StyleSheet.create({
   listView: {
     flex: 1,
-    backgroundColor: '#000',
   },
+  text: {
+    color: 'black',
+  }
 });

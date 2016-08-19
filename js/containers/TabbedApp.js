@@ -161,12 +161,6 @@ class _TabbedAppView extends React.Component {
         }}
         />;
     case 'VideoList':
-    // TODO: fix videoID on the main youtube docs?
-    // also explain setNativeProps
-    // push up our fixes?
-    //
-    // for my client feature-bar (if i support scrub bar):
-    // speed-rate, play/pause, back-ten-seconds, airplay
       return <VideoList
         playlist={route.blog}
         />;

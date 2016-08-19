@@ -17,6 +17,7 @@ import { track } from '../store/track';
 import YouTube from 'react-native-youtube';
 import { FeedListView } from './BlogList';
 import {
+  Card,
   HorizontalView,
   Text,
 } from '../ui';
@@ -31,13 +32,12 @@ export class VideoList extends React.Component {
   }
 
   renderHeader() {
-    const description = this.props.playlist.description ? <Text style={styles.playlistDescription}>{this.props.playlist.description}</Text> : null;
+    const description = this.props.playlist.description ? <Text style={[styles.text, styles.playlistDescription]}>{this.props.playlist.description}</Text> : null;
     const duration = VideoList.formatDuration(this.props.playlist.durationSeconds());
-    return <View>
-      <Text style={styles.playlistTitle}>{this.props.playlist.title}</Text>
+    return <View style={styles.playlistRow}>
+      <Text style={[styles.text, styles.playlistTitle]}>{this.props.playlist.title}</Text>
       {description}
-      <Text style={styles.playlistAuthor}>{this.props.playlist.author()}</Text>
-      <Text style={styles.videoDuration}>{duration}</Text>
+      <Text style={[styles.text, styles.playlistSubtitle]}>{this.props.playlist.author()} - {duration}</Text>
     </View>;
   }
 
@@ -66,10 +66,10 @@ export class VideoList extends React.Component {
     }}>
       <View>
       <HorizontalView style={styles.videoRow}>
-        <Image source={require('./images/play.png')} style={styles.videoPlay} />
+        <Image source={require('./images/play-dark.png')} style={styles.videoPlay} />
         <View style={{flex: 1}}>
-          <Text style={styles.videoTitle}>{post.title}</Text>
-          <Text style={styles.videoDuration}>{duration}</Text>
+          <Text style={[styles.text, styles.videoTitle]}>{post.title}</Text>
+          <Text style={[styles.text, styles.videoDuration]}>{duration}</Text>
         </View>
       </HorizontalView>
       </View>
@@ -78,6 +78,12 @@ export class VideoList extends React.Component {
   }
 
   render() {
+    // TODO: fix videoID on the main youtube docs?
+    // also explain setNativeProps
+    // push up our fixes?
+    //
+    // for my client feature-bar (if i support scrub bar):
+    // speed-rate, play/pause, back-ten-seconds, airplay
     return <View style={styles.container}>
       <YouTube
         ref={(x) => {
@@ -90,6 +96,7 @@ export class VideoList extends React.Component {
         loop={false}
         rel={false}
         showinfo={true}
+        //controls={0}
         modestbranding={true}
         style={{alignSelf: 'stretch', height: 220, backgroundColor: 'black'}}
         />
@@ -105,20 +112,27 @@ export class VideoList extends React.Component {
 let styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
+  },
+  text: {
+    color: 'black',
+  },
+  playlistRow: {
+    padding: 7,
+    backgroundColor: 'white',
   },
   playlistTitle: {
     fontSize: 20,
     lineHeight: 23,
   },
-  playlistDescription: {
-
-  },
-  playlistAuthor: {
-
+  playlistSubtitle: {
+    fontSize: 15,
+    lineHeight: 18,
   },
   videoRow: {
     alignItems: 'center',
-    margin: 7,
+    padding: 7,
+    backgroundColor: '#eee',
   },
   videoTitle: {
     fontWeight: 'bold',
