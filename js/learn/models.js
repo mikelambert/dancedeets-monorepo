@@ -93,14 +93,58 @@ export class Tutorial {
   title: string;
   description: string;
   author: string;
-  durationSeconds: number;
+  sections: [Section];
+
+  constructor(json: any) {
+    this.title = json.title;
+    this.description = json.description;
+    this.author = json.author;
+    this.sections = json.sections.map((x) => new Section(x));
+  }
+  getDurationSeconds(): number {
+    return 0;
+  }
+
+  getItems() {
+    const items = {};
+    this.sections.forEach((x) => {
+      if (!(x.title in items)) {
+        items[x.title] = [];
+      }
+      items[x.title].push(x.videos);
+    });
+  }
+
+  getSectionHeaders() {
+    return this.sections.map((x) => x.title);
+  }
+}
+
+export class Section {
+  title: string;
   videos: [Video];
+
+  constructor(json: any) {
+    this.title = json.title;
+    this.videos = json.videos.map((x) => new Video(x));
+  }
+
+  getDurationSeconds(): number {
+    return 0;
+  }
 }
 
 export class Video {
   title: string;
   durationSeconds: number;
   url: string;
+  youtubeId: string;
+
+  constructor(json: any) {
+    this.title = json.title;
+    this.durationSeconds = json.durationSeconds;
+    this.youtubeId = json.youtubeId;
+  }
 }
 
 export class YoutubeTutorial extends Tutorial {

@@ -9,6 +9,7 @@
 import React from 'react';
 import {
   Image,
+  ListView,
   StyleSheet,
   TouchableHighlight,
   View,
@@ -38,7 +39,9 @@ export class TutorialListView extends React.Component {
   }
 
   async load() {
-    this.setState({tutorials: await getRemoteTutorials()});
+    const tutorialsJson = await getRemoteTutorials();
+    const tutorials = tutorialsJson.map((x) => new Tutorial(x));
+    this.setState({tutorials: tutorials});
   }
 
   renderRow(tutorial: Tutorial) {
@@ -61,6 +64,56 @@ export class TutorialListView extends React.Component {
   }
 }
 
+
+type FeedProps = {
+  items: {[key: any]: any};
+  sectionHeaders: [any];
+  renderRow: (post: any) => any;
+  renderHeader: ?() => any;
+};
+
+export class SectionedListView extends React.Component {
+  state: {
+    dataSource: ListView.DataSource,
+  };
+  props: FeedProps;
+
+  constructor(props: FeedProps) {
+    super(props);
+    var dataSource = new ListView.DataSource({
+      rowHasChanged: (row1, row2) => row1 !== row2,
+      sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
+    });
+    this.state = {dataSource};
+    this.state = this._getNewState(this.props.items, this.props.sectionHeaders);
+  }
+
+  _getNewState(items: {[key: any]: any}, sectionHeaders: [any]) {
+    const state = {
+      ...this.state,
+      dataSource: this.state.dataSource.cloneWithRowsAndSections(items, sectionHeaders),
+    };
+    return state;
+  }
+
+  componentWillReceiveProps(nextProps: FeedProps) {
+    this.setState(this._getNewState(nextProps.items, nextProps.sectionHeaders));
+  }
+
+  render() {
+    return <ListView
+      style={[styles.listView]}
+      dataSource={this.state.dataSource}
+      renderRow={this.props.renderRow}
+      renderHeader={this.props.renderHeader}
+      initialListSize={10}
+      pageSize={5}
+      scrollRenderAheadDistance={10000}
+      indicatorStyle="white"
+     />;
+  }
+}
+
 export class TutorialView extends React.Component {
   youtubePlayer: any;
 
@@ -71,12 +124,12 @@ export class TutorialView extends React.Component {
   }
 
   renderHeader() {
-    const description = this.props.playlist.description ? <Text style={[styles.text, styles.playlistDescription]}>{this.props.playlist.description}</Text> : null;
-    const duration = Tutorial.formatDuration(this.props.playlist.durationSeconds());
-    return <View style={styles.playlistRow}>
-      <Text style={[styles.text, styles.playlistTitle]}>{this.props.playlist.title}</Text>
+    const description = this.props.tutorial.description ? <Text style={[styles.text, styles.tutorialDescription]}>{this.props.tutorial.description}</Text> : null;
+    const duration = TutorialView.formatDuration(this.props.tutorial.getDurationSeconds());
+    return <View style={styles.tutorialRow}>
+      <Text style={[styles.text, styles.tutorialTitle]}>{this.props.tutorial.title}</Text>
       {description}
-      <Text style={[styles.text, styles.playlistSubtitle]}>{this.props.playlist.author()} - {duration}</Text>
+      <Text style={[styles.text, styles.tutorialSubtitle]}>{this.props.tutorial.author} - {duration}</Text>
     </View>;
   }
 
@@ -89,7 +142,7 @@ export class TutorialView extends React.Component {
   }
 
   renderRow(post: any) {
-    const duration = Tutorial.formatDuration(post.durationSeconds);
+    const duration = TutorialView.formatDuration(post.durationSeconds);
     return <TouchableHighlight onPress={() => {
       // TODO: Track post details
       track('Blog Post Selected');
@@ -128,7 +181,7 @@ export class TutorialView extends React.Component {
         ref={(x) => {
           this.youtubePlayer = x;
         }}
-        videoId={this.props.playlist.posts[0].youtubeId}
+        videoId={this.props.tutorial.sections[0].videos[0].youtubeId}
         play={false}
         hidden={false}
         playsInline={true}
@@ -140,7 +193,8 @@ export class TutorialView extends React.Component {
         style={{alignSelf: 'stretch', height: 220, backgroundColor: 'black'}}
         />
       <FeedListView
-        items={this.props.playlist.posts}
+        items={this.props.tutorial.getItems()}
+        sectionHeaders={this.props.tutorial.getSectionHeaders()}
         renderRow={this.renderRow}
         renderHeader={this.renderHeader}
         />

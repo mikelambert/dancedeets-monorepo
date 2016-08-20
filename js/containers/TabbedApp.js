@@ -174,7 +174,7 @@ class _TabbedAppView extends React.Component {
         />;
     case 'Tutorial':
       return <TutorialView
-        playlist={route.tutorial}
+        tutorial={route.tutorial}
         />;
     case 'BlogPostList':
       return <BlogPostList
