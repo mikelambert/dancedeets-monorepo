@@ -102,21 +102,19 @@ export class Tutorial {
     this.sections = json.sections.map((x) => new Section(x));
   }
   getDurationSeconds(): number {
-    return 0;
+    return this.sections.reduce((reduced, item) => reduced + item.getDurationSeconds(), 0);
   }
 
   getItems() {
     const items = {};
     this.sections.forEach((x) => {
-      if (!(x.title in items)) {
-        items[x.title] = [];
-      }
-      items[x.title].push(x.videos);
+      items[x.key()] = x.videos;
     });
+    return items;
   }
 
   getSectionHeaders() {
-    return this.sections.map((x) => x.title);
+    return this.sections.map((x) => x.key());
   }
 }
 
@@ -130,20 +128,31 @@ export class Section {
   }
 
   getDurationSeconds(): number {
-    return 0;
+    return this.videos.reduce((reduced, item) => reduced + item.getDurationSeconds(), 0);
+  }
+
+  key() {
+    return JSON.stringify({
+      title: this.title,
+      durationSeconds: this.getDurationSeconds(),
+    });
   }
 }
 
 export class Video {
   title: string;
-  durationSeconds: number;
+  duration: number;
   url: string;
   youtubeId: string;
 
   constructor(json: any) {
     this.title = json.title;
-    this.durationSeconds = json.durationSeconds;
+    this.duration = json.duration;
     this.youtubeId = json.youtubeId;
+  }
+
+  getDurationSeconds(): number {
+    return moment.duration(this.duration).asSeconds();
   }
 }
 

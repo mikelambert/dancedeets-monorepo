@@ -45,13 +45,14 @@ export class TutorialListView extends React.Component {
   }
 
   renderRow(tutorial: Tutorial) {
+    const duration = formatDuration(tutorial.getDurationSeconds());
     return <TouchableHighlight onPress={() => {
       this.props.onSelected(tutorial);
     }}>
       <View style={{margin: 7}}>
         <Text style={styles.text}>{tutorial.title}</Text>
         <Text style={styles.text}>{tutorial.author}</Text>
-        <Text style={styles.text}>{tutorial.durationSeconds}</Text>
+        <Text style={styles.text}>{duration}</Text>
       </View>
     </TouchableHighlight>;
   }
@@ -64,11 +65,24 @@ export class TutorialListView extends React.Component {
   }
 }
 
+function formatDuration(durationSeconds: number) {
+  const hours = Math.floor(durationSeconds / 60 / 60);
+  const minutes = Math.floor(durationSeconds / 60) % 60;
+  const seconds = durationSeconds % 60;
+  const minutesString = (hours && minutes < 10) ? '0' + minutes : minutes;
+  const secondsString = (seconds < 10) ? '0' + seconds : seconds;
+  if (durationSeconds > 60 * 60) {
+    return `${hours}:${minutesString}:${secondsString}`;
+  } else {
+    return `${minutesString}:${secondsString}`;
+  }
+}
 
 type FeedProps = {
   items: {[key: any]: any};
   sectionHeaders: [any];
-  renderRow: (post: any) => any;
+  renderRow: (row: any) => any;
+  renderSectionHeader: (header: any) => any;
   renderHeader: ?() => any;
 };
 
@@ -106,6 +120,7 @@ export class SectionedListView extends React.Component {
       dataSource={this.state.dataSource}
       renderRow={this.props.renderRow}
       renderHeader={this.props.renderHeader}
+      renderSectionHeader={this.props.renderSectionHeader}
       initialListSize={10}
       pageSize={5}
       scrollRenderAheadDistance={10000}
@@ -125,7 +140,7 @@ export class TutorialView extends React.Component {
 
   renderHeader() {
     const description = this.props.tutorial.description ? <Text style={[styles.text, styles.tutorialDescription]}>{this.props.tutorial.description}</Text> : null;
-    const duration = TutorialView.formatDuration(this.props.tutorial.getDurationSeconds());
+    const duration = formatDuration(this.props.tutorial.getDurationSeconds());
     return <View style={styles.tutorialRow}>
       <Text style={[styles.text, styles.tutorialTitle]}>{this.props.tutorial.title}</Text>
       {description}
@@ -133,22 +148,14 @@ export class TutorialView extends React.Component {
     </View>;
   }
 
-  static formatDuration(durationSeconds: number) {
-    if (durationSeconds > 60 * 60) {
-      return `${Math.floor(durationSeconds / 60 / 60)}:${Math.floor(durationSeconds / 60) % 60}:${durationSeconds % 60}`;
-    } else {
-      return `${Math.floor(durationSeconds / 60)}:${durationSeconds % 60}`;
-    }
-  }
-
-  renderRow(post: any) {
-    const duration = TutorialView.formatDuration(post.durationSeconds);
+  renderRow(video: any) {
+    const duration = formatDuration(video.getDurationSeconds());
     return <TouchableHighlight onPress={() => {
       // TODO: Track post details
       track('Blog Post Selected');
       // Hacks because of how the imperative API works
       this.youtubePlayer.setNativeProps({
-        videoId: post.youtubeId,
+        videoId: video.youtubeId,
         play: false,
       });
       this.youtubePlayer.setNativeProps({
@@ -160,13 +167,19 @@ export class TutorialView extends React.Component {
       <HorizontalView style={styles.videoRow}>
         <Image source={require('./images/play-dark.png')} style={styles.videoPlay} />
         <View style={{flex: 1}}>
-          <Text style={[styles.text, styles.videoTitle]}>{post.title}</Text>
+          <Text style={[styles.text, styles.videoTitle]}>{video.title}</Text>
           <Text style={[styles.text, styles.videoDuration]}>{duration}</Text>
         </View>
       </HorizontalView>
       </View>
     </TouchableHighlight>;
 
+  }
+
+  renderSectionHeader(data, sectionId) {
+    const sectionData = JSON.parse(sectionId);
+    const duration = formatDuration(sectionData.durationSeconds)
+    return <Text style={[styles.text]}>{sectionData.title} - {duration}</Text>;
   }
 
   render() {
@@ -192,10 +205,11 @@ export class TutorialView extends React.Component {
         modestbranding={true}
         style={{alignSelf: 'stretch', height: 220, backgroundColor: 'black'}}
         />
-      <FeedListView
+      <SectionedListView
         items={this.props.tutorial.getItems()}
         sectionHeaders={this.props.tutorial.getSectionHeaders()}
         renderRow={this.renderRow}
+        renderSectionHeader={this.renderSectionHeader}
         renderHeader={this.renderHeader}
         />
     </View>;
