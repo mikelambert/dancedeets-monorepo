@@ -17,12 +17,51 @@ import { track } from '../store/track';
 import YouTube from 'react-native-youtube';
 import { FeedListView } from './BlogList';
 import {
-  Card,
   HorizontalView,
   Text,
 } from '../ui';
+import { getRemoteTutorials } from '../learn/learnConfig';
+import { Tutorial } from './models';
 
-export class VideoList extends React.Component {
+export class TutorialListView extends React.Component {
+  state: {
+    tutorials: [Tutorial];
+  };
+
+  constructor(props) {
+    super(props);
+    (this: any).renderRow = this.renderRow.bind(this);
+    this.state = {
+      tutorials: [],
+    };
+    this.load();
+  }
+
+  async load() {
+    this.setState({tutorials: await getRemoteTutorials()});
+  }
+
+  renderRow(tutorial: Tutorial) {
+    return <TouchableHighlight onPress={() => {
+      this.props.onSelected(tutorial);
+    }}>
+      <View style={{margin: 7}}>
+        <Text style={styles.text}>{tutorial.title}</Text>
+        <Text style={styles.text}>{tutorial.author}</Text>
+        <Text style={styles.text}>{tutorial.durationSeconds}</Text>
+      </View>
+    </TouchableHighlight>;
+  }
+
+  render() {
+    return <FeedListView
+      items={this.state.tutorials}
+      renderRow={this.renderRow}
+      />;
+  }
+}
+
+export class TutorialView extends React.Component {
   youtubePlayer: any;
 
   constructor(props) {
@@ -33,7 +72,7 @@ export class VideoList extends React.Component {
 
   renderHeader() {
     const description = this.props.playlist.description ? <Text style={[styles.text, styles.playlistDescription]}>{this.props.playlist.description}</Text> : null;
-    const duration = VideoList.formatDuration(this.props.playlist.durationSeconds());
+    const duration = Tutorial.formatDuration(this.props.playlist.durationSeconds());
     return <View style={styles.playlistRow}>
       <Text style={[styles.text, styles.playlistTitle]}>{this.props.playlist.title}</Text>
       {description}
@@ -42,7 +81,7 @@ export class VideoList extends React.Component {
   }
 
   static formatDuration(durationSeconds: number) {
-    if (durationSeconds > 60*60) {
+    if (durationSeconds > 60 * 60) {
       return `${Math.floor(durationSeconds / 60 / 60)}:${Math.floor(durationSeconds / 60) % 60}:${durationSeconds % 60}`;
     } else {
       return `${Math.floor(durationSeconds / 60)}:${durationSeconds % 60}`;
@@ -50,7 +89,7 @@ export class VideoList extends React.Component {
   }
 
   renderRow(post: any) {
-    const duration = VideoList.formatDuration(post.durationSeconds);
+    const duration = Tutorial.formatDuration(post.durationSeconds);
     return <TouchableHighlight onPress={() => {
       // TODO: Track post details
       track('Blog Post Selected');

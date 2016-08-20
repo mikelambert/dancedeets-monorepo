@@ -97,6 +97,10 @@ export class FeedListView extends React.Component {
     return state;
   }
 
+  componentWillReceiveProps(nextProps: FeedProps) {
+    this.setState(this._getNewState(nextProps.items));
+  }
+
   render() {
     return <ListView
       style={[styles.listView]}

@@ -36,13 +36,16 @@ import {
 import AddEvents from '../containers/AddEvents';
 import { track, trackWithEvent } from '../store/track';
 import { setDefaultState } from '../reducers/navigation';
-import { VideoList } from '../learn/Playlist';
+import {
+  TutorialListView,
+  TutorialView,
+} from '../learn/Playlist';
 
 const EventNavigator = generateNavigator('EVENT_NAV');
 setDefaultState('EVENT_NAV', { key: 'EventList', title: 'DanceDeets' });
 
 const LearnNavigator = generateNavigator('LEARN_NAV');
-setDefaultState('LEARN_NAV', { key: 'BlogList', title: 'Learn' });
+setDefaultState('LEARN_NAV', { key: 'TutorialList', title: 'Learn' });
 
 class GradientTabBar extends React.Component {
   render() {
@@ -157,12 +160,21 @@ class _TabbedAppView extends React.Component {
           // TODO: Track blog details
           track('Blog Selected');
           //navigatable.onNavigate({key: 'BlogPostList', title: blog.title, blog: blog});
-          navigatable.onNavigate({key: 'VideoList', title: blog.title, blog: blog});
+          navigatable.onNavigate({key: 'Tutorial', title: blog.title, tutorial: blog});
         }}
         />;
-    case 'VideoList':
-      return <VideoList
-        playlist={route.blog}
+    case 'TutorialList':
+      return <TutorialListView
+        onSelected={(tutorial) => {
+          // TODO: Track blog details
+          track('Tutorial Selected');
+          //navigatable.onNavigate({key: 'BlogPostList', title: blog.title, blog: blog});
+          navigatable.onNavigate({key: 'Tutorial', title: tutorial.title, tutorial: tutorial});
+        }}
+        />;
+    case 'Tutorial':
+      return <TutorialView
+        playlist={route.tutorial}
         />;
     case 'BlogPostList':
       return <BlogPostList

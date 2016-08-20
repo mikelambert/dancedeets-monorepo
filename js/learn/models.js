@@ -89,6 +89,27 @@ export class FeedBlog extends Blog {
   }
 }
 
+export class Tutorial {
+  title: string;
+  description: string;
+  author: string;
+  durationSeconds: number;
+  videos: [Video];
+}
+
+export class Video {
+  title: string;
+  durationSeconds: number;
+  url: string;
+}
+
+export class YoutubeTutorial extends Tutorial {
+}
+
+export function createYoutubeTutorial(json: any) {
+
+}
+
 export class YoutubePlaylistBlog extends Blog {
   constructor(playlistJson: any, playlistItemsJson: any, videosJson: any) {
     super();
@@ -126,10 +147,6 @@ export class YoutubePlaylistBlog extends Blog {
       youtubeId: snippet.resourceId.videoId,
       durationSeconds: moment.duration(contentDetails.duration).asSeconds(),
     };
-  }
-
-  static async convertDuration(duration: string) {
-
   }
 
   static getUrl(path: string, args: Object) {

@@ -8,6 +8,9 @@
 
 import { RemoteConfig } from 'react-native-firebase3';
 
+import jardyTutorial from './jardy.json';
+const defaultTutorials = [jardyTutorial];
+
 const defaultBlogs = [
   'y:PLB9CAA2877007AC02', // House Jardy: basic
   'y:PLE839D54D07A8ABC2', // House Jardy: advanced
@@ -86,13 +89,10 @@ const extraBlogs = [
   'rue-magazine',
 ];
 
-const defaultTutorials = [
-];
-
 async function loadConfig() {
   RemoteConfig.setNamespacedDefaults({
-    blogs: JSON.stringify(defaultBlogs),
     tutorials: JSON.stringify(defaultTutorials),
+    blogs: JSON.stringify(defaultBlogs),
   }, 'Learn');
   await RemoteConfig.fetchWithExpirationDuration(30 * 15);
   await RemoteConfig.activateFetched();
@@ -102,4 +102,7 @@ loadConfig();
 
 export async function getRemoteBlogs() {
   return JSON.parse(await RemoteConfig.getNamedspacedString('blogs', 'Learn'));
+}
+export async function getRemoteTutorials() {
+  return JSON.parse(await RemoteConfig.getNamedspacedString('tutorials', 'Learn'));
 }
