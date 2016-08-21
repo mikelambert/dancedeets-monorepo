@@ -18,21 +18,14 @@ const defaultTutorials = [
   require('./house/yeomin.json'),
   require('./house/yusuke.json'),
   require('./house/vincanitv.json'),
+  require('./house/japanese.json'),
   require('./house/miscellaneous.json'),
   require('./hiphop/alvaro.json'),
 ];
 
 const defaultBlogs = [
-  'y:PLB9CAA2877007AC02', // House Jardy: basic
-  'y:PLE839D54D07A8ABC2', // House Jardy: advanced
-  'y:PLdu69DsTPMPSw7OWmDuKxuoYJeFl6HsmR', // House with Rich Stylez
-  'y:PLwTkRR4yEsPL6g_GorhXIhM-uaL77sGjo', // House with Super Malcolm
   'y:PLZelnKT8VJwytJrZY9nmZtslGRdhFaYso', // Jardy in spanish (needs subtitles!)
   'y:PLF5290D54A54C4EDA', // Jardy in Korean (needs subtitles!)
-  'y:PLVY6uOsv4D9aV0_xhKlb1HhmviRBaB4Uh', // Koji in Japanese
-  'y:PLVY6uOsv4D9YVHGU8AAv4wlORDtNkAjIp', // Hiro in Japanese
-  'y:PLomQfPiZA65Rh0hgchIytdZYlhxOaXfDm', // Yu-suke in Japanese
-  'y:PLwQFrP9G-gpB-CO355_sKMF5EsKSWHwRc', // Yu-suke in Japanese
   // Somehow some of these aren't in a playlist? https://www.youtube.com/user/DANCEcoaching/search?query=%E3%83%8F%E3%82%A6%E3%82%B9
   // In particular: https://www.youtube.com/watch?v=EEluQ_4eBrs
 
@@ -42,27 +35,6 @@ const defaultBlogs = [
   'y:PL60B63DCF4C745EF4', // Originality Khan
   'y:PLD3786D9190A031C9', // Includes crap expertvillage as well as japanese ones
 ];
-// Spanish House
-// https://www.youtube.com/user/Iniciasport/search?query=house
-// Spanish Hiphop
-// https://www.youtube.com/user/Iniciasport/search?query=hiphop
-// VincaniTV (need to make a playlist out of these?):
-// - Emiko
-// https://www.youtube.com/watch?v=Xc8PmwxVPgY
-// https://www.youtube.com/watch?v=6dCIa2vG8f8
-// https://www.youtube.com/watch?v=3P55U4_-Q14
-// https://www.youtube.com/watch?v=pvx_NzLe7yU
-// - Coflo
-// https://www.youtube.com/watch?v=ogASj4J77hQ 
-// - Jardy
-// https://www.youtube.com/watch?v=eVa92XQppTU
-
-// House:
-// https://www.youtube.com/watch?v=gTzVvUpQbmM
-// https://www.youtube.com/watch?v=ta8htUbPjYQ
-
-// Japanese House:
-// https://www.youtube.com/watch?v=hcbDPNg0J9g
 
 // Find many here:
 // https://www.youtube.com/user/RISINGDanceSchoolCh/playlists

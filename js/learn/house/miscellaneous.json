@@ -18,8 +18,8 @@
         {
           "youtubeId": "hcbDPNg0J9g",
           "duration": "PT10M00S",
-          "title": "Japanese House Dance Tutorial",
-        }
+          "title": "Unknown Dancers",
+        },
       ],
     },
     {
@@ -31,6 +31,15 @@
           "title": "South African Dancers teach Chase, Farmer, Skate",
         }
       ],
+    },
+    {
+      "title": "Brian Henninger",
+      "videos": [
+        {
+          "youtubeId": "uaftuBfkGj8",
+          "duration": "PT17M41S",
+          "title": "The Jack and the Skate/Train"
+        }]
     },
   ]
 }
