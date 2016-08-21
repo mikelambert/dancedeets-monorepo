@@ -1,0 +1,36 @@
+{
+  "title": "Miscellaneous House Dance Tutorials",
+  "author": "Miscellaneous",
+  "sections": [
+    {
+      "title": "Washington Salles",
+      "videos": [
+        {
+          "youtubeId": "93lxE7qwwXc",
+          "duration": "PT3M13S",
+          "title": "Washington Salles"
+        },
+      ]
+    },
+    {
+      "title": "Japanese House Dance Tutorial",
+      "videos": [
+        {
+          "youtubeId": "hcbDPNg0J9g",
+          "duration": "PT10M00S",
+          "title": "Japanese House Dance Tutorial",
+        }
+      ],
+    },
+    {
+      "title": "South African Dancers",
+      "videos": [
+        {
+          "youtubeId": "ta8htUbPjYQ",
+          "duration": "PT2M44S",
+          "title": "South African Dancers teach Chase, Farmer, Skate",
+        }
+      ],
+    },
+  ]
+}

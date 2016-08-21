@@ -13,6 +13,12 @@ const defaultTutorials = [
   require('./house/rich.json'),
   require('./house/malcolm.json'),
   require('./house/alvaro.json'),
+  require('./house/hiro.json'),
+  require('./house/koji.json'),
+  require('./house/yeomin.json'),
+  require('./house/yusuke.json'),
+  require('./house/vincanitv.json'),
+  require('./house/miscellaneous.json'),
   require('./hiphop/alvaro.json'),
 ];
 

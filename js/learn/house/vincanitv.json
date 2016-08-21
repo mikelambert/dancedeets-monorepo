@@ -1,0 +1,46 @@
+{
+  "title": "VincaniTV's Tutorials",
+  "author": "Miscellaneous - Emiko, Coflo, & Jardy",
+  "sections": [
+    {
+      "title": "Emiko (Syrenz Crew)",
+      "videos": [
+        {
+          "youtubeId": "Xc8PmwxVPgY",
+          "duration": "PT1M49S",
+          "title": "Heel Toe"
+        },
+        {
+          "youtubeId": "pvx_NzLe7yU",
+          "duration": "PT2M02S",
+          "title": "Pas De Bourrée"
+        },
+        {
+          "youtubeId": "3P55U4_-Q14",
+          "duration": "PT1M47S",
+          "title": "Stomping"
+        },
+      ]
+    },
+    {
+      "title": "CoFlo (Circle of Fire / Soul Shifters)",
+      "videos": [
+        {
+          "youtubeId": "ogASj4J77hQ",
+          "duration": "PT5M25S",
+          "title": "Time Step",
+        },
+      ],
+    },
+    {
+      "title": "Jardy Santiago",
+      "videos": [
+        {
+          "youtubeId": "eVa92XQppTU",
+          "duration": "PT8M54S",
+          "title": "Loose Legs Variation",
+        },
+      ],
+    }
+  ]
+}
