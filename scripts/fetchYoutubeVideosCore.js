@@ -63,4 +63,4 @@ async function load(playlistId) {
 }
 
 
-load('PLE839D54D07A8ABC2');
+load(process.argv.slice(2));
