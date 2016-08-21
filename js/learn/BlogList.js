@@ -42,7 +42,7 @@ export class BlogPostContents extends React.Component {
         hidden={true}
         playsInline={true}
         loop={false}
-        style={{alignSelf: 'stretch', height: 300, backgroundColor: 'black'}}
+        style={{alignSelf: 'stretch', height: 300}}
         />;
     } else {
       return <WKWebView
@@ -231,8 +231,9 @@ export class BlogList extends React.Component {
 const styles = StyleSheet.create({
   listView: {
     flex: 1,
+    backgroundColor: 'black',
   },
   text: {
-    color: 'black',
+    color: 'white',
   }
 });
