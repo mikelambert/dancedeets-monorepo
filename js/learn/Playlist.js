@@ -23,6 +23,7 @@ import {
 } from '../ui';
 import { getRemoteTutorials } from '../learn/learnConfig';
 import { Tutorial, Video } from './models';
+import { lightPurpleColors, purpleColors } from '../Colors';
 
 export class TutorialListView extends React.Component {
   state: {
@@ -165,7 +166,7 @@ export class TutorialView extends React.Component {
     }}>
       <View>
       <HorizontalView style={styles.videoRow}>
-        <Image source={require('./images/play-dark.png')} style={styles.videoPlay} />
+        <Image source={require('./images/play.png')} style={styles.videoPlay} />
         <View style={{flex: 1}}>
           <Text style={[styles.text, styles.videoTitle]}>{video.title}</Text>
           <Text style={[styles.text, styles.videoDuration]}>{duration}</Text>
@@ -176,7 +177,7 @@ export class TutorialView extends React.Component {
 
   }
 
-  renderSectionHeader(data: [Video], sectionId: string, x) {
+  renderSectionHeader(data: [Video], sectionId: string) {
     const sectionData = JSON.parse(sectionId);
     const duration = formatDuration(sectionData.durationSeconds);
     return <View style={styles.sectionRow}>
@@ -225,11 +226,13 @@ let styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   text: {
-    color: 'black',
+    color: 'white',
   },
   tutorialRow: {
     padding: 7,
-    backgroundColor: 'white',
+    backgroundColor: purpleColors[4],
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: purpleColors[3],
   },
   tutorialTitle: {
     fontWeight: 'bold',
@@ -242,21 +245,23 @@ let styles = StyleSheet.create({
   },
   sectionRow: {
     padding: 7,
-    backgroundColor: '#eee',
+    backgroundColor: purpleColors[4],
   },
   sectionTitle: {
     fontSize: 15,
     lineHeight: 18,
   },
   sectionDuration: {
-    color: '#666',
+    color: '#ccc',
     fontSize: 12,
     lineHeight: 15,
   },
   videoRow: {
     alignItems: 'center',
     padding: 7,
-    backgroundColor: 'white',
+    backgroundColor: purpleColors[3],
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: purpleColors[4],
   },
   videoTitle: {
     fontWeight: 'bold',
@@ -264,7 +269,7 @@ let styles = StyleSheet.create({
     lineHeight: 18,
   },
   videoDuration: {
-    color: '#666',
+    color: '#ccc',
     fontSize: 12,
     lineHeight: 15,
   },
