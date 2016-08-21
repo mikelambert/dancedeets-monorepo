@@ -1,0 +1,81 @@
+{
+  "title": "Super Malcolm's House Tutorials",
+  "author": "Super Malcolm",
+  "sections": [
+    {
+      "title": "Side steps",
+      "videos": [
+        {
+          "id": "3sQdaM4MOgE",
+          "duration": "PT1M36S",
+          "title": "Pas de bourree Variation"
+        },
+        {
+          "id": "6mlouSEOc0M",
+          "duration": "PT31S",
+          "title": "Cross walk"
+        },
+        {
+          "id": "Qi_SdxQWa3I",
+          "duration": "PT1M58S",
+          "title": "Cross Step Variation"
+        },
+        {
+          "id": "QZ51SN1dcy0",
+          "duration": "PT4M23S",
+          "title": "Step Tutorial"
+        },
+        {
+          "id": "1JheWLZS3lk",
+          "duration": "PT1M42S",
+          "title": "Side Walk"
+        },
+        {
+          "id": "ryhkx1IMpqY",
+          "duration": "PT1M25S",
+          "title": "Side Walk Variation"
+        },
+      ],
+    },
+    {
+      "title": "In-place steps",
+      "videos": [
+        {
+          "id": "siYtrioXsiM",
+          "duration": "PT2M42S",
+          "title": "Heel Toe Variation"
+        },
+        {
+          "id": "v8MCMYezApA",
+          "duration": "PT38S",
+          "title": "Jack in the box"
+        },
+        {
+          "id": "2TAc5fRFCY0",
+          "duration": "PT2M26S",
+          "title": "Roger Rabbit Variation 1"
+        },
+        {
+          "id": "PKbnBYtiC_E",
+          "duration": "PT2M56S",
+          "title": "Roger Rabbit Variation 2"
+        }
+      ]
+    },
+    {
+      "title": "Miscellaneous",
+      "videos": [
+        {
+          "id": "7O_d3KoajP8",
+          "duration": "PT4M52S",
+          "title": "Floorwork Tutorial"
+        },
+        {
+          "id": "ffkyKgrpo6Y",
+          "duration": "PT1M35S",
+          "title": "Steps Variation"
+        }
+      ]
+    }
+  ]
+}

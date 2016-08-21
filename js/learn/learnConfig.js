@@ -9,7 +9,14 @@
 import { RemoteConfig } from 'react-native-firebase3';
 
 import jardyTutorial from './jardy.json';
-const defaultTutorials = [jardyTutorial];
+import richTutorial from './rich.json';
+import malcolmTutorial from './malcolm.json';
+
+const defaultTutorials = [
+  jardyTutorial,
+  richTutorial,
+  malcolmTutorial,
+];
 
 const defaultBlogs = [
   'y:PLB9CAA2877007AC02', // House Jardy: basic
@@ -31,7 +38,10 @@ const defaultBlogs = [
   'y:PL60B63DCF4C745EF4', // Originality Khan
   'y:PLD3786D9190A031C9', // Includes crap expertvillage as well as japanese ones
 ];
-
+// Spanish House
+// https://www.youtube.com/user/Iniciasport/search?query=house
+// Spanish Hiphop
+// https://www.youtube.com/user/Iniciasport/search?query=hiphop
 // VincaniTV (need to make a playlist out of these?):
 // - Emiko
 // https://www.youtube.com/watch?v=Xc8PmwxVPgY
