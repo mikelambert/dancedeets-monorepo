@@ -133,10 +133,17 @@ export class SectionedListView extends React.Component {
 export class TutorialView extends React.Component {
   youtubePlayer: any;
 
+  state: {
+    selectedIndex: number;
+  };
+
   constructor(props) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).renderHeader = this.renderHeader.bind(this);
+    this.state = {
+      selectedIndex: 0,
+    };
   }
 
   renderHeader() {
@@ -165,6 +172,12 @@ export class TutorialView extends React.Component {
         this.youtubePlayer.setNativeProps({
           play: true,
         });
+        const index = this.props.tutorial.getVideoIndex(video);
+        //TODO: Enable this to make setState work.
+        // It unfortunately causes a html-video-reload, which ends up being slower
+        // than reusing the existing video object and just setting the video id.
+        // this.setState({selectedIndex: index});
+
         //navigatable.onNavigate({key: 'BlogPostItem', title: post.title, post: post});
       }}>
       <View>
@@ -189,6 +202,10 @@ export class TutorialView extends React.Component {
     </View>;
   }
 
+  getSelectedVideo() {
+    return this.props.tutorial.getVideo(this.state.selectedIndex);
+  }
+
   render() {
     // TODO: fix videoID on the main youtube docs?
     // also explain setNativeProps
@@ -201,7 +218,7 @@ export class TutorialView extends React.Component {
         ref={(x) => {
           this.youtubePlayer = x;
         }}
-        videoId={this.props.tutorial.sections[0].videos[0].youtubeId}
+        videoId={this.getSelectedVideo(this.state.selectedIndex).youtubeId}
         play={false}
         hidden={false}
         playsInline={true}
