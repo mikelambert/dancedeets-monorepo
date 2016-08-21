@@ -22,7 +22,7 @@ function getUrl(path: string, args: Object) {
 
 
 async function getTimes(playlistItemsJson) {
-  const videoIds = playlistItemsJson.items.map((x) => x.snippet.resourceId.videoId);
+  const videoIds = playlistItemsJson.items.map((x) => x.id ? x.id.videoId : x.snippet.resourceId.videoId);
   const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/videos',
   {
     id: videoIds.join(','),
@@ -34,7 +34,7 @@ async function getTimes(playlistItemsJson) {
   return videosResult;
 }
 
-async function load(playlistId) {
+async function loadPlaylist(playlistId) {
   const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/playlistItems',
   {
     playlistId: playlistId,
@@ -62,5 +62,45 @@ async function load(playlistId) {
   console.log(JSON.stringify(annotatedPlaylist, null, '  '));
 }
 
+async function loadChannel(channelName, searchQuery) {
+  const channelUrl = getUrl('https://www.googleapis.com/youtube/v3/channels',
+  {
+    forUsername: channelName,
+    part: 'snippet',
+    key: YoutubeKey,
+  });
+  const channelJson = await (await fetch(channelUrl)).json();
+  const channelId = channelJson.items[0].id;
+  const channelSearchUrl = getUrl('https://www.googleapis.com/youtube/v3/search',
+  {
+    channelId,
+    part: 'id,snippet',
+    q: searchQuery,
+    key: YoutubeKey,
+    maxResults: 50,
+    type: 'video',
+  });
+  const channelSearchJson = await (await fetch(channelSearchUrl)).json();
+  const videosJson = await getTimes(channelSearchJson);
+  const contentDetailsLookup = {};
+  videosJson.items.forEach((x) => {
+    contentDetailsLookup[x.id] = x.contentDetails;
+  });
+  const annotatedPlaylist = channelSearchJson.items.map((x) => {
+    const id = x.id ? x.id.videoId : x.snippet.resourceId.videoId;
+    return {
+      id: id,
+      duration: contentDetailsLookup[id].duration,
+      title: x.snippet.title,
+    };
+  });
+  console.log(JSON.stringify(annotatedPlaylist, null, '  '));
+}
 
-load(process.argv.slice(2));
+const args = process.argv.slice(2);
+const type = args[0];
+if (type == 'pl') {
+  loadPlaylist(args[1]);
+} else if (type == 'ch') {
+  loadChannel(args[1], args[2]);
+}
