@@ -22,7 +22,7 @@ function getUrl(path: string, args: Object) {
 
 
 async function getTimes(playlistItemsJson) {
-  const videoIds = playlistItemsJson.items.map((x) => x.id ? x.id.videoId : x.snippet.resourceId.videoId);
+  const videoIds = playlistItemsJson.items.map((x) => x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId);
   const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/videos',
   {
     id: videoIds.join(','),
@@ -43,6 +43,7 @@ async function loadPlaylist(playlistId) {
     key: YoutubeKey,
   });
   const playlistItemsJson = await (await fetch(playlistItemsUrl)).json();
+  console.log(playlistItemsJson);
   const videosJson = await getTimes(playlistItemsJson);
 
   const contentDetailsLookup = {};
@@ -87,7 +88,7 @@ async function loadChannel(channelName, searchQuery) {
     contentDetailsLookup[x.id] = x.contentDetails;
   });
   const annotatedPlaylist = channelSearchJson.items.map((x) => {
-    const id = x.id ? x.id.videoId : x.snippet.resourceId.videoId;
+    const id = x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId;
     return {
       id: id,
       duration: contentDetailsLookup[id].duration,
