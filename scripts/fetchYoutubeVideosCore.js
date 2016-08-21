@@ -70,7 +70,7 @@ async function loadChannel(channelName, searchQuery) {
     key: YoutubeKey,
   });
   const channelJson = await (await fetch(channelUrl)).json();
-  const channelId = channelJson.items[0].id;
+  const channelId = channelJson.items.length ? channelJson.items[0].id : channelName;
   const channelSearchUrl = getUrl('https://www.googleapis.com/youtube/v3/search',
   {
     channelId,
