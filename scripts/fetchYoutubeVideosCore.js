@@ -43,7 +43,6 @@ async function loadPlaylist(playlistId) {
     key: YoutubeKey,
   });
   const playlistItemsJson = await (await fetch(playlistItemsUrl)).json();
-  console.log(playlistItemsJson);
   const videosJson = await getTimes(playlistItemsJson);
 
   const contentDetailsLookup = {};
