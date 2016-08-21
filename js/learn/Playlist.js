@@ -23,7 +23,7 @@ import {
 } from '../ui';
 import { getRemoteTutorials } from '../learn/learnConfig';
 import { Tutorial, Video } from './models';
-import { lightPurpleColors, purpleColors } from '../Colors';
+import { yellowColors, purpleColors } from '../Colors';
 
 export class TutorialListView extends React.Component {
   state: {
@@ -151,19 +151,22 @@ export class TutorialView extends React.Component {
 
   renderRow(video: any) {
     const duration = formatDuration(video.getDurationSeconds());
-    return <TouchableHighlight onPress={() => {
-      // TODO: Track post details
-      track('Blog Post Selected');
-      // Hacks because of how the imperative API works
-      this.youtubePlayer.setNativeProps({
-        videoId: video.youtubeId,
-        play: false,
-      });
-      this.youtubePlayer.setNativeProps({
-        play: true,
-      });
-      //navigatable.onNavigate({key: 'BlogPostItem', title: post.title, post: post});
-    }}>
+    return <TouchableHighlight
+      underlayColor={purpleColors[0]}
+      activeOpacity={0.5}
+      onPress={() => {
+        // TODO: Track post details
+        track('Blog Post Selected');
+        // Hacks because of how the imperative API works
+        this.youtubePlayer.setNativeProps({
+          videoId: video.youtubeId,
+          play: false,
+        });
+        this.youtubePlayer.setNativeProps({
+          play: true,
+        });
+        //navigatable.onNavigate({key: 'BlogPostItem', title: post.title, post: post});
+      }}>
       <View>
       <HorizontalView style={styles.videoRow}>
         <Image source={require('./images/play.png')} style={styles.videoPlay} />
