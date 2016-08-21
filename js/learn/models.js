@@ -107,14 +107,14 @@ export class Tutorial {
 
   getItems() {
     const items = {};
-    this.sections.forEach((x) => {
-      items[x.key()] = x.videos;
+    this.sections.forEach((x, i) => {
+      items[x.key(i)] = x.videos;
     });
     return items;
   }
 
   getSectionHeaders() {
-    return this.sections.map((x) => x.key());
+    return this.sections.map((x, i) => x.key(i));
   }
 }
 
@@ -131,8 +131,9 @@ export class Section {
     return this.videos.reduce((reduced, item) => reduced + item.getDurationSeconds(), 0);
   }
 
-  key() {
+  key(index: number) {
     return JSON.stringify({
+      index: index,
       title: this.title,
       durationSeconds: this.getDurationSeconds(),
     });

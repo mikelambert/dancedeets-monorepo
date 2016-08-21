@@ -22,7 +22,7 @@ import {
   Text,
 } from '../ui';
 import { getRemoteTutorials } from '../learn/learnConfig';
-import { Tutorial } from './models';
+import { Tutorial, Video } from './models';
 
 export class TutorialListView extends React.Component {
   state: {
@@ -176,10 +176,13 @@ export class TutorialView extends React.Component {
 
   }
 
-  renderSectionHeader(data, sectionId) {
+  renderSectionHeader(data: [Video], sectionId: string, x) {
     const sectionData = JSON.parse(sectionId);
-    const duration = formatDuration(sectionData.durationSeconds)
-    return <Text style={[styles.text]}>{sectionData.title} - {duration}</Text>;
+    const duration = formatDuration(sectionData.durationSeconds);
+    return <View style={styles.sectionRow}>
+      <Text style={[styles.text, styles.sectionTitle]}>{sectionData.index + 1} - {sectionData.title}</Text>
+      <Text style={[styles.text, styles.sectionDuration]}>{duration}</Text>
+    </View>;
   }
 
   render() {
@@ -224,22 +227,36 @@ let styles = StyleSheet.create({
   text: {
     color: 'black',
   },
-  playlistRow: {
+  tutorialRow: {
     padding: 7,
     backgroundColor: 'white',
   },
-  playlistTitle: {
-    fontSize: 20,
-    lineHeight: 23,
+  tutorialTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    lineHeight: 20,
   },
-  playlistSubtitle: {
+  tutorialSubtitle: {
     fontSize: 15,
     lineHeight: 18,
+  },
+  sectionRow: {
+    padding: 7,
+    backgroundColor: '#eee',
+  },
+  sectionTitle: {
+    fontSize: 15,
+    lineHeight: 18,
+  },
+  sectionDuration: {
+    color: '#666',
+    fontSize: 12,
+    lineHeight: 15,
   },
   videoRow: {
     alignItems: 'center',
     padding: 7,
-    backgroundColor: '#eee',
+    backgroundColor: 'white',
   },
   videoTitle: {
     fontWeight: 'bold',
@@ -247,6 +264,7 @@ let styles = StyleSheet.create({
     lineHeight: 18,
   },
   videoDuration: {
+    color: '#666',
     fontSize: 12,
     lineHeight: 15,
   },
