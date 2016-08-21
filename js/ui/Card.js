@@ -7,11 +7,22 @@ import {
 import { purpleColors } from '../Colors';
 
 export default class Card extends React.Component {
+  _root: React.Component;
+
   render() {
-    return <View style={[styles.card, this.props.style]}>
+    return <View
+        ref={(x) => {
+          this._root = x;
+        }}
+        style={[styles.card, this.props.style]}
+      >
       <View style={styles.titleBackground}>{this.props.title}</View>
       <View style={styles.mainBackground}>{this.props.children}</View>
     </View>;
+  }
+
+  setNativeProps(props) {
+    this._root.setNativeProps(props);
   }
 }
 

@@ -93,12 +93,18 @@ export class Tutorial {
   title: string;
   description: string;
   author: string;
+  style: string;
+  language: string;
+  thumbnail: string;
   sections: [Section];
 
   constructor(json: any) {
     this.title = json.title;
     this.description = json.description;
     this.author = json.author;
+    this.style = json.style;
+    this.language = json.language;
+    this.thumbnail = json.thumbnail;
     this.sections = json.sections.map((x) => new Section(x));
   }
   getDurationSeconds(): number {

@@ -1,6 +1,9 @@
 {
   "title": "Super Malcolm's House Tutorials",
   "author": "Super Malcolm",
+  "style": "house",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/1JheWLZS3lk/sddefault.jpg",
   "sections": [
     {
       "title": "Side steps",

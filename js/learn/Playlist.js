@@ -18,6 +18,7 @@ import { track } from '../store/track';
 import YouTube from 'react-native-youtube';
 import { FeedListView } from './BlogList';
 import {
+  Card,
   HorizontalView,
   Text,
 } from '../ui';
@@ -52,11 +53,16 @@ export class TutorialListView extends React.Component {
     return <TouchableHighlight onPress={() => {
       this.props.onSelected(tutorial);
     }}>
-      <View style={{margin: 7}}>
-        <Text style={styles.text}>{tutorial.title}</Text>
-        <Text style={styles.text}>{tutorial.author}</Text>
-        <Text style={styles.text}>{duration}</Text>
-      </View>
+      <Card
+        title={
+          <Text style={[styles.text, styles.tutorialTitle, styles.tutorialListRow]}>{tutorial.title}</Text>
+        }>
+        <View style={{margin: 7}}>
+          <Image source={{uri: tutorial.thumbnail}} style={styles.thumbnail} />
+          <Text style={styles.text}>Teacher: {tutorial.author}</Text>
+          <Text style={styles.text}>Duration: {duration}</Text>
+        </View>
+      </Card>
     </TouchableHighlight>;
   }
 
@@ -278,6 +284,13 @@ let styles = StyleSheet.create({
   },
   text: {
     color: 'white',
+  },
+  thumbnail: {
+    borderRadius: 10,
+    height: 200,
+  },
+  tutorialListRow: {
+    padding: 7,
   },
   tutorialRow: {
     padding: 7,

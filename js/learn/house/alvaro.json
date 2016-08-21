@@ -1,6 +1,9 @@
 {
   "title": "Álvaro García's House Tutorials",
   "author": "Álvaro García",
+  "style": "house",
+  "language": "es",
+  "thumbnail": "https://i.ytimg.com/vi/GNnJTKVtmcw/sddefault.jpg",
   "sections": [
     {
       "title": "Introducción",

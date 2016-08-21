@@ -1,6 +1,9 @@
 {
   "title": "Yeomon's House Tutorials",
   "author": "여민 - Yeomin",
+  "style": "house",
+  "language": "ko",
+  "thumbnail": "https://i.ytimg.com/vi/BMOAuaJ9Ij0/sddefault.jpg",
   "sections": [
     {
       "title": "Basics",
