@@ -274,7 +274,7 @@ export class TutorialView extends React.Component {
 let styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'black',
   },
   text: {
     color: 'white',
