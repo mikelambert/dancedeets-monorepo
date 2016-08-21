@@ -1,0 +1,111 @@
+{
+  "title": "Álvaro García's House Tutorials",
+  "author": "Álvaro García",
+  "sections": [
+    {
+      "title": "Introducción",
+      "videos": [
+        {
+          "youtubeId": "GNnJTKVtmcw",
+          "duration": "PT1M49S",
+          "title": "Introducción"
+        },
+        {
+          "youtubeId": "_qPgYqka-KA",
+          "duration": "PT32S",
+          "title": "Equipación"
+        },
+        {
+          "youtubeId": "lcufQsQ0dU8",
+          "duration": "PT3M8S",
+          "title": "Las cinco bases del house"
+        },
+      ]
+    },
+    {
+      "title": "Steps - 1",
+      "videos": [
+        {
+          "youtubeId": "8J2SejfHSuU",
+          "duration": "PT1M40S",
+          "title": "Jack in the box"
+        },
+        {
+          "youtubeId": "tfD_Z9MWz_I",
+          "duration": "PT1M25S",
+          "title": "Loose legs"
+        },
+        {
+          "youtubeId": "NEbDsdWtHWU",
+          "duration": "PT1M7S",
+          "title": "The train"
+        },
+        {
+          "youtubeId": "V2Jex49NcpA",
+          "duration": "PT1M19S",
+          "title": "Farmer"
+        },
+        {
+          "youtubeId": "PKmu2IBOO78",
+          "duration": "PT1M21S",
+          "title": "Samba swirl"
+        },
+        {
+          "youtubeId": "MYuMFRkAioA",
+          "duration": "PT1M26S",
+          "title": "Pass de boure"
+        },
+        {
+          "youtubeId": "TawNCpuP5QQ",
+          "duration": "PT1M27S",
+          "title": "Salsa step"
+        },
+        {
+          "youtubeId": "5G8T3pYTFr0",
+          "duration": "PT1M23S",
+          "title": "Salsa hop"
+        },
+      ]
+    },
+    {
+      "title": "Steps - 2",
+      "videos": [
+        {
+          "youtubeId": "ajujUKjFp5A",
+          "duration": "PT1M21S",
+          "title": "Side walk"
+        },
+        {
+          "youtubeId": "2-FytbEWzWs",
+          "duration": "PT1M25S",
+          "title": "Cross walk"
+        },
+        {
+          "youtubeId": "RTQZqlcmIfc",
+          "duration": "PT1M26S",
+          "title": "Cross roads"
+        },
+        {
+          "youtubeId": "KUCgmrur674",
+          "duration": "PT2M25S",
+          "title": "Heel and toe"
+        },
+        {
+          "youtubeId": "LG5X8QQxst0",
+          "duration": "PT1M32S",
+          "title": "Tip tap toe"
+        },
+        {
+          "youtubeId": "DM6FcjTCVig",
+          "duration": "PT1M16S",
+          "title": "Three ways"
+        },
+        {
+          "youtubeId": "IOOOdF4Q8EA",
+          "duration": "PT1M16S",
+          "title": "Demostración"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "title": "Álvaro García's Hip Hop Tutorials",
+  "author": "Álvaro García",
+  "sections": [
+    {
+      "title": "Introducción",
+      "videos": [
+        {
+          "youtubeId": "vbWziMUR5XU",
+          "duration": "PT2M27S",
+          "title": "Introducción"
+        },
+        {
+          "youtubeId": "gIVerlT0IRk",
+          "duration": "PT1M58S",
+          "title": "Desplazamientos"
+        },
+      ]
+    },
+    {
+      "title": "Steps - 1",
+      "videos": [
+        {
+          "youtubeId": "g8PI_qgadhA",
+          "duration": "PT1M25S",
+          "title": "Running man"
+        },
+        {
+          "youtubeId": "bFJLPd-wowk",
+          "duration": "PT1M26S",
+          "title": "Reebok"
+        },
+        {
+          "youtubeId": "KZeSQIpAccU",
+          "duration": "PT1M50S",
+          "title": "Upstairs downstairs"
+        },
+        {
+          "youtubeId": "0bfsjIWPj3M",
+          "duration": "PT1M40S",
+          "title": "Roger Rabbit"
+        },
+        {
+          "youtubeId": "s2SR7_8tjuo",
+          "duration": "PT1M47S",
+          "title": "Monastery"
+        },
+      ]
+    },
+    {
+      "title": "Steps - 2",
+      "videos": [
+        {
+          "youtubeId": "vukDRzUXvbw",
+          "duration": "PT1M28S",
+          "title": "Kriss Kross"
+        },
+        {
+          "youtubeId": "TgE-tw86f4g",
+          "duration": "PT2M17S",
+          "title": "Harlem shake"
+        },
+        {
+          "youtubeId": "gNiQfVFuNKM",
+          "duration": "PT1M24S",
+          "title": "Party machine"
+        },
+        {
+          "youtubeId": "z6mvx6u6t9c",
+          "duration": "PT1M36S",
+          "title": "Bart Simpson"
+        },
+        {
+          "youtubeId": "p_MY7LlS8c4",
+          "duration": "PT2M13S",
+          "title": "Bounce"
+        },
+      ]
+    },
+    {
+      "title": "Steps - 3",
+      "videos": [
+        {
+          "youtubeId": "vD4Mhf8nbKg",
+          "duration": "PT1M42S",
+          "title": "Wop"
+        },
+        {
+          "youtubeId": "Zo05IfWAoik",
+          "duration": "PT1M44S",
+          "title": "Bankhead bounce"
+        },
+        {
+          "youtubeId": "PcA-RgveDFs",
+          "duration": "PT2M2S",
+          "title": "ATL Stomp"
+        },
+        {
+          "youtubeId": "xwNx1c61X_M",
+          "duration": "PT2M19S",
+          "title": "Cabbage patch"
+        },
+        {
+          "youtubeId": "eyy8QT5lyms",
+          "duration": "PT2M2S",
+          "title": "Steve Martin"
+        }
+      ]
+    },
+    {
+      "title": "Final",
+      "videos": [
+        {
+          "youtubeId": "FpwPIXAEzfI",
+          "duration": "PT3M1S",
+          "title": "Demostración final"
+        }
+      ]
+    }
+  ]
+}

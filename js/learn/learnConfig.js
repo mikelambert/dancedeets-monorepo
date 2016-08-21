@@ -8,14 +8,12 @@
 
 import { RemoteConfig } from 'react-native-firebase3';
 
-import jardyTutorial from './jardy.json';
-import richTutorial from './rich.json';
-import malcolmTutorial from './malcolm.json';
-
 const defaultTutorials = [
-  jardyTutorial,
-  richTutorial,
-  malcolmTutorial,
+  require('./house/jardy.json'),
+  require('./house/rich.json'),
+  require('./house/malcolm.json'),
+  require('./house/alvaro.json'),
+  require('./hiphop/alvaro.json'),
 ];
 
 const defaultBlogs = [
