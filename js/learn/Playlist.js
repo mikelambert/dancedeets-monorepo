@@ -23,7 +23,9 @@ import {
 } from '../ui';
 import { getRemoteTutorials } from '../learn/learnConfig';
 import { Tutorial, Video } from './models';
-import { yellowColors, purpleColors } from '../Colors';
+import { purpleColors } from '../Colors';
+import shallowEqual from 'fbjs/lib/shallowEqual';
+import styleEqual from 'style-equal';
 
 export class TutorialListView extends React.Component {
   state: {
@@ -130,6 +132,43 @@ export class SectionedListView extends React.Component {
   }
 }
 
+// This is a wrapper around <YouTube> that ignores any changes to the videoId,
+// and instead uses them to update the YouTube object directly.
+class YouTubeNoReload extends React.Component {
+  _root: React.Component;
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const style = this.props.style;
+    const nextStyle = nextProps.style;
+    const trimmedProps = {...this.props, style: null, videoId: null};
+    const trimmedNextProps = {...nextProps, style: null, videoId: null};
+    const diff = !styleEqual(style, nextStyle) || !shallowEqual(trimmedProps, trimmedNextProps) || !shallowEqual(this.state, nextState);
+    if (!diff && (this.props.videoId != nextProps.videoId)) {
+      this._root.setNativeProps({
+        videoId: nextProps.videoId,
+        play: false,
+      });
+      this._root.setNativeProps({
+        play: true,
+      });
+    }
+    return diff;
+  }
+
+  setNativeProps(props) {
+    this._root.setNativeProps(props);
+  }
+
+  render() {
+    return <YouTube
+      ref={(x) => {
+        this._root = x;
+      }}
+      {...this.props}
+      />;
+  }
+}
+
 export class TutorialView extends React.Component {
   youtubePlayer: any;
 
@@ -164,19 +203,11 @@ export class TutorialView extends React.Component {
       onPress={() => {
         // TODO: Track post details
         track('Blog Post Selected');
-        // Hacks because of how the imperative API works
-        this.youtubePlayer.setNativeProps({
-          videoId: video.youtubeId,
-          play: false,
-        });
-        this.youtubePlayer.setNativeProps({
-          play: true,
-        });
         const index = this.props.tutorial.getVideoIndex(video);
         //TODO: Enable this to make setState work.
         // It unfortunately causes a html-video-reload, which ends up being slower
         // than reusing the existing video object and just setting the video id.
-        // this.setState({selectedIndex: index});
+        this.setState({selectedIndex: index});
 
         //navigatable.onNavigate({key: 'BlogPostItem', title: post.title, post: post});
       }}>
@@ -214,7 +245,7 @@ export class TutorialView extends React.Component {
     // for my client feature-bar (if i support scrub bar):
     // speed-rate, play/pause, back-ten-seconds, airplay
     return <View style={styles.container}>
-      <YouTube
+      <YouTubeNoReload
         ref={(x) => {
           this.youtubePlayer = x;
         }}

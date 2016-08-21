@@ -86,9 +86,6 @@ const messages = defineMessages({
   },
 });
 
-// TODO HACK: this is a huge hack. We need to store it as a member variable of an object somewhere
-const app = {};
-
 class _TabbedAppView extends React.Component {
   //TODO: move this to redux state!
   state: {
