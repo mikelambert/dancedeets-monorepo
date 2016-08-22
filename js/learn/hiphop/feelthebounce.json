@@ -1,0 +1,74 @@
+{
+  "title": "FeelTheBounceTV HipHop Tutorials",
+  "author": "Miscellaneous",
+  "style": "hiphop",
+  "language": "cs",
+  "thumbnail": "https://i.ytimg.com/vi/HKUfNGvTHwg/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Moves",
+      "videos": [
+        {
+          "youtubeId": "ts9YbI00bOk",
+          "duration": "PT2M6S",
+          "title": "Reebok"
+        },
+        {
+          "youtubeId": "oYSDzlqbizQ",
+          "duration": "PT1M44S",
+          "title": "Step N Slide"
+        },
+        {
+          "youtubeId": "voVqUru13rk",
+          "duration": "PT1M49S",
+          "title": "Kick Step"
+        },
+        {
+          "youtubeId": "-NdNwOJDkkA",
+          "duration": "PT4M",
+          "title": "ATL Stomp"
+        },
+        {
+          "youtubeId": "7szVc4i-dvU",
+          "duration": "PT2M7S",
+          "title": "Fila"
+        },
+        {
+          "youtubeId": "2SgbWQK31v4",
+          "duration": "PT1M51S",
+          "title": "Cabbage Patch"
+        },
+        {
+          "youtubeId": "VNBmaLSJJDU",
+          "duration": "PT1M47S",
+          "title": "Bounce"
+        },
+        {
+          "youtubeId": "jjmD2heQNrU",
+          "duration": "PT1M42S",
+          "title": "Bart Simpson"
+        },
+        {
+          "youtubeId": "C8EVrGvROrs",
+          "duration": "PT4M1S",
+          "title": "Choreo"
+        },
+        {
+          "youtubeId": "84B3N6vZ1jk",
+          "duration": "PT5M19S",
+          "title": "Choreo #2"
+        },
+        {
+          "youtubeId": "Se1swc4e15I",
+          "duration": "PT4M",
+          "title": "Choreo #3"
+        },
+        {
+          "youtubeId": "1Vrycp-Kmnw",
+          "duration": "PT4M35S",
+          "title": "Choreo #4"
+        },
+      ]
+    }
+  ]
+}

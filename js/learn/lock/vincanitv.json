@@ -1,0 +1,31 @@
+{
+  "title": "VincaniTV's Tutorials",
+  "author": "Miscellaneous - Lil' B & Moon",
+  "style": "lock",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/3P55U4_-Q14/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Lil' B (Groovmekanex, Academy of Villians)",
+      "videos": [
+
+        {
+          "youtubeId": "Oeto-pWkeog",
+          "duration": "PT4M25S",
+          "title": "Groove"
+        },
+      ]
+    },
+    {
+      "title": "Moon (2nd Nature, Korea)",
+      "videos": [
+
+        {
+          "youtubeId": "nuo-6UKqBMI",
+          "duration": "PT5M11S",
+          "title": "Beginner's Combination"
+        },
+      ]
+    },
+  ]
+}

@@ -10,6 +10,7 @@ import { RemoteConfig } from 'react-native-firebase3';
 
 const defaultTutorials = {
   'House': [
+    require('./house/newschool_dictionary.json'),
     require('./house/jardy.json'),
     require('./house/rich.json'),
     require('./house/malcolm.json'),
@@ -23,8 +24,9 @@ const defaultTutorials = {
     require('./house/miscellaneous.json'),
   ],
   'Locking': [
-    require('./lock/japanese.json'),
     require('./lock/flukey.json'),
+    require('./lock/vincanitv.json'),
+    require('./lock/japanese.json'),
     require('./lock/yakfilms.json'),
     require('./lock/kenzo.json'),
     require('./lock/ricky.json'),
@@ -32,11 +34,19 @@ const defaultTutorials = {
     require('./lock/wordrider.json'),
   ],
   'Hip-Hop': [
+    require('./hiphop/newschool_dictionary.json'),
     require('./hiphop/alvaro.json'),
+    require('./hiphop/moncell.json'),
+    require('./hiphop/stezo.json'),
+    require('./hiphop/akihico.json'),
+    require('./hiphop/vobr.json'),
+    require('./hiphop/miscellaneous.json'),
+    require('./hiphop/feelthebounce.json'),
   ],
 };
 
 /*
+Locking:
 // skeeter and flomaster
   {
     "youtubeId": "P6hwVlKuBU4",
@@ -60,6 +70,7 @@ const defaultTutorials = {
   Volkswagon
   Pimp Walk
   Leo Walk
+https://www.youtube.com/watch?v=6z5WewBEXi8 skeer rabbits 1-2-3-4
 
 // skeeter and suga pop
   {
@@ -103,6 +114,14 @@ const defaultTutorials = {
 https://www.youtube.com/watch?v=K6TDyBFH5e0
 // popping chinese
 https://www.youtube.com/watch?v=_-Ergy2XsGg
+
+HipHop:
+https://www.youtube.com/channel/UCquj-IS-DKTg-6vRxmwsFbw/videos
+https://www.youtube.com/user/streetdanceru/videos
+https://www.youtube.com/user/typhoonbroooooooklyn/search?query=tutorial
+
+Gonna ignore:
+https://www.youtube.com/channel/UCoU_XspQfZlFy6YC7NEicoQ
 */
 
 const defaultBlogs = [
@@ -110,8 +129,6 @@ const defaultBlogs = [
   'y:PLF5290D54A54C4EDA', // Jardy in Korean (needs subtitles!)
   // Somehow some of these aren't in a playlist? https://www.youtube.com/user/DANCEcoaching/search?query=%E3%83%8F%E3%82%A6%E3%82%B9
   // In particular: https://www.youtube.com/watch?v=EEluQ_4eBrs
-
-  'y:PLD3786D9190A031C9', // Includes crap expertvillage as well as japanese ones
 ];
 
 // Hiphop:

@@ -1,0 +1,59 @@
+{
+  "title": "Miscellaneous Hip-Hop Dance Tutorials",
+  "author": "Miscellaneous",
+  "style": "hiphop",
+  "language": "lt",
+  "thumbnail": "https://i.ytimg.com/vi/93lxE7qwwXc/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Japanese Hiphop Lesson",
+      "videos": [
+        {
+          "youtubeId": "rFVml6p3P64",
+          "duration": "PT3M50S",
+          "title": "Unknown Dancers"
+        }
+      ]
+    },
+    {
+      "title": "Barbora",
+      "videos": [
+        {
+          "youtubeId": "xACAqm5Xxj8",
+          "duration": "PT2M",
+          "title": "Roger Rabbit"
+        },
+        {
+          "youtubeId": "DEPSzsWiNMQ",
+          "duration": "PT1M50S",
+          "title": "Bart Simpson"
+        },
+        {
+          "youtubeId": "MW-wQbL2wys",
+          "duration": "PT2M1S",
+          "title": "Rodger Rabbit & Bart Simpson Combo"
+        },
+      ]
+    },
+    {
+      "title": "Gabija",
+      "videos": [
+        {
+          "youtubeId": "rIs4XA1jVxY",
+          "duration": "PT1M59S",
+          "title": "V Step"
+        },
+        {
+          "youtubeId": "f0M-TFyjj-E",
+          "duration": "PT2M",
+          "title": "Criss Cross"
+        },
+        {
+          "youtubeId": "dFja2WsjKRE",
+          "duration": "PT55S",
+          "title": "V Step Criss Cross Combo"
+        },
+      ],
+    }
+  ]
+}

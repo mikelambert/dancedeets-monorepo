@@ -1,7 +1,6 @@
 {
   "title": "Miscellaneous House Dance Tutorials",
   "author": "Miscellaneous",
-  "image": "",
   "style": "house",
   "language": "en",
   "thumbnail": "https://i.ytimg.com/vi/93lxE7qwwXc/hqdefault.jpg",
@@ -27,6 +26,16 @@
       ],
     },
     {
+      "title": "Japanese House Dance Lesson",
+      "videos": [
+        {
+          "youtubeId": "QP23w4gGJ5o",
+          "duration": "PT3M39S",
+          "title": "Unknown Dancers"
+        }
+      ]
+    },
+    {
       "title": "South African Dancers",
       "videos": [
         {
@@ -43,7 +52,28 @@
           "youtubeId": "uaftuBfkGj8",
           "duration": "PT17M41S",
           "title": "The Jack and the Skate/Train"
-        }]
+        }
+      ]
     },
+    {
+      "title": "Gouda",
+      "videos": [
+        {
+          "youtubeId": "DYkS7Pr2kHg",
+          "duration": "PT1M58S",
+          "title": "Pas De Bourrée"
+        },
+        {
+          "youtubeId": "uBXad3gg7rw",
+          "duration": "PT1M32S",
+          "title": "Heel Step"
+        },
+        {
+          "youtubeId": "_LozRiIvuuM",
+          "duration": "PT2M1S",
+          "title": "Heel Step & Pas De Bourree Combo"
+        },
+      ],
+    }
   ]
 }

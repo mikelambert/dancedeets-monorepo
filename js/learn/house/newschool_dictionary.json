@@ -1,0 +1,89 @@
+{
+  "title": "New School Dictionary: House",
+  "author": "Elite Force",
+  "style": "house",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/-xeN8gNny2U/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Moves",
+      "videos": [
+        {
+          "youtubeId": "HrgW0lRxz2Q",
+          "duration": "PT32S",
+          "title": "Tip Tap Toe"
+        },
+        {
+          "youtubeId": "xdo31AEG750",
+          "duration": "PT59S",
+          "title": "Salsa Hop"
+        },
+        {
+          "youtubeId": "-xeN8gNny2U",
+          "duration": "PT53S",
+          "title": "Jack In The Box"
+        },
+        {
+          "youtubeId": "NUTh3klPzFw",
+          "duration": "PT30S",
+          "title": "Crossroads"
+        },
+        {
+          "youtubeId": "WIaTo6q6RYM",
+          "duration": "PT32S",
+          "title": "Sidewalk"
+        },
+        {
+          "youtubeId": "lyNhNr1z5Nw",
+          "duration": "PT49S",
+          "title": "Salsa"
+        },
+        {
+          "youtubeId": "avwhKUVRFJE",
+          "duration": "PT38S",
+          "title": "Train"
+        },
+        {
+          "youtubeId": "noA-H6b-2hU",
+          "duration": "PT38S",
+          "title": "Farmer"
+        },
+        {
+          "youtubeId": "UVJU1KOHYAg",
+          "duration": "PT1M2S",
+          "title": "Setup"
+        },
+        {
+          "youtubeId": "nyKDwfAdr-0",
+          "duration": "PT51S",
+          "title": "Bart Simpson"
+        },
+        {
+          "youtubeId": "fhKBR-HwoZg",
+          "duration": "PT49S",
+          "title": "Swirl"
+        },
+        {
+          "youtubeId": "trws6c6md4k",
+          "duration": "PT38S",
+          "title": "Scribble Foot"
+        },
+        {
+          "youtubeId": "mnAv7nbmyuc",
+          "duration": "PT39S",
+          "title": "Loose Leg"
+        },
+        {
+          "youtubeId": "Wk_Ti4oXa2c",
+          "duration": "PT37S",
+          "title": "Skate"
+        },
+        {
+          "youtubeId": "vqAklI3l1pc",
+          "duration": "PT1M",
+          "title": "Crosswalk"
+        },
+      ]
+    }
+  ]
+}
