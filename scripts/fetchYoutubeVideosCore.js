@@ -92,7 +92,7 @@ async function loadChannel(channelName, searchQuery) {
       youtubeId: id,
       duration: contentDetailsLookup[id].duration,
       title: x.snippet.title,
-      publishedAt: x.publishedAt,
+      publishedAt: x.snippet.publishedAt,
     };
   });
   const sortedPlaylist = _.sortBy(annotatedPlaylist, 'publishedAt').map((x) => _.omit(x, 'publishedAt'));
