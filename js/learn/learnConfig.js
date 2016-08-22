@@ -25,6 +25,7 @@ const defaultTutorials = {
   ],
   'Locking': [
     require('./lock/oldschool_dictionary.json'),
+    require('./lock/tonygogo.json'),
     require('./lock/flukey.json'),
     require('./lock/vincanitv.json'),
     require('./lock/japanese.json'),
