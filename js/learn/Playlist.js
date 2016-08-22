@@ -54,15 +54,17 @@ export class TutorialStylesView extends React.Component {
   }
 
   renderRow(style: string) {
-    return <TouchableHighlight onPress={() => {
-      this.props.onSelected(style, this.state.styleTutorials[style]);
-    }}>
+    // When we have per-style images
+    // <Image source={{uri: style}} style={styles.thumbnail} />
+    return <TouchableHighlight
+      onPress={() => {
+        this.props.onSelected(style, this.state.styleTutorials[style]);
+      }}>
       <Card
         title={
           <Text style={[styles.text, styles.tutorialTitle, styles.tutorialListRow]}>{style}</Text>
         }>
         <View style={{margin: 7}}>
-          <Image source={{uri: style}} style={styles.thumbnail} />
           <Text style={styles.text}>{this.state.styleTutorials[style].length} Tutorials</Text>
         </View>
       </Card>
@@ -85,9 +87,10 @@ export class TutorialListView extends React.Component {
 
   renderRow(tutorial: Tutorial) {
     const duration = formatDuration(tutorial.getDurationSeconds());
-    return <TouchableHighlight onPress={() => {
-      this.props.onSelected(tutorial);
-    }}>
+    return <TouchableHighlight
+      onPress={() => {
+        this.props.onSelected(tutorial);
+      }}>
       <Card
         title={
           <Text style={[styles.text, styles.tutorialTitle, styles.tutorialListRow]}>{tutorial.title}</Text>
