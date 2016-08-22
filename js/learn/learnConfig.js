@@ -22,10 +22,88 @@ const defaultTutorials = {
     require('./house/japanese.json'),
     require('./house/miscellaneous.json'),
   ],
+  'Locking': [
+    require('./lock/japanese.json'),
+    require('./lock/flukey.json'),
+    require('./lock/yakfilms.json'),
+    require('./lock/kenzo.json'),
+    require('./lock/ricky.json'),
+    require('./lock/russian.json'),
+    require('./lock/wordrider.json'),
+  ],
   'Hip-Hop': [
     require('./hiphop/alvaro.json'),
   ],
 };
+
+/*
+// skeeter and flomaster
+  {
+    "youtubeId": "P6hwVlKuBU4",
+    "duration": "PT15M20S",
+    "title": "Old School Dictionary | Poppin', Lockin' & Breakin' | Part 1 HD"
+  },
+  {
+    "youtubeId": "dfHF-kK21Qw",
+    "duration": "PT14M8S",
+    "title": "Old School Dictionary | Poppin´ ,Lockin´ & Breakin´ | Part 2 HD"
+  },
+  // Some of these got split up into https://www.youtube.com/user/DrugLock/videos and the end of it...
+  Strutting
+  Fillmore Style
+  Snaking
+  Shadow Box
+  Puppet Style
+  Crazy Legs
+  Sleepy Style
+  Sneak / Sneaky Peek
+  Volkswagon
+  Pimp Walk
+  Leo Walk
+
+// skeeter and suga pop
+  {
+    "youtubeId": "ZrzMe-7W8hU",
+    "duration": "PT4M50S",
+    "title": "Locking Tutorial Compilation with Skeeter Rabbit"
+  },
+
+// in a gym
+  {
+    "youtubeId": "U6TegTeV8kg",
+    "duration": "PT4M50S",
+    "title": "Skeeter Rabbit : locking tutorial"
+  },
+
+  {
+    "youtubeId": "bUrX5BoDBrA",
+    "duration": "PT6M4S",
+    "title": "Popping Tutorial | Skeeter Rabbit | How To Do Walk Out & Variations"
+  },
+  {
+    "youtubeId": "5v9RTdwm72w",
+    "duration": "PT1M13S",
+    "title": "Scooby Doo | Locking Basics"
+  },
+
+
+// already have, dont need
+  {
+    "youtubeId": "A7uhR_gC-1c",
+    "duration": "PT24M45S",
+    "title": "Oldschool_Dictionary Locking.mp4"
+  },
+  {
+    "youtubeId": "W4AfRhzUcY0",
+    "duration": "PT15M11S",
+    "title": "Oldschool Dictionary part1"
+  },
+
+// locking chinese
+https://www.youtube.com/watch?v=K6TDyBFH5e0
+// popping chinese
+https://www.youtube.com/watch?v=_-Ergy2XsGg
+*/
 
 const defaultBlogs = [
   'y:PLZelnKT8VJwytJrZY9nmZtslGRdhFaYso', // Jardy in spanish (needs subtitles!)
@@ -33,12 +111,18 @@ const defaultBlogs = [
   // Somehow some of these aren't in a playlist? https://www.youtube.com/user/DANCEcoaching/search?query=%E3%83%8F%E3%82%A6%E3%82%B9
   // In particular: https://www.youtube.com/watch?v=EEluQ_4eBrs
 
-  'y:PL_eG_ziq86f_JuH3AvfAGi8qv9zn7T_nS', // japanese locking
-  'y:PL2LmIWNts41gY1yYQDqh1e4LM4-GbiI-r', // a bunch of individual tutorials, should be split up!
-  'y:PLNu-Tjbz985ZgTVzPpMFGpopYbxeLNNWn', // more OGs in here, no real 1/2/3/4/5 though
-  'y:PL60B63DCF4C745EF4', // Originality Khan
   'y:PLD3786D9190A031C9', // Includes crap expertvillage as well as japanese ones
 ];
+
+// Hiphop:
+// https://www.youtube.com/watch?v=sPDa5OjHUWY
+// https://www.youtube.com/watch?v=eITvtPkm5Lg
+// https://www.youtube.com/watch?v=eSCyfUSv38k
+// https://www.youtube.com/watch?v=2OK2XbwKamw
+// rising school:
+// https://www.youtube.com/playlist?list=PLVY6uOsv4D9YoJHuwyA8E7TbbsrPzKfqj
+// https://www.youtube.com/playlist?list=PLVY6uOsv4D9ZsP2wTgPaItzrta5AjQiTO
+// https://www.youtube.com/user/YAKfilms/search?query=hiphop+tutorial
 
 // Find many here:
 // https://www.youtube.com/user/RISINGDanceSchoolCh/playlists

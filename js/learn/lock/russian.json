@@ -1,0 +1,29 @@
+{
+  "title": "Russian Locking Tutorial",
+  "author": "Unknown",
+  "style": "lock",
+  "language": "ru",
+  "thumbnail": "https://i.ytimg.com/vi/XnOLuXT3X68/hqdefault.jpg",
+  "sections": [
+    {
+      "title": "Locking Moves",
+      "videos": [
+        {
+          "youtubeId": "XnOLuXT3X68",
+          "duration": "PT8M57S",
+          "title": "Groove, Up And Lock, Wrist Twirl, Point, Scooby Doo",
+        },
+        {
+          "youtubeId": "pP5sQEn3L3Q",
+          "duration": "PT8M17S",
+          "title": "Scoobot, Scoobot Down, Scoobot Up, Don Campbel Walk, Rock Steady"
+        },
+        {
+          "youtubeId": "2-CKvmuFCE8",
+          "duration": "PT6M34S",
+          "title": "Stop N Go, Which A Way, Hammer, Knee Drop, Kill The Roach, Split"
+        },
+      ]
+    }
+  ]
+}

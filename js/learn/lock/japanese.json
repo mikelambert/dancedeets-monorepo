@@ -1,0 +1,149 @@
+{
+  "title": "Japanese: Dance Style Lockers",
+  "author": "Bebop Crew, Gogo Brothers, Hilty & Bosch",
+  "style": "lock",
+  "language": "ja",
+  "thumbnail": "https://i.ytimg.com/vi/QMBWZsOHhm4/hqdefault.jpg",
+  "sections": [
+    {
+      "title": "Basic Foundation",
+      "videos": [
+        {
+          "youtubeId": "QMBWZsOHhm4",
+          "duration": "PT3M2S",
+          "title": "Isolation pt. 1"
+        },
+        {
+          "youtubeId": "NJXzMZBQdpk",
+          "duration": "PT3M2S",
+          "title": "Isolation pt. 2"
+        },
+        {
+          "youtubeId": "PCHyb3D93AU",
+          "duration": "PT3M54S",
+          "title": "Up"
+        },
+        {
+          "youtubeId": "myFLnqCnHMU",
+          "duration": "PT3M9S",
+          "title": "Down"
+        },
+        {
+          "youtubeId": "UvdmQ2_J0GE",
+          "duration": "PT3M8S",
+          "title": "Twirl pt. 1"
+        },
+        {
+          "youtubeId": "oA6irBulLak",
+          "duration": "PT28S",
+          "title": "Twirl pt. 2"
+        },
+        {
+          "youtubeId": "iWwv2BMREsE",
+          "duration": "PT2M13S",
+          "title": "Point"
+        },
+        {
+          "youtubeId": "Lbottr7WA04",
+          "duration": "PT3M16S",
+          "title": "Lock"
+        },
+      ]
+    },
+    {
+      "title": "Intermediate Foundation",
+      "videos": [
+        {
+          "youtubeId": "4PrG53C00y0",
+          "duration": "PT2M19S",
+          "title": "Step"
+        },
+        {
+          "youtubeId": "RXW4Zz1MPaI",
+          "duration": "PT2M15S",
+          "title": "Scoobie Doo"
+        },
+        {
+          "youtubeId": "GvIUadx0IYw",
+          "duration": "PT1M58S",
+          "title": "Skeeter Rabbit"
+        },
+        {
+          "youtubeId": "5AiEC27dJfQ",
+          "duration": "PT2M15S",
+          "title": "Scuba"
+        },
+        {
+          "youtubeId": "xiND_ArJKyk",
+          "duration": "PT3M3S",
+          "title": "Rock Steady"
+        },
+        {
+          "youtubeId": "x_lZSm9ek6o",
+          "duration": "PT1M36S",
+          "title": "Kick Walk"
+        },
+        {
+          "youtubeId": "NyEbkUwIkKg",
+          "duration": "PT1M21S",
+          "title": "Shuffle"
+        },
+        {
+          "youtubeId": "ayAc4xjHZSc",
+          "duration": "PT2M11S",
+          "title": "Sneek"
+        },
+        {
+          "youtubeId": "quB1qCJOia8",
+          "duration": "PT2M3S",
+          "title": "Stop"
+        },
+        {
+          "youtubeId": "M-vDlgTeLtU",
+          "duration": "PT2M10S",
+          "title": "Which Way"
+        },
+      ]
+    },
+    {
+      "title": "Performances and Solos",
+      "videos": [
+        {
+          "youtubeId": "HkP3nUZIH_g",
+          "duration": "PT3M9S",
+          "title": "BEBOP"
+        },
+        {
+          "youtubeId": "1hPHGtfCc5c",
+          "duration": "PT3M3S",
+          "title": "GOGO Brothers"
+        },
+        {
+          "youtubeId": "UnHcjTSWTPY",
+          "duration": "PT1M2S",
+          "title": "Open"
+        },
+        {
+          "youtubeId": "DWSD032NRo8",
+          "duration": "PT2M1S",
+          "title": "Dance Style Locker - Solo"
+        },
+        {
+          "youtubeId": "rHy0EHM66Cs",
+          "duration": "PT1M54S",
+          "title": "Solo"
+        },
+        {
+          "youtubeId": "DPCHu0UEMPs",
+          "duration": "PT3M4S",
+          "title": "Hilty and Bosch"
+        },
+        {
+          "youtubeId": "heTlkxpcwws",
+          "duration": "PT3M28S",
+          "title": "Locking Line"
+        },
+      ]
+    }
+  ]
+}
