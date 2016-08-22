@@ -6,12 +6,12 @@
   "thumbnail": "https://i.ytimg.com/vi/NvZyBpo-kbA/sddefault.jpg",
   "sections": [
     {
-      "title": "Moves",
+      "title": "Old School Dictionary",
       "videos": [
         {
-          "youtubeId": "Z9wYbJyMN14",
-          "duration": "PT48S",
-          "title": "Happy Feet"
+          "youtubeId": "NFubPbbOF3g",
+          "duration": "PT46S",
+          "title": "Smurf"
         },
         {
           "youtubeId": "NvZyBpo-kbA",
@@ -19,54 +19,14 @@
           "title": "Prep"
         },
         {
-          "youtubeId": "cuGghyTD6fE",
-          "duration": "PT1M14S",
-          "title": "Running Man"
+          "youtubeId": "EvJAruK1Wnc",
+          "duration": "PT44S",
+          "title": "Reebok"
         },
         {
-          "youtubeId": "Ojbbe2GLdWc",
-          "duration": "PT32S",
-          "title": "Heel Toe"
-        },
-        {
-          "youtubeId": "PFcFQA2ITr0",
-          "duration": "PT50S",
-          "title": "BK Bounce"
-        },
-        {
-          "youtubeId": "D_hpI0tMZac",
-          "duration": "PT55S",
-          "title": "Bankhead Bounce"
-        },
-        {
-          "youtubeId": "kUQTYnYDipk",
-          "duration": "PT1M33S",
-          "title": "Roger Rabbit"
-        },
-        {
-          "youtubeId": "NFubPbbOF3g",
-          "duration": "PT46S",
-          "title": "Smurf"
-        },
-        {
-          "youtubeId": "1kN0QafF-sY",
-          "duration": "PT56S",
-          "title": "Stomp"
-        },
-        {
-          "youtubeId": "xYmS6n9k7Bk",
-          "duration": "PT42S",
-          "title": "real Harlem Shake"
-        },
-        {
-          "youtubeId": "1asD5rcEjrY",
-          "duration": "PT41S",
-          "title": "Kriss Kross"
-        },
-        {
-          "youtubeId": "bIRFvHuhd54",
-          "duration": "PT47S",
-          "title": "Steve Martin"
+          "youtubeId": "9u4x6xv2Fmw",
+          "duration": "PT48S",
+          "title": "Wop"
         },
         {
           "youtubeId": "Rn-Zv7l20Kw",
@@ -74,24 +34,75 @@
           "title": "Cabbage Patch"
         },
         {
+          "youtubeId": "Z9wYbJyMN14",
+          "duration": "PT48S",
+          "title": "Happy Feet"
+        },
+        {
           "youtubeId": "-cMA9LbawLs",
           "duration": "PT40S",
           "title": "Fila"
         },
+      ],
+    },
+    {
+      "title": "Middle School Dictionary",
+      "videos": [
         {
-          "youtubeId": "QjM6ZN029rE",
-          "duration": "PT39S",
-          "title": "ATL Stomp"
+          "youtubeId": "opCn8CBRPz8",
+          "duration": "PT53S",
+          "title": "Party Dance"
         },
         {
-          "youtubeId": "EvJAruK1Wnc",
-          "duration": "PT44S",
-          "title": "Reebook"
+          "youtubeId": "cuGghyTD6fE",
+          "duration": "PT1M14S",
+          "title": "Running Man"
         },
+        {
+          "youtubeId": "kUQTYnYDipk",
+          "duration": "PT1M33S",
+          "title": "Roger Rabbit (with House Variation)"
+        },
+        {
+          "youtubeId": "bIRFvHuhd54",
+          "duration": "PT47S",
+          "title": "Steve Martin"
+        },
+        {
+          "youtubeId": "nyKDwfAdr-0",
+          "duration": "PT51S",
+          "title": "Bart Simpson"
+        },
+        {
+          "youtubeId": "_qWuVfIaihA",
+          "duration": "PT26S",
+          "title": "Pepper Seed"
+        },
+        {
+          "youtubeId": "PFcFQA2ITr0",
+          "duration": "PT50S",
+          "title": "Brooklyn Bounce"
+        },
+        {
+          "youtubeId": "DlOS5HncyRA",
+          "duration": "PT23S",
+          "title": "Butterfly"
+        },
+      ]
+    },
+    {
+      "title": "New School Dictionary",
+      "videos": [
         {
           "youtubeId": "T9Owy7K-23M",
           "duration": "PT59S",
-          "title": "Monestary"
+          "title": "Monastary"
+        },
+        // skeeter rabbit
+        {
+          "youtubeId": "D_hpI0tMZac",
+          "duration": "PT55S",
+          "title": "Bankhead Bounce"
         },
         {
           "youtubeId": "VnHRtL3Fw_I",
@@ -99,20 +110,16 @@
           "title": "Walk It Out"
         },
         {
-          "youtubeId": "opCn8CBRPz8",
-          "duration": "PT53S",
-          "title": "Party Dance"
+          "youtubeId": "xYmS6n9k7Bk",
+          "duration": "PT42S",
+          "title": "Real Harlem Shake"
         },
         {
-          "youtubeId": "DlOS5HncyRA",
-          "duration": "PT23S",
-          "title": "Butterfly"
+          "youtubeId": "QjM6ZN029rE",
+          "duration": "PT39S",
+          "title": "ATL Stomp"
         },
-        {
-          "youtubeId": "9u4x6xv2Fmw",
-          "duration": "PT48S",
-          "title": "Wop"
-        },
+        // run it
         {
           "youtubeId": "HDjQB5AfKQ8",
           "duration": "PT43S",
@@ -124,9 +131,9 @@
           "title": "Wreckin Shop"
         },
         {
-          "youtubeId": "_qWuVfIaihA",
-          "duration": "PT26S",
-          "title": "Pepper Seed"
+          "youtubeId": "FNe4BwQnI8o",
+          "duration": "PT46S",
+          "title": "C-walk"
         },
       ]
     }

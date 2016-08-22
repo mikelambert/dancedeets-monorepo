@@ -6,37 +6,17 @@
   "thumbnail": "https://i.ytimg.com/vi/-xeN8gNny2U/sddefault.jpg",
   "sections": [
     {
-      "title": "Moves",
+      "title": "Old School Dictionary",
       "videos": [
         {
-          "youtubeId": "HrgW0lRxz2Q",
-          "duration": "PT32S",
-          "title": "Tip Tap Toe"
+          "youtubeId": "1kN0QafF-sY",
+          "duration": "PT56S",
+          "title": "Stomp"
         },
         {
-          "youtubeId": "xdo31AEG750",
-          "duration": "PT59S",
-          "title": "Salsa Hop"
-        },
-        {
-          "youtubeId": "-xeN8gNny2U",
-          "duration": "PT53S",
-          "title": "Jack In The Box"
-        },
-        {
-          "youtubeId": "NUTh3klPzFw",
-          "duration": "PT30S",
-          "title": "Crossroads"
-        },
-        {
-          "youtubeId": "WIaTo6q6RYM",
-          "duration": "PT32S",
-          "title": "Sidewalk"
-        },
-        {
-          "youtubeId": "lyNhNr1z5Nw",
-          "duration": "PT49S",
-          "title": "Salsa"
+          "youtubeId": "mnAv7nbmyuc",
+          "duration": "PT39S",
+          "title": "Loose Leg"
         },
         {
           "youtubeId": "avwhKUVRFJE",
@@ -49,19 +29,59 @@
           "title": "Farmer"
         },
         {
+          "youtubeId": "fhKBR-HwoZg",
+          "duration": "PT49S",
+          "title": "Swirl"
+        },
+        {
+          "youtubeId": "-xeN8gNny2U",
+          "duration": "PT53S",
+          "title": "Jack In The Box"
+        },
+      ]
+    },
+    {
+      "title": "Middle School Dictionary",
+      "videos": [
+        {
+          "youtubeId": "lyNhNr1z5Nw",
+          "duration": "PT49S",
+          "title": "Salsa Step"
+        },
+        {
+          "youtubeId": "xdo31AEG750",
+          "duration": "PT59S",
+          "title": "Salsa Hop"
+        },
+        {
+          "youtubeId": "WIaTo6q6RYM",
+          "duration": "PT32S",
+          "title": "Sidewalk"
+        },
+        {
+          "youtubeId": "vqAklI3l1pc",
+          "duration": "PT1M",
+          "title": "Crosswalk"
+        },
+        {
+          "youtubeId": "NUTh3klPzFw",
+          "duration": "PT30S",
+          "title": "Crossroads"
+        },
+        {
           "youtubeId": "UVJU1KOHYAg",
           "duration": "PT1M2S",
           "title": "Setup"
         },
+      ]
+    },
+    {
+      "title": "New School Dictionary",
+      "videos": [
         {
-          "youtubeId": "nyKDwfAdr-0",
-          "duration": "PT51S",
-          "title": "Bart Simpson"
-        },
-        {
-          "youtubeId": "fhKBR-HwoZg",
-          "duration": "PT49S",
-          "title": "Swirl"
+          "youtubeId": "HrgW0lRxz2Q",
+          "duration": "PT32S",
+          "title": "Tip Tap Toe"
         },
         {
           "youtubeId": "trws6c6md4k",
@@ -69,20 +89,26 @@
           "title": "Scribble Foot"
         },
         {
-          "youtubeId": "mnAv7nbmyuc",
-          "duration": "PT39S",
-          "title": "Loose Leg"
+          "youtubeId": "1asD5rcEjrY",
+          "duration": "PT41S",
+          "title": "Kriss Kross"
+        },
+        {
+          "youtubeId": "Ojbbe2GLdWc",
+          "duration": "PT32S",
+          "title": "Heel Toe"
+        },
+        {
+          "youtubeId": "kUQTYnYDipk",
+          "duration": "PT1M33S",
+          "title": "Roger Rabbit (with Hip-Hop Variation)"
         },
         {
           "youtubeId": "Wk_Ti4oXa2c",
           "duration": "PT37S",
           "title": "Skate"
         },
-        {
-          "youtubeId": "vqAklI3l1pc",
-          "duration": "PT1M",
-          "title": "Crosswalk"
-        },
+        //dolphins
       ]
     }
   ]
