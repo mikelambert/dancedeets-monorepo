@@ -1,0 +1,54 @@
+{
+  "title": "JSmooth and JRock: Ticking/Strobing/Snaking Tutorials",
+  "author": "JSmooth (MGF), JRock (ABM)",
+  "style": "popping",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/tFMiJb3NXTw/sddefault.jpg",
+  "sections": [
+    {
+      "title": "JSmooth (MGF)",
+      "videos": [
+        {
+          "youtubeId": "MPjFbgy2k4Y",
+          "duration": "PT1M35S",
+          "title": "Strobing"
+        },
+        {
+          "youtubeId": "Cv9Op_Wr0hg",
+          "duration": "PT2M40S",
+          "title": "Tick waves"
+        },
+        {
+          "youtubeId": "tFMiJb3NXTw",
+          "duration": "PT38S",
+          "title": "Wave variation"
+        },
+        {
+          "youtubeId": "yX5cG-xBYRc",
+          "duration": "PT1M39S",
+          "title": "Snaking, strobing, ticking - variations"
+        },
+      ]
+    },
+    {
+      "title": "JRock (ABM) on Ticking",
+      "videos": [
+        {
+          "youtubeId": "PpxP3tUycKg",
+          "duration": "PT1M21S",
+          "title": "Popping style ticking"
+        },
+        {
+          "youtubeId": "SgFQlRHiw2c",
+          "duration": "PT3M41S",
+          "title": "Bopping style ticking"
+        },
+        {
+          "youtubeId": "VmXs46_Ekok",
+          "duration": "PT49S",
+          "title": "Ticking, scarecrow, bopping"
+        },
+      ]
+    }
+  ]
+}

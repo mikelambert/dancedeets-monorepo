@@ -1,0 +1,114 @@
+{
+  "title": "Oakland Boogaloo Movements",
+  "author": "Chuck Powell, Boogaloo Dan",
+  "style": "popping",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/24PmecwfFCg/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Chuck Powell",
+      "videos": [
+        {
+          "youtubeId": "24PmecwfFCg",
+          "duration": "PT49S",
+          "title": "Moonwalk"
+        },
+        {
+          "youtubeId": "qH3r0d50U_c",
+          "duration": "PT1M31S",
+          "title": "Slot"
+        },
+        {
+          "youtubeId": "EwOIs81oQKI",
+          "duration": "PT48S",
+          "title": "Puppet move"
+        },
+        {
+          "youtubeId": "sV8jczIabBo",
+          "duration": "PT43S",
+          "title": "Wiggling or worming"
+        },
+        {
+          "youtubeId": "KjQzS7EpNbU",
+          "duration": "PT28S",
+          "title": "The Falling Man"
+        },
+        {
+          "youtubeId": "D_4_u_UeLJc",
+          "duration": "PT21S",
+          "title": "Tidal wave"
+        },
+        {
+          "youtubeId": "_E_84sh-52M",
+          "duration": "PT27S",
+          "title": "Swinging the arms"
+        },
+        {
+          "youtubeId": "UTfo2wNr-SU",
+          "duration": "PT32S",
+          "title": "Hops"
+        },
+        {
+          "youtubeId": "dS4W2_KPhqM",
+          "duration": "PT59S",
+          "title": "Toy spins"
+        },
+      ]
+    },
+    {
+      "title": "Boogaloo Dan",
+      "videos": [
+        {
+          "youtubeId": "R8wvHcnwK6k",
+          "duration": "PT2M7S",
+          "title": "Swinging the arms, dime stopping, Creeping, Animation"
+        },
+        {
+          "youtubeId": "M3cTF3FKETg",
+          "duration": "PT12S",
+          "title": "The Swoop or Swooping"
+        },
+        {
+          "youtubeId": "aJGfnTAOt3w",
+          "duration": "PT1M19S",
+          "title": "Hops or Hopping"
+        },
+        {
+          "youtubeId": "LDsIYBiVyDE",
+          "duration": "PT30S",
+          "title": "Seven Voyages Of Sinbad"
+        },
+        {
+          "youtubeId": "Eb1UjtipqZY",
+          "duration": "PT38S",
+          "title": "Worming"
+        },
+        {
+          "youtubeId": "Pvdql1WxzEA",
+          "duration": "PT1M26S",
+          "title": "Slot or Side to Side"
+        },
+        {
+          "youtubeId": "c4nPFkuhQeo",
+          "duration": "PT1M37S",
+          "title": "Banging"
+        },
+        {
+          "youtubeId": "-hm0VVhyc70",
+          "duration": "PT38S",
+          "title": "Vibrating"
+        },
+        {
+          "youtubeId": "0z93KNS0ixY",
+          "duration": "PT1M20S",
+          "title": "Back Slide, Floating"
+        },
+        {
+          "youtubeId": "qLzZFrXIUKE",
+          "duration": "PT2M33S",
+          "title": "Broken Body"
+        },
+      ]
+    }
+  ]
+}

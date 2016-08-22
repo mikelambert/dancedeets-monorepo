@@ -24,6 +24,7 @@ const defaultTutorials = {
     require('./house/miscellaneous.json'),
   ],
   'Locking': [
+    require('./lock/oldschool_dictionary.json'),
     require('./lock/flukey.json'),
     require('./lock/vincanitv.json'),
     require('./lock/japanese.json'),
@@ -44,6 +45,10 @@ const defaultTutorials = {
     require('./hiphop/feelthebounce.json'),
   ],
   'Popping': [
+    require('./pop/oakland_boogaloo.json'),
+    require('./pop/oldschool_dictionary.json'),
+    require('./pop/avex.json'),
+    require('./pop/jsmooth_jrock.json'),
   ],
   'Waacking': [
   ],
@@ -115,6 +120,11 @@ https://www.youtube.com/watch?v=6z5WewBEXi8 skeer rabbits 1-2-3-4
     "duration": "PT15M11S",
     "title": "Oldschool Dictionary part1"
   },
+
+Let's grab these!
+https://www.youtube.com/channel/UC7LZQaffoSn2b_ocQg9ATlQ/videos
+the animation/tutting video references are still useful?
+the wiggles videos too
 
 // locking chinese
 https://www.youtube.com/watch?v=K6TDyBFH5e0
