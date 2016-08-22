@@ -9,7 +9,7 @@
 import { RemoteConfig } from 'react-native-firebase3';
 
 const defaultTutorials = {
-  'House': [
+  'House Dance': [
     require('./house/newschool_dictionary.json'),
     require('./house/jardy.json'),
     require('./house/rich.json'),
@@ -33,7 +33,7 @@ const defaultTutorials = {
     require('./lock/russian.json'),
     require('./lock/wordrider.json'),
   ],
-  'Hip-Hop': [
+  'Hip-Hop Dance': [
     require('./hiphop/newschool_dictionary.json'),
     require('./hiphop/alvaro.json'),
     require('./hiphop/moncell.json'),
@@ -42,6 +42,12 @@ const defaultTutorials = {
     require('./hiphop/vobr.json'),
     require('./hiphop/miscellaneous.json'),
     require('./hiphop/feelthebounce.json'),
+  ],
+  'Popping': [
+  ],
+  'Waacking': [
+  ],
+  'Breaking': [
   ],
 };
 
