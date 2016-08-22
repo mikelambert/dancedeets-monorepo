@@ -20,6 +20,7 @@ import { FeedListView } from './BlogList';
 import {
   Card,
   HorizontalView,
+  ProportionalImage,
   Text,
 } from '../ui';
 import { getRemoteTutorials } from '../learn/learnConfig';
@@ -56,6 +57,23 @@ export class TutorialStylesView extends React.Component {
   renderRow(style: string) {
     // When we have per-style images
     // <Image source={{uri: style}} style={styles.thumbnail} />
+    const tutorials = this.state.styleTutorials[style];
+    const thumbnails = tutorials.map((tutorial) =>
+      <Image source={{uri: tutorial.thumbnail}} style={styles.miniThumbnail} />
+    );
+    const groupedThumbnails = [];
+    let i = 0;
+    while (i < thumbnails.length) {
+      groupedThumbnails.push(
+        <HorizontalView style={{flex: 1}}>
+          {thumbnails[i] ? thumbnails[i] : null}
+          {thumbnails[i + 1] ? thumbnails[i + 1] : null}
+          {thumbnails[i + 2] ? thumbnails[i + 2] : null}
+        </HorizontalView>
+      );
+      i += 3;
+    }
+    console.log(groupedThumbnails);
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(style, this.state.styleTutorials[style]);
@@ -66,6 +84,7 @@ export class TutorialStylesView extends React.Component {
         }>
         <View style={{margin: 7}}>
           <Text style={styles.text}>{this.state.styleTutorials[style].length} Tutorials</Text>
+          {groupedThumbnails}
         </View>
       </Card>
     </TouchableHighlight>;
@@ -322,6 +341,10 @@ let styles = StyleSheet.create({
   },
   text: {
     color: 'white',
+  },
+  miniThumbnail: {
+    height: 50,
+    flex: 1,
   },
   thumbnail: {
     borderRadius: 10,
