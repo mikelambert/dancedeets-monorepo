@@ -1,0 +1,104 @@
+{
+  "title": "RISING Dance School: Mizuki's Waacking/Punking Tutorial",
+  "author": "Mizuki",
+  "style": "waack",
+  "language": "ja",
+  "thumbnail": "https://i.ytimg.com/vi/-OVHbenlNFc/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Intro",
+      "videos": [
+        {
+          "youtubeId": "-OVHbenlNFc",
+          "duration": "PT3M27S",
+          "title": "Mizuki インタビュー Interview"
+        },
+      ]
+    },
+    {
+      "title": "リズム Grooves",
+      "videos": [
+        {
+          "youtubeId": "ZExyXf1fzbk",
+          "duration": "PT3M48S",
+          "title": "リズムキープ Keep the Groove"
+        },
+        {
+          "youtubeId": "II4-eps5ICc",
+          "duration": "PT3M28S",
+          "title": "リズムキープ+腰のリズム Keep the Groove & Waist Rhythm"
+        },
+        {
+          "youtubeId": "6OopfJsOOl4",
+          "duration": "PT5M58S",
+          "title": "フォーコーナー Four Corners"
+        },
+        {
+          "youtubeId": "Rm0eiQ619J8",
+          "duration": "PT4M6S",
+          "title": "胸と腰とひざのリズム Chest/Hip/Knees Groove"
+        },
+      ]
+    },
+    {
+      "title": "腕 Arms",
+      "videos": [
+        {
+          "youtubeId": "Wjs1zvr3Zuw",
+          "duration": "PT4M39S",
+          "title": "腕の動き Arm Movement"
+        },
+        {
+          "youtubeId": "8n7j1JOJudY",
+          "duration": "PT4M16S",
+          "title": "腕をのばしたまま振る Arm Swings"
+        },
+        {
+          "youtubeId": "pG1_QXdauWc",
+          "duration": "PT8M1S",
+          "title": "腕の回転 Arm Rotations"
+        },
+        {
+          "youtubeId": "4Cx9xewxNSk",
+          "duration": "PT3M32S",
+          "title": "腕を止める Arm Stops"
+        },
+      ]
+    },
+    {
+      "title": "動き Movement",
+      "videos": [
+        {
+          "youtubeId": "tE-Xv1yCYFM",
+          "duration": "PT3M4S",
+          "title": "ポーズ Pose"
+        },
+        {
+          "youtubeId": "BVmTHAt4DrY",
+          "duration": "PT2M12S",
+          "title": "ウォーク Walk"
+        },
+        {
+          "youtubeId": "tMkJI0x0WNE",
+          "duration": "PT3M10S",
+          "title": "リズムと腕の動き Groove and Arm Movement"
+        },
+      ]
+    },
+    {
+      "title": "まとめ",
+      "videos": [
+        {
+          "youtubeId": "yxF0YW25DDs",
+          "duration": "PT3M44S",
+          "title": "コンビネーション Compilation"
+        },
+        {
+          "youtubeId": "5gbRfYa-06o",
+          "duration": "PT1M41S",
+          "title": "まとめ Summary"
+        },
+      ],
+    }
+  ]
+}

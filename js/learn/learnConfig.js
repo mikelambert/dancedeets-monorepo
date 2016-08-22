@@ -52,6 +52,9 @@ const defaultTutorials = {
     require('./pop/jsmooth_jrock.json'),
   ],
   'Waacking': [
+    require('./waack/mizuki.json'),
+    require('./waack/christina.json'),
+    require('./waack/miscellaneous.json'),
   ],
   'Breaking': [
   ],
