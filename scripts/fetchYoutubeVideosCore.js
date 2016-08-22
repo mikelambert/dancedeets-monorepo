@@ -5,7 +5,7 @@
  */
 
 'use strict';
-
+import _ from 'underscore';
 import fetch from 'node-fetch';
 
 const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
@@ -54,7 +54,7 @@ async function loadPlaylist(playlistId) {
     .filter((x) => contentDetailsLookup[x.snippet.resourceId.videoId]);
   const annotatedPlaylist = filteredPlaylistItems.map((x) => {
     return {
-      id: x.snippet.resourceId.videoId,
+      youtubeId: x.snippet.resourceId.videoId,
       duration: contentDetailsLookup[x.snippet.resourceId.videoId].duration,
       title: x.snippet.title,
     };
@@ -89,12 +89,14 @@ async function loadChannel(channelName, searchQuery) {
   const annotatedPlaylist = channelSearchJson.items.map((x) => {
     const id = x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId;
     return {
-      id: id,
+      youtubeId: id,
       duration: contentDetailsLookup[id].duration,
       title: x.snippet.title,
+      publishedAt: x.publishedAt,
     };
   });
-  console.log(JSON.stringify(annotatedPlaylist, null, '  '));
+  const sortedPlaylist = _.sortBy(annotatedPlaylist, 'publishedAt').map((x) => _.omit(x, 'publishedAt'));
+  console.log(JSON.stringify(sortedPlaylist, null, '  '));
 }
 
 const args = process.argv.slice(2);
