@@ -8,20 +8,24 @@
 
 import { RemoteConfig } from 'react-native-firebase3';
 
-const defaultTutorials = [
-  require('./house/jardy.json'),
-  require('./house/rich.json'),
-  require('./house/malcolm.json'),
-  require('./house/alvaro.json'),
-  require('./house/hiro.json'),
-  require('./house/koji.json'),
-  require('./house/yeomin.json'),
-  require('./house/yusuke.json'),
-  require('./house/vincanitv.json'),
-  require('./house/japanese.json'),
-  require('./house/miscellaneous.json'),
-  require('./hiphop/alvaro.json'),
-];
+const defaultTutorials = {
+  'House': [
+    require('./house/jardy.json'),
+    require('./house/rich.json'),
+    require('./house/malcolm.json'),
+    require('./house/alvaro.json'),
+    require('./house/hiro.json'),
+    require('./house/koji.json'),
+    require('./house/yeomin.json'),
+    require('./house/yusuke.json'),
+    require('./house/vincanitv.json'),
+    require('./house/japanese.json'),
+    require('./house/miscellaneous.json'),
+  ],
+  'Hip-Hop': [
+    require('./hiphop/alvaro.json'),
+  ],
+};
 
 const defaultBlogs = [
   'y:PLZelnKT8VJwytJrZY9nmZtslGRdhFaYso', // Jardy in spanish (needs subtitles!)

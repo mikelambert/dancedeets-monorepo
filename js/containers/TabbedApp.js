@@ -38,6 +38,7 @@ import { track, trackWithEvent } from '../store/track';
 import { setDefaultState } from '../reducers/navigation';
 import {
   TutorialListView,
+  TutorialStylesView,
   TutorialView,
 } from '../learn/Playlist';
 
@@ -45,7 +46,7 @@ const EventNavigator = generateNavigator('EVENT_NAV');
 setDefaultState('EVENT_NAV', { key: 'EventList', title: 'DanceDeets' });
 
 const LearnNavigator = generateNavigator('LEARN_NAV');
-setDefaultState('LEARN_NAV', { key: 'TutorialList', title: 'Learn' });
+setDefaultState('LEARN_NAV', { key: 'TutorialStyles', title: 'Learn' });
 
 class GradientTabBar extends React.Component {
   render() {
@@ -160,8 +161,17 @@ class _TabbedAppView extends React.Component {
           navigatable.onNavigate({key: 'Tutorial', title: blog.title, tutorial: blog});
         }}
         />;
+    case 'TutorialStyles':
+      return <TutorialStylesView
+        onSelected={(style, tutorials) => {
+          track('Style Selected');
+          console.log(tutorials);
+          navigatable.onNavigate({key: 'TutorialList', title: style, tutorials: tutorials});
+        }}
+        />;
     case 'TutorialList':
       return <TutorialListView
+        tutorials={route.tutorials}
         onSelected={(tutorial) => {
           // TODO: Track blog details
           track('Tutorial Selected');

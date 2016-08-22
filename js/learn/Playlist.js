@@ -28,24 +28,59 @@ import { purpleColors } from '../Colors';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import styleEqual from 'style-equal';
 
-export class TutorialListView extends React.Component {
+
+export class TutorialStylesView extends React.Component {
   state: {
-    tutorials: [Tutorial];
+    styleTutorials: {[style: string]: [Tutorial]};
   };
 
   constructor(props) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
     this.state = {
-      tutorials: [],
+      styleTutorials: {},
     };
     this.load();
   }
 
   async load() {
     const tutorialsJson = await getRemoteTutorials();
-    const tutorials = tutorialsJson.map((x) => new Tutorial(x));
-    this.setState({tutorials: tutorials});
+
+    const styleTutorials = {};
+    Object.keys(tutorialsJson).forEach((style) => {
+      styleTutorials[style] = tutorialsJson[style].map((x) => new Tutorial(x));
+    });
+    this.setState({styleTutorials: styleTutorials});
+  }
+
+  renderRow(style: string) {
+    return <TouchableHighlight onPress={() => {
+      this.props.onSelected(style, this.state.styleTutorials[style]);
+    }}>
+      <Card
+        title={
+          <Text style={[styles.text, styles.tutorialTitle, styles.tutorialListRow]}>{style}</Text>
+        }>
+        <View style={{margin: 7}}>
+          <Image source={{uri: style}} style={styles.thumbnail} />
+          <Text style={styles.text}>{this.state.styleTutorials[style].length} Tutorials</Text>
+        </View>
+      </Card>
+    </TouchableHighlight>;
+  }
+
+  render() {
+    return <FeedListView
+      items={Object.keys(this.state.styleTutorials)}
+      renderRow={this.renderRow}
+      />;
+  }
+}
+
+export class TutorialListView extends React.Component {
+  constructor(props) {
+    super(props);
+    (this: any).renderRow = this.renderRow.bind(this);
   }
 
   renderRow(tutorial: Tutorial) {
@@ -68,7 +103,7 @@ export class TutorialListView extends React.Component {
 
   render() {
     return <FeedListView
-      items={this.state.tutorials}
+      items={this.props.tutorials}
       renderRow={this.renderRow}
       />;
   }
