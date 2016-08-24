@@ -23,15 +23,21 @@ function getUrl(path: string, args: Object) {
 
 async function getTimes(playlistItemsJson) {
   const videoIds = playlistItemsJson.items.map((x) => x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId);
-  const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/videos',
-  {
-    id: videoIds.join(','),
-    maxResults: 50,
-    part: 'contentDetails',
-    key: YoutubeKey,
-  });
-  const videosResult = await (await fetch(playlistItemsUrl)).json();
-  return videosResult;
+  const returnResult = {
+    items: [],
+  };
+  for (let i = 0; i < playlistItemsJson.items.length; i += 50) {
+    const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/videos',
+    {
+      id: videoIds.splice(i, 50).join(','),
+      maxResults: 50,
+      part: 'contentDetails',
+      key: YoutubeKey,
+    });
+    const videosResult = await (await fetch(playlistItemsUrl)).json();
+    Array.prototype.push.apply(returnResult.items, videosResult.items);
+  }
+  return returnResult;
 }
 
 async function loadPlaylist(playlistId) {
@@ -62,6 +68,16 @@ async function loadPlaylist(playlistId) {
   printResult(annotatedPlaylist);
 }
 
+async function getRestOfResults(channelUrl, pageToken) {
+  const newUrl = channelUrl + (pageToken ? '&pageToken=' + pageToken : '');
+  const channelSearchJson = await (await fetch(newUrl)).json();
+  if (channelSearchJson.nextPageToken) {
+    const channelSearchJson2 = await getRestOfResults(channelUrl, channelSearchJson.nextPageToken);
+    Array.prototype.push.apply(channelSearchJson.items, channelSearchJson2.items);
+  }
+  return channelSearchJson;
+}
+
 async function loadChannel(channelName, searchQuery) {
   const channelUrl = getUrl('https://www.googleapis.com/youtube/v3/channels',
   {
@@ -80,7 +96,7 @@ async function loadChannel(channelName, searchQuery) {
     maxResults: 50,
     type: 'video',
   });
-  const channelSearchJson = await (await fetch(channelSearchUrl)).json();
+  const channelSearchJson = await getRestOfResults(channelSearchUrl);
   const videosJson = await getTimes(channelSearchJson);
   const contentDetailsLookup = {};
   videosJson.items.forEach((x) => {
@@ -90,7 +106,7 @@ async function loadChannel(channelName, searchQuery) {
     const id = x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId;
     return {
       youtubeId: id,
-      duration: contentDetailsLookup[id].duration,
+      duration: contentDetailsLookup[id] ? contentDetailsLookup[id].duration : null,
       title: x.snippet.title,
       publishedAt: x.snippet.publishedAt,
     };
