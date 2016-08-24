@@ -1,0 +1,115 @@
+{
+  "title": "Japanese: Dance Style Popping 2",
+  "author": "Bebop Crew, Gogo Brothers, Hilty & Bosch",
+  "style": "lock",
+  "language": "ja",
+  "thumbnail": "https://i.ytimg.com/vi/QMBWZsOHhm4/hqdefault.jpg",
+  "sections": [
+    {
+      "title": "Kei",
+      "videos": [
+        {
+          "youtubeId": "83--Ei-pOpM",
+          "duration": "PT4M50S",
+          "title": "ゲームストップ & ゲームストップのニュアンスを変える | Dimestop and Variations"
+        },
+        {
+          "youtubeId": "zdPYO3nlfFc",
+          "duration": "PT7M4S",
+          "title": "上半身のアイソレーション: 肩と胸 | Upper Body Isolations: Shoulders and Chest"
+        },
+      ]
+    },
+    {
+      "title": "Gucchon",
+      "videos": [
+        {
+          "youtubeId": "1ospfj2_BfE",
+          "duration": "PT4M11S",
+          "title": "ポッピンにおける 「軸」とは, 軸を意識する | Popping's Axis & Awareness"
+        },
+        {
+          "youtubeId": "Z3u8fpMH5Bw",
+          "duration": "PT7M49S",
+          "title": "内側の軸を意識する | 'Inside' Axis Awareness"
+        },
+      ]
+    }
+    {
+      "title": "Kite",
+      "videos": [
+        {
+          "youtubeId": "7MYBluFdEmY",
+          "duration": "PT2M45S",
+          "title": "ロールの流れ | Roll Flow"
+        },
+        {
+          "youtubeId": "m1fRLcUF35U",
+          "duration": "PT6M42S",
+          "title": "半身のアイソレーション: 腰と膝と足首 ｜ Lower Body Isolations: Hips, Knees, and Ankles"
+        },
+      ]
+    },
+    {
+      "title": "Gogo Brothers",
+      "videos": [
+        {
+          "youtubeId": "JeRRkU1cgJg",
+          "duration": "PT5M27S",
+          "title": "Yuu:　イメージを動きにつなげる, イメージから生まれた動きを組み合わせる | Connect the image to the movement, Creating movement from the image"
+        },
+        {
+          "youtubeId": "dms0nuYl_cQ",
+          "duration": "PT7M21S",
+          "title": "Rei： グルーブを身につける, グルーブを動きに変える, ｜ Adding a Groove, Groove to Movement"
+        },
+        {
+          "youtubeId": "5r-p2Fv_j_A",
+          "duration": "PT4M1S",
+          "title": "リズムトレーニング, ヒットでリズムをきざもう｜ Rhythm Training, Hitting on Beat"
+        },
+      ],
+    }
+    {
+      "title": "Madoka",
+      "videos": [
+        {
+          "youtubeId": "3r-GACYf5PU",
+          "duration": "PT8M48S",
+          "title": "ヒットで音を表現する, ヒットのニュアンスを変える 練習方法 | Showing Sound with Hits, Practing Hit Variations"
+        },
+      ],
+    },
+    {
+      "title": "Move Demonstrations",
+      "videos": [
+        {
+          "youtubeId": "HwsB9t1fHyM",
+          "duration": "PT7M46S",
+          "title": "Dimestop (Kei & Kite), Airpose (Rei & Yuu), Ticking (Gucchon), Bottom First (Rei & Yuu), Neckoflex (Rei), Walkout (Rei), Twistoflex (Gucchon), Masterflex (Rei), Rolls (Yuu), Skarecrow (Gucchon), Crazy Legs (Rei & Kite), Old Man (Gucchon & Yuu), Wave (Madoka & Kei), Cobra (Kei), Puppet (Yuu), Sac Walk (Madoka)"
+        }
+      ],
+    },
+    {
+      "title": "Team Performances",
+      "videos": [
+        {
+          "youtubeId": "FyApT2bAmyg",
+          "duration": "PT3M6S",
+          "title": "Co-thkoo, Former Action, Go Go Brother"
+        },
+      ],
+    },
+    {
+      "title": "Solo Performances",
+      "videos": [
+        {
+          "youtubeId": "a89bZgIR7zw",
+          "duration": "PT8M58S",
+          "title": "Kei, Kite, Rei, Yuu, Gucchon"
+        },
+      ]
+    },
+  ]
+}
+

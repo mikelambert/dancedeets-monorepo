@@ -156,6 +156,7 @@ export class Section {
   videos: [Video];
 
   constructor(json: any) {
+    console.log(json);
     this.title = json.title;
     this.videos = json.videos.map((x) => new Video(x));
   }

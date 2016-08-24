@@ -1,0 +1,55 @@
+{
+  "title": "ABM Crew Tutorials",
+  "author": "ABM Crew",
+  "style": "pop",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/-TowUwwZ8iE/sddefault.jpg",
+  "sections": [
+    {
+      "title": "ABM: Popping Basics",
+      "videos": [
+        {
+          "youtubeId": "-TowUwwZ8iE",
+          "duration": "PT4M16S",
+          "title": "Ground Moves - Dementia"
+        },
+        {
+          "youtubeId": "4pM1g1uGBo4",
+          "duration": "PT4M39S",
+          "title": "Waving - Funktion"
+        },
+        {
+          "youtubeId": "ycPeDQUKjq4",
+          "duration": "PT8M42S",
+          "title": "Tutting - Dementia"
+        },
+        {
+          "youtubeId": "qq4D9iwa6MM",
+          "duration": "PT8M44S",
+          "title": "Robot - JRock"
+        },
+        {
+          "youtubeId": "Uhmmqo_jR6E",
+          "duration": "PT5M4S",
+          "title": "Snaking - Funktion"
+        },
+      ]
+    },
+    {
+      "title": "Other Tutorials",
+      "videos": [
+        {
+          "youtubeId": "_ZEcvGOTbs8",
+          "duration": "PT12M46S",
+          "title": "TwistoFlex and Toyman - JRock"
+        },
+        {
+          "youtubeId": "1gqgwyyCwtQ",
+          "duration": "PT1M11S",
+          "title": "3D Tutting - Dementia"
+        },
+      ]
+    },
+  ]
+}
+

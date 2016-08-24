@@ -1,0 +1,19 @@
+{
+  "title": "Panda's Russian Locking Tutorial",
+  "author": "Panda",
+  "style": "lock",
+  "language": "ru",
+  "thumbnail": "https://i.ytimg.com/vi/uLbIlnaYR9o/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Locking Tutorial",
+      "videos": [
+        {
+          "youtubeId": "uLbIlnaYR9o",
+          "duration": "PT6M02S",
+          "title": "Locking Tutorial"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "title": "YAKFilms' Popping Combo Tutorials",
+  "author": "Nelson, Funky Lia",
+  "style": "pop",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/Pe46uE-cADQ/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Nelson",
+      "videos": [
+        {
+          "youtubeId": "Pe46uE-cADQ",
+          "duration": "PT3M34S",
+          "title": "Part 1 / 4"
+        },
+        {
+          "youtubeId": "pc6nIdG1800",
+          "duration": "PT3M31S",
+          "title": "Part 2 / 4"
+        },
+        {
+          "youtubeId": "fd6ofwgijBw",
+          "duration": "PT4M4S",
+          "title": "Part 3 / 4"
+        },
+        {
+          "youtubeId": "3gWf3QUAXZU",
+          "duration": "PT6M16S",
+          "title": "Part 4 / 4"
+        },
+      ]
+    },
+    {
+      "title": "Funky Lia",
+      "videos": [
+        {
+          "youtubeId": "FFsn8KOfEwc",
+          "duration": "PT2M57S",
+          "title": "Part 1 - Robot"
+        },
+        {
+          "youtubeId": "TuroKkjXO34",
+          "duration": "PT3M10S",
+          "title": "Part 2 - Waving"
+        },
+        {
+          "youtubeId": "PwdIDbeiz2w",
+          "duration": "PT3M28S",
+          "title": "Part 3 - Gliding"
+        },
+        {
+          "youtubeId": "Y2kafPEH-FQ",
+          "duration": "PT4M9S",
+          "title": "Part 4 - King Snake"
+        },
+      ]
+    },
+    {
+      "title": "Robozee - Tutting",
+      "videos": [
+        {
+          "youtubeId": "pwSos_uEqaA",
+          "duration": "PT2M20S",
+          "title": "Part 1"
+        },
+        {
+          "youtubeId": "bu-0gJU39KE",
+          "duration": "PT2M16S",
+          "title": "Part 2"
+        },
+        {
+          "youtubeId": "-HGp5_kWbCM",
+          "duration": "PT3M11S",
+          "title": "Part 3"
+        },
+        {
+          "youtubeId": "ecPjQ920thQ",
+          "duration": "PT4M13S",
+          "title": "Part 4"
+        },
+      ]
+    },
+    {
+      "title": "Nemesis - Finger Tutting",
+      "videos": [
+        {
+          "youtubeId": "CihXIz2Fgdk",
+          "duration": "PT2M13S",
+          "title": "Part 1"
+        },
+        {
+          "youtubeId": "MHD0RDZsVqU",
+          "duration": "PT2M13S",
+          "title": "Part 2"
+        },
+        {
+          "youtubeId": "4mJpy4hD2PU",
+          "duration": "PT2M21S",
+          "title": "Part 3"
+        },
+        {
+          "youtubeId": "EDnTMnQJzFM",
+          "duration": "PT3M59S",
+          "title": "Part 4"
+        },
+      ],
+    },
+    {
+      "title": "Strobe - Finger Tutting",
+      "videos": [
+        {
+          "youtubeId": "1VdmU5duMsk",
+          "duration": "PT2M5S",
+          "title": "Part 1"
+        },
+        {
+          "youtubeId": "7vtf9vukbvw",
+          "duration": "PT2M10S",
+          "title": "Part 2"
+        },
+        {
+          "youtubeId": "NA88Q6Ui0BM",
+          "duration": "PT2M28S",
+          "title": "Part 3"
+        },
+        {
+          "youtubeId": "sKbL66wDWGk",
+          "duration": "PT3M7S",
+          "title": "Part 4"
+        },
+      ]
+    },
+  ]
+}

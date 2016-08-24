@@ -34,6 +34,7 @@ const defaultTutorials = {
     require('./lock/ricky.json'),
     require('./lock/russian.json'),
     require('./lock/wordrider.json'),
+    require('./lock/panda.json'),
   ],
   'Hip-Hop Dance': [
     require('./hiphop/newschool_dictionary.json'),
@@ -42,6 +43,7 @@ const defaultTutorials = {
     require('./hiphop/stezo.json'),
     require('./hiphop/akihico.json'),
     require('./hiphop/vobr.json'),
+    require('./hiphop/yakfilms.json'),
     require('./hiphop/miscellaneous.json'),
     require('./hiphop/feelthebounce.json'),
   ],
@@ -50,6 +52,16 @@ const defaultTutorials = {
     require('./pop/oldschool_dictionary.json'),
     require('./pop/avex.json'),
     require('./pop/jsmooth_jrock.json'),
+    require('./pop/learntopop.json'),
+    require('./pop/russian_streetdancetv.json'),
+    require('./pop/vincanitv.json'),
+    require('./pop/yakfilms.json'),
+    require('./pop/salah.json'),
+    require('./pop/poppingzone.json'),
+    require('./pop/itsmrich.json'),
+    require('./pop/jayfunk.json'),
+    require('./pop/abm.json'),
+    require('./pop/russiantiger.json'),
   ],
   'Waacking': [
     require('./waack/mizuki.json'),
@@ -58,6 +70,10 @@ const defaultTutorials = {
   ],
   'Breaking': [
   ],
+  'Other': [
+    require('./misc/yakfilms.json'),
+  ]
+
 };
 
 /*
@@ -129,6 +145,9 @@ Let's grab these!
 https://www.youtube.com/channel/UC7LZQaffoSn2b_ocQg9ATlQ/videos
 the animation/tutting video references are still useful?
 the wiggles videos too
+
+// popping, but we need to segment or do in-app segmenting:
+https://www.youtube.com/watch?v=izngp0yCfyE
 
 // locking chinese
 https://www.youtube.com/watch?v=K6TDyBFH5e0

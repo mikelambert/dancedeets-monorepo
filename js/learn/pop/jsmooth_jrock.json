@@ -1,10 +1,30 @@
 {
-  "title": "JSmooth and JRock: Ticking/Strobing/Snaking Tutorials",
+  "title": "JSmooth and JRock: Ticking (Popping vs Bopping) and Strobing",
   "author": "JSmooth (MGF), JRock (ABM)",
   "style": "popping",
   "language": "en",
   "thumbnail": "https://i.ytimg.com/vi/tFMiJb3NXTw/sddefault.jpg",
   "sections": [
+    {
+      "title": "JRock (ABM) on Ticking",
+      "videos": [
+        {
+          "youtubeId": "PpxP3tUycKg",
+          "duration": "PT1M21S",
+          "title": "Popping style ticking"
+        },
+        {
+          "youtubeId": "SgFQlRHiw2c",
+          "duration": "PT3M41S",
+          "title": "Bopping style ticking"
+        },
+        {
+          "youtubeId": "VmXs46_Ekok",
+          "duration": "PT49S",
+          "title": "Ticking, scarecrow, bopping"
+        },
+      ]
+    },
     {
       "title": "JSmooth (MGF)",
       "videos": [
@@ -30,25 +50,5 @@
         },
       ]
     },
-    {
-      "title": "JRock (ABM) on Ticking",
-      "videos": [
-        {
-          "youtubeId": "PpxP3tUycKg",
-          "duration": "PT1M21S",
-          "title": "Popping style ticking"
-        },
-        {
-          "youtubeId": "SgFQlRHiw2c",
-          "duration": "PT3M41S",
-          "title": "Bopping style ticking"
-        },
-        {
-          "youtubeId": "VmXs46_Ekok",
-          "duration": "PT49S",
-          "title": "Ticking, scarecrow, bopping"
-        },
-      ]
-    }
   ]
 }

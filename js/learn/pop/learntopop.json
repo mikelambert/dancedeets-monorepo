@@ -1,0 +1,44 @@
+{
+  "title": "Invent's Learn to Pop Tutorial",
+  "author": "Assad 'Invent' Conley",
+  "style": "popping",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/2uyoHlZ_qjw/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Progressive Series",
+      "videos": [
+        {
+          "youtubeId": "2uyoHlZ_qjw",
+          "duration": "PT7M38S",
+          "title": "Hits"
+        },
+        {
+          "youtubeId": "iG4MjPFGZTk",
+          "duration": "PT9M39S",
+          "title": "Fresno and Angles"
+        },
+        {
+          "youtubeId": "VdCvWfeBJm0",
+          "duration": "PT10M23S",
+          "title": "Basic Footwork"
+        },
+        {
+          "youtubeId": "k46p_2xkvyw",
+          "duration": "PT10M59S",
+          "title": "Arm and Body Waves"
+        },
+        {
+          "youtubeId": "dCSMtkoeX9M",
+          "duration": "PT4M",
+          "title": "Dimestops"
+        },
+        {
+          "youtubeId": "-Fr3QOpflZI",
+          "duration": "PT5M33S",
+          "title": "Review, Recap and Thanks"
+        }
+      ]
+    }
+  ]
+}

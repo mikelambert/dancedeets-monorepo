@@ -1,0 +1,39 @@
+{
+  "title": "Salah's Breathe The Beat",
+  "author": "Salah",
+  "style": "pop",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/CT_ztZjp0Ds/sddefault.jpg",
+  "sections": [
+    {
+      "title": "",
+      "videos": [
+        {
+          "youtubeId": "CT_ztZjp0Ds",
+          "duration": "PT5M55S",
+          "title": "Music of Life"
+        },
+        {
+          "youtubeId": "hKnJCB7iJEc",
+          "duration": "PT5M23S",
+          "title": "Snake in the Water"
+        },
+        {
+          "youtubeId": "Zyl6Xq-AY9o",
+          "duration": "PT7M2S",
+          "title": "Seeing is Believing"
+        },
+        {
+          "youtubeId": "M2D43gXbkaI",
+          "duration": "PT6M35S",
+          "title": "The Architect"
+        },
+        {
+          "youtubeId": "Ia2CEAPIbX0",
+          "duration": "PT5M14S",
+          "title": "Culture is Key"
+        }
+      ]
+    }
+  ]
+}

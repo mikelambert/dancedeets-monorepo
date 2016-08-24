@@ -1,0 +1,49 @@
+{
+  "title": "Polish Popping Zone Tutorials",
+  "author": "Miscellaneous",
+  "style": "pop",
+  "language": "pl",
+  "thumbnail": "https://i.ytimg.com/vi/PI0SY65Rev0/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Popping Zone",
+      "videos": [
+        {
+          "youtubeId": "PI0SY65Rev0",
+          "duration": "PT14M31S",
+          "title": "podstawy poppingu | Pitzo"
+        },
+        {
+          "youtubeId": "4gDJ_SkAr-0",
+          "duration": "PT15M3S",
+          "title": "boogaloo rolls | Batman"
+        },
+        {
+          "youtubeId": "Y7E8NTETFM8",
+          "duration": "PT10M43S",
+          "title": "Crazy Legs | Sheva"
+        },
+        {
+          "youtubeId": "PqCqZaEuBNo",
+          "duration": "PT15M40S",
+          "title": "izolacje | Fantom"
+        },
+        {
+          "youtubeId": "myJh1pCkNm0",
+          "duration": "PT11M59S",
+          "title": "robot | Lipskee"
+        },
+        {
+          "youtubeId": "S9rRSKeVyzY",
+          "duration": "PT21M41S",
+          "title": "King Tut Style aka Tutting | Alkowy P-Funkowy"
+        },
+        {
+          "youtubeId": "1NYnfOa_tPQ",
+          "duration": "PT11M23S",
+          "title": "Slow Motion | Driver"
+        }
+      ]
+    }
+  ]
+}

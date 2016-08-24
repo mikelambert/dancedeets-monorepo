@@ -1,0 +1,119 @@
+{
+  "title": "YAKFilms' Tutorials",
+  "author": "Roxrite, Lilou, Jilou, Sunni, Kapela",
+  "style": "misc",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/H6y5NzhfwVk/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Bboy Roxrite",
+      "videos": [
+        {
+          "youtubeId": "H6y5NzhfwVk",
+          "duration": "PT1M44S",
+          "title": "Part 1"
+        },
+        {
+          "youtubeId": "p8rJmr7zifg",
+          "duration": "PT2M46S",
+          "title": "Part 2"
+        },
+        {
+          "youtubeId": "xjsE2lnScQA",
+          "duration": "PT2M5S",
+          "title": "Part 3"
+        },
+        {
+          "youtubeId": "lvRG3_GvLkg",
+          "duration": "PT3M32S",
+          "title": "Part 4"
+        },
+      ]
+    },
+    {
+      "title": "Bboy Lilou",
+      "videos": [
+        {
+          "youtubeId": "IjCVi3Qx8b8",
+          "duration": "PT1M37S",
+          "title": "Part 1 of 4"
+        },
+        {
+          "youtubeId": "-wlQm8t4KB0",
+          "duration": "PT2M20S",
+          "title": "Part 2 of 4"
+        },
+        {
+          "youtubeId": "NMiGEt48nGU",
+          "duration": "PT1M59S",
+          "title": "Part 3 of 4"
+        },
+        {
+          "youtubeId": "yMgvTfONOu8",
+          "duration": "PT4M31S",
+          "title": "Part 4 of 4"
+        },
+      ]
+    },
+    {
+      "title": "Bgirl Jilou",
+      "videos": [
+        {
+          "youtubeId": "Gj9YJoasx_w",
+          "duration": "PT2M2S",
+          "title": "Part 1"
+        },
+        {
+          "youtubeId": "RMl8YADZfbI",
+          "duration": "PT1M44S",
+          "title": "Part 2"
+        },
+        {
+          "youtubeId": "XSnLCJf4D5Q",
+          "duration": "PT2M44S",
+          "title": "Part 3"
+        },
+        {
+          "youtubeId": "WS7PAo1s7ow",
+          "duration": "PT2M51S",
+          "title": "Part 4"
+        },
+      ]
+    },
+    {
+      "title": "Bboy Sunni (Soul Mavericks)",
+      "videos": [
+        {
+          "youtubeId": "TZpq4ilRSRA",
+          "duration": "PT4M12S",
+          "title": "Breaking Tutorial"
+        }
+      ]
+    },
+    {
+      "title": "Kapela (Serial Stepperz) - Toprock",
+      "videos": [
+        {
+          "youtubeId": "Sb5wqv5_0DM",
+          "duration": "PT2M10S",
+          "title": "Part 1/4"
+        },
+        {
+          "youtubeId": "KSVaa1gHftM",
+          "duration": "PT2M28S",
+          "title": "Part 2/4"
+        },
+        {
+          "youtubeId": "gCv-5toheWo",
+          "duration": "PT1M13S",
+          "title": "Part 3/4"
+        },
+        {
+          "youtubeId": "vHFK8GhHQds",
+          "duration": "PT2M50S",
+          "title": "Part 4/4"
+        },
+      ]
+    },
+  ]
+}
