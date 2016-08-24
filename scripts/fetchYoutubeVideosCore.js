@@ -59,7 +59,7 @@ async function loadPlaylist(playlistId) {
       title: x.snippet.title,
     };
   });
-  console.log(JSON.stringify(annotatedPlaylist, null, '  '));
+  printResult(annotatedPlaylist);
 }
 
 async function loadChannel(channelName, searchQuery) {
@@ -95,8 +95,26 @@ async function loadChannel(channelName, searchQuery) {
       publishedAt: x.snippet.publishedAt,
     };
   });
-  const sortedPlaylist = _.sortBy(annotatedPlaylist, 'publishedAt').map((x) => _.omit(x, 'publishedAt'));
-  console.log(JSON.stringify(sortedPlaylist, null, '  '));
+  const searchKeywords = searchQuery.split(' ');
+  const filteredPlaylist = annotatedPlaylist.filter((x) => {
+    for (var i = 0; i < searchKeywords.length; i++) {
+
+      if (x.title.toLowerCase().indexOf(searchKeywords[i]) == -1) {
+        return false;
+      }
+    }
+    return true;
+  });
+  const sortedPlaylist = _.sortBy(filteredPlaylist, 'publishedAt').map((x) => _.omit(x, 'publishedAt'));
+  printResult(sortedPlaylist);
+}
+
+function printResult(videos) {
+  const result = {
+    title: '',
+    videos: videos,
+  };
+  console.log(JSON.stringify(result, null, '  '));
 }
 
 const args = process.argv.slice(2);
