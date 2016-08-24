@@ -1,0 +1,259 @@
+{
+  "title": "James Barry's Tutorials",
+  "author": "James Barry",
+  "style": "pop",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/mWz5Kxo4dTM/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Basics",
+      "videos": [
+        {
+          "youtubeId": "mWz5Kxo4dTM",
+          "duration": "PT7M47S",
+          "title": "How To Pop"
+        },
+        {
+          "youtubeId": "iJ-GkW42utw",
+          "duration": "PT4M36S",
+          "title": "How to Freestyle"
+        },
+      ]
+    },
+    {
+      "title": "Isolations",
+      "videos": [
+        {
+          "youtubeId": "iw-YBCqRmF4",
+          "duration": "PT7M48S",
+          "title": "Dime Stops"
+        },
+        {
+          "youtubeId": "nxmF17L1vX8",
+          "duration": "PT2M40S",
+          "title": "Heavy Isolations"
+        },
+        {
+          "youtubeId": "KihZlSJhUYY",
+          "duration": "PT3M24S",
+          "title": "Triple Isolations"
+        },
+      ]
+    },
+    {
+      "title": "Electric Boogaloo Moves",
+      "videos": [
+        {
+          "youtubeId": "qFokZFl6Ccc",
+          "duration": "PT5M32S",
+          "title": "Twist-o-Flex"
+        },
+        {
+          "youtubeId": "cXMeMR5l6aI",
+          "duration": "PT5M37S",
+          "title": "Old Man"
+        },
+        {
+          "youtubeId": "KHQ5KCy6DDs",
+          "duration": "PT4M14S",
+          "title": "Walk Out"
+        },
+        {
+          "youtubeId": "HT_sBOQ2wq4",
+          "duration": "PT6M6S",
+          "title": "Lifts & Rolls: Basic Boogaloo"
+        },
+        {
+          "youtubeId": "9WqYRF_2WyA",
+          "duration": "PT5M26S",
+          "title": "Crazy Legs"
+        },
+      ]
+    },
+    {
+      "title": "Animation",
+      "videos": [
+        {
+          "youtubeId": "f2Awy32AQxo",
+          "duration": "PT6M9S",
+          "title": "Strobing"
+        },
+        {
+          "youtubeId": "95h7JzX6G3w",
+          "duration": "PT4M38S",
+          "title": "Ticking"
+        },
+        {
+          "youtubeId": "CEAanLyHjcA",
+          "duration": "PT2M26S",
+          "title": "Shaking"
+        },
+      ]
+    },
+    {
+      "title": "Other Concepts",
+      "videos": [
+        {
+          "youtubeId": "jgNhhVxNspE",
+          "duration": "PT4M52S",
+          "title": "Manipulation"
+        }, 
+       {
+          "youtubeId": "UPblQD6wSNQ",
+          "duration": "PT4M41S",
+          "title": "Puppet Style"
+        },
+        {
+          "youtubeId": "hKiZ47ohPHM",
+          "duration": "PT4M45S",
+          "title": "King Tut Basics"
+        },
+        {
+          "youtubeId": "VJQCIORBgnw",
+          "duration": "PT2M56S",
+          "title": "Footwork - V Step"
+        },
+        {
+          "youtubeId": "slSkGTLHvXQ",
+          "duration": "PT4M2S",
+          "title": "Gliding"
+        },
+      ]
+    },
+    {
+      "title": "Floorwork",
+      "videos": [
+        {
+          "youtubeId": "9RDNwaGmPIc",
+          "duration": "PT5M34S",
+          "title": "Floor Moves"
+        },
+        {
+          "youtubeId": "Yi3KqUJIK6c",
+          "duration": "PT5M15S",
+          "title": "Get ups"
+        },
+      ]
+    },
+    {
+      "title": "Robot",
+      "videos": [
+        {
+          "youtubeId": "ZI6VPPUJz-o",
+          "duration": "PT4M47S",
+          "title": "Robot Animatronics Basics"
+        },
+        {
+          "youtubeId": "gYfN9_htimg",
+          "duration": "PT5M54S",
+          "title": "Robot Animatronics Intermediate"
+        },
+        {
+          "youtubeId": "WgTkBm6yUqg",
+          "duration": "PT3M25S",
+          "title": "Step Up 3D robot move"
+        },
+      ]
+    },
+    {
+      "title": "Waving & Liquid",
+      "videos": [
+        {
+          "youtubeId": "RPI1WfWka6M",
+          "duration": "PT3M58S",
+          "title": "Hands and Liquid"
+        },
+        {
+          "youtubeId": "rAnqKwJiamM",
+          "duration": "PT6M32S",
+          "title": "Double Wave"
+        },
+        {
+          "youtubeId": "mrHUO2j4C3k",
+          "duration": "PT5M14S",
+          "title": "Double Wave 2.0"
+        },
+        {
+          "youtubeId": "lEu1ExVddWM",
+          "duration": "PT4M57S",
+          "title": "Body Wave Tutorial"
+        },
+        {
+          "youtubeId": "3JVkVMJMNPs",
+          "duration": "PT4M2S",
+          "title": "Body Wave Advanced"
+        },
+        {
+          "youtubeId": "78svoCpUxmo",
+          "duration": "PT3M6S",
+          "title": "Liquid"
+        },
+        {
+          "youtubeId": "UtpDawgKAxI",
+          "duration": "PT3M44S",
+          "title": "Snaking"
+        },
+      ],
+    },
+    {
+      "title": "Mime Tutorials",
+      "videos": [
+        {
+          "youtubeId": "z8B5qNoCUAM",
+          "duration": "PT3M31S",
+          "title": "Push Points / The Wall"
+        },
+        {
+          "youtubeId": "OsIh5JqRM_A",
+          "duration": "PT3M12S",
+          "title": "Fixed points / The Wall"
+        },
+        {
+          "youtubeId": "JQahmRzrWy0",
+          "duration": "PT4M20S",
+          "title": "The Pipe"
+        },
+      ]
+    },
+    {
+      "title": "Beginner's Combos",
+      "videos": [
+        {
+          "youtubeId": "dTDWKGKc3sw",
+          "duration": "PT4M43S",
+          "title": "Beginner's combo"
+        },
+        {
+          "youtubeId": "zVHrdL_C9bE",
+          "duration": "PT5M50S",
+          "title": "Beginner's (that have levelled up) combo"
+        },
+        {
+          "youtubeId": "FAb1Wx2Bat8",
+          "duration": "PT4M23S",
+          "title": "Beginner's Arm Combo"
+        },
+      ]
+    },
+    {
+      "title": "Beginner's Popping Pointers",
+      "videos": [
+        {
+          "youtubeId": "jdG64Ub7VAg",
+          "duration": "PT5M51S",
+          "title": "Pointers"
+        },
+        {
+          "youtubeId": "on5aAg3fK2M",
+          "duration": "PT3M51S",
+          "title": "Pointers - Waving"
+        },
+        {
+          "youtubeId": "r9WQWinmWuo",
+          "duration": "PT3M51S",
+          "title": "Pointers - Music"
+        }
+      ]
+    },
+  ]
+}

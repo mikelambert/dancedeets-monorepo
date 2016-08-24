@@ -50,6 +50,7 @@ const defaultTutorials = {
   'Popping': [
     require('./pop/oakland_boogaloo.json'),
     require('./pop/oldschool_dictionary.json'),
+    require('./pop/miscellaneous.json'),
     require('./pop/avex.json'),
     require('./pop/jsmooth_jrock.json'),
     require('./pop/learntopop.json'),
@@ -62,6 +63,8 @@ const defaultTutorials = {
     require('./pop/jayfunk.json'),
     require('./pop/abm.json'),
     require('./pop/russiantiger.json'),
+    require('./pop/japanese.json'),
+    require('./pop/jamesbarry.json'),
   ],
   'Waacking': [
     require('./waack/mizuki.json'),
