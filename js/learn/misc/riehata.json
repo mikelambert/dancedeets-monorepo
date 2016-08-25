@@ -1,0 +1,79 @@
+{
+  "title": "RISING Dance School: Rie Hata: Dougie Tutorial",
+  "author": "Rie Hata",
+  "style": "dougie",
+  "language": "ja",
+  "thumbnail": "https://i.ytimg.com/vi/nIEHhNqmqDU/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorials",
+      "videos": [
+        {
+          "youtubeId": "f8iVfepI9B0",
+          "duration": "PT5M24S",
+          "title": "ベーシックドギー Basic Dougie"
+        },
+        {
+          "youtubeId": "62QNcbNKgqg",
+          "duration": "PT6M7S",
+          "title": "ドギー2 Dougie 2"
+        },
+        {
+          "youtubeId": "t0LYiw5mUgM",
+          "duration": "PT4M55S",
+          "title": "ドギー3 Dougie 3"
+        },
+        {
+          "youtubeId": "bH7evQ0VYfc",
+          "duration": "PT5M30S",
+          "title": "ドギー4 Dougie 4"
+        },
+        {
+          "youtubeId": "w5atFPyLu48",
+          "duration": "PT4M52S",
+          "title": "ジュース1 Juice 1"
+        },
+        {
+          "youtubeId": "PKzol1NPUwc",
+          "duration": "PT4M44S",
+          "title": "ジュース2 Juice 2"
+        },
+        {
+          "youtubeId": "IljcXrPxrWg",
+          "duration": "PT6M52S",
+          "title": "ジュース3 Juice 3"
+        },
+        {
+          "youtubeId": "Fq7RHFc43tY",
+          "duration": "PT5M37S",
+          "title": "P.Diddy"
+        },
+        {
+          "youtubeId": "YQnOoijeH3g",
+          "duration": "PT5M19S",
+          "title": "ティップ Tip"
+        },
+        {
+          "youtubeId": "yOhJTzoRMlk",
+          "duration": "PT5M26S",
+          "title": "スワッグショルダー Swag Shoulder"
+        },
+        {
+          "youtubeId": "WKbA7x4Xo2E",
+          "duration": "PT5M55S",
+          "title": "レッツドギー Let's Dougie"
+        },
+        {
+          "youtubeId": "hC9-oHfhqOQ",
+          "duration": "PT4M27S",
+          "title": "レッツジュース Let's Juice"
+        },
+        {
+          "youtubeId": "5frsEcexHqo",
+          "duration": "PT4M43S",
+          "title": "まとめ Summary"
+        }
+      ]
+    }
+  ]
+}

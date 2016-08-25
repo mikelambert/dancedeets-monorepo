@@ -75,6 +75,8 @@ const defaultTutorials = {
     require('./pop/popinpete.json'),
     require('./pop/korean.json'),
     require('./pop/chinese.json'),
+    require('./pop/umin.json'),
+    require('./pop/mikesong.json'),
   ],
   'Waacking': [
     require('./waack/mizuki.json'),
@@ -82,6 +84,13 @@ const defaultTutorials = {
     require('./waack/miscellaneous.json'),
   ],
   'Breaking': [
+    require('./break/piechienteddie.json'),
+    require('./break/milestone.json'),
+    require('./break/roxrite.json'),
+    require('./break/tlil.json'),
+    require('./break/josef.json'),
+    require('./break/lprad.json'),
+    require('./break/pigmie.json'),
   ],
   'Urban Choreo / Street Jazz': [
     require('./streetjazz/mattsteffanina.json'),
@@ -89,6 +98,9 @@ const defaultTutorials = {
   'Other': [
     require('./misc/yakfilms.json'),
     require('./misc/krump.json'),
+    require('./misc/horie.json'),
+    require('./misc/riehata.json'),
+    require('./misc/seto.json'),
   ]
 
 };
@@ -198,7 +210,6 @@ const defaultBlogs = [
 // https://www.youtube.com/user/YAKfilms/search?query=hiphop+tutorial
 
 // Find many here:
-// https://www.youtube.com/user/RISINGDanceSchoolCh/playlists
 // https://www.youtube.com/playlist?list=PLGOtBlWsXfr1eGS2Z2_efsYG3mwpz0WPa
 // https://www.youtube.com/user/DANCEdiet/playlists
 // https://www.youtube.com/user/WEBDancelesson/playlists
@@ -208,6 +219,16 @@ const defaultBlogs = [
 
 // Also possibly this one
 // https://www.youtube.com/user/ichidancerdesu2/videos
+
+// BBoy:
+// https://www.youtube.com/user/LilAznOrginization/videos (3 videos)
+// https://www.youtube.com/channel/UCvz5hnbqACYKae6tB9DYbcg/playlists
+
+// https://www.youtube.com/user/strifetv/search?query=tutorial
+// https://www.youtube.com/playlist?list=PL1F1B68030F09120B
+// AlienNess explains Toprock | STRIFE.TV
+
+
 
 const extraBlogs = [
   'http://www.thebboyspot.com/feed/',

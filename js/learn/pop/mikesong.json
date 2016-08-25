@@ -1,0 +1,59 @@
+{
+  "title": "Mike Song's Tutorials",
+  "author": "Mike Song",
+  "style": "pop",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/dAoQZ4XG2Vs/sddefault.jpg",
+  "sections": [
+    {
+      "title": "How To Tut",
+      "videos": [
+        {
+          "youtubeId": "dAoQZ4XG2Vs",
+          "duration": "PT7M35S",
+          "title": "Tutting Basics""
+        },
+        {
+          "youtubeId": "r4mJX5YIS4o",
+          "duration": "PT6M18S",
+          "title": "Arm Variation Combo""
+        },
+        {
+          "youtubeId": "i-5-xaoGifo",
+          "duration": "PT6M45S",
+          "title": "Toyman Transitions""
+        },
+        {
+          "youtubeId": "r00uKrKL1R4",
+          "duration": "PT5M22S",
+          "title": "The Four Square""
+        },
+      ]
+    },
+    {
+      "title": "Combos",
+      "videos": [
+        {
+          "youtubeId": "NIlXjvW2QAQ",
+          "duration": "PT5M53S",
+          "title": "Learn a Basic Footwork Combo""
+        },
+        {
+          "youtubeId": "k2LYi0-HGME",
+          "duration": "PT5M57S",
+          "title": "Basic Isolation Combo""
+        },
+        {
+          "youtubeId": "P5xr8gFRwdU",
+          "duration": "PT10M42S",
+          "title": "Mike Song - STEP BY STEP Ep. 6"
+        },
+        {
+          "youtubeId": "GucMFhbNN4M",
+          "duration": "PT9M7S",
+          "title": "When It Counts Choreography + Reunion - STEP BY STEP Ep. 8"
+        },
+      ]
+    }
+  ]
+}

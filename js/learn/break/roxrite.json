@@ -1,0 +1,29 @@
+{
+  "title": "Roxrite's BBoy Tutorials",
+  "author": "Roxrite",
+  "style": "break",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/d55ZX9ZviXw/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorials",
+      "videos": [
+        {
+          "youtubeId": "d55ZX9ZviXw",
+          "duration": "PT4M8S",
+          "title": "Basic Freezes"
+        },
+        {
+          "youtubeId": "o6EjZJsnEVg",
+          "duration": "PT5M",
+          "title": "Intermediate Freezes"
+        },
+        {
+          "youtubeId": "HoEcZnFePXE",
+          "duration": "PT3M27S",
+          "title": "Battle Tip"
+        },
+      ]
+    }
+  ]
+}

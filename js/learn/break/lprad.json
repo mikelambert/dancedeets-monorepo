@@ -1,0 +1,44 @@
+{
+  "title": "BBoy Lprad's BBoy Tutorials",
+  "author": "BBoy Lprad",
+  "style": "break",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/OFASN0FXglY/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorials",
+      "videos": [
+        {
+          "youtubeId": "OFASN0FXglY",
+          "duration": "PT5M27S",
+          "title": "Transitions"
+        },
+        {
+          "youtubeId": "nFG38_CbPso",
+          "duration": "PT7M48S",
+          "title": "Munchmills"
+        },
+        {
+          "youtubeId": "ZEpn294wnu8",
+          "duration": "PT6M32S",
+          "title": "Advanced Get Downs"
+        },
+        {
+          "youtubeId": "u_8l9OxP5OQ",
+          "duration": "PT5M26S",
+          "title": "Tapmills"
+        },
+        {
+          "youtubeId": "VQH2ufJwEHk",
+          "duration": "PT9M42S",
+          "title": "Sidechairs and Airchairs"
+        },
+        {
+          "youtubeId": "OVIYDBFGaT8",
+          "duration": "PT10M33S",
+          "title": "Rollback Freezes"
+        }
+      ]
+    }
+  ]
+}

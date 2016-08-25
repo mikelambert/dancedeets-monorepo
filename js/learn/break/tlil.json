@@ -1,0 +1,59 @@
+{
+  "title": "Bboy T-Lil's Powermove Tutorials",
+  "author": "Bboy T-Lil",
+  "style": "break",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/1fdA0O8rogs/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Powermove Tutorials",
+      "videos": [
+        {
+          "youtubeId": "1fdA0O8rogs",
+          "duration": "PT9M22S",
+          "title": "Halo"
+        },
+        {
+          "youtubeId": "JLD1BoIk_5U",
+          "duration": "PT7M6S",
+          "title": "Cricket/Jackhammer"
+        },
+        {
+          "youtubeId": "UAOMUyzhTEU",
+          "duration": "PT8M32S",
+          "title": "Flare"
+        },
+        {
+          "youtubeId": "N5iyHodsw5s",
+          "duration": "PT5M44S",
+          "title": "Swipe"
+        },
+        {
+          "youtubeId": "A8YY1U5kOR4",
+          "duration": "PT8M46S",
+          "title": "Airflare"
+        },
+        {
+          "youtubeId": "J5Qv9wmgW7E",
+          "duration": "PT9M48S",
+          "title": "1990/2000"
+        },
+        {
+          "youtubeId": "pYd-YBylaVc",
+          "duration": "PT8M13S",
+          "title": "Munchmill/Babymill"
+        },
+        {
+          "youtubeId": "dXRefXrvBwE",
+          "duration": "PT6M41S",
+          "title": "Windmill To Airflare"
+        },
+        {
+          "youtubeId": "qF_HVw-URZA",
+          "duration": "PT7M",
+          "title": "Flare To Airflare"
+        }
+      ]
+    }
+  ]
+}
