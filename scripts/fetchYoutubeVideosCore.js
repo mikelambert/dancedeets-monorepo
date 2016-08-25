@@ -20,16 +20,16 @@ function getUrl(path: string, args: Object) {
   return fullPath;
 }
 
-
 async function getTimes(playlistItemsJson) {
   const videoIds = playlistItemsJson.items.map((x) => x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId);
   const returnResult = {
     items: [],
   };
-  for (let i = 0; i < playlistItemsJson.items.length; i += 50) {
+  while (videoIds.length) {
+    const splicedVideoIds = videoIds.splice(0, 50);
     const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/videos',
     {
-      id: videoIds.splice(i, 50).join(','),
+      id: splicedVideoIds.join(','),
       maxResults: 50,
       part: 'contentDetails',
       key: YoutubeKey,
@@ -48,9 +48,8 @@ async function loadPlaylist(playlistId) {
     part: 'snippet',
     key: YoutubeKey,
   });
-  const playlistItemsJson = await (await fetch(playlistItemsUrl)).json();
+  const playlistItemsJson = await fetchAll(playlistItemsUrl);
   const videosJson = await getTimes(playlistItemsJson);
-
   const contentDetailsLookup = {};
   videosJson.items.forEach((x) => {
     contentDetailsLookup[x.id] = x.contentDetails;
@@ -68,14 +67,14 @@ async function loadPlaylist(playlistId) {
   printResult(annotatedPlaylist);
 }
 
-async function getRestOfResults(channelUrl, pageToken) {
-  const newUrl = channelUrl + (pageToken ? '&pageToken=' + pageToken : '');
-  const channelSearchJson = await (await fetch(newUrl)).json();
-  if (channelSearchJson.nextPageToken) {
-    const channelSearchJson2 = await getRestOfResults(channelUrl, channelSearchJson.nextPageToken);
-    Array.prototype.push.apply(channelSearchJson.items, channelSearchJson2.items);
+async function fetchAll(pageUrl, pageToken) {
+  const newUrl = pageUrl + (pageToken ? '&pageToken=' + pageToken : '');
+  const pageJson = await (await fetch(newUrl)).json();
+  if (pageJson.nextPageToken) {
+    const pageJson2 = await fetchAll(pageUrl, pageJson.nextPageToken);
+    Array.prototype.push.apply(pageJson.items, pageJson2.items);
   }
-  return channelSearchJson;
+  return pageJson;
 }
 
 async function loadChannel(channelName, searchQuery) {
@@ -96,7 +95,7 @@ async function loadChannel(channelName, searchQuery) {
     maxResults: 50,
     type: 'video',
   });
-  const channelSearchJson = await getRestOfResults(channelSearchUrl);
+  const channelSearchJson = await fetchAll(channelSearchUrl);
   const videosJson = await getTimes(channelSearchJson);
   const contentDetailsLookup = {};
   videosJson.items.forEach((x) => {
