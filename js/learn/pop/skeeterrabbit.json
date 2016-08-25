@@ -1,0 +1,64 @@
+{
+  "title": "Skeeter Rabbit's The Cure Tutorials",
+  "author": "Skeeter Rabbit",
+  "style": "pop",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/FiT7NvSj0C8/hqdefault.jpg",
+  "sections": [
+    {
+      "title": "The Cure",
+      "videos": [
+        {
+          "youtubeId": "7U4Z_2EbViM",
+          "duration": "PT7M9S",
+          "title": "Scarecrow"
+        },
+        {
+          "youtubeId": "k-fFneZ-fQs",
+          "duration": "PT9M8S",
+          "title": "Toyman"
+        },
+        {
+          "youtubeId": "VlGSgTddRVw",
+          "duration": "PT5M40S",
+          "title": "Puppet"
+        },
+        {
+          "youtubeId": "bUrX5BoDBrA",
+          "duration": "PT6M4S",
+          "title": "Walk Out & Variations"
+        },
+        {
+          "youtubeId": "V2puW8Is6JA",
+          "duration": "PT2M26S",
+          "title": "Neck O Flex"
+        },
+        {
+          "youtubeId": "FiT7NvSj0C8",
+          "duration": "PT1M49S",
+          "title": "Connection Move"
+        },
+        {
+          "youtubeId": "1VqkMNhYx7c",
+          "duration": "PT1M19S",
+          "title": "Style Vs Move"
+        },
+        {
+          "youtubeId": "TiajPS5Gt7k",
+          "duration": "PT1M57S",
+          "title": "Dance To The Beat"
+        },
+        {
+          "youtubeId": "-r68SELhbwM",
+          "duration": "PT2M3S",
+          "title": "Sittin In Hit"
+        },
+        {
+          "youtubeId": "jyQ9h_obpW4",
+          "duration": "PT10M11S",
+          "title": "Gettin' Down & Summary"
+        },
+      ]
+    }
+  ]
+}

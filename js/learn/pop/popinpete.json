@@ -1,0 +1,74 @@
+{
+  "title": "Popin Pete's Tutorials",
+  "author": "Popin Pete",
+  "style": "pop",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/eafX7l7SHEc/hqdefault.jpg",
+  "sections": [
+    {
+      "title": "Boogaloo Tutorial",
+      "videos": [
+        {
+          "youtubeId": "eafX7l7SHEc",
+          "duration": "PT14M1S",
+          "title": "Part 1 - Boogaloo Rolls & Poppin' Drills"
+        },
+        {
+          "youtubeId": "nLYWp9QdFAI",
+          "duration": "PT14M1S",
+          "title": "Part 2 - Poppin' Drills, Boogaloo Stepout, Single Leg Roll, Total Boogaloo Rolls, Old vs The New"
+        },
+        {
+          "youtubeId": "s1ehJsBqhd0",
+          "duration": "PT9M6S",
+          "title": "Part 3 - Crazy Legs Lessons, Poppin' Drills Shoulders"
+        },
+      ],
+    },
+    {
+      "title": "Gettin' Down Dancing",
+      "videos": [
+        {
+          "youtubeId": "t-UGEUEAvEQ",
+          "duration": "PT13M28S",
+          "title": "Popin Pete + Electric Boogaloos + Students | Gettin' Down"
+        },
+      ]
+    },
+    {
+      "title": "How To Pop & Boogaloo",
+      "videos": [
+        {
+          "youtubeId": "m1xG66qszII",
+          "duration": "PT13M41S",
+          "title": "Part 1 - Popping the Legs, Fresno, Definition & Origin, Popping the Arms & Wrists, Arm Variations, Popping the Neck"
+        },
+        {
+          "youtubeId": "VXpJGO2pFWw",
+          "duration": "PT14M23S",
+          "title": "Part 2 - Popping Variations, Dancing vs Tricks, Chest Variations, Neck-O-Flex, Ticking, Shoewear"
+        },
+        {
+          "youtubeId": "JCQCAB63wE4",
+          "duration": "PT6M7S",
+          "title": "Part 3 - Air Poses, Waves, Locking"
+        },
+      ]
+    },
+    {
+      "title": "Move Tutorials",
+      "videos": [
+        {
+          "youtubeId": "vObLVRZIvqY",
+          "duration": "PT5M23S",
+          "title": "Old Man Tutorial"
+        },
+        {
+          "youtubeId": "IKMzNwyI2_A",
+          "duration": "PT4M21S",
+          "title": "Twist O Flex Tutorial"
+        },
+      ],
+    },
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "title": "Japanese: Dance Style Popping",
+  "author": "Acky, Wild Cherry, Seen, Yuki, Testu-G, Fab 5 Boogz, 3D Crew, Quight, co-thkoo",
+  "style": "pop",
+  "language": "ja",
+  "thumbnail": "https://i.ytimg.com/vi/QMBWZsOHhm4/hqdefault.jpg",
+  "sections": [
+    {
+      "title": "Basic Foundation",
+      "videos": [
+        {
+          "youtubeId": "ABX4yXXdtKI",
+          "duration": "PT10M1S",
+          "title": "Popping Basic | Acky (中文字幕)"
+        },
+        {
+          "youtubeId": "hrNJ_yT5Fec",
+          "duration": "PT10M2S",
+          "title": "Popping Basic Part 2 | Acky (中文字幕)"
+        },
+        {
+          "youtubeId": "52lKJ7ZvrkQ",
+          "duration": "PT10M10S",
+          "title": "Animation | Seen (中文字幕)"
+        },
+        {
+          "youtubeId": "vRIOVfKQlHs",
+          "duration": "PT8M48S",
+          "title": "Boogaloo 1 | Tetsu G"
+        },
+        {
+          "youtubeId": "YyCsU-UY4Bg",
+          "duration": "PT3M30S",
+          "title": "Boogaloo 2 | Yuki"
+        },
+        {
+          "youtubeId": "ulq1xnRCH-0",
+          "duration": "PT8M19S",
+          "title": "Robot & King Tut | Wild Cherry"
+        },
+      ]
+    }
+  ]
+}
