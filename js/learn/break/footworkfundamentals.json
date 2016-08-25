@@ -1,0 +1,79 @@
+{
+  "title": "Storm's Footwork Fundamentals",
+  "author": "Storm",
+  "style": "break",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/D319k5qarNk/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorials",
+      "videos": [
+        {
+          "youtubeId": "D319k5qarNk",
+          "duration": "PT33S",
+          "title": "Part #01 Intro"
+        },
+        {
+          "youtubeId": "AGTi__ph9t0",
+          "duration": "PT40S",
+          "title": "Part #02"
+        },
+        {
+          "youtubeId": "7SRuyFEZfAI",
+          "duration": "PT11M50S",
+          "title": "Part #03"
+        },
+        {
+          "youtubeId": "wNHjnww0pa8",
+          "duration": "PT11M17S",
+          "title": "Part #04"
+        },
+        {
+          "youtubeId": "cDbd9jZm60A",
+          "duration": "PT10M40S",
+          "title": "Part #05"
+        },
+        {
+          "youtubeId": "lkDXEMVzNA8",
+          "duration": "PT10M45S",
+          "title": "Part #06"
+        },
+        {
+          "youtubeId": "iFOE_RZkn7M",
+          "duration": "PT16M4S",
+          "title": "Part #07"
+        },
+        {
+          "youtubeId": "mpdI6P85Zxg",
+          "duration": "PT11M9S",
+          "title": "Part #08"
+        },
+        {
+          "youtubeId": "RZdARE9TZaA",
+          "duration": "PT5M28S",
+          "title": "Part #09"
+        },
+        {
+          "youtubeId": "4ATB_Fb05oY",
+          "duration": "PT6M26S",
+          "title": "Part #10"
+        },
+        {
+          "youtubeId": "ix0JKAfDI18",
+          "duration": "PT12M50S",
+          "title": "Part #11"
+        },
+        {
+          "youtubeId": "s7iQPkO0YJY",
+          "duration": "PT12M16S",
+          "title": "Part #12"
+        },
+        {
+          "youtubeId": "GCebdNveOBo",
+          "duration": "PT4M9S",
+          "title": "Part #13"
+        },
+      ]
+    }
+  ]
+}

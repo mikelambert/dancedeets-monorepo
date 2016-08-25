@@ -48,8 +48,11 @@ const defaultTutorials = {
     require('./hiphop/feelthebounce.json'),
   ],
   'Popping': [
-    require('./pop/oakland_boogaloo.json'),
     require('./pop/oldschool_dictionary.json'),
+    require('./pop/skeeterrabbit.json'),
+    require('./pop/popinpete.json'),
+    require('./pop/oakland_boogaloo.json'),
+    require('./pop/wiggles.json'),
     require('./pop/miscellaneous.json'),
     require('./pop/avex.json'),
     require('./pop/jsmooth_jrock.json'),
@@ -71,8 +74,6 @@ const defaultTutorials = {
     require('./pop/mattsteffanina.json'),
     require('./pop/baseis.json'),
     require('./pop/advice.json'),
-    require('./pop/skeeterrabbit.json'),
-    require('./pop/popinpete.json'),
     require('./pop/korean.json'),
     require('./pop/chinese.json'),
     require('./pop/umin.json'),
@@ -96,6 +97,7 @@ const defaultTutorials = {
     require('./break/vincanitv_flowbasics.json'),
     require('./break/vincanitv_stalks.json'),
     require('./break/vincanitv_threads.json'),
+    require('./break/footworkfundamentals.json'),
     require('./break/piechienteddie.json'),
     require('./break/milestone.json'),
     require('./break/roxrite.json'),
@@ -232,7 +234,7 @@ const defaultBlogs = [
 // BBoy:
 // https://www.youtube.com/user/LilAznOrginization/videos (3 videos)
 // https://www.youtube.com/channel/UCvz5hnbqACYKae6tB9DYbcg/playlists
-
+// https://www.youtube.com/channel/PLVY6uOsv4D9ZsP2wTgPaItzrta5AjQiTO/playlists
 
 
 const extraBlogs = [
