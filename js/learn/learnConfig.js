@@ -99,6 +99,7 @@ const defaultTutorials = {
     require('./break/piechienteddie.json'),
     require('./break/milestone.json'),
     require('./break/roxrite.json'),
+    require('./break/strifetv.json'),
     require('./break/tlil.json'),
     require('./break/josef.json'),
     require('./break/lprad.json'),
@@ -197,7 +198,6 @@ https://www.youtube.com/watch?v=_-Ergy2XsGg
 
 HipHop:
 https://www.youtube.com/channel/UCquj-IS-DKTg-6vRxmwsFbw/videos
-https://www.youtube.com/user/streetdanceru/videos
 https://www.youtube.com/user/typhoonbroooooooklyn/search?query=tutorial
 
 Gonna ignore:
@@ -216,9 +216,6 @@ const defaultBlogs = [
 // https://www.youtube.com/watch?v=eITvtPkm5Lg
 // https://www.youtube.com/watch?v=eSCyfUSv38k
 // https://www.youtube.com/watch?v=2OK2XbwKamw
-// rising school:
-// https://www.youtube.com/playlist?list=PLVY6uOsv4D9YoJHuwyA8E7TbbsrPzKfqj
-// https://www.youtube.com/playlist?list=PLVY6uOsv4D9ZsP2wTgPaItzrta5AjQiTO
 // https://www.youtube.com/user/YAKfilms/search?query=hiphop+tutorial
 
 // Find many here:
@@ -235,10 +232,6 @@ const defaultBlogs = [
 // BBoy:
 // https://www.youtube.com/user/LilAznOrginization/videos (3 videos)
 // https://www.youtube.com/channel/UCvz5hnbqACYKae6tB9DYbcg/playlists
-
-// https://www.youtube.com/user/strifetv/search?query=tutorial
-// https://www.youtube.com/playlist?list=PL1F1B68030F09120B
-// AlienNess explains Toprock | STRIFE.TV
 
 
 
