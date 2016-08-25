@@ -67,6 +67,8 @@ const defaultTutorials = {
     require('./pop/jamesbarry.json'),
     require('./pop/khrys.json'),
     require('./pop/mattsteffanina.json'),
+    require('./pop/baseis.json'),
+    require('./pop/advice.json'),
   ],
   'Waacking': [
     require('./waack/mizuki.json'),
