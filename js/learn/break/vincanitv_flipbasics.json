@@ -1,0 +1,39 @@
+{
+  "title": "VincaniTV - Flip Basics",
+  "author": "VincaniTV Teachers",
+  "style": "break",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/GDqDK5d4_jw/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorials",
+      "videos": [
+        {
+          "youtubeId": "GDqDK5d4_jw",
+          "duration": "PT1M39S",
+          "title": "Valdez/Macaco/Monkey Flip | Flip Basics"
+        },
+        {
+          "youtubeId": "Tw3arcqQ_Fc",
+          "duration": "PT2M30S",
+          "title": "How To Do An Aerial | Cartwheel With No Hands | Monica Miyagi (Miyagi Gymnastics, Auburn)"
+        },
+        {
+          "youtubeId": "CWGh0ndv3H4",
+          "duration": "PT2M18S",
+          "title": "How To Do A Gainer Front Flip | Jessica Miyagi(Miyagi Gymnastics)"
+        },
+        {
+          "youtubeId": "boRco6eopPc",
+          "duration": "PT1M51S",
+          "title": "Backflip | Jessica Miyagi(Miyagi Gymnastics, Auburn)"
+        },
+        {
+          "youtubeId": "HKcl-Cq1z5Q",
+          "duration": "PT4M45S",
+          "title": "do a 540 Kick | Rudy Reynon II (QUEST CREW)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "title": "VincaniTV - Advanced Tutorials",
+  "author": "VincaniTV Teachers",
+  "style": "break",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/iJh5symP6d8/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorials",
+      "videos": [
+        {
+          "youtubeId": "iJh5symP6d8",
+          "duration": "PT5M48S",
+          "title": "Walks Part 1- Yodas | Kujo (Soul Control / Ill Abilities)"
+        },
+        {
+          "youtubeId": "iJh5symP6d8",
+          "duration": "PT5M48S",
+          "title": "Walks Part 1- Yodas | Kujo (Soul Control / Ill Abilities)"
+        },
+        {
+          "youtubeId": "ZNoy701Isks",
+          "duration": "PT7M1S",
+          "title": "Walks Part 2- Variations | Kujo (Soul Control / Ill Abilities)"
+        },
+        {
+          "youtubeId": "ICLQQwyZQ2A",
+          "duration": "PT5M37S",
+          "title": "Baby Windmills | Kurt the Hurt"
+        },
+        {
+          "youtubeId": "SoA-KTyBLFU",
+          "duration": "PT12M11S",
+          "title": "do an Invert"
+        },
+        {
+          "youtubeId": "OepF1ILxxrQ",
+          "duration": "PT6M",
+          "title": "Invert Training"
+        },
+        {
+          "youtubeId": "bTSY8od5Vws",
+          "duration": "PT5M18S",
+          "title": "Hawaiian Flare"
+        }
+      ]
+    }
+  ]
+}

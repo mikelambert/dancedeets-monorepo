@@ -1,0 +1,34 @@
+{
+  "title": "VincaniTV - Threads",
+  "author": "VincaniTV Teachers",
+  "style": "break",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/y0jKHC8MaXY/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorials",
+      "videos": [
+        {
+          "youtubeId": "y0jKHC8MaXY",
+          "duration": "PT4M17S",
+          "title": "Threads"
+        },
+        {
+          "youtubeId": "jqnLzhue_rk",
+          "duration": "PT5M55S",
+          "title": "Pike to Push Up"
+        },
+        {
+          "youtubeId": "UwYlitVPnSc",
+          "duration": "PT3M17S",
+          "title": "Thread-Roll-Thread | Breaking for Beginners"
+        },
+        {
+          "youtubeId": "WAwTucA9zpM",
+          "duration": "PT3M24S",
+          "title": "Thread Somersault"
+        }
+      ]
+    }
+  ]
+}

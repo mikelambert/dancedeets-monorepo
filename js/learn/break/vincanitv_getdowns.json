@@ -1,0 +1,59 @@
+{
+  "title": "VincaniTV - Get Downs",
+  "author": "VincaniTV Teachers",
+  "style": "break",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/S9w1wjYbk6E/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorials",
+      "videos": [
+        {
+          "youtubeId": "S9w1wjYbk6E",
+          "duration": "PT1M18S",
+          "title": "do \"The W\" | Get downs"
+        },
+        {
+          "youtubeId": "mQqUaORggzw",
+          "duration": "PT2M3S",
+          "title": "Colt (Pin Drop) | Get Downs"
+        },
+        {
+          "youtubeId": "4dlt1Bqwc_I",
+          "duration": "PT2M25S",
+          "title": "Shuffle Kick Out: Get Down | POE ONE (Style Elements)"
+        },
+        {
+          "youtubeId": "JpPSzEt_a5A",
+          "duration": "PT2M38S",
+          "title": "Spin Down | Get Down Basics"
+        },
+        {
+          "youtubeId": "ArTLyiFsBF8",
+          "duration": "PT2M15S",
+          "title": "Spin Down to Pilot Freeze | Matt Cash(Floor Raskalz/North Star Zulu)"
+        },
+        {
+          "youtubeId": "2PML4XLLyjM",
+          "duration": "PT6M46S",
+          "title": "Indian Step Get Down | Milestone (Renegade Rockers, San Francisco)"
+        },
+        {
+          "youtubeId": "yRYQuoyRY1Q",
+          "duration": "PT3M58S",
+          "title": "do the Neckmove | Fever One (Rock Steady Crew / DVS) | Seattle, WA"
+        },
+        {
+          "youtubeId": "pbla79daPFw",
+          "duration": "PT4M49S",
+          "title": "Coffee Grinder Get Down"
+        },
+        {
+          "youtubeId": "OMvO3MobXxU",
+          "duration": "PT4M15S",
+          "title": "Sweep Get Down"
+        }
+      ]
+    }
+  ]
+}
