@@ -8,9 +8,9 @@
 import _ from 'underscore';
 import fetch from 'node-fetch';
 
-const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
+export const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
 
-function getUrl(path: string, args: Object) {
+export function getUrl(path: string, args: Object) {
   const querystring = require('querystring');
   const formattedArgs = querystring.stringify(args);
   var fullPath = path;
@@ -40,7 +40,7 @@ async function getTimes(playlistItemsJson) {
   return returnResult;
 }
 
-async function loadPlaylist(playlistId) {
+export async function loadPlaylist(playlistId) {
   const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/playlistItems',
   {
     playlistId: playlistId,
@@ -64,7 +64,11 @@ async function loadPlaylist(playlistId) {
       title: x.snippet.title,
     };
   });
-  printResult(annotatedPlaylist);
+  return annotatedPlaylist;
+}
+
+async function printPlaylist(playlistId) {
+  printResult(await loadPlaylist(playlistId));
 }
 
 async function fetchAll(pageUrl, pageToken) {
@@ -121,7 +125,11 @@ async function loadChannel(channelName, searchQuery) {
     return true;
   });
   const sortedPlaylist = _.sortBy(filteredPlaylist, 'publishedAt').map((x) => _.omit(x, 'publishedAt'));
-  printResult(sortedPlaylist);
+  return sortedPlaylist;
+}
+
+async function printChannel(channelName, searchQuery) {
+  printResult(await loadChannel(channelName, searchQuery));
 }
 
 function printResult(videos) {
@@ -135,7 +143,7 @@ function printResult(videos) {
 const args = process.argv.slice(2);
 const type = args[0];
 if (type == 'pl') {
-  loadPlaylist(args[1]);
+  printPlaylist(args[1]);
 } else if (type == 'ch') {
-  loadChannel(args[1], args[2]);
+  printChannel(args[1], args[2]);
 }
