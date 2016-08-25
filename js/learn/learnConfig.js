@@ -65,6 +65,8 @@ const defaultTutorials = {
     require('./pop/russiantiger.json'),
     require('./pop/japanese.json'),
     require('./pop/jamesbarry.json'),
+    require('./pop/khrys.json'),
+    require('./pop/mattsteffanina.json'),
   ],
   'Waacking': [
     require('./waack/mizuki.json'),
@@ -73,8 +75,12 @@ const defaultTutorials = {
   ],
   'Breaking': [
   ],
+  'Urban Choreo / Street Jazz': [
+    require('./streetjazz/mattsteffanina.json'),
+  ],
   'Other': [
     require('./misc/yakfilms.json'),
+    require('./misc/krump.json'),
   ]
 
 };

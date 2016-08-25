@@ -56,7 +56,7 @@
         {
           "youtubeId": "4PrG53C00y0",
           "duration": "PT2M19S",
-          "title": "Step"
+          "title": "Six Step"
         },
         {
           "youtubeId": "RXW4Zz1MPaI",
@@ -96,12 +96,17 @@
         {
           "youtubeId": "quB1qCJOia8",
           "duration": "PT2M3S",
-          "title": "Stop"
+          "title": "Stop & Go"
         },
         {
           "youtubeId": "M-vDlgTeLtU",
           "duration": "PT2M10S",
           "title": "Which Way"
+        },
+        {
+          "youtubeId": "0-FmGmxihDs",
+          "duration": "PT1M1S",
+          "title": "Get Fancy"
         },
       ]
     },
@@ -111,27 +116,27 @@
         {
           "youtubeId": "HkP3nUZIH_g",
           "duration": "PT3M9S",
-          "title": "BEBOP"
+          "title": "Bebop Crew"
         },
         {
           "youtubeId": "1hPHGtfCc5c",
           "duration": "PT3M3S",
-          "title": "GOGO Brothers"
+          "title": "Gogo Brothers"
         },
         {
           "youtubeId": "UnHcjTSWTPY",
           "duration": "PT1M2S",
-          "title": "Open"
+          "title": "Open Circle"
         },
         {
           "youtubeId": "DWSD032NRo8",
           "duration": "PT2M1S",
-          "title": "Dance Style Locker - Solo"
+          "title": "Solos"
         },
         {
           "youtubeId": "rHy0EHM66Cs",
           "duration": "PT1M54S",
-          "title": "Solo"
+          "title": "Solos"
         },
         {
           "youtubeId": "DPCHu0UEMPs",
@@ -141,7 +146,7 @@
         {
           "youtubeId": "heTlkxpcwws",
           "duration": "PT3M28S",
-          "title": "Locking Line"
+          "title": "Locking Line / Soul Train Line"
         },
       ]
     }

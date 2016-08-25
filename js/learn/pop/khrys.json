@@ -1,0 +1,139 @@
+{
+  "title": "Poppin Khrys's Tutorials",
+  "author": "Poppin Khrys",
+  "style": "pop",
+  "language": "es",
+  "thumbnail": "https://i.ytimg.com/vi/nQ4lZy2XjFQ/hqdefault.jpg",
+  "sections": [
+    {
+      "title": "Popping",
+      "videos": [
+        {
+          "youtubeId": "nQ4lZy2XjFQ",
+          "duration": "PT5M56S",
+          "title": "Baile Robot Tutorial"
+        },
+        {
+          "youtubeId": "Oo-3KgFQqRc",
+          "duration": "PT2M33S",
+          "title": "Dime Stop"
+        },
+        {
+          "youtubeId": "jhVUHt8PDR4",
+          "duration": "PT4M44S",
+          "title": "Strobin'"
+        },
+        {
+          "youtubeId": "PswIj80bzMk",
+          "duration": "PT2M41S",
+          "title": "Tickin'"
+        },
+        {
+          "youtubeId": "bEkEDxqfFZ4",
+          "duration": "PT10M35S",
+          "title": "Contracciones / Pops - Parte 1"
+        },
+        {
+          "youtubeId": "Aos0CDvStNY",
+          "duration": "PT5M18S",
+          "title": "Contracciones / Pops - Parte 2: Piernas"
+        }
+      ]
+    },
+    {
+      "title": "Waving",
+      "videos": [
+        {
+          "youtubeId": "s3UFbCj0NTU",
+          "duration": "PT2M30S",
+          "title": "Basic - Waves"
+        },
+        {
+          "youtubeId": "OnabD58puhA",
+          "duration": "PT2M56S",
+          "title": "Advanced - Tutorial Ondas/Olas Avanzadas"
+        },
+        {
+          "youtubeId": "1ORJdkgrHCI",
+          "duration": "PT3M51S",
+          "title": "Tips Trucos - Olas / Ondas / Waves"
+        }
+      ]
+    },
+    {
+      "title": "Tutorial Popping/Boogaloo Básicos",
+      "videos": [
+        {
+          "youtubeId": "tXehm7T_kQQ",
+          "duration": "PT3M29S",
+          "title": "Fresno"
+        },
+        {
+          "youtubeId": "bgcAdfX0eMg",
+          "duration": "PT2M49S",
+          "title": "Flex / Flexing"
+        },
+        {
+          "youtubeId": "Yiihk4JwEHM",
+          "duration": "PT2M59S",
+          "title": "Twist-O-Flex"
+        },
+        {
+          "youtubeId": "4Jhob3z6J8Q",
+          "duration": "PT2M58S",
+          "title": "Neck-O-Flex"
+        },
+        {
+          "youtubeId": "jy6vNfKYryk",
+          "duration": "PT3M25S",
+          "title": "Master Flex"
+        },
+        {
+          "youtubeId": "0YKYaCi6YyA",
+          "duration": "PT3M27S",
+          "title": "Walk Out"
+        }
+      ]
+    },
+    {
+      "title": "Boogaloo Style",
+      "videos": [
+        {
+          "youtubeId": "r15LIHzG_F0",
+          "duration": "PT3M45S",
+          "title": "Parte 1/7 - Cuello y Hombros"
+        },
+        {
+          "youtubeId": "7YeOnjcdUDU",
+          "duration": "PT3M32S",
+          "title": "Parte 2/7 - Hombros y Pecho"
+        },
+        {
+          "youtubeId": "HJh6K0KVncc",
+          "duration": "PT3M41S",
+          "title": "Parte 3/7 - Cintura y Cadera"
+        },
+        {
+          "youtubeId": "S05eHZSBMMQ",
+          "duration": "PT4M18S",
+          "title": "Parte 4/7 - Rodillas"
+        },
+        {
+          "youtubeId": "3gZxTcoVfWQ",
+          "duration": "PT3M16S",
+          "title": "Parte 5/7 - Brazos, Manos y Tobillos"
+        },
+        {
+          "youtubeId": "NWWauXaFFIQ",
+          "duration": "PT3M35S",
+          "title": "Parte 6/7 - Coreografía"
+        },
+        {
+          "youtubeId": "ggtj48xbmEQ",
+          "duration": "PT2M8S",
+          "title": "Parte 7/7 - Freestyle"
+        }
+      ]
+    }
+  ]
+}

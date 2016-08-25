@@ -1,0 +1,59 @@
+{
+  "title": "FunkyKye Krump Tutorials",
+  "author": "FunkyKye Krump",
+  "style": "krump",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/7B9TI1nlqdY/sddefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorial",
+      "videos": [
+        {
+          "youtubeId": "7B9TI1nlqdY",
+          "duration": "PT10M42S",
+          "title": "Part 1"
+        },
+        {
+          "youtubeId": "bEkLs1Y3WE4",
+          "duration": "PT10M53S",
+          "title": "Part 2"
+        },
+        {
+          "youtubeId": "cCv96ctWV5s",
+          "duration": "PT10M46S",
+          "title": "Part 3"
+        },
+        {
+          "youtubeId": "3UByYhfILDk",
+          "duration": "PT10M55S",
+          "title": "Part 4"
+        },
+        {
+          "youtubeId": "MC0GpzHjeQU",
+          "duration": "PT10M47S",
+          "title": "Part 5"
+        },
+        {
+          "youtubeId": "DQplIVckWI8",
+          "duration": "PT10M53S",
+          "title": "Part 6"
+        },
+        {
+          "youtubeId": "auqg-U7MYmI",
+          "duration": "PT7M58S",
+          "title": "Part 7"
+        },
+      ]
+    },
+    {
+      "title": "Tutorial #2",
+      "videos": [
+        {
+          "youtubeId": "cQeyWYo0VuQ",
+          "duration": "PT8M50S",
+          "title": "Tutorial"
+        },
+      ]
+    }
+  ]
+}
