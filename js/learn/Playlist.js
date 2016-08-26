@@ -65,7 +65,7 @@ export class TutorialStylesView extends React.Component {
     let i = 0;
     while (i < thumbnails.length) {
       groupedThumbnails.push(
-        <HorizontalView style={{flex: 1}}>
+        <HorizontalView key={i} style={{flex: 1}}>
           {thumbnails[i] ? thumbnails[i] : null}
           {thumbnails[i + 1] ? thumbnails[i + 1] : null}
           {thumbnails[i + 2] ? thumbnails[i + 2] : null}
@@ -73,7 +73,6 @@ export class TutorialStylesView extends React.Component {
       );
       i += 3;
     }
-    console.log(groupedThumbnails);
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(style, this.state.styleTutorials[style]);
