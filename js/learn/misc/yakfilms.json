@@ -27,7 +27,7 @@
           "youtubeId": "c6gfRoRalY0",
           "duration": "PT3M48S",
           "title": "Part 4 - Lock In"
-        },
+        }
       ]
     },
     {
@@ -52,7 +52,7 @@
           "youtubeId": "nGImNC1U9M8",
           "duration": "PT3M57S",
           "title": "Part 4 of 4"
-        },
+        }
       ]
     },
     {
@@ -102,7 +102,7 @@
           "youtubeId": "x9Rp08WNzmQ",
           "duration": "PT3M8S",
           "title": "Part 4 of 4"
-        },
+        }
       ]
     },
     {
@@ -127,7 +127,7 @@
           "youtubeId": "zcUD3B6xI8U",
           "duration": "PT3M20S",
           "title": "Part 4 of 4"
-        },
+        }
       ]
     },
     {
@@ -171,7 +171,7 @@
         {
           "youtubeId": "1CbiOq4lYJs",
           "duration": "PT1M37S",
-          "title": "Part 1/4 - Waving",
+          "title": "Part 1/4 - Waving"
         },
         {
           "youtubeId": "F-zb_UzZjjc",
@@ -186,8 +186,8 @@
         {
           "youtubeId": "JZPWA-52bBg",
           "duration": "PT2M05S",
-          "title": "Part 4/4 - Power Moves (Cliff Hanger)",
-        },
+          "title": "Part 4/4 - Power Moves (Cliff Hanger)"
+        }
       ]
     },
     {
@@ -196,7 +196,7 @@
         {
           "youtubeId": "ANZ_4PtimpI",
           "duration": "PT2M08S",
-          "title": "Part 1/4 - Popping/Waving",
+          "title": "Part 1/4 - Popping/Waving"
         },
         {
           "youtubeId": "GFMLbKhLX_s",
@@ -211,9 +211,9 @@
         {
           "youtubeId": "V93PbHME-JI",
           "duration": "PT2M14S",
-          "title": "Part 4/4 - Ground Moves (Tsunami)",
-        },
+          "title": "Part 4/4 - Ground Moves (Tsunami)"
+        }
       ]
-    },
+    }
   ]
 }

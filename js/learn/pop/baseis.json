@@ -42,8 +42,8 @@
           "youtubeId": "pz_Z1-8uQi4",
           "duration": "PT4M31S",
           "title": "Body percussion 2"
-        },
-      ],
+        }
+      ]
     },
     {
       "title": "Popping",
@@ -87,7 +87,7 @@
           "youtubeId": "SVm803BEqR4",
           "duration": "PT12M20S",
           "title": "Sacking"
-        },
+        }
       ]
     },
     {
@@ -132,7 +132,7 @@
           "youtubeId": "z933pksLvxo",
           "duration": "PT13M15S",
           "title": "Creep Walk"
-        },
+        }
       ]
     },
     {
@@ -197,7 +197,7 @@
           "youtubeId": "q4Mt7lDKV4E",
           "duration": "PT9M49S",
           "title": "L-forms | Close Hand Positions"
-        },
+        }
       ]
     },
     {
@@ -262,7 +262,7 @@
           "youtubeId": "MhNwWUBqTl4",
           "duration": "PT7M53S",
           "title": "4 Corners Down Body"
-        },
+        }
       ]
     },
     {
@@ -337,7 +337,7 @@
           "youtubeId": "JXlEw8zuABg",
           "duration": "PT7M35S",
           "title": "Palm: Flip - Flow"
-        },
+        }
       ]
     },
     {
@@ -356,7 +356,7 @@
         {
           "youtubeId": "QI2Gr14ANNY",
           "duration": "PT6M14S",
-          "title": "Inner Tut",
+          "title": "Inner Tut"
         },
         {
           "youtubeId": "rwCK-X2sZVk",
@@ -382,7 +382,7 @@
           "youtubeId": "cxLHWIRymNc",
           "duration": "PT11M44S",
           "title": "3D Tut"
-        },
+        }
       ]
     },
     {
@@ -402,7 +402,7 @@
           "youtubeId": "WtouEEeqC6o",
           "duration": "PT2M48S",
           "title": "Part 3"
-        },
+        }
       ]
     },
     {
@@ -412,9 +412,9 @@
           "youtubeId": "v1YFI0PGpU8",
           "duration": "PT1M30S",
           "title": "Cobra: Animation"
-        },
+        }
       ]
-    },
+    }
   ]
 }
 

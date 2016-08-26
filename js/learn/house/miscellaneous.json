@@ -12,7 +12,7 @@
           "youtubeId": "93lxE7qwwXc",
           "duration": "PT3M13S",
           "title": "Washington Salles"
-        },
+        }
       ]
     },
     {
@@ -21,9 +21,9 @@
         {
           "youtubeId": "hcbDPNg0J9g",
           "duration": "PT10M00S",
-          "title": "Unknown Dancers",
-        },
-      ],
+          "title": "Unknown Dancers"
+        }
+      ]
     },
     {
       "title": "Japanese House Dance Lesson",
@@ -41,9 +41,9 @@
         {
           "youtubeId": "ta8htUbPjYQ",
           "duration": "PT2M44S",
-          "title": "South African Dancers teach Chase, Farmer, Skate",
+          "title": "South African Dancers teach Chase, Farmer, Skate"
         }
-      ],
+      ]
     },
     {
       "title": "Brian Henninger",
@@ -72,8 +72,8 @@
           "youtubeId": "_LozRiIvuuM",
           "duration": "PT2M1S",
           "title": "Heel Step & Pas De Bourree Combo"
-        },
-      ],
+        }
+      ]
     }
   ]
 }

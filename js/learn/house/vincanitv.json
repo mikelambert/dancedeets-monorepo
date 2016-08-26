@@ -22,7 +22,7 @@
           "youtubeId": "3P55U4_-Q14",
           "duration": "PT1M47S",
           "title": "Stomping"
-        },
+        }
       ]
     },
     {
@@ -31,9 +31,9 @@
         {
           "youtubeId": "ogASj4J77hQ",
           "duration": "PT5M25S",
-          "title": "Time Step",
-        },
-      ],
+          "title": "Time Step"
+        }
+      ]
     },
     {
       "title": "Jardy Santiago",
@@ -41,9 +41,9 @@
         {
           "youtubeId": "eVa92XQppTU",
           "duration": "PT8M54S",
-          "title": "Loose Legs Variation",
-        },
-      ],
+          "title": "Loose Legs Variation"
+        }
+      ]
     }
   ]
 }

@@ -27,7 +27,7 @@
           "youtubeId": "3gWf3QUAXZU",
           "duration": "PT6M16S",
           "title": "Part 4 / 4"
-        },
+        }
       ]
     },
     {
@@ -52,7 +52,7 @@
           "youtubeId": "Y2kafPEH-FQ",
           "duration": "PT4M9S",
           "title": "Part 4 - King Snake"
-        },
+        }
       ]
     },
     {
@@ -77,7 +77,7 @@
           "youtubeId": "ecPjQ920thQ",
           "duration": "PT4M13S",
           "title": "Part 4"
-        },
+        }
       ]
     },
     {
@@ -102,8 +102,8 @@
           "youtubeId": "EDnTMnQJzFM",
           "duration": "PT3M59S",
           "title": "Part 4"
-        },
-      ],
+        }
+      ]
     },
     {
       "title": "Strobe - Finger Tutting",
@@ -127,8 +127,8 @@
           "youtubeId": "sKbL66wDWGk",
           "duration": "PT3M7S",
           "title": "Part 4"
-        },
+        }
       ]
-    },
+    }
   ]
 }

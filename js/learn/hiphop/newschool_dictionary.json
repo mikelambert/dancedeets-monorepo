@@ -42,8 +42,8 @@
           "youtubeId": "-cMA9LbawLs",
           "duration": "PT40S",
           "title": "Fila"
-        },
-      ],
+        }
+      ]
     },
     {
       "title": "Middle School Dictionary",
@@ -87,7 +87,7 @@
           "youtubeId": "DlOS5HncyRA",
           "duration": "PT23S",
           "title": "Butterfly"
-        },
+        }
       ]
     },
     {
@@ -134,7 +134,7 @@
           "youtubeId": "FNe4BwQnI8o",
           "duration": "PT46S",
           "title": "C-walk"
-        },
+        }
       ]
     }
   ]

@@ -22,7 +22,7 @@
           "youtubeId": "E3JRY5DX-D8",
           "duration": "PT4M25S",
           "title": "Basics of Animation"
-        },
+        }
       ]
     },
     {
@@ -32,7 +32,7 @@
           "youtubeId": "m9rub_iGb7k",
           "duration": "PT10M10S",
           "title": "Animation Tutorial - Including King Cobra"
-        },
+        }
       ]
     },
     {
@@ -42,7 +42,7 @@
           "youtubeId": "cYPxxM3UjmU",
           "duration": "PT59S",
           "title": "King Cobra Tutorial"
-        },
+        }
       ]
     },
     {
@@ -54,8 +54,7 @@
           "title": "LA Popping History Lesson and Oldman Tutorial"
         }
       ]
-    },
-
+    }
   ]
 }
 

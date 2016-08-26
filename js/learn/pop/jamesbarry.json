@@ -17,7 +17,7 @@
           "youtubeId": "iJ-GkW42utw",
           "duration": "PT4M36S",
           "title": "How to Freestyle"
-        },
+        }
       ]
     },
     {
@@ -37,7 +37,7 @@
           "youtubeId": "KihZlSJhUYY",
           "duration": "PT3M24S",
           "title": "Triple Isolations"
-        },
+        }
       ]
     },
     {
@@ -67,7 +67,7 @@
           "youtubeId": "9WqYRF_2WyA",
           "duration": "PT5M26S",
           "title": "Crazy Legs"
-        },
+        }
       ]
     },
     {
@@ -87,7 +87,7 @@
           "youtubeId": "CEAanLyHjcA",
           "duration": "PT2M26S",
           "title": "Shaking"
-        },
+        }
       ]
     },
     {
@@ -117,7 +117,7 @@
           "youtubeId": "slSkGTLHvXQ",
           "duration": "PT4M2S",
           "title": "Gliding"
-        },
+        }
       ]
     },
     {
@@ -132,7 +132,7 @@
           "youtubeId": "Yi3KqUJIK6c",
           "duration": "PT5M15S",
           "title": "Get ups"
-        },
+        }
       ]
     },
     {
@@ -152,7 +152,7 @@
           "youtubeId": "WgTkBm6yUqg",
           "duration": "PT3M25S",
           "title": "Step Up 3D robot move"
-        },
+        }
       ]
     },
     {
@@ -192,8 +192,8 @@
           "youtubeId": "UtpDawgKAxI",
           "duration": "PT3M44S",
           "title": "Snaking"
-        },
-      ],
+        }
+      ]
     },
     {
       "title": "Mime Tutorials",
@@ -212,7 +212,7 @@
           "youtubeId": "JQahmRzrWy0",
           "duration": "PT4M20S",
           "title": "The Pipe"
-        },
+        }
       ]
     },
     {
@@ -232,7 +232,7 @@
           "youtubeId": "FAb1Wx2Bat8",
           "duration": "PT4M23S",
           "title": "Beginner's Arm Combo"
-        },
+        }
       ]
     },
     {
@@ -254,6 +254,6 @@
           "title": "Pointers - Music"
         }
       ]
-    },
+    }
   ]
 }
