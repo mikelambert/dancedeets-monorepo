@@ -9,6 +9,7 @@ import fetch from 'node-fetch';
 import querystring from 'querystring';
 import { walk, readFile } from './_fsPromises';
 import parseJson from 'parse-json';
+import areEqual from 'fbjs/lib/areEqual';
 
 export const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
 
@@ -58,17 +59,34 @@ async function checkTutorial(tutorialJson) {
 
 
 async function checkAllTutorials() {
-  const files = await walk('js/learn/');
+  const files = await walk('js/learn/tutorials');
   const jsonFiles = files.filter((x) => x.endsWith('.json'));
+  const promises = [];
+  const tutorials = [];
   for (let jsonFilename of jsonFiles) {
     let jsonData = null;
     try {
       jsonData = parseJson(await readFile(jsonFilename));
+      tutorials.push(jsonData);
     } catch (e) {
       console.error('Error loading ', jsonFilename, '\n', e);
       continue;
     }
-    checkTutorial(jsonData);
+    promises.push(checkTutorial(jsonData));
+  }
+  await Promise.all(promises);
+
+  // Used for testing down below
+  let defaultTutorials = null;
+  try {
+    defaultTutorials = require('../js/learn/learnConfig.js').defaultTutorials;
+  } catch (e) {
+    console.error('Error importing learnConfig.js\n', e);
+  }
+  const configuredTutorials = [].concat.apply([], Object.values(defaultTutorials));
+  const missingTutorials = tutorials.filter((fileTut) => !configuredTutorials.find((configTut) => areEqual(configTut, fileTut)));
+  for (let tutorial of missingTutorials) {
+    console.error('Tutorial not included: ', tutorial.style, tutorial.title);
   }
 }
 
