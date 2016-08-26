@@ -5,9 +5,10 @@
  */
 
 'use strict';
-import _ from 'underscore';
 import fetch from 'node-fetch';
 import querystring from 'querystring';
+import { walk, readFile } from './_fsPromises';
+import parseJson from 'parse-json';
 
 export const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
 
@@ -55,9 +56,20 @@ async function checkTutorial(tutorialJson) {
   }
 }
 
-//    const filename = `./js/learn/break/vincanitv_${playlistTitle.replace(' ', '').toLowerCase()}.json`;
-//    fs.writeFile(filename, JSON.stringify(tutorial, null, '  '));
 
-const a = require('../js/learn/break/footworkfundamentals.json');
-console.log(a);
-checkTutorial(a);
+async function checkAllTutorials() {
+  const files = await walk('js/learn/');
+  const jsonFiles = files.filter((x) => x.endsWith('.json'));
+  for (let jsonFilename of jsonFiles) {
+    let jsonData = null;
+    try {
+      jsonData = parseJson(await readFile(jsonFilename));
+    } catch (e) {
+      console.error('Error loading ', jsonFilename, '\n', e);
+      continue;
+    }
+    checkTutorial(jsonData);
+  }
+}
+
+checkAllTutorials();
