@@ -23,7 +23,7 @@ import {
   ProportionalImage,
   Text,
 } from '../ui';
-import { getRemoteTutorials } from '../learn/learnConfig';
+import { getRemoteTutorials } from '../learn/liveLearnConfig';
 import { Tutorial, Video } from './models';
 import { purpleColors } from '../Colors';
 import shallowEqual from 'fbjs/lib/shallowEqual';

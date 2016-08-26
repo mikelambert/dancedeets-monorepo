@@ -19,7 +19,7 @@ import {
 } from '../ui';
 import {
   getRemoteBlogs
-} from './learnConfig';
+} from './liveLearnConfig';
 import type {
   BlogPost,
 } from './models';
