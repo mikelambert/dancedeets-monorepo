@@ -106,6 +106,7 @@ const defaultTutorials = {
     require('./break/josef.json'),
     require('./break/lprad.json'),
     require('./break/pigmie.json'),
+    require('./break/taisuke.json'),
   ],
   'Urban Choreo / Street Jazz': [
     require('./streetjazz/mattsteffanina.json'),
@@ -116,6 +117,7 @@ const defaultTutorials = {
     require('./misc/horie.json'),
     require('./misc/riehata.json'),
     require('./misc/seto.json'),
+    require('./misc/kenzo_beginner.json'),
   ]
 
 };
@@ -235,7 +237,7 @@ const defaultBlogs = [
 // https://www.youtube.com/user/LilAznOrginization/videos (3 videos)
 // https://www.youtube.com/channel/UCvz5hnbqACYKae6tB9DYbcg/playlists
 // https://www.youtube.com/channel/PLVY6uOsv4D9ZsP2wTgPaItzrta5AjQiTO/playlists
-
+// https://www.youtube.com/user/shisou3/playlists
 
 const extraBlogs = [
   'http://www.thebboyspot.com/feed/',
