@@ -7,11 +7,11 @@
 'use strict';
 import _ from 'underscore';
 import fetch from 'node-fetch';
+import querystring from 'querystring';
 
 export const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
 
 export function getUrl(path: string, args: Object) {
-  const querystring = require('querystring');
   const formattedArgs = querystring.stringify(args);
   var fullPath = path;
   if (formattedArgs) {

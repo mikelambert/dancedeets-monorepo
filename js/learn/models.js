@@ -8,6 +8,7 @@
 
 import { feed } from '../api/dancedeets';
 import moment from 'moment';
+import querystring from 'querystring';
 
 const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
 
@@ -237,7 +238,6 @@ export class YoutubePlaylistBlog extends Blog {
   }
 
   static getUrl(path: string, args: Object) {
-    const querystring = require('querystring');
     const formattedArgs = querystring.stringify(args);
     var fullPath = path;
     if (formattedArgs) {
