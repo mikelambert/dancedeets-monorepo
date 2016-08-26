@@ -101,6 +101,7 @@ export const defaultTutorials = {
     require('./tutorials/break/roxrite.json'),
     require('./tutorials/break/strifetv.json'),
     require('./tutorials/break/tlil.json'),
+    require('./tutorials/break/yakfilms.json'),
     require('./tutorials/break/josef.json'),
     require('./tutorials/break/lprad.json'),
     require('./tutorials/break/pigmie.json'),
