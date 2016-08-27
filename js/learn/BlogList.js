@@ -59,7 +59,6 @@ export class BlogPostTitle extends React.Component {
       <View>
         <Text style={styles.text}>{this.props.post.title}</Text>
         <Text style={styles.text}>{this.props.post.author}</Text>
-        <Text style={styles.text}>{this.props.post.durationSeconds}</Text>
       </View>
     </TouchableHighlight>;
   }
@@ -75,7 +74,6 @@ export class FeedListView extends React.Component {
   state: {
     dataSource: ListView.DataSource,
   };
-  props: FeedProps;
 
   constructor(props: FeedProps) {
     super(props);

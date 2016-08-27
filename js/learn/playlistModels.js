@@ -1,5 +1,14 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
 
-export class Tutorial {
+'use strict';
+
+import moment from 'moment';
+
+export class Playlist {
   title: string;
   description: string;
   author: string;

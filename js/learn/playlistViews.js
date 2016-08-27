@@ -100,13 +100,13 @@ export class PlaylistStylesView extends React.Component {
   }
 }
 
-type PlaylistViewProps = {
+type PlaylistListViewProps = {
   onSelected: (playlist: Playlist) => void;
   playlists: [Playlist];
 };
 
 export class PlaylistListView extends React.Component {
-  constructor(props: PlaylistViewProps) {
+  constructor(props: PlaylistListViewProps) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
   }
@@ -151,11 +151,11 @@ function formatDuration(durationSeconds: number) {
   }
 }
 
-type FeedProps = {
+type SectionedListViewProps = {
   items: {[key: any]: any};
   sectionHeaders: [any];
   renderRow: (row: any) => any;
-  renderSectionHeader: (header: any) => any;
+  renderSectionHeader: (data: [any], sectionId: string) => any;
   renderHeader: ?() => any;
 };
 
@@ -163,9 +163,8 @@ export class SectionedListView extends React.Component {
   state: {
     dataSource: ListView.DataSource,
   };
-  props: FeedProps;
 
-  constructor(props: FeedProps) {
+  constructor(props: SectionedListViewProps) {
     super(props);
     var dataSource = new ListView.DataSource({
       rowHasChanged: (row1, row2) => row1 !== row2,
@@ -183,7 +182,7 @@ export class SectionedListView extends React.Component {
     return state;
   }
 
-  componentWillReceiveProps(nextProps: FeedProps) {
+  componentWillReceiveProps(nextProps: SectionedListViewProps) {
     this.setState(this._getNewState(nextProps.items, nextProps.sectionHeaders));
   }
 
@@ -205,7 +204,7 @@ export class SectionedListView extends React.Component {
 // This is a wrapper around <YouTube> that ignores any changes to the videoId,
 // and instead uses them to update the YouTube object directly.
 class YouTubeNoReload extends React.Component {
-  _root: React.Component;
+  _root: any;
 
   shouldComponentUpdate(nextProps, nextState) {
     const style = this.props.style;
