@@ -7,7 +7,11 @@
 'use strict';
 import fetch from 'node-fetch';
 import querystring from 'querystring';
-import { walk, readFile } from './_fsPromises';
+import {
+  readFile,
+  walk,
+  writeFile,
+} from './_fsPromises';
 import parseJson from 'parse-json';
 import areEqual from 'fbjs/lib/areEqual';
 
@@ -22,7 +26,7 @@ export function getUrl(path: string, args: Object) {
   return fullPath;
 }
 
-async function findVideoIds(inVideoIds): Promise<[string]> {
+async function findVideoItems(inVideoIds): Promise<[Object]> {
   const items = [];
   const videoIds = inVideoIds.slice();
   while (videoIds.length) {
@@ -32,13 +36,13 @@ async function findVideoIds(inVideoIds): Promise<[string]> {
     {
       id: splicedVideoIds.join(','),
       maxResults: 50,
-      part: 'id,snippet',
+      part: 'id,contentDetails',
       key: YoutubeKey,
     });
     const videosResult = await (await fetch(playlistItemsUrl)).json();
     Array.prototype.push.apply(items, videosResult.items);
   }
-  return items.map((x) => x.id);
+  return items;
 }
 
 async function checkTutorial(tutorialJson) {
@@ -52,13 +56,32 @@ async function checkTutorial(tutorialJson) {
   if (!thumbnailVideoId) {
     console.error('Thumbnail for tutorial set incorrectly:', tutorialJson.style, tutorialJson.title);
   }
-  const foundVideoIds = new Set(await findVideoIds(videoIds));
-  const missingVideoIds = videoIds.filter(x => !foundVideoIds.has(x));
-  if (missingVideoIds.length) {
-    console.error('Tutorial has broken video references: ', missingVideoIds);
+  const videoItems = await findVideoItems(videoIds);
+  const videoItemsMap = {};
+  for (let video of videoItems) {
+    videoItemsMap[video.id] = video;
   }
+
+  for (let section of tutorialJson.sections) {
+    for (let video of section.videos) {
+      const foundVideo = videoItemsMap[video.youtubeId];
+      // Check that each video id exists
+      if (!foundVideo) {
+        console.error('Tutorial has broken video reference: ', video.youtubeId);
+      // Check that video durations are correct
+      } else if (video.duration != foundVideo.contentDetails.duration) {
+        console.error('Tutorial has incorrect duration:', video.duration, ', expected: ', foundVideo.contentDetails.duration);
+        video.duration = foundVideo.contentDetails.duration;
+      }
+    }
+  }
+  return tutorialJson;
 }
 
+async function reportAndFix(jsonFilename, jsonData) {
+  const fixedJson = await checkTutorial(jsonData);
+  await writeFile(jsonFilename, JSON.stringify(fixedJson, null, '  '));
+}
 
 async function checkAllTutorials() {
   const files = await walk('js/learn/tutorials');
@@ -74,7 +97,7 @@ async function checkAllTutorials() {
       console.error('Error loading ', jsonFilename, '\n', e);
       continue;
     }
-    promises.push(checkTutorial(jsonData));
+    promises.push(reportAndFix(jsonFilename, jsonData));
   }
   await Promise.all(promises);
 
