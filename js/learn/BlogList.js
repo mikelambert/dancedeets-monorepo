@@ -21,10 +21,8 @@ import {
   getRemoteBlogs
 } from './liveLearnConfig';
 import type {
-  BlogPost,
-} from './models';
-import {
   Blog,
+  BlogPost,
   FeedBlog,
   MediumBlog,
   YoutubePlaylistBlog,

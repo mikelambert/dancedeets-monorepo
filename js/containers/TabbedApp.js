@@ -37,10 +37,10 @@ import AddEvents from '../containers/AddEvents';
 import { track, trackWithEvent } from '../store/track';
 import { setDefaultState } from '../reducers/navigation';
 import {
-  TutorialListView,
-  TutorialStylesView,
-  TutorialView,
-} from '../learn/Playlist';
+  PlaylistListView,
+  PlaylistStylesView,
+  PlaylistView,
+} from '../learn/playlistViews';
 
 const EventNavigator = generateNavigator('EVENT_NAV');
 setDefaultState('EVENT_NAV', { key: 'EventList', title: 'DanceDeets' });
@@ -162,14 +162,14 @@ class _TabbedAppView extends React.Component {
         }}
         />;
     case 'TutorialStyles':
-      return <TutorialStylesView
+      return <PlaylistStylesView
         onSelected={(style, tutorials) => {
           track('Style Selected');
           navigatable.onNavigate({key: 'TutorialList', title: style, tutorials: tutorials});
         }}
         />;
     case 'TutorialList':
-      return <TutorialListView
+      return <PlaylistListView
         tutorials={route.tutorials}
         onSelected={(tutorial) => {
           // TODO: Track blog details
@@ -179,7 +179,7 @@ class _TabbedAppView extends React.Component {
         }}
         />;
     case 'Tutorial':
-      return <TutorialView
+      return <PlaylistView
         tutorial={route.tutorial}
         />;
     case 'BlogPostList':
