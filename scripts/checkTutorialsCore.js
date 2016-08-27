@@ -22,15 +22,17 @@ export function getUrl(path: string, args: Object) {
   return fullPath;
 }
 
-async function findVideoIds(videoIds): Promise<[string]> {
+async function findVideoIds(inVideoIds): Promise<[string]> {
   const items = [];
+  const videoIds = inVideoIds.slice();
   while (videoIds.length) {
+    // modifies videoIds
     const splicedVideoIds = videoIds.splice(0, 50);
     const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/videos',
     {
       id: splicedVideoIds.join(','),
       maxResults: 50,
-      part: 'id',
+      part: 'id,snippet',
       key: YoutubeKey,
     });
     const videosResult = await (await fetch(playlistItemsUrl)).json();
@@ -88,6 +90,7 @@ async function checkAllTutorials() {
   for (let tutorial of missingTutorials) {
     console.error('Tutorial not included: ', tutorial.style, tutorial.title);
   }
+  console.log('Finished!');
 }
 
 checkAllTutorials();

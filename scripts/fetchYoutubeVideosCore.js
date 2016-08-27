@@ -26,6 +26,7 @@ async function getTimes(playlistItemsJson) {
     items: [],
   };
   while (videoIds.length) {
+    // modifies videoIds
     const splicedVideoIds = videoIds.splice(0, 50);
     const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/videos',
     {
