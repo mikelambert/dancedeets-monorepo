@@ -49,7 +49,7 @@ if (global.Intl) {
   global.Intl = require('intl');
 }
 
-export default function intl(Wrapped) {
+export default function intl(Wrapped: Class<React.Component>) {
   class Internationalize extends React.Component {
 
     render() {
@@ -67,7 +67,7 @@ export default function intl(Wrapped) {
           defaultLocale={defaultLocale}
           key={currentLocale} // https://github.com/yahoo/react-intl/issues/234
           locale={currentLocale}
-          messages={messages[currentLocale]}
+          messages={messages[currentLocale] || null}
         >
           <Wrapped {...this.props} />
         </IntlProvider>

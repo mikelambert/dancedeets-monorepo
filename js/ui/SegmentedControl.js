@@ -53,7 +53,7 @@ export default class SegmentedControl extends React.Component {
 
   props: Props;
 
-  static defaultProps = {
+  static defaultProps: Props = {
     values: [],
     defaultIndex: -1,
     enabled: true,

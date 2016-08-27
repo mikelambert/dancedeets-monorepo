@@ -21,8 +21,10 @@ import {
   getRemoteBlogs
 } from './liveLearnConfig';
 import type {
-  Blog,
   BlogPost,
+} from './models';
+import {
+  Blog,
   FeedBlog,
   MediumBlog,
   YoutubePlaylistBlog,
@@ -67,7 +69,7 @@ export class BlogPostTitle extends React.Component {
 type FeedProps = {
   items: [any];
   renderRow: (post: BlogPost) => any;
-  renderHeader: ?() => any;
+  renderHeader?: () => any;
 };
 
 export class FeedListView extends React.Component {
@@ -151,7 +153,6 @@ class BlogTitle extends React.Component {
 }
 
 type BlogProps = {
-  blogs: [Blog];
   onSelected: (blog: Blog) => void;
 };
 
@@ -167,7 +168,8 @@ export class BlogList extends React.Component {
       rowHasChanged: (row1, row2) => row1 !== row2,
     });
     this.state = {dataSource};
-    this.state = this._getNewState(this.props.blogs);
+    // We don't take in any props.blogs, so no need to run this:
+    // this.state = this._getNewState(this.props.blogs);
     (this: any)._renderRow = this._renderRow.bind(this);
   }
 

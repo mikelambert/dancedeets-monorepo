@@ -38,6 +38,24 @@ type Result = {
   terms?: Array<Term>;
 };
 
+
+type Props = {
+  style: Object, // style for ListView
+  styles: Object, // styles for subcomponents
+  onLocationSelected: (location: string) => (void | Promise),
+  minLength: number,
+  fetchDetails: boolean,
+  textValue: () => string,
+  query: Object,
+  GoogleReverseGeocodingQuery: Object,
+  predefinedPlaces: [Result],
+  currentLocation: boolean,
+  currentLocationLabel: string,
+  filterReverseGeocodingByTypes: [string],
+  predefinedPlacesAlwaysVisible: boolean,
+  queryLanguage: string,
+};
+
 export default class AutocompleteList extends React.Component {
   state: {
     dataSource: ListView.DataSource,
@@ -48,24 +66,7 @@ export default class AutocompleteList extends React.Component {
   _requests: [XMLHttpRequest] = [];
 
 
-  props: {
-    style: Object, // style for ListView
-    styles: Object, // styles for subcomponents
-    onLocationSelected: (location: string) => void | Promise,
-    minLength: number,
-    fetchDetails: boolean,
-    textValue: () => string,
-    query: Object,
-    GoogleReverseGeocodingQuery: Object,
-    predefinedPlaces: [Result],
-    currentLocation: boolean,
-    currentLocationLabel: string,
-    filterReverseGeocodingByTypes: [string],
-    predefinedPlacesAlwaysVisible: boolean,
-    queryLanguage: string,
-  };
-
-  static defaultProps = {
+  static defaultProps: Props = {
     onLocationSelected: (x) => {},
     minLength: 0,
     fetchDetails: false,

@@ -20,19 +20,20 @@ import {
   semiNormalize,
 } from './normalize';
 
-class Button extends React.Component {
-  props: {
-    icon: ?number;
-    caption: string;
-    style: any;
-    onPress: () => void;
-    size: 'small' | 'large';
-    textStyle: any;
-    color: 'purple' | 'color';
-    testId: string;
-  };
+type Props = {
+  icon: ?number;
+  caption: string;
+  style: any;
+  onPress: () => void;
+  size: 'small' | 'large';
+  textStyle: any;
+  color: 'purple' | 'yellow' | 'red';
+  testID: ?string;
+};
 
-  static defaultProps = {
+class Button extends React.Component {
+
+  static defaultProps: Props = {
     caption: '',
     icon: null,
     style: {},
@@ -40,7 +41,7 @@ class Button extends React.Component {
     size: 'large',
     textStyle: {},
     color: 'purple',
-    testId: null,
+    testID: null,
   };
 
   render() {

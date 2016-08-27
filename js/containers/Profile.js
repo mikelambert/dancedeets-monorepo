@@ -158,7 +158,7 @@ const Credits = injectIntl(_Credits);
 const shareLinkContent = {
   contentType: 'link',
   contentUrl: 'http://www.dancedeets.com',
-  contentDescription: null,
+  contentDescription: '',
 };
 
 class _ShareButtons extends React.Component {

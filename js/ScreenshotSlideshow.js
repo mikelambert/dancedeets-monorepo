@@ -63,6 +63,10 @@ class _ScreenshotSlideshow extends React.Component {
       accessToken: '',
       applicationID: '2347064084',
       userID: '701004',
+      declinedPermissions: [],
+      expirationTime: 0,
+      lastRefreshTime: 0,
+      permissions: [],
     });
     const token = await AccessToken.getCurrentAccessToken();
     if (!token) {

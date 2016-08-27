@@ -147,7 +147,6 @@ const messages = defineMessages({
 });
 
 class SubEventLine extends React.Component {
-
   icon() {
     throw new Error('Not Implemented!');
   }
@@ -508,7 +507,7 @@ class _EventRsvpControl extends React.Component {
     this.setState({defaultRsvp: rsvpIndex, loading: false});
   }
 
-  async onRsvpChange(index: number, oldIndex: number) {
+  async onRsvpChange(index: number, oldIndex: number): Promise<> {
     // Android's SegmentedControl doesn't upport enabled=,
     // so it's possible onRsvpChange will be called while we are loading.
     // Setting an RSVP while an RSVP is in-progress breaks the underlying FB API.
