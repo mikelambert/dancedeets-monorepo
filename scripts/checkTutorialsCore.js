@@ -67,10 +67,10 @@ async function checkTutorial(tutorialJson) {
       const foundVideo = videoItemsMap[video.youtubeId];
       // Check that each video id exists
       if (!foundVideo) {
-        console.error('Tutorial has broken video reference: ', video.youtubeId);
+        console.error(`Tutorial ${video.youtubeId} has broken video reference.`);
       // Check that video durations are correct
       } else if (video.duration != foundVideo.contentDetails.duration) {
-        console.error('Tutorial has incorrect duration:', video.duration, ', expected: ', foundVideo.contentDetails.duration);
+        console.error(`Tutorial ${video.youtubeId} has incorrect duration: ${video.duration}, expected: ${foundVideo.contentDetails.duration}`);
         video.duration = foundVideo.contentDetails.duration;
       }
     }
