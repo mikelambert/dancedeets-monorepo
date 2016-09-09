@@ -164,7 +164,9 @@ class _TabbedAppView extends React.Component {
     case 'TutorialStyles':
       return <PlaylistStylesView
         onSelected={(style, tutorials) => {
-          track('Style Selected');
+          track('Tutorial Style Selected', {
+            tutorialStyle: style,
+          });
           navigatable.onNavigate({key: 'TutorialList', title: style, tutorials: tutorials});
         }}
         />;
@@ -172,9 +174,10 @@ class _TabbedAppView extends React.Component {
       return <PlaylistListView
         tutorials={route.tutorials}
         onSelected={(tutorial) => {
-          // TODO: Track blog details
-          track('Tutorial Selected');
-          //navigatable.onNavigate({key: 'BlogPostList', title: blog.title, blog: blog});
+          track('Tutorial Selected', {
+            tutorialName: tutorial.title,
+            tutorialStyle: tutorial.style,
+          });
           navigatable.onNavigate({key: 'Tutorial', title: tutorial.title, tutorial: tutorial});
         }}
         />;

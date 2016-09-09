@@ -274,15 +274,18 @@ export class PlaylistView extends React.Component {
       underlayColor={purpleColors[0]}
       activeOpacity={0.5}
       onPress={() => {
-        // TODO: Track post details
-        track('Blog Post Selected');
         const index = this.props.playlist.getVideoIndex(video);
+
+        track('Tutorial Video Selected', {
+          tutorialName: this.props.playlist.title,
+          tutorialStyle: this.props.playlist.style,
+          tutorialVideoIndex: index,
+        });
+
         //TODO: Enable this to make setState work.
         // It unfortunately causes a html-video-reload, which ends up being slower
         // than reusing the existing video object and just setting the video id.
         this.setState({selectedIndex: index});
-
-        //navigatable.onNavigate({key: 'BlogPostItem', title: post.title, post: post});
       }}>
       <View>
       <HorizontalView style={styles.videoRow}>
