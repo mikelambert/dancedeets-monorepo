@@ -28,12 +28,7 @@ def adjust_caps(s):
     return s
 
 
-class MindBodyBrowserScraper(items.StudioScraper):
-    allowed_domains = ['clients.mindbodyonline.com']
-
-    mindbody_studio_id = 0
-    mindbody_tab_id = 0
-
+class BrowserScraper(items.StudioScraper):
     # So we can log in to our scrapinghub splash instance
     http_user = keys.get('scrapinghub_key')
     http_pass = ''
@@ -51,8 +46,12 @@ class MindBodyBrowserScraper(items.StudioScraper):
         }
     }
 
-    def __init__(self, *args, **kwargs):
-        super(MindBodyBrowserScraper, self).__init__(*args, **kwargs)
+
+class MindBodyBrowserScraper(BrowserScraper):
+    allowed_domains = ['clients.mindbodyonline.com']
+
+    mindbody_studio_id = 0
+    mindbody_tab_id = 0
 
     def _main_mindbody_url(self):
         return 'https://clients.mindbodyonline.com/ASP/home.asp?studioid=%s' % self.mindbody_studio_id

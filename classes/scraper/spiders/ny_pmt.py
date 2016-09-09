@@ -2,7 +2,10 @@
 
 import dateparser
 import datetime
-import re
+import scrapy
+import scrapyjs
+
+from .. import browser_scraper
 from .. import items
 
 from nlp import event_classifier
@@ -16,21 +19,41 @@ def parse_times(times):
     return start_time, end_time
 
 
-class PMTHouseOfDance(items.StudioScraper):
+class PMTHouseOfDance(browser_scraper.BrowserScraper):
     name = 'PMT'
     allowed_domains = ['pmthouseofdance.com']
     latlong = (40.7374272, -73.9987284)
     address = '69 W 14th St, New York, NY'
 
-    start_urls = [
-        'http://www.pmthouseofdance.com/?_escaped_fragment_=schedule/c1jfb',
-    ]
+    def _generate_request(self, url):
+        script = """
+        function main(splash)
+            assert(splash:go(splash.args.url))
+            return splash:evaljs("document.body.outerHTML")
+        end
+        """
+        return scrapy.Request(
+            url,
+            meta={
+                'splash': {
+                    'args': {
+                        'lua_source': script,
+                    },
+                    'endpoint': 'execute',
+                    # optional parameters
+                    'slot_policy': scrapyjs.SlotPolicy.PER_DOMAIN,
+                }
+            },
+        )
+
+    def start_requests(self):
+        yield self._generate_request(self._get_url(None))
 
     def _get_url(self, response):
         return 'http://www.pmthouseofdance.com/#!schedule/c1jfb'
 
     def parse_classes(self, response):
-        table = response.css('div.Text')
+        table = response.css('div#c1jfbinlineContent div.s2')
 
         captured_columns = []
         rows_to_capture = 0
