@@ -50,9 +50,7 @@ export class PlaylistStylesView extends React.Component {
   async load() {
     const playlistsJson = await getRemoteTutorials();
 
-    console.log('a', playlistsJson);
     const constructedPlaylists = playlistsJson.map((playlist) => {
-    console.log('b', playlist);
       return {
         ...playlist,
         tutorials: playlist.tutorials.map((x) => new Playlist(x)),

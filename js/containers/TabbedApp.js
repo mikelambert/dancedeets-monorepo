@@ -163,11 +163,11 @@ class _TabbedAppView extends React.Component {
         />;
     case 'TutorialStyles':
       return <PlaylistStylesView
-        onSelected={(style, tutorials) => {
+        onSelected={(style) => {
           track('Tutorial Style Selected', {
-            tutorialStyle: style,
+            tutorialStyle: style.title,
           });
-          navigatable.onNavigate({key: 'TutorialList', title: style, tutorials: tutorials});
+          navigatable.onNavigate({key: 'TutorialList', title: style.title, tutorials: style.tutorials});
         }}
         />;
     case 'TutorialList':
