@@ -1,0 +1,29 @@
+{
+  "title": "Tight Eyez's Krump Basics",
+  "author": "Tight Eyez",
+  "style": "krump",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/9rVaELJHSIg/hqdefault.jpg",
+  "sections": [
+    {
+      "title": "Krump Basics",
+      "videos": [
+        {
+          "youtubeId": "9rVaELJHSIg",
+          "duration": "PT1H30M8S",
+          "title": "Part 1 of 3"
+        },
+        {
+          "youtubeId": "M65objaBotc",
+          "duration": "PT1H17M40S",
+          "title": "Part 2 of 3"
+        },
+        {
+          "youtubeId": "g8VyX_Aq_3U",
+          "duration": "PT1H29M24S",
+          "title": "Part 3 of 3"
+        }
+      ]
+    }
+  ]
+}

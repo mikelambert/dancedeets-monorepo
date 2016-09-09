@@ -1,0 +1,29 @@
+{
+  "title": "Torch's Krump Tutorial",
+  "author": "Torch Tha Street Bauss",
+  "style": "krump",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/7A2MASio7HU/hqdefault.jpg",
+  "sections": [
+    {
+      "title": "Krump 4.0 Tutorials",
+      "videos": [
+        {
+          "youtubeId": "7A2MASio7HU",
+          "duration": "PT10M02S",
+          "title": "Part 1 - Stance and Footwork"
+        },
+        {
+          "youtubeId": "y_zN5hMOmtU",
+          "duration": "PT8M30S",
+          "title": "Part 2 - Body Control and Groove"
+        },
+        {
+          "youtubeId": "h1WjxaBR3z0",
+          "duration": "PT10M16S",
+          "title": "Part 3 - Arms and Focus Points"
+        }
+      ]
+    }
+  ]
+}

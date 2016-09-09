@@ -1,0 +1,59 @@
+{
+  "title": "Крамп уроки | Russian Krump Tutorial",
+  "author": "Группа вк",
+  "style": "krump",
+  "language": "ru",
+  "thumbnail": "https://i.ytimg.com/vi/nY7H4XJFS34/hqdefault.jpg",
+  "sections": [
+    {
+      "title": "Main Tutorial",
+      "videos": [
+        {
+          "youtubeId": "nY7H4XJFS34",
+          "duration": "PT3M49S",
+          "title": "Lesson 1 - Stomp"
+        },
+        {
+          "youtubeId": "7W0Oj_53ZJU",
+          "duration": "PT4M2S",
+          "title": "Lesson 2 - Chest Pop"
+        },
+        {
+          "youtubeId": "sHPuw63P_-U",
+          "duration": "PT4M47S",
+          "title": "Lesson 3 - Jabs"
+        },
+        {
+          "youtubeId": "eOK76_gWnSc",
+          "duration": "PT3M25S",
+          "title": "Lesson 4 - Arm Swings"
+        },
+        {
+          "youtubeId": "uINTAYSrKfg",
+          "duration": "PT2M13S",
+          "title": "Lesson 5 - Grab"
+        },
+        {
+          "youtubeId": "TI3CJTkJu84",
+          "duration": "PT3M",
+          "title": "Lesson 6 - PUNCH"
+        },
+        {
+          "youtubeId": "N1aFkqe3kp8",
+          "duration": "PT2M23S",
+          "title": "Lesson 7 - FOOTWORK"
+        }
+      ]
+    },
+    {
+      "title": "Back to Krump",
+      "videos": [
+        {
+          "youtubeId": "jCkPsHg8u6Y",
+          "duration": "PT1M54S",
+          "title": "Back to Krump Tutorial"
+        },
+      ]
+    }
+  ]
+}

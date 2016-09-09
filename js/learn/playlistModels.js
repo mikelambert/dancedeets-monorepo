@@ -75,8 +75,13 @@ export class Section {
   videos: [Video];
 
   constructor(json: any) {
-    this.title = json.title;
-    this.videos = json.videos.map((x) => new Video(x));
+    try {
+      this.title = json.title;
+      this.videos = json.videos.map((x) => new Video(x));
+    } catch (e) {
+      console.log('Error on playlist: ', json);
+      throw e;
+    }
   }
 
   getDurationSeconds(): number {
@@ -99,9 +104,14 @@ export class Video {
   youtubeId: string;
 
   constructor(json: any) {
-    this.title = json.title;
-    this.duration = json.duration;
-    this.youtubeId = json.youtubeId;
+    try {
+      this.title = json.title;
+      this.duration = json.duration;
+      this.youtubeId = json.youtubeId;
+    } catch (e) {
+      console.log('Error on video: ', json);
+      throw e;
+    }
   }
 
   getDurationSeconds(): number {

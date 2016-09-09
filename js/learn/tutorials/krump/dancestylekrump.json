@@ -1,8 +1,8 @@
 {
-  "title": "FunkyKye Krump Tutorials",
-  "author": "FunkyKye Krump",
+  "title": "Japanese: Dance Style Krump",
+  "author": "Hipnotic Boogie, D'oam",
   "style": "krump",
-  "language": "en",
+  "language": "ja",
   "thumbnail": "https://i.ytimg.com/vi/7B9TI1nlqdY/hqdefault.jpg",
   "sections": [
     {
@@ -42,16 +42,6 @@
           "youtubeId": "auqg-U7MYmI",
           "duration": "PT7M58S",
           "title": "Part 7"
-        }
-      ]
-    },
-    {
-      "title": "Tutorial #2",
-      "videos": [
-        {
-          "youtubeId": "cQeyWYo0VuQ",
-          "duration": "PT8M50S",
-          "title": "Tutorial"
         }
       ]
     }

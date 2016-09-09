@@ -77,6 +77,15 @@ export const defaultTutorials = {
     require('./tutorials/pop/umin.json'),
     require('./tutorials/pop/mikesong.json'),
   ],
+  'Krump': [
+    require('./tutorials/krump/krump40.json'),
+    require('./tutorials/krump/krumpkings.json'),
+    require('./tutorials/krump/tighteyes.json'),
+    require('./tutorials/krump/torch.json'),
+    require('./tutorials/krump/streetdancetv.json'),
+    require('./tutorials/krump/dancestylekrump.json'),
+    require('./tutorials/krump/chinese.json'),
+  ],
   'Waacking': [
     require('./tutorials/waack/mizuki.json'),
     require('./tutorials/waack/christina.json'),
@@ -112,11 +121,12 @@ export const defaultTutorials = {
   ],
   'Other': [
     require('./tutorials/misc/yakfilms.json'),
-    require('./tutorials/misc/krump.json'),
     require('./tutorials/misc/horie.json'),
     require('./tutorials/misc/riehata.json'),
     require('./tutorials/misc/seto.json'),
     require('./tutorials/misc/kenzo_beginner.json'),
+    require('./tutorials/misc/dancehall_streetdancetv.json'),
+    require('./tutorials/misc/flex_streetdancetv.json'),
   ]
 
 };
