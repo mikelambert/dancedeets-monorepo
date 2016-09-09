@@ -172,18 +172,18 @@ class _TabbedAppView extends React.Component {
         />;
     case 'TutorialList':
       return <PlaylistListView
-        tutorials={route.tutorials}
-        onSelected={(tutorial) => {
+        playlists={route.tutorials}
+        onSelected={(playlist) => {
           track('Tutorial Selected', {
-            tutorialName: tutorial.title,
-            tutorialStyle: tutorial.style,
+            tutorialName: playlist.title,
+            tutorialStyle: playlist.style,
           });
-          navigatable.onNavigate({key: 'Tutorial', title: tutorial.title, tutorial: tutorial});
+          navigatable.onNavigate({key: 'Tutorial', title: playlist.title, tutorial: playlist});
         }}
         />;
     case 'Tutorial':
       return <PlaylistView
-        tutorial={route.tutorial}
+        playlist={route.tutorial}
         />;
     case 'BlogPostList':
       return <BlogPostList
