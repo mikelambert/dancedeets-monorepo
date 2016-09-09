@@ -70,6 +70,7 @@ type FeedProps = {
   items: [any];
   renderRow: (post: BlogPost) => any;
   renderHeader?: () => any;
+  contentContainerStyle?: any;
 };
 
 export class FeedListView extends React.Component {
@@ -102,6 +103,7 @@ export class FeedListView extends React.Component {
   render() {
     return <ListView
       style={[styles.listView]}
+      contentContainerStyle={this.props.contentContainerStyle}
       dataSource={this.state.dataSource}
       renderRow={this.props.renderRow}
       renderHeader={this.props.renderHeader}

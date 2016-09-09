@@ -50,43 +50,34 @@ export class PlaylistStylesView extends React.Component {
   async load() {
     const playlistsJson = await getRemoteTutorials();
 
-    const stylePlaylists = {};
-    Object.keys(playlistsJson).forEach((style) => {
-      stylePlaylists[style] = playlistsJson[style].map((x) => new Playlist(x));
+    console.log('a', playlistsJson);
+    const constructedPlaylists = playlistsJson.map((playlist) => {
+    console.log('b', playlist);
+      return {
+        ...playlist,
+        tutorials: playlist.tutorials.map((x) => new Playlist(x)),
+      };
     });
-    this.setState({stylePlaylists: stylePlaylists});
+    this.setState({stylePlaylists: constructedPlaylists});
   }
 
-  renderRow(style: string) {
+  renderRow(style: any) {
     // When we have per-style images
     // <Image source={{uri: style}} style={styles.thumbnail} />
-    const playlists = this.state.stylePlaylists[style];
-    const thumbnails = playlists.map((playlist) =>
-      <Image source={{uri: playlist.thumbnail}} style={styles.miniThumbnail} />
-    );
-    const groupedThumbnails = [];
-    let i = 0;
-    while (i < thumbnails.length) {
-      groupedThumbnails.push(
-        <HorizontalView key={i} style={{flex: 1}}>
-          {thumbnails[i] ? thumbnails[i] : null}
-          {thumbnails[i + 1] ? thumbnails[i + 1] : null}
-          {thumbnails[i + 2] ? thumbnails[i + 2] : null}
-        </HorizontalView>
-      );
-      i += 3;
-    }
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(style, this.state.stylePlaylists[style]);
-      }}>
+      }}
+      style={{height: 350}}
+      >
       <Card
         title={
-          <Text style={[styles.text, styles.playlistTitle, styles.playlistListRow]}>{style}</Text>
-        }>
-        <View style={{margin: 7}}>
-          <Text style={styles.text}>{this.state.stylePlaylists[style].length} Playlists</Text>
-          {groupedThumbnails}
+          <Text style={[styles.text, styles.playlistTitle, styles.playlistListRow]}>{style.title}</Text>
+        }
+        style={{width: 150, height: 300}}>
+        <View style={{margin: 7, flex: 1}}>
+          <Text style={styles.text}>{style.tutorials.length} Playlists</Text>
+          <Image source={style.thumbnail} resizeMode="contain" style={{width: 120, height: 200}}/>
         </View>
       </Card>
     </TouchableHighlight>;
@@ -94,8 +85,13 @@ export class PlaylistStylesView extends React.Component {
 
   render() {
     return <FeedListView
-      items={Object.keys(this.state.stylePlaylists)}
+      items={this.state.stylePlaylists}
       renderRow={this.renderRow}
+      contentContainerStyle={{
+        justifyContent: 'center',
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+      }}
       />;
   }
 }
