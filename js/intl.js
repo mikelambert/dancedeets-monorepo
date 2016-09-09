@@ -29,6 +29,7 @@ import fr from './messages/fr.json';
 import ja from './messages/ja.json';
 import zh from './messages/zh.json';
 const messages = {
+  en: null, // use built-ins...but ensure we have an entry so we don't have undefined flow errors
   fr,
   ja,
   'zh-Hant': zh,
@@ -41,15 +42,15 @@ if (global.Intl) {
     // `Intl` exists, but it doesn't have the data we need, so load the
     // polyfill and replace the constructors we need with the polyfill's.
     require('intl');
-    Intl.NumberFormat = IntlPolyfill.NumberFormat; // eslint-disable-line no-undef
-    Intl.DateTimeFormat = IntlPolyfill.DateTimeFormat; // eslint-disable-line no-undef
+    global.Intl.NumberFormat = global.IntlPolyfill.NumberFormat; // eslint-disable-line no-undef
+    global.Intl.DateTimeFormat = global.IntlPolyfill.DateTimeFormat; // eslint-disable-line no-undef
   }
 } else {
   // No `Intl`, so use and load the polyfill.
   global.Intl = require('intl');
 }
 
-export default function intl(Wrapped: Class<React.Component>) {
+export default function intl(Wrapped: any) {
   class Internationalize extends React.Component {
 
     render() {
@@ -67,7 +68,7 @@ export default function intl(Wrapped: Class<React.Component>) {
           defaultLocale={defaultLocale}
           key={currentLocale} // https://github.com/yahoo/react-intl/issues/234
           locale={currentLocale}
-          messages={messages[currentLocale] || null}
+          messages={messages[currentLocale]}
         >
           <Wrapped {...this.props} />
         </IntlProvider>

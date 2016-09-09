@@ -34,7 +34,6 @@ import {
   defineMessages,
   injectIntl,
 } from 'react-intl';
-import { getLocale } from '../intl';
 
 const messages = defineMessages({
   location: {

@@ -41,7 +41,7 @@ async function getTimes(playlistItemsJson) {
   return returnResult;
 }
 
-export async function loadPlaylist(playlistId) {
+export async function loadPlaylist(playlistId: string) {
   const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/playlistItems',
   {
     playlistId: playlistId,
