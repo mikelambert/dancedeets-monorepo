@@ -22,7 +22,7 @@ import {
   HorizontalView,
   Text,
 } from '../ui';
-import { getRemoteTutorials } from '../learn/liveLearnConfig';
+import { getRemoteTutorials } from './liveLearnConfig';
 import { Playlist, Video } from './playlistModels';
 import { purpleColors } from '../Colors';
 import shallowEqual from 'fbjs/lib/shallowEqual';
@@ -35,14 +35,14 @@ type PlaylistStylesViewProps = {
 
 export class PlaylistStylesView extends React.Component {
   state: {
-    stylePlaylists: {[style: string]: [Playlist]};
+    stylePlaylists: [any];
   };
 
   constructor(props: PlaylistStylesViewProps) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
     this.state = {
-      stylePlaylists: {},
+      stylePlaylists: [],
     };
     this.load();
   }
@@ -67,10 +67,10 @@ export class PlaylistStylesView extends React.Component {
       >
       <View style={{
         width: 150,
-        height: 180,
         margin: 5,
         padding: 5,
         backgroundColor: purpleColors[2],
+        borderRadius: 10,
         alignItems: 'center',
       }}>
         <Image source={style.thumbnail} resizeMode="contain" style={{width: 120, height: 120}}/>
@@ -85,10 +85,11 @@ export class PlaylistStylesView extends React.Component {
       items={this.state.stylePlaylists}
       renderRow={this.renderRow}
       contentContainerStyle={{
-        justifyContent: 'center',
+        alignSelf: 'center',
+        justifyContent: 'flex-start',
         flexDirection: 'row',
         flexWrap: 'wrap',
-        alignItems: 'center',
+        alignItems: 'flex-start',
       }}
       />;
   }
@@ -111,13 +112,19 @@ export class PlaylistListView extends React.Component {
       onPress={() => {
         this.props.onSelected(playlist);
       }}
-      style={{height: 200}}
       >
-      <Card
-        style={{width: 150, height: 170}}>
-        <Text style={[styles.text, styles.playlistTitle]}>{playlist.title}</Text>
-        <Image source={{uri: playlist.thumbnail}} style={styles.thumbnail} />
-      </Card>
+      <View
+        style={{
+          width: 150,
+          backgroundColor: purpleColors[2],
+          margin: 5,
+          padding: 5,
+          borderRadius: 10,
+        }}>
+        <Image source={{uri: playlist.thumbnail}} resizeMode="cover" style={styles.thumbnail} />
+        <Text style={[styles.text, {fontWeight: 'bold'}]}>{playlist.title}</Text>
+        <Text style={[styles.text]}>{playlist.getVideoCount()} videos: {duration}</Text>
+      </View>
     </TouchableHighlight>;
   }
 //          <Text style={styles.text}>Duration: {duration}</Text>
@@ -127,9 +134,11 @@ export class PlaylistListView extends React.Component {
       items={this.props.playlists}
       renderRow={this.renderRow}
       contentContainerStyle={{
-        justifyContent: 'center',
+        alignSelf: 'center',
+        justifyContent: 'flex-start',
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
       }}
       />;
   }
@@ -138,13 +147,10 @@ export class PlaylistListView extends React.Component {
 function formatDuration(durationSeconds: number) {
   const hours = Math.floor(durationSeconds / 60 / 60);
   const minutes = Math.floor(durationSeconds / 60) % 60;
-  const seconds = durationSeconds % 60;
-  const minutesString = (hours && minutes < 10) ? '0' + minutes : minutes;
-  const secondsString = (seconds < 10) ? '0' + seconds : seconds;
   if (durationSeconds > 60 * 60) {
-    return `${hours}:${minutesString}:${secondsString}`;
+    return `${hours}h ${minutes}m`;
   } else {
-    return `${minutesString}:${secondsString}`;
+    return `${minutes}m`;
   }
 }
 
@@ -256,11 +262,11 @@ export class PlaylistView extends React.Component {
   }
 
   renderHeader() {
-    const description = this.props.playlist.description ? <Text style={[styles.text, styles.playlistDescription]}>{this.props.playlist.description}</Text> : null;
+    const subtitle = this.props.playlist.subtitle ? <Text style={[styles.text, styles.playlistSubtitle]}>{this.props.playlist.subtitle}</Text> : null;
     const duration = formatDuration(this.props.playlist.getDurationSeconds());
     return <View style={styles.playlistRow}>
       <Text style={[styles.text, styles.playlistTitle]}>{this.props.playlist.title}</Text>
-      {description}
+      {subtitle}
       <Text style={[styles.text, styles.playlistSubtitle]}>{this.props.playlist.author} - {duration}</Text>
     </View>;
   }

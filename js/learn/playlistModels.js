@@ -10,7 +10,7 @@ import moment from 'moment';
 
 export class Playlist {
   title: string;
-  description: string;
+  subtitle: string;
   author: string;
   style: string;
   language: string;
@@ -19,7 +19,7 @@ export class Playlist {
 
   constructor(json: any) {
     this.title = json.title;
-    this.description = json.description;
+    this.subtitle = json.subtitle;
     this.author = json.author;
     this.style = json.style;
     this.language = json.language;
@@ -67,6 +67,14 @@ export class Playlist {
       }
     }
     console.error('Video not in tutorial for index lookup');
+  }
+
+  getVideoCount() {
+    let count = 0;
+    for (var i = 0; i < this.sections.length; i++) {
+      count += this.sections[i].videos.length;
+    }
+    return count;
   }
 }
 

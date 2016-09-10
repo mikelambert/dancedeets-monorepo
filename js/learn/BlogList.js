@@ -9,7 +9,6 @@
 import React from 'react';
 import {
   ListView,
-  RefreshControl,
   StyleSheet,
   TouchableHighlight,
   View,
@@ -29,6 +28,9 @@ import {
   MediumBlog,
   YoutubePlaylistBlog,
 } from './models';
+import {
+  purpleColors
+} from '../Colors';
 import WKWebView from 'react-native-wkwebview';
 import YouTube from 'react-native-youtube';
 
@@ -231,7 +233,7 @@ export class BlogList extends React.Component {
 const styles = StyleSheet.create({
   listView: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: purpleColors[4],
   },
   text: {
     color: 'white',
