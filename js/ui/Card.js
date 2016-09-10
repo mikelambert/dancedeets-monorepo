@@ -16,8 +16,8 @@ export default class Card extends React.Component {
         }}
         style={[styles.card, this.props.style]}
       >
-      <View style={styles.titleBackground}>{this.props.title}</View>
-      <View style={styles.mainBackground}>{this.props.children}</View>
+      <View style={[styles.titleBackground, this.props.titleBackgroundStyle]}>{this.props.title}</View>
+      <View style={[styles.mainBackground, this.props.mainBackgroundStyle]}>{this.props.children}</View>
     </View>;
   }
 

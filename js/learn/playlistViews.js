@@ -60,24 +60,23 @@ export class PlaylistStylesView extends React.Component {
   }
 
   renderRow(style: any) {
-    // When we have per-style images
-    // <Image source={{uri: style}} style={styles.thumbnail} />
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(style, this.state.stylePlaylists[style]);
       }}
-      style={{height: 350}}
       >
-      <Card
-        title={
-          <Text style={[styles.text, styles.playlistTitle, styles.playlistListRow]}>{style.title}</Text>
-        }
-        style={{width: 150, height: 300}}>
-        <View style={{margin: 7, flex: 1}}>
-          <Text style={styles.text}>{style.tutorials.length} Playlists</Text>
-          <Image source={style.thumbnail} resizeMode="contain" style={{width: 120, height: 200}}/>
-        </View>
-      </Card>
+      <View style={{
+        width: 150,
+        height: 180,
+        margin: 5,
+        padding: 5,
+        backgroundColor: purpleColors[2],
+        alignItems: 'center',
+      }}>
+        <Image source={style.thumbnail} resizeMode="contain" style={{width: 120, height: 120}}/>
+        <Text style={[styles.text, {fontWeight: 'bold'}]}>{style.title}</Text>
+        <Text style={styles.text}>{style.tutorials.length} Tutorials</Text>
+      </View>
     </TouchableHighlight>;
   }
 
@@ -88,7 +87,8 @@ export class PlaylistStylesView extends React.Component {
       contentContainerStyle={{
         justifyContent: 'center',
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        alignItems: 'center',
       }}
       />;
   }
@@ -110,24 +110,27 @@ export class PlaylistListView extends React.Component {
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(playlist);
-      }}>
+      }}
+      style={{height: 200}}
+      >
       <Card
-        title={
-          <Text style={[styles.text, styles.playlistTitle, styles.playlistListRow]}>{playlist.title}</Text>
-        }>
-        <View style={{margin: 7}}>
-          <Image source={{uri: playlist.thumbnail}} style={styles.thumbnail} />
-          <Text style={styles.text}>Teacher: {playlist.author}</Text>
-          <Text style={styles.text}>Duration: {duration}</Text>
-        </View>
+        style={{width: 150, height: 170}}>
+        <Text style={[styles.text, styles.playlistTitle]}>{playlist.title}</Text>
+        <Image source={{uri: playlist.thumbnail}} style={styles.thumbnail} />
       </Card>
     </TouchableHighlight>;
   }
+//          <Text style={styles.text}>Duration: {duration}</Text>
 
   render() {
     return <FeedListView
       items={this.props.playlists}
       renderRow={this.renderRow}
+      contentContainerStyle={{
+        justifyContent: 'center',
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+      }}
       />;
   }
 }
@@ -355,7 +358,7 @@ let styles = StyleSheet.create({
   },
   thumbnail: {
     borderRadius: 10,
-    height: 200,
+    height: 100,
   },
   playlistListRow: {
     padding: 7,

@@ -46,7 +46,7 @@ const EventNavigator = generateNavigator('EVENT_NAV');
 setDefaultState('EVENT_NAV', { key: 'EventList', title: 'DanceDeets' });
 
 const LearnNavigator = generateNavigator('LEARN_NAV');
-setDefaultState('LEARN_NAV', { key: 'TutorialStyles', title: 'Learn' });
+setDefaultState('LEARN_NAV', { key: 'TutorialStyles', title: 'Learn: Tutorials' });
 
 class GradientTabBar extends React.Component {
   render() {
@@ -167,7 +167,7 @@ class _TabbedAppView extends React.Component {
           track('Tutorial Style Selected', {
             tutorialStyle: style.title,
           });
-          navigatable.onNavigate({key: 'TutorialList', title: style.title, tutorials: style.tutorials});
+          navigatable.onNavigate({key: 'TutorialList', title: `${style.title} Courses`, tutorials: style.tutorials});
         }}
         />;
     case 'TutorialList':
