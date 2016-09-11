@@ -222,8 +222,10 @@ function formatDuration(durationSeconds: number) {
   const minutes = Math.floor(durationSeconds / 60) % 60;
   if (durationSeconds > 60 * 60) {
     return `${hours}h ${minutes}m`;
-  } else {
+  } else if (durationSeconds > 60) {
     return `${minutes}m`;
+  } else {
+    return `${durationSeconds}s`;
   }
 }
 
