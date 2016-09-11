@@ -18,7 +18,6 @@ import { track } from '../store/track';
 import YouTube from 'react-native-youtube';
 import { FeedListView } from './BlogList';
 import {
-  Card,
   HorizontalView,
   Text,
 } from '../ui';
@@ -27,7 +26,10 @@ import { Playlist, Video } from './playlistModels';
 import { purpleColors } from '../Colors';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import styleEqual from 'style-equal';
-
+import {
+  injectIntl,
+} from 'react-intl';
+import languages from '../languages';
 
 type PlaylistStylesViewProps = {
   onSelected: (playlist: Playlist) => void;
@@ -100,7 +102,7 @@ type PlaylistListViewProps = {
   playlists: [Playlist];
 };
 
-export class PlaylistListView extends React.Component {
+class _PlaylistListView extends React.Component {
   constructor(props: PlaylistListViewProps) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
@@ -108,6 +110,11 @@ export class PlaylistListView extends React.Component {
 
   renderRow(playlist: Playlist) {
     const duration = formatDuration(playlist.getDurationSeconds());
+    let title = playlist.title;
+    if (this.props.intl.locale != playlist.language) {
+      const localizedLanguage = languages[this.props.intl.locale][playlist.language];
+      title = `${localizedLanguage}: ${playlist.title}`;
+    }
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(playlist);
@@ -122,7 +129,7 @@ export class PlaylistListView extends React.Component {
           borderRadius: 10,
         }}>
         <Image source={{uri: playlist.thumbnail}} resizeMode="cover" style={styles.thumbnail} />
-        <Text style={[styles.text, {fontWeight: 'bold'}]}>{playlist.title}</Text>
+        <Text style={[styles.text, {fontWeight: 'bold'}]}>{title}</Text>
         <Text style={[styles.text]}>{playlist.getVideoCount()} videos: {duration}</Text>
       </View>
     </TouchableHighlight>;
@@ -143,6 +150,7 @@ export class PlaylistListView extends React.Component {
       />;
   }
 }
+export const PlaylistListView = injectIntl(_PlaylistListView);
 
 function formatDuration(durationSeconds: number) {
   const hours = Math.floor(durationSeconds / 60 / 60);
