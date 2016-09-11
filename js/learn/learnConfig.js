@@ -124,7 +124,7 @@ export const defaultTutorials = [
   },
   {
     title: 'Krump',
-    thumbnail: require('./images/styles/krump.jpg'),
+    thumbnail: require('./images/styles/krump.png'),
     tutorials: [
       require('./tutorials/krump/krump40.json'),
       require('./tutorials/krump/krumpkings.json'),
@@ -136,29 +136,17 @@ export const defaultTutorials = [
     ],
   },
   {
-    title: 'Waacking',
-    thumbnail: null,
-    tutorials: [
-      require('./tutorials/waack/mizuki.json'),
-      require('./tutorials/waack/christina.json'),
-      require('./tutorials/waack/miscellaneous.json'),
-    ],
-  },
-  {
-    title: 'Urban Choreo / Street Jazz',
-    thumbnail: null,
-    tutorials: [
-      require('./tutorials/streetjazz/mattsteffanina.json'),
-    ],
-  },
-  {
-    title: 'Other',
+    title: 'All Other Styles',
     thumbnail: null,
     tutorials: [
       require('./tutorials/misc/yakfilms.json'),
       require('./tutorials/misc/horie.json'),
       require('./tutorials/misc/riehata.json'),
       require('./tutorials/misc/seto.json'),
+      require('./tutorials/waack/mizuki.json'),
+      require('./tutorials/waack/christina.json'),
+      require('./tutorials/waack/miscellaneous.json'),
+      require('./tutorials/streetjazz/mattsteffanina.json'),
       require('./tutorials/misc/kenzo_beginner.json'),
       require('./tutorials/misc/dancehall_streetdancetv.json'),
       require('./tutorials/misc/flex_streetdancetv.json'),
