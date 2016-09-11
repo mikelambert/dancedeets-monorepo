@@ -1,9 +1,10 @@
 {
-  "title": "Panda's Russian Locking Tutorial",
+  "title": "Panda",
+
   "author": "Panda",
   "style": "lock",
   "language": "ru",
-  "thumbnail": "https://i.ytimg.com/vi/uLbIlnaYR9o/hqdefault.jpg",
+  "thumbnail": "https://i.ytimg.com/vi/uLbIlnaYR9o/mqdefault.jpg",
   "sections": [
     {
       "title": "Locking Tutorial",
@@ -11,7 +12,7 @@
         {
           "youtubeId": "uLbIlnaYR9o",
           "duration": "PT6M3S",
-          "title": "Locking Tutorial"
+          "title": "Up and Lock, Party Dance, Slap Clap"
         }
       ]
     }

@@ -1,9 +1,9 @@
 {
-  "title": "Flukey Luke's Workshop",
-  "author": "Flukey Luke",
+  "title": "Flukey Luke",
+  "subtitle": "Workshop at Style Dance Industry, in Espoo, Finland",
   "style": "lock",
   "language": "en",
-  "thumbnail": "https://i.ytimg.com/vi/qxwLk3g_1bk/hqdefault.jpg",
+  "thumbnail": "https://i.ytimg.com/vi/qxwLk3g_1bk/mqdefault.jpg",
   "sections": [
     {
       "title": "Flukey Luke's Workshop",
@@ -11,52 +11,52 @@
         {
           "youtubeId": "qxwLk3g_1bk",
           "duration": "PT1M58S",
-          "title": "Flukey Luke - The Lock lock"
+          "title": "The Lock lock"
         },
         {
           "youtubeId": "8z525yMisak",
           "duration": "PT1M17S",
-          "title": "Flukey Luke - Speed locking"
+          "title": "Speed locking"
         },
         {
           "youtubeId": "wF77yKS8itw",
           "duration": "PT46S",
-          "title": "Flukey Luke - Twirl, point, lock & hat twist"
+          "title": "Twirl, point, lock & hat twist"
         },
         {
           "youtubeId": "WqfkPSCEip4",
           "duration": "PT2M31S",
-          "title": "Flukey Luke - The Penguin"
+          "title": "The Penguin"
         },
         {
           "youtubeId": "SSvTdqcxTzE",
           "duration": "PT1M19S",
-          "title": "Flukey Luke - The Which-a-way (Iron Horse)"
+          "title": "The Which-a-way (Iron Horse)"
         },
         {
           "youtubeId": "xjn4hcZsJUg",
           "duration": "PT1M27S",
-          "title": "Flukey Luke - The Scoo B Doo"
+          "title": "The Scoo B Doo"
         },
         {
           "youtubeId": "hAVf6dbvN8w",
           "duration": "PT1M2S",
-          "title": "Flukey Luke - The Locking Handshake"
+          "title": "The Locking Handshake"
         },
         {
           "youtubeId": "iUheY309OGQ",
           "duration": "PT51S",
-          "title": "Flukey Luke - Twirl, clap, clap"
+          "title": "Twirl, clap, clap"
         },
         {
           "youtubeId": "STvkqfhm1ak",
           "duration": "PT1M15S",
-          "title": "Flukey Luke - The Kicks"
+          "title": "The Kicks"
         },
         {
           "youtubeId": "82Ed1cysISk",
           "duration": "PT1M50S",
-          "title": "Flukey Luke - The Guitar"
+          "title": "The Guitar"
         }
       ]
     }
