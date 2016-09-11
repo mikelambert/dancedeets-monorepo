@@ -149,6 +149,7 @@ export const defaultTutorials = [
       require('./tutorials/streetjazz/mattsteffanina.json'),
       require('./tutorials/misc/kenzo_beginner.json'),
       require('./tutorials/misc/dancehall_streetdancetv.json'),
+      require('./tutorials/misc/electro_mitfrol.json'),
       require('./tutorials/misc/flex_streetdancetv.json'),
     ],
   },

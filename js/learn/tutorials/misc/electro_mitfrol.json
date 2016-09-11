@@ -1,0 +1,34 @@
+{
+  "title": "MitFrol's Electrodance",
+  "author": "MitFrol",
+  "style": "misc",
+  "language": "ru",
+  "thumbnail": "https://i.ytimg.com/vi/CgVx0yzPPRY/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorial",
+      "videos": [
+        {
+          "youtubeId": "CgVx0yzPPRY",
+          "duration": "PT4M52S",
+          "title": "Part 1"
+        },
+        {
+          "youtubeId": "u0GyhPoUEmc",
+          "duration": "PT4M",
+          "title": "Part 2"
+        },
+        {
+          "youtubeId": "At9m8otcY8o",
+          "duration": "PT4M35S",
+          "title": "Part 3"
+        },
+        {
+          "youtubeId": "p_y_sNcgNcY",
+          "duration": "PT4M7S",
+          "title": "Part 4"
+        }
+      ]
+    }
+  ]
+}
