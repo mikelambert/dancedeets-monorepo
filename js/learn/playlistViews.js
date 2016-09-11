@@ -8,6 +8,8 @@
 
 import React from 'react';
 import {
+  AlertIOS,
+  Dimensions,
   Image,
   ListView,
   StyleSheet,
@@ -18,6 +20,7 @@ import { track } from '../store/track';
 import YouTube from 'react-native-youtube';
 import { FeedListView } from './BlogList';
 import {
+  Button,
   HorizontalView,
   Text,
 } from '../ui';
@@ -30,10 +33,19 @@ import {
   injectIntl,
 } from 'react-intl';
 import languages from '../languages';
+const Mailer = require('NativeModules').RNMail;
 
 type PlaylistStylesViewProps = {
   onSelected: (playlist: Playlist) => void;
 };
+
+const boxWidth = 150;
+const boxMargin = 5;
+
+function listViewWidth() {
+  const fullBox = boxWidth + boxMargin;
+  return Math.floor(Dimensions.get('window').width / fullBox) * fullBox - 20;
+}
 
 export class PlaylistStylesView extends React.Component {
   state: {
@@ -68,24 +80,33 @@ export class PlaylistStylesView extends React.Component {
       }}
       >
       <View style={{
-        width: 150,
-        margin: 5,
+        width: boxWidth,
+        margin: boxMargin,
         padding: 5,
         backgroundColor: purpleColors[2],
         borderRadius: 10,
         alignItems: 'center',
       }}>
         <Image source={style.thumbnail} resizeMode="contain" style={{width: 120, height: 120}}/>
-        <Text style={[styles.text, {fontWeight: 'bold'}]}>{style.title}</Text>
-        <Text style={styles.text}>{style.tutorials.length} Tutorials</Text>
+        <Text style={{fontWeight: 'bold'}}>{style.title}</Text>
+        <Text>{style.tutorials.length} Tutorials</Text>
       </View>
     </TouchableHighlight>;
+  }
+
+  renderHeader() {
+    return <Text style={{
+      textAlign: 'center',
+      margin: 10,
+      width: listViewWidth(),
+    }}>Choose a style you'd like to learn:</Text>;
   }
 
   render() {
     return <FeedListView
       items={this.state.stylePlaylists}
       renderRow={this.renderRow}
+      renderHeader={this.renderHeader}
       contentContainerStyle={{
         alignSelf: 'center',
         justifyContent: 'flex-start',
@@ -122,24 +143,68 @@ class _PlaylistListView extends React.Component {
       >
       <View
         style={{
-          width: 150,
+          width: boxWidth,
           backgroundColor: purpleColors[2],
-          margin: 5,
+          margin: boxMargin,
           padding: 5,
           borderRadius: 10,
         }}>
         <Image source={{uri: playlist.thumbnail}} resizeMode="cover" style={styles.thumbnail} />
-        <Text style={[styles.text, {fontWeight: 'bold'}]}>{title}</Text>
-        <Text style={[styles.text]}>{playlist.getVideoCount()} videos: {duration}</Text>
+        <Text style={{fontWeight: 'bold'}}>{title}</Text>
+        <Text>{playlist.getVideoCount()} videos: {duration}</Text>
       </View>
     </TouchableHighlight>;
   }
-//          <Text style={styles.text}>Duration: {duration}</Text>
+
+  renderHeader() {
+    return <Text style={{
+      textAlign: 'center',
+      margin: 10,
+      width: listViewWidth(),
+    }}>Choose a tutorial:</Text>;
+  }
+
+  renderFooter() {
+    return <View style={{
+        margin: 10,
+        width: listViewWidth(),
+      }}>
+      <Text>
+      Want to list your tutorials, DVD, or classes?{"\n"}
+      Want to progress beyond these tutorials?{"\n"}
+      Want exclusive tutorials from the world's best dancers?{"\n"}
+      </Text>
+      <HorizontalView style={{alignItems: 'center'}}>
+      <Text>Then </Text>
+      <Button
+        size="small"
+        caption="Contact Us"
+        onPress={this.sendTutorialContactEmail}
+      >Contact Us</Button>
+      <Text> and let us know!</Text>
+      </HorizontalView>
+    </View>;
+  }
+
+  sendTutorialContactEmail() {
+    track('Contact Tutorials');
+    Mailer.mail({
+        subject: 'More Tutorials',
+        recipients: ['advertising@dancedeets.com'],
+        body: '',
+      }, (error, event) => {
+          if (error) {
+            AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
+          }
+      });
+  }
 
   render() {
     return <FeedListView
       items={this.props.playlists}
       renderRow={this.renderRow}
+      renderHeader={this.renderHeader}
+      renderFooter={this.renderFooter}
       contentContainerStyle={{
         alignSelf: 'center',
         justifyContent: 'flex-start',
@@ -270,12 +335,12 @@ export class PlaylistView extends React.Component {
   }
 
   renderHeader() {
-    const subtitle = this.props.playlist.subtitle ? <Text style={[styles.text, styles.playlistSubtitle]}>{this.props.playlist.subtitle}</Text> : null;
+    const subtitle = this.props.playlist.subtitle ? <Text style={styles.playlistSubtitle}>{this.props.playlist.subtitle}</Text> : null;
     const duration = formatDuration(this.props.playlist.getDurationSeconds());
     return <View style={styles.playlistRow}>
-      <Text style={[styles.text, styles.playlistTitle]}>{this.props.playlist.title}</Text>
+      <Text style={styles.playlistTitle}>{this.props.playlist.title}</Text>
       {subtitle}
-      <Text style={[styles.text, styles.playlistSubtitle]}>{this.props.playlist.author} - {duration}</Text>
+      <Text style={styles.playlistSubtitle}>{this.props.playlist.author} - {duration}</Text>
     </View>;
   }
 
@@ -302,8 +367,8 @@ export class PlaylistView extends React.Component {
       <HorizontalView style={styles.videoRow}>
         <Image source={require('./images/play.png')} style={styles.videoPlay} />
         <View style={{flex: 1}}>
-          <Text style={[styles.text, styles.videoTitle]}>{video.title}</Text>
-          <Text style={[styles.text, styles.videoDuration]}>{duration}</Text>
+          <Text style={styles.videoTitle}>{video.title}</Text>
+          <Text style={styles.videoDuration}>{duration}</Text>
         </View>
       </HorizontalView>
       </View>
@@ -315,8 +380,8 @@ export class PlaylistView extends React.Component {
     const sectionData = JSON.parse(sectionId);
     const duration = formatDuration(sectionData.durationSeconds);
     return <View style={styles.sectionRow}>
-      <Text style={[styles.text, styles.sectionTitle]}>{sectionData.index + 1} - {sectionData.title}</Text>
-      <Text style={[styles.text, styles.sectionDuration]}>{duration}</Text>
+      <Text style={styles.sectionTitle}>{sectionData.index + 1} - {sectionData.title}</Text>
+      <Text style={styles.sectionDuration}>{duration}</Text>
     </View>;
   }
 
@@ -362,9 +427,6 @@ let styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
-  },
-  text: {
-    color: 'white',
   },
   miniThumbnail: {
     height: 50,

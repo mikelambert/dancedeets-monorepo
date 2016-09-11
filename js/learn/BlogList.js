@@ -103,12 +103,11 @@ export class FeedListView extends React.Component {
   }
 
   render() {
+    const {items, ...otherProps} = this.props;
     return <ListView
       style={[styles.listView]}
-      contentContainerStyle={this.props.contentContainerStyle}
+      {...otherProps}
       dataSource={this.state.dataSource}
-      renderRow={this.props.renderRow}
-      renderHeader={this.props.renderHeader}
       initialListSize={10}
       pageSize={5}
       scrollRenderAheadDistance={10000}
