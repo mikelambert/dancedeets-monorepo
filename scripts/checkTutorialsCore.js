@@ -52,7 +52,7 @@ async function checkTutorial(tutorialJson) {
       videoIds.push(video.youtubeId);
     }
   }
-  const thumbnailVideoId = videoIds.find((videoId) => tutorialJson.thumbnail == `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`);
+  const thumbnailVideoId = videoIds.find((videoId) => tutorialJson.thumbnail == `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`);
   if (!thumbnailVideoId) {
     console.error('Thumbnail for tutorial set incorrectly:', tutorialJson.style, tutorialJson.title);
   }
