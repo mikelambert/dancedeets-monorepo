@@ -13,6 +13,9 @@ import {
 import { RemoteConfig } from 'react-native-firebase3';
 
 async function loadConfig() {
+  if (__DEV__) {
+    RemoteConfig.setDeveloperMode();
+  }
   RemoteConfig.setNamespacedDefaults({
     tutorials: JSON.stringify(defaultTutorials),
     blogs: JSON.stringify(defaultBlogs),
