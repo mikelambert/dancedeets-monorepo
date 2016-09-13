@@ -9,7 +9,7 @@
 export function timeout(timeoutMs: number, promise: Promise) {
   return new Promise(function(resolve, reject) {
     setTimeout(function() {
-      reject(new Error('timeout'));
+      reject(new Error(`${timeoutMs}ms timeout reached`));
     }, timeoutMs);
     promise.then(resolve, reject);
   });
