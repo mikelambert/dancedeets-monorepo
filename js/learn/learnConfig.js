@@ -8,7 +8,7 @@
 
 export const defaultTutorials = [
   {
-    title: 'Break - Bboy/Bgirl',
+    title: 'Bboy/Bgirl',
     thumbnail: require('./images/styles/break.png'),
     tutorials: [
       require('./tutorials/break/vincanitv_beginnertutorials.json'),
@@ -37,7 +37,7 @@ export const defaultTutorials = [
     ],
   },
   {
-    title: 'Hip-Hop Dance',
+    title: 'Hip-Hop',
     thumbnail: require('./images/styles/hiphop.png'),
     tutorials: [
       require('./tutorials/hiphop/newschool_dictionary.json'),
@@ -110,6 +110,8 @@ export const defaultTutorials = [
     tutorials: [
       require('./tutorials/house/newschool_dictionary.json'),
       require('./tutorials/house/jardy.json'),
+      require('./tutorials/house/jardy_footwork.json'),
+      require('./tutorials/house/jardy_footwork_expansion.json'),
       require('./tutorials/house/rich.json'),
       require('./tutorials/house/malcolm.json'),
       require('./tutorials/house/alvaro.json'),
@@ -136,7 +138,7 @@ export const defaultTutorials = [
     ],
   },
   {
-    title: 'All Other Styles',
+    title: 'Other Styles',
     thumbnail: require('./images/styles/other.png'),
     tutorials: [
       require('./tutorials/misc/yakfilms.json'),
