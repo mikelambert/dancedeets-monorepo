@@ -38,7 +38,7 @@ export const defaultTutorials = [
   },
   {
     title: 'Hip-Hop Dance',
-    thumbnail: null,
+    thumbnail: require('./images/styles/hiphop.png'),
     tutorials: [
       require('./tutorials/hiphop/newschool_dictionary.json'),
       require('./tutorials/hiphop/alvaro.json'),
@@ -137,7 +137,7 @@ export const defaultTutorials = [
   },
   {
     title: 'All Other Styles',
-    thumbnail: null,
+    thumbnail: require('./images/styles/other.png'),
     tutorials: [
       require('./tutorials/misc/yakfilms.json'),
       require('./tutorials/misc/horie.json'),
