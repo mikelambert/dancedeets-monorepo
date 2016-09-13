@@ -47,7 +47,20 @@ function listViewWidth() {
   return Math.floor(Dimensions.get('window').width / fullBox) * fullBox - 20;
 }
 
-export class PlaylistStylesView extends React.Component {
+function sortedTutorials(tutorials, language) {
+  const nativeTutorials = [];
+  const foreignTutorials = [];
+  tutorials.forEach((tut) => {
+    if (tut.language == language) {
+      nativeTutorials.push(tut);
+    } else {
+      foreignTutorials.push(tut);
+    }
+  });
+  return [].concat(nativeTutorials, foreignTutorials);
+}
+
+class _PlaylistStylesView extends React.Component {
   state: {
     stylePlaylists: [any];
   };
@@ -64,10 +77,10 @@ export class PlaylistStylesView extends React.Component {
   async load() {
     const playlistsJson = await getRemoteTutorials();
 
-    const constructedPlaylists = playlistsJson.map((playlist) => {
+    const constructedPlaylists = playlistsJson.map((style) => {
       return {
-        ...playlist,
-        tutorials: playlist.tutorials.map((x) => new Playlist(x)),
+        ...style,
+        tutorials: sortedTutorials(style.tutorials, this.props.intl.locale).map((x) => new Playlist(x)),
       };
     });
     this.setState({stylePlaylists: constructedPlaylists});
@@ -117,6 +130,7 @@ export class PlaylistStylesView extends React.Component {
       />;
   }
 }
+export const PlaylistStylesView = injectIntl(_PlaylistStylesView);
 
 type PlaylistListViewProps = {
   onSelected: (playlist: Playlist) => void;
