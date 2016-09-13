@@ -33,13 +33,17 @@ import {
   injectIntl,
 } from 'react-intl';
 import languages from '../languages';
+import {
+  semiNormalize,
+} from '../ui/normalize';
+
 const Mailer = require('NativeModules').RNMail;
 
 type PlaylistStylesViewProps = {
   onSelected: (playlist: Playlist) => void;
 };
 
-const boxWidth = 150;
+const boxWidth = semiNormalize(150);
 const boxMargin = 5;
 
 function listViewWidth() {
