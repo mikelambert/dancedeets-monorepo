@@ -331,6 +331,7 @@ export class PlaylistView extends React.Component {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).renderHeader = this.renderHeader.bind(this);
+    (this: any).renderSectionHeader = this.renderSectionHeader.bind(this);
     this.state = {
       selectedIndex: 0,
     };
@@ -379,6 +380,11 @@ export class PlaylistView extends React.Component {
   }
 
   renderSectionHeader(data: [Video], sectionId: string) {
+    // If there's only one section, let's ignore showing the section header.
+    // It's just confusing relative to the real header.
+    if (this.props.playlist.getSectionHeaders().length === 1) {
+      return null;
+    }
     const sectionData = JSON.parse(sectionId);
     const duration = formatDuration(sectionData.durationSeconds);
     return <View style={styles.sectionRow}>
