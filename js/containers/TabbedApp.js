@@ -167,7 +167,7 @@ class _TabbedAppView extends React.Component {
           track('Tutorial Style Selected', {
             tutorialStyle: style.title,
           });
-          navigatable.onNavigate({key: 'TutorialList', title: `${style.title} Courses`, tutorials: style.tutorials});
+          navigatable.onNavigate({key: 'TutorialList', title: `${style.title} Tutorials`, tutorials: style.tutorials});
         }}
         />;
     case 'TutorialList':
