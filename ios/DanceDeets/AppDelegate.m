@@ -56,6 +56,11 @@
     jsCodeLocation = [CodePush bundleURL];
   #endif
 
+  // Disable animations so that our UITests can "quiesce" properly and continue running
+  if ([[[NSProcessInfo processInfo] environment][@"UITest"] isEqualToString:@"1"]) {
+    [UIView setAnimationsEnabled:NO];
+  }
+
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"DanceDeets"
                                                initialProperties:nil
