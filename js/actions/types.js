@@ -67,6 +67,7 @@ export type Action =
   | { type: 'TAB_SELECT', tab: string }
   | { type: 'TRANSLATE_EVENT_TOGGLE', eventId: string }
   | { type: 'TRANSLATE_EVENT_DONE', eventId: string, translations: Object }
+  | { type: 'TUTORIAL_SET_VIDEO_INDEX', index: number }
   ;
 
 export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;

@@ -13,6 +13,7 @@ import {mainTabs} from './mainTabs';
 import {navigationState} from './navigation';
 import {search} from './search';
 import {translate} from './translate';
+import {tutorials} from './tutorials';
 
 export default combineReducers({
   addEvents,
@@ -21,4 +22,5 @@ export default combineReducers({
   user,
   search,
   translate,
+  tutorials,
 });

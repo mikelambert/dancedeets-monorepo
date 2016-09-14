@@ -12,6 +12,7 @@ import * as mainTabs from './mainTabs';
 import * as navigation from './navigation';
 import * as search from './search';
 import * as translate from './translate';
+import * as tutorials from './tutorials';
 
 module.exports = {
   ...addEvents,
@@ -20,4 +21,5 @@ module.exports = {
   ...navigation,
   ...search,
   ...translate,
+  ...tutorials,
 };

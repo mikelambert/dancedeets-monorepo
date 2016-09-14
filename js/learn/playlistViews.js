@@ -37,7 +37,11 @@ import {
   semiNormalize,
   normalize,
 } from '../ui/normalize';
-
+import { connect } from 'react-redux';
+import type { Dispatch } from '../actions/types';
+import {
+  setTutorialVideoIndex,
+} from '../actions';
 const Mailer = require('NativeModules').RNMail;
 
 type PlaylistStylesViewProps = {
@@ -340,12 +344,8 @@ type PlaylistViewProps = {
   playlist: Playlist;
 };
 
-export class PlaylistView extends React.Component {
+class _PlaylistView extends React.Component {
   youtubePlayer: any;
-
-  state: {
-    selectedIndex: number;
-  };
 
   constructor(props: PlaylistViewProps) {
     super(props);
@@ -353,9 +353,11 @@ export class PlaylistView extends React.Component {
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderSectionHeader = this.renderSectionHeader.bind(this);
     (this: any).onChangeState = this.onChangeState.bind(this);
-    this.state = {
-      selectedIndex: 0,
-    };
+  }
+
+  componentWillUnmount() {
+    // So the next time we open up a playlist, it will start at the beginning
+    this.props.setTutorialVideoIndex(0);
   }
 
   renderHeader() {
@@ -382,10 +384,7 @@ export class PlaylistView extends React.Component {
           tutorialVideoIndex: index,
         });
 
-        //TODO: Enable this to make setState work.
-        // It unfortunately causes a html-video-reload, which ends up being slower
-        // than reusing the existing video object and just setting the video id.
-        this.setState({selectedIndex: index});
+        this.props.setTutorialVideoIndex(index);
       }}>
       <View>
       <HorizontalView style={styles.videoRow}>
@@ -415,13 +414,13 @@ export class PlaylistView extends React.Component {
   }
 
   getSelectedVideo() {
-    return this.props.playlist.getVideo(this.state.selectedIndex);
+    return this.props.playlist.getVideo(this.props.tutorialVideoIndex);
   }
 
   onChangeState(props: Object) {
     if (props.state === 'ended') {
       // next video!
-      this.setState({selectedIndex: this.state.selectedIndex + 1});
+      this.props.setTutorialVideoIndex(this.props.tutorialVideoIndex + 1);
     }
   }
 
@@ -438,7 +437,7 @@ export class PlaylistView extends React.Component {
         ref={(x) => {
           this.youtubePlayer = x;
         }}
-        videoId={this.getSelectedVideo(this.state.selectedIndex).youtubeId}
+        videoId={this.getSelectedVideo().youtubeId}
         play={false}
         hidden={false}
         playsInline={true}
@@ -460,7 +459,16 @@ export class PlaylistView extends React.Component {
     </View>;
   }
 }
-
+export const PlaylistView = connect(
+  (state) => {
+    return {
+      tutorialVideoIndex: state.tutorials.videoIndex,
+    };
+  },
+  (dispatch: Dispatch) => ({
+    setTutorialVideoIndex: (eventId, language) => dispatch(setTutorialVideoIndex(eventId, language)),
+  }),
+)(_PlaylistView);
 let styles = StyleSheet.create({
   container: {
     flex: 1,
