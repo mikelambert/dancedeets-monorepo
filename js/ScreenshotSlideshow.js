@@ -19,11 +19,14 @@ import {
   AccessToken,
 } from 'react-native-fbsdk';
 import {
-  disableWrites
+  disableWrites,
+  event,
 } from './api/dancedeets';
 import {
-  updateLocation,
+  logOut,
+  navigatePush,
   performSearch,
+  updateLocation,
 } from './actions';
 import {
   injectIntl,
@@ -78,19 +81,34 @@ class _ScreenshotSlideshow extends React.Component {
     await dispatch(performSearch());
   }
 
+  async setupEventView(dispatch) {
+    const fetchedEvent = await event('397757633752918'); //SYGU 2015
+    await dispatch(navigatePush('EVENT_NAV', {key: 'EventView', title: fetchedEvent.name, event: fetchedEvent}));
+  }
+
+  async logout(dispatch) {
+    dispatch(logOut());
+  }
+
   async transitionPage(dispatch) {
     switch (this.state.page) {
       case 0:
+        break;
+      case 1:
         await this.setupListView(dispatch);
         break;
       case 1:
-        //await this.setupEventView(dispatch);
+        await this.setupEventView(dispatch);
         break;
       case 2:
+        // To delete the accesstoken and make this emulator usable again
+        await this.logout(dispatch);
         //await this.setupAddEventView(dispatch);
         break;
       case 3:
         //await this.setupProfileView(dispatch);
+        break;
+      case 4:
         break;
     }
     this.setState({page: this.state.page + 1});

@@ -40,6 +40,15 @@ class DanceDeetsUITests: XCTestCase {
         NSLog("C1 %@", app.debugDescription)
       })
 
+      // Now wait for content to load
+
+      expectationForPredicate(NSPredicate(format: "exists == true"), evaluatedWithObject: app.otherElements["mainButton"], handler: nil)
+      waitForExpectationsWithTimeout(20, handler:      {(error: Any?) -> Void in
+        NSLog("C0 Error is \(error)")
+        NSLog("C1 %@", app.debugDescription)
+      })
+
+
       snapshot("0")
       app.otherElements["mainButton"].tap()
 
@@ -50,6 +59,15 @@ class DanceDeetsUITests: XCTestCase {
       })
 
       snapshot("1")
+
+      app.otherElements["mainButton"].tap()
+
+      expectationForPredicate(NSPredicate(format: "exists == true"), evaluatedWithObject: app.otherElements["mainButton"], handler: nil)
+      waitForExpectationsWithTimeout(20, handler:      {(error: Any?) -> Void in
+        NSLog("C0 Error is \(error)")
+        NSLog("C1 %@", app.debugDescription)
+      })
+      snapshot("2")
 
     }
 }
