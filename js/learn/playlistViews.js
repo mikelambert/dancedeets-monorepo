@@ -360,6 +360,14 @@ class _PlaylistView extends React.Component {
     this.props.setTutorialVideoIndex(0);
   }
 
+  componentWillReceiveProps(nextProps: any) {
+    if (nextProps.selectedTab !== 'learn') {
+      this.youtubePlayer.setNativeProps({
+        play: false,
+      });
+    }
+  }
+
   renderHeader() {
     const subtitle = this.props.playlist.subtitle ? <Text style={styles.playlistSubtitle}>{this.props.playlist.subtitle}</Text> : null;
     const duration = formatDuration(this.props.playlist.getDurationSeconds());
@@ -464,6 +472,7 @@ export const PlaylistView = connect(
   (state) => {
     return {
       tutorialVideoIndex: state.tutorials.videoIndex,
+      selectedTab: state.mainTabs.selectedTab,
     };
   },
   (dispatch: Dispatch) => ({
