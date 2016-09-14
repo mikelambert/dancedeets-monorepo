@@ -370,7 +370,8 @@ class _PlaylistView extends React.Component {
     </View>;
   }
 
-  renderRow(video: any) {
+  renderRow(row: any) {
+    const {video, selected} = row;
     const duration = formatDuration(video.getDurationSeconds());
     return <TouchableHighlight
       underlayColor={purpleColors[0]}
@@ -387,7 +388,7 @@ class _PlaylistView extends React.Component {
         this.props.setTutorialVideoIndex(index);
       }}>
       <View>
-      <HorizontalView style={styles.videoRow}>
+      <HorizontalView style={[styles.videoRow, selected ? styles.videoActiveRow : styles.videoInactiveRow]}>
         <Image source={require('./images/play.png')} style={styles.videoPlay} />
         <View style={{flex: 1}}>
           <Text style={styles.videoTitle}>{video.title}</Text>
@@ -450,7 +451,7 @@ class _PlaylistView extends React.Component {
         onChangeState={this.onChangeState}
         />
       <SectionedListView
-        items={this.props.playlist.getItems()}
+        items={this.props.playlist.getItems(this.props.tutorialVideoIndex)}
         sectionHeaders={this.props.playlist.getSectionHeaders()}
         renderRow={this.renderRow}
         renderSectionHeader={this.renderSectionHeader}
@@ -516,9 +517,14 @@ let styles = StyleSheet.create({
   videoRow: {
     alignItems: 'center',
     padding: 7,
-    backgroundColor: purpleColors[3],
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: purpleColors[4],
+  },
+  videoActiveRow: {
+    backgroundColor: purpleColors[0],
+  },
+  videoInactiveRow: {
+    backgroundColor: purpleColors[3],
   },
   videoTitle: {
     fontWeight: 'bold',

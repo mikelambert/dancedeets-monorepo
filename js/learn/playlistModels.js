@@ -30,10 +30,11 @@ export class Playlist {
     return this.sections.reduce((reduced, item) => reduced + item.getDurationSeconds(), 0);
   }
 
-  getItems() {
+  getItems(selectedIndex: number) {
+    const selectedVideo = this.getVideo(selectedIndex);
     const items = {};
-    this.sections.forEach((x, i) => {
-      items[x.key(i)] = x.videos;
+    this.sections.forEach((section, i) => {
+      items[section.key(i)] = section.videos.map((video) => ({video, selected: video == selectedVideo}));
     });
     return items;
   }
