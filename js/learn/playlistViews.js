@@ -35,6 +35,7 @@ import {
 import languages from '../languages';
 import {
   semiNormalize,
+  normalize,
 } from '../ui/normalize';
 
 const Mailer = require('NativeModules').RNMail;
@@ -91,6 +92,7 @@ class _PlaylistStylesView extends React.Component {
   }
 
   renderRow(style: any) {
+    const imageWidth = boxWidth - 30;
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(style, this.state.stylePlaylists[style]);
@@ -104,7 +106,7 @@ class _PlaylistStylesView extends React.Component {
         borderRadius: 10,
         alignItems: 'center',
       }}>
-        <Image source={style.thumbnail} resizeMode="contain" style={{width: 120, height: 120}}/>
+        <Image source={style.thumbnail} resizeMode="contain" style={{width: imageWidth, height: imageWidth}}/>
         <Text style={{fontWeight: 'bold'}}>{style.title}</Text>
         <Text>{style.tutorials.length} Tutorials</Text>
       </View>
@@ -422,6 +424,7 @@ export class PlaylistView extends React.Component {
     //
     // for my client feature-bar (if i support scrub bar):
     // speed-rate, play/pause, back-ten-seconds, airplay
+    const height = Dimensions.get('window').width * 9/16;
     return <View style={styles.container}>
       <YouTubeNoReload
         ref={(x) => {
@@ -436,7 +439,7 @@ export class PlaylistView extends React.Component {
         showinfo={true}
         //controls={0}
         modestbranding={true}
-        style={{alignSelf: 'stretch', height: 220, backgroundColor: 'black'}}
+        style={{alignSelf: 'stretch', height: height, backgroundColor: 'black'}}
         />
       <SectionedListView
         items={this.props.playlist.getItems()}
@@ -473,25 +476,25 @@ let styles = StyleSheet.create({
   },
   playlistTitle: {
     fontWeight: 'bold',
-    fontSize: 18,
-    lineHeight: 20,
+    fontSize: semiNormalize(18),
+    lineHeight: semiNormalize(20),
   },
   playlistSubtitle: {
-    fontSize: 15,
-    lineHeight: 18,
+    fontSize: semiNormalize(15),
+    lineHeight: semiNormalize(18),
   },
   sectionRow: {
     padding: 7,
     backgroundColor: purpleColors[4],
   },
   sectionTitle: {
-    fontSize: 15,
-    lineHeight: 18,
+    fontSize: semiNormalize(15),
+    lineHeight: semiNormalize(18),
   },
   sectionDuration: {
     color: '#ccc',
-    fontSize: 12,
-    lineHeight: 15,
+    fontSize: semiNormalize(12),
+    lineHeight: semiNormalize(15),
   },
   videoRow: {
     alignItems: 'center',
@@ -502,17 +505,17 @@ let styles = StyleSheet.create({
   },
   videoTitle: {
     fontWeight: 'bold',
-    fontSize: 15,
-    lineHeight: 18,
+    fontSize: semiNormalize(15),
+    lineHeight: semiNormalize(18),
   },
   videoDuration: {
     color: '#ccc',
-    fontSize: 12,
-    lineHeight: 15,
+    fontSize: semiNormalize(12),
+    lineHeight: semiNormalize(15),
   },
   videoPlay: {
-    width: 25,
-    height: 25,
+    width: semiNormalize(25),
+    height: semiNormalize(25),
     marginRight: 5,
   },
 });
