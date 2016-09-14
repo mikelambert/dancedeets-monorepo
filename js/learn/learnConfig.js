@@ -8,7 +8,7 @@
 
 export const defaultTutorials = [
   {
-    title: 'Bboy/Bgirl',
+    title: 'Bboy / Bgirl',
     thumbnail: require('./images/styles/break.png'),
     tutorials: [
       require('./tutorials/break/vincanitv_beginnertutorials.json'),
