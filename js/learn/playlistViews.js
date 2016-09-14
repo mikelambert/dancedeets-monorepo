@@ -408,7 +408,7 @@ export class PlaylistView extends React.Component {
     const sectionData = JSON.parse(sectionId);
     const duration = formatDuration(sectionData.durationSeconds);
     return <View style={styles.sectionRow}>
-      <Text style={styles.sectionTitle}>{sectionData.index + 1} - {sectionData.title}</Text>
+      <Text style={styles.sectionTitle}>{sectionData.title}</Text>
       <Text style={styles.sectionDuration}>{duration}</Text>
     </View>;
   }
