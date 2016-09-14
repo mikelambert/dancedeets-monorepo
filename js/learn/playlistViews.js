@@ -352,6 +352,7 @@ export class PlaylistView extends React.Component {
     (this: any).renderRow = this.renderRow.bind(this);
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderSectionHeader = this.renderSectionHeader.bind(this);
+    (this: any).onChangeState = this.onChangeState.bind(this);
     this.state = {
       selectedIndex: 0,
     };
@@ -417,6 +418,14 @@ export class PlaylistView extends React.Component {
     return this.props.playlist.getVideo(this.state.selectedIndex);
   }
 
+  onChangeState(props: Object) {
+    const {state, target} = props;
+    if (state === 'ended') {
+      // next video!
+      this.setState({selectedIndex: this.state.selectedIndex + 1});
+    }
+  }
+
   render() {
     // TODO: fix videoID on the main youtube docs?
     // also explain setNativeProps
@@ -440,6 +449,7 @@ export class PlaylistView extends React.Component {
         //controls={0}
         modestbranding={true}
         style={{alignSelf: 'stretch', height: height, backgroundColor: 'black'}}
+        onChangeState={this.onChangeState}
         />
       <SectionedListView
         items={this.props.playlist.getItems()}
