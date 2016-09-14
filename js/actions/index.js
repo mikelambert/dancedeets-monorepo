@@ -8,6 +8,7 @@
 
 import * as addEvents from './addEvents';
 import * as login from './login';
+import * as mainTabs from './mainTabs';
 import * as navigation from './navigation';
 import * as search from './search';
 import * as translate from './translate';
@@ -15,6 +16,7 @@ import * as translate from './translate';
 module.exports = {
   ...addEvents,
   ...login,
+  ...mainTabs,
   ...navigation,
   ...search,
   ...translate,

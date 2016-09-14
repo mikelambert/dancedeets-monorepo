@@ -23,6 +23,7 @@ import {
   injectIntl,
   defineMessages,
 } from 'react-intl';
+import { connect } from 'react-redux';
 import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
 import {
@@ -33,6 +34,9 @@ import {
 import {
   ZoomableImage,
 } from '../ui';
+import {
+  selectTab,
+} from '../actions';
 import AddEvents from '../containers/AddEvents';
 import { track, trackWithEvent } from '../store/track';
 import { setDefaultState } from '../reducers/navigation';
@@ -88,16 +92,9 @@ const messages = defineMessages({
 });
 
 class _TabbedAppView extends React.Component {
-  //TODO: move this to redux state!
-  state: {
-    selectedTab: string,
-  };
-
   constructor(props: any) {
     super(props);
-    this.state = {
-      selectedTab: 'home',
-    };
+
     (this: any).renderEventScene = this.renderEventScene.bind(this);
     (this: any).renderLearnScene = this.renderLearnScene.bind(this);
   }
@@ -202,25 +199,24 @@ class _TabbedAppView extends React.Component {
   }
 
   render() {
-    const {intl} = this.props;
     return <TabNavigator
         tabBarStyle={styles.tabBarStyle}
         sceneStyle={styles.tabBarSceneStyle}
         tabBarClass={GradientTabBar}
       >
       <TabNavigator.Item
-        selected={this.state.selectedTab === 'home'}
-        title={intl.formatMessage(messages.events)}
+        selected={this.props.selectedTab === 'events'}
+        title={this.props.intl.formatMessage(messages.events)}
         titleStyle={styles.titleStyle}
         selectedTitleStyle={styles.selectedTitleStyle}
         renderIcon={() => this.icon(require('../containers/icons/events.png'))}
         renderSelectedIcon={() => this.icon(require('../containers/icons/events-highlighted.png'))}
         onPress={() => {
-          if (this.state.selectedTab === 'home') {
+          if (this.props.selectedTab === 'events') {
             this.refs.event_navigator.dispatchProps.goHome();
           } else {
-            track('Tab Selected', {Tab: 'Home'});
-            this.setState({ selectedTab: 'home' });
+            track('Tab Selected', {Tab: 'Events'});
+            this.props.selectTab('events');
           }
         }}>
         <EventNavigator
@@ -229,18 +225,19 @@ class _TabbedAppView extends React.Component {
           />
       </TabNavigator.Item>
       <TabNavigator.Item
-        selected={this.state.selectedTab === 'learn'}
-        title={intl.formatMessage(messages.learn)}
+        selected={this.props.selectedTab === 'learn'}
+        title={this.props.intl.formatMessage(messages.learn)}
         titleStyle={styles.titleStyle}
         selectedTitleStyle={styles.selectedTitleStyle}
         renderIcon={() => this.icon(require('../containers/icons/learn.png'))}
         renderSelectedIcon={() => this.icon(require('../containers/icons/learn-highlighted.png'))}
         onPress={() => {
-          if (this.state.selectedTab === 'learn') {
+          if (this.props.selectedTab === 'learn') {
             this.refs.learn_navigator.dispatchProps.goHome();
           } else {
             track('Tab Selected', {Tab: 'Learn'});
-            this.setState({ selectedTab: 'learn' });
+            this.props.selectTab('learn');
+            //this.setState({ selectedTab: 'learn' });
           }
         }}>
         <LearnNavigator
@@ -249,16 +246,16 @@ class _TabbedAppView extends React.Component {
           />
       </TabNavigator.Item>
       <TabNavigator.Item
-        selected={this.state.selectedTab === 'about'}
-        title={intl.formatMessage(messages.about)}
+        selected={this.props.selectedTab === 'about'}
+        title={this.props.intl.formatMessage(messages.about)}
         titleStyle={styles.titleStyle}
         selectedTitleStyle={styles.selectedTitleStyle}
         renderIcon={() => this.icon(require('../containers/icons/profile.png'))}
         renderSelectedIcon={() => this.icon(require('../containers/icons/profile-highlighted.png'))}
         onPress={() => {
-          if (this.state.selectedTab !== 'about') {
+          if (this.props.selectedTab !== 'about') {
             track('Tab Selected', {Tab: 'About'});
-            this.setState({ selectedTab: 'about' });
+            this.props.selectTab('about');
           }
         }}>
         <AboutApp />
@@ -266,7 +263,14 @@ class _TabbedAppView extends React.Component {
     </TabNavigator>;
   }
 }
-export default injectIntl(_TabbedAppView);
+export default connect(
+  state => ({
+    selectedTab: state.mainTabs.selectedTab,
+  }),
+  dispatch => ({
+    selectTab: (x) => dispatch(selectTab(x)),
+  }),
+)(injectIntl(_TabbedAppView));
 
 var tabBarHeight = semiNormalize(52);
 
