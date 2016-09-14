@@ -51,7 +51,7 @@ export function loginStartOnboard(): Action {
   };
 }
 
-export function loginComplete(token: AccessToken): Action {
+export function loginComplete(token: AccessToken): ThunkAction {
   // Kick these off and let them happen in the background
   return async (dispatch: Dispatch) => {
     // This could be the first time this user is created.

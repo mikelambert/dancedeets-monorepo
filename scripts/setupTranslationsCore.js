@@ -42,6 +42,7 @@ async function updateWithTranslations(englishTranslation) {
 
 async function run() {
   const filenames = await walk('build/messages');
+  // $FlowFixMe: This is a dev script, and so can use dynamic includes
   const jsons = filenames.map((file) => require(file));
   const json = jsons.reduce((result, jsList) => {
     result = result.concat(jsList);

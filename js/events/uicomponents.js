@@ -147,43 +147,31 @@ const messages = defineMessages({
 });
 
 class SubEventLine extends React.Component {
-  icon() {
-    throw new Error('Not Implemented!');
-  }
-
-  textRender() {
-    throw new Error('Not Implemented!');
-  }
-
-  shouldRender() {
-    return true;
-  }
+  props: {
+    icon: any;
+    children?: ReactElement;
+  };
 
   render() {
-    if (this.shouldRender()) {
-      return (
-        <HorizontalView style={eventStyles.detailLine}>
-          <Image key="image" source={this.icon()} style={eventStyles.detailIcon} />
-          <View style={eventStyles.detailTextContainer}>
-          {this.textRender()}
-          </View>
-        </HorizontalView>
-      );
-    } else {
-      return null;
-    }
+    return (
+      <HorizontalView style={eventStyles.detailLine}>
+        <Image key="image" source={this.props.icon} style={eventStyles.detailIcon} />
+        <View style={eventStyles.detailTextContainer}>
+        {this.props.children}
+        </View>
+      </HorizontalView>
+    );
   }
 }
 
-class EventCategories extends SubEventLine {
-  icon() {
-    return require('./images/categories.png');
-  }
-  textRender() {
+class EventCategories extends React.Component {
+  render() {
     if (this.props.categories.length > 0) {
-      return <Text
-        style={eventStyles.detailText}
-        >{this.props.categories.slice(0,8).join(', ')}</Text>;
+      return <SubEventLine icon={require('./images/categories.png')}>
+        <Text
+          style={eventStyles.detailText}
+          >{this.props.categories.slice(0,8).join(', ')}</Text>
+      </SubEventLine>;
     } else {
       return null;
     }
@@ -209,13 +197,10 @@ class _AddToCalendarButton extends React.Component {
 }
 const AddToCalendarButton = injectIntl(_AddToCalendarButton);
 
-class _EventDateTime extends SubEventLine {
+class _EventDateTime extends React.Component {
   interval: number;
 
-  icon() {
-    return require('./images/datetime.png');
-  }
-  textRender() {
+  render() {
     const textFields = [];
     const now = moment();
     const start = moment(this.props.start, moment.ISO_8601);
@@ -243,10 +228,12 @@ class _EventDateTime extends SubEventLine {
       textFields.push('\n');
       textFields.push(relativeStartOffset);
     }
-    return <View style={{alignItems: 'flex-start'}}>
-      <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{textFields.join('')}</Text>
-      {this.props.children}
-    </View>;
+    return <SubEventLine icon={require('./images/datetime.png')}>
+      <View style={{alignItems: 'flex-start'}}>
+        <Text style={[eventStyles.detailText, eventStyles.rowDateTime]}>{textFields.join('')}</Text>
+        {this.props.children}
+      </View>
+    </SubEventLine>;
   }
   componentDidMount() {
     // refresh our 'relative start offset' every minute
@@ -269,11 +256,8 @@ function formatDistance(intl, distanceKm) {
   }
 }
 
-class _EventVenue extends SubEventLine {
-  icon() {
-    return require('./images/location.png');
-  }
-  textRender() {
+class _EventVenue extends React.Component {
+  render() {
     var components = [];
     if (this.props.venue.name) {
       components.push(<Autolink
@@ -297,19 +281,20 @@ class _EventVenue extends SubEventLine {
       const km = geolib.getDistance(this.props.currentPosition.coords, this.props.venue.geocode) / 1000;
       distanceComponent = <Text>{formatDistance(this.props.intl, km)}</Text>;
     }
-    return <View>{components}{distanceComponent}</View>;
+    return <SubEventLine icon={require('./images/location.png')}>
+      {components}
+      {distanceComponent}
+    </SubEventLine>;
   }
 }
 const EventVenue = injectIntl(_EventVenue);
 
-class _EventSource extends SubEventLine {
+class _EventSource extends React.Component {
   constructor(props: Object) {
     super(props);
     (this: any).onPress = this.onPress.bind(this);
   }
-  icon() {
-    return require('./images/website.png');
-  }
+
   onPress() {
     trackWithEvent('Open Source', this.props.event);
     const sourceUrl = this.props.event.source.url;
@@ -319,15 +304,18 @@ class _EventSource extends SubEventLine {
       console.error('Error opening:', sourceUrl, ', with Error:', err);
     }
   }
-  textRender() {
+
+  render() {
     if (this.props.event.source) {
       return (
-        <HorizontalView>
-          <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.source)}{' '}</Text>
-          <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
-            <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{this.props.event.source.name}</Text>
-          </TouchableOpacity>
-        </HorizontalView>
+        <SubEventLine icon={require('./images/website.png')}>
+          <HorizontalView>
+            <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.source)}{' '}</Text>
+            <TouchableOpacity onPress={this.onPress} activeOpacity={0.5}>
+              <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{this.props.event.source.name}</Text>
+            </TouchableOpacity>
+          </HorizontalView>
+        </SubEventLine>
       );
     } else {
       return null;
@@ -336,7 +324,7 @@ class _EventSource extends SubEventLine {
 }
 const EventSource = injectIntl(_EventSource);
 
-class _EventAddedBy extends SubEventLine {
+class _EventAddedBy extends React.Component {
   state: {
     addedBy: ?string,
   };
@@ -346,11 +334,6 @@ class _EventAddedBy extends SubEventLine {
     this.state = {
       addedBy: null,
     };
-  }
-
-  icon() {
-    //TODO: Fix image
-    return require('./images/user-add.png');
   }
 
   async loadProfileName() {
@@ -365,17 +348,15 @@ class _EventAddedBy extends SubEventLine {
     this.loadProfileName();
   }
 
-  shouldRender() {
-    return this.state.addedBy;
-  }
-
-  textRender() {
+  render() {
     if (this.state.addedBy) {
       //TODO: When we add Profiles, let's link to the Profile view itself: eventStyles.rowLink
       return (
-        <HorizontalView>
-          <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.addedBy, {name: this.state.addedBy})}</Text>
-        </HorizontalView>
+        <SubEventLine icon={require('./images/user-add.png')}>
+          <HorizontalView>
+            <Text style={eventStyles.detailText}>{this.props.intl.formatMessage(messages.addedBy, {name: this.state.addedBy})}</Text>
+          </HorizontalView>
+        </SubEventLine>
       );
     } else {
       return null;
@@ -384,7 +365,7 @@ class _EventAddedBy extends SubEventLine {
 }
 const EventAddedBy = injectIntl(_EventAddedBy);
 
-class _EventOrganizers extends SubEventLine {
+class _EventOrganizers extends React.Component {
   state: {
     opened: boolean,
   };
@@ -394,10 +375,6 @@ class _EventOrganizers extends SubEventLine {
     this.state = {
       opened: false,
     };
-  }
-
-  icon() {
-    return require('./images/organizer.png');
   }
 
   async _openAdmin(adminId) {
@@ -439,8 +416,12 @@ class _EventOrganizers extends SubEventLine {
     ><Text style={[eventStyles.detailText, eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>;
   }
 
-  shouldRender() {
-    return this.props.event.admins.length;
+  render() {
+    if (this.props.event.admins.length) {
+      return <SubEventLine icon={require('./images/organizer.png')}>
+        {this.textRender()}
+      </SubEventLine>;
+    }
   }
 
   textRender() {
@@ -545,17 +526,8 @@ class _EventRsvpControl extends React.Component {
 }
 const EventRsvpControl = injectIntl(_EventRsvpControl);
 
-class _EventRsvp extends SubEventLine {
-
-  icon() {
-    return require('./images/attending.png');
-  }
-
-  shouldRender() {
-    return this.props.event.rsvp;
-  }
-
-  textRender() {
+class _EventRsvp extends React.Component {
+  render() {
     if (this.props.event.rsvp) {
       let counts = '';
       if (this.props.event.rsvp.attending_count) {
@@ -571,10 +543,10 @@ class _EventRsvp extends SubEventLine {
       //TODO: Maybe make a pop-out to show the list-of-users-attending prepended by DD users
       const countsText = <Text style={eventStyles.detailText}>{counts}</Text>;
       const rsvpControl = (this.props.event.source.name === 'Facebook Event') ? <EventRsvpControl event={this.props.event} /> : null;
-      return <View>
+      return <SubEventLine icon={require('./images/attending.png')}>
         {countsText}
         {rsvpControl}
-      </View>;
+      </SubEventLine>;
     } else {
       return null;
     }
@@ -817,7 +789,7 @@ const EventTranslate = connect(
   }),
 )(injectIntl(_EventTranslate));
 
-class _EventTickets extends SubEventLine {
+class _EventTickets extends React.Component {
   constructor(props) {
     super(props);
     (this: any).onTicketClicked = this.onTicketClicked.bind(this);
@@ -832,22 +804,20 @@ class _EventTickets extends SubEventLine {
     }
   }
 
-  shouldRender() {
-    return this.props.event.ticket_uri;
-  }
-
-  icon() {
-    return require('./images/ticket.png');
-  }
-
-  textRender() {
-    const hostname = url.parse(this.props.event.ticket_uri).hostname;
-    return <HorizontalView>
-      <Text style={[eventStyles.detailText]}>{this.props.intl.formatMessage(messages.ticketsLink)}{' '}</Text>
-      <TouchableOpacity onPress={this.onTicketClicked} activeOpacity={0.5}>
-        <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{hostname}</Text>
-      </TouchableOpacity>
-    </HorizontalView>;
+  render() {
+    if (this.props.event.ticket_uri) {
+      const hostname = url.parse(this.props.event.ticket_uri).hostname;
+      return <SubEventLine icon={require('./images/ticket.png')}>
+        <HorizontalView>
+          <Text style={[eventStyles.detailText]}>{this.props.intl.formatMessage(messages.ticketsLink)}{' '}</Text>
+          <TouchableOpacity onPress={this.onTicketClicked} activeOpacity={0.5}>
+            <Text style={[eventStyles.detailText, eventStyles.rowLink]}>{hostname}</Text>
+          </TouchableOpacity>
+        </HorizontalView>
+      </SubEventLine>;
+    } else {
+      return null;
+    }
   }
 }
 const EventTickets = injectIntl(_EventTickets);

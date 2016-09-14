@@ -46,6 +46,7 @@ function combineCountryList(filter, cb) {
     })
     .reduce((reduced, filename) => {
       const locale = getLocaleFrom(filename);
+      // $FlowFixMe: This is a dev script, and so can use dynamic includes
       const data = require(`../${filename}`);
       reduced[locale] = data;
       return reduced;
