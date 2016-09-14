@@ -107,8 +107,9 @@ async function checkAllTutorials() {
     defaultTutorials = require('../js/learn/learnConfig.js').defaultTutorials;
   } catch (e) {
     console.error('Error importing learnConfig.js\n', e);
+    return;
   }
-  const configuredTutorials = [].concat.apply([], Object.values(defaultTutorials.map((tut) => tut.videos)));
+  const configuredTutorials = [].concat.apply([], Object.values(defaultTutorials.map((style) => style.tutorials)));
   const missingTutorials = tutorials.filter((fileTut) => !configuredTutorials.find((configTut) => areEqual(configTut, fileTut)));
   for (let tutorial of missingTutorials) {
     console.error('Tutorial not included: ', tutorial.style, tutorial.title);

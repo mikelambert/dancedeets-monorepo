@@ -419,8 +419,7 @@ export class PlaylistView extends React.Component {
   }
 
   onChangeState(props: Object) {
-    const {state, target} = props;
-    if (state === 'ended') {
+    if (props.state === 'ended') {
       // next video!
       this.setState({selectedIndex: this.state.selectedIndex + 1});
     }
@@ -433,7 +432,7 @@ export class PlaylistView extends React.Component {
     //
     // for my client feature-bar (if i support scrub bar):
     // speed-rate, play/pause, back-ten-seconds, airplay
-    const height = Dimensions.get('window').width * 9/16;
+    const height = Dimensions.get('window').width * 9 / 16;
     return <View style={styles.container}>
       <YouTubeNoReload
         ref={(x) => {
