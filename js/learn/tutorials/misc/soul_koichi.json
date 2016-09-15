@@ -1,0 +1,54 @@
+{
+  "title": "Soul Step - 功一さん Koichi",
+  "author": "功一",
+  "style": "soul",
+  "language": "ja",
+  "thumbnail": "https://i.ytimg.com/vi/46xNyvz1BsE/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "",
+      "videos": [
+        {
+          "youtubeId": "46xNyvz1BsE",
+          "duration": "PT1M2S",
+          "title": "Break Down ブレイクダウン"
+        },
+        {
+          "youtubeId": "T8_uhZhxCbI",
+          "duration": "PT1M5S",
+          "title": "Funky Chicken  ファンキーチキン"
+        },
+        {
+          "youtubeId": "sjCxuBzagSc",
+          "duration": "PT1M4S",
+          "title": "Funky Penguin ファンキーペンギン"
+        },
+        {
+          "youtubeId": "VoWwHrDcz3w",
+          "duration": "PT1M33S",
+          "title": "Funky Broadway ファンキーブロードウェイ"
+        },
+        {
+          "youtubeId": "1wR1JDyde1k",
+          "duration": "PT1M19S",
+          "title": "Water  Gate ウォーターゲート"
+        },
+        {
+          "youtubeId": "xonGOaMb27g",
+          "duration": "PT2M14S",
+          "title": "Four Corner　フォーコーナー"
+        },
+        {
+          "youtubeId": "ZXc9ZaktWBc",
+          "duration": "PT1M46S",
+          "title": "Sex Machine セックスマシーン(ステップver.)"
+        },
+        {
+          "youtubeId": "rAMQ0kN2J-c",
+          "duration": "PT1M24S",
+          "title": "Robot Dance ロボットダンス"
+        }
+      ]
+    }
+  ]
+}

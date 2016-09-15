@@ -1,0 +1,29 @@
+{
+  "title": "Kumari Suraj",
+  "author": "Kumari Suraj",
+  "style": "waacking",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/rnOkr0gekwo/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Kumari's Vlog on Waacking",
+      "videos": [
+        {
+          "youtubeId": "l62XRkUym2Q",
+          "duration": "PT3M35S",
+          "title": "What is Waacking? | History of Punking, Whacking, Waacking 1970-2003"
+        },
+        {
+          "youtubeId": "B_d2uAFdxXo",
+          "duration": "PT3M32S",
+          "title": "Waack vs Vogue | What the difference?"
+        },
+        {
+          "youtubeId": "isyhrzo80B4",
+          "duration": "PT3M28S",
+          "title": "Kumari's Bollywhack Pinga Tutorial"
+        }
+      ]
+    }
+  ]
+}
