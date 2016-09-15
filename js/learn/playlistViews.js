@@ -428,8 +428,10 @@ class _PlaylistView extends React.Component {
 
   onChangeState(props: Object) {
     if (props.state === 'ended') {
-      // next video!
-      this.props.setTutorialVideoIndex(this.props.tutorialVideoIndex + 1);
+      // next video, if we're not at the end!
+      if (this.props.tutorialVideoIndex + 1 < this.props.playlist.getVideoCount()) {
+        this.props.setTutorialVideoIndex(this.props.tutorialVideoIndex + 1);
+      }
     }
   }
 
