@@ -17,8 +17,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-// My overrides
-import { NavigationHeaderTitle } from '../react-navigation';
 import { gradientBottom, gradientTop } from '../Colors';
 import { navigatePush, navigatePop, navigateSwap } from '../actions';
 import ShareEventIcon from './ShareEventIcon';
@@ -31,9 +29,9 @@ import type {
 } from 'NavigationTypeDefinition';
 
 const {
-	AnimatedView: NavigationAnimatedView,
 	Card: NavigationCard,
-	Header: NavigationHeader
+	Header: NavigationHeader,
+	Transitioner: NavigationTransitioner,
 } = NavigationExperimental;
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -73,7 +71,7 @@ class AppContainer extends React.Component {
 
 	constructor(props) {
 		super(props);
-		(this: any).renderOverlay = this.renderOverlay.bind(this);
+		(this: any)._renderTransitioner = this._renderTransitioner.bind(this);
 	}
 
 	renderLeft(props) {
@@ -87,11 +85,11 @@ class AppContainer extends React.Component {
 	}
 
 	renderTitle(props) {
-		return <NavigationHeaderTitle
+		return <NavigationHeader.Title
 			textStyle={{color: 'white', fontSize: 24}}
 		>
 			{props.scene.route.title}
-		</NavigationHeaderTitle>;
+		</NavigationHeader.Title>;
 	}
 
 	renderRight(props) {
@@ -101,7 +99,7 @@ class AppContainer extends React.Component {
 		return null;
 	}
 
-	renderOverlay(props) {
+	_renderOverlay(props) {
 		return <GradientBar style={styles.navHeader}>
 			<NavigationHeader
 				style={{backgroundColor: 'transparent', borderBottomWidth: 0}}
@@ -115,32 +113,53 @@ class AppContainer extends React.Component {
 		</GradientBar>;
 	}
 
+	_renderScene(props) {
+		// Again, we pass our navigationState from the Redux store to <NavigationCard />.
+		// Finally, we'll render out our scene based on navigationState in _renderScene().
+		return <NavigationCard
+			{...props}
+			key={props.scene.route.key}
+			style={{marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT}}
+			renderScene={({scene}) => this.props.renderScene(scene, this.props)}
+		/>;
+	}
+
+	_renderTransitioner(props) {
+    const overlay = this._renderOverlay({
+      ...props,
+      scene: props.scene,
+    });
+
+    const scenes = props.scenes.map(
+      scene => this._renderScene({
+        ...props,
+        scene,
+      })
+    );
+
+    return (
+      <View
+        style={styles.outerContainer}>
+        <View
+          style={styles.container}>
+          {scenes}
+        </View>
+        {overlay}
+      </View>
+    );
+	}
+
 	render() {
 		let { navigationState, onBack } = this.props;
-
 		return (
-
 			// Note that we are not using a NavigationRootContainer here because Redux is handling
 			// the reduction of our state for us. Instead, we grab the navigationState we have in
-			// our Redux store and pass it directly to the <NavigationAnimatedView />.
-      //
-      // In RN 0.30, convert to NavigationTransitioner:
-      // https://github.com/jmurzy/react-native/commit/e040531b6fb75243f72611acf998300b32ca111e
-			<NavigationAnimatedView
+			// our Redux store and pass it directly to the <NavigationTransitioner />.
+			<NavigationTransitioner
 				navigationState={navigationState}
 				style={styles.outerContainer}
 				onBack={onBack}
-				renderOverlay={this.renderOverlay}
-				renderScene={props => (
-					// Again, we pass our navigationState from the Redux store to <NavigationCard />.
-					// Finally, we'll render out our scene based on navigationState in _renderScene().
-					<NavigationCard
-						{...props}
-						key={props.scene.route.key}
-						style={{marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT}}
-						renderScene={({scene}) => this.props.renderScene(scene, this.props)}
-					/>
-				)}
+				render={this._renderTransitioner}
 			/>
 		);
 	}
