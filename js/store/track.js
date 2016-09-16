@@ -65,14 +65,19 @@ export function track(eventName: string, params: ?Params) {
   if (!trackingEnabled) {
     return;
   }
-  if (params) {
+  const firebaseSafeEventName = eventName.replace(' ', '');
+  if (params != null) {
+    const firebaseSafeParams = {};
+    for (let key of Object.keys(params)) {
+      firebaseSafeParams[key] = params[key] ? params[key].toString().replace(' ', '') : params[key];
+    }
     AppEventsLogger.logEvent(eventName, 1, params);
     Mixpanel.trackWithProperties(eventName, params);
-    Analytics.logEvent(eventName, params);
+    Analytics.logEvent(firebaseSafeEventName, firebaseSafeParams);
   } else {
     AppEventsLogger.logEvent(eventName, 1);
     Mixpanel.track(eventName);
-    Analytics.logEvent(eventName);
+    Analytics.logEvent(firebaseSafeEventName);
   }
 }
 
@@ -112,13 +117,13 @@ async function setupPersonProperties() {
   Mixpanel.setOnce({'$created': now});
 
   Analytics.setUserProperties({
-    'FB First Name': user.first_name,
-    'FB Last Name': user.last_name,
-    'FB Gender': user.gender,
-    'FB Locale': user.locale,
-    'FB Timezone': user.timezone,
-    'FB Email': user.email,
-    'Last Login': now,
+    'FBFirstName': user.first_name,
+    'FBLastName': user.last_name,
+    'FBGender': user.gender,
+    'FBLocale': user.locale,
+    'FBTimezone': user.timezone.toString(),
+    'FBEmail': user.email,
+    'LastLogin': now,
   });
 
 }
