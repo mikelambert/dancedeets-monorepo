@@ -25,6 +25,7 @@
 'use strict';
 
 import Mixpanel from 'react-native-mixpanel';
+import { Analytics } from 'react-native-firebase3';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { performRequest } from '../api/fb';
 
@@ -67,9 +68,11 @@ export function track(eventName: string, params: ?Params) {
   if (params) {
     AppEventsLogger.logEvent(eventName, 1, params);
     Mixpanel.trackWithProperties(eventName, params);
+    Analytics.logEvent(eventName, params);
   } else {
     AppEventsLogger.logEvent(eventName, 1);
     Mixpanel.track(eventName);
+    Analytics.logEvent(eventName);
   }
 }
 
@@ -92,6 +95,7 @@ async function setupPersonProperties() {
     return;
   }
   Mixpanel.identify(token.userID);
+  Analytics.setUserID(token.userID);
 
   const user = await performRequest('GET', 'me', {fields: 'id,name,first_name,last_name,gender,locale,timezone,email,link'});
   const now = new Date().toISOString().slice(0,19); // Trim off the fractional seconds from our ISO?UTC time
@@ -106,6 +110,17 @@ async function setupPersonProperties() {
     'Last Login': now,
   });
   Mixpanel.setOnce({'$created': now});
+
+  Analytics.setUserProperties({
+    'FB First Name': user.first_name,
+    'FB Last Name': user.last_name,
+    'FB Gender': user.gender,
+    'FB Locale': user.locale,
+    'FB Timezone': user.timezone,
+    'FB Email': user.email,
+    'Last Login': now,
+  });
+
 }
 
 export async function trackLogin() {
@@ -126,6 +141,7 @@ export function trackLogout() {
   track('Logout');
   //Mixpanel.removePushToken();
   Mixpanel.reset();
+  Analytics.setUserID(null);
 }
 
 export default function trackDispatches(action: Action): void {
