@@ -89,6 +89,11 @@ const messages = defineMessages({
     defaultMessage: 'View Flyer',
     description: 'Title Bar for Viewing Flyer',
   },
+  styleTutorialTitle: {
+    id: 'tutorialVideos.styleTutorialTitle',
+    defaultMessage: '{style} Tutorials',
+    description: 'Title Bar for viewing a given style\'s tutorials',
+  },
 });
 
 class _TabbedAppView extends React.Component {
@@ -164,7 +169,7 @@ class _TabbedAppView extends React.Component {
           track('Tutorial Style Selected', {
             tutorialStyle: style.title,
           });
-          navigatable.onNavigate({key: 'TutorialList', title: `${style.title} Tutorials`, tutorials: style.tutorials});
+          navigatable.onNavigate({key: 'TutorialList', title: this.props.intl.formatMessage(messages.styleTutorialTitle, {style: style.title}), tutorials: style.tutorials});
         }}
         />;
     case 'TutorialList':
