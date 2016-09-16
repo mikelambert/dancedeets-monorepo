@@ -1,0 +1,29 @@
+{
+  "title": "Soul Steps - Ricky (Bebop Crew)",
+  "author": "Ricky (Bebop Crew) with Masyumi & Yoko",
+  "style": "soul",
+  "language": "ja",
+  "thumbnail": "https://i.ytimg.com/vi/aqyQ2CuQUX8/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "",
+      "videos": [
+        {
+          "youtubeId": "aqyQ2CuQUX8",
+          "duration": "PT2M29S",
+          "title": "ムーンウォーク Moonwalk"
+        },
+        {
+          "youtubeId": "yXkCnu9qcJI",
+          "duration": "PT2M43S",
+          "title": "Washing Machine, Guess, GI walk, Lacoste, Snake"
+        },
+        {
+          "youtubeId": "XndkwZnxcWY",
+          "duration": "PT3M11S",
+          "title": "アップ ダウン Up & Down"
+        }
+      ]
+    }
+  ]
+}
