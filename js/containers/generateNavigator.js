@@ -8,7 +8,6 @@
 
 import React from 'react';
 import {
-	Easing,
 	Image,
 	NavigationExperimental,
 	Platform,
@@ -19,7 +18,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { gradientBottom, gradientTop } from '../Colors';
+import { gradientTop } from '../Colors';
 import { navigatePush, navigatePop, navigateSwap } from '../actions';
 import ShareEventIcon from './ShareEventIcon';
 import { getNamedState } from '../reducers/navigation';
@@ -28,33 +27,18 @@ import type {
 	NavigationRoute,
 	NavigationScene,
 	NavigationState,
-	NavigationTransitionProps,
-	NavigationTransitionSpec,
 } from 'NavigationTypeDefinition';
 
 const {
 	CardStack: NavigationCardStack,
 	Card: NavigationCard,
 	Header: NavigationHeader,
-	Transitioner: NavigationTransitioner,
 } = NavigationExperimental;
-import LinearGradient from 'react-native-linear-gradient';
 
 
 // These are basically copied from NavigationHeader.js
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
-
-class GradientBar extends React.Component {
-	render() {
-		return <LinearGradient
-			start={[0.0, 0.0]} end={[0.0, 1]}
-			colors={[gradientBottom, gradientTop]}
-			style={this.props.style}>
-			{this.props.children}
-		</LinearGradient>;
-	}
-}
 
 type Navigatable = {
 	onNavigate: (x: NavigationRoute) => ThunkAction;
