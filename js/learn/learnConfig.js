@@ -49,6 +49,7 @@ export const defaultTutorials = [
       require('./tutorials/hiphop/yakfilms.json'),
       require('./tutorials/hiphop/miscellaneous.json'),
       require('./tutorials/hiphop/feelthebounce.json'),
+      require('./tutorials/hiphop/yesneyes.json'),
     ],
   },
   {

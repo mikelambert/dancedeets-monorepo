@@ -1,0 +1,80 @@
+{
+  "title": "YesNeYes",
+  "subtitle": "RISING Dance School",
+  "author": "YesNeYes s tanečnicema, Last Minute",
+  "style": "hiphop",
+  "language": "cz",
+  "thumbnail": "https://i.ytimg.com/vi/J2abZczwf9E/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Nauč se s tanečnicema",
+      "videos": [
+        {
+          "youtubeId": "J2abZczwf9E",
+          "duration": "PT2M59S",
+          "title": "Reebok"
+        },
+        {
+          "youtubeId": "EhvcV4K0KVQ",
+          "duration": "PT3M9S",
+          "title": "Prep"
+        },
+        {
+          "youtubeId": "k23ZWNQfGh4",
+          "duration": "PT3M27S",
+          "title": "Pepper seed"
+        },
+        {
+          "youtubeId": "8Ie4S7OP6Wc",
+          "duration": "PT3M57S",
+          "title": "Ranking"
+        },
+        {
+          "youtubeId": "wRaCgBQ6Gdk",
+          "duration": "PT2M38S",
+          "title": "Jerk"
+        },
+        {
+          "youtubeId": "GTyGpi2yVXA",
+          "duration": "PT3M22S",
+          "title": "Big bounds"
+        },
+        {
+          "youtubeId": "QoDvrGA-ZiY",
+          "duration": "PT3M3S",
+          "title": "Kickers step"
+        },
+        {
+          "youtubeId": "6cUEPRfy1Sg",
+          "duration": "PT2M59S",
+          "title": "Scooby-doo"
+        },
+        {
+          "youtubeId": "dZWzka--kxk",
+          "duration": "PT3M5S",
+          "title": "Shamrock"
+        }
+      ]
+    },
+    {
+      "title": "Nauč se s Last Minute",
+      "videos": [
+        {
+          "youtubeId": "KONfpbxfZOw",
+          "duration": "PT3M2S",
+          "title": "Bart Simpson"
+        },
+        {
+          "youtubeId": "14MftIVMKdI",
+          "duration": "PT3M4S",
+          "title": "Cabbage patch"
+        },
+        {
+          "youtubeId": "ita18HuKyXc",
+          "duration": "PT3M3S",
+          "title": "Steve Martin"
+        }
+      ]
+    }
+  ]
+}
