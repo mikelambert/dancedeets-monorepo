@@ -139,9 +139,15 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-firebase3')
-    compile project(':react-native-native-env')
-    compile project(':react-native-locale')
+    compile (project(':react-native-firebase3')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-native-env')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
+    compile (project(':react-native-locale')) {
+        exclude group: 'com.facebook.react', module: 'react-native'
+    }
     compile project(':ReactAndroid')
     compile (project(':react-native-code-push')) {
         exclude group: 'com.facebook.react', module: 'react-native'
@@ -188,13 +194,14 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
 
-    //compile 'com.google.firebase:firebase-core:9.0.0'
+    compile 'com.google.firebase:firebase-core:9.4.0+'
+    compile 'com.google.firebase:firebase-config:9.4.0+'
     // The excludes above and includes below are due to version incompatibilities
     // between 8.4 and 9.0 libraries.
     // https://github.com/lelandrichardson/react-native-maps/issues/249
-    compile 'com.google.android.gms:play-services-base:9.2.0+'
-    compile 'com.google.android.gms:play-services-ads:9.2.0+'
-    compile 'com.google.android.gms:play-services-maps:9.2.0+'
+    compile 'com.google.android.gms:play-services-base:9.4.0+'
+    compile 'com.google.android.gms:play-services-ads:9.4.0+'
+    compile 'com.google.android.gms:play-services-maps:9.4.0+'
     compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
         transitive = true;
     }
