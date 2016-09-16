@@ -138,61 +138,45 @@ android {
     }
 }
 
+configurations.all {
+    // React-Native-Compile:
+    // exclude group: 'com.facebook.react', module: 'react-native'
+    resolutionStrategy {
+        force 'com.google.android.gms:play-services-ads:9.4.0+'
+        force 'com.google.android.gms:play-services-base:9.4.0+'
+        force 'com.google.android.gms:play-services-location:9.4.0+'
+        force 'com.google.android.gms:play-services-maps:9.4.0+'
+    }
+}
+
 dependencies {
-    compile (project(':react-native-firebase3')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile (project(':react-native-native-env')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile (project(':react-native-locale')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile project(':ReactAndroid')
-    compile (project(':react-native-code-push')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile (project(':react-native-share')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile (project(':react-native-mail')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile (project(':react-native-admob')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-        exclude group: 'com.google.android.gms', module: 'play-services-ads'
-    }
-    compile (project(':react-native-mixpanel')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile (project(':react-native-fabric')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile (project(':react-native-fbsdk')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile (project(':react-native-geocoder')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile (project(':react-native-linear-gradient')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile (project(':react-native-maps')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-        exclude group: 'com.google.android.gms', module: 'play-services-base'
-        exclude group: 'com.google.android.gms', module: 'play-services-maps'
-    }
-    compile (project(':react-native-segmented-android')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
-    compile (project(':RNSendIntentModule')) {
-        exclude group: 'com.facebook.react', module: 'react-native'
-    }
+    compile project(':react-native-firebase3')
+    compile project(':react-native-native-env')
+    compile project(':react-native-locale')
+    compile project(':react-native-code-push')
+    compile project(':react-native-share')
+    compile project(':react-native-mail')
+    compile project(':react-native-admob')
+    compile project(':react-native-mixpanel')
+    compile project(':react-native-fabric')
+    compile project(':react-native-fbsdk')
+    compile project(':react-native-geocoder')
+    compile project(':react-native-linear-gradient')
+    compile project(':react-native-maps')
+    compile project(':react-native-segmented-android')
+    compile project(':RNSendIntentModule')
     //compile "com.mixpanel.android:mixpanel-android:4.+"
-    //compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
+    compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
+        transitive = true;
+    }
+
+    // React-Native-Compile:
+    // compile project(':ReactAndroid')
+    // React-Native-Compile:
+    compile 'com.facebook.react:react-native:+'
 
     compile 'com.google.firebase:firebase-core:9.4.0+'
     compile 'com.google.firebase:firebase-config:9.4.0+'
@@ -202,9 +186,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-base:9.4.0+'
     compile 'com.google.android.gms:play-services-ads:9.4.0+'
     compile 'com.google.android.gms:play-services-maps:9.4.0+'
-    compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
-        transitive = true;
-    }
 }
 
 apply plugin: 'com.google.gms.google-services'
