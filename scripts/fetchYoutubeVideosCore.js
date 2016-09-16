@@ -118,8 +118,7 @@ async function loadChannel(channelName, searchQuery) {
   const searchKeywords = searchQuery.split(' ');
   const filteredPlaylist = annotatedPlaylist.filter((x) => {
     for (var i = 0; i < searchKeywords.length; i++) {
-
-      if (x.title.toLowerCase().indexOf(searchKeywords[i]) == -1) {
+      if (x.title.indexOf(searchKeywords[i]) == -1) {
         return false;
       }
     }
