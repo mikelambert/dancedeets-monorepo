@@ -31,6 +31,7 @@ import shallowEqual from 'fbjs/lib/shallowEqual';
 import styleEqual from 'style-equal';
 import {
   injectIntl,
+  defineMessages,
 } from 'react-intl';
 import languages from '../languages';
 import {
@@ -47,6 +48,69 @@ const Mailer = require('NativeModules').RNMail;
 type PlaylistStylesViewProps = {
   onSelected: (playlist: Playlist) => void;
 };
+
+const messages = defineMessages({
+  numTutorials: {
+    id: 'tutorial.numTutorials',
+    defaultMessage: '{count} Tutorials',
+    description: 'How many tutorials there are',
+  },
+  totalTime: {
+    id: 'tutorial.totalTime',
+    defaultMessage: 'Total: {time}',
+    description: 'Total time for all tutorials',
+  },
+  chooseStyle: {
+    id: 'tutorial.styleHeader',
+    defaultMessage: 'Choose a style you\'d like to learn:',
+    description: 'Header for styles list',
+  },
+  chooseTutorial: {
+    id: 'tutorial.tutorialHeader',
+    defaultMessage: 'Choose a tutorial:',
+    description: 'Header for tutorials list',
+  },
+  numVideosWithDuration: {
+    id: 'tutorial.numVideosWithDuration',
+    defaultMessage: '{count} videos: {duration}',
+    description: 'Total for all videos in a tutorial',
+  },
+  tutorialFooter: {
+    id: 'tutorial.turorialFooter',
+    defaultMessage: 'Want to put your tutorials, DVD, or classes here?\nWant affordable lessons from the world\'s best teachers?\n',
+    description: 'Footer for tutorials list, inviting participation',
+  },
+  contact: {
+    id: 'tutorial.contact',
+    defaultMessage: 'Contact Us',
+    description: '"Contact Us" button for asking about tutorials',
+  },
+  contactSuffix: {
+    id: 'tutorial.contactSuffix',
+    defaultMessage: ' and let us know!',
+    description: 'Suffix to display after the "Contact Us" button',
+  },
+  languagePrefixedTitle: {
+    id: 'tutorial.languagePrefixedTitle',
+    defaultMessage: '{language}: {title}',
+    description: 'When we have a foreign language tutorial, we prefix that language to the title'
+  },
+  timeHoursMinutes: {
+    id: 'tutorial.timeHoursMinutes',
+    defaultMessage: '{hours}h {minutes}m',
+    description: 'Time formatting',
+  },
+  timeMinutes: {
+    id: 'tutorial.timeMinutes',
+    defaultMessage: '{minutes}m',
+    description: 'Time formatting',
+  },
+  timeSeconds: {
+    id: 'tutorial.timeSeconds',
+    defaultMessage: '{seconds}s',
+    description: 'Time formatting',
+  },
+});
 
 const boxWidth = semiNormalize(150);
 const boxMargin = 5;
@@ -77,6 +141,7 @@ class _PlaylistStylesView extends React.Component {
   constructor(props: PlaylistStylesViewProps) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
+    (this: any).renderHeader = this.renderHeader.bind(this);
     this.state = {
       stylePlaylists: [],
     };
@@ -98,7 +163,7 @@ class _PlaylistStylesView extends React.Component {
   renderRow(style: any) {
     const imageWidth = boxWidth - 30;
     const durationSeconds = style.tutorials.reduce((prev, current) => prev + current.getDurationSeconds(), 0);
-    const length = formatDuration(durationSeconds);
+    const length = formatDuration(this.props.intl.formatMessage, durationSeconds);
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(style, this.state.stylePlaylists[style]);
@@ -114,8 +179,8 @@ class _PlaylistStylesView extends React.Component {
       }}>
         <Image source={style.thumbnail} resizeMode="contain" style={{width: imageWidth, height: imageWidth}}/>
         <Text style={{fontWeight: 'bold'}}>{style.title}</Text>
-        <Text>{style.tutorials.length} Tutorials</Text>
-        <Text>Total: {length}</Text>
+        <Text>{this.props.intl.formatMessage(messages.numTutorials, {count: style.tutorials.length})}</Text>
+        <Text>{this.props.intl.formatMessage(messages.totalTime, {time: length})}</Text>
       </View>
     </TouchableHighlight>;
   }
@@ -125,7 +190,7 @@ class _PlaylistStylesView extends React.Component {
       textAlign: 'center',
       margin: 10,
       width: listViewWidth(),
-    }}>Choose a style you'd like to learn:</Text>;
+    }}>{this.props.intl.formatMessage(messages.chooseStyle)}</Text>;
   }
 
   render() {
@@ -154,14 +219,16 @@ class _PlaylistListView extends React.Component {
   constructor(props: PlaylistListViewProps) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
+    (this: any).renderHeader = this.renderHeader.bind(this);
+    (this: any).renderFooter = this.renderFooter.bind(this);
   }
 
   renderRow(playlist: Playlist) {
-    const duration = formatDuration(playlist.getDurationSeconds());
+    const duration = formatDuration(this.props.intl.formatMessage, playlist.getDurationSeconds());
     let title = playlist.title;
     if (this.props.intl.locale != playlist.language) {
       const localizedLanguage = languages[this.props.intl.locale][playlist.language];
-      title = `${localizedLanguage}: ${playlist.title}`;
+      title = this.props.intl.formatMessage(messages.languagePrefixedTitle, {language: localizedLanguage, title: playlist.title});
     }
     return <TouchableHighlight
       onPress={() => {
@@ -178,7 +245,7 @@ class _PlaylistListView extends React.Component {
         }}>
         <Image source={{uri: playlist.thumbnail}} resizeMode="cover" style={styles.thumbnail} />
         <Text style={{fontWeight: 'bold'}}>{title}</Text>
-        <Text>{playlist.getVideoCount()} videos: {duration}</Text>
+        <Text>{this.props.intl.formatMessage(messages.numVideosWithDuration, {count: playlist.getVideoCount(), duration})}</Text>
       </View>
     </TouchableHighlight>;
   }
@@ -188,7 +255,7 @@ class _PlaylistListView extends React.Component {
       textAlign: 'center',
       margin: 10,
       width: listViewWidth(),
-    }}>Choose a tutorial:</Text>;
+    }}>{this.props.intl.formatMessage(messages.chooseTutorial)}</Text>;
   }
 
   renderFooter() {
@@ -197,18 +264,16 @@ class _PlaylistListView extends React.Component {
         width: listViewWidth(),
       }}>
       <Text>
-      Want to list your tutorials, DVD, or classes?{"\n"}
-      Want to progress beyond these tutorials?{"\n"}
-      Want exclusive tutorials from the world's best dancers?{"\n"}
+      {this.props.intl.formatMessage(messages.tutorialFooter)}
       </Text>
       <HorizontalView style={{alignItems: 'center'}}>
       <Text>Then </Text>
       <Button
         size="small"
-        caption="Contact Us"
+        caption={this.props.intl.formatMessage(messages.contact)}
         onPress={this.sendTutorialContactEmail}
       >Contact Us</Button>
-      <Text> and let us know!</Text>
+      <Text>{this.props.intl.formatMessage(messages.contactSuffix)}</Text>
       </HorizontalView>
     </View>;
   }
@@ -244,15 +309,16 @@ class _PlaylistListView extends React.Component {
 }
 export const PlaylistListView = injectIntl(_PlaylistListView);
 
-function formatDuration(durationSeconds: number) {
+function formatDuration(formatMessage: (message: Object, timeData: Object) => string, durationSeconds: number) {
   const hours = Math.floor(durationSeconds / 60 / 60);
   const minutes = Math.floor(durationSeconds / 60) % 60;
   if (durationSeconds > 60 * 60) {
-    return `${hours}h ${minutes}m`;
+    return formatMessage(messages.timeHoursMinutes, {hours, minutes});
   } else if (durationSeconds > 60) {
-    return `${minutes}m`;
+    return formatMessage(messages.timeMinutes, {minutes});
   } else {
-    return `${durationSeconds}s`;
+    const seconds = durationSeconds;
+    return formatMessage(messages.timeSeconds, {seconds});
   }
 }
 
@@ -373,7 +439,7 @@ class _PlaylistView extends React.Component {
 
   renderHeader() {
     const subtitle = this.props.playlist.subtitle ? <Text style={styles.playlistSubtitle}>{this.props.playlist.subtitle}</Text> : null;
-    const duration = formatDuration(this.props.playlist.getDurationSeconds());
+    const duration = formatDuration(this.props.intl.formatMessage, this.props.playlist.getDurationSeconds());
     return <View style={styles.playlistRow}>
       <Text style={styles.playlistTitle}>{this.props.playlist.title}</Text>
       {subtitle}
@@ -383,7 +449,7 @@ class _PlaylistView extends React.Component {
 
   renderRow(row: any) {
     const {video, selected} = row;
-    const duration = formatDuration(video.getDurationSeconds());
+    const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
     return <TouchableHighlight
       underlayColor={purpleColors[0]}
       activeOpacity={0.5}
@@ -418,7 +484,7 @@ class _PlaylistView extends React.Component {
       return null;
     }
     const sectionData = JSON.parse(sectionId);
-    const duration = formatDuration(sectionData.durationSeconds);
+    const duration = formatDuration(this.props.intl.formatMessage, sectionData.durationSeconds);
     return <View style={styles.sectionRow}>
       <Text style={styles.sectionTitle}>{sectionData.title}</Text>
       <Text style={styles.sectionDuration}>{duration}</Text>
@@ -483,7 +549,8 @@ export const PlaylistView = connect(
   (dispatch: Dispatch) => ({
     setTutorialVideoIndex: (eventId, language) => dispatch(setTutorialVideoIndex(eventId, language)),
   }),
-)(_PlaylistView);
+)(injectIntl(_PlaylistView));
+
 let styles = StyleSheet.create({
   container: {
     flex: 1,
