@@ -1,55 +1,85 @@
+package com.dancedeets.android;
 
 import android.app.Application;
-import android.util.Log;
 
+import com.AirMaps.AirPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.burnweb.rnsendintent.RNSendIntentPackage;
+import com.chirag.RNMail.RNMail;
+import com.dancedeets.android.BuildConfig;
+import com.devfd.RNGeocoder.RNGeocoderPackage;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
+import com.higo.zhangyp.segmented.AndroidSegmentedPackage;
+import com.kevinejohn.RNMixpanel.RNMixpanel;
+import com.microsoft.codepush.react.CodePush;
+import com.sbugert.rnadmob.RNAdMobPackage;
+import com.smixx.fabric.FabricPackage;
 import com.xgfe.reactnativeenv.RCTNativeEnvPackage;
 
 import java.util.Arrays;
 import java.util.List;
 
+import cl.json.RNSharePackage;
+import io.fixd.rctlocale.RCTLocalePackage;
+
 public class MainApplication extends Application implements ReactApplication {
 
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+    private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
+
+    protected static CallbackManager getCallbackManager() {
+        return mCallbackManager;
+    }
+
+    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+        @Override
+        protected boolean getUseDeveloperSupport() {
+          return BuildConfig.DEBUG;
+        }
+
+        @Override
+        protected List<ReactPackage> getPackages() {
+            return Arrays.<ReactPackage>asList(
+                new MainReactPackage(),
+                new RCTNativeEnvPackage(BuildConfig.class),
+                new RCTLocalePackage(),
+                new CodePush(BuildConfig.CODEPUSH_KEY, MainApplication.this, BuildConfig.DEBUG),
+                new RNSharePackage(),
+                new RNMail(),
+                new RNAdMobPackage(),
+                new RNMixpanel(),
+                new RNGeocoderPackage(),
+                new AirPackage(),
+                new FabricPackage(null),
+                new LinearGradientPackage(),
+                new AndroidSegmentedPackage(),
+                new RNSendIntentPackage(),
+                new FBSDKPackage(mCallbackManager)
+            );
+        }
+
+        @Override
+        protected String getJSBundleFile() {
+            return CodePush.getBundleUrl();
+        }
+    };
+
     @Override
-    protected boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
+    public void onCreate() {
+        super.onCreate();
+        // Initialize the SDK before executing any other operations,
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
     }
 
     @Override
-    protected List<ReactPackage> getPackages() {
-        mCallbackManager = CallbackManager.Factory.create();
-        return Arrays.<ReactPackage>asList(
-            new MainReactPackage(),
-            new RCTNativeEnvPackage(BuildConfig.class),
-            new RCTLocalePackage(),
-            new CodePush(BuildConfig.CODEPUSH_KEY, this, BuildConfig.DEBUG),
-            new RNSharePackage(),
-            new RNMail(),
-            new RNAdMobPackage(),
-            new RNMixpanel(),
-            new RNGeocoderPackage(),
-            new AirPackage(),
-            new FabricPackage(null),
-            new LinearGradientPackage(),
-            new AndroidSegmentedPackage(),
-            new RNSendIntentPackage(),
-            new FBSDKPackage(mCallbackManager)
-        );
-    }
-
-    @Override
-    protected String getJSBundleFile() {
-        return CodePush.getBundleUrl();
-    }
-  }
-
-  @Override
-  public ReactNativeHost getReactNativeHost() {
+    public ReactNativeHost getReactNativeHost() {
       return mReactNativeHost;
   }
 }

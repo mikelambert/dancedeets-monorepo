@@ -22,7 +22,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-      android:application=".MainApplication"
+      android:name=".MainApplication"
       android:allowBackup="true"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
