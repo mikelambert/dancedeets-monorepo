@@ -111,8 +111,8 @@ export const defaultTutorials = [
     tutorials: [
       require('./tutorials/house/newschool_dictionary.json'),
       require('./tutorials/house/jardy.json'),
-      require('./tutorials/house/jardy_footwork.json'),
-      require('./tutorials/house/jardy_footwork_expansion.json'),
+      //require('./tutorials/house/jardy_footwork.json'),
+      //require('./tutorials/house/jardy_footwork_expansion.json'),
       require('./tutorials/house/rich.json'),
       require('./tutorials/house/malcolm.json'),
       require('./tutorials/house/alvaro.json'),
