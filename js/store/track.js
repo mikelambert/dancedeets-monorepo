@@ -69,7 +69,7 @@ export function track(eventName: string, params: ?Params) {
   if (params != null) {
     const firebaseSafeParams = {};
     for (let key of Object.keys(params)) {
-      firebaseSafeParams[key] = params[key] ? params[key].toString().replace(' ', '') : params[key];
+      firebaseSafeParams[key.replace(' ', '')] = params[key] ? params[key].toString().replace(' ', '') : params[key];
     }
     AppEventsLogger.logEvent(eventName, 1, params);
     Mixpanel.trackWithProperties(eventName, params);
