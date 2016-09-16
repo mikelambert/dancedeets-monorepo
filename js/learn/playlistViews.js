@@ -97,6 +97,8 @@ class _PlaylistStylesView extends React.Component {
 
   renderRow(style: any) {
     const imageWidth = boxWidth - 30;
+    const durationSeconds = style.tutorials.reduce((prev, current) => prev + current.getDurationSeconds(), 0);
+    const length = formatDuration(durationSeconds);
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(style, this.state.stylePlaylists[style]);
@@ -113,6 +115,7 @@ class _PlaylistStylesView extends React.Component {
         <Image source={style.thumbnail} resizeMode="contain" style={{width: imageWidth, height: imageWidth}}/>
         <Text style={{fontWeight: 'bold'}}>{style.title}</Text>
         <Text>{style.tutorials.length} Tutorials</Text>
+        <Text>Total: {length}</Text>
       </View>
     </TouchableHighlight>;
   }
