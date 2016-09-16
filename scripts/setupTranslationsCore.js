@@ -18,7 +18,7 @@ function generateJsonFile(translations) {
   return stableJsonStringify(translations, {space: 2});
 }
 
-const locales = ['fr', 'ja', 'zh'];
+const locales = ['en', 'fr', 'ja', 'zh'];
 
 function loadJsonFile(filename) {
   return JSON.parse(fs.readFileSync(filename, 'utf8'));
