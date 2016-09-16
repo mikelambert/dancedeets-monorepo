@@ -51,62 +51,62 @@ type PlaylistStylesViewProps = {
 
 const messages = defineMessages({
   numTutorials: {
-    id: 'tutorial.numTutorials',
+    id: 'tutorialVideos.numTutorials',
     defaultMessage: '{count} Tutorials',
     description: 'How many tutorials there are',
   },
   totalTime: {
-    id: 'tutorial.totalTime',
+    id: 'tutorialVideos.totalTime',
     defaultMessage: 'Total: {time}',
     description: 'Total time for all tutorials',
   },
   chooseStyle: {
-    id: 'tutorial.styleHeader',
+    id: 'tutorialVideos.styleHeader',
     defaultMessage: 'Choose a style you\'d like to learn:',
     description: 'Header for styles list',
   },
   chooseTutorial: {
-    id: 'tutorial.tutorialHeader',
+    id: 'tutorialVideos.tutorialHeader',
     defaultMessage: 'Choose a tutorial:',
     description: 'Header for tutorials list',
   },
   numVideosWithDuration: {
-    id: 'tutorial.numVideosWithDuration',
+    id: 'tutorialVideos.numVideosWithDuration',
     defaultMessage: '{count} videos: {duration}',
     description: 'Total for all videos in a tutorial',
   },
   tutorialFooter: {
-    id: 'tutorial.turorialFooter',
+    id: 'tutorialVideos.turorialFooter',
     defaultMessage: 'Want to put your tutorials, DVD, or classes here?\nWant affordable lessons from the world\'s best teachers?\n',
     description: 'Footer for tutorials list, inviting participation',
   },
   contact: {
-    id: 'tutorial.contact',
+    id: 'tutorialVideos.contact',
     defaultMessage: 'Contact Us',
     description: '"Contact Us" button for asking about tutorials',
   },
   contactSuffix: {
-    id: 'tutorial.contactSuffix',
+    id: 'tutorialVideos.contactSuffix',
     defaultMessage: ' and let us know!',
     description: 'Suffix to display after the "Contact Us" button',
   },
   languagePrefixedTitle: {
-    id: 'tutorial.languagePrefixedTitle',
+    id: 'tutorialVideos.languagePrefixedTitle',
     defaultMessage: '{language}: {title}',
     description: 'When we have a foreign language tutorial, we prefix that language to the title'
   },
   timeHoursMinutes: {
-    id: 'tutorial.timeHoursMinutes',
+    id: 'tutorialVideos.timeHoursMinutes',
     defaultMessage: '{hours}h {minutes}m',
     description: 'Time formatting',
   },
   timeMinutes: {
-    id: 'tutorial.timeMinutes',
+    id: 'tutorialVideos.timeMinutes',
     defaultMessage: '{minutes}m',
     description: 'Time formatting',
   },
   timeSeconds: {
-    id: 'tutorial.timeSeconds',
+    id: 'tutorialVideos.timeSeconds',
     defaultMessage: '{seconds}s',
     description: 'Time formatting',
   },
@@ -267,7 +267,6 @@ class _PlaylistListView extends React.Component {
       {this.props.intl.formatMessage(messages.tutorialFooter)}
       </Text>
       <HorizontalView style={{alignItems: 'center'}}>
-      <Text>Then </Text>
       <Button
         size="small"
         caption={this.props.intl.formatMessage(messages.contact)}

@@ -19,7 +19,7 @@
   "distance.km": "{km}公里遠",
   "distance.miles": "{miles}英里遠",
   "errors.fetchEventsError": "抱歉，載入活動時發生問題。",
-  "errors.networkRetry": "請檢查您的網路連線，然後再試一次。",
+  "errors.networkRetry": "請檢查你的網路連線，然後再試一次。",
   "event.addToCalendar": "新增到行事曆",
   "event.addedBy": "新增者: {name}",
   "event.addedToCalendar": "已加入行事曆",
@@ -67,5 +67,17 @@
   "tutorial.login": "登入 Facebook",
   "tutorial.nologin": "不想登入?",
   "tutorial.nologin.justification": "Almost all our dance events are\nfound when dancers like you log in.\n\nLogging in shares your dance events\nwith DanceDeets, so our algorithm\ncan sort through everyone's events,\nand share them with dancers everywhere.\n\nBut without any logged-in dancers,\nwe’d have nothing to share with you.\n\nSo please consider logging in,\nto help us help your dance scene.\n\nOtherwise, you're always able to use\nour website without any login:",
-  "tutorial.nologin.website": "來客訪問"
+  "tutorial.nologin.website": "來客訪問",
+  "tutorialVideos.contact": "請與我們連絡",
+  "tutorialVideos.contactSuffix": " ",
+  "tutorialVideos.languagePrefixedTitle": "{language}: {title}",
+  "tutorialVideos.numTutorials": "{count}教程",
+  "tutorialVideos.numVideosWithDuration": "{count}部影片: {duration}",
+  "tutorialVideos.styleHeader": "選擇你想學習舞蹈風格:",
+  "tutorialVideos.timeHoursMinutes": "{hours}小時{minutes}分",
+  "tutorialVideos.timeMinutes": "{minutes}分",
+  "tutorialVideos.timeSeconds": "{seconds}秒",
+  "tutorialVideos.totalTime": "總時間: {time}",
+  "tutorialVideos.turorialFooter": "想讓你的授課內容，排舞或者上課影片上線嗎？\n想要用合理的價格得到傳奇舞者們的真傳嗎？",
+  "tutorialVideos.tutorialHeader": "選擇教程:"
 }
