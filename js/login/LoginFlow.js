@@ -33,7 +33,7 @@ class LoginFlow extends React.Component {
     } else {
       // This is used when we're starting up, before we know
       // whether to drop them into the <OnboardingFlow/> process.
-      return null;//<LaunchScreen />;
+      return <LaunchScreen />;
     }
   }
 }

@@ -126,7 +126,7 @@ class _TutorialScreen extends React.Component {
       style={styles.bottomFade} />;
 
     if (pageID === 0) {
-      return null;//<LaunchScreen>{bottomFade}</LaunchScreen>
+      return <LaunchScreen>{bottomFade}</LaunchScreen>
     } else if (pageID === 1) {
       return <Image
         style={styles.container}
