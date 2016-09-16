@@ -8,10 +8,12 @@
 
 import React from 'react';
 import {
+	Easing,
 	Image,
 	NavigationExperimental,
 	Platform,
 	StyleSheet,
+	Text,
 	TouchableOpacity,
 	View,
 } from 'react-native';
@@ -26,9 +28,12 @@ import type {
 	NavigationRoute,
 	NavigationScene,
 	NavigationState,
+	NavigationTransitionProps,
+	NavigationTransitionSpec,
 } from 'NavigationTypeDefinition';
 
 const {
+	CardStack: NavigationCardStack,
 	Card: NavigationCard,
 	Header: NavigationHeader,
 	Transitioner: NavigationTransitioner,
@@ -66,12 +71,22 @@ type CallingProps = {
 	renderScene: (scene: NavigationScene, nav: Navigatable) => React.Component;
 };
 
+const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }) => (
+  <View style={[ styles.title, style ]} {...viewProps}>
+    <Text style={[ styles.titleText, textStyle ]} numberOfLines={1}>{children}</Text>
+  </View>
+);
+
 class AppContainer extends React.Component {
 	props: AppContainerProps & Navigatable & CallingProps;
 
 	constructor(props) {
 		super(props);
-		(this: any)._renderTransitioner = this._renderTransitioner.bind(this);
+		(this: any)._renderScene = this._renderScene.bind(this);
+		(this: any)._renderHeader = this._renderHeader.bind(this);
+		(this: any).renderLeft = this.renderLeft.bind(this);
+		(this: any).renderTitle = this.renderTitle.bind(this);
+		(this: any).renderRight = this.renderRight.bind(this);
 	}
 
 	renderLeft(props) {
@@ -85,11 +100,11 @@ class AppContainer extends React.Component {
 	}
 
 	renderTitle(props) {
-		return <NavigationHeader.Title
+		return <NavigationHeaderTitle
 			textStyle={{color: 'white', fontSize: 24}}
 		>
 			{props.scene.route.title}
-		</NavigationHeader.Title>;
+		</NavigationHeaderTitle>;
 	}
 
 	renderRight(props) {
@@ -99,18 +114,17 @@ class AppContainer extends React.Component {
 		return null;
 	}
 
-	_renderOverlay(props) {
-		return <GradientBar style={styles.navHeader}>
-			<NavigationHeader
-				style={{backgroundColor: 'transparent', borderBottomWidth: 0}}
-				{...props}
-				renderLeftComponent={this.renderLeft}
-				renderTitleComponent={this.renderTitle}
-				renderRightComponent={this.renderRight}
-        // Use this.props here, instead of passed-in props
-        onNavigateBack={this.props.onBack}
-			/>
-		</GradientBar>;
+	_renderHeader(props) {
+		// 0.33: Disable for now, as it doesn't appear to work: <GradientBar style={styles.navHeader}>
+		return <NavigationHeader
+			{...props}
+			style={[styles.navHeader, {backgroundColor: gradientBottom, borderBottomWidth: 0}]}
+			renderLeftComponent={this.renderLeft}
+			renderTitleComponent={this.renderTitle}
+			renderRightComponent={this.renderRight}
+      // Use this.props here, instead of passed-in props
+      onNavigateBack={this.props.onBack}
+		/>;
 	}
 
 	_renderScene(props) {
@@ -124,42 +138,14 @@ class AppContainer extends React.Component {
 		/>;
 	}
 
-	_renderTransitioner(props) {
-    const overlay = this._renderOverlay({
-      ...props,
-      scene: props.scene,
-    });
-
-    const scenes = props.scenes.map(
-      scene => this._renderScene({
-        ...props,
-        scene,
-      })
-    );
-
-    return (
-      <View
-        style={styles.outerContainer}>
-        <View
-          style={styles.container}>
-          {scenes}
-        </View>
-        {overlay}
-      </View>
-    );
-	}
-
 	render() {
-		let { navigationState, onBack } = this.props;
 		return (
-			// Note that we are not using a NavigationRootContainer here because Redux is handling
-			// the reduction of our state for us. Instead, we grab the navigationState we have in
-			// our Redux store and pass it directly to the <NavigationTransitioner />.
-			<NavigationTransitioner
-				navigationState={navigationState}
+			<NavigationCardStack
+				navigationState={this.props.navigationState}
 				style={styles.outerContainer}
-				onBack={onBack}
-				render={this._renderTransitioner}
+				onBack={this.props.onBack}
+				renderHeader={this._renderHeader}
+				renderScene={this._renderScene}
 			/>
 		);
 	}
@@ -212,4 +198,19 @@ const styles = StyleSheet.create({
 		marginLeft: 10,
 		marginRight: 10,
 	},
+	title: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16
+  },
+
+  titleText: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: 'rgba(0, 0, 0, .9)',
+    textAlign: Platform.OS === 'ios' ? 'center' : 'left'
+  }
+
 });
