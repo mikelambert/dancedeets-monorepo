@@ -168,10 +168,13 @@ class _PlaylistStylesView extends React.Component {
       onPress={() => {
         this.props.onSelected(style, this.state.stylePlaylists[style]);
       }}
+      style={{
+        margin: boxMargin,
+        borderRadius: 10,
+      }}
       >
       <View style={{
         width: boxWidth,
-        margin: boxMargin,
         padding: 5,
         backgroundColor: purpleColors[2],
         borderRadius: 10,
@@ -234,12 +237,15 @@ class _PlaylistListView extends React.Component {
       onPress={() => {
         this.props.onSelected(playlist);
       }}
+      style={{
+        margin: boxMargin,
+        borderRadius: 10,
+      }}
       >
       <View
         style={{
           width: boxWidth,
           backgroundColor: purpleColors[2],
-          margin: boxMargin,
           padding: 5,
           borderRadius: 10,
         }}>
