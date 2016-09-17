@@ -108,7 +108,7 @@ async function setupPersonProperties() {
     return;
   }
   Mixpanel.identify(token.userID);
-  Analytics.setUserID(token.userID);
+  Analytics.setUserId(token.userID);
 
   const user = await performRequest('GET', 'me', {fields: 'id,name,first_name,last_name,gender,locale,timezone,email,link'});
   const now = new Date().toISOString().slice(0,19); // Trim off the fractional seconds from our ISO?UTC time

@@ -27,8 +27,8 @@ async function loadConfig() {
 loadConfig();
 
 export async function getRemoteBlogs() {
-  return JSON.parse(await RemoteConfig.getNamedspacedString('blogs', 'Learn'));
+  return JSON.parse(await RemoteConfig.getNamespacedString('blogs', 'Learn'));
 }
 export async function getRemoteTutorials() {
-  return JSON.parse(await RemoteConfig.getNamedspacedString('tutorials', 'Learn'));
+  return JSON.parse(await RemoteConfig.getNamespacedString('tutorials', 'Learn'));
 }
