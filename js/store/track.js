@@ -28,6 +28,7 @@ import Mixpanel from 'react-native-mixpanel';
 import { Analytics } from 'react-native-firebase3';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { performRequest } from '../api/fb';
+import _ from 'underscore.string';
 
 import type {Action} from '../actions/types';
 import type {Event} from '../events/models';
@@ -61,23 +62,30 @@ initMixpanel();
 
 type Params = {[key: string]: string | number};
 
+function firebaseSafe(str) {
+  if (str != null) {
+    return _.replaceAll(str.toString(), ' ', '');
+  } else {
+    return '';
+  }
+}
+
 export function track(eventName: string, params: ?Params) {
   if (!trackingEnabled) {
     return;
   }
-  const firebaseSafeEventName = eventName.replace(' ', '');
   if (params != null) {
     const firebaseSafeParams = {};
     for (let key of Object.keys(params)) {
-      firebaseSafeParams[key.replace(' ', '')] = params[key] ? params[key].toString().replace(' ', '') : params[key];
+      firebaseSafeParams[firebaseSafe(key)] = firebaseSafe(params[key]);
     }
     AppEventsLogger.logEvent(eventName, 1, params);
     Mixpanel.trackWithProperties(eventName, params);
-    Analytics.logEvent(firebaseSafeEventName, firebaseSafeParams);
+    Analytics.logEvent(firebaseSafe(eventName), firebaseSafeParams);
   } else {
     AppEventsLogger.logEvent(eventName, 1);
     Mixpanel.track(eventName);
-    Analytics.logEvent(firebaseSafeEventName);
+    Analytics.logEvent(firebaseSafe(eventName));
   }
 }
 
