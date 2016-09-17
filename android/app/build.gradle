@@ -176,7 +176,7 @@ dependencies {
     // React-Native-Compile:
     // compile project(':ReactAndroid')
     // React-Native-Compile:
-    compile 'com.facebook.react:react-native:+'
+    compile 'com.facebook.react:react-native:+' // from node_modules
 
     compile 'com.google.firebase:firebase-core:9.4.0+'
     compile 'com.google.firebase:firebase-config:9.4.0+'
