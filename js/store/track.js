@@ -28,7 +28,6 @@ import Mixpanel from 'react-native-mixpanel';
 import { Analytics } from 'react-native-firebase3';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { performRequest } from '../api/fb';
-import _ from 'underscore.string';
 
 import type {Action} from '../actions/types';
 import type {Event} from '../events/models';
@@ -64,7 +63,7 @@ type Params = {[key: string]: string | number};
 
 function firebaseSafe(str) {
   if (str != null) {
-    return _.replaceAll(str.toString(), ' ', '');
+    return str.toString().replace(/\W/g, '');
   } else {
     return '';
   }
