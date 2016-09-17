@@ -2,7 +2,7 @@ package com.dancedeets.android;
 
 import android.app.Application;
 
-import com.AirMaps.AirPackage;
+import com.airbnb.android.react.maps.MapsPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.chirag.RNMail.RNMail;
@@ -55,7 +55,7 @@ public class MainApplication extends Application implements ReactApplication {
                 new RNAdMobPackage(),
                 new RNMixpanel(),
                 new RNGeocoderPackage(),
-                new AirPackage(),
+                new MapsPackage(),
                 new FabricPackage(null),
                 new LinearGradientPackage(),
                 new AndroidSegmentedPackage(),
