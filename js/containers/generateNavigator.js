@@ -25,13 +25,12 @@ import { getNamedState } from '../reducers/navigation';
 import type { ThunkAction, Dispatch } from '../actions/types';
 import type {
 	NavigationRoute,
-	NavigationScene,
+	NavigationSceneRendererProps,
 	NavigationState,
 } from 'NavigationTypeDefinition';
 
 const {
 	CardStack: NavigationCardStack,
-	Card: NavigationCard,
 	Header: NavigationHeader,
 } = NavigationExperimental;
 
@@ -40,7 +39,7 @@ const {
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 
-type Navigatable = {
+export type Navigatable = {
 	onNavigate: (x: NavigationRoute) => ThunkAction;
 	onBack: () => ThunkAction;
 	onSwap: (key: string, newState: NavigationRoute) => ThunkAction;
@@ -52,7 +51,7 @@ type AppContainerProps = {
 };
 
 type CallingProps = {
-	renderScene: (scene: NavigationScene, nav: Navigatable) => React.Component;
+	renderScene: (scene: NavigationSceneRendererProps, nav: Navigatable) => React.Element;
 };
 
 const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }) => (
@@ -66,7 +65,6 @@ class AppContainer extends React.Component {
 
 	constructor(props) {
 		super(props);
-		(this: any)._renderScene = this._renderScene.bind(this);
 		(this: any)._renderHeader = this._renderHeader.bind(this);
 		(this: any).renderLeft = this.renderLeft.bind(this);
 		(this: any).renderTitle = this.renderTitle.bind(this);
@@ -111,17 +109,6 @@ class AppContainer extends React.Component {
 		/>;
 	}
 
-	_renderScene(props) {
-		// Again, we pass our navigationState from the Redux store to <NavigationCard />.
-		// Finally, we'll render out our scene based on navigationState in _renderScene().
-		return <NavigationCard
-			{...props}
-			key={props.scene.route.key}
-			style={{marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT}}
-			renderScene={({scene}) => this.props.renderScene(scene, this.props)}
-		/>;
-	}
-
 	render() {
 		return (
 			<NavigationCardStack
@@ -129,7 +116,10 @@ class AppContainer extends React.Component {
 				style={styles.outerContainer}
 				onBack={this.props.onBack}
 				renderHeader={this._renderHeader}
-				renderScene={this._renderScene}
+				renderScene={(props: NavigationSceneRendererProps) => this.props.renderScene(props, this.props)}
+				cardStyle={{
+					marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT,
+				}}
 			/>
 		);
 	}
@@ -158,10 +148,12 @@ export default function(navName: string) {
 
 const styles = StyleSheet.create({
 	outerContainer: {
-		flex: 1
+		flex: 1,
+		// when transitioning Cards, they fade out to the background color
+		backgroundColor: 'black',
 	},
 	container: {
-		flex: 1
+		flex: 1,
 	},
 	// These are basically copied from NavigationHeader.js
 	navHeader: {

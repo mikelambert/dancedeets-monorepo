@@ -45,6 +45,9 @@ import {
   PlaylistStylesView,
   PlaylistView,
 } from '../learn/playlistViews';
+import type {
+  Navigatable
+} from '../containers/generateNavigator';
 
 const EventNavigator = generateNavigator('EVENT_NAV');
 setDefaultState('EVENT_NAV', { key: 'EventList', title: 'DanceDeets' });
@@ -108,7 +111,8 @@ class _TabbedAppView extends React.Component {
     return <Image source={source} style={styles.icon}/>;
   }
 
-  renderEventScene(scene, navigatable) {
+  renderEventScene(props, navigatable: Navigatable) {
+    const { scene } = props;
     const { route } = scene;
     switch (route.key) {
     case 'EventList':
@@ -151,7 +155,8 @@ class _TabbedAppView extends React.Component {
     }
   }
 
-  renderLearnScene(scene, navigatable) {
+  renderLearnScene(props, navigatable: Navigatable) {
+    const { scene } = props;
     const { route } = scene;
     switch (route.key) {
     case 'BlogList':
