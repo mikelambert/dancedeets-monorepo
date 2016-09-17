@@ -109,6 +109,7 @@ class _TutorialScreen extends React.Component {
         flex: 1,
         width: windowSize.width,
         height: windowSize.height,
+        backgroundColor: 'black',
       }}
       key={pageId}>
     {contents}
