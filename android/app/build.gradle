@@ -166,7 +166,7 @@ dependencies {
     compile project(':react-native-segmented-android')
     compile project(':RNSendIntentModule')
     //compile "com.mixpanel.android:mixpanel-android:4.+"
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: "libs", include: ["*.jar"])
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile('com.crashlytics.sdk.android:crashlytics:2.+@aar') {
@@ -186,6 +186,13 @@ dependencies {
     compile 'com.google.android.gms:play-services-base:9.4.0+'
     compile 'com.google.android.gms:play-services-ads:9.4.0+'
     compile 'com.google.android.gms:play-services-maps:9.4.0+'
+}
+
+// Run this once to be able to run the application with BUCK
+// puts all compile dependencies into folder libs for BUCK to use
+task copyDownloadableDepsToLibs(type: Copy) {
+  from configurations.compile
+  into 'libs'
 }
 
 apply plugin: 'com.google.gms.google-services'
