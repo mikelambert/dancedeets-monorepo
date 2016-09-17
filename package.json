@@ -25,7 +25,7 @@
     "react-native-fabric": "^0.2.0",
     "react-native-fabric-crashlytics": "^0.1.5",
     "react-native-fbsdk": "mikelambert/react-native-fbsdk#patch-1",
-    "react-native-firebase3": "file:///Users/lambert/Projects/react-native-firebase",
+    "react-native-firebase3": "0.1.4",
     "react-native-geocoder": "^0.4.3",
     "react-native-linear-gradient": "^1.5.9",
     "react-native-locale": "0.0.11",
