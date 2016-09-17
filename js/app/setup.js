@@ -8,7 +8,8 @@
 
 import App from './app';
 import React from 'react';
-import {Provider} from 'react-redux';
+import { Platform } from 'react-native';
+import { Provider } from 'react-redux';
 import configureStore from '../store/configureStore';
 import Mixpanel from 'react-native-mixpanel';
 import ScreenshotSlideshow from '../ScreenshotSlideshow';
@@ -43,7 +44,7 @@ export default function setup(): Class<Object> {
         return null;
       }
       let app = <App />;
-      if (ProcessInfo.environment.UITest) {
+      if (Platform.OS === 'ios' && ProcessInfo.environment.UITest) {
         app = <ScreenshotSlideshow>{app}</ScreenshotSlideshow>;
       }
       return (
