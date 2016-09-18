@@ -95,6 +95,14 @@
                       sourceApplication:sourceApplication annotation:annotation];
 }
 
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+  return [self application:application
+                   openURL:url
+         sourceApplication:[options objectForKey:UIApplicationOpenURLOptionsSourceApplicationKey]
+                annotation:[options objectForKey:UIApplicationOpenURLOptionsAnnotationKey]];
+}
 
 // Only if your app is using [Universal Links](https://developer.apple.com/library/prerelease/ios/documentation/General/Conceptual/AppSearch/UniversalLinks.html).
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity
