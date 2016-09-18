@@ -313,6 +313,14 @@ export default class AutocompleteList extends React.Component {
   }
 
   _renderRow(rowData: Result) {
+    let emojiFlag = null;
+        // Emojiflags don't work so well on Android?
+    if (Platform.OS === 'ios') {
+      emojiFlag = <Text
+        style={[defaultStyles.flag, defaultStyles.description, this.props.styles.description]}>
+        {rowData.flag}
+      </Text>;
+    }
 
     return (
       <TouchableHighlight
@@ -323,10 +331,7 @@ export default class AutocompleteList extends React.Component {
       >
         <View>
           <HorizontalView style={[defaultStyles.row, this.props.styles.row]}>
-            <Text
-              style={[defaultStyles.flag, defaultStyles.description, this.props.styles.description]}>
-              {rowData.flag}
-            </Text>
+            {emojiFlag}
 
             <Text
               style={[{flex: 1}, defaultStyles.description, this.props.styles.description]}
