@@ -523,7 +523,7 @@ class _PlaylistView extends React.Component {
           this.youtubePlayer = x;
         }}
         videoId={this.getSelectedVideo().youtubeId}
-        play={this.props.selectedTab === 'learn'} // auto-play when loading a tutorial
+        play={true} // auto-play when loading a tutorial
         hidden={false}
         playsInline={true}
         loop={false}
