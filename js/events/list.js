@@ -41,7 +41,6 @@ import {
 import { track } from '../store/track';
 import { AdMobBanner } from 'react-native-admob';
 import WebsiteUrl from '../websiteUrl';
-import LinearGradient from 'react-native-linear-gradient';
 import {
   injectIntl,
   defineMessages,
@@ -97,13 +96,9 @@ class SectionHeader extends React.Component {
   };
 
   render() {
-    return <LinearGradient
-        start={[0.0, 0.0]} end={[0.0, 1]}
-        colors={[purpleColors[5], purpleColors[2], purpleColors[2], purpleColors[5]]}
-        locations={[0.0, 0.4, 0.6, 1.0]}
-        style={styles.sectionHeader}>
+    return <View style={styles.sectionHeader}>
       <Text style={styles.sectionHeaderText}>{this.props.title}</Text>
-    </LinearGradient>;
+    </View>;
   }
 }
 
