@@ -1,1 +1,1 @@
-~/Library/Android/sdk/tools/emulator @Nexus_5_API_21_x86
+~/Library/Android/sdk/tools/emulator @Nexus_6_API_22
