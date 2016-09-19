@@ -25,6 +25,7 @@
 'use strict';
 
 import Mixpanel from 'react-native-mixpanel';
+// TODO(lambert): Eventually migrate this to react-native-firestack
 import { Analytics } from 'react-native-firebase3';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { performRequest } from '../api/fb';
@@ -33,8 +34,6 @@ import type {Action} from '../actions/types';
 import type {Event} from '../events/models';
 
 let trackingEnabled = true;
-// TODO: Implement GA: https://github.com/lwansbrough/react-native-google-analytics ?
-// TODO: Implement Firebase Analytics
 
 export function disableTracking() {
   trackingEnabled = false;
