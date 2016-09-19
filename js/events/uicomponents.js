@@ -420,6 +420,8 @@ class _EventOrganizers extends React.Component {
       return <SubEventLine icon={require('./images/organizer.png')}>
         {this.textRender()}
       </SubEventLine>;
+    } else {
+      return null
     }
   }
 
