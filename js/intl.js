@@ -6,8 +6,8 @@
 
 'use strict';
 
-import React, { PropTypes } from 'react';
-import { IntlProvider } from 'react-intl';
+import React from 'react';
+import { addLocaleData, IntlProvider } from 'react-intl';
 import Locale from 'react-native-locale';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import moment from 'moment';
@@ -28,6 +28,8 @@ import 'moment/locale/zh-tw';
 import fr from './messages/fr.json';
 import ja from './messages/ja.json';
 import zh from './messages/zh.json';
+
+
 const messages = {
   en: null, // use built-ins...but ensure we have an entry so we don't have undefined flow errors
   fr,
@@ -49,6 +51,18 @@ if (global.Intl) {
   // No `Intl`, so use and load the polyfill.
   global.Intl = require('intl');
 }
+
+// These have number formtting, useful for NumberFormat and DateTimeFormat
+global.Intl.__addLocaleData(require('intl/locale-data/json/en'));
+global.Intl.__addLocaleData(require('intl/locale-data/json/fr'));
+global.Intl.__addLocaleData(require('intl/locale-data/json/ja'));
+global.Intl.__addLocaleData(require('intl/locale-data/json/zh'));
+
+// These has pluralRuleFunction, necessary for react-intl's use of intl-messageformat
+addLocaleData(require('react-intl/locale-data/en'));
+addLocaleData(require('react-intl/locale-data/fr'));
+addLocaleData(require('react-intl/locale-data/ja'));
+addLocaleData(require('react-intl/locale-data/zh'));
 
 export default function intl(Wrapped: any) {
   class Internationalize extends React.Component {
