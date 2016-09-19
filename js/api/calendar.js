@@ -14,22 +14,6 @@ import SendIntentAndroid from 'react-native-send-intent';
 import { Event } from '../events/models';
 import moment from 'moment';
 
-function authorizationStatus(): Promise {
-  return new Promise((resolve, reject) => {
-    CalendarEventsIOS.authorizationStatus((x) => {
-      resolve(x.status);
-    });
-  });
-}
-
-function authorizeEventStore(): Promise {
-  return new Promise((resolve, reject) => {
-    CalendarEventsIOS.authorizeEventStore((x) => {
-      resolve(x.status);
-    });
-  });
-}
-
 function OkAlert(title: string, message: string, cancel = false): Promise {
   return new Promise((resolve, reject) => {
     var buttons = [];
@@ -60,12 +44,12 @@ function getStartEndTime(event: Event) {
 }
 
 async function addIOS(event: Event) {
-  var status = await authorizationStatus();
+  var status = await CalendarEventsIOS.authorizationStatus();
 
   if (status === 'undetermined') {
     try {
       await OkCancelAlert('Add to Calendar', 'To add this event to your calendar, you need to allow access to your calendar.');
-      status = await authorizeEventStore();
+      status = await CalendarEventsIOS.authorizeEventStore();
     } catch (error) {}
   }
 
@@ -83,12 +67,17 @@ async function addIOS(event: Event) {
 
   const { start, end } = getStartEndTime(event);
 
-  CalendarEventsIOS.saveEvent(event.name, {
-    location: event.venue.fullAddress(),
-    notes: getDescription(event),
-    startDate: start.toISOString(),
-    endDate: end ? end.toISOString() : null,
-  });
+  try {
+    CalendarEventsIOS.saveEvent(event.name, {
+      location: event.venue.fullAddress(),
+      notes: getDescription(event),
+      startDate: start.toISOString(),
+      endDate: end ? end.toISOString() : null,
+      url: event.getUrl(),
+    });
+  } catch (e) {
+    console.warn(e);
+  }
 
   return true;
 }
