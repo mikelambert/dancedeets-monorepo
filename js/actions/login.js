@@ -52,6 +52,9 @@ export function loginStartOnboard(): Action {
 }
 
 async function authAndGetUser(dispatch) {
+  // This could be the first time this user is created.
+  // So let's ensure the user is successfully created,
+  // before we try to loadUserData and pull in empty data.
   await auth(dispatch);
   loadUserData(dispatch);
 }
@@ -59,9 +62,6 @@ async function authAndGetUser(dispatch) {
 export function loginComplete(token: AccessToken): ThunkAction {
   // Kick these off and let them happen in the background
   return async (dispatch: Dispatch) => {
-    // This could be the first time this user is created.
-    // So let's ensure the user is successfully created,
-    // before we try to loadUserData and pull in empty data.
     authAndGetUser(dispatch);
     trackLogin();
     // But mark us as logged-in here
