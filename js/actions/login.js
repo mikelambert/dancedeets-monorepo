@@ -55,7 +55,7 @@ async function authAndGetUser(dispatch) {
   // This could be the first time this user is created.
   // So let's ensure the user is successfully created,
   // before we try to loadUserData and pull in empty data.
-  await auth(dispatch);
+  await auth();
   loadUserData(dispatch);
 }
 
