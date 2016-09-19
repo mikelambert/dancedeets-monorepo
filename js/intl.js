@@ -15,13 +15,6 @@ import moment from 'moment';
 const defaultLocale = 'en';
 const locales = ['en', 'ja', 'fr', 'zh-Hant'];
 
-const getCurrentLocale = () => {
-  const currentLocale = Locale.constants().localeIdentifier.split('_')[0];
-  return locales.indexOf(currentLocale) !== -1
-    ? currentLocale
-    : defaultLocale;
-};
-
 import 'moment/locale/fr';
 import 'moment/locale/ja';
 import 'moment/locale/zh-tw';
@@ -66,6 +59,13 @@ addLocaleData(require('react-intl/locale-data/en'));
 addLocaleData(require('react-intl/locale-data/fr'));
 addLocaleData(require('react-intl/locale-data/ja'));
 addLocaleData(require('react-intl/locale-data/zh'));
+
+const getCurrentLocale = () => {
+  const currentLocale = Locale.constants().localeIdentifier.split('_')[0];
+  return locales.indexOf(currentLocale) !== -1
+    ? currentLocale
+    : defaultLocale;
+};
 
 export default function intl(Wrapped: any) {
   class Internationalize extends React.Component {
