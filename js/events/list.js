@@ -31,7 +31,10 @@ import {
   updateKeywords,
 } from '../actions';
 import { linkColor, purpleColors, yellowColors } from '../Colors';
-import { auth } from '../api/dancedeets';
+import {
+  auth,
+  event,
+} from '../api/dancedeets';
 import {
   Button,
   normalize,
@@ -242,8 +245,8 @@ class _EventListContainer extends React.Component {
     const processedUrl = url ? new WebsiteUrl(url) : null;
     if (processedUrl && processedUrl.isEventUrl()) {
       const eventId = processedUrl.eventId();
-      const event = await fetch(eventId);
-      this.props.onEventSelected(event);
+      const eventData = await event(eventId);
+      this.props.onEventSelected(eventData);
     } if (processedUrl && processedUrl.isSearchUrl()) {
       this.props.updateLocation(processedUrl.location());
       this.props.updateKeywords(processedUrl.keywords());
