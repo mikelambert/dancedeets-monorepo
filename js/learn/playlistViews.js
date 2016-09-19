@@ -364,7 +364,6 @@ export class SectionedListView extends React.Component {
 
   render() {
     return <ListView
-      style={[styles.listView]}
       dataSource={this.state.dataSource}
       renderRow={this.props.renderRow}
       renderHeader={this.props.renderHeader}
@@ -535,13 +534,15 @@ class _PlaylistView extends React.Component {
         style={{alignSelf: 'stretch', height: height, backgroundColor: 'black'}}
         onChangeState={this.onChangeState}
         />
-      <SectionedListView
-        items={this.props.playlist.getItems(this.props.tutorialVideoIndex)}
-        sectionHeaders={this.props.playlist.getSectionHeaders()}
-        renderRow={this.renderRow}
-        renderSectionHeader={this.renderSectionHeader}
-        renderHeader={this.renderHeader}
-        />
+      <View style={styles.listViewWrapper}>
+        <SectionedListView
+          items={this.props.playlist.getItems(this.props.tutorialVideoIndex)}
+          sectionHeaders={this.props.playlist.getSectionHeaders()}
+          renderRow={this.renderRow}
+          renderSectionHeader={this.renderSectionHeader}
+          renderHeader={this.renderHeader}
+          />
+      </View>
     </View>;
   }
 }
@@ -569,6 +570,11 @@ let styles = StyleSheet.create({
   thumbnail: {
     borderRadius: 10,
     height: 100,
+  },
+  listViewWrapper: {
+    flex: 1,
+    borderTopColor: 'black',
+    borderTopWidth: 1,
   },
   playlistListRow: {
     padding: 7,
