@@ -72,15 +72,15 @@
   "tutorialVideos.contact": "請與我們連絡",
   "tutorialVideos.contactSuffix": " ",
   "tutorialVideos.languagePrefixedTitle": "{language}: {title}",
-  "tutorialVideos.navigatorTitle": "學習: 教程",
-  "tutorialVideos.numTutorials": "{count}部教程",
-  "tutorialVideos.numVideosWithDuration": "{count}部影片: {duration}",
+  "tutorialVideos.navigatorTitle": "學習: 課程",
+  "tutorialVideos.numTutorials": "{count}部課程",
+  "tutorialVideos.numVideosWithDuration": "{count}個短片: {duration}",
   "tutorialVideos.styleHeader": "選擇你想學習舞蹈風格:",
-  "tutorialVideos.styleTutorialTitle": "{style} 教程",
+  "tutorialVideos.styleTutorialTitle": "{style} 課程",
   "tutorialVideos.timeHoursMinutes": "{hours}小時{minutes}分",
   "tutorialVideos.timeMinutes": "{minutes}分",
   "tutorialVideos.timeSeconds": "{seconds}秒",
   "tutorialVideos.totalTime": "總時間: {time}",
   "tutorialVideos.turorialFooter": "想讓你的授課內容，排舞或者上課影片上線嗎？\n想要用合理的價格得到傳奇舞者們的真傳嗎？",
-  "tutorialVideos.tutorialHeader": "選擇教程:"
+  "tutorialVideos.tutorialHeader": "選擇課程:"
 }
