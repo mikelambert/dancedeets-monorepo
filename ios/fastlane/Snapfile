@@ -7,7 +7,7 @@ devices([
   "iPhone 5",
   "iPhone 4s",
   "iPad Retina",
-  "iPad Pro"
+  "iPad Pro (12.9 inch)"
 ])
 
 languages([
