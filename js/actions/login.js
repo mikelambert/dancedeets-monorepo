@@ -101,8 +101,12 @@ export async function loadUserData(dispatch: Dispatch) {
   });
 
   // Since ddUser.location could be a full address, let's get just the city
+  let formattedCity = user.ddUser.location;
+  // If we fail to parse the address, just use the user's configured location above
   const address = await Geocoder.geocodeAddress(user.ddUser.location);
-  const formattedCity = format(address[0]);
+  if (address.length !== 0) {
+    formattedCity = format(address[0]);
+  }
   user.ddUser.formattedCity = formattedCity;
 
   dispatch({
