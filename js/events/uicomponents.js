@@ -202,7 +202,7 @@ class _EventDateTime extends React.Component {
 
   render() {
     const textFields = [];
-    const now = moment();
+    const now = moment(this.props.intl.now());
     const start = moment(this.props.start, moment.ISO_8601);
     const formattedStart = _.upperFirst(this.props.intl.formatDate(start.toDate(), weekdayDateTime));
     if (this.props.end) {
@@ -218,7 +218,6 @@ class _EventDateTime extends React.Component {
       const relativeDuration = moment.duration(duration).humanize();
       textFields.push(` (${relativeDuration})`);
     } else {
-      const formattedDate = _.upperFirst(this.props.intl.formatDate(start.toDate(), weekdayDateTime));
       textFields.push(formattedStart);
     }
     // Ensure we do some sort of timer refresh update on this
@@ -237,7 +236,7 @@ class _EventDateTime extends React.Component {
   }
   componentDidMount() {
     // refresh our 'relative start offset' every minute
-    this.interval = setInterval(() => this.forceUpdate(), 60*1000);
+    this.interval = setInterval(() => this.forceUpdate(), 60 * 1000);
   }
   componentWillUnmount() {
     clearInterval(this.interval);
