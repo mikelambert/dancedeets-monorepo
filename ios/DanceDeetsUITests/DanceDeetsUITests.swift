@@ -34,16 +34,16 @@ class DanceDeetsUITests: XCTestCase {
     func testExample() {
       let app = XCUIApplication()
 
-      expectationForPredicate(NSPredicate(format: "exists == true"), evaluatedWithObject: app.otherElements["mainButton"], handler: nil)
-      waitForExpectationsWithTimeout(20, handler:      {(error: Any?) -> Void in
+      expectation(for: NSPredicate(format: "exists == true"), evaluatedWith: app.otherElements["mainButton"], handler: nil)
+      waitForExpectations(timeout: 20, handler:      {(error: Any?) -> Void in
         NSLog("C0 Error is \(error)")
         NSLog("C1 %@", app.debugDescription)
       })
 
       // Now wait for content to load
 
-      expectationForPredicate(NSPredicate(format: "exists == true"), evaluatedWithObject: app.otherElements["mainButton"], handler: nil)
-      waitForExpectationsWithTimeout(20, handler:      {(error: Any?) -> Void in
+      expectation(for: NSPredicate(format: "exists == true"), evaluatedWith: app.otherElements["mainButton"], handler: nil)
+      waitForExpectations(timeout: 20, handler:      {(error: Any?) -> Void in
         NSLog("C0 Error is \(error)")
         NSLog("C1 %@", app.debugDescription)
       })
@@ -52,8 +52,8 @@ class DanceDeetsUITests: XCTestCase {
       snapshot("0")
       app.otherElements["mainButton"].tap()
 
-      expectationForPredicate(NSPredicate(format: "exists == true"), evaluatedWithObject: app.otherElements["mainButton"], handler: nil)
-      waitForExpectationsWithTimeout(20, handler:      {(error: Any?) -> Void in
+      expectation(for: NSPredicate(format: "exists == true"), evaluatedWith: app.otherElements["mainButton"], handler: nil)
+      waitForExpectations(timeout: 20, handler:      {(error: Any?) -> Void in
         NSLog("C0 Error is \(error)")
         NSLog("C1 %@", app.debugDescription)
       })
@@ -62,8 +62,8 @@ class DanceDeetsUITests: XCTestCase {
 
       app.otherElements["mainButton"].tap()
 
-      expectationForPredicate(NSPredicate(format: "exists == true"), evaluatedWithObject: app.otherElements["mainButton"], handler: nil)
-      waitForExpectationsWithTimeout(20, handler:      {(error: Any?) -> Void in
+      expectation(for: NSPredicate(format: "exists == true"), evaluatedWith: app.otherElements["mainButton"], handler: nil)
+      waitForExpectations(timeout: 20, handler:      {(error: Any?) -> Void in
         NSLog("C0 Error is \(error)")
         NSLog("C1 %@", app.debugDescription)
       })
