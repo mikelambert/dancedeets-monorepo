@@ -52,11 +52,14 @@ if (global.Intl) {
   global.Intl = require('intl');
 }
 
-// These have number formtting, useful for NumberFormat and DateTimeFormat
-global.Intl.__addLocaleData(require('intl/locale-data/json/en'));
-global.Intl.__addLocaleData(require('intl/locale-data/json/fr'));
-global.Intl.__addLocaleData(require('intl/locale-data/json/ja'));
-global.Intl.__addLocaleData(require('intl/locale-data/json/zh'));
+// Only load these if we're using the polyfill (that exposes this function)
+if (global.Intl.__addLocaleData) {
+  // These have number formtting, useful for NumberFormat and DateTimeFormat
+  global.Intl.__addLocaleData(require('intl/locale-data/json/en'));
+  global.Intl.__addLocaleData(require('intl/locale-data/json/fr'));
+  global.Intl.__addLocaleData(require('intl/locale-data/json/ja'));
+  global.Intl.__addLocaleData(require('intl/locale-data/json/zh'));
+}
 
 // These has pluralRuleFunction, necessary for react-intl's use of intl-messageformat
 addLocaleData(require('react-intl/locale-data/en'));
