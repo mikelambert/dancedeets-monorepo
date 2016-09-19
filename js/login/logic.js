@@ -93,7 +93,8 @@ async function refreshFullToken() {
     // Let's grab the actual access token (which should now be cached from the refresh).
     // This has an easier API to work with too.
     const newAccessToken = await AccessToken.getCurrentAccessToken();
-    console.log('Refreshed Token result:', newAccessToken);
+    // Don't want to log actual token to public log file, so check truthiness
+    console.log('Refreshed Token result:', (newAccessToken != null));
     // Now check if this token has user_events permission (our most important permission)
     // For awhile many iOS users were being approved without this permission due to a bug.
     // So this requests they log in again to explicitly grab that permission.
