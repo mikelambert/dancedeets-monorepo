@@ -59,7 +59,7 @@ async function performRequest(path: string, args: Object, postArgs: ?Object | nu
     const json = await result.json();
     // 'undefined' means success, 'false' means error
     if (json['success'] === false) {
-      throw new Error(json['errors']);
+      throw new Error('Server Error: ' + json['errors']);
     } else {
       return json;
     }
@@ -88,6 +88,7 @@ export async function auth(data: ?Object) {
   if (writesDisabled) {
     return;
   }
+  console.log(data);
   await verifyAuthenticated();
   return idempotentRetry(2000, createRequest('auth', {}, data));
 }
