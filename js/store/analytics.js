@@ -22,9 +22,9 @@
 
 'use strict';
 
-import track from './track';
+import { trackDispatches } from './track';
 
 module.exports = store => next => action => {
-  track(action);
+  trackDispatches(action);
   return next(action);
 };

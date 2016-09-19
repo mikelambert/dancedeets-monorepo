@@ -156,7 +156,7 @@ export function trackLogout() {
   Analytics.setUserID(null);
 }
 
-export default function trackDispatches(action: Action): void {
+export function trackDispatches(action: Action): void {
   if (!trackingEnabled) {
     return;
   }
