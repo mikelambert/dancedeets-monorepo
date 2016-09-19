@@ -11,67 +11,93 @@
         {
           "youtubeId": "ogpxgM1Cofk",
           "duration": "PT3M4S",
-          "title": "Aerial"
+          "title": "Aerial",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "66OrkuyizyY",
           "duration": "PT3M51S",
-          "title": "Baby Freeze"
+          "title": "Baby Freeze",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "S4k9rwl2k70",
           "duration": "PT6M1S",
-          "title": "Headstand"
+          "title": "Headstand",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "uNuXVameins",
           "duration": "PT5M44S",
-          "title": "Headhollow"
+          "title": "Headhollow",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "jwBNl_vqR7g",
           "duration": "PT6M4S",
-          "title": "Rubberbands"
+          "title": "Rubberbands",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "tLDvJG5jmgQ",
           "duration": "PT3M22S",
-          "title": "Kip Up"
+          "title": "Kip Up",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "va6B3lPzUhM",
           "duration": "PT3M47S",
-          "title": "One Step"
+          "title": "One Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "A_0vUWRgcck",
           "duration": "PT2M2S",
-          "title": "Two Step"
+          "title": "Two Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "R87XRYu_uY4",
           "duration": "PT1M22S",
-          "title": "Three Step"
+          "title": "Three Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "nMNYu2nX8H0",
           "duration": "PT3M47S",
-          "title": "Six Step"
+          "title": "Six Step",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "c_1ZuZyfQzY",
           "duration": "PT8M26S",
-          "title": "Headstand Tutorial"
+          "title": "Headstand Tutorial",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "LflMG14wlyw",
           "duration": "PT3M39S",
-          "title": "Baby Freeze Tutorial (Ft. Xophein0527)"
+          "title": "Baby Freeze Tutorial (Ft. Xophein0527)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "I7MwpH8EyZs",
           "duration": "PT5M9S",
-          "title": "Baby Freeze Tutorial (shorter version)"
+          "title": "Baby Freeze Tutorial (shorter version)",
+          "height": 344,
+          "width": 459
         }
       ]
     }

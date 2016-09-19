@@ -12,67 +12,93 @@
         {
           "youtubeId": "f8iVfepI9B0",
           "duration": "PT5M24S",
-          "title": "ベーシックドギー Basic Dougie"
+          "title": "ベーシックドギー Basic Dougie",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "62QNcbNKgqg",
           "duration": "PT6M7S",
-          "title": "ドギー2 Dougie 2"
+          "title": "ドギー2 Dougie 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "t0LYiw5mUgM",
           "duration": "PT4M55S",
-          "title": "ドギー3 Dougie 3"
+          "title": "ドギー3 Dougie 3",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "bH7evQ0VYfc",
           "duration": "PT5M30S",
-          "title": "ドギー4 Dougie 4"
+          "title": "ドギー4 Dougie 4",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "w5atFPyLu48",
           "duration": "PT4M52S",
-          "title": "ジュース1 Juice 1"
+          "title": "ジュース1 Juice 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "PKzol1NPUwc",
           "duration": "PT4M44S",
-          "title": "ジュース2 Juice 2"
+          "title": "ジュース2 Juice 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "IljcXrPxrWg",
           "duration": "PT6M52S",
-          "title": "ジュース3 Juice 3"
+          "title": "ジュース3 Juice 3",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Fq7RHFc43tY",
           "duration": "PT5M37S",
-          "title": "P.Diddy"
+          "title": "P.Diddy",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "YQnOoijeH3g",
           "duration": "PT5M19S",
-          "title": "ティップ Tip"
+          "title": "ティップ Tip",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "yOhJTzoRMlk",
           "duration": "PT5M26S",
-          "title": "スワッグショルダー Swag Shoulder"
+          "title": "スワッグショルダー Swag Shoulder",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "WKbA7x4Xo2E",
           "duration": "PT5M55S",
-          "title": "レッツドギー Let's Dougie"
+          "title": "レッツドギー Let's Dougie",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "hC9-oHfhqOQ",
           "duration": "PT4M27S",
-          "title": "レッツジュース Let's Juice"
+          "title": "レッツジュース Let's Juice",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "5frsEcexHqo",
           "duration": "PT4M43S",
-          "title": "まとめ Summary"
+          "title": "まとめ Summary",
+          "height": 270,
+          "width": 480
         }
       ]
     }

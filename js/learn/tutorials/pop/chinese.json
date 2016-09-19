@@ -11,62 +11,86 @@
         {
           "youtubeId": "Bt1yV9gG0p8",
           "duration": "PT7M47S",
-          "title": "How To Step | Part 1"
+          "title": "How To Step | Part 1",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "_LcaBfAZWaQ",
           "duration": "PT7M50S",
-          "title": "How To Step | Part 2"
+          "title": "How To Step | Part 2",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "VZPGLa9BxM0",
           "duration": "PT8M17S",
-          "title": "How To Pop"
+          "title": "How To Pop",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "QaTtO9GlX5I",
           "duration": "PT3M13S",
-          "title": "Fresno"
+          "title": "Fresno",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "Re8wVIP0X3U",
           "duration": "PT5M5S",
-          "title": "How To Flex"
+          "title": "How To Flex",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "8EJ6f9RmBr0",
           "duration": "PT8M4S",
-          "title": "How To Roll | Part 1"
+          "title": "How To Roll | Part 1",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "k9u20M4ebcU",
           "duration": "PT8M15S",
-          "title": "How To Roll | Part 2"
+          "title": "How To Roll | Part 2",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "S0_Tepn3L-M",
           "duration": "PT7M7S",
-          "title": "How To Roll | Part 3"
+          "title": "How To Roll | Part 3",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "C6q9o4hHKJM",
           "duration": "PT10M31S",
-          "title": "Rolling Combination"
+          "title": "Rolling Combination",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "xbWN3P5lzd4",
           "duration": "PT5M3S",
-          "title": "How To Freestyle"
+          "title": "How To Freestyle",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "rtLK_CclMM8",
           "duration": "PT2M26S",
-          "title": "How To Dance To The Beat"
+          "title": "How To Dance To The Beat",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "KyYHrRLr_Cw",
           "duration": "PT2M51S",
-          "title": "Head Isolation"
+          "title": "Head Isolation",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -76,52 +100,72 @@
         {
           "youtubeId": "V80FlraRgOQ",
           "duration": "PT4M23S",
-          "title": "Ticking"
+          "title": "Ticking",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "gdMMCedPMug",
           "duration": "PT4M10S",
-          "title": "Spider Man"
+          "title": "Spider Man",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "l2CUxGSxEM0",
           "duration": "PT1M52S",
-          "title": "Vibration"
+          "title": "Vibration",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "6Jsll5n0vNQ",
           "duration": "PT3M14S",
-          "title": "Baby Wave"
+          "title": "Baby Wave",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "i47HSy7hjQs",
           "duration": "PT6M40S",
-          "title": "Strobing"
+          "title": "Strobing",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "RqNIdlgwfNc",
           "duration": "PT5M45S",
-          "title": "Ground Move"
+          "title": "Ground Move",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "mFRqiXanNsU",
           "duration": "PT4M32S",
-          "title": "Ground Move | Part 2"
+          "title": "Ground Move | Part 2",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "Su-tJsVJ2uI",
           "duration": "PT7M57S",
-          "title": "Robot"
+          "title": "Robot",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "i1xfaHVyFbk",
           "duration": "PT6M5S",
-          "title": "Snaking"
+          "title": "Snaking",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "hXR0uz3KdRM",
           "duration": "PT7M13S",
-          "title": "Old Man"
+          "title": "Old Man",
+          "height": 344,
+          "width": 459
         }
       ]
     }

@@ -11,32 +11,44 @@
         {
           "youtubeId": "1kN0QafF-sY",
           "duration": "PT56S",
-          "title": "Stomp"
+          "title": "Stomp",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "mnAv7nbmyuc",
           "duration": "PT39S",
-          "title": "Loose Leg"
+          "title": "Loose Leg",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "avwhKUVRFJE",
           "duration": "PT38S",
-          "title": "Train"
+          "title": "Train",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "noA-H6b-2hU",
           "duration": "PT38S",
-          "title": "Farmer"
+          "title": "Farmer",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "fhKBR-HwoZg",
           "duration": "PT49S",
-          "title": "Swirl"
+          "title": "Swirl",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "-xeN8gNny2U",
           "duration": "PT53S",
-          "title": "Jack In The Box"
+          "title": "Jack In The Box",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -46,32 +58,44 @@
         {
           "youtubeId": "lyNhNr1z5Nw",
           "duration": "PT49S",
-          "title": "Salsa Step"
+          "title": "Salsa Step",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "xdo31AEG750",
           "duration": "PT59S",
-          "title": "Salsa Hop"
+          "title": "Salsa Hop",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "WIaTo6q6RYM",
           "duration": "PT32S",
-          "title": "Sidewalk"
+          "title": "Sidewalk",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "vqAklI3l1pc",
           "duration": "PT1M",
-          "title": "Crosswalk"
+          "title": "Crosswalk",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "NUTh3klPzFw",
           "duration": "PT30S",
-          "title": "Crossroads"
+          "title": "Crossroads",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "UVJU1KOHYAg",
           "duration": "PT1M2S",
-          "title": "Setup"
+          "title": "Setup",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -81,32 +105,44 @@
         {
           "youtubeId": "HrgW0lRxz2Q",
           "duration": "PT32S",
-          "title": "Tip Tap Toe"
+          "title": "Tip Tap Toe",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "trws6c6md4k",
           "duration": "PT38S",
-          "title": "Scribble Foot"
+          "title": "Scribble Foot",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "1asD5rcEjrY",
           "duration": "PT41S",
-          "title": "Kriss Kross"
+          "title": "Kriss Kross",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "Ojbbe2GLdWc",
           "duration": "PT32S",
-          "title": "Heel Toe"
+          "title": "Heel Toe",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "kUQTYnYDipk",
           "duration": "PT1M33S",
-          "title": "Roger Rabbit (with Hip-Hop Variation)"
+          "title": "Roger Rabbit (with Hip-Hop Variation)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "Wk_Ti4oXa2c",
           "duration": "PT37S",
-          "title": "Skate"
+          "title": "Skate",
+          "height": 344,
+          "width": 459
         }
       ]
     }

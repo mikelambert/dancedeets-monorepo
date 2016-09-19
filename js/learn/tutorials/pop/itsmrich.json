@@ -12,22 +12,30 @@
         {
           "youtubeId": "FyfkVyFTJ5k",
           "duration": "PT3M9S",
-          "title": "Full Body Wave Lesson"
+          "title": "Full Body Wave Lesson",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ikA5Ohb4yAU",
           "duration": "PT3M37S",
-          "title": "How to Pop, Hit, Arms, Chest & Legs"
+          "title": "How to Pop, Hit, Arms, Chest & Legs",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "Dd3DLqx9rlo",
           "duration": "PT2M20S",
-          "title": "How To Vibrate"
+          "title": "How To Vibrate",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ckzhyRWq14c",
           "duration": "PT1M47S",
-          "title": "How To Do a Wave While Vibrating"
+          "title": "How To Do a Wave While Vibrating",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -37,17 +45,23 @@
         {
           "youtubeId": "bE_RiUR4ZZQ",
           "duration": "PT2M49S",
-          "title": "Part 1"
+          "title": "Part 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "6jrcRyMfnQA",
           "duration": "PT1M38S",
-          "title": "Part 2"
+          "title": "Part 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "UNewbA4Q8_g",
           "duration": "PT1M35S",
-          "title": "Part 3"
+          "title": "Part 3",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -57,42 +71,58 @@
         {
           "youtubeId": "OXq-iTY5WNo",
           "duration": "PT4M1S",
-          "title": "Tutting & Waving/Wrist Rolls"
+          "title": "Tutting & Waving/Wrist Rolls",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "_rHkFPGKQgI",
           "duration": "PT3M38S",
-          "title": "Dragon Combo Finger Tutting"
+          "title": "Dragon Combo Finger Tutting",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "T9JSRI_BVyI",
           "duration": "PT3M8S",
-          "title": "Slow Motion In 4 Steps"
+          "title": "Slow Motion In 4 Steps",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "vJ6o28qSiSs",
           "duration": "PT2M1S",
-          "title": "How To Do The Jazz Split"
+          "title": "How To Do The Jazz Split",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "3tv5YHwhqhA",
           "duration": "PT3M51S",
-          "title": "How to Do a Toe Stand"
+          "title": "How to Do a Toe Stand",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "4uepkshOOWo",
           "duration": "PT2M8S",
-          "title": "How to Gravity Spin in 4 Steps"
+          "title": "How to Gravity Spin in 4 Steps",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "87y_CqG5Afc",
           "duration": "PT2M19S",
-          "title": "Gliding Techniques"
+          "title": "Gliding Techniques",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "SecViviYlyM",
           "duration": "PT1M56S",
-          "title": "Invisible Chair"
+          "title": "Invisible Chair",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -102,22 +132,30 @@
         {
           "youtubeId": "G4sqknwFauU",
           "duration": "PT3M59S",
-          "title": "Tutting Concept"
+          "title": "Tutting Concept",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "AfSSEB_dZY8",
           "duration": "PT6M51S",
-          "title": "Dance Object Isolation"
+          "title": "Dance Object Isolation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "9R5Elxh5qCE",
           "duration": "PT3M8S",
-          "title": "Energy Concept"
+          "title": "Energy Concept",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "9R5Elxh5qCE",
           "duration": "PT3M8S",
-          "title": "Energy Concept"
+          "title": "Energy Concept",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -127,7 +165,9 @@
         {
           "youtubeId": "AYjMEl0D28I",
           "duration": "PT2M2S",
-          "title": "Exclusive itsMRich 60 Min Premium Tutorials"
+          "title": "Exclusive itsMRich 60 Min Premium Tutorials",
+          "height": 270,
+          "width": 480
         }
       ]
     }

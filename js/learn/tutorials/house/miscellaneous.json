@@ -11,7 +11,9 @@
         {
           "youtubeId": "93lxE7qwwXc",
           "duration": "PT3M14S",
-          "title": "Washington Salles"
+          "title": "Washington Salles",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -21,7 +23,9 @@
         {
           "youtubeId": "hcbDPNg0J9g",
           "duration": "PT10M1S",
-          "title": "Unknown Dancers"
+          "title": "Unknown Dancers",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -31,7 +35,9 @@
         {
           "youtubeId": "QP23w4gGJ5o",
           "duration": "PT3M40S",
-          "title": "Unknown Dancers"
+          "title": "Unknown Dancers",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -41,7 +47,9 @@
         {
           "youtubeId": "ta8htUbPjYQ",
           "duration": "PT2M45S",
-          "title": "South African Dancers teach Chase, Farmer, Skate"
+          "title": "South African Dancers teach Chase, Farmer, Skate",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -51,7 +59,9 @@
         {
           "youtubeId": "uaftuBfkGj8",
           "duration": "PT17M42S",
-          "title": "The Jack and the Skate/Train"
+          "title": "The Jack and the Skate/Train",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -61,17 +71,23 @@
         {
           "youtubeId": "DYkS7Pr2kHg",
           "duration": "PT1M58S",
-          "title": "Pas De Bourrée"
+          "title": "Pas De Bourrée",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "uBXad3gg7rw",
           "duration": "PT1M32S",
-          "title": "Heel Step"
+          "title": "Heel Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "_LozRiIvuuM",
           "duration": "PT2M1S",
-          "title": "Heel Step & Pas De Bourree Combo"
+          "title": "Heel Step & Pas De Bourree Combo",
+          "height": 270,
+          "width": 480
         }
       ]
     }

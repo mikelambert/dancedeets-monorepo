@@ -12,32 +12,44 @@
         {
           "youtubeId": "46MRzpcu4hc",
           "duration": "PT1M57S",
-          "title": "Lesson 1"
+          "title": "Lesson 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "uXIWP-6WUGo",
           "duration": "PT1M34S",
-          "title": "Lesson 2"
+          "title": "Lesson 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Qex7ppcyRhM",
           "duration": "PT1M55S",
-          "title": "Lesson 3"
+          "title": "Lesson 3",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "9CUUhHuhE_E",
           "duration": "PT2M6S",
-          "title": "Lesson 4"
+          "title": "Lesson 4",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "uhPmkKpyBAc",
           "duration": "PT2M",
-          "title": "Lesson 5"
+          "title": "Lesson 5",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "vjA5J3JUHFY",
           "duration": "PT1M58S",
-          "title": "Lesson 5"
+          "title": "Lesson 5",
+          "height": 270,
+          "width": 480
         }
       ]
     }

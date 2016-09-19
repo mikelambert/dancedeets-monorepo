@@ -11,17 +11,23 @@
         {
           "youtubeId": "vDs3WOdqM_Q",
           "duration": "PT59S",
-          "title": "Pas De Bourrée"
+          "title": "Pas De Bourrée",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "o4GqzMlX2eM",
           "duration": "PT5M27S",
-          "title": "Pivoting Pas De Bourrée"
+          "title": "Pivoting Pas De Bourrée",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "e4nMyzZpxYs",
           "duration": "PT1M16S",
-          "title": "Crossroads"
+          "title": "Crossroads",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -31,17 +37,23 @@
         {
           "youtubeId": "65b0Lbiw8ss",
           "duration": "PT5M39S",
-          "title": "Cross Step x 2"
+          "title": "Cross Step x 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "49didNXeUGY",
           "duration": "PT4M17S",
-          "title": "Cross Step Drag"
+          "title": "Cross Step Drag",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "vsLLYYfVjLc",
           "duration": "PT1M55S",
-          "title": "Scribble foot"
+          "title": "Scribble foot",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -51,17 +63,23 @@
         {
           "youtubeId": "Quv4vNwPxE8",
           "duration": "PT1M35S",
-          "title": "Swirl"
+          "title": "Swirl",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "lYPFNzL_2TI",
           "duration": "PT1M2S",
-          "title": "Set-up"
+          "title": "Set-up",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "7-Ly3ICovLE",
           "duration": "PT1M45S",
-          "title": "Shuffle"
+          "title": "Shuffle",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -71,22 +89,30 @@
         {
           "youtubeId": "NGSFhejNm4I",
           "duration": "PT4M28S",
-          "title": "Heel Step"
+          "title": "Heel Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "iZh95d_-5OY",
           "duration": "PT4M20S",
-          "title": "Heel Step Variation"
+          "title": "Heel Step Variation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "vn6ql3YVIxM",
           "duration": "PT7M14S",
-          "title": "Heel Toe Hop"
+          "title": "Heel Toe Hop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "wHlRtI3bqxU",
           "duration": "PT7M42S",
-          "title": "Kerry Step"
+          "title": "Kerry Step",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -96,22 +122,30 @@
         {
           "youtubeId": "i4QOMSRzBfk",
           "duration": "PT3M19S",
-          "title": "Sidewalk"
+          "title": "Sidewalk",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "PzaIigqpfVY",
           "duration": "PT6M32S",
-          "title": "Sidewalk Variation"
+          "title": "Sidewalk Variation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "XFccHhOba4g",
           "duration": "PT5M48S",
-          "title": "Scissors"
+          "title": "Scissors",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Q5OwKqhbp8E",
           "duration": "PT7M5S",
-          "title": "Pivot Groove Step"
+          "title": "Pivot Groove Step",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -121,12 +155,16 @@
         {
           "youtubeId": "SKiX_3XIHVc",
           "duration": "PT4M5S",
-          "title": "Roger Rabbit/Reject (House Version)"
+          "title": "Roger Rabbit/Reject (House Version)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "LvDnZQbZPh8",
           "duration": "PT8M27S",
-          "title": "Backwards Jog"
+          "title": "Backwards Jog",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -136,17 +174,23 @@
         {
           "youtubeId": "u9zIOc9mwJE",
           "duration": "PT2M42S",
-          "title": "Spongebob"
+          "title": "Spongebob",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "AOz68KT3huI",
           "duration": "PT3M32S",
-          "title": "Happy Feet"
+          "title": "Happy Feet",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "s_TXekHFkWc",
           "duration": "PT3M26S",
-          "title": "Kriss Kross"
+          "title": "Kriss Kross",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -156,12 +200,16 @@
         {
           "youtubeId": "cxWEbJFM5YI",
           "duration": "PT3M21S",
-          "title": "Salsa Step"
+          "title": "Salsa Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "5eVZmPZ6pFI",
           "duration": "PT59S",
-          "title": "Salsa Hop"
+          "title": "Salsa Hop",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -171,12 +219,16 @@
         {
           "youtubeId": "Z7zcCSak16o",
           "duration": "PT5M11S",
-          "title": "Crosswalk"
+          "title": "Crosswalk",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "xoYXFuGEne8",
           "duration": "PT4M13S",
-          "title": "Pow Wow"
+          "title": "Pow Wow",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -186,17 +238,23 @@
         {
           "youtubeId": "1ZP4rd_oHmw",
           "duration": "PT2M44S",
-          "title": "Loose Legs"
+          "title": "Loose Legs",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "bWhrrM8GWJ0",
           "duration": "PT9M15S",
-          "title": "Transitions: Loose Legs to Shuffle"
+          "title": "Transitions: Loose Legs to Shuffle",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "6z095kKq_68",
           "duration": "PT16M52S",
-          "title": "Loose Legs [FULL VERSION]"
+          "title": "Loose Legs [FULL VERSION]",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -206,17 +264,23 @@
         {
           "youtubeId": "TNwsQgRsr3o",
           "duration": "PT7M9S",
-          "title": "Jacking Style"
+          "title": "Jacking Style",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "UPZVAe8pKhI",
           "duration": "PT1M45S",
-          "title": "Basic Jack"
+          "title": "Basic Jack",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "MFGoGsJK61I",
           "duration": "PT2M12S",
-          "title": "Jack in The Box"
+          "title": "Jack in The Box",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -226,22 +290,30 @@
         {
           "youtubeId": "m672-5RbeGc",
           "duration": "PT1M39S",
-          "title": "Stomp"
+          "title": "Stomp",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "asHNd57UO-c",
           "duration": "PT1M14S",
-          "title": "Farmer"
+          "title": "Farmer",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "CCrjLzVi14c",
           "duration": "PT10M15S",
-          "title": "Farmer Variations"
+          "title": "Farmer Variations",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "IXwbC3CmWU0",
           "duration": "PT16M47S",
-          "title": "House Dance Tutorial   Gallop a.k.a Farmer's Run"
+          "title": "House Dance Tutorial   Gallop a.k.a Farmer's Run",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -251,27 +323,37 @@
         {
           "youtubeId": "Ckh17PQ8iZ0",
           "duration": "PT1M33S",
-          "title": "Skate"
+          "title": "Skate",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "h7ll0mXg2Gg",
           "duration": "PT2M42S",
-          "title": "Train"
+          "title": "Train",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "J8cKf3bGjIM",
           "duration": "PT7M28S",
-          "title": "Transitions: Train to Skate"
+          "title": "Transitions: Train to Skate",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "-gtSTaHhaxA",
           "duration": "PT4M23S",
-          "title": "Pivoting Skate"
+          "title": "Pivoting Skate",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "8cM8pWlZsBM",
           "duration": "PT14M38S",
-          "title": "Skating Variations"
+          "title": "Skating Variations",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -281,27 +363,37 @@
         {
           "youtubeId": "hLlng5_8HZY",
           "duration": "PT6M9S",
-          "title": "Combo: Pas De Bourree Loop"
+          "title": "Combo: Pas De Bourree Loop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "kvEREYniDw0",
           "duration": "PT3M16S",
-          "title": "African Step"
+          "title": "African Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Rb99CKKr4Z0",
           "duration": "PT4M55S",
-          "title": "Around The World"
+          "title": "Around The World",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "nOJ-i4D8l6c",
           "duration": "PT4M57S",
-          "title": "Reset to Bicycle Kick"
+          "title": "Reset to Bicycle Kick",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "VEE5qqDPVGY",
           "duration": "PT5M37S",
-          "title": "5-Minute Warmup (Read Description)"
+          "title": "5-Minute Warmup (Read Description)",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -311,27 +403,37 @@
         {
           "youtubeId": "9tlnBH7SecI",
           "duration": "PT8M54S",
-          "title": "Dolphin Dive From Knee Drop"
+          "title": "Dolphin Dive From Knee Drop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "1ooo_9webq4",
           "duration": "PT6M20S",
-          "title": "Ground Sweeps"
+          "title": "Ground Sweeps",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "6d7ckB6m-O0",
           "duration": "PT7M10S",
-          "title": "Rollback Dolphin Dive"
+          "title": "Rollback Dolphin Dive",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "QbvOZ6-REUg",
           "duration": "PT5M50S",
-          "title": "Floor Spins"
+          "title": "Floor Spins",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "-z1UmqDJ15o",
           "duration": "PT7M23S",
-          "title": "Spins/Turns"
+          "title": "Spins/Turns",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -341,22 +443,30 @@
         {
           "youtubeId": "rpyv4ZVyXE0",
           "duration": "PT43S",
-          "title": "House form/posture"
+          "title": "House form/posture",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "lxl6tqZTSdc",
           "duration": "PT5M25S",
-          "title": "Style Tips #01"
+          "title": "Style Tips #01",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ZPph9yzzqtI",
           "duration": "PT5M59S",
-          "title": "Style Tips #02"
+          "title": "Style Tips #02",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "vvvdzLsSyMc",
           "duration": "PT6M4S",
-          "title": "Shoes Edition"
+          "title": "Shoes Edition",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -366,17 +476,23 @@
         {
           "youtubeId": "Umbjo5lKSsw",
           "duration": "PT10M34S",
-          "title": "Stalking"
+          "title": "Stalking",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "lKjo-CcSXyA",
           "duration": "PT8M17S",
-          "title": "Musicality: Part 3 of 4"
+          "title": "Musicality: Part 3 of 4",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "eMJZknvRkqk",
           "duration": "PT11M32S",
-          "title": "Theory: Groove"
+          "title": "Theory: Groove",
+          "height": 270,
+          "width": 480
         }
       ]
     }

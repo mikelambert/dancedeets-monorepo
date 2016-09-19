@@ -11,77 +11,107 @@
         {
           "youtubeId": "zdbG5BFuBLE",
           "duration": "PT5M52S",
-          "title": "Flare"
+          "title": "Flare",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "jZTZjX7-R0I",
           "duration": "PT6M39S",
-          "title": "Halo"
+          "title": "Halo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "2_JNkKC-pOw",
           "duration": "PT6M19S",
-          "title": "Airflare/ Airtrack"
+          "title": "Airflare/ Airtrack",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "U3xhxziXqek",
           "duration": "PT5M16S",
-          "title": "Windmills"
+          "title": "Windmills",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "5lVUKmaiN58",
           "duration": "PT5M30S",
-          "title": "Kip up (Kick Up) Rubberbands"
+          "title": "Kip up (Kick Up) Rubberbands",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "StnvfFI6bMw",
           "duration": "PT2M48S",
-          "title": "\"Be Tight\" - What I Mean When Regarding Powermoves and Other Exercises"
+          "title": "\"Be Tight\" - What I Mean When Regarding Powermoves and Other Exercises",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "NvLsxM-S3tc",
           "duration": "PT5M13S",
-          "title": "Windmill to Flare - Information Exchange (Guide)"
+          "title": "Windmill to Flare - Information Exchange (Guide)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "UtyjstHDA3E",
           "duration": "PT6M14S",
-          "title": "Flare to Airflare and (Handstand) Combo"
+          "title": "Flare to Airflare and (Handstand) Combo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "BWgz8xIBn74",
           "duration": "PT4M43S",
-          "title": "Headspin"
+          "title": "Headspin",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "iX6oefYfP3Y",
           "duration": "PT10M10S",
-          "title": "Powermove \"Throw Down\" - For Mills Airflares  Etc."
+          "title": "Powermove \"Throw Down\" - For Mills Airflares  Etc.",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "NKtjO3EF5Hs",
           "duration": "PT4M54S",
-          "title": "Backspin"
+          "title": "Backspin",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Yt_XV6ZF_R4",
           "duration": "PT4M11S",
-          "title": "Airflare 1.5 (Suicide)"
+          "title": "Airflare 1.5 (Suicide)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "YZWBPTaahHU",
           "duration": "PT6M48S",
-          "title": "Cheat Gainer Flip"
+          "title": "Cheat Gainer Flip",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "zU1NLgNXk1g",
           "duration": "PT6M16S",
-          "title": "Invert"
+          "title": "Invert",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "0-YHqkgj4xI",
           "duration": "PT6M49S",
-          "title": "Handhop"
+          "title": "Handhop",
+          "height": 270,
+          "width": 480
         }
       ]
     }

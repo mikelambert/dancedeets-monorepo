@@ -11,22 +11,30 @@
         {
           "youtubeId": "dAoQZ4XG2Vs",
           "duration": "PT7M35S",
-          "title": "Tutting Basics"
+          "title": "Tutting Basics",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "r4mJX5YIS4o",
           "duration": "PT6M18S",
-          "title": "Arm Variation Combo"
+          "title": "Arm Variation Combo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "i-5-xaoGifo",
           "duration": "PT6M45S",
-          "title": "Toyman Transitions"
+          "title": "Toyman Transitions",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "r00uKrKL1R4",
           "duration": "PT5M22S",
-          "title": "The Four Square"
+          "title": "The Four Square",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -36,22 +44,30 @@
         {
           "youtubeId": "NIlXjvW2QAQ",
           "duration": "PT5M53S",
-          "title": "Learn a Basic Footwork Combo"
+          "title": "Learn a Basic Footwork Combo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "k2LYi0-HGME",
           "duration": "PT5M57S",
-          "title": "Basic Isolation Combo"
+          "title": "Basic Isolation Combo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "P5xr8gFRwdU",
           "duration": "PT10M42S",
-          "title": "Mike Song - STEP BY STEP Ep. 6"
+          "title": "Mike Song - STEP BY STEP Ep. 6",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "GucMFhbNN4M",
           "duration": "PT9M7S",
-          "title": "When It Counts Choreography + Reunion - STEP BY STEP Ep. 8"
+          "title": "When It Counts Choreography + Reunion - STEP BY STEP Ep. 8",
+          "height": 270,
+          "width": 480
         }
       ]
     }

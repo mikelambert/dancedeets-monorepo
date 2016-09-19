@@ -11,47 +11,65 @@
         {
           "youtubeId": "24PmecwfFCg",
           "duration": "PT49S",
-          "title": "Moonwalk"
+          "title": "Moonwalk",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "qH3r0d50U_c",
           "duration": "PT1M31S",
-          "title": "Slot"
+          "title": "Slot",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "EwOIs81oQKI",
           "duration": "PT48S",
-          "title": "Puppet move"
+          "title": "Puppet move",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "sV8jczIabBo",
           "duration": "PT43S",
-          "title": "Wiggling or worming"
+          "title": "Wiggling or worming",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "KjQzS7EpNbU",
           "duration": "PT28S",
-          "title": "The Falling Man"
+          "title": "The Falling Man",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "D_4_u_UeLJc",
           "duration": "PT21S",
-          "title": "Tidal wave"
+          "title": "Tidal wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "_E_84sh-52M",
           "duration": "PT27S",
-          "title": "Swinging the arms"
+          "title": "Swinging the arms",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "UTfo2wNr-SU",
           "duration": "PT32S",
-          "title": "Hops"
+          "title": "Hops",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "dS4W2_KPhqM",
           "duration": "PT59S",
-          "title": "Toy spins"
+          "title": "Toy spins",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -61,52 +79,72 @@
         {
           "youtubeId": "R8wvHcnwK6k",
           "duration": "PT2M7S",
-          "title": "Swinging the arms, dime stopping, Creeping, Animation"
+          "title": "Swinging the arms, dime stopping, Creeping, Animation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "M3cTF3FKETg",
           "duration": "PT12S",
-          "title": "The Swoop or Swooping"
+          "title": "The Swoop or Swooping",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "aJGfnTAOt3w",
           "duration": "PT1M19S",
-          "title": "Hops or Hopping"
+          "title": "Hops or Hopping",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "LDsIYBiVyDE",
           "duration": "PT30S",
-          "title": "Seven Voyages Of Sinbad"
+          "title": "Seven Voyages Of Sinbad",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Eb1UjtipqZY",
           "duration": "PT38S",
-          "title": "Worming"
+          "title": "Worming",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Pvdql1WxzEA",
           "duration": "PT1M26S",
-          "title": "Slot or Side to Side"
+          "title": "Slot or Side to Side",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "c4nPFkuhQeo",
           "duration": "PT1M37S",
-          "title": "Banging"
+          "title": "Banging",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "-hm0VVhyc70",
           "duration": "PT38S",
-          "title": "Vibrating"
+          "title": "Vibrating",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "0z93KNS0ixY",
           "duration": "PT1M20S",
-          "title": "Back Slide, Floating"
+          "title": "Back Slide, Floating",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "qLzZFrXIUKE",
           "duration": "PT2M33S",
-          "title": "Broken Body"
+          "title": "Broken Body",
+          "height": 270,
+          "width": 480
         }
       ]
     }

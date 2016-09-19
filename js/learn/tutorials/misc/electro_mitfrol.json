@@ -11,22 +11,30 @@
         {
           "youtubeId": "CgVx0yzPPRY",
           "duration": "PT4M52S",
-          "title": "Part 1"
+          "title": "Part 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "u0GyhPoUEmc",
           "duration": "PT4M",
-          "title": "Part 2"
+          "title": "Part 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "At9m8otcY8o",
           "duration": "PT4M35S",
-          "title": "Part 3"
+          "title": "Part 3",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "p_y_sNcgNcY",
           "duration": "PT4M7S",
-          "title": "Part 4"
+          "title": "Part 4",
+          "height": 270,
+          "width": 480
         }
       ]
     }

@@ -11,17 +11,23 @@
         {
           "youtubeId": "Y4JC2o7xQJ4",
           "duration": "PT6M41S",
-          "title": "How To Hit With Your Upper Body | Marie Poppins (We Are Heros)"
+          "title": "How To Hit With Your Upper Body | Marie Poppins (We Are Heros)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "MHVMj0c6N0o",
           "duration": "PT4M36S",
-          "title": "Arm Popping Tutorial | Kid Boogie (Machine Gone Funk)"
+          "title": "Arm Popping Tutorial | Kid Boogie (Machine Gone Funk)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Wz2WNRjbLuk",
           "duration": "PT4M48S",
-          "title": "Leg Popping Tutorial | Kid Boogie (Machine Gone Funk)"
+          "title": "Leg Popping Tutorial | Kid Boogie (Machine Gone Funk)",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -31,22 +37,30 @@
         {
           "youtubeId": "uiVkXnjQfAI",
           "duration": "PT7M32S",
-          "title": "How To Wave | Boogie Frantick (Mighty Zulu Kingz)"
+          "title": "How To Wave | Boogie Frantick (Mighty Zulu Kingz)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "6_FUIu9YedE",
           "duration": "PT10M6S",
-          "title": "How to Strut | Money B (Playboyz Inc)"
+          "title": "How to Strut | Money B (Playboyz Inc)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "v3JgPdrTc9A",
           "duration": "PT5M32S",
-          "title": "Heel Toe Variation | Bionic Man (Machine Gone Funk)"
+          "title": "Heel Toe Variation | Bionic Man (Machine Gone Funk)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "i1R207wTB_g",
           "duration": "PT3M49S",
-          "title": "Low Level Roll From A 'W' | Bionic Man (Machine Gone Funk)"
+          "title": "Low Level Roll From A 'W' | Bionic Man (Machine Gone Funk)",
+          "height": 270,
+          "width": 480
         }
       ]
     }

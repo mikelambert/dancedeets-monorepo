@@ -11,17 +11,23 @@
         {
           "youtubeId": "PpxP3tUycKg",
           "duration": "PT1M21S",
-          "title": "Popping style ticking"
+          "title": "Popping style ticking",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "SgFQlRHiw2c",
           "duration": "PT3M41S",
-          "title": "Bopping style ticking"
+          "title": "Bopping style ticking",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "VmXs46_Ekok",
           "duration": "PT49S",
-          "title": "Ticking, scarecrow, bopping"
+          "title": "Ticking, scarecrow, bopping",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -31,22 +37,30 @@
         {
           "youtubeId": "MPjFbgy2k4Y",
           "duration": "PT1M35S",
-          "title": "Strobing"
+          "title": "Strobing",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Cv9Op_Wr0hg",
           "duration": "PT2M40S",
-          "title": "Tick waves"
+          "title": "Tick waves",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "tFMiJb3NXTw",
           "duration": "PT38S",
-          "title": "Wave variation"
+          "title": "Wave variation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "yX5cG-xBYRc",
           "duration": "PT1M39S",
-          "title": "Snaking, strobing, ticking - variations"
+          "title": "Snaking, strobing, ticking - variations",
+          "height": 270,
+          "width": 480
         }
       ]
     }

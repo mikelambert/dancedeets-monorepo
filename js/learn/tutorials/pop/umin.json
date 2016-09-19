@@ -12,62 +12,86 @@
         {
           "youtubeId": "_xWUjmKqECU",
           "duration": "PT6M25S",
-          "title": "ポップ Pop"
+          "title": "ポップ Pop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "iz5rIU0nNeI",
           "duration": "PT2M54S",
-          "title": "指のウェーブ Finger Wave"
+          "title": "指のウェーブ Finger Wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "n5Otlt5Pc5A",
           "duration": "PT2M10S",
-          "title": "トルネードウェーブ Tunnel Wave"
+          "title": "トルネードウェーブ Tunnel Wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "1P79nnBakuk",
           "duration": "PT2M50S",
-          "title": "ひじのウェーブ Knee Wave"
+          "title": "ひじのウェーブ Knee Wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Ks1tGN3vk4Q",
           "duration": "PT3M5S",
-          "title": "タッチウェーブ Touch Wave"
+          "title": "タッチウェーブ Touch Wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "N5EmjBkkNWs",
           "duration": "PT1M51S",
-          "title": "胸から僧帽筋のウェーブ Chest to Traps Wave"
+          "title": "胸から僧帽筋のウェーブ Chest to Traps Wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "8b1_uDM7n_A",
           "duration": "PT1M44S",
-          "title": "ウェーブ(電流イメージ) Electricity Waves"
+          "title": "ウェーブ(電流イメージ) Electricity Waves",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ztPiV7L_cJM",
           "duration": "PT3M50S",
-          "title": "首のアイソレーションとバリエーション Sound Isolation & Vibration"
+          "title": "首のアイソレーションとバリエーション Sound Isolation & Vibration",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "pyRppPlGL-0",
           "duration": "PT4M42S",
-          "title": "スローモーション Slow Motion"
+          "title": "スローモーション Slow Motion",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "W0WD8QWO_SA",
           "duration": "PT7M54S",
-          "title": "コブラ Cobra"
+          "title": "コブラ Cobra",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "f_ngGjgHD04",
           "duration": "PT4M20S",
-          "title": "ウェーブ〜コブラ〜背中のウェーブ Wave, Cobra, Back Wave"
+          "title": "ウェーブ〜コブラ〜背中のウェーブ Wave, Cobra, Back Wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "R02Sps4IF-s",
           "duration": "PT4M14S",
-          "title": "ロボット Robot"
+          "title": "ロボット Robot",
+          "height": 270,
+          "width": 480
         }
       ]
     }

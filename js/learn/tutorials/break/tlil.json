@@ -11,47 +11,65 @@
         {
           "youtubeId": "1fdA0O8rogs",
           "duration": "PT9M22S",
-          "title": "Halo"
+          "title": "Halo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "JLD1BoIk_5U",
           "duration": "PT7M6S",
-          "title": "Cricket/Jackhammer"
+          "title": "Cricket/Jackhammer",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "UAOMUyzhTEU",
           "duration": "PT8M32S",
-          "title": "Flare"
+          "title": "Flare",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "N5iyHodsw5s",
           "duration": "PT5M44S",
-          "title": "Swipe"
+          "title": "Swipe",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "A8YY1U5kOR4",
           "duration": "PT8M46S",
-          "title": "Airflare"
+          "title": "Airflare",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "J5Qv9wmgW7E",
           "duration": "PT9M48S",
-          "title": "1990/2000"
+          "title": "1990/2000",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "pYd-YBylaVc",
           "duration": "PT8M13S",
-          "title": "Munchmill/Babymill"
+          "title": "Munchmill/Babymill",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "dXRefXrvBwE",
           "duration": "PT6M41S",
-          "title": "Windmill To Airflare"
+          "title": "Windmill To Airflare",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "qF_HVw-URZA",
           "duration": "PT7M",
-          "title": "Flare To Airflare"
+          "title": "Flare To Airflare",
+          "height": 270,
+          "width": 480
         }
       ]
     }

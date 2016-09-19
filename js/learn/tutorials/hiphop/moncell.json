@@ -11,82 +11,114 @@
         {
           "youtubeId": "F_xK9F9AP48",
           "duration": "PT2M10S",
-          "title": "Basic Bounce"
+          "title": "Basic Bounce",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "hR6Ju7HXW8A",
           "duration": "PT3M10S",
-          "title": "Patty Duke"
+          "title": "Patty Duke",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "j1uNgYoil08",
           "duration": "PT2M10S",
-          "title": "Step and Slide"
+          "title": "Step and Slide",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "Tmdff2A38Qs",
           "duration": "PT2M19S",
-          "title": "Fila"
+          "title": "Fila",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "Xj_m5BNtUy4",
           "duration": "PT10M51S",
-          "title": "Combo"
+          "title": "Combo",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "BY51fAel1oo",
           "duration": "PT52S",
-          "title": "Wobble"
+          "title": "Wobble",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "ld_2wgv_0oU",
           "duration": "PT51S",
-          "title": "Monastery"
+          "title": "Monastery",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "dStCNK1K4Xo",
           "duration": "PT1M18S",
-          "title": "Marge Step"
+          "title": "Marge Step",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "zjPKF1-100I",
           "duration": "PT2M54S",
-          "title": "Roger Rabbit"
+          "title": "Roger Rabbit",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "5mbNbi2FkRw",
           "duration": "PT55S",
-          "title": "Humpty Hump"
+          "title": "Humpty Hump",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "H_3Je3U9Ov4",
           "duration": "PT2M45S",
-          "title": "Happy Feet"
+          "title": "Happy Feet",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "R3EAptg-8WI",
           "duration": "PT3M20S",
-          "title": "Alf"
+          "title": "Alf",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "iO3i_Qq1cGI",
           "duration": "PT3M39S",
-          "title": "Cork screw"
+          "title": "Cork screw",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "mQBUL7kk1k4",
           "duration": "PT3M50S",
-          "title": "Crosses"
+          "title": "Crosses",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "vFA6YUrXt0g",
           "duration": "PT6M55S",
-          "title": "Steve Martin"
+          "title": "Steve Martin",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "Bb2ZGZnkLjI",
           "duration": "PT2M29S",
-          "title": "Hip-Hop vs Video Choreo"
+          "title": "Hip-Hop vs Video Choreo",
+          "height": 344,
+          "width": 459
         }
       ]
     }

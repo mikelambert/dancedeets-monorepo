@@ -12,47 +12,65 @@
         {
           "youtubeId": "J2abZczwf9E",
           "duration": "PT2M59S",
-          "title": "Reebok"
+          "title": "Reebok",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "EhvcV4K0KVQ",
           "duration": "PT3M9S",
-          "title": "Prep"
+          "title": "Prep",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "k23ZWNQfGh4",
           "duration": "PT3M27S",
-          "title": "Pepper seed"
+          "title": "Pepper seed",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "8Ie4S7OP6Wc",
           "duration": "PT3M57S",
-          "title": "Ranking"
+          "title": "Ranking",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "wRaCgBQ6Gdk",
           "duration": "PT2M38S",
-          "title": "Jerk"
+          "title": "Jerk",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "GTyGpi2yVXA",
           "duration": "PT3M22S",
-          "title": "Big bounds"
+          "title": "Big bounds",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "QoDvrGA-ZiY",
           "duration": "PT3M3S",
-          "title": "Kickers step"
+          "title": "Kickers step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "6cUEPRfy1Sg",
           "duration": "PT2M59S",
-          "title": "Scooby-doo"
+          "title": "Scooby-doo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "dZWzka--kxk",
           "duration": "PT3M5S",
-          "title": "Shamrock"
+          "title": "Shamrock",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -62,17 +80,23 @@
         {
           "youtubeId": "KONfpbxfZOw",
           "duration": "PT3M2S",
-          "title": "Bart Simpson"
+          "title": "Bart Simpson",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "14MftIVMKdI",
           "duration": "PT3M4S",
-          "title": "Cabbage patch"
+          "title": "Cabbage patch",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ita18HuKyXc",
           "duration": "PT3M3S",
-          "title": "Steve Martin"
+          "title": "Steve Martin",
+          "height": 270,
+          "width": 480
         }
       ]
     }

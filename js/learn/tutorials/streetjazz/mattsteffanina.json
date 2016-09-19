@@ -11,42 +11,58 @@
         {
           "youtubeId": "zjIA4rujYVE",
           "duration": "PT15M48S",
-          "title": "Jason Derulo - Wiggle"
+          "title": "Jason Derulo - Wiggle",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "63znSzwUyog",
           "duration": "PT11M58S",
-          "title": "Flo Rida - GDFR"
+          "title": "Flo Rida - GDFR",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "AFoylH3Lcnw",
           "duration": "PT9M20S",
-          "title": "Lil Jon - Turn Down For What"
+          "title": "Lil Jon - Turn Down For What",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "t1XNjXCbHAM",
           "duration": "PT8M21S",
-          "title": "Ariana Grande - Break Free"
+          "title": "Ariana Grande - Break Free",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "DYa8r_iVhHo",
           "duration": "PT12M39S",
-          "title": "Jason Derulo - Kama Sutra"
+          "title": "Jason Derulo - Kama Sutra",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "wx2GeRP7MlY",
           "duration": "PT7M57S",
-          "title": "Macklemore - Thrift Shop"
+          "title": "Macklemore - Thrift Shop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "LfCmNHkHFss",
           "duration": "PT10M9S",
-          "title": "Jason Derulo - Talk Dirty"
+          "title": "Jason Derulo - Talk Dirty",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "kWqq0kkAGmI",
           "duration": "PT13M49S",
-          "title": "Omarion ft Chris Brown - Post To Be"
+          "title": "Omarion ft Chris Brown - Post To Be",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -56,27 +72,37 @@
         {
           "youtubeId": "KyBBAMO3CDo",
           "duration": "PT15M4S",
-          "title": "Trap Queen - Fetty Wap"
+          "title": "Trap Queen - Fetty Wap",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "fdPEO599wVg",
           "duration": "PT17M50S",
-          "title": "Worth It - Fifth Harmony"
+          "title": "Worth It - Fifth Harmony",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ythINtYmtmM",
           "duration": "PT12M20S",
-          "title": "Hey Mama - David Guetta ft Nicki Minaj"
+          "title": "Hey Mama - David Guetta ft Nicki Minaj",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "2zcFiA71zy4",
           "duration": "PT19M36S",
-          "title": "Justin Bieber - Sorry"
+          "title": "Justin Bieber - Sorry",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "SJL44TP4nlc",
           "duration": "PT13M36S",
-          "title": "Jason Derulo - Pull Up"
+          "title": "Jason Derulo - Pull Up",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -86,27 +112,37 @@
         {
           "youtubeId": "298AJWhusgo",
           "duration": "PT16M32S",
-          "title": "Dawin - Dessert"
+          "title": "Dawin - Dessert",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "7qGd-NUkMKY",
           "duration": "PT22M59S",
-          "title": "Justin Bieber - What Do You Mean"
+          "title": "Justin Bieber - What Do You Mean",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "85cSsql7MEM",
           "duration": "PT16M51S",
-          "title": "Drake - Hotline Bling"
+          "title": "Drake - Hotline Bling",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "MMEWm1rAkLI",
           "duration": "PT23M5S",
-          "title": "Trey Songz - Slow Motion"
+          "title": "Trey Songz - Slow Motion",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "eAsJvqOVsys",
           "duration": "PT20M33S",
-          "title": "Justin Bieber - Where Are U Now"
+          "title": "Justin Bieber - Where Are U Now",
+          "height": 270,
+          "width": 480
         }
       ]
     }

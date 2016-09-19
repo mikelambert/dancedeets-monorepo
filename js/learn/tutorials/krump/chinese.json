@@ -11,7 +11,9 @@
         {
           "youtubeId": "cQeyWYo0VuQ",
           "duration": "PT8M50S",
-          "title": "Tutorial"
+          "title": "Tutorial",
+          "height": 344,
+          "width": 459
         }
       ]
     }

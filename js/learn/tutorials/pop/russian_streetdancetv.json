@@ -11,87 +11,121 @@
         {
           "youtubeId": "C9zzZ7tpzpw",
           "duration": "PT3M",
-          "title": "Robot Style ( Isolation | Body Control ) Part 1"
+          "title": "Robot Style ( Isolation | Body Control ) Part 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "jKrwMpBJ2Kk",
           "duration": "PT3M31S",
-          "title": "Robot Style ( Isolation | Body Control ) Part 2"
+          "title": "Robot Style ( Isolation | Body Control ) Part 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "P94tKNq6h5c",
           "duration": "PT3M46S",
-          "title": "Slow motion | Speed Control"
+          "title": "Slow motion | Speed Control",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "uMgU5PRCK9A",
           "duration": "PT2M41S",
-          "title": "Glides (Part 1)"
+          "title": "Glides (Part 1)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "KDzxYhr7a7I",
           "duration": "PT3M26S",
-          "title": "Glides (Part 2)"
+          "title": "Glides (Part 2)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "eQw-zG-XLGI",
           "duration": "PT3M24S",
-          "title": "Pop (Part 1)"
+          "title": "Pop (Part 1)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "V5YvvnJrIW4",
           "duration": "PT3M33S",
-          "title": "Pop (Part 2)"
+          "title": "Pop (Part 2)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "kU2-xwwsFf4",
           "duration": "PT3M13S",
-          "title": "Groove"
+          "title": "Groove",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "qjkqGPwZQJg",
           "duration": "PT2M59S",
-          "title": "Boogaloo Rolls"
+          "title": "Boogaloo Rolls",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "bEnMmL9ylKA",
           "duration": "PT3M50S",
-          "title": "Walk Out"
+          "title": "Walk Out",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "fIJTylVcL9w",
           "duration": "PT4M22S",
-          "title": "Flex"
+          "title": "Flex",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "0tH_yanbcOY",
           "duration": "PT4M44S",
-          "title": "King tut"
+          "title": "King tut",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "eURXE3RDxGM",
           "duration": "PT2M43S",
-          "title": "King Tut (Part2)"
+          "title": "King Tut (Part2)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "9D-Svwg7dg0",
           "duration": "PT8M12S",
-          "title": "King Tut (Part3)"
+          "title": "King Tut (Part3)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "EXiHXnivYMs",
           "duration": "PT6M34S",
-          "title": "Bonus Edition"
+          "title": "Bonus Edition",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "G9pKj-3ZzMQ",
           "duration": "PT2M45S",
-          "title": "Egyptian twist"
+          "title": "Egyptian twist",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "uXfB3OV3FQ0",
           "duration": "PT7M27S",
-          "title": "Кач"
+          "title": "Кач",
+          "height": 270,
+          "width": 480
         }
       ]
     }

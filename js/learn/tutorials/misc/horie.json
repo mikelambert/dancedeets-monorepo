@@ -12,67 +12,93 @@
         {
           "youtubeId": "nIEHhNqmqDU",
           "duration": "PT4M44S",
-          "title": "ジャンプ Jump"
+          "title": "ジャンプ Jump",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Ax3mGeKBqQg",
           "duration": "PT3M57S",
-          "title": "ひざ抜きステップ Kneeless Step"
+          "title": "ひざ抜きステップ Kneeless Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "OIqoePWbY3o",
           "duration": "PT4M31S",
-          "title": "IDJステップ IDJ Step 1"
+          "title": "IDJステップ IDJ Step 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "oC3xcd7b6b0",
           "duration": "PT4M8S",
-          "title": "IDJステップ2 IDJ Step 2"
+          "title": "IDJステップ2 IDJ Step 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "9h3gqLwnqb4",
           "duration": "PT2M34S",
-          "title": "移動IDJステップ Moving IDJ Step"
+          "title": "移動IDJステップ Moving IDJ Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "A_lvHw_ZTso",
           "duration": "PT2M39S",
-          "title": "チャールストン Charleston"
+          "title": "チャールストン Charleston",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "uA-v1iPQTzg",
           "duration": "PT4M42S",
-          "title": "6ステップ パート1 - 6 Step Part 1"
+          "title": "6ステップ パート1 - 6 Step Part 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ukt2VrlSSX8",
           "duration": "PT3M46S",
-          "title": "6ステップ パート2 - 6 Step Part 2"
+          "title": "6ステップ パート2 - 6 Step Part 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Nd8hwfbrlm8",
           "duration": "PT3M29S",
-          "title": "2ステップ - 2 Step"
+          "title": "2ステップ - 2 Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "vfa8_o9rjc8",
           "duration": "PT3M28S",
-          "title": "バップダウン Bop Down"
+          "title": "バップダウン Bop Down",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "lFOeVzLCBVQ",
           "duration": "PT2M51S",
-          "title": "スイングステップ Swing Step"
+          "title": "スイングステップ Swing Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "lyILUMpllDE",
           "duration": "PT2M23S",
-          "title": "スイングステップ2 Swing Step 2"
+          "title": "スイングステップ2 Swing Step 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "3AxS5MFPrRE",
           "duration": "PT2M14S",
-          "title": "まとめ Summary"
+          "title": "まとめ Summary",
+          "height": 270,
+          "width": 480
         }
       ]
     }

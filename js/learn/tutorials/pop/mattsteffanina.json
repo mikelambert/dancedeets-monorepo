@@ -11,62 +11,86 @@
         {
           "youtubeId": "6CPtOe3GVwk",
           "duration": "PT4M2S",
-          "title": "Arm Wave"
+          "title": "Arm Wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "HOO8xfEzngA",
           "duration": "PT2M57S",
-          "title": "Hand Wave"
+          "title": "Hand Wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "swqq7Md5lDA",
           "duration": "PT4M48S",
-          "title": "Tracing"
+          "title": "Tracing",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "TzEYQJy8sl0",
           "duration": "PT3M4S",
-          "title": "Tutting (Beg/Int Routine)"
+          "title": "Tutting (Beg/Int Routine)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "rZcTrfvyLJc",
           "duration": "PT2M51S",
-          "title": "Isolation TUTORIAL: Head & Shoulders » How To Dance w/ Matt Steffanina (Hip Hop)"
+          "title": "Isolation TUTORIAL: Head & Shoulders » How To Dance w/ Matt Steffanina (Hip Hop)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "CPethqaBMHo",
           "duration": "PT2M15S",
-          "title": "Tutting (Basic Routine)"
+          "title": "Tutting (Basic Routine)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Q2fjzk9XNcg",
           "duration": "PT3M16S",
-          "title": "Gliding"
+          "title": "Gliding",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "xtU2a4z075g",
           "duration": "PT3M15S",
-          "title": "Arm Wave"
+          "title": "Arm Wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "q_W_YlwqC_g",
           "duration": "PT2M19S",
-          "title": "Lower Body Isolation"
+          "title": "Lower Body Isolation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "21F6YGw-W5M",
           "duration": "PT2M32S",
-          "title": "Neck & Shoulder Circle Isolation"
+          "title": "Neck & Shoulder Circle Isolation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "xYSHiKhAYpE",
           "duration": "PT3M56S",
-          "title": "Body Wave"
+          "title": "Body Wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "YS3af36VQa0",
           "duration": "PT2M42S",
-          "title": "Body Wave w/ Jake Kodish"
+          "title": "Body Wave w/ Jake Kodish",
+          "height": 270,
+          "width": 480
         }
       ]
     }

@@ -11,72 +11,100 @@
         {
           "youtubeId": "hP5BsQRDag4",
           "duration": "PT2M22S",
-          "title": "Pop"
+          "title": "Pop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "BFADypI9mF8",
           "duration": "PT1M15S",
-          "title": "Sleepy style"
+          "title": "Sleepy style",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "w4VRnXY1MTU",
           "duration": "PT1M16S",
-          "title": "Crazy Legs"
+          "title": "Crazy Legs",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "FeFm4St1NaI",
           "duration": "PT1M14S",
-          "title": "Waving"
+          "title": "Waving",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "dB1BgaWfItU",
           "duration": "PT1M37S",
-          "title": "Tutting"
+          "title": "Tutting",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "sosCYn1Y9i4",
           "duration": "PT2M3S",
-          "title": "Boogaloo"
+          "title": "Boogaloo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "CyhcZl66cgY",
           "duration": "PT1M43S",
-          "title": "Ticking"
+          "title": "Ticking",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ZAFHjdjRqA4",
           "duration": "PT2M4S",
-          "title": "Toyman"
+          "title": "Toyman",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ixZaAnJf6Io",
           "duration": "PT1M36S",
-          "title": "Scarecrow"
+          "title": "Scarecrow",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "J7i-CcEoZzQ",
           "duration": "PT1M38S",
-          "title": "Puppet"
+          "title": "Puppet",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "qqhSz1QqarQ",
           "duration": "PT1M45S",
-          "title": "Shadow box"
+          "title": "Shadow box",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "PfwIckMmmp8",
           "duration": "PT1M37S",
-          "title": "Snaking"
+          "title": "Snaking",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "7sDTrGnkX68",
           "duration": "PT1M35S",
-          "title": "Fillmore"
+          "title": "Fillmore",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Nl_SI9T0W-w",
           "duration": "PT1M30S",
-          "title": "Strutting"
+          "title": "Strutting",
+          "height": 270,
+          "width": 480
         }
       ]
     }

@@ -11,52 +11,72 @@
         {
           "youtubeId": "qPV25l9yMzw",
           "duration": "PT4M9S",
-          "title": "Boogaloo - A Jin"
+          "title": "Boogaloo - A Jin",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "z0qxYM3bGYQ",
           "duration": "PT3M49S",
-          "title": "Arm Hit - A Jin"
+          "title": "Arm Hit - A Jin",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "_amNVsbZsRM",
           "duration": "PT2M50S",
-          "title": "Leg Hit - A Jin"
+          "title": "Leg Hit - A Jin",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "2SM7e4GPBm0",
           "duration": "PT3M34S",
-          "title": "Chest Hit - A Jin"
+          "title": "Chest Hit - A Jin",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "x7fT9e_iqIQ",
           "duration": "PT6M14S",
-          "title": "Tutting - Nam Hyun Joon"
+          "title": "Tutting - Nam Hyun Joon",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "1xsjog4OfLA",
           "duration": "PT2M56S",
-          "title": "Crazy Leg - Crazy Kyo"
+          "title": "Crazy Leg - Crazy Kyo",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "sCGYUKQQx_k",
           "duration": "PT5M13S",
-          "title": "Rolls - Poppin J"
+          "title": "Rolls - Poppin J",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "LFwOFlHet-c",
           "duration": "PT7M31S",
-          "title": "Pop & Flex - Part 1 - Popkun"
+          "title": "Pop & Flex - Part 1 - Popkun",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "tcDGa1mSDmM",
           "duration": "PT7M38S",
-          "title": "Pop & Flex - Part 2 - Popkun"
+          "title": "Pop & Flex - Part 2 - Popkun",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "9Qs5wUDvAvA",
           "duration": "PT4M48S",
-          "title": "Hat Trick - Nam Hyun Joon"
+          "title": "Hat Trick - Nam Hyun Joon",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -66,67 +86,93 @@
         {
           "youtubeId": "oycFW3tH_jU",
           "duration": "PT2M40S",
-          "title": "Boogaloo Varation"
+          "title": "Boogaloo Varation",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "t_cnFF6QUoc",
           "duration": "PT3M9S",
-          "title": "Roboting Varation"
+          "title": "Roboting Varation",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "4p_LHlMqFkQ",
           "duration": "PT7M36S",
-          "title": "Roll"
+          "title": "Roll",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "ikxbdjyy4p4",
           "duration": "PT2M48S",
-          "title": "Sham Lock"
+          "title": "Sham Lock",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "pGGbFOci5rA",
           "duration": "PT3M17S",
-          "title": "Rolling Varation"
+          "title": "Rolling Varation",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "sW5YhpVlOR0",
           "duration": "PT2M40S",
-          "title": "Pop And Go"
+          "title": "Pop And Go",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "Lyl-weAI8Q8",
           "duration": "PT2M38S",
-          "title": "Neck O Flex"
+          "title": "Neck O Flex",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "_ynHqr3jxKQ",
           "duration": "PT3M9S",
-          "title": "Egyptian Flex"
+          "title": "Egyptian Flex",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "KTYa49lK86k",
           "duration": "PT2M37S",
-          "title": "Bottom Pose"
+          "title": "Bottom Pose",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "d_RVi4iS0lI",
           "duration": "PT3M27S",
-          "title": "Air Pose"
+          "title": "Air Pose",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "a3lN97quLMo",
           "duration": "PT2M36S",
-          "title": "Ticking Varation"
+          "title": "Ticking Varation",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "LWJAGMOzWeM",
           "duration": "PT3M38S",
-          "title": "Walk Out"
+          "title": "Walk Out",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "U8s9h-KMzXE",
           "duration": "PT3M18S",
-          "title": "Twist O Flex"
+          "title": "Twist O Flex",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -136,37 +182,51 @@
         {
           "youtubeId": "yswDcqa9Wl8",
           "duration": "PT10M22S",
-          "title": "Pop"
+          "title": "Pop",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "XG2oRQp3FLY",
           "duration": "PT8M21S",
-          "title": "Walk Out"
+          "title": "Walk Out",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "aYJ4Ntw0S1Y",
           "duration": "PT6M54S",
-          "title": "Roll - Part 1"
+          "title": "Roll - Part 1",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "SnviTKHhd0o",
           "duration": "PT6M15S",
-          "title": "Roll - Part 2"
+          "title": "Roll - Part 2",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "9oQF7cJYaxY",
           "duration": "PT6M7S",
-          "title": "Flex - Part 1"
+          "title": "Flex - Part 1",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "uwycuOvOYoE",
           "duration": "PT5M21S",
-          "title": "Flex - Part 2"
+          "title": "Flex - Part 2",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "bnvoCDR1qEo",
           "duration": "PT6M42S",
-          "title": "Flex - Part 3"
+          "title": "Flex - Part 3",
+          "height": 344,
+          "width": 459
         }
       ]
     }

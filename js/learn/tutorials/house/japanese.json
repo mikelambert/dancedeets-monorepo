@@ -11,12 +11,16 @@
         {
           "youtubeId": "kZs3MiAFdZE",
           "duration": "PT5M10S",
-          "title": "Dance Solos"
+          "title": "Dance Solos",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "2ijyyFnIAr0",
           "duration": "PT37S",
-          "title": "Introduction"
+          "title": "Introduction",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -26,32 +30,44 @@
         {
           "youtubeId": "taOfUlHPFJY",
           "duration": "PT1M38S",
-          "title": "Down Rhythm (Tatsuo)"
+          "title": "Down Rhythm (Tatsuo)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "mNtnk8snpJg",
           "duration": "PT1M28S",
-          "title": "Up Rhythm (Kenji)"
+          "title": "Up Rhythm (Kenji)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "UG6M-j-PZ4M",
           "duration": "PT3M16S",
-          "title": "Down Rhythm - Backwards (Shuho)"
+          "title": "Down Rhythm - Backwards (Shuho)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "N-ItBLzbd0o",
           "duration": "PT1M24S",
-          "title": "Down Rhythm - Forwards (Shuho)"
+          "title": "Down Rhythm - Forwards (Shuho)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "ZB-jiDDBYkI",
           "duration": "PT2M36S",
-          "title": "Up Rhythm - Forwards (Hiro)"
+          "title": "Up Rhythm - Forwards (Hiro)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "cGqFb7uf9Cc",
           "duration": "PT2M19S",
-          "title": "3 Rhythm - Up Up Down (Hiro)"
+          "title": "3 Rhythm - Up Up Down (Hiro)",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -61,47 +77,65 @@
         {
           "youtubeId": "gf0m8fAKmuI",
           "duration": "PT2M20S",
-          "title": "2 Step (Pino)"
+          "title": "2 Step (Pino)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "6uINhMQ3j1g",
           "duration": "PT2M8S",
-          "title": "Sidewalk (Tatsuo)"
+          "title": "Sidewalk (Tatsuo)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "0sQB29bJOHg",
           "duration": "PT1M53S",
-          "title": "Back Skip (Kenji)"
+          "title": "Back Skip (Kenji)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "hZsedDov3OA",
           "duration": "PT2M35S",
-          "title": "Skate Step (Shuho)"
+          "title": "Skate Step (Shuho)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "GZXn8rc_1XE",
           "duration": "PT3M32S",
-          "title": "Heel and Toe (Hiro)"
+          "title": "Heel and Toe (Hiro)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "JP4xSMifdhQ",
           "duration": "PT3M1S",
-          "title": "Side to Side (Hiro)"
+          "title": "Side to Side (Hiro)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "4RBobi1bSqY",
           "duration": "PT4M9S",
-          "title": "Turn (Hiro)"
+          "title": "Turn (Hiro)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "G5MbCGj8kA0",
           "duration": "PT1M4S",
-          "title": "Crossdown (Itsuji)"
+          "title": "Crossdown (Itsuji)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "5BdLqFkjJtc",
           "duration": "PT1M41S",
-          "title": "Dophin (Itsuji)"
+          "title": "Dophin (Itsuji)",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -111,62 +145,86 @@
         {
           "youtubeId": "sXj0mi-jEAI",
           "duration": "PT1M33S",
-          "title": "2 Step Variation (Kenji)"
+          "title": "2 Step Variation (Kenji)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "-S8blX1qAys",
           "duration": "PT1M",
-          "title": "Kenji Solo"
+          "title": "Kenji Solo",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "c1YfdJKi0WA",
           "duration": "PT1M31S",
-          "title": "Side to Side Variation (Pino)"
+          "title": "Side to Side Variation (Pino)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "dE8V7UXlSKw",
           "duration": "PT1M15S",
-          "title": "Pino Solo"
+          "title": "Pino Solo",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "s4WZAi1-N5c",
           "duration": "PT3M4S",
-          "title": "Back Skip Variation (Tatsuo)"
+          "title": "Back Skip Variation (Tatsuo)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "3Yt1xBxS43g",
           "duration": "PT1M14S",
-          "title": "Tatsuo Solo"
+          "title": "Tatsuo Solo",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "bVajCz3v0Ys",
           "duration": "PT1M59S",
-          "title": "Sidewalk Variation (Itsuji)"
+          "title": "Sidewalk Variation (Itsuji)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "iXBi2j_KiXE",
           "duration": "PT1M13S",
-          "title": "Itsuji Solo"
+          "title": "Itsuji Solo",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "mi3fFCh6GZI",
           "duration": "PT2M17S",
-          "title": "Skate Variation 1 (Hiro)"
+          "title": "Skate Variation 1 (Hiro)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "lr9lSL_Aqw8",
           "duration": "PT1M14S",
-          "title": "Hiro Solo"
+          "title": "Hiro Solo",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "Wl2FWN0lrGA",
           "duration": "PT2M32S",
-          "title": "Skate Variation 2 (Shuho)"
+          "title": "Skate Variation 2 (Shuho)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "AAe3aksRt9o",
           "duration": "PT1M11S",
-          "title": "Shuho Solo"
+          "title": "Shuho Solo",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -176,17 +234,23 @@
         {
           "youtubeId": "gXttQtuFSEk",
           "duration": "PT47S",
-          "title": "Pinocchio: 2 Step, Side to Side, Turn"
+          "title": "Pinocchio: 2 Step, Side to Side, Turn",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "CTptLhF6jCg",
           "duration": "PT49S",
-          "title": "Glass Hopper: Back Skip, Turn, Sidewalk, Crossdown, Dolphin"
+          "title": "Glass Hopper: Back Skip, Turn, Sidewalk, Crossdown, Dolphin",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "R2ENjjEzYJw",
           "duration": "PT47S",
-          "title": "Hiro & Shuho: Skate, Farmer"
+          "title": "Hiro & Shuho: Skate, Farmer",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -196,17 +260,23 @@
         {
           "youtubeId": "XC3m31oqIV0",
           "duration": "PT44S",
-          "title": "Pinocchio: Pino & Kenji"
+          "title": "Pinocchio: Pino & Kenji",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "ZUGsZ4Gio3k",
           "duration": "PT50S",
-          "title": "Glass Hopper: Tatsuo & Itsuji"
+          "title": "Glass Hopper: Tatsuo & Itsuji",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "Z6mCBsO_88A",
           "duration": "PT39S",
-          "title": "Hiro & Shuho"
+          "title": "Hiro & Shuho",
+          "height": 344,
+          "width": 459
         }
       ]
     }

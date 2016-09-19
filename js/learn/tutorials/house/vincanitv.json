@@ -11,17 +11,23 @@
         {
           "youtubeId": "Xc8PmwxVPgY",
           "duration": "PT1M50S",
-          "title": "Heel Toe"
+          "title": "Heel Toe",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "pvx_NzLe7yU",
           "duration": "PT2M3S",
-          "title": "Pas De Bourrée"
+          "title": "Pas De Bourrée",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "3P55U4_-Q14",
           "duration": "PT1M48S",
-          "title": "Stomping"
+          "title": "Stomping",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -31,7 +37,9 @@
         {
           "youtubeId": "ogASj4J77hQ",
           "duration": "PT5M26S",
-          "title": "Time Step"
+          "title": "Time Step",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -41,7 +49,9 @@
         {
           "youtubeId": "eVa92XQppTU",
           "duration": "PT8M55S",
-          "title": "Loose Legs Variation"
+          "title": "Loose Legs Variation",
+          "height": 270,
+          "width": 480
         }
       ]
     }

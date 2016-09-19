@@ -12,7 +12,9 @@
         {
           "youtubeId": "-OVHbenlNFc",
           "duration": "PT3M27S",
-          "title": "Mizuki インタビュー Interview"
+          "title": "Mizuki インタビュー Interview",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -22,22 +24,30 @@
         {
           "youtubeId": "ZExyXf1fzbk",
           "duration": "PT3M48S",
-          "title": "リズムキープ Keep the Groove"
+          "title": "リズムキープ Keep the Groove",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "II4-eps5ICc",
           "duration": "PT3M28S",
-          "title": "リズムキープ+腰のリズム Keep the Groove & Waist Rhythm"
+          "title": "リズムキープ+腰のリズム Keep the Groove & Waist Rhythm",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "6OopfJsOOl4",
           "duration": "PT5M58S",
-          "title": "フォーコーナー Four Corners"
+          "title": "フォーコーナー Four Corners",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Rm0eiQ619J8",
           "duration": "PT4M6S",
-          "title": "胸と腰とひざのリズム Chest/Hip/Knees Groove"
+          "title": "胸と腰とひざのリズム Chest/Hip/Knees Groove",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -47,22 +57,30 @@
         {
           "youtubeId": "Wjs1zvr3Zuw",
           "duration": "PT4M39S",
-          "title": "腕の動き Arm Movement"
+          "title": "腕の動き Arm Movement",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "8n7j1JOJudY",
           "duration": "PT4M16S",
-          "title": "腕をのばしたまま振る Arm Swings"
+          "title": "腕をのばしたまま振る Arm Swings",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "pG1_QXdauWc",
           "duration": "PT8M1S",
-          "title": "腕の回転 Arm Rotations"
+          "title": "腕の回転 Arm Rotations",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "4Cx9xewxNSk",
           "duration": "PT3M32S",
-          "title": "腕を止める Arm Stops"
+          "title": "腕を止める Arm Stops",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -72,17 +90,23 @@
         {
           "youtubeId": "tE-Xv1yCYFM",
           "duration": "PT3M4S",
-          "title": "ポーズ Pose"
+          "title": "ポーズ Pose",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "BVmTHAt4DrY",
           "duration": "PT2M12S",
-          "title": "ウォーク Walk"
+          "title": "ウォーク Walk",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "tMkJI0x0WNE",
           "duration": "PT3M10S",
-          "title": "リズムと腕の動き Groove and Arm Movement"
+          "title": "リズムと腕の動き Groove and Arm Movement",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -92,12 +116,16 @@
         {
           "youtubeId": "yxF0YW25DDs",
           "duration": "PT3M44S",
-          "title": "コンビネーション Compilation"
+          "title": "コンビネーション Compilation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "5gbRfYa-06o",
           "duration": "PT1M41S",
-          "title": "まとめ Summary"
+          "title": "まとめ Summary",
+          "height": 270,
+          "width": 480
         }
       ]
     }

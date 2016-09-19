@@ -11,62 +11,86 @@
         {
           "youtubeId": "ts9YbI00bOk",
           "duration": "PT2M6S",
-          "title": "Reebok"
+          "title": "Reebok",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "oYSDzlqbizQ",
           "duration": "PT1M44S",
-          "title": "Step N Slide"
+          "title": "Step N Slide",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "voVqUru13rk",
           "duration": "PT1M49S",
-          "title": "Kick Step"
+          "title": "Kick Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "-NdNwOJDkkA",
           "duration": "PT4M",
-          "title": "ATL Stomp"
+          "title": "ATL Stomp",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "7szVc4i-dvU",
           "duration": "PT2M7S",
-          "title": "Fila"
+          "title": "Fila",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "2SgbWQK31v4",
           "duration": "PT1M51S",
-          "title": "Cabbage Patch"
+          "title": "Cabbage Patch",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "VNBmaLSJJDU",
           "duration": "PT1M47S",
-          "title": "Bounce"
+          "title": "Bounce",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "jjmD2heQNrU",
           "duration": "PT1M42S",
-          "title": "Bart Simpson"
+          "title": "Bart Simpson",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "C8EVrGvROrs",
           "duration": "PT4M1S",
-          "title": "Choreo"
+          "title": "Choreo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "84B3N6vZ1jk",
           "duration": "PT5M19S",
-          "title": "Choreo #2"
+          "title": "Choreo #2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Se1swc4e15I",
           "duration": "PT4M",
-          "title": "Choreo #3"
+          "title": "Choreo #3",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "1Vrycp-Kmnw",
           "duration": "PT4M35S",
-          "title": "Choreo #4"
+          "title": "Choreo #4",
+          "height": 270,
+          "width": 480
         }
       ]
     }

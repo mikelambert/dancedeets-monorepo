@@ -11,37 +11,51 @@
         {
           "youtubeId": "PI0SY65Rev0",
           "duration": "PT14M31S",
-          "title": "podstawy poppingu | Pitzo"
+          "title": "podstawy poppingu | Pitzo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "4gDJ_SkAr-0",
           "duration": "PT15M3S",
-          "title": "boogaloo rolls | Batman"
+          "title": "boogaloo rolls | Batman",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Y7E8NTETFM8",
           "duration": "PT10M43S",
-          "title": "Crazy Legs | Sheva"
+          "title": "Crazy Legs | Sheva",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "PqCqZaEuBNo",
           "duration": "PT15M40S",
-          "title": "izolacje | Fantom"
+          "title": "izolacje | Fantom",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "myJh1pCkNm0",
           "duration": "PT11M59S",
-          "title": "robot | Lipskee"
+          "title": "robot | Lipskee",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "S9rRSKeVyzY",
           "duration": "PT21M41S",
-          "title": "King Tut Style aka Tutting | Alkowy P-Funkowy"
+          "title": "King Tut Style aka Tutting | Alkowy P-Funkowy",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "1NYnfOa_tPQ",
           "duration": "PT11M23S",
-          "title": "Slow Motion | Driver"
+          "title": "Slow Motion | Driver",
+          "height": 270,
+          "width": 480
         }
       ]
     }

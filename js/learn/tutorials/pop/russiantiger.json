@@ -11,42 +11,58 @@
         {
           "youtubeId": "hkZXB3LLMBA",
           "duration": "PT5M23S",
-          "title": "Arm Wave"
+          "title": "Arm Wave",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "jP1QtfOUSPM",
           "duration": "PT4M",
-          "title": "Advanced Waving"
+          "title": "Advanced Waving",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "aLSZT6pN8qk",
           "duration": "PT6M25S",
-          "title": "Body Wave"
+          "title": "Body Wave",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "e8ZN6SLt7uQ",
           "duration": "PT4M26S",
-          "title": "Gliding / Moonwalk"
+          "title": "Gliding / Moonwalk",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "_ktDqmkogPU",
           "duration": "PT5M46S",
-          "title": "Head Isolation"
+          "title": "Head Isolation",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "si_13rEP59c",
           "duration": "PT5M37S",
-          "title": "Boogaloo (Popping 101)"
+          "title": "Boogaloo (Popping 101)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "IsKS35ztV6A",
           "duration": "PT5M48S",
-          "title": "Dancing to Dubstep"
+          "title": "Dancing to Dubstep",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "55rp1cj_XuM",
           "duration": "PT5M48S",
-          "title": "Basic Choreography Tutorial: Dubstep Music with Popping"
+          "title": "Basic Choreography Tutorial: Dubstep Music with Popping",
+          "height": 270,
+          "width": 480
         }
       ]
     }

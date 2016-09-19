@@ -11,27 +11,37 @@
         {
           "youtubeId": "GDqDK5d4_jw",
           "duration": "PT1M39S",
-          "title": "Valdez/Macaco/Monkey Flip | Flip Basics"
+          "title": "Valdez/Macaco/Monkey Flip | Flip Basics",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Tw3arcqQ_Fc",
           "duration": "PT2M30S",
-          "title": "How To Do An Aerial | Cartwheel With No Hands | Monica Miyagi (Miyagi Gymnastics, Auburn)"
+          "title": "How To Do An Aerial | Cartwheel With No Hands | Monica Miyagi (Miyagi Gymnastics, Auburn)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "CWGh0ndv3H4",
           "duration": "PT2M18S",
-          "title": "How To Do A Gainer Front Flip | Jessica Miyagi(Miyagi Gymnastics)"
+          "title": "How To Do A Gainer Front Flip | Jessica Miyagi(Miyagi Gymnastics)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "boRco6eopPc",
           "duration": "PT1M51S",
-          "title": "Backflip | Jessica Miyagi(Miyagi Gymnastics, Auburn)"
+          "title": "Backflip | Jessica Miyagi(Miyagi Gymnastics, Auburn)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "HKcl-Cq1z5Q",
           "duration": "PT4M45S",
-          "title": "do a 540 Kick | Rudy Reynon II (QUEST CREW)"
+          "title": "do a 540 Kick | Rudy Reynon II (QUEST CREW)",
+          "height": 270,
+          "width": 480
         }
       ]
     }

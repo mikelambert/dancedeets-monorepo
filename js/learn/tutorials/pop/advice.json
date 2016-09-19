@@ -11,27 +11,37 @@
         {
           "youtubeId": "IowuB4RnqDw",
           "duration": "PT6M52S",
-          "title": "Kid Boogie (MGF)"
+          "title": "Kid Boogie (MGF)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "GM4u1fQylF0",
           "duration": "PT3M1S",
-          "title": "Jr Boogaloo (USA)"
+          "title": "Jr Boogaloo (USA)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "cPX2pOcFSYY",
           "duration": "PT1M18S",
-          "title": "Storm (Germany)"
+          "title": "Storm (Germany)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "mHnxH40kzPE",
           "duration": "PT2M3S",
-          "title": "Hugo aka Mista Smooth"
+          "title": "Hugo aka Mista Smooth",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "_NoZUBK-Nsw",
           "duration": "PT3M37S",
-          "title": "Slim Boogie"
+          "title": "Slim Boogie",
+          "height": 270,
+          "width": 480
         }
       ]
     }

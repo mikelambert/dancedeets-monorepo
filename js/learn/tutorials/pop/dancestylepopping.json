@@ -11,32 +11,44 @@
         {
           "youtubeId": "ABX4yXXdtKI",
           "duration": "PT10M1S",
-          "title": "Popping Basic | Acky (中文字幕)"
+          "title": "Popping Basic | Acky (中文字幕)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "hrNJ_yT5Fec",
           "duration": "PT10M2S",
-          "title": "Popping Basic Part 2 | Acky (中文字幕)"
+          "title": "Popping Basic Part 2 | Acky (中文字幕)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "52lKJ7ZvrkQ",
           "duration": "PT10M10S",
-          "title": "Animation | Seen (中文字幕)"
+          "title": "Animation | Seen (中文字幕)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "vRIOVfKQlHs",
           "duration": "PT8M48S",
-          "title": "Boogaloo 1 | Tetsu G"
+          "title": "Boogaloo 1 | Tetsu G",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "YyCsU-UY4Bg",
           "duration": "PT3M30S",
-          "title": "Boogaloo 2 | Yuki"
+          "title": "Boogaloo 2 | Yuki",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "ulq1xnRCH-0",
           "duration": "PT8M19S",
-          "title": "Robot & King Tut | Wild Cherry"
+          "title": "Robot & King Tut | Wild Cherry",
+          "height": 344,
+          "width": 459
         }
       ]
     }

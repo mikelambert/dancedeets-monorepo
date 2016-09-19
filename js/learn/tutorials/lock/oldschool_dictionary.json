@@ -11,72 +11,100 @@
         {
           "youtubeId": "YnJ_ssdZ3CE",
           "duration": "PT1M5S",
-          "title": "Wrist Twirl"
+          "title": "Wrist Twirl",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "SjcBTQtOwB8",
           "duration": "PT1M49S",
-          "title": "Pacing"
+          "title": "Pacing",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "IAbZB5Mcvzs",
           "duration": "PT1M7S",
-          "title": "Stop & Go"
+          "title": "Stop & Go",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "zHVBwrfgVbk",
           "duration": "PT1M39S",
-          "title": "Scoobot"
+          "title": "Scoobot",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "84EvgqVH9JI",
           "duration": "PT1M11S",
-          "title": "Scooby Doo"
+          "title": "Scooby Doo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "43reUB6bRSw",
           "duration": "PT1M56S",
-          "title": "The Skeeter Rabbit"
+          "title": "The Skeeter Rabbit",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "DGHGWU734-Q",
           "duration": "PT1M27S",
-          "title": "Point"
+          "title": "Point",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "VSW_zftR1eY",
           "duration": "PT1M5S",
-          "title": "The Lock"
+          "title": "The Lock",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "BwLRVLqe6Iw",
           "duration": "PT1M17S",
-          "title": "Five"
+          "title": "Five",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "csJyU8amg7E",
           "duration": "PT55S",
-          "title": "Leo Walk"
+          "title": "Leo Walk",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "d7sa-SprZ4k",
           "duration": "PT56S",
-          "title": "Which a Way"
+          "title": "Which a Way",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "hPVgaKDSKiQ",
           "duration": "PT1M32S",
-          "title": "Pimp Walk"
+          "title": "Pimp Walk",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "W-zc1dnWaI4",
           "duration": "PT1M28S",
-          "title": "Volkswagon"
+          "title": "Volkswagon",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "4v4bLMxgWtQ",
           "duration": "PT2M2S",
-          "title": "Sneak"
+          "title": "Sneak",
+          "height": 270,
+          "width": 480
         }
       ]
     }

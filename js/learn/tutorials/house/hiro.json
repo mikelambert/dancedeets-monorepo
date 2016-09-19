@@ -12,12 +12,16 @@
         {
           "youtubeId": "JCG9PojVBi0",
           "duration": "PT2M6S",
-          "title": "ダウン - Down"
+          "title": "ダウン - Down",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "NWpxwP02Z1M",
           "duration": "PT4M7S",
-          "title": "アップ - Up"
+          "title": "アップ - Up",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -27,17 +31,23 @@
         {
           "youtubeId": "Tnst6YZy7TQ",
           "duration": "PT3M49S",
-          "title": "ツーステップ - Two step"
+          "title": "ツーステップ - Two step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "1X171Mwc2Y8",
           "duration": "PT2M44S",
-          "title": "パドブレ - Pas de Bourrée"
+          "title": "パドブレ - Pas de Bourrée",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "oWHKptlnu6U",
           "duration": "PT4M22S",
-          "title": "スワル - Swirl"
+          "title": "スワル - Swirl",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -47,17 +57,23 @@
         {
           "youtubeId": "kD6TZoldCOY",
           "duration": "PT3M31S",
-          "title": " スケート - Skate"
+          "title": " スケート - Skate",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "wtl04_NCMLw",
           "duration": "PT3M",
-          "title": " トレイン - Train"
+          "title": " トレイン - Train",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "jwXj0a56OiE",
           "duration": "PT1M10S",
-          "title": " スケーティング - Skating"
+          "title": " スケーティング - Skating",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -67,22 +83,30 @@
         {
           "youtubeId": "Rn3oGiDv8ms",
           "duration": "PT3M5S",
-          "title": "サイドウォーク - Sidewalk"
+          "title": "サイドウォーク - Sidewalk",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "skrYtTw_ddA",
           "duration": "PT3M24S",
-          "title": "サイドにジャンプ - Sidesteps"
+          "title": "サイドにジャンプ - Sidesteps",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Z9k_4-mxRz0",
           "duration": "PT2M28S",
-          "title": "シャッフル - Shuffle"
+          "title": "シャッフル - Shuffle",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "p2BBDjFDQVY",
           "duration": "PT2M28S",
-          "title": "クロスウォーク - Cross Walk"
+          "title": "クロスウォーク - Cross Walk",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -92,27 +116,37 @@
         {
           "youtubeId": "80vO8a1fvPc",
           "duration": "PT3M46S",
-          "title": "クロスステップ - Cross Step"
+          "title": "クロスステップ - Cross Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "EtcPRNeBuqY",
           "duration": "PT2M6S",
-          "title": "ステップターン - Step Turn"
+          "title": "ステップターン - Step Turn",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Tx9LvLMfv4I",
           "duration": "PT2M23S",
-          "title": "ジャック イン ザ ボックス - Jack in the Box"
+          "title": "ジャック イン ザ ボックス - Jack in the Box",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "_RCdfUCzM64",
           "duration": "PT2M22S",
-          "title": "バックスキップ - Back Step"
+          "title": "バックスキップ - Back Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "4udWwunDme4",
           "duration": "PT2M46S",
-          "title": "ファーマー - Farmer"
+          "title": "ファーマー - Farmer",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -122,12 +156,16 @@
         {
           "youtubeId": "Pd9a_kvkCco",
           "duration": "PT2M31S",
-          "title": "まとめ - Summary"
+          "title": "まとめ - Summary",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "byoj6Y2meiY",
           "duration": "PT3M13S",
-          "title": "コメント映像 - Comments"
+          "title": "コメント映像 - Comments",
+          "height": 270,
+          "width": 480
         }
       ]
     }

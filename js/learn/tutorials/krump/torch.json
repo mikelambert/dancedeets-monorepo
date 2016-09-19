@@ -11,17 +11,23 @@
         {
           "youtubeId": "7A2MASio7HU",
           "duration": "PT10M3S",
-          "title": "Part 1 - Stance and Footwork"
+          "title": "Part 1 - Stance and Footwork",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "y_zN5hMOmtU",
           "duration": "PT1M43S",
-          "title": "Part 2 - Body Control and Groove"
+          "title": "Part 2 - Body Control and Groove",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "h1WjxaBR3z0",
           "duration": "PT10M17S",
-          "title": "Part 3 - Arms and Focus Points"
+          "title": "Part 3 - Arms and Focus Points",
+          "height": 270,
+          "width": 480
         }
       ]
     }

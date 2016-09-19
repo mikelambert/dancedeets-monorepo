@@ -11,7 +11,9 @@
         {
           "youtubeId": "uLbIlnaYR9o",
           "duration": "PT6M3S",
-          "title": "Up and Lock, Party Dance, Slap Clap"
+          "title": "Up and Lock, Party Dance, Slap Clap",
+          "height": 270,
+          "width": 480
         }
       ]
     }

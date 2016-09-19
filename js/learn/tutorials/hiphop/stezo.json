@@ -12,62 +12,86 @@
         {
           "youtubeId": "S-CE0cnR69o",
           "duration": "PT6M15S",
-          "title": "バートシンプソン Bart Simpson"
+          "title": "バートシンプソン Bart Simpson",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "5LUuHL0qt78",
           "duration": "PT4M9S",
-          "title": "バタフライ Butterfly"
+          "title": "バタフライ Butterfly",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "7co59wg6B68",
           "duration": "PT2M19S",
-          "title": "ヒール&トゥー Heel Toe"
+          "title": "ヒール&トゥー Heel Toe",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "b_u-5SMV3uQ",
           "duration": "PT3M5S",
-          "title": "オリジナルステップ Original Step"
+          "title": "オリジナルステップ Original Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "tC6ddDt_Nz4",
           "duration": "PT4M30S",
-          "title": "ジャックスイング Jack Swing"
+          "title": "ジャックスイング Jack Swing",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "jM3fhYLI0zw",
           "duration": "PT2M43S",
-          "title": "オリジナルステップ ジャックスイング後ろノリ Jack Swing Backwards"
+          "title": "オリジナルステップ ジャックスイング後ろノリ Jack Swing Backwards",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "6AjOK0HC1lg",
           "duration": "PT4M46S",
-          "title": "横のリズム取り Adjacent rhythm-up"
+          "title": "横のリズム取り Adjacent rhythm-up",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "zPHb2biU0Y4",
           "duration": "PT6M45S",
-          "title": "横の重心移動を使った動き"
+          "title": "横の重心移動を使った動き",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "OeGNxSZ9eVw",
           "duration": "PT4M22S",
-          "title": "ケントステップ Kento Step"
+          "title": "ケントステップ Kento Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "djaqObdA-qM",
           "duration": "PT7M50S",
-          "title": "向きを変えたい時に使える動き Direction Changes"
+          "title": "向きを変えたい時に使える動き Direction Changes",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Fly4-kHH-9c",
           "duration": "PT7M8S",
-          "title": "3連のリズム取り 3-point rhythm-up"
+          "title": "3連のリズム取り 3-point rhythm-up",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "QijUlgVKGTY",
           "duration": "PT7M",
-          "title": "アイソレーションを使った流れ Isolation Flow"
+          "title": "アイソレーションを使った流れ Isolation Flow",
+          "height": 270,
+          "width": 480
         }
       ]
     }

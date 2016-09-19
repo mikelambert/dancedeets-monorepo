@@ -11,32 +11,44 @@
         {
           "youtubeId": "nQ4lZy2XjFQ",
           "duration": "PT5M56S",
-          "title": "Baile Robot Tutorial"
+          "title": "Baile Robot Tutorial",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Oo-3KgFQqRc",
           "duration": "PT2M33S",
-          "title": "Dime Stop"
+          "title": "Dime Stop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "jhVUHt8PDR4",
           "duration": "PT4M44S",
-          "title": "Strobin'"
+          "title": "Strobin'",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "PswIj80bzMk",
           "duration": "PT2M41S",
-          "title": "Tickin'"
+          "title": "Tickin'",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "bEkEDxqfFZ4",
           "duration": "PT10M35S",
-          "title": "Contracciones / Pops - Parte 1"
+          "title": "Contracciones / Pops - Parte 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Aos0CDvStNY",
           "duration": "PT5M18S",
-          "title": "Contracciones / Pops - Parte 2: Piernas"
+          "title": "Contracciones / Pops - Parte 2: Piernas",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -46,17 +58,23 @@
         {
           "youtubeId": "s3UFbCj0NTU",
           "duration": "PT2M30S",
-          "title": "Basic - Waves"
+          "title": "Basic - Waves",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "OnabD58puhA",
           "duration": "PT2M56S",
-          "title": "Advanced - Tutorial Ondas/Olas Avanzadas"
+          "title": "Advanced - Tutorial Ondas/Olas Avanzadas",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "1ORJdkgrHCI",
           "duration": "PT3M51S",
-          "title": "Tips Trucos - Olas / Ondas / Waves"
+          "title": "Tips Trucos - Olas / Ondas / Waves",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -66,32 +84,44 @@
         {
           "youtubeId": "tXehm7T_kQQ",
           "duration": "PT3M29S",
-          "title": "Fresno"
+          "title": "Fresno",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "bgcAdfX0eMg",
           "duration": "PT2M49S",
-          "title": "Flex / Flexing"
+          "title": "Flex / Flexing",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Yiihk4JwEHM",
           "duration": "PT2M59S",
-          "title": "Twist-O-Flex"
+          "title": "Twist-O-Flex",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "4Jhob3z6J8Q",
           "duration": "PT2M58S",
-          "title": "Neck-O-Flex"
+          "title": "Neck-O-Flex",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "jy6vNfKYryk",
           "duration": "PT3M25S",
-          "title": "Master Flex"
+          "title": "Master Flex",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "0YKYaCi6YyA",
           "duration": "PT3M27S",
-          "title": "Walk Out"
+          "title": "Walk Out",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -101,37 +131,51 @@
         {
           "youtubeId": "r15LIHzG_F0",
           "duration": "PT3M45S",
-          "title": "Parte 1/7 - Cuello y Hombros"
+          "title": "Parte 1/7 - Cuello y Hombros",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "7YeOnjcdUDU",
           "duration": "PT3M32S",
-          "title": "Parte 2/7 - Hombros y Pecho"
+          "title": "Parte 2/7 - Hombros y Pecho",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "HJh6K0KVncc",
           "duration": "PT3M41S",
-          "title": "Parte 3/7 - Cintura y Cadera"
+          "title": "Parte 3/7 - Cintura y Cadera",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "S05eHZSBMMQ",
           "duration": "PT4M18S",
-          "title": "Parte 4/7 - Rodillas"
+          "title": "Parte 4/7 - Rodillas",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "3gZxTcoVfWQ",
           "duration": "PT3M16S",
-          "title": "Parte 5/7 - Brazos, Manos y Tobillos"
+          "title": "Parte 5/7 - Brazos, Manos y Tobillos",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "NWWauXaFFIQ",
           "duration": "PT3M35S",
-          "title": "Parte 6/7 - Coreografía"
+          "title": "Parte 6/7 - Coreografía",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "ggtj48xbmEQ",
           "duration": "PT2M8S",
-          "title": "Parte 7/7 - Freestyle"
+          "title": "Parte 7/7 - Freestyle",
+          "height": 270,
+          "width": 480
         }
       ]
     }

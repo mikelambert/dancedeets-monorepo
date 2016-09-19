@@ -11,52 +11,72 @@
         {
           "youtubeId": "slZZYS4DyuQ",
           "duration": "PT13M15S",
-          "title": "Tutting Basics - JayFunk & Jason"
+          "title": "Tutting Basics - JayFunk & Jason",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "A4viOzllZNM",
           "duration": "PT13M52S",
-          "title": "Hinges/Isolation Points + Tutting Combo - JayFunk & Jason"
+          "title": "Hinges/Isolation Points + Tutting Combo - JayFunk & Jason",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "LObzXT0hxxc",
           "duration": "PT11M36S",
-          "title": "Tutting Combo + Tips - JayFunk & Jason"
+          "title": "Tutting Combo + Tips - JayFunk & Jason",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "4FxzemyQdVQ",
           "duration": "PT13M49S",
-          "title": "Tutting Combo + Freestyle Tips - JayFunk & Jason"
+          "title": "Tutting Combo + Freestyle Tips - JayFunk & Jason",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "wXXGMlHvz4k",
           "duration": "PT18M16S",
-          "title": "Tutting Combo + Freestyle Tips - JayFunk, Jason Kim, Fiasko Daniels"
+          "title": "Tutting Combo + Freestyle Tips - JayFunk, Jason Kim, Fiasko Daniels",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "NIKS_Mop1lw",
           "duration": "PT12M50S",
-          "title": "Tutting Combo + Digit Concept - JayFunk & Fiasko Daniels"
+          "title": "Tutting Combo + Digit Concept - JayFunk & Fiasko Daniels",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Ym8p0cTpBQA",
           "duration": "PT16M54S",
-          "title": "Tutting Combos - JayFunk & Fiasko Daniels"
+          "title": "Tutting Combos - JayFunk & Fiasko Daniels",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "WI6AWDl8OyI",
           "duration": "PT11M12S",
-          "title": "Tutting Combo - JayFunk, Jason Kim, Fiasko Daniels"
+          "title": "Tutting Combo - JayFunk, Jason Kim, Fiasko Daniels",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "8vpUHRvPn5w",
           "duration": "PT15M48S",
-          "title": "Tutting Combo + Tunneling - JayFunk, Jason Kim, Fiasko Daniels"
+          "title": "Tutting Combo + Tunneling - JayFunk, Jason Kim, Fiasko Daniels",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "inTo9LNDI60",
           "duration": "PT10M1S",
-          "title": "Tutting Choreo - JayFunk, Jason Kim, Fiasko Daniels"
+          "title": "Tutting Choreo - JayFunk, Jason Kim, Fiasko Daniels",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -66,22 +86,30 @@
         {
           "youtubeId": "r_7zXbpBf2U",
           "duration": "PT11M40S",
-          "title": "Tracing / Fingertutting Basics Part I - JayFunk & Jason"
+          "title": "Tracing / Fingertutting Basics Part I - JayFunk & Jason",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "zGDPsKCnoHc",
           "duration": "PT11M33S",
-          "title": "Fingertutting Combo + Crumbling - JayFunk & Jason"
+          "title": "Fingertutting Combo + Crumbling - JayFunk & Jason",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "fP-ERh8RXFo",
           "duration": "PT16M36S",
-          "title": "Fingertutting Tutorial - JayFunk & Fiasko Daniels"
+          "title": "Fingertutting Tutorial - JayFunk & Fiasko Daniels",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "BaL0eBDBDeo",
           "duration": "PT14M29S",
-          "title": "Fingertutting Combos - JayFunk & Fiasko Daniels"
+          "title": "Fingertutting Combos - JayFunk & Fiasko Daniels",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -91,22 +119,30 @@
         {
           "youtubeId": "_WEYSsmAg6A",
           "duration": "PT3M35S",
-          "title": "Part 1"
+          "title": "Part 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "SJpdilUrnG0",
           "duration": "PT4M48S",
-          "title": "Part 2"
+          "title": "Part 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "onJahzd74_E",
           "duration": "PT6M35S",
-          "title": "Part 3"
+          "title": "Part 3",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "TdLDbvVwZtY",
           "duration": "PT7M52S",
-          "title": "Part 4"
+          "title": "Part 4",
+          "height": 270,
+          "width": 480
         }
       ]
     }

@@ -11,12 +11,16 @@
         {
           "youtubeId": "vbWziMUR5XU",
           "duration": "PT2M27S",
-          "title": "Introducción"
+          "title": "Introducción",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "gIVerlT0IRk",
           "duration": "PT1M58S",
-          "title": "Desplazamientos"
+          "title": "Desplazamientos",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -26,27 +30,37 @@
         {
           "youtubeId": "g8PI_qgadhA",
           "duration": "PT1M25S",
-          "title": "Running man"
+          "title": "Running man",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "bFJLPd-wowk",
           "duration": "PT1M26S",
-          "title": "Reebok"
+          "title": "Reebok",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "KZeSQIpAccU",
           "duration": "PT1M50S",
-          "title": "Upstairs downstairs"
+          "title": "Upstairs downstairs",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "0bfsjIWPj3M",
           "duration": "PT1M40S",
-          "title": "Roger Rabbit"
+          "title": "Roger Rabbit",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "s2SR7_8tjuo",
           "duration": "PT1M47S",
-          "title": "Monastery"
+          "title": "Monastery",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -56,27 +70,37 @@
         {
           "youtubeId": "vukDRzUXvbw",
           "duration": "PT1M28S",
-          "title": "Kriss Kross"
+          "title": "Kriss Kross",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "TgE-tw86f4g",
           "duration": "PT2M17S",
-          "title": "Harlem shake"
+          "title": "Harlem shake",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "gNiQfVFuNKM",
           "duration": "PT1M24S",
-          "title": "Party machine"
+          "title": "Party machine",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "z6mvx6u6t9c",
           "duration": "PT1M36S",
-          "title": "Bart Simpson"
+          "title": "Bart Simpson",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "p_MY7LlS8c4",
           "duration": "PT2M13S",
-          "title": "Bounce"
+          "title": "Bounce",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -86,27 +110,37 @@
         {
           "youtubeId": "vD4Mhf8nbKg",
           "duration": "PT1M42S",
-          "title": "Wop"
+          "title": "Wop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Zo05IfWAoik",
           "duration": "PT1M44S",
-          "title": "Bankhead bounce"
+          "title": "Bankhead bounce",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "PcA-RgveDFs",
           "duration": "PT2M2S",
-          "title": "ATL Stomp"
+          "title": "ATL Stomp",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "xwNx1c61X_M",
           "duration": "PT2M19S",
-          "title": "Cabbage patch"
+          "title": "Cabbage patch",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "eyy8QT5lyms",
           "duration": "PT2M2S",
-          "title": "Steve Martin"
+          "title": "Steve Martin",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -116,7 +150,9 @@
         {
           "youtubeId": "FpwPIXAEzfI",
           "duration": "PT3M1S",
-          "title": "Demostración final"
+          "title": "Demostración final",
+          "height": 270,
+          "width": 480
         }
       ]
     }

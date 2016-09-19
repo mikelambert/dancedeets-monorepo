@@ -11,17 +11,23 @@
         {
           "youtubeId": "XnOLuXT3X68",
           "duration": "PT8M57S",
-          "title": "Groove, Up And Lock, Wrist Twirl, Point, Scooby Doo"
+          "title": "Groove, Up And Lock, Wrist Twirl, Point, Scooby Doo",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "pP5sQEn3L3Q",
           "duration": "PT8M17S",
-          "title": "Scoobot, Scoobot Down, Scoobot Up, Don Campbel Walk, Rock Steady"
+          "title": "Scoobot, Scoobot Down, Scoobot Up, Don Campbel Walk, Rock Steady",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "2-CKvmuFCE8",
           "duration": "PT6M34S",
-          "title": "Stop N Go, Which A Way, Hammer, Knee Drop, Kill The Roach, Split"
+          "title": "Stop N Go, Which A Way, Hammer, Knee Drop, Kill The Roach, Split",
+          "height": 344,
+          "width": 459
         }
       ]
     }

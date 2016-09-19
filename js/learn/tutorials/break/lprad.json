@@ -11,32 +11,44 @@
         {
           "youtubeId": "OFASN0FXglY",
           "duration": "PT5M27S",
-          "title": "Transitions"
+          "title": "Transitions",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "nFG38_CbPso",
           "duration": "PT7M48S",
-          "title": "Munchmills"
+          "title": "Munchmills",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ZEpn294wnu8",
           "duration": "PT6M32S",
-          "title": "Advanced Get Downs"
+          "title": "Advanced Get Downs",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "u_8l9OxP5OQ",
           "duration": "PT5M26S",
-          "title": "Tapmills"
+          "title": "Tapmills",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "VQH2ufJwEHk",
           "duration": "PT9M42S",
-          "title": "Sidechairs and Airchairs"
+          "title": "Sidechairs and Airchairs",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "OVIYDBFGaT8",
           "duration": "PT10M33S",
-          "title": "Rollback Freezes"
+          "title": "Rollback Freezes",
+          "height": 270,
+          "width": 480
         }
       ]
     }

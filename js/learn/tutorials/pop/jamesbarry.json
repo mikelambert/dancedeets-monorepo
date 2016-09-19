@@ -11,12 +11,16 @@
         {
           "youtubeId": "mWz5Kxo4dTM",
           "duration": "PT7M47S",
-          "title": "How To Pop"
+          "title": "How To Pop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "iJ-GkW42utw",
           "duration": "PT4M36S",
-          "title": "How to Freestyle"
+          "title": "How to Freestyle",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -26,17 +30,23 @@
         {
           "youtubeId": "iw-YBCqRmF4",
           "duration": "PT7M48S",
-          "title": "Dime Stops"
+          "title": "Dime Stops",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "nxmF17L1vX8",
           "duration": "PT2M40S",
-          "title": "Heavy Isolations"
+          "title": "Heavy Isolations",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "KihZlSJhUYY",
           "duration": "PT3M24S",
-          "title": "Triple Isolations"
+          "title": "Triple Isolations",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -46,27 +56,37 @@
         {
           "youtubeId": "qFokZFl6Ccc",
           "duration": "PT5M32S",
-          "title": "Twist-o-Flex"
+          "title": "Twist-o-Flex",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "cXMeMR5l6aI",
           "duration": "PT5M37S",
-          "title": "Old Man"
+          "title": "Old Man",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "KHQ5KCy6DDs",
           "duration": "PT4M14S",
-          "title": "Walk Out"
+          "title": "Walk Out",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "HT_sBOQ2wq4",
           "duration": "PT6M6S",
-          "title": "Lifts & Rolls: Basic Boogaloo"
+          "title": "Lifts & Rolls: Basic Boogaloo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "9WqYRF_2WyA",
           "duration": "PT5M26S",
-          "title": "Crazy Legs"
+          "title": "Crazy Legs",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -76,17 +96,23 @@
         {
           "youtubeId": "f2Awy32AQxo",
           "duration": "PT6M9S",
-          "title": "Strobing"
+          "title": "Strobing",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "95h7JzX6G3w",
           "duration": "PT4M38S",
-          "title": "Ticking"
+          "title": "Ticking",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "CEAanLyHjcA",
           "duration": "PT2M26S",
-          "title": "Shaking"
+          "title": "Shaking",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -96,27 +122,37 @@
         {
           "youtubeId": "jgNhhVxNspE",
           "duration": "PT4M52S",
-          "title": "Manipulation"
+          "title": "Manipulation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "UPblQD6wSNQ",
           "duration": "PT4M41S",
-          "title": "Puppet Style"
+          "title": "Puppet Style",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "hKiZ47ohPHM",
           "duration": "PT4M45S",
-          "title": "King Tut Basics"
+          "title": "King Tut Basics",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "VJQCIORBgnw",
           "duration": "PT2M56S",
-          "title": "Footwork - V Step"
+          "title": "Footwork - V Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "slSkGTLHvXQ",
           "duration": "PT4M2S",
-          "title": "Gliding"
+          "title": "Gliding",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -126,12 +162,16 @@
         {
           "youtubeId": "9RDNwaGmPIc",
           "duration": "PT5M34S",
-          "title": "Floor Moves"
+          "title": "Floor Moves",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Yi3KqUJIK6c",
           "duration": "PT5M15S",
-          "title": "Get ups"
+          "title": "Get ups",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -141,17 +181,23 @@
         {
           "youtubeId": "ZI6VPPUJz-o",
           "duration": "PT4M47S",
-          "title": "Robot Animatronics Basics"
+          "title": "Robot Animatronics Basics",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "gYfN9_htimg",
           "duration": "PT5M54S",
-          "title": "Robot Animatronics Intermediate"
+          "title": "Robot Animatronics Intermediate",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "WgTkBm6yUqg",
           "duration": "PT3M25S",
-          "title": "Step Up 3D robot move"
+          "title": "Step Up 3D robot move",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -161,37 +207,51 @@
         {
           "youtubeId": "RPI1WfWka6M",
           "duration": "PT3M58S",
-          "title": "Hands and Liquid"
+          "title": "Hands and Liquid",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "rAnqKwJiamM",
           "duration": "PT6M32S",
-          "title": "Double Wave"
+          "title": "Double Wave",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "mrHUO2j4C3k",
           "duration": "PT5M14S",
-          "title": "Double Wave 2.0"
+          "title": "Double Wave 2.0",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "lEu1ExVddWM",
           "duration": "PT4M57S",
-          "title": "Body Wave Tutorial"
+          "title": "Body Wave Tutorial",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "3JVkVMJMNPs",
           "duration": "PT4M2S",
-          "title": "Body Wave Advanced"
+          "title": "Body Wave Advanced",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "78svoCpUxmo",
           "duration": "PT3M6S",
-          "title": "Liquid"
+          "title": "Liquid",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "UtpDawgKAxI",
           "duration": "PT3M44S",
-          "title": "Snaking"
+          "title": "Snaking",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -201,17 +261,23 @@
         {
           "youtubeId": "z8B5qNoCUAM",
           "duration": "PT3M31S",
-          "title": "Push Points / The Wall"
+          "title": "Push Points / The Wall",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "OsIh5JqRM_A",
           "duration": "PT3M12S",
-          "title": "Fixed points / The Wall"
+          "title": "Fixed points / The Wall",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "JQahmRzrWy0",
           "duration": "PT4M20S",
-          "title": "The Pipe"
+          "title": "The Pipe",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -221,17 +287,23 @@
         {
           "youtubeId": "dTDWKGKc3sw",
           "duration": "PT4M43S",
-          "title": "Beginner's combo"
+          "title": "Beginner's combo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "zVHrdL_C9bE",
           "duration": "PT5M50S",
-          "title": "Beginner's (that have levelled up) combo"
+          "title": "Beginner's (that have levelled up) combo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "FAb1Wx2Bat8",
           "duration": "PT4M23S",
-          "title": "Beginner's Arm Combo"
+          "title": "Beginner's Arm Combo",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -241,17 +313,23 @@
         {
           "youtubeId": "jdG64Ub7VAg",
           "duration": "PT5M51S",
-          "title": "Pointers"
+          "title": "Pointers",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "on5aAg3fK2M",
           "duration": "PT3M51S",
-          "title": "Pointers - Waving"
+          "title": "Pointers - Waving",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "r9WQWinmWuo",
           "duration": "PT3M51S",
-          "title": "Pointers - Music"
+          "title": "Pointers - Music",
+          "height": 270,
+          "width": 480
         }
       ]
     }

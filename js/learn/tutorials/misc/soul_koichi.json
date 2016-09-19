@@ -11,42 +11,58 @@
         {
           "youtubeId": "46xNyvz1BsE",
           "duration": "PT1M2S",
-          "title": "Break Down ブレイクダウン"
+          "title": "Break Down ブレイクダウン",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "T8_uhZhxCbI",
           "duration": "PT1M5S",
-          "title": "Funky Chicken  ファンキーチキン"
+          "title": "Funky Chicken  ファンキーチキン",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "sjCxuBzagSc",
           "duration": "PT1M4S",
-          "title": "Funky Penguin ファンキーペンギン"
+          "title": "Funky Penguin ファンキーペンギン",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "VoWwHrDcz3w",
           "duration": "PT1M33S",
-          "title": "Funky Broadway ファンキーブロードウェイ"
+          "title": "Funky Broadway ファンキーブロードウェイ",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "1wR1JDyde1k",
           "duration": "PT1M19S",
-          "title": "Water  Gate ウォーターゲート"
+          "title": "Water  Gate ウォーターゲート",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "xonGOaMb27g",
           "duration": "PT2M14S",
-          "title": "Four Corner　フォーコーナー"
+          "title": "Four Corner　フォーコーナー",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "ZXc9ZaktWBc",
           "duration": "PT1M46S",
-          "title": "Sex Machine セックスマシーン(ステップver.)"
+          "title": "Sex Machine セックスマシーン(ステップver.)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "rAMQ0kN2J-c",
           "duration": "PT1M24S",
-          "title": "Robot Dance ロボットダンス"
+          "title": "Robot Dance ロボットダンス",
+          "height": 344,
+          "width": 459
         }
       ]
     }

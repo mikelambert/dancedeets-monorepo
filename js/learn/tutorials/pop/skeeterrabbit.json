@@ -11,52 +11,72 @@
         {
           "youtubeId": "7U4Z_2EbViM",
           "duration": "PT7M9S",
-          "title": "Scarecrow"
+          "title": "Scarecrow",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "k-fFneZ-fQs",
           "duration": "PT9M8S",
-          "title": "Toyman"
+          "title": "Toyman",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "VlGSgTddRVw",
           "duration": "PT5M40S",
-          "title": "Puppet"
+          "title": "Puppet",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "bUrX5BoDBrA",
           "duration": "PT6M4S",
-          "title": "Walk Out & Variations"
+          "title": "Walk Out & Variations",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "V2puW8Is6JA",
           "duration": "PT2M26S",
-          "title": "Neck O Flex"
+          "title": "Neck O Flex",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "FiT7NvSj0C8",
           "duration": "PT1M49S",
-          "title": "Connection Move"
+          "title": "Connection Move",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "1VqkMNhYx7c",
           "duration": "PT1M19S",
-          "title": "Style Vs Move"
+          "title": "Style Vs Move",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "TiajPS5Gt7k",
           "duration": "PT1M57S",
-          "title": "Dance To The Beat"
+          "title": "Dance To The Beat",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "-r68SELhbwM",
           "duration": "PT2M3S",
-          "title": "Sittin In Hit"
+          "title": "Sittin In Hit",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "jyQ9h_obpW4",
           "duration": "PT10M11S",
-          "title": "Gettin' Down & Summary"
+          "title": "Gettin' Down & Summary",
+          "height": 344,
+          "width": 459
         }
       ]
     }

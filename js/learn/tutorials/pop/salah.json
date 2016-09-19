@@ -11,27 +11,37 @@
         {
           "youtubeId": "CT_ztZjp0Ds",
           "duration": "PT5M55S",
-          "title": "Music of Life"
+          "title": "Music of Life",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "hKnJCB7iJEc",
           "duration": "PT5M23S",
-          "title": "Snake in the Water"
+          "title": "Snake in the Water",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Zyl6Xq-AY9o",
           "duration": "PT7M2S",
-          "title": "Seeing is Believing"
+          "title": "Seeing is Believing",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "M2D43gXbkaI",
           "duration": "PT6M35S",
-          "title": "The Architect"
+          "title": "The Architect",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Ia2CEAPIbX0",
           "duration": "PT5M14S",
-          "title": "Culture is Key"
+          "title": "Culture is Key",
+          "height": 270,
+          "width": 480
         }
       ]
     }

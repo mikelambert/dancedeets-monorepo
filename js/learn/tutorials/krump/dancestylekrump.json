@@ -11,37 +11,51 @@
         {
           "youtubeId": "7B9TI1nlqdY",
           "duration": "PT10M42S",
-          "title": "Part 1"
+          "title": "Part 1",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "bEkLs1Y3WE4",
           "duration": "PT10M53S",
-          "title": "Part 2"
+          "title": "Part 2",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "cCv96ctWV5s",
           "duration": "PT10M46S",
-          "title": "Part 3"
+          "title": "Part 3",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "3UByYhfILDk",
           "duration": "PT10M55S",
-          "title": "Part 4"
+          "title": "Part 4",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "MC0GpzHjeQU",
           "duration": "PT10M47S",
-          "title": "Part 5"
+          "title": "Part 5",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "DQplIVckWI8",
           "duration": "PT10M53S",
-          "title": "Part 6"
+          "title": "Part 6",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "auqg-U7MYmI",
           "duration": "PT7M58S",
-          "title": "Part 7"
+          "title": "Part 7",
+          "height": 344,
+          "width": 459
         }
       ]
     }

@@ -11,7 +11,9 @@
         {
           "youtubeId": "fLc4L5C0Oo0",
           "duration": "PT3M23S",
-          "title": "Intro to Waacking tutorial"
+          "title": "Intro to Waacking tutorial",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -21,7 +23,9 @@
         {
           "youtubeId": "1FEOjMPhxLE",
           "duration": "PT6M10S",
-          "title": "5 Waacking Arm Basics and Combo"
+          "title": "5 Waacking Arm Basics and Combo",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -31,12 +35,16 @@
         {
           "youtubeId": "giBENBGrevY",
           "duration": "PT5M18S",
-          "title": "Dance Tutorial Basic Wacking part 1"
+          "title": "Dance Tutorial Basic Wacking part 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "bVRFhKJZRN8",
           "duration": "PT2M58S",
-          "title": "Dance Tutorial Basic Wacking part 2"
+          "title": "Dance Tutorial Basic Wacking part 2",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -46,17 +54,23 @@
         {
           "youtubeId": "4A177L6TyPg",
           "duration": "PT1M1S",
-          "title": "Waacking - the basic waack with Lady Venus"
+          "title": "Waacking - the basic waack with Lady Venus",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "q1rzULEOWyU",
           "duration": "PT3M21S",
-          "title": "Waacking - combo 1 with Lady Venus"
+          "title": "Waacking - combo 1 with Lady Venus",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "1K5duHI3YnA",
           "duration": "PT1M19S",
-          "title": "Stephanie Sit aka Lady Venus of the Waacktioners - Waacking guru"
+          "title": "Stephanie Sit aka Lady Venus of the Waacktioners - Waacking guru",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -66,7 +80,9 @@
         {
           "youtubeId": "QeFBpG2XTkk",
           "duration": "PT1M20S",
-          "title": "Tutorial de Waacking"
+          "title": "Tutorial de Waacking",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -76,7 +92,9 @@
         {
           "youtubeId": "ZfIwYEf0Pe4",
           "duration": "PT9M9S",
-          "title": "Waacking Tutorial"
+          "title": "Waacking Tutorial",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -86,7 +104,9 @@
         {
           "youtubeId": "-Oi3lEgHyTk",
           "duration": "PT3M7S",
-          "title": "Learn Basics of Waacking"
+          "title": "Learn Basics of Waacking",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -96,7 +116,9 @@
         {
           "youtubeId": "67Key9srYaI",
           "duration": "PT8M22S",
-          "title": "How To Waack"
+          "title": "How To Waack",
+          "height": 344,
+          "width": 459
         }
       ]
     },
@@ -106,7 +128,9 @@
         {
           "youtubeId": "on3mNgt5YcI",
           "duration": "PT12M43S",
-          "title": "Waacking Tutorial: Arms, Legs, Posing, Grooving"
+          "title": "Waacking Tutorial: Arms, Legs, Posing, Grooving",
+          "height": 270,
+          "width": 480
         }
       ]
     }

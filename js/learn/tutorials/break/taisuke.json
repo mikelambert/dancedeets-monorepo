@@ -12,52 +12,72 @@
         {
           "youtubeId": "TwBRN0kJ9To",
           "duration": "PT6M41S",
-          "title": "エアーチェアー Air Chair"
+          "title": "エアーチェアー Air Chair",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "D4oSKJruRPI",
           "duration": "PT7M59S",
-          "title": "バッファロー&コークスクリュー Buffalo & Corkscrew"
+          "title": "バッファロー&コークスクリュー Buffalo & Corkscrew",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "gICzB4ysOvU",
           "duration": "PT6M22S",
-          "title": "クリケット Cricket"
+          "title": "クリケット Cricket",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "On1xB7UVMZE",
           "duration": "PT4M6S",
-          "title": "ドロップ Drop"
+          "title": "ドロップ Drop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "bCOmU49QzPA",
           "duration": "PT4M56S",
-          "title": "ドリル Drill"
+          "title": "ドリル Drill",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "bIih1s8K-Lk",
           "duration": "PT4M58S",
-          "title": "【B-BOY】チェアー Chair"
+          "title": "【B-BOY】チェアー Chair",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "i1523aXO4eM",
           "duration": "PT4M43S",
-          "title": "ドロップ(応用) Drop"
+          "title": "ドロップ(応用) Drop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "vjhXhJN2_fA",
           "duration": "PT3M48S",
-          "title": "【B-BOY】ズールスピン Zulu Spin"
+          "title": "【B-BOY】ズールスピン Zulu Spin",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "CqOTgJ4rtbo",
           "duration": "PT4M33S",
-          "title": "【B-BOY】チェアー(応用) Applied Chair"
+          "title": "【B-BOY】チェアー(応用) Applied Chair",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "XGNwiZluIbw",
           "duration": "PT7M53S",
-          "title": "【B-BOY】バックスピン Back Spin"
+          "title": "【B-BOY】バックスピン Back Spin",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -67,32 +87,44 @@
         {
           "youtubeId": "-2kiSt_G9ts",
           "duration": "PT2M1S",
-          "title": "オリジナルインディアンステップ Original Indian Step"
+          "title": "オリジナルインディアンステップ Original Indian Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ra9IzjPwuWQ",
           "duration": "PT1M45S",
-          "title": "サルサロック Breakin' Salsa"
+          "title": "サルサロック Breakin' Salsa",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "7t1X3IZLtUU",
           "duration": "PT2M20S",
-          "title": "ニードロップ Knee Drop"
+          "title": "ニードロップ Knee Drop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "j1ponoCMJ88",
           "duration": "PT2M3S",
-          "title": "チェアー Chair"
+          "title": "チェアー Chair",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "20c9Bnrbm9o",
           "duration": "PT2M10S",
-          "title": "【B-BOY】フットワーク(6歩) Footwork (6 Step)"
+          "title": "【B-BOY】フットワーク(6歩) Footwork (6 Step)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Ur22Q6-FNWk",
           "duration": "PT1M36S",
-          "title": "【B-BOY】フットワーク(3歩) Footwork (3 Step)"
+          "title": "【B-BOY】フットワーク(3歩) Footwork (3 Step)",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -102,22 +134,30 @@
         {
           "youtubeId": "Ht2049kU6cw",
           "duration": "PT1M27S",
-          "title": "Wフリーズ 'W' Freeze"
+          "title": "Wフリーズ 'W' Freeze",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "o_ILrEgj03U",
           "duration": "PT4M7S",
-          "title": "ウインドミル Windmills"
+          "title": "ウインドミル Windmills",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "nqRGTUNhQC0",
           "duration": "PT2M10S",
-          "title": "スワイプス Swipes"
+          "title": "スワイプス Swipes",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "nxQNE1y5u1U",
           "duration": "PT2M20S",
-          "title": "トーマスフレア Thomasflare"
+          "title": "トーマスフレア Thomasflare",
+          "height": 270,
+          "width": 480
         }
       ]
     }

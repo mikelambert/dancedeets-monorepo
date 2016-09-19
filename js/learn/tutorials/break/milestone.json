@@ -11,7 +11,9 @@
         {
           "youtubeId": "otlBjo7ggxk",
           "duration": "PT1M14S",
-          "title": "Tutorial Introduction"
+          "title": "Tutorial Introduction",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -21,27 +23,37 @@
         {
           "youtubeId": "_aEb9SDagNE",
           "duration": "PT2M47S",
-          "title": "The Rock"
+          "title": "The Rock",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "TfpfjiFv2qQ",
           "duration": "PT2M55S",
-          "title": "Box Freestyle"
+          "title": "Box Freestyle",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "QfecuSyEh2o",
           "duration": "PT5M",
-          "title": "March Step Progression"
+          "title": "March Step Progression",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "BHtlujKk13k",
           "duration": "PT6M21S",
-          "title": "Knee Up Box Freestyle"
+          "title": "Knee Up Box Freestyle",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "36i7Og8T_xo",
           "duration": "PT3M27S",
-          "title": "Indian Step Toe Pivot"
+          "title": "Indian Step Toe Pivot",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -51,22 +63,30 @@
         {
           "youtubeId": "yPIeFxyZczY",
           "duration": "PT3M21S",
-          "title": "Cork Screw"
+          "title": "Cork Screw",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "eeHwhk6LDrs",
           "duration": "PT7M21S",
-          "title": "Seven Step Variation"
+          "title": "Seven Step Variation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "71-ZMvTSP_Q",
           "duration": "PT7M48S",
-          "title": "Toprock To Knee Drop/ Colt 45"
+          "title": "Toprock To Knee Drop/ Colt 45",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "2PML4XLLyjM",
           "duration": "PT6M46S",
-          "title": "Indian Step Get Down"
+          "title": "Indian Step Get Down",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -76,52 +96,72 @@
         {
           "youtubeId": "jyZ_fsZErb8",
           "duration": "PT3M58S",
-          "title": "Basic Footwork Mechanics"
+          "title": "Basic Footwork Mechanics",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "U0tAxNh0P20",
           "duration": "PT4M37S",
-          "title": "Hooks"
+          "title": "Hooks",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "HfhBdfxTWCg",
           "duration": "PT2M56S",
-          "title": "Hooks"
+          "title": "Hooks",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "YoKbpEbtrwM",
           "duration": "PT2M42S",
-          "title": "Russian Kicks"
+          "title": "Russian Kicks",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Y9ZGs6ahKf0",
           "duration": "PT4M20S",
-          "title": "Monkey Swings"
+          "title": "Monkey Swings",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "wf8J_XCORvk",
           "duration": "PT6M39S",
-          "title": "CCs"
+          "title": "CCs",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "rI0LaE-FGFc",
           "duration": "PT4M23S",
-          "title": "Six Step"
+          "title": "Six Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "AUBFbvwEuh0",
           "duration": "PT4M",
-          "title": "Front Side Seven Step"
+          "title": "Front Side Seven Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "S0gQIRz2wzM",
           "duration": "PT6M19S",
-          "title": "Overunder"
+          "title": "Overunder",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "CrCRCOtSkNM",
           "duration": "PT3M34S",
-          "title": "Footwork Tutorial"
+          "title": "Footwork Tutorial",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -131,7 +171,9 @@
         {
           "youtubeId": "Z4KL0dAyIpM",
           "duration": "PT4M58S",
-          "title": "Freeze Fundamentals | Freeze Switches"
+          "title": "Freeze Fundamentals | Freeze Switches",
+          "height": 270,
+          "width": 480
         }
       ]
     }

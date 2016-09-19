@@ -11,52 +11,72 @@
         {
           "youtubeId": "qxwLk3g_1bk",
           "duration": "PT1M58S",
-          "title": "The Lock lock"
+          "title": "The Lock lock",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "8z525yMisak",
           "duration": "PT1M17S",
-          "title": "Speed locking"
+          "title": "Speed locking",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "wF77yKS8itw",
           "duration": "PT46S",
-          "title": "Twirl, point, lock & hat twist"
+          "title": "Twirl, point, lock & hat twist",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "WqfkPSCEip4",
           "duration": "PT2M31S",
-          "title": "The Penguin"
+          "title": "The Penguin",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "SSvTdqcxTzE",
           "duration": "PT1M19S",
-          "title": "The Which-a-way (Iron Horse)"
+          "title": "The Which-a-way (Iron Horse)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "xjn4hcZsJUg",
           "duration": "PT1M27S",
-          "title": "The Scoo B Doo"
+          "title": "The Scoo B Doo",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "hAVf6dbvN8w",
           "duration": "PT1M2S",
-          "title": "The Locking Handshake"
+          "title": "The Locking Handshake",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "iUheY309OGQ",
           "duration": "PT51S",
-          "title": "Twirl, clap, clap"
+          "title": "Twirl, clap, clap",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "STvkqfhm1ak",
           "duration": "PT1M15S",
-          "title": "The Kicks"
+          "title": "The Kicks",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "82Ed1cysISk",
           "duration": "PT1M50S",
-          "title": "The Guitar"
+          "title": "The Guitar",
+          "height": 270,
+          "width": 480
         }
       ]
     }

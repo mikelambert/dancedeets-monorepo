@@ -11,22 +11,30 @@
         {
           "youtubeId": "Pe46uE-cADQ",
           "duration": "PT3M34S",
-          "title": "Part 1 / 4"
+          "title": "Part 1 / 4",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "pc6nIdG1800",
           "duration": "PT3M31S",
-          "title": "Part 2 / 4"
+          "title": "Part 2 / 4",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "fd6ofwgijBw",
           "duration": "PT4M4S",
-          "title": "Part 3 / 4"
+          "title": "Part 3 / 4",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "3gWf3QUAXZU",
           "duration": "PT6M16S",
-          "title": "Part 4 / 4"
+          "title": "Part 4 / 4",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -36,22 +44,30 @@
         {
           "youtubeId": "FFsn8KOfEwc",
           "duration": "PT2M57S",
-          "title": "Part 1 - Robot"
+          "title": "Part 1 - Robot",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "TuroKkjXO34",
           "duration": "PT3M10S",
-          "title": "Part 2 - Waving"
+          "title": "Part 2 - Waving",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "PwdIDbeiz2w",
           "duration": "PT3M28S",
-          "title": "Part 3 - Gliding"
+          "title": "Part 3 - Gliding",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Y2kafPEH-FQ",
           "duration": "PT4M9S",
-          "title": "Part 4 - King Snake"
+          "title": "Part 4 - King Snake",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -61,22 +77,30 @@
         {
           "youtubeId": "pwSos_uEqaA",
           "duration": "PT2M20S",
-          "title": "Part 1"
+          "title": "Part 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "bu-0gJU39KE",
           "duration": "PT2M16S",
-          "title": "Part 2"
+          "title": "Part 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "-HGp5_kWbCM",
           "duration": "PT3M11S",
-          "title": "Part 3"
+          "title": "Part 3",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ecPjQ920thQ",
           "duration": "PT4M13S",
-          "title": "Part 4"
+          "title": "Part 4",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -86,22 +110,30 @@
         {
           "youtubeId": "CihXIz2Fgdk",
           "duration": "PT2M13S",
-          "title": "Part 1"
+          "title": "Part 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "MHD0RDZsVqU",
           "duration": "PT2M13S",
-          "title": "Part 2"
+          "title": "Part 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "4mJpy4hD2PU",
           "duration": "PT2M21S",
-          "title": "Part 3"
+          "title": "Part 3",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "EDnTMnQJzFM",
           "duration": "PT3M59S",
-          "title": "Part 4"
+          "title": "Part 4",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -111,22 +143,30 @@
         {
           "youtubeId": "1VdmU5duMsk",
           "duration": "PT2M5S",
-          "title": "Part 1"
+          "title": "Part 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "7vtf9vukbvw",
           "duration": "PT2M10S",
-          "title": "Part 2"
+          "title": "Part 2",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "NA88Q6Ui0BM",
           "duration": "PT2M28S",
-          "title": "Part 3"
+          "title": "Part 3",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "sKbL66wDWGk",
           "duration": "PT3M7S",
-          "title": "Part 4"
+          "title": "Part 4",
+          "height": 270,
+          "width": 480
         }
       ]
     }

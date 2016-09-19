@@ -11,17 +11,23 @@
         {
           "youtubeId": "aqyQ2CuQUX8",
           "duration": "PT2M29S",
-          "title": "ムーンウォーク Moonwalk"
+          "title": "ムーンウォーク Moonwalk",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "yXkCnu9qcJI",
           "duration": "PT2M43S",
-          "title": "Washing Machine, Guess, GI walk, Lacoste, Snake"
+          "title": "Washing Machine, Guess, GI walk, Lacoste, Snake",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "XndkwZnxcWY",
           "duration": "PT3M11S",
-          "title": "アップ ダウン Up & Down"
+          "title": "アップ ダウン Up & Down",
+          "height": 270,
+          "width": 480
         }
       ]
     }

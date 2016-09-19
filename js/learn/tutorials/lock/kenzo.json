@@ -12,42 +12,58 @@
         {
           "youtubeId": "HKUfNGvTHwg",
           "duration": "PT2M44S",
-          "title": "ザ・ロック The Lock w/ Fairies 空"
+          "title": "ザ・ロック The Lock w/ Fairies 空",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "dX0GaR7h0Dw",
           "duration": "PT2M56S",
-          "title": "スキーターラビット Skeeter Rabbit w/ Fairies 空"
+          "title": "スキーターラビット Skeeter Rabbit w/ Fairies 空",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "PbD6VhtWGlw",
           "duration": "PT2M59S",
-          "title": "スクーボップ Scoobot w/ Fairies 川音"
+          "title": "スクーボップ Scoobot w/ Fairies 川音",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "G5c9MFbLHBY",
           "duration": "PT2M49S",
-          "title": "スクーバーホップ Scoobot Hop w/ Sori"
+          "title": "スクーバーホップ Scoobot Hop w/ Sori",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "YIpNSE-Ynho",
           "duration": "PT2M45S",
-          "title": "ポイント Point w/ Fairies 萌々香"
+          "title": "ポイント Point w/ Fairies 萌々香",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "wrqA8ezAA10",
           "duration": "PT3M36S",
-          "title": "トゥエル Wrist Twirl w/ Fairies 萌々香"
+          "title": "トゥエル Wrist Twirl w/ Fairies 萌々香",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "jJgj0k4-9fY",
           "duration": "PT2M49S",
-          "title": "ダブルクラップ Double Claps w/ Fairies 川音"
+          "title": "ダブルクラップ Double Claps w/ Fairies 川音",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "szqVoCCK57g",
           "duration": "PT3M12S",
-          "title": "キックウォーク Kick Walk w/ Sori"
+          "title": "キックウォーク Kick Walk w/ Sori",
+          "height": 270,
+          "width": 480
         }
       ]
     }

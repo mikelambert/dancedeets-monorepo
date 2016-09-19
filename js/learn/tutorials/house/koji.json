@@ -12,62 +12,86 @@
         {
           "youtubeId": "S4FXALEvZIo",
           "duration": "PT2M14S",
-          "title": "ヒールステップ - Heel Step"
+          "title": "ヒールステップ - Heel Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ywBWbUuQ6_0",
           "duration": "PT2M3S",
-          "title": "ツイスト - Twist"
+          "title": "ツイスト - Twist",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "lLrxcTcSMeo",
           "duration": "PT2M31S",
-          "title": "サルサステップ(フロントキック) - Salsa Step"
+          "title": "サルサステップ(フロントキック) - Salsa Step",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "zQY2W0TlouQ",
           "duration": "PT2M26S",
-          "title": "サルサホップ(ジョーイ) - Salsa Hop"
+          "title": "サルサホップ(ジョーイ) - Salsa Hop",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "s0VPL_mxarY",
           "duration": "PT2M24S",
-          "title": "タッチバックスキップ - Touch Back Skip"
+          "title": "タッチバックスキップ - Touch Back Skip",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "w2t4fq8ClDg",
           "duration": "PT2M29S",
-          "title": "サイドスイング - Side Swing"
+          "title": "サイドスイング - Side Swing",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "8RIHocefErY",
           "duration": "PT2M18S",
-          "title": "ピーターポール - Peter Paul"
+          "title": "ピーターポール - Peter Paul",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "9l0DyX2t3dY",
           "duration": "PT1M56S",
-          "title": "ティップタップトォー - Tip Tap Toe"
+          "title": "ティップタップトォー - Tip Tap Toe",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "eY4zbMi8A8k",
           "duration": "PT2M46S",
-          "title": "ハッピーフィート - Happy Feet"
+          "title": "ハッピーフィート - Happy Feet",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "hdnu32ZMx2E",
           "duration": "PT2M26S",
-          "title": "クロスヒール&トォー - Cross Heel & Toe"
+          "title": "クロスヒール&トォー - Cross Heel & Toe",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "P9OOnUDibIY",
           "duration": "PT2M17S",
-          "title": "ツーステップバリエーション - Two Step Variation"
+          "title": "ツーステップバリエーション - Two Step Variation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "2RpWwECfC6E",
           "duration": "PT3M14S",
-          "title": "スクリブルフット - Scribble Foot"
+          "title": "スクリブルフット - Scribble Foot",
+          "height": 270,
+          "width": 480
         }
       ]
     }

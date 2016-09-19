@@ -11,32 +11,44 @@
         {
           "youtubeId": "2uyoHlZ_qjw",
           "duration": "PT7M38S",
-          "title": "Hits"
+          "title": "Hits",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "iG4MjPFGZTk",
           "duration": "PT9M39S",
-          "title": "Fresno and Angles"
+          "title": "Fresno and Angles",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "VdCvWfeBJm0",
           "duration": "PT10M23S",
-          "title": "Basic Footwork"
+          "title": "Basic Footwork",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "k46p_2xkvyw",
           "duration": "PT10M59S",
-          "title": "Arm and Body Waves"
+          "title": "Arm and Body Waves",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "dCSMtkoeX9M",
           "duration": "PT4M",
-          "title": "Dimestops"
+          "title": "Dimestops",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "-Fr3QOpflZI",
           "duration": "PT5M33S",
-          "title": "Review, Recap and Thanks"
+          "title": "Review, Recap and Thanks",
+          "height": 270,
+          "width": 480
         }
       ]
     }

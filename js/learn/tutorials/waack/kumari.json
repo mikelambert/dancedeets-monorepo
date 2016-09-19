@@ -11,17 +11,23 @@
         {
           "youtubeId": "l62XRkUym2Q",
           "duration": "PT8M41S",
-          "title": "What is Waacking? | History of Punking, Whacking, Waacking 1970-2003"
+          "title": "What is Waacking? | History of Punking, Whacking, Waacking 1970-2003",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "B_d2uAFdxXo",
           "duration": "PT2M25S",
-          "title": "Waack vs Vogue | What the difference?"
+          "title": "Waack vs Vogue | What the difference?",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "isyhrzo80B4",
           "duration": "PT16M42S",
-          "title": "Kumari's Bollywhack Pinga Tutorial"
+          "title": "Kumari's Bollywhack Pinga Tutorial",
+          "height": 270,
+          "width": 480
         }
       ]
     }

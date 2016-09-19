@@ -11,17 +11,23 @@
         {
           "youtubeId": "rnOkr0gekwo",
           "duration": "PT3M35S",
-          "title": "Drill"
+          "title": "Drill",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "2Kak724aDYc",
           "duration": "PT3M32S",
-          "title": "Pose"
+          "title": "Pose",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "0Bb8H7xSs4g",
           "duration": "PT3M15S",
-          "title": "Waack Attack"
+          "title": "Waack Attack",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -31,12 +37,16 @@
         {
           "youtubeId": "YrU8SWJeLa8",
           "duration": "PT3M28S",
-          "title": "Training Routine"
+          "title": "Training Routine",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "6zky-yQpbdY",
           "duration": "PT3M51S",
-          "title": "Drill Variations"
+          "title": "Drill Variations",
+          "height": 270,
+          "width": 480
         }
       ]
     }

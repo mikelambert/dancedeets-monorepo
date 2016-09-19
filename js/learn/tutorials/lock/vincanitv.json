@@ -12,7 +12,9 @@
         {
           "youtubeId": "Oeto-pWkeog",
           "duration": "PT4M26S",
-          "title": "Groove"
+          "title": "Groove",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -22,7 +24,9 @@
         {
           "youtubeId": "nuo-6UKqBMI",
           "duration": "PT5M11S",
-          "title": "Beginner's Combination"
+          "title": "Beginner's Combination",
+          "height": 270,
+          "width": 480
         }
       ]
     }

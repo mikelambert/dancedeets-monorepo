@@ -11,17 +11,23 @@
         {
           "youtubeId": "yny8-oVLPHE",
           "duration": "PT2M30S",
-          "title": "Part 1/3"
+          "title": "Part 1/3",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "v30MKB2q_ZI",
           "duration": "PT2M21S",
-          "title": "Part 2/3"
+          "title": "Part 2/3",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "fkNZUsfZ6Eo",
           "duration": "PT2M1S",
-          "title": "Part 3/3"
+          "title": "Part 3/3",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -31,22 +37,30 @@
         {
           "youtubeId": "T8Zve0wyjyw",
           "duration": "PT2M44S",
-          "title": "Lesson 1 - Pauzing"
+          "title": "Lesson 1 - Pauzing",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "V-Rd9Zos1Uw",
           "duration": "PT2M41S",
-          "title": "Lesson 2 - Waving, Isolation"
+          "title": "Lesson 2 - Waving, Isolation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "-RVo7lX2YPk",
           "duration": "PT3M30S",
-          "title": "Lesson 3 - Waving, Connection"
+          "title": "Lesson 3 - Waving, Connection",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "NyrbTYUdEmQ",
           "duration": "PT3M29S",
-          "title": "Lesson 4 - Glides"
+          "title": "Lesson 4 - Glides",
+          "height": 270,
+          "width": 480
         }
       ]
     }

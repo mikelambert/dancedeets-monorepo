@@ -11,32 +11,44 @@
         {
           "youtubeId": "3sQdaM4MOgE",
           "duration": "PT1M36S",
-          "title": "Pas de bourrée Variation"
+          "title": "Pas de bourrée Variation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "6mlouSEOc0M",
           "duration": "PT31S",
-          "title": "Cross walk"
+          "title": "Cross walk",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "Qi_SdxQWa3I",
           "duration": "PT1M58S",
-          "title": "Cross Step Variation"
+          "title": "Cross Step Variation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "QZ51SN1dcy0",
           "duration": "PT4M23S",
-          "title": "Step Tutorial"
+          "title": "Step Tutorial",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "1JheWLZS3lk",
           "duration": "PT1M42S",
-          "title": "Side Walk"
+          "title": "Side Walk",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ryhkx1IMpqY",
           "duration": "PT1M25S",
-          "title": "Side Walk Variation"
+          "title": "Side Walk Variation",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -46,22 +58,30 @@
         {
           "youtubeId": "siYtrioXsiM",
           "duration": "PT2M42S",
-          "title": "Heel Toe Variation"
+          "title": "Heel Toe Variation",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "v8MCMYezApA",
           "duration": "PT38S",
-          "title": "Jack in the box"
+          "title": "Jack in the box",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "2TAc5fRFCY0",
           "duration": "PT2M26S",
-          "title": "Roger Rabbit Variation 1"
+          "title": "Roger Rabbit Variation 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "PKbnBYtiC_E",
           "duration": "PT2M56S",
-          "title": "Roger Rabbit Variation 2"
+          "title": "Roger Rabbit Variation 2",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -71,12 +91,16 @@
         {
           "youtubeId": "7O_d3KoajP8",
           "duration": "PT4M52S",
-          "title": "Floorwork Tutorial"
+          "title": "Floorwork Tutorial",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ffkyKgrpo6Y",
           "duration": "PT1M35S",
-          "title": "Steps Variation"
+          "title": "Steps Variation",
+          "height": 270,
+          "width": 480
         }
       ]
     }

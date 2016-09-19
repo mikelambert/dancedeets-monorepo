@@ -11,47 +11,65 @@
         {
           "youtubeId": "S9w1wjYbk6E",
           "duration": "PT1M18S",
-          "title": "do \"The W\" | Get downs"
+          "title": "do \"The W\" | Get downs",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "mQqUaORggzw",
           "duration": "PT2M3S",
-          "title": "Colt (Pin Drop) | Get Downs"
+          "title": "Colt (Pin Drop) | Get Downs",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "4dlt1Bqwc_I",
           "duration": "PT2M25S",
-          "title": "Shuffle Kick Out: Get Down | POE ONE (Style Elements)"
+          "title": "Shuffle Kick Out: Get Down | POE ONE (Style Elements)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "JpPSzEt_a5A",
           "duration": "PT2M38S",
-          "title": "Spin Down | Get Down Basics"
+          "title": "Spin Down | Get Down Basics",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "ArTLyiFsBF8",
           "duration": "PT2M15S",
-          "title": "Spin Down to Pilot Freeze | Matt Cash(Floor Raskalz/North Star Zulu)"
+          "title": "Spin Down to Pilot Freeze | Matt Cash(Floor Raskalz/North Star Zulu)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "2PML4XLLyjM",
           "duration": "PT6M46S",
-          "title": "Indian Step Get Down | Milestone (Renegade Rockers, San Francisco)"
+          "title": "Indian Step Get Down | Milestone (Renegade Rockers, San Francisco)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "yRYQuoyRY1Q",
           "duration": "PT3M58S",
-          "title": "do the Neckmove | Fever One (Rock Steady Crew / DVS) | Seattle, WA"
+          "title": "do the Neckmove | Fever One (Rock Steady Crew / DVS) | Seattle, WA",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "pbla79daPFw",
           "duration": "PT4M49S",
-          "title": "Coffee Grinder Get Down"
+          "title": "Coffee Grinder Get Down",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "OMvO3MobXxU",
           "duration": "PT4M15S",
-          "title": "Sweep Get Down"
+          "title": "Sweep Get Down",
+          "height": 270,
+          "width": 480
         }
       ]
     }

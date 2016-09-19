@@ -11,67 +11,93 @@
         {
           "youtubeId": "D319k5qarNk",
           "duration": "PT33S",
-          "title": "Intro Part 1"
+          "title": "Intro Part 1",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "AGTi__ph9t0",
           "duration": "PT40S",
-          "title": "Intro Part 2"
+          "title": "Intro Part 2",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "7SRuyFEZfAI",
           "duration": "PT11M50S",
-          "title": "In Your Face"
+          "title": "In Your Face",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "wNHjnww0pa8",
           "duration": "PT11M17S",
-          "title": "Backbone Basics"
+          "title": "Backbone Basics",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "cDbd9jZm60A",
           "duration": "PT10M40S",
-          "title": "Hook & Sling"
+          "title": "Hook & Sling",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "lkDXEMVzNA8",
           "duration": "PT10M45S",
-          "title": "Circulating"
+          "title": "Circulating",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "iFOE_RZkn7M",
           "duration": "PT16M4S",
-          "title": "Atomic Style (Spinning & Orbiting)"
+          "title": "Atomic Style (Spinning & Orbiting)",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "mpdI6P85Zxg",
           "duration": "PT11M9S",
-          "title": "Pretzel"
+          "title": "Pretzel",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "RZdARE9TZaA",
           "duration": "PT5M28S",
-          "title": "Go-Downs"
+          "title": "Go-Downs",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "4ATB_Fb05oY",
           "duration": "PT6M26S",
-          "title": "No Hand Footwork"
+          "title": "No Hand Footwork",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "ix0JKAfDI18",
           "duration": "PT12M50S",
-          "title": "Freezes"
+          "title": "Freezes",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "s7iQPkO0YJY",
           "duration": "PT12M16S",
-          "title": "Additional Concepts"
+          "title": "Additional Concepts",
+          "height": 344,
+          "width": 459
         },
         {
           "youtubeId": "GCebdNveOBo",
           "duration": "PT4M9S",
-          "title": "Conclusion"
+          "title": "Conclusion",
+          "height": 344,
+          "width": 459
         }
       ]
     }
