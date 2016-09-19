@@ -49,23 +49,6 @@ import type {
   Navigatable
 } from '../containers/generateNavigator';
 
-const EventNavigator = generateNavigator('EVENT_NAV');
-setDefaultState('EVENT_NAV', { key: 'EventList', title: 'DanceDeets' });
-
-const LearnNavigator = generateNavigator('LEARN_NAV');
-setDefaultState('LEARN_NAV', { key: 'TutorialStyles', title: 'Learn: Tutorials' });
-
-class GradientTabBar extends React.Component {
-  render() {
-    return <LinearGradient
-      start={[0.0, 0.0]} end={[0.0, 1]}
-      colors={[gradientTop, gradientBottom]}
-      style={this.props.style}>
-      {this.props.children}
-    </LinearGradient>;
-  }
-}
-
 const messages = defineMessages({
   events: {
     id: 'tab.events',
@@ -92,12 +75,39 @@ const messages = defineMessages({
     defaultMessage: 'View Flyer',
     description: 'Title Bar for Viewing Flyer',
   },
+  eventsTitle: {
+    id: 'navigator.eventsTitle',
+    defaultMessage: 'DanceDeets: Events',
+    description: 'Initial title bar for Events tab',
+  },
+  learnTitle: {
+    id: 'tutorialVideos.navigatorTitle',
+    defaultMessage: 'Learn: Tutorials',
+    description: 'Initial title bar for Learn tab',
+  },
   styleTutorialTitle: {
     id: 'tutorialVideos.styleTutorialTitle',
     defaultMessage: '{style} Tutorials',
     description: 'Title Bar for viewing a given style\'s tutorials',
   },
 });
+
+const EventNavigator = generateNavigator('EVENT_NAV');
+setDefaultState('EVENT_NAV', { key: 'EventList', message: messages.eventsTitle });
+
+const LearnNavigator = generateNavigator('LEARN_NAV');
+setDefaultState('LEARN_NAV', { key: 'TutorialStyles', message: messages.learnTitle });
+
+class GradientTabBar extends React.Component {
+  render() {
+    return <LinearGradient
+      start={[0.0, 0.0]} end={[0.0, 1]}
+      colors={[gradientTop, gradientBottom]}
+      style={this.props.style}>
+      {this.props.children}
+    </LinearGradient>;
+  }
+}
 
 class _TabbedAppView extends React.Component {
   constructor(props: any) {

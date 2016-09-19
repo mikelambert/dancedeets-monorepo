@@ -17,7 +17,9 @@ import {
 	View,
 } from 'react-native';
 import { connect } from 'react-redux';
-
+import {
+  injectIntl,
+} from 'react-intl';
 import { gradientTop } from '../Colors';
 import { navigatePush, navigatePop, navigateSwap } from '../actions';
 import ShareEventIcon from './ShareEventIcon';
@@ -60,7 +62,7 @@ const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }) => (
   </View>
 );
 
-class AppContainer extends React.Component {
+class _AppContainer extends React.Component {
 	props: AppContainerProps & Navigatable & CallingProps;
 
 	constructor(props) {
@@ -82,10 +84,12 @@ class AppContainer extends React.Component {
 	}
 
 	renderTitle(props) {
-		return <NavigationHeaderTitle
-			textStyle={{color: 'white', fontSize: 24}}
-		>
-			{props.scene.route.title}
+		let title = props.scene.route.title;
+		if (props.scene.route.message) {
+			title = this.props.intl.formatMessage(props.scene.route.message);
+		}
+		return <NavigationHeaderTitle textStyle={{color: 'white', fontSize: 24}}>
+			{title}
 		</NavigationHeaderTitle>;
 	}
 
@@ -128,6 +132,7 @@ class AppContainer extends React.Component {
     this.props.goHome();
   }
 }
+const AppContainer = injectIntl(_AppContainer);
 
 export default function(navName: string) {
 	return connect(
