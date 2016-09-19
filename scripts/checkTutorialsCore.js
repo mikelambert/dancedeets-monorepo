@@ -45,6 +45,16 @@ async function findVideoItems(inVideoIds): Promise<[Object]> {
   return items;
 }
 
+async function findVideoDimensions(videoIds) {
+  const dimensions = {};
+  for (let videoId of videoIds) {
+    const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+    const results = await (await fetch(oEmbedUrl)).json();
+    dimensions[videoId] = {width: results.width, height: results.height};
+  }
+  return dimensions;
+}
+
 async function checkTutorial(tutorialJson) {
   const videoIds = [];
   for (let section of tutorialJson.sections) {
@@ -62,6 +72,8 @@ async function checkTutorial(tutorialJson) {
     videoItemsMap[video.id] = video;
   }
 
+  const videoDimensionsMap = await findVideoDimensions(videoIds);
+
   for (let section of tutorialJson.sections) {
     for (let video of section.videos) {
       const foundVideo = videoItemsMap[video.youtubeId];
@@ -72,6 +84,18 @@ async function checkTutorial(tutorialJson) {
       } else if (video.duration != foundVideo.contentDetails.duration) {
         console.error(`Tutorial ${video.youtubeId} has incorrect duration: ${video.duration}, expected: ${foundVideo.contentDetails.duration}`);
         video.duration = foundVideo.contentDetails.duration;
+      }
+
+      const foundOEmbed = videoDimensionsMap[video.youtubeId];
+      // Check that each video id exists
+      if (!foundOEmbed) {
+        console.error(`Tutorial ${video.youtubeId} has broken oembed video reference.`);
+        continue;
+      // Check that video dimensions are correct
+      } else if (video.width !== foundOEmbed.width || video.height !== foundOEmbed.height) {
+        console.error(`Tutorial ${video.youtubeId} has incorrect dimensions: ${video.width}x${video.height}, expected: ${foundOEmbed.width}x${foundOEmbed.height}`);
+        video.height = foundOEmbed.height;
+        video.width = foundOEmbed.width;
       }
     }
   }
