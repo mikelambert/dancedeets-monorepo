@@ -516,13 +516,14 @@ class _PlaylistView extends React.Component {
     //
     // for my client feature-bar (if i support scrub bar):
     // speed-rate, play/pause, back-ten-seconds, airplay
-    const height = Dimensions.get('window').width * 9 / 16;
+    const video = this.getSelectedVideo();
+    const height = Dimensions.get('window').width * video.height / video.width;
     return <View style={styles.container}>
       <YouTubeNoReload
         ref={(x) => {
           this.youtubePlayer = x;
         }}
-        videoId={this.getSelectedVideo().youtubeId}
+        videoId={video.youtubeId}
         play={true} // auto-play when loading a tutorial
         hidden={false}
         playsInline={true}

@@ -111,12 +111,16 @@ export class Video {
   duration: number;
   url: string;
   youtubeId: string;
+  width: number;
+  height: number;
 
   constructor(json: any) {
     try {
       this.title = json.title;
       this.duration = json.duration;
       this.youtubeId = json.youtubeId;
+      this.width = json.width;
+      this.height = json.height;
     } catch (e) {
       console.log('Error on video: ', json);
       throw e;
