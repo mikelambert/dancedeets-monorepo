@@ -699,12 +699,12 @@ class _EventRow extends React.Component {
               style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
             <HorizontalView>
               <View style={{width: width}}>
-                <Image
+                {imageProps.source ? <Image
                   source={{uri: imageProps.source}}
                   originalWidth={imageProps.width}
                   originalHeight={imageProps.height}
                   style={eventStyles.thumbnail}
-                />
+                /> : null}
               </View>
               <View style={{flex: 1}}>
                 <EventCategories categories={this.props.event.annotations.categories} />
@@ -721,12 +721,12 @@ class _EventRow extends React.Component {
       return (
         <Card style={eventStyles.row}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
-            <ProportionalImage
+            {imageProps.source ? <ProportionalImage
               source={{uri: imageProps.source}}
               originalWidth={imageProps.width}
               originalHeight={imageProps.height}
               style={eventStyles.thumbnail}
-            />
+            /> : null}
             <Text
               numberOfLines={2}
               style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
