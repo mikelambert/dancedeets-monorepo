@@ -6,7 +6,7 @@
 
 'use strict';
 
-import React from 'react';
+import React, {createElement} from 'react';
 import {
 	Image,
 	NavigationExperimental,
@@ -125,7 +125,7 @@ class _AppContainer extends React.Component {
 				style={styles.outerContainer}
 				onBack={this.props.onBack}
 				renderHeader={this._renderHeader}
-				renderScene={(props: NavigationSceneRendererProps) => this.props.renderScene(props, this.props)}
+				renderScene={this.props.renderScene}
 				cardStyle={{
 					marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT,
 				}}

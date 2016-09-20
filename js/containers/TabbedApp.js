@@ -48,6 +48,9 @@ import {
 import type {
   Navigatable
 } from '../containers/generateNavigator';
+import type {
+  NavigationSceneRendererProps,
+} from 'NavigationTypeDefinition';
 
 const messages = defineMessages({
   events: {
@@ -109,42 +112,31 @@ class GradientTabBar extends React.Component {
   }
 }
 
-class _TabbedAppView extends React.Component {
-  constructor(props: any) {
-    super(props);
-
-    (this: any).renderEventScene = this.renderEventScene.bind(this);
-    (this: any).renderLearnScene = this.renderLearnScene.bind(this);
-  }
-
-  icon(source) {
-    return <Image source={source} style={styles.icon}/>;
-  }
-
-  renderEventScene(props, navigatable: Navigatable) {
-    const { scene } = props;
+class _EventView extends React.Component {
+  render() {
+    const { scene } = this.props.sceneProps;
     const { route } = scene;
     switch (route.key) {
     case 'EventList':
       return <EventListContainer
         onEventSelected={(event) => {
           trackWithEvent('View Event', event);
-          navigatable.onNavigate({key: 'EventView', title: event.name, event: event});
+          this.props.navigatable.onNavigate({key: 'EventView', title: event.name, event: event});
         }}
         onAddEventClicked={(source) => {
           track('Add Event', {source: source});
-          navigatable.onNavigate({key: 'AddEvent', title: this.props.intl.formatMessage(messages.addEvent)});
+          this.props.navigatable.onNavigate({key: 'AddEvent', title: this.props.intl.formatMessage(messages.addEvent)});
         }}
       />;
     case 'EventView':
       return <EventPager
         onEventNavigated={(event)=> {
           trackWithEvent('View Event', event);
-          navigatable.onSwap('EventView', {key: 'EventView', title: event.name, event: event});
+          this.props.navigatable.onSwap('EventView', {key: 'EventView', title: event.name, event: event});
         }}
         onFlyerSelected={(event)=> {
           trackWithEvent('View Flyer', event);
-          navigatable.onNavigate({
+          this.props.navigatable.onNavigate({
             key: 'FlyerView',
             title: this.props.intl.formatMessage(messages.viewFlyer),
             image: event.cover.images[0].source,
@@ -164,9 +156,12 @@ class _TabbedAppView extends React.Component {
       return <AddEvents />;
     }
   }
+}
+const EventView = injectIntl(_EventView);
 
-  renderLearnScene(props, navigatable: Navigatable) {
-    const { scene } = props;
+class _LearnView extends React.Component {
+  render() {
+    const { scene } = this.props.sceneProps;
     const { route } = scene;
     switch (route.key) {
     case 'BlogList':
@@ -174,8 +169,8 @@ class _TabbedAppView extends React.Component {
         onSelected={(blog) => {
           // TODO: Track blog details
           track('Blog Selected');
-          //navigatable.onNavigate({key: 'BlogPostList', title: blog.title, blog: blog});
-          navigatable.onNavigate({key: 'Tutorial', title: blog.title, tutorial: blog});
+          //this.props.navigatable.onNavigate({key: 'BlogPostList', title: blog.title, blog: blog});
+          this.props.navigatable.onNavigate({key: 'Tutorial', title: blog.title, tutorial: blog});
         }}
         />;
     case 'TutorialStyles':
@@ -184,7 +179,7 @@ class _TabbedAppView extends React.Component {
           track('Tutorial Style Selected', {
             tutorialStyle: style.title,
           });
-          navigatable.onNavigate({key: 'TutorialList', title: this.props.intl.formatMessage(messages.styleTutorialTitle, {style: style.title}), tutorials: style.tutorials});
+          this.props.navigatable.onNavigate({key: 'TutorialList', title: this.props.intl.formatMessage(messages.styleTutorialTitle, {style: style.title}), tutorials: style.tutorials});
         }}
         />;
     case 'TutorialList':
@@ -195,7 +190,7 @@ class _TabbedAppView extends React.Component {
             tutorialName: playlist.title,
             tutorialStyle: playlist.style,
           });
-          navigatable.onNavigate({key: 'Tutorial', title: playlist.title, tutorial: playlist});
+          this.props.navigatable.onNavigate({key: 'Tutorial', title: playlist.title, tutorial: playlist});
         }}
         />;
     case 'Tutorial':
@@ -208,7 +203,7 @@ class _TabbedAppView extends React.Component {
         onSelected={(post) => {
           // TODO: Track post details
           track('Blog Post Selected');
-          navigatable.onNavigate({key: 'BlogPostItem', title: post.title, post: post});
+          this.props.navigatable.onNavigate({key: 'BlogPostItem', title: post.title, post: post});
         }}
         />;
     case 'BlogPostItem':
@@ -216,6 +211,13 @@ class _TabbedAppView extends React.Component {
         post={route.post}
         />;
     }
+  }
+}
+const LearnView = injectIntl(_LearnView);
+
+class _TabbedAppView extends React.Component {
+  icon(source) {
+    return <Image source={source} style={styles.icon}/>;
   }
 
   render() {
@@ -241,7 +243,9 @@ class _TabbedAppView extends React.Component {
         }}>
         <EventNavigator
           ref="event_navigator"
-          renderScene={this.renderEventScene}
+          renderScene={(sceneProps: NavigationSceneRendererProps) =>
+            <EventView sceneProps={sceneProps} navigatable={this.refs.event_navigator && this.refs.event_navigator.dispatchProps} />
+          }
           />
       </TabNavigator.Item>
       <TabNavigator.Item
@@ -262,7 +266,9 @@ class _TabbedAppView extends React.Component {
         }}>
         <LearnNavigator
           ref="learn_navigator"
-          renderScene={this.renderLearnScene}
+          renderScene={(sceneProps: NavigationSceneRendererProps) =>
+            <LearnView sceneProps={sceneProps} navigatable={this.refs.learn_navigator && this.refs.learn_navigator.dispatchProps} />
+          }
           />
       </TabNavigator.Item>
       <TabNavigator.Item
