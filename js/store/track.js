@@ -152,7 +152,7 @@ export function trackLogout() {
   track('Logout');
   //Mixpanel.removePushToken();
   Mixpanel.reset();
-  Analytics.setUserID(null);
+  Analytics.setUserId(null);
 }
 
 export function trackDispatches(action: Action): void {
