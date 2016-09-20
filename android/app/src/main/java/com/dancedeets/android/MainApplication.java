@@ -12,6 +12,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
+import com.reactnative.photoview.PhotoViewPackage;
 import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import org.jall.reactnative.firebase.FirebasePackage;
 import com.facebook.react.ReactNativeHost;
@@ -49,6 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+            new PhotoViewPackage(),
             new ReactNativePermissionsPackage(),
                 new FirebasePackage(),
                 new RCTNativeEnvPackage(BuildConfig.class),
