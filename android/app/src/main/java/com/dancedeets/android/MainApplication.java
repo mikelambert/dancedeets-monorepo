@@ -60,7 +60,7 @@ public class MainApplication extends Application implements ReactApplication {
                 new RNMixpanel(),
                 new RNGeocoderPackage(),
                 new MapsPackage(),
-                new FabricPackage(null),
+                new FabricPackage(),
                 new LinearGradientPackage(),
                 new AndroidSegmentedPackage(),
                 new RNSendIntentPackage(),

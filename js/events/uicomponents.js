@@ -579,7 +579,7 @@ class _EventDescription extends React.Component {
         text={description}
         // Currently only works on Android with my recent change:
         // https://github.com/mikelambert/react-native/commit/90a79cc11ee493f0dd6a8a2a5fa2a01cb2d12cad
-        textProps={{selectable: true}}
+        selectable={true}
         hashtag="instagram"
         twitter
       />
