@@ -30,6 +30,9 @@ import type {
 	NavigationSceneRendererProps,
 	NavigationState,
 } from 'NavigationTypeDefinition';
+import {
+	semiNormalize,
+} from '../ui/normalize';
 
 const {
 	CardStack: NavigationCardStack,
@@ -88,7 +91,7 @@ class _AppContainer extends React.Component {
 		if (props.scene.route.message) {
 			title = this.props.intl.formatMessage(props.scene.route.message);
 		}
-		return <NavigationHeaderTitle textStyle={{color: 'white', fontSize: 24}}>
+		return <NavigationHeaderTitle>
 			{title}
 		</NavigationHeaderTitle>;
 	}
@@ -185,12 +188,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 16
   },
-
   titleText: {
     flex: 1,
-    fontSize: 18,
+    fontSize: semiNormalize(18),
     fontWeight: '500',
-    color: 'rgba(0, 0, 0, .9)',
+    color: 'white',
     textAlign: Platform.OS === 'ios' ? 'center' : 'left'
   }
 

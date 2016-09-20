@@ -113,12 +113,18 @@ const messages = defineMessages({
   },
 });
 
-const boxWidth = semiNormalize(150);
+// Try to make our boxes as wide as we can...
+let boxWidth = normalize(170);
+// ...and only start scaling them non-proportionally on the larger screen sizes,
+// so that we do 3-4 columns
+if (Dimensions.get('window').width >= 1024) {
+  boxWidth = semiNormalize(170);
+}
 const boxMargin = 5;
 
 function listViewWidth() {
   const fullBox = boxWidth + boxMargin;
-  return Math.floor(Dimensions.get('window').width / fullBox) * fullBox - 20;
+  return Math.floor(Dimensions.get('window').width / fullBox) * fullBox - 10;
 }
 
 function sortedTutorials(tutorials, language) {
@@ -166,7 +172,6 @@ class _PlaylistStylesView extends React.Component {
     const durationSeconds = style.tutorials.reduce((prev, current) => prev + current.getDurationSeconds(), 0);
     const length = formatDuration(this.props.intl.formatMessage, durationSeconds);
     let styleTitle = style.title;
-    console.log(style.title, style.titleMessage);
     if (style.titleMessage) {
       styleTitle = this.props.intl.formatMessage(style.titleMessage);
     }
@@ -187,9 +192,9 @@ class _PlaylistStylesView extends React.Component {
         alignItems: 'center',
       }}>
         <Image source={style.thumbnail} resizeMode="contain" style={{width: imageWidth, height: imageWidth}}/>
-        <Text style={{fontWeight: 'bold'}}>{styleTitle}</Text>
-        <Text>{this.props.intl.formatMessage(messages.numTutorials, {count: style.tutorials.length})}</Text>
-        <Text>{this.props.intl.formatMessage(messages.totalTime, {time: length})}</Text>
+        <Text style={[styles.boxTitle, styles.boxText]}>{styleTitle}</Text>
+        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.numTutorials, {count: style.tutorials.length})}</Text>
+        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.totalTime, {time: length})}</Text>
       </View>
     </TouchableHighlight>;
   }
@@ -256,8 +261,8 @@ class _PlaylistListView extends React.Component {
           borderRadius: 10,
         }}>
         <Image source={{uri: playlist.thumbnail}} resizeMode="cover" style={styles.thumbnail} />
-        <Text style={{fontWeight: 'bold'}}>{title}</Text>
-        <Text>{this.props.intl.formatMessage(messages.numVideosWithDuration, {count: playlist.getVideoCount(), duration})}</Text>
+        <Text style={[styles.boxTitle, styles.boxText]}>{title}</Text>
+        <Text style={styles.boxText}>{this.props.intl.formatMessage(messages.numVideosWithDuration, {count: playlist.getVideoCount(), duration})}</Text>
       </View>
     </TouchableHighlight>;
   }
@@ -575,12 +580,19 @@ let styles = StyleSheet.create({
   },
   thumbnail: {
     borderRadius: 10,
-    height: 100,
+    height: semiNormalize(100),
   },
   listViewWrapper: {
     flex: 1,
     borderTopColor: 'black',
     borderTopWidth: 1,
+  },
+  boxTitle: {
+    fontWeight: 'bold',
+  },
+  boxText: {
+    fontSize: semiNormalize(14),
+    lineHeight: normalize(22),
   },
   playlistListRow: {
     padding: 7,

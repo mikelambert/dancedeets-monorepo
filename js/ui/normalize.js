@@ -13,6 +13,6 @@ export function normalize(size: number): number {
   return Math.round(scale * size);
 }
 
-export function semiNormalize(size: number): number {
-  return Math.round(size + 0.4 * (normalize(size) - size));
+export function semiNormalize(size: number, scalingSpeed: number = 0.4): number {
+  return Math.round(size + scalingSpeed * (normalize(size) - size));
 }
