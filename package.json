@@ -34,7 +34,7 @@
     "react-native-mixpanel": "github:mikelambert/react-native-mixpanel",
     "react-native-native-env": "0.0.4",
     "react-native-permissions": "github:yonahforst/react-native-permissions",
-    "react-native-photo-view": "^1.0.1",
+    "react-native-photo-view": "github:alwx/react-native-photo-view",
     "react-native-processinfo": "0.0.2",
     "react-native-segmented-android": "github:mikelambert/react-native-segmented-android",
     "react-native-send-intent": "^1.0.13",
