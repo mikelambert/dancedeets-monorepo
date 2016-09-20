@@ -326,14 +326,14 @@ class _PlaylistListView extends React.Component {
 export const PlaylistListView = injectIntl(_PlaylistListView);
 
 function formatDuration(formatMessage: (message: Object, timeData: Object) => string, durationSeconds: number) {
-  const hours = Math.floor(durationSeconds / 60 / 60);
-  const minutes = Math.floor(durationSeconds / 60) % 60;
+  const hours = Math.floor(durationSeconds / 60 / 60).toString();
+  const minutes = (Math.floor(durationSeconds / 60) % 60).toString();
   if (durationSeconds > 60 * 60) {
     return formatMessage(messages.timeHoursMinutes, {hours, minutes});
   } else if (durationSeconds > 60) {
     return formatMessage(messages.timeMinutes, {minutes});
   } else {
-    const seconds = durationSeconds;
+    const seconds = durationSeconds.toString();
     return formatMessage(messages.timeSeconds, {seconds});
   }
 }
