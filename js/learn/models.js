@@ -25,13 +25,13 @@ export class Blog {
   description: string;
   url: string;
   authorLookup: { [key: string]: string };
-  posts: [BlogPost];
+  posts: BlogPost[];
 }
 
 export class MediumBlog extends Blog {
   constructor(json: any) {
     super();
-    const realPosts: [any] = Object.values(json.payload.references.Post);
+    const realPosts: any[] = Object.values(json.payload.references.Post);
     const users = json.payload.references.User;
     this.title = json.payload.value.name;
     this.description = json.payload.value.shortDescription;
@@ -67,7 +67,7 @@ export class MediumBlog extends Blog {
 export class FeedBlog extends Blog {
   constructor(json: any) {
     super();
-    const realPosts: [any] = json.entries;
+    const realPosts: any[] = json.entries;
     this.title = json.feed.title;
     this.description = json.feed.subtitle;
     this.url = json.feed.link;

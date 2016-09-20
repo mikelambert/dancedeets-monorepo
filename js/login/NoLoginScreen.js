@@ -55,7 +55,7 @@ class _NoLoginScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Image
-          style={[styles.container, styles.centerItems, styles.topAndBottom]}
+          style={[styles.container, styles.topAndBottom]}
           source={require('./images/Onboard4.jpg')}>
           <Text style={[styles.topText, styles.text]}>{this.props.intl.formatMessage(messages.loginJustification)}
             {'\n'}
@@ -64,13 +64,11 @@ class _NoLoginScreen extends React.Component {
               onPress={() => this.props.onNoLogin('Text Link')}
               >http://www.dancedeets.com/</Text>
           </Text>
-          <View style={[styles.centerItems, styles.bottomBox]}>
-            <LoginButtonWithAlternate
-              onLogin={this.props.onLogin}
-              onNoLogin={() => this.props.onNoLogin('Bottom Button')}
-              noLoginText={this.props.intl.formatMessage(messages.useWebsite)}
-              />
-          </View>
+          <LoginButtonWithAlternate
+            onLogin={this.props.onLogin}
+            onNoLogin={() => this.props.onNoLogin('Bottom Button')}
+            noLoginText={this.props.intl.formatMessage(messages.useWebsite)}
+            />
         </Image>
       </View>
     );

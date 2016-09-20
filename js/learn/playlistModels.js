@@ -16,7 +16,7 @@ export class Playlist {
   style: string;
   language: string;
   thumbnail: string;
-  sections: [Section];
+  sections: Section[];
 
   constructor(json: any) {
     this.title = json.title;
@@ -83,7 +83,7 @@ export class Playlist {
 
 export class Section {
   title: string;
-  videos: [Video];
+  videos: Video[];
 
   constructor(json: any) {
     try {

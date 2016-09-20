@@ -35,23 +35,23 @@ type Result = {
   isCurrentLocation?: boolean;
   isLoading?: boolean;
   flag?: string;
-  terms?: Array<Term>;
+  terms?: Term[];
 };
 
 
 type Props = {
   style: Object, // style for ListView
   styles: Object, // styles for subcomponents
-  onLocationSelected: (location: string) => (void | Promise),
+  onLocationSelected: (location: string) => (void | Promise<void>),
   minLength: number,
   fetchDetails: boolean,
   textValue: () => string,
   query: Object,
   GoogleReverseGeocodingQuery: Object,
-  predefinedPlaces: [Result],
+  predefinedPlaces: Result[],
   currentLocation: boolean,
   currentLocationLabel: string,
-  filterReverseGeocodingByTypes: [string],
+  filterReverseGeocodingByTypes: string[],
   predefinedPlacesAlwaysVisible: boolean,
   queryLanguage: string,
 };
@@ -62,8 +62,8 @@ export default class AutocompleteList extends React.Component {
     listViewDisplayed: boolean,
   };
 
-  _results: [Result] = [];
-  _requests: [XMLHttpRequest] = [];
+  _results: Result[] = [];
+  _requests: XMLHttpRequest[] = [];
 
 
   static defaultProps: Props = {
@@ -107,8 +107,8 @@ export default class AutocompleteList extends React.Component {
     (this: any)._renderRow = this._renderRow.bind(this);
   }
 
-  buildRowsFromResults(results: [Result]): [Result] {
-    var res: ?[Result] = null;
+  buildRowsFromResults(results: Result[]): Result[] {
+    var res: ?Result[] = null;
 
     if (results.length === 0 || this.props.predefinedPlacesAlwaysVisible === true) {
       res = this.props.predefinedPlaces.map((x) => {
@@ -208,12 +208,12 @@ export default class AutocompleteList extends React.Component {
     }
   }
 
-  _filterResultsByTypes(responseJSON: Object, types: [string]) {
+  _filterResultsByTypes(responseJSON: Object, types: string[]) {
     if (types.length === 0) {
       return responseJSON.results;
     }
 
-    var results: [Object] = [];
+    var results: Object[] = [];
     for (let i = 0; i < responseJSON.results.length; i++) {
       let found = false;
       for (let j = 0; j < types.length; j++) {

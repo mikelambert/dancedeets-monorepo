@@ -142,7 +142,7 @@ function sortedTutorials(tutorials, language) {
 
 class _PlaylistStylesView extends React.Component {
   state: {
-    stylePlaylists: [any];
+    stylePlaylists: any[];
   };
 
   constructor(props: PlaylistStylesViewProps) {
@@ -226,7 +226,7 @@ export const PlaylistStylesView = injectIntl(_PlaylistStylesView);
 
 type PlaylistListViewProps = {
   onSelected: (playlist: Playlist) => void;
-  playlists: [Playlist];
+  playlists: Playlist[];
 };
 
 class _PlaylistListView extends React.Component {
@@ -340,9 +340,9 @@ function formatDuration(formatMessage: (message: Object, timeData: Object) => st
 
 type SectionedListViewProps = {
   items: {[key: any]: any};
-  sectionHeaders: [any];
+  sectionHeaders: any[];
   renderRow: (row: any) => any;
-  renderSectionHeader: (data: [any], sectionId: string) => any;
+  renderSectionHeader: (data: any[], sectionId: string) => any;
   renderHeader?: () => any;
 };
 
@@ -361,7 +361,7 @@ export class SectionedListView extends React.Component {
     this.state = this._getNewState(this.props.items, this.props.sectionHeaders);
   }
 
-  _getNewState(items: {[key: any]: any}, sectionHeaders: [any]) {
+  _getNewState(items: {[key: any]: any}, sectionHeaders: any[]) {
     const state = {
       ...this.state,
       dataSource: this.state.dataSource.cloneWithRowsAndSections(items, sectionHeaders),
@@ -492,7 +492,7 @@ class _PlaylistView extends React.Component {
 
   }
 
-  renderSectionHeader(data: [Video], sectionId: string) {
+  renderSectionHeader(data: Video[], sectionId: string) {
     // If there's only one section, let's ignore showing the section header.
     // It's just confusing relative to the real header.
     if (this.props.playlist.getSectionHeaders().length === 1) {

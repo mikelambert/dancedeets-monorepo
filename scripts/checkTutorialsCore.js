@@ -26,7 +26,7 @@ export function getUrl(path: string, args: Object) {
   return fullPath;
 }
 
-async function findVideoItems(inVideoIds): Promise<[Object]> {
+async function findVideoItems(inVideoIds): Promise<Object[]> {
   const items = [];
   const videoIds = inVideoIds.slice();
   while (videoIds.length) {
