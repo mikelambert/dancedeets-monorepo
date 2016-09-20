@@ -688,9 +688,6 @@ class _EventRow extends React.Component {
   };
 
   render() {
-    if (!this.props.event.venue.geocode) {
-      console.log(this.props.event);
-    }
     if (this.props.listLayout) {
       const width = normalize(100);
       const imageProps = this.props.event.getImagePropsForWidth(width);
