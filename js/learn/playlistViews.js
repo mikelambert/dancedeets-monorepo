@@ -16,6 +16,7 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
+import _ from 'lodash/string';
 import { track } from '../store/track';
 import YouTube from 'react-native-youtube';
 import { FeedListView } from './BlogList';
@@ -231,7 +232,7 @@ class _PlaylistListView extends React.Component {
     let title = playlist.title;
     if (this.props.intl.locale != playlist.language) {
       const localizedLanguage = languages[this.props.intl.locale][playlist.language];
-      title = this.props.intl.formatMessage(messages.languagePrefixedTitle, {language: localizedLanguage, title: playlist.title});
+      title = this.props.intl.formatMessage(messages.languagePrefixedTitle, {language: _.upperFirst(localizedLanguage), title: playlist.title});
     }
     return <TouchableHighlight
       onPress={() => {
