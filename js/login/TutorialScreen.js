@@ -127,7 +127,7 @@ class _TutorialScreen extends React.Component {
       style={styles.bottomFade} />;
 
     if (pageID === 0) {
-      return <LaunchScreen>{bottomFade}</LaunchScreen>
+      return <LaunchScreen>{bottomFade}</LaunchScreen>;
     } else if (pageID === 1) {
       return <Image
         style={styles.container}
@@ -178,8 +178,8 @@ const styles = StyleSheet.create({
     fontSize: normalize(30),
     lineHeight: normalize(40),
     fontWeight: 'bold',
-    marginTop: 20,
-    height: 60,
+    marginTop: normalize(20),
+    height: normalize(60),
   },
   onboardList: {
   },
