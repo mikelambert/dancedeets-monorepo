@@ -38,7 +38,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>31</string>
+	<string>33</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>Fabric</key>
@@ -124,7 +124,7 @@
 		</dict>
 	</dict>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string></string>
+	<string>DanceDeets is connecting to Bluetooth</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>DanceDeets can add dance events to your calendar</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
