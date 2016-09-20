@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.4.4</string>
+	<string>2.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -38,7 +38,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>29</string>
+	<string>31</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>Fabric</key>
@@ -123,8 +123,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>DanceDeets can talk to Bluetooth devices</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>DanceDeets can add dance events to your calendar</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>DanceDeets can find nearby events</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Ubuntu 300.ttf</string>
