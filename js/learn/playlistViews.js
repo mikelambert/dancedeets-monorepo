@@ -165,6 +165,11 @@ class _PlaylistStylesView extends React.Component {
     const imageWidth = boxWidth - 30;
     const durationSeconds = style.tutorials.reduce((prev, current) => prev + current.getDurationSeconds(), 0);
     const length = formatDuration(this.props.intl.formatMessage, durationSeconds);
+    let styleTitle = style.title;
+    console.log(style.title, style.titleMessage);
+    if (style.titleMessage) {
+      styleTitle = this.props.intl.formatMessage(style.titleMessage);
+    }
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(style, this.state.stylePlaylists[style]);
@@ -182,7 +187,7 @@ class _PlaylistStylesView extends React.Component {
         alignItems: 'center',
       }}>
         <Image source={style.thumbnail} resizeMode="contain" style={{width: imageWidth, height: imageWidth}}/>
-        <Text style={{fontWeight: 'bold'}}>{style.title}</Text>
+        <Text style={{fontWeight: 'bold'}}>{styleTitle}</Text>
         <Text>{this.props.intl.formatMessage(messages.numTutorials, {count: style.tutorials.length})}</Text>
         <Text>{this.props.intl.formatMessage(messages.totalTime, {time: length})}</Text>
       </View>

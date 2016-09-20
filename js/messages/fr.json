@@ -75,6 +75,7 @@
   "tutorialVideos.navigatorTitle": "Apprendre : Tutoriels",
   "tutorialVideos.numTutorials": "{count} Tutoriels",
   "tutorialVideos.numVideosWithDuration": "{count} vidéos : {duration}",
+  "tutorialVideos.otherStylesTitle": "D'autres Styles",
   "tutorialVideos.styleHeader": "Choisir un style de danse :",
   "tutorialVideos.styleTutorialTitle": "Tutoriels de {style}",
   "tutorialVideos.timeHoursMinutes": "{hours}h {minutes}m",

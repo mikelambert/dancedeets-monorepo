@@ -75,6 +75,7 @@
   "tutorialVideos.navigatorTitle": "Learn: Tutorials",
   "tutorialVideos.numTutorials": "{count} Tutorials",
   "tutorialVideos.numVideosWithDuration": "{count} videos: {duration}",
+  "tutorialVideos.otherStylesTitle": "Other Styles",
   "tutorialVideos.styleHeader": "Choose a style you'd like to learn:",
   "tutorialVideos.styleTutorialTitle": "{style} Tutorials",
   "tutorialVideos.timeHoursMinutes": "{hours}h {minutes}m",

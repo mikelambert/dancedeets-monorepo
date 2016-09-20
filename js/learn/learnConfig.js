@@ -6,6 +6,18 @@
 
 'use strict';
 
+import {
+  defineMessages,
+} from 'react-intl';
+
+const messages = defineMessages({
+  otherStylesTitle: {
+    id: 'tutorialVideos.otherStylesTitle',
+    defaultMessage: 'Other Styles',
+    description: 'Name of the tutorial category for miscellaneous dance styles',
+  },
+});
+
 export const defaultTutorials = [
   {
     title: 'Bboy / Bgirl',
@@ -140,6 +152,7 @@ export const defaultTutorials = [
   },
   {
     title: 'Other Styles',
+    titleMessage: messages.otherStylesTitle,
     thumbnail: require('./images/styles/other.png'),
     tutorials: [
       require('./tutorials/misc/yakfilms.json'),

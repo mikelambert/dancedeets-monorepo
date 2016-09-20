@@ -75,6 +75,7 @@
   "tutorialVideos.navigatorTitle": "學習: 課程",
   "tutorialVideos.numTutorials": "{count}部課程",
   "tutorialVideos.numVideosWithDuration": "{count}個短片: {duration}",
+  "tutorialVideos.otherStylesTitle": "其他的舞蹈風格",
   "tutorialVideos.styleHeader": "選擇你想學習舞蹈風格:",
   "tutorialVideos.styleTutorialTitle": "{style} 課程",
   "tutorialVideos.timeHoursMinutes": "{hours}小時{minutes}分",
