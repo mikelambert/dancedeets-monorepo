@@ -221,6 +221,12 @@ class _EventListContainer extends React.Component {
   }
 
   async setLocationAndSearch(formattedAddress: string) {
+    // Reload our current location, just in case we haven't loaded it before.
+    // This could happen if we don't have a location at load time (no permissions)
+    // But the user gives us permissions, we do a search, and now we need to reload it here,
+    // ideally before the user's search results come back
+    this.loadLocation();
+    // Now do the actual search logic:
     await this.props.detectedLocation(formattedAddress);
     await this.props.performSearch();
   }
@@ -259,8 +265,12 @@ class _EventListContainer extends React.Component {
   }
 
   async loadLocation() {
-    const position = await getPosition();
-    this.setState({position});
+    try {
+      const position = await getPosition();
+      this.setState({position});
+    } catch (e) {
+      console.log('Error fetching user location for finding distance-to-event: ' + e);
+    }
   }
 
   componentWillMount() {
