@@ -2,34 +2,36 @@ package com.dancedeets.android;
 
 import android.app.Application;
 
-import com.airbnb.android.react.maps.MapsPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
+import com.airbnb.android.react.maps.MapsPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.chirag.RNMail.RNMail;
-import com.dancedeets.android.BuildConfig;
+import com.crashlytics.android.Crashlytics;
 import com.devfd.RNGeocoder.RNGeocoderPackage;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
-import com.reactnative.photoview.PhotoViewPackage;
-import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
-import org.jall.reactnative.firebase.FirebasePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.higo.zhangyp.segmented.AndroidSegmentedPackage;
+import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import com.kevinejohn.RNMixpanel.RNMixpanel;
 import com.microsoft.codepush.react.CodePush;
+import com.reactnative.photoview.PhotoViewPackage;
 import com.sbugert.rnadmob.RNAdMobPackage;
 import com.smixx.fabric.FabricPackage;
 import com.xgfe.reactnativeenv.RCTNativeEnvPackage;
+
+import org.jall.reactnative.firebase.FirebasePackage;
 
 import java.util.Arrays;
 import java.util.List;
 
 import cl.json.RNSharePackage;
+import io.fabric.sdk.android.Fabric;
 import io.fixd.rctlocale.RCTLocalePackage;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -82,6 +84,14 @@ public class MainApplication extends Application implements ReactApplication {
         // Initialize the SDK before executing any other operations,
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
+        // If we want to have Crashlytics report the version of our JS (and not our app),
+        // because we are using CodePush or AppHub, then we need to pass in a stubbed Context.
+        // It will wrap-and-delegate-to-"this", except for:
+        //   PackageManager packageManager = context.getPackageManager();
+        //   PackageInfo packageInfo = packageManager.getPackageInfo(this.packageName, 0);
+        //   this.versionCode = Integer.toString(packageInfo.versionCode);
+        //   this.versionName = (packageInfo.versionName == null ? "0.0" : packageInfo.versionName);
+        Fabric.with(this, new Crashlytics());
     }
 
     @Override
