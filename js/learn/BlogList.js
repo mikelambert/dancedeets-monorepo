@@ -69,7 +69,7 @@ export class BlogPostTitle extends React.Component {
 }
 
 type FeedProps = {
-  items: [any];
+  items: [];
   renderRow: (post: BlogPost) => any;
   renderHeader?: () => any;
   contentContainerStyle?: any;
@@ -89,7 +89,7 @@ export class FeedListView extends React.Component {
     this.state = this._getNewState(this.props.items);
   }
 
-  _getNewState(items: [any]) {
+  _getNewState(items: []) {
     const results = items || [];
     const state = {
       ...this.state,
@@ -200,7 +200,7 @@ export class BlogList extends React.Component {
     this.loadFeeds();
   }
 
-  _getNewState(blogs: [Blog]) {
+  _getNewState(blogs: Blog[]) {
     const results = blogs || [];
     const state = {
       ...this.state,

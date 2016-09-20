@@ -142,7 +142,7 @@ function sortedTutorials(tutorials, language) {
 
 class _PlaylistStylesView extends React.Component {
   state: {
-    stylePlaylists: any[];
+    stylePlaylists: [];
   };
 
   constructor(props: PlaylistStylesViewProps) {
@@ -340,9 +340,9 @@ function formatDuration(formatMessage: (message: Object, timeData: Object) => st
 
 type SectionedListViewProps = {
   items: {[key: any]: any};
-  sectionHeaders: any[];
+  sectionHeaders: [];
   renderRow: (row: any) => any;
-  renderSectionHeader: (data: any[], sectionId: string) => any;
+  renderSectionHeader: (data: [], sectionId: string) => any;
   renderHeader?: () => any;
 };
 
@@ -361,7 +361,7 @@ export class SectionedListView extends React.Component {
     this.state = this._getNewState(this.props.items, this.props.sectionHeaders);
   }
 
-  _getNewState(items: {[key: any]: any}, sectionHeaders: any[]) {
+  _getNewState(items: {[key: any]: any}, sectionHeaders: []) {
     const state = {
       ...this.state,
       dataSource: this.state.dataSource.cloneWithRowsAndSections(items, sectionHeaders),
