@@ -88,7 +88,6 @@ export async function auth(data: ?Object) {
   if (writesDisabled) {
     return;
   }
-  console.log(data);
   await verifyAuthenticated();
   return idempotentRetry(2000, createRequest('auth', {}, data));
 }
