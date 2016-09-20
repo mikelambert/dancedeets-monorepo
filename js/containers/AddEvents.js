@@ -109,7 +109,7 @@ class _FilterHeader extends React.Component {
         style={{flex: 1}}
         defaultIndex={this.props.displayOptions.onlyUnadded ? 1 : 0}
         tintColor={yellowColors[1]}
-        tryOnChange={(index)=>{this.props.setOnlyUnadded(index == 1);}}
+        tryOnChange={(index) => this.props.setOnlyUnadded(index == 1)}
       />
     </HorizontalView>
 
@@ -120,7 +120,7 @@ class _FilterHeader extends React.Component {
         style={{flex: 1}}
         tintColor={yellowColors[1]}
         defaultIndex={this.props.displayOptions.sortOrder === 'ByName' ? 1 : 0}
-        tryOnChange={(index)=>{this.props.setSortOrder(index == 1 ? 'ByName' : 'ByDate');}}
+        tryOnChange={(index) => this.props.setSortOrder(index == 1 ? 'ByName' : 'ByDate')}
       />
     </HorizontalView>
     </View>;
@@ -131,7 +131,7 @@ const FilterHeader = connect(
     displayOptions: state.addEvents.displayOptions,
   }),
   dispatch => ({
-    setOnlyUnadded: (x) => dispatch(setOnlyUnadded(x)),
+    setOnlyUnadded: (x): Promise<void> => dispatch(setOnlyUnadded(x)),
     setSortOrder: (x) => dispatch(setSortOrder(x)),
   }),
 )(injectIntl(_FilterHeader));

@@ -41,7 +41,7 @@ class _LoginButtonWithAlternate extends React.Component {
 
   render() {
     return (
-      <View style={[styles.centerItems, styles.bottomBox]}>
+      <View style={styles.bottomBox}>
         <Button
           icon={require('./icons/facebook.png')}
           caption={this.props.intl.formatMessage(messages.loginButton)}

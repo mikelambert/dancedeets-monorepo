@@ -149,7 +149,7 @@ const messages = defineMessages({
 class SubEventLine extends React.Component {
   props: {
     icon: any;
-    children?: ReactElement;
+    children?: ReactElement<any>;
   };
 
   render() {
@@ -875,7 +875,6 @@ class _FullEventView extends React.Component {
       >
         {this.props.event.cover ? clickableFlyer : flyerImage}
         <Card
-          style={eventStyles.eventIndent}
           title={
             <Text
               numberOfLines={2}

@@ -343,7 +343,7 @@ type SectionedListViewProps = {
   sectionHeaders: [any];
   renderRow: (row: any) => any;
   renderSectionHeader: (data: [any], sectionId: string) => any;
-  renderHeader: ?() => any;
+  renderHeader?: () => any;
 };
 
 export class SectionedListView extends React.Component {

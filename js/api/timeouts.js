@@ -6,7 +6,7 @@
 
 'use strict';
 
-export function timeout(timeoutMs: number, promise: Promise) {
+export function timeout<T>(timeoutMs: number, promise: Promise<T>): Promise<T> {
   return new Promise(function(resolve, reject) {
     setTimeout(function() {
       reject(new Error(`${timeoutMs}ms timeout reached`));
@@ -15,7 +15,7 @@ export function timeout(timeoutMs: number, promise: Promise) {
   });
 }
 
-export async function retryWithBackoff(startTimeoutMs: number, backoffFactor: number, retries: number, getPromise: () => Promise) {
+export async function retryWithBackoff<T>(startTimeoutMs: number, backoffFactor: number, retries: number, getPromise: () => Promise<T>): Promise<T> {
   try {
     return await timeout(startTimeoutMs, getPromise());
   } catch (e) {

@@ -17,19 +17,19 @@ import {
   semiNormalize,
 } from '../ui/normalize';
 
-export function Text({style, ...props}: Object): ReactElement {
+export function Text({style, ...props}: Object): ReactElement<RealText> {
   return <RealText style={[styles.font, styles.text, style]} {...props} />;
 }
 
-export function Heading1({style, ...props}: Object): ReactElement {
+export function Heading1({style, ...props}: Object): ReactElement<RealText> {
   return <RealText style={[styles.font, styles.h1, style]} {...props} />;
 }
 
-export function Paragraph({style, ...props}: Object): ReactElement {
+export function Paragraph({style, ...props}: Object): ReactElement<RealText> {
   return <RealText style={[styles.font, styles.p, style]} {...props} />;
 }
 
-export function Autolink({style, ...props}: Object): ReactElement {
+export function Autolink({style, ...props}: Object): ReactElement<RealAutolink> {
   return <RealAutolink style={[styles.font, style]} {...props} />;
 }
 

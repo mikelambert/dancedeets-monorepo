@@ -32,7 +32,7 @@ function getUrl(path: string, args: Object) {
   return fullPath;
 }
 
-async function performRequest(path: string, args: Object, postArgs: ?Object | null) {
+async function performRequest(path: string, args: Object, postArgs: ?Object | null): Promise<Object> {
   try {
     // Standardize our API args with additional data
     const client = 'react-' + Platform.OS;
@@ -69,11 +69,11 @@ async function performRequest(path: string, args: Object, postArgs: ?Object | nu
   }
 }
 
-function createRequest(path: string, args: Object, postArgs: ?Object | null) {
+function createRequest(path: string, args: Object, postArgs: ?Object | null): () => Promise<Object> {
   return () => performRequest(path, args, postArgs);
 }
 
-function idempotentRetry(timeoutMs: number, promiseGenerator: () => Promise) {
+function idempotentRetry(timeoutMs: number, promiseGenerator: () => Promise<() => Promise<Object>>) {
   return retryWithBackoff(timeoutMs, 2, 5, promiseGenerator);
 }
 
@@ -116,7 +116,7 @@ export async function event(id: string) {
   return new Event(eventData);
 }
 
-export async function getAddEvents() {
+export async function getAddEvents(): Promise<> {
   await verifyAuthenticated();
   return await timeout(10000, performRequest('events_list_to_add', {}));
 }

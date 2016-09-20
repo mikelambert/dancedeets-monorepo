@@ -113,10 +113,6 @@ export class YoutubePlaylistBlog extends Blog {
     return this.posts[0].author;
   }
 
-  durationSeconds() {
-    return this.posts.reduce((prev, current) => prev + current.durationSeconds, 0);
-  }
-
   parsePlaylistItem(snippet: any, contentDetails: any): BlogPost {
     return {
       title: snippet.title,
@@ -125,7 +121,6 @@ export class YoutubePlaylistBlog extends Blog {
       author: snippet.channelTitle,
       url: `https://www.youtube.com/watch?v=${snippet.resourceId.videoId}`,
       youtubeId: snippet.resourceId.videoId,
-      durationSeconds: moment.duration(contentDetails.duration).asSeconds(),
     };
   }
 

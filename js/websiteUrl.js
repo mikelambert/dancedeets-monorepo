@@ -6,22 +6,22 @@
 
 'use strict';
 
-import urllib from 'url';
+import { Url } from 'url';
 
 export default class WebsiteUrl {
-  url: ?Object;
+  url: ?Url;
 
   constructor(url: string) {
-    this.url = url ? urllib.parse(url, true) : null;
+    this.url = url ? new Url().parse(url, true) : null;
   }
 
   isEventUrl() {
     return this.url && this.url.pathname.startsWith('/event/');
   }
 
-  eventId() {
+  eventId(): string {
     if (!this.url || !this.isEventUrl()) {
-      return null;
+      throw new Error('Not a valid event url: ' + (this.url || 'null'));
     }
     const pathname = this.url.pathname;
     const elems = pathname.split('/');
@@ -37,14 +37,14 @@ export default class WebsiteUrl {
 
   location() {
     if (!this.url || !this.isSearchUrl()) {
-      return null;
+      throw new Error('Not a valid search url: ' + (this.url || 'null'));
     }
     return this.url.query.location;
   }
 
   keywords() {
     if (!this.url || !this.isSearchUrl()) {
-      return null;
+      throw new Error('Not a valid search url: ' + (this.url || 'null'));
     }
     return this.url.query.keywords;
   }

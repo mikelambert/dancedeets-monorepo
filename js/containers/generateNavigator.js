@@ -19,6 +19,7 @@ import {
 import { connect } from 'react-redux';
 import {
   injectIntl,
+  intlShape,
 } from 'react-intl';
 import { gradientTop } from '../Colors';
 import { navigatePush, navigatePop, navigateSwap } from '../actions';
@@ -53,10 +54,11 @@ export type Navigatable = {
 
 type AppContainerProps = {
 	navigationState: NavigationState,
+	intl: intlShape,
 };
 
 type CallingProps = {
-	renderScene: (scene: NavigationSceneRendererProps, nav: Navigatable) => React.Element;
+	renderScene: (scene: NavigationSceneRendererProps, nav: Navigatable) => ReactElement<any>;
 };
 
 const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }) => (

@@ -14,7 +14,7 @@ import SendIntentAndroid from 'react-native-send-intent';
 import { Event } from '../events/models';
 import moment from 'moment';
 
-function OkAlert(title: string, message: string, cancel = false): Promise {
+function OkAlert(title: string, message: string, cancel = false): Promise<void> {
   return new Promise((resolve, reject) => {
     var buttons = [];
     if (cancel) {
@@ -27,7 +27,7 @@ function OkAlert(title: string, message: string, cancel = false): Promise {
   });
 }
 
-function OkCancelAlert(title: string, message: string): Promise {
+function OkCancelAlert(title: string, message: string): Promise<void> {
   return OkAlert(title, message, true);
 }
 

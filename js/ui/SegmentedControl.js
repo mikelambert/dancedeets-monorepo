@@ -17,10 +17,10 @@ import normalizeColor from 'normalizeColor';
 import SegmentedControlAndroid from 'react-native-segmented-android';
 
 type Props = {
-  values: [string],
+  values: string[],
   defaultIndex: number,
   enabled: boolean,
-  tryOnChange: ((index: number, oldIndex: number) => void) | ((index: number, oldIndex: number) => Promise),
+  tryOnChange: (index: number, oldIndex: number) => (void | Promise<void>),
   tintColor: string,
   style: any,
 };
