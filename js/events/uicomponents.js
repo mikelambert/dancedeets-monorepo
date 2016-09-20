@@ -692,7 +692,7 @@ class _EventRow extends React.Component {
       console.log(this.props.event);
     }
     if (this.props.listLayout) {
-      const width = 100;
+      const width = normalize(100);
       const imageProps = this.props.event.getImagePropsForWidth(width);
       return (
         <Card style={eventStyles.row}>
