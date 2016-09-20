@@ -1,6 +1,8 @@
 rootProject.name = 'DanceDeets'
 
 include ':app'
+include ':react-native-permissions'
+project(':react-native-permissions').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-permissions/android')
 include ':react-native-firebase3'
 project(':react-native-firebase3').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-firebase3/android')
 include ':react-native-native-env'
