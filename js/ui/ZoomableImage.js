@@ -23,12 +23,16 @@
  */
 'use strict';
 
-var Image = require('Image');
-var React = require('React');
-var ScrollView = require('ScrollView');
-var StyleSheet = require('StyleSheet');
-var TouchableWithoutFeedback = require('TouchableWithoutFeedback');
-import { Dimensions } from 'react-native';
+import React from 'react';
+import {
+  Dimensions,
+  Image,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import PhotoView from 'react-native-photo-view';
 
 export default class ZoomableImage extends React.Component {
   props: {
@@ -88,6 +92,19 @@ export default class ZoomableImage extends React.Component {
     const zoomScale = Math.min(widthScale, heightScale);
     const horizontal = (widthScale < heightScale);
 
+    if (Platform.OS == 'android') {
+      return <PhotoView
+        maximumZoomScale={Math.max(zoomScale, 4.0)}
+        minimumZoomScale={Math.min(zoomScale, 1.0)}
+        style={[styles.image, {flex: 1, width: this.props.width, height: this.props.height}]}
+        source={{uri: this.props.url}}
+        />;
+    } else {
+      this.renderIOS(zoomScale, horizontal);
+    }
+  }
+
+  renderIOS(zoomScale: number, horizontal: boolean) {
     return (
       <ScrollView
         ref="zoomable_scroll"
