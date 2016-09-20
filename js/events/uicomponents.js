@@ -91,7 +91,7 @@ const messages = defineMessages({
   },
   showOrganizers: {
     id: 'event.showOrganizers',
-    defaultMessage: 'Show {count} Organizers', // Always 2-and-more, so don't need to deal with singular case
+    defaultMessage: 'Show {count, number} Organizers', // Always 2-and-more, so don't need to deal with singular case
     description: 'Will show the list of organizers for this event',
   },
   eventDetails: {
@@ -111,12 +111,12 @@ const messages = defineMessages({
   },
   attendingCount: {
     id: 'event.attendingCount',
-    defaultMessage: '{attendingCount} attending',
+    defaultMessage: '{attendingCount, number} attending',
     description: 'Count of people attending this event',
   },
   attendingMaybeCount: {
     id: 'event.attendingMaybeCount',
-    defaultMessage: '{attendingCount} attending, {maybeCount} maybe',
+    defaultMessage: '{attendingCount, number} attending, {maybeCount, number} maybe',
     description: 'Count of people maybe-attending this event',
   },
   attending: {
@@ -136,12 +136,12 @@ const messages = defineMessages({
   },
   milesAway: {
     id: 'distance.miles',
-    defaultMessage: '{miles} {miles, plural, one {mile} other {miles}} away',
+    defaultMessage: '{miles, number} {miles, plural, one {mile} other {miles}} away',
     description: 'Distance of something from the user',
   },
   kmAway: {
     id: 'distance.km',
-    defaultMessage: '{km} km away',
+    defaultMessage: '{km, number} km away',
     description: 'Distance of something from the user',
   },
 });

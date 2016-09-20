@@ -53,7 +53,7 @@ type PlaylistStylesViewProps = {
 const messages = defineMessages({
   numTutorials: {
     id: 'tutorialVideos.numTutorials',
-    defaultMessage: '{count} Tutorials',
+    defaultMessage: '{count,number} Tutorials',
     description: 'How many tutorials there are',
   },
   totalTime: {
@@ -73,7 +73,7 @@ const messages = defineMessages({
   },
   numVideosWithDuration: {
     id: 'tutorialVideos.numVideosWithDuration',
-    defaultMessage: '{count} videos: {duration}',
+    defaultMessage: '{count,number} videos: {duration}',
     description: 'Total for all videos in a tutorial',
   },
   tutorialFooter: {
@@ -98,17 +98,17 @@ const messages = defineMessages({
   },
   timeHoursMinutes: {
     id: 'tutorialVideos.timeHoursMinutes',
-    defaultMessage: '{hours}h {minutes}m',
+    defaultMessage: '{hours,number}h {minutes,number}m',
     description: 'Time formatting',
   },
   timeMinutes: {
     id: 'tutorialVideos.timeMinutes',
-    defaultMessage: '{minutes}m',
+    defaultMessage: '{minutes,number}m',
     description: 'Time formatting',
   },
   timeSeconds: {
     id: 'tutorialVideos.timeSeconds',
-    defaultMessage: '{seconds}s',
+    defaultMessage: '{seconds,number}s',
     description: 'Time formatting',
   },
 });
@@ -326,14 +326,14 @@ class _PlaylistListView extends React.Component {
 export const PlaylistListView = injectIntl(_PlaylistListView);
 
 function formatDuration(formatMessage: (message: Object, timeData: Object) => string, durationSeconds: number) {
-  const hours = Math.floor(durationSeconds / 60 / 60).toString();
-  const minutes = (Math.floor(durationSeconds / 60) % 60).toString();
+  const hours = Math.floor(durationSeconds / 60 / 60);
+  const minutes = Math.floor(durationSeconds / 60) % 60;
   if (durationSeconds > 60 * 60) {
-    return formatMessage(messages.timeHoursMinutes, {hours, minutes});
+    return formatMessage(messages.timeHoursMinutes, {hours, minutes: 0});
   } else if (durationSeconds > 60) {
     return formatMessage(messages.timeMinutes, {minutes});
   } else {
-    const seconds = durationSeconds.toString();
+    const seconds = durationSeconds;
     return formatMessage(messages.timeSeconds, {seconds});
   }
 }

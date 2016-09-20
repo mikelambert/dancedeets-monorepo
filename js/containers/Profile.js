@@ -106,7 +106,7 @@ const messages = defineMessages({
   },
   profileDetailsContents: {
     id: 'profile.detailsContents',
-    defaultMessage: '– Added: {handAdded}\n– Auto-contributed: {autoAdded}',
+    defaultMessage: '– Added: {handAdded, number}\n– Auto-contributed: {autoAdded, number}',
     description: 'Details about the user',
   },
 });
