@@ -6,6 +6,8 @@
 
 'use strict';
 
+import { Dimensions } from 'react-native';
+
 import type {Action} from '../actions/types';
 import type { SearchQuery, SearchResults } from '../events/search';
 
@@ -17,8 +19,10 @@ export type State = {
   error: boolean; // whether there was an error fetching the current results
 };
 
+// Use the smaller thumbnails by default on a larger screen
+const widescreen = Dimensions.get('window').width >= 768;
 const initialState = {
-  listLayout: false,
+  listLayout: widescreen,
   loading: false,
   searchQuery: {
     location: '',
