@@ -124,7 +124,7 @@
 		</dict>
 	</dict>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>DanceDeets can talk to Bluetooth devices</string>
+	<string></string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>DanceDeets can add dance events to your calendar</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

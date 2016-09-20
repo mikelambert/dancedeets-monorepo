@@ -18,8 +18,10 @@ function OkAlert(title: string, message: string, cancel = false): Promise {
   return new Promise((resolve, reject) => {
     var buttons = [];
     if (cancel) {
+      //TODO(localization)
       buttons.push({text: 'Cancel', onPress: () => reject(), style: 'cancel'});
     }
+    //TODO(localization)
     buttons.push({text: 'OK', onPress: () => resolve()});
     Alert.alert(title, message, buttons);
   });
@@ -48,6 +50,7 @@ async function addIOS(event: Event) {
 
   if (status === 'undetermined') {
     try {
+      //TODO(localization)
       await OkCancelAlert('Add to Calendar', 'To add this event to your calendar, you need to allow access to your calendar.');
       status = await CalendarEventsIOS.authorizeEventStore();
     } catch (error) {}
@@ -58,6 +61,7 @@ async function addIOS(event: Event) {
       OkAlert('Cannot Access Calendar', 'Could not access calendar.');
     } else if (status === 'denied') {
       try {
+        //TODO(localization)
         await OkCancelAlert('Cannot Access Calendar', 'Please open Settings to allow Calendar permissions.');
         if (await Permissions.canOpenSettings()) {
           Permissions.openSettings();

@@ -5,3 +5,6 @@
   Created by LambertMike on 2016/09/20.
   Copyright © 2016年 Facebook. All rights reserved.
 */
+
+"NSLocationWhenInUseUsageDescription" = ""; /* TODO(localization) */
+"NSCalendarsUsageDescription" = "";  /* TODO(localization) */

@@ -7,3 +7,4 @@
 */
 
 "NSLocationWhenInUseUsageDescription" = "DanceDeetsはご近所のイベントを探します";
+"NSCalendarsUsageDescription" = "";
