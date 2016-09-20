@@ -6,9 +6,9 @@
 
 import {
   Alert,
-  Linking,
   Platform,
 } from 'react-native';
+import Permissions from 'react-native-permissions';
 import CalendarEventsIOS from 'react-native-calendar-events';
 import SendIntentAndroid from 'react-native-send-intent';
 import { Event } from '../events/models';
@@ -59,7 +59,9 @@ async function addIOS(event: Event) {
     } else if (status === 'denied') {
       try {
         await OkCancelAlert('Cannot Access Calendar', 'Please open Settings to allow Calendar permissions.');
-        Linking.openURL('app-settings:');
+        if (await Permissions.canOpenSettings()) {
+          Permissions.openSettings();
+        }
       } catch (err) {}
     }
     return false;
