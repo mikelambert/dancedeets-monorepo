@@ -66,17 +66,20 @@
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
 
-  // Load our LaunchScreen again, to use as the "loadingView" while React Native proceeds to initialize.
-  // This prevents the white flash screen inbetween the real LaunchScreen and our initialized RN app.
-  // Idea and solution found in https://github.com/facebook/react-native/issues/1402 .
-  UIView* launchScreenView = [[[NSBundle mainBundle] loadNibNamed:@"LaunchScreen" owner:self options:nil] objectAtIndex:0];
-  launchScreenView.frame = self.window.bounds;
-  rootView.loadingView = launchScreenView;
-
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
+
+  // Load our LaunchScreen again, to use as the "loadingView" while React Native proceeds to initialize.
+  // This prevents the white flash screen inbetween the real LaunchScreen and our initialized RN app.
+  UIImageView *launchView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"launch_screen.jpg"]];
+  launchView.contentMode = UIViewContentModeScaleAspectFill;
+  // We need to wait for self.window to be reconstructed above, before attempding to access its size here
+  launchView.frame = self.window.bounds;
+  rootView.loadingView = launchView;
+
+
   [self.window makeKeyAndVisible];
   return YES;
 }
