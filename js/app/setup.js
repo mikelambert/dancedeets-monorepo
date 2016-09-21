@@ -15,6 +15,7 @@ import Mixpanel from 'react-native-mixpanel';
 import ScreenshotSlideshow from '../ScreenshotSlideshow';
 import intl from '../intl';
 import ProcessInfo from 'react-native-processinfo';
+import { setup as setupNotifications } from '../notifications/setup';
 
 export default function setup(): Class<Object> {
   console.disableYellowBox = true;
@@ -24,6 +25,7 @@ export default function setup(): Class<Object> {
   } else {
     Mixpanel.sharedInstanceWithToken('f5d9d18ed1bbe3b190f9c7c7388df243');
   }
+  setupNotifications();
 
   class Root extends React.Component {
     state: {

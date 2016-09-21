@@ -100,6 +100,19 @@ export function trackWithEvent(eventName: string, event: Event, params: ?Params)
   track(eventName, extraParams);
 }
 
+export type TokenRegistration = {
+  os: 'android' | 'os';
+  token: string;
+};
+
+export function setupToken(tokenData: TokenRegistration) {
+  if (tokenData.os === 'android') {
+    Mixpanel.setPushRegistrationId(tokenData.token);
+  } else if (tokenData.os === 'ios') {
+    Mixpanel.addPushDeviceToken(tokenData.token);
+  }
+}
+
 async function setupPersonProperties() {
   const token = await AccessToken.getCurrentAccessToken();
   if (!token) {
