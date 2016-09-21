@@ -63,7 +63,6 @@ export type Admin = {
 
 export class Event extends JsonDerivedObject {
   id: string;
-  venue: string;
   picture: string;
   name: string;
   description: string;
