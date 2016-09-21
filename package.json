@@ -27,6 +27,7 @@
     "react-native-fbsdk": "github:mikelambert/react-native-fbsdk#patch-1",
     "react-native-firebase3": "0.1.4",
     "react-native-geocoder": "^0.4.3",
+    "react-native-google-api-availability": "^0.0.1",
     "react-native-linear-gradient": "^1.5.9",
     "react-native-locale": "0.0.11",
     "react-native-mail": "^1.6.0",
