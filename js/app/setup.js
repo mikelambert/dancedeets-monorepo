@@ -25,7 +25,6 @@ export default function setup(): Class<Object> {
   } else {
     Mixpanel.sharedInstanceWithToken('f5d9d18ed1bbe3b190f9c7c7388df243');
   }
-  setupNotifications();
 
   class Root extends React.Component {
     state: {
@@ -39,6 +38,7 @@ export default function setup(): Class<Object> {
         isLoading: true,
         store: configureStore(() => this.setState({isLoading: false})),
       };
+      setupNotifications(this.state.store);
     }
 
     render() {
