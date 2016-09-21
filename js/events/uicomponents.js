@@ -52,6 +52,7 @@ import {
 import geolib from 'geolib';
 import { toggleEventTranslation } from '../actions';
 import url from 'url';
+import GoogleApiAvailability from 'react-native-google-api-availability';
 
 const messages = defineMessages({
   addToCalendar: {
@@ -597,8 +598,29 @@ const EventDescription = connect(
 
 
 class EventMap extends React.Component {
+  state: {
+    mapOk: boolean;
+  };
+
+  constructor(props) {
+    super(props);
+    if (Platform.OS === 'ios') {
+      this.state = {mapOk: true};
+    } else {
+      this.state = {mapOk: false};
+      this.checkAndroidMaps();
+    }
+  }
+
+  async checkAndroidMaps() {
+    const available = await GoogleApiAvailability.isGooglePlayServicesAvailable();
+    this.setState({mapOk: available});
+  }
 
   render() {
+    if (!this.state.mapOk) {
+      return null;
+    }
     return <MapView
         style={[eventStyles.eventMap, this.props.style]}
         region={{
