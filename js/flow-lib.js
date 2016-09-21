@@ -29,4 +29,8 @@ declare module 'react-native-locale' {
   declare var exports: any;
 }
 
+declare module 'url' {
+  declare var exports: any;
+}
+
 declare var requestAnimationFrame: (callback: () => void) => number;

@@ -24,6 +24,9 @@
 .*/Libraries/react-native/ReactNative.js
 .*/node_modules/jest-runtime/build/__tests__/.*
 
+.*/node_modules/config-chain/test/.*\.json
+.*/node_modules/npmconf/test/fixtures/.*\.json
+
 [include]
 
 [libs]
