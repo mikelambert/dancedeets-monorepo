@@ -36,6 +36,7 @@
     "react-native-permissions": "github:yonahforst/react-native-permissions",
     "react-native-photo-view": "github:alwx/react-native-photo-view",
     "react-native-processinfo": "0.0.2",
+    "react-native-push-notification": "^2.1.1",
     "react-native-segmented-android": "github:mikelambert/react-native-segmented-android",
     "react-native-send-intent": "^1.0.13",
     "react-native-share": "^1.0.10",

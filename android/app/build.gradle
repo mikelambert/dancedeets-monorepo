@@ -166,6 +166,7 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':react-native-push-notification')
     compile project(':react-native-photo-view')
     compile project(':react-native-permissions')
     compile project(':react-native-firebase3')
