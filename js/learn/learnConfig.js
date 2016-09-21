@@ -242,12 +242,20 @@ https://www.youtube.com/watch?v=6z5WewBEXi8 skeer rabbits 1-2-3-4
     "title": "Oldschool Dictionary part1"
   },
 
-https://www.youtube.com/user/ilovethisdance/search?query=tutorial
+    {
+      "title": "English of Japanese Dancers Box Step",
+      "videos": [
+        {
+          "youtubeId": "rFVml6p3P64",
+          "duration": "PT3M51S",
+          "title": "Unknown Dancers",
+          "height": 344,
+          "width": 459
+        }
+      ]
+    },
 
-Let's grab these!
-https://www.youtube.com/channel/UC7LZQaffoSn2b_ocQg9ATlQ/videos
-the animation/tutting video references are still useful?
-the wiggles videos too
+https://www.youtube.com/user/ilovethisdance/search?query=tutorial
 
 // popping, but we need to segment or do in-app segmenting:
 https://www.youtube.com/watch?v=izngp0yCfyE

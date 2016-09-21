@@ -1,22 +1,10 @@
 {
-  "title": "Miscellaneous Teachers",
-  "author": "Miscellaneous",
+  "title": "StreetDanceLT",
+  "author": "Barbora and Gabija",
   "style": "hiphop",
   "language": "lt",
-  "thumbnail": "https://i.ytimg.com/vi/rFVml6p3P64/mqdefault.jpg",
+  "thumbnail": "https://i.ytimg.com/vi/xACAqm5Xxj8/mqdefault.jpg",
   "sections": [
-    {
-      "title": "Japanese Hiphop Lesson",
-      "videos": [
-        {
-          "youtubeId": "rFVml6p3P64",
-          "duration": "PT3M51S",
-          "title": "Unknown Dancers",
-          "height": 344,
-          "width": 459
-        }
-      ]
-    },
     {
       "title": "Barbora",
       "videos": [
