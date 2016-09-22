@@ -19,7 +19,11 @@ import {
 } from '../api/dancedeets';
 import type {Event} from '../events/models';
 import { purpleColors } from '../Colors';
-import { navigatePush, navigatePop } from '../actions';
+import {
+  navigatePush,
+  navigatePop,
+  selectTab,
+} from '../actions';
 
 function hashCode(s: string) {
   let hash = 0;
@@ -46,8 +50,7 @@ class Handler {
     // TODO: Limitations of PushNotification:
     // TODO: Download larger flyer bitmaps (2:1 ish ratio) to display in the LargeIcon
     // TODO: Set CATEGORY_EVENT
-    // - can't set a pendingIntent that opens ACTION_VIEW (maybe not important?)
-    // - we can add actions, but we can't make them be ACTION_VIEW mapUrl actions or have icons...
+    // TODO: We can add actions, but we can't add icons or make them be ACTION_VIEW mapUrl actions or have icons...
     // - Look up SharedPreference for whether we want to play sounds?
     const eventTime = event.start_time; // TODO: need to get only as string
     const eventLocation = event.venue.name;
@@ -110,6 +113,8 @@ class Handler {
         const dispatch = this.store.dispatch;
         const navName = 'EVENT_NAV';
         const destState = {key: 'EventView', title: notificationEvent.name, event: notificationEvent};
+        //TODO: factor out some of this navigation functionality
+        await dispatch(selectTab('events'));
         await dispatch(navigatePop(navName));
         await dispatch(navigatePop(navName));
         await dispatch(navigatePush(navName, destState));
