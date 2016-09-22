@@ -12,6 +12,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
+import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
 import org.jall.reactnative.googleapiavailability.GoogleApiAvailabilityPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.facebook.react.ReactNativeHost;
@@ -52,26 +53,27 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
-        new MainReactPackage(),
-        new GoogleApiAvailabilityPackage(),
-        new ReactNativePushNotificationPackage(),
-        new PhotoViewPackage(),
-        new ReactNativePermissionsPackage(),
-        new FirebasePackage(),
-        new RCTNativeEnvPackage(BuildConfig.class),
-        new RCTLocalePackage(),
-        new CodePush(BuildConfig.CODEPUSH_KEY, getApplication(), BuildConfig.DEBUG),
-        new RNSharePackage(),
-        new RNMail(),
-        new RNAdMobPackage(),
-        new RNMixpanel(),
-        new RNGeocoderPackage(),
-        new MapsPackage(),
-        new FabricPackage(),
-        new LinearGradientPackage(),
-        new AndroidSegmentedPackage(),
-        new RNSendIntentPackage(),
-        new FBSDKPackage(mCallbackManager)
+            new MainReactPackage(),
+            new ReactNativeYouTube(),
+            new GoogleApiAvailabilityPackage(),
+            new ReactNativePushNotificationPackage(),
+            new PhotoViewPackage(),
+            new ReactNativePermissionsPackage(),
+            new FirebasePackage(),
+            new RCTNativeEnvPackage(BuildConfig.class),
+            new RCTLocalePackage(),
+            new CodePush(BuildConfig.CODEPUSH_KEY, getApplication(), BuildConfig.DEBUG),
+            new RNSharePackage(),
+            new RNMail(),
+            new RNAdMobPackage(),
+            new RNMixpanel(),
+            new RNGeocoderPackage(),
+            new MapsPackage(),
+            new FabricPackage(),
+            new LinearGradientPackage(),
+            new AndroidSegmentedPackage(),
+            new RNSendIntentPackage(),
+            new FBSDKPackage(mCallbackManager)
         );
     }
 

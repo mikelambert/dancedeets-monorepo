@@ -162,10 +162,12 @@ configurations.all {
         force 'com.google.android.gms:play-services-base:9.4.0+'
         force 'com.google.android.gms:play-services-location:9.4.0+'
         force 'com.google.android.gms:play-services-maps:9.4.0+'
+        force 'com.google.android.gms:play-services-gcm:9.4.0+'
     }
 }
 
 dependencies {
+    compile project(':react-native-youtube')
     compile project(':react-native-google-api-availability')
     compile project(':react-native-push-notification')
     compile project(':react-native-photo-view')

@@ -45,7 +45,7 @@
     "react-native-trackjs": "^0.1.2",
     "react-native-viewpager": "github:dmueller39/react-native-viewpager#patch-1",
     "react-native-wkwebview": "github:mikelambert/react-native-wkwebview",
-    "react-native-youtube": "github:mikelambert/react-native-youtube",
+    "react-native-youtube": "../react-native-youtube",
     "react-redux": "^4.4.4",
     "redux": "^3.4.0",
     "redux-logger": "^2.6.1",
