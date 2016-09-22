@@ -19,7 +19,7 @@
     "react-native": "../react-native",
     "react-native-admob": "^1.0.0",
     "react-native-autolink": "^0.7.0",
-    "react-native-calendar-events": "^1.0.0",
+    "react-native-calendar-events": "github:mikelambert/react-native-calendar-events",
     "react-native-carousel": "^0.10.0",
     "react-native-code-push": "^1.14.6-beta",
     "react-native-fabric": "^0.3.0",
