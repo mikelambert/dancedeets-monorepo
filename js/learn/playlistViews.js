@@ -44,6 +44,7 @@ import type { Dispatch } from '../actions/types';
 import {
   setTutorialVideoIndex,
 } from '../actions';
+import { googleKey } from '../keys';
 const Mailer = require('NativeModules').RNMail;
 
 type PlaylistStylesViewProps = {
@@ -399,11 +400,11 @@ class YouTubeNoReload extends React.Component {
     const trimmedNextProps = {...nextProps, style: null, videoId: null};
     const diff = !styleEqual(style, nextStyle) || !shallowEqual(trimmedProps, trimmedNextProps) || !shallowEqual(this.state, nextState);
     if (!diff && (this.props.videoId != nextProps.videoId)) {
-      this._root.setNativeProps({
+      this.setNativeProps({
         videoId: nextProps.videoId,
         play: false,
       });
-      this._root.setNativeProps({
+      this.setNativeProps({
         play: true,
       });
     }
@@ -533,6 +534,7 @@ class _PlaylistView extends React.Component {
         ref={(x) => {
           this.youtubePlayer = x;
         }}
+        apiKey={googleKey}
         videoId={video.youtubeId}
         play={true} // auto-play when loading a tutorial
         hidden={false}
