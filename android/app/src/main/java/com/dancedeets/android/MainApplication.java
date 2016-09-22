@@ -22,6 +22,7 @@ import com.higo.zhangyp.segmented.AndroidSegmentedPackage;
 import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import com.kevinejohn.RNMixpanel.RNMixpanel;
 import com.microsoft.codepush.react.CodePush;
+import com.microsoft.codepush.react.ReactInstanceHolder;
 import com.reactnative.photoview.PhotoViewPackage;
 import com.sbugert.rnadmob.RNAdMobPackage;
 import com.smixx.fabric.FabricPackage;
@@ -36,51 +37,56 @@ import cl.json.RNSharePackage;
 import io.fabric.sdk.android.Fabric;
 import io.fixd.rctlocale.RCTLocalePackage;
 
-public class MainApplication extends Application implements ReactApplication {
+class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
+    static CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
-    private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
-
-    protected static CallbackManager getCallbackManager() {
-        return mCallbackManager;
+    protected MyReactNativeHost(Application application) {
+      super(application);
     }
 
-    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-        @Override
-        protected boolean getUseDeveloperSupport() {
-          return BuildConfig.DEBUG;
-        }
+    @Override
+    protected boolean getUseDeveloperSupport() {
+      return BuildConfig.DEBUG;
+    }
 
-        @Override
-        protected List<ReactPackage> getPackages() {
-            return Arrays.<ReactPackage>asList(
-                new MainReactPackage(),
-            new GoogleApiAvailabilityPackage(),
-            new ReactNativePushNotificationPackage(),
-            new PhotoViewPackage(),
-            new ReactNativePermissionsPackage(),
-                new FirebasePackage(),
-                new RCTNativeEnvPackage(BuildConfig.class),
-                new RCTLocalePackage(),
-                new CodePush(BuildConfig.CODEPUSH_KEY, MainApplication.this, BuildConfig.DEBUG),
-                new RNSharePackage(),
-                new RNMail(),
-                new RNAdMobPackage(),
-                new RNMixpanel(),
-                new RNGeocoderPackage(),
-                new MapsPackage(),
-                new FabricPackage(),
-                new LinearGradientPackage(),
-                new AndroidSegmentedPackage(),
-                new RNSendIntentPackage(),
-                new FBSDKPackage(mCallbackManager)
-            );
-        }
+    @Override
+    protected List<ReactPackage> getPackages() {
+        return Arrays.<ReactPackage>asList(
+            new MainReactPackage(),
+        new GoogleApiAvailabilityPackage(),
+        new ReactNativePushNotificationPackage(),
+        new PhotoViewPackage(),
+        new ReactNativePermissionsPackage(),
+            new FirebasePackage(),
+            new RCTNativeEnvPackage(BuildConfig.class),
+            new RCTLocalePackage(),
+            new CodePush(BuildConfig.CODEPUSH_KEY, getApplication(), BuildConfig.DEBUG),
+            new RNSharePackage(),
+            new RNMail(),
+            new RNAdMobPackage(),
+            new RNMixpanel(),
+            new RNGeocoderPackage(),
+            new MapsPackage(),
+            new FabricPackage(),
+            new LinearGradientPackage(),
+            new AndroidSegmentedPackage(),
+            new RNSendIntentPackage(),
+            new FBSDKPackage(mCallbackManager)
+        );
+    }
 
-        @Override
-        protected String getJSBundleFile() {
-            return CodePush.getBundleUrl();
-        }
-    };
+    @Override
+    protected String getJSBundleFile() {
+        return CodePush.getBundleUrl();
+    }
+}
+
+public class MainApplication extends Application implements ReactApplication {
+    private final MyReactNativeHost mReactNativeHost = new MyReactNativeHost(this);
+
+    protected static CallbackManager getCallbackManager() {
+        return MyReactNativeHost.mCallbackManager;
+    }
 
     @Override
     public void onCreate() {
@@ -96,6 +102,7 @@ public class MainApplication extends Application implements ReactApplication {
         //   this.versionCode = Integer.toString(packageInfo.versionCode);
         //   this.versionName = (packageInfo.versionName == null ? "0.0" : packageInfo.versionName);
         Fabric.with(this, new Crashlytics());
+        CodePush.setReactInstanceHolder(mReactNativeHost);
     }
 
     @Override
