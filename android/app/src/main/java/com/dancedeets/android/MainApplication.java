@@ -41,37 +41,37 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
     static CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
     protected MyReactNativeHost(Application application) {
-      super(application);
+        super(application);
     }
 
     @Override
     protected boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
+        return BuildConfig.DEBUG;
     }
 
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
-            new MainReactPackage(),
+        new MainReactPackage(),
         new GoogleApiAvailabilityPackage(),
         new ReactNativePushNotificationPackage(),
         new PhotoViewPackage(),
         new ReactNativePermissionsPackage(),
-            new FirebasePackage(),
-            new RCTNativeEnvPackage(BuildConfig.class),
-            new RCTLocalePackage(),
-            new CodePush(BuildConfig.CODEPUSH_KEY, getApplication(), BuildConfig.DEBUG),
-            new RNSharePackage(),
-            new RNMail(),
-            new RNAdMobPackage(),
-            new RNMixpanel(),
-            new RNGeocoderPackage(),
-            new MapsPackage(),
-            new FabricPackage(),
-            new LinearGradientPackage(),
-            new AndroidSegmentedPackage(),
-            new RNSendIntentPackage(),
-            new FBSDKPackage(mCallbackManager)
+        new FirebasePackage(),
+        new RCTNativeEnvPackage(BuildConfig.class),
+        new RCTLocalePackage(),
+        new CodePush(BuildConfig.CODEPUSH_KEY, getApplication(), BuildConfig.DEBUG),
+        new RNSharePackage(),
+        new RNMail(),
+        new RNAdMobPackage(),
+        new RNMixpanel(),
+        new RNGeocoderPackage(),
+        new MapsPackage(),
+        new FabricPackage(),
+        new LinearGradientPackage(),
+        new AndroidSegmentedPackage(),
+        new RNSendIntentPackage(),
+        new FBSDKPackage(mCallbackManager)
         );
     }
 
@@ -107,6 +107,6 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     public ReactNativeHost getReactNativeHost() {
-      return mReactNativeHost;
-  }
+        return mReactNativeHost;
+    }
 }
