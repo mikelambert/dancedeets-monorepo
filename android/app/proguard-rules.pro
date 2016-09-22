@@ -64,3 +64,11 @@
 -dontwarn java.nio.file.*
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn okio.**
+
+# keep youtube / google
+-keep public class com.google.api.services.** { public *; }
+-keep public class com.google.android.youtube.player.** { public *; }
+# Needed by google-api-client to keep generic types and @Key annotations accessed via reflection
+-keepclassmembers class * {
+  @com.google.api.client.util.Key <fields>;
+}
