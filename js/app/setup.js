@@ -28,23 +28,18 @@ export default function setup(): Class<Object> {
 
   class Root extends React.Component {
     state: {
-      isLoading: boolean,
       store: any,
     };
 
     constructor() {
       super();
       this.state = {
-        isLoading: true,
-        store: configureStore(() => this.setState({isLoading: false})),
+        store: configureStore(),
       };
       setupNotifications(this.state.store);
     }
 
     render() {
-      if (this.state.isLoading) {
-        return null;
-      }
       let app = <App />;
       if (Platform.OS === 'ios' && ProcessInfo.environment.UITest) {
         app = <ScreenshotSlideshow>{app}</ScreenshotSlideshow>;

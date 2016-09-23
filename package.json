@@ -46,7 +46,6 @@
     "react-native-viewpager": "github:dmueller39/react-native-viewpager#patch-1",
     "react-native-wkwebview": "github:mikelambert/react-native-wkwebview",
     "react-native-youtube": "../react-native-youtube",
-    "react-redux": "^4.4.4",
     "redux": "^3.4.0",
     "redux-logger": "^2.6.1",
     "redux-persist": "^4.0.0-alpha5",
