@@ -318,7 +318,6 @@ export default class AddEvents extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
   },
   listView: {
     flex: 1,
@@ -343,7 +342,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     transform: [{rotate: '-30deg'}],
     backgroundColor: '#c00',
-    borderColor: 'black',
     borderWidth: 0.5,
     left: -100,
     right: -100,

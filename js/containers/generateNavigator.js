@@ -34,6 +34,9 @@ import type {
 import {
 	semiNormalize,
 } from '../ui/normalize';
+import {
+	purpleColors
+} from '../Colors';
 
 const {
 	CardStack: NavigationCardStack,
@@ -127,6 +130,7 @@ class _AppContainer extends React.Component {
 				renderHeader={this._renderHeader}
 				renderScene={this.props.renderScene}
 				cardStyle={{
+					backgroundColor: purpleColors[4],
 					marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT,
 				}}
 			/>
@@ -159,8 +163,6 @@ export default function(navName: string) {
 const styles = StyleSheet.create({
 	outerContainer: {
 		flex: 1,
-		// when transitioning Cards, they fade out to the background color
-		backgroundColor: 'black',
 	},
 	container: {
 		flex: 1,

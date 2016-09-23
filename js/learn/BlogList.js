@@ -232,7 +232,6 @@ export class BlogList extends React.Component {
 const styles = StyleSheet.create({
   listView: {
     flex: 1,
-    backgroundColor: purpleColors[4],
   },
   text: {
     color: 'white',

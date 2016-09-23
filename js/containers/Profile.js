@@ -320,11 +320,10 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: purpleColors[4],
   },
   containerContent: {
     top: STATUSBAR_HEIGHT,
-    backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'space-around',
   },

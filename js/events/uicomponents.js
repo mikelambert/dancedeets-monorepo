@@ -940,7 +940,6 @@ const eventStyles = StyleSheet.create({
     borderRadius: 5,
   },
   container: {
-    backgroundColor: '#000',
   },
   splitButtons: {
     justifyContent: 'space-between',

@@ -544,7 +544,7 @@ class _PlaylistView extends React.Component {
         showinfo={true}
         //controls={0}
         modestbranding={true}
-        style={{alignSelf: 'stretch', height: height, backgroundColor: 'black'}}
+        style={{alignSelf: 'stretch', height: height}}
         onChangeState={this.onChangeState}
         />
       <View style={styles.listViewWrapper}>
@@ -574,7 +574,6 @@ export const PlaylistView = connect(
 let styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
   },
   miniThumbnail: {
     height: 50,
@@ -586,7 +585,6 @@ let styles = StyleSheet.create({
   },
   listViewWrapper: {
     flex: 1,
-    borderTopColor: 'black',
     borderTopWidth: 1,
   },
   boxTitle: {
