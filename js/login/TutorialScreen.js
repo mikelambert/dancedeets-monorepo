@@ -109,6 +109,10 @@ class _TutorialScreen extends React.Component {
         flex: 1,
         width: windowSize.width,
         height: windowSize.height,
+        // We need to have a black background,
+        // because on android there is a slight delay in loading images,
+        // and the background android style can show through.
+        backgroundColor: 'black',
       }}
       key={pageId}>
     {contents}
