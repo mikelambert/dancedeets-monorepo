@@ -8,6 +8,7 @@
 
 import React from 'react';
 import {
+  Platform,
   Text as RealText,
   StyleSheet,
 } from 'react-native';
@@ -33,9 +34,9 @@ export function Autolink({style, ...props}: Object): ReactElement<RealAutolink> 
 }
 
 export const defaultFont = {
-  // Disable this due to alignment issues:
+  // Disable this due to alignment issues on iOS:
   // https://github.com/facebook/react-native/issues/8540
-  // fontFamily: 'Ubuntu',
+  fontFamily: (Platform.OS === 'android') ? 'Ubuntu' : null,
   fontWeight: '300',
   color: 'white',
   backgroundColor: 'transparent',
