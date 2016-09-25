@@ -21,6 +21,7 @@ import _ from 'lodash/array';
 import type { Action, Dispatch, ThunkAction, User } from './types';
 import Geocoder from '../api/geocoder';
 import {format} from '../events/formatAddress';
+import { setup as setupNotifications } from '../notifications/setup';
 import {
   defineMessages,
   intlShape,
@@ -64,6 +65,7 @@ export function loginComplete(token: AccessToken): ThunkAction {
   return async (dispatch: Dispatch) => {
     authAndGetUser(dispatch);
     trackLogin();
+    setupNotifications(this.state.store);
     // But mark us as logged-in here
     dispatch({
       type: 'LOGIN_LOGGED_IN',

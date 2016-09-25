@@ -137,6 +137,7 @@ export function setup(store: Object) {
       // (optional) Called when Token is generated (iOS and Android)
       onRegister: async function (tokenRegistration: TokenRegistration) {
         setupToken(tokenRegistration);
+        // Make sure we are logged-in before we call auth()
         if (tokenRegistration.os === 'android') {
           auth({android_device_token: tokenRegistration.token});
         } else {

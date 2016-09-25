@@ -15,7 +15,6 @@ import Mixpanel from 'react-native-mixpanel';
 import ScreenshotSlideshow from '../ScreenshotSlideshow';
 import intl from '../intl';
 import ProcessInfo from 'react-native-processinfo';
-import { setup as setupNotifications } from '../notifications/setup';
 
 export default function setup(): Class<Object> {
   console.disableYellowBox = true;
@@ -36,7 +35,6 @@ export default function setup(): Class<Object> {
       this.state = {
         store: configureStore(),
       };
-      setupNotifications(this.state.store);
     }
 
     render() {
