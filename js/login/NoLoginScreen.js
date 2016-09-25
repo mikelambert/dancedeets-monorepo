@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: 'black',
     // Image's source contains explicit size, but we want
     // it to prefer flex: 1
     width: undefined,
