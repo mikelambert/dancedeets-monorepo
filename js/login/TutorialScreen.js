@@ -77,9 +77,7 @@ class _TopView extends React.Component {
     return (
       <View style={styles.centerItems} >
         <Text style={styles.onboardHeader}>{header.toUpperCase()}</Text>
-        <View style={styles.onboardList}>
-          <Text style={styles.onboardListItem}>{body}</Text>
-        </View>
+        <Text style={styles.onboardListItem}>{body}</Text>
       </View>
     );
   }
@@ -182,9 +180,6 @@ const styles = StyleSheet.create({
     lineHeight: normalize(40),
     fontWeight: 'bold',
     marginTop: normalize(20),
-    height: normalize(60),
-  },
-  onboardList: {
   },
   onboardListItem: {
     color: 'white',
