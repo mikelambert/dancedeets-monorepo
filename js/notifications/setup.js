@@ -39,10 +39,10 @@ function hashCode(s: string) {
 }
 
 class Handler {
-  store: Object;
+  dispatch: Object;
 
-  constructor(store) {
-    this.store = store;
+  constructor(dispatch) {
+    this.dispatch = dispatch;
     (this: any).receivedNotification = this.receivedNotification.bind(this);
   }
 
@@ -110,7 +110,7 @@ class Handler {
       if (notification.openedEventId) {
         console.log('OPENED ', notification.openedEventId);
         const notificationEvent = await fetchEvent(notification.openedEventId);
-        const dispatch = this.store.dispatch;
+        const dispatch = this.dispatch;
         const navName = 'EVENT_NAV';
         const destState = {key: 'EventView', title: notificationEvent.name, event: notificationEvent};
         //TODO: factor out some of this navigation functionality

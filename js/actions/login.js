@@ -65,7 +65,7 @@ export function loginComplete(token: AccessToken): ThunkAction {
   return async (dispatch: Dispatch) => {
     authAndGetUser(dispatch);
     trackLogin();
-    setupNotifications(dispatch.store);
+    setupNotifications(dispatch);
     // But mark us as logged-in here
     dispatch({
       type: 'LOGIN_LOGGED_IN',
