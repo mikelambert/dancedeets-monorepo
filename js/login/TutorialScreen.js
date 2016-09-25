@@ -6,7 +6,6 @@
 
 import React from 'react';
 import {
-  Dimensions,
   Image,
   StyleSheet,
   View,
@@ -101,12 +100,9 @@ class _TutorialScreen extends React.Component {
 
   _renderPage(pageId: number) {
     var contents = this._renderPageContents(pageId);
-    var windowSize = Dimensions.get('window');
     return <View
       style={{
         flex: 1,
-        width: windowSize.width,
-        height: windowSize.height,
         // We need to have a black background,
         // because on android there is a slight delay in loading images,
         // and the background android style can show through.
