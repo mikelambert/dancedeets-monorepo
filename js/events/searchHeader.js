@@ -17,9 +17,10 @@ import {
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
 import {
+  AutocompleteList,
   Button,
   defaultFont,
-  AutocompleteList
+  HorizontalView,
 } from '../ui';
 import {
   performSearch,
@@ -146,7 +147,7 @@ class _SearchHeader extends React.Component {
 
   render() {
     return <View style={{flex: 1}}>
-      <View
+      <HorizontalView
         onLayout={this.onLayout}
         style={[styles.floatTop, styles.statusBar]}
         blurType="dark"
@@ -197,7 +198,7 @@ class _SearchHeader extends React.Component {
           icon={this.props.listLayout ? require('./search-images/large-flyer.png') : require('./search-images/small-flyer.png')}
           onPress={this.props.toggleLayout}
           />
-      </View>
+      </HorizontalView>
       {this.props.children}
       <AutocompleteList
         ref="location_autocomplete"
@@ -252,7 +253,6 @@ const styles = StyleSheet.create({
     right: 0,
   },
   statusBar: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: gradientTop,
     paddingBottom: 4,
