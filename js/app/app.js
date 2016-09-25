@@ -17,6 +17,7 @@ import LoginFlow from '../login/LoginFlow';
 import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';
 import TabbedApp from '../containers/TabbedApp';
+import { gradientTop } from '../Colors';
 
 function select(store) {
   return {
@@ -59,8 +60,8 @@ class App extends React.Component {
     return (
       <View style={styles.container}>
         <StatusBar
-          translucent={true}
-          backgroundColor="rgba(0, 0, 0, 0.2)"
+          translucent={false}
+          backgroundColor={gradientTop}
           barStyle="light-content"
          />
         <TabbedApp />
