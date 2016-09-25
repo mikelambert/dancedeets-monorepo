@@ -243,6 +243,7 @@ function sendAdvertisingEmail() {
 class _UserProfile extends React.Component {
   render() {
     const logoutButton = <Button
+      style={{marginBottom: 10}}
       size="small"
       caption={this.props.intl.formatMessage(messages.logout)}
       onPress={() => this.props.logOutWithPrompt(this.props.intl)}
@@ -259,25 +260,25 @@ class _UserProfile extends React.Component {
       friendsCopy = <Text style={{marginBottom: 10}}>{this.props.intl.formatMessage(messages.friendsUsing, {count: friendCount})}</Text>;
     }
 
+    // For some reason, if we use HorizontalView to lay things out (and we don't set a Card width),
+    // then the auto-flow and auto-flex doesn't resize all elements properly,
+    // and the wrapping city doesn't push the Card bigger,
+    // and so the bottom info bits overwrite or overflow improperly.
+    // By just using an absolutely positioned element with a margin to manually flow,
+    // things work so much better.
     return <Card>
-      <HorizontalView>
-        <View style={styles.profileLeft}>
-          <View style={[styles.profileImageSize, styles.profileImage]}>{image}</View>
-        </View>
-        <View style={styles.profileRight}>
-          <Heading1>{user.profile.name || ' '}</Heading1>
-          <Text style={{fontStyle: 'italic', marginBottom: 10}}>{user.ddUser.formattedCity || ' '}</Text>
-          {logoutButton}
-        </View>
-      </HorizontalView>
-      <View>
-        {friendsCopy}
-        <Text style={{fontWeight: 'bold'}}>{this.props.intl.formatMessage(messages.profileDetailsHeader)}</Text>
-        <Text>{this.props.intl.formatMessage(messages.profileDetailsContents, {
-          handAdded: user.ddUser.num_hand_added_events || 0,
-          autoAdded: user.ddUser.num_auto_added_events || 0,
-        })}</Text>
+      <View style={styles.profileLeft}>{image}</View>
+      <View style={styles.profileRight}>
+        <Heading1>{user.profile.name || ' '}</Heading1>
+        <Text style={{fontStyle: 'italic', marginBottom: 10}}>{user.ddUser.formattedCity || ' '}</Text>
+        {logoutButton}
       </View>
+      {friendsCopy}
+      <Text style={{fontWeight: 'bold'}}>{this.props.intl.formatMessage(messages.profileDetailsHeader)}</Text>
+      <Text>{this.props.intl.formatMessage(messages.profileDetailsContents, {
+        handAdded: user.ddUser.num_hand_added_events || 0,
+        autoAdded: user.ddUser.num_auto_added_events || 0,
+      })}</Text>
     </Card>;
   }
 }
@@ -331,19 +332,16 @@ const styles = StyleSheet.create({
     fontSize: 22,
   },
   profileLeft: {
-    marginRight: 10,
+    position: 'absolute',
+    borderWidth: 1,
+    borderColor: purpleColors[0],
   },
   profileRight: {
+    marginLeft: 100,
   },
   profileImageSize: {
     width: 90,
     height: 90,
-    borderRadius: 5,
-  },
-  profileImage: {
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: purpleColors[0],
   },
   bottomSpacedContent: {
     flex: 1,
