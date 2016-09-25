@@ -156,8 +156,10 @@ class _SearchHeader extends React.Component {
           placeholder={this.props.intl.formatMessage(messages.location)}
           returnKeyType="search"
           onChangeText={(text) => {
-            this.props.updateLocation(text);
-            this.refs.location_autocomplete.onTextInputChangeText(text);
+            if (this.props.searchQuery.location != text) {
+              this.props.updateLocation(text);
+              this.refs.location_autocomplete.onTextInputChangeText(text);
+            }
           }}
           onFocus={() => {
             this.refs.location_autocomplete.onTextInputFocus();
@@ -175,7 +177,11 @@ class _SearchHeader extends React.Component {
           ref="keywords"
           placeholder={this.props.intl.formatMessage(messages.keywords)}
           returnKeyType="search"
-          onChangeText={(text) => this.props.updateKeywords(text)}
+          onChangeText={(text) => {
+            if (this.props.searchQuery.keywords != text) {
+              this.props.updateKeywords(text);
+            }
+          }}
           onSubmitEditing={() => this.props.performSearch(this.props.searchQuery)}
           value={this.props.searchQuery.keywords}
         />
