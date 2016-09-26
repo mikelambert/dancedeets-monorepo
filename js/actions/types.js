@@ -42,7 +42,7 @@ export type Action =
   | { type: 'NAV_JUMP_TO_KEY', navigator: string, key: string }
   | { type: 'NAV_JUMP_TO_INDEX', navigator: string, index: number }
   | { type: 'NAV_RESET', navigator: string, index: number, routes: Array<NavigationRoute> }
-  | { type: 'NAV_SWAP', navigator: string, key: string, newState: NavigationRoute }
+  | { type: 'NAV_SWAP', navigator: string, key: string, newRoute: NavigationRoute }
   | { type: 'LOGIN_START_ONBOARD' }
   | { type: 'LOGIN_LOGGED_IN', token: AccessToken }
   | { type: 'LOGIN_LOGGED_OUT' }

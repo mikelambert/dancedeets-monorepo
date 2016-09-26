@@ -13,7 +13,7 @@ import type { NavigationState, NavigationRoute } from 'NavigationTypeDefinition'
 
 // This is used to track the 'default' route for each possible navigator,
 // that can be configured from outside of this module
-const defaultNavigatorRoutes = {};
+const defaultNavigatorRoutes: {[navigator: string]: NavigationRoute} = {};
 
 type AllNavigationStates = {
 	states: { [key: string]: NavigationState };
@@ -78,7 +78,7 @@ export function navigationState(allStates: AllNavigationStates = initialNavState
 		state = getNamedState(allStates, action.navigator);
 		return {
 			...allStates,
-			[action.navigator]: NavigationStateUtils.replaceAt(state, action.key, action.newState),
+			[action.navigator]: NavigationStateUtils.replaceAt(state, action.key, action.newRoute),
 		};
 
 	case NAV_RESET:

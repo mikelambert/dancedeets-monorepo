@@ -155,7 +155,7 @@ export default function(navName: string) {
 				await dispatch(navigatePop(navName));
 			},
 			onBack: () => dispatch(navigatePop(navName)),
-			onSwap: (key, newState) => dispatch(navigateSwap(navName, key, newState)),
+			onSwap: (key, newRoute) => dispatch(navigateSwap(navName, key, newRoute)),
 		}),
 	)(AppContainer);
 }

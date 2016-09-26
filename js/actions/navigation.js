@@ -50,12 +50,12 @@ export function navigateJumpToIndex(navigator: string, index: number): Action {
 	};
 }
 
-export function navigateSwap(navigator: string, key: string, newState: NavigationRoute): Action {
+export function navigateSwap(navigator: string, key: string, newRoute: NavigationRoute): Action {
 	return {
 		type: NAV_SWAP,
 		navigator,
 		key,
-		newState,
+		newRoute,
 	};
 }
 
