@@ -28,10 +28,6 @@
 		1D2F15E61D48015600BA0D43 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D2F15E41D4800D000BA0D43 /* CoreFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		1D449AAA1D04A69300195AF6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D449AA91D04A69300195AF6 /* libz.tbd */; };
 		1D449B301D04D70500195AF6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D449B2F1D04D70400195AF6 /* Images.xcassets */; };
-		1D89584E1CF913100029E37E /* Ubuntu 300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584B1CF9125D0029E37E /* Ubuntu 300.ttf */; };
-		1D89584F1CF913130029E37E /* Ubuntu 500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584C1CF9125D0029E37E /* Ubuntu 500.ttf */; };
-		1D8958501CF913150029E37E /* Ubuntu regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D89584D1CF9125D0029E37E /* Ubuntu regular.ttf */; };
-		1D8BF8071D0E442D00B7243F /* Ubuntu italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D8BF7F01D0E43F800B7243F /* Ubuntu italic.ttf */; };
 		1D902A661D42B7FB00B938F3 /* DanceDeetsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D902A651D42B7FB00B938F3 /* DanceDeetsUITests.swift */; };
 		1D902A851D42B81700B938F3 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D902A841D42B81700B938F3 /* SnapshotHelper.swift */; };
 		1D9EDD1D1CF9097F00871235 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D9EDD1A1CF9097F00871235 /* FBSDKCoreKit.framework */; };
@@ -306,10 +302,6 @@
 		1D2F15E41D4800D000BA0D43 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		1D449AA91D04A69300195AF6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		1D449B2F1D04D70400195AF6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = DanceDeets/Images.xcassets; sourceTree = "<group>"; };
-		1D89584B1CF9125D0029E37E /* Ubuntu 300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 300.ttf"; sourceTree = "<group>"; };
-		1D89584C1CF9125D0029E37E /* Ubuntu 500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu 500.ttf"; sourceTree = "<group>"; };
-		1D89584D1CF9125D0029E37E /* Ubuntu regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu regular.ttf"; sourceTree = "<group>"; };
-		1D8BF7F01D0E43F800B7243F /* Ubuntu italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu italic.ttf"; sourceTree = "<group>"; };
 		1D902A631D42B7FB00B938F3 /* DanceDeetsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DanceDeetsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D902A651D42B7FB00B938F3 /* DanceDeetsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DanceDeetsUITests.swift; sourceTree = "<group>"; };
 		1D902A671D42B7FB00B938F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -484,7 +476,6 @@
 			children = (
 				1DE1FE1C1D8E7C5F00795B27 /* DanceDeets Debug.entitlements */,
 				1D2694F21D077C5F000E1BD3 /* launch_screen.jpg */,
-				1D8958471CF912260029E37E /* Fonts */,
 				1D449B2F1D04D70400195AF6 /* Images.xcassets */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -535,17 +526,6 @@
 				1D8958331CF910B20029E37E /* libRNMixpanel.a */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		1D8958471CF912260029E37E /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				1D89584B1CF9125D0029E37E /* Ubuntu 300.ttf */,
-				1D89584C1CF9125D0029E37E /* Ubuntu 500.ttf */,
-				1D89584D1CF9125D0029E37E /* Ubuntu regular.ttf */,
-				1D8BF7F01D0E43F800B7243F /* Ubuntu italic.ttf */,
-			);
-			name = Fonts;
 			sourceTree = "<group>";
 		};
 		1D8958E41CF968B00029E37E /* Products */ = {
@@ -1188,14 +1168,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D89584E1CF913100029E37E /* Ubuntu 300.ttf in Resources */,
-				1D8958501CF913150029E37E /* Ubuntu regular.ttf in Resources */,
 				1DC888C71D631661001FAFF3 /* YTPlayerView-iframe-player.html in Resources */,
 				1DC8881E1D5D451F001FAFF3 /* GoogleService-Info.plist in Resources */,
-				1D8BF8071D0E442D00B7243F /* Ubuntu italic.ttf in Resources */,
 				1D2694F31D077C5F000E1BD3 /* launch_screen.jpg in Resources */,
 				1D449B301D04D70500195AF6 /* Images.xcassets in Resources */,
-				1D89584F1CF913130029E37E /* Ubuntu 500.ttf in Resources */,
 				1D17D43A1D9101AF00CE92FD /* Info.plist in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				1D17D43C1D9102E000CE92FD /* InfoPlist.strings in Resources */,
