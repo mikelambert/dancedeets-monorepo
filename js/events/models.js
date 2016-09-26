@@ -9,6 +9,11 @@
 type JSON = string | number | boolean | null | JSONObject | JSONArray;
 type JSONObject = { [key:string]: JSON };
 type JSONArray = Array<JSON>;
+type MiniImageProp = {
+  uri: string;
+  width: number;
+  height: number;
+};
 
 import { PixelRatio } from 'react-native';
 
@@ -110,31 +115,11 @@ export class Event extends JsonDerivedObject {
     return {source, width, height};
   }
 
-  getImagePropsForWidth(width: number) {
-    const rawPixelWidth = PixelRatio.getPixelSizeForLayoutSize(width);
-    let bestImageProps = {
-      source: this.picture,
-      width: 100,
-      height: 100,
-    };
-    if (this.cover !== null && this.cover.images.length > 0) {
-      bestImageProps = this.cover.images[0];
-      this.cover.images.forEach((i) => {
-        // Get the best image that is *smaller* than our screen size in pixels (ie, round down)
-        if (bestImageProps.width > rawPixelWidth) {
-          // Find the smaller image, since the one we have is too large
-          if (i.width < bestImageProps.width) {
-            bestImageProps = i;
-          }
-        } else {
-          // Find the better quality image that is still smaller than our screen
-          if (bestImageProps.width < i.width && i.width < rawPixelWidth) {
-            bestImageProps = i;
-          }
-        }
-      });
+  getCoverImageProps(): MiniImageProp[] {
+    if (!this.cover) {
+      return [];
     }
-    return bestImageProps;
+    return this.cover.images.map((x) => ({uri: x.source, width: x.width, height: x.height}));
   }
 
   getUrl() {

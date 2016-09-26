@@ -710,9 +710,8 @@ class _EventRow extends React.Component {
   };
 
   render() {
+    const imageProps = this.props.event.getCoverImageProps();
     if (this.props.listLayout) {
-      const width = normalize(100);
-      const imageProps = this.props.event.getImagePropsForWidth(width);
       return (
         <Card style={eventStyles.row}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
@@ -720,11 +719,11 @@ class _EventRow extends React.Component {
               numberOfLines={2}
               style={[eventStyles.rowTitle, eventStyles.rowLink]}>{this.props.event.name}</Text>
             <HorizontalView>
-              <View style={{width: width}}>
-                {imageProps.source ? <Image
-                  source={{uri: imageProps.source}}
-                  originalWidth={imageProps.width}
-                  originalHeight={imageProps.height}
+              <View style={{width: 100}}>
+                {imageProps.length ? <Image
+                  source={imageProps}
+                  originalWidth={imageProps[0].width}
+                  originalHeight={imageProps[0].height}
                   style={eventStyles.thumbnail}
                 /> : null}
               </View>
@@ -738,15 +737,13 @@ class _EventRow extends React.Component {
         </Card>
       );
     } else {
-      const width = Dimensions.get('window').width;
-      const imageProps = this.props.event.getImagePropsForWidth(width);
       return (
         <Card style={eventStyles.row}>
           <TouchableOpacity onPress={() => this.props.onEventSelected(this.props.event)} activeOpacity={0.5}>
-            {imageProps.source ? <ProportionalImage
-              source={{uri: imageProps.source}}
-              originalWidth={imageProps.width}
-              originalHeight={imageProps.height}
+            {imageProps.length ? <ProportionalImage
+              source={imageProps}
+              originalWidth={imageProps[0].width}
+              originalHeight={imageProps[0].height}
               style={eventStyles.thumbnail}
             /> : null}
             <Text
@@ -867,19 +864,22 @@ class _FullEventView extends React.Component {
 
   render() {
     const width = Dimensions.get('window').width;
-    const imageProps = this.props.event.getImagePropsForWidth(width);
-    const flyerImage =
-      <ProportionalImage
-        source={{uri: imageProps.source}}
-        originalWidth={imageProps.width}
-        originalHeight={imageProps.height}
-        style={eventStyles.thumbnail}
-      />;
+    let flyer = null;
+    const imageProps = this.props.event.getCoverImageProps();
+    if (imageProps.length) {
+      const flyerImage =
+        <ProportionalImage
+          source={imageProps}
+          originalWidth={imageProps[0].width}
+          originalHeight={imageProps[0].height}
+          style={eventStyles.thumbnail}
+        />;
 
-    const clickableFlyer =
-      <TouchableOpacity onPress={this.onFlyerClicked} activeOpacity={0.5}>
-        {flyerImage}
-      </TouchableOpacity>;
+      flyer =
+        <TouchableOpacity onPress={this.onFlyerClicked} activeOpacity={0.5}>
+          {flyerImage}
+        </TouchableOpacity>;
+    }
 
     const map = this.props.event.venue.geocode
       ? <EventMap venue={this.props.event.venue} style={eventStyles.eventMap} defaultSize={0.005} />
@@ -895,7 +895,7 @@ class _FullEventView extends React.Component {
       <ProgressiveLayout
         style={[eventStyles.container, {width: width}]}
       >
-        {this.props.event.cover ? clickableFlyer : flyerImage}
+        {flyer}
         <Card
           title={
             <Text
