@@ -36,7 +36,7 @@ export function Autolink({style, ...props}: Object): ReactElement<RealAutolink> 
 export const defaultFont = {
   // Disable this due to alignment issues on iOS:
   // https://github.com/facebook/react-native/issues/8540
-  fontFamily: (Platform.OS === 'android') ? 'Ubuntu' : null,
+  fontFamily: (Platform.OS === 'android') ? 'Roboto' : null,
   fontWeight: '300',
   color: 'white',
   backgroundColor: 'transparent',
