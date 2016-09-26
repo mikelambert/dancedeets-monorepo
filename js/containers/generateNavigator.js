@@ -12,7 +12,6 @@ import {
 	NavigationExperimental,
 	Platform,
 	StyleSheet,
-	Text,
 	TouchableOpacity,
 	View,
 } from 'react-native';
@@ -33,7 +32,8 @@ import type {
 } from 'NavigationTypeDefinition';
 import {
 	semiNormalize,
-} from '../ui/normalize';
+	Text,
+} from '../ui';
 import {
 	purpleColors
 } from '../Colors';
