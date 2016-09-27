@@ -18,7 +18,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { logOutWithPrompt } from '../actions';
-import { linkColor } from '../Colors';
 import {
   Button,
   Card,
@@ -27,7 +26,10 @@ import {
   normalize,
   Text,
 } from '../ui';
-import { purpleColors } from '../Colors';
+import {
+  linkColor,
+  purpleColors,
+} from '../Colors';
 import { track } from '../store/track';
 import type { Dispatch } from '../actions/types';
 import { ShareDialog, MessageDialog } from 'react-native-fbsdk';

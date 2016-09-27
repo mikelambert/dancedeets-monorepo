@@ -39,6 +39,7 @@ import {
   selectTab,
 } from '../actions';
 import AddEvents from '../containers/AddEvents';
+import NotificationPreferences from '../containers/NotificationPreferences';
 import { track, trackWithEvent } from '../store/track';
 import { setDefaultState } from '../reducers/navigation';
 import {
@@ -232,7 +233,7 @@ class _AboutView extends React.Component {
         }}
         />;
     case 'NotificationPreferences':
-      return <Text>Hey</Text>;
+      return <NotificationPreferences>Hey</NotificationPreferences>;
     }
   }
 }
