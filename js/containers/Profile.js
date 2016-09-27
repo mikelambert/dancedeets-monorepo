@@ -297,15 +297,21 @@ const UserProfile = connect(
 class _Profile extends React.Component {
 
   render() {
+    // iOS handles notification settings automatically for us, so let's offer this there
+    let notificationButton = null;
+    if (Platform.OS === 'android') {
+      notificationButton = <Button
+        size="small"
+        caption={this.props.intl.formatMessage(messages.buttonNotificationSettings)}
+        onPress={this.props.onNotificationPreferences}
+        />;
+    }
+
     return <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
 
       <UserProfile />
 
-      {Platform.OS === 'android' ? <Button
-        size="small"
-        caption={this.props.intl.formatMessage(messages.buttonNotificationSettings)}
-        onPress={this.props.onNotificationPreferences}
-        /> : null}
+      {notificationButton}
 
       <ShareButtons />
 
