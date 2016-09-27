@@ -33,7 +33,6 @@ class App extends React.Component {
     super(props, context);
     (this: any).handleAppStateChange = this.handleAppStateChange.bind(this);
     (this: any).componentDidMount = this.componentDidMount.bind(this);
-    console.log('context', context);
     setupNotifications(context.store.dispatch, context.intl);
   }
 
