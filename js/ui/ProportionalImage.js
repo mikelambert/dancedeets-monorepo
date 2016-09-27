@@ -13,18 +13,18 @@ import {
 } from 'react-native';
 
 type Props = {
-  originalWidth: number,
-  originalHeight: number,
-  style?: any,
-  duration: number,
+  originalWidth: number;
+  originalHeight: number;
+  style?: any;
+  duration: number;
 };
 
 export default class ProportionalImage extends React.Component {
   props: Props;
 
   state: {
-    height: ?number,
-    opacity: any,
+    height: ?number;
+    opacity: any;
   };
 
   constructor(props: Props) {
