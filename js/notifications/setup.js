@@ -104,10 +104,7 @@ class Handler {
       userInteraction: false
     */
     console.log( 'NOTIFICATION:', notification );
-    const notificationsEnabled = true;
-    const notificationsUpcomingEventsEnabled = true;
     if (notification.userInteraction) {
-      console.log('aaa', navigatePop, selectTab);
       if (notification.openedEventId) {
         console.log('OPENED ', notification.openedEventId);
         const notificationEvent = await fetchEvent(notification.openedEventId);
@@ -122,6 +119,8 @@ class Handler {
       }
     } else {
       if (notification.notification_type === 'EVENT_REMINDER') {
+        const notificationsEnabled = true;
+        const notificationsUpcomingEventsEnabled = true;
         if (notificationsEnabled && notificationsUpcomingEventsEnabled) {
           const notificationEvent = await fetchEvent(notification.event_id);
           this.sendUpcomingEventReminder(notificationEvent);
