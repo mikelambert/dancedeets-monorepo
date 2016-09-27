@@ -15,8 +15,6 @@ type MiniImageProp = {
   height: number;
 };
 
-import { PixelRatio } from 'react-native';
-
 export type Cover = {
   source: string,
   height: number,

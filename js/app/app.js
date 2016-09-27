@@ -18,6 +18,9 @@ import CodePush from 'react-native-code-push';
 import { connect } from 'react-redux';
 import TabbedApp from '../containers/TabbedApp';
 import { gradientTop } from '../Colors';
+import { setup as setupNotifications } from '../notifications/setup';
+import { storeShape } from 'react-redux/lib/utils/storeShape';
+import { intlShape } from 'react-intl';
 
 function select(store) {
   return {
@@ -26,10 +29,12 @@ function select(store) {
 }
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
     (this: any).handleAppStateChange = this.handleAppStateChange.bind(this);
     (this: any).componentDidMount = this.componentDidMount.bind(this);
+    console.log('context', context);
+    setupNotifications(context.store.dispatch, context.intl);
   }
 
   loadAppData() {
@@ -70,6 +75,10 @@ class App extends React.Component {
   }
   // Add <PushNotificationsController /> back in to <View>...
 }
+App.contextTypes = {
+  store: storeShape,
+  intl: intlShape,
+};
 export default connect(select)(App);
 
 var styles = StyleSheet.create({

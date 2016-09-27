@@ -24,6 +24,12 @@ import {
   navigatePop,
   selectTab,
 } from '../actions';
+import moment from 'moment';
+import { time as timeFormat } from '../formats';
+import {
+  intlShape,
+} from 'react-intl';
+
 
 function hashCode(s: string) {
   let hash = 0;
@@ -40,9 +46,11 @@ function hashCode(s: string) {
 
 class Handler {
   dispatch: any;
+  intl: intlShape;
 
-  constructor(dispatch) {
+  constructor(dispatch, intl) {
     this.dispatch = dispatch;
+    this.intl = intl;
     (this: any).receivedNotification = this.receivedNotification.bind(this);
   }
 
@@ -52,10 +60,11 @@ class Handler {
     // TODO: Set CATEGORY_EVENT
     // TODO: We can add actions, but we can't add icons or make them be ACTION_VIEW mapUrl actions or have icons...
     // - Look up SharedPreference for whether we want to play sounds?
-    const eventTime = event.start_time; // TODO: need to get only as string
+    const start = moment(event.start_time, moment.ISO_8601);
+    const eventTime = this.intl.formatTime(start.toDate(), timeFormat);
     const eventLocation = event.venue.name;
     const notificationTitle = event.name;
-    const notificationMessage = `${eventTime}: ${eventLocation}`;
+    const notificationMessage = `${eventTime} @ ${eventLocation}`;
     const notificationExpandedText = event.description;
     const canVibrate = await PermissionsAndroid.checkPermission('android.permission.VIBRATE');
     PushNotification.localNotification({
@@ -130,8 +139,8 @@ class Handler {
   }
 }
 
-export function setup(store: Object) {
-  const handler = new Handler(store);
+export function setup(dispatch: Object, intl: intlShape) {
+  const handler = new Handler(dispatch, intl);
 
   PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
