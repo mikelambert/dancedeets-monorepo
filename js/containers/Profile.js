@@ -86,7 +86,7 @@ const messages = defineMessages({
   },
   buttonNotificationSettings: {
     id: 'buttons.notificationSettings',
-    defaultMessage: 'Notification Settings(TODO)',
+    defaultMessage: 'Notification Settings',
     description: 'Configure the app notification preferences',
   },
   buttonSendFeedback: {
@@ -299,9 +299,13 @@ class _Profile extends React.Component {
 
       <UserProfile />
 
-      <ShareButtons />
+      {Platform.OS === 'android' ? <Button
+        size="small"
+        caption={this.props.intl.formatMessage(messages.buttonNotificationSettings)}
+        onPress={this.props.onNotificationPreferences}
+        /> : null}
 
-      {Platform.OS === 'android' ? <Button size="small" caption={this.props.intl.formatMessage(messages.buttonNotificationSettings)}/> : null}
+      <ShareButtons />
 
       <Button size="small" caption={this.props.intl.formatMessage(messages.buttonSendFeedback)} onPress={sendEmail} style={styles.noFlexButton}/>
 

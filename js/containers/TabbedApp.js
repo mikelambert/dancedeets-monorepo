@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import generateNavigator from '../containers/generateNavigator';
-import AboutApp from '../containers/Profile';
+import ProfilePage from '../containers/Profile';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -32,6 +32,7 @@ import {
   BlogPostContents,
 } from '../learn/BlogList';
 import {
+  Text,
   ZoomableImage,
 } from '../ui';
 import {
@@ -100,6 +101,9 @@ setDefaultState('EVENT_NAV', { key: 'EventList', message: messages.eventsTitle }
 
 const LearnNavigator = generateNavigator('LEARN_NAV');
 setDefaultState('LEARN_NAV', { key: 'TutorialStyles', message: messages.learnTitle });
+
+const AboutNavigator = generateNavigator('ABOUT_NAV');
+setDefaultState('ABOUT_NAV', { key: 'About', message: messages.about });
 
 class GradientTabBar extends React.Component {
   render() {
@@ -215,6 +219,25 @@ class _LearnView extends React.Component {
 }
 const LearnView = injectIntl(_LearnView);
 
+class _AboutView extends React.Component {
+  render() {
+    const { scene } = this.props.sceneProps;
+    const { route } = scene;
+    switch (route.key) {
+    case 'About':
+      return <ProfilePage
+        onNotificationPreferences={() => {
+          track('Open Notification Preferences');
+          this.props.navigatable.onNavigate({key: 'NotificationPreferences', title: 'Notifications'});
+        }}
+        />;
+    case 'NotificationPreferences':
+      return <Text>Hey</Text>;
+    }
+  }
+}
+const AboutView = injectIntl(_AboutView);
+
 class _TabbedAppView extends React.Component {
   icon(source) {
     return <Image source={source} style={styles.icon}/>;
@@ -284,7 +307,12 @@ class _TabbedAppView extends React.Component {
             this.props.selectTab('about');
           }
         }}>
-        <AboutApp />
+        <AboutNavigator
+          ref="about_navigator"
+          renderScene={(sceneProps: NavigationSceneRendererProps) =>
+            <AboutView sceneProps={sceneProps} navigatable={this.refs.about_navigator && this.refs.about_navigator.dispatchProps} />
+          }
+        />
       </TabNavigator.Item>
     </TabNavigator>;
   }
