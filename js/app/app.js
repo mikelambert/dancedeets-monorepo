@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import TabbedApp from '../containers/TabbedApp';
 import { gradientTop } from '../Colors';
 import { setup as setupNotifications } from '../notifications/setup';
-import { storeShape } from 'react-redux/lib/utils/storeShape';
+import storeShape from 'react-redux/lib/utils/storeShape';
 import { intlShape } from 'react-intl';
 
 function select(store) {
