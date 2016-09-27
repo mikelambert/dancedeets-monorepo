@@ -105,7 +105,7 @@ export type TokenRegistration = {
   token: string;
 };
 
-export function setupToken(tokenData: TokenRegistration) {
+export function setupMixpanelToken(tokenData: TokenRegistration) {
   if (tokenData.os === 'android') {
     Mixpanel.setPushRegistrationId(tokenData.token);
   } else if (tokenData.os === 'ios') {

@@ -12,9 +12,9 @@ import {
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import type { TokenRegistration } from '../store/track';
-import { setupToken } from '../store/track';
+import { setupMixpanelToken } from '../store/track';
 import {
-  auth,
+  saveToken,
   event as fetchEvent,
 } from '../api/dancedeets';
 import type {Event} from '../events/models';
@@ -39,7 +39,7 @@ function hashCode(s: string) {
 }
 
 class Handler {
-  dispatch: Object;
+  dispatch: any;
 
   constructor(dispatch) {
     this.dispatch = dispatch;
@@ -107,6 +107,7 @@ class Handler {
     const notificationsEnabled = true;
     const notificationsUpcomingEventsEnabled = true;
     if (notification.userInteraction) {
+      console.log('aaa', navigatePop, selectTab);
       if (notification.openedEventId) {
         console.log('OPENED ', notification.openedEventId);
         const notificationEvent = await fetchEvent(notification.openedEventId);
@@ -136,13 +137,8 @@ export function setup(store: Object) {
   PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
       onRegister: async function (tokenRegistration: TokenRegistration) {
-        setupToken(tokenRegistration);
-        // Make sure we are logged-in before we call auth()
-        if (tokenRegistration.os === 'android') {
-          auth({android_device_token: tokenRegistration.token});
-        } else {
-          //auth({android_device_token: tokenData.token});
-        }
+        setupMixpanelToken(tokenRegistration);
+        await saveToken(tokenRegistration);
       },
 
       // (required) Called when a remote or local notification is opened or received

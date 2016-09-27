@@ -6,10 +6,11 @@
 
 'use strict';
 
+import type { TimePeriod } from '../events/search';
+import type { TokenRegistration } from '../store/track';
 import querystring from 'querystring';
 import { Platform } from 'react-native';
 import { AccessToken } from 'react-native-fbsdk';
-import type { TimePeriod } from '../events/search';
 import { Event } from '../events/models';
 import { timeout, retryWithBackoff } from './timeouts';
 import Locale from 'react-native-locale';
@@ -84,12 +85,35 @@ async function verifyAuthenticated() {
   }
 }
 
+export async function saveToken(tokenRegistration: TokenRegistration) {
+  const fbToken = await AccessToken.getCurrentAccessToken();
+  // Make sure we are logged-in before we call auth(), otherwise save it for later
+  let eventuallySaveToken = fbToken ? auth : saveForLaterAuth;
+  if (tokenRegistration.os === 'android') {
+    eventuallySaveToken({android_device_token: tokenRegistration.token});
+  } else {
+    //eventuallySaveToken({ios_device_token: tokenData.token});
+  }
+}
+
+// Where we store off any android/ios tokens, for later passing to auth() when we authorize properly
+let saveForAuth = {};
+
+export function saveForLaterAuth(data: ?Object) {
+  saveForAuth = data;
+}
+
 export async function auth(data: ?Object) {
   if (writesDisabled) {
     return;
   }
   await verifyAuthenticated();
-  return idempotentRetry(2000, createRequest('auth', {}, data));
+
+  // Grab any saveForAuth data and pass it in to the auth() call
+  const finalData = {...saveForAuth, ...data};
+  saveForAuth = {};
+
+  return idempotentRetry(2000, createRequest('auth', {}, finalData));
 }
 
 export async function feed(url: string) {
