@@ -30,6 +30,7 @@ import { time as timeFormat } from '../formats';
 import {
   intlShape,
 } from 'react-intl';
+import { getPreference } from './prefs';
 
 function hashCode(s: string) {
   let hash = 0;
@@ -42,14 +43,6 @@ function hashCode(s: string) {
     hash = hash & hash; // Convert to 32bit integer
   }
   return hash;
-}
-
-async function getPreference(key: string, defaultValue: any) {
-  const result = await AsyncStorage.getItem('preferences.notifications.' + key);
-  if (result !== null) {
-    return result;
-  }
-  return defaultValue;
 }
 
 class Handler {
