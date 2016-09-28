@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import {
+  Card,
   HorizontalView,
   normalize,
   Text,
@@ -34,7 +35,7 @@ const messages = defineMessages({
 
 class NamedSwitch extends React.Component {
   render() {
-    return <HorizontalView style={{justifyContent: 'space-between'}}>
+    return <HorizontalView style={[this.props.style, {justifyContent: 'space-between'}]}>
       <Text>{this.props.text}:</Text><Switch />
     </HorizontalView>;
   }
@@ -43,8 +44,16 @@ class _NotificationPreferences extends React.Component {
 
   render() {
     return <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
-      <NamedSwitch text="Notifications" />
+    <Card title={
+      <NamedSwitch text="Notifications"
+        style={{
+          margin: 5,
+          alignItems: 'center',
+        }} />
+      }>
       <NamedSwitch text="Play Sound" />
+      <NamedSwitch text="Vibration" />
+    </Card>
     </ScrollView>;
   }
 }
