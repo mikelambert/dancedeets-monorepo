@@ -7,7 +7,7 @@
 'use strict';
 
 import type { Action, ThunkAction, Dispatch } from './types';
-import type { SearchQuery, SearchResults } from '../events/search';
+import type { SearchResults } from '../events/search';
 
 import { search } from '../api/dancedeets';
 import { track } from '../store/track';

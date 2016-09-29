@@ -13,7 +13,6 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import { Text } from './DDText';
 import {

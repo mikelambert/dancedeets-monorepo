@@ -32,7 +32,6 @@ import {
   BlogPostContents,
 } from '../learn/BlogList';
 import {
-  Text,
   ZoomableImage,
 } from '../ui';
 import {
@@ -47,9 +46,6 @@ import {
   PlaylistStylesView,
   PlaylistView,
 } from '../learn/playlistViews';
-import type {
-  Navigatable
-} from '../containers/generateNavigator';
 import type {
   NavigationSceneRendererProps,
 } from 'NavigationTypeDefinition';

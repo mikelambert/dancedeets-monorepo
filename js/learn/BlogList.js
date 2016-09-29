@@ -28,9 +28,6 @@ import {
   MediumBlog,
   YoutubePlaylistBlog,
 } from './models';
-import {
-  purpleColors
-} from '../Colors';
 import WKWebView from 'react-native-wkwebview';
 import YouTube from 'react-native-youtube';
 

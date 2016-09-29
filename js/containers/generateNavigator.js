@@ -6,7 +6,7 @@
 
 'use strict';
 
-import React, {createElement} from 'react';
+import React from 'react';
 import {
 	Image,
 	NavigationExperimental,

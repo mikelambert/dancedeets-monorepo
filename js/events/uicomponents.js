@@ -422,7 +422,7 @@ class _EventOrganizers extends React.Component {
         {this.textRender()}
       </SubEventLine>;
     } else {
-      return null
+      return null;
     }
   }
 
@@ -969,7 +969,7 @@ const eventStyles = StyleSheet.create({
   },
   detailText: {
     fontSize: semiNormalize(detailHeight),
-    lineHeight: semiNormalize(detailHeight+2),
+    lineHeight: semiNormalize(detailHeight + 2),
   },
   shareIndent: {
   },

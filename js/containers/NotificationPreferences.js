@@ -12,13 +12,10 @@ import {
   ScrollView,
   StyleSheet,
   Switch,
-  View,
 } from 'react-native';
-import { connect } from 'react-redux';
 import {
   Card,
   HorizontalView,
-  normalize,
   Text,
 } from '../ui';
 import { purpleColors } from '../Colors';

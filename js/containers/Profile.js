@@ -13,7 +13,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -22,7 +21,6 @@ import {
   Button,
   Card,
   Heading1,
-  HorizontalView,
   normalize,
   Text,
 } from '../ui';
@@ -36,7 +34,6 @@ import { ShareDialog, MessageDialog } from 'react-native-fbsdk';
 import Share from 'react-native-share';
 import {
   injectIntl,
-  intlShape,
   defineMessages,
 } from 'react-intl';
 import NativeEnv from 'react-native-native-env';

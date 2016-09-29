@@ -9,7 +9,6 @@
 import {
   PermissionsAndroid,
   Platform,
-  AsyncStorage,
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import type { TokenRegistration } from '../store/track';

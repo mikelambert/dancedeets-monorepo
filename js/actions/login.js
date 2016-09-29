@@ -18,7 +18,7 @@ import { trackLogin, trackLogout } from '../store/track';
 import { performRequest } from '../api/fb';
 import { userInfo } from '../api/dancedeets';
 import _ from 'lodash/array';
-import type { Action, Dispatch, ThunkAction, User } from './types';
+import type { Action, Dispatch, ThunkAction } from './types';
 import Geocoder from '../api/geocoder';
 import {format} from '../events/formatAddress';
 import {

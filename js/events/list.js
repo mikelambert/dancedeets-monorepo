@@ -20,7 +20,6 @@ import {
 import { connect } from 'react-redux';
 import _ from 'lodash/string';
 import { EventRow } from './uicomponents';
-import { Event } from './models';
 import SearchHeader from './searchHeader';
 import type { SearchResults } from './search';
 import moment from 'moment';
@@ -30,7 +29,10 @@ import {
   updateLocation,
   updateKeywords,
 } from '../actions';
-import { linkColor, purpleColors, yellowColors } from '../Colors';
+import {
+  linkColor,
+  purpleColors,
+} from '../Colors';
 import {
   auth,
   event,

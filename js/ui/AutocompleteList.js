@@ -18,9 +18,6 @@ import {Text} from './DDText';
 import Qs from 'qs';
 import emojiFlags from 'emoji-flags';
 import { googleKey } from '../keys';
-import Geocoder from '../api/geocoder';
-import type { Address } from '../events/formatAddress';
-import { format } from '../events/formatAddress';
 import {
   semiNormalize,
 } from '../ui/normalize';
