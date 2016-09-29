@@ -35,6 +35,21 @@ import {
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 
 const messages = defineMessages({
+  notificationHeader: {
+    id: 'notifications.header',
+    defaultMessage: 'Notifications:',
+    description: 'Title for the Notifications Preferences card',
+  },
+  notificationSounds: {
+    id: 'notifications.sounds',
+    defaultMessage: 'Play Sound:',
+    description: 'Should we play a sound on notification',
+  },
+  notificationVibration: {
+    id: 'notifications.vibration',
+    defaultMessage: 'Vibrate:',
+    description: 'Should we vibrate on notification',
+  },
 });
 
 class NamedSwitch extends React.Component {
@@ -53,9 +68,8 @@ class NamedSwitch extends React.Component {
 
   render() {
     const {style, text, value, onValueChange, ...otherProps} = this.props;
-    console.log(text, value);
     return <HorizontalView style={[style, {justifyContent: 'space-between'}]}>
-      <Text>{text}:</Text>
+      <Text>{text}</Text>
       <Switch {...otherProps}
         value={value}
         onValueChange={onValueChange}
@@ -102,7 +116,7 @@ class _NotificationPreferences extends React.Component {
     return <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
       <Card title={
         <NamedSwitch
-          text="Notifications"
+          text={this.props.intl.formatMessage(messages.notificationHeader)}
           style={{
             margin: 5,
             alignItems: 'center',
@@ -113,13 +127,13 @@ class _NotificationPreferences extends React.Component {
         }>
         <NamedSwitch
           disabled={!this.state.overall}
-          text="Play Sound"
+          text={this.props.intl.formatMessage(messages.notificationSounds)}
           value={this.state.sounds}
           onValueChange={(value) => this.onChange('sounds', value)}
           />
         <NamedSwitch
           disabled={!this.state.overall}
-          text="Vibration"
+          text={this.props.intl.formatMessage(messages.notificationVibration)}
           value={this.state.vibration}
           onValueChange={(value) => this.onChange('vibration', value)}
           />
