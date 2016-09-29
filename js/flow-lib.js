@@ -13,7 +13,19 @@ declare var describe: (name: string, callback: () => void) => void;
 declare var it: (name: string, callback: () => void) => void;
 declare var expect: any;
 
+declare module 'react-native-calendar-events' {
+  declare var exports: any;
+}
+
+declare module 'react-native-google-api-availability' {
+  declare var exports: any;
+}
+
 declare module 'react-native-linear-gradient' {
+  declare var exports: any;
+}
+
+declare module 'react-native-locale' {
   declare var exports: any;
 }
 
@@ -22,10 +34,6 @@ declare module 'react-native-segmented-android' {
 }
 
 declare module 'react-native-push-notification' {
-  declare var exports: any;
-}
-
-declare module 'react-native-locale' {
   declare var exports: any;
 }
 

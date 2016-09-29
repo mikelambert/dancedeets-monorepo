@@ -56,20 +56,13 @@ class NamedSwitch extends React.Component {
   props: {
     text: string;
     style?: any;
-
-    value: boolean;
-    onValueChange: (value: boolean) => any;
-
-    disabled?: boolean;
   };
 
   render() {
-    const {style, text, value, onValueChange, ...otherProps} = this.props;
+    const {style, text, ...otherProps} = this.props;
     return <HorizontalView style={[style, {justifyContent: 'space-between'}]}>
       <Text>{text}</Text>
       <Switch {...otherProps}
-        value={value}
-        onValueChange={onValueChange}
       />
     </HorizontalView>;
   }
