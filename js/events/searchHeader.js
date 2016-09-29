@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   searchField: {
+    padding: 4,
     color: 'white',
     borderRadius: 5,
     flex: 1,
