@@ -43,62 +43,87 @@ class NamedSwitch extends React.Component {
   };
   props: {
     text: string;
-    style: any;
+    style?: any;
 
-    pref: string;
-    defaultValue: boolean;
+    value: boolean;
+    onValueChange: (value: boolean) => any;
+
+    disabled?: boolean;
+  };
+
+  render() {
+    const {style, text, value, onValueChange, ...otherProps} = this.props;
+    console.log(text, value);
+    return <HorizontalView style={[style, {justifyContent: 'space-between'}]}>
+      <Text>{text}:</Text>
+      <Switch {...otherProps}
+        value={value}
+        onValueChange={onValueChange}
+      />
+    </HorizontalView>;
   }
+}
+
+class _NotificationPreferences extends React.Component {
+  state: {[key: string]: boolean};
 
   constructor(props) {
     super(props);
     this.state = {
-      value: this.props.defaultValue,
     };
   }
+
+  static preferenceDefaults = {
+    overall: true,
+    sounds: true,
+    vibration: true,
+  };
 
   componentWillMount() {
     this.loadPreference();
   }
 
   async loadPreference() {
-    this.setState({value: await getPreference(this.props.pref) === '1'});
+    const preferences = {};
+    const defaults = this.constructor.preferenceDefaults;
+    for (let key of Object.keys(defaults)) {
+      preferences[key] = await getPreference(key, defaults[key]);
+    }
+    this.setState(preferences);
   }
 
-  async onChange(value: boolean) {
-    await setPreference(this.props.pref, value ? '1' : '0');
+  async onChange(key: string, value: boolean) {
+    await setPreference(key, value);
     // Only set the state if the above doesn't error out
-    this.setState({value});
+    this.setState({[key]: value});
   }
-
-  render() {
-    const {style, pref, defaultValue, ...otherProps} = this.props;
-
-    return <HorizontalView style={[style, {justifyContent: 'space-between'}]}>
-      <Text>{this.props.text}:</Text>
-      <Switch {...otherProps}
-        value={this.state.value}
-        onValueChange={(value) => this.onChange(value)}
-      />
-    </HorizontalView>;
-  }
-}
-class _NotificationPreferences extends React.Component {
 
   render() {
     return <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
-    <Card title={
-      <NamedSwitch text="Notifications"
-        style={{
-          margin: 5,
-          alignItems: 'center',
-        }}
-        pref="overall"
-        defaultValue={true}
-        />
-      }>
-      <NamedSwitch text="Play Sound" pref="sounds" defaultValue={true} />
-      <NamedSwitch text="Vibration" pref="vibration" defaultValue={true} />
-    </Card>
+      <Card title={
+        <NamedSwitch
+          text="Notifications"
+          style={{
+            margin: 5,
+            alignItems: 'center',
+          }}
+          value={this.state.overall}
+          onValueChange={(value) => this.onChange('overall', value)}
+          />
+        }>
+        <NamedSwitch
+          disabled={!this.state.overall}
+          text="Play Sound"
+          value={this.state.sounds}
+          onValueChange={(value) => this.onChange('sounds', value)}
+          />
+        <NamedSwitch
+          disabled={!this.state.overall}
+          text="Vibration"
+          value={this.state.vibration}
+          onValueChange={(value) => this.onChange('vibration', value)}
+          />
+      </Card>
     </ScrollView>;
   }
 }
