@@ -44,8 +44,9 @@ const {
 } = NavigationExperimental;
 
 
-// These are basically copied from NavigationHeader.js
-const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
+// These are basically copied from NavigationHeader.js.
+// But we made it shorter on Android for the more compact display
+const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 46;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 
 export type Navigatable = {
