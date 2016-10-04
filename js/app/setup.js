@@ -13,7 +13,7 @@ import { Provider } from 'react-redux';
 import configureStore from '../store/configureStore';
 import Mixpanel from 'react-native-mixpanel';
 import ScreenshotSlideshow from '../ScreenshotSlideshow';
-import intl from '../intl';
+import { intl } from '../intl';
 import ProcessInfo from 'react-native-processinfo';
 
 export default function setup(): Class<Object> {

@@ -67,19 +67,35 @@ const getCurrentLocale = () => {
     : defaultLocale;
 };
 
-export default function intl(Wrapped: any) {
+function configureMoment(currentLocale) {
+  // Our Locale.contstants().localeIdentifier returns zh-Hant_US.
+  // But moment locales are zh-tw (traditional) and zh-cn (simplified).
+  // So manually convert the getCurrentLocale() 'zh' to the 'zh-tw' moment needs:
+  let momentLocale = currentLocale;
+  if (momentLocale === 'zh-Hant') {
+    momentLocale = 'zh-tw';
+  }
+  moment.locale(momentLocale);
+}
+
+export function constructIntl() {
+  let currentLocale = getCurrentLocale();
+  configureMoment(currentLocale);
+  return new IntlProvider({
+    defaultLocale: defaultLocale,
+    key: currentLocale, // https://github.com/yahoo/react-intl/issues/234
+    locale: currentLocale,
+    messages: messages[currentLocale],
+  }, {
+  }).getChildContext().intl;
+}
+
+export function intl(Wrapped: any) {
   class Internationalize extends React.Component {
 
     render() {
       let currentLocale = getCurrentLocale();
-      // Our Locale.contstants().localeIdentifier returns zh-Hant_US.
-      // But moment locales are zh-tw (traditional) and zh-cn (simplified).
-      // So manually convert the getCurrentLocale() 'zh' to the 'zh-tw' moment needs:
-      let momentLocale = currentLocale;
-      if (momentLocale === 'zh-Hant') {
-        momentLocale = 'zh-tw';
-      }
-      moment.locale(momentLocale);
+      configureMoment(currentLocale);
       return (
         <IntlProvider
           defaultLocale={defaultLocale}
