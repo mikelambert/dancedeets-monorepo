@@ -30,6 +30,7 @@ import {
   intlShape,
 } from 'react-intl';
 import { getPreference } from './prefs';
+import { constructIntl } from '../intl';
 
 function hashCode(s: string) {
   let hash = 0;
@@ -142,9 +143,9 @@ class Handler {
   }
 }
 
-export function setup(dispatch: Object, intl: intlShape) {
-  const handler = new Handler(dispatch, intl);
-
+function init() {
+  const intl = constructIntl();
+  const handler = new Handler(null, intl);
   PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
       onRegister: async function (tokenRegistration: TokenRegistration) {
@@ -175,5 +176,21 @@ export function setup(dispatch: Object, intl: intlShape) {
         * - if not, you must call PushNotificationsHandler.requestPermissions() later
         */
       requestPermissions: Platform.OS === 'android',
+  });
+}
+
+// Initialize ASAP here, so that the background listener service can process/handle notifications
+// This gets called repeatedly in DEV mode, so don't use popInitialNotification.
+init();
+
+// Later, call setup() once we have a proper dispatch, that gets used when our App UI is initialized,
+// so our opened notifications can script the UI properly.
+// We use popInitialNotification here, to process the incoming app-opening intents as if we received them.
+// It doesn't make sense to popInitialNotification on the listener service configuration above.
+export function setup(dispatch: Object, intl: intlShape) {
+  const handler = new Handler(dispatch, intl);
+  PushNotification.configure({
+    popInitialNotification: true,
+    onNotification: handler.receivedNotification,
   });
 }
