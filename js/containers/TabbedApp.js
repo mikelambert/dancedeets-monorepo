@@ -58,7 +58,7 @@ const messages = defineMessages({
   },
   learn: {
     id: 'tab.learn',
-    defaultMessage: 'Learn',
+    defaultMessage: 'Tutorials',
     description: 'Tab button to help folks learn about dance',
   },
   about: {
@@ -83,7 +83,7 @@ const messages = defineMessages({
   },
   learnTitle: {
     id: 'tutorialVideos.navigatorTitle',
-    defaultMessage: 'Learn: Tutorials',
+    defaultMessage: 'Tutorials',
     description: 'Initial title bar for Learn tab',
   },
   styleTutorialTitle: {
