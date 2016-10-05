@@ -164,6 +164,7 @@ export default function(navName: string) {
 const styles = StyleSheet.create({
 	outerContainer: {
 		flex: 1,
+		backgroundColor: 'black',
 	},
 	container: {
 		flex: 1,
