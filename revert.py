@@ -18,21 +18,21 @@ def run(cmd):
 
 
 def get_versions():
-    output = run('gcloud app modules list default')
-
+    output = run('gcloud app versions list --service default')
     def split(l):
         return re.split(r'\s+', l)
 
     output_lines = output.split('\n')
     keys = split(output_lines[0])
 
+    live = None
     versions = []
     for line in output_lines[1:]:
         values = split(line)
         d = dict(zip(keys, values))
         if re.match(r'^\d+t\d+$', d['VERSION']):
             versions.append(d['VERSION'])
-        if d['TRAFFIC_SPLIT'] == '1.0':
+        if d['TRAFFIC_SPLIT'] == '1.00':
             live = d['VERSION']
 
     versions.sort()
@@ -56,12 +56,12 @@ else:
     target_version = get_previous_version(versions, live)
 
 try:
-    output = run('gcloud app modules start default --version=%s' % target_version)
+    output = run('gcloud app versions start --service=default %s' % target_version)
 except IOError as e:
     if 'already started' not in e.args[0]:
         raise
 
-cmd = 'gcloud app modules set-default default --version=%s' % target_version
+cmd = 'gcloud app services set-traffic default --splits %s=1' % target_version
 logging.info('Running: %s' % cmd)
 # For some reason the 'yes | ...' never actually finishes. This actually does
 p = subprocess.Popen(args=cmd.split(' '), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
