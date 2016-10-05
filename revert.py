@@ -18,7 +18,7 @@ def run(cmd):
 
 
 def get_versions():
-    output = run('gcloud preview app modules list default')
+    output = run('gcloud app modules list default')
 
     def split(l):
         return re.split(r'\s+', l)
@@ -56,12 +56,12 @@ else:
     target_version = get_previous_version(versions, live)
 
 try:
-    output = run('gcloud preview app modules start default --version=%s' % target_version)
+    output = run('gcloud app modules start default --version=%s' % target_version)
 except IOError as e:
     if 'already started' not in e.args[0]:
         raise
 
-cmd = 'gcloud preview app modules set-default default --version=%s' % target_version
+cmd = 'gcloud app modules set-default default --version=%s' % target_version
 logging.info('Running: %s' % cmd)
 # For some reason the 'yes | ...' never actually finishes. This actually does
 p = subprocess.Popen(args=cmd.split(' '), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
