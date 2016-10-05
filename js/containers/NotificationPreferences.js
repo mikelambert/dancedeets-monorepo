@@ -25,6 +25,7 @@ import {
   defineMessages,
 } from 'react-intl';
 import {
+  PreferenceNames,
   getPreference,
   setPreference,
 } from '../notifications/prefs';
@@ -112,20 +113,20 @@ class _NotificationPreferences extends React.Component {
             alignItems: 'center',
           }}
           value={this.state.overall}
-          onValueChange={(value) => this.onChange('overall', value)}
+          onValueChange={(value) => this.onChange(PreferenceNames.overall, value)}
           />
         }>
         <NamedSwitch
           disabled={!this.state.overall}
           text={this.props.intl.formatMessage(messages.notificationSounds)}
           value={this.state.sounds}
-          onValueChange={(value) => this.onChange('sounds', value)}
+          onValueChange={(value) => this.onChange(PreferenceNames.sounds, value)}
           />
         <NamedSwitch
           disabled={!this.state.overall}
           text={this.props.intl.formatMessage(messages.notificationVibration)}
           value={this.state.vibration}
-          onValueChange={(value) => this.onChange('vibration', value)}
+          onValueChange={(value) => this.onChange(PreferenceNames.vibration, value)}
           />
       </Card>
     </ScrollView>;
