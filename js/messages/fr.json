@@ -40,6 +40,7 @@
   "login.logoutPrompt": "Se déconnecter de mon compte",
   "navigator.addEvent": "Ajouter un événement",
   "navigator.eventsTitle": "DanceDeets : Événements",
+  "navigator.notificationsTitle": "Paramètres de notification",
   "navigator.viewFlyer": "Bannière publicitaire",
   "notifications.header": "Notifications :",
   "notifications.sounds": "Son :",

@@ -91,6 +91,11 @@ const messages = defineMessages({
     defaultMessage: '{style} Tutorials',
     description: 'Title Bar for viewing a given style\'s tutorials',
   },
+  notificationsTitle: {
+    id: 'navigator.notificationsTitle',
+    defaultMessage: 'Notification Settings',
+    description: 'Titlebar for notification settings'
+  },
 });
 
 const EventNavigator = generateNavigator('EVENT_NAV');
@@ -225,7 +230,7 @@ class _AboutView extends React.Component {
       return <ProfilePage
         onNotificationPreferences={() => {
           track('Open Notification Preferences');
-          this.props.navigatable.onNavigate({key: 'NotificationPreferences', title: 'Notifications'});
+          this.props.navigatable.onNavigate({key: 'NotificationPreferences', title: this.props.intl.formatMessage(messages.notificationsTitle)});
         }}
         />;
     case 'NotificationPreferences':

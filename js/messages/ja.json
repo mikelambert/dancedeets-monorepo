@@ -40,6 +40,7 @@
   "login.logoutPrompt": "{name}からログアウト",
   "navigator.addEvent": "イベントを追加",
   "navigator.eventsTitle": "DanceDeets: イベント",
+  "navigator.notificationsTitle": "通知設定",
   "navigator.viewFlyer": "フライヤー",
   "notifications.header": "通知:",
   "notifications.sounds": "音:",

@@ -40,6 +40,7 @@
   "login.logoutPrompt": "登出{name}",
   "navigator.addEvent": "新增活動",
   "navigator.eventsTitle": "DanceDeets: 活動",
+  "navigator.notificationsTitle": "通知設定",
   "navigator.viewFlyer": "傳單",
   "notifications.header": "通知:",
   "notifications.sounds": "音效:",
