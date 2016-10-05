@@ -45,7 +45,7 @@ export class Playlist {
     return this.sections.map((x, i) => x.key(i));
   }
 
-  getVideo(index: number) {
+  getVideo(index: number): Video {
     const originalIndex = index;
     for (var i = 0; i < this.sections.length; i++) {
       const section = this.sections[i];
@@ -55,10 +55,10 @@ export class Playlist {
         index -= section.videos.length;
       }
     }
-    console.error(`Video index out of range: ${originalIndex}`);
+    throw new Error(`Video index out of range: ${originalIndex}`);
   }
 
-  getVideoIndex(video: Video) {
+  getVideoIndex(video: Video): number {
     let index = 0;
     for (var i = 0; i < this.sections.length; i++) {
       const videos = this.sections[i].videos;
@@ -69,7 +69,20 @@ export class Playlist {
         index += videos.length;
       }
     }
-    console.error('Video not in tutorial for index lookup');
+    throw new Error('Video not in tutorial for index lookup');
+  }
+
+  getVideoSectionRow(index: number): {section: number, row: number} {
+    const originalIndex = index;
+    for (var i = 0; i < this.sections.length; i++) {
+      const section = this.sections[i];
+      if (index < section.videos.length) {
+        return {section: i, row: index};
+      } else {
+        index -= section.videos.length;
+      }
+    }
+    throw new Error(`Video index out of range: ${originalIndex}`);
   }
 
   getVideoCount() {

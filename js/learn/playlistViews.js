@@ -342,15 +342,13 @@ function formatDuration(formatMessage: (message: Object, timeData: Object) => st
 type SectionedListViewProps = {
   items: {[key: any]: any};
   sectionHeaders: [];
-  renderRow: (row: any) => any;
-  renderSectionHeader: (data: [], sectionId: string) => any;
-  renderHeader?: () => any;
 };
 
 export class SectionedListView extends React.Component {
   state: {
     dataSource: ListView.DataSource,
   };
+  listView: ListView;
 
   constructor(props: SectionedListViewProps) {
     super(props);
@@ -375,16 +373,20 @@ export class SectionedListView extends React.Component {
   }
 
   render() {
+    const {sectionHeaders, items, ...otherProps} = this.props;
     return <ListView
+      ref={(x) => this.listView = x}
       dataSource={this.state.dataSource}
-      renderRow={this.props.renderRow}
-      renderHeader={this.props.renderHeader}
-      renderSectionHeader={this.props.renderSectionHeader}
       initialListSize={10}
       pageSize={5}
       scrollRenderAheadDistance={10000}
       indicatorStyle="white"
+      {...otherProps}
      />;
+  }
+
+  scrollTo(options: {x?: number; y?: number; animated?: boolean}) {
+    this.listView.scrollTo(options);
   }
 }
 
@@ -430,7 +432,10 @@ type PlaylistViewProps = {
 };
 
 class _PlaylistView extends React.Component {
-  youtubePlayer: any;
+  youtubePlayer: YouTubeNoReload;
+  sectionedListView: SectionedListView;
+  cachedLayout: Array<Array<{top: number, bottom: number}>>;
+  viewDimensions: {top: number, bottom: number};
 
   constructor(props: PlaylistViewProps) {
     super(props);
@@ -438,6 +443,9 @@ class _PlaylistView extends React.Component {
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderSectionHeader = this.renderSectionHeader.bind(this);
     (this: any).onChangeState = this.onChangeState.bind(this);
+    (this: any).onListViewLayout = this.onListViewLayout.bind(this);
+    (this: any).onListViewScroll = this.onListViewScroll.bind(this);
+    this.cachedLayout = [];
   }
 
   componentWillUnmount() {
@@ -463,9 +471,10 @@ class _PlaylistView extends React.Component {
     </View>;
   }
 
-  renderRow(row: any) {
-    const {video, selected} = row;
+  renderRow(rowData: any, section: string, row: string) {
+    const {video, selected} = rowData;
     const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
+    const sectionIndex = this.props.playlist.getSectionHeaders().indexOf(section);
     return <TouchableHighlight
       underlayColor={purpleColors[0]}
       activeOpacity={0.5}
@@ -479,6 +488,12 @@ class _PlaylistView extends React.Component {
         });
 
         this.props.setTutorialVideoIndex(index);
+      }}
+      onLayout={(e) => {
+        const rowIndex = parseInt(row);
+        const top = e.nativeEvent.layout.y;
+        const bottom = top + e.nativeEvent.layout.height;
+        this.setCachedLayoutForRow(sectionIndex, rowIndex, top, bottom);
       }}>
       <View>
       <HorizontalView style={[styles.videoRow, selected ? styles.videoActiveRow : styles.videoInactiveRow]}>
@@ -491,6 +506,13 @@ class _PlaylistView extends React.Component {
       </View>
     </TouchableHighlight>;
 
+  }
+
+  setCachedLayoutForRow(section, row, top, bottom) {
+    if (!this.cachedLayout[section]) {
+      this.cachedLayout[section] = [];
+    }
+    this.cachedLayout[section][row] = {top, bottom};
   }
 
   renderSectionHeader(data: Video[], sectionId: string) {
@@ -511,13 +533,56 @@ class _PlaylistView extends React.Component {
     return this.props.playlist.getVideo(this.props.tutorialVideoIndex);
   }
 
+  ensureTutorialVisible(index) {
+    const {section, row} = this.props.playlist.getVideoSectionRow(index);
+    // {top, bottom} of the element
+    const element = this.cachedLayout[section][row];
+    // {top, bottom} of the containing view's current scroll position
+    const view = this.viewDimensions;
+
+    let newScroll = null;
+    // if we're off the bottom of the screen
+    if (element.bottom > view.bottom) {
+      // figure out the proper scroll amount to fit it on the screen
+      newScroll = view.top + (element.bottom - view.bottom);
+    }
+    // or if we're off the top of the screen
+    if (element.top < view.top) {
+      // ensure we stick it at the top
+      newScroll = element.top;
+    }
+    // only scroll if necessary
+    if (newScroll !== null) {
+      this.sectionedListView.scrollTo({
+        y: newScroll,
+        animated: true,
+      });
+    }
+  }
+
+  onListViewScroll(e) {
+    const top = e.nativeEvent.contentOffset.y;
+    const bottom = top + e.nativeEvent.layoutMeasurement.height;
+    this.viewDimensions = {top, bottom};
+  }
+
   onChangeState(props: Object) {
     if (props.state === 'ended') {
       // next video, if we're not at the end!
-      if (this.props.tutorialVideoIndex + 1 < this.props.playlist.getVideoCount()) {
-        this.props.setTutorialVideoIndex(this.props.tutorialVideoIndex + 1);
+      const newIndex = this.props.tutorialVideoIndex + 1;
+      if (newIndex < this.props.playlist.getVideoCount()) {
+        // scroll it into view
+        this.ensureTutorialVisible(newIndex)
+        // and select it, playing the video
+        this.props.setTutorialVideoIndex(newIndex);
       }
     }
+  }
+
+  onListViewLayout(e) {
+    const top = e.nativeEvent.layout.y;
+    const bottom = top + e.nativeEvent.layout.height;
+    this.viewDimensions = {top, bottom};
   }
 
   render() {
@@ -549,11 +614,16 @@ class _PlaylistView extends React.Component {
         />
       <View style={styles.listViewWrapper}>
         <SectionedListView
+          ref={(x) => {
+            this.sectionedListView = x;
+          }}
           items={this.props.playlist.getItems(this.props.tutorialVideoIndex)}
           sectionHeaders={this.props.playlist.getSectionHeaders()}
           renderRow={this.renderRow}
           renderSectionHeader={this.renderSectionHeader}
           renderHeader={this.renderHeader}
+          onScroll={this.onListViewScroll}
+          onLayout={this.onListViewLayout}
           />
       </View>
     </View>;
