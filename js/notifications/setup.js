@@ -146,14 +146,19 @@ class Handler {
 function init() {
   const intl = constructIntl();
   const handler = new Handler(null, intl);
+  let lastTokenRegistration = null;
+
   PushNotification.configure({
-      // (optional) Called when Token is generated (iOS and Android)
       onRegister: async function (tokenRegistration: TokenRegistration) {
+        // Don't re-process if we've already already recorded this token
+        if (lastTokenRegistration == tokenRegistration.token) {
+          return;
+        }
+        lastTokenRegistration = tokenRegistration.token;
         setupMixpanelToken(tokenRegistration);
         await saveToken(tokenRegistration);
       },
 
-      // (required) Called when a remote or local notification is opened or received
       onNotification: handler.receivedNotification,
 
       // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
