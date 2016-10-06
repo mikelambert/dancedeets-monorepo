@@ -25,6 +25,34 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!-- React Native depends on Android-JSC (JavaScript Core), is lacking targetSdkVersion in AndroidManifest.xml.
+         So Android will assume a low targetSdkVersion to maintain compatibility, and necessitate READ_PHONE_STATE.
+         https://developer.android.com/reference/android/Manifest.permission.html#READ_PHONE_STATE
+           "If both your minSdkVersion and targetSdkVersion values are set to 3 or lower,
+           the system implicitly grants your app this permission.
+           If you don't need this permission, be sure your targetSdkVersion is 4 or higher."
+
+         This fix is being tracked in:
+         https://github.com/facebook/android-jsc/pull/12
+
+         Or the larger react-native issue:
+         https://github.com/facebook/react-native/issues/5886
+    -->
+    <uses-permission tools:node="remove" android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- These are for the unused ShortcutBadger. We want to hide these from our build. -->
+    <uses-permission tools:node="remove" android:name="com.sec.android.provider.badge.permission.READ" />
+    <uses-permission tools:node="remove" android:name="com.sec.android.provider.badge.permission.WRITE" />
+    <uses-permission tools:node="remove" android:name="com.htc.launcher.permission.READ_SETTINGS" />
+    <uses-permission tools:node="remove" android:name="com.htc.launcher.permission.UPDATE_SHORTCUT" />
+    <uses-permission tools:node="remove" android:name="com.sonyericsson.home.permission.BROADCAST_BADGE" />
+    <uses-permission tools:node="remove" android:name="com.sonymobile.home.permission.PROVIDER_INSERT_BADGE" />
+    <uses-permission tools:node="remove" android:name="com.anddoes.launcher.permission.UPDATE_COUNT" />
+    <uses-permission tools:node="remove" android:name="com.majeur.launcher.permission.UPDATE_BADGE" />
+    <uses-permission tools:node="remove" android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" />
+    <uses-permission tools:node="remove" android:name="com.huawei.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission tools:node="remove" android:name="com.huawei.android.launcher.permission.WRITE_SETTINGS" />
+
     <application
       android:name=".MainApplication"
       android:allowBackup="true"
