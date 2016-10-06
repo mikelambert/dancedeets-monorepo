@@ -36,7 +36,7 @@ export class Venue extends JsonDerivedObject {
     latitude: number,
     longitude: number,
   };
-  address: {
+  address: ?{
     street: string,
     city: string,
     state: string,
@@ -47,15 +47,27 @@ export class Venue extends JsonDerivedObject {
   id: string;
 
   fullAddress() {
-    return [this.name, this.address.street, this.address.city, this.address.state, this.address.country].filter((x) => x).join(', ');
+    if (this.address) {
+      return [this.name, this.address.street, this.address.city, this.address.state, this.address.country].filter((x) => x).join(', ');
+    } else {
+      return this.name;
+    }
   }
 
   cityState() {
-    return [this.address.city, this.address.state].filter((x) => x).join(', ');
+    if (this.address) {
+      return [this.address.city, this.address.state].filter((x) => x).join(', ');
+    } else {
+      return null;
+    }
   }
 
   cityStateCountry() {
-    return [this.address.city, this.address.state, this.address.country].filter((x) => x).join(', ');
+    if (this.address) {
+      return [this.address.city, this.address.state, this.address.country].filter((x) => x).join(', ');
+    } else {
+      return null;
+    }
   }
 }
 
