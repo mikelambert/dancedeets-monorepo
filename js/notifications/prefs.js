@@ -14,7 +14,7 @@ export const PreferenceNames = {
   overall: 'overall',
   sounds: 'sounds',
   vibration: 'vibration',
-}
+};
 
 export async function getPreference(key: string, defaultValue: boolean): Promise<boolean> {
   if (key == null) {
