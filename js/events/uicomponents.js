@@ -622,6 +622,7 @@ class EventMap extends React.Component {
       return null;
     }
     return <MapView
+        liteMode={true} // Android-only, uses a simpler view that scrolls better.
         style={[eventStyles.eventMap, this.props.style]}
         region={{
           latitude: this.props.venue.geocode.latitude,
