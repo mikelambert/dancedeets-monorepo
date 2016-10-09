@@ -59,4 +59,5 @@ class TheLab(items.StudioScraper):
             item['end_time'] = datetime.datetime.combine(date, end_time)
             if not self._valid_item(item):
                 continue
-            yield item
+            for new_item in self._repeated_items_iterator(item):
+                yield new_item
