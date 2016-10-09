@@ -5,7 +5,7 @@ api_version: 1
 service: default
 
 manual_scaling:
-  instances: 2
+  instances: 4
 
 # At some point, we must swap vm_settings for resources
 # And change runtime form 'vm' to 'custom'
