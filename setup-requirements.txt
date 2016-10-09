@@ -44,8 +44,7 @@ flask_graphql
 graphene
 
 # Google
-git+https://github.com/Khan/appengine-mapreduce
-#GoogleAppEngineMapReduce
+GoogleAppEngineMapReduce
 GoogleAppEnginePipeline
 google-api-python-client
 gdata
