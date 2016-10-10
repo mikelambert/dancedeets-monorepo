@@ -209,5 +209,6 @@ export function setup(dispatch: Object, intl: intlShape) {
   PushNotification.configure({
     popInitialNotification: true,
     onNotification: globalHandler.receivedNotification,
+    requestPermissions: false, // Make sure we don't request permissions on iOS (or anywhere)
   });
 }
