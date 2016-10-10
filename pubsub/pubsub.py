@@ -307,7 +307,7 @@ def facebook_post(auth_token, db_event):
     datetime_string = db_event.start_time.strftime('%s @ %s' % (DATE_FORMAT, TIME_FORMAT))
 
     page_id = auth_token.token_nickname
-    endpoint = 'v2.5/%s/feed' % page_id
+    endpoint = 'v2.8/%s/feed' % page_id
     fbl = fb_api.FBLookup(None, auth_token.oauth_token)
 
     post_values = {}
@@ -372,30 +372,24 @@ def facebook_post(auth_token, db_event):
 
 
 def get_targeting_data(fbl, db_event):
-    short_country = None
     city_key = None
 
-    venue_id = db_event.venue.get('id')
-
-    if venue_id:
-        # Target to people in the same country as the event. Should improve signal/noise ratio.
-        if db_event.country:
-            country = db_event.country.upper()
-            if country in iso3166.countries_by_name:
-                short_country = iso3166.countries_by_name[country].alpha2
-
-        city_state_country_list = [
+    short_country = db_event.country
+    if short_country:
+        city_state_list = [
             db_event.city,
-            db_event.state
+            db_event.state,
         ]
-        city_state_country = ', '.join(x for x in city_state_country_list if x)
-        kw_params = {
-            'q': city_state_country,
-            'country_code': short_country,
+        city_state = ', '.join(x for x in city_state_list if x)
+        geo_search = {
+            'type': 'adgeolocation',
+            'location_types': 'city',
+            'country_code': db_event.country,
+            'q': city_state,
         }
-        geo_target = fbl.get(LookupGeoTarget, urls.urlencode(kw_params))
+        geo_target = fbl.get(LookupGeoTarget, urls.urlencode(geo_search), allow_cache=False)
 
-        good_targets = [x for x in geo_target['search']['data'] if x['supports_city']]
+        good_targets = geo_target['search']['data']
         if good_targets:
             # Is usually an integer, but in the case of HK and SG (city/country combos), it can be a string
             city_key = good_targets[0]['key']
@@ -407,11 +401,13 @@ def get_targeting_data(fbl, db_event):
             short_country = geocode.country()
 
     feed_targeting = {}
-    if short_country:
+    # Target by city if we can, otherwise use the country
+    if city_key:
+        feed_targeting['cities'] = [{'key': city_key}]
+    elif short_country:
         feed_targeting['countries'] = [short_country]
-        if city_key:
-            feed_targeting['cities'] = [city_key]
-    return feed_targeting
+    full_targeting = {'geo_locations': feed_targeting}
+    return full_targeting
 
 
 request_token_url = 'https://twitter.com/oauth/request_token'
