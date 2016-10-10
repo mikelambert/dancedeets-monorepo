@@ -72,17 +72,6 @@ export function loginComplete(token: AccessToken): ThunkAction {
   };
 }
 
-/*
-export function performSearch(): ThunkAction {
-  return async (dispatch: Dispatch, getState) => {
-    const searchQuery = getState().search.searchQuery;
-    track('Search Events', {
-      'Location': searchQuery.location,
-      'Keywords': searchQuery.keywords,
-    });
-    await dispatch(searchStart());
-    try {
-*/
 export async function loadUserData(dispatch: Dispatch) {
   const requests = {
     profile: performRequest('GET', 'me', {fields: 'id,name'}),
