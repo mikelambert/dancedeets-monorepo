@@ -321,7 +321,7 @@ def facebook_post(auth_token, db_event):
     # TODO: Sometimes we definitely know the City (from a lat/long), but FB doesn't give us a city.
     # Hopefully in the Great Event Location Cleanup, can take care of this...
     if db_event.city:
-        location = '%s ' % db_event.city
+        location = db_event.city
     else:
         location = ''
 
@@ -338,7 +338,17 @@ def facebook_post(auth_token, db_event):
     else:
         venue = db_event.location_name
 
-    message = "Hey %sdancers, time to dance! New dance event on %s at %s." % (location, human_date, venue)
+    params = {
+        'location': ' ' + location if location else '',
+        'date': human_date,
+        'venue': venue,
+    }
+    messages = [
+        'Hey%(location)s dancers, mark your calendars! We just found a new dance event on %(date)s at %(venue)s.',
+        'Hey%(location)s dancers, save the date! Look what we found coming up on %(date)s at %(venue)s.',
+        'Hey%(location)s, upcoming dance event on %(date)s at %(venue)s.',
+    ]
+    message = random.choice(messages) % params
     if host and host != venue:
         message += ' Hosted by our friends at %s.' % host
     if name:
