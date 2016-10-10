@@ -29,6 +29,7 @@ import Mixpanel from 'react-native-mixpanel';
 import { Analytics } from 'react-native-firebase3';
 import { AccessToken, AppEventsLogger } from 'react-native-fbsdk';
 import { performRequest } from '../api/fb';
+import { Crashlytics } from 'react-native-fabric';
 
 import type {Action} from '../actions/types';
 import type {Event} from '../events/models';
@@ -118,12 +119,15 @@ async function setupPersonProperties() {
   if (!token) {
     return;
   }
+  Crashlytics.setUserIdentifier(token.userID);
   Mixpanel.identify(token.userID);
   Analytics.setUserId(token.userID);
 
   const user = await performRequest('GET', 'me', {fields: 'id,name,first_name,last_name,gender,locale,timezone,email,link'});
   const now = new Date().toISOString().slice(0,19); // Trim off the fractional seconds from our ISO?UTC time
 
+  Crashlytics.setUserName(user.name);
+  Crashlytics.setUserEmail(user.email);
   Mixpanel.set({
     '$first_name': user.first_name,
     '$last_name': user.last_name,
