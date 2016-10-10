@@ -6,6 +6,7 @@
 
 import React from 'react';
 import {
+  Dimensions,
   Image,
   StyleSheet,
   View,
@@ -107,6 +108,9 @@ class _TutorialScreen extends React.Component {
         // because on android there is a slight delay in loading images,
         // and the background android style can show through.
         backgroundColor: 'black',
+        // Explicitly set the dimensions of each page in our carousel.
+        // Without this, the layout gets wonky.
+        width: Dimensions.get('window').width,
       }}
       key={pageId}>
     {contents}
