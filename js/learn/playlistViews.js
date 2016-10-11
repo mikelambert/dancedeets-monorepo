@@ -330,7 +330,7 @@ function formatDuration(formatMessage: (message: Object, timeData: Object) => st
   const hours = Math.floor(durationSeconds / 60 / 60);
   const minutes = Math.floor(durationSeconds / 60) % 60;
   if (durationSeconds > 60 * 60) {
-    return formatMessage(messages.timeHoursMinutes, {hours, minutes: 0});
+    return formatMessage(messages.timeHoursMinutes, {hours, minutes});
   } else if (durationSeconds > 60) {
     return formatMessage(messages.timeMinutes, {minutes});
   } else {
