@@ -223,8 +223,8 @@ class _EventDateTime extends React.Component {
     }
     // Ensure we do some sort of timer refresh update on this
     const relativeStart = start.diff(now);
-    if (relativeStart < moment.duration(2, 'weeks')) {
-      const relativeStartOffset = moment.duration(relativeStart).humanize(true);
+    if (relativeStart > 0 && relativeStart < moment.duration(2, 'weeks')) {
+      const relativeStartOffset = _.upperFirst(moment.duration(relativeStart).humanize(true));
       textFields.push('\n');
       textFields.push(relativeStartOffset);
     }
