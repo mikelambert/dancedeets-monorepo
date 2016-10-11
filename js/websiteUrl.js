@@ -8,6 +8,16 @@
 
 import { Url } from 'url';
 
+export function canHandleUrl(url: ?string) {
+  if (url) {
+    const websiteUrl = new WebsiteUrl(url);
+    if (websiteUrl.canHandleUrl()) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export default class WebsiteUrl {
   url: ?Url;
 
@@ -33,6 +43,10 @@ export default class WebsiteUrl {
 
   isSearchUrl() {
     return this.url ? (this.url.query.location || this.url.query.keywords) : false;
+  }
+
+  canHandleUrl() {
+    return this.isEventUrl() || this.isSearchUrl();
   }
 
   location() {

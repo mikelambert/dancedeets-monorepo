@@ -26,6 +26,7 @@ import moment from 'moment';
 import {
   detectedLocation,
   performSearch,
+  processUrl,
   updateLocation,
   updateKeywords,
 } from '../actions';
@@ -45,7 +46,6 @@ import {
 } from '../ui';
 import { track } from '../store/track';
 import { AdMobBanner } from 'react-native-admob';
-import WebsiteUrl from '../websiteUrl';
 import {
   injectIntl,
   defineMessages,
@@ -56,6 +56,7 @@ import {
 } from '../util/geo';
 import { weekdayDate } from '../formats';
 import { loadUserData } from '../actions/login';
+import { canHandleUrl } from '../websiteUrl';
 
 const messages = defineMessages({
   fetchEventsError: {
@@ -250,15 +251,8 @@ class _EventListContainer extends React.Component {
 
   async initialize() {
     const url: ?string = await Linking.getInitialURL();
-    const processedUrl = url ? new WebsiteUrl(url) : null;
-    if (processedUrl && processedUrl.isEventUrl()) {
-      const eventId = processedUrl.eventId();
-      const eventData = await event(eventId);
-      this.props.onEventSelected(eventData);
-    } if (processedUrl && processedUrl.isSearchUrl()) {
-      this.props.updateLocation(processedUrl.location());
-      this.props.updateKeywords(processedUrl.keywords());
-      this.props.performSearch();
+    if (canHandleUrl(url)) {
+      this.props.processUrl(url);
     } else {
       this.fetchLocationAndSearch();
       // TODO: Tie this search in with some attempt to pull in a saved search query
@@ -413,6 +407,9 @@ export default connect(
     },
     updateKeywords: async (keywords) => {
       await dispatch(updateKeywords(keywords));
+    },
+    processUrl: async (url) => {
+      await dispatch(processUrl(url))
     },
     loadUserData: async () => {
       await loadUserData(dispatch);

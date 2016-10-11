@@ -9,6 +9,7 @@
 import React from 'react';
 import {
   AppState,
+  Linking,
   StatusBar,
   StyleSheet,
   View,
@@ -21,18 +22,14 @@ import { gradientTop } from '../Colors';
 import { setup as setupNotifications } from '../notifications/setup';
 import storeShape from 'react-redux/lib/utils/storeShape';
 import { intlShape } from 'react-intl';
-
-function select(store) {
-  return {
-    isLoggedIn: store.user.isLoggedIn || store.user.hasSkippedLogin,
-  };
-}
+import { processUrl } from '../actions';
 
 class App extends React.Component {
   constructor(props, context) {
     super(props, context);
     (this: any).handleAppStateChange = this.handleAppStateChange.bind(this);
     (this: any).componentDidMount = this.componentDidMount.bind(this);
+    (this: any).handleOpenURL = this.handleOpenURL.bind(this);
     setupNotifications(context.store.dispatch, context.intl);
   }
 
@@ -44,10 +41,16 @@ class App extends React.Component {
     AppState.addEventListener('change', this.handleAppStateChange);
     this.loadAppData();
     CodePush.sync({installMode: CodePush.InstallMode.ON_NEXT_RESUME, minimumBackgroundDuration: 60 * 5});
+    Linking.addEventListener('url', this.handleOpenURL);
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
+    Linking.removeEventListener('url', this.handleOpenURL);
+  }
+
+  handleOpenURL(event) {
+    this.props.processUrl(event.url);
   }
 
   handleAppStateChange(appState) {
@@ -78,7 +81,14 @@ App.contextTypes = {
   store: storeShape,
   intl: intlShape,
 };
-export default connect(select)(App);
+export default connect(
+  store => ({
+    isLoggedIn: store.user.isLoggedIn || store.user.hasSkippedLogin,
+  }),
+  dispatch => ({
+    processUrl: (event) => dispatch(processUrl(event)),
+  }),
+)(App);
 
 var styles = StyleSheet.create({
   container: {

@@ -22,6 +22,7 @@ import { purpleColors } from '../Colors';
 import {
   navigatePush,
   navigatePop,
+  appNavigateToEvent,
   selectTab,
 } from '../actions';
 import moment from 'moment';
@@ -134,14 +135,7 @@ class Handler {
       if (notification.openedEventId) {
         console.log('OPENED ', notification.openedEventId);
         const notificationEvent = await fetchEvent(notification.openedEventId);
-        const dispatch = this.dispatch;
-        const navName = 'EVENT_NAV';
-        const destState = {key: 'EventView', title: notificationEvent.name, event: notificationEvent};
-        //TODO: factor out some of this navigation functionality
-        await dispatch(selectTab('events'));
-        await dispatch(navigatePop(navName));
-        await dispatch(navigatePop(navName));
-        await dispatch(navigatePush(navName, destState));
+        this.dispatch(appNavigateToEvent(notificationEvent));
       }
     } else {
       if (notification.notification_type === 'EVENT_REMINDER') {
