@@ -2,8 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.dancedeets.android"
-    android:versionCode="34"
-    android:versionName="2.0.6"
+    android:versionCode="35"
+    android:versionName="2.0.7"
     >
 
     <!--<uses-sdk tools:overrideLibrary="com.facebook.react, com.BV.LinearGradient, com.kevinejohn.RNMixpanel"/>-->
