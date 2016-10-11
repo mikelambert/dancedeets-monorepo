@@ -59,12 +59,13 @@ class EventPager extends React.Component {
 
     if (results && results.results) {
       const pageIndex = results.results.findIndex((x) => x.id === this.props.selectedEvent.id);
-      // If we have an event that's not in the list, it's because we're just displaying this event.
-      if (pageIndex === -1) {
-        finalResults = [this.props.selectedEvent].map((event) => ({event, position}));
-      } else {
+      if (pageIndex !== -1) {
         finalResults = results.results.map((event) => ({event, position}));
       }
+    }
+    // If we have an event that's not in the list, it's because we're just displaying this event.
+    if (!finalResults.length) {
+      finalResults = [this.props.selectedEvent].map((event) => ({event, position}));
     }
     const state = {
       ...this.state,
