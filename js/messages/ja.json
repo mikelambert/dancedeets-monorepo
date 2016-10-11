@@ -86,6 +86,6 @@
   "tutorialVideos.timeMinutes": "{minutes, number}分",
   "tutorialVideos.timeSeconds": "{seconds, number}秒",
   "tutorialVideos.totalTime": "合計時間: {time}",
-  "tutorialVideos.turorialFooter": "あなたのチュートリアルやDVDやレッスンなどを追加したくないですか？\n世界一上手いダンサーのお手頃なレッスンを受けたくないですか？",
+  "tutorialVideos.turorialFooter": "あなたのチュートリアルやDVDやレッスンなどを追加したくないですか？\n世界一上手いダンサーのレッスンを受けたくないですか？",
   "tutorialVideos.tutorialHeader": "チュートリアルを選択:"
 }

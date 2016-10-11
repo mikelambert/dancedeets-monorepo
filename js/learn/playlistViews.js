@@ -79,7 +79,7 @@ const messages = defineMessages({
   },
   tutorialFooter: {
     id: 'tutorialVideos.turorialFooter',
-    defaultMessage: 'Want to put your tutorials, DVD, or classes here?\nWant affordable lessons from the world\'s best teachers?\n',
+    defaultMessage: 'Want to put your tutorials, DVD, or classes here?\nWant lessons from the world\'s best teachers?\n',
     description: 'Footer for tutorials list, inviting participation',
   },
   contact: {
