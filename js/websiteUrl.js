@@ -16,7 +16,7 @@ export default class WebsiteUrl {
   }
 
   isEventUrl() {
-    return this.url && this.url.pathname.startsWith('/event/');
+    return this.url && this.url.pathname.startsWith('/events/');
   }
 
   eventId(): string {
@@ -25,7 +25,7 @@ export default class WebsiteUrl {
     }
     const pathname = this.url.pathname;
     const elems = pathname.split('/');
-    if (elems[1] != 'event') {
+    if (elems[1] != 'events') {
       throw new Error('Confusing pathname: ' + pathname);
     }
     return elems[2];
