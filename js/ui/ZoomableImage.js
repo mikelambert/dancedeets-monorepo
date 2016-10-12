@@ -46,6 +46,8 @@ export default class ZoomableImage extends React.Component {
     isZoomed: boolean;
   };
 
+  zoomable_scroll: ReactElement<ScrollView>;
+
   constructor() {
     super();
     this.state = {
@@ -61,14 +63,14 @@ export default class ZoomableImage extends React.Component {
   componentDidMount() {
     const zoomScale = this.getNaturalZoomScale();
     console.log(zoomScale);
-    this.refs.zoomable_scroll.setNativeProps({
+    this.zoomable_scroll.setNativeProps({
       //zoomScale: zoomScale,
     });
     console.log(this.props);
     console.log(this.props.width * zoomScale);
-    //this.refs.zoomable_scroll.scrollTo({x: 205, y: 0, animated: false});
+    //this.zoomable_scroll.scrollTo({x: 205, y: 0, animated: false});
  //= 0.5;
-    this.refs.zoomable_scroll.scrollResponderZoomTo({
+    this.zoomable_scroll.scrollResponderZoomTo({
       width: this.props.width,
       height: this.props.height,
       x: 0,
@@ -107,7 +109,7 @@ export default class ZoomableImage extends React.Component {
   renderIOS(zoomScale: number, horizontal: boolean) {
     return (
       <ScrollView
-        ref="zoomable_scroll"
+        ref={(x) => {this.zoomable_scroll = x;}}
         onScroll={this.onZoomChanged}
         scrollEventThrottle={100}
         scrollsToTop={false}
@@ -137,7 +139,7 @@ export default class ZoomableImage extends React.Component {
     if (timestamp - this.state.lastTapTimestamp <= 500) {
       var {locationX, locationY} = e.nativeEvent;
       var size = this.state.isZoomed ? {width: 10000, height: 10000} : {width: 0, height: 0};
-      this.refs.zoomable_scroll.scrollResponderZoomTo({x: locationX, y: locationY, ...size});
+      this.zoomable_scroll.scrollResponderZoomTo({x: locationX, y: locationY, ...size});
     }
     this.setState({lastTapTimestamp: timestamp});
   }

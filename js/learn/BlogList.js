@@ -35,7 +35,6 @@ export class BlogPostContents extends React.Component {
   render() {
     if (this.props.post.youtubeId) {
       return <YouTube
-        ref="youtubePlayer"
         videoId={this.props.post.youtubeId}
         play={true}
         hidden={true}

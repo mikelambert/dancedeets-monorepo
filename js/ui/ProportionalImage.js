@@ -27,6 +27,8 @@ export default class ProportionalImage extends React.Component {
     opacity: any;
   };
 
+  view: ReactElement<View>;
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -42,7 +44,7 @@ export default class ProportionalImage extends React.Component {
   };
 
   setNativeProps(nativeProps: Object) {
-    this.refs.view.setNativeProps(nativeProps);
+    this.view.setNativeProps(nativeProps);
   }
 
   onLayout(e: SyntheticEvent) {
@@ -72,7 +74,7 @@ export default class ProportionalImage extends React.Component {
     return (
       <View
         onLayout={this.onLayout}
-        ref="view"
+        ref={(x) => {this.view = x;}}
         {...this.props}
         >
         <Animated.Image

@@ -161,6 +161,8 @@ class _EventListContainer extends React.Component {
     dataSource: ListView.DataSource,
   };
 
+  list_view: ReactElement<ListView>;
+
   constructor(props) {
     super(props);
     var dataSource = new ListView.DataSource({
@@ -219,7 +221,7 @@ class _EventListContainer extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState(this._getNewState(nextProps));
     if (nextProps.search.results !== this.props.search.results) {
-      this.refs.list_view.scrollTo({x: 0, y: 0, animated: false});
+      this.list_view.scrollTo({x: 0, y: 0, animated: false});
     }
   }
 
@@ -351,7 +353,7 @@ class _EventListContainer extends React.Component {
   renderListView() {
     return (
       <ListView
-        ref="list_view"
+        ref={(x) => {this.list_view = x;}}
         style={[styles.listView]}
         dataSource={this.state.dataSource}
         renderHeader={this._renderHeader}

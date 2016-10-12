@@ -241,6 +241,10 @@ class _AboutView extends React.Component {
 const AboutView = injectIntl(_AboutView);
 
 class _TabbedAppView extends React.Component {
+  event_navigator: ReactElement<any>;
+  learn_navigator: ReactElement<any>;
+  about_navigator: ReactElement<any>;
+
   icon(source) {
     return <Image source={source} style={styles.icon}/>;
   }
@@ -267,9 +271,9 @@ class _TabbedAppView extends React.Component {
           }
         }}>
         <EventNavigator
-          ref="event_navigator"
+          ref={(x) => {this.event_navigator = x;}}
           renderScene={(sceneProps: NavigationSceneRendererProps) =>
-            <EventView sceneProps={sceneProps} navigatable={this.refs.event_navigator && this.refs.event_navigator.dispatchProps} />
+            <EventView sceneProps={sceneProps} navigatable={this.event_navigator && this.event_navigator.dispatchProps} />
           }
           />
       </TabNavigator.Item>
@@ -290,9 +294,9 @@ class _TabbedAppView extends React.Component {
           }
         }}>
         <LearnNavigator
-          ref="learn_navigator"
+          ref={(x) => {this.learn_navigator = x;}}
           renderScene={(sceneProps: NavigationSceneRendererProps) =>
-            <LearnView sceneProps={sceneProps} navigatable={this.refs.learn_navigator && this.refs.learn_navigator.dispatchProps} />
+            <LearnView sceneProps={sceneProps} navigatable={this.learn_navigator && this.learn_navigator.dispatchProps} />
           }
           />
       </TabNavigator.Item>
@@ -310,9 +314,9 @@ class _TabbedAppView extends React.Component {
           }
         }}>
         <AboutNavigator
-          ref="about_navigator"
+          ref={(x) => {this.about_navigator = x;}}
           renderScene={(sceneProps: NavigationSceneRendererProps) =>
-            <AboutView sceneProps={sceneProps} navigatable={this.refs.about_navigator && this.refs.about_navigator.dispatchProps} />
+            <AboutView sceneProps={sceneProps} navigatable={this.about_navigator && this.about_navigator.dispatchProps} />
           }
         />
       </TabNavigator.Item>
