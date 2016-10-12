@@ -49,6 +49,9 @@ import {
 import type {
   NavigationSceneRendererProps,
 } from 'NavigationTypeDefinition';
+import {
+  EventSignupsView
+} from '../event_signups/views';
 
 const messages = defineMessages({
   events: {
@@ -106,6 +109,10 @@ setDefaultState('LEARN_NAV', { key: 'TutorialStyles', message: messages.learnTit
 
 const AboutNavigator = generateNavigator('ABOUT_NAV');
 setDefaultState('ABOUT_NAV', { key: 'About', message: messages.about });
+
+const EventSignupsNavigator = generateNavigator('EVENT_SIGNUPS_NAV');
+setDefaultState('EVENT_SIGNUPS_NAV', { key: 'EventSignups', title: 'Event Signups' });
+
 
 class GradientTabBar extends React.Component {
   render() {
@@ -241,6 +248,7 @@ class _AboutView extends React.Component {
 const AboutView = injectIntl(_AboutView);
 
 class _TabbedAppView extends React.Component {
+  event_signups_navigator: ReactElement<any>;
   event_navigator: ReactElement<any>;
   learn_navigator: ReactElement<any>;
   about_navigator: ReactElement<any>;
@@ -250,6 +258,31 @@ class _TabbedAppView extends React.Component {
   }
 
   render() {
+    let extraTabs = null;
+    if (this.props.user && this.props.user.profile.id === '701004') {
+      extraTabs = <TabNavigator.Item
+        selected={this.props.selectedTab === 'event_signups'}
+        title={'Event Signups'}
+        titleStyle={styles.titleStyle}
+        selectedTitleStyle={styles.selectedTitleStyle}
+        renderIcon={() => this.icon(require('../containers/icons/events.png'))}
+        renderSelectedIcon={() => this.icon(require('../containers/icons/events-highlighted.png'))}
+        onPress={() => {
+          if (this.props.selectedTab === 'event_signups') {
+            this.refs.event_navigator.dispatchProps.goHome();
+          } else {
+            track('Tab Selected', {Tab: 'Event Signups'});
+            this.props.selectTab('event_signups');
+          }
+        }}>
+        <EventSignupsNavigator
+          ref={(x) => {this.event_signups_navigator = x;}}
+          renderScene={(sceneProps: NavigationSceneRendererProps) =>
+            <EventSignupsView sceneProps={sceneProps} navigatable={this.event_signups_navigator && this.event_signups_navigator.dispatchProps} />
+          }
+          />
+      </TabNavigator.Item>;
+    }
     return <TabNavigator
         tabBarStyle={styles.tabBarStyle}
         sceneStyle={styles.tabBarSceneStyle}
@@ -320,11 +353,13 @@ class _TabbedAppView extends React.Component {
           }
         />
       </TabNavigator.Item>
+      {extraTabs}
     </TabNavigator>;
   }
 }
 export default connect(
   state => ({
+    user: state.user.userData,
     selectedTab: state.mainTabs.selectedTab,
   }),
   dispatch => ({
