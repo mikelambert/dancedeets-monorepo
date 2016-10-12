@@ -78,7 +78,7 @@ async function addIOS(event: Event) {
       location: event.venue.fullAddress(),
       notes: getDescription(event),
       startDate: start.toISOString(),
-      endDate: end ? end.toISOString() : null,
+      endDate: end.toISOString(),
       url: event.getUrl(),
     });
   } catch (e) {
@@ -91,7 +91,11 @@ async function addIOS(event: Event) {
 function androidDate(date: Date) {
   // 2016-01-01 01:00
   const tzOffset = new Date().getTimezoneOffset() * 60000;
-  return new Date(date - tzOffset).toISOString().replace(/T/, ' ').slice(0, 16);
+  try {
+    return new Date(date - tzOffset).toISOString().replace(/T/, ' ').slice(0, 16);
+  } catch (e) {
+    throw new Error('Date: new Date(' + date.toString() + ' - ' + tzOffset + ') returned invalid date');
+  }
 }
 
 function addAndroid(event: Event) {
