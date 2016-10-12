@@ -50,7 +50,7 @@ class Evolution(items.StudioScraper):
                     name = re.sub(instructor_re, '', summary)
                 else:
                     name = summary
-                    match = re.search(r'(?:Instructors?|Teachers?): ([^\n]*)', event['description'])
+                    match = re.search(r'(?:Instructors?|Teachers?): ([^\n]*)', event.get('description', ''))
                     if match:
                         teacher = match.group(1).strip()
                     else:
