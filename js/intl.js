@@ -48,10 +48,10 @@ if (global.Intl) {
 // Only load these if we're using the polyfill (that exposes this function)
 if (global.Intl.__addLocaleData) {
   // These have number formtting, useful for NumberFormat and DateTimeFormat
-  global.Intl.__addLocaleData(require('intl/locale-data/json/en'));
-  global.Intl.__addLocaleData(require('intl/locale-data/json/fr'));
-  global.Intl.__addLocaleData(require('intl/locale-data/json/ja'));
-  global.Intl.__addLocaleData(require('intl/locale-data/json/zh'));
+  require('intl/locale-data/jsonp/en');
+  require('intl/locale-data/jsonp/fr');
+  require('intl/locale-data/jsonp/ja');
+  require('intl/locale-data/jsonp/zh');
 }
 
 // These has pluralRuleFunction, necessary for react-intl's use of intl-messageformat
