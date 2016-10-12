@@ -56,7 +56,7 @@ export type Navigatable = {
 	goHome: () => ThunkAction;
 };
 
-type AppContainerProps = {
+type NavigatorProps = {
 	navigationState: NavigationState,
 	intl: intlShape,
 };
@@ -71,8 +71,8 @@ const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }) => (
   </View>
 );
 
-class _AppContainer extends React.Component {
-	props: AppContainerProps & Navigatable & CallingProps;
+class _Navigator extends React.Component {
+	props: NavigatorProps & Navigatable & CallingProps;
 
 	constructor(props) {
 		super(props);
@@ -142,7 +142,7 @@ class _AppContainer extends React.Component {
     this.props.goHome();
   }
 }
-const AppContainer = injectIntl(_AppContainer);
+const Navigator = injectIntl(_Navigator);
 
 export default function(navName: string) {
 	return connect(
@@ -158,7 +158,7 @@ export default function(navName: string) {
 			onBack: () => dispatch(navigatePop(navName)),
 			onSwap: (key, newRoute) => dispatch(navigateSwap(navName, key, newRoute)),
 		}),
-	)(AppContainer);
+	)(Navigator);
 }
 
 const styles = StyleSheet.create({
