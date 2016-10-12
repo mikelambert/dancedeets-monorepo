@@ -122,6 +122,12 @@
                      restorationHandler:restorationHandler];
 }
 
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    // Call the 'activateApp' method to log an app event for use
+    // in analytics and advertising reporting.
+    [FBSDKAppEvents activateApp];
+}
+
 // Required to register for notifications
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
