@@ -38,6 +38,7 @@ import {
   Card,
   semiNormalize,
   normalize,
+  ProportionalImage,
 } from '../ui';
 import { connect } from 'react-redux';
 import type { Dispatch } from '../actions/types';
@@ -158,18 +159,20 @@ class _EventSignups extends React.Component {
 
     const images = [];
     const margin = 30;
-    const imageWidth = (boxWidth - 30) / Math.max(teamSize, 2) - margin;
+    const imageWidth = (boxWidth - 30 - margin) / (2 * Math.max(teamSize, 2));
     for (let i = 0; i < teamSize; i++) {
-      images.push(<Image
+      images.push(<ProportionalImage
+        resizeDirection="width"
         source={danceStyles[category.styleIcon].thumbnail}
+        originalWidth={danceStyles[category.styleIcon].width}
+        originalHeight={danceStyles[category.styleIcon].height}
         resizeMode="contain"
         style={{
-          width: imageWidth,
           height: imageWidth,
         }}
       />);
     }
-    return images;
+    return <HorizontalView>{images}</HorizontalView>;
   }
 
   renderRow(category: any) {
@@ -245,8 +248,8 @@ class _Category extends React.Component {
 
   render() {
     return <View>
-      <Text>{this.props.category.displayName()}</Text>
-      <Button caption="Sign Up" />
+      <Button caption="Sign Up" style={{width: semiNormalize(200), height: semiNormalize(50)}}/>
+      <Text>{this.props.category.signups.length} competitors:</Text>
       <SignupList signups={this.props.category.signups} />
     </View>;
   }

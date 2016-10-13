@@ -24,6 +24,7 @@ export default class ProportionalImage extends React.Component {
 
   state: {
     height: ?number;
+    width: ?number;
     opacity: any;
   };
 
@@ -33,6 +34,7 @@ export default class ProportionalImage extends React.Component {
     super(props);
     this.state = {
       height: null,
+      width: null,
       opacity: new Animated.Value(0),
     };
     (this: any).onLayout = this.onLayout.bind(this);
@@ -51,14 +53,26 @@ export default class ProportionalImage extends React.Component {
     const nativeEvent: any = e.nativeEvent;
     const layout = nativeEvent.layout;
     const aspectRatio = this.props.originalWidth / this.props.originalHeight;
-    const measuredHeight = layout.width / aspectRatio;
-    const currentHeight = layout.height;
+    if (this.props.resizeDirection == 'width') {
+      const measuredWidth = aspectRatio * layout.height;
+      const currentWidth = layout.width;
+      console.log('hey', measuredWidth, currentWidth);
+      if (measuredWidth !== currentWidth) {
+        this.setState({
+          ...this.state,
+          width: measuredWidth,
+        });
+      }
+    } else {
+      const measuredHeight = layout.width / aspectRatio;
+      const currentHeight = layout.height;
 
-    if (measuredHeight !== currentHeight) {
-      this.setState({
-        ...this.state,
-        height: measuredHeight,
-      });
+      if (measuredHeight !== currentHeight) {
+        this.setState({
+          ...this.state,
+          height: measuredHeight,
+        });
+      }
     }
   }
 
@@ -79,7 +93,7 @@ export default class ProportionalImage extends React.Component {
         >
         <Animated.Image
           {...this.props}
-          style={[{opacity: this.state.opacity, height: this.state.height}, this.props.style]}
+          style={[{opacity: this.state.opacity, height: this.state.height, width: this.state.width}, this.props.style]}
           onLoad={this.onLoad}
         />
       </View>
