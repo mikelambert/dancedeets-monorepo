@@ -41,7 +41,7 @@ export class CompetitionCategory {
   }
 
   displayName() {
-    const nxn = this.teamSize ? `${this.teamSize}x${this.teamSize}` : '';
+    const nxn = this.teamSize ? `${this.teamSize}×${this.teamSize}` : '';
     const displayName = nxn ? `${nxn} ${this.name}` : this.name; //TODO: backup to some variant of 'style'
     return displayName;
   }

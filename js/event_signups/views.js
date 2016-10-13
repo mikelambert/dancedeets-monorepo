@@ -53,10 +53,11 @@ import type {
 } from './models';
 import danceStyles from '../styles';
 
+// Trying to emulate Just Debout
 const categories: Array<CompetitionCategory> = [
   new CompetitionCategory({
-    name: 'BBoy/BGirl',
-    styleIcon: 'break',
+    name: 'Hip-Hop',
+    styleIcon: 'hiphop',
     teamSize: 2,
     signups: [
       {
@@ -73,10 +74,58 @@ const categories: Array<CompetitionCategory> = [
   new CompetitionCategory({
     name: 'House',
     styleIcon: 'house',
-    teamSize: 1,
+    teamSize: 2,
     signups: [
       {
         teamName: 'Apartment Feet',
+        dancers: [
+          {
+            uid: '701004',
+            name: 'Mike Lambert'
+          },
+        ],
+      },
+    ],
+  }),
+  new CompetitionCategory({
+    name: 'Popping',
+    styleIcon: 'pop',
+    teamSize: 2,
+    signups: [
+      {
+        teamName: 'Stack Poppers',
+        dancers: [
+          {
+            uid: '701004',
+            name: 'Mike Lambert'
+          },
+        ],
+      },
+    ],
+  }),
+  new CompetitionCategory({
+    name: 'Locking',
+    styleIcon: 'lock',
+    teamSize: 2,
+    signups: [
+      {
+        teamName: 'Lock Racing',
+        dancers: [
+          {
+            uid: '701004',
+            name: 'Mike Lambert'
+          },
+        ],
+      },
+    ],
+  }),
+  new CompetitionCategory({
+    name: 'Top Rock',
+    styleIcon: 'break',
+    teamSize: 1,
+    signups: [
+      {
+        teamName: 'Upper Pebbles',
         dancers: [
           {
             uid: '701004',
@@ -114,7 +163,10 @@ class _EventSignups extends React.Component {
       images.push(<Image
         source={danceStyles[category.styleIcon].thumbnail}
         resizeMode="contain"
-        style={{width: imageWidth, height: imageWidth}}
+        style={{
+          width: imageWidth,
+          height: imageWidth,
+        }}
       />);
     }
     return images;
