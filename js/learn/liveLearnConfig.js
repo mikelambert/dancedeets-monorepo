@@ -17,7 +17,6 @@ async function loadConfig() {
     RemoteConfig.setDeveloperMode(true);
   }
   RemoteConfig.setNamespacedDefaults({
-    tutorials: JSON.stringify(defaultTutorials),
     blogs: JSON.stringify(defaultBlogs),
   }, 'Learn');
   await RemoteConfig.fetchWithExpirationDuration(30 * 15);
@@ -30,5 +29,5 @@ export async function getRemoteBlogs() {
   return JSON.parse(await RemoteConfig.getNamespacedString('blogs', 'Learn'));
 }
 export async function getRemoteTutorials() {
-  return JSON.parse(await RemoteConfig.getNamespacedString('tutorials', 'Learn'));
+  return defaultTutorials;
 }
