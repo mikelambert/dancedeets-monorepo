@@ -6,22 +6,11 @@
 
 'use strict';
 
-import {
-  defineMessages,
-} from 'react-intl';
-
-const messages = defineMessages({
-  otherStylesTitle: {
-    id: 'tutorialVideos.otherStylesTitle',
-    defaultMessage: 'Other Styles',
-    description: 'Name of the tutorial category for miscellaneous dance styles',
-  },
-});
+import styles from '../styles';
 
 export const defaultTutorials = [
   {
-    title: 'Bboy / Bgirl',
-    thumbnail: require('./images/styles/break.png'),
+    style: styles.break,
     tutorials: [
       require('./tutorials/break/vincanitv_beginnertutorials.json'),
       require('./tutorials/break/vincanitv_intermediatetutorials.json'),
@@ -49,8 +38,7 @@ export const defaultTutorials = [
     ],
   },
   {
-    title: 'Hip-Hop',
-    thumbnail: require('./images/styles/hiphop.png'),
+    style: styles.hiphop,
     tutorials: [
       require('./tutorials/hiphop/newschool_dictionary.json'),
       require('./tutorials/hiphop/moncell.json'),
@@ -65,8 +53,7 @@ export const defaultTutorials = [
     ],
   },
   {
-    title: 'Popping',
-    thumbnail: require('./images/styles/pop.png'),
+    style: styles.pop,
     tutorials: [
       require('./tutorials/pop/oldschool_dictionary.json'),
       require('./tutorials/pop/oakland_boogaloo.json'),
@@ -101,8 +88,7 @@ export const defaultTutorials = [
     ],
   },
   {
-    title: 'Locking',
-    thumbnail: require('./images/styles/lock.png'),
+    style: styles.lock,
     tutorials: [
       require('./tutorials/lock/oldschool_dictionary.json'),
       require('./tutorials/lock/tonygogo.json'),
@@ -118,8 +104,7 @@ export const defaultTutorials = [
     ],
   },
   {
-    title: 'House Dance',
-    thumbnail: require('./images/styles/house.png'),
+    style: styles.other,
     tutorials: [
       require('./tutorials/house/newschool_dictionary.json'),
       require('./tutorials/house/jardy.json'),
@@ -138,8 +123,7 @@ export const defaultTutorials = [
     ],
   },
   {
-    title: 'Krump',
-    thumbnail: require('./images/styles/krump.png'),
+    styles: styles.krump,
     tutorials: [
       require('./tutorials/krump/krump40.json'),
       require('./tutorials/krump/krumpkings.json'),
@@ -151,9 +135,7 @@ export const defaultTutorials = [
     ],
   },
   {
-    title: 'Other Styles',
-    titleMessage: messages.otherStylesTitle,
-    thumbnail: require('./images/styles/other.png'),
+    style: styles.other,
     tutorials: [
       require('./tutorials/misc/yakfilms.json'),
       require('./tutorials/misc/horie.json'),
