@@ -111,7 +111,7 @@ const AboutNavigator = generateNavigator('ABOUT_NAV');
 setDefaultState('ABOUT_NAV', { key: 'About', message: messages.about });
 
 const EventSignupsNavigator = generateNavigator('EVENT_SIGNUPS_NAV');
-setDefaultState('EVENT_SIGNUPS_NAV', { key: 'EventSignups', title: 'Event Signups' });
+setDefaultState('EVENT_SIGNUPS_NAV', { key: 'EventSignups', title: 'Battle Signups' });
 
 
 class GradientTabBar extends React.Component {

@@ -9,6 +9,7 @@
 import React from 'react';
 import {
   AlertIOS,
+  Animated,
   Dimensions,
   Image,
   ListView,
@@ -34,16 +35,68 @@ import {
 } from 'react-intl';
 import languages from '../languages';
 import {
+  Card,
   semiNormalize,
   normalize,
-} from '../ui/normalize';
+} from '../ui';
 import { connect } from 'react-redux';
 import type { Dispatch } from '../actions/types';
 import {
   setTutorialVideoIndex,
 } from '../actions';
 import { googleKey } from '../keys';
+import {
+  CompetitionCategory,
+} from './models';
+import type {
+  Signup,
+} from './models';
+import danceStyles from '../styles';
 
+const categories: Array<CompetitionCategory> = [
+  new CompetitionCategory({
+    name: 'BBoy/BGirl',
+    styleIcon: 'break',
+    teamSize: 2,
+    signups: [
+      {
+        teamName: 'Step Funktion',
+        dancers: [
+          {
+            uid: '701004',
+            name: 'Mike Lambert'
+          },
+        ],
+      },
+    ],
+  }),
+  new CompetitionCategory({
+    name: 'House',
+    styleIcon: 'house',
+    teamSize: 1,
+    signups: [
+      {
+        teamName: 'Apartment Feet',
+        dancers: [
+          {
+            uid: '701004',
+            name: 'Mike Lambert'
+          },
+        ],
+      },
+    ],
+  }),
+];
+
+
+// Try to make our boxes as wide as we can...
+let boxWidth = normalize(350);
+// ...and only start scaling them non-proportionally on the larger screen sizes,
+// so that we do 3-4 columns
+if (Dimensions.get('window').width >= 1024) {
+  boxWidth = semiNormalize(350);
+}
+const boxMargin = 5;
 
 class _EventSignups extends React.Component {
   constructor(props: any) {
@@ -51,17 +104,45 @@ class _EventSignups extends React.Component {
     (this: any).renderRow = this.renderRow.bind(this);
   }
 
+  dancerIcons(category: any) {
+    const teamSize = Math.max(category.teamSize, 1);
+
+    const images = [];
+    const margin = 30;
+    const imageWidth = (boxWidth - 30) / Math.max(teamSize, 2) - margin;
+    for (let i = 0; i < teamSize; i++) {
+      images.push(<Image
+        source={danceStyles[category.styleIcon].thumbnail}
+        resizeMode="contain"
+        style={{width: imageWidth, height: imageWidth}}
+      />);
+    }
+    return images;
+  }
+
   renderRow(category: any) {
+    const dancerIcons = this.dancerIcons(category);
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(category);
       }}
+      style={{
+        margin: boxMargin,
+        borderRadius: 10,
+      }}
       >
       <View
         style={{
+          width: boxWidth,
           backgroundColor: purpleColors[2],
+          padding: 5,
+          borderRadius: 10,
         }}>
-        <Text style={[]}>{category}</Text>
+        <HorizontalView style={{justifyContent: 'space-between'}}>
+          <View>{dancerIcons}</View>
+          <Animated.View style={{position:'relative',transform:[{skewY: '-180deg'}]}}>{dancerIcons}</Animated.View>
+        </HorizontalView>
+        <Text style={{marginVertical: 10, textAlign: 'center', fontWeight: 'bold', fontSize: semiNormalize(30), lineHeight: semiNormalize(34)}}>{category.displayName()}</Text>
       </View>
     </TouchableHighlight>;
   }
@@ -70,6 +151,13 @@ class _EventSignups extends React.Component {
     return <FeedListView
       items={this.props.categories}
       renderRow={this.renderRow}
+      contentContainerStyle={{
+        alignSelf: 'center',
+        justifyContent: 'flex-start',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+      }}
       />;
   }
 }
@@ -81,8 +169,12 @@ class _SignupList extends React.Component {
     (this: any).renderRow = this.renderRow.bind(this);
   }
 
-  renderRow(signup: any) {
-    return <Text>{signup}</Text>;
+  renderRow(signup: Signup) {
+    const dancers = signup.dancers.map((x) => <Text key={x.uid}>{x.name}</Text>);
+    return <Card>
+      <Text>{signup.teamName}</Text>
+      {dancers}
+    </Card>;
   }
 
   render() {
@@ -101,13 +193,9 @@ class _Category extends React.Component {
 
   render() {
     return <View>
-      <Text>{this.props.category}</Text>
-      <Button>Signup</Button>
-      <SignupList signups={[
-        'a',
-        'b',
-        'c',
-      ]}/>
+      <Text>{this.props.category.displayName()}</Text>
+      <Button caption="Sign Up" />
+      <SignupList signups={this.props.category.signups} />
     </View>;
   }
 }
@@ -122,14 +210,9 @@ class _EventSignupsView extends React.Component {
       return <EventSignups
         onSelected={(category) => {
           //trackWithEvent('View Event', event);
-          this.props.navigatable.onNavigate({key: 'Category', title: category.name, category: category});
+          this.props.navigatable.onNavigate({key: 'Category', title: category.displayName(), category: category});
         }}
-        categories={
-          [
-          'BBoy 1x1',
-          'House 2x2',
-          ]
-        }
+        categories={categories}
       />;
     case 'Category':
       return <Category
