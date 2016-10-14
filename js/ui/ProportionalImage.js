@@ -56,7 +56,6 @@ export default class ProportionalImage extends React.Component {
     if (this.props.resizeDirection == 'width') {
       const measuredWidth = aspectRatio * layout.height;
       const currentWidth = layout.width;
-      console.log('hey', measuredWidth, currentWidth);
       if (measuredWidth !== currentWidth) {
         this.setState({
           ...this.state,

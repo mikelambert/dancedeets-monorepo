@@ -53,6 +53,7 @@ import type {
   Signup,
 } from './models';
 import danceStyles from '../styles';
+import FitImage from 'react-native-fit-image';
 
 // Trying to emulate Just Debout
 const categories: Array<CompetitionCategory> = [
@@ -132,7 +133,11 @@ const categories: Array<CompetitionCategory> = [
     ],
   }),
 ];
-
+const battleEvent = {
+  headerLogoUrl: 'http://group.juste-debout.com/wp-content/uploads/2016/06/jdevent-whitebg-1.jpg',
+  categories: categories,
+  appVersionRequired: 0, //for ensuring we have a version of the app for signup logic flows
+};
 
 // Try to make our boxes as wide as we can...
 let boxWidth = normalize(350);
@@ -193,6 +198,7 @@ const RegistrationStatus = connect(
 class _EventSignups extends React.Component {
   constructor(props: any) {
     super(props);
+    (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderRow = this.renderRow.bind(this);
   }
 
@@ -214,6 +220,13 @@ class _EventSignups extends React.Component {
       />);
     }
     return <HorizontalView>{images}</HorizontalView>;
+  }
+
+  renderHeader() {
+    return <FitImage
+      source={{uri: this.props.battleEvent.headerLogoUrl}}
+      style={{flex: 1, width: Dimensions.get('window').width}}
+    />;
   }
 
   renderRow(category: any) {
@@ -246,13 +259,12 @@ class _EventSignups extends React.Component {
 
   render() {
     return <FeedListView
-      items={this.props.categories}
+      items={this.props.battleEvent.categories}
+      renderHeader={this.renderHeader}
       renderRow={this.renderRow}
       contentContainerStyle={{
         alignSelf: 'center',
         justifyContent: 'flex-start',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
         alignItems: 'flex-start',
       }}
       />;
@@ -309,7 +321,7 @@ class _EventSignupsView extends React.Component {
           //trackWithEvent('View Event', event);
           this.props.navigatable.onNavigate({key: 'Category', title: category.displayName(), category: category});
         }}
-        categories={categories}
+        battleEvent={battleEvent}
       />;
     case 'Category':
       return <Category
