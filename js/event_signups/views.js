@@ -150,7 +150,7 @@ const boxMargin = 5;
 
 class CompactTeam extends React.Component {
   render() {
-    return <Text>{this.props.team.teamName}</Text>;
+    return <Text style={[this.props.style, styles.registrationStatusText]}>{this.props.team.teamName}</Text>;
   }
 }
 class _RegistrationStatus extends React.Component {
@@ -158,22 +158,24 @@ class _RegistrationStatus extends React.Component {
     const userId = this.props.user.profile.id;
     const signedUpTeams = this.props.category.signups.filter((signup) => userId in signup.dancers);
     if (signedUpTeams.length) {
-      const teamTexts = signedUpTeams.map((x) => <CompactTeam key={x} team={x} />);
-      return <View>
-        <HorizontalView style={styles.registrationStatus}>
-          <HorizontalView>
-            <Image
-              source={require('./images/green-check.png')}
-              style={styles.registrationStatusIcon}
-              />
-            <Text style={styles.registrationStatusText}>Registered</Text>
-          </HorizontalView>
+      const teamTexts = signedUpTeams.map((x) => {
+        return <HorizontalView style={styles.registrationLine}>
+          <CompactTeam key={x} team={x} style={styles.registrationIndent}/>
           <Button caption="Unregister" />
+        </HorizontalView>;
+      });
+      return <View>
+        <HorizontalView>
+          <Image
+            source={require('./images/green-check.png')}
+            style={styles.registrationStatusIcon}
+            />
+          <Text style={styles.registrationStatusText}>Registered:</Text>
         </HorizontalView>
         {teamTexts}
       </View>;
     } else {
-      return <HorizontalView style={styles.registrationStatus}>
+      return <HorizontalView style={styles.registrationLine}>
         <HorizontalView>
           <Image
             source={require('./images/red-x.png')}
@@ -195,12 +197,8 @@ const RegistrationStatus = connect(
   }),
 )(injectIntl(_RegistrationStatus));
 
-class _EventSignups extends React.Component {
-  constructor(props: any) {
-    super(props);
-    (this: any).renderHeader = this.renderHeader.bind(this);
-    (this: any).renderRow = this.renderRow.bind(this);
-  }
+class CategoryView extends React.Component {
+  _root: ReactElement<any>;
 
   dancerIcons(category: any) {
     const teamSize = Math.max(category.teamSize, 1);
@@ -223,6 +221,40 @@ class _EventSignups extends React.Component {
     return <HorizontalView>{images}</HorizontalView>;
   }
 
+  render() {
+    const dancerIcons = this.dancerIcons(this.props.category);
+    return <View
+      style={{
+        width: boxWidth,
+        backgroundColor: purpleColors[2],
+        padding: 5,
+        borderRadius: 10,
+      }}
+      ref={(x) => {
+        this._root = x;
+      }}
+       >
+      <HorizontalView style={{justifyContent: 'space-between'}}>
+        <View>{dancerIcons}</View>
+        <Animated.View style={{position:'relative',transform:[{skewY: '-180deg'}]}}>{dancerIcons}</Animated.View>
+      </HorizontalView>
+      <Text style={{marginVertical: 10, textAlign: 'center', fontWeight: 'bold', fontSize: semiNormalize(30), lineHeight: semiNormalize(34)}}>{this.props.category.displayName()}</Text>
+      <RegistrationStatus category={this.props.category}/>
+    </View>;
+  }
+
+  setNativeProps(props) {
+    this._root.setNativeProps(props);
+  }
+}
+
+class _EventSignups extends React.Component {
+  constructor(props: any) {
+    super(props);
+    (this: any).renderHeader = this.renderHeader.bind(this);
+    (this: any).renderRow = this.renderRow.bind(this);
+  }
+
   renderHeader() {
     return <FitImage
       source={{uri: this.props.battleEvent.headerLogoUrl}}
@@ -231,7 +263,6 @@ class _EventSignups extends React.Component {
   }
 
   renderRow(category: any) {
-    const dancerIcons = this.dancerIcons(category);
     return <TouchableHighlight
       onPress={() => {
         this.props.onSelected(category);
@@ -241,20 +272,7 @@ class _EventSignups extends React.Component {
         borderRadius: 10,
       }}
       >
-      <View
-        style={{
-          width: boxWidth,
-          backgroundColor: purpleColors[2],
-          padding: 5,
-          borderRadius: 10,
-        }}>
-        <HorizontalView style={{justifyContent: 'space-between'}}>
-          <View>{dancerIcons}</View>
-          <Animated.View style={{position:'relative',transform:[{skewY: '-180deg'}]}}>{dancerIcons}</Animated.View>
-        </HorizontalView>
-        <Text style={{marginVertical: 10, textAlign: 'center', fontWeight: 'bold', fontSize: semiNormalize(30), lineHeight: semiNormalize(34)}}>{category.displayName()}</Text>
-        <RegistrationStatus category={category}/>
-      </View>
+      <CategoryView category={category} />
     </TouchableHighlight>;
   }
 
@@ -302,8 +320,11 @@ class _Category extends React.Component {
   }
 
   render() {
-    return <View>
-      <RegistrationStatus category={this.props.category}/>
+    return <View style={{
+      alignSelf: 'center',
+      marginTop: 10,
+    }}>
+      <CategoryView category={this.props.category}/>
       <Text>{this.props.category.signups.length} competitors:</Text>
       <SignupList signups={this.props.category.signups} />
     </View>;
@@ -333,7 +354,8 @@ class _EventSignupsView extends React.Component {
 }
 export const EventSignupsView = injectIntl(_EventSignupsView);
 
-
+const checkSize = 20;
+const checkMargin = 10;
 let styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -342,14 +364,17 @@ let styles = StyleSheet.create({
     height: 50,
     flex: 1,
   },
-  registrationStatus: {
+  registrationLine: {
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   registrationStatusIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 10,
+    width: checkSize,
+    height: checkSize,
+    marginRight: checkMargin,
+  },
+  registrationIndent: {
+    marginLeft: checkSize + checkMargin,
   },
   registrationStatusText: {
     fontSize: semiNormalize(20),
