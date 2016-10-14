@@ -129,7 +129,7 @@ class _Navigator extends React.Component {
 				style={styles.outerContainer}
 				onBack={this.props.onBack}
 				renderHeader={this._renderHeader}
-				renderScene={this.props.renderScene}
+				renderScene={(props) => this.props.renderScene(props, this.props)}
 				cardStyle={{
 					backgroundColor: purpleColors[4],
 					marginTop: APPBAR_HEIGHT + STATUSBAR_HEIGHT,
@@ -145,7 +145,7 @@ class _Navigator extends React.Component {
 const Navigator = injectIntl(_Navigator);
 
 export default function(navName: string) {
-	return connect(
+	const component = connect(
 		state => ({
 			navigationState: getNamedState(state.navigationState, navName),
 		}),
@@ -159,6 +159,8 @@ export default function(navName: string) {
 			onSwap: (key, newRoute) => dispatch(navigateSwap(navName, key, newRoute)),
 		}),
 	)(Navigator);
+	component.navName = navName;
+	return component;
 }
 
 const styles = StyleSheet.create({

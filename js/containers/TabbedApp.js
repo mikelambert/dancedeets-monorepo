@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import generateNavigator from '../containers/generateNavigator';
+import type { Navigatable } from '../containers/generateNavigator';
 import ProfilePage from '../containers/Profile';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
@@ -134,6 +135,7 @@ class _EventView extends React.Component {
       return <EventListContainer
         onEventSelected={(event) => {
           trackWithEvent('View Event', event);
+          console.log(this.props);
           this.props.navigatable.onNavigate({key: 'EventView', title: event.name, event: event});
         }}
         onAddEventClicked={(source) => {
@@ -177,15 +179,6 @@ class _LearnView extends React.Component {
     const { scene } = this.props.sceneProps;
     const { route } = scene;
     switch (route.key) {
-    case 'BlogList':
-      return <BlogList
-        onSelected={(blog) => {
-          // TODO: Track blog details
-          track('Blog Selected');
-          //this.props.navigatable.onNavigate({key: 'BlogPostList', title: blog.title, blog: blog});
-          this.props.navigatable.onNavigate({key: 'Tutorial', title: blog.title, tutorial: blog});
-        }}
-        />;
     case 'TutorialStyles':
       return <PlaylistStylesView
         onSelected={(style) => {
@@ -209,19 +202,6 @@ class _LearnView extends React.Component {
     case 'Tutorial':
       return <PlaylistView
         playlist={route.tutorial}
-        />;
-    case 'BlogPostList':
-      return <BlogPostList
-        blog={route.blog}
-        onSelected={(post) => {
-          // TODO: Track post details
-          track('Blog Post Selected');
-          this.props.navigatable.onNavigate({key: 'BlogPostItem', title: post.title, post: post});
-        }}
-        />;
-    case 'BlogPostItem':
-      return <BlogPostContents
-        post={route.post}
         />;
     }
   }
@@ -269,7 +249,7 @@ class _TabbedAppView extends React.Component {
         renderSelectedIcon={() => this.icon(require('../containers/icons/events-highlighted.png'))}
         onPress={() => {
           if (this.props.selectedTab === 'event_signups') {
-            this.refs.event_navigator.dispatchProps.goHome();
+            this.event_navigator.dispatchProps.goHome();
           } else {
             track('Tab Selected', {Tab: 'Event Signups'});
             this.props.selectTab('event_signups');
@@ -277,8 +257,8 @@ class _TabbedAppView extends React.Component {
         }}>
         <EventSignupsNavigator
           ref={(x) => {this.event_signups_navigator = x;}}
-          renderScene={(sceneProps: NavigationSceneRendererProps) =>
-            <EventSignupsView sceneProps={sceneProps} navigatable={this.event_signups_navigator && this.event_signups_navigator.dispatchProps} />
+          renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
+            <EventSignupsView sceneProps={sceneProps} navigatable={nav} />
           }
           />
       </TabNavigator.Item>;
@@ -297,7 +277,7 @@ class _TabbedAppView extends React.Component {
         renderSelectedIcon={() => this.icon(require('../containers/icons/events-highlighted.png'))}
         onPress={() => {
           if (this.props.selectedTab === 'events') {
-            this.refs.event_navigator.dispatchProps.goHome();
+            this.event_navigator.dispatchProps.goHome();
           } else {
             track('Tab Selected', {Tab: 'Events'});
             this.props.selectTab('events');
@@ -305,8 +285,8 @@ class _TabbedAppView extends React.Component {
         }}>
         <EventNavigator
           ref={(x) => {this.event_navigator = x;}}
-          renderScene={(sceneProps: NavigationSceneRendererProps) =>
-            <EventView sceneProps={sceneProps} navigatable={this.event_navigator && this.event_navigator.dispatchProps} />
+          renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
+            <EventView sceneProps={sceneProps} navigatable={nav} />
           }
           />
       </TabNavigator.Item>
@@ -319,7 +299,7 @@ class _TabbedAppView extends React.Component {
         renderSelectedIcon={() => this.icon(require('../containers/icons/learn-highlighted.png'))}
         onPress={() => {
           if (this.props.selectedTab === 'learn') {
-            this.refs.learn_navigator.dispatchProps.goHome();
+            this.learn_navigator.dispatchProps.goHome();
           } else {
             track('Tab Selected', {Tab: 'Learn'});
             this.props.selectTab('learn');
@@ -328,8 +308,8 @@ class _TabbedAppView extends React.Component {
         }}>
         <LearnNavigator
           ref={(x) => {this.learn_navigator = x;}}
-          renderScene={(sceneProps: NavigationSceneRendererProps) =>
-            <LearnView sceneProps={sceneProps} navigatable={this.learn_navigator && this.learn_navigator.dispatchProps} />
+          renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
+            <LearnView sceneProps={sceneProps} navigatable={nav} />
           }
           />
       </TabNavigator.Item>
@@ -348,8 +328,8 @@ class _TabbedAppView extends React.Component {
         }}>
         <AboutNavigator
           ref={(x) => {this.about_navigator = x;}}
-          renderScene={(sceneProps: NavigationSceneRendererProps) =>
-            <AboutView sceneProps={sceneProps} navigatable={this.about_navigator && this.about_navigator.dispatchProps} />
+          renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
+            <AboutView sceneProps={sceneProps} navigatable={nav} />
           }
         />
       </TabNavigator.Item>
