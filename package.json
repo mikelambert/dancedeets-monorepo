@@ -14,7 +14,7 @@
     "lodash": "^4.13.1",
     "moment": "^2.13.0",
     "querystring": "^0.2.0",
-    "react": "~15.3.0",
+    "react": "^15.3.2",
     "react-intl": "^2.1.5",
     "react-native": "file:../react-native",
     "react-native-admob": "^1.0.0",
