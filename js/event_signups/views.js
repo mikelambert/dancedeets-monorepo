@@ -70,6 +70,50 @@ const categories: Array<CompetitionCategory> = [
           },
         },
       },
+      {
+        teamName: 'Mary & John',
+        dancers: {
+          '701010': {
+            name: 'Mary'
+          },
+          '701005': {
+            name: 'John'
+          },
+        },
+      },
+      {
+        teamName: 'Waack Dudes',
+        dancers: {
+          '701008': {
+            name: 'Martin Lambert'
+          },
+          '701009': {
+            name: 'Some Literally Waack Dude'
+          },
+        },
+      },
+      {
+        teamName: 'Hipster Hopsters',
+        dancers: {
+          '701007': {
+            name: 'Mark Lambert'
+          },
+          '701005': {
+            name: 'Tommy'
+          },
+        },
+      },
+      {
+        teamName: 'Broken Hips and Stunted Hops',
+        dancers: {
+          '701007': {
+            name: 'Mike Lambert'
+          },
+          '701005': {
+            name: 'Mr. Hip Surgery'
+          },
+        },
+      },
     ],
   }),
   new CompetitionCategory({
@@ -298,9 +342,9 @@ class _SignupList extends React.Component {
   }
 
   renderRow(signup: Signup) {
-    const dancers = Object.keys(signup.dancers).map((x) => <Text key={x}>{signup.dancers[x].name}</Text>);
+    const dancers = Object.keys(signup.dancers).map((x) => <Text key={x} style={{marginLeft: 20}}>{signup.dancers[x].name}</Text>);
     return <Card>
-      <Text>{signup.teamName}</Text>
+      <Text>{signup.teamName}:</Text>
       {dancers}
     </Card>;
   }
@@ -323,6 +367,7 @@ class _Category extends React.Component {
     return <View style={{
       alignSelf: 'center',
       marginTop: 10,
+      flex: 1,
     }}>
       <CategoryView category={this.props.category}/>
       <Text>{this.props.category.signups.length} competitors:</Text>
