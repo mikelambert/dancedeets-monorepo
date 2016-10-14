@@ -7,13 +7,12 @@
 'use strict';
 
 export type Dancer = {
-  uid: String;
   name: String;
 };
 
 export type Signup = {
   teamName: string;
-  dancers: Array<Dancer>;
+  dancers: {[uid: string]: Dancer};
 };
 
 export type SignupRequirements = {

@@ -63,12 +63,11 @@ const categories: Array<CompetitionCategory> = [
     signups: [
       {
         teamName: 'Step Funktion',
-        dancers: [
-          {
-            uid: '701004',
+        dancers: {
+          '701004': {
             name: 'Mike Lambert'
           },
-        ],
+        },
       },
     ],
   }),
@@ -79,12 +78,11 @@ const categories: Array<CompetitionCategory> = [
     signups: [
       {
         teamName: 'Apartment Feet',
-        dancers: [
-          {
-            uid: '701004',
-            name: 'Mike Lambert'
+        dancers: {
+          '701005': {
+            name: 'Someone Else'
           },
-        ],
+        },
       },
     ],
   }),
@@ -95,12 +93,11 @@ const categories: Array<CompetitionCategory> = [
     signups: [
       {
         teamName: 'Stack Poppers',
-        dancers: [
-          {
-            uid: '701004',
+        dancers: {
+          '701004': {
             name: 'Mike Lambert'
           },
-        ],
+        },
       },
     ],
   }),
@@ -110,13 +107,12 @@ const categories: Array<CompetitionCategory> = [
     teamSize: 2,
     signups: [
       {
-        teamName: 'Lock Racing',
-        dancers: [
-          {
-            uid: '701004',
+        teamName: 'Lock Racers',
+        dancers: {
+          '701004': {
             name: 'Mike Lambert'
           },
-        ],
+        },
       },
     ],
   }),
@@ -127,12 +123,11 @@ const categories: Array<CompetitionCategory> = [
     signups: [
       {
         teamName: 'Upper Pebbles',
-        dancers: [
-          {
-            uid: '701004',
+        dancers: {
+          '701004': {
             name: 'Mike Lambert'
           },
-        ],
+        },
       },
     ],
   }),
@@ -148,6 +143,53 @@ if (Dimensions.get('window').width >= 1024) {
 }
 const boxMargin = 5;
 
+class CompactTeam extends React.Component {
+  render() {
+    return <Text>{this.props.team.teamName}</Text>;
+  }
+}
+class _RegistrationStatus extends React.Component {
+  render() {
+    const userId = this.props.user.profile.id;
+    const signedUpTeams = this.props.category.signups.filter((signup) => userId in signup.dancers);
+    if (signedUpTeams.length) {
+      const teamTexts = signedUpTeams.map((x) => <CompactTeam team={x} />);
+      return <View>
+        <HorizontalView style={styles.registrationStatus}>
+          <HorizontalView>
+            <Image
+              source={require('./images/green-check.png')}
+              style={styles.registrationStatusIcon}
+              />
+            <Text style={styles.registrationStatusText}>Registered</Text>
+          </HorizontalView>
+          <Button caption="Unregister" />
+        </HorizontalView>
+        {teamTexts}
+      </View>;
+    } else {
+      return <HorizontalView style={styles.registrationStatus}>
+        <HorizontalView>
+          <Image
+            source={require('./images/red-x.png')}
+            style={styles.registrationStatusIcon}
+            />
+          <Text style={styles.registrationStatusText}>Not Registered</Text>
+        </HorizontalView>
+        <Button caption="Register" />
+      </HorizontalView>;
+
+    }
+  }
+}
+const RegistrationStatus = connect(
+  state => ({
+    user: state.user.userData,
+  }),
+  (dispatch: Dispatch) => ({
+  }),
+)(injectIntl(_RegistrationStatus));
+
 class _EventSignups extends React.Component {
   constructor(props: any) {
     super(props);
@@ -158,8 +200,7 @@ class _EventSignups extends React.Component {
     const teamSize = Math.max(category.teamSize, 1);
 
     const images = [];
-    const margin = 30;
-    const imageWidth = (boxWidth - 30 - margin) / (2 * Math.max(teamSize, 2));
+    const imageWidth = (boxWidth - 20) / (2 * Math.max(teamSize, 2));
     for (let i = 0; i < teamSize; i++) {
       images.push(<ProportionalImage
         resizeDirection="width"
@@ -198,6 +239,7 @@ class _EventSignups extends React.Component {
           <Animated.View style={{position:'relative',transform:[{skewY: '-180deg'}]}}>{dancerIcons}</Animated.View>
         </HorizontalView>
         <Text style={{marginVertical: 10, textAlign: 'center', fontWeight: 'bold', fontSize: semiNormalize(30), lineHeight: semiNormalize(34)}}>{category.displayName()}</Text>
+        <RegistrationStatus category={category}/>
       </View>
     </TouchableHighlight>;
   }
@@ -225,7 +267,7 @@ class _SignupList extends React.Component {
   }
 
   renderRow(signup: Signup) {
-    const dancers = signup.dancers.map((x) => <Text key={x.uid}>{x.name}</Text>);
+    const dancers = Object.keys(signup.dancers).map((x) => <Text key={x}>{signup.dancers[x].name}</Text>);
     return <Card>
       <Text>{signup.teamName}</Text>
       {dancers}
@@ -248,7 +290,7 @@ class _Category extends React.Component {
 
   render() {
     return <View>
-      <Button caption="Sign Up" style={{width: semiNormalize(200), height: semiNormalize(50)}}/>
+      <RegistrationStatus category={this.props.category}/>
       <Text>{this.props.category.signups.length} competitors:</Text>
       <SignupList signups={this.props.category.signups} />
     </View>;
@@ -286,5 +328,18 @@ let styles = StyleSheet.create({
   miniThumbnail: {
     height: 50,
     flex: 1,
+  },
+  registrationStatus: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  registrationStatusIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+  },
+  registrationStatusText: {
+    fontSize: semiNormalize(20),
+    lineHeight: semiNormalize(24),
   },
 });
