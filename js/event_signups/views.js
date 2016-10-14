@@ -158,7 +158,7 @@ class _RegistrationStatus extends React.Component {
     const userId = this.props.user.profile.id;
     const signedUpTeams = this.props.category.signups.filter((signup) => userId in signup.dancers);
     if (signedUpTeams.length) {
-      const teamTexts = signedUpTeams.map((x) => <CompactTeam team={x} />);
+      const teamTexts = signedUpTeams.map((x) => <CompactTeam key={x} team={x} />);
       return <View>
         <HorizontalView style={styles.registrationStatus}>
           <HorizontalView>
@@ -209,6 +209,7 @@ class _EventSignups extends React.Component {
     const imageWidth = (boxWidth - 20) / (2 * Math.max(teamSize, 2));
     for (let i = 0; i < teamSize; i++) {
       images.push(<ProportionalImage
+        key={i}
         resizeDirection="width"
         source={danceStyles[category.styleIcon].thumbnail}
         originalWidth={danceStyles[category.styleIcon].width}
