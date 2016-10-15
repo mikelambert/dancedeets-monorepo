@@ -47,141 +47,17 @@ import {
 } from '../actions';
 import { googleKey } from '../keys';
 import {
-  CompetitionCategory,
+  categoryDisplayName,
 } from './models';
 import type {
   Signup,
+  CompetitionCategory,
 } from './models';
 import danceStyles from '../styles';
 import FitImage from 'react-native-fit-image';
 
 // Trying to emulate Just Debout
-const categories: Array<CompetitionCategory> = [
-  new CompetitionCategory({
-    name: 'Hip-Hop',
-    styleIcon: 'hiphop',
-    teamSize: 2,
-    signups: [
-      {
-        teamName: 'Step Funktion',
-        dancers: {
-          '701004': {
-            name: 'Mike Lambert'
-          },
-        },
-      },
-      {
-        teamName: 'Mary & John',
-        dancers: {
-          '701010': {
-            name: 'Mary'
-          },
-          '701005': {
-            name: 'John'
-          },
-        },
-      },
-      {
-        teamName: 'Waack Dudes',
-        dancers: {
-          '701008': {
-            name: 'Martin Lambert'
-          },
-          '701009': {
-            name: 'Some Literally Waack Dude'
-          },
-        },
-      },
-      {
-        teamName: 'Hipster Hopsters',
-        dancers: {
-          '701007': {
-            name: 'Mark Lambert'
-          },
-          '701005': {
-            name: 'Tommy'
-          },
-        },
-      },
-      {
-        teamName: 'Broken Hips and Stunted Hops',
-        dancers: {
-          '701007': {
-            name: 'Mike Lambert'
-          },
-          '701005': {
-            name: 'Mr. Hip Surgery'
-          },
-        },
-      },
-    ],
-  }),
-  new CompetitionCategory({
-    name: 'House',
-    styleIcon: 'house',
-    teamSize: 2,
-    signups: [
-      {
-        teamName: 'Apartment Feet',
-        dancers: {
-          '701005': {
-            name: 'Someone Else'
-          },
-        },
-      },
-    ],
-  }),
-  new CompetitionCategory({
-    name: 'Popping',
-    styleIcon: 'pop',
-    teamSize: 2,
-    signups: [
-      {
-        teamName: 'Stack Poppers',
-        dancers: {
-          '701004': {
-            name: 'Mike Lambert'
-          },
-        },
-      },
-    ],
-  }),
-  new CompetitionCategory({
-    name: 'Locking',
-    styleIcon: 'lock',
-    teamSize: 2,
-    signups: [
-      {
-        teamName: 'Lock Racers',
-        dancers: {
-          '701004': {
-            name: 'Mike Lambert'
-          },
-        },
-      },
-    ],
-  }),
-  new CompetitionCategory({
-    name: 'Top Rock',
-    styleIcon: 'break',
-    teamSize: 1,
-    signups: [
-      {
-        teamName: 'Upper Pebbles',
-        dancers: {
-          '701004': {
-            name: 'Mike Lambert'
-          },
-        },
-      },
-    ],
-  }),
-];
-const battleEvent = {
-  headerLogoUrl: 'http://group.juste-debout.com/wp-content/uploads/2016/06/jdevent-whitebg-1.jpg',
-  categories: categories,
-  appVersionRequired: 0, //for ensuring we have a version of the app for signup logic flows
-};
+const battleEvent = require('./justeDebout.json');
 
 // Try to make our boxes as wide as we can...
 let boxWidth = normalize(350);
@@ -229,7 +105,6 @@ class _UserRegistrationStatus extends React.Component {
         </HorizontalView>
         <Button caption="Register" />
       </HorizontalView>;
-
     }
   }
 }
@@ -266,6 +141,7 @@ class CategorySummaryView extends React.Component {
   }
 
   render() {
+    const displayName = categoryDisplayName(this.props.category);
     const dancerIcons = this.dancerIcons(this.props.category);
     return <View
       style={{
@@ -282,7 +158,7 @@ class CategorySummaryView extends React.Component {
         <View>{dancerIcons}</View>
         <Animated.View style={{position:'relative',transform:[{skewY: '-180deg'}]}}>{dancerIcons}</Animated.View>
       </HorizontalView>
-      <Text style={{marginVertical: 10, textAlign: 'center', fontWeight: 'bold', fontSize: semiNormalize(30), lineHeight: semiNormalize(34)}}>{this.props.category.displayName()}</Text>
+      <Text style={{marginVertical: 10, textAlign: 'center', fontWeight: 'bold', fontSize: semiNormalize(30), lineHeight: semiNormalize(34)}}>{displayName}</Text>
       <UserRegistrationStatus category={this.props.category}/>
     </View>;
   }
@@ -386,7 +262,8 @@ class _EventSignupsView extends React.Component {
       return <BattleView
         onSelected={(category) => {
           //trackWithEvent('View Event', event);
-          this.props.navigatable.onNavigate({key: 'Category', title: category.displayName(), category: category});
+          const displayName = categoryDisplayName(category);
+          this.props.navigatable.onNavigate({key: 'Category', title: displayName, category: category});
         }}
         battleEvent={battleEvent}
       />;

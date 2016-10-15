@@ -1,0 +1,125 @@
+{
+  "headerLogoUrl": "http://group.juste-debout.com/wp-content/uploads/2016/06/jdevent-whitebg-1.jpg",
+  "appVersionRequired": 0,
+  "categories": [
+    {
+      "name": "Hip-Hop",
+      "styleIcon": "hiphop",
+      "teamSize": 2,
+      "signups": [
+        {
+          "teamName": "Step Funktion",
+          "dancers": {
+            "701004": {
+              "name": "Mike Lambert"
+            }
+          }
+        },
+        {
+          "teamName": "Mary & John",
+          "dancers": {
+            "701010": {
+              "name": "Mary"
+            },
+            "701005": {
+              "name": "John"
+            }
+          }
+        },
+        {
+          "teamName": "Waack Dudes",
+          "dancers": {
+            "701008": {
+              "name": "Martin Lambert"
+            },
+            "701009": {
+              "name": "Some Literally Waack Dude"
+            }
+          }
+        },
+        {
+          "teamName": "Hipster Hopsters",
+          "dancers": {
+            "701007": {
+              "name": "Mark Lambert"
+            },
+            "701005": {
+              "name": "Tommy"
+            }
+          }
+        },
+        {
+          "teamName": "Broken Hips and Stunted Hops",
+          "dancers": {
+            "701007": {
+              "name": "Mike Lambert"
+            },
+            "701005": {
+              "name": "Mr. Hip Surgery"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "House",
+      "styleIcon": "house",
+      "teamSize": 2,
+      "signups": [
+        {
+          "teamName": "Apartment Feet",
+          "dancers": {
+            "701005": {
+              "name": "Someone Else"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Popping",
+      "styleIcon": "pop",
+      "teamSize": 2,
+      "signups": [
+        {
+          "teamName": "Stack Poppers",
+          "dancers": {
+            "701004": {
+              "name": "Mike Lambert"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locking",
+      "styleIcon": "lock",
+      "teamSize": 2,
+      "signups": [
+        {
+          "teamName": "Lock Racers",
+          "dancers": {
+            "701004": {
+              "name": "Mike Lambert"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Top Rock",
+      "styleIcon": "break",
+      "teamSize": 1,
+      "signups": [
+        {
+          "teamName": "Upper Pebbles",
+          "dancers": {
+            "701004": {
+              "name": "Mike Lambert"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

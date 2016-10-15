@@ -21,7 +21,7 @@ export type SignupRequirements = {
   maxTeamSize: number;
 };
 
-export class CompetitionCategory {
+export type CompetitionCategory = {
   // Used for Category display
   name: string;
   styleIcon: string; // used for icons
@@ -30,18 +30,10 @@ export class CompetitionCategory {
   signupRequirements: SignupRequirements;
   maxSignupsAllowed: number;
   signups: Array<Signup>;
+};
 
-  constructor(json: any) {
-    this.name = json.name;
-    this.styleIcon = json.styleIcon;
-    this.teamSize = json.teamSize;
-    this.signupRequirements = json.signupRequirements;
-    this.signups = json.signups;
-  }
-
-  displayName() {
-    const nxn = this.teamSize ? `${this.teamSize}×${this.teamSize}` : '';
-    const displayName = nxn ? `${nxn} ${this.name}` : this.name; //TODO: backup to some variant of 'style'
-    return displayName;
-  }
+export function categoryDisplayName(category: CompetitionCategory) {
+  const nxn = category.teamSize ? `${category.teamSize}×${category.teamSize}` : '';
+  const displayName = nxn ? `${nxn} ${category.name}` : category.name; //TODO: backup to some variant of 'style'
+  return displayName;
 }
