@@ -197,7 +197,7 @@ class CompactTeam extends React.Component {
     return <Text style={[this.props.style, styles.registrationStatusText]}>{this.props.team.teamName}</Text>;
   }
 }
-class _RegistrationStatus extends React.Component {
+class _UserRegistrationStatus extends React.Component {
   render() {
     const userId = this.props.user.profile.id;
     const signedUpTeams = this.props.category.signups.filter((signup) => userId in signup.dancers);
@@ -233,15 +233,15 @@ class _RegistrationStatus extends React.Component {
     }
   }
 }
-const RegistrationStatus = connect(
+const UserRegistrationStatus = connect(
   state => ({
     user: state.user.userData,
   }),
   (dispatch: Dispatch) => ({
   }),
-)(injectIntl(_RegistrationStatus));
+)(injectIntl(_UserRegistrationStatus));
 
-class CategoryView extends React.Component {
+class CategorySummaryView extends React.Component {
   _root: ReactElement<any>;
 
   dancerIcons(category: any) {
@@ -283,7 +283,7 @@ class CategoryView extends React.Component {
         <Animated.View style={{position:'relative',transform:[{skewY: '-180deg'}]}}>{dancerIcons}</Animated.View>
       </HorizontalView>
       <Text style={{marginVertical: 10, textAlign: 'center', fontWeight: 'bold', fontSize: semiNormalize(30), lineHeight: semiNormalize(34)}}>{this.props.category.displayName()}</Text>
-      <RegistrationStatus category={this.props.category}/>
+      <UserRegistrationStatus category={this.props.category}/>
     </View>;
   }
 
@@ -292,7 +292,7 @@ class CategoryView extends React.Component {
   }
 }
 
-class _EventSignups extends React.Component {
+class _BattleView extends React.Component {
   constructor(props: any) {
     super(props);
     (this: any).renderHeader = this.renderHeader.bind(this);
@@ -316,7 +316,7 @@ class _EventSignups extends React.Component {
         borderRadius: 10,
       }}
       >
-      <CategoryView category={category} />
+      <CategorySummaryView category={category} />
     </TouchableHighlight>;
   }
 
@@ -333,9 +333,9 @@ class _EventSignups extends React.Component {
       />;
   }
 }
-const EventSignups = injectIntl(_EventSignups);
+const BattleView = injectIntl(_BattleView);
 
-class _SignupList extends React.Component {
+class _TeamList extends React.Component {
   constructor(props: any) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
@@ -356,7 +356,7 @@ class _SignupList extends React.Component {
       />;
   }
 }
-const SignupList = injectIntl(_SignupList);
+const TeamList = injectIntl(_TeamList);
 
 class _Category extends React.Component {
   constructor(props: any) {
@@ -369,9 +369,9 @@ class _Category extends React.Component {
       marginTop: 10,
       flex: 1,
     }}>
-      <CategoryView category={this.props.category}/>
+      <CategorySummaryView category={this.props.category}/>
       <Text>{this.props.category.signups.length} competitors:</Text>
-      <SignupList signups={this.props.category.signups} />
+      <TeamList signups={this.props.category.signups} />
     </View>;
   }
 }
@@ -383,7 +383,7 @@ class _EventSignupsView extends React.Component {
     const { route } = scene;
     switch (route.key) {
     case 'EventSignups':
-      return <EventSignups
+      return <BattleView
         onSelected={(category) => {
           //trackWithEvent('View Event', event);
           this.props.navigatable.onNavigate({key: 'Category', title: category.displayName(), category: category});
