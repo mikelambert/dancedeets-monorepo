@@ -7,6 +7,9 @@ export default function init() {
     // Live reloading and hot reloading in particular lead to tons of noise...
     return;
   }
-  trackjs.init({token: '77a8a7079d734df7a94150f8f0d7e16f'});
+  trackjs.init({
+    token: '77a8a7079d734df7a94150f8f0d7e16f',
+    application: 'react-native',
+  });
   crashlytics_reporter.init();
 }
