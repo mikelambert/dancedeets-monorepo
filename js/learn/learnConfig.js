@@ -123,7 +123,7 @@ export const defaultTutorials = [
     ],
   },
   {
-    styles: styles.krump,
+    style: styles.krump,
     tutorials: [
       require('./tutorials/krump/krump40.json'),
       require('./tutorials/krump/krumpkings.json'),
