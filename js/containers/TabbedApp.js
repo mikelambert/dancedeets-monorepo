@@ -135,7 +135,6 @@ class _EventView extends React.Component {
       return <EventListContainer
         onEventSelected={(event) => {
           trackWithEvent('View Event', event);
-          console.log(this.props);
           this.props.navigatable.onNavigate({key: 'EventView', title: event.name, event: event});
         }}
         onAddEventClicked={(source) => {
