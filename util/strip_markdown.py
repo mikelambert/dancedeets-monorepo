@@ -21,7 +21,7 @@ def strip(s):
     # Remove images
     s = re.sub(r'\!\[.*?\][\[\(].*?[\]\)]', '', s)
     # Remove inline links
-    s = re.sub(r'\[(.*?)\][\[\(].*?[\]\)]', '\\1', s)
+    s = re.sub(r'\[(.*?)\][\[\(].*?[\]\)]', '\\1', s, flags=re.DOTALL)
     # Remove Blockquotes
     s = re.sub(r'>', '', s)
     # Remove reference-style links?
