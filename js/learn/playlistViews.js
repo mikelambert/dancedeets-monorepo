@@ -12,6 +12,7 @@ import {
   Dimensions,
   Image,
   ListView,
+  Platform,
   StyleSheet,
   TouchableHighlight,
   View,
@@ -396,12 +397,16 @@ class YouTubeNoReload extends React.Component {
   _root: any;
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (Platform.OS === 'ios') {
+      return true;
+    }
     const style = this.props.style;
     const nextStyle = nextProps.style;
     const trimmedProps = {...this.props, style: null, videoId: null};
     const trimmedNextProps = {...nextProps, style: null, videoId: null};
     const diff = !styleEqual(style, nextStyle) || !shallowEqual(trimmedProps, trimmedNextProps) || !shallowEqual(this.state, nextState);
     if (!diff && (this.props.videoId != nextProps.videoId)) {
+      // setNativeProps only exists on Android, be careful!
       this.setNativeProps({
         videoId: nextProps.videoId,
         play: false,
