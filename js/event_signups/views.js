@@ -81,7 +81,7 @@ class _UserRegistrationStatus extends React.Component {
       const teamTexts = signedUpTeams.map((x) => {
         return <HorizontalView style={styles.registrationLine}>
           <CompactTeam key={x} team={x} style={styles.registrationIndent}/>
-          <Button caption="Unregister" />
+          <Button caption="Unregister" onPress={this.props.unregisterUser}/>
         </HorizontalView>;
       });
       return <View>
@@ -103,7 +103,7 @@ class _UserRegistrationStatus extends React.Component {
             />
           <Text style={styles.registrationStatusText}>Not Registered</Text>
         </HorizontalView>
-        <Button caption="Register" />
+        <Button caption="Register" onPress={this.props.registerUser}/>
       </HorizontalView>;
     }
   }
@@ -112,7 +112,9 @@ const UserRegistrationStatus = connect(
   state => ({
     user: state.user.userData,
   }),
-  (dispatch: Dispatch) => ({
+  (dispatch: Dispatch, props) => ({
+    registerUser: () => console.log('register:', props.category),
+    unregisterUser: () => console.log('unregister:', props.category),
   }),
 )(injectIntl(_UserRegistrationStatus));
 
@@ -204,7 +206,7 @@ class _BattleView extends React.Component {
       contentContainerStyle={{
         alignSelf: 'center',
         justifyContent: 'flex-start',
-        alignItems: 'flex-start',
+        alignItems: 'center',
       }}
       />;
   }
