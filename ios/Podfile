@@ -11,6 +11,7 @@ target 'DanceDeets' do
   'Firebase/Database',
   'Firebase/RemoteConfig',
   'Firebase/Messaging',
+  'Firebase/AdMob',
   'Mixpanel',
   'Fabric',
   'Crashlytics'
