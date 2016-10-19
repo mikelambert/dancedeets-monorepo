@@ -802,6 +802,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				CF41303A6A662045F6F154CD /* [CP] Embed Pods Frameworks */,
 				2F73D197BA2817639EC2E70D /* [CP] Copy Pods Resources */,
+				1D64342B1DB7ED6400805722 /* Upload Build to Fabric/Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -1260,6 +1261,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/packager/react-native-xcode.sh";
+		};
+		1D64342B1DB7ED6400805722 /* Upload Build to Fabric/Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Build to Fabric/Crashlytics";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "${PODS_ROOT}/Fabric/run f827a34a7ab66071f1fc473cdfa00f94403b241b 5ca03b8142243c84d2a6de3bd37dfebc06f7b5b986ece6a61d6474b3b7d6602b";
+			shellScript = "";
 		};
 		2F73D197BA2817639EC2E70D /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
