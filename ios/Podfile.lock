@@ -1,77 +1,75 @@
 PODS:
-  - Crashlytics (3.7.3):
+  - Crashlytics (3.8.3):
     - Fabric (~> 1.6.3)
-  - Fabric (1.6.8)
-  - Firebase (3.4.0):
-    - Firebase/Core (= 3.4.0)
-  - Firebase/AdMob (3.4.0):
-    - Firebase/Analytics
-    - Google-Mobile-Ads-SDK (= 7.9.1)
-  - Firebase/Analytics (3.4.0):
-    - FirebaseAnalytics (~> 3.3)
-  - Firebase/Auth (3.4.0):
-    - Firebase/Analytics
-    - FirebaseAuth (= 3.0.4)
-  - Firebase/Core (3.4.0):
-    - Firebase/Analytics
-  - Firebase/Database (3.4.0):
-    - Firebase/Analytics
-    - FirebaseDatabase (= 3.0.2)
-  - Firebase/Messaging (3.4.0):
-    - Firebase/Analytics
-    - FirebaseMessaging (= 1.1.1)
-  - Firebase/RemoteConfig (3.4.0):
-    - Firebase/Analytics
-    - FirebaseRemoteConfig (= 1.2.0)
-  - Firebase/Storage (3.4.0):
-    - Firebase/Analytics
-    - FirebaseStorage (= 1.0.2)
-  - FirebaseAnalytics (3.3.0):
+  - Fabric (1.6.10)
+  - Firebase (3.7.1):
+    - Firebase/Core (= 3.7.1)
+  - Firebase/AdMob (3.7.1):
+    - Firebase/Core
+    - Google-Mobile-Ads-SDK (= 7.12.1)
+  - Firebase/Auth (3.7.1):
+    - Firebase/Core
+    - FirebaseAuth (= 3.0.5)
+  - Firebase/Core (3.7.1):
+    - FirebaseAnalytics (= 3.4.4)
+    - FirebaseCore (= 3.4.3)
+  - Firebase/Database (3.7.1):
+    - Firebase/Core
+    - FirebaseDatabase (= 3.0.3)
+  - Firebase/Messaging (3.7.1):
+    - Firebase/Core
+    - FirebaseMessaging (= 1.2.0)
+  - Firebase/RemoteConfig (3.7.1):
+    - Firebase/Core
+    - FirebaseRemoteConfig (= 1.3.0)
+  - Firebase/Storage (3.7.1):
+    - Firebase/Core
+    - FirebaseStorage (= 1.0.3)
+  - FirebaseAnalytics (3.4.4):
+    - FirebaseCore (~> 3.4)
     - FirebaseInstanceID (~> 1.0)
     - GoogleInterchangeUtilities (~> 1.2)
     - GoogleSymbolUtilities (~> 1.1)
-    - GoogleUtilities (~> 1.2)
-  - FirebaseAuth (3.0.4):
-    - FirebaseAnalytics (~> 3.2)
+  - FirebaseAuth (3.0.5):
+    - FirebaseAnalytics (~> 3.3)
     - GoogleNetworkingUtilities (~> 1.2)
-    - GoogleParsingUtilities (~> 1.1)
     - GoogleUtilities (~> 1.2)
-  - FirebaseDatabase (3.0.2):
-    - FirebaseAnalytics (~> 3.2)
+  - FirebaseCore (3.4.3):
+    - GoogleInterchangeUtilities (~> 1.2)
+    - GoogleUtilities (~> 1.2)
+  - FirebaseDatabase (3.0.3):
+    - FirebaseAnalytics (~> 3.3)
   - FirebaseInstanceID (1.0.8)
-  - FirebaseMessaging (1.1.1):
+  - FirebaseMessaging (1.2.0):
     - FirebaseAnalytics (~> 3.3)
     - FirebaseInstanceID (~> 1.0)
     - GoogleInterchangeUtilities (~> 1.2)
     - GoogleIPhoneUtilities (~> 1.2)
     - GoogleSymbolUtilities (~> 1.1)
-  - FirebaseRemoteConfig (1.2.0):
+  - FirebaseRemoteConfig (1.3.0):
     - FirebaseAnalytics (~> 3.3)
     - FirebaseInstanceID (~> 1.0)
     - GoogleInterchangeUtilities (~> 1.2)
     - GoogleIPhoneUtilities (~> 1.2)
     - GoogleSymbolUtilities (~> 1.1)
     - GoogleUtilities (~> 1.2)
-  - FirebaseStorage (1.0.2):
-    - FirebaseAnalytics (~> 3.2)
+  - FirebaseStorage (1.0.3):
+    - FirebaseAnalytics (~> 3.3)
     - GoogleNetworkingUtilities (~> 1.2)
-  - Google-Mobile-Ads-SDK (7.9.1)
-  - GoogleInterchangeUtilities (1.2.1):
-    - GoogleSymbolUtilities (~> 1.0)
+  - Google-Mobile-Ads-SDK (7.12.1)
+  - GoogleInterchangeUtilities (1.2.2):
+    - GoogleSymbolUtilities (~> 1.1)
   - GoogleIPhoneUtilities (1.2.1):
     - GoogleSymbolUtilities (~> 1.0)
     - GoogleUtilities (~> 1.0)
-  - GoogleNetworkingUtilities (1.2.1):
-    - GoogleSymbolUtilities (~> 1.0)
-  - GoogleParsingUtilities (1.1.1):
-    - GoogleNetworkingUtilities (~> 1.0)
-    - GoogleSymbolUtilities (~> 1.0)
-  - GoogleSymbolUtilities (1.1.1)
-  - GoogleUtilities (1.3.1):
-    - GoogleSymbolUtilities (~> 1.0)
-  - Mixpanel (3.0.2):
-    - Mixpanel/Mixpanel (= 3.0.2)
-  - Mixpanel/Mixpanel (3.0.2)
+  - GoogleNetworkingUtilities (1.2.2):
+    - GoogleSymbolUtilities (~> 1.1)
+  - GoogleSymbolUtilities (1.1.2)
+  - GoogleUtilities (1.3.2):
+    - GoogleSymbolUtilities (~> 1.1)
+  - Mixpanel (3.0.4):
+    - Mixpanel/Mixpanel (= 3.0.4)
+  - Mixpanel/Mixpanel (3.0.4)
 
 DEPENDENCIES:
   - Crashlytics
@@ -87,24 +85,24 @@ DEPENDENCIES:
   - Mixpanel
 
 SPEC CHECKSUMS:
-  Crashlytics: 76f6beaff70acf226139582c09c78461597c2b98
-  Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
-  Firebase: 754562547af419cc2f4b15247fee419081924bc2
-  FirebaseAnalytics: 228be2991cb28efb96cdafc4d62f64680e615c69
-  FirebaseAuth: 26fd291c3b552fc9658420b867520d5ae080421c
-  FirebaseDatabase: 59bea2e7dfd81b3b8b2f8e396caf1a52c2ced6f7
+  Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
+  Fabric: c73f371ee543e3f0b80608f2674750e4910d1669
+  Firebase: be473484f0d515e72ffd04acf22f981773c23e58
+  FirebaseAnalytics: 0533a00b681e08fd0b2cd0444b7ddf0ef9fd7a1a
+  FirebaseAuth: 75a062bbf2d3c97d1e6e55bbc110e13a6853e25d
+  FirebaseCore: 5a885548bbc5f0c410b04f8e9ac9d73ff1221907
+  FirebaseDatabase: 750a4a0fe18ef114318876fd654b2d9c671e0992
   FirebaseInstanceID: ba1e640935235e5fac39dfa816fe7660e72e1a8a
-  FirebaseMessaging: 6bc7cd2ecb875c1a9c0f8b94956398aa3145bbb8
-  FirebaseRemoteConfig: c5378e689c1edb54ff62061b8f6a908263dd80ae
-  FirebaseStorage: fa2a87dee81f682f553af6839daa37a750e65f6a
-  Google-Mobile-Ads-SDK: 575583d7eae25793bb81ad8673737d1b4ecbedc5
-  GoogleInterchangeUtilities: def8415a862effc67d549d5b5b0b9c7a2f97d4de
+  FirebaseMessaging: 789d23fd796594dfb55dcf36cd325541df887c22
+  FirebaseRemoteConfig: 981f45d4278281cfefa8f48a6f5c566f2c95ac5a
+  FirebaseStorage: 3992817bf405f5c1a4f8349678d22724cd0ef509
+  Google-Mobile-Ads-SDK: 542eb24c1ce6c8fd5084ee9572fd9dcd2d06065a
+  GoogleInterchangeUtilities: d5bc4d88d5b661ab72f9d70c58d02ca8c27ad1f7
   GoogleIPhoneUtilities: 63f25e93a3ddcb66884d182aab3a660d98f1479b
-  GoogleNetworkingUtilities: 3e83269048cfb498dc7ec83ab36813360965c74f
-  GoogleParsingUtilities: 30b3896f9ee167dc78747f013d3de157ced1cadf
-  GoogleSymbolUtilities: 33117db1b5f290c6fbf259585e4885b4c84b98d7
-  GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
-  Mixpanel: 0e4f1f9a2ac612b589b2894830038418c2587428
+  GoogleNetworkingUtilities: 3edd3a8161347494f2da60ea0deddc8a472d94cb
+  GoogleSymbolUtilities: 631ee17048aa5e9ab133470d768ea997a5ef9b96
+  GoogleUtilities: 8bbc733218aad26306f9d4a253823986110e3358
+  Mixpanel: 4a2330c26556109d2f42b01e36a05eb9e2caf25e
 
 PODFILE CHECKSUM: a4baf677361d611638000557e9031a0b9f26728c
 
