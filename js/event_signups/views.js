@@ -79,7 +79,7 @@ class _UserRegistrationStatus extends React.Component {
     const signedUpTeams = this.props.category.signups.filter((signup) => userId in signup.dancers);
     if (signedUpTeams.length) {
       const teamTexts = signedUpTeams.map((x) => {
-        return <HorizontalView style={styles.registrationLine}>
+        return <HorizontalView style={styles.registrationLine} key={x}>
           <CompactTeam key={x} team={x} style={styles.registrationIndent}/>
           <Button caption="Unregister" onPress={this.props.unregisterUser}/>
         </HorizontalView>;
