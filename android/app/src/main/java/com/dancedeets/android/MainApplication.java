@@ -12,6 +12,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
+import io.fullstack.firestack.FirestackPackage;
 import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
 import org.jall.reactnative.googleapiavailability.GoogleApiAvailabilityPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
@@ -54,6 +55,7 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new FirestackPackage(getApplicationContext()),
             new ReactNativeYouTube(),
             new GoogleApiAvailabilityPackage(),
             new ReactNativePushNotificationPackage(),

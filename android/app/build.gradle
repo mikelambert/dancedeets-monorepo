@@ -167,6 +167,7 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':react-native-firestack')
     compile project(':react-native-youtube')
     compile project(':react-native-google-api-availability')
     compile project(':react-native-push-notification')
