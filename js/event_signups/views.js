@@ -56,9 +56,6 @@ import type {
 import danceStyles from '../styles';
 import FitImage from 'react-native-fit-image';
 
-// Trying to emulate Just Debout
-const battleEvent = require('./justeDebout.json');
-
 // Try to make our boxes as wide as we can...
 let boxWidth = normalize(350);
 // ...and only start scaling them non-proportionally on the larger screen sizes,
@@ -236,6 +233,8 @@ class _TeamList extends React.Component {
 }
 const TeamList = injectIntl(_TeamList);
 
+import firestack from '../firestack';
+
 class _Category extends React.Component {
   constructor(props: any) {
     super(props);
@@ -256,7 +255,32 @@ class _Category extends React.Component {
 const Category = injectIntl(_Category);
 
 class _EventSignupsView extends React.Component {
+  state: {
+    firebaseData: any;
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {firebaseData: null};
+    (this: any).handleValueChange = this.handleValueChange.bind(this);
+  }
+
+  handleValueChange(snapshot) {
+    if (snapshot.val()) {
+      this.setState({firebaseData: snapshot.val()});
+    }
+  }
+
+  componentWillMount() {
+    const eventPath = 'events/' + 'justeDebout';//this.props.eventId;
+    firestack.database.ref(eventPath).on('value', this.handleValueChange);
+  }
+
   render() {
+    if (!this.state.firebaseData) {
+      return null;
+    }
+
     const { scene } = this.props.sceneProps;
     const { route } = scene;
     switch (route.key) {
@@ -267,7 +291,7 @@ class _EventSignupsView extends React.Component {
           const displayName = categoryDisplayName(category);
           this.props.navigatable.onNavigate({key: 'Category', title: displayName, category: category});
         }}
-        battleEvent={battleEvent}
+        battleEvent={this.state.firebaseData}
       />;
     case 'Category':
       return <Category
