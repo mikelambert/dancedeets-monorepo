@@ -15,6 +15,8 @@ import Mixpanel from 'react-native-mixpanel';
 import ScreenshotSlideshow from '../ScreenshotSlideshow';
 import { intl } from '../intl';
 import ProcessInfo from 'react-native-processinfo';
+// Initialize firestack
+import firestack from '../firestack';
 
 export default function setup(): Class<Object> {
   console.disableYellowBox = true;

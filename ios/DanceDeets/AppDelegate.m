@@ -29,8 +29,6 @@
   RCTSetLogFunction(CrashlyticsReactLogFunction);
   [[FBSDKApplicationDelegate sharedInstance] application:application
                            didFinishLaunchingWithOptions:launchOptions];
-  [FIRApp configure];
-
   NSURL *jsCodeLocation;
 
   /**
