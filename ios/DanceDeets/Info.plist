@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.10</string>
+	<string>2.1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -38,7 +38,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>40</string>
+	<string>42</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>Fabric</key>
@@ -124,11 +124,13 @@
 		</dict>
 	</dict>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>DanceDeets is connecting to Bluetooth</string>
+	<string>DanceDeets would like to use Bluetooth</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>DanceDeets can add dance events to your calendar</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>DanceDeets can find nearby events</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>DanceDeets would like to access photos</string>
 	<key>UIAppFonts</key>
 	<array/>
 	<key>UILaunchStoryboardName</key>
