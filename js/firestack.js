@@ -13,5 +13,6 @@ const configurationOptions = {
 };
 const firestack = new Firestack(configurationOptions);
 firestack.on('debug', msg => console.log('Received debug message', msg));
+firestack.database.setPersistence(true);
 
 export default firestack;
