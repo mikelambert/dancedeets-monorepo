@@ -14,6 +14,8 @@ import { AccessToken } from 'react-native-fbsdk';
 import { Event } from '../events/models';
 import { timeout, retryWithBackoff } from './timeouts';
 import Locale from 'react-native-locale';
+import sort from '../util/sort';
+import moment from 'moment';
 
 const DEV_SERVER = false;
 
@@ -132,6 +134,7 @@ export async function search(location: string, keywords: string, time_period: Ti
     time_period,
   }));
   results.results = results.results.map((x) => new Event(x));
+  results.results = sort(results.results, (resultEvent) => moment(resultEvent.start_time).toISOString());
   return results;
 }
 
