@@ -102,7 +102,7 @@ export default class ZoomableImage extends React.Component {
         source={{uri: this.props.url}}
         />;
     } else {
-      this.renderIOS(zoomScale, horizontal);
+      return this.renderIOS(zoomScale, horizontal);
     }
   }
 
