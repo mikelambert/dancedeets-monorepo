@@ -248,7 +248,7 @@ class _TabbedAppView extends React.Component {
         renderSelectedIcon={() => this.icon(require('../containers/icons/events-highlighted.png'))}
         onPress={() => {
           if (this.props.selectedTab === 'event_signups') {
-            this.event_navigator.dispatchProps.goHome();
+            this.event_signups_navigator.dispatchProps.goHome();
           } else {
             track('Tab Selected', {Tab: 'Event Signups'});
             this.props.selectTab('event_signups');
