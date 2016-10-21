@@ -8,18 +8,15 @@
 
 import React from 'react';
 import {
-  AlertIOS,
   Animated,
   Dimensions,
   Image,
-  ListView,
   StyleSheet,
   TouchableHighlight,
   View,
 } from 'react-native';
 import _ from 'lodash/string';
 import { track } from '../store/track';
-import YouTube from 'react-native-youtube';
 import { FeedListView } from '../learn/BlogList';
 import {
   Button,
@@ -27,13 +24,10 @@ import {
   Text,
 } from '../ui';
 import { purpleColors } from '../Colors';
-import shallowEqual from 'fbjs/lib/shallowEqual';
-import styleEqual from 'style-equal';
 import {
   injectIntl,
   defineMessages,
 } from 'react-intl';
-import languages from '../languages';
 import {
   Card,
   semiNormalize,
@@ -43,18 +37,14 @@ import {
 import { connect } from 'react-redux';
 import type { Dispatch } from '../actions/types';
 import {
-  setTutorialVideoIndex,
-} from '../actions';
-import { googleKey } from '../keys';
-import {
   categoryDisplayName,
 } from './models';
 import type {
   Signup,
-  CompetitionCategory,
 } from './models';
 import danceStyles from '../styles';
 import FitImage from 'react-native-fit-image';
+import firestack from '../firestack';
 
 // Try to make our boxes as wide as we can...
 let boxWidth = normalize(350);
@@ -258,8 +248,6 @@ class _TeamList extends React.Component {
   }
 }
 const TeamList = injectIntl(_TeamList);
-
-import firestack from '../firestack';
 
 class _Category extends React.Component {
   constructor(props: any) {
