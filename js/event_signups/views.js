@@ -253,6 +253,7 @@ class _TeamList extends React.Component {
     return <FeedListView
       items={this.props.signups}
       renderRow={this.renderRow}
+      renderHeader={this.props.renderHeader}
       />;
   }
 }
@@ -266,15 +267,16 @@ class _Category extends React.Component {
   }
 
   render() {
-    return <View style={{
-      alignSelf: 'center',
-      marginTop: 10,
-      flex: 1,
-    }}>
-      <CategorySummaryView category={this.props.category}/>
-      <Text>{this.props.category.signups.length} competitors:</Text>
-      <TeamList signups={this.props.category.signups} />
-    </View>;
+    return <TeamList signups={this.props.category.signups}
+      renderHeader={() => <View style={{
+          alignSelf: 'center',
+          marginTop: 10,
+        }}>
+          <CategorySummaryView category={this.props.category}/>
+          <Text>{this.props.category.signups.length} competitors:</Text>
+        </View>
+      }
+    />;
   }
 }
 const Category = injectIntl(_Category);
