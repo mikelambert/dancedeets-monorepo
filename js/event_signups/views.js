@@ -168,15 +168,37 @@ class CategorySummaryView extends React.Component {
 }
 
 class _BattleView extends React.Component {
+  state: {
+    battleEvent: any;
+  };
+
   constructor(props: any) {
     super(props);
+    this.state = {battleEvent: null};
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderRow = this.renderRow.bind(this);
+    (this: any).handleValueChange = this.handleValueChange.bind(this);
+  }
+
+  handleValueChange(snapshot) {
+    if (snapshot.val()) {
+      this.setState({battleEvent: snapshot.val()});
+    }
+  }
+
+  componentWillMount() {
+    const eventPath = 'events/' + 'justeDebout';//this.props.eventId;
+    firestack.database.ref(eventPath).on('value', this.handleValueChange);
+  }
+
+  componentWillUnmount() {
+    const eventPath = 'events/' + 'justeDebout';//this.props.eventId;
+    firestack.database.ref(eventPath).off('value', this.handleValueChange);
   }
 
   renderHeader() {
     return <FitImage
-      source={{uri: this.props.battleEvent.headerLogoUrl}}
+      source={{uri: this.state.battleEvent.headerLogoUrl}}
       style={{flex: 1, width: Dimensions.get('window').width}}
     />;
   }
@@ -196,8 +218,11 @@ class _BattleView extends React.Component {
   }
 
   render() {
+    if (!this.state.battleEvent) {
+      return null;
+    }
     return <FeedListView
-      items={this.props.battleEvent.categories}
+      items={this.state.battleEvent.categories}
       renderHeader={this.renderHeader}
       renderRow={this.renderRow}
       contentContainerStyle={{
@@ -255,32 +280,7 @@ class _Category extends React.Component {
 const Category = injectIntl(_Category);
 
 class _EventSignupsView extends React.Component {
-  state: {
-    firebaseData: any;
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {firebaseData: null};
-    (this: any).handleValueChange = this.handleValueChange.bind(this);
-  }
-
-  handleValueChange(snapshot) {
-    if (snapshot.val()) {
-      this.setState({firebaseData: snapshot.val()});
-    }
-  }
-
-  componentWillMount() {
-    const eventPath = 'events/' + 'justeDebout';//this.props.eventId;
-    firestack.database.ref(eventPath).on('value', this.handleValueChange);
-  }
-
   render() {
-    if (!this.state.firebaseData) {
-      return null;
-    }
-
     const { scene } = this.props.sceneProps;
     const { route } = scene;
     switch (route.key) {
@@ -291,7 +291,6 @@ class _EventSignupsView extends React.Component {
           const displayName = categoryDisplayName(category);
           this.props.navigatable.onNavigate({key: 'Category', title: displayName, category: category});
         }}
-        battleEvent={this.state.firebaseData}
       />;
     case 'Category':
       return <Category
