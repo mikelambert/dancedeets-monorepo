@@ -104,7 +104,7 @@ export const defaultTutorials = [
     ],
   },
   {
-    style: styles.other,
+    style: styles.house,
     tutorials: [
       require('./tutorials/house/newschool_dictionary.json'),
       require('./tutorials/house/jardy.json'),
