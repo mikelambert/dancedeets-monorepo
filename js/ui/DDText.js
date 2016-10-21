@@ -10,6 +10,7 @@ import React from 'react';
 import {
   Platform,
   Text as RealText,
+  TextInput as RealTextInput,
   StyleSheet,
 } from 'react-native';
 import {default as RealAutolink} from 'react-native-autolink';
@@ -31,6 +32,14 @@ export function Paragraph({style, ...props}: Object): ReactElement<RealText> {
 
 export function Autolink({style, ...props}: Object): ReactElement<RealAutolink> {
   return <RealAutolink style={[styles.font, style]} {...props} />;
+}
+
+export function TextInput({style, ...props}: Object): ReactElement<TextInput> {
+  return <RealTextInput {...props}
+    style={[styles.font, style]}
+    placeholderTextColor="rgba(255, 255, 255, 0.5)"
+    keyboardAppearance="dark"
+    />;
 }
 
 export const defaultFont = {

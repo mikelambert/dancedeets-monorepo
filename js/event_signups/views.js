@@ -33,6 +33,7 @@ import {
   semiNormalize,
   normalize,
   ProportionalImage,
+  TextInput,
 } from '../ui';
 import { connect } from 'react-redux';
 import type { Dispatch } from '../actions/types';
@@ -65,10 +66,10 @@ class _UserRegistrationStatus extends React.Component {
     const userId = this.props.user.profile.id;
     const signedUpTeams = this.props.category.signups.filter((signup) => userId in signup.dancers);
     if (signedUpTeams.length) {
-      const teamTexts = signedUpTeams.map((x) => {
-        return <HorizontalView style={styles.registrationLine} key={x}>
-          <CompactTeam key={x} team={x} style={styles.registrationIndent}/>
-          <Button caption="Unregister" onPress={this.props.unregisterUser}/>
+      const teamTexts = signedUpTeams.map((team) => {
+        return <HorizontalView style={styles.registrationLine} key={team}>
+          <CompactTeam team={team} style={styles.registrationIndent}/>
+          <Button caption="Unregister" onPress={() => this.props.onUnregister(this.props.category, team)}/>
         </HorizontalView>;
       });
       return <View>
@@ -90,7 +91,7 @@ class _UserRegistrationStatus extends React.Component {
             />
           <Text style={styles.registrationStatusText}>Not Registered</Text>
         </HorizontalView>
-        <Button caption="Register" onPress={this.props.registerUser}/>
+        <Button caption="Register" onPress={() => this.props.onRegister(this.props.category)}/>
       </HorizontalView>;
     }
   }
@@ -100,8 +101,6 @@ const UserRegistrationStatus = connect(
     user: state.user.userData,
   }),
   (dispatch: Dispatch, props) => ({
-    registerUser: () => console.log('register:', props.category),
-    unregisterUser: () => console.log('unregister:', props.category),
   }),
 )(injectIntl(_UserRegistrationStatus));
 
@@ -148,7 +147,11 @@ class CategorySummaryView extends React.Component {
         <Animated.View style={{position:'relative',transform:[{skewY: '-180deg'}]}}>{dancerIcons}</Animated.View>
       </HorizontalView>
       <Text style={{marginVertical: 10, textAlign: 'center', fontWeight: 'bold', fontSize: semiNormalize(30), lineHeight: semiNormalize(34)}}>{displayName}</Text>
-      <UserRegistrationStatus category={this.props.category}/>
+      <UserRegistrationStatus
+        category={this.props.category}
+        onRegister={this.props.onRegister}
+        onUnregister={this.props.onUnregister}
+        />
     </View>;
   }
 
@@ -203,7 +206,11 @@ class _BattleView extends React.Component {
         borderRadius: 10,
       }}
       >
-      <CategorySummaryView category={category} />
+      <CategorySummaryView
+        category={category}
+        onRegister={this.props.onRegister}
+        onUnregister={this.props.onUnregister}
+        />
     </TouchableHighlight>;
   }
 
@@ -256,11 +263,16 @@ class _Category extends React.Component {
 
   render() {
     return <TeamList signups={this.props.category.signups}
-      renderHeader={() => <View style={{
+      renderHeader={() => <View
+        style={{
           alignSelf: 'center',
           marginTop: 10,
         }}>
-          <CategorySummaryView category={this.props.category}/>
+          <CategorySummaryView
+            category={this.props.category}
+            onRegister={this.props.onRegister}
+            onUnregister={this.props.onUnregister}
+          />
           <Text>{this.props.category.signups.length} competitors:</Text>
         </View>
       }
@@ -269,7 +281,36 @@ class _Category extends React.Component {
 }
 const Category = injectIntl(_Category);
 
+class RegistrationPage extends React.Component {
+  render() {
+    return <View>
+      <HorizontalView>
+        <Text>Team Name:</Text>
+        <TextInput style={{flex: 1, height: 40, backgroundColor: 'blue'}} />
+      </HorizontalView>
+      <Text>Team Members:</Text>
+      <TextInput style={{height: 40, backgroundColor: 'red'}}/>
+      <TextInput />
+    </View>;
+  }
+}
+
 class _EventSignupsView extends React.Component {
+  constructor(props) {
+    super(props);
+    (this: any).onRegister = this.onRegister.bind(this);
+    (this: any).onUnregister = this.onUnregister.bind(this);
+  }
+
+  onRegister(category) {
+    const displayName = categoryDisplayName(category);
+    this.props.navigatable.onNavigate({key: 'Register', title: `${displayName} Registration`, category: category});
+  }
+
+  onUnregister(category, team) {
+    console.log('Unregister team ', team);
+  }
+
   render() {
     const { scene } = this.props.sceneProps;
     const { route } = scene;
@@ -281,10 +322,18 @@ class _EventSignupsView extends React.Component {
           const displayName = categoryDisplayName(category);
           this.props.navigatable.onNavigate({key: 'Category', title: displayName, category: category});
         }}
+        onRegister={this.onRegister}
+        onUnregister={this.onUnregister}
       />;
+    case 'Register':
+      return <RegistrationPage
+        category={route.category}
+        />;
     case 'Category':
       return <Category
         category={route.category}
+        onRegister={this.onRegister}
+        onUnregister={this.onUnregister}
         />;
     }
   }
