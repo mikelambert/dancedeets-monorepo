@@ -296,25 +296,50 @@ class _RegistrationPage extends React.Component {
     return 'Computed Team';
   }
 
+  teamDefaults() {
+    const requirements = this.props.category.signupRequirements;
+    const validators = {};
+    new Array(requirements.maxTeamSize).fill(null).forEach((x, index) => {
+      validators['dancer' + (index + 1)] = '';
+    });
+  }
+
+  teamWidgets() {
+    const requirements = this.props.category.signupRequirements;
+    return new Array(requirements.maxTeamSize).fill(null).map((x, index) =>
+      <GiftedForm.TextInputWidget
+        key={index}
+        name={'dancer' + (index + 1)}
+        title={'Dancer ' + (index + 1)}
+
+        placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        keyboardAppearance="dark"
+
+        placeholder=""
+        clearButtonMode="while-editing"
+        />
+    );
+  }
+
+  teamValidators() {
+    const requirements = this.props.category.signupRequirements;
+    const validators = {};
+    new Array(requirements.maxTeamSize).fill(null).forEach((x, index) => {
+      validators['dancer' + (index + 1)] = {
+        title: 'Dancer ' + (index + 1),
+        validate: [{
+          validator: 'isLength',
+          arguments: [3, 30],
+          message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+        }]
+      };
+    });
+  }
+
   render() {
     const requirements = this.props.category.signupRequirements;
 
-    let teamMembers = null;
-    if (requirements.minTeamSize) {
-      teamMembers = new Array(requirements.maxTeamSize).fill(null).map((x, index) =>
-        <GiftedForm.TextInputWidget
-          key={index}
-          name={'dancer' + index}
-          title={'Dancer ' + index}
-
-          placeholderTextColor="rgba(255, 255, 255, 0.5)"
-          keyboardAppearance="dark"
-
-          placeholder=""
-          clearButtonMode="while-editing"
-          />
-      );
-    }
+    const teamMembers = requirements.minTeamSize ? this.teamWidgets() : null;
 
     let teamName = null;
     if (requirements.needsTeamName) {
@@ -338,14 +363,7 @@ class _RegistrationPage extends React.Component {
 
       defaults={{
         teamName: this.computeDefaultTeamName(),
-        dancer0: '',
-        dancer1: '',
-        /*
-        'gender{M}': true,
-        password: 'abcdefg',
-        country: 'FR',
-        birthday: new Date(((new Date()).getFullYear() - 18)+''),
-        */
+        ...this.teamDefaults(),
       }}
 
       validators={{
@@ -357,14 +375,7 @@ class _RegistrationPage extends React.Component {
             message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
           }]
         },
-        dancer1: {
-          title: 'Dancer 1',
-          validate: [{
-            validator: 'isLength',
-            arguments: [3, 30],
-            message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-          }]
-        },
+        ...this.teamValidators(),
       }}
     >
 
@@ -381,7 +392,6 @@ class _RegistrationPage extends React.Component {
         onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
           if (isValid === true) {
             // prepare object
-            values.gender = values.gender[0];
 
             /* Implement the request to your server using values variable
             ** then you can do:
