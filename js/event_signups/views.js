@@ -336,6 +336,12 @@ class _RegistrationPage extends React.Component {
     });
   }
 
+  fakeNavigator() {
+    return {
+      pop: () => this.props.navigatePop(),
+    };
+  }
+
   render() {
     const requirements = this.props.category.signupRequirements;
 
@@ -356,6 +362,7 @@ class _RegistrationPage extends React.Component {
     }
 
     return <MyGiftedForm
+      navigator={this.fakeNavigator()}
       scrollEnabled={false}
       formName="signupForm" // GiftedForm instances that use the same name will also share the same states
 
@@ -388,7 +395,7 @@ class _RegistrationPage extends React.Component {
       <GiftedForm.SeparatorWidget />
 
       <MyGiftedSubmitWidget
-        title='Sign up'
+        title="Register"
         onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
           if (isValid === true) {
             // prepare object
@@ -402,6 +409,7 @@ class _RegistrationPage extends React.Component {
             */
             // Do we want this?
             //this.props.onRegisterSubmit();
+            modalNavigator.pop();
           }
         }}
 
@@ -415,6 +423,7 @@ const RegistrationPage = connect(
   }),
   (dispatch: Dispatch, props) => ({
     navigatePush: (route) => dispatch(navigatePush('EVENT_SIGNUPS_NAV', route)),
+    navigatePop: (route) => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
   }),
 )(injectIntl(_RegistrationPage));
 
