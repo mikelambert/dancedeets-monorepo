@@ -23,17 +23,21 @@ import {
   HorizontalView,
   Text,
 } from '../ui';
-import { purpleColors } from '../Colors';
+import {
+  purpleColors,
+  yellowColors,
+} from '../Colors';
 import {
   injectIntl,
   defineMessages,
 } from 'react-intl';
 import {
   Card,
-  semiNormalize,
+  defaultFont,
   normalize,
   ProportionalImage,
   TextInput,
+  semiNormalize,
 } from '../ui';
 import { connect } from 'react-redux';
 import type { Dispatch } from '../actions/types';
@@ -46,6 +50,7 @@ import type {
 import danceStyles from '../styles';
 import FitImage from 'react-native-fit-image';
 import firestack from '../firestack';
+import { GiftedForm, GiftedFormManager } from 'react-native-gifted-form';
 
 // Try to make our boxes as wide as we can...
 let boxWidth = normalize(350);
@@ -283,14 +288,168 @@ const Category = injectIntl(_Category);
 
 class RegistrationPage extends React.Component {
   render() {
-    return <View>
-      <HorizontalView>
+    const requirements = this.props.category.signupRequirements;
+
+    let teamMembers = null;
+    if (requirements.minTeamSize) {
+      const individuals = new Array(requirements.maxTeamSize).fill(null).map((x, index) =>
+        <TextInput
+          key={index}
+          style={styles.textInput}
+          placeholder="Mike Lambert"
+          />
+      );
+      teamMembers = <Card>
+        <Text>Team Members:</Text>
+        {individuals}
+      </Card>;
+    }
+
+    let teamName = null;
+    if (requirements.needsTeamName) {
+      teamName = <Card>
         <Text>Team Name:</Text>
-        <TextInput style={{flex: 1, height: 40, backgroundColor: 'blue'}} />
-      </HorizontalView>
-      <Text>Team Members:</Text>
-      <TextInput style={{height: 40, backgroundColor: 'red'}}/>
-      <TextInput />
+        <TextInput
+          style={styles.textInput}
+          placeholder="A and B"
+          />
+      </Card>;
+    }
+
+    return <View>
+      {teamMembers}
+      {teamName}
+      <Card>
+      <GiftedForm
+      scrollEnabled={false}
+        formName='signupForm' // GiftedForm instances that use the same name will also share the same states
+
+        openModal={(route) => {
+          navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
+        }}
+
+        clearOnClose={false} // delete the values of the form when unmounted
+
+        formStyles={{
+          containerView: {backgroundColor: 'transparent'},
+          TextInputWidget: {
+            rowContainer: Object.assign({}, defaultFont, {
+              backgroundColor: 'transparent',
+              borderColor: purpleColors[0],
+            }),
+            textInputTitleInline: defaultFont,
+            textInputTitle: defaultFont,
+            textInput: Object.assign({}, defaultFont, {backgroundColor: purpleColors[1]}),
+            textInputInline: Object.assign({}, defaultFont, {}),
+          },
+          SubmitWidget: {
+            submitButton: {
+              backgroundColor: purpleColors[3],
+            },
+          },
+        }}
+
+        defaults={{
+          /*
+          username: 'Farid',
+          'gender{M}': true,
+          password: 'abcdefg',
+          country: 'FR',
+          birthday: new Date(((new Date()).getFullYear() - 18)+''),
+          */
+        }}
+
+        validators={{
+          fullName: {
+            title: 'Full name',
+            validate: [{
+              validator: 'isLength',
+              arguments: [1, 23],
+              message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+            }]
+          },
+          username: {
+            title: 'Username',
+            validate: [{
+              validator: 'isLength',
+              arguments: [3, 16],
+              message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+            },{
+              validator: 'matches',
+              arguments: /^[a-zA-Z0-9]*$/,
+              message: '{TITLE} can contains only alphanumeric characters'
+            }]
+          },
+        }}
+      >
+
+        <GiftedForm.TextInputWidget
+          name='fullName' // mandatory
+          title='Full name'
+
+          placeholderTextColor="rgba(255, 255, 255, 0.5)"
+          keyboardAppearance="dark"
+
+          placeholder='Marco Polo'
+          clearButtonMode='while-editing'
+        />
+
+
+        <GiftedForm.TextInputWidget
+          name='username'
+          title='Username'
+
+          placeholderTextColor="rgba(255, 255, 255, 0.5)"
+
+          placeholder='MarcoPolo'
+          clearButtonMode='while-editing'
+
+          onTextInputFocus={(currentText = '') => {
+            if (!currentText) {
+              let fullName = GiftedFormManager.getValue('signupForm', 'fullName');
+              if (fullName) {
+                return fullName.replace(/[^a-zA-Z0-9-_]/g, '');
+              }
+            }
+            return currentText;
+          }}
+        />
+
+        <GiftedForm.SeparatorWidget />
+
+        <GiftedForm.SubmitWidget
+          title='Sign up'
+          onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
+            if (isValid === true) {
+              // prepare object
+              values.gender = values.gender[0];
+
+              /* Implement the request to your server using values variable
+              ** then you can do:
+              ** postSubmit(); // disable the loader
+              ** postSubmit(['An error occurred, please try again']); // disable the loader and display an error message
+              ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
+              ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
+              */
+            }
+          }}
+
+        />
+
+        <GiftedForm.NoticeWidget
+          title='By signing up, you agree to the Terms of Service and Privacy Policity.'
+        />
+
+        <GiftedForm.HiddenWidget name='tos' value={true} />
+
+      </GiftedForm>
+      </Card>
+
+      <Button
+        caption="Register"
+        style={{margin: 10}}
+        onPress={this.props.onRegisterSubmit}
+        />
     </View>;
   }
 }
@@ -365,5 +524,10 @@ let styles = StyleSheet.create({
   registrationStatusText: {
     fontSize: semiNormalize(20),
     lineHeight: semiNormalize(24),
+  },
+  textInput: {
+    height: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    marginTop: 5,
   },
 });
