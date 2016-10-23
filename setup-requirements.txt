@@ -28,6 +28,7 @@ jinja2
 htmlmin
 
 requests
+urllib3
 requests-toolbelt
 
 # WebApps
@@ -46,4 +47,4 @@ GoogleAppEnginePipeline
 google-api-python-client
 gdata
 
-python-firebase
+python-firebase-gae
