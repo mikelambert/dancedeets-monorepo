@@ -663,7 +663,7 @@ BATTLE = Name('BATTLE', Any(
     u'대전', # korean battle
     u'배틀', # korean battle
     'crew battle[sz]?', 'exhibition battle[sz]?',
-    'battles?',
+    'battle[ts]?',
     'battlu(?:je)?', # french czech
     'batalhas?', # portuguese battles
     u'competiç\w+', # portuguese competitions
