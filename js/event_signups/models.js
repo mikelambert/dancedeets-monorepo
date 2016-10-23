@@ -24,10 +24,15 @@ export type SignupRequirements = {
 export type CompetitionCategory = {
   // Used for Category display
   name: string;
-  styleIcon: string; // used for icons
-  teamSize: number; // 0 means team size is irrelevant
+  // Dance Style named, used for icon lookup
+  styleIcon: string;
+  // 0 means team size is irrelevant.
+  // Non-0 means 1v1 or 2v2
+  teamSize: number;
 
+  // The signup requirements, used locally and remotely, to check signups
   signupRequirements: SignupRequirements;
+  // At what point do we cut off new signups
   maxSignupsAllowed: number;
   signups: Array<Signup>;
 };
