@@ -290,9 +290,35 @@ class _Category extends React.Component {
 }
 const Category = injectIntl(_Category);
 
+
+class GradientSubmitWidget extends GiftedForm.SubmitWidget {
+
+  render() {
+    return (
+      <View>
+        <Button
+          ref='submitButton'
+          textStyle={this.getStyle('textSubmitButton')}
+          disabledStyle={this.getStyle('disabledSubmitButton')}
+
+          isLoading={this.state.isLoading}
+          isDisabled={this.props.isDisabled}
+          activityIndicatorColor={this.props.activityIndicatorColor}
+
+          {...this.props}
+
+          onPress={() => this._doSubmit()}
+          caption={this.props.title}
+        >
+        </Button>
+      </View>
+    );
+  }
+}
+
 class _RegistrationPage extends React.Component {
   computeDefaultTeamName() {
-
+    return 'Computed Team';
   }
 
   render() {
@@ -300,37 +326,39 @@ class _RegistrationPage extends React.Component {
 
     let teamMembers = null;
     if (requirements.minTeamSize) {
-      const individuals = new Array(requirements.maxTeamSize).fill(null).map((x, index) =>
-        <TextInput
+      teamMembers = new Array(requirements.maxTeamSize).fill(null).map((x, index) =>
+        <GiftedForm.TextInputWidget
           key={index}
-          style={styles.textInput}
-          placeholder="Mike Lambert"
+          name={'dancer' + index}
+          title={'Dancer ' + index}
+
+          placeholderTextColor="rgba(255, 255, 255, 0.5)"
+          keyboardAppearance="dark"
+
+          placeholder=""
+          clearButtonMode="while-editing"
           />
       );
-      teamMembers = <Card>
-        <Text>Team Members:</Text>
-        {individuals}
-      </Card>;
     }
 
     let teamName = null;
     if (requirements.needsTeamName) {
-      teamName = <Card>
-        <Text>Team Name:</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="A and B"
-          />
-      </Card>;
+      teamName = <GiftedForm.TextInputWidget
+        name="teamName" // mandatory
+        title="Team Name"
+
+        placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        keyboardAppearance="dark"
+
+        placeholder={this.computeDefaultTeamName()}
+        clearButtonMode="while-editing"
+      />;
     }
 
-    return <View>
-      {teamMembers}
-      {teamName}
-      <Card>
+    return <Card>
       <GiftedForm
-      scrollEnabled={false}
-        formName='signupForm' // GiftedForm instances that use the same name will also share the same states
+        scrollEnabled={false}
+        formName="signupForm" // GiftedForm instances that use the same name will also share the same states
 
         openModal={(route) => this.props.navigatePush(route)}
 
@@ -346,7 +374,7 @@ class _RegistrationPage extends React.Component {
             textInputTitleInline: defaultFont,
             textInputTitle: defaultFont,
             textInput: Object.assign({}, defaultFont, {backgroundColor: purpleColors[1]}),
-            textInputInline: Object.assign({}, defaultFont, {}),
+            textInputInline: Object.assign({}, defaultFont, {backgroundColor: purpleColors[1]}),
           },
           SubmitWidget: {
             submitButton: {
@@ -356,8 +384,10 @@ class _RegistrationPage extends React.Component {
         }}
 
         defaults={{
+          teamName: this.computeDefaultTeamName(),
+          dancer0: '',
+          dancer1: '',
           /*
-          username: 'Farid',
           'gender{M}': true,
           password: 'abcdefg',
           country: 'FR',
@@ -366,63 +396,34 @@ class _RegistrationPage extends React.Component {
         }}
 
         validators={{
-          fullName: {
-            title: 'Full name',
+          teamName: {
+            title: 'Team Name',
             validate: [{
               validator: 'isLength',
-              arguments: [1, 23],
+              arguments: [3, 30],
               message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
             }]
           },
-          username: {
-            title: 'Username',
+          dancer1: {
+            title: 'Dancer 1',
             validate: [{
               validator: 'isLength',
-              arguments: [3, 16],
+              arguments: [3, 30],
               message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-            },{
-              validator: 'matches',
-              arguments: /^[a-zA-Z0-9]*$/,
-              message: '{TITLE} can contains only alphanumeric characters'
             }]
           },
         }}
       >
-        <GiftedForm.TextInputWidget
-          name="teamName" // mandatory
-          title="Team Name"
 
-          placeholderTextColor="rgba(255, 255, 255, 0.5)"
-          keyboardAppearance="dark"
-
-          placeholder={this.computeDefaultTeamName()}
-          clearButtonMode="while-editing"
-        />
-
-
-        <GiftedForm.TextInputWidget
-          name='username'
-          title='Username'
-
-          placeholderTextColor="rgba(255, 255, 255, 0.5)"
-
-          placeholder='MarcoPolo'
-          clearButtonMode='while-editing'
-
-          onTextInputFocus={(currentText = '') => {
-            if (!currentText) {
-              let fullName = GiftedFormManager.getValue('signupForm', 'fullName');
-              if (fullName) {
-                return fullName.replace(/[^a-zA-Z0-9-_]/g, '');
-              }
-            }
-            return currentText;
-          }}
-        />
+        {teamMembers}
 
         <GiftedForm.SeparatorWidget />
 
-        <GiftedForm.SubmitWidget
+        {teamName}
+
+        <GiftedForm.SeparatorWidget />
+
+        <GradientSubmitWidget
           title='Sign up'
           onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
             if (isValid === true) {
@@ -436,26 +437,15 @@ class _RegistrationPage extends React.Component {
               ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
               ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
               */
+              // Do we want this?
+              //this.props.onRegisterSubmit();
             }
           }}
 
         />
 
-        <GiftedForm.NoticeWidget
-          title='By signing up, you agree to the Terms of Service and Privacy Policity.'
-        />
-
-        <GiftedForm.HiddenWidget name='tos' value={true} />
-
       </GiftedForm>
-      </Card>
-
-      <Button
-        caption="Register"
-        style={{margin: 10}}
-        onPress={this.props.onRegisterSubmit}
-        />
-    </View>;
+    </Card>;
   }
 }
 const RegistrationPage = connect(
