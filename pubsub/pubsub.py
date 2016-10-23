@@ -51,7 +51,8 @@ def eventually_publish_event(event_id, token_nickname=None):
         if _should_post_event(token, db_event):
             logging.info("Adding task for posting!")
             # Names are limited to r"^[a-zA-Z0-9_-]{1,500}$"
-            name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id.replace(':', '-'), int(time.time()))
+            time_add = int(time.time()) if token.allow_reposting else 0
+            name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id.replace(':', '-'), time_add)
             logging.info("Adding task with name %s", name)
             q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
 
@@ -438,6 +439,8 @@ class OAuthToken(ndb.Model):
     valid_token = ndb.BooleanProperty()
     oauth_token = ndb.StringProperty()
     oauth_token_secret = ndb.StringProperty()
+    # Can we post the same thing multiple times (developer mode)
+    allow_reposting = ndb.BooleanProperty()
 
     time_between_posts = ndb.IntegerProperty() # In seconds!
     next_post_time = ndb.DateTimeProperty()
@@ -543,7 +546,7 @@ class LookupUserAccounts(fb_api.LookupType):
 
 def get_dancedeets_fbl():
     page_id = '110312662362915'
-    #page_id = '1375421172766829'
+    #page_id = '1375421172766829' # DD-Manager-Test
     tokens = OAuthToken.query(OAuthToken.user_id == '701004', OAuthToken.token_nickname == page_id, OAuthToken.application == APP_FACEBOOK).fetch(1)
     if tokens:
         return fb_api.FBLookup(None, tokens[0].oauth_token)
