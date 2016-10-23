@@ -32,6 +32,10 @@ import {
   defineMessages,
 } from 'react-intl';
 import {
+  navigatePop,
+  navigatePush,
+} from '../actions';
+import {
   Card,
   defaultFont,
   normalize,
@@ -286,7 +290,11 @@ class _Category extends React.Component {
 }
 const Category = injectIntl(_Category);
 
-class RegistrationPage extends React.Component {
+class _RegistrationPage extends React.Component {
+  computeDefaultTeamName() {
+
+  }
+
   render() {
     const requirements = this.props.category.signupRequirements;
 
@@ -324,9 +332,7 @@ class RegistrationPage extends React.Component {
       scrollEnabled={false}
         formName='signupForm' // GiftedForm instances that use the same name will also share the same states
 
-        openModal={(route) => {
-          navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
-        }}
+        openModal={(route) => this.props.navigatePush(route)}
 
         clearOnClose={false} // delete the values of the form when unmounted
 
@@ -382,16 +388,15 @@ class RegistrationPage extends React.Component {
           },
         }}
       >
-
         <GiftedForm.TextInputWidget
-          name='fullName' // mandatory
-          title='Full name'
+          name="teamName" // mandatory
+          title="Team Name"
 
           placeholderTextColor="rgba(255, 255, 255, 0.5)"
           keyboardAppearance="dark"
 
-          placeholder='Marco Polo'
-          clearButtonMode='while-editing'
+          placeholder={this.computeDefaultTeamName()}
+          clearButtonMode="while-editing"
         />
 
 
@@ -453,6 +458,14 @@ class RegistrationPage extends React.Component {
     </View>;
   }
 }
+const RegistrationPage = connect(
+  state => ({
+    user: state.user.userData,
+  }),
+  (dispatch: Dispatch, props) => ({
+    navigatePush: (route) => dispatch(navigatePush('EVENT_SIGNUPS_NAV', route)),
+  }),
+)(injectIntl(_RegistrationPage));
 
 class _EventSignupsView extends React.Component {
   constructor(props) {
@@ -470,9 +483,19 @@ class _EventSignupsView extends React.Component {
     console.log('Unregister team ', team);
   }
 
+  fakeNavigator() {
+    return {
+      pop: () => this.props.navigatePop(),
+    };
+  }
+
   render() {
     const { scene } = this.props.sceneProps;
     const { route } = scene;
+    // Handle Gifted Form navigation
+    if (route.renderScene) {
+      return route.renderScene(this.fakeNavigator());
+    }
     switch (route.key) {
     case 'EventSignups':
       return <BattleView
@@ -497,7 +520,13 @@ class _EventSignupsView extends React.Component {
     }
   }
 }
-export const EventSignupsView = injectIntl(_EventSignupsView);
+export const EventSignupsView = connect(
+  state => ({
+  }),
+  (dispatch: Dispatch, props) => ({
+    navigatePop: (route) => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
+  }),
+)(injectIntl(_EventSignupsView));
 
 const checkSize = 20;
 const checkMargin = 10;
