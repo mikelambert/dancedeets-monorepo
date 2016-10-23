@@ -20,6 +20,8 @@ import { track } from '../store/track';
 import { FeedListView } from '../learn/BlogList';
 import {
   Button,
+  MyGiftedForm,
+  MyGiftedSubmitWidget,
   HorizontalView,
   Text,
 } from '../ui';
@@ -37,10 +39,8 @@ import {
 } from '../actions';
 import {
   Card,
-  defaultFont,
   normalize,
   ProportionalImage,
-  TextInput,
   semiNormalize,
 } from '../ui';
 import { connect } from 'react-redux';
@@ -54,7 +54,7 @@ import type {
 import danceStyles from '../styles';
 import FitImage from 'react-native-fit-image';
 import firestack from '../firestack';
-import { GiftedForm, GiftedFormManager } from 'react-native-gifted-form';
+import { GiftedForm } from 'react-native-gifted-form';
 
 // Try to make our boxes as wide as we can...
 let boxWidth = normalize(350);
@@ -291,31 +291,6 @@ class _Category extends React.Component {
 const Category = injectIntl(_Category);
 
 
-class GradientSubmitWidget extends GiftedForm.SubmitWidget {
-
-  render() {
-    return (
-      <View>
-        <Button
-          ref='submitButton'
-          textStyle={this.getStyle('textSubmitButton')}
-          disabledStyle={this.getStyle('disabledSubmitButton')}
-
-          isLoading={this.state.isLoading}
-          isDisabled={this.props.isDisabled}
-          activityIndicatorColor={this.props.activityIndicatorColor}
-
-          {...this.props}
-
-          onPress={() => this._doSubmit()}
-          caption={this.props.title}
-        >
-        </Button>
-      </View>
-    );
-  }
-}
-
 class _RegistrationPage extends React.Component {
   computeDefaultTeamName() {
     return 'Computed Team';
@@ -355,97 +330,73 @@ class _RegistrationPage extends React.Component {
       />;
     }
 
-    return <Card>
-      <GiftedForm
-        scrollEnabled={false}
-        formName="signupForm" // GiftedForm instances that use the same name will also share the same states
+    return <MyGiftedForm
+      scrollEnabled={false}
+      formName="signupForm" // GiftedForm instances that use the same name will also share the same states
 
-        openModal={(route) => this.props.navigatePush(route)}
+      openModal={(route) => this.props.navigatePush(route)}
 
-        clearOnClose={false} // delete the values of the form when unmounted
+      defaults={{
+        teamName: this.computeDefaultTeamName(),
+        dancer0: '',
+        dancer1: '',
+        /*
+        'gender{M}': true,
+        password: 'abcdefg',
+        country: 'FR',
+        birthday: new Date(((new Date()).getFullYear() - 18)+''),
+        */
+      }}
 
-        formStyles={{
-          containerView: {backgroundColor: 'transparent'},
-          TextInputWidget: {
-            rowContainer: Object.assign({}, defaultFont, {
-              backgroundColor: 'transparent',
-              borderColor: purpleColors[0],
-            }),
-            textInputTitleInline: defaultFont,
-            textInputTitle: defaultFont,
-            textInput: Object.assign({}, defaultFont, {backgroundColor: purpleColors[1]}),
-            textInputInline: Object.assign({}, defaultFont, {backgroundColor: purpleColors[1]}),
-          },
-          SubmitWidget: {
-            submitButton: {
-              backgroundColor: purpleColors[3],
-            },
-          },
+      validators={{
+        teamName: {
+          title: 'Team Name',
+          validate: [{
+            validator: 'isLength',
+            arguments: [3, 30],
+            message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+          }]
+        },
+        dancer1: {
+          title: 'Dancer 1',
+          validate: [{
+            validator: 'isLength',
+            arguments: [3, 30],
+            message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+          }]
+        },
+      }}
+    >
+
+      {teamMembers}
+
+      <GiftedForm.SeparatorWidget />
+
+      {teamName}
+
+      <GiftedForm.SeparatorWidget />
+
+      <MyGiftedSubmitWidget
+        title='Sign up'
+        onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
+          if (isValid === true) {
+            // prepare object
+            values.gender = values.gender[0];
+
+            /* Implement the request to your server using values variable
+            ** then you can do:
+            ** postSubmit(); // disable the loader
+            ** postSubmit(['An error occurred, please try again']); // disable the loader and display an error message
+            ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
+            ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
+            */
+            // Do we want this?
+            //this.props.onRegisterSubmit();
+          }
         }}
 
-        defaults={{
-          teamName: this.computeDefaultTeamName(),
-          dancer0: '',
-          dancer1: '',
-          /*
-          'gender{M}': true,
-          password: 'abcdefg',
-          country: 'FR',
-          birthday: new Date(((new Date()).getFullYear() - 18)+''),
-          */
-        }}
-
-        validators={{
-          teamName: {
-            title: 'Team Name',
-            validate: [{
-              validator: 'isLength',
-              arguments: [3, 30],
-              message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-            }]
-          },
-          dancer1: {
-            title: 'Dancer 1',
-            validate: [{
-              validator: 'isLength',
-              arguments: [3, 30],
-              message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-            }]
-          },
-        }}
-      >
-
-        {teamMembers}
-
-        <GiftedForm.SeparatorWidget />
-
-        {teamName}
-
-        <GiftedForm.SeparatorWidget />
-
-        <GradientSubmitWidget
-          title='Sign up'
-          onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
-            if (isValid === true) {
-              // prepare object
-              values.gender = values.gender[0];
-
-              /* Implement the request to your server using values variable
-              ** then you can do:
-              ** postSubmit(); // disable the loader
-              ** postSubmit(['An error occurred, please try again']); // disable the loader and display an error message
-              ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
-              ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
-              */
-              // Do we want this?
-              //this.props.onRegisterSubmit();
-            }
-          }}
-
-        />
-
-      </GiftedForm>
-    </Card>;
+      />
+    </MyGiftedForm>;
   }
 }
 const RegistrationPage = connect(

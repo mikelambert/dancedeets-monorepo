@@ -14,6 +14,7 @@ import ProportionalImage from './ProportionalImage';
 import SegmentedControl from './SegmentedControl';
 import ZoomableImage from './ZoomableImage';
 import * as DDText from './DDText';
+import * as GiftedForm from './GiftedForm';
 import * as Misc from './Misc';
 import * as FBButtons from './FBButtons';
 import * as normalize from './normalize';
@@ -26,8 +27,9 @@ module.exports = {
   ProportionalImage,
   SegmentedControl,
   ZoomableImage,
-  ...FBButtons,
-  ...Misc,
   ...DDText,
+  ...FBButtons,
+  ...GiftedForm,
+  ...Misc,
   ...normalize,
 };
