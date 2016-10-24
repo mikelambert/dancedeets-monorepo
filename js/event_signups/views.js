@@ -57,7 +57,7 @@ import {
 } from '../api/dancedeets';
 import danceStyles from '../styles';
 import FitImage from 'react-native-fit-image';
-import firestack from '../firestack';
+import { TrackFirebase } from '../firestack';
 import { GiftedForm } from 'react-native-gifted-form';
 
 // Try to make our boxes as wide as we can...
@@ -181,37 +181,15 @@ class CategorySummaryView extends React.Component {
 }
 
 class _BattleView extends React.Component {
-  state: {
-    battleEvent: any;
-  };
-
   constructor(props: any) {
     super(props);
-    this.state = {battleEvent: null};
     (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderRow = this.renderRow.bind(this);
-    (this: any).handleValueChange = this.handleValueChange.bind(this);
-  }
-
-  handleValueChange(snapshot) {
-    if (snapshot.val()) {
-      this.setState({battleEvent: snapshot.val()});
-    }
-  }
-
-  componentWillMount() {
-    const eventPath = 'events/' + 'justeDebout';//this.props.eventId;
-    firestack.database.ref(eventPath).on('value', this.handleValueChange);
-  }
-
-  componentWillUnmount() {
-    const eventPath = 'events/' + 'justeDebout';//this.props.eventId;
-    firestack.database.ref(eventPath).off('value', this.handleValueChange);
   }
 
   renderHeader() {
     return <FitImage
-      source={{uri: this.state.battleEvent.headerLogoUrl}}
+      source={{uri: this.props.battleEvent.headerLogoUrl}}
       style={{flex: 1, width: Dimensions.get('window').width}}
     />;
   }
@@ -235,22 +213,32 @@ class _BattleView extends React.Component {
   }
 
   render() {
-    if (!this.state.battleEvent) {
-      return null;
+    let view = null;
+    if (this.props.battleEvent) {
+      view = <FeedListView
+        items={this.props.battleEvent.categories}
+        renderHeader={this.renderHeader}
+        renderRow={this.renderRow}
+        contentContainerStyle={{
+          alignSelf: 'center',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+        }}
+        />;
     }
-    return <FeedListView
-      items={this.state.battleEvent.categories}
-      renderHeader={this.renderHeader}
-      renderRow={this.renderRow}
-      contentContainerStyle={{
-        alignSelf: 'center',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-      }}
-      />;
+    return <TrackFirebase
+      path="events/justeDebout"
+      storageKey="eventSignup"
+      >{view}</TrackFirebase>;
   }
 }
-const BattleView = injectIntl(_BattleView);
+const BattleView = connect(
+  state => ({
+    battleEvent: state.firebase.eventSignup,
+  }),
+  (dispatch: Dispatch, props) => ({
+  }),
+)(injectIntl(_BattleView));
 
 class _TeamList extends React.Component {
   constructor(props: any) {

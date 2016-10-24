@@ -68,6 +68,7 @@ export type Action =
   | { type: 'TRANSLATE_EVENT_TOGGLE', eventId: string }
   | { type: 'TRANSLATE_EVENT_DONE', eventId: string, translations: Object }
   | { type: 'TUTORIAL_SET_VIDEO_INDEX', index: number }
+  | { type: 'FIREBASE_UPDATE', key: string, value: any }
   ;
 
 export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;
