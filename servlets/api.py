@@ -640,12 +640,13 @@ class RegisterHandler(ApiHandler):
 
         team_name = team.get('team_name')
 
-        dancer_names = []
+        dancers = {}
         dancer_index = 1
         while team.get('dancer_name_%s' % dancer_index):
-            dancer_names.append(team.get('dancer_name_%s' % dancer_index))
+            dancer_name = team.get('dancer_name_%s' % dancer_index)
+            dancer_id = team.get('dancer_id_%s' % dancer_index) or dancer_name
+            dancers[dancer_id] = {'name': dancer_name}
             dancer_index += 1
-        dancers = dict((x, {'name': x}) for x in dancer_names)
 
         event = db.get('/events', event_id)
         category_index = [index for (index, elem) in enumerate(event['categories']) if elem['id'] == category_id][0]
