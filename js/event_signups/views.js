@@ -470,10 +470,10 @@ class _EventSignupsView extends React.Component {
     switch (route.key) {
     case 'EventSignups':
       return <BattleView
-        onSelected={(category) => {
+        onSelected={(selectedCategory) => {
           //trackWithEvent('View Event', event);
-          const displayName = categoryDisplayName(category);
-          this.props.navigatable.onNavigate({key: 'Category', title: displayName, categoryId: category.id});
+          const displayName = categoryDisplayName(selectedCategory);
+          this.props.navigatable.onNavigate({key: 'Category', title: displayName, categoryId: selectedCategory.id});
         }}
         onRegister={this.onRegister}
         onUnregister={this.onUnregister}
