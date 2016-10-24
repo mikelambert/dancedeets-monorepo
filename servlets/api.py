@@ -634,23 +634,27 @@ class RegisterHandler(ApiHandler):
     def post(self):
         event_id = self.json_body.get('event_id')
         category_id = self.json_body.get('category_id')
-        team_name = self.json_body.get('teamName')
-        logging.info(self.json_body)
+        team = self.json_body.get('team')
+
+        team_name = team.get('team_name')
+
+        dancer_names = []
+        dancer_index = 1
+        while team.get('dancer_name_%s' % dancer_index):
+            dancer_names.append(team.get('dancer_name_%s' % dancer_index))
+            dancer_index += 1
+        dancers = dict((x, {'name': x}) for x in dancer_names)
 
         event = db.get('/events', event_id)
         category_index = [index for (index, elem) in enumerate(event['categories']) if elem['id'] == category_id][0]
 
         signup_id = '%s_%s' % (int(time.time()), random.randint(10000, 99999))
         signup = {
-            "team_name": team_name,
+            'teamName': team_name,
+            'dancers': dancers,
         }
-        logging.info('/events/%s/categories/%s/signups/%s' % (event_id, category_index, signup_id))
-        logging.info('%s, %s', signup_id, signup)
-        logging.info(db.get('/events/%s/categories/%s/signups' % (event_id, category_index), None))
-        result = db.put('/events/%s/categories/%s/signups/' % (event_id, category_index), signup_id, signup)
-        logging.info(result)
-        json_data = {}
-        self.write_json_success(json_data)
+        db.put('/events/%s/categories/%s/signups/' % (event_id, category_index), signup_id, signup)
+        self.write_json_success()
 
 @apiroute(r'/event_signups/unregister')
 class UnregisterHandler(ApiHandler):
