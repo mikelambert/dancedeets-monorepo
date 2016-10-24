@@ -349,7 +349,7 @@ class _RegistrationPage extends React.Component {
   render() {
     const requirements = this.props.category.signupRequirements;
 
-    const teamMembers = requirements.minTeamSize ? this.teamWidgets() : null;
+    const teamMembers = requirements.minTeamSize ? this.teamWidgets().slice(1) : null;
 
     let teamName = null;
     if (requirements.needsTeamName) {
@@ -393,6 +393,18 @@ class _RegistrationPage extends React.Component {
       onValueChange={null}
     >
 
+      <GiftedForm.HiddenWidget name="dancer_id_1" value={this.props.user.profile.id} />
+
+      <GiftedForm.TextInputWidget
+        name="dancer_name_1" // mandatory
+        title="Dancer 1"
+
+        placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        keyboardAppearance="dark"
+
+        value={this.props.user.profile.name}
+        clearButtonMode="while-editing"
+      />
       {teamMembers}
 
       <GiftedForm.SeparatorWidget />
