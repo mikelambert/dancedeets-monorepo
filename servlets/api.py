@@ -631,6 +631,8 @@ db = firebase.FirebaseApplication('https://dancedeets-hrd.firebaseio.com', auth)
 
 @apiroute(r'/event_signups/register')
 class RegisterHandler(ApiHandler):
+    supports_auth = True
+
     def post(self):
         event_id = self.json_body.get('event_id')
         category_id = self.json_body.get('category_id')
@@ -658,6 +660,8 @@ class RegisterHandler(ApiHandler):
 
 @apiroute(r'/event_signups/unregister')
 class UnregisterHandler(ApiHandler):
+    supports_auth = True
+
     def post(self):
         event_id = self.json_body.get('event_id')
         category_id = self.json_body.get('category_id')
@@ -665,5 +669,12 @@ class UnregisterHandler(ApiHandler):
 
         event = db.get('/events', event_id)
         category_index = [index for (index, elem) in enumerate(event['categories']) if elem['id'] == category_id][0]
-        db.delete('/events/%s/categories/%s/signups/%s' % (event_id, category_index, signup_id))
-        self.write_json_success(json_data)
+        logging.info('%s, %s', category_index, signup_id)
+        logging.info('%s', event['categories'][category_index])
+        signup = event['categories'][category_index]['signups'][signup_id]
+        authenticated = self.fb_uid in signup['dancers']
+        if authenticated:
+            db.delete('/events/%s/categories/%s/signups' % (event_id, category_index), signup_id)
+            self.write_json_success()
+        else:
+            self.write_json_error('not authorized to delete signup')
