@@ -70,10 +70,17 @@ class CompactTeam extends React.Component {
     return <Text style={[this.props.style, styles.registrationStatusText]}>{this.props.team.teamName}</Text>;
   }
 }
+
+function getCategorySignups(category: Category): Array<Signup> {
+  const result: Array<any> = Object.entries(category.signups).sort().map((x) => x[1]);
+  return result;
+}
+
 class _UserRegistrationStatus extends React.Component {
   render() {
     const userId = this.props.user.profile.id;
-    const signedUpTeams = this.props.category.signups.filter((signup) => userId in signup.dancers);
+    const signups = getCategorySignups(this.props.category);
+    const signedUpTeams = signups.filter((signup) => userId in signup.dancers);
     if (signedUpTeams.length) {
       const teamTexts = signedUpTeams.map((team) => {
         return <HorizontalView style={styles.registrationLine} key={team}>
@@ -271,7 +278,8 @@ class _Category extends React.Component {
   }
 
   render() {
-    return <TeamList signups={this.props.category.signups}
+    const signups = getCategorySignups(this.props.category.signups);
+    return <TeamList signups={signups}
       renderHeader={() => <View
         style={{
           alignSelf: 'center',
@@ -282,7 +290,7 @@ class _Category extends React.Component {
             onRegister={this.props.onRegister}
             onUnregister={this.props.onUnregister}
           />
-          <Text>{this.props.category.signups.length} competitors:</Text>
+          <Text>{signups.length} competitors:</Text>
         </View>
       }
     />;
@@ -409,7 +417,9 @@ class _RegistrationPage extends React.Component {
             */
             // Do we want this?
             //this.props.onRegisterSubmit();
-            modalNavigator.pop();
+            if (modalNavigator) {
+              modalNavigator.pop();
+            }
           }
         }}
 

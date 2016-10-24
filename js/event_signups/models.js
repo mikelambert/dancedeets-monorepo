@@ -34,7 +34,7 @@ export type CompetitionCategory = {
   signupRequirements: SignupRequirements;
   // At what point do we cut off new signups
   maxSignupsAllowed: number;
-  signups: Array<Signup>;
+  signups: {[key: string]: Signup};
 };
 
 export function categoryDisplayName(category: CompetitionCategory) {
