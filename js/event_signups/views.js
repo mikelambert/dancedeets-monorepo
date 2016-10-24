@@ -76,7 +76,7 @@ class CompactTeam extends React.Component {
 }
 
 function getCategorySignups(category: Category): Array<Signup> {
-  const result: Array<any> = Object.entries(category.signups).sort().map((x) => x[1]);
+  const result: Array<any> = Object.entries(category.signups || {}).sort().map((x) => x[1]);
   return result;
 }
 
@@ -84,7 +84,7 @@ class _UserRegistrationStatus extends React.Component {
   render() {
     const userId = this.props.user.profile.id;
     const signups = getCategorySignups(this.props.category);
-    const signedUpTeams = signups.filter((signup) => userId in signup.dancers);
+    const signedUpTeams = signups.filter((signup) => userId in (signup.dancers || {}));
     if (signedUpTeams.length) {
       const teamTexts = signedUpTeams.map((team) => {
         return <HorizontalView style={styles.registrationLine} key={team}>
@@ -247,7 +247,7 @@ class _TeamList extends React.Component {
   }
 
   renderRow(signup: Signup) {
-    const dancers = Object.keys(signup.dancers).map((x) => <Text key={x} style={{marginLeft: 20}}>{signup.dancers[x].name}</Text>);
+    const dancers = Object.keys(signup.dancers || {}).map((x) => <Text key={x} style={{marginLeft: 20}}>{signup.dancers[x].name}</Text>);
     return <Card>
       <Text>{signup.teamName}:</Text>
       {dancers}
@@ -447,8 +447,9 @@ class _EventSignupsView extends React.Component {
     this.props.navigatable.onNavigate({key: 'Register', title: `${displayName} Registration`, categoryId: category.id});
   }
 
-  onUnregister(category, team) {
-    console.log('Unregister team ', team);
+  async onUnregister(category, teamToDelete) {
+    const [teamKey, ] = Object.entries(category.signups || {}).filter(([key, team]) => team === teamToDelete)[0];
+    await eventUnregister('justeDebout', category.id, teamKey);
   }
 
   fakeNavigator() {

@@ -12,7 +12,7 @@ export type Dancer = {
 
 export type Signup = {
   teamName: string;
-  dancers: {[uid: string]: Dancer};
+  dancers: ?{[uid: string]: Dancer};
 };
 
 export type SignupRequirements = {
@@ -36,7 +36,7 @@ export type CompetitionCategory = {
   signupRequirements: SignupRequirements;
   // At what point do we cut off new signups
   maxSignupsAllowed: number;
-  signups: {[key: string]: Signup};
+  signups: ?{[key: string]: Signup};
 };
 
 export function categoryDisplayName(category: CompetitionCategory) {
