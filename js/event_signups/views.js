@@ -228,13 +228,13 @@ class _BattleView extends React.Component {
     }
     return <TrackFirebase
       path="events/justeDebout"
-      storageKey="eventSignup"
+      storageKey="battleEvent"
       >{view}</TrackFirebase>;
   }
 }
 const BattleView = connect(
   state => ({
-    battleEvent: state.firebase.eventSignup,
+    battleEvent: state.firebase.battleEvent,
   }),
   (dispatch: Dispatch, props) => ({
   }),
@@ -289,7 +289,6 @@ class _Category extends React.Component {
   }
 }
 const Category = injectIntl(_Category);
-
 
 class _RegistrationPage extends React.Component {
   computeDefaultTeamName() {
@@ -445,7 +444,7 @@ class _EventSignupsView extends React.Component {
 
   onRegister(category) {
     const displayName = categoryDisplayName(category);
-    this.props.navigatable.onNavigate({key: 'Register', title: `${displayName} Registration`, category: category});
+    this.props.navigatable.onNavigate({key: 'Register', title: `${displayName} Registration`, categoryId: category.id});
   }
 
   onUnregister(category, team) {
@@ -465,32 +464,38 @@ class _EventSignupsView extends React.Component {
     if (route.renderScene) {
       return route.renderScene(this.fakeNavigator());
     }
+
+    let category = null;
+
     switch (route.key) {
     case 'EventSignups':
       return <BattleView
         onSelected={(category) => {
           //trackWithEvent('View Event', event);
           const displayName = categoryDisplayName(category);
-          this.props.navigatable.onNavigate({key: 'Category', title: displayName, category: category});
+          this.props.navigatable.onNavigate({key: 'Category', title: displayName, categoryId: category.id});
         }}
         onRegister={this.onRegister}
         onUnregister={this.onUnregister}
       />;
-    case 'Register':
-      return <RegistrationPage
-        category={route.category}
-        />;
     case 'Category':
+      category = this.props.battleEvent.categories.find((x) => x.id === route.categoryId);
       return <Category
-        category={route.category}
+        category={category}
         onRegister={this.onRegister}
         onUnregister={this.onUnregister}
+        />;
+    case 'Register':
+      category = this.props.battleEvent.categories.find((x) => x.id === route.categoryId);
+      return <RegistrationPage
+        category={category}
         />;
     }
   }
 }
 export const EventSignupsView = connect(
   state => ({
+    battleEvent: state.firebase.battleEvent,
   }),
   (dispatch: Dispatch, props) => ({
     navigatePop: (route) => dispatch(navigatePop('EVENT_SIGNUPS_NAV')),
