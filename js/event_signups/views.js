@@ -312,7 +312,7 @@ class _RegistrationPage extends React.Component {
     const requirements = this.props.category.signupRequirements;
     const validators = {};
     new Array(requirements.maxTeamSize).fill(null).forEach((x, index) => {
-      validators['dancer' + (index + 1)] = '';
+      validators['dancer_name_' + (index + 1)] = '';
     });
   }
 
@@ -321,7 +321,7 @@ class _RegistrationPage extends React.Component {
     return new Array(requirements.maxTeamSize).fill(null).map((x, index) =>
       <GiftedForm.TextInputWidget
         key={index}
-        name={'dancer' + (index + 1)}
+        name={'dancer_name_' + (index + 1)}
         title={'Dancer ' + (index + 1)}
 
         placeholderTextColor="rgba(255, 255, 255, 0.5)"
@@ -337,7 +337,7 @@ class _RegistrationPage extends React.Component {
     const requirements = this.props.category.signupRequirements;
     const validators = {};
     new Array(requirements.maxTeamSize).fill(null).forEach((x, index) => {
-      validators['dancer' + (index + 1)] = {
+      validators['dancer_name_' + (index + 1)] = {
         title: 'Dancer ' + (index + 1),
         validate: [{
           validator: 'isLength',
@@ -362,7 +362,7 @@ class _RegistrationPage extends React.Component {
     let teamName = null;
     if (requirements.needsTeamName) {
       teamName = <GiftedForm.TextInputWidget
-        name="teamName" // mandatory
+        name="team_name" // mandatory
         title="Team Name"
 
         placeholderTextColor="rgba(255, 255, 255, 0.5)"
@@ -381,12 +381,12 @@ class _RegistrationPage extends React.Component {
       openModal={(route) => this.props.navigatePush(route)}
 
       defaults={{
-        teamName: this.computeDefaultTeamName(),
+        team_name: this.computeDefaultTeamName(),
         ...this.teamDefaults(),
       }}
 
       validators={{
-        teamName: {
+        team_name: {
           title: 'Team Name',
           validate: [{
             validator: 'isLength',
@@ -422,7 +422,7 @@ class _RegistrationPage extends React.Component {
             ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
             ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
             */
-            const result = await eventRegister('justeDebout', this.props.category.id, values);
+            const result = await eventRegister('justeDebout', this.props.category.id, {team: values});
             if (postSubmit) {
               postSubmit();
             }
