@@ -295,17 +295,22 @@ class _RegistrationPage extends React.Component {
     return 'Computed Team';
   }
 
-  teamDefaults() {
+  teamIndices() {
     const requirements = this.props.category.signupRequirements;
-    const validators = {};
-    new Array(requirements.maxTeamSize).fill(null).forEach((x, index) => {
-      validators['dancer_name_' + (index + 1)] = '';
+    const zero_to_n = Array.from(Array(requirements.maxTeamSize).keys());
+    return zero_to_n;
+  }
+
+  teamDefaults() {
+    const defaults = {};
+    this.teamIndices().forEach((index) => {
+      defaults['dancer_name_' + (index + 1)] = '';
     });
+    return defaults;
   }
 
   teamWidgets() {
-    const requirements = this.props.category.signupRequirements;
-    return new Array(requirements.maxTeamSize).fill(null).map((x, index) =>
+    return this.teamIndices().map((index) =>
       <GiftedForm.TextInputWidget
         key={index}
         name={'dancer_name_' + (index + 1)}
@@ -321,9 +326,8 @@ class _RegistrationPage extends React.Component {
   }
 
   teamValidators() {
-    const requirements = this.props.category.signupRequirements;
     const validators = {};
-    new Array(requirements.maxTeamSize).fill(null).forEach((x, index) => {
+    this.teamIndices().forEach((index) => {
       validators['dancer_name_' + (index + 1)] = {
         title: 'Dancer ' + (index + 1),
         validate: [{
@@ -333,6 +337,7 @@ class _RegistrationPage extends React.Component {
         }]
       };
     });
+    return validators;
   }
 
   fakeNavigator() {
