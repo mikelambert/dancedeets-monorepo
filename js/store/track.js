@@ -93,9 +93,13 @@ export function trackWithEvent(eventName: string, event: Event, params: ?Params)
     return;
   }
   const venue = event.venue || null;
+  let city = venue.address ? venue.cityStateCountry() : '';
+  if (!city) {
+    city = '';
+  }
   const extraParams: Params = Object.assign({}, params, {
     'Event ID': event.id,
-    'Event City': venue.address ? venue.cityStateCountry() : '',
+    'Event City': city,
     'Event Country': venue.address ? venue.address.country : '',
   });
   track(eventName, extraParams);

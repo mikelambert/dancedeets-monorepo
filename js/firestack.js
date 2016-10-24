@@ -50,3 +50,5 @@ export const TrackFirebase = connect(
     setFirebaseState: (key, value) => dispatch(setFirebaseState(key, value)),
   }),
 )(_TrackFirebase);
+
+export default firestack;

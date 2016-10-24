@@ -27,7 +27,7 @@
 .*/node_modules/config-chain/test/.*\.json
 .*/node_modules/npmconf/test/fixtures/.*\.json
 
-android/app/build/intermediates/assets/debug/CodePushHash.json
+.*/CodePushHash.json
 
 [include]
 
