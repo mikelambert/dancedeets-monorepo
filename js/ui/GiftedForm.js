@@ -57,10 +57,10 @@ export class MyGiftedForm extends React.Component {
         formStyles={{
           containerView: {backgroundColor: 'transparent'},
           TextInputWidget: {
-            rowContainer: Object.assign({}, defaultFont, {
+            rowContainer: {
               backgroundColor: 'transparent',
               borderColor: purpleColors[0],
-            }),
+            },
             textInputTitleInline: defaultFont,
             textInputTitle: defaultFont,
             textInput: Object.assign({}, defaultFont, {backgroundColor: purpleColors[1]}),
