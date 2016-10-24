@@ -22,6 +22,8 @@ export type SignupRequirements = {
 };
 
 export type CompetitionCategory = {
+  // Used for modifications through the server API
+  id: string;
   // Used for Category display
   name: string;
   // Dance Style named, used for icon lookup

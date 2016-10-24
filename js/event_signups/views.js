@@ -51,6 +51,10 @@ import {
 import type {
   Signup,
 } from './models';
+import {
+  eventRegister,
+  eventUnregister,
+} from '../api/dancedeets';
 import danceStyles from '../styles';
 import FitImage from 'react-native-fit-image';
 import firestack from '../firestack';
@@ -278,7 +282,7 @@ class _Category extends React.Component {
   }
 
   render() {
-    const signups = getCategorySignups(this.props.category.signups);
+    const signups = getCategorySignups(this.props.category);
     return <TeamList signups={signups}
       renderHeader={() => <View
         style={{
@@ -392,6 +396,9 @@ class _RegistrationPage extends React.Component {
         },
         ...this.teamValidators(),
       }}
+
+      // Can use this to implement Redux state storage
+      onValueChange={null}
     >
 
       {teamMembers}
@@ -404,7 +411,7 @@ class _RegistrationPage extends React.Component {
 
       <MyGiftedSubmitWidget
         title="Register"
-        onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
+        onSubmit={async (isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
           if (isValid === true) {
             // prepare object
 
@@ -415,6 +422,10 @@ class _RegistrationPage extends React.Component {
             ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
             ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
             */
+            const result = await eventRegister('justeDebout', this.props.category.id, values);
+            if (postSubmit) {
+              postSubmit();
+            }
             // Do we want this?
             //this.props.onRegisterSubmit();
             if (modalNavigator) {

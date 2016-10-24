@@ -167,3 +167,14 @@ export async function translateEvent(eventId: string) {
   return await timeout(10000, performRequest('events_translate', params, params));
 }
 
+export async function eventRegister(eventId: string, categoryId: string, values: Object) {
+  await verifyAuthenticated();
+  const params = {event_id: eventId, category_id: categoryId, ...values};
+  return await performRequest('event_signups/register', params, params);
+}
+
+export async function eventUnregister(eventId: string, categoryId: string, signupId: string) {
+  await verifyAuthenticated();
+  const params = {event_id: eventId, category_id: categoryId, signup_id: signupId};
+  return await performRequest('event_signups/unregister', params, params);
+}
