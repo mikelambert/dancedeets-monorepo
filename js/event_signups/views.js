@@ -340,13 +340,9 @@ class _RegistrationPage extends React.Component {
         key={index}
         name={'dancer_name_' + (index + 1)}
         title={'Dancer ' + (index + 1)}
-
-        placeholderTextColor="rgba(255, 255, 255, 0.5)"
-        keyboardAppearance="dark"
-
         placeholder=""
-        clearButtonMode="while-editing"
-        underlined={true}
+
+        {...this.textInputProps()}
         />
     );
   }
@@ -366,6 +362,18 @@ class _RegistrationPage extends React.Component {
     return validators;
   }
 
+  textInputProps() {
+    return {
+      placeholderTextColor: 'rgba(255, 255, 255, 0.5)',
+      keyboardAppearance: 'dark',
+
+      clearButtonMode: 'while-editing',
+      underlined: true,
+      autoCorrect: false,
+      autoCapitalize: 'words',
+    };
+  }
+
   fakeNavigator() {
     return {
       pop: () => this.props.navigatePop(),
@@ -382,13 +390,9 @@ class _RegistrationPage extends React.Component {
       teamName = <GiftedForm.TextInputWidget
         name="team_name" // mandatory
         title="Team Name"
-
-        placeholderTextColor="rgba(255, 255, 255, 0.5)"
-        keyboardAppearance="dark"
-
         placeholder={this.computeDefaultTeamName()}
-        clearButtonMode="while-editing"
-        underlined={true}
+
+        {...this.textInputProps()}
       />;
     }
 
@@ -425,16 +429,10 @@ class _RegistrationPage extends React.Component {
       <GiftedForm.TextInputWidget
         name="dancer_name_1" // mandatory
         title="Dancer 1 (You)"
-
-        placeholderTextColor="rgba(255, 255, 255, 0.5)"
-        keyboardAppearance="dark"
-
-        validationImage={false}
-        //image={{uri: this.props.user.picture.data.url}}
-
         value={this.props.user.profile.name}
-        clearButtonMode="while-editing"
-        underlined={true}
+        validationImage={false}
+
+        {...this.textInputProps()}
       />
       {teamMembers}
 
