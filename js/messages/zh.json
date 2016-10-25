@@ -36,6 +36,7 @@
   "event.tickets": "網路購票:",
   "event.translate": "翻譯",
   "event.untranslate": "原文",
+  "login.login": "Login",
   "login.logout": "登出",
   "login.logoutPrompt": "登出{name}",
   "navigator.addEvent": "新增活動",

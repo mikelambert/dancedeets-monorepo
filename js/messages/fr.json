@@ -36,6 +36,7 @@
   "event.tickets": "Billets :",
   "event.translate": "Traduire",
   "event.untranslate": "Originale",
+  "login.login": "Login",
   "login.logout": "Se déconnecter",
   "login.logoutPrompt": "Se déconnecter de mon compte",
   "navigator.addEvent": "Ajouter un événement",

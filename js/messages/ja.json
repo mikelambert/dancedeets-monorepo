@@ -36,6 +36,7 @@
   "event.tickets": "チケット:",
   "event.translate": "翻訳",
   "event.untranslate": "原文",
+  "login.login": "Login",
   "login.logout": "ログアウト",
   "login.logoutPrompt": "{name}からログアウト",
   "navigator.addEvent": "イベントを追加",

@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { logOutWithPrompt } from '../actions';
+import { loginButtonPressed } from '../login/logic';
 import {
   Button,
   Card,
@@ -77,6 +78,11 @@ const messages = defineMessages({
     id: 'profile.friendsUsing',
     defaultMessage: '{count} friends using DanceDeets',
     description: 'A count of how many of the user\'s friends are using the app',
+  },
+  login: {
+    id: 'login.login',
+    defaultMessage: 'Login',
+    description: 'Button to login to the app',
   },
   logout: {
     id: 'login.logout',
@@ -241,17 +247,24 @@ function sendAdvertisingEmail() {
 
 class _UserProfile extends React.Component {
   render() {
+    const user = this.props.user;
+    if (!user) {
+      const loginButton = <Button
+        icon={require('../login/icons/facebook.png')}
+        style={{marginBottom: 10}}
+        size="small"
+        caption={this.props.intl.formatMessage(messages.login)}
+        onPress={this.props.logIn}
+      />;
+      return loginButton;
+    }
+
     const logoutButton = <Button
       style={{marginBottom: 10}}
       size="small"
       caption={this.props.intl.formatMessage(messages.logout)}
       onPress={() => this.props.logOutWithPrompt(this.props.intl)}
     />;
-    const user = this.props.user;
-    if (!user) {
-      // Don't render anything if we don't yet have a user
-      return logoutButton;
-    }
     const friendCount = user.friends.data.length || 0;
     const image = user.picture ? <Image style={styles.profileImageSize} source={{uri: user.picture.data.url}}/> : null;
     let friendsCopy = null;
@@ -286,6 +299,7 @@ const UserProfile = connect(
     user: state.user.userData,
   }),
   (dispatch: Dispatch) => ({
+    logIn: () => loginButtonPressed(dispatch),
     logOutWithPrompt: (intl) => dispatch(logOutWithPrompt(intl)),
   }),
 )(injectIntl(_UserProfile));
