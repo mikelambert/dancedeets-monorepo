@@ -14,6 +14,7 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import { HorizontalView } from './Misc';
 import { Text } from './DDText';
@@ -25,7 +26,7 @@ type Props = {
   icon: ?number;
   caption: string;
   style: any;
-  onPress: () => void;
+  onPress: Promise<void> | () => void;
   size: 'small' | 'large';
   textStyle: any;
   color: 'purple' | 'yellow' | 'red';
@@ -64,17 +65,26 @@ class Button extends React.Component {
   }
 
   _renderContent() {
+    let contentOpacity = 1.0;
+    let activityIndicator = null;
     if (this.props.isLoading) {
-      return (
-        <ActivityIndicator
-          animating={true}
-          size="small"
-          style={styles.spinner}
-          color={this.props.activityIndicatorColor || 'black'}
-        />
+      activityIndicator = (
+        <View style={styles.spinnerContainer}>
+          <ActivityIndicator
+            animating={true}
+            size="small"
+            color={this.props.activityIndicatorColor || 'white'}
+          />
+        </View>
       );
+      contentOpacity = 0;
     }
-    return this._renderRealContent();
+    return <View>
+      {activityIndicator}
+      <View style={{opacity: contentOpacity}}>
+        {this._renderRealContent()}
+      </View>
+      </View>;
   }
 
   render() {
@@ -128,8 +138,13 @@ var styles = StyleSheet.create({
     width: semiNormalize(18),
     height: semiNormalize(18),
   },
-  spinner: {
-    alignSelf: 'center',
+  spinnerContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
   },
   border: {
     borderWidth: 1,
