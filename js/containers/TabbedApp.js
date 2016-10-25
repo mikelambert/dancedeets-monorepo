@@ -226,11 +226,31 @@ class _AboutView extends React.Component {
 }
 const AboutView = injectIntl(_AboutView);
 
+import remoteConfig from '../remoteConfig';
+
 class _TabbedAppView extends React.Component {
   event_signups_navigator: ReactElement<any>;
   event_navigator: ReactElement<any>;
   learn_navigator: ReactElement<any>;
   about_navigator: ReactElement<any>;
+
+  state: {
+    event_signup_user_ids: Array<string>;
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {event_signup_user_ids: []};
+  }
+
+  componentWillMount() {
+    this.loadWhitelist();
+  }
+
+  async loadWhitelist() {
+    const event_signup_user_ids = await remoteConfig.get('event_signup_user_ids');
+    this.setState({event_signup_user_ids});
+  }
 
   icon(source) {
     return <Image source={source} style={styles.icon}/>;

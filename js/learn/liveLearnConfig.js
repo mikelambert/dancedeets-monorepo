@@ -23,7 +23,7 @@ async function loadConfig() {
   await RemoteConfig.activateFetched();
 }
 
-loadConfig();
+//loadConfig();
 
 export async function getRemoteBlogs() {
   return JSON.parse(await RemoteConfig.getNamespacedString('blogs', 'Learn'));
