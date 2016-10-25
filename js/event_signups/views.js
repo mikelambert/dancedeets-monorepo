@@ -91,9 +91,12 @@ class _UserRegistrationStatus extends React.Component {
   }
 
   render() {
-    const userId = this.props.user.profile.id;
-    const signups = getCategorySignups(this.props.category);
-    const signedUpTeams = signups.filter((signup) => userId in (signup.dancers || {}));
+    let signedUpTeams = [];
+    if (this.props.user) {
+      const userId = this.props.user.profile.id;
+      const signups = getCategorySignups(this.props.category);
+      signedUpTeams = signups.filter((signup) => userId in (signup.dancers || {}));
+    }
     if (signedUpTeams.length) {
       const teamTexts = signedUpTeams.map((team) => {
         return <HorizontalView style={styles.registrationLineOuter} key={team}>
@@ -324,9 +327,11 @@ class _RegistrationPage extends React.Component {
     super(props);
     this.state = {values: {
       ...this.teamDefaults(),
-      dancer_name_1: this.props.user.profile.name,
       team_name: '',
     }};
+    if (this.props.user) {
+      this.state.values.dancer_name_1 = this.props.user.profile.name;
+    }
     (this: any).handleValueChange = this.handleValueChange.bind(this);
   }
 
@@ -403,7 +408,22 @@ class _RegistrationPage extends React.Component {
   render() {
     const requirements = this.props.category.signupRequirements;
 
-    const teamMembers = requirements.minTeamSize ? this.teamWidgets().slice(1) : null;
+    let teamMember1 = [];
+    let teamMembers = requirements.minTeamSize ? this.teamWidgets() : null;
+    if (this.props.user) {
+      teamMember1 = [
+        <GiftedForm.HiddenWidget name="dancer_id_1" value={this.props.user.profile.id} />
+      ,
+        <GiftedForm.TextInputWidget
+          name="dancer_name_1" // mandatory
+          title="Dancer 1 (You)"
+          validationImage={false}
+
+          {...this.textInputProps()}
+        />
+      ];
+      teamMembers = teamMembers ? teamMembers.slice(1) : null;
+    }
 
     let teamName = null;
     if (requirements.needsTeamName) {
@@ -435,15 +455,7 @@ class _RegistrationPage extends React.Component {
       onValueChange={this.handleValueChange}
     >
 
-      <GiftedForm.HiddenWidget name="dancer_id_1" value={this.props.user.profile.id} />
-
-      <GiftedForm.TextInputWidget
-        name="dancer_name_1" // mandatory
-        title="Dancer 1 (You)"
-        validationImage={false}
-
-        {...this.textInputProps()}
-      />
+      {teamMember1}
       {teamMembers}
 
       <GiftedForm.SeparatorWidget />
