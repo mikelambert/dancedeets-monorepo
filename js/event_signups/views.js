@@ -346,6 +346,7 @@ class _RegistrationPage extends React.Component {
 
         placeholder=""
         clearButtonMode="while-editing"
+        underlined={true}
         />
     );
   }
@@ -357,7 +358,7 @@ class _RegistrationPage extends React.Component {
         title: 'Dancer ' + (index + 1),
         validate: [{
           validator: 'isLength',
-          arguments: [3, 30],
+          arguments: [0, 40],
           message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
         }]
       };
@@ -387,6 +388,7 @@ class _RegistrationPage extends React.Component {
 
         placeholder={this.computeDefaultTeamName()}
         clearButtonMode="while-editing"
+        underlined={true}
       />;
     }
 
@@ -422,16 +424,17 @@ class _RegistrationPage extends React.Component {
 
       <GiftedForm.TextInputWidget
         name="dancer_name_1" // mandatory
-        title="Dancer 1"
+        title="Dancer 1 (You)"
 
         placeholderTextColor="rgba(255, 255, 255, 0.5)"
         keyboardAppearance="dark"
 
         validationImage={false}
-        image={{uri: this.props.user.picture.data.url}}
+        //image={{uri: this.props.user.picture.data.url}}
 
         value={this.props.user.profile.name}
         clearButtonMode="while-editing"
+        underlined={true}
       />
       {teamMembers}
 

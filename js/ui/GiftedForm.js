@@ -59,7 +59,13 @@ export class MyGiftedForm extends React.Component {
           TextInputWidget: {
             rowContainer: {
               backgroundColor: 'transparent',
-              borderColor: purpleColors[0],
+              borderColor: purpleColors[1],
+            },
+            underlineIdle: {
+              borderColor: purpleColors[2],
+            },
+            underlineFocused: {
+              borderColor: yellowColors[2],
             },
             textInputTitleInline: defaultFont,
             textInputTitle: defaultFont,
