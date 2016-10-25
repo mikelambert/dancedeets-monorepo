@@ -13,11 +13,21 @@ import { loginStartOnboard, loginComplete } from '../actions';
 import type { Dispatch } from '../actions/types';
 import { track } from '../store/track';
 
+export async function canGetValidLogin(dispatch: Dispatch, message: string) {
+  try {
+    // TODO: Prompt for access!
+    await loginButtonPressed(dispatch);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 export async function loginButtonPressed(dispatch: Dispatch) {
   try {
     const token = await loginOrLogout();
     track('Login - Completed');
-    dispatch(loginComplete(token));
+    return await dispatch(loginComplete(token));
   } catch (e) {
     console.log('Staying on this screen, failed to login: ', e, e.stack);
   }
@@ -28,14 +38,14 @@ export async function autoLoginAtStartup(dispatch: Dispatch, secondTime: boolean
   if (await isLoggedOut()) {
     console.log('Wait for onboarding!');
     track('Login - Not Logged In');
-    return dispatch(loginStartOnboard());
+    return await dispatch(loginStartOnboard());
   // Now let's check how old the token is. We want to refresh old tokens,
   // but not delay/block users who have recently refreshed.
   } else if (secondTime || await isRecentlyLoggedIn()) {
     console.log('Fresh access token, completing login!');
     const token = await AccessToken.getCurrentAccessToken();
     if (token != null) {
-      return dispatch(loginComplete(token));
+      return await dispatch(loginComplete(token));
     } else {
       console.error('We have a recently logged-in token, but no token??');
     }
