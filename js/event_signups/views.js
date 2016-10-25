@@ -372,8 +372,7 @@ class _RegistrationPage extends React.Component {
     this.teamIndices().forEach((index) => {
       validators['dancer_name_' + (index + 1)] = {
         title: 'Dancer ' + (index + 1),
-        validate: [{
-        }]
+        validate: [],
       };
     });
     return validators;
@@ -428,8 +427,7 @@ class _RegistrationPage extends React.Component {
       validators={{
         team_name: {
           title: 'Team Name',
-          validate: [{
-          }]
+          validate: [],
         },
         ...this.teamValidators(),
       }}
