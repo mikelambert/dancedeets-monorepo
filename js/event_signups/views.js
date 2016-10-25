@@ -316,8 +316,27 @@ class _Category extends React.Component {
 const Category = injectIntl(_Category);
 
 class _RegistrationPage extends React.Component {
+  state: {
+    values: any;
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {values: {
+      dancer_name_1: this.props.user.profile.name,
+      ...this.teamDefaults(),
+    }};
+    (this: any).handleValueChange = this.handleValueChange.bind(this);
+  }
+
   computeDefaultTeamName() {
-    return 'Computed Team';
+    const dancers = [];
+    let index = 1;
+    while (this.state.values['dancer_name_' + index]) {
+      dancers.push(this.state.values['dancer_name_' + index]);
+      index += 1;
+    }
+    return dancers.join(' and ');
   }
 
   teamIndices() {
@@ -380,6 +399,10 @@ class _RegistrationPage extends React.Component {
     };
   }
 
+  handleValueChange(values) {
+    this.setState({values});
+  }
+
   render() {
     const requirements = this.props.category.signupRequirements;
 
@@ -403,10 +426,7 @@ class _RegistrationPage extends React.Component {
 
       openModal={(route) => this.props.navigatePush(route)}
 
-      defaults={{
-        team_name: this.computeDefaultTeamName(),
-        ...this.teamDefaults(),
-      }}
+      defaults={this.state.values}
 
       validators={{
         team_name: {
@@ -420,8 +440,7 @@ class _RegistrationPage extends React.Component {
         ...this.teamValidators(),
       }}
 
-      // Can use this to implement Redux state storage
-      onValueChange={null}
+      onValueChange={this.handleValueChange}
     >
 
       <GiftedForm.HiddenWidget name="dancer_id_1" value={this.props.user.profile.id} />
@@ -429,7 +448,6 @@ class _RegistrationPage extends React.Component {
       <GiftedForm.TextInputWidget
         name="dancer_name_1" // mandatory
         title="Dancer 1 (You)"
-        value={this.props.user.profile.name}
         validationImage={false}
 
         {...this.textInputProps()}
@@ -455,7 +473,8 @@ class _RegistrationPage extends React.Component {
             ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
             ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
             */
-            const result = await eventRegister('justeDebout', this.props.category.id, {team: values});
+            const newValues = {team_name: this.computeDefaultTeamName(), ...values};
+            const result = await eventRegister('justeDebout', this.props.category.id, {team: newValues});
             if (postSubmit) {
               postSubmit();
             }
