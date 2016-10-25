@@ -91,56 +91,60 @@ class _UserRegistrationStatus extends React.Component {
   }
 
   render() {
-    let signedUpTeams = [];
+    const registerButton = (
+      <Button
+        caption="Register"
+        onPress={async () => {
+          this.setState({isLoading: true});
+          await this.props.onRegister(this.props.category);
+          this.setState({isLoading: false});
+        }}
+        isLoading={this.state.isLoading}
+        />
+    );
     if (this.props.user) {
       const userId = this.props.user.profile.id;
       const signups = getCategorySignups(this.props.category);
-      signedUpTeams = signups.filter((signup) => userId in (signup.dancers || {}));
-    }
-    if (signedUpTeams.length) {
-      const teamTexts = signedUpTeams.map((team) => {
-        return <HorizontalView style={styles.registrationLineOuter} key={team}>
-          <CompactTeam team={team} style={styles.registrationIndent}/>
-          <Button
-            caption="Unregister"
-            onPress={async () => {
-              this.setState({isLoading: true});
-              await this.props.onUnregister(this.props.category, team);
-              this.setState({isLoading: false});
-            }}
-            isLoading={this.state.isLoading}
-            />
+      const signedUpTeams = signups.filter((signup) => userId in (signup.dancers || {}));
+      if (signedUpTeams.length) {
+        const teamTexts = signedUpTeams.map((team) => {
+          return <HorizontalView style={styles.registrationLineOuter} key={team}>
+            <CompactTeam team={team} style={styles.registrationIndent}/>
+            <Button
+              caption="Unregister"
+              onPress={async () => {
+                this.setState({isLoading: true});
+                await this.props.onUnregister(this.props.category, team);
+                this.setState({isLoading: false});
+              }}
+              isLoading={this.state.isLoading}
+              />
+          </HorizontalView>;
+        });
+        return <View>
+          <HorizontalView style={styles.registrationLine}>
+            <Image
+              source={require('./images/green-check.png')}
+              style={styles.registrationStatusIcon}
+              />
+            <Text style={styles.registrationStatusText}>Registered:</Text>
+          </HorizontalView>
+          {teamTexts}
+        </View>;
+      } else {
+        return <HorizontalView style={styles.registrationLineOuter}>
+          <HorizontalView style={styles.registrationLine}>
+            <Image
+              source={require('./images/red-x.png')}
+              style={styles.registrationStatusIcon}
+              />
+            <Text style={styles.registrationStatusText}>Not Registered</Text>
+          </HorizontalView>
+          {registerButton}
         </HorizontalView>;
-      });
-      return <View>
-        <HorizontalView style={styles.registrationLine}>
-          <Image
-            source={require('./images/green-check.png')}
-            style={styles.registrationStatusIcon}
-            />
-          <Text style={styles.registrationStatusText}>Registered:</Text>
-        </HorizontalView>
-        {teamTexts}
-      </View>;
+      }
     } else {
-      return <HorizontalView style={styles.registrationLineOuter}>
-        <HorizontalView style={styles.registrationLine}>
-          <Image
-            source={require('./images/red-x.png')}
-            style={styles.registrationStatusIcon}
-            />
-          <Text style={styles.registrationStatusText}>Not Registered</Text>
-        </HorizontalView>
-        <Button
-          caption="Register"
-          onPress={async () => {
-            this.setState({isLoading: true});
-            await this.props.onRegister(this.props.category);
-            this.setState({isLoading: false});
-          }}
-          isLoading={this.state.isLoading}
-          />
-      </HorizontalView>;
+      return registerButton;
     }
   }
 }
