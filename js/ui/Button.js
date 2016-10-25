@@ -10,10 +10,12 @@ import { purpleColors, yellowColors, redColors } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import React from 'react';
 import {
+  ActivityIndicator,
   Image,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import { HorizontalView } from './Misc';
 import { Text } from './DDText';
 import {
   semiNormalize,
@@ -41,14 +43,41 @@ class Button extends React.Component {
     textStyle: {},
     color: 'purple',
     testID: null,
+    isLoading: false,
   };
 
-  render() {
+  _renderRealContent() {
     const caption = this.props.caption;
     let icon;
     if (this.props.icon) {
       icon = <Image source={this.props.icon} style={[caption ? styles.iconSpacing : {}, styles.iconSize]} />;
     }
+    const content = (
+      <HorizontalView>
+        {icon}
+        <Text style={[styles.caption, this.props.textStyle]}>
+          {caption}
+        </Text>
+      </HorizontalView>
+    );
+    return content;
+  }
+
+  _renderContent() {
+    if (this.props.isLoading) {
+      return (
+        <ActivityIndicator
+          animating={true}
+          size="small"
+          style={styles.spinner}
+          color={this.props.activityIndicatorColor || 'black'}
+        />
+      );
+    }
+    return this._renderRealContent();
+  }
+
+  render() {
     const size = this.props.size === 'small' ? styles.smallButton : styles.largeButton;
     let colors = null;
     if (this.props.color === 'purple') {
@@ -58,18 +87,6 @@ class Button extends React.Component {
     } else if (this.props.color === 'red') {
       colors = [redColors[0], redColors[1], redColors[1]];
     }
-    const content = (
-      <LinearGradient
-        start={[0, 0]} end={[0, 1]}
-        locations={[0.0, 0.7, 1.0]}
-        colors={colors}
-        style={[styles.button, size]}>
-        {icon}
-        <Text style={[styles.caption, this.props.textStyle]}>
-          {caption}
-        </Text>
-      </LinearGradient>
-    );
     return (
       <TouchableOpacity
         accessibilityTraits="button"
@@ -77,7 +94,13 @@ class Button extends React.Component {
         activeOpacity={0.8}
         style={[this.props.style]}
         testID={this.props.testID}>
-        {content}
+        <LinearGradient
+          start={[0, 0]} end={[0, 1]}
+          locations={[0.0, 0.7, 1.0]}
+          colors={colors}
+          style={[styles.button, size]}>
+            {this._renderContent()}
+        </LinearGradient>
       </TouchableOpacity>
     );
   }
@@ -105,6 +128,9 @@ var styles = StyleSheet.create({
     width: semiNormalize(18),
     height: semiNormalize(18),
   },
+  spinner: {
+    alignSelf: 'center',
+  },
   border: {
     borderWidth: 1,
     borderColor: 'white',
@@ -120,7 +146,7 @@ var styles = StyleSheet.create({
   },
   secondaryCaption: {
     color: 'white',
-  }
+  },
 });
 
 module.exports = Button;
