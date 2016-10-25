@@ -226,7 +226,7 @@ class _AboutView extends React.Component {
 }
 const AboutView = injectIntl(_AboutView);
 
-import remoteConfig from '../remoteConfig';
+import * as RemoteConfig from '../remoteConfig';
 
 class _TabbedAppView extends React.Component {
   event_signups_navigator: ReactElement<any>;
@@ -248,7 +248,7 @@ class _TabbedAppView extends React.Component {
   }
 
   async loadWhitelist() {
-    const event_signup_user_ids = await remoteConfig.get('event_signup_user_ids');
+    const event_signup_user_ids = await RemoteConfig.get('event_signup_user_ids');
     this.setState({event_signup_user_ids});
   }
 
@@ -258,7 +258,7 @@ class _TabbedAppView extends React.Component {
 
   render() {
     let extraTabs = null;
-    if (this.props.user && this.props.user.profile.id === '701004') {
+    if (this.props.user && this.state.event_signup_user_ids.includes(this.props.user.profile.id)) {
       extraTabs = <TabNavigator.Item
         selected={this.props.selectedTab === 'event_signups'}
         title={'Event Signups'}
