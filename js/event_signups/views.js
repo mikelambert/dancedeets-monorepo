@@ -323,8 +323,9 @@ class _RegistrationPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {values: {
-      dancer_name_1: this.props.user.profile.name,
       ...this.teamDefaults(),
+      dancer_name_1: this.props.user.profile.name,
+      team_name: '',
     }};
     (this: any).handleValueChange = this.handleValueChange.bind(this);
   }
@@ -372,9 +373,6 @@ class _RegistrationPage extends React.Component {
       validators['dancer_name_' + (index + 1)] = {
         title: 'Dancer ' + (index + 1),
         validate: [{
-          validator: 'isLength',
-          arguments: [0, 40],
-          message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
         }]
       };
     });
@@ -418,7 +416,6 @@ class _RegistrationPage extends React.Component {
         {...this.textInputProps()}
       />;
     }
-
     return <MyGiftedForm
       navigator={this.fakeNavigator()}
       scrollEnabled={false}
@@ -432,9 +429,6 @@ class _RegistrationPage extends React.Component {
         team_name: {
           title: 'Team Name',
           validate: [{
-            validator: 'isLength',
-            arguments: [3, 30],
-            message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
           }]
         },
         ...this.teamValidators(),
@@ -473,7 +467,10 @@ class _RegistrationPage extends React.Component {
             ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
             ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
             */
-            const newValues = {team_name: this.computeDefaultTeamName(), ...values};
+            const newValues = {...values};
+            if (!newValues.team_name) {
+              newValues.team_name = this.computeDefaultTeamName();
+            }
             const result = await eventRegister('justeDebout', this.props.category.id, {team: newValues});
             if (postSubmit) {
               postSubmit();
