@@ -72,6 +72,7 @@
   "tutorial.login": "Se connecter avec Facebook",
   "tutorial.nologin": "Je préfère ne pas me connecter",
   "tutorial.nologin.justification": "Almost all our dance events are\nfound when dancers like you log in.\n\nLogging in shares your dance events\nwith DanceDeets, so our algorithm\ncan sort through everyone's events,\nand share them with dancers everywhere.\n\nBut without any logged-in dancers,\nwe’d have nothing to share with you.\n\nSo please consider logging in,\nto help us help your dance scene.\n\nOtherwise, you're always able to use\nour website without any login:",
+  "tutorial.nologin.usewithoutlogin": "Je préfère ne pas me connecter",
   "tutorial.nologin.website": "Accéder directement au site web",
   "tutorialVideos.contact": "Contactez-nous",
   "tutorialVideos.contactSuffix": " ",
