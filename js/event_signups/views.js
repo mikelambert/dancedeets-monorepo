@@ -81,6 +81,15 @@ function getCategorySignups(category: Category): Array<Signup> {
 }
 
 class _UserRegistrationStatus extends React.Component {
+  state: {
+    isLoading: boolean;
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {isLoading: false};
+  }
+
   render() {
     const userId = this.props.user.profile.id;
     const signups = getCategorySignups(this.props.category);
@@ -89,7 +98,15 @@ class _UserRegistrationStatus extends React.Component {
       const teamTexts = signedUpTeams.map((team) => {
         return <HorizontalView style={styles.registrationLineOuter} key={team}>
           <CompactTeam team={team} style={styles.registrationIndent}/>
-          <Button caption="Unregister" onPress={() => this.props.onUnregister(this.props.category, team)}/>
+          <Button
+            caption="Unregister"
+            onPress={async () => {
+              this.setState({isLoading: true});
+              await this.props.onUnregister(this.props.category, team);
+              this.setState({isLoading: false});
+            }}
+            isLoading={this.state.isLoading}
+            />
         </HorizontalView>;
       });
       return <View>
@@ -111,7 +128,15 @@ class _UserRegistrationStatus extends React.Component {
             />
           <Text style={styles.registrationStatusText}>Not Registered</Text>
         </HorizontalView>
-        <Button caption="Register" onPress={() => this.props.onRegister(this.props.category)}/>
+        <Button
+          caption="Register"
+          onPress={async () => {
+            this.setState({isLoading: true});
+            await this.props.onRegister(this.props.category);
+            this.setState({isLoading: false});
+          }}
+          isLoading={this.state.isLoading}
+          />
       </HorizontalView>;
     }
   }
