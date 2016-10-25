@@ -87,13 +87,13 @@ class _UserRegistrationStatus extends React.Component {
     const signedUpTeams = signups.filter((signup) => userId in (signup.dancers || {}));
     if (signedUpTeams.length) {
       const teamTexts = signedUpTeams.map((team) => {
-        return <HorizontalView style={styles.registrationLine} key={team}>
+        return <HorizontalView style={styles.registrationLineOuter} key={team}>
           <CompactTeam team={team} style={styles.registrationIndent}/>
           <Button caption="Unregister" onPress={() => this.props.onUnregister(this.props.category, team)}/>
         </HorizontalView>;
       });
       return <View>
-        <HorizontalView>
+        <HorizontalView style={styles.registrationLine}>
           <Image
             source={require('./images/green-check.png')}
             style={styles.registrationStatusIcon}
@@ -103,8 +103,8 @@ class _UserRegistrationStatus extends React.Component {
         {teamTexts}
       </View>;
     } else {
-      return <HorizontalView style={styles.registrationLine}>
-        <HorizontalView>
+      return <HorizontalView style={styles.registrationLineOuter}>
+        <HorizontalView style={styles.registrationLine}>
           <Image
             source={require('./images/red-x.png')}
             style={styles.registrationStatusIcon}
@@ -402,6 +402,9 @@ class _RegistrationPage extends React.Component {
         placeholderTextColor="rgba(255, 255, 255, 0.5)"
         keyboardAppearance="dark"
 
+        validationImage={false}
+        image={{uri: this.props.user.picture.data.url}}
+
         value={this.props.user.profile.name}
         clearButtonMode="while-editing"
       />
@@ -532,7 +535,10 @@ let styles = StyleSheet.create({
   },
   registrationLine: {
     alignItems: 'center',
+  },
+  registrationLineOuter: {
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   registrationStatusIcon: {
     width: checkSize,
