@@ -27,6 +27,11 @@ const messages = defineMessages({
     defaultMessage: 'Use website without login',
     description: 'Link to use the website without logging into the app',
   },
+  'useWithoutLogin': {
+    id: 'tutorial.nologin.usewithoutlogin',
+    defaultMessage: 'Use without login',
+    description: 'Use the app without FB login',
+  },
   loginJustification: {
     id: 'tutorial.nologin.justification',
     defaultMessage: `Almost all our dance events are
@@ -42,9 +47,6 @@ we’d have nothing to share with you.
 
 So please consider logging in,
 to help us help your dance scene.
-
-Otherwise, you're always able to use
-our website without any login:
 `,
     description: 'A long explanation of why we need login',
   }
@@ -57,17 +59,11 @@ class _NoLoginScreen extends React.Component {
         <Image
           style={[styles.container, styles.topAndBottom]}
           source={require('./images/Onboard4.jpg')}>
-          <Text style={[styles.topText, styles.text]}>{this.props.intl.formatMessage(messages.loginJustification)}
-            {'\n'}
-            <Text
-              style={[{color: linkColor}, styles.text]}
-              onPress={() => this.props.onNoLogin('Text Link')}
-              >http://www.dancedeets.com/</Text>
-          </Text>
+          <Text style={[styles.topText, styles.text]}>{this.props.intl.formatMessage(messages.loginJustification)}</Text>
           <LoginButtonWithAlternate
             onLogin={this.props.onLogin}
             onNoLogin={() => this.props.onNoLogin('Bottom Button')}
-            noLoginText={this.props.intl.formatMessage(messages.useWebsite)}
+            noLoginText={this.props.intl.formatMessage(messages.useWithoutLogin)}
             />
         </Image>
       </View>

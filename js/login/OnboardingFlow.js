@@ -5,13 +5,11 @@
  */
 
 import React from 'react';
-import {
-  Linking
-} from 'react-native';
 import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
 import NoLoginScreen from './NoLoginScreen';
 import { loginButtonPressed } from './logic';
+import { skipLogin } from '../actions/login';
 import { track } from '../store/track';
 
 type ScreenState = 'CAROUSEL' | 'NO_LOGIN';
@@ -19,6 +17,7 @@ type ScreenState = 'CAROUSEL' | 'NO_LOGIN';
 class OnboardingFlow extends React.Component {
   props: {
     onLogin: () => void,
+    skipLogin: () => void,
   };
 
   state: {
@@ -31,7 +30,7 @@ class OnboardingFlow extends React.Component {
       screen: 'CAROUSEL',
     };
     (this: any).onDontWantLoginPressed = this.onDontWantLoginPressed.bind(this);
-    (this: any).onOpenWebsite = this.onOpenWebsite.bind(this);
+    (this: any).onSkipLogin = this.onSkipLogin.bind(this);
   }
 
   onDontWantLoginPressed() {
@@ -39,9 +38,9 @@ class OnboardingFlow extends React.Component {
     this.setState({...this.state, screen: 'NO_LOGIN'});
   }
 
-  onOpenWebsite(button: string) {
-    track('Login - Use Website', {'Button': button});
-    Linking.openURL('http://www.dancedeets.com/').catch(err => console.error('Error opening dancedeets.com:', err));
+  onSkipLogin() {
+    track('Login - Really Without Facebook');
+    this.props.skipLogin();
   }
 
   render() {
@@ -59,7 +58,7 @@ class OnboardingFlow extends React.Component {
           track('Login - FBLogin Button Pressed', {'Button': 'Second Screen'});
           this.props.onLogin();
         }}
-        onNoLogin={this.onOpenWebsite}
+        onNoLogin={this.onSkipLogin}
         />;
     }
   }
@@ -67,9 +66,8 @@ class OnboardingFlow extends React.Component {
 
 export default connect(
     null,
-    (dispatch) => {
-      return {
-        onLogin: (e) => loginButtonPressed(dispatch),
-      };
-    },
+    (dispatch) => ({
+      onLogin: () => loginButtonPressed(dispatch),
+      skipLogin: () => dispatch(skipLogin()),
+    }),
 )(OnboardingFlow);
