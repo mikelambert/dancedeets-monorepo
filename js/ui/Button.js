@@ -26,7 +26,7 @@ type Props = {
   icon: ?number;
   caption: string;
   style: any;
-  onPress: Promise<void> | () => void;
+  onPress: () => Promise<void> | () => void;
   size: 'small' | 'large';
   textStyle: any;
   color: 'purple' | 'yellow' | 'red';
