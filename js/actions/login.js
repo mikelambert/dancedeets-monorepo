@@ -119,6 +119,7 @@ export function skipLogin(): ThunkAction {
 export function logOut(): ThunkAction {
   return (dispatch) => {
     LoginManager.logOut();
+    setSkippedLogin(false);
     trackLogout();
     return dispatch({
       type: 'LOGIN_LOGGED_OUT',
