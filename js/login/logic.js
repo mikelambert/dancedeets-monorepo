@@ -29,7 +29,7 @@ const messages = defineMessages({
   },
   loginMessage: {
     id: 'login.message',
-    defaultMessage: '"{feature}" requires logging in. Do you want to login/signup?',
+    defaultMessage: '"{feature}" requires logging in. Would you like to login?',
     description: 'Prompt in asking the user if they would like to login',
   },
   promptCancel: {

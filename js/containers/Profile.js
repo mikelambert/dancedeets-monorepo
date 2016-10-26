@@ -132,9 +132,9 @@ const credits = [
   [
     'Translations',
     [
-      'French: Mai Le',
+      'French: Mai Le, Hayet',
       'Japanese: Huu Rock',
-      'Chinese: Wei and King Kong',
+      'Chinese: Wei, King Kong, Zoe',
     ]
   ]
 ];
