@@ -18,7 +18,7 @@ import {
   loginStartOnboard,
   loginComplete,
   skipLogin,
-} from '../actions';
+} from './login';
 import type { Dispatch } from '../actions/types';
 import { track } from '../store/track';
 import {
@@ -27,7 +27,7 @@ import {
 } from 'react-intl';
 import {
   hasSkippedLogin
-} from './savedState';
+} from '../login/savedState';
 
 const messages = defineMessages({
   loginTitle: {

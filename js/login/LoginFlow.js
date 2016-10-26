@@ -14,7 +14,7 @@ import {
 import LaunchScreen from './LaunchScreen';
 import OnboardingFlow from './OnboardingFlow';
 import { connect } from 'react-redux';
-import { autoLoginAtStartup } from './logic';
+import { autoLoginAtStartup } from '../actions';
 
 class LoginFlow extends React.Component {
   constructor(props) {

@@ -16,8 +16,10 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { logOutWithPrompt } from '../actions';
-import { loginButtonPressed } from '../login/logic';
+import {
+  logOutWithPrompt,
+  loginButtonPressed,
+} from '../actions';
 import {
   Button,
   Card,

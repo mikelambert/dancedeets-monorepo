@@ -8,8 +8,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import TutorialScreen from './TutorialScreen';
 import NoLoginScreen from './NoLoginScreen';
-import { loginButtonPressed } from './logic';
-import { skipLogin } from '../actions/login';
+import {
+  loginButtonPressed,
+  skipLogin,
+} from '../actions';
 import { track } from '../store/track';
 
 type ScreenState = 'CAROUSEL' | 'NO_LOGIN';

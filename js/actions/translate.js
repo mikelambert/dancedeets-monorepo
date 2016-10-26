@@ -8,7 +8,7 @@
 
 import { translateEvent as translateEventApi } from '../api/dancedeets';
 import type { Action, Dispatch, ThunkAction } from './types';
-import { canGetValidLoginFor } from '../login/logic';
+import { canGetValidLoginFor } from './loginComplex';
 import {
   defineMessages,
   intlShape,
@@ -52,4 +52,3 @@ function eventTranslated(eventId: string, translations: Object): Action {
     translations,
   };
 }
-

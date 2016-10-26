@@ -50,10 +50,12 @@ import {
   defineMessages,
 } from 'react-intl';
 import geolib from 'geolib';
-import { toggleEventTranslation } from '../actions';
+import {
+  toggleEventTranslation,
+  canGetValidLoginFor,
+} from '../actions';
 import url from 'url';
 import GoogleApiAvailability from 'react-native-google-api-availability';
-import { canGetValidLoginFor } from '../login/logic';
 
 const messages = defineMessages({
   addToCalendar: {

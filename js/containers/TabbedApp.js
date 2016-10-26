@@ -37,8 +37,8 @@ import {
 } from '../ui';
 import {
   selectTab,
+  canGetValidLoginFor,
 } from '../actions';
-import { canGetValidLoginFor } from '../login/logic';
 import AddEvents from '../containers/AddEvents';
 import NotificationPreferences from '../containers/NotificationPreferences';
 import { track, trackWithEvent } from '../store/track';
