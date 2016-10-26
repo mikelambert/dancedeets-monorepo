@@ -43,7 +43,7 @@ export async function loginButtonPressed(dispatch: Dispatch) {
     await dispatch(loginComplete(token));
     return token;
   } catch (e) {
-    console.log('Staying on this screen, failed to login: ', e, e.stack);
+    console.log('Staying on this screen, failed to login because: ' + e);
     return null;
   }
 }
