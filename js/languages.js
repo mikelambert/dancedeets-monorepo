@@ -6,7 +6,7 @@
 
 'use strict';
 
-import languages from './languages.json';
+import languages from './languagesData.json';
 const languageMap = {};
 languages.forEach((x) => {
   languageMap[x.iso] = x;
