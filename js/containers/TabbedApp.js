@@ -99,7 +99,12 @@ const messages = defineMessages({
   notificationsTitle: {
     id: 'navigator.notificationsTitle',
     defaultMessage: 'Notification Settings',
-    description: 'Titlebar for notification settings'
+    description: 'Titlebar for notification settings',
+  },
+  featureAddingEvents: {
+    id: 'feature.addingEvents',
+    defaultMessage: 'Adding Events',
+    description: 'The name of the Add Event feature when requesting permissions',
   },
 });
 
@@ -178,7 +183,7 @@ const EventView =  connect(
   }),
   dispatch => ({
     openAddEvent: async (props) => {
-      if (!props.user && !await canGetValidLoginFor('Adding Events', dispatch)) {
+      if (!props.user && !await canGetValidLoginFor(props.intl.formatMessage(messages.featureAddingEvents), props.intl, dispatch)) {
         return;
       }
       props.navigatable.onNavigate({key: 'AddEvent', title: props.intl.formatMessage(messages.addEvent)});

@@ -791,7 +791,7 @@ class _EventTranslate extends React.Component {
       size="small"
       onPress={() => {
         trackWithEvent('Translate', this.props.event);
-        this.props.toggleEventTranslation(this.props.event.id, this.props.intl.locale);
+        this.props.toggleEventTranslation(this.props.event.id, this.props.intl.locale, this.props.intl);
       }}
     />;
   }
@@ -803,7 +803,7 @@ const EventTranslate = connect(
     };
   },
   (dispatch: Dispatch) => ({
-    toggleEventTranslation: (eventId, language) => dispatch(toggleEventTranslation(eventId, language)),
+    toggleEventTranslation: (eventId, language, intl) => dispatch(toggleEventTranslation(eventId, language, intl)),
   }),
 )(injectIntl(_EventTranslate));
 

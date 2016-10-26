@@ -15,8 +15,36 @@ import {
 import { loginStartOnboard, loginComplete } from '../actions';
 import type { Dispatch } from '../actions/types';
 import { track } from '../store/track';
+import {
+  defineMessages,
+  intlShape,
+} from 'react-intl';
 
-export async function canGetValidLoginFor(message: string, dispatch: Dispatch) {
+
+const messages = defineMessages({
+  loginTitle: {
+    id: 'login.title',
+    defaultMessage: 'Login Required',
+    description: 'Title for window prompting tuser if they would like to log in',
+  },
+  loginMessage: {
+    id: 'login.message',
+    defaultMessage: '"{feature}" requires logging in. Do you want to login/signup?',
+    description: 'Prompt in asking the user if they would like to login',
+  },
+  promptCancel: {
+    id: 'prompt.cancel',
+    defaultMessage: 'Cancel',
+    description: 'Cancel button',
+  },
+  promptOk: {
+    id: 'prompt.ok',
+    defaultMessage: 'OK',
+    description: 'OK button',
+  },
+});
+
+export async function canGetValidLoginFor(feature: string, intl: intlShape, dispatch: Dispatch) {
   return new Promise((resolve, reject) => {
     const ok = async () => {
       const loggedIn = await loginButtonPressed(dispatch);
@@ -26,11 +54,11 @@ export async function canGetValidLoginFor(message: string, dispatch: Dispatch) {
       resolve(false);
     };
     Alert.alert(
-      'Login Required',
-      `"${message}" requires logging in. Do you want to login/signup?`,
+      intl.formatMessage(messages.loginTitle),
+      intl.formatMessage(messages.loginMessage, {feature}),
       [
-        {text: 'Cancel', onPress: cancel, style: 'cancel'},
-        {text: 'OK', onPress: ok},
+        {text: intl.formatMessage(messages.promptCancel), onPress: cancel, style: 'cancel'},
+        {text: intl.formatMessage(messages.promptOk), onPress: ok},
       ]
     );
   });
