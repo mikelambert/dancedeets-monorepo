@@ -16,19 +16,13 @@ import OnboardingFlow from './OnboardingFlow';
 import { connect } from 'react-redux';
 import { autoLoginAtStartup } from './logic';
 
-function select(store) {
-  return {
-    isOnboarding: store.user.isOnboarding,
-  };
-}
-
 class LoginFlow extends React.Component {
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    autoLoginAtStartup(this.props.dispatch);
+    this.props.autoLoginAtStartup();
   }
 
   render() {
@@ -51,5 +45,12 @@ class LoginFlow extends React.Component {
     }
   }
 }
-export default connect(select)(LoginFlow);
+export default connect(
+  (state) => ({
+    isOnboarding: state.user.isOnboarding,
+  }),
+  (dispatch) => ({
+    autoLoginAtStartup: () => autoLoginAtStartup(dispatch),
+  }),
+)(LoginFlow);
 

@@ -61,7 +61,7 @@ class App extends React.Component {
   }
 
   render() {
-    if (!this.props.isLoggedIn) {
+    if (!this.props.user.isLoggedIn && !this.props.user.hasSkippedLogin) {
       return <LoginFlow />;
     }
     return (
@@ -83,7 +83,7 @@ App.contextTypes = {
 };
 export default connect(
   store => ({
-    isLoggedIn: store.user.isLoggedIn || store.user.hasSkippedLogin,
+    user: store.user,
   }),
   dispatch => ({
     processUrl: (event) => dispatch(processUrl(event)),
