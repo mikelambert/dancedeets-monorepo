@@ -4,22 +4,30 @@
  * @flow
  */
 
+'use strict';
+
 import _ from 'lodash/collection';
 import {
-  Alert
+  Alert,
 } from 'react-native';
 import {
   LoginManager,
   AccessToken,
 } from 'react-native-fbsdk';
-import { loginStartOnboard, loginComplete } from '../actions';
+import {
+  loginStartOnboard,
+  loginComplete,
+  skipLogin,
+} from '../actions';
 import type { Dispatch } from '../actions/types';
 import { track } from '../store/track';
 import {
   defineMessages,
   intlShape,
 } from 'react-intl';
-
+import {
+  hasSkippedLogin
+} from './savedState';
 
 const messages = defineMessages({
   loginTitle: {
@@ -79,9 +87,15 @@ export async function loginButtonPressed(dispatch: Dispatch) {
 export async function autoLoginAtStartup(dispatch: Dispatch, secondTime: boolean = false) {
   // When they open the app, check for their existing FB token.
   if (await isLoggedOut()) {
-    console.log('Wait for onboarding!');
-    track('Login - Not Logged In');
-    return await dispatch(loginStartOnboard());
+    if (await hasSkippedLogin()) {
+      console.log('Skipped login previously, so mark it again');
+      track('Login - Skipped Login');
+      return await dispatch(skipLogin());
+    } else {
+      console.log('Wait for onboarding!');
+      track('Login - Not Logged In');
+      return await dispatch(loginStartOnboard());
+    }
   // Now let's check how old the token is. We want to refresh old tokens,
   // but not delay/block users who have recently refreshed.
   } else if (secondTime || await isRecentlyLoggedIn()) {

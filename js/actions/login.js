@@ -22,6 +22,9 @@ import type { Action, Dispatch, ThunkAction } from './types';
 import Geocoder from '../api/geocoder';
 import {format} from '../events/formatAddress';
 import {
+  setSkippedLogin,
+} from '../login/savedState';
+import {
   defineMessages,
   intlShape,
 } from 'react-intl';
@@ -41,7 +44,7 @@ const messages = defineMessages({
     id: 'login.logoutPrompt',
     defaultMessage: 'Logout from my account',
     description: 'Prompt to show the user before logging out',
-  }
+  },
 });
 
 
@@ -104,9 +107,12 @@ export async function loadUserData(dispatch: Dispatch) {
   });
 }
 
-export function skipLogin(): Action {
-  return {
-    type: 'LOGIN_SKIPPED',
+export function skipLogin(): ThunkAction {
+  return (dispatch) => {
+    setSkippedLogin(true);
+    return dispatch({
+      type: 'LOGIN_SKIPPED',
+    });
   };
 }
 
