@@ -237,6 +237,9 @@ class _EventListContainer extends React.Component {
   }
 
   async authAndReloadProfile(address) {
+    if (!this.props.user) {
+      return;
+    }
     await auth({location: address});
     // After sending an auth to update the user's address,
     // we should reload our local user's data too.
@@ -391,11 +394,10 @@ class _EventListContainer extends React.Component {
     );
   }
 }
-const EventListContainer = injectIntl(_EventListContainer);
-
 export default connect(
   (state) => ({
     search: state.search,
+    user: state.user.userData,
   }),
   (dispatch) => ({
     detectedLocation: async (location) => {
@@ -411,13 +413,13 @@ export default connect(
       await dispatch(updateKeywords(keywords));
     },
     processUrl: async (url) => {
-      await dispatch(processUrl(url))
+      await dispatch(processUrl(url));
     },
     loadUserData: async () => {
       await loadUserData(dispatch);
     },
   })
-)(injectIntl(EventListContainer));
+)(injectIntl(_EventListContainer));
 
 
 const styles = StyleSheet.create({
