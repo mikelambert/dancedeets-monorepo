@@ -8,17 +8,15 @@
 
 import { translateEvent as translateEventApi } from '../api/dancedeets';
 import type { Action, Dispatch, ThunkAction } from './types';
-import { canGetValidLogin } from '../login/logic';
+import { canGetValidLoginFor } from '../login/logic';
 
 export function toggleEventTranslation(eventId: string, language: string): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
     const state = getState();
     if (!state.translate.events[eventId]) {
       // Lookup translation
-      if (!state.user.userData) {
-        if (!canGetValidLogin(dispatch)) {
-          return;
-        }
+      if (!state.user.userData && !await canGetValidLoginFor('Translation', dispatch)) {
+        return;
       }
       const translations = await translateEventApi(eventId, language);
       await dispatch(eventTranslated(eventId, translations));

@@ -6,6 +6,9 @@
 
 import _ from 'lodash/collection';
 import {
+  Alert
+} from 'react-native';
+import {
   LoginManager,
   AccessToken,
 } from 'react-native-fbsdk';
@@ -13,23 +16,35 @@ import { loginStartOnboard, loginComplete } from '../actions';
 import type { Dispatch } from '../actions/types';
 import { track } from '../store/track';
 
-export async function canGetValidLogin(dispatch: Dispatch, message: string) {
-  try {
-    // TODO: Prompt for access!
-    await loginButtonPressed(dispatch);
-    return true;
-  } catch (e) {
-    return false;
-  }
+export async function canGetValidLoginFor(message: string, dispatch: Dispatch) {
+  return new Promise((resolve, reject) => {
+    const ok = async () => {
+      const loggedIn = await loginButtonPressed(dispatch);
+      resolve(Boolean(loggedIn));
+    };
+    const cancel = () => {
+      resolve(false);
+    };
+    Alert.alert(
+      'Login Required',
+      `"${message}" requires logging in. Do you want to login/signup?`,
+      [
+        {text: 'Cancel', onPress: cancel, style: 'cancel'},
+        {text: 'OK', onPress: ok},
+      ]
+    );
+  });
 }
 
 export async function loginButtonPressed(dispatch: Dispatch) {
   try {
     const token = await loginOrLogout();
     track('Login - Completed');
-    return await dispatch(loginComplete(token));
+    await dispatch(loginComplete(token));
+    return token;
   } catch (e) {
     console.log('Staying on this screen, failed to login: ', e, e.stack);
+    return null;
   }
 }
 
