@@ -39,7 +39,7 @@ class OnboardingFlow extends React.Component {
   }
 
   onSkipLogin() {
-    track('Login - Really Without Facebook');
+    track('Login - Skip Login');
     this.props.skipLogin();
   }
 
