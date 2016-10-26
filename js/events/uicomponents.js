@@ -53,6 +53,7 @@ import geolib from 'geolib';
 import { toggleEventTranslation } from '../actions';
 import url from 'url';
 import GoogleApiAvailability from 'react-native-google-api-availability';
+import { canGetValidLoginFor } from '../login/logic';
 
 const messages = defineMessages({
   addToCalendar: {
@@ -99,6 +100,11 @@ const messages = defineMessages({
     id: 'event.details',
     defaultMessage: 'Event Details:',
     description: 'Title for the event description card',
+  },
+  featureRSVP: {
+    id: 'feature.RSVP',
+    defaultMessage: 'RSVP',
+    description: 'The name of the RSVP feature when requesting permissions',
   },
   organizer: {
     id: 'event.organizer',
@@ -475,22 +481,33 @@ class _EventRsvpControl extends React.Component {
   constructor(props: Object) {
     super(props);
     this.state = {
-      loading: true,
+      loading: false,
       defaultRsvp: -1,
     };
     (this: any).onRsvpChange = this.onRsvpChange.bind(this);
   }
 
   componentDidMount() {
-    this.loadRsvp();
+    if (this.props.user) {
+      this.loadRsvp();
+    }
   }
 
   async loadRsvp() {
+    // We don't check this.props.user here, since there may be a delay before it gets set,
+    // relative to the code flow that calls this from onRsvpChange.
+    this.setState({loading: true});
     const rsvpIndex = await new RsvpOnFB().getRsvpIndex(this.props.event.id);
     this.setState({defaultRsvp: rsvpIndex, loading: false});
   }
 
   async onRsvpChange(index: number, oldIndex: number): Promise<> {
+    if (!this.props.user) {
+      if (!await this.props.canGetValidLoginFor(this.props.intl.formatMessage(messages.featureRSVP), this.props)) {
+        throw new Error('Not logged in, do not allow changes!');
+      }
+      // Have user, let's load!
+    }
     // Android's SegmentedControl doesn't upport enabled=,
     // so it's possible onRsvpChange will be called while we are loading.
     // Setting an RSVP while an RSVP is in-progress breaks the underlying FB API.
@@ -526,7 +543,19 @@ class _EventRsvpControl extends React.Component {
       />;
   }
 }
-const EventRsvpControl = injectIntl(_EventRsvpControl);
+const EventRsvpControl = connect(
+  (state) => ({
+    user: state.user.userData,
+  }),
+  (dispatch) => ({
+    canGetValidLoginFor: async (feature, props) => {
+      if (!props.user && !await canGetValidLoginFor(feature, props.intl, dispatch)) {
+        return false;
+      }
+      return true;
+    },
+  })
+)(injectIntl(_EventRsvpControl));
 
 class _EventRsvp extends React.Component {
   render() {
