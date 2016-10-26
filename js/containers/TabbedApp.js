@@ -38,6 +38,7 @@ import {
 import {
   selectTab,
 } from '../actions';
+import { canGetValidLoginFor } from '../login/logic';
 import AddEvents from '../containers/AddEvents';
 import NotificationPreferences from '../containers/NotificationPreferences';
 import { track, trackWithEvent } from '../store/track';
@@ -139,7 +140,7 @@ class _EventView extends React.Component {
         }}
         onAddEventClicked={(source) => {
           track('Add Event', {source: source});
-          this.props.navigatable.onNavigate({key: 'AddEvent', title: this.props.intl.formatMessage(messages.addEvent)});
+          this.props.openAddEvent(this.props);
         }}
       />;
     case 'EventView':
@@ -171,7 +172,19 @@ class _EventView extends React.Component {
     }
   }
 }
-const EventView = injectIntl(_EventView);
+const EventView =  connect(
+  state => ({
+    user: state.user.userData,
+  }),
+  dispatch => ({
+    openAddEvent: async (props) => {
+      if (!props.user && !await canGetValidLoginFor('Adding Events', dispatch)) {
+        return;
+      }
+      props.navigatable.onNavigate({key: 'AddEvent', title: props.intl.formatMessage(messages.addEvent)});
+    },
+  }),
+)(injectIntl(_EventView));
 
 class _LearnView extends React.Component {
   render() {
