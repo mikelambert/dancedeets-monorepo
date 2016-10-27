@@ -637,7 +637,6 @@ class RegisterHandler(ApiHandler):
         event_id = self.json_body.get('event_id')
         category_id = self.json_body.get('category_id')
         team = self.json_body.get('team')
-
         team_name = team.get('team_name')
 
         dancers = {}
@@ -670,8 +669,6 @@ class UnregisterHandler(ApiHandler):
 
         event = db.get('/events', event_id)
         category_index = [index for (index, elem) in enumerate(event['categories']) if elem['id'] == category_id][0]
-        logging.info('%s, %s', category_index, signup_id)
-        logging.info('%s', event['categories'][category_index])
         signup = event['categories'][category_index]['signups'][signup_id]
         authenticated = self.fb_uid in signup['dancers']
         if authenticated:
