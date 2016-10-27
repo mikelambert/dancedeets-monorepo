@@ -16,6 +16,7 @@ export default function sort<T>(list: Array<T>, computeFunction: (value: T) => a
     sortValues[key].push(origValue);
   }
   const origSortedDeep = Object.keys(sortValues).sort().map((sortValue) => sortValues[sortValue]);
+  // Flatten the array of arrays into a single flattened array
   const origSorted = [].concat.apply([], origSortedDeep);
   return origSorted;
 }
