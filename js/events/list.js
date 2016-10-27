@@ -57,6 +57,10 @@ import {
 import { weekdayDate } from '../formats';
 import { loadUserData } from '../actions/login';
 import { canHandleUrl } from '../websiteUrl';
+import {
+  loadSavedAddress,
+  storeSavedAddress,
+} from './savedAddress';
 
 const messages = defineMessages({
   fetchEventsError: {
@@ -226,18 +230,33 @@ class _EventListContainer extends React.Component {
   }
 
   async setLocationAndSearch(formattedAddress: string) {
-    // Reload our current location, just in case we haven't loaded it before.
-    // This could happen if we don't have a location at load time (no permissions)
-    // But the user gives us permissions, we do a search, and now we need to reload it here,
-    // ideally before the user's search results come back
+    if (!formattedAddress) {
+      return;
+    }
+
+    // Reload our current location for "N miles away" info, in case we haven't loaded it yet.
+    // This could happen if we don't have a location at load time (no permissions),
+    // then the user gives us permissions for a search, and now we need to reload it here,
+    // ideally before the user's search results come back.
     this.loadLocation();
+
     // Now do the actual search logic:
     await this.props.detectedLocation(formattedAddress);
     await this.props.performSearch();
+
+    // If the user doesn't have a location, let's save one based on their search
+    // Hopefully we'll have loaded the user data by now, after the search has completed...
+    // But this isn't critical functionality, but just a best-effort attempt to save a location
+    if (this.props.user && this.props.user.ddUser && !this.props.user.ddUser.location) {
+      await storeSavedAddress(formattedAddress);
+    }
   }
 
   async authAndReloadProfile(address) {
     if (!this.props.user) {
+      return;
+    }
+    if (!address) {
       return;
     }
     await auth({location: address});
@@ -247,10 +266,18 @@ class _EventListContainer extends React.Component {
   }
 
   async fetchLocationAndSearch() {
-    const address = await getAddress();
-    // Trigger this search without waiting around
+    // Get the address from GPS
+    let address = await getAddress();
+    // Save this location in the user's profile
     this.authAndReloadProfile(address);
-    // And likewise with our attempt to search
+
+    // Otherwise, fall back to the last-searched address
+    if (!address) {
+      address = await loadSavedAddress();
+      console.log('Failed to load GPS, falling back to last-searched address: ', address);
+    }
+
+    // And if we have a location from either place, do a search
     this.setLocationAndSearch(address);
   }
 
@@ -260,8 +287,6 @@ class _EventListContainer extends React.Component {
       this.props.processUrl(url);
     } else {
       this.fetchLocationAndSearch();
-      // TODO: Tie this search in with some attempt to pull in a saved search query
-      // this.props.performSearch();
     }
   }
 
