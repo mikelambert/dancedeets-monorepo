@@ -230,7 +230,7 @@ class Search(object):
         search_results = self._deduped_results(search_results)
 
         # Now sort and return the results
-        search_results.sort(key=lambda x: x.start_time)
+        search_results.sort(key=lambda x: (x.start_time, x.attendee_count))
         return search_results
 
 
