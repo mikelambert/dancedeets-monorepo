@@ -55,7 +55,7 @@ class MyReactNativeHost extends ReactNativeHost implements ReactInstanceHolder {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
-            new FirestackPackage(getApplicationContext()),
+            new FirestackPackage(),
             new ReactNativeYouTube(),
             new GoogleApiAvailabilityPackage(),
             new ReactNativePushNotificationPackage(),
