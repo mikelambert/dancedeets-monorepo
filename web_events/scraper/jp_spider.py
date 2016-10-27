@@ -52,6 +52,7 @@ _VENUE_REMAP = {
     u'天神 club selecta': u'club selecta 福岡県',
     u'ＨＡＴＣＨ！！～ＳＨＩＢＵＹＡ　ＲＥＮＴＡＬ　ＳＴＵＤＩＯ～': 'Studio Hatch, Shibuya',
     u'うめきた広場 テントステージ': u'グランフロント大阪 うめきた広場テントステージ',
+    u'Studio 1000 / Studio NY': u'大阪市北区兎我野町5-6',
 }
 
 
