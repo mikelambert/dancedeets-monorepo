@@ -253,7 +253,7 @@ class _UserProfile extends React.Component {
     if (!user) {
       const loginButton = <Button
         icon={require('../login/icons/facebook.png')}
-        style={{marginBottom: 10}}
+        style={{margin: 10}}
         size="small"
         caption={this.props.intl.formatMessage(messages.login)}
         onPress={this.props.logIn}
