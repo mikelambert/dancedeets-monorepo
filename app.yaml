@@ -32,13 +32,11 @@ vm_settings:
 #    target_utilization: 0.5
 
 env_variables:
-  GAE_USE_SOCKETS_HTTPLIB : '1'
-
+  GAE_USE_SOCKETS_HTTPLIB: '1'
 inbound_services:
 - warmup
 
-default_expiration: "10d"
-
+default_expiration: 10d
 handlers:
 - url: /_pipeline(/.*)?
   script: pipeline.handlers._APP
@@ -116,9 +114,9 @@ handlers:
   script: main.application
 
 admin_console:
- pages:
- - name: Appstats
-   url: /_ah/stats
+  pages:
+  - name: Appstats
+    url: /_ah/stats
 
 skip_files:
 - ^(.*/)?#.*#
