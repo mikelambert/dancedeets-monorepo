@@ -23,32 +23,6 @@ indexes:
 - kind: DBEvent
   properties:
   - name: city_name
-  - name: latitude
-  - name: anywhere
-
-- kind: DBEvent
-  properties:
-  - name: city_name
-  - name: latitude
-  - name: start_time
-    direction: desc
-
-- kind: DBEvent
-  properties:
-  - name: city_name
-  - name: start_time
-    direction: desc
-
-- kind: DBEvent
-  properties:
-  - name: geohashes
-  - name: search_time_period
-  - name: start_time
-    direction: desc
-
-- kind: DBEvent
-  properties:
-  - name: geohashes
   - name: start_time
     direction: desc
 
@@ -56,11 +30,6 @@ indexes:
   properties:
   - name: search_time_period
   - name: __scatter__
-
-- kind: DBEvent
-  properties:
-  - name: search_time_period
-  - name: start_time
 
 - kind: FacebookCachedObject
   properties:
