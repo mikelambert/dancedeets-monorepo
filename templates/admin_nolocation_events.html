@@ -6,19 +6,26 @@ Events without Locations
 
 {% block inner_body %}
 <table>
+  <tr>
+    <th>Event</th>
+    <th>Problem</th>
+    <th>Attendees</th>
+    <th>Start Time</th>
+  </tr>
 	{% for event in events %}
 	<tr
 	{{ loop.cycle('style="background-color: lightgrey"', '') }}
 	>
 		<td><a href="/events/admin_edit?event_id={{ event.fb_event.info.id }}">{{ event.fb_event.info.name }}</a></td>
-		<td>
+		<td style="padding: 5px">
 		{% if not event.db_event.latitude %}
 			Unknown City
 		{% else %}
 			No Nearby City
 		{% endif %}
 		</td>
-		<td>{{ event.db_event.start_time|date_human_format }}</td>
+    <td>{{ event.db_event.attendee_count }}</td>
+    <td>{{ event.db_event.start_time|date_human_format }}</td>
 	</tr>
 	{% endfor %}
 </table>
