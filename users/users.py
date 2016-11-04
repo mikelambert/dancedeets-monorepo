@@ -108,7 +108,7 @@ class User(ndb.Model):
     def add_message(self, message):
         user_message = UserMessage(
             real_fb_uid=self.fb_uid,
-            creation_time=datetime.datetime.now(),    
+            creation_time=datetime.datetime.now(),
             message=message,
         )
         try:
@@ -150,5 +150,3 @@ class UserMessage(ndb.Model):
     real_fb_uid = ndb.StringProperty()
     creation_time = ndb.DateTimeProperty()
     message = ndb.TextProperty(indexed=False)
-
-
