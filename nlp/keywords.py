@@ -56,6 +56,9 @@ EASY_DANCE = Name('EASY_DANCE', Any(
     u'แดนซ์', # dance thai
     u'เต้น', # dance thai
     u'กเต้น', # dancers thai
+    u'nhảy', # dance vietnamese
+    u'vũ đạo', # dance vietnamese
+    u'múa', # dance vietnamese
     'danse\w*', # french and danish
     'taniec', # dance polish
     u'tane?[cč][íú\w]*', # dance slovak/czech
@@ -90,6 +93,7 @@ EASY_CHOREO = Name('EASY_CHOREO', Any(
     'choreo',
     u'chorée', # french choreo
     u'chorégraph\w*', # french choreographer
+    u'biên đạo', # vietnamese choreography
     u'кореограф', # macedonian
     u'안무',
 ))
@@ -430,6 +434,7 @@ EASY_SESSION = Any(
     'open sessions?',
     u'오픈 ?세션', # open session
     'training',
+    u'buổi', # vietnamese sessions
 )
 EASY_EVENT = Name('EASY_EVENT', Any(
     EASY_CLUB,
@@ -468,6 +473,8 @@ PERFORMANCE = Name('PERFORMANCE', Any(
     u'展', # chinese exhibition/show
     u'果展', # chinese exhibition
     u'表演', # chinese performance
+    u'biểu diễn', # vietnamese performance
+    u'trình diễn', # vietnamese performance
     u'vystoupení', # czech performances
     u'výkonnostních', # czech performance
     u'изпълнението', # bulgarian performance
@@ -651,6 +658,10 @@ BATTLE = Name('BATTLE', Any(
     'verseny', # hungarian competition
     'championships?',
     'champs?',
+    u'dự thi', # vietnamese competition
+    u'phần thi', # vietnamese competition
+    u'giải đấu', # vietnamese tournament
+    u'thi đấu', # competition vietnamese
     u'čempionatams', # lithuanian championship
     'campeonato', # spanish championship
     'meisterschaft', # german championship
@@ -686,8 +697,6 @@ BATTLE = Name('BATTLE', Any(
     u'大会', # japanese tournament
     u'トーナメント', # japanese tournament
     'turnie\w*', # tournament polish/german
-    u'giải đấu', # tournament vietnamese
-    u'thi đấu', # competition vietnamese
     u'състезанието', # competition bulgarian
     u'đấu', # game vietnamese
     'turneringer', # danish tournament
@@ -707,6 +716,7 @@ CLASS = Name('CLASS', Any(
     'w\.s\.', # japanese workshop W.S.
     u'ワークショップ', # japanese workshop
     u'작업장', # korean workshop
+    u'hội thảo', # vietnamese workshop
     'cursillo', # spanish workshop
     'ateliers', # french workshop
     'workshopy', # czech workshop
@@ -829,6 +839,7 @@ JUDGE = Name('JUDGE', Any(
     'jurados?', # spanish jury
     u'журито', # bulgarian jury
     'judge[sz]?',
+    u'giám khảo', # vietnamese judges
     'jures', # french jury
     '(?:les? )?juges?', # french judges
     'tuomar(?:it)?', # finnish judge(s)
@@ -968,6 +979,7 @@ CONNECTOR = Name('CONNECTOR', Any(
     ' di ',
     ' de ',
     ' ?: ?',
+    u' bài ', # vietnamese
     u'な', # japanese
     u'の', # japanese
     u'的', # chinese
@@ -1043,6 +1055,7 @@ FORMAT_TYPE = Name('FORMAT_TYPE', Any(
     u'チーム', # japanese team
     u'팀', # korean team
     'crew',
+    u'nhóm', # vietnamese crew/band
     u'クルー', # japanese crew
     u'크루', # korean crew
     u'đội', # vietnamese team

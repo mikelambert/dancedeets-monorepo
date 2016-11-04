@@ -31,7 +31,7 @@ aov,0
 art of tec[hk]nique
 au[rl]o[rl]a.tex
 b-trible
-b\W?fresh brno 
+b\W?fresh brno
 baccano
 baltimore dance crews
 bdcp collective
@@ -145,6 +145,7 @@ jack\W?baskets
 jazz\W?cotech
 kamikaze crew
 kamikaze clownz
+k\W?i\W?f\W?crew
 kinematik dance
 klandeskillz
 l\.?o\.?f\.?d
