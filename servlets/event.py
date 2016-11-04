@@ -410,7 +410,7 @@ class AdminNoLocationEventsHandler(base_servlet.BaseRequestHandler):
         db_events = [x for x in db_events if x.anywhere is False]
         template_events = []
         for db_event in db_events:
-            if db_event.has_content():
+            if db_event.has_content() and db_event.is_fb_event:
                 template_events.append(dict(fb_event=db_event.fb_event, db_event=db_event))
         self.display['events'] = template_events
         self.render_template('admin_nolocation_events')
