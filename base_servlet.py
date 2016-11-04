@@ -316,7 +316,8 @@ class BaseRequestHandler(BareBaseRequestHandler):
                     # These are either infinite-access tokens (which won't expire soon)
                     # or they are ancient tokens (in which case, our User reload mapreduce has already set user.expired_oauth_token)
                     token_expires_soon = False
-                if self.user.expired_oauth_token or token_expires_soon:
+                # Update the access token if necessary
+                if self.user.expired_oauth_token or token_expires_soon or self.request.get('update_fb_access_token'):
                     try:
                         access_token, access_token_expires = self.get_long_lived_token_and_expires(request)
                     except TypeError:
