@@ -187,6 +187,10 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
 
 def _update_geodata(db_event, location_info):
     # If we got good values from before, don't overwrite with empty values!
+    if not db_event.actual_city_name:
+        logging.info('NO EVENT LOCATION1: %s', db_event.id)
+        logging.info('NO EVENT LOCATION2: %s', location_info)
+        logging.info('NO EVENT LOCATION3: %s', location_info.geocode)
     if location_info.actual_city() != db_event.actual_city_name or not db_event.actual_city_name:
         db_event.anywhere = location_info.is_online_event()
         db_event.actual_city_name = location_info.actual_city()

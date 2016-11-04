@@ -82,7 +82,7 @@ class DBEvent(ndb.Model):
 
     # searchable properties
     search_time_period = ndb.StringProperty()
-    start_time = ndb.DateTimeProperty(indexed=False)
+    start_time = ndb.DateTimeProperty(indexed=True) # needed to composite index
     end_time = ndb.DateTimeProperty(indexed=False)
     attendee_count = ndb.IntegerProperty(indexed=False)
 
@@ -91,7 +91,7 @@ class DBEvent(ndb.Model):
     actual_city_name = ndb.StringProperty(indexed=False) # city for this event
     # Index is needed for city_name=Unknown searches in admin_nolocation_events
     city_name = ndb.StringProperty() # largest nearby city for this event
-    latitude = ndb.FloatProperty(indexed=False)
+    latitude = ndb.FloatProperty(indexed=True) # needed to composite index
     longitude = ndb.FloatProperty(indexed=False)
     anywhere = ndb.BooleanProperty()
 
