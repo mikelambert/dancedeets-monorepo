@@ -40,6 +40,7 @@ export const defaultTutorials = [
   {
     style: styles.hiphop,
     tutorials: [
+      require('./tutorials/hiphop/nextschool_dictionary.json'),
       require('./tutorials/hiphop/newschool_dictionary.json'),
       require('./tutorials/hiphop/moncell.json'),
       require('./tutorials/hiphop/stezo.json'),
@@ -106,6 +107,7 @@ export const defaultTutorials = [
   {
     style: styles.house,
     tutorials: [
+      require('./tutorials/house/nextschool_dictionary.json'),
       require('./tutorials/house/newschool_dictionary.json'),
       require('./tutorials/house/jardy.json'),
       //require('./tutorials/house/jardy_footwork.json'),
