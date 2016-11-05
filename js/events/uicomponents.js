@@ -194,9 +194,9 @@ class _AddToCalendarButton extends React.Component {
       icon={require('./images/calendar.png')}
       caption={this.props.intl.formatMessage(messages.addToCalendar)}
       size="small"
-      onPress={() => {
+      onPress={async () => {
         trackWithEvent('Add to Calendar', this.props.event);
-        CalendarAdd(this.props.event);
+        await CalendarAdd(this.props.event);
         if (Platform.OS == 'ios') {
           AlertIOS.alert(this.props.intl.formatMessage(messages.addedToCalendar));
         }

@@ -112,9 +112,9 @@ function addAndroid(event: Event) {
     recurrence: '',
   });
 }
-export function add(event: Event) {
+export async function add(event: Event) {
   if (Platform.OS == 'ios') {
-    addIOS(event);
+    await addIOS(event);
   } else {
     addAndroid(event);
   }
