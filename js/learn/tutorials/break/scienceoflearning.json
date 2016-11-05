@@ -11,67 +11,93 @@
         {
           "youtubeId": "uAxa5BI4SFI",
           "duration": "PT10M21S",
-          "title": "1990s (non official)"
+          "title": "1990s (non official)",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "zsUhDW9UNN0",
           "duration": "PT8M22S",
-          "title": "Flagspin"
+          "title": "Flagspin",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "FnRwNZ0M69Q",
           "duration": "PT8M1S",
-          "title": "Airflare"
+          "title": "Airflare",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "bOEJCYKNrUE",
           "duration": "PT8M22S",
-          "title": "Flare"
+          "title": "Flare",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "VDlBHm91FxM",
           "duration": "PT10M1S",
-          "title": "Windmill"
+          "title": "Windmill",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "8XY5sgiI90U",
           "duration": "PT13M7S",
-          "title": "Headspin"
+          "title": "Headspin",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "JGqkRQZpQag",
           "duration": "PT8M19S",
-          "title": "HALO"
+          "title": "HALO",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "6KLedEeEkZA",
           "duration": "PT10M1S",
-          "title": "Elbow Flare"
+          "title": "Elbow Flare",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "EJkR7184mYA",
           "duration": "PT6M28S",
-          "title": "Baby Mills"
+          "title": "Baby Mills",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "_5il9tk4w5U",
           "duration": "PT6M1S",
-          "title": "Bellymill"
+          "title": "Bellymill",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "JZ1Bt81Hu6I",
           "duration": "PT3M38S",
-          "title": "Windmill to Flare"
+          "title": "Windmill to Flare",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "gI3Qug65HmI",
           "duration": "PT3M2S",
-          "title": "Flare to Headspin"
+          "title": "Flare to Headspin",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "0lU5_9eVwf0",
           "duration": "PT10M16S",
-          "title": "Stretching"
+          "title": "Stretching",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -81,27 +107,37 @@
         {
           "youtubeId": "3IUEoNQhSoA",
           "duration": "PT2M17S",
-          "title": "HANDSTAND - LEVEL 1 - UPDATED"
+          "title": "HANDSTAND - LEVEL 1 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "qmbX6TkH9n8",
           "duration": "PT2M10S",
-          "title": "L-SIT - LEVEL 1 - UPDATED"
+          "title": "L-SIT - LEVEL 1 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "LNVn6ZrQ8G8",
           "duration": "PT2M32S",
-          "title": "HALF PRESS HANDSTAND - LEVEL 2 - UPDATED"
+          "title": "HALF PRESS HANDSTAND - LEVEL 2 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "bh2J-RD41PU",
           "duration": "PT3M48S",
-          "title": "ONE ARM HANDSTAND - LEVEL 4 - UPDATED"
+          "title": "ONE ARM HANDSTAND - LEVEL 4 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "n0GKTczM1bs",
           "duration": "PT5M14S",
-          "title": "PLANCHE - LEVEL 4 - UPDATED"
+          "title": "PLANCHE - LEVEL 4 - UPDATED",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -111,42 +147,58 @@
         {
           "youtubeId": "fYWFtqwMdnQ",
           "duration": "PT2M20S",
-          "title": "WEBSTER - LEVEL 1 - UPDATED"
+          "title": "WEBSTER - LEVEL 1 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "NA3TzCi0kRY",
           "duration": "PT2M34S",
-          "title": "SIDE FLIP - LEVEL 1 - UPDATED"
+          "title": "SIDE FLIP - LEVEL 1 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "fIs2raL82VI",
           "duration": "PT2M25S",
-          "title": "GAINER FLIP - LEVEL 2 - UPDATED"
+          "title": "GAINER FLIP - LEVEL 2 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "cGTOyUa9pM4",
           "duration": "PT2M26S",
-          "title": "B-TWIST - LEVEL 2 - UPDATED"
+          "title": "B-TWIST - LEVEL 2 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "FOKLNqTyd7Q",
           "duration": "PT2M3S",
-          "title": "BACK FLIP - LEVEL 3 - UPDATED"
+          "title": "BACK FLIP - LEVEL 3 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "eoeSWq6VUMk",
           "duration": "PT2M18S",
-          "title": "RAIZ FLIP - LEVEL 3 - UPDATED"
+          "title": "RAIZ FLIP - LEVEL 3 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "OaBzv2s2z1Q",
           "duration": "PT2M34S",
-          "title": "CORKSCREW - LEVEL 3 - UPDATED"
+          "title": "CORKSCREW - LEVEL 3 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "WP_ZrwlVMQQ",
           "duration": "PT2M12S",
-          "title": "RAIZ TO CORKSCREW - LEVEL 4 - UPDATED"
+          "title": "RAIZ TO CORKSCREW - LEVEL 4 - UPDATED",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -156,32 +208,44 @@
         {
           "youtubeId": "WOMHH9XiF_E",
           "duration": "PT2M45S",
-          "title": "HAND HOP - LEVEL 1 - UPDATED"
+          "title": "HAND HOP - LEVEL 1 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "kWXbtTaXsys",
           "duration": "PT4M6S",
-          "title": "AIRCHAIR - LEVEL 2 - UPDATED"
+          "title": "AIRCHAIR - LEVEL 2 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "hiDKXGgWH_E",
           "duration": "PT3M32S",
-          "title": "AIRCHAIR HOPS - LEVEL 4 - UPDATED"
+          "title": "AIRCHAIR HOPS - LEVEL 4 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "C2u74xljeYs",
           "duration": "PT3M10S",
-          "title": "AIRCHAIR TO HEAD / COMBO - LEVEL 4"
+          "title": "AIRCHAIR TO HEAD / COMBO - LEVEL 4",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "oqkUA5blehY",
           "duration": "PT3M55S",
-          "title": "DOUBLE AIRCHAIR - LEVEL 5 - UPDATED"
+          "title": "DOUBLE AIRCHAIR - LEVEL 5 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "KVTefRAhql8",
           "duration": "PT2M37S",
-          "title": "ELBOW HOP - LEVEL 2 - UPDATED"
+          "title": "ELBOW HOP - LEVEL 2 - UPDATED",
+          "height": 270,
+          "width": 480
         }
       ]
     },
@@ -191,20 +255,25 @@
         {
           "youtubeId": "Z4HU2UsFOzk",
           "duration": "PT2M8S",
-          "title": "INVERT FREEZE - LEVEL 4 - UPDATED"
+          "title": "INVERT FREEZE - LEVEL 4 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "I_5OI0OhPMY",
           "duration": "PT4M28S",
-          "title": "HOLLOWBACK - LEVEL 3 - UPDATED"
+          "title": "HOLLOWBACK - LEVEL 3 - UPDATED",
+          "height": 270,
+          "width": 480
         },
         {
           "youtubeId": "MEggTU_eVWM",
           "duration": "PT2M2S",
-          "title": "SHOULDER FREEZE - LEVEL 1 - UPDATED"
+          "title": "SHOULDER FREEZE - LEVEL 1 - UPDATED",
+          "height": 270,
+          "width": 480
         }
       ]
     }
-
   ]
 }
