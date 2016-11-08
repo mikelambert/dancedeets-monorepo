@@ -35,7 +35,7 @@
     "react-native-linear-gradient": "^1.5.9",
     "react-native-locale": "0.0.11",
     "react-native-mail": "^1.6.0",
-    "react-native-maps": "github:mikelambert/react-native-maps",
+    "react-native-maps": "github:mikelambert/react-native-maps#v11",
     "react-native-mixpanel": "github:mikelambert/react-native-mixpanel",
     "react-native-native-env": "0.0.4",
     "react-native-permissions": "github:yonahforst/react-native-permissions",
