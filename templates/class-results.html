@@ -31,7 +31,7 @@
 <div class="container">
 <div class="row">
 <div class="col-md-12">
-<div id="app"></div>
+<div id="app">{{classesHtml|safe}}</div>
 </div>
 </div>
 </div>
@@ -39,7 +39,7 @@
 <div class="container">
 <div class="row">
 <div class="col-md-9">
-<div id="app"></div>
+<div id="app">{{classesHtml|safe}}</div>
 </div>{# col-md-9 #}
 <div class="col-md-3">
   <button type="button" class="btn btn-primary" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
@@ -64,13 +64,6 @@ function share() {
 }
 
 //TODO: make a "class" page with relevant info (youtube, studio link, etc)
-
-var classes = {{classes|tojson}};
-
-var imagePath = '/dist-{{version}}/img/classes/{{location|escapejs}}/';
-
-var searchLocation = {{full_location|tojson}};
-
 
 function resetAffixedOffset() {
   var height = 0;
@@ -104,6 +97,11 @@ $(window).resize(function() {
   resetAffixedOffset();
 });
 
+var classes = {{classes|tojson}};
+var imagePath = {{imagePath|tojson}};
+var searchLocation = {{full_location|tojson}};
 </script>
+
 <script src="/dist-{{version}}/js/class-results.js"></script>
+
 {% endblock %}

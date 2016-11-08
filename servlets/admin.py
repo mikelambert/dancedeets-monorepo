@@ -73,14 +73,8 @@ class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
 @app.route('/tools/test')
 class TestHandler(base_servlet.webapp2.RequestHandler):
     def get(self):
-        from react.conf import settings
         from react.render import render_component
         import os.path
-        DEBUG = True
-        settings.configure(
-            RENDER=True,  # not DEBUG,
-            RENDER_URL='http://localhost:8090/render',
-        )
         classes = [
             {
                 'url': 'url',

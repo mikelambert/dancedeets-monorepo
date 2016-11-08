@@ -1,12 +1,14 @@
 import datetime
 import json
 import logging
-import keys
+import os.path
+from react.render import render_component
 import urllib
 import webapp2
 
 import app
 import base_servlet
+import keys
 from search import search_base
 from . import class_index
 from . import class_models
@@ -51,7 +53,10 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         if location not in ['nyc', 'la']:
             self.add_error('Bad location: %s' % location)
         full_location = self.location_shortcuts.get(location, location)
-        self.errors_are_fatal
+
+        image_path = '/dist-%s/img/classes/%s/' % (self._get_static_version(), location)
+
+        self.errors_are_fatal()
         form = search_base.SearchForm(
             start=datetime.date.today() - datetime.timedelta(days=1),
             end=datetime.date.today() + datetime.timedelta(days=7),
@@ -59,7 +64,18 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         )
         search_results = class_index.ClassSearch(form.build_query(start_end_query=True)).get_search_results()
 
-        self.display['classes'] = [self.make_class(i, x) for i, x in enumerate(search_results)]
+        classes = [self.make_class(i, x) for i, x in enumerate(search_results)]
+        classes_html = render_component(
+            path=os.path.abspath('assets/js/class-results.jsx'),
+            props=dict(
+                imagePath=image_path,
+                location=full_location,
+                classes=classes,
+            ))
+
+        self.display['imagePath'] = image_path
+        self.display['classes'] = classes
+        self.display['classesHtml'] = classes_html
         self.display['location'] = location
         self.display['full_location'] = full_location
         self.render_template(self.template_name)

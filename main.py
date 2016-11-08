@@ -60,6 +60,18 @@ def webapp_add_wsgi_middleware(app):
     return app
 
 
+def is_local_appengine():
+    return ('APPENGINE_RUNTIME' in os.environ and
+            'Development/' in os.environ['SERVER_SOFTWARE'])
+
+from react.conf import settings
+DEBUG = is_local_appengine() and False
+settings.configure(
+    RENDER=not DEBUG,
+    RENDER_URL='http://localhost:8090/render',
+)
+
+
 logging.info("Begin modules")
 import webapp2
 from google.appengine.ext import ereporter
