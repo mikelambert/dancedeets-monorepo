@@ -73,6 +73,21 @@ class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
 @app.route('/tools/test')
 class TestHandler(base_servlet.webapp2.RequestHandler):
     def get(self):
-        import urllib
-        result = urllib.urlopen('http://localhost:8090').read()
-        self.response.out.write(result)
+        from react.conf import settings
+        DEBUG = True
+        settings.configure(
+            RENDER=True,  # not DEBUG,
+            RENDER_URL='http://localhost:8090/render',
+        )
+        from react.render import render_component
+        import os.path
+        result = render_component(
+            path=os.path.abspath('assets/js/class-results.jsx'),
+            props=dict(
+                imagePath='imagePath',
+                location='searchLocation',
+                classes=[],
+                studios=[],
+                styles=[],
+            ))
+        self.response.out.write(result.markup)

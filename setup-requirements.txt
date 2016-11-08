@@ -6,6 +6,9 @@ git+https://github.com/sixohsix/twitter
 # https://github.com/wtforms/wtforms-appengine/commit/841b76c15a2658c73c7e705fb810fe7c224b104b
 git+https://github.com/wtforms/wtforms-appengine
 
+# Communicate to our npm js render server
+react
+
 # ScrapingHub API
 scrapinghub
 scrapy
