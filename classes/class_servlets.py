@@ -39,7 +39,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             'location': result.actual_city_name,
             'startTime': result.start_time_raw,
             'categories': result.extended_categories(),
-            'key': 'result-' + index,
+            'key': 'result-%s' % index,
         }
         if result.sponsor:
             result['sponsor'] = result.sponsor
