@@ -117,7 +117,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
   };
 };
-export default EventPager = connect(
+
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(EventPager);

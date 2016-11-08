@@ -97,18 +97,18 @@ class _ScreenshotSlideshow extends React.Component {
       case 1:
         await this.setupListView(dispatch);
         break;
-      case 1:
+      case 2:
         await this.setupEventView(dispatch);
         break;
-      case 2:
+      case 3:
         // To delete the accesstoken and make this emulator usable again
         await this.logout(dispatch);
         //await this.setupAddEventView(dispatch);
         break;
-      case 3:
+      case 4:
         //await this.setupProfileView(dispatch);
         break;
-      case 4:
+      case 5:
         break;
     }
     this.setState({page: this.state.page + 1});

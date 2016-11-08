@@ -329,13 +329,14 @@ class _RegistrationPage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {values: {
+    const state = {values: {
       ...this.teamDefaults(),
       team_name: '',
     }};
     if (this.props.user) {
-      this.state.values.dancer_name_1 = this.props.user.profile.name;
+      state.values.dancer_name_1 = this.props.user.profile.name;
     }
+    this.state = state;
     (this: any).handleValueChange = this.handleValueChange.bind(this);
   }
 
