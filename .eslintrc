@@ -1,4 +1,8 @@
 {
+  "parser": "babel-eslint",
+
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+
   "ecmaFeatures": {
     "modules": true,
     "jsx": true,
@@ -13,6 +17,10 @@
     "react",
   ],
   "rules": {
+    "no-console": 0,
+    "react/prop-types": 0,
+    "react/react-in-jsx-scope": 0,
+
     // Possible Errors
     "comma-dangle": [2, "always-multiline"],
     "no-cond-assign": 2,
