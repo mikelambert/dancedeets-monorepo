@@ -65,7 +65,7 @@ def is_local_appengine():
             'Development/' in os.environ['SERVER_SOFTWARE'])
 
 from react.conf import settings
-DEBUG = is_local_appengine() and False
+DEBUG = is_local_appengine()
 settings.configure(
     RENDER=not DEBUG,
     RENDER_URL='http://localhost:8090/render',
