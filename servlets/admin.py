@@ -81,11 +81,21 @@ class TestHandler(base_servlet.webapp2.RequestHandler):
             RENDER=True,  # not DEBUG,
             RENDER_URL='http://localhost:8090/render',
         )
+        classes = [
+            {
+                'url': 'url',
+                'name': 'Link',
+                'location': 'EXPG',
+                'startTime': '2014-01-01T00:00:00',
+                'categories': ['Hip-Hop'],
+                'key': 'result-0',
+            }
+        ]
         result = render_component(
             path=os.path.abspath('assets/js/class-results.jsx'),
             props=dict(
                 imagePath='imagePath',
                 location='searchLocation',
-                classes=[],
+                classes=classes,
             ))
         self.response.out.write(result.markup)
