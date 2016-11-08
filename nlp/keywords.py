@@ -324,6 +324,7 @@ STYLE_HIPHOP = Name('STYLE_HIPHOP', Any(
     'hip\W?hop\Wn(?:ew|u)\W?style',
     'girl\W?s\W?hip\W?hop',
     'hip\W?hopp?er[sz]?',
+    'video\W?funk',
     'street\W?jazz', 'street\W?funk',
     'jazz\W?funk', 'funk\W?jazz',
     'boom\W?crack',

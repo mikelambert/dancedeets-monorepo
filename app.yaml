@@ -1,5 +1,5 @@
 vm: true
-runtime: python27
+runtime: custom
 threadsafe: true
 api_version: 1
 service: default
@@ -11,7 +11,6 @@ manual_scaling:
 # And change runtime form 'vm' to 'custom'
 vm_settings:
   machine_type: n1-standard-1
-  vm_runtime: python27
 #resources:
 #  memory_gb: 0.6
 ##  cpu: 1.0
@@ -31,8 +30,6 @@ vm_settings:
 #  cpu_utilization:
 #    target_utilization: 0.5
 
-env_variables:
-  GAE_USE_SOCKETS_HTTPLIB: '1'
 inbound_services:
 - warmup
 

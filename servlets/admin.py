@@ -69,3 +69,10 @@ class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
         logging.info("found %s events", len(all_events))
         for e in all_events:
             self.response.out.write('<a href="%s">%s</a><br>\n' % (e.source_url, e.fb_event_id))
+
+@app.route('/tools/test')
+class TestHandler(base_servlet.webapp2.RequestHandler):
+    def get(self):
+        import urllib
+        result = urllib.urlopen('http://localhost:8090').read()
+        self.response.out.write(result)

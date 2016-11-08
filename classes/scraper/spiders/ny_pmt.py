@@ -53,6 +53,8 @@ class PMTHouseOfDance(browser_scraper.BrowserScraper):
         return 'http://www.pmthouseofdance.com/#!schedule/c1jfb'
 
     def parse_classes(self, response):
+        import logging
+        logging.info(response.body)
         table = response.css('div#c1jfbinlineContent div.s2')
 
         captured_columns = []
