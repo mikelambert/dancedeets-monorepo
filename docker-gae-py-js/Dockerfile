@@ -1,6 +1,8 @@
+# This basically pulls from:
+# https://github.com/GoogleCloudPlatform/python-compat-runtime/blob/master/Dockerfile
 FROM gcr.io/google_appengine/python-compat-multicore
 
-# These bits are copied from:
+# And this is a copy from:
 # https://github.com/GoogleCloudPlatform/nodejs-docker/blob/master/base/Dockerfile
 
 # Install updates and dependencies
@@ -20,10 +22,10 @@ ADD install_node /usr/local/bin/install_node
 # Set common env vars
 ENV NODE_ENV production
 
-ADD run-servers.sh /usr/local/bin/run-servers.sh
+
+
 
 # But let's change the final script to run node *and* python servers
+ADD run-servers.sh /usr/local/bin/run-servers.sh
 ENTRYPOINT ["bash", "run-servers.sh"]
-
-
 
