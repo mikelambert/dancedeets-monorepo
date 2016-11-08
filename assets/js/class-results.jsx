@@ -1,6 +1,13 @@
+/**
+ * Copyright 2016 DanceDeets.
+ *
+ * @flow
+ */
 /* global $ */
+
+'use strict';
+
 import React from 'react';
-import ReactDOM from 'react-dom';
 import dateFormat from 'date-fns/format';
 
 var StudioImage = React.createClass({
@@ -532,13 +539,4 @@ var App = React.createClass({
   },
 });
 
-ReactDOM.render(
-  <App
-    imagePath={window.imagePath}
-    location={window.searchLocation}
-    classes={window.classes}
-    studios={window.studios}
-    styles={window.styles}
-  />,
-  document.getElementById('app')
-);
+module.exports = App;
