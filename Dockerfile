@@ -1,4 +1,4 @@
-FROM gcr.io/google_appengine/python-compat
+FROM gcr.io/google_appengine/python-compat-multicore
 
 # These bits are copied from:
 # https://github.com/GoogleCloudPlatform/nodejs-docker/blob/master/base/Dockerfile
