@@ -197,7 +197,7 @@ var SearchBar = React.createClass({
         <div>
           Styles:{' '}
           <MultiSelectList
-            list={this.props.initial_styles}
+            list={this.props.initialStyles}
             value={this.props.styles}
             ref="styles"
             onChange={this.onChange}
@@ -206,7 +206,7 @@ var SearchBar = React.createClass({
         <div>
           Studios:{' '}
           <MultiSelectList
-            list={this.props.initial_studios}
+            list={this.props.initialStudios}
             value={this.props.studios}
             ref="studios"
             onChange={this.onChange}
@@ -331,19 +331,19 @@ var StudioClasses = React.createClass({
     var aNamedDays = {};
     goodClasses.forEach(function(studioClass) {
       // Section header rendering
-      if (lastStudioClass === null || dateFormat(studioClass.start_time, 'YYYY-MM-DD') !== dateFormat(lastStudioClass.start_time, 'YYYY-MM-DD')) {
-        var day = dateFormat(studioClass.start_time, 'dddd');
+      if (lastStudioClass === null || dateFormat(studioClass.startTime, 'YYYY-MM-DD') !== dateFormat(lastStudioClass.startTime, 'YYYY-MM-DD')) {
+        var day = dateFormat(studioClass.startTime, 'dddd');
         rows.push(
           <DayHeader
-            date={studioClass.start_time}
-            key={dateFormat(studioClass.start_time, 'YYYY-MM-DD')}
+            date={studioClass.startTime}
+            key={dateFormat(studioClass.startTime, 'YYYY-MM-DD')}
             useAnchor={!aNamedDays[day]}
           />
         );
         aNamedDays[day] = true;
       }
-      if (lastStudioClass === null || dateFormat(studioClass.start_time, 'HH:mm') !== dateFormat(lastStudioClass.start_time, 'HH:mm')) {
-        rows.push(<TimeHeader datetime={studioClass.start_time} key={dateFormat(studioClass.start_time, 'YYYY-MM-DDTHH:mm')} />);
+      if (lastStudioClass === null || dateFormat(studioClass.startTime, 'HH:mm') !== dateFormat(lastStudioClass.startTime, 'HH:mm')) {
+        rows.push(<TimeHeader datetime={studioClass.startTime} key={dateFormat(studioClass.startTime, 'YYYY-MM-DDTHH:mm')} />);
       }
       // Class rendering
       rows.push(<StudioClass studio_class={studioClass} key={studioClass.key} />);
@@ -367,18 +367,56 @@ function toggleSearchBar() {
   }
 }
 
-var App = React.createClass({
-  childContextTypes: {
-    imagePath: React.PropTypes.string,
-  },
-  getChildContext: function() {
-    console.log(this.props);
+function parseISO(s) {
+  s = s.split(/\D/);
+  return new Date(Number(s[0]), Number(s[1]) - 1, Number(s[2]), Number(s[3]), Number(s[4]), Number(s[5]), 0);
+}
+
+class App extends React.Component {
+  props: {
+    imagePath: string,
+    searchLocation: string,
+    classes: Array<any>;
+  };
+
+  constructor(props) {
+    super(props);
+    const studiosSet = {};
+    const stylesSet = {};
+    this.props.classes.forEach(function(studioClass) {
+      studiosSet[studioClass.location] = true;
+      studioClass.categories.forEach(function(category) {
+        if (category !== 'All-Styles') {
+          stylesSet[category] = true;
+        }
+      });
+    });
+    const newClasses = this.props.classes.map(studioClass => {
+      const {startTime, ...rest} = studioClass;
+      return {startTime: parseISO(startTime), ...rest};
+    });
+    function caseInsensitiveSort(a, b) {
+      return a.toLowerCase().localeCompare(b.toLowerCase());
+    }
+
+    this.state = {
+      styles: [],
+      studios: [],
+      teacher: '',
+      initialClasses: newClasses,
+      initialStudios: Object.keys(studiosSet).sort(caseInsensitiveSort),
+      initialStyles: Object.keys(stylesSet).sort(caseInsensitiveSort),
+    };
+  }
+
+  getChildContext() {
     return {imagePath: this.props.imagePath};
-  },
-  filteredClasses: function() {
+  }
+
+  filteredClasses() {
     var goodClasses = [];
     var state = this.state;
-    this.props.classes.forEach(function(studioClass) {
+    this.state.initialClasses.forEach(function(studioClass) {
       // Class filtering logic
       if (state.teacher) {
         if (studioClass.name.toLowerCase().indexOf(state.teacher.toLowerCase()) === -1) {
@@ -405,22 +443,17 @@ var App = React.createClass({
       goodClasses.push(studioClass);
     });
     return goodClasses;
-  },
-  getInitialState: function() {
-    return {
-      styles: [],
-      studios: [],
-      teacher: '',
-    };
-  },
-  handleUserInput: function(styles, studios, teacher) {
+  }
+
+  handleUserInput(styles, studios, teacher) {
     this.setState({
       styles: styles,
       studios: studios,
       teacher: teacher,
     });
-  },
-  componentDidMount: function componentDidMount() {
+  }
+
+  componentDidMount() {
     var allowedTime = 500; // maximum time allowed to travel that distance
     var startX;
     var startY;
@@ -463,17 +496,20 @@ var App = React.createClass({
         }
       },
     });
-  },
-  componentDidUpdate: function() {
+  }
+
+  componentDidUpdate() {
     // Now scroll back so the navbar is directly at the top of the screen
     // and all of the results start fresh, beneath it
     var normalAffixedTop = $('#navbar-container').offset().top;
     if ($(document).scrollTop() > normalAffixedTop) {
       window.scroll(0, normalAffixedTop);
     }
-  },
-  render: function() {
+  }
+
+  render() {
     var filteredClasses = this.filteredClasses();
+    console.log('b', this.state);
     return (
       <div>
         <div
@@ -494,8 +530,8 @@ var App = React.createClass({
               <div id="navbar-collapsable" className="navmenu-height">
                 <b>{this.props.location} Street Dance Classes</b>
                 <SearchBar
-                  initial_studios={this.props.studios}
-                  initial_styles={this.props.styles}
+                  initialStudios={this.state.initialStudios}
+                  initialStyles={this.state.initialStyles}
                   location={this.props.location}
                   styles={this.state.styles}
                   studios={this.state.studios}
@@ -524,19 +560,22 @@ var App = React.createClass({
             filteredClasses={filteredClasses}
             />
           <StudioClasses
-            classes={this.props.classes}
+            classes={this.state.initialClasses}
             styles={this.state.styles}
             studios={this.state.studios}
             teacher={this.state.teacher}
             filteredClasses={filteredClasses}
           />
           <SponsoredSummary
-            classes={this.props.classes}
+            classes={this.state.initialClasses}
           />
         </div>
       </div>
     );
-  },
-});
+  }
+}
+App.childContextTypes = {
+  imagePath: React.PropTypes.string,
+};
 
 module.exports = App;

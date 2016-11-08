@@ -32,6 +32,19 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
     def post(self, *args, **kwargs):
         self.handle(*args, **kwargs)
 
+    def make_class(index, result):
+        result = {
+            'url': result.source_page,
+            'name': result.name,
+            'location': result.actual_city_name,
+            'startTime': result.start_time_raw,
+            'categories': result.extended_categories(),
+            'key': 'result-' + index,
+        }
+        if result.sponsor:
+            result['sponsor'] = result.sponsor
+        return result
+
     def handle(self, location):
         self.finish_preload()
 
@@ -46,7 +59,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         )
         search_results = class_index.ClassSearch(form.build_query(start_end_query=True)).get_search_results()
 
-        self.display['search_results'] = search_results
+        self.display['classes'] = [self.make_class(i, x) for i, x in enumerate(search_results)]
         self.display['location'] = location
         self.display['full_location'] = full_location
         self.render_template(self.template_name)

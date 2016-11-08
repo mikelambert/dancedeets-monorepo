@@ -43,7 +43,9 @@ function fixStickyTouch(window) {
           }
         }
       }
-    } catch (ex) {}
+    } catch (ex) {
+      // Do nothing
+    }
   }
 }
 

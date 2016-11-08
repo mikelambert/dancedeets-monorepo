@@ -74,20 +74,18 @@ class ShowNoOwnerEventsHandler(base_servlet.BaseRequestHandler):
 class TestHandler(base_servlet.webapp2.RequestHandler):
     def get(self):
         from react.conf import settings
+        from react.render import render_component
+        import os.path
         DEBUG = True
         settings.configure(
             RENDER=True,  # not DEBUG,
             RENDER_URL='http://localhost:8090/render',
         )
-        from react.render import render_component
-        import os.path
         result = render_component(
             path=os.path.abspath('assets/js/class-results.jsx'),
             props=dict(
                 imagePath='imagePath',
                 location='searchLocation',
                 classes=[],
-                studios=[],
-                styles=[],
             ))
         self.response.out.write(result.markup)

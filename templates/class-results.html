@@ -65,45 +65,10 @@ function share() {
 
 //TODO: make a "class" page with relevant info (youtube, studio link, etc)
 
-function parseISO(s) {
-  s = s.split(/\D/);
-  return new Date(+s[0], --s[1], +s[2], +s[3], +s[4], +s[5], 0);
-}
+var classes = {{classes|tojson}};
 
-var classes = [];
-{% for result in search_results %}
-  classes.push({
-    'url': {{result.source_page|tojson}},
-    'name': {{result.name|tojson}},
-    'location': {{result.actual_city_name|tojson}},
-    'start_time': parseISO('{{result.start_time_raw}}'),
-{#    'end_time': parseISO('{{result.end_time_raw}}'), #}
-    'categories': {{result.extended_categories()|tojson}},
-{% if result.sponsor %}
-    'sponsor': {{result.sponsor|tojson}},
-{% endif %}
-    'key': 'result-{{loop.index}}',
-  });
-{% endfor %}
-
-var studios_set = {};
-var styles_set = {};
-classes.forEach(function(studio_class) {
-  studios_set[studio_class.location] = true;
-  studio_class.categories.forEach(function(category) {
-    if (category != 'All-Styles') {
-      styles_set[category] = true;
-    }
-  });
-});
 var imagePath = '/dist-{{version}}/img/classes/{{location|escapejs}}/';
 
-function caseInsensitiveSort(a, b) {
-    return a.toLowerCase().localeCompare(b.toLowerCase());
-}
-
-var studios = Object.keys(studios_set).sort(caseInsensitiveSort);
-var styles = Object.keys(styles_set).sort(caseInsensitiveSort);
 var searchLocation = {{full_location|tojson}};
 
 
