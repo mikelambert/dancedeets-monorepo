@@ -119,7 +119,7 @@ var MultiSelectList = React.createClass({
 
       var selected = true;
       subItems.forEach(function(subItem) {
-        selected = selected && ($.inArray(subItem, value) !== -1);
+        selected = selected && (value.indexOf(subItem) !== -1);
       });
 
       options.push(
