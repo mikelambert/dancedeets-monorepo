@@ -209,7 +209,7 @@
     "no-bitwise": 1,                 // disallow use of bitwise operators (off by default)
     "no-plusplus": 0,                // disallow use of unary operators, ++ and -- (off by default)
 
-    "react/display-name": 0,
+    "react/display-name": 1,
     "react/jsx-boolean-value": 0,
     "jsx-quotes": [1, "prefer-double"],
     "react/jsx-sort-props": 0,
@@ -218,7 +218,7 @@
     "react/no-did-mount-set-state": [1, "allow-in-func"],
     "react/no-did-update-set-state": [1, "allow-in-func"],
     "react/no-multi-comp": 0,
-    "react/no-unknown-property": 0,
+    "react/no-unknown-property": 1,
     "react/prop-types": 0,
     "react/react-in-jsx-scope": 0,
     "react/self-closing-comp": 1,
