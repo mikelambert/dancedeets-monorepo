@@ -146,13 +146,13 @@ class DisplayableEvent(object):
                 '  <span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">',
             ]
             if self.street_address:
-                html += ['    <meta itemprop="streetAddress" content="%s"/>' % self.db_event.street_address]
+                html += ['    <meta itemprop="streetAddress" content="%s"/>' % self.street_address]
             if self.city:
-                html += ['    <meta itemprop="addressLocality" content="%s"/>' % self.db_event.city]
-            if self.street_address:
-                html += ['    <meta itemprop="addressRegion" content="%s"/>' % self.db_event.state]
-            if self.street_address:
-                html += ['    <meta itemprop="addressCountry" content="%s"/>' % self.db_event.country]
+                html += ['    <meta itemprop="addressLocality" content="%s"/>' % self.city]
+            if self.state:
+                html += ['    <meta itemprop="addressRegion" content="%s"/>' % self.state]
+            if self.country:
+                html += ['    <meta itemprop="addressCountry" content="%s"/>' % self.country]
             html += ['  </span>']
         html += [
             '</span>',
