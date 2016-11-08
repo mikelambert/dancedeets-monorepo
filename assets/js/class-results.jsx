@@ -509,7 +509,6 @@ class App extends React.Component {
 
   render() {
     var filteredClasses = this.filteredClasses();
-    console.log('b', this.state);
     return (
       <div>
         <div
