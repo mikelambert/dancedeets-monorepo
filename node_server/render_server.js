@@ -48,7 +48,7 @@ app.post('/render', function(req, res) {
         markup: null,
       });
     } else {
-      req.body.component = eval(data);
+      req.body.component = eval(data); // eslint-disable-line no-eval
       reactRender(req.body, function(err, markup) {
         if (err) {
           res.json({
