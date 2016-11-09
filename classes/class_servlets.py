@@ -75,7 +75,8 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
                     location=full_location,
                     classes=classes,
                 ))
-        except exceptions.RenderServerError:
+        except exceptions.RenderServerError as e:
+            logging.exception('Error rendering React component')
             classes_html = ''
 
         self.display['imagePath'] = image_path
