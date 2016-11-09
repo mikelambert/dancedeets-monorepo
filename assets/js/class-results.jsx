@@ -49,6 +49,7 @@ var SelectButton = React.createClass({
 
     return (
       <button
+        type="button"
         className={'btn btn-default btn-sm ' + extraClass}
         ref="button"
         onClick={this.toggleState}
@@ -407,6 +408,8 @@ class App extends React.Component {
       initialStudios: Object.keys(studiosSet).sort(caseInsensitiveSort),
       initialStyles: Object.keys(stylesSet).sort(caseInsensitiveSort),
     };
+
+    this.handleUserInput = this.handleUserInput.bind(this);
   }
 
   getChildContext() {
