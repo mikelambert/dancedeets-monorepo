@@ -13,6 +13,7 @@ var argv = require('yargs')
   .strict()
   .argv;
 
+var fs = require('fs');
 var http = require('http');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -36,7 +37,7 @@ app.get('/', function(req, res) {
 });
 
 app.post('/render', function(req, res) {
-  reactRender(req.body, function(err, markup) {
+  fs.readFile(req.body.path, {encoding: 'utf8'}, function(err, data) {
     if (err) {
       res.json({
         error: {
@@ -47,9 +48,23 @@ app.post('/render', function(req, res) {
         markup: null,
       });
     } else {
-      res.json({
-        error: null,
-        markup: markup,
+      req.body.component = eval(data);
+      reactRender(req.body, function(err, markup) {
+        if (err) {
+          res.json({
+            error: {
+              type: err.constructor.name,
+              message: err.message,
+              stack: err.stack,
+            },
+            markup: null,
+          });
+        } else {
+          res.json({
+            error: null,
+            markup: markup,
+          });
+        }
       });
     }
   });
