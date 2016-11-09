@@ -75,7 +75,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
                     location=full_location,
                     classes=classes,
                 ))
-        except exceptions.RenderServerError as e:
+        except (exceptions.RenderServerError, exceptions.ReactRenderingError):
             logging.exception('Error rendering React component')
             classes_html = ''
 
