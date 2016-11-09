@@ -8,7 +8,7 @@ module.exports = {
     'main': './assets/js/main.js',
     'ie8': './assets/js/ie8.js',
     'calendar': './assets/js/calendar.js',
-    'class-results': './assets/js/class-results-exec.jsx',
+    'class-results-exec': './assets/js/class-results-exec.jsx',
   },
   output: {
     path: path.join(__dirname, 'dist/js'),
