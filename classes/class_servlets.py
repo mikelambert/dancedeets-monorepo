@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import os.path
+from react import exceptions
 from react.render import render_component
 import urllib
 import webapp2
@@ -34,8 +35,9 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
     def post(self, *args, **kwargs):
         self.handle(*args, **kwargs)
 
+    @staticmethod
     def make_class(index, result):
-        result = {
+        class_result = {
             'url': result.source_page,
             'name': result.name,
             'location': result.actual_city_name,
@@ -44,8 +46,8 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
             'key': 'result-%s' % index,
         }
         if result.sponsor:
-            result['sponsor'] = result.sponsor
-        return result
+            class_result['sponsor'] = result.sponsor
+        return class_result
 
     def handle(self, location):
         self.finish_preload()
@@ -65,13 +67,16 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         search_results = class_index.ClassSearch(form.build_query(start_end_query=True)).get_search_results()
 
         classes = [self.make_class(i, x) for i, x in enumerate(search_results)]
-        classes_html = render_component(
-            path=os.path.abspath('assets/js/class-results.jsx'),
-            props=dict(
-                imagePath=image_path,
-                location=full_location,
-                classes=classes,
-            ))
+        try:
+            classes_html = render_component(
+                path=os.path.abspath('assets/js/class-results.jsx'),
+                props=dict(
+                    imagePath=image_path,
+                    location=full_location,
+                    classes=classes,
+                ))
+        except exceptions.RenderServerError:
+            classes_html = ''
 
         self.display['imagePath'] = image_path
         self.display['classes'] = classes
