@@ -69,7 +69,7 @@ class RelevantHandler(base_servlet.BaseRequestHandler):
         classes = [self.make_class(i, x) for i, x in enumerate(search_results)]
         try:
             classes_html = render_component(
-                path=os.path.abspath('assets/js/class-results.jsx'),
+                path=os.path.abspath('dist/js-server/class-results.js'),
                 props=dict(
                     imagePath=image_path,
                     location=full_location,

@@ -19,13 +19,15 @@ var bodyParser = require('body-parser');
 var reactRender = require('react-render');
 
 // Ensure support for loading files that contain ES6+7 & JSX
-require('babel-core/register');
+// Disabled for now, since we cannot use this in a webpack-compiled script
+// And unfortunately, the 10K file limit on GAE keeps us from using uncompiled.
+// require('babel-core/register');
 
 var ADDRESS = argv.address;
 var PORT = argv.port;
 
 var app = express();
-var server = http.Server(app);
+var server = new http.Server(app);
 
 app.use(bodyParser.json());
 

@@ -26,6 +26,7 @@
     "gulp-shell": "^0.5.2",
     "gutil": "^1.6.4",
     "image-webpack-loader": "^1.6.3",
+    "json-loader": "^0.5.4",
     "node-sass": "^3.4.2",
     "pleeease-loader": "^1.0.0",
     "postcss-import": "^8.0.2",
@@ -63,7 +64,8 @@
     "node": ">=0.12"
   },
   "scripts": {
-    "start": "node node_server/render_server.js"
+    "start_local": "node node_server/render_server.js",
+    "start": "node dist/js-server/render_server.js"
   },
   "private": true
 }

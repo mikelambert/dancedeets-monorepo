@@ -129,6 +129,7 @@ skip_files:
 - ^local_data3(/.*)?
 - ^download(/.*)?
 - ^node_modules(/.*)?
+- ^node_server/node_modules(/.*)?
 - ^snapshotted(/.*)?
 - ^scratch(/.*)?
 - ^grammar-processed.*
