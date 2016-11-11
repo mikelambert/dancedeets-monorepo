@@ -44,33 +44,6 @@ handlers:
   script: google.appengine.ext.appstats.ui.app
 - url: /_ah/remote_api(/.*)?
   script: google.appengine.ext.remote_api.handler.application
-- url: /dancedeets.png
-  static_files: dancedeets.png
-  upload: dancedeets.png
-- url: /robots.txt
-  static_files: robots.txt
-  upload: robots.txt
-- url: /favicon.ico
-  static_files: favicon.ico
-  upload: favicon.ico
-- url: /vcss/.*
-  static_dir: css
-- url: /vjs/.*
-  static_dir: js
-- url: /css
-  static_dir: css
-- url: /js
-  static_dir: js
-- url: /dist.*/fonts
-  static_dir: dist/fonts
-- url: /dist.*/img
-  static_dir: dist/img
-- url: /dist.*/js
-  static_dir: dist/js
-- url: /dist.*/css
-  static_dir: dist/css
-- url: /images
-  static_dir: images
 - url: /tools/.*
   script: main.application
   login: admin
@@ -95,8 +68,6 @@ handlers:
 - url: /mapreduce/worker_callback.*
   script: main.application
   login: admin
-- url: /mapreduce/pipeline/images
-  static_dir: mapreduce/lib/pipeline/ui/images
 - url: /mapreduce(/.*)?
   script: mapreduce.main.APP
   login: admin

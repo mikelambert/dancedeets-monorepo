@@ -27,9 +27,10 @@ from servlets import feedback
 from servlets import login
 from servlets import mobile_apps
 from servlets import new_homepage
-from servlets import static_servlets
 from servlets import promote
 from servlets import profile_page
+from servlets import static
+from servlets import static_servlets
 from servlets import tools
 from servlets import warmup
 from servlets import youtube_simple_api
