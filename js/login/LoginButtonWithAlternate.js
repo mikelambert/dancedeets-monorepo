@@ -39,13 +39,27 @@ class _LoginButtonWithAlternate extends React.Component {
     intl: intlShape.isRequired,
   };
 
+  state: {
+    enabled: boolean,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {enabled: true};
+  }
+
   render() {
     return (
       <View style={styles.bottomBox}>
         <Button
           icon={require('./icons/facebook.png')}
           caption={this.props.intl.formatMessage(messages.loginButton)}
-          onPress={this.props.onLogin}
+          onPress={async () => {
+            this.setState({enabled: false});
+            await this.props.onLogin();
+            this.setState({enabled: true});
+          }}
+          enabled={this.state.enabled}
           textStyle={styles.buttonStyle}
           testID="loginButton"
         />

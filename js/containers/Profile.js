@@ -301,7 +301,7 @@ const UserProfile = connect(
     user: state.user.userData,
   }),
   (dispatch: Dispatch) => ({
-    logIn: () => loginButtonPressed(dispatch),
+    logIn: async () => await loginButtonPressed(dispatch),
     logOutWithPrompt: (intl) => dispatch(logOutWithPrompt(intl)),
   }),
 )(injectIntl(_UserProfile));

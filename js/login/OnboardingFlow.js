@@ -48,17 +48,17 @@ class OnboardingFlow extends React.Component {
   render() {
     if (this.state.screen === 'CAROUSEL') {
       return <TutorialScreen
-        onLogin={() => {
+        onLogin={async () => {
           track('Login - FBLogin Button Pressed', {'Button': 'First Screen'});
-          this.props.onLogin();
+          await this.props.onLogin();
         }}
         onNoLogin={this.onDontWantLoginPressed}
       />;
     } else if (this.state.screen === 'NO_LOGIN') {
       return <NoLoginScreen
-        onLogin={() => {
+        onLogin={async () => {
           track('Login - FBLogin Button Pressed', {'Button': 'Second Screen'});
-          this.props.onLogin();
+          await this.props.onLogin();
         }}
         onNoLogin={this.onSkipLogin}
         />;
@@ -69,7 +69,7 @@ class OnboardingFlow extends React.Component {
 export default connect(
     null,
     (dispatch) => ({
-      onLogin: () => loginButtonPressed(dispatch),
+      onLogin: async () => await loginButtonPressed(dispatch),
       skipLogin: () => dispatch(skipLogin()),
     }),
 )(OnboardingFlow);

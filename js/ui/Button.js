@@ -31,6 +31,7 @@ type Props = {
   textStyle: any;
   color: 'purple' | 'yellow' | 'red';
   testID: ?string;
+  enabled: ?boolean;
 };
 
 class Button extends React.Component {
@@ -45,6 +46,7 @@ class Button extends React.Component {
     color: 'purple',
     testID: null,
     isLoading: false,
+    enabled: true,
   };
 
   _renderRealContent() {
@@ -97,22 +99,28 @@ class Button extends React.Component {
     } else if (this.props.color === 'red') {
       colors = [redColors[0], redColors[1], redColors[1]];
     }
-    return (
-      <TouchableOpacity
-        accessibilityTraits="button"
-        onPress={this.props.onPress}
-        activeOpacity={0.8}
-        style={[this.props.style]}
-        testID={this.props.testID}>
-        <LinearGradient
-          start={[0, 0]} end={[0, 1]}
-          locations={[0.0, 0.7, 1.0]}
-          colors={colors}
-          style={[styles.button, size]}>
-            {this._renderContent()}
-        </LinearGradient>
-      </TouchableOpacity>
-    );
+    const buttonContents = <LinearGradient
+      start={[0, 0]} end={[0, 1]}
+      locations={[0.0, 0.7, 1.0]}
+      colors={colors}
+      style={[styles.button, size]}>
+        {this._renderContent()}
+    </LinearGradient>;
+
+    if (this.props.enabled) {
+      return (
+        <TouchableOpacity
+          accessibilityTraits="button"
+          onPress={this.props.onPress}
+          activeOpacity={0.8}
+          style={[this.props.style]}
+          testID={this.props.testID}>
+          {buttonContents}
+        </TouchableOpacity>
+      );
+    } else {
+      return <View>{buttonContents}</View>;
+    }
   }
 }
 
