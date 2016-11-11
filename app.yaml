@@ -124,6 +124,7 @@ skip_files:
 - ^(.*/)?.*\.db
 - ^(.*/)?.*\.csv
 - ^(.*/)?test_data(/.*)?
+- ^.git(/.*)?
 - ^local_data(/.*)?
 - ^local_data2(/.*)?
 - ^local_data3(/.*)?
@@ -139,6 +140,11 @@ skip_files:
 - ^snapshotted(/.*)?
 - ^tmp(/.*)?
 - ^build(/.*)?
+# We don't need these on the server, this is only used for scrapy:
+- ^lib/lxml(/.*)?
+- ^lib/scrapy(/.*)?
+- ^lib/twisted(/.*)?
+- ^lib/zope(/.*)?
 #- ^(.*/)?app\.yaml
 #- ^(.*/)?app\.yml
 #- ^(.*/)?index\.yaml

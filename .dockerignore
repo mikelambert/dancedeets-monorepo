@@ -12,4 +12,10 @@ r/*
 snapshotted
 tmp
 build
+.git
 
+# We don't need these on the server, this is only used for scrapy:
+lib/lxml
+lib/scrapy
+lib/twisted
+lib/zope
