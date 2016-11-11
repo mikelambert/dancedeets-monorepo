@@ -12,7 +12,7 @@ mappings = [
     (r'/(favicon\.ico)', './'),
     (r'/v?css/(.*)', 'css/'),
     (r'/v?js/(.*)', 'js/'),
-    (r'/dist.*/(.*)', 'dist/'),
+    (r'/dist[^/]*/(.*)', 'dist/'),
     (r'^images/(.*)', 'images/'),
     (r'^mapreduce/pipeline/images/(.*)', 'mapreduce/pipeline/ui/images/')
 ]
