@@ -14,6 +14,11 @@
       "logged_in": {% if user %}true{% else %}false{% endif %},
       "Platform": "Web",
   });
+{% else %}
+window.mixpanel = {
+  track: function(name, args) {},
+  track_links: function(cssPath, name) {},
+};
 {% endif %}
 
   {% if prod_mode and track_analytics %}
