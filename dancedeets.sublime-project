@@ -6,48 +6,49 @@
 			"path": ".",
 			"folder_exclude_patterns": ["download", "build", "node_modules"],
 		},
-    ],
-    "build_systems":
-    [
-        {
-            "name": "test",
-            "working_dir": "${project_path:${folder}}",
-            "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-            "shell_cmd": "make && ./nose.sh"
-        },
-    ],
-    "SublimeLinter": {
-        "linters": {
-            "pylint": {
-                // Disabled for now, to make our codebase look decent with pylint
-                "disable": "C0103,C0111,C0301,R0903",
-                // C0103: Invalid %s name "%s"
-                // C0111: Missing %s docstring
-                // C0301: Line too long (%s/%s)
-                // R0903: Too few public methods (%s/%s)
-                "paths": [
-                    "${project}/lib",
-                    "${home}/google-cloud-sdk/platform/google_appengine",
-                ],
-            },
-            "pep8": {
-                "ignore": "E501,E261"
-                // E501: line too long
-                // E261: at least two spaces before inline comment
-            }
-        }
+  ],
+  "build_systems":
+  [
+    {
+      "name": "test",
+      "working_dir": "${project_path:${folder}}",
+      "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+      "shell_cmd": "make && ./nose.sh"
     },
-    "codeintel_settings": {
-        "codeintel_language_settings": {
-            "Python": {
-                "codeintel_scan_extra_dir": [
-                    // These project-relative and user-relative paths depend on:
-                    // https://github.com/SublimeCodeIntel/SublimeCodeIntel/pull/569
-                    // Otherwise we need to specify them as fully-absolute paths
-                    "lib",
-                    "~/google-cloud-sdk/platform/google_appengine",
-                ],
-            },
-        },
+  ],
+  "SublimeLinter": {
+    "@python": 2.7,
+    "linters": {
+      "pylint": {
+        // Disabled for now, to make our codebase look decent with pylint
+        "disable": "C0103,C0111,C0301,R0903",
+        // C0103: Invalid %s name "%s"
+        // C0111: Missing %s docstring
+        // C0301: Line too long (%s/%s)
+        // R0903: Too few public methods (%s/%s)
+        "paths": [
+          "${project}/lib",
+          "${home}/google-cloud-sdk/platform/google_appengine",
+        ],
+      },
+      "pep8": {
+        "ignore": "E501,E261"
+        // E501: line too long
+        // E261: at least two spaces before inline comment
+      }
+    }
+  },
+  "codeintel_settings": {
+    "codeintel_language_settings": {
+      "Python": {
+        "codeintel_scan_extra_dir": [
+          // These project-relative and user-relative paths depend on:
+          // https://github.com/SublimeCodeIntel/SublimeCodeIntel/pull/569
+          // Otherwise we need to specify them as fully-absolute paths
+          "lib",
+          "~/google-cloud-sdk/platform/google_appengine",
+        ],
+      },
     },
+  },
 }
