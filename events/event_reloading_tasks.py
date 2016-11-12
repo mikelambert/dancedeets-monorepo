@@ -114,7 +114,7 @@ load_fb_event = fb_mapreduce.nomr_wrap(yield_load_fb_event)
 
 def yield_load_fb_event_attending(fbl, all_events):
     db_events = [x for x in all_events if x.is_fb_event]
-    fbl.get_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events])
+    fbl.get_multi(fb_api.LookupEventAttending, [x.fb_event_id for x in db_events], allow_fail=True)
 map_load_fb_event_attending = fb_mapreduce.mr_wrap(yield_load_fb_event_attending)
 load_fb_event_attending = fb_mapreduce.nomr_wrap(yield_load_fb_event_attending)
 
@@ -169,5 +169,6 @@ class ReloadEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):
         only_if_updated = self.request.get('only_if_updated', '1') != '0'
         time_period = self.request.get('time_period', None)
         load_attending = self.request.get('load_attending', '0') != '0'
-        mr_load_fb_events(self.fbl, load_attending=load_attending, time_period=time_period, update_geodata=update_geodata, only_if_updated=only_if_updated)
+        queue = self.request.get('queue', 'slow-queue')
+        mr_load_fb_events(self.fbl, load_attending=load_attending, time_period=time_period, update_geodata=update_geodata, only_if_updated=only_if_updated, queue=queue)
     post=get
