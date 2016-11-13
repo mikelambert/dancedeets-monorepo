@@ -29,7 +29,7 @@ class TrackNewUserFriendsHandler(base_servlet.BaseTaskFacebookRequestHandler):
 
 @app.route('/tasks/load_users')
 class LoadUserHandler(base_servlet.UserOperationHandler):
-    user_operation = lambda fbl, load_users: [load_fb_user(fbl, x) for x in load_users]
+    user_operation = lambda self, fbl, load_users: [load_fb_user(fbl, x) for x in load_users]
 
 
 @app.route('/tasks/reload_all_users')

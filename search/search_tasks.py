@@ -12,7 +12,7 @@ class EmailAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
 
 @app.route('/tasks/email_user')
 class EmailUserHandler(base_servlet.UserOperationHandler):
-    user_operation = lambda fbl, load_users: [email_events.email_user(fbl, x) for x in load_users]
+    user_operation = lambda self, fbl, load_users: [email_events.email_user(fbl, x) for x in load_users]
 
 @app.route('/tasks/refresh_fulltext_search_index')
 class RefreshFulltextSearchIndex(base_servlet.BaseTaskFacebookRequestHandler):

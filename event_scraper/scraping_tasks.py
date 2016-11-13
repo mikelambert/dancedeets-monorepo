@@ -29,7 +29,7 @@ class CountSourceStatsHandler(base_servlet.BaseTaskFacebookRequestHandler):
 
 @app.route('/tasks/load_potential_events_for_user')
 class LoadPotentialEventsForUserHandler(base_servlet.UserIdOperationHandler):
-    user_id_operation = potential_events_reloading.load_potential_events_for_user_ids
+    user_id_operation = staticmethod(potential_events_reloading.load_potential_events_for_user_ids)
 
 @app.route('/tasks/load_all_potential_events')
 class LoadAllPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):

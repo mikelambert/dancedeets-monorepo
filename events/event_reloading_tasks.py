@@ -149,12 +149,12 @@ def mr_load_fb_events(fbl, load_attending=False, time_period=None, update_geodat
 
 @app.route('/tasks/load_events')
 class LoadEventHandler(base_servlet.EventOperationHandler):
-    event_operation = load_fb_event
+    event_operation = staticmethod(load_fb_event)
 
 
 @app.route('/tasks/load_event_attending')
 class LoadEventAttendingHandler(base_servlet.EventOperationHandler):
-    event_operation = load_fb_event_attending
+    event_operation = staticmethod(load_fb_event_attending)
 
 
 @app.route('/tasks/reload_events')
