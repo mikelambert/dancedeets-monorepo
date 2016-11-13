@@ -89,15 +89,14 @@ class FindAccessTokensForEventsPipeline(base_handler.PipelineBase):
             shards=2,
         )
 
-class FindAccessTokensForEventsHandler(base_servlet.BaseTaskRequestHandler):
-    def get(self):
-        event_ids = [x for x in self.request.get('event_ids').split(',') if x]
+class FindAccessTokensForEventsHandler(base_servlet.EventIdOperationHandler):
+    @staticmethod
+    def event_id_operation(fbl, event_ids):
         real_event_ids = [x.string_id() for x in eventdata.DBEvent.get_by_ids(event_ids, keys_only=True) if x]
         logging.info("Passed IDs %s, going to run mapreduce search with IDs %s", event_ids, real_event_ids)
         if event_ids:
             pipeline = FindAccessTokensForEventsPipeline(real_event_ids)
             pipeline.start(queue_name='slow-queue')
-    post=get
 
 def map_events_needing_access_tokens(all_db_events):
     fbl = fb_mapreduce.get_fblookup()

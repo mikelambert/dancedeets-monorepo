@@ -28,10 +28,8 @@ class CountSourceStatsHandler(base_servlet.BaseTaskFacebookRequestHandler):
         thing_db.mr_count_potential_events(self.fbl, queue=queue)
 
 @app.route('/tasks/load_potential_events_for_user')
-class LoadPotentialEventsForUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        user_ids = [x for x in self.request.get('user_ids').split(',') if x]
-        potential_events_reloading.load_potential_events_for_user_ids(self.fbl, user_ids)
+class LoadPotentialEventsForUserHandler(base_servlet.UserIdOperationHandler):
+    user_id_operation = potential_events_reloading.load_potential_events_for_user_ids
 
 @app.route('/tasks/load_all_potential_events')
 class LoadAllPotentialEventsHandler(base_servlet.BaseTaskFacebookRequestHandler):

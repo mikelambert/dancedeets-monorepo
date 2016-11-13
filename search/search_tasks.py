@@ -11,12 +11,8 @@ class EmailAllUsersHandler(base_servlet.BaseTaskFacebookRequestHandler):
     post=get
 
 @app.route('/tasks/email_user')
-class EmailUserHandler(base_servlet.BaseTaskFacebookRequestHandler):
-    def get(self):
-        user_ids = [x for x in self.request.get('user_ids').split(',') if x]
-        load_users = users.User.get_by_ids(user_ids)
-        email_events.email_user(self.fbl, load_users[0])
-    post=get
+class EmailUserHandler(base_servlet.UserOperationHandler):
+    user_operation = lambda fbl, load_users: [email_events.email_user(fbl, x) for x in load_users]
 
 @app.route('/tasks/refresh_fulltext_search_index')
 class RefreshFulltextSearchIndex(base_servlet.BaseTaskFacebookRequestHandler):

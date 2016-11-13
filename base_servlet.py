@@ -19,6 +19,7 @@ from google.appengine.ext import db
 from google.appengine.ext import deferred
 
 from users import users
+from events import eventdata
 import event_types
 import facebook
 import fb_api
@@ -725,3 +726,39 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
         expiry_days = int(self.request.get('expiry_days', 0)) or None
         if expiry_days:
             self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
+
+
+class EventIdOperationHandler(BaseTaskFacebookRequestHandler):
+    event_id_operation = None
+
+    def get(self):
+        event_ids = [x for x in self.request.get('event_ids').split(',') if x]
+        self.event_id_operation(self.fbl, event_ids)
+    post=get
+
+
+class EventOperationHandler(BaseTaskFacebookRequestHandler):
+    event_operation = None
+
+    def get(self):
+        event_ids = [x for x in self.request.get('event_ids').split(',') if x]
+        db_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
+        self.event_operation(self.fbl, db_events)
+    post=get
+
+class UserIdOperationHandler(BaseTaskFacebookRequestHandler):
+    user_id_operation = None
+
+    def get(self):
+        user_ids = [x for x in self.request.get('user_ids').split(',') if x]
+        self.user_id_operation(self.fbl, user_ids)
+    post=get
+
+class UserOperationHandler(BaseTaskFacebookRequestHandler):
+    user_operation = None
+
+    def get(self):
+        user_ids = [x for x in self.request.get('user_ids').split(',') if x]
+        load_users = users.User.get_by_ids(user_ids)
+        self.user_operation(self.fbl, load_users)
+    post=get
