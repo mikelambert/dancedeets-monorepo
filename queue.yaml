@@ -5,6 +5,9 @@ queue:
 - name: super-slow-queue
   rate: 30/m
   max_concurrent_requests: 1
+- name: super-super-slow-queue
+  rate: 1/m
+  max_concurrent_requests: 1
 - name: fast-queue
   rate: 60/s
   max_concurrent_requests: 2
