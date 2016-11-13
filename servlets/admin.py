@@ -55,6 +55,7 @@ class FBDataHandler(base_servlet.BareBaseRequestHandler):
             real_key = fbl.key_to_cache_key(key)
         memcache_result = memcache.get(real_key)
         db_result = fb_api.FacebookCachedObject.get_by_key_name(real_key)
+        self.response.out.write('Database Date:\n%s\n\n' % db_result.date_cached)
         self.response.out.write('Memcache:\n%s\n\n' % pprint.pformat(memcache_result, width=200))
         self.response.out.write('Database:\n%s\n\n' % pprint.pformat(db_result and db_result.decode_data() or None, width=200))
         self.response.out.write('MemcacheJSON:\n%s\n\n' % json.dumps(memcache_result))
