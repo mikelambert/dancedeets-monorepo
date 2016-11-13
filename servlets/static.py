@@ -20,6 +20,7 @@ mappings = [
 compiled_mappings = [(re.compile(regex), path) for regex, path in mappings]
 all_static = '|'.join(regex for regex, path in mappings)
 
+mimetypes.add_type('application/font-woff2', '.woff2')
 
 @app.route(all_static)
 class StaticHandler(base_servlet.webapp2.RequestHandler):
@@ -30,7 +31,8 @@ class StaticHandler(base_servlet.webapp2.RequestHandler):
                 full_path = os.path.join(path, result.group(1))
                 if os.path.exists(full_path):
                     mimetype, encoding = mimetypes.guess_type(self.request.path)
-                    self.response.headers['Content-Type'] = mimetype
+                    if mimetype:
+                        self.response.headers['Content-Type'] = mimetype
                     self.response.out.write(open(full_path).read())
                 else:
                     self.response.set_status(404)
