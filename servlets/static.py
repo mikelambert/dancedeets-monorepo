@@ -7,14 +7,14 @@ import app
 import base_servlet
 
 mappings = [
-    (r'/(dancedeets\.png)', './'),
-    (r'/(robots\.txt)', './'),
-    (r'/(favicon\.ico)', './'),
-    (r'/v?css/(.*)', 'css/'),
-    (r'/v?js/(.*)', 'js/'),
-    (r'/dist[^/]*/(.*)', 'dist/'),
-    (r'^images/(.*)', 'images/'),
-    (r'^mapreduce/pipeline/images/(.*)', 'mapreduce/pipeline/ui/images/')
+    (r'^/(dancedeets\.png)', './'),
+    (r'^/(robots\.txt)', './'),
+    (r'^/(favicon\.ico)', './'),
+    (r'^/v?css/(.*)', 'css/'),
+    (r'^/v?js/(.*)', 'js/'),
+    (r'^/dist[^/]*/(.*)', 'dist/'),
+    (r'^/images/(.*)', 'images/'),
+    (r'^/mapreduce/pipeline/images/(.*)', 'mapreduce/pipeline/ui/images/')
 ]
 
 compiled_mappings = [(re.compile(regex), path) for regex, path in mappings]
