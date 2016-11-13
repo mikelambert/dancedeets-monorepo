@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from google.appengine.ext import deferred
@@ -11,6 +12,7 @@ from users import users
 from . import eventdata
 from . import event_updates
 
+DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated):
     fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id, only_if_updated=only_if_updated)
@@ -158,6 +160,8 @@ class LoadEventAttendingHandler(base_servlet.BaseTaskFacebookRequestHandler):
     def get(self):
         event_ids = [x for x in self.request.get('event_ids').split(',') if x]
         db_events = [x for x in eventdata.DBEvent.get_by_ids(event_ids) if x]
+        if self.request.get('oldest_allowed'):
+            self.fbl.db.oldest_allowed = datetime.datetime.strptime(self.request.get('oldest_allowed'), DATETIME_FORMAT)
         load_fb_event_attending(self.fbl, db_events)
     post=get
 
