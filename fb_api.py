@@ -14,6 +14,7 @@ from google.appengine.api import memcache
 from google.appengine.api import urlfetch
 from google.appengine.runtime import apiproxy_errors
 
+from util import mr
 from util import properties
 from util import urls
 
@@ -120,6 +121,7 @@ class LookupProfile(LookupType):
 
     @classmethod
     def get_lookups(cls, object_id):
+        mr.increment('fb-lookups-profile')
         return [
             ('profile', cls.url('%s' % object_id)),
         ]
@@ -130,6 +132,7 @@ class LookupProfile(LookupType):
 class LookupUser(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
+        mr.increment('fb-lookups-user', 1)
         return [
             ('profile', cls.url('%s' % object_id, fields=OBJ_USER_FIELDS)),
             ('friends', cls.url('%s/friends' % object_id)),
@@ -149,6 +152,7 @@ class LookupUserEvents(LookupType):
 
     @classmethod
     def get_lookups(cls, object_id):
+        mr.increment('fb-lookups-user-events', 3)
         common = 'limit=1000&since=yesterday&fields=%s' % ','.join(cls.fields)
         return [
             ('events', cls.url('%s/events?%s' % (object_id, common))), # attending and unsure
@@ -178,6 +182,7 @@ class LookupEvent(LookupType):
 
     @classmethod
     def get_lookups(cls, object_id):
+        mr.increment('fb-lookups-event', 1)
         return [
             ('info', cls.url(object_id, fields=OBJ_EVENT_FIELDS)),
             # Dependent lookup for the image from the info's cover photo id:
@@ -193,6 +198,7 @@ class LookupEventPageComments(LookupType):
 
     @classmethod
     def get_lookups(cls, object_id):
+        mr.increment('fb-lookups-comments', 1)
         return [
             ('comments', cls.url('/comments/?ids=%s' % urls.dd_event_url(object_id))),
         ]
@@ -203,6 +209,7 @@ class LookupEventPageComments(LookupType):
 class LookupEventAttending(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
+        mr.increment('fb-lookups-event-rsvp', 1)
         return [
             ('attending', cls.url('%s/attending?fields=id&limit=5000' % object_id)),
         ]
@@ -213,6 +220,7 @@ class LookupEventAttending(LookupType):
 class LookupEventMembers(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
+        mr.increment('fb-lookups-event-rsvp', 4)
         return [
             ('attending', cls.url('%s/attending' % object_id)),
             ('maybe', cls.url('%s/maybe' % object_id)),
@@ -226,6 +234,7 @@ class LookupEventMembers(LookupType):
 class LookupThingFeed(LookupType):
     @classmethod
     def get_lookups(cls, object_id):
+        mr.increment('fb-lookups-source', 1)
         return [
             # Can't pass fields=OBJ_SOURCE_FIELDS, because we can't guarantee it has all these fields (groups vs pages vs profiles etc)
             ('info', cls.url('%s' % object_id)),
