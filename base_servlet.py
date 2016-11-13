@@ -36,8 +36,20 @@ from util import urls
 class _ValidationError(Exception):
     pass
 
+class FacebookMixinHandler(object):
+    def setup_fbl(self):
+        self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
+        force_updated = bool(int(self.request.get('force_updated', 0)))
+        self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
+        self.fbl.allow_cache = self.allow_cache
+        self.fbl.force_updated = force_updated
 
-class BareBaseRequestHandler(webapp2.RequestHandler):
+        # Refresh our potential event cache every N days (since they may have updated with better keywords, as often happens)
+        expiry_days = int(self.request.get('expiry_days', 0)) or None
+        if expiry_days:
+            self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
+
+class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
     allow_minify = True
 
     def __init__(self, *args, **kwargs):
@@ -515,9 +527,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
                 self.user = None
         # If they have a fb_uid, let's do lookups on that behalf (does not require a user)
         if self.fb_uid:
-            allow_cache = bool(int(self.request.get('allow_cache', 1)))
-            self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
-            self.fbl.allow_cache = allow_cache
+            self.setup_fbl()
             # Always look up the user's information for every page view...?
             self.fbl.request(fb_api.LookupUser, self.fb_uid)
         else:
@@ -693,7 +703,7 @@ class BaseTaskRequestHandler(webapp2.RequestHandler):
     pass
 
 
-class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
+class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler, FacebookMixinHandler):
     def requires_login(self):
         return False
 
@@ -716,16 +726,7 @@ class BaseTaskFacebookRequestHandler(BaseTaskRequestHandler):
                 self.access_token = self.user.fb_access_token
             else:
                 self.access_token = None
-        self.allow_cache = bool(int(self.request.get('allow_cache', 1)))
-        force_updated = bool(int(self.request.get('force_updated', 0)))
-        self.fbl = fb_api.FBLookup(self.fb_uid, self.access_token)
-        self.fbl.allow_cache = self.allow_cache
-        self.fbl.force_updated = force_updated
-
-        # Refresh our potential event cache every N days (since they may have updated with better keywords, as often happens)
-        expiry_days = int(self.request.get('expiry_days', 0)) or None
-        if expiry_days:
-            self.fbl.db.oldest_allowed = datetime.datetime.now() - datetime.timedelta(days=expiry_days)
+        self.setup_fbl()
 
 
 class EventIdOperationHandler(BaseTaskFacebookRequestHandler):
