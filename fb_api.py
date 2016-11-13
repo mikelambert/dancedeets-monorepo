@@ -137,7 +137,7 @@ class LookupUser(LookupType):
             ('profile', cls.url('%s' % object_id, fields=OBJ_USER_FIELDS)),
             ('friends', cls.url('%s/friends' % object_id)),
             ('permissions', cls.url('%s/permissions' % object_id)),
-            ('rsvp_for_future_events', cls.url('%s/events?since=yesterday&fields=id,rsvp_status' % object_id)),
+            ('rsvp_for_future_events', cls.url('%s/events?since=yesterday&fields=id,rsvp_status&limit=5000' % object_id)),
         ]
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
