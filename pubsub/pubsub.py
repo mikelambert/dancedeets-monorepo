@@ -54,7 +54,11 @@ def eventually_publish_event(event_id, token_nickname=None):
             time_add = int(time.time()) if token.allow_reposting else 0
             name = 'Token_%s__Event_%s__TimeAdd_%s' % (token.queue_id(), event_id.replace(':', '-'), time_add)
             logging.info("Adding task with name %s", name)
-            q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
+            try:
+                q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
+            except taskqueue.TombstonedTaskError:
+                # Ignore publishing requests we've already decided to publish (multi-task concurrency)
+                pass
 
 
 def _should_post_event(auth_token, db_event):
