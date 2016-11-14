@@ -106,6 +106,7 @@ countries_abbrev2full = {
     "IQ": "Iraq",
     "IE": "Ireland",
     "IL": "Israel",
+    "IM": "Isle of Man",
     "IT": "Italy",
     "JM": "Jamaica",
     "JP": "Japan",
