@@ -12,7 +12,7 @@ class ImageProxyHandler(webapp2.RequestHandler):
 
     def get(self, event_id):
         try:
-            mimetype, response = event_image.get_image(event_id)
+            mimetype, response = event_image._raw_get_image(event_id)
         except event_image.NotFoundError:
             self.response.set_status(404)
             return
