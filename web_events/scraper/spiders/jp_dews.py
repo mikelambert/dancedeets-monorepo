@@ -8,6 +8,7 @@ from scrapy.selector import Selector
 from events import namespaces
 from .. import items
 from .. import jp_spider
+from loc import japanese_addresses
 
 date_re = ur'(\d+)年\s*(\d+)月\s*(\d+)日'
 # We separate these so we can handle "OPEN : 12:00 / 14:30 / CLOSE : 14:30 / 16:00"
@@ -98,6 +99,7 @@ class DewsScraper(items.WebEventScraper):
         venue = _get('location')
         if not venue:
             venue = jp_spider.get_venue_from_description(item['description'])
-        jp_spider.setup_location(venue, None, item)
+        jp_addresses = japanese_addresses.find_addresses(item['description'])
+        jp_spider.setup_location(venue, jp_addresses, item)
 
         yield item
