@@ -36,12 +36,12 @@ def get_largest_nearby_city_name(point):
 
 class City(db.Model):
     city_name = db.StringProperty()
-    state_name = db.StringProperty()
-    country_name = db.StringProperty()
-    latitude = db.FloatProperty()
-    longitude = db.FloatProperty()
-    population = db.IntegerProperty()
-    timezone = db.StringProperty()
+    state_name = db.StringProperty(indexed=False)
+    country_name = db.StringProperty(indexed=False)
+    latitude = db.FloatProperty(indexed=False)
+    longitude = db.FloatProperty(indexed=False)
+    population = db.IntegerProperty(indexed=False)
+    timezone = db.StringProperty(indexed=False)
     geohashes = db.StringListProperty()
 
 def import_cities():
