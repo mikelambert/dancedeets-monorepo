@@ -9,7 +9,7 @@ from util import abbrev
 
 CITY_GEOHASH_PRECISIONS = range(
     geohash_math.get_geohash_bits_for_km(1500),
-    geohash_math.get_geohash_bits_for_km(200) + 1,
+    geohash_math.get_geohash_bits_for_km(50) + 1,
 )
 
 NEARBY_DISTANCE_KM = 100 # km of distance to nearest "scene" a user will identify with
@@ -32,7 +32,6 @@ def get_largest_nearby_city_name(point):
         city_name = 'San Francisco Bay Area, United States'
     if city_name == 'Tijuana, Mexico':
         city_name = 'San Diego, United States'
-    city_name = city_name.replace("Taiwan, Province of China", "Taiwan")
     return city_name
 
 class City(db.Model):
@@ -54,8 +53,9 @@ def import_cities():
         # List of fields from http://download.geonames.org/export/dump/
         geonameid, name, asciiname, alternatenames, latitude, longitude, feature_class, feature_code, country_code, cc2, admin1_code, admin2_code, admin3_code, admin4_code, population, elevation, gtopo30, timezone, modification_date = line.split('\t')
 
-        if int(population) < 50000:
-            continue
+        #if int(population) < 50000:
+        #    print name, population
+        #    continue
         city = City.get_or_insert(', '.join([asciiname, admin1_code, country_code]))
         city.city_name = asciiname
         city.state_name = admin1_code
