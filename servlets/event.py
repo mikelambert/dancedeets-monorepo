@@ -160,6 +160,14 @@ class DisplayableEvent(object):
         return jinja2.Markup('\n'.join(html))
 
     @property
+    def no_index(self):
+        full_text = '%s %s' % (self.db_event.name, self.db_event.description).lower()
+        if re.search(r'\bno google\b', full_text):
+            return True
+        # Maybe do some automatic checks in the UK for international dancers?
+        return False
+
+    @property
     def meta_description(self):
         formatted_start_time = self.db_event.start_time.strftime('%Y/%m/%d @ %H:%M')
 
