@@ -61,7 +61,13 @@ class RelevantHandler(SearchHandler):
             onebox_links = []
             if validated:
                 search_query = form.build_query()
-                search_results = self.search_class(search_query).get_search_results()
+
+                if self.indexing_bot:
+                    search_results = self.search_class(search_query).get_search_results(full_event=True)
+                    search_results = [x for x in search_results if x.db_event.is_indexable()]
+                else:
+                    search_results = self.search_class(search_query).get_search_results()
+
                 if 'class' in form.deb.data:
                     from classes import class_index
                     class_results = class_index.ClassSearch(search_query).get_search_results()

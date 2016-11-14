@@ -23,10 +23,6 @@
 <meta name="twitter:app:id:googleplay" content="com.dancedeets.android" />
 <meta name="twitter:app:url:googleplay" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/" />
 
-{% if displayable_event.no_index %}
-<meta name="robots" content="noindex" />
-{% endif %}
-
 <meta property="al:ios:url" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/" />
 <meta property="al:ios:app_store_id" content="955212002" />
 <meta property="al:ios:app_name" content="DanceDeets" />
@@ -42,6 +38,10 @@
 <meta property="og:image" content="http://www.dancedeets.com/events/image_proxy/{{ displayable_event.id }}" />
 <meta property="og:description"
       content="{{ displayable_event.meta_description|e }}" />
+
+{% if not displayable_event.is_indexable() %}
+<meta name="robots" content="noindex" />
+{% endif %}
 
 <link rel="canonical" href="{{ canonical_url }}" />
 {% if displayable_event.largest_cover %}

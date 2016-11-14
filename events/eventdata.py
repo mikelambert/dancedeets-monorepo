@@ -1,5 +1,6 @@
 import dateutil
 import logging
+import re
 
 from google.appengine.ext import ndb
 
@@ -118,6 +119,13 @@ class DBEvent(ndb.Model):
 
     def has_geocode(self):
         return self.location_geocode is not None and self.location_geocode.get('status') == 'OK'
+
+    def is_indexable(self):
+        full_text = ('%s %s' % (self.name, self.description)).lower()
+        if re.search(r'\bno google\b', full_text):
+            return False
+        # Maybe do some automatic checks in the UK for international dancers?
+        return True
 
     @classmethod
     def get_by_ids(cls, id_list, keys_only=False):
