@@ -191,20 +191,20 @@ def _update_geodata(db_event, location_info):
         logging.info('NO EVENT LOCATION1: %s', db_event.id)
         logging.info('NO EVENT LOCATION2: %s', location_info)
         logging.info('NO EVENT LOCATION3: %s', location_info.geocode)
-    if location_info.actual_city() != db_event.actual_city_name or not db_event.actual_city_name:
-        db_event.anywhere = location_info.is_online_event()
-        db_event.actual_city_name = location_info.actual_city()
+    if location_info.actual_city() != db_event.actual_city_name or not db_event.actual_city_name or db_event.city_name == 'Unknown':
         if location_info.geocode:
             db_event.city_name = rankings.get_ranking_location_latlng(location_info.geocode.latlng())
         else:
             db_event.city_name = "Unknown"
-        if db_event.actual_city_name:
-            db_event.latitude, db_event.longitude = location_info.latlong()
-        else:
-            db_event.latitude = None
-            db_event.longitude = None
-            # TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
-            logging.warning("No geocoding results for eid=%s is: %s", db_event.id, location_info)
+    db_event.anywhere = location_info.is_online_event()
+    db_event.actual_city_name = location_info.actual_city()
+    if db_event.actual_city_name:
+        db_event.latitude, db_event.longitude = location_info.latlong()
+    else:
+        db_event.latitude = None
+        db_event.longitude = None
+        # TODO(lambert): find a better way of reporting/notifying about un-geocodeable addresses
+        logging.warning("No geocoding results for eid=%s is: %s", db_event.id, location_info)
 
     # This only grabs the very first result from the raw underlying geocode request, since that's all that's used to construct the Geocode object in memory
     db_event.location_geocode = gmaps_api.convert_geocode_to_json(location_info.geocode)
