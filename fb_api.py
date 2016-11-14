@@ -109,6 +109,10 @@ class LookupType(object):
         raise NotImplementedError()
 
     @classmethod
+    def track_lookup(cls):
+        pass
+
+    @classmethod
     def cleanup_data(cls, object_data):
         """NOTE: modifies object_data in-place"""
         # Backwards-compatibility support for old objects lingering around
@@ -120,8 +124,11 @@ class LookupProfile(LookupType):
     use_access_token = False
 
     @classmethod
-    def get_lookups(cls, object_id):
+    def track_lookup(cls):
         mr.increment('fb-lookups-profile')
+
+    @classmethod
+    def get_lookups(cls, object_id):
         return [
             ('profile', cls.url('%s' % object_id)),
         ]
@@ -131,8 +138,11 @@ class LookupProfile(LookupType):
 
 class LookupUser(LookupType):
     @classmethod
+    def track_lookup(cls):
+        mr.increment('fb-lookups-user')
+
+    @classmethod
     def get_lookups(cls, object_id):
-        mr.increment('fb-lookups-user', 1)
         return [
             ('profile', cls.url('%s' % object_id, fields=OBJ_USER_FIELDS)),
             ('friends', cls.url('%s/friends' % object_id)),
@@ -151,8 +161,11 @@ class LookupUserEvents(LookupType):
     fields = ['id', 'name', 'start_time', 'host', 'rsvp_status']
 
     @classmethod
-    def get_lookups(cls, object_id):
+    def track_lookup(cls):
         mr.increment('fb-lookups-user-events', 3)
+
+    @classmethod
+    def get_lookups(cls, object_id):
         common = 'limit=1000&since=yesterday&fields=%s' % ','.join(cls.fields)
         return [
             ('events', cls.url('%s/events?%s' % (object_id, common))), # attending and unsure
@@ -181,8 +194,11 @@ class LookupEvent(LookupType):
     optional_keys = ['cover_info']
 
     @classmethod
+    def track_lookup(cls):
+        mr.increment('fb-lookups-event')
+
+    @classmethod
     def get_lookups(cls, object_id):
-        mr.increment('fb-lookups-event', 1)
         return [
             ('info', cls.url(object_id, fields=OBJ_EVENT_FIELDS)),
             # Dependent lookup for the image from the info's cover photo id:
@@ -197,8 +213,11 @@ class LookupEventPageComments(LookupType):
     use_access_token = False
 
     @classmethod
+    def track_lookup(cls):
+        mr.increment('fb-lookups-comments')
+
+    @classmethod
     def get_lookups(cls, object_id):
-        mr.increment('fb-lookups-comments', 1)
         return [
             ('comments', cls.url('/comments/?ids=%s' % urls.dd_event_url(object_id))),
         ]
@@ -208,8 +227,11 @@ class LookupEventPageComments(LookupType):
 
 class LookupEventAttending(LookupType):
     @classmethod
+    def track_lookup(cls):
+        mr.increment('fb-lookups-event-rsvp')
+
+    @classmethod
     def get_lookups(cls, object_id):
-        mr.increment('fb-lookups-event-rsvp', 1)
         return [
             ('attending', cls.url('%s/attending?fields=id&limit=5000' % object_id)),
         ]
@@ -219,8 +241,11 @@ class LookupEventAttending(LookupType):
 
 class LookupEventMembers(LookupType):
     @classmethod
-    def get_lookups(cls, object_id):
+    def track_lookup(cls):
         mr.increment('fb-lookups-event-rsvp', 4)
+
+    @classmethod
+    def get_lookups(cls, object_id):
         return [
             ('attending', cls.url('%s/attending' % object_id)),
             ('maybe', cls.url('%s/maybe' % object_id)),
@@ -233,8 +258,11 @@ class LookupEventMembers(LookupType):
 
 class LookupThingFeed(LookupType):
     @classmethod
-    def get_lookups(cls, object_id):
+    def track_lookup(cls):
         mr.increment('fb-lookups-source', 1)
+
+    @classmethod
+    def get_lookups(cls, object_id):
         return [
             # Can't pass fields=OBJ_SOURCE_FIELDS, because we can't guarantee it has all these fields (groups vs pages vs profiles etc)
             ('info', cls.url('%s' % object_id)),
@@ -448,6 +476,7 @@ class FBAPI(CacheSystem):
         object_keys_to_rpcs = {}
         for object_key in object_keys_to_lookup:
             cls, oid = break_key(object_key)
+            parts_to_urls = cls.track_lookup()
             parts_to_urls = cls.get_lookups(oid)
             batch_list = [dict(method='GET', name=part_key, relative_url=url, omit_response_on_success=False) for (part_key, url) in parts_to_urls]
             rpc = self._create_rpc_for_batch(batch_list, cls.use_access_token)
