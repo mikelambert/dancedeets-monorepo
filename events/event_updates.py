@@ -146,27 +146,28 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
         if geocode is None:
             logging.warning("Received a location_address that was not geocodeable, treating as empty: %s", json_body['location_address'])
     if geocode is None:
-        results = None
-        if json_body.get('location_address'):
-            results = gmaps_api.fetch_place_as_json(query=json_body['location_address'])
+        if json_body.get('latitude') or json_body.get('longitude'):
+            logging.info("Have latlong, let's geocode that way: %s, %s", json_body.get('latitude'), json_body.get('longitude'))
+            geocode = gmaps_api.lookup_latlng((json_body.get('latitude'), json_body.get('longitude')))
+    if geocode is None:
         if json_body.get('geolocate_location_name'):
             logging.info("Have magic geolocate_location_name, checking if it is a place: %s", json_body.get('geolocate_location_name'))
-            results = gmaps_api.fetch_place_as_json(query=json_body['geolocate_location_name'])
-        if not results or results['status'] == 'ZERO_RESULTS':
-            if json_body.get('location_name'):
-                logging.info("Have regular location_name, checking if it is a place: %s", json_body.get('location_name'))
-                results = gmaps_api.fetch_place_as_json(query=json_body['location_name'])
-        if results and results['status'] == 'OK':
-            result = results['results'][0]
-            json_body['location_name'] = result['name']
-            json_body['location_address'] = result['formatted_address']
-            logging.info("Found an address: %s", json_body['location_address'])
-            # BIG HACK!!!
-            if 'Japan' not in json_body['location_address'] and 'Korea' not in json_body['location_address']:
-                logging.error("Found incorrect address for venue!")
-            latlng = result['geometry']['location']
-            json_body['latitude'] = latlng['lat']
-            json_body['longitude'] = latlng['lng']
+            geocode = gmaps_api.lookup_location(json_body['geolocate_location_name'])
+    if geocode is None:
+        if json_body.get('location_name'):
+            logging.info("Have regular location_name, checking if it is a place: %s", json_body.get('location_name'))
+            geocode = gmaps_api.lookup_location(json_body['location_name'])
+    if geocode:
+        if 'name' in geocode.json_data:
+            json_body['location_name'] = geocode.json_data['name']
+        json_body['location_address'] = geocode.json_data['formatted_address']
+        logging.info("Found an address: %s", json_body['location_address'])
+        # BIG HACK!!!
+        if 'Japan' not in json_body['location_address'] and 'Korea' not in json_body['location_address']:
+            logging.error("Found incorrect address for venue!")
+        latlng = geocode.json_data['geometry']['location']
+        json_body['latitude'] = latlng['lat']
+        json_body['longitude'] = latlng['lng']
 
     db_event.address = json_body.get('location_address')
 
@@ -182,7 +183,7 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
 
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
-        db_event.location_geocode = None
+        db_event.location_geocode = geocode
         location_info = event_locations.LocationInfo(db_event=db_event)
         _update_geodata(db_event, location_info)
 

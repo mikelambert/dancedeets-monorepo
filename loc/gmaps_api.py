@@ -89,6 +89,20 @@ def delete(**kwargs):
     geocode_api.delete(**kwargs)
 
 
+def lookup_location(address, language=None):
+    params = {'address': address}
+    if language:
+        params['language'] = language
+    json = places_api.get_json(**params)
+    geocode = _build_geocode_from_json(json)
+    if not geocode:
+        params = {'query': address}
+        if language:
+            params['language'] = language
+            json = geocode_api.get_json(**params)
+            geocode = _build_geocode_from_json(json)
+    return geocode
+
 def lookup_address(address, language=None):
     params = {'address': address}
     if language:
@@ -105,7 +119,7 @@ def lookup_address(address, language=None):
 
 
 def lookup_latlng(latlng):
-    json = geocode_api.get_json({'latlng': '%s,%s' % latlng})
+    json = geocode_api.get_json(latlng='%s,%s' % latlng)
     return _build_geocode_from_json(json)
 
 
