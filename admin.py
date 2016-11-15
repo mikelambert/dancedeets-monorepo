@@ -16,6 +16,7 @@ from loc.gmaps_cached import CachedGeoCode
 from loc.gmaps_bwcompat import GeoCode
 from pubsub.pubsub import OAuthToken
 from search.search import DisplayEvent
+from servlets.static_db import StaticContent
 from topics.topic_db import Topic
 from users.users import User, UserFriendsAtSignup, UserMessage
 
@@ -24,7 +25,7 @@ app.debug = True
 app.secret_key = keys.get('flask_session_key')
 
 admin = Admin(app, name="Admin")
-for model in [CachedGeoCode, City, DBEvent, DisplayEvent, FacebookCachedObject, GeoCode, LocationMapping, OAuthToken, PotentialEvent, Source, StudioClass, Topic, User, UserFriendsAtSignup, UserMessage]:
+for model in [CachedGeoCode, City, DBEvent, DisplayEvent, FacebookCachedObject, GeoCode, LocationMapping, OAuthToken, PotentialEvent, Source, StaticContent, StudioClass, Topic, User, UserFriendsAtSignup, UserMessage]:
     admin.add_view(appengine.ModelView(model))
 
 

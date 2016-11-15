@@ -51,3 +51,5 @@ google-api-python-client
 gdata
 
 python-firebase-gae
+
+markdown
