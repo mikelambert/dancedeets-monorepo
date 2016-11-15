@@ -15,14 +15,14 @@ from . import event_updates
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated):
-    fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id, only_if_updated=only_if_updated)
+    fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
+    update_regardless = not only_if_updated
+    if update_regardless or db_event.fb_event != fb_event:
+        logging.info("Event %s is updated.", db_event.id)
+        events_to_update.append((db_event, fb_event))
     # This happens when an event moves from TIME_FUTURE into TIME_PAST
-    logging.info("Event %s is%s updated.", db_event.id, " not" if not fb_event else "")
     if event_updates.need_forced_update(db_event):
-        fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.id)
         logging.info("Event %s is being saved via forced update", db_event.fb_event_id)
-    # If we have an event in need of updating, record that
-    if fb_event:
         events_to_update.append((db_event, fb_event))
 
 
