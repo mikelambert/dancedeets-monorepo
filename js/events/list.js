@@ -37,6 +37,7 @@ import {
 import {
   auth,
   event,
+  isAuthenticated,
 } from '../api/dancedeets';
 import {
   Button,
@@ -253,7 +254,7 @@ class _EventListContainer extends React.Component {
   }
 
   async authAndReloadProfile(address) {
-    if (!this.props.user) {
+    if (!isAuthenticated()) {
       return;
     }
     if (!address) {

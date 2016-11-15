@@ -80,9 +80,12 @@ function idempotentRetry(timeoutMs: number, promiseGenerator: () => Promise<() =
   return retryWithBackoff(timeoutMs, 2, 5, promiseGenerator);
 }
 
+export async function isAuthenticated() {
+  return await AccessToken.getCurrentAccessToken();
+}
+
 async function verifyAuthenticated() {
-  const token = await AccessToken.getCurrentAccessToken();
-  if (!token) {
+  if (!await isAuthenticated()) {
     throw new Error('Not authenticated!');
   }
 }
