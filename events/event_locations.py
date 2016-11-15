@@ -119,7 +119,7 @@ class LocationInfo(object):
             self.final_latlng = _get_latlng_from_event(fb_event)
             if self.final_latlng:
                 self.exact_from_event = True
-                self.geocode = gmaps_api.get_geocode(latlng=self.final_latlng)
+                self.geocode = gmaps_api.lookup_latlng(self.final_latlng)
                 self.fb_address = formatting.format_geocode(self.geocode)
                 self.remapped_address = None
             else:
@@ -137,7 +137,7 @@ class LocationInfo(object):
             if self.online:
                 self.geocode = None
             elif self.final_address is not None:
-                self.geocode = gmaps_api.get_geocode(address=self.final_address)
+                self.geocode = gmaps_api.lookup_address(self.final_address)
             else:
                 self.geocode = None
 

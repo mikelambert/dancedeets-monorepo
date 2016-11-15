@@ -101,7 +101,7 @@ class User(ndb.Model):
             logging.error("Failed to save timezone %s: %s", fb_user['profile'].get('timezone'), e)
         self.location_country = None
         if self.location:
-            geocode = gmaps_api.get_geocode(address=self.location)
+            geocode = gmaps_api.lookup_address(self.location)
             if geocode:
                 self.location_country = geocode.country()
 

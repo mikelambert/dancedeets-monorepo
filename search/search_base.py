@@ -38,7 +38,7 @@ def valid_query(form, field):
 
 def geocodable_location(form, field):
     if field.data:
-        geocode = gmaps_api.get_geocode(address=field.data)
+        geocode = gmaps_api.lookup_address(field.data)
         if not geocode:
             raise wtforms.ValidationError("Did not understand location: %s" % field.data)
 
@@ -106,7 +106,7 @@ class SearchForm(wtforms.Form):
     def get_bounds(self):
         bounds = None
         if self.location.data:
-            geocode = gmaps_api.get_geocode(address=self.location.data, language=self.locale.data)
+            geocode = gmaps_api.lookup_address(self.location.data, language=self.locale.data)
             bounds = math.expand_bounds(geocode.latlng_bounds(), self.distance_in_km())
         return bounds
 

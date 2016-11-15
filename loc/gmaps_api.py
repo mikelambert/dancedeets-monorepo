@@ -29,7 +29,6 @@ class GeocodeException(Exception):
 class _GMapsResult(object):
     def __init__(self, json_data):
         self.json_data = json_data
-        self.lookup_kwargs = {}
 
     def latlng(self):
         return (float(self.json_data['geometry']['location']['lat']), float(self.json_data['geometry']['location']['lng']))
@@ -41,7 +40,6 @@ class _GMapsResult(object):
 class GMapsGeocode(_GMapsResult):
     def __init__(self, json_data):
         self.json_data = json_data
-        self.lookup_kwargs = {}
 
     def country(self, long=False):
         return self.get_component('country', long=long)
@@ -70,10 +68,6 @@ class GMapsGeocode(_GMapsResult):
         self.json_data['address_components'] = [x for x in self.json_data['address_components'] if name not in x['types']]
 
 
-def GMapsPlace(_GMapsResult):
-    pass
-
-
 def convert_geocode_to_json(geocode):
     if geocode:
         return {'status': 'OK', 'results': [geocode.json_data]}
@@ -95,34 +89,34 @@ def delete(**kwargs):
     geocode_api.delete(**kwargs)
 
 
-def get_geocode(**kwargs):
-    json_data = _fetch_geocode_as_json(**kwargs)
+def lookup_address(address, language=None):
+    params = {'address': address}
+    if language:
+        params['language'] = language
+    json = geocode_api.get_json(**params)
+    geocode = _build_geocode_from_json(json)
+    if not geocode:
+        params = {'query': address}
+        if language:
+            params['language'] = language
+            json = places_api.get_json(**params)
+            geocode = _build_geocode_from_json(json)
+    return geocode
+
+
+def lookup_latlng(latlng):
+    json = geocode_api.get_json({'latlng': '%s,%s' % latlng})
+    return _build_geocode_from_json(json)
+
+
+def _build_geocode_from_json(json_data):
     try:
         geocode = parse_geocode(json_data)
     except GeocodeException as e:
         if e.status == 'INVALID_REQUEST':
             return None
         raise
-    if geocode:
-        geocode.lookup_kwargs = kwargs
     return geocode
-
-
-def _fetch_geocode_as_json(address=None, latlng=None, language=None, region=None, components=None):
-    params = {}
-    if address is not None:
-        params['address'] = address
-    if latlng is not None:
-        params['latlng'] = '%s,%s' % latlng
-    assert params
-    if language is not None:
-        params['language'] = language
-    if region is not None:
-        params['region'] = region
-    if components is not None:
-        params['components'] = components
-
-    return geocode_api.get_json(**params)
 
 
 def fetch_place_as_json(query=None, language=None):

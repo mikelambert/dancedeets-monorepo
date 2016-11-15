@@ -142,7 +142,7 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
     geocode = None
     if json_body.get('location_address'):
         logging.info("Have location address, checking if it is geocodable: %s", json_body.get('location_address'))
-        geocode = gmaps_api.get_geocode(address=json_body['location_address'])
+        geocode = gmaps_api.lookup_address(json_body['location_address'])
         if geocode is None:
             logging.warning("Received a location_address that was not geocodeable, treating as empty: %s", json_body['location_address'])
     if geocode is None:

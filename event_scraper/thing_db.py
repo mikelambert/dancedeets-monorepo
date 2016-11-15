@@ -115,7 +115,7 @@ class Source(db.Model):
                         component_names = ['street', 'city', 'state', 'zip', 'region', 'country']
                         components = [location.get(x) for x in component_names if location.get(x)]
                         address = ', '.join(components)
-                        geocode = gmaps_api.get_geocode(address=address)
+                        geocode = gmaps_api.lookup_address(address)
                         if geocode:
                             self.latitude, self.longitude = geocode.latlng()
         #TODO(lambert): at some point we need to calculate all potential events, and all real events, and update the numbers with values from them. and all fake events. we have a problem where a new source gets added, adds in the potential events and/or real events, but doesn't properly tally them all. can fix this one-off, but it's too-late now, and i imagine our data will grow inaccurate over time anyway.

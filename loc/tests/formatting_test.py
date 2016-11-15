@@ -45,7 +45,7 @@ class TestLocationFormatting(unittest.TestCase):
     def runTest(self):
         for address, final_address in formatting_reg_data.iteritems():
             logging.info('%s should be formatted as %s', address, final_address)
-            formatted_address = formatting.format_geocode(gmaps_api.get_geocode(address=address), include_neighborhood=True)
+            formatted_address = formatting.format_geocode(gmaps_api.lookup_address(address), include_neighborhood=True)
             if formatted_address != final_address:
                 logging.error('formatted address for %r is %r, should be %r', address, formatted_address, final_address)
                 logging.error('%s', gmaps_api._fetch_geocode_as_json(address=address))
@@ -66,7 +66,7 @@ class TestMultiLocationFormatting(unittest.TestCase):
         for addresses, reformatted_addresses in grouping_lists:
             logging.info("Formatting addresses: %s", addresses)
             logging.info("Intended reformatted addresses: %r", reformatted_addresses)
-            geocodes = [gmaps_api.get_geocode(address=address) for address in addresses]
+            geocodes = [gmaps_api.lookup_address(address) for address in addresses]
             reformatted_parts = formatting.format_geocodes(geocodes, include_neighborhood=True)
             logging.info("Reformatted addresses: %r", reformatted_parts)
             self.assertEqual(reformatted_parts, reformatted_addresses)

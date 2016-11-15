@@ -33,7 +33,7 @@ def email_for_user(user, fbl, should_send=True):
     min_attendees = user.min_attendees
 
     # search for relevant events
-    geocode = gmaps_api.get_geocode(address=user_location)
+    geocode = gmaps_api.lookup_address(user_location)
     if not geocode:
         return None
     bounds = math.expand_bounds(geocode.latlng_bounds(), distance_in_km)

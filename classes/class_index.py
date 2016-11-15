@@ -55,18 +55,6 @@ class ClassSearch(object):
         # Extra search index fields to return
         self.extra_fields = []
 
-    @classmethod
-    def create_from_location(cls, location):
-        if location:
-            geocode = gmaps_api.get_geocode(address=location)
-            if not geocode:
-                raise search_base.SearchException("Did not understand location: %s" % location)
-            bounds = math.expand_bounds(geocode.latlng_bounds(), 200) # HACK?
-        else:
-            bounds = None
-        self = cls(bounds=bounds)
-        return self
-
     DATE_SEARCH_FORMAT = '%Y-%m-%d'
     def _get_query_string(self):
         clauses = []
