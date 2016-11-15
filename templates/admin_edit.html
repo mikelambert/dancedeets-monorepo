@@ -8,9 +8,9 @@ Edit Event
 
 		<form action="/events/admin_edit" method=post>
 
-			<table class="goog-trans-section"><tr><td>
+			<table><tr><td>
 			<h2>{{ fb_event.info.name|format_html|highlight_keywords }}</h2>
-			</td><td class="goog-trans-control"></td></tr>
+			</td></tr>
 			</table>
 			<a href="{{ raw_fb_event_url(fb_event.info.id) }}">See on Facebook</a> (<a href="http://graph.facebook.com/{{ fb_event.info.id }}">Graph</a>)
 			{% if fb_event.info.owner %}
@@ -24,9 +24,9 @@ Edit Event
 				<tr><td>
 					Original Address:
 				</td><td>
-					<table class="goog-trans-section" style="display:inline"><tr><td>
+					<table style="display:inline"><tr><td>
 					<a href="http://www.google.com/search?q={{ location_info.fb_address|urlencode }}">{{ location_info.fb_address|format_html }}</a>
-					</td><td class="goog-trans-control"></td></tr>
+					</td></tr>
 					</table>
 				</td></tr>
 				<tr><td>
@@ -56,8 +56,8 @@ Edit Event
 					{% endif %}
 				</td></tr>
 			</table>
-			<div class="goog-trans-section">
-			<table><tr><td>Description:</td><td class="goog-trans-control"></td></tr></table>
+			<div>
+			<table><tr><td>Description:</td><td><div style="height: 25px" id="google_translate_element"></div></td></tr></table>
 			{% if fb_event.info.description %}
 				{% set description = fb_event.info.description %}
 			{% else %}
@@ -82,12 +82,12 @@ Edit Event
 				{% if creating_user %}
 					Submitted by <a href="{{ creating_user.profile.link }}">{{ creating_user.profile.name }}</a>.<br>
 				{% endif %}
-				<button class="btn btn-primary">Edit Event</button>
-				<button class="btn btn-danger" name="delete" value="yes">Delete Event</button>
+				<button type="button" class="btn btn-primary">Edit Event</button>
+				<button type="button" class="btn btn-danger" name="delete" value="yes">Delete Event</button>
 			{% else %}
 				Creating new event!
-				<button class="btn btn-primary">Create Event</button>
-				{# <button class="btn btn-default">Not a Dance Event</button> #}
+				<button type="button" class="btn btn-primary">Create Event</button>
+				{# <button type="button" class="btn btn-default">Not a Dance Event</button> #}
 			{% endif %}
 			<p>
 			{% include "_event_admin_links.html" %}
@@ -111,16 +111,16 @@ Edit Event
 {% endblock %}
 
 {% block bottom_javascript %}
-<script>
-function googleSectionalElementInit() {
-  new google.translate.SectionalElement({
-    sectionalNodeClassName: 'goog-trans-section',
-    controlNodeClassName: 'goog-trans-control',
-    background: 'transparent'
-  }, 'google_sectional_element');
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    multilanguagePage: true,
+    gaTrack: true,
+    gaId: 'UA-18831479-1',
+  }, 'google_translate_element');
 }
 </script>
-<script src="//translate.google.com/translate_a/element.js?cb=googleSectionalElementInit&ug=section&hl=en" crossorigin="anonymous"></script>
-</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 {% endblock %}
 
