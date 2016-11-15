@@ -31,7 +31,6 @@ from servlets import promote
 from servlets import profile_page
 from servlets import static
 from servlets import static_db
-from servlets import static_servlets
 from servlets import tools
 from servlets import warmup
 from servlets import youtube_simple_api

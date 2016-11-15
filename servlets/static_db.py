@@ -35,3 +35,11 @@ class DbStaticHandler(base_servlet.BaseRequestHandler):
         self.display['title'] = content.title
         self.display['content'] = rendered_content
         self.render_template('static_wrapper')
+
+@app.route('/(help|about|privacy)')
+class StaticRedirectHandler(base_servlet.BaseRequestHandler):
+    def requires_login(self):
+        return False
+
+    def get(self, name):
+        self.redirect('/t/%s' % name, permanent=True)
