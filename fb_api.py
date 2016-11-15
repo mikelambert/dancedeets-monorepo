@@ -587,7 +587,6 @@ class FBLookup(object):
         self._fetched_objects = {}
         self._db_updated_objects = set()
         self._object_keys_to_lookup_without_cache = set()
-        self.force_updated = False
         self.allow_cache = True
         self.allow_memcache_write = True
         self.allow_memcache_read = True
@@ -621,24 +620,18 @@ class FBLookup(object):
             else:
                 self._object_keys_to_lookup_without_cache.add(key)
 
-    def fetched_data(self, cls, object_id, only_if_updated=False):
-        return self._fetched_data_single(cls, object_id, only_if_updated)
+    def fetched_data(self, cls, object_id):
+        return self._fetched_data_single(cls, object_id)
 
-    def fetched_data_multi(self, cls, object_ids, only_if_updated=False, allow_fail=False):
-        return [self._fetched_data_single(cls, object_id, only_if_updated, allow_fail=allow_fail) for object_id in object_ids]
+    def fetched_data_multi(self, cls, object_ids, allow_fail=False):
+        return [self._fetched_data_single(cls, object_id, allow_fail=allow_fail) for object_id in object_ids]
 
-    def _fetched_data_single(self, cls, object_id, only_if_updated, allow_fail=False):
+    def _fetched_data_single(self, cls, object_id, allow_fail=False):
         key = generate_key(cls, object_id)
-        if (self.force_updated or
-              not only_if_updated or
-              (only_if_updated and key in self._db_updated_objects)):
-            if key in self._fetched_objects:
-                return self._fetched_objects[key]
-            # only_if_updated means the caller expects to have some None returns
-            if only_if_updated or allow_fail:
-                return None
-            else:
-                raise NoFetchedDataException('Could not find %s' % (key,))
+        if key in self._fetched_objects:
+            return self._fetched_objects[key]
+        else:
+            raise NoFetchedDataException('Could not find %s' % (key,))
 
     def get(self, cls, object_id, allow_cache=True):
         self.request(cls, object_id, allow_cache=allow_cache)
