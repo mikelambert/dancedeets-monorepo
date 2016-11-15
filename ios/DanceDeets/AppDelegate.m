@@ -46,7 +46,7 @@
    */
 
   #ifdef DEBUG
-    jsCodeLocation = [NSURL URLWithString:@"http://10.0.1.6:8081/index.ios.bundle?platform=ios&dev=true"];
+    jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
   #else
   /**
    * OPTION 2
