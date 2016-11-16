@@ -6,7 +6,7 @@
 
 import React from 'react';
 import {
-  ActivityIndicatorIOS,
+  ActivityIndicator,
   ListView,
   Platform,
   ProgressBarAndroid,
@@ -280,16 +280,8 @@ export default class AutocompleteList extends React.Component {
   }
 
   _getRowLoader() {
-    if (Platform.OS === 'android') {
-      return (
-        <ProgressBarAndroid
-          style={[defaultStyles.androidLoader, this.props.styles.androidLoader]}
-          styleAttr="Inverse"
-        />
-      );
-    }
     return (
-      <ActivityIndicatorIOS
+      <ActivityIndicator
         animating={true}
         size="small"
       />
