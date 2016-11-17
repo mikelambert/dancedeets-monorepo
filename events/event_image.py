@@ -32,10 +32,15 @@ class DownloadError(Exception):
         super(DownloadError, self).__init__()
         self.code = code
 
+class NoImageError(Exception):
+    pass
+
 NotFoundError = gcs.NotFoundError
 
 def _raw_get_image(db_event):
     image_url = db_event.full_image_url
+    if not image_url:
+        raise NoImageError()
     try:
         logging.info('Fetching image for event %s: %s', db_event.id, image_url)
         mimetype, response = fetch.fetch_data(image_url)

@@ -12,7 +12,7 @@ class ImageProxyHandler(webapp2.RequestHandler):
 
     def get(self, event_id):
         db_event = eventdata.DBEvent.get_by_id(event_id)
-        if not db_event:
+        if not db_event or not db_event.full_image_url:
             self.response.set_status(404)
             return
         width = self.request.get('width')
