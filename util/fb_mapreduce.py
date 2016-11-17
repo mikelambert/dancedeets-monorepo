@@ -77,6 +77,8 @@ def get_fblookup_params(fbl, randomize_tokens=False):
     if randomize_tokens:
         params['fbl_access_tokens'] = _get_multiple_tokens(token_count=20)
         logging.info('Found %s valid tokens', len(params['fbl_access_tokens']))
+        if len(params['fbl_access_tokens']) == 0:
+            raise Exception('No Valid Tokens')
     else:
         params['fbl_access_token'] = fbl.access_token
     return params
@@ -105,6 +107,7 @@ def _get_multiple_tokens(token_count):
     for token, info in zip(tokens, debug_token_infos):
         if info['empty']:
             logging.error('Trying to lookup invalid access token: %s', token)
+            continue
         if (info['info']['data']['is_valid'] and
             (info['info']['data']['expires_at'] == 0 or  # infinite token
              info['info']['data']['expires_at'] > one_day_from_now)):
