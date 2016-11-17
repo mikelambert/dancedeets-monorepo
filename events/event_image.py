@@ -10,6 +10,8 @@ EVENT_IMAGE_BUCKET = 'dancedeets-event-images'
 class DownloadError(Exception):
     pass
 
+NotFoundError = gcs.NotFoundError
+
 def _raw_get_image(db_event):
     image_url = db_event.full_image_url
     try:
@@ -37,11 +39,15 @@ def _render_image(event_id, operation):
     final_img = img.execute_transforms(output_encoding=images.JPEG)
     return 'image/jpeg', final_img
 
-def render(response, event_id):
+def render(response, event):
     #TODO: how to pass in width/height
     def fix_image_size(img):
         # resize(width=0, height=0, crop_to_fit=False, crop_offset_x=0.5, crop_offset_y=0.5, allow_stretch=False)
         img.resize(width=img.width, height=img.height)
-    mimetype, final_img = _render_image(event_id, operation=fix_image_size)
+    try:
+        mimetype, final_img = _render_image(event.id, operation=fix_image_size)
+    except NotFoundError:
+        cache_image_and_get_size(event)
+        mimetype, final_img = _render_image(event.id, operation=fix_image_size)
     response.headers['Content-Type'] = mimetype
     response.out.write(final_img)

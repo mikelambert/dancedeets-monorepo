@@ -1,8 +1,12 @@
 import io
 
 from oauth2client.client import GoogleCredentials
+from googleapiclient import errors
 from googleapiclient import http
 from googleapiclient.discovery import build
+
+class NotFoundError(Exception):
+    pass
 
 def _create_service():
     # Get the application default credentials. When running locally, these are
@@ -39,18 +43,22 @@ def put_object(bucket, filename, contents):
     return resp
 
 def get_object(bucket, filename):
-    service = _create_service()
+    try:
+        service = _create_service()
 
-    # Use get_media instead of get to get the actual contents of the object.
-    # http://g.co/dv/resources/api-libraries/documentation/storage/v1/python/latest/storage_v1.objects.html#get_media
-    req = service.objects().get_media(bucket=bucket, object=filename)
+        # Use get_media instead of get to get the actual contents of the object.
+        # http://g.co/dv/resources/api-libraries/documentation/storage/v1/python/latest/storage_v1.objects.html#get_media
+        req = service.objects().get_media(bucket=bucket, object=filename)
 
-    out_file = io.BytesIO()
-    downloader = http.MediaIoBaseDownload(out_file, req)
+        out_file = io.BytesIO()
+        downloader = http.MediaIoBaseDownload(out_file, req)
 
-    done = False
-    while done is False:
-        status, done = downloader.next_chunk()
-        print("Download {}%.".format(int(status.progress() * 100)))
+        done = False
+        while done is False:
+            status, done = downloader.next_chunk()
+            print("Download {}%.".format(int(status.progress() * 100)))
 
-    return out_file.getvalue()
+        return out_file.getvalue()
+    except errors.HttpError as e:
+        if e.resp.status == 404:
+            raise NotFoundError()
