@@ -249,7 +249,7 @@ class DBEvent(ndb.Model):
             # as iOS will probably crash with zero-sized width/heights
             if self.web_event.get('photo_width') and self.web_event.get('photo_height'):
                 return [{
-                    'source': self.image_url,
+                    'source': self.square_image_url,
                     'width': self.web_event['photo_width'],
                     'height': self.web_event['photo_height'],
                 }]
@@ -272,7 +272,16 @@ class DBEvent(ndb.Model):
             return None
 
     @property
-    def image_url(self):
+    def full_image_url(self):
+        cover = self.largest_cover
+        if cover:
+            return cover['source']
+        else:
+            # Fall back to the old square images
+            return self.image_url
+
+    @property
+    def square_image_url(self):
         if self.web_event:
             return self.web_event['photo']
         else:

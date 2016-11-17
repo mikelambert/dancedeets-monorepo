@@ -2,7 +2,6 @@ import urllib2
 
 from google.appengine.api import images
 
-from events import eventdata
 from util import fetch
 from util import gcs
 
@@ -15,14 +14,7 @@ class DownloadError(Exception):
     pass
 
 def _raw_get_image(db_event):
-    if db_event.is_fb_event:
-        cover = db_event.largest_cover
-        if not cover:
-            raise NotFoundError()
-        image_url = cover['source']
-    else:
-        image_url = db_event.image_url
-
+    image_url = db_event.full_image_url
     try:
         mimetype, response = fetch.fetch_data(image_url)
         return mimetype, response

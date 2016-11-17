@@ -398,7 +398,7 @@ def canonicalize_event_data(db_event, event_keywords):
         }
     else:
         event_api['cover'] = None
-    event_api['picture'] = db_event.image_url
+    event_api['picture'] = db_event.square_image_url
 
     # location data
     if db_event.location_name:
