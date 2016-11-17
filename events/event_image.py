@@ -1,4 +1,6 @@
 import imghdr
+from PIL import Image
+from resizeimage import resizeimage
 import io
 import urllib2
 
@@ -51,11 +53,28 @@ def _render_image(event_id):
     image_type = imghdr.what(f)
     return 'image/%s' % image_type, image_data
 
-def render(response, event):
+def _resize_image(final_image, width, height):
+    if width or height:
+        orig_data = io.BytesIO(final_image)
+        with Image.open(orig_data) as image:
+            resized = None
+            if width and height:
+                resized = resizeimage.resize_cover(image, [width, height])
+            elif width:
+                resized = resizeimage.resize_width(image, width)
+            elif height:
+                resized = resizeimage.resize_height(image, height)
+            resized_data = io.BytesIO()
+            resized.save(resized_data, image.format)
+            final_image = resized_data.getvalue()
+    return final_image
+
+def render(response, event, width=None, height=None):
     try:
-        mimetype, final_img = _render_image(event.id)
+        mimetype, final_image = _render_image(event.id)
     except NotFoundError:
         cache_image_and_get_size(event)
-        mimetype, final_img = _render_image(event.id)
+        mimetype, final_image = _render_image(event.id)
+    final_image = _resize_image(final_image, width, height)
     response.headers['Content-Type'] = mimetype
-    response.out.write(final_img)
+    response.out.write(final_image)
