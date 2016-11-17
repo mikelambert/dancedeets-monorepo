@@ -1,6 +1,6 @@
 {% macro event_info_as_icon_list(displayable_event, canonical_url, social_links=True) %}
   <ul class="fa-ul event-ul">
-  {% if displayable_event.cover_images %}
+  {% if displayable_event.has_image %}
     <li><i class="event-info-icon fa-li fa fa-picture-o fa-lg"></i><b><a class="link-event-flyer" href="/events/image_proxy/{{ displayable_event.id }}">See Full Flyer</a></b></li>
   {% endif %}
   {% if displayable_event.web_event %}

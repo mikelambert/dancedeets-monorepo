@@ -245,6 +245,11 @@ class DBEvent(ndb.Model):
         return event_types.humanize_categories(self.auto_categories)
 
     @property
+    def has_image(self):
+        #TODO: replace this with a better check against gcs-and-or-fallback, or saved from our last event update?
+        return self.cover_images
+
+    @property
     def cover_images(self):
         if self.web_event:
             # Only return a cover image here if we have a width/height,

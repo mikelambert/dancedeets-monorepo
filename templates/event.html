@@ -12,7 +12,7 @@
 {% if displayable_event.description %}
   <meta name="twitter:description" content="{{ displayable_event.description|truncate(250)|e }}">
 {% endif %}
-{% if displayable_event.cover_images %}
+{% if displayable_event.has_image %}
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image:src" content="http://{{ full_hostname }}/events/image_proxy/{{ displayable_event.id }}" />
 {% else %}
@@ -35,7 +35,9 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="http://{{ full_hostname }}/events/{{ displayable_event.id }}/" />
 <meta property="og:site_name" content="DanceDeets" />
+{% if displayable_event.has_image %}
 <meta property="og:image" content="http://www.dancedeets.com/events/image_proxy/{{ displayable_event.id }}" />
+{% endif %}
 <meta property="og:description"
       content="{{ displayable_event.meta_description|e }}" />
 
@@ -80,7 +82,7 @@
 
   <div class="row">
     <div class="col-sm-5">
-      {% if displayable_event.cover_images %}
+      {% if displayable_event.has_image %}
         <div style="position: relative; margin-bottom: 1em"><a class="link-event-flyer" href="/events/image_proxy/{{ displayable_event.id }}">
             <img src="/events/image_proxy/{{ displayable_event.id }}" style="width: 100%" itemprop="image">
         </a></div>
