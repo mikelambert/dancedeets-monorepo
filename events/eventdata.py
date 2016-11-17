@@ -249,7 +249,7 @@ class DBEvent(ndb.Model):
         if self.web_event:
             # Only return a cover image here if we have a width/height,
             # as iOS will probably crash with zero-sized width/heights
-            if self.json_props.get('photo_width') and self.json_props.get('photo_height'):
+            if self.json_props and self.json_props.get('photo_width') and self.json_props.get('photo_height'):
                 return [{
                     'source': self.web_event['photo'],
                     'width': self.json_props['photo_width'],
