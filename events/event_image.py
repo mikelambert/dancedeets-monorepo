@@ -14,39 +14,37 @@ class NotFoundError(Exception):
 class DownloadError(Exception):
     pass
 
-def _raw_get_image(event_id):
-    db_event = eventdata.DBEvent.get_by_id(event_id)
-    if not db_event:
-        raise NotFoundError()
-    cover = db_event.largest_cover
-    if not cover:
-        raise NotFoundError()
+def _raw_get_image(db_event):
+    if db_event.is_fb_event:
+        cover = db_event.largest_cover
+        if not cover:
+            raise NotFoundError()
+        image_url = cover['source']
+    else:
+        image_url = db_event.image_url
 
     try:
-        mimetype, response = fetch.fetch_data(cover['source'])
+        mimetype, response = fetch.fetch_data(image_url)
         return mimetype, response
     except urllib2.HTTPError as e:
         raise DownloadError(e.code)
 
-
 #TODO:
 # event image bucket
-# how to pass back image size/dimensions
 # how to pass in width/height
-# where to stick this code?
 
 def _event_image_filename(event_id):
     return '%s.jpg' % event_id
 
-def cache_image_and_get_size(event_id):
-    mimetype, response = _raw_get_image(event_id)
-    gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event_id), response)
+def cache_image_and_get_size(event):
+    mimetype, response = _raw_get_image(event)
+    gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event.event_id), response)
 
     img = images.Image(response)
     return img.width, img.height
 
 
-def render_image(event_id, operation):
+def _render_image(event_id, operation):
     image_data = gcs.get_object(EVENT_IMAGE_BUCKET, _event_image_filename(event_id))
     img = images.Image(image_data)
     if operation:
@@ -54,9 +52,10 @@ def render_image(event_id, operation):
     final_img = img.execute_transforms(output_encoding=images.JPEG)
     return 'image/jpeg', final_img
 
-def render(self, event_id):
+def render(response, event_id):
     def fix_image_size(img):
+        # resize(width=0, height=0, crop_to_fit=False, crop_offset_x=0.5, crop_offset_y=0.5, allow_stretch=False)
         img.resize(width=img.width, height=img.height)
-    mimetype, final_img = render_image(event_id, operation=fix_image_size)
-    self.response.headers['Content-Type'] = mimetype
-    self.response.out.write(final_img)
+    mimetype, final_img = _render_image(event_id, operation=fix_image_size)
+    response.headers['Content-Type'] = mimetype
+    response.out.write(final_img)

@@ -11,8 +11,12 @@ class ImageProxyHandler(webapp2.RequestHandler):
     """Proxies images for use by twitter, where it doesn't need to respect the FB cache server's /robots.txt."""
 
     def get(self, event_id):
+        db_event = eventdata.DBEvent.get_by_id(event_id)
+        if not db_event:
+            self.response.set_status(404)
+            return
         try:
-            mimetype, response = event_image._raw_get_image(event_id)
+            mimetype, response = event_image._raw_get_image(db_event)
         except event_image.NotFoundError:
             self.response.set_status(404)
             return
