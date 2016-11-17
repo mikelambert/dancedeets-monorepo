@@ -9,6 +9,16 @@ from util import gcs
 
 EVENT_IMAGE_BUCKET = 'dancedeets-event-images'
 
+def test_jpeg(h, f):
+    if h[:4] in [
+        '\xff\xd8\xff\xe2',
+        '\xff\xd8\xff\xe1',
+        '\xff\xd8\xff\xe0',
+        '\xff\xd8\xff\xdb'
+    ]:
+        return 'jpeg'
+imghdr.tests.append(test_jpeg)
+
 class DownloadError(Exception):
     def __init__(self, code):
         super(DownloadError, self).__init__()
@@ -38,8 +48,8 @@ def cache_image_and_get_size(event):
 def _render_image(event_id):
     image_data = gcs.get_object(EVENT_IMAGE_BUCKET, _event_image_filename(event_id))
     f = io.BytesIO(image_data)
-    type = imghdr.what(f)
-    return 'image/%s' % type, image_data
+    image_type = imghdr.what(f)
+    return 'image/%s' % image_type, image_data
 
 def render(response, event):
     try:
