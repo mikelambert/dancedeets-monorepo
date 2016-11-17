@@ -74,10 +74,6 @@ handlers:
 - url: /_ah/warmup
   script: main.application
   login: admin
-- url: /oauth2callback
-  script: oauth2client.appengine.application
-- url: /oauth_setup
-  script: servlets.oauth.application
 - url: .*
   script: main.application
 
