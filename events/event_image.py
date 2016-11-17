@@ -10,7 +10,9 @@ from util import gcs
 EVENT_IMAGE_BUCKET = 'dancedeets-event-images'
 
 class DownloadError(Exception):
-    pass
+    def __init__(self, code):
+        super(DownloadError, self).__init__()
+        self.code = code
 
 NotFoundError = gcs.NotFoundError
 
