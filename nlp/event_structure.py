@@ -4,8 +4,8 @@ import logging
 try:
     import re2
     import re2 as re
-except ImportError:
-    logging.info("Could not import re2, falling back to re.")
+except ImportError as e:
+    logging.info("Could not import re2, falling back to re: %s", e)
     re2 = None
     import re
 
