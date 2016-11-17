@@ -81,8 +81,8 @@
   <div class="row">
     <div class="col-sm-5">
       {% if displayable_event.cover_images %}
-        <div style="position: relative; margin-bottom: 1em"><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">
-            <img src="{{ displayable_event.largest_cover.source }}" style="width: 100%" itemprop="image">
+        <div style="position: relative; margin-bottom: 1em"><a class="link-event-flyer" href="/events/image_proxy/{{ displayable_event.id }}">
+            <img src="/events/image_proxy/{{ displayable_event.id }}" style="width: 100%" itemprop="image">
         </a></div>
       {% endif %}
 

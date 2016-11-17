@@ -122,8 +122,8 @@
   <div class="row">
     <div class="col-sm-5">
       {% if displayable_event.cover_images %}
-        <div class="event-flyer"><a class="link-event-flyer" href="{{ displayable_event.largest_cover.source }}">
-            <amp-img src="{{ displayable_event.largest_cover.source }}" layout="responsive" width="{{ displayable_event.largest_cover.width }}" height="{{ displayable_event.largest_cover.height }}">
+        <div class="event-flyer"><a class="link-event-flyer" href="/events/image_proxy/{{ displayable_event.id }}">
+            <amp-img src="/events/image_proxy/{{ displayable_event.id }}" layout="responsive" width="{{ displayable_event.largest_cover.width }}" height="{{ displayable_event.largest_cover.height }}">
         </a></div>
       {% endif %}
 
