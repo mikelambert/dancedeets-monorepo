@@ -25,6 +25,7 @@ from search import search
 from search import search_base
 from users import user_creation
 from users import users
+from util import urls
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 DATETIME_FORMAT_TZ = "%Y-%m-%dT%H:%M:%S%z"
@@ -390,15 +391,24 @@ def canonicalize_event_data(db_event, event_keywords):
     }
 
     # cover images
-    cover_images = db_event.cover_images
-    if cover_images:
+    if db_event.has_image:
+        if db_event.json_props:
+            ratio = 1.0 * db_event.json_props['photo_width'] / db_event.json_props['photo_height']
+        else:
+            cover = db_event.cover_images[0]
+            ratio = 1.0 * cover['width'] / cover['height']
+        # Covers the most common screen sizes, according to Mixpanel:
+        widths = reversed([320, 480, 720, 1080, 1440])
+        cover_images = [{'source': urls.event_image_url(db_event.id, width=width), 'width': width, 'height': int(width/ratio)} for width in widths]
+
         event_api['cover'] = {
             'cover_id': 'dummy', # Android (v1.1) expects this value, even though it does nothing with it.
             'images': sorted(cover_images, key=lambda x: -x['height']),
         }
+        event_api['picture'] = urls.event_image_url(db_event.id, width=200, height=200)
     else:
         event_api['cover'] = None
-    event_api['picture'] = db_event.square_image_url
+        event_api['picture'] = None
 
     # location data
     if db_event.location_name:

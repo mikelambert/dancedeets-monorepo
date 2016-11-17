@@ -310,7 +310,7 @@ class DBEvent(ndb.Model):
                 return picture_url['data'][0]['pic_big']
             else:
                 logging.error("Error loading picture for event id %s", self.fb_event['info']['id'])
-                return urls.fb_event_image_url(self.fb_event['info']['id'])
+                return 'https://graph.facebook.com/%s/picture?type=%s' % (self.fb_event['info']['id'], 'large')
 
     @property
     def location_name(self):

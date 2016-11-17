@@ -22,8 +22,8 @@ def dd_admin_source_url(eid):
     return 'http://www.dancedeets.com/sources/admin_edit?source_id=%s' % eid
 
 
-def fb_event_image_url(eid, size='large'):
-    return 'https://graph.facebook.com/%s/picture?type=%s' % (eid, size)
+def event_image_url(eid, **kwargs):
+    return 'http://www.dancedeets.com/events/image_proxy/%s?%s' % (eid, urlencode(kwargs))
 
 
 def urlencode(kwargs, doseq=False):
