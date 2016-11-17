@@ -47,6 +47,8 @@ def _raw_get_image(db_event):
         return mimetype, response
     except urllib2.HTTPError as e:
         raise DownloadError(e.code)
+    except urllib2.URLError:
+        raise DownloadError(404)
 
 def _event_image_filename(event_id):
     return str(event_id)
