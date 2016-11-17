@@ -5,7 +5,7 @@ from google.appengine.api import images
 from util import fetch
 from util import gcs
 
-EVENT_IMAGE_BUCKET = 'TODO:asdasdasdasdasd'
+EVENT_IMAGE_BUCKET = 'dancedeets-event-images'
 
 class NotFoundError(Exception):
     pass
@@ -20,10 +20,6 @@ def _raw_get_image(db_event):
         return mimetype, response
     except urllib2.HTTPError as e:
         raise DownloadError(e.code)
-
-#TODO:
-# event image bucket
-# how to pass in width/height
 
 def _event_image_filename(event_id):
     return '%s.jpg' % event_id
@@ -45,6 +41,7 @@ def _render_image(event_id, operation):
     return 'image/jpeg', final_img
 
 def render(response, event_id):
+    #TODO: how to pass in width/height
     def fix_image_size(img):
         # resize(width=0, height=0, crop_to_fit=False, crop_offset_x=0.5, crop_offset_y=0.5, allow_stretch=False)
         img.resize(width=img.width, height=img.height)

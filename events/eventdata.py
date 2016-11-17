@@ -69,6 +69,8 @@ class DBEvent(ndb.Model):
     # derived data from fb_event itself
     fb_event = ndb.JsonProperty(indexed=False)
 
+    json_props = ndb.JsonProperty(indexed=False)
+
     #STR_ID_MIGRATE (Old, to be migrated...to namespaced_creator)
     creating_fb_uid = ndb.IntegerProperty()
     # # TODO: WEB_EVENTS: IMPLEMENT AND MIGRATE DATA
@@ -247,9 +249,15 @@ class DBEvent(ndb.Model):
         if self.web_event:
             # Only return a cover image here if we have a width/height,
             # as iOS will probably crash with zero-sized width/heights
-            if self.web_event.get('photo_width') and self.web_event.get('photo_height'):
+            if self.json_props.get('photo_width') and self.json_props.get('photo_height'):
                 return [{
-                    'source': self.square_image_url,
+                    'source': self.web_event['photo'],
+                    'width': self.json_props['photo_width'],
+                    'height': self.json_props['photo_height'],
+                }]
+            elif self.web_event.get('photo_width') and self.web_event.get('photo_height'):
+                return [{
+                    'source': self.web_event['photo'],
                     'width': self.web_event['photo_width'],
                     'height': self.web_event['photo_height'],
                 }]

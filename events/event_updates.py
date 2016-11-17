@@ -1,8 +1,6 @@
 import datetime
 import logging
-import urllib2
 
-from google.appengine.api import images
 from google.appengine.ext import ndb
 
 import fb_api
@@ -12,7 +10,7 @@ from search import search
 from nlp import categories
 from nlp import event_classifier
 from util import dates
-from util import fetch
+from . import event_image
 from . import event_locations
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
@@ -45,9 +43,9 @@ def update_and_save_fb_events(events_to_update, update_geodata=True):
 
 
 def update_and_save_web_events(events_to_update, update_geodata=True):
-    for db_event, json_body in events_to_update:
+    for db_event, web_event in events_to_update:
         logging.info("Updating and saving DBEvent %s", db_event.id)
-        _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata=update_geodata)
+        _inner_make_event_findable_for_web_event(db_event, web_event, update_geodata=update_geodata)
     db_events = [x[0] for x in events_to_update]
     _save_events(db_events)
 
@@ -72,6 +70,16 @@ def _all_attending_count(fb_event):
         else:
             return None
 
+def _inner_cache_photo(db_event):
+    if db_event.full_image_url:
+        width, height = event_image.cache_image_and_get_size(db_event.full_image_url)
+        db_event.json_props['photo_width'] = width
+        db_event.json_props['photo_height'] = height
+    else:
+        if 'photo_width' in db_event.json_props:
+            del db_event.json_props['photo_width']
+        if 'photo_height' in db_event.json_props:
+            del db_event.json_props['photo_height']
 
 def _inner_make_event_findable_for_fb_event(db_event, fb_dict, update_geodata):
     """set up any cached fields or bucketing or whatnot for this event"""
@@ -113,6 +121,8 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, update_geodata):
     db_event.event_keywords = event_classifier.relevant_keywords(fb_dict)
     db_event.auto_categories = [x.index_name for x in categories.find_styles(fb_dict) + categories.find_event_types(fb_dict)]
 
+    _inner_cache_photo(db_event)
+
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
         db_event.location_geocode = None
@@ -120,18 +130,18 @@ def _inner_make_event_findable_for_fb_event(db_event, fb_dict, update_geodata):
         _update_geodata(db_event, location_info)
 
 
-def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata):
+def _inner_make_event_findable_for_web_event(db_event, web_event, update_geodata):
     logging.info("Making web_event %s findable." % db_event.id)
-    db_event.web_event = json_body
+    db_event.web_event = web_event
 
     db_event.fb_event = None
     db_event.owner_fb_uid = None
 
     db_event.attendee_count = 0 # Maybe someday set attending counts when we fetch them?
 
-    db_event.start_time = datetime.datetime.strptime(json_body['start_time'], DATETIME_FORMAT)
-    if json_body.get('end_time'):
-        db_event.end_time = datetime.datetime.strptime(json_body['end_time'], DATETIME_FORMAT)
+    db_event.start_time = datetime.datetime.strptime(web_event['start_time'], DATETIME_FORMAT)
+    if web_event.get('end_time'):
+        db_event.end_time = datetime.datetime.strptime(web_event['end_time'], DATETIME_FORMAT)
     else:
         db_event.end_time = None
     db_event.search_time_period = _event_time_period(db_event)
@@ -140,47 +150,38 @@ def _inner_make_event_findable_for_web_event(db_event, json_body, update_geodata
     db_event.auto_categories = [x.index_name for x in categories.find_styles(db_event) + categories.find_event_types(db_event)]
 
     geocode = None
-    if json_body.get('location_address'):
-        logging.info("Have location address, checking if it is geocodable: %s", json_body.get('location_address'))
-        geocode = gmaps_api.lookup_address(json_body['location_address'])
+    if web_event.get('location_address'):
+        logging.info("Have location address, checking if it is geocodable: %s", web_event.get('location_address'))
+        geocode = gmaps_api.lookup_address(web_event['location_address'])
         if geocode is None:
-            logging.warning("Received a location_address that was not geocodeable, treating as empty: %s", json_body['location_address'])
+            logging.warning("Received a location_address that was not geocodeable, treating as empty: %s", web_event['location_address'])
     if geocode is None:
-        if json_body.get('latitude') or json_body.get('longitude'):
-            logging.info("Have latlong, let's geocode that way: %s, %s", json_body.get('latitude'), json_body.get('longitude'))
-            geocode = gmaps_api.lookup_latlng((json_body.get('latitude'), json_body.get('longitude')))
+        if web_event.get('latitude') or web_event.get('longitude'):
+            logging.info("Have latlong, let's geocode that way: %s, %s", web_event.get('latitude'), web_event.get('longitude'))
+            geocode = gmaps_api.lookup_latlng((web_event.get('latitude'), web_event.get('longitude')))
     if geocode is None:
-        if json_body.get('geolocate_location_name'):
-            logging.info("Have magic geolocate_location_name, checking if it is a place: %s", json_body.get('geolocate_location_name'))
-            geocode = gmaps_api.lookup_location(json_body['geolocate_location_name'])
+        if web_event.get('geolocate_location_name'):
+            logging.info("Have magic geolocate_location_name, checking if it is a place: %s", web_event.get('geolocate_location_name'))
+            geocode = gmaps_api.lookup_location(web_event['geolocate_location_name'])
     if geocode is None:
-        if json_body.get('location_name'):
-            logging.info("Have regular location_name, checking if it is a place: %s", json_body.get('location_name'))
-            geocode = gmaps_api.lookup_location(json_body['location_name'])
+        if web_event.get('location_name'):
+            logging.info("Have regular location_name, checking if it is a place: %s", web_event.get('location_name'))
+            geocode = gmaps_api.lookup_location(web_event['location_name'])
     if geocode:
         if 'name' in geocode.json_data:
-            json_body['location_name'] = geocode.json_data['name']
-        json_body['location_address'] = geocode.json_data['formatted_address']
-        logging.info("Found an address: %s", json_body['location_address'])
+            web_event['location_name'] = geocode.json_data['name']
+        web_event['location_address'] = geocode.json_data['formatted_address']
+        logging.info("Found an address: %s", web_event['location_address'])
         # BIG HACK!!!
-        if 'Japan' not in json_body['location_address'] and 'Korea' not in json_body['location_address']:
+        if 'Japan' not in web_event['location_address'] and 'Korea' not in web_event['location_address']:
             logging.error("Found incorrect address for venue!")
         latlng = geocode.json_data['geometry']['location']
-        json_body['latitude'] = latlng['lat']
-        json_body['longitude'] = latlng['lng']
+        web_event['latitude'] = latlng['lat']
+        web_event['longitude'] = latlng['lng']
 
-    db_event.address = json_body.get('location_address')
+    db_event.address = web_event.get('location_address')
 
-    # TODO: delete this? combine this with image fetching?
-    if db_event.square_image_url:
-        try:
-            mimetype, image_data = fetch.fetch_data(db_event.square_image_url)
-            image = images.Image(image_data)
-            json_body['photo_width'] = image.width
-            json_body['photo_height'] = image.height
-            logging.info("Found image width size %sx%s", image.width, image.height)
-        except urllib2.HTTPError:
-            logging.warning("Couldn't find image: %s", db_event.square_image_url)
+    _inner_cache_photo(db_event)
 
     if update_geodata:
         # Don't use cached/stale geocode when constructing the LocationInfo here
