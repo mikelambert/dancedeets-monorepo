@@ -1,3 +1,5 @@
+import imghdr
+import io
 import urllib2
 
 from google.appengine.api import images
@@ -21,7 +23,7 @@ def _raw_get_image(db_event):
         raise DownloadError(e.code)
 
 def _event_image_filename(event_id):
-    return '%s.jpg' % event_id
+    return '%s' % event_id
 
 def cache_image_and_get_size(event):
     mimetype, response = _raw_get_image(event)
@@ -33,7 +35,9 @@ def cache_image_and_get_size(event):
 
 def _render_image(event_id):
     image_data = gcs.get_object(EVENT_IMAGE_BUCKET, _event_image_filename(event_id))
-    return 'image/jpeg', image_data
+    f = io.BytesIO(image_data)
+    type = imghdr.what(f)
+    return 'image/%s' % type, image_data
 
 def render(response, event):
     try:
