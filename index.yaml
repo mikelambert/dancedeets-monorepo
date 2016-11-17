@@ -31,6 +31,13 @@ indexes:
   - name: search_time_period
   - name: __scatter__
 
+- kind: ExceptionRecord
+  properties:
+  - name: date
+  - name: major_version
+  - name: minor_version
+    direction: desc
+
 - kind: FacebookCachedObject
   properties:
   - name: __key__
