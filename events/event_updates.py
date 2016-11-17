@@ -71,8 +71,10 @@ def _all_attending_count(fb_event):
             return None
 
 def _inner_cache_photo(db_event):
+    if db_event.json_props is None:
+        db_event.json_props = {}
     if db_event.full_image_url:
-        width, height = event_image.cache_image_and_get_size(db_event.full_image_url)
+        width, height = event_image.cache_image_and_get_size(db_event)
         db_event.json_props['photo_width'] = width
         db_event.json_props['photo_height'] = height
     else:

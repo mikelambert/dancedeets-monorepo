@@ -7,9 +7,6 @@ from util import gcs
 
 EVENT_IMAGE_BUCKET = 'dancedeets-event-images'
 
-class NotFoundError(Exception):
-    pass
-
 class DownloadError(Exception):
     pass
 
@@ -26,7 +23,7 @@ def _event_image_filename(event_id):
 
 def cache_image_and_get_size(event):
     mimetype, response = _raw_get_image(event)
-    gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event.event_id), response)
+    gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event.id), response)
 
     img = images.Image(response)
     return img.width, img.height

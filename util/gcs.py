@@ -28,15 +28,14 @@ def put_object(bucket, filename, contents):
 
     # Now insert them into the specified bucket as a media insertion.
     # http://g.co/dv/resources/api-libraries/documentation/storage/v1/python/latest/storage_v1.objects.html#insert
-    with open(filename, 'rb') as f:
-        req = service.objects().insert(
-            bucket=bucket, body=body,
-            # You can also just set media_body=filename, but for the sake of
-            # demonstration, pass in the more generic file handle, which could
-            # very well be a StringIO or similar.
-            media_body=http.MediaIoBaseUpload(f, 'application/octet-stream'))
-        resp = req.execute()
-
+    f = io.BytesIO(contents)
+    req = service.objects().insert(
+        bucket=bucket, body=body,
+        # You can also just set media_body=filename, but for the sake of
+        # demonstration, pass in the more generic file handle, which could
+        # very well be a StringIO or similar.
+        media_body=http.MediaIoBaseUpload(f, 'application/octet-stream'))
+    resp = req.execute()
     return resp
 
 def get_object(bucket, filename):
