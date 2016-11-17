@@ -9,6 +9,7 @@ import htmlmin
 import logging
 import hashlib
 import os
+import traceback
 import urllib
 import urlparse
 import webapp2
@@ -143,6 +144,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
             raise _ValidationError(self._errors)
 
     def handle_exception(self, e, debug):
+        logging.info(traceback.format_exc())
         handled = False
         if isinstance(e, _ValidationError):
             handled = self.handle_error_response(self._errors)

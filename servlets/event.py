@@ -329,6 +329,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             try:
                 add_entities.add_update_event(fb_event, self.fbl, creating_uid=self.user.fb_uid, remapped_address=remapped_address, override_address=override_address, creating_method=eventdata.CM_ADMIN)
             except Exception as e:
+                logging.exception('Error adding event')
                 self.add_error(str(e))
             self.errors_are_fatal()
             self.user.add_message("Changes saved!")
