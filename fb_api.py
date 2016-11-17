@@ -158,7 +158,7 @@ class LookupUser(LookupType):
 class LookupUserEvents(LookupType):
     version = "v2.5"
 
-    fields = ['id', 'name', 'start_time', 'host', 'rsvp_status']
+    fields = ['id', 'name', 'start_time', 'admins', 'rsvp_status', 'picture']
 
     @classmethod
     def track_lookup(cls):

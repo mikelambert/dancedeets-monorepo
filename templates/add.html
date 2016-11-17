@@ -37,7 +37,7 @@ Add Dance Event
 							{% endif %}
 							">
 							<div style="float:left;width:50px; margin-right: 1em">
-								<img src="http://graph.facebook.com/{{ event.id }}/picture" width="50">
+								<img src="{{ event.picture.data.url }}" width="50">
 							</div>
 							<div>
 							<span style="font-weight: bold">{{ event.name|e }}</span><br>
