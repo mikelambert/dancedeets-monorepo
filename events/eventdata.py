@@ -286,7 +286,7 @@ class DBEvent(ndb.Model):
             return cover['source']
         else:
             # Fall back to the old square images
-            return self.image_url
+            return self.square_image_url
 
     @property
     def square_image_url(self):
