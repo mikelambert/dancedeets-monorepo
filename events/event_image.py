@@ -1,6 +1,12 @@
 import imghdr
-from PIL import Image
-from resizeimage import resizeimage
+import logging
+try:
+    from PIL import Image
+    from resizeimage import resizeimage
+except ImportError:
+    logging.exception('Error importing PIL')
+    Image = None
+    resizeimage = None
 import io
 import urllib2
 
@@ -31,6 +37,7 @@ NotFoundError = gcs.NotFoundError
 def _raw_get_image(db_event):
     image_url = db_event.full_image_url
     try:
+        logging.info('Fetching image for event %s: %s', db_event.id, image_url)
         mimetype, response = fetch.fetch_data(image_url)
         return mimetype, response
     except urllib2.HTTPError as e:
