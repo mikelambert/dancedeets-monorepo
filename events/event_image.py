@@ -68,19 +68,22 @@ def _render_image(event_id):
     return 'image/%s' % image_type, image_data
 
 def _resize_image(final_image, width, height):
-    if width or height:
-        orig_data = io.BytesIO(final_image)
-        with Image.open(orig_data) as image:
-            resized = None
-            if width and height:
-                resized = resizeimage.resize_cover(image, [width, height])
-            elif width:
-                resized = resizeimage.resize_width(image, width)
-            elif height:
-                resized = resizeimage.resize_height(image, height)
-            resized_data = io.BytesIO()
-            resized.save(resized_data, image.format)
-            final_image = resized_data.getvalue()
+    try:
+        if width or height:
+            orig_data = io.BytesIO(final_image)
+            with Image.open(orig_data) as image:
+                resized = None
+                if width and height:
+                    resized = resizeimage.resize_cover(image, [width, height])
+                elif width:
+                    resized = resizeimage.resize_width(image, width)
+                elif height:
+                    resized = resizeimage.resize_height(image, height)
+                resized_data = io.BytesIO()
+                resized.save(resized_data, image.format)
+                final_image = resized_data.getvalue()
+    except resizeimage.ImageSizeError as e:
+        logging.info('Requested too-large image resize, returning original image: %s', e)
     return final_image
 
 def render(response, event, width=None, height=None):
