@@ -7,7 +7,7 @@ from google.appengine.api import images
 from util import fetch
 from util import gcs
 
-EVENT_IMAGE_BUCKET = 'dancedeets-event-images'
+EVENT_IMAGE_BUCKET = 'dancedeets-event-flyers-full'
 
 def test_jpeg(h, f):
     if h[:4] in [
@@ -35,7 +35,7 @@ def _raw_get_image(db_event):
         raise DownloadError(e.code)
 
 def _event_image_filename(event_id):
-    return '%s' % event_id
+    return str(event_id)
 
 def cache_image_and_get_size(event):
     mimetype, response = _raw_get_image(event)
