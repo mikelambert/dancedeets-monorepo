@@ -53,3 +53,5 @@ gdata
 python-firebase-gae
 
 markdown
+
+resizeimage
