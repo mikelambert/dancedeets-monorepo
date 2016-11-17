@@ -56,7 +56,7 @@ def eventually_publish_event(event_id, token_nickname=None):
             logging.info("Adding task with name %s", name)
             try:
                 q.add(taskqueue.Task(name=name, payload=event_id, method='PULL', tag=token.queue_id()))
-            except taskqueue.TombstonedTaskError:
+            except (taskqueue.TombstonedTaskError, taskqueue.TaskAlreadyExistsError):
                 # Ignore publishing requests we've already decided to publish (multi-task concurrency)
                 pass
 
