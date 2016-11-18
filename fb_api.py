@@ -70,7 +70,10 @@ def is_public_ish(fb_event):
         (fb_event['info'].get('privacy', 'OPEN') == 'FRIENDS' and
          get_all_members_count(fb_event) >= 60) or
         (fb_event['info'].get('privacy', 'OPEN') == 'SECRET' and
-         get_all_members_count(fb_event) >= 200)
+         get_all_members_count(fb_event) >= 200) or
+        (fb_event['info'].get('privacy', 'OPEN') == 'CLOSED' and
+         get_all_members_count(fb_event) >= 200) or
+        False
     )
 
 
