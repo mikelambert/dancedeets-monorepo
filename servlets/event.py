@@ -4,6 +4,7 @@ import datetime
 import jinja2
 import logging
 import os
+import pprint
 import re
 import urllib
 
@@ -205,6 +206,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         if e:
             visible_users = users.User.get_by_ids(e.visible_to_fb_uids)
             self.display['visible_users'] = [x for x in visible_users if x]
+            self.display['current_fb_data'] = pprint.pformat(e.fb_event)
         self.response.out.write('%s<br>\n' % error_string)
         self.render_template('_event_admin_links')
 
