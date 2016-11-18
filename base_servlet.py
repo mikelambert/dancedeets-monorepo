@@ -649,6 +649,7 @@ class BaseRequestHandler(BareBaseRequestHandler):
             'India',
             'Japan: Osaka',
             'Japan: Tokyo',
+            'Korea',
             'Malaysia',
             'New Zealand',
             'Peru',
