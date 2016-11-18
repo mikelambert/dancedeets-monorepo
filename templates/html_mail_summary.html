@@ -10,9 +10,11 @@ Hi {{ user.full_name }},
 {% for result in results %}
 <tr>
 	<td width="180">
+{% if result.image %}
 		<a href="{{ dd_event_url(result.event_id, dict(utm_source='weekly_email', utm_medium='email', utm_campaign='weekly_email')) }}">
 		<img src="{{ result.image }}" width="180" border="0">
 		</a>
+{% endif %}
 		<br><br>
 	</td>
 	<td valign=top>
