@@ -111,6 +111,7 @@ class LocationInfo(object):
         self.fb_address = None
         self.remapped_address = None
         self.final_address = None
+        self.geocode = None
 
         has_overridden_address = db_event and db_event.address
         if not has_overridden_address and not fb_event:
