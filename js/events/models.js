@@ -6,6 +6,8 @@
 
 'use strict';
 
+import url from 'url';
+
 type JSON = string | number | boolean | null | JSONObject | JSONArray;
 type JSONObject = { [key:string]: JSON };
 type JSONArray = Array<JSON>;
@@ -78,7 +80,6 @@ export type Admin = {
 
 export class Event extends JsonDerivedObject {
   id: string;
-  picture: string;
   name: string;
   description: string;
   start_time: string;
@@ -91,10 +92,7 @@ export class Event extends JsonDerivedObject {
     attendingCount: number,
     maybeCount: number,
   };
-  cover: {
-    cover_id: string,
-    images: Array<Cover>,
-  };
+  picture: ?Cover;
   venue: Venue;
   annotations: {
     categories: Array<string>,
@@ -112,24 +110,24 @@ export class Event extends JsonDerivedObject {
     this.venue = new Venue(eventData['venue']);
   }
 
-  getImageProps() {
-    var source = this.picture;
-    var width = 100;
-    var height = 100;
-    if (this.cover !== null && this.cover.images.length > 0) {
-      var image = this.cover.images[0];
-      source = image.source;
-      width = image.width;
-      height = image.height;
-    }
-    return {source, width, height};
-  }
-
-  getCoverImageProps(): MiniImageProp[] {
-    if (!this.cover) {
+  getResponsiveFlyers() {
+    if (!this.picture) {
       return [];
     }
-    return this.cover.images.map((x) => ({uri: x.source, width: x.width, height: x.height}));
+    const ratio = this.picture.width / this.picture.height;
+    const parsedSource = url.parse(this.picture.source, true);
+    const results = [320, 480, 720, 1080, 1440].map((x) => {
+      // Careful! We are re-using parsedSource here.
+      // If we do more complex things, we may need to create and modify copies...
+      parsedSource.query.width = x;
+      const result = {
+        uri: url.format(parsedSource),
+        width: x,
+        height: Math.floor(x / ratio),
+      };
+      return result;
+    });
+    return results;
   }
 
   getUrl() {

@@ -742,7 +742,7 @@ class _EventRow extends React.Component {
   };
 
   render() {
-    const imageProps = this.props.event.getCoverImageProps();
+    const imageProps = this.props.event.getResponsiveFlyers();
     if (this.props.listLayout) {
       return (
         <Card style={eventStyles.row}>
@@ -897,7 +897,7 @@ class _FullEventView extends React.Component {
   render() {
     const width = Dimensions.get('window').width;
     let flyer = null;
-    const imageProps = this.props.event.getCoverImageProps();
+    const imageProps = this.props.event.getResponsiveFlyers();
     if (imageProps.length) {
       const flyerImage =
         <ProportionalImage

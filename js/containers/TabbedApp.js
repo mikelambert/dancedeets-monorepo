@@ -159,9 +159,9 @@ class _EventView extends React.Component {
           this.props.navigatable.onNavigate({
             key: 'FlyerView',
             title: this.props.intl.formatMessage(messages.viewFlyer),
-            image: event.cover.images[0].source,
-            width: event.cover.images[0].width,
-            height: event.cover.images[0].height,
+            image: event.picture.source,
+            width: event.picture.width,
+            height: event.picture.height,
           });
         }}
         selectedEvent={route.event}

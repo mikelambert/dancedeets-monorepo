@@ -26,7 +26,8 @@ export function disableWrites() {
 }
 
 function getUrl(path: string, args: Object) {
-  const baseUrl = DEV_SERVER ? 'http://dev.dancedeets.com:8080/api/v1.2/' : 'http://www.dancedeets.com/api/v1.2/';
+  const version = '1.3';
+  const baseUrl = DEV_SERVER ? `http://dev.dancedeets.com:8080/api/v${version}/` : `http://www.dancedeets.com/api/v${version}/`;
   const formattedArgs = querystring.stringify(args);
   var fullPath = baseUrl + path;
   if (formattedArgs) {
