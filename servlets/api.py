@@ -217,7 +217,7 @@ class SearchHandler(ApiHandler):
         json_results = []
         for result in search_results:
             try:
-                json_result = canonicalize_event_data(result.db_event, result.event_keywords)
+                json_result = canonicalize_event_data(result.db_event, result.event_keywords, self.version)
                 json_results.append(json_result)
             except Exception as e:
                 logging.exception("Error processing event %s: %s" % (result.event_id, e))
@@ -374,7 +374,7 @@ class SettingsHandler(ApiHandler):
         self.write_json_success()
 
 
-def canonicalize_event_data(db_event, event_keywords):
+def canonicalize_event_data(db_event, event_keywords, version):
     event_api = {}
     event_api['id'] = db_event.id
     event_api['name'] = db_event.name
@@ -397,18 +397,25 @@ def canonicalize_event_data(db_event, event_keywords):
         else:
             cover = db_event.cover_images[0]
             ratio = 1.0 * cover['width'] / cover['height']
-        # Covers the most common screen sizes, according to Mixpanel:
-        widths = reversed([320, 480, 720, 1080, 1440])
-        cover_images = [{'source': urls.event_image_url(db_event.id, width=width), 'width': width, 'height': int(width/ratio)} for width in widths]
 
-        event_api['cover'] = {
-            'cover_id': 'dummy', # Android (v1.1) expects this value, even though it does nothing with it.
-            'images': sorted(cover_images, key=lambda x: -x['height']),
-        }
-        event_api['picture'] = urls.event_image_url(db_event.id, width=200, height=200)
+        if version >= (1, 3):
+            # Used by new react builds
+            event_api['picture'] = urls.event_image_url(db_event.id)
+        else:
+            # Covers the most common screen sizes, according to Mixpanel:
+            widths = reversed([320, 480, 720, 1080, 1440])
+            cover_images = [{'source': urls.event_image_url(db_event.id, width=width), 'width': width, 'height': int(width/ratio)} for width in widths]
+
+            # Used by old android and ios builds
+            event_api['picture'] = urls.event_image_url(db_event.id, width=200, height=200)
+            # Used by old react builds
+            event_api['cover'] = {
+                'cover_id': 'dummy', # Android (v1.1) expects this value, even though it does nothing with it.
+                'images': sorted(cover_images, key=lambda x: -x['height']),
+            }
     else:
-        event_api['cover'] = None
         event_api['picture'] = None
+        event_api['cover'] = None
 
     # location data
     if db_event.location_name:
@@ -600,7 +607,7 @@ class EventHandler(ApiHandler):
         # get venue address and stuffs
         # pass in as rewritten db_event for computing json_data
 
-        json_data = canonicalize_event_data(db_event, None)
+        json_data = canonicalize_event_data(db_event, None, self.version)
 
         # Ten minute expiry on data we return
         self.response.headers['Cache-Control'] = 'max-age=%s' % (60 * 10)
