@@ -392,16 +392,20 @@ def canonicalize_event_data(db_event, event_keywords, version):
 
     # cover images
     if db_event.has_image:
-        if db_event.json_props:
-            ratio = 1.0 * db_event.json_props['photo_width'] / db_event.json_props['photo_height']
-        else:
-            cover = db_event.cover_images[0]
-            ratio = 1.0 * cover['width'] / cover['height']
-
         if version >= (1, 3):
+            cover = db_event.cover_images[0]
             # Used by new react builds
-            event_api['picture'] = urls.event_image_url(db_event.id)
+            event_api['picture'] = {
+                'source': urls.event_image_url(db_event.id),
+                'width': cover['width'],
+                'height': cover['height'],
+            }
         else:
+            if db_event.json_props:
+                ratio = 1.0 * db_event.json_props['photo_width'] / db_event.json_props['photo_height']
+            else:
+                cover = db_event.cover_images[0]
+                ratio = 1.0 * cover['width'] / cover['height']
             # Covers the most common screen sizes, according to Mixpanel:
             widths = reversed([320, 480, 720, 1080, 1440])
             cover_images = [{'source': urls.event_image_url(db_event.id, width=width), 'width': width, 'height': int(width/ratio)} for width in widths]
