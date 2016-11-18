@@ -1,4 +1,11 @@
 <a href="https://developers.facebook.com/tools/explorer/{{ app_id }}?method=GET&path={{ event_id }}">FB Event Live</a><br>
+{% for user in visible_users %}
+  Token for User {{user.fb_uid}}: {{user.fb_access_token}}
+  {% if user.expired_oauth_token %}
+    (expired)
+  {% endif %}
+  <br>
+{% endfor %}
 <a href="https://www.facebook.com/events/{{ event_id }}/">FB.com Event</a><br>
 <a href="/tools/fb_data?key=701004.{{ event_id }}.OBJ_EVENT">FB Event Cache</a><br>
 {% if display_event %}

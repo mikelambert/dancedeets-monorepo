@@ -27,6 +27,7 @@ from nlp import categories
 from nlp import event_auto_classifier
 from nlp import event_classifier
 from search import search
+from users import users
 from util import dates
 from util import urls
 
@@ -201,6 +202,9 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         self.display['event'] = e
         self.display['fb_event'] = fb_event
         self.display['event_id'] = fb_event_id
+        if e:
+            visible_users = users.User.get_by_ids(e.visible_to_fb_uids)
+            self.display['visible_users'] = [x for x in visible_users if x]
         self.response.out.write('%s<br>\n' % error_string)
         self.render_template('_event_admin_links')
 
