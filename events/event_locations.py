@@ -118,11 +118,13 @@ class LocationInfo(object):
         if (not has_overridden_address and fb_event) or debug:
             self.final_latlng = _get_latlng_from_event(fb_event)
             if self.final_latlng:
-                self.exact_from_event = True
                 self.geocode = gmaps_api.lookup_latlng(self.final_latlng)
                 self.fb_address = formatting.format_geocode(self.geocode)
                 self.remapped_address = None
-            else:
+                self.exact_from_event = bool(self.geocode)
+            # Sometimes the geocode above fails, so we fallback on addresses.
+            # For exmaple: venue id 156028414450815 with latlng: (24.43012, 118.31452)
+            if not self.geocode:
                 self.fb_address = get_address_for_fb_event(fb_event)
                 self.remapped_address = _get_remapped_address_for(self.fb_address)
                 if self.remapped_address:

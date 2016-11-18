@@ -38,6 +38,7 @@ formatting_reg_data = {
     'Keelung, Taiwan 20241': 'Keelung City, Taiwan',
     'Taipei': 'Taipei, Taiwan',
     'Tangerang': 'Tangerang, Banten, Indonesia',
+    'No. 261, Minzu Rd, Kinmen County, 893': 'Kinmen County',
 }
 
 

@@ -36,6 +36,9 @@ class _GMapsResult(object):
     def formatted_address(self):
         return self.json['formatted_address']
 
+    def __repr__(self):
+        return '%s(dict(%r))' % (self.__class__, self.__dict__)
+
 
 class GMapsGeocode(_GMapsResult):
     def __init__(self, json_data):
