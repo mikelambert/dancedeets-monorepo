@@ -84,23 +84,10 @@ def get_fblookup_params(fbl, randomize_tokens=False):
     return params
 
 
-class LookupAccessToken(fb_api.LookupType):
-    @classmethod
-    def get_lookups(cls, object_id):
-        return [
-            ('info', cls.url('debug_token?input_token=%s' % object_id)),
-        ]
-    @classmethod
-    def cache_key(cls, object_id, fetching_uid):
-        raise Exception("Should not cache access token debug data")
-
-
 def _get_multiple_tokens(token_count):
     good_users = users.User.query(users.User.key >= ndb.Key(users.User, '701004'), users.User.expired_oauth_token == False).fetch(token_count)  # noqa
     tokens = [x.fb_access_token for x in good_users]
-    app_fbl = fb_api.FBLookup(None, fb_api.facebook.FACEBOOK_CONFIG['app_access_token'])
-    app_fbl.make_passthrough()
-    debug_token_infos = app_fbl.get_multi(LookupAccessToken, tokens)
+    debug_token_infos = fb_api.lookup_debug_tokens(tokens)
     one_day_from_now = time.time() + (24 * 60 * 60)
     # Ensure our tokens are really still valid, and still valid a day from now, for long-running mapreduces
     good_tokens = []
@@ -108,9 +95,9 @@ def _get_multiple_tokens(token_count):
         if info['empty']:
             logging.error('Trying to lookup invalid access token: %s', token)
             continue
-        if (info['info']['data']['is_valid'] and
-            (info['info']['data']['expires_at'] == 0 or  # infinite token
-             info['info']['data']['expires_at'] > one_day_from_now)):
+        if (info['token']['data']['is_valid'] and
+            (info['token']['data']['expires_at'] == 0 or  # infinite token
+             info['token']['data']['expires_at'] > one_day_from_now)):
             good_tokens.append(token)
     return good_tokens
 

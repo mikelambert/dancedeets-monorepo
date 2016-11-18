@@ -749,13 +749,13 @@ class _LookupDebugToken(LookupType):
 
     @classmethod
     def cache_key(cls, object_id, fetching_uid):
-        return (USERLESS_UID, object_id, 'OBJ_DEBUG_TOKEN')
+        raise Exception("Should not cache access token debug data")
 
 
-def lookup_debug_token(access_token):
+def lookup_debug_tokens(access_tokens):
     # We use a prod config here, so we can lookup access tokens from prod apps
     app_fbl = FBLookup(None, facebook._PROD_FACEBOOK_CONFIG['app_access_token'])
-    app_fbl.allow_cache = False
-    return app_fbl.get(_LookupDebugToken, access_token)
+    app_fbl.make_passthrough()
+    return app_fbl.get_multi(_LookupDebugToken, access_tokens)
 
 

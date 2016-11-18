@@ -285,7 +285,7 @@ class AuthHandler(ApiHandler):
         self.errors_are_fatal() # Assert that our access_token is set
 
         # Fetch the access_token_expires value from Facebook, instead of demanding it via the API
-        debug_info = fb_api.lookup_debug_token(access_token)
+        debug_info = fb_api.lookup_debug_tokens([access_token])[0]
         if debug_info['empty']:
             logging.error('Error: %s', debug_info['empty'])
             raise Exception(debug_info['empty'])
