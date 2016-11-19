@@ -21,10 +21,15 @@ class Stub(object):
         self.real_db_cache = fb_api.DBCache
         if disk_db:
             fb_api.DBCache = DiskDBCache
+        self.real_lookup_debug_tokens = fb_api.lookup_debug_tokens
+        fb_api.lookup_debug_tokens = fake_lookup_debug_tokens
 
     def deactivate(self):
         fb_api.FBAPI = self.real_fb_api
         fb_api.DBCache = self.real_db_cache
+
+def fake_lookup_debug_tokens(tokens):
+    return [{'empty': False, 'token': {'data': {'is_valid': True, 'expires_at': 0}}} for x in tokens]
 
 class DiskDBCache(fb_api.DBCache):
     def fetch_keys(self, keys):

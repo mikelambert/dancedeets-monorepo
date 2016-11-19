@@ -23,9 +23,11 @@ class TestTasks(unittest.TestCase):
         e.put()
         m = users.User(id=MIKE_ID)
         m.fb_access_token = "DUMMY"
+        m.expired_oauth_token = False
         m.put()
         u = users.User(id=USER_ID)
         u.fb_access_token = "DUMMY"
+        u.expired_oauth_token = False
         u.put()
 
 class TestLoadEvents(TestTasks):
