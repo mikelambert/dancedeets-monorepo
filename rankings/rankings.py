@@ -48,7 +48,7 @@ def count_event_for_city(dbevent):
         return
     if not dbevent.latitude or not dbevent.longitude: # no-location event, don't count
         return
-    city = get_ranking_location_latlng((dbevent.latitude, dbevent.longitude))
+    city = dbevent.city_name
     for time_period in get_time_periods(dbevent.creation_time or dbevent.start_time):
         yield op.counters.Increment(make_key_name("City", city=city, time_period=time_period))
 
