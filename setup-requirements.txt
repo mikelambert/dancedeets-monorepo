@@ -7,6 +7,9 @@ git+https://github.com/sixohsix/twitter
 git+https://github.com/wtforms/wtforms-appengine
 
 # Communicate to our npm js render server
+# We need our fixed version of optional-django, that handles ImportError safely.
+# And we need to do it before we import/load the react module which depends on it.
+git+https://github.com/mikelambert/optional-django
 react
 
 # ScrapingHub API
