@@ -86,7 +86,11 @@ class FakeResult(object):
 
 class MemoryFBAPI(fb_api.FBAPI):
     results = {}
+    get_results = {}
     do_timeout = False
+
+    def get(self, path, args):
+        return self.get_results[path]
 
     def post(*args, **kwargs):
         pass

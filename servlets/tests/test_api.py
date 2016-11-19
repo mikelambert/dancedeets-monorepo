@@ -28,6 +28,9 @@ class TestAuth(unittest.TestCase):
         me_uid = '701004'
         access_token = 'BlahToken'
         new_access_token = 'BlahToken2'
+        fb_api.FBAPI.get_results = {
+            'me': {'id': me_uid},
+        }
         fb_api.FBAPI.results = {
             url: (200, {'id': me_uid, 'name': 'Mike Lambert'}),
             '/v2.2/me/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {}),
