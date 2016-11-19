@@ -39,6 +39,9 @@ NotFoundError = gcs.NotFoundError
 
 def _raw_get_image(db_event):
     image_url = db_event.full_image_url
+    # For testing purposes:
+    if image_url.startswith('test:'):
+        raise NotFoundError()
     if not image_url:
         raise NoImageError()
     try:

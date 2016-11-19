@@ -31,7 +31,7 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
             picture_url:
                 (200, {
                     "data": {
-                        "url": "test image url",
+                        "url": "test: image url",
                     }
                 }),
     })
@@ -67,7 +67,7 @@ def create_user(user_id='701004', access_token='Access Token', access_token_expi
             'name': 'Test User',
             'email': 'test@test.com'
         }),
-        '%s/events?since=yesterday&fields=id,rsvp_status' % base_url: (200, {
+        '%s/events?since=yesterday&fields=id,rsvp_status&limit=5000' % base_url: (200, {
             "data": {
             },
         }),
