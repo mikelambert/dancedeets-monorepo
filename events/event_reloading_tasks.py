@@ -1,4 +1,3 @@
-import datetime
 import logging
 
 from google.appengine.ext import deferred
@@ -15,7 +14,12 @@ from . import event_updates
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 def add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated):
-    fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
+    try:
+        fb_event = fbl.fetched_data(fb_api.LookupEvent, db_event.fb_event_id)
+    except fb_api.NoFetchedDataException:
+        # Ensure we can do a bare-minimum update, even if we aren't able to get a proper fb_event from the server.
+        # This helps ensure we still update the event's search_time_period regardless.
+        fb_event = db_event.fb_event
     update_regardless = not only_if_updated
     if update_regardless or db_event.fb_event != fb_event:
         logging.info("Event %s is updated.", db_event.id)
@@ -34,6 +38,10 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
         fbl = None
         logging.info("Looking for event id %s with visible user ids %s", db_event.fb_event_id, db_event.visible_to_fb_uids)
         for user in users.User.get_by_ids(db_event.visible_to_fb_uids):
+            if not user:
+                # If this user id doesn't exist in our system, then it was never an actual user
+                # It most likely comes from the days when we could get fb events from friends-of-users
+                continue
             fbl = user.get_fblookup()
             fbl.allow_cache = allow_cache
             try:
@@ -46,10 +54,13 @@ def load_fb_events_using_backup_tokens(event_ids, allow_cache, only_if_updated, 
                     processed = True
         # If we didn't process, it means none of our access_tokens are valid.
         if not processed:
+            logging.warning('Cleaning out the visible_to_fb_uids for event %s, since our tokens have all expired.', db_event.fb_event_id)
             # Now mark our event as lacking in valid access_tokens, so that our pipeline can pick it up and look for a new one
             db_event.visible_to_fb_uids = []
             db_event.put()
             # Let's update the DBEvent as necessary (note, this uses the last-updated FBLookup)
+            # Unfortunately, we failed to get anything in our fbl, as it was raising an ExpiredOAuthToken
+            # So instead, let's call it and just have it use the db_event.fb_event
             if fbl:
                 add_event_tuple_if_updating(events_to_update, fbl, db_event, only_if_updated)
     event_updates.update_and_save_fb_events(events_to_update, update_geodata=update_geodata)
