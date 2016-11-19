@@ -37,8 +37,8 @@ class TestLoadEventAttending(TestTasks):
         fb_api.FBAPI.results = {
             '/299993043349170/attending': (200, {
                 "data": [
-                    {"uid": 703278},
-                    {"uid": 823422},
+                    {"id": "703278"},
+                    {"id": "823422"},
             ]})
         }
         app.get('/tasks/load_event_attending?user_id=%s&event_ids=%s' % (MIKE_ID, EVENT_ID))
@@ -57,8 +57,8 @@ class TestTrackNewUserFriends(TestTasks):
             '/v2.2/701004/friends':
             (200, {
                 "data": [
-                    {"uid": "703278"},
-                    {"uid": '823422'},
+                    {"id": "703278"},
+                    {"id": '823422'},
             ]}),
         }
         app.get('/tasks/track_newuser_friends?user_id=%s' % MIKE_ID)
