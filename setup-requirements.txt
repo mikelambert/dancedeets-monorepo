@@ -57,4 +57,4 @@ python-firebase-gae
 
 markdown
 
-resizeimage
+python-resize-image
