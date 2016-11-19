@@ -15,6 +15,7 @@
     "eslint-plugin-react": "^5.2.2",
     "expose-loader": "^0.7.1",
     "extract-text-webpack-plugin": "^1.0.1",
+    "favicons": "github:mikelambert/favicons#patch-1",
     "file-loader": "^0.8.5",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.2",
