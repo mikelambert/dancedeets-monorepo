@@ -17,7 +17,8 @@
   <a href="https://console.cloud.google.com/datastore/entities/edit?key=0%2F%7C7%2FDBEvent%7C21%2Fname:{{ event.id }}&project=dancedeets-hrd">DBEvent Datastore</a><br>
 {% endif %}
 {% if potential_event %}
-  <a href="/admin/potentialevent/edit/?url=%2Fadmin%2Fpotentialevent%2F&id={{ potential_event.key().__str__() }}">Potential Event</a>
+  <a href="/admin/potentialevent/edit/?url=%2Fadmin%2Fpotentialevent%2F&id={{ potential_event.key().__str__() }}">PotentialEvent</a><br>
+  <a href="https://console.cloud.google.com/datastore/entities/edit?key=0%2F%7C14%2FPotentialEvent%7C21%2Fname:{{ event.id }}&project=dancedeets-hrd">PotentialEvent Datastore</a><br>
 {% endif %}
 
 {% if current_fb_data %}
