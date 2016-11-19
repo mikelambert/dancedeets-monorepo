@@ -24,6 +24,7 @@ suds
 # Date Manip
 dateparser
 icalendar
+ruamel.yaml
 
 iso3166
 oauth2
@@ -46,6 +47,12 @@ git+https://github.com/mikelambert/wtforms-appengine
 # Relay / GraphQL
 flask_graphql
 graphene
+
+# For /event/222/title-is-here URLs
+slugify
+
+# In case we want to parse rss/atom feeds
+feedparser
 
 # Google
 GoogleAppEngineMapReduce
