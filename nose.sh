@@ -28,7 +28,7 @@ cat app.yaml | sed 's/runtime: vm/runtime: python27/' > app-nose.yaml
 # If our lib/ directory exists, manage it properly, otherwise assume the modules are all installed globally
 if [ -d lib ]; then
 	rm -rf lib/tests # this is pulled in via twilio, and messes with our excludes
-	MODULES=$(find lib -maxdepth 1 | grep -v info | cut -f2- -d/ | sed 's/\.py/\$/' | sed 's/^/\^/' | paste -s -d "|" -)
+	MODULES=$(find lib -maxdepth 1 | grep -v info | cut -f2- -d/ | sed 's/\.pyc?/\$/' | sed 's/^/\^/' | paste -s -d "|" -)
 	EXCLUDE=--exclude="$MODULES"
 else
 	EXCLUDE=""
