@@ -99,7 +99,7 @@ class TestFBAPI(full_unittest.TestCase):
 
         fb_api.FBAPI.results = {
             url: (200, {}),
-            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status': (200, {}),
+            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {}),
             '/v2.2/uid/friends': (200, {}),
             '/v2.2/uid/permissions': (200, {}),
         }
@@ -117,7 +117,7 @@ class TestFBAPI(full_unittest.TestCase):
 
         fb_api.FBAPI.results = {
             url: (500, {}),
-            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status': (200, {}),
+            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {}),
             '/v2.2/uid/friends': (200, {}),
             '/v2.2/uid/permissions': (200, {}),
         }
@@ -128,7 +128,7 @@ class TestFBAPI(full_unittest.TestCase):
 
         fb_api.FBAPI.results = {
             url: (200, False),
-            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status': (200, False),
+            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, False),
             '/v2.2/uid/friends': (200, False),
             '/v2.2/uid/permissions': (200, False),
         }
@@ -142,7 +142,7 @@ class TestFBAPI(full_unittest.TestCase):
 
         fb_api.FBAPI.results = {
             url: (200, {'error_code': 100}),
-            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status': (200, {'error_code': 100}),
+            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {'error_code': 100}),
             '/v2.2/uid/friends': (200, {'error_code': 100}),
             '/v2.2/uid/permissions': (200, {'error_code': 100}),
         }
@@ -185,7 +185,7 @@ class TestFBLookup(FBApiTestCase):
         # Set up our facebook backend
         fb_api.FBAPI.results = {
             url: (200, {}),
-            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status': (200, {}),
+            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {}),
             '/v2.2/uid/friends': (200, {}),
             '/v2.2/uid/permissions': (200, {}),
         }

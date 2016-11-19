@@ -1,4 +1,5 @@
 import json
+import logging
 from google.appengine.api import urlfetch
 
 import fb_api
@@ -64,6 +65,7 @@ class FakeRPC(object):
                     else:
                         status_code, content = result
                 else:
+                    logging.error('Returning 404 because url %s not in %s', url, MemoryFBAPI.results)
                     status_code = 404
                     content = None
                 if status_code:
