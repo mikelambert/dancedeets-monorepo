@@ -10,6 +10,7 @@ from loc import gmaps_api
 from loc import math
 from nlp import categories
 from util import dates
+from util import urls
 
 TIME_PAST = 'PAST'
 TIME_ONGOING = 'ONGOING'
@@ -181,7 +182,7 @@ class SearchResult(object):
             categories.append('Hip-Hop & Street-Jazz')
         return categories
 
-    image = property(lambda x: x.data['image'])
+    image = property(lambda x: urls.event_image_url(x.event_id, width=360, height=360))
     sponsor = property(lambda x: x.data.get('sponsor'))
 
     # Only for use by StudioClass-indexed results

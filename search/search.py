@@ -79,7 +79,6 @@ class DisplayEvent(ndb.Model):
             categories = [unicode(x) for x in db_event.auto_categories]
             display_event.data = {
                 'name': db_event.name,
-                'image': db_event.square_image_url,
                 'cover': db_event.largest_cover,
                 'start_time': db_event.start_time_string,
                 'end_time': db_event.end_time_string,
