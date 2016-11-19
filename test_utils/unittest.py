@@ -7,6 +7,7 @@ from google.appengine.ext import testbed
 
 from loc import gmaps_stub
 from test_utils import fb_api_stub
+from util import gcs
 
 class TestCase(unittest.TestCase):
     def setUp(self):
@@ -28,8 +29,11 @@ class TestCase(unittest.TestCase):
         self.testbed.setup_env(overwrite=True,
             DEFAULT_VERSION_HOSTNAME='localhost',
         )
+        gcs.test_mode = True
 
     def tearDown(self):
         self.gmaps_stub.deactivate()
         self.fb_api.deactivate()
+        gcs.test_mode = False
+
 

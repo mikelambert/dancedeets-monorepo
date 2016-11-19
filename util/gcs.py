@@ -5,6 +5,8 @@ from googleapiclient import errors
 from googleapiclient import http
 from googleapiclient.discovery import build
 
+test_mode = False
+
 class NotFoundError(Exception):
     pass
 
@@ -22,6 +24,8 @@ def _create_service():
 
 
 def put_object(bucket, filename, contents):
+    if test_mode:
+        return
     service = _create_service()
 
     # This is the request body as specified:
@@ -43,6 +47,9 @@ def put_object(bucket, filename, contents):
     return resp
 
 def get_object(bucket, filename):
+    if test_mode:
+        return 'Dummy Object'
+
     try:
         service = _create_service()
 
