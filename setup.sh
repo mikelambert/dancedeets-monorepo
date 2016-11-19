@@ -33,6 +33,8 @@ pip install --upgrade -t $BASE_DIR/lib -r $BASE_DIR/setup-requirements.txt
 
 # So we can import zope.interface
 touch $BASE_DIR/lib/zope/__init__.py
+# So we can import ruamel.yaml
+touch $BASE_DIR/lib/ruamel/__init__.py
 
 # TODO: install node
 # TODO: install npm?
