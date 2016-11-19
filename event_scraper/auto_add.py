@@ -39,6 +39,7 @@ def classify_events(fbl, pe_list, fb_list):
             location_info = event_locations.LocationInfo(fb_event)
             result = '+%s\n' % '\t'.join(unicode(x) for x in (pe.fb_event_id, location_info.exact_from_event, location_info.final_city, location_info.final_city is not None, location_info.fb_address, fb_event['info'].get('name', '')))
             try:
+                logging.info('VTFI %s: Adding event %s, due to pe-invite-ids: %s', pe.fb_event_id, pe.fb_event_id, pe.get_invite_uids())
                 add_entities.add_update_event(fb_event, fbl, visible_to_fb_uids=pe.get_invite_uids(), creating_method=eventdata.CM_AUTO)
                 pe2 = potential_events.PotentialEvent.get_by_key_name(pe.fb_event_id)
                 pe2.looked_at = True

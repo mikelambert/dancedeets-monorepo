@@ -38,6 +38,7 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
             visible_to_fb_uids = []
     e.visible_to_fb_uids = visible_to_fb_uids
 
+    # Updates and saves the event
     event_updates.update_and_save_fb_events([(e, fb_event)])
 
     if newly_created:

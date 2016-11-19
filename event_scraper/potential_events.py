@@ -160,6 +160,8 @@ def make_potential_event_with_source(fb_event, discovered):
         potential_event.source_ids.append(long(discovered.source_id))
         potential_event.source_fields.append(discovered.source_field)
 
+        logging.info('VTFI %s: Just added source id %s to potential event, and saving', fb_event_id, discovered.source_id)
+
         potential_event.show_even_if_no_score = potential_event.show_even_if_no_score or show_all_events
         potential_event.put()
         return True, potential_event.match_score
@@ -170,6 +172,7 @@ def make_potential_event_with_source(fb_event, discovered):
     except apiproxy_errors.CapabilityDisabledError, e:
         logging.error("Error saving potential event %s due to %s", fb_event_id, e)
     potential_event = PotentialEvent.get_by_key_name(fb_event_id)
+    logging.info('VTFI %s: Just loaded potential event %s, now with sources', fb_event_id, fb_event_id, potential_event.get_invite_uids())
 
     # potential_event = update_scores_for_potential_event(potential_event, fb_event, fb_event_attending)
     if new_source:
