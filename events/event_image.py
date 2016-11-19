@@ -58,7 +58,6 @@ def _event_image_filename(event_id):
 
 def cache_image_and_get_size(event):
     mimetype, response = _raw_get_image(event)
-    logging.error('ERROR: %s: %s', event, event.full_image_url)
     gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event.id), response)
 
     img = images.Image(response)
