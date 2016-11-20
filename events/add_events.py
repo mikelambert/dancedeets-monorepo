@@ -11,7 +11,11 @@ def get_decorated_user_events(fbl):
     for e in events:
         e['image_url'] = e['picture']['data']['url']
         del e['picture']
-        e['admins'] = [x['name'] for x in e['admins']['data']]
+        if 'admins' in e:
+            e['admins'] = [x['name'] for x in e['admins']['data']]
+        else:
+            # Sometimes may happen due to our fallback on old cached data in _get_user_events
+            e['admins'] = []
     logging.info('Found %s events for user', len(events))
     events = _decorate_with_loaded(events)
 
