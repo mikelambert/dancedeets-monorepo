@@ -43,7 +43,11 @@ def put_object(bucket, filename, contents):
         # demonstration, pass in the more generic file handle, which could
         # very well be a StringIO or similar.
         media_body=http.MediaIoBaseUpload(f, 'application/octet-stream'))
-    resp = req.execute()
+    try:
+        resp = req.execute()
+    except errors.HttpError as e:
+        if e.resp.status == 404:
+            raise NotFoundError()
     return resp
 
 def get_object(bucket, filename):

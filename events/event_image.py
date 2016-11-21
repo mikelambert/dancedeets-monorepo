@@ -16,6 +16,11 @@ from util import fetch
 from util import gcs
 
 EVENT_IMAGE_BUCKET = 'dancedeets-event-flyers-full'
+EVENT_IMAGE_CACHE_BUCKET = 'dancedeets-event-flyers-%s-by-%s'
+
+CACHEABLE_SIZES = set([
+    (360, 360)
+])
 
 def test_jpeg(h, f):
     if h[:4] in [
@@ -66,35 +71,72 @@ def cache_image_and_get_size(event):
 
 def _render_image(event_id):
     image_data = gcs.get_object(EVENT_IMAGE_BUCKET, _event_image_filename(event_id))
-    f = io.BytesIO(image_data)
-    image_type = imghdr.what(f)
-    return 'image/%s' % image_type, image_data
+    return image_data
 
 def _resize_image(final_image, width, height):
+    orig_data = io.BytesIO(final_image)
+    with Image.open(orig_data) as image:
+        resized = None
+        if width and height:
+            resized = resizeimage.resize_cover(image, [width, height])
+        elif width:
+            resized = resizeimage.resize_width(image, width)
+        elif height:
+            resized = resizeimage.resize_height(image, height)
+        resized_data = io.BytesIO()
+        resized.save(resized_data, image.format)
+        final_image = resized_data.getvalue()
+    return final_image
+
+def _attempt_resize_image(final_image, width, height):
     try:
         if width or height:
-            orig_data = io.BytesIO(final_image)
-            with Image.open(orig_data) as image:
-                resized = None
-                if width and height:
-                    resized = resizeimage.resize_cover(image, [width, height])
-                elif width:
-                    resized = resizeimage.resize_width(image, width)
-                elif height:
-                    resized = resizeimage.resize_height(image, height)
-                resized_data = io.BytesIO()
-                resized.save(resized_data, image.format)
-                final_image = resized_data.getvalue()
+            final_image = _resize_image(final_image, width, height)
     except resizeimage.ImageSizeError as e:
         logging.info('Requested too-large image resize, returning original image: %s', e)
     return final_image
 
-def render(response, event, width=None, height=None):
+def _get_cache_bucket_name(width, height):
+    return EVENT_IMAGE_CACHE_BUCKET % (width, height)
+
+def _read_image_cache(event_id, width, height):
     try:
-        mimetype, final_image = _render_image(event.id)
+        image_data = gcs.get_object(_get_cache_bucket_name(width, height), _event_image_filename(event_id))
+        return image_data
     except NotFoundError:
-        cache_image_and_get_size(event)
-        mimetype, final_image = _render_image(event.id)
-    final_image = _resize_image(final_image, width, height)
-    response.headers['Content-Type'] = mimetype
+        return None
+
+def _write_image_cache(event_id, width, height, final_image):
+    bucket = _get_cache_bucket_name(width, height)
+    filename = _event_image_filename(event_id)
+    try:
+        gcs.put_object(bucket, filename, final_image)
+    except NotFoundError:
+        logging.error('Error writing image cache to gs://%s/%s', bucket, filename)
+
+def _get_mimetype(image_data):
+    f = io.BytesIO(image_data)
+    image_type = imghdr.what(f)
+    return 'image/%s' % image_type
+
+def render(response, event, width=None, height=None):
+    logging.error('oh boy')
+    final_image = None
+    cache_key = (width, height)
+    if cache_key in CACHEABLE_SIZES:
+        final_image = _read_image_cache(event.id, width, height)
+    if not final_image:
+        try:
+            final_image = _render_image(event.id)
+        except NotFoundError:
+            cache_image_and_get_size(event)
+            final_image = _render_image(event.id)
+    if width or height:
+        try:
+            final_image = _resize_image(final_image, width, height)
+            if cache_key in CACHEABLE_SIZES:
+                _write_image_cache(event.id, width, height, final_image)
+        except resizeimage.ImageSizeError as e:
+            logging.info('Requested too-large image resize, using original image: %s', e)
+    response.headers['Content-Type'] = _get_mimetype(final_image)
     response.out.write(final_image)
