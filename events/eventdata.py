@@ -13,10 +13,11 @@ REGION_RADIUS = 200 # kilometers
 
 
 # valid parameters for creating_method= argument below
-CM_AUTO = 'CM_AUTO'
+CM_AUTO = 'CM_AUTO' # A FBEvent we found via fb pages/groups and signed-in fb users
+CM_AUTO_WEB = 'CM_AUTO_WEB' # A FBEvent we scraped from the web
 CM_ADMIN = 'CM_ADMIN'
 CM_USER = 'CM_USER'
-CM_WEB_SCRAPE = 'CM_WEB_SCRAPE'
+CM_WEB_SCRAPE = 'CM_WEB_SCRAPE' # A WebEvent we scraped from the web
 
 EVENT_ID_REGEX = r'(?:\d+|[^/?#]+:[^/?#]+)'
 

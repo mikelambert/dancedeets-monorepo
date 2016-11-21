@@ -39,4 +39,5 @@ from users import user_event_tasks
 from users import user_servlets
 from users import user_tasks
 from util import batched_mapperworker
+from web_events import fb_events_servlets
 from web_events import web_events_servlets
