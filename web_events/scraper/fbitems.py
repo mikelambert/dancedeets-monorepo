@@ -3,13 +3,6 @@ from scrapy import item
 
 from scrapy_lib import pipelines
 
-class AddFacebookEvent(item.DictItem):
-    fields = ['url']
-
-    def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, self.__dict__)
-
-
 class SaveFacebookEventPipeline(pipelines.SaveEventsToServerPipeline):
     server_path = 'web_events/upload_multi_fbevent'
     batch_size = 20
@@ -23,3 +16,7 @@ class FbEventScraper(scrapy.Spider):
             'web_events.scraper.fbitems.SaveFacebookEventPipeline': 300,
         }
     }
+
+    @staticmethod
+    def add_url(url):
+        return {'url': url}
