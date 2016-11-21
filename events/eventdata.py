@@ -247,8 +247,7 @@ class DBEvent(ndb.Model):
 
     @property
     def has_image(self):
-        #TODO: replace this with a better check against gcs-and-or-fallback, or saved from our last event update?
-        return self.cover_images
+        return self.json_props and self.json_props.get('photo_width')
 
     @property
     def cover_images(self):
