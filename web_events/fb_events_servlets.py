@@ -21,7 +21,11 @@ class ClassMultiFbEventUploadHandler(web_events_servlets.JsonDataHandler):
         fbl = fb_api.FBLookup(fb_uid, user.fb_access_token)
 
         for event_url in self.json_body['events']:
+            logging.info('Adding %s', event_url)
             event_id = urls.get_event_id_from_url(event_url)
+            if not event_id:
+                logging.warning('Not a valid fb event for adding: %s', event_url)
+                continue
             fb_event = fbl.get(fb_api.LookupEvent, event_id, allow_cache=False)
             try:
                 add_entities.add_update_event(fb_event, fbl, creating_method=eventdata.CM_AUTO_WEB)
