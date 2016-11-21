@@ -10,8 +10,8 @@ from loc import japanese_addresses
 from .. import items
 from .. import jp_spider
 
-time_re = ur'(\d+)時(\d+)分'
-date_time_re = ur'(\d+)年(\d+)月(\d+)日 %s' % time_re
+time_re = ur'(\d+)[時:](\d+)[分]?'
+date_time_re = ur'(\d+)[年.](\d+)[月.](\d+)[日.]? %s' % time_re
 
 
 def _intall(lst):
