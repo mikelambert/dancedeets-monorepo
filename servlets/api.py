@@ -590,7 +590,7 @@ class EventAddHandler(ApiHandler):
         self.write_json_success()
 
 
-@apiroute(r'/events/%s' % eventdata.EVENT_ID_REGEX)
+@apiroute(r'/events/%s' % urls.EVENT_ID_REGEX)
 class EventHandler(ApiHandler):
     def get(self):
         path_bits = self.request.path.split('/events/')

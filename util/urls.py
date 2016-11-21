@@ -1,5 +1,7 @@
+import re
 import urllib
 
+EVENT_ID_REGEX = r'(?:\d+|[^/?#]+:[^/?#]+)'
 
 def dd_event_url(eid, kwargs=None):
     kwarg_string = '?%s' % urlencode(kwargs) if kwargs else ''
@@ -39,3 +41,13 @@ def urlencode(kwargs, doseq=False):
     else:
         kwargs = dict((unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for (k, v) in kwargs.iteritems())
     return urllib.urlencode(kwargs, doseq=doseq)
+
+def get_event_id_from_url(url):
+    if '#' in url:
+        url = url.split('#')[1]
+    match = re.search(r'eid=(\d+)', url)
+    if not match:
+        match = re.search(r'/events/(%s)(?:/|$)' % EVENT_ID_REGEX, url)
+        if not match:
+            return None
+    return match.group(1)

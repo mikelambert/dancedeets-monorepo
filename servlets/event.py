@@ -72,7 +72,7 @@ class RedirectToEventHandler(base_servlet.BaseRequestHandler):
         return self.redirect(urls.dd_relative_event_url(event_id), permanent=True)
 
 
-@app.route(r'/events/%s(?:/.*)?' % eventdata.EVENT_ID_REGEX)
+@app.route(r'/events/%s(?:/.*)?' % urls.EVENT_ID_REGEX)
 class ShowEventHandler(base_servlet.BaseRequestHandler):
 
     def requires_login(self):
@@ -213,7 +213,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
     def handle_error_response(self, errors):
         event_id = None
         if self.request.get('event_url'):
-            event_id = get_id_from_url(self.request.get('event_url'))
+            event_id = urls.get_event_id_from_url(self.request.get('event_url'))
         elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
         error_string = ','.join(errors)
@@ -233,7 +233,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
     def get(self):
         event_id = None
         if self.request.get('event_url'):
-            event_id = get_id_from_url(self.request.get('event_url'))
+            event_id = urls.get_event_id_from_url(self.request.get('event_url'))
         elif self.request.get('event_id'):
             event_id = self.request.get('event_id')
         self.fbl.request(fb_api.LookupEvent, event_id, allow_cache=False)
@@ -342,17 +342,6 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
             return self.redirect('/events/admin_edit?event_id=%s' % event_id)
 
 
-def get_id_from_url(url):
-    if '#' in url:
-        url = url.split('#')[1]
-    match = re.search(r'eid=(\d+)', url)
-    if not match:
-        match = re.search(r'/events/(%s)(?:/|$)' % eventdata.EVENT_ID_REGEX, url)
-        if not match:
-            return None
-    return match.group(1)
-
-
 @app.route('/events_add')
 class AddHandler(base_servlet.BaseRequestHandler):
     def get(self):
@@ -360,7 +349,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         events = []
 
         if self.request.get('event_url'):
-            event_id = get_id_from_url(self.request.get('event_url'))
+            event_id = urls.get_event_id_from_url(self.request.get('event_url'))
         else:
             event_id = self.request.get('event_id')
         if event_id and not self._errors:
@@ -382,7 +371,7 @@ class AddHandler(base_servlet.BaseRequestHandler):
         if self.request.get('event_id'):
             event_id = self.request.get('event_id')
         elif self.request.get('event_url'):
-            event_id = get_id_from_url(self.request.get('event_url'))
+            event_id = urls.get_event_id_from_url(self.request.get('event_url'))
             if not event_id:
                 self.add_error('invalid event_url, expecting eid= parameter')
         else:

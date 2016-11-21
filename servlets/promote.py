@@ -9,8 +9,8 @@ from events import eventdata
 import fb_api
 from nlp import event_auto_classifier
 from nlp import event_classifier
-from servlets import event as servlets_event
 from util import dates
+from util import urls
 
 @app.route('/promote')
 class PromoteHandler(base_servlet.BaseRequestHandler):
@@ -47,7 +47,7 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
 
     def post(self):
         if self.request.get('event_url'):
-            event_id = servlets_event.get_id_from_url(self.request.get('event_url'))
+            event_id = urls.get_event_id_from_url(self.request.get('event_url'))
             if not event_id:
                 self.add_error('Unrecognized Facebook event URL')
         else:
