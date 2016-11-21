@@ -58,5 +58,5 @@ class BBoyBattlesScraper(mixins.BrowserScraperMixin, fbitems.FbEventScraper):
             parsed = urlparse.urlsplit(url)
             qs = urlparse.parse_qs(parsed.query)
             if qs and 'Url' in qs:
-                event_url = qs['Url']
+                event_url = qs['Url'][0]
                 yield fbitems.AddFacebookEvent(event_url)
