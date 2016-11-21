@@ -17,7 +17,7 @@ from scrapy import item
 from nlp import event_classifier
 from nlp import keywords
 from nlp import rules
-from scrapers import pipelines
+from scrapy_lib import pipelines
 from util import strip_markdown
 
 
