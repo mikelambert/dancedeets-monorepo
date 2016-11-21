@@ -107,7 +107,7 @@ class SaveEventsToServerPipeline(object):
             logging.info('Upload returned: %s', result)
 
     def process_item(self, item, spider):
-        self.items.append(item.fb_url)
+        self.items.append(item['url'])
         if self.batch_size and len(self.items) >= self.batch_size:
             self.send_batch(spider)
         return item

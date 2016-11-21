@@ -3,12 +3,11 @@ from scrapy import item
 
 from scrapy_lib import pipelines
 
-class AddFacebookEvent(item.BaseItem):
-    def __init__(self, url):
-        self.fb_url = url
+class AddFacebookEvent(item.DictItem):
+    fields = ['url']
 
     def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, self.fb_url)
+        return '%s(%r)' % (self.__class__.__name__, self.__dict__)
 
 
 class SaveFacebookEventPipeline(pipelines.SaveEventsToServerPipeline):
