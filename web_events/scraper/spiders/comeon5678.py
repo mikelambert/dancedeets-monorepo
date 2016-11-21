@@ -17,7 +17,7 @@ def split_list_on_element(lst, split_elem):
     return [x.strip() for x in new_list]
 
 
-class ComeOn5678Scraper(items.WebEventScraper):
+class ComeOn5678Scraper(scrapy.Spider):
     name = 'ComeOn5678'
     allowed_domains = ['comeon5678.com']
 
