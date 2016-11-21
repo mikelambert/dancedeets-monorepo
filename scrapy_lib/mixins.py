@@ -17,6 +17,9 @@ class BrowserScraperMixin(object):
     http_user = keys.get('scrapinghub_key')
     http_pass = ''
 
+
+
+def generate_custom_settings(kwargs):
     custom_settings = {
         'SPLASH_URL': SERVER_URL,
         'DOWNLOADER_MIDDLEWARES': {
@@ -25,7 +28,6 @@ class BrowserScraperMixin(object):
         },
         'DUPEFILTER_CLASS': 'scrapyjs.SplashAwareDupeFilter',
         'HTTPCACHE_STORAGE': 'scrapyjs.SplashAwareFSCacheStorage',
-        'ITEM_PIPELINES': {
-            'classes.scraper.items.SaveStudioClassPipeline': 300,
-        }
     }
+    custom_settings.update(kwargs)
+    return custom_settings

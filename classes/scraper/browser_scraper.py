@@ -16,7 +16,10 @@ def adjust_caps(s):
 
 
 class BrowserScraper(items.StudioScraper, mixins.BrowserScraperMixin):
-    pass
+    custom_settings = mixins.generate_custom_settings(
+        items.StudioScraper.custom_settings
+    )
+
 
 
 class MindBodyBrowserScraper(BrowserScraper):
