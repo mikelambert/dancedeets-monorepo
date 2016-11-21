@@ -6,7 +6,7 @@ import scrapyjs
 from scrapy.linkextractors import LinkExtractor
 
 from scrapy_lib import mixins
-from .. import items
+from .. import fbitems
 
 
 def split_list_on_element(lst, split_elem):
@@ -19,9 +19,13 @@ def split_list_on_element(lst, split_elem):
     return [x.strip() for x in new_list]
 
 
-class BBoyBattlesScraper(mixins.BrowserScraperMixin, scrapy.Spider):
+class BBoyBattlesScraper(mixins.BrowserScraperMixin, fbitems.FbEventScraper):
     name = 'BBoyBattles'
     allowed_domains = ['bboybattles.org']
+
+    custom_settings = mixins.generate_custom_settings(
+        fbitems.FbEventScraper.custom_settings
+    )
 
     def _generate_request(self, url):
         script = """
@@ -55,4 +59,4 @@ class BBoyBattlesScraper(mixins.BrowserScraperMixin, scrapy.Spider):
             qs = urlparse.parse_qs(parsed.query)
             if qs and 'Url' in qs:
                 event_url = qs['Url']
-                yield items.AddFacebookEvent(event_url)
+                yield fbitems.AddFacebookEvent(event_url)

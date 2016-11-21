@@ -47,14 +47,6 @@ class WebEvent(item.DictItem):
     ]
 
 
-class AddFacebookEvent(item.BaseItem):
-    def __init__(self, url):
-        self.fb_url = url
-
-    def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, self.fb_url)
-
-
 def extract_text(cell):
     return format_text(' '.join(cell.extract()))
 

@@ -82,3 +82,32 @@ class SaveToServerPipeline(object):
         if self.batch_size and len(self.items) >= self.batch_size:
             self.send_batch(spider)
         return new_item
+
+
+class SaveEventsToServerPipeline(object):
+    server_path = None
+    batch_size = None
+
+    def open_spider(self, spider):
+        assert self.server_path, "Must set the server_path member variable."
+        self.items = []
+        pass
+
+    def close_spider(self, spider):
+        self.send_batch(spider)
+
+    def send_batch(self, spider):
+        logging.info('Sending batch of %s items', len(self.items))
+        params = {
+            'events': self.items,
+        }
+        result = make_requests(self.server_path, params)
+        self.items = []
+        if result:
+            logging.info('Upload returned: %s', result)
+
+    def process_item(self, item, spider):
+        self.items.append(item.fb_url)
+        if self.batch_size and len(self.items) >= self.batch_size:
+            self.send_batch(spider)
+        return item

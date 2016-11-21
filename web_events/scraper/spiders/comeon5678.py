@@ -4,7 +4,7 @@ import urlparse
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 
-from .. import items
+from .. import fbitems
 
 
 def split_list_on_element(lst, split_elem):
@@ -17,7 +17,7 @@ def split_list_on_element(lst, split_elem):
     return [x.strip() for x in new_list]
 
 
-class ComeOn5678Scraper(scrapy.Spider):
+class ComeOn5678Scraper(fbitems.FbEventScraper):
     name = 'ComeOn5678'
     allowed_domains = ['comeon5678.com']
 
@@ -28,7 +28,8 @@ class ComeOn5678Scraper(scrapy.Spider):
         e = LinkExtractor()
         urls = [link.url for link in e.extract_links(response)]
         for url in urls:
-            yield items.AddFacebookEvent(url)
+            if response.url != url:
+                yield fbitems.AddFacebookEvent(url)
         if urls:
             qs = urlparse.parse_qs(urlparse.urlparse(response.url).query)
             qs = dict((k, v[0]) for (k, v) in qs.iteritems())

@@ -58,6 +58,16 @@ def process_upload_finalization(studio_name):
         # dedupe_classes(scrape_time_to_keep, classes)
 
 
+@app.route('/web_events/upload_multi_fbevent')
+class ClassMultiFbEventUploadHandler(JsonDataHandler):
+    def post(self):
+        if self.json_body['scrapinghub_key'] != keys.get('scrapinghub_key'):
+            self.response.status = 403
+            return
+        for event_url in self.json_body['events']:
+            logging.info(event_url)
+
+
 @app.route('/web_events/upload_multi')
 class ClassMultiUploadHandler(JsonDataHandler):
     def post(self):
