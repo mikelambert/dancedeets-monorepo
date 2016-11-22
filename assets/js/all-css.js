@@ -9,4 +9,4 @@ require('../css/social-hovers.scss');
 require('../css/header.scss');
 require('../css/footer.scss');
 require('../css/custom.scss');
-require('../../css/dancedeets.css');
+require('../css/dancedeets-old.scss');
