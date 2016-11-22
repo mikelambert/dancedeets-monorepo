@@ -120,7 +120,6 @@ def _get_mimetype(image_data):
     return 'image/%s' % image_type
 
 def render(response, event, width=None, height=None):
-    logging.error('oh boy')
     final_image = None
     cache_key = (width, height)
     if cache_key in CACHEABLE_SIZES:
