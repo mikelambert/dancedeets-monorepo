@@ -50,17 +50,14 @@
     "date-fns": "^1.3.0",
     "font-awesome": "^4.5.0",
     "fullcalendar": "^3.0.1",
-    "html5shiv": "^3.7.3",
     "jquery": "^3.0.0",
     "jquery-lazyload": "^1.9.7",
     "jquery.backstretch": "^2.1.1",
     "jquery.cookie": "^1.4.1",
-    "jquery.placeholder": "^2.0.7",
     "jquery.smartbanner": "^0.1.0",
     "moment": "^2.11.2",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
-    "respond.js": "^1.4.2",
     "trackjs": "^2.2.0"
   },
   "engines": {

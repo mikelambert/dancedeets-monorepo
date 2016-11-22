@@ -21,7 +21,6 @@ function isCommonModule(module) {
 module.exports = {
   entry: {
     'main': './assets/js/main.js',
-    'ie8': './assets/js/ie8.js',
     'calendar': './assets/js/calendar.js',
     'class-results-exec': './assets/js/class-results-exec.jsx',
   },
