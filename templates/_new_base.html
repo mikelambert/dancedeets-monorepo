@@ -6,6 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<link rel="stylesheet" href="/dist-{{version}}/css/common.css">
 <link rel="stylesheet" href="/dist-{{version}}/css/main.css">
 
 {% include "favicon_tags.html" %}
@@ -303,14 +304,8 @@ var google_remarketing_only = false;
 /* ]]> */
 </script>
 
+<script type="text/javascript" src="/dist-{{version}}/js/common.js"></script>
 <script type="text/javascript" src="/dist-{{version}}/js/main.js"></script>
-<!--from old template: momentjs@2.10.6,jquery.lazyload@1.9.3-->
-<!-- if we ever want to add i18n, we can use moment-with-locales instead -->
-
-<!--[if lt IE 9]>
-    <script src="/dist-{{version}}/js/ie8.js"></script>
-<![endif]-->
-
 
 {% block bottom_javascript %}{% endblock %}
 

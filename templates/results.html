@@ -206,8 +206,9 @@ function share() {
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
 
 {% if selected_tab == 'calendar' %}
-<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.css' />
-<link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css' media="print"/>
+<link rel="stylesheet" href="/dist-{{version}}/css/calendar.css">
+<script type="text/javascript" src="/dist-{{version}}/js/calendar.js"></script>
+
 <style type="text/css">
 /** We want to see the whole city and title, so let's ensure we override 'white-space: nowrap'.
   * This is discussed in more detail here, which is when 2.1 introduced table-based event layout:
@@ -217,9 +218,6 @@ function share() {
 	white-space: normal;
 }
 </style>
-<script src="https://cdn.jsdelivr.net/g/momentjs@2.10.6" crossorigin="anonymous"></script>
-<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.js' crossorigin="anonymous"></script>
-<!--<script src="/dist-123813329741956948/js/calendar.js"></script>-->
 
 <script type="text/javascript">
 mixpanel.track("Search Events", {

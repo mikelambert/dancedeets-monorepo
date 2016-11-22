@@ -1,4 +1,6 @@
 /* var moment = */
-require('../../node_modules/moment/min/moment.min.js');
+require('moment');
 /* var calendar = */
 require('fullcalendar');
+// css code
+require('fullcalendar/dist/fullcalendar.css');

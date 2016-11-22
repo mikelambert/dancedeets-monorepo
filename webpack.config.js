@@ -3,6 +3,21 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var path = require('path');
 var uncss = require('uncss');
 
+function isCommonModule(module) {
+  const userRequest = module.userRequest;
+  if (typeof userRequest !== 'string') {
+    return false;
+  }
+
+  const common = ['jquery', 'bootstrap', 'trackjs'];
+  for (var elem of common) {
+    if (userRequest.indexOf(elem) > -1) {
+      return true;
+    }
+  }
+  return false;
+}
+
 module.exports = {
   entry: {
     'main': './assets/js/main.js',
@@ -16,6 +31,9 @@ module.exports = {
   },
   devtool: 'source-map',
   plugins: [
+    // Only import the english locale for moment.js:
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en$/),
+
     new webpack.DefinePlugin({
       'process.env': { // eslint-disable-line quote-props
         'NODE_ENV': JSON.stringify('production'),
@@ -24,6 +42,10 @@ module.exports = {
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin(),
     new ExtractTextPlugin('../css/[name].css'),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      minChunks: isCommonModule,
+    }),
   ],
   resolve: {
     extensions: ['', '.js', '.jsx'],
