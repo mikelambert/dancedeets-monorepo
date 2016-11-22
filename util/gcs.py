@@ -48,6 +48,7 @@ def put_object(bucket, filename, contents):
     except errors.HttpError as e:
         if e.resp.status == 404:
             raise NotFoundError()
+        raise
     return resp
 
 def get_object(bucket, filename):
@@ -73,3 +74,4 @@ def get_object(bucket, filename):
     except errors.HttpError as e:
         if e.resp.status == 404:
             raise NotFoundError()
+        raise
