@@ -111,6 +111,7 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
             try:
                 event_html = render_component(
                     path=os.path.abspath('dist/js-server/event.js'),
+                    to_static_markup=True, # We don't need all the React data markup
                     props=dict(
                         event=api_event,
                     ))
