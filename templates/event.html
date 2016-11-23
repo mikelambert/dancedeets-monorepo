@@ -88,11 +88,13 @@
         </a></div>
       {% endif %}
 
+      <div style="border-radius: 15px; background-color: #4C4D81; padding: 10px">
       {{ event_common.event_info_as_icon_list(displayable_event, canonical_url) }}
       <meta itemprop="startDate" content="{{ displayable_event.start_time|datetime_format }}" />
       {% if displayable_event.end_time %}
         <meta itemprop="endDate" content="{{ displayable_event.end_time|datetime_format }}" />
       {% endif %}
+      </div>
       {# not worth showing maps embed if there is no street_address #}
       {% if displayable_event.latitude %}
         <p>Open in <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.

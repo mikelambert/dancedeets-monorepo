@@ -1,3 +1,5 @@
+@import 'config.scss';
+
 /* Convert to less for some of those 5px vars, then compile it together with bootstrap.css into a single css file */
 
 /* lazy loaded images on the results pages */
@@ -73,7 +75,7 @@ select {
 }
 
 html, body {
-	background-color: #FFFFFF;
+	background-color: $backgroundColor;
 }
 
 .top-to-bottom-fade {
@@ -437,10 +439,10 @@ ul.feature-list {
 }
 #add-events .ui-selectable:hover {
 	background-color: #ddd;
-	color: black;
+	color: $textColor;
 }
 #add-events .ui-disabled {
-	color: black;
+	color: $textColor;
 	opacity:0.4;
 	filter:alpha(opacity=40);
 }
