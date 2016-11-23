@@ -56,8 +56,11 @@
     "jquery.cookie": "^1.4.1",
     "jquery.smartbanner": "^0.1.0",
     "moment": "^2.11.2",
+    "querystring": "^0.2.0",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
+    "react-format-text": "^1.1.0",
+    "react-google-maps": "^4.11.0",
     "trackjs": "^2.2.0"
   },
   "engines": {
