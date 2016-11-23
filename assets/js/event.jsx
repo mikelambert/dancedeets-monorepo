@@ -9,6 +9,9 @@
 import React from 'react';
 import FormatText from 'react-format-text';
 import querystring from 'querystring';
+import moment from 'moment';
+import {intl} from './intl';
+import {StartEnd} from './shared';
 
 class Card extends React.Component {
   render() {
@@ -77,6 +80,10 @@ function rsvpString(event) {
   return rsvp;
 }
 
+function schemaDateFormat(dateTime) {
+  return moment(dateTime).format('%Y-%m-%dT%H:%M:%S');
+}
+
 // TODO: add duration_human_format() for Time
 class EventLinks extends React.Component {
   render() {
@@ -112,7 +119,11 @@ class EventLinks extends React.Component {
         <div className="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button" data-size="small" data-mobile-iframe="true"><a className="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a></div>
       </ImagePrefix>
       <ImagePrefix iconName="clock-o">
-        Time: {event.start_time} - {event.end_time}
+        Time: <StartEnd start={event.start_time} end={event.end_time} tagName={FormatText} />
+        <meta itemProp="startDate" content={schemaDateFormat(event.start_time)} />
+        {event.end_time ?
+          <meta itemProp="endDate" content={schemaDateFormat(event.end_time)} /> :
+          null}
       </ImagePrefix>
       <ImagePrefix iconName="calendar-plus-o">
         <a href={getAddToCalendarLink(event)} className="link-event-add-to-calendar">Add to Google Calendar</a>
@@ -120,27 +131,29 @@ class EventLinks extends React.Component {
       {rsvpElement}
       {organizerElement}
     </Card>;
-/*  <li><i class="event-info-icon fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
-  <div>
-  {% if displayable_event.location_name %}
-    {% if displayable_event.venue and displayable_event.venue.id %}
-      <a class="link-event-venue" href="https://www.facebook.com/{{ displayable_event.venue.id }}">{{ displayable_event.location_name }}</a>
-    {% else %}
-      {{ displayable_event.location_name }}
-    {% endif %}
-    <br>
-  {% endif %}
-  {{ displayable_event.full_address|format_html }}
-
-    {event.name}</h2></Card>;
-  }
-*/
   }
 }
 
+// TODO: full_address
 class MapWithLinks extends React.Component {
   render() {
-    return <Card><h2>{this.props.event.name}</h2></Card>;
+    const venue = this.props.event.venue;
+    if (venue) {
+      let locationName = venue.name;
+      if (venue.id) {
+        locationName = <a href={`https://www.facebook.com/${venue.id}`}>{locationName}</a>;
+      }
+      return <Card>
+          <ImagePrefix iconName="map-marker">
+            {locationName}<br/>
+            <FormatText>{venue.full_address}</FormatText>
+          </ImagePrefix>
+          <div id="map-wrapper" className="responsive-map-wrapper">
+          </div>
+
+      </Card>;
+    }
+    return null;
   }
 }
 
@@ -172,4 +185,4 @@ export default class EventPage extends React.Component {
   }
 }
 
-module.exports = EventPage;
+module.exports = intl(EventPage);
