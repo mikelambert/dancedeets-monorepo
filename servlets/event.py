@@ -8,6 +8,8 @@ import pprint
 import re
 import urllib
 
+from react import exceptions
+from react.render import render_component
 from slugify import slugify
 
 from google.appengine.ext import deferred
@@ -28,6 +30,7 @@ from nlp import categories
 from nlp import event_auto_classifier
 from nlp import event_classifier
 from search import search
+from servlets import api
 from users import users
 from util import dates
 from util import urls
@@ -102,6 +105,19 @@ class ShowEventHandler(base_servlet.BaseRequestHandler):
         self.display['canonical_url'] = 'http://%s/events/%s/%s' % (self._get_full_hostname(), db_event.id, slugify(db_event.name))
 
         self.display['email_suffix'] = '+event-%s' % db_event.id
+
+        if self.request.get('new'):
+            api_event = api.canonicalize_event_data(db_event, None, version=(1, 3))
+            try:
+                event_html = render_component(
+                    path=os.path.abspath('dist/js-server/event.js'),
+                    props=dict(
+                        event=api_event,
+                    ))
+            except (exceptions.RenderServerError, exceptions.ReactRenderingError):
+                logging.exception('Error rendering React component')
+                event_html = ''
+            self.display['react_event_html'] = event_html
 
         if self.request.get('amp'):
             if self.display['displayable_event'].largest_cover:
