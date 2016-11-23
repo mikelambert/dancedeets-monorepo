@@ -119,7 +119,7 @@ class EventLinks extends React.Component {
         <div className="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button" data-size="small" data-mobile-iframe="true"><a className="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a></div>
       </ImagePrefix>
       <ImagePrefix iconName="clock-o">
-        Time: <StartEnd start={event.start_time} end={event.end_time} tagName={FormatText} />
+        <StartEnd start={event.start_time} end={event.end_time} tagName={FormatText} />
         <meta itemProp="startDate" content={schemaDateFormat(event.start_time)} />
         {event.end_time ?
           <meta itemProp="endDate" content={schemaDateFormat(event.end_time)} /> :
@@ -136,6 +136,23 @@ class EventLinks extends React.Component {
 
 // TODO: full_address
 class MapWithLinks extends React.Component {
+  map() {
+    if (!this.props.event.venue.geocode.latitude) {
+      return null;
+    }
+    const mapUrl = `http://maps.google.com/?daddr=${this.props.event.venue.geocode.latitude },${this.props.event.venue.geocode.longitude}`;
+    return <div>
+      { this.props.event.description ?
+        <div className="visible-xs" style={{fontStyle: 'italic'}}>Event description is below the map.</div> :
+        null
+      }
+      <a className="link-event-map" href={mapUrl} target="_blank">
+        <div id="map-wrapper" className="responsive-map-wrapper">
+        </div>
+      </a>
+    </div>;
+  }
+
   render() {
     const venue = this.props.event.venue;
     if (venue) {
@@ -144,13 +161,11 @@ class MapWithLinks extends React.Component {
         locationName = <a href={`https://www.facebook.com/${venue.id}`}>{locationName}</a>;
       }
       return <Card>
-          <ImagePrefix iconName="map-marker">
-            {locationName}<br/>
-            <FormatText>{venue.full_address}</FormatText>
-          </ImagePrefix>
-          <div id="map-wrapper" className="responsive-map-wrapper">
-          </div>
-
+        <ImagePrefix iconName="map-marker">
+          {locationName}<br/>
+          <FormatText>{venue.full_address}</FormatText>
+        </ImagePrefix>
+        {this.map()}
       </Card>;
     }
     return null;
