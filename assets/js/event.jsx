@@ -13,6 +13,22 @@ import moment from 'moment';
 import {intl} from './intl';
 import {StartEnd} from './shared';
 
+/* intersperse: Return an array with the separator interspersed between
+ * each element of the input array.
+ *
+ * > _([1,2,3]).intersperse(0)
+ * [1,0,2,0,3]
+ */
+function intersperse(arr, sep) {
+  if (arr.length === 0) {
+    return [];
+  }
+
+  return arr.slice(1).reduce(function(xs, x) {
+    return xs.concat([sep, x]);
+  }, [arr[0]]);
+}
+
 class Card extends React.Component {
   render() {
     return <div style={{borderRadius: '15px', backgroundColor: '#4C4D81', padding: '10px', margin: '10px'}}>
@@ -23,7 +39,32 @@ class Card extends React.Component {
 
 class Title extends React.Component {
   render() {
-    return <Card><h2>{this.props.event.name}</h2></Card>;
+    const event = this.props.event;
+
+    let categoryLinks = null;
+    if (event.annotations.categories) {
+      const categories = event.annotations.categories.map(x => <a href={`/?keywords=${x}`}>{x}</a>);
+      categoryLinks = <li>categorized as: {intersperse(categories, ', ')}.</li>;
+    }
+    let locationLinks = null;
+    if (event.cityStateCountry) {
+      locationLinks = <li>in <a href={`/?location=${event.cityStateCountry}`}>{event.cityStateCountry}</a>.</li>;
+    }
+    let moreLinks = null;
+    if (categoryLinks || locationLinks) {
+      moreLinks = <div>
+        See more events:
+        <ul>
+          {locationLinks}
+          {categoryLinks}
+        </ul>
+      </div>;
+    }
+
+    return <Card>
+      {moreLinks}
+      <h2>{this.props.event.name}</h2>
+    </Card>;
   }
 }
 
