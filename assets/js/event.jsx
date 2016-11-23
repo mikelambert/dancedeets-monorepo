@@ -137,18 +137,18 @@ class EventLinks extends React.Component {
 // TODO: full_address
 class MapWithLinks extends React.Component {
   map() {
-    if (!this.props.event.venue.geocode.latitude) {
+    const geocode = this.props.event.venue.geocode;
+    if (!geocode.latitude) {
       return null;
     }
-    const mapUrl = `http://maps.google.com/?daddr=${this.props.event.venue.geocode.latitude },${this.props.event.venue.geocode.longitude}`;
+    const mapUrl = `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
     return <div>
       { this.props.event.description ?
         <div className="visible-xs" style={{fontStyle: 'italic'}}>Event description is below the map.</div> :
         null
       }
       <a className="link-event-map" href={mapUrl} target="_blank">
-        <div id="map-wrapper" className="responsive-map-wrapper">
-        </div>
+        <div id="map-wrapper" className="responsive-map-wrapper" />
       </a>
     </div>;
   }

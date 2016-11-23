@@ -63,7 +63,6 @@
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-format-text": "^1.1.0",
-    "react-google-maps": "^4.11.0",
     "react-intl": "^2.1.5",
     "trackjs": "^2.2.0"
   },
