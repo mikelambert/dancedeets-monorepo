@@ -72,7 +72,7 @@ class ImagePrefix extends React.Component {
   render() {
     return <div style={{paddingLeft: '5px', paddingTop: '5px', display: 'table'}}>
       {this.props.iconName ?
-        <i className={'fa fa-' + this.props.iconName + ' fa-lg'} style={{paddingRight: '5px', width: '1.5em', display: 'table-cell'}}></i> :
+        <i className={'fa fa-' + this.props.iconName + ' fa-lg'} style={{paddingRight: '5px', width: '1.5em', display: 'table-cell', textAlign: 'center'}}></i> :
         null
       }
       <div style={{display: 'table-cell'}}>
@@ -221,7 +221,8 @@ class Description extends React.Component {
 
 export default class EventPage extends React.Component {
   render() {
-    return <div>
+    return <div className="container" itemScope itemType="http://schema.org/DanceEvent">
+      <span itemProp="url" content="canonical_url"></span>
       <div className="row">
         <div className="col-xs-12">
           <Title event={this.props.event}/>
