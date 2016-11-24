@@ -523,7 +523,6 @@ class App extends React.Component {
           <div
             id="navbar"
             style={ {
-              backgroundColor: 'white',
               boxShadow: '0 5px 4px -4px black',
               zIndex: 50,
             } }
