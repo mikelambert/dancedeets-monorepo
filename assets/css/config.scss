@@ -1,4 +1,12 @@
-$deetsYellowColor: #FFBA01;
+/*
+  '#FFF3B0',
+  '#FFEA73',
+  '#FFD802',
+  '#FFCA01',
+  '#C0A000',
+*/
+$yellow-lighter: #FFEA73;
+$deetsYellowColor: #FFD802;
 
 $purple-darkest: #171728;
 $purple-dark: #222238;
@@ -15,15 +23,21 @@ $brand-info:            #5bc0de !default;
 $brand-warning:         #f0ad4e !default;
 $brand-danger:          #d9534f !default;
 
-$header-background-color: $purple-darkest;
+
+$text-color: white;
 $background-color: $purple-dark;
+
+$header-menu-hover-color: $yellow-lighter;
+$header-background-color: $purple-darkest;
+
 $footer-color: $purple-darkest;
 $footer-border-color: $purple-medium;
 $footer-text-color: #fff;
 $footer-accent-color: $purple-medium;
+
 $headline-underline-main-color: $deetsYellowColor;
 $headline-underline-secondary-color: $purple-medium;
-$text-color: #fff;
+
 
 $event-info-icon-color: white;
 $panel-default-text: white;

@@ -932,7 +932,7 @@
   .header-fixed .header-v6.header-classic-dark.header-fixed-shrink .navbar-nav .active > a,
   .header-v6.header-classic-dark .navbar-nav li > a:hover,
   .header-fixed .header-v6.header-classic-dark.header-fixed-shrink .navbar-nav li > a:hover {
-    color: #72c02c;
+    color: $header-menu-hover-color;
   }
 
   .header-v6.header-classic-dark li.menu-icons i.menu-icons-style,
@@ -980,7 +980,7 @@
 
   .header-v6.header-classic-dark .dropdown-menu .active > a,
   .header-v6.header-classic-dark .dropdown-menu li > a:hover {
-    color: #72c02c;
+    color: $header-menu-hover-color;
   }
 
   /*Equal Height List Style*/
@@ -998,7 +998,7 @@
 
   .header-v6.header-classic-dark .mega-menu .equal-height-list .active > a,
   .header-v6.header-classic-dark .mega-menu .equal-height-list li a:hover {
-    color: #72c02c;
+    color: $header-menu-hover-color;
   }
 }
 
