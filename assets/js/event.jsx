@@ -70,13 +70,14 @@ class Title extends React.Component {
 
 class ImagePrefix extends React.Component {
   render() {
-    return <div style={{paddingLeft: '5px', paddingTop: '5px', display: 'table'}}>
-      {this.props.iconName ?
+    const {iconName, children, ...props} = this.props;
+    return <div style={{paddingLeft: '5px', paddingTop: '5px', display: 'table'}} {...props}>
+      {iconName ?
         <i className={'fa fa-' + this.props.iconName + ' fa-lg'} style={{paddingRight: '5px', width: '1.5em', display: 'table-cell', textAlign: 'center'}}></i> :
         null
       }
       <div style={{display: 'table-cell'}}>
-      {this.props.children}
+      {children}
       </div>
     </div>;
   }
@@ -152,12 +153,12 @@ class EventLinks extends React.Component {
     }
 
     return <Card>
-      <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
-        <a className="link-event-source" href={event.source.url}>{'View Original: ' + event.source.name}</a>
-      </ImagePrefix>
-      <ImagePrefix>
+      <ImagePrefix className="product-social-links">
         <a className="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
         <div className="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button" data-size="small" data-mobile-iframe="true"><a className="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a></div>
+      </ImagePrefix>
+      <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
+        <a className="link-event-source" href={event.source.url}>{'View Original: ' + event.source.name}</a>
       </ImagePrefix>
       <ImagePrefix iconName="clock-o">
         <StartEnd start={event.start_time} end={event.end_time} tagName={FormatText} />
