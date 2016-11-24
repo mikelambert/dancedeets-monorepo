@@ -10,8 +10,7 @@
   {% endif %}
   <li><div class="product-social-links">
     <a class="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
-    <div class="link-event-share fb-share-button" data-layout="button"></div>
-    <div class="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a></div>
+    <div class="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a></div>
   </div></li>
   <li><i class="event-info-icon fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
   {{ duration_human_format(displayable_event.start_time, end_time) }}
