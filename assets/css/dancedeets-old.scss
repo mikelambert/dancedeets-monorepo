@@ -438,7 +438,7 @@ ul.feature-list {
 	display: block;
 }
 #add-events .ui-selectable:hover {
-	background-color: #ddd;
+	background-color: $purple-lightest;
 	color: $text-color;
 }
 #add-events .ui-disabled {
@@ -447,7 +447,6 @@ ul.feature-list {
 	filter:alpha(opacity=40);
 }
 #add-events .ui-selectable {
-	background: white;
 	cursor: pointer;
 	cursor: hand;
 }
