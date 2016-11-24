@@ -57,7 +57,7 @@
 				{{result.location_schema_html()}}
 			</div>
 			{% if result.get_attendance() %}
-				<div>RSVP:
+				<div style="display: inline-block">RSVP:
 					{% if use_rsvp_form %}
 						{{ rsvp.rsvp_form(result.event_id, result.get_attendance()) }}
 					{% else %}

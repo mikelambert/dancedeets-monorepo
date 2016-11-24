@@ -78,15 +78,13 @@ html, body {
 	background-color: $background-color;
 }
 
-.top-to-bottom-fade {
-	border-width: 1px;
-	border-style: solid;
-	border-image:
-		linear-gradient(to bottom, lightgrey, rgba(0, 0, 0, 0)) 1 100%;
-}
-
 .tabs-after {
 	min-height: 100px;
+}
+
+#ongoing_events {
+  border-left: 1px solid $hr-border;
+  padding-left: 5px;
 }
 
 .events-list {
@@ -96,8 +94,9 @@ html, body {
 }
 .event-image {
 	float: left;
-	border: 1px solid #ccc;
-	width: 180px;
+	border: 1px solid $flyer-border-color;
+  width: 182px;
+  height: 182px;
 	margin-right: 10px;
 	line-height: 1;
 }
@@ -142,7 +141,7 @@ h3.event-title {
 
 .narrow-event {
 	padding-bottom: 5px;
-	border-bottom: 1px solid lightgrey;
+	border-bottom: 1px solid $hr-border;
 	margin-bottom: 5px;
 	float: left;
 	width: 100%;
