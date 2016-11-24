@@ -5,8 +5,10 @@
   '#FFCA01',
   '#C0A000',
 */
+$yellow-medium: #FFD802;
 $yellow-lighter: #FFEA73;
-$deetsYellowColor: #FFD802;
+$yellow-lightest: #FFF3B0;
+$deetsYellowColor: $yellow-medium;
 
 $purple-darkest: #171728;
 $purple-dark: #222238;
@@ -23,11 +25,16 @@ $brand-info:            #5bc0de !default;
 $brand-warning:         #f0ad4e !default;
 $brand-danger:          #d9534f !default;
 
+$text-color: white;
+$body-bg: $purple-dark;
+
 
 //TODO: Fix the form colors
-$btn-default-color:              #333;
-$btn-default-bg:                 #fff;
-$btn-default-border:             #ccc;
+$btn-default-color:              $text-color;
+$btn-default-bg:                 $brand-primary;
+$btn-default-border:             lighten($brand-primary, 10%);
+$btn-primary-border:             lighten($brand-primary, 10%);
+
 $input-bg: white;
 $input-bg-disabled: darken(white, 30%);
 
@@ -35,8 +42,23 @@ $hr-border: $purple-lightest;
 
 $flyer-border-color: $purple-lightest;
 
-$text-color: white;
-$background-color: $purple-dark;
+$nav-link-hover-bg:                         $body-bg;
+
+$nav-disabled-link-color:                   $yellow-lightest;
+$nav-disabled-link-hover-color:             $yellow-lightest;
+
+
+$nav-tabs-border-color:                     $yellow-medium;
+
+$nav-tabs-link-hover-border-color:          $yellow-medium;
+
+$nav-tabs-active-link-hover-bg:             $body-bg;
+$nav-tabs-active-link-hover-color:          $yellow-medium;
+$nav-tabs-active-link-hover-border-color:   $yellow-medium;
+
+$nav-tabs-justified-link-border-color: $yellow-medium;
+$nav-tabs-justified-active-link-border-color: $body-bg;
+
 
 $header-menu-hover-color: $yellow-lighter;
 $header-background-color: $purple-darkest;
@@ -46,7 +68,7 @@ $footer-border-color: $purple-medium;
 $footer-text-color: #fff;
 $footer-accent-color: $purple-medium;
 
-$headline-underline-main-color: $deetsYellowColor;
+$headline-underline-main-color: $yellow-medium;
 $headline-underline-secondary-color: $purple-medium;
 
 

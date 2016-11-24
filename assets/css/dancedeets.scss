@@ -4,7 +4,7 @@
   color: $headline-underline-main-color;
 }
 #navbar {
-  background-color: $background-color;
+  background-color: $body-bg;
 }
 
 body {
@@ -152,3 +152,16 @@ h6 {
   border-bottom: 2px solid $headline-underline-main-color;
 }
 
+.nav {
+
+  > li {
+
+    > a {
+      color: white;
+      &:hover,
+      &:focus {
+        color: $yellow-lighter
+      }
+    }
+  }
+}
