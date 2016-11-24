@@ -24,6 +24,14 @@ $brand-warning:         #f0ad4e !default;
 $brand-danger:          #d9534f !default;
 
 
+//TODO: Fix the form colors
+$btn-default-color:              #333;
+$btn-default-bg:                 #fff;
+$btn-default-border:             #ccc;
+$input-bg: white;
+$input-bg-disabled: darken(white, 30%);
+
+
 $text-color: white;
 $background-color: $purple-dark;
 
@@ -37,6 +45,7 @@ $footer-accent-color: $purple-medium;
 
 $headline-underline-main-color: $deetsYellowColor;
 $headline-underline-secondary-color: $purple-medium;
+
 
 
 $event-info-icon-color: white;
