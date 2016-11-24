@@ -54,10 +54,8 @@ body, h1, h2, h3, h4, h5, h6 {
     position: relative;
     overflow: hidden;
     display: block;
-    border-radius: 0 !important;
     margin-bottom: 10px;
 }
-.panel-default { border-color: #ebedef !important; }
 .panel .panel-body { position: relative; padding: 0 !important; overflow: hidden; height: auto; }
 .panel .panel-body a { overflow: hidden; }
 .panel .panel-body a img { display: block; margin: 0; width: 100%; height: auto;

@@ -1,15 +1,24 @@
 $deetsYellowColor: #FFBA01;
 
-$header-background-color: #171728;
-$background-color: #222238;
-$footer-color: #171728;
-$footer-border-color: #333452;
+$purple-darkest: #171728;
+$purple-dark: #222238;
+$purple-medium: #333452;
+$blue-link: #70C0FF;
+
+$header-background-color: $purple-darkest;
+$background-color: $purple-dark;
+$footer-color: $purple-darkest;
+$footer-border-color: $purple-medium;
 $footer-text-color: #fff;
-$footer-accent-color: #333452;
+$footer-accent-color: $purple-medium;
 $headline-underline-main-color: $deetsYellowColor;
-$headline-underline-secondary-color: #333452;
+$headline-underline-secondary-color: $purple-medium;
 $text-color: #fff;
 
+$panel-default-text:          $blue-link;
+$panel-default-border:        $blue-link;
+//$panel-default-heading-bg:    #f5f5f5 !default;
 
-$link-color: #70C0FF;
+
+$link-color: $blue-link;
 $link-hover-color: lighten($link-color, 20%);
