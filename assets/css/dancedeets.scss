@@ -1,5 +1,12 @@
 @import 'config.scss';
 
+#navbar-collapse-button-icon {
+  color: $headline-underline-main-color;
+}
+#navbar {
+  background-color: $background-color;
+}
+
 body {
   font-weight: 'lighter';
 }
@@ -137,7 +144,8 @@ h6 {
 
 .headline h2,
 .headline h3,
-.headline h4 {
+.headline h4,
+.headline .headline-underline {
   margin: 0 0 -2px 0;
   padding-bottom: 5px;
   display: inline-block;

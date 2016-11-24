@@ -3,7 +3,17 @@ $deetsYellowColor: #FFBA01;
 $purple-darkest: #171728;
 $purple-dark: #222238;
 $purple-medium: #333452;
+$purple-light: #4C4D81;
+$purple-lighter: #656595;
+$purple-lightest: #8283A9;
+
 $blue-link: #70C0FF;
+
+$brand-primary:         $purple-lighter;
+$brand-success:         #5cb85c !default;
+$brand-info:            #5bc0de !default;
+$brand-warning:         #f0ad4e !default;
+$brand-danger:          #d9534f !default;
 
 $header-background-color: $purple-darkest;
 $background-color: $purple-dark;
