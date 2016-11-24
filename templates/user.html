@@ -5,11 +5,11 @@ Settings
 {% endblock %}
 
 {% block inner_body %}
-<form action="/user/edit" method="post" accept-charset="UTF-8">
+<form action="/user/edit" method="post" accept-charset="UTF-8" class="form-inline">
 <p>
-<p>Events near <input id="location_input" name=location value="{{ defaults.location or '' }}">
+<p>Events near <input id="location_input" name=location value="{{ defaults.location or '' }}" class="form-control">
 {# distance is defaults.distance #}
-within <select name="distance">
+within <select name="distance" class="form-control">
 {% for d in [10, 50, 100, 200, 500, 3000, 12000] %}
 	<option value="{{ d }}" {% if defaults.distance|string == d|string %}selected{% endif %}>
 	{% if d|string == 12000|string %}Everywhere{% else %}{{ d }} miles{% endif %}
@@ -19,7 +19,7 @@ within <select name="distance">
 <input type=hidden name=distance_units value=miles>
 with
 {# min_attendees is fdefaults.min_attendees #}
-<select name="min_attendees">
+<select name="min_attendees" class="form-control">
 {% for m in [0, 10, 50, 100, 500] %}
 	<option value="{{ m }}" {% if defaults.min_attendees|string == m|string %}selected{% endif %}>
 	{{ m }}+ attendees
@@ -27,24 +27,19 @@ with
 {% endfor %}
 </select>
 <p>
-	Weekly Email Updates:<br>
-<ul class="inputs-list">
-<li>
-	<label>
-	<input type=radio name=send_email value="true" id="send_email_yes"
+	Weekly Email Updates:
+	<label style="padding-left: 1em">
+	<input type=radio name=send_email value="true" id="send_email_yes" class="form-control"
 {% if defaults.send_email %}
 	checked
 {% endif %}
 	> Yes</label>
-</li>
-<li>
-	<label>
-	<input type=radio name=send_email value="false" id="send_email_no"
+	<label style="padding-left: 1em">
+	<input type=radio name=send_email value="false" id="send_email_no" class="form-control"
 {% if not defaults.send_email %}
 	checked
 {% endif %}
 	> No</label>
-</ul>
 
 <p><button class="btn btn-primary">Save Changes</button>
 </form>
