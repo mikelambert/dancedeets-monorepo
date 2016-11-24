@@ -903,7 +903,7 @@
   .header-v6.header-classic-dark,
   .header-fixed .header-v6.header-classic-dark.header-fixed-shrink {
     box-shadow: none;
-    background: #2a2b2b;
+    background: $header-background-color;
   }
 
   .header-v6.header-classic-dark .navbar,
@@ -942,7 +942,7 @@
 
   /*Search*/
   .header-v6.header-classic-dark .search-open {
-    background: #2a2b2b;
+    background: $header-background-color;
   }
 
   .header-fixed .header-v6.header-classic-dark.header-fixed-shrink .search-open {
@@ -951,7 +951,7 @@
 
   .header-v6.header-classic-dark .search-open .form-control {
     color: #fff;
-    background: #2a2b2b;
+    background: $header-background-color;
   }
 
   .header-v6.header-classic-dark .search-open .form-control::-moz-placeholder {
@@ -971,7 +971,7 @@
 
   /*Dropdown*/
   .header-v6.header-classic-dark .dropdown-menu {
-    background: #2a2b2b;
+    background: $header-background-color;
   }
 
   .header-v6.header-classic-dark .dropdown-menu li a {
@@ -1015,7 +1015,7 @@
 	}
 
 	.header-fixed .header-v6.header-dark-transparent.header-fixed-shrink .navbar {
-		background: #2a2b2b;
+		background: $header-background-color;
 	}
 
 	/*Navbar Brand*/

@@ -75,7 +75,7 @@ select {
 }
 
 html, body {
-	background-color: $backgroundColor;
+	background-color: $background-color;
 }
 
 .top-to-bottom-fade {
@@ -439,10 +439,10 @@ ul.feature-list {
 }
 #add-events .ui-selectable:hover {
 	background-color: #ddd;
-	color: $textColor;
+	color: $text-color;
 }
 #add-events .ui-disabled {
-	color: $textColor;
+	color: $text-color;
 	opacity:0.4;
 	filter:alpha(opacity=40);
 }

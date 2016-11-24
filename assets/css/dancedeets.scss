@@ -127,12 +127,12 @@ h6 {
 
 .headline {
   margin: 10px 0 25px 0;
-  border-bottom: 1px dotted #e4e9f0;
+  border-bottom: 1px solid $headline-underline-secondary-color;
 }
 
 .headline h2 {
   font-size: 22px;
-  color: #585f69;
+  //color: #585f69;
 }
 
 .headline h2,
@@ -141,6 +141,6 @@ h6 {
   margin: 0 0 -2px 0;
   padding-bottom: 5px;
   display: inline-block;
-  border-bottom: 2px solid $deetsYellowColor;
+  border-bottom: 2px solid $headline-underline-main-color;
 }
 

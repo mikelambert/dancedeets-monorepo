@@ -1,14 +1,15 @@
 $deetsYellowColor: #FFBA01;
-$deetsPurpleColor: #8283A9;
-$extraColor: #D5EEF0;
 
-$lightGreyBackground: #f7f7f7;
-$mediumGreyBackground: #eee;
-
-$backgroundColor: #222238;
-$cardBackgroundColor: #4C4D81;
-$textColor: #fff;
+$header-background-color: #171728;
+$background-color: #222238;
+$footer-color: #171728;
+$footer-border-color: #333452;
+$footer-text-color: #fff;
+$footer-accent-color: #333452;
+$headline-underline-main-color: $deetsYellowColor;
+$headline-underline-secondary-color: #333452;
 $text-color: #fff;
 
+
 $link-color: #70C0FF;
-$link-hover-color: lighten($link-color, 25%);
+$link-hover-color: lighten($link-color, 20%);
