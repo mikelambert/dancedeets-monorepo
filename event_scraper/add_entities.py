@@ -22,11 +22,11 @@ def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, 
         event_locations.update_remapped_address(fb_event, remapped_address)
 
     e = eventdata.DBEvent.get_or_insert(fb_event['info']['id'])
-    newly_created = (e.creating_fb_uid is None)
+    newly_created = (e.creating_method is None)
     if override_address is not None:
         e.address = override_address
-    if newly_created and creating_method:
-        e.creating_method = creating_method
+    if newly_created:
+        e.creating_method = creating_method or eventdata.CM_UNKNOWN
         # Don't override the original creating_fb_uid
         #STR_ID_MIGRATE
         e.creating_fb_uid = long(creating_uid) if creating_uid else None

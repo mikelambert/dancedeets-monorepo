@@ -18,6 +18,7 @@ CM_AUTO_WEB = 'CM_AUTO_WEB' # A FBEvent we scraped from the web
 CM_ADMIN = 'CM_ADMIN'
 CM_USER = 'CM_USER'
 CM_WEB_SCRAPE = 'CM_WEB_SCRAPE' # A WebEvent we scraped from the web
+CM_UNKNOWN = 'CM_UNKNOWN'
 
 EVENT_ID_REGEX = r'(?:\d+|[^/?#]+:[^/?#]+)'
 
