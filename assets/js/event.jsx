@@ -85,6 +85,9 @@ class ImagePrefix extends React.Component {
 
 class ImageWithLinks extends React.Component {
   render() {
+    if (!this.props.event.picture) {
+      return null;
+    }
     return <Card><img
       src={this.props.event.picture.source}
       style={{
