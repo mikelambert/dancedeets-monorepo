@@ -75,3 +75,11 @@ def get_object(bucket, filename):
         if e.resp.status == 404:
             raise NotFoundError()
         raise
+
+def delete_object(bucket, filename):
+    service = _create_service()
+
+    req = service.objects().delete(bucket=bucket, object=filename)
+    resp = req.execute()
+
+    return resp
