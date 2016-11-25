@@ -78,7 +78,9 @@ def get_object(bucket, filename):
 def delete_object(bucket, filename):
     service = _create_service()
 
-    req = service.objects().delete(bucket=bucket, object=filename)
-    resp = req.execute()
-
+    try:
+        req = service.objects().delete(bucket=bucket, object=filename)
+        resp = req.execute()
+    except errors.HttpError:
+        pass
     return resp
