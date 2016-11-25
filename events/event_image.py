@@ -61,10 +61,15 @@ def _raw_get_image(db_event):
 def _event_image_filename(event_id):
     return str(event_id)
 
+def _clear_out_resize_caches(event_id):
+    for width, height in CACHEABLE_SIZES:
+        bucket = _get_cache_bucket_name(width, height)
+        gcs.delete_object(bucket, _event_image_filename(event_id))
+
 def cache_image_and_get_size(event):
     mimetype, response = _raw_get_image(event)
     gcs.put_object(EVENT_IMAGE_BUCKET, _event_image_filename(event.id), response)
-
+    _clear_out_resize_caches(event.id)
     img = images.Image(response)
     return img.width, img.height
 
