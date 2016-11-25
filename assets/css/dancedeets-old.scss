@@ -1,3 +1,5 @@
+@import 'config.scss';
+
 /* Convert to less for some of those 5px vars, then compile it together with bootstrap.css into a single css file */
 
 /* lazy loaded images on the results pages */
@@ -72,19 +74,13 @@ select {
 	width: auto;
 }
 
-html, body {
-	background-color: #FFFFFF;
-}
-
-.top-to-bottom-fade {
-	border-width: 1px;
-	border-style: solid;
-	border-image:
-		linear-gradient(to bottom, lightgrey, rgba(0, 0, 0, 0)) 1 100%;
-}
-
 .tabs-after {
 	min-height: 100px;
+}
+
+#ongoing_events {
+  border-left: 1px solid $hr-border;
+  padding-left: 5px;
 }
 
 .events-list {
@@ -94,8 +90,9 @@ html, body {
 }
 .event-image {
 	float: left;
-	border: 1px solid #ccc;
-	width: 180px;
+	border: 1px solid $flyer-border-color;
+  width: 182px;
+  height: 182px;
 	margin-right: 10px;
 	line-height: 1;
 }
@@ -140,7 +137,7 @@ h3.event-title {
 
 .narrow-event {
 	padding-bottom: 5px;
-	border-bottom: 1px solid lightgrey;
+	border-bottom: 1px solid $hr-border;
 	margin-bottom: 5px;
 	float: left;
 	width: 100%;
@@ -436,16 +433,15 @@ ul.feature-list {
 	display: block;
 }
 #add-events .ui-selectable:hover {
-	background-color: #ddd;
-	color: black;
+	background-color: $purple-lightest;
+	color: $text-color;
 }
 #add-events .ui-disabled {
-	color: black;
+	color: $text-color;
 	opacity:0.4;
 	filter:alpha(opacity=40);
 }
 #add-events .ui-selectable {
-	background: white;
 	cursor: pointer;
 	cursor: hand;
 }

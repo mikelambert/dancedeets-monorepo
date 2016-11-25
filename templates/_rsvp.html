@@ -1,7 +1,8 @@
 {% macro rsvp_form(fb_event_id, user_rsvp) %}
-<form style="margin:0px;display:inline">
+<form style="margin:0px;display:inline" class="form-inline">
 <!--{{ user_rsvp }}-->
 <select
+  class="form-control"
 	id="rsvp_{{fb_event_id}}"
 	name="rsvp_{{fb_event_id}}"
 	onchange='event_rsvp("{{fb_event_id}}", $("#rsvp_{{fb_event_id}}").val());'

@@ -80,7 +80,7 @@ Add Dance Event
 			selectees.filter('.ui-selected').each(function() {
 				$(this).removeClass('ui-selected');
 			});
-			$(event.target).parents().andSelf().filter('.ui-selectable').each(function() {
+			$(event.target).parents().addBack().filter('.ui-selectable').each(function() {
 				$(this).addClass('ui-selected');
 				$('#event_id_form').val($(this).data('id'));
 			});
@@ -88,7 +88,7 @@ Add Dance Event
         $("#add-events li").each(function () {
 			var outerDiv = $('<div class="add-button">');
 			outerDiv.append($('<div class="whiten"></div>'));
-			outerDiv.append($('<button type="button" class="btn btn-primary" style="margin-left:60px; margin-top: 1.5em">Add Event</button>')
+			outerDiv.append($('<button type="button" class="btn btn-primary" style="margin-left:60px; margin-top: 0.75em">Add Event</button>')
 				.attr('id', 'button-' + $(this).data('id'))
 				.on('click', addEvent));
 			$(this).append(outerDiv);

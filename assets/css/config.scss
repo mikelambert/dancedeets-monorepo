@@ -1,6 +1,81 @@
-$deetsYellowColor: #FFBA01;
-$deetsPurpleColor: #8283A9;
-$extraColor: #D5EEF0;
+/*
+  '#FFF3B0',
+  '#FFEA73',
+  '#FFD802',
+  '#FFCA01',
+  '#C0A000',
+*/
+$yellow-medium: #FFD802;
+$yellow-lighter: #FFEA73;
+$yellow-lightest: #FFF3B0;
+$deetsYellowColor: $yellow-medium;
 
-$lightGreyBackground: #f7f7f7;
-$mediumGreyBackground: #eee;
+$purple-darkest: #171728;
+$purple-dark: #222238;
+$purple-medium: #333452;
+$purple-light: #4C4D81;
+$purple-lighter: #656595;
+$purple-lightest: #8283A9;
+
+$blue-link: #70C0FF;
+
+$brand-primary:         $purple-lighter;
+$brand-success:         #5cb85c !default;
+$brand-info:            #5bc0de !default;
+$brand-warning:         #f0ad4e !default;
+$brand-danger:          #d9534f !default;
+
+$text-color: white;
+$body-bg: $purple-dark;
+
+
+//TODO: Fix the form colors
+$btn-default-color:              $text-color;
+$btn-default-bg:                 $brand-primary;
+$btn-default-border:             lighten($brand-primary, 10%);
+$btn-primary-border:             lighten($brand-primary, 10%);
+
+$input-bg: white;
+$input-bg-disabled: darken(white, 30%);
+
+$hr-border: $purple-lightest;
+
+$flyer-border-color: $purple-lightest;
+
+$nav-link-hover-bg:                         $body-bg;
+
+$nav-disabled-link-color:                   $yellow-lightest;
+$nav-disabled-link-hover-color:             $yellow-lightest;
+
+
+$nav-tabs-border-color:                     $yellow-medium;
+
+$nav-tabs-link-hover-border-color:          $yellow-medium;
+
+$nav-tabs-active-link-hover-bg:             $body-bg;
+$nav-tabs-active-link-hover-color:          $yellow-medium;
+$nav-tabs-active-link-hover-border-color:   $yellow-medium;
+
+$nav-tabs-justified-link-border-color: $yellow-medium;
+$nav-tabs-justified-active-link-border-color: $body-bg;
+
+
+$header-menu-hover-color: $yellow-lighter;
+$header-background-color: $purple-darkest;
+
+$footer-color: $purple-darkest;
+$footer-border-color: $purple-medium;
+$footer-text-color: #fff;
+$footer-accent-color: $purple-medium;
+
+$headline-underline-main-color: $yellow-medium;
+$headline-underline-secondary-color: $purple-medium;
+
+
+
+$event-info-icon-color: white;
+$panel-default-text: white;
+$panel-default-border: $blue-link;
+
+$link-color: $blue-link;
+$link-hover-color: lighten($link-color, 10%);

@@ -176,7 +176,7 @@ var DayNavMenu = React.createClass({
       );
     }
     return (
-      <span className="navmenu-height">Jump to:
+      <span className="navmenu-height headline-underline">Jump to:
       {' '}
       {weeks}
       </span>
@@ -521,10 +521,9 @@ class App extends React.Component {
           } }
           >
           <div
+            className="headline"
             id="navbar"
             style={ {
-              backgroundColor: 'white',
-              boxShadow: '0 5px 4px -4px black',
               zIndex: 50,
             } }
           >

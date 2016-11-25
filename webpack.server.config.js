@@ -4,6 +4,7 @@ var path = require('path');
 module.exports = {
   entry: {
     'class-results': './assets/js/class-results.jsx',
+    'event': './assets/js/event.jsx',
     'render_server': './node_server/render_server.js',
   },
   output: {

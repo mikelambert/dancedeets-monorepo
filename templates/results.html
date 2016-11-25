@@ -53,10 +53,6 @@
   </td></tr></table>
 </div>{# margin-bottom: 25px #}
 
-Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
-
-<hr>
-
 <div style="min-height:300px">
 
 <ul class="nav nav-tabs nav-justified" data-tabs="tabs">
@@ -109,7 +105,7 @@ Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
 	{% endif %}
 	><span><i class="fa fa-calendar fa-lg"></i> Calendar</span></a></li>
 </ul>
-<div class="tabs-after top-to-bottom-fade row">
+<div class="tabs-after row">
 	{% if onebox_links %}
 	<div class="col-xs-12">
 		<div><b>Related pages:</b></div>
@@ -141,28 +137,25 @@ Promoter? Or want to help? <a href="/events_add">Add a dance event</a>!
 			</div>
 		{% endif %}
 		{% if ongoing_results %}
-			<div id="ongoing_events" class="col-md-4 col-xs-12" style="border-left: 1px solid lightgrey; padding-left: 5px">
+			<div id="ongoing_events" class="col-md-4 col-xs-12">
 				<h3>Ongoing Events</h3>
 				{{ results.render_narrow_results(ongoing_results) }}
 			</div>
 		{% endif %}
 	{% elif selected_tab == 'calendar' %}
-		<div id="calendar"></div>
+		<div id="calendar" style="margin-top: 10px"></div>
 	{% endif %}
 </div>{# min-height:300px #}
 </div>{# col-md-9 #}
 </div>{# row #}
 
 <div class="col-md-3">
-	<a href="/events_add" class="btn btn-primary"><i class="fa fa-calendar-plus-o fa-lg"></i> Add Dance Event</a>
-	<button type="button" class="btn btn-primary" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
-	<div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="190" data-action="like" data-show-faces="true" style="margin: 10px 0;"></div>
-	<p>
-
-	<hr>
-	<div class="rankings">
-	<a href="/rankings"><i class="fa fa-list-ol fa-lg"></i> City Rankings</a>.
-	</div>
+	<a href="/events_add" class="btn btn-primary" style="margin-bottom: 10px"><i class="fa fa-calendar-plus-o fa-lg"></i> Add Dance Event</a>
+	<button type="button" class="btn btn-primary" style="margin-bottom: 10px" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
+  <div class="rankings" style="margin-bottom: 10px">
+  <a href="/rankings"><i class="fa fa-list-ol fa-lg"></i> City Rankings</a>.
+  </div>
+  <div class="fb-page" data-href="https://www.facebook.com/dancedeets/" data-hide-cover="true" data-small-header="true" data-adapt-container-width="true" data-show-facepile="true"><blockquote cite="https://www.facebook.com/dancedeets/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/dancedeets/">DanceDeets</a></blockquote></div>
 </div>
 
 </div> {# row #}

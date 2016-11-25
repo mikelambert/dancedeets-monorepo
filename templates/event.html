@@ -56,6 +56,9 @@
 {% endblock %}
 
 {% block body %}
+{% if react_event_html %}
+  {{ react_event_html|safe }}
+{% else %}
 <div class="container">
 <div itemscope itemtype="http://schema.org/DanceEvent">
 
@@ -124,6 +127,8 @@ region= paramter cctld
 
 </div>{# itemscope #}
 </div>
+{% endif %}
+
 {% endblock %}
 
 {% block bottom_javascript %}

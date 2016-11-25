@@ -14,8 +14,8 @@ Rankings
 
 {% block inner_body %}
 
-<form action="/rankings">
-Rankings over <select name="time_period" onchange="this.form.submit();">
+<form action="/rankings" class="form-inline">
+Rankings over <select name="time_period" class="form-control form-inline" onchange="this.form.submit();">
 	{% for time_period in time_periods %}
 		<option value="{{ time_period }}"
 		{% if current_time_period == time_period %}

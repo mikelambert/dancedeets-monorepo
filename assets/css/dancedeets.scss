@@ -1,5 +1,16 @@
 @import 'config.scss';
 
+#navbar-collapse-button-icon {
+  color: $headline-underline-main-color;
+}
+#navbar {
+  background-color: $body-bg;
+}
+
+body {
+  font-weight: 'lighter';
+}
+
 .fullscreen-static-image {
     height: 100vh;
 }
@@ -28,7 +39,7 @@
 }
 
 .event-info-icon {
-  color: darkslategray;
+  color: $event-info-icon-color;
 }
 
 .event-flyer {
@@ -73,20 +84,6 @@
 .color-light { color: #ffffff;}
 .bg-color-darker { background-color: #222 !important;}
 
-.btn-cta {
-  box-shadow: none;
-  border-radius: 0;
-  text-transform: uppercase;
-  color: #fff;
-  background: #4F5086;
-}
-
-.btn-cta:hover,
-.btn-cta:focus,
-.btn-cta:active {
-    background: #333452;
-}
-
 .btn:hover {
   color: #fff;
   text-decoration: none;
@@ -123,20 +120,66 @@ h6 {
 
 .headline {
   margin: 10px 0 25px 0;
-  border-bottom: 1px dotted #e4e9f0;
+  border-bottom: 1px solid $headline-underline-secondary-color;
 }
 
 .headline h2 {
   font-size: 22px;
-  color: #585f69;
+  //color: #585f69;
 }
 
 .headline h2,
 .headline h3,
-.headline h4 {
+.headline h4,
+.headline .headline-underline {
   margin: 0 0 -2px 0;
   padding-bottom: 5px;
   display: inline-block;
-  border-bottom: 2px solid $deetsYellowColor;
+  border-bottom: 2px solid $headline-underline-main-color;
 }
 
+// Gradient Buttons
+.btn-default {
+  background-image: linear-gradient(180deg, $purple-lighter, $purple-medium) !important;
+
+  &:focus,
+  &.focus {
+    background-image: linear-gradient(180deg, $purple-medium, $purple-lighter) !important;
+  }
+}
+.btn-primary {
+  background-image: linear-gradient(180deg, $purple-lighter, $purple-medium) !important;
+
+  &:focus,
+  &.focus {
+    background-image: linear-gradient(180deg, $purple-medium, $purple-lighter) !important;
+  }
+}
+
+//FullCalendar buttons
+.fc-state-default {
+  background-color: $brand-primary !important;
+  color: white !important;
+  background-image: linear-gradient(180deg, $brand-primary, lighten($brand-primary, 10%)) !important;
+}
+.fc-state-hover {
+  background-color: lighten($brand-primary, 10%) !important;
+}
+.fc-state-active {
+  background-color: darken($brand-primary, 10%) !important;
+}
+
+// Color the text of the tabs to not look like blue links
+.nav {
+
+  > li {
+
+    > a {
+      color: white;
+      &:hover,
+      &:focus {
+        color: $yellow-lighter
+      }
+    }
+  }
+}

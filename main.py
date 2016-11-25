@@ -65,9 +65,9 @@ def is_local_appengine():
             'Development/' in os.environ['SERVER_SOFTWARE'])
 
 from react.conf import settings
-DEBUG = is_local_appengine()
 settings.configure(
-    RENDER=not DEBUG,
+    # We want to always use the render server, since we may be rendering things that we aren't sending clientside code to render
+    RENDER=True,
     RENDER_URL='http://localhost:8090/render',
 )
 

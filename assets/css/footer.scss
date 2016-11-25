@@ -4,12 +4,12 @@
 ------------------------------------*/
 .footer {
 	padding: 40px 0;
-	background: #f7f7f7;
-	border-top: 3px solid #eee;
+	background: $footer-color;
+	border-top: 3px solid $footer-border-color;
 }
 
 .footer p {
-	color: #555;
+	color: $footer-text-color;
 }
 
 .footer-logo {
@@ -18,7 +18,7 @@
 
 /*Link List*/
 .link-list li {
-  border-top: solid 1px #eee;
+  border-top: solid 1px $footer-accent-color;
 }
 
 .link-list li:first-child {
@@ -26,7 +26,7 @@
 }
 
 .link-list a {
-    color: #555;
+    //color: white;
     font-size: 11px;
     padding: 6px 0px;
     display: inline-block;
@@ -34,13 +34,13 @@
 }
 
 .link-list li i {
-    color: #bbb;
+    color: $footer-text-color;
     float: right;
     margin-top: 10px;
 }
 
 address {
-	color: #555;
+	color: $footer-text-color;
 	line-height: 23px;
 }
 
@@ -53,12 +53,12 @@ address i {
 /*Copyright*/
 .copyright {
 	border-top: none;
-	background: #eee;
+	background: $footer-color;
 	padding: 20px 0 15px;
 }
 
 .copyright p {
-	color: #555;
+	color: $footer-text-color;
 	margin-bottom: 0;
 }
 
