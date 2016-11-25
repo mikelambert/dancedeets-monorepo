@@ -69,9 +69,9 @@ class DisplayEvent(ndb.Model):
     @classmethod
     def build(cls, db_event):
         """Save off the minimal set of data necessary to render an event on the list page, for quicker loading/serialization from memcache/db."""
-        if not cls.can_build_from(db_event):
-            return None
         try:
+            if not cls.can_build_from(db_event):
+                return None
             display_event = cls(id=db_event.id)
             # The event_keywords are actually _BaseValue objects, not strings.
             # So they fail json serialization, and must be converted manually here.
