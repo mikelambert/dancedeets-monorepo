@@ -81,7 +81,6 @@ def delete_object(bucket, filename):
 
     try:
         req = service.objects().delete(bucket=bucket, object=filename)
-        resp = req.execute()
+        req.execute()
     except errors.HttpError:
         pass
-    return resp
