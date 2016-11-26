@@ -126,7 +126,6 @@ class Button extends React.Component {
 
 var styles = StyleSheet.create({
   button: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
