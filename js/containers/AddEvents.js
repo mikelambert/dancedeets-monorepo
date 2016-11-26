@@ -17,6 +17,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {
+  AccessToken,
+} from 'react-native-fbsdk';
 import { connect } from 'react-redux';
 import type { AddEventData } from '../addEventsModels';
 import type { State } from '../reducers/addEvents';
@@ -138,6 +141,7 @@ const FilterHeader = connect(
 
 class _AddEventRow extends React.Component {
   props: {
+    token: AccessToken,
     onEventClicked: (event: AddEventData) => void,
     onEventAdded: (event: AddEventData) => void,
     event: AddEventData,
@@ -147,7 +151,7 @@ class _AddEventRow extends React.Component {
   render() {
     const width = semiNormalize(75);
     const pixelWidth = Math.ceil(width * PixelRatio.get());
-    const imageUrl = 'https://graph.facebook.com/' + this.props.event.id + '/picture?type=large';
+    const imageUrl = `https://graph.facebook.com/${this.props.event.id}/picture?type=large&access_token=${this.props.token.accessToken}`;
     let tempOverlay = null;
     if (this.props.event.clickedConfirming) {
       tempOverlay = <View style={{position: 'absolute', top: 20, left: 0}}>
@@ -170,7 +174,6 @@ class _AddEventRow extends React.Component {
 
     const start = moment(this.props.event.start_time, moment.ISO_8601);
     const formattedStart = this.props.intl.formatDate(start.toDate(), weekdayDateTime);
-
 
     const row = (
       <HorizontalView>
@@ -218,6 +221,7 @@ class _AddEventList extends React.Component {
   };
   state: {
     dataSource: ListView.DataSource,
+    token: ?AccessToken,
   };
 
   constructor(props) {
@@ -228,9 +232,18 @@ class _AddEventList extends React.Component {
     });
     this.state = {
       dataSource,
+      token: null,
     };
+    this.loadToken();
     this.state = this._getNewState(this.props);
     (this: any)._renderRow = this._renderRow.bind(this);
+  }
+
+  async loadToken() {
+    const token = await AccessToken.getCurrentAccessToken();
+    this.setState({
+      token,
+    });
   }
 
   applyFilterSorts(props, results) {
@@ -267,6 +280,7 @@ class _AddEventList extends React.Component {
   _renderRow(row: AddEventData) {
     return <AddEventRow
       event={row}
+      token={this.state.token}
       onEventClicked={(event: AddEventData) => {this.props.clickEvent(event.id);}}
       onEventAdded={(event: AddEventData) => {
         track('Add Event To Site', {'Event ID': event.id});
@@ -276,6 +290,9 @@ class _AddEventList extends React.Component {
   }
 
   render() {
+    if (!this.state.token) {
+      return null;
+    }
     return <ListView
       style={[styles.listView]}
       dataSource={this.state.dataSource}
