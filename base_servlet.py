@@ -98,6 +98,7 @@ class BareBaseRequestHandler(webapp2.RequestHandler, FacebookMixinHandler):
 
     def initialize(self, request, response):
         super(BareBaseRequestHandler, self).initialize(request, response)
+        logging.info('%s: %s', self.request.method, self.request.url)
         for arg in sorted(self.request.GET):
             logging.info("GET %r = %r", arg, self.request.GET.getall(arg))
         for arg in sorted(self.request.POST):
