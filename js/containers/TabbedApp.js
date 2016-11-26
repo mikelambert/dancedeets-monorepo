@@ -54,6 +54,7 @@ import type {
 import {
   EventSignupsView
 } from '../event_signups/views';
+import * as RemoteConfig from '../remoteConfig';
 
 const messages = defineMessages({
   events: {
@@ -243,8 +244,6 @@ class _AboutView extends React.Component {
   }
 }
 const AboutView = injectIntl(_AboutView);
-
-import * as RemoteConfig from '../remoteConfig';
 
 class _TabbedAppView extends React.Component {
   event_signups_navigator: ReactElement<any>;

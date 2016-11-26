@@ -19,5 +19,10 @@ async function loadConfig() {
 loadConfig();
 
 export async function get(value: string) {
-  return JSON.parse(await RemoteConfig.getString(value));
+  const result = await RemoteConfig.getString(value);
+  if (result) {
+    return JSON.parse(result);
+  } else {
+    return null;
+  }
 }
