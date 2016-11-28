@@ -20,14 +20,17 @@ $purple-lightest: #8283A9;
 $blue-link: #70C0FF;
 
 $brand-primary:         $purple-lighter;
-$brand-success:         #5cb85c !default;
-$brand-info:            #5bc0de !default;
-$brand-warning:         #f0ad4e !default;
-$brand-danger:          #d9534f !default;
+$brand-success:         #5cb85c;
+$brand-info:            #5bc0de;
+$brand-warning:         #f0ad4e;
+$brand-danger:          #d9534f;
 
 $text-color: white;
 $body-bg: $purple-dark;
 
+$state-info-text:                #000;
+$state-info-bg:                  $yellow-lightest;
+$state-info-border:              darken(adjust-hue($state-info-bg, -10), 7%);
 
 //TODO: Fix the form colors
 $btn-default-color:              $text-color;
