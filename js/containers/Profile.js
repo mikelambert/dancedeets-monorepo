@@ -206,8 +206,8 @@ class _ShareButtons extends React.Component {
             track('Share DanceDeets', {Button: 'Send Native'});
             const localizedShareLinkContent = this.getShareLinkContent();
             Share.open({
-              share_text: localizedShareLinkContent.contentDescription,
-              share_URL: localizedShareLinkContent.contentUrl,
+              message: localizedShareLinkContent.contentDescription,
+              url: localizedShareLinkContent.contentUrl,
               title: 'DanceDeets',
             }, (e) => {
               console.warn(e);
