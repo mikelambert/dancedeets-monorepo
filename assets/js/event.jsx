@@ -129,7 +129,6 @@ function schemaDateFormat(dateTime) {
   return moment(dateTime).format('%Y-%m-%dT%H:%M:%S');
 }
 
-// TODO: add duration_human_format() for Time
 class EventLinks extends React.Component {
   render() {
     const event = this.props.event;
@@ -219,7 +218,11 @@ class MapWithLinks extends React.Component {
 
 class Description extends React.Component {
   render() {
-    return <Card><FormatText>{this.props.event.description}</FormatText></Card>;
+    return <Card>
+      <div style={{fontWeight: 'bold'}}>Description:</div>
+      <div style={{height: '25px'}} id="google_translate_element"></div>
+      <FormatText>{this.props.event.description}</FormatText>
+    </Card>;
   }
 }
 
