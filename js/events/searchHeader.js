@@ -30,6 +30,7 @@ import {
 } from '../actions';
 import {
   gradientTop,
+  lightPurpleColors,
 } from '../Colors';
 import {
   defineMessages,
@@ -92,6 +93,7 @@ class SearchInput extends React.Component {
       autoCorrect={false}
       autoCapitalize="none"
       clearButtonMode="while-editing"
+      underlineColorAndroid={lightPurpleColors[2]}
       onFocus={() => {
         this.animatedRelayout();
         if (this.props.onFocus) {
