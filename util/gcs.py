@@ -77,6 +77,9 @@ def get_object(bucket, filename):
         raise
 
 def delete_object(bucket, filename):
+    if test_mode:
+        return
+
     service = _create_service()
 
     try:
