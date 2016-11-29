@@ -39,13 +39,17 @@ touch $BASE_DIR/lib/ruamel/__init__.py
 # TODO: install node
 # TODO: install npm?
 
-cd $BASE_DIR
 
 echo "Installing npm modules"
+cd $BASE_DIR
 npm install
 
+cd $BASE_DIR/node_server
+npm install
+
+cd $BASE_DIR
 if [ "$TRAVIS" == true ]; then
-  echo "Compiling CSS and JS"
+  echo "Compiling CSS and JS and Icons"
   gulp compile-css-js compile-favicons
 else
   echo "Installing necessary brew libraries"
