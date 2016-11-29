@@ -117,6 +117,7 @@ class SearchInput extends React.Component {
         if (this.props.onSubmitEditing) {
           this.props.onSubmitEditing();
         }
+        this.textInput.blur();
       }}
     />;
   }
