@@ -169,7 +169,6 @@ class LookupUserEvents(LookupType):
 
 class LookupEvent(LookupType):
     optional_keys = ['cover_info']
-    version = "v2.3"
 
     @classmethod
     def track_lookup(cls):
