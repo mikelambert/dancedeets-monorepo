@@ -633,6 +633,8 @@ class FBLookup(object):
         key = generate_key(cls, object_id)
         if key in self._fetched_objects:
             return self._fetched_objects[key]
+        elif allow_fail:
+            return None
         else:
             raise NoFetchedDataException('Could not find %s' % (key,))
 
