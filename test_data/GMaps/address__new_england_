@@ -1,0 +1,50 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "New England", 
+                    "short_name": "New England", 
+                    "types": [
+                        "colloquial_area", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "New England", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 47.459686, 
+                        "lng": -66.8850751
+                    }, 
+                    "southwest": {
+                        "lat": 40.950943, 
+                        "lng": -73.727775
+                    }
+                }, 
+                "location": {
+                    "lat": 43.9653889, 
+                    "lng": -70.8226541
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 47.459686, 
+                        "lng": -66.8850751
+                    }, 
+                    "southwest": {
+                        "lat": 40.950943, 
+                        "lng": -73.727775
+                    }
+                }
+            }, 
+            "place_id": "ChIJP3fuARk5skwR7aW7DG3mHlQ", 
+            "types": [
+                "colloquial_area", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

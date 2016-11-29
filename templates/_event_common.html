@@ -1,0 +1,53 @@
+{% macro event_info_as_icon_list(displayable_event, canonical_url, social_links=True) %}
+  <ul class="fa-ul event-ul">
+  {% if displayable_event.has_image %}
+    <li><i class="event-info-icon fa-li fa fa-picture-o fa-lg"></i><a class="link-event-flyer" href="/events/image_proxy/{{ displayable_event.id }}">See Full Flyer</a></li>
+  {% endif %}
+  {% if displayable_event.web_event %}
+    <li><i class="event-info-icon fa-li fa fa-external-link fa-lg fa-fw"></i><a class="link-event-source" href="{{ displayable_event.source_url }}">See Event on {{ displayable_event.source_name }}</a></li>
+  {% else %}
+    <li><i class="event-info-icon fa-li fa fa-facebook-square fa-lg fa-fw"></i><a class="link-event-source" href="{{ displayable_event.source_url }}">See Event on Facebook</a></li>
+  {% endif %}
+  <li><div class="product-social-links">
+    <a class="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
+    <div class="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a></div>
+  </div></li>
+  <li><i class="event-info-icon fa-li fa fa-clock-o fa-lg"></i><b>Time:</b>
+  {{ duration_human_format(displayable_event.start_time, end_time) }}
+  </li>
+  <li><i class="event-info-icon fa-li fa fa-calendar-plus-o fa-lg"></i>
+  <a href="https://www.google.com/calendar/render?action=TEMPLATE&amp;text={{ displayable_event.name|urlencode }}&amp;dates={{displayable_event.calendar_start_end|urlencode }}&amp;details=Latest Event 'Deets:{{ '\n'|urlencode }}{{ canonical_url|urlencode }}&amp;location={{ (displayable_event.full_address or '').replace('\n', ", ")|urlencode }}&amp;sf=true&amp;output=xml" class="link-event-add-to-calendar">Add to Google Calendar</a>
+  </li>
+  {% if displayable_event.attending_count %}
+    <li><i class="event-info-icon fa-li fa fa-users fa-lg"></i><b>RSVPs:</b>
+    {{ displayable_event.attending_count }} Attending
+    {%- if displayable_event.maybe_count -%}
+      , {{ displayable_event.maybe_count }} Maybe
+    {%- endif %}
+    </li>
+  {% endif %}
+  {% if displayable_event.admins %}
+    <li><i class="event-info-icon fa-li fa fa-user fa-lg"></i><b>Organizers:</b><br>
+    <ul>
+    {% for admin in displayable_event.admins %}
+      <li><a class="link-event-admin" href="https://www.facebook.com/{{ admin.id }} ">{{ admin.name }}</a></li>
+    {% endfor %}
+    </ul>
+    </li>
+  {% endif %}
+  <li><i class="event-info-icon fa-li fa fa-map-marker fa-lg"></i><b>Location:</b><br>
+  <div>
+  {% if displayable_event.location_name %}
+    {% if displayable_event.venue and displayable_event.venue.id %}
+      <a class="link-event-venue" href="https://www.facebook.com/{{ displayable_event.venue.id }}">{{ displayable_event.location_name }}</a>
+    {% else %}
+      {{ displayable_event.location_name }}
+    {% endif %}
+    <br>
+  {% endif %}
+  {{ displayable_event.full_address|format_html }}
+
+{{ displayable_event.location_schema_html() }}
+  </div></li>
+  </ul>
+{% endmacro %}

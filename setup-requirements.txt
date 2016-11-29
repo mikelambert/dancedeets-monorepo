@@ -1,0 +1,67 @@
+
+# Because the published version has a bug with media uploads:
+git+https://github.com/sixohsix/twitter
+
+# Because the published version doesn't work with JsonProperty:
+# https://github.com/wtforms/wtforms-appengine/commit/841b76c15a2658c73c7e705fb810fe7c224b104b
+git+https://github.com/wtforms/wtforms-appengine
+
+# Communicate to our npm js render server
+# We need our fixed version of optional-django, that handles ImportError safely.
+# And we need to do it before we import/load the react module which depends on it.
+git+https://github.com/mikelambert/optional-django
+react
+
+# ScrapingHub API
+scrapinghub
+scrapy
+scrapyjs
+html2text
+
+# MindBody
+suds
+
+# Date Manip
+dateparser
+icalendar
+ruamel.yaml
+
+iso3166
+oauth2
+twilio
+python-gcm
+python-gflags
+jinja2
+htmlmin
+
+requests
+urllib3
+requests-toolbelt
+
+# WebApps
+Flask
+flask-admin
+wtforms
+git+https://github.com/mikelambert/wtforms-appengine
+
+# Relay / GraphQL
+flask_graphql
+graphene
+
+# For /event/222/title-is-here URLs
+slugify
+
+# In case we want to parse rss/atom feeds
+feedparser
+
+# Google
+GoogleAppEngineMapReduce
+GoogleAppEnginePipeline
+google-api-python-client
+gdata
+
+python-firebase-gae
+
+markdown
+
+python-resize-image

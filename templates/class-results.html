@@ -1,0 +1,107 @@
+{% extends class_base_template %}
+
+{% block title %}
+{{full_location}} Street Dance Classes
+{% endblock %}
+
+{% block head_stylesheet %}
+    <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ result_title }}" />
+    <meta property="og:site_name" content="DanceDeets"/>
+    <meta property="og:description"
+          content="Every street dance event. On the web, on your phone. At home, and when traveling."/>
+
+<style type="text/css">
+  #navbar-collapsed-summary {
+    display: none;
+  }
+  #navbar.affix {
+    top: 0px;
+  }
+  #navbar.affix-top #navbar-collapse-button-icon {
+    visibility: hidden;
+  }
+</style>
+
+{% endblock %}
+
+{% block body %}
+{% if webview %}
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<div id="app">{{classesHtml|safe}}</div>
+</div>
+</div>
+</div>
+{% else %}
+<div class="container">
+<div class="row">
+<div class="col-md-9">
+<div id="app">{{classesHtml|safe}}</div>
+</div>{# col-md-9 #}
+<div class="col-md-3">
+  <button type="button" class="btn btn-primary" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
+  <div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="190" data-action="like" data-show-faces="true" style="margin: 10px 0;"></div>
+  <p>
+</div>
+</div> {# row #}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block bottom_javascript %}
+
+<script type="text/javascript">
+
+function share() {
+  FB.ui({
+    method: 'share',
+    mobile_iframe: true,
+    href: 'https://www.dancedeets.com/',
+  }, function(response){});
+}
+
+//TODO: make a "class" page with relevant info (youtube, studio link, etc)
+
+function resetAffixedOffset() {
+  var height = 0;
+  $('.navmenu-height').each(function(elem) {
+    height += $(this).height();
+  });
+  $('#navbar-container').height(height);
+  $('#navbar').affix({
+      offset: { top: $('#navbar').offset().top }
+  });
+  // When we scroll up to the top of the page,
+  // make sure we un-collapse the navbar if necessary
+  $('#navbar').bind('affixed-top.bs.affix', function() {
+    if (!$('#navbar-collapsable').is(":visible")) {
+      toggleSearchBar();
+    }
+  });
+
+  var width = $('#navbar-container').width() - parseInt($('#navbar-container').css('paddingLeft')) - parseInt($('#navbar-container').css('paddingRight'));
+  $('#navbar').css('width', width);
+}
+$(function() {
+  resetAffixedOffset();
+
+  $(document).on("keypress", "form", function(event) {
+    return event.keyCode != 13;
+  });
+});
+
+$(window).resize(function() {
+  resetAffixedOffset();
+});
+
+var classes = {{classes|tojson}};
+var imagePath = {{imagePath|tojson}};
+var searchLocation = {{full_location|tojson}};
+</script>
+
+<script src="/dist-{{version}}/js/class-results-exec.js"></script>
+
+{% endblock %}

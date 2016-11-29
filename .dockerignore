@@ -1,0 +1,21 @@
+node_server/node_modules
+node_modules
+scratch
+download
+local_data
+local_data2
+local_data3
+grammar-processed.*
+full-logs.txt
+scratch*
+r/*
+snapshotted
+tmp
+build
+.git
+
+# We don't need these on the server, this is only used for scrapy:
+lib/lxml
+lib/scrapy
+lib/twisted
+lib/zope

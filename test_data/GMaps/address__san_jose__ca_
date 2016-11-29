@@ -1,0 +1,74 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "San Jose", 
+                    "short_name": "San Jose", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Santa Clara County", 
+                    "short_name": "Santa Clara County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "California", 
+                    "short_name": "CA", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "San Jose, CA, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 37.4695381, 
+                        "lng": -121.589154
+                    }, 
+                    "southwest": {
+                        "lat": 37.124493, 
+                        "lng": -122.0456679
+                    }
+                }, 
+                "location": {
+                    "lat": 37.3382082, 
+                    "lng": -121.8863286
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.4695381, 
+                        "lng": -121.589154
+                    }, 
+                    "southwest": {
+                        "lat": 37.124493, 
+                        "lng": -122.0456679
+                    }
+                }
+            }, 
+            "place_id": "ChIJ9T_5iuTKj4ARe3GfygqMnbk", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

@@ -1,0 +1,220 @@
+{% import "_event_common.html" as event_common -%}
+<!doctype html>
+<html amp lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ displayable_event.name|e }}</title>
+    <link rel="canonical" href="{{ canonical_url }}" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <style amp-custom>
+    {{ event_amp_stylesheet|safe }}
+    </style>
+    <script type="application/ld+json">
+    {#
+        //
+        // The document referenced in mainEntityOfPage should be the same as the
+        // canonical link above.
+        //
+        // Also, please be aware that some platforms that use AMP HTML have
+        // further restrictions with regards to some schema components.
+        //
+        // For example:
+        //
+        //   * The leader "image" referenced in the markup below must appear
+        //   somewhere on the AMP HTML document itself.
+        //
+        //   * The URL for that "image" must precisely match the src of the
+        //   amp-img tag.
+        //
+        //   * All marked-up URLs should be absolute.
+        //
+        //   * The "logo" dimensions must not exceed 600x60.
+    #}
+      {
+        "@context": "http://schema.org",
+        "@type": "NewsArticle",
+        "mainEntityOfPage": "{{ canonical_url }}",
+        "headline": "{{ displayable_event.name|e }}",
+        "datePublished": "{{ date_format('%Y-%m-%dT%H:%M:00Z', displayable_event.creation_time) }}",
+        "description": "{{ displayable_event.description|e }}",
+        "author": {
+          "@type": "Organization",
+          "name": "DanceDeets"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "DanceDeets",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "http://{{ full_hostname }}/dist-{{version}}/img/deets-head-and-title-on-black.png",
+            "width": 246,
+            "height": 60
+          }
+        },
+        "image": {
+          "@type": "ImageObject",
+          "url": "{{ displayable_event.largest_cover.source }}",
+          "height": {{ displayable_event.largest_cover.height }},
+          "width": {{ displayable_event.largest_cover.width }}
+        }
+      }
+    </script>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+    <script async custom-element="amp-analytics"
+        src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
+    <script async custom-element="amp-iframe"
+        src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script>
+  </head>
+  <body>
+    <amp-analytics type="googleanalytics">
+      <script type="application/json">
+      {
+        "vars": {
+            "account": "UA-18831479-1"
+        },
+        "triggers": {
+          "trackPageview": {
+            "on": "visible",
+            "request": "pageview"
+          }
+        }
+      }
+      </script>
+  </amp-analytics>
+
+<!--=== Header v6 ===-->
+<nav class="header-v6 header-classic-dark header-sticky">
+    <!-- Navbar -->
+    <div class="navbar mega-menu" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="menu-container">
+                <!-- Navbar Brand -->
+                <div class="navbar-brand">
+                    <a href="/">
+                        <span class="dancedeets-logo"
+                        ><amp-img layout="fixed" width="262" height="64"
+                        class="default-logo"
+                        srcset="
+/dist-{{version}}/img/deets-head-and-title-on-black.png 1x,
+/dist-{{version}}/img/deets-head-and-title-on-black@2x.png 2x"
+                        src="/dist-{{version}}/img/deets-head-and-title-on-black.png" alt="DanceDeets"
+                        ></span>
+                    </a>
+                </div>
+                <!-- ENd Navbar Brand -->
+            </div>
+        </div>
+    </div>
+    <!-- End Navbar -->
+</nav>
+<!--=== End Header v6 ===-->
+
+<div class="body-contents margin-bottom-60">
+<div class="container">
+
+  <div class="row">
+    <h1 class="event-page-title">{{ displayable_event.name }}</h1>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-5">
+      {% if displayable_event.has_image %}
+        <div class="event-flyer"><a class="link-event-flyer" href="/events/image_proxy/{{ displayable_event.id }}">
+            <amp-img src="/events/image_proxy/{{ displayable_event.id }}" layout="responsive" width="{{ displayable_event.largest_cover.width }}" height="{{ displayable_event.largest_cover.height }}">
+        </a></div>
+      {% endif %}
+
+      {{ event_common.event_info_as_icon_list(displayable_event, canonical_url, social_links=False) }}
+      {# not worth showing maps embed if there is no street_address #}
+      {% if displayable_event.latitude %}
+        <p>Open in <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">Google Maps</a>.
+        <a class="link-event-map" href="http://maps.google.com/?daddr={{ displayable_event.latitude }},{{ displayable_event.longitude }}" target="_blank">
+          <amp-img src="http://www.google.com/maps/api/staticmap?key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;size=450x450&amp;scale=2&amp;zoom=13&amp;center={{ displayable_event.latitude }},{{ displayable_event.longitude }}&amp;markers=color:blue%7C{{ displayable_event.latitude }},{{ displayable_event.longitude }}" layout="responsive" width="300" height="300">
+          </amp-img>
+        </a>
+      {% endif %}
+    </div>
+
+    {% if displayable_event.description %}
+    <div class="col-sm-7">
+      <h1 class="event-page-title visible-xs-block">{{ displayable_event.name }}</h1>
+      <div><b>Description:</b></div>
+      <span>
+        {{ displayable_event.description|format_html|linkify }}
+      </span>
+    </div>
+    {% endif %}
+  </div>
+
+{#
+can add these to google-maps embed:
+language= parameter
+region= paramter cctld
+#}
+
+</div>
+</div>
+
+
+<footer>
+    <!--=== Footer v2 ===-->
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <!-- About -->
+                <div class="col-md-4 md-margin-bottom-40">
+                    <a href="index.html"><amp-img layout="fixed" width="205" height="50" id="logo-footer" class="footer-logo" src="/dist-{{version}}/img/deets-head-and-title-on-black.png" alt=""></a>
+                    <p class="margin-bottom-20">DanceDeets is <em>the</em> source for street dance events worldwide.</p>
+                    <div class="fb-like" data-href="https://www.facebook.com/dancedeets" data-layout="standard" data-width="280" data-action="like" data-show-faces="true" data-share="true"></div>
+                </div>
+                <!-- End About -->
+
+                <!-- Link List -->
+                <div class="col-md-4 md-margin-bottom-40">
+                    <div class="headline"><h2>Useful Links</h2></div>
+                    <ul class="list-unstyled link-list">
+                        <li><a href="/about">About</a><i class="fa fa-angle-right"></i></li>
+                        <li><a href="/rankings">Rankings</a><i class="fa fa-angle-right"></i></li>
+                        <li><a href="/help">Help</a><i class="fa fa-angle-right"></i></li>
+                        <li><a href="/feedback">Contact</a><i class="fa fa-angle-right"></i></li>
+                        <li><a href="/privacy">Privacy</a><i class="fa fa-angle-right"></i></li>
+                    </ul>
+                </div>
+                <!-- End Link List -->
+
+                <!-- Address -->
+                <div class="col-md-4 md-margin-bottom-40">
+                    <div class="headline"><h2>Contact Us</h2></div>
+                    <address class="md-margin-bottom-40">
+                        <i class="fa fa-globe"></i>Website: <a href="#">www.dancedeets.com</a> <br />
+                        <i class="fa fa-envelope"></i>Email: <a href="mailto:info{{ email_suffix }}@dancedeets.com">info@dancedeets.com</a><br />
+                        <i class="fa fa-home"></i>Or find us in the clubs of New York<br />
+                    </address>
+
+                    <!-- Social Links -->
+                    <ul class="social-icons">
+                        <li><a href="https://www.facebook.com/dancedeets" data-original-title="Facebook" class="rounded-x social_facebook"></a></li>
+                        <li><a href="https://www.twitter.com/dancedeets" data-original-title="Twitter" class="rounded-x social_twitter"></a></li>
+                    </ul>
+                    <!-- End Social Links -->
+                </div>
+                <!-- End Address -->
+            </div>
+        </div>
+    </div><!--/footer-->
+
+    <div class="copyright">
+        <div class="container">
+            <p class="text-center">
+                2016 &copy; DanceDeets. All Rights Reserved.<br/>
+            </p>
+        </div>
+    </div><!--/copyright-->
+    <!--=== End Footer v2 ===-->
+</footer>
+
+</body>
+</html>

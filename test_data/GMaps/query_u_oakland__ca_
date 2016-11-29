@@ -1,0 +1,44 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "Oakland, CA, USA", 
+            "geometry": {
+                "location": {
+                    "lat": 37.8043637, 
+                    "lng": -122.2711137
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.88472489999999, 
+                        "lng": -122.1149234
+                    }, 
+                    "southwest": {
+                        "lat": 37.699198, 
+                        "lng": -122.3426648
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png", 
+            "id": "da4a4da21e013f9d3a24e8eee6d4f84de02148d3", 
+            "name": "Oakland", 
+            "photos": [
+                {
+                    "height": 1872, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/107780019121692670257/photos\">Adam Sporka</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAAKDRgfaId-Wfd0uVNa8viSM32bCZru_5gJBlmrlWhergGUgZgQc7C9amgMCxNswx2fA2g_f7afcWGScI2-g9R7WuBdTjY5s8qcJgJ5-TfRevsNcjMRW5EgkAPq8-hPy3JaD8LjNab5RolEjQFkNIxErn0UaDb2VxsaDkCS7EPY7CEhCsmwTLfahSo8iScaDu39GvGhRRLmWWiklXi6AoXLFaCQnll2ZqEw", 
+                    "width": 3328
+                }
+            ], 
+            "place_id": "ChIJA-2qKIt9hYARZ5N1NdUVtHE", 
+            "reference": "CmRbAAAAiJm-W8ygau056wURMzxOWpFlfHErYXngpjtiCNRmeLnH6bd-fRgGSnxhV2bh6zZQ0zqG2JYq-dNbhkT9bY2wW5kWz_D2snwGBKXRG4q2vSNZhHT4MV9Q3kya1rOtrGK7EhArk9xc4-h_VNmcT0VQm65PGhRTicBSO437VNS6kOi77iGlMyPJaw", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

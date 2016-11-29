@@ -1,0 +1,99 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "27182", 
+                    "short_name": "27182", 
+                    "types": [
+                        "street_number"
+                    ]
+                }, 
+                {
+                    "long_name": "Patrick Avenue", 
+                    "short_name": "Patrick Ave", 
+                    "types": [
+                        "route"
+                    ]
+                }, 
+                {
+                    "long_name": "Harder - Tennyson", 
+                    "short_name": "Harder - Tennyson", 
+                    "types": [
+                        "neighborhood", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Hayward", 
+                    "short_name": "Hayward", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Alameda County", 
+                    "short_name": "Alameda County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "California", 
+                    "short_name": "CA", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "94544", 
+                    "short_name": "94544", 
+                    "types": [
+                        "postal_code"
+                    ]
+                }, 
+                {
+                    "long_name": "4404", 
+                    "short_name": "4404", 
+                    "types": [
+                        "postal_code_suffix"
+                    ]
+                }
+            ], 
+            "formatted_address": "27182 Patrick Ave, Hayward, CA 94544, USA", 
+            "geometry": {
+                "location": {
+                    "lat": 37.6344512, 
+                    "lng": -122.0787739
+                }, 
+                "location_type": "ROOFTOP", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.6358001802915, 
+                        "lng": -122.0774249197085
+                    }, 
+                    "southwest": {
+                        "lat": 37.6331022197085, 
+                        "lng": -122.0801228802915
+                    }
+                }
+            }, 
+            "place_id": "ChIJod73YByUj4ARb4PTFWWqEKI", 
+            "types": [
+                "street_address"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

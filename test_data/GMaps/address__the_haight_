@@ -1,0 +1,83 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "Haight-Ashbury", 
+                    "short_name": "Haight-Ashbury", 
+                    "types": [
+                        "neighborhood", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "San Francisco", 
+                    "short_name": "SF", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "San Francisco County", 
+                    "short_name": "San Francisco County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "California", 
+                    "short_name": "CA", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Haight-Ashbury, San Francisco, CA, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 37.774107, 
+                        "lng": -122.4358098
+                    }, 
+                    "southwest": {
+                        "lat": 37.7658804, 
+                        "lng": -122.4538708
+                    }
+                }, 
+                "location": {
+                    "lat": 37.7692204, 
+                    "lng": -122.4481393
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.774107, 
+                        "lng": -122.4358098
+                    }, 
+                    "southwest": {
+                        "lat": 37.7658804, 
+                        "lng": -122.4538708
+                    }
+                }
+            }, 
+            "partial_match": true, 
+            "place_id": "ChIJX_Qyn6yAhYARSAqN56vATTI", 
+            "types": [
+                "neighborhood", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

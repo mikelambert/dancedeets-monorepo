@@ -1,0 +1,64 @@
+@import 'config.scss';
+
+/*Footer-v2
+------------------------------------*/
+.footer {
+	padding: 40px 0;
+	background: $footer-color;
+	border-top: 3px solid $footer-border-color;
+}
+
+.footer p {
+	color: $footer-text-color;
+}
+
+.footer-logo {
+  margin: 17px 0 20px;
+}
+
+/*Link List*/
+.link-list li {
+  border-top: solid 1px $footer-accent-color;
+}
+
+.link-list li:first-child {
+    border-top: none !important;
+}
+
+.link-list a {
+    //color: white;
+    font-size: 11px;
+    padding: 6px 0px;
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+.link-list li i {
+    color: $footer-text-color;
+    float: right;
+    margin-top: 10px;
+}
+
+address {
+	color: $footer-text-color;
+	line-height: 23px;
+}
+
+address i {
+	min-width: 20px;
+	margin-right: 5px;
+	text-align: center;
+}
+
+/*Copyright*/
+.copyright {
+	border-top: none;
+	background: $footer-color;
+	padding: 20px 0 15px;
+}
+
+.copyright p {
+	color: $footer-text-color;
+	margin-bottom: 0;
+}
+

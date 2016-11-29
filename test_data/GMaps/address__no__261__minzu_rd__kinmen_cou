@@ -1,0 +1,80 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "261", 
+                    "short_name": "261", 
+                    "types": [
+                        "street_number"
+                    ]
+                }, 
+                {
+                    "long_name": "Minzu Road", 
+                    "short_name": "Minzu Rd", 
+                    "types": [
+                        "route"
+                    ]
+                }, 
+                {
+                    "long_name": "Jincheng", 
+                    "short_name": "Jincheng", 
+                    "types": [
+                        "colloquial_area", 
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Kinmen County", 
+                    "short_name": "Kinmen County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "893", 
+                    "short_name": "893", 
+                    "types": [
+                        "postal_code"
+                    ]
+                }
+            ], 
+            "formatted_address": "261 Minzu Rd, Jincheng 893", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 24.4302878, 
+                        "lng": 118.3154009
+                    }, 
+                    "southwest": {
+                        "lat": 24.4302708, 
+                        "lng": 118.3153985
+                    }
+                }, 
+                "location": {
+                    "lat": 24.4302708, 
+                    "lng": 118.3153985
+                }, 
+                "location_type": "RANGE_INTERPOLATED", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 24.4316282802915, 
+                        "lng": 118.3167486802915
+                    }, 
+                    "southwest": {
+                        "lat": 24.4289303197085, 
+                        "lng": 118.3140507197085
+                    }
+                }
+            }, 
+            "partial_match": true, 
+            "place_id": "EiPph5Hln47msJHml4_ot68yNjHpgq7mlL_nvJbnoIE6IDg5Mw", 
+            "types": [
+                "street_address"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

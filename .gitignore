@@ -1,0 +1,33 @@
+# generated files:
+*.pyc
+*.swp
+app-nose.yaml
+app-devserver.yaml
+dist/
+dist-includes/
+
+# secret files
+keys.yaml
+facebook-dev.yaml
+facebook-prod.yaml
+
+# temp files not for git
+tmp
+
+# scratch files for tool output
+scratch
+
+# mac files:
+.DS_Store
+
+# per-user sublime files:
+*.sublime-workspace
+
+# coverage file built by 'run coverage'
+.coverage
+
+.gcloud
+
+# installed libraries
+lib/
+node_modules/

@@ -1,0 +1,24 @@
+language: python
+python:
+  - 2.7
+
+install:
+  # Download the latest version of the GAE Python SDK
+  - "wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.30.zip -nv -O downloaded_appengine.zip"
+  - "unzip -q downloaded_appengine.zip"
+  # This is a quick hack, necessary to get fancy_urllib working,
+  # by exposing the lib/fancy_urllib/fancy_urllib/ dirctory within for use by appengine.
+  - "rm -rf google_appengine/lib/fancy_urllib/__init__.py"
+  # Install latest version of node
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
+  # Set up and compile our project
+  - "./setup.sh"
+
+# command to run tests
+script: "./nose.sh --coverage --gae-lib-root=google_appengine"
+
+after_success:
+  - pip install coveralls
+  - coveralls

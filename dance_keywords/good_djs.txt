@@ -1,0 +1,52 @@
+adam rios
+anané vega
+afrika bambaataa
+afro mosaic soul
+akalepse
+bj piggo
+black coffee
+clubshelter
+(?:joe|joaquin\W+joe)\W+claussell
+danny krivit
+david harness
+derek sampson
+dj disciple
+dj jazzy jeff
+dj k-katsu
+dj nk-soul
+dj premier
+dj spinna
+dj veusty
+dj cuba & dj dres # for ritmo y tumbao parties, where they always play together
+ep\W+extended play
+eric groove
+francois k
+greg gauthier
+ian friday
+jayvi velasco
+jaze\W?art\W?remote
+jellybean benitez
+kaistar
+louie vega
+manchildblack
+mark francis
+marques wyatt
+max pela
+myrto joyce
+nicky siano
+ohishi\W+(?:jmc\W+)?sodeep
+peven everett
+rich medina
+rubi r-tres
+ruff cut djs # finland
+sabine blazin
+sachio\W+hi-score
+stephen rigmaiden
+still1
+sweater\W?funk
+tijo aimé
+timmy regisford
+timmy richardson
+tyrone francis
+tyrone\W+mixologist\W+francis
+vjuan allure # vogue

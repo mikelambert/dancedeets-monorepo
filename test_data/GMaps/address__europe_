@@ -1,0 +1,52 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "Europe", 
+                    "short_name": "Europe", 
+                    "types": [
+                        "continent", 
+                        "natural_feature", 
+                        "establishment"
+                    ]
+                }
+            ], 
+            "formatted_address": "Europe", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 82.1673907, 
+                        "lng": 74.3554999
+                    }, 
+                    "southwest": {
+                        "lat": 34.5428, 
+                        "lng": -31.4647999
+                    }
+                }, 
+                "location": {
+                    "lat": 54.5259614, 
+                    "lng": 15.2551187
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 65, 
+                        "lng": 55
+                    }, 
+                    "southwest": {
+                        "lat": 34, 
+                        "lng": -11
+                    }
+                }
+            }, 
+            "place_id": "ChIJhdqtz4aI7UYRefD8s-aZ73I", 
+            "types": [
+                "continent", 
+                "natural_feature", 
+                "establishment"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

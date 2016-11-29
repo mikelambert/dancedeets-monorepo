@@ -1,0 +1,304 @@
+{% extends class_base_template %}
+{% import "_rsvp.html" as rsvp %}
+{% import "_results.html" as results %}
+
+{% block title %}
+{{ result_title }}
+{% endblock %}
+
+{% block head_stylesheet %}
+    <meta property="og:image" content="http://www.dancedeets.com/images/deet-city.jpg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ result_title }}" />
+    <meta property="og:site_name" content="DanceDeets"/>
+    <meta property="og:description"
+          content="Every street dance event. On the web, on your phone. At home, and when traveling."/>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<div class="row">
+<div class="col-md-9">
+<div style="margin-bottom: 25px">
+  <table><tr><td>
+  	<img class="hidden-xs" id="penguin" src="/images/full_penguin_240.png" height="120" width="120">
+  </td><td>
+  <form id="search-form" class="form-inline" role="search" action="/" accept-charset="UTF-8">
+    <div class="form-group">
+      <div style="font-weight: bold">Where will you dance next?</div>
+      <div class="input-group">
+		<span class="input-group-addon"><i class="fa fa-globe fa-fw"></i></span>
+        <input id="location_input" type="text" name="location" placeholder="everywhere" value="{{ form.location.data }}" class="form-control">
+      </div>
+    </div>
+    <div class="form-group">
+      <div style="font-weight: bold">Looking for anything in particular?</div>
+      <div style="font-style: italic; font-size: 70%">You can enter a dance style, dancer, event name, or leave it blank!</div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+        <input id="keywords_input" type="text" name="keywords" placeholder="all events" value="{{ form.keywords.data }}" class="form-control">
+      </div>
+    </div>
+    {% if form.deb.data %}
+	    <input type="hidden" name="deb" value="{{ form.deb.data }}">
+	{% endif %}
+    <button type="submit" class="btn btn-default btn-block" style="margin-top: 1em">
+      <i class="fa fa-search fa-fw"></i>
+      Search our {{ total_events }} Events
+    </button>
+  {# maybe make a small hourglass icon search box ?
+   # $("#search-button").click(function(e){ if ($("#location_input").val()) $("#search-form").submit(); });
+   #}
+  </form>
+  </td></tr></table>
+</div>{# margin-bottom: 25px #}
+
+<div style="min-height:300px">
+
+<ul class="nav nav-tabs nav-justified" data-tabs="tabs">
+	<li
+	{% if selected_tab == 'past' %}
+		class="active"
+	{% endif %}
+	><a
+	{% if selected_tab == 'past' %}
+		href="#"
+	{% else %}
+		href="{{ past_view_url }}"
+	{% endif %}
+	><span><i class="fa fa-history fa-lg"></i>
+	{% if selected_tab == 'past' %}
+		{% set num_past_results = len(past_results) %}
+		{% if num_past_results %}
+			{{ num_past_results }}
+		{% endif %}
+	{% endif %}
+	Past Events</span></a></li>
+
+	<li
+	{% if selected_tab == 'present' %}
+		class="active"
+	{% endif %}
+	><a
+	{% if selected_tab == 'present' %}
+		href="#"
+	{% else %}
+		href="{{ upcoming_view_url }}"
+	{% endif %}
+	><span>
+	{% if selected_tab == 'present' %}
+		{% if num_upcoming_results %}
+			{{ num_upcoming_results }}
+		{% endif %}
+	{% endif %}
+	Upcoming Events</span></a></li>
+
+	<li
+	{% if selected_tab == 'calendar' %}
+		class="active"
+	{% endif %}
+	><a
+	{% if selected_tab == 'calendar' %}
+		href="#"
+	{% else %}
+		href="{{ calendar_view_url }}"
+	{% endif %}
+	><span><i class="fa fa-calendar fa-lg"></i> Calendar</span></a></li>
+</ul>
+<div class="tabs-after row">
+	{% if onebox_links %}
+	<div class="col-xs-12">
+		<div><b>Related pages:</b></div>
+		<ul>
+		{% for onebox in onebox_links %}
+			<li><a class="link-onebox" href="{{ onebox.url }}">{{ onebox.title }}</a></li>
+		{% endfor %}
+		</ul>
+	</div>
+	{% endif %}
+
+	{% if selected_tab == 'past' %}
+		{{ results.render_wide_results(past_results) }}
+	{% elif selected_tab == 'present' %}
+		{% if num_upcoming_results %}
+			<div id="upcoming_events" class="col-md-8 col-xs-12">
+			{% for group in grouped_upcoming_results %}
+				{% if group.results %}
+					<h3 class="group-title">{{ group.name }}</h3>
+					{{ results.render_wide_results(group.results) }}
+				{% endif %}
+			{% endfor %}
+			{% if sponsored_studios['MINDBODY'] %}
+				<div style="margin: 1em 0em; font-style: italic">
+					Studios Powered by <a href="http://www.mindbodyonline.com">MINDBODY</a>:
+					{{ sponsored_studios['MINDBODY']|join(', ') }}
+				</div>
+			{% endif %}
+			</div>
+		{% endif %}
+		{% if ongoing_results %}
+			<div id="ongoing_events" class="col-md-4 col-xs-12">
+				<h3>Ongoing Events</h3>
+				{{ results.render_narrow_results(ongoing_results) }}
+			</div>
+		{% endif %}
+	{% elif selected_tab == 'calendar' %}
+		<div id="calendar" style="margin-top: 10px"></div>
+	{% endif %}
+</div>{# min-height:300px #}
+</div>{# col-md-9 #}
+</div>{# row #}
+
+<div class="col-md-3">
+	<a href="/events_add" class="btn btn-primary" style="margin-bottom: 10px"><i class="fa fa-calendar-plus-o fa-lg"></i> Add Dance Event</a>
+	<button type="button" class="btn btn-primary" style="margin-bottom: 10px" onclick="share(); return true;"><i class="fa fa-user-plus fa-lg"></i> Share on Facebook</button>
+  <div class="rankings" style="margin-bottom: 10px">
+  <a href="/rankings"><i class="fa fa-list-ol fa-lg"></i> City Rankings</a>.
+  </div>
+  <div class="fb-page" data-href="https://www.facebook.com/dancedeets/" data-hide-cover="true" data-small-header="true" data-adapt-container-width="true" data-show-facepile="true"><blockquote cite="https://www.facebook.com/dancedeets/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/dancedeets/">DanceDeets</a></blockquote></div>
+</div>
+
+</div> {# row #}
+</div> {# container #}
+{% endblock %}
+
+{% block bottom_javascript %}
+
+<script type="text/javascript">
+$(document).ready(function(event) {
+  $("body").delegate("#location_input", "click", function() { return false; });
+  $('#keywords_input').keydown(function(event) {
+      if (event.keyCode == 13) {
+          this.form.submit();
+          return false;
+       }
+  });
+  $('#location_input').keydown(function(event) {
+      if (event.keyCode == 13) {
+          this.form.submit();
+          return false;
+       }
+  });
+});
+
+function initializeLocationAutocomplete() {
+  var autocomplete = new google.maps.places.Autocomplete($('#location_input').get(0));
+  autocomplete.setTypes(['(regions)'])
+}
+
+function share() {
+	FB.ui({
+		method: 'share',
+		mobile_iframe: true,
+		href: 'https://www.dancedeets.com/',
+	}, function(response){});
+}
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;key=AIzaSyAvvrWfamjBD6LqCURkATAWEovAoBm1xNQ&amp;libraries=places&amp;callback=initializeLocationAutocomplete"></script>
+
+{% if selected_tab == 'calendar' %}
+<link rel="stylesheet" href="/dist-{{version}}/css/calendar.css">
+<script type="text/javascript" src="/dist-{{version}}/js/calendar.js"></script>
+
+<style type="text/css">
+/** We want to see the whole city and title, so let's ensure we override 'white-space: nowrap'.
+  * This is discussed in more detail here, which is when 2.1 introduced table-based event layout:
+  * https://code.google.com/p/fullcalendar/issues/detail?id=1992
+  **/
+.fc-day-grid-event > .fc-content {
+	white-space: normal;
+}
+</style>
+
+<script type="text/javascript">
+mixpanel.track("Search Events", {
+  "Location": {{ form.location.data|tojson }},
+  "Keywords": {{ form.keywords.data|tojson }}
+});
+
+mixpanel.track("Searched Results", {
+  "Location": {{ form.location.data|tojson }},
+  "Keywords": {{ form.keywords.data|tojson }},
+  "Tab": "CALENDAR"
+});
+
+$(document).ready(function() {
+	$('#calendar').fullCalendar({
+		aspectRatio: 1.8,
+		header: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'month,basicWeek,basicDay'
+		},
+		views: {
+			month: {
+				eventLimit: 4,
+				eventLimitClick: 'day',
+			},
+			week: {
+				eventLimit: 8,
+				eventLimitClick: 'day',
+			}
+		},
+		ignoreTimezone: true,
+		allDayDefault: false,
+		defaultView: 'basicWeek',
+		events: '{{ calendar_feed_url|format_js|safe }}'
+	});
+});
+</script>
+{% else %}
+<script type="text/javascript">
+mixpanel.track("Search Events", {
+  "Location": {{ form.location.data|tojson }},
+  "Keywords": {{ form.keywords.data|tojson }}
+});
+
+{% if selected_tab == 'past' %}
+  var num_results = {{ len(past_results) }};
+  var tab = 'PAST';
+{% elif selected_tab == 'present' %}
+  var num_results = {{ num_upcoming_results }};
+  var tab = 'UPCOMING';
+{% else %}
+  var tab = null;
+{% endif %}
+
+if (tab != null) {
+  mixpanel.track("Searched Results", {
+    "Location": {{ form.location.data|tojson }},
+    "Keywords": {{ form.keywords.data|tojson }},
+    "Tab": tab,
+    "Result Count": num_results,
+    "Onebox Count": {{ len(onebox_links) }}
+  });
+}
+mixpanel.track_links(".link-onebox", "Onebox");
+</script>
+
+{{ rsvp.rsvp_script() }}
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+{#
+{% if selected_tab == 'past' %}
+	{{ results.render_result_attending_tooltip_javascript(past_results) }}
+{% elif selected_tab == 'present' %}
+	{{ results.render_result_attending_tooltip_javascript(ongoing_results) }}
+	{% for group in grouped_upcoming_results %}
+		{% if group.results %}
+			{{ results.render_result_attending_tooltip_javascript(group.results) }}
+		{% endif %}
+	{% endfor %}
+{% endif %}
+#}
+	$("img.lazy-narrow").show().lazyload({threshold : 500});
+	$("img.lazy-wide").show().lazyload({threshold : 500});
+});
+
+</script>
+{% endif %}
+{% endblock %}

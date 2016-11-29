@@ -1,0 +1,95 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "Tbd", 
+                    "short_name": "Tbd", 
+                    "types": [
+                        "route"
+                    ]
+                }, 
+                {
+                    "long_name": "Neillsville", 
+                    "short_name": "Neillsville", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Dewhurst", 
+                    "short_name": "Dewhurst", 
+                    "types": [
+                        "administrative_area_level_3", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Clark County", 
+                    "short_name": "Clark County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Wisconsin", 
+                    "short_name": "WI", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "54456", 
+                    "short_name": "54456", 
+                    "types": [
+                        "postal_code"
+                    ]
+                }
+            ], 
+            "formatted_address": "Tbd, Neillsville, WI 54456, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 44.4950632, 
+                        "lng": -90.760988
+                    }, 
+                    "southwest": {
+                        "lat": 44.491375, 
+                        "lng": -90.7610498
+                    }
+                }, 
+                "location": {
+                    "lat": 44.4929312, 
+                    "lng": -90.7610498
+                }, 
+                "location_type": "GEOMETRIC_CENTER", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 44.4950632, 
+                        "lng": -90.7596699197085
+                    }, 
+                    "southwest": {
+                        "lat": 44.491375, 
+                        "lng": -90.7623678802915
+                    }
+                }
+            }, 
+            "place_id": "ChIJhzcEpjcb_4cRGLxjDmEWHhw", 
+            "types": [
+                "route"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

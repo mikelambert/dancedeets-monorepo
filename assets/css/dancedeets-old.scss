@@ -1,0 +1,474 @@
+@import 'config.scss';
+
+/* Convert to less for some of those 5px vars, then compile it together with bootstrap.css into a single css file */
+
+/* lazy loaded images on the results pages */
+.lazy-narrow {
+  display: none;
+}
+.lazy-wide {
+  display: none;
+}
+
+/* username in upper right corner */
+.user-name {
+	max-width: 120px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+/* bootstrap.css overrides */
+.navbar-brand {
+	/* our image is larger, so we need less padding */
+	padding: 8px;
+}
+/* these all relate to giving regular text a proper display color/padding */
+.nav-text {
+  position: relative;
+  padding: 10px;
+  line-height: 20px;
+
+  color: #fff;
+  background-color: transparent;
+}
+@media (min-width: 768px) {
+  .nav-text {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+}
+
+.fb_button-nav {
+	padding: 10px 10px 0px;
+	width: 200px;
+	text-align: right;
+}
+
+.event-page-title {
+	font-size: 2em;
+	font-weight: 500;
+}
+
+.responsive-map-wrapper {
+	position: relative;
+	padding-top: 25px;
+	height: 0;
+	padding-bottom: 100%; /* square...but only because width is 80% below, with our 80% here */
+	margin-bottom: 0%;
+}
+
+/* on event page */
+.product-social-links {
+    line-height: 10px;
+}
+
+/* on every page, for mobile overlays */
+.feature-list {
+	float:left;
+	margin-bottom: 0px;
+}
+
+/* all select boxes should autosize */
+select {
+	width: auto;
+}
+
+.tabs-after {
+	min-height: 100px;
+}
+
+#ongoing_events {
+  border-left: 1px solid $hr-border;
+  padding-left: 5px;
+}
+
+.events-list {
+	margin: 0px;
+	padding: 0px;
+	list-style-type:none
+}
+.event-image {
+	float: left;
+	border: 1px solid $flyer-border-color;
+  width: 182px;
+  height: 182px;
+	margin-right: 10px;
+	line-height: 1;
+}
+.event-image img {
+	margin-bottom: -2px;
+}
+.day-header {
+	font-size: 120%;
+	font-weight: bold; /* inherited from H3 anyway */
+}
+.event-title {
+	font-size: 120%;
+	font-weight: bold; /* inherited from H3 anyway */
+	margin: 0px;
+}
+.event-date {
+	padding-top: 10px;
+}
+
+table.rankings td {
+	padding: 5px;
+}
+
+#location_form {
+	width: 170px;
+}
+
+.ranking-title {
+	font-weight: bold;
+}
+
+#upcoming_events {
+	float: left;
+}
+
+/* for ongoing events*/
+h3.event-title {
+	line-height: 1.3;
+}
+
+.narrow-event {
+	padding-bottom: 5px;
+	border-bottom: 1px solid $hr-border;
+	margin-bottom: 5px;
+	float: left;
+	width: 100%;
+}
+
+.wide-event {
+	padding-bottom: 10px;
+}
+
+.big-font {
+	font-size: 200%;
+}
+
+.bad-matched-text {
+	background-color: pink;
+}
+.matched-text {
+	background-color: lightgreen;
+}
+
+footer.old {
+	text-align: center;
+	margin-top: 30px;
+}
+
+.big-facebook-login-button {
+	margin-bottom:30px;
+	margin-top: 30px;
+	width: 130px;
+}
+
+/* For use on the /mobile_apps page */
+.sms-textbox {
+	display: inline-block;
+	width: auto;
+	vertical-align: middle;
+}
+.feature-list .fa {
+	opacity: 0.8;
+    filter: alpha(opacity=80); /* For IE8 and earlier */
+}
+.feature-list li {
+	height: 35px;
+}
+ul.feature-list {
+	padding-left: 30px;
+}
+.event-ul li {
+	padding-bottom: 5px;
+}
+
+.install-div {
+	margin-left: 20px;
+	margin-top: 20px;
+}
+.store-button {
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+#penguin {
+	position: relative; /* so it can move */
+}
+
+@-webkit-keyframes bounce
+{
+	0% {
+		width: 140px;
+		height: 140px;
+		top: 0px;
+	}
+	40% {
+		width: 140px;
+		height: 120px;
+		top: 20px;
+		-webkit-animation-timing-function: ease-out;
+		animation-timing-function: ease-out;
+	}
+	50% {
+		top: 0px;
+		width: 140px;
+		height: 140px;
+		-webkit-animation-timing-function: cubic-bezier(0.33333, 0.66667, 0.66667, 1);
+		animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+	}
+	75% {
+		top: -30px;
+		width: 140px;
+		height: 140px;
+		-webkit-animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+		animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+	}
+	100% {
+		top: 0px;
+		width: 140px;
+		height: 140px;
+	}
+}
+@keyframes bounce
+{
+	0% {
+		width: 140px;
+		height: 140px;
+		top: 0px;
+	}
+	40% {
+		width: 140px;
+		height: 120px;
+		top: 20px;
+		-webkit-animation-timing-function: ease-out;
+		animation-timing-function: ease-out;
+	}
+	50% {
+		top: 0px;
+		width: 140px;
+		height: 140px;
+		-webkit-animation-timing-function: cubic-bezier(0.33333, 0.66667, 0.66667, 1);
+		animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+	}
+	75% {
+		top: -30px;
+		-webkit-animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+		animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+		/* These seem to be required in Safari to keep the thing from shrinking horizontally */
+		width: 140px;
+		height: 140px;
+	}
+	100% {
+		top: 0px;
+		width: 140px;
+		height: 140px;
+	}
+}
+
+/* Handle our search form */
+#search-form .form-group {
+	display: block;
+	margin-bottom: 0;
+	vertical-align: middle;
+}
+#search-form .form-control {
+	width: 250px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+/* http://work.smarchal.com/twbscolor/scss/8bc34a689f38ffffffffff8d1*/
+.navbar-default {
+  background-color: #8bc34a;
+  border-color: #689f38;
+}
+.navbar-default .navbar-brand {
+  color: #ffffff;
+}
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+  color: #ffff8d;
+}
+.navbar-default .navbar-text {
+  color: #ffffff;
+}
+.navbar-default .navbar-nav > li > a {
+  color: #ffffff;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  color: #ffff8d;
+}
+.navbar-default .navbar-nav > li > .dropdown-menu {
+  background-color: #8bc34a;
+}
+.navbar-default .navbar-nav > li > .dropdown-menu > li > a {
+  color: #ffffff;
+}
+.navbar-default .navbar-nav > li > .dropdown-menu > li > a:hover,
+.navbar-default .navbar-nav > li > .dropdown-menu > li > a:focus {
+  color: #ffff8d;
+  background-color: #689f38;
+}
+.navbar-default .navbar-nav > li > .dropdown-menu > li > .divider {
+  background-color: #8bc34a;
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+  color: #ffff8d;
+  background-color: #689f38;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+  color: #ffff8d;
+  background-color: #689f38;
+}
+.navbar-default .navbar-toggle {
+  border-color: #689f38;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+  background-color: #689f38;
+}
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #ffffff;
+}
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+  border-color: #ffffff;
+}
+.navbar-default .navbar-link {
+  color: #ffffff;
+}
+.navbar-default .navbar-link:hover {
+  color: #ffff8d;
+}
+
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+    color: #ffffff;
+  }
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #ffff8d;
+  }
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #ffff8d;
+    background-color: #689f38;
+  }
+}
+
+.event-sidebar-icon {
+	float:left;
+	text-align:center;
+	width:1.5em;
+}
+
+.nav > li > a.nav-icon {
+	font-size: 20px;
+	padding: 10px 5px;
+	line-height: 30px;
+	display: inline;
+}
+
+.nav > .nav-icon-row {
+	padding: 10px 15px;
+}
+
+/* We don't want the banner on top of our full screen modal dialogs */
+#smartbanner {
+	z-index: 1000;
+}
+
+.fullscreen-dialog {
+  width: 90%;
+  height: 90%;
+  padding: 0;
+  margin: auto;
+}
+
+.fullscreen-content {
+  height: 100%;
+}
+
+#app-install .modal-dialog {
+	background: url(/images/flyers.jpg);
+	background-size: contain;
+}
+
+#app-install .modal-content {
+	background-color: rgba(0, 0, 0, 0.7);
+	color: white;
+	padding: 0px 10px;
+	border: 1px solid #999;
+}
+
+#app-install .feature .fa {
+	opacity: 1.0;
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+}
+
+#app-install .cancel {
+	text-align: center;
+	padding: 10px 0px;
+}
+#app-install .download-app {
+	width: 100%;
+}
+
+.nav li a {
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+/* for add_event/promote pages */
+#add-events {
+	overflow-y: scroll;
+	list-style-type: none;
+	padding: 0px;
+}
+#add-events li {
+	display: block;
+}
+#add-events .ui-selectable:hover {
+	background-color: $purple-lightest;
+	color: $text-color;
+}
+#add-events .ui-disabled {
+	color: $text-color;
+	opacity:0.4;
+	filter:alpha(opacity=40);
+}
+#add-events .ui-selectable {
+	cursor: pointer;
+	cursor: hand;
+}
+/* For our Add Event buttons to be centered over the event on click */
+#add-events li {
+	position: relative;
+}
+#add-events li .add-button {
+	display: none;
+}
+#add-events li.ui-selected .add-button {
+	display: block;
+	margin: 0 auto;
+	position: absolute;
+	top: 0px;
+	height: 100%;
+	left: 0px;
+	width: 100%;
+}
+#add-events li.ui-selected .add-button .btn {
+	position: relative;
+}
+#add-events li.ui-selected .add-button .whiten {
+	top: 0px;
+	height: 100%;
+	left: 0px;
+	width: 100%;
+	position: absolute;
+	background: white;
+	opacity: 0.75;
+	filter: alpha(opacity=75);
+}

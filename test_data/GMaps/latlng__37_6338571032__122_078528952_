@@ -1,0 +1,472 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "27300", 
+                    "short_name": "27300", 
+                    "types": [
+                        "street_number"
+                    ]
+                }, 
+                {
+                    "long_name": "Patrick Avenue", 
+                    "short_name": "Patrick Ave", 
+                    "types": [
+                        "route"
+                    ]
+                }, 
+                {
+                    "long_name": "Harder - Tennyson", 
+                    "short_name": "Harder - Tennyson", 
+                    "types": [
+                        "neighborhood", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Hayward", 
+                    "short_name": "Hayward", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Alameda County", 
+                    "short_name": "Alameda County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "California", 
+                    "short_name": "CA", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "94544", 
+                    "short_name": "94544", 
+                    "types": [
+                        "postal_code"
+                    ]
+                }
+            ], 
+            "formatted_address": "27300 Patrick Ave, Hayward, CA 94544, USA", 
+            "geometry": {
+                "location": {
+                    "lat": 37.63339, 
+                    "lng": -122.0788905
+                }, 
+                "location_type": "ROOFTOP", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.6347389802915, 
+                        "lng": -122.0775415197085
+                    }, 
+                    "southwest": {
+                        "lat": 37.6320410197085, 
+                        "lng": -122.0802394802915
+                    }
+                }
+            }, 
+            "place_id": "ChIJHT2OERyUj4ARvboZsrn6U8s", 
+            "types": [
+                "street_address"
+            ]
+        }, 
+        {
+            "address_components": [
+                {
+                    "long_name": "Harder - Tennyson", 
+                    "short_name": "Harder - Tennyson", 
+                    "types": [
+                        "neighborhood", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Hayward", 
+                    "short_name": "Hayward", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Alameda County", 
+                    "short_name": "Alameda County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "California", 
+                    "short_name": "CA", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Harder - Tennyson, Hayward, CA, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 37.649532, 
+                        "lng": -122.0630731
+                    }, 
+                    "southwest": {
+                        "lat": 37.631333, 
+                        "lng": -122.093708
+                    }
+                }, 
+                "location": {
+                    "lat": 37.6390949, 
+                    "lng": -122.0809039
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.649532, 
+                        "lng": -122.0630731
+                    }, 
+                    "southwest": {
+                        "lat": 37.631333, 
+                        "lng": -122.093708
+                    }
+                }
+            }, 
+            "place_id": "ChIJrRQEhgOUj4AR-naHjE1eDrE", 
+            "types": [
+                "neighborhood", 
+                "political"
+            ]
+        }, 
+        {
+            "address_components": [
+                {
+                    "long_name": "Hayward", 
+                    "short_name": "Hayward", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Alameda County", 
+                    "short_name": "Alameda County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "California", 
+                    "short_name": "CA", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Hayward, CA, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 37.69003, 
+                        "lng": -121.9220689
+                    }, 
+                    "southwest": {
+                        "lat": 37.5612581, 
+                        "lng": -122.16064
+                    }
+                }, 
+                "location": {
+                    "lat": 37.6688205, 
+                    "lng": -122.0807964
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.69003, 
+                        "lng": -121.9220689
+                    }, 
+                    "southwest": {
+                        "lat": 37.5612581, 
+                        "lng": -122.16064
+                    }
+                }
+            }, 
+            "place_id": "ChIJfVkBtjGUj4ARwDlpwt50BAc", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }, 
+        {
+            "address_components": [
+                {
+                    "long_name": "94544", 
+                    "short_name": "94544", 
+                    "types": [
+                        "postal_code"
+                    ]
+                }, 
+                {
+                    "long_name": "Hayward", 
+                    "short_name": "Hayward", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Alameda County", 
+                    "short_name": "Alameda County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "California", 
+                    "short_name": "CA", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Hayward, CA 94544, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 37.6698509, 
+                        "lng": -121.996915
+                    }, 
+                    "southwest": {
+                        "lat": 37.603907, 
+                        "lng": -122.10161
+                    }
+                }, 
+                "location": {
+                    "lat": 37.6270256, 
+                    "lng": -122.0496521
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.6698509, 
+                        "lng": -121.996915
+                    }, 
+                    "southwest": {
+                        "lat": 37.603907, 
+                        "lng": -122.10161
+                    }
+                }
+            }, 
+            "place_id": "ChIJ6ynTwRSUj4ARr4VRerh-M-g", 
+            "types": [
+                "postal_code"
+            ]
+        }, 
+        {
+            "address_components": [
+                {
+                    "long_name": "Alameda County", 
+                    "short_name": "Alameda County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "California", 
+                    "short_name": "CA", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Alameda County, CA, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 37.9056681, 
+                        "lng": -121.4692139
+                    }, 
+                    "southwest": {
+                        "lat": 37.4545388, 
+                        "lng": -122.3426648
+                    }
+                }, 
+                "location": {
+                    "lat": 37.6016892, 
+                    "lng": -121.7195459
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.9056681, 
+                        "lng": -121.4692139
+                    }, 
+                    "southwest": {
+                        "lat": 37.4545388, 
+                        "lng": -122.3426648
+                    }
+                }
+            }, 
+            "place_id": "ChIJWRd5NDfyj4ARc30TGxHHxmg", 
+            "types": [
+                "administrative_area_level_2", 
+                "political"
+            ]
+        }, 
+        {
+            "address_components": [
+                {
+                    "long_name": "California", 
+                    "short_name": "CA", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "California, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 42.0095169, 
+                        "lng": -114.1313926
+                    }, 
+                    "southwest": {
+                        "lat": 32.5342643, 
+                        "lng": -124.415165
+                    }
+                }, 
+                "location": {
+                    "lat": 36.778261, 
+                    "lng": -119.4179324
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 42.0095169, 
+                        "lng": -114.1313926
+                    }, 
+                    "southwest": {
+                        "lat": 32.5342643, 
+                        "lng": -124.415165
+                    }
+                }
+            }, 
+            "place_id": "ChIJPV4oX_65j4ARVW8IJ6IJUYs", 
+            "types": [
+                "administrative_area_level_1", 
+                "political"
+            ]
+        }, 
+        {
+            "address_components": [
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "United States", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 71.3867745, 
+                        "lng": -66.9502861
+                    }, 
+                    "southwest": {
+                        "lat": 18.9106768, 
+                        "lng": 172.4458955
+                    }
+                }, 
+                "location": {
+                    "lat": 37.09024, 
+                    "lng": -95.712891
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 49.38, 
+                        "lng": -66.94
+                    }, 
+                    "southwest": {
+                        "lat": 25.82, 
+                        "lng": -124.39
+                    }
+                }
+            }, 
+            "place_id": "ChIJCzYy5IS16lQRQrfeQ5K5Oxw", 
+            "types": [
+                "country", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

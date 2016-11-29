@@ -1,0 +1,93 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "9", 
+                    "short_name": "9", 
+                    "types": [
+                        "street_number"
+                    ]
+                }, 
+                {
+                    "long_name": "Navaginskaya ulitsa", 
+                    "short_name": "Navaginskaya ul.", 
+                    "types": [
+                        "route"
+                    ]
+                }, 
+                {
+                    "long_name": "Sochi", 
+                    "short_name": "Sochi", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Tsentralnyy rayon", 
+                    "short_name": "Tsentralnyy rayon", 
+                    "types": [
+                        "administrative_area_level_3", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "gorod-kurort Sochi", 
+                    "short_name": "gorod-kurort Sochi", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Krasnodarskiy kray", 
+                    "short_name": "Krasnodarskiy kray", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Russia", 
+                    "short_name": "RU", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "354000", 
+                    "short_name": "354000", 
+                    "types": [
+                        "postal_code"
+                    ]
+                }
+            ], 
+            "formatted_address": "Navaginskaya ul., 9, Sochi, Krasnodarskiy kray, Russia, 354000", 
+            "geometry": {
+                "location": {
+                    "lat": 43.589583, 
+                    "lng": 39.724554
+                }, 
+                "location_type": "ROOFTOP", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 43.59093198029149, 
+                        "lng": 39.72590298029149
+                    }, 
+                    "southwest": {
+                        "lat": 43.5882340197085, 
+                        "lng": 39.72320501970849
+                    }
+                }
+            }, 
+            "partial_match": true, 
+            "place_id": "ChIJWVQjFdDL9UARCsQ98fJQ3iY", 
+            "types": [
+                "street_address"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

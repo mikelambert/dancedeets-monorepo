@@ -1,0 +1,53 @@
+BEFORE LAUNCH:
+
+- Handle XSRF properly
+
+- Add some stats on "users that see a given event", to make a compelling case for promoters to put events on this site. Maybe use google-analytics cookie for uniqueness? Would need to investigate their 'format' a bit to see what's discoverable.
+
+- Find out how to do named task insertions, to override existing pending tasks. Use for updatelastlogontime to avoid queuing up too many in backlogged times.
+
+- Set up forums using Cloud SQL? https://code.google.com/apis/sqlservice/
+http://groups.google.com/group/google-cloud-sql-discuss
+
+- If we port to EC2, use http://appscale.cs.ucsb.edu/appengine.html or typhoonae
+
+- Ensure this matches:
+http://www.dancedeets.com/events/admin_edit?event_id=206267406110368
+'choreography workshops lounge'
+http://www.dancedeets.com/events/admin_edit?event_id=228216297195689
+'dance hip hop stage'?
+http://www.dancedeets.com/events/admin_edit?event_id=282582811759681
+http://www.dancedeets.com/events/admin_edit?event_id=266608366706476
+http://www.dancedeets.com/events/admin_edit?event_id=124645687637460
+http://www.dancedeets.com/events/admin_edit?event_id=224488204279017
+http://www.dancedeets.com/events/admin_edit?event_id=263695657005390
+http://www.dancedeets.com/events/admin_edit?event_id=222782557786103
+http://www.dancedeets.com/events/admin_edit?event_id=193362027404244
+http://www.dancedeets.com/events/admin_edit?event_id=109967295779417
+http://www.dancedeets.com/events/admin_edit?event_id=297213826966950
+http://www.dancedeets.com/events/admin_edit?event_id=164801136955648
+http://www.dancedeets.com/events/admin_edit?event_id=262771393789462 # missing workshop/lesson/etc
+http://www.dancedeets.com/events/admin_edit?event_id=359823644046511 # hhdu jam old school hip hop, space to train, mirror
+http://www.dancedeets.com/events/admin_edit?event_id=299741040086967 # same as previous
+http://www.dancedeets.com/events/admin_edit?event_id=306340392756530
+http://www.dancedeets.com/events/admin_edit?event_id=140853525997526
+http://www.dancedeets.com/events/admin_edit?event_id=260544503964101 # session
+http://www.dancedeets.com/events/admin_edit?event_id=170215153054761 # house class
+http://www.dancedeets.com/events/admin_edit?event_id=151634374928764 # street jam session
+http://www.dancedeets.com/events/admin_edit?event_id=231043440253834 # breakin practice
+http://www.dancedeets.com/events/admin_edit?event_id=324969544184938 # freestyle friday
+http://www.dancedeets.com/events/admin_edit?event_id=148775235167387 # cypher event
+http://www.dancedeets.com/events/admin_edit?event_id=372653979427954
+http://www.dancedeets.com/events/admin_edit?event_id=233084563440802 # add dancers
+http://www.dancedeets.com/events/admin_edit?event_id=292474087484320
+http://www.dancedeets.com/events/admin_edit?event_id=394044470610646
+
+LONGER TERM:
+
+- music venues, good events, using classifier
+- going through theater, arts, live music, etc
+- programmer-tech-meet-up events
+
+- video hosting, use youtube+vimeo apis to aggregate. group by event, by performer, by group, etc
+- live streaming events with kyte, aggregate for others to virtually 'attend'
+

@@ -1,0 +1,24 @@
+{% extends "_bigbox_base.html" %}
+
+{% block title %}
+Feedback
+{% endblock %}
+
+{% block inner_body %}
+<form action="/feedback" method="post" accept-charset="UTF-8">
+
+<p>Questions? Need Help? Suggestions? Improvements? Criticism? Fill it out below!
+
+<p>Subject: <input type="text" name="subject" class="form-control">
+
+<p>Message:
+<br>
+<textarea name="body" rows="20" cols="80" class="form-control">
+</textarea>
+
+<p><button class="btn btn-primary">Send Email</button>
+
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,185 @@
+@import 'config.scss';
+
+#navbar-collapse-button-icon {
+  color: $headline-underline-main-color;
+}
+#navbar {
+  background-color: $body-bg;
+}
+
+body {
+  font-weight: 'lighter';
+}
+
+.fullscreen-static-image {
+    height: 100vh;
+}
+.fullscreen-darken-image {
+    background: rgba(41, 35, 0, 0.5);
+    width: 100%;
+    height: 100%;
+}
+
+.vertical-center {
+    position: relative;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.animate-on-hover {
+  display: block;
+}
+
+.body-contents {
+  margin-top: 30px;
+}
+
+.flush-top {
+  margin-top: -30px;
+}
+
+.event-info-icon {
+  color: $event-info-icon-color;
+}
+
+.event-flyer {
+  position: relative;
+  margin-bottom: 1em;
+}
+
+.product-social-links {
+  padding-bottom: 0 1em;
+  height: 20px;
+}
+
+.margin-bottom-5,
+.margin-bottom-10,
+.margin-bottom-15,
+.margin-bottom-20,
+.margin-bottom-25,
+.margin-bottom-30,
+.margin-bottom-35,
+.margin-bottom-40,
+.margin-bottom-45,
+.margin-bottom-50,
+.margin-bottom-55,
+.margin-bottom-60,
+.margin-bottom-100 {
+   clear:both;
+}
+.margin-bottom-5  { margin-bottom:5px;}
+.margin-bottom-10 { margin-bottom:10px;}
+.margin-bottom-15 { margin-bottom:15px;}
+.margin-bottom-20 { margin-bottom:20px;}
+.margin-bottom-25 { margin-bottom:25px;}
+.margin-bottom-30 { margin-bottom:30px;}
+.margin-bottom-35 { margin-bottom:35px;}
+.margin-bottom-40 { margin-bottom:40px;}
+.margin-bottom-45 { margin-bottom:45px;}
+.margin-bottom-50 { margin-bottom:50px;}
+.margin-bottom-55 { margin-bottom:55px;}
+.margin-bottom-60 { margin-bottom:60px;}
+.margin-bottom-100 { margin-bottom:100px;}
+
+.color-light { color: #ffffff;}
+.bg-color-darker { background-color: #222 !important;}
+
+.btn:hover {
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.content-md {
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+h1 {
+  font-size: 28px;
+  line-height: 35px;
+}
+h2 {
+  font-size: 24px;
+  line-height: 33px;
+}
+h3 {
+  font-size: 20px;
+  line-height: 27px;
+}
+h4 {
+  line-height: 25px;
+}
+h5 {
+  line-height: 20px;
+}
+h6 {
+  line-height: 18px;
+}
+
+
+.headline {
+  margin: 10px 0 25px 0;
+  border-bottom: 1px solid $headline-underline-secondary-color;
+}
+
+.headline h2 {
+  font-size: 22px;
+  //color: #585f69;
+}
+
+.headline h2,
+.headline h3,
+.headline h4,
+.headline .headline-underline {
+  margin: 0 0 -2px 0;
+  padding-bottom: 5px;
+  display: inline-block;
+  border-bottom: 2px solid $headline-underline-main-color;
+}
+
+// Gradient Buttons
+.btn-default {
+  background-image: linear-gradient(180deg, $purple-lighter, $purple-medium) !important;
+
+  &:focus,
+  &.focus {
+    background-image: linear-gradient(180deg, $purple-medium, $purple-lighter) !important;
+  }
+}
+.btn-primary {
+  background-image: linear-gradient(180deg, $purple-lighter, $purple-medium) !important;
+
+  &:focus,
+  &.focus {
+    background-image: linear-gradient(180deg, $purple-medium, $purple-lighter) !important;
+  }
+}
+
+//FullCalendar buttons
+.fc-state-default {
+  background-color: $brand-primary !important;
+  color: white !important;
+  background-image: linear-gradient(180deg, $brand-primary, lighten($brand-primary, 10%)) !important;
+}
+.fc-state-hover {
+  background-color: lighten($brand-primary, 10%) !important;
+}
+.fc-state-active {
+  background-color: darken($brand-primary, 10%) !important;
+}
+
+// Color the text of the tabs to not look like blue links
+.nav {
+
+  > li {
+
+    > a {
+      color: white;
+      &:hover,
+      &:focus {
+        color: $yellow-lighter
+      }
+    }
+  }
+}

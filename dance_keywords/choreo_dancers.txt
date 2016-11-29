@@ -1,0 +1,126 @@
+2auce\W+edwards # ignore cj at front due to backtracking
+alan truong
+alex bullon
+alex fetbroth
+amanda suk
+amari marshall
+andi vega
+andrew baterina
+antoine troupe
+april bambao
+april rodriguez
+arnel calvario
+ava bernstine
+bam\W+martin
+beau fournier
+brandon dumlao
+breeze lee
+brian friedman
+brian fucanan
+brian puspos
+bryan tanaka
+candace brown
+carlos neto
+cj salvador
+david moore,0
+denzel chisolm
+derrick caldwell
+devin jamieson
+dmoe
+dom byrd
+eddie martinez
+eddie morales
+eddie orales
+ellen kim
+elm pizarro
+elm\W+boogie\W+pizarro
+emerson aquino
+eric negron
+george anzaldo
+gigi torres
+greg chapkis
+gus bemberry
+ian eastwood
+isaac tee
+jackie lautchang
+jackie luatchang
+jared grimes
+jay\W?chris moore
+jayson wright
+jeffrey viray
+jeka
+jeka kalotkin
+jekajane
+jerome esplana
+jillian meyers
+joao assuncao
+jp goldstein
+jp san pedro
+julius law
+jun quemado
+keko domenech
+ken duong
+kenny wormald
+keone madrid
+kevin maher,0
+kim holmes
+kimberley taylor
+krystal meraz
+kyle hanagami
+kyle limin
+lando wilkins
+lee lee coleman
+leslie panitchpakdi
+lin samuelsen
+lyle beniga
+marc marvelous
+mari martin
+mariama ambrose
+mariel martin
+mark fucanan
+martin singh,0
+mecnun giasar
+michael riccio
+mike song
+misha gabriel
+miss\W?funk
+moe borromeo
+moon\W+zhang # ignore moon at the front due to backtracking
+mr\W? lucky,0
+myron marten 
+nacer misterstep
+nader musharbash
+nick bass
+nick demoura
+nick whage
+nico o'connor
+nika kjlun
+olivia\W+chachi\W+gonzales
+parris goebel
+pat cruz
+patrick cruz
+phillip geniza
+phillip\W+pacman\W+chbeeb
+rhapsody james
+ricky cole 
+rie hata
+rocko,0
+samath orm
+sean\W+fresh\W+redding
+shaun evaristo
+sherman soate
+sho-tyme
+shoey sun
+sky hoffman
+sophia aguiar
+stephane charbonneau,0
+sven taylor
+teddy forance
+tega alex
+tony czar
+toybox,0
+tucker barkley
+valentine norton
+vinh nguyen
+wayman tisdale
+yeya

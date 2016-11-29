@@ -1,0 +1,6 @@
+[run]
+include = */dancedeets*
+omit =
+    google_appengine/*
+    lib/*
+    */tests/*

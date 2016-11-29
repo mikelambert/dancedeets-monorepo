@@ -1,0 +1,84 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "Brooklyn", 
+                    "short_name": "Brooklyn", 
+                    "types": [
+                        "sublocality_level_1", 
+                        "sublocality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "New York", 
+                    "short_name": "NY", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Kings County", 
+                    "short_name": "Kings County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "New York", 
+                    "short_name": "NY", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Brooklyn, NY, USA", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 40.739446, 
+                        "lng": -73.8333651
+                    }, 
+                    "southwest": {
+                        "lat": 40.551042, 
+                        "lng": -74.05663
+                    }
+                }, 
+                "location": {
+                    "lat": 40.6781784, 
+                    "lng": -73.9441579
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 40.739446, 
+                        "lng": -73.8333651
+                    }, 
+                    "southwest": {
+                        "lat": 40.551042, 
+                        "lng": -74.05663
+                    }
+                }
+            }, 
+            "place_id": "ChIJCSF8lBZEwokRhngABHRcdoI", 
+            "types": [
+                "sublocality_level_1", 
+                "sublocality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

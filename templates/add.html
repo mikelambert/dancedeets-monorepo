@@ -1,0 +1,106 @@
+{% extends "_bigbox_base.html" %}
+
+{% block title %}
+Add Dance Event
+{% endblock %}
+
+{% block inner_body %}
+		<form action="/events_add" method=post>
+		<div>
+			{% if fb_event %}
+				<input type=hidden name="event_id" value="{{ fb_event.info.id }}">
+				<p>Name: {{ fb_event.info.name|e }}
+				<br>Description:
+				<div style="padding: 20px; width: 450px; height:250px; overflow:scroll; border: 1px solid black">
+				{% if fb_event.info.description %}
+					{{ fb_event.info.description|format_html|linkify }}
+				{% else %}
+					None!
+				{% endif %}
+				</div>
+				<p><button class="btn btn-primary">Add Event</button>
+			{% else %}
+				Enter your facebook event URL here:<br>
+				<input id="event_url_form" type=text name="event_url" class="form-control">
+				<p><button class="btn btn-primary" onclick="return validateAdd();">Add Event by URL</button>
+				<br/>
+				{% if events %}
+					Or select one of your facebook events below:<br>
+					<input id="event_id_form" type="hidden" name="event_id" value="">
+					<ul id="add-events">
+					{% for event in events %}
+						<li data-id="{{ event.id }}" id="event-{{ event.id }}" style="margin-bottom: 15px" class="clearfix
+							{% if event.loaded %}
+								ui-disabled
+							{% else %}
+								ui-selectable
+							{% endif %}
+							">
+							<div style="float:left;width:50px; margin-right: 1em">
+								<img src="{{ event.image_url }}" width="50">
+							</div>
+							<div>
+							<span style="font-weight: bold">{{ event.name|e }}</span><br>
+							{{ event.start_time|parse_fb_timestamp|date_human_format }}<br>
+							{% if event.loaded %}
+								ALREADY ADDED
+							{% endif %}
+							</div>
+						</li>
+					{% endfor %}
+					</ul>
+				{% endif %}
+			{% endif %}
+		</div>
+		</form>
+{% endblock %}
+
+{% block bottom_javascript %}
+<script type="text/javascript">
+	function addEvent() {
+		var element = $(this);
+		var id = element.attr('id').replace('button-', '');
+
+		element.text('Adding...');
+		$.ajax({
+			method: 'POST',
+			url: '/events_add?ajax=1&event_id=' + id,
+		}).done(function() {
+			var liEvent = $('#event-' + id);
+			liEvent.addClass('ui-disabled');
+			liEvent.removeClass('ui-selectable').removeClass('ui-selected');
+		}).done(function () {
+			element.text('Add Event');
+		})
+		return false;
+	}
+	$(document).ready(function() {
+		$("#add-events").click(function(event) {
+			var selectees = $(".ui-selectable", "#add-events");
+			selectees.filter('.ui-selected').each(function() {
+				$(this).removeClass('ui-selected');
+			});
+			$(event.target).parents().addBack().filter('.ui-selectable').each(function() {
+				$(this).addClass('ui-selected');
+				$('#event_id_form').val($(this).data('id'));
+			});
+		});
+        $("#add-events li").each(function () {
+			var outerDiv = $('<div class="add-button">');
+			outerDiv.append($('<div class="whiten"></div>'));
+			outerDiv.append($('<button type="button" class="btn btn-primary" style="margin-left:60px; margin-top: 0.75em">Add Event</button>')
+				.attr('id', 'button-' + $(this).data('id'))
+				.on('click', addEvent));
+			$(this).append(outerDiv);
+			});
+		});
+	function validateAdd() {
+		if ($('#event_id_form').val() || $('#event_url_form').val()) {
+			return true;
+		} else {
+			alert("Please select one of your events to add, or enter the URL of the event you wish to add.");
+			return false;
+		}
+	}
+</script>
+{% endblock %}

@@ -1,0 +1,66 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "Shibuya", 
+                    "short_name": "Shibuya", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Tokyo", 
+                    "short_name": "Tokyo", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Japan", 
+                    "short_name": "JP", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }
+            ], 
+            "formatted_address": "Shibuya, Tokyo, Japan", 
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 35.6921405, 
+                        "lng": 139.7238949
+                    }, 
+                    "southwest": {
+                        "lat": 35.6415646, 
+                        "lng": 139.6613575
+                    }
+                }, 
+                "location": {
+                    "lat": 35.6640352, 
+                    "lng": 139.6982122
+                }, 
+                "location_type": "APPROXIMATE", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 35.6921405, 
+                        "lng": 139.7238949
+                    }, 
+                    "southwest": {
+                        "lat": 35.6415646, 
+                        "lng": 139.6613575
+                    }
+                }
+            }, 
+            "place_id": "ChIJ0Qgx67KMGGARd2ZbObLZHPE", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

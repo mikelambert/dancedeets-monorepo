@@ -1,0 +1,50 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "27182 Patrick Ave, Hayward, CA 94544, United States", 
+            "geometry": {
+                "location": {
+                    "lat": 37.6345177, 
+                    "lng": -122.0788698
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.63468585, 
+                        "lng": -122.07859985
+                    }, 
+                    "southwest": {
+                        "lat": 37.63401325, 
+                        "lng": -122.07967965
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/generic_recreational-71.png", 
+            "id": "ae1d703da48ff8516b0acc65a6068befa6c36951", 
+            "name": "Weekes Community Center-Park", 
+            "opening_hours": {
+                "open_now": false, 
+                "weekday_text": []
+            }, 
+            "photos": [
+                {
+                    "height": 1440, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/115644414587581765000/photos\">jose guerra</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAAMLtTV70AAWassNgYTcb959PUGERnQat84BotrLZ72dkNSGm-yLRqiVDfFPum-TutLEgRO4vFtavbtFI8s_5Omx1Xswg_2LjT-dJO0aPFxaMu4p91Uf-s5a8wFF4wPCYYG_bxYU0KSfMB5n3d9Xpm2t2ype6l_rgC2C1sKCBmSpvEhAnq2EmWeKbFrL4d2Vl-L01GhTziOLezEg-RY1rHI6FluXeyPeWpg", 
+                    "width": 2560
+                }
+            ], 
+            "place_id": "ChIJ7aTfjhuUj4ARrIxfMF7EVYc", 
+            "rating": 4.1, 
+            "reference": "CmRSAAAA_F5tbh7fnvzUulwArBvMCii0iafkszjmaEs1f94weetQmoKGJQYUIeMWReHEq9SPyX3u7oSUCxgTaG0BrpyEH4UWhcrVPBlFBE8HdaA_v7SL1q-YehIU-TreXxVZYg6CEhCuX4cJ953Wp35WmJ0rddKEGhQlV1ZzKjJOia56gS-zJZlDDGbJ4Q", 
+            "types": [
+                "park", 
+                "point_of_interest", 
+                "establishment"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

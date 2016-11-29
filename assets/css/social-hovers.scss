@@ -1,0 +1,46 @@
+@import 'config.scss';
+
+.rounded-x { border-radius: 20% !important;}
+
+.social-icons {
+     margin: 0;
+     padding: 0;
+}
+
+.social-icons li {
+     list-style: none;
+     margin-right: 3px;
+     margin-bottom: 5px;
+     text-indent: -9999px;
+     display: inline-block;
+}
+
+.social-icons li a, a.social-icon {
+     width: 28px;
+     height: 28px;
+     display: block;
+     background-position: 0 0;
+     background-repeat: no-repeat;
+     transition: all 0.3s ease-in-out;
+}
+
+.social-icons li:hover a {
+     background-position: 0 -38px;
+}
+
+.social-icons-color li a {
+    opacity: 0.7;
+    background-position: 0 -38px !important;
+    -webkit-backface-visibility: hidden; /*For Chrome*/
+}
+
+.social-icons-color li a:hover {
+    opacity: 1;
+}
+
+
+.social_facebook {background: url(../img/facebook.png) no-repeat;}
+.social_googleplus {background: url(../img/googleplus.png) no-repeat;}
+.social_twitter {background: url(../img/twitter.png) no-repeat;}
+.social_youtube {background: url(../img/youtube.png) no-repeat;}
+.social_instagram {background: url(../img/instagram.png) no-repeat;}
