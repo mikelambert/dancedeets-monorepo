@@ -35,17 +35,8 @@ Potential Events Classification
 		</a></td>
 		{% if potential_event.location_info %}
 			<td>
-			{% if potential_event.location_info.exact_from_event %}
+        <a href="http://www.google.com/search?q={{ potential_event.location_info.fb_address|urlencode }}">{{ potential_event.location_info.fb_address|format_html }}</a><br>
 				{{ potential_event.location_info.final_city }}
-			{% else %}
-				<a href="http://www.google.com/search?q={{ potential_event.location_info.fb_address|urlencode }}">{{ potential_event.location_info.fb_address|format_html }}</a><br>
-				{{ potential_event.location_info.final_city }}
-				{% if potential_event.location_info.overridden_address %}
-					(Overridden)
-				{% elif potential_event.location_info.remapped_address %}
-					(Remapped)
-				{% endif %}
-			{% endif %}
 			</td>
 		{% endif %}
 		<td style="white-space: nowrap">

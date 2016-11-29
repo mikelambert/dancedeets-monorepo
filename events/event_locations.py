@@ -109,7 +109,6 @@ def clean_address(address):
 
 class LocationInfo(object):
     def __init__(self, fb_event=None, db_event=None, debug=False):
-        self.exact_from_event = False
         self.overridden_address = None
         self.fb_address = None
         self.remapped_address = None
@@ -138,12 +137,13 @@ class LocationInfo(object):
                     self.geocode = gmaps_api.lookup_latlng(self.final_latlng)
                     self.fb_address = formatting.format_geocode(self.geocode)
 
-            self.exact_from_event = bool(self.geocode)
             self.final_address = self.final_address or self.remapped_address or self.fb_address
         if has_overridden_address:
+            self.geocode = None
             self.overridden_address = db_event.address
             self.final_address = self.overridden_address
-            self.geocode = gmaps_api.lookup_address(self.final_address)
+            if self.final_address != ONLINE_ADDRESS:
+                self.geocode = gmaps_api.lookup_address(self.final_address)
 
         logging.info("Final address is %r", self.final_address)
 
