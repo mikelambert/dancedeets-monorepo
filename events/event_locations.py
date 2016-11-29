@@ -136,11 +136,13 @@ class LocationInfo(object):
             self.remapped_address = _get_remapped_address_for(self.fb_address)
             if self.remapped_address:
                 logging.info("Checking remapped address, which is %r", self.remapped_address)
-            location_geocode = gmaps_api.lookup_location(self.remapped_address or self.fb_address)
-            if location_geocode:
-                address = clean_address(location_geocode.formatted_address())
-                self.geocode = gmaps_api.lookup_address(address)
-                self.final_address = location_geocode.formatted_address()
+            lookup_address = self.remapped_address or self.fb_address
+            if lookup_address:
+                location_geocode = gmaps_api.lookup_location(lookup_address)
+                if location_geocode:
+                    address = clean_address(location_geocode.formatted_address())
+                    self.geocode = gmaps_api.lookup_address(address)
+                    self.final_address = location_geocode.formatted_address()
             if not self.geocode:
                 self.final_latlng = _get_latlng_from_event(fb_event)
                 if self.final_latlng:
