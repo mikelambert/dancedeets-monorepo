@@ -1,0 +1,53 @@
+# OSX
+#
+.DS_Store
+
+# Xcode
+#
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+# Let's make this one visible...since it's existence can break us when run-ios attempts its auto-detection:
+# xcodebuild: error: 'project.xcworkspace' does not exist.
+# xcodebuild: error: The workspace named "DanceDeets" does not contain a scheme named "project". The "-list" option can be used to find the names of the schemes in the workspace
+# project.xcworkspace
+
+# CocoaPods
+Pods
+
+# Android/IJ
+#
+*.iml
+.idea
+.gradle
+local.properties
+crashlytics-build.properties
+com_crashlytics_export_strings.xml
+
+# node.js
+#
+node_modules/
+npm-debug.log
+
+# BUCK
+buck-out/
+\.buckd/
+android/app/libs
+android/keystores/debug.keystore
+
+# Fastlane
+report.xml
+screenshots

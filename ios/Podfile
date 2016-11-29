@@ -1,0 +1,21 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+platform :ios, '8.0'
+
+target 'DanceDeets' do
+[
+  'Firebase',
+  'Firebase/Core',
+  'Firebase/Auth',
+  'Firebase/Storage',
+  'Firebase/Database',
+  'Firebase/RemoteConfig',
+  'Firebase/Messaging',
+  'Firebase/AdMob',
+  'Mixpanel',
+  'Fabric',
+  'Crashlytics'
+].each do |lib|
+  pod lib
+end
+end

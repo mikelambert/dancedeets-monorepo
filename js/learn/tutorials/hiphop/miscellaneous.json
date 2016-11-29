@@ -1,0 +1,61 @@
+{
+  "title": "StreetDanceLT",
+  "author": "Barbora and Gabija",
+  "style": "hiphop",
+  "language": "lt",
+  "thumbnail": "https://i.ytimg.com/vi/xACAqm5Xxj8/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Barbora",
+      "videos": [
+        {
+          "youtubeId": "xACAqm5Xxj8",
+          "duration": "PT2M",
+          "title": "Roger Rabbit",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "DEPSzsWiNMQ",
+          "duration": "PT1M50S",
+          "title": "Bart Simpson",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "MW-wQbL2wys",
+          "duration": "PT2M1S",
+          "title": "Rodger Rabbit & Bart Simpson Combo",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Gabija",
+      "videos": [
+        {
+          "youtubeId": "rIs4XA1jVxY",
+          "duration": "PT1M59S",
+          "title": "V Step",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "f0M-TFyjj-E",
+          "duration": "PT2M",
+          "title": "Criss Cross",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "dFja2WsjKRE",
+          "duration": "PT55S",
+          "title": "V Step Criss Cross Combo",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    }
+  ]
+}

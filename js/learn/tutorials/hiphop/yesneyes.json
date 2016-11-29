@@ -1,0 +1,104 @@
+{
+  "title": "YesNeYes",
+  "subtitle": "RISING Dance School",
+  "author": "YesNeYes s tanečnicema, Last Minute",
+  "style": "hiphop",
+  "language": "cs",
+  "thumbnail": "https://i.ytimg.com/vi/J2abZczwf9E/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Nauč se s tanečnicema",
+      "videos": [
+        {
+          "youtubeId": "J2abZczwf9E",
+          "duration": "PT2M59S",
+          "title": "Reebok",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "EhvcV4K0KVQ",
+          "duration": "PT3M9S",
+          "title": "Prep",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "k23ZWNQfGh4",
+          "duration": "PT3M27S",
+          "title": "Pepper seed",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "8Ie4S7OP6Wc",
+          "duration": "PT3M57S",
+          "title": "Ranking",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "wRaCgBQ6Gdk",
+          "duration": "PT2M38S",
+          "title": "Jerk",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "GTyGpi2yVXA",
+          "duration": "PT3M22S",
+          "title": "Big bounds",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "QoDvrGA-ZiY",
+          "duration": "PT3M3S",
+          "title": "Kickers step",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "6cUEPRfy1Sg",
+          "duration": "PT2M59S",
+          "title": "Scooby-doo",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "dZWzka--kxk",
+          "duration": "PT3M5S",
+          "title": "Shamrock",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Nauč se s Last Minute",
+      "videos": [
+        {
+          "youtubeId": "KONfpbxfZOw",
+          "duration": "PT3M2S",
+          "title": "Bart Simpson",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "14MftIVMKdI",
+          "duration": "PT3M4S",
+          "title": "Cabbage patch",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "ita18HuKyXc",
+          "duration": "PT3M3S",
+          "title": "Steve Martin",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    }
+  ]
+}

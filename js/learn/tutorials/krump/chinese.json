@@ -1,0 +1,21 @@
+{
+  "title": "Krump",
+  "author": "Chinese Krump",
+  "style": "krump",
+  "language": "zh-Hant",
+  "thumbnail": "https://i.ytimg.com/vi/cQeyWYo0VuQ/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorial",
+      "videos": [
+        {
+          "youtubeId": "cQeyWYo0VuQ",
+          "duration": "PT8M50S",
+          "title": "Tutorial",
+          "height": 344,
+          "width": 459
+        }
+      ]
+    }
+  ]
+}

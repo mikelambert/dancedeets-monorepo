@@ -1,0 +1,48 @@
+rootProject.name = 'DanceDeets'
+
+include ':app'
+include ':react-native-firestack'
+project(':react-native-firestack').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-firestack/android')
+include ':react-native-youtube'
+project(':react-native-youtube').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-youtube/android')
+include ':react-native-google-api-availability'
+project(':react-native-google-api-availability').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-google-api-availability/android')
+include ':react-native-push-notification'
+project(':react-native-push-notification').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-push-notification/android')
+include ':react-native-photo-view'
+project(':react-native-photo-view').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-photo-view/android')
+include ':react-native-permissions'
+project(':react-native-permissions').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-permissions/android')
+include ':react-native-firebase3'
+project(':react-native-firebase3').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-firebase3/android')
+include ':react-native-native-env'
+project(':react-native-native-env').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-native-env/android')
+include ':react-native-locale'
+project(':react-native-locale').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-locale/android')
+// React-Native-Compile:
+// include ':ReactAndroid'
+// project(':ReactAndroid').projectDir = new File(rootProject.projectDir, '../node_modules/react-native/ReactAndroid')
+include ':react-native-code-push'
+project(':react-native-code-push').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-code-push/android/app')
+include ':react-native-share'
+project(':react-native-share').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-share/android')
+include ':react-native-mail'
+project(':react-native-mail').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-mail/android')
+include ':react-native-admob'
+project(':react-native-admob').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-admob/android')
+include ':react-native-mixpanel'
+project(':react-native-mixpanel').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-mixpanel/android')
+include ':react-native-geocoder'
+project(':react-native-geocoder').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-geocoder/android')
+include ':react-native-fbsdk'
+project(':react-native-fbsdk').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fbsdk/Android')
+include ':RNSendIntentModule'
+project(':RNSendIntentModule').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-send-intent/android')
+include ':react-native-linear-gradient'
+project(':react-native-linear-gradient').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-linear-gradient/android')
+include ':react-native-fabric'
+project(':react-native-fabric').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fabric/android')
+include ':react-native-maps'
+project(':react-native-maps').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-maps/android')
+include ':react-native-segmented-android'
+project(':react-native-segmented-android').projectDir = new File(rootProject.projectDir,'../node_modules/react-native-segmented-android')

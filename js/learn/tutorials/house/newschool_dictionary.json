@@ -1,0 +1,150 @@
+{
+  "title": "New School Dictionary",
+  "author": "Elite Force",
+  "style": "house",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/1kN0QafF-sY/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Old School Dictionary",
+      "videos": [
+        {
+          "youtubeId": "1kN0QafF-sY",
+          "duration": "PT56S",
+          "title": "Stomp",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "mnAv7nbmyuc",
+          "duration": "PT39S",
+          "title": "Loose Leg",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "avwhKUVRFJE",
+          "duration": "PT38S",
+          "title": "Train",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "noA-H6b-2hU",
+          "duration": "PT38S",
+          "title": "Farmer",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "fhKBR-HwoZg",
+          "duration": "PT49S",
+          "title": "Swirl",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "-xeN8gNny2U",
+          "duration": "PT53S",
+          "title": "Jack In The Box",
+          "height": 344,
+          "width": 459
+        }
+      ]
+    },
+    {
+      "title": "Middle School Dictionary",
+      "videos": [
+        {
+          "youtubeId": "lyNhNr1z5Nw",
+          "duration": "PT49S",
+          "title": "Salsa Step",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "xdo31AEG750",
+          "duration": "PT59S",
+          "title": "Salsa Hop",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "WIaTo6q6RYM",
+          "duration": "PT32S",
+          "title": "Sidewalk",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "vqAklI3l1pc",
+          "duration": "PT1M",
+          "title": "Crosswalk",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "NUTh3klPzFw",
+          "duration": "PT30S",
+          "title": "Crossroads",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "UVJU1KOHYAg",
+          "duration": "PT1M2S",
+          "title": "Setup",
+          "height": 344,
+          "width": 459
+        }
+      ]
+    },
+    {
+      "title": "New School Dictionary",
+      "videos": [
+        {
+          "youtubeId": "HrgW0lRxz2Q",
+          "duration": "PT32S",
+          "title": "Tip Tap Toe",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "trws6c6md4k",
+          "duration": "PT38S",
+          "title": "Scribble Foot",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "1asD5rcEjrY",
+          "duration": "PT41S",
+          "title": "Kriss Kross",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "Ojbbe2GLdWc",
+          "duration": "PT32S",
+          "title": "Heel Toe",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "kUQTYnYDipk",
+          "duration": "PT1M33S",
+          "title": "Roger Rabbit (with Hip-Hop Variation)",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "Wk_Ti4oXa2c",
+          "duration": "PT37S",
+          "title": "Skate",
+          "height": 344,
+          "width": 459
+        }
+      ]
+    }
+  ]
+}

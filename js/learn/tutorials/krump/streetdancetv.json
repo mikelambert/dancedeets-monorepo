@@ -1,0 +1,75 @@
+{
+  "title": "Крамп уроки | Krump Tutorial",
+  "author": "Группа вк",
+  "style": "krump",
+  "language": "ru",
+  "thumbnail": "https://i.ytimg.com/vi/nY7H4XJFS34/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Main Tutorial",
+      "videos": [
+        {
+          "youtubeId": "nY7H4XJFS34",
+          "duration": "PT3M49S",
+          "title": "Lesson 1 - Stomp",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "7W0Oj_53ZJU",
+          "duration": "PT4M2S",
+          "title": "Lesson 2 - Chest Pop",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "sHPuw63P_-U",
+          "duration": "PT4M47S",
+          "title": "Lesson 3 - Jabs",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "eOK76_gWnSc",
+          "duration": "PT3M25S",
+          "title": "Lesson 4 - Arm Swings",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "uINTAYSrKfg",
+          "duration": "PT2M13S",
+          "title": "Lesson 5 - Grab",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "TI3CJTkJu84",
+          "duration": "PT3M",
+          "title": "Lesson 6 - PUNCH",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "N1aFkqe3kp8",
+          "duration": "PT2M23S",
+          "title": "Lesson 7 - FOOTWORK",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Back to Krump",
+      "videos": [
+        {
+          "youtubeId": "jCkPsHg8u6Y",
+          "duration": "PT1M54S",
+          "title": "Back to Krump Tutorial",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "title": "Álvaro García",
+  "author": "Álvaro García",
+  "style": "house",
+  "language": "es",
+  "thumbnail": "https://i.ytimg.com/vi/GNnJTKVtmcw/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Introducción",
+      "videos": [
+        {
+          "youtubeId": "GNnJTKVtmcw",
+          "duration": "PT1M49S",
+          "title": "Introducción",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "_qPgYqka-KA",
+          "duration": "PT32S",
+          "title": "Equipación",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "lcufQsQ0dU8",
+          "duration": "PT3M8S",
+          "title": "Las cinco bases del house",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Steps - 1",
+      "videos": [
+        {
+          "youtubeId": "8J2SejfHSuU",
+          "duration": "PT1M40S",
+          "title": "Jack in the box",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "tfD_Z9MWz_I",
+          "duration": "PT1M25S",
+          "title": "Loose legs",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "NEbDsdWtHWU",
+          "duration": "PT1M7S",
+          "title": "The train",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "V2Jex49NcpA",
+          "duration": "PT1M19S",
+          "title": "Farmer",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "PKmu2IBOO78",
+          "duration": "PT1M21S",
+          "title": "Samba swirl",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "MYuMFRkAioA",
+          "duration": "PT1M26S",
+          "title": "Pass de boure",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "TawNCpuP5QQ",
+          "duration": "PT1M27S",
+          "title": "Salsa step",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "5G8T3pYTFr0",
+          "duration": "PT1M23S",
+          "title": "Salsa hop",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Steps - 2",
+      "videos": [
+        {
+          "youtubeId": "ajujUKjFp5A",
+          "duration": "PT1M21S",
+          "title": "Side walk",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "2-FytbEWzWs",
+          "duration": "PT1M25S",
+          "title": "Cross walk",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "RTQZqlcmIfc",
+          "duration": "PT1M26S",
+          "title": "Cross roads",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "KUCgmrur674",
+          "duration": "PT2M25S",
+          "title": "Heel and toe",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "LG5X8QQxst0",
+          "duration": "PT1M32S",
+          "title": "Tip tap toe",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "DM6FcjTCVig",
+          "duration": "PT1M16S",
+          "title": "Three ways",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "IOOOdF4Q8EA",
+          "duration": "PT1M16S",
+          "title": "Demostración",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    }
+  ]
+}

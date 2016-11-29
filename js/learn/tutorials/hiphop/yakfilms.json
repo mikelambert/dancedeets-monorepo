@@ -1,0 +1,174 @@
+{
+  "title": "YAKFilms' Combos",
+  "author": "Nelson, Funky Lia",
+  "style": "pop",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/vXpqcUnVZYo/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Lil O",
+      "videos": [
+        {
+          "youtubeId": "vXpqcUnVZYo",
+          "duration": "PT1M33S",
+          "title": "Part 1 - Hat Trick",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "z7H7wzoQOVw",
+          "duration": "PT2M5S",
+          "title": "Part 2 - Hat Trace",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "YqJhbhgJ0nE",
+          "duration": "PT2M",
+          "title": "Part 3 - Ground Breakdown",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "5zUV2qPfvr0",
+          "duration": "PT3M42S",
+          "title": "Part 4 - Grasshopper and more",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Boris and Rico Hip-Hop/Footwork Tutorial",
+      "videos": [
+        {
+          "youtubeId": "QQdctuFi7Ko",
+          "duration": "PT2M2S",
+          "title": "Part 1",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "roItFXjoq6E",
+          "duration": "PT2M11S",
+          "title": "Part 2",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "gzAkarZKdFU",
+          "duration": "PT2M55S",
+          "title": "Part 3",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "8-X4EHjzREY",
+          "duration": "PT5M23S",
+          "title": "Part 4",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Larry 'Ca Blaze' (Les Twins) New Style Hip-Hop Tutorial",
+      "videos": [
+        {
+          "youtubeId": "XTqtgaYppXM",
+          "duration": "PT2M6S",
+          "title": "Part 1/4",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "SIfpqy2ZTp4",
+          "duration": "PT2M31S",
+          "title": "Part 2/4",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "v4p3-uOHc5Y",
+          "duration": "PT2M20S",
+          "title": "Part 3/4",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "T6KlVp5bOW4",
+          "duration": "PT2M51S",
+          "title": "Part 4/4",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Ca Blaze & Lil' Beast (Les Twins)",
+      "videos": [
+        {
+          "youtubeId": "21AFK2f_Qas",
+          "duration": "PT2M16S",
+          "title": "Part 1/4",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "cHlgwdH5MW4",
+          "duration": "PT1M59S",
+          "title": "Part 2/4",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "51ujSW7HHyQ",
+          "duration": "PT1M56S",
+          "title": "Part 3/4",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "ZZFp8q2pi44",
+          "duration": "PT3M42S",
+          "title": "Part 4/4",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Laurent 'Lil Beast' (Les Twins, Criminalz)",
+      "videos": [
+        {
+          "youtubeId": "gs5jlb1vYC0",
+          "duration": "PT2M26S",
+          "title": "Laurent \"Lil Beast\" LES TWINS Tutorial Part 1/4 | YAK FILMS",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "CDnB_MEIK5o",
+          "duration": "PT2M29S",
+          "title": "Laurent \"Lil Beast\" Les Twins (Criminalz) Tutorial Part 2 of 4 YAK FILMS",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "4KCvAthz5VM",
+          "duration": "PT2M15S",
+          "title": "Laurent \"Lil Beast\" Les Twins (Criminalz) Tutorial Part 3 of 4 YAK FILMS",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "Sv9OPq6qRRU",
+          "duration": "PT3M32S",
+          "title": "Laurent \"Lil Beast\" Les Twins (Criminalz) Tutorial Part 4 of 4 YAK FILMS",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    }
+  ]
+}

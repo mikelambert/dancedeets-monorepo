@@ -1,0 +1,28 @@
+{
+  "title": "Next School Dictionary",
+  "author": "MOPTOP",
+  "style": "hiphop",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/CW6EvvkYNPg/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Next School Dictionary",
+      "videos": [
+        {
+          "youtubeId": "CW6EvvkYNPg",
+          "duration": "PT9M22S",
+          "title": "Cabbage Patch, Reebok, Smurf (and variations)",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "3zDYz0THYkQ",
+          "duration": "PT12M35S",
+          "title": "Gigolo, Gucci, Wu-Tang, Stomp (and variations)",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    }
+  ]
+}

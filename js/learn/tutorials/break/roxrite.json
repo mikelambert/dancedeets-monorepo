@@ -1,0 +1,35 @@
+{
+  "title": "Roxrite",
+  "author": "Roxrite",
+  "style": "break",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/d55ZX9ZviXw/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Tutorials",
+      "videos": [
+        {
+          "youtubeId": "d55ZX9ZviXw",
+          "duration": "PT4M8S",
+          "title": "Basic Freezes",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "o6EjZJsnEVg",
+          "duration": "PT5M",
+          "title": "Intermediate Freezes",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "HoEcZnFePXE",
+          "duration": "PT3M27S",
+          "title": "Battle Tip",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    }
+  ]
+}

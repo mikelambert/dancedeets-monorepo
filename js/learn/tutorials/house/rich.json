@@ -1,0 +1,56 @@
+{
+  "title": "Rich Stylez",
+  "author": "Rich Stylez",
+  "style": "house",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/WtT55laSsg8/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "House Tutorials",
+      "videos": [
+        {
+          "youtubeId": "2v0owCMj-O4",
+          "duration": "PT4M22S",
+          "title": "Jacking",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "IeSryviZdCg",
+          "duration": "PT3M45S",
+          "title": "Loose Leg",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "wIwZh7_EYNQ",
+          "duration": "PT3M13S",
+          "title": "Heel Step",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "-EHw6ypodmk",
+          "duration": "PT3M54S",
+          "title": "The Farmer",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "WtT55laSsg8",
+          "duration": "PT3M27S",
+          "title": "Pas De Bourrée",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "xDnDVqU2DMc",
+          "duration": "PT3M27S",
+          "title": "The Skate",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    }
+  ]
+}

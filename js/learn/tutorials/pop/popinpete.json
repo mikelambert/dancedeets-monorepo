@@ -1,0 +1,92 @@
+{
+  "title": "Popin Pete",
+  "author": "Popin Pete",
+  "style": "pop",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/eafX7l7SHEc/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Boogaloo Tutorial",
+      "videos": [
+        {
+          "youtubeId": "eafX7l7SHEc",
+          "duration": "PT14M1S",
+          "title": "Part 1 - Boogaloo Rolls & Poppin' Drills",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "nLYWp9QdFAI",
+          "duration": "PT14M1S",
+          "title": "Part 2 - Poppin' Drills, Boogaloo Stepout, Single Leg Roll, Total Boogaloo Rolls, Old vs The New",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "s1ehJsBqhd0",
+          "duration": "PT9M6S",
+          "title": "Part 3 - Crazy Legs Lessons, Poppin' Drills Shoulders",
+          "height": 344,
+          "width": 459
+        }
+      ]
+    },
+    {
+      "title": "Gettin' Down Dancing",
+      "videos": [
+        {
+          "youtubeId": "t-UGEUEAvEQ",
+          "duration": "PT13M28S",
+          "title": "Popin Pete + Electric Boogaloos + Students | Gettin' Down",
+          "height": 344,
+          "width": 459
+        }
+      ]
+    },
+    {
+      "title": "How To Pop & Boogaloo",
+      "videos": [
+        {
+          "youtubeId": "m1xG66qszII",
+          "duration": "PT13M41S",
+          "title": "Part 1 - Popping the Legs, Fresno, Definition & Origin, Popping the Arms & Wrists, Arm Variations, Popping the Neck",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "VXpJGO2pFWw",
+          "duration": "PT14M23S",
+          "title": "Part 2 - Popping Variations, Dancing vs Tricks, Chest Variations, Neck-O-Flex, Ticking, Shoewear",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "JCQCAB63wE4",
+          "duration": "PT6M7S",
+          "title": "Part 3 - Air Poses, Waves, Locking",
+          "height": 344,
+          "width": 459
+        }
+      ]
+    },
+    {
+      "title": "Move Tutorials",
+      "videos": [
+        {
+          "youtubeId": "vObLVRZIvqY",
+          "duration": "PT5M23S",
+          "title": "Old Man Tutorial",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "IKMzNwyI2_A",
+          "duration": "PT4M21S",
+          "title": "Twist O Flex Tutorial",
+          "height": 344,
+          "width": 459
+        }
+      ]
+    }
+  ]
+}

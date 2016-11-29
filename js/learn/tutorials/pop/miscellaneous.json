@@ -1,0 +1,71 @@
+{
+  "title": "Miscellaneous OGs",
+  "author": "Boppin Andre, Skeeter Rabbit",
+  "style": "pop",
+  "language": "en",
+  "thumbnail": "https://i.ytimg.com/vi/gnjvA4wq_AE/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Boppin Andre",
+      "videos": [
+        {
+          "youtubeId": "gnjvA4wq_AE",
+          "duration": "PT2M49S",
+          "title": "Boppin Andre - Ticking instruction",
+          "height": 344,
+          "width": 459
+        },
+        {
+          "youtubeId": "ctQoVFqH1gU",
+          "duration": "PT13M42S",
+          "title": "Boppin Andre - Bopping instructional",
+          "height": 270,
+          "width": 480
+        },
+        {
+          "youtubeId": "E3JRY5DX-D8",
+          "duration": "PT4M26S",
+          "title": "Basics of Animation",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Seen",
+      "videos": [
+        {
+          "youtubeId": "m9rub_iGb7k",
+          "duration": "PT10M10S",
+          "title": "Animation Tutorial - Including King Cobra",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Zulu Gremlin",
+      "videos": [
+        {
+          "youtubeId": "cYPxxM3UjmU",
+          "duration": "PT59S",
+          "title": "King Cobra Tutorial",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    },
+    {
+      "title": "Skeeter Rabbit",
+      "videos": [
+        {
+          "youtubeId": "9ieeSkpkGZ0",
+          "duration": "PT8M34S",
+          "title": "LA Popping History Lesson and Oldman Tutorial",
+          "height": 344,
+          "width": 459
+        }
+      ]
+    }
+  ]
+}

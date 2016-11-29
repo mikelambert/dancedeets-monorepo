@@ -1,0 +1,21 @@
+{
+  "title": "Panda",
+  "author": "Panda",
+  "style": "lock",
+  "language": "ru",
+  "thumbnail": "https://i.ytimg.com/vi/uLbIlnaYR9o/mqdefault.jpg",
+  "sections": [
+    {
+      "title": "Locking Tutorial",
+      "videos": [
+        {
+          "youtubeId": "uLbIlnaYR9o",
+          "duration": "PT6M3S",
+          "title": "Up and Lock, Party Dance, Slap Clap",
+          "height": 270,
+          "width": 480
+        }
+      ]
+    }
+  ]
+}
