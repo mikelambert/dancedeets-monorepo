@@ -56,6 +56,9 @@ class GMapsGeocode(_GMapsResult):
     def copy(self):
         return GMapsGeocode(copy.deepcopy(self.json_data))
 
+    def formatted_address(self):
+        return self.json_data['formatted_address']
+
     def address_components(self):
         return self.json_data['address_components']
 

@@ -103,6 +103,9 @@ def update_remapped_address(fb_event, new_remapped_address):
     if location_info.remapped_address != new_remapped_address:
         _save_remapped_address_for(location_info.fb_address, new_remapped_address)
 
+def clean_address(address):
+    address = re.sub(r'B?\d+F$', '', address)
+    return address
 
 class LocationInfo(object):
     def __init__(self, fb_event=None, db_event=None, debug=False):
@@ -117,32 +120,32 @@ class LocationInfo(object):
         if not has_overridden_address and not fb_event:
             logging.warning("Passed a db_event without an address, and no fb_event to pull from: %s" % db_event.id)
         if (not has_overridden_address and fb_event) or debug:
-            self.final_latlng = _get_latlng_from_event(fb_event)
-            if self.final_latlng:
-                self.geocode = gmaps_api.lookup_latlng(self.final_latlng)
-                self.fb_address = formatting.format_geocode(self.geocode)
-                self.remapped_address = None
-                self.exact_from_event = bool(self.geocode)
-            # Sometimes the geocode above fails, so we fallback on addresses.
-            # For exmaple: venue id 156028414450815 with latlng: (24.43012, 118.31452)
+            # We try to trust the address *over* the latlong,
+            # because fb uses bing which has less accuracy on some addresses (ie a jingsta address)
+            self.fb_address = get_address_for_fb_event(fb_event)
+            self.remapped_address = _get_remapped_address_for(self.fb_address)
+            if self.remapped_address:
+                logging.info("Checking remapped address, which is %r", self.remapped_address)
+            location_geocode = gmaps_api.lookup_location(self.remapped_address or self.fb_address)
+            if location_geocode:
+                address = clean_address(location_geocode.formatted_address())
+                self.geocode = gmaps_api.lookup_address(address)
+                print self.geocode
+                self.final_address = location_geocode.formatted_address()
             if not self.geocode:
-                self.fb_address = get_address_for_fb_event(fb_event)
-                self.remapped_address = _get_remapped_address_for(self.fb_address)
-                if self.remapped_address:
-                    logging.info("Checking remapped address, which is %r", self.remapped_address)
-            self.final_address = self.remapped_address or self.fb_address
+                self.final_latlng = _get_latlng_from_event(fb_event)
+                if self.final_latlng:
+                    self.geocode = gmaps_api.lookup_latlng(self.final_latlng)
+                    self.fb_address = formatting.format_geocode(self.geocode)
+
+            self.exact_from_event = bool(self.geocode)
+            self.final_address = self.final_address or self.remapped_address or self.fb_address
         if has_overridden_address:
             self.overridden_address = db_event.address
             self.final_address = self.overridden_address
+            self.geocode = gmaps_api.lookup_address(self.final_address)
 
-        if not self.exact_from_event:
-            logging.info("Final address is %r", self.final_address)
-            if self.online:
-                self.geocode = None
-            elif self.final_address is not None:
-                self.geocode = gmaps_api.lookup_address(self.final_address)
-            else:
-                self.geocode = None
+        logging.info("Final address is %r", self.final_address)
 
     @property
     def online(self):

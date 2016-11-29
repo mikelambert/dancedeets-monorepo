@@ -1,6 +1,5 @@
 import datetime
 import logging
-import re
 
 from google.appengine.ext import ndb
 
@@ -157,8 +156,7 @@ def _inner_make_event_findable_for_web_event(db_event, web_event, update_geodata
 
     geocode = None
     if web_event.get('location_address'):
-        address = web_event.get('location_address')
-        address = re.sub(r'B?\d+F$', '', address)
+        address = event_locations.clean_address(web_event.get('location_address'))
         logging.info("Have location address, checking if it is geocodable: %s", web_event.get('location_address'))
         logging.info("Stripping off any floor info, final address is: %s", address)
         geocode = gmaps_api.lookup_address(address)
