@@ -38,7 +38,8 @@ touch $BASE_DIR/lib/ruamel/__init__.py
 
 # TODO: install node
 # TODO: install npm?
-
+echo "Copying over private configs"
+cp ~/Dropbox/dancedeets/private/*.yaml $BASE_DIR/
 
 echo "Installing npm modules"
 cd $BASE_DIR
