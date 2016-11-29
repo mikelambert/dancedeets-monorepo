@@ -96,6 +96,7 @@ def delete(**kwargs):
 
 
 def lookup_location(location, language=None):
+    logging.info('lookup location: %s', location.encode('utf-8'))
     params = {'query': location}
     if language:
         params['language'] = language
@@ -110,6 +111,7 @@ def lookup_location(location, language=None):
     return geocode
 
 def lookup_address(address, language=None):
+    logging.info('lookup address: %s', address.encode('utf-8'))
     params = {'address': address}
     if language:
         params['language'] = language

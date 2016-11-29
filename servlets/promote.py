@@ -91,7 +91,7 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
         location_info = event_locations.LocationInfo(fb_event)
         if not location_info.geocode:
             event_errors.append('Your event has no location. Please select a particular address, city, state, or country for this event.')
-        elif 'venue' not in fb_event['info']:
+        elif 'place' not in fb_event['info']:
             event_warnings.append('For best results, your event should select a location from one of the venues Facebook suggests. DanceDeets believes your event is in %s' % location_info.final_city)
 
         self.display['event_warnings'] = event_warnings

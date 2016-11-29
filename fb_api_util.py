@@ -2,8 +2,6 @@ import fb_api
 
 
 class LookupMetadata(fb_api.LookupType):
-    version = "v2.5"
-
     @classmethod
     def get_lookups(cls, object_id):
         return [

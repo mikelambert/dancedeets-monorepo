@@ -31,7 +31,7 @@ EMPTY_CAUSE_DELETED = 'deleted'
 
 #TODO(lambert): use parent_group to find additional sources to scrape
 #TODO(FB2.4): The 'privacy' field is deprecated in favor of a new 'type' field we should be using.
-OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'location', 'name', 'owner', 'privacy', 'start_time', 'venue', 'cover', 'admins', 'parent_group', 'ticket_uri', 'timezone', 'updated_time', 'is_date_only', 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count', 'is_page_owned', 'is_canceled')
+OBJ_EVENT_FIELDS = ('description', 'end_time', 'id', 'name', 'owner', 'privacy', 'start_time', 'place', 'cover', 'admins', 'parent_group', 'ticket_uri', 'timezone', 'updated_time', 'is_date_only', 'attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count', 'is_page_owned', 'is_canceled')
 
 OBJ_USER_FIELDS = ('name', 'email', 'first_name', 'last_name', 'locale', 'gender', 'picture', 'link', 'timezone')
 
@@ -90,7 +90,7 @@ class PageRedirectException(Exception):
 class LookupType(object):
     optional_keys = []
     use_access_token = True
-    version = "v2.2"
+    version = "v2.8"
 
     @classmethod
     def url(cls, path, fields=None, **kwargs):
@@ -159,7 +159,6 @@ class LookupUser(LookupType):
 #TODO(lambert): move these LookupType subclasses out of fb_api.py into client code where they belong,
 # keeping this file infrastructure and unmodified as we add new features + LookupTypes
 class LookupUserEvents(LookupType):
-    version = "v2.5"
 
     fields = ['id', 'name', 'start_time', 'admins', 'rsvp_status', 'picture']
 
@@ -186,7 +185,6 @@ class LookupUserEvents(LookupType):
                 []
             )
         except KeyError:
-            print 'x',len(fb_data['events']['data'])
             return fb_data['events']['data']
 
     @classmethod
@@ -195,6 +193,7 @@ class LookupUserEvents(LookupType):
 
 class LookupEvent(LookupType):
     optional_keys = ['cover_info']
+    version = "v2.3"
 
     @classmethod
     def track_lookup(cls):

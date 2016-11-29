@@ -14,7 +14,7 @@ def create_event(event_id='1000001', start_time=None, location='NYC'):
     if not start_time:
         start_time = datetime.datetime.now()
     fields_str = '%2C'.join(fb_api.OBJ_EVENT_FIELDS)
-    base_url = '/v2.2/%s' % event_id
+    base_url = '/v2.8/%s' % event_id
     url = '%s?fields=%s' % (base_url, fields_str)
 
     picture_url = '%s/picture?redirect=false&type=large' % base_url
@@ -58,7 +58,7 @@ def index_events(testbed_instance):
 
 def create_user(user_id='701004', access_token='Access Token', access_token_expires=None, location='NYC'):
     fields_str = '%2C'.join(fb_api.OBJ_USER_FIELDS)
-    base_url = '/v2.2/%s' % user_id
+    base_url = '/v2.8/%s' % user_id
     url = '%s?fields=%s' % (base_url, fields_str)
 
     fb_api.FBAPI.results.update({

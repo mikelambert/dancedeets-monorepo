@@ -30,7 +30,7 @@ class TheLab(items.StudioScraper):
     address = '541 N Azusa Ave, West Covina, CA'
 
     def start_requests(self):
-        yield scrapy.Request('https://graph.facebook.com/v2.7/InTheLab247?fields=general_info&access_token=' + token)
+        yield scrapy.Request('https://graph.facebook.com/v2.8/InTheLab247?fields=general_info&access_token=' + token)
 
     def _get_url(self, response):
         return 'https://www.facebook.com/InTheLab247'

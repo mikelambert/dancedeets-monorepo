@@ -5,8 +5,8 @@ import re
 from google.appengine.ext import ndb
 
 import event_types
+from events import event_locations
 from loc import gmaps_api
-from util import urls
 from . import namespaces
 
 REGION_RADIUS = 200 # kilometers
@@ -318,7 +318,7 @@ class DBEvent(ndb.Model):
         if self.web_event:
             return self.web_event.get('location_name')
         else:
-            return self.fb_event['info'].get('location', '')
+            return event_locations.get_fb_place_name(self.fb_event)
 
     @property
     def venue(self):
@@ -326,7 +326,7 @@ class DBEvent(ndb.Model):
             # TODO: WEB_EVENTS: We need to enable this if we want to support location_schema_html() in Google Search
             return {}
         else:
-            return self.fb_event['info'].get('venue', {})
+            return event_locations.get_fb_place(self.fb_event)
 
     @property
     def full_address(self):

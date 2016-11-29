@@ -33,9 +33,21 @@ def city_for_fb_location(location):
     else:
         return None
 
+def get_fb_place(fb_event):
+    event_info = fb_event['info']
+    # bwcompat:
+    place = event_info.get('venue', event_info.get('place', {}).get('location', {}))
+    return place
+
+def get_fb_place_name(fb_event):
+    event_info = fb_event['info']
+    place = get_fb_place(fb_event)
+    # bwcompat:
+    event_location = event_info.get('location', place.get('name'))
+    return event_location
 
 def _get_latlng_from_event(fb_event):
-    venue = fb_event['info'].get('venue')
+    venue = get_fb_place(fb_event)
     if venue and venue.get('latitude') and venue.get('longitude'):
         return float(venue['latitude']), float(venue['longitude'])
     # In the "olden days", we would get a venue block with an id but without a lat/lng, requiring further lookup.
@@ -45,9 +57,8 @@ def _get_latlng_from_event(fb_event):
 
 
 def get_address_for_fb_event(fb_event):
-    event_info = fb_event['info']
-    venue = event_info.get('venue', {})
-    event_location = event_info.get('location', '')
+    venue = get_fb_place(fb_event)
+    event_location = get_fb_place_name(fb_event)
 
     # Sometimes the venue is [] instead of {...}, so handle that no-venue scenario
     if not venue:
@@ -129,7 +140,6 @@ class LocationInfo(object):
             if location_geocode:
                 address = clean_address(location_geocode.formatted_address())
                 self.geocode = gmaps_api.lookup_address(address)
-                print self.geocode
                 self.final_address = location_geocode.formatted_address()
             if not self.geocode:
                 self.final_latlng = _get_latlng_from_event(fb_event)

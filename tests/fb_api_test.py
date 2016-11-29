@@ -12,8 +12,8 @@ class TestLookupUser(unittest.TestCase):
     def runTest(self):
         lookups = fb_api.LookupUser.get_lookups('id')
         info_url = re.sub('fields=[^&]*', 'fields=X', [x[1] for x in lookups if x[0] == 'profile'][0])
-        self.assertEqual(info_url, '/v2.2/id?fields=X')
-        self.assertEqual(lookups[1], ('friends', '/v2.2/id/friends'))
+        self.assertEqual(info_url, '/v2.8/id?fields=X')
+        self.assertEqual(lookups[1], ('friends', '/v2.8/id/friends'))
         cache_key = fb_api.LookupUser.cache_key('id', 'fetch_id')
         self.assertEqual(cache_key, ('fetch_id', 'id', 'OBJ_USER'))
 
@@ -28,7 +28,7 @@ class TestLookupEvent(unittest.TestCase):
     def runTest(self):
         lookups = fb_api.LookupEvent.get_lookups('id')
         info_url = re.sub('fields=[^&]*', 'fields=X', [x[1] for x in lookups if x[0] == 'info'][0])
-        self.assertEqual(info_url, '/v2.2/id?fields=X')
+        self.assertEqual(info_url, '/v2.8/id?fields=X')
         cache_key = fb_api.LookupEvent.cache_key('id', 'fetch_id')
         self.assertEqual(cache_key, (fb_api.USERLESS_UID, 'id', 'OBJ_EVENT'))
 
@@ -95,13 +95,13 @@ class TestFBAPI(full_unittest.TestCase):
         self.assertEqual(d, {})
 
         fields_str = '%2C'.join(fb_api.OBJ_USER_FIELDS)
-        url = '/v2.2/uid?fields=%s' % fields_str
+        url = '/v2.8/uid?fields=%s' % fields_str
 
         fb_api.FBAPI.results = {
             url: (200, {}),
-            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {}),
-            '/v2.2/uid/friends': (200, {}),
-            '/v2.2/uid/permissions': (200, {}),
+            '/v2.8/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {}),
+            '/v2.8/uid/friends': (200, {}),
+            '/v2.8/uid/permissions': (200, {}),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -117,9 +117,9 @@ class TestFBAPI(full_unittest.TestCase):
 
         fb_api.FBAPI.results = {
             url: (500, {}),
-            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {}),
-            '/v2.2/uid/friends': (200, {}),
-            '/v2.2/uid/permissions': (200, {}),
+            '/v2.8/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {}),
+            '/v2.8/uid/friends': (200, {}),
+            '/v2.8/uid/permissions': (200, {}),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -128,9 +128,9 @@ class TestFBAPI(full_unittest.TestCase):
 
         fb_api.FBAPI.results = {
             url: (200, False),
-            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, False),
-            '/v2.2/uid/friends': (200, False),
-            '/v2.2/uid/permissions': (200, False),
+            '/v2.8/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, False),
+            '/v2.8/uid/friends': (200, False),
+            '/v2.8/uid/permissions': (200, False),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -142,9 +142,9 @@ class TestFBAPI(full_unittest.TestCase):
 
         fb_api.FBAPI.results = {
             url: (200, {'error_code': 100}),
-            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {'error_code': 100}),
-            '/v2.2/uid/friends': (200, {'error_code': 100}),
-            '/v2.2/uid/permissions': (200, {'error_code': 100}),
+            '/v2.8/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {'error_code': 100}),
+            '/v2.8/uid/friends': (200, {'error_code': 100}),
+            '/v2.8/uid/permissions': (200, {'error_code': 100}),
         }
         user_key = (fb_api.LookupUser, 'uid')
         d = fb.fetch_keys(set([user_key]))
@@ -180,14 +180,14 @@ class TestFBLookup(FBApiTestCase):
         fbl = fb_api.FBLookup('uid', 'access_token')
 
         fields_str = '%2C'.join(fb_api.OBJ_USER_FIELDS)
-        url = '/v2.2/uid?fields=%s' % fields_str
+        url = '/v2.8/uid?fields=%s' % fields_str
 
         # Set up our facebook backend
         fb_api.FBAPI.results = {
             url: (200, {}),
-            '/v2.2/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {}),
-            '/v2.2/uid/friends': (200, {}),
-            '/v2.2/uid/permissions': (200, {}),
+            '/v2.8/uid/events?since=yesterday&fields=id,rsvp_status&limit=5000': (200, {}),
+            '/v2.8/uid/friends': (200, {}),
+            '/v2.8/uid/permissions': (200, {}),
         }
         # And fetching it then populates our memcache and db
         result = fbl.get(fb_api.LookupUser, 'uid')
@@ -278,7 +278,7 @@ class TestFBLookupProfile(FBApiTestCase):
 
         # Set up our facebook backend
         fb_api.FBAPI.results = {
-            '/v2.2/uid': (200, {}),
+            '/v2.8/uid': (200, {}),
         }
         # And fetching it then populates our memcache and db
         result = fbl.get(fb_api.LookupProfile, 'uid')
@@ -296,9 +296,9 @@ class TestEventFailureHandling(FBApiTestCase):
 
         # Set up our facebook backend
         fields_str = '%2C'.join(fb_api.OBJ_EVENT_FIELDS)
-        url = '/v2.2/eid?fields=%s' % fields_str
+        url = '/v2.8/eid?fields=%s' % fields_str
 
-        picture_url = '/v2.2/eid/picture?redirect=false&type=large'
+        picture_url = '/v2.8/eid/picture?redirect=false&type=large'
         # Inaccessible event
         fb_api.FBAPI.results = {
             url:
@@ -385,6 +385,6 @@ class TestUserFailureHandling(FBApiTestCase):
 
 class TestMisc(unittest.TestCase):
     def runTest(self):
-        self.assertEqual('/v2.2/path?fields=a%2Cb', fb_api.LookupType.url('path', fields=['a', 'b']))
+        self.assertEqual('/v2.8/path?fields=a%2Cb', fb_api.LookupType.url('path', fields=['a', 'b']))
         self.assertEqual(True, fb_api.LookupEvent.use_access_token)
         self.assertEqual(False, fb_api.LookupProfile.use_access_token)
