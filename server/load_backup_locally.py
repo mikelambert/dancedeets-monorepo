@@ -36,7 +36,7 @@ from events.eventdata import DBEvent
 
 def run():
     # Set your downloaded folder's path here (must be readable by dev_appserver)
-    mypath = '/Users/lambert/Dropbox/dancedeets-data/datastore_backup_datastore_backup_2016_11_19_DBEvent/15700286559371541387849311E815D'
+    mypath = '/Users/lambert/Dropbox/dancedeets/data/datastore_backup_datastore_backup_2016_11_19_DBEvent/15700286559371541387849311E815D'
     # Se the class of the objects here
     cls = DBEvent
     # Set your app's name here

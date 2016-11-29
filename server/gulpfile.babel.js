@@ -17,7 +17,7 @@ import username from 'username';
 
 const $ = gulpLoadPlugins();
 
-var baseAssetsDir = '/Users/' + username.sync() + '/Dropbox/dancedeets-art/build-assets/';
+var baseAssetsDir = '/Users/' + username.sync() + '/Dropbox/dancedeets/art/build-assets/';
 
 gulp.task('compile-favicons', function() {
   return gulp.src('assets/img/deets-head.png')
