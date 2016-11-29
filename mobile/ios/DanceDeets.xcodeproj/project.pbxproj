@@ -430,7 +430,7 @@
 		C11775CF6CE546DD8997D4BC /* LRDRCTNativeEnv.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = LRDRCTNativeEnv.xcodeproj; path = "../node_modules/react-native-native-env/ios/LRDRCTNativeEnv.xcodeproj"; sourceTree = "<group>"; };
 		CEA565539668378262D1903D /* Pods-DanceDeets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.release.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.release.xcconfig"; sourceTree = "<group>"; };
 		D354B51278E84DA1A4ED481B /* libRCTLocale.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTLocale.a; sourceTree = "<group>"; };
-		D42DA3102D9A4EB5B6B39CFA /* RCTWKWebView.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTWKWebView.xcodeproj; path = "../node_modules/react-native-wkwebview/ios/RCTWKWebView.xcodeproj"; sourceTree = "<group>"; };
+		D42DA3102D9A4EB5B6B39CFA /* RCTWKWebView.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTWKWebView.xcodeproj; path = "../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView.xcodeproj"; sourceTree = "<group>"; };
 		DFE54775FE8646DF9CEA6CE5 /* libRNMixpanel.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNMixpanel.a; sourceTree = "<group>"; };
 		F0F2BCED993949CDA4946B12 /* libRNCalendarEvents.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCalendarEvents.a; sourceTree = "<group>"; };
 		F33F4F5DCEB28B5ACFB6FDF7 /* Pods-DanceDeets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DanceDeets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DanceDeets/Pods-DanceDeets.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1577,7 +1577,7 @@
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
-					"$(SRCROOT)/../node_modules/react-native-wkwebview/ios/RCTWKWebView",
+					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 					"$(SRCROOT)/../node_modules/react-native-firestack/ios/Firestack",
@@ -1641,7 +1641,7 @@
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
-					"$(SRCROOT)/../node_modules/react-native-wkwebview/ios/RCTWKWebView",
+					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 					"$(SRCROOT)/../node_modules/react-native-firestack/ios/Firestack",
@@ -1754,7 +1754,7 @@
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
-					"$(SRCROOT)/../node_modules/react-native-wkwebview/ios/RCTWKWebView",
+					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 					"$(SRCROOT)/../node_modules/react-native-firestack/ios/Firestack",
@@ -1817,7 +1817,7 @@
 					"$(SRCROOT)/../node_modules/react-native-native-env/ios/LRDRCTNativeEnv",
 					"$(SRCROOT)/../node_modules/react-native-processinfo/RNProcessInfo",
 					"$(SRCROOT)/../node_modules/react-native-firebase3/ios/Firebase",
-					"$(SRCROOT)/../node_modules/react-native-wkwebview/ios/RCTWKWebView",
+					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
 					"$(SRCROOT)/../node_modules/react-native-youtube/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 					"$(SRCROOT)/../node_modules/react-native-firestack/ios/Firestack",
