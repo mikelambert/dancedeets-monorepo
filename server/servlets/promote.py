@@ -76,7 +76,7 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
         if 'description' not in fb_event['info']:
             event_errors.append('The event needs a description.')
 
-        if not fb_events.is_event_public(fb_event):
+        if not fb_events.is_public(fb_event):
             event_errors.append('The event privacy settings are too restricted.')
 
         classified_event = event_classifier.classified_event_from_fb_event(fb_event)
