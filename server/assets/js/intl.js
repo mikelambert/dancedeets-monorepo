@@ -22,17 +22,15 @@ const locales = ['en', 'ja', 'fr', 'zh-Hant'];
 import 'moment/locale/fr';
 import 'moment/locale/ja';
 import 'moment/locale/zh-tw';
-// import fr from './messages/fr.json';
-// import ja from './messages/ja.json';
-// import zh from './messages/zh.json';
+import fr from './messages/fr.json';
+import ja from './messages/ja.json';
+import zh from './messages/zh.json';
 
 const messages = {
-/*
   en: null, // use built-ins...but ensure we have an entry so we don't have undefined flow errors
   fr,
   ja,
   'zh-Hant': zh,
-*/
 };
 
 // https://github.com/yahoo/intl-locales-supported#usage

@@ -34,7 +34,7 @@ import {
   PreferenceNames,
   getPreference,
 } from './prefs';
-import { constructIntl } from '../intl';
+import { constructIntl } from 'dancedeets-common/intl';
 
 export let globalHandler = null;
 

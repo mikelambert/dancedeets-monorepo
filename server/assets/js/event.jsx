@@ -10,7 +10,7 @@ import React from 'react';
 import FormatText from 'react-format-text';
 import querystring from 'querystring';
 import moment from 'moment';
-import {intl} from './intl';
+import {intl} from 'dancedeets-common/intl';
 import {StartEnd} from './shared';
 
 /* intersperse: Return an array with the separator interspersed between

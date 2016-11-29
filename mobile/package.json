@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "cldr-data": "^29.0.1",
+    "dancedeets-common": "../common",
     "emoji-flags": "^1.1.0",
     "geolib": "^2.0.21",
     "intl": "^1.2.5",
