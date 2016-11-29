@@ -19,7 +19,7 @@ import {StartEnd} from './shared';
  * > _([1,2,3]).intersperse(0)
  * [1,0,2,0,3]
  */
-function intersperse(arr, sep) {
+function intersperse(arr: Array<any>, sep: string) {
   if (arr.length === 0) {
     return [];
   }
