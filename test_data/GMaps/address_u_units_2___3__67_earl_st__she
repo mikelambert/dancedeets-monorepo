@@ -1,0 +1,92 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "67", 
+                    "short_name": "67", 
+                    "types": [
+                        "street_number"
+                    ]
+                }, 
+                {
+                    "long_name": "Earl Street", 
+                    "short_name": "Earl St", 
+                    "types": [
+                        "route"
+                    ]
+                }, 
+                {
+                    "long_name": "Sheffield", 
+                    "short_name": "Sheffield", 
+                    "types": [
+                        "locality", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Sheffield", 
+                    "short_name": "Sheffield", 
+                    "types": [
+                        "postal_town"
+                    ]
+                }, 
+                {
+                    "long_name": "South Yorkshire", 
+                    "short_name": "South Yorkshire", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "England", 
+                    "short_name": "England", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United Kingdom", 
+                    "short_name": "GB", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "S1 4PY", 
+                    "short_name": "S1 4PY", 
+                    "types": [
+                        "postal_code"
+                    ]
+                }
+            ], 
+            "formatted_address": "67 Earl St, Sheffield S1 4PY, UK", 
+            "geometry": {
+                "location": {
+                    "lat": 53.37510820000001, 
+                    "lng": -1.4708424
+                }, 
+                "location_type": "ROOFTOP", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 53.37645718029151, 
+                        "lng": -1.469493419708498
+                    }, 
+                    "southwest": {
+                        "lat": 53.37375921970851, 
+                        "lng": -1.472191380291502
+                    }
+                }
+            }, 
+            "partial_match": true, 
+            "place_id": "ChIJaTOlvoaCeUgR6j8KOT3N3kw", 
+            "types": [
+                "street_address"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

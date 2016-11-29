@@ -1,0 +1,93 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "224", 
+                    "short_name": "224", 
+                    "types": [
+                        "street_number"
+                    ]
+                }, 
+                {
+                    "long_name": "Franklin Street", 
+                    "short_name": "Franklin St", 
+                    "types": [
+                        "route"
+                    ]
+                }, 
+                {
+                    "long_name": "Greenpoint", 
+                    "short_name": "Greenpoint", 
+                    "types": [
+                        "neighborhood", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "Brooklyn", 
+                    "short_name": "Brooklyn", 
+                    "types": [
+                        "political", 
+                        "sublocality", 
+                        "sublocality_level_1"
+                    ]
+                }, 
+                {
+                    "long_name": "Kings County", 
+                    "short_name": "Kings County", 
+                    "types": [
+                        "administrative_area_level_2", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "New York", 
+                    "short_name": "NY", 
+                    "types": [
+                        "administrative_area_level_1", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "United States", 
+                    "short_name": "US", 
+                    "types": [
+                        "country", 
+                        "political"
+                    ]
+                }, 
+                {
+                    "long_name": "11222", 
+                    "short_name": "11222", 
+                    "types": [
+                        "postal_code"
+                    ]
+                }
+            ], 
+            "formatted_address": "224 Franklin St, Brooklyn, NY 11222, USA", 
+            "geometry": {
+                "location": {
+                    "lat": 40.7333365, 
+                    "lng": -73.9580029
+                }, 
+                "location_type": "ROOFTOP", 
+                "viewport": {
+                    "northeast": {
+                        "lat": 40.7346854802915, 
+                        "lng": -73.95665391970849
+                    }, 
+                    "southwest": {
+                        "lat": 40.7319875197085, 
+                        "lng": -73.9593518802915
+                    }
+                }
+            }, 
+            "place_id": "ChIJd9Nbvz9ZwokR-dChxdfCfqY", 
+            "types": [
+                "street_address"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

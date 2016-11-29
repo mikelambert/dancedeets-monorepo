@@ -1,0 +1,44 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "San Francisco, CA, USA", 
+            "geometry": {
+                "location": {
+                    "lat": 37.7749295, 
+                    "lng": -122.4194155
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 37.812, 
+                        "lng": -122.3482
+                    }, 
+                    "southwest": {
+                        "lat": 37.70339999999999, 
+                        "lng": -122.527
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png", 
+            "id": "1b9ea3c094d3ac23c9a3afa8cd4d8a41f05de50a", 
+            "name": "San Francisco", 
+            "photos": [
+                {
+                    "height": 1108, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/111166835846832756433/photos\">Joe the Kop</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAAAAeWw2OxTCwkk0xPec-X1HIFKAW-1xn4laFj79bxd89R-JHZMfeDa67h47wRemUQGE3x3hITHDhEPEMnYBp6Rm07Ad_VdjpqAqh_BZl788uZ4saTJgRjVejxFH7KJflJK9-CBYlVOdqQaewQJWhG75TVlpbANihebqSByVkI5KlEhCIw0IYyXVBK2Wxb43pjnK5GhSz01DaPJkLyhtspm2BSeR0ADvgdQ", 
+                    "width": 1478
+                }
+            ], 
+            "place_id": "ChIJIQBpAG2ahYAR_6128GcTUEo", 
+            "reference": "CmRbAAAAyshk0xdi8jb0S0IHRv4Zaa3UKeX7zsoCrFbqn0G2vvkdKq1cC4qLFgtyb0FLiDMza-gPwsH5bC_NrCjIYTiHcs3qaFa1bdeizGRrgqmHh0bFvXikNZjg4ZgD4IIVp_Y8EhAw9I5Yhn5Q6Dw-ZjX4E9CbGhS6NgQgaxYumWrs2gBM8ErqDbqrDw", 
+            "types": [
+                "locality", 
+                "political"
+            ]
+        }
+    ], 
+    "status": "OK"
+}

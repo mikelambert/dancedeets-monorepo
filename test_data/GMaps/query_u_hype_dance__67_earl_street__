@@ -1,0 +1,50 @@
+{
+    "html_attributions": [], 
+    "results": [
+        {
+            "formatted_address": "Units 2 & 3, 67 Earl St, Sheffield S1 4PY, United Kingdom", 
+            "geometry": {
+                "location": {
+                    "lat": 53.375161, 
+                    "lng": -1.471089
+                }, 
+                "viewport": {
+                    "northeast": {
+                        "lat": 53.37520905000001, 
+                        "lng": -1.47095625
+                    }, 
+                    "southwest": {
+                        "lat": 53.37510365, 
+                        "lng": -1.47113325
+                    }
+                }
+            }, 
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/school-71.png", 
+            "id": "027fe4825272705ef2526653aaf8483d0b0dba50", 
+            "name": "Hype Dance Academy", 
+            "opening_hours": {
+                "open_now": true, 
+                "weekday_text": []
+            }, 
+            "photos": [
+                {
+                    "height": 533, 
+                    "html_attributions": [
+                        "<a href=\"https://maps.google.com/maps/contrib/114527029588807766740/photos\">Hype Dance Academy</a>"
+                    ], 
+                    "photo_reference": "CoQBdwAAAMUl7Nz4BZLbbjoAKA1rOZ101sGz53nqQivvfjKh1B4NRAcbPRjiwEWaTAumb2kyACZoScn4Tma6w9WHS0raZtUI2GhMiiN8sRWPTEe4-aoVVGTcIsQ78fBdhnt5ZA7R_Iejok0LdUbaxXGDwOLButuIPHHrMEmoQVIEWnU8ArYwEhCeJoIg7kMVwDHJVz1Lr7lzGhRxE_pc8AodcxIJtZ2tM4xu1Oc8Og", 
+                    "width": 800
+                }
+            ], 
+            "place_id": "ChIJq3xPoISCeUgR5uIY6_qzUBs", 
+            "reference": "CmRRAAAAqbQwuCSWLVGz2W5mhXuh0Q5yhamrHdKEQ8709DrpBxoTTJxGFsqWLQUNTGbTxgh_ZCA32g0D5Be3obFTNUHGudYxA-S1Rmfc4I_yHy-55cW5G1vILhR-hWQ6ahz93bCQEhB6ZEiw_OmBM4gbMJeiAVXlGhSWeB0ycmGJMbGYzGBJ2Fxr1MzB8w", 
+            "types": [
+                "gym", 
+                "health", 
+                "point_of_interest", 
+                "establishment"
+            ]
+        }
+    ], 
+    "status": "OK"
+}
