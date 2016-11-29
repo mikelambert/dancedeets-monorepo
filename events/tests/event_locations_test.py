@@ -106,6 +106,19 @@ class TestOnline(TestEventLocations):
         self.assertEqual(location_info.actual_city(), None)
         self.assertEqual(location_info.latlong(), (None, None))
 
+class TestNewEventPlaceAPI(TestEventLocations):
+    def runTest(self):
+        fb_event = self.get_event(103)
+
+        location_info = event_locations.LocationInfo(fb_event, debug=True)
+        self.assertEqual(location_info.overridden_address, None)
+        self.assertEqual(location_info.remapped_address, None)
+        self.assertEqual(location_info.fb_address, u'\u795e\u5bae\u524d2-18-7\u5916\u82d1\u30d3\u30ebB1, Shibuya-ku, Tokyo, Japan')
+        self.assertEqual(location_info.final_city, u'18, Shibuya-ku, T\u014dky\u014d-to, Japan')
+        self.assertEqual(location_info.is_online_event(), False)
+        self.assertEqual(location_info.actual_city(), u'18, Shibuya-ku, T\u014dky\u014d-to, Japan')
+        self.assertEqual(location_info.latlong(), (35.6724529, 139.7098159))
+
 class TestNone(TestEventLocations):
     def runTest(self):
         db_event = eventdata.DBEvent(address='ungeocodeable mess of crap')
@@ -143,7 +156,7 @@ class TestNothingAtAll(TestEventLocations):
         location_info = event_locations.LocationInfo(fb_event, debug=True)
         self.assertEqual(location_info.overridden_address, None)
         self.assertEqual(location_info.remapped_address, None)
-        self.assertEqual(location_info.fb_address, '')
+        self.assertEqual(location_info.fb_address, None)
         self.assertEqual(location_info.final_city, None)
         self.assertEqual(location_info.latlong(), (None, None))
 
