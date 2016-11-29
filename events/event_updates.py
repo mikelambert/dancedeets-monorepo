@@ -60,15 +60,10 @@ def _save_events(db_events):
 
 
 def _all_attending_count(fb_event):
-    # TODO(FB2.0): cleanup!
-    data = fb_event.get('fql_info', {}).get('data')
-    if data and data[0].get('attending_count'):
-        return data[0]['attending_count']
+    if 'info' in fb_event and fb_event['info'].get('attending_count'):
+        return fb_event['info']['attending_count']
     else:
-        if 'info' in fb_event and fb_event['info'].get('invited_count'):
-            return fb_event['info']['attending_count']
-        else:
-            return None
+        return None
 
 def _inner_cache_photo(db_event):
     if db_event.json_props is None:

@@ -490,8 +490,8 @@ def canonicalize_event_data(db_event, event_keywords, version):
 
     event_api['annotations'] = annotations
     event_api['ticket_uri'] = db_event.ticket_uri
-    # maybe handle: 'timezone', 'updated_time', 'is_date_only'
-    # rsvp_fields = ['attending_count', 'declined_count', 'maybe_count', 'noreply_count', 'invited_count']
+    # maybe handle: 'timezone', 'updated_time'
+    # rsvp_fields = ['attending_count', 'declined_count', 'maybe_count', 'noreply_count']
     if db_event.attending_count or db_event.maybe_count:
         event_api['rsvp'] = {
             'attending_count': db_event.attending_count or 0,
