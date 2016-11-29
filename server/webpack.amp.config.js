@@ -36,7 +36,11 @@ module.exports = {
         exclude: /(node_modules|bower_components)/,
         loader: 'babel',
         query: {
-          presets: ['react'],
+          presets: ['latest', 'react'],
+          plugins: [
+            'transform-object-rest-spread',
+            'transform-flow-strip-types',
+          ],
         },
       },
       {

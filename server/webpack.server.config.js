@@ -44,10 +44,14 @@ module.exports = {
       },
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /node_modules(?!\/dancedeets-common)/,
         loader: 'babel',
         query: {
-          presets: ['react'],
+          presets: ['latest', 'react'],
+          plugins: [
+            'transform-object-rest-spread',
+            'transform-flow-strip-types',
+          ],
         },
       },
       {
