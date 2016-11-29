@@ -1,3 +1,4 @@
+#!/usr/bin/python
 """
 # App Engine import data from Datastore Backup to localhost
 
@@ -19,13 +20,13 @@ Copy-paste this gist to your Interactive Console, set correct paths and press `E
 (default: http://localhost:8000/console)
 
 """
+import sys
+sys.path.insert(0, '/usr/local/google_appengine')
 
-
+print sys.path
 from google.appengine.api.files import records
 from google.appengine.datastore import entity_pb
 from google.net.proto.ProtocolBuffer import ProtocolBufferDecodeError
-from google.appengine.datastore import datastore_pbs
-from google.appengine.api import datastore
 from google.appengine.ext import ndb
 from os.path import isfile
 from os.path import join
@@ -40,11 +41,10 @@ def run():
     cls = DBEvent
     # Set your app's name here
     appname = "dev~None"
-    
+
     # Do the harlem shake
     onlyfiles = [ f for f in listdir(mypath) if isfile(join(mypath,f)) ]
-    ec = datastore_pbs.get_entity_converter()
-    
+
     for file in onlyfiles:
         i = 0
         try:
@@ -60,14 +60,14 @@ def run():
                 i += 1
                 if i % 100 == 0:
                     print "Saved %d %ss" % (i, '')#entity.kind())
-                    ndb.put_multi(to_put)
+                    ndb.put_multi(to_put) # use_memcache=False)
                     to_put = list()
-            
-            ndb.put_multi(to_put)
+
+            ndb.put_multi(to_put) # use_memcache=False)
             to_put = list()
             print "Saved %d" % i
-            
+
         except ProtocolBufferDecodeError:
             """ All good """
- 
+
 run()
