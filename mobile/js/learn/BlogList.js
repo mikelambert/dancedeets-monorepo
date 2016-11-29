@@ -28,7 +28,7 @@ import {
   MediumBlog,
   YoutubePlaylistBlog,
 } from './models';
-import WKWebView from 'react-native-wkwebview';
+import WKWebView from 'react-native-wkwebview-reborn';
 import YouTube from 'react-native-youtube';
 
 export class BlogPostContents extends React.Component {
