@@ -96,6 +96,8 @@ def delete(**kwargs):
 
 
 def lookup_location(location, language=None):
+    if location == None:
+        raise ValueError('Location cannot be None')
     logging.info('lookup location: %s', location.encode('utf-8'))
     params = {'query': location}
     if language:
@@ -111,6 +113,8 @@ def lookup_location(location, language=None):
     return geocode
 
 def lookup_address(address, language=None):
+    if address == None:
+        raise ValueError('Address cannot be None')
     logging.info('lookup address: %s', address.encode('utf-8'))
     params = {'address': address}
     if language:
