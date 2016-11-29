@@ -13,6 +13,7 @@ import {
   addLocaleData,
   IntlProvider,
 } from 'react-intl';
+import Locale from 'react-native-locale';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import moment from 'moment';
 
