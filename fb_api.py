@@ -14,6 +14,7 @@ from google.appengine.api import memcache
 from google.appengine.api import urlfetch
 from google.appengine.runtime import apiproxy_errors
 
+from util import fb_events
 from util import mr
 from util import properties
 from util import urls
@@ -51,31 +52,6 @@ class FacebookCachedObject(db.Model):
         if not self.json_data:
             self.delete() # hack fix to get these objects purged from the system
         return self.data
-
-def get_all_members_count(fb_event):
-    # TODO(FB2.0): cleanup!
-    data = fb_event.get('fql_info', {}).get('data')
-    if data and data[0].get('all_members_count'):
-        return data[0]['all_members_count']
-    else:
-        if 'info' in fb_event and fb_event['info'].get('invited_count'):
-            return fb_event['info']['invited_count']
-        else:
-            return None
-
-def is_public_ish(fb_event):
-    # Don't allow SECRET events
-    return not fb_event['empty'] and (
-        fb_event['info'].get('privacy', 'OPEN') == 'OPEN' or
-        (fb_event['info'].get('privacy', 'OPEN') == 'FRIENDS' and
-         get_all_members_count(fb_event) >= 60) or
-        (fb_event['info'].get('privacy', 'OPEN') == 'SECRET' and
-         get_all_members_count(fb_event) >= 200) or
-        (fb_event['info'].get('privacy', 'OPEN') == 'CLOSED' and
-         get_all_members_count(fb_event) >= 200) or
-        False
-    )
-
 
 class ExpiredOAuthToken(Exception):
     pass
@@ -301,7 +277,7 @@ class CacheSystem(object):
             # intentionally empty object
             if this_object.get('empty'):
                 return True
-            elif this_object.get('info') and is_public_ish(this_object):
+            elif this_object.get('info') and fb_events.is_public_ish(this_object):
                 return True
             else:
                 return False

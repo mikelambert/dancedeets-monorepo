@@ -33,6 +33,7 @@ from search import search
 from servlets import api
 from users import users
 from util import dates
+from util import fb_events
 from util import urls
 
 PREFETCH_EVENTS_INTERVAL = 24 * 60 * 60
@@ -266,7 +267,7 @@ class AdminEditHandler(base_servlet.BaseRequestHandler):
         except fb_api.NoFetchedDataException:
             return self.show_barebones_page(event_id, "No fetched data")
 
-        if not fb_api.is_public_ish(fb_event):
+        if not fb_events.is_public_ish(fb_event):
             self.add_error('Cannot add secret/closed events to dancedeets!')
 
         self.errors_are_fatal()

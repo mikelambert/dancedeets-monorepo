@@ -9,6 +9,7 @@ import app
 import base_servlet
 from events import eventdata
 import fb_api
+from util import fb_events
 from util import mr
 from util import fb_mapreduce
 
@@ -55,9 +56,9 @@ def count_private_events(fbl, e_list):
                 logging.error("skipping row2 for event id %s", e.fb_event_id)
                 continue
             attendees = fb_api.get_all_members_count(fbe)
-            privacy = fbe['info'].get('privacy', 'OPEN')
-            if privacy != 'OPEN' and attendees > 60:
+            if not fb_events.is_public(fbe) and fb_events.is_public_ish(fbe):
                 mr.increment('nonpublic-and-large')
+            privacy = fbe['info'].get('privacy', 'UNKNOWN')
             mr.increment('privacy-%s' % privacy)
 
             start_date = e.start_time.strftime('%Y-%m-%d') if e.start_time else ''

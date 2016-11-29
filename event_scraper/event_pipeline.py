@@ -3,7 +3,7 @@ import logging
 import fb_api
 from event_scraper import potential_events
 from event_scraper import auto_add
-
+from util import fb_events
 
 def get_unprocessed_discovered_events(discovered_list):
     discovered_to_process = []
@@ -58,7 +58,7 @@ def process_discovered_events(fbl, full_discovered_list):
         if not fb_event or fb_event['empty']:
             continue
         event_id = fb_event['info']['id']
-        if fb_event['empty'] or not fb_api.is_public_ish(fb_event):
+        if fb_event['empty'] or not fb_events.is_public_ish(fb_event):
             logging.info("event id %s: deleted, or private", event_id)
             continue # only legit events
         logging.info('VTFI %s: Discovered event %s, adding potential event due to discoveredevent %s', event_id, event_id, discovered)

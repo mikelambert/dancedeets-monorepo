@@ -6,6 +6,7 @@ from google.appengine.ext import ndb
 
 import event_types
 from events import event_locations
+import fb_api
 from loc import gmaps_api
 from . import namespaces
 
@@ -240,7 +241,7 @@ class DBEvent(ndb.Model):
         if self.web_event:
             return True
         else:
-            return self.fb_event['info'].get('privacy', 'OPEN') == 'OPEN'
+            return fb_events.is_public(self.fb_event)
 
     @property
     def categories(self):

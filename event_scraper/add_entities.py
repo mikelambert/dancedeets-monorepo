@@ -8,6 +8,7 @@ from events import event_locations
 from events import event_updates
 from pubsub import pubsub
 from nlp import event_classifier
+from util import fb_events
 from . import potential_events
 from . import thing_db
 
@@ -15,7 +16,7 @@ class AddEventException(Exception):
     pass
 
 def add_update_event(fb_event, fbl, creating_uid=None, visible_to_fb_uids=None, remapped_address=None, override_address=None, creating_method=None):
-    if not fb_api.is_public_ish(fb_event):
+    if not fb_events.is_public_ish(fb_event):
         raise AddEventException('Cannot add secret/closed events to dancedeets!')
 
     if remapped_address is not None:

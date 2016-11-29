@@ -10,6 +10,7 @@ import fb_api
 from nlp import event_auto_classifier
 from nlp import event_classifier
 from util import dates
+from util import fb_events
 from util import urls
 
 @app.route('/promote')
@@ -75,8 +76,7 @@ class PromoteHandler(base_servlet.BaseRequestHandler):
         if 'description' not in fb_event['info']:
             event_errors.append('The event needs a description.')
 
-        privacy = fb_event['info'].get('privacy')
-        if privacy != 'OPEN':
+        if not fb_events.is_event_public(fb_event):
             event_errors.append('The event privacy settings are too restricted.')
 
         classified_event = event_classifier.classified_event_from_fb_event(fb_event)
