@@ -11,8 +11,7 @@ import localizedCountries from '../data/localizedCountries';
 const countryLookup = Object.keys(localizedCountries).reduce((reduction, languageCode) => {
   Object.keys(localizedCountries[languageCode]).reduce((reduction2, countryCode) => {
     const country = localizedCountries[languageCode][countryCode];
-    reduction2[country] = countryCode;
-    return reduction2;
+    return { ...reduction, [country]: countryCode };
   }, reduction);
   return reduction;
 }, {});

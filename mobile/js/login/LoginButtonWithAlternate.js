@@ -10,6 +10,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {
+  defineMessages,
+  injectIntl,
+  intlShape,
+} from 'react-intl';
 import { yellowColors } from '../Colors';
 import {
   Button,
@@ -17,11 +22,6 @@ import {
   Text,
   semiNormalize,
 } from '../ui';
-import {
-  defineMessages,
-  injectIntl,
-  intlShape,
-} from 'react-intl';
 
 const messages = defineMessages({
   loginButton: {

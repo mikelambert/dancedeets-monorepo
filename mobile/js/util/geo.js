@@ -4,15 +4,15 @@
  * @flow
  */
 
-import type { Address } from '../events/formatAddress';
 import { Platform } from 'react-native';
+import Permissions from 'react-native-permissions';
+import type { Address } from '../events/formatAddress';
 import Geocoder from '../api/geocoder';
 import { format } from '../events/formatAddress';
-import Permissions from 'react-native-permissions';
 
 function getCurrentPosition() {
   return new Promise((resolve, reject) => {
-    const highAccuracy = Platform.OS == 'ios';
+    const highAccuracy = Platform.OS === 'ios';
     navigator.geolocation.getCurrentPosition(resolve, reject,
       { enableHighAccuracy: highAccuracy, timeout: 10 * 1000, maximumAge: 10 * 60 * 1000 }
     );

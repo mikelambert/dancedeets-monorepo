@@ -34,7 +34,7 @@ export class Playlist {
     const selectedVideo = this.getVideo(selectedIndex);
     const items = {};
     this.sections.forEach((section, i) => {
-      items[section.key(i)] = section.videos.map(video => ({ video, selected: video == selectedVideo }));
+      items[section.key(i)] = section.videos.map(video => ({ video, selected: video === selectedVideo }));
     });
     return items;
   }
@@ -44,13 +44,14 @@ export class Playlist {
   }
 
   getVideo(index: number): Video {
+    let currentIndex = index;
     const originalIndex = index;
-    for (let i = 0; i < this.sections.length; i++) {
+    for (let i = 0; i < this.sections.length; i += 1) {
       const section = this.sections[i];
-      if (index < section.videos.length) {
-        return section.videos[index];
+      if (currentIndex < section.videos.length) {
+        return section.videos[currentIndex];
       } else {
-        index -= section.videos.length;
+        currentIndex -= section.videos.length;
       }
     }
     throw new Error(`Video index out of range: ${originalIndex}`);
@@ -58,7 +59,7 @@ export class Playlist {
 
   getVideoIndex(video: Video): number {
     let index = 0;
-    for (let i = 0; i < this.sections.length; i++) {
+    for (let i = 0; i < this.sections.length; i += 1) {
       const videos = this.sections[i].videos;
       const sectionIndex = videos.indexOf(video);
       if (sectionIndex > -1) {
@@ -71,13 +72,14 @@ export class Playlist {
   }
 
   getVideoSectionRow(index: number): {section: number, row: number} {
+    let currentIndex = index;
     const originalIndex = index;
-    for (let i = 0; i < this.sections.length; i++) {
+    for (let i = 0; i < this.sections.length; i += 1) {
       const section = this.sections[i];
-      if (index < section.videos.length) {
-        return { section: i, row: index };
+      if (currentIndex < section.videos.length) {
+        return { section: i, row: currentIndex };
       } else {
-        index -= section.videos.length;
+        currentIndex -= section.videos.length;
       }
     }
     throw new Error(`Video index out of range: ${originalIndex}`);
@@ -85,7 +87,7 @@ export class Playlist {
 
   getVideoCount() {
     let count = 0;
-    for (let i = 0; i < this.sections.length; i++) {
+    for (let i = 0; i < this.sections.length; i += 1) {
       count += this.sections[i].videos.length;
     }
     return count;

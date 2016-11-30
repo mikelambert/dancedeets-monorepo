@@ -4,8 +4,8 @@
  * @flow
  */
 
+import type { NavigationRoute } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
 import type { Action } from './types';
-import type { NavigationRoute } from 'NavigationTypeDefinition';
 
 // *** Action Types ***
 export const NAVIGATE = 'NAVIGATE';
@@ -19,11 +19,11 @@ export const NAV_SWAP = 'NAV_SWAP';
 // *** Action Creators ***
 // The following action creators were derived from NavigationStackReducer
 export function navigatePush(navigator: string, state: string | NavigationRoute): Action {
-  state = typeof state === 'string' ? { key: state } : state;
+  const realState = typeof state === 'string' ? { key: state } : state;
   return {
     type: NAV_PUSH,
     navigator,
-    state,
+    state: realState,
   };
 }
 

@@ -4,8 +4,8 @@
  * @flow
  */
 
-import { feed } from '../api/dancedeets';
 import querystring from 'querystring';
+import { feed } from '../api/dancedeets';
 
 const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
 
@@ -33,10 +33,7 @@ export class MediumBlog extends Blog {
     this.title = json.payload.value.name;
     this.description = json.payload.value.shortDescription;
     this.url = `https://medium.com/${json.payload.value.slug}`;
-    this.authorLookup = Object.keys(users).reduce((previous, x) => {
-      previous[x] = users[x].name;
-      return previous;
-    }, {});
+    this.authorLookup = Object.keys(users).reduce((previous, x) => ({ ...previous, [x]: users[x].name }), {});
     this.posts = realPosts.map(x => this.parseMediumPost(x));
   }
 

@@ -11,6 +11,8 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
+import WKWebView from 'react-native-wkwebview-reborn';
+import YouTube from 'react-native-youtube';
 import {
   Text,
 } from '../ui';
@@ -26,10 +28,13 @@ import {
   MediumBlog,
   YoutubePlaylistBlog,
 } from './models';
-import WKWebView from 'react-native-wkwebview-reborn';
-import YouTube from 'react-native-youtube';
+
+type Post = any;
 
 export class BlogPostContents extends React.Component {
+  props: {
+    post: Post;
+  }
   render() {
     if (this.props.post.youtubeId) {
       return (<YouTube
@@ -50,6 +55,10 @@ export class BlogPostContents extends React.Component {
 }
 
 export class BlogPostTitle extends React.Component {
+  props: {
+    onPress: (post: Post) => void;
+    post: Post;
+  }
   render() {
     return (<TouchableHighlight
       onPress={() => {
@@ -82,20 +91,20 @@ export class FeedListView extends React.Component {
       rowHasChanged: (row1, row2) => row1 !== row2,
     });
     this.state = { dataSource };
-    this.state = this._getNewState(this.props.items);
+    this.state = this.getNewState(this.props.items);
   }
 
-  _getNewState(items: []) {
+  componentWillReceiveProps(nextProps: FeedProps) {
+    this.setState(this.getNewState(nextProps.items));
+  }
+
+  getNewState(items: []) {
     const results = items || [];
     const state = {
       ...this.state,
       dataSource: this.state.dataSource.cloneWithRows(results),
     };
     return state;
-  }
-
-  componentWillReceiveProps(nextProps: FeedProps) {
-    this.setState(this._getNewState(nextProps.items));
   }
 
   render() {
@@ -121,10 +130,10 @@ export class BlogPostList extends React.Component {
 
   constructor(props: BlogPostProps) {
     super(props);
-    (this: any)._renderRow = this._renderRow.bind(this);
+    (this: any).renderRow = this.renderRow.bind(this);
   }
 
-  _renderRow(post: BlogPost) {
+  renderRow(post: BlogPost) {
     return (<BlogPostTitle
       post={post}
       onPress={this.props.onSelected}
@@ -134,12 +143,17 @@ export class BlogPostList extends React.Component {
   render() {
     return (<FeedListView
       items={this.props.blog.posts}
-      renderRow={this._renderRow}
+      renderRow={this.renderRow}
     />);
   }
 }
 
 class BlogTitle extends React.Component {
+  props: {
+    onPress: (blog: Blog) => void;
+    blog: Blog;
+  }
+
   render() {
     return (<TouchableHighlight
       onPress={() => {
@@ -158,10 +172,11 @@ type BlogProps = {
 };
 
 export class BlogList extends React.Component {
+  props: BlogProps;
+
   state: {
     dataSource: ListView.DataSource,
   };
-  props: BlogProps;
 
   constructor(props: BlogProps) {
     super(props);
@@ -170,8 +185,21 @@ export class BlogList extends React.Component {
     });
     this.state = { dataSource };
     // We don't take in any props.blogs, so no need to run this:
-    // this.state = this._getNewState(this.props.blogs);
-    (this: any)._renderRow = this._renderRow.bind(this);
+    // this.state = this.getNewState(this.props.blogs);
+    (this: any).renderRow = this.renderRow.bind(this);
+  }
+
+  componentWillMount() {
+    this.loadFeeds();
+  }
+
+  getNewState(blogs: Blog[]) {
+    const results = blogs || [];
+    const state = {
+      ...this.state,
+      dataSource: this.state.dataSource.cloneWithRows(results),
+    };
+    return state;
   }
 
   async loadFeeds() {
@@ -191,23 +219,10 @@ export class BlogList extends React.Component {
       }
     }));
     const filteredBlogData = blogData.filter(x => x);
-    this.setState(this._getNewState(filteredBlogData));
+    this.setState(this.getNewState(filteredBlogData));
   }
 
-  componentWillMount() {
-    this.loadFeeds();
-  }
-
-  _getNewState(blogs: Blog[]) {
-    const results = blogs || [];
-    const state = {
-      ...this.state,
-      dataSource: this.state.dataSource.cloneWithRows(results),
-    };
-    return state;
-  }
-
-  _renderRow(blog: Blog) {
+  renderRow(blog: Blog) {
     return (<BlogTitle
       blog={blog}
       onPress={this.props.onSelected}
@@ -218,7 +233,7 @@ export class BlogList extends React.Component {
     return (<ListView
       style={[styles.listView]}
       dataSource={this.state.dataSource}
-      renderRow={this._renderRow}
+      renderRow={this.renderRow}
       initialListSize={10}
       pageSize={5}
       scrollRenderAheadDistance={10000}

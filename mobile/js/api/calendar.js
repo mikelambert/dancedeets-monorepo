@@ -11,8 +11,8 @@ import {
 import Permissions from 'react-native-permissions';
 import CalendarEventsIOS from 'react-native-calendar-events';
 import SendIntentAndroid from 'react-native-send-intent';
-import { Event } from '../events/models';
 import moment from 'moment';
+import { Event } from '../events/models';
 
 function OkAlert(title: string, message: string, cancel = false): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -55,10 +55,12 @@ async function addIOS(event: Event) {
       // TODO(localization)
       await OkCancelAlert('Add to Calendar', 'To add this event to your calendar, you need to allow access to your calendar.');
       status = await CalendarEventsIOS.authorizeEventStore();
-    } catch (error) {}
+    } catch (error) {
+      console.log('Canceled: Add to Calendar');
+    }
   }
 
-  if (status != 'authorized') {
+  if (status !== 'authorized') {
     if (status === 'restricted') {
       OkAlert('Cannot Access Calendar', 'Could not access calendar.');
     } else if (status === 'denied') {
@@ -68,7 +70,9 @@ async function addIOS(event: Event) {
         if (await Permissions.canOpenSettings()) {
           Permissions.openSettings();
         }
-      } catch (err) {}
+      } catch (err) {
+        console.log('Canceled: Add to Calendar Permissions');
+      }
     }
     return false;
   }
@@ -113,7 +117,7 @@ function addAndroid(event: Event) {
   });
 }
 export async function add(event: Event) {
-  if (Platform.OS == 'ios') {
+  if (Platform.OS === 'ios') {
     await addIOS(event);
   } else {
     addAndroid(event);

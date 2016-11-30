@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import {
   injectIntl,
+  intlShape,
   defineMessages,
 } from 'react-intl';
 import {
@@ -48,12 +49,13 @@ const messages = defineMessages({
 });
 
 class NamedSwitch extends React.Component {
-  state: {
-    value: boolean;
-  };
   props: {
     text: string;
     style?: any;
+  };
+
+  state: {
+    value: boolean;
   };
 
   render() {
@@ -80,10 +82,22 @@ class _NotificationPreferences extends React.Component {
     };
   }
 
-  state: {[key: string]: boolean};
+  props: {
+    intl: intlShape;
+  }
+
+  state: {
+    [key: string]: boolean
+  }
 
   componentWillMount() {
     this.loadPreference();
+  }
+
+  async onChange(key: string, value: boolean) {
+    await setPreference(key, value);
+    // Only set the state if the above doesn't error out
+    this.setState({ [key]: value });
   }
 
   async loadPreference() {
@@ -93,12 +107,6 @@ class _NotificationPreferences extends React.Component {
       preferences[key] = await getPreference(key, defaults[key]);
     }
     this.setState(preferences);
-  }
-
-  async onChange(key: string, value: boolean) {
-    await setPreference(key, value);
-    // Only set the state if the above doesn't error out
-    this.setState({ [key]: value });
   }
 
   render() {

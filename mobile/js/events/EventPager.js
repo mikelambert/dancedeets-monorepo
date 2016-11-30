@@ -37,7 +37,7 @@ class EventPager extends React.Component {
       position: null,
       dataSource,
     };
-    this.state = this._getNewState(this.props, null);
+    this.state = this.getNewState(this.props, null);
     (this: any).renderEvent = this.renderEvent.bind(this);
   }
 
@@ -49,7 +49,7 @@ class EventPager extends React.Component {
     />);
   }
 
-  _getNewState(props, position) {
+  getNewState(props, position) {
     const results = props.search.results;
     let finalResults = [];
     position = position || this.state.position;
@@ -73,12 +73,12 @@ class EventPager extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(this._getNewState(nextProps, this.state.position));
+    this.setState(this.getNewState(nextProps, this.state.position));
   }
 
   async loadLocation() {
     const position = await getPosition();
-    this.setState(this._getNewState(this.props, position));
+    this.setState(this.getNewState(this.props, position));
   }
 
   componentWillMount() {

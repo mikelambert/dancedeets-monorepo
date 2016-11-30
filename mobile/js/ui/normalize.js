@@ -14,5 +14,5 @@ export function normalize(size: number): number {
 }
 
 export function semiNormalize(size: number, scalingSpeed: number = 0.4): number {
-  return Math.round(size + scalingSpeed * (normalize(size) - size));
+  return Math.round(size + (scalingSpeed * (normalize(size) - size)));
 }

@@ -99,10 +99,11 @@ export async function autoLoginAtStartup(dispatch: Dispatch, secondTime: boolean
   } else if (secondTime || await isRecentlyLoggedIn()) {
     console.log('Fresh access token, completing login!');
     const token = await AccessToken.getCurrentAccessToken();
-    if (token != null) {
-      return await dispatch(loginComplete(token));
-    } else {
+    if (token == null) {
       console.error('We have a recently logged-in token, but no token??');
+      return null;
+    } else {
+      return await dispatch(loginComplete(token));
     }
   } else {
     await refreshFullToken();

@@ -8,21 +8,23 @@ import React from 'react';
 import {
   Image,
   StyleSheet,
+  View,
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
+import type {
+  NavigationSceneRendererProps,
+} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
+import LinearGradient from 'react-native-linear-gradient';
+import { connect } from 'react-redux';
+import {
+  injectIntl,
+  intlShape,
+  defineMessages,
+} from 'react-intl';
 import generateNavigator from '../containers/generateNavigator';
 import type { Navigatable } from '../containers/generateNavigator';
 import ProfilePage from '../containers/Profile';
 import { yellowColors, gradientBottom, gradientTop } from '../Colors';
-import LinearGradient from 'react-native-linear-gradient';
-import {
-  semiNormalize,
-} from '../ui';
-import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
-import { connect } from 'react-redux';
 import EventListContainer from '../events/list';
 import EventPager from '../events/EventPager';
 import {
@@ -31,12 +33,14 @@ import {
   BlogPostContents,
 } from '../learn/BlogList';
 import {
+  semiNormalize,
   ZoomableImage,
 } from '../ui';
 import {
   selectTab,
   canGetValidLoginFor,
 } from '../actions';
+import { User } from '../actions/types';
 import AddEvents from '../containers/AddEvents';
 import NotificationPreferences from '../containers/NotificationPreferences';
 import { track, trackWithEvent } from '../store/track';
@@ -46,9 +50,6 @@ import {
   PlaylistStylesView,
   PlaylistView,
 } from '../learn/playlistViews';
-import type {
-  NavigationSceneRendererProps,
-} from 'NavigationTypeDefinition';
 import {
   EventSignupsView,
 } from '../event_signups/views';
@@ -121,6 +122,11 @@ setDefaultState('EVENT_SIGNUPS_NAV', { key: 'EventSignups', title: 'Battle Signu
 
 
 class GradientTabBar extends React.Component {
+  props: {
+    style: View.propTypes.style;
+    children: Array<React.Element<*>>;
+  }
+
   render() {
     return (<LinearGradient
       start={[0.0, 0.0]} end={[0.0, 1]}
@@ -132,7 +138,18 @@ class GradientTabBar extends React.Component {
   }
 }
 
+type CommonProps = {
+  sceneProps: NavigationSceneRendererProps;
+  navigatable: Navigatable;
+  openAddEvent: (props: any) => void;
+  intl: intlShape;
+};
+
 class _EventView extends React.Component {
+  props: CommonProps & {
+    openAddEvent: (props: any) => void;
+  }
+
   render() {
     const { scene } = this.props.sceneProps;
     const { route } = scene;
@@ -174,6 +191,9 @@ class _EventView extends React.Component {
         />);
       case 'AddEvent':
         return <AddEvents />;
+      default:
+        console.error('Unknown case:', route.key);
+        return null;
     }
   }
 }
@@ -192,6 +212,9 @@ const EventView = connect(
 )(injectIntl(_EventView));
 
 class _LearnView extends React.Component {
+  props: CommonProps & {
+  };
+
   render() {
     const { scene } = this.props.sceneProps;
     const { route } = scene;
@@ -220,12 +243,18 @@ class _LearnView extends React.Component {
         return (<PlaylistView
           playlist={route.tutorial}
         />);
+      default:
+        console.error('Unknown case:', route.key);
+        return null;
     }
   }
 }
 const LearnView = injectIntl(_LearnView);
 
 class _AboutView extends React.Component {
+  props: CommonProps & {
+  };
+
   render() {
     const { scene } = this.props.sceneProps;
     const { route } = scene;
@@ -239,24 +268,35 @@ class _AboutView extends React.Component {
         />);
       case 'NotificationPreferences':
         return <NotificationPreferences>Hey</NotificationPreferences>;
+      default:
+        console.error('Unknown case:', route.key);
+        return null;
     }
   }
 }
 const AboutView = injectIntl(_AboutView);
 
 class _TabbedAppView extends React.Component {
-  event_signups_navigator: ReactElement<any>;
-  event_navigator: ReactElement<any>;
-  learn_navigator: ReactElement<any>;
-  about_navigator: ReactElement<any>;
+  props: {
+    // Self-managed props
+    user: ?User;
+    selectedTab: string;
+    selectTab: (tab: string) => void;
+    intl: intlShape;
+  }
 
   state: {
-    event_signup_user_ids: Array<string>;
+    eventSignupUserIds: Array<string>;
   }
+
+  _eventSignupsNavigator: React.Element<any>;
+  _eventNavigator: React.Element<any>;
+  _learnNavigator: React.Element<any>;
+  _aboutNavigator: React.Element<any>;
 
   constructor(props) {
     super(props);
-    this.state = { event_signup_user_ids: [] };
+    this.state = { eventSignupUserIds: [] };
   }
 
   componentWillMount() {
@@ -264,8 +304,8 @@ class _TabbedAppView extends React.Component {
   }
 
   async loadWhitelist() {
-    const event_signup_user_ids = await RemoteConfig.get('event_signup_user_ids');
-    this.setState({ event_signup_user_ids });
+    const eventSignupUserIds = await RemoteConfig.get('event_signup_user_ids');
+    this.setState({ eventSignupUserIds });
   }
 
   icon(source) {
@@ -274,7 +314,7 @@ class _TabbedAppView extends React.Component {
 
   render() {
     let extraTabs = null;
-    if (this.props.user && this.state.event_signup_user_ids.includes(this.props.user.profile.id)) {
+    if (this.props.user && this.state.eventSignupUserIds.includes(this.props.user.profile.id)) {
       extraTabs = (<TabNavigator.Item
         selected={this.props.selectedTab === 'event_signups'}
         title={'Event Signups'}
@@ -284,7 +324,7 @@ class _TabbedAppView extends React.Component {
         renderSelectedIcon={() => this.icon(require('../containers/icons/events-highlighted.png'))}
         onPress={() => {
           if (this.props.selectedTab === 'event_signups') {
-            this.event_signups_navigator.dispatchProps.goHome();
+            this._eventSignupsNavigator.dispatchProps.goHome();
           } else {
             track('Tab Selected', { Tab: 'Event Signups' });
             this.props.selectTab('event_signups');
@@ -292,7 +332,7 @@ class _TabbedAppView extends React.Component {
         }}
       >
         <EventSignupsNavigator
-          ref={(x) => { this.event_signups_navigator = x; }}
+          ref={(x) => { this._eventSignupsNavigator = x; }}
           renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
             <EventSignupsView sceneProps={sceneProps} navigatable={nav} />
           }
@@ -313,7 +353,7 @@ class _TabbedAppView extends React.Component {
         renderSelectedIcon={() => this.icon(require('../containers/icons/events-highlighted.png'))}
         onPress={() => {
           if (this.props.selectedTab === 'events') {
-            this.event_navigator.dispatchProps.goHome();
+            this._eventNavigator.dispatchProps.goHome();
           } else {
             track('Tab Selected', { Tab: 'Events' });
             this.props.selectTab('events');
@@ -321,7 +361,7 @@ class _TabbedAppView extends React.Component {
         }}
       >
         <EventNavigator
-          ref={(x) => { this.event_navigator = x; }}
+          ref={(x) => { this._eventNavigator = x; }}
           renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
             <EventView sceneProps={sceneProps} navigatable={nav} />
           }
@@ -336,7 +376,7 @@ class _TabbedAppView extends React.Component {
         renderSelectedIcon={() => this.icon(require('../containers/icons/learn-highlighted.png'))}
         onPress={() => {
           if (this.props.selectedTab === 'learn') {
-            this.learn_navigator.dispatchProps.goHome();
+            this._learnNavigator.dispatchProps.goHome();
           } else {
             track('Tab Selected', { Tab: 'Learn' });
             this.props.selectTab('learn');
@@ -345,7 +385,7 @@ class _TabbedAppView extends React.Component {
         }}
       >
         <LearnNavigator
-          ref={(x) => { this.learn_navigator = x; }}
+          ref={(x) => { this._learnNavigator = x; }}
           renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
             <LearnView sceneProps={sceneProps} navigatable={nav} />
           }
@@ -366,7 +406,7 @@ class _TabbedAppView extends React.Component {
         }}
       >
         <AboutNavigator
-          ref={(x) => { this.about_navigator = x; }}
+          ref={(x) => { this._aboutNavigator = x; }}
           renderScene={(sceneProps: NavigationSceneRendererProps, nav: Navigatable) =>
             <AboutView sceneProps={sceneProps} navigatable={nav} />
           }

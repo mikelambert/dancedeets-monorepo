@@ -4,12 +4,12 @@
  * @flow
  */
 
-import * as NavigationStateUtils from 'NavigationStateUtils';
+import * as NavigationStateUtils from 'react-native/Libraries/NavigationExperimental/NavigationStateUtils';
+import type { NavigationState, NavigationRoute } from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
 
 import { NAV_PUSH, NAV_POP, NAV_JUMP_TO_KEY, NAV_JUMP_TO_INDEX, NAV_RESET, NAV_SWAP } from '../actions';
 
 import type { Action } from '../actions/types';
-import type { NavigationState, NavigationRoute } from 'NavigationTypeDefinition';
 
 // This is used to track the 'default' route for each possible navigator,
 // that can be configured from outside of this module

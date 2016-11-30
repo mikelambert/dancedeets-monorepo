@@ -129,11 +129,11 @@ export async function feed(url: string) {
   return results;
 }
 
-export async function search(location: string, keywords: string, time_period: TimePeriod) {
+export async function search(location: string, keywords: string, timePeriod: TimePeriod) {
   const results = await timeout(10000, performRequest('search', {
     location,
     keywords,
-    time_period,
+    time_period: timePeriod,
   }));
   results.results = results.results.map(x => new Event(x));
   results.results = sort(results.results, resultEvent => moment(resultEvent.start_time).toISOString());

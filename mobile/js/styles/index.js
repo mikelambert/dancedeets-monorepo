@@ -16,6 +16,13 @@ const messages = defineMessages({
   },
 });
 
+export type Style = {
+  title: string;
+  thumbnail: any;
+  width: number;
+  height: number;
+};
+
 export default {
   break: {
     title: 'Bboy / Bgirl',

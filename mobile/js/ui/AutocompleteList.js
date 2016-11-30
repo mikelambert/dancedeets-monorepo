@@ -101,7 +101,7 @@ export default class AutocompleteList extends React.Component {
     (this: any).onTextInputFocus = this.onTextInputFocus.bind(this);
     (this: any)._onPress = this._onPress.bind(this);
     (this: any).onTextInputChangeText = this.onTextInputChangeText.bind(this);
-    (this: any)._renderRow = this._renderRow.bind(this);
+    (this: any).renderRow = this.renderRow.bind(this);
   }
 
   buildRowsFromResults(results: Result[]): Result[] {
@@ -287,7 +287,7 @@ export default class AutocompleteList extends React.Component {
     );
   }
 
-  _renderLoader(rowData: Result) {
+  renderLoader(rowData: Result) {
     if (rowData.isLoading === true) {
       return (
         <HorizontalView
@@ -300,7 +300,7 @@ export default class AutocompleteList extends React.Component {
     return null;
   }
 
-  _renderRow(rowData: Result) {
+  renderRow(rowData: Result) {
     let emojiFlag = null;
         // Emojiflags don't work so well on Android?
     if (Platform.OS === 'ios') {
@@ -328,7 +328,7 @@ export default class AutocompleteList extends React.Component {
             >
               {rowData.description}
             </Text>
-            {this._renderLoader(rowData)}
+            {this.renderLoader(rowData)}
           </HorizontalView>
         </View>
       </TouchableHighlight>
@@ -353,7 +353,7 @@ export default class AutocompleteList extends React.Component {
           keyboardDismissMode="on-drag"
           style={[defaultStyles.listView, this.props.styles.listView, style]}
           dataSource={this.state.dataSource}
-          renderRow={this._renderRow}
+          renderRow={this.renderRow}
           automaticallyAdjustContentInsets={false}
 
           {...otherProps}

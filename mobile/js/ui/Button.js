@@ -4,7 +4,6 @@
  * @flow
  */
 
-import { purpleColors, yellowColors, redColors } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import React from 'react';
 import {
@@ -14,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { purpleColors, yellowColors, redColors } from '../Colors';
 import { HorizontalView } from './Misc';
 import { Text } from './DDText';
 import {
@@ -24,11 +24,12 @@ type Props = {
   icon: ?number;
   caption: string;
   style: any;
-  onPress: () => Promise<void> | () => void;
+  onPress: () => (Promise<void> | void);
   size: 'small' | 'large';
   textStyle: any;
   color: 'purple' | 'yellow' | 'red';
   testID: ?string;
+  isLoading: boolean;
   enabled: ?boolean;
 };
 
@@ -47,7 +48,9 @@ class Button extends React.Component {
     enabled: true,
   };
 
-  _renderRealContent() {
+  props: Props;
+
+  renderRealContent() {
     const caption = this.props.caption;
     let icon;
     if (this.props.icon) {
@@ -64,7 +67,7 @@ class Button extends React.Component {
     return content;
   }
 
-  _renderContent() {
+  renderContent() {
     let contentOpacity = 1.0;
     let activityIndicator = null;
     if (this.props.isLoading) {
@@ -82,7 +85,7 @@ class Button extends React.Component {
     return (<View>
       {activityIndicator}
       <View style={{ opacity: contentOpacity }}>
-        {this._renderRealContent()}
+        {this.renderRealContent()}
       </View>
     </View>);
   }
@@ -103,7 +106,7 @@ class Button extends React.Component {
       colors={colors}
       style={[styles.button, size]}
     >
-      {this._renderContent()}
+      {this.renderContent()}
     </LinearGradient>);
 
     if (this.props.enabled) {

@@ -6,9 +6,15 @@
 
 import React from 'react';
 import { View } from 'react-native';
-import { ShareDialog } from 'react-native-fbsdk';
+import type {
+  ShareContent,
+} from 'react-native-fbsdk/js/models/FBShareContent';
+import {
+  ShareDialog,
+} from 'react-native-fbsdk';
 import {
   injectIntl,
+  intlShape,
   defineMessages,
 } from 'react-intl';
 import Button from '../Button';
@@ -22,6 +28,10 @@ const messages = defineMessages({
 });
 
 class _FBShareButton extends React.Component {
+  props: {
+    intl: intlShape;
+    shareContent: ShareContent;
+  };
 
   render() {
     return (

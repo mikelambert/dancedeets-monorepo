@@ -15,9 +15,17 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
+import {
+  injectIntl,
+  intlShape,
+  defineMessages,
+} from 'react-intl';
+import { connect } from 'react-redux';
+import YouTube from 'react-native-youtube';
+import shallowEqual from 'fbjs/lib/shallowEqual';
+import styleEqual from 'style-equal';
 import _ from 'lodash/string';
 import { track } from '../store/track';
-import YouTube from 'react-native-youtube';
 import { FeedListView } from './BlogList';
 import {
   Button,
@@ -27,23 +35,18 @@ import {
 import { getRemoteTutorials } from './liveLearnConfig';
 import { Playlist, Video } from './playlistModels';
 import { purpleColors } from '../Colors';
-import shallowEqual from 'fbjs/lib/shallowEqual';
-import styleEqual from 'style-equal';
-import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
 import languages from '../languages';
 import {
   semiNormalize,
   normalize,
 } from '../ui/normalize';
-import { connect } from 'react-redux';
 import type { Dispatch } from '../actions/types';
 import {
   setTutorialVideoIndex,
 } from '../actions';
 import { googleKey } from '../keys';
+import type { Style } from '../styles';
+
 const Mailer = require('NativeModules').RNMail;
 
 type PlaylistStylesViewProps = {
@@ -124,14 +127,14 @@ const boxMargin = 5;
 
 function listViewWidth() {
   const fullBox = boxWidth + boxMargin;
-  return Math.floor(Dimensions.get('window').width / fullBox) * fullBox - 10;
+  return Math.floor((Dimensions.get('window').width / fullBox) * fullBox) - 10;
 }
 
 function sortedTutorials(tutorials, language) {
   const nativeTutorials = [];
   const foreignTutorials = [];
   tutorials.forEach((tut) => {
-    if (tut.language == language) {
+    if (tut.language === language) {
       nativeTutorials.push(tut);
     } else {
       foreignTutorials.push(tut);
@@ -141,9 +144,16 @@ function sortedTutorials(tutorials, language) {
 }
 
 class _PlaylistStylesView extends React.Component {
+  props: {
+    onSelected: (style: Style, playlists: Array<Playlist>) => void;
+
+    // Self-managed props
+    intl: intlShape;
+  }
+
   state: {
     stylePlaylists: [];
-  };
+  }
 
   constructor(props: PlaylistStylesViewProps) {
     super(props);
@@ -232,6 +242,14 @@ type PlaylistListViewProps = {
 };
 
 class _PlaylistListView extends React.Component {
+  props: {
+    playlists: Array<Playlist>;
+    onSelected: (playlist: Playlist) => ();
+
+    // Self-managed props
+    intl: intlShape;
+  }
+
   constructor(props: PlaylistListViewProps) {
     super(props);
     (this: any).renderRow = this.renderRow.bind(this);
@@ -239,10 +257,23 @@ class _PlaylistListView extends React.Component {
     (this: any).renderFooter = this.renderFooter.bind(this);
   }
 
+  sendTutorialContactEmail() {
+    track('Contact Tutorials');
+    Mailer.mail({
+      subject: 'More Tutorials',
+      recipients: ['advertising@dancedeets.com'],
+      body: '',
+    }, (error, event) => {
+      if (error) {
+        AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
+      }
+    });
+  }
+
   renderRow(playlist: Playlist) {
     const duration = formatDuration(this.props.intl.formatMessage, playlist.getDurationSeconds());
     let title = playlist.title;
-    if (this.props.intl.locale != playlist.language) {
+    if (this.props.intl.locale !== playlist.language) {
       const localizedLanguage = languages[this.props.intl.locale][playlist.language];
       title = this.props.intl.formatMessage(messages.languagePrefixedTitle, { language: _.upperFirst(localizedLanguage), title: playlist.title });
     }
@@ -301,19 +332,6 @@ class _PlaylistListView extends React.Component {
     </View>);
   }
 
-  sendTutorialContactEmail() {
-    track('Contact Tutorials');
-    Mailer.mail({
-      subject: 'More Tutorials',
-      recipients: ['advertising@dancedeets.com'],
-      body: '',
-    }, (error, event) => {
-      if (error) {
-        AlertIOS.alert('Error', 'Please email us at feedback@dancedeets.com');
-      }
-    });
-  }
-
   render() {
     return (<FeedListView
       items={this.props.playlists}
@@ -363,10 +381,14 @@ export class SectionedListView extends React.Component {
       sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
     });
     this.state = { dataSource };
-    this.state = this._getNewState(this.props.items, this.props.sectionHeaders);
+    this.state = this.getNewState(this.props.items, this.props.sectionHeaders);
   }
 
-  _getNewState(items: {[key: any]: any}, sectionHeaders: []) {
+  componentWillReceiveProps(nextProps: SectionedListViewProps) {
+    this.setState(this.getNewState(nextProps.items, nextProps.sectionHeaders));
+  }
+
+  getNewState(items: {[key: any]: any}, sectionHeaders: []) {
     const state = {
       ...this.state,
       dataSource: this.state.dataSource.cloneWithRowsAndSections(items, sectionHeaders),
@@ -374,14 +396,10 @@ export class SectionedListView extends React.Component {
     return state;
   }
 
-  componentWillReceiveProps(nextProps: SectionedListViewProps) {
-    this.setState(this._getNewState(nextProps.items, nextProps.sectionHeaders));
-  }
-
   render() {
     const { sectionHeaders, items, ...otherProps } = this.props;
     return (<ListView
-      ref={x => this.listView = x}
+      ref={x => { this.listView = x; }}
       dataSource={this.state.dataSource}
       initialListSize={10}
       pageSize={5}
@@ -471,73 +489,31 @@ class _PlaylistView extends React.Component {
     }
   }
 
-  renderHeader() {
-    const subtitle = this.props.playlist.subtitle ? <Text style={styles.playlistSubtitle}>{this.props.playlist.subtitle}</Text> : null;
-    const duration = formatDuration(this.props.intl.formatMessage, this.props.playlist.getDurationSeconds());
-    return (<View style={styles.playlistRow}>
-      <Text style={styles.playlistTitle}>{this.props.playlist.title}</Text>
-      {subtitle}
-      <Text style={styles.playlistSubtitle}>{this.props.playlist.author} - {duration}</Text>
-    </View>);
+  onListViewScroll(e) {
+    const top = e.nativeEvent.contentOffset.y;
+    const bottom = top + e.nativeEvent.layoutMeasurement.height;
+    this.viewDimensions = { top, bottom };
   }
 
-  renderRow(rowData: any, section: string, row: string) {
-    const { video, selected } = rowData;
-    const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
-    const sectionIndex = this.props.playlist.getSectionHeaders().indexOf(section);
-    return (<TouchableHighlight
-      underlayColor={purpleColors[0]}
-      activeOpacity={0.5}
-      onPress={() => {
-        const index = this.props.playlist.getVideoIndex(video);
-
-        track('Tutorial Video Selected', {
-          tutorialName: this.props.playlist.title,
-          tutorialStyle: this.props.playlist.style,
-          tutorialVideoIndex: index,
-        });
-
-        this.props.setTutorialVideoIndex(index);
-      }}
-      onLayout={(e) => {
-        const rowIndex = parseInt(row);
-        const top = e.nativeEvent.layout.y;
-        const bottom = top + e.nativeEvent.layout.height;
-        this.setCachedLayoutForRow(sectionIndex, rowIndex, top, bottom);
-      }}
-    >
-      <View>
-        <HorizontalView style={[styles.videoRow, selected ? styles.videoActiveRow : styles.videoInactiveRow]}>
-          <Image source={require('./images/play.png')} style={styles.videoPlay} />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.videoTitle}>{video.title}</Text>
-            <Text style={styles.videoDuration}>{duration}</Text>
-          </View>
-        </HorizontalView>
-      </View>
-    </TouchableHighlight>);
-  }
-
-  setCachedLayoutForRow(section, row, top, bottom) {
-    if (!this.cachedLayout[section]) {
-      this.cachedLayout[section] = [];
+  onChangeState(props: Object) {
+    if (props.state === 'ended') {
+      // next video, if we're not at the end!
+      const newIndex = this.props.tutorialVideoIndex + 1;
+      if (newIndex < this.props.playlist.getVideoCount()) {
+        // scroll it into view
+        this.ensureTutorialVisible(newIndex);
+        // and select it, playing the video
+        this.props.setTutorialVideoIndex(newIndex);
+      }
     }
-    this.cachedLayout[section][row] = { top, bottom };
   }
 
-  renderSectionHeader(data: Video[], sectionId: string) {
-    // If there's only one section, let's ignore showing the section header.
-    // It's just confusing relative to the real header.
-    if (this.props.playlist.getSectionHeaders().length === 1) {
-      return null;
-    }
-    const sectionData = JSON.parse(sectionId);
-    const duration = formatDuration(this.props.intl.formatMessage, sectionData.durationSeconds);
-    return (<View style={styles.sectionRow}>
-      <Text style={styles.sectionTitle}>{sectionData.title}</Text>
-      <Text style={styles.sectionDuration}>{duration}</Text>
-    </View>);
+  onListViewLayout(e) {
+    const top = e.nativeEvent.layout.y;
+    const bottom = top + e.nativeEvent.layout.height;
+    this.viewDimensions = { top, bottom };
   }
+
 
   getSelectedVideo() {
     return this.props.playlist.getVideo(this.props.tutorialVideoIndex);
@@ -570,29 +546,72 @@ class _PlaylistView extends React.Component {
     }
   }
 
-  onListViewScroll(e) {
-    const top = e.nativeEvent.contentOffset.y;
-    const bottom = top + e.nativeEvent.layoutMeasurement.height;
-    this.viewDimensions = { top, bottom };
-  }
-
-  onChangeState(props: Object) {
-    if (props.state === 'ended') {
-      // next video, if we're not at the end!
-      const newIndex = this.props.tutorialVideoIndex + 1;
-      if (newIndex < this.props.playlist.getVideoCount()) {
-        // scroll it into view
-        this.ensureTutorialVisible(newIndex);
-        // and select it, playing the video
-        this.props.setTutorialVideoIndex(newIndex);
-      }
+  setCachedLayoutForRow(section, row, top, bottom) {
+    if (!this.cachedLayout[section]) {
+      this.cachedLayout[section] = [];
     }
+    this.cachedLayout[section][row] = { top, bottom };
   }
 
-  onListViewLayout(e) {
-    const top = e.nativeEvent.layout.y;
-    const bottom = top + e.nativeEvent.layout.height;
-    this.viewDimensions = { top, bottom };
+  renderHeader() {
+    const subtitle = this.props.playlist.subtitle ? <Text style={styles.playlistSubtitle}>{this.props.playlist.subtitle}</Text> : null;
+    const duration = formatDuration(this.props.intl.formatMessage, this.props.playlist.getDurationSeconds());
+    return (<View style={styles.playlistRow}>
+      <Text style={styles.playlistTitle}>{this.props.playlist.title}</Text>
+      {subtitle}
+      <Text style={styles.playlistSubtitle}>{this.props.playlist.author} - {duration}</Text>
+    </View>);
+  }
+
+  renderRow(rowData: any, section: string, row: string) {
+    const { video, selected } = rowData;
+    const duration = formatDuration(this.props.intl.formatMessage, video.getDurationSeconds());
+    const sectionIndex = this.props.playlist.getSectionHeaders().indexOf(section);
+    return (<TouchableHighlight
+      underlayColor={purpleColors[0]}
+      activeOpacity={0.5}
+      onPress={() => {
+        const index = this.props.playlist.getVideoIndex(video);
+
+        track('Tutorial Video Selected', {
+          tutorialName: this.props.playlist.title,
+          tutorialStyle: this.props.playlist.style,
+          tutorialVideoIndex: index,
+        });
+
+        this.props.setTutorialVideoIndex(index);
+      }}
+      onLayout={(e) => {
+        const rowIndex = parseInt(row, 10);
+        const top = e.nativeEvent.layout.y;
+        const bottom = top + e.nativeEvent.layout.height;
+        this.setCachedLayoutForRow(sectionIndex, rowIndex, top, bottom);
+      }}
+    >
+      <View>
+        <HorizontalView style={[styles.videoRow, selected ? styles.videoActiveRow : styles.videoInactiveRow]}>
+          <Image source={require('./images/play.png')} style={styles.videoPlay} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.videoTitle}>{video.title}</Text>
+            <Text style={styles.videoDuration}>{duration}</Text>
+          </View>
+        </HorizontalView>
+      </View>
+    </TouchableHighlight>);
+  }
+
+  renderSectionHeader(data: Video[], sectionId: string) {
+    // If there's only one section, let's ignore showing the section header.
+    // It's just confusing relative to the real header.
+    if (this.props.playlist.getSectionHeaders().length === 1) {
+      return null;
+    }
+    const sectionData = JSON.parse(sectionId);
+    const duration = formatDuration(this.props.intl.formatMessage, sectionData.durationSeconds);
+    return (<View style={styles.sectionRow}>
+      <Text style={styles.sectionTitle}>{sectionData.title}</Text>
+      <Text style={styles.sectionDuration}>{duration}</Text>
+    </View>);
   }
 
   render() {

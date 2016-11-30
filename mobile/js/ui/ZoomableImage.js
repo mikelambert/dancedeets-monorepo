@@ -21,7 +21,9 @@
  *
  * @flow
  */
-import React from 'react';
+import React, {
+  Element,
+} from 'react';
 import {
   Dimensions,
   Image,
@@ -44,7 +46,7 @@ export default class ZoomableImage extends React.Component {
     isZoomed: boolean;
   };
 
-  zoomable_scroll: ReactElement<ScrollView>;
+  _zoomableScroll: Element<ScrollView>;
 
   constructor() {
     super();
@@ -56,19 +58,18 @@ export default class ZoomableImage extends React.Component {
     (this: any).onZoomChanged = this.onZoomChanged.bind(this);
     (this: any).toggleZoom = this.toggleZoom.bind(this);
   }
-
 /*
   componentDidMount() {
     const zoomScale = this.getNaturalZoomScale();
     console.log(zoomScale);
-    this.zoomable_scroll.setNativeProps({
+    this._zoomableScroll.setNativeProps({
       //zoomScale: zoomScale,
     });
     console.log(this.props);
     console.log(this.props.width * zoomScale);
-    //this.zoomable_scroll.scrollTo({x: 205, y: 0, animated: false});
+    //this._zoomableScroll.scrollTo({x: 205, y: 0, animated: false});
  //= 0.5;
-    this.zoomable_scroll.scrollResponderZoomTo({
+    this._zoomableScroll.scrollResponderZoomTo({
       width: this.props.width,
       height: this.props.height,
       x: 0,
@@ -85,29 +86,24 @@ export default class ZoomableImage extends React.Component {
   }
 */
 
-  render() {
-    const windowSize = Dimensions.get('window');
-    const widthScale = windowSize.width / this.props.width;
-    const heightScale = windowSize.height / this.props.height;
-    const zoomScale = Math.min(widthScale, heightScale);
-    const horizontal = (widthScale < heightScale);
+  onZoomChanged(e: any) {
+    this.setState({ isZoomed: e.nativeEvent.zoomScale > 1 });
+  }
 
-    if (Platform.OS == 'android') {
-      return (<PhotoView
-        maximumZoomScale={Math.max(zoomScale, 4.0)}
-        minimumZoomScale={Math.min(zoomScale, 1.0)}
-        style={[styles.image, { flex: 1, width: this.props.width, height: this.props.height }]}
-        source={{ uri: this.props.url }}
-      />);
-    } else {
-      return this.renderIOS(zoomScale, horizontal);
+  toggleZoom(e: any) {
+    const timestamp = new Date().getTime();
+    if (timestamp - this.state.lastTapTimestamp <= 500) {
+      const { locationX, locationY } = e.nativeEvent;
+      const size = this.state.isZoomed ? { width: 10000, height: 10000 } : { width: 0, height: 0 };
+      this._zoomableScroll.scrollResponderZoomTo({ x: locationX, y: locationY, ...size });
     }
+    this.setState({ lastTapTimestamp: timestamp });
   }
 
   renderIOS(zoomScale: number, horizontal: boolean) {
     return (
       <ScrollView
-        ref={(x) => { this.zoomable_scroll = x; }}
+        ref={(x) => { this._zoomableScroll = x; }}
         onScroll={this.onZoomChanged}
         scrollEventThrottle={100}
         scrollsToTop={false}
@@ -132,18 +128,24 @@ export default class ZoomableImage extends React.Component {
     );
   }
 
-  toggleZoom(e: any) {
-    const timestamp = new Date().getTime();
-    if (timestamp - this.state.lastTapTimestamp <= 500) {
-      let { locationX, locationY } = e.nativeEvent;
-      const size = this.state.isZoomed ? { width: 10000, height: 10000 } : { width: 0, height: 0 };
-      this.zoomable_scroll.scrollResponderZoomTo({ x: locationX, y: locationY, ...size });
-    }
-    this.setState({ lastTapTimestamp: timestamp });
-  }
+  render() {
+    const windowSize = Dimensions.get('window');
+    const widthScale = windowSize.width / this.props.width;
+    const heightScale = windowSize.height / this.props.height;
+    const zoomScale = Math.min(widthScale, heightScale);
+    const horizontal = (widthScale < heightScale);
 
-  onZoomChanged(e: any) {
-    this.setState({ isZoomed: e.nativeEvent.zoomScale > 1 });
+    if (Platform.OS === 'android') {
+      return (<PhotoView
+        maximumZoomScale={Math.max(zoomScale, 4.0)}
+        minimumZoomScale={Math.min(zoomScale, 1.0)}
+        style={[styles.image, { flex: 1, width: this.props.width, height: this.props.height }]}
+        source={{ uri: this.props.url }}
+      />);
+    } else if (Platform.OS === 'ios') {
+      return this.renderIOS(zoomScale, horizontal);
+    }
+    return null;
   }
 }
 

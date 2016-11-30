@@ -39,13 +39,13 @@ export function processUrl(url: string) {
   };
 }
 
-export function appNavigateToEvent(event: Event): ThunkAction {
+export function appNavigateToEvent(navigateEvent: Event): ThunkAction {
   return async (dispatch: Dispatch) => {
     const navName = 'EVENT_NAV';
     const destState = {
       key: 'EventView',
-      title: event.name,
-      event,
+      title: navigateEvent.name,
+      event: navigateEvent,
     };
     await dispatch(selectTab('events'));
     await dispatch(navigatePop(navName));

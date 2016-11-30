@@ -3,12 +3,14 @@
  *
  * @flow
  */
-import React from 'react';
+import React, {
+  Element,
+} from 'react';
 import {
   Animated,
-  Image,
   View,
 } from 'react-native';
+import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared/stack/event/SyntheticEvent';
 
 type Props = {
   originalWidth: number;
@@ -18,6 +20,10 @@ type Props = {
 };
 
 export default class ProportionalImage extends React.Component {
+  static defaultProps = {
+    duration: 200,
+  };
+
   props: Props;
 
   state: {
@@ -25,8 +31,6 @@ export default class ProportionalImage extends React.Component {
     width: ?number;
     opacity: any;
   };
-
-  view: ReactElement<View>;
 
   constructor(props: Props) {
     super(props);
@@ -37,14 +41,6 @@ export default class ProportionalImage extends React.Component {
     };
     (this: any).onLayout = this.onLayout.bind(this);
     (this: any).onLoad = this.onLoad.bind(this);
-  }
-
-  static defaultProps = {
-    duration: 200,
-  };
-
-  setNativeProps(nativeProps: Object) {
-    this.view.setNativeProps(nativeProps);
   }
 
   onLayout(e: SyntheticEvent) {
@@ -79,6 +75,12 @@ export default class ProportionalImage extends React.Component {
       duration: this.props.duration,
     }).start();
   }
+
+  setNativeProps(nativeProps: Object) {
+    this.view.setNativeProps(nativeProps);
+  }
+
+  view: Element<View>;
 
   render() {
     // We catch the onLayout in the view, find the size, then resize the child (before it is laid out?)

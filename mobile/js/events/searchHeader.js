@@ -12,14 +12,22 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import SyntheticEvent from 'react-native/Libraries/Renderer/src/renderers/shared/stack/event/SyntheticEvent';
 import Locale from 'react-native-locale';
 import { connect } from 'react-redux';
+import {
+  defineMessages,
+  injectIntl,
+  intlShape,
+} from 'react-intl';
 import {
   AutocompleteList,
   Button,
   defaultFont,
   HorizontalView,
 } from '../ui';
+import { Event } from '../events/models';
+import type { SearchQuery } from '../events/search';
 import {
   performSearch,
   toggleLayout,
@@ -30,10 +38,6 @@ import {
   gradientTop,
   lightPurpleColors,
 } from '../Colors';
-import {
-  defineMessages,
-  injectIntl,
-} from 'react-intl';
 
 const messages = defineMessages({
   location: {
@@ -59,32 +63,48 @@ const messages = defineMessages({
 });
 
 class SearchInput extends React.Component {
+  props: {
+    onFocus: () => void;
+    onBlur: () => void;
+    onSubmitEditing: () => void;
+  }
   state: {
     focused: boolean,
-  };
-  textInput: ReactElement<TextInput>;
+  }
+
+  _textInput: React.Element<TextInput>;
 
   constructor(props) {
     super(props);
     (this: any).focus = this.focus.bind(this);
     (this: any).blur = this.blur.bind(this);
     (this: any).animatedRelayout = this.animatedRelayout.bind(this);
-    UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
     this.state = {
       focused: false,
     };
   }
 
   animatedRelayout() {
-    this.setState({ focused: this.textInput.isFocused() });
+    this.setState({ focused: this._textInput.isFocused() });
     LayoutAnimation.easeInEaseOut();
+  }
+
+  blur() {
+    this._textInput.blur();
+  }
+
+  focus() {
+    this._textInput.focus();
   }
 
   render() {
     const { style, ...otherProps } = { style: {}, ...this.props };
     return (<TextInput
       {...otherProps}
-      ref={(x) => { this.textInput = x; }}
+      ref={(x) => { this._textInput = x; }}
       style={[defaultFont, styles.searchField, this.state.focused ? styles.focusedField : {}, style]}
       placeholderTextColor="rgba(255, 255, 255, 0.5)"
       keyboardAppearance="dark"
@@ -116,27 +136,35 @@ class SearchInput extends React.Component {
         if (this.props.onSubmitEditing) {
           this.props.onSubmitEditing();
         }
-        this.textInput.blur();
+        this._textInput.blur();
       }}
     />);
   }
 
-  blur() {
-    this.textInput.blur();
-  }
-
-  focus() {
-    this.textInput.focus();
-  }
 }
 
 class _SearchHeader extends React.Component {
+  props: {
+    onAddEvent: () => void;
+    children: Array<React.Element<*>>;
+
+    // Self-managed props
+    intl: intlShape;
+    listLayout: boolean,
+    searchQuery: SearchQuery,
+    updateLocation: (location: string) => void;
+    updateKeywords: (keywords: string) => void;
+    performSearch: () => Promise<void>;
+    toggleLayout: () => Promise<void>;
+  }
+
   state: {
     height: number;
-  };
-  location: ReactElement<TextInput>;
-  keywords: ReactElement<TextInput>;
-  location_autocomplete: ReactElement<AutocompleteList>;
+  }
+
+  _location: React.Element<TextInput>;
+  _keywords: React.Element<TextInput>;
+  _locationAutocomplete: React.Element<AutocompleteList>;
 
   constructor(props) {
     super(props);
@@ -160,33 +188,33 @@ class _SearchHeader extends React.Component {
         blurType="dark"
       >
         <SearchInput
-          ref={(x) => { this.location = x; }}
+          ref={(x) => { this._location = x; }}
           placeholder={this.props.intl.formatMessage(messages.location)}
           returnKeyType="search"
           onChangeText={(text) => {
-            if (this.props.searchQuery.location != text) {
+            if (this.props.searchQuery.location !== text) {
               this.props.updateLocation(text);
-              this.location_autocomplete.onTextInputChangeText(text);
+              this._locationAutocomplete.onTextInputChangeText(text);
             }
           }}
           onFocus={() => {
-            this.location_autocomplete.onTextInputFocus();
+            this._locationAutocomplete.onTextInputFocus();
           }}
           onBlur={() => {
-            this.location_autocomplete.onTextInputBlur();
+            this._locationAutocomplete.onTextInputBlur();
           }}
           onSubmitEditing={() => {
-            this.location_autocomplete.onTextInputBlur();
+            this._locationAutocomplete.onTextInputBlur();
             this.props.performSearch();
           }}
           value={this.props.searchQuery.location}
         />
         <SearchInput
-          ref={(x) => { this.keywords = x; }}
+          ref={(x) => { this._keywords = x; }}
           placeholder={this.props.intl.formatMessage(messages.keywords)}
           returnKeyType="search"
           onChangeText={(text) => {
-            if (this.props.searchQuery.keywords != text) {
+            if (this.props.searchQuery.keywords !== text) {
               this.props.updateKeywords(text);
             }
           }}
@@ -208,14 +236,14 @@ class _SearchHeader extends React.Component {
       </HorizontalView>
       {this.props.children}
       <AutocompleteList
-        ref={(x) => { this.location_autocomplete = x; }}
+        ref={(x) => { this._locationAutocomplete = x; }}
         style={{ top: this.state.height }}
         textValue={() => this.props.searchQuery.location}
         queryLanguage={Locale.constants().localeIdentifier}
         currentLocationLabel={this.props.intl.formatMessage(messages.currentLocation)}
         onLocationSelected={async (text) => {
           await this.props.updateLocation(text);
-          this.location.blur();
+          this._location.blur();
           await this.props.performSearch();
         }}
         predefinedPlaces={this.props.intl.formatMessage(messages.locations).split('\n').map(x => ({ description: x }))}

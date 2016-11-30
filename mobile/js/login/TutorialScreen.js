@@ -86,7 +86,7 @@ const TopView = injectIntl(_TopView);
 
 class _TutorialScreen extends React.Component {
   render() {
-    const pages = PAGES.map((val, i) => this._renderPage(i));
+    const pages = PAGES.map((val, i) => this.renderPage(i));
     return (<Carousel
       indicatorOffset={0}
       indicatorColor="#FFFFFF"
@@ -99,8 +99,8 @@ class _TutorialScreen extends React.Component {
     </Carousel>);
   }
 
-  _renderPage(pageId: number) {
-    const contents = this._renderPageContents(pageId);
+  renderPage(pageId: number) {
+    const contents = this.renderPageContents(pageId);
     return (<View
       style={{
         flex: 1,
@@ -118,7 +118,7 @@ class _TutorialScreen extends React.Component {
     </View>);
   }
 
-  _renderPageContents(pageID: number) {
+  renderPageContents(pageID: number) {
     // We manually insert a bottomFade into each page below,
     // so that we can stick buttons/links/text on top of the fade.
 

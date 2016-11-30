@@ -16,7 +16,7 @@ async function loadConfig() {
 
 loadConfig();
 
-export async function get(value: string) {
+export async function get(value: string): any {
   const result = await RemoteConfig.getString(value);
   if (result) {
     return JSON.parse(result);

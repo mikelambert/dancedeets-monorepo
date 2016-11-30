@@ -12,6 +12,10 @@ import {
 } from 'react-native';
 
 export default class LaunchScreen extends React.Component {
+  props: {
+    children: Array<React.Element<*>>;
+  }
+
   render() {
     return (<Image
       style={styles.container}

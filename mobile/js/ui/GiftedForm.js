@@ -8,6 +8,7 @@ import React from 'react';
 import {
   View,
 } from 'react-native';
+import { GiftedForm } from 'react-native-gifted-form';
 import _ from 'lodash/string';
 import {
   purpleColors,
@@ -16,7 +17,6 @@ import {
 import Button from './Button';
 import Card from './Card';
 import { defaultFont } from './DDText';
-import { GiftedForm } from 'react-native-gifted-form';
 
 
 export class MyGiftedSubmitWidget extends GiftedForm.SubmitWidget {
@@ -25,7 +25,6 @@ export class MyGiftedSubmitWidget extends GiftedForm.SubmitWidget {
     return (
       <View>
         <Button
-          ref="submitButton"
           textStyle={this.getStyle('textSubmitButton')}
           disabledStyle={this.getStyle('disabledSubmitButton')}
 

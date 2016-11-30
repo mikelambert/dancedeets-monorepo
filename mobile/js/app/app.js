@@ -21,11 +21,16 @@ import TabbedApp from '../containers/TabbedApp';
 import { gradientTop } from '../Colors';
 import { setup as setupNotifications } from '../notifications/setup';
 import { processUrl } from '../actions';
+import type { State } from '../reducers/user';
 
 class App extends React.Component {
+  props: {
+    processUrl: (url: string) => void;
+    userState: State;
+  };
+
   constructor(props, context) {
     super(props, context);
-    (this: any).handleAppStateChange = this.handleAppStateChange.bind(this);
     (this: any).componentDidMount = this.componentDidMount.bind(this);
     (this: any).handleOpenURL = this.handleOpenURL.bind(this);
     setupNotifications(context.store.dispatch, context.intl);
@@ -33,7 +38,6 @@ class App extends React.Component {
 
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
-    this.loadAppData();
     CodePush.sync({ installMode: CodePush.InstallMode.ON_NEXT_RESUME, minimumBackgroundDuration: 60 * 5 });
     Linking.addEventListener('url', this.handleOpenURL);
   }
@@ -43,23 +47,18 @@ class App extends React.Component {
     Linking.removeEventListener('url', this.handleOpenURL);
   }
 
-  loadAppData() {
-    // TODO: Download any app-wide data we need, here.
-  }
-
   handleOpenURL(event) {
     this.props.processUrl(event.url);
   }
 
   handleAppStateChange(appState) {
     if (appState === 'active') {
-      this.loadAppData();
       CodePush.sync({ installMode: CodePush.InstallMode.ON_NEXT_RESUME, minimumBackgroundDuration: 60 * 5 });
     }
   }
 
   render() {
-    if (!this.props.user.isLoggedIn && !this.props.user.hasSkippedLogin) {
+    if (!this.props.userState.isLoggedIn && !this.props.userState.hasSkippedLogin) {
       return <LoginFlow />;
     }
     return (
@@ -81,7 +80,7 @@ App.contextTypes = {
 };
 export default connect(
   store => ({
-    user: store.user,
+    userState: store.user,
   }),
   dispatch => ({
     processUrl: event => dispatch(processUrl(event)),

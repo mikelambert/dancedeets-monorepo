@@ -15,8 +15,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {
+  injectIntl,
+  intlShape,
+  defineMessages,
+} from 'react-intl';
+import Locale from 'react-native-locale';
+import { connect } from 'react-redux';
+import MapView from 'react-native-maps';
+import GoogleApiAvailability from 'react-native-google-api-availability';
+import moment from 'moment';
+import geolib from 'geolib';
+import url from 'url';
 import _ from 'lodash/string';
 import querystring from 'querystring';
+import {
+  formatStartEnd,
+} from 'dancedeets-common/dates';
 import {
   Autolink,
   Button,
@@ -30,11 +45,8 @@ import {
   semiNormalize,
   Text,
 } from '../ui';
-import Locale from 'react-native-locale';
-import { connect } from 'react-redux';
+import type { User } from '../actions/types';
 import { Event, Venue } from './models';
-import MapView from 'react-native-maps';
-import moment from 'moment';
 import { linkColor, yellowColors } from '../Colors';
 import { add as CalendarAdd } from '../api/calendar';
 import { performRequest } from '../api/fb';
@@ -44,19 +56,9 @@ import type { ThunkAction, Dispatch } from '../actions/types';
 import type { TranslatedEvent } from '../reducers/translate';
 import { weekdayDateTime } from '../formats';
 import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
-import geolib from 'geolib';
-import {
   toggleEventTranslation,
   canGetValidLoginFor,
 } from '../actions';
-import url from 'url';
-import GoogleApiAvailability from 'react-native-google-api-availability';
-import {
-  formatStartEnd,
-} from 'dancedeets-common/dates';
 
 const messages = defineMessages({
   addToCalendar: {
@@ -159,7 +161,7 @@ const messages = defineMessages({
 class SubEventLine extends React.Component {
   props: {
     icon: any;
-    children?: ReactElement<any>;
+    children?: React.Element<*>;
   };
 
   render() {
@@ -175,6 +177,10 @@ class SubEventLine extends React.Component {
 }
 
 class EventCategories extends React.Component {
+  props: {
+    categories: Array<string>;
+  }
+
   render() {
     if (this.props.categories.length > 0) {
       return (<SubEventLine icon={require('./images/categories.png')}>
@@ -189,6 +195,13 @@ class EventCategories extends React.Component {
 }
 
 class _AddToCalendarButton extends React.Component {
+  props: {
+    event: Event;
+    style: View.propTypes.style;
+
+    // Self-managed props
+    intl: intlShape;
+  }
   render() {
     return (<Button
       style={this.props.style}
@@ -198,7 +211,7 @@ class _AddToCalendarButton extends React.Component {
       onPress={async () => {
         trackWithEvent('Add to Calendar', this.props.event);
         await CalendarAdd(this.props.event);
-        if (Platform.OS == 'ios') {
+        if (Platform.OS === 'ios') {
           AlertIOS.alert(this.props.intl.formatMessage(messages.addedToCalendar));
         }
       }}
@@ -208,7 +221,16 @@ class _AddToCalendarButton extends React.Component {
 const AddToCalendarButton = injectIntl(_AddToCalendarButton);
 
 class _EventDateTime extends React.Component {
-  interval: number;
+  props: {
+    start: string;
+    end: string;
+
+    // Self-managed props
+    intl: intlShape;
+    children: Array<React.Element<*>>;
+  }
+
+  _interval: number;
 
   render() {
     const formattedText = formatStartEnd(this.props.start, this.props.end, this.props.intl);
@@ -221,10 +243,10 @@ class _EventDateTime extends React.Component {
   }
   componentDidMount() {
     // refresh our 'relative start offset' every minute
-    this.interval = setInterval(() => this.forceUpdate(), 60 * 1000);
+    this._interval = setInterval(() => this.forceUpdate(), 60 * 1000);
   }
   componentWillUnmount() {
-    clearInterval(this.interval);
+    clearInterval(this._interval);
   }
 }
 const EventDateTime = injectIntl(_EventDateTime);
@@ -241,6 +263,16 @@ function formatDistance(intl, distanceKm) {
 }
 
 class _EventVenue extends React.Component {
+  props: {
+    venue: Venue;
+    style: View.propTypes.style;
+
+    currentPosition: ?Object;
+
+    // Self-managed props
+    intl: intlShape;
+  }
+
   render() {
     const components = [];
     if (this.props.venue.name) {
@@ -251,6 +283,7 @@ class _EventVenue extends React.Component {
       />);
     }
     if (this.props.venue.address) {
+      const country = this.props.venue.address.country;
       components.push(<Text
         key="line2"
         style={[eventStyles.detailText, this.props.style]}
@@ -258,7 +291,7 @@ class _EventVenue extends React.Component {
       components.push(<Text
         key="line3"
         style={[eventStyles.detailText, this.props.style]}
-      >{this.props.venue.address.country}</Text>);
+      >{country}</Text>);
     }
     let distanceComponent = null;
     if (this.props.venue.geocode && this.props.currentPosition) {
@@ -309,6 +342,13 @@ class _EventSource extends React.Component {
 const EventSource = injectIntl(_EventSource);
 
 class _EventAddedBy extends React.Component {
+  props: {
+    event: Event;
+
+    // Self-managed props
+    intl: intlShape;
+  }
+
   state: {
     addedBy: ?string,
   };
@@ -320,16 +360,16 @@ class _EventAddedBy extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.loadProfileName();
+  }
+
   async loadProfileName() {
     const creation = this.props.event.annotations.creation;
-    if (creation && creation.creator && creation.creator != '701004') {
+    if (creation && creation.creator && creation.creator !== '701004') {
       const result = await performRequest('GET', creation.creator, { fields: 'name' });
       this.setState({ ...this.state, addedBy: result.name });
     }
-  }
-
-  componentDidMount() {
-    this.loadProfileName();
   }
 
   render() {
@@ -350,6 +390,13 @@ class _EventAddedBy extends React.Component {
 const EventAddedBy = injectIntl(_EventAddedBy);
 
 class _EventOrganizers extends React.Component {
+  props: {
+    event: Event;
+
+    // Self-managed props
+    intl: intlShape;
+  }
+
   state: {
     opened: boolean,
   };
@@ -361,7 +408,7 @@ class _EventOrganizers extends React.Component {
     };
   }
 
-  async _openAdmin(adminId) {
+  async openAdmin(adminId) {
     let adminUrl = null;
     // On Android, just send them to the URL and let the native URL intecerpetor send it to FB.
     if (Platform.OS === 'ios' && await Linking.canOpenURL('fb://')) {
@@ -395,7 +442,7 @@ class _EventOrganizers extends React.Component {
     return (<TouchableOpacity
       key={admin.id}
       onPress={() => {
-        this._openAdmin(admin.id);
+        this.openAdmin(admin.id);
       }}
     ><Text style={[eventStyles.detailText, eventStyles.detailListText, eventStyles.rowLink]}>{admin.name}</Text></TouchableOpacity>);
   }
@@ -449,6 +496,15 @@ const EventOrganizers = injectIntl(_EventOrganizers);
 
 
 class _EventRsvpControl extends React.Component {
+  props: {
+    event: Event;
+
+    // Self-managed props
+    intl: intlShape;
+    user: ?User;
+    canGetValidLoginFor: (feature: string, props: {intl: intlShape, user: ?User}) => Promise<void>;
+  }
+
   state: {
     loading: boolean,
     defaultRsvp: number,
@@ -534,6 +590,13 @@ const EventRsvpControl = connect(
 )(injectIntl(_EventRsvpControl));
 
 class _EventRsvp extends React.Component {
+  props: {
+    event: Event;
+
+    // Self-managed props
+    intl: intlShape;
+  }
+
   render() {
     if (this.props.event.rsvp) {
       let counts = '';
@@ -562,6 +625,15 @@ class _EventRsvp extends React.Component {
 const EventRsvp = injectIntl(_EventRsvp);
 
 class _EventDescription extends React.Component {
+  props: {
+    event: Event;
+    children: Array<React.Element<*>>;
+
+    // Self-managed props
+    intl: intlShape;
+    translatedEvents: Array<TranslatedEvent>;
+  }
+
   render() {
     let description = this.props.event.description;
     const translatedEvent = this.props.translatedEvents[this.props.event.id];
@@ -605,6 +677,11 @@ const EventDescription = connect(
 
 
 class EventMap extends React.Component {
+  props: {
+    venue: Venue;
+    defaultSize: number;
+    style: View.propTypes.style;
+  }
   state: {
     mapOk: boolean;
   };
@@ -714,7 +791,7 @@ class _EventRow extends React.Component {
     onEventSelected: (x: Event) => void,
     event: Event,
     listLayout: boolean,
-    currentPosition: any,
+    currentPosition: ?Object,
   };
 
   render() {
@@ -775,6 +852,10 @@ export const EventRow = connect(
 )(_EventRow);
 
 class EventShare extends React.Component {
+  props: {
+    event: Event;
+  }
+
   render() {
     const shareContent = {
       contentType: 'link',
@@ -787,6 +868,15 @@ class EventShare extends React.Component {
 }
 
 class _EventTranslate extends React.Component {
+  props: {
+    event: Event;
+
+    // Self-managed props
+    intl: intlShape;
+    translatedEvents: Array<TranslatedEvent>;
+    toggleEventTranslation: (eventId: string, language: string, intl: intlShape) => void;
+  }
+
   render() {
     const translatedEvent = this.props.translatedEvents[this.props.event.id];
     const translatedText = (translatedEvent && translatedEvent.visible)
@@ -813,6 +903,10 @@ const EventTranslate = connect(
 )(injectIntl(_EventTranslate));
 
 class _EventTickets extends React.Component {
+  props: {
+    event: Event;
+  }
+
   constructor(props) {
     super(props);
     (this: any).onTicketClicked = this.onTicketClicked.bind(this);

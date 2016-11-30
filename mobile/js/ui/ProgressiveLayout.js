@@ -14,11 +14,11 @@ type Props = {
 };
 
 export default class ProgressiveLayout extends React.Component {
+  props: Props;
+
   state: {
     dataSource: ListView.DataSource,
   };
-
-  props: Props;
 
   constructor(props: Props) {
     super(props);
@@ -26,21 +26,20 @@ export default class ProgressiveLayout extends React.Component {
       rowHasChanged: (row1, row2) => row1 !== row2,
     });
     this.state = { dataSource };
-    this.state = this._getNewState(props);
-    (this: any)._renderRow = this._renderRow.bind(this);
+    this.state = this.getNewState(props);
   }
 
-  _getNewState(props: Props) {
+  componentWillReceiveProps(nextProps: Props) {
+    this.setState(this.getNewState(nextProps));
+  }
+
+  getNewState(props: Props) {
     return {
       dataSource: this.state.dataSource.cloneWithRows(props.children),
     };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    this.setState(this._getNewState(nextProps));
-  }
-
-  _renderRow(elem: number) {
+  renderRow(elem: number) {
     return elem;
   }
 
@@ -48,7 +47,7 @@ export default class ProgressiveLayout extends React.Component {
     const { children, ...otherProps } = this.props;
     return (<ListView
       dataSource={this.state.dataSource}
-      renderRow={this._renderRow}
+      renderRow={this.renderRow}
       initialListSize={1}
       pageSize={1}
       scrollRenderAheadDistance={10000}

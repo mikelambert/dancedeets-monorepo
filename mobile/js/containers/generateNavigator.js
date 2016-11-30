@@ -4,41 +4,41 @@
  * @flow
  */
 
-import React from 'react';
+import React, { Element } from 'react';
 import {
-	Image,
-	NavigationExperimental,
-	Platform,
-	StyleSheet,
-	TouchableOpacity,
-	View,
+  Image,
+  NavigationExperimental,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { connect } from 'react-redux';
 import {
   injectIntl,
   intlShape,
 } from 'react-intl';
-import { gradientTop } from '../Colors';
+import type {
+  NavigationRoute,
+  NavigationSceneRendererProps,
+  NavigationState,
+} from 'react-native/Libraries/NavigationExperimental/NavigationTypeDefinition';
 import { navigatePush, navigatePop, navigateSwap } from '../actions';
 import ShareEventIcon from './ShareEventIcon';
 import { getNamedState } from '../reducers/navigation';
 import type { ThunkAction, Dispatch } from '../actions/types';
-import type {
-	NavigationRoute,
-	NavigationSceneRendererProps,
-	NavigationState,
-} from 'NavigationTypeDefinition';
 import {
-	semiNormalize,
-	Text,
+  semiNormalize,
+  Text,
 } from '../ui';
 import {
-	purpleColors,
+  gradientTop,
+  purpleColors,
 } from '../Colors';
 
 const {
-	CardStack: NavigationCardStack,
-	Header: NavigationHeader,
+  CardStack: NavigationCardStack,
+  Header: NavigationHeader,
 } = NavigationExperimental;
 
 
@@ -48,19 +48,19 @@ const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 46;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 
 export type Navigatable = {
-	onNavigate: (x: NavigationRoute) => ThunkAction;
-	onBack: () => ThunkAction;
-	onSwap: (key: string, newState: NavigationRoute) => ThunkAction;
-	goHome: () => ThunkAction;
+  onNavigate: (x: NavigationRoute) => ThunkAction;
+  onBack: () => ThunkAction;
+  onSwap: (key: string, newState: NavigationRoute) => ThunkAction;
+  goHome: () => ThunkAction;
 };
 
 type NavigatorProps = {
-	navigationState: NavigationState,
-	intl: intlShape,
+  navigationState: NavigationState,
+  intl: intlShape,
 };
 
 type CallingProps = {
-	renderScene: (scene: NavigationSceneRendererProps, nav: Navigatable) => ReactElement<any>;
+  renderScene: (scene: NavigationSceneRendererProps, nav: Navigatable) => Element<any>;
 };
 
 const NavigationHeaderTitle = ({ children, style, textStyle, viewProps }) => (
@@ -74,17 +74,21 @@ class _Navigator extends React.Component {
 
   constructor(props) {
     super(props);
-    (this: any)._renderHeader = this._renderHeader.bind(this);
+    (this: any).renderHeader = this.renderHeader.bind(this);
     (this: any).renderLeft = this.renderLeft.bind(this);
     (this: any).renderTitle = this.renderTitle.bind(this);
     (this: any).renderRight = this.renderRight.bind(this);
+  }
+
+  backToHome() {
+    this.props.goHome();
   }
 
   renderLeft(props) {
     if (!props.scene.index) {
       return null;
     }
-    const icon = Platform.OS == 'ios' ? require('./navbar-icons/back-ios.png') : require('./navbar-icons/back-android.png');
+    const icon = Platform.OS === 'ios' ? require('./navbar-icons/back-ios.png') : require('./navbar-icons/back-android.png');
     return (<TouchableOpacity style={styles.centeredContainer} onPress={props.onNavigateBack}>
       <Image style={{ height: 18, width: 18 }} source={icon} />
     </TouchableOpacity>);
@@ -107,8 +111,8 @@ class _Navigator extends React.Component {
     return null;
   }
 
-  _renderHeader(props) {
-		// 0.33: Disable for now, as it doesn't appear to work: <GradientBar style={styles.navHeader}>
+  renderHeader(props) {
+    // 0.33: Disable for now, as it doesn't appear to work: <GradientBar style={styles.navHeader}>
     return (<NavigationHeader
       {...props}
       style={[styles.navHeader, { backgroundColor: gradientTop, borderBottomWidth: 0 }]}
@@ -126,7 +130,7 @@ class _Navigator extends React.Component {
         navigationState={this.props.navigationState}
         style={styles.outerContainer}
         onBack={this.props.onBack}
-        renderHeader={this._renderHeader}
+        renderHeader={this.renderHeader}
         renderScene={props => this.props.renderScene(props, this.props)}
         cardStyle={{
           backgroundColor: purpleColors[4],
@@ -135,28 +139,24 @@ class _Navigator extends React.Component {
       />
     );
   }
-
-  backToHome() {
-    this.props.goHome();
-  }
 }
 const Navigator = injectIntl(_Navigator);
 
 export default function (navName: string) {
   const component = connect(
-		state => ({
-  navigationState: getNamedState(state.navigationState, navName),
-}),
-		(dispatch: Dispatch) => ({
-  onNavigate: destState => dispatch(navigatePush(navName, destState)),
-  goHome: async () => {
-    await dispatch(navigatePop(navName));
-    await dispatch(navigatePop(navName));
-  },
-  onBack: () => dispatch(navigatePop(navName)),
-  onSwap: (key, newRoute) => dispatch(navigateSwap(navName, key, newRoute)),
-}),
-	)(Navigator);
+    state => ({
+      navigationState: getNamedState(state.navigationState, navName),
+    }),
+    (dispatch: Dispatch) => ({
+      onNavigate: destState => dispatch(navigatePush(navName, destState)),
+      goHome: async () => {
+        await dispatch(navigatePop(navName));
+        await dispatch(navigatePop(navName));
+      },
+      onBack: () => dispatch(navigatePop(navName)),
+      onSwap: (key, newRoute) => dispatch(navigateSwap(navName, key, newRoute)),
+    }),
+  )(Navigator);
   component.navName = navName;
   return component;
 }
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-	// These are basically copied from NavigationHeader.js
+  // These are basically copied from NavigationHeader.js
   navHeader: {
     alignItems: 'center',
     elevation: 1,

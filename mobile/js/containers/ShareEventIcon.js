@@ -10,10 +10,14 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { trackWithEvent } from '../store/track';
 import Share from 'react-native-share';
+import { trackWithEvent } from '../store/track';
+import { Event } from '../events/models';
 
 export default class ShareEventIcon extends React.Component {
+  props: {
+    event: Event;
+  }
   render() {
     return (<TouchableOpacity
       onPress={() => {

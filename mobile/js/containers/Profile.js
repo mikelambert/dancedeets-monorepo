@@ -14,6 +14,14 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
+import { ShareDialog, MessageDialog } from 'react-native-fbsdk';
+import Share from 'react-native-share';
+import {
+  injectIntl,
+  intlShape,
+  defineMessages,
+} from 'react-intl';
+import NativeEnv from 'react-native-native-env';
 import {
   logOutWithPrompt,
   loginButtonPressed,
@@ -30,14 +38,10 @@ import {
   purpleColors,
 } from '../Colors';
 import { track } from '../store/track';
-import type { Dispatch } from '../actions/types';
-import { ShareDialog, MessageDialog } from 'react-native-fbsdk';
-import Share from 'react-native-share';
-import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
-import NativeEnv from 'react-native-native-env';
+import type {
+  Dispatch,
+  User,
+} from '../actions/types';
 
 const Mailer = require('NativeModules').RNMail;
 
@@ -140,6 +144,10 @@ const credits = [
 ];
 
 class CreditSubList extends React.Component {
+  props: {
+    list: Array<string>;
+  };
+
   render() {
     const subcreditGroups = this.props.list.map(x => <Text key={x} style={{ left: 10 }}>- {x}</Text>);
     return <View>{subcreditGroups}</View>;
@@ -147,6 +155,11 @@ class CreditSubList extends React.Component {
 }
 
 class _Credits extends React.Component {
+  props: {
+    intl: intlShape;
+    style: Object;
+  };
+
   render() {
     const creditHeader = <Heading1 style={{ marginBottom: 5 }}>{this.props.intl.formatMessage(messages.credits)}</Heading1>;
     const creditGroups = credits.map(x => <View key={x[0]} ><Text style={{ fontWeight: 'bold' }}>{x[0]}:</Text><CreditSubList list={x[1]} /></View>);
@@ -167,6 +180,10 @@ const shareLinkContent = {
 };
 
 class _ShareButtons extends React.Component {
+  props: {
+    intl: intlShape;
+  };
+
   getShareLinkContent() {
     return Object.assign({}, shareLinkContent, { contentDescription: this.props.intl.formatMessage(messages.tagline) });
   }
@@ -246,6 +263,14 @@ function sendAdvertisingEmail() {
 }
 
 class _UserProfile extends React.Component {
+  props: {
+    // Self-managed props
+    user: ?User;
+    intl: intlShape;
+    logIn: () => void;
+    logOutWithPrompt: () => void;
+  };
+
   render() {
     const user = this.props.user;
     if (!user) {
@@ -306,6 +331,10 @@ const UserProfile = connect(
 
 
 class _Profile extends React.Component {
+  props: {
+    intl: intlShape;
+    onNotificationPreferences: () => void;
+  };
 
   render() {
     // iOS handles notification settings automatically for us, so let's offer this there

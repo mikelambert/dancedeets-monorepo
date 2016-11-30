@@ -14,20 +14,31 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
+import { AdMobBanner } from 'react-native-admob';
+import {
+  injectIntl,
+  intlShape,
+  defineMessages,
+} from 'react-intl';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import _ from 'lodash/string';
 import { EventRow } from './uicomponents';
 import SearchHeader from './searchHeader';
-import type { SearchResults } from './search';
-import moment from 'moment';
+import type {
+  State,
+} from '../reducers/search';
+import type {
+  Onebox,
+  SearchResults,
+} from './search';
+import { Event } from './models';
 import {
   detectedLocation,
   performSearch,
   processUrl,
-  updateLocation,
-  updateKeywords,
 } from '../actions';
+import type { User } from '../actions/types';
 import {
   linkColor,
   purpleColors,
@@ -44,11 +55,6 @@ import {
   Text,
 } from '../ui';
 import { track } from '../store/track';
-import { AdMobBanner } from 'react-native-admob';
-import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
 import {
   getAddress,
   getPosition,
@@ -111,7 +117,11 @@ class SectionHeader extends React.Component {
   }
 }
 
-class Onebox extends React.Component {
+class OneboxView extends React.Component {
+  props: {
+    onebox: Onebox;
+  }
+
   constructor(props) {
     super(props);
     (this: any).oneboxClicked = this.oneboxClicked.bind(this);
@@ -145,6 +155,11 @@ class Onebox extends React.Component {
 }
 
 class _AddEventButton extends React.Component {
+  props: {
+    intl: intlShape;
+    onPress: () => void;
+  }
+
   render() {
     return (<Button
       caption={this.props.intl.formatMessage(messages.addEvent)}
@@ -159,12 +174,26 @@ class _AddEventButton extends React.Component {
 const AddEventButton = injectIntl(_AddEventButton);
 
 class _EventListContainer extends React.Component {
+  props: {
+    intl: intlShape;
+    onEventSelected: (event: Event) => void;
+    onAddEventClicked: (clickTarget: string) => void;
+
+    // Self-managed props
+    search: State,
+    user: ?User,
+    detectedLocation: (location: string) => Promise<void>;
+    performSearch: () => Promise<void>;
+    processUrl: (url: string) => Promise<void>;
+    loadUserData: () => Promise<void>;
+  }
+
   state: {
     position: ?Object,
     dataSource: ListView.DataSource,
   };
 
-  list_view: ReactElement<ListView>;
+  _listView: React.Element<ListView>;
 
   constructor(props) {
     super(props);
@@ -176,13 +205,60 @@ class _EventListContainer extends React.Component {
       position: null,
       dataSource,
     };
-    this.state = this._getNewState(this.props);
-    (this: any)._renderHeader = this._renderHeader.bind(this);
-    (this: any)._renderRow = this._renderRow.bind(this);
+    this.state = this.getNewState(this.props);
+    (this: any).renderHeader = this.renderHeader.bind(this);
+    (this: any).renderRow = this.renderRow.bind(this);
     (this: any).setLocationAndSearch = this.setLocationAndSearch.bind(this);
   }
 
-  _buildDataBlobAndHeaders(results: SearchResults) {
+  componentWillMount() {
+    this.loadLocation();
+  }
+
+  componentDidMount() {
+    this.initialize();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(this.getNewState(nextProps));
+    if (nextProps.search.results !== this.props.search.results) {
+      this._listView.scrollTo({ x: 0, y: 0, animated: false });
+    }
+  }
+
+  getNewState(props) {
+    const { dataBlob, sectionHeaders } = this.buildDataBlobAndHeaders(props.search.results);
+    const state = {
+      ...this.state,
+      dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlob, sectionHeaders),
+    };
+    return state;
+  }
+
+  async setLocationAndSearch(formattedAddress: string) {
+    if (!formattedAddress) {
+      return;
+    }
+
+    // Reload our current location for "N miles away" info, in case we haven't loaded it yet.
+    // This could happen if we don't have a location at load time (no permissions),
+    // then the user gives us permissions for a search, and now we need to reload it here,
+    // ideally before the user's search results come back.
+    this.loadLocation();
+
+    // Now do the actual search logic:
+    await this.props.detectedLocation(formattedAddress);
+    await this.props.performSearch();
+
+    // If the user doesn't have a location, let's save one based on their search
+    // Hopefully we'll have loaded the user data by now, after the search has completed...
+    // But this isn't critical functionality, but just a best-effort attempt to save a location
+    if (this.props.user && this.props.user.ddUser && !this.props.user.ddUser.location) {
+      await storeSavedAddress(formattedAddress);
+    }
+  }
+
+  buildDataBlobAndHeaders(results: ?SearchResults) {
     const dataBlob = {};
     const sectionHeaders = [];
 
@@ -210,45 +286,6 @@ class _EventListContainer extends React.Component {
       dataBlob,
       sectionHeaders,
     };
-  }
-
-  _getNewState(props) {
-    const { dataBlob, sectionHeaders } = this._buildDataBlobAndHeaders(props.search.results);
-    const state = {
-      ...this.state,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlob, sectionHeaders),
-    };
-    return state;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState(this._getNewState(nextProps));
-    if (nextProps.search.results !== this.props.search.results) {
-      this.list_view.scrollTo({ x: 0, y: 0, animated: false });
-    }
-  }
-
-  async setLocationAndSearch(formattedAddress: string) {
-    if (!formattedAddress) {
-      return;
-    }
-
-    // Reload our current location for "N miles away" info, in case we haven't loaded it yet.
-    // This could happen if we don't have a location at load time (no permissions),
-    // then the user gives us permissions for a search, and now we need to reload it here,
-    // ideally before the user's search results come back.
-    this.loadLocation();
-
-    // Now do the actual search logic:
-    await this.props.detectedLocation(formattedAddress);
-    await this.props.performSearch();
-
-    // If the user doesn't have a location, let's save one based on their search
-    // Hopefully we'll have loaded the user data by now, after the search has completed...
-    // But this isn't critical functionality, but just a best-effort attempt to save a location
-    if (this.props.user && this.props.user.ddUser && !this.props.user.ddUser.location) {
-      await storeSavedAddress(formattedAddress);
-    }
   }
 
   async authAndReloadProfile(address) {
@@ -282,7 +319,7 @@ class _EventListContainer extends React.Component {
 
   async initialize() {
     const url: ?string = await Linking.getInitialURL();
-    if (canHandleUrl(url)) {
+    if (url != null && canHandleUrl(url)) {
       this.props.processUrl(url);
     } else {
       this.fetchLocationAndSearch();
@@ -298,15 +335,18 @@ class _EventListContainer extends React.Component {
     }
   }
 
-  componentWillMount() {
-    this.loadLocation();
+  bannerError(e) {
+    console.log('didFailToReceiveAdWithError', e);
   }
 
-  componentDidMount() {
-    this.initialize();
+  renderHeader() {
+    if (this.props.search.error) {
+      return this.renderErrorView();
+    }
+    return this.renderSummaryView();
   }
 
-  _renderRow(row) {
+  renderRow(row) {
     if ('id' in row) {
       return (<EventRow
         event={row}
@@ -314,19 +354,8 @@ class _EventListContainer extends React.Component {
         currentPosition={this.state.position}
       />);
     } else {
-      return <Onebox onebox={row} />;
+      return <OneboxView onebox={row} />;
     }
-  }
-
-  bannerError(e) {
-    console.log('didFailToReceiveAdWithError', e);
-  }
-
-  _renderHeader() {
-    if (this.props.search.error) {
-      return this.renderErrorView();
-    }
-    return this.renderSummaryView();
   }
 
   renderErrorView() {
@@ -342,7 +371,7 @@ class _EventListContainer extends React.Component {
     let message = null;
     const query = this.props.search.results && this.props.search.results.query;
     if (!query) {
-      return;
+      return null;
     }
     if (query.location && query.keywords) {
       message = messages.eventsWithLocationKeywords;
@@ -380,17 +409,17 @@ class _EventListContainer extends React.Component {
   renderListView() {
     return (
       <ListView
-        ref={(x) => { this.list_view = x; }}
+        ref={(x) => { this._listView = x; }}
         style={[styles.listView]}
         dataSource={this.state.dataSource}
-        renderHeader={this._renderHeader}
+        renderHeader={this.renderHeader}
         refreshControl={
           <RefreshControl
             refreshing={this.props.search.loading}
             onRefresh={() => this.props.performSearch()}
           />
         }
-        renderRow={this._renderRow}
+        renderRow={this.renderRow}
         renderSectionHeader={(data, sectionID) =>
           <SectionHeader title={_.upperFirst(sectionID)} />
         }
@@ -433,12 +462,6 @@ export default connect(
     },
     performSearch: async () => {
       await dispatch(performSearch());
-    },
-    updateLocation: async (location) => {
-      await dispatch(updateLocation(location));
-    },
-    updateKeywords: async (keywords) => {
-      await dispatch(updateKeywords(keywords));
     },
     processUrl: async (url) => {
       await dispatch(processUrl(url));

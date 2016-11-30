@@ -26,7 +26,10 @@ import {
   defineMessages,
 } from 'react-intl';
 import type { AddEventData } from '../addEventsModels';
-import type { State } from '../reducers/addEvents';
+import type {
+  DisplayOptions,
+  State,
+} from '../reducers/addEvents';
 import { track } from '../store/track';
 import {
   addEvent,
@@ -98,6 +101,13 @@ const messages = defineMessages({
 });
 
 class _FilterHeader extends React.Component {
+  props: {
+    intl: intlShape;
+    displayOptions: DisplayOptions;
+    setOnlyUnadded: (onlyUnadded: boolean) => void;
+    setSortOrder: (x: string) => void;
+  }
+
   render() {
     return (
       <View style={styles.header}>
@@ -168,7 +178,7 @@ class _AddEventRow extends React.Component {
     const addedBanner = (this.props.event.loaded ?
       (
         <View style={styles.disabledOverlay}>
-          <View style={[styles.redRibbon, { top: width / 2 - 10 }]}>
+          <View style={[styles.redRibbon, { top: (width / 2) - 10 }]}>
             <Text style={styles.redRibbonText}>
               {this.props.intl.formatMessage(messages.addedBanner).toUpperCase()}
             </Text>
@@ -231,6 +241,18 @@ class _AddEventList extends React.Component {
     return finalResults;
   }
 
+  props: {
+    addEvent: (eventId: string) => void;
+    clickEvent: (eventId: string) => void;
+    addEvents: State;
+    reloadAddEvents: () => void;
+  };
+
+  state: {
+    dataSource: ListView.DataSource,
+    token: ?AccessToken,
+  };
+
   constructor(props) {
     super(props);
     const dataSource = new ListView.DataSource({
@@ -242,14 +264,9 @@ class _AddEventList extends React.Component {
       token: null,
     };
     this.loadToken();
-    this.state = this._getNewState(this.props);
-    (this: any)._renderRow = this._renderRow.bind(this);
+    this.state = this.getNewState(this.props);
+    (this: any).renderRow = this.renderRow.bind(this);
   }
-
-  state: {
-    dataSource: ListView.DataSource,
-    token: ?AccessToken,
-  };
 
   componentDidMount() {
     if (!this.props.addEvents.results) {
@@ -258,24 +275,10 @@ class _AddEventList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(this._getNewState(nextProps));
+    this.setState(this.getNewState(nextProps));
   }
 
-  props: {
-    addEvent: (eventId: string) => void;
-    clickEvent: (eventId: string) => void;
-    addEvents: State;
-    reloadAddEvents: () => void;
-  };
-
-  async loadToken() {
-    const token = await AccessToken.getCurrentAccessToken();
-    this.setState({
-      token,
-    });
-  }
-
-  _getNewState(props) {
+  getNewState(props) {
     const results = AddEventList.applyFilterSorts(props, props.addEvents.results || []);
     const state = {
       ...this.state,
@@ -284,8 +287,14 @@ class _AddEventList extends React.Component {
     return state;
   }
 
+  async loadToken() {
+    const token = await AccessToken.getCurrentAccessToken();
+    this.setState({
+      token,
+    });
+  }
 
-  _renderRow(row: AddEventData) {
+  renderRow(row: AddEventData) {
     return (
       <AddEventRow
         event={row}
@@ -313,7 +322,7 @@ class _AddEventList extends React.Component {
             onRefresh={() => this.props.reloadAddEvents()}
           />
         }
-        renderRow={this._renderRow}
+        renderRow={this.renderRow}
         initialListSize={10}
         pageSize={5}
         scrollRenderAheadDistance={10000}
