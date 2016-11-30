@@ -4,9 +4,7 @@
  * @flow
  */
 
-'use strict';
-
-import type { Action, ThunkAction, Dispatch } from './types';
+import type { ThunkAction, Dispatch } from './types';
 
 import { Event } from '../events/models';
 import { selectTab } from './mainTabs';
@@ -38,16 +36,20 @@ export function processUrl(url: string) {
       await dispatch(updateKeywords(processedUrl.keywords()));
       dispatch(performSearch());
     }
-  }
+  };
 }
 
 export function appNavigateToEvent(event: Event): ThunkAction {
-  return async (dispatch: Dispatch, getState) => {
+  return async (dispatch: Dispatch) => {
     const navName = 'EVENT_NAV';
-    const destState = {key: 'EventView', title: event.name, event: event};
+    const destState = {
+      key: 'EventView',
+      title: event.name,
+      event,
+    };
     await dispatch(selectTab('events'));
     await dispatch(navigatePop(navName));
     await dispatch(navigatePop(navName));
     await dispatch(navigatePush(navName, destState));
-  }
+  };
 }

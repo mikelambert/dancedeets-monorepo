@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import {
   defineMessages,
 } from 'react-intl';

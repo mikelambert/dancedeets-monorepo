@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import type { Action, ThunkAction, Dispatch } from './types';
 import type {
   AddEventList,
@@ -15,7 +13,7 @@ import { track } from '../store/track';
 import { getAddEvents, addEvent as reallyAddEvent } from '../api/dancedeets';
 
 export function reloadAddEvents(): ThunkAction {
-  return async (dispatch: Dispatch, getState) => {
+  return async (dispatch: Dispatch) => {
     await dispatch(reloadStart());
     try {
       const responseData = await getAddEvents();
@@ -51,7 +49,7 @@ function markAsPending(eventId): Action {
   return {
     type: 'ADD_EVENTS_UPDATE_LOADED',
     status: 'PENDING',
-    eventId: eventId,
+    eventId,
   };
 }
 
@@ -59,7 +57,7 @@ function markAsLoaded(eventId): Action {
   return {
     type: 'ADD_EVENTS_UPDATE_LOADED',
     status: 'LOADED',
-    eventId: eventId,
+    eventId,
   };
 }
 
@@ -67,7 +65,7 @@ function markAsUnLoaded(eventId): Action {
   return {
     type: 'ADD_EVENTS_UPDATE_LOADED',
     status: 'UNLOADED',
-    eventId: eventId,
+    eventId,
   };
 }
 
@@ -82,6 +80,7 @@ function alreadyProcessing(getState, eventId: string) {
         return true;
       }
     }
+    return false;
   });
 }
 
@@ -89,7 +88,7 @@ export function clickEvent(eventId: string) {
   return {
     type: 'ADD_EVENTS_UPDATE_LOADED',
     status: 'CLICKED',
-    eventId: eventId,
+    eventId,
   };
 }
 

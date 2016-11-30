@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import React from 'react';
 import {
   addLocaleData,
@@ -14,9 +12,6 @@ import {
 import areIntlLocalesSupported from 'intl-locales-supported';
 import moment from 'moment';
 
-export const defaultLocale = 'en';
-export const supportedLocales = ['en', 'ja', 'fr', 'zh-Hant'];
-
 import 'moment/locale/fr';
 import 'moment/locale/ja';
 import 'moment/locale/zh-tw';
@@ -24,6 +19,8 @@ import fr from './messages/fr.json';
 import ja from './messages/ja.json';
 import zh from './messages/zh.json';
 
+export const defaultLocale = 'en';
+export const supportedLocales = ['en', 'ja', 'fr', 'zh-Hant'];
 
 const messages = {
   en: null, // use built-ins...but ensure we have an entry so we don't have undefined flow errors
@@ -76,7 +73,7 @@ function configureMoment(currentLocale: string) {
 export function constructIntl(currentLocale: string) {
   configureMoment(currentLocale);
   return new IntlProvider({
-    defaultLocale: defaultLocale,
+    defaultLocale,
     key: currentLocale, // https://github.com/yahoo/react-intl/issues/234
     locale: currentLocale,
     messages: messages[currentLocale],

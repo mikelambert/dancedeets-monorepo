@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import { RemoteConfig } from 'react-native-firebase3';
 
 async function loadConfig() {
@@ -22,7 +20,6 @@ export async function get(value: string) {
   const result = await RemoteConfig.getString(value);
   if (result) {
     return JSON.parse(result);
-  } else {
-    return null;
   }
+  return null;
 }

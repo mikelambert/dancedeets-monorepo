@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import styles from '../styles';
 
 export const defaultTutorials = [

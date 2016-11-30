@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 export type Dancer = {
   name: String;
 };

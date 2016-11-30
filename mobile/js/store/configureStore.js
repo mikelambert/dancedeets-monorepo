@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
 import promise from './promise';

@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import React from 'react';
 import FormatText from 'react-format-text';
 import querystring from 'querystring';
@@ -32,9 +30,7 @@ function intersperse(arr: Array<any>, sep: string) {
     return [];
   }
 
-  return arr.slice(1).reduce(function(xs, x) {
-    return xs.concat([sep, x]);
-  }, [arr[0]]);
+  return arr.slice(1).reduce((xs, x) => xs.concat([sep, x]), [arr[0]]);
 }
 
 class Card extends React.Component {
@@ -78,13 +74,13 @@ class Title extends React.Component {
 
 class ImagePrefix extends React.Component {
   render() {
-    const {iconName, children, ...props} = this.props;
-    return <div style={{paddingLeft: '5px', paddingTop: '5px', display: 'table'}} {...props}>
+    const { iconName, children, ...props } = this.props;
+    return <div style={{ paddingLeft: '5px', paddingTop: '5px', display: 'table' }} {...props}>
       {iconName ?
-        <i className={'fa fa-' + this.props.iconName + ' fa-lg'} style={{paddingRight: '5px', width: '1.5em', display: 'table-cell', textAlign: 'center'}}></i> :
+        <i className={`fa fa-${this.props.iconName} fa-lg`} style={{ paddingRight: '5px', width: '1.5em', display: 'table-cell', textAlign: 'center' }} /> :
         null
       }
-      <div style={{display: 'table-cell'}}>
+      <div style={{ display: 'table-cell' }}>
       {children}
       </div>
     </div>;
@@ -96,17 +92,19 @@ class ImageWithLinks extends React.Component {
     if (!this.props.event.picture) {
       return null;
     }
-    return <Card><img
-      src={this.props.event.picture.source}
-      style={{
-        width: '100%',
-        borderRadius: '5px',
-      }}
-    /><br/>
-    <ImagePrefix iconName="picture-o">
-      <a className="link-event-flyer" href={'/events/image_proxy/' + this.props.event.id}>See Full Flyer</a>
-    </ImagePrefix>
-    </Card>;
+    return (
+      <Card><img
+        src={this.props.event.picture.source}
+        style={{
+          width: '100%',
+          borderRadius: '5px',
+        }}
+      /><br />
+        <ImagePrefix iconName="picture-o">
+          <a className="link-event-flyer" href={'/events/image_proxy/' + this.props.event.id}>See Full Flyer</a>
+        </ImagePrefix>
+      </Card>
+    );
   }
 }
 // TODO: add calendar_start_end
@@ -122,7 +120,8 @@ function getAddToCalendarLink(event) {
     sf: true,
     output: 'xml',
   };
-  return 'https://www.google.com/calendar/render?' + querystring.stringify(args);
+  const query = querystring.stringify(args);
+  return `https://www.google.com/calendar/render?${query}`;
 }
 
 function rsvpString(event) {
@@ -142,9 +141,11 @@ class _EventLinks extends React.Component {
     const event = this.props.event;
     let rsvpElement = null;
     if (event.rsvp.attending_count || event.rsvp.maybe_count) {
-      rsvpElement = <ImagePrefix iconName="users">
-        {rsvpString(event)}
-      </ImagePrefix>;
+      rsvpElement = (
+        <ImagePrefix iconName="users">
+          {rsvpString(event)}
+        </ImagePrefix>
+      );
     }
     let organizerElement = null;
     if (event.admins) {
@@ -154,36 +155,40 @@ class _EventLinks extends React.Component {
           className="link-event-admin"
           href={`https://www.facebook.com/${admin.id}`}
         >{admin.name}</a></li>));
-      organizerElement = <ImagePrefix iconName="user">
-        Organizers:<br/>
-        <ul>
-        {admins}
-        </ul>
-      </ImagePrefix>;
+      organizerElement = (
+        <ImagePrefix iconName="user">
+          Organizers:<br />
+          <ul>
+            {admins}
+          </ul>
+        </ImagePrefix>
+      );
     }
 
     const formattedStartEndText = formatStartEnd(event.start_time, event.end_time, this.props.intl);
-    return <Card>
-      <ImagePrefix className="product-social-links">
-        <a className="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
-        <div className="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button" data-size="small" data-mobile-iframe="true"><a className="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a></div>
-      </ImagePrefix>
-      <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
-        <a className="link-event-source" href={event.source.url}>{'View Original: ' + event.source.name}</a>
-      </ImagePrefix>
-      <ImagePrefix iconName="clock-o">
-        <FormatText>{formattedStartEndText}</FormatText>
-        <meta itemProp="startDate" content={schemaDateFormat(event.start_time)} />
-        {event.end_time ?
-          <meta itemProp="endDate" content={schemaDateFormat(event.end_time)} /> :
-          null}
-      </ImagePrefix>
-      <ImagePrefix iconName="calendar-plus-o">
-        <a href={getAddToCalendarLink(event)} className="link-event-add-to-calendar">Add to Google Calendar</a>
-      </ImagePrefix>
-      {rsvpElement}
-      {organizerElement}
-    </Card>;
+    return (
+      <Card>
+        <ImagePrefix className="product-social-links">
+          <a className="link-event-share twitter-share-button" href="https://twitter.com/intent/tweet?hashtags=dancedeets" data-count="none">Tweet</a>
+          <div className="link-event-share fb-share-button" data-href="{{ canonical_url }}" data-layout="button" data-size="small" data-mobile-iframe="true"><a className="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url }}&amp;src=sdkpreparse">Share</a></div>
+        </ImagePrefix>
+        <ImagePrefix iconName={event.source.name === 'Facebook Event' ? 'facebook-square' : 'external-link'}>
+          <a className="link-event-source" href={event.source.url}>{`View Original: ${event.source.name}`}</a>
+        </ImagePrefix>
+        <ImagePrefix iconName="clock-o">
+          <FormatText>{formattedStartEndText}</FormatText>
+          <meta itemProp="startDate" content={schemaDateFormat(event.start_time)} />
+          {event.end_time ?
+            <meta itemProp="endDate" content={schemaDateFormat(event.end_time)} /> :
+            null}
+        </ImagePrefix>
+        <ImagePrefix iconName="calendar-plus-o">
+          <a href={getAddToCalendarLink(event)} className="link-event-add-to-calendar">Add to Google Calendar</a>
+        </ImagePrefix>
+        {rsvpElement}
+        {organizerElement}
+      </Card>
+    );
   }
 }
 const EventLinks = injectIntl(_EventLinks);
@@ -196,15 +201,17 @@ class MapWithLinks extends React.Component {
       return null;
     }
     const mapUrl = `http://maps.google.com/?daddr=${geocode.latitude},${geocode.longitude}`;
-    return <div>
-      { this.props.event.description ?
-        <div className="visible-xs" style={{fontStyle: 'italic'}}>Event description is below the map.</div> :
-        null
-      }
-      <a className="link-event-map" href={mapUrl} target="_blank">
-        <div id="map-wrapper" className="responsive-map-wrapper" />
-      </a>
-    </div>;
+    return (
+      <div>
+        { this.props.event.description ?
+          <div className="visible-xs" style={{ fontStyle: 'italic' }}>Event description is below the map.</div> :
+          null
+        }
+        <a className="link-event-map" href={mapUrl} target="_blank">
+          <div id="map-wrapper" className="responsive-map-wrapper" />
+        </a>
+      </div>
+    );
   }
 
   render() {
@@ -214,13 +221,15 @@ class MapWithLinks extends React.Component {
       if (venue.id) {
         locationName = <a href={`https://www.facebook.com/${venue.id}`}>{locationName}</a>;
       }
-      return <Card>
-        <ImagePrefix iconName="map-marker">
-          {locationName}<br/>
-          <FormatText>{venue.full_address}</FormatText>
-        </ImagePrefix>
-        {this.map()}
-      </Card>;
+      return (
+        <Card>
+          <ImagePrefix iconName="map-marker">
+            {locationName}<br />
+            <FormatText>{venue.full_address}</FormatText>
+          </ImagePrefix>
+          {this.map()}
+        </Card>
+      );
     }
     return null;
   }
@@ -228,34 +237,38 @@ class MapWithLinks extends React.Component {
 
 class Description extends React.Component {
   render() {
-    return <Card>
-      <div style={{fontWeight: 'bold'}}>Description:</div>
-      <div style={{height: '25px'}} id="google_translate_element"></div>
-      <FormatText>{this.props.event.description}</FormatText>
-    </Card>;
+    return (
+      <Card>
+        <div style={{ fontWeight: 'bold' }}>Description:</div>
+        <div style={{ height: '25px' }} id="google_translate_element"></div>
+        <FormatText>{this.props.event.description}</FormatText>
+      </Card>
+    );
   }
 }
 
 export default class EventPage extends React.Component {
   render() {
-    return <div className="container" itemScope itemType="http://schema.org/DanceEvent">
-      <span itemProp="url" content="canonical_url"></span>
-      <div className="row">
-        <div className="col-xs-12">
-          <Title event={this.props.event}/>
+    return (
+      <div className="container" itemScope itemType="http://schema.org/DanceEvent">
+        <span itemProp="url" content="canonical_url" />
+        <div className="row">
+          <div className="col-xs-12">
+            <Title event={this.props.event} />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-sm-5">
+            <ImageWithLinks event={this.props.event} />
+            <EventLinks event={this.props.event} />
+            <MapWithLinks event={this.props.event} />
+          </div>
+          <div className="col-sm-7">
+            <Description event={this.props.event} />
+          </div>
         </div>
       </div>
-      <div className="row">
-        <div className="col-sm-5">
-          <ImageWithLinks event={this.props.event}/>
-          <EventLinks event={this.props.event}/>
-          <MapWithLinks event={this.props.event}/>
-        </div>
-        <div className="col-sm-7">
-          <Description event={this.props.event}/>
-        </div>
-      </div>
-    </div>;
+    );
   }
 }
 

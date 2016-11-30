@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 
 export const yellowColors = [
   '#FFF3B0',
@@ -38,7 +36,7 @@ export const redColors = [
 const fbBlueColor = '#415DAE';
 const blueColor = '#70C0FF';
 
-//TODO: update this colors to reflect our color scheme?
+// TODO: update this colors to reflect our color scheme?
 export const lightText = yellowColors[0];
 
 export const linkColor = blueColor;

@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import moment from 'moment';
 
 export class Playlist {

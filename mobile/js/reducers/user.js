@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Action, User} from '../actions/types';
 
 export type State = {

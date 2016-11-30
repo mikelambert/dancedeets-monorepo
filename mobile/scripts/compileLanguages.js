@@ -6,8 +6,6 @@
  * @flow
  */
 
-'use strict';
-
 import * as fs from 'fs';
 import * as path from 'path';
 import * as glob from 'glob';
@@ -32,7 +30,7 @@ const locales = ['en', 'fr', 'zh_Hans', 'zh_Hant', 'ja', 'de', 'it', 'nl', 'ru',
 
 function downloadCountryList(cb) {
   mkdirpSync('build');
-  clone('https://github.com/umpirsky/country-list.git', REPO_PATH, {shallow: true}, cb);
+  clone('https://github.com/umpirsky/country-list.git', REPO_PATH, { shallow: true }, cb);
 }
 
 function getLocaleFrom(filename) {

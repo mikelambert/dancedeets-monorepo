@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import type { Action, ThunkAction, Dispatch } from './types';
 import type { SearchResults } from '../events/search';
 
@@ -19,17 +17,17 @@ export function performSearch(): ThunkAction {
   return async (dispatch: Dispatch, getState) => {
     const searchQuery = getState().search.searchQuery;
     track('Search Events', {
-      'Location': searchQuery.location,
-      'Keywords': searchQuery.keywords,
+      Location: searchQuery.location,
+      Keywords: searchQuery.keywords,
     });
     await storeSavedAddress(searchQuery.location);
     await dispatch(searchStart());
     try {
       const responseData = await search(searchQuery.location, searchQuery.keywords, searchQuery.timePeriod);
       track('Searched Results', {
-        'Location': searchQuery.location,
-        'Keywords': searchQuery.keywords,
-        'Tab': searchQuery.timePeriod,
+        Location: searchQuery.location,
+        Keywords: searchQuery.keywords,
+        Tab: searchQuery.timePeriod,
         'Result Count': responseData.results.length,
         'Onebox Count': responseData.onebox_links.length,
       });
@@ -49,7 +47,7 @@ export function toggleLayout(): Action {
 }
 
 export function detectedLocation(location: string): ThunkAction {
-  return async function(dispatch: Dispatch) {
+  return async (dispatch: Dispatch) => {
     await dispatch({
       type: 'DETECTED_LOCATION',
       location,

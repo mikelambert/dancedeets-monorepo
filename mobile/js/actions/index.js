@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import * as addEvents from './addEvents';
 import * as appNavigation from './appNavigation';
 import * as firebase from './firebase';

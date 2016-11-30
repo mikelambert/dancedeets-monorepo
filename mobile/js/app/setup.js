@@ -4,17 +4,15 @@
  * @flow
  */
 
-'use strict';
-
-import App from './app';
 import React from 'react';
 import { Platform } from 'react-native';
 import { Provider } from 'react-redux';
-import configureStore from '../store/configureStore';
 import Mixpanel from 'react-native-mixpanel';
-import ScreenshotSlideshow from '../ScreenshotSlideshow';
-import { intl } from 'dancedeets-common/intl';
 import ProcessInfo from 'react-native-processinfo';
+import { intl } from 'dancedeets-common/intl';
+import App from './app';
+import configureStore from '../store/configureStore';
+import ScreenshotSlideshow from '../ScreenshotSlideshow';
 // Initialize firestack
 import firestack from '../firestack';
 import { getCurrentLocale } from '../locale';
@@ -23,16 +21,16 @@ export default function setup(): Class<Object> {
   console.disableYellowBox = true;
 
   class Root extends React.Component {
-    state: {
-      store: any,
-    };
-
     constructor() {
       super();
       this.state = {
         store: configureStore(),
       };
     }
+
+    state: {
+      store: any,
+    };
 
     render() {
       let app = <App />;

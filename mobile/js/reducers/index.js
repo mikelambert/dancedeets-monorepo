@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import {combineReducers} from 'redux';
 import {addEvents} from './addEvents';
 import {firebase} from './firebase';

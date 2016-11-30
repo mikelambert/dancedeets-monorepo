@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import { purpleColors, yellowColors, redColors } from '../Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import React from 'react';

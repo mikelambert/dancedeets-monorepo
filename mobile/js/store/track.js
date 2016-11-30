@@ -22,8 +22,6 @@
  * @flow
  */
 
-'use strict';
-
 import Mixpanel from 'react-native-mixpanel';
 // TODO(lambert): Eventually migrate this to react-native-firestack
 import { Analytics } from 'react-native-firebase3';

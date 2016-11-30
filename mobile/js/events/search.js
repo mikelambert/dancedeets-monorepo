@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import { Event } from './models';
 
 export type TimePeriod = 'UPCOMING' | 'ONGOING' | 'PAST' | 'ALL_FUTURE';

@@ -20,81 +20,81 @@ type AllNavigationStates = { [key: string]: NavigationState };
 const initialNavStates: AllNavigationStates = {};
 
 export function setDefaultState(navigator: string, route: NavigationRoute) {
-	defaultNavigatorRoutes[navigator] = route;
+  defaultNavigatorRoutes[navigator] = route;
 }
 
 export function getNamedState(allStates: AllNavigationStates, navigator: string): NavigationState {
-	return allStates[navigator] || {
-		index: 0,
-		routes: [defaultNavigatorRoutes[navigator]],
-	};
+  return allStates[navigator] || {
+    index: 0,
+    routes: [defaultNavigatorRoutes[navigator]],
+  };
 }
 
 export function navigationState(allStates: AllNavigationStates = initialNavStates, action: Action): AllNavigationStates {
-	if (action.type === 'LOGIN_LOGGED_OUT') {
-		return {};
-	}
-	let state = null;
-	switch (action.type) {
-	case NAV_PUSH:
-		state = getNamedState(allStates, action.navigator);
-		if (state.routes[state.index].key === (action.state && action.state.key)) {
-			return {
-				...allStates,
-				[action.navigator]: state,
-			};
-		}
-		return {
-			...allStates,
-			[action.navigator]: NavigationStateUtils.push(state, action.state),
-		};
+  if (action.type === 'LOGIN_LOGGED_OUT') {
+    return {};
+  }
+  let state = null;
+  switch (action.type) {
+  case NAV_PUSH:
+    state = getNamedState(allStates, action.navigator);
+    if (state.routes[state.index].key === (action.state && action.state.key)) {
+      return {
+        ...allStates,
+        [action.navigator]: state,
+      };
+    }
+    return {
+      ...allStates,
+      [action.navigator]: NavigationStateUtils.push(state, action.state),
+    };
 
-	case NAV_POP:
-		state = getNamedState(allStates, action.navigator);
-		if (state.index === 0 || state.routes.length === 1) {
-			return {
-				...allStates,
-				[action.navigator]: state,
-			};
-		}
-		return {
-			...allStates,
-			[action.navigator]: NavigationStateUtils.pop(state),
-		};
+  case NAV_POP:
+    state = getNamedState(allStates, action.navigator);
+    if (state.index === 0 || state.routes.length === 1) {
+      return {
+        ...allStates,
+        [action.navigator]: state,
+      };
+    }
+    return {
+      ...allStates,
+      [action.navigator]: NavigationStateUtils.pop(state),
+    };
 
-	case NAV_JUMP_TO_KEY:
-		state = getNamedState(allStates, action.navigator);
-		return {
-			...allStates,
-			[action.navigator]: NavigationStateUtils.jumpTo(state, action.key),
-		};
+  case NAV_JUMP_TO_KEY:
+    state = getNamedState(allStates, action.navigator);
+    return {
+      ...allStates,
+      [action.navigator]: NavigationStateUtils.jumpTo(state, action.key),
+    };
 
-	case NAV_JUMP_TO_INDEX:
-		state = getNamedState(allStates, action.navigator);
-		return {
-			...allStates,
-			[action.navigator]: NavigationStateUtils.jumpToIndex(state, action.index),
-		};
+  case NAV_JUMP_TO_INDEX:
+    state = getNamedState(allStates, action.navigator);
+    return {
+      ...allStates,
+      [action.navigator]: NavigationStateUtils.jumpToIndex(state, action.index),
+    };
 
-	case NAV_SWAP:
-		state = getNamedState(allStates, action.navigator);
-		return {
-			...allStates,
-			[action.navigator]: NavigationStateUtils.replaceAt(state, action.key, action.newRoute),
-		};
+  case NAV_SWAP:
+    state = getNamedState(allStates, action.navigator);
+    return {
+      ...allStates,
+      [action.navigator]: NavigationStateUtils.replaceAt(state, action.key, action.newRoute),
+    };
 
-	case NAV_RESET:
-		state = getNamedState(allStates, action.navigator);
-		return {
-			...allStates,
-			[action.navigator]: {
-				...state,
-				index: action.index,
-				routes: action.routes,
-			}
-		};
+  case NAV_RESET:
+    state = getNamedState(allStates, action.navigator);
+    return {
+      ...allStates,
+      [action.navigator]: {
+        ...state,
+        index: action.index,
+        routes: action.routes,
+      }
+    };
 
-	default:
-		return allStates;
-	}
+  default:
+    return allStates;
+  }
 }

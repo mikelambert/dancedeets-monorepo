@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import type { State } from '../reducers/search';
 
 import React from 'react';

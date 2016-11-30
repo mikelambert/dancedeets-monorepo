@@ -5,38 +5,36 @@
  *
  * @flow
  */
-
-'use strict';
 import fetch from 'node-fetch';
 import * as fs from 'fs';
 import {
   YoutubeKey,
   getUrl,
   loadPlaylist,
-} from './fetchYoutubeVideosCore.js';
+} from './fetchYoutubeVideos';
 
 async function loadPlaylistData(playlistIds) {
   const playlistUrl = getUrl('https://www.googleapis.com/youtube/v3/playlists',
-  {
-    id: playlistIds.join(','),
-    part: 'snippet',
-    key: YoutubeKey,
-  });
+    {
+      id: playlistIds.join(','),
+      part: 'snippet',
+      key: YoutubeKey,
+    });
   const playlistJson = await (await fetch(playlistUrl)).json();
   return playlistJson;
 }
 
 function transformTitle(title) {
   const toTrim = [
-  ' | Beginner\'s Guide',
-  ' | Beginners Guide',
-  ' | Power Move Basics',
-  ' | Top Rock Basics',
-  ' | Footwork 101',
-  ' | Flow Basics',
-  ' | Freeze Basics',
-  'How to Breakdance | ',
-  'How to ',
+    ' | Beginner\'s Guide',
+    ' | Beginners Guide',
+    ' | Power Move Basics',
+    ' | Top Rock Basics',
+    ' | Footwork 101',
+    ' | Flow Basics',
+    ' | Freeze Basics',
+    'How to Breakdance | ',
+    'How to ',
   ];
   let newTitle = title;
   toTrim.forEach((x) => {
@@ -64,7 +62,7 @@ async function reloadPlaylists(playlistIds) {
         {
           title: 'Tutorials',
           videos: tutorialItemsJson,
-        }
+        },
       ],
     };
     const filename = `./js/learn/break/vincanitv_${playlistTitle.replace(' ', '').toLowerCase()}.json`;

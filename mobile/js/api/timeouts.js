@@ -4,11 +4,9 @@
  * @flow
  */
 
-'use strict';
-
 export function timeout<T>(timeoutMs: number, promise: Promise<T>): Promise<T> {
-  return new Promise(function(resolve, reject) {
-    setTimeout(function() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
       reject(new Error(`${timeoutMs}ms timeout reached`));
     }, timeoutMs);
     promise.then(resolve, reject);
@@ -21,8 +19,7 @@ export async function retryWithBackoff<T>(startTimeoutMs: number, backoffFactor:
   } catch (e) {
     if (retries > 0) {
       return retryWithBackoff(startTimeoutMs * backoffFactor, backoffFactor, retries - 1, getPromise);
-    } else {
-      throw e;
     }
+    throw e;
   }
 }

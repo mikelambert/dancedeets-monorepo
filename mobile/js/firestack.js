@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import React from 'react';
 import Firestack from 'react-native-firestack';
 import { connect } from 'react-redux';
@@ -25,18 +23,18 @@ class _TrackFirebase extends React.Component {
     (this: any).handleValueChange = this.handleValueChange.bind(this);
   }
 
-  handleValueChange(snapshot) {
-    if (snapshot.val()) {
-      this.props.setFirebaseState(this.props.storageKey, snapshot.val());
-    }
-  }
-
   componentWillMount() {
     firestack.database.ref(this.props.path).on('value', this.handleValueChange);
   }
 
   componentWillUnmount() {
     firestack.database.ref(this.props.path).off('value', this.handleValueChange);
+  }
+
+  handleValueChange(snapshot) {
+    if (snapshot.val()) {
+      this.props.setFirebaseState(this.props.storageKey, snapshot.val());
+    }
   }
 
   render() {
@@ -46,7 +44,7 @@ class _TrackFirebase extends React.Component {
 export const TrackFirebase = connect(
   state => ({
   }),
-  (dispatch: Dispatch, props) => ({
+  (dispatch: Dispatch) => ({
     setFirebaseState: (key, value) => dispatch(setFirebaseState(key, value)),
   }),
 )(_TrackFirebase);

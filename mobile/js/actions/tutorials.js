@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import type { Action } from './types';
 
 export function setTutorialVideoIndex(index: number): Action {

@@ -22,8 +22,6 @@
  * @flow
  */
 
-'use strict';
-
 import type { NavigationRoute } from 'NavigationTypeDefinition';
 import { AccessToken } from 'react-native-fbsdk';
 import type { SearchResults } from '../events/search';

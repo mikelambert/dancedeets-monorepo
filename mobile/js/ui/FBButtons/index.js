@@ -4,16 +4,14 @@
  * @flow
  */
 
-'use strict';
-
 import React from 'react';
 import { View } from 'react-native';
 import { ShareDialog } from 'react-native-fbsdk';
-import Button from '../Button';
 import {
   injectIntl,
   defineMessages,
 } from 'react-intl';
+import Button from '../Button';
 
 const messages = defineMessages({
   share: {

@@ -4,15 +4,13 @@
  * @flow
  */
 
-'use strict';
-
-import { translateEvent as translateEventApi } from '../api/dancedeets';
-import type { Action, Dispatch, ThunkAction } from './types';
-import { canGetValidLoginFor } from './loginComplex';
 import {
   defineMessages,
   intlShape,
 } from 'react-intl';
+import { translateEvent as translateEventApi } from '../api/dancedeets';
+import type { Action, Dispatch, ThunkAction } from './types';
+import { canGetValidLoginFor } from './loginComplex';
 
 const messages = defineMessages({
   featureTranslation: {

@@ -4,42 +4,43 @@
  * @flow
  */
 
-'use strict';
-
-import React from 'react';
+import React, { Element } from 'react';
 import {
   Platform,
   Text as RealText,
   TextInput as RealTextInput,
   StyleSheet,
 } from 'react-native';
-import {default as RealAutolink} from 'react-native-autolink';
+import { default as RealAutolink } from 'react-native-autolink';
 import {
   semiNormalize,
 } from '../ui/normalize';
 
-export function Text({style, ...props}: Object): ReactElement<RealText> {
+export function Text({ style, ...props }: Object): Element<RealText> {
   return <RealText style={[styles.font, styles.text, style]} {...props} />;
 }
 
-export function Heading1({style, ...props}: Object): ReactElement<RealText> {
+export function Heading1({ style, ...props }: Object): Element<RealText> {
   return <RealText style={[styles.font, styles.h1, style]} {...props} />;
 }
 
-export function Paragraph({style, ...props}: Object): ReactElement<RealText> {
+export function Paragraph({ style, ...props }: Object): Element<RealText> {
   return <RealText style={[styles.font, styles.p, style]} {...props} />;
 }
 
-export function Autolink({style, ...props}: Object): ReactElement<RealAutolink> {
+export function Autolink({ style, ...props }: Object): Element<RealAutolink> {
   return <RealAutolink style={[styles.font, style]} {...props} />;
 }
 
-export function TextInput({style, ...props}: Object): ReactElement<TextInput> {
-  return <RealTextInput {...props}
-    style={[styles.font, style]}
-    placeholderTextColor="rgba(255, 255, 255, 0.5)"
-    keyboardAppearance="dark"
-    />;
+export function TextInput({ style, ...props }: Object): Element<TextInput> {
+  return (
+    <RealTextInput
+      {...props}
+      style={[styles.font, style]}
+      placeholderTextColor="rgba(255, 255, 255, 0.5)"
+      keyboardAppearance="dark"
+    />
+  );
 }
 
 export const defaultFont = {

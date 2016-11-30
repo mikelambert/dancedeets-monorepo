@@ -1,16 +1,16 @@
-var jQuery = require('jquery');
+const jQuery = require('jquery');
 require('jquery.cookie');
 
-var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
-  var loginPressed = false;
+const FBSetup = (window, fbPermissions, fbAppId, baseHostname) => {
+  let loginPressed = false;
 
   function deleteLoginCookies() {
-    var cookieOptions = {
-      domain: '.' + baseHostname,
+    const cookieOptions = {
+      domain: `.${baseHostname}`,
       path: '/',
     };
-    jQuery.removeCookie('fbsr_' + fbAppId, cookieOptions);
-    jQuery.removeCookie('user_login_' + fbAppId, cookieOptions);
+    jQuery.removeCookie(`fbsr_${fbAppId}`, cookieOptions);
+    jQuery.removeCookie(`user_login_${fbAppId}`, cookieOptions);
   }
 
   function reloadWithNewToken() {
@@ -22,7 +22,7 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
   }
 
   function currentUser() {
-    var userLogin = jQuery.cookie('user_login_' + fbAppId);
+    const userLogin = jQuery.cookie(`user_login_${fbAppId}`);
     if (userLogin) {
       return JSON.parse(userLogin).uid;
     }
@@ -61,7 +61,7 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
     function login() {
       loginPressed = true;
       window.mixpanel.track('Login - FBLogin Button Pressed');
-      FB.login(function(/* response */) {}, {
+      FB.login((/* response */) => {}, {
         scope: fbPermissions,
       });
     }
@@ -70,9 +70,9 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
       window.mixpanel.track('Logout');
       // Seems the logout callback isn't being called, so ensure we delete the cookie here
       deleteLoginCookies();
-      FB.getLoginStatus(function(response) {
+      FB.getLoginStatus((response) => {
         if (response.status === 'connected') {
-          FB.logout(function(/* response */) {
+          FB.logout((/* response */) => {
             window.location.reload();
           });
         } else {
@@ -81,9 +81,9 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
       });
     }
 
-    FB.init({version: 'v2.8', appId: fbAppId, status: true, cookie: true, xfbml: true});
+    FB.init({ version: 'v2.8', appId: fbAppId, status: true, cookie: true, xfbml: true });
     FB.Event.subscribe('auth.statusChange', handleStatusChange);
-    FB.getLoginStatus(function(response) {
+    FB.getLoginStatus((response) => {
       handleStatusChange(response);
     });
 
@@ -91,7 +91,7 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
     jQuery('.onclick-logout').on('click', logout);
   }
 
-  window.fbAsyncInit = function() {
+  window.fbAsyncInit = () => {
     initFBCode(window.FB);
   };
 
@@ -103,13 +103,12 @@ var FBSetup = function(window, fbPermissions, fbAppId, baseHostname) {
    */
 
   // Facebook/Login Code
-  (function(d, s, id) {
-    var js;
-    var fjs = d.getElementsByTagName(s)[0];
+  ((d, s, id) => {
+    const fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) {
       return;
     }
-    js = d.createElement(s);
+    const js = d.createElement(s);
     js.id = id;
     js.src = 'https://connect.facebook.net/en_US/sdk.js';
     fjs.parentNode.insertBefore(js, fjs);

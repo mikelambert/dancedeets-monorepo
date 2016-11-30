@@ -4,9 +4,8 @@
  * @flow
  */
 
-'use strict';
-
 import languages from './languagesData.json';
+
 const languageMap = {};
 languages.forEach((x) => {
   languageMap[x.iso] = x;

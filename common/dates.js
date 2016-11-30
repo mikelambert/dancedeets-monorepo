@@ -4,12 +4,11 @@
  * @flow
  */
 
-'use strict';
-
 import _ from 'lodash/string';
 import moment from 'moment';
 
-export const weekdayDateTime = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
+// TODO: combine this with mobile's formats.js
+export const weekdayDateTime = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
 export function formatStartEnd(startString, endString, intl) {
   const textFields = [];
@@ -21,10 +20,10 @@ export function formatStartEnd(startString, endString, intl) {
     const duration = end.diff(start);
     if (duration > moment.duration(1, 'days')) {
       const formattedEnd = _.upperFirst(intl.formatDate(end, weekdayDateTime));
-      textFields.push(formattedStart + ' - \n' + formattedEnd);
+      textFields.push(`${formattedStart} - \n${formattedEnd}`);
     } else {
       const formattedEndTime = intl.formatTime(end);
-      textFields.push(formattedStart + ' - ' + formattedEndTime);
+      textFields.push(`${formattedStart} - ${formattedEndTime}`);
     }
     const relativeDuration = moment.duration(duration).humanize();
     textFields.push(` (${relativeDuration})`);

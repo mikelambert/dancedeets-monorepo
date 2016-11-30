@@ -6,7 +6,6 @@
  * @flow
  */
 
-'use strict';
 
 import * as path from 'path';
 import * as fs from 'fs';
@@ -17,7 +16,7 @@ import {
 } from './_fsPromises';
 
 function generateJsonFile(translations) {
-  return stableJsonStringify(translations, {space: 2});
+  return stableJsonStringify(translations, { space: 2 });
 }
 
 const locales = ['en', 'fr', 'ja', 'zh'];
@@ -45,12 +44,9 @@ async function updateWithTranslations(englishTranslation) {
 async function run() {
   const filenames = await walk('build/messages');
   // $FlowFixMe: This is a dev script, and so can use dynamic includes
-  const jsons = filenames.map((file) => require(file));
-  const json = jsons.reduce((result, jsList) => {
-    result = result.concat(jsList);
-    return result;
-  }, []);
-  var translationLookup = {};
+  const jsons = filenames.map(file => require(file));
+  const json = jsons.reduce((result, jsList) => result.concat(jsList), []);
+  const translationLookup = {};
   json.forEach((x) => {
     translationLookup[x.id] = x.defaultMessage;
   });

@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import {
   PermissionsAndroid,
   Platform,

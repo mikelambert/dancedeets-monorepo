@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import React from 'react';
 import {
   Platform,
@@ -14,16 +12,15 @@ import {
   Switch,
 } from 'react-native';
 import {
+  injectIntl,
+  defineMessages,
+} from 'react-intl';
+import {
   Card,
   HorizontalView,
   Text,
 } from '../ui';
 import { purpleColors } from '../Colors';
-import { track } from '../store/track';
-import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
 import {
   PreferenceNames,
   getPreference,
@@ -60,17 +57,22 @@ class NamedSwitch extends React.Component {
   };
 
   render() {
-    const {style, text, ...otherProps} = this.props;
-    return <HorizontalView style={[style, {justifyContent: 'space-between'}]}>
-      <Text>{text}</Text>
-      <Switch {...otherProps}
-      />
-    </HorizontalView>;
+    const { style, text, ...otherProps } = this.props;
+    return (
+      <HorizontalView style={[style, { justifyContent: 'space-between' }]}>
+        <Text>{text}</Text>
+        <Switch {...otherProps} />
+      </HorizontalView>
+    );
   }
 }
 
 class _NotificationPreferences extends React.Component {
-  state: {[key: string]: boolean};
+  static preferenceDefaults = {
+    overall: true,
+    sounds: true,
+    vibration: true,
+  };
 
   constructor(props) {
     super(props);
@@ -78,11 +80,7 @@ class _NotificationPreferences extends React.Component {
     };
   }
 
-  static preferenceDefaults = {
-    overall: true,
-    sounds: true,
-    vibration: true,
-  };
+  state: {[key: string]: boolean};
 
   componentWillMount() {
     this.loadPreference();
@@ -91,7 +89,7 @@ class _NotificationPreferences extends React.Component {
   async loadPreference() {
     const preferences = {};
     const defaults = this.constructor.preferenceDefaults;
-    for (let key of Object.keys(defaults)) {
+    for (const key of Object.keys(defaults)) {
       preferences[key] = await getPreference(key, defaults[key]);
     }
     this.setState(preferences);
@@ -100,36 +98,40 @@ class _NotificationPreferences extends React.Component {
   async onChange(key: string, value: boolean) {
     await setPreference(key, value);
     // Only set the state if the above doesn't error out
-    this.setState({[key]: value});
+    this.setState({ [key]: value });
   }
 
   render() {
-    return <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
-      <Card title={
-        <NamedSwitch
-          text={this.props.intl.formatMessage(messages.notificationHeader)}
-          style={{
-            margin: 5,
-            alignItems: 'center',
-          }}
-          value={this.state.overall}
-          onValueChange={(value) => this.onChange(PreferenceNames.overall, value)}
+    return (
+      <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
+        <Card
+          title={
+            <NamedSwitch
+              text={this.props.intl.formatMessage(messages.notificationHeader)}
+              style={{
+                margin: 5,
+                alignItems: 'center',
+              }}
+              value={this.state.overall}
+              onValueChange={value => this.onChange(PreferenceNames.overall, value)}
+            />
+          }
+        >
+          <NamedSwitch
+            disabled={!this.state.overall}
+            text={this.props.intl.formatMessage(messages.notificationSounds)}
+            value={this.state.sounds}
+            onValueChange={value => this.onChange(PreferenceNames.sounds, value)}
           />
-        }>
-        <NamedSwitch
-          disabled={!this.state.overall}
-          text={this.props.intl.formatMessage(messages.notificationSounds)}
-          value={this.state.sounds}
-          onValueChange={(value) => this.onChange(PreferenceNames.sounds, value)}
+          <NamedSwitch
+            disabled={!this.state.overall}
+            text={this.props.intl.formatMessage(messages.notificationVibration)}
+            value={this.state.vibration}
+            onValueChange={value => this.onChange(PreferenceNames.vibration, value)}
           />
-        <NamedSwitch
-          disabled={!this.state.overall}
-          text={this.props.intl.formatMessage(messages.notificationVibration)}
-          value={this.state.vibration}
-          onValueChange={(value) => this.onChange(PreferenceNames.vibration, value)}
-          />
-      </Card>
-    </ScrollView>;
+        </Card>
+      </ScrollView>
+    );
   }
 }
 export default injectIntl(_NotificationPreferences);

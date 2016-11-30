@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import url from 'url';
 
 type JSON = string | number | boolean | null | JSONObject | JSONArray;

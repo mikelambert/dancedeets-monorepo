@@ -4,34 +4,32 @@
  * @flow
  */
 
-'use strict';
-
 import React from 'react';
 import {
   TouchableHighlight,
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import type { Dispatch } from './actions/types';
-import {disableTracking} from './store/track';
-import { loginComplete } from './actions';
 import {
   AccessToken,
 } from 'react-native-fbsdk';
+import {
+  injectIntl,
+  defineMessages,
+} from 'react-intl';
+import type { Dispatch } from './actions/types';
+import { disableTracking } from './store/track';
 import {
   disableWrites,
   event,
 } from './api/dancedeets';
 import {
   logOut,
+  loginComplete,
   navigatePush,
   performSearch,
   updateLocation,
 } from './actions';
-import {
-  injectIntl,
-  defineMessages,
-} from 'react-intl';
 
 const messages = defineMessages({
   locations: {
@@ -42,10 +40,6 @@ const messages = defineMessages({
 });
 
 class _ScreenshotSlideshow extends React.Component {
-  state: {
-    page: number;
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -53,6 +47,10 @@ class _ScreenshotSlideshow extends React.Component {
     };
     (this: any).transitionPage = this.transitionPage.bind(this);
   }
+
+  state: {
+    page: number;
+  };
 
   componentWillMount() {
     disableTracking();
@@ -82,8 +80,8 @@ class _ScreenshotSlideshow extends React.Component {
   }
 
   async setupEventView(dispatch) {
-    const fetchedEvent = await event('397757633752918'); //SYGU 2015
-    await dispatch(navigatePush('EVENT_NAV', {key: 'EventView', title: fetchedEvent.name, event: fetchedEvent}));
+    const fetchedEvent = await event('397757633752918'); // SYGU 2015
+    await dispatch(navigatePush('EVENT_NAV', { key: 'EventView', title: fetchedEvent.name, event: fetchedEvent }));
   }
 
   async logout(dispatch) {
@@ -103,42 +101,43 @@ class _ScreenshotSlideshow extends React.Component {
       case 3:
         // To delete the accesstoken and make this emulator usable again
         await this.logout(dispatch);
-        //await this.setupAddEventView(dispatch);
+        // await this.setupAddEventView(dispatch);
         break;
       case 4:
-        //await this.setupProfileView(dispatch);
+        // await this.setupProfileView(dispatch);
         break;
       case 5:
         break;
     }
-    this.setState({page: this.state.page + 1});
+    this.setState({ page: this.state.page + 1 });
   }
 
   render() {
-    return <View style={{flex: 1}}>
-      {this.props.children}
-      <TouchableHighlight
-        style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-        }}
-        onPress={() => this.props.transitionPage(this)}
-        testID="mainButton">
-        <View />
-      </TouchableHighlight>
-    </View>;
+    return (
+      <View style={{ flex: 1 }}>
+        {this.props.children}
+        <TouchableHighlight
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+          onPress={() => this.props.transitionPage(this)}
+          testID="mainButton"
+        >
+          <View />
+        </TouchableHighlight>
+      </View>
+    );
   }
 }
 export default connect(
-  (state) => {
-    return {
-      translatedEvents: state.translate.events,
-    };
-  },
+  state => ({
+    translatedEvents: state.translate.events,
+  }),
   (dispatch: Dispatch) => ({
-    transitionPage: (obj) => obj.transitionPage(dispatch),
+    transitionPage: obj => obj.transitionPage(dispatch),
   }),
 )(injectIntl(_ScreenshotSlideshow));

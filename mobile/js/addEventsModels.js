@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 export type AddEventData = {
   // From FB (by way of DanceDeets)
   id: string;

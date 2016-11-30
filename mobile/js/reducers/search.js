@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import { Dimensions } from 'react-native';
 
 import type {Action} from '../actions/types';

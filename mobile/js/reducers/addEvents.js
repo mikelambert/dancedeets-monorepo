@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import type {Action} from '../actions/types';
 
 import type { AddEventData, AddEventList, SortOrder } from '../addEventsModels';

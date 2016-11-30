@@ -1,6 +1,4 @@
 
-'use strict';
-
 // This gulpfile makes use of new JavaScript features.
 // Babel handles this without us having to do anything. It just works.
 // You can read more about the new JavaScript features here:
@@ -17,10 +15,10 @@ import username from 'username';
 
 const $ = gulpLoadPlugins();
 
-var baseAssetsDir = '/Users/' + username.sync() + '/Dropbox/dancedeets/art/build-assets/';
+const baseAssetsDir = `/Users/${username.sync()}/Dropbox/dancedeets/art/build-assets/`;
 
-gulp.task('compile-favicons', function() {
-  return gulp.src('assets/img/deets-head.png')
+gulp.task('compile-favicons', () => gulp
+  .src('assets/img/deets-head.png')
   .pipe(favicons({
     appName: 'DanceDeets',
     appDescription: 'Street Dance Events. Worldwide.',
@@ -42,70 +40,70 @@ gulp.task('compile-favicons', function() {
     replace: true,
   }))
   .on('error', gutil.log)
-  .pipe(gulp.dest('./dist/img/favicons/'));
-});
+  .pipe(gulp.dest('./dist/img/favicons/'))
+);
 
-gulp.task('compile-images-resize', () => {
-  return gulp.src(baseAssetsDir + 'img/**/*.{png,jpg}')
-    .pipe($.responsiveImages({
-      'classes/*/*.*': [{
-        width: 32,
-        height: 32,
-        format: 'png',
-      }],
-      '{location,style}-*.jpg': [{
-        width: 450,
-        height: 300,
-        crop: 'true',
-        quality: 60,
-      }],
-      'deets-activity-*.png': [{
-        height: 100,
-      }],
-      'background*.jpg': [{
-        width: 1200,
-        quality: 60,
-        suffix: '@2x',
-      }, {
-        width: 600,
-        quality: 60,
-      }],
-      'deets-head-and-title-on-black.png': [{
-        height: 64 * 2,
-        suffix: '@2x',
-      }, {
-        height: 64,
-      }, {
-        height: 60,
-        suffix: '-60px',
-      }],
-      'fb-login.png': [
-      {},
-      ],
-    }))
-    .pipe($.imagemin({
-      progressive: true,
-      interlaced: true,
-    }))
-    .pipe(gulp.dest('dist/img'));
-});
+gulp.task('compile-images-resize', () => gulp
+  .src(`${baseAssetsDir}img/**/*.{png,jpg}`)
+  .pipe($.responsiveImages({
+    'classes/*/*.*': [{
+      width: 32,
+      height: 32,
+      format: 'png',
+    }],
+    '{location,style}-*.jpg': [{
+      width: 450,
+      height: 300,
+      crop: 'true',
+      quality: 60,
+    }],
+    'deets-activity-*.png': [{
+      height: 100,
+    }],
+    'background*.jpg': [{
+      width: 1200,
+      quality: 60,
+      suffix: '@2x',
+    }, {
+      width: 600,
+      quality: 60,
+    }],
+    'deets-head-and-title-on-black.png': [{
+      height: 64 * 2,
+      suffix: '@2x',
+    }, {
+      height: 64,
+    }, {
+      height: 60,
+      suffix: '-60px',
+    }],
+    'fb-login.png': [
+    {},
+    ],
+  }))
+  .pipe($.imagemin({
+    progressive: true,
+    interlaced: true,
+  }))
+  .pipe(gulp.dest('dist/img'))
+);
 
 gulp.task('compile-images', ['compile-favicons', 'compile-images-resize', 'compile-svg']);
 
 // gets deets-activity svg files
-gulp.task('compile-svg', () => {
-  return gulp.src(baseAssetsDir + 'img/*.svg')
-    .pipe($.cache($.imagemin({
-      progressive: true,
-      interlaced: true,
-    })))
-    .pipe(gulp.dest('dist/img'));
-});
+gulp.task('compile-svg', () => gulp
+  .src(`${baseAssetsDir}img/*.svg`)
+  .pipe($.cache($.imagemin({
+    progressive: true,
+    interlaced: true,
+  })))
+  .pipe(gulp.dest('dist/img'))
+);
 
-gulp.task('compile-fonts', () => {
-  return gulp.src('bower_components/font-awesome/fonts/*.*')
-    .pipe(gulp.dest('dist/fonts/'));
-});
+gulp.task('compile-fonts', () => gulp
+  .src('bower_components/font-awesome/fonts/*.*')
+    .pipe(gulp.dest('dist/fonts/'))
+);
 
 // Run PageSpeed Insights
 gulp.task('pagespeed', cb =>
@@ -135,13 +133,11 @@ gulp.task('compile-server', $.shell.task([
 
 gulp.task('compile', ['compile-css-js', 'compile-images', 'compile-fonts']);
 
-gulp.task('clean', () => {
-  return del.sync('dist');
-});
+gulp.task('clean', () => del.sync('dist'));
 
 gulp.task('test', $.shell.task(['./nose.sh']));
 
-gulp.task('clean-build-test', function(callback) {
+gulp.task('clean-build-test', (callback) => {
   runSequence('clean', 'compile', 'test', callback);
 });
 

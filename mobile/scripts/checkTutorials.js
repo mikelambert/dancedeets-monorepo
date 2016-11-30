@@ -5,25 +5,23 @@
  *
  * @flow
  */
-
-'use strict';
 import fetch from 'node-fetch';
 import querystring from 'querystring';
+import parseJson from 'parse-json';
+import areEqual from 'fbjs/lib/areEqual';
 import {
   readFile,
   walk,
   writeFile,
 } from './_fsPromises';
-import parseJson from 'parse-json';
-import areEqual from 'fbjs/lib/areEqual';
 
 export const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
 
 export function getUrl(path: string, args: Object) {
   const formattedArgs = querystring.stringify(args);
-  var fullPath = path;
+  let fullPath = path;
   if (formattedArgs) {
-    fullPath += '?' + formattedArgs;
+    fullPath += `?${formattedArgs}`;
   }
   return fullPath;
 }
@@ -35,12 +33,12 @@ async function findVideoItems(inVideoIds): Promise<Object[]> {
     // modifies videoIds
     const splicedVideoIds = videoIds.splice(0, 50);
     const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/videos',
-    {
-      id: splicedVideoIds.join(','),
-      maxResults: 50,
-      part: 'id,contentDetails',
-      key: YoutubeKey,
-    });
+      {
+        id: splicedVideoIds.join(','),
+        maxResults: 50,
+        part: 'id,contentDetails',
+        key: YoutubeKey,
+      });
     const videosResult = await (await fetch(playlistItemsUrl)).json();
     Array.prototype.push.apply(items, videosResult.items);
   }
@@ -49,7 +47,7 @@ async function findVideoItems(inVideoIds): Promise<Object[]> {
 
 async function findVideoDimensions(videoIds) {
   const dimensions = {};
-  for (let videoId of videoIds) {
+  for (const videoId of videoIds) {
     const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
     const results = await (await fetch(oEmbedUrl)).json();
     dimensions[videoId] = {width: results.width, height: results.height};
@@ -59,31 +57,31 @@ async function findVideoDimensions(videoIds) {
 
 async function checkTutorial(tutorialJson) {
   const videoIds = [];
-  for (let section of tutorialJson.sections) {
-    for (let video of section.videos) {
+  for (const section of tutorialJson.sections) {
+    for (const video of section.videos) {
       videoIds.push(video.youtubeId);
     }
   }
-  const thumbnailVideoId = videoIds.find((videoId) => tutorialJson.thumbnail == `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`);
+  const thumbnailVideoId = videoIds.find(videoId => tutorialJson.thumbnail === `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`);
   if (!thumbnailVideoId) {
     console.error('Thumbnail for tutorial set incorrectly:', tutorialJson.style, tutorialJson.title);
   }
   const videoItems = await findVideoItems(videoIds);
   const videoItemsMap = {};
-  for (let video of videoItems) {
+  for (const video of videoItems) {
     videoItemsMap[video.id] = video;
   }
 
   const videoDimensionsMap = await findVideoDimensions(videoIds);
 
-  for (let section of tutorialJson.sections) {
-    for (let video of section.videos) {
+  for (const section of tutorialJson.sections) {
+    for (const video of section.videos) {
       const foundVideo = videoItemsMap[video.youtubeId];
       // Check that each video id exists
       if (!foundVideo) {
         console.error(`Tutorial ${video.youtubeId} has broken video reference.`);
       // Check that video durations are correct
-      } else if (video.duration != foundVideo.contentDetails.duration) {
+      } else if (video.duration !== foundVideo.contentDetails.duration) {
         console.error(`Tutorial ${video.youtubeId} has incorrect duration: ${video.duration}, expected: ${foundVideo.contentDetails.duration}`);
         video.duration = foundVideo.contentDetails.duration;
       }
@@ -111,10 +109,10 @@ async function reportAndFix(jsonFilename, jsonData) {
 
 async function checkAllTutorials() {
   const files = await walk('js/learn/tutorials');
-  const jsonFiles = files.filter((x) => x.endsWith('.json'));
+  const jsonFiles = files.filter(x => x.endsWith('.json'));
   const promises = [];
   const tutorials = [];
-  for (let jsonFilename of jsonFiles) {
+  for (const jsonFilename of jsonFiles) {
     let jsonData = null;
     try {
       jsonData = parseJson(await readFile(jsonFilename));
@@ -135,9 +133,9 @@ async function checkAllTutorials() {
     console.error('Error importing learnConfig.js\n', e);
     return;
   }
-  const configuredTutorials = [].concat.apply([], Object.values(defaultTutorials.map((style) => style.tutorials)));
-  const missingTutorials = tutorials.filter((fileTut) => !configuredTutorials.find((configTut) => areEqual(configTut, fileTut)));
-  for (let tutorial of missingTutorials) {
+  const configuredTutorials = [].concat(...Object.values(defaultTutorials.map(style => style.tutorials)));
+  const missingTutorials = tutorials.filter(fileTut => !configuredTutorials.find(configTut => areEqual(configTut, fileTut)));
+  for (const tutorial of missingTutorials) {
     console.error('Tutorial not included: ', tutorial.style, tutorial.title);
   }
   console.log('Finished!');

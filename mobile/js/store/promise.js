@@ -20,8 +20,6 @@
  * DEALINGS IN THE SOFTWARE
  */
 
-'use strict';
-
 function warn(error) {
   console.warn(error.message || error);
   throw new Error(error); // To let the caller handle the rejection

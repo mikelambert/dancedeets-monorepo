@@ -1,10 +1,9 @@
-'use strict';
-
 if (window.prodMode) {
   require('trackjs');
 }
 
-var $ = require('jquery');
+const $ = require('jquery');
+
 global.$ = global.jQuery = $;
 
 require('jquery.backstretch');
@@ -16,13 +15,13 @@ require('bootstrap');
 
 require('./all-css');
 
-var App = require('./app');
+const App = require('./app');
 
-var fbSetup = require('./fb');
+const fbSetup = require('./fb');
 
-var fixStickyTouch = require('./sticky-touch');
+const fixStickyTouch = require('./sticky-touch');
 
-var appInstallPromos = require('./app-install-promo');
+const appInstallPromos = require('./app-install-promo');
 
 fbSetup(window, window.fbPermissions, window.fbAppId, window.baseHostname);
 
@@ -34,13 +33,13 @@ if (window.showSmartBanner) {
   });
 }
 
-$(document).ready(function() {
+$(document).ready(() => {
   App.init($);
   fixStickyTouch(window);
   appInstallPromos(window);
 
   // background-image rotation
-  var images = [
+  let images = [
     'dist/img/background-show-locking.jpg', // slim
     'dist/img/background-class-overhead.jpg', // cricket
     'dist/img/background-club-turntable.jpg', // mario
@@ -54,21 +53,19 @@ $(document).ready(function() {
 //    'dist/img/background-club-headspin.jpg',
   ];
   if ($(document).width() > 900) {
-    images = images.map(function(x) {
-      return x.replace('.jpg', '@2x.jpg');
-    });
+    images = images.map(x => x.replace('.jpg', '@2x.jpg'));
   }
-  $('.fullscreen-static-image').backstretch(images, {duration: 8000, fade: 1500});
+  $('.fullscreen-static-image').backstretch(images, { duration: 8000, fade: 1500 });
 
   // animate-on-hover
-  $('.animate-on-hover').hover(function() {
-    $(this).addClass('animated ' + $(this).data('action'));
+  $('.animate-on-hover').hover(() => {
+    const action = $(this).data('action');
+    $(this).addClass(`animated ${action}`);
   });
-  $('.animate-on-hover').bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', function() {
-    $(this).removeClass('animated ' + $(this).data('action'));
+  $('.animate-on-hover').bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', () => {
+    const action = $(this).data('action');
+    $(this).removeClass(`animated ${action}`);
   });
 
-  $('#location_submit').click(function() {
-    return Boolean($('#location').val());
-  });
+  $('#location_submit').click(() => Boolean($('#location').val()));
 });

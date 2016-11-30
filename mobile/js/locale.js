@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import Locale from 'react-native-locale';
 import {
   supportedLocales,

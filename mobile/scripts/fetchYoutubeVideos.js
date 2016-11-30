@@ -5,8 +5,6 @@
  *
  * @flow
  */
-
-'use strict';
 import _ from 'underscore';
 import fetch from 'node-fetch';
 import querystring from 'querystring';
@@ -15,15 +13,16 @@ export const YoutubeKey = 'AIzaSyCV8QCRxSwv1vVk017qI3EZ9zlC8TefUjY';
 
 export function getUrl(path: string, args: Object) {
   const formattedArgs = querystring.stringify(args);
-  var fullPath = path;
+  let fullPath = path;
   if (formattedArgs) {
-    fullPath += '?' + formattedArgs;
+    fullPath += `?${formattedArgs}`;
   }
   return fullPath;
 }
 
 async function getTimes(playlistItemsJson) {
-  const videoIds = playlistItemsJson.items.map((x) => x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId);
+  const videoIds = playlistItemsJson.items.map(x => (
+    x.id instanceof Object ? x.id.videoId : x.snippet.resourceId.videoId));
   const returnResult = {
     items: [],
   };
@@ -31,12 +30,12 @@ async function getTimes(playlistItemsJson) {
     // modifies videoIds
     const splicedVideoIds = videoIds.splice(0, 50);
     const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/videos',
-    {
-      id: splicedVideoIds.join(','),
-      maxResults: 50,
-      part: 'contentDetails',
-      key: YoutubeKey,
-    });
+      {
+        id: splicedVideoIds.join(','),
+        maxResults: 50,
+        part: 'contentDetails',
+        key: YoutubeKey,
+      });
     const videosResult = await (await fetch(playlistItemsUrl)).json();
     Array.prototype.push.apply(returnResult.items, videosResult.items);
   }
@@ -45,12 +44,12 @@ async function getTimes(playlistItemsJson) {
 
 export async function loadPlaylist(playlistId: string) {
   const playlistItemsUrl = getUrl('https://www.googleapis.com/youtube/v3/playlistItems',
-  {
-    playlistId: playlistId,
-    maxResults: 50,
-    part: 'snippet',
-    key: YoutubeKey,
-  });
+    {
+      playlistId,
+      maxResults: 50,
+      part: 'snippet',
+      key: YoutubeKey,
+    });
   const playlistItemsJson = await fetchAll(playlistItemsUrl);
   const videosJson = await getTimes(playlistItemsJson);
   const contentDetailsLookup = {};
@@ -59,14 +58,12 @@ export async function loadPlaylist(playlistId: string) {
   });
   // Filter out any private/deleted videos which we can't access contentDetails for
   const filteredPlaylistItems = playlistItemsJson.items
-    .filter((x) => contentDetailsLookup[x.snippet.resourceId.videoId]);
-  const annotatedPlaylist = filteredPlaylistItems.map((x) => {
-    return {
-      youtubeId: x.snippet.resourceId.videoId,
-      duration: contentDetailsLookup[x.snippet.resourceId.videoId].duration,
-      title: x.snippet.title,
-    };
-  });
+    .filter(x => contentDetailsLookup[x.snippet.resourceId.videoId]);
+  const annotatedPlaylist = filteredPlaylistItems.map(x => ({
+    youtubeId: x.snippet.resourceId.videoId,
+    duration: contentDetailsLookup[x.snippet.resourceId.videoId].duration,
+    title: x.snippet.title,
+  }));
   return annotatedPlaylist;
 }
 
@@ -75,7 +72,7 @@ async function printPlaylist(playlistId) {
 }
 
 async function fetchAll(pageUrl, pageToken) {
-  const newUrl = pageUrl + (pageToken ? '&pageToken=' + pageToken : '');
+  const newUrl = pageUrl + (pageToken ? `&pageToken=${pageToken}` : '');
   const pageJson = await (await fetch(newUrl)).json();
   if (pageJson.nextPageToken) {
     const pageJson2 = await fetchAll(pageUrl, pageJson.nextPageToken);
@@ -86,22 +83,22 @@ async function fetchAll(pageUrl, pageToken) {
 
 async function loadChannel(channelName, searchQuery) {
   const channelUrl = getUrl('https://www.googleapis.com/youtube/v3/channels',
-  {
-    forUsername: channelName,
-    part: 'snippet',
-    key: YoutubeKey,
-  });
+    {
+      forUsername: channelName,
+      part: 'snippet',
+      key: YoutubeKey,
+    });
   const channelJson = await (await fetch(channelUrl)).json();
   const channelId = channelJson.items.length ? channelJson.items[0].id : channelName;
   const channelSearchUrl = getUrl('https://www.googleapis.com/youtube/v3/search',
-  {
-    channelId,
-    part: 'id,snippet',
-    q: searchQuery,
-    key: YoutubeKey,
-    maxResults: 50,
-    type: 'video',
-  });
+    {
+      channelId,
+      part: 'id,snippet',
+      q: searchQuery,
+      key: YoutubeKey,
+      maxResults: 50,
+      type: 'video',
+    });
   const channelSearchJson = await fetchAll(channelSearchUrl);
   const videosJson = await getTimes(channelSearchJson);
   const contentDetailsLookup = {};
@@ -119,14 +116,14 @@ async function loadChannel(channelName, searchQuery) {
   });
   const searchKeywords = searchQuery.split(' ');
   const filteredPlaylist = annotatedPlaylist.filter((x) => {
-    for (var i = 0; i < searchKeywords.length; i++) {
-      if (x.title.indexOf(searchKeywords[i]) == -1) {
+    for (const keyword of searchKeywords) {
+      if (x.title.indexOf(keyword) === -1) {
         return false;
       }
     }
     return true;
   });
-  const sortedPlaylist = _.sortBy(filteredPlaylist, 'publishedAt').map((x) => _.omit(x, 'publishedAt'));
+  const sortedPlaylist = _.sortBy(filteredPlaylist, 'publishedAt').map(x => _.omit(x, 'publishedAt'));
   return sortedPlaylist;
 }
 
@@ -137,15 +134,15 @@ async function printChannel(channelName, searchQuery) {
 function printResult(videos) {
   const result = {
     title: '',
-    videos: videos,
+    videos,
   };
   console.log(JSON.stringify(result, null, '  '));
 }
 
 const args = process.argv.slice(2);
 const type = args[0];
-if (type == 'pl') {
+if (type === 'pl') {
   printPlaylist(args[1]);
-} else if (type == 'ch') {
+} else if (type === 'ch') {
   printChannel(args[1], args[2] || '');
 }

@@ -4,12 +4,12 @@
 * Author: @htmlstream
 * Website: http://htmlstream.com
 */
-var jQuery = require('jquery');
+const jQuery = require('jquery');
 
-var App = (function() {
+const App = (() => {
   // Fixed Header
   function handleHeader() {
-    jQuery(window).scroll(function() {
+    jQuery(window).scroll(() => {
       if (jQuery(window).scrollTop() > 100) {
         jQuery('.header-fixed .header-sticky').addClass('header-fixed-shrink');
       } else {
@@ -20,7 +20,7 @@ var App = (function() {
 
   // Header Mega Menu
   function handleMegaMenu() {
-    jQuery(document).on('click', '.mega-menu .dropdown-menu', function(e) {
+    jQuery(document).on('click', '.mega-menu .dropdown-menu', (e) => {
       e.stopPropagation();
     });
   }
@@ -49,32 +49,32 @@ var App = (function() {
   }
 
   return {
-    init: function() {
+    init() {
       handleBootstrap();
       handleHeader();
       handleMegaMenu();
     },
 
     // Parallax Backgrounds
-    initParallaxBg: function() {
-      jQuery(window).load(function() {
+    initParallaxBg() {
+      jQuery(window).load(() => {
         jQuery('.parallaxBg').parallax('50%', 0.2);
         jQuery('.parallaxBg1').parallax('50%', 0.4);
       });
     },
 
     // Animate Dropdown
-    initAnimateDropdown: function() {
+    initAnimateDropdown() {
       function menuMode() {
-        jQuery('.dropdown').on('show.bs.dropdown', function() {
+        jQuery('.dropdown').on('show.bs.dropdown', () => {
           jQuery(this).find('.dropdown-menu').first().stop(true, true).slideDown();
         });
-        jQuery('.dropdown').on('hide.bs.dropdown', function() {
+        jQuery('.dropdown').on('hide.bs.dropdown', () => {
           jQuery(this).find('.dropdown-menu').first().stop(true, true).slideUp();
         });
       }
 
-      jQuery(window).resize(function() {
+      jQuery(window).resize(() => {
         if (jQuery(window).width() > 768) {
           menuMode();
         }

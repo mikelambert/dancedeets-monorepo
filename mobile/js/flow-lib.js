@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 /* eslint no-unused-vars:0 */
 declare var jest: any;
 declare var jasmine: any;

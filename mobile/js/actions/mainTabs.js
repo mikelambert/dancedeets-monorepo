@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import type { Action } from './types';
 
 export function selectTab(tab: string): Action {

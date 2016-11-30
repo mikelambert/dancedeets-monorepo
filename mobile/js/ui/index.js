@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import AutocompleteList from './AutocompleteList';
 import Button from './Button';
 import Card from './Card';

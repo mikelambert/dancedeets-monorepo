@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import { feed } from '../api/dancedeets';
 import querystring from 'querystring';
 

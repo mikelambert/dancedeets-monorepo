@@ -20,8 +20,6 @@
  * DEALINGS IN THE SOFTWARE
  */
 
-'use strict';
-
 import { trackDispatches } from './track';
 
 module.exports = store => next => action => {

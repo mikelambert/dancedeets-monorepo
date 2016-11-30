@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import _ from 'lodash/collection';
 import {
   Alert,
@@ -15,6 +13,10 @@ import {
   AccessToken,
 } from 'react-native-fbsdk';
 import {
+  defineMessages,
+  intlShape,
+} from 'react-intl';
+import {
   loginStartOnboard,
   loginComplete,
   skipLogin,
@@ -22,11 +24,7 @@ import {
 import type { Dispatch } from '../actions/types';
 import { track } from '../store/track';
 import {
-  defineMessages,
-  intlShape,
-} from 'react-intl';
-import {
-  hasSkippedLogin
+  hasSkippedLogin,
 } from '../login/savedState';
 
 const messages = defineMessages({
@@ -63,10 +61,10 @@ export async function canGetValidLoginFor(feature: string, intl: intlShape, disp
     };
     Alert.alert(
       intl.formatMessage(messages.loginTitle),
-      intl.formatMessage(messages.loginMessage, {feature}),
+      intl.formatMessage(messages.loginMessage, { feature }),
       [
-        {text: intl.formatMessage(messages.promptCancel), onPress: cancel, style: 'cancel'},
-        {text: intl.formatMessage(messages.promptOk), onPress: ok},
+        { text: intl.formatMessage(messages.promptCancel), onPress: cancel, style: 'cancel' },
+        { text: intl.formatMessage(messages.promptOk), onPress: ok },
       ]
     );
   });
@@ -79,7 +77,7 @@ export async function loginButtonPressed(dispatch: Dispatch) {
     await dispatch(loginComplete(token));
     return token;
   } catch (e) {
-    console.log('Staying on this screen, failed to login because: ' + e);
+    console.log(`Staying on this screen, failed to login because: ${e}`);
     return null;
   }
 }
@@ -123,12 +121,11 @@ async function loginOrLogout(): Promise<AccessToken> {
     throw new Error('Canceled by user');
   }
 
-  var accessToken = await AccessToken.getCurrentAccessToken();
-  if (accessToken != null) {
-    return accessToken;
-  } else {
+  const accessToken = await AccessToken.getCurrentAccessToken();
+  if (accessToken == null) {
     throw new Error('No access token');
   }
+  return accessToken;
 }
 
 
@@ -140,13 +137,12 @@ async function isLoggedOut() {
 async function isRecentlyLoggedIn() {
   const accessToken = await AccessToken.getCurrentAccessToken();
   if (accessToken != null) {
-    var howLongAgo = Math.round((Date.now() - accessToken.lastRefreshTime) / 1000);
+    const howLongAgo = Math.round((Date.now() - accessToken.lastRefreshTime) / 1000);
     return (howLongAgo < 24 * 60 * 60);
-  } else {
-    // This shouldn't happen, since we check isLoggedOut() before isRecentlyLoggedIn().
-    // But let's handle it correctly anyway.
-    return false;
   }
+  // This shouldn't happen, since we check isLoggedOut() before isRecentlyLoggedIn().
+  // But let's handle it correctly anyway.
+  return false;
 }
 
 async function refreshFullToken() {

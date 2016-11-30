@@ -4,30 +4,32 @@
  * @flow
  */
 
-'use strict';
-
 import {
   AccessToken,
   LoginManager,
 } from 'react-native-fbsdk';
-import ActionSheetIOS from 'ActionSheetIOS';
-import {Platform} from 'react-native';
-import Alert from 'Alert';
-import { auth } from '../api/dancedeets';
-import { trackLogin, trackLogout } from '../store/track';
-import { performRequest } from '../api/fb';
-import { userInfo } from '../api/dancedeets';
-import _ from 'lodash/array';
-import type { Action, Dispatch, ThunkAction } from './types';
-import Geocoder from '../api/geocoder';
-import {format} from '../events/formatAddress';
 import {
-  setSkippedLogin,
-} from '../login/savedState';
+  ActionSheetIOS,
+  Alert,
+  Platform,
+} from 'react-native';
 import {
   defineMessages,
   intlShape,
 } from 'react-intl';
+import _ from 'lodash/array';
+import { trackLogin, trackLogout } from '../store/track';
+import { performRequest } from '../api/fb';
+import {
+  auth,
+  userInfo,
+} from '../api/dancedeets';
+import type { Action, Dispatch, ThunkAction } from './types';
+import Geocoder from '../api/geocoder';
+import { format } from '../events/formatAddress';
+import {
+  setSkippedLogin,
+} from '../login/savedState';
 
 const messages = defineMessages({
   logoutButton: {
@@ -70,21 +72,21 @@ export function loginComplete(token: AccessToken): ThunkAction {
     // But mark us as logged-in here
     dispatch({
       type: 'LOGIN_LOGGED_IN',
-      token: token,
+      token,
     });
   };
 }
 
 export async function loadUserData(dispatch: Dispatch) {
   const requests = {
-    profile: performRequest('GET', 'me', {fields: 'id,name'}),
-    picture: performRequest('GET', 'me/picture', {type: 'large', fields: 'url', redirect: '0'}),
-    friends: performRequest('GET', 'me/friends', {limit: '1000', fields: 'id'}),
+    profile: performRequest('GET', 'me', { fields: 'id,name' }),
+    picture: performRequest('GET', 'me/picture', { type: 'large', fields: 'url', redirect: '0' }),
+    friends: performRequest('GET', 'me/friends', { limit: '1000', fields: 'id' }),
     ddUser: userInfo(),
   };
 
   const keys = Object.keys(requests);
-  const promises = keys.map((x) => requests[x]);
+  const promises = keys.map(x => requests[x]);
   const values = await Promise.all(promises);
   // Now await each of them and stick them in our user Object
   const user: any = {};
@@ -138,7 +140,7 @@ export function logOutWithPrompt(intl: intlShape): ThunkAction {
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          title: intl.formatMessage(messages.logoutPrompt, {name}),
+          title: intl.formatMessage(messages.logoutPrompt, { name }),
           options: [intl.formatMessage(messages.logoutButton), intl.formatMessage(messages.cancelButton)],
           destructiveButtonIndex: 0,
           cancelButtonIndex: 1,
@@ -152,7 +154,7 @@ export function logOutWithPrompt(intl: intlShape): ThunkAction {
     } else {
       Alert.alert(
         intl.formatMessage(messages.logoutButton),
-        intl.formatMessage(messages.logoutPrompt, {name}),
+        intl.formatMessage(messages.logoutPrompt, { name }),
         [
           { text: intl.formatMessage(messages.cancelButton) },
           { text: intl.formatMessage(messages.logoutButton), onPress: () => dispatch(logOut()) },
